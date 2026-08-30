@@ -14,29 +14,40 @@ import {
   Combat,
   RotatingDecider,
   sampleCatalog,
+  verifyAll,
+  formatViolations,
+  captureReplay,
+  verifyReplay,
+  INVARIANT_COUNT,
   type DomainEvent,
 } from '../src/index.js';
 
 const MAX_TICKS = 300;
 
-function buildCombat(seed: number): Combat {
+const ROSTER = [
+  { unitDefId: 'unit_warrior', faction: 'blue' as const, lane: 'top' },
+  { unitDefId: 'unit_mage', faction: 'blue' as const, lane: 'top' },
+  { unitDefId: 'unit_warrior', faction: 'red' as const, lane: 'top' },
+  { unitDefId: 'unit_mage', faction: 'red' as const, lane: 'top' },
+];
+
+function compiledCatalog() {
   const catalog = Catalog.compile(sampleCatalog);
   if (!catalog.ok) {
     throw new Error(`编目编译失败：${catalog.error.message}\n${JSON.stringify(catalog.error.details)}`);
   }
+  return catalog.value;
+}
+
+function buildCombat(seed: number): Combat {
   const combat = Combat.create({
     id: `smoke-${seed}`,
     seed,
-    catalog: catalog.value,
+    catalog: compiledCatalog(),
     // 全部放在同一路：
     // 近战的 laneRef 是 same_lane，分处两路会互相够不着而陷入僵持——
     // 这不是引擎缺陷，而是"分兵"这一战术选择本身带来的后果。
-    roster: [
-      { unitDefId: 'unit_warrior', faction: 'blue', lane: 'top' },
-      { unitDefId: 'unit_mage', faction: 'blue', lane: 'top' },
-      { unitDefId: 'unit_warrior', faction: 'red', lane: 'top' },
-      { unitDefId: 'unit_mage', faction: 'red', lane: 'top' },
-    ],
+    roster: ROSTER,
     maxTicks: MAX_TICKS,
   });
   if (!combat.ok) throw new Error(`战斗创建失败：${combat.error.message}`);
@@ -109,6 +120,30 @@ function main(): void {
       ? '随机使用登记：本场未抽样'
       : `随机使用登记：${randomUsage.map((r) => `${r.key}(${JSON.stringify(r.params)})×${r.samples}`).join(', ')}`,
   );
+
+  // —— 不变量校验（§12 共 47 条 —— 编目 + 状态 + 事件流）——
+  const verification = verifyAll(combat);
+  console.log(
+    `不变量校验（共 ${INVARIANT_COUNT} 条）：${verification.ok ? 'PASS' : `FAIL（${verification.violations.length} 项）`}`,
+  );
+  if (!verification.ok) console.log(formatViolations(verification.violations));
+
+  // —— 精确回放（R6）——
+  const bundle = captureReplay({
+    combatId: 'smoke-replay',
+    seed: 20260830,
+    catalog: compiledCatalog(),
+    roster: ROSTER,
+    decider: 'rotating',
+    maxTicks: MAX_TICKS,
+  });
+  if (bundle.ok) {
+    const r = verifyReplay(bundle.value, compiledCatalog());
+    const pass = r.ok && r.value.identical;
+    console.log(`精确回放（指纹 ${bundle.value.fingerprint}）：${pass ? 'PASS' : 'FAIL'}`);
+    if (r.ok && !r.value.identical) console.log(r.value.differences.join('\n'));
+  }
+
   console.log(line);
 }
 

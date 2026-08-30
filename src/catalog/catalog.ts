@@ -136,6 +136,36 @@ export class Catalog {
     return this.unitMap.get(id);
   }
 
+  // ——— 全量遍历（验证器 / 审计工具用）———
+
+  effectIds(): readonly DefId[] {
+    return [...this.effectMap.keys()];
+  }
+
+  termIds(): readonly DefId[] {
+    return [...this.termMap.keys()];
+  }
+
+  behaviorIds(): readonly DefId[] {
+    return [...this.behaviorMap.keys()];
+  }
+
+  skillIds(): readonly DefId[] {
+    return [...this.skillMap.keys()];
+  }
+
+  statusIds(): readonly DefId[] {
+    return [...this.statusMap.keys()];
+  }
+
+  zoneIds(): readonly DefId[] {
+    return [...this.zoneMap.keys()];
+  }
+
+  unitIds(): readonly DefId[] {
+    return [...this.unitMap.keys()];
+  }
+
   requireEffect(id: DefId): EffectDef {
     const d = this.effectMap.get(id);
     invariant(d !== undefined, 'CATALOG_UNRESOLVED_REF', `效果 ${id} 不存在`);

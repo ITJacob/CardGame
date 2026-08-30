@@ -438,9 +438,26 @@ export class Combat implements CombatHost, EffectRuntime {
     return unit;
   }
 
+  /**
+   * 中断引导：清 channel、效果作废、**资源不退**（§5.7 纪律：提交即承诺）。
+   * 挂起的 Action 必须有终态，否则回放里会留下永远 pending 的悬空记录。
+   */
+  private interruptChannel(unit: Unit, terminalState: string): void {
+    const channel = unit.channel;
+    if (!channel) return;
+    unit.channel = null;
+    if (unit.state === 'channeling') unit.state = 'active';
+    const action = this.actions.get(channel.actionId);
+    if (action) action.state = 'resolved';
+    this.bus.emit({ type: 'ChannelInterrupted', unitId: unit.id, actionId: channel.actionId });
+    this.bus.emit({ type: 'ActionResolved', actionId: channel.actionId, state: terminalState });
+  }
+
   /** 单位死亡：亡语 → 离场 → 坍缩 → revertAll（§13 / INV-P4）。 */
   handleDeath(unit: Unit): void {
     if (unit.state === 'dying' || unit.state === 'removed') return;
+    // 引导中阵亡 → 引导作废；否则那条 Action 会永远停在 pending
+    this.interruptChannel(unit, 'aborted_by_death');
     unit.state = 'dying';
     this.bus.emit({ type: 'UnitDied', unitId: unit.id, coord: unit.position });
 
@@ -612,6 +629,10 @@ export class Combat implements CombatHost, EffectRuntime {
   private finish(winner: FactionId | null): void {
     this.finishing = true;
     this.battle.state = 'finished';
+    // 收尾：战斗结束时仍未结算的引导必须作废，否则事件流里会留下悬空的 pending Action。
+    for (const unit of this.registry.all()) {
+      this.interruptChannel(unit, 'aborted_by_combat_end');
+    }
     this.bus.emit({ type: 'CombatFinished', winner, tickIndex: this.clock.tickIndex });
   }
 

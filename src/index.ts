@@ -79,5 +79,9 @@ export * from './execution/commit.js';
 // ——— combat ———
 export * from './combat/combat.js';
 
+// ——— 验证与回放 ———
+export * from './verification/index.js';
+export * from './replay/replay.js';
+
 // ——— 示例编目 ———
 export { sampleCatalog } from './data/sample-catalog.js';

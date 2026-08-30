@@ -25,7 +25,9 @@ export type ErrorCode =
   | 'STALE_CANDIDATE_POOL'
   | 'EFFECT_FAILED'
   | 'ACTION_NOT_PENDING'
-  | 'NOT_IMPLEMENTED';
+  | 'NOT_IMPLEMENTED'
+  | 'REPLAY_VERSION_MISMATCH'
+  | 'REPLAY_PARSE_FAILED';
 
 export interface DomainError {
   readonly code: ErrorCode;

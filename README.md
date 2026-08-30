@@ -59,6 +59,36 @@ src/
 | I→R→M→O 流水线 | `execution/pipeline*.ts` | INV-E1–E9 |
 | 伤害链阶段管道 | `effect/damage-chain.ts` | INV-D1–D5 |
 | 随机源治理与登记 | `random/random-source.ts` | R1–R6 |
+| **47 条不变量可执行断言** | `verification/` | §12 全表 |
+| **事件流 schema + 精确回放** | `replay/replay.ts` | R6 可复现契约 |
+
+## 验证与回放
+
+```ts
+import { verifyAll, tickAndVerify, captureReplay, verifyReplay } from './src/index.js';
+
+// 一次跑完：编目 + 战斗状态 + 事件流
+const r = verifyAll(combat);
+console.log(r.ok ? 'PASS' : formatViolations(r.violations));
+
+// 逐 tick 校验：能在违规发生的那一刻定位到 tick 号
+const bad = tickAndVerify(combat, 200);
+
+// 录制 → 存档 → 重放比对（改引擎后跑一遍，指纹变了就说明行为变了）
+const bundle = captureReplay({ combatId, seed, catalog, roster, decider: 'rotating' });
+const v = verifyReplay(bundle, catalog);
+```
+
+47 条不变量按**归类**登记在 `verification/types.ts`：
+
+- `enforced` — 构造即保证（类型系统 / 单一出口），断言器只做回归哨兵
+- `checked` — 每次调用都真正校验
+- `logged` — 只能在事件流上做事后校验（S3 / S4 / E7 / P7）
+
+归类的意义：不变量被破坏时，一眼知道该去改代码还是改配置。
+
+> 断言器上线的当天就抓到一个真 bug：引导中的单位阵亡时 channel 未清除，
+> 那条 Action 永远停在 pending（`action#196`）。已修——见 `Combat.interruptChannel()`。
 
 ## 与设计稿的三处偏差（都是为了让模型自洽）
 
@@ -81,11 +111,13 @@ src/
 - 数值全部是占位：DEF 杠杆、再生 12 点总回复、技能伤害基准都标记了待评审。
 - `击退 = modify_resource(gauge.current, -50/n)` 里 **n 的含义待确认**（清单第 31 项）。
 - `burn` 状态已补（原 15 个状态表里缺它，但三个示例技能都依赖它）。
-- 47 条不变量中已有 40+ 条被测试覆盖，剩余以"配置约束"形式存在于 Catalog 编译期校验。
 
 ## 下一步建议
 
-1. 把 47 条不变量写成**可执行断言**挂在战斗快照上（现在只有抽样断言）。
-2. 定义**事件流 schema**，配合 seed 做精确回放。
-3. 数值重新标定：用这个引擎重扫 TTK，回填参数层。
-4. 术语词汇表校准 + 技能设计（A20 的推进顺序：先术语，再技能）。
+1. ~~把 47 条不变量写成可执行断言~~——已完成（`verification/`）。
+2. ~~定义事件流 schema + 精确回放~~——已完成（`replay/`）。
+3. **数值重新标定**：用这个引擎重扫 TTK，回填参数层 §2.6 与 §2.7。
+4. **术语词汇表校准 + 技能设计**（A20 的推进顺序：先术语，再技能）——
+   `docs/skill-design/` 里已有 v0.1 的技能池与框架改动清单。
+5. 补 `on_battle_start` 触发点：现有 TriggerEvent 里没有它，
+   `on_spawn` 会与召唤物 / 中途增援混淆，不能当"开局"用。

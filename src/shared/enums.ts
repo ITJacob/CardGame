@@ -142,6 +142,33 @@ export type StatKey =
 
 export const RESISTANCE_ELEMENTS: readonly Element[] = ['fire', 'ice', 'poison', 'shock', 'mental', 'physical'];
 
+/**
+ * 全部合法 StatKey（A24 固化）。
+ *
+ * ⛔ 刻意**不含**"行动周期"与"有效攻防"——它们都是派生值（INV-S5），
+ * 要改只能改源属性。验证器靠这张表抓"有人偷偷修派生值"。
+ */
+export const STAT_KEYS: readonly StatKey[] = [
+  'attack',
+  'defense',
+  'armor',
+  'hp_max',
+  'energy_max',
+  'energy_regen',
+  'gauge_rate',
+  'gauge_threshold',
+  'resist:fire',
+  'resist:ice',
+  'resist:poison',
+  'resist:shock',
+  'resist:mental',
+  'resist:physical',
+];
+
+export function isStatKey(value: string): value is StatKey {
+  return (STAT_KEYS as readonly string[]).includes(value);
+}
+
 export function isResistanceStat(stat: StatKey): boolean {
   return stat.startsWith('resist:');
 }
