@@ -27,7 +27,7 @@ export type SourceKind = 'behavior' | 'status' | 'zone' | 'melee_clash';
 
 export interface DispelFilter {
   readonly dispelable?: boolean;
-  readonly category?: string;
+  readonly category?: string | readonly string[];
   readonly count?: number;
 }
 
@@ -85,8 +85,8 @@ export interface EffectRuntime {
   /** 生成新单位（spawn 效果）。落位失败返回 null（如路线已满，INV-B7）。 */
   spawnUnit(unitDefId: DefId, faction: FactionId, coord: Coordinate): Unit | null;
 
-  /** 单位死亡处理：亡语 → 离场 → revertAll（INV-P4）。 */
-  handleDeath(unit: Unit): void;
+  /** 单位死亡处理：亡语 → 离场 → revertAll（INV-P4）。killer 为击杀者（A4 on_kill 用）。 */
+  handleDeath(unit: Unit, killer?: Unit | null): void;
 }
 
 export interface EffectContext {

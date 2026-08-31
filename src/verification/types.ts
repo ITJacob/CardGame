@@ -13,13 +13,13 @@
 
 export type InvariantId =
   // 战场
-  | 'INV-B1' | 'INV-B2' | 'INV-B3' | 'INV-B4' | 'INV-B5' | 'INV-B6' | 'INV-B7' | 'INV-B8'
+  | 'INV-B1' | 'INV-B2' | 'INV-B3' | 'INV-B4' | 'INV-B5' | 'INV-B6' | 'INV-B7' | 'INV-B8' | 'INV-B9'
   // 编队
   | 'INV-P1' | 'INV-P2' | 'INV-P3' | 'INV-P4' | 'INV-P5' | 'INV-P6' | 'INV-P7'
   // 调度
   | 'INV-S1' | 'INV-S2' | 'INV-S3' | 'INV-S4' | 'INV-S5'
   // 执行
-  | 'INV-E1' | 'INV-E2' | 'INV-E3' | 'INV-E4' | 'INV-E5' | 'INV-E6' | 'INV-E7' | 'INV-E8' | 'INV-E9'
+  | 'INV-E1' | 'INV-E2' | 'INV-E3' | 'INV-E4' | 'INV-E5' | 'INV-E6' | 'INV-E7' | 'INV-E8' | 'INV-E9' | 'INV-E10' | 'INV-E11' | 'INV-E12'
   // 效果
   | 'INV-D1' | 'INV-D2' | 'INV-D3' | 'INV-D4' | 'INV-D5'
   | 'INV-EL1' | 'INV-EL2' | 'INV-EL3' | 'INV-EL4'
@@ -41,7 +41,7 @@ export interface InvariantRegistryEntry {
   readonly statement: string;
 }
 
-/** §12 不变量总表：编号 → 表述 + 归类。总数固定为 47。 */
+/** §12 不变量总表：编号 → 表述 + 归类。总数 51（2026-08-31 A1/A4/G8 +3，C6 +1）。 */
 export const INVARIANTS: readonly InvariantRegistryEntry[] = [
   { id: 'INV-B1', enforcement: 'checked', statement: '队列占用数 ≤ 容量' },
   { id: 'INV-B2', enforcement: 'checked', statement: '队列无内部空洞（占用必须是前缀）' },
@@ -97,6 +97,12 @@ export const INVARIANTS: readonly InvariantRegistryEntry[] = [
   { id: 'INV-C2', enforcement: 'checked', statement: '数值单点定义（Def 管默认，Grant 管实例值）' },
   { id: 'INV-C3', enforcement: 'checked', statement: '战斗启动时快照 Catalog' },
   { id: 'INV-C4', enforcement: 'checked', statement: '展开与环路/白名单校验在 Catalog 加载时完成' },
+
+  // 2026-08-31 扩展（A1 / A4 / G8）
+  { id: 'INV-B9', enforcement: 'enforced', statement: '单位 faction 不可变：relocate 禁止跨阵营迁移（G8 硬约束）' },
+  { id: 'INV-E10', enforcement: 'enforced', statement: 'on_battle_start 在所有 on_spawn 之后、首个 tick 之前触发，每单位至多一次' },
+  { id: 'INV-E11', enforcement: 'enforced', statement: 'on_kill 仅 fire 给击杀者（lastAttacker），不 fire 给死者' },
+  { id: 'INV-E12', enforcement: 'enforced', statement: '次数型状态（charges）消耗至 0 必须卸载（reason: consumed）且 chargesRemaining 不为负（C6）' },
 ];
 
 export const INVARIANT_COUNT = INVARIANTS.length;

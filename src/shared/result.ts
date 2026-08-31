@@ -27,7 +27,8 @@ export type ErrorCode =
   | 'ACTION_NOT_PENDING'
   | 'NOT_IMPLEMENTED'
   | 'REPLAY_VERSION_MISMATCH'
-  | 'REPLAY_PARSE_FAILED';
+  | 'REPLAY_PARSE_FAILED'
+  | 'CROSS_FACTION_RELOCATE';
 
 export interface DomainError {
   readonly code: ErrorCode;

@@ -24,6 +24,12 @@ export interface StatusInstance {
   readonly grant: StatusGrant;
   remaining: number;
   currentStacks: number;
+  /**
+   * 次数型状态（C6）剩余次数。仅当挂载时传入 charges（grant.charges ?? def.charges）
+   * 才存在；undefined 表示非次数型（响应式触发不消耗次数）。
+   * 由 fireEventTriggers 在每次响应式派发后递减，归零即卸载（reason: 'consumed'）。
+   */
+  chargesRemaining?: number;
   readonly binding?: StatusBinding;
   /** 由效果层在挂载时写入的分类缓存（只读），供 INV-P5 的"分类驱动"清除使用。 */
   readonly category?: StatusCategory;
@@ -47,6 +53,7 @@ export class StatusSet {
   mount(def: CompiledStatus, grant: StatusGrant, ids: IdGenerator): MountResult {
     const existing = this.ofDef(def.id);
     const requestedStacks = Math.max(1, Math.floor(grant.stacks ?? 1));
+    const chargesStart = grant.charges ?? def.charges;
 
     if (existing !== null) {
       if (def.stackPolicy === 'reject') {
@@ -68,6 +75,7 @@ export class StatusSet {
       remaining: Math.max(0, grant.duration ?? def.defaultDuration),
       currentStacks: Math.min(def.maxStacks, requestedStacks),
       ...(grant.binding ? { binding: { ...grant.binding } } : {}),
+      ...(chargesStart !== undefined ? { chargesRemaining: Math.max(0, Math.floor(chargesStart)) } : {}),
       category: def.category,
     };
     this.list.push(instance);

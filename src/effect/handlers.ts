@@ -113,7 +113,7 @@ const handleDamage: EffectHandler = (ctx, ref, target) => {
   rt.fireEventTriggers(ctx.caster, 'on_deal_damage', ctx, [target]);
 
   // 死亡判定（O 节点之后统一处理，保证亡语在伤害结算完成后触发）。
-  if (defender.hp <= 0) rt.handleDeath(defender);
+  if (defender.hp <= 0) rt.handleDeath(defender, ctx.caster);
 
   return ok({
     element,
@@ -296,6 +296,20 @@ const handleMove: EffectHandler = (ctx, ref, target) => {
       result = rt.placement.relocate(unitId, { faction: from.faction, lane, index: rt.battle.shape.capacity - 1 });
       break;
     }
+    case 'pull_forward': {
+      // 己方半场内向前挪格（G8：faction 锁定 from.faction，无越线）。
+      const distance = Math.max(1, Math.floor(num(p, 'distance', 1)));
+      const idx = Math.max(0, from.index - distance);
+      result = rt.placement.relocate(unitId, { faction: from.faction, lane: from.lane, index: idx });
+      break;
+    }
+    case 'push_back': {
+      // 己方半场内向后挪格（G8：faction 锁定 from.faction，无越线）。
+      const distance = Math.max(1, Math.floor(num(p, 'distance', 1)));
+      const idx = Math.min(rt.battle.shape.capacity - 1, from.index + distance);
+      result = rt.placement.relocate(unitId, { faction: from.faction, lane: from.lane, index: idx });
+      break;
+    }
     default: {
       const to = {
         faction: str(p, 'faction', from.faction),
@@ -323,15 +337,29 @@ const handleSpawn: EffectHandler = (ctx, ref, target) => {
   if (unitDefId === '') return err('EFFECT_FAILED', `spawn 缺少 unit_def（effect: ${def.id}）`);
 
   // 召唤物占格、有血量、可被攻击 → summon + spawn；纯坐标效果 → zone（A23）。
-  if (target.occupantId !== null) return ok({ skipped: true, reason: 'coordinate_occupied' });
+  // position：'coord'（默认，落在解析到的坐标）/ 'tail'（落己方 lane 队尾，用于重生/补位）。
+  const position = str(p, 'position', 'coord');
+  const finalCoord =
+    position === 'tail'
+      ? { faction: ctx.caster.faction, lane: target.coord.lane, index: rt.battle.shape.capacity - 1 }
+      : target.coord;
+  if (rt.battle.occupantAt(finalCoord) !== null) return ok({ skipped: true, reason: 'coordinate_occupied' });
 
   const faction = str(p, 'faction', ctx.caster.faction);
-  const unit = rt.spawnUnit(unitDefId, faction, target.coord);
+  const unit = rt.spawnUnit(unitDefId, faction, finalCoord);
   if (unit === null) return ok({ skipped: true, reason: 'placement_failed' });
+
+  // hpRatio：以满血的百分比生成（复活式再生 / 奇迹 用 0.3~0.5；满血省略）。
+  const hpRatio = num(p, 'hpRatio', 1);
+  if (hpRatio > 0 && hpRatio < 1) {
+    const spawnHp = Math.max(1, Math.floor(unit.hpMax * hpRatio));
+    unit.pool('hp').setValue(spawnHp);
+  }
+
   rt.fireEventTriggers(unit, 'on_spawn', ctx, [target]);
   return ok({
     unitId: unit.id,
-    coord: { faction: target.coord.faction, lane: target.coord.lane, index: target.coord.index },
+    coord: { faction: finalCoord.faction, lane: finalCoord.lane, index: finalCoord.index },
   });
 };
 
@@ -360,7 +388,13 @@ const handleDispel: EffectHandler = (ctx, ref, target) => {
 
   const filter = {
     ...(typeof p['dispelable'] === 'boolean' ? { dispelable: bool(p, 'dispelable', true) } : {}),
-    ...(typeof p['category'] === 'string' ? { category: str(p, 'category', '') } : {}),
+    ...(p['category'] !== undefined
+      ? {
+          category: Array.isArray(p['category'])
+            ? (p['category'] as readonly string[])
+            : str(p, 'category', ''),
+        }
+      : {}),
     ...(typeof p['count'] === 'number' ? { count: Math.floor(num(p, 'count', 0)) } : {}),
   };
   const removed = rt.dispelStatuses(targetUnit, filter);
@@ -416,7 +450,7 @@ const handleDrain: EffectHandler = (ctx, ref, target) => {
 
   rt.fireEventTriggers(defender, 'on_take_damage', ctx, [target]);
   rt.fireEventTriggers(ctx.caster, 'on_deal_damage', ctx, [target]);
-  if (defender.hp <= 0) rt.handleDeath(defender);
+  if (defender.hp <= 0) rt.handleDeath(defender, ctx.caster);
 
   return ok({ element, damage: actualDamage, healed });
 };

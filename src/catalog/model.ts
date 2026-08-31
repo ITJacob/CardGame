@@ -223,6 +223,12 @@ export interface StatusDef {
   /** 默认时长。单点定义于此（INV-C2）；缺失会让 INV-C2 无法成立。 */
   readonly defaultDuration: number;
   readonly maxStacks: number;
+  /**
+   * 次数型状态（C6）：状态可触发的"响应式事件"次数上限。
+   * 缺省表示非次数型（无限次触发，直到 duration 到期）。
+   * 单点定义于此（INV-C2）；实例值由 StatusGrant.charges 覆盖。
+   */
+  readonly charges?: number;
   readonly stackPolicy: StackPolicy;
   readonly dispelable: boolean;
   readonly triggers: readonly TriggerDef[];
@@ -237,6 +243,8 @@ export interface StatusDef {
 export interface StatusGrant {
   readonly duration?: number;
   readonly stacks?: number;
+  /** 次数型状态（C6）：覆盖 StatusDef.charges 的初始次数。 */
+  readonly charges?: number;
   readonly params?: Params;
   /** 特殊绑定：守护目标 / 转移目标。 */
   readonly binding?: {

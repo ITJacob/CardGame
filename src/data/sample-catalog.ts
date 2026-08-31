@@ -12,6 +12,18 @@ import type { EffectDef, StatusDef, TermDef } from '../catalog/model.js';
 import type { TargetSpec } from '../shared/target-spec.js';
 
 // ————————————————————————————————————————————————
+// 可调参数（单点定义，归 03_参数层 §4 回填清单；INV-C2）
+// ————————————————————————————————————————————————
+
+/**
+ * 击退距离：一次性把目标行动条推后多少点（gauge.current 负向增量）。
+ * 含义是"击退"，但不是引擎术语/算子——它只是 `modify_resource(gauge.current, -KNOCKBACK_DISTANCE)` 的命名封装。
+ * 设计口径统一为一次性推后 KNOCKBACK_DISTANCE 点（默认 50，阈值 75 → 推后 2/3 行动周期），
+ * 废弃原文档未定义的「50/n tick」公式（见 框架改动记录 D1/E2）。
+ */
+export const KNOCKBACK_DISTANCE = 50;
+
+// ————————————————————————————————————————————————
 // 目标规格
 // ————————————————————————————————————————————————
 
@@ -21,6 +33,25 @@ const ENEMY_FRONT: TargetSpec = {
     faction: 'enemy',
     laneRef: 'same_lane',
     anchor: 'front_line',
+    scope: 'single_point',
+    sort: 'index_asc',
+    spread: 'none',
+    pickCount: 1,
+  },
+  mode: 'unit',
+  consumption: 'instant',
+  selectionMode: 'auto',
+};
+
+/**
+ * 敌方同路第一个空格（C7 验证用）。
+ * 愚弄命运：把攻击重定向到空坐标 → instant 消费下必定落空（whiff）。
+ */
+const FOE_FIRST_EMPTY: TargetSpec = {
+  request: {
+    faction: 'enemy',
+    laneRef: 'same_lane',
+    anchor: 'first_empty',
     scope: 'single_point',
     sort: 'index_asc',
     spread: 'none',
@@ -150,6 +181,8 @@ const effects: readonly EffectDef[] = [
 
   // 2. heal（A22：治疗语义，只作用于生命类池）
   { id: 'heal_regen', type: 'heal', element: 'none', params: { value: 2, pool: 'hp' } },
+  // C6 演练：次数型状态触发时的自疗效果
+  { id: 'ward_charged_heal', type: 'heal', element: 'none', params: { value: 3, pool: 'hp' } },
 
   // 3. mount_status
   { id: 'apply_burn', type: 'mount_status', element: 'none', params: { status_id: 'burn', duration: 3 } },
@@ -169,16 +202,23 @@ const effects: readonly EffectDef[] = [
   // 5. modify_resource（A22 / A24）
   { id: 'gain_armor_2', type: 'modify_resource', params: { resource: 'armor', value: 2, mode: 'delta' } },
   { id: 'shatter_armor', type: 'modify_resource', params: { resource: 'armor', value: -3, mode: 'delta' } },
-  { id: 'knockback', type: 'modify_resource', params: { resource: 'gauge.current', value: -50, mode: 'delta' } },
+  { id: 'knockback', type: 'modify_resource', params: { resource: 'gauge.current', value: -KNOCKBACK_DISTANCE, mode: 'delta' } },
   { id: 'pay_hp_3', type: 'modify_resource', params: { resource: 'hp', value: -3, mode: 'delta' } },
 
   // 6. move / 7. spawn
   { id: 'swap_back', type: 'move', params: { op: 'swap_neighbor', direction: 1 } },
   { id: 'summon_wolf', type: 'spawn', params: { unit_def: 'unit_wolf' } },
+  // C1：队列内前后挪格（锁定己方 faction，G8 合规）。
+  { id: 'move_pull', type: 'move', params: { op: 'pull_forward', distance: 1 } },
+  { id: 'move_push', type: 'move', params: { op: 'push_back', distance: 1 } },
+  // C5：以 30% 血量生成召唤物（复活式再生 / 奇迹 同构）。
+  { id: 'summon_weak', type: 'spawn', params: { unit_def: 'unit_wolf', hpRatio: 0.3 } },
 
   // 8. dispel（A23）
   { id: 'dispel_unit', type: 'dispel', params: { target: 'unit', dispelable: true } },
   { id: 'dispel_trap', type: 'dispel', params: { target: 'coordinate' } },
+  // C2：一次清三类（debuff/dot/control），单 category 做不到。
+  { id: 'dispel_multi', type: 'dispel', params: { target: 'unit', category: ['debuff', 'dot', 'control'] } },
 
   // 9. drain（A17：跨效果传值，效果内部闭环）
   { id: 'drain_life', type: 'drain', element: 'physical', params: { source: 'attack', ratio: 1, healRatio: 0.5 } },
@@ -317,6 +357,20 @@ const statuses: readonly StatusDef[] = [
     triggers: [{ event: 'on_spawn', effects: [{ ref: 'gain_armor_2' }] }],
   },
   {
+    // C6 演练：次数型状态（charges）。受击 2 次后自动卸载（reason: 'consumed'）。
+    // defaultDuration 仅兜底，真正寿命由 charges 控制。
+    id: 'ward_charged',
+    displayName: '充能守护',
+    category: 'buff',
+    defaultDuration: 99,
+    maxStacks: 1,
+    stackPolicy: 'refresh',
+    dispelable: true,
+    charges: 2,
+    behaviorModifiers: [],
+    triggers: [{ event: 'on_take_damage', effects: [{ ref: 'ward_charged_heal' }] }],
+  },
+  {
     id: 'vulnerable',
     displayName: '易伤',
     category: 'debuff',
@@ -383,6 +437,18 @@ const statuses: readonly StatusDef[] = [
       { op: 'force', behaviorKey: 'basic_attack' },
       { op: 'target_override', value: ENEMY_FRONT },
     ],
+    triggers: [],
+  },
+  {
+    id: 'fool_fate',
+    displayName: '愚弄命运',
+    category: 'control',
+    defaultDuration: 6,
+    maxStacks: 1,
+    stackPolicy: 'refresh',
+    dispelable: true,
+    // C7：把持有者的攻击重定向到敌方同路第一个空格（instant 消费下落空）。
+    behaviorModifiers: [{ op: 'target_override', value: FOE_FIRST_EMPTY }],
     triggers: [],
   },
   {

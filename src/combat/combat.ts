@@ -161,6 +161,11 @@ export class Combat implements CombatHost, EffectRuntime {
       const r = combat.addUnit(entry.unitDefId, entry.faction, entry.lane, entry.id);
       if (!r.ok) return r;
     }
+    // A1：开局触发点——所有单位部署完成（各自已 fire 过 on_spawn）后、首个 tick 前，
+    // 统一 fire 一次 on_battle_start。每单位至多一次，且晚于 on_spawn（避免召唤物被当开局单位）。
+    for (const u of combat.registry.all()) {
+      combat.fireEventTriggers(u, 'on_battle_start', combat.rootContext(u.id));
+    }
     combat.battle.state = 'ready';
     combat.bus.emit({ type: 'CombatStarted', combatId: combat.id, seed: combat.seed });
     return ok(combat);
@@ -334,7 +339,10 @@ export class Combat implements CombatHost, EffectRuntime {
       const def = this.catalog.status(inst.defId);
       if (!def) return false;
       if (filter.dispelable !== undefined && def.dispelable !== filter.dispelable) return false;
-      if (filter.category !== undefined && def.category !== filter.category) return false;
+      if (filter.category !== undefined) {
+        const cats = Array.isArray(filter.category) ? filter.category : [filter.category];
+        if (def.category === undefined || !cats.includes(def.category)) return false;
+      }
       if (filter.dispelable === undefined && filter.category === undefined && !def.dispelable) return false;
       return true;
     });
@@ -363,6 +371,8 @@ export class Combat implements CombatHost, EffectRuntime {
     if (targets.length === 0) return;
 
     const next: EffectContext = { ...ctx, depth: ctx.depth + 1, cause: event };
+    // C6：次数型状态在本轮派发中消耗到 0 的实例，循环结束后统一卸载（reason: 'consumed'）。
+    const consumed: InstanceId[] = [];
     this.triggerDepth += 1;
     try {
       // 状态触发器
@@ -374,6 +384,14 @@ export class Combat implements CombatHost, EffectRuntime {
           const effects = tr.effects.length > 0 ? tr.effects : (def.payload ?? []);
           if (effects.length === 0) continue;
           this.dispatchTriggeredAction(unit, effects, targets, event, inst.instanceId, next);
+          // C6：次数型状态每次响应式派发消耗 1 次；归零即标记为卸载并停止本状态后续触发。
+          if (inst.chargesRemaining !== undefined) {
+            inst.chargesRemaining -= 1;
+            if (inst.chargesRemaining <= 0) {
+              consumed.push(inst.instanceId);
+              break;
+            }
+          }
         }
       }
       // 被动行为（passiveHook）
@@ -383,6 +401,12 @@ export class Combat implements CombatHost, EffectRuntime {
       }
     } finally {
       this.triggerDepth -= 1;
+    }
+
+    // C6：次数型状态消耗到 0 后卸载（reason: 'consumed' 已计入 StatusRemoved 事件，
+    // 并触发 on_remove 的溯源回滚）。放在循环外统一处理，避免派发中途改 StatusSet 引发不确定性。
+    for (const id of consumed) {
+      this.unmountStatus(unit, id, 'consumed');
     }
   }
 
@@ -454,7 +478,7 @@ export class Combat implements CombatHost, EffectRuntime {
   }
 
   /** 单位死亡：亡语 → 离场 → 坍缩 → revertAll（§13 / INV-P4）。 */
-  handleDeath(unit: Unit): void {
+  handleDeath(unit: Unit, killer?: Unit | null): void {
     if (unit.state === 'dying' || unit.state === 'removed') return;
     // 引导中阵亡 → 引导作废；否则那条 Action 会永远停在 pending
     this.interruptChannel(unit, 'aborted_by_death');
@@ -462,6 +486,12 @@ export class Combat implements CombatHost, EffectRuntime {
     this.bus.emit({ type: 'UnitDied', unitId: unit.id, coord: unit.position });
 
     this.fireEventTriggers(unit, 'on_death', this.rootContext(unit.id));
+
+    // A4：击杀触发点——fire 给击杀者（而非死者）。仅当击杀者存在、与死者不同且仍存活。
+    // 直接伤害击杀时由 handleDamage / handleDrain 传入 ctx.caster；DoT / 环境死亡无击杀者则跳过。
+    if (killer && killer !== unit && killer.isAlive) {
+      this.fireEventTriggers(killer, 'on_kill', this.rootContext(killer.id));
+    }
 
     const at = unit.position;
     if (at !== null) this.placement.remove(unit.id);
@@ -481,7 +511,8 @@ export class Combat implements CombatHost, EffectRuntime {
   }
 
   /** 系统级（非行为驱动）的效果上下文：以目标单位自身作为施法方。 */
-  private rootContext(sourceId: InstanceId, caster?: Unit): EffectContext {
+  /** 构造根触发上下文（depth:0, cause:null）。测试与扩展层（如 progression）触发状态时复用。 */
+  rootContext(sourceId: InstanceId, caster?: Unit): EffectContext {
     const self = caster ?? this.registry.all()[0];
     return {
       runtime: this,

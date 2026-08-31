@@ -6,7 +6,7 @@
  */
 
 /** 六元素 + none。纯标签，自身无数值语义（INV-EL1）。 */
-export const ELEMENTS = ['fire', 'ice', 'poison', 'shock', 'mental', 'physical', 'none'] as const;
+export const ELEMENTS = ['fire', 'ice', 'poison', 'shock', 'mental', 'physical', 'water', 'none'] as const;
 export type Element = (typeof ELEMENTS)[number];
 
 /** 由 Element 派生的只读标签（INV-EL3）：默认不参与结算，服务于 UI 分组与流派规约。 */
@@ -20,6 +20,7 @@ export const ELEMENT_TO_DAMAGE_CATEGORY: Readonly<Record<Element, DamageCategory
   poison: 'magic',
   shock: 'magic',
   mental: 'magic',
+  water: 'magic',
   none: 'true',
 };
 
@@ -39,7 +40,9 @@ export type TriggerEvent =
   | 'on_death'
   | 'on_spawn'
   | 'on_turn_start'
-  | 'on_remove';
+  | 'on_remove'
+  | 'on_battle_start'
+  | 'on_kill';
 
 export const TRIGGER_EVENTS: readonly TriggerEvent[] = [
   'on_apply',
@@ -50,6 +53,8 @@ export const TRIGGER_EVENTS: readonly TriggerEvent[] = [
   'on_spawn',
   'on_turn_start',
   'on_remove',
+  'on_battle_start',
+  'on_kill',
 ];
 
 /** 状态分类。`stance` 受硬控清除规则约束（INV-P5）。 */
@@ -138,9 +143,10 @@ export type StatKey =
   | 'resist:poison'
   | 'resist:shock'
   | 'resist:mental'
-  | 'resist:physical';
+  | 'resist:physical'
+  | 'resist:water';
 
-export const RESISTANCE_ELEMENTS: readonly Element[] = ['fire', 'ice', 'poison', 'shock', 'mental', 'physical'];
+export const RESISTANCE_ELEMENTS: readonly Element[] = ['fire', 'ice', 'poison', 'shock', 'mental', 'physical', 'water'];
 
 /**
  * 全部合法 StatKey（A24 固化）。
@@ -163,6 +169,7 @@ export const STAT_KEYS: readonly StatKey[] = [
   'resist:shock',
   'resist:mental',
   'resist:physical',
+  'resist:water',
 ];
 
 export function isStatKey(value: string): value is StatKey {

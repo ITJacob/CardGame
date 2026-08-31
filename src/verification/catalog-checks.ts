@@ -6,7 +6,7 @@
  * 断言器会一次性列出全部违规。
  */
 
-import { ELEMENTS, damageCategoryOf } from '../shared/enums.js';
+import { ELEMENTS, ELEMENT_TO_DAMAGE_CATEGORY, damageCategoryOf } from '../shared/enums.js';
 import type { Element } from '../shared/enums.js';
 import { validateTargetSpec } from '../shared/target-spec.js';
 import { DEFAULT_DAMAGE_CHAIN } from '../effect/damage-chain.js';
@@ -16,16 +16,8 @@ import { expandTermNodes } from '../catalog/term-expander.js';
 import type { Catalog } from '../catalog/catalog.js';
 import type { InvariantViolationReport } from './types.js';
 
-/** canonical 的 element → damageCategory 映射（INV-EL3：全系统单点定义）。 */
-const EXPECTED_CATEGORY: Readonly<Record<Element, string>> = {
-  physical: 'physical',
-  fire: 'magic',
-  ice: 'magic',
-  poison: 'magic',
-  shock: 'magic',
-  mental: 'magic',
-  none: 'true',
-};
+/** canonical 的 element → damageCategory 映射（INV-EL3：直接复用 enums 的权威定义，避免双份来源）。 */
+const EXPECTED_CATEGORY = ELEMENT_TO_DAMAGE_CATEGORY;
 
 /** canonical 的伤害链阶段顺序（INV-D1：顺序固定且配置可见）。 */
 const EXPECTED_CHAIN_ORDER: readonly string[] = [

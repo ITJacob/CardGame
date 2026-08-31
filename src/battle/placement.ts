@@ -144,6 +144,11 @@ export class Placement {
     const from = this.battle.coordOf(unitId);
     if (from === null) return err('UNIT_NOT_ON_FIELD', `单位 ${unitId} 不在场上`);
     if (!this.battle.isValidCoord(c)) return err('INVALID_COORDINATE', `非法坐标 ${coordKey(c)}`);
+    // G8（全局硬约束）：己方单位不得越中线进入敌方半场。relocate 是 move 的唯一落点出口，
+    // 禁止 to.faction 与 from.faction 不同，从根上挡住跨阵营位移（突进/跳跃类技能走近战攻击进程，不调 move）。
+    if (c.faction !== from.faction) {
+      return err('CROSS_FACTION_RELOCATE', `禁止跨阵营迁移：单位 ${unitId} 属 ${from.faction}，目标 ${c.faction}`);
+    }
     return this.run((draft) => {
       draft.setSlot(from, null);
       const slots = draft.laneSlots(c.faction, c.lane);

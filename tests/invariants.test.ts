@@ -15,8 +15,8 @@ import {
 import { compileSample, makeCombat, runToEnd } from './helpers.js';
 
 describe('不变量总表（§12）', () => {
-  it('共 47 条', () => {
-    expect(INVARIANT_COUNT).toBe(47);
+  it('共 51 条', () => {
+    expect(INVARIANT_COUNT).toBe(51);
   });
 
   it('编号不重复', () => {
