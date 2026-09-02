@@ -18,6 +18,7 @@
 | 执行 | 动作与流水线 | Action / ActionSource / ResolvedTarget / BehaviorContext | Pipeline（I→R→M→O） |
 | 效果 | 结算 | Effect / DamageChain / MitigationStage | EffectExecutor |
 | 编目 | 定义态（独立聚合，只读） | 各 Def | Catalog（按 id 解析） |
+| 肉鸽派发 | 局外构筑与局内抽取 | SkillDef（候选）/ BuildSlot / BuildSnapshot / UpgradeTrack | ProgressionAggregate（抽池 / 构筑校验） |
 | 共享内核 | 跨层复用的值对象与规约 | TargetSpec / EffectRef / EffectCondition / RandomSource / 元素 / 术语 | —— |
 
 ## 二、通用模式：Definition + Grant
@@ -58,6 +59,7 @@
 - [执行上下文](./contexts/执行上下文.md)
 - [效果上下文](./contexts/效果上下文.md)
 - [编目上下文](./contexts/编目上下文.md)
+- [肉鸽派发上下文](./contexts/肉鸽派发上下文.md)
 - [共享内核](./contexts/共享内核.md)
 - [随机性治理](./contexts/随机性治理.md)
 
@@ -68,8 +70,9 @@
 - [执行参数](./params/执行参数.md)
 - [效果参数](./params/效果参数.md)
 - [编目参数](./params/编目参数.md)
+- [肉鸽派发参数](./params/肉鸽派发参数.md)
 - [共享内核参数](./params/共享内核参数.md)
 
 ## 五、不变量总览（按上下文）
 
-共 47 条，分布如下：战场 8 · 编队 9 · 调度 5 · 执行 9 · 效果 9 · 编目 7。各条完整定义见对应上下文文档末尾。
+共 50 条，分布如下：战场 8 · 编队 9 · 调度 5 · 执行 9 · 效果 9 · 编目 7 · 肉鸽派发 3。各条完整定义见对应上下文文档末尾。
