@@ -26,9 +26,9 @@
 | A23 | 区域载荷清单化 + 陷阱定位（dispel 拆陷阱） | `contexts/效果上下文.md` §二「dispel 的目标与边界（A23）」+ INV-B8 |
 | A24 | Gauge 三维度开放 + 击退建模 | `params/效果参数.md`「Gauge 三维度（A24 开放）」 |
 
-## B 组（肉鸽派发）
+## B 组（肉鸽派发，已于 2026-09-05 迁出）
 
-B1–B7（rarity / weight / pool / pathway / sharedAcross / 槽位 / duplicatePolicy / desc / 升级阶梯）→ 全部落入 `contexts/肉鸽派发上下文.md` + `params/肉鸽派发参数.md`。
+B1–B7（rarity / weight / pool / pathway / sharedAcross / 槽位 / duplicatePolicy / desc / 升级阶梯）原落入 `contexts/肉鸽派发上下文.md` + `params/肉鸽派发参数.md`。按全局蓝图 §5.2，「肉鸽派发」一分为二：构筑结构归 Progression、抽取机制归 Draft，二者均属游戏主项目（非本战斗内核库）。原定义保留在 git 历史 `7e6d01f`。
 
 ## C 组（效果 / 状态扩展）
 

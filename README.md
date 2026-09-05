@@ -1,123 +1,45 @@
-# 卡牌对战系统 · 核心逻辑层
+# CardGame · 战斗内核领域设计
 
-把《02_详细设计_v1.5》与《03_参数层_v1.5》落地为可运行、可测试、可回放的领域模型。
-**不含任何 UI、渲染、网络、持久化**——这一层只负责一件事：把战斗当成确定性纯函数推进。
+本仓库是 Roguelike 爬塔卡牌游戏**战斗内核**的领域设计文档库（DDD）。
 
-```
-结果 = f(初始状态, 输入序列, seed)
-```
+不含实现代码。这里产出的是领域模型、不变量与参数取值域；实现落点由主项目承载。
 
-## 快速开始
+## 定位与边界
 
-```bash
-npm install
-npm run typecheck   # 类型检查
-npm test            # 53 个测试
-npm run smoke       # 跑一场完整战斗并打印过程
-npm run build       # 产出 dist/
-```
+本仓库只承载战斗内核，即战斗本身从开局到结束的领域模型：
 
-## 目录结构
+> 结果 = f(初始状态, 输入序列, seed)
 
-目录与限界上下文一一对应（上下文是逻辑边界，聚合是事务边界，二者不必重合）：
+对外契约是 `CombatSetup → CombatEnded`，整场战斗是一个聚合，根为 `Combat`。
+
+**不在此处**（属战外 / 元层，由主项目承载）：抽发 Draft、构筑 Progression、跑图 Run、事件 Event、名册 Roster、匹配 Match、元进度、遥测。
+
+边界依据主项目全局蓝图 `blueprint-完整版.md`。
+
+## 目录
 
 ```
-src/
-├─ shared/       共享内核：标识、Result、事件字典、元素、目标规格、条件谓词
-├─ catalog/      编目（独立聚合）：各 Def、术语编目期展开、编译期校验
-├─ battle/       战场：坐标 / 路线 / Placement 唯一占位出口 / Zone
-├─ roster/       编队：Unit、属性三层、Gauge / Pool、StatProvenance、状态
-├─ scheduling/   调度：BattleClock、ActionOpportunity、先手、可选行为
-├─ execution/    执行：Action、I→R→M→O 流水线、近战对撞
-├─ effect/       效果：DamageChain、九种效果执行体
-├─ random/       随机源治理（R1–R6）
-├─ combat/       聚合根 Combat
-└─ data/         示例编目（数值占位，结构可用）
+docs/ddd/          战斗内核 DDD 设计（本仓库正源）
+├─ README.md       文档入口：上下文总览、依赖关系、不变量总表
+├─ LEGACY_REFS.md  v1.5 旧档条目到终版模型的迁移映射
+├─ contexts/       7 个限界上下文 + 共享内核
+└─ params/         各上下文的参数与取值域
+
+docs/skill-design/ 诡秘之主 22 途径技能池 v0.2（内容设计，非 DDD）
+docs/诡秘之主职业路径与能力对照表.md
 ```
 
-依赖方向是单向的：`combat → execution / effect / scheduling / roster / battle → shared`。
-下层模块只依赖 `shared` 与各自声明的窄接口（`EffectRuntime` / `CombatHost`），
-由聚合根实现并注入，因此不存在模块循环。
+限界上下文：**战场 / 编队 / 调度 / 执行 / 效果 / 编目 / 随机性治理** + **共享内核**。
 
-## 一个必须先定的架构判断
+原「肉鸽派发」上下文已于 2026-09-05 迁出至主项目（拆为 Draft 抽取机制 + Progression 构筑结构），原定义保留在 git 历史。
 
-**整场战斗是一个聚合，根是 `Combat`；`Unit` 不是聚合根。**
+## 阅读顺序
 
-核心不变量——坍缩后队列无空洞、同一时刻只有一个单位在行动、转向后目标仍是合法坐标——
-全都横跨多个单位。若 `Unit` 各自成聚合，这些不变量没有任何聚合内能保证。
-代价是聚合变大，缓解方式是内部按"上下文"做逻辑分层，各层只通过明确接口访问。
+从 `docs/ddd/README.md` 进入，它给出上下文总览、依赖方向、不变量总表（当前 49 条）与导航链接。
 
-## 已落地的关键机制
+参数与架构描述解耦：模型结构看 `contexts/`，取值域看 `params/`。
 
-| 机制 | 落点 | 对应不变量 |
-|---|---|---|
-| Definition + Grant 三层模式 | `catalog/model.ts` | INV-C2 数值单点定义 |
-| 术语编目期展开（编译期宏 + 溯源烙印） | `catalog/term-expander.ts` | INV-T1–T5 |
-| Placement 唯一占位出口 + 快照回滚 | `battle/placement.ts` | INV-B1–B7 |
-| 属性三层 + 溯源账本 | `roster/attributes.ts` `roster/provenance.ts` | INV-P1–P7 |
-| tick 八步原子推进 | `scheduling/clock.ts` | INV-S1–S5 |
-| I→R→M→O 流水线 | `execution/pipeline*.ts` | INV-E1–E9 |
-| 伤害链阶段管道 | `effect/damage-chain.ts` | INV-D1–D5 |
-| 随机源治理与登记 | `random/random-source.ts` | R1–R6 |
-| **47 条不变量可执行断言** | `verification/` | §12 全表 |
-| **事件流 schema + 精确回放** | `replay/replay.ts` | R6 可复现契约 |
+## 已迁出的内容
 
-## 验证与回放
-
-```ts
-import { verifyAll, tickAndVerify, captureReplay, verifyReplay } from './src/index.js';
-
-// 一次跑完：编目 + 战斗状态 + 事件流
-const r = verifyAll(combat);
-console.log(r.ok ? 'PASS' : formatViolations(r.violations));
-
-// 逐 tick 校验：能在违规发生的那一刻定位到 tick 号
-const bad = tickAndVerify(combat, 200);
-
-// 录制 → 存档 → 重放比对（改引擎后跑一遍，指纹变了就说明行为变了）
-const bundle = captureReplay({ combatId, seed, catalog, roster, decider: 'rotating' });
-const v = verifyReplay(bundle, catalog);
-```
-
-47 条不变量按**归类**登记在 `verification/types.ts`：
-
-- `enforced` — 构造即保证（类型系统 / 单一出口），断言器只做回归哨兵
-- `checked` — 每次调用都真正校验
-- `logged` — 只能在事件流上做事后校验（S3 / S4 / E7 / P7）
-
-归类的意义：不变量被破坏时，一眼知道该去改代码还是改配置。
-
-> 断言器上线的当天就抓到一个真 bug：引导中的单位阵亡时 channel 未清除，
-> 那条 Action 永远停在 pending（`action#196`）。已修——见 `Combat.interruptChannel()`。
-
-## 与设计稿的三处偏差（都是为了让模型自洽）
-
-1. **Gauge 的越界扣减时机**。§5.3 的伪码把 `current = overflow` 写在 `advance()` 里，
-   但 §6.2 又要求 commit 时 `consume(cost.gaugeAmount)`（默认等于 threshold）。
-   若在 advance 里就压成 overflow，"成本 = 阈值"将永远付不起。
-   实现取：**advance 只报告越界，扣减发生在 commit**；机会未被消耗时由 `settleOverflow()`
-   按策略处理（对应 INV-S4 的"不累积"）。这样行动周期恰好是 `threshold / rate`。
-
-2. **抗性阶段与乘区阶段的关系**。§8.2 说抗性是独立阶段且插在乘区前，
-   §3.10 / A14 又说抗性与易伤"同乘区加算后统一乘一次"。
-   实现取：抗性是独立阶段（可见于 breakdown、单独钳制），但其贡献累加进同一个乘区桶，
-   由乘区阶段统一乘一次——两条要求同时满足。
-
-3. **INV-D4 的作用范围**。"状态伤害不进通用乘区"被解释为
-   **不进易伤 / 坚守这类状态提供的乘区，抗性仍然生效**（否则 DoT 无视火抗，不合理）。
-
-## 已知缺口（源自设计稿 §14.2，非实现缺陷）
-
-- 数值全部是占位：DEF 杠杆、再生 12 点总回复、技能伤害基准都标记了待评审。
-- `击退 = modify_resource(gauge.current, -50/n)` 里 **n 的含义待确认**（清单第 31 项）。
-- `burn` 状态已补（原 15 个状态表里缺它，但三个示例技能都依赖它）。
-
-## 下一步建议
-
-1. ~~把 47 条不变量写成可执行断言~~——已完成（`verification/`）。
-2. ~~定义事件流 schema + 精确回放~~——已完成（`replay/`）。
-3. **数值重新标定**：用这个引擎重扫 TTK，回填参数层 §2.6 与 §2.7。
-4. **术语词汇表校准 + 技能设计**（A20 的推进顺序：先术语，再技能）——
-   `docs/skill-design/` 里已有 v0.1 的技能池与框架改动清单。
-5. 补 `on_battle_start` 触发点：现有 TriggerEvent 里没有它，
-   `on_spawn` 会与召唤物 / 中途增援混淆，不能当"开局"用。
+本仓库曾包含一套 TypeScript 核心逻辑层实现（`src/` 约 8600 行 + `tests/` + 构建配置，89 个测试全过，含确定性校验与不变量校验）。
+该实现已于 2026-09-05 随仓库重新定位而移除，**完整保留在 git 历史中**（`7e6d01f`），需要时可全量取回。

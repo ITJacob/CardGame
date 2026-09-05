@@ -2,6 +2,16 @@
 
 本目录是整套领域设计文档的入口。文档按 DDD 限界上下文拆分，每个上下文独立成篇；参数与取值域单独成篇，与架构描述解耦。
 
+## 〇、本仓库的范围（2026-09-05 裁撤后）
+
+本仓库**只承载战斗内核的领域设计**：战场 / 编队 / 调度 / 执行 / 效果 / 编目 / 随机性治理 七个上下文，外加共享内核。
+
+对外契约是「入口 `CombatSetup` → 出口 `CombatEnded`」，战斗内核是一个纯函数：结果 = f(初始状态, 输入序列, 种子)。
+
+**不在此处**的上下文（由游戏主项目的全局蓝图承载）：抽发 Draft、构筑 Progression、跑图征程 Run、事件 Event、名册与队伍 Roster、对局与匹配 Match、元进度 Meta、平衡遥测 Telemetry。
+
+> 原「肉鸽派发」上下文已于 2026-09-05 迁出：按全局蓝图 §5.2 一分为二，构筑结构归 Progression、抽取机制归 Draft。原定义保留在 git 历史 `7e6d01f`。
+
 本文档只描述**当前确定的最终模型**。版本演进、拍板决策记录、示例技能等内容已从各篇剥离，不在此处出现。
 
 ## 一、架构总览
@@ -18,7 +28,6 @@
 | 执行 | 动作与流水线 | Action / ActionSource / ResolvedTarget / BehaviorContext | Pipeline（I→R→M→O） |
 | 效果 | 结算 | Effect / DamageChain / MitigationStage | EffectExecutor |
 | 编目 | 定义态（独立聚合，只读） | 各 Def | Catalog（按 id 解析） |
-| 肉鸽派发 | 局外构筑与局内抽取 | SkillDef（候选）/ BuildSlot / BuildSnapshot / UpgradeTrack | ProgressionAggregate（抽池 / 构筑校验） |
 | 共享内核 | 跨层复用的值对象与规约 | TargetSpec / EffectRef / EffectCondition / RandomSource / 元素 / 术语 | —— |
 
 ## 二、通用模式：Definition + Grant
@@ -59,7 +68,6 @@
 - [执行上下文](./contexts/执行上下文.md)
 - [效果上下文](./contexts/效果上下文.md)
 - [编目上下文](./contexts/编目上下文.md)
-- [肉鸽派发上下文](./contexts/肉鸽派发上下文.md)
 - [共享内核](./contexts/共享内核.md)
 - [随机性治理](./contexts/随机性治理.md)
 
@@ -70,7 +78,6 @@
 - [执行参数](./params/执行参数.md)
 - [效果参数](./params/效果参数.md)
 - [编目参数](./params/编目参数.md)
-- [肉鸽派发参数](./params/肉鸽派发参数.md)
 - [共享内核参数](./params/共享内核参数.md)
 
 ### 辅助索引
@@ -78,4 +85,4 @@
 
 ## 五、不变量总览（按上下文）
 
-共 50 条，分布如下：战场 8 · 编队 9 · 调度 5 · 执行 9 · 效果 9 · 编目 7 · 肉鸽派发 3。各条完整定义见对应上下文文档末尾。
+共 49 条，分布如下：战场 8 · 编队 9 · 调度 5 · 执行 9 · 效果 9 · 编目 9。共享内核与随机性治理不在此处以 INV 编号表达（前者为值对象，后者以 R1–R6 规则表达）。各条完整定义见对应上下文文档末尾。
