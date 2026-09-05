@@ -21,11 +21,12 @@
 ```
 docs/ddd/          战斗内核 DDD 设计（本仓库正源）
 ├─ README.md       文档入口：上下文总览、依赖关系、不变量总表
-├─ LEGACY_REFS.md  v1.5 旧档条目到终版模型的迁移映射
 ├─ contexts/       7 个限界上下文 + 共享内核
 └─ params/         各上下文的参数与取值域
 
 docs/skill-design/ 诡秘之主 22 途径技能池 v0.2（内容设计，非 DDD）
+├─ _GENERATION_BRIEF.md   生成规范；§7 承载旧框架编号 → DDD 落点速查
+└─ <途径>_技能池_v0.2.md  ×22
 docs/诡秘之主职业路径与能力对照表.md
 ```
 
