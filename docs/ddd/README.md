@@ -22,7 +22,7 @@
 
 | 上下文 | 职责 | 核心实体 | 关键组件 |
 |---|---|---|---|
-| 战场 | 空间与结构 | Battle / Faction / Lane / Slot / Coordinate / Zone | Placement（唯一占位出口）、CoordinateQuery |
+| 战场 | 空间与结构 | Battle / Faction / Lane / Slot / Coordinate / Zone / Domain | Placement（唯一占位出口）、CoordinateQuery、界域栈（压制/优先级） |
 | 编队 | 单位与挂载 | Unit / AttributeSet / BaseProfile / Gauge / Pool / StatProvenance / StatusInstance / BehaviorSlot | UnitRegistry、ProfileQuery |
 | 调度 | 时间与机会 | BattleClock / ActionOpportunity / Channel / Cooldown | Scheduler（推进 tick、授予机会） |
 | 执行 | 动作与流水线 | Action / ActionSource / ResolvedTarget / BehaviorContext | Pipeline（I→R→M→O） |
@@ -38,6 +38,7 @@
 - **BehaviorTemplate → SkillDef → BehaviorSlot**
 - **StatusDef → StatusGrant → StatusInstance**
 - **ZoneDef → ZoneGrant → Zone**
+- **DomainDef → DomainGrant → DomainInstance**
 - **TermDef → TermGrant →（编目期展开后消失，只留 originTerm 烙印）**
 
 三条铁律：
@@ -88,4 +89,4 @@
 
 ## 五、不变量总览（按上下文）
 
-共 49 条，分布如下：战场 8 · 编队 9 · 调度 5 · 执行 9 · 效果 9 · 编目 9。共享内核与随机性治理不在此处以 INV 编号表达（前者为值对象，后者以 R1–R6 规则表达）。各条完整定义见对应上下文文档末尾。
+共 54 条，分布如下：战场 12 · 编队 9 · 调度 5 · 执行 9 · 效果 10 · 编目 9。共享内核与随机性治理不在此处以 INV 编号表达（前者为值对象，后者以 R1–R6 规则表达）。各条完整定义见对应上下文文档末尾。
