@@ -33,6 +33,8 @@ docs/json/          技能池 JSON 结构化产物（由 skill-design 的 md 转
 ├─ manifest.json    索引：schema 版本、稀有度映射、状态 ID、22 途径卡片数
 ├─ <途径>.skills.json ×22  结构化 AST 卡面（sourceFile 回指 ../skill-design/）
 ├─ validate.py      语义校验器（枚举/引用完整性，无依赖）
+├─ SKILLS_OVERVIEW.md  全库总览：22 途径分章，每卡含效果/机制/支持进度/拍板项
+├─ build_overview.py   上面这份总览的生成脚本（数据变了重跑，勿手改产物）
 └─ schema/          机器可读结构标准
    ├─ skills.schema.json / manifest.schema.json  JSON Schema draft 2020-12
    └─ validate_schema.py   结构 + 跨字段校验（需 pip install jsonschema）
