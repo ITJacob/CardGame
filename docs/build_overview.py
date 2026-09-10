@@ -2,17 +2,19 @@
 """生成技能池全库总览（按途径分章）。
 
 用法:
-    python docs/json/build_overview.py
+    python docs/build_overview.py
 
-输入: docs/json/*.skills.json + manifest.json
-输出: docs/json/SKILLS_OVERVIEW.md
+输入: docs/json/*.skills.json + docs/json/manifest.json
+输出: docs/SKILLS_OVERVIEW.md
 
 数据变了就重跑本脚本，不要手改输出文件。
+本脚本位于 docs/ 根目录，技能池数据在同级 json/ 下。
 """
 import io, os, glob, json
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "SKILLS_OVERVIEW.md")
+HERE = os.path.dirname(os.path.abspath(__file__))       # docs/
+JSON_DIR = os.path.join(HERE, "json")                   # docs/json/
+OUT = os.path.join(HERE, "SKILLS_OVERVIEW.md")          # docs/SKILLS_OVERVIEW.md
 
 # ---------- 名称映射 ----------
 ELEM = {"fire": "火", "ice": "冰", "poison": "毒", "shock": "电击", "mental": "精神",
@@ -330,7 +332,7 @@ class Renderer:
 
 
 def main():
-    files = sorted(glob.glob(os.path.join(HERE, "*.skills.json")))
+    files = sorted(glob.glob(os.path.join(JSON_DIR, "*.skills.json")))
     docs = [json.load(io.open(f, encoding="utf-8")) for f in files]
 
     # 全局状态 id → 中文名
@@ -339,7 +341,7 @@ def main():
         for c in d["cards"]:
             for sd in c.get("statusDefs") or []:
                 snames.setdefault(sd["id"], sd["name"])
-    mani = os.path.join(HERE, "manifest.json")
+    mani = os.path.join(JSON_DIR, "manifest.json")
     if os.path.exists(mani):
         m = json.load(io.open(mani, encoding="utf-8"))
         for cn, sid in (m.get("statusIds") or {}).items():
@@ -350,7 +352,7 @@ def main():
     w = L.append
     w("# 技能池全库总览")
     w("")
-    w("> 由 `docs/json/build_overview.py` 从 `*.skills.json` 自动生成——**数据变了就重跑脚本，不要手改本文件**。")
+    w("> 由 `docs/build_overview.py` 从 `docs/json/*.skills.json` 自动生成——**数据变了就重跑脚本，不要手改本文件**。")
     w("> 生成范围：22 条途径 / 773 张卡。内容为设计稿现状，**全部数值处于 `tentative` 待拍板状态**。")
     w("")
 

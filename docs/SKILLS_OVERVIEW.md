@@ -1,6 +1,6 @@
 # 技能池全库总览
 
-> 由 `docs/json/build_overview.py` 从 `*.skills.json` 自动生成——**数据变了就重跑脚本，不要手改本文件**。
+> 由 `docs/build_overview.py` 从 `docs/json/*.skills.json` 自动生成——**数据变了就重跑脚本，不要手改本文件**。
 > 生成范围：22 条途径 / 773 张卡。内容为设计稿现状，**全部数值处于 `tentative` 待拍板状态**。
 
 ## 图例与判据
