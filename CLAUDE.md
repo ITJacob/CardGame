@@ -21,9 +21,13 @@ docs/skill-design/   内容设计（非 DDD）
 ├─ _GENERATION_BRIEF.md  技能池生成规范，当前 v0.3；§7–§9 是旧框架编号 → DDD 落点速查
 └─ <途径>_技能池_v0.2.md ×22（注意：池仍为 v0.2，brief 已升 v0.3，增量升级进行中）
 docs/json/           技能池 JSON 结构化产物（md → JSON，2026-09-10 从 skill-design/json/ 上移一层）
+├─ SCHEMA.md        结构规范（改结构前必读；含已知待修数据清单）
 ├─ manifest.json    索引（schema 版本 / 稀有度映射 / 状态 ID / 各途径卡片数）
 ├─ <途径>.skills.json ×22  结构化 AST 卡面；每份的 sourceFile 回指 ../skill-design/<途径>_技能池_v0.2.md
-└─ validate.py      全库校验器：python docs/json/validate.py
+├─ validate.py      语义校验器（无依赖）：python docs/json/validate.py
+└─ schema/          JSON Schema draft 2020-12 + 结构校验器
+   ├─ skills.schema.json / manifest.schema.json
+   └─ validate_schema.py  python docs/json/schema/validate_schema.py（需 jsonschema）
 docs/                根目录：源素材（世界体系/界域机制/职业对照表）+ v1.6 提案 05_/06_（界域融入，未跟踪未融入）
 ```
 
@@ -44,6 +48,7 @@ docs/                根目录：源素材（世界体系/界域机制/职业对
 3. **v0.3 新维度（界域/位格/迷失/性别/吟唱）已于 2026-09-06 融入 ddd**：界域三件套（DomainDef→Grant→Instance，base/hero/overlay 压制栈）、domain/translocate 第 10/11 原语、位格 rank（stat_compare 零新谓词）、迷失值（每英雄 Pool+阈值档）、gender_shift/gender_is、interrupt 打断标志。落点与拍板结论索引在 `_GENERATION_BRIEF.md` §14。
 4. **Edit 工具对部分中文短语会匹配失败**（疑似零宽字符/异码点，报 "String to replace not found"）。绕过法：Python 按行首前缀整行重写（`io.open(encoding="utf-8")` + `startswith` 定位 + 整行替换/插入）。
 5. **数值锚点与硬约束清单**：写/改技能稿前必读 brief §1–§3（九原语、15+burn 状态、单卡预算 ≈3能量≈6伤害≈10%最大生命）与 `.workbuddy/memory/MEMORY.md` 的「硬约束」节（B1/A22/A21/INV-S5/INV-P7/INV-C2）。
+6. **改 JSON 结构先改 schema**：`docs/json/schema/skills.schema.json` 是技能池的结构标准（规范说明在 `docs/json/SCHEMA.md`）。新增/删除字段、扩枚举都**先改 schema 再改数据**；改完跑 `validate_schema.py`（结构）+ `validate.py`（语义），两者都要 0 错误。
 
 ## Git 工作方式（血泪教训）
 

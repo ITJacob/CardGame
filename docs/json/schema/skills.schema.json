@@ -1,0 +1,898 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cardgame.local/schema/skills.schema.json",
+  "title": "途径技能池文档（<pathway>.skills.json）",
+  "description": "单条诡秘之主途径的技能池结构化产物：一份文件 = 一条途径，含构筑轴（axes）与全部技能卡（cards）。字段语义与约定见 docs/json/SCHEMA.md。",
+  "type": "object",
+  "required": ["pathwayId", "pathwayName", "sourceFile", "sourceVersion", "axes", "cards"],
+  "additionalProperties": false,
+  "properties": {
+    "pathwayId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "途径英文 ID，必须与文件名 <pathwayId>.skills.json 一致、且与 manifest.json 的 pathways[].id 对齐。"
+    },
+    "pathwayName": { "type": "string", "description": "途径中文名。" },
+    "sourceFile": {
+      "type": "string",
+      "pattern": "^\\.\\./skill-design/.+_技能池_v0\\.2\\.md$",
+      "description": "回指源 markdown 的相对路径（相对本文件所在目录）。目录结构调整时必须同步修改。"
+    },
+    "sourceVersion": { "type": "string", "description": "源技能池版本，当前 v0.2；个别文件标注 v0.3 但文件名沿用 v0.2。" },
+    "axes": {
+      "type": "object",
+      "description": "本途径的构筑轴；键为 axis id，卡片 axis 字段必须取自这里的键。",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/axis" }
+    },
+    "cards": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/card" } }
+  },
+  "$defs": {
+    "axis": {
+      "type": "object",
+      "required": ["symbol", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "symbol": { "type": "string", "description": "轴符号（emoji 或炼金符号），用于 UI 展示。" },
+        "name": { "type": "string", "description": "轴中文名。" }
+      }
+    },
+
+    "card": {
+      "type": "object",
+      "description": "一张技能卡。kind 决定必填分支：active 需 cost/reach/target；passive 需 hook。",
+      "required": ["id", "name", "kind", "sequence", "sequenceName", "rarity", "axis", "flagship", "lore", "flavor", "describe", "effects", "tentative"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^skill_[a-z0-9_]+_s[0-9]_[a-z0-9_]+$",
+          "description": "全局唯一 ID：skill_<pathwayId>_s<序列位阶>_<英文短名>。"
+        },
+        "name": { "type": "string", "description": "卡片中文名。" },
+        "kind": { "enum": ["active", "passive"] },
+        "sequence": { "type": "integer", "minimum": 0, "maximum": 9, "description": "序列位阶 9→0。" },
+        "sequenceName": { "type": "string", "description": "该序列位阶名称，如「药师」「驯兽师」。" },
+        "rarity": {
+          "enum": ["common", "uncommon", "rare", "epic", "legendary"],
+          "description": "稀有度，必须与 sequence 满足 manifest.rarityMap 映射（由 validate_schema.py 校验，schema 不表达）。"
+        },
+        "axis": { "type": "string", "description": "构筑轴 id，必须存在于顶层 axes 的键中（跨字段约束，由 validate_schema.py 校验）。" },
+        "flagship": { "type": "boolean", "description": "是否为该途径的代表性旗舰卡。" },
+        "lore": { "type": "string", "description": "设定出处文本。" },
+        "flavor": { "type": "string", "description": "风味文本（第二人称叙事口吻）。" },
+        "describe": { "type": "string", "description": "玩家可读的效果描述——唯一面向玩家的字段，须与 effects 语义一致。" },
+        "effects": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/effect" }, "description": "卡面效果序列（可嵌套算子）。" },
+        "tentative": { "type": "boolean", "description": "数值待拍板。当前全库 773 张均为 true。" },
+
+        "cost": { "$ref": "#/$defs/cost" },
+        "reach": { "enum": ["none", "melee", "ranged"], "description": "攻击距离类型；非攻击类写 none。" },
+        "target": { "$ref": "#/$defs/cardTarget" },
+        "hook": { "$ref": "#/$defs/triggerEvent", "description": "被动技能的挂载触发点。" },
+
+        "statusDefs": { "type": "array", "items": { "$ref": "#/$defs/statusDef" }, "description": "本卡引入的状态定义（id 需全局唯一）。" },
+        "triggers": { "type": "array", "items": { "$ref": "#/$defs/trigger" }, "description": "卡片级触发器；状态自身的触发器写在 statusDefs[].triggers。" },
+        "unitDefs": { "type": "array", "items": { "$ref": "#/$defs/unitDef" }, "description": "本卡引入的召唤物/单位蓝本。" },
+        "zoneDef": { "$ref": "#/$defs/zoneDef", "description": "本卡引入的区域定义。" },
+        "domainDef": { "$ref": "#/$defs/domainDef", "description": "本卡引入的界域定义（DomainDef）。" },
+        "domain": { "$ref": "#/$defs/domainGrant", "description": "界域挂载（DomainDef → Grant 的实例值：时长/可否驱散等）。" },
+        "zone": { "$ref": "#/$defs/zoneGrant", "description": "区域挂载（ZoneDef → Grant 的实例值）。" },
+
+        "upgradeLadder": { "$ref": "#/$defs/upgradeLadder", "description": "升级阶梯（同名卡多档强化）。" },
+        "variants": { "type": "array", "items": { "$ref": "#/$defs/variant" }, "description": "变体（同卡的不同形态/分支）。" },
+        "secondaryTargets": { "type": "array", "items": { "$ref": "#/$defs/secondaryTarget" }, "description": "附属目标请求（多段效果各自选靶）。" },
+
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "界域交互标签（供 RulePatch 按 tag 过滤）。" },
+        "gender": { "enum": ["any", "male", "female"], "description": "性别限制（部分途径序列有性别要求）。" },
+        "sharedAcross": { "type": "array", "items": { "type": "string" }, "description": "共享该卡的其他途径 pathwayId 列表。" },
+        "conversionNotes": {
+          "description": "md → JSON 转换期备注（未能结构化的内容、口径存疑处）。",
+          "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }]
+        },
+        "frameworkFlags": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/frameworkFlag" },
+          "description": "框架缺口登记：卡片用到但 DDD 内核尚未正式支持的机制。"
+        }
+      },
+      "allOf": [
+        { "if": { "properties": { "kind": { "const": "active" } }, "required": ["kind"] }, "then": { "required": ["cost", "reach", "target"] } },
+        { "if": { "properties": { "kind": { "const": "passive" } }, "required": ["kind"] }, "then": { "required": ["hook"] } }
+      ]
+    },
+
+    "cost": {
+      "type": "object",
+      "required": ["energy", "cooldown", "castTime"],
+      "additionalProperties": false,
+      "properties": {
+        "energy": { "type": "integer", "minimum": 0 },
+        "cooldown": { "type": "integer", "minimum": 0 },
+        "castTime": { "type": ["integer", "null"], "minimum": 0, "description": "吟唱时长；null = 无吟唱。" },
+        "note": { "type": "string" }
+      }
+    },
+
+    "cardTarget": {
+      "type": "object",
+      "required": ["selectionMode", "request"],
+      "additionalProperties": false,
+      "properties": {
+        "selectionMode": { "enum": ["manual", "auto"], "description": "manual = 玩家手选；auto = 引擎按 fallbackSort 自动选。" },
+        "request": { "$ref": "#/$defs/unitRequest" },
+        "fallbackSort": { "oneOf": [{ "$ref": "#/$defs/sortKey" }, { "type": "null" }], "description": "自动选靶/手选缺省时的排序规则。" },
+        "consumption": { "enum": ["summon", "domain", "zone"] },
+        "note": { "type": "string" }
+      }
+    },
+    "secondaryTarget": {
+      "type": "object",
+      "required": ["request"],
+      "additionalProperties": false,
+      "properties": {
+        "request": { "$ref": "#/$defs/unitRequest" },
+        "selectionMode": { "enum": ["manual", "auto"] },
+        "fallbackSort": { "oneOf": [{ "$ref": "#/$defs/sortKey" }, { "type": "null" }] },
+        "note": { "type": "string" }
+      }
+    },
+    "unitRequest": {
+      "type": "object",
+      "description": "目标选择请求（faction × scope × 过滤 × 锚点 × 排序）。",
+      "required": ["faction", "scope"],
+      "additionalProperties": false,
+      "properties": {
+        "faction": { "enum": ["self", "ally", "enemy", "any", "none", "self_or_ally"] },
+        "scope": { "enum": ["single", "all", "none"] },
+        "filter": { "$ref": "#/$defs/unitFilter" },
+        "anchor": { "enum": ["front_line", "spawned_unit", "first_empty", "empty_ally_slot"] },
+        "sort": { "$ref": "#/$defs/sortKey" },
+        "sortKey": { "type": "string", "description": "状态键排序，形如 status:<id>:asc|desc。" },
+        "spread": { "enum": ["splash_adjacent"] },
+        "excludeSelf": { "type": "boolean" }
+      }
+    },
+
+    "unitFilter": {
+      "type": "object",
+      "description": "候选池过滤器。开放结构：布尔属性缺省即不约束；新增维度须先在共享内核参数登记。",
+      "properties": {
+        "unitType": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "category": { "oneOf": [{ "$ref": "#/$defs/statusCategory" }, { "type": "array", "items": { "$ref": "#/$defs/statusCategory" } }] },
+        "statusId": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "unitId": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "element": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "tier": { "oneOf": [{ "type": "string" }, { "type": "integer" }] },
+        "count": { "oneOf": [{ "type": "number" }, { "type": "string" }, { "type": "object" }, { "type": "null" }] },
+        "dispelable": { "type": "boolean" },
+        "isSummon": { "type": "boolean" },
+        "isOwnSummon": { "type": "boolean" },
+        "isAllyOrMirror": { "type": "boolean" },
+        "isPuppet": { "type": "boolean" },
+        "casterOwned": { "type": "boolean" },
+        "anyOf": { "type": "array", "items": { "$ref": "#/$defs/unitFilter" } }
+      }
+    },
+
+    "effect": {
+      "description": "一个效果节点：算子（op）或原语（type）。递归结构。",
+      "oneOf": [
+        { "$ref": "#/$defs/opSequence" },
+        { "$ref": "#/$defs/opRepeat" },
+        { "$ref": "#/$defs/opIf" },
+        { "$ref": "#/$defs/effDamage" },
+        { "$ref": "#/$defs/effHeal" },
+        { "$ref": "#/$defs/effMountStatus" },
+        { "$ref": "#/$defs/effModifyStat" },
+        { "$ref": "#/$defs/effModifyResource" },
+        { "$ref": "#/$defs/effMove" },
+        { "$ref": "#/$defs/effSpawn" },
+        { "$ref": "#/$defs/effDispel" },
+        { "$ref": "#/$defs/effDrain" },
+        { "$ref": "#/$defs/effDomain" },
+        { "$ref": "#/$defs/effModifyDamage" },
+        { "$ref": "#/$defs/effTargetOverride" },
+        { "$ref": "#/$defs/effTransferStatus" },
+        { "$ref": "#/$defs/effSnapshot" },
+        { "$ref": "#/$defs/effRestoreSnapshot" },
+        { "$ref": "#/$defs/effEchoLastSkill" },
+        { "$ref": "#/$defs/effGaugeShuffle" },
+        { "$ref": "#/$defs/effStatusShuffle" }
+      ]
+    },
+
+    "opSequence": {
+      "type": "object",
+      "required": ["op", "steps"],
+      "additionalProperties": false,
+      "properties": {
+        "op": { "const": "sequence", "description": "顺序执行 steps，编目期展开为扁平 EffectRef。" },
+        "steps": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "note": { "type": "string" }
+      }
+    },
+    "opRepeat": {
+      "type": "object",
+      "required": ["op", "steps"],
+      "additionalProperties": false,
+      "properties": {
+        "op": { "const": "repeat" },
+        "count": { "$ref": "#/$defs/countValue", "description": "重复次数，可写状态动态值（对象形式为 {valueFrom, filter, cap} 等）。" },
+        "countFrom": { "type": "string", "description": "次数来源，如 statusStacks。" },
+        "shareTarget": { "type": "boolean", "description": "每次重复是否复用同一目标。" },
+        "statusId": { "type": "string" },
+        "steps": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "note": { "type": "string" }
+      }
+    },
+    "opIf": {
+      "type": "object",
+      "required": ["op", "condition", "then"],
+      "additionalProperties": false,
+      "properties": {
+        "op": { "const": "if" },
+        "condition": { "$ref": "#/$defs/condition" },
+        "then": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "else": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "note": { "type": "string" },
+        "noteElse": { "type": "string" },
+        "params": { "type": "object" }
+      }
+    },
+
+    "effDamage": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "damage" },
+        "value": { "$ref": "#/$defs/scalar" },
+        "element": { "$ref": "#/$defs/element" },
+        "mul": { "type": "number", "description": "伤害乘区系数。" },
+        "valueFrom": { "oneOf": [{ "type": "object" }, { "type": "string" }] },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "spread": { "enum": ["splash_adjacent"] },
+        "pierce": { "type": "array", "items": { "type": "string" } },
+        "neverMiss": { "type": "boolean" },
+        "lethal": { "type": "boolean" },
+        "damageCategory": { "type": "string" },
+        "armorPierceRatio": { "oneOf": [{ "type": "number" }, { "type": "object" }] },
+        "condition": { "$ref": "#/$defs/condition" },
+        "note": { "type": "string" }
+      }
+    },
+    "effHeal": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "heal" },
+        "value": { "$ref": "#/$defs/scalar" },
+        "mode": { "enum": ["setHp", "hpMaxRatio", "to_ratio"] },
+        "healToRatio": { "type": "number" },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "condition": { "$ref": "#/$defs/condition" },
+        "note": { "type": "string" }
+      }
+    },
+    "effMountStatus": {
+      "type": "object",
+      "required": ["type", "statusId"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "mount_status" },
+        "statusId": { "type": "string", "description": "状态 id；$self 表示引用宿主自身状态。" },
+        "duration": { "oneOf": [{ "type": "integer" }, { "type": "null" }], "description": "持续回合数；null = 跟随状态定义/常驻。" },
+        "stacks": { "oneOf": [{ "type": "number" }, { "type": "string" }], "description": "层数增减；all = 全部。" },
+        "stackMode": { "enum": ["add", "consume", "override"] },
+        "maxStacks": { "type": "number" },
+        "maxStacksOverride": { "oneOf": [{ "type": "number" }, { "type": "object" }] },
+        "ignoreMaxStacks": { "type": "boolean" },
+        "charges": { "type": "integer", "description": "次数型状态（charges）初始次数——落空/阻挡语义的确定性写法。" },
+        "value": { "$ref": "#/$defs/scalar" },
+        "params": { "type": "object", "description": "传给状态载荷的实例化参数。" },
+        "request": { "$ref": "#/$defs/unitRequest" },
+        "binding": { "type": "object", "description": "状态与目标的绑定关系（如 link 双向绑定）。" },
+        "overrides": { "type": "object" },
+        "statusDefOverride": { "type": "object" },
+        "fallback": { "type": "object" },
+        "filter": { "$ref": "#/$defs/unitFilter" },
+        "refresh": { "type": "boolean" },
+        "durationDelta": { "type": "number" },
+        "maxBonusDuration": { "type": "number" },
+        "dispelable": { "type": "boolean" },
+        "contagious": { "type": "boolean" },
+        "spread": { "enum": ["splash_adjacent"] },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "condition": { "$ref": "#/$defs/condition" },
+        "note": { "type": "string" }
+      }
+    },
+    "effModifyStat": {
+      "type": "object",
+      "required": ["type", "stat", "mode"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "modify_stat" },
+        "stat": {
+          "type": "string",
+          "pattern": "^(attack|defense|armor|rank|hp_max|energy_max|energy_regen|gauge\\.rate|gauge\\.threshold|summon_cap|resist:(\\*|[a-z]+|\\$[A-Za-z]+))$",
+          "description": "属性键。以代码为准用 gauge.rate / gauge.threshold（不是 stamina_*）。"
+        },
+        "value": { "$ref": "#/$defs/scalar" },
+        "mode": { "enum": ["delta", "set", "mul", "to_at_least"] },
+        "duration": { "oneOf": [{ "type": "integer" }, { "type": "null" }] },
+        "sourceRef": { "enum": ["caster", "secondary_target", "field_average"], "description": "取值参照源。" },
+        "valueFrom": { "oneOf": [{ "type": "object" }, { "type": "string" }] },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "filter": { "$ref": "#/$defs/unitFilter" },
+        "spread": { "enum": ["splash_adjacent"] },
+        "condition": { "$ref": "#/$defs/condition" },
+        "note": { "type": "string" }
+      }
+    },
+    "effModifyResource": {
+      "type": "object",
+      "required": ["type", "resource"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "modify_resource" },
+        "resource": { "enum": ["hp", "energy", "shield", "armor", "lost", "gauge.current", "gauge.threshold"] },
+        "value": { "$ref": "#/$defs/scalar" },
+        "mode": { "enum": ["delta", "set", "swap"] },
+        "op": { "enum": ["swap"] },
+        "between": { "type": "array", "items": { "$ref": "#/$defs/effectTarget" } },
+        "duration": { "type": "integer" },
+        "maxTriggersPerBattle": { "type": "integer" },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "filter": { "$ref": "#/$defs/unitFilter" },
+        "condition": { "$ref": "#/$defs/condition" },
+        "note": { "type": "string" }
+      }
+    },
+    "effMove": {
+      "type": "object",
+      "required": ["type", "op"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "move" },
+        "op": { "enum": ["swap_neighbor", "insert_tail_cross_lane", "swap_ally", "param", "pull_forward", "push_back", "charge_forward"] },
+        "distance": { "type": "number" },
+        "to": { "oneOf": [{ "type": "string" }, { "type": "object" }] },
+        "params": { "type": "object" },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "note": { "type": "string" }
+      }
+    },
+    "effSpawn": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "spawn" },
+        "unitId": { "type": "string", "description": "召唤物单位 id（引用 unitDefs 或全局单位蓝本）。" },
+        "unit": { "type": "string" },
+        "template": { "type": "string", "description": "模板来源，如 killed_unit / primary_target。" },
+        "def": { "type": "string", "description": "定义 id（spawn 区域时指向 zoneDef）。" },
+        "kind": { "type": "string" },
+        "zone": { "oneOf": [{ "type": "string" }, { "type": "object" }] },
+        "variant": { "type": "string" },
+        "position": { "enum": ["tail", "at_unit", "original"] },
+        "count": { "$ref": "#/$defs/countValue" },
+        "hpRatio": { "oneOf": [{ "type": "number" }, { "type": "string" }, { "type": "object" }] },
+        "atkRatio": { "oneOf": [{ "type": "number" }, { "type": "null" }] },
+        "consumption": { "enum": ["zone"] },
+        "duration": { "type": "integer" },
+        "lifetime": { "type": "integer" },
+        "reviveOf": { "enum": ["self", "status_holder", "last_dead_ally"], "description": "复活语义（G4：不新增原语）。" },
+        "oncePerBattle": { "type": "boolean" },
+        "inheritSkills": { "type": "boolean" },
+        "summonCap": { "type": "object" },
+        "summonCapOverride": { "type": "integer" },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "condition": { "$ref": "#/$defs/condition" },
+        "note": { "type": "string" }
+      }
+    },
+    "effDispel": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "dispel" },
+        "dispelTarget": { "enum": ["unit", "domain"], "description": "驱散对象：单位身上的状态 / 界域本身。" },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "filter": { "$ref": "#/$defs/unitFilter" },
+        "category": { "type": "array", "items": { "$ref": "#/$defs/statusCategory" } },
+        "statusId": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "count": { "$ref": "#/$defs/countValue" },
+        "collect": { "type": "string" },
+        "mode": { "enum": ["area"] },
+        "condition": { "$ref": "#/$defs/condition" },
+        "note": { "type": "string" }
+      }
+    },
+    "effDrain": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "drain" },
+        "resource": { "enum": ["hp", "energy"] },
+        "value": { "$ref": "#/$defs/scalar" },
+        "ratio": { "type": "number" },
+        "healRatio": { "type": "number", "description": "吸血比例（归施法者，F2）。" },
+        "category": { "enum": ["buff"], "description": "增益转移（F50）。" },
+        "count": { "$ref": "#/$defs/countValue" },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "note": { "type": "string" }
+      }
+    },
+    "effDomain": {
+      "type": "object",
+      "required": ["type", "op"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "domain" },
+        "op": { "enum": ["overlay", "swap", "hero"], "description": "overlay = 覆盖层压制；hero = 英雄位格界域。" },
+        "def": { "type": "string", "description": "指向 domainDef.id。" },
+        "duration": { "type": "integer" },
+        "durationUnit": { "enum": ["turn", "tick"] },
+        "note": { "type": "string" }
+      }
+    },
+    "effModifyDamage": {
+      "type": "object",
+      "required": ["type", "mul"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "modify_damage" },
+        "scope": { "enum": ["taken", "dealt"] },
+        "mul": { "type": "number" },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "note": { "type": "string" }
+      }
+    },
+    "effTargetOverride": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "target_override" },
+        "faction": { "type": "string" },
+        "anchor": { "type": "string" },
+        "sort": { "$ref": "#/$defs/sortKey" },
+        "note": { "type": "string" }
+      }
+    },
+    "effTransferStatus": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "transfer_status" },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "statusesFrom": { "type": "string" },
+        "from": { "type": "object" },
+        "to": { "oneOf": [{ "type": "string" }, { "type": "object" }] },
+        "mapping": { "type": "object" },
+        "mode": { "enum": ["copy", "rewrite"] },
+        "keepDuration": { "type": "boolean" },
+        "durationMul": { "type": "number" },
+        "stacksMul": { "type": "number" },
+        "count": { "$ref": "#/$defs/scalar" },
+        "filter": { "$ref": "#/$defs/unitFilter" },
+        "fallback": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "note": { "type": "string" }
+      }
+    },
+    "effSnapshot": {
+      "type": "object",
+      "required": ["type", "fields"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "snapshot" },
+        "fields": { "type": "array", "items": { "type": "string" } },
+        "filter": { "$ref": "#/$defs/unitFilter" },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "note": { "type": "string" }
+      }
+    },
+    "effRestoreSnapshot": {
+      "type": "object",
+      "required": ["type", "fields"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "restore_snapshot" },
+        "fields": { "type": "array", "items": { "type": "string" } },
+        "target": { "$ref": "#/$defs/effectTarget" },
+        "note": { "type": "string" }
+      }
+    },
+    "effEchoLastSkill": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "echo_last_skill" },
+        "potency": { "oneOf": [{ "type": "number" }, { "type": "string" }] },
+        "snapshot": { "type": "string" },
+        "rounding": { "enum": ["ceil", "floor", "round"] },
+        "fallback": { "type": "object" },
+        "note": { "type": "string" }
+      }
+    },
+    "effGaugeShuffle": {
+      "type": "object",
+      "required": ["type", "resource"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "gauge_shuffle" },
+        "resource": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "effStatusShuffle": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "status_shuffle" },
+        "mode": { "enum": ["rotate"] },
+        "sort": { "$ref": "#/$defs/sortKey" },
+        "count": { "$ref": "#/$defs/countValue" },
+        "note": { "type": "string" }
+      }
+    },
+
+    "condition": {
+      "type": "object",
+      "description": "效果生效条件谓词。开放结构：字段随 kind 变化。chance 类须遵守随机性治理 R1–R6（只用于非伤害维度、单次抽样、须登记）。",
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "any_of", "caster_has_summon", "caster_status_exists", "chance", "consumed_count",
+            "dead_count", "dispelled_count", "element_is", "field_status_count", "gauge_rank", "has_category",
+            "has_status", "hp_percent", "hp_percent_compare", "remove_reason", "stat_compare",
+            "status_category", "target_dead", "target_faction_is", "target_has_tag",
+            "target_is_summoned", "target_unit_type", "unit_faction", "variant_is", "zone_active"
+          ]
+        },
+        "side": { "enum": ["self", "target", "ally", "enemy", "both", "all", "attacker"] },
+        "cmp": { "enum": [">", ">=", "<", "<=", "=="] },
+        "n": { "type": "number" },
+        "id": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "p": { "type": "number", "description": "chance 的概率值 0–1。" },
+        "value": { "$ref": "#/$defs/scalar" },
+        "categories": { "type": "array", "items": { "$ref": "#/$defs/statusCategory" } },
+        "category": { "$ref": "#/$defs/statusCategory" },
+        "conditions": { "type": "array", "items": { "$ref": "#/$defs/condition" } },
+        "statusId": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "stacksAtLeast": { "type": "integer" },
+        "unitId": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "unitTypes": { "type": "array", "items": { "type": "string" } },
+        "type": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "tag": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "element": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "faction": { "type": "string" },
+        "aUnit": { "type": "string" },
+        "bUnit": { "type": "string" },
+        "aSide": { "type": "string" },
+        "bSide": { "type": "string" },
+        "key": { "type": "string" },
+        "op": { "type": "string" },
+        "target": { "type": "string" },
+        "zoneId": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+
+    "trigger": {
+      "type": "object",
+      "required": ["event"],
+      "additionalProperties": false,
+      "properties": {
+        "event": { "$ref": "#/$defs/triggerEvent" },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "condition": { "$ref": "#/$defs/condition" },
+        "consumeCharge": { "oneOf": [{ "type": "boolean" }, { "type": "integer" }] },
+        "consume": { "type": "integer" },
+        "global": { "type": "boolean" },
+        "reason": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "reasonFilter": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+        "minIntervalTicks": { "type": "integer" },
+        "params": { "type": "object" },
+        "filter": { "$ref": "#/$defs/unitFilter" },
+        "target": { "oneOf": [{ "$ref": "#/$defs/effectTarget" }, { "type": "object" }], "description": "触发目标：字符串锚点，或直接给一个目标请求对象。" },
+        "transfer": { "type": "object" },
+        "note": { "type": "string" }
+      }
+    },
+
+    "statusDef": {
+      "type": "object",
+      "description": "状态定义（StatusDef）。实例值写在 mount_status 侧（INV-C2 数值单点定义）。",
+      "required": ["id", "name", "category", "dispelable"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "name": { "type": "string" },
+        "category": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/statusCategory" } },
+        "dispelable": { "type": "boolean" },
+        "duration": { "oneOf": [{ "type": "integer" }, { "type": "null" }] },
+        "modifiers": { "$ref": "#/$defs/modifierSet", "description": "状态修正集合。" },
+        "triggers": { "type": "array", "items": { "$ref": "#/$defs/trigger" } },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "charges": { "type": "integer" },
+        "maxStacks": { "type": "integer" },
+        "stackPolicy": { "enum": ["stack", "refresh"] },
+        "stackThreshold": { "type": "object" },
+        "stackCapOverride": { "type": "object" },
+        "statPerStack": { "type": "object" },
+        "statMods": { "type": "object" },
+        "behaviorModifiers": { "type": "array" },
+        "lethalProtect": { "oneOf": [{ "type": "boolean" }, { "type": "object" }] },
+        "reviveBlocked": { "oneOf": [{ "type": "boolean" }, { "type": "object" }] },
+        "transferOnDeath": { "type": "boolean" },
+        "contagious": { "type": "boolean" },
+        "immune": { "oneOf": [{ "type": "object" }, { "type": "array" }] },
+        "silent_immune": { "type": "boolean" },
+        "suppress": { "type": "array" },
+        "redirectRule": { "type": "object" },
+        "thresholdTrigger": { "type": "object" },
+        "healReceivedMul": { "type": "number" },
+        "formGroup": { "type": "string" },
+        "cycleTicks": { "type": "integer" },
+        "nextPhase": { "type": "string" },
+        "phases": { "type": "array" },
+        "slots": { "type": "object" },
+        "fields": { "oneOf": [{ "type": "array" }, { "type": "object" }] },
+        "ramp": { "type": "array" },
+        "hpRatio": { "type": "number" },
+        "note": { "type": "string" }
+      }
+    },
+    "modifierSet": {
+      "description": "状态修正集合：既可以是数组（字符串/对象混合），也可以是「修正名 → 参数」的映射表。开放结构。",
+      "oneOf": [
+        { "type": "array", "items": { "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/statusModifier" }] } },
+        { "type": "object" }
+      ]
+    },
+    "statusModifier": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string" },
+        "stat": { "type": "string" },
+        "value": { "$ref": "#/$defs/scalar" },
+        "ratio": { "type": "number" },
+        "mul": { "type": "number" },
+        "bonus": { "type": "number" },
+        "valueFrom": { "oneOf": [{ "type": "object" }, { "type": "string" }] },
+        "metric": { "type": "string" },
+        "direction": { "type": "string" },
+        "sort": { "$ref": "#/$defs/sortKey" },
+        "priority": { "oneOf": [{ "type": "number" }, { "type": "string" }] },
+        "split": { "type": "string" },
+        "linkedTo": { "type": "string" },
+        "statusId": { "type": "string" },
+        "filter": { "$ref": "#/$defs/unitFilter" },
+        "note": { "type": "string" }
+      }
+    },
+
+    "domainDef": {
+      "type": "object",
+      "required": ["id", "tier", "dispelable", "duration", "durationUnit", "triggers", "rulePatches"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "tier": { "enum": ["overlay", "hero"] },
+        "dispelable": { "type": "boolean" },
+        "duration": { "type": "integer" },
+        "durationUnit": { "enum": ["turn", "tick"] },
+        "triggers": { "type": "array", "items": { "$ref": "#/$defs/trigger" } },
+        "rulePatches": { "type": "array", "items": { "$ref": "#/$defs/rulePatch" } },
+        "envRules": { "oneOf": [{ "type": "object" }, { "type": "array" }] },
+        "extraRuleNote": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "rulePatch": {
+      "type": "object",
+      "required": ["kind", "side"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string", "description": "规则补丁类型，如 damage_mul / stat_mod。" },
+        "side": { "type": "string", "description": "作用侧，如 all / ally / enemy。" },
+        "tag": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }], "description": "按 SkillDef.tags 过滤的作用面，可多值。" },
+        "mul": { "type": "number" },
+        "stat": { "type": "string" },
+        "effectType": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "domainGrant": {
+      "type": "object",
+      "required": ["tier", "def", "duration", "durationUnit", "dispelable", "rulePatches"],
+      "additionalProperties": false,
+      "properties": {
+        "tier": { "enum": ["overlay", "hero"] },
+        "def": { "type": "string" },
+        "duration": { "type": "integer" },
+        "durationUnit": { "enum": ["turn", "tick"] },
+        "dispelable": { "type": "boolean" },
+        "rulePatches": { "type": "array", "items": { "$ref": "#/$defs/rulePatch" } },
+        "envRulesText": { "type": "string" }
+      }
+    },
+
+    "zoneDef": {
+      "type": "object",
+      "required": ["id", "kind", "trigger", "affects", "effects"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "kind": { "enum": ["hazard", "blessing"] },
+        "trigger": { "enum": ["on_occupy_tick", "on_attack", "summon_skill"] },
+        "affects": { "type": "string", "description": "作用面，如 any / enemy_of_owner。" },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/zoneEffect" } },
+        "duration": { "oneOf": [{ "type": "integer" }, { "type": "null" }] },
+        "durationUnit": { "enum": ["turn", "tick"] },
+        "interval": { "type": "integer" },
+        "modifiers": { "$ref": "#/$defs/modifierSet" },
+        "note": { "type": "string" }
+      }
+    },
+    "zoneEffect": {
+      "description": "区域载荷：直接是一个效果，或 {side, payload} 的分组形式（按阵营分别结算）。",
+      "oneOf": [
+        { "$ref": "#/$defs/effect" },
+        {
+          "type": "object",
+          "required": ["side", "payload"],
+          "additionalProperties": false,
+          "properties": {
+            "side": { "type": "string" },
+            "payload": { "$ref": "#/$defs/effect" }
+          }
+        }
+      ]
+    },
+    "zoneGrant": {
+      "type": "object",
+      "required": ["def", "duration"],
+      "additionalProperties": false,
+      "properties": {
+        "def": { "type": "string" },
+        "duration": { "type": "integer" },
+        "durationUnit": { "enum": ["turn", "tick"] },
+        "placement": { "type": "string" },
+        "kind": { "type": "string" },
+        "affects": { "type": "string" },
+        "envRulesText": { "type": "string" }
+      }
+    },
+
+    "unitDef": {
+      "type": "object",
+      "required": ["id", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "name": { "type": "string" },
+        "base": { "oneOf": [{ "type": "string" }, { "type": "object" }, { "type": "number" }] },
+        "baseOn": { "type": "string" },
+        "unitType": { "type": "string" },
+        "hpRatio": { "oneOf": [{ "type": "number" }, { "type": "string" }] },
+        "atkRatio": { "oneOf": [{ "type": "number" }, { "type": "string" }] },
+        "reach": { "enum": ["none", "melee", "ranged"] },
+        "element": { "$ref": "#/$defs/element" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "triggers": { "type": "array", "items": { "$ref": "#/$defs/trigger" } },
+        "note": { "type": "string" }
+      }
+    },
+
+    "upgradeLadder": {
+      "type": "object",
+      "required": ["ref", "tiers"],
+      "additionalProperties": false,
+      "properties": {
+        "ref": { "type": "string", "description": "阶梯引用（同 id 卡的强化链）。" },
+        "tiers": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/ladderTier" } },
+        "duplicatePolicy": { "type": "string" }
+      }
+    },
+    "ladderTier": {
+      "type": "object",
+      "required": ["name", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "note": { "type": "string" },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "statusDefOverride": { "type": "object" }
+      }
+    },
+    "variant": {
+      "type": "object",
+      "required": ["name", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "note": { "type": "string" },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "targetOverride": { "type": "object" },
+        "statusDefOverride": { "type": "object" },
+        "domainDefOverride": { "type": "object" },
+        "costOverride": { "type": "object" }
+      }
+    },
+
+    "frameworkFlag": {
+      "type": "object",
+      "required": ["code", "note", "landed"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string", "description": "缺口代号，如 GAUGE_RATE_AS_STAT。" },
+        "note": { "type": "string", "description": "缺口说明与待办。" },
+        "landed": { "type": "boolean", "description": "是否已落入 DDD 内核。false = 仍欠账。" }
+      }
+    },
+
+    "countValue": {
+      "description": "数量：数值为主；字符串用于 all / 动态引用；对象用于 {valueFrom, filter, cap} 形式的运行期计算。",
+      "oneOf": [{ "type": "number" }, { "type": "string" }, { "type": "object" }, { "type": "null" }]
+    },
+    "scalar": {
+      "description": "标量取值：数值为主；字符串用于动态引用（如 statusStacks:<id>、$var）或占位描述；布尔/null 为个别遗留写法。",
+      "oneOf": [{ "type": "number" }, { "type": "string" }, { "type": "boolean" }, { "type": "null" }]
+    },
+    "effectTarget": {
+      "type": "string",
+      "description": "效果级目标锚点（相对卡面 target 的二次寻址）。新增取值须先在共享内核参数登记。",
+      "enum": [
+        "self", "caster", "target", "primary_target", "same_target", "secondary_target",
+        "attacker", "holder", "status_holder", "killed_unit",
+        "all_allies", "allies_except_self", "all_enemies", "all_other_enemies", "all_units", "all",
+        "adjacent_enemy", "enemy",
+        "occupant_ally", "occupant_enemy",
+        "splash_adjacent", "splash_behind",
+        "one_own_snare_trap"
+      ]
+    },
+    "sortKey": {
+      "type": "string",
+      "description": "目标排序键。取值域见 ddd/params/共享内核参数.md。⚠️ atk_asc 尚未登记（现有 1 处使用，待裁定）。",
+      "enum": [
+        "none", "hp_asc", "hp_desc", "atk_desc", "index_asc", "index_desc",
+        "energy_desc", "armor_desc", "buff_count_desc", "debuff_count_desc",
+        "gauge_asc", "gauge_desc", "stat_max_desc"
+      ]
+    },
+    "element": {
+      "type": "string",
+      "pattern": "^(fire|ice|poison|shock|mental|physical|water|holy|none|\\$[A-Za-z.]+)$",
+      "description": "元素；$ 前缀表示运行期变量引用（如 $recorded.element）。"
+    },
+    "statusCategory": {
+      "type": "string",
+      "enum": ["dot", "hot", "buff", "debuff", "control", "reactive", "aura", "stance", "fear", "retarget", "link", "contract", "conceal", "seal"]
+    },
+    "triggerEvent": {
+      "type": "string",
+      "description": "触发点封闭集（12 个）。⚠️ on_status_gain 为未登记项，使用时必须同时登记 frameworkFlags。",
+      "enum": [
+        "on_apply", "on_remove", "on_tick", "on_turn_start", "on_battle_start", "on_spawn",
+        "on_death", "on_kill", "on_attack", "on_take_damage", "on_deal_damage", "on_active_skill",
+        "on_status_gain"
+      ]
+    }
+  }
+}
