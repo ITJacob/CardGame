@@ -20,6 +20,10 @@ docs/ddd/            战斗内核 DDD 设计（权威正源）
 docs/skill-design/   内容设计（非 DDD）
 ├─ _GENERATION_BRIEF.md  技能池生成规范，当前 v0.3；§7–§9 是旧框架编号 → DDD 落点速查
 └─ <途径>_技能池_v0.2.md ×22（注意：池仍为 v0.2，brief 已升 v0.3，增量升级进行中）
+docs/json/           技能池 JSON 结构化产物（md → JSON，2026-09-10 从 skill-design/json/ 上移一层）
+├─ manifest.json    索引（schema 版本 / 稀有度映射 / 状态 ID / 各途径卡片数）
+├─ <途径>.skills.json ×22  结构化 AST 卡面；每份的 sourceFile 回指 ../skill-design/<途径>_技能池_v0.2.md
+└─ validate.py      全库校验器：python docs/json/validate.py
 docs/                根目录：源素材（世界体系/界域机制/职业对照表）+ v1.6 提案 05_/06_（界域融入，未跟踪未融入）
 ```
 

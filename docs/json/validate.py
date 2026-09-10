@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""技能池 JSON 全库校验器。用法: python docs/skill-design/json/validate.py"""
+"""技能池 JSON 全库校验器。用法: python docs/json/validate.py"""
 import json, io, sys, glob, os
 
 PRIMS = {"damage","heal","mount_status","modify_stat","modify_resource","move","spawn","dispel","drain","domain","translocate",
