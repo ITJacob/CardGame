@@ -1,0 +1,2460 @@
+{
+  "pathwayId": "corpse_collector",
+  "pathwayName": "收尸人",
+  "sourceFile": "../收尸人途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "spirit_sight": {
+      "symbol": "🜁",
+      "name": "灵视"
+    },
+    "corpse": {
+      "symbol": "🜂",
+      "name": "尸骸"
+    },
+    "undead": {
+      "symbol": "🜃",
+      "name": "亡者"
+    },
+    "end": {
+      "symbol": "🜄",
+      "name": "终末"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_corpse_collector_s9_corpse_nature",
+      "name": "尸体特质",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "收尸人",
+      "rarity": "common",
+      "axis": "corpse",
+      "flagship": false,
+      "lore": "序列9 收尸人 —— \"具备尸体特质，体温低，避免亡灵袭击 / 能承受腐烂、寒冷、死亡气息\"",
+      "flavor": "你的体温比尸体高不了多少，腐烂与寒冷都伤不到你；而那些游荡的亡灵，也从不把你当成活人。",
+      "describe": "战斗开始时获得「尸体特质」：毒抗性 +20%、冰抗性 +20%，受到亡灵来源的伤害 ×0.7。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "corpse_nature",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "corpse_nature",
+          "name": "尸体特质",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:poison",
+              "value": 20,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:ice",
+              "value": 20,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "damage_taken_mul": {
+              "value": 0.7,
+              "filter": {
+                "sourceUnitType": [
+                  "UNDEAD"
+                ]
+              },
+              "note": "避免亡灵袭击 = 对 UNDEAD 来源伤害减免（H4 filter 来源维度）"
+            }
+          }
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s9_natural_sight",
+      "name": "天然灵视",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "收尸人",
+      "rarity": "common",
+      "axis": "spirit_sight",
+      "flagship": false,
+      "lore": "序列9 收尸人 —— \"天然灵视，看见部分恶灵\"",
+      "flavor": "你天生能看见那些本不该被看见的东西——藏起来的身形瞒不过你，飘在半空的恶灵更瞒不过你。",
+      "describe": "战斗开始时获得「天然灵视」：敌方隐匿类状态对你无效；你对灵体单位造成的伤害 ×1.3。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_sight",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_sight",
+          "name": "天然灵视",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "seeThroughStealth": true,
+            "damage_mul": {
+              "value": 1.3,
+              "filter": {
+                "unitType": [
+                  "SPIRIT"
+                ]
+              },
+              "note": "原著限定「部分恶灵」：只给 SPIRIT，不给 UNDEAD"
+            }
+          },
+          "note": "与不眠者【通灵之眼】同源同族（H42），建议并入同一 StatusDef；本条为序列9 档引用副本"
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s9_decay_breath",
+      "name": "腐息",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "收尸人",
+      "rarity": "common",
+      "axis": "corpse",
+      "flagship": false,
+      "lore": "序列9 收尸人 —— \"具备尸体特质……能承受腐烂……气息\"（主动化引申）",
+      "flavor": "你张口吐出一口尸腐之气——它躲不开，也吐不掉。",
+      "describe": "对一名敌人造成 2 点毒素伤害，并使其中毒 2 tick。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "poison",
+          "value": 2
+        },
+        {
+          "type": "mount_status",
+          "statusId": "poison",
+          "duration": 2
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "本稿唯一推断项（序列9 无原著攻击手段，取「腐烂气息」主动化补低费输出地基）；若汇总阶段认定越界可整条删除"
+      ]
+    },
+    {
+      "id": "skill_corpse_collector_s8_gravedigger_body",
+      "name": "掘墓人体魄",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "掘墓人",
+      "rarity": "common",
+      "axis": "corpse",
+      "flagship": false,
+      "lore": "序列8 掘墓人 —— \"体魄更强壮\"",
+      "flavor": "整日挥铲掘土练就的身板，比看上去结实得多。",
+      "describe": "战斗开始时，自身攻击 +2、防御 +1、生命上限 +8，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 8,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "属性提升",
+            "note": "+1 / +1 / +4"
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s8_death_eye",
+      "name": "死亡之眼",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "掘墓人",
+      "rarity": "common",
+      "axis": "spirit_sight",
+      "flagship": true,
+      "lore": "序列8 掘墓人 —— \"『死亡之眼』：进入灵性世界，从更高层次俯视敌人找弱点\"；\"灵视更厉害\"",
+      "flavor": "你的魂魄离体半寸，从灵性世界里俯下身——它的要害、它的破绽，一下子全浮了出来。",
+      "describe": "对一名敌人造成 3 点精神伤害（处于隐匿状态时 ×1.5），使其易伤 3 tick，并驱散其 1 个隐匿类状态。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_category",
+                "side": "target",
+                "categories": [
+                  "conceal"
+                ]
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 3,
+                  "mul": 1.5,
+                  "note": "俯视：目标处于隐匿类状态时本次伤害 ×1.5"
+                }
+              ],
+              "else": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 3,
+                  "note": "进入灵性世界"
+                }
+              ]
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 3,
+              "note": "找弱点"
+            },
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "conceal"
+                ],
+                "count": 1
+              },
+              "note": "俯视"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s8_spirit_whisper",
+      "name": "灵之耳语",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "掘墓人",
+      "rarity": "common",
+      "axis": "spirit_sight",
+      "flagship": false,
+      "lore": "序列8 掘墓人 —— \"能初步沟通附近少量灵\"",
+      "flavor": "你向附近的游灵低声问了句话——它凑到你耳边，把即将落下的那一击提前告诉了你。",
+      "describe": "使一名友军获得游灵示警 3 tick：下一次受到的伤害 ×0.6（随后失效）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_warning",
+          "charges": 1,
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_warning",
+          "name": "游灵示警",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_damage",
+                  "scope": "taken",
+                  "mul": 0.6,
+                  "target": "self",
+                  "note": "该次伤害 x0.6：灵的预警替你挡下半数力道（modify_damage scope:taken 扩展原语）"
+                }
+              ],
+              "consumeCharge": true
+            }
+          ],
+          "note": "H3 参数化减伤母版（C6 charges）"
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s7_seance",
+      "name": "通灵",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "通灵者",
+      "rarity": "uncommon",
+      "axis": "undead",
+      "flagship": true,
+      "lore": "序列7 通灵者 —— \"『通灵』（核心）：直接与自然灵和亡魂沟通，借灵实现魔法\"",
+      "flavor": "你向着空处开口，一缕亡魂应声而来——它替你把这道咒文推了出去，然后留在了这里。",
+      "describe": "对一名敌人造成 3 点精神伤害（借灵施法），并召来一只亡魂为己方作战（70% 生命，落位己方队尾）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "note": "借灵实现魔法"
+            },
+            {
+              "type": "spawn",
+              "unit": "unit_wraith",
+              "hpRatio": 0.7,
+              "position": "tail",
+              "note": "沟通：召来的灵留在场上（F25 + C5）"
+            }
+          ]
+        }
+      ],
+      "unitDefs": [
+        {
+          "id": "unit_wraith",
+          "name": "亡魂",
+          "unitType": "UNDEAD",
+          "base": {
+            "hpRatio": 0.7,
+            "atkRatio": null,
+            "reach": "melee"
+          },
+          "note": "F25 已落 H1 召唤物基线（hp 16 / atk 4 量级 ⚠️D）；ID 归属已裁决：归收尸人亡灵线，不眠者自然灵另立 unit_nature_spirit"
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s7_kin_of_spirits",
+      "name": "灵之同类",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "通灵者",
+      "rarity": "uncommon",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列7 通灵者 —— \"对亡魂、自然灵而言像同类，危险性低\"",
+      "flavor": "在它们眼里，你闻起来和它们是一路的——亡魂不会先扑向你，自然灵也不会。",
+      "describe": "战斗开始时获得「灵之同类」：受到灵体与亡灵来源的伤害 ×0.7；敌方灵体与亡灵优先攻击其他目标（你的受选优先级最低）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "kin_of_spirits",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "kin_of_spirits",
+          "name": "灵之同类",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_taken_mul": {
+              "value": 0.7,
+              "filter": {
+                "sourceUnitType": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ]
+              },
+              "note": "「危险性低」是对方对你的危险感知低，必须按来源类型过滤，不是通用减伤"
+            },
+            "targetPriorityLowest": {
+              "filter": {
+                "sourceUnitType": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ]
+              },
+              "note": "候选池加权分支（status:<id>:asc 排序键族，2026-09-04 拍板）；嘲讽/守护仍可覆盖"
+            }
+          }
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "TARGET_WEIGHTING",
+          "note": "C8 候选池加权分支稿面标 🟢 未实现；若只落地一条优先保留减伤①",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_corpse_collector_s7_death_rite",
+      "name": "亡灵仪式",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "通灵者",
+      "rarity": "uncommon",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列7 通灵者 —— \"掌握与灵相关的神秘学仪式\"",
+      "flavor": "你在地上画完最后一笔，站进圈里的亡者们同时抬起了头。",
+      "describe": "全体己方亡灵攻击 +2、行动条速率 +3（4 tick），自身能量 +2。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "all",
+          "filter": {
+            "unitType": [
+              "UNDEAD"
+            ]
+          }
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "rite_of_death",
+              "duration": 4,
+              "target": "all_allies"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "self",
+              "note": "仪式的准备：施法者得利"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "rite_of_death",
+          "name": "死亡仪式",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 3,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ],
+          "note": "H42 常驻母版；仅对 UNDEAD 单位挂载（targetSpec filter.unitType）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge_rate 修正面按 modify_stat(gauge.rate) 表达，同战士先例，待内核裁定归一",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_corpse_collector_s6_raise_skeleton",
+      "name": "唤起骷髅",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "死灵导师",
+      "rarity": "uncommon",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列6 死灵导师 —— \"『复活』：唤起活尸和骷髅\"",
+      "flavor": "你伸手按在尸骸上，骨头开始自己拼合——它站起来，等着你吩咐。",
+      "describe": "唤起一具骷髅为己方作战（落位己方队尾）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unit": "unit_skeleton",
+          "position": "tail",
+          "note": "F34 + C5"
+        }
+      ],
+      "unitDefs": [
+        {
+          "id": "unit_skeleton",
+          "name": "骷髅",
+          "unitType": "UNDEAD",
+          "base": {
+            "hpRatio": 1.0,
+            "atkRatio": null,
+            "reach": "melee"
+          },
+          "note": "F34 已落 H1 召唤物基线（hp 12 / atk 3 量级 ⚠️D）；廉价铺量定位"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s6_raise_zombie",
+      "name": "唤起活尸",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "死灵导师",
+      "rarity": "uncommon",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列6 死灵导师 —— \"『复活』：唤起活尸和骷髅\"",
+      "flavor": "泥土裂开，一具还挂着腐肉的躯体爬了出来，摇摇晃晃地挡在你身前。",
+      "describe": "唤起一具活尸为己方作战（高血低速坦克型，落位己方队尾）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unit": "unit_zombie",
+          "position": "tail",
+          "note": "F35"
+        }
+      ],
+      "unitDefs": [
+        {
+          "id": "unit_zombie",
+          "name": "活尸",
+          "unitType": "UNDEAD",
+          "base": {
+            "hpRatio": 1.0,
+            "atkRatio": null,
+            "reach": "melee"
+          },
+          "note": "F35 已落 H1 召唤物基线（hp 24 / atk 2 量级 ⚠️D）；本途径唯一坦克型召唤物"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s6_word_of_dead",
+      "name": "亡者之语",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "死灵导师",
+      "rarity": "uncommon",
+      "axis": "undead",
+      "flagship": true,
+      "lore": "序列6 死灵导师 —— \"『亡者之语』：绕过血肉保护，将沟通上升为驱使乃至奴役\"",
+      "flavor": "你只说了一个词——它绕过皮肉与甲胄，直接咬在骨头上。",
+      "describe": "战斗开始时获得「亡者之语」：你造成的所有伤害无视目标护甲，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "word_of_the_dead",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "word_of_the_dead",
+          "name": "亡者之语",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "outgoingDamageParams": {
+              "pierce": [
+                "armor"
+              ],
+              "note": "ignore_armor：armor 是唯一一层「血肉保护」（H16 整层跳过）"
+            }
+          },
+          "note": "「驱使乃至奴役」另立主动卡【驱使亡者】，本条只承载「绕过血肉保护」"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s6_drive_dead",
+      "name": "驱使亡者",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "死灵导师",
+      "rarity": "uncommon",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列6 死灵导师 —— \"将沟通上升为驱使乃至奴役\"；\"可提前控制、驱使亡者和自然灵战斗\"",
+      "flavor": "你叫了它的名字——它僵了一瞬，然后转过身，扑向自己刚才的同伴。",
+      "describe": "若目标为灵体或亡灵：操纵其 6 tick，攻击强制打向其同阵营友军；否则使其下一次攻击强制打向其阵营首位。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "target_unit_type",
+            "type": [
+              "UNDEAD",
+              "SPIRIT"
+            ]
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "puppet_string",
+              "duration": 6,
+              "note": "奴役（F9 + C7；按 G15-b 取 6t ≈ 覆盖目标 1 个自身回合）"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "countersuit",
+              "charges": 1,
+              "duration": 4,
+              "note": "驱使（F19）：下一次攻击强制打其阵营首位"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "puppet_string",
+          "name": "提线木偶",
+          "category": [
+            "retarget",
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "modifiers": {
+            "targetOverride": {
+              "op": "target_override",
+              "anchor": "index_asc_same_faction",
+              "note": "H12 target_override 族；优先于嘲讽/守护"
+            }
+          },
+          "note": "F9 已登记；权威定义见状态表，此处为引用副本"
+        },
+        {
+          "id": "countersuit",
+          "name": "反噬",
+          "category": [
+            "retarget"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 1,
+          "modifiers": {
+            "targetOverride": {
+              "op": "target_override",
+              "anchor": "first_empty",
+              "note": "F19 → H12；下一次攻击强制打其阵营首位"
+            }
+          },
+          "note": "F19 已登记；权威定义见状态表，此处为引用副本"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s6_raise_dead",
+      "name": "唤起亡者",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "死灵导师",
+      "rarity": "uncommon",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列6 死灵导师 —— \"『复活』：唤起活尸和骷髅\"（对刚死之物的即时唤起）",
+      "flavor": "倒下的躯体还没凉透，你的手已经按了上去——它站起来，换了边。",
+      "describe": "每当你击杀一名敌人，立即唤起一具骷髅（60% 生命，落位己方队尾）为己方作战。",
+      "hook": "on_kill",
+      "effects": [
+        {
+          "type": "spawn",
+          "unit": "unit_skeleton",
+          "hpRatio": 0.6,
+          "position": "tail",
+          "note": "跨阵营 spawn = 新建单位非 relocate，G8 合规；落点恒为 tail"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s5_death_envoy",
+      "name": "死神使者",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "看门人",
+      "rarity": "rare",
+      "axis": "end",
+      "flagship": true,
+      "lore": "序列5 看门人 —— \"『死神使者』：低泣声让目标血液冻僵、生命力流逝\"",
+      "flavor": "你低低地哭了一声——它的血停住了，而它身体里的什么东西，正一点一点地往外漏。",
+      "describe": "对一名敌人造成 3 点冰霜伤害，并使其血液冻僵 4 tick：行动条速率 ×0.8、每 tick 1 点无属性伤害、受到的治疗 ×0.7。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "ice",
+              "value": 3,
+              "note": "低泣声"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "blood_chill",
+              "duration": 4
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "blood_chill",
+          "name": "血液冻僵",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "gaugeRateMul": 0.8,
+            "heal_received_mul": 0.7
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 1,
+                  "target": "self",
+                  "note": "生命力流逝"
+                }
+              ]
+            }
+          ],
+          "note": "H24 减速族 + H21 heal_received_mul（与 F20 petrify 同型）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s5_underworld",
+      "name": "小型冥界",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "看门人",
+      "rarity": "rare",
+      "axis": "undead",
+      "flagship": true,
+      "lore": "序列5 看门人 —— \"小型『冥界』：以身体为囚笼创造独属冥界，容纳魂体亡者\"",
+      "flavor": "你的身体里有一处只属于你的冥界——凡是在你面前倒下的，魂都进到这里，散不掉，也走不了。",
+      "describe": "战斗开始时获得「小型冥界」（最多存 3 魂）：任意单位死亡时魂数 +1（满则不再累加）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "underworld_cage",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "underworld_cage",
+          "name": "小型冥界",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "triggers": [
+            {
+              "event": "on_death",
+              "global": true,
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "underworld_cage",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "target": "self",
+                  "note": "任意单位（敌我不限）死亡时魂数 +1；全局第三方监听（执行参数 §2.1）"
+                }
+              ]
+            }
+          ],
+          "note": "H11 计数型容器（F51 stacks + F48 consume 读写）；上限可被【亡者之王】覆写为 6"
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s5_underworld_release",
+      "name": "冥界放出",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "看门人",
+      "rarity": "rare",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列5 看门人 —— \"驱使亡灵\"；\"小型『冥界』……容纳魂体亡者\"",
+      "flavor": "你打开身上的冥界，那些被你收着的魂一涌而出——它们还记得自己是谁，但现在只听你的。",
+      "describe": "放出冥界中全部魂体：每只魂化为一只亡魂（50% 生命，落位己方队尾），随后冥界清空。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "op": "repeat",
+              "countFrom": "statusStacks",
+              "statusId": "underworld_cage",
+              "steps": [
+                {
+                  "type": "spawn",
+                  "unit": "unit_wraith",
+                  "hpRatio": 0.5,
+                  "position": "tail"
+                }
+              ],
+              "note": "Repeat(n = underworld_cage.stacks)（G3 动态段数）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "underworld_cage",
+              "stacks": "all",
+              "stackMode": "consume",
+              "target": "self",
+              "note": "F48 status.consume 清空"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s4_underworld_gate",
+      "name": "冥界之门",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "不死者",
+      "rarity": "rare",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列4 不死者 —— \"『冥界之门』：利用冥界力量创造战斗环境\"",
+      "flavor": "你身前的空气裂开一道门的形状，门后的冥界渗了进来——站在门里的亡者变得沉重，而活物变得迟缓。",
+      "describe": "降临「冥界之门」4 回合：己方亡灵每回合攻击 +2、受伤 ×0.85；全体敌人每回合行动条速率 ×0.85；「亡灵/死亡」标签卡效果 ×1.5，「光明/净化」标签卡 ×0.7；死亡单位转为资源。自身迷失值 +1。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_underworld_gate",
+              "duration": 4,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_underworld_gate",
+        "duration": 4,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：己方 UNDEAD 单位 attack +2 / damage_taken_mul ×0.85（亡者得利，1t 刷新）；敌方全体 gauge_rate ×0.85（生灵受阻，1t 刷新）；死亡单位转为资源（走死亡结算链，非补丁）",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "亡灵",
+              "死亡"
+            ],
+            "mul": 1.5
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光明",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_underworld_gate",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 4,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "ally",
+              "unitType": [
+                "UNDEAD"
+              ]
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 2,
+                "mode": "delta",
+                "duration": 1
+              },
+              {
+                "type": "modify_stat",
+                "stat": "defense",
+                "value": 0.85,
+                "mode": "mul",
+                "duration": 1,
+                "note": "亡者得利：受伤 ×0.85（1t 刷新）"
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 0.85,
+                "mode": "mul",
+                "duration": 1,
+                "note": "生灵受阻（1t 刷新，乘算 INV-S5 合规）"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "亡灵",
+              "死亡"
+            ],
+            "mul": 1.5
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光明",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "tags": [
+        "亡灵",
+        "死亡"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s4_flesh_undying",
+      "name": "不死者",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "不死者",
+      "rarity": "rare",
+      "axis": "corpse",
+      "flagship": true,
+      "lore": "序列4 不死者 —— \"漫长生命，但每 60 年死去一次复活一次，遗忘大部分记忆\"",
+      "flavor": "你死去，然后又站起来——只是这一次醒来，你想不起自己为什么站在这里，也想不起那些刻在身上的本事。",
+      "describe": "自身死亡时以 40% 生命原地复活（每场一次）：复活时失去全部增益、攻击 -2（本场不恢复）、回复 6 点生命。",
+      "hook": "on_death",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "spawn",
+              "reviveOf": "self",
+              "hpRatio": 0.4,
+              "position": "original",
+              "oncePerBattle": true,
+              "note": "G4 reviveOf；60 年一次折为每场一次"
+            },
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": null
+              },
+              "note": "遗忘大部分记忆 = 失去全部增益"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "遗忘 = 连技艺也一起忘了"
+            },
+            {
+              "type": "heal",
+              "value": 6,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s4_flesh_immortal",
+      "name": "肉体不灭",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "不死者",
+      "rarity": "rare",
+      "axis": "corpse",
+      "flagship": false,
+      "lore": "序列4 不死者 —— \"肉体打击不再致命（除非完全摧毁）\"",
+      "flavor": "刀砍进你的身体，只留下一道口子——除非有人把你整个碾碎，否则你不会倒下。",
+      "describe": "战斗开始时获得「肉体不灭」：单次受到的伤害不超过自身最大生命的 30%。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "flesh_immortal",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "flesh_immortal",
+          "name": "肉体不灭",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_cap": {
+              "ratio": 0.3,
+              "base": "hp_max",
+              "note": "除非完全摧毁：单次结算伤害截断至 30% 最大生命（编队参数 §1.1b 死亡结算行，截断非免死）"
+            }
+          },
+          "note": "退化方案：damage_taken_mul ×0.85 通用减伤"
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s5_undead_haste_drive",
+      "name": "亡灵驱使",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "看门人",
+      "rarity": "rare",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列5 看门人 —— \"感应冥界入口，驱使亡灵\"；序列6 —— \"可提前控制、驱使亡者和自然灵战斗\"",
+      "flavor": "你抬了抬手，那具还在后面踉跄的骷髅猛地窜了出去——它比所有人都先动。",
+      "describe": "指定一只己方亡灵：行动条 +30，攻击 +2（2 tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single",
+          "filter": {
+            "unitType": [
+              "UNDEAD"
+            ]
+          }
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 30,
+              "mode": "delta",
+              "target": "target",
+              "note": "「提前」驱使 = 把行动条往前推；G5/G6：推友军绝不自推"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "undead_haste",
+              "duration": 2,
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "undead_haste",
+          "name": "亡者疾行",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": 2,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s3_ferry_gaze",
+      "name": "摆渡·对视",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "摆渡人",
+      "rarity": "epic",
+      "axis": "end",
+      "flagship": true,
+      "lore": "序列3 摆渡人 —— \"死亡权柄：与其对视的生灵直接死亡，神性者遭受重创\"",
+      "flavor": "你抬起眼，与它对上了目光——它僵在那里，然后倒了下去。而那些更强一些的，只是踉跄着退开，身上多了一道深可见骨的口子。",
+      "describe": "若目标生命不高于 25%：直接处决；否则造成 6 点无属性伤害并易伤 3 tick。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "hp_percent",
+            "side": "target",
+            "cmp": "<=",
+            "n": 0.25
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 0,
+              "lethal": true,
+              "note": "execute（效果参数 §1.1 damage.lethal，H36）"
+            }
+          ],
+          "else": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 6
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "vulnerable",
+                  "duration": 3
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s3_left_hand",
+      "name": "左手触碰",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "摆渡人",
+      "rarity": "epic",
+      "axis": "end",
+      "flagship": false,
+      "lore": "序列3 摆渡人 —— \"左手触碰：目标几乎不可逆地走向死亡\"",
+      "flavor": "你的左手按在它肩上——从这一刻起，它已经在往下走了，而且没有什么能让它停下来。",
+      "describe": "使一名敌人被死亡印记缠绕 8 tick（不可驱散）：每 tick 2 点无属性伤害、受到的治疗 ×0.5、受伤 ×1.15；只能被【右手触碰】解除。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "doomed",
+          "duration": 8
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "doomed",
+          "name": "死亡印记",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": 8,
+          "modifiers": {
+            "heal_received_mul": 0.5,
+            "damage_taken_mul": 1.15
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "H2 参数化复合 debuff；「几乎不可逆」= dispelable:false，仅【右手触碰】按 statusId 精确解除（锁钥设计）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s3_right_hand",
+      "name": "右手触碰",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "摆渡人",
+      "rarity": "epic",
+      "axis": "corpse",
+      "flagship": false,
+      "lore": "序列3 摆渡人 —— \"右手触碰：解除此状态\"",
+      "flavor": "你的右手覆上去，那道正在往深处走的痕迹停住了——它喘过一口气，活了回来。",
+      "describe": "解除一名友军的死亡印记，驱散其 1 个持续伤害或减益状态，并治疗 6 点生命。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": [
+                  "doomed"
+                ],
+                "count": null
+              },
+              "note": "全场唯一可解 doomed（dispel.filter.statusId 精确点名）"
+            },
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "dot",
+                  "debuff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "heal",
+              "value": 6,
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s3_ferryman_body",
+      "name": "摆渡人之躯",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "摆渡人",
+      "rarity": "epic",
+      "axis": "corpse",
+      "flagship": false,
+      "lore": "序列3 摆渡人 —— \"不会自然死亡，净化外大部分攻击无效\"",
+      "flavor": "你已经死过一次了——那些慢慢侵蚀你的东西，只能把你拖到门口，推不进去；而死亡的气息，对你来说只是故乡的风。",
+      "describe": "战斗开始时获得「摆渡人之躯」：持续伤害不会使你死亡（致死时保留 1 血）；受到毒与冰霜伤害 ×0.6。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "ferryman_shroud",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "ferryman_shroud",
+          "name": "摆渡人之躯",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "dot_cannot_kill": true,
+            "damage_taken_mul": {
+              "value": 0.6,
+              "filter": {
+                "element": [
+                  "poison",
+                  "ice"
+                ]
+              },
+              "note": "「净化外大部分攻击无效」折为死亡系元素减免（位格碾压不搬，brief §11）"
+            }
+          },
+          "note": "dot_cannot_kill（编队参数 §1.1b，trigger: dot 分支，与 lethal_protect 共用插桩）"
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s2_true_death",
+      "name": "完全的死亡",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "死亡执政官",
+      "rarity": "epic",
+      "axis": "end",
+      "flagship": true,
+      "lore": "序列2 死亡执政官 —— \"『完全的死亡』：剥夺区域内所有生命力，复活 / 替身能力无效\"",
+      "flavor": "你抬手画下边界——那一块地方里不再有生命这回事：流干的血补不回来，准备好的替身，也只是又一具尸体。",
+      "describe": "展开「完全的死亡」区域：区域内敌人每 tick 受 2 点无属性伤害、被禁疗且无法复活（各 2 tick 刷新）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "zone"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "consumption": "zone",
+          "zone": "zone_true_death",
+          "note": "保持 Zone 形态（H9 Zone 母版）"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "lifeless",
+          "name": "生命力剥夺",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "heal_received_mul": 0
+          },
+          "note": "生命被剥夺，补不回来（H21 支持 0）"
+        },
+        {
+          "id": "revive_blocked",
+          "name": "复活着禁",
+          "category": [
+            "seal"
+          ],
+          "dispelable": false,
+          "duration": 2,
+          "modifiers": {
+            "revive_blocked": true
+          },
+          "note": "与不眠者 eternal_sleep、愚者命运锚点同源同一母版（编队参数 §1.1b）；此处为引用副本"
+        }
+      ],
+      "zoneDef": {
+        "id": "zone_true_death",
+        "kind": "hazard",
+        "trigger": "on_occupy_tick",
+        "affects": "enemy_of_owner",
+        "duration": null,
+        "effects": [
+          {
+            "op": "sequence",
+            "steps": [
+              {
+                "type": "damage",
+                "element": "none",
+                "value": 2,
+                "note": "剥夺生命力"
+              },
+              {
+                "type": "mount_status",
+                "statusId": "lifeless",
+                "duration": 2
+              },
+              {
+                "type": "mount_status",
+                "statusId": "revive_blocked",
+                "duration": 2
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s2_undead_king",
+      "name": "亡者之王",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "死亡执政官",
+      "rarity": "epic",
+      "axis": "undead",
+      "flagship": true,
+      "lore": "序列2 死亡执政官 —— \"『亡者之王』：小型冥界容纳不死生物大军\"",
+      "flavor": "你体内的冥界向外撑开了一圈——它不再只装得下三个魂，而站在你身后的，也不再只是一小队亡者。",
+      "describe": "战斗开始时：小型冥界容量 3→6；自身召唤位上限 +2；你召唤的亡灵攻击 +2、生命上限 +5（常驻）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "underworld_cage",
+              "stackMode": "override",
+              "target": "self",
+              "overrides": {
+                "maxStacks": 6
+              },
+              "note": "扩容：与【小型冥界】同一个计数状态（H11 maxStacks 可覆盖）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "summon_cap",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "H39 summon_cap"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "实际走 spawn.companionBuff（F54）挂给自身 spawn 的 UNDEAD；不挂 on_spawn 自触发（A2）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 5,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "同上，companionBuff 段"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s2_pale_kingdom",
+      "name": "死亡之国",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "死亡执政官",
+      "rarity": "epic",
+      "axis": "end",
+      "flagship": false,
+      "lore": "序列2 死亡执政官 —— \"『死亡之国』：创造死亡苍白区域，不够强大者立刻死亡转为不死\"",
+      "flavor": "你脚下的土地褪成一片苍白——站进去的人，凡是撑不住的，都会当场倒下；而当它们再站起来时，已经换了一边。",
+      "describe": "展开「死亡之国」区域：区域内生命不高于 20% 的敌人被处决并转为己方骷髅（60% 生命，己方队尾）；每个单位只判定一次。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "zone"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "consumption": "zone",
+          "zone": "zone_pale_kingdom",
+          "note": "保持 Zone 形态"
+        }
+      ],
+      "zoneDef": {
+        "id": "zone_pale_kingdom",
+        "kind": "hazard",
+        "trigger": "on_occupy_tick",
+        "affects": "enemy_of_owner",
+        "duration": null,
+        "effects": [
+          {
+            "op": "if",
+            "condition": {
+              "kind": "hp_percent",
+              "side": "target",
+              "cmp": "<=",
+              "n": 0.2
+            },
+            "then": [
+              {
+                "op": "sequence",
+                "steps": [
+                  {
+                    "type": "damage",
+                    "element": "none",
+                    "value": 0,
+                    "lethal": true,
+                    "note": "立刻死亡（execute / damage.lethal）"
+                  },
+                  {
+                    "type": "spawn",
+                    "unit": "unit_skeleton",
+                    "hpRatio": 0.6,
+                    "position": "tail",
+                    "note": "转为不死（归属己方，跨阵营 spawn G8 合规）"
+                  }
+                ]
+              }
+            ],
+            "else": [],
+            "note": "每单位限判定一次（附 charges:1 判定标记）"
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s1_death_sentence",
+      "name": "死亡宣告",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "苍白皇帝",
+      "rarity": "legendary",
+      "axis": "end",
+      "flagship": true,
+      "lore": "序列1 苍白皇帝 —— \"『死亡宣告』：看到 / 指中的目标瞬间死亡\"",
+      "flavor": "你看了它一眼，抬起手，指了过去——它还有两个呼吸的时间，而那已经是它全部的未来。",
+      "describe": "宣告一名敌人死刑（不可驱散，2 tick 后执行）：若其生命不高于 40% 则直接处决，否则受到 8 点无属性伤害。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "death_sentence",
+          "duration": 2
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "death_sentence",
+          "name": "死亡宣告",
+          "category": [
+            "seal",
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": 2,
+          "triggers": [
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "hp_percent",
+                    "side": "self",
+                    "cmp": "<=",
+                    "n": 0.4
+                  },
+                  "then": [
+                    {
+                      "type": "damage",
+                      "element": "none",
+                      "value": 0,
+                      "lethal": true,
+                      "note": "execute"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "damage",
+                      "element": "none",
+                      "value": 8
+                    }
+                  ]
+                }
+              ],
+              "note": "duration 到期 fire on_remove（执行参数 §2.1）；2 tick 为对手留的交互窗口"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s1_pale_world",
+      "name": "苍白世界",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "苍白皇帝",
+      "rarity": "legendary",
+      "axis": "end",
+      "flagship": true,
+      "lore": "序列1 苍白皇帝 —— \"『苍白世界』：颜色死亡的国度，非凡能力凋零\"",
+      "flavor": "你摊开手掌，颜色从这片世界里退了出去——随之退去的，还有它们身上那些自以为是的本事。",
+      "describe": "降临「苍白世界」3 回合：敌方每 tick 被剥 1 个增益并凋零 2 tick（攻击 -3、造成伤害 ×0.8）；己方亡灵受伤 ×0.85；「亡灵/死亡」标签卡效果 ×1.3，「光明/净化」标签卡 ×0.7。自身迷失值 +1。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_pale_world",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "withered",
+          "name": "凋零",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "damage_mul": 0.8
+          },
+          "statMods": {
+            "attack": -3
+          },
+          "note": "H42 + H4 召唤物增益族"
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_pale_world",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：敌方单位每 tick 被剥 1 层 buff 且攻势凋零（attack -3 / damage_mul ×0.8，2t）；己方 UNDEAD 单位 damage_taken_mul ×0.85（1t 刷新）",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "亡灵",
+              "死亡"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光明",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_pale_world",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "dispel",
+                "target": "target",
+                "dispelTarget": "unit",
+                "filter": {
+                  "category": [
+                    "buff"
+                  ],
+                  "count": 1
+                },
+                "note": "非凡能力凋零：每 tick 自动剥一层 buff"
+              },
+              {
+                "type": "mount_status",
+                "statusId": "withered",
+                "duration": 2
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "ally",
+              "unitType": [
+                "UNDEAD"
+              ]
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "defense",
+                "value": 0.85,
+                "mode": "mul",
+                "duration": 1,
+                "note": "亡者得庇护（1t 刷新）"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "亡灵",
+              "死亡"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光明",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "tags": [
+        "亡灵",
+        "死亡"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s1_spirit_master",
+      "name": "灵之主宰",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "苍白皇帝",
+      "rarity": "legendary",
+      "axis": "undead",
+      "flagship": true,
+      "lore": "序列1 苍白皇帝 —— \"『灵之主宰』：任何具备灵的生物都能压制 / 奴役 / 使其死去\"；序列0 死神 —— \"『奴役』权柄\"",
+      "flavor": "凡是有灵的东西，都在你的手掌心里——你可以让它跪下，可以让它转向，也可以只是让它不再存在。",
+      "describe": "战斗开始时获得「灵之主宰」：你对灵体与亡灵造成的伤害 ×1.5；敌方灵体与亡灵对你造成的伤害 ×0.7；战斗开始时操纵敌方攻击最高的灵体或亡灵反戈 6 tick。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_sovereign",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_sovereign",
+          "name": "灵之主宰",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.5,
+              "filter": {
+                "unitType": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ]
+              },
+              "note": "使其死去"
+            },
+            "damage_taken_mul": {
+              "value": 0.7,
+              "filter": {
+                "sourceUnitType": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ]
+              },
+              "note": "压制；与灵之同类①同源同值，H42 同向取最高不叠乘"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_battle_start",
+              "effects": [
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "target_unit_type",
+                    "type": [
+                      "SPIRIT",
+                      "UNDEAD"
+                    ],
+                    "side": "enemy"
+                  },
+                  "then": [
+                    {
+                      "type": "mount_status",
+                      "statusId": "puppet_string",
+                      "duration": 6,
+                      "note": "奴役：敌方 atk_desc 破平的 1 个 SPIRIT/UNDEAD（F9 + C7，G15-b 取 6t）"
+                    }
+                  ],
+                  "else": []
+                }
+              ]
+            }
+          ],
+          "note": "与不眠者【灵体灵性权柄】同源同 ID 族；本条为序列1 档引用副本（权威定义见状态表）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s1_soul_capture",
+      "name": "灵魂掌控",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "苍白皇帝",
+      "rarity": "legendary",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列1 苍白皇帝 —— \"『灵魂掌控』：概率抽取目标灵体\"",
+      "flavor": "它倒下的那一刻，有什么东西从躯壳里被抽了出来——那东西看了你一眼，然后站到了你这边。",
+      "describe": "每当你击杀一名敌人，有 30% 概率抽取其灵体为己方作战（继承其外观与部分属性：30% 生命、50% 攻击，落位己方队尾）。",
+      "hook": "on_kill",
+      "effects": [
+        {
+          "type": "spawn",
+          "template": "killed_unit",
+          "hpRatio": 0.3,
+          "atkRatio": 0.5,
+          "position": "tail",
+          "condition": {
+            "kind": "chance",
+            "p": 0.3
+          },
+          "note": "全表唯一概率点：R3 登记、R4 单次抽样、R5 非伤害维度（G1 更正：EffectRef.condition，无 Chance 算子）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s0_death_authority",
+      "name": "死亡权柄",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "死神",
+      "rarity": "legendary",
+      "axis": "end",
+      "flagship": true,
+      "lore": "序列0 死神 —— \"『死亡』权柄：生命 / 记忆 / 联系 / 烙印皆会死亡，非凡特性也短暂死亡\"",
+      "flavor": "你说了那个字——它的生命、它的记忆、它与这世上一切的联系、它身上那些被赋予过的印记，一起熄灭了。连它赖以不凡的那点东西，也暗了片刻。",
+      "describe": "对一名敌人造成 6 点无属性伤害；驱散其 2 个增益与全部链接/契约类状态；使其 6 tick 内无法复活、攻击 -4（4 tick）。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 6,
+              "note": "生命死亡"
+            },
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 2
+              },
+              "note": "记忆死亡"
+            },
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "link",
+                  "contract"
+                ],
+                "count": null
+              },
+              "note": "联系死亡（H40 增补类别）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "revive_blocked",
+              "duration": 6,
+              "note": "烙印死亡"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -4,
+              "mode": "delta",
+              "duration": 4,
+              "note": "非凡特性短暂死亡"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s0_journeys_end",
+      "name": "一切的归宿",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "死神",
+      "rarity": "legendary",
+      "axis": "end",
+      "flagship": false,
+      "lore": "序列0 死神 —— \"『终点』权柄\"；\"一切的归宿，所有生命共同的终点\"",
+      "flavor": "万物都有终点，而你就是那个终点——离它越近的人，被你拉过去时越轻；而凡是走进终点的，都回不来。",
+      "describe": "战斗开始时获得「一切的归宿」：你对生命不高于 50% 的目标伤害 ×1.3、不高于 25% 时 ×1.6（两档取高不叠乘）；你击杀的敌人无法复活。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "journeys_end",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "journeys_end",
+          "name": "一切的归宿",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": [
+              {
+                "value": 1.6,
+                "filter": {
+                  "targetHpPercentLe": 0.25
+                }
+              },
+              {
+                "value": 1.3,
+                "filter": {
+                  "targetHpPercentLe": 0.5
+                }
+              }
+            ],
+            "note": "H4 {filter, dynamic} 条件乘区（按目标血量过滤），同向取最高不叠乘"
+          },
+          "triggers": [
+            {
+              "event": "on_kill",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "revive_blocked",
+                  "duration": null,
+                  "target": "target",
+                  "note": "回不来"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s0_undead_authority",
+      "name": "亡灵权柄",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "死神",
+      "rarity": "legendary",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列0 死神 —— \"『亡灵』权柄\"",
+      "flavor": "死亡不是终点，而是一种兵役——凡是在你面前倒下的，最终都会在你的队伍里报到。",
+      "describe": "战斗开始时获得「亡灵权柄」：你控制的亡灵受伤 ×0.85；你的亡灵死亡时冥界魂数 +1（不受容量上限限制）；你的亡灵攻击附带 1 点无属性伤害。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "undead_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "undead_authority",
+          "name": "亡灵权柄",
+          "category": [
+            "buff",
+            "aura"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_taken_mul": {
+              "value": 0.85,
+              "filter": {
+                "unitType": [
+                  "UNDEAD"
+                ],
+                "casterOwned": true
+              }
+            },
+            "onDealDamageBonus": {
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 1
+                }
+              ],
+              "note": "死亡气息：走 F54 companionBuff 携带 on_deal_damage 附加段"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_death",
+              "global": true,
+              "effects": [
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "target_unit_type",
+                    "type": [
+                      "UNDEAD"
+                    ]
+                  },
+                  "then": [
+                    {
+                      "type": "mount_status",
+                      "statusId": "underworld_cage",
+                      "stacks": 1,
+                      "stackMode": "add",
+                      "ignoreMaxStacks": true,
+                      "target": "self",
+                      "note": "权柄级豁免：不计原上限（3/6）"
+                    }
+                  ],
+                  "else": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    }
+  ]
+}

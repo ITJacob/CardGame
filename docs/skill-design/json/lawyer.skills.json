@@ -1,0 +1,2193 @@
+{
+  "pathwayId": "lawyer",
+  "pathwayName": "律师",
+  "sourceFile": "../律师途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "advocacy": {
+      "symbol": "🜁",
+      "name": "讼辩"
+    },
+    "brute": {
+      "symbol": "🜂",
+      "name": "蛮力"
+    },
+    "bribery": {
+      "symbol": "🜃",
+      "name": "贿腐"
+    },
+    "disorder": {
+      "symbol": "🜄",
+      "name": "失序"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_lawyer_s9_sophistry",
+      "name": "诡辩",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "律师",
+      "rarity": "common",
+      "axis": "advocacy",
+      "flagship": true,
+      "lore": "序列9 律师 —— \"出色的口才和思辨逻辑，扭曲/引导目标思维\"",
+      "flavor": "你三言两语便把它的念头拧向了别处——它挥出的那一刀，砍在了你身侧的空气上。",
+      "describe": "使一名敌人的下次攻击落空（持续 3 tick，触发 1 次后失效）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "deluded",
+          "charges": 1,
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "deluded",
+          "name": "诡辩（失心）",
+          "category": [
+            "retarget"
+          ],
+          "dispelable": true,
+          "charges": 1,
+          "duration": 3,
+          "modifiers": {
+            "behaviorOverride": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty"
+              }
+            ]
+          },
+          "note": "次数型（C6）：下一次攻击落空后消耗 1 层归零卸载。C7 已端到端验证；「扭曲」暗线起点（一层雏形），与混乱/腐蚀同族"
+        }
+      ],
+      "sharedAcross": [
+        "arbiter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s9_weakness_exploit",
+      "name": "薄弱处",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "律师",
+      "rarity": "common",
+      "axis": "advocacy",
+      "flagship": false,
+      "lore": "序列9 律师 —— \"擅长发现利用规则漏洞和对手薄弱处\"",
+      "flavor": "你一眼就看见它身上那道还没合拢的口子——刀尖顺着旧伤往里推。",
+      "describe": "被动：你造成伤害时，若目标带有减益/持续伤害/控制状态，额外造成 1 点精神伤害。",
+      "hook": "on_deal_damage",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_category",
+            "side": "target",
+            "categories": [
+              "debuff",
+              "dot",
+              "control"
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "note": "攻击已存在的破口（F52 target_has_status 已登记）"
+            }
+          ],
+          "else": []
+        }
+      ],
+      "sharedAcross": [
+        "arbiter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s9_chink_finding",
+      "name": "寻隙",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "律师",
+      "rarity": "common",
+      "axis": "advocacy",
+      "flagship": false,
+      "lore": "序列9 律师 —— \"擅长发现利用规则漏洞和对手薄弱处\"",
+      "flavor": "条文有缝，盔甲也有缝。你从不硬撼一堵墙，你只找那条缝。",
+      "describe": "被动：整场战斗中，你造成的伤害无视目标护甲。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "chink_finding",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "chink_finding",
+          "name": "寻隙",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "armorPierceRatio": 1,
+            "note": "ignore_armor 取比例档 =1（新增项 11 ✅ 已落 ddd：效果参数 §1.1 armorPierceRatio）"
+          },
+          "note": "「利用规则漏洞」侧：绕过防御体系本身（与贿赂·削弱的削数值分野）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s9_glib_tongue",
+      "name": "滔滔不绝",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "律师",
+      "rarity": "common",
+      "axis": "advocacy",
+      "flagship": false,
+      "lore": "序列9 律师 —— \"出色的口才和思辨逻辑\"",
+      "flavor": "你说服的不只是它，还有它身上那道伤口——你说它该留多久，它就留多久。",
+      "describe": "被动：整场战斗中，你施加的减益/控制/持续伤害状态持续时间 +1 tick。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "glib_tongue",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "glib_tongue",
+          "name": "滔滔不绝",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "durationModifier": {
+              "scope": "outgoing",
+              "mode": "add",
+              "value": 1,
+              "filter": {
+                "hasCategory": [
+                  "debuff",
+                  "control",
+                  "dot"
+                ]
+              }
+            }
+          },
+          "note": "debuff_duration_extend（新增项 12 ✅ 已落 ddd：编队参数 §1.1b durationModifier H14）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s8_force_resolution",
+      "name": "力量解决",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "野蛮人",
+      "rarity": "common",
+      "axis": "brute",
+      "flagship": false,
+      "lore": "序列8 野蛮人 —— \"不能依靠法律的，就用力量解决\"",
+      "flavor": "条文讲不通的地方，就用拳头讲。",
+      "describe": "对一名近战敌人造成 6 点物理伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 6
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 6 → 8 → 10"
+          },
+          {
+            "name": "位移分支",
+            "note": "或解锁【蛮横冲撞】的位移分支"
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s8_barbaric_body",
+      "name": "野蛮体魄",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "野蛮人",
+      "rarity": "common",
+      "axis": "brute",
+      "flagship": false,
+      "lore": "序列8 野蛮人 —— \"可怕的力量、体魄和抵抗能力\"",
+      "flavor": "你的体格与蛮横一同增长：血更厚，皮更硬，而那些冲着心神来的东西，也难再撼动你。",
+      "describe": "被动：整场战斗中，自身生命上限 +10、护甲 +3、精神抗性 +10%、物理抗性 +10%。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 10,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "armor",
+          "value": 3,
+          "mode": "delta",
+          "target": "self",
+          "note": "稿面 modify_stat(armor) 按战士先例归一为 modify_resource(armor)（护甲是资源不是属性）"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": 10,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:physical",
+          "value": 10,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "conversionNotes": [
+        "稿面 ⚠️：modify_stat 带 duration:null（永久）的回滚语义需确认（v1.5 已修带 duration 分支，null 分支一并确认）"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s8_savage_charge",
+      "name": "蛮横冲撞",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "野蛮人",
+      "rarity": "common",
+      "axis": "brute",
+      "flagship": false,
+      "lore": "序列8 野蛮人 —— \"不能依靠法律的，就用力量解决\"（力量维度的第二表达）",
+      "flavor": "你一头撞进它的队列里，把它和它的位置一起顶了回去。",
+      "describe": "对一名近战敌人造成 4 点物理伤害，并将其在其自身队列内后移 1 格。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 4
+        },
+        {
+          "type": "move",
+          "op": "push_back",
+          "params": {
+            "distance": 1
+          },
+          "note": "G8 合规：目标在其自身队列内后移（远离中线方向），不涉及己方单位越中线；C1 push_back 已落地且锁定 from.faction"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s7_bribe_weaken",
+      "name": "贿赂·削弱",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "贿赂者",
+      "rarity": "uncommon",
+      "axis": "bribery",
+      "flagship": false,
+      "lore": "序列7 贿赂者 —— \"给予事物后削弱目标攻击\"",
+      "flavor": "一样东西塞进它手里，它的手臂就沉了下去——拿了我的，就得还。",
+      "describe": "使一名敌人攻击 -3，持续 4 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -3,
+          "mode": "delta",
+          "duration": 4
+        }
+      ],
+      "sharedAcross": [
+        "arbiter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s7_bribe_charm",
+      "name": "贿赂·魅惑",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "贿赂者",
+      "rarity": "uncommon",
+      "axis": "bribery",
+      "flagship": false,
+      "lore": "序列7 贿赂者 —— \"让目标产生好感\"",
+      "flavor": "它忽然觉得，对面那个同伴看起来格外碍眼。",
+      "describe": "魅惑一名敌人 2 tick：持续期间它的攻击强制指向其己方队友。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "charm",
+          "duration": 2
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "charm",
+          "name": "魅惑",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "behaviorOverride": [
+              {
+                "op": "target_override",
+                "anchor": "self_faction_hp_desc",
+                "note": "强制指向其己方队友（F15 反向嘲讽母版）；持续生效（与扭曲的一次性 charges 分野）"
+              }
+            ]
+          },
+          "note": "F15 已登记（罪犯+药师途径合并登记，机制=反向嘲讽），权威定义见状态表，此处为引用副本，不新立状态；与 corrupted 同持时 corrupted 优先（贪婪压过好感，裁定见腐蚀条）"
+        }
+      ],
+      "sharedAcross": [
+        "arbiter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s7_bribe_arrogance",
+      "name": "贿赂·狂妄",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "贿赂者",
+      "rarity": "uncommon",
+      "axis": "bribery",
+      "flagship": false,
+      "lore": "序列7 贿赂者 —— \"心智降低\"",
+      "flavor": "你把它捧得高高的。它昂起头，把所有破绽都亮给了你。",
+      "describe": "使一名敌人陷入狂妄 4 tick：受伤 ×1.2、防御 -2、精神抗性 -20%。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "arrogance",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "arrogance",
+          "name": "狂妄",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "damageTakenMul": {
+              "value": 1.2,
+              "note": "乘区刻意压在 1.2（低于易伤 1.3），避免叠乘失控"
+            }
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": -20,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self",
+              "note": "本途径协同钩子：为后续 mental 伤害铺路"
+            }
+          ],
+          "note": "新状态 arrogance（新增项 13 ✅ 纯数据，H2 母版）；「心智降低」的可观测后果三合一"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s7_bribe_connected",
+      "name": "贿赂·关联",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "贿赂者",
+      "rarity": "uncommon",
+      "axis": "bribery",
+      "flagship": false,
+      "lore": "序列7 贿赂者 —— \"建立联系\"",
+      "flavor": "你和它之间搭上了一条看不见的线。它每出一分力，就有一分流进你的口袋。",
+      "describe": "与一名敌人建立利益通道 4 tick：它每次造成伤害时，你获得 2 点能量。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "connected",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "connected",
+          "name": "关联",
+          "category": [
+            "link"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 2,
+                  "mode": "delta",
+                  "target": "caster",
+                  "note": "收益归施法者（casterId 寻址，F56 ✅ 编队参数 §1.1b）"
+                }
+              ]
+            }
+          ],
+          "note": "新状态 connected（新增项 15 ✅ 纯数据）；本途径唯一能量引擎（对位愚者灵体之线的击杀回能，触发条件更稳）；与 F2 parasitized（吸血）同一底层、不同收益类型"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s6_distortion",
+      "name": "扭曲",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "腐化男爵",
+      "rarity": "uncommon",
+      "axis": "disorder",
+      "flagship": true,
+      "lore": "序列6 腐化男爵 —— \"『扭曲』：扭曲目标语言/行动/意图含义，构建有利秩序\"",
+      "flavor": "它抬起手想把你撕碎——可\"撕碎\"这个词在你嘴里转了一圈，落到它同伴身上去了。",
+      "describe": "使一名敌人的下次攻击转打其自身阵营（持续 4 tick，触发 1 次后失效），并造成 2 点精神伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "countersuit",
+          "charges": 1,
+          "duration": 4
+        },
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 2
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "countersuit",
+          "name": "扭曲（反噬）",
+          "category": [
+            "retarget"
+          ],
+          "dispelable": true,
+          "charges": 1,
+          "duration": 4,
+          "modifiers": {
+            "behaviorOverride": [
+              {
+                "op": "target_override",
+                "anchor": "self_faction_hp_desc",
+                "note": "其自身阵营单位（F19 母版「阵营首位」锚点随状态表归一）；触发后 charges -1 卸载"
+              }
+            ]
+          },
+          "note": "F19 已登记（v0.1 律-2，保留 ID 与机制，本版从序列4 下移序列6——原著「扭曲」是序列6 能力）；权威定义见状态表，此处为引用副本。与诡辩（打空）/腐蚀（打最残血）构成目标扭曲谱系"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s6_corruption",
+      "name": "腐蚀",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "腐化男爵",
+      "rarity": "uncommon",
+      "axis": "bribery",
+      "flagship": true,
+      "lore": "序列6 腐化男爵 —— \"『腐蚀』：10 米内人心变阴暗贪婪，做出不理智选择\"",
+      "flavor": "人心里的阴暗被你轻轻一拨就翻了上来。它丢下眼前的敌人，转身扑向那个最好啃的——哪怕那是它自己人。",
+      "describe": "使目标及其相邻敌人下次攻击强制打向全场生命百分比最低的单位（不分阵营，持续 4 tick，触发 1 次后失效）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "spread": "splash_adjacent"
+        },
+        "fallbackSort": null,
+        "note": "稿面仅给 spread 未给 fallbackSort，manual 模式强制字段暂记 null 待补"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "corrupted",
+          "charges": 1,
+          "duration": 4,
+          "note": "目标与其相邻敌方单位同挂（splash_adjacent）"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "corrupted",
+          "name": "腐蚀（贪婪）",
+          "category": [
+            "retarget"
+          ],
+          "dispelable": true,
+          "charges": 1,
+          "duration": 4,
+          "modifiers": {
+            "behaviorOverride": [
+              {
+                "op": "target_override",
+                "anchor": "any_lowest_hp",
+                "note": "全场生命百分比最低（不分阵营）——贪婪不帮它分辨敌我，可能回头咬自己的残血同伴"
+              }
+            ]
+          },
+          "note": "新锚点 any_lowest_hp（新增项 1 ✅ 已落 ddd：共享内核参数 §一 锚点枚举）；与 charm 同持时本状态优先（贪婪压过好感，亦压过理智）；R5 完全确定性，不掷骰子"
+        }
+      ],
+      "conversionNotes": [
+        "稿面 targetSpec 未给 fallbackSort（manual 必填），暂记 null 待数值阶段补（建议 atk_desc）"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s6_corruption_kickback",
+      "name": "腐化回扣",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "腐化男爵",
+      "rarity": "uncommon",
+      "axis": "bribery",
+      "flagship": false,
+      "lore": "序列6 腐化男爵 —— \"腐蚀\"的收益侧（腐化人心者，从其堕落中取利）",
+      "flavor": "它倒下的时候，你从它身上收回了当初投下去的每一分。",
+      "describe": "被动：你击杀带有腐蚀/狂妄/关联/熵蚀状态的敌人时，获得 3 点能量。",
+      "hook": "on_kill",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": [
+              "corrupted",
+              "arrogance",
+              "connected",
+              "entropy_decay"
+            ],
+            "note": "F52 target_has_status 已泛化登记（共享内核 §三 has_status）"
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 3,
+              "mode": "delta",
+              "target": "self"
+            }
+          ],
+          "else": []
+        }
+      ],
+      "conversionNotes": [
+        "条件限定为本途径自己挂得上的四种状态，避免退化成通用击杀回能（G2 教训：on_deal_damage 每次命中都触发会失控）",
+        "entropy_decay 为 F18 通用登记状态（权威定义见状态表，此处仅引用 ID）"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s5_chaos",
+      "name": "混乱",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "混乱导师",
+      "rarity": "rare",
+      "axis": "disorder",
+      "flagship": false,
+      "lore": "序列5 混乱导师 —— \"『混乱』：使目标/区域出现混乱，攻击难落身\"",
+      "flavor": "你在这片地方撒下一把混乱——它们的刀都挥向了自己以为的方向，而那里什么也没有。",
+      "describe": "使目标及其相邻敌人下次攻击落空（持续 4 tick，触发 1 次后失效），且行动条速率 -6。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "spread": "splash_adjacent"
+        },
+        "fallbackSort": null,
+        "note": "稿面仅给 spread 未给 fallbackSort，manual 模式强制字段暂记 null 待补"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "confused",
+          "charges": 1,
+          "duration": 4,
+          "note": "目标与其相邻敌方单位同挂（splash_adjacent）"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "confused",
+          "name": "混乱",
+          "category": [
+            "retarget"
+          ],
+          "dispelable": true,
+          "charges": 1,
+          "duration": 4,
+          "modifiers": {
+            "behaviorOverride": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty"
+              }
+            ]
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -6,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self",
+              "note": "拖慢行动节奏（INV-S5 合规：改源属性不改派生周期）"
+            }
+          ],
+          "note": "诡辩的群体升级版：打空（C7 ✅）+ 减速；R5 确定性 charges 写法，不使用概率"
+        }
+      ],
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge.rate) 表达持续修正，待内核裁定归一",
+          "landed": false
+        }
+      ],
+      "sharedAcross": [
+        "arbiter"
+      ],
+      "conversionNotes": [
+        "稿面 targetSpec 未给 fallbackSort（manual 必填），暂记 null 待数值阶段补"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s5_shared_burden",
+      "name": "对半承担",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "混乱导师",
+      "rarity": "rare",
+      "axis": "disorder",
+      "flagship": true,
+      "lore": "序列5 混乱导师 —— \"『扭曲』（序列5 层）：可扭曲双方概念，对半承担伤害\"",
+      "flavor": "\"这一击落在谁身上\"——这句话是可以改写的。你把它改成：一人一半。",
+      "describe": "你与一名敌人缔结对半承担 5 tick（可驱散）：双方各自受到的伤害 50% 转移给对方。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "shared_burden",
+          "duration": 5
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shared_burden",
+          "duration": 5,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "shared_burden",
+          "name": "对半承担",
+          "category": [
+            "link"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "modifiers": {
+            "damageShare": {
+              "ratio": 0.5,
+              "direction": "both",
+              "linkedTo": "counterpart",
+              "note": "双向对半：你挨的打对方分一半，对方挨的打你也分一半；转移部分不再二次触发（H28 内置防循环）"
+            }
+          },
+          "note": "「扭曲」二层：被扭曲的是「谁承担」概念本身，必须双向才有原著味（单向退化成伤害转移）；damage_share（新增项 2 ✅ 已落 ddd：编队参数 §1.1b 伤害转嫁族 H28）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s5_untouchable",
+      "name": "难落身",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "混乱导师",
+      "rarity": "rare",
+      "axis": "disorder",
+      "flagship": false,
+      "lore": "序列5 混乱导师 —— \"使目标/区域出现混乱，攻击难落身\"",
+      "flavor": "你周身的秩序始终是乱的——刀砍进来，总要先迷路一程。",
+      "describe": "被动：整场战斗中，你受到的伤害 ×0.9。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "untouchable_confusion",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "untouchable_confusion",
+          "name": "难落身",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damageTakenMul": {
+              "value": 0.9,
+              "note": "0.9 刻意压得比 sanctuary（0.8）/glibness（0.75）薄——常驻被动不是一张卡"
+            }
+          },
+          "note": "新状态 untouchable_confusion（新增项 17 ✅ 纯数据：H3 减伤母版）；与混乱分享同一句原著的另一半（主动群体一次性 vs 被动自身持续）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s4_exploit",
+      "name": "利用",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "堕落伯爵",
+      "rarity": "rare",
+      "axis": "disorder",
+      "flagship": true,
+      "lore": "序列4 堕落伯爵 —— \"篡改/增加/利用规则，营造有利战斗环境\"",
+      "flavor": "你什么都没定。你只是把已经写在它身上的那些条文，一条条勒紧了——它倚仗的越多，勒得越深。",
+      "describe": "使一名敌人被规则反勒 4 tick：其每持有 1 个增益状态，受到的伤害 +10%（至多 +40%）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null,
+        "note": "吟唱 ⚠️D 待标"
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "rule_exploited",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "rule_exploited",
+          "name": "被利用",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "damageTakenMul": {
+              "dynamic": {
+                "perCount": {
+                  "filter": {
+                    "hasCategory": [
+                      "buff"
+                    ]
+                  },
+                  "value": 0.1,
+                  "cap": 0.4
+                }
+              },
+              "note": "按目标持有 buff 数动态递增（新增项 3 ✅ 已落 ddd：H4 damage_taken_mul {filter, dynamic}）"
+            }
+          },
+          "note": "本途径「利用规则」的定义性落地：让对手自己的优势反过来勒住它；与仲裁人「律令」的分野=立法 vs 改写受力方向"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s4_amplify",
+      "name": "放大",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "堕落伯爵",
+      "rarity": "rare",
+      "axis": "brute",
+      "flagship": true,
+      "lore": "序列4 堕落伯爵 —— \"『放大』：可让普通一击变『处决』\"",
+      "flavor": "你只是普通地挥了一拳。但你先替这一拳改了定义——于是它成了处决。",
+      "describe": "强化你的下次攻击（持续 3 tick，1 次）：伤害 ×2.0，且若目标生命百分比 ≤35% 则直接处决。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null,
+        "note": "吟唱 ⚠️D 待标"
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "amplified",
+          "charges": 1,
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "amplified",
+          "name": "放大",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "charges": 1,
+          "duration": 3,
+          "fields": {
+            "nextAttack": {
+              "damageMul": 2.0,
+              "onHit": [
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "hp_percent",
+                    "side": "target",
+                    "cmp": "<=",
+                    "n": 0.35
+                  },
+                  "then": [
+                    {
+                      "type": "damage",
+                      "element": "none",
+                      "value": 0,
+                      "lethal": true,
+                      "note": "execute：直达死亡结算，不吃 armor/减伤/抗性（新增项 4 ✅ 效果参数 §1.1 damage.lethal）"
+                    }
+                  ],
+                  "else": []
+                }
+              ]
+            }
+          },
+          "note": "原著「普通一击变处决」精确落地：本卡自身不造成伤害，只放大下一次攻击；条件谓词 target_hp_percent（新增项 5 ✅ 共享内核 §三）；charges:1（C6 ✅）"
+        }
+      ],
+      "conversionNotes": [
+        "与【力量解决】联动：3 能放大 + 3 能力量解决 = 12 伤且带 35% 阈值处决（🜂 轴唯一质变点）"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s4_endow",
+      "name": "赠予",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "堕落伯爵",
+      "rarity": "rare",
+      "axis": "bribery",
+      "flagship": false,
+      "lore": "序列4 堕落伯爵 —— \"『赠予』\"（与『利用』『放大』并列）",
+      "flavor": "你把它要的力量给了它。利息？利息从它自己的血里出。",
+      "describe": "赋予一名友军力量 4 tick：攻击 +4，但每 tick 受到 1 点无属性伤害（利息）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null,
+        "note": "吟唱 ⚠️D 待标"
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "endowed",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "endowed",
+          "name": "赠予",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 4,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 1,
+                  "target": "self",
+                  "note": "利息：A22 严守治疗方向——掉血走 damage 原语，不用负向 heal"
+                }
+              ]
+            }
+          ],
+          "note": "新状态 endowed（新增项 14 ✅ 纯数据，双 category 走 H40 增补）；本途径唯一增益卡，增益自带獠牙"
+        }
+      ],
+      "conversionNotes": [
+        "稿面遗留：on_tick 自伤会高频触发目标 on_take_damage——① 是否触发对半承担的转移（若是会形成伤害放大循环）；② 不应被狂乱适应计为 debuff。需实现阶段写死"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s4_rule_monopoly",
+      "name": "独享规则",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "堕落伯爵",
+      "rarity": "rare",
+      "axis": "disorder",
+      "flagship": false,
+      "lore": "序列4 堕落伯爵 —— \"篡改/增加/利用规则，营造有利战斗环境\"（\"有利\"二字的独占语义）",
+      "flavor": "规则当然存在。只是它永远只朝一个方向倾斜——朝着你。",
+      "describe": "被动：整场战斗中，你获得的增益与你施加的减益均不可被驱散。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "rule_monopoly",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "rule_monopoly",
+          "name": "独享规则",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "dispelableOverride": {
+              "scope": [
+                "self_gain_buff",
+                "self_outgoing_debuff"
+              ],
+              "value": false,
+              "note": "运行时覆写 dispelable（新增项 19 ✅ 已落 ddd：编队参数 §2.4 H8）"
+            }
+          },
+          "note": "律师与仲裁人最刺眼的一处对立：律师的规则只服务一个人（仲裁人的规则双向可验证）"
+        }
+      ],
+      "conversionNotes": [
+        "稿面平衡建议：与滔滔不绝（+1 时长）叠加后减益几乎不可解，数值阶段建议给不可驱散设范围限制（如仅对 debuff 生效，control 类除外）"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s4_distorted_order",
+      "name": "扭曲秩序",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "堕落伯爵",
+      "rarity": "rare",
+      "axis": "disorder",
+      "flagship": false,
+      "lore": "序列4 堕落伯爵 —— 「篡改 / 增加 / 利用规则，营造有利战斗环境」",
+      "flavor": "你不动规则一根手指头——你只是让所有人对规则的理解，从这一刻起全是错的。",
+      "describe": "降临「扭曲秩序」界域 3 回合（可驱散，双方同受）：所有单位每 tick 被剥 1 层增益、行动条速率 ×0.9；混乱/扭曲标签卡效果 ×1.3，秩序/律令标签卡 ×0.7。自身迷失值 +1。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null,
+        "note": "吟唱 ⚠️D 待标"
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_distorted_order",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_distorted_order",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场（双方同受）：所有单位每 tick 被剥 1 层 buff（增益的含义被扭曲消解）+ gauge_rate ×0.9（秩序失稳，节奏拖沓，刷新不叠层）——双向：扭曲不认人，己方同样受束",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "混乱",
+              "扭曲"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "秩序",
+              "律令"
+            ],
+            "mul": 0.7,
+            "note": "秩序在扭曲之地失效"
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_distorted_order",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "filter": {
+              "side": "both"
+            },
+            "effects": [
+              {
+                "type": "dispel",
+                "dispelTarget": "unit",
+                "filter": {
+                  "category": [
+                    "buff"
+                  ],
+                  "count": 1
+                },
+                "note": "全场（双方）每 tick 剥 1 层 buff"
+              },
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": -1,
+                "mode": "delta",
+                "duration": 2,
+                "target": "self",
+                "note": "gauge_rate ×0.9 的近似 delta 表达，2t 刷新不叠层（ddd 无 gauge 乘区键，归一见 GAUGE_RATE_AS_STAT）"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "混乱",
+              "扭曲"
+            ],
+            "mul": 1.3,
+            "note": "O 节点"
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "秩序",
+              "律令"
+            ],
+            "mul": 0.7,
+            "note": "O 节点"
+          }
+        ],
+        "extraRuleNote": "与仲裁人【满月】恰成对位：满月立法（公开双向自己也守），扭曲秩序坏法（扭曲拖垮谁也别想干净）；周期载荷只走 on_tick，不引 on_turn_start（G15 规避）；（2026-09-08 界域牌批次新增，同时销掉遗留「混乱区域维度未做真区域」——区域的正解是界域不是 Zone）"
+      },
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "ddd 将 gauge.* 列为 modify_resource 键；界域载荷按 modify_stat(gauge.rate) 表达周期减速，待内核裁定归一",
+          "landed": false
+        }
+      ],
+      "tags": [
+        "混乱",
+        "扭曲",
+        "失序"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s3_authority_press",
+      "name": "上位者·威严",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "狂乱法师",
+      "rarity": "epic",
+      "axis": "disorder",
+      "flagship": true,
+      "lore": "序列3 狂乱法师 —— \"部分『阶层』权柄：上位者——威严实质化为武器，下位者身不由己听从\"",
+      "flavor": "你的威严落下来是有重量的。位格低于你的东西，在这一刻连站直的资格都没有。",
+      "describe": "对一名敌人造成 4 点精神伤害；若你的位格高于它，则额外使其眩晕 1 tick 并在其自身队列内后移 1 格。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null,
+        "note": "吟唱 ⚠️D 待标"
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 4
+        },
+        {
+          "op": "if",
+          "params": {
+            "rankCheck": true
+          },
+          "condition": {
+            "kind": "stat_compare",
+            "aUnit": "caster",
+            "bUnit": "target",
+            "key": "rank",
+            "cmp": ">"
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "duration": 1,
+              "note": "位格压制成立则「身不由己」必定生效（brief §11.2）"
+            },
+            {
+              "type": "move",
+              "op": "push_back",
+              "params": {
+                "distance": 1
+              },
+              "note": "G8 合规：敌方自身队列内后移"
+            }
+          ],
+          "else": []
+        }
+      ],
+      "sharedAcross": [
+        "arbiter"
+      ],
+      "conversionNotes": [
+        "退化方案（稿面）：去掉 If，改为固定眩晕 1t + 后撤，代价是失去位格压制门槛感"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s3_stratum",
+      "name": "阶层",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "狂乱法师",
+      "rarity": "epic",
+      "axis": "disorder",
+      "flagship": false,
+      "lore": "序列3 狂乱法师 —— \"部分『阶层』权柄：上位者……下位者身不由己听从\"",
+      "flavor": "位格在你之下者，打不动你，也躲不开你。",
+      "describe": "被动：整场战斗中，位格低于你的敌人对你造成的伤害 ×0.85、你对其造成的伤害 ×1.15。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "stratum",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "stratum",
+          "name": "阶层",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damageTakenMul": {
+              "value": 0.85,
+              "filter": {
+                "statCompare": {
+                  "key": "rank",
+                  "cmp": "<",
+                  "note": "攻击者位格低于持有者（新增项 5 ✅ 条件谓词 H4 filter）"
+                }
+              }
+            },
+            "damageMul": {
+              "value": 1.15,
+              "filter": {
+                "statCompare": {
+                  "key": "rank",
+                  "cmp": "<",
+                  "note": "目标位格低于持有者"
+                }
+              }
+            }
+          },
+          "note": "上位者·威严的常驻版（一次性位格碾压 vs 整场位格环境）；两乘区压在 ±15% 内（条件常驻非一次性）；位格基准=序列位阶（编队参数 §1.4），强度随晋升自然成长"
+        }
+      ],
+      "conversionNotes": [
+        "退化方案（稿面）：改为 on_battle_start 时对低位格敌人一次性挂易伤，代价是后续入场单位吃不到"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s3_frantic_surge",
+      "name": "狂乱",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "狂乱法师",
+      "rarity": "epic",
+      "axis": "disorder",
+      "flagship": true,
+      "lore": "序列3 狂乱法师 —— \"一定『混乱』权柄：『狂乱』——自身能力随机有益变化，敌人则不利\"",
+      "flavor": "狂乱从你体内涌出，灌进它的脑子——你的力量在乱流里长成了新的样子，而它的身体先一步背叛了它。",
+      "describe": "自身从 4 项增益中各以 25% 概率获得（期望 1 项：攻击 +3 / 护盾 +5 / 行动条速率 +8 / 吸血 1 次），目标从 4 项减益中各以 25% 概率获得（期望 1 项：攻击 -3 / 眩晕 1 / 易伤 3 / 打空 1 次）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null,
+        "note": "吟唱 ⚠️D 待标"
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self",
+              "condition": {
+                "kind": "chance",
+                "p": 0.25
+              }
+            },
+            {
+              "type": "modify_resource",
+              "resource": "shield",
+              "value": 5,
+              "mode": "delta",
+              "target": "self",
+              "condition": {
+                "kind": "chance",
+                "p": 0.25
+              }
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self",
+              "condition": {
+                "kind": "chance",
+                "p": 0.25
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "lifesteal",
+              "charges": 1,
+              "duration": 4,
+              "target": "self",
+              "condition": {
+                "kind": "chance",
+                "p": 0.25
+              }
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -3,
+              "mode": "delta",
+              "duration": 4,
+              "condition": {
+                "kind": "chance",
+                "p": 0.25
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "duration": 1,
+              "condition": {
+                "kind": "chance",
+                "p": 0.25
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 3,
+              "condition": {
+                "kind": "chance",
+                "p": 0.25
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "deluded",
+              "charges": 1,
+              "duration": 3,
+              "condition": {
+                "kind": "chance",
+                "p": 0.25
+              }
+            }
+          ],
+          "note": "8 处独立伯努利（p=0.25）期望各 1 项，实际 0~4 项——方差即「狂乱」体感，有意保留"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "lifesteal",
+          "name": "吸血",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "charges": 1,
+          "duration": 4,
+          "modifiers": {
+            "lifesteal": {
+              "healRatio": 0.5,
+              "note": "数值 ⚠️D；吸血族与 F2 parasitized 同一底层"
+            }
+          },
+          "note": "权威定义见状态表（F 族吸血母版），此处为引用副本"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "池扩容",
+            "note": "增益池/减益池各扩容一项"
+          },
+          {
+            "name": "概率提升",
+            "note": "或改为 p=0.35（期望 1.4 项）"
+          }
+        ]
+      },
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge.rate) 表达持续修正，待内核裁定归一",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "全池唯一引入概率的技能（R5 边界测试）：随机只决定从固定池获得哪一个添头状态，池内各项均为定值既有状态，没有任何一项是伤害数值",
+        "R3：两处概率已登记（新增项 23 ✅ 随机性治理 R3，condition:{kind:chance,p} 即登记入口）；R4：只在 condition 判定处抽样一次，结算链内不再二次抽样",
+        "确定性退化方案（平衡审计备选）：自身固定获得 attack +3（4t）+ 打空 1 次，目标固定获得 attack -3（4t）+ 易伤 3t"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s3_frantic_adaptation",
+      "name": "狂乱适应",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "狂乱法师",
+      "rarity": "epic",
+      "axis": "disorder",
+      "flagship": false,
+      "lore": "序列3 狂乱法师 —— \"狂乱：自身能力随机有益变化，敌人则不利\"（\"自身有益\"侧的被动版）",
+      "flavor": "捆在你身上的每一道锁，最后都成了你的力气。",
+      "describe": "被动：每 tick 重算——你每持有 1 个减益/控制/持续伤害状态，攻击 +1（至多 +3），随层数实时增减。",
+      "hook": "on_tick",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "frantic",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "frantic",
+          "name": "狂乱适应",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "statPerStack": {
+              "attack": 1
+            },
+            "stackCount": {
+              "dynamic": {
+                "countStatuses": {
+                  "side": "self",
+                  "categories": [
+                    "debuff",
+                    "control",
+                    "dot"
+                  ],
+                  "cap": 3
+                }
+              },
+              "note": "层数=自身持有的 debuff/control/dot 状态数（上限 3），每 tick 重算（F51 stacks ✅ + 新增项 3 H4 dynamic ✅）"
+            }
+          },
+          "note": "「自身能力随机有益变化」的确定性翻译：混乱对你总是有益的，且越乱越强；与难落身构成完整的「你越打我我越强」"
+        }
+      ],
+      "conversionNotes": [
+        "退化方案（稿面，不依赖 on_tick 重算）：固定为「每持有一个 debuff，attack +1，最多 +3」，用 on_apply/on_remove 各刷新一次"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s2_entropy",
+      "name": "熵",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "熵之公爵",
+      "rarity": "epic",
+      "axis": "disorder",
+      "flagship": true,
+      "lore": "序列2 熵之公爵 —— \"部分『混乱』权柄→『熵』：战斗越久，敌人能力/思维/状态越随机混乱\"",
+      "flavor": "熵是会蔓延的。它从一个人身上开始，然后顺着队列爬过去——拖得越久，爬得越远。",
+      "describe": "使一名敌人染上熵蚀（1 层，持续 4 tick）：每 tick 向相邻敌方单位蔓延 1 层（每单位至多 3 层）——拖得越久，被卷入的单位越多。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null,
+        "note": "吟唱 ⚠️D 待标"
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "entropy_decay",
+          "stacks": 1,
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "entropy_decay",
+          "name": "熵蚀",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "maxStacks": 3,
+          "stackPolicy": "refresh",
+          "duration": 4,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "entropy_decay",
+                  "stacks": 1,
+                  "duration": 4,
+                  "target": "adjacent_enemy",
+                  "note": "对相邻敌方单位蔓延 1 层（重置 duration 4，每单位层数上限 3）"
+                }
+              ]
+            }
+          ],
+          "note": "F18 已登记（H2 母版，ID 保留），权威定义见状态表，此处为引用副本 + 本途径新增的「扩散」触发器；dot/乘区本体的具体数值随 F18 母版（⚠️D）；扩散顺序与层数上限全部确定，零随机（R5 ✅）；依赖新增项 20 adjacency ✅ + F51 stacks ✅"
+        }
+      ],
+      "sharedAcross": [
+        "arbiter"
+      ],
+      "conversionNotes": [
+        "共享为稿面「谨慎」项：entropy_decay 是通用登记状态（F18），非本途径私有；「扩散」是本途径新增语义，共享前需确认状态定义归属公共 catalog"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s2_moon_step",
+      "name": "踏月",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "熵之公爵",
+      "rarity": "epic",
+      "axis": "disorder",
+      "flagship": false,
+      "lore": "序列2 熵之公爵 —— \"部分『利用』权柄：对规则利用强化到从地面跳到红月\"",
+      "flavor": "规则说你够不到它。你只是\"利用\"了一下这条规则——然后你从地面，一路跳到了红月上。",
+      "describe": "强化你的下次攻击（持续 4 tick，1 次）：伤害 ×2.5，无视前排站位限制（可直接指定任意敌人）且无视护甲。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null,
+        "note": "吟唱 ⚠️D 待标"
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "moon_step",
+          "charges": 1,
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "moon_step",
+          "name": "踏月",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "charges": 1,
+          "duration": 4,
+          "modifiers": {
+            "damageMul": {
+              "value": 2.5
+            },
+            "ignoreRedirect": {
+              "value": true,
+              "note": "无视前排站位限制：可直接指定任意敌方单位（含被守护/嘲讽保护的后排）——ignore_guard（新增项 10 ✅ 执行参数 §一 EffectRef.params.ignore_redirect，ddd 明示律师「踏月」判例）"
+            },
+            "armorPierceRatio": {
+              "value": 1,
+              "note": "ignore_armor 比例档 =1（新增项 11 ✅ 效果参数 §1.1）"
+            }
+          },
+          "note": "G8 合规声明：本技能不调用 move 原语，纯攻击进程 + 目标选择放宽（「跳到红月」译为「无视站位规则」，与「利用权柄」同源同义）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s1_defined_substitute",
+      "name": "定义·替身",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "弑序亲王",
+      "rarity": "legendary",
+      "axis": "disorder",
+      "flagship": true,
+      "lore": "序列1 弑序亲王 —— \"定义什么是『替身』什么是『本体』，让本体瞬间变替身\"",
+      "flavor": "你不需要杀死它。你只需要宣布一件事——\"它，是替身。\" 于是不死的特权离它而去，而它开始替它的主人挨刀。",
+      "describe": "将一名敌人定义为替身（6 tick，不可驱散）：压制其免死与复活类效果，且其所在阵营中攻击最高者受到伤害的 50% 转移给它。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null,
+        "note": "吟唱 ⚠️D 待标"
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "defined_substitute",
+          "duration": 6,
+          "dispelable": false
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "defined_substitute",
+          "name": "定义·替身",
+          "category": [
+            "contract"
+          ],
+          "dispelable": false,
+          "duration": 6,
+          "modifiers": {
+            "suppress": [
+              "lethal_protect",
+              "miracle",
+              "spirit_worm",
+              "paper_substitute",
+              "puppet_immortality"
+            ],
+            "reviveBlocked": {
+              "value": true,
+              "note": "持有者死亡时进入 revive_blocked，所有复活结算前检查该标记（新增项 7 ✅）"
+            },
+            "damageShare": {
+              "ratio": 0.5,
+              "direction": "to_self",
+              "linkedFrom": {
+                "scope": "faction_original",
+                "sort": "atk_desc",
+                "note": "其所在阵营中 attack 最高的单位（按原阵营判定——定义改写的是身份不是阵营）；该单位受伤时 50% 转移给持有者，不占 damage_taken_mul 乘区（H28 ✅ 新增项 2）"
+              }
+            }
+          },
+          "note": "「扭曲」三层（身份定义）：恐怖之处不在伤害而在身份被改写——① 替身没有不死的特权 ② 替身的职责是替本体受创；defined_substitute 状态数据（新增项 21 ✅ 纯数据）"
+        }
+      ],
+      "conversionNotes": [
+        "★★ 与愚者途径交互裁定：纸人替身（lethal_protect）被压制——替身不配拥有替身；秘偶不死被压制（优先级 defined_substitute > 秘偶不死）；灵之虫/奇迹不生效（revive_blocked）；与秘偶（puppet_string）不冲突可叠加（一个改「打谁」一个改「伤害归谁」）；与重组/transfer_status 不冲突",
+        "复活优先级链：revive_blocked > defined_substitute 压制 > lethal_protect（阻止死亡，不进死亡结算）> on_death 复活（编队上下文 §十 ✅ 新增项 22，与稿面建议链完全一致）"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s1_redefine",
+      "name": "重定义",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "弑序亲王",
+      "rarity": "legendary",
+      "axis": "disorder",
+      "flagship": true,
+      "lore": "序列1 弑序亲王 —— \"通过重新『定义』和『扭曲』让秩序有利于自身\"",
+      "flavor": "你重新定义了一件小事：从现在起，你们所谓的\"恢复\"，叫作\"流失\"。",
+      "describe": "使敌方全体被重定义 5 tick：其获得的治疗转为等量无属性伤害。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null,
+        "note": "吟唱 ⚠️D 待标"
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "order_redefined",
+          "duration": 5,
+          "note": "targetSpec ALL_ENEMIES（scope:all，F59 族通用扩展不重复立项）"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "order_redefined",
+          "name": "重定义",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "modifiers": {
+            "healInvert": {
+              "value": true,
+              "note": "持有者获得的 heal 量转为等量 damage(element: none)，方向反转数值不变（新增项 6 ✅ 效果上下文 §2.1 heal_invert）"
+            }
+          },
+          "note": "本作唯一反治疗手段（counter 治疗队）；选「治疗」是因为它有独立原语（heal，A22）可干净反转，且反转不破坏伤害数值体系"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s0_autocrat",
+      "name": "独裁者",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "黑皇帝",
+      "rarity": "legendary",
+      "axis": "disorder",
+      "flagship": true,
+      "lore": "序列0 黑皇帝 —— \"『独裁者』权柄（核心）：下位含『扭曲』『利用』『定义』『阶层』\"",
+      "flavor": "秩序不是被你破坏的，是被你收编的——扭曲、利用、定义、阶层，四条权柄在你身上合成同一件事：规则只为你一个人服务。",
+      "describe": "被动：整场战斗中——你施加的单体减益额外蔓延到目标相邻的敌人；你击杀敌人时偷取其 1 个增益且该敌人无法复活；位格低于你的敌人对你造成的伤害 ×0.8。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "autocrat",
+          "duration": null,
+          "dispelable": false,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "autocrat",
+          "name": "独裁者",
+          "category": [
+            "contract"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "debuffSpread": {
+              "to": "adjacent_enemy",
+              "scope": "single_target_debuff",
+              "note": "扭曲：你施加的单体减益额外作用于目标的一个相邻敌方单位（新增项 18 扩散载荷）"
+            },
+            "damageTakenMul": {
+              "value": 0.8,
+              "filter": {
+                "statCompare": {
+                  "key": "rank",
+                  "cmp": "<",
+                  "note": "阶层：位格低于你的敌方单位（新增项 5 ✅ H4 filter）"
+                }
+              }
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_kill",
+              "params": {
+                "deathSettlement": {
+                  "revive_blocked": true
+                },
+                "note": "定义：你击杀的敌方单位死亡结算写入 revive_blocked 字段（编队参数 §1.1b 死亡结算行，非状态挂载），所有复活结算前检查该字段"
+              },
+              "effects": [
+                {
+                  "type": "drain",
+                  "category": "buff",
+                  "count": 1,
+                  "target": "self",
+                  "note": "利用：从死者身上 drain 1 个 buff 给自己（F50 ✅ 效果参数 §1.1 drain.category）"
+                }
+              ]
+            }
+          ],
+          "note": "新状态 autocrat（新增项 18 ✅ 纯数据）；四条权柄各取一条合成一个被动（扭曲←扭曲 / 利用←利用 / 定义←定义·替身 / 阶层←阶层），是本途径全部机制的收束件"
+        }
+      ],
+      "conversionNotes": [
+        "稿面平衡建议：四条全开强度极高，数值阶段优先砍「扭曲扩散」触发频率（如每场 3 次）",
+        "「定义·击杀禁复活」由 mount_status(revive_blocked) 归一为 on_kill 触发器 params.deathSettlement.revive_blocked——revive_blocked 是死亡结算字段（编队参数 §1.1b）不是状态，与 defined_substitute 的 modifiers.reviveBlocked 同出口；源稿语义（你击杀的敌方单位无法复活）不变"
+      ],
+      "frameworkFlags": [
+        {
+          "code": "DEATH_SETTLEMENT_FIELD_WRITE",
+          "note": "on_kill 触发器 params.deathSettlement 写死亡结算字段 revive_blocked 的载荷形态待内核裁定",
+          "landed": false
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s0_nine_tombs",
+      "name": "九座陵寝",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "黑皇帝",
+      "rarity": "legendary",
+      "axis": "disorder",
+      "flagship": true,
+      "lore": "序列0 黑皇帝 —— \"九座陵寝全部摧毁前不会真正死去，能从陵寝苏醒复活\"",
+      "flavor": "你为你自己修了九座陵寝。它们一日不全毁，你就一日不死——每一次倒下，都只是从其中一座里重新睁开眼。",
+      "describe": "被动：整场战斗中你拥有 3 座可唤醒的陵寝——你死亡时以 30% 生命原地复活，每次消耗 1 座，耗尽后不再触发。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "nine_tombs",
+          "charges": 3,
+          "duration": null,
+          "target": "self",
+          "note": "容器状态必须开局挂载；on_death 语义由状态触发器承载"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "nine_tombs",
+          "name": "九座陵寝",
+          "category": [
+            "reactive"
+          ],
+          "dispelable": false,
+          "charges": 3,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "spawn",
+                  "reviveOf": "self",
+                  "hpRatio": 0.3,
+                  "position": "original",
+                  "note": "G4 ✅ 效果参数 §1.1 spawn.reviveOf + C5 hpRatio/position；从陵寝苏醒"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "$self",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self",
+                  "note": "charges - 1，归零后不再触发"
+                }
+              ]
+            }
+          ],
+          "note": "「九座」是世界观锚点，本场可唤醒层数 ⚠️D 待平衡裁定（建议 3——flavor：九座陵寝，本场你能唤醒的只有三座）；3 层强于愚者灵之虫 4 次但为被动档"
+        }
+      ],
+      "conversionNotes": [
+        "稿面 hook 写 on_death，但容器状态必须开局挂载（死亡时挂载无从触发），归一为 hook:on_battle_start + 状态 on_death 触发器",
+        "复活机制优先级链：revive_blocked > defined_substitute 压制 > lethal_protect > on_death 复活（nine_tombs/spirit_worm/miracle）（编队上下文 §十 ✅）"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_lawyer_s0_order_collapse",
+      "name": "秩序崩坏",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "黑皇帝",
+      "rarity": "legendary",
+      "axis": "disorder",
+      "flagship": true,
+      "lore": "序列0 黑皇帝 —— \"大部分『混乱』权柄：让秩序和规则本身陷入混乱 / 能让世界底层规则出现扭曲和混乱\"",
+      "flavor": "你把这两样东西——\"谁先动手\"和\"谁担着什么\"——同时扔进了粉碎机。于是最先出手的那个忽然沉默了，而最慢的那个已经冲到了你面前。",
+      "describe": "敌方全体秩序崩坏：其行动条进度按集合守恒重新分配（总量不变、归属打乱），且每个敌人与相邻敌人按序轮转交换 1 个状态。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null,
+        "note": "吟唱 ⚠️D 待标"
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        },
+        "note": "targetSpec ALL_ENEMIES（若引擎不支持退化为 spread:splash_adjacent + 提高覆盖）"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "gauge_shuffle",
+              "resource": "gauge.current",
+              "note": "行动条数值集合守恒重排：把敌方全体现有 gauge.current 作为一组数重新分配（总量不变，归属打乱）——不是随机生成数值（新增项 8 ✅ 效果上下文 §2.1）；确定性退化=按 gauge.current 降序反转分配"
+            },
+            {
+              "type": "status_shuffle",
+              "mode": "rotate",
+              "sort": "index_asc",
+              "count": 1,
+              "note": "每个敌方单位与其相邻的敌方单位交换 1 个状态，按 index_asc 轮转一位，确定性（新增项 9 ✅ transfer_status rotate 模式）"
+            }
+          ]
+        }
+      ],
+      "conversionNotes": [
+        "R5 合规声明（关键）：gauge_shuffle 不是随机生成行动条数值，是把已有的一组数重新分配——集合守恒，不产生任何新的随机量",
+        "不改任何数值、不造成任何伤害，却把对手一整局的节奏规划全部作废——「不参与秩序，而是让秩序失效」"
+      ],
+      "frameworkFlags": [
+        {
+          "code": "ORDER_SHUFFLE",
+          "note": "gauge_shuffle（行动条集合守恒重排）+ status_shuffle（状态轮转搬运）双扩展原语用于本卡，已合法但待引擎落地确认",
+          "landed": false
+        }
+      ],
+      "tentative": true
+    }
+  ]
+}

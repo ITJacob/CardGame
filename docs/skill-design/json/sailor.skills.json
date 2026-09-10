@@ -1,0 +1,2451 @@
+{
+  "pathwayId": "sailor",
+  "pathwayName": "水手",
+  "sourceFile": "../水手途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "rage": {
+      "symbol": "🜁",
+      "name": "愤怒"
+    },
+    "storm": {
+      "symbol": "🜂",
+      "name": "风暴"
+    },
+    "authority": {
+      "symbol": "🜃",
+      "name": "权柄"
+    },
+    "ocean": {
+      "symbol": "🜄",
+      "name": "海洋"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_sailor_s9_great_strength",
+      "name": "卓越力量",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "水手",
+      "rarity": "common",
+      "axis": "authority",
+      "flagship": false,
+      "lore": "序列9 水手 —— \"卓越力量：远超常人的力量\"",
+      "flavor": "经年累月在甲板上拽缆绳练出来的臂力——战斗一开始，你的力量便压过常人。",
+      "describe": "战斗开始时，自身攻击 +2，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "力量提升",
+            "note": "attack +2 → +3 → +4",
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 4,
+                "mode": "delta",
+                "duration": null,
+                "target": "self"
+              }
+            ]
+          }
+        ]
+      },
+      "sharedAcross": [
+        "chanter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s9_scale_veil",
+      "name": "幻鳞",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "水手",
+      "rarity": "common",
+      "axis": "authority",
+      "flagship": false,
+      "lore": "序列9 水手 —— \"平衡+幻鳞（难以被抓握）\"",
+      "flavor": "你身上覆着一层滑腻的幻鳞，谁也抓不牢你——推搡、拖拽、擒抱，都从你身上滑开。",
+      "describe": "战斗开始时获得幻鳞：无法被位移，且受到的伤害 ×0.9，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "scale_veil",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "scale_veil",
+          "name": "幻鳞",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "moveImmune": true,
+            "damage_taken_mul": 0.9
+          },
+          "note": "moveImmune 走 H27（与愚者新增项 6 同源并入）；减伤部分建议并入参数化减伤状态母版（F 组合并候选 2）"
+        }
+      ],
+      "sharedAcross": [
+        "chanter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s9_aquatic_agility",
+      "name": "水中灵活",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "水手",
+      "rarity": "common",
+      "axis": "ocean",
+      "flagship": false,
+      "lore": "序列9 水手 —— \"水中灵活如海族，无保护下潜 15 米\"",
+      "flavor": "你像海族一样滑进浪里，闪到一处更安全的落脚点，只留下一片抓不住的水影。",
+      "describe": "自身移动到己方半场内一个指定空位，并获得一次性水影：3 tick 内下一次受击伤害 ×0.5。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "param",
+              "target": "self",
+              "note": "落点限定己方半场（G8③：handleMove 入口统一 to.faction === from.faction 校验）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "elusive_wake",
+              "charges": 1,
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "elusive_wake",
+          "name": "水影",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "modifiers": {
+            "damage_taken_mul": 0.5
+          },
+          "note": "C6 charges:1 = 一次性闪避"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s8_rage_burst",
+      "name": "愤怒爆发",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "暴怒之民",
+      "rarity": "common",
+      "axis": "rage",
+      "flagship": false,
+      "lore": "序列8 暴怒之民 —— \"'愤怒爆发'：愤怒时力量和速度极大提升\"",
+      "flavor": "每一次挨打都在你胸腔里添一把火——愤怒越盛，你的力量与出手速度就越惊人。",
+      "describe": "战斗开始时获得愤怒：每次受击叠 1 层（至多 5 层，整场），每层攻击 +1、行动条速率 +2。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "rage",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "rage",
+          "name": "愤怒",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 5,
+          "stackPolicy": "stack",
+          "statPerStack": {
+            "attack": 1,
+            "gauge.rate": 2
+          },
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "rage",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "duration": null,
+                  "target": "self",
+                  "note": "越挨打越强，达上限不再增"
+                }
+              ]
+            }
+          ],
+          "note": "H34 statPerStack + F51 stacks（本稿新增项 1）；INV-S5 合规（改 gauge.rate 源属性）。退化方案：满 5 层挂 frenzy（attack +3 / gauge.rate +8，duration 3）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "statPerStack 内含 gauge.rate 键，同战士强健体魄待裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_sailor_s8_rage_swipe",
+      "name": "暴怒挥击",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "暴怒之民",
+      "rarity": "common",
+      "axis": "rage",
+      "flagship": false,
+      "lore": "序列8 暴怒之民（愤怒积攒机制在低序列的常规表达）",
+      "flavor": "你带着火气抡出一记重击——挨打的人疼，你自己却越打越上头。",
+      "describe": "对一名近战敌人造成 4 点物理伤害，自身愤怒层数 +1。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "rage",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面未给 fallbackSort，置 null 待补"
+      ]
+    },
+    {
+      "id": "skill_sailor_s8_rage_strike",
+      "name": "暴怒一击",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "暴怒之民",
+      "rarity": "common",
+      "axis": "rage",
+      "flagship": true,
+      "lore": "序列8 暴怒之民 —— \"'暴怒一击'：积攒愤怒后的恐怖一击\"",
+      "flavor": "你把积压的怒火一次性倾泻出去——这一击有多重，取决于你挨过多少打。",
+      "describe": "若自身有愤怒层数：消耗全部层数，造成 3 + 2×层数 点物理伤害；否则造成 3 点物理伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "rage",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3,
+              "valueFrom": {
+                "statusStacks": "rage",
+                "formula": "3 + 2 * stacks"
+              },
+              "note": "跨效果传值（效果参数 §1.1 valueFrom statusStacks，H26，本稿新增项 2）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "rage",
+              "stacks": "all",
+              "stackMode": "consume",
+              "target": "self",
+              "note": "消耗全部愤怒层数（F48 status.consume(rage, all)）"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "定价红线：层数上限经愤怒之源 +3、暴君权柄 +5 后可达 13 → 3+2×13=29 伤/3 能量严重越线，落地前必须同时 clamp 换算系数（建议 1.5）与层数上限（锁 8）",
+        "分档退化方案（跨效果传值不落地时）：0 层 3 伤 / 1-2 层 6 伤 / 3-4 层 9 伤 / ≥5 层 13 伤，走 has_status 层数比较谓词"
+      ]
+    },
+    {
+      "id": "skill_sailor_s7_navigator_intuition",
+      "name": "天文地理直觉",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "航海家",
+      "rarity": "uncommon",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列7 航海家 —— \"天文地理直觉：对磁场、洋流、风向有直觉，永不迷路\"",
+      "flavor": "你读得懂磁场、洋流与风向——战斗一开始就抢到先手，而任何想把你的节奏推离航道的手段都会落空。",
+      "describe": "战斗开始时自身行动条 +15，且整场免疫行动条被削减（永不迷路）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 15,
+              "mode": "delta",
+              "target": "self",
+              "note": "on_battle_start 被动自推有效（G5/G6 只禁主动技能回合内自推）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "navigator_intuition",
+              "duration": null,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "navigator_intuition",
+          "name": "天文地理直觉",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "gaugeReductionImmune": true
+          },
+          "note": "H31（与愚者新增项 10 命运锚点同源并入）"
+        }
+      ],
+      "sharedAcross": [
+        "chanter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s7_ocean_blessing",
+      "name": "海洋眷顾",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "航海家",
+      "rarity": "uncommon",
+      "axis": "ocean",
+      "flagship": false,
+      "lore": "序列7 航海家 —— \"海洋眷顾：海上全方位提升\"",
+      "flavor": "大海眷顾着它的水手——你的力量、韧性与对海水的耐受力都高出一截。",
+      "describe": "战斗开始时，自身攻击 +1、防御 +1、水抗性 +15%，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:water",
+          "value": 0.15,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "sharedAcross": [
+        "chanter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s6_gale",
+      "name": "狂风",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "风眷者",
+      "rarity": "uncommon",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列6 风眷者 —— \"'风之掌控'：刮出狂风\"",
+      "flavor": "你卷起一阵狂风，把整条敌阵吹得踉跄后退。",
+      "describe": "全体敌人受到 2 点物理伤害，并各自在自己队列内后移 1 格。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "target": "all_enemies"
+            },
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 1,
+              "target": "all_enemies",
+              "note": "C1 锁定 from.faction，G8 合规"
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "暴风雪",
+            "note": "序列4档：改为 damage(water, 3) + gauge.rate ×0.85（3t）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "water",
+                "value": 3,
+                "target": "all_enemies"
+              },
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 0.85,
+                "mode": "mul",
+                "duration": 3,
+                "target": "all_enemies"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s6_wind_blade",
+      "name": "风刃",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "风眷者",
+      "rarity": "uncommon",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列6 风眷者 —— \"'风之掌控'：风刃\"",
+      "flavor": "一道薄薄的风刃切过空气，精准地划开敌人的身体。",
+      "describe": "对一名敌人造成 5 点物理伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 5
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 5 → 7 → 9",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 9
+              }
+            ]
+          },
+          {
+            "name": "风刃穿透",
+            "note": "对目标身后相邻单位追加 2 点 physical",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 5
+              },
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 2,
+                "target": "secondary_target",
+                "note": "目标身后相邻单位"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s6_hurricane_coil",
+      "name": "飓风盘绕",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "风眷者",
+      "rarity": "uncommon",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列6 风眷者 —— \"'风之掌控'：飓风盘绕\"",
+      "flavor": "一道飓风盘绕住敌人的身躯，把它卷在半空——它既挪不动，也慢了下来。",
+      "describe": "对一名敌人造成 3 点物理伤害，并束缚 2 tick：无法位移、行动条速率 ×0.7。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shackle",
+              "duration": 2
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "shackle",
+          "name": "枷锁",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "moveImmune": true,
+            "gaugeRateMul": 0.7
+          },
+          "note": "复用 F7 已登记定义；权威定义见状态表，此处为引用副本（Grant duration 实例值 2）"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "风之束缚",
+            "note": "序列5档：群体化，全体敌人 shackle、零直伤",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "shackle",
+                "duration": 2,
+                "target": "all_enemies"
+              }
+            ]
+          },
+          {
+            "name": "龙卷风",
+            "note": "序列4档：单体强化，高伤 + 强制吹到队尾（见 skill_sailor_s4_tornado）"
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s6_accel_glide",
+      "name": "加速与滑翔",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "风眷者",
+      "rarity": "uncommon",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列6 风眷者 —— \"加速与滑翔：脚下生风跑速翻倍，空中滑翔\"",
+      "flavor": "脚下生风，你的出手快得惊人；而每当有人逼近，你便借风滑开一段距离。",
+      "describe": "战斗开始时行动条速率 +8（整场）；且获得 1 层滑翔：每次受击时自身退到己方半场最后位，每场共 1 次。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "glide",
+              "charges": 1,
+              "duration": null,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "glide",
+          "name": "滑翔",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "move",
+                  "op": "push_back",
+                  "distance": 99,
+                  "target": "self",
+                  "note": "借风脱离：退到己方半场最后位，G8 合规"
+                }
+              ],
+              "note": "每次响应对应 charges -1；刻意做整场有限次数以规避 G15"
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "滑翔次数提升",
+            "note": "glide charges 1 → 2 → 3",
+            "statusDefOverride": {
+              "charges": 3
+            }
+          }
+        ]
+      },
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate +8 常驻修正，同强健体魄",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_sailor_s6_deep_dive",
+      "name": "深潜",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "风眷者",
+      "rarity": "uncommon",
+      "axis": "ocean",
+      "flagship": false,
+      "lore": "序列6 风眷者 —— \"水中不沉，深潜百米\"",
+      "flavor": "战斗一开始你便沉入水下百米——敌人找不着你，直到你自己浮上来出手。",
+      "describe": "战斗开始时深潜：不可被单体技能选中，自身一旦造成伤害立即浮出暴露，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "submerged",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "submerged",
+          "name": "深潜",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": null,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "submerged"
+                  },
+                  "note": "一出手就暴露（先手伏击而非永久免伤）"
+                }
+              ]
+            }
+          ],
+          "note": "H5 潜行母版（与 F4 shadow_veil / F11 stealth 同源，F 组合并候选 1）；与战士水银化 submerged 同名同族，权威定义建议归并状态表，此处为引用副本"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s5_lightning_arrow",
+      "name": "雷电之矢",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "海洋歌者",
+      "rarity": "rare",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列5 海洋歌者 —— \"'闪电掌控'：雷电之矢\"",
+      "flavor": "一柄雷电凝成的长矢脱手而出，笔直地钉穿敌人。",
+      "describe": "对一名敌人造成 5 点雷电伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "shock",
+          "value": 5
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s5_thunder_strike",
+      "name": "雷击",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "海洋歌者",
+      "rarity": "rare",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列5 海洋歌者 —— \"'闪电掌控'：雷击（麻痹敌人，克制亡灵）\"",
+      "flavor": "一道落雷劈中敌人，电流窜过它的躯体使其浑身麻痹；若是亡灵，这一击会格外致命。",
+      "describe": "对一名敌人造成 3 点雷电伤害并眩晕 1 tick；若其为亡灵或灵体，追加 4 点雷电伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "shock",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "duration": 1
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "target_has_tag",
+                "tag": [
+                  "undead",
+                  "spirit"
+                ]
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "shock",
+                  "value": 4,
+                  "note": "克制亡灵"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面声明默认按退化方案落地：数据层给亡灵/灵体单位预置负 resist:shock（如 -25）；此处仍登记条件分支（target_has_tag，新增项 11）供母版实现后切换"
+      ]
+    },
+    {
+      "id": "skill_sailor_s5_ocean_song",
+      "name": "海洋之歌",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "海洋歌者",
+      "rarity": "rare",
+      "axis": "ocean",
+      "flagship": false,
+      "lore": "序列5 海洋歌者 —— \"'歌唱'：干扰灵体 / 提升爆发 / 模拟雷鸣震慑\"",
+      "flavor": "你唱起海洋的歌——可以扰得灵体神魂不宁，可以把同伴的血烧热，也可以让嗓中滚出真正的雷鸣。",
+      "describe": "三种唱法（派发时随机其一）：干扰之歌——对一名敌人造成 3 点精神伤害并沉默 2 tick，召唤物或灵体追加 3 点；爆发之歌——使一名友军伤害 +20%（4 tick）；雷鸣之歌——全体敌人受到 2 点雷电伤害且攻击 -2（3 tick）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "silence",
+              "duration": 2
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "target_is_summoned"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 3,
+                  "note": "干扰灵体"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "burst_song",
+          "name": "爆发之歌",
+          "note": "提升爆发（共享给歌颂者）",
+          "targetOverride": {
+            "faction": "ally"
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "tutelage",
+              "duration": 4,
+              "target": "target",
+              "note": "F14 已登记（阅读者途径），伤害 +20%，不重立"
+            }
+          ]
+        },
+        {
+          "id": "thunder_song",
+          "name": "雷鸣之歌",
+          "note": "模拟雷鸣震慑（共享给歌颂者）；能量 4 / cd 5",
+          "costOverride": {
+            "energy": 4,
+            "cooldown": 5
+          },
+          "targetOverride": {
+            "faction": "enemy",
+            "scope": "all"
+          },
+          "effects": [
+            {
+              "type": "damage",
+              "element": "shock",
+              "value": 2,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "chanter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s5_water_veil",
+      "name": "水幕",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "海洋歌者",
+      "rarity": "rare",
+      "axis": "ocean",
+      "flagship": false,
+      "lore": "序列5 海洋歌者 —— \"'水幕'\"",
+      "flavor": "一层流动的水幕张开在队伍身前，替所有人挡下第一波打击。",
+      "describe": "为全体友军提供 4 点护盾，持续 3 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "shield",
+          "value": 4,
+          "duration": 3,
+          "target": "all_allies"
+        }
+      ],
+      "sharedAcross": [
+        "chanter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s4_blade_legion",
+      "name": "风刃军团",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "灾难主祭",
+      "rarity": "rare",
+      "axis": "storm",
+      "flagship": true,
+      "lore": "序列4 灾难主祭 —— \"'风刃军团'：数百上千道风刃\"",
+      "flavor": "数百道风刃在你身后结成阵列，然后一齐倾泻而下——没有人能在这片刀雨里全身而退。",
+      "describe": "全体敌人各承受 3 段攻击，每段 2 点物理伤害（逐段独立结算，破盾与加攻件逐段放大）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "repeat",
+          "count": 3,
+          "shareTarget": false,
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "target": "all_enemies"
+            }
+          ],
+          "note": "G3 运行时展开；shareTarget:false + 全体目标 → 每名敌人各承受 3 段。敌方存活单位数少于段数时的分配规则需实现显式约定"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s4_tsunami",
+      "name": "海啸",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "灾难主祭",
+      "rarity": "rare",
+      "axis": "ocean",
+      "flagship": false,
+      "lore": "序列4 灾难主祭 —— \"'海啸'\"（序列3 海王\"掀起四五十米海啸\"）",
+      "flavor": "一道数十米高的水墙横推过来，把整条敌阵卷进水里。",
+      "describe": "全体敌人受到 4 点水伤害、被溺沉 3 tick，并各自在自己队列内后移 1 格。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "water",
+              "value": 4,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "drowning",
+              "duration": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 1,
+              "target": "all_enemies",
+              "note": "C1 ✅"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "drowning",
+          "name": "溺沉",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "note": "复用 F13 已登记定义（本途径 v0.1 已登记，连环闪电导电联动的载体）；权威定义见状态表，此处为引用副本"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "洪水",
+            "note": "更强推位移"
+          },
+          {
+            "name": "暴雨",
+            "note": "群体 water 2 伤 ×2 + 敌方 resist:shock -0.1（为连环闪电铺路）"
+          }
+        ]
+      },
+      "tentative": true,
+      "conversionNotes": [
+        "本稿定价风险最高的卡：群体直伤 + 群体 debuff + 群体位移三重叠加，群体溢价系数无既有锚点（D4）"
+      ]
+    },
+    {
+      "id": "skill_sailor_s4_chain_lightning",
+      "name": "连环闪电",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "灾难主祭",
+      "rarity": "rare",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列4 灾难主祭 —— \"'连环闪电'+地震制造\"",
+      "flavor": "一道电蛇咬住第一个目标，随即跳跃到下一个、再下一个——脚下的大地也随之震颤。",
+      "describe": "雷电在 3 个不同目标间跳跃，各造成 3 点雷电伤害；命中溺沉目标追加 2 点雷电（导电）；全体敌人行动条 -10（地震震慑）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "repeat",
+          "count": 3,
+          "shareTarget": false,
+          "steps": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "damage",
+                  "element": "shock",
+                  "value": 3,
+                  "note": "3 个不同目标各 3 伤"
+                },
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "has_status",
+                    "side": "target",
+                    "id": "drowning",
+                    "cmp": ">=",
+                    "n": 1
+                  },
+                  "then": [
+                    {
+                      "type": "damage",
+                      "element": "shock",
+                      "value": 2,
+                      "note": "导电：水能导电（F52 has_status）"
+                    }
+                  ],
+                  "else": []
+                }
+              ]
+            }
+          ],
+          "note": "shareTarget:false 自动分裂；目标数不足 3 时的分配规则需实现显式约定"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -10,
+          "mode": "delta",
+          "target": "all_enemies",
+          "note": "地震震慑，约为击退 -50 的五分之一"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s4_tornado",
+      "name": "龙卷风",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "灾难主祭",
+      "rarity": "rare",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列4 灾难主祭 —— \"'龙卷风'\"",
+      "flavor": "一道龙卷拔地而起，把敌人整个卷起，甩到它自己队伍的最后头。",
+      "describe": "对一名敌人造成 5 点物理伤害，并将其吹到自己队伍的最后位。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 5
+            },
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "note": "C1 锁定 from.faction，吹到其自己队列最后位，G8 合规"
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "磁极牵引",
+            "note": "序列2档：改为 move(pull_forward, 99)，把敌方后排脆皮拽到队首",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 5
+              },
+              {
+                "type": "move",
+                "op": "pull_forward",
+                "distance": 99
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s4_true_flight",
+      "name": "真正飞行",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "灾难主祭",
+      "rarity": "rare",
+      "axis": "authority",
+      "flagship": false,
+      "lore": "序列4 灾难主祭 —— \"真正飞行（时速 500 公里）\"",
+      "flavor": "你真正地飞了起来——离地的那一刻，地面上的一切都抓不住你，也打不太疼你。",
+      "describe": "换到己方另一路队尾，并进入飞行 4 tick：受伤 ×0.85、无法被位移。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "insert_tail_cross_lane",
+              "target": "self",
+              "note": "己方半场内换道，G8 合规"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "flying",
+              "duration": 4,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "flying",
+          "name": "飞行",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "damage_taken_mul": 0.85,
+            "moveImmune": true
+          },
+          "note": "H3 + H27；与 F10 beast_form 同属变身/形态族，建议并入参数化变身母版"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s4_don_armor",
+      "name": "披甲",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "灾难主祭",
+      "rarity": "rare",
+      "axis": "authority",
+      "flagship": false,
+      "lore": "序列4 灾难主祭 —— \"'披甲'\"",
+      "flavor": "灾难主祭披上风暴凝成的甲胄——从战斗一开始，它就穿在你身上。",
+      "describe": "战斗开始时，自身护甲 +5（容量），持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "护甲提升",
+            "note": "+5 → +8 → +12（按参数层 clamp，不叠出免疫）",
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "armor",
+                "value": 12,
+                "mode": "delta",
+                "duration": null,
+                "target": "self"
+              }
+            ]
+          }
+        ]
+      },
+      "sharedAcross": [
+        "chanter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s3_sea_kingdom",
+      "name": "海王领域",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "海王",
+      "rarity": "epic",
+      "axis": "ocean",
+      "flagship": true,
+      "lore": "序列3 海王 —— \"领域主宰：掌控海域内自由行走海底，掀起四五十米海啸\"",
+      "flavor": "这片海域归你主宰——你的人在水中如履平地，而敌人每走一步都要与海水搏斗。",
+      "describe": "战斗开始时注入英雄域「海王国度」（常驻）：己方行动条速率 ×1.1、水抗性 +15%，敌方行动条速率 ×0.9 且每 tick 受到 1 点水伤害；「海洋/水」标签卡效果 ×1.3、「火」标签卡 ×0.8。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "domain",
+          "op": "hero",
+          "def": "domain_sea_kingdom",
+          "duration": -1,
+          "durationUnit": "turn",
+          "note": "英雄域：CombatSetup 注入、常驻、不入压制栈、不收迷失租金（全库首个 hero 域实例）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "lost",
+          "value": 0,
+          "mode": "delta",
+          "target": "self",
+          "note": "迷失租金登记：英雄域（hero tier）CombatSetup 注入、常驻、不收迷失租金（源稿与 ddd 英雄域设计一致），0 租金仅为校验口径登记"
+        }
+      ],
+      "domain": {
+        "tier": "hero",
+        "def": "domain_sea_kingdom",
+        "duration": -1,
+        "durationUnit": "turn",
+        "dispelable": false,
+        "envRulesText": "全场：己方 gauge_rate ×1.1 + resist:water +0.15（海中如履平地）；敌方 gauge_rate ×0.9 且每 tick 受 damage(water, 1)（与海水搏斗）——双向：己方加速 / 敌方迟滞磨血",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "海洋",
+              "水"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "火"
+            ],
+            "mul": 0.8
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_sea_kingdom",
+        "tier": "hero",
+        "dispelable": false,
+        "duration": -1,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "damage",
+                "element": "water",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "ally"
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 1.1,
+                "mode": "mul",
+                "duration": 1,
+                "target": "self"
+              },
+              {
+                "type": "modify_stat",
+                "stat": "resist:water",
+                "value": 0.15,
+                "mode": "delta",
+                "duration": 1,
+                "target": "self"
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 0.9,
+                "mode": "mul",
+                "duration": 1,
+                "target": "self"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "海洋",
+              "水"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "火"
+            ],
+            "mul": 0.8
+          }
+        ]
+      },
+      "tags": [
+        "海洋",
+        "水"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "域内 gauge_rate ×1.1 / ×0.9（1t 刷新）走 modify_stat(gauge.rate)，同强健体魄待裁定",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "hero 域由 CombatSetup 注入、不收迷失租金——效果清单不含 modify_resource(lost) 段，符合迷失租金铁律的例外口径（租金只约束打出式 domain/translocate）"
+      ]
+    },
+    {
+      "id": "skill_sailor_s3_sea_beast_call",
+      "name": "海兽呼唤",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "海王",
+      "rarity": "epic",
+      "axis": "ocean",
+      "flagship": false,
+      "lore": "序列3 海王（领域主宰）/ 序列0「水」权柄：\"海洋+水生生物\"",
+      "flavor": "你的号令沉进海里，一头海兽破浪而出，站到你这一边。",
+      "describe": "召唤一头海兽助战（40% 生命、50% 攻击，落己方队尾）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_sea_beast",
+          "hpRatio": 0.4,
+          "atkRatio": 0.5,
+          "position": "tail",
+          "note": "F32 已登记（H1 召唤物基线），不重立；A2：召唤物登场 fire on_spawn，禁止在其身上挂开局语义"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "深海巨兽",
+            "note": "复用 F33 unit_leviathan：hpRatio 0.8 / atkRatio 0.7，自带亡语：死亡时全体敌人 damage(water, 4)",
+            "effects": [
+              {
+                "type": "spawn",
+                "unitId": "unit_leviathan",
+                "hpRatio": 0.8,
+                "atkRatio": 0.7,
+                "position": "tail"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s3_lightning_storm",
+      "name": "闪电风暴",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "海王",
+      "rarity": "epic",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列3 海王 —— \"'闪电风暴'：密集电蛇笼罩数百米\"（附加：序列2「电磁紊乱」）",
+      "flavor": "数百米内电蛇密布，每一次炸响都让敌人的非凡能力变得迟滞而不稳。",
+      "describe": "全体敌人承受 2 段雷电，每段 3 点；并被电磁紊乱 3 tick：能量恢复 -0.2。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "repeat",
+          "count": 2,
+          "shareTarget": true,
+          "steps": [
+            {
+              "type": "damage",
+              "element": "shock",
+              "value": 3,
+              "target": "all_enemies"
+            }
+          ]
+        },
+        {
+          "type": "mount_status",
+          "statusId": "emc_disorder",
+          "duration": 3,
+          "target": "all_enemies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "emc_disorder",
+          "name": "电磁紊乱",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": -0.2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            }
+          ],
+          "note": "序列2「电磁紊乱」并入本卡附加条款，不单独立项"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s3_annihilation_drop",
+      "name": "毁灭水滴",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "海王",
+      "rarity": "epic",
+      "axis": "ocean",
+      "flagship": false,
+      "lore": "序列3 海王 —— \"'毁灭水滴'\"",
+      "flavor": "所有海水被压缩成一滴——它轻飘飘地落下，却穿透了一切阻挡。",
+      "describe": "驱散一名敌人全部增益、将其护甲清零，然后造成 8 点水伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": "all"
+              },
+              "note": "C2 dispel.category 数组：剥掉护盾/坚守类增益"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": -99,
+              "mode": "delta",
+              "note": "护甲清零，下限截断为 0"
+            },
+            {
+              "type": "damage",
+              "element": "water",
+              "value": 8
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s3_sonic_boom",
+      "name": "音爆",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "海王",
+      "rarity": "epic",
+      "axis": "ocean",
+      "flagship": false,
+      "lore": "序列3 海王 —— \"'音爆'\"",
+      "flavor": "你吐出一个音节，空气炸开——整条敌阵被震得耳中嗡鸣，一时间谁也念不出咒文。",
+      "describe": "全体敌人受到 3 点物理伤害并沉默 1 tick。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "silence",
+              "duration": 1,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "全稿第二高风险卡（仅次于海啸）：群体沉默无既有锚点（D3），需过验证脚本重定"
+      ]
+    },
+    {
+      "id": "skill_sailor_s2_rage_origin",
+      "name": "愤怒之源",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "天灾",
+      "rarity": "epic",
+      "axis": "rage",
+      "flagship": false,
+      "lore": "序列2 天灾 —— \"'愤怒之源'\"",
+      "flavor": "你就是愤怒本身——每一次挨打都在你体内点燃双倍的火，而这火可以烧得比从前更旺。",
+      "describe": "战斗开始时愤怒升华：愤怒层数上限 +3（5→8），此后每次受击叠 2 层（替代 +1）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "rage",
+          "duration": null,
+          "target": "self",
+          "maxStacksOverride": 8,
+          "note": "H34：rage maxStacks 挂载方覆盖 5→8"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "叠层规则改写 +1→+2：需覆写 rage 的 on_take_damage 触发器叠层参数（statusDef 级覆写），与愤怒爆发互斥——挂载本状态后替代原触发器，待内核裁定覆写口径",
+        "数值红线：与暴君权柄（+5）叠加后上限 13，必须与暴怒一击换算系数一起 clamp（上限锁 8）"
+      ]
+    },
+    {
+      "id": "skill_sailor_s2_dread_voice",
+      "name": "恐惧之音",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "天灾",
+      "rarity": "epic",
+      "axis": "authority",
+      "flagship": false,
+      "lore": "序列2 天灾 —— \"'恐惧之音'：上百公里范围生灵恐惧服从\"",
+      "flavor": "你说出那个音节——范围内所有生灵都从骨子里感到恐惧，它们的双手开始发抖，再不敢直视你。",
+      "describe": "全体敌人陷入恐惧 3 tick：攻击 -3、造成伤害 ×0.8，且无法以你为攻击目标。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "dread",
+          "duration": 3,
+          "target": "all_enemies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dread",
+          "name": "恐惧",
+          "category": [
+            "fear",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "stackPolicy": "refresh",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -3,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "damage_mul": 0.8,
+            "excludeCasterTargeting": true
+          },
+          "note": "与 taunt 方向相反（都不敢打施法者）；refresh duration 不叠层防乘区指数化；「无法以施法者为目标」走 C8 §四 排除分支（可选增强）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s2_calamity_descent",
+      "name": "天灾降临",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "天灾",
+      "rarity": "epic",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列2 天灾 —— \"'天灾降临'：雷灾 / 雪难 / 海啸，毁灭港口或岛屿\"",
+      "flavor": "你以天灾之名降下裁决——雷灾、雪难，或是海啸，由你选择用哪一种来毁灭这里。",
+      "describe": "三种天灾择一（派发时随机）：雷灾——全体敌人 4 点雷电伤害并各后退 1 格；雪难——全体敌人 3 点水伤害且行动条速率 ×0.85（3 tick）；海啸——全体敌人 4 点水伤害并溺沉 3 tick。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "shock",
+              "value": 4,
+              "target": "all_enemies"
+            },
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 1,
+              "target": "all_enemies",
+              "note": "雷灾：C1 ✅"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "snow_blight",
+          "name": "雪难",
+          "note": "偏控制",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "water",
+              "value": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 0.85,
+              "mode": "mul",
+              "duration": 3,
+              "target": "all_enemies",
+              "note": "乘算，INV-S5 合规"
+            }
+          ]
+        },
+        {
+          "id": "tsunami",
+          "name": "海啸",
+          "note": "偏持续",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "water",
+              "value": 4,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "drowning",
+              "duration": 3,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s1_divine_punishment",
+      "name": "天罚",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "雷神",
+      "rarity": "legendary",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列1 雷神 —— \"'天罚'：巨大闪电附带瓦解、净化、摧毁力量\"",
+      "flavor": "一道天罚自云端垂落——它先劈碎你的护持、瓦解你的加持，然后才轮到你的身体。",
+      "describe": "驱散一名敌人全部增益、护甲清零，造成 8 点雷电伤害，并施加易伤 3 tick。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": "all"
+              },
+              "note": "瓦解：剥掉全部增益与护持"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": -99,
+              "mode": "delta"
+            },
+            {
+              "type": "damage",
+              "element": "shock",
+              "value": 8,
+              "note": "净化"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 3,
+              "note": "摧毁：留下易伤残骸"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sailor_s1_light_incarnate",
+      "name": "光之化身",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "雷神",
+      "rarity": "legendary",
+      "axis": "authority",
+      "flagship": false,
+      "lore": "序列1 雷神 —— \"'光之化身'：转化能量体，接近光速飞行\"",
+      "flavor": "你把自己转化成纯粹的能量体——刀剑与雷霆大半从你身上穿了过去，而你的速度快得近乎光。",
+      "describe": "战斗开始时转化为光之能量体（整场）：物理抗性 +30%、雷电抗性 +30%、行动条速率 +8，代价是精神抗性 -10%。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "light_form",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "light_form",
+          "name": "光之化身",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:physical",
+              "value": 0.3,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:shock",
+              "value": 0.3,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": -0.1,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "平衡代价：能量体更易被精神与灵性伤害"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "接近光速飞行"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate +8 段同强健体魄",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_sailor_s1_storm_hell",
+      "name": "风暴地狱",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "雷神",
+      "rarity": "legendary",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列1 雷神 —— \"'风暴地狱'\"（变体：'闪电海洋'、'雷霆之舞'）",
+      "flavor": "你把一整片风暴地狱搬到了战场上——电蛇与狂风在其中永不停歇地撕咬。",
+      "describe": "降下风暴地狱区域（4 tick）：区域内敌方每 tick 受到 2 点雷电伤害且行动条速率 ×0.9（2 tick 刷新，不叠层）。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        },
+        "consumption": "zone"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "consumption": "zone",
+          "zone": "zone_storm_hell",
+          "duration": 4,
+          "note": "Zone 注册（consumption: zone + 卡面 zoneDef），非界域原语；H9 Zone 母版（2026-09-08 界域牌批次登记）"
+        }
+      ],
+      "zone": {
+        "kind": "hazard",
+        "def": "zone_storm_hell",
+        "duration": 4,
+        "affects": "enemy_of_owner",
+        "envRulesText": "区域内敌方 on_tick：damage(shock, 2) + gauge.rate ×0.9（2t 刷新，不叠层，风压）"
+      },
+      "zoneDef": {
+        "id": "zone_storm_hell",
+        "kind": "hazard",
+        "trigger": "on_occupy_tick",
+        "affects": "enemy_of_owner",
+        "duration": 4,
+        "effects": [
+          {
+            "op": "sequence",
+            "steps": [
+              {
+                "type": "damage",
+                "element": "shock",
+                "value": 2
+              },
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 0.9,
+                "mode": "mul",
+                "duration": 2,
+                "target": "self",
+                "note": "风压：刷新不叠层"
+              }
+            ]
+          }
+        ]
+      },
+      "variants": [
+        {
+          "id": "lightning_ocean",
+          "name": "闪电海洋",
+          "note": "瞬发档：一轮爆发",
+          "effects": [
+            {
+              "op": "repeat",
+              "count": 2,
+              "shareTarget": false,
+              "steps": [
+                {
+                  "type": "damage",
+                  "element": "shock",
+                  "value": 4,
+                  "target": "all_enemies"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "thunder_dance",
+          "name": "雷霆之舞",
+          "note": "爆发 + 清场档：信息化克星",
+          "effects": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "damage",
+                  "element": "shock",
+                  "value": 4,
+                  "target": "all_enemies"
+                },
+                {
+                  "type": "dispel",
+                  "dispelTarget": "unit",
+                  "target": "all_enemies",
+                  "filter": {
+                    "category": [
+                      "buff"
+                    ],
+                    "count": 1
+                  }
+                },
+                {
+                  "type": "dispel",
+                  "dispelTarget": "unit",
+                  "target": "all_enemies",
+                  "filter": {
+                    "category": [
+                      "conceal"
+                    ],
+                    "count": "all"
+                  },
+                  "note": "破除隐匿：C8 识破分支"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "Zone 风压 gauge.rate ×0.9 段",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_sailor_s0_tyrant_mandate",
+      "name": "暴君权柄",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "暴君",
+      "rarity": "legendary",
+      "axis": "authority",
+      "flagship": true,
+      "lore": "序列0 暴君 —— \"'暴君'权柄：万王之王（威慑、愤怒、恐惧）\"",
+      "flavor": "你是万王之王——敌人一进场就矮了半截，你的怒火比谁都烧得旺，而凡是被你击中的，都会记起恐惧的滋味。",
+      "describe": "战斗开始时敌方全体攻击 -2（整场）；自身愤怒上限 +5、开局获得 3 层、每层额外使伤害 +5%；你每次造成伤害给目标施加恐惧 2 tick。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_enemies",
+              "note": "威慑"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "rage",
+              "stacks": 3,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self",
+              "maxStacksOverride": 10,
+              "note": "愤怒：开局 3 层、上限 +5（叠加愤怒之源后达 13，须按红线 clamp 至 8）；每层额外 damage_mul +0.05 走 rage statPerStack 扩展，待内核裁定"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "tyrant_dread",
+              "duration": null,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "tyrant_dread",
+          "name": "暴君之威",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "dread",
+                  "duration": 2,
+                  "note": "恐惧：刷新不叠层"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "「每层额外 damage_mul +0.05」是对 rage statPerStack 的增益乘区扩展（本稿新增项 1 的扩展用法）；退化方案：层数 ≥5 时挂 frenzy（damage_mul 1.25，duration 3）",
+        "on_deal_damage 触发器挂在施法者侧的承载状态 tyrant_dread 上，dread 定义见恐惧之音"
+      ]
+    },
+    {
+      "id": "skill_sailor_s0_matter_transmute",
+      "name": "物质转化",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "暴君",
+      "rarity": "legendary",
+      "axis": "authority",
+      "flagship": false,
+      "lore": "序列0 暴君 —— \"'物质'权柄：物质与能量相互转化，覆盖基本力\"",
+      "flavor": "你改写了它护甲的\"定义\"——那些甲片不再保护它，而是变成了刺向它自己的刀。",
+      "describe": "驱散一名敌人全部增益并护甲清零，把被清除的护盾与护甲总量转化为等量物理伤害打回它身上。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "armor_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": "all"
+              },
+              "note": "读取并清除护盾值，计入 N"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": -99,
+              "mode": "delta",
+              "note": "清除护甲值，计入 N"
+            },
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 0,
+              "valueFrom": {
+                "dispelledAmount": true,
+                "formula": "N = 本次被清除的护盾 + 护甲总量（⚠️D 建议设上限）"
+              },
+              "note": "跨效果传值（效果参数 §1.1 valueFrom dispelledAmount，H26，ddd 明示水手判例，本稿新增项 8）"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "退化方案：固定 damage(physical, 6) + 清除防护（退化为毁灭水滴的 physical 版）",
+        "fallbackSort armor_desc（新增项 14）实现「专打重甲」语义；不做则按 hp_desc 兜底"
+      ]
+    }
+  ]
+}

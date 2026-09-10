@@ -1,0 +1,2245 @@
+{
+  "pathwayId": "planter",
+  "pathwayName": "耕种者",
+  "sourceFile": "../耕种者途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "harvest": {
+      "symbol": "🌾",
+      "name": "丰饶"
+    },
+    "healing": {
+      "symbol": "✚",
+      "name": "治疗"
+    },
+    "alchemy": {
+      "symbol": "🧪",
+      "name": "炼成"
+    },
+    "blight": {
+      "symbol": "☠",
+      "name": "荒芜"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_planter_s9_strength",
+      "name": "力气",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "耕种者",
+      "rarity": "common",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列9 耕种者 —— \"力气变得很大\"",
+      "flavor": "你握惯了锄头的手攥紧拳头——这一下，和抡了十年镐头没什么两样。",
+      "describe": "对一名近战敌人造成 4 点物理伤害，自身攻击 +2（3 tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 4
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self",
+          "note": "活动开了"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 4 → 6 → 8",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 8
+              }
+            ]
+          },
+          {
+            "name": "连枷",
+            "note": "两段 damage(physical,3)",
+            "effects": [
+              {
+                "op": "repeat",
+                "count": 2,
+                "shareTarget": true,
+                "steps": [
+                  {
+                    "type": "damage",
+                    "element": "physical",
+                    "value": 3
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s9_weather_omen",
+      "name": "预测天气",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "耕种者",
+      "rarity": "common",
+      "axis": "harvest",
+      "flagship": true,
+      "lore": "序列9 耕种者 —— \"能通过自然现象预测天气\"",
+      "flavor": "你抬头看了一眼云——它们比你更早知道接下来会发生什么。",
+      "describe": "战斗开始时，全体友军行动条 +15，且行动条速率 +4（整场）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": 15,
+          "mode": "delta",
+          "target": "all_allies",
+          "note": "G5/G6 边界：被动 + fire 在调度开始前 + 推全体友军，双重合规"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "weather_omen",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "weather_omen",
+          "name": "天时预兆",
+          "category": [
+            "aura"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 4,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies"
+            }
+          ],
+          "note": "H42 常驻模板"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 修正按 modify_stat 表达，待内核裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_planter_s9_cultivated_seed",
+      "name": "分辨种子",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "耕种者",
+      "rarity": "common",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列9 耕种者 —— \"擅于分辨培育种子\"",
+      "flavor": "你在掌心挑出一粒最饱满的种子，把它按进同伴的伤口里——三天后它会自己长成一棵树。",
+      "describe": "为一名友军埋下种子 3 tick：到期时其回复 4 点生命并攻击 +3（4 tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "cultivated",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "cultivated",
+          "name": "培育种子",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "triggers": [
+            {
+              "event": "on_remove",
+              "reason": [
+                "expired"
+              ],
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 4,
+                  "target": "self",
+                  "note": "种子成熟破土"
+                },
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": 3,
+                  "mode": "delta",
+                  "duration": 4,
+                  "target": "self"
+                }
+              ],
+              "note": "H29：on_remove 自然到期（expired）同样 fire"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s8_heal",
+      "name": "治疗",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "医师",
+      "rarity": "common",
+      "axis": "healing",
+      "flagship": false,
+      "lore": "序列8 医师 —— \"『治疗』（核心）：灵视判断病情，出色外科手术\"",
+      "flavor": "你的灵视一眼看穿病根在何处，刀口随之落下——该切的切掉，该缝的缝上。",
+      "describe": "治疗一名友军 4 点生命，并驱散其 1 个持续伤害或减益状态。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "heal",
+              "value": 4
+            },
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "dot",
+                  "debuff"
+                ],
+                "count": 1
+              },
+              "note": "刻意不清 control（要等序列4 触碰痊愈）"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "apothecary"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s8_surgery",
+      "name": "外科手术",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "医师",
+      "rarity": "common",
+      "axis": "healing",
+      "flagship": false,
+      "lore": "序列8 医师 —— \"出色外科手术\"",
+      "flavor": "你的刀比谁都清楚该往哪里切——伤口开得精准，之后的每一次打击都会更深。",
+      "describe": "对一名近战敌人造成 3 点物理伤害，并使其易伤 3 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 3
+        },
+        {
+          "type": "mount_status",
+          "statusId": "vulnerable",
+          "duration": 3
+        }
+      ],
+      "sharedAcross": [
+        "apothecary"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s8_soul_stitch",
+      "name": "缝合灵魂",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "医师",
+      "rarity": "common",
+      "axis": "healing",
+      "flagship": true,
+      "lore": "序列8 医师 —— \"缝合灵魂\"",
+      "flavor": "灵魂裂开的那一瞬，你伸手把它缝了回去——线是用麦秆搓的，很土，但很牢。",
+      "describe": "每场一次：任一友军受到致死伤害时，中断死亡、保留 1 血并治疗 3 点。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "soul_stitch",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "soul_stitch",
+          "name": "缝合灵魂",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "target",
+                "cmp": "<=",
+                "n": 0,
+                "note": "该次伤害将致其死亡"
+              },
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 3,
+                  "note": "H7 lethalProtect：中断死亡、保留 1 血后治疗"
+                }
+              ],
+              "note": "触发器监听任一友军的 on_take_damage（全局监听，执行参数 §2.1）；响应后 charges -1 归零卸载；与 C4 miracle 方向相反（阻止死亡 ≠ 死后召回）"
+            }
+          ],
+          "lethalProtect": true,
+          "hpRatio": 0.03,
+          "note": "H7 + C6 charges（每场一次）；致死保护优先级链与 C4/G4 跨途径统一裁定（编队上下文 §十）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s8_give_life",
+      "name": "给予生命",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "医师",
+      "rarity": "common",
+      "axis": "healing",
+      "flagship": false,
+      "lore": "序列8 医师 —— \"给予生命\"",
+      "flavor": "你把一口气吹进同伴的胸膛——那口气在它体内生了根，开始自己长。",
+      "describe": "治疗一名友军 3 点生命，并使其再生 3 tick（每 tick 2 点）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "heal",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "regen",
+              "duration": 3
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "apothecary"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s7_catalyze_seed",
+      "name": "催化种子",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "丰收祭司",
+      "rarity": "uncommon",
+      "axis": "harvest",
+      "flagship": true,
+      "lore": "序列7 丰收祭司 —— \"『催化种子』：30 米范围植物加速生长 / 制造藤蔓纠缠\"",
+      "flavor": "你往地里丢了一把种子——它们疯长成藤，缠住了敌人的脚踝；而藤蔓的荫凉下，同伴的伤正在愈合。",
+      "describe": "在己方队尾召唤一株藤蔓；并使一名敌人被藤蔓纠缠 3 tick：无法被位移、行动条速率 ×0.75、攻击 -2。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "secondaryTargets": [
+        {
+          "request": {
+            "faction": "ally",
+            "scope": "single",
+            "anchor": "empty_ally_slot"
+          },
+          "note": "己方召唤位（队尾）"
+        }
+      ],
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "spawn",
+              "unitId": "unit_vine",
+              "position": "tail",
+              "note": "植物加速生长 → 己方召唤（H1 基线）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vine_snare",
+              "duration": 3,
+              "note": "藤蔓纠缠（控制面）"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "vine_snare",
+          "name": "藤蔓纠缠",
+          "category": [
+            "debuff",
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "moveImmune": true,
+            "gaugeRateMul": 0.75,
+            "attackMod": -2
+          },
+          "note": "H24 减速族 + H27 moveImmune（单体强控档）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s7_vermin_swarm",
+      "name": "驱使虫豸",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "丰收祭司",
+      "rarity": "uncommon",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列7 丰收祭司 —— \"驱使植物和虫豸\"",
+      "flavor": "你蹲下来和它们说了几句话。然后它们就从地缝里涌出去了，密密麻麻。",
+      "describe": "在己方队尾召唤一群虫豸（低血、快、攻击带毒），死亡时对相邻敌人施加中毒 2 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_vermin",
+          "position": "tail",
+          "note": "H1 基线：≈8 血 / attack 2 (poison) / gauge_rate 偏高；亡语 on_death → 相邻敌人 mount_status(poison,2t)（用亡语不用 on_spawn，A2 合规）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s7_rain_or_shine",
+      "name": "祈雨祈晴",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "丰收祭司",
+      "rarity": "uncommon",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列7 丰收祭司 —— \"祈雨 / 祈晴仪式\"",
+      "flavor": "你向天空举起双臂。缺水的年景里你求一场雨，晦暗的日子里你求一个晴天——大地从不拒绝你。",
+      "describe": "若我方生命偏低（平均 <50%）则祈雨：全体友军治疗 3 点并再生 2 tick；否则祈晴：全体友军行动条速率 +8（4 tick）并驱散 1 个持续伤害状态。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "hp_percent",
+            "side": "self",
+            "cmp": "<",
+            "n": 50
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 3,
+              "target": "all_allies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "regen",
+              "duration": 2,
+              "target": "all_allies"
+            }
+          ],
+          "else": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": 4,
+              "target": "all_allies"
+            },
+            {
+              "type": "dispel",
+              "target": "all_allies",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "dot"
+                ],
+                "count": 1
+              }
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "祈晴分支 gauge.rate 修正",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "稿面条件为「己方平均生命% < 50%」；谓词集无全体平均值谓词，暂以 hp_percent(side:self) 为代表，待内核裁定"
+      ]
+    },
+    {
+      "id": "skill_planter_s7_growth_spread",
+      "name": "繁衍生长",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "丰收祭司",
+      "rarity": "uncommon",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列7 丰收祭司 —— \"促进生物繁衍生长，带来丰收\"",
+      "flavor": "凡是踏上你土地的生灵，都会长得比别处更快、更壮——包括那些刚落地的。",
+      "describe": "己方任意单位登场时（含召唤物与增援），其再生 3 tick 并攻击 +1（整场，每单位最多 3 层）。",
+      "hook": "on_spawn",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "regen",
+          "duration": 3,
+          "target": "target",
+          "note": "以登场单位为锚（anchor: spawned_unit），每个单位独立结算"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "on_spawn 正用（本条语义就是每次登场重复触发，非 A2 禁止的「开局」语义）；全局 on_spawn 监听已落 ddd（执行参数 §2.1）"
+      ]
+    },
+    {
+      "id": "skill_planter_s6_bio_insight",
+      "name": "生物洞悉",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "生物学家",
+      "rarity": "uncommon",
+      "axis": "alchemy",
+      "flagship": false,
+      "lore": "序列6 生物学家 —— \"对生物特性深刻了解\"",
+      "flavor": "你只看了一眼，就知道它最软的地方在哪、哪层硬壳是装出来的。",
+      "describe": "使一名敌人易伤 3 tick，并驱散其 1 个增益状态。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "vulnerable",
+          "duration": 3
+        },
+        {
+          "type": "dispel",
+          "target": "target",
+          "dispelTarget": "unit",
+          "filter": {
+            "category": [
+              "buff"
+            ],
+            "count": 1
+          },
+          "note": "剥掉那层「装出来的硬壳」"
+        }
+      ],
+      "sharedAcross": [
+        "apothecary"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s6_hybrid_spawn",
+      "name": "杂交造物",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "生物学家",
+      "rarity": "uncommon",
+      "axis": "alchemy",
+      "flagship": true,
+      "lore": "序列6 生物学家 —— \"能杂交各种生物产生奇奇怪怪产物\"",
+      "flavor": "你把两只谁也看不上谁的生物揉成了一团。落地的东西谁也没见过，连你也不太确定它明天会不会变异。",
+      "describe": "在己方队尾召唤一只杂交兽（F41 unit_beastling），并随机附加一种变异：反伤 2 / 再生 3 tick / 攻击附带中毒 2 tick / 护盾 +4（3 tick）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_beastling",
+          "position": "tail",
+          "note": "复用 F41 unit_beastling（已登记 🟢），不新立单位"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "thorns",
+          "value": 2,
+          "duration": null,
+          "target": "target",
+          "condition": {
+            "kind": "chance",
+            "p": 0.25
+          },
+          "note": "变异 1/4：按声明顺序取首个命中，R3 登记 + R4 单次抽样"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "regen",
+          "duration": 3,
+          "target": "target",
+          "condition": {
+            "kind": "chance",
+            "p": 0.25
+          },
+          "note": "变异 2/4"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "anointed",
+          "duration": 3,
+          "target": "target",
+          "condition": {
+            "kind": "chance",
+            "p": 0.25
+          },
+          "note": "变异 3/4：攻击附带中毒(2t)，借战士途径 anointed 机制表达，权威定义见战士登记"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shield",
+          "value": 4,
+          "duration": 3,
+          "target": "target",
+          "condition": {
+            "kind": "chance",
+            "p": 0.25
+          },
+          "note": "变异 4/4"
+        }
+      ],
+      "sharedAcross": [
+        "apothecary"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s6_venomous",
+      "name": "剧毒体质",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "生物学家",
+      "rarity": "uncommon",
+      "axis": "alchemy",
+      "flagship": false,
+      "lore": "序列6 生物学家 —— \"自身能产生剧毒\"",
+      "flavor": "你的血里常年养着一窝毒。它们咬别人，不咬你。",
+      "describe": "战斗开始时，自身毒素抗性 +20（整场）；自身每次造成伤害使目标中毒 2 tick（刷新不叠层）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:poison",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "venomous",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "venomous",
+          "name": "剧毒体质",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "poison",
+                  "duration": 2,
+                  "note": "刷新 duration 不叠层，防 DOT 指数化"
+                }
+              ]
+            }
+          ],
+          "note": "H10 on_deal_damage 附加段"
+        }
+      ],
+      "sharedAcross": [
+        "apothecary"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s5_bear_form",
+      "name": "化身巨熊",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "德鲁伊",
+      "rarity": "rare",
+      "axis": "harvest",
+      "flagship": true,
+      "lore": "序列5 德鲁伊 —— \"化身为巨熊战斗\"",
+      "flavor": "你的骨头开始咯吱作响、向外撑开——等皮毛盖满全身，你已经不太记得人类的语言了。",
+      "describe": "化身巨熊 5 tick：攻击 +5、防御 +3、护甲 +5、生命上限 +8、物理抗性 +10。可被驱散。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "bear_form",
+          "duration": 5,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "bear_form",
+          "name": "巨熊形态",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 5,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 3,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 5,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 8,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:physical",
+              "value": 10,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            }
+          ],
+          "note": "H10 参数化形态母版（与 F10 beast_form 同母版两档）；F46 结论：化身不产生第二个单位，仅表现层；带 duration 修正到期回滚走账本条目 remaining"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s5_subterranean",
+      "name": "地底潜行",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "德鲁伊",
+      "rarity": "rare",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列5 德鲁伊 —— 大地系法术「地底潜行」",
+      "flavor": "你往土里一沉，像一粒被埋下的种子。再冒头时，你已经在自己人后面了。",
+      "describe": "退回己方半场最后位，并潜入地底 3 tick：不可被单体技能选中、受伤 ×0.8，造成伤害时出土现身。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "target": "self",
+              "note": "G8 合规（锁定己方半场）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "subterranean",
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "subterranean",
+          "name": "地底潜行",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "damage_taken_mul": 0.8,
+            "untargetableByTargeted": {
+              "direction": "both",
+              "scope": "single"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [],
+              "note": "on_break：出土（自动破除 untargetable）"
+            }
+          ],
+          "note": "H5 潜行/虚化母版（与 F4/F11/愚者 disguise_form 同族，F 组合并候选 1）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s5_mire",
+      "name": "沼泽",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "德鲁伊",
+      "rarity": "rare",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列5 德鲁伊 —— 大地系法术「沼泽」",
+      "flavor": "脚下的泥土忽然软了下去，变成一片冒着泡的稀泥——它们每一步都在往下沉。",
+      "describe": "全体敌人陷入沼泽 4 tick：行动条速率 ×0.75、无法被位移（刷新不叠层）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mire",
+          "duration": 4,
+          "target": "all_enemies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mire",
+          "name": "沼泽",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "stackPolicy": "refresh",
+          "modifiers": {
+            "gaugeRateMul": 0.75,
+            "moveImmune": true
+          },
+          "note": "H24 减速族全体软控档（与 F7 shackle / vine_snare 同母版三档）；刷新 duration 不叠层"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s5_nature_abhorrence",
+      "name": "自然憎恶",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "德鲁伊",
+      "rarity": "rare",
+      "axis": "blight",
+      "flagship": false,
+      "lore": "序列5 德鲁伊 —— 大地系法术「自然憎恶」",
+      "flavor": "你让这片土地讨厌它。于是藤蔓朝它长，虫豸朝它爬，连风都绕着它走。",
+      "describe": "使一名敌人被自然憎恶 4 tick：受伤 ×1.2，且己方单位的攻击被强制引向它。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "nature_abhorrence",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "nature_abhorrence",
+          "name": "自然憎恶",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "damage_taken_mul": 1.2,
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "unit",
+                "unitId": "self"
+              }
+            ]
+          },
+          "note": "anchor <指定单位=该目标自身>（H12，新增项 5）；原著未解释该法术，此为设计推演（见稿面「原著存疑」1）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s5_oak_child",
+      "name": "橡树之子",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "德鲁伊",
+      "rarity": "rare",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列5 德鲁伊 —— 大地系法术「橡树之子」",
+      "flavor": "你把一颗橡实按进土里，退后一步。三息之后，一个孩子从树皮里睁开了眼。",
+      "describe": "在己方队尾召唤橡树之子（≈20 血 / 攻击 4 物理 / 行动偏慢）：自带坚守（整场），死亡时对相邻敌人造成 3 点物理伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_oak_child",
+          "position": "tail",
+          "note": "H1 基线；自带 mount_status(bulwark,null)（树皮）+ 亡语 on_death → 相邻敌人 damage(physical,3)（倒下的树）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s4_life_alchemy",
+      "name": "生命炼成",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "古代炼金师",
+      "rarity": "rare",
+      "axis": "alchemy",
+      "flagship": true,
+      "lore": "序列4 古代炼金师 —— \"『生命炼成』：创造普通人类或战斗魔像\"",
+      "flavor": "你在地上画好阵图，把泥土、血和一点自己的寿命填进去。站起来的是个不会说话的东西，但它听你的。",
+      "describe": "在己方队尾召唤一只战斗魔像（≈26 血 / 攻击 5 物理 / 笨重，自带护甲 +5）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_golem",
+          "position": "tail",
+          "note": "H1 基线；自带 modify_stat(armor,+5,null)"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "炼成之人",
+            "note": "原著「普通人类或战斗魔像」分叉：unit_homunculus（低血≈10 / attack 1 / 亡语 heal(3) 全体友军）",
+            "effects": [
+              {
+                "type": "spawn",
+                "unitId": "unit_homunculus",
+                "position": "tail"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s4_healing_touch",
+      "name": "触碰痊愈",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "古代炼金师",
+      "rarity": "rare",
+      "axis": "healing",
+      "flagship": true,
+      "lore": "序列4 古代炼金师 —— \"能让触碰的生灵无论多严重伤势痊愈\"",
+      "flavor": "你的手按上去的那一刻，伤口、诅咒，和那些说不清的毛病，一起安静了。",
+      "describe": "治疗一名友军 8 点生命，并驱散其全部减益、持续伤害与控制状态（含眩晕/沉默）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "heal",
+              "value": 8
+            },
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "debuff",
+                  "dot",
+                  "control"
+                ]
+              },
+              "note": "count 省略 = 全部清除；本途径唯一解眩晕/沉默的卡"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "apothecary"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s4_vitality_field",
+      "name": "生命充盈",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "古代炼金师",
+      "rarity": "rare",
+      "axis": "healing",
+      "flagship": false,
+      "lore": "序列4 古代炼金师 —— \"能让周围充满生命力，动植物蓬勃生长\"",
+      "flavor": "你站过的地方，草会自己长出来；你队伍里的每一个，都比昨天更结实一点。",
+      "describe": "战斗开始时：全体友军生命上限 +5（整场）；己方植物/虫豸/造物类单位攻击 +1 并再生（1/tick，整场）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "all_allies"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "vitality_field",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "vitality_field",
+          "name": "生命充盈",
+          "category": [
+            "aura"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies",
+              "filter": {
+                "anyOf": [
+                  {
+                    "unitType": [
+                      "PLANT",
+                      "VERMIN",
+                      "CONSTRUCT"
+                    ]
+                  },
+                  {
+                    "isSummon": true
+                  }
+                ]
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "regen",
+              "value": 1,
+              "duration": null,
+              "target": "all_allies",
+              "filter": {
+                "anyOf": [
+                  {
+                    "unitType": [
+                      "PLANT",
+                      "VERMIN",
+                      "CONSTRUCT"
+                    ]
+                  },
+                  {
+                    "isSummon": true
+                  }
+                ]
+              },
+              "note": "低量 1/tick 常驻（H42）"
+            }
+          ],
+          "note": "H42 + §1.2b 单位类型过滤（新增项 10）"
+        }
+      ],
+      "sharedAcross": [
+        "apothecary"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s3_wraith_transform",
+      "name": "恶灵化",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "抬棺人",
+      "rarity": "epic",
+      "axis": "blight",
+      "flagship": true,
+      "lore": "序列3 抬棺人 —— \"『恶灵化』：10 公里范围死者变恶灵为自己战斗\"",
+      "flavor": "它倒下的地方升起一团黑影——那是它自己，只是现在，它替你的土地干活了。",
+      "describe": "任意敌方单位死亡时，在己方队尾以 50% 生命召唤一只恶灵。",
+      "hook": "on_death",
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_wraith",
+          "position": "tail",
+          "hpRatio": 0.5,
+          "note": "F25 unit_wraith（不眠者/收尸人已登记）；全局 on_death 监听（执行参数 §2.1，2026-09-07 回改为「敌方单位死亡即转化」）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "F25 条目挂有「两稿属性冲突（hp 8/atk 3 vs hp 16/atk 4）」警示，汇总时必须定档",
+        "与收尸人亡灵线划清：本条为战斗中现杀现转的增量，不共享 sharedAcross"
+      ]
+    },
+    {
+      "id": "skill_planter_s3_drain_life",
+      "name": "剥夺生命",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "抬棺人",
+      "rarity": "epic",
+      "axis": "blight",
+      "flagship": false,
+      "lore": "序列3 抬棺人 —— \"『剥夺生命』：击中目标使其接受死亡考验\"",
+      "flavor": "你的手落在它肩上，它的生命开始倒数。通不过这场考验的，就不必再留着了。",
+      "describe": "对一名敌人造成 3 点无元素伤害，并使其接受死亡考验 3 tick：每 tick 流失 1 点生命；若期间生命 <25%，立即受到 6 点无元素伤害（每目标只结算一次）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "death_trial",
+              "duration": 3
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "death_trial",
+          "name": "死亡考验",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 1,
+                  "target": "self"
+                }
+              ]
+            },
+            {
+              "event": "on_tick",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "self",
+                "cmp": "<",
+                "n": 25
+              },
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 6,
+                  "target": "self",
+                  "note": "考验失败"
+                },
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "death_trial"
+                  },
+                  "note": "卸载自身；每场对同一目标只结算一次"
+                }
+              ]
+            }
+          ],
+          "note": "H2 stackThreshold / §1.1b thresholdTrigger；25% 阈值为设计取值（原著未给）；元素 none 让大地权柄乘区可覆盖"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s3_return_to_earth",
+      "name": "回归大地",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "抬棺人",
+      "rarity": "epic",
+      "axis": "blight",
+      "flagship": false,
+      "lore": "序列3 抬棺人 —— \"『回归大地』：死灵类生物迅速消散\"",
+      "flavor": "你敲了敲地面。那些本该躺在土里的东西，忽然记起了自己该在哪儿。",
+      "describe": "若目标是死灵/灵体/亡构类：造成 10 点无元素伤害、驱散其全部增益并禁止复活；否则只造成 3 点无元素伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "target_unit_type",
+            "unitTypes": [
+              "UNDEAD",
+              "SPIRIT",
+              "CONSTRUCT"
+            ]
+          },
+          "then": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 10
+                },
+                {
+                  "type": "dispel",
+                  "target": "target",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "buff"
+                    ]
+                  }
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "revive_blocked",
+                  "duration": null,
+                  "note": "反复活标记（新增项 16，与愚者 11 同源同母版）；revive_blocked 本体是死亡结算字段（编队参数 §1.1b），以状态 modifiers 承载于目标，死亡结算前检查"
+                }
+              ]
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 3,
+              "note": "非亡灵刻意低效率"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "revive_blocked",
+          "name": "复活着禁",
+          "category": [
+            "seal"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "revive_blocked": true
+          },
+          "note": "死亡结算字段表达（编队参数 §1.1b 死亡结算行 + 编队上下文 §十 优先级链）；与愚者命运锚点、收尸人 s2_true_death、不眠者 eternal_sleep 同源同一母版；此处为引用副本"
+        }
+      ],
+      "conversionNotes": [
+        "sd:death_trial 的卸载已由归一脚本写为 dispel filter.statusId: death_trial，与源稿「考验失败并卸载自身，每场对同一目标只结算一次」语义一致",
+        "revive_blocked 引用显式落为 modifiers.revive_blocked 的死亡结算字段表达（非独立机制状态），源稿「禁止复活」语义不变"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s2_blight",
+      "name": "荒芜",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "荒芜主母",
+      "rarity": "epic",
+      "axis": "blight",
+      "flagship": true,
+      "lore": "序列2 荒芜主母 —— \"『荒芜』：30 公里范围所有生命飞快流逝至死\"",
+      "flavor": "你不再催生任何东西。于是这片土地上的一切，都开始往回走。",
+      "describe": "全体敌人荒芜 4 tick：每 tick 流失 2 点生命（无元素），受到的治疗减半（刷新不叠层）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "blight",
+          "duration": 4,
+          "target": "all_enemies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "blight",
+          "name": "荒芜",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "stackPolicy": "refresh",
+          "modifiers": {
+            "heal_received_mul": 0.5
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "H2 + H21（heal_received_mul 0.5 与 F20 petrify 同源复用）；「流逝至死」是过程故做 DOT"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s2_earth_authority",
+      "name": "大地权柄",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "荒芜主母",
+      "rarity": "epic",
+      "axis": "blight",
+      "flagship": false,
+      "lore": "序列2 荒芜主母 —— \"部分『大地』『荒芜』『丰收』『生命』权柄\"",
+      "flavor": "你脚下踩着的不只是土——是起源，也是终点。你的枯萎比别人的更久，你的收成比别人的更多。",
+      "describe": "战斗开始时获得「大地权柄」：自身施加的持续伤害状态时长 +1 tick；自身造成的无元素伤害 ×1.15。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "earth_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "earth_authority",
+          "name": "大地权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "durationModifier": {
+              "scope": "outgoing",
+              "mode": "add",
+              "value": 1,
+              "filter": {
+                "category": [
+                  "dot"
+                ]
+              }
+            },
+            "damage_mul": {
+              "value": 1.15,
+              "filter": {
+                "element": [
+                  "none"
+                ]
+              }
+            }
+          },
+          "note": "H14 outgoing + H4 filter.element（新增项 7/8，与愚者 14 同源）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s2_doll_making",
+      "name": "人偶制造",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "荒芜主母",
+      "rarity": "epic",
+      "axis": "alchemy",
+      "flagship": true,
+      "lore": "序列2 荒芜主母 —— \"人偶制造扩展至泥土 / 植物 / 岩浆 / 矿石 / 金属\"",
+      "flavor": "泥土捏的人偶还在往下掉渣，而你已经在想下一个该换什么材质了。",
+      "describe": "在己方队尾召唤一只当前材质档的人偶（泥土→植物→岩浆→矿石→金属，随施放次数自动升档），并把材质阶梯推进 1 档（上限 5）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "spawn",
+              "unitId": "unit_doll",
+              "variant": "matter_ladder",
+              "position": "tail",
+              "note": "spawn.variant（H17）按 matter_ladder 当前档位选 5 档材质表；未持阶梯则取泥土档（规则②）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "matter_ladder",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self",
+              "note": "advance(matter_ladder,+1)，到 5 档封顶"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "matter_ladder",
+          "name": "材质阶梯",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 5,
+          "stackPolicy": "stack",
+          "note": "H11 计数型母版；初始 1 档；同场战斗不重置；旧人偶不换材质（规则③）。五档参数：泥土 hp18/atk3/物理/亡语相邻 gaugeRateMul0.85(2t)；植物 hp20/atk4/毒/再生1(整场)；岩浆 hp22/atk5/火/反伤2；矿石 hp26/atk5/物理/护甲+8；金属 hp24/atk7/shock/gauge.rate+8（全档 ⚠️D，召唤物基线统一重定）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s2_wither_bloom_cycle",
+      "name": "枯荣循环",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "荒芜主母",
+      "rarity": "epic",
+      "axis": "blight",
+      "flagship": true,
+      "lore": "序列2 荒芜主母「部分『丰收』『生命』权柄」+ 序列0 下位「荒芜」「丰收」并列",
+      "flavor": "它们枯萎的地方，你们的种子正破土而出——同一片土地，只换了一只看它的眼睛。",
+      "describe": "每 tick：若场上存在处于持续伤害状态的敌人，己方生命最低的友军回复 1 点生命。",
+      "hook": "on_tick",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_category",
+            "side": "enemy",
+            "categories": [
+              "dot"
+            ]
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 1,
+              "target": "target",
+              "note": "锚 self_faction_hp_desc（己方生命最低者，F60）"
+            }
+          ],
+          "else": []
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面条件「场上存在处于 dot 状态的敌方单位」：field_status_count 谓词按状态 id 计数、无 dot 类别版，暂以 has_category(side:enemy) 表达，语义差异待内核裁定",
+        "on_tick 频率是本卡最大数值盲区（每 tick 回 1 ≈ 每自身回合回 5），需按 tick 频率重标"
+      ]
+    },
+    {
+      "id": "skill_planter_s1_nature_child",
+      "name": "自然之子",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "自然行者",
+      "rarity": "legendary",
+      "axis": "harvest",
+      "flagship": true,
+      "lore": "序列1 自然行者 —— \"『自然之子』：与大地树林水流山峰矿石成为一体，可穿梭\"",
+      "flavor": "你和大山、和溪流、和脚下的矿脉对了一下眼神，然后就不在这里了——你从身后的土里冒了出来。",
+      "describe": "移动至己方半场内指定空格，并化身自然之子 3 tick：不可被单体技能选中、受伤 ×0.8，每 tick 回复 1 点生命。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "param",
+              "to": {
+                "anchor": "empty_ally_slot"
+              },
+              "target": "self",
+              "note": "G8 合规：落点强制己方半场（G8③ 硬校验）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "nature_child",
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "nature_child",
+          "name": "自然之子",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "damage_taken_mul": 0.8,
+            "untargetableByTargeted": {
+              "direction": "both",
+              "scope": "single"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 1,
+                  "target": "self",
+                  "note": "大地滋养"
+                }
+              ]
+            }
+          ],
+          "note": "H5 潜行/虚化母版 + on_tick heal 载荷"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s1_create_world",
+      "name": "创造世界",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "自然行者",
+      "rarity": "legendary",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列1 自然行者 —— \"『创造世界』：孕育创造属于『自然』概念的世界\"",
+      "flavor": "你孕育了一个小小的世界——里面只有树、只有虫、只有会自己长回来的东西。你邀请同伴进去，然后把门带上。",
+      "describe": "降临「自然世界」界域 4 回合：己方单位每回合被滋养（再生 2 tick + 攻击 +2），敌方全体行动条速率 ×0.85 且每 tick 受 1 点毒素伤害；「自然/植物/毒」标签卡 ×1.3，「火」标签卡 ×0.8。自身迷失值 +1。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_nature_world",
+              "duration": 4,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_nature_world",
+        "duration": 4,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场双向：己方每回合刷新 再生(2t)+攻击+2；敌方 gauge_rate ×0.85 且每 tick 受 1 点毒素伤害（滋养/侵蚀）",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "自然",
+              "植物",
+              "毒"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "火"
+            ],
+            "mul": 0.8
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_nature_world",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 4,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "poison",
+                "value": 1,
+                "target": "all_enemies",
+                "note": "自然侵蚀"
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "regen",
+                "duration": 2,
+                "target": "all_allies",
+                "note": "滋养（刷新）"
+              },
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 2,
+                "mode": "delta",
+                "duration": 1,
+                "target": "all_allies",
+                "note": "滋养（刷新）"
+              },
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "mode": "mul",
+                "value": 0.85,
+                "duration": 1,
+                "target": "all_enemies",
+                "note": "自然迟缓（刷新）；mode mul 待内核裁定，同罪犯 GAUGE_RATE_MUL_STAT_MODE"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "自然",
+              "植物",
+              "毒"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "火"
+            ],
+            "mul": 0.8
+          }
+        ]
+      },
+      "tags": [
+        "自然"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s0_mother_nest",
+      "name": "万物母巢",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "母亲",
+      "rarity": "legendary",
+      "axis": "healing",
+      "flagship": true,
+      "lore": "序列0 母亲 —— \"『母亲』权柄：孕育万物\"；\"『大地』权柄：生命起源、万物母巢、最后回归之地\"",
+      "flavor": "你是一切开始的地方，也是一切结束的地方。从你这里出去的，最后都会回来。",
+      "describe": "战斗开始时：全体友军生命上限 +8（整场）；己方单位登场时获得 3 点护盾；己方单位死亡时全体友军回复 2 点生命、自身能量 +1。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mother_nest",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 8,
+          "mode": "delta",
+          "duration": null,
+          "target": "all_allies",
+          "note": "③ 起源"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mother_nest",
+          "name": "万物母巢",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_spawn",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "shield",
+                  "value": 3,
+                  "target": "target",
+                  "note": "① 孕育：登场给护盾"
+                }
+              ],
+              "note": "全局 on_spawn 监听（执行参数 §2.1）"
+            },
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "all_allies",
+                  "note": "② 回归：死亡反哺生者"
+                },
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "A22：治疗走 heal 原语"
+                }
+              ],
+              "note": "全局 on_death 监听"
+            }
+          ],
+          "note": "H1 + H11；本途径唯一同时踩住「生」与「死」两端的被动"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s0_last_return",
+      "name": "最后回归之地",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "母亲",
+      "rarity": "legendary",
+      "axis": "blight",
+      "flagship": true,
+      "lore": "序列0 母亲 —— \"『大地』权柄：最后回归之地\"",
+      "flavor": "你敲了敲地面，说了句「回来吧」。它们的生命开始往土里淌；而你们这边倒下过的，正从土里往外爬。",
+      "describe": "全体敌人受到 6 点无元素伤害；若己方有已死亡单位，以 40% 生命复活最近死亡的一名己方单位（落己方队尾）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 6,
+              "target": "all_enemies"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "dead_count",
+                "side": "ally",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "spawn",
+                  "reviveOf": "last_dead_ally",
+                  "hpRatio": 0.4,
+                  "position": "tail",
+                  "note": "G4 reviveOf + 锚 last_dead_ally + C5"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_planter_s0_nature_authority",
+      "name": "自然权柄",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "母亲",
+      "rarity": "legendary",
+      "axis": "blight",
+      "flagship": false,
+      "lore": "序列0 母亲 —— \"『自然』权柄：现实世界的一部分，难被摧毁封印\"",
+      "flavor": "你不是站在自然里——你就是自然的一部分。要摧毁你，得先摧毁一整片大陆。",
+      "describe": "战斗开始时获得「自然权柄」：敌方施加于你的状态时长 ×0.5；你身上的状态不可被驱散；每场一次，死亡时以 30% 生命原地复活。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "nature_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "nature_authority",
+          "name": "自然权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "durationModifier": {
+              "scope": "incoming",
+              "mode": "mul",
+              "value": 0.5
+            },
+            "dispelableOverride": {
+              "value": false,
+              "scope": "self"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "spawn",
+                  "reviveOf": "self",
+                  "hpRatio": 0.3,
+                  "position": "original",
+                  "oncePerBattle": true,
+                  "note": "③ 死亡不是终点；稿面 charges:1 折为 spawn.oncePerBattle"
+                }
+              ]
+            }
+          ],
+          "note": "H14 incoming + H8 + G4；复活优先级链见编队上下文 §十（H23）"
+        }
+      ],
+      "tentative": true
+    }
+  ]
+}

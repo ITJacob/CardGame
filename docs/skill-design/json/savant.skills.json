@@ -1,0 +1,2193 @@
+{
+  "pathwayId": "savant",
+  "pathwayName": "通识者",
+  "sourceFile": "../通识者途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "lore": {
+      "symbol": "🜁",
+      "name": "通识"
+    },
+    "craft": {
+      "symbol": "🜂",
+      "name": "造物"
+    },
+    "astral": {
+      "symbol": "🜃",
+      "name": "星律"
+    },
+    "civilization": {
+      "symbol": "🜄",
+      "name": "文明"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_savant_s9_awaken_memory",
+      "name": "唤醒记忆",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "通识者",
+      "rarity": "common",
+      "axis": "lore",
+      "flagship": true,
+      "lore": "序列9 通识者 —— \"'唤醒记忆'：记起看过的所有知识\"",
+      "flavor": "你合上眼，把读过的每一页在脑中重新翻开一遍——那些知识一直都在，只是需要被叫醒。",
+      "describe": "战斗开始时，自身能量 +8、能量上限 +5，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 8,
+          "mode": "delta",
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "energy_max",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s9_nitroglycerin",
+      "name": "硝酸甘油",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "通识者",
+      "rarity": "common",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列9 通识者 —— \"精通王水、硝酸甘油、齿轮装置等\"",
+      "flavor": "你扔出一小管摇晃过的硝酸甘油——它炸开的火光，比任何咒语都直白。",
+      "describe": "对一名敌人造成 5 点火焰伤害，并点燃 3 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 5
+            },
+            {
+              "type": "mount_status",
+              "statusId": "burn",
+              "duration": 3
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 5 → 7 → 9",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "fire",
+                "value": 9
+              },
+              {
+                "type": "mount_status",
+                "statusId": "burn",
+                "duration": 3
+              }
+            ]
+          },
+          {
+            "name": "震荡",
+            "note": "爆炸击退（G8 合规：不调 move，只推行动条）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "fire",
+                "value": 5
+              },
+              {
+                "type": "mount_status",
+                "statusId": "burn",
+                "duration": 3
+              },
+              {
+                "type": "modify_resource",
+                "resource": "gauge.current",
+                "value": -25,
+                "mode": "delta"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s9_aqua_regia",
+      "name": "王水",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "通识者",
+      "rarity": "common",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列9 通识者 —— \"精通王水、硝酸甘油、齿轮装置等\"",
+      "flavor": "你泼出那瓶能溶解黄金的液体——护甲、机关、外壳，在它面前都只是待溶的金属。",
+      "describe": "对一名敌人造成 3 点毒素伤害，并摧毁其 5 点护甲。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "armor_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 3
+            },
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": -5,
+              "mode": "delta",
+              "note": "溶解金属 = 消耗当前护甲值"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s9_gear_device",
+      "name": "齿轮装置",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "通识者",
+      "rarity": "common",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列9 通识者 —— \"精通王水、硝酸甘油、齿轮装置等\"",
+      "flavor": "你甩出一串咬合的齿轮，它们缠住敌人的手脚，让它慢了整整半拍。",
+      "describe": "对一名敌人造成 2 点物理伤害，行动条 -30。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -30,
+              "mode": "delta",
+              "note": "G8 合规：不调 move，只推行动条"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s8_forbidden_lore",
+      "name": "遗迹禁忌知识",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "考古学家",
+      "rarity": "common",
+      "axis": "lore",
+      "flagship": false,
+      "lore": "序列8 考古学家 —— \"拥有历史知识、野外生存知识、遗迹禁忌知识\"",
+      "flavor": "你知道的那些东西，本不该被人知道——但也正因如此，没有什么精神上的把戏能真正吓到你。",
+      "describe": "战斗开始时，自身精神抗性 +20%、毒素抗性 +10%，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:poison",
+          "value": 10,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s8_wild_physique",
+      "name": "荒野体魄",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "考古学家",
+      "rarity": "common",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列8 考古学家 —— \"足够强壮的体魄\" + \"野外生存知识\"",
+      "flavor": "长年在废墟与荒野里刨土的人，身体早就不是书房里的那具了。",
+      "describe": "战斗开始时，自身生命上限 +10，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 10,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "hp_max 截断语义已拍板（效果参数 §1.1）：生效即截断、回滚不补足；稿面「若引擎不自动补足则追加 modify_resource(hp,+10)」按此口径不追加"
+      ]
+    },
+    {
+      "id": "skill_savant_s8_excavation",
+      "name": "考古发掘",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "考古学家",
+      "rarity": "common",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列8 考古学家 —— \"拥有历史知识……\"（从遗迹中获取非凡物品）",
+      "flavor": "你的铲子磕到了什么硬物——一具沉睡千年的古物傀儡，抖落尘土站了起来。",
+      "describe": "在己方队尾召唤一具古物傀儡（40% 生命）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_relic",
+          "hpRatio": 0.4,
+          "position": "tail",
+          "target": "self",
+          "note": "F42 已登记，单位数据走 H1 基线模板"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "A2 铁律：召唤物登场 fire on_spawn，绝不挂任何开局语义"
+      ]
+    },
+    {
+      "id": "skill_savant_s8_ritual_magic",
+      "name": "仪式魔法",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "考古学家",
+      "rarity": "common",
+      "axis": "lore",
+      "flagship": false,
+      "lore": "序列8 考古学家 —— \"能勉强应用仪式魔法\"",
+      "flavor": "你用炭笔在脚下画了半圈残缺的仪式——它不完美，但足够让同伴的手更稳一点、刀更快一点。",
+      "describe": "使一名友军攻击 +2，持续 4 tick。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": 4
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s7_appraisal",
+      "name": "鉴定",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "鉴定师",
+      "rarity": "uncommon",
+      "axis": "lore",
+      "flagship": false,
+      "lore": "序列7 鉴定师 —— \"快速鉴定神奇物品，不用占卜推理\" / \"直觉把握超凡物品的能力和问题，规避危险使用\"",
+      "flavor": "你扫了一眼就报出它的来路、能力与致命缺陷——那件被它当作依凭的东西，顿时失去了光泽。",
+      "describe": "驱散一名敌人 1 个增益状态，并使其易伤 4 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 4
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s7_hazard_ward",
+      "name": "危险规避",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "鉴定师",
+      "rarity": "uncommon",
+      "axis": "lore",
+      "flagship": false,
+      "lore": "序列7 鉴定师 —— \"规避危险使用\"（直觉把握超凡物品的问题，从而规避危险）",
+      "flavor": "你早就看出哪里会出事——前两次落在你身上的重击，都被你提前挪开了半寸。",
+      "describe": "战斗开始时获得「危险规避」：可抵挡 2 次伤害（每次受到的伤害 ×0.5，消耗 1 层，归零卸载），持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "hazard_ward",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "hazard_ward",
+          "name": "危险规避",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 2,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_damage",
+                  "mul": 0.5,
+                  "target": "self",
+                  "note": "该次伤害 ×0.5（R5 裁决：阻挡语义走 charges）"
+                }
+              ],
+              "note": "每响应一次 charges -1，归零卸载（C6）"
+            }
+          ],
+          "note": "C6 charges 次数型 + H3 减伤母版；不设 duration 以规避 G15-b 时间尺度冲突"
+        }
+      ],
+      "frameworkFlags": [
+        {
+          "code": "HAZARD_WARD_MODIFY_DAMAGE",
+          "note": "hazard_ward 触发器载荷使用扩展原语 modify_damage（scope: taken ×0.5，R5 裁决：阻挡语义走 charges），登记待引擎落地确认",
+          "landed": false
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s6_mechanical_marvel",
+      "name": "机械奇物",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "机械专家",
+      "rarity": "uncommon",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列6 机械专家 —— \"能制造机械奇物和非凡物品\"",
+      "flavor": "你从随身的零件箱里倒出一堆废铜烂铁，三两下拧成一台会走、会站的机械。",
+      "describe": "在己方队尾召唤一台机械造物（55% 生命），站得住、可被造物系技能定向服务。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_automaton",
+          "hpRatio": 0.55,
+          "position": "tail",
+          "target": "self",
+          "note": "F43 已登记，单位数据走 H1 基线模板"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "非凡物品",
+            "note": "不召唤单位，改为给一名友军装备（覆盖原著\"非凡物品\"半句）",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "relic_armament",
+                "duration": 6,
+                "target": "target",
+                "note": "目标改为友军（Manual / atk_desc）"
+              }
+            ]
+          },
+          {
+            "name": "弑神之器",
+            "note": "在非凡物品基础上追加（序列4 原著\"高序列材料\"）",
+            "statusDefOverride": {
+              "effects": [
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": 4,
+                  "mode": "delta",
+                  "duration": 6,
+                  "target": "self"
+                },
+                {
+                  "type": "modify_stat",
+                  "stat": "armor",
+                  "value": 5,
+                  "mode": "delta",
+                  "duration": 6,
+                  "target": "self"
+                },
+                {
+                  "type": "modify_stat",
+                  "stat": "resist:mental",
+                  "value": 30,
+                  "mode": "delta",
+                  "duration": 6,
+                  "target": "self"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "statusDefs": [
+        {
+          "id": "relic_armament",
+          "name": "非凡物品",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 4,
+              "mode": "delta",
+              "duration": 6,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 5,
+              "mode": "delta",
+              "duration": 6,
+              "target": "self"
+            }
+          ],
+          "note": "退化方案：不建状态，直接用 modify_stat + modify_resource 两条表达（代价：不可被驱散、无状态图标）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "A2 合规：不挂任何开场光环"
+      ]
+    },
+    {
+      "id": "skill_savant_s6_mechanic_repair",
+      "name": "机械维修",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "机械专家",
+      "rarity": "uncommon",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列6 机械专家 —— \"能制造机械奇物\"（本稿明确引申：能造即能养）",
+      "flavor": "你掀开它的外壳，用扳手和焊枪在火花里把它重新拼回能站的样子。",
+      "describe": "治疗一名造物单位 5 点生命。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single",
+          "filter": {
+            "unitType": [
+              "CONSTRUCT"
+            ]
+          }
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "heal",
+          "value": 5
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "原著引申（原著只写\"能制造\"），标注存疑；A22：治疗必须走 heal 原语",
+        "CONSTRUCT unitType + tags 细分（mechanical/relic/homunculus）已落编队参数 §1.2b（F62 扩展，本稿新增项 #20）"
+      ]
+    },
+    {
+      "id": "skill_savant_s6_craft_master",
+      "name": "制造大师",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "机械专家",
+      "rarity": "uncommon",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列6 机械专家 —— \"'制造大师'：成形的超凡物品负面影响低、效果好\"",
+      "flavor": "出自你手的东西，总是比图纸上更好一点——更硬、更利，也更不容易出岔子。",
+      "describe": "你召唤的造物登场时攻击 +2、生命上限 +6、护甲 +2（随 spawn 载荷结算，不占触发点）。",
+      "hook": "on_spawn",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "target",
+              "note": "target = 本次登场造物（anchor: spawned_unit）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 6,
+              "mode": "delta",
+              "duration": null,
+              "target": "target"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": 2,
+              "mode": "delta",
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "实现走 F54 spawn.companionBuff（效果参数 §1.1）：增益挂在 spawn 载荷上登场即结算，不挂 on_spawn 触发点（A2 歧义规避）；hook 字段仅作归类占位"
+      ]
+    },
+    {
+      "id": "skill_savant_s9_practice_perfect",
+      "name": "熟能生巧",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "通识者",
+      "rarity": "common",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列9 通识者 —— \"记忆、学习和实践能力非凡化\"（实践 → 越做越熟）",
+      "flavor": "每做成一件东西，你的手就更稳一分——下一次，你会更快。",
+      "describe": "你召唤的造物每次登场，你回复 2 点能量（每场最多 3 次）。",
+      "hook": "on_spawn",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 2,
+          "mode": "delta",
+          "target": "self",
+          "maxTriggersPerBattle": 3,
+          "note": "寻址施法者用 F56 casterId"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "改道实现（本稿新增项 #7 销项）：不新建 on_summon 触发点，能量回流直接追加在 spawn 载荷效果链上寻址施法者（F56）；每场限 3 次走 maxTriggersPerBattle（新增项 #8，编队参数 §1.1b）",
+        "源稿序列行明写「归入精良档是刻意的（强度随造物频率放大，与序列位阶脱钩）」，但 ddd 稀有度映射（序列9-8=common）无例外通道，归一为 common 并在本条留痕；若内核为稀有度开脱钩例外，可回改 uncommon"
+      ]
+    },
+    {
+      "id": "skill_savant_s5_star_deduction",
+      "name": "星轨推演",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "天文学家",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列5 天文学家 —— （观星与推演；\"虚假星象\"的能力前提）",
+      "flavor": "你夜夜推演星轨，偶尔能从繁杂的轨迹里读出一点有用的东西——不一定每次都有。",
+      "describe": "你每次行动开始时有 40% 概率回复 2 点能量。",
+      "hook": "on_turn_start",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 2,
+          "mode": "delta",
+          "target": "self",
+          "condition": {
+            "kind": "chance",
+            "p": 0.4
+          },
+          "note": "R3 登记 / R4 单次抽样 / R5 非伤害维度（回能，合规）；期望 0.8 能量/回合"
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "ON_TURN_START_NOT_FIRED",
+          "note": "G15：on_turn_start 引擎从未 fire，当前不生效；修 G15 后自动闭环",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_savant_s5_false_astral",
+      "name": "虚假星象",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "天文学家",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列5 天文学家 —— \"'虚假星象'：伪造星空迷惑/干扰占星，百米内引起现象\"",
+      "flavor": "你为它伪造了一整片星空——它抬头，看见的星座指向错误的方向，于是一拳砸向了空处。",
+      "describe": "对一名敌人造成 2 点精神伤害，并使其陷入「虚假星象」4 tick：接下来 2 次攻击打向空处。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            },
+            {
+              "type": "mount_status",
+              "statusId": "false_astral",
+              "duration": 4
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "false_astral",
+          "name": "虚假星象",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 2,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty",
+                "note": "认错目标，打空（C7 ✅ 已验证）"
+              }
+            ]
+          },
+          "note": "C6 charges（迷惑两次）+ C7 behaviorModifiers；与愚者制造幻觉同族（C7），F 组合并候选 3 归并后作同母版参数档"
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s5_star_blessing",
+      "name": "星之祝福",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "天文学家",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列5 天文学家 —— \"'星之祝福'：引来星光改变重力\"",
+      "flavor": "星光落在同伴肩上，重力轻了几分——它抬起脚，比以往任何时候都更快。",
+      "describe": "使一名友军行动条速率 +8，持续 5 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_asc"
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 8,
+          "mode": "delta",
+          "duration": 5
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "G5/G6 合规：改速率源属性，绝不写 gauge.current 自推/推友军（INV-S5：改 gauge.rate 允许）"
+      ],
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge_rate 按 modify_stat(gauge.rate) 表达持续修正，ddd 将 gauge.* 列于 modify_resource 键族，待内核裁定归一",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_savant_s5_star_curse",
+      "name": "星之诅咒",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "天文学家",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列5 天文学家 —— \"'星之诅咒'：星光射线带来衰弱/变异/创伤\"",
+      "flavor": "一道看不见的星光射线穿透了它——伤口不深，却在持续溃烂、扭曲，而它连挥刀的力气都在流失。",
+      "describe": "对一名敌人造成 4 点精神伤害，并使其衰弱 / 创伤 4 tick（攻击 -3、受伤 ×1.15）；35% 概率额外使其易伤。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "astral_curse",
+              "duration": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 4,
+              "condition": {
+                "kind": "chance",
+                "p": 0.35
+              },
+              "note": "变异 = 不一定发生；R3 登记 / R5 非伤害维度"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "astral_curse",
+          "name": "星之诅咒",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -3,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self",
+              "note": "衰弱"
+            }
+          ],
+          "modifiers": {
+            "damage_taken_mul": 1.15,
+            "note": "创伤：伤口持续恶化"
+          },
+          "note": "H2/H3 复合 debuff 母版；与 F 组合并候选 4 同源"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s4_transmutation",
+      "name": "炼成",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "炼金术士",
+      "rarity": "rare",
+      "axis": "craft",
+      "flagship": true,
+      "lore": "序列4 炼金术士 —— \"'炼成'（核心）：就地取材制造临时人偶和器物\"",
+      "flavor": "你抓起脚下的碎石与铁屑，在掌心里捏成一具人形——它睁开眼，认你为主人，但它不会活太久。",
+      "describe": "在己方队尾炼成一具临时人偶（50% 生命），6 tick 后自行崩解。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_homunculus",
+          "hpRatio": 0.5,
+          "position": "tail",
+          "lifetime": 6,
+          "target": "self",
+          "note": "临时造物：lifetime 到期自动消散（走 on_remove 消散路径）"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "炼成·器物",
+            "note": "不造人偶，改为给一名友军临时器物（覆盖原著\"人偶和器物\"的器物半句）",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "improvised_tool",
+                "duration": 5,
+                "target": "target"
+              }
+            ]
+          },
+          {
+            "name": "炼成·群偶",
+            "note": "一次炼成两具人偶（依赖 G3 Repeat 运行时）",
+            "effects": [
+              {
+                "op": "repeat",
+                "count": 2,
+                "steps": [
+                  {
+                    "type": "spawn",
+                    "unitId": "unit_homunculus",
+                    "hpRatio": 0.35,
+                    "position": "tail",
+                    "lifetime": 6,
+                    "target": "self"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "statusDefs": [
+        {
+          "id": "improvised_tool",
+          "name": "即兴器物",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 2,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 5,
+              "duration": 4,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s4_ensoul",
+      "name": "注入灵魂",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "炼金术士",
+      "rarity": "rare",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列4 炼金术士 —— \"能为自己制造的物品注入灵魂，给予生命\"",
+      "flavor": "你把自己的一缕灵性按进它胸口的凹槽——它不再是零件了：它会疼，也会在散架前替你咬下一块肉。",
+      "describe": "点活一名造物：攻击 +3、生命上限 +5（永久）；它死亡时对相邻敌方造成 5 点物理伤害（亡语）。只能对造物使用。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single",
+          "filter": {
+            "unitType": [
+              "CONSTRUCT"
+            ]
+          }
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "ensouled",
+          "duration": null
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "ensouled",
+          "name": "注入灵魂",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 5,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 5,
+                  "target": "target",
+                  "note": "亡语：散架时仍在撕咬；目标域 = ADJACENT_ENEMY（共享内核 §一 filter.adjacency）"
+                }
+              ]
+            }
+          ],
+          "note": "duration:null = 灵魂永久；不可驱散（灵魂已注入）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s4_soul_forge",
+      "name": "灵魂熔炉",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "炼金术士",
+      "rarity": "rare",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列4 炼金术士 —— （\"炼成 / 就地取材\"的本稿引申：回收材料）",
+      "flavor": "它散架的那一刻，你伸手接住了还在发烫的残骸——材料不该被浪费。",
+      "describe": "你召唤的造物每次死亡，你回复 4 点能量（每场最多 3 次）。",
+      "hook": "on_death",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 4,
+          "mode": "delta",
+          "target": "self",
+          "maxTriggersPerBattle": 3,
+          "note": "F56 寻址施法者；限定\"由你召唤的造物\"（casterOwned 过滤）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "本稿引申（原著只写\"就地取材\"的取材端，未写回收），标注存疑",
+        "退化方案：on_death 挂在造物身上（走 F54 companionBuff 亡语载荷），同样依赖 F56"
+      ]
+    },
+    {
+      "id": "skill_savant_s3_drain",
+      "name": "汲取",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "奥秘学者",
+      "rarity": "epic",
+      "axis": "civilization",
+      "flagship": false,
+      "lore": "序列3 奥秘学者 —— \"'汲取'：从 5 公里内生物抽取生命力\"",
+      "flavor": "你伸出手——五公里内没有谁能躲开。它的生命力顺着看不见的管道流进你的身体，而你甚至没有靠近它。",
+      "describe": "抽取一名敌人 5 点生命归于自身，并使其攻击 -2（4 tick）。无视距离，可任选目标。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "drain",
+              "resource": "hp",
+              "value": 5,
+              "note": "敌方 → 自身（drain 默认 hp 转移给施法者，效果参数 §1.1）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 4,
+              "note": "被抽走生命力而衰弱"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s3_disintegration",
+      "name": "解离",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "奥秘学者",
+      "rarity": "epic",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列3 奥秘学者 —— \"'解离'：发射光芒破坏物品结构，分解为屑末\"",
+      "flavor": "一道白光打在它的护甲上——那层金属没有碎裂，而是像被抹去了定义一样，化作一地粉末。",
+      "describe": "对一名敌人造成 3 点物理伤害，直接摧毁其护盾，并击碎 8 点护甲。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "armor_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3
+            },
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "shield"
+              },
+              "note": "dispel.filter.statusId 精确点名护盾（效果参数 §一）"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": -8,
+              "mode": "delta"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s3_knowledge_fae",
+      "name": "知识妖精",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "奥秘学者",
+      "rarity": "epic",
+      "axis": "civilization",
+      "flagship": false,
+      "lore": "序列3 奥秘学者 —— \"'知识妖精'：转化为知识进入目标心智体\"",
+      "flavor": "你把自己拆解成一段纯粹的知识，钻进它的脑海——它看不见你，而它每挨一下，你都读得更清楚一点。",
+      "describe": "自身化为知识 3 tick（敌方单体技能无法选中你、你造成的伤害视为精神），并与一名敌人建立链接 4 tick：它每次受击你回复 2 点能量。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "knowledge_fae",
+              "duration": 3,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "fae_intrusion",
+              "duration": 4
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "knowledge_fae",
+          "name": "知识妖精",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            },
+            "damageElementOverride": "mental"
+          },
+          "note": "H5 潜行母版 + damageElementOverride（效果参数 §1.1 行 33）：期间你已是\"知识\"，伤害元素视为 mental"
+        },
+        {
+          "id": "fae_intrusion",
+          "name": "妖精入脑",
+          "category": [
+            "link",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 2,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "目标受击 → 施法者回能（F56 casterId 寻址）"
+                }
+              ]
+            }
+          ],
+          "note": "F56 寻址施法者，与 F21 astral_mark 同构母版"
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s3_dominion",
+      "name": "环境掌控",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "奥秘学者",
+      "rarity": "epic",
+      "axis": "civilization",
+      "flagship": false,
+      "lore": "序列3 奥秘学者 —— \"'环境掌控者'\"",
+      "flavor": "这一片战场突然开始与你合作：风向、地形、脚下的碎石，都在替你绊住它们。",
+      "describe": "降临「掌控之境」3 回合：敌方每 tick 被挂易伤 2 tick、行动条速率 ×0.85，己方行动条速率 ×1.1；「机械 / 知识」标签卡效果 ×1.2。自身迷失值 +1。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_dominion",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_dominion",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：敌方单位每 tick 刷新易伤 2t（破绽毕露）+ gauge_rate ×0.85（地形拖慢）；己方单位 gauge_rate ×1.1（风向相助）——双向：绊敌 / 助己",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "机械",
+              "知识"
+            ],
+            "mul": 1.2
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_dominion",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "vulnerable",
+                "duration": 2,
+                "target": "all_enemies",
+                "note": "暴露破绽（每 tick 刷新）"
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 0.85,
+                "mode": "mul",
+                "duration": 1,
+                "target": "all_enemies",
+                "note": "地形拖慢（1t 刷新）"
+              },
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 1.1,
+                "mode": "mul",
+                "duration": 1,
+                "target": "all_allies",
+                "note": "风向相助（1t 刷新）"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "机械",
+              "知识"
+            ],
+            "mul": 1.2
+          }
+        ]
+      },
+      "tags": [
+        "机械",
+        "知识"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "2026-09-08 由 Zone 升格为界域牌（双向性按 brief §10.2 补齐：v0.2 只压敌方，现补己方 ×1.1 受益面）；Zone 形态废止",
+        "域内 gauge_rate 按 ddd 口径应走 modify_resource(gauge.rate)，此处沿用 modify_stat(gauge.rate) 写法待裁定"
+      ]
+    },
+    {
+      "id": "skill_savant_s2_law_edit",
+      "name": "规律权柄",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "知识导师",
+      "rarity": "epic",
+      "axis": "astral",
+      "flagship": true,
+      "lore": "序列2 知识导师 —— \"'规律'权柄：改变物理规律（燃烧未必有火焰等）\"",
+      "flavor": "你改写了这里的一条规律——火，从此不再必然灼烧。",
+      "describe": "使全体友军获得「规律改写」5 tick：受到指定元素的伤害减半（构筑时选定元素：无焰=火 / 不蚀=毒 / 不流=冰 / 不击=雷）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "law_edit",
+          "duration": 5,
+          "target": "all_allies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "law_edit",
+          "name": "规律改写",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "modifiers": {
+            "damage_taken_mul": {
+              "value": 0.5,
+              "filter": {
+                "element": [
+                  "$variant.element"
+                ]
+              },
+              "note": "仅对变体选定元素生效（H4 dynamic 条件乘区，元素 filter 维度 ✅）"
+            }
+          },
+          "slots": {
+            "element": "构筑时选定（fire/poison/ice/shock）"
+          },
+          "note": "退化方案为无条件 damage_taken_mul 0.75（失去\"改写某条具体规律\"的语义）"
+        }
+      ],
+      "variants": [
+        {
+          "id": "no_flame",
+          "name": "规律·无焰",
+          "note": "火元素伤害减半",
+          "effects": []
+        },
+        {
+          "id": "no_corrosion",
+          "name": "规律·不蚀",
+          "note": "毒元素伤害减半",
+          "effects": []
+        },
+        {
+          "id": "no_flow",
+          "name": "规律·不流",
+          "note": "冰元素伤害减半",
+          "effects": []
+        },
+        {
+          "id": "no_strike",
+          "name": "规律·不击",
+          "note": "雷元素伤害减半",
+          "effects": []
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s2_analysis_authority",
+      "name": "解析权柄",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "知识导师",
+      "rarity": "epic",
+      "axis": "lore",
+      "flagship": false,
+      "lore": "序列2 知识导师 —— \"'解析'权柄增强：看到天使本质\"",
+      "flavor": "没有什么能在你面前藏住它的本质——伪装的本质是信息，而你恰好最擅长读信息。",
+      "describe": "战斗开始时获得「解析权柄」：敌方隐匿 / 不可选中类状态对你无效，你对持有增益的目标造成的伤害 ×1.25，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "analysis_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "analysis_authority",
+          "name": "解析权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "pierceConceal": true,
+            "damage_mul": {
+              "value": 1.25,
+              "filter": {
+                "targetHasCategory": [
+                  "buff"
+                ]
+              },
+              "note": "独立乘区，刻意不占 vulnerable 的 1.3（避免叠乘；H42 同向取最高）"
+            }
+          },
+          "note": "C8 识破分支（§四）；与愚者灵体之线同族共用实现"
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s2_learning_authority",
+      "name": "学习权柄",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "知识导师",
+      "rarity": "epic",
+      "axis": "lore",
+      "flagship": false,
+      "lore": "序列2 知识导师 —— \"'学习'权柄（弱化）\"",
+      "flavor": "你学得比谁都快——战斗拖得越久，你越清楚该怎么打。",
+      "describe": "战斗开始时，自身能量恢复 +0.3/tick，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "energy_regen",
+          "value": 0.3,
+          "mode": "delta",
+          "duration": null,
+          "target": "self",
+          "note": "G14：单位 per tick，不写\"每回合\""
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s2_creation_authority",
+      "name": "制造权柄",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "知识导师",
+      "rarity": "epic",
+      "axis": "craft",
+      "flagship": false,
+      "lore": "序列2 知识导师 —— \"'制造'权柄（弱化）\"",
+      "flavor": "不需要图纸，不需要材料——你说要有，于是就有了两台。",
+      "describe": "在己方队尾凭空制造两台机械造物（各 45% 生命）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "op": "repeat",
+          "count": 2,
+          "steps": [
+            {
+              "type": "spawn",
+              "unitId": "unit_automaton",
+              "hpRatio": 0.45,
+              "position": "tail",
+              "target": "self",
+              "note": "F43 unit_automaton + G3 Repeat 动态段数"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "联动：一次召唤两台 → 熟能生巧结算 2 次（受每场 3 次上限约束）"
+      ]
+    },
+    {
+      "id": "skill_savant_s2_mentor",
+      "name": "导师",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "知识导师",
+      "rarity": "epic",
+      "axis": "civilization",
+      "flagship": false,
+      "lore": "序列2 知识导师 —— \"'导师'\"",
+      "flavor": "你没有替它出手，你只是指了指——它便明白了一直没想通的那一招。",
+      "describe": "使一名友军伤害 ×1.2 并回复 3 点能量，持续 5 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "tutored",
+          "duration": 5
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "tutored",
+          "name": "受教",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "modifiers": {
+            "damage_mul": 1.2
+          },
+          "triggers": [
+            {
+              "event": "on_apply",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 3,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "顿悟回能"
+                }
+              ]
+            }
+          ],
+          "note": "H3 参数化母版；与 F14 tutelage（阅读者）同源，本条为更高序列档位（5t + 回能）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s1_civilization_scroll",
+      "name": "文明图卷",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "启蒙者",
+      "rarity": "legendary",
+      "axis": "civilization",
+      "flagship": true,
+      "lore": "序列1 启蒙者 —— \"可展现完整的文明图卷\"",
+      "flavor": "你在战场中央展开一幅完整的文明图卷：城市、田野、熔炉与学堂。同伴站在图上，忽然知道自己为何而战；而敌人脚下那些野蛮的、混乱的东西，开始自行崩解。",
+      "describe": "全体友军攻击 +3、防御 +3（6 tick），并驱散全体敌方各 1 个增益状态。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 6,
+              "target": "all_allies"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 3,
+              "mode": "delta",
+              "duration": 6,
+              "target": "all_allies"
+            },
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              },
+              "target": "all_enemies",
+              "note": "文明对照之下野蛮自行崩解（混沌沉淀秩序支）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s1_ruinous_rebirth",
+      "name": "毁灭新生",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "启蒙者",
+      "rarity": "legendary",
+      "axis": "civilization",
+      "flagship": false,
+      "lore": "序列1 启蒙者 —— \"'文明'权柄：让混沌沉淀秩序、毁灭焕发新生、黑暗迸发光芒\"",
+      "flavor": "文明从不畏惧终结——废墟之上，你的同伴重新站了起来。",
+      "describe": "治疗全体友军 8 点生命；若存在已死亡的友军，复活最近死亡者（40% 生命，原坐标）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "heal",
+              "value": 8,
+              "target": "all_allies"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "dead_count",
+                "side": "ally",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "spawn",
+                  "reviveOf": "last_dead_ally",
+                  "hpRatio": 0.4,
+                  "position": "original",
+                  "note": "G4 reviveOf：寻址死者用锚点 last_dead_ally（共享内核 §一）；复活不新增第 10 原语"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "退化方案（稿面建议先上）：去掉复活分支，改为 heal(12) 全体 + 驱散友军全体 1 个 debuff",
+        "「黑暗迸发光芒」支未单独立项，稿面建议作本卡变体（对敌方全体 mental 5 伤 + 驱散隐匿）"
+      ]
+    },
+    {
+      "id": "skill_savant_s1_enlightenment",
+      "name": "教化权柄",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "启蒙者",
+      "rarity": "legendary",
+      "axis": "civilization",
+      "flagship": false,
+      "lore": "序列1 启蒙者 —— \"'教化'权柄：提升目标智慧，给予启迪灵感\"",
+      "flavor": "你点亮了它的脑子——它还是它，但它忽然看懂了眼前这场战斗，甚至想到了你没教过的打法。",
+      "describe": "使一名友军伤害 ×1.25、能量恢复 +0.3/tick、精神抗性 +20，持续 6 tick。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "enlightened",
+          "duration": 6
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "enlightened",
+          "name": "启迪",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "modifiers": {
+            "damage_mul": 1.25
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": 0.3,
+              "mode": "delta",
+              "duration": 6,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": 20,
+              "mode": "delta",
+              "duration": 6,
+              "target": "self"
+            }
+          ],
+          "note": "H3 参数化母版（energy_regen / resist:mental 标准载荷）；与 F14 tutelage 同源"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_savant_s0_perfection_field",
+      "name": "完美之境",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "完美者",
+      "rarity": "legendary",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列0 完美者 —— （\"完美\"：己方趋近完美，敌方显出残缺）",
+      "flavor": "你在战场上写下\"完美\"二字——你的同伴忽然没有短板，而敌人身上每一处将就，都被照了出来。",
+      "describe": "全体友军获得 6 点护盾（5 tick）、行动条速率 +6（5 tick）；全体敌方护甲 -8、行动条速率 -6（5 tick）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 6,
+              "duration": 5,
+              "target": "all_allies"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 6,
+              "mode": "delta",
+              "duration": 5,
+              "target": "all_allies"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": -8,
+              "mode": "delta",
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -6,
+              "mode": "delta",
+              "duration": 5,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "G6/INV-S5 合规：gauge_rate 用速率不用 current；不搬位格碾压，只借\"完美\"概念"
+      ],
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge_rate 写法同星之祝福",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_savant_s0_reality_knowledge",
+      "name": "现实知识",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "完美者",
+      "rarity": "legendary",
+      "axis": "lore",
+      "flagship": false,
+      "lore": "序列0 完美者 —— \"'现实知识'权柄：掌握现实世界全部知识并可修改\"",
+      "flavor": "你知道这个世界全部的图纸——包括你自己那一张。于是你提笔，把上面几个数字改了一下。",
+      "describe": "战斗开始时，自身生命上限 +20、能量上限 +20、攻击 +3，持续整场（改的是基础值，不可驱散）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "energy_max",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 3,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "hp_max 截断语义同荒野体魄（生效即截断、回滚不补足）",
+        "20 血 / 20 能 / 3 攻为明显越线的占位量级，必须优先重定"
+      ]
+    },
+    {
+      "id": "skill_savant_s0_reality_law",
+      "name": "现实规律",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "完美者",
+      "rarity": "legendary",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列0 完美者 —— \"'规律'权柄（偏现实）\"",
+      "flavor": "开战之前，你就已经改写了现实世界里那条与你为敌的规律——从此，这种东西伤不到你的同伴。",
+      "describe": "战斗开始时，全体友军对构筑时选定元素的抗性 +40，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:$buildElement",
+          "value": 40,
+          "mode": "delta",
+          "duration": null,
+          "target": "all_allies",
+          "note": "元素在构筑（派发）时选定，非战斗中选；resist:<元素> 为既有 StatKey"
+        }
+      ],
+      "variants": [
+        {
+          "id": "fire",
+          "name": "现实规律·火",
+          "note": "火抗 +40",
+          "effects": []
+        },
+        {
+          "id": "ice",
+          "name": "现实规律·冰",
+          "note": "冰抗 +40",
+          "effects": []
+        },
+        {
+          "id": "poison",
+          "name": "现实规律·毒",
+          "note": "毒抗 +40",
+          "effects": []
+        },
+        {
+          "id": "shock",
+          "name": "现实规律·雷",
+          "note": "雷抗 +40",
+          "effects": []
+        },
+        {
+          "id": "mental",
+          "name": "现实规律·精神",
+          "note": "精神抗 +40",
+          "effects": []
+        },
+        {
+          "id": "physical",
+          "name": "现实规律·物理",
+          "note": "物理抗 +40",
+          "effects": []
+        },
+        {
+          "id": "water",
+          "name": "现实规律·水",
+          "note": "水抗 +40",
+          "effects": []
+        },
+        {
+          "id": "holy",
+          "name": "现实规律·神圣",
+          "note": "神圣抗 +40",
+          "effects": []
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "BUILD_ELEMENT_RESIST",
+          "note": "modify_stat stat: resist:$buildElement 使用构筑期槽位变量（元素在派发时选定，非战斗中选），槽位变量读取语法待内核确认",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "+40 明显越抗性纪律（±10~20%），为传说档刻意留的占位，需复核；若裁定不越线，建议下调至 +25 并改为仅自身",
+        "变体 ID 需与 progression 派发层约定"
+      ]
+    }
+  ]
+}

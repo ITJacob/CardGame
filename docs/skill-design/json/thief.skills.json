@@ -1,0 +1,2400 @@
+{
+  "pathwayId": "thief",
+  "pathwayName": "偷盗者",
+  "sourceFile": "../偷盗者途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "steal": {
+      "symbol": "🜁",
+      "name": "窃取"
+    },
+    "deceit": {
+      "symbol": "🜂",
+      "name": "欺诈"
+    },
+    "parasite": {
+      "symbol": "🜃",
+      "name": "寄生"
+    },
+    "chrono": {
+      "symbol": "🜄",
+      "name": "时命"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_thief_s9_steal",
+      "name": "窃取",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "偷盗者",
+      "rarity": "common",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列9 偷盗者 —— \"「窃取」：轻松窃取目标口袋内物品\"",
+      "flavor": "你的手从它的口袋里掠过——钱袋没了，而你连它什么时候被划开的都没让它察觉。",
+      "describe": "对一名近战敌人造成 1 点物理伤害，并偷取其 3 点能量归自己。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "energy_desc"
+      },
+      "effects": [
+        {
+          "type": "drain",
+          "resource": "energy",
+          "value": 3,
+          "note": "F49：目标能量不足时按实际值结算、不产生负数"
+        },
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 1
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "窃取强化",
+            "note": "drain(energy) 3→4→5，能量 2→3→4",
+            "effects": [
+              {
+                "type": "drain",
+                "resource": "energy",
+                "value": 5
+              },
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "sharedAcross": [
+        "fool",
+        "apprentice"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s9_nimble_hands",
+      "name": "敏捷之手",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "偷盗者",
+      "rarity": "common",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列9 偷盗者 —— \"「敏捷之手」：提升手腕指头灵活度\"",
+      "flavor": "你的手腕与十指灵活得不像人手——同样的时间里，你总能比别人多摸一次、多出一手。",
+      "describe": "战斗开始时，自身行动条速率 +8，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 8,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge.rate) 表达持续/常驻修正，待内核裁定归一",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_thief_s9_keen_eye",
+      "name": "卓越观察",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "偷盗者",
+      "rarity": "common",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列9 偷盗者 —— \"「卓越观察」：感应 10 米内贵重物品\"",
+      "flavor": "你一眼就看出谁身上带着值钱的东西——躲起来的没用，揣得深的也没用。",
+      "describe": "战斗开始时获得「卓越观察」：敌方隐匿类状态对你无效；你对携带增益或护盾的目标伤害 ×1.25，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "keen_eye",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "keen_eye",
+          "name": "卓越观察",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "detectConceal": true,
+            "damage_mul": {
+              "value": 1.25,
+              "filter": {
+                "anyOf": [
+                  {
+                    "hasCategory": [
+                      "buff"
+                    ]
+                  },
+                  {
+                    "hasStatus": [
+                      "shield"
+                    ]
+                  }
+                ]
+              },
+              "note": "\"携带 ≥1 个 buff 或 shield\"判定；anyOf 组合子待内核确认（与 F52 同族）"
+            }
+          },
+          "note": "识破分支依赖 C8（已落 ddd：共享内核 §四）"
+        }
+      ],
+      "sharedAcross": [
+        "fool"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s8_misdirect",
+      "name": "思维误导",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "诈骗师",
+      "rarity": "common",
+      "axis": "deceit",
+      "flagship": true,
+      "lore": "序列8 诈骗师 —— \"「思维误导」+「精神干扰」\"",
+      "flavor": "你在它脑子里轻轻拨了一下——它挥出的那一击，砍在了它自己以为你站着的地方。",
+      "describe": "使一名敌人被误导 3 tick：它的下一次攻击打空（砍向空位），只被骗一次。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "misdirect",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "misdirect",
+          "name": "思维误导",
+          "category": [
+            "retarget"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty"
+              }
+            ]
+          },
+          "note": "C7 已端到端验证 + C6 charges:1（只被骗一次）；duration 受【魅力口才】+1 加成"
+        }
+      ],
+      "sharedAcross": [
+        "fool"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s8_mind_jam",
+      "name": "精神干扰",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "诈骗师",
+      "rarity": "common",
+      "axis": "deceit",
+      "flagship": false,
+      "lore": "序列8 诈骗师 —— \"「思维误导」+「精神干扰」\"",
+      "flavor": "一串细碎的噪声钻进它的脑袋，它的动作慢了半拍，而那半拍足够你做很多事。",
+      "describe": "对一名敌人造成 2 点精神伤害，并使其行动条进度 -20。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 2
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -20,
+          "mode": "delta"
+        }
+      ],
+      "sharedAcross": [
+        "fool"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s8_micro_read",
+      "name": "微表情",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "诈骗师",
+      "rarity": "common",
+      "axis": "deceit",
+      "flagship": false,
+      "lore": "序列8 诈骗师 —— \"「卓越观察」质变：观察微表情、小动作\"",
+      "flavor": "它肩膀一动你就知道拳要往哪儿落——你侧了半寸，那一击擦着你的衣角过去了。",
+      "describe": "战斗开始时获得「微表情」：每场 3 次，你受到伤害的那一次 ×0.75。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "micro_read",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "micro_read",
+          "name": "微表情",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 3,
+          "modifiers": {
+            "damage_taken_mul": 0.75
+          },
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "$self",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self",
+                  "note": "charges - 1（C6 响应式派发消耗）"
+                }
+              ]
+            }
+          ],
+          "note": "并入 H3 参数化减伤母版（编队参数 §2.4）；与愚者【直觉预感】同源"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s8_silver_tongue",
+      "name": "魅力口才",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "诈骗师",
+      "rarity": "common",
+      "axis": "deceit",
+      "flagship": false,
+      "lore": "序列8 诈骗师 —— \"「魅力」+「口才」：话术提升 + 超凡说服力\"",
+      "flavor": "你说出口的谎，连命运都愿意多信一会儿——它们在你身上留得比别人久。",
+      "describe": "战斗开始时获得「魅力口才」：你施加的减益与控制类状态持续时间 +1 tick，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "silver_tongue",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "silver_tongue",
+          "name": "魅力口才",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "durationModifier": {
+              "scope": "outgoing",
+              "mode": "add",
+              "value": 1,
+              "filter": {
+                "category": [
+                  "debuff",
+                  "control"
+                ]
+              }
+            }
+          },
+          "note": "H14 durationModifier 行（本稿新增项 8，已落 ddd：编队参数 §1.1b）；退化方案：技能数据写死 +1 tick"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s7_disillusion",
+      "name": "解析幻象",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "解密学者",
+      "rarity": "uncommon",
+      "axis": "deceit",
+      "flagship": false,
+      "lore": "序列7 解密学者 —— \"能解析梦境、幻象等谜团，找出敌人方位\"",
+      "flavor": "你一眼看穿了那层幻象的织法——它散了，而藏在后面的东西也一并露了出来。",
+      "describe": "驱散一名敌人的 2 个增益或护盾，造成 1 点精神伤害，并使其隐匿类状态对你无效 2 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "dispelable": true,
+                "category": [
+                  "buff"
+                ],
+                "count": 2,
+                "statusId": [
+                  "shield"
+                ]
+              }
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1
+            },
+            {
+              "type": "mount_status",
+              "statusId": "disillusioned",
+              "duration": 2
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "disillusioned",
+          "name": "被识破",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "concealInvalidForCaster": true
+          },
+          "note": "该单位身上的隐匿/潜行类状态对施法者无效（C8 识破分支）"
+        }
+      ],
+      "sharedAcross": [
+        "fool"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s7_locator",
+      "name": "找出方位",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "解密学者",
+      "rarity": "uncommon",
+      "axis": "deceit",
+      "flagship": false,
+      "lore": "序列7 解密学者 —— \"…找出敌人方位\"",
+      "flavor": "你总能算出它在哪儿——前排挡不住你，阴影也藏不住它。",
+      "describe": "战斗开始时获得「找出方位」：你的单体技能选目标时忽略前排限制与守护拦截，隐匿单位仍在你的候选池内，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "locator",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "locator",
+          "name": "找出方位",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "ignoreFrontline": true,
+            "ignoreGuardIntercept": true,
+            "seeConceal": true
+          },
+          "note": "依赖 C8 候选池过滤（已落 ddd：共享内核 §四）；「无视前排」若引擎为硬编码需另开入口，待确认"
+        }
+      ],
+      "sharedAcross": [
+        "fool"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s7_spirit_intuition",
+      "name": "灵性直觉",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "解密学者",
+      "rarity": "uncommon",
+      "axis": "deceit",
+      "flagship": false,
+      "lore": "序列7 解密学者 —— \"神秘学知识掌握、灵性直觉增强 / 观察、联想和推导能力提升\"",
+      "flavor": "你的灵性在危险落下之前就先紧了一下——那两次，你都提前让开了。",
+      "describe": "战斗开始时获得「灵性直觉」：每场 2 次，你受到伤害的那一次 ×0.6。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_intuition",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_intuition",
+          "name": "灵性直觉",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 2,
+          "modifiers": {
+            "damage_taken_mul": 0.6
+          },
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "$self",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self",
+                  "note": "charges - 1"
+                }
+              ]
+            }
+          ],
+          "note": "H3 参数化减伤母版；与【微表情】分层：浅而多 ×0.75×3 / 深而少 ×0.6×2"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s6_fire_theft",
+      "name": "盗火",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "盗火人",
+      "rarity": "uncommon",
+      "axis": "steal",
+      "flagship": true,
+      "lore": "序列6 盗火人 —— \"「窃取」能力版：短暂窃取他人非凡能力（50 米，10 分钟）\"",
+      "flavor": "你从它掌心把那团火取走了——它还握着拳，却什么也放不出来；而那团火此刻在你手上。",
+      "describe": "使一名敌人沉默 3 tick，偷走它 1 个增益归自己，并获得「盗火」4 tick：你的下一次攻击改用目标的主元素并追加 3 点伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "silence",
+              "duration": 3,
+              "note": "它的能力被拿走了（禁用技能，复用既有沉默）"
+            },
+            {
+              "type": "drain",
+              "category": "buff",
+              "count": 1,
+              "note": "F50：把已攒下的增益搬过来（保留剩余 duration）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "stolen_ability",
+              "duration": 4,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "stolen_ability",
+          "name": "盗火",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 1,
+          "slots": {
+            "element": "$target.mainElement"
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "$recorded.element",
+                  "value": 3,
+                  "note": "下一次攻击取目标主元素并追加伤害；H33 状态数据槽读取语法"
+                }
+              ]
+            }
+          ],
+          "note": "退化方案：数据槽不落地时退化为固定 damage(mental, 3)"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s6_remote_snatch",
+      "name": "隔空取物",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "盗火人",
+      "rarity": "uncommon",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列6 盗火人 —— \"「窃取」物品版：隐蔽隔空偷取 / 塞入物品\"",
+      "flavor": "隔着半个战场，它怀里最沉的那袋东西就没了——而它到现在还没发现。",
+      "describe": "自动锁定能量最高的敌人，偷取其 5 点能量归自己，不造成任何伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "sort": "energy_desc"
+        }
+      },
+      "effects": [
+        {
+          "type": "drain",
+          "resource": "energy",
+          "value": 5
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s6_plant_evidence",
+      "name": "栽赃",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "盗火人",
+      "rarity": "uncommon",
+      "axis": "deceit",
+      "flagship": false,
+      "lore": "序列6 盗火人 —— \"「窃取」物品版：隐蔽隔空偷取 / 塞入物品\"",
+      "flavor": "你把一件\"好东西\"悄悄塞进了它的口袋——它以为自己捡了便宜，直到那东西开始发烫。",
+      "describe": "塞给一名敌人一件伪装成增益的赃物 4 tick：每 tick 受 1 点精神伤害，被移除时再受 2 点精神伤害；敌方驱散减益清不掉它。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "framed",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "framed",
+          "name": "栽赃",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 1,
+                  "target": "self",
+                  "note": "贴身的东西在咬它"
+                }
+              ]
+            },
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "target": "self",
+                  "note": "终于被发现了"
+                }
+              ]
+            }
+          ],
+          "note": "category 声明为 buff（伪装增益），敌方的 dispel(category:['debuff']) 清不掉它；category 与效果解耦为纯数据声明（本稿新增项 9，已落 ddd）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s6_mind_resist",
+      "name": "精神污染抗性",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "盗火人",
+      "rarity": "uncommon",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列6 盗火人 —— \"精神污染抗性增强\"",
+      "flavor": "你的精神被反复浸染过太多次——那些冲着你脑子来的东西，如今只能挠痒。",
+      "describe": "战斗开始时，自身精神抗性 +20%，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s5_steal_memory",
+      "name": "窃取记忆",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "窃梦家",
+      "rarity": "rare",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列5 窃梦家 —— \"可拿走他人理想、梦境、记忆\"",
+      "flavor": "你把它脑子里那些\"它以为自己是谁\"的东西拿走了——它还站着，却已经不知道该怎么做自己。",
+      "describe": "使一名敌人沉默 3 tick、攻击 -2（4 tick），并造成 1 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "silence",
+              "duration": 3
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 4
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s5_steal_thought",
+      "name": "偷走想法",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "窃梦家",
+      "rarity": "rare",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列5 窃梦家 —— \"偷走想法使目标呆滞\"",
+      "flavor": "你把它脑子里正在成型的那个念头抽走了——它愣在原地，半天想不起自己要干什么。",
+      "describe": "使一名敌人呆滞 4 tick：行动条速率 -6，并造成 2 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "stupor",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "stupor",
+          "name": "呆滞",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -6,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "状态内 gauge.rate 修正，同敏捷之手待裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_thief_s5_divine_disguise",
+      "name": "伪装·盗天机",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "窃梦家",
+      "rarity": "rare",
+      "axis": "deceit",
+      "flagship": true,
+      "lore": "序列5 窃梦家 —— \"「伪装」（盗天机）：伪装神灵信徒窃取回应\"",
+      "flavor": "你披上了它信奉的那个模样——它的视线从你身上滑了过去，而你的刀已经贴在它后背。",
+      "describe": "伪装 3 tick：敌方单体技能无法选中你；你的下一次造成伤害 ×1.5，随后立即暴露（伪装移除）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "divine_mask",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "divine_mask",
+          "name": "伪装·盗天机",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            },
+            "damage_mul": {
+              "value": 1.5,
+              "charges": 1,
+              "note": "下一次造成伤害 ×1.5（出手就露馅）"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "divine_mask"
+                  },
+                  "note": "出手即暴露：自动移除自身伪装"
+                }
+              ]
+            }
+          ],
+          "note": "并入 H5 潜行母版（编队参数 §2.4）；duration 受【魅力口才】+1 加成"
+        }
+      ],
+      "sharedAcross": [
+        "fool",
+        "apprentice"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s5_dream_eater",
+      "name": "食梦者",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "窃梦家",
+      "rarity": "rare",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列5 窃梦家 —— \"可拿走他人理想、梦境、记忆\"（持续窃取主题）",
+      "flavor": "每当有人在你面前倒下，你都会顺手把它最后那个梦吃掉——甜丝丝的，很补。",
+      "describe": "每当你击杀一个单位，自身能量 +3。",
+      "hook": "on_kill",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 3,
+          "mode": "delta",
+          "target": "self"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s4_parasitize",
+      "name": "寄生",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "寄生者",
+      "rarity": "rare",
+      "axis": "parasite",
+      "flagship": true,
+      "lore": "序列4 寄生者 —— \"「寄生」：初步寄生（借助宿主隐藏 / 恢复）→ 全面控制（接管身体）\"",
+      "flavor": "你钻进了它的身体——先是借它喘口气，接着，它的手就不再听它的了。",
+      "describe": "寄生一名敌人 6 tick：前 3 tick 每 tick 偷取它 2 点生命归自己，且你受到的伤害 ×0.85；后 3 tick 接管它的身体，它的攻击转向它自己的同伴；期间其攻击 -1。宿主死亡则寄生移除。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "parasitized",
+          "duration": 6
+        },
+        {
+          "type": "mount_status",
+          "statusId": "host_shelter",
+          "duration": 6,
+          "target": "self",
+          "note": "施法者侧：借助宿主隐藏"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "parasitized",
+          "name": "寄生",
+          "category": [
+            "debuff",
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "phases": [
+            {
+              "name": "初步寄生",
+              "ticks": [
+                1,
+                3
+              ],
+              "triggers": [
+                {
+                  "event": "on_tick",
+                  "effects": [
+                    {
+                      "type": "drain",
+                      "resource": "hp",
+                      "value": 2,
+                      "target": "self",
+                      "note": "宿主 → 施法者（F56 casterId 寻址）"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "全面控制",
+              "ticks": [
+                4,
+                6
+              ],
+              "modifiers": {
+                "behaviorModifiers": [
+                  {
+                    "op": "target_override",
+                    "anchor": "self_faction_hp_desc",
+                    "note": "宿主的攻击转向它自己的同伴（H12 target_override 族）"
+                  }
+                ]
+              }
+            }
+          ],
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -1,
+              "mode": "delta",
+              "duration": 6,
+              "target": "self"
+            }
+          ],
+          "note": "F2 扩展为两阶段（H50 formGroup/phases，已落 ddd：编队参数 §1.1b）；退化方案：parasitized(3t) → on_remove → puppeteered(2t) 两状态串联"
+        },
+        {
+          "id": "host_shelter",
+          "name": "宿主遮蔽",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "modifiers": {
+            "damage_taken_mul": 0.85
+          },
+          "note": "寄生期间施法者受到的伤害 ×0.85（借助宿主隐藏）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s4_steal_distance",
+      "name": "窃取距离",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "寄生者",
+      "rarity": "rare",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列4 寄生者 —— \"可窃取概念性事物（位置、距离）\"",
+      "flavor": "你把它与你之间的距离偷走了——它还在原地，却已经被挤到了战场的另一头，怎么迈步也靠近不了。",
+      "describe": "把一名敌人推到它自己队列的最后位，行动条进度 -20，并造成 2 点无元素伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "note": "C1：锁定 from.faction，位移发生在敌方自己的队列内，不越中线（G8 合规）"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -20,
+              "mode": "delta"
+            },
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "apprentice"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "原著同条的「窃取位置」因 G8 铁律禁止跨阵营 relocate 不做，列入稿面遗留"
+      ]
+    },
+    {
+      "id": "skill_thief_s4_precise_steal",
+      "name": "精准窃取",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "寄生者",
+      "rarity": "rare",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列4 寄生者 —— \"精准窃取目标能力（三选一），维持 2 小时\"",
+      "flavor": "你看了一会儿，然后从它身上挑走了最值钱的那一样。",
+      "describe": "从三种精准窃取中选一：偷力（目标攻击 -3、你攻击 +3，5 tick）／偷守（双方防御 ±3，5 tick）／偷源（偷取目标 6 点能量）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -3,
+          "mode": "delta",
+          "duration": 5
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 3,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self"
+        }
+      ],
+      "variants": [
+        {
+          "id": "steal_might",
+          "name": "精准·力",
+          "note": "偷走它的力气（默认档）",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -3,
+              "mode": "delta",
+              "duration": 5
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            }
+          ]
+        },
+        {
+          "id": "steal_guard",
+          "name": "精准·守",
+          "note": "偷走它的守势",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -3,
+              "mode": "delta",
+              "duration": 5
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 3,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            }
+          ]
+        },
+        {
+          "id": "steal_source",
+          "name": "精准·源",
+          "note": "偷走它的积蓄（F49）",
+          "effects": [
+            {
+              "type": "drain",
+              "resource": "energy",
+              "value": 6
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s4_borrow_body",
+      "name": "借宿",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "寄生者",
+      "rarity": "rare",
+      "axis": "parasite",
+      "flagship": false,
+      "lore": "序列4 寄生者 —— \"初步寄生（借助宿主隐藏 / 恢复）\"",
+      "flavor": "快撑不住的时候，你就往同伴身上一躲——刀砍在它身上，疼的是它，活下来的是你。",
+      "describe": "战斗开始时获得「借宿」：每场 2 次，你生命低于 30% 时受到伤害，该次伤害的 60% 转嫁给己方生命最高的其他友军。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "host_body",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "host_body",
+          "name": "借宿",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 2,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "self",
+                "cmp": "<",
+                "n": 0.3
+              },
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "$self",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self",
+                  "note": "charges - 1"
+                }
+              ],
+              "transfer": {
+                "ratio": 0.6,
+                "direction": "to_third",
+                "targetAnchor": "self_faction_hp_desc",
+                "exclude": "self",
+                "note": "该次伤害的 60% 转嫁给己方 HP 最高的其他友军（H28 伤害转嫁母版，与 F5 pain_link 同机制两向）"
+              }
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s3_deceive_rule",
+      "name": "欺诈规则",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "欺瞒导师",
+      "rarity": "epic",
+      "axis": "deceit",
+      "flagship": true,
+      "lore": "序列3 欺瞒导师 —— \"「欺瞒」：误导敌人，甚至欺诈自然规则\"",
+      "flavor": "你说服了它的护甲，让它以为自己还在——于是那一刀砍下去，砍在了它\"以为\"的地方。",
+      "describe": "欺诈一名敌人 4 tick：它身上已挂载的增益类状态期间不生效（不移除、到期恢复），并造成 3 点精神伤害。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "rule_deceived",
+              "duration": 4
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "rule_deceived",
+          "name": "规则被欺诈",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "suppress": [
+            "buff"
+          ],
+          "note": "只压制生效、不移除实例、到期自动恢复（suppress 已落 ddd：编队参数 §1.1b）；分阶段建议：先只作用于 shield，验证后放开全部 buff"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s3_triple_steal",
+      "name": "三连窃取",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "欺瞒导师",
+      "rarity": "epic",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列3 欺瞒导师 —— \"可一次性窃取三种能力\"",
+      "flavor": "你一口气从它身上取走了三样东西——它的力气、它的积蓄、还有它刚攒下的那点好运。",
+      "describe": "同时从一名敌人身上偷走三样：攻击 -3（你 +3，5 tick）、4 点能量、1 个增益。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -3,
+              "mode": "delta",
+              "duration": 5
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "drain",
+              "resource": "energy",
+              "value": 4
+            },
+            {
+              "type": "drain",
+              "category": "buff",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s3_master_of_deceit",
+      "name": "欺瞒导师",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "欺瞒导师",
+      "rarity": "epic",
+      "axis": "deceit",
+      "flagship": false,
+      "lore": "序列3 欺瞒导师 —— \"「欺瞒」：误导敌人…\"（位格提升，欺骗不可被识破）",
+      "flavor": "到了这个位格，你撒的谎连\"被识破\"这条路都没有了——它们只能信到底。",
+      "describe": "战斗开始时获得「欺瞒导师」：你施加的控制与减益类状态不可被驱散，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "deceit_master",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "deceit_master",
+          "name": "欺瞒导师",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "outgoingDispelOverride": {
+              "filter": {
+                "category": [
+                  "control",
+                  "debuff"
+                ]
+              },
+              "dispelable": false
+            }
+          },
+          "note": "运行时覆写 dispelable（H8，已落 ddd：编队参数 §1.1b，与愚者新增项 9 同源）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s2_graft_fate",
+      "name": "嫁接命运",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "命运木马",
+      "rarity": "epic",
+      "axis": "chrono",
+      "flagship": true,
+      "lore": "序列2 命运木马 —— \"嫁接命运：互换短期未来\"",
+      "flavor": "你把它和它的猎物之间的未来剪开、对调——本该先出手的那个，忽然落到了后面。",
+      "describe": "选择一名友军与一名敌人：交换两者当前的行动条数值。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "secondaryTargets": [
+        {
+          "request": {
+            "faction": "ally",
+            "scope": "single"
+          },
+          "note": "双目标：主目标敌方 + 次目标友军；友军侧稿面未给 fallbackSort，置 null 待补"
+        }
+      ],
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "mode": "swap",
+          "target": "secondary_target",
+          "note": "swap_resource 算子（已落 ddd：效果上下文 §2.1）：交换主目标（敌）与次目标（友）的行动条；G5/G6 合规（不含自身）"
+        }
+      ],
+      "sharedAcross": [
+        "fool"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "退化方案：两条 modify_resource 各推差值一半，仍是双向但丢掉精确互换语义"
+      ]
+    },
+    {
+      "id": "skill_thief_s2_steal_identity",
+      "name": "窃取身份",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "命运木马",
+      "rarity": "epic",
+      "axis": "parasite",
+      "flagship": true,
+      "lore": "序列2 命运木马 —— \"窃取身份：顶替身份使目标成为「无运者」渐死\"",
+      "flavor": "你顶替了它在命运里的名字——从这一刻起，没有人再认得它，连好运也绕着它走；它开始一点点地凋谢。",
+      "describe": "使一名敌人成为「无运者」5 tick：每 tick 流失 1 点生命、受伤 ×1.15、无法再获得增益；你获得「顶替」4 tick：受伤 ×0.9，且你对该目标伤害 ×1.2。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "unfortuned",
+              "duration": 5
+            },
+            {
+              "type": "mount_status",
+              "statusId": "stolen_identity",
+              "duration": 4,
+              "target": "self",
+              "binding": {
+                "recordedTarget": "target"
+              }
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "unfortuned",
+          "name": "无运者",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "modifiers": {
+            "damage_taken_mul": 1.15,
+            "buffBlocked": true
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 1,
+                  "target": "self",
+                  "note": "渐死：生命流失"
+                }
+              ]
+            }
+          ],
+          "note": "H2 参数化复合 debuff + H38 buffBlocked（已落 ddd）"
+        },
+        {
+          "id": "stolen_identity",
+          "name": "顶替",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "damage_taken_mul": 0.9,
+            "damage_mul": {
+              "value": 1.2,
+              "filter": {
+                "recordedTargetOnly": true
+              }
+            }
+          },
+          "note": "\"对该目标伤害 ×1.2\"需状态记录目标引用（F56 casterId 同族寻址）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s2_fate_gap",
+      "name": "命运缝隙",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "命运木马",
+      "rarity": "epic",
+      "axis": "chrono",
+      "flagship": false,
+      "lore": "序列2 命运木马 —— \"对他人命运做手脚，钻命运漏洞\"",
+      "flavor": "命运的每一次落笔都留着缝——谁的手快抬到一半，你就从那道缝里钻进去。",
+      "describe": "战斗开始时获得「命运缝隙」：你对行动条进度 ≥70%（即将出手）的敌方单位伤害 ×1.3，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "fate_gap",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "fate_gap",
+          "name": "命运缝隙",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.3,
+              "filter": {
+                "gaugeAbove": 70
+              }
+            }
+          },
+          "note": "gauge_above 谓词（已落 ddd：共享内核参数 §三，本稿新增项 7）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s1_steal_time",
+      "name": "窃取时间",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "时之虫",
+      "rarity": "legendary",
+      "axis": "chrono",
+      "flagship": true,
+      "lore": "序列1 时之虫 —— \"「窃取」：可短暂窃取时间、锚、权柄\"",
+      "flavor": "你把它生命里的一段时间剪下来揣进了自己怀里——它的动作开始发黏，而你忽然多出了一整个喘息的空档。",
+      "describe": "抽走一名敌人 50 点行动条进度、行动条速率 -6（4 tick）；你获得「偷来的时间」4 tick：能量恢复速率 +0.2。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -50,
+              "mode": "delta",
+              "note": "参照 D1 KNOCKBACK_DISTANCE 量级"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -6,
+              "mode": "delta",
+              "duration": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "stolen_time",
+              "duration": 4,
+              "target": "self",
+              "note": "G5/G6：自身收益不推条，改能量恢复速率"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "stolen_time",
+          "name": "偷来的时间",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": 0.2,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "目标侧 gauge.rate 修正，同敏捷之手待裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_thief_s1_aging",
+      "name": "衰老",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "时之虫",
+      "rarity": "legendary",
+      "axis": "chrono",
+      "flagship": false,
+      "lore": "序列1 时之虫 —— \"「衰老」：让目标流失生命进入衰老\"",
+      "flavor": "你把它生命里尚未到来的那部分提前支取了——它开始咳嗽、迟钝、伤口不再愈合，像是一下子老了二十岁。",
+      "describe": "使一名敌人衰老 5 tick：每 tick 流失 1 点生命，攻击 -2、行动条速率 -4，受到的治疗 ×0.7。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "aged",
+          "duration": 5
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "aged",
+          "name": "衰老",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "modifiers": {
+            "heal_received_mul": 0.7
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -4,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 1,
+                  "target": "self",
+                  "note": "生命流失；衰老不属于七元素"
+                }
+              ]
+            }
+          ],
+          "note": "H2 复合 debuff + H21 heal_received_mul（已落 ddd）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "状态内 gauge.rate 修正，同敏捷之手待裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_thief_s1_steal_anchor",
+      "name": "窃取锚",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "时之虫",
+      "rarity": "legendary",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列1 时之虫 —— \"「窃取」：可短暂窃取时间、锚、权柄\"",
+      "flavor": "你拔掉了它钉在现实里的那根锚——它还在原地，却每一步都要比平时多走很久；而你自己，反倒轻快了起来。",
+      "describe": "使一名敌人出手门槛 +15（4 tick），你自己出手门槛 -8（4 tick）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "value": 15,
+              "mode": "delta",
+              "duration": 4,
+              "resource": "gauge.threshold"
+            },
+            {
+              "type": "modify_resource",
+              "value": -8,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self",
+              "resource": "gauge.threshold"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_THRESHOLD_INV_S5",
+          "note": "gauge_threshold 是合法 StatKey，但改它等价于改行动周期（threshold/rate），是否触碰 INV-S5 悬案待拍板（本稿新增项 16）；退化方案：gauge.current 双向推拉",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_thief_s1_stone_clock",
+      "name": "石制壁钟",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "时之虫",
+      "rarity": "legendary",
+      "axis": "chrono",
+      "flagship": false,
+      "lore": "序列1 时之虫 —— \"召唤古老石制壁钟虚影，展现历史事件\"",
+      "flavor": "一具古老的石制壁钟在你身后浮现——钟摆每晃一下，战场上所有人就都被往回拖了一格；而它忠实记下的，是这场战斗从头到尾发生过的一切。",
+      "describe": "召唤石制壁钟虚影到己方队尾：登场时全体敌军行动条 -15 并受 2 点无元素伤害（钟声一响，时间倒退）；壁钟碎裂时全体敌军行动条再 -25（最后一响）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_stone_clock",
+          "position": "tail",
+          "hpRatio": 0.8,
+          "atkRatio": 0,
+          "note": "H1 召唤物基线：hp 偏高 / atk 0 / gauge.rate 极低（几乎不行动，是一件\"物\"而非战力）"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_spawn",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -15,
+              "mode": "delta",
+              "target": "all_enemies"
+            },
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "target": "all_enemies",
+              "note": "钟声一响，时间倒退（挂在召唤物自身，A2 合规）"
+            }
+          ]
+        },
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -25,
+              "mode": "delta",
+              "target": "all_enemies",
+              "note": "壁钟碎裂时的最后一响（亡语）"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "unit_stone_clock 单位定义随 H1 召唤物基线登记（本稿新增项 5，已落 ddd：编队参数 §2.4）；on_spawn 触发器挂在召唤物自身"
+      ]
+    },
+    {
+      "id": "skill_thief_s1_doppel_replace",
+      "name": "分身替换",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "时之虫",
+      "rarity": "legendary",
+      "axis": "parasite",
+      "flagship": true,
+      "lore": "序列1 时之虫 —— \"分身替换：本体死亡时分身窃取一切变本体\"",
+      "flavor": "你倒下的那一刻，远处那个\"你\"忽然怔了一下——它接管了你的一切，而你，从它的身体里站了起来。",
+      "describe": "你死亡时，若场上存在你控制的分身：销毁其中一具，你以该分身当前的生命比例在原坐标复活；否则正常死亡。",
+      "hook": "on_death",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "caster_has_summon",
+            "unitId": [
+              "unit_doppelganger"
+            ]
+          },
+          "then": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "dispel",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "unitId": "unit_doppelganger",
+                    "count": 1
+                  },
+                  "target": "self",
+                  "note": "销毁一具分身（寻址己方召唤物）"
+                },
+                {
+                  "type": "spawn",
+                  "reviveOf": "self",
+                  "hpRatio": "$doppelganger.hpRatio",
+                  "position": "original",
+                  "note": "复活血量 = 被消耗分身的当前 HP 比例（\"分身窃取一切变本体\"）"
+                }
+              ]
+            }
+          ],
+          "else": [],
+          "note": "G4 reviveOf + 死亡拦截链（H7 lethalProtect 在死亡确认前分支，已落 ddd：编队上下文 §十）"
+        }
+      ],
+      "sharedAcross": [
+        "apprentice"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s1_clock_tower_domain",
+      "name": "壁钟之域",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "时之虫",
+      "rarity": "legendary",
+      "axis": "chrono",
+      "flagship": false,
+      "lore": "序列1 时之虫 —— \"「窃取时间」+「古老石制壁钟虚影」的领域化\"",
+      "flavor": "钟声不再来自一具虚影，而是来自空气本身——整座战场成了壁钟的内部，每一秒都先经过你的手，再流向别人。",
+      "describe": "降临「壁钟之域」3 回合：敌方单位每 tick 行动条 -2、己方单位每 tick 行动条 +2；「窃取/欺诈」标签卡效果 ×1.3。自身迷失值 +1。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_clock_tower",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金（降临范式 +1）"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_clock_tower",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：敌方单位每 tick gauge.current -2（时间被一格一格偷走）；己方单位每 tick gauge.current +2（偷来的时间塞进你们的口袋）——双向：偷敌之秒 / 补己之拍",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "窃取",
+              "欺诈"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_clock_tower",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "effects": [
+              {
+                "type": "modify_resource",
+                "resource": "gauge.current",
+                "value": -2,
+                "mode": "delta",
+                "target": "all_enemies",
+                "note": "偷时间：drain 语义在周期层的展开"
+              },
+              {
+                "type": "modify_resource",
+                "resource": "gauge.current",
+                "value": 2,
+                "mode": "delta",
+                "target": "all_allies"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "窃取",
+              "欺诈"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "tags": [
+        "窃取",
+        "欺诈"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "2026-09-08 界域牌批次新增；G5/G6 合规——tick 结算时推全队，不走本回合自推"
+      ]
+    },
+    {
+      "id": "skill_thief_s0_confuse_doppel",
+      "name": "混淆分身",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "错误",
+      "rarity": "legendary",
+      "axis": "parasite",
+      "flagship": false,
+      "lore": "序列0 错误 —— \"混淆分身与本体关系（分身逃脱即本体逃脱）/ 可分离出两个序列 1 级分身\"",
+      "flavor": "你从自己身上剥下两个\"你\"——从现在起，谁也说不清刀该砍向哪一个；而只要有一个逃出去，活着的就是你。",
+      "describe": "召唤 2 具分身到己方队尾（30% 生命、50% 攻击），持续 5 tick：敌方单体技能优先选中你的分身而非你；只要场上仍有分身存活，你受到的伤害 ×0.9。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "spawn",
+              "unitId": "unit_doppelganger",
+              "count": 2,
+              "hpRatio": 0.3,
+              "atkRatio": 0.5,
+              "position": "tail"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "identity_confused",
+              "duration": 5,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "identity_confused",
+          "name": "分身与本体混淆",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "modifiers": {
+            "targetPriorityToSummons": {
+              "unitId": "unit_doppelganger",
+              "scope": "single",
+              "note": "敌方单体技能在候选池中优先选中施法者的分身（H12 锚点 <分身>，已落 ddd）"
+            },
+            "damage_taken_mul": {
+              "value": 0.9,
+              "condition": {
+                "kind": "field_status_count",
+                "id": "unit_doppelganger_alive",
+                "cmp": ">=",
+                "n": 1
+              },
+              "note": "只要场上仍有分身存活，自身受伤 ×0.9"
+            }
+          }
+        }
+      ],
+      "sharedAcross": [
+        "apprentice"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s0_error",
+      "name": "错误",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "错误",
+      "rarity": "legendary",
+      "axis": "steal",
+      "flagship": true,
+      "lore": "序列0 错误 —— \"「错误」：以假代真窃取权柄，制造漏洞回避攻击\"",
+      "flavor": "这里出错了——它那一击明明砍在了你身上，可你身上什么都没有；倒下的，是它自己。\"错误\"就是这么回事：真的会变成假的，假的会变成真的。",
+      "describe": "获得「错误」6 tick（2 次）：每次你受到伤害时该次伤害完全无效（没有发生过），并把该次伤害的 40% 以精神伤害反弹给攻击者。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "error",
+          "duration": 6,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "error",
+          "name": "错误",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "charges": 2,
+          "modifiers": {
+            "damage_taken_mul": 0,
+            "note": "H3 乘区 = 0 档：该次伤害完全无效（制造漏洞回避攻击）"
+          },
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "valueFrom": {
+                    "kind": "lastEffectReturn",
+                    "ratio": 0.4
+                  },
+                  "target": "attacker",
+                  "note": "以假代真：被免疫的伤害值的 40% 反噬攻击者（F61 attacker 寻址）"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "$self",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "完全免疫 N 次伤害 + 被免疫值传出（H3×C6 + valueFrom lastEffectReturn，已落 ddd）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_thief_s0_steal_authority",
+      "name": "窃取权柄",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "错误",
+      "rarity": "legendary",
+      "axis": "steal",
+      "flagship": false,
+      "lore": "序列0 错误 —— \"以假代真窃取权柄\"",
+      "flavor": "你伸手把它名下的东西全部划到了自己名下——它曾凭这些站着，现在它什么都不是了。",
+      "describe": "偷走一名敌人身上的全部增益归自己，并使其 4 tick 内无法再获得增益，造成 3 点精神伤害。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 9,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "drain",
+              "category": "buff",
+              "count": "all",
+              "note": "F50：全稿唯一 drain(count: all)，强度随敌方堆叠量放大，数值 ⚠️D"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "authority_lost",
+              "duration": 4
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "authority_lost",
+          "name": "权柄失落",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "buffBlocked": true
+          },
+          "note": "H38 buffBlocked（已落 ddd：编队参数 §1.1b）"
+        }
+      ],
+      "tentative": true
+    }
+  ]
+}

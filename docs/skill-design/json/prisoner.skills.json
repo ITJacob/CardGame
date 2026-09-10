@@ -1,0 +1,2356 @@
+{
+  "pathwayId": "prisoner",
+  "pathwayName": "囚犯",
+  "sourceFile": "../囚犯途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "curse": {
+      "symbol": "🜍",
+      "name": "诅咒"
+    },
+    "bondage": {
+      "symbol": "🜎",
+      "name": "束缚"
+    },
+    "aberration": {
+      "symbol": "🜏",
+      "name": "异类"
+    },
+    "item": {
+      "symbol": "🜐",
+      "name": "物品"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_prisoner_s9_sturdy_body",
+      "name": "体魄强化",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "囚犯",
+      "rarity": "common",
+      "axis": "aberration",
+      "flagship": false,
+      "lore": "序列9 囚犯 —— \"体魄强化，强壮\"",
+      "flavor": "长年囚禁没能压垮你的肉身，反倒把它磨得更硬。",
+      "describe": "战斗开始时，自身攻击 +2、护甲 +1，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "数值提升",
+            "note": "+2/+1 → +3/+2 → +4/+3",
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 4,
+                "mode": "delta",
+                "duration": null,
+                "target": "self"
+              },
+              {
+                "type": "modify_stat",
+                "stat": "armor",
+                "value": 3,
+                "mode": "delta",
+                "duration": null,
+                "target": "self"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s9_keen_senses",
+      "name": "知觉敏锐",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "囚犯",
+      "rarity": "common",
+      "axis": "item",
+      "flagship": false,
+      "lore": "序列9 囚犯 —— \"知觉敏锐\"",
+      "flavor": "你比别人先看见、先听见、先摸到那件能要人命的东西。",
+      "describe": "战斗开始时，自身行动条速率 +6，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 6,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "稿面写 modify_stat(gauge_rate)；ddd 将 gauge.* 列为 modify_resource 键，卡面按 modify_stat(gauge.rate) 表达常驻修正，待内核裁定归一。被动改源属性、非自推 gauge.current，INV-S5/G5/G6 合规",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_prisoner_s9_improvised_weapon",
+      "name": "随手物品",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "囚犯",
+      "rarity": "common",
+      "axis": "item",
+      "flagship": true,
+      "lore": "序列9 囚犯 —— \"掌握诸多犯罪技巧，擅长用随手物品杀人\"",
+      "flavor": "你的手边永远有东西能要人命。抄起手边之物砸过去；要是顺手抄到的是锁链，还能把它缠住。",
+      "describe": "对一名敌人造成 4 点物理伤害；30% 概率附加枷锁 1 tick。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 4
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shackle",
+          "duration": 1,
+          "condition": {
+            "kind": "chance",
+            "p": 0.3
+          },
+          "note": "抄到锁链：概率只作用于是否附加状态（非伤害维度，R5 合规），须登记 RandomUsageRegistry（R3）、单次抽样（R4）"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 4 → 6 → 8",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 8
+              },
+              {
+                "type": "mount_status",
+                "statusId": "shackle",
+                "duration": 1,
+                "condition": {
+                  "kind": "chance",
+                  "p": 0.3
+                }
+              }
+            ]
+          },
+          {
+            "name": "镣铐变体",
+            "note": "解锁变体：改为必定附加 shackle 1t，伤害降为 3（锁链缠绕 flavor 落在升级分支，不单独占技能位）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 3
+              },
+              {
+                "type": "mount_status",
+                "statusId": "shackle",
+                "duration": 1
+              }
+            ]
+          }
+        ]
+      },
+      "sharedAcross": [
+        "criminal"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s9_criminal_tricks",
+      "name": "犯罪技巧",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "囚犯",
+      "rarity": "common",
+      "axis": "item",
+      "flagship": false,
+      "lore": "序列9 囚犯 —— \"掌握诸多犯罪技巧\"",
+      "flavor": "下绊、迷眼、背后那一下——你太熟这些了。",
+      "describe": "对一名近战敌人造成 2 点物理伤害，并把其行动条向后拨 25。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 2
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -25,
+          "mode": "delta"
+        }
+      ],
+      "sharedAcross": [
+        "criminal"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "推条（gauge.current 推拉）定价无既有锚点，沿用 D2 待标"
+      ]
+    },
+    {
+      "id": "skill_prisoner_s8_desire_burst",
+      "name": "爆发欲望",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "疯子",
+      "rarity": "common",
+      "axis": "bondage",
+      "flagship": true,
+      "lore": "序列8 疯子 —— \"牺牲理智换力量：爆发欲望换取全方面提高\"",
+      "flavor": "你把理智松开了一道口子——力量涌上来，代价也同样真实，而且没人能让你中途冷静下来。",
+      "describe": "进入爆发状态 3 回合：攻击 +3、行动条速率 +8、护甲 +2，但防御 -2、精神抗性 -20%；期间不可被驱散。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "frenzy",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "frenzy",
+          "name": "爆发欲望",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": -20,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            }
+          ],
+          "note": "H10 参数化形态增益母版（增益段 × 代价段 × dispelable:false），与 F10 beast_form 同母版，差异在代价段与可否驱散；正负两段同挂一个可计时状态，到期自动回滚"
+        }
+      ],
+      "sharedAcross": [
+        "criminal"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "frenzy 内含 gauge.rate 修正，同知觉敏锐待内核裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_prisoner_s8_unhinged_resistance",
+      "name": "疯癫抗性",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "疯子",
+      "rarity": "common",
+      "axis": "bondage",
+      "flagship": false,
+      "lore": "序列8 疯子 —— \"对干扰思绪 / 影响精神的强大抵抗力\"",
+      "flavor": "你早就疯了，没人能再把你逼疯；而每一次冲着你来的精神冲击，都让你的疯狂更兴奋一点。",
+      "describe": "战斗开始时精神抗性 +20%，持续整场；获得「疯癫」：每次受到精神伤害时回复 1 点能量。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "unhinged_mind",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "unhinged_mind",
+          "name": "疯癫",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "condition": {
+                "kind": "element_is",
+                "element": "mental"
+              },
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "sourceFilter 按元素过滤走共享内核 §二 ElementIs 谓词"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s7_werewolf_form",
+      "name": "狼人化",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "狼人",
+      "rarity": "uncommon",
+      "axis": "aberration",
+      "flagship": true,
+      "lore": "序列7 狼人 —— \"恐怖的力量、敏捷、速度和自愈，狼人化后手爪牙齿带毒\"",
+      "flavor": "骨骼错位、毛发暴长。你的爪牙带毒，每次命中都让对方溃烂；而你的伤口在每一个瞬间自行合拢。",
+      "describe": "狼人化 4 回合：攻击 +3、行动条速率 +8；每次造成伤害给目标附加中毒 2 tick；每 tick 自愈 1 点生命。可被驱散。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 6,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "beast_form",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "beast_form",
+          "name": "狼人化",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "poison",
+                  "duration": 2,
+                  "note": "爪牙带毒：载荷目标为被击中的单位"
+                }
+              ]
+            },
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 1,
+                  "target": "self",
+                  "note": "恐怖自愈；A22 必须用 heal 原语，G14 tick ≠ 回合"
+                }
+              ]
+            }
+          ],
+          "note": "复用 F10 beast_form 母版（atk+3 / gauge_rate+8 / dispelable:true），本卡追加 on_deal_damage 附毒 + on_tick 自愈两条触发器"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "beast_form 内含 gauge.rate 修正，同知觉敏锐待内核裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_prisoner_s7_darkness_terror",
+      "name": "黑暗恐惧",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "狼人",
+      "rarity": "uncommon",
+      "axis": "bondage",
+      "flagship": false,
+      "lore": "序列7 狼人 —— \"『驱光』、『黑暗恐惧』\"",
+      "flavor": "你伸手把战场上的光掐灭了。同伴眼前的黑是掩护，敌人眼前的黑是恐惧。",
+      "describe": "驱散全体敌人各 1 个增益，并对其各造成 2 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "all_enemies",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              },
+              "note": "驱光：C2 dispel.category 数组已支持"
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "target": "all_enemies",
+              "note": "黑暗恐惧：先灭光、再恐惧，同属一个动作"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "criminal"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s7_toxic_puppet",
+      "name": "毒性傀儡",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "狼人",
+      "rarity": "uncommon",
+      "axis": "aberration",
+      "flagship": false,
+      "lore": "序列7 狼人 —— \"控制被毒性浸入目标转化为傀儡\"",
+      "flavor": "毒液浸透它的四肢百骸，你这才牵起线来——接下来它的攻击由你指定打向谁。",
+      "describe": "使一名敌人中毒 4 回合；若其已中毒，则附加「傀儡线」6 tick：其发动攻击时由你指定目标。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "poison",
+              "duration": 4
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "poison",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "puppet_string",
+                  "duration": 6
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "puppet_string",
+          "name": "傀儡线",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "modifiers": {
+            "targetOverride": {
+              "trigger": "on_attack",
+              "note": "G15-b：触发点改为「单位发动攻击」即时节点，不受 duration 尺度影响；duration 6t 兜底"
+            }
+          },
+          "note": "复用 F9 已登记定义（H12 target_override 族，sharedAcross 含罪犯），此处为引用副本；前置是毒（与怨魂附身 charges 型对照：duration 型持续控制）"
+        }
+      ],
+      "sharedAcross": [
+        "criminal"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s7_anti_scry",
+      "name": "初步反占卜",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "狼人",
+      "rarity": "uncommon",
+      "axis": "bondage",
+      "flagship": false,
+      "lore": "序列7 狼人 —— \"初步反占卜（只能看到黑毛身影）\"",
+      "flavor": "占卜与通灵落在你身上，只捞得到一团模糊的黑毛。",
+      "describe": "战斗开始时获得「反占卜」（1 次）：第一个指向你的敌方单体技能转向落空，随后消散。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "anti_scry",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "anti_scry",
+          "name": "反占卜",
+          "category": [
+            "conceal",
+            "retarget"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 1,
+          "redirectRule": {
+            "to": "first_empty",
+            "sourceFilter": "skill",
+            "scope": "single",
+            "direction": "inbound",
+            "note": "C7 已验证空坐标锚点：被敌方单体技能指向时转向生效、该次攻击打空，随后 charges 归零卸载"
+          },
+          "note": "确定性落空（2026-09-04 拍板取代原 chance 0.25，落空属目标选择维度、概率化违反 R1/R5，走 C6 charges 次数型）；次数 ⚠️D 待标定"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s6_iron_body",
+      "name": "钢铁之躯",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "活尸",
+      "rarity": "uncommon",
+      "axis": "aberration",
+      "flagship": false,
+      "lore": "序列6 活尸 —— \"超强防御：身体如钢铁，硬挡子弹炮弹\"",
+      "flavor": "子弹打在你身上只是嵌进肉里。",
+      "describe": "战斗开始时，自身护甲 +3、物理抗性 +15%，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 3,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:physical",
+          "value": 15,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s6_grasp_of_dead_cold",
+      "name": "死寒之握",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "活尸",
+      "rarity": "uncommon",
+      "axis": "aberration",
+      "flagship": false,
+      "lore": "序列6 活尸 —— \"掌握死亡 / 腐烂之力和冰的掌控\"",
+      "flavor": "你把手按在它身上，血肉先是冻住，然后开始烂。",
+      "describe": "对一名近战敌人造成 3 点冰霜伤害，并使其中毒 3 回合。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "ice",
+          "value": 3
+        },
+        {
+          "type": "mount_status",
+          "statusId": "poison",
+          "duration": 3,
+          "note": "冰的掌控（ice 直伤）+ 腐烂之力（既有 poison dot），不新立状态"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s6_raise_corpse",
+      "name": "唤醒死尸",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "活尸",
+      "rarity": "uncommon",
+      "axis": "aberration",
+      "flagship": false,
+      "lore": "序列6 活尸 —— \"能操纵活尸、唤醒死尸、培养傀儡、控制幽魂\"",
+      "flavor": "地缝里伸出的手抓住了活人的脚踝——一具还在抽动的尸体爬起来，站到了你的队列末尾。",
+      "describe": "在己方队尾召唤一具活尸（生命 100%）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_ghoul",
+          "position": "tail",
+          "hpRatio": 1.0,
+          "note": "F26 unit_ghoul（本体数值刻意压低，预算大半买身位）；C5 hpRatio/position 已实现；A2 禁挂开场语义，召唤登场 fire on_spawn 供操纵活尸订阅"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "控制幽魂",
+            "note": "序列6「控制幽魂」升级档暂不能落地：F25 unit_wraith ID 冲突（不眠者稿与收尸人稿同 ID 两套属性，合并候选 10 列为必须先解决项）"
+          }
+        ]
+      },
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "F25_UNIT_WRAITH_ID_CONFLICT",
+          "note": "控制幽魂升级档依赖 F25 unit_wraith，ID 冲突未解决前不落地",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_prisoner_s6_corpse_handler",
+      "name": "操纵活尸",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "活尸",
+      "rarity": "uncommon",
+      "axis": "item",
+      "flagship": false,
+      "lore": "序列6 活尸 —— \"能操纵活尸、唤醒死尸、培养傀儡、控制幽魂\"",
+      "flavor": "每一具被你叫起来的东西，都在你手里被养得更结实一点。",
+      "describe": "每当一个己方单位登场时，其攻击 +1、生命上限 +4，持续整场。",
+      "hook": "on_spawn",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "single",
+          "anchor": "spawned_unit"
+        }
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "target"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 4,
+          "mode": "delta",
+          "duration": null,
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "on_spawn 正向用例（A2 禁的是把 on_spawn 当开局，本条要的正是每召唤一次增强一次）；anchor spawned_unit 已落 ddd（共享内核 §一）",
+        "遗留：on_spawn fire 时新单位须已完成落位，否则 modify_stat 可能打在错误目标上，需引擎确认时序"
+      ]
+    },
+    {
+      "id": "skill_prisoner_s5_spirit_form",
+      "name": "灵体化",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "怨魂",
+      "rarity": "rare",
+      "axis": "aberration",
+      "flagship": true,
+      "lore": "序列5 怨魂 —— \"『灵体化』：穿过障碍物、藏身镜子、直接攻击灵魂\"；\"自由出入灵界，纯物理武器无法伤害\"",
+      "flavor": "你散成一团怨气——物理的刀剑穿过你像穿过雾，而你的每一次攻击都落在灵魂上。",
+      "describe": "散入镜中退回己方最后位，并灵体化 3 回合：物理抗性 +50%、免疫位移、不可被单体技能选中，自身造成的伤害全部转为精神伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "target": "self",
+              "note": "散入镜中退回己方最后位；G8 合规（只在己方半场内移动）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "spirit_form",
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_form",
+          "name": "灵体化",
+          "category": [
+            "buff",
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:physical",
+              "value": 50,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "moveImmune": true,
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single",
+              "note": "藏身镜子：C8 候选池过滤"
+            },
+            "damageElementOverride": "mental",
+            "note": "直接攻击灵魂：damageElementOverride（效果参数 §1.1，新增项 5）"
+          },
+          "note": "H5 潜行/虚化母版 + H27 moveImmune + damageElementOverride；原著「自由出入灵界」在单战场无第二维度，仅作 flavor"
+        }
+      ],
+      "sharedAcross": [
+        "criminal"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s5_wraith_body",
+      "name": "幽影之躯",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "怨魂",
+      "rarity": "rare",
+      "axis": "aberration",
+      "flagship": false,
+      "lore": "序列5 怨魂 —— \"纯物理武器无法伤害\"（灵体化常态化的弱化版）",
+      "flavor": "你的身体早就不完全是血肉了——每一次被实体武器击中，你都会短暂地散开一瞬。",
+      "describe": "战斗开始时物理抗性 +20%，持续整场；获得「幽影」：每次受到物理伤害时自身行动条 +8。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:physical",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "wraith_body",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "wraith_body",
+          "name": "幽影",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "condition": {
+                "kind": "element_is",
+                "element": "physical"
+              },
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 8,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "受击后散开一瞬 = 抢回一点节奏；被动状态内 on_take_damage 触发，非主动技能自推条，G5/G6 合规"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s5_wraith_grudge",
+      "name": "怨灵之缠",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "怨魂",
+      "rarity": "rare",
+      "axis": "curse",
+      "flagship": false,
+      "lore": "序列5 怨魂 —— \"『怨灵之缠』\"",
+      "flavor": "一道散不掉的怨影贴上它的背，越缠越紧。",
+      "describe": "使一名敌人易伤 3 回合（受伤 ×1.3），并立刻受到 2 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 3,
+              "note": "A14 已裁定 ×1.3 乘区；与愚者·诅咒同量级，3t（单体）vs 愚者 4t（可群）"
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s5_wraith_possession",
+      "name": "怨魂附身",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "怨魂",
+      "rarity": "rare",
+      "axis": "aberration",
+      "flagship": false,
+      "lore": "序列5 怨魂 —— \"『怨魂附身』\"",
+      "flavor": "你钻进它的身体里扳动它的骨头——它的力气归你，接下来的两次出手由你替它决定。",
+      "describe": "附身一名敌人：其攻击 -3（4 tick）、你攻击 +3（4 tick）；其接下来 2 次攻击的目标由你指定。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "puppet_string",
+              "charges": 2,
+              "duration": 5,
+              "note": "F9 + C6 次数型：附身撑不了太久，控制两下就会被挣脱；G15-b 触发点为 on_attack"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -3,
+              "mode": "delta",
+              "duration": 4
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self",
+              "note": "此消彼长：你占了这具身体，它的力气归你"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "criminal"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "puppet_string 定义见毒性傀儡（序列7 首登记），本条仅引用并覆写 charges/duration 实例值"
+      ]
+    },
+    {
+      "id": "skill_prisoner_s5_wraith_shriek",
+      "name": "怨魂尖啸",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "怨魂",
+      "rarity": "rare",
+      "axis": "aberration",
+      "flagship": false,
+      "lore": "序列5 怨魂 —— \"『怨魂尖啸』\"",
+      "flavor": "你张开嘴，那声尖啸不属于活人的喉咙。",
+      "describe": "全体敌人受到 3 点精神伤害，并被震得行动条 -15。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -15,
+              "mode": "delta",
+              "target": "all_enemies",
+              "note": "震慑推条；与黑暗恐惧差异：尖啸是纯范围压制、不驱散"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "AOE 定价无既有锚点（brief 只有单体锚点 3 能量 ≈ 6 伤害），按单目标折算再打对折粗定，沿用 D4，本稿最大数值风险点之一"
+      ]
+    },
+    {
+      "id": "skill_prisoner_s4_curse_source",
+      "name": "诅咒之源",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "木偶",
+      "rarity": "rare",
+      "axis": "curse",
+      "flagship": true,
+      "lore": "序列4 木偶 —— \"『诅咒之源』：变成秘术木偶诅咒目标，伤害反映在另一方\"",
+      "flavor": "你削出一个与它一模一样的秘术木偶。从现在起，你打在木偶身上的每一分力道，都会原样出现在它身上——而木偶连着你，你自己也讨不了好。",
+      "describe": "诅咒一名敌人 3 回合：你（木偶载体）受到的伤害等量复制给被诅咒目标，但你自己照常受伤（伤敌也伤己）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "curse_link",
+          "duration": 3,
+          "target": "self",
+          "binding": {
+            "linkedTo": "target"
+          },
+          "note": "木偶载体默认为施法者自身，可指定己方召唤物"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "curse_link",
+          "name": "诅咒链接",
+          "category": [
+            "link",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "damageTransfer": {
+              "ratio": 1.0,
+              "direction": "to_target",
+              "selfKeep": true,
+              "linkedTo": "target",
+              "note": "H28 伤害转嫁母版（ratio × direction × split × selfKeep × linkedTo 五参，与 F5 pain_link 同母版，F5 即 ratio:0.5 档）；内置防循环：由本状态产生的伤害不再触发任何链接。selfKeep:true = 序列4 反噬未解（伤敌也伤己）；序列3 无反噬之咒翻为 false，序列0 万咒加身完成所有类型诅咒——三层同一母版"
+            }
+          }
+        }
+      ],
+      "sharedAcross": [
+        "criminal"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面双目标（指定 1 敌人 + 木偶载体）：主目标取被诅咒敌人，载体段走 target:self 并以 binding.linkedTo 指回主目标；召唤物载体稿面未给选择规格，暂记 self 待裁定"
+      ]
+    },
+    {
+      "id": "skill_prisoner_s4_possess_objects",
+      "name": "操纵物品",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "木偶",
+      "rarity": "rare",
+      "axis": "item",
+      "flagship": true,
+      "lore": "序列4 木偶 —— \"操纵全部无生命物品\"",
+      "flavor": "地上的断刃、残椅、破碎的灯罩，全都颤了一下，然后僵硬地扑了上去。",
+      "describe": "在己方队尾召唤一具古物傀儡（生命 60%、攻击 50%）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_relic",
+          "position": "tail",
+          "hpRatio": 0.6,
+          "atkRatio": 0.5,
+          "note": "复用 F42 unit_relic 古物傀儡（不新立单位）；C5 hpRatio/position 已实现；物品权柄与异类之王的共同燃料"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "原著未给操纵数量上限，本稿按「一次唤起一具古物傀儡」处理，是设计选择而非原著原文"
+      ]
+    },
+    {
+      "id": "skill_prisoner_s4_performance",
+      "name": "演出",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "木偶",
+      "rarity": "rare",
+      "axis": "item",
+      "flagship": false,
+      "lore": "序列4 木偶 —— \"『演出』：表演前序角色将其能力提升到弱序列4 层次\"",
+      "flavor": "你给它安排了一个角色，让它照着演——本来就比这强的，分毫不动。",
+      "describe": "一名友军的攻击与防御被抬升到至少弱序列4 基准（4 tick）；已超过基准的不受影响。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_asc"
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": null,
+          "mode": "to_at_least",
+          "duration": 4,
+          "target": "target",
+          "note": "弱序列4 基准值 ⚠️D 未定；H48 mode to_at_least 已落 ddd（取 max(当前值, 基准值)，强者吃不到收益）"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": null,
+          "mode": "to_at_least",
+          "duration": 4,
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "「弱序列4 基准值」具体 attack / defense 数值未定（⚠️D），需与参数层一起定",
+        "退化方案：改为 modify_stat(attack, +4, 4t) + modify_stat(defense, +2, 4t)，代价是失去「只补弱者」的原著语义"
+      ],
+      "frameworkFlags": [
+        {
+          "code": "SORT_ATK_ASC",
+          "note": "按攻击升序（手动选己方单位取最弱者，源稿演出对象语义）；atk_asc 不在封闭 fallbackSort 枚举内，保留写法待内核登记",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_prisoner_s5_spirit_shroud_domain",
+      "name": "灵界潜域",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "怨魂",
+      "rarity": "rare",
+      "axis": "aberration",
+      "flagship": false,
+      "lore": "序列5 怨魂 —— \"自由出入灵界，纯物理武器无法伤害\"",
+      "flavor": "你把整座战场往灵界那边按了按——物理的刀剑穿过你的人时像穿过雾，而弥漫的怨气直接咬在敌人的灵魂上。",
+      "describe": "降临「灵界潜域」3 回合：己方单位受伤 ×0.85（半沉灵界）；敌方单位每 tick 受 1 点精神伤害（怨气蚀魂）；「诅咒 / 灵体」标签卡效果 ×1.3，「光 / 净化」标签卡 ×0.7（灵界畏光）。自身迷失值 +1。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_spirit_shroud",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金（编队参数 §2.5，显式写段可审计）"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_spirit_shroud",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：己方单位 damage_taken_mul ×0.85（半沉灵界，物理难及）；敌方单位每 tick 受 damage(mental, 1)（怨气蚀魂）——双向：护己 / 蚀敌",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "诅咒",
+              "灵体"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_spirit_shroud",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "damage",
+                "element": "mental",
+                "value": 1,
+                "note": "怨气蚀魂：mental 直伤不走物理抗性"
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "ally"
+            },
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "spirit_shroud_guard",
+                "duration": 1,
+                "target": "all_allies",
+                "note": "半沉灵界：己方全体 damage_taken_mul ×0.85 每回合刷新"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "诅咒",
+              "灵体"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "statusDefs": [
+        {
+          "id": "spirit_shroud_guard",
+          "name": "半沉灵界",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 1,
+          "modifiers": {
+            "damage_taken_mul": 0.85
+          },
+          "note": "界域己方减伤段的承载状态，由 domainDef on_turn_start 每回合刷新"
+        }
+      ],
+      "tags": [
+        "诅咒",
+        "灵体"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "2026-09-08 界域牌批次新增；与灵体化的关系：灵体化是自己潜入灵界（单体虚化），灵界潜域是把战场按进灵界（全场规则），同一权柄两种尺度",
+        "稿面把己方减伤写在域规则文本里，JSON 折为每回合刷新的 1t 承载状态 spirit_shroud_guard（乘区无对应原语，待内核确认更优承载）"
+      ]
+    },
+    {
+      "id": "skill_prisoner_s3_silent_vigil",
+      "name": "长久沉默",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "沉默门徒",
+      "rarity": "epic",
+      "axis": "bondage",
+      "flagship": true,
+      "lore": "序列3 沉默门徒 —— \"可附身物体，在长久沉默中酝酿极致诅咒\"",
+      "flavor": "沉默是你的道。你免疫一切封口；而在沉默里泡久了的那些人，被你的诅咒咬得格外深。",
+      "describe": "战斗开始时获得「长久沉默」：免疫沉默类状态，持续整场；对处于沉默 / 封技状态的目标造成的伤害 ×1.3。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "silent_vigil",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "silent_vigil",
+          "name": "长久沉默",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "immune": {
+              "categories": [
+                "seal"
+              ],
+              "note": "G12 immune；silence 归 seal 类别（H40 增补）"
+            },
+            "damage_mul": {
+              "value": 1.3,
+              "filter": {
+                "targetHasStatus": [
+                  "silence"
+                ]
+              },
+              "note": "H4 过滤伤害乘区（§三 has_status 条件乘区）：诅咒在沉默里发酵"
+            }
+          },
+          "note": "原著写的是自己在沉默中酝酿诅咒，不是让别人闭嘴（v0.1 全体封技 3 回合原著无据，已剔除）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s3_object_possession",
+      "name": "附身物体",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "沉默门徒",
+      "rarity": "epic",
+      "axis": "item",
+      "flagship": false,
+      "lore": "序列3 沉默门徒 —— \"可附身物体\"",
+      "flavor": "你把灵魂塞进旁边那件死物里——肉身安全、无处可寻，但你也发不出任何技能，只能从那件东西里伸出怨毒的手。",
+      "describe": "附身物体 3 回合：物理抗性 +40%、不可被单体技能选中、无法使用技能；但每次攻击附带 2 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "object_possession",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "object_possession",
+          "name": "附身物体",
+          "category": [
+            "buff",
+            "stance"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:physical",
+              "value": 40,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single",
+              "note": "C8 候选池过滤出口（H5 母版）"
+            },
+            "disableSkills": true,
+            "note": "disable 作用域=技能（执行参数 §一，与「沉默」同字段）；物体不会施法，自废施法换生存"
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "note": "从物件里伸出的怨毒之手"
+                }
+              ]
+            }
+          ],
+          "note": "与灵体化互补的防守向形态（灵体化进攻向：攻击转精神、仍能施法），两者不可合并"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s3_transmute_curse",
+      "name": "变形诅咒",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "沉默门徒",
+      "rarity": "epic",
+      "axis": "curse",
+      "flagship": true,
+      "lore": "序列3 沉默门徒 —— \"『变形诅咒』：使目标变成其他生物，失去绝大部分特质\"",
+      "flavor": "它忽然四足着地，喉咙里只能发出低吼——它现在只是一头野兽了。",
+      "describe": "使一名敌人变形诅咒 3 回合：攻击减半、防御 -2、行动条速率减半，且无法使用技能（仍可普通攻击）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "transmute_curse",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "transmute_curse",
+          "name": "变形诅咒",
+          "category": [
+            "debuff",
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "attackMod": 0.5,
+            "gaugeRateMul": 0.5,
+            "disableSkills": true,
+            "note": "H24 减速族（gaugeRateMul × attackMod）+ H10 属性段 + disable 技能作用域；变成生物、属性腰斩、忘掉技能，但还能咬人（非定身）"
+          },
+          "note": "与刺客 petrification（石化全禁）、F20 petrify（物质转化禁疗）三者同名近义机制不同，落地时不可合并；变形诅咒 > 免吟唱（变形成野兽后不存在吟唱）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s3_curse_no_backlash",
+      "name": "无反噬之咒",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "沉默门徒",
+      "rarity": "epic",
+      "axis": "curse",
+      "flagship": false,
+      "lore": "序列3 沉默门徒 —— \"『诅咒之源』强化：伤敌不再伤己\"",
+      "flavor": "这一次，木偶上不再连着你的血肉。",
+      "describe": "诅咒一名敌人 5 回合：你（木偶载体）受到的伤害全部转移给被诅咒目标，自己分毫不伤（伤敌不伤己）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "curse_link",
+          "duration": 5,
+          "target": "self",
+          "binding": {
+            "linkedTo": "target"
+          },
+          "params": {
+            "selfKeep": false
+          },
+          "note": "序列4 → 序列3 的进化 = selfKeep true→false，代价能量 4→5、cd 6→7"
+        }
+      ],
+      "sharedAcross": [
+        "criminal"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "与诅咒之源同一状态母版（H28），仅 ratio/selfKeep/duration 参数档不同；curse_link 定义见诅咒之源（序列4 首登记），本条为参数覆写引用",
+        "载体默认自身可指定己方召唤物，同诅咒之源 conversionNotes"
+      ]
+    },
+    {
+      "id": "skill_prisoner_s2_curse_authority",
+      "name": "诅咒权柄",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "古代邪物",
+      "rarity": "epic",
+      "axis": "curse",
+      "flagship": false,
+      "lore": "序列2 古代邪物 —— \"部分『诅咒』权柄：直接攻击影响灵体\"",
+      "flavor": "你的诅咒不认得血肉之墙。",
+      "describe": "对一名敌人造成 5 点精神伤害，无视其护甲与护盾；若目标处于灵体状态，伤害 ×1.5。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "spirit_form",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 5,
+              "mul": 1.5,
+              "pierce": [
+                "armor",
+                "shield"
+              ],
+              "note": "对灵体格外狠：与灵体化的正向联动；if/else 合并表达「该次伤害 ×1.5」"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 5,
+              "pierce": [
+                "armor",
+                "shield"
+              ],
+              "note": "damage.pierce 已落 ddd（效果参数 §1.1，H16）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s2_eye_of_abomination",
+      "name": "邪物之眼",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "古代邪物",
+      "rarity": "epic",
+      "axis": "curse",
+      "flagship": false,
+      "lore": "序列2 古代邪物 —— \"『变形诅咒』（天使层）：目标映入眼眸即变形，几乎无时限\"",
+      "flavor": "你抬眼，所有撞进你眼眸的东西都变了形状。",
+      "describe": "全体敌人受到变形诅咒 6 回合（攻击减半、防御 -2、行动条速率减半、无法使用技能）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "transmute_curse",
+          "duration": 6,
+          "target": "all_enemies",
+          "note": "与变形诅咒同一个状态（transmute_curse），天使层只放大两参数：范围单体→全体、时长 3t→6t（位格碾压做成数值更大的同一件事，brief §3）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "AOE 定价 ⚠️D（沿用 D4）"
+      ]
+    },
+    {
+      "id": "skill_prisoner_s2_abomination",
+      "name": "邪物",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "古代邪物",
+      "rarity": "epic",
+      "axis": "bondage",
+      "flagship": false,
+      "lore": "序列2 古代邪物 —— \"『邪物』：靠近者产生强邪念、疯狂\"",
+      "flavor": "你身上那块古老而错误的东西一直在往外渗。",
+      "describe": "战斗开始时获得「邪物」：每个 tick，每名敌人 20% 概率被染上 1 层精神污染。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "abomination",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "abomination",
+          "name": "邪物",
+          "category": [
+            "aura"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "mind_taint",
+                  "stacks": 1,
+                  "duration": 3,
+                  "target": "all_enemies",
+                  "condition": {
+                    "kind": "chance",
+                    "p": 0.2
+                  },
+                  "note": "状态挂在施法者身上、on_tick 载荷 target 覆写到敌方全体（新增项 18 已落：效果上下文 §二，歌颂者 8 / 窥秘人 SS15 同判例）；概率须登记 RandomUsageRegistry（R3）、单次抽样（R4）"
+                }
+              ]
+            }
+          ],
+          "note": "F8 mind_taint（H2 复合 debuff + H34 statPerStack，与战士 aging 同族，建议上限 3 层）+ F51 stacks；光环式持续渗透（v0.1 主动 AOE 挂 2 层原著无据，已改回）"
+        }
+      ],
+      "sharedAcross": [
+        "criminal"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s1_erosion_curse",
+      "name": "侵蚀诅咒",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "神孽",
+      "rarity": "legendary",
+      "axis": "curse",
+      "flagship": false,
+      "lore": "序列1 神孽 —— \"『侵蚀诅咒』：让敌人灵性凝固，身体成灵的囚笼\"",
+      "flavor": "它体内的灵性一点一点凝住了——它的身体成了自己灵魂的牢房。",
+      "describe": "使一名敌人灵性囚笼 4 回合：完全无法行动，且无法被任何治疗唤醒（不可驱散）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_prison",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_prison",
+          "name": "灵性囚笼",
+          "category": [
+            "control",
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": 4,
+          "modifiers": {
+            "disableAllActions": true,
+            "healReceivedMul": 0,
+            "note": "disable 全部四行为（编队参数 §2.2 眩晕同字段）+ H21 禁疗（heal_received_mul:0，与 F20 petrify 同字段）"
+          },
+          "note": "比眩晕更彻底的控制：不可驱散、禁疗、时长 4t（眩晕常规 1t）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s1_conversion",
+      "name": "转化",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "神孽",
+      "rarity": "legendary",
+      "axis": "aberration",
+      "flagship": true,
+      "lore": "序列1 神孽 —— \"『转化』：将生物转化为狼人 / 活尸 / 木偶等异种傀儡\"",
+      "flavor": "你把手伸进它的身体，把它的骨头重新排了一遍。它站起来了——只是不再站在对面了。",
+      "describe": "将一名敌人转化为己方异种傀儡：阵营改判为己方、套用所选异种形态的属性模板、禁用其原有技能、落位到己方队尾，保留当前生命百分比。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "count": 1
+              },
+              "target": "target",
+              "note": "移除原单位（convert 第一动词的近似：实现即「先移除原单位、再在己方队尾 spawn 新单位」，天然绕开 G8）"
+            },
+            {
+              "type": "spawn",
+              "unitId": "unit_ghoul",
+              "position": "tail",
+              "hpRatio": 1.0,
+              "target": "self",
+              "note": "在施法者队尾 spawn 异种傀儡（ghoul 档 = F26 unit_ghoul 属性模板）；保留当前生命百分比待内核确认"
+            }
+          ],
+          "note": "convert（效果上下文 §2.1：改判 faction + 替换技能组 + 套属性模板 + 落队尾四动词）已落 ddd 但 JSON 原语集未放行，以 dispel+spawn 近似表达，见 frameworkFlags"
+        }
+      ],
+      "variants": [
+        {
+          "id": "ghoul",
+          "name": "活尸",
+          "note": "套用 F26 unit_ghoul 属性档"
+        },
+        {
+          "id": "wolf",
+          "name": "狼人",
+          "note": "套用 F10 beast_form 属性档"
+        },
+        {
+          "id": "puppet",
+          "name": "木偶",
+          "note": "套用属性削减档"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "原著「转化」是阵营 + 形态的双重改变，不是杀死再召唤，此语义必须保住",
+        "退化方案（建议先上验证）：on_death（该目标）→ spawn(unit_ghoul, tail, hpRatio 0.5)，丢了「立即倒戈」的爆发感且需先击杀",
+        "遗留：被转化单位已挂载状态如何处理（保留/清空/反向）、原始技能组是否留「挣脱」窗口、落位 G8 约束，均待引擎确认"
+      ],
+      "frameworkFlags": [
+        {
+          "code": "CONVERT_AS_DISPEL_SPAWN",
+          "note": "「转化」四动词（改判阵营+换技能组+套模板+落队尾）无单一原语；按源稿退化口径以 dispel(移除原单位)+spawn(unit_ghoul, tail) 近似，丢失保留生命百分比与禁用原技能语义，待内核放行 convert 原语",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_prisoner_s0_king_of_aberrations",
+      "name": "异类之王",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "被缚者",
+      "rarity": "legendary",
+      "axis": "aberration",
+      "flagship": false,
+      "lore": "序列0 被缚者 —— \"『异类』权柄：异类之王，转化掌控所有异种，天然压制\"",
+      "flavor": "凡是不属于人的东西，都认得你。",
+      "describe": "战斗开始时获得「异类之王」：己方所有异种单位攻击 +2，持续整场；你对异种单位造成的伤害 ×1.5。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "aberration_king",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "aberration_king",
+          "name": "异类之王",
+          "category": [
+            "buff",
+            "aura"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies",
+              "filter": {
+                "unitType": [
+                  "ABERRATION"
+                ]
+              },
+              "note": "掌控：unit_ghoul / unit_relic / 被 convert 的单位（新增项 7 类型定向已落：编队参数 §1.2b + 共享内核 §一 filter.unitType）"
+            }
+          ],
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.5,
+              "filter": {
+                "targetUnitType": "ABERRATION"
+              },
+              "note": "天然压制：对异种加伤"
+            }
+          },
+          "note": "操纵物品 / 唤醒死尸 / 转化三条召唤转化线的共同收束"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s0_the_bound",
+      "name": "被缚者",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "被缚者",
+      "rarity": "legendary",
+      "axis": "bondage",
+      "flagship": true,
+      "lore": "序列0 被缚者 —— \"『束缚 / 节制』权柄：束缚 / 封印疯狂欲望物品生物\"",
+      "flavor": "你不再挣脱枷锁——你成了枷锁本身。",
+      "describe": "战斗开始时获得「被缚者」：免疫一切位移与行动条后拨；你施加的枷锁、变形诅咒与灵性囚笼不可被驱散。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "the_bound",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "the_bound",
+          "name": "被缚者",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "moveImmune": true,
+            "gaugeReductionImmune": true,
+            "runtimeDispelOverride": {
+              "statusIds": [
+                "shackle",
+                "transmute_curse",
+                "spirit_prison"
+              ],
+              "dispelable": false,
+              "note": "H8 运行时覆写（挂载方声明指定类别 dispelable:false，新增项 9，与愚者 9 同源同落点）：封印的绝对性"
+            },
+            "note": "moveImmune / gaugeReductionImmune 已落 ddd（编队参数 §1.1b，H27/H31，与 F7 同字段正反面）——被缚住了所以推不动、拖不慢"
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s0_item_authority",
+      "name": "物品权柄",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "被缚者",
+      "rarity": "legendary",
+      "axis": "item",
+      "flagship": true,
+      "lore": "序列0 被缚者 —— \"『物品』权柄：掌控各种物品\"",
+      "flavor": "这战场上所有没有生命的东西，都是你的。",
+      "describe": "己方所有物品类单位攻击 +3（4 tick）并立刻获得 30 点行动条；同时驱散全体敌人各 2 个增益。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "secondaryTargets": [
+        {
+          "request": {
+            "faction": "ally",
+            "scope": "all",
+            "filter": {
+              "unitType": [
+                "ITEM"
+              ]
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 4,
+              "target": "secondary_target"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 30,
+              "mode": "delta",
+              "target": "secondary_target",
+              "note": "「我让它动它就动」：让物品类单位立刻获得出手机会；新增项 7 ITEM 定向已落 ddd"
+            },
+            {
+              "type": "dispel",
+              "target": "all_enemies",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 2
+              },
+              "note": "夺走其持有之物（C2 dispel.category 数组）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_prisoner_s0_all_curses",
+      "name": "万咒加身",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "被缚者",
+      "rarity": "legendary",
+      "axis": "curse",
+      "flagship": false,
+      "lore": "序列0 被缚者 —— \"『诅咒』权柄：完成所有类型诅咒，本身极难被诅咒\"",
+      "flavor": "你能想到的每一种诅咒，同时落在了它身上——枷锁、变形、剧毒、怨毒、精神污染，一层压着一层。而你自己，从来没有人诅咒得动。",
+      "describe": "全体敌人同时受到：枷锁 2 tick、变形诅咒 2 tick、中毒 3 回合、易伤 3 回合、精神污染 2 层（3 tick）；自身获得两条整场状态：受到的减益 / 持续伤害状态时长减半，以及 3 次确定性阻挡（免疫减益与持续伤害类状态）。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 9,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "shackle",
+              "duration": 2,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "transmute_curse",
+              "duration": 2,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "poison",
+              "duration": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "mind_taint",
+              "stacks": 2,
+              "duration": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "curse_ward",
+              "duration": null,
+              "target": "self",
+              "note": "本身极难被诅咒（前半）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "curse_ward_block",
+              "duration": null,
+              "target": "self",
+              "note": "本身极难被诅咒（后半）：3 次确定性阻挡"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "curse_ward",
+          "name": "诅咒护体",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "durationModifier": {
+              "scope": "incoming",
+              "mode": "mul",
+              "value": 0.5,
+              "filter": {
+                "category": [
+                  "debuff",
+                  "dot"
+                ]
+              },
+              "note": "H14 durationModifier：受到的 debuff/dot 类状态 duration ×0.5"
+            }
+          }
+        },
+        {
+          "id": "curse_ward_block",
+          "name": "咒壁",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 3,
+          "modifiers": {
+            "immune": {
+              "categories": [
+                "debuff",
+                "dot"
+              ],
+              "note": "G12 immune；每阻挡一次施加 charges -1，归零卸载（C6 次数型）"
+            }
+          },
+          "note": "确定性阻挡（2026-09-04 拍板取代原 chance 0.5，理由同初步反占卜：阻挡属目标选择维度，概率化违反 R1/R5）；次数 ⚠️D 待标定"
+        },
+        {
+          "id": "mind_taint",
+          "name": "精神污染",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "note": "F8 通用状态最小副本：精神污染叠层（F51 stacks，上限 3 层为 F8 建议值）；按层修正属性（H34 statPerStack）数值待拍板，与 madness / whisper 同属叠层 debuff 母版。序列最低引用卡（s0）携带登记，s2 邪物同源引用"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "传说档故意超预算（派发权重极低、一局最多 1 张），超标系数上限 ⚠️D",
+        "「完成所有类型诅咒」= 一次性挂满本途径从序列9 攒到序列3 的全部 debuff 类型（收束倾泻）；「本身极难被诅咒」= curse_ward + curse_ward_block，两段缺一都不是原著那条权柄"
+      ]
+    }
+  ]
+}

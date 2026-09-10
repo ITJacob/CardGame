@@ -1,0 +1,2662 @@
+{
+  "pathwayId": "criminal",
+  "pathwayName": "罪犯",
+  "sourceFile": "../罪犯途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "vice": {
+      "symbol": "🜁",
+      "name": "恶欲"
+    },
+    "filth": {
+      "symbol": "🜂",
+      "name": "污秽"
+    },
+    "elements": {
+      "symbol": "🜃",
+      "name": "领域"
+    },
+    "demon": {
+      "symbol": "🜄",
+      "name": "恶魔"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_criminal_s9_strong_body",
+      "name": "强壮身体",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "罪犯",
+      "rarity": "common",
+      "axis": "demon",
+      "flagship": false,
+      "lore": "序列9 罪犯 —— \"强壮身体和敏锐直觉，身心处于恶欲统治下\"",
+      "flavor": "你的身体比看上去结实得多。战斗开始时，生命上限 +15、护甲 +2。",
+      "describe": "战斗开始时，自身生命上限 +15、护甲 +2，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 15,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s9_keen_intuition",
+      "name": "敏锐直觉",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "罪犯",
+      "rarity": "common",
+      "axis": "demon",
+      "flagship": false,
+      "lore": "序列9 罪犯 —— \"强壮身体和敏锐直觉\"",
+      "flavor": "你总比别人先半步察觉到刀锋的方向。战斗开始时，行动条速率 +6；而冲着你脑子来的东西，也伤不到你多少——精神抗性 +10%。",
+      "describe": "战斗开始时，自身行动条速率 +6、精神抗性 +10%，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 6,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": 10,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge.rate) 表达常驻修正，待内核裁定归一",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_criminal_s9_crime_abilities",
+      "name": "犯罪能力",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "罪犯",
+      "rarity": "common",
+      "axis": "vice",
+      "flagship": true,
+      "lore": "序列9 罪犯 —— \"掌握各种犯罪能力，各类武器熟练上手\"",
+      "flavor": "下毒、勒颈、背后那一下——你太熟这些了。造成 4 点物理伤害，并在它身上留下三成机会补一道易于下手的破绽。",
+      "describe": "对一名近战敌人造成 4 点物理伤害，并有 30% 概率使其易伤 2 tick。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 4
+        },
+        {
+          "type": "mount_status",
+          "statusId": "vulnerable",
+          "duration": 2,
+          "condition": {
+            "kind": "chance",
+            "p": 0.3
+          },
+          "note": "概率只作用于是否附加状态（非伤害维度，R5 合规），需登记 RandomUsageRegistry（R3）、单次抽样（R4）"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 4 → 6 → 8（序列8 档）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 8
+              }
+            ]
+          },
+          {
+            "name": "惯犯",
+            "note": "改为必定附加 vulnerable 2t，伤害降为 3",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 3
+              },
+              {
+                "type": "mount_status",
+                "statusId": "vulnerable",
+                "duration": 2
+              }
+            ]
+          }
+        ]
+      },
+      "sharedAcross": [
+        "prisoner"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s9_weapon_mastery",
+      "name": "武器上手",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "罪犯",
+      "rarity": "common",
+      "axis": "elements",
+      "flagship": false,
+      "lore": "序列9 罪犯 —— \"掌握各种犯罪能力，各类武器熟练上手\"",
+      "flavor": "刀、枪、绞索、随手抄起的铁棍——到了你手里都一样趁手。整场战斗中，你造成的物理伤害提升 15%。",
+      "describe": "战斗开始时获得「武器上手」：自身造成的物理伤害 ×1.15，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "weapon_mastery",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "weapon_mastery",
+          "name": "武器上手",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.15,
+              "filter": {
+                "element": [
+                  "physical"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "sharedAcross": [
+        "prisoner"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s8_lost_conscience",
+      "name": "失去良知",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "折翼天使",
+      "rarity": "common",
+      "axis": "vice",
+      "flagship": false,
+      "lore": "序列8 折翼天使 —— \"失去良知，与恶欲同流\"",
+      "flavor": "你已经不记得良知是什么东西了，所以没人能用它来刺痛你。整场战斗中精神抗性 +20%；而那些被欲望与污秽沾过的人，在你眼里格外好下手——你对身上带着负面状态的目标造成的伤害提高 15%。",
+      "describe": "战斗开始时获得「失去良知」：精神抗性 +20%，对带有减益或持续伤害状态的目标造成的伤害 ×1.15，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "lost_conscience",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "lost_conscience",
+          "name": "失去良知",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": 20,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.15,
+              "filter": {
+                "targetHasCategory": [
+                  "debuff",
+                  "dot"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s8_slow",
+      "name": "迟缓",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "折翼天使",
+      "rarity": "common",
+      "axis": "filth",
+      "flagship": false,
+      "lore": "序列8 折翼天使 —— \"共通能力『迟缓』\"",
+      "flavor": "你伸手按住了它的影子。它慢了下来——接下来的 3 个 tick，它连抬手都比别人慢半拍，行动条速率只剩七成五。",
+      "describe": "对一名远程敌人造成 2 点物理伤害，并使其迟缓 3 tick：行动条速率 ×0.75。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 2
+        },
+        {
+          "type": "mount_status",
+          "statusId": "slow",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "slow",
+          "name": "迟缓",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "gaugeRateMul": 0.75
+          },
+          "note": "H24 减速族（与 F7 shackle 同母版，0.75 档不带 moveImmune）"
+        }
+      ],
+      "sharedAcross": [
+        "prisoner"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s8_demon_spells",
+      "name": "恶魔类法术",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "折翼天使",
+      "rarity": "common",
+      "axis": "elements",
+      "flagship": false,
+      "lore": "序列8 折翼天使 —— \"获得恶魔类法术能力（因人而异）：毒火 / 诅咒 / 黑烟\"",
+      "flavor": "深渊给你的那份礼物，和给别人的都不一样。你张开手——是灼人的毒火、是一句短促的诅咒、还是一团呛人的黑烟，全看你自己是谁。",
+      "describe": "三选一：毒火造成 3 点火焰伤害并中毒 2 tick；诅咒使其易伤 3 tick 并造成 2 点精神伤害；黑烟使其幻觉（下一次攻击挥空）并造成 2 点毒素伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "fire",
+          "value": 3,
+          "note": "默认分支：毒火"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "poison",
+          "duration": 2,
+          "note": "毒火分支"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "hallucination",
+          "name": "幻觉",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty"
+              }
+            ]
+          },
+          "note": "最小副本：与愚者途径 v0.2「制造幻觉」同名同机制（C7 已验证），建议两稿共用；本条 charges/duration 由 Grant 传参"
+        }
+      ],
+      "variants": [
+        {
+          "id": "poison_fire",
+          "name": "毒火",
+          "note": "火里带毒",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "poison",
+              "duration": 2
+            }
+          ]
+        },
+        {
+          "id": "curse",
+          "name": "诅咒",
+          "note": "短促的恶毒咒言",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 3
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "id": "black_smoke",
+          "name": "黑烟",
+          "note": "呛得看不清，下一击挥空",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "hallucination",
+              "charges": 1,
+              "duration": 2
+            },
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "SKILL_DEF_MODES",
+          "note": "释放时三选一变体依赖 SkillDef.modes（新增项 21，ddd 无落点，🟡 待拍）；退化方案：拆三张独立卡",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_criminal_s7_demon_rite",
+      "name": "恶魔仪式",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "连环杀手",
+      "rarity": "uncommon",
+      "axis": "demon",
+      "flagship": false,
+      "lore": "序列7 连环杀手 —— \"掌握涉及恶魔的知识和仪式\"",
+      "flavor": "你割开自己的手掌，把血画成那个不该被画出的形状。你失去 6 点生命，换来 8 点能量——以及一道留在自己身上的、深渊看得见的印记。",
+      "describe": "自身失去 6 点生命、获得 8 点能量，并叠加 1 层「仪式刻印」（最多 3 层，整场），刻印是深渊召唤的强化材料。",
+      "cost": {
+        "energy": 1,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "hp",
+              "value": -6,
+              "mode": "delta",
+              "target": "self"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 8,
+              "mode": "delta",
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "rite_mark",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "rite_mark",
+          "name": "仪式刻印",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "note": "H11 计数型母版；由深渊召唤经 status.consume（F48）消耗，每层使恶魔 attack +2（F54 companionBuff）"
+        }
+      ],
+      "sharedAcross": [
+        "prisoner"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s7_abyss_summon",
+      "name": "深渊召唤",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "连环杀手",
+      "rarity": "uncommon",
+      "axis": "demon",
+      "flagship": true,
+      "lore": "序列7 连环杀手 —— \"能从深渊召唤恶魔投影获得帮助\"",
+      "flavor": "裂隙在你脚边张开，硫磺味先涌了出来——一头恶魔的投影爬进战场，站到你队伍的末尾，身上还烧着你仪式留下的印记。",
+      "describe": "在己方队尾召唤一只恶魔投影（50% 生命/攻击），登场时对相邻敌人造成 2 点火焰伤害；消耗自身全部仪式刻印，每层使恶魔攻击 +2。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "spawn",
+              "unitId": "unit_demon",
+              "position": "tail",
+              "hpRatio": 0.5,
+              "atkRatio": 0.5,
+              "note": "F45 unit_demon（召唤物基线模板）；自带 on_spawn → 相邻敌方 damage(fire,2)（硫磺味，A2 正向用法）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "rite_mark",
+              "stacks": "all",
+              "stackMode": "consume",
+              "note": "F48 消耗自身全部仪式刻印层数，每层使恶魔 attack +2（F54 companionBuff）"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "prisoner"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "consume_status 步骤为 status.consume（F48，效果上下文 §2.1）语义的 JSON 表达，非第 12 原语",
+        "稿面未写 reach：非攻击卡取 none",
+        "源稿为消耗自身全部 rite_mark 层数：stacks 取 \"all\"（原脚本归一误为 -1）"
+      ]
+    },
+    {
+      "id": "skill_criminal_s7_divination_jam",
+      "name": "干扰占卜与通灵",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "连环杀手",
+      "rarity": "uncommon",
+      "axis": "demon",
+      "flagship": false,
+      "lore": "序列7 连环杀手 —— \"有效干扰占卜和通灵\"",
+      "flavor": "占卜者在你身上只捞到一团模糊的恶念。战斗开始的刹那，敌人指向前两个单体技能注定落在空处；而那些被召来、被唤起的灵体，它们与深渊之间的联系被你掐断了——你对召唤物与灵体类单位造成的伤害提高三成。",
+      "describe": "战斗开始时获得「占卜遮蔽」2 层：前两次被敌方单体技能指定时攻击落空（转向最近空坐标）；整场对召唤物与灵体类单位造成的伤害 ×1.3。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "divination_veil",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "divination_block",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "divination_veil",
+          "name": "占卜遮蔽",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 2,
+          "modifiers": {
+            "redirect": {
+              "to": "first_empty",
+              "sourceFilter": "skill",
+              "direction": "inbound",
+              "scope": "single"
+            }
+          },
+          "note": "C7/H12 first_empty 确定性落空（2026-09-04 拍板取代概率），charges 每次生效 -1，归零卸载（C6）"
+        },
+        {
+          "id": "divination_block",
+          "name": "通灵阻断",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.3,
+              "filter": {
+                "anyOf": [
+                  {
+                    "unitType": [
+                      "SPIRIT"
+                    ]
+                  },
+                  {
+                    "isSummon": true
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "sharedAcross": [
+        "prisoner"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s6_demonize",
+      "name": "恶魔化",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "恶魔",
+      "rarity": "uncommon",
+      "axis": "demon",
+      "flagship": true,
+      "lore": "序列6 恶魔 —— \"『恶魔化』：巨大化 3 米，山羊角 + 巨型翅膀 + 硫磺味\"",
+      "flavor": "你的脊背裂开，一对巨翼撑破了衣服；你的颅骨上长出弯曲的羊角，身体一路撑到三米高——空气里全是硫磺的臭味。5 个 tick 内攻击力 +4、生命上限 +15、护甲 +2、行动条速率 +4；你的每一次攻击都带着那股恶臭，让对方中毒。代价是你的理智随身体一起膨胀——精神抗性 -15%。",
+      "describe": "变身恶魔 5 tick：攻击 +4、生命上限 +15、护甲 +2、行动条速率 +4、精神抗性 -15%；期间每次造成伤害使目标中毒 1 tick。可被驱散。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 7,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "demonize",
+          "duration": 5,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "demonize",
+          "name": "恶魔化",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 4,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 15,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 2,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 4,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": -15,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self",
+              "note": "代价段：与恶欲同流，理智下降"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "poison",
+                  "duration": 1,
+                  "note": "硫磺味"
+                }
+              ]
+            }
+          ],
+          "note": "H10 参数化形态增益母版（与 F10 beast_form 同母版保留独立 ID）；状态触发器产生的伤害不再触发同一状态触发器（防循环，与囚犯 curse_link 同族待框架裁定）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 修正段同敏锐直觉",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_criminal_s6_malice_sense",
+      "name": "恶意感知",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "恶魔",
+      "rarity": "uncommon",
+      "axis": "demon",
+      "flagship": false,
+      "lore": "序列6 恶魔 —— \"『恶意感知』：预知危险来源并扼杀\"",
+      "flavor": "你总能提前半步知道那一下要从哪里来——于是你先出手，把危险连同它的主人一起掐死。战斗开始时行动条速率 +5；整场战斗中，任何攻击你的人都会被反噬 2 点伤害。",
+      "describe": "战斗开始时，自身行动条速率 +5（整场），并获得反伤 2（整场）：攻击你的人受到 2 点反弹伤害。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "thorns",
+          "value": 2,
+          "duration": null,
+          "target": "self",
+          "note": "复用既有「反伤」状态（H42 常驻模板 + 数值参数化）"
+        }
+      ],
+      "sharedAcross": [
+        "prisoner"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 修正同敏锐直觉",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_criminal_s6_magma_sword",
+      "name": "岩浆之剑",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "恶魔",
+      "rarity": "uncommon",
+      "axis": "elements",
+      "flagship": false,
+      "lore": "序列6 恶魔 —— \"火焰 / 毒素 / 污秽三领域法术：『岩浆之剑』\"",
+      "flavor": "你手里的剑刃变成了一道流淌的岩浆。造成 5 点火焰伤害，并把它点着——它会持续灼烧 3 个 tick。",
+      "describe": "对一名近战敌人造成 5 点火焰伤害，并使其灼烧 3 tick（每 tick 2 点伤害）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "fire",
+          "value": 5
+        },
+        {
+          "type": "mount_status",
+          "statusId": "burn",
+          "duration": 3
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s6_sulfur_orb",
+      "name": "硫磺火球",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "恶魔",
+      "rarity": "uncommon",
+      "axis": "elements",
+      "flagship": false,
+      "lore": "序列6 恶魔 —— \"火焰 / 毒素 / 污秽三领域法术：『硫磺火球』\"",
+      "flavor": "你把一团硫磺捏成球掷出去。它在目标身上炸开（4 点火焰伤害），溅了旁边一身（2 点火焰伤害），而那股恶臭让主目标中毒 2 个 tick。",
+      "describe": "对一名远程敌人造成 4 点火焰伤害、相邻敌人 2 点火焰伤害，并使主目标中毒 2 tick。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "fire",
+          "value": 4
+        },
+        {
+          "type": "damage",
+          "element": "fire",
+          "value": 2,
+          "spread": "splash_adjacent"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "poison",
+          "duration": 2
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s6_abyssalize",
+      "name": "深渊化",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "恶魔",
+      "rarity": "uncommon",
+      "axis": "elements",
+      "flagship": true,
+      "lore": "序列6 恶魔 —— \"『深渊化』：将一片区域化为深渊，无视防护地侵蚀众生，克制一切替身与幻影\"",
+      "flavor": "你脚下的地面裂开了，翻涌出黏腻的黑暗。那不是影子，是深渊本身——它啃噬着每一层护甲，而任何妄图用替身、幻象蒙混过去的把戏，在这里都失去了意义。",
+      "describe": "降临「深渊化」界域 3 回合：全场所有单位每 tick 受到 2 点无视护甲的腐蚀伤害；替身/镜像/幻象类效果失效；「深渊/污秽」标签卡效果 ×1.3。自身迷失值 +1。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_abyssal",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_abyssal",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：所有单位每 tick 受 2 点无视护甲腐蚀（无差别，双向）；替身/镜像/幻象类能力在本界域失效（无分敌我）",
+        "rulePatches": [
+          {
+            "kind": "disable_effect",
+            "side": "both",
+            "tag": [
+              "mirror",
+              "illusion",
+              "clone"
+            ]
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "深渊",
+              "污秽"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_abyssal",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "none",
+                "value": 2,
+                "pierce": [
+                  "armor"
+                ],
+                "target": "all_enemies",
+                "note": "全场无差别腐蚀，敌我双方同受；稿面元素 void 非枚举，归一为 none"
+              },
+              {
+                "type": "damage",
+                "element": "none",
+                "value": 2,
+                "pierce": [
+                  "armor"
+                ],
+                "target": "all_allies",
+                "note": "双向：己方同受"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "disable_effect",
+            "side": "both",
+            "tag": [
+              "mirror",
+              "illusion",
+              "clone"
+            ]
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "深渊",
+              "污秽"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "tags": [
+        "深渊",
+        "污秽"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面 damage(element: void, 2)：void 不在九元素枚举内，归一为 none + pierce:[armor]，语义保留"
+      ]
+    },
+    {
+      "id": "skill_criminal_s6_foul_words",
+      "name": "污秽之语",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "恶魔",
+      "rarity": "uncommon",
+      "axis": "filth",
+      "flagship": true,
+      "lore": "序列6 恶魔 —— \"火焰 / 毒素 / 污秽三领域法术：『岩浆之剑』『硫磺火球』『污秽之语』（缓慢 / 死 / 堕落）\"",
+      "flavor": "你说的不是人能发出的音节。你念出那个词——是让它慢下来，是判它死，还是让它堕落，全看你想说什么。",
+      "describe": "三选一：缓慢使目标行动条速率 ×0.6（3 tick）并造成 1 点毒素伤害；死使目标中毒 4 tick，若其生命 ≤25% 再造成 6 点毒素伤害；堕落造成 2 点精神伤害并使其陷入欲望 3 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "mode": "mul",
+          "value": 0.6,
+          "duration": 3,
+          "note": "默认分支：缓慢"
+        },
+        {
+          "type": "damage",
+          "element": "poison",
+          "value": 1,
+          "note": "缓慢分支"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "lust",
+          "name": "欲望",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "note": "F17 通用状态最小副本：受伤加重 + 禁获护盾（buffBlocked 同族）；权威数值定义见 F17 登记，此处不重复"
+        }
+      ],
+      "variants": [
+        {
+          "id": "slowness",
+          "name": "缓慢",
+          "note": "血肉变得迟钝",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "mode": "mul",
+              "value": 0.6,
+              "duration": 3
+            },
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "id": "death",
+          "name": "死",
+          "note": "对将死之物宣判",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "poison",
+              "duration": 4
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "target",
+                "cmp": "<=",
+                "n": 25
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "poison",
+                  "value": 6
+                }
+              ],
+              "else": []
+            }
+          ]
+        },
+        {
+          "id": "corruption",
+          "name": "堕落",
+          "note": "在它心里种下欲望",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            },
+            {
+              "type": "mount_status",
+              "statusId": "lust",
+              "duration": 3
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "SKILL_DEF_MODES",
+          "note": "三选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍）",
+          "landed": false
+        },
+        {
+          "code": "GAUGE_RATE_MUL_STAT_MODE",
+          "note": "modify_stat.mode 枚举为 delta/set/to_at_least/to_at_most，无 mul；卡面 ×0.6 速率按 mode:mul 表达，待内核裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_criminal_s5_desire_control",
+      "name": "掌控欲望",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "欲望使徒",
+      "rarity": "rare",
+      "axis": "vice",
+      "flagship": true,
+      "lore": "序列5 欲望使徒 —— \"『掌控欲望』：操纵情绪欲望，诱使堕落 / 情绪失控 / 欲望爆炸\"",
+      "flavor": "你伸手在它心里拨了一下那根弦，某个被压了很久的东西就松动了。它陷入「欲望」4 个 tick，并受到 2 点精神伤害——若它心里早已有欲望在烧，这次拨动就足以让它彻底失控，转身扑向自己人。",
+      "describe": "对一名敌人造成 2 点精神伤害并使其陷入欲望 4 tick；若施加前它已持有欲望，则转而魅惑 2 tick（攻击其己方队友）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            },
+            {
+              "type": "mount_status",
+              "statusId": "lust",
+              "duration": 4
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "lust",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "charm",
+                  "duration": 2,
+                  "note": "欲望爆炸前的情绪失控：攻击其己方队友"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "charm",
+          "name": "魅惑",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "self"
+              }
+            ]
+          },
+          "note": "F15 最小副本（H12 target_override 族）：反向嘲讽，攻击其己方队友；权威定义见 F15 登记"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "If 判定刻意放在 mount_status(lust) 之后：语义是「目标此前已有欲望」则升级为 charm；引擎按顺序结算即可承载"
+      ]
+    },
+    {
+      "id": "skill_criminal_s5_desire_blast",
+      "name": "欲望爆炸",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "欲望使徒",
+      "rarity": "rare",
+      "axis": "vice",
+      "flagship": false,
+      "lore": "序列5 欲望使徒 —— \"掌控欲望：操纵情绪欲望，诱使堕落 / 情绪失控 / 欲望爆炸\"",
+      "flavor": "你没去压它心里的欲望，你给它添了一把柴。三个 tick 后，它会从里到外炸开——8 点精神伤害，连旁边的人也要溅上 4 点。",
+      "describe": "使一名敌人成为「欲望炸弹」3 tick：到期时其受到 8 点精神伤害，相邻敌人受到 4 点精神伤害；被驱散则不爆炸。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "desire_bomb",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "desire_bomb",
+          "name": "欲望炸弹",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "triggers": [
+            {
+              "event": "on_remove",
+              "reason": [
+                "expired"
+              ],
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 8,
+                  "target": "self",
+                  "note": "作用于原持有者"
+                },
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 4,
+                  "spread": "splash_adjacent"
+                }
+              ],
+              "note": "H29 on_remove reason 过滤：仅自然到期爆炸，被驱散不炸"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s5_mind_shock",
+      "name": "精神冲击",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "欲望使徒",
+      "rarity": "rare",
+      "axis": "vice",
+      "flagship": false,
+      "lore": "序列5 欲望使徒 —— \"『精神冲击』：燃烧恶魔角冲击精神\"",
+      "flavor": "你低头，羊角上腾起黑色的火焰，然后你把它撞进了对方的脑子。造成 5 点精神伤害并使其眩晕 1 个 tick；若你正处于恶魔化，那对燃烧的角会再追加 3 点精神伤害。",
+      "describe": "对一名近战敌人造成 5 点精神伤害并眩晕 1 tick；若自身处于恶魔化，再追加 3 点精神伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 5
+            },
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "duration": 1
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "caster_status_exists",
+                "id": "demonize"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 3,
+                  "note": "燃烧的恶魔角（途径内协同：恶魔化是充能器）"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s5_desire_avatar",
+      "name": "欲望化身",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "欲望使徒",
+      "rarity": "rare",
+      "axis": "vice",
+      "flagship": false,
+      "lore": "序列5 欲望使徒 —— \"『欲望化身』：转化为黑色液体规避 / 隐匿 / 影响\"",
+      "flavor": "你塌成了一摊漆黑的、缓慢流动的液体。3 个 tick 内没人能把你当作单体目标，打在你身上的力道也要少掉四分之一；而谁被这摊黑液沾到，心里就会长出点什么东西。",
+      "describe": "化作黑色液体并滑回己方最后位，持续 3 tick：不可被单体技能选中、受伤 ×0.75；造成伤害时使目标陷入欲望 2 tick，但首次造成伤害后失去不可选中。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "target": "self",
+              "note": "摊开滑回己方最后位，G8 合规（锁定己方半场）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "desire_avatar",
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "desire_avatar",
+          "name": "欲望化身",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "damage_taken_mul": 0.75,
+            "untargetableByTargeted": {
+              "direction": "both",
+              "scope": "single"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "lust",
+                  "duration": 2,
+                  "note": "影响：被黑液沾到"
+                }
+              ],
+              "note": "on_break：首次造成伤害后失去 untargetable（液体溅出去藏不住了），减伤与感染保留"
+            }
+          ],
+          "note": "H5 潜行/虚化母版（与 F4/F11/囚犯灵体化同族）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s4_mental_duelist",
+      "name": "精神交锋",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "魔鬼",
+      "rarity": "rare",
+      "axis": "vice",
+      "flagship": false,
+      "lore": "序列4 魔鬼 —— \"擅长精神层面交锋，高智商\"",
+      "flavor": "你在脑子里的战场上从没输过。整场战斗中精神抗性 +20%；而被你的欲望、魅惑与呓语污染过的人，是最容易被你看穿的——你对他们造成的伤害提高 25%。",
+      "describe": "战斗开始时获得「精神交锋」：精神抗性 +20%，对持有欲望/魅惑/呓语的目标造成的伤害 ×1.25，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mental_duelist",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mental_duelist",
+          "name": "精神交锋",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": 20,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.25,
+              "filter": {
+                "targetHasStatus": [
+                  "lust",
+                  "charm",
+                  "whisper"
+                ]
+              }
+            }
+          },
+          "note": "与【失去良知】分界：本条定向（本途径三污染状态，+25%），那条广谱（任何 debuff/dot，+15%）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s4_hallucinate",
+      "name": "迷幻",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "魔鬼",
+      "rarity": "rare",
+      "axis": "vice",
+      "flagship": true,
+      "lore": "序列4 魔鬼 —— \"通过声音 / 眼神 / 动作让目标陷入迷幻，欲望膨胀\"",
+      "flavor": "你说了句话，或者只是看了它一眼。它眼前的世界晃了一下——接下来的两次攻击都挥向了不存在的东西；而它心里那些本来还能压住的东西，开始膨胀。",
+      "describe": "使一名敌人迷幻 4 tick：接下来 2 次攻击挥向空处；并使其陷入欲望 3 tick。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "hallucination",
+              "charges": 2,
+              "duration": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "lust",
+              "duration": 3
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s4_acid_marsh",
+      "name": "强酸沼泽",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "魔鬼",
+      "rarity": "rare",
+      "axis": "elements",
+      "flagship": false,
+      "lore": "序列4 魔鬼 —— \"新增：『强酸沼泽』、『地狱之火』、『腐蚀毒雾』等\"",
+      "flavor": "它脚下的地面变成了冒泡的酸沼。目标及其左右相邻的单位护甲被蚀掉 3 点（持续 4 个 tick），并各自受到 2 点毒素伤害。",
+      "describe": "使目标及其相邻敌人的护甲 -3（4 tick），并各受到 2 点毒素伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "armor_desc"
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": -3,
+          "mode": "delta",
+          "duration": 4,
+          "spread": "splash_adjacent"
+        },
+        {
+          "type": "damage",
+          "element": "poison",
+          "value": 2,
+          "spread": "splash_adjacent"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面 modify_stat(armor,-3,duration:4) 带 duration 的护甲修正常量化归一为 modify_stat(stat:armor) 容量语义"
+      ]
+    },
+    {
+      "id": "skill_criminal_s4_hellfire",
+      "name": "地狱之火",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "魔鬼",
+      "rarity": "rare",
+      "axis": "elements",
+      "flagship": false,
+      "lore": "序列4 魔鬼 —— \"新增：『强酸沼泽』、『地狱之火』、『腐蚀毒雾』等\"",
+      "flavor": "你把手按在地上，黑红色的火从它脚下窜起来。造成 6 点火焰伤害，并让它烧起来，持续 3 个 tick。",
+      "describe": "对一名远程敌人造成 6 点火焰伤害，并使其灼烧 3 tick（每 tick 2 点伤害）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "fire",
+          "value": 6
+        },
+        {
+          "type": "mount_status",
+          "statusId": "burn",
+          "duration": 3
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s4_corrosive_fog",
+      "name": "腐蚀毒雾",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "魔鬼",
+      "rarity": "rare",
+      "axis": "elements",
+      "flagship": false,
+      "lore": "序列4 魔鬼 —— \"新增：『强酸沼泽』『地狱之火』、『腐蚀毒雾』等\"",
+      "flavor": "一团黄绿色的雾从你袖口漫开，笼罩了整个战场。全体敌人受到 2 点毒素伤害，并中毒 3 个 tick。",
+      "describe": "全体敌人受到 2 点毒素伤害，并中毒 3 tick。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "poison",
+          "value": 2,
+          "target": "all_enemies"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "poison",
+          "duration": 3,
+          "target": "all_enemies"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s3_whispers",
+      "name": "呓语",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "呓语者",
+      "rarity": "epic",
+      "axis": "filth",
+      "flagship": true,
+      "lore": "序列3 呓语者 —— \"声音和单词能让非凡者失控 / 重创 / 精神混乱 / 诅咒\"",
+      "flavor": "你开始说话了。没有人听懂那些音节，但每个听见的人都会出事——是失控、是重创、是彻底乱掉、还是被诅咒，全看你念出了哪一个词。",
+      "describe": "四选一：失控使目标魅惑 2 tick（攻击自己人）；重创造成 8 点精神伤害；混乱叠加 2 层呓语（3 tick）并使其行动条速率 ×0.7；诅咒使其易伤 4 tick 并中毒 3 tick。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "charm",
+          "duration": 2,
+          "note": "默认分支：失控"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "whisper",
+          "name": "呓语",
+          "category": [
+            "debuff",
+            "dot"
+          ],
+          "dispelable": true,
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "note": "F16 通用状态最小副本：精神污染叠层（F51 stacks）；污染权柄（序列3）可将其运行时覆写为不可驱散。权威定义见 F16 登记"
+        }
+      ],
+      "variants": [
+        {
+          "id": "lose_control",
+          "name": "失控",
+          "note": "它转身扑向自己人",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "charm",
+              "duration": 2
+            }
+          ]
+        },
+        {
+          "id": "maul",
+          "name": "重创",
+          "note": "一句话就撕开了它的脑子",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 8
+            }
+          ]
+        },
+        {
+          "id": "confusion",
+          "name": "混乱",
+          "note": "呓语在它脑子里回响，它连先后都分不清了",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "whisper",
+              "stacks": 2,
+              "duration": 3
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "mode": "mul",
+              "value": 0.7,
+              "duration": 3
+            }
+          ]
+        },
+        {
+          "id": "curse",
+          "name": "诅咒",
+          "note": "一个短促的、污秽的咒",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "poison",
+              "duration": 3
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "SKILL_DEF_MODES",
+          "note": "四选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍）；退化方案：拆四张独立史诗卡",
+          "landed": false
+        },
+        {
+          "code": "GAUGE_RATE_MUL_STAT_MODE",
+          "note": "混乱分支 gauge.rate ×0.7 同污秽之语缓慢分支",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_criminal_s3_pollution_authority",
+      "name": "污染权柄",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "呓语者",
+      "rarity": "epic",
+      "axis": "filth",
+      "flagship": false,
+      "lore": "序列3 呓语者 —— \"掌握一定『污染』权柄（心灵精神方面）\"",
+      "flavor": "污染在你手里是有主人的东西。整场战斗中，你施加的负面状态与持续伤害都会多持续 1 个 tick；而你种进别人脑子里的呓语，除了你，没人洗得掉。",
+      "describe": "战斗开始时获得「污染权柄」：自身施加的减益与持续伤害状态时长 +1 tick；自身施加的呓语不可被驱散。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "pollution_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "pollution_authority",
+          "name": "污染权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "durationModifier": {
+              "scope": "outgoing",
+              "mode": "add",
+              "value": 1,
+              "filter": {
+                "category": [
+                  "debuff",
+                  "dot"
+                ]
+              }
+            },
+            "dispelableOverride": {
+              "statusIds": [
+                "whisper"
+              ],
+              "value": false
+            }
+          },
+          "note": "H14 durationModifier（outgoing）+ H8 运行时覆写 dispelable"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s3_distant_voice",
+      "name": "远距离传声",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "呓语者",
+      "rarity": "epic",
+      "axis": "filth",
+      "flagship": false,
+      "lore": "序列3 呓语者 —— \"可远距离传声让目标暴毙\"",
+      "flavor": "你隔着整个战场，把那个词直接送进了它耳朵里。造成 6 点精神伤害——而如果它已经只剩一口气，这句话就足以让它当场倒下（追加 8 点精神伤害）。",
+      "describe": "无视距离对一名敌人造成 6 点精神伤害；若其生命 ≤25%，再追加 8 点精神伤害。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 6
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "hp_percent",
+            "side": "target",
+            "cmp": "<=",
+            "n": 25
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 8
+            }
+          ],
+          "else": []
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s2_blood_master",
+      "name": "鲜血主宰",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "鲜血大公",
+      "rarity": "epic",
+      "axis": "demon",
+      "flagship": true,
+      "lore": "序列2 鲜血大公 —— \"『鲜血主宰』：掌握自身和他人鲜血体液\"",
+      "flavor": "你伸手一握，它血管里的东西就听你的了。造成 7 点伤害并汲取其中 5 点化为自身生命；而它的伤口不会合拢——3 个 tick 内持续失血，且任何治疗都只能起一半作用。",
+      "describe": "对一名近战敌人造成 7 点伤害并汲取 5 点化为自身生命；使其失血 3 tick：每 tick 流失 1 点生命，受到的治疗减半。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "drain",
+          "resource": "hp",
+          "value": 7,
+          "healRatio": 0.71,
+          "note": "7 伤回 5（healRatio 5/7，新增项 22 已落 ddd）"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "hemorrhage",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "hemorrhage",
+          "name": "失血",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "heal_received_mul": 0.5
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 1,
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "H2 + H21；与「中毒」区分：中毒穿甲不禁疗，失血禁疗不穿甲"
+        }
+      ],
+      "sharedAcross": [
+        "prisoner"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s2_malice_avatar",
+      "name": "恶意化身",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "鲜血大公",
+      "rarity": "epic",
+      "axis": "demon",
+      "flagship": true,
+      "lore": "序列2 鲜血大公 —— \"『恶意化身』：恶意不灭魔鬼不死，可在目标心里复活\"",
+      "flavor": "你散在别人心里的那些恶意，从来不会真的散掉。每场战斗中第一次倒下时，只要场上还有一个人心里留着你的污染，你就会从那份恶意里重新长出来——以 30% 的生命回到队列末尾，而那个人心里的恶意也随之被消耗掉一层。",
+      "describe": "每场一次：自身死亡时，若场上仍有敌人持有你施加的呓语/欲望/魅惑，则消耗其中 1 层，以 30% 生命在己方队尾复活。",
+      "hook": "on_death",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "malice_avatar",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "malice_avatar",
+          "name": "恶意化身",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_death",
+              "condition": {
+                "kind": "any_of",
+                "conditions": [
+                  {
+                    "kind": "field_status_count",
+                    "id": "whisper",
+                    "cmp": ">=",
+                    "n": 1
+                  },
+                  {
+                    "kind": "field_status_count",
+                    "id": "lust",
+                    "cmp": ">=",
+                    "n": 1
+                  },
+                  {
+                    "kind": "field_status_count",
+                    "id": "charm",
+                    "cmp": ">=",
+                    "n": 1
+                  }
+                ],
+                "note": "场上存在由你施加污染的敌方单位（field_status_count + casterId 归属 F56）"
+              },
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "whisper",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "note": "F48 消耗谓词命中单位身上的污染状态 1 层——源稿为 whisper/lust/charm 任一（any_of 命中项），JSON 以 whisper 为代表登记"
+                },
+                {
+                  "type": "spawn",
+                  "reviveOf": "self",
+                  "hpRatio": 0.3,
+                  "position": "tail",
+                  "oncePerBattle": true
+                }
+              ],
+              "note": "else：正常死亡"
+            }
+          ],
+          "note": "稿面 charges:1 承载一次性，JSON 折为 spawn.oncePerBattle；复活优先级链见编队上下文 §十（H23）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "复活材料消耗：源稿为命中单位身上 whisper/lust/charm 任一状态 1 层，JSON statusId 以 whisper 为代表（any_of 命中项由执行侧按谓词解析）"
+      ],
+      "frameworkFlags": [
+        {
+          "code": "ANY_OF_PREDICATE",
+          "note": "field_status_count 谓词单 id，三状态存在性需 any_of 组合子，待内核裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_criminal_s2_body_authority",
+      "name": "身体权柄",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "鲜血大公",
+      "rarity": "epic",
+      "axis": "demon",
+      "flagship": false,
+      "lore": "序列2 鲜血大公 —— \"一定『恶意』和『身体』权柄\"",
+      "flavor": "这具身体归你自己管，谁也别想动它。战斗开始时生命上限 +15、物理抗性 +15%；整场战斗中，你的生命上限与护甲不会被任何力量削减——能腐蚀一切壁垒的侵蚀者，唯独腐蚀不了自己的君王。",
+      "describe": "战斗开始时，自身生命上限 +15、物理抗性 +15%（整场），且生命上限与护甲不会被削减（整场）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 15,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:physical",
+          "value": 15,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "body_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "body_authority",
+          "name": "身体权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "immune_stat_reduction": [
+              "hp_max",
+              "armor"
+            ]
+          },
+          "note": "编队参数 §1.1b immune_stat_reduction（原文标注罪犯）；与【侵蚀者】的正反对照"
+        }
+      ],
+      "sharedAcross": [
+        "prisoner"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s1_filth_king",
+      "name": "污秽之王",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "污秽君王",
+      "rarity": "legendary",
+      "axis": "filth",
+      "flagship": true,
+      "lore": "序列1 污秽君王 —— \"『污秽之王』：肮脏罪恶不净物的掌控者\"",
+      "flavor": "战场上所有脏的东西都认得你，也听你的。全体敌人受到 3 点毒素伤害；它们身上原本就在溃烂、灼烧、被呓语侵蚀的伤口，全都在你手里重新发酵了一遍（各叠加 1 层、持续时间刷新至 3 个 tick）；而每有一个人在你面前溃烂，你就从那股污秽里汲取 2 点生命。",
+      "describe": "全体敌人受到 3 点毒素伤害；已中毒/灼烧/呓语的敌人各叠 1 层并刷新至 3 tick；每命中一个带持续伤害状态的敌人，自身回复 2 点生命。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 3,
+              "target": "all_enemies"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "poison",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "poison",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "duration": 3,
+                  "target": "all_enemies",
+                  "note": "重复挂载刷新 duration + 叠层（编队上下文 §六，F51）"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "burn",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "burn",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "duration": 3,
+                  "target": "all_enemies"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "whisper",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "whisper",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "duration": 3,
+                  "target": "all_enemies"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_category",
+                "side": "target",
+                "categories": [
+                  "dot"
+                ]
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "self",
+                  "note": "A22：每命中一个带 dot 的敌方单位回 2（逐目标结算）"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "三个 If 逐目标判定（目标域为 all_enemies 时每单位独立结算）；稿面「各叠加 1 层并刷新至 3t」走挂载流程叠加分支（新增项 23）"
+      ]
+    },
+    {
+      "id": "skill_criminal_s1_erosion",
+      "name": "侵蚀者",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "污秽君王",
+      "rarity": "legendary",
+      "axis": "filth",
+      "flagship": true,
+      "lore": "序列1 污秽君王 —— \"『侵蚀者』：再坚固的壁垒持续腐蚀也会穿透\"",
+      "flavor": "你把手贴在那面墙上。5 个 tick 内，它每时每刻都被腐蚀掉 3 点生命——这腐蚀无视它的一切护甲、护盾与抗性；而那面墙本身，也在一点点变薄（护甲 -2）。",
+      "describe": "使一名敌人被侵蚀 5 tick：每 tick 受到 3 点无视护甲、护盾与抗性的毒素伤害，护甲 -2（5 tick）。可被驱散。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "armor_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "erosion",
+          "duration": 5
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "erosion",
+          "name": "侵蚀",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": -2,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "poison",
+                  "value": 3,
+                  "pierce": [
+                    "armor",
+                    "shield",
+                    "resist"
+                  ],
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "H2 + H16；可被驱散是刻意弱点（「持续腐蚀会穿透」的前提是腐蚀持续下去）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s1_abyss_fire",
+      "name": "深渊之火",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "污秽君王",
+      "rarity": "legendary",
+      "axis": "elements",
+      "flagship": true,
+      "lore": "序列1 污秽君王 —— \"『深渊之火』：兼具燃烧 / 腐蚀 / 毒素 / 污染\"",
+      "flavor": "你张开嘴，吐出的火是黑色的。它烧灼（5 点火焰伤害）、它腐蚀（护甲 -2，持续 4 个 tick）、它带毒（中毒 3 个 tick）、它还污染（1 层呓语，3 个 tick）——四种恶在里头烧成一团，落在每一个人身上。",
+      "describe": "全体敌人受到 5 点火焰伤害，护甲 -2（4 tick），中毒 3 tick 并叠加 1 层呓语（3 tick）。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 9,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 5,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": -2,
+              "mode": "delta",
+              "duration": 4,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "poison",
+              "duration": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "whisper",
+              "stacks": 1,
+              "duration": 3,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s0_abyss_is_me",
+      "name": "深渊即我",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "深渊",
+      "rarity": "legendary",
+      "axis": "demon",
+      "flagship": true,
+      "lore": "序列0 深渊 —— \"『深渊即我，我即深渊』\"",
+      "flavor": "深渊不在别处，深渊就是站在这里的你。整场战斗中火焰与毒素抗性各 +30%；你施加的一切污秽与恶意，无人能洗；而凡是已经沾上污秽的东西，本来就已经在深渊里了——你对身上带着任何负面状态的目标造成的伤害提高三成。",
+      "describe": "战斗开始时获得「深渊即我」：火焰与毒素抗性各 +30%；自身施加的减益与持续伤害状态不可被驱散；对带减益或持续伤害状态的目标造成的伤害 ×1.3。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "abyss_is_me",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "abyss_is_me",
+          "name": "深渊即我",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:fire",
+              "value": 30,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:poison",
+              "value": 30,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "dispelableOverride": {
+              "categories": [
+                "debuff",
+                "dot"
+              ],
+              "value": false,
+              "scope": "outgoing"
+            },
+            "damage_mul": {
+              "value": 1.3,
+              "filter": {
+                "targetHasCategory": [
+                  "debuff",
+                  "dot"
+                ]
+              }
+            }
+          },
+          "note": "② H8 覆写 dispelable；③ 深渊不是一种地方是一种状态（堕落者归你支配）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s0_fallen",
+      "name": "堕落",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "深渊",
+      "rarity": "legendary",
+      "axis": "vice",
+      "flagship": true,
+      "lore": "序列0 深渊 —— \"部分『堕落』权柄\"",
+      "flavor": "你把手按在它肩上，说了一句\"你也一样\"。6 个 tick 内，它彻底堕落了——它的每一次攻击都落在自己身上，它的血肉每时每刻被腐蚀 2 点（无视一切防护），而它再也不配被任何治疗拯救（受到的治疗减半）。这份堕落不可逆。",
+      "describe": "使一名近战敌人堕落 6 tick（不可驱散）：每次攻击落在自己身上，每 tick 受到 2 点无视一切防护的毒素伤害，受到的治疗减半。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "fallen",
+          "duration": 6
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "fallen",
+          "name": "堕落",
+          "category": [
+            "control",
+            "debuff",
+            "dot"
+          ],
+          "dispelable": false,
+          "duration": 6,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "self"
+              }
+            ],
+            "heal_received_mul": 0.5
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "poison",
+                  "value": 2,
+                  "pierce": [
+                    "armor",
+                    "shield",
+                    "resist"
+                  ],
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "H12 anchor self（新增项 4）+ H2 + H16 + H21；与【迷幻】分界：迷幻打向空处（charges 可驱散短），堕落打向自己（duration 不可驱散 6t）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_criminal_s0_abyss_curse",
+      "name": "深渊之咒",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "深渊",
+      "rarity": "legendary",
+      "axis": "filth",
+      "flagship": false,
+      "lore": "序列0 深渊 —— \"部分『诅咒』权柄\"",
+      "flavor": "你说出那个从深渊底下捞起来的词。5 个 tick 内，它每时每刻被啃掉 2 点精神；它的攻击与防御各被削去 2 点；而在这段时间里，它得不到任何祝福。",
+      "describe": "使一名敌人被诅咒 5 tick：每 tick 受到 2 点精神伤害，攻击 -2、防御 -2，期间无法获得任何增益状态。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "abyss_curse",
+          "duration": 5
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "abyss_curse",
+          "name": "深渊之咒",
+          "category": [
+            "debuff",
+            "dot"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "modifiers": {
+            "buffBlocked": true
+          },
+          "note": "H2 + H38 buffBlocked（与 F17 lust 禁护盾同族，粒度由 categories 参数控制）"
+        }
+      ],
+      "tentative": true
+    }
+  ]
+}

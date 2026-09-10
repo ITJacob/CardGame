@@ -1,0 +1,2299 @@
+{
+  "pathwayId": "chanter",
+  "pathwayName": "歌颂者",
+  "sourceFile": "../歌颂者途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "hymn": {
+      "symbol": "🜁",
+      "name": "颂歌"
+    },
+    "light": {
+      "symbol": "🜂",
+      "name": "圣光"
+    },
+    "notary": {
+      "symbol": "🜃",
+      "name": "公证"
+    },
+    "judgment": {
+      "symbol": "🜄",
+      "name": "审判"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_chanter_s9_chant",
+      "name": "歌颂",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "歌颂者",
+      "rarity": "common",
+      "axis": "hymn",
+      "flagship": true,
+      "lore": "序列9 歌颂者 —— \"通过歌声带来勇气、力量、虔诚和服从\"",
+      "flavor": "你唱起颂歌，勇气与力量随音符一起灌进同伴的身体——他握刀的手，稳了。",
+      "describe": "使一名友军获得「祝福」3 tick：攻击 +2、防御 +1，到期回滚。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "blessing",
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "blessing",
+          "name": "祝福（歌颂）",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 1,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "sailor",
+        "spectator"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s9_battle_hymn",
+      "name": "勇气赞歌",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "歌颂者",
+      "rarity": "common",
+      "axis": "hymn",
+      "flagship": false,
+      "lore": "序列9 歌颂者 —— \"消除恐惧……附带灵性恢复\"",
+      "flavor": "一句高昂的赞歌驱散了同伴心头的寒意，也让他重新感到力量在身体里流淌。",
+      "describe": "驱散一名友军的 1 个控制或减益状态，并为其回复 2 点能量。",
+      "cost": {
+        "energy": 1,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "control",
+                  "debuff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "sailor",
+        "spectator"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s9_spirit_recovery",
+      "name": "灵性恢复",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "歌颂者",
+      "rarity": "common",
+      "axis": "hymn",
+      "flagship": false,
+      "lore": "序列9 歌颂者 —— \"消除恐惧、提升力量，附带灵性恢复\"",
+      "flavor": "你的灵性在歌声中自行回补——每当轮到你行动时，圣力便又盈满一分。",
+      "describe": "每当你开始行动时，自身回复 2 点能量。",
+      "hook": "on_turn_start",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 2,
+          "mode": "delta",
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "G15_ON_TURN_START",
+          "note": "稿面注明 on_turn_start 引擎从未 fire、当前不生效；退化方案为 on_battle_start + modify_stat(energy_regen, +0.2)，待 G15 修复后本卡自动闭环",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_chanter_s8_daylight",
+      "name": "白昼",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "祈光人",
+      "rarity": "common",
+      "axis": "light",
+      "flagship": false,
+      "lore": "序列8 祈光人 —— \"『白昼』：周围10米获得光照\"",
+      "flavor": "你点亮一圈白昼——在这圈光里，黑暗再也藏不住任何东西。",
+      "describe": "全场挂载「白昼」4 tick：敌方隐匿与不可选中类状态对己方失效；己方对不死 / 污秽 / 黑暗标签单位的伤害 ×1.15。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "daylight",
+              "duration": 4,
+              "target": "all_allies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "daylight",
+              "duration": 4,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "daylight",
+          "name": "白昼",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "revealConcealment": {
+              "direction": "inbound",
+              "note": "敌方隐匿 / 不可选中类状态对己方无效（C8 识破分支，已落共享内核参数 §四）"
+            },
+            "allyDamageMul": {
+              "value": 1.15,
+              "filter": {
+                "tags": [
+                  "undead",
+                  "foul",
+                  "dark"
+                ]
+              },
+              "note": "己方对不死 / 污秽 / 黑暗标签单位伤害 ×1.15"
+            }
+          }
+        }
+      ],
+      "sharedAcross": [
+        "sailor"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s8_sunshine",
+      "name": "日照",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "祈光人",
+      "rarity": "common",
+      "axis": "light",
+      "flagship": false,
+      "lore": "序列8 祈光人 —— \"『日照』：创造烈阳光芒伤害不死生物\"",
+      "flavor": "你召来一道烈阳的光芒——凡是不洁的东西，在它下面都会燃烧起来。",
+      "describe": "对一名敌人造成 3 点圣光伤害；若其带不死 / 污秽 / 黑暗标签，伤害 ×1.5。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "target_has_tag",
+            "tag": [
+              "undead",
+              "foul",
+              "dark"
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 3,
+              "mul": 1.5
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 3
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "sailor"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s8_blessing",
+      "name": "祝福",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "祈光人",
+      "rarity": "common",
+      "axis": "light",
+      "flagship": false,
+      "lore": "序列8 祈光人 —— \"『祝福』\"",
+      "flavor": "你把圣光按在同伴肩上——一层暖意裹住他，伤口也跟着收敛了。",
+      "describe": "使一名友军获得 4 点护盾（3 tick），并回复 2 点生命。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 4,
+              "duration": 3,
+              "target": "target"
+            },
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "spectator",
+        "sailor"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s9_tone_of_obedience",
+      "name": "服从之音",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "歌颂者",
+      "rarity": "common",
+      "axis": "judgment",
+      "flagship": false,
+      "lore": "序列9 歌颂者 —— \"通过歌声带来勇气、力量、虔诚和服从\"",
+      "flavor": "你的歌声落进敌人耳中，化作一句无法违拗的低语——它举刀的手，慢了下来。",
+      "describe": "使一名敌人服从 3 tick：攻击 -2、行动条速率 ×0.9。",
+      "cost": {
+        "energy": 1,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "obedience",
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "obedience",
+          "name": "服从",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 0.9,
+              "mode": "mul",
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "sailor",
+        "spectator"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 乘算修正（×0.9）以 modify_stat(gauge.rate, mode:mul) 表达；ddd 将 gauge.* 列为 modify_resource 键，乘算模式无对应枚举，待内核裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_chanter_s7_summon_holy_light",
+      "name": "召唤圣光",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "太阳神官",
+      "rarity": "uncommon",
+      "axis": "light",
+      "flagship": true,
+      "lore": "序列7 太阳神官 —— \"『召唤圣光』\"",
+      "flavor": "你举起手掌，一束圣光自虚空中降临，笔直地落在敌人的身上。",
+      "describe": "对一名敌人造成 5 点圣光伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "holy",
+          "value": 5
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 5 → 7 → 9（序列档递进）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "holy",
+                "value": 9
+              }
+            ]
+          },
+          {
+            "name": "纯白射线档",
+            "note": "解锁「纯白射线」（序列4 同源能力，见稀有档）"
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s7_holy_water",
+      "name": "制造圣水",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "太阳神官",
+      "rarity": "uncommon",
+      "axis": "light",
+      "flagship": false,
+      "lore": "序列7 太阳神官 —— \"『制造圣水』\"",
+      "flavor": "你倒出一小瓶圣水——它洗去同伴身上的污秽，也把他的伤口缝合起来。",
+      "describe": "驱散一名友军的 2 个减益或持续伤害状态，并回复 3 点生命。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "debuff",
+                  "dot"
+                ],
+                "count": 2
+              }
+            },
+            {
+              "type": "heal",
+              "value": 3,
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面 targetSpec 只给 {faction: ALLY} 未给 fallbackSort；按 manual 处理并置 null 待补"
+      ]
+    },
+    {
+      "id": "skill_chanter_s7_purifying_slash",
+      "name": "净化之斩",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "太阳神官",
+      "rarity": "uncommon",
+      "axis": "light",
+      "flagship": false,
+      "lore": "序列7 太阳神官 —— \"『净化之斩』\"",
+      "flavor": "你挥出凝着圣光的一斩——光刃落处，敌人身上的加持也跟着剥落了一层。",
+      "describe": "对敌方最前排造成 4 点圣光伤害，并驱散其 1 个增益状态。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "anchor": "front_line"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 4,
+              "note": "近战攻击进程，不调 move（G8 合规）"
+            },
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              }
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s7_sacred_flame",
+      "name": "光明之火",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "太阳神官",
+      "rarity": "uncommon",
+      "axis": "light",
+      "flagship": false,
+      "lore": "序列7 太阳神官 —— \"『光明之火』\"",
+      "flavor": "一团银白的火苗黏在敌人身上——它不烧皮肉，只烧那些不该存在的东西。",
+      "describe": "使一名敌人被圣焰灼烧 3 tick：每 tick 受到 2 点圣光伤害。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "sacred_flame",
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "sacred_flame",
+          "name": "圣焰",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "slots": {
+            "element": "holy"
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "holy",
+                  "value": 2,
+                  "target": "self",
+                  "note": "圣焰灼烧；元素必须 holy，否则不死克制对 dot 不生效"
+                }
+              ]
+            }
+          ],
+          "note": "H2 参数化复合 debuff 母版实例（F6/F12/F16/F18/F13/F17/F8 同族）；特殊条款只有元素必须为 holy"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "阳炎",
+            "note": "序列4 无暗者档：改为全体敌人挂载 sacred_flame，能量 4 / cd 5（原著「阳炎」即光明之火的群体进化版，不单独立项）",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "sacred_flame",
+                "duration": 3,
+                "target": "all_enemies"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s7_sun_aura",
+      "name": "太阳光环",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "太阳神官",
+      "rarity": "uncommon",
+      "axis": "light",
+      "flagship": false,
+      "lore": "序列7 太阳神官 —— \"『太阳光环』\"；\"体质增强，抗疾病\"",
+      "flavor": "你周身始终悬着一圈太阳的光晕——它护住同伴，也灼伤那些见不得光的东西。",
+      "describe": "战斗开始时，己方全体获得「太阳光环」整场：受伤 ×0.9；对不死 / 污秽 / 黑暗标签单位造成的伤害 ×1.15。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "sun_aura",
+          "duration": null,
+          "target": "all_allies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "sun_aura",
+          "name": "太阳光环",
+          "category": [
+            "aura",
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_taken_mul": 0.9,
+            "damage_mul": {
+              "value": 1.15,
+              "filter": {
+                "tags": [
+                  "undead",
+                  "foul",
+                  "dark"
+                ]
+              }
+            }
+          },
+          "note": "H42 光环母版（同向乘区取最高不叠乘，与正义光环 ×0.9 同向取 ×0.9）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s7_fearless",
+      "name": "免疫恐惧",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "太阳神官",
+      "rarity": "uncommon",
+      "axis": "hymn",
+      "flagship": false,
+      "lore": "序列7 太阳神官 —— \"『免疫恐惧』\"；\"体质增强，抗疾病\"",
+      "flavor": "恐惧在你面前没有落脚的地方；疫病与毒秽也难侵你的身。",
+      "describe": "战斗开始时获得「无畏」整场：免疫控制类状态，毒素抗性 +20%、精神抗性 +10%。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "fearless",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "fearless",
+          "name": "无畏",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "immune": {
+            "categories": [
+              "control"
+            ]
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:poison",
+              "value": 20,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": 10,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "note": "免疫 control 依 G12 immune 字段（已落编队参数 §1.1b）"
+        }
+      ],
+      "sharedAcross": [
+        "spectator"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s6_notarize",
+      "name": "公证",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "公证人",
+      "rarity": "uncommon",
+      "axis": "notary",
+      "flagship": true,
+      "lore": "序列6 公证人 —— \"『公证』（核心）：对非凡能力真实性做出公证，有效的增强、无效的削弱\"",
+      "flavor": "你以公证人之名裁定——真的，当更强；假的，当更弱。",
+      "describe": "裁定一名友军的下一击为真：其下一次造成伤害 ×1.5（4 tick 内有效，触发后消耗）。变体——裁定·伪：改为裁定一名敌军，其下一次造成伤害 ×0.5。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "notarize",
+          "duration": 4,
+          "charges": 1,
+          "params": {
+            "mul": 1.5
+          },
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "notarize",
+          "name": "公证裁定",
+          "category": [
+            "contract"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 1,
+          "modifiers": {
+            "damage_mul": {
+              "valueFromParams": "mul",
+              "consumeOn": "on_deal_damage"
+            }
+          },
+          "note": "参数化裁定母版（稿面建议合并 notarized_true / notarized_false 为一个带 mul 参数的 notarize 状态）：挂载方以 params.mul 填 1.5（真）或 0.5（伪）；on_deal_damage 触发后消耗一层（C6）"
+        }
+      ],
+      "variants": [
+        {
+          "id": "notarize_false",
+          "name": "裁定·伪",
+          "note": "双模式另一支：目标改为敌军，mul 0.5",
+          "targetOverride": {
+            "faction": "enemy"
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "notarize",
+              "duration": 4,
+              "charges": 1,
+              "params": {
+                "mul": 0.5
+              },
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面双模式（{faction: ALLY} 或 {faction: ENEMY}）折为本体 + variants.targetOverride",
+        "稿面未给 fallbackSort；置 null 待补"
+      ]
+    },
+    {
+      "id": "skill_chanter_s7_holy_oath",
+      "name": "神圣誓约",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "太阳神官",
+      "rarity": "uncommon",
+      "axis": "notary",
+      "flagship": false,
+      "lore": "序列7 太阳神官 —— \"『神圣誓约』\"；序列6 公证人 —— \"擅制契约，序列5也无法违背，序列4违约付出代价\"",
+      "flavor": "你与它立下誓约——它仍可以出手，但每挥一次刀，都要付一次血的代价。",
+      "describe": "使一名敌人立约 5 tick：它每次造成伤害时，自身受到 2 点圣光伤害。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "oath",
+          "duration": 5,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "oath",
+          "name": "誓约",
+          "category": [
+            "contract",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "holy",
+                  "value": 2,
+                  "target": "self",
+                  "note": "违约代价：伤害结算回持有者自身"
+                }
+              ]
+            }
+          ],
+          "note": "与既有「反伤」同族母版（差异：反伤只在攻击施法者时触发，本条攻击任何人都付代价）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s5_divine_light",
+      "name": "神圣之光",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "光之祭司",
+      "rarity": "rare",
+      "axis": "judgment",
+      "flagship": true,
+      "lore": "序列5 光之祭司 —— \"『神圣之光』：炽烈光柱从天而降，令敌人蒸发\"",
+      "flavor": "一道炽烈的光柱自天而降——光柱散去的时候，那里什么都不剩了。",
+      "describe": "对一名敌人造成 8 点圣光伤害；若其带不死 / 污秽 / 黑暗标签，伤害 ×1.5。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "target_has_tag",
+            "tag": [
+              "undead",
+              "foul",
+              "dark"
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 8,
+              "mul": 1.5
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 8
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s5_purifying_nimbus",
+      "name": "净化光环",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "光之祭司",
+      "rarity": "rare",
+      "axis": "light",
+      "flagship": false,
+      "lore": "序列5 光之祭司 —— \"『净化光环』：金色光辉外扩，精准操纵\"",
+      "flavor": "一圈金色光辉自我身上向外扩散——它掠过同伴时温柔，掠过敌人时锋利。",
+      "describe": "己方全体驱散 2 个减益或持续伤害状态并回复 3 点生命；敌方全体受到 2 点圣光伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "all_allies",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "debuff",
+                  "dot"
+                ],
+                "count": 2
+              }
+            },
+            {
+              "type": "heal",
+              "value": 3,
+              "target": "all_allies"
+            },
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "群体 heal / 群体护盾定价无既有锚点（稿面自述最大数值盲区，沿用 D3）"
+      ]
+    },
+    {
+      "id": "skill_chanter_s5_foe_of_filth",
+      "name": "邪秽克星",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "光之祭司",
+      "rarity": "rare",
+      "axis": "light",
+      "flagship": true,
+      "lore": "序列5 光之祭司 —— \"污秽和死灵的克星\"",
+      "flavor": "污秽与死灵在你面前无所遁形——你的光天生就知道该往哪里烧。",
+      "describe": "战斗开始时获得「邪秽克星」整场：你对不死 / 污秽 / 黑暗标签单位造成的全部伤害 ×1.5；此类单位对你造成的伤害 ×0.85。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "foe_of_filth",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "foe_of_filth",
+          "name": "邪秽克星",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.5,
+              "filter": {
+                "tags": [
+                  "undead",
+                  "foul",
+                  "dark"
+                ]
+              }
+            },
+            "damage_taken_mul": {
+              "value": 0.85,
+              "filter": {
+                "tags": [
+                  "undead",
+                  "foul",
+                  "dark"
+                ]
+              },
+              "scope": "incoming"
+            }
+          },
+          "note": "退化方案：数据层给不死 / 污秽 / 黑暗单位预置 resist:holy -25，由抗性表自然生效（失去减伤条款）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s4_zone_no_darkness",
+      "name": "无暗之域",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "无暗者",
+      "rarity": "rare",
+      "axis": "light",
+      "flagship": true,
+      "lore": "序列4 无暗者 —— \"『无暗之域』\"；\"『净化』（核心）：净化堕落 / 污秽 / 黑暗 / 疾病力量\"",
+      "flavor": "你在身前张开一片无暗之域——那里没有影子，也没有藏在影子里的东西。",
+      "describe": "在身前展开「无暗之域」区域：区域内敌方每 tick 受到 2 点圣光伤害并被驱散 1 个增益；区域内己方受伤 ×0.85。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "zone"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "consumption": "zone",
+          "zone": "zone_no_darkness",
+          "note": "Zone 注册（consumption: zone + 卡面 zoneDef），非界域原语；H9 Zone 母版已落"
+        }
+      ],
+      "zoneDef": {
+        "id": "zone_no_darkness",
+        "kind": "blessing",
+        "trigger": "on_occupy_tick",
+        "affects": "any",
+        "effects": [
+          {
+            "side": "enemy",
+            "payload": {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "damage",
+                  "element": "holy",
+                  "value": 2
+                },
+                {
+                  "type": "dispel",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "buff"
+                    ],
+                    "count": 1
+                  }
+                }
+              ],
+              "note": "持续净化：黑暗 / 污秽被逐 tick 剥落"
+            }
+          },
+          {
+            "side": "ally",
+            "payload": {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 0.85,
+              "mode": "mul",
+              "duration": 1,
+              "note": "区域内己方受伤 ×0.85；ddd 口径减伤走乘区，Zone 载荷以乘区表达"
+            }
+          }
+        ]
+      },
+      "tentative": true,
+      "conversionNotes": [
+        "吟唱 ⚠️D 无值，castTime 置 null",
+        "Zone 非界域牌（domain/translocate 之外），无迷失租金段；稿面登记行亦未含租金"
+      ]
+    },
+    {
+      "id": "skill_chanter_s4_spear_of_light",
+      "name": "无暗之枪",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "无暗者",
+      "rarity": "rare",
+      "axis": "judgment",
+      "flagship": false,
+      "lore": "序列4 无暗者 —— \"『无暗之枪』\"；\"从辅助型进化为全面的太阳战士\"",
+      "flavor": "一杆由纯粹的光凝成的长枪被你掷出——它先剥下敌人的加持，再贯穿它。",
+      "describe": "驱散敌方最前排的全部增益状态，然后对其造成 6 点圣光伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "anchor": "front_line"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ]
+              },
+              "note": "count 省略 = 全部清除（C2）；先驱散后伤害"
+            },
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 6,
+              "note": "近战攻击进程，不调 move（G8 合规）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s4_pure_white_ray",
+      "name": "纯白射线",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "无暗者",
+      "rarity": "rare",
+      "axis": "judgment",
+      "flagship": false,
+      "lore": "序列4 无暗者 —— \"『纯白射线』\"",
+      "flavor": "一线纯白的光自你指尖射出，笔直地穿过队列，灼穿它经过的一切。",
+      "describe": "对一名敌人造成 4 点圣光伤害，并对其同路相邻单位造成 2 点圣光伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 4
+            },
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "spread": "splash_adjacent",
+              "note": "贯穿队列：同 lane 相邻单位"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s4_sacred_armor",
+      "name": "神圣盔甲",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "无暗者",
+      "rarity": "rare",
+      "axis": "notary",
+      "flagship": false,
+      "lore": "序列4 无暗者 —— \"『神圣盔甲』\"",
+      "flavor": "一层看不见的神圣盔甲覆上你的身体——它既挡刀，也让你的拳头更重。",
+      "describe": "战斗开始时获得「神圣盔甲」整场：护甲上限 +5、攻击 +2，并额外获得 5 点护盾（3 tick）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "sacred_armor",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "sacred_armor",
+          "name": "神圣盔甲",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 5,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 5,
+              "duration": 3,
+              "target": "self",
+              "note": "开局一层圣光壳"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s4_sun_oath",
+      "name": "太阳誓约",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "无暗者",
+      "rarity": "rare",
+      "axis": "notary",
+      "flagship": false,
+      "lore": "序列6 公证人 —— \"擅制契约……序列4 违约付出代价\"；序列4 无暗者 —— \"『太阳誓约』\"",
+      "flavor": "你以太阳之名与它们全体立约——谁敢挥刀，谁就先被烧一次。",
+      "describe": "使敌方全体立约 5 tick：每次造成伤害时，自身受到 3 点圣光伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "sun_oath",
+          "duration": 5,
+          "target": "all_enemies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "sun_oath",
+          "name": "太阳誓约",
+          "category": [
+            "contract",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "holy",
+                  "value": 3,
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "oath 状态族群体版（神圣誓约的单体 2 伤 → 全体 3 伤）；权威机制同 oath，建议共用母版"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s3_justice_code",
+      "name": "正义准则",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "正义导师",
+      "rarity": "epic",
+      "axis": "notary",
+      "flagship": true,
+      "lore": "序列3 正义导师 —— \"形成『正义』准则（自身『秩序』），获得『契约』和『秩序』权柄\"",
+      "flavor": "你为这片战场立下一条准则——从这一刻起，违背它的人，就是有罪的人。",
+      "describe": "为全场立法 8 tick（默认准则「不得加害弱者」）：任何单位发动攻击时，若目标生命百分比低于自身，则被定罪 6 tick。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "justice_code",
+              "duration": 8,
+              "target": "all_allies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "justice_code",
+              "duration": 8,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "justice_code",
+          "name": "正义准则",
+          "category": [
+            "contract"
+          ],
+          "dispelable": true,
+          "duration": 8,
+          "triggers": [
+            {
+              "event": "on_attack",
+              "condition": {
+                "kind": "hp_percent_compare",
+                "aSide": "target",
+                "bSide": "self",
+                "cmp": "<"
+              },
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "guilty",
+                  "duration": 6,
+                  "target": "self",
+                  "note": "违背准则（加害弱者）者被定罪；触发者为发动攻击的单位"
+                }
+              ],
+              "note": "默认档「不得加害弱者」；on_attack 触发点已落（执行参数 §2.1），规避 G15-b 时间尺度冲突"
+            }
+          ],
+          "note": "准则内容为数据层变体档（B6），引擎只承载「立法 + 违背判定 + 定罪」"
+        },
+        {
+          "id": "guilty",
+          "name": "罪责",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "note": "标记性状态：本身无载荷，是【正义审判】的判定条件（H2 族最小实例）"
+        }
+      ],
+      "variants": [
+        {
+          "id": "no_bully",
+          "name": "不得以多欺少",
+          "note": "数据层变体档：目标相邻有其友军时发动攻击即违约（B6，不进引擎）"
+        },
+        {
+          "id": "no_buff_bully",
+          "name": "不得恃加持",
+          "note": "数据层变体档：带 buff 的单位不得发动攻击（B6，不进引擎）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面分阶段建议：可先上保守版（直接给敌方全体挂 guilty，无需违背判定）验证【正义审判】收益后再启用判定逻辑",
+        "判定条件「目标 HP% < 自身 HP%」用 hp_percent_compare 谓词（共享内核参数 §三 歌颂者判例）"
+      ]
+    },
+    {
+      "id": "skill_chanter_s3_judgment",
+      "name": "正义审判",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "正义导师",
+      "rarity": "epic",
+      "axis": "judgment",
+      "flagship": true,
+      "lore": "序列3 正义导师 —— \"『正义审判』：指定目标不符合准则的力量被极大削弱，连天使都受影响\"",
+      "flavor": "你宣判它有罪——于是它引以为傲的那份力量，在判决落下的瞬间就被削去了大半。",
+      "describe": "审判一名敌人：若其带「罪责」，造成 8 点圣光伤害、驱散其全部增益并使其攻击 -5（5 tick）；否则只造成 3 点圣光伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "guilty",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "damage",
+                  "element": "holy",
+                  "value": 8
+                },
+                {
+                  "type": "dispel",
+                  "target": "target",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "buff"
+                    ]
+                  },
+                  "note": "力量被极大削弱：扒光增益"
+                },
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": -5,
+                  "mode": "delta",
+                  "duration": 5,
+                  "target": "target"
+                }
+              ]
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 3,
+              "note": "判决仍执行，但力度大减"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面未标 reach；审判自任意距离落下，取 ranged 待裁定",
+        "原著「连天使都受影响」不做成 dispelable:false（过强），保留在 flavor 与秩序权柄"
+      ]
+    },
+    {
+      "id": "skill_chanter_s3_justice_aura",
+      "name": "正义光环",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "正义导师",
+      "rarity": "epic",
+      "axis": "notary",
+      "flagship": false,
+      "lore": "序列3 正义导师 —— \"『正义光环』：10公里内符合准则增强、违背者削弱\"",
+      "flavor": "你的准则化作一圈无形的光环——守序者在此变得更强，悖逆者在此变得迟钝。",
+      "describe": "战斗开始时：己方全体获得「正义光环」整场（造成伤害 ×1.1、受伤 ×0.9）；敌方全体获得「悖逆」整场（造成伤害 ×0.9）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "justice_aura",
+              "duration": null,
+              "target": "all_allies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "injustice",
+              "duration": null,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "justice_aura",
+          "name": "正义光环",
+          "category": [
+            "aura",
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": 1.1,
+            "damage_taken_mul": 0.9
+          },
+          "note": "H42 光环母版；同向乘区取最高不叠乘（与太阳光环 ×0.9 同向取 ×0.9）"
+        },
+        {
+          "id": "injustice",
+          "name": "悖逆",
+          "category": [
+            "aura",
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": 0.9
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s2_photonic_form",
+      "name": "化光",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "逐光者",
+      "rarity": "epic",
+      "axis": "light",
+      "flagship": true,
+      "lore": "序列2 逐光者 —— \"化光飞行、化光承受伤害后重组\"",
+      "flavor": "你的身体散作一团光——刀锋穿过你，什么也没砍到；光又聚拢起来，你还站在那里。",
+      "describe": "化作光 4 tick：期间受到的伤害 ×0（可挡 2 次）；化光结束时回复 4 点生命并退回己方半场最后位。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "photonic_form",
+          "duration": 4,
+          "charges": 2,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "photonic_form",
+          "name": "化光",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 2,
+          "modifiers": {
+            "damage_taken_mul": 0
+          },
+          "triggers": [
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "op": "sequence",
+                  "steps": [
+                    {
+                      "type": "heal",
+                      "value": 4,
+                      "target": "self",
+                      "note": "重组"
+                    },
+                    {
+                      "type": "move",
+                      "op": "push_back",
+                      "distance": 99,
+                      "target": "self",
+                      "note": "化光飞行：退回己方半场最后位（G8 合规）"
+                    }
+                  ]
+                }
+              ],
+              "note": "charges 归零或自然到期均 fire（C6 / H29）"
+            }
+          ],
+          "note": "H3 参数化减伤母版（支持 0 值）；与 zeal 同族（次数型完全免伤），差异在 charges / duration / 载荷"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s2_sun_herald",
+      "name": "太阳使者",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "逐光者",
+      "rarity": "epic",
+      "axis": "judgment",
+      "flagship": false,
+      "lore": "序列2 逐光者 —— \"『太阳使者』：化身微缩太阳洒下光热净化\"",
+      "flavor": "你化身为一轮微缩的太阳，悬在战场上方——光与热洒下来，一切不洁都在蒸发。",
+      "describe": "化身微缩太阳 4 tick：每 tick 对全体敌方造成 2 点圣光伤害；自身受伤 ×0.8、攻击 +3。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "sun_herald",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "sun_herald",
+          "name": "太阳使者",
+          "category": [
+            "buff",
+            "stance"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "damage_taken_mul": 0.8
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "holy",
+                  "value": 2,
+                  "target": "all_enemies",
+                  "note": "洒下光热净化；需 on_tick 承载「对全体敌人」目标解析"
+                }
+              ]
+            }
+          ],
+          "note": "H10 参数化形态母版（与 F10 beast_form / 观众变身同源，建议并入）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s2_light_authority",
+      "name": "光之权柄",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "逐光者",
+      "rarity": "epic",
+      "axis": "light",
+      "flagship": false,
+      "lore": "序列2 逐光者 —— \"获得『太阳』和『光』之权柄\"",
+      "flavor": "你掌握了光的权柄——每一道出自你手的光，都比从前更炽烈一分。",
+      "describe": "战斗开始时获得「光之权柄」整场：你造成的圣光元素伤害 ×1.25。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "light_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "light_authority",
+          "name": "光之权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.25,
+              "filter": {
+                "element": [
+                  "holy"
+                ]
+              }
+            }
+          },
+          "note": "H4 带过滤条件的伤害乘区（按元素过滤，已落）；退化方案：holy 伤害固定 +2"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s1_holy_nation",
+      "name": "神圣之国",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "纯白天使",
+      "rarity": "legendary",
+      "axis": "light",
+      "flagship": true,
+      "lore": "序列1 纯白天使 —— \"『神圣之国』：覆盖城市的虚幻国度\"",
+      "flavor": "一座虚幻的国度在你身后升起——它的城墙是光，城内的人不再流血，而城外的人在燃烧。",
+      "describe": "降临「神圣之国」4 回合：己方每 tick 回复 1 点生命、受伤 ×0.75；敌方每 tick 受到 2 点圣光伤害并被驱散 1 个增益；「光/净化」标签卡效果 ×1.3，「暗影/污秽」标签卡 ×0.7。自身迷失值 +1。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_holy_nation",
+              "duration": 4,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_holy_nation",
+        "duration": 4,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：己方受伤 ×0.75 且每 tick heal(1)（城内庇护）；敌方每 tick 受 damage(holy, 2) 并被驱散 1 个 buff（城外灼烧）——双向：护城 / 焚敌",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "暗影",
+              "污秽"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_holy_nation",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 4,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "effects": [
+              {
+                "type": "heal",
+                "value": 1,
+                "target": "all_allies"
+              },
+              {
+                "type": "damage",
+                "element": "holy",
+                "value": 2,
+                "target": "all_enemies"
+              },
+              {
+                "type": "dispel",
+                "target": "all_enemies",
+                "dispelTarget": "unit",
+                "filter": {
+                  "category": [
+                    "buff"
+                  ],
+                  "count": 1
+                }
+              }
+            ],
+            "note": "灼烧与净化"
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "ally"
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "defense",
+                "value": 0.75,
+                "mode": "mul",
+                "duration": 1,
+                "note": "庇护：受伤 ×0.75（乘区表达，逐回合刷新）"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "暗影",
+              "污秽"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "tags": [
+        "光",
+        "净化"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s1_pure_white_light",
+      "name": "纯白之光",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "纯白天使",
+      "rarity": "legendary",
+      "axis": "judgment",
+      "flagship": true,
+      "lore": "序列1 纯白天使 —— \"『纯白之光』：毁灭即净化\"",
+      "flavor": "纯白的光淹没了它——而被光抹去的每一样东西，都变成了洗涤这片战场的水。",
+      "describe": "驱散一名敌人的全部增益，然后造成 9 点圣光伤害；若此次伤害将其击杀，己方全体回复 4 点生命。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ]
+              },
+              "note": "先抹掉它倚仗的一切"
+            },
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 9
+            }
+          ]
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_kill",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 4,
+              "target": "all_allies",
+              "note": "毁灭即净化"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s1_zeal",
+      "name": "信仰之仆",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "纯白天使",
+      "rarity": "legendary",
+      "axis": "notary",
+      "flagship": false,
+      "lore": "序列1 纯白天使 —— \"『信仰之仆』：使自身 / 信徒狂热免疫伤害\"",
+      "flavor": "信仰灼烧着你的信徒——他们忘记疼痛，第一次伤害落在身上时，就像从来没有发生过。",
+      "describe": "战斗开始时，己方全体获得「狂热」：各免疫一次受到的伤害（整场有效）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "zeal",
+          "duration": null,
+          "charges": 1,
+          "target": "all_allies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "zeal",
+          "name": "狂热",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 1,
+          "modifiers": {
+            "damage_taken_mul": 0
+          },
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "zeal"
+                  },
+                  "note": "以 charges 归零卸载表达一次性免疫（C6）"
+                }
+              ]
+            }
+          ],
+          "note": "H3 支持 0 值；与 photonic_form 同族（全体 1 次整场 vs 自身 2 次短时）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s0_divine_authority",
+      "name": "神圣权柄",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "太阳",
+      "rarity": "legendary",
+      "axis": "light",
+      "flagship": false,
+      "lore": "序列0 太阳 —— \"『神圣』权柄：一切不谐皆受净化\"",
+      "flavor": "凡是不谐的东西，都无法在你面前停留——你的光扫过谁，谁的加持就少一层。",
+      "describe": "战斗开始时获得「神圣权柄」整场：你每次造成伤害时，驱散目标 1 个增益状态（每个目标每 tick 至多触发 1 次）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "divine_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "divine_authority",
+          "name": "神圣权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "minIntervalTicks": 1,
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "target",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "buff"
+                    ],
+                    "count": 1
+                  }
+                }
+              ],
+              "note": "节流：同一目标每 tick 至多触发 1 次（稿面「本稿遗留」要求，借 TriggerDef.minIntervalTicks 表达）；可选增强（holy 无视正向 resist:holy）未实现"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_chanter_s0_light_immortal",
+      "name": "光之不朽",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "太阳",
+      "rarity": "legendary",
+      "axis": "light",
+      "flagship": false,
+      "lore": "序列0 太阳 —— \"『光』权柄：全知全能者的能量基石，极难被彻底摧毁\"",
+      "flavor": "你就是光——光不会被杀死，它只会在被击碎的地方重新聚起来。",
+      "describe": "每场战斗一次：你死亡时阻止死亡，并回复至 30% 最大生命。",
+      "hook": "on_death",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "light_immortal",
+          "duration": null,
+          "charges": 1,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "light_immortal",
+          "name": "光之不朽",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 1,
+          "lethalProtect": {
+            "hpRatio": 0.3
+          },
+          "note": "H7 致死保护（已落，与愚者纸人替身 / 秘偶不死同源母版）；退化方案：C4 miracle + G4 reviveOf 走 spawn 流程"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面「hook on_death → 挂载带 on_death 触发的状态」语义折为常驻挂载的 lethal_protect 状态（愚者稿同先例）"
+      ]
+    },
+    {
+      "id": "skill_chanter_s0_order_authority",
+      "name": "秩序权柄",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "太阳",
+      "rarity": "legendary",
+      "axis": "notary",
+      "flagship": false,
+      "lore": "序列0 太阳 —— \"『秩序』权柄：偏正面、自我、排它\"",
+      "flavor": "你的秩序只认你自己——你身上的光永不褪色，而你立下的誓约，无人能解。",
+      "describe": "战斗开始时获得「秩序权柄」整场：自身的增益与护盾不可被驱散；你施加的誓约 / 准则 / 公证裁定类状态不可被驱散。本条无伤害。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "order_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "order_authority",
+          "name": "秩序权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "runtimeDispelLock": {
+              "scope": "self_buffs",
+              "note": "自我：自身所有增益（buff / 护盾）运行时覆写 dispelable:false（H8，已落）"
+            },
+            "contractDispelLock": {
+              "statusIds": [
+                "oath",
+                "sun_oath",
+                "justice_code",
+                "notarize"
+              ],
+              "note": "排它：由你施加的契约 / 誓约类状态不可被驱散"
+            }
+          },
+          "note": "偏正面 = 只保护不进攻；与愚者 / 观众同源 H8 母版"
+        }
+      ],
+      "tentative": true
+    }
+  ]
+}

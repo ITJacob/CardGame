@@ -1,0 +1,2772 @@
+{
+  "pathwayId": "assassin",
+  "pathwayName": "刺客",
+  "sourceFile": "../刺客途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "mirror": {
+      "symbol": "🜁",
+      "name": "镜"
+    },
+    "charm": {
+      "symbol": "🜂",
+      "name": "魅"
+    },
+    "plague": {
+      "symbol": "🜃",
+      "name": "疫"
+    },
+    "form": {
+      "symbol": "🜄",
+      "name": "形"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_assassin_s9_featherlight",
+      "name": "羽毛般轻盈",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "刺客",
+      "rarity": "common",
+      "axis": "form",
+      "flagship": false,
+      "lore": "序列9 刺客 —— \"短时间内改变身体获得羽毛般轻盈\" / \"灵巧步伐\"",
+      "flavor": "你的身体轻得没有分量，出手总比对手快上半拍；而刀锋及体的瞬间，你已踩着灵巧的步子退了开去。",
+      "describe": "战斗开始时获得「轻盈」：自身行动条速率 +6，持续整场；每场 3 次，你受击后在己方半场内自动后撤一格。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "featherlight",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "featherlight",
+          "name": "羽毛般轻盈",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 6,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "move",
+                  "op": "push_back",
+                  "distance": 1,
+                  "target": "self",
+                  "note": "灵巧步伐：己方半场内后撤一格（G8 合规），随后 charges - 1"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "$self",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 按 modify_stat 表达，待内核裁定归一",
+          "landed": false
+        },
+        {
+          "code": "MOVE_IN_STATUS_TRIGGER",
+          "note": "状态触发器载荷内调用 move 是否走 G8 faction 校验待确认（本稿新增项 16）",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_assassin_s9_eagle_sight",
+      "name": "鹰的视力",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "刺客",
+      "rarity": "common",
+      "axis": "form",
+      "flagship": false,
+      "lore": "序列9 刺客 —— \"固化鹰的视力和黑暗视觉\"",
+      "flavor": "鹰的瞳孔在你的眼底凝固，黑暗与隐匿都瞒不过你——连躲进镜子里的人，你也能一眼看见。",
+      "describe": "战斗开始时获得「鹰的视力」：敌方的隐匿类状态与「镜中囚禁」状态对你无效——你可以选中并攻击那些单位，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "eagle_sight",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "eagle_sight",
+          "name": "鹰的视力",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "detectConceal": true,
+            "detectMirrored": true
+          },
+          "note": "C8 识破分支（与愚者【灵视】同源）；黑暗视觉 = 能看见 mirrored 单位，本途径内部制衡"
+        }
+      ],
+      "sharedAcross": [
+        "hunter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s9_shadow_hide",
+      "name": "阴影躲藏",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "刺客",
+      "rarity": "common",
+      "axis": "form",
+      "flagship": false,
+      "lore": "序列9 刺客 —— \"擅长躲藏阴影\"",
+      "flavor": "你缩进阴影里，呼吸与夜色融为一体——下一次出手，从暗处刺出，格外致命。",
+      "describe": "躲入阴影 2 tick：敌方单体技能无法选中你；你的下一次伤害 ×1.5，出手后立即暴露。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "shadow_hide",
+          "duration": 2,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "shadow_hide",
+          "name": "阴影躲藏",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "charges": 1,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            },
+            "damage_mul": {
+              "value": 1.5,
+              "charges": 1,
+              "note": "下一次攻击 ×1.5（爆发层，出手即消耗）"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "shadow_hide"
+                  },
+                  "note": "出手即暴露"
+                }
+              ]
+            }
+          ],
+          "note": "与 F4 shadow_veil / F11 stealth 同源，建议并入统一潜行母版"
+        }
+      ],
+      "sharedAcross": [
+        "hunter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s9_burst_strike",
+      "name": "力量爆发于一击",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "刺客",
+      "rarity": "common",
+      "axis": "form",
+      "flagship": true,
+      "lore": "序列9 刺客 —— \"力量爆发于一击\"",
+      "flavor": "你把全身的力量压进这一击里——若此刻你正藏在阴影或隐形之中，这一刀会从背后刺入，重得让人直不起腰。",
+      "describe": "对一名近战敌人造成 5 点物理伤害；若你正处于阴影躲藏或隐形状态，追加 4 点物理伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 5
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "any_of",
+            "conditions": [
+              {
+                "kind": "caster_status_exists",
+                "id": "shadow_hide"
+              },
+              {
+                "kind": "caster_status_exists",
+                "id": "invisible"
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 4,
+              "note": "背刺追加"
+            }
+          ],
+          "else": []
+        }
+      ],
+      "sharedAcross": [
+        "hunter"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "SELF_HAS_STATUS_PREDICATE",
+          "note": "self_has_status 谓词（本稿新增项 12，🟡；F52 的 self 方向）待落地，暂以 any_of + caster_status_exists 表达",
+          "landed": false
+        },
+        {
+          "code": "ANY_OF_PREDICATE",
+          "note": "any_of 组合子待内核裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_assassin_s8_charm",
+      "name": "魅惑",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "教唆者",
+      "rarity": "common",
+      "axis": "charm",
+      "flagship": false,
+      "lore": "序列8 教唆者 —— \"魅惑\"",
+      "flavor": "你冲它笑了一下。它愣住了，转过身，把刀挥向了离自己最近的同伴。",
+      "describe": "魅惑一名敌人 2 tick：它转而攻击自己的队友，并受到 1 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "charm",
+              "duration": 2
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "charm",
+          "name": "魅惑",
+          "category": [
+            "retarget"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "self_faction_hp_desc",
+                "note": "反向嘲讽：被魅惑单位攻击其己方队友"
+              }
+            ]
+          },
+          "note": "F15 已登记（权威定义见 F 组状态表，此处为引用最小副本）；duration 受【说服】+1"
+        }
+      ],
+      "sharedAcross": [
+        "hunter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s8_mislead",
+      "name": "误导",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "教唆者",
+      "rarity": "common",
+      "axis": "charm",
+      "flagship": false,
+      "lore": "序列8 教唆者 —— \"误导、说服\"",
+      "flavor": "你轻声说了句话，它便深信不疑——于是刀锋挥向了你身后那片根本不存在的阴影。",
+      "describe": "使一名敌人被误导 3 tick：它的下一次攻击砍向空位（打空），只被骗一次。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mislead",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mislead",
+          "name": "误导",
+          "category": [
+            "retarget"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty"
+              }
+            ]
+          },
+          "note": "C7 已验证（target_override → first_empty）；duration 受【说服】+1"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s8_inflame_conflict",
+      "name": "激化矛盾",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "教唆者",
+      "rarity": "common",
+      "axis": "charm",
+      "flagship": true,
+      "lore": "序列8 教唆者 —— \"擅长诱发心底恶欲，激化矛盾，挑起冲突\"",
+      "flavor": "你在它耳边说了句什么。它心底那点见不得光的欲望腾地烧起来——它红着眼扑向同伴，招式凶狠，却门户大开。",
+      "describe": "使一名敌人 2 tick 内转头攻击自己的队友、攻击 +3、防御 -3（打队友更狠，但也更容易被打死）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "charm",
+              "duration": 2,
+              "note": "挑起冲突（转头打自己人）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 2,
+              "note": "诱发心底恶欲（失去理智地猛攻）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -3,
+              "mode": "delta",
+              "duration": 2,
+              "note": "激化矛盾（只顾攻、不顾守，门户大开）"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "hunter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s8_persuasion",
+      "name": "说服",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "教唆者",
+      "rarity": "common",
+      "axis": "charm",
+      "flagship": false,
+      "lore": "序列8 教唆者 —— \"魅惑、说服\"",
+      "flavor": "你说服它，而不是控制它——所以它信得更久，也更难被旁人点醒。",
+      "describe": "战斗开始时获得「说服」：你施加的魅惑与误导状态持续时间 +1 tick，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "persuasion",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "persuasion",
+          "name": "说服",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "durationModifier": {
+              "scope": "outgoing",
+              "mode": "add",
+              "value": 1,
+              "filter": {
+                "statusId": [
+                  "charm",
+                  "mislead"
+                ]
+              },
+              "note": "按状态族（target_override 类）过滤的 duration 加成"
+            }
+          },
+          "note": "退化方案：只对 charm 单状态生效"
+        }
+      ],
+      "sharedAcross": [
+        "hunter"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "DURATION_BY_STATUS_FAMILY",
+          "note": "按状态族过滤的 duration 加成（本稿新增项 18/19，🟡）待落地",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_assassin_s7_invisible",
+      "name": "隐形",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "女巫",
+      "rarity": "uncommon",
+      "axis": "form",
+      "flagship": false,
+      "lore": "序列7 女巫 —— \"隐形\"",
+      "flavor": "你的身影在空气中化开，连轮廓都不剩——而当你重新出现时，刀已经递到了它的后心。",
+      "describe": "隐形 3 tick：敌方单体技能无法选中你，受伤 ×0.7；你的下一次伤害 ×1.5，但出手不会解除隐形。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "invisible",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "invisible",
+          "name": "隐形",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            },
+            "damage_taken_mul": 0.7,
+            "damage_mul": {
+              "value": 1.5,
+              "charges": 1,
+              "note": "下一次攻击 ×1.5（爆发层）；不会因出手而自动卸载"
+            }
+          },
+          "note": "与 F4 shadow_veil 同源，建议并入统一潜行母版"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s7_black_flame",
+      "name": "黑焰",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "女巫",
+      "rarity": "uncommon",
+      "axis": "plague",
+      "flagship": false,
+      "lore": "序列7 女巫 —— \"操控黑焰\"；序列6 欢愉 —— \"黑焰可如子弹射出 / 驱除诅咒\"",
+      "flavor": "一簇漆黑的火苗在你掌心燃起，它没有温度，却把碰到的东西连同诅咒一起烧成灰烬。",
+      "describe": "对一名敌人造成 4 点火焰伤害，并有 40% 几率使其燃烧。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "fire",
+          "value": 4
+        },
+        {
+          "type": "mount_status",
+          "statusId": "burn",
+          "duration": 3,
+          "condition": {
+            "kind": "chance",
+            "p": 0.4
+          },
+          "note": "G1：概率写在 EffectRef.condition（R3 登记、R5 限非伤害维度）；元素取 fire（引擎无 dark，黑焰辨识度来自外观与技能名，不共享给猎人）"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "黑焰弹",
+            "note": "序列6 分支：追加对目标身后相邻单位 damage(fire, 2)（spread: splash_adjacent）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "fire",
+                "value": 6
+              },
+              {
+                "type": "damage",
+                "element": "fire",
+                "value": 2,
+                "target": "splash_behind",
+                "note": "spread: splash_adjacent"
+              }
+            ]
+          },
+          {
+            "name": "驱除诅咒",
+            "note": "序列6 分支：追加驱散自身全部减益/持续伤害/控制",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "fire",
+                "value": 6
+              },
+              {
+                "type": "dispel",
+                "target": "self",
+                "dispelTarget": "unit",
+                "filter": {
+                  "category": [
+                    "debuff",
+                    "dot",
+                    "control"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s7_frost",
+      "name": "冰霜",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "女巫",
+      "rarity": "uncommon",
+      "axis": "plague",
+      "flagship": false,
+      "lore": "序列7 女巫 —— \"操控冰霜\"",
+      "flavor": "寒气顺着你的指尖爬上它的四肢，动作一点点凝滞下来。",
+      "describe": "对一名敌人造成 3 点冰霜伤害，并使其行动条速率 -6（3 tick）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "ice",
+          "value": 3
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": -6,
+          "mode": "delta",
+          "duration": 3
+        }
+      ],
+      "sharedAcross": [
+        "hunter"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 按 modify_stat 表达，待内核裁定归一",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_assassin_s7_mirror_divination",
+      "name": "魔镜占卜",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "女巫",
+      "rarity": "uncommon",
+      "axis": "mirror",
+      "flagship": false,
+      "lore": "序列7 女巫 —— \"镜子魔法：魔镜占卜\"",
+      "flavor": "你向魔镜问过一个又一个答案，其中总有一句，在你受伤的瞬间恰好想起。",
+      "describe": "战斗开始时获得「魔镜占卜」：每次你受到伤害，有 30% 几率想起一句启示，能量 +1。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mirror_divination",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mirror_divination",
+          "name": "魔镜占卜",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "condition": {
+                    "kind": "chance",
+                    "p": 0.3
+                  },
+                  "note": "R3 登记、R5 限非伤害维度"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s7_witch_form",
+      "name": "女巫之形",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "女巫",
+      "rarity": "uncommon",
+      "axis": "form",
+      "flagship": false,
+      "lore": "序列7 女巫 —— \"男性变女性，容貌魅力极大提升\"；序列6 欢愉 —— \"更加美丽\"；序列0 魔女 —— \"女性权柄\"",
+      "flavor": "你的容貌早已超越了性别与年龄能丈量的范畴——敌人举刀的手会迟疑半分，而被你魅住的人，再也不肯醒来。",
+      "describe": "战斗开始时获得「女巫之形」：自身受伤 ×0.9；你施加的魅惑与误导不可被驱散，持续整场。",
+      "hook": "on_battle_start",
+      "gender": "any",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "witch_form",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "witch_form",
+          "name": "女巫之形",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_taken_mul": 0.9,
+            "outgoingDispelOverride": {
+              "filter": {
+                "statusId": [
+                  "charm",
+                  "mislead"
+                ]
+              },
+              "dispelable": false
+            }
+          },
+          "note": "\"男性变女性\"落在战外晋升事件（2026-09-07 拍板：战斗内无性别转换入口），故 gender: any；状态级不可驱散标志（H8，与愚者新增项 2 同源）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s7_mirror_substitute",
+      "name": "镜子替身",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "女巫",
+      "rarity": "uncommon",
+      "axis": "mirror",
+      "flagship": true,
+      "lore": "序列7 女巫 —— \"镜子魔法：镜子替身法（、魔杖替身法）\"",
+      "flavor": "致命一击落下的刹那，替你碎在原地的是一面镜子——镜中的你替你死了，而你身上的诅咒也随镜面一同崩裂。",
+      "describe": "获得「镜子替身」4 tick：你死亡时若场上有镜像分身，销毁一具分身代你死、你保留 1 点生命；否则触发致死保护保留 1 点生命；随后驱散自身全部减益与持续伤害（每场 1 次）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mirror_substitute",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mirror_substitute",
+          "name": "镜子替身",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "caster_has_summon",
+                    "unitId": [
+                      "unit_mirror_image"
+                    ]
+                  },
+                  "then": [
+                    {
+                      "op": "sequence",
+                      "steps": [
+                        {
+                          "type": "dispel",
+                          "dispelTarget": "unit",
+                          "filter": {
+                            "unitId": "unit_mirror_image",
+                            "count": 1
+                          },
+                          "note": "销毁一具镜像分身代替你死"
+                        },
+                        {
+                          "type": "heal",
+                          "value": 1,
+                          "target": "self",
+                          "mode": "setHp",
+                          "note": "自身保留 1 血（致死保护 H7）"
+                        }
+                      ]
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "heal",
+                      "value": 1,
+                      "target": "self",
+                      "mode": "setHp",
+                      "note": "无镜像时动用致死保护"
+                    }
+                  ]
+                },
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "debuff",
+                      "dot"
+                    ]
+                  },
+                  "note": "镜面崩裂：驱散自身全部减益/持续伤害（C2）"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "$self",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "lethal_protect（H7，已落 ddd）+ caster_has_summon 谓词（本稿新增项 11）；与愚者【纸人替身】同机制不同代价"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s6_bliss_touch",
+      "name": "欢愉之触",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "欢愉",
+      "rarity": "uncommon",
+      "axis": "charm",
+      "flagship": false,
+      "lore": "序列6 欢愉 —— \"通过接触使人欢愉\"",
+      "flavor": "你的指尖擦过它的手臂——那一瞬间涌上的欢愉淹没了它，它甚至忘了自己为什么站在这里。",
+      "describe": "对一名近战敌人造成 2 点精神伤害，并使其沉溺欢愉 3 tick：造成的伤害 ×0.75、攻击 -2。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            },
+            {
+              "type": "mount_status",
+              "statusId": "bliss",
+              "duration": 3
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "bliss",
+          "name": "沉溺欢愉",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "damage_mul": 0.75
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            }
+          ],
+          "note": "与 F17 lust（受伤加重+禁护盾）不重叠；与 F14 tutelage 的 damage_mul 是正反两面"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s6_silk_web",
+      "name": "无形蛛丝",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "欢愉",
+      "rarity": "uncommon",
+      "axis": "form",
+      "flagship": true,
+      "lore": "序列6 欢愉 —— \"制造无形蛛丝：缠绕减缓目标 / 快速横移 / 结茧\"",
+      "flavor": "一根看不见的丝缠上它的脚踝——越挣扎，缠得越紧。",
+      "describe": "缠住一名敌人 3 tick：行动条速率 -8、护甲 -5。升级可解锁「结茧」（2 tick 不能行动且受伤 ×0.7）与「横移」（自身前插一格）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "silk_bind",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "silk_bind",
+          "name": "缠绕",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -8,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self",
+              "note": "缠绕减缓（INV-S5 合规）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": -5,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self",
+              "note": "丝线勒进护甲的缝隙"
+            }
+          ],
+          "note": "与 F7 shackle 同源，建议并入"
+        },
+        {
+          "id": "cocoon",
+          "name": "结茧",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "action_nullify": true,
+            "damage_taken_mul": 0.7,
+            "note": "不能行动 + 茧壳护住了它"
+          }
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "结茧",
+            "note": "改为 mount_status(cocoon, duration: 2)：不能行动 + 受伤 ×0.7",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "cocoon",
+                "duration": 2
+              }
+            ]
+          },
+          {
+            "name": "横移",
+            "note": "基础缠绕之外追加自身 move(pull_forward, 1)（G8 合规）",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "silk_bind",
+                "duration": 3
+              },
+              {
+                "type": "move",
+                "op": "pull_forward",
+                "distance": 1,
+                "target": "self"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "silk_bind 内 gauge.rate 修正，同冰霜待裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_assassin_s6_frost_armor",
+      "name": "冰霜护甲",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "欢愉",
+      "rarity": "uncommon",
+      "axis": "form",
+      "flagship": false,
+      "lore": "序列6 欢愉 —— \"冰霜护甲\"",
+      "flavor": "一层薄霜覆上你的肩甲，寒气顺着每一次撞击爬回敌人身上。",
+      "describe": "为一名友军（可给自己）覆上冰霜护甲 4 tick：护甲 +5；期间每次受击，使攻击者行动条速率 -6（2 tick）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "frost_armor",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "frost_armor",
+          "name": "冰霜护甲",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 5,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self",
+              "note": "护甲 5 一档；带 duration 的护甲修正常量化（modify_stat 容量语义）"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_stat",
+                  "stat": "gauge.rate",
+                  "value": -6,
+                  "mode": "delta",
+                  "duration": 2,
+                  "target": "attacker",
+                  "note": "寒气反噬（F61 attacker 寻址，🟡 已登记）；退化方案：全体敌人 gauge.rate -4"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "hunter"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "寒气反噬 gauge.rate 修正，待裁定",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "友军选择的 fallbackSort 稿面未给，置 null 待补"
+      ]
+    },
+    {
+      "id": "skill_assassin_s5_disease",
+      "name": "疾病",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "痛苦",
+      "rarity": "rare",
+      "axis": "plague",
+      "flagship": true,
+      "lore": "序列5 痛苦 —— \"疾病：制造多种病原体，加速感染爆发，2-3 分钟可致猝死\"",
+      "flavor": "你送进它体内的东西会繁殖。起初只是发热，然后是溃烂，最后——在你数到一百之前，它已经倒下了。",
+      "describe": "使一名敌人感染 4 tick：每 tick 受到递增的毒素伤害（1/2/3/4），到期爆发 4 点毒素伤害。可驱散。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "disease",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "disease",
+          "name": "疾病",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "ramp": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "poison",
+                  "valueFrom": {
+                    "kind": "ramp"
+                  },
+                  "target": "self",
+                  "note": "dot 递增（加速感染爆发，dot_ramp 已落 ddd：编队参数 §1.1b ramp 行）"
+                }
+              ]
+            },
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "poison",
+                  "value": 4,
+                  "target": "self",
+                  "note": "感染爆发（\"2-3 分钟可致猝死\"）"
+                }
+              ]
+            }
+          ],
+          "note": "数值明显偏高 ⚠️D（建议 dot 降 1/1/2/2、爆发降 3）；退化方案：固定 dot 2/tick×4 + 爆发 4"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "疾病权柄",
+            "note": "序列1「部分疾病权柄」：被 disease 击杀的单位死亡时，对相邻敌方单位 mount_status(disease, duration: 2)（传染）",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "disease",
+                "duration": 4
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s5_repeated_charm",
+      "name": "反复魅惑",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "痛苦",
+      "rarity": "rare",
+      "axis": "charm",
+      "flagship": false,
+      "lore": "序列5 痛苦 —— \"魅惑主动化，反复使用可让人真正爱上自己\"",
+      "flavor": "一次是蛊惑，两次是沉溺，三次之后——它就真的爱上你了。到那时，谁也别想唤醒它。",
+      "describe": "战斗开始时获得「真爱」：你对同一目标每施加一次魅惑，其迷恋层 +1；达到 3 层时，该目标身上的魅惑变为不可驱散且持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "true_love",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "true_love",
+          "name": "真爱",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "condition": {
+                "note": "实际订阅事件：对目标施加 charm 时（挂载侦听）；此处按稿面计数语义登记"
+              },
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "infatuation",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "binding": {
+                    "recordedTarget": "target"
+                  },
+                  "note": "F51 stacks：对同一目标的迷恋计数 +1"
+                },
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "has_status",
+                    "side": "target",
+                    "id": "infatuation",
+                    "cmp": ">=",
+                    "n": 3
+                  },
+                  "then": [
+                    {
+                      "type": "mount_status",
+                      "statusId": "charm",
+                      "stackMode": "override",
+                      "target": "target",
+                      "overrides": {
+                        "dispelable": false,
+                        "duration": null
+                      },
+                      "note": "真正爱上自己：魅惑不可驱散且持续整场"
+                    }
+                  ],
+                  "else": []
+                }
+              ]
+            }
+          ],
+          "note": "退化方案：阈值 2 层 + charges 计数"
+        },
+        {
+          "id": "infatuation",
+          "name": "迷恋",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "note": "计数层（H11 计数型状态）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s5_mirror_maze",
+      "name": "镜像迷宫",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "痛苦",
+      "rarity": "rare",
+      "axis": "mirror",
+      "flagship": true,
+      "lore": "序列5 痛苦 —— \"镜像迷宫\"",
+      "flavor": "四面八方的镜子里都站着同一个你。它挥刀砍碎了一面又一面，而真正的你，正从它背后的镜中走出来。",
+      "describe": "降临「镜像迷宫」3 回合：敌方单位每 4 次攻击落空 1 次；「镜像/替身」标签卡效果 ×2、非镜像单体卡 ×0.9。入场瞬间：每个敌人下一击砍空（4 tick），并召唤 1 具你的镜像。自身迷失值 +1。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_mirror_maze",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "mirror_maze",
+              "duration": 4,
+              "target": "all_enemies",
+              "note": "降临瞬间入场效果：每个敌人下一击砍空（C7）"
+            },
+            {
+              "type": "spawn",
+              "unitId": "unit_mirror_image",
+              "hpRatio": 0.2,
+              "position": "tail",
+              "target": "self",
+              "note": "从迷宫里走出一具你的镜像（C5）"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金（降临范式 +1）"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mirror_maze",
+          "name": "迷失镜像",
+          "category": [
+            "retarget"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 1,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty"
+              }
+            ]
+          },
+          "note": "C7 target_override 族；仅降临瞬间入场效果，持续落空由 DomainDef 承载"
+        },
+        {
+          "id": "maze_daze",
+          "name": "迷宫迷失计数",
+          "category": [
+            "stance"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 4,
+          "note": "域内计数状态（源稿 domainDef 登记句直引）：敌方每次攻击 +1 层，满 4 层时该次攻击落空并 consume(4)（R5 确定性落空 ≈25%）；计数逻辑挂载于 domainDef 触发器"
+        },
+        {
+          "id": "maze_miss",
+          "name": "迷宫落空",
+          "category": [
+            "retarget"
+          ],
+          "dispelable": false,
+          "duration": 0,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty"
+              }
+            ]
+          },
+          "note": "一次性落空标记（源稿「满 4 层时该次攻击 target_override → first_empty」的承载状态，duration 0 当次攻击结算后即消）：该次攻击改打空坐标（C7）"
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_mirror_maze",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全体敌方单位攻击 25% 落空（镜中皆是虚影）；我方「镜像/替身」标签技能必定触发（其 condition:chance 豁免 p=1）；我方非镜像单体技能命中同目标时伤害 −10% ⚠️D",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "镜像",
+              "替身"
+            ],
+            "mul": 2.0
+          },
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": "非镜像单体",
+            "mul": 0.9,
+            "note": "取反过滤待 tag 体系支持，先文字登记 ⚠️D"
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_mirror_maze",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_attack",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "maze_daze",
+                "stacks": 1,
+                "stackMode": "add",
+                "target": "self",
+                "note": "计数 maze_daze stacks +1"
+              },
+              {
+                "op": "if",
+                "condition": {
+                  "kind": "has_status",
+                  "side": "target",
+                  "id": "maze_daze",
+                  "cmp": ">=",
+                  "n": 4
+                },
+                "then": [
+                  {
+                    "type": "mount_status",
+                    "statusId": "maze_daze",
+                    "stacks": -4,
+                    "stackMode": "consume",
+                    "target": "self",
+                    "note": "满 4 层消耗"
+                  },
+                  {
+                    "type": "mount_status",
+                    "statusId": "maze_miss",
+                    "duration": 0,
+                    "target": "self",
+                    "note": "该次攻击 target_override → first_empty（R5 确定性落空 ≈25%，卡面「25% 落空」的合规转写）"
+                  }
+                ],
+                "else": []
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "镜像",
+              "替身"
+            ],
+            "mul": 2.0
+          },
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": "非镜像单体",
+            "mul": 0.9,
+            "note": "⚠️D 取反过滤待 tag 体系支持"
+          }
+        ]
+      },
+      "tags": [
+        "镜像",
+        "替身"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "v0.3 升级为降临类界域牌；「我方镜像/替身标签技能必定触发」= 其 condition:chance 豁免（p 直写 1，R3 登记）；maze_miss 状态为文字登记（target_override 一次性改写）"
+      ]
+    },
+    {
+      "id": "skill_assassin_s5_hair_blades",
+      "name": "发刃",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "痛苦",
+      "rarity": "rare",
+      "axis": "form",
+      "flagship": false,
+      "lore": "序列5 痛苦 —— \"操纵头发为武器\"",
+      "flavor": "你的发丝骤然暴长，如数十根钢针同时贯穿它的身体。",
+      "describe": "以发丝连刺一名敌人 3 次，每次 3 点物理伤害；末段使其易伤 2 tick（受伤 ×1.3）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "repeat",
+          "count": 3,
+          "shareTarget": true,
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "type": "mount_status",
+          "statusId": "vulnerable",
+          "duration": 2,
+          "note": "伤口千疮百孔"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s4_plague",
+      "name": "瘟疫",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "绝望",
+      "rarity": "rare",
+      "axis": "plague",
+      "flagship": false,
+      "lore": "序列4 绝望 —— \"瘟疫：覆盖 3 公里范围，十几种秒到分钟级致命\"",
+      "flavor": "你放出了十几样东西——它们看不见，跑得比风快，覆盖所能望见的每一寸土地。",
+      "describe": "全体敌人感染疾病 3 tick（递增毒素伤害、到期爆发），失去 1 个增益，并易伤 3 tick。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "disease",
+              "duration": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              },
+              "target": "all_enemies",
+              "note": "十几种病原体侵蚀身体，增益瓦解（C2）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 3,
+              "target": "all_enemies",
+              "note": "身体被掏空"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "全体三合一数值 ⚠️D（本稿最大数值盲区）；disease 定义见【疾病】卡"
+      ]
+    },
+    {
+      "id": "skill_assassin_s4_mirror_step",
+      "name": "投影传送",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "绝望",
+      "rarity": "rare",
+      "axis": "mirror",
+      "flagship": false,
+      "lore": "序列4 绝望 —— \"镜中世界深入掌握：定位 5 公里镜子、任意穿梭、投影传送\"",
+      "flavor": "你在一面镜子里消失，从另一面走出来——而原本站在那儿的，是你的镜像。",
+      "describe": "与一名友军或镜像分身交换位置，并获得「穿梭余韵」2 tick：护盾 +3。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single",
+          "filter": {
+            "isAllyOrMirror": true
+          }
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 3,
+              "duration": 2,
+              "target": "self",
+              "note": "mirror_step：穿梭的余韵"
+            },
+            {
+              "type": "move",
+              "op": "swap_ally",
+              "target": "target",
+              "note": "swap_ally 锁定 from.faction（G8 合规，与愚者【秘偶换位】同机制）；可与镜像分身换位"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mirror_step",
+          "name": "穿梭余韵",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 3,
+              "duration": 2,
+              "target": "self"
+            }
+          ],
+          "note": "引用副本；权威定义见卡面效果（shield 封闭状态承载）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "目标 filter「is_ally_or_mirror」稿面语义（含镜像分身），引擎侧待确认为 filter.isSummon/casterOwned 组合；fallbackSort 稿面未给置 null"
+      ]
+    },
+    {
+      "id": "skill_assassin_s4_untransferable_curse",
+      "name": "不可转移的诅咒",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "绝望",
+      "rarity": "rare",
+      "axis": "plague",
+      "flagship": true,
+      "lore": "序列4 绝望 —— \"诅咒无法用替身转移\"",
+      "flavor": "你种下的东西，长在它的命里——纸人替不掉，镜子也替不掉。",
+      "describe": "战斗开始时获得「不可转移的诅咒」：你施加的减益与持续伤害类状态不可被驱散、不可被搬运（敌方的净化与状态搬运对它们无效），持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "untransferable_curse",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "untransferable_curse",
+          "name": "不可转移的诅咒",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "outgoingDispelOverride": {
+              "filter": {
+                "category": [
+                  "debuff",
+                  "dot"
+                ]
+              },
+              "dispelable": false,
+              "untransferable": true
+            }
+          },
+          "note": "状态级 untransferable 标志（已落 ddd：编队参数 §1.1b suppress/untransferable 行）；与 G12 immune（阻挡施加）是同族字段的另一面（阻挡移除/搬运）；强度上抬须与疾病/瘟疫/命运诅咒数值联合标定"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s3_mirror_self",
+      "name": "镜中人",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "不老",
+      "rarity": "epic",
+      "axis": "mirror",
+      "flagship": true,
+      "lore": "序列3 不老 —— \"复活：死亡后于『镜中人』身上复活，镜中人不止一个\"",
+      "flavor": "你死了一次。然后，在另一面镜子里，你睁开眼睛——那里还有很多个你。",
+      "describe": "战斗开始时获得「镜中人」：每场 2 次，你死亡时若场上有镜像分身，销毁一具并在该镜像的位置以 30% 生命复活；没有镜像则原地以 30% 生命复活。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mirror_self",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mirror_self",
+          "name": "镜中人",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 2,
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "caster_has_summon",
+                    "unitId": [
+                      "unit_mirror_image"
+                    ]
+                  },
+                  "then": [
+                    {
+                      "op": "sequence",
+                      "steps": [
+                        {
+                          "type": "dispel",
+                          "dispelTarget": "unit",
+                          "filter": {
+                            "unitId": "unit_mirror_image",
+                            "count": 1
+                          },
+                          "note": "销毁一具镜像分身"
+                        },
+                        {
+                          "type": "spawn",
+                          "reviveOf": "self",
+                          "hpRatio": 0.3,
+                          "position": "at_unit",
+                          "note": "在该镜像的坐标复活（position: 'at_unit'，G4 扩展已落 ddd）"
+                        }
+                      ]
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "spawn",
+                      "reviveOf": "self",
+                      "hpRatio": 0.3,
+                      "position": "original",
+                      "note": "退化：原地爬起来"
+                    }
+                  ]
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "$self",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self",
+                  "note": "归零后不再触发"
+                }
+              ]
+            }
+          ],
+          "note": "G4 reviveOf + position at_unit + caster_has_summon（均已落 ddd）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s3_eternal_youth",
+      "name": "青春永驻",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "不老",
+      "rarity": "epic",
+      "axis": "form",
+      "flagship": false,
+      "lore": "序列3 不老 —— \"青春永驻，寿命极长\"",
+      "flavor": "时间在你身上停了很久了——伤口会自己长好，而你的血，比看上去要多得多。",
+      "describe": "战斗开始时：自身生命上限 +15（整场），并获得「再生」5 tick（每 tick 回复 2 点生命）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 15,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "regen",
+          "duration": 5,
+          "target": "self"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s3_petrification",
+      "name": "石化",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "不老",
+      "rarity": "epic",
+      "axis": "form",
+      "flagship": false,
+      "lore": "序列3 不老 —— \"石化：真正石化能力，蛇发女妖形态\"",
+      "flavor": "你撩开头发看了它一眼。它的血肉从指尖开始变成灰白的石头——而石头，是会碎的。",
+      "describe": "使一名敌人石化 3 tick：不能行动、受伤 ×0.6（石头比血肉硬）、不可驱散；解除时碎裂，易伤 2 tick。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "petrification",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "petrification",
+          "name": "石化",
+          "category": [
+            "control",
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": 3,
+          "modifiers": {
+            "action_nullify": true,
+            "damage_taken_mul": 0.6,
+            "note": "damage_taken_mul 0.6 是有意的负收益：石化等于给了它 3 tick 减伤，正确用法是锁住奶妈/核心先杀别人"
+          },
+          "triggers": [
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "vulnerable",
+                  "duration": 2,
+                  "target": "self",
+                  "note": "碎裂：从石头状态解除时满身裂纹"
+                }
+              ]
+            }
+          ],
+          "note": "与眩晕的三点差异：时长 3t / 带减伤 / 不可驱散且解除后附易伤"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "ID 冲突：F20 已占用 petrify（通识者·结晶，heal_received_mul 0.5），语义不同；本稿改名 petrification 避让，建议改名并存不合并（汇总时拍板）"
+      ]
+    },
+    {
+      "id": "skill_assassin_s3_mirror_prison",
+      "name": "镜中囚禁",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "不老",
+      "rarity": "epic",
+      "axis": "mirror",
+      "flagship": false,
+      "lore": "序列3 不老 —— \"可强制拉人/房屋/街道入镜中世界\"",
+      "flavor": "你把它拽进镜子里。外面的人看不见它，它也碰不到外面的世界——等它跌出来的时候，这里已经打完了。",
+      "describe": "位格判定后把一名敌人拉入镜中世界 3 tick：不可被选中、不能行动、免疫一切伤害、不参与行动排序；到期跌回原坐标。位格低于你必定成功且目标无察觉；位格不低于你时基础 40% 成功率（眩晕/冰冻/虚弱 +35%、狂乱/失控 +20%、Boss −20%）。迷失 +0.5。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "params": {
+            "rankCheck": true
+          },
+          "condition": {
+            "kind": "stat_compare",
+            "aUnit": "caster",
+            "bUnit": "target",
+            "key": "rank",
+            "cmp": ">"
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "mirrored",
+              "duration": 3,
+              "note": "位格低于施法者：必定生效，且目标\"不会有任何察觉\"——不触发亡语、不触发反击、不触发敌方增益"
+            }
+          ],
+          "else": [
+            {
+              "op": "if",
+              "params": {
+                "rankCheck": true
+              },
+              "condition": {
+                "kind": "chance",
+                "p": 0.4,
+                "note": "基础 40%；眩晕/冰冻/虚弱 +35%、狂乱/失控 +20%、Boss −20%（⚠️D 状态修正见 conversionNotes）；R3 登记、单次抽样（R4）、非伤害维度（R5）"
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "mirrored",
+                  "duration": 3
+                }
+              ],
+              "else": []
+            }
+          ]
+        },
+        {
+          "type": "modify_resource",
+          "resource": "lost",
+          "value": 0.5,
+          "mode": "delta",
+          "target": "self",
+          "note": "拉入范式迷失租金 +0.5（向上取整累计）"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mirrored",
+          "name": "镜中囚禁",
+          "category": [
+            "control"
+          ],
+          "dispelable": false,
+          "duration": 3,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "both",
+              "scope": "all"
+            },
+            "action_nullify": true,
+            "damage_taken_mul": 0,
+            "excludeFromActionOrder": true
+          },
+          "note": "不可被选中（C8）+ 不可行动 + 免疫一切伤害 + 不参与行动排序三合一（H5 潜行母版 damage_immune 参数位 + action_nullify）；duration 到期跌回原坐标；退化方案：去掉免疫伤害"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "位格判定状态修正：目标处于 stun/freeze/weak 类 +35%、狂乱/失控类 +20%、Boss（位格 +2 以上）−20%，引擎侧待参数化，暂记文字",
+        "持有【鹰的视力】者可继续攻击 mirrored 单位（本稿内部制衡）"
+      ]
+    },
+    {
+      "id": "skill_assassin_s2_disaster",
+      "name": "灾难",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "灾难",
+      "rarity": "epic",
+      "axis": "plague",
+      "flagship": true,
+      "lore": "序列2 灾难 —— \"灾难：天灾（暴雪/海啸/地震/陨石）+ 人祸（列车事故/房屋垮塌）\"",
+      "flavor": "天暗下来了。先是暴雪压断屋梁，然后是地底传来的那一声闷响——你只是站在这里，这片地方就自己坏掉了。",
+      "describe": "全体敌人受到 3 点冰霜伤害（暴雪天灾）与 3 点物理伤害（房屋垮塌人祸），并眩晕 1 tick。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "ice",
+              "value": 3,
+              "target": "all_enemies",
+              "note": "天灾：暴雪"
+            },
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3,
+              "target": "all_enemies",
+              "note": "人祸：房屋垮塌 / 列车事故"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "duration": 1,
+              "target": "all_enemies",
+              "note": "被垮塌砸中"
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "海啸 / 陨石",
+            "note": "替换其中一段：海啸 damage(water, 3)（F63）/ 陨石 damage(fire, 3)",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "water",
+                "value": 3,
+                "target": "all_enemies"
+              },
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 3,
+                "target": "all_enemies"
+              },
+              {
+                "type": "mount_status",
+                "statusId": "stun",
+                "duration": 1,
+                "target": "all_enemies"
+              }
+            ]
+          }
+        ]
+      },
+      "sharedAcross": [
+        "hunter"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "全体 6 伤 + 全体眩晕 1t 收 6 能量按单卡预算明显超模，必须重定（建议 2+2 或去眩晕）"
+      ]
+    },
+    {
+      "id": "skill_assassin_s2_doom_curse",
+      "name": "命运诅咒",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "灾难",
+      "rarity": "epic",
+      "axis": "plague",
+      "flagship": false,
+      "lore": "序列2 灾难 —— \"命运诅咒：在命运上诅咒，让目标接连遭遇灾难\"",
+      "flavor": "你在它的命运上划了一道口子。从这一刻起，每一件倒霉事都会追着它跑——你打它一下，命运会替你再补一下。",
+      "describe": "诅咒一名敌人 6 tick（3 次）：每当它受到伤害，命运追加 3 点无元素伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "doom",
+          "duration": 6
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "doom",
+          "name": "命运诅咒",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "charges": 3,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 3,
+                  "target": "self",
+                  "note": "祸不单行"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "$self",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "命运主题不译概率（brief §3.0 例外条款），做\"受击追加\"次数型状态；与 F21 astral_mark 同触发点不同载荷，建议并入\"受击反哺\"状态族；on_take_damage 响应式触发不受 G15-b 影响"
+        }
+      ],
+      "sharedAcross": [
+        "hunter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s2_collapse",
+      "name": "崩解",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "灾难",
+      "rarity": "epic",
+      "axis": "plague",
+      "flagship": false,
+      "lore": "序列2 灾难 —— \"可延伸至权柄和概念：诱导问题爆发让系统崩解\"",
+      "flavor": "你什么都没破坏，你只是让它本来就有的问题，一次性全部爆发了出来。",
+      "describe": "驱散一名敌人的全部增益；若驱散了至少 2 个，造成 4 点无元素伤害，否则造成 1 点（目标身上的增益越多崩得越惨）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ]
+              },
+              "note": "count 省略 = 全部清除（C2）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "dispelled_count",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 4,
+                  "note": "积弊集中爆发"
+                }
+              ],
+              "else": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s1_apocalypse",
+      "name": "末日",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "末日",
+      "rarity": "legendary",
+      "axis": "plague",
+      "flagship": true,
+      "lore": "序列1 末日 —— \"末日权柄：让指定区域各种矛盾集中爆发，命运纠缠终结\"",
+      "flavor": "你说，这里该结束了。于是所有的旧账在同一刻清算——它们互相撕咬，而命运替每一个人都写好了结尾。",
+      "describe": "全体敌人受到 4 点无元素伤害，被魅惑 2 tick（互相撕咬，F15），并各自受到命运诅咒 4 tick（2 次受击追伤）。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 4,
+              "target": "all_enemies",
+              "note": "权柄的直接体现；none 元素：末日不属于任何一种自然力"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "charm",
+              "duration": 2,
+              "target": "all_enemies",
+              "note": "矛盾集中爆发（互相撕咬，F15）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "doom",
+              "duration": 4,
+              "target": "all_enemies",
+              "note": "命运纠缠终结（各自的灾难接连落下）"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "7 能量 / 全体三重无既有锚点，最大定价盲区之一"
+      ]
+    },
+    {
+      "id": "skill_assassin_s1_charm_authority",
+      "name": "魅力权柄",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "末日",
+      "rarity": "legendary",
+      "axis": "charm",
+      "flagship": false,
+      "lore": "序列1 末日 —— \"欢愉权柄：『魅力』权柄下位\"；序列0 魔女 —— \"魅力权柄\"",
+      "flavor": "你笑了一声，整片战场安静了半秒——敌人为这一刻沉醉，而你的同伴感到从未有过的轻快。",
+      "describe": "全体敌人沉溺欢愉 3 tick（伤害 ×0.75、攻击 -2）；全体友军回复 4 点生命。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "bliss",
+              "duration": 3,
+              "target": "all_enemies",
+              "note": "沉醉于欢愉"
+            },
+            {
+              "type": "heal",
+              "value": 4,
+              "target": "all_allies",
+              "note": "A22：治疗必须用 heal 原语"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s0_chaos_vortex",
+      "name": "混沌漩涡",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "魔女",
+      "rarity": "legendary",
+      "axis": "mirror",
+      "flagship": true,
+      "lore": "序列0 魔女 —— \"混沌权柄（核心）：万物归于混沌，漩涡融化事物为未发生的可能性\"",
+      "flavor": "你掀开一个漩涡。它身上的祝福被抹平，而它挥出的那两刀——从来就没有发生过。",
+      "describe": "抹平一名敌人的全部增益（万物归于混沌），并使其接下来的 2 次攻击不产生任何效果（被融化成\"未发生的可能性\"）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ]
+              },
+              "note": "万物归于混沌（C2）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "chaos_vortex",
+              "duration": 6
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "chaos_vortex",
+          "name": "混沌漩涡",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "charges": 2,
+          "modifiers": {
+            "action_nullify": {
+              "scope": "outgoing",
+              "charges": 2,
+              "note": "持有者接下来 2 次造成的伤害不产生任何效果（被漩涡融化成未发生的可能性），每次消耗一层"
+            }
+          },
+          "note": "damage_intercept 母版（编队参数 §2.4 H3 乘区=0 档；action_nullify 已落 ddd：编队参数 §1.1b）；退化方案：damage_mul 0.4，彻底失去\"未发生\"的味道，不推荐"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_assassin_s0_mirror_world",
+      "name": "镜中世界",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "魔女",
+      "rarity": "legendary",
+      "axis": "mirror",
+      "flagship": false,
+      "lore": "序列0 魔女 —— \"镜中世界权柄\"",
+      "flavor": "你抬起手，整片战场被折进镜子里。敌人伸手碰不到任何人，而你的同伴，从每一面镜子中同时走了出来。",
+      "describe": "吟唱 2 tick 后降临「镜中世界」2 回合：敌方单位持续不可选中、不可行动、免疫伤害；我方「镜像/替身」标签卡 ×2、敌方「光/净化」标签卡削弱；我方登场/复活从镜像位置出现。入场瞬间：全体敌人被放逐 1 tick，全体友军行动条 +20。自身迷失值 +1。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 8,
+        "castTime": 2
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_mirror_world",
+              "duration": 2,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "mirrored",
+              "duration": 1,
+              "target": "all_enemies",
+              "params": {
+                "rankCheck": true
+              },
+              "note": "强制拉入镜中世界（入场瞬间，短暂放逐）；位格 ≥ 施法者的敌方单位走 brief §11.2 成功率判定（序列 0 位格基准 10，仅对 Boss/同序列敌人需掷判定）"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 20,
+              "mode": "delta",
+              "target": "all_allies",
+              "note": "从镜中走出，抢先出手；G5/G6 合规（推全体友军，不靠自推）"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金（降临范式 +1）"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_mirror_world",
+        "duration": 2,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全体敌方单位不可被选中、不可行动、免疫伤害（持续，非仅入场瞬间）；我方单位登场/复活时从镜像位置而非队尾出现（Placement 落点规则读取，非补丁）",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "镜像",
+              "替身"
+            ],
+            "mul": 2.0
+          },
+          {
+            "kind": "disable_effect",
+            "side": "enemy",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "note": "I 节点削弱"
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_mirror_world",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 2,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "mirrored",
+                "duration": 2,
+                "target": "all_enemies",
+                "note": "环境规则的持续化承载：不可选中 / 不可行动 / 免疫伤害每 tick 刷新"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "镜像",
+              "替身"
+            ],
+            "mul": 2.0
+          },
+          {
+            "kind": "disable_effect",
+            "side": "enemy",
+            "tag": [
+              "光",
+              "净化"
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "镜像",
+        "替身"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "v0.3 升级为传说档降临界域（brief §11.3 传说 = 短而强）；吟唱 2 tick 是敌人打断窗口",
+        "位格判定：敌方单位位格 ≥ 施法者位格时按 brief §11.2 走成功率，具体嵌套 If 结构与【镜中囚禁】同模板"
+      ]
+    },
+    {
+      "id": "skill_assassin_s0_primal_stillness",
+      "name": "原初·静止",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "魔女",
+      "rarity": "legendary",
+      "axis": "form",
+      "flagship": true,
+      "lore": "序列0 魔女 —— \"原初权柄：静止 / 停滞 / 全能，下位为『石化』\"",
+      "flavor": "每一次有生命在你面前熄灭，就有一个正要行动的身影被钉在原地——不是被抓住，是被停住了。",
+      "describe": "每当你击杀一个单位：使行动条最接近满的一名敌人行动条立即清零（-999，截断为 0），行动条速率 -15（3 tick）。",
+      "hook": "on_kill",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -999,
+              "mode": "delta",
+              "target": "enemy",
+              "note": "目标 = 行动条最接近满的敌方单位（fallbackSort: gauge_desc）；负 delta 下限截断为 0（F55 同族问题，待一并确认）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -15,
+              "mode": "delta",
+              "duration": 3,
+              "target": "enemy"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 按 modify_stat 表达，待裁定",
+          "landed": false
+        }
+      ]
+    }
+  ]
+}

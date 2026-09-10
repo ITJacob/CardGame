@@ -1,0 +1,2091 @@
+{
+  "pathwayId": "apprentice",
+  "pathwayName": "学徒",
+  "sourceFile": "../学徒途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "gate": {
+      "symbol": "🜁",
+      "name": "开门"
+    },
+    "trick": {
+      "symbol": "🜂",
+      "name": "戏法"
+    },
+    "record": {
+      "symbol": "🜃",
+      "name": "记录"
+    },
+    "astral": {
+      "symbol": "🜄",
+      "name": "星界"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_apprentice_s9_gate_open",
+      "name": "开门",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "学徒",
+      "rarity": "common",
+      "axis": "gate",
+      "flagship": false,
+      "lore": "序列9 学徒 —— \"「开门」：穿墙而过，手掌按住墙壁出现幽蓝大门\"",
+      "flavor": "你按住虚空，一道幽蓝的门扉在墙上浮现——你穿门而过，出现在战场的另一处，门扉闭合时的气流掀动了近旁的敌人。",
+      "describe": "自身移动到己方半场内一个指定空位，并对敌方前排造成 2 点物理伤害。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "param",
+              "target": "self",
+              "note": "落点为己方半场指定空位（anchor: empty_ally_slot，G8 合规）"
+            },
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "target": "all_enemies",
+              "note": "锚点 front_line：仅敌方前排受气流挤压"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s9_ritual_gate",
+      "name": "仪式·门",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "学徒",
+      "rarity": "common",
+      "axis": "gate",
+      "flagship": false,
+      "lore": "序列9 学徒 —— \"能使用仪式魔法\"",
+      "flavor": "开战前你便布下了一道仪式——三息之后，那道门会在敌阵前方自行洞开。",
+      "describe": "战斗开始时布置仪式之门：4 tick 后在敌方前排爆发，造成 4 点无元素伤害。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "ritual_gate",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "ritual_gate",
+          "name": "仪式·门",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "triggers": [
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 4,
+                  "target": "all_enemies",
+                  "note": "锚点 front_line：门在敌阵前方洞开"
+                }
+              ],
+              "note": "稿面遗留：若被 dispel 也 fire 则成强度漏洞，建议加 removeReason: expired 过滤（H29 已落）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s8_flash_trick",
+      "name": "戏法·闪光",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "戏法大师",
+      "rarity": "common",
+      "axis": "trick",
+      "flagship": true,
+      "lore": "序列8 戏法大师 —— \"掌握各种奇怪法术：闪光、黑幕、转移气体、巨响、冰冻、电击、造雾、刮风、点火、摔倒术、驱物、逃脱戏法\"",
+      "flavor": "一道刺目的强光在它眼前炸开，紧接着是一声贯耳的巨响——它挥出的下一击，砍在了空处。",
+      "describe": "使一名敌人被闪光震慑 3 tick：它的下一次单体攻击落空，且行动条进度 -20。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "flash",
+              "charges": 1,
+              "duration": 3
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -20,
+              "mode": "delta",
+              "note": "巨响震慑，轻推（D1 锚点为 -50）"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "flash",
+          "name": "闪光",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "modifiers": {
+            "targetOverride": {
+              "anchor": "first_empty",
+              "note": "C7：下一次单体攻击改写至最近空坐标，只瞎一次（C6 charges）"
+            }
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s8_tri_element",
+      "name": "戏法·三元素",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "戏法大师",
+      "rarity": "common",
+      "axis": "trick",
+      "flagship": false,
+      "lore": "序列8 戏法大师 —— \"…冰冻、电击、…点火…\"",
+      "flavor": "你打出一串细碎的手势——一点火苗、一层白霜、一缕电光，接连落在它身上。",
+      "describe": "对一名敌人连续造成 3 段元素伤害：2 点火、2 点冰、2 点电，各自独立结算。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 2
+            },
+            {
+              "type": "damage",
+              "element": "ice",
+              "value": 2
+            },
+            {
+              "type": "damage",
+              "element": "shock",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s8_trip_push",
+      "name": "戏法·摔倒术",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "戏法大师",
+      "rarity": "common",
+      "axis": "trick",
+      "flagship": false,
+      "lore": "序列8 戏法大师 —— \"…刮风、…摔倒术、驱物…\"",
+      "flavor": "它脚下一绊莫名踉跄，你顺手卷起一阵风，把它推得更远。",
+      "describe": "对一名敌人造成 2 点物理伤害，并将其在自己队列内后移 1 格。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2
+            },
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 1,
+              "note": "C1：锁定 from.faction，只在目标自己队列内后移，G8 合规"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s8_escape_act",
+      "name": "逃脱戏法",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "戏法大师",
+      "rarity": "common",
+      "axis": "gate",
+      "flagship": false,
+      "lore": "序列8 戏法大师 —— \"…逃脱戏法\"",
+      "flavor": "你的袖子里永远留着一手——每一次被逼到绝路，你都能从原地消失，出现在后排。",
+      "describe": "战斗开始时获得 3 层逃脱戏法：每次受击时该次伤害 ×0.8，并退回己方半场最后位，每场共 3 次。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "escape_act",
+          "charges": 3,
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "escape_act",
+          "name": "逃脱戏法",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 3,
+          "modifiers": {
+            "damage_taken_mul": 0.8
+          },
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "move",
+                  "op": "push_back",
+                  "distance": 99,
+                  "target": "self",
+                  "note": "退回己方半场最后位，G8 合规；受击结算中途 relocate 时序见编队上下文 §十 H43"
+                }
+              ],
+              "note": "每次响应该次伤害 ×0.8 并退位，charges -1"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s7_danger_sense",
+      "name": "危险预感",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "占星人",
+      "rarity": "uncommon",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列7 占星人 —— \"灵性直觉增强，出现危险预感\"",
+      "flavor": "危险降临前的半息，你的后颈会先一步发凉——三次之内，你都能提前避开要害。",
+      "describe": "战斗开始时获得 3 层危险预感：每次受击时该次伤害 ×0.7，每场共 3 次。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "danger_sense",
+          "charges": 3,
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "danger_sense",
+          "name": "危险预感",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 3,
+          "modifiers": {
+            "damage_taken_mul": 0.7
+          },
+          "note": "H3 参数化减伤状态母版（与愚者 premonition / wound_transfer / poise 同源），charges 每次受击 -1"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s7_divination_jam",
+      "name": "干扰占卜",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "占星人",
+      "rarity": "uncommon",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列7 占星人 —— \"干扰占卜及灵性直觉\"",
+      "flavor": "你搅乱了它头顶的星象——它读不出你的方位，能量也开始从指缝里漏走。",
+      "describe": "干扰一名敌人 3 tick：它每 tick 流失 1 点能量，且下一次单体攻击落空。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "energy_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "divination_jam",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "divination_jam",
+          "name": "干扰占卜",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": -1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "F55：对敌方削能下限截断为 0"
+                }
+              ]
+            }
+          ],
+          "modifiers": {
+            "targetOverride": {
+              "anchor": "first_empty",
+              "charges": 1,
+              "note": "C7：方位错乱，下一次单体攻击打空"
+            }
+          }
+        }
+      ],
+      "sharedAcross": [
+        "fool",
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s7_astrology",
+      "name": "星相学",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "占星人",
+      "rarity": "uncommon",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列7 占星人 —— \"占星术：水晶球占卜 + 星相学\"",
+      "flavor": "你在星图上钉住了它的位置——从此它藏不住、躲不掉，而它的每一步都慢了半拍。",
+      "describe": "标记一名敌人 4 tick：它身上的隐匿与不可选中状态对你方无效，且行动条速率 -5。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "star_mark",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "star_mark",
+          "name": "星相标记",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -5,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "pierceConceal": true,
+            "note": "C8 识破分支：持有者身上的隐匿 / 不可选中类状态对己方无效"
+          }
+        }
+      ],
+      "sharedAcross": [
+        "fool",
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s6_inscription",
+      "name": "记录",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "记录官",
+      "rarity": "uncommon",
+      "axis": "record",
+      "flagship": true,
+      "lore": "序列6 记录官 —— \"「记录」：重现目标使用的非凡能力并存储 / 序列7-9 能力可记录 20 个（效果接近原版），序列5-6 可记录 8 个（效果减半）\"",
+      "flavor": "它打在你身上的每一招，都被你原样拓进灵性拓片里——连同那一招的属性与力道。",
+      "describe": "自身每次受击时记录层数 +1（至多 8 层），并记下这一击的元素与档位，供重现与再现使用。",
+      "hook": "on_take_damage",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "inscription",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self",
+              "note": "F51：层数 +1，达上限不再增"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "recorded",
+              "duration": null,
+              "target": "self",
+              "note": "刷新两个数据槽：element = 本次伤害元素、tier = 本次伤害档位（H33 slots，读取语法 $recorded.<key>）"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "inscription",
+          "name": "记录层数",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 8,
+          "stackPolicy": "stack",
+          "note": "F1 已登记（H11 计数型状态）；上限 8 对齐原著「序列5-6 可记录 8 个」。此处为引用副本，权威定义见 F1"
+        },
+        {
+          "id": "recorded",
+          "name": "已记录",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "stackPolicy": "refresh",
+          "slots": {
+            "element": null,
+            "tier": null
+          },
+          "note": "H33 状态数据槽：记录最近一招的元素与档位；退化方案为缺省按 mental 结算"
+        }
+      ],
+      "sharedAcross": [
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s6_reenact_strike",
+      "name": "重现",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "记录官",
+      "rarity": "uncommon",
+      "axis": "record",
+      "flagship": false,
+      "lore": "序列6 记录官 —— \"「记录」：重现目标使用的非凡能力…\"",
+      "flavor": "你翻开拓片，把它刚刚用来打你的那一招，原封不动地还了回去。",
+      "describe": "若记录层数 ≥3：消耗 3 层，以被记录那一招的元素造成 3 + 2×(层数÷3) 点伤害；否则造成 2 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "inscription",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 3,
+              "valueFrom": {
+                "statusStacks": "inscription",
+                "formula": "3 + 2 * floor(stacks / 3)"
+              },
+              "note": "元素取 $recorded.element（H33）；退化方案固定 mental"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "inscription",
+              "stacks": -3,
+              "stackMode": "consume"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s5_traveler_gate",
+      "name": "旅行家之门",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "旅行家",
+      "rarity": "rare",
+      "axis": "gate",
+      "flagship": true,
+      "lore": "序列5 旅行家 —— \"「旅行家之门」：灵界穿梭传送\"",
+      "flavor": "一道门在它脚边打开——再出现时，它已经站在了队伍的另一头。",
+      "describe": "将一名友军跨路转移到己方另一路队尾，并为其提供 3 点护盾（3 tick）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "insert_tail_cross_lane",
+              "note": "跨路插队到己方后排，G8 合规"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 3,
+              "duration": 3,
+              "target": "target",
+              "note": "穿越灵界的擦伤补偿"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s5_blink",
+      "name": "闪现",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "旅行家",
+      "rarity": "rare",
+      "axis": "gate",
+      "flagship": false,
+      "lore": "序列5 旅行家 —— \"「闪现」：短距离不断闪现，制造围攻效果\"",
+      "flavor": "你在它身周不断闪现——左、右、背后，三记短促的攻击几乎同时落下。",
+      "describe": "对一名近战敌人连续攻击 3 次，每次造成 2 点物理伤害（突进仅为表现，站位不变）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "repeat",
+          "count": 3,
+          "shareTarget": true,
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s5_invisible_hand",
+      "name": "无形之手",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "旅行家",
+      "rarity": "rare",
+      "axis": "trick",
+      "flagship": false,
+      "lore": "序列5 旅行家 —— \"「无形之手」：远处摄物\"",
+      "flavor": "一只看不见的手扣住它的衣领，把它从队列里生生拽了出来。",
+      "describe": "对一名敌人造成 3 点物理伤害，并将其在自己队列内前移 1 格。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3
+            },
+            {
+              "type": "move",
+              "op": "pull_forward",
+              "distance": 1,
+              "note": "C1：锁定 from.faction，只在目标自己队列内前移，G8 合规"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "fool"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s5_semi_divine_record",
+      "name": "半神记录",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "旅行家",
+      "rarity": "rare",
+      "axis": "record",
+      "flagship": false,
+      "lore": "序列5 旅行家 —— \"「记录」提升至半神层次\"",
+      "flavor": "成为旅行家后，你的拓片能容纳更多内容——不止打向你的，连落在同伴身上的招式也被一并记下。",
+      "describe": "战斗开始时记录升华：记录层数上限 8 层，且任意友军受击都会为你累积记录层数。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "record_semi_divine",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "record_semi_divine",
+          "name": "半神记录",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "note": "① inscription maxStacks 8（H34 挂载方覆盖）；② 记录触发范围扩展为任意友军受击——走全局 on_take_damage 第三方监听（执行参数 §2.1，新增项 6）。退化方案：仅保留①"
+        }
+      ],
+      "sharedAcross": [
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s4_secrecy",
+      "name": "守秘",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "秘法师",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列4 秘法师 —— \"「守秘」：屏蔽感应，影响神秘学追踪\"",
+      "flavor": "你把关于自己的一切藏进灵界的褶皱里——敌人既读不到你，也休想把你身上的加持抹掉。",
+      "describe": "战斗开始时获得守秘：自身增益不可被敌方驱散，且敌方单体技能选取目标时自身优先级降低。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "secrecy",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "secrecy",
+          "name": "守秘",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "buffUndispellable": true,
+            "candidateWeight": "status:secrecy:asc",
+            "note": "H8 运行时覆写 dispelable：自身已挂载 buff 类状态不可被敌方 dispel；C8 加权分支：排序键 status:secrecy:asc 使自身被单体选取时降权"
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s4_hidden_space",
+      "name": "空间隐藏",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "秘法师",
+      "rarity": "rare",
+      "axis": "gate",
+      "flagship": false,
+      "lore": "序列4 秘法师 —— \"「空间隐藏」：扭曲割裂空间并隐藏\"",
+      "flavor": "你身边的空间被扭曲割裂——它还在那里，却再没有谁能准确地指向它。",
+      "describe": "使一名友军隐匿 2 tick：不可被单体技能选中（范围效果仍可命中），出手造成伤害时隐匿破除。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "hidden_space",
+          "duration": 2,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "hidden_space",
+          "name": "空间隐藏",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "hidden_space"
+                  },
+                  "note": "一出手就暴露了"
+                }
+              ]
+            }
+          ],
+          "note": "H5 潜行母版（与 F4 shadow_veil / F11 stealth 同源），不新立机制"
+        }
+      ],
+      "sharedAcross": [
+        "fool",
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s4_phantom_door",
+      "name": "幻化",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "秘法师",
+      "rarity": "rare",
+      "axis": "gate",
+      "flagship": false,
+      "lore": "序列4 秘法师 —— \"「幻化」：变成虚幻之门，攻击处于不同世界\"",
+      "flavor": "你的躯体化为一道虚幻的门扉——打向你的攻击穿门而过，落进了另一个世界。",
+      "describe": "自身化为虚幻之门 2 tick：受到的所有伤害 ×0.5，仍可被点名，怕驱散。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "phantom_door",
+          "duration": 2,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "phantom_door",
+          "name": "幻化",
+          "category": [
+            "stance"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "damage_taken_mul": 0.5
+          },
+          "note": "H3 参数化减伤母版（与 C3 glibness / F22 sanctuary 同源）；与空间隐藏分工：隐藏怕 AoE、幻化怕驱散"
+        }
+      ],
+      "sharedAcross": [
+        "fool",
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s4_exile",
+      "name": "放逐",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "秘法师",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": true,
+      "lore": "序列4 秘法师 —— \"「放逐」：将目标丢入时空乱流\"",
+      "flavor": "它脚下的空间裂开一道缝——它被丢进乱流里，等它挣扎着爬回来时，身上已经没有一处完好。",
+      "describe": "将一名敌人放逐 3 tick：行动条冻结、不可被单体技能选中，归来时受到 4 点无元素伤害（乱流撕扯）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "exiled",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "exiled",
+          "name": "放逐",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "gaugeRateMul": 0,
+            "untargetableByTargeted": {
+              "direction": "both",
+              "scope": "single"
+            },
+            "note": "gauge_freeze = gaugeRateMul 冻结档 0（H24 行动条调制母版）；状态可被驱散打断（乱流还能游出来）"
+          },
+          "triggers": [
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 4,
+                  "target": "self",
+                  "note": "乱流撕扯：归位时结算"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s3_space_rift",
+      "name": "撕裂空间",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "漫游者",
+      "rarity": "epic",
+      "axis": "gate",
+      "flagship": true,
+      "lore": "序列3 漫游者 —— \"「漫游」：可进入星空，遨游星界，前往不同星球 /「开门」：能突破几乎所有屏障 /「融入空间」、「撕裂空间」\"",
+      "flavor": "你伸手撕开一道裂隙——它和它身侧的同伴都被裂口咬住，而裂隙并不会合拢。",
+      "describe": "对一名敌人造成 5 点物理伤害（相邻敌人受到 2 点溅射），并撕开空间裂隙 3 tick：其受伤 ×1.15。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 5
+            },
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "target": "secondary_target",
+              "note": "spread: splash_adjacent → 相邻敌人溅射 2 伤"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "space_rift",
+              "duration": 3
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "space_rift",
+          "name": "空间裂隙",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "damage_taken_mul": 1.15
+          },
+          "note": "H3/H4 参数化受伤乘区（与 vulnerable 1.3 同族）：伤口不合拢，持续受伤加重"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s3_merge_space",
+      "name": "融入空间",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "漫游者",
+      "rarity": "epic",
+      "axis": "gate",
+      "flagship": false,
+      "lore": "序列3 漫游者 —— \"「融入空间」\"",
+      "flavor": "你融进了身后的空间——再探出手时，那一击从谁也预料不到的角度落下。",
+      "describe": "自身融入空间 2 tick：不可被单体技能选中，下一次造成伤害 ×1.5，出手后隐匿破除。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "merged",
+          "duration": 2,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "merged",
+          "name": "融入空间",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "charges": 1,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            },
+            "damage_mul": {
+              "value": 1.5,
+              "charges": 1,
+              "note": "C6：一次性爆发窗口，探头一击"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "merged"
+                  },
+                  "note": "出手即暴露"
+                }
+              ]
+            }
+          ],
+          "note": "攻防一体潜行：与空间隐藏（纯防御、可给友军）区分"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s3_breach_gate",
+      "name": "破障之门",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "漫游者",
+      "rarity": "epic",
+      "axis": "gate",
+      "flagship": false,
+      "lore": "序列3 漫游者 —— \"「开门」：能突破几乎所有屏障\"",
+      "flavor": "这世上几乎没有你打不开的门——凡是躲在屏障后面的，被你找到门缝只是时间问题。",
+      "describe": "战斗开始时获得破障：你对持有护盾的目标伤害 ×1.3，且你的位移效果无视目标的禁位移限制。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "breach",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "breach",
+          "name": "破障之门",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.3,
+              "filter": {
+                "hasStatus": [
+                  "shield"
+                ]
+              },
+              "note": "F52 has_status：只对护盾屏障增伤，不做无脑无视护甲"
+            },
+            "movePierceImmune": true
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s3_starry_roam",
+      "name": "漫游星空",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "漫游者",
+      "rarity": "epic",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列3 漫游者 —— \"「漫游」：可进入星空，遨游星界，前往不同星球\"",
+      "flavor": "你的一部分还留在星界那头——在这里的每一次出手，你都比别人早到一步。",
+      "describe": "战斗开始时，自身行动条阈值 -10，持续整场（每次行动更快到来）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "gauge.threshold",
+          "value": -10,
+          "mode": "delta",
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面写 modify_stat(gauge_threshold)；ddd 口径 gauge.* 三键归 modify_resource，已归一为 modify_resource(gauge.threshold)。改阈值是自属性修正、非自推 gauge.current，G5/G6 合规"
+      ]
+    },
+    {
+      "id": "skill_apprentice_s2_dimension_view",
+      "name": "维度之视",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "旅法师",
+      "rarity": "epic",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列2 旅法师 —— \"「维度之视」：缩小化目标并收纳，覆盖一座城市\"",
+      "flavor": "你用更高维度的视角俯瞰它——在那一眼里，它小得像沙盘上的一粒棋子。",
+      "describe": "将一名敌人缩小 4 tick：攻击 -4、行动条速率 -5，到期自动恢复。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "diminished",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "diminished",
+          "name": "维度缩小",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -4,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -5,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ],
+          "note": "原著「覆盖一座城市」是位格描述，按 brief §3 不搬"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge_rate) 表达持续修正，待内核裁定归一",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_apprentice_s2_reappear",
+      "name": "再现",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "旅法师",
+      "rarity": "epic",
+      "axis": "record",
+      "flagship": true,
+      "lore": "序列2 旅法师 —— \"「再现」：记录场景 / 人物 / 非凡能力，可转移至记录场景或让场景降临\"",
+      "flavor": "你翻开那卷记录——被你记下的\"他\"从纸面上走了下来，替你挡在前头。",
+      "describe": "若记录层数 ≥4：消耗 4 层，召唤一具被记录者的影像为己方作战（40% 生命、50% 攻击）；否则造成 4 点精神伤害。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "inscription",
+            "cmp": ">=",
+            "n": 4
+          },
+          "then": [
+            {
+              "type": "spawn",
+              "unitId": "unit_thoughtform",
+              "hpRatio": 0.4,
+              "atkRatio": 0.5,
+              "position": "tail",
+              "note": "F23 已登记（H1 召唤物基线），不新立单位"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "inscription",
+              "stacks": -4,
+              "stackMode": "consume"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 4
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s2_sigil_self",
+      "name": "自我符号",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "旅法师",
+      "rarity": "epic",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列2 旅法师 —— \"「自我符号」：转化为象征符号，借助星界前往不同世界\"",
+      "flavor": "你的形体坍缩成一枚符号——穿过星界之后，你在战场的另一端重新落笔成形。",
+      "describe": "自身符号化 2 tick：不可被单体技能选中且受伤 ×0.7；状态结束时移动到己方半场内一个指定空位。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "sigil_self",
+          "duration": 2,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "sigil_self",
+          "name": "自我符号",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            },
+            "damage_taken_mul": 0.7
+          },
+          "triggers": [
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "type": "move",
+                  "op": "param",
+                  "target": "self",
+                  "note": "在别处现形：落点为己方半场指定空位（anchor: empty_ally_slot，G8 合规）"
+                }
+              ],
+              "note": "状态触发器内执行 move 时序见编队上下文 §十 H43"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s2_reenactment_descent",
+      "name": "再现·降临",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "旅法师",
+      "rarity": "epic",
+      "axis": "record",
+      "flagship": false,
+      "lore": "序列2 旅法师 —— 「再现」：**重现 / 存储**他人用过的非凡能力与场景——本卡取**场景**支（【重现】取招式支、【再现】取人物支）",
+      "flavor": "你把记录里的那片战场又「放」了出来——它们脚下的路还是旧路，每走一步都在原地打转，而你记得这里的每一寸。",
+      "describe": "若记录层数 ≥2：消耗 2 层，降临「再现之境」3 回合——敌方每 tick 行动条 -3，己方伤害 ×1.1，「星界/记录」标签卡效果 ×1.3；自身迷失值 +1。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "inscription",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "mount_status",
+                  "statusId": "inscription",
+                  "stacks": -2,
+                  "stackMode": "consume"
+                },
+                {
+                  "type": "domain",
+                  "op": "overlay",
+                  "def": "domain_reenactment",
+                  "duration": 3,
+                  "durationUnit": "turn"
+                },
+                {
+                  "type": "modify_resource",
+                  "resource": "lost",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "界域操作租金"
+                }
+              ]
+            }
+          ],
+          "else": [],
+          "noteElse": "稿面未给 else 分支（层数不足 2 时无效果），待裁定"
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_reenactment",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：敌方单位每 tick gauge.current -3（旧场景里原地打转）；己方单位伤害 ×1.1（你记得这里的每一寸，empower 补丁持续生效）——双向：困敌 / 助己",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "stat": "damage",
+            "mul": 1.1
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "星界",
+              "记录"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_reenactment",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "modify_resource",
+                "resource": "gauge.current",
+                "value": -3,
+                "mode": "delta"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "stat": "damage",
+            "mul": 1.1
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "星界",
+              "记录"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "tags": [
+        "星界",
+        "记录"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "己方 damage_mul ×1.1 改用 rulePatches empower(side:ally, stat:damage, mul:1.1) 承载（INV-D6 补丁纯声明，删除原 on_turn_start 1t 刷新触发器）"
+      ]
+    },
+    {
+      "id": "skill_apprentice_s1_locate",
+      "name": "定位",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "星之匙",
+      "rarity": "legendary",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列1 星之匙 —— \"「定位」权柄：自身永不迷失，让敌人无法定位\"",
+      "flavor": "你握住了这颗星球上所有的坐标——你永远不会走错，而它们，从此找不到北。",
+      "describe": "对全体敌方定位 4 tick：受伤 ×1.15 且下一次单体攻击落空；自身行动条速率 +6（4 tick）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "located",
+              "duration": 4,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 6,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self",
+              "note": "自身永不迷失"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "located",
+          "name": "被定位",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 1,
+          "modifiers": {
+            "damage_taken_mul": 1.15,
+            "targetOverride": {
+              "anchor": "first_empty",
+              "charges": 1,
+              "note": "C7：无法定位，下一次单体攻击打空"
+            }
+          }
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "自身 gauge.rate +6 段同强健体魄",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_apprentice_s1_time_maze",
+      "name": "时空迷宫",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "星之匙",
+      "rarity": "legendary",
+      "axis": "astral",
+      "flagship": true,
+      "lore": "序列1 星之匙 —— \"「时空迷宫」：时间即空间，制造时间混乱或空间循环迷宫\"",
+      "flavor": "你把所有向前走的路都折成了同一个拐角——它们在迷宫里越走越远，而时间也开始乱了顺序。",
+      "describe": "对全体敌方施加时空迷宫 3 tick：每 tick 行动条 -6，且行动条速率 -5。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "time_maze",
+          "duration": 3,
+          "target": "all_enemies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "time_maze",
+          "name": "时空迷宫",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -5,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self",
+              "note": "时间混乱：速率源属性修正，INV-S5 合规"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": -6,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "空间循环：越走越回不去"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate -5 段同强健体魄",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_apprentice_s1_space_shatter",
+      "name": "空间破碎",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "星之匙",
+      "rarity": "legendary",
+      "axis": "gate",
+      "flagship": false,
+      "lore": "序列1 星之匙 —— \"「空间破碎」（重力操纵）\"",
+      "flavor": "你翻转了这一片空间的重力——敌阵在塌陷中失衡、后仰，甲胄被挤压得吱呀作响。",
+      "describe": "全体敌人受到 4 点物理伤害、各自在自己队列内后移 1 格，且护甲上限 -3（3 tick）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 4,
+              "target": "all_enemies"
+            },
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 1,
+              "target": "all_enemies",
+              "note": "多目标 move 逐目标结算（新增项 11）；全体击退强度是本稿数值风险最高项"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": -3,
+              "mode": "delta",
+              "duration": 3,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s1_seal",
+      "name": "封印",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "星之匙",
+      "rarity": "legendary",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列1 星之匙 —— \"初步掌控「封印」权柄\"（序列0「封印」权柄：含时光、迷宫要素，可短时间封印旧日）",
+      "flavor": "门在它身后合上、落下、上锁——连时间都不再为它流动。等门重新打开时，它已被时空磨去了一层。",
+      "describe": "将一名敌人封印 4 tick：行动条冻结、不可被单体技能选中、无法被治疗；破封时受到 5 点无元素反噬。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "sealed",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "sealed",
+          "name": "封印",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "gaugeRateMul": 0,
+            "untargetableByTargeted": {
+              "direction": "both",
+              "scope": "single"
+            },
+            "heal_received_mul": 0
+          },
+          "triggers": [
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 5,
+                  "target": "self",
+                  "note": "破封时的时空反噬"
+                }
+              ]
+            }
+          ],
+          "note": "与放逐差异：封印 4t / 5 伤 / 断治疗 / 更贵；gauge_freeze 走 H24 冻结档，heal_received_mul 与 F20 petrify 同源（H21）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s0_door_shut",
+      "name": "门之概念",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "门",
+      "rarity": "legendary",
+      "axis": "gate",
+      "flagship": false,
+      "lore": "序列0 门 —— \"「门」之概念：打开或关上所有与「门」相关的事物\"",
+      "flavor": "你说了一声\"关\"——所有朝向它的门都合上了：补给进不来，伤口合不上，退路也不存在。",
+      "describe": "关闭一名敌人所有的门 4 tick：无法被位移、无法被治疗、无法获得增益。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "door_shut",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "door_shut",
+          "name": "门关",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "moveImmune": true,
+            "heal_received_mul": 0,
+            "buffBlocked": true
+          },
+          "note": "三条断绝全部由已落机制拼出：moveImmune（F7/H27）、heal_received_mul（F20/H21）、buffBlocked（H38）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s0_space_cage",
+      "name": "空间牢笼",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "门",
+      "rarity": "legendary",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列0 门 —— \"「空间」权柄：制造空间牢笼、令空间毁灭坍塌、瞬间前往任何空间、开辟异度空间\"",
+      "flavor": "六面看不见的墙在它四周合拢——空间开始向内收缩，而它连一步都挪不动。",
+      "describe": "将一名敌人困入空间牢笼 4 tick：无法被位移、受伤 ×1.25，且每 tick 受到 1 点物理伤害。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "space_cage",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "space_cage",
+          "name": "空间牢笼",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "moveImmune": true,
+            "damage_taken_mul": 1.25
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 1,
+                  "target": "self",
+                  "note": "牢笼持续收缩，共 4 伤"
+                }
+              ]
+            }
+          ],
+          "note": "与封印区分：封印是移出战斗，牢笼是困在原地照样挨打（最强点杀前置）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apprentice_s0_ubiquity",
+      "name": "无处不在",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "门",
+      "rarity": "legendary",
+      "axis": "gate",
+      "flagship": true,
+      "lore": "序列0 门 —— \"「无处不在」（闪现极致）、「概念化」\"",
+      "flavor": "闪现到了极致，便是无处不在——你同时站在战场的每一处，敌人推不动一个并不只在原地的你。",
+      "describe": "战斗开始时获得无处不在：行动条速率 +6、无法被位移，并召唤一个留在星界的残影（30% 生命）助战。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "ubiquity",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "ubiquity",
+          "name": "无处不在",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 6,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "spawn",
+              "unitId": "unit_thoughtform",
+              "hpRatio": 0.3,
+              "position": "tail",
+              "note": "F23（H1 召唤物基线）不新立单位；C5 ✅"
+            }
+          ],
+          "modifiers": {
+            "moveImmune": true
+          }
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate +6 段同强健体魄",
+          "landed": false
+        }
+      ]
+    }
+  ]
+}

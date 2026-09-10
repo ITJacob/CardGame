@@ -1,0 +1,2403 @@
+{
+  "pathwayId": "sleepless",
+  "pathwayName": "不眠者",
+  "sourceFile": "../不眠者途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "darkness": {
+      "symbol": "🌑",
+      "name": "暗夜"
+    },
+    "nightmare": {
+      "symbol": "🌙",
+      "name": "梦魇"
+    },
+    "requiem": {
+      "symbol": "🕯",
+      "name": "安魂"
+    },
+    "secrecy": {
+      "symbol": "🗝",
+      "name": "隐秘"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_sleepless_s9_sleepless_body",
+      "name": "不眠之躯",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "不眠者",
+      "rarity": "common",
+      "axis": "darkness",
+      "flagship": false,
+      "lore": "序列9 不眠者 —— \"每天只需 3-4 小时休息\"",
+      "flavor": "你的身体早已习惯不眠，别人睡一整夜才攒下的精力，你在片刻的假寐里就能补回。",
+      "describe": "战斗开始时，自身能量上限 +5、能量回复 +0.2/tick，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "energy_max",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "energy_regen",
+          "value": 0.2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面注明能量仅为'睡得少'的副产品，v0.1 的能量续航轴已废弃，本卡为唯一遗留"
+      ]
+    },
+    {
+      "id": "skill_sleepless_s9_night_vision",
+      "name": "夜视",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "不眠者",
+      "rarity": "common",
+      "axis": "darkness",
+      "flagship": false,
+      "lore": "序列9 不眠者 —— \"无需光照具备卓越视力\"；\"敏锐察觉黑暗里的危险\"",
+      "flavor": "黑暗于你并非阻碍——藏在暗处的身形瞒不过你的眼睛，而它们自以为得手的偷袭，也总是慢了半步。",
+      "describe": "战斗开始时获得「夜视」：敌方隐匿类状态对你无效；受到处于隐匿状态敌人的攻击时，该次伤害 ×0.75。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "dark_sight",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dark_sight",
+          "name": "夜视",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "seeThroughStealth": true,
+            "note": "C8 识破分支：敌方 concealed/shadow_veil/stealth 类状态对本单位无效（共享内核参数 §四 + H5）"
+          },
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "condition": {
+                "kind": "has_category",
+                "side": "attacker",
+                "categories": [
+                  "conceal"
+                ]
+              },
+              "effects": [
+                {
+                  "type": "modify_damage",
+                  "scope": "taken",
+                  "mul": 0.75,
+                  "note": "反伏击减伤：攻击者处于隐匿类状态时该次伤害 ×0.75（扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "corpse_collector"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s9_deepening_night",
+      "name": "夜色渐浓",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "不眠者",
+      "rarity": "common",
+      "axis": "darkness",
+      "flagship": false,
+      "lore": "序列9 不眠者 —— \"夜越深精力越充沛，力量/敏捷/思维超越常人\"",
+      "flavor": "夜色每浓一分，你的力量、身手与思绪便更清明一分——黎明之前，不会有人的锋芒比你更盛。",
+      "describe": "每 tick 自身「夜色」+1 层（最多 5 层，整场）：每层攻击 +1、行动条速率 +2、能量回复 +0.04，满层 +5/+10/+0.2。",
+      "hook": "on_tick",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "nightfall",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "nightfall",
+          "name": "夜色",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 5,
+          "stackPolicy": "stack",
+          "statPerStack": {
+            "attack": 1,
+            "gauge.rate": 2,
+            "energy_regen": 0.04
+          },
+          "note": "H34 statPerStack 按层数线性修正；'越黑暗越强'的主判据（守夜人体质 / 黑暗仆人·不灭 读取本状态层数）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "statPerStack 内含 gauge.rate 键；ddd modify_stat.stat 枚举无 gauge.rate（ gauge 三维度归 modify_resource），待内核裁定归一",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_sleepless_s8_midnight_prowess",
+      "name": "午夜武艺",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "午夜诗人",
+      "rarity": "common",
+      "axis": "darkness",
+      "flagship": false,
+      "lore": "序列8 午夜诗人 —— \"擅长格斗、射击、攀爬和感应\"",
+      "flavor": "你在午夜里练就的身手从不需要灯火照明——拳脚、准头与攀爬的本能，早已刻进骨子里。",
+      "describe": "战斗开始时，自身攻击 +2、防御 +1，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "属性提升",
+            "note": "+1 / +1（攻防同步抬升）"
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s8_dazing_verse",
+      "name": "午夜诗篇·恍惚",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "午夜诗人",
+      "rarity": "common",
+      "axis": "nightmare",
+      "flagship": false,
+      "lore": "序列8 午夜诗人 —— \"用不同风格的诗篇影响生灵：使敌人精神恍惚\"",
+      "flavor": "你念起一支节拍错乱的诗——它的思绪散了，挥出的拳也失了准头。",
+      "describe": "对一名敌人造成 2 点精神伤害，并使其恍惚 3 tick：造成伤害 ×0.8、行动条速率 ×0.9。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 2
+        },
+        {
+          "type": "mount_status",
+          "statusId": "daze",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "daze",
+          "name": "恍惚",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "damage_mul": 0.8,
+            "gaugeRateMul": 0.9
+          },
+          "note": "H24 减速族 × H4 乘区；退化方案：modify_stat(attack, -2, duration:3)"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s8_lullaby",
+      "name": "安眠谣",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "午夜诗人",
+      "rarity": "common",
+      "axis": "requiem",
+      "flagship": false,
+      "lore": "序列8 午夜诗人 —— \"用不同风格的诗篇影响生灵：使队友安静\"",
+      "flavor": "你低声哼起一支安眠的调子——同伴急促的呼吸平复下来，身上的诅咒也松动了几分。",
+      "describe": "治疗一名友军 5 点生命，并驱散其 1 个控制或减益状态。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "heal",
+          "value": 5,
+          "target": "target"
+        },
+        {
+          "type": "dispel",
+          "target": "target",
+          "dispelTarget": "unit",
+          "filter": {
+            "category": [
+              "control",
+              "debuff"
+            ],
+            "count": 1
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s8_dread_verse",
+      "name": "惊惧诗",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "午夜诗人",
+      "rarity": "common",
+      "axis": "nightmare",
+      "flagship": false,
+      "lore": "序列8 午夜诗人 —— \"用不同风格的诗篇影响生灵：使目标恐惧\"",
+      "flavor": "你吟出一行不该被听见的句子——它的瞳孔骤然收缩，握武器的手开始发抖。",
+      "describe": "对一名敌人造成 3 点精神伤害，并使其恐惧 2 tick：攻击 -3、造成伤害 ×0.8。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 3
+        },
+        {
+          "type": "mount_status",
+          "statusId": "dread",
+          "duration": 2
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dread",
+          "name": "恐惧",
+          "category": [
+            "fear",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "maxStacks": 1,
+          "modifiers": {
+            "damage_mul": 0.8
+          },
+          "statMods": {
+            "attack": -3
+          },
+          "note": "与水手 v0.2 新增项 3 同名同参，复用同一 StatusDef；恐惧链三级复用（惊惧诗/恐惧灵光/恐惧权柄）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s7_dream_pull",
+      "name": "入梦",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "梦魇",
+      "rarity": "uncommon",
+      "axis": "nightmare",
+      "flagship": true,
+      "lore": "序列7 梦魇 —— \"『入梦』：自由出入极大范围熟睡者的梦，强行拉人入梦\"",
+      "flavor": "你伸手探进它的睡意，把它整个人拽了进去——在它自己的梦里，它连抬手都做不到。",
+      "describe": "对一名敌人造成 2 点精神伤害，并使其入梦 4 tick：无法行动，且受伤 ×1.2。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 2
+        },
+        {
+          "type": "mount_status",
+          "statusId": "slumber",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "slumber",
+          "name": "沉眠",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "disable": "all",
+            "damage_taken_mul": 1.2
+          },
+          "note": "与「眩晕」同构（disable 全部四行为）+ H4 受伤乘区；睡眠族扩展：被延长走 H14 durationModifier、被永眠改写走 H32 transferStatus"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s7_dream_shaping",
+      "name": "塑梦",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "梦魇",
+      "rarity": "uncommon",
+      "axis": "nightmare",
+      "flagship": false,
+      "lore": "序列7 梦魇 —— \"『塑梦』：让梦境按设想发展，引导秘密或击溃精神\"",
+      "flavor": "你替它把这场梦改了走向——梦里的东西开始啃食它的精神，而它藏得最深的那个秘密，已经落在了你手里。",
+      "describe": "若目标已入梦：折磨其 4 tick（每 tick 2 点精神伤害）、使其易伤 4 tick、自身能量 +2；否则造成 2 点精神伤害并使其入梦 3 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "slumber",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "mount_status",
+                  "statusId": "nightmare_torment",
+                  "duration": 4
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "vulnerable",
+                  "duration": 4
+                },
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 2,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "得知秘密"
+                }
+              ]
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            },
+            {
+              "type": "mount_status",
+              "statusId": "slumber",
+              "duration": 3
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "nightmare_torment",
+          "name": "梦魇折磨",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "击溃精神；挂载时把宿主 slumber duration 刷新至 4（H14 durationModifier 口径）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s7_dream_walker",
+      "name": "梦境行者",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "梦魇",
+      "rarity": "uncommon",
+      "axis": "nightmare",
+      "flagship": false,
+      "lore": "序列7 梦魇 —— \"自由出入极大范围熟睡者的梦\"",
+      "flavor": "只要有谁还沉在梦里，就没有你够不到的地方——距离与前排，都拦不住一个走在梦里的人。",
+      "describe": "战斗开始时获得「梦境行者」：对入梦敌人的技能无视射程与前排限制；你施加的入梦持续时间 +1。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "dream_walker",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dream_walker",
+          "name": "梦境行者",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "ignoreRangeRestriction": {
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "slumber",
+                "cmp": ">=",
+                "n": 1
+              },
+              "note": "对处于 slumber 的敌方单位施放技能时忽略 reach/前排限制；落点 = 执行参数 §一 EffectRef.params.ignore_redirect（律师「踏月」判例）"
+            },
+            "durationModifier": {
+              "scope": "outgoing",
+              "mode": "add",
+              "value": 1,
+              "filter": {
+                "statusId": "slumber"
+              }
+            }
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s6_forced_dream",
+      "name": "强制入梦",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "安魂师",
+      "rarity": "uncommon",
+      "axis": "nightmare",
+      "flagship": false,
+      "lore": "序列6 安魂师 —— \"强制入梦范围提升至 150 米\"（序列5 再提升至 200 米）",
+      "flavor": "你不再一个一个地请它们入睡——夜色所及之处，所有站着的东西都开始发困。",
+      "describe": "对全体敌人造成 2 点精神伤害，并使其入梦 3 tick。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 2,
+          "target": "all_enemies"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "slumber",
+          "duration": 3,
+          "target": "all_enemies"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "原著 150m/200m 两次范围提升合并为'单体升级群体'，距离数字不建模"
+      ]
+    },
+    {
+      "id": "skill_sleepless_s6_requiem",
+      "name": "安魂",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "安魂师",
+      "rarity": "uncommon",
+      "axis": "requiem",
+      "flagship": true,
+      "lore": "序列6 安魂师 —— \"『安魂』（核心）：安抚灵魂，抹平欲望和情绪\"；序列4 守夜人 —— \"安魂质变：死灵怨魂也变缓慢安宁\"",
+      "flavor": "你为它念起安魂的词句——它眼底的光一点点黯下去，那些驱使它厮杀的渴望，也一并被抹平了。",
+      "describe": "驱散一名敌人 1 个增益，并使其安宁 4 tick：攻击 -2、造成伤害 ×0.75、期间无法获得增益；若其为灵体或亡灵，持续时间翻倍且行动条速率 ×0.8。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "pacified",
+              "duration": 4
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "target_unit_type",
+                "type": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ]
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "pacified",
+                  "duration": 8,
+                  "note": "安魂质变：duration ×2"
+                },
+                {
+                  "type": "modify_stat",
+                  "stat": "gauge.rate",
+                  "value": 0.8,
+                  "mode": "mul",
+                  "duration": 4,
+                  "note": "死灵怨魂也变缓慢安宁；乘算 INV-S5 合规"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "pacified",
+          "name": "安宁",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "damage_mul": 0.75,
+            "buffBlocked": true
+          },
+          "statMods": {
+            "attack": -2
+          },
+          "note": "H38 buffBlocked 禁止获得增益；质变分支由卡面 If 覆写 duration 为 8"
+        }
+      ],
+      "sharedAcross": [
+        "corpse_collector"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s6_spirit_eye",
+      "name": "通灵之眼",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "安魂师",
+      "rarity": "uncommon",
+      "axis": "requiem",
+      "flagship": false,
+      "lore": "序列6 安魂师 —— \"能直接看见灵体生物\"",
+      "flavor": "那些游荡在世间的灵体，在你眼里从来不是虚无的影子——它们轮廓分明，也无处躲藏。",
+      "describe": "战斗开始时获得「通灵之眼」：对灵体与亡灵造成的伤害 ×1.25，且它们的隐匿类状态对你无效。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_sight",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_sight",
+          "name": "通灵之眼",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "seeThroughStealth": true,
+            "damage_mul": {
+              "value": 1.25,
+              "filter": {
+                "unitType": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ]
+              }
+            }
+          },
+          "note": "收尸人【天然灵视】与本条同源同族（H42 常驻模板），建议并入同一 StatusDef"
+        }
+      ],
+      "sharedAcross": [
+        "corpse_collector"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s5_spirit_fang",
+      "name": "灵之牙",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "灵巫",
+      "rarity": "rare",
+      "axis": "requiem",
+      "flagship": false,
+      "lore": "序列5 灵巫 —— \"擅长驱使自然灵，封印于牙齿释放\"",
+      "flavor": "你叩了叩自己的牙——一枚被封在那里的自然灵挣脱出来，带着细碎的冷光扑向敌阵。",
+      "describe": "从齿间释放一只自然灵为己方作战（落位己方队尾，满生命）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unit": "unit_nature_spirit",
+          "hpRatio": 1.0,
+          "position": "tail"
+        }
+      ],
+      "unitDefs": [
+        {
+          "id": "unit_nature_spirit",
+          "name": "自然灵",
+          "unitType": "SPIRIT",
+          "base": {
+            "hpRatio": 1.0,
+            "atkRatio": null,
+            "reach": "melee"
+          },
+          "note": "H1 召唤物基线模板四参（hpRatio/atkRatio/reach/亡语载荷）；与 F25 unit_wraith 的 ID 冲突已裁决——wraith 归收尸人亡灵线（UNDEAD），本 ID 另立（SPIRIT）；数值 ⚠️D"
+        }
+      ],
+      "sharedAcross": [
+        "corpse_collector"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s5_split_mind",
+      "name": "一心多用",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "灵巫",
+      "rarity": "rare",
+      "axis": "requiem",
+      "flagship": false,
+      "lore": "序列5 灵巫 —— \"可驱使 4-5 个灵，一心多用\"",
+      "flavor": "你的意识被拆成许多股，各自牵着一只灵——旁人操控一只都要分神，你同时驱使一群仍游刃有余。",
+      "describe": "战斗开始时，自身召唤位上限 +2；你召唤的灵攻击 +1。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "split_mind_cap",
+          "duration": null,
+          "target": "self",
+          "note": "自身召唤位上限 +2 走 statusDef modifiers.summon_cap（H39，编队参数 §1.1b UnitDef/运行时参数字段，非 modify_stat.stat 枚举键）"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "self",
+          "note": "实际走 spawn.companionBuff（F54）挂给自身 spawn 出的灵，此处为语义简写"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "split_mind_cap",
+          "name": "一心多用·驱使",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "summon_cap": 2
+          },
+          "note": "summon_cap 是 UnitDef/运行时参数（H39 编队参数 §1.1b），以状态 modifiers 承载对持有者召唤位上限的修正；由归一自 modify_stat(stat: summon_cap) 改写"
+        }
+      ],
+      "sharedAcross": [
+        "corpse_collector"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s5_spirit_swarm",
+      "name": "灵群",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "灵巫",
+      "rarity": "rare",
+      "axis": "requiem",
+      "flagship": false,
+      "lore": "序列5 灵巫 —— \"可驱使 4-5 个灵\"",
+      "flavor": "一次叩齿，两三只灵同时钻了出来——它们单薄，却足够缠住任何人。",
+      "describe": "连续释放 2 只自然灵（各 60% 生命，落位己方队尾）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "op": "repeat",
+          "count": 2,
+          "steps": [
+            {
+              "type": "spawn",
+              "unit": "unit_nature_spirit",
+              "hpRatio": 0.6,
+              "position": "tail"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "corpse_collector"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s4_nightwatch_nature",
+      "name": "守夜人体质",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "守夜人",
+      "rarity": "rare",
+      "axis": "darkness",
+      "flagship": false,
+      "lore": "序列4 守夜人 —— \"越黑暗越强，正午阳光下被削弱\"",
+      "flavor": "你是为夜而生的——天光未散时你倦怠迟钝，而一旦夜色彻底落下，没有谁比你更清醒、更锋利。",
+      "describe": "每 tick 判定：若自身夜色 ≥3 层或处于黑夜领域中，获得 2 tick 增益（攻击 +3、防御 +2、精神抗性 +10%）；否则若夜色 ≤1 层，获得 2 tick 削弱（攻击 -2、防御 -1）。",
+      "hook": "on_tick",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "nightfall",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "night_empower",
+              "duration": 2,
+              "target": "self"
+            }
+          ],
+          "else": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "zone_active",
+                "zoneId": "domain_night_realm"
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "night_empower",
+                  "duration": 2,
+                  "target": "self"
+                }
+              ],
+              "else": [
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "has_status",
+                    "side": "self",
+                    "id": "nightfall",
+                    "cmp": "<=",
+                    "n": 1
+                  },
+                  "then": [
+                    {
+                      "type": "mount_status",
+                      "statusId": "sunlight_weakness",
+                      "duration": 2,
+                      "target": "self"
+                    }
+                  ],
+                  "else": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "night_empower",
+          "name": "暗夜加持",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 2,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 2,
+              "mode": "delta",
+              "duration": 2,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": 10,
+              "mode": "delta",
+              "duration": 2,
+              "target": "self"
+            }
+          ],
+          "note": "刷新不叠层（maxStacks 1）"
+        },
+        {
+          "id": "sunlight_weakness",
+          "name": "天光未散",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 2,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -1,
+              "mode": "delta",
+              "duration": 2,
+              "target": "self"
+            }
+          ],
+          "note": "正午阳光下被削弱 = 夜色未起时的攻防减值，零新机制"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s4_night_realm",
+      "name": "黑夜领域",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "守夜人",
+      "rarity": "rare",
+      "axis": "darkness",
+      "flagship": true,
+      "lore": "序列4 守夜人 —— \"『黑夜领域』：纯粹黑暗构成领域，防御 / 侵蚀敌人 / 为灵提供增益\"",
+      "flavor": "纯粹的黑暗从你脚下漫开——它替你挡下劈来的刀，啃咬着困在其中的敌人，而你那些灵的爪牙，在黑暗里变得愈发锋利。",
+      "describe": "降临「黑夜领域」3 回合：全体敌人每 tick 受 1 点精神伤害、行动条速率 ×0.9；己方全体受伤 ×0.85，其中灵体与亡灵攻击 +2；「暗影/梦境/灵体」标签卡效果 ×1.3，「光/净化」标签卡 ×0.7。自身迷失值 +1。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_night_realm",
+              "duration": 4,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_night_realm",
+        "duration": 4,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：己方单位 damage_taken_mul ×0.85（黑暗护持）；其中 unitType SPIRIT/UNDEAD 额外 attack +2（为灵增益）。敌方单位每 tick damage(mental,1)（侵蚀）+ gauge_rate ×0.9（步履维艰）",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "暗影",
+              "梦境",
+              "灵体"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_night_realm",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 4,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "damage",
+                "element": "mental",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "ally"
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "defense",
+                "value": 0.85,
+                "mode": "mul",
+                "duration": 1,
+                "note": "黑暗护持：受伤 ×0.85（1t 刷新）"
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "ally",
+              "unitType": [
+                "SPIRIT",
+                "UNDEAD"
+              ]
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 2,
+                "mode": "delta",
+                "duration": 1
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 0.9,
+                "mode": "mul",
+                "duration": 1,
+                "note": "步履维艰（1t 刷新，乘算 INV-S5 合规）"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "暗影",
+              "梦境",
+              "灵体"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "tags": [
+        "暗影",
+        "梦境",
+        "灵体"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s4_hair_snare",
+      "name": "发丝缠绕",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "守夜人",
+      "rarity": "rare",
+      "axis": "darkness",
+      "flagship": false,
+      "lore": "序列4 守夜人 —— \"『发丝缠绕』\"",
+      "flavor": "你的长发无声地散开、缠上它的手脚——越是挣扎，缠得越紧。",
+      "describe": "对一名近战敌人造成 2 点精神伤害，并束缚其 3 tick：无法被位移，行动条速率 ×0.7。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 2
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shackle",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "shackle",
+          "name": "束缚",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "moveImmune": true,
+            "gaugeRateMul": 0.7
+          },
+          "note": "F7 已登记定义（H24 减速族）；权威定义见状态表，此处为引用副本"
+        }
+      ],
+      "sharedAcross": [
+        "corpse_collector"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s4_misfortune",
+      "name": "厄运",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "守夜人",
+      "rarity": "rare",
+      "axis": "darkness",
+      "flagship": false,
+      "lore": "序列4 守夜人 —— \"可给予厄运\"",
+      "flavor": "你往它身上挂了一小片夜色——从这一刻起，它迈出的每一步都比预想的更慢、更沉，而第一记落下的重击，总会挑中最疼的地方。",
+      "describe": "使一名敌人厄运缠身 4 tick：行动条速率 ×0.85，每 tick 行动条 -2，且下一次受到的伤害 ×1.25（随后失效）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "misfortune",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "misfortune",
+          "name": "厄运",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "maxStacks": 1,
+          "modifiers": {
+            "gaugeRateMul": 0.85
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": -2,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "行动条持续倒退"
+                }
+              ]
+            },
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_damage",
+                  "scope": "taken",
+                  "mul": 1.25,
+                  "note": "首次受创加重（charges 型一次性，C6；扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
+                }
+              ],
+              "consumeCharge": true
+            }
+          ],
+          "charges": 1,
+          "note": "零概率的确定性厄运：慢半拍 + 倒退 + 一次性加重；刷新不叠层（maxStacks 1）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s3_dark_sword",
+      "name": "黑暗之剑",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "恐惧主教",
+      "rarity": "epic",
+      "axis": "darkness",
+      "flagship": false,
+      "lore": "序列3 恐惧主教 —— \"『黑暗之剑』：骨制长剑，目标被黑暗力量感染直接消融\"",
+      "flavor": "一柄骨白色的长剑自黑暗里探出——被它划开的地方没有血，只有正在一点点消融的、连光都透不进去的黑。",
+      "describe": "对一名近战敌人造成 5 点精神伤害，并侵蚀其 3 tick：每 tick 2 点精神伤害、受到的治疗 ×0.7；若其在此期间死亡，则不可复活。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 5
+        },
+        {
+          "type": "mount_status",
+          "statusId": "dark_corrosion",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dark_corrosion",
+          "name": "黑暗侵蚀",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "heal_received_mul": 0.7
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "target": "self",
+                  "note": "消融"
+                }
+              ]
+            },
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "eternal_sleep",
+                  "duration": null,
+                  "target": "self",
+                  "note": "死于消融 = 不可复活"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "eternal_sleep",
+          "name": "永眠",
+          "category": [
+            "seal"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "revive_blocked": true
+          },
+          "note": "revive_blocked（编队参数 §1.1b 死亡结算行）；与收尸人【完全的死亡】/愚者【命运锚点】同源同一母版"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s3_fear_aura",
+      "name": "恐惧灵光",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "恐惧主教",
+      "rarity": "epic",
+      "axis": "nightmare",
+      "flagship": false,
+      "lore": "序列3 恐惧主教 —— \"『恐惧灵光』：不够强大的非凡者直接被吓死或失控\"",
+      "flavor": "你身上腾起一层看不见的灵光——弱一些的家伙连看都不敢看，心脏在胸腔里停了下来。",
+      "describe": "对全体敌人造成 3 点精神伤害并恐惧 3 tick；生命低于 30% 的敌人额外受到 6 点精神伤害。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "dread",
+              "duration": 3,
+              "target": "all_enemies"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "target",
+                "cmp": "<=",
+                "n": 0.3
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 6,
+                  "target": "all_enemies",
+                  "note": "不够强大者直接被吓死（按目标逐个判定）"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "原著「失控」引擎无对应维度，不建模，只取「被吓死」"
+      ]
+    },
+    {
+      "id": "skill_sleepless_s3_nightmare_world",
+      "name": "梦魇世界",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "恐惧主教",
+      "rarity": "epic",
+      "axis": "nightmare",
+      "flagship": false,
+      "lore": "序列3 恐惧主教 —— \"『梦魇世界』：创造梦境世界影响一座小城市\"",
+      "flavor": "你在这里造了一个梦——走进去的人起初只觉得困，等它发现自己已经分不清梦境与现实时，已经醒不过来了。",
+      "describe": "展开「梦魇世界」区域 4 tick：区域内敌人每 tick 梦陷 +1（最多 3 层）且行动条速率 ×0.9；梦陷满 3 层的敌人陷入沉眠 3 tick 并清空梦陷。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "zone"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "spawn",
+              "consumption": "zone",
+              "zone": "zone_nightmare_world",
+              "duration": 4,
+              "note": "spawn_zone（H9 Zone 母版）；保持 Zone 形态"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "dream_depth",
+                "cmp": ">=",
+                "n": 3
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "slumber",
+                  "duration": 3
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "dream_depth",
+                  "stacks": -3,
+                  "stackMode": "consume",
+                  "target": "target",
+                  "note": "F48 status.consume"
+                }
+              ],
+              "else": [],
+              "note": "对区域内每个敌方单位判定（叠满判定留在卡面效果行，ZoneDef 载荷不含）"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dream_depth",
+          "name": "梦陷",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": null,
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "note": "H11 计数型 + H2 stackThreshold；满 3 层由卡面效果转 slumber 并 consume(3)"
+        }
+      ],
+      "zoneDef": {
+        "id": "zone_nightmare_world",
+        "kind": "hazard",
+        "trigger": "on_occupy_tick",
+        "affects": "enemy_of_owner",
+        "duration": 4,
+        "effects": [
+          {
+            "type": "mount_status",
+            "statusId": "dream_depth",
+            "stacks": 1,
+            "stackMode": "add"
+          },
+          {
+            "type": "modify_stat",
+            "stat": "gauge.rate",
+            "value": 0.9,
+            "mode": "mul",
+            "duration": 2
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s2_concealment",
+      "name": "隐秘化",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "隐秘之仆",
+      "rarity": "epic",
+      "axis": "secrecy",
+      "flagship": false,
+      "lore": "序列2 隐秘之仆 —— \"『隐秘化』：使目标进入不被外界感应的状态\"",
+      "flavor": "你把它从世界上暂时抹去了——眼睛看不见，感应够不着，它站在那里，却像不在那里。",
+      "describe": "使一名友军（含自身）隐秘 3 tick：无法被敌方单体技能选中，造成伤害后破除。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "self_or_ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "concealed",
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "concealed",
+          "name": "潜行",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "concealed",
+                    "count": 1
+                  },
+                  "note": "on_deal_damage 自动破除"
+                }
+              ]
+            }
+          ],
+          "note": "H5 潜行母版 + C8（F4 shadow_veil / F11 stealth 同源）；权威定义见状态表，此处为引用副本"
+        }
+      ],
+      "sharedAcross": [
+        "corpse_collector"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s2_hidden_land",
+      "name": "隐秘之地",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "隐秘之仆",
+      "rarity": "epic",
+      "axis": "secrecy",
+      "flagship": true,
+      "lore": "序列2 隐秘之仆 —— \"『隐秘之地』：封印目标于隐秘区域\"",
+      "flavor": "你为它在世界之外找了个角落——它还在，但无论是它的同伴还是它的敌人，都再也够不到它了。",
+      "describe": "将一名敌人封入隐秘之地 4 tick：任何技能都无法选中它（包括其友军的治疗与增益），无法行动且不参与行动排序，已挂载的持续伤害正常结算。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "sealed",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "sealed",
+          "name": "隐秘封印",
+          "category": [
+            "seal",
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "untargetableByAll": {
+              "direction": "both",
+              "note": "共享内核参数 §四 direction: both——连友军的治疗/增益也选不中"
+            },
+            "disable": "all",
+            "gaugeRateMul": 0
+          },
+          "note": "封印不免疫伤害：已挂载 dot 正常结算"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s2_unveiling",
+      "name": "掀幕",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "隐秘之仆",
+      "rarity": "epic",
+      "axis": "secrecy",
+      "flagship": false,
+      "lore": "序列2 隐秘之仆 —— \"『隐秘』权柄：让发生的一切不被窥见，也能展现被隐秘的内容\"",
+      "flavor": "你伸手揭开了那层幕布——所有藏起来的东西都重新现形，而在刺眼的真实面前，它们连站都站不稳。",
+      "describe": "驱散全体敌人的隐匿与封印类状态，每个被驱散的敌人受到 3 点精神伤害并易伤 3 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "all_enemies",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "conceal",
+                  "seal"
+                ],
+                "count": null
+              },
+              "note": "count 省略 = 全部清除"
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "target": "all_enemies",
+              "note": "暴露在光下的代价（对被驱散者）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 3,
+              "target": "all_enemies",
+              "note": "仅对被驱散者（稿面语义，实现侧按 dispelled 集合过滤）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s2_traceless_shadow",
+      "name": "无迹之影",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "隐秘之仆",
+      "rarity": "epic",
+      "axis": "secrecy",
+      "flagship": false,
+      "lore": "序列2 隐秘之仆 —— \"『隐秘』权柄：让发生的一切不被窥见\"",
+      "flavor": "你的行迹从不在世上留下痕迹——每次被击中，你就像从未站在那里一样，重新隐入无人的暗处。",
+      "describe": "战斗开始时获得「无迹之影」：自身与己方单位的隐匿状态不可被驱散；自身每次受击后获得 2 tick 潜行。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "traceless",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "traceless",
+          "name": "无迹之影",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "dispelOverride": {
+              "categories": [
+                "conceal"
+              ],
+              "dispelable": false,
+              "note": "H8 运行时覆写 dispelable（与愚者新增项 9 同源同落点）"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "concealed",
+                  "duration": 2,
+                  "target": "self",
+                  "note": "受击后痕迹被抹去，重新隐去"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s1_calamity",
+      "name": "厄难",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "厄难骑士",
+      "rarity": "legendary",
+      "axis": "darkness",
+      "flagship": false,
+      "lore": "序列1 厄难骑士 —— \"『厄难』：给予敌人厄运——黑暗的『厄运』权柄\"；序列0 黑暗 —— \"厄运和灾难权柄\"",
+      "flavor": "你宣判了它们的厄难——从今夜起，厄运和灾难会自己找上门，一步慢，步步慢。",
+      "describe": "全体敌人厄运缠身 5 tick，受到 3 点精神伤害，行动条 -10。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "misfortune",
+              "duration": 5,
+              "target": "all_enemies"
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -10,
+              "mode": "delta",
+              "target": "all_enemies",
+              "note": "灾难：整条队列被向后推"
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "序列1 档",
+            "note": "只挂 misfortune（本行即基础效果）"
+          },
+          {
+            "name": "序列0 档",
+            "note": "追加精神伤害与全队行动条倒退（本卡基础效果即按序列0 档登记）"
+          }
+        ]
+      },
+      "tentative": true,
+      "conversionNotes": [
+        "序列1「厄难」与序列0「厄运和灾难权柄」合并为一张卡，升级阶梯区分强度"
+      ]
+    },
+    {
+      "id": "skill_sleepless_s1_dark_vassal",
+      "name": "黑暗仆人·不灭",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "厄难骑士",
+      "rarity": "legendary",
+      "axis": "darkness",
+      "flagship": false,
+      "lore": "序列1 厄难骑士 —— \"『黑暗仆人』：黑夜中几乎无法被杀死，每次从黑暗中回归\"；序列0 黑暗 —— \"黑暗权柄：黑暗中不死，借助黑暗复活\"",
+      "flavor": "你已是黑暗的仆人——只要夜色还在，死亡就只是暂时。每一次倒下，你都会从黑暗里重新走回来。",
+      "describe": "战斗开始时获得 3 层「黑暗仆人」：自身死亡时若夜色 ≥3 层或黑夜领域在场，则中断死亡、保留 1 血并回复 30% 最大生命，消耗 1 层；层数耗尽后正常死亡。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "dark_vassal",
+          "charges": 3,
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dark_vassal",
+          "name": "黑暗仆人",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 3,
+          "triggers": [
+            {
+              "event": "on_death",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "nightfall",
+                "cmp": ">=",
+                "n": 3
+              },
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 0.3,
+                  "mode": "hpMaxRatio",
+                  "target": "self",
+                  "note": "lethalProtect 中断死亡保留 1 血（H7）+ 回复 30% 最大生命"
+                }
+              ],
+              "consumeCharge": true,
+              "note": "主判据 nightfall ≥3；黑夜领域在场为备选判据（zone_active domain_night_realm）"
+            }
+          ],
+          "note": "序列1 与序列0 描述合并立项；与 eternal_sleep 对冲已由编队上下文 §十 裁定：revive_blocked > lethal_protect"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s1_spirit_commander",
+      "name": "灵之统帅",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "厄难骑士",
+      "rarity": "legendary",
+      "axis": "requiem",
+      "flagship": false,
+      "lore": "序列1 厄难骑士 —— \"『灵之统帅』：统御自然灵和亡灵\"；\"大天使层面的骑士水准\"",
+      "flavor": "你抬起手，凡是带灵性的东西都低下头去——连站在对面的那些亡灵，也调转了它们空洞的眼窝。",
+      "describe": "己方全体灵体与亡灵攻击 +3（4 tick），自身攻击 +3（4 tick）；若敌方存在灵体或亡灵，则操纵其中攻击最高的一个反戈 3 tick。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "all",
+          "filter": {
+            "unitType": [
+              "SPIRIT",
+              "UNDEAD"
+            ]
+          }
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 4,
+              "target": "all_allies",
+              "note": "统御自然灵：全体己方 SPIRIT/UNDEAD（含自身若为灵体）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self",
+              "note": "大天使层面的骑士水准（位格碾压折为常量）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "target_unit_type",
+                "type": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ],
+                "side": "enemy",
+                "note": "敌方存在性判定（§一 filter.unitType 参数化写法）"
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "puppet_string",
+                  "duration": 3,
+                  "note": "统御亡灵：敌方 atk_desc 破平的 1 个 SPIRIT/UNDEAD"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "puppet_string",
+          "name": "提线木偶",
+          "category": [
+            "retarget",
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "targetOverride": {
+              "op": "target_override",
+              "anchor": "index_asc_same_faction",
+              "note": "H12 target_override 族：攻击强制打向其同阵营存活友军；优先于嘲讽/守护"
+            }
+          },
+          "note": "F9 已登记（C7 同落）；权威定义见状态表，此处为引用副本"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s0_eternal_slumber",
+      "name": "永眠·消融",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "黑暗",
+      "rarity": "legendary",
+      "axis": "nightmare",
+      "flagship": false,
+      "lore": "序列0 黑暗 —— \"『黑暗』权柄：让目标入梦 / 永眠 / 消融\"",
+      "flavor": "你把它送进了一场没有尽头的睡眠——在梦里，它仍在，只是再也不会醒来；连死亡也无法把它从这场梦里带走。",
+      "describe": "对一名敌人造成 4 点精神伤害，并使其入梦 6 tick、被黑暗侵蚀 6 tick（每 tick 2 点精神伤害、受治疗 ×0.7）、期间死亡不可复活。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "slumber",
+              "duration": 6,
+              "note": "入梦"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "dark_corrosion",
+              "duration": 6,
+              "note": "消融"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "eternal_sleep",
+              "duration": 6,
+              "note": "永眠：期间死亡不可被任何复活效果召回"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s0_secrecy_authority",
+      "name": "隐秘权柄",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "黑暗",
+      "rarity": "legendary",
+      "axis": "secrecy",
+      "flagship": false,
+      "lore": "序列0 黑暗 —— \"『隐秘』权柄：隐藏痕迹、误导窥探，将任何事物变隐秘\"",
+      "flavor": "你走到哪里，痕迹就消失到哪里——连你召来的那些灵，也一并隐没在无人能窥的暗处。",
+      "describe": "战斗开始时获得「隐秘权柄」：自身与己方全部召唤物常驻潜行（造成伤害后破除 2 tick 再重新隐匿），且己方单位的潜行不可被驱散。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "conceal_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "conceal_authority",
+          "name": "隐秘权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "concealed",
+                  "duration": null,
+                  "target": "self",
+                  "note": "隐藏痕迹：自身常驻 concealed"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "concealed",
+                  "duration": null,
+                  "target": "all_allies",
+                  "note": "己方全部召唤物常驻 concealed（filter isSummon，实现侧细化）"
+                }
+              ]
+            },
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "concealed",
+                    "count": 1
+                  },
+                  "note": "自身造成伤害后破除"
+                }
+              ]
+            }
+          ],
+          "modifiers": {
+            "dispelOverride": {
+              "categories": [
+                "conceal"
+              ],
+              "dispelable": false,
+              "note": "将任何事物变隐秘：己方 concealed 不可驱散（H8，与无迹之影同源）"
+            }
+          },
+          "note": "破除后 2 tick 由 on_tick 触发器重新挂载"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s0_fear_authority",
+      "name": "恐惧权柄",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "黑暗",
+      "rarity": "legendary",
+      "axis": "nightmare",
+      "flagship": false,
+      "lore": "序列0 黑暗 —— \"『恐惧』权柄\"",
+      "flavor": "凡是被你触及的生灵都会记住这一刻——它们开始发抖，而它们的恐惧，正是你下一次挥击的弹药。",
+      "describe": "战斗开始时获得「恐惧权柄」：你造成伤害时使目标恐惧 2 tick；对处于入梦、恐惧或安宁状态的目标，你造成的伤害 ×1.3。",
+      "hook": "on_deal_damage",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "dread_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dread_authority",
+          "name": "恐惧权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.3,
+              "filter": {
+                "targetHasStatus": [
+                  "slumber",
+                  "dread",
+                  "pacified"
+                ]
+              },
+              "note": "按目标状态过滤的施加方伤害乘区（H4 {filter, dynamic}，新增项 19 同族）"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "dread",
+                  "duration": 2,
+                  "note": "刷新不叠层（dread maxStacks 1）"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_sleepless_s0_spirit_authority",
+      "name": "灵体灵性权柄",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "黑暗",
+      "rarity": "legendary",
+      "axis": "requiem",
+      "flagship": false,
+      "lore": "序列0 黑暗 —— \"『灵体灵性』权柄\"",
+      "flavor": "一切具备灵性的存在，都在你的意志之下——你的灵永不失控，而别人的灵，在你面前脆弱得不堪一击。",
+      "describe": "战斗开始时获得「灵体灵性权柄」：己方灵体与亡灵免疫控制；你对灵体与亡灵造成的伤害 ×1.3；灵体与亡灵对你造成的伤害 ×0.85。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_sovereign",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_sovereign",
+          "name": "灵体灵性权柄",
+          "category": [
+            "buff",
+            "aura"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.3,
+              "filter": {
+                "unitType": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ]
+              }
+            },
+            "damage_taken_mul": {
+              "value": 0.85,
+              "filter": {
+                "sourceUnitType": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ]
+              },
+              "note": "按来源类型过滤的受伤乘区（H4 filter caster 维度）"
+            },
+            "immune": {
+              "categories": [
+                "control"
+              ],
+              "filter": {
+                "unitType": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ]
+              },
+              "note": "己方灵体与亡灵免疫 control 类状态（G12 immune 字段 + filter.unitType 限定；由归一自 modify_stat(stat: control_immunity) 改写，语义不变）"
+            }
+          },
+          "note": "收尸人【灵之主宰】与本条共用 spirit_sovereign 族（H42 同向取最高不叠乘）"
+        }
+      ],
+      "sharedAcross": [
+        "corpse_collector"
+      ],
+      "tentative": true
+    }
+  ]
+}

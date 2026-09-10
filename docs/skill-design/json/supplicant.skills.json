@@ -1,0 +1,2551 @@
+{
+  "pathwayId": "supplicant",
+  "pathwayName": "秘祈人",
+  "sourceFile": "../秘祈人途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "shadow": {
+      "symbol": "🜁",
+      "name": "阴影"
+    },
+    "flesh": {
+      "symbol": "🜂",
+      "name": "血肉"
+    },
+    "soul": {
+      "symbol": "🜃",
+      "name": "牧魂"
+    },
+    "corruption": {
+      "symbol": "🜄",
+      "name": "秽堕"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_supplicant_s9_inspiration",
+      "name": "灵感",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "秘祈人",
+      "rarity": "common",
+      "axis": "shadow",
+      "flagship": false,
+      "lore": "序列9 秘祈人 —— \"灵感极大提升：察觉神秘恐怖存在\"",
+      "flavor": "你的灵感远超常人，战局尚未展开，你就已经嗅到了\"不该存在之物\"的气息。",
+      "describe": "战斗开始时：自身能量 +5、行动条速率 +4（整场）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 5,
+          "mode": "delta",
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 4,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge_rate 修正在 ddd 属 modify_resource 键；卡面按 modify_stat(gauge.rate) 表达持续修正，待内核裁定归一（gauge.rate 定价无锚点，沿用 D2）",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_supplicant_s9_sacrifice_rite",
+      "name": "祭祀仪式",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "秘祈人",
+      "rarity": "common",
+      "axis": "flesh",
+      "flagship": false,
+      "lore": "序列9 秘祈人 —— \"掌握祭祀知识和少量仪式魔法\"",
+      "flavor": "你划开自己的皮肉，把血与痛摆上祭坛：仪式完成，力量涌了上来。",
+      "describe": "支付 3 点生命（不走伤害链）：自身能量 +5、攻击 +2（3 tick）。",
+      "cost": {
+        "energy": 0,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "hp",
+          "value": -3,
+          "mode": "delta",
+          "target": "self",
+          "note": "源稿 pay_hp 语义（支付生命不走伤害链，新增项 8）：归一为 modify_resource(hp,-3)；silent（不 fire on_take_damage/反伤/亡语/致死判定）语义待内核裁定"
+        },
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 5,
+              "mode": "delta",
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "diviner"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+      ]
+    },
+    {
+      "id": "skill_supplicant_s8_listen",
+      "name": "倾听",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "倾听者",
+      "rarity": "common",
+      "axis": "corruption",
+      "flagship": true,
+      "lore": "序列8 倾听者 —— \"'倾听'：直接听到隐秘存在的耳语，获得强大但扭曲的能力\"；\"难以存活超过五年，都是隐藏的疯子\"",
+      "flavor": "你日夜聆听那些不该被听见的耳语：力量源源不断地涌来，而你的理智正被它们一点点啃空。",
+      "describe": "战斗开始时获得「倾听」整场（不可驱散）：能量恢复 +0.4、生命上限 -8；每 tick 有 25% 概率叠加 1 层疯癫。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "listener",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "listener",
+          "name": "倾听",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": 0.4,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "强大"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": -8,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "扭曲（理智被侵蚀）；hp_max 削减即时截断且不回补"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "madness",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "target": "self",
+                  "condition": {
+                    "kind": "chance",
+                    "p": 0.25
+                  },
+                  "note": "隐藏的疯子：概率只用于非伤害维度（R5），单次抽样（R4）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "madness",
+          "name": "疯癫",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": null,
+          "maxStacks": 5,
+          "stackPolicy": "stack",
+          "modifiers": {
+            "damage_taken_mul": {
+              "dynamic": "1 + 0.06 * stacks"
+            }
+          },
+          "statPerStack": {
+            "gauge.rate": -5
+          },
+          "note": "gauge_rate ×(1−0.05n) 以 statPerStack(gauge.rate, -5) 近似表达；H2 叠层族（与 F8 mind_taint / F16 whisper 同族，建议并入参数化复合 debuff 母版）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "madness 的 gauge_rate 递减走 statPerStack(gauge.rate)，同待裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_supplicant_s8_whisper",
+      "name": "耳语",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "倾听者",
+      "rarity": "common",
+      "axis": "corruption",
+      "flagship": false,
+      "lore": "序列8 倾听者 —— \"直接听到隐秘存在的耳语\"（把听到的东西塞进别人脑子里）",
+      "flavor": "你把耳中那句不可名状的低语送进了它的脑袋——它的眼睛开始失焦。",
+      "describe": "对一名敌人造成 3 点精神伤害，并有 40% 概率叠加 1 层疯癫。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "madness",
+              "stacks": 1,
+              "stackMode": "add",
+              "target": "target",
+              "condition": {
+                "kind": "chance",
+                "p": 0.4
+              }
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 3 → 5 → 7",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "mental",
+                "value": 7
+              },
+              {
+                "type": "mount_status",
+                "statusId": "madness",
+                "stacks": 1,
+                "stackMode": "add",
+                "target": "target",
+                "condition": {
+                  "kind": "chance",
+                  "p": 0.4
+                }
+              }
+            ]
+          },
+          {
+            "name": "群低语",
+            "note": "对目标相邻单位各 1 点精神伤害（spread: splash_adjacent）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "mental",
+                "value": 1,
+                "spread": "splash_adjacent"
+              }
+            ]
+          }
+        ]
+      },
+      "sharedAcross": [
+        "diviner"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+      ]
+    },
+    {
+      "id": "skill_supplicant_s8_twisted_power",
+      "name": "扭曲之力",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "倾听者",
+      "rarity": "common",
+      "axis": "corruption",
+      "flagship": false,
+      "lore": "序列8 倾听者 —— \"获得强大但扭曲的能力\"；\"都是隐藏的疯子\"",
+      "flavor": "疯癫也是一种力量：你越被耳语侵蚀，出手就越狠，也越不在乎自己会碎在哪里。",
+      "describe": "战斗开始时获得「扭曲之力」整场：自身造成伤害 ×（1 + 0.08 × 自身疯癫层数），最多按 5 层计（×1.4）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "twisted_power",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "twisted_power",
+          "name": "扭曲之力",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "dynamic": "1 + 0.08 * min(madness.stacks, 5)"
+            }
+          },
+          "note": "H4 dynamic 条件动态乘区（按其它状态层数取值，已落）；与【倾听】构成疯癫闭环"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "pay_hp 归一为 modify_resource(hp,-3,delta,self)；源稿不走伤害链语义以 note 标记，silent 标志待内核裁定"
+      ]
+    },
+    {
+      "id": "skill_supplicant_s7_shadow_dwell",
+      "name": "藏入阴影",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "隐修士",
+      "rarity": "uncommon",
+      "axis": "shadow",
+      "flagship": true,
+      "lore": "序列7 隐修士 —— \"'藏入阴影'：躲藏、跟踪、运用阴影力量\"",
+      "flavor": "你沉进脚下的阴影里，气息随之消失——敌人只看到一片会动的暗。",
+      "describe": "藏入阴影 3 tick：不可被敌方单体技能选中、受伤 ×0.85；出手或挨打即现形。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "shadow_dwell",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "shadow_dwell",
+          "name": "藏入阴影",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            },
+            "damage_taken_mul": 0.85
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "shadow_dwell"
+                  },
+                  "note": "出手即现形"
+                }
+              ]
+            },
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "shadow_dwell"
+                  },
+                  "note": "挨打即现形"
+                }
+              ]
+            }
+          ],
+          "note": "H5 潜行母版（与 F4 shadow_veil / F11 stealth 同一机制，建议并入统一潜行母版）；不做位移（G8 禁止越中线）"
+        }
+      ],
+      "sharedAcross": [
+        "diviner"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+      ]
+    },
+    {
+      "id": "skill_supplicant_s7_summon_shadow",
+      "name": "召唤阴影",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "隐修士",
+      "rarity": "uncommon",
+      "axis": "shadow",
+      "flagship": false,
+      "lore": "序列7 隐修士 —— \"'召唤阴影'：召唤阴影世界生物\"",
+      "flavor": "阴影里伸出一只不属于此世的手——你把它整个拽了出来。",
+      "describe": "召唤一只阴影生物（生命 35%、攻击 50% 继承）至己方队尾；它死亡时对相邻敌方造成 2 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "template": "unit_shadow_spawn",
+          "hpRatio": 0.35,
+          "atkRatio": 0.5,
+          "position": "tail"
+        }
+      ],
+      "unitDefs": [
+        {
+          "id": "unit_shadow_spawn",
+          "name": "阴影生物",
+          "hpRatio": 0.35,
+          "atkRatio": 0.5,
+          "reach": "melee",
+          "element": "mental",
+          "tags": [
+            "shadow"
+          ],
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "spread": "splash_adjacent",
+                  "note": "亡语：对相邻敌方单位造成 2 点精神伤害（A2：只挂亡语，禁挂登场光环）"
+                }
+              ]
+            }
+          ],
+          "note": "H1 召唤物基线模板实例（新增项 20，已落）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s7_shadow_curse",
+      "name": "阴影诅咒",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "隐修士",
+      "rarity": "uncommon",
+      "axis": "corruption",
+      "flagship": false,
+      "lore": "序列7 隐修士 —— \"'阴影诅咒'\"；序列6 蔷薇主教 —— \"'血肉诅咒'\"",
+      "flavor": "阴影像一件湿透的裹尸布贴上它的身体，血肉从底下开始腐烂。",
+      "describe": "使一名敌人被血肉腐蚀 3 tick：每 tick 受到 2 点毒素伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "flesh_corrode",
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "flesh_corrode",
+          "name": "血肉腐蚀",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "poison",
+                  "value": 2,
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "序列7「阴影诅咒」与序列6「血肉诅咒」语义重合合为一张；H2 复合 debuff 母版（与 F6/F12/F13/F16/F18 同族）；元素取 poison 与 burn（火）/ whisper（精神）区分"
+        }
+      ],
+      "sharedAcross": [
+        "diviner"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+      ]
+    },
+    {
+      "id": "skill_supplicant_s7_shadow_mastery",
+      "name": "操纵阴影",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "隐修士",
+      "rarity": "uncommon",
+      "axis": "shadow",
+      "flagship": false,
+      "lore": "序列7 隐修士 —— \"'操纵阴影'\"、\"'阴影塑形'\"",
+      "flavor": "脚下的影子托着你滑向队列另一侧，顺手凝出一面影盾挡在身前。",
+      "describe": "自身退至己方半场队尾，并获得 5 点护盾（3 tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "target": "self",
+              "note": "C1 已落地且锁定 from.faction；G8 合规（只在己方队列内）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 5,
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "影刃",
+            "note": "前压版：move(pull_forward) + 攻击 +2（3 tick）（阴影塑形升级分支）",
+            "effects": [
+              {
+                "type": "move",
+                "op": "pull_forward",
+                "distance": 1,
+                "target": "self"
+              },
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 2,
+                "mode": "delta",
+                "duration": 3,
+                "target": "self"
+              }
+            ]
+          }
+        ]
+      },
+      "sharedAcross": [
+        "diviner"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "F53 charge_forward 本稿已建议撤销（位移全部走 C1 push_back / pull_forward）",
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+      ]
+    },
+    {
+      "id": "skill_supplicant_s6_flesh_heal",
+      "name": "血肉治愈",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "蔷薇主教",
+      "rarity": "uncommon",
+      "axis": "flesh",
+      "flagship": true,
+      "lore": "序列6 蔷薇主教 —— \"血肉魔法专家：深层掌控细胞，极擅长治疗\"",
+      "flavor": "你伸手按在伤口上，肌肉与皮肤在你掌心重新长好。",
+      "describe": "指定一名友军（可含自身），回复 8 点生命。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "heal",
+          "value": 8,
+          "target": "target"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "治疗提升",
+            "note": "治疗 8 → 11 → 14",
+            "effects": [
+              {
+                "type": "heal",
+                "value": 14,
+                "target": "target"
+              }
+            ]
+          },
+          {
+            "name": "细胞重构",
+            "note": "同时 dispel(目标, ['dot','debuff'], 1)（C2），对应原著「深层掌控细胞」",
+            "effects": [
+              {
+                "type": "heal",
+                "value": 8,
+                "target": "target"
+              },
+              {
+                "type": "dispel",
+                "target": "target",
+                "dispelTarget": "unit",
+                "filter": {
+                  "category": [
+                    "dot",
+                    "debuff"
+                  ],
+                  "count": 1
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s6_flesh_cloak",
+      "name": "血肉披风",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "蔷薇主教",
+      "rarity": "uncommon",
+      "axis": "flesh",
+      "flagship": false,
+      "lore": "序列6 蔷薇主教 —— \"'血肉披风'\"",
+      "flavor": "你把一层仍在蠕动的血肉披在身上——它替你吃下大部分力道。",
+      "describe": "获得「血肉披风」4 tick：受到的伤害 ×0.85。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "flesh_cloak",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "flesh_cloak",
+          "name": "血肉披风",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "damage_taken_mul": 0.85
+          },
+          "note": "H3 参数化减伤母版（与 C3 glibness / F22 sanctuary / F4 shadow_veil 同族）；比 shield 更贴「披风」持续吸伤语义，且不吃禁获护盾克制"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s6_flesh_bomb",
+      "name": "血肉炸弹",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "蔷薇主教",
+      "rarity": "uncommon",
+      "axis": "flesh",
+      "flagship": false,
+      "lore": "序列6 蔷薇主教 —— \"'血肉炸弹'\"",
+      "flavor": "你把一块还在跳动的血肉塞进它的伤口——两秒后，那块肉炸了，连它身边的同伴一起。",
+      "describe": "对一名敌人造成 4 点物理伤害并植入血肉炸弹：2 tick 后爆炸，对其及相邻单位造成 3 点物理伤害（被驱散也会炸）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 4,
+              "note": "近战攻击进程，不调 move（G8 合规）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "flesh_bomb",
+              "duration": 2,
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "flesh_bomb",
+          "name": "血肉炸弹",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "triggers": [
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 3,
+                  "spread": "splash_adjacent",
+                  "target": "self",
+                  "note": "到期或被驱散均爆炸（拆弹须付代价，刻意设计）"
+                }
+              ]
+            }
+          ],
+          "note": "延时用 duration + on_remove 表达，不引入新原语"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s6_liquefy_parasite",
+      "name": "液化寄生",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "蔷薇主教",
+      "rarity": "uncommon",
+      "axis": "flesh",
+      "flagship": false,
+      "lore": "序列6 蔷薇主教 —— \"身体液化 / 寄生\"",
+      "flavor": "你的身体化成一滩血肉，从它的耳道钻了进去——从现在起，它养着你。",
+      "describe": "寄生一名敌人 4 tick：其每 tick 被吸取 2 点生命给你，且攻击 -1。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "parasitized",
+          "duration": 4,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "parasitized",
+          "name": "寄生",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "drain",
+                  "resource": "hp",
+                  "ratio": 1,
+                  "value": 2,
+                  "target": "self",
+                  "note": "宿主每 tick 被吸取 2 点生命给施法者（F56 施法者引用）"
+                }
+              ]
+            }
+          ],
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -1,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ],
+          "note": "直接复用 F2 parasitized 的最小副本；权威定义见 F2 登记（偷盗者序列4「寄生者」同源机制），此处参数照稿面；退化方案：施法者 on_tick heal(2) + 宿主 atk -1，丢掉吸取方向性"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s6_flesh_servant",
+      "name": "血肉仆役",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "蔷薇主教",
+      "rarity": "uncommon",
+      "axis": "flesh",
+      "flagship": false,
+      "lore": "序列6 蔷薇主教 —— \"'血肉仆役'\"",
+      "flavor": "你从自己身上撕下一块肉，它落地便长出四肢，低吼着替你挡在前面。",
+      "describe": "支付 3 点生命（不走伤害链）：召唤一只血肉仆役（生命 50%、攻击 40% 继承）至己方队尾；它死亡时为你回复 3 点生命。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "hp",
+          "value": -3,
+          "mode": "delta",
+          "target": "self",
+          "note": "源稿 pay_hp 语义（撕下血肉，与祭祀仪式同源，不走伤害链）：归一为 modify_resource(hp,-3)，silent 语义待内核裁定"
+        },
+        {
+          "type": "spawn",
+          "template": "unit_flesh_servant",
+          "hpRatio": 0.5,
+          "atkRatio": 0.4,
+          "position": "tail"
+        }
+      ],
+      "unitDefs": [
+        {
+          "id": "unit_flesh_servant",
+          "name": "血肉仆役",
+          "hpRatio": 0.5,
+          "atkRatio": 0.4,
+          "reach": "melee",
+          "element": "physical",
+          "tags": [
+            "flesh"
+          ],
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 3,
+                  "target": "caster",
+                  "note": "仆役死了，血肉回到主人身上（F56 施法者引用）"
+                }
+              ]
+            }
+          ],
+          "note": "H1 召唤物基线模板实例；你召唤的不是灵体，是你自己的肉"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "pay_hp 归一为 modify_resource(hp,-3,delta,self)；不走伤害链语义以 note 标记，silent 标志待内核裁定"
+      ]
+    },
+    {
+      "id": "skill_supplicant_s6_flesh_replenish",
+      "name": "补充血肉",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "蔷薇主教",
+      "rarity": "uncommon",
+      "axis": "flesh",
+      "flagship": false,
+      "lore": "序列6 蔷薇主教 —— \"必须经常补充血肉\"；\"深层掌控细胞\"",
+      "flavor": "你的身体永远在饥饿。每杀一个，你就把它的血肉补回自己身上；而你的细胞，也总能排出几分毒与腐。",
+      "describe": "战斗开始时获得「血肉饥渴」整场：生命上限 -5；每击杀一个敌人，自身回复 3 点生命并攒 1 层血肉储备（上限 5）；每 tick 有 30% 概率驱散自身 1 个持续伤害状态。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "flesh_hunger",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "flesh_hunger",
+          "name": "血肉饥渴",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": -5,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "持续消耗的代价"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_kill",
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 3,
+                  "target": "self"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "flesh_stock",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "target": "self",
+                  "note": "血肉储备，供【血肉不灭】当复活燃料"
+                }
+              ]
+            },
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "dot"
+                    ],
+                    "count": 1
+                  },
+                  "condition": {
+                    "kind": "chance",
+                    "p": 0.3
+                  },
+                  "note": "深层掌控细胞：自行排出毒素（R5：驱散属非伤害维度）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "flesh_stock",
+          "name": "血肉储备",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 5,
+          "stackPolicy": "stack",
+          "note": "H11 计数叠层（与 F1 inscription 同型共用计数型母版）；消耗走 F48 status.consume"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s5_graze_soul",
+      "name": "放牧灵魂",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "牧羊人",
+      "rarity": "rare",
+      "axis": "soul",
+      "flagship": true,
+      "lore": "序列5 牧羊人 —— \"'放牧'（核心）：吞噬灵魂到体内驱使，使用其三种能力；最高放牧 7 个灵魂，一次驱使一个\"",
+      "flavor": "你张口吞下它的灵魂——它在你体内尖叫，而它的力量、它的厚度、它的狡诈，都成了你的。",
+      "describe": "对一名敌人造成 5 点精神伤害；若其因此死亡，吞噬其灵魂：自身叠 1 层被放牧的灵魂，攻击 +1、生命上限 +2、能量上限 +1（均整场）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 5
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "target_dead",
+                "note": "目标因此死亡（F52 同族谓词，已落共享内核参数 §三）"
+              },
+              "then": [
+                {
+                  "op": "sequence",
+                  "steps": [
+                    {
+                      "type": "mount_status",
+                      "statusId": "grazed_soul",
+                      "stacks": 1,
+                      "stackMode": "add",
+                      "target": "self"
+                    },
+                    {
+                      "type": "modify_stat",
+                      "stat": "attack",
+                      "value": 1,
+                      "mode": "delta",
+                      "duration": null,
+                      "target": "self",
+                      "note": "力量"
+                    },
+                    {
+                      "type": "modify_stat",
+                      "stat": "hp_max",
+                      "value": 2,
+                      "mode": "delta",
+                      "duration": null,
+                      "target": "self",
+                      "note": "厚度"
+                    },
+                    {
+                      "type": "modify_stat",
+                      "stat": "energy_max",
+                      "value": 1,
+                      "mode": "delta",
+                      "duration": null,
+                      "target": "self",
+                      "note": "灵动"
+                    }
+                  ]
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "grazed_soul",
+          "name": "被放牧的灵魂",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 7,
+          "stackPolicy": "stack",
+          "slots": {
+            "unitDef": "被吞单位逐层记录（H33），供驱使 / 眷属按模板召唤（备选方案）"
+          },
+          "note": "H11 计数叠层 + F48 status.consume 扣层；maxStacks 由【灵魂牧场】/【三首形态】阶梯覆盖（7/9/13/18/22）；备选方案：按记录 unitDef 元素 / 攻击类型生成对应召唤物"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s5_soul_paddock",
+      "name": "灵魂牧场",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "牧羊人",
+      "rarity": "rare",
+      "axis": "soul",
+      "flagship": false,
+      "lore": "序列5 牧羊人 —— \"最高放牧 7 个灵魂，一次驱使一个\"（序列4 升至 9、序列3 升至 13 且同时驱使 3 个、序列2 升至 18、序列1 外放 22 个）",
+      "flavor": "你体内是一片牧场。起初只容得下七头，后来是九头、十三头……直到二十二头一起冲出来。",
+      "describe": "战斗开始时获得「灵魂牧场」整场：被放牧的灵魂上限设为 7；每层被放牧的灵魂使你生命上限 +1（整场）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "soul_paddock",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "soul_paddock",
+          "name": "灵魂牧场",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "stackCapOverride": {
+              "statusId": "grazed_soul",
+              "maxStacks": 7
+            }
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 1,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "valueFrom": "statusStacks:grazed_soul",
+              "note": "每层 grazed_soul → 自身 hp_max +1"
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "阶梯 II（序列4 黑骑士）",
+            "note": "maxStacks 7 → 9",
+            "statusDefOverride": {
+              "modifiers": {
+                "stackCapOverride": {
+                  "statusId": "grazed_soul",
+                  "maxStacks": 9
+                }
+              }
+            }
+          },
+          {
+            "name": "阶梯 III（序列3 三首圣堂）",
+            "note": "maxStacks 13，同时驱使 3 个（召唤上限，与三首形态取较大值）",
+            "statusDefOverride": {
+              "modifiers": {
+                "stackCapOverride": {
+                  "statusId": "grazed_soul",
+                  "maxStacks": 13
+                },
+                "summonCapOverride": 3
+              }
+            }
+          },
+          {
+            "name": "阶梯 IV（序列2 秽语长老）",
+            "note": "maxStacks 18，同时驱使 3 个",
+            "statusDefOverride": {
+              "modifiers": {
+                "stackCapOverride": {
+                  "statusId": "grazed_soul",
+                  "maxStacks": 18
+                },
+                "summonCapOverride": 3
+              }
+            }
+          },
+          {
+            "name": "阶梯 V（序列1 暗天使）",
+            "note": "maxStacks 22，全部外放",
+            "statusDefOverride": {
+              "modifiers": {
+                "stackCapOverride": {
+                  "statusId": "grazed_soul",
+                  "maxStacks": 22
+                },
+                "summonCapOverride": 99
+              }
+            }
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s5_drive_soul",
+      "name": "驱使灵魂",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "牧羊人",
+      "rarity": "rare",
+      "axis": "soul",
+      "flagship": false,
+      "lore": "序列5 牧羊人 —— \"吞噬灵魂到体内驱使……一次驱使一个\"；序列4 黑骑士 —— \"放牧升至 9 个，可外放使用全部能力\"",
+      "flavor": "你松开体内一道灵魂的锁链——它扑出来，带着生前最后的恨意扑向敌人。",
+      "describe": "消耗 1 层被放牧的灵魂，召唤一只被放牧的灵体（生命 40%、攻击 50% 继承）至己方队尾；场上同时存在数受灵魂牧场阶梯限制，超出时最早的一个消散。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "grazed_soul",
+              "stacks": -1,
+              "stackMode": "consume"
+            },
+            {
+              "type": "spawn",
+              "template": "unit_grazed_wraith",
+              "hpRatio": 0.4,
+              "atkRatio": 0.5,
+              "position": "tail",
+              "summonCap": {
+                "valueFrom": "soul_paddock.summonCapOverride",
+                "default": 1,
+                "overflow": "oldest_on_remove",
+                "note": "H39 summon_cap：超限最老者自动消散（2026-09-04 确认）"
+              }
+            }
+          ]
+        }
+      ],
+      "unitDefs": [
+        {
+          "id": "unit_grazed_wraith",
+          "name": "被放牧的灵体",
+          "hpRatio": 0.4,
+          "atkRatio": 0.5,
+          "reach": "melee",
+          "element": "mental",
+          "tags": [
+            "spirit"
+          ],
+          "note": "H1 召唤物基线模板实例"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s5_shadow_bind",
+      "name": "掌控阴影",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "牧羊人",
+      "rarity": "rare",
+      "axis": "shadow",
+      "flagship": false,
+      "lore": "序列5 牧羊人 —— \"'掌控阴影'：操纵深厚阴影束缚、压扁、腐蚀目标\"",
+      "flavor": "浓稠的阴影从四面八方缠上来——它动不了，只能感觉到自己正被一寸寸压扁。",
+      "describe": "使一名敌人被阴影束缚 3 tick：无法被位移、行动条速率 ×0.8，且每 tick 受到 1 点物理伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "shadow_bind",
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "shadow_bind",
+          "name": "阴影束缚",
+          "category": [
+            "control",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "moveImmune": true
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 0.8,
+              "mode": "mul",
+              "duration": 3,
+              "target": "self",
+              "note": "压扁：改 gauge.rate 源属性，不碰派生行动周期（INV-S5 合规）"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 1,
+                  "target": "self",
+                  "note": "腐蚀"
+                }
+              ]
+            }
+          ],
+          "note": "与 F7 shackle（禁位移 + gauge_rate ×0.7）机制重合，直接参数化填参（H24+H27，新增项 16 已落），不新立状态"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 乘算修正（×0.8），同服从之音待裁定；若引擎 modify_stat 只支持加减则退化为 gauge.rate -6",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_supplicant_s4_black_armor",
+      "name": "黑甲",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "黑骑士",
+      "rarity": "rare",
+      "axis": "flesh",
+      "flagship": false,
+      "lore": "序列4 黑骑士 —— \"'黑骑士'：化身黑甲小巨人，盔甲吸收攻击\"",
+      "flavor": "你披上那身黑甲，身形暴涨——打上来的力道大半被甲胄吞掉，而没人推得动你。",
+      "describe": "战斗开始时获得「黑甲」整场：受到的伤害 ×0.85、免疫位移、生命上限 +8。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "black_armor",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "black_armor",
+          "name": "黑甲",
+          "category": [
+            "buff",
+            "stance"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_taken_mul": 0.85,
+            "moveImmune": true
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 8,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "note": "常驻形态而非一次性变身；moveImmune 与 F7 shackle 禁位移同字段正反两面（H27，已落）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s4_soul_flesh_blade",
+      "name": "灵肉之刃",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "黑骑士",
+      "rarity": "rare",
+      "axis": "flesh",
+      "flagship": true,
+      "lore": "序列4 黑骑士 —— \"'灵肉之刃'（核心）：腐蚀血肉、泯灭灵魂、斩破屏障\"",
+      "flavor": "漆黑的巨刃劈下——伤口先是溃烂，然后是它魂魄碎裂的声音，最后连它身上那层护罩也一并断开。",
+      "describe": "对一名敌人造成 5 点物理伤害（对召唤物 ×1.5），驱散其 2 个护盾/护甲/增益类状态，施加血肉腐蚀 3 tick，并使其灵魂泯灭（无法以任何方式复活）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "target_is_summoned"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 5,
+                  "mul": 1.5,
+                  "note": "灵魂单薄：对召唤物 ×1.5"
+                }
+              ],
+              "else": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 5
+                }
+              ]
+            },
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "statusId": [
+                  "shield",
+                  "armor"
+                ],
+                "count": 2
+              },
+              "note": "斩破屏障（C2 数组）：护盾 / 护甲 / 增益共 2 个"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "flesh_corrode",
+              "duration": 3,
+              "target": "target",
+              "note": "腐蚀血肉（同阴影诅咒）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "soul_annihilated",
+              "duration": null,
+              "target": "target",
+              "note": "泯灭灵魂"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "soul_annihilated",
+          "name": "灵魂泯灭",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "reviveBlocked": true,
+          "note": "单位级标记：无法以任何方式复活（H23 复活优先级链，与愚者【命运锚点】新增项 11 同源母版，已落）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s4_fallen_shadow",
+      "name": "堕落之影",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "黑骑士",
+      "rarity": "rare",
+      "axis": "corruption",
+      "flagship": false,
+      "lore": "序列4 黑骑士 —— \"'堕落之影'\"、\"'统御阴影'\"",
+      "flavor": "你统御的阴影在敌阵中升起，化作一张张扭曲的脸——被它擦过的东西，都开始腐烂。",
+      "describe": "对全体敌方造成 3 点精神伤害，并各有 35% 概率被玷污（各目标独立判定）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "defile",
+              "duration": 3,
+              "target": "all_enemies",
+              "condition": {
+                "kind": "chance",
+                "p": 0.35
+              },
+              "note": "各目标独立判定（R4 单次抽样）"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "defile",
+          "name": "玷污",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "note": "F12 已登记状态的最小副本（🟡）；权威定义见通用状态表 F12 登记，此处仅引用参数槽位"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s3_three_headed",
+      "name": "三首形态",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "三首圣堂",
+      "rarity": "epic",
+      "axis": "soul",
+      "flagship": false,
+      "lore": "序列3 三首圣堂 —— \"三首形态：两侧各长一头颅，各带走 1/3 躯体\"；\"可同时驱使 3 个灵魂，放牧升至 13 个\"",
+      "flavor": "你的脖子两侧各裂开一道口子，长出两颗新的头颅——躯体被分走三分之二，可替你驱使的灵魂也多了两倍。",
+      "describe": "战斗开始时获得「三首形态」整场（不可驱散）：被放牧的灵魂上限提升至 13、同时驱使上限变为 3；自身受到的伤害 ×0.85。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "three_headed",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "three_headed",
+          "name": "三首形态",
+          "category": [
+            "buff",
+            "stance"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "stackCapOverride": {
+              "statusId": "grazed_soul",
+              "maxStacks": 13
+            },
+            "summonCapOverride": 3,
+            "damage_taken_mul": 0.85
+          },
+          "note": "与【灵魂牧场】阶梯 III 同组数字，两卡共存取较大值"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s3_shadow_double",
+      "name": "阴影替身术",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "三首圣堂",
+      "rarity": "epic",
+      "axis": "shadow",
+      "flagship": false,
+      "lore": "序列3 三首圣堂 —— \"'阴影替身术'\"",
+      "flavor": "刀锋落下时，被劈成两半的是你的影子——而你已经退到了队伍最后。",
+      "describe": "获得「阴影替身」5 tick：下一次受到的伤害 ×0（替身承受），随后自身退回己方半场队尾。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "shadow_double",
+          "duration": 5,
+          "charges": 1,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "shadow_double",
+          "name": "阴影替身",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_stat",
+                  "stat": "defense",
+                  "value": 0,
+                  "mode": "set",
+                  "duration": 0,
+                  "target": "self",
+                  "note": "该次伤害 ×0（替身承受）的表达锚点：以伤害链截断载荷承载，待内核裁定精确写法"
+                },
+                {
+                  "type": "move",
+                  "op": "push_back",
+                  "distance": 99,
+                  "target": "self",
+                  "note": "本体退回己方半场队尾（G8 合规）"
+                },
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "shadow_double"
+                  },
+                  "note": "消耗 1 层（C6）"
+                }
+              ]
+            }
+          ],
+          "note": "G15-b：触发点 on_take_damage 事件驱动不受 duration 尺度影响；duration 5 按覆盖 1 个自身回合取保守值"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s3_flesh_immortal",
+      "name": "血肉不灭",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "三首圣堂",
+      "rarity": "epic",
+      "axis": "flesh",
+      "flagship": true,
+      "lore": "序列3 三首圣堂 —— \"'血肉不灭'（只要剩一个细胞 + 血肉补充即可重塑）\"；序列0 倒吊人 —— \"'异变'：黑暗中凭空制造怪物，血肉不灭质变的复活\"",
+      "flavor": "只要还剩一个细胞，只要还有血肉可用——你就会重新长回来。",
+      "describe": "战斗开始时获得「血肉不灭」整场：你死亡时若血肉储备 ≥2，消耗 2 层阻止死亡并回复至 20% 最大生命；否则正常死亡。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "flesh_immortal",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "flesh_immortal",
+          "name": "血肉不灭",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "has_status",
+                    "side": "self",
+                    "id": "flesh_stock",
+                    "cmp": ">=",
+                    "n": 2
+                  },
+                  "then": [
+                    {
+                      "op": "sequence",
+                      "steps": [
+                        {
+                          "type": "mount_status",
+                          "statusId": "flesh_stock",
+                          "stacks": -2,
+                          "stackMode": "consume"
+                        },
+                        {
+                          "type": "heal",
+                          "value": 20,
+                          "mode": "to_ratio",
+                          "target": "self",
+                          "note": "lethal_protect：阻止死亡并回复至 20% 最大生命（H7，已落）"
+                        }
+                      ]
+                    }
+                  ],
+                  "else": []
+                }
+              ]
+            }
+          ],
+          "note": "「+ 血肉补充」是复活前提：flesh_stock 由【补充血肉】击杀产出，没攒够就死透"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s2_word_spirit",
+      "name": "秽语·言灵",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "秽语长老",
+      "rarity": "epic",
+      "axis": "corruption",
+      "flagship": true,
+      "lore": "序列2 秽语长老 —— \"'秽语'（堕落 + 污秽权柄）：利用回答制造言灵效果，直接诅咒；诱使目标堕落\"",
+      "flavor": "你问了它一个问题。它开口回答的那一刻，它自己说出口的话，就成了刺进它身体的刀。",
+      "describe": "使一名敌人被言灵缠住 6 tick：其下一次造成伤害时，自身受到 4 点精神伤害，你回复 2 点能量。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "word_spirit",
+          "duration": 6,
+          "charges": 1,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "word_spirit",
+          "name": "言灵",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "op": "sequence",
+                  "steps": [
+                    {
+                      "type": "damage",
+                      "element": "mental",
+                      "value": 4,
+                      "target": "self",
+                      "note": "目标自身受 4 点精神伤害（它的回答成了刀）"
+                    },
+                    {
+                      "type": "modify_resource",
+                      "resource": "energy",
+                      "value": 2,
+                      "mode": "delta",
+                      "target": "caster",
+                      "note": "收益结算归施法者（F56 施法者引用，已落）"
+                    }
+                  ]
+                }
+              ],
+              "note": "只等一次回答（charges 1，C6）；退化方案：去掉回能段"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s2_curse",
+      "name": "秽语·诅咒",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "秽语长老",
+      "rarity": "epic",
+      "axis": "corruption",
+      "flagship": false,
+      "lore": "序列2 秽语长老 —— \"'秽语'……直接诅咒；诱使目标堕落——精神上的灵肉之刃\"",
+      "flavor": "你吐出一串污秽的音节。它的伤口开始发黑，而它心里有什么东西，正一点点松动。",
+      "describe": "对一名敌人造成 3 点精神伤害并诱使其堕落 4 tick：受到的治疗 ×0.5、每 tick 受到 1 点精神伤害；堕落结束时转为被玷污 3 tick。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "fallen",
+              "duration": 4,
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "fallen",
+          "name": "堕落",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "healReceivedMul": 0.5,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 1,
+                  "target": "self"
+                }
+              ]
+            },
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "defile",
+                  "duration": 3,
+                  "target": "self",
+                  "note": "堕落完成：到期转为 defile（F12）"
+                }
+              ]
+            }
+          ],
+          "note": "H2 + on_remove 挂载载荷判例（heal_received_mul 与 F20 petrify 同源）；「精神上的灵肉之刃」走 mental 元素"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s1_dark_sea",
+      "name": "黑暗海洋",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "暗天使",
+      "rarity": "legendary",
+      "axis": "corruption",
+      "flagship": true,
+      "lore": "序列1 暗天使 —— \"'黑暗'权柄：制造黑暗海洋吞噬攻击\"",
+      "flavor": "黑暗像海水一样漫过战场——打进来的东西沉了下去，而你在水里看得一清二楚。",
+      "describe": "降临「黑暗海洋」4 回合：敌方造成伤害 ×0.75、行动条速率 ×0.85；己方获得隐匿（难以被单体技能选中）；「暗影/黑暗/污秽」标签卡效果 ×1.3，「光/净化」标签卡 ×0.7。自身迷失值 +1。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_dark_sea",
+              "duration": 4,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_dark_sea",
+        "duration": 4,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：敌方 damage_mul ×0.75 + gauge_rate ×0.85（攻击被黑暗吞噬、身形被黑暗拖住）；己方 concealed（黑暗掩体）——双向：吞噬敌方攻势 / 隐蔽己方",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "暗影",
+              "黑暗",
+              "污秽"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_dark_sea",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 4,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_turn_start",
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 0.75,
+                "mode": "mul",
+                "duration": 1,
+                "target": "all_enemies",
+                "note": "吞噬攻势：作用在攻击方 damage_mul（不含本次入射），乘区表达待内核确认精确承载字段"
+              },
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 0.85,
+                "mode": "mul",
+                "duration": 1,
+                "target": "all_enemies"
+              },
+              {
+                "type": "mount_status",
+                "statusId": "concealed",
+                "duration": 1,
+                "target": "all_allies",
+                "note": "黑暗掩体：隐匿 1t 刷新；C8 候选池过滤承载（H5 母版参数实例）；statusId 依源稿 DomainDef 登记（mount_status(concealed, 1t)）由 concealed_domain_cover 修正为 concealed"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "暗影",
+              "黑暗",
+              "污秽"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "tags": [
+        "暗影",
+        "黑暗",
+        "污秽"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "界域载荷 gauge_rate ×0.85 乘算修正，同待裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_supplicant_s1_wasting",
+      "name": "秽语·流逝",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "暗天使",
+      "rarity": "legendary",
+      "axis": "corruption",
+      "flagship": false,
+      "lore": "序列1 暗天使 —— \"'秽语'进阶：敌人生命流逝、疯狂加强\"",
+      "flavor": "你每说一句，它们的血肉就淡一分，眼里的疯狂就浓一分。",
+      "describe": "使全体敌方生命流逝 4 tick：每 tick 受到 2 点无属性伤害并叠加 1 层疯癫。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "wasting",
+          "duration": 4,
+          "target": "all_enemies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "wasting",
+          "name": "生命流逝",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "target": "self",
+                  "note": "element: none 规避抗性维度，正合「流逝」不可抵抗"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "madness",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "target": "self",
+                  "note": "疯狂加强：与本途径疯癫体系打通"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s1_shadow_sovereign",
+      "name": "阴影统治者",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "暗天使",
+      "rarity": "legendary",
+      "axis": "shadow",
+      "flagship": false,
+      "lore": "序列1 暗天使 —— \"'阴影统治者'\"；序列0 倒吊人 —— \"权柄：阴影之主……\"",
+      "flavor": "所有阴影都听你的——你藏在里面时，出手比任何时候都狠；而它们生出来的东西，也更强。",
+      "describe": "战斗开始时获得「阴影统治者」整场（不可驱散）：你处于藏入阴影/潜行类状态时造成伤害 ×1.3；己方阴影/灵体类召唤物攻击 +2。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "shadow_sovereign",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "shadow_sovereign",
+          "name": "阴影统治者",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.3,
+              "condition": {
+                "kind": "caster_status_exists",
+                "id": "shadow_dwell"
+              },
+              "note": "处于 shadow_dwell / stealth / shadow_veil 时（H4 dynamic 按自身状态取值，已落）"
+            },
+            "allySummonAttackBonus": {
+              "stat": "attack",
+              "value": 2,
+              "filter": {
+                "tags": [
+                  "shadow",
+                  "spirit"
+                ],
+                "isSummon": true,
+                "side": "ally"
+              },
+              "note": "覆盖 unit_shadow_spawn / unit_grazed_wraith / unit_flesh_servant / unit_fallen_kin / unit_abomination"
+            }
+          },
+          "note": "阴影轴与牧魂轴的汇合点；按 tags 筛选己方单位已落（编队参数 §1.2b + filter.tags）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s1_fallen_kin",
+      "name": "堕落眷属",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "暗天使",
+      "rarity": "legendary",
+      "axis": "soul",
+      "flagship": true,
+      "lore": "序列1 暗天使 —— \"'堕落眷属'：22 个灵魂全部外放为眷属\"",
+      "flavor": "你把体内所有被吞下的灵魂一起放了出来——二十二道扭曲的身影，黑压压地站满了半个战场。",
+      "describe": "消耗全部「被放牧的灵魂」层数，每 2 层召唤一只堕落眷属（生命 25%、攻击 30% 继承，至多 11 只）至己方队尾；眷属不占用同时驱使上限。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 9,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "grazed_soul",
+              "stacks": "all",
+              "stackMode": "consume"
+            },
+            {
+              "op": "repeat",
+              "count": {
+                "valueFrom": "consumedStacks",
+                "div": 2,
+                "max": 11
+              },
+              "steps": [
+                {
+                  "type": "spawn",
+                  "template": "unit_fallen_kin",
+                  "hpRatio": 0.25,
+                  "atkRatio": 0.3,
+                  "position": "tail"
+                }
+              ],
+              "note": "批量 spawn + status.consume(all)（新增项 9，已落 spawn.count + F48）"
+            }
+          ]
+        }
+      ],
+      "unitDefs": [
+        {
+          "id": "unit_fallen_kin",
+          "name": "堕落眷属",
+          "hpRatio": 0.25,
+          "atkRatio": 0.3,
+          "reach": "melee",
+          "element": "mental",
+          "tags": [
+            "shadow",
+            "spirit"
+          ],
+          "note": "H1 召唤物基线模板实例；不占用同时驱使上限（与驱使灵魂两条独立约束）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_supplicant_s0_abomination",
+      "name": "异变",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "倒吊人",
+      "rarity": "legendary",
+      "axis": "corruption",
+      "flagship": false,
+      "lore": "序列0 倒吊人 —— \"'异变'：黑暗中凭空制造怪物，血肉不灭质变的复活\"",
+      "flavor": "黑暗里有什么东西自己长了出来——它用这个战场上所有死掉的血肉，拼成了自己的身体。",
+      "describe": "召唤一只异变怪物（攻击 70% 继承）至己方队尾：生命按本场已阵亡单位数成长（基础 50%，每个 +8%，上限 100%）；它死亡时对全体敌方造成 3 点物理伤害。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 9,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "template": "unit_abomination",
+          "hpRatio": {
+            "base": 0.5,
+            "per": 0.08,
+            "metric": "deathsThisBattle",
+            "cap": 1.0
+          },
+          "atkRatio": 0.7,
+          "position": "tail"
+        }
+      ],
+      "unitDefs": [
+        {
+          "id": "unit_abomination",
+          "name": "异变怪物",
+          "hpRatio": "动态（见卡面效果）",
+          "atkRatio": 0.7,
+          "reach": "melee",
+          "element": "physical",
+          "tags": [
+            "shadow",
+            "spirit",
+            "flesh"
+          ],
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 3,
+                  "target": "all_enemies"
+                }
+              ]
+            }
+          ],
+          "note": "H1 召唤物基线模板实例；用战场死亡总量喂养（血肉不灭质变的复活）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "SPAWN_HPRATIO_EXPRESSION",
+          "note": "spawn.hpRatio 运行时表达式（deathsThisBattle）直接写法未见登记：valueFrom battleStats 已落，唯 hpRatio 直接表达式留尾，退化方案固定 hpRatio 0.7",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_supplicant_s0_scapegoat",
+      "name": "替罪",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "倒吊人",
+      "rarity": "legendary",
+      "axis": "flesh",
+      "flagship": true,
+      "lore": "序列0 倒吊人 —— \"权柄：……替罪……\"；\"'替罪'：代替目标承受伤害和死亡\"",
+      "flavor": "你把自己挂了上去。它该受的伤，你来受；它该尝的死，你来尝。",
+      "describe": "指定一名友军 4 tick：其受到的伤害全部转嫁给你；其若受到致死伤害，改由你承担这次死亡判定（可触发你的血肉不灭）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "scapegoat",
+          "duration": 4,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "scapegoat",
+          "name": "替罪",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "damageRedirect": {
+              "ratio": 1.0,
+              "direction": "to_caster",
+              "note": "该友军受到的伤害转嫁给施法者（H28 direction，与刺客 F5 pain_link 反方向同源母版，已落）；不占 damage_taken_mul 乘区"
+            },
+            "lethalRedirect": {
+              "to": "caster",
+              "note": "致死判定改由施法者承担，可触发施法者自身 lethal_protect（如血肉不灭）"
+            }
+          },
+          "note": "状态挂在友军身上、方向为目标→施法者（F56 施法者引用，已落）；退化方案：去掉 lethal_redirect 只做伤害转嫁"
+        }
+      ],
+      "sharedAcross": [
+        "diviner"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "未决优先级：替罪 lethal_redirect → 血肉不灭 lethal_protect → 灵肉之刃 revive_blocked 三者对冲，需先定致死/复活/反复活结算优先级链（稿面「本稿遗留」）",
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+      ]
+    }
+  ]
+}

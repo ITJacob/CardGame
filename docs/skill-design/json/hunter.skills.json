@@ -1,0 +1,2649 @@
+{
+  "pathwayId": "hunter",
+  "pathwayName": "猎人",
+  "sourceFile": "../猎人途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "flame": {
+      "symbol": "🔥",
+      "name": "燃焚"
+    },
+    "intrigue": {
+      "symbol": "🕸",
+      "name": "阴谋"
+    },
+    "massing": {
+      "symbol": "⚔",
+      "name": "集众"
+    },
+    "harvest": {
+      "symbol": "🏹",
+      "name": "收割"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_hunter_s9_hunter_sense",
+      "name": "猎人的感官",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "猎人",
+      "rarity": "common",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列9 猎人 —— \"感官直线提升：分辨气味、看到浅脚印、听见心跳微风\"",
+      "flavor": "你能听见它的心跳，闻得到它三天前留下的气味——再会藏的猎物，在你眼里也像踩在雪地上一样清楚。",
+      "describe": "战斗开始时获得猎人感官（整场，不可驱散）：敌方隐匿/不可选中类状态对你无效，你的单体技能自动优选当前生命值最低的敌人。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "hunter_sense",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "hunter_sense",
+          "name": "猎人的感官",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": [
+            {
+              "kind": "see_through",
+              "note": "C8 识破分支：敌方 stealth/shadow_veil 等隐匿、不可选中类状态对持有者无效（共享内核参数 §四）"
+            },
+            {
+              "kind": "fallback_sort",
+              "sort": "hp_asc",
+              "note": "持有者的单体技能自动优选当前生命值最低的敌方单位"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "assassin"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s9_structural_eye",
+      "name": "结构要点",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "猎人",
+      "rarity": "common",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列9 猎人 —— \"能直观找到结构要点\"",
+      "flavor": "你一眼就看出它护甲衔接处的那条缝——你的每一次攻击，都落在最不该被砸的地方。",
+      "describe": "战斗开始时获得结构之眼（整场）：你的攻击无视目标 50% 的护甲。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "structural_eye",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "structural_eye",
+          "name": "结构要点",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": [
+            {
+              "kind": "armor_pierce",
+              "ratio": 0.5,
+              "note": "armorPierceRatio（效果参数 §1.1，H16）"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "assassin"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s9_wild_survival",
+      "name": "野外生存",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "猎人",
+      "rarity": "common",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列9 猎人 —— \"身体素质全面超越常人（熊的强壮 + 猫的轻灵）/ 野外生存知识\"",
+      "flavor": "你在林子里活下来的每一年都还在这副身体上：熊一样的力气，猫一样的敏捷，以及永远知道该往哪儿退的本能。",
+      "describe": "战斗开始时：生命上限 +10、攻击 +1、行动条速率 +6（均整场）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 10,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 6,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "猫的轻灵 = 敏捷 → gauge.rate（INV-S5 合规，不改派生行动周期）"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate +6 的 stat 键与 D2 定价盲区",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_hunter_s9_pounce",
+      "name": "扑杀",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "猎人",
+      "rarity": "common",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列9 猎人 —— \"身体素质全面超越常人（熊的强壮 + 猫的轻灵）\"",
+      "flavor": "你像熊一样压上去，又像猫一样快——它还没看清你的动作，已经被撞翻在地。",
+      "describe": "对单体敌人造成 4 点物理伤害（近战，无附加）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 4,
+          "target": "target"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 4 → 6 → 8",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 8,
+                "target": "target"
+              }
+            ]
+          },
+          {
+            "name": "连击",
+            "note": "解锁连击：对同一目标追加 2 伤",
+            "effects": [
+              {
+                "op": "repeat",
+                "count": 2,
+                "shareTarget": true,
+                "steps": [
+                  {
+                    "type": "damage",
+                    "element": "physical",
+                    "value": 2,
+                    "target": "target"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s8_provoke",
+      "name": "挑衅",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "挑衅者",
+      "rarity": "common",
+      "axis": "intrigue",
+      "flagship": true,
+      "lore": "序列8 挑衅者 —— \"『挑衅』（核心）：洞察目标敏感点，激怒对方失去理智 / 被动效果 + 主动激发（辱骂语言 + 羞辱行为）\"",
+      "flavor": "你一句话精准戳在它最不敢被人提起的地方——它红了眼，脑子里只剩下\"弄死你\"，破绽和队形都忘了。",
+      "describe": "单体敌人：嘲讽 3 tick（强制攻击你）+ 易伤 3 tick + 攻击 -2、防御 -2（3 tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "taunt",
+              "duration": 3,
+              "target": "target"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 3,
+              "target": "target"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "target"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "assassin"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s8_humiliation",
+      "name": "羞辱",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "挑衅者",
+      "rarity": "common",
+      "axis": "intrigue",
+      "flagship": false,
+      "lore": "序列8 挑衅者 —— \"被动效果 + 主动激发（辱骂语言 + 羞辱行为）\"",
+      "flavor": "它每打中你一次，你就笑着再补一句——它越怒，露出的破绽越大。",
+      "describe": "被动：每次你受到伤害时，对攻击者施加易伤 2 tick。",
+      "hook": "on_take_damage",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "vulnerable",
+          "duration": 2,
+          "target": "attacker"
+        }
+      ],
+      "sharedAcross": [
+        "assassin"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "target: attacker 依赖 F61 RedirectRule.to attacker（✅ 执行参数 §一，已落地）"
+      ]
+    },
+    {
+      "id": "skill_hunter_s7_fire_crow",
+      "name": "火鸦术",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "纵火家",
+      "rarity": "uncommon",
+      "axis": "flame",
+      "flagship": false,
+      "lore": "序列7 纵火家 —— \"『火鸦术』\"",
+      "flavor": "你手心的火团扑腾着长出翅膀，化作一只火鸦撞进它的胸口，羽毛落处，火就烧了起来。",
+      "describe": "单体敌人：3 点火焰伤害 + 燃烧 3 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 3,
+              "target": "target"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "burn",
+              "duration": 3,
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "直伤提升",
+            "note": "直伤 3 → 4 → 5",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "fire",
+                "value": 5,
+                "target": "target"
+              },
+              {
+                "type": "mount_status",
+                "statusId": "burn",
+                "duration": 3,
+                "target": "target"
+              }
+            ]
+          },
+          {
+            "name": "巨大火球",
+            "note": "解锁原著「巨大火球」：对目标及其相邻单位 4 伤（splash_adjacent）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "fire",
+                "value": 4,
+                "target": "target",
+                "spread": "splash_adjacent"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true,
+      "conversionNotes": [
+        "burn 折算依赖 D4（🔴 未标）：若按 tick 快速结算，能量需上调至 4 或直伤砍到 2"
+      ]
+    },
+    {
+      "id": "skill_hunter_s7_white_lance",
+      "name": "炽白之枪",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "纵火家",
+      "rarity": "uncommon",
+      "axis": "flame",
+      "flagship": true,
+      "lore": "序列7 纵火家 —— \"『炽白之枪』\"",
+      "flavor": "火焰被压缩到极致，褪去橙红，只剩一缕炽得发白的光——它贯穿护甲，也贯穿了它。",
+      "describe": "单体敌人：6 点火焰伤害，完全无视护甲（破甲比例 1.0），自动优选护甲最高的敌人。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "armor_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "fire",
+          "value": 6,
+          "target": "target",
+          "armorPierceRatio": 1.0
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s7_wall_of_fire",
+      "name": "燃烧之墙",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "纵火家",
+      "rarity": "uncommon",
+      "axis": "flame",
+      "flagship": false,
+      "lore": "序列7 纵火家 —— \"『燃烧之墙』\"",
+      "flavor": "一道火墙自地面窜起横亘战场，把战线切成两半——谁要过去，就得先穿过它。",
+      "describe": "全体敌人：2 点火焰伤害 + 燃烧 3 tick + 行动条 -15（被火墙挡住，慢一步）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 2,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "burn",
+              "duration": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -15,
+              "mode": "delta",
+              "target": "all_enemies",
+              "note": "G8 合规：纯伤害+节奏技能，不做任何位移"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "burn 折算（D4）与 gauge.current 定价（D2）均 ⚠️；范围技能按敌方人数线性放大，需 4 人满编复核"
+      ]
+    },
+    {
+      "id": "skill_hunter_s7_delayed_blast",
+      "name": "延时爆炸",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "纵火家",
+      "rarity": "uncommon",
+      "axis": "flame",
+      "flagship": false,
+      "lore": "序列7 纵火家 —— 火焰操控七技之「延时爆炸」",
+      "flavor": "你在它脚下留了一颗火种，然后走开。两息之后，它脚下的地面炸开了花。",
+      "describe": "单体敌人被种下延时火种：2 tick 后爆炸，对目标及其相邻单位造成 5 点火焰伤害（被驱散则哑弹）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "delayed_blast",
+          "duration": 2,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "delayed_blast",
+          "name": "延时爆炸",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "triggers": [
+            {
+              "event": "on_remove",
+              "condition": {
+                "kind": "remove_reason",
+                "value": "expired"
+              },
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "fire",
+                  "value": 5,
+                  "target": "target",
+                  "spread": "splash_adjacent",
+                  "note": "对目标及其相邻单位爆炸"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "触发限定 removeReason: expired——被 dispel 则哑弹（稿面认可的反制面）；remove_reason 过滤依赖 H29 语义"
+      ]
+    },
+    {
+      "id": "skill_hunter_s7_flame_armament",
+      "name": "火焰附魔",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "纵火家",
+      "rarity": "uncommon",
+      "axis": "flame",
+      "flagship": false,
+      "lore": "序列7 纵火家 —— 火焰操控七技之「武器附火」「临时武器」「体表防御」",
+      "flavor": "火焰顺着你的手臂爬上刀刃，也在你皮肤下铺开一层流动的赤色——砍中的会烧起来，砍你的也会。",
+      "describe": "自身 4 tick：攻击附带 2 点火焰伤害（武器附火）+ 火抗 +30% + 反伤 2（体表防御）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "flame_armament",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:fire",
+              "value": 30,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "thorns",
+              "duration": 4,
+              "value": 2,
+              "target": "self",
+              "note": "体表防御：反伤 value 2"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "flame_armament",
+          "name": "火焰附魔",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "fire",
+                  "value": 2,
+                  "target": "same_target",
+                  "note": "武器附火：对同一目标追加火焰伤害"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "反伤既有状态登记未定 value 字段口径（🟡 数值待标）"
+      ]
+    },
+    {
+      "id": "skill_hunter_s7_fuel_fire",
+      "name": "注火",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "纵火家",
+      "rarity": "uncommon",
+      "axis": "flame",
+      "flagship": false,
+      "lore": "序列7 纵火家 —— 火焰操控七技之「注火」",
+      "flavor": "火一旦烧起来，你就往里再添一把——你打的每一处伤口，都在给那团火加柴。",
+      "describe": "被动：你造成伤害时，若目标带有燃烧，则刷新其燃烧时长并 +1 tick（单次上限 +2 tick）。",
+      "hook": "on_deal_damage",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "burn"
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "burn",
+              "refresh": true,
+              "durationDelta": 1,
+              "maxBonusDuration": 2,
+              "target": "target",
+              "note": "重复挂载刷新 duration（编队参数 §六 mount 流程，F13 口径），单次上限 +2t（⚠️D）"
+            }
+          ],
+          "else": []
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s6_deceived",
+      "name": "误导",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "阴谋家",
+      "rarity": "uncommon",
+      "axis": "intrigue",
+      "flagship": true,
+      "lore": "序列6 阴谋家 —— \"误导、迷惑和欺骗的超凡能力（『阴谋』核心）\"",
+      "flavor": "你让它以为你还在原地——它挥出的那一击又狠又准，只是砍在了空气上。",
+      "describe": "单体敌人被误导（3 tick，1 次）：它的下一次攻击打向空位（目标改写 → first_empty）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "deceived",
+          "charges": 1,
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "deceived",
+          "name": "误导",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "behaviorModifiers": [
+            {
+              "op": "target_override",
+              "anchor": "first_empty"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "assassin"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "C7 target_override → first_empty 已端到端验证；C6 charges 已落地，零新依赖"
+      ]
+    },
+    {
+      "id": "skill_hunter_s6_incited",
+      "name": "煽动",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "阴谋家",
+      "rarity": "uncommon",
+      "axis": "intrigue",
+      "flagship": false,
+      "lore": "序列6 阴谋家 —— \"『煽动 / 鼓动』能力\"",
+      "flavor": "你在它耳边说了句什么——它回过头，看向了刚才还站在自己身边的那个人。",
+      "describe": "单体敌人被煽动（3 tick）：其攻击目标改写为己方队友（同阵营生命值最高者）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "incited",
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "incited",
+          "name": "煽动",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "behaviorModifiers": [
+            {
+              "op": "target_override",
+              "anchor": "self_faction_hp_desc"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "assassin"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "与 F9 puppet_string / F15 charm / F3 puppeteered / F19 countersuit 同属 F 组 target_override 状态族合并候选 3，落地时随母版收敛"
+      ]
+    },
+    {
+      "id": "skill_hunter_s6_flame_saber",
+      "name": "火焰马刀",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "阴谋家",
+      "rarity": "uncommon",
+      "axis": "flame",
+      "flagship": false,
+      "lore": "序列6 阴谋家 —— \"火焰精细化操纵：塑形成鞭子、马刀等\"",
+      "flavor": "火焰在你手中凝成一柄马刀的形状——你劈下去，又顺势把它的步伐勾乱了半分。",
+      "describe": "单体敌人：4 点火焰伤害（近战），并将其在其自己队列内前拉 1 格。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 4,
+              "target": "target"
+            },
+            {
+              "type": "move",
+              "op": "pull_forward",
+              "distance": 1,
+              "target": "target",
+              "note": "C1：锁定 from.faction，敌方只在自己队列内前移，永不跨中线（G8 合规，本稿唯一 move）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s5_weak_point",
+      "name": "弱点侦察",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "收割者",
+      "rarity": "rare",
+      "axis": "harvest",
+      "flagship": true,
+      "lore": "序列5 收割者 —— \"『弱点侦察』：从神秘学角度发现目标弱点\"",
+      "flavor": "你的目光从神秘学的角度扫过它——护甲的接缝、灵性的淤滞、那道还没长好的旧伤。你一清二楚。",
+      "describe": "单体敌人：易伤 4 tick（受伤 ×1.3）+ 剥除其 1 个增益状态（撕开神秘学防护）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 4,
+              "target": "target"
+            },
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "target": "target",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              }
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "assassin"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s5_harvest",
+      "name": "收割",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "收割者",
+      "rarity": "rare",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列5 收割者 —— \"『收割』：附加攻击收割生命，命中弱点一击致命\"",
+      "flavor": "镰刃划过它的伤口，你把它正在流走的生命收进了自己体内；若这一刀正落在弱点上，那就不只是伤了。",
+      "describe": "单体敌人：吸取 4 点生命；若目标带有易伤，追加 3 点无元素伤害（命中弱点）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "drain",
+              "resource": "hp",
+              "value": 4,
+              "target": "target"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "vulnerable"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 3,
+                  "target": "target",
+                  "note": "命中弱点一击：一击致命的完整形态见序列1 毁灭之矛"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "assassin"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "drain 无既有定价锚点（数值盲区）"
+      ]
+    },
+    {
+      "id": "skill_hunter_s5_precision",
+      "name": "精准",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "收割者",
+      "rarity": "rare",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列5 收割者 —— \"『精准』：让攻击精准命中预定位置\"",
+      "flavor": "你决定打哪儿，就打哪儿——没有谁能替它挡下来，也没有哪种把戏能让它从你眼前消失。",
+      "describe": "战斗开始时获得精准（整场）：你的攻击不被守护转移、不受目标隐匿影响，你的目标改写类效果优先级高于嘲讽/守护。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "precision",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "precision",
+          "name": "精准",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": [
+            {
+              "kind": "ignore_redirect",
+              "note": "攻击不会被守护状态转移（§四 识破分支 / ignore_redirect 同出口）"
+            },
+            {
+              "kind": "see_through",
+              "note": "单体技能不受目标隐匿/不可选中状态影响（C8 候选池过滤）"
+            },
+            {
+              "kind": "override_priority",
+              "priority": "above_taunt_guard",
+              "note": "target_override 类效果优先级高于目标嘲讽/守护（执行参数 §一 转向优先级 + 聚合规则）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s4_steel_body",
+      "name": "钢铁化",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "铁血骑士",
+      "rarity": "rare",
+      "axis": "massing",
+      "flagship": false,
+      "lore": "序列4 铁血骑士 —— \"『钢铁化』\"",
+      "flavor": "你的皮肤泛起一层冷硬的铁灰色，敲击其上的声音像是打在铁砧上。",
+      "describe": "自身 4 tick：护甲 +10（两档）+ 物理抗性 +20%。纯防御向身体改造。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "steel_body",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "steel_body",
+          "name": "钢铁化",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 10,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:physical",
+              "value": 20,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面状态名 iron_body 与战士途径 iron_body 撞名，转换时更名为 steel_body",
+        "带 duration 的 modify_stat 回滚依赖 v1.5 已修的计时机制，需确认"
+      ]
+    },
+    {
+      "id": "skill_hunter_s4_flame_form",
+      "name": "火焰化",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "铁血骑士",
+      "rarity": "rare",
+      "axis": "massing",
+      "flagship": false,
+      "lore": "序列4 铁血骑士 —— \"『火焰化』\"",
+      "flavor": "你的身体散开又重聚，化作一团人形的火焰——拳头穿过去了，而穿过去的那个东西正烧起来。",
+      "describe": "自身 4 tick：火抗 +60% + 护甲 +5，近战者攻击你时被点燃（燃烧 2 tick）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "flame_form",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "flame_form",
+          "name": "火焰化",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:fire",
+              "value": 60,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 5,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "burn",
+                  "duration": 2,
+                  "target": "attacker",
+                  "note": "碰到火焰身躯者被点燃（F61 attacker targetSpec）"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s4_remote_bombard",
+      "name": "远程轰炸",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "铁血骑士",
+      "rarity": "rare",
+      "axis": "massing",
+      "flagship": false,
+      "lore": "序列4 铁血骑士 —— \"『远程轰炸』（5–10 公里）\"",
+      "flavor": "火球自天而降，一颗接一颗砸在敌阵里——你甚至没有看向那边。",
+      "describe": "全体敌人：4 点火焰伤害 + 燃烧 2 tick（不可反击的远程全体轰炸）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 4,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "burn",
+              "duration": 2,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "与燃烧之墙构成 B6 升级阶梯（序列2 明写远程轰炸全面升级），重复抽到按 B5 duplicatePolicy: upgrade 处理",
+        "burn 折算（D4）+ 范围随人数放大，需 4 人满编复核"
+      ]
+    },
+    {
+      "id": "skill_hunter_s4_massing",
+      "name": "集众·铁血",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "铁血骑士",
+      "rarity": "rare",
+      "axis": "massing",
+      "flagship": true,
+      "lore": "序列4 铁血骑士 —— \"团队集众：集中全队力量灵性于自身，共享视野，分摊伤害\"",
+      "flavor": "你把全队的力量与灵性都聚到自己身上——他们看得见的你都看得见，而他们该受的伤，你来扛。",
+      "describe": "战斗开始时：自身攻击力随存活友军数动态 +1（整场）；全体友军链接——受伤害的 30% 转由你承受，且全体获得识破隐匿（共享视野）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "massing",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "massing_link",
+              "duration": null,
+              "target": "all_allies"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "massing",
+          "name": "集众·铁血",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": [
+            {
+              "kind": "modify_stat_dynamic",
+              "stat": "attack",
+              "valueFrom": "battleStats",
+              "metric": "alive_allies_count",
+              "value": 1,
+              "note": "集中全队力量：attack +1 × 存活友军数（valueFrom battleStats，新增项 4）；友军死亡时动态重算"
+            }
+          ]
+        },
+        {
+          "id": "massing_link",
+          "name": "集众链接",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": [
+            {
+              "kind": "see_through",
+              "note": "共享视野：敌方隐匿/不可选中状态对全体友军无效（C8 识破分支）"
+            },
+            {
+              "kind": "redirect_damage",
+              "ratio": 0.3,
+              "direction": "to_caster",
+              "linkedTo": "caster",
+              "note": "分摊伤害：持有者受伤 30% 转由集众者承受（H28 伤害转嫁族 ratio/direction/linkedTo，编队参数 §1.1b；寻址走 casterId F56，内置防循环）；由归一自触发器载荷移入 modifiers"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面退化方案备查：① 改固定 attack +3 + 友军死亡 on_death 监听 -1；② 分摊只对相邻友军；③ 共享视野并入猎人的感官"
+      ]
+    },
+    {
+      "id": "skill_hunter_s4_iron_courage",
+      "name": "钢铁勇气",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "铁血骑士",
+      "rarity": "rare",
+      "axis": "massing",
+      "flagship": false,
+      "lore": "序列4 铁血骑士 —— \"钢铁般勇气，不再被恐惧击倒\"",
+      "flavor": "你不是不知道怕，你只是不再因为怕而后退半步——任何试图让你恐惧、让你动摇、让你爱上别的东西的把戏，都碰不到你。",
+      "describe": "战斗开始时获得钢铁勇气（整场）：免疫恐惧类状态，并立刻驱散自身 1 个控制类状态（一次性挣脱）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "iron_courage",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "iron_courage",
+          "name": "钢铁勇气",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "immune": [
+            "fear"
+          ],
+          "triggers": [
+            {
+              "event": "on_apply",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "dispelTarget": "unit",
+                  "target": "self",
+                  "filter": {
+                    "category": [
+                      "control"
+                    ],
+                    "count": 1
+                  },
+                  "note": "一次性挣脱既有控制（不碰眩晕免疫，严格限定恐惧/精神压迫类）"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "assassin"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s3_borrow_ability",
+      "name": "借用能力",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "战争主教",
+      "rarity": "epic",
+      "axis": "massing",
+      "flagship": false,
+      "lore": "序列3 战争主教 —— \"3 公里内使用团队成员非凡能力\"",
+      "flavor": "你伸出手，从身边的同伴身上借走了他最擅长的那一样东西——现在是你的了。",
+      "describe": "选择一名友军：读取其最高的一项属性（攻击/防御/护甲/行动速率四取一），自身该属性 +50%（4 tick，到期归还）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "stat_max_desc"
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "mode": "delta",
+          "valueFrom": {
+            "kind": "targetStat",
+            "of": "target",
+            "select": "highestOf",
+            "statCandidates": [
+              "attack",
+              "defense",
+              "armor",
+              "gauge.rate"
+            ],
+            "ratio": 0.5
+          },
+          "duration": 4,
+          "target": "self",
+          "note": "读取目标 attack/defense/armor/gauge.rate 四者中最高的一项，自身同属性 +50%（H26 valueFrom: targetStat 跨效果传值，效果参数 §1.1）；stat 键为形式占位（合法枚举），实际修正属性由 valueFrom.select 运行时解析，待内核裁定动态 stat 表达"
+        }
+      ],
+      "frameworkFlags": [
+        {
+          "code": "DYNAMIC_STAT_RESOLVE",
+          "note": "modify_stat.stat 需为合法枚举，本卡「四取一动态属性」以 valueFrom.select: highestOf + statCandidates 承载，stat 键为占位，待内核裁定",
+          "landed": false
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s3_war_cry",
+      "name": "战吼",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "战争主教",
+      "rarity": "epic",
+      "axis": "massing",
+      "flagship": false,
+      "lore": "序列3 战争主教 —— \"『战吼 / 战歌』\"",
+      "flavor": "你吼出的不是声音，是一整支军队的士气——每个人的血都热了一分，压在心头的那点恐惧也散了。",
+      "describe": "全体友军：攻击 +2（4 tick）+ 驱散 1 个控制/减益 + 行动条 +10（不含施法者，彻底规避 G5/G6）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": 4,
+              "target": "all_allies"
+            },
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "target": "all_allies",
+              "filter": {
+                "category": [
+                  "control",
+                  "debuff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 10,
+              "mode": "delta",
+              "target": "allies_except_self",
+              "note": "G5/G6 规避：推条受益方明确为除施法者外的全体友军；施法者只吃 attack +2 与驱散"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s3_war_mist",
+      "name": "战争迷雾",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "战争主教",
+      "rarity": "epic",
+      "axis": "massing",
+      "flagship": false,
+      "lore": "序列3 战争主教 —— \"『战争迷雾』\"",
+      "flavor": "灰色的雾从你脚下漫开，吞掉阵型、吞掉口令——它们开始在雾里互相猜疑，而你的队伍看得一清二楚。",
+      "describe": "降临战争迷雾域（3 回合，可驱散）：敌方攻击 -2 且每 tick 行动条 -4；己方受伤 ×0.9（双向：压敌护己）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "none",
+          "scope": "none"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_war_mist",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金（编队参数 §2.5）"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_war_mist",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：敌方单位 attack -2 且每 tick gauge.current -4（雾中指挥失灵）；己方单位 damage_taken_mul ×0.9（雾中隐蔽）——双向：压敌攻势 / 护己阵型",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "战争",
+              "迷雾"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.8
+          },
+          {
+            "kind": "empower",
+            "side": "ally",
+            "stat": "damage_taken_mul",
+            "mul": 0.9,
+            "note": "雾中隐蔽：己方受伤 ×0.9（O 节点乘区 empower，战场参数 §一；整域持续生效，替代原 1t 刷新的触发器写法）"
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_war_mist",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "modify_resource",
+                "resource": "gauge.current",
+                "value": -4,
+                "mode": "delta"
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": -2,
+                "mode": "delta",
+                "duration": 1,
+                "note": "1t 刷新"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "战争",
+              "迷雾"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.8
+          },
+          {
+            "kind": "empower",
+            "side": "ally",
+            "stat": "damage_taken_mul",
+            "mul": 0.9,
+            "note": "雾中隐蔽：己方受伤 ×0.9（O 节点乘区 empower，战场参数 §一；由 dd 触发器归一，乘区不走 modify_stat.stat）"
+          }
+        ]
+      },
+      "tags": [
+        "战争",
+        "迷雾"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "归属勘误：战争主教 = 猎人序列3，战士池同名卡已删除（2026-09-08 界域牌批次落定）",
+        "己方受伤 ×0.9 由 domainDef 触发器（modify_stat stat: damage_taken_mul）归一为 rulePatches empower(side: ally, stat: damage_taken_mul, mul: 0.9)——乘区不走 modify_stat.stat，战场参数 §一"
+      ]
+    },
+    {
+      "id": "skill_hunter_s3_sacrifice_prayer",
+      "name": "献祭祈求",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "战争主教",
+      "rarity": "epic",
+      "axis": "massing",
+      "flagship": true,
+      "lore": "序列3 战争主教 —— \"献祭祈求：献出祭品向战争本源祈求一次帮助\"",
+      "flavor": "你把一个士兵推到刀口上——不，是把它献了出去。作为交换，战争本源回应了你一次。",
+      "describe": "献祭一个己方召唤物（无召唤物则以自己 8 血为祭）：获得战争回应（5 tick，1 次）——你下一次造成的伤害 ×2 并附加眩晕 1 tick。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single",
+          "filter": {
+            "casterOwned": true,
+            "isSummon": true
+          }
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "caster_has_summon"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 9999,
+                  "lethal": true,
+                  "target": "target",
+                  "note": "消灭其中一个祭品（对己方召唤物造成伤害，新增项 16）"
+                }
+              ],
+              "else": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 8,
+                  "target": "self",
+                  "note": "以自己的血为祭"
+                }
+              ]
+            },
+            {
+              "type": "mount_status",
+              "statusId": "war_god_answer",
+              "charges": 1,
+              "duration": 5,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "war_god_answer",
+          "name": "战争回应",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "charges": 1,
+          "modifiers": [
+            {
+              "kind": "damage_mul",
+              "value": 2,
+              "note": "该次伤害 ×2"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "stun",
+                  "duration": 1,
+                  "target": "same_target",
+                  "note": "附加眩晕 1t"
+                }
+              ],
+              "consume": 1,
+              "note": "触发后 charges -1 卸载（C6 次数型）"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "prayer_flame",
+          "name": "祈求·烈焰",
+          "note": "收益改为附加 burn 3t + 对相邻单位溅射",
+          "statusDefOverride": {
+            "triggers": [
+              {
+                "event": "on_deal_damage",
+                "effects": [
+                  {
+                    "type": "mount_status",
+                    "statusId": "burn",
+                    "duration": 3,
+                    "target": "same_target",
+                    "spread": "splash_adjacent"
+                  }
+                ],
+                "consume": 1
+              }
+            ]
+          }
+        },
+        {
+          "id": "prayer_bulwark",
+          "name": "祈求·铁壁",
+          "note": "收益改为全体友军获得护盾 8",
+          "statusDefOverride": {
+            "triggers": [
+              {
+                "event": "on_apply",
+                "effects": [
+                  {
+                    "type": "modify_resource",
+                    "resource": "shield",
+                    "value": 8,
+                    "mode": "delta",
+                    "target": "all_allies"
+                  }
+                ],
+                "consume": 1
+              }
+            ]
+          }
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "祭品 targetSpec OWN_SUMMON 走 filter casterOwned+isSummon（§一）；Manual 但稿面未给 fallbackSort，fallbackSort 置 null 待裁定",
+        "消灭祭品用 lethal damage 承载（对己方单位造成伤害已落，新增项 16）"
+      ]
+    },
+    {
+      "id": "skill_hunter_s3_mind_link",
+      "name": "心灵沟通",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "战争主教",
+      "rarity": "epic",
+      "axis": "massing",
+      "flagship": false,
+      "lore": "序列3 战争主教 —— \"『心灵沟通』\"",
+      "flavor": "你不需要开口——你看见的弱点，全队都看见了。",
+      "describe": "战斗开始时获得心灵链接（整场）：全体友军对被你施加易伤的目标造成的伤害 ×1.15（情报同步）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mind_link",
+          "duration": null,
+          "target": "all_allies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mind_link",
+          "name": "心灵沟通",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": [
+            {
+              "kind": "ally_damage_mul",
+              "filter": {
+                "targetHasStatus": [
+                  "vulnerable"
+                ]
+              },
+              "mul": 1.15,
+              "note": "按目标状态条件化的友军伤害乘区（H4 filter.hasStatus + H42 群体常驻模板）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s2_extreme_weather",
+      "name": "操纵天气",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "天气术士",
+      "rarity": "epic",
+      "axis": "massing",
+      "flagship": true,
+      "lore": "序列2 天气术士 —— \"『操纵天气』（核心权柄）：创造极端天气\"",
+      "flavor": "云层在你头顶翻涌着压下来——雷声、雪幕、沙暴，随便哪一种，都够它们受的。",
+      "describe": "降临极端天气域（4 回合，可驱散）：全场每 tick 受 1 点雷电伤害（无差别天灾，己方同样挨砸）；敌方行动速率 -6。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "none",
+          "scope": "none"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_extreme_weather",
+              "duration": 4,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金（编队参数 §2.5）"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_extreme_weather",
+        "duration": 4,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：所有单位每 tick 受 damage(shock, 1)（无差别天灾，己方同样挨砸）；敌方单位 gauge.rate -6（风压迟滞）——双向性 = 天灾不认人，但风只压敌人",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "天气",
+              "风暴",
+              "海洋"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_extreme_weather",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 4,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "filter": {
+              "side": "all"
+            },
+            "effects": [
+              {
+                "type": "damage",
+                "element": "shock",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": -6,
+                "mode": "delta",
+                "duration": 1,
+                "note": "风压迟滞（1t 刷新）"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "天气",
+              "风暴",
+              "海洋"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "tags": [
+        "天气",
+        "风暴"
+      ],
+      "variants": [
+        {
+          "id": "thunderstorm",
+          "name": "雷暴",
+          "note": "默认档：shock 元素掉血（如上登记）"
+        },
+        {
+          "id": "blizzard",
+          "name": "暴雪",
+          "note": "ice 元素：掉节奏翻倍、伤害减半（tick damage 1→0.5，风压 -6→-12，⚠️D）",
+          "domainDefOverride": {
+            "triggers": [
+              {
+                "event": "on_tick",
+                "filter": {
+                  "side": "all"
+                },
+                "effects": [
+                  {
+                    "type": "damage",
+                    "element": "ice",
+                    "value": 0.5
+                  }
+                ]
+              },
+              {
+                "event": "on_turn_start",
+                "filter": {
+                  "side": "enemy"
+                },
+                "effects": [
+                  {
+                    "type": "modify_stat",
+                    "stat": "gauge.rate",
+                    "value": -12,
+                    "mode": "delta",
+                    "duration": 1
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "sandstorm",
+          "name": "沙暴",
+          "note": "physical 元素：敌方攻击衰减 attack -3（替换风压档，⚠️D）",
+          "domainDefOverride": {
+            "triggers": [
+              {
+                "event": "on_tick",
+                "filter": {
+                  "side": "all"
+                },
+                "effects": [
+                  {
+                    "type": "damage",
+                    "element": "physical",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "event": "on_turn_start",
+                "filter": {
+                  "side": "enemy"
+                },
+                "effects": [
+                  {
+                    "type": "modify_stat",
+                    "stat": "attack",
+                    "value": -3,
+                    "mode": "delta",
+                    "duration": 1
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "sharedAcross": [
+        "assassin"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "建议与刺客序列2「灾难」共用同一套 DomainDef 母版，只换元素与载荷"
+      ]
+    },
+    {
+      "id": "skill_hunter_s2_purple_flame",
+      "name": "紫色火焰",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "天气术士",
+      "rarity": "epic",
+      "axis": "flame",
+      "flagship": true,
+      "lore": "序列2 天气术士 —— \"火焰提升为紫色\"",
+      "flavor": "你掌心的火焰褪去最后一丝橙红，变成了一种近乎妖异的紫——同样的火，现在能烧穿的东西完全不同了。",
+      "describe": "自身获得紫火（整场，不可驱散）：你造成的所有火焰伤害 ×1.3，你施加的燃烧时长 +1——全途径 11 个火系技能同时升档。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "purple_flame",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "purple_flame",
+          "name": "紫色火焰",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": [
+            {
+              "kind": "damage_mul",
+              "filter": {
+                "element": "fire"
+              },
+              "mul": 1.3,
+              "note": "按伤害元素过滤的伤害乘区（H4 filter.element，与愚者 14 同族同母版）"
+            },
+            {
+              "kind": "status_duration_bonus",
+              "statusId": "burn",
+              "bonus": 1,
+              "note": "施加的 burn duration +1"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "紫火表现层（VFX/文案切换）为纯表现层，不进战斗内核（新增项 22）"
+      ]
+    },
+    {
+      "id": "skill_hunter_s2_sharing_unlimited",
+      "name": "无限制分享",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "天气术士",
+      "rarity": "epic",
+      "axis": "massing",
+      "flagship": false,
+      "lore": "序列2 天气术士 —— \"10 公里内使用团队成员能力，分享无限制\"",
+      "flavor": "借来的东西，你没有独吞——你拿到的每一点力量，都同时出现在了每一个同伴身上。",
+      "describe": "战斗开始时获得无限制分享（整场）：你每获得一个增益状态就复制一份给全体友军（时长与层数减半，不扣除你那份）；全体友军互相分摊伤害的 20%。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "sharing_unlimited",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "sharing_unlimited",
+          "name": "无限制分享",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_apply",
+              "condition": {
+                "kind": "status_category",
+                "category": "buff",
+                "side": "self"
+              },
+              "effects": [
+                {
+                  "type": "transfer_status",
+                  "mode": "copy",
+                  "target": "all_allies",
+                  "durationMul": 0.5,
+                  "stacksMul": 0.5,
+                  "note": "复制不扣除源（H32 transfer_status mode: copy）；duration 与层数减半（⚠️D）"
+                }
+              ]
+            }
+          ],
+          "modifiers": [
+            {
+              "kind": "redirect_damage",
+              "ratio": 0.2,
+              "direction": "to_allies",
+              "split": "even",
+              "note": "全员互相分摊：任一友军受击，20% 均摊给其余存活友军（H28，内置防循环）"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "遗留 4：多人持有或增益过多时复制可能叠加爆炸，建议设每个友军同时最多持有 N 个被复制的增益（⚠️D）"
+      ]
+    },
+    {
+      "id": "skill_hunter_s1_conquer",
+      "name": "征服",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "征服者",
+      "rarity": "legendary",
+      "axis": "massing",
+      "flagship": true,
+      "lore": "序列1 征服者 —— \"『征服』权柄：让目标身心臣服，彻底征服后永远效忠\"",
+      "flavor": "你看着它的眼睛，说了一个字。它的膝盖先软下去，然后是它的意志——从这一刻起，它不再是它自己的人了。",
+      "describe": "单体敌人被征服（6 tick）：掉头攻向自己人（同阵营生命最高者）、攻击 -2、受伤 ×1.2；它在此期间死亡则以士兵身份永远效忠（以 50% 生命在己方队尾复活为 war_soldier）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "conquered",
+          "duration": 6,
+          "target": "target"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "conquered",
+          "name": "征服",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "behaviorModifiers": [
+            {
+              "op": "target_override",
+              "anchor": "self_faction_hp_desc"
+            }
+          ],
+          "modifiers": {
+            "damage_taken_mul": 1.2
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 6,
+              "target": "holder"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "spawn",
+                  "unitId": "unit_war_soldier",
+                  "template": "holder",
+                  "hpRatio": 0.5,
+                  "position": "tail",
+                  "note": "彻底征服后永远效忠：跨阵营 spawn 落己方队尾（G8 合规）+ spawn.template 继承死者属性（新增项 18/19）"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "遗留 2：被征服单位带 miracle/reviveOf 时先复活还是先转化未决，本稿主张征服优先，需定进复活结算链"
+      ]
+    },
+    {
+      "id": "skill_hunter_s1_dolls_to_soldiers",
+      "name": "以偶为兵",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "征服者",
+      "rarity": "legendary",
+      "axis": "massing",
+      "flagship": true,
+      "lore": "序列1 征服者 —— \"『以偶为兵』（撒豆成兵）：征服无生命物体转化为士兵\"",
+      "flavor": "你埋下的那些铁夹子、这片战场上的碎石与断木——你征服了它们。于是它们站了起来，握紧了不存在的刀。",
+      "describe": "把自己每个捕兽夹献祭（引爆其亡语：相邻 4 物理伤 + 眩晕 1 tick）并转化为一名士兵（己方队尾）；无陷阱则直接召唤 1 名士兵（撒豆成兵）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "all",
+          "filter": {
+            "casterOwned": true,
+            "isSummon": true,
+            "unitId": "unit_snare_trap"
+          }
+        }
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "caster_has_summon",
+            "unitId": "unit_snare_trap"
+          },
+          "then": [
+            {
+              "op": "repeat",
+              "count": "own_snare_trap_count",
+              "shareTarget": false,
+              "steps": [
+                {
+                  "op": "sequence",
+                  "steps": [
+                    {
+                      "type": "damage",
+                      "element": "none",
+                      "value": 9999,
+                      "lethal": true,
+                      "target": "one_own_snare_trap",
+                      "note": "对己方陷阱造成致死伤害，引爆其亡语（F36 登记：相邻 damage 4 physical + 眩晕 1t）；Repeat 动态 count（G3 + 新增项 8）"
+                    },
+                    {
+                      "type": "spawn",
+                      "unitId": "unit_war_soldier",
+                      "position": "tail",
+                      "note": "陷阱被征服转化为士兵（F37 由陷阱转化入场变体，新增项 20）"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "else": [
+            {
+              "type": "spawn",
+              "unitId": "unit_war_soldier",
+              "position": "tail",
+              "note": "撒豆成兵：无陷阱时就地取材直接召 1 兵"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s1_spear_of_ruin",
+      "name": "毁灭之矛",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "征服者",
+      "rarity": "legendary",
+      "axis": "harvest",
+      "flagship": true,
+      "lore": "序列1 征服者 —— \"『毁灭之矛』：『收割』质变版，命中弱点相当于必然死亡\"",
+      "flavor": "你投出的不是矛，是一个已经写好的结局——如果它身上有你点明的那处弱点，那支矛落下的地方，就是终点。",
+      "describe": "单体敌人：5 点无元素伤害；若目标带有易伤（弱点已标记），直接致死——不管它还有多少血。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 5,
+              "target": "target"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "vulnerable"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 9999,
+                  "lethal": true,
+                  "target": "target",
+                  "note": "命中弱点相当于必然死亡（execute / damage.lethal，H36）；退化口径 damage 9999 为平衡备选"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "遗留 3：execute 建议对 Boss/精英类单位设免疫白名单"
+      ]
+    },
+    {
+      "id": "skill_hunter_s1_massing_ascend",
+      "name": "集众质变",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "征服者",
+      "rarity": "legendary",
+      "axis": "massing",
+      "flagship": true,
+      "lore": "序列1 征服者 —— \"『集众』质变：力量达一定数量产生质变\"",
+      "flavor": "当足够多的人站在你身后时，发生的不只是\"更多\"——是\"不一样\"。你们的呼吸开始同步，刀锋开始指向同一个方向。",
+      "describe": "战斗开始时获得集众质变（整场）：自身攻击随存活友军数动态 +1；当存活友军 ≥ 3 时全队伤害 ×1.2、你受伤 ×0.8（阈值质变）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "massing_ascend",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "massing_ascend",
+          "name": "集众质变",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": [
+            {
+              "kind": "modify_stat_dynamic",
+              "stat": "attack",
+              "valueFrom": "battleStats",
+              "metric": "alive_allies_count",
+              "value": 1,
+              "note": "与集众·铁血的动态攻击叠加（valueFrom battleStats）"
+            }
+          ],
+          "thresholdTrigger": {
+            "metric": "alive_allies",
+            "cmp": ">=",
+            "value": 3,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "damage_mul",
+                "value": 1.2,
+                "mode": "mul",
+                "duration": null,
+                "target": "all_allies",
+                "note": "质变：全体友军伤害 ×1.2"
+              },
+              {
+                "type": "modify_stat",
+                "stat": "damage_taken_mul",
+                "value": 0.8,
+                "mode": "mul",
+                "duration": null,
+                "target": "self",
+                "note": "质变：自身受伤 ×0.8"
+              }
+            ],
+            "note": "阈值触发运行时检查（编队参数 §1.1b thresholdTrigger，新增项 6）；阈值 ⚠️D 待标"
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_hunter_s0_war_mandate",
+      "name": "战争权柄",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "红祭司",
+      "rarity": "legendary",
+      "axis": "massing",
+      "flagship": true,
+      "lore": "序列0 红祭司 —— \"『战争』权柄：存在即可让目标区域发生战争\"",
+      "flavor": "你站在那里，战争就开始了——它们不再分敌我，不再听号令，只剩下\"杀\"这一件事。",
+      "describe": "全体敌人陷入战争狂热（6 tick）：攻击最近的任何单位（不分阵营，敌我不分）、攻击 +3、护甲 -5；男性目标受伤 ×1.15（男性权柄）。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 10,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "warmonger",
+          "duration": 6,
+          "target": "all_enemies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "warmonger",
+          "name": "战争狂热",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "behaviorModifiers": [
+            {
+              "op": "target_override",
+              "anchor": "nearest_any"
+            }
+          ],
+          "modifiers": {
+            "damage_taken_mul": {
+              "value": 1.15,
+              "filter": {
+                "gender": "male"
+              },
+              "note": "男性权柄：男性单位受伤 ×1.15（H4 过滤乘区，编队参数 §1.1b；filter.gender 待内核裁定，替代原 gender_is If + modify_stat 写法）"
+            }
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 6,
+              "target": "holder"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": -5,
+              "mode": "delta",
+              "duration": 6,
+              "target": "holder"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "遗留 5：nearest_any 若最近单位是施法者本人则等于变相嘲讽，需明确是否排除施法者",
+        "与嘲讽/守护/precision 优先级已裁定（执行参数 §一 + 聚合规则覆盖 + §四 识破分支）",
+        "男性权柄 ×1.15 由 gender_is If + modify_stat(stat: damage_taken_mul) 归一为 modifiers.damage_taken_mul { value, filter: { gender: male } }（H4 过滤乘区）；filter.gender 待内核裁定并登记 frameworkFlags"
+      ],
+      "frameworkFlags": [
+        {
+          "code": "GENDER_FILTERED_MUL",
+          "note": "damage_taken_mul 过滤乘区的 filter.gender 维度待内核裁定（编队参数 §1.1b H4 filter 扩展）",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_hunter_s0_ruin_mandate",
+      "name": "毁灭权柄",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "红祭司",
+      "rarity": "legendary",
+      "axis": "harvest",
+      "flagship": true,
+      "lore": "序列0 红祭司 —— \"『毁灭』权柄：上可毁灭星球，下可杀死真神\"",
+      "flavor": "那不是火焰，是\"消失\"本身。凡是还没死透的，都会被一并抹掉。",
+      "describe": "全体敌人：8 点火焰伤害；生命值 ≤ 30% 的目标直接抹除（毁灭的彻底性：不是打伤，是不存在了）。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 10,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 8,
+              "target": "all_enemies"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "target",
+                "cmp": "<=",
+                "n": 0.3
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 9999,
+                  "lethal": true,
+                  "target": "target",
+                  "note": "对残血者直接抹除（execute / damage.lethal，H36；§三 hp_percent 谓词）"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "范围技能随敌方人数线性放大，需 4 人满编复核；execute 的 Boss 白名单见遗留 3"
+      ]
+    }
+  ]
+}

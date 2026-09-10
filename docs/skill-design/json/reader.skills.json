@@ -1,0 +1,1970 @@
+{
+  "pathwayId": "reader",
+  "pathwayName": "阅读者",
+  "sourceFile": "../阅读者途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "analysis": {
+      "symbol": "🜁",
+      "name": "解析"
+    },
+    "arcana": {
+      "symbol": "🜂",
+      "name": "秘术"
+    },
+    "mimic": {
+      "symbol": "🜃",
+      "name": "模仿"
+    },
+    "foresight": {
+      "symbol": "🜄",
+      "name": "预知"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_reader_s9_photographic_memory",
+      "name": "过目不忘",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "阅读者",
+      "rarity": "common",
+      "axis": "analysis",
+      "flagship": false,
+      "lore": "序列9 阅读者 —— \"记忆力、理解力提升\"",
+      "flavor": "你读过的每一页都还在脑子里——开战的第一秒，你就已经想起了该怎么打。",
+      "describe": "战斗开始时，自身能量 +5、能量上限 +5，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 5,
+          "mode": "delta",
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "energy_max",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s9_comprehension",
+      "name": "理解力",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "阅读者",
+      "rarity": "common",
+      "axis": "analysis",
+      "flagship": false,
+      "lore": "序列9 阅读者 —— \"记忆力、理解力提升\"",
+      "flavor": "你理解事物的速度比别人快上一截——别人的灵性还在积蓄，你的已经溢出来了。",
+      "describe": "战斗开始时，自身能量恢复 +0.2/tick，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "energy_regen",
+          "value": 0.2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self",
+          "note": "G14：单位 per tick"
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s9_ritual_magic",
+      "name": "仪式魔法",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "阅读者",
+      "rarity": "common",
+      "axis": "arcana",
+      "flagship": false,
+      "lore": "序列9 阅读者 —— \"能使用仪式魔法，大量阅读获得知识储备\"",
+      "flavor": "你按着书上的步骤摆完最后一枚蜡烛——仪式完成，某种看不见的东西咬住了它。",
+      "describe": "对一名敌人造成 4 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 4
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 4 → 6",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "mental",
+                "value": 6
+              }
+            ]
+          },
+          {
+            "name": "仪式魔法专家",
+            "note": "序列8「仪式魔法专家」即本技能第二升级档（不单独立项），伤害 6 → 8",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "mental",
+                "value": 8
+              }
+            ]
+          }
+        ]
+      },
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s8_logic_deduction",
+      "name": "逻辑推演",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "推理学员",
+      "rarity": "common",
+      "axis": "analysis",
+      "flagship": false,
+      "lore": "序列8 推理学员 —— \"观察力、逻辑思维能力提升\"",
+      "flavor": "你顺着它挥刀的轨迹倒推回去，找到了那条最不合理的弧线——那里就是破绽。",
+      "describe": "使一名敌人易伤 4 tick，造成 2 点精神伤害，并解析它（刷新技能快照 6 tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 4
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            },
+            {
+              "type": "mount_status",
+              "statusId": "observed",
+              "duration": 6,
+              "note": "解析类技能命中即刷新快照（通用设计）"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "spectator"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s8_observe",
+      "name": "观察",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "推理学员",
+      "rarity": "common",
+      "axis": "mimic",
+      "flagship": true,
+      "lore": "序列8 推理学员 —— \"观察力、逻辑思维能力提升\"（并作为序列6「模仿解析过的能力」的前置）",
+      "flavor": "你盯着它的手——每一次挥击、每一个起手式，都被你记了下来。",
+      "describe": "你造成伤害、或受到伤害时，解析本次交互的对方单位（快照其最近一次施放的技能，6 tick）。",
+      "hook": "on_deal_damage",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "observed",
+          "duration": 6
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "observed",
+              "duration": 6,
+              "note": "你打中的目标被解析"
+            }
+          ]
+        },
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "observed",
+              "duration": 6,
+              "note": "打你的单位被解析（挨打也是一种观察）"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "observed",
+          "name": "已解析",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "slots": {
+            "lastSkillRef": "挂载瞬间快照目标最近一次施放过的技能（H33 slots）"
+          },
+          "note": "G15-b 合规：duration 6 ≥ 敏捷 0 单位约 5 tick 行动周期，且挂载走即时节点（on_deal_damage / on_take_damage），不受 on_turn_start 时间尺度影响"
+        }
+      ],
+      "sharedAcross": [
+        "spectator"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "双触发点（on_deal_damage / on_take_damage）：hook 字段填主触发点，第二触发点见 triggers 数组"
+      ]
+    },
+    {
+      "id": "skill_reader_s8_ritual_expertise",
+      "name": "仪式魔法专家",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "推理学员",
+      "rarity": "common",
+      "axis": "arcana",
+      "flagship": false,
+      "lore": "序列8 推理学员 —— \"成为仪式魔法专家\"",
+      "flavor": "同样的步骤，你念出来的咒文比书上多出了三个音节——而效果，强了不止一点。",
+      "describe": "战斗开始时获得「仪式专精」：你造成的精神伤害 ×1.2，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "ritual_expertise",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "ritual_expertise",
+          "name": "仪式专精",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.2,
+              "filter": {
+                "element": [
+                  "mental"
+                ]
+              }
+            }
+          },
+          "note": "H4 按元素过滤的伤害乘区（✅）；退化方案为 modify_stat(attack,+1)（物理线也吃到）"
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s9_knowledge_reserve",
+      "name": "知识储备",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "阅读者",
+      "rarity": "common",
+      "axis": "mimic",
+      "flagship": false,
+      "lore": "序列9 阅读者 —— \"大量阅读获得知识储备\"",
+      "flavor": "你翻遍脑中那座图书馆，终于抽出了此刻恰好有用的那一册。",
+      "describe": "自身能量 +4。",
+      "cost": {
+        "energy": 1,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 4,
+          "mode": "delta",
+          "target": "self"
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s7_weapon_mastery",
+      "name": "武器精通",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "守知者",
+      "rarity": "uncommon",
+      "axis": "arcana",
+      "flagship": true,
+      "lore": "序列7 守知者 —— \"武器精通、格斗大师、推理大师、仪式魔法大师\"",
+      "flavor": "任何东西到了你手里都能杀人——而你现在手里，恰好握着一把剑。",
+      "describe": "战斗开始时，自身攻击 +2，持续整场（不可驱散）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self",
+          "note": "modify_stat 账本条目，非 StatusInstance，天然不可驱散"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s7_combat_master",
+      "name": "格斗大师",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "守知者",
+      "rarity": "uncommon",
+      "axis": "arcana",
+      "flagship": false,
+      "lore": "序列7 守知者 —— \"武器精通、格斗大师……附带格斗和器械能力\"",
+      "flavor": "你贴近它、卸力、反手一送——它踉跄着退开，而你已经在等它的下一招。",
+      "describe": "对最前排一名敌人造成 4 点物理伤害，击退其行动条 50。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "anchor": "front_line"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 4,
+              "note": "近战攻击进程，G8 合规：不调 move"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -50,
+              "mode": "delta",
+              "note": "击退 = 推行动条（KNOCKBACK_DISTANCE=50，D1 已拍板）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s7_replay_event",
+      "name": "解析还原",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "守知者",
+      "rarity": "uncommon",
+      "axis": "analysis",
+      "flagship": true,
+      "lore": "序列7 守知者 —— \"可解析还原区域内发生过的事件\"",
+      "flavor": "你读出这片空气里残留的痕迹——三秒前，你的同伴正是在这里，被这样的一击打穿。现在，轮到你了。",
+      "describe": "重放目标本场最近一次对己方造成的伤害（原元素，六成效力的向上取整），并驱散其 1 个增益状态；若目标尚未造成过伤害，改为造成 4 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "echo_last_skill",
+              "snapshot": "lastDamageSnapshot",
+              "potency": 0.6,
+              "rounding": "ceil",
+              "fallback": {
+                "type": "damage",
+                "element": "mental",
+                "value": 4
+              },
+              "note": "效果上下文 §2.1：重放目标最近一次对己方造成的伤害（快照元素 × 0.6 向上取整）"
+            },
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              },
+              "note": "还原真相即剥去伪装（C2 ✅）"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "退化方案：整条改为 dispel(category:[buff],count:1) + damage(mental,4)，零新依赖"
+      ]
+    },
+    {
+      "id": "skill_reader_s6_analyze",
+      "name": "解析",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "博学者",
+      "rarity": "uncommon",
+      "axis": "analysis",
+      "flagship": false,
+      "lore": "序列6 博学者 —— \"『解析』：解析对手非凡能力，辨识具体情况和缺陷\"",
+      "flavor": "你把它身上那层\"非凡\"剥开来看——里面是什么、缺了什么，一目了然。",
+      "describe": "驱散一名敌人 1 个增益状态，防御 -2（4 tick），并解析它（刷新技能快照 6 tick）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              },
+              "note": "解析对手非凡能力"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 4,
+              "note": "辨识缺陷（到期回滚，v1.5 已修）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "observed",
+              "duration": 6
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s6_mimic_novice",
+      "name": "模仿·初解",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "博学者",
+      "rarity": "uncommon",
+      "axis": "mimic",
+      "flagship": true,
+      "lore": "序列6 博学者 —— \"『模仿』：有几率模仿解析过的能力（20%–50% 效果） / 无使用次数限制\"",
+      "flavor": "你照着它刚刚那一招比划了一下——形似而神不足，但确实打中了。",
+      "describe": "模仿一名已解析敌人最近一次施放的技能（20% 效力）；50% 概率成功，失败或快照为空时改为造成 2 点精神伤害。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "filter": {
+            "hasStatus": "observed"
+          }
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mimic",
+          "duration": 3,
+          "params": {
+            "potency": 0.2
+          },
+          "condition": {
+            "kind": "chance",
+            "p": 0.5
+          },
+          "fallback": {
+            "type": "damage",
+            "element": "mental",
+            "value": 2
+          },
+          "note": "R3 登记 / R4 单次抽样 / R5 添头维度（非伤害数值）"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mimic",
+          "name": "模仿",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_apply",
+              "effects": [
+                {
+                  "type": "echo_last_skill",
+                  "potency": "$params.potency",
+                  "note": "展开重放快照技能：伤害 ×potency（向上取整）；potency≥0.8 附加效果完整保留，否则只保留 mount_status 且 duration ×potency（最低 1）；potency≥0.9 状态 duration 不再打折；spawn/move/target_override 一律跳过（保守版）"
+                }
+              ]
+            }
+          ],
+          "note": "参数化一次性乘区状态母版（H3：charges × 乘区 × 触发点 × 载荷）；与 optimal_choice 共用母版。序列1 档重放跳过 authority:true 标记条目（权柄不可重放，编目参数 §二）"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "duplicatePolicy": "upgrade",
+        "tiers": [
+          {
+            "name": "模仿 20%",
+            "note": "potency 0.2（本档，唯一带概率）",
+            "effects": []
+          },
+          {
+            "name": "模仿 50%",
+            "note": "potency 0.5（第一级升级档，承接原著区间）",
+            "effects": []
+          },
+          {
+            "name": "模仿 60%",
+            "note": "potency 0.6（= 模仿·秘术导师档）",
+            "effects": []
+          },
+          {
+            "name": "模仿 80%",
+            "note": "potency 0.8（= 模仿·预言家档，效果保留门槛）",
+            "effects": []
+          },
+          {
+            "name": "模仿 90%",
+            "note": "potency 0.9（= 模仿·智天使档，状态 duration 不再打折）",
+            "effects": []
+          },
+          {
+            "name": "模仿 100%",
+            "note": "potency 1.0（= 模仿·全知之眼档，跳过权柄）",
+            "effects": []
+          }
+        ]
+      },
+      "sharedAcross": [
+        "spectator"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s7_master_reasoner",
+      "name": "推理大师",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "守知者",
+      "rarity": "uncommon",
+      "axis": "analysis",
+      "flagship": false,
+      "lore": "序列7 守知者 —— \"武器精通、格斗大师、推理大师、仪式魔法大师\"",
+      "flavor": "一旦被你算出破绽，它接下来的每一次呼吸都在往你的刀口上撞。",
+      "describe": "你造成伤害时，若目标带有易伤，该次伤害 ×1.2。",
+      "hook": "on_deal_damage",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "vulnerable",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_damage",
+              "scope": "dealt",
+              "mul": 1.2,
+              "target": "self",
+              "note": "作用于本次 on_deal_damage 触发的那次伤害（F52 has_status 谓词；modify_damage scope:dealt 扩展原语）"
+            }
+          ],
+          "else": []
+        }
+      ],
+      "sharedAcross": [
+        "spectator"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s7_ritual_master",
+      "name": "仪式魔法大师",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "守知者",
+      "rarity": "uncommon",
+      "axis": "arcana",
+      "flagship": false,
+      "lore": "序列7 守知者 —— \"武器精通、格斗大师、推理大师、仪式魔法大师\"",
+      "flavor": "这次的仪式足足画了七重阵纹——阵成之时，你在阵心，而灾祸落在它头上。",
+      "describe": "对一名敌人造成 6 点精神伤害，自身获得 4 点护盾（3 tick）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 6
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 4,
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "与序列9「仪式魔法」是不同技能（非升级档），可同时占槽"
+      ]
+    },
+    {
+      "id": "skill_reader_s5_self_arcana",
+      "name": "秘术·自创",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "秘术导师",
+      "rarity": "rare",
+      "axis": "arcana",
+      "flagship": true,
+      "lore": "序列5 秘术导师 —— \"掌握独特罕见的秘术，能自行发明创造法术\"",
+      "flavor": "书上没有这一条——因为它是你昨晚自己写出来的。",
+      "describe": "释放你自创的法术（获得时三选一）：锋锐——7 点精神伤害；守护——3 点精神伤害并为自身与相邻友军套 5 点护盾（3 tick）；洞察——3 点精神伤害、易伤 4 tick 并解析目标。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 7,
+          "note": "默认档「锋锐」"
+        }
+      ],
+      "variants": [
+        {
+          "id": "sharp",
+          "name": "锋锐",
+          "note": "纯输出档",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 7
+            }
+          ]
+        },
+        {
+          "id": "ward",
+          "name": "守护",
+          "note": "自身与相邻友军套盾",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 5,
+              "duration": 3,
+              "target": "self",
+              "note": "相邻友军同享（spread splash_adjacent）"
+            }
+          ]
+        },
+        {
+          "id": "insight",
+          "name": "洞察",
+          "note": "解析档",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "observed",
+              "duration": 6
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s5_streamlined_cast",
+      "name": "省略步骤",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "秘术导师",
+      "rarity": "rare",
+      "axis": "arcana",
+      "flagship": false,
+      "lore": "序列5 秘术导师 —— \"可省略施法材料和步骤\"",
+      "flavor": "那些繁琐的材料、冗长的咒文，你早就不需要了——你想，于是它发生。",
+      "describe": "战斗开始时获得「省略步骤」：你的本途径技能能量消耗 -1（最低 1），持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "streamlined_cast",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "streamlined_cast",
+          "name": "省略步骤",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "energyCostAdd": -1,
+            "energyCostMin": 1,
+            "filter": {
+              "pathway": [
+                "reader"
+              ]
+            }
+          },
+          "note": "本稿新增项 11（🟡）：progression 层 SkillDef.costDelta 属战外上下文、归主项目，本仓库 ddd 不含"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "SKILL_COST_DELTA",
+          "note": "技能费用修正属 progression 层（战外），ddd 未落；退化方案为 modify_stat(energy_regen,+0.3)（G14 需重标，约 5 倍时间尺度差）",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_reader_s4_prophecy",
+      "name": "预言",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "预言家",
+      "rarity": "rare",
+      "axis": "foresight",
+      "flagship": true,
+      "lore": "序列4 预言家 —— \"『预言』能力：看到未来最可能的几种可能性\"",
+      "flavor": "你在无数条岔路里看见了最可能的那一条——同伴会先出手，而它会慢上半拍。",
+      "describe": "指定一名友军：其行动条 +25、获得「预知」（下次受击伤害 ×0.5，5 tick）；敌方主目标行动条 -20。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_asc"
+      },
+      "secondaryTargets": [
+        {
+          "request": {
+            "faction": "enemy",
+            "scope": "single",
+            "sort": "gauge_desc"
+          },
+          "note": "稿面未给敌方排序，取 gauge_desc（拖条收益最大者）待裁定"
+        }
+      ],
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 25,
+              "mode": "delta",
+              "note": "G5/G6 合规：推友军，绝不自推"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "foresight",
+              "duration": 5
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -20,
+              "mode": "delta",
+              "target": "secondary_target"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "foresight",
+          "name": "预知",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_damage",
+                  "mul": 0.5,
+                  "target": "self",
+                  "note": "该次伤害 ×0.5"
+                }
+              ],
+              "note": "C6 charges：响应一次 -1，归零卸载；F 组合并候选 2 参数化减伤母版同源"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s4_astral_arcana",
+      "name": "星界秘术",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "预言家",
+      "rarity": "rare",
+      "axis": "arcana",
+      "flagship": false,
+      "lore": "序列4 预言家 —— \"『星界秘术』：利用星界力量创造秘术\"",
+      "flavor": "你从星界那侧借来一点东西——它不属于这个世界，所以这个世界挡不住它。",
+      "describe": "全体敌人受到 3 点精神伤害，并失去 2 点能量（下限 0）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": -2,
+              "mode": "delta",
+              "target": "all_enemies",
+              "note": "星界侵蚀施法燃料；下限截断为 0"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "pryer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s5_mimic_arcana",
+      "name": "模仿·秘术导师",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "秘术导师",
+      "rarity": "rare",
+      "axis": "mimic",
+      "flagship": true,
+      "lore": "序列5 秘术导师 —— \"模仿效果达 60%\"",
+      "flavor": "你把它那一招学了个六成——力道差了些，但路数分毫不差。",
+      "describe": "必定成功：模仿一名已解析敌人最近一次施放的技能（60% 效力）；快照为空时改为造成 3 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "filter": {
+            "hasStatus": "observed"
+          }
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mimic",
+          "duration": 3,
+          "params": {
+            "potency": 0.6
+          },
+          "fallback": {
+            "type": "damage",
+            "element": "mental",
+            "value": 3
+          },
+          "note": "序列5 起原著不再提\"有几率\"，本档起必定成功；mimic 定义见模仿·初解"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "与模仿·初解是同一条技能线（B6 duplicatePolicy:upgrade，0.2→0.5→0.6→0.8→0.9→1.0，不额外占槽）"
+      ]
+    },
+    {
+      "id": "skill_reader_s4_mimic_prophet",
+      "name": "模仿·预言家",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "预言家",
+      "rarity": "rare",
+      "axis": "mimic",
+      "flagship": false,
+      "lore": "序列4 预言家 —— \"模仿效果达 80%\"",
+      "flavor": "你不但学会了它的招式，还学会了它使出那一招时的想法——八成，已经足以乱真。",
+      "describe": "模仿一名已解析敌人最近一次施放的技能（80% 效力，附加效果自此档起完整保留）；快照为空时改为造成 4 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "filter": {
+            "hasStatus": "observed"
+          }
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mimic",
+          "duration": 3,
+          "params": {
+            "potency": 0.8
+          },
+          "fallback": {
+            "type": "damage",
+            "element": "mental",
+            "value": 4
+          },
+          "note": "0.8 为效果保留门槛：附加效果（状态/驱散/资源修改）完整保留；mimic 定义见模仿·初解"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s5_arcana_tutelage",
+      "name": "秘术传授",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "秘术导师",
+      "rarity": "rare",
+      "axis": "mimic",
+      "flagship": false,
+      "lore": "序列5 秘术导师 —— （职业名「导师」，及\"掌握独特罕见的秘术\"）",
+      "flavor": "你把一段咒文压进同伴的掌心——他不懂原理，但他念得出来，而且好用。",
+      "describe": "战斗开始时，使攻击力最高的一名其他友军伤害 ×1.2，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "tutelage",
+          "duration": null,
+          "target": "target",
+          "note": "targetSpec：ally + excludeSelf + atk_desc（攻击力最高的其他友军）"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "tutelage",
+          "name": "秘术传授",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": 1.2
+          },
+          "note": "复用 F14 tutelage（权威出处：F14 v0.1 登记，机制 H12 + 标准 damage_mul 已落 ddd）；本稿把 duration 从 F14 登记的 4 改为 null（整场），若太强改回 4 ⚠️D"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "原著存疑标注：对照表序列5 能力栏无\"传授他人\"描述，本条按职业名「导师」推断，是本稿对原著最大的一处推断"
+      ]
+    },
+    {
+      "id": "skill_reader_s4_astral_sanctum",
+      "name": "星界秘域",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "预言家",
+      "rarity": "rare",
+      "axis": "foresight",
+      "flagship": false,
+      "lore": "序列4 预言家 —— 「预言：看到未来最可能的几种可能性」+ 星界语义",
+      "flavor": "你展开了星界的秘域——未来在你眼里摊成一本读过的书：他们的下一步还没迈出去，你已经站在落点上等好了。",
+      "describe": "降临「星界秘域」3 回合：敌方每 tick 行动条 -2，己方伤害 ×1.1；「秘术 / 预知」标签卡效果 ×1.3。自身迷失值 +1。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_astral_sanctum",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_astral_sanctum",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：敌方单位每 tick gauge.current -2（未来被预读，行动被拖延）；己方单位 damage_mul ×1.1（洞见先机）——双向：滞敌 / 利己",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "秘术",
+              "预知"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_astral_sanctum",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "effects": [
+              {
+                "type": "modify_resource",
+                "resource": "gauge.current",
+                "value": -2,
+                "mode": "delta",
+                "target": "all_enemies",
+                "note": "行动被预读"
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 0,
+                "mode": "delta",
+                "duration": 1,
+                "target": "all_allies",
+                "note": "占位写法：洞见先机 = 己方 damage_mul ×1.1（1t 刷新），引擎侧走 damageMulMul: 1.1"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "秘术",
+              "预知"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "tags": [
+        "秘术",
+        "预知"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "2026-09-08 界域牌批次新增",
+        "on_turn_start 档的 damage_mul ×1.1 在 domainDef 内以占位 modify_stat 表达，引擎实现时应为伤害乘区（H4）1t 刷新"
+      ]
+    },
+    {
+      "id": "skill_reader_s3_discern",
+      "name": "洞悉",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "洞悉者",
+      "rarity": "epic",
+      "axis": "analysis",
+      "flagship": true,
+      "lore": "序列3 洞悉者 —— \"『洞悉』：洞悉世界规则，敌人弱点暴露无遗\"",
+      "flavor": "你看见的不再是一个敌人，而是一整套正在运转的规则——而这套规则，此刻到处都是裂缝。",
+      "describe": "全体敌人易伤 5 tick、防御 -3（5 tick）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 5,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -3,
+              "mode": "delta",
+              "duration": 5,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s3_law_breach",
+      "name": "规律·撬动",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "洞悉者",
+      "rarity": "epic",
+      "axis": "foresight",
+      "flagship": true,
+      "lore": "序列3 洞悉者 —— \"掌握『规律』权柄 / 通过撬动规律解决问题\"",
+      "flavor": "你没有去打破它的甲——你只是轻轻拨动了一下\"甲能挡住什么\"这条规则。",
+      "describe": "使一名敌人护甲 -5、全元素抗性 -20（4 tick），期间你对其造成的伤害不结算护盾吸收。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "armor_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "law_breach",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "law_breach",
+          "name": "规律撬动",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": -5,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:*",
+              "value": -20,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self",
+              "note": "resist:all 通配 = 8 元素全降（共享内核 §一 ResistanceSet 行）"
+            }
+          ],
+          "modifiers": {
+            "pierce": [
+              "shield"
+            ],
+            "pierceScope": "incoming_from_caster",
+            "note": "pierce_shield：期间施法者对其造成的伤害不结算 shield 吸收（效果参数 §一 pierce 行含 shield）"
+          },
+          "note": "退化方案：去掉 pierce_shield，resist:all 改为逐元素 8 条 modify_stat（Repeat 展开，零新 StatKey）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s2_mimic_cherub",
+      "name": "模仿·智天使",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "智天使",
+      "rarity": "epic",
+      "axis": "mimic",
+      "flagship": true,
+      "lore": "序列2 智天使 —— \"模仿效果达 90%\"",
+      "flavor": "九成。除了那一点点只属于它自己的东西，你把它整个搬了过来。",
+      "describe": "模仿一名已解析敌人最近一次施放的技能（90% 效力，状态持续不再打折）；快照为空时改为造成 5 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "filter": {
+            "hasStatus": "observed"
+          }
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mimic",
+          "duration": 3,
+          "params": {
+            "potency": 0.9
+          },
+          "fallback": {
+            "type": "damage",
+            "element": "mental",
+            "value": 5
+          },
+          "note": "0.9 第二道门槛：状态 duration 不再打折；mimic 定义见模仿·初解"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s2_wisdom_authority",
+      "name": "智慧权柄",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "智天使",
+      "rarity": "epic",
+      "axis": "foresight",
+      "flagship": true,
+      "lore": "序列2 智天使 —— \"『智慧』权柄：总能提前看清局势，做出最正确选择\"",
+      "flavor": "你永远比战场快半步——因为你站在的那一步，本来就是最正确的那一步。",
+      "describe": "战斗开始时获得「智慧」：你的攻击与技能必定命中、伤害 ×1.15，持续整场；自身行动条速率 +8，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "wisdom",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "「总能提前看清局势」；INV-S5 合规：改 gauge.rate 源属性；G5/G6 合规：on_battle_start 被动"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "wisdom",
+          "name": "智慧",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "neverMiss": true,
+            "damage_mul": 1.15
+          },
+          "note": "H35 neverMiss + 标准 damage_mul；never_miss 若无法落地（引擎无 miss 维度）退化为 damage_mul 1.25"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge_rate 按 modify_stat(gauge.rate) 表达持续修正，ddd 将 gauge.* 列于 modify_resource 键族，待内核裁定归一",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_reader_s2_optimal_choice",
+      "name": "局势推演",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "智天使",
+      "rarity": "epic",
+      "axis": "foresight",
+      "flagship": false,
+      "lore": "序列2 智天使 —— \"总能提前看清局势，做出最正确选择\"（把\"最正确选择\"施加于同伴）",
+      "flavor": "你在他耳边说了一句话——于是他做出了这一整场里最正确的那次出手。",
+      "describe": "指定一名其他友军：行动条 +30，其下一次造成的伤害 ×1.4（5 tick 内）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single",
+          "excludeSelf": true
+        },
+        "fallbackSort": "gauge_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 30,
+              "mode": "delta",
+              "note": "G5/G6 合规：推友军不自推"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "optimal_choice",
+              "duration": 5
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "optimal_choice",
+          "name": "最优选择",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "charges": 1,
+          "modifiers": {
+            "damage_mul": 1.4,
+            "note": "下一次造成的伤害 ×1.4，响应后消耗"
+          },
+          "note": "与 mimic 共用参数化乘区母版（参数 mul/charges）；H42 同向乘区取最高"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s3_law_authority",
+      "name": "规律权柄",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "洞悉者",
+      "rarity": "epic",
+      "axis": "foresight",
+      "flagship": false,
+      "lore": "序列3 洞悉者 —— \"掌握『规律』权柄\"",
+      "flavor": "你写在敌人身上的东西，就是规律——而规律，不会被轻易抹去。",
+      "describe": "战斗开始时获得「规律权柄」：你施加的减益类状态不可被驱散，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "law_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "law_authority",
+          "name": "规律权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "dispelableOverwrite": {
+              "scope": "outgoing",
+              "categories": [
+                "debuff"
+              ],
+              "value": false,
+              "note": "H8 运行时覆写：你施加的 vulnerable/observed/law_breach/omniscience_mark 等减益挂载时覆写为 dispelable:false"
+            }
+          },
+          "note": "与愚者 v0.2 新增项 9、歌颂者 v0.2 新增项 11 同源（H8），建议并入同一母版"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s1_omniscience_mark",
+      "name": "全知·现在与过去",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "全知之眼",
+      "rarity": "legendary",
+      "axis": "analysis",
+      "flagship": true,
+      "lore": "序列1 全知之眼 —— \"『全知』权柄：看到目标过去、现在、未来全部信息\"",
+      "flavor": "它是什么、做过什么、将要做什么——这些对你而言从来不是秘密，只是尚未说出口的事实。",
+      "describe": "战斗开始时，全体敌人被刻下「全知刻印」：对其伤害 ×1.2、其隐匿 / 不可选中对你无效、你的攻击与技能对其必定命中，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "omniscience_mark",
+          "duration": null,
+          "target": "all_enemies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "omniscience_mark",
+          "name": "全知刻印",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": null,
+          "modifiers": {
+            "damage_taken_mul": 1.2,
+            "concealPiercedForCaster": true,
+            "casterNeverMiss": true
+          },
+          "note": "H2 复合 debuff + §四 识破分支 + H35 neverMiss；与 vulnerable（1.3）同向乘区取最高不叠乘（H42）"
+        }
+      ],
+      "sharedAcross": [
+        "spectator"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s1_astral_tutor",
+      "name": "星界导师",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "全知之眼",
+      "rarity": "legendary",
+      "axis": "mimic",
+      "flagship": true,
+      "lore": "序列1 全知之眼 —— \"『星界导师』权柄：触及星界概念修改目标行为\"",
+      "flavor": "你伸手在星界那侧改了一个概念——它抬起刀，却再也想不起来要砍向哪里。",
+      "describe": "使一名敌人攻击 -3（6 tick），并修改其行为概念 6 tick：接下来 2 次攻击打向空处。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "astral_tutelage",
+              "duration": 6
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -3,
+              "mode": "delta",
+              "duration": 6
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "astral_tutelage",
+          "name": "星界导师",
+          "category": [
+            "retarget",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "charges": 2,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty",
+                "note": "修改\"行为\"概念本身：攻击打向空处（C7 ✅ 已验证）"
+              }
+            ]
+          },
+          "note": "H12 target_override 族「锚点=空坐标 × 存续=charges:2」格，F 组合并候选 3 建议并入该母版"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s1_mimic_omniscience",
+      "name": "模仿·全知之眼",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "全知之眼",
+      "rarity": "legendary",
+      "axis": "mimic",
+      "flagship": true,
+      "lore": "序列1 全知之眼 —— \"模仿效果达 100%（不涉及权柄）\"",
+      "flavor": "一模一样。除了那一丝只属于权柄的东西——而那东西，你本来也不打算要。",
+      "describe": "完美模仿一名已解析敌人最近一次施放的技能（100% 效力，权柄类效果不被复制）；快照为空时改为造成 6 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "filter": {
+            "hasStatus": "observed"
+          }
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mimic",
+          "duration": 3,
+          "params": {
+            "potency": 1.0,
+            "skipAuthority": true
+          },
+          "fallback": {
+            "type": "damage",
+            "element": "mental",
+            "value": 6
+          },
+          "note": "原著「不涉及权柄」落地：重放跳过 authority:true 标记条目（编目参数 §二，数据层标注）；mimic 定义见模仿·初解"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_reader_s0_tower_creation",
+      "name": "白塔·创造",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "白塔",
+      "rarity": "legendary",
+      "axis": "arcana",
+      "flagship": false,
+      "lore": "序列0 白塔 —— \"『创造』权柄\"",
+      "flavor": "你从知识里造出一个东西——它有形，会动，而且听你的。",
+      "describe": "在己方队尾凭空创造一个白塔造物（40% 生命 / 50% 攻击，继承施法者属性）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_tower_construct",
+          "hpRatio": 0.4,
+          "atkRatio": 0.5,
+          "position": "tail",
+          "target": "self",
+          "note": "H1 召唤物基线模板 + C5 spawn 参数；与 F 组合并候选 7 同源，只填参数不新建模板"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "A2 合规：不挂任何 on_spawn 语义"
+      ]
+    },
+    {
+      "id": "skill_reader_s0_astral_stairs",
+      "name": "星界阶梯",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "白塔",
+      "rarity": "legendary",
+      "axis": "foresight",
+      "flagship": false,
+      "lore": "序列0 白塔 —— \"『星界阶梯』权柄\"",
+      "flavor": "你为同伴在星界开了一道阶梯——他踩上去，从刀口消失了；再落下时，已在安全的后方。",
+      "describe": "指定一名其他友军：其退至己方半场最后位，并获得 8 点护盾（4 tick）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single",
+          "excludeSelf": true
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "note": "G8 合规：push_back 锁定 from.faction，不越中线（C1 ✅）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 8,
+              "duration": 4
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "本稿全篇零 heal：原著阅读者途径无治疗能力，阶梯只负责离开、不负责治好（刻意设计）"
+      ]
+    },
+    {
+      "id": "skill_reader_s0_omniscience",
+      "name": "白塔·全知",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "白塔",
+      "rarity": "legendary",
+      "axis": "analysis",
+      "flagship": true,
+      "lore": "序列0 白塔 —— \"『全知』权柄：对万事万物全知，可模仿任何能力（不含权柄象征）/ 部分『规律』『学习』『解析』权柄\"",
+      "flavor": "在这座塔上，没有什么是你不知道的——所以也没有什么是你学不会的。",
+      "describe": "战斗开始时获得「白塔全知」：全体敌人视同已被解析，你每次造成伤害刷新被命中目标的解析快照，你对敌方伤害 ×1.15，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "omniscience",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "omniscience",
+          "name": "白塔全知",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damage_mul": {
+              "value": 1.15,
+              "filter": {
+                "faction": [
+                  "enemy"
+                ]
+              }
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "observed",
+                  "duration": 6,
+                  "target": "target",
+                  "note": "全知 = 不需要额外动作去观察：打谁，谁就被即时解析刷新快照"
+                }
+              ],
+              "note": "即时节点 ✅ 已 fire，规避 G15/G15-b；on_battle_start 时全体敌方先挂 observed（快照为空，靠本触发持续刷新）"
+            }
+          ],
+          "note": "与全知·现在与过去是两条独立被动（那条「看穿敌人」，本条「学得会敌人」），对应原著两个位阶的全知权柄，不合并"
+        }
+      ],
+      "tentative": true
+    }
+  ]
+}

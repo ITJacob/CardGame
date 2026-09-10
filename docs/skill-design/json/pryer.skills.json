@@ -1,0 +1,2667 @@
+{
+  "pathwayId": "pryer",
+  "pathwayName": "窥秘人",
+  "sourceFile": "../窥秘人途径_技能池_v0.2.md",
+  "sourceVersion": "v0.3（文件名沿用 v0.2）",
+  "axes": {
+    "scrying": {
+      "symbol": "🜁",
+      "name": "窥秘"
+    },
+    "combat": {
+      "symbol": "🜂",
+      "name": "格斗"
+    },
+    "scroll": {
+      "symbol": "🜃",
+      "name": "卷轴法术"
+    },
+    "astral": {
+      "symbol": "🜄",
+      "name": "星象信息"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_pryer_s9_scrying_eye",
+      "name": "窥秘之眼",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "窥秘人",
+      "rarity": "common",
+      "axis": "scrying",
+      "flagship": false,
+      "lore": "序列9 窥秘人 —— \"『窥秘之眼』：观察星灵体 / 以太体 / 心智体状态\"",
+      "flavor": "你的眼睛能看见别人的\"三体\"：星灵体的光、以太体的流、心智体的结。藏起来的瞒不过你，身上带着门道的，也瞒不过你。",
+      "describe": "战斗开始时获得「窥秘之眼」：敌方隐匿 / 不可选中类状态对你无效；你对携带任意状态的目标伤害 ×1.15，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "scrying_eye",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "scrying_eye",
+          "name": "窥秘之眼",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "detect": {
+              "ignoreUntargetable": true,
+              "direction": "inbound",
+              "note": "C8 候选池过滤：敌方 stealth / shadow_veil / 不可选中类状态对持有者无效"
+            },
+            "damage_mul": {
+              "value": 1.15,
+              "filter": {
+                "hasAnyStatus": true
+              },
+              "note": "对携带任意状态的目标 ×1.15；F52 的 any 语义用 has_category 全枚举承载"
+            }
+          }
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "C8_NOT_IMPLEMENTED",
+          "note": "稿面自认：候选池过滤（C8）未实现，识破部分当前不生效；若长期不落地需整体重做",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_pryer_s9_rapid_ritual",
+      "name": "快速仪式",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "窥秘人",
+      "rarity": "common",
+      "axis": "scrying",
+      "flagship": false,
+      "lore": "序列9 窥秘人 —— \"快速仪式：无需大多数仪式物品\"",
+      "flavor": "你省去了那些瓶瓶罐罐与繁琐步骤——咒文脱口而出，手上的功夫也快了半拍。",
+      "describe": "自身能量 +3，并获得 2 tick「免吟唱」。",
+      "cost": {
+        "energy": 1,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 3,
+          "mode": "delta",
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "free_cast",
+          "duration": 2,
+          "target": "self"
+        }
+      ],
+      "sharedAcross": [
+        "reader",
+        "savant"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s9_astro_divination",
+      "name": "占星术",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "窥秘人",
+      "rarity": "common",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列9 窥秘人 —— \"魔法、巫术、占星术等神秘知识全面掌握\"",
+      "flavor": "你从星象里读出下一步。被你点到的同伴，脚步会比对手先落下。",
+      "describe": "使一名友军行动条 +20。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_asc"
+      },
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": 20,
+          "mode": "delta",
+          "target": "target"
+        }
+      ],
+      "sharedAcross": [
+        "reader"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "G5 铁律：不自推 gauge.current（自回合释放时行动条已清零），故推友军"
+      ]
+    },
+    {
+      "id": "skill_pryer_s9_arcane_knowledge",
+      "name": "神秘知识",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "窥秘人",
+      "rarity": "common",
+      "axis": "scroll",
+      "flagship": false,
+      "lore": "序列9 窥秘人 —— \"魔法、巫术、占星术等神秘知识全面掌握\"",
+      "flavor": "那些别人要翻遍典籍才找得到的条目，你早就烂熟于心——你的灵感来得更密，也更早。",
+      "describe": "战斗开始时，自身能量上限 +5、能量恢复 +0.2/tick，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "energy_max",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "energy_regen",
+          "value": 0.2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "sharedAcross": [
+        "reader"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面契约注意：引擎 StatKey 无「智力」，v0.1 的 modify_stat(int,+2) 为无效键，本版改 energy_max / energy_regen"
+      ]
+    },
+    {
+      "id": "skill_pryer_s8_adaptive_martial_arts",
+      "name": "格斗术·因敌施技",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "格斗学者",
+      "rarity": "common",
+      "axis": "combat",
+      "flagship": true,
+      "lore": "序列8 格斗学者 —— \"掌握许多流派格斗术\"",
+      "flavor": "你学过的流派太多，多到身体会自己挑：对方立了架势，你就用刚劲砸开；对方抢了先手，你就卸力推回；对方躲在后面，你就把它拽出来。",
+      "describe": "对一名近战敌人按状态选招：目标带护盾或坚守时造成 7 点物理伤害（刚）；目标行动条最高时造成 3 点物理伤害并使其行动条 -20（柔）；其余造成 4 点物理伤害并将其前拉 1 格（擒）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "any_of",
+            "conditions": [
+              {
+                "kind": "has_status",
+                "side": "target",
+                "id": "shield",
+                "cmp": ">=",
+                "n": 1
+              },
+              {
+                "kind": "has_status",
+                "side": "target",
+                "id": "bulwark",
+                "cmp": ">=",
+                "n": 1
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 7,
+              "note": "刚：破架势"
+            }
+          ],
+          "else": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "gauge_rank",
+                "n": 1,
+                "note": "目标行动条全场第 1（即将出手，gauge_desc 语义）"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 3,
+                  "note": "柔：卸力"
+                },
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": -20,
+                  "mode": "delta"
+                }
+              ],
+              "else": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 4,
+                  "note": "擒：近身"
+                },
+                {
+                  "type": "move",
+                  "op": "pull_forward",
+                  "distance": 1,
+                  "note": "在其自己队列内前拉 1 格，C1 锁定 from.faction，G8 合规"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "ANY_OF_PREDICATE",
+          "note": "共享内核 §三无 any_of 组合子，暂内联两段 has_status 表达「护盾或坚守」，待内核裁定",
+          "landed": false
+        },
+        {
+          "code": "GAUGE_RANK_PREDICATE",
+          "note": "「目标行动条最高」无对应谓词（§三仅 gauge_above 阈值比较），暂记 gauge_rank 伪谓词，待裁定",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_pryer_s8_scholar_physique",
+      "name": "学者体魄",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "格斗学者",
+      "rarity": "common",
+      "axis": "combat",
+      "flagship": false,
+      "lore": "序列8 格斗学者 —— \"身体素质提升\"",
+      "flavor": "常年浸淫各家流派的身体，比看上去结实得多。",
+      "describe": "战斗开始时，自身生命上限 +8、防御 +1，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 8,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s7_illumination",
+      "name": "照明术",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "巫师",
+      "rarity": "uncommon",
+      "axis": "scroll",
+      "flagship": false,
+      "lore": "序列7 巫师 —— \"常见法术：照明术、闪电术、造风术、力场之手等\"",
+      "flavor": "一团光在你掌心炸开，黑暗里藏不住任何东西——包括它身上那些见不得光的门道。",
+      "describe": "对一名敌人造成 3 点火焰伤害，并驱散其 1 个增益状态。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "fire",
+          "value": 3
+        },
+        {
+          "type": "dispel",
+          "target": "target",
+          "dispelTarget": "unit",
+          "filter": {
+            "category": [
+              "buff"
+            ],
+            "count": 1
+          },
+          "note": "C2 数组类别：照明破除依附于黑暗的状态（隐匿类与增益类同属 buff）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s7_lightning_bolt",
+      "name": "闪电术",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "巫师",
+      "rarity": "uncommon",
+      "axis": "scroll",
+      "flagship": false,
+      "lore": "序列7 巫师 —— \"常见法术：照明术、闪电术、造风术、力场之手等\"",
+      "flavor": "一道电光自你指尖窜出，在它身上炸开一片焦痕。",
+      "describe": "对一名敌人造成 5 点雷电伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "shock",
+          "value": 5
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "元素取 shock（原著「闪电术」；F63 已否决 lightning 立项，雷电复用 shock）"
+      ]
+    },
+    {
+      "id": "skill_pryer_s7_gust_of_wind",
+      "name": "造风术",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "巫师",
+      "rarity": "uncommon",
+      "axis": "scroll",
+      "flagship": false,
+      "lore": "序列7 巫师 —— \"常见法术：照明术、闪电术、造风术、力场之手等\"",
+      "flavor": "你挥手掀起一阵风，把它连同它的节奏一起往后推去。",
+      "describe": "对一名敌人造成 2 点物理伤害，将其后撤 1 格并使其行动条 -10。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 2
+        },
+        {
+          "type": "move",
+          "op": "push_back",
+          "distance": 1,
+          "note": "在其自己队列内后撤 1 格，C1 锁定 from.faction，G8 合规"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -10,
+          "mode": "delta"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s7_forceful_hand",
+      "name": "力场之手",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "巫师",
+      "rarity": "uncommon",
+      "axis": "scroll",
+      "flagship": false,
+      "lore": "序列7 巫师 —— \"常见法术：照明术、闪电术、造风术、力场之手等\"",
+      "flavor": "一只无形的手攥住它，把它从后排硬生生拖到你面前，钉在原地动弹不得。",
+      "describe": "对一名敌人造成 3 点物理伤害，将其前拉 1 格，并施加枷锁 2 tick（禁位移、行动条速率 ×0.7）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_desc",
+        "note": "index_desc 咬后排"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 3
+        },
+        {
+          "type": "move",
+          "op": "pull_forward",
+          "distance": 1,
+          "note": "在其自己队列内前拉 1 格，G8 合规"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shackle",
+          "duration": 2
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "shackle",
+          "name": "枷锁",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "moveImmune": true,
+            "gaugeRateMul": 0.7
+          },
+          "note": "复用 F7 已登记定义（禁位移 + gauge_rate ×0.7）；权威定义见状态表，此处为引用副本，本卡为途径内最低序列首登记"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s7_scattered_materials",
+      "name": "洒材料",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "巫师",
+      "rarity": "uncommon",
+      "axis": "scroll",
+      "flagship": false,
+      "lore": "序列7 巫师 —— \"通过洒出不同材料实现多种效果\"",
+      "flavor": "你随手洒出一把材料——是硫磺、是冰晶、还是银粉，落到它身上才知道。",
+      "describe": "对一名敌人造成 3 点无元素伤害，并各以 33% 概率附加：燃烧 3 tick（硫磺）、枷锁 2 tick（冰晶）、驱散 1 个增益（银粉）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "none",
+          "value": 3,
+          "note": "固定伤害，不随机（R5：概率只作用于附加维度）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "p": 0.33
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "burn",
+              "duration": 3,
+              "note": "硫磺"
+            }
+          ],
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "p": 0.33
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "shackle",
+              "duration": 2,
+              "note": "冰晶"
+            }
+          ],
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "p": 0.33
+          },
+          "then": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              },
+              "note": "银粉"
+            }
+          ],
+          "else": []
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "三条互斥随机各 33%：R3 须登记 RandomUsageRegistry，R4 单次抽样",
+        "三种附加期望价值不等（burn≈3 伤 / shackle≈1 次节奏 / 驱散浮动），需统一标定"
+      ]
+    },
+    {
+      "id": "skill_pryer_s7_spell_analysis",
+      "name": "法术解析",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "巫师",
+      "rarity": "uncommon",
+      "axis": "scroll",
+      "flagship": true,
+      "lore": "序列7 巫师 —— \"法术解析与创造：解析、学习、创建法术\"",
+      "flavor": "你一眼看穿它身上那道法术的结构——咒文在你脑中拆成一串符号，散了一半，剩下一半被你记了下来。",
+      "describe": "对一名敌人造成 3 点精神伤害，驱散其 1 个增益状态，自身法术学识 +1 层（最多 3 层，为「神秘再现」攒料）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc",
+        "note": "咬增益最多者"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            },
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "spell_lore",
+              "stacks": 1,
+              "stackMode": "add",
+              "target": "self",
+              "note": "解析 → 学习：为神秘再现攒料"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spell_lore",
+          "name": "法术学识",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "note": "SS2 计数型状态（H11 母版，与 F1 inscription 同源）；由技能显式 +1，消耗走 F48 status.consume"
+        }
+      ],
+      "sharedAcross": [
+        "reader"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s6_scroll_frost",
+      "name": "卷轴·冰冻",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "卷轴教授",
+      "rarity": "uncommon",
+      "axis": "scroll",
+      "flagship": false,
+      "lore": "序列6 卷轴教授 —— \"卷轴制作：念咒后卷轴燃烧释放能力\" / \"冰冻、麻痹等卷轴极大节约施法时间\"",
+      "flavor": "你抽出一张卷轴，咒文在上头燃成灰烬。下一记打向你的拳头，会先撞上一堵看不见的冰墙。",
+      "describe": "自身获得冰冻卷轴 4 tick（1 次）：下次受击时对攻击者施加枷锁 2 tick 并造成 2 点冰霜伤害；卷轴不受沉默影响。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "scroll_frost",
+          "charges": 1,
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "scroll_frost",
+          "name": "冰冻卷轴",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 1,
+          "silent_immune": true,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "shackle",
+                  "duration": 2,
+                  "target": "attacker",
+                  "note": "F7：冻住攻击者"
+                },
+                {
+                  "type": "damage",
+                  "element": "ice",
+                  "value": 2,
+                  "target": "attacker"
+                }
+              ],
+              "note": "触发后 charges 归零卸载（C6）"
+            }
+          ],
+          "note": "SS9 预存触发状态族：charges:1 + silent_immune + 触发事件 + 载荷"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面 targetSpec 允许 SELF 或 ALLY，JSON 取 SELF 主目标"
+      ]
+    },
+    {
+      "id": "skill_pryer_s6_scroll_paralyze",
+      "name": "卷轴·麻痹",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "卷轴教授",
+      "rarity": "uncommon",
+      "axis": "scroll",
+      "flagship": false,
+      "lore": "序列6 卷轴教授 —— \"冰冻、麻痹等卷轴极大节约施法时间\"",
+      "flavor": "你预先在卷轴上写下一道麻痹咒。等你出手时，它替你把那一击钉死。",
+      "describe": "自身获得麻痹卷轴 4 tick（1 次）：下次造成伤害时对目标施加眩晕 1 tick 并附加 2 点雷电伤害；卷轴不受沉默影响。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "scroll_paralyze",
+          "charges": 1,
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "scroll_paralyze",
+          "name": "麻痹卷轴",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 1,
+          "silent_immune": true,
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "stun",
+                  "duration": 1,
+                  "target": "target",
+                  "note": "被击中的目标麻痹"
+                },
+                {
+                  "type": "damage",
+                  "element": "shock",
+                  "value": 2,
+                  "target": "target"
+                }
+              ],
+              "note": "触发后 charges 归零卸载（C6）"
+            }
+          ],
+          "note": "SS9 预存触发状态族，进攻向；「眩晕 1t」强度高，若验证判超模则降级为 shackle 减速半段（差异改为 ice/shock 元素）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面 targetSpec 允许 SELF 或 ALLY，JSON 取 SELF 主目标"
+      ]
+    },
+    {
+      "id": "skill_pryer_s5_pillar_of_stars",
+      "name": "星之巨柱",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "星象师",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": true,
+      "lore": "序列5 星象师 —— \"星之巨柱、星海穿梭、星桥、本我星象、星光囚笼 / 初步掌握星象、星座、星辰、星光概念\"",
+      "flavor": "你指向它脚下的阴影。星光自虚空垂落，凝成一柱，把它连同步伐一起砸进地里。",
+      "describe": "对一名敌人造成 7 点无元素伤害，并使其行动条 -20。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "none",
+          "value": 7,
+          "note": "星象类伤害统一 element:none（星光不是火/电，参照 F63 否决 lightning 的口径）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -20,
+          "mode": "delta",
+          "note": "压制"
+        }
+      ],
+      "sharedAcross": [
+        "savant"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s5_stellar_traversal",
+      "name": "星海穿梭",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "星象师",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列5 星象师 —— \"星之巨柱、星海穿梭、星桥、本我星象、星光囚笼\"",
+      "flavor": "你的身形散作一片星尘，退到战阵之后；下一道打向你的攻击穿过漫天光点，只擦走了几粒。",
+      "describe": "自身退回己方队尾，并获得星尘相位 3 tick（1 次）：下次受击时该次伤害 ×0.4，自身行动条 +15。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "target": "self",
+              "note": "退回己方半场最后位，C1 已落地，G8 合规"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "stellar_phase",
+              "charges": 1,
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "stellar_phase",
+          "name": "星尘相位",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "modifiers": {
+            "damage_taken_mul": 0.4
+          },
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 15,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "穿梭后抢先反击"
+                }
+              ],
+              "note": "触发后 charges 归零卸载（C6）"
+            }
+          ],
+          "note": "SS10 参数化减伤状态（H3 母版，与 F 组合并候选 2 同源）；位移仅为己方半场内后退，穿梭本体为减伤 + 反抢节奏"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s5_star_bridge",
+      "name": "星桥",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "星象师",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列5 星象师 —— \"星之巨柱、星海穿梭、星桥、本我星象、星光囚笼\"",
+      "flavor": "一道星光在两条战线之间架起桥来，被你点到的同伴踏桥而过，赶在需要他的地方落位。",
+      "describe": "使一名友军跨路换线落另一路队尾，并使其行动条 +15。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "insert_tail_cross_lane",
+              "target": "target",
+              "note": "既有 move.op，G8 合规"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 15,
+              "mode": "delta",
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "savant"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "G5 合规：推的是友军的 gauge.current，不是自己"
+      ]
+    },
+    {
+      "id": "skill_pryer_s5_starlight_cage",
+      "name": "星光囚笼",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "星象师",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列5 星象师 —— \"星之巨柱、星海穿梭、星桥、本我星象、星光囚笼\"",
+      "flavor": "星光在它四周织成笼子。它挪不动，也叫不出来。",
+      "describe": "对一名敌人造成 2 点无元素伤害，施加枷锁 3 tick（禁位移、行动条速率 ×0.7）并沉默 1 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc",
+        "note": "锁即将出手者"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "none",
+          "value": 2
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shackle",
+          "duration": 3
+        },
+        {
+          "type": "mount_status",
+          "statusId": "silence",
+          "duration": 1,
+          "note": "原著本途径唯一封技点（单体 1t）；若验证判超模首选砍沉默保留 shackle"
+        }
+      ],
+      "sharedAcross": [
+        "savant"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s5_ego_constellation",
+      "name": "本我星象",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "星象师",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列5 星象师 —— \"星之巨柱、星海穿梭、星桥、本我星象、星光囚笼 / 初步掌握星象、星座、星辰、星光概念\"",
+      "flavor": "每个人头顶都悬着一片属于自己的星象。你认得你那一片——它让脚步轻快，也在你濒死时骤然亮起。",
+      "describe": "战斗开始时：自身行动条速率 +6（整场），并获得「本我星象」（每场 1 次）：自身生命低于 40% 受击时行动条 +20。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 6,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "ego_constellation",
+          "charges": 1,
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "ego_constellation",
+          "name": "本我星象",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "self",
+                "cmp": "<",
+                "n": 0.4
+              },
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 20,
+                  "mode": "delta",
+                  "target": "self"
+                }
+              ],
+              "note": "SS13：hp_percent（side:self）谓词，SS19 SelfHpBelow 已并入；触发后 charges 归零（每场一次保底反打）"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge.rate) 表达常驻速率修正，待内核裁定归一",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_pryer_s4_mystery_reenactment",
+      "name": "神秘再现",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "神秘学家",
+      "rarity": "rare",
+      "axis": "scroll",
+      "flagship": true,
+      "lore": "序列4 神秘学家 —— \"『神秘再现』（核心）：从神秘学知识汲取力量创造魔法\"",
+      "flavor": "你把那些解析来的、记下来的、谁都不曾见过的知识倒进咒文里——它们燃烧起来，变成从未存在过的法术。",
+      "describe": "若自身有法术学识层数：消耗全部层数 N，对目标造成 N 段各 3 点无元素伤害；若 N≥3 额外在己方队尾召唤卷轴造物并使自己隐秘知识 +1。无层数时退化为 3 点无元素伤害并使法术学识 +1。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "spell_lore",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "mount_status",
+                  "statusId": "spell_lore",
+                  "stacks": "all",
+                  "stackMode": "consume"
+                },
+                {
+                  "op": "repeat",
+                  "count": "$consumed.spell_lore",
+                  "shareTarget": true,
+                  "steps": [
+                    {
+                      "type": "damage",
+                      "element": "none",
+                      "value": 3
+                    }
+                  ],
+                  "note": "动态段数（G3 已确认）：学了几条知识就炸几下"
+                },
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "consumed_count",
+                    "statusId": "spell_lore",
+                    "cmp": ">=",
+                    "n": 3,
+                    "note": "N≥3"
+                  },
+                  "then": [
+                    {
+                      "type": "spawn",
+                      "template": "unit_scroll_construct",
+                      "position": "tail",
+                      "note": "SS20 复用 F44 已登记单位（H1 召唤物基线），不新立项"
+                    },
+                    {
+                      "type": "mount_status",
+                      "statusId": "hidden_knowledge",
+                      "stacks": 1,
+                      "stackMode": "add",
+                      "target": "self"
+                    }
+                  ],
+                  "else": []
+                }
+              ]
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "spell_lore",
+              "stacks": 1,
+              "stackMode": "add",
+              "target": "self",
+              "note": "无层数退化：仍攒 1 层"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null",
+        "Repeat 段数取自 status.consume 消耗值（跨效果传值 valueFrom 族）"
+      ]
+    },
+    {
+      "id": "skill_pryer_s4_matchstick_girl",
+      "name": "卖火柴的小女孩",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "神秘学家",
+      "rarity": "rare",
+      "axis": "scroll",
+      "flagship": false,
+      "lore": "序列4 神秘学家 —— \"童话魔法：卖火柴的小女孩（幻觉）、灰姑娘（变形）、朗基努斯之枪（强攻）等\"",
+      "flavor": "你划亮一根火柴。它在火光里看见了温暖的房间、丰盛的晚餐和早已死去的祖母——它伸出手，扑了个空。",
+      "describe": "对一名敌人造成 2 点精神伤害，并施加幻觉 4 tick（2 次）：其攻击落向最近空坐标。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc",
+        "note": "锁最高攻者"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 2
+        },
+        {
+          "type": "mount_status",
+          "statusId": "hallucination",
+          "charges": 2,
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "hallucination",
+          "name": "火柴幻觉",
+          "category": [
+            "retarget",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 2,
+          "behaviorModifiers": [
+            {
+              "op": "target_override",
+              "anchor": "first_empty",
+              "note": "C7 已验证：攻击落向空处"
+            }
+          ],
+          "note": "童话魔法可被选散（人人都知道的故事）；可选增强（SS8 on_attack）：落空时持有者自受 mental 2（火柴熄灭）——未内建，列为后续"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null"
+      ]
+    },
+    {
+      "id": "skill_pryer_s4_cinderella",
+      "name": "灰姑娘",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "神秘学家",
+      "rarity": "rare",
+      "axis": "scroll",
+      "flagship": false,
+      "lore": "序列4 神秘学家 —— \"童话魔法：卖火柴的小女孩（幻觉）、灰姑娘（变形）、朗基努斯之枪（强攻）等\"",
+      "flavor": "你打了个响指。华服变回灰扑扑的旧裙，马车变回南瓜——它站在那儿，笨拙、迟缓、脆弱。等到十二点的钟声敲响，一切才会复原。",
+      "describe": "使一名敌人变形 3 tick：攻击 -4、防御 -2、行动条速率 ×0.85、受伤 ×1.15，到期自动复原。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "cinderella_form",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "cinderella_form",
+          "name": "褴褛形态",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -4,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 0.85,
+              "mode": "mul",
+              "duration": 3,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "damage_taken_mul": 1.15
+          },
+          "note": "SS11 形态状态（H10 母版，与 F10 beast_form 同族）；到期回滚 = 十二点的钟声"
+        }
+      ],
+      "variants": [
+        {
+          "id": "glamour_form",
+          "name": "华服形态",
+          "note": "B6 友军版：灰姑娘的两面，正向变形、同样到期复原",
+          "targetOverride": {
+            "faction": "ally"
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "cinderella_form",
+              "duration": 3,
+              "target": "target",
+              "statusDefOverride": {
+                "id": "glamour_form",
+                "name": "华服形态",
+                "category": [
+                  "buff"
+                ],
+                "effects": [
+                  {
+                    "type": "modify_stat",
+                    "stat": "attack",
+                    "value": 3,
+                    "mode": "delta",
+                    "duration": 3,
+                    "target": "self"
+                  },
+                  {
+                    "type": "modify_stat",
+                    "stat": "defense",
+                    "value": 2,
+                    "mode": "delta",
+                    "duration": 3,
+                    "target": "self"
+                  },
+                  {
+                    "type": "modify_stat",
+                    "stat": "gauge.rate",
+                    "value": 1.15,
+                    "mode": "mul",
+                    "duration": 3,
+                    "target": "self"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate ×0.85 以 modify_stat(mode:mul) 表达，同本我星象待裁定归一",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null"
+      ]
+    },
+    {
+      "id": "skill_pryer_s4_lance_of_longinus",
+      "name": "朗基努斯之枪",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "神秘学家",
+      "rarity": "rare",
+      "axis": "combat",
+      "flagship": true,
+      "lore": "序列4 神秘学家 —— \"童话魔法：卖火柴的小女孩（幻觉）、灰姑娘（变形）、朗基努斯之枪（强攻）等\"",
+      "flavor": "那柄刺穿神子肋旁的枪出现在你手中。它不认得什么护甲、什么庇佑——它只认得要刺穿的东西。",
+      "describe": "对一名近战敌人造成 8 点物理伤害，驱散其 1 个增益状态，并使其护甲上限 -5（3 tick）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 8
+            },
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              },
+              "note": "贯穿庇佑"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": -5,
+              "mode": "delta",
+              "duration": 3,
+              "note": "破甲"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null",
+        "护甲带 duration 为容量语义，按归一纪律写 modify_stat（稿面即此写法）",
+        "G8 合规：近战攻击进程不调 move，突刺为 flavor"
+      ]
+    },
+    {
+      "id": "skill_pryer_s4_hidden_knowledge",
+      "name": "隐秘知识",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "神秘学家",
+      "rarity": "rare",
+      "axis": "scrying",
+      "flagship": true,
+      "lore": "序列4 神秘学家 —— \"知识越少人知道法术越强大\"",
+      "flavor": "你手里握着从没人见过的知识——那是它最锋利的时候。可每用一次，看穿它的人就多一个。",
+      "describe": "战斗开始时获得「隐秘知识」3 层（最多 5 层，整场）：自身伤害 ×(1+0.1×层数)；每次造成伤害层数 -1；释放知识类技能（法术解析 / 神秘再现 / 删除 / 修改 / 知识攻击）层数 +1。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "hidden_knowledge",
+          "stacks": 3,
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "hidden_knowledge",
+          "name": "隐秘知识",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 5,
+          "stackPolicy": "stack",
+          "modifiers": {
+            "damage_mul": {
+              "dynamic": "1 + 0.1 × 层数",
+              "note": "H4 按层数动态乘区"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "hidden_knowledge",
+                  "stacks": -1,
+                  "stackMode": "consume"
+                }
+              ]
+            }
+          ],
+          "note": "SS3 计数型状态（H11 母版，与 F1 inscription 同源）；回充不写在状态上，由各知识类技能效果显式 +1（零新依赖主方案）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s5_astral_field",
+      "name": "星象领域",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "星象师",
+      "rarity": "rare",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列5 星象师 —— 星之巨柱 / 星海穿梭 / 星桥 / 本我星象 / 星光囚笼 的领域化",
+      "flavor": "星图在你头顶铺开，星光垂落下来罩住整座战场——在你的星象之下，友军步步生辉，而敌人的魂魄被星辉一点点灼穿。",
+      "describe": "降临「星象领域」3 回合：己方单位攻击 +1、行动条速率 ×1.1（星光引路）；敌方单位每 tick 受 1 点精神伤害（星辉灼魂）；「星象/光」标签卡效果 ×1.3，「暗影」标签卡 ×0.8。自身迷失值 +1。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_astral_field",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_astral_field",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：己方单位 attack +1 + gauge.rate ×1.1（星光引路）；敌方单位每 tick 受 damage(mental, 1)（星辉灼魂）——双向：引路 / 灼魂",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "星象",
+              "光"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "暗影"
+            ],
+            "mul": 0.8
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_astral_field",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "damage",
+                "element": "mental",
+                "value": 1,
+                "note": "星辉灼魂"
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "ally"
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 1,
+                "mode": "delta",
+                "duration": 1
+              },
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 1.1,
+                "mode": "mul",
+                "duration": 1,
+                "note": "星光引路"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "星象",
+              "光"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "暗影"
+            ],
+            "mul": 0.8
+          }
+        ]
+      },
+      "tags": [
+        "星象",
+        "光"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "DomainDef 内 gauge.rate ×1.1 以 modify_stat(mode:mul) 表达，同本我星象待裁定归一",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null",
+        "SS21：F47 zone_astral_field 的落实，最终形态为界域牌，Zone 形态不再单立（2026-09-08 界域牌批次新增）"
+      ]
+    },
+    {
+      "id": "skill_pryer_s3_prophecy",
+      "name": "预言",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "预言大师",
+      "rarity": "epic",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列3 预言大师 —— \"『预言』：预见选择后果、最佳选择、末日来临\"",
+      "flavor": "你已经看见了该走的那一步。同伴踏了上去，而对手被留在了它自己的犹豫里。",
+      "describe": "双目标：使一名友军行动条 +20（最佳选择），并使一名敌人行动条 -20（预见其选择的后果）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_asc"
+      },
+      "secondaryTargets": [
+        {
+          "selectionMode": "manual",
+          "request": {
+            "faction": "enemy",
+            "scope": "single",
+            "sort": "gauge_desc"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 20,
+              "mode": "delta",
+              "target": "target"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -20,
+              "mode": "delta",
+              "target": "secondary_target"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "reader"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null",
+        "G5/G6 修正：弃 v0.1「自身 +30 / 目标 −25」自推无效写法，改推友军 + 拖敌人（与愚者命运干扰同构）",
+        "与阅读者【预言】命名重叠，汇总阶段待裁定（建议改称「星占」/「大预言」）"
+      ]
+    },
+    {
+      "id": "skill_pryer_s3_doomsday_prophecy",
+      "name": "末日预言",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "预言大师",
+      "rarity": "epic",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列3 预言大师 —— \"『预言』：预见选择后果、最佳选择、末日来临\"",
+      "flavor": "你说出了那个结局。从这一刻起，它身上的每一道伤都会更深，而末日会在第三声钟响时落下。",
+      "describe": "使全体敌人陷入末日 3 tick：受伤 ×1.25，到期时各受 6 点无元素伤害。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "doomsday",
+          "duration": 3,
+          "target": "all_enemies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "doomsday",
+          "name": "末日",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "damage_taken_mul": 1.25
+          },
+          "triggers": [
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 6,
+                  "target": "self",
+                  "note": "末日降临"
+                }
+              ],
+              "note": "倒计时爆发；on_remove 是否覆盖自然到期（expired）待实测，若只覆盖主动驱散则改 on_tick 计数"
+            }
+          ],
+          "note": "SS12 参数化复合 debuff（H2 含 on_remove 载荷参数，与 F 组合并候选 4 同源）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "ON_REMOVE_EXPIRY",
+          "note": "稿面自认：on_remove 在自然到期时是否 fire 待实测确认；不成立则核心（倒计时爆发）需改为 on_tick 计数表达式",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null"
+      ]
+    },
+    {
+      "id": "skill_pryer_s3_scrying_authority",
+      "name": "窥秘权柄",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "预言大师",
+      "rarity": "epic",
+      "axis": "scrying",
+      "flagship": true,
+      "lore": "序列3 预言大师 —— \"『窥秘』权柄：窥探隐藏的秘密、知识、存在、命运秘密\"",
+      "flavor": "世界上没有对你隐藏的东西。藏起来的存在，你照得见；被护住的知识，你也照样能撕开。",
+      "describe": "战斗开始时获得「窥秘权柄」：敌方隐匿 / 不可选中类状态对你无效；你的驱散无视不可驱散标志，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "scrying_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "scrying_authority",
+          "name": "窥秘权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "detect": {
+              "ignoreUntargetable": true,
+              "direction": "inbound",
+              "note": "C8 候选池过滤：隐匿 / 不可选中类状态对持有者无效"
+            },
+            "dispelParams": {
+              "ignoreDispelable": true,
+              "note": "SS4：驱散命中 dispelable:false 的状态也照常移除（窥见被隐藏的知识，强行揭示）"
+            }
+          },
+          "note": "序列 3 权柄，与序列 9 窥秘之眼（感官级）分层不重叠"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "C8_NOT_IMPLEMENTED",
+          "note": "识破部分同窥秘之眼依赖 C8（稿面自认未实现）；退化方案：驱散 count +1 替代无视不可驱散",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_pryer_s2_informatization",
+      "name": "信息化",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "贤者",
+      "rarity": "epic",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列2 贤者 —— \"信息掌控（核心）：自身信息化成信息流生物\"",
+      "flavor": "你的躯体散作一串流动的信息。拳头穿你而过，只搅乱了几个字符——直到你重新凝聚成\"人\"的那一下。",
+      "describe": "自身信息化 4 tick（2 次）：不可被单体技能选中、受伤 ×0.6，造成伤害时立即破除。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "info_form",
+          "charges": 2,
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "info_form",
+          "name": "信息化",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 2,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            },
+            "damage_taken_mul": 0.6
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "info_form",
+                  "stacks": -2,
+                  "stackMode": "consume",
+                  "note": "攻击即破除（显形即失效）：charges 2 一次清空，等同卸载本状态"
+                }
+              ]
+            }
+          ],
+          "note": "SS14：与 F4 shadow_veil 机制完全同族（0.7 减伤 / charges 2 / 攻击破除，此处 0.6），建议并入 F 组合并候选 1 潜行母版，本卡只填参数"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "C8_NOT_IMPLEMENTED",
+          "note": "不可被选中部分依赖 C8 候选池过滤（稿面自认未实现）；若长期不落地需改为不依赖候选池的替代收益",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null"
+      ]
+    },
+    {
+      "id": "skill_pryer_s2_knowledge_infusion",
+      "name": "灌输知识",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "贤者",
+      "rarity": "epic",
+      "axis": "combat",
+      "flagship": false,
+      "lore": "序列2 贤者 —— \"灌输知识、知识攻击、同化、虚假信息\"",
+      "flavor": "你每打中它一次，就把一段无用、错乱、自相矛盾的知识灌进它的脑子——它越想施法，越觉得吃力。",
+      "describe": "每当你造成伤害：目标获得「耗能加重」2 tick（能量消耗 ×1.5）。",
+      "hook": "on_deal_damage",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "energy_strain",
+          "duration": 2,
+          "target": "target",
+          "note": "既有状态纯复用，零新机制"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s2_knowledge_strike",
+      "name": "知识攻击",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "贤者",
+      "rarity": "epic",
+      "axis": "combat",
+      "flagship": false,
+      "lore": "序列2 贤者 —— \"灌输知识、知识攻击、同化、虚假信息\"",
+      "flavor": "你把一整段悖论直接砸进它的意识。它的脑子先是疼，然后开始怀疑自己知道的一切。",
+      "describe": "对一名敌人造成 5 点精神伤害并施加「耗能加重」3 tick；若自身隐秘知识 ≥2 层，额外造成 3 点精神伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "energy_desc",
+        "note": "优先砸施法者（F57 同源）"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 5
+            },
+            {
+              "type": "mount_status",
+              "statusId": "energy_strain",
+              "duration": 3
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "hidden_knowledge",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 3,
+                  "note": "知识越隐秘攻击越致命"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "assimilation",
+          "name": "同化",
+          "note": "B6 变体（原著点名）：与序列 0 下位「复制」语义重叠，正卡只上「攻击」这一半",
+          "effects": [
+            {
+              "type": "drain",
+              "category": "buff",
+              "count": 1,
+              "note": "F50：从目标转移 1 个可驱散增益到施法者（保留剩余 duration）"
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null",
+        "知识类技能：命中后应回充隐秘知识 +1（写在回充方技能效果里，本卡不在自身效果内重复声明）"
+      ]
+    },
+    {
+      "id": "skill_pryer_s2_deletion",
+      "name": "删除",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "贤者",
+      "rarity": "epic",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列2 贤者 —— \"粗浅的『删除』和『修改』权柄\" / 序列0 隐者下位\"删除\"",
+      "flavor": "你从现实里划掉了它身上的两行——护佑、祝福，都没了。如果它身上什么都没有，那就划掉它自己。",
+      "describe": "驱散一名敌人的 2 个增益状态；若其没有可删的增益，改为造成 4 点无元素伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 2
+              }
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "dispelled_count",
+                "cmp": "<",
+                "n": 1,
+                "note": "目标无 buff 可删（本次驱散 0 个）"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 4,
+                  "note": "没有可删的东西，就删掉它的一部分存在"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "savant"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null",
+        "「无 buff 可删」判定用共享内核 dispelled_count 谓词（valueFrom dispelledAmount 族）承载"
+      ]
+    },
+    {
+      "id": "skill_pryer_s2_modification",
+      "name": "修改",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "贤者",
+      "rarity": "epic",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列2 贤者 —— \"粗浅的『删除』和『修改』权柄\" / 序列0 隐者下位\"修改\"",
+      "flavor": "你把它身上那道\"祝福\"的定义改了一个词。于是祝福成了诅咒。",
+      "describe": "将一名敌人的 1 个增益改写为等价减益（保留剩余时长）；无对应映射时退化为驱散 1 个增益并造成 3 点无元素伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "type": "transfer_status",
+          "mode": "rewrite",
+          "filter": {
+            "category": [
+              "buff"
+            ],
+            "count": 1
+          },
+          "mapping": {
+            "shield": "vulnerable",
+            "regen": "burn",
+            "bulwark": "vulnerable",
+            "gauge_rate_up": "shackle"
+          },
+          "note": "SS5 状态改写算子（transfer_status mode:rewrite，H32；与愚者稿新增项 2 / F50 同源并入同一母版，不重复立项）",
+          "fallback": [
+            {
+              "type": "dispel",
+              "target": "target",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 3
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "savant"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null",
+        "映射表为示例（gauge_rate+ → shackle 一条为推演），待拍板；分阶段建议：先上保守版（dispel 1 buff + mount vulnerable），映射表列为后续增强"
+      ]
+    },
+    {
+      "id": "skill_pryer_s1_edification",
+      "name": "教化权柄",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "知识皇帝",
+      "rarity": "legendary",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列1 知识皇帝 —— \"『教化』权柄 +『窥秘』权柄：窥见众神乃至旧日的秘密\" / \"神秘知识权柄深化：将力量赋予知识获得其他序列非凡能力\"",
+      "flavor": "你把知识分给同伴，知识便回赠他们以灵感。而你从众神都不曾示人的地方取回的那一份，只留给自己。",
+      "describe": "战斗开始时获得「教化」：全体友军能量恢复 +0.2/tick，自身伤害 ×1.15，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "edification",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "edification",
+          "name": "教化",
+          "category": [
+            "buff",
+            "aura"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": 0.2,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies"
+            }
+          ],
+          "modifiers": {
+            "damage_mul": 1.15,
+            "note": "「将力量赋予知识」的自用部分"
+          },
+          "note": "SS18 纯数据配置，零新机制；v0.1「全队智力 +3」为无效键，改 energy_regen"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_pryer_s1_false_information",
+      "name": "虚假信息·灵体之线",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "知识皇帝",
+      "rarity": "legendary",
+      "axis": "scrying",
+      "flagship": true,
+      "lore": "序列2 贤者 —— \"虚假信息\" / 序列1 知识皇帝 —— \"伪造信息沿灵体之线传播\"",
+      "flavor": "你编了一段假话，顺着那条看不见的灵体之线送了出去。它信了，它旁边的也信了——而假话会一直啃到它们发现自己被骗为止。",
+      "describe": "使一名敌人携带虚假信息 4 tick（伪装成增益，按减益净化清不掉），并沿队列传播给相邻单位：受伤 ×1.2，每 tick 能量 -2。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "false_info",
+          "duration": 4,
+          "spread": "splash_adjacent",
+          "note": "沿灵体之线传播给相邻单位"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "false_info",
+          "name": "虚假信息",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "damage_taken_mul": 1.2
+          },
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": -2,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "F55：energy 键钳制下限 0"
+                }
+              ]
+            }
+          ],
+          "note": "SS15：category 写 buff（伪装成增益）但载荷有害——所有按 category 工作的机制（敌方净化减益 / 增益保护 / UI）都会被骗；零新字段纯数据"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "SPREAD_SPLASH_ADJACENT",
+          "note": "SS16：spread 字段已登记（共享内核 §一），但实现状态待确认（愚者稿飞牌升级阶梯引用过同一字段）",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null"
+      ]
+    },
+    {
+      "id": "skill_pryer_s0_concealment_authority",
+      "name": "隐匿权柄",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "隐者",
+      "rarity": "legendary",
+      "axis": "scrying",
+      "flagship": true,
+      "lore": "序列0 隐者 —— \"『隐匿』权柄\"",
+      "flavor": "你的一部分始终留在知识荒野的雾里。敌人找不到你——除非你自己走出来。",
+      "describe": "战斗开始时获得「隐匿权柄」：敌方单体技能难以选中你、受伤 ×0.9；你每次造成伤害后显形 2 tick（期间上述效果失效）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "concealment_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "concealment_authority",
+          "name": "隐匿权柄",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            },
+            "damage_taken_mul": 0.9
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "concealment_broken",
+                  "duration": 2,
+                  "target": "self",
+                  "note": "攻击即破：显形 2 tick"
+                }
+              ]
+            }
+          ],
+          "note": "SS17 潜行母版（H5，与 F4 shadow_veil / F11 stealth 同源建议并入）；显形段由伴随状态 concealment_broken 承载"
+        },
+        {
+          "id": "concealment_broken",
+          "name": "显形",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": 2,
+          "modifiers": {
+            "suppress": [
+              "concealment_authority"
+            ],
+            "note": "显形期间隐匿权柄的不可选中与减伤失效（H38 suppress 语义）"
+          },
+          "note": "辅助状态：隐匿权柄的代价段承载"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "C8_NOT_IMPLEMENTED",
+          "note": "不可选中部分依赖 C8 候选池过滤（稿面自认未实现）；若长期不落地本卡需整体重做",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_pryer_s0_numeric_symbolism",
+      "name": "数字象征·零与一",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "隐者",
+      "rarity": "legendary",
+      "axis": "astral",
+      "flagship": true,
+      "lore": "序列0 隐者 —— \"『神秘知识』权柄：赋予数字象征力量（0 = 混沌，1 = 造物主）\"",
+      "flavor": "「一」是造物主，从混沌里立起秩序；「零」是混沌，把秩序推回原初。你摊开手掌，看自己更需要哪一个。",
+      "describe": "若自身生命低于 50%：全体友军获得 6 点护盾（4 tick）且攻击 +2（4 tick）（「一」·造物主）；否则：驱散全体敌人全部增益并造成 5 点无元素伤害（「零」·混沌）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "hp_percent",
+            "side": "self",
+            "cmp": "<",
+            "n": 0.5
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 6,
+              "duration": 4,
+              "target": "all_allies",
+              "note": "「一」·造物主：从混沌中创造"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": 4,
+              "target": "all_allies"
+            }
+          ],
+          "else": [
+            {
+              "type": "dispel",
+              "target": "all_enemies",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ]
+              },
+              "note": "「零」·混沌：count 省略 = 全部清除；把秩序打回混沌"
+            },
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 5,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "savant"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "吟唱 ⚠️D → castTime null",
+        "分支条件 = 自身血量（SS19 SelfHpBelow 已并入 hp_percent side:self）；护盾 6 超「5 一档」由传说档权重与 cd 8 兜住，待验证"
+      ]
+    },
+    {
+      "id": "skill_pryer_s0_backup",
+      "name": "备份",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "隐者",
+      "rarity": "legendary",
+      "axis": "astral",
+      "flagship": false,
+      "lore": "序列0 隐者 —— 下位权柄\"备份\"",
+      "flavor": "你把自己复制了一份，存在没人找得到的地方。第一次真正死去时，那份拷贝会把你拼回来——连同你本该有的样子。",
+      "describe": "战斗开始时获得「备份」（每场 1 次）：挂载时记录自身增益状态快照；首次死亡时中断死亡、以 25% 生命存活，清除自身全部减益与持续伤害，并还原快照中的增益（保留剩余时长）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "backup",
+          "charges": 1,
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "backup",
+          "name": "备份",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 1,
+          "lethalProtect": {
+            "hpRatio": 0.25
+          },
+          "triggers": [
+            {
+              "event": "on_apply",
+              "effects": [
+                {
+                  "type": "snapshot",
+                  "fields": [
+                    "statuses"
+                  ],
+                  "filter": {
+                    "category": [
+                      "buff"
+                    ]
+                  },
+                  "target": "self",
+                  "note": "SS6 status_snapshot：挂载时记录自身增益状态快照"
+                }
+              ]
+            },
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "debuff",
+                      "dot"
+                    ]
+                  },
+                  "note": "count 省略 = 全部清除"
+                },
+                {
+                  "type": "restore_snapshot",
+                  "fields": [
+                    "statuses"
+                  ],
+                  "target": "self",
+                  "note": "还原快照中的增益（保留剩余 duration）"
+                }
+              ],
+              "note": "致死保护（H7/SS7）中断死亡不进死亡结算；触发后 charges 归零（C6，每场一次）"
+            }
+          ],
+          "note": "原著下位四权柄（备份/复制/删除/修改）最「隐者」的一条：从备份还原的是状态不是生命；与愚者灵之虫（on_death→spawn 死后召回 4 次）不同"
+        }
+      ],
+      "tentative": true
+    }
+  ]
+}

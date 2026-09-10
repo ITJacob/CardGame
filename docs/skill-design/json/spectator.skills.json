@@ -1,0 +1,2245 @@
+{
+  "pathwayId": "spectator",
+  "pathwayName": "观众",
+  "sourceFile": "../观众途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "insight": {
+      "symbol": "🜁",
+      "name": "洞察"
+    },
+    "suggestion": {
+      "symbol": "🜂",
+      "name": "暗示"
+    },
+    "dream": {
+      "symbol": "🜃",
+      "name": "梦境"
+    },
+    "fantasy": {
+      "symbol": "🜄",
+      "name": "空想"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_spectator_s9_subtle_observe",
+      "name": "观众·细微观察",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "观众",
+      "rarity": "common",
+      "axis": "insight",
+      "flagship": false,
+      "lore": "序列9 观众 —— \"出众的精神和敏锐的观察力：从表情举止窥见真实想法\"",
+      "flavor": "你看着它的肩膀、它的呼吸、它眨眼的方式——每读懂一次，你心里就多记下一笔。",
+      "describe": "自身造成精神伤害时，「心象」层数 +1（上限 5 层，整场持续）。",
+      "hook": "on_deal_damage",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "insight",
+          "stacks": 1,
+          "stackMode": "add",
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "insight",
+          "name": "心象",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 5,
+          "stackPolicy": "stack",
+          "note": "计数型状态（H11 + F51），本身不提供任何属性，只作消耗品；洞察权柄可扩至 7 层。与 F1 inscription（学徒·默记）同源母版"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "DAMAGE_ELEMENT_TRIGGER_FILTER",
+          "note": "触发需按伤害元素过滤（仅 mental 伤害时 +1 层），ddd 触发条件侧无元素维度谓词，维持 🟡（本稿新增项 18）",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_spectator_s9_exceptional_mind",
+      "name": "出众精神",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "观众",
+      "rarity": "common",
+      "axis": "suggestion",
+      "flagship": false,
+      "lore": "序列9 观众 —— \"出众的精神和敏锐的观察力\"",
+      "flavor": "这条途径的低序列之所以能在非凡者环绕中活下来，靠的就是这副精神。",
+      "describe": "战斗开始时，自身精神抗性 +20%，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "sharedAcross": [
+        "chanter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s9_indirect_influence",
+      "name": "间接影响",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "观众",
+      "rarity": "common",
+      "axis": "insight",
+      "flagship": false,
+      "lore": "序列9 观众 —— \"间接影响，缺乏直接克敌手段\"",
+      "flavor": "你从不亲手伤人——你只是让同伴的脚步，比对手快了半拍。",
+      "describe": "指定一名友军，其行动条 +20。",
+      "cost": {
+        "energy": 1,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_asc"
+      },
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": 20,
+          "mode": "delta"
+        }
+      ],
+      "sharedAcross": [
+        "reader",
+        "chanter"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "G5 铁律：只推友军，绝不写 SELF 自推条"
+      ]
+    },
+    {
+      "id": "skill_spectator_s8_mind_read",
+      "name": "读心",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "读心者",
+      "rarity": "common",
+      "axis": "insight",
+      "flagship": false,
+      "lore": "序列8 读心者 —— \"观察深入气场、以太体，异常准确地掌握人心\"",
+      "flavor": "你读完了它。接下来的一击，你确切知道该落在哪儿。",
+      "describe": "对一名敌人造成 2 点精神伤害；若自身「心象」≥2 层，消耗 2 层，改为再造成 6 点精神伤害并使其易伤 2 tick。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "caster_status_exists",
+                "id": "insight",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "insight",
+                  "stacks": -2,
+                  "stackMode": "consume",
+                  "note": "源稿：消耗 2 层心象换爆发（原脚本归一误为 -1）"
+                },
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 6
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "vulnerable",
+                  "duration": 2
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "reader"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "心象消耗补 statusId:insight，stacks 依源稿订正为 -2（原脚本归一误为 -1）"
+      ]
+    },
+    {
+      "id": "skill_spectator_s8_aura_sight",
+      "name": "气场感知",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "读心者",
+      "rarity": "common",
+      "axis": "insight",
+      "flagship": false,
+      "lore": "序列8 读心者 —— \"观察深入气场、以太体……在其面前很难有秘密\"",
+      "flavor": "气场和以太体瞒不了你——藏起来的东西，在你眼里只是颜色深了一点。",
+      "describe": "战斗开始时获得「气场感知」：敌方的隐匿 / 不可选中状态对你无效，你对隐匿目标造成的伤害 ×1.25，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "aura_sight",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "aura_sight",
+          "name": "气场感知",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "pierceConceal": true,
+            "damage_mul": {
+              "value": 1.25,
+              "filter": {
+                "targetConcealed": true
+              }
+            }
+          },
+          "note": "共享内核参数 §四 识破分支：忽略隐匿/不可选中 + 对隐匿目标伤害乘区；与凡有言必被知 / 洞察权柄构成三级反隐匿链（本条最廉价）"
+        }
+      ],
+      "sharedAcross": [
+        "reader"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s7_dread",
+      "name": "震慑",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "心理医生",
+      "rarity": "uncommon",
+      "axis": "suggestion",
+      "flagship": false,
+      "lore": "序列7 心理医生 —— \"『震慑』：使目标瞬间惊慌混乱\"",
+      "flavor": "你只看了它一眼。它慌了，手上的动作乱了半拍。",
+      "describe": "使一名敌人眩晕 2 tick，行动条 -20。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "duration": 2
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -20,
+              "mode": "delta"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s7_madness",
+      "name": "狂乱",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "心理医生",
+      "rarity": "uncommon",
+      "axis": "suggestion",
+      "flagship": false,
+      "lore": "序列7 心理医生 —— \"『狂乱』：引爆情绪，精神伤害\"",
+      "flavor": "你伸手在它心里那堆乱麻上点了一下——炸开的全是它自己的情绪。",
+      "describe": "对一名敌人造成 4 点精神伤害；若其带有减益 / 持续伤害 / 控制类状态，再追加 2 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 4
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_category",
+                "side": "target",
+                "categories": [
+                  "debuff",
+                  "dot",
+                  "control"
+                ]
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s7_psych_suggestion",
+      "name": "心理暗示",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "心理医生",
+      "rarity": "uncommon",
+      "axis": "suggestion",
+      "flagship": false,
+      "lore": "序列7 心理医生 —— \"『心理暗示』\"",
+      "flavor": "你轻声告诉它：你很弱，你的刀也很钝。它就真的信了。",
+      "describe": "驱散一名敌人 1 个增益状态，并使其攻击 -3，持续 4 tick。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -3,
+              "mode": "delta",
+              "duration": 4
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s7_console",
+      "name": "安抚",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "心理医生",
+      "rarity": "uncommon",
+      "axis": "suggestion",
+      "flagship": false,
+      "lore": "序列7 心理医生 —— \"『安抚（精神分析）』\"",
+      "flavor": "你把那些压着它的东西一件件拿出来看了一遍——看完，就不疼了。",
+      "describe": "治疗一名友军 5 点生命，并驱散其 1 个减益 / 持续伤害状态。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "heal",
+              "value": 5
+            },
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "debuff",
+                  "dot"
+                ],
+                "count": 1
+              }
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "chanter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s6_combat_hypnosis",
+      "name": "战斗催眠",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "催眠师",
+      "rarity": "uncommon",
+      "axis": "dream",
+      "flagship": false,
+      "lore": "序列6 催眠师 —— \"『战斗催眠』\"",
+      "flavor": "战阵之上，你的声音低了下去。它也跟着低了下去，然后就不动了。",
+      "describe": "使一名敌人眩晕 3 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "stun",
+          "duration": 3
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s6_psych_invisibility",
+      "name": "心理学隐身",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "催眠师",
+      "rarity": "uncommon",
+      "axis": "suggestion",
+      "flagship": false,
+      "lore": "序列6 催眠师 —— \"『心理学隐身』\"",
+      "flavor": "你没有消失。你只是从所有人的意识里，被轻轻地漏掉了。",
+      "describe": "进入心理学隐身 2 tick：敌方单体技能无法选中你；你一出手就立即暴露。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "psych_invisibility",
+          "duration": 2,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "psych_invisibility",
+          "name": "心理学隐身",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "statusId": "psych_invisibility"
+                  },
+                  "target": "self",
+                  "note": "出手即暴露（区别于 stealth 的受击破除）"
+                }
+              ]
+            }
+          ],
+          "note": "H5 潜行母版 + C8（共享内核 §四），与 F11 stealth / F4 shadow_veil 同源"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s6_suggestion_qualitative",
+      "name": "心理暗示·质变",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "催眠师",
+      "rarity": "uncommon",
+      "axis": "suggestion",
+      "flagship": false,
+      "lore": "序列6 催眠师 —— \"『心理暗示』质变：直接修改意识、影响潜意识\"",
+      "flavor": "你没跟它讲道理。你直接走进去，把\"谁是敌人\"那一栏改掉了。",
+      "describe": "对一名敌人造成 2 点精神伤害，并篡改其潜意识 5 tick：它发动攻击时目标被强制改写为同阵营友军（优先于嘲讽 / 守护）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "subconscious_edit",
+              "duration": 5
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "subconscious_edit",
+          "name": "潜意识篡改",
+          "category": [
+            "control",
+            "retarget"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "self_faction_hp_desc",
+                "tiebreak": "index_asc",
+                "priority": 15,
+                "note": "优先于嘲讽/守护（守护 priority 10）；改写为其同阵营 hp_desc 单位"
+              }
+            ]
+          },
+          "triggers": [
+            {
+              "event": "on_attack",
+              "note": "G15-b：走「单位发动攻击」即时节点，duration 5t 只是存续上限而非触发窗口"
+            }
+          ],
+          "note": "H12 target_override 族（锚点 <阵营hp_desc>）；与 F9 puppet_string / F15 charm 同源母版（F 组合并候选 3），语义差异：改敌我认定（认知）而非物理牵引"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s6_dragon_scale",
+      "name": "龙鳞",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "催眠师",
+      "rarity": "uncommon",
+      "axis": "fantasy",
+      "flagship": false,
+      "lore": "序列6 催眠师 —— \"『龙鳞』：皮肤制造鳞片减伤\"",
+      "flavor": "你一用力，皮肤下就浮起一层细密的鳞。",
+      "describe": "战斗开始时，自身护甲上限 +5，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面 modify_stat(armor,+5,duration:null)；带 duration 的护甲修正按 ddd 口径归一为容量语义 modify_stat，此处 duration:null 为常驻，同口径"
+      ]
+    },
+    {
+      "id": "skill_spectator_s5_guide",
+      "name": "引导",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "梦境行者",
+      "rarity": "rare",
+      "axis": "dream",
+      "flagship": false,
+      "lore": "序列5 梦境行者 —— \"『引导』：以梦境引导目标说出秘密\"",
+      "flavor": "你顺着它的梦话往下问。它把自己最软的地方，一句一句说了出来。",
+      "describe": "对一名敌人造成 1 点精神伤害、防御 -2（4 tick），自身「心象」+1。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "insight",
+              "stacks": 1,
+              "stackMode": "add",
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s5_dream_edit",
+      "name": "修改",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "梦境行者",
+      "rarity": "rare",
+      "axis": "dream",
+      "flagship": false,
+      "lore": "序列5 梦境行者 —— \"『修改』：通过修改梦境日积月累影响目标\"",
+      "flavor": "你每晚在它的梦里改掉一小块。改到第三夜，它已经不记得自己原本是什么样了。",
+      "describe": "使一名敌人进入「梦境修改」：最多叠 3 层、持续 4 tick，每层每 tick 受 1 点精神伤害；重复施放叠层并刷新持续。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "dream_edit",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dream_edit",
+          "name": "梦境修改",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 1,
+                  "target": "self",
+                  "note": "每层每 tick 1 伤"
+                }
+              ]
+            }
+          ],
+          "note": "H11 叠层 + F51 stacks；重复挂载叠层并刷新 duration。与 F16 whisper 同源，建议并入参数化复合 debuff 母版（F 组合并候选 4）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s5_dream_shift",
+      "name": "梦境穿梭",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "梦境行者",
+      "rarity": "rare",
+      "axis": "dream",
+      "flagship": false,
+      "lore": "序列5 梦境行者 —— \"『梦境穿梭』：身体虚化藏入别人梦境，梦境间跳跃闪现\"",
+      "flavor": "身体散成一片雾，钻进旁边那场梦里——再从战场最后排的缝隙里探出头来。",
+      "describe": "自身虚化 2 tick（敌方单体技能无法选中），并退回己方半场最后位。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "target": "self",
+              "note": "G8 合规：push_back 锁定 from.faction，己方半场内退至后排，不越中线（C1 ✅）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "dream_phase",
+              "duration": 2,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dream_phase",
+          "name": "梦境虚化",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            }
+          },
+          "note": "C8 候选池过滤（§四），与 psych_invisibility 同一底层（H5 潜行母版）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s4_manipulate",
+      "name": "操纵",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "操纵师",
+      "rarity": "rare",
+      "axis": "suggestion",
+      "flagship": true,
+      "lore": "序列4 操纵师 —— \"『操纵』（核心）：通过集体潜意识大海篡改潜意识、读取想法、驱使目标\"",
+      "flavor": "你把手指探进那片所有人都连着的、黑沉沉的海——捞起一个念头，改掉它，顺便读到了它周围所有的窃窃私语。",
+      "describe": "篡改一名敌人的潜意识 5 tick（其攻击目标被改写为同阵营友军），对全体敌方造成 2 点精神伤害，自身「心象」+2。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "subconscious_edit",
+              "duration": 5
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "target": "all_enemies",
+              "note": "集体潜意识大海的余波"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "insight",
+              "stacks": 2,
+              "stackMode": "add",
+              "target": "self",
+              "note": "读取想法"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "subconscious_edit 定义见心理暗示·质变（本档复用）；吟唱 ⚠️D 无值 → castTime:null"
+      ]
+    },
+    {
+      "id": "skill_spectator_s4_virtual_persona",
+      "name": "虚拟人格",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "操纵师",
+      "rarity": "rare",
+      "axis": "fantasy",
+      "flagship": false,
+      "lore": "序列4 操纵师 —— \"『虚拟人格』：虚拟 13 个人格对抗心灵影响\"",
+      "flavor": "你在心里排了十三张椅子。每次有人想从里面推你一把，就有一张椅子上的\"你\"站起来替你挡下——然后那张椅子就空了。",
+      "describe": "战斗开始时获得「虚拟人格」：可抵挡 3 次控制类状态（每次抵挡消耗 1 层，归零卸载），持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "virtual_persona",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "virtual_persona",
+          "name": "虚拟人格",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 3,
+          "modifiers": {
+            "immune": {
+              "categories": [
+                "control"
+              ]
+            }
+          },
+          "note": "G12 immune（StatusCategory[] 含 control）+ C6/H3 次数型：每次抵挡消耗 1 层，归零卸载。原著 13 人格，机制层数 3 为占位 ⚠️D（若标定接近 13 则改回）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s4_mind_drain",
+      "name": "心智剥夺",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "操纵师",
+      "rarity": "rare",
+      "axis": "suggestion",
+      "flagship": false,
+      "lore": "序列4 操纵师 —— \"『心智剥夺』\"",
+      "flavor": "你伸手进去，把\"思考\"这件事从它脑子里拿走了。它还站着，但里面已经没人了。",
+      "describe": "使一名敌人沉默 2 tick，攻击 -4（4 tick）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "silence",
+              "duration": 2
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -4,
+              "mode": "delta",
+              "duration": 4
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s4_mind_storm",
+      "name": "心灵风暴",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "操纵师",
+      "rarity": "rare",
+      "axis": "dream",
+      "flagship": false,
+      "lore": "序列4 操纵师 —— \"『心灵风暴』\"",
+      "flavor": "你掀起了那片海。所有人的头都开始疼。",
+      "describe": "对全体敌方造成 3 点精神伤害，并使其眩晕 1 tick。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "duration": 1,
+              "target": "all_enemies",
+              "note": "1t 为打断性质而非控制性质"
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "心灵吐息",
+            "note": "原著序列4 同名能力：改为直线 / 前排 2 目标，高伤 + 沉默",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "mental",
+                "value": 5,
+                "note": "2 目标（直线 / 前排）"
+              },
+              {
+                "type": "mount_status",
+                "statusId": "silence",
+                "duration": 1
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s4_mind_plague",
+      "name": "精神瘟疫",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "操纵师",
+      "rarity": "rare",
+      "axis": "dream",
+      "flagship": false,
+      "lore": "序列4 操纵师 —— \"『精神瘟疫』\"",
+      "flavor": "你种下的东西会自己长。它倒下的时候，旁边那个人已经开始说胡话了。",
+      "describe": "使一名敌人感染「精神瘟疫」4 tick：每 tick 受 2 点精神伤害；持有者死亡时传染给相邻同阵营单位（只传一代）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mind_plague",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "mind_plague",
+          "name": "精神瘟疫",
+          "category": [
+            "dot",
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "contagious": true,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "target": "self"
+                }
+              ]
+            },
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "mind_plague",
+                  "duration": 4,
+                  "contagious": false,
+                  "target": "target",
+                  "note": "向相邻同阵营单位挂载二级实例（adjacent_allies，只传一代）；目标锚点 = 死者相邻同阵营"
+                }
+              ]
+            }
+          ],
+          "note": "H2 复合 debuff（contagious/spread）+ 新 targetSpec adjacent_allies；与 F6/F12/F16/F18 同源，「传染」为特有条款保留"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s4_dragon_form",
+      "name": "龙化",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "操纵师",
+      "rarity": "rare",
+      "axis": "fantasy",
+      "flagship": false,
+      "lore": "序列4 操纵师 —— \"『龙化』\"",
+      "flavor": "你的脊背拱起，鳞片撑破衣服——你离那条龙，又近了一步。",
+      "describe": "化龙 4 tick：攻击 +3、护甲上限 +5、行动条速率 +8，可被驱散。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "dragon_form",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dragon_form",
+          "name": "龙化",
+          "category": [
+            "buff",
+            "stance"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 5,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ],
+          "note": "H10 参数化变身母版（含 armor 档位，F10 beast_form 需扩参）；与 F10 同源"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge_rate 按 modify_stat(gauge.rate) 表达持续修正，ddd 将 gauge.* 列于 modify_resource 键族，待内核裁定归一",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_spectator_s3_weave_dream",
+      "name": "编织梦境",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "织梦人",
+      "rarity": "epic",
+      "axis": "dream",
+      "flagship": true,
+      "lore": "序列3 织梦人 —— \"编织梦境并将目标拉入\"",
+      "flavor": "你为它织了一场梦，然后请它进去坐一会儿——至于外面的仗，等它醒再说。",
+      "describe": "将一名敌人拉入梦境封印 3 tick（不能行动、双方都无法选中它）；若自身「心象」≥3 层，消耗 3 层延长为 5 tick。目标位格不低于你时，只有 40% 概率成功。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "caster_status_exists",
+            "id": "insight",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "insight",
+              "stacks": -3,
+              "stackMode": "consume",
+              "note": "源稿：消耗 3 层心象延长封印至 5t（原脚本归一误为 -1）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "drawn_in",
+              "duration": 5,
+              "note": "消耗 3 层心象 = 必定生效档（封印 5t）"
+            }
+          ],
+          "else": [
+            {
+              "op": "if",
+              "params": {
+                "rankCheck": true
+              },
+              "condition": {
+                "kind": "stat_compare",
+                "aUnit": "self",
+                "bUnit": "target",
+                "key": "rank",
+                "cmp": "<"
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "drawn_in",
+                  "duration": 3,
+                  "note": "目标位格 < 施法者位格：必定拉入且目标无察觉（不触发亡语/反击/敌方增益）"
+                }
+              ],
+              "else": [
+                {
+                  "type": "mount_status",
+                  "statusId": "drawn_in",
+                  "duration": 3,
+                  "condition": {
+                    "kind": "chance",
+                    "p": 0.4
+                  },
+                  "note": "目标位格 ≥ 施法者位格：40% 概率（R3 登记 / R4 单次抽样 / R5 非伤害维度）；状态修正（眩晕/冰冻/虚弱 +35% 等）待标"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "drawn_in",
+          "name": "拉入梦境",
+          "category": [
+            "control",
+            "seal"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "disable": [
+              "attack",
+              "skill"
+            ],
+            "untargetableByTargeted": {
+              "direction": "both",
+              "scope": "all"
+            }
+          },
+          "note": "不能行动（复用眩晕语义）+ 双向不可选中（共享内核 §四 direction:both，己方也选不中，等于暂时移出战斗）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "心象消耗补 statusId:insight，stacks 依源稿订正为 -3（原脚本归一误为 -1）"
+      ]
+    },
+    {
+      "id": "skill_spectator_s3_identity_split",
+      "name": "身份分离",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "织梦人",
+      "rarity": "epic",
+      "axis": "fantasy",
+      "flagship": false,
+      "lore": "序列3 织梦人 —— \"『身份分离』：分离曾拥有的身份使其变成活人\"",
+      "flavor": "你把自己曾经扮演过的那个\"人\"从身上撕下来，推到前面去——它有你的手段，也有你的脾气。",
+      "describe": "在己方队尾召唤一个身份分离体（40% 生命 / 60% 攻击），它继承你已装配的全部技能组。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_split_identity",
+          "hpRatio": 0.4,
+          "atkRatio": 0.6,
+          "position": "tail",
+          "inheritSkills": true,
+          "target": "self",
+          "note": "「曾拥有的身份」：继承施法者已装配技能组快照（spawn 参数 template 语义，2026-09-04 确认）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "A2 合规：召唤物登场 fire on_spawn，严禁在其上挂任何开局语义",
+        "与愚者·历史影像（复制敌人）语义相反；与 F 组合并候选 7「召唤物基线」同源"
+      ]
+    },
+    {
+      "id": "skill_spectator_s3_plague_storm",
+      "name": "瘟疫风暴",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "织梦人",
+      "rarity": "epic",
+      "axis": "dream",
+      "flagship": false,
+      "lore": "序列3 织梦人 —— \"『瘟疫风暴』：结合心智剥夺 + 精神瘟疫\"",
+      "flavor": "你掀起的那场风暴里，飘着的不是沙，是别人的念头——沾上就烧，烧完还会传。",
+      "describe": "使全体敌方感染「精神瘟疫」4 tick；主目标额外沉默 2 tick。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "mind_plague",
+              "duration": 4,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "silence",
+              "duration": 2,
+              "note": "心智剥夺段，作用于主目标"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "mind_plague 定义见精神瘟疫（本档复用）；稿面未写 reach，非攻击卡取 none"
+      ]
+    },
+    {
+      "id": "skill_spectator_s3_shared_dream",
+      "name": "集体梦境",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "织梦人",
+      "rarity": "epic",
+      "axis": "dream",
+      "flagship": false,
+      "lore": "序列3 织梦人 —— 「编织梦境并将目标拉入」的群体化 / 领域化",
+      "flavor": "你织的不再是某一个人的梦——整场仗都被罩进了同一场梦里：敌人在梦里越跑越慢，而你的人在梦里被温柔地缝合。",
+      "describe": "降临「集体梦境」3 回合：敌方每 tick 受 1 点精神伤害、行动条速率 ×0.85，己方每 tick 回复 1 点生命；「梦境 / 心灵」标签卡效果 ×1.3。自身迷失值 +1。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_shared_dream",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_shared_dream",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：敌方单位 gauge_rate ×0.85（梦里跑不快）且每 tick 受 damage(mental, 1)（梦境侵蚀）；己方单位每 tick heal(1)（梦里疗养）——双向：困敌于梦 / 养己于梦",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "梦境",
+              "心灵"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_shared_dream",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "mental",
+                "value": 1,
+                "target": "all_enemies",
+                "note": "梦境侵蚀"
+              },
+              {
+                "type": "heal",
+                "value": 1,
+                "target": "all_allies",
+                "note": "梦里疗养"
+              }
+            ]
+          },
+          {
+            "event": "on_turn_start",
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 0.85,
+                "mode": "mul",
+                "duration": 1,
+                "target": "all_enemies",
+                "note": "梦里跑不快（1t 刷新）"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "梦境",
+              "心灵"
+            ],
+            "mul": 1.3
+          }
+        ]
+      },
+      "tags": [
+        "梦境",
+        "心灵"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "2026-09-08 界域牌批次新增（编织梦境的群体化 / 领域化）",
+        "域内 gauge_rate 按 ddd 口径应走 modify_resource(gauge.rate)，此处沿用战士档 modify_stat(gauge.rate) 写法待裁定"
+      ]
+    },
+    {
+      "id": "skill_spectator_s2_dream_maze",
+      "name": "梦境迷宫",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "洞察者",
+      "rarity": "epic",
+      "axis": "dream",
+      "flagship": false,
+      "lore": "序列2 洞察者 —— \"『梦境迷宫』\"",
+      "flavor": "它一直在跑，路一直没变。等它终于挥出那一刀，砍中的是一堵墙。",
+      "describe": "全体敌方行动条 -20，并进入「迷梦」3 tick：下次攻击打向空处。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -20,
+              "mode": "delta",
+              "target": "all_enemies",
+              "note": "G5 合规：只拖敌方条"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "bewildered",
+              "duration": 3,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "bewildered",
+          "name": "迷梦",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty",
+                "note": "走错方向，打空（C7 已验证）"
+              }
+            ]
+          },
+          "note": "复用 C7 target_override → first_empty + C6 charges；无新机制"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s2_suggestion_authority",
+      "name": "心理暗示·权柄",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "洞察者",
+      "rarity": "epic",
+      "axis": "suggestion",
+      "flagship": true,
+      "lore": "序列2 洞察者 —— \"质变的心理暗示（达权柄程度）：认为自己强就会强\"",
+      "flavor": "你没有给它任何东西。你只是让它（或让他）真心相信：自己很强。于是就成了真的。",
+      "describe": "使一名友军（可含自身）攻击 +6，持续 5 tick；该增益不可被驱散。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 6,
+          "mode": "delta",
+          "duration": 5,
+          "note": "权柄级不可驱散：modify_stat 带 duration 走账本条目、不产生 StatusInstance、不可被驱散（INV-P7），天然满足"
+        }
+      ],
+      "sharedAcross": [
+        "chanter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s2_insight_authority",
+      "name": "洞察权柄",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "洞察者",
+      "rarity": "epic",
+      "axis": "insight",
+      "flagship": true,
+      "lore": "序列2 洞察者 —— \"『洞察』权柄：洞悉心灵漏洞、恐惧、过去命运因果\"",
+      "flavor": "你看见的不只是它现在的样子：你看见它怕什么、软在哪里、以及它是怎么一路走到这儿的。",
+      "describe": "战斗开始时获得「洞察权柄」：「心象」上限 5→7，每层心象使你造成的精神伤害 +3%，对生命低于 50% 的目标伤害 ×1.2，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "insight_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "insight_authority",
+          "name": "洞察权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "maxStacksOverride": {
+              "insight": 7
+            },
+            "damage_mul": {
+              "dynamic": {
+                "perStackOf": "insight",
+                "value": 0.03,
+                "filter": {
+                  "element": [
+                    "mental"
+                  ]
+                }
+              }
+            },
+            "damage_mul_2": {
+              "value": 1.2,
+              "filter": {
+                "targetHpPercentBelow": 0.5
+              },
+              "note": "「洞悉恐惧」：对 HP < 50% 目标伤害 ×1.2（hp_percent 谓词维度）"
+            }
+          },
+          "note": "H4 dynamic：按另一状态层数给伤害乘区（每层 +3% ⚠️D）已落；退化方案为固定 mental ×1.2。同向乘区取最高不叠乘（H42）"
+        }
+      ],
+      "sharedAcross": [
+        "reader"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s2_true_dragon",
+      "name": "巨龙",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "洞察者",
+      "rarity": "epic",
+      "axis": "fantasy",
+      "flagship": false,
+      "lore": "序列2 洞察者 —— \"『巨龙』（可化为真正巨龙）\"",
+      "flavor": "这一次不是像了。这一次，你自己就是那条龙。",
+      "describe": "化为真正巨龙 5 tick：攻击 +6、护甲上限 +10、行动条速率 +8，攻击对相邻单位追加 50% 溅射伤害。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "dragon_true_form",
+          "duration": 5,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dragon_true_form",
+          "name": "巨龙",
+          "category": [
+            "buff",
+            "stance"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 6,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 10,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "outgoingDamageParams": {
+              "spread": "splash_adjacent",
+              "splashRatio": 0.5
+            }
+          },
+          "note": "空想轴三级龙链第三级（龙鳞→龙化→巨龙）；spread splash_adjacent（共享内核 §一）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge_rate 写法同龙化",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_spectator_s1_written_truth",
+      "name": "书写成真",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "作家",
+      "rarity": "legendary",
+      "axis": "fantasy",
+      "flagship": true,
+      "lore": "序列1 作家 —— \"『书写成真』：书写的故事变成现实\"",
+      "flavor": "你写下：\"三息之后，它会睡着。\"然后合上本子——这件事就已经发生完了，只是还没走到那一步。",
+      "describe": "书写一段命运，3 tick 后强制生效（写下即不可驱散，唯一出口是时间到）：使目标沉睡 3 tick、或受到 12 点精神伤害、或治疗 12 点生命，获得时三选一。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "written_truth",
+          "duration": 3,
+          "note": "载荷为变体档数据（编目 B6 同族），不进引擎"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "written_truth",
+          "name": "书写成真",
+          "category": [
+            "seal"
+          ],
+          "dispelable": false,
+          "duration": 3,
+          "triggers": [
+            {
+              "event": "on_remove",
+              "reasonFilter": [
+                "expired"
+              ],
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "stun",
+                  "duration": 3,
+                  "condition": {
+                    "kind": "variant_is",
+                    "id": "sleep"
+                  },
+                  "note": "到期执行已记录载荷：变体·沉睡档（三选一在获得时写入状态数据槽）"
+                },
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 12,
+                  "condition": {
+                    "kind": "variant_is",
+                    "id": "finale"
+                  },
+                  "note": "到期执行已记录载荷：变体·终章档"
+                },
+                {
+                  "type": "heal",
+                  "value": 12,
+                  "target": "target",
+                  "condition": {
+                    "kind": "variant_is",
+                    "id": "recovery"
+                  },
+                  "note": "到期执行已记录载荷：变体·痊愈档（目标为打写时锁定的友军）"
+                }
+              ],
+              "note": "dispelable:false → on_remove 只有「自然到期」一个出口（H29 reason 过滤）"
+            }
+          ],
+          "note": "延迟强制生效模式（本稿新增项 10，✅）：on_remove(expired) 而非 on_tick 计数，不新增计时机制"
+        }
+      ],
+      "variants": [
+        {
+          "id": "sleep",
+          "name": "沉睡",
+          "note": "变体·沉睡",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "duration": 3
+            }
+          ]
+        },
+        {
+          "id": "finale",
+          "name": "终章",
+          "note": "变体·终章",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 12
+            }
+          ]
+        },
+        {
+          "id": "recovery",
+          "name": "痊愈",
+          "note": "变体·痊愈（对友军）",
+          "targetOverride": {
+            "faction": "ally"
+          },
+          "effects": [
+            {
+              "type": "heal",
+              "value": 12
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "到期载荷以三个 variant_is 条件效果镜像 variants 三档表达（payload 是载荷参数非原语，原 {type:payload} 非法已拆）；变体选择由获得时写入状态数据槽供给"
+      ]
+    },
+    {
+      "id": "skill_spectator_s1_imagined_creation",
+      "name": "空想具现",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "作家",
+      "rarity": "legendary",
+      "axis": "fantasy",
+      "flagship": false,
+      "lore": "序列1 作家 —— \"『空想』权柄：将概念拉入现实变成真实事物\"",
+      "flavor": "你想到了\"一个能挡在我前面、并且很生气的东西\"。于是它就站在那儿了。",
+      "describe": "在己方队尾召唤一个空想造物（60% 生命 / 80% 攻击），属性高但没有你的技能。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_imagined",
+          "hpRatio": 0.6,
+          "atkRatio": 0.8,
+          "position": "tail",
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "与身份分离体的区别：空想造物只有高属性、不继承技能组；A2 合规，不挂 on_spawn 语义"
+      ]
+    },
+    {
+      "id": "skill_spectator_s1_all_spoken_known",
+      "name": "凡有言必被知",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "作家",
+      "rarity": "legendary",
+      "axis": "insight",
+      "flagship": false,
+      "lore": "序列1 作家 —— \"『凡有言必被知』：知道『作家』者，作家也知道他\"",
+      "flavor": "它一开口，你就知道了它是谁；它一出手，你就知道了它所有的底细。藏是藏不住的。",
+      "describe": "战斗开始时获得「凡有言必被知」：敌方隐匿 / 不可选中状态对你无效、你对隐匿目标伤害 ×1.3；你每次受击回复 1 点能量，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "all_spoken_known",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "all_spoken_known",
+          "name": "凡有言必被知",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "pierceConceal": true,
+            "damage_mul": {
+              "value": 1.3,
+              "filter": {
+                "targetConcealed": true
+              }
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "它一出手，你就读到了它"
+                }
+              ]
+            }
+          ],
+          "note": "识破分支（共享内核 §四）+ 标准能量回流；与气场感知同族三级链（本条为最高级）"
+        }
+      ],
+      "sharedAcross": [
+        "reader"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s0_declared_future",
+      "name": "宣告未来",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "空想家",
+      "rarity": "legendary",
+      "axis": "fantasy",
+      "flagship": false,
+      "lore": "序列0 空想家 —— \"『空想』权柄：……所宣称的未来必将上演\"",
+      "flavor": "你没有祈祷，也没有攻击。你只是当着所有人的面说了出来：\"四息之后，你们都会倒下。\"——那就一定会倒下。",
+      "describe": "宣告 4 tick 后全体敌方受到 8 点精神伤害（写下即不可驱散，必将上演）；宣告期间己方全体获得「预兆守护」4 tick。",
+      "cost": {
+        "energy": 8,
+        "cooldown": 10,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "declared_fate",
+              "duration": 4,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "fortify",
+              "duration": 4,
+              "target": "all_allies",
+              "note": "「我宣称我们会赢」——宣告期间友军先获得守护"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "declared_fate",
+          "name": "宣告未来",
+          "category": [
+            "seal"
+          ],
+          "dispelable": false,
+          "duration": 4,
+          "triggers": [
+            {
+              "event": "on_remove",
+              "reasonFilter": [
+                "expired"
+              ],
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 8,
+                  "target": "all_enemies"
+                }
+              ],
+              "note": "与书写成真共用「延迟强制生效」底层（本稿新增项 10）"
+            }
+          ]
+        },
+        {
+          "id": "fortify",
+          "name": "预兆守护",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "damage_taken_mul": 0.9
+          },
+          "note": "稿面仅给名字 fortify 未给数值效果，0.9 为占位解释（⚠️），待 D 组标定"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s0_mind_authority",
+      "name": "心灵权柄",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "空想家",
+      "rarity": "legendary",
+      "axis": "suggestion",
+      "flagship": false,
+      "lore": "序列0 空想家 —— \"『心灵』权柄：心灵世界之主\"",
+      "flavor": "在心灵的世界里，你写下的东西没有人有资格擦掉。",
+      "describe": "战斗开始时获得「心灵权柄」：你施加的控制类状态不可被驱散，你对处于控制状态的目标造成的精神伤害 ×1.25，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "lord_of_mind",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "lord_of_mind",
+          "name": "心灵权柄",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "dispelableOverwrite": {
+              "scope": "outgoing",
+              "categories": [
+                "control"
+              ],
+              "value": false,
+              "note": "H8 运行时覆写：后续由你挂载的 control 类状态覆写为 dispelable:false（subconscious_edit/眩晕/沉默/drawn_in）"
+            },
+            "damage_mul": {
+              "value": 1.25,
+              "filter": {
+                "targetHasCategory": [
+                  "control"
+                ],
+                "element": [
+                  "mental"
+                ]
+              }
+            }
+          },
+          "note": "与愚者途径 v0.2 新增项 9 同源（H8），建议并入同一母版"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_spectator_s0_trait_separation",
+      "name": "特性分离",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "空想家",
+      "rarity": "legendary",
+      "axis": "fantasy",
+      "flagship": false,
+      "lore": "序列0 空想家 —— \"可分离两份序列1特性，空想出特性代替，保持位格不降\"",
+      "flavor": "你撕下自己一半的特性丢在原地，让它替你碎掉。真正的你在三步之外，睁开了眼睛。",
+      "describe": "自身死亡时触发一次：以 40% 生命在原坐标重生（整场一次）。",
+      "hook": "on_death",
+      "effects": [
+        {
+          "type": "spawn",
+          "reviveOf": "self",
+          "hpRatio": 0.4,
+          "position": "original",
+          "oncePerBattle": true,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "稿面以状态 sealed_identity（charges:1）承载一次性，JSON 折为 spawn.oncePerBattle（同战士·黄昏重生先例）",
+        "原著未给次数限制，按 1 次占位 ⚠️D；原著「分离两份序列1特性」字面上暗示 2 次，待拍板"
+      ]
+    }
+  ]
+}

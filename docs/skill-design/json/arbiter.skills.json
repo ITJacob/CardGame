@@ -1,0 +1,2394 @@
+{
+  "pathwayId": "arbiter",
+  "pathwayName": "仲裁人",
+  "sourceFile": "../仲裁人途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "jurisdiction": {
+      "symbol": "🜁",
+      "name": "辖区"
+    },
+    "sanction": {
+      "symbol": "🜂",
+      "name": "惩戒"
+    },
+    "inquest": {
+      "symbol": "🜃",
+      "name": "审讯"
+    },
+    "decree": {
+      "symbol": "🜄",
+      "name": "律令"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_arbiter_s9_convincing_authority",
+      "name": "信服与权威",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "仲裁人",
+      "rarity": "common",
+      "axis": "jurisdiction",
+      "flagship": false,
+      "lore": "序列9 仲裁人 —— \"让人信服的魅力和权威\"",
+      "flavor": "你往那儿一站，就是规矩本身——敌人面对你时难免自惭形秽，出手也软了三分。",
+      "describe": "战斗开始时，敌方全体攻击 -1，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "duration": null,
+          "target": "all_enemies"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s9_submit",
+      "name": "屈服",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "仲裁人",
+      "rarity": "common",
+      "axis": "inquest",
+      "flagship": false,
+      "lore": "序列9 仲裁人 —— \"让冲突方不自觉想要屈服\"",
+      "flavor": "你抬眼看了它一眼，它的刀便偏了——那一击挥向了你身侧的空处。",
+      "describe": "使一名敌人屈服 3 tick：其下一次攻击打向最近的空坐标，随后该效果消失。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "overawed",
+          "charges": 1,
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "overawed",
+          "name": "屈服",
+          "category": [
+            "retarget"
+          ],
+          "dispelable": true,
+          "charges": 1,
+          "duration": 3,
+          "modifiers": {
+            "behaviorOverride": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty"
+              }
+            ]
+          },
+          "note": "次数型（C6）：下一次攻击落空后消耗 1 层归零卸载。C7 已端到端验证"
+        }
+      ],
+      "sharedAcross": [
+        "lawyer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s9_martial_arts",
+      "name": "格斗术",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "仲裁人",
+      "rarity": "common",
+      "axis": "sanction",
+      "flagship": false,
+      "lore": "序列9 仲裁人 —— \"出色格斗能力\"",
+      "flavor": "你近身上前，一记利落的直拳砸在它脸上——仲裁人的拳头，从来先于判决到达。",
+      "describe": "对一名近战敌人造成 5 点物理伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 5
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 5→7→9",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 9
+              }
+            ]
+          },
+          {
+            "name": "械斗分支",
+            "note": "解锁：对目标追加 gauge.current -20（打退）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 5
+              },
+              {
+                "type": "modify_resource",
+                "resource": "gauge.current",
+                "value": -20,
+                "mode": "delta"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s8_photographic_memory",
+      "name": "过目不忘",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "治安官",
+      "rarity": "common",
+      "axis": "inquest",
+      "flagship": true,
+      "lore": "序列8 治安官 —— \"见过就能牢牢记住目标样子，获得额外感应\"",
+      "flavor": "你只要看过一眼，那张脸就再也抹不掉了——记住的东西，藏不起来，也逃不掉。",
+      "describe": "战斗开始时标记敌方全体（整场）：你对被标记目标的伤害 +1；其隐匿类状态对你无效；你的单体技能优先选中它们。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "marked",
+          "duration": null,
+          "target": "all_enemies",
+          "note": "新登场敌方单位（召唤物）补标记依赖 on_spawn 全局第三方监听；退化方案：只标记开局在场敌人"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "marked",
+          "name": "过目标记",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damageTakenBonus": {
+              "value": 1,
+              "filter": {
+                "casterHasStatus": "marked_observer"
+              },
+              "note": "你对被标记单位造成的伤害 +1（施加者侧过滤）"
+            },
+            "revealToSource": true,
+            "targetPriority": {
+              "sort": "status:marked:desc",
+              "note": "单体技能候选池优先命中被标记单位（C8 加权）"
+            }
+          },
+          "note": "识破分支（共享内核 §四）+ 排序键 status:marked:desc；施加者=被动持有者"
+        }
+      ],
+      "sharedAcross": [
+        "lawyer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s8_jurisdiction",
+      "name": "辖区",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "治安官",
+      "rarity": "common",
+      "axis": "jurisdiction",
+      "flagship": true,
+      "lore": "序列8 治安官 —— \"『辖区』：指定区域获得超凡实力和环境帮助\"",
+      "flavor": "这里是你的辖区。脚下的路、墙里的砖、风里的味道都站在你这边——而踏进来的外人，寸步难行。",
+      "describe": "在己方半场铺设「辖区」（Ⅰ 档，持续 6 tick）：区域内己方单位攻击 +2、受伤 ×0.9；区域内敌方单位行动条速率 ×0.9。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "zone"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "consumption": "zone",
+          "zone": "zone_jurisdiction",
+          "duration": 6,
+          "note": "Zone 注册（consumption: zone + 卡面 zoneDef，H9 Zone 母版），非界域原语；落点：己方半场一块（约 2 格）"
+        }
+      ],
+      "zoneDef": {
+        "id": "zone_jurisdiction",
+        "kind": "blessing",
+        "trigger": "on_occupy_tick",
+        "affects": "any",
+        "duration": 6,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": 2,
+            "mode": "delta",
+            "duration": 2,
+            "target": "occupant_ally"
+          },
+          {
+            "type": "modify_stat",
+            "stat": "gauge.rate",
+            "value": -1,
+            "mode": "delta",
+            "duration": 2,
+            "target": "occupant_enemy",
+            "note": "敌方 gauge_rate ×0.9 的近似 delta 表达（zone 载荷为周期性刷新，乘区口径见 GAUGE_RATE_AS_STAT）"
+          }
+        ],
+        "modifiers": {
+          "damageTakenMul": {
+            "value": 0.9,
+            "side": "ally"
+          }
+        },
+        "note": "Ⅰ 档（己方半场）；Ⅱ 大都市=己方全场 attack +3 / ×0.85 / ×0.85；Ⅲ 秩序领域=全场+挂 decree（见升级阶梯）。2026-09-08 界域牌批次登记（H9 Zone 母版），保持 Zone 不升格界域"
+      },
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "Ⅱ 大都市",
+            "note": "覆盖己方全场，数值加强（attack +3、受伤害 ×0.85、敌方 gauge_rate ×0.85），对应序列3「辖区扩大至大都市」"
+          },
+          {
+            "name": "Ⅲ 秩序领域",
+            "note": "全场（含敌方半场，落位待拍板；退化=己方全场 Zone + 敌方全体挂 decree），对应序列1"
+          }
+        ]
+      },
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "ZoneDef 内 gauge_rate ×0.9 乘区表达，待内核裁定统一口径",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_arbiter_s8_anomaly_sense",
+      "name": "察觉异常",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "治安官",
+      "rarity": "common",
+      "axis": "inquest",
+      "flagship": false,
+      "lore": "序列8 治安官 —— \"能察觉不正常因素、邪恶混乱相关事物\"",
+      "flavor": "你总能先一步闻到不对劲——那些正在溃烂的、正在失控的、正在躲藏的，都瞒不过你。",
+      "describe": "战斗开始时获得「察觉异常」（整场）：敌方隐匿类状态对你无效；你对带有减益、持续伤害或控制状态的目标伤害 +1。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "evil_sense",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "evil_sense",
+          "name": "察觉异常",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "reveal": true,
+            "damageBonus": {
+              "value": 1,
+              "filter": {
+                "targetHasCategory": [
+                  "debuff",
+                  "dot",
+                  "control"
+                ]
+              }
+            }
+          },
+          "note": "识破分支与【过目不忘】同源（共享 C8 同一分支实现）"
+        }
+      ],
+      "sharedAcross": [
+        "lawyer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s7_mind_pierce",
+      "name": "精神刺穿",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "审讯者",
+      "rarity": "uncommon",
+      "axis": "inquest",
+      "flagship": true,
+      "lore": "序列7 审讯者 —— \"『精神刺穿』：无视肉身穿刺灵体（5 米内）\"",
+      "flavor": "你的意志化作一根细针，绕开血肉、绕开甲胄，直接钉进它的灵体——疼的是\"它自己\"，不是它的身体。",
+      "describe": "对一名近战敌人造成 4 点精神伤害，无视其护甲与护盾。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 4,
+          "pierce": [
+            "armor",
+            "shield"
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s7_whip_of_pain",
+      "name": "痛苦之鞭",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "审讯者",
+      "rarity": "uncommon",
+      "axis": "inquest",
+      "flagship": false,
+      "lore": "序列7 审讯者 —— \"『痛苦之鞭』：直接攻击精神，让人坦白交代\"",
+      "flavor": "鞭子抽在灵体上，没有伤口，只有无法忍受的痛——它张开了嘴，把藏着的底牌全抖了出来。",
+      "describe": "对一名敌人造成 3 点精神伤害，驱散其 1 个增益状态，并沉默 2 tick。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            },
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "silence",
+              "duration": 2
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s7_demolition",
+      "name": "爆破",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "审讯者",
+      "rarity": "uncommon",
+      "axis": "sanction",
+      "flagship": false,
+      "lore": "序列7 审讯者 —— \"精通各种武器，爆破专家\"",
+      "flavor": "你把一包炸药丢进人堆里——火光掀翻了它，也掀翻了它身边的人。",
+      "describe": "对一名敌人造成 3 点物理伤害，并对其相邻单位造成 2 点物理伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 3
+        },
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 2,
+          "spread": "splash_adjacent",
+          "note": "对目标相邻单位（共享内核 §一 spread: splash_adjacent）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s7_weapon_mastery",
+      "name": "精通武器",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "审讯者",
+      "rarity": "uncommon",
+      "axis": "sanction",
+      "flagship": false,
+      "lore": "序列7 审讯者 —— \"精通各种武器，爆破专家\"",
+      "flavor": "刀、枪、炸药、拳头——你都拿得起来，也都使得比别人更狠一点。",
+      "describe": "战斗开始时，自身攻击 +2，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s6_decree",
+      "name": "立规",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "法官",
+      "rarity": "uncommon",
+      "axis": "decree",
+      "flagship": true,
+      "lore": "序列6 法官 —— \"对一定区域立下新规则，违背则受束缚\"",
+      "flavor": "你当着它的面宣判了一条规矩。它当然可以不听——但规矩之所以是规矩，是因为违背它的代价，它付不起。",
+      "describe": "对一名敌人立规 6 tick（可惩罚 2 次）：其每次发动主动技能时受到 3 点精神伤害并被束缚 2 tick，惩罚 2 次后规则失效。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "decree",
+          "duration": 6,
+          "charges": 2,
+          "params": {
+            "rule": "no_skill",
+            "note": "本序列开放两档：no_skill（不得发动主动技能）/ no_attack（不得发动攻击）"
+          }
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "decree",
+          "name": "律令（规则）",
+          "category": [
+            "contract"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "charges": 2,
+          "fields": {
+            "rule": "no_skill",
+            "punishment": [
+              {
+                "type": "damage",
+                "element": "mental",
+                "value": 3
+              },
+              {
+                "type": "mount_status",
+                "statusId": "shackle",
+                "duration": 2
+              }
+            ]
+          },
+          "triggers": [
+            {
+              "event": "on_active_skill",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 3,
+                  "target": "self",
+                  "note": "惩罚作用于违背者（持有者），结算归施法者（casterId F56）"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "shackle",
+                  "duration": 2,
+                  "target": "self"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "$self",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self",
+                  "note": "charges - 1，归零卸载"
+                }
+              ]
+            }
+          ],
+          "note": "🔴 decree 状态族（rule / punishment 字段）未落 ddd（本稿新增项 2）；触发点 on_active_skill ✅、惩罚归施法者 casterId ✅ 均已落。退化方案：改为沉默 2t + mental 3 硬控（失去立法者辨识度，不推荐）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "DECREE_STATUS_FAMILY",
+          "note": "decree 状态族的 rule / punishment 字段未落 ddd，卡住立规 / 禁制追击 / 秩序领域 3 张卡",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_arbiter_s6_forbid",
+      "name": "禁止",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "法官",
+      "rarity": "uncommon",
+      "axis": "decree",
+      "flagship": false,
+      "lore": "序列6 法官 —— \"『禁止』\"",
+      "flavor": "你吐出两个字：「禁止。」它的喉咙像是被谁攥住了，一个音节也发不出来。",
+      "describe": "沉默一名敌人 3 tick，并造成 2 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "energy_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "silence",
+              "duration": 3
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "lawyer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s6_imprison",
+      "name": "囚禁",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "法官",
+      "rarity": "uncommon",
+      "axis": "decree",
+      "flagship": false,
+      "lore": "序列6 法官 —— \"『囚禁』\"\"『禁闭』\"",
+      "flavor": "看不见的牢笼在它周身合拢——它动不了，也走不开，只能等着判决落下。",
+      "describe": "使一名敌人眩晕 2 tick 并施加枷锁 2 tick：无法被位移、行动条速率 ×0.7。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "duration": 2
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shackle",
+              "duration": 2
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "shackle",
+          "name": "枷锁",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "moveImmune": true,
+            "gaugeRateMul": 0.7
+          },
+          "note": "复用 F7 已登记定义（禁 move + gauge_rate ×0.7）；权威定义见状态表，此处为引用副本"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s6_lashing",
+      "name": "鞭打",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "法官",
+      "rarity": "uncommon",
+      "axis": "sanction",
+      "flagship": false,
+      "lore": "序列6 法官 —— \"『鞭打』\"",
+      "flavor": "判决是鞭子，行刑也是鞭子——每一道血痕都在提醒它：规矩不是建议。",
+      "describe": "对一名近战敌人造成 4 点物理伤害，并使其易伤 2 tick（受伤 ×1.3）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 2
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s6_authority_shift",
+      "name": "权威质变",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "法官",
+      "rarity": "uncommon",
+      "axis": "jurisdiction",
+      "flagship": false,
+      "lore": "序列6 法官 —— \"权威质变，能影响环境\"",
+      "flavor": "成为法官之后，你说出的话本身就带着分量——你的命令更持久，你的辖区也更宽阔。",
+      "describe": "战斗开始时获得「权威质变」（整场）：你施加的规则、沉默、眩晕、枷锁、放逐、分割、易伤类状态持续时间 +1；你的辖区效果数值 +50%。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "authority",
+          "name": "权威质变",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "durationModifier": {
+              "scope": "outgoing",
+              "mode": "add",
+              "value": 1,
+              "filter": {
+                "statusId": [
+                  "decree",
+                  "silence",
+                  "stun",
+                  "shackle",
+                  "exiled",
+                  "isolated",
+                  "vulnerable"
+                ]
+              }
+            },
+            "regionValueBoost": {
+              "zoneDef": "zone_jurisdiction",
+              "mul": 1.5
+            }
+          },
+          "note": "duration +1 走 H14 durationModifier（✅ 已落）；区域数值倍率 🟡 随 zone_jurisdiction 一并落地"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "REGION_VALUE_BOOST",
+          "note": "辖区数值 +50% 倍率随 ZoneDef 落地，ddd 尚无区域数值倍率字段（🟡）",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_arbiter_s5_castigation",
+      "name": "惩戒",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "惩戒骑士",
+      "rarity": "rare",
+      "axis": "sanction",
+      "flagship": true,
+      "lore": "序列5 惩戒骑士 —— \"『惩戒』：选定惩戒目标，增强对目标的攻击威力\"",
+      "flavor": "你抬起手，在它额头上按下了一个看不见的印记——从这一刻起，你的每一击都为它而来。",
+      "describe": "标记一名敌人为惩戒目标（整场）：它受到你造成的伤害 ×1.4。全场同时只有一个惩戒目标，改判新目标时旧标记消失。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "castigated",
+          "duration": null
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "castigated",
+          "name": "惩戒",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damageTakenMul": {
+              "value": 1.4,
+              "filter": {
+                "caster": "status_caster"
+              }
+            }
+          },
+          "note": "按施法者过滤的 ×1.4（H4，✅ 已落）；「全场唯一持有者 + 改判自动卸载」语义 ddd 尚无字段（🟡 新增项 8）。退化方案：改为易伤（×1.3 全员可用），代价=与既有状态重合失去输出引擎"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "CASTIGATED_UNIQUE_HOLDER",
+          "note": "全场唯一持有者 + 改判自动卸载语义未落 ddd（新增项 8 🟡）",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_arbiter_s5_punitive_pursuit",
+      "name": "禁制追击",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "惩戒骑士",
+      "rarity": "rare",
+      "axis": "decree",
+      "flagship": false,
+      "lore": "序列5 惩戒骑士 —— \"『禁止』（叠加）：敌人违背规则时以必定命中姿态攻击\"",
+      "flavor": "你在它身上叠了第二道禁令。它若再敢动手，你的剑会自己找过去——那一击，躲不掉。",
+      "describe": "对一名敌人立规 6 tick（可惩罚 3 次）：其每次发动主动技能时受到你造成的 5 点必定命中的物理伤害；若它已被惩戒标记，该伤害 ×1.4。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "decree",
+          "duration": 6,
+          "charges": 3,
+          "params": {
+            "rule": "no_attack",
+            "punishment": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 5,
+                "neverMiss": true,
+                "note": "必定命中（H35）；若目标持有 castigated 则 ×1.4"
+              }
+            ]
+          }
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "DECREE_STATUS_FAMILY",
+          "note": "同立规，依赖 decree 状态族 rule / punishment 字段",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_arbiter_s5_full_moon",
+      "name": "满月",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "惩戒骑士",
+      "rarity": "rare",
+      "axis": "decree",
+      "flagship": true,
+      "lore": "序列5 惩戒骑士 —— 「满月」：秩序与律令在月华下愈发彰显，违背规则者无所遁形",
+      "flavor": "一轮清辉满月爬上战场天幕。在它的注视下，你立下的每一条律令都多了几分重量，而妄图躲藏、违背秩序的人，影子被照得清清楚楚。",
+      "describe": "降临「满月」界域 3 回合：己方律令的违背惩罚伤害 +30%、必定命中追击伤害 ×1.2；处于隐匿的敌方单位每 tick 受 1 点真实伤害并显形。自身迷失值 +1。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_full_moon",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_full_moon",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：敌方隐匿/不可选中单位每 tick 受 damage(true, 1) 并显形（满月之下无暗可藏，双向：照敌之隐 / 增己之律）",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "律令"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "秩序"
+            ],
+            "mul": 1.2
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_full_moon",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "filter": {
+              "side": "enemy",
+              "hasCategory": [
+                "conceal"
+              ]
+            },
+            "effects": [
+              {
+                "type": "damage",
+                "element": "none",
+                "damageCategory": "true",
+                "value": 1
+              },
+              {
+                "type": "dispel",
+                "dispelTarget": "unit",
+                "filter": {
+                  "category": [
+                    "conceal"
+                  ],
+                  "count": 99
+                },
+                "note": "显形"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "律令"
+            ],
+            "mul": 1.3,
+            "note": "己方 decree 违背惩罚伤害 +30%（O 节点）"
+          },
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "秩序"
+            ],
+            "mul": 1.2,
+            "note": "never_miss 追击伤害 ×1.2（O 节点）"
+          }
+        ],
+        "extraRuleNote": "交互规则「违背代价 +1 层」走 decree 状态触发器的 Repeat 段数（G3），非补丁"
+      },
+      "tags": [
+        "秩序",
+        "律令"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s4_edict_reality_rise",
+      "name": "律令·神秘减弱，现实增强",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "律令法师",
+      "rarity": "rare",
+      "axis": "decree",
+      "flagship": true,
+      "lore": "序列4 律令法师 —— \"『律令』（核心）：制定宽泛限制维持 30 秒到一刻钟 / 如'神秘减弱，现实增强'——削弱所有非凡能力\"",
+      "flavor": "「于此地，神秘减弱，现实增强。」话音落下，敌人的非凡能力开始迟滞、走形、变得昂贵——而你脚下的大地，比刚才更实了。",
+      "describe": "律令持续 8 tick：敌方全体耗能加重（技能费用 ×1.5）且攻击 -3；己方全体护甲 +3。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        },
+        "consumption": "domain",
+        "note": "双向 targetSpec：敌我各一套载荷，两段 EffectRef 各用 target 覆写"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "energy_strain",
+              "duration": 8,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -3,
+              "mode": "delta",
+              "duration": 8,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": 3,
+              "mode": "delta",
+              "target": "all_allies",
+              "note": "现实增强；modify_resource 为量池 delta，无 duration 不回滚（稿面原文如此）"
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "秩序",
+        "律令"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s4_deprivation",
+      "name": "剥夺",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "律令法师",
+      "rarity": "rare",
+      "axis": "decree",
+      "flagship": false,
+      "lore": "序列4 律令法师 —— \"『剥夺』\"",
+      "flavor": "你宣判剥夺——它身上所有借来的力量、加持与庇护，一并被收了回去。",
+      "describe": "驱散一名敌人全部增益状态，并造成 3 点精神伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ]
+              },
+              "note": "count 省略 = 全部清除"
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s4_exile",
+      "name": "放逐",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "律令法师",
+      "rarity": "rare",
+      "axis": "decree",
+      "flagship": false,
+      "lore": "序列4 律令法师「『放逐』」/ 序列6 法官「『流放』」",
+      "flavor": "你把它从队列里抹了出去——它还在场上，但它的同伴再也够不着它，它也再喊不应任何人。",
+      "describe": "将一名敌人推至其队列末尾并放逐 4 tick：不可被同阵营的增益/治疗/守护类效果选中，攻击 -2。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "note": "推至其自己队列末尾，锁定 from.faction（G8 合规，C1 ✅）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "exiled",
+              "duration": 4
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "exiled",
+          "name": "放逐",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 4
+            }
+          ],
+          "modifiers": {
+            "untargetable": {
+              "direction": "inbound",
+              "effectCategories": [
+                "buff",
+                "heal",
+                "guard"
+              ],
+              "scope": "same_faction",
+              "note": "不可被其同阵营增益/治疗/守护选中（C8 候选池过滤，方向 inbound）"
+            }
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s4_execution",
+      "name": "处决",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "律令法师",
+      "rarity": "rare",
+      "axis": "sanction",
+      "flagship": false,
+      "lore": "序列4 律令法师 —— \"『处决』\"",
+      "flavor": "判决只有一种执行方式。血线见底的那一刻，你的刀已经落下了。",
+      "describe": "对一名近战敌人造成 4 点物理伤害；若其生命不高于 30%，改为造成 9 点物理伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "hp_percent",
+            "side": "target",
+            "cmp": "<=",
+            "n": 0.3
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 9
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 4
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s4_intimidation",
+      "name": "震慑",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "律令法师",
+      "rarity": "rare",
+      "axis": "jurisdiction",
+      "flagship": false,
+      "lore": "序列4 律令法师 —— \"『震慑』\"",
+      "flavor": "你甚至没有出手，只是抬了抬眼——对面齐齐一顿，动作慢了半拍。",
+      "describe": "敌方全体行动条 -25，攻击 -2（3 tick）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -25,
+              "mode": "delta",
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 3,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "lawyer"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s3_judgment_sword",
+      "name": "审判之剑",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "混乱猎手",
+      "rarity": "epic",
+      "axis": "sanction",
+      "flagship": true,
+      "lore": "序列3 混乱猎手 —— \"部分'审判'权柄：'审判之剑'对混乱之物直接审判\"",
+      "flavor": "你拔出的不是剑，是判决。而它身上每一道溃烂、每一分失控，都在替你签字。",
+      "describe": "对一名近战敌人造成 4 点精神伤害；若其持有任一减益/持续伤害/控制状态，再追加 5 点必定命中的精神伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "debuff_count_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 4
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_category",
+                "side": "target",
+                "categories": [
+                  "debuff",
+                  "dot",
+                  "control"
+                ]
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 5,
+                  "neverMiss": true,
+                  "note": "直接审判：判定已下、无法规避"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s3_chaos_sense",
+      "name": "混乱感应",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "混乱猎手",
+      "rarity": "epic",
+      "axis": "inquest",
+      "flagship": false,
+      "lore": "序列3 混乱猎手 —— \"少量'混乱'权柄：感应/锁定/追踪混乱，迅速平息\"",
+      "flavor": "混乱在你的感知里像是一股腥味。谁最失控，你的目光就钉在谁身上——而它躲不掉。",
+      "describe": "战斗开始时自动锁定敌方负面状态最多的单位（整场）：你对其伤害 +2、其隐匿对你无效、你的单体技能优先选中它；目标死亡后自动改锁下一个。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "hunted",
+          "duration": null,
+          "request": {
+            "faction": "enemy",
+            "scope": "single",
+            "sort": "debuff_count_desc"
+          },
+          "note": "自动锁定（平局 index_asc 破平）；目标死亡自动转移走 on_death 全局第三方监听（✅ 新增项 11 已落）"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "hunted",
+          "name": "追猎标记",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damageTakenBonus": {
+              "value": 2,
+              "filter": {
+                "casterIsStatusSource": true
+              }
+            },
+            "revealToSource": true,
+            "targetPriority": {
+              "sort": "status:hunted:desc"
+            }
+          },
+          "transferOnDeath": true,
+          "note": "可转移：目标死亡时经 on_death 全局监听重算并改锁下一个（效果上下文 §2.1 transfer_status）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s3_battlefield_split",
+      "name": "分割战场",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "混乱猎手",
+      "rarity": "epic",
+      "axis": "jurisdiction",
+      "flagship": false,
+      "lore": "序列3 混乱猎手 —— \"能分割战场\"",
+      "flavor": "你抬手划下一道看不见的界线。线的这一边和那一边，从此谁也够不着谁。",
+      "describe": "分割一名敌人 5 tick：它无法成为同阵营增益/治疗/守护效果的目标，也无法以这类效果指向同阵营单位。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "index_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "isolated",
+          "duration": 5
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "isolated",
+          "name": "分割",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "modifiers": {
+            "untargetable": {
+              "direction": "both",
+              "effectCategories": [
+                "buff",
+                "heal",
+                "guard"
+              ],
+              "scope": "same_faction"
+            }
+          },
+          "note": "direction: both（共享内核 §四），与序列2【均衡分割】共用"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "双方分割",
+            "note": "把敌方队列切成两半，两半之间互相断链（战场级语义）"
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s3_blink_step",
+      "name": "近瞬移",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "混乱猎手",
+      "rarity": "epic",
+      "axis": "jurisdiction",
+      "flagship": false,
+      "lore": "序列3 混乱猎手 —— \"近瞬移\"",
+      "flavor": "你在一瞬间挪了位置——落点还在自己这边，但已经从刀口挪到了安全的角落。",
+      "describe": "在己方半场内前移 1 格（或与一名友军换位），并获得 4 点护盾（3 tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "pull_forward",
+              "distance": 1,
+              "target": "self",
+              "note": "或 move(swap_ally)，二选一按配置；均锁定 from.faction（G8 合规）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 4,
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s2_equalize",
+      "name": "五五开",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "平衡者",
+      "rarity": "epic",
+      "axis": "decree",
+      "flagship": true,
+      "lore": "序列2 平衡者 —— \"单对单强制降低/提升敌人至自己水准（『五五开』）\"",
+      "flavor": "你把它拉到了和你同一条线上。它比你强，就跌下来；它比你弱，就抬上来——总之，五五开。",
+      "describe": "将一名敌人的攻击、防御、护甲、行动条速率强制拉平到与你相同（双向：高则降、低则抬），持续 6 tick。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "mode": "set",
+              "sourceRef": "caster",
+              "duration": 6
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "mode": "set",
+              "sourceRef": "caster",
+              "duration": 6
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "mode": "set",
+              "sourceRef": "caster",
+              "duration": 6
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "mode": "set",
+              "sourceRef": "caster",
+              "duration": 6
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "equalize 含 gauge_rate 键；ddd modify_stat.stat 无 gauge.rate，卡面按 warrior 先例写作 stat，待内核裁定",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "稿面 equalize_stat 已落 ddd（modify_stat.mode: set + sourceRef，✅ 新增项 4）；排除 hp/hp_max/energy 系（稿面设计取值）"
+      ]
+    },
+    {
+      "id": "skill_arbiter_s2_balanced_split",
+      "name": "均衡分割",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "平衡者",
+      "rarity": "epic",
+      "axis": "decree",
+      "flagship": false,
+      "lore": "序列2 平衡者 —— \"部分'平衡'权柄：分割战场保证实力平衡\"",
+      "flavor": "你把战场一分为二，然后拨了拨天平——你们两边最强的那个，从此一样强。",
+      "describe": "自动选取敌方攻击最高者与己方攻击最高者：前者被分割 5 tick（无法与同阵营互给增益/治疗/守护），二者的攻击与防御被拉平（6 tick）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "sort": "stat_max_desc",
+          "sortKey": "attack"
+        }
+      },
+      "secondaryTargets": [
+        {
+          "request": {
+            "faction": "ally",
+            "scope": "single",
+            "sort": "stat_max_desc",
+            "sortKey": "attack"
+          },
+          "note": "己方攻击最高者（平局 index_asc）"
+        }
+      ],
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "isolated",
+              "duration": 5,
+              "note": "复用分割战场登记的 isolated 定义"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "mode": "set",
+              "sourceRef": "secondary_target",
+              "duration": 6
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "mode": "set",
+              "sourceRef": "secondary_target",
+              "duration": 6
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s2_imbalance_sense",
+      "name": "失衡感应",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "平衡者",
+      "rarity": "epic",
+      "axis": "inquest",
+      "flagship": false,
+      "lore": "序列2 平衡者 —— \"能感应不平衡发现隐秘目标\"",
+      "flavor": "谁在这片战场上站得太高，你一眼就能看出来——而站得最高的那个，往往藏得最深。",
+      "describe": "战斗开始时自动锁定敌方攻击最高的单位（整场）：你对其伤害 ×1.2，其隐匿类状态对你无效。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "unbalanced",
+          "duration": null,
+          "request": {
+            "faction": "enemy",
+            "scope": "single",
+            "sort": "stat_max_desc",
+            "sortKey": "attack"
+          },
+          "note": "判据 attack 最高（平局 index_asc），stat_max_desc 排序键 ✅ 已落"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "unbalanced",
+          "name": "失衡标记",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damageTakenMul": {
+              "value": 1.2,
+              "filter": {
+                "casterIsStatusSource": true
+              }
+            },
+            "revealToSource": true
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s1_order_domain",
+      "name": "秩序领域",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "秩序之手",
+      "rarity": "legendary",
+      "axis": "jurisdiction",
+      "flagship": true,
+      "lore": "序列1 秩序之手 —— \"部分'秩序'权柄：为战场/城市/国度制定新规则\"",
+      "flavor": "你为这片战场立了法。从这一刻起，这里的每一条规矩都由你书写——而违规者，会知道代价。",
+      "describe": "对敌方全体立规 10 tick（可惩罚 3 次，规则可选：禁技能/禁攻击/禁加持）：每次违背受到 4 点精神伤害、被束缚 2 tick、行动条 -20。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "decree",
+          "duration": 10,
+          "charges": 3,
+          "target": "all_enemies",
+          "params": {
+            "rule": "no_skill",
+            "ruleOptions": [
+              "no_skill",
+              "no_attack",
+              "no_buff"
+            ],
+            "punishment": [
+              {
+                "type": "damage",
+                "element": "mental",
+                "value": 4
+              },
+              {
+                "type": "mount_status",
+                "statusId": "shackle",
+                "duration": 2
+              },
+              {
+                "type": "modify_resource",
+                "resource": "gauge.current",
+                "value": -20,
+                "mode": "delta"
+              }
+            ],
+            "note": "规则可选是本条序列1 味道（制定规则）"
+          }
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "DECREE_STATUS_FAMILY",
+          "note": "decree 全体挂载 + 规则参数依赖新增项 2（🔴）；Zone 跨场落位待拍板（退化=己方全场 Zone + 敌方全体 decree，机制不变）",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_arbiter_s1_abolition",
+      "name": "废止",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "秩序之手",
+      "rarity": "legendary",
+      "axis": "decree",
+      "flagship": true,
+      "lore": "序列1 秩序之手 —— \"能修改或暂时去除原有规则（非底层）\"",
+      "flavor": "你伸手从这片战场上抽走了一条既有的规矩。它消失了四秒——四秒，足够改掉很多事。",
+      "describe": "驱散战场上全部生效中的上层界域（被压制的下层随之恢复），并降临「废止」域 4 tick：期间无人能再切换界域（敌我同禁）。自身迷失值 +1。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain",
+        "note": "本卡不指向任何单位"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "dispelTarget": "domain",
+              "filter": {
+                "tier": "overlay"
+              },
+              "note": "抽走战场上全部正在生效的上层界域；base 不可驱散（INV-B11）"
+            },
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "edict_seal",
+              "duration": 4,
+              "durationUnit": "tick"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "edict_seal",
+        "duration": 4,
+        "durationUnit": "tick",
+        "dispelable": true,
+        "envRulesText": "全场（敌我同禁）：本域存续期间一切 consumption: domain 行为失效——无人能再切换界域",
+        "rulePatches": [
+          {
+            "kind": "disable_effect",
+            "side": "both",
+            "effectType": "domain"
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "edict_seal",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 4,
+        "durationUnit": "tick",
+        "triggers": [],
+        "rulePatches": [
+          {
+            "kind": "disable_effect",
+            "side": "both",
+            "effectType": "domain",
+            "note": "I 节点：本域存续期间一切界域操作失效（天然双向）"
+          }
+        ],
+        "note": "纯规则锁，无周期载荷——抽走既存界域由本卡 Sequence 前段的 dispel(domain) 承载，不入 DomainDef"
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s1_quell_anomaly",
+      "name": "中止奇异",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "秩序之手",
+      "rarity": "legendary",
+      "axis": "inquest",
+      "flagship": false,
+      "lore": "序列1 秩序之手 —— \"能中止混乱奇异，感应秩序变化\"",
+      "flavor": "秩序落下的地方，混乱无处存身——那些诡异的加持、畸变的庇护，一并散了形。",
+      "describe": "驱散敌方全体全部增益状态并各造成 3 点精神伤害；随后 6 tick 内，敌方新获得的增益持续时间减半。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ]
+              },
+              "target": "all_enemies"
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "order_sense",
+              "duration": 6,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "order_sense",
+          "name": "秩序感应",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": 6,
+          "modifiers": {
+            "durationModifier": {
+              "scope": "enemy_outgoing",
+              "mode": "mul",
+              "value": 0.5,
+              "filter": {
+                "category": [
+                  "buff"
+                ]
+              },
+              "note": "敌方新获得的增益 duration ×0.5（宿主侧缩放，🟡 与耕种者新增项 18 同源）"
+            }
+          }
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s0_judgment",
+      "name": "审判",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "审判者",
+      "rarity": "legendary",
+      "axis": "sanction",
+      "flagship": true,
+      "lore": "序列0 审判者 —— \"'审判'权柄：违背秩序者皆可审判，有整个世界意志和力量加持\"",
+      "flavor": "你宣判的那一刻，整个世界的意志都站在你身后——它身上的每一道罪，都在这一击里被清算。",
+      "describe": "驱散一名敌人全部增益并造成 4 点精神伤害；其身上每有一道减益/持续伤害/控制状态，追加 2 点精神伤害（最多 5 段）；其余每个敌人受到 2 点精神伤害。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "debuff_count_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ]
+              },
+              "note": "先剥夺其一切借来的力量"
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 4,
+              "note": "基础判决"
+            },
+            {
+              "op": "repeat",
+              "count": {
+                "valueFrom": "targetStatusCount",
+                "filter": {
+                  "category": [
+                    "debuff",
+                    "dot",
+                    "control"
+                  ]
+                },
+                "cap": 5
+              },
+              "shareTarget": true,
+              "steps": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "note": "逐条清算"
+                }
+              ]
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "target": "all_other_enemies",
+              "note": "世界意志加持：判决余波波及全场其余敌人（不分摊，每人一份）"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "Repeat 按状态数量展开依赖 G3 valueFrom（✅ 已落：编目参数 §一 Repeat.count 支持 valueFrom）；退化方案：若 ≥3 个负面状态则追加 damage(mental,6)，失去逐条清算仪式感"
+      ]
+    },
+    {
+      "id": "skill_arbiter_s0_bedrock_rules",
+      "name": "底层规则",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "审判者",
+      "rarity": "legendary",
+      "axis": "decree",
+      "flagship": true,
+      "lore": "序列0 审判者 —— \"'秩序'权柄：修改世界底层规则、制定/去除规则、赋予豁免权\"",
+      "flavor": "你改写了这条世界的一行底层。于是有人获得了豁免——而另一些人，连求饶的资格都被抹掉了。",
+      "describe": "降临「底层规则」界域 8 tick：全场治疗量 ×2、护盾不再吸收伤害（敌我同改）；己方全体获得豁免（免疫减益类状态）8 tick。自身迷失值 +1。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 9,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "order_bedrock",
+              "duration": 8,
+              "durationUnit": "tick",
+              "note": "修改而非去除一条底层规则"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "immunity_writ",
+              "duration": 8,
+              "target": "all_allies",
+              "note": "赋予豁免权"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "immunity_writ",
+          "name": "豁免权",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": 8,
+          "modifiers": {
+            "immune": {
+              "categories": [
+                "debuff"
+              ]
+            }
+          },
+          "note": "G12 immune 字段 ✅（编队参数 §1.1b），由 A 施加给 B 属自然覆盖"
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "order_bedrock",
+        "duration": 8,
+        "durationUnit": "tick",
+        "dispelable": true,
+        "envRulesText": "全场（双向）：治疗量 ×2；护盾不再吸收伤害——生命可被抚慰，外物不再庇佑",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "stat": "heal",
+            "mul": 2
+          },
+          {
+            "kind": "disable_effect",
+            "side": "both",
+            "tag": [
+              "护盾"
+            ],
+            "note": "全场护盾不再吸收伤害"
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "order_bedrock",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 8,
+        "durationUnit": "tick",
+        "triggers": [],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "stat": "heal",
+            "mul": 2,
+            "note": "全场治疗量 ×2（O 节点）"
+          },
+          {
+            "kind": "disable_effect",
+            "side": "both",
+            "tag": [
+              "护盾"
+            ],
+            "note": "全场护盾不再吸收伤害（I 节点）"
+          }
+        ],
+        "note": "纯规则改写，无周期载荷；己方全体豁免由本卡 Sequence 的 mount_status(immunity_writ) 承载，不入 DomainDef。交互规则「规则」标签卡 duration +2：RulePatch 初批四 kind 无 duration 档，登记于此待 kind 扩充（⚠️D 不阻塞派发）"
+      },
+      "tags": [
+        "规则",
+        "秩序"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_arbiter_s0_forced_balance",
+      "name": "强制平衡",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "审判者",
+      "rarity": "legendary",
+      "axis": "decree",
+      "flagship": false,
+      "lore": "序列0 审判者 —— \"'平衡'权柄：强制平衡（含理智和疯狂的平衡）\"",
+      "flavor": "天平被你按了下去。所有人的攻与防、快与慢，都被拉向同一条线——连疯狂，也被拉回了理智。",
+      "describe": "全场所有单位（含敌我）的攻击、防御、护甲、行动条速率被拉向全场均值（8 tick）；驱散全场全部控制状态；自身获得理智 8 tick（免疫控制）。",
+      "cost": {
+        "energy": 7,
+        "cooldown": 9,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        },
+        "note": "targetSpec ALL（含敌我），实际载荷见 effects 逐段 target 覆写"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "mode": "set",
+              "sourceRef": "field_average",
+              "duration": 8,
+              "target": "all_units",
+              "note": "强制平衡：不分敌我一律拉向均值"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "mode": "set",
+              "sourceRef": "field_average",
+              "duration": 8,
+              "target": "all_units"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "mode": "set",
+              "sourceRef": "field_average",
+              "duration": 8,
+              "target": "all_units"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "mode": "set",
+              "sourceRef": "field_average",
+              "duration": 8,
+              "target": "all_units"
+            },
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "control"
+                ]
+              },
+              "target": "all_units",
+              "note": "疯狂的平衡：一切失控状态被平息"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "composure",
+              "duration": 8,
+              "target": "self",
+              "note": "理智：施法者自己保持清醒"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "composure",
+          "name": "理智",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": 8,
+          "modifiers": {
+            "immune": {
+              "categories": [
+                "control"
+              ]
+            }
+          }
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "均值拉平含 gauge_rate 键，同五五开",
+          "landed": false
+        }
+      ],
+      "conversionNotes": [
+        "双刃警告：本卡会把己方最强者也拉下来（原著「强制平衡」语义，故 7 能量传说档）"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2057 @@
+{
+  "pathwayId": "fool",
+  "pathwayName": "愚者",
+  "sourceFile": "../愚者途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "foresight": {
+      "symbol": "🜁",
+      "name": "预知"
+    },
+    "trick": {
+      "symbol": "🜂",
+      "name": "戏法"
+    },
+    "marionette": {
+      "symbol": "🜃",
+      "name": "秘偶"
+    },
+    "miracle": {
+      "symbol": "🜄",
+      "name": "奇迹"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_fool_s9_clairvoyance",
+      "name": "灵视",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "占卜家",
+      "rarity": "common",
+      "axis": "foresight",
+      "flagship": false,
+      "lore": "序列9 占卜家 —— \"能『看』到被遮挡事物、『听』到微弱脚步声，提前判断\"",
+      "flavor": "你的灵视洞穿遮蔽，战斗一开始便窥见战局走向，立即获得 5 点能量；而藏起来的敌人也瞒不过你。",
+      "describe": "战斗开始时自身能量 +5、能量上限 +5（整场），并获得「灵视」：敌方隐匿/潜行类状态对你无效。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 5,
+              "mode": "delta",
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "energy_max",
+              "value": 5,
+              "mode": "delta",
+              "duration": null
+            },
+            {
+              "type": "mount_status",
+              "statusId": "clairvoyance",
+              "duration": null
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "clairvoyance",
+          "name": "灵视",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "reveal_stealth": true
+          },
+          "note": "识破分支（C8，共享内核参数 §四）：敌方隐匿/潜行类状态对持有者无效"
+        }
+      ],
+      "sharedAcross": [
+        "apprentice",
+        "thief"
+      ],
+      "tentative": true,
+      "conversionNotes": "原著感知能力拆两条：①「提前判断」= 开局能量（D 组待标）；②「看到被遮挡事物」= 识破隐匿。"
+    },
+    {
+      "id": "skill_fool_s9_divination",
+      "name": "占卜",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "占卜家",
+      "rarity": "common",
+      "axis": "foresight",
+      "flagship": false,
+      "lore": "序列9 占卜家 —— \"掌握占星术、卡牌占卜、灵摆、灵视等占卜能力\"",
+      "flavor": "你以卡牌与灵摆窥探天机，每回合开始时，有三成机会得到一丝启示，获得 2 点能量。",
+      "describe": "每回合开始时 30% 概率获得 2 点能量。",
+      "hook": "on_turn_start",
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 2,
+          "mode": "delta",
+          "target": "self",
+          "condition": {
+            "kind": "chance",
+            "p": 0.3
+          }
+        }
+      ],
+      "sharedAcross": [
+        "apprentice",
+        "thief"
+      ],
+      "frameworkFlags": [
+        {
+          "code": "G15",
+          "note": "on_turn_start 引擎从未 fire，当前完全不生效；修 G15 后自动闭环（执行参数 §2.1）",
+          "landed": false
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "概率写法依 G1 用 EffectRef.condition（R3 登记、R5 限非伤害维度）。"
+    },
+    {
+      "id": "skill_fool_s9_astrology",
+      "name": "占星术",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "占卜家",
+      "rarity": "common",
+      "axis": "foresight",
+      "flagship": false,
+      "lore": "序列9 占卜家 —— 占星术，\"提前判断\"",
+      "flavor": "你从星象中读出一丝先机，指定一名同伴被向前拨动行动条，抢在对手之前出手。",
+      "describe": "指定一名友军，行动条 +25（delta）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_asc"
+      },
+      "effects": [
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": 25,
+          "mode": "delta"
+        }
+      ],
+      "sharedAcross": [
+        "apprentice",
+        "thief"
+      ],
+      "tentative": true,
+      "conversionNotes": "G5 铁律：绝不写成 SELF 自推条（自回合释放时行动条已清零，自推等于没加）。"
+    },
+    {
+      "id": "skill_fool_s8_flying_card",
+      "name": "飞牌",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "小丑",
+      "rarity": "common",
+      "axis": "trick",
+      "flagship": true,
+      "lore": "序列8 小丑 —— \"『飞牌』：将纸张掷出，使其锋利如刀刃\"",
+      "flavor": "一张薄纸在你指尖化作利刃，破空钉入敌人的身体。",
+      "describe": "远程对一名敌人造成 4 点物理伤害（低费纯直伤，本途径输出地基）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 4
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "伤害提升",
+            "note": "伤害 4→6→8（序列8 小丑档）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 8
+              }
+            ]
+          },
+          {
+            "name": "抽纸为兵",
+            "note": "解锁序列7 同源能力：对目标相邻单位追加 2 点物理伤害（splash_adjacent）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 4
+              },
+              {
+                "type": "damage",
+                "element": "physical",
+                "value": 2,
+                "target": "splash_adjacent"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s8_premonition",
+      "name": "直觉预感",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "小丑",
+      "rarity": "common",
+      "axis": "trick",
+      "flagship": false,
+      "lore": "序列8 小丑 —— \"可凭直觉预感目标下一步行动\"",
+      "flavor": "你直觉地预感到对手的下一步，每回合开始凝成一层「预感」；受到攻击时它替你挡下半数力道。",
+      "describe": "每回合开始叠加 1 层「预感」（上限 3 层，整场）；受击时该次伤害 ×0.6 并消耗 1 层。",
+      "hook": "on_turn_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "premonition",
+          "stacks": 1,
+          "maxStacks": 3,
+          "duration": null
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "premonition",
+          "name": "预感",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": null,
+          "maxStacks": 3,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_damage",
+                  "scope": "taken",
+                  "mul": 0.6,
+                  "note": "该次伤害 ×0.6（H3 参数化减伤母版；扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
+                }
+              ],
+              "consumeCharge": true
+            }
+          ],
+          "note": "C6 charges 表达一次性预感；F51 mount_status.stacks 表达每回合补层（编队上下文 §六）"
+        }
+      ],
+      "frameworkFlags": [
+        {
+          "code": "G15",
+          "note": "on_turn_start 引擎从未 fire（执行参数 §2.1）；修 G15 后自动闭环",
+          "landed": false
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s8_perfect_poise",
+      "name": "完美协调",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "小丑",
+      "rarity": "common",
+      "axis": "trick",
+      "flagship": false,
+      "lore": "序列8 小丑 —— \"技巧型格斗大师：极大提高身体协调性，几乎不会跌倒\"",
+      "flavor": "你的身体协调到近乎不可能失衡——任何推挤、拖拽与击倒都拿你无可奈何。",
+      "describe": "整场免疫位移（击退/拖拽）与控制类状态（击倒/眩晕）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "poise",
+          "duration": null
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "poise",
+          "name": "完美协调",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "moveImmune": true,
+            "immune": [
+              "control"
+            ]
+          },
+          "note": "G12 immune + moveImmune（编队参数 §1.1b，H27）；与 F7 shackle 是同字段正反两面，建议统一为 move_immune 布尔"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s7_air_bullet",
+      "name": "空气弹",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "魔术师",
+      "rarity": "uncommon",
+      "axis": "trick",
+      "flagship": false,
+      "lore": "序列7 魔术师 —— \"『空气弹』：打响指制造堪比左轮手枪的空气弹\"",
+      "flavor": "你打了个响指，压缩空气如子弹般迸射，将敌人打得踉跄后退。",
+      "describe": "远程对一名敌人造成 3 点物理伤害，并将其行动条 -50（击退，推后 2/3 行动周期）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -50,
+              "mode": "delta",
+              "note": "击退（D1 已拍板，KNOCKBACK_DISTANCE）"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "v0.1 名「空气弹跳」语义偏成位移，本版改回原著「空气弹」。"
+    },
+    {
+      "id": "skill_fool_s7_fire_leap",
+      "name": "火焰跳跃",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "魔术师",
+      "rarity": "uncommon",
+      "axis": "trick",
+      "flagship": false,
+      "lore": "序列7 魔术师 —— \"『火焰跳跃』：30 米范围内在火种间闪现\"；\"操纵火焰\"",
+      "flavor": "你在跃动的火光间一闪而逝，灼伤身前的敌人后退回己方后排。",
+      "describe": "近战攻击进程对前排敌人造成 4 点火焰伤害，随后自身退回己方半场最后位。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single",
+          "anchor": "front_line"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 4,
+              "note": "近战攻击进程（G8 禁越中线，编队上下文 §十一）"
+            },
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "target": "self",
+              "note": "自身退回己方半场最后位（G8 合规，己方半场内位移）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s7_paper_substitute",
+      "name": "纸人替身",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "魔术师",
+      "rarity": "uncommon",
+      "axis": "trick",
+      "flagship": true,
+      "lore": "序列7 魔术师 —— \"『纸人替身』：纸人变自身挡致命一击，削弱诅咒\"",
+      "flavor": "剪好的纸人在你受致命一击的刹那替你碎裂——你活了下来，而附着在你身上的诅咒也随之被削弱。",
+      "describe": "自身获得「纸人替身」（1 层充能，4 tick）：受到致命一击时阻止死亡（保留 1 血）并驱散自身全部 debuff/dot，随后替身碎裂。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "paper_substitute",
+          "charges": 1,
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "paper_substitute",
+          "name": "纸人替身",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 1,
+          "lethalProtect": true,
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "category": [
+                    "debuff",
+                    "dot"
+                  ],
+                  "count": "all",
+                  "note": "「削弱诅咒」：触发时驱散自身全部负面"
+                }
+              ],
+              "consumeCharge": true
+            }
+          ],
+          "note": "lethalProtect（H7，编队参数 §1.1b）在死亡确认前分支、保留 1 血、不触发 on_death 后续链（编队上下文 §十）；on_death 钩子仅承载驱散时序"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "「阻止死亡」走 lethal_protect（本稿新增项 1，已落 ddd），不走 C4 miracle 近似（避免丢保留原格与驱散时序）。"
+    },
+    {
+      "id": "skill_fool_s7_wound_transfer",
+      "name": "伤害转移",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "魔术师",
+      "rarity": "uncommon",
+      "axis": "marionette",
+      "flagship": false,
+      "lore": "序列7 魔术师 —— \"『伤害转移』：将要害伤口转移至手臂等不重要部位\"",
+      "flavor": "你把即将落在要害的伤口挪到了无关紧要的地方——接下来几次打击，都只伤到皮肉。",
+      "describe": "自身获得「伤害转移」（3 层充能，4 tick）：受击时该次伤害 ×0.5 并消耗 1 层。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "wound_transfer",
+          "charges": 3,
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "wound_transfer",
+          "name": "伤害转移",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 3,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_damage",
+                  "scope": "taken",
+                  "mul": 0.5,
+                  "note": "把 N 次伤口挪走（H3 参数化减伤母版；扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
+                }
+              ],
+              "consumeCharge": true
+            }
+          ],
+          "note": "原著序列7 转移到自己不重要部位（伤害降级）；转移到别人是序列4【秽物转移】"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s7_hallucination",
+      "name": "制造幻觉",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "魔术师",
+      "rarity": "uncommon",
+      "axis": "marionette",
+      "flagship": false,
+      "lore": "序列7 魔术师 —— \"『制造幻觉』\"",
+      "flavor": "你让敌人看见并不存在的景象——它的下一击挥向幻影，落在空处。",
+      "describe": "使一名敌人产生幻觉（1 层充能，3 tick）：其下一次攻击改打向空坐标。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "hallucination",
+          "charges": 1,
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "hallucination",
+          "name": "幻觉",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "charges": 1,
+          "behaviorModifiers": [
+            {
+              "op": "target_override",
+              "anchor": "first_empty"
+            }
+          ],
+          "note": "C7 target_override 空坐标已验证；幻觉是愚弄的低阶版（单体/1 次/短）"
+        }
+      ],
+      "sharedAcross": [
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s7_illusion_domain",
+      "name": "幻境",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "魔术师",
+      "rarity": "uncommon",
+      "axis": "marionette",
+      "flagship": true,
+      "lore": "序列7 魔术师 —— 「制造幻觉」的进阶：以幻象织成一片领域，让敌我皆难辨真伪",
+      "flavor": "你轻轻打了个响指。周遭景物开始流动、重叠、失真——敌人再也看不清你手里攥着什么，而你自己的攻击，有时也会穿过那片并不存在的影子。",
+      "describe": "降临「幻境」域（overlay，3 回合）：敌方无法查看我方手牌；我方普通攻击按落空计数（每 5 次攻击落空 1 次）；幻象/镜像标签效果 ×1.5，光/净化标签效果 ×0.7。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "fallbackSort": null,
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_illusion",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_illusion",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场：敌方无法查看我方手牌（信息遮蔽）；我方普通攻击按落空计数（每 5 次落空 1 次，R5 确定性转写 ≈20%）；幻象/镜像标签卡效果 ×1.5；光/净化标签卡效果 ×0.7（幻境畏光）",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "幻象",
+              "镜像"
+            ],
+            "mul": 1.5
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_illusion",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_attack",
+            "filter": {
+              "side": "ally"
+            },
+            "effects": [
+              {
+                "op": "if",
+                "condition": {
+                  "kind": "has_status",
+                  "target": "self",
+                  "statusId": "illusion_daze",
+                  "stacksAtLeast": 5
+                },
+                "then": [
+                  {
+                    "type": "dispel",
+                    "target": "self",
+                    "statusId": [
+                      "illusion_daze"
+                    ],
+                    "count": "all",
+                    "note": "consume(5) 落空计数清零"
+                  },
+                  {
+                    "type": "target_override",
+                    "anchor": "first_empty",
+                    "note": "该次攻击打向幻象本身（C7 空坐标）；R5 确定性落空 ≈ 卡面 20%"
+                  }
+                ],
+                "else": [
+                  {
+                    "type": "mount_status",
+                    "statusId": "illusion_daze",
+                    "stacks": 1,
+                    "target": "self"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "幻象",
+              "镜像"
+            ],
+            "mul": 1.5
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ],
+        "envRules": {
+          "hand_hidden": true
+        }
+      },
+      "statusDefs": [
+        {
+          "id": "illusion_daze",
+          "name": "幻境落空计数",
+          "category": [
+            "stance"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 5,
+          "note": "域内计数状态：满 5 层时该次攻击 target_override → first_empty 并 consume(5)（计数逻辑挂载于 domainDef 触发器）"
+        }
+      ],
+      "frameworkFlags": [
+        {
+          "code": "HAND_HIDDEN",
+          "note": "环境规则「敌方无法查看我方手牌」= 信息层标志 hand_hidden，非补丁，待引擎信息层承载确认",
+          "landed": false
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "与【诡秘之境】（传说）的区别：幻境是低序列可用的软遮蔽，诡秘之境是权柄级的现实改写。"
+    },
+    {
+      "id": "skill_fool_s6_disguise",
+      "name": "变形",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "无面人",
+      "rarity": "uncommon",
+      "axis": "miracle",
+      "flagship": true,
+      "lore": "序列6 无面人 —— \"『变形』：永久变化容貌（拔高 / 变矮 10cm），模拟声音\"",
+      "flavor": "你把自己的面容与身形揉成另一个人的模样——敌人的攻击认不出你，而你的利刃已经贴上它的后背。",
+      "describe": "自身变形 3 tick：敌方单体技能无法选中你；期间首次造成伤害 ×1.5（近身一击）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "disguise_form",
+          "duration": 3
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "disguise_form",
+          "name": "变形",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "untargetableByTargeted": true
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "modify_damage",
+                  "scope": "dealt",
+                  "mul": 1.5,
+                  "note": "对方认不出你、被近身一击（扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
+                }
+              ],
+              "consumeCharge": true
+            }
+          ],
+          "charges": 1,
+          "note": "H5 潜行母版（与 F4 shadow_veil、F11 stealth 同底层，C8 候选池过滤，共享内核参数 §四）"
+        }
+      ],
+      "sharedAcross": [
+        "apprentice",
+        "thief"
+      ],
+      "tentative": true,
+      "conversionNotes": "原著「永久变化容貌」在单局战斗中无意义，取持续 3 回合。与【兽形】区分：变形是潜入形态（不可选中），兽形是战斗形态（属性增益）。"
+    },
+    {
+      "id": "skill_fool_s6_keen_observe",
+      "name": "细微观察",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "无面人",
+      "rarity": "uncommon",
+      "axis": "foresight",
+      "flagship": false,
+      "lore": "序列6 无面人 —— \"对他人外貌和细微动作的极强观察力和记忆力\"",
+      "flavor": "你记下对手的每一个细微动作，它的招式在你眼里越来越慢、破绽越来越多。",
+      "describe": "每次造成伤害叠加 1 层「观察」（上限 3，整场）；自身伤害 ×(1 + 0.1×层数)。",
+      "hook": "on_deal_damage",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "observe",
+          "stacks": 1,
+          "maxStacks": 3,
+          "duration": null
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "observe",
+          "name": "观察",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 3,
+          "modifiers": {
+            "damageDealtMulPerStack": 0.1
+          },
+          "note": "伤害 ×(1 + 0.1×层数)；H11 计数型母版（与 F1 inscription 学徒·默记共用，编队参数 §2.4）；F51 stacks"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s6_power_refine",
+      "name": "能力精进",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "无面人",
+      "rarity": "uncommon",
+      "axis": "miracle",
+      "flagship": false,
+      "lore": "序列6 无面人 —— \"火焰跳跃、空气弹等能力变强约 30%\"",
+      "flavor": "成为无面人后，你对身体与火焰的掌控更上一层——本途径的所有攻击技能，威力提升三成。",
+      "describe": "整场自身伤害 ×1.3，仅对途径 fool 的技能生效（途径内增伤协同引擎）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "power_refine",
+          "duration": null
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "power_refine",
+          "name": "能力精进",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "damageDealtMul": 1.3,
+            "damageDealtMulFilter": {
+              "pathway": "fool"
+            }
+          },
+          "note": "H4 过滤乘区支持按途径过滤（编队参数 §1.1b）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "退化方案：改为自身 fire+physical 伤害 ×1.15（不依赖标签，代价是吃不到途径区分）。"
+    },
+    {
+      "id": "skill_fool_s5_marionette",
+      "name": "秘偶",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "秘偶大师",
+      "rarity": "rare",
+      "axis": "marionette",
+      "flagship": true,
+      "lore": "序列5 秘偶大师 —— \"看见并操纵『灵体之线』，通过灵体之线控制目标的灵体、心智体、以太体和身躯……可将目标彻底变成秘偶\"",
+      "flavor": "你牵住那条看不见的灵体之线，敌人的身躯不再属于它——它转身，扑向自己的同伴。",
+      "describe": "远程使一名敌人被灵体之线操控 6 tick（发动攻击时目标被强制改为其同阵营友军，优先于嘲讽/守护），并造成 2 点精神伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "puppet_string",
+              "duration": 6
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "puppet_string",
+          "name": "灵体之线操控",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "triggers": [
+            {
+              "event": "on_attack",
+              "effects": [
+                {
+                  "type": "target_override",
+                  "faction": "same_as_holder",
+                  "sort": "index_asc",
+                  "note": "目标强制改写为其同阵营存活友军（index_asc 破平）；puppet_string 优先于嘲讽/守护；on_attack 即时节点不受 duration 尺度影响（G15-b 修正，执行参数 §2.1）"
+                }
+              ]
+            }
+          ],
+          "note": "F9 已登记（编队参数 §2.4），sharedAcross 罪犯途径；此处为引用副本"
+        }
+      ],
+      "sharedAcross": [
+        "criminal"
+      ],
+      "tentative": true,
+      "conversionNotes": "G15-b：v0.1 duration 3t + on_turn_start 大概率不生效；本版 duration 6t（≈覆盖目标 1 个自身回合）+ 攻击即时节点，两处都取稳。"
+    },
+    {
+      "id": "skill_fool_s5_spirit_thread",
+      "name": "灵体之线",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "秘偶大师",
+      "rarity": "rare",
+      "axis": "foresight",
+      "flagship": false,
+      "lore": "序列5 秘偶大师 —— \"找出隐藏目标——『魔女』『隐身术』和『阴影躲藏』的克星\"",
+      "flavor": "所有隐藏在阴影与镜中的把戏，在你眼里都牵着一条清晰的线。",
+      "describe": "整场识破敌方 stealth/shadow_veil/untargetable 类状态；对隐匿/潜行单位伤害 ×1.3。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_thread_vision",
+          "duration": null
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_thread_vision",
+          "name": "灵体之线感知",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "reveal_stealth": true,
+            "damageDealtMulVsConcealed": 1.3
+          },
+          "note": "C8 识破分支（与【灵视】同源）；对隐匿/潜行状态单位伤害 ×1.3 走隐藏目标过滤乘区"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s4_marionette_immortal",
+      "name": "秘偶不死",
+      "kind": "passive",
+      "sequence": 4,
+      "sequenceName": "诡法师",
+      "rarity": "rare",
+      "axis": "miracle",
+      "flagship": true,
+      "lore": "序列4 诡法师 —— \"只要有秘偶活着，诡法师不会死\"",
+      "flavor": "只要还有一具秘偶听你号令，死亡就追不上你——致命一击落在它身上，而你依旧站立。",
+      "describe": "自身濒死时若场上存在由你控制的秘偶（己方召唤物或处于 puppet_string 的敌方单位）：销毁其中一具并阻止死亡，保留 1 血且治疗至 20% 最大生命；否则正常死亡。",
+      "hook": "on_death",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "caster_has_summon"
+          },
+          "then": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "dispel",
+                  "count": 1,
+                  "filter": {
+                    "isOwnSummon": true
+                  },
+                  "note": "销毁其中一具秘偶（或解除一个 puppet_string，共享内核参数 §三 caster_has_summon 谓词族）"
+                },
+                {
+                  "type": "heal",
+                  "value": "to_20pct_hp_max",
+                  "note": "治疗至 20% 最大生命；保留 1 血由 lethalProtect（H7）在死亡确认前分支承载；无秘偶可替死时走 else 分支正常死亡"
+                }
+              ]
+            }
+          ],
+          "else": []
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "三处引擎依赖均已落 ddd：If 算子 + caster_has_summon 谓词（共享内核参数 §三）、lethal_protect（H7）、on_death 取消死亡分支（编队上下文 §十 死亡结算链）。"
+    },
+    {
+      "id": "skill_fool_s4_marionette_swap",
+      "name": "秘偶换位",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "诡法师",
+      "rarity": "rare",
+      "axis": "trick",
+      "flagship": false,
+      "lore": "序列4 诡法师 —— \"1 千米内可自由与秘偶调换位置\"",
+      "flavor": "你与一具秘偶在瞬息间互换了位置——它替你站到了刀口上。",
+      "describe": "与指定秘偶交换位置（swap_ally 锁定同阵营，G8 合规）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single",
+          "filter": {
+            "isPuppet": true
+          }
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "type": "move",
+          "op": "swap_ally",
+          "note": "与指定秘偶交换位置；既有 swap_ally move.op，无新扩展"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "稿面 targetSpec { faction: ALLY, filter: is_puppet } 无 fallbackSort，manual 模式按规则记 null。"
+    },
+    {
+      "id": "skill_fool_s4_filth_transfer",
+      "name": "秽物转移",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "诡法师",
+      "rarity": "rare",
+      "axis": "marionette",
+      "flagship": false,
+      "lore": "序列4 诡法师 —— \"将伤口和疾病转移给替身纸人\"",
+      "flavor": "你把身上的伤口、疾病与诅咒一并揭下，贴到了敌人的身上。",
+      "describe": "驱散自身全部 debuff/dot 并将其（保留剩余时长）转移到一名敌人身上——是搬运不是复制。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "category": [
+                "debuff",
+                "dot"
+              ],
+              "count": "all",
+              "collect": "transferred_statuses",
+              "note": "揭下自身的伤口与疾病（收集被驱散状态列表供下步搬运）"
+            },
+            {
+              "type": "transfer_status",
+              "target": "primary_target",
+              "statusesFrom": "transferred_statuses",
+              "keepDuration": true,
+              "note": "H32 transferStatus（mode 含 move，编队参数 §1.1b）；贴到敌人身上"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "关键语义「转移而非复制」：自身的没了，敌人的有了。与 F50 drain category:buff 同源，本条需要 debuff 方向。"
+    },
+    {
+      "id": "skill_fool_s4_beast_form",
+      "name": "兽形",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "诡法师",
+      "rarity": "rare",
+      "axis": "marionette",
+      "flagship": false,
+      "lore": "序列4 诡法师 —— \"可变成体型差距不大的动物\"",
+      "flavor": "你的骨骼与肌肉在扭曲中重铸，化身为一头与体型相仿的野兽。",
+      "describe": "自身化身为兽 4 tick：攻击 +3、行动条速率 +8（可驱散）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "beast_form",
+          "duration": 4
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "beast_form",
+          "name": "兽形",
+          "category": [
+            "stance"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "statPerStack": {
+            "attack": 3,
+            "gauge.rate": 8
+          },
+          "note": "F10 已登记（编队参数 §2.4），此处为引用副本；modify_stat duration 回滚 v1.5 已修"
+        }
+      ],
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "statPerStack 内含 gauge.rate 键；ddd modify_stat.stat 枚举无 gauge.rate（gauge 三维度归 modify_resource），待内核裁定归一",
+          "landed": false
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "与【变形】区分：兽形是战斗形态（属性增益、可驱散），变形是潜入形态（不可选中）。"
+    },
+    {
+      "id": "skill_fool_s3_borrow_power",
+      "name": "借取力量",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "古代学者",
+      "rarity": "epic",
+      "axis": "miracle",
+      "flagship": true,
+      "lore": "序列3 古代学者 —— \"从过去的自己处借取力量\"",
+      "flavor": "你向历史深处的那个自己伸出手，借来他尚未褪去的锋芒。",
+      "describe": "自身攻击增益 4 tick：N = 本场战斗自身历史最高攻击 − 当前攻击（为负取 0），即恢复到历史峰值。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "mode": "delta",
+          "valueFrom": {
+            "kind": "maxStatThisBattle",
+            "stat": "attack",
+            "minusCurrent": true,
+            "floor": 0
+          },
+          "duration": 4,
+          "note": "valueFrom maxStatThisBattle（效果参数 §1.1 本稿新增项 8）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "退化方案（引擎读不到历史峰值）：modify_stat(attack, +4, duration: 4)，仍保留「借」语义（临时增益、到期归还）。"
+    },
+    {
+      "id": "skill_fool_s3_historical_echo",
+      "name": "历史影像",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "古代学者",
+      "rarity": "epic",
+      "axis": "miracle",
+      "flagship": true,
+      "lore": "序列3 古代学者 —— \"从历史孔隙召唤影像（人或物），了解越详细成功率越高\"",
+      "flavor": "你从历史的孔隙里拽出一个\"他\"的影像——它有着那个人的模样与手段，却只听你的号令。",
+      "describe": "以指定单位（可敌方）为模板召唤一具历史影像为己方作战（35% 生命 / 60% 攻击，己方队尾）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "any",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unit": "unit_historical_echo",
+          "template": "primary_target",
+          "hpRatio": 0.35,
+          "atkRatio": 0.6,
+          "position": "tail",
+          "note": "spawn.template（效果参数 §1.1 本稿新增项 4）+ C5 hpRatio/position"
+        }
+      ],
+      "unitDefs": [
+        {
+          "id": "unit_historical_echo",
+          "name": "历史影像",
+          "baseOn": "template_target",
+          "hpRatio": 0.35,
+          "atkRatio": 0.6,
+          "note": "H1 召唤物基线模板（编队参数 §2.4 本稿新增项 15）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "「了解越详细成功率越高」→ 若模板单位本场已被攻击/观察过（有 observe 层数），影像属性按比例提升；稿面 targetSpec faction ANY 无 fallbackSort，manual 记 null。"
+    },
+    {
+      "id": "skill_fool_s3_paper_limb",
+      "name": "纸人部位",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "古代学者",
+      "rarity": "epic",
+      "axis": "marionette",
+      "flagship": false,
+      "lore": "序列3 古代学者 —— \"可将纸人部位转移给目标，在其发现是假之前正常运行\"",
+      "flavor": "你悄悄把它的手臂换成纸做的——在它发现之前，这只\"手臂\"一样能挥，只是轻飘飘毫无力气。",
+      "describe": "使一名敌人攻击 -5、防御 -2，持续 4 tick，到期自动回滚（「发现是假」）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -5,
+          "mode": "delta",
+          "duration": 4
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -2,
+          "mode": "delta",
+          "duration": 4
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s2_spirit_worm",
+      "name": "灵之虫",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "奇迹师",
+      "rarity": "epic",
+      "axis": "miracle",
+      "flagship": true,
+      "lore": "序列2 奇迹师 —— \"借助过去的『灵之虫』复活（4 次后无效）\"",
+      "flavor": "你体内沉睡着过去的灵之虫——每一次死亡，都有一条替你碎裂，把你从冥河拉回来。四次之后，虫尽人亡。",
+      "describe": "整场携带 4 条灵之虫；每次死亡时消耗 1 条以 30% 生命原地复活，4 条耗尽后不再触发。",
+      "hook": "on_death",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "spirit_worm",
+              "charges": 4,
+              "duration": null
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_worm",
+          "name": "灵之虫",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "charges": 4,
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "spawn",
+                  "reviveOf": "self",
+                  "hpRatio": 0.3,
+                  "position": "original",
+                  "note": "G4 spawn.reviveOf（效果参数 §1.1）；复活结算前检查 revive_blocked（命运锚点对冲，编队上下文 §十 优先级链）"
+                }
+              ],
+              "consumeCharge": true
+            }
+          ],
+          "note": "原著明确 4 次（v0.1「每场一次」是偏离，本版改回）；归零后不再触发"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s2_wish",
+      "name": "愿望",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "奇迹师",
+      "rarity": "epic",
+      "axis": "miracle",
+      "flagship": true,
+      "lore": "序列2 奇迹师 —— \"『愿望』：先满足别人愿望才能满足自身，战斗时通过向自己许愿将情况变为现实\"",
+      "flavor": "你先为同伴实现一个愿望，然后向自己许下另一个——你说的，就会成真。",
+      "describe": "双目标：先治疗一名友军 6 点（满足别人的愿望），再使自身下次攻击必定命中且伤害 ×2（向自己许愿）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "secondaryTargets": [
+        {
+          "request": {
+            "faction": "self",
+            "scope": "single"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "heal",
+              "value": 6,
+              "note": "治疗用 heal 原语（A22 / INV-D5）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "wish_fulfilled",
+              "charges": 1,
+              "duration": 4,
+              "target": "secondary_target"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "wish_fulfilled",
+          "name": "愿望成真",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "charges": 1,
+          "modifiers": {
+            "neverMiss": true
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [
+                {
+                  "type": "modify_damage",
+                  "scope": "dealt",
+                  "mul": 2
+                }
+              ],
+              "consumeCharge": true
+            }
+          ],
+          "note": "never_miss（H35，编队参数 §1.1b）；两段式结构（先人后己）一比一还原原著"
+        }
+      ],
+      "variants": [
+        {
+          "name": "愿望·庇佑",
+          "note": "友军改为获得护盾"
+        },
+        {
+          "name": "愿望·锋锐",
+          "note": "自身下次攻击附加易伤"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s2_fate_interference",
+      "name": "命运干扰",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "奇迹师",
+      "rarity": "epic",
+      "axis": "foresight",
+      "flagship": true,
+      "lore": "序列2 奇迹师 —— \"对未来施加影响，干扰目标命运\"",
+      "flavor": "你拨动命运的丝线——同伴被推向未来，敌人被拖回过去。",
+      "describe": "双目标：主目标（敌人）行动条 -20；行动条最低的一名友军行动条 +20。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "secondaryTargets": [
+        {
+          "request": {
+            "faction": "ally",
+            "scope": "single",
+            "sort": "gauge_asc"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -20,
+              "mode": "delta"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 20,
+              "mode": "delta",
+              "target": "secondary_target"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "thief"
+      ],
+      "tentative": true,
+      "conversionNotes": "G6 已修正自推条错误（+20 永远指向友军 secondary，绝不指向自身）。"
+    },
+    {
+      "id": "skill_fool_s1_regeneration",
+      "name": "再生",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "诡秘侍者",
+      "rarity": "legendary",
+      "axis": "marionette",
+      "flagship": true,
+      "lore": "序列1 诡秘侍者 —— \"『再生』：让消失的灵体之线再生，将食物 / 植物变成秘偶\"",
+      "flavor": "战场上每有一具躯体倒下，它消散的灵体之线便在你手中重续——你把它缝成一具新的秘偶。",
+      "describe": "任意单位死亡时（含敌我），在己方队尾召唤一具秘偶（25% 生命 / 40% 攻击）。",
+      "hook": "on_death",
+      "effects": [
+        {
+          "type": "spawn",
+          "unit": "unit_marionette",
+          "position": "tail",
+          "hpRatio": 0.25,
+          "atkRatio": 0.4,
+          "note": "全局 on_death 第三方监听（执行参数 §2.1 本稿新增项 5）：任意单位死亡时除 fire 给死者自身，另向持有该被动的单位 fire；与 A4 on_kill fire 给击杀者不同"
+        }
+      ],
+      "unitDefs": [
+        {
+          "id": "unit_marionette",
+          "name": "秘偶",
+          "baseOn": "summon_baseline",
+          "hpRatio": 0.25,
+          "atkRatio": 0.4,
+          "note": "H1 召唤物基线模板（编队参数 §2.4 本稿新增项 15）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s1_mystery_realm",
+      "name": "诡秘之境",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "诡秘侍者",
+      "rarity": "legendary",
+      "axis": "miracle",
+      "flagship": true,
+      "lore": "序列1 诡秘侍者 —— \"『诡秘之境』：创造神国雏形，带隐秘效果\"",
+      "flavor": "你在战场的一角张开神国的雏形——其中的一切都被隐秘笼罩，敌人看不清，也打不中。",
+      "describe": "展开「诡秘之境」区域：区域内己方单位获得 concealed（敌方单体技能难以选中）且受伤 ×0.85；区域内敌方单位行动条速率 ×0.85（各 2 tick 刷新）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "fallbackSort": null,
+        "consumption": "zone"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "consumption": "zone",
+          "zone": "zone_mystery_realm",
+          "note": "保持 Zone 形态（H9 Zone 母版，阵地非全场界域）"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "concealed",
+          "name": "诡秘 concealed",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "untargetableByTargeted": true,
+            "damageTakenMul": 0.85
+          },
+          "note": "与不眠者 concealed 同源同一母版；此处为引用副本"
+        }
+      ],
+      "zoneDef": {
+        "id": "zone_mystery_realm",
+        "kind": "blessing",
+        "trigger": "on_occupy_tick",
+        "affects": "any",
+        "duration": null,
+        "effects": [
+          {
+            "op": "if",
+            "condition": {
+              "kind": "unit_faction",
+              "faction": "ally_of_owner"
+            },
+            "then": [
+              {
+                "type": "mount_status",
+                "statusId": "concealed",
+                "duration": 2
+              },
+              {
+                "type": "damage_taken_mul",
+                "value": 0.85,
+                "duration": 2,
+                "note": "区域内己方受伤害 ×0.85"
+              }
+            ],
+            "else": []
+          },
+          {
+            "op": "if",
+            "condition": {
+              "kind": "unit_faction",
+              "faction": "enemy_of_owner"
+            },
+            "then": [
+              {
+                "type": "modify_stat",
+                "stat": "gauge.rate",
+                "value": 0.85,
+                "mode": "mul",
+                "duration": 2,
+                "note": "区域内敌方 gauge_rate ×0.85（隐秘拖慢）"
+              }
+            ],
+            "else": []
+          }
+        ]
+      },
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "Zone 载荷含 gauge.rate 键；ddd modify_stat.stat 枚举无 gauge.rate（gauge 三维度归 modify_resource），待内核裁定归一",
+          "landed": false
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "Zone 落位不受 G8 约束（G8 原文只约束单位位移，战场上下文 §二已拍板）。"
+    },
+    {
+      "id": "skill_fool_s1_restructure",
+      "name": "重组",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "诡秘侍者",
+      "rarity": "legendary",
+      "axis": "marionette",
+      "flagship": true,
+      "lore": "序列1 诡秘侍者 —— \"『重组』（『篡改』/『嫁接』）：将实体事物或抽象概念重新组合，篡改定义、逻辑、规则\"",
+      "flavor": "你把它身上那道\"祝福\"的定义改写了一下——于是祝福成了诅咒。",
+      "describe": "把目标 1 个增益重组为对应减益（搬运而非驱散+新挂）；无对应映射时退化为驱散 1 个增益并造成 3 点精神伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "type": "transfer_status",
+          "from": {
+            "category": [
+              "buff"
+            ]
+          },
+          "to": "mapped_debuff",
+          "count": 1,
+          "keepDuration": true,
+          "note": "H32 transferStatus；映射表示例 shield→vulnerable / regen→burn / fortify→vulnerable / gauge_rate+→shackle（数据配置，需人工定义完整）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "分阶段建议：先上保守版（dispel buff×1 + 挂 1 vulnerable，不建映射表）验证收益，映射表列为后续增强。与【秽物转移】区分：重组是改造，搬运是位移。buff_count_desc 排序已落 ddd（共享内核参数 §一 sorts）。"
+    },
+    {
+      "id": "skill_fool_s0_miracle",
+      "name": "奇迹",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "愚者",
+      "rarity": "legendary",
+      "axis": "miracle",
+      "flagship": false,
+      "lore": "序列2 奇迹师 / 序列0 愚者「奇迹」权柄",
+      "flavor": "你降下一个奇迹——即便同伴倒下，也会在光芒中重新站起。",
+      "describe": "使一名友军获得「奇迹」（6 tick）：其死亡时以 50% 生命原地复活（死后召回，不阻止死亡）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "miracle",
+          "duration": 6
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "miracle",
+          "name": "奇迹",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "spawn",
+                  "reviveOf": "status_holder",
+                  "hpRatio": 0.5,
+                  "position": "original",
+                  "note": "C4 已登记（编队上下文 §十）+ G4 reviveOf；复活结算前检查 revive_blocked；此处为引用副本"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "与【纸人替身】差异：奇迹是给别人的复活且不阻止死亡（死后召回）；纸人替身是自身免死。稿面 targetSpec ALLY 无 fallbackSort，manual 记 null。"
+    },
+    {
+      "id": "skill_fool_s0_fooling",
+      "name": "愚弄",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "愚者",
+      "rarity": "legendary",
+      "axis": "marionette",
+      "flagship": true,
+      "lore": "序列0 愚者 —— \"『愚弄』权柄（核心）：弄假成真，降低敌人智商，愚弄时间 / 历史\"",
+      "flavor": "你愚弄了它——它挥向幻影，错愕之间时间也乱了方寸；而当它终于挥出那一击，假象便成了真的伤口。",
+      "describe": "使一名敌人被愚弄 6 tick（2 层充能）：攻击打向空处；其每次发起攻击受到等于其自身攻击力的精神伤害（弄假成真）；行动条速率 -8、攻击 -3。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "fooled",
+          "charges": 2,
+          "duration": 6
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "fooled",
+          "name": "愚弄",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "charges": 2,
+          "behaviorModifiers": [
+            {
+              "op": "target_override",
+              "anchor": "first_empty"
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_attack",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "valueFrom": {
+                    "kind": "target_stat",
+                    "stat": "attack"
+                  },
+                  "target": "status_holder",
+                  "note": "弄假成真：等于其攻击力的精神伤害给持有者自身；on_attack 在每次攻击行为发起时 fire、含落空（执行参数 §2.1 本稿新增项 3/12）"
+                }
+              ]
+            }
+          ],
+          "statPerStack": {
+            "gauge.rate": -8,
+            "attack": -3
+          },
+          "note": "四要素全落地：弄假（打空）/ 成真（反噬）/ 愚弄时间（gauge.rate -8）/ 降低智商（attack -3）；退化方案：去掉反噬，保留双次打空+减速+减攻"
+        }
+      ],
+      "sharedAcross": [
+        "thief"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s0_lord_of_spirits",
+      "name": "灵界掌控者",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "愚者",
+      "rarity": "legendary",
+      "axis": "foresight",
+      "flagship": true,
+      "lore": "序列0 愚者 —— \"『灵界掌控者』：操纵灵体之线和唤起灵性之线\"",
+      "flavor": "你是灵界的主宰——所有灵体之线都在你掌心，敌人的灵魂越虚弱，你牵动它们越轻易。",
+      "describe": "整场：你施加的控制类状态（puppet_string/hallucination/fooled/taunt）不可被驱散；对生命低于 50% 的目标伤害 ×1.3。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "lord_of_spirits",
+          "duration": null
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "lord_of_spirits",
+          "name": "灵界掌控者",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "control_undispellable": true
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "condition": {
+                "kind": "hp_percent",
+                "target": "target",
+                "op": "le",
+                "value": 0.5
+              },
+              "effects": [
+                {
+                  "type": "modify_damage",
+                  "scope": "dealt",
+                  "mul": 1.3,
+                  "note": "灵性之线松动：残血目标易控（TargetHpBelow 谓词已存在于 EffectCondition 谓词集；扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
+                }
+              ]
+            }
+          ],
+          "note": "运行时覆写 dispelable: false（H8，编队参数 §1.1b）：挂载方把后续施加的 puppet_string/hallucination/fooled/taunt 标为不可驱散"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_fool_s0_fate_anchor",
+      "name": "命运锚点",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "愚者",
+      "rarity": "legendary",
+      "axis": "foresight",
+      "flagship": false,
+      "lore": "序列0 愚者 —— \"『命运锚点』权柄\"",
+      "flavor": "你把自己的命运钉死在此处——没有人能把你从这条线上推开；而凡是被你钉住命运的敌人，连死亡都收不走它。",
+      "describe": "整场：自身免疫一切 gauge.current 减少（击退/拖慢无效）；你击杀的敌方单位无法以任何方式复活。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "fate_anchor",
+              "duration": null
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "fate_anchor",
+          "name": "命运锚点",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "gaugeReductionImmune": true
+          },
+          "triggers": [
+            {
+              "event": "on_kill",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "revive_blocked",
+                  "duration": null,
+                  "target": "killed_unit",
+                  "note": "被你钉住命运的敌人连死亡都收不走它"
+                }
+              ]
+            }
+          ],
+          "note": "gaugeReductionImmune（H31，编队参数 §1.1b）：需在所有减 gauge 效果入口检查"
+        },
+        {
+          "id": "revive_blocked",
+          "name": "复活着禁",
+          "category": [
+            "seal"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "revive_blocked": true
+          },
+          "note": "与收尸人 s2_true_death、不眠者 eternal_sleep 同源同一母版（编队参数 §1.1b + 编队上下文 §十 死亡结算链）；此处为引用副本"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "锚定自己（不被推动）+ 锚定敌人（死了就是死了），是本项目唯一的反复活手段；与灵之虫/奇迹的复活对冲优先级链已定（编队上下文 §十）。"
+    }
+  ]
+}

@@ -1,0 +1,2336 @@
+{
+  "pathwayId": "apothecary",
+  "pathwayName": "药师",
+  "sourceFile": "../药师途径_技能池_v0.2.md",
+  "sourceVersion": "v0.2",
+  "axes": {
+    "brew": {
+      "symbol": "🜄",
+      "name": "药剂"
+    },
+    "beasts": {
+      "symbol": "🐾",
+      "name": "兽群"
+    },
+    "crimson": {
+      "symbol": "🜸",
+      "name": "血月"
+    },
+    "moon": {
+      "symbol": "🌙",
+      "name": "月相"
+    }
+  },
+  "cards": [
+    {
+      "id": "skill_apothecary_s9_brew",
+      "name": "药剂调配",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "药师",
+      "rarity": "common",
+      "axis": "brew",
+      "flagship": false,
+      "lore": "序列9 药师 —— \"擅长调配药剂\"",
+      "flavor": "你随手把几味药材捣碎调匀灌了下去，苦涩的暖流立刻淌遍全身。",
+      "describe": "治疗一名友军 4 点生命。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "heal",
+          "value": 4
+        }
+      ],
+      "sharedAcross": [
+        "planter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s9_herbal_dressing",
+      "name": "草药敷贴",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "药师",
+      "rarity": "common",
+      "axis": "brew",
+      "flagship": false,
+      "lore": "序列9 药师 —— \"驯化使用植物治病\"",
+      "flavor": "你嚼碎一把活着的苔草敷上伤口，叶片仍在微微抽动，把生机一点点渡进血肉里。",
+      "describe": "治疗一名友军 3 点生命，并使其再生 3 tick（每 tick 2 点）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "heal",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "regen",
+              "duration": 3
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "planter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s9_toxin_resist",
+      "name": "毒素抗性",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "药师",
+      "rarity": "common",
+      "axis": "brew",
+      "flagship": false,
+      "lore": "序列9 药师 —— \"毒素抗性强\"",
+      "flavor": "你常年与毒草为伴，寻常的毒已经毒不倒你；而每次中毒，身体都会自己把它解掉。",
+      "describe": "战斗开始时，自身毒素抗性 +20（整场）；受到毒素伤害时自行化解 1 点（回复 1 点生命）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:poison",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "antivenom",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "antivenom",
+          "name": "抗毒体质",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "condition": {
+                "kind": "element_is",
+                "element": "poison"
+              },
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 1,
+                  "target": "self",
+                  "note": "自行化解：小额回血，避免抗性堆到免疫"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s9_health_sight",
+      "name": "健康灵视",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "药师",
+      "rarity": "common",
+      "axis": "brew",
+      "flagship": true,
+      "lore": "序列9 药师 —— \"健康领域『灵视』\"",
+      "flavor": "你能看见别人身上的病气与裂口在哪里 —— 伤得越重的人，你越知道该怎么救。",
+      "describe": "战斗开始时获得「健康灵视」：你施放的治疗对当前生命低于 50% 的目标治疗量 ×1.5。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "health_sight",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "health_sight",
+          "name": "健康灵视",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "heal_output_mul": {
+              "value": 1.5,
+              "filter": {
+                "targetHpPercentBelow": 50
+              }
+            }
+          },
+          "note": "heal_output_mul（施法者侧，handleHeal 读取）+ 目标血量过滤"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s8_beast_whistle",
+      "name": "驯兽哨",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "驯兽师",
+      "rarity": "common",
+      "axis": "beasts",
+      "flagship": false,
+      "lore": "序列8 驯兽师 —— \"驯化使用活着的动物（含超凡生物）\"",
+      "flavor": "你吹响骨哨，林子里那头被你驯过的狼循声而来，龇着牙站到了你身前。",
+      "describe": "在己方队尾召唤一只被驯化的野兽。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "type": "spawn",
+          "unitId": "unit_beast",
+          "position": "tail",
+          "note": "F38（H1 基线）；禁止挂「开局」语义状态（A2）"
+        }
+      ],
+      "sharedAcross": [
+        "planter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s8_beast_sense",
+      "name": "动物感官",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "驯兽师",
+      "rarity": "common",
+      "axis": "beasts",
+      "flagship": true,
+      "lore": "序列8 驯兽师 —— \"『动物感官』：读懂野兽想法，沟通 / 驱使 / 分享感官\"",
+      "flavor": "你与它们共享着同一副感官 —— 谁咬住了你，你的兽群就先一步知道。",
+      "describe": "战斗开始时：己方动物类/召唤物攻击 +1、行动条速率 +5（整场）；你受到伤害时，己方全体召唤物行动条 +10。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "beast_sense",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "beast_sense",
+          "name": "动物感官",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies",
+              "filter": {
+                "anyOf": [
+                  {
+                    "tags": [
+                      "beast"
+                    ]
+                  },
+                  {
+                    "isSummon": true
+                  }
+                ]
+              },
+              "note": "驱使"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 5,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies",
+              "filter": {
+                "anyOf": [
+                  {
+                    "tags": [
+                      "beast"
+                    ]
+                  },
+                  {
+                    "isSummon": true
+                  }
+                ]
+              }
+            }
+          ],
+          "triggers": [
+            {
+              "event": "on_take_damage",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 10,
+                  "mode": "delta",
+                  "target": "all_allies",
+                  "filter": {
+                    "isSummon": true
+                  },
+                  "note": "分享感官：推友军不推自己（G5/G6 合规）"
+                }
+              ]
+            }
+          ],
+          "note": "§1.2b unitType/tags + §一 filter.isSummon（新增项 10）；「读懂想法」（信息）未做"
+        }
+      ],
+      "sharedAcross": [
+        "planter"
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 常驻修正",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_apothecary_s7_vampire_body",
+      "name": "血族体质",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "吸血鬼",
+      "rarity": "uncommon",
+      "axis": "crimson",
+      "flagship": false,
+      "lore": "序列7 吸血鬼 —— \"生命提升（活 300 岁）／出色体质、速度、敏捷\"",
+      "flavor": "三百年的岁月在你血管里沉淀 —— 你的身躯比看上去结实得多，出手也比任何人预想的快。",
+      "describe": "战斗开始时，自身生命上限 +15、护甲 +3、行动条速率 +5，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 15,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 3,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 定价无锚点（D2）；INV-S5 合规（改源属性）",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_apothecary_s7_vampire_charm",
+      "name": "血族魅力",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "吸血鬼",
+      "rarity": "uncommon",
+      "axis": "crimson",
+      "flagship": false,
+      "lore": "序列7 吸血鬼 —— \"颜值魅力提升\"",
+      "flavor": "你抬起眼的那一瞬，最先冲上来的那个敌人愣住了 —— 它对着空气狠狠挥出一击。",
+      "describe": "战斗开始时，使敌方攻击最高的单位失神：其下一次攻击落空（5 tick 内）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "captivated",
+          "charges": 1,
+          "duration": 5,
+          "target": "target",
+          "note": "目标 = 敌方 atk_desc 最高者"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "captivated",
+          "name": "着迷",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "charges": 1,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty"
+              }
+            ]
+          },
+          "note": "C7 first_empty（已验证）；duration 5 满足 G15-b（≥ 目标一个行动周期）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s7_corrosive_claw",
+      "name": "腐蚀之爪",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "吸血鬼",
+      "rarity": "uncommon",
+      "axis": "crimson",
+      "flagship": true,
+      "lore": "序列7 吸血鬼 —— \"『腐蚀之爪』\"",
+      "flavor": "你的指甲暴长成漆黑的利爪，撕开的不只是皮肉 —— 连同它身上的护甲一并锈成了渣。",
+      "describe": "对一名近战敌人造成 4 点毒素伤害，并使其护甲 -2（3 tick）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 2,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "armor_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "poison",
+          "value": 4
+        },
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": -2,
+          "mode": "delta",
+          "duration": 3
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s7_abyss_shackle",
+      "name": "深渊枷锁",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "吸血鬼",
+      "rarity": "uncommon",
+      "axis": "crimson",
+      "flagship": false,
+      "lore": "序列7 吸血鬼 —— \"『深渊枷锁』\"",
+      "flavor": "深渊里伸出漆黑的锁链，缠住它的四肢拖向黑暗 —— 它每动一下都比刚才更沉。",
+      "describe": "对一名远程敌人造成 2 点无元素伤害，并施加枷锁 2 tick：无法被位移、行动条速率 ×0.7。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "none",
+          "value": 2
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shackle",
+          "duration": 2
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "shackle",
+          "name": "枷锁",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "moveImmune": true,
+            "gaugeRateMul": 0.7
+          },
+          "note": "F7 已登记定义引用副本（H24 减速族），不重复立项"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s7_dark_wings",
+      "name": "黑暗之翼",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "吸血鬼",
+      "rarity": "uncommon",
+      "axis": "crimson",
+      "flagship": false,
+      "lore": "序列7 吸血鬼 —— \"『黑暗之翼』\"",
+      "flavor": "你背后张开一双由黑暗凝成的巨翼，托着你掠回阵地深处 —— 而留在原地的只有几片融进夜色的羽毛。",
+      "describe": "退回己方半场最后位，并获得黑暗之翼 3 tick：受伤 ×0.85、行动条速率 +6。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "target": "self",
+              "note": "G8 合规"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "dark_wings",
+              "duration": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dark_wings",
+          "name": "黑暗之翼",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 6,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            }
+          ],
+          "modifiers": {
+            "damage_taken_mul": 0.85
+          },
+          "note": "H10 形态母版（与 F10/耕种者 bear_form 同母版）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 带 duration 修正",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_apothecary_s7_blood_servant",
+      "name": "血仆转化",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "吸血鬼",
+      "rarity": "uncommon",
+      "axis": "crimson",
+      "flagship": true,
+      "lore": "序列7 吸血鬼 —— \"『血仆转化』\"",
+      "flavor": "你咬破它的颈侧，把自己的血渡了进去 —— 当它再站起来时，第一个扑向的是它昔日的同伴。",
+      "describe": "使一名近战敌人变成血仆 5 tick：攻击其己方队友，且攻击 -2。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "charm",
+          "duration": 5
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -2,
+          "mode": "delta",
+          "duration": 5,
+          "note": "成为血仆后自身衰弱"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "charm",
+          "name": "魅惑",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "self"
+              }
+            ]
+          },
+          "note": "F15 引用副本（H12 target_override 族）；duration 5 满足 G15-b"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "真·阵营转换",
+            "note": "若引擎批复 convert（真转己方单位），升级为「目标转为己方单位」并去掉 attack -2；当前以 charm 落地",
+            "effects": []
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s6_invisibility_potion",
+      "name": "隐身药剂",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "魔药教授",
+      "rarity": "uncommon",
+      "axis": "brew",
+      "flagship": false,
+      "lore": "序列6 魔药教授 —— \"调配超凡药剂和香水（隐身药剂、无味香水等）\"",
+      "flavor": "你摔碎那瓶银灰色的药剂，雾气散开时，你已经不在原地了。",
+      "describe": "自身隐身 2 tick：不可被单体技能选中（攻击或受击后现身）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "stealth",
+          "duration": 2,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "stealth",
+          "name": "潜行",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "untargetableByTargeted": {
+              "direction": "both",
+              "scope": "single"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_deal_damage",
+              "effects": [],
+              "note": "破除"
+            },
+            {
+              "event": "on_take_damage",
+              "effects": [],
+              "note": "破除"
+            }
+          ],
+          "note": "F11 引用副本（H5 潜行母版 + C8 候选池过滤）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s6_scentless",
+      "name": "无味香水",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "魔药教授",
+      "rarity": "uncommon",
+      "axis": "brew",
+      "flagship": false,
+      "lore": "序列6 魔药教授 —— \"调配超凡药剂和香水（隐身药剂、无味香水等）\"",
+      "flavor": "你在颈侧抹了一点无味的香膏 —— 从这一刻起，没有什么脏东西再能沾到你身上。",
+      "describe": "驱散自身全部减益与持续伤害状态，并获得无味 2 tick：免疫减益与持续伤害状态。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 4,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "debuff",
+                  "dot"
+                ]
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "scentless",
+              "duration": 2,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "scentless",
+          "name": "无味",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "immune": {
+              "categories": [
+                "debuff",
+                "dot"
+              ]
+            }
+          },
+          "note": "G12 immune 字段（事前阻断，非事后清洗）；退化方案（on_tick 驱散）仍备"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s6_prepared_draught",
+      "name": "预服药水",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "魔药教授",
+      "rarity": "uncommon",
+      "axis": "brew",
+      "flagship": true,
+      "lore": "序列6 魔药教授 —— \"预服药水后非常难以应付\"",
+      "flavor": "你在战前就把三瓶药水灌了下去 —— 开战那一刻，你的血是沸腾的。",
+      "describe": "战斗开始时获得「预服药水」10 tick：攻击 +2、防御 +2、行动条速率 +8。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "prepared_draught",
+          "duration": 10,
+          "target": "self",
+          "note": "绝不能写成 on_spawn（A2：召唤物登场重复触发）"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "prepared_draught",
+          "name": "预服药水",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 10,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": 10,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 2,
+              "mode": "delta",
+              "duration": 10,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": 10,
+              "target": "self"
+            }
+          ],
+          "note": "带 duration 的回滚走账本条目 remaining / revertBySource"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate 带 duration 修正",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_apothecary_s6_spirit_material",
+      "name": "灵性材料辨识",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "魔药教授",
+      "rarity": "uncommon",
+      "axis": "brew",
+      "flagship": false,
+      "lore": "序列6 魔药教授 —— \"具备分辨灵性材料的非凡能力\"",
+      "flavor": "你一眼就能看出哪具躯壳里还藏着可用的灵性 —— 越纯粹的素材，你榨取得越干净。",
+      "describe": "你击杀单位时回复能量：击杀召唤物/灵界生物回复 4 点，否则回复 2 点。",
+      "hook": "on_kill",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "target_is_summoned"
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 4,
+              "mode": "delta",
+              "target": "self"
+            }
+          ],
+          "else": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s5_full_moon",
+      "name": "满月",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "深红学者",
+      "rarity": "rare",
+      "axis": "moon",
+      "flagship": false,
+      "lore": "序列5 深红学者 —— \"『满月』：让范围处于满月状态\"",
+      "flavor": "一轮满月在你头顶升起，银白色的光洒满整个战场 —— 所有伤口都在月光下急速愈合。",
+      "describe": "自身月相强制切换至满月（重置轮转计数）；全体友军沐浴月光 3 tick：受到的治疗 ×1.3。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "moon_full",
+              "duration": 6,
+              "target": "self",
+              "note": "形态组互斥：顶掉当前月相并重置 moon_cycle 计数（切换规则②）；未持有 moon_cycle 时仍可单卡成立"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "moonlit",
+              "duration": 3,
+              "target": "all_allies"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "moon_blood",
+          "name": "血月",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "formGroup": "moon_phase",
+          "nextPhase": "moon_red",
+          "cycleTicks": 6,
+          "modifiers": {
+            "damage_mul": 1.2,
+            "drainHealBonus": 2
+          },
+          "note": "月相形态组登记（H50）：🌑 血月，掠夺/进攻"
+        },
+        {
+          "id": "moon_red",
+          "name": "红月",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "formGroup": "moon_phase",
+          "nextPhase": "moon_silver",
+          "cycleTicks": 6,
+          "modifiers": {
+            "durationModifier": {
+              "scope": "outgoing",
+              "mode": "add",
+              "value": 2,
+              "filter": {
+                "category": [
+                  "debuff"
+                ]
+              }
+            }
+          },
+          "note": "🌘 红月，侵蚀/持久"
+        },
+        {
+          "id": "moon_silver",
+          "name": "银月",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "formGroup": "moon_phase",
+          "nextPhase": "moon_full",
+          "cycleTicks": 6,
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": 0.2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": 20,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "note": "🌗 银月，灵性澄澈（对应「灵性权柄」）"
+        },
+        {
+          "id": "moon_full",
+          "name": "满月",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "formGroup": "moon_phase",
+          "nextPhase": "moon_waning",
+          "cycleTicks": 6,
+          "modifiers": {
+            "heal_output_mul": 1.4
+          },
+          "note": "🌕 满月，圆满/治愈（对应「难以想象的恢复能力」）"
+        },
+        {
+          "id": "moon_waning",
+          "name": "缺月",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "formGroup": "moon_phase",
+          "nextPhase": "moon_blood",
+          "cycleTicks": 6,
+          "modifiers": {
+            "damage_taken_mul": 0.8,
+            "untargetableByTargeted": {
+              "direction": "inbound",
+              "scope": "single"
+            }
+          },
+          "note": "🌒 缺月，消退/隐匿（C8：敌方单体难以选中）"
+        },
+        {
+          "id": "moonlit",
+          "name": "月光",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "modifiers": {
+            "heal_received_mul": 1.3
+          },
+          "note": "heal_received_mul 正向档 1.3（H21，与 F20 同字段复用）"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "血月分支",
+            "note": "三选一换卡面：全体友军 damage_mul 1.15",
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 0,
+                "mode": "delta",
+                "duration": 3,
+                "target": "all_allies",
+                "note": "占位：全体友军伤害 ×1.15（写成 attack 修正仅为 JSON 占位，权威写法待 empower 表达式）"
+              }
+            ]
+          },
+          {
+            "name": "缺月分支",
+            "note": "三选一换卡面：全体友军 damage_taken_mul 0.9",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "moonlit",
+                "duration": 3,
+                "target": "all_allies",
+                "note": "占位：受伤 ×0.9 借 moonlit 位表达，数值覆写"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s5_blink",
+      "name": "闪现",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "深红学者",
+      "rarity": "rare",
+      "axis": "moon",
+      "flagship": false,
+      "lore": "序列5 深红学者 —— \"『闪现』（月光范围内）\"",
+      "flavor": "你在月光照到的地方消失，又在下一处月光里浮现 —— 而刀锋已经在敌人的背后。",
+      "describe": "与一名指定友军换位（友军所在即月光笼罩处），并对敌方前排造成 3 点无元素伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 3,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      },
+      "secondaryTargets": [
+        {
+          "request": {
+            "faction": "enemy",
+            "scope": "single",
+            "anchor": "front_line"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "swap_ally",
+              "target": "target",
+              "note": "「月光范围」绑定友军所在（原著未定义，稿面处置见遗留 3）"
+            },
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 3,
+              "target": "secondary_target",
+              "note": "近战进程伤害"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "友军指定的 fallbackSort 稿面未给，置 null 待补；swap_ally 锁定同 faction，G8 合规"
+      ]
+    },
+    {
+      "id": "skill_apothecary_s5_moonlight_form",
+      "name": "月光化",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "深红学者",
+      "rarity": "rare",
+      "axis": "moon",
+      "flagship": false,
+      "lore": "序列5 深红学者 —— \"『月光化』：虚化为红鳞消散重组\"",
+      "flavor": "你的身躯在月光里散成漫天细碎的红鳞；而当它们重新聚拢时，你还站着。",
+      "describe": "月光化 5 tick：受伤 ×0.85；期间死亡时以 25% 生命重组（每场一次）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "moonlight_form",
+          "duration": 5,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "moonlight_form",
+          "name": "月光化",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "charges": 1,
+          "modifiers": {
+            "damage_taken_mul": 0.85
+          },
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 0,
+                  "target": "self",
+                  "note": "H7 lethalProtect：阻止死亡、保留 1 血并 heal 至 25% 最大生命（重组），消耗该层"
+                }
+              ]
+            }
+          ],
+          "lethalProtect": true,
+          "hpRatio": 0.25,
+          "note": "H5 + H7 + C6；duration 5 满足 G15-b"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s5_crimson_vitality",
+      "name": "深红体质",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "深红学者",
+      "rarity": "rare",
+      "axis": "crimson",
+      "flagship": false,
+      "lore": "序列5 深红学者 —— \"可怕速度和难以想象的恢复能力\"",
+      "flavor": "你的心跳快得像擂鼓，血流快得能听见 —— 而那些还没来得及疼的伤口，已经在自己合拢。",
+      "describe": "战斗开始时，自身行动条速率 +10、生命上限 +10（整场），并常驻自愈（每 tick 回复 1 点）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 10,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 10,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "crimson_vitality",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "crimson_vitality",
+          "name": "深红活力",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 1,
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "H42 常驻模板（duration:null + on_tick）"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "gauge.rate +10 定价无锚点（D2）",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_apothecary_s4_moon_paper",
+      "name": "月亮纸人",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "巫王",
+      "rarity": "rare",
+      "axis": "moon",
+      "flagship": false,
+      "lore": "序列4 巫王 —— \"『月亮纸人』（替身）\"",
+      "flavor": "你剪好的那张月亮纸人替你碎在了刀下 —— 而碎裂的纸屑反手扎进了凶手的眼里。",
+      "describe": "月亮纸人替身 6 tick：期间死亡时以 20% 生命免死（每场一次），并对致死来源造成 3 点无元素伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "moon_paper_substitute",
+          "duration": 6,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "moon_paper_substitute",
+          "name": "月亮纸人",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "charges": 1,
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 0,
+                  "target": "self",
+                  "note": "H7：阻止死亡、保留 1 血并 heal 至 20% 最大生命"
+                },
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 3,
+                  "target": "attacker",
+                  "note": "纸屑反噬致死来源"
+                }
+              ]
+            }
+          ],
+          "lethalProtect": true,
+          "hpRatio": 0.2,
+          "note": "与愚者【纸人替身】同源（H7），本条多一层反噬"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s4_dark_gaze",
+      "name": "黑暗凝视",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "巫王",
+      "rarity": "rare",
+      "axis": "moon",
+      "flagship": false,
+      "lore": "序列4 巫王 —— \"『黑暗凝视』（眼球操作映射目标）\"",
+      "flavor": "你把自己的眼珠映射到了它的眼里 —— 从这一刻起，它看见的一切都是你让它看见的。",
+      "describe": "使一名敌人被黑暗凝视 5 tick：接下来 2 次攻击落空，且受伤 ×1.15。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 4,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "dark_gaze",
+          "charges": 2,
+          "duration": 5
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "dark_gaze",
+          "name": "黑暗凝视",
+          "category": [
+            "control"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "charges": 2,
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "first_empty"
+              }
+            ],
+            "damage_taken_mul": 1.15
+          },
+          "note": "C7 first_empty；与【血仆转化】区分：凝视=打空，转化=打自己人"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s4_bat_swarm",
+      "name": "蝙蝠分解",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "巫王",
+      "rarity": "rare",
+      "axis": "moon",
+      "flagship": false,
+      "lore": "序列4 巫王 —— \"蝙蝠分解：分解成吸血蝙蝠群，除非全杀否则重组\"",
+      "flavor": "你的身体轰然炸开成一群吸血蝙蝠 —— 只要还剩一只活着，你就还没死。",
+      "describe": "分解成 3 只吸血蝙蝠并进入蝠群形态 6 tick：受伤 ×0.6、不可被单体选中；期间死亡时若仍有蝙蝠存活，则以 20% 生命重组并销毁全部蝙蝠（否则正常死亡）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "spawn",
+              "unitId": "unit_bat",
+              "count": 3,
+              "position": "tail",
+              "note": "spawn.count（H17）+ unit_bat（H1）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "swarm_form",
+              "duration": 6,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "swarm_form",
+          "name": "蝠群形态",
+          "category": [
+            "conceal"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "modifiers": {
+            "damage_taken_mul": 0.6,
+            "untargetableByTargeted": {
+              "direction": "both",
+              "scope": "single"
+            }
+          },
+          "triggers": [
+            {
+              "event": "on_death",
+              "condition": {
+                "kind": "caster_has_summon",
+                "unitId": "unit_bat"
+              },
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 0,
+                  "target": "self",
+                  "note": "H7：阻止死亡、保留 1 血并 heal 至 20%（重组）"
+                },
+                {
+                  "type": "dispel",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "unitId": "unit_bat"
+                  },
+                  "target": "self",
+                  "note": "销毁全部剩余蝙蝠（召唤物销毁走 dispel unit 写法，同 assassin 镜子替身先例）"
+                }
+              ],
+              "note": "除非全杀否则重组：蝙蝠清零则正常死亡（有解的免死）"
+            }
+          ],
+          "lethalProtect": true,
+          "hpRatio": 0.2,
+          "note": "H5 + H7；「场上存活蝙蝠数 > 0」判定走 caster_has_summon(unitId) 谓词"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s3_summon_gate",
+      "name": "召唤之门",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "召唤大师",
+      "rarity": "epic",
+      "axis": "beasts",
+      "flagship": true,
+      "lore": "序列3 召唤大师 —— \"『召唤之门』：拉伸出虚幻之门让灵界生物降临\"",
+      "flavor": "你伸手在空气里撕开一道虚幻的门缝 —— 门那头的东西先探出爪子，然后才是它巨大而模糊的身躯；而它身后的小东西们，已经顺着门缝挤了进来。",
+      "describe": "撕开召唤之门：在己方队尾召唤 1 只强大灵界生物 + 2 只野兽。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 7,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "summon"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "spawn",
+              "unitId": "unit_elder_thing",
+              "position": "tail",
+              "note": "F39（H1）"
+            },
+            {
+              "type": "spawn",
+              "unitId": "unit_beast",
+              "count": 2,
+              "position": "tail",
+              "note": "F38；多次 spawn 亦可走 count（H17）"
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "门持续渗出",
+            "note": "门持续 8t，每 5 tick 再渗出一只 unit_beast（上限 2 次）——需 spawn 定时能力，列为后续增强",
+            "effects": []
+          }
+        ]
+      },
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s3_spirit_pact",
+      "name": "灵界契印",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "召唤大师",
+      "rarity": "epic",
+      "axis": "beasts",
+      "flagship": false,
+      "lore": "序列3 召唤大师 —— \"『人缘』好可与天使签订契约直接召唤\"",
+      "flavor": "那些被你唤来的存在身上都带着同一道契印 —— 它们受你的庇护而来，散去时把残余的灵性还给你。",
+      "describe": "战斗开始时获得「灵界契印」：你召唤的单位登场时自带 3 点护盾；由你召唤的单位死亡时你回复 2 点能量。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_pact",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_pact",
+          "name": "灵界契印",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_spawn",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "shield",
+                  "value": 3,
+                  "target": "target",
+                  "note": "契印护佑（spawn.companionBuff F54）"
+                }
+              ],
+              "note": "仅由你召唤的单位（casterOwned 过滤）"
+            },
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 2,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "契约回流"
+                }
+              ],
+              "note": "全局 on_death 第三方监听（执行参数 §2.1，与 A4 on_kill 不冲突）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s2_creation",
+      "name": "创生",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "创生者",
+      "rarity": "epic",
+      "axis": "brew",
+      "flagship": true,
+      "lore": "序列2 创生者 —— \"『创造之力』（部分『生命』权柄）：让生命延长 / 缩短 / 爆发\"",
+      "flavor": "你把手按在同伴的伤口上，命令那具身体活下去；同一瞬间，你朝敌人摊开手掌，把它血脉里的年岁一段段抽走。",
+      "describe": "双目标：治疗生命最低的一名友军 8 点并使其再生 3 tick；同时使主目标敌人生命上限 -8（6 tick，到期不回补截断）。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "secondaryTargets": [
+        {
+          "request": {
+            "faction": "ally",
+            "scope": "single",
+            "sort": "hp_asc"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "heal",
+              "value": 8,
+              "target": "secondary_target",
+              "note": "生命爆发"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "regen",
+              "duration": 3,
+              "target": "secondary_target",
+              "note": "生命延长"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": -8,
+              "mode": "delta",
+              "duration": 6,
+              "note": "生命缩短：生效即截断当前生命，到期回滚不回补（效果参数 §1.1 hp_max 削减截断行，2026-09-04 确认）"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "planter"
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s2_self_mend",
+      "name": "自我治愈",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "创生者",
+      "rarity": "epic",
+      "axis": "brew",
+      "flagship": false,
+      "lore": "序列2 创生者 —— \"直接治疗无需药剂，自我治愈达最高程度\"",
+      "flavor": "你不再需要任何瓶子与草药 —— 你的身体自己记得该怎么把自己修好，伤得越重，修得越急。",
+      "describe": "战斗开始时获得「自我治愈」：每 tick 回复 1 点生命；生命低于 50% 时受到伤害会急速愈合 2 点。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "self_mend",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "self_mend",
+          "name": "自我治愈",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 1,
+                  "target": "self"
+                }
+              ]
+            },
+            {
+              "event": "on_take_damage",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "self",
+                "cmp": "<",
+                "n": 50
+              },
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "H42 常驻模板"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s2_pure_land",
+      "name": "净土净化",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "创生者",
+      "rarity": "epic",
+      "axis": "brew",
+      "flagship": false,
+      "lore": "序列2 创生者 —— \"能给予土地新生命，清理污秽\"",
+      "flavor": "你脚下这片焦土重新长出了嫩芽 —— 而缠在同伴身上的污秽，也随之一寸寸褪去。",
+      "describe": "全体友军驱散全部减益与持续伤害状态，并各回复 3 点生命。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "all_allies",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "debuff",
+                  "dot"
+                ]
+              },
+              "note": "C2 数组；count 省略 = 全部"
+            },
+            {
+              "type": "heal",
+              "value": 3,
+              "target": "all_allies"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "planter"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "「给予土地新生命」无土地维度，折算为群体小额治疗（稿面诚实标注的唯一语义迁移）"
+      ]
+    },
+    {
+      "id": "skill_apothecary_s1_beauty_shock",
+      "name": "美之震撼",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "美神",
+      "rarity": "legendary",
+      "axis": "moon",
+      "flagship": true,
+      "lore": "序列1 美神 —— \"『美』之权柄（较低层次）：所有看到者遭受极致之美震撼\"",
+      "flavor": "你抬起脸。那一瞬间，整个战场上所有看向你的眼睛都停住了 —— 没有人在震撼停息之前，还记得自己手里握着武器。",
+      "describe": "全体敌人被震撼 2 tick：行动条速率 ×0.75、攻击 -3。可被驱散。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "awestruck",
+          "duration": 2,
+          "target": "all_enemies"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "awestruck",
+          "name": "震撼",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 2,
+          "modifiers": {
+            "gaugeRateMul": 0.75,
+            "attackMod": -3
+          },
+          "note": "H24 减速族两参档；不写成眩晕：保留对抗面（可驱散、不影响已蓄满行动条）"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s1_beauty_summon",
+      "name": "美神召唤",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "美神",
+      "rarity": "legendary",
+      "axis": "moon",
+      "flagship": false,
+      "lore": "序列1 美神 —— \"『召唤』权柄：没谁能拒绝美神的召唤\"",
+      "flavor": "没有什么存在能拒绝你的呼唤 —— 听见你声音的，永远比门那头该来的更多一个。",
+      "describe": "战斗开始时获得「美神召唤」：你的召唤类技能额外召唤一只野兽；你施加的魅惑/黑暗凝视/着迷不可被驱散。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "beauty_summon",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "beauty_summon",
+          "name": "美神召唤",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "modifiers": {
+            "extraSpawn": {
+              "trigger": "summon_skill",
+              "unitId": "unit_beast",
+              "note": "「多来一个」：召唤类技能额外 spawn 一只 unit_beast"
+            },
+            "dispelableOverride": {
+              "statusIds": [
+                "charm",
+                "dark_gaze",
+                "captivated"
+              ],
+              "value": false
+            }
+          },
+          "note": "extraSpawn 为 H8 同源挂载方覆写思路的扩展表达，语义偏差待内核裁定"
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s0_life_authority",
+      "name": "生命之权",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "月亮",
+      "rarity": "legendary",
+      "axis": "moon",
+      "flagship": false,
+      "lore": "序列0 月亮 —— \"部分『生命』权柄：永恒生命，赐予 / 收回生命\"",
+      "flavor": "你赐予同伴一段不属于它的生命；然后转过身，从敌人身上把属于它的那一段，一寸不剩地收了回来。",
+      "describe": "双目标：一名友军获得永恒生命 6 tick（期间死亡时以 40% 生命免死）；主目标敌人生命上限永久 -12（当前生命同步截断，不回补）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "secondaryTargets": [
+        {
+          "request": {
+            "faction": "ally",
+            "scope": "single"
+          },
+          "fallbackSort": "hp_asc"
+        }
+      ],
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "eternal_life",
+              "duration": 6,
+              "target": "secondary_target",
+              "note": "赐予生命"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": -12,
+              "mode": "delta",
+              "duration": null,
+              "note": "收回生命：全稿唯一 duration:null 的负面 modify_stat；永久削减 + 截断不回补（与创生的 6t 临时削减区分）"
+            }
+          ]
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "eternal_life",
+          "name": "永恒生命",
+          "category": [
+            "buff"
+          ],
+          "dispelable": true,
+          "duration": 6,
+          "triggers": [
+            {
+              "event": "on_death",
+              "effects": [
+                {
+                  "type": "heal",
+                  "value": 0,
+                  "target": "self",
+                  "note": "H7 lethalProtect + hpRatio 0.4：阻止死亡并 heal 至 40% 最大生命（不丢站位，与 C4 miracle 死后召回方向差异由 H7/H23 承载）"
+                }
+              ]
+            }
+          ],
+          "lethalProtect": true,
+          "hpRatio": 0.4
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s0_moon_cycle",
+      "name": "月相·轮转",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "月亮",
+      "rarity": "legendary",
+      "axis": "moon",
+      "flagship": true,
+      "lore": "序列0 月亮 —— \"『血月 / 红月 / 银月 / 满月 / 缺月』五种月相状态\"",
+      "flavor": "你头顶的月亮从不会停在同一副模样 —— 它盈了又缺，缺了又盈；而你随着它的每一次圆缺，变成另一个人。",
+      "describe": "战斗开始时获得「月相轮转」：月相按 血月→红月→银月→满月→缺月 每 6 tick 自发轮转（开场血月）；生命首次低于 30% 时立即切至满月；【满月】卡可强制切相。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "moon_cycle",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "moon_cycle",
+          "name": "月相轮转",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "formGroup": "moon_phase",
+          "cycleTicks": 6,
+          "phases": [
+            "moon_blood",
+            "moon_red",
+            "moon_silver",
+            "moon_full",
+            "moon_waning"
+          ],
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [],
+              "note": "① 自发周期：每 6 tick 沿 phases 顺序进一相——语义由 H50 声明式字段（formGroup/nextPhase/cycleTicks，见五相 StatusDef 登记）承载，无效果原语，见 frameworkFlags"
+            },
+            {
+              "event": "on_tick",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "self",
+                "cmp": "<",
+                "n": 30
+              },
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "moon_full",
+                  "target": "self",
+                  "note": "③ 条件触发：首次低于 30% 切至满月并保持到下一次自发轮转"
+                }
+              ],
+              "note": "首次：需 once 标记，语义待引擎确认"
+            }
+          ],
+          "note": "五相 StatusDef 登记在【满月】卡（序列最低首个登记点，H50 formGroup/nextPhase/cycleTicks/phases）；未持有本条时【满月】仍可单卡使用"
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "ADVANCE_PHASE_DECLARATIVE",
+          "note": "「沿 formGroup 顺序进一相、同组新相顶掉旧相」无效果原语；H50 已声明式落 ddd（StatusDef formGroup/nextPhase/cycleTicks），触发器效果列表留空由声明字段承载",
+          "landed": false
+        }
+      ]
+    },
+    {
+      "id": "skill_apothecary_s0_spirit_root",
+      "name": "灵性根源",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "月亮",
+      "rarity": "legendary",
+      "axis": "moon",
+      "flagship": false,
+      "lore": "序列0 月亮 —— \"『灵性』权柄：灵性根源，所有灵性力量的母亲\"",
+      "flavor": "你是所有灵性力量的源头 —— 你的灵性深不见底，而凡是由你唤来的存在，都自带一层灵性的护壳。",
+      "describe": "战斗开始时，自身能量上限 +10、能量回复 +0.2/tick（整场）；你召唤的单位登场时自带 3 点护盾。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "energy_max",
+          "value": 10,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "energy_regen",
+          "value": 0.2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "spirit_root",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "spirit_root",
+          "name": "灵性根源",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "triggers": [
+            {
+              "event": "on_spawn",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "shield",
+                  "value": 3,
+                  "target": "target",
+                  "note": "母亲庇护（spawn.companionBuff F54）"
+                }
+              ],
+              "note": "仅由你召唤的单位（casterOwned 过滤）"
+            }
+          ]
+        }
+      ],
+      "tentative": true
+    },
+    {
+      "id": "skill_apothecary_s0_blood_moon_rising",
+      "name": "血月当空",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "月亮",
+      "rarity": "legendary",
+      "axis": "moon",
+      "flagship": false,
+      "lore": "序列0 月亮 —— \"五种月相」之血月 +「生命权柄」的领域化",
+      "flavor": "你把血月挂上了天——月光所及，万物渗血，而懂得饮血的东西全都兴奋了起来。",
+      "describe": "降临「血月当空」界域 3 回合：全场所有单位（双方）每 tick 受到 1 点无元素伤害；「血月/吸血/月亮」标签卡 ×1.3，「光/净化」标签卡 ×0.7。自身迷失值 +1。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_blood_moon",
+              "duration": 3,
+              "durationUnit": "turn"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_blood_moon",
+        "duration": 3,
+        "durationUnit": "turn",
+        "dispelable": true,
+        "envRulesText": "全场（双方同受）：每 tick 受 1 点无元素伤害（万物渗血，双向）——渗血是代价也是吸血轴燃料",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "血月",
+              "吸血",
+              "月亮"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "domainDef": {
+        "id": "domain_blood_moon",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_tick",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "none",
+                "value": 1,
+                "target": "all_enemies",
+                "note": "万物渗血"
+              },
+              {
+                "type": "damage",
+                "element": "none",
+                "value": 1,
+                "target": "all_allies",
+                "note": "双向：己方同受"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "血月",
+              "吸血",
+              "月亮"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
+      "tags": [
+        "血月",
+        "月亮",
+        "吸血"
+      ],
+      "tentative": true,
+      "conversionNotes": [
+        "月相形态组的「血月」（挂自身，伤害 ×1.2/drain+2）与本界域牌（挂天上，全场规则）互补不冲突"
+      ]
+    }
+  ]
+}
