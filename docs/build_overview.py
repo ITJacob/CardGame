@@ -17,8 +17,8 @@ JSON_DIR = os.path.join(HERE, "json")                   # docs/json/
 OUT = os.path.join(HERE, "SKILLS_OVERVIEW.md")          # docs/SKILLS_OVERVIEW.md
 
 # ---------- 名称映射 ----------
-ELEM = {"fire": "火", "ice": "冰", "poison": "毒", "shock": "电击", "mental": "精神",
-        "physical": "物理", "water": "水", "holy": "圣", "none": "无属性"}
+ELEM = {"fire": "火", "ice": "冰", "poison": "毒", "lightning": "电击", "mental": "精神",
+        "physical": "物理", "holy": "圣", "none": "无属性"}
 RES = {"hp": "生命", "energy": "能量", "shield": "护盾", "armor": "护甲",
        "lost": "迷失值", "gauge.current": "行动条", "gauge.threshold": "行动条阈值"}
 STAT = {"attack": "攻击", "defense": "防御", "armor": "护甲", "rank": "位格",

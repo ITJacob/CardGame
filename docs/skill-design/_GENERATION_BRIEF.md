@@ -281,7 +281,7 @@ E1（burn 已实现）/ E2（击退口径，随 D1）/ E3（命名 `gauge.*`）/
 | F58 | `exclude_veiled` 过滤 | `../ddd/params/共享内核参数.md` §四 候选池过滤器（与 C8 同出口） |
 | F59 | targetSpec `ALL_ALLIES` | `../ddd/params/共享内核参数.md` §一 `scope: all` + faction 过滤（H18） |
 | F61 | targetSpec `attacker`（反伤寻址攻击者） | `../ddd/params/执行参数.md` §一 RedirectRule.to `attacker` |
-| F63 | 新元素 `water` | `../ddd/params/共享内核参数.md` §二 |
+| F63 | 新元素 `water`（已撤销：water 退役为 tag，不进元素枚举） | `../ddd/params/共享内核参数.md` §二 |
 
 ### G 组（逐职业核对修正，技能稿实际引用者）
 

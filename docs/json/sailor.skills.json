@@ -425,7 +425,7 @@
       "flagship": false,
       "lore": "序列7 航海家 —— \"海洋眷顾：海上全方位提升\"",
       "flavor": "大海眷顾着它的水手——你的力量、韧性与对海水的耐受力都高出一截。",
-      "describe": "战斗开始时，自身攻击 +1、防御 +1、水抗性 +15%，持续整场。",
+      "describe": "战斗开始时，自身攻击 +1、防御 +1、护甲 +5，持续整场。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -446,8 +446,8 @@
         },
         {
           "type": "modify_stat",
-          "stat": "resist:water",
-          "value": 0.15,
+          "stat": "armor",
+          "value": 5,
           "mode": "delta",
           "duration": null,
           "target": "self"
@@ -460,6 +460,7 @@
     },
     {
       "id": "skill_sailor_s6_gale",
+        "tags": ["水"],
       "name": "狂风",
       "kind": "active",
       "sequence": 6,
@@ -508,11 +509,11 @@
         "tiers": [
           {
             "name": "暴风雪",
-            "note": "序列4档：改为 damage(water, 3) + gauge.rate ×0.85（3t）",
+            "note": "序列4档：改为 damage(none, 3) + gauge.rate ×0.85（3t）",
             "effects": [
               {
                 "type": "damage",
-                "element": "water",
+                "element": "none",
                 "value": 3,
                 "target": "all_enemies"
               },
@@ -850,7 +851,7 @@
       "effects": [
         {
           "type": "damage",
-          "element": "shock",
+          "element": "lightning",
           "value": 5
         }
       ],
@@ -888,7 +889,7 @@
           "steps": [
             {
               "type": "damage",
-              "element": "shock",
+              "element": "lightning",
               "value": 3
             },
             {
@@ -908,7 +909,7 @@
               "then": [
                 {
                   "type": "damage",
-                  "element": "shock",
+                  "element": "lightning",
                   "value": 4,
                   "note": "克制亡灵"
                 }
@@ -920,7 +921,7 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "稿面声明默认按退化方案落地：数据层给亡灵/灵体单位预置负 resist:shock（如 -25）；此处仍登记条件分支（target_has_tag，新增项 11）供母版实现后切换"
+        "稿面声明默认按退化方案落地：数据层给亡灵/灵体单位预置负 resist:lightning（如 -25）；此处仍登记条件分支（target_has_tag，新增项 11）供母版实现后切换"
       ]
     },
     {
@@ -1014,7 +1015,7 @@
           "effects": [
             {
               "type": "damage",
-              "element": "shock",
+              "element": "lightning",
               "value": 2,
               "target": "all_enemies"
             },
@@ -1118,6 +1119,7 @@
     },
     {
       "id": "skill_sailor_s4_tsunami",
+        "tags": ["水"],
       "name": "海啸",
       "kind": "active",
       "sequence": 4,
@@ -1127,7 +1129,7 @@
       "flagship": false,
       "lore": "序列4 灾难主祭 —— \"'海啸'\"（序列3 海王\"掀起四五十米海啸\"）",
       "flavor": "一道数十米高的水墙横推过来，把整条敌阵卷进水里。",
-      "describe": "全体敌人受到 4 点水伤害、被溺沉 3 tick，并各自在自己队列内后移 1 格。",
+      "describe": "全体敌人受到 4 点伤害、被溺沉 3 tick，并各自在自己队列内后移 1 格。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1147,7 +1149,7 @@
           "steps": [
             {
               "type": "damage",
-              "element": "water",
+              "element": "none",
               "value": 4,
               "target": "all_enemies"
             },
@@ -1189,7 +1191,7 @@
           },
           {
             "name": "暴雨",
-            "note": "群体 water 2 伤 ×2 + 敌方 resist:shock -0.1（为连环闪电铺路）"
+            "note": "群体 water 2 伤 ×2 + 敌方 resist:lightning -0.1（为连环闪电铺路）"
           }
         ]
       },
@@ -1234,7 +1236,7 @@
               "steps": [
                 {
                   "type": "damage",
-                  "element": "shock",
+                  "element": "lightning",
                   "value": 3,
                   "note": "3 个不同目标各 3 伤"
                 },
@@ -1250,7 +1252,7 @@
                   "then": [
                     {
                       "type": "damage",
-                      "element": "shock",
+                      "element": "lightning",
                       "value": 2,
                       "note": "导电：水能导电（F52 has_status）"
                     }
@@ -1451,6 +1453,7 @@
     },
     {
       "id": "skill_sailor_s3_sea_kingdom",
+        "tags": ["水"],
       "name": "海王领域",
       "kind": "passive",
       "sequence": 3,
@@ -1460,7 +1463,7 @@
       "flagship": true,
       "lore": "序列3 海王 —— \"领域主宰：掌控海域内自由行走海底，掀起四五十米海啸\"",
       "flavor": "这片海域归你主宰——你的人在水中如履平地，而敌人每走一步都要与海水搏斗。",
-      "describe": "战斗开始时注入英雄域「海王国度」（常驻）：己方行动条速率 ×1.1、水抗性 +15%，敌方行动条速率 ×0.9 且每 tick 受到 1 点水伤害；「海洋/水」标签卡效果 ×1.3、「火」标签卡 ×0.8。",
+      "describe": "战斗开始时注入英雄域「海王国度」（常驻）：己方行动条速率 ×1.1、护甲 +5，敌方行动条速率 ×0.9 且每 tick 受到 1 点伤害；「海洋/水」标签卡效果 ×1.3、「火」标签卡 ×0.8。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1486,7 +1489,7 @@
         "duration": -1,
         "durationUnit": "turn",
         "dispelable": false,
-        "envRulesText": "全场：己方 gauge_rate ×1.1 + resist:water +0.15（海中如履平地）；敌方 gauge_rate ×0.9 且每 tick 受 damage(water, 1)（与海水搏斗）——双向：己方加速 / 敌方迟滞磨血",
+        "envRulesText": "全场：己方 gauge_rate ×1.1 + 护甲 +5（海中如履平地）；敌方 gauge_rate ×0.9 且每 tick 受 1 点伤害（与海水搏斗）——双向：己方加速 / 敌方迟滞磨血",
         "rulePatches": [
           {
             "kind": "empower",
@@ -1522,7 +1525,7 @@
             "effects": [
               {
                 "type": "damage",
-                "element": "water",
+                "element": "none",
                 "value": 1
               }
             ]
@@ -1543,8 +1546,8 @@
               },
               {
                 "type": "modify_stat",
-                "stat": "resist:water",
-                "value": 0.15,
+                "stat": "armor",
+                "value": 5,
                 "mode": "delta",
                 "duration": 1,
                 "target": "self"
@@ -1645,7 +1648,7 @@
         "tiers": [
           {
             "name": "深海巨兽",
-            "note": "复用 F33 unit_leviathan：hpRatio 0.8 / atkRatio 0.7，自带亡语：死亡时全体敌人 damage(water, 4)",
+            "note": "复用 F33 unit_leviathan：hpRatio 0.8 / atkRatio 0.7，自带亡语：死亡时全体敌人 damage(none, 4)",
             "effects": [
               {
                 "type": "spawn",
@@ -1693,7 +1696,7 @@
           "steps": [
             {
               "type": "damage",
-              "element": "shock",
+              "element": "lightning",
               "value": 3,
               "target": "all_enemies"
             }
@@ -1732,6 +1735,7 @@
     },
     {
       "id": "skill_sailor_s3_annihilation_drop",
+        "tags": ["水"],
       "name": "毁灭水滴",
       "kind": "active",
       "sequence": 3,
@@ -1741,7 +1745,7 @@
       "flagship": false,
       "lore": "序列3 海王 —— \"'毁灭水滴'\"",
       "flavor": "所有海水被压缩成一滴——它轻飘飘地落下，却穿透了一切阻挡。",
-      "describe": "驱散一名敌人全部增益、将其护甲清零，然后造成 8 点水伤害。",
+      "describe": "驱散一名敌人全部增益、将其护甲清零，然后造成 8 点伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1781,7 +1785,7 @@
             },
             {
               "type": "damage",
-              "element": "water",
+              "element": "none",
               "value": 8
             }
           ]
@@ -1932,6 +1936,7 @@
     },
     {
       "id": "skill_sailor_s2_calamity_descent",
+        "tags": ["水"],
       "name": "天灾降临",
       "kind": "active",
       "sequence": 2,
@@ -1941,7 +1946,7 @@
       "flagship": false,
       "lore": "序列2 天灾 —— \"'天灾降临'：雷灾 / 雪难 / 海啸，毁灭港口或岛屿\"",
       "flavor": "你以天灾之名降下裁决——雷灾、雪难，或是海啸，由你选择用哪一种来毁灭这里。",
-      "describe": "三种天灾择一（派发时随机）：雷灾——全体敌人 4 点雷电伤害并各后退 1 格；雪难——全体敌人 3 点水伤害且行动条速率 ×0.85（3 tick）；海啸——全体敌人 4 点水伤害并溺沉 3 tick。",
+      "describe": "三种天灾择一（派发时随机）：雷灾——全体敌人 4 点雷电伤害并各后退 1 格；雪难——全体敌人 3 点伤害且行动条速率 ×0.85（3 tick）；海啸——全体敌人 4 点伤害并溺沉 3 tick。",
       "cost": {
         "energy": 7,
         "cooldown": 8,
@@ -1961,7 +1966,7 @@
           "steps": [
             {
               "type": "damage",
-              "element": "shock",
+              "element": "lightning",
               "value": 4,
               "target": "all_enemies"
             },
@@ -1983,7 +1988,7 @@
           "effects": [
             {
               "type": "damage",
-              "element": "water",
+              "element": "none",
               "value": 3,
               "target": "all_enemies"
             },
@@ -2005,7 +2010,7 @@
           "effects": [
             {
               "type": "damage",
-              "element": "water",
+              "element": "none",
               "value": 4,
               "target": "all_enemies"
             },
@@ -2070,7 +2075,7 @@
             },
             {
               "type": "damage",
-              "element": "shock",
+              "element": "lightning",
               "value": 8,
               "note": "净化"
             },
@@ -2126,7 +2131,7 @@
             },
             {
               "type": "modify_stat",
-              "stat": "resist:shock",
+              "stat": "resist:lightning",
               "value": 0.3,
               "mode": "delta",
               "duration": null,
@@ -2216,7 +2221,7 @@
             "steps": [
               {
                 "type": "damage",
-                "element": "shock",
+                "element": "lightning",
                 "value": 2
               },
               {
@@ -2245,7 +2250,7 @@
               "steps": [
                 {
                   "type": "damage",
-                  "element": "shock",
+                  "element": "lightning",
                   "value": 4,
                   "target": "all_enemies"
                 }
@@ -2263,7 +2268,7 @@
               "steps": [
                 {
                   "type": "damage",
-                  "element": "shock",
+                  "element": "lightning",
                   "value": 4,
                   "target": "all_enemies"
                 },

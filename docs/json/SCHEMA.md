@@ -168,7 +168,7 @@ python docs/json/validate.py
 
 ### 5.4 元素（element）
 
-`fire` `ice` `poison` `shock` `mental` `physical` `water` `holy` `none`；`$` 前缀表示运行期变量（如 `$recorded.element`）。
+`fire` `ice` `poison` `lightning` `mental` `physical` `holy` `dark` `none`；`$` 前缀表示运行期变量（如 `$recorded.element`）。
 
 ## 6. 状态（statusDef）
 

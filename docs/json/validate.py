@@ -7,7 +7,7 @@ PRIMS = {"damage","heal","mount_status","modify_stat","modify_resource","move","
          "echo_last_skill","gauge_shuffle","status_shuffle"}
 OPS = {"sequence","repeat","if"}
 EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill"}
-ELEMENTS = {"fire","ice","poison","shock","mental","physical","water","holy","none"}
+ELEMENTS = {"fire","ice","poison","lightning","mental","physical","holy","dark","none"}
 REACH = {"melee","ranged","none"}
 SORTS = {"none","hp_asc","hp_desc","atk_desc","index_asc","index_desc","energy_desc","armor_desc","buff_count_desc","debuff_count_desc","gauge_asc","gauge_desc","stat_max_desc"}
 STATS = {"attack","defense","armor","rank","hp_max","energy_max","energy_regen","stamina_rate","stamina_threshold","gauge.rate","summon_cap"} | {"resist:"+e for e in ELEMENTS - {"none"}} | {"resist:*"}
