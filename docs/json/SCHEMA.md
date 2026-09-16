@@ -134,7 +134,7 @@ python docs/json/validate.py
 | `repeat` | `steps` | 重复；`count` 可用对象形式 `{valueFrom, filter, cap}` 做运行期计算 |
 | `if` | `condition`, `then` | 条件分支，`else` 可选 |
 
-### 5.2 原语（18 个，封闭集）
+### 5.2 原语（19 个，封闭集）
 
 | type | 关键字段 | 备注 |
 |---|---|---|
@@ -148,6 +148,7 @@ python docs/json/validate.py
 | `dispel` | `dispelTarget`(unit/domain) `filter` `category` `count` | 只作用于 StatusInstance（INV-P7） |
 | `drain` | `resource` `value` `healRatio` | |
 | `domain` | `op`(overlay/swap/hero) `def` `duration` | 界域三件套 |
+| `translocate` | `op`(pull_into/banish) `duration` `returnPayload` | **跨层位移**：目标 detached N tick（离场不持坐标、计时冻结），到期于己方队尾回归；`banish` 可带回归载荷。ddd 效果参数 11 号，2026-09-06 拍板；schema 于 2026-09-16 补登记（此前缺失导致零使用） |
 | `modify_damage` | `scope`(taken/dealt) `mul` | |
 | `target_override` | `faction` `anchor` `sort` | |
 | `transfer_status` | `mode`(copy/rewrite) `mapping` `fallback`(effect[]) | |
