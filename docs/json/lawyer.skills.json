@@ -1666,7 +1666,7 @@
       "sequence": 3,
       "sequenceName": "狂乱法师",
       "rarity": "epic",
-      "axis": "warp_rule",
+      "axis": "brute",
       "flagship": false,
       "lore": "序列3 狂乱法师 —— \"狂乱：自身能力随机有益变化，敌人则不利\"（\"自身有益\"侧的被动版）",
       "flavor": "捆在你身上的每一道锁，最后都成了你的力气。",
@@ -1794,7 +1794,7 @@
       "sequence": 2,
       "sequenceName": "熵之公爵",
       "rarity": "epic",
-      "axis": "warp_rule",
+      "axis": "brute",
       "flagship": false,
       "lore": "序列2 熵之公爵 —— \"部分『利用』权柄：对规则利用强化到从地面跳到红月\"",
       "flavor": "规则说你够不到它。你只是\"利用\"了一下这条规则——然后你从地面，一路跳到了红月上。",
@@ -2375,6 +2375,331 @@
       ],
       "tentative": true,
       "hook": "on_battle_start"
+    },
+    {
+      "id": "skill_lawyer_s6_seize",
+      "name": "强夺",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "腐化男爵",
+      "rarity": "uncommon",
+      "axis": "brute",
+      "flagship": false,
+      "lore": "序列6 腐化男爵 —— 法律给不了的东西，就用拳头拿",
+      "flavor": "条文拿不走的，手可以。",
+      "describe": "对一名近战敌人造成 5 点物理伤害，并使自身攻击 +3（持续 3 tick）。",
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 5
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 3,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 4,
+        "cooldown": 3,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      }
+    },
+    {
+      "id": "skill_lawyer_s5_violent_verdict",
+      "name": "暴力裁决",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "混乱导师",
+      "rarity": "rare",
+      "axis": "brute",
+      "flagship": false,
+      "lore": "序列5 混乱导师 —— 判决宣告无效时，执行者自己动手",
+      "flavor": "宣判太慢。",
+      "describe": "对一名敌人造成 6 点物理伤害；若其生命低于 50%，再追加 6 点物理伤害。",
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 6
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "hp_percent",
+            "cmp": "<",
+            "n": 0.5,
+            "side": "target"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 6
+            }
+          ],
+          "else": []
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 5,
+        "cooldown": 3,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      }
+    },
+    {
+      "id": "skill_lawyer_s2_crush",
+      "name": "碾压",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "熵之公爵",
+      "rarity": "epic",
+      "axis": "brute",
+      "flagship": false,
+      "lore": "序列2 熵之公爵 —— 重量本身就是一种道理",
+      "flavor": "不需要解释，只需要落下来。",
+      "describe": "对一名敌人及其相邻敌人造成 8 点物理伤害，并无视其护甲。",
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 8,
+          "armorPierceRatio": 1,
+          "spread": "splash_adjacent"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 5,
+        "cooldown": 3,
+        "castTime": 4
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      }
+    },
+    {
+      "id": "skill_lawyer_s1_regicide_fist",
+      "name": "弑序铁拳",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "弑序亲王",
+      "rarity": "legendary",
+      "axis": "brute",
+      "flagship": false,
+      "lore": "序列1 弑序亲王 —— 当规则不容置疑时，就把制定规则的东西打碎",
+      "flavor": "这一拳不讲条文。",
+      "describe": "对一名敌人造成 14 点物理伤害，并无视其护甲。",
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 14,
+          "armorPierceRatio": 1
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 6,
+        "cooldown": 4,
+        "castTime": 5
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      }
+    },
+    {
+      "id": "skill_lawyer_s5_buy_off",
+      "name": "收买",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "混乱导师",
+      "rarity": "rare",
+      "axis": "bribery",
+      "flagship": false,
+      "lore": "序列5 混乱导师 —— 忠诚只是尚未报价",
+      "flavor": "人人都有一个价钱。",
+      "describe": "使一名敌人被收买 4 tick（可驱散）：其造成的伤害 ×0.8、受到的治疗 ×0.5。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "bribed",
+          "duration": 4
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 4,
+        "cooldown": 3,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "statusDefs": [
+        {
+          "id": "bribed",
+          "name": "被收买",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 4,
+          "modifiers": {
+            "damage_mul": 0.8
+          },
+          "healReceivedMul": 0.5
+        }
+      ]
+    },
+    {
+      "id": "skill_lawyer_s3_heavy_bribe",
+      "name": "重贿",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "狂乱法师",
+      "rarity": "epic",
+      "axis": "bribery",
+      "flagship": false,
+      "lore": "序列3 狂乱法师 —— 拿得越多，陷得越深",
+      "flavor": "第一笔钱最好赚。",
+      "describe": "使一名敌人及其相邻敌人被重贿腐蚀 3 tick（可驱散）：每 tick 受到 2 点物理伤害。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "heavy_bribe",
+          "duration": 3,
+          "spread": "splash_adjacent"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 4,
+        "cooldown": 3,
+        "castTime": 3
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "statusDefs": [
+        {
+          "id": "heavy_bribe",
+          "name": "重贿腐蚀",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 2
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill_lawyer_s1_universal_bribe",
+      "name": "万贿归一",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "弑序亲王",
+      "rarity": "legendary",
+      "axis": "bribery",
+      "flagship": false,
+      "lore": "序列1 弑序亲王 —— 当所有人都在你的账本上",
+      "flavor": "整个战场都是债务人。",
+      "describe": "使敌方全体被收买 5 tick（可驱散）：其造成的伤害 ×0.85。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "bribed_mass",
+          "duration": 5
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 6,
+        "cooldown": 4,
+        "castTime": 5
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "statusDefs": [
+        {
+          "id": "bribed_mass",
+          "name": "被收买·众",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 5,
+          "modifiers": {
+            "damage_mul": 0.85
+          }
+        }
+      ]
     }
   ]
 }
