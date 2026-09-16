@@ -256,7 +256,7 @@
 |---|---|---|---|
 | 1 | `dark` 元素曾零使用，holy/dark 不对称 | ✅ 已解决 | 2026-09-15 已执行存量迁移（9 张暗/黑/深渊系卡 → dark，清单见 §七·补 7-1）；holy 仍略多，但已非"空槽" |
 | 2 | 吟唱机制曾全库未执行 v0.3 纪律 | ✅ 已解决 | 2026-09-15 已按序列档位回填 38 张（详见 §七·补 7-2）；数值补偿（能量折扣）仍待落编目时补 |
-| 3 | `on_turn_start` 25 处死逻辑 | 🔴 高 | 修 G15（引擎补 fire），或把这 25 处改挂 `on_tick` / `on_battle_start` |
+| 3 | `on_turn_start` 25 处死逻辑 | 🟡 方案已定（待主项目实现） | 已定方案：引擎补 fire 点（规格见 §七·补 7-3，含 25 处精确清单：4 hook + 21 event / 19 张卡）。本仓库为纯设计文档库，fire 点需在 cardgame-core 落地；实现后关闭 G15 |
 | 4 | 轴间失衡 3–5 倍 | 🟠 中 | 按 4 轴均衡目标做一轮卡量再分配（优先补 rage / hymn / intrigue / beasts / spirit_sight / advocacy） |
 | 5 | 旗舰标记 4~16 失控 | 🟠 中 | 收敛为每轴 1 个（= 4/途径），其余降为普通卡 |
 | 6 | 律师 `disorder` 与原著权柄偏离 | 🟠 中 | 复核改为「扭曲规则」语义，或将卡量迁至律令/秩序方向 |
@@ -293,9 +293,42 @@
 
 按序列档位（序列 4→2t、3→3t、2→4t、1→5t、0→6t）赋给「序列 ≤ 4 且主动且界域 / 仪式类」的卡；档位规则已写入 `_GENERATION_BRIEF.md` §13.2。**数值补偿（吟唱 N tick ≈ 折扣 0.5×N 能量）尚未逐卡回填，落编目时需补。**
 
-### 7-3 `on_turn_start`（未闭环，需主项目修引擎）
+### 7-3 `on_turn_start`（方案已定：引擎补 fire 点，待 cardgame-core 实现）
 
-19 处依赖已完整登记到 `docs/ddd/params/执行参数.md` §2.1 的 G15 阻塞说明中（含 4 个被动 hook 与 15 个界域触发器的完整清单）。这是**引擎实现缺口而非设计缺口**，本仓库无法自行闭环。
+**现状**：`TriggerEvent` 枚举已含 `on_turn_start`（登记为 G15），但引擎主循环从未发射该事件，故 JSON 里 25 处引用全部为死逻辑。本仓库为纯设计文档库，引擎在独立的 cardgame-core（`src/combat` / `src/scheduling` / `src/execution`），不在此机/此仓库，fire 点需在主项目落地。
+
+**精确清单（25 次引用 = 4 个被动 hook + 21 个状态 event，去重 19 张卡）**：
+
+| 卡 id | 途径 | 类型 | 引用数 |
+|---|---|---|---|
+| `skill_chanter_s9_spirit_recovery` | 歌颂者 | hook（被动） | 1 |
+| `skill_fool_s8_premonition` | 愚者 | hook（被动） | 1 |
+| `skill_fool_s9_divination` | 愚者 | hook（被动） | 1 |
+| `skill_savant_s5_star_deduction` | 秘祈人 | hook（被动） | 1 |
+| `skill_chanter_s1_holy_nation` | 歌颂者 | event（状态） | 1 |
+| `skill_corpse_collector_s1_pale_world` | 收尸人 | event | 1 |
+| `skill_corpse_collector_s4_underworld_gate` | 收尸人 | event | 2 |
+| `skill_hunter_s2_extreme_weather` | 猎人 | event | 3 |
+| `skill_hunter_s3_war_mist` | 猎人 | event | 1 |
+| `skill_planter_s1_create_world` | 耕种者 | event | 1 |
+| `skill_prisoner_s5_spirit_shroud_domain` | 囚犯 | event | 1 |
+| `skill_pryer_s5_astral_field` | 祈祷者 | event | 1 |
+| `skill_reader_s4_astral_sanctum` | 窥秘人 | event | 1 |
+| `skill_sailor_s3_sea_kingdom` | 水手 | event | 2 |
+| `skill_savant_s3_dominion` | 秘祈人 | event | 1 |
+| `skill_sleepless_s4_night_realm` | 不眠者 | event | 3 |
+| `skill_spectator_s3_shared_dream` | 观众 | event | 1 |
+| `skill_supplicant_s1_dark_sea` | 祈求者 | event | 1 |
+| `skill_warrior_s6_dawn_domain` | 战士 | event | 1 |
+
+**引擎 fire 点规格（供主项目实现）**：
+
+1. **发射位置**：调度/执行主循环，单位"行动周期（gauge 阈值触发）开始"处——即选定本 tick 进入行动的单位、在其执行技能/动作之前，发射 `on_turn_start`。
+2. **发射对象**：`source = target = 该单位`；逐个进入行动的单位各发一次。
+3. **频率**：每单位每回合一次；因加速/击退/推条导致的"额外回合"或"重新进入"各算一次（与行动周期派生值一致，不在此直接修正周期）。
+4. **生效范围**：触发该单位的 `passive.hooks.on_turn_start`（4 处）+ 挂于该单位/全局、且 `trigger == on_turn_start` 的状态 `events`（21 处）。
+5. **边界**：死亡单位不发射；被 `disable`（眩晕）单位是否发射需裁定——建议正常发射（眩晕只阻断"行动执行"，回合仍开始；多数 `on_turn_start` 期望每回合稳定触发）。
+6. **配套**：实现后在 `docs/ddd/params/执行参数.md` §2.1 G15 标注"已补 fire 点"并移出阻塞；若回合开始涉及数值结算（如每回合回能），需在 invariants 登记对应不变量。
 
 ---
 
@@ -304,7 +337,7 @@
 1. **设计风格**：已形成以「状态挂载 + 条件响应」为核心的稳定风格（mount_status 占 48%），通用术语 22 个、特色术语 15 个、跨途径共享状态 20 个——**术语体系已经成型**，你举例的那种"复合条件增伤"在现有词汇下可以直接书写。
 2. **原著契合**：22/22 途径的构筑轴均能在原著找到明确对应，仅律师 `disorder` 一处需要复核。
 3. **工具覆盖**：主流工具（界域、迷失、充能、推条、标签联动、叠层、转嫁、潜行、复活）利用率良好；v0.3 三大新增维度中**吟唱已修复（1 张 → 38 张）**，但**位格（7 卡 / 4 途径）与跨层（2 卡 / 2 途径）仍严重低用**，是下一轮重点。
-4. **三件事的处置（2026-09-15）**：`dark` 存量迁移 ✅ 9 张；吟唱回填 ✅ 38 张（档位规则已入 `_GENERATION_BRIEF.md` §13.2，数值补偿待回填）；`on_turn_start` ⚠️ **19 处依赖已登记为 G15 阻塞，需主项目补引擎 fire 点，本仓库无法自行闭环**。
+4. **三件事的处置（2026-09-15 → 2026-09-16）**：`dark` 存量迁移 ✅ 9 张；吟唱回填 ✅ 38 张（档位规则已入 `_GENERATION_BRIEF.md` §13.2，数值补偿待回填）；`on_turn_start` 🟡 **方案已定——引擎补 fire 点规格见 §七·补 7-3（含 25 处精确清单：4 hook + 21 event / 19 张卡），待 cardgame-core 落地后关闭 G15**。
 
 ---
 
