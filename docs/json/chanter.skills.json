@@ -2291,6 +2291,231 @@
         }
       ],
       "tentative": true
+    },
+    {
+      "id": "skill_chanter_s8_holy_blessing",
+      "name": "圣咏赐福",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "祈光人",
+      "rarity": "common",
+      "axis": "hymn",
+      "flagship": false,
+      "lore": "颂歌予人安宁。",
+      "flavor": "愿圣光抚慰你的同伴。",
+      "describe": "为一名友军施加赐福（3 回合）。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "blessing",
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 2,
+        "cooldown": 0,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_chanter_s6_valiant_hymn",
+      "name": "英勇颂歌",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "公证人",
+      "rarity": "uncommon",
+      "axis": "hymn",
+      "flagship": false,
+      "lore": "战歌令人无畏。",
+      "flavor": "听，这是冲锋的号角。",
+      "describe": "驱散友军身上 1 个减益/控制，并恢复其 2 点能量。",
+      "effects": [
+        {
+          "type": "dispel",
+          "target": "target",
+          "dispelTarget": "unit",
+          "filter": {
+            "category": [
+              "control",
+              "debuff"
+            ]
+          },
+          "count": 1
+        },
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 2,
+          "mode": "delta",
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 3,
+        "cooldown": 1,
+        "castTime": null
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_chanter_s5_endless_hymn",
+      "name": "不息赞歌",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "光之祭司",
+      "rarity": "rare",
+      "axis": "hymn",
+      "flagship": false,
+      "lore": "赞歌自喉间不绝。",
+      "flavor": "你口中永远吟着安魂的调子。",
+      "describe": "战斗开始时永久获得赐福。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "blessing",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "hook": "on_battle_start"
+    },
+    {
+      "id": "skill_chanter_s4_purify_chant",
+      "name": "净化圣咏",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "无暗者",
+      "rarity": "rare",
+      "axis": "hymn",
+      "flagship": false,
+      "lore": "以圣咏涤荡污秽。",
+      "flavor": "不洁之物，退散。",
+      "describe": "驱散友军 1 个减益/控制，并为其恢复 4 点生命。",
+      "effects": [
+        {
+          "type": "dispel",
+          "target": "target",
+          "dispelTarget": "unit",
+          "filter": {
+            "category": [
+              "control",
+              "debuff"
+            ]
+          },
+          "count": 1
+        },
+        {
+          "type": "heal",
+          "value": 4,
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 4,
+        "cooldown": 1,
+        "castTime": 2
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_chanter_s3_light_blessing",
+      "name": "光之赞礼",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "正义导师",
+      "rarity": "epic",
+      "axis": "hymn",
+      "flagship": false,
+      "lore": "圣光恒照其身。",
+      "flavor": "你立于光中，无惧阴影。",
+      "describe": "战斗开始时永久获得赐福。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "blessing",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "hook": "on_battle_start"
+    },
+    {
+      "id": "skill_chanter_s2_finale_hymn",
+      "name": "终焉颂歌",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "逐光者",
+      "rarity": "epic",
+      "axis": "hymn",
+      "flagship": false,
+      "lore": "以终焉之歌颂尽敌孽。",
+      "flavor": "此曲终了，汝命亦终。",
+      "describe": "造成 6 点圣光伤害，并驱散目标 1 个减益。",
+      "effects": [
+        {
+          "type": "damage",
+          "element": "holy",
+          "value": 6,
+          "target": "target"
+        },
+        {
+          "type": "dispel",
+          "target": "target",
+          "dispelTarget": "unit",
+          "filter": {
+            "category": [
+              "debuff"
+            ]
+          },
+          "count": 1
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 5,
+        "cooldown": 2,
+        "castTime": 4
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
     }
   ]
 }

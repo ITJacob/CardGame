@@ -2457,6 +2457,232 @@
         "退化方案：固定 damage(physical, 6) + 清除防护（退化为毁灭水滴的 physical 版）",
         "fallbackSort armor_desc（新增项 14）实现「专打重甲」语义；不做则按 hp_desc 兜底"
       ]
+    },
+    {
+      "id": "skill_sailor_s9_rage_roar",
+      "name": "怒涛咆哮",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "水手",
+      "rarity": "common",
+      "axis": "rage",
+      "flagship": false,
+      "lore": "源自水手在风暴中宣泄的狂怒。",
+      "flavor": "浪涛裹着你的怒意拍碎敌舰。",
+      "describe": "造成 4 点物理伤害，并为自己叠加 1 层愤怒。",
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 4,
+          "target": "target"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "rage",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 2,
+        "cooldown": 0,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_sailor_s7_raging_sea",
+      "name": "怒海翻腾",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "航海家",
+      "rarity": "uncommon",
+      "axis": "rage",
+      "flagship": false,
+      "lore": "怒海翻腾，越受击越暴烈。",
+      "flavor": "海浪拍打甲板，你的怒火也随之翻涌。",
+      "describe": "每次受到攻击，叠加 1 层愤怒。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "rage",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "hook": "on_take_damage"
+    },
+    {
+      "id": "skill_sailor_s6_blood_surge",
+      "name": "血潮怒涌",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "风眷者",
+      "rarity": "uncommon",
+      "axis": "rage",
+      "flagship": false,
+      "lore": "血与怒同源，越怒越凶。",
+      "flavor": "你的每一次挥砍都带着滚烫的血气。",
+      "describe": "造成等同于 3 + 2×愤怒层数 的物理伤害，并叠加 1 层愤怒。",
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 3,
+          "valueFrom": {
+            "statusStacks": "rage",
+            "formula": "3 + 2 * stacks"
+          },
+          "target": "target"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "rage",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 3,
+        "cooldown": 1,
+        "castTime": null
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_sailor_s5_wrath_body",
+      "name": "盛怒之躯",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "海洋歌者",
+      "rarity": "rare",
+      "axis": "rage",
+      "flagship": false,
+      "lore": "盛怒化作不灭的战意。",
+      "flavor": "你的身躯就是怒意的容器。",
+      "describe": "战斗开始时永久获得愤怒状态。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "rage",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "hook": "on_battle_start"
+    },
+    {
+      "id": "skill_sailor_s4_wrath_smash",
+      "name": "怒意重击",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "灾难主祭",
+      "rarity": "rare",
+      "axis": "rage",
+      "flagship": false,
+      "lore": "将怒意灌注于一击。",
+      "flavor": "这一下，连钢铁都会弯曲。",
+      "describe": "造成 5 点物理伤害，并使目标陷入易伤（3 回合）。",
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 5,
+          "target": "target"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "vulnerable",
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 4,
+        "cooldown": 1,
+        "castTime": 2
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_sailor_s3_tyrant_edict",
+      "name": "暴君裁决",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "海王",
+      "rarity": "epic",
+      "axis": "rage",
+      "flagship": false,
+      "lore": "以暴君之姿审判来犯者。",
+      "flavor": "俯瞰众生，唯余怒火。",
+      "describe": "造成 8 点物理伤害，并叠加 2 层愤怒。",
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 8,
+          "target": "target"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "rage",
+          "stacks": 2,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 5,
+        "cooldown": 2,
+        "castTime": 3
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
     }
   ]
 }

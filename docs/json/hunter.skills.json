@@ -2644,6 +2644,216 @@
       "conversionNotes": [
         "范围技能随敌方人数线性放大，需 4 人满编复核；execute 的 Boss 白名单见遗留 3"
       ]
+    },
+    {
+      "id": "skill_hunter_s9_seed_doubt",
+      "name": "暗布疑云",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "猎人",
+      "rarity": "common",
+      "axis": "intrigue",
+      "flagship": false,
+      "lore": "疑云生于人心。",
+      "flavor": "一句话，便够了。",
+      "describe": "使目标陷入困惑（1 次，3 回合）。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "deceived",
+          "charges": 1,
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 2,
+        "cooldown": 0,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_hunter_s7_schemer",
+      "name": "阴谋家",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "纵火家",
+      "rarity": "uncommon",
+      "axis": "intrigue",
+      "flagship": false,
+      "lore": "布局者从不露面。",
+      "flavor": "真正的猎手，藏在暗处。",
+      "describe": "战斗开始时永久获得煽动。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "incited",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "hook": "on_battle_start"
+    },
+    {
+      "id": "skill_hunter_s5_divide",
+      "name": "离间之计",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "收割者",
+      "rarity": "rare",
+      "axis": "intrigue",
+      "flagship": false,
+      "lore": "令其众叛亲离。",
+      "flavor": "你的敌人，将自相残杀。",
+      "describe": "使目标陷入嘲讽（3 回合）与易伤（3 回合）。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "taunt",
+          "duration": 3,
+          "target": "target"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "vulnerable",
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 4,
+        "cooldown": 1,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_hunter_s4_lay_trap",
+      "name": "陷阱布置",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "铁血骑士",
+      "rarity": "rare",
+      "axis": "intrigue",
+      "flagship": false,
+      "lore": "陷阱静候猎物。",
+      "flavor": "踩上去吧，我知道你会来。",
+      "describe": "使目标陷入困惑（1 次）与易伤（3 回合）。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "deceived",
+          "charges": 1,
+          "duration": 3,
+          "target": "target"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "vulnerable",
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 4,
+        "cooldown": 1,
+        "castTime": 2
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_hunter_s3_shadow_planner",
+      "name": "暗影策划",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "战争主教",
+      "rarity": "epic",
+      "axis": "intrigue",
+      "flagship": false,
+      "lore": "于暗影中编织阴谋。",
+      "flavor": "每一步，都在计划之中。",
+      "describe": "战斗开始时永久获得煽动。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "incited",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "hook": "on_battle_start"
+    },
+    {
+      "id": "skill_hunter_s2_final_intrigue",
+      "name": "终局阴谋",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "天气术士",
+      "rarity": "epic",
+      "axis": "intrigue",
+      "flagship": false,
+      "lore": "收网的时刻到了。",
+      "flavor": "游戏结束。",
+      "describe": "造成 5 点物理伤害，并使目标陷入易伤（4 回合）。",
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 5,
+          "target": "target"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "vulnerable",
+          "duration": 4,
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 5,
+        "cooldown": 2,
+        "castTime": 4
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
     }
   ]
 }

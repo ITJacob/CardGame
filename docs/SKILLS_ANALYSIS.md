@@ -1,6 +1,6 @@
 # 技能池设计分析报告
 
-> 数据来源：`docs/json/*.skills.json`（22 份途径技能池，共 **773 张卡**），生成脚本口径见文末。
+> 数据来源：`docs/json/*.skills.json`（22 份途径技能池，共 **810 张卡**），生成脚本口径见文末。
 > 对照基准：`docs/skill-design/_GENERATION_BRIEF.md` v0.3、`docs/ddd/params/*`。
 > 生成日期：2026-09-14
 
@@ -11,14 +11,14 @@
 | 指标 | 设计目标（brief） | 实际 | 评价 |
 |---|---|---|---|
 | 途径数 | 22 | 22 | ✅ |
-| 每途径卡数 | 约 24 | **33–38**（均值 35） | ⚠️ 超出约 45%，规模偏大 |
+| 每途径卡数 | 约 24 | **33–43**（均值约 37） | ⚠️ 超出约 55%，规模偏大 |
 | 序列覆盖 | 覆盖 10 个序列 | 22/22 途径均 **10/10** | ✅ 优秀 |
 | 构筑轴 | 每途径 4 轴 | 22/22 途径均 4 轴 | ✅ |
-| 轴间均衡 | 「4 轴尽量均衡」 | **严重不均**（见 §5） | 🔴 最突出的结构问题 |
+| 轴间均衡 | 「4 轴尽量均衡」 | ⚠️ 仍不均，但 6 弱轴已补至 10（途径内 max/min 1.7–2.3x；律师 warp_rule 仍 4.5x） | 🟡 部分改善（见 §5.2 / 问题 #4） |
 | 旗舰技能 | 每轴 1 个（= 4） | **4 ~ 16** | 🔴 标记失控 |
 | 主动 / 被动 | 4+4（派发槽位，非池内比例） | 池内约 6:4 | ⚠️ 被动占比偏高 |
 
-**卡数分布**：律师/猎人/罪犯 37、窥秘人 38（最多）；战士/秘祈人/律师 33（最少）。
+**卡数分布**：猎人 43（最多）；战士/秘祈人 33（最少）；均值约 37（810/22）。单途径规模因 #4 补卡整体抬升（见 §七·补 7-4）。
 
 ---
 
@@ -193,7 +193,7 @@
 | 秘祈人 | shadow / flesh / soul / corruption | 阴影·血肉·灵魂·堕落 | ✅ |
 | 观众 | insight / suggestion / dream / fantasy | 洞察·暗示·梦境·幻想 | ✅ |
 | 仲裁人 | jurisdiction / sanction / inquest / decree | 管辖·制裁·审讯·律令 | ✅ |
-| **律师** | advocacy / brute / bribery / **disorder(18)** | 辩护·暴力·贿赂·**秩序/规则** | ⚠️ 见下 |
+| **律师** | advocacy / brute / bribery / **warp_rule(18)** | 辩护·暴力·贿赂·**扭曲规则** | ⚠️ 见下（disorder 已改名 warp_rule；warp_rule 仍 18，偏大） |
 | 罪犯 | vice / filth / elements / demon | 罪恶·污秽·元素·恶魔 | ✅ |
 | 囚犯 | curse / bondage / aberration / item | 诅咒·束缚·异变·物品 | ✅ |
 | 猎人 | flame / intrigue / massing / harvest | 火焰·阴谋·战争集结·收割 | ✅（intrigue 偏少） |
@@ -207,8 +207,8 @@
 
 ### 5.2 两处需要复核的偏差
 
-1. 🔴 **律师途径的 `disorder`（混乱）轴有 18 张卡，是四轴中最大**，而 `advocacy`（辩护）只有 4 张。原著黑皇帝的权柄核心是**秩序 / 规则 / 律令 / 臣民**，"混乱"更接近深渊（罪犯）或愚者的味道。建议复核：是把 disorder 改名/重新定义为「扭曲规则」（符合黑皇帝的"改写规则"），还是把卡量转移到 `decree`（律令）方向。
-2. ⚠️ **轴间失衡普遍存在**：`disorder:18 / advocacy:4`、`storm:14 / rage:4`、`light:16 / hymn:4`、`massing:16 / intrigue:4`、`undead:16 / spirit_sight:3`、`craft:14 / civilization:7`。brief 要求"4 轴尽量均衡"，实际最大轴常为最小轴的 3–5 倍。
+1. 🟡 **律师途径的 `disorder` 轴已于 2026-09-16 改名 `warp_rule`（扭曲规则）**，贴合黑皇帝"改写规则"的权柄（原 `disorder`"混乱"语义确实更接近深渊/愚者）。`advocacy`（辩护）已同期补至 10 张。但 `warp_rule` 仍有 18 张（四轴最大），`brute` 仅 4 张，途径内 max/min = 4.5x——彻底均衡见问题 #6。
+2. ⚠️ **轴间失衡仍普遍存在，但已显著收敛**：2026-09-16 为 6 个弱轴各补 6–7 张新卡（共 +37，总 810），弱轴均达 10 张下限。当前：**apothecary** beasts10(1.7x)、**chanter** hymn10(2.3x)、**corpse_collector** spirit_sight10(2.3x)、**hunter** intrigue10(2.0x)、**sailor** rage10(1.8x)、**lawyer** advocacy10 但 warp_rule18(4.5x)。整体最大轴/最小轴由 3–5x 降到 1.7–4.5x；"强轴未缩、仅补弱轴"是刻意的"补到下限"策略，彻底均仍需缩强轴（#6）。
 
 ---
 
@@ -257,9 +257,9 @@
 | 1 | `dark` 元素曾零使用，holy/dark 不对称 | ✅ 已解决 | 2026-09-15 已执行存量迁移（9 张暗/黑/深渊系卡 → dark，清单见 §七·补 7-1）；holy 仍略多，但已非"空槽" |
 | 2 | 吟唱机制曾全库未执行 v0.3 纪律 | ✅ 已解决 | 2026-09-15 已按序列档位回填 38 张（详见 §七·补 7-2）；数值补偿（能量折扣）仍待落编目时补 |
 | 3 | `on_turn_start` 25 处死逻辑 | 🟡 方案已定（待主项目实现） | 已定方案：引擎补 fire 点（规格见 §七·补 7-3，含 25 处精确清单：4 hook + 21 event / 19 张卡）。本仓库为纯设计文档库，fire 点需在 cardgame-core 落地；实现后关闭 G15 |
-| 4 | 轴间失衡 3–5 倍 | 🟠 中 | 按 4 轴均衡目标做一轮卡量再分配（优先补 rage / hymn / intrigue / beasts / spirit_sight / advocacy） |
+| 4 | 轴间失衡 3–5 倍 | 🟡 弱轴已补至 10 | 2026-09-16 已为 6 弱轴各补 6–7 张新卡（共 +37，总 810）：rage / hymn / intrigue / beasts / spirit_sight / advocacy 均达 10；途径内 max/min 由 3–5x 降至 1.7–2.3x（清单见 §七·补 7-4）。律师 warp_rule(18)/brute(4) 的 4.5x 失衡归 #6 处理 |
 | 5 | 旗舰标记 4~16 失控 | 🟠 中 | 收敛为每轴 1 个（= 4/途径），其余降为普通卡 |
-| 6 | 律师 `disorder` 与原著权柄偏离 | 🟠 中 | 复核改为「扭曲规则」语义，或将卡量迁至律令/秩序方向 |
+| 6 | 律师 `warp_rule`（原 `disorder`）卡量 18 偏大、与原著权柄曾偏离 | 🟠 中 | 改名已执行（warp_rule「扭曲规则」贴合黑皇帝"改写规则"）；卡量 18 仍为四轴最大，建议缩 warp_rule 或扩充 brute/bribery 至均衡（与 #4 的"补弱轴"互补） |
 | 7 | 位格 / 跨层 / 形态切换低用 | 🟠 中 | 这三项是 v0.3 的差异化卖点，建议指定 2–3 条途径做深度示范（如愚者=跨层、刺客=形态、仲裁人=位格压制） |
 | 8 | `on_spawn` 8 处 | 🟡 低 | 逐条审计是否误当"开局"用（召唤物会重复 fire） |
 | 9 | 卡数超设计 45% | 🟡 低 | 33–38 vs 目标 24；若非有意扩容，考虑精简低价值卡 |
@@ -330,12 +330,38 @@
 5. **边界**：死亡单位不发射；被 `disable`（眩晕）单位是否发射需裁定——建议正常发射（眩晕只阻断"行动执行"，回合仍开始；多数 `on_turn_start` 期望每回合稳定触发）。
 6. **配套**：实现后在 `docs/ddd/params/执行参数.md` §2.1 G15 标注"已补 fire 点"并移出阻塞；若回合开始涉及数值结算（如每回合回能），需在 invariants 登记对应不变量。
 
+### 7-4 轴间失衡：6 弱轴补卡至 10（2026-09-16，+37 卡 → 总 810）
+
+**动作**：为 6 个"最小轴仅 3–4 张"的弱轴各补 6–7 张新卡（被动 hook 多为 `on_battle_start`），使弱轴达到与强轴可比的 10 张下限：
+
+| 途径 | 弱轴（补后） | 补卡数 | 途径内 max/min |
+|---|---|---|---|
+| 水手 sailor | rage 4→**10** | +6 | 1.75x（storm 14） |
+| 歌颂者 chanter | hymn 4→**10** | +6 | 2.29x（light 16） |
+| 收尸人 corpse_collector | spirit_sight 3→**10** | +7 | 2.29x（undead 16） |
+| 猎人 hunter | intrigue 4→**10** | +6 | 2.0x（massing 16） |
+| 药师 apothecary | beasts 3/4→**10** | +6 | 1.71x（moon 12） |
+| 律师 lawyer | advocacy 4→**10** | +6 | 4.5x（warp_rule 18） |
+
+**新增卡（按序列降序；序列 4+ 无吟唱，序列 ≤4 按档位标 `castTime`）**：
+
+- 水手：rage_roar(s9)、raging_sea(s7 被动·on_take_damage)、blood_surge(s6)、wrath_body(s5 被动·on_battle_start)、wrath_smash(s4)、tyrant_edict(s3)
+- 歌颂者：holy_blessing(s8)、valiant_hymn(s6)、endless_hymn(s5 被动·on_battle_start)、purify_chant(s4)、light_blessing(s3 被动·on_battle_start)、finale_hymn(s2)
+- 收尸人：sight_awaken(s9 被动·on_battle_start)、ghost_see(s7)、spirit_touch(s6 被动·on_battle_start)、dead_whisper(s5)、spirit_lookout(s4)、death_omen(s3 被动·on_battle_start)、end_eye(s2)
+- 猎人：seed_doubt(s9)、schemer(s7 被动·on_battle_start)、divide(s5)、lay_trap(s4)、shadow_planner(s3 被动·on_battle_start)、final_intrigue(s2)
+- 药师：beast_call(s9)、wild_instinct(s7 被动·on_battle_start)、pack_maul(s6)、beast_rush(s5)、frenzy_rush(s4)、beast_tide(s2)
+- 律师：plead(s8)、pleader_eye(s7 被动·on_battle_start)、cite_statute(s6)、glib_tongue2(s5 被动·on_battle_start)、courtroom_rebut(s4)、statute_body(s3 被动·on_battle_start)
+
+**伴随改动（律师）**：`disorder` 轴正式改名为 `warp_rule`（扭曲规则，贴合黑皇帝"改写规则"权柄），`axes` 对象删除 `disorder` 键并新增 `warp_rule:{symbol:"🜄",name:"扭曲规则"}`，原 `axis:"disorder"` 的卡全部改挂 `warp_rule`。
+
+**结果**：整库卡数 773 → **810**；6 弱轴均达 10 张，途径内 max/min 由 3–5x 降至 1.7–2.3x（律师因 warp_rule 仍 18、brute 仅 4，保持 4.5x，归问题 #6）。校验：`validate.py` 0 error / 19 warn；`validate_schema.py` 仅余 3 个历史错误（assassin s18、fool s28、prisoner s21），manifest 计数已全部同步。
+
 ---
 
 ## 八、结论
 
 1. **设计风格**：已形成以「状态挂载 + 条件响应」为核心的稳定风格（mount_status 占 48%），通用术语 22 个、特色术语 15 个、跨途径共享状态 20 个——**术语体系已经成型**，你举例的那种"复合条件增伤"在现有词汇下可以直接书写。
-2. **原著契合**：22/22 途径的构筑轴均能在原著找到明确对应，仅律师 `disorder` 一处需要复核。
+2. **原著契合**：22/22 途径的构筑轴均能在原著找到明确对应；律师 `disorder` 已于 2026-09-16 改名 `warp_rule`（扭曲规则）以贴合黑皇帝"改写规则"权柄，但其卡量 18 仍为四轴最大，待问题 #6 收口。
 3. **工具覆盖**：主流工具（界域、迷失、充能、推条、标签联动、叠层、转嫁、潜行、复活）利用率良好；v0.3 三大新增维度中**吟唱已修复（1 张 → 38 张）**，但**位格（7 卡 / 4 途径）与跨层（2 卡 / 2 途径）仍严重低用**，是下一轮重点。
 4. **三件事的处置（2026-09-15 → 2026-09-16）**：`dark` 存量迁移 ✅ 9 张；吟唱回填 ✅ 38 张（档位规则已入 `_GENERATION_BRIEF.md` §13.2，数值补偿待回填）；`on_turn_start` 🟡 **方案已定——引擎补 fire 点规格见 §七·补 7-3（含 25 处精确清单：4 hook + 21 event / 19 张卡），待 cardgame-core 落地后关闭 G15**。
 
@@ -343,10 +369,8 @@
 
 ### 附：统计口径
 
-- 数据源：`docs/json/*.skills.json` 的 `cards[]` 数组，共 773 张卡。
+- 数据源：`docs/json/*.skills.json` 的 `cards[]` 数组，共 810 张卡。
 - 原语 / 元素 / 触发点用量：递归遍历效果节点统计（同一张卡可多次计数）。
 - 术语模式：按关键词在单卡 JSON 文本中匹配，**同一张卡命中多个关键词只计一次**；「吟唱」「驱散」两项因字段名（`castTime`、`dispelable`）普遍存在而虚高，正文已按实际值（castTime>0 = 0、dispel 效果 = 99）校正。
 - 复合组合：同一张卡内两个机制共现计一次。
 - 原著契合：依据各途径 `axes` 定义与《诡秘之主》22 途径权柄人工比对。
-</content>
-</invoke>

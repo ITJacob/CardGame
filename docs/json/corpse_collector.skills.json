@@ -2452,6 +2452,273 @@
         }
       ],
       "tentative": true
+    },
+    {
+      "id": "skill_corpse_collector_s9_sight_awaken",
+      "name": "灵视觉醒",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "收尸人",
+      "rarity": "common",
+      "axis": "spirit_sight",
+      "flagship": false,
+      "lore": "天生便见常人所不见。",
+      "flavor": "你睁眼，便见亡魂列队。",
+      "describe": "战斗开始时永久获得灵视。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_sight",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "hook": "on_battle_start"
+    },
+    {
+      "id": "skill_corpse_collector_s7_ghost_see",
+      "name": "幽冥窥视",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "通灵者",
+      "rarity": "uncommon",
+      "axis": "spirit_sight",
+      "flagship": false,
+      "lore": "幽冥之视洞穿伪装。",
+      "flavor": "藏于暗处的，也逃不过你。",
+      "describe": "造成 3 点精神伤害；若目标处于隐匿类状态，本次伤害 ×1.5。",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_category",
+            "side": "target",
+            "categories": [
+              "conceal"
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "mul": 1.5,
+              "target": "target"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 3,
+        "cooldown": 0,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_corpse_collector_s6_spirit_touch",
+      "name": "通灵之触",
+      "kind": "passive",
+      "sequence": 6,
+      "sequenceName": "死灵导师",
+      "rarity": "uncommon",
+      "axis": "spirit_sight",
+      "flagship": false,
+      "lore": "亡者的低语拂过指尖。",
+      "flavor": "它们在跟你说话。",
+      "describe": "战斗开始时永久获得灵预警。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_warning",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "hook": "on_battle_start"
+    },
+    {
+      "id": "skill_corpse_collector_s5_dead_whisper",
+      "name": "亡者低语",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "看门人",
+      "rarity": "rare",
+      "axis": "spirit_sight",
+      "flagship": false,
+      "lore": "逝者向你吐露杀机。",
+      "flavor": "听，它在警告你。",
+      "describe": "使目标获得灵预警（1 次，3 回合）。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_warning",
+          "charges": 1,
+          "duration": 3,
+          "target": "target"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 4,
+        "cooldown": 1,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_corpse_collector_s4_spirit_lookout",
+      "name": "灵界瞭望",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "不死者",
+      "rarity": "rare",
+      "axis": "spirit_sight",
+      "flagship": false,
+      "lore": "于灵界俯瞰战场。",
+      "flavor": "我看见你了，无论你藏在哪里。",
+      "describe": "造成 4 点精神伤害；若目标处于隐匿类状态，本次伤害 ×1.5。",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_category",
+            "side": "target",
+            "categories": [
+              "conceal"
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 4,
+              "mul": 1.5,
+              "target": "target"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 4,
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 4,
+        "cooldown": 1,
+        "castTime": 2
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
+    },
+    {
+      "id": "skill_corpse_collector_s3_death_omen",
+      "name": "死兆预感",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "摆渡人",
+      "rarity": "epic",
+      "axis": "spirit_sight",
+      "flagship": false,
+      "lore": "死亡的气息，你比谁都熟。",
+      "flavor": "你早已知晓结局。",
+      "describe": "战斗开始时永久获得灵视。",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "spirit_sight",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": true,
+      "hook": "on_battle_start"
+    },
+    {
+      "id": "skill_corpse_collector_s2_end_eye",
+      "name": "终末之眼",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "死亡执政官",
+      "rarity": "epic",
+      "axis": "spirit_sight",
+      "flagship": false,
+      "lore": "终末之眼，照见一切伪装。",
+      "flavor": "无处可藏。",
+      "describe": "造成 7 点精神伤害，并驱散目标 1 个隐匿类状态。",
+      "effects": [
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 7,
+          "target": "target"
+        },
+        {
+          "type": "dispel",
+          "target": "target",
+          "dispelTarget": "unit",
+          "filter": {
+            "category": [
+              "conceal"
+            ]
+          },
+          "count": 1
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 5,
+        "cooldown": 2,
+        "castTime": 4
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": null
+      }
     }
   ]
 }
