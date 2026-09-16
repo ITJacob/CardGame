@@ -45,7 +45,7 @@ v0.2 只锁效果不锁数值，但**框架的语义维度封得太死**——�
 ### 1.2 已有状态（15 个 + burn，不要再发明等价的）
 | 状态 | 语义 |
 |---|---|
-| 中毒 | 持续伤害 dot |
+| 中毒 | 持续伤害 debuff |
 | 再生 | 持续回血 |
 | 反伤 | 受击反弹 |
 | 亡语 | 死亡时触发效果 |
@@ -60,7 +60,7 @@ v0.2 只锁效果不锁数值，但**框架的语义维度封得太死**——�
 | 眩晕 | 不能行动 |
 | 守护 | 替友军挡 |
 | 伤害转移 | 伤害转嫁 |
-| **burn** | dot，每 tick 2 伤，duration 3 |
+| **burn** | debuff，每 tick 2 伤，duration 3 |
 
 ### 1.3 触发点（**取值域封闭，共 12 个**）
 
@@ -269,7 +269,7 @@ E1（burn 已实现）/ E2（击退口径，随 D1）/ E3（命名 `gauge.*`）/
 | F9 | `puppet_string`（傀儡线，持续改写目标） | H12 target_override 族 |
 | F11 | `stealth`（隐匿） | H5 潜行母版 |
 | F13 | `drowning`（溺沉） | H2 参数化复合 debuff |
-| F16 | `whisper`（呓语污染，叠层精神 dot） | H2 参数化复合 debuff + H11 层数 |
+| F16 | `whisper`（呓语污染，叠层精神 debuff） | H2 参数化复合 debuff + H11 层数 |
 | F20 | `petrify`（结晶，禁疗） | H21 `heal_received_mul` |
 | F25 | `unit_wraith`（灵体/怨灵） | H1 召唤物基线；ID 归收尸人亡灵线，不眠者自然灵另立 `unit_nature_spirit`（C-6 裁决） |
 | F47 | `zone_astral_field`（星象领域） | H9 Zone 母版 |

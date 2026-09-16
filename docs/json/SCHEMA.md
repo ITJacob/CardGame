@@ -175,7 +175,7 @@ python docs/json/validate.py
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | `id` / `name` | string | id 小写下划线 |
-| `category` | enum[] | `dot` `hot` `buff` `debuff` `control` `reactive` `aura` `stance` `fear` `retarget` `link` `contract` `conceal` `seal` |
+| `category` | enum[] | `buff` `debuff` `control` `reactive` `aura` `stance` `fear` `retarget` `link` `contract` `conceal` `seal` |
 | `dispelable` | bool | |
 | `duration` | int\|null | |
 | `modifiers` | array\|object | **两种形态都合法**：数组（字符串/对象混合）或 `{修正名: 参数}` 映射表；开放结构 |
