@@ -116,7 +116,7 @@ python docs/json/validate.py
 
 **sortKey 封闭枚举**（新增须先登记到共享内核参数）：
 
-`none` `hp_asc` `hp_desc` `atk_desc` `index_asc` `index_desc` `energy_desc` `armor_desc` `buff_count_desc` `debuff_count_desc` `gauge_asc` `gauge_desc` `stat_max_desc`
+`none` `hp_asc` `hp_desc` `atk_asc` `atk_desc` `index_asc` `index_desc` `energy_desc` `armor_desc` `buff_count_desc` `debuff_count_desc` `gauge_asc` `gauge_desc` `stat_max_desc`
 
 **effect 级 target 锚点**（效果内二次寻址，23 个封闭值）：
 
@@ -215,19 +215,19 @@ python docs/json/validate.py
 
 扩展新枚举值时，先去 `docs/ddd/params/` 对应参数篇登记，再改 schema，最后改数据。
 
-## 10. 当前校验结果（2026-09-10）
+## 10. 当前校验结果（2026-09-16 更新）
 
 ```
-files: 22 | errors: 3 | warns: 28
+files: 22 | errors: 0 | warns: 28
 ```
 
-**3 处数据问题**（规范认为是数据错，不是 schema 错）：
+**原 3 处数据问题——已于 2026-09-16 全部清零**：
 
-| 位置 | 问题 | 建议 |
+| 位置 | 原问题 | 处置 |
 |---|---|---|
-| `assassin` / `skill_assassin_s5_repeated_charm` | `statusDefs[0].triggers[0].condition` 缺 `kind` | 补 kind（按语义应为 `has_status` 之类） |
-| `fool` / `skill_fool_s1_mystery_realm` | `zoneDef.effects[0].then[1]` 用了 `type: "damage_taken_mul"`——不是原语 | 改写为 `mount_status` + 状态 `modifiers.damage_taken_mul`，或登记新原语 |
-| `prisoner` / `skill_prisoner_s4_performance`（演出） | `target.fallbackSort: "atk_asc"` 不在 sortKey 封闭集 | 改用 `atk_desc`，或去共享内核参数登记 `atk_asc` |
+| `assassin` / `skill_assassin_s5_repeated_charm` | `statusDefs[0].triggers[0].condition` 缺 `kind` | ✅ 该 condition 实为纯注释（无谓词），已将 note 上移到 `trigger.note` 并删除空 condition——省略 condition 即表示「无条件」，与 `always` 等价，无需为此新开枚举值 |
+| `fool` / `skill_fool_s1_mystery_realm` | `zoneDef.effects[0].then[1]` 用了 `type: "damage_taken_mul"`——不是原语 | ✅ 改写为既有原语 `modify_damage`（`scope:"taken"`, `mul:0.85`）。该原语已在库内使用 11 次，无需新登记；`duration` 字段该原语不支持，已移除（zone 为 `on_occupy_tick` 逐 tick 重挂，语义为「停留期间」） |
+| `prisoner` / `skill_prisoner_s4_performance`（演出） | `target.fallbackSort: "atk_asc"` 不在 sortKey 封闭集 | ✅ **裁定为登记 `atk_asc`**：权威取值域 `ddd/params/共享内核参数.md` §sort 早在 2026-09-14 就已含 `atk_asc`，是 schema 未同步。已补进 schema sortKey 枚举并同步本文件枚举清单，保留数据原意（按攻击升序取最弱己方） |
 
 **28 条警告**：跨途径同名状态但定义不一致（如 `charm`、`shackle`、`puppet_string`）。需逐条确认是「拆成两个状态」还是「统一定义」。
 

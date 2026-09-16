@@ -354,7 +354,23 @@
 
 **伴随改动（律师）**：`disorder` 轴正式改名为 `warp_rule`（扭曲规则，贴合黑皇帝"改写规则"权柄），`axes` 对象删除 `disorder` 键并新增 `warp_rule:{symbol:"🜄",name:"扭曲规则"}`，原 `axis:"disorder"` 的卡全部改挂 `warp_rule`。
 
-**结果**：整库卡数 773 → **810**；6 弱轴均达 10 张，途径内 max/min 由 3–5x 降至 1.7–2.3x（律师因 warp_rule 仍 18、brute 仅 4，保持 4.5x，归问题 #6）。校验：`validate.py` 0 error / 19 warn；`validate_schema.py` 仅余 3 个历史错误（assassin s18、fool s28、prisoner s21），manifest 计数已全部同步。
+**结果**：整库卡数 773 → **810**；6 弱轴均达 10 张，途径内 max/min 由 3–5x 降至 1.7–2.3x（律师因 warp_rule 仍 18、brute 仅 4，保持 4.5x，归问题 #6）。校验：`validate.py` 0 error / 19 warn；`validate_schema.py` 当时仅余 3 个历史错误（assassin s18、fool s28、prisoner s21），manifest 计数已全部同步——**该 3 项已于同日另行清零，见 7-5**。
+
+### 7-5 清除 3 个历史 schema 错误（2026-09-16，校验归零）
+
+`validate_schema.py` 长期残留的 3 个结构性错误（均非本轮引入，可追溯至 2026-09-10）已全部清零，至此 **两个校验器均 0 error**（`validate.py` 0/19 warn、`validate_schema.py` 0/28 warn）。
+
+| 位置 | 原错误 | 处置与理由 |
+|---|---|---|
+| `assassin` / `skill_assassin_s5_repeated_charm` | `statusDefs[0].triggers[0].condition` 缺 `kind` | 该 condition 实为**纯注释对象**（只有一个 `note`，无任何谓词），语义是标注"实际订阅事件应为施加 charm 时"。已将 note 上移至 `trigger.note` 并删除空 condition——**省略 condition 即"无条件"**，无需为"无谓词"新开 `always` 枚举值（Condition.kind 封闭集本就无此项） |
+| `fool` / `skill_fool_s1_mystery_realm` | `zoneDef.effects[0].then[1]` 用了 `type:"damage_taken_mul"`（非原语） | 改写为既有原语 **`modify_damage`**（`scope:"taken"`, `mul:0.85`）。该原语库内已用 11 次，无需新登记；`duration` 不被该原语支持故移除——zone 为 `on_occupy_tick` 逐 tick 重挂，语义正是"停留期间生效"，与原 `duration:2` 意图一致 |
+| `prisoner` / `skill_prisoner_s4_performance`（演出） | `target.fallbackSort:"atk_asc"` 不在 sortKey 封闭集 | **裁定为登记 `atk_asc`**：权威取值域 `ddd/params/共享内核参数.md` §sort 早在 2026-09-14 即已含 `atk_asc`，是 **schema 未同步**（schema 描述里还写着"待裁定"）。已补进 `sortKey` 枚举 + `SCHEMA.md` 枚举清单，保留数据原意（按攻击升序取最弱己方），未改成 `atk_desc` |
+
+**连带处置**：
+
+- prisoner 的 `frameworkFlags.SORT_ATK_ASC` 置 **`landed: true`**——`landed` 的语义是"是否已落入 **DDD 内核**"（≠引擎实现），而 atk_asc 确已在内核参数登记，该 flag 此前是陈旧状态。
+- **修正 `build_overview.py` 的 landed 逻辑缺陷**：原脚本按 `len(frameworkFlags)` 渲染"N 项缺口未落地"，**完全忽略 `landed`**，导致已落地项仍被计为缺口；图例还硬编码"全库 109 条 landed 均为 false"。已改为只统计 `landed:false` 为缺口、已落地项渲染为"✅ 历史缺口已落入 DDD 内核"，汇总计数同步按未落地口径。重跑后 prisoner 该卡正确显示"✅ 1 项历史缺口已落入 DDD 内核"。
+- `SCHEMA.md` §10 校验结果更新为 `files: 22 | errors: 0 | warns: 28`，原"3 处数据问题"表改为已处置说明；sortKey 封闭枚举清单补 `atk_asc`。
 
 ---
 

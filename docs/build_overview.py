@@ -364,7 +364,8 @@ def main():
     w("| 标记 | 含义 |")
     w("|---|---|")
     w("| ✅ 已支持 | 无 `frameworkFlags`，用到的机制都在内核封闭集内 |")
-    w("| ⚠️ 缺口 N | 登记了 N 项 `frameworkFlags`，即用到内核尚未支持的机制；**当前全库 109 条缺口 `landed` 均为 false，无一落地** |")
+    w("| ⚠️ 缺口 N | 登记了 N 项 `frameworkFlags` 且 `landed: false`，即用到内核尚未支持的机制 |")
+    w("| ✅ 已落地 | 该卡曾登记缺口但已置 `landed: true`——机制已落入 DDD 内核（不再计入未落地缺口） |")
     w("")
     w("**拍板项**（数值/口径是否还需要裁定）：")
     w("")
@@ -385,7 +386,7 @@ def main():
     tot = dict(cards=0, act=0, pas=0, flag=0, note=0, fs=0)
     for d in docs:
         cs = d["cards"]
-        nf = sum(1 for c in cs if c.get("frameworkFlags"))
+        nf = sum(1 for c in cs if any(not f.get("landed") for f in (c.get("frameworkFlags") or [])))
         nn = sum(1 for c in cs if c.get("conversionNotes"))
         nact = sum(1 for c in cs if c["kind"] == "active")
         nfs = sum(1 for c in cs if c.get("flagship"))
@@ -402,7 +403,7 @@ def main():
     for i, d in enumerate(docs, 1):
         cs = d["cards"]
         axes = " / ".join("%s %s" % (a["symbol"], a["name"]) for a in d["axes"].values())
-        nf = sum(1 for c in cs if c.get("frameworkFlags"))
+        nf = sum(1 for c in cs if any(not f.get("landed") for f in (c.get("frameworkFlags") or [])))
         nn = sum(1 for c in cs if c.get("conversionNotes"))
         w("---")
         w("")
@@ -479,11 +480,16 @@ def main():
                 if c.get("sharedAcross"):
                     w("- **跨途径共享**：%s" % " / ".join(c["sharedAcross"]))
 
-                # 进度与拍板
+                # 进度与拍板（按 landed 区分：只有未落地的才算缺口）
                 fl = c.get("frameworkFlags") or []
-                if fl:
-                    items = "；".join("`%s` %s" % (f["code"], f["note"]) for f in fl)
-                    w("- **⚠️ 支持进度**：%d 项缺口未落地 —— %s" % (len(fl), items))
+                unlanded = [f for f in fl if not f.get("landed")]
+                landed = [f for f in fl if f.get("landed")]
+                if unlanded:
+                    items = "；".join("`%s` %s" % (f["code"], f["note"]) for f in unlanded)
+                    w("- **⚠️ 支持进度**：%d 项缺口未落地 —— %s" % (len(unlanded), items))
+                elif landed:
+                    items = "；".join("`%s` %s" % (f["code"], f["note"]) for f in landed)
+                    w("- **✅ 支持进度**：%d 项历史缺口已落入 DDD 内核 —— %s" % (len(landed), items))
                 else:
                     w("- **✅ 支持进度**：机制均在内核封闭集内，无登记缺口")
                 cn = c.get("conversionNotes")
