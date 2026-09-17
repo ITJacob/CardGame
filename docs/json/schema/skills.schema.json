@@ -661,6 +661,24 @@
         },
         {
           "$ref": "#/$defs/effStatusShuffle"
+        },
+        {
+          "$ref": "#/$defs/effModifySkill"
+        },
+        {
+          "$ref": "#/$defs/effModifyStatus"
+        },
+        {
+          "$ref": "#/$defs/effModifyTargetability"
+        },
+        {
+          "$ref": "#/$defs/effReveal"
+        },
+        {
+          "$ref": "#/$defs/effGrantImmunity"
+        },
+        {
+          "$ref": "#/$defs/effTakeControl"
         }
       ]
     },
@@ -1722,6 +1740,335 @@
         }
       }
     },
+    "effModifySkill": {
+      "type": "object",
+      "description": "行为层修改（一）：改写技能实例的运行时属性——清 CD / 改施法消耗 / 吟唱转瞬发 / 单体转范围。作用于已存在的技能实例，不是卡静态字段。",
+      "required": [
+        "type",
+        "skillRef"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "modify_skill"
+        },
+        "skillRef": {
+          "type": "object",
+          "required": [
+            "selector"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "selector": {
+              "enum": [
+                "self_last",
+                "self",
+                "target",
+                "by_id"
+              ],
+              "description": "self_last=施法者最近一次使用的主动技能实例（对应「清除当前技能的 CD」）；self=施法者指定技能（配 skillId）；target=目标单位身上指定技能（配 target + ofSkill）；by_id=按卡 id 直接定位。"
+            },
+            "skillId": {
+              "type": "string",
+              "description": "selector 为 self / by_id 时指定卡 id；selector=target 时可省（取 ofSkill 指定的技能）。"
+            },
+            "ofSkill": {
+              "enum": [
+                "active",
+                "channeling",
+                "last"
+              ],
+              "description": "selector=target 时，取目标的哪种技能：active=当前激活、channeling=施放中、last=最近使用。"
+            },
+            "target": {
+              "$ref": "#/$defs/effectTarget"
+            }
+          }
+        },
+        "clearCooldown": {
+          "type": "boolean",
+          "description": "将匹配技能的剩余冷却清零（清除当前技能 CD）。"
+        },
+        "cooldownDelta": {
+          "type": "integer",
+          "description": "剩余冷却 +/- 修正；负=减少。"
+        },
+        "costDelta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "energy": {
+              "type": "integer",
+              "description": "能量消耗修正。"
+            },
+            "cooldown": {
+              "type": "integer"
+            },
+            "castTime": {
+              "type": "integer"
+            }
+          },
+          "description": "施法消耗修正（cost 三件套：energy 能量 / cooldown 冷却 / castTime 吟唱）；负=减少。对应「减少/增加技能施法消耗」。"
+        },
+        "castTimeDelta": {
+          "type": "integer",
+          "description": "吟唱时长 +/- 修正。"
+        },
+        "setInstant": {
+          "type": "boolean",
+          "description": "将吟唱技能改为瞬发（castTime 置 0）。对应「修改吟唱技能为瞬发技能」。"
+        },
+        "targetingModeOverride": {
+          "enum": [
+            "single",
+            "all",
+            "splash_adjacent"
+          ],
+          "description": "修改技能选取范围：single=单体、all=全体、splash_adjacent=溅射相邻。对应「修改单体技能为范围技能」。"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effModifyStatus": {
+      "type": "object",
+      "description": "行为层修改（二）：改写一个已存在的状态实例——延长/重设持续时间、调整最大可叠加层数。区别于 mount_status（施加新状态），本原语作用于运行中的实例。",
+      "required": [
+        "type",
+        "statusId",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "modify_status"
+        },
+        "statusId": {
+          "type": "string",
+          "description": "要修改的已存在状态实例 id；$self 表示引用宿主自身状态。"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget",
+          "description": "持有该状态实例的单位。"
+        },
+        "addDuration": {
+          "type": "integer",
+          "description": "给剩余持续时间 +/- 修正；正=延长。对应「修改状态的持续时间」。"
+        },
+        "setDuration": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "覆盖剩余持续时间；null=常驻。"
+        },
+        "maxStacksDelta": {
+          "type": "integer",
+          "description": "最大可叠加层数 +/- 修正。"
+        },
+        "maxStacksSet": {
+          "type": "integer",
+          "description": "直接设定最大可叠加层数。对应「修改状态的最大可叠加层数」。"
+        },
+        "stacksDelta": {
+          "type": "integer",
+          "description": "当前层数 +/- 修正（可选，配合层数玩法）。"
+        },
+        "dispelableOverride": {
+          "type": "boolean",
+          "description": "覆盖该状态实例的可驱散性（true=强制可驱散 / false=强制不可驱散）。对应此前手写的 dispelableOverride / dispelOverride / dispelableOverwrite / runtimeDispelLock 等 8 种拼写（约 16 处）。"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effModifyTargetability": {
+      "type": "object",
+      "description": "改单位的「可被选为目标」属性，带方向与持续。对应此前手写的 untargetableByTargeted(29) / untargetable(2) / untargetableByAll(1)。",
+      "required": [
+        "type",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "modify_targetability"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "untargetable": {
+          "type": "boolean",
+          "description": "true=不可被选为目标；false=解除不可选取。"
+        },
+        "direction": {
+          "enum": [
+            "all",
+            "enemy_targeted",
+            "enemy_aoe",
+            "ally"
+          ],
+          "description": "对谁不可选：all=全体 / enemy_targeted=敌方指定类 / enemy_aoe=敌方范围类 / ally=友方。"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "pierce": {
+          "enum": [
+            "none",
+            "source",
+            "all"
+          ],
+          "description": "谁能看穿该不可选取：none=无人 / source=仅施法者 / all=所有人。"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effReveal": {
+      "type": "object",
+      "description": "揭示 / 穿透隐匿。对应此前手写的 14 种拼写（pierceConceal / revealToSource / seeThroughStealth / detectConceal …，约 26 处）。⚠️ 纯驱散隐匿仍应用 dispel(filter.category=[conceal])，本原语用于「显形但不驱散」「仅对施法者显形」等场景。",
+      "required": [
+        "type",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "reveal"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "scope": {
+          "enum": [
+            "to_source",
+            "to_all"
+          ],
+          "description": "显形范围：to_source=仅对施法者显形 / to_all=对全体显形。"
+        },
+        "dispel": {
+          "type": "boolean",
+          "description": "是否顺带驱散隐匿类状态。false=仅显形、保留状态。"
+        },
+        "pierceTargetability": {
+          "type": "boolean",
+          "description": "是否同时穿透「不可被选为目标」（modify_targetability）。"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effGrantImmunity": {
+      "type": "object",
+      "description": "授予免疫。此前仅 statusDef.immune（2 处）可用，需为每种免疫单写状态；本原语让「临时/条件性免疫」可直接表达（手写 immune 约 19 处）。",
+      "required": [
+        "type",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "grant_immunity"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "against": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/statusCategory"
+          },
+          "description": "对哪些状态类别免疫（如 control / fear / debuff）。"
+        },
+        "element": {
+          "$ref": "#/$defs/element",
+          "description": "对哪种元素伤害免疫。"
+        },
+        "damageType": {
+          "type": "string",
+          "description": "对哪种伤害类型免疫（如 dot / direct / lethal）。"
+        },
+        "charges": {
+          "type": "integer",
+          "description": "免疫次数（确定性，落空/阻挡语义沿用 charges 约定）。"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effTakeControl": {
+      "type": "object",
+      "description": "夺取控制权 / 阵营翻转：目标在持续期内视为己方单位行动。此前**完全空白**（0 处），而「操控/支配」被提及 72 次，仅靠 target_override / gaugeRateMul:0 / untargetableByTargeted 三招凑。",
+      "required": [
+        "type",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "take_control"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "onExpire": {
+          "enum": [
+            "revert",
+            "die",
+            "keep"
+          ],
+          "description": "到期处置：revert=回归原阵营 / die=死亡 / keep=保持。"
+        },
+        "actionPolicy": {
+          "enum": [
+            "full",
+            "attack_only",
+            "move_only"
+          ],
+          "description": "被控单位可执行哪些行动：full=全权 / attack_only=仅攻击 / move_only=仅移动。"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
     "condition": {
       "type": "object",
       "description": "效果生效条件谓词。开放结构：字段随 kind 变化。chance 类须遵守随机性治理 R1–R6（只用于非伤害维度、单次抽样、须登记）。",
@@ -2091,6 +2438,13 @@
         },
         "behaviorModifiers": {
           "type": "array"
+        },
+        "disallowActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/actionLock"
+          },
+          "description": "行为封锁：单位持有该状态时禁止相应行动。move=禁止移动（禁用 move 原语/站位变动）；basic_attack=禁止普攻；skill=禁止使用主动技能；skip=禁止跳过自身行动周期；react=禁止反应/反击（reactive）；channel=禁止吟唱。对应「行为层面上的修改」。通过既有 mount_status 挂载，可驱散、可带 duration/stacks。"
         },
         "lethalProtect": {
           "oneOf": [
@@ -2824,6 +3178,18 @@
       "type": "string",
       "pattern": "^(fire|ice|poison|lightning|mental|physical|holy|dark|none|\\$[A-Za-z.]+)$",
       "description": "元素；$ 前缀表示运行期变量引用（如 $recorded.element）。"
+    },
+    "actionLock": {
+      "type": "string",
+      "description": "行为封锁类型（statusDef.disallowActions 的取值枚举）。",
+      "enum": [
+        "move",
+        "basic_attack",
+        "skill",
+        "skip",
+        "react",
+        "channel"
+      ]
     },
     "statusCategory": {
       "type": "string",

@@ -1,4 +1,4 @@
-# 技能池 JSON 规范（schema v1.1.0）
+# 技能池 JSON 规范（schema v1.3.0）
 
 本文件是 `docs/json/*.skills.json` 与 `docs/json/manifest.json` 的**结构标准**。
 机器可读版本在同目录 `schema/` 下，两者必须保持一致：改结构先改 schema，再改数据。
@@ -134,7 +134,7 @@ python docs/json/validate.py
 | `repeat` | `steps` | 重复；`count` 可用对象形式 `{valueFrom, filter, cap}` 做运行期计算 |
 | `if` | `condition`, `then` | 条件分支，`else` 可选 |
 
-### 5.2 原语（19 个，封闭集）
+### 5.2 原语（25 个，封闭集）
 
 | type | 关键字段 | 备注 |
 |---|---|---|
@@ -155,6 +155,12 @@ python docs/json/validate.py
 | `snapshot` / `restore_snapshot` | `fields` | 成对使用 |
 | `echo_last_skill` | `potency` `rounding` | 权柄技能不可被重放 |
 | `gauge_shuffle` / `status_shuffle` | `resource` / `mode` `sort` | |
+| `modify_skill` | `skillRef`(selector/by_id) `clearCooldown` `costDelta` `setInstant` `targetingModeOverride` | **行为层修改（一）**：改写技能实例运行时属性——清 CD / 改施法消耗 / 吟唱转瞬发 / 单体转范围（2026-09-17 拍板，补原缺口） |
+| `modify_status` | `statusId` `target` `addDuration` `setDuration` `maxStacksDelta` `dispelableOverride` | **行为层修改（二）**：改写已存在状态实例的持续 / 最大可叠加层数 / 可驱散性（区别于 mount_status 施加新状态；2026-09-17 拍板） |
+| `modify_targetability` | `target` `untargetable` `direction` `duration` `pierce` | 目标可选性：改单位「可被选为目标」的属性，带方向与穿透。对应手写 `untargetableByTargeted`(29)/`untargetable`(2)/`untargetableByAll`(1) |
+| `reveal` | `target` `scope`(to_source/to_all) `dispel` `pierceTargetability` | 揭示 / 穿透隐匿。对应手写 14 种拼写（约 26 处）。⚠️ **纯驱散隐匿仍用 `dispel(filter.category=[conceal])`**，本原语用于「显形但不驱散」「仅对施法者显形」 |
+| `grant_immunity` | `target` `against`(statusCategory[]) `element` `damageType` `charges` `duration` | 授予免疫（临时/条件性）。此前仅 `statusDef.immune`（2 处）可用，需为每种免疫单写状态 |
+| `take_control` | `target` `duration` `onExpire`(revert/die/keep) `actionPolicy`(full/attack_only/move_only) | 夺取控制权 / 阵营翻转：持续期内目标视为己方行动。此前**完全空白**（0 处），而「操控/支配」被提及 72 次 |
 
 ⚠️ `damage_taken_mul`、`heal_received_mul` 这类**不是原语**，属状态修正，必须写在 `statusDefs[].modifiers` 里。
 
@@ -182,7 +188,8 @@ python docs/json/validate.py
 | `modifiers` | array\|object | **两种形态都合法**：数组（字符串/对象混合）或 `{修正名: 参数}` 映射表；开放结构 |
 | `triggers` / `effects` | | 状态自带触发器与载荷 |
 | `charges` `maxStacks` `stackPolicy`(stack/refresh) | | 层数与次数 |
-| 其余 | | `lethalProtect` `immune` `suppress` `redirectRule` `thresholdTrigger` `slots` `fields` `ramp` 等，见 schema |
+| `disallowActions` | `actionLock[]` | **行为封锁**：单位持有该状态时禁止相应行动，`actionLock` 封闭枚举 = `move`(禁止移动) / `basic_attack`(禁止普攻) / `skill`(禁止主动技能) / `skip`(禁止跳过行动周期) / `react`(禁止反应·反击) / `channel`(禁止吟唱)。经既有 `mount_status` 挂载，可驱散、可带 duration/stacks（行为层修改三，2026-09-17 拍板） |
+| 其余 | | `lethalProtect` `immune` `suppress` `redirectRule` `thresholdTrigger` `slots` `fields` `ramp` `behaviorModifiers` 等，见 schema |
 
 跨途径**同名状态视为共享状态**：同名但定义不同时会告警（当前 28 条），需确认是否应拆成两个状态。
 
@@ -216,11 +223,25 @@ python docs/json/validate.py
 
 扩展新枚举值时，先去 `docs/ddd/params/` 对应参数篇登记，再改 schema，最后改数据。
 
-## 10. 当前校验结果（2026-09-16 更新）
+## 10. 当前校验结果（2026-09-17 更新）
 
 ```
-files: 22 | errors: 0 | warns: 28
+结构校验（validate_schema.py）: files 22 | errors 0 | warns 28
+语义校验（validate.py）       : cards 828 | errors 0 | warns 44
 ```
+
+**命名治理（2026-09-17 起）**：`modifiers` 为开放结构，同义异写严重（如受伤倍率有 `damage_taken_mul`(74)/`damageTakenMul`(8)/`damageTakenBonus`(2) 三种拼写）。
+`validate.py` 已内置 `MODIFIER_ALIASES` 别名表，命中即产出**非阻断告警**引导收敛（当前 25 条）：
+
+| 别名 | 规范拼写 |
+|---|---|
+| `damageTakenMul` / `damageTakenBonus` | `damage_taken_mul` |
+| `damageMul` / `damageDealtMul` / `damageDealtMulFilter` / `damage_mul_2` | `damage_mul` |
+| `healReceivedMul` / `healInvert` | `heal_received_mul` |
+| `untargetable` / `untargetableByAll` | `untargetableByTargeted` |
+| `dispelOverride` / `dispelableOverwrite` / `runtimeDispelOverride` | `dispelableOverride` |
+
+收敛方式：优先改用规范拼写；语义上确属新能力的，改用对应原语（如 `reveal` / `modify_targetability` / `modify_status.dispelableOverride`）。
 
 **原 3 处数据问题——已于 2026-09-16 全部清零**：
 

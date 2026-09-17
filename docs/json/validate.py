@@ -4,7 +4,9 @@ import json, io, sys, glob, os
 
 PRIMS = {"damage","heal","mount_status","modify_stat","modify_resource","move","spawn","dispel","drain","domain","translocate",
          "modify_damage","transfer_status","target_override","snapshot","restore_snapshot",
-         "echo_last_skill","gauge_shuffle","status_shuffle"}
+         "echo_last_skill","gauge_shuffle","status_shuffle",
+         "modify_skill","modify_status",
+         "modify_targetability","reveal","grant_immunity","take_control"}
 OPS = {"sequence","repeat","if"}
 EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill"}
 ELEMENTS = {"fire","ice","poison","lightning","mental","physical","holy","dark","none"}
@@ -13,6 +15,32 @@ SORTS = {"none","hp_asc","hp_desc","atk_desc","index_asc","index_desc","energy_d
 STATS = {"attack","defense","armor","rank","hp_max","energy_max","energy_regen","stamina_rate","stamina_threshold","gauge.rate","gauge.threshold","summon_cap"} | {"resist:"+e for e in ELEMENTS - {"none"}} | {"resist:*"}
 RESOURCES = {"hp","energy","shield","armor","lost","gauge.current"}
 CATS = {"dot","hot","buff","debuff","control","reactive","aura","stance","fear","retarget","link","contract","conceal","seal"}
+ACTION_LOCKS = {"move","basic_attack","skill","skip","react","channel"}
+TARGET_DIRECTIONS = {"all","enemy_targeted","enemy_aoe","ally"}
+TARGET_PIERCE = {"none","source","all"}
+REVEAL_SCOPES = {"to_source","to_all"}
+CONTROL_EXPIRE = {"revert","die","keep"}
+CONTROL_POLICY = {"full","attack_only","move_only"}
+# 命名治理：modifiers 为开放结构，同义异写严重。别名 -> 规范拼写（非阻断，仅告警引导收敛）
+MODIFIER_ALIASES = {
+    "damageTakenMul": "damage_taken_mul",
+    "damageTakenBonus": "damage_taken_mul",
+    "damageMul": "damage_mul",
+    "damageDealtMul": "damage_mul",
+    "damageDealtMulFilter": "damage_mul",
+    "damage_mul_2": "damage_mul",
+    "healReceivedMul": "heal_received_mul",
+    "healInvert": "heal_received_mul",
+    "untargetable": "untargetableByTargeted",
+    "untargetableByAll": "untargetableByTargeted",
+    "dispelOverride": "dispelableOverride",
+    "dispelableOverwrite": "dispelableOverride",
+    "runtimeDispelOverride": "dispelableOverride",
+}
+SKILL_SELECTORS = {"self_last","self","target","by_id"}
+EFFECT_TARGETS = {"self","caster","target","primary_target","same_target","secondary_target","attacker","holder","status_holder",
+                  "killed_unit","all_allies","allies_except_self","all_enemies","all_other_enemies","all_units","all",
+                  "adjacent_enemy","enemy","occupant_ally","occupant_enemy","splash_adjacent","splash_behind","one_own_snare_trap"}
 MOVE_OPS = {"swap_neighbor","insert_tail_cross_lane","swap_ally","param","pull_forward","push_back","charge_forward"}
 DOMAIN_OPS = {"overlay","swap","hero"}
 TRANS_OPS = {"pull_into","banish"}
@@ -49,6 +77,36 @@ def main():
                     walk(e.get("else"), cid, p+".else", flags, errors, warns)
                 continue
             if t not in PRIMS: errors.append("%s %s: bad primitive %s" % (cid,p,t)); continue
+            if t=="modify_skill":
+                sr = e.get("skillRef") or {}
+                if sr.get("selector") not in SKILL_SELECTORS:
+                    errors.append("%s %s: bad modify_skill.skillRef.selector %s" % (cid,p,sr.get("selector")))
+            if t=="modify_status":
+                if not e.get("statusId"): errors.append("%s %s: modify_status missing statusId" % (cid,p))
+                if e.get("target") not in EFFECT_TARGETS: errors.append("%s %s: bad modify_status.target %s" % (cid,p,e.get("target")))
+            if t=="modify_targetability":
+                if e.get("target") not in EFFECT_TARGETS: errors.append("%s %s: bad modify_targetability.target %s" % (cid,p,e.get("target")))
+                if e.get("direction") is not None and e["direction"] not in TARGET_DIRECTIONS:
+                    errors.append("%s %s: bad modify_targetability.direction %s" % (cid,p,e["direction"]))
+                if e.get("pierce") is not None and e["pierce"] not in TARGET_PIERCE:
+                    errors.append("%s %s: bad modify_targetability.pierce %s" % (cid,p,e["pierce"]))
+            if t=="reveal":
+                if e.get("target") not in EFFECT_TARGETS: errors.append("%s %s: bad reveal.target %s" % (cid,p,e.get("target")))
+                if e.get("scope") is not None and e["scope"] not in REVEAL_SCOPES:
+                    errors.append("%s %s: bad reveal.scope %s" % (cid,p,e["scope"]))
+            if t=="grant_immunity":
+                if e.get("target") not in EFFECT_TARGETS: errors.append("%s %s: bad grant_immunity.target %s" % (cid,p,e.get("target")))
+                for cat in e.get("against") or []:
+                    if cat not in CATS: errors.append("%s %s: bad grant_immunity.against %s" % (cid,p,cat))
+                el = e.get("element")
+                if el is not None and el not in ELEMENTS and not str(el).startswith("$"):
+                    errors.append("%s %s: bad grant_immunity.element %s" % (cid,p,el))
+            if t=="take_control":
+                if e.get("target") not in EFFECT_TARGETS: errors.append("%s %s: bad take_control.target %s" % (cid,p,e.get("target")))
+                if e.get("onExpire") is not None and e["onExpire"] not in CONTROL_EXPIRE:
+                    errors.append("%s %s: bad take_control.onExpire %s" % (cid,p,e["onExpire"]))
+                if e.get("actionPolicy") is not None and e["actionPolicy"] not in CONTROL_POLICY:
+                    errors.append("%s %s: bad take_control.actionPolicy %s" % (cid,p,e["actionPolicy"]))
             el = e.get("element")
             if el is not None and el not in ELEMENTS and not str(el).startswith("$"):
                 errors.append("%s %s: bad element %s"%(cid,p,el))
@@ -116,6 +174,15 @@ def main():
             for sd in c.get("statusDefs") or []:
                 for cat in sd.get("category",[]) or []:
                     if cat not in CATS: errors.append("%s sd %s: bad category %s"%(cid,sd.get("id"),cat))
+                for a in sd.get("disallowActions") or []:
+                    if a not in ACTION_LOCKS: errors.append("%s sd %s: bad disallowActions %s"%(cid,sd.get("id"),a))
+                # 命名治理：modifiers 开放结构内的同义异写，告警引导收敛到规范拼写
+                mods = sd.get("modifiers")
+                mkeys = list(mods.keys()) if isinstance(mods, dict) else \
+                        [k for it in (mods or []) if isinstance(it, dict) for k in it]
+                for k in mkeys:
+                    if k in MODIFIER_ALIASES:
+                        warns.append("%s sd %s: modifier '%s' 建议收敛为 '%s'"%(cid, sd.get("id"), k, MODIFIER_ALIASES[k]))
                 walk(sd.get("effects"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
                 trigs(sd.get("triggers"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
             if c.get("domainDef"): trigs(c["domainDef"].get("triggers"), cid, "dd", flags, errors, warns)
