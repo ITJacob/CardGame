@@ -48,8 +48,8 @@ python docs/json/validate.py
 |---|---|:--:|---|
 | `pathwayId` | string | ✓ | 途径英文 ID，必须与文件名 `<pathwayId>.skills.json` 一致 |
 | `pathwayName` | string | ✓ | 途径中文名 |
-| `sourceFile` | string | ✓ | 回指源 md：`../skill-design/<途径>途径_技能池_v0.2.md`（目录变动时必须同步） |
-| `sourceVersion` | string | ✓ | 源池版本，当前 `v0.2` |
+| `sourceFile` | string | ✓ | 回指源 md：`../skill-design/<途径>途径_技能池_v0.3.md`（目录变动时必须同步） |
+| `sourceVersion` | string | ✓ | 源池版本，当前 `v0.3` |
 | `axes` | object | ✓ | 构筑轴，`{ "<axisId>": { symbol, name } }`；卡片 `axis` 必须取自这里的键 |
 | `cards` | array | ✓ | 技能卡列表 |
 

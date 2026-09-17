@@ -8,7 +8,7 @@
   "additionalProperties": false,
   "properties": {
     "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "本索引文件自身的 schema 版本。" },
-    "sourceVersion": { "type": "string", "description": "源技能池版本，如 v0.2。" },
+    "sourceVersion": { "type": "string", "description": "源技能池版本，如 v0.3。" },
     "generatedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "生成日期 YYYY-MM-DD。" },
     "rarityMap": {
       "type": "object",
@@ -41,7 +41,7 @@
           "name": { "type": "string", "description": "途径中文名。" },
           "file": { "type": "string", "pattern": "^[a-z][a-z0-9_]*\\.skills\\.json$", "description": "文件名（与 manifest 同目录）。" },
           "cardCount": { "type": "integer", "minimum": 0, "description": "卡片数，必须等于文件中的 cards.length。" },
-          "sourceFile": { "type": "string", "pattern": "^\\.\\./skill-design/.+_技能池_v0\\.2\\.md$", "description": "回指源 markdown（相对 docs/json/ 目录）。" },
+          "sourceFile": { "type": "string", "pattern": "^\\.\\./skill-design/.+_技能池_v\\d+\\.\\d+\\.md$", "description": "回指源 markdown（相对 docs/json/ 目录）。" },
           "status": { "enum": ["done", "wip", "todo"], "description": "转换状态。" },
           "tentativeCount": { "type": "integer", "minimum": 0, "description": "其中 tentative=true 的卡片数。" },
           "frameworkFlagCount": { "type": "integer", "minimum": 0, "description": "带 frameworkFlags 的卡片数。" }
