@@ -10,12 +10,13 @@
   3. modify_resource 专项目的：具体改了哪些 resource、用了哪些参数
      （mode/op/between/duration/maxTriggersPerBattle/condition/target/filter）
 
-产物：docs/SKILLS_ANALYSIS_BY_PROFESSION.md
-复用：python docs/build_profession_analysis.py
+产物：docs/analysis/SKILLS_ANALYSIS_BY_PROFESSION.md
+复用：python docs/analysis/build_profession_analysis.py
 """
 import json, glob, os, collections, datetime, re
 
-JSON_DIR = os.path.join(os.path.dirname(__file__), "json")
+# 本脚本位于 docs/analysis/，技能池数据在上一层 docs/json/
+JSON_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "json")
 MANIFEST = os.path.join(JSON_DIR, "manifest.json")
 
 # 效果 type 全集
@@ -199,7 +200,7 @@ def main():
     L = []
     L.append("# 技能池设计分析报告（职业维度 · 效果原语专项）\n")
     L.append("> 数据来源：`docs/json/*.skills.json`（22 份途径技能池，共 **%d 张卡**），"
-             "由 `docs/build_profession_analysis.py` 递归遍历全部效果节点生成。" % total_cards)
+             "由 `docs/analysis/build_profession_analysis.py` 递归遍历全部效果节点生成。" % total_cards)
     L.append("> 对照基准：`docs/skill-design/_GENERATION_BRIEF.md` v0.3、`docs/ddd/params/*`。")
     L.append("> 生成日期：%s\n" % datetime.date.today().isoformat())
 
@@ -556,7 +557,7 @@ def main():
              "`mode`/`value`/`duration`/`condition`/`target`/`filter`/`spread`/`sourceRef`/`valueFrom`"
              "（资源侧另含 `op`/`between`/`maxTriggersPerBattle`）逐一记录。")
     L.append("- 参数覆盖度：仅统计实际出现的字段（未在节点中出现的字段不计入）。")
-    L.append("- 生成脚本：`docs/build_profession_analysis.py`（可重复运行）。")
+    L.append("- 生成脚本：`docs/analysis/build_profession_analysis.py`（可重复运行）。")
 
     out = "\n".join(L)
     out_path = os.path.join(os.path.dirname(__file__), "SKILLS_ANALYSIS_BY_PROFESSION.md")

@@ -1,7 +1,7 @@
 # 偷盗者（thief）· 技能构筑轴分析
 
 > 数据来源：`docs/json/thief.skills.json`（共 **37** 张技能卡）。
-> 由 `docs/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。
+> 由 `docs/analysis/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。
 > 生成日期：2026-09-17
 
 ## 一、职业总览：四条构筑轴一览
@@ -221,4 +221,4 @@
 - 原语以效果节点 `type` 归类（19 类）；算子以 `op` 归类（9 类）。
 - 挂载状态：统计每张卡 `statusDefs[]` 的 `category`（类型）与 `dispelable`（可驱散性）。
 - 设计风格标签：由原语/属性/资源/状态类别映射到五大维度（进攻/防御/控制/运营/续航）后取占比≥25%的维度，至多 2 个组合而成。
-- 生成脚本：`docs/build_axis_analysis.py`（可重复运行）。
+- 生成脚本：`docs/analysis/build_axis_analysis.py`（可重复运行）。

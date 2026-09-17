@@ -28,6 +28,12 @@ docs/json/           技能池 JSON 结构化产物（md → JSON，2026-09-10 �
 └─ schema/          JSON Schema draft 2020-12 + 结构校验器
    ├─ skills.schema.json / manifest.schema.json
    └─ validate_schema.py  python docs/json/schema/validate_schema.py（需 jsonschema）
+docs/analysis/        统计与分析产物（2026-09-17 从 docs/ 根整合而来；产物勿手改，重跑脚本）
+├─ SKILLS_ANALYSIS.md                原语分析底稿（手维护）
+├─ SKILLS_ANALYSIS_BY_PROFESSION.md  原语用量 + modify_stat/modify_resource 属性与参数统计
+├─ build_profession_analysis.py      python docs/analysis/build_profession_analysis.py（读 ../json/）
+├─ build_axis_analysis.py            python docs/analysis/build_axis_analysis.py
+└─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告（每职业一份）
 docs/                根目录
 ├─ SKILLS_OVERVIEW.md  全库总览（22 途径分章 / 773 卡；效果+机制+支持进度+拍板项）
 ├─ build_overview.py   总览生成脚本：python docs/build_overview.py（读 docs/json/，产物勿手改）
