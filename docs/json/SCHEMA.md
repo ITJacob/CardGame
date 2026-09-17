@@ -142,7 +142,7 @@ python docs/json/validate.py
 | `heal` | `value` `mode`(setHp/hpMaxRatio/to_ratio) | 治疗走 heal，不混 modify_resource（A22） |
 | `mount_status` | `statusId` `duration` `stacks` `stackMode` `charges` | 落空/阻挡语义一律用 `charges`（确定性） |
 | `modify_stat` | `stat` `value` `mode`(delta/set/mul/to_at_least) `duration` | 无宿主、不可驱散；要可见/可驱散用 mount_status |
-| `modify_resource` | `resource` `value` `mode` | `hp/energy/shield/armor/lost/gauge.current/gauge.threshold` |
+| `modify_resource` | `resource` `value` `mode` | `hp/energy/shield/armor/lost/gauge.current` |
 | `move` | `op` `distance` | 7 种 op |
 | `spawn` | `unitId`/`unit`/`template` `position` `hpRatio` `reviveOf` | 复活走 `reviveOf`，不新增原语（G4） |
 | `dispel` | `dispelTarget`(unit/domain) `filter` `category` `count` | 只作用于 StatusInstance（INV-P7） |
@@ -199,7 +199,7 @@ python docs/json/validate.py
 卡片用到但 DDD 内核尚未正式支持的机制，必须登记：
 
 ```json
-"frameworkFlags": [{ "code": "GAUGE_RATE_AS_STAT", "note": "gauge.rate 定价无锚点（D2）", "landed": false }]
+"frameworkFlags": [{ "code": "GAUGE_RATE_AS_STAT", "note": "gauge.rate 定价无锚点（D2）", "landed": true }]
 ```
 
 `landed: false` = 仍欠账。当前 104 张卡带 flag（共 109 条）。

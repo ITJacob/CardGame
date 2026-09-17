@@ -116,7 +116,7 @@
         {
           "code": "GAUGE_RATE_AS_STAT",
           "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge.rate) 表达持续/常驻修正，待内核裁定归一",
-          "landed": false
+          "landed": true
         }
       ]
     },
@@ -890,7 +890,7 @@
         {
           "code": "GAUGE_RATE_AS_STAT",
           "note": "状态内 gauge.rate 修正，同敏捷之手待裁定",
-          "landed": false
+          "landed": true
         }
       ]
     },
@@ -1777,7 +1777,7 @@
         {
           "code": "GAUGE_RATE_AS_STAT",
           "note": "目标侧 gauge.rate 修正，同敏捷之手待裁定",
-          "landed": false
+          "landed": true
         }
       ]
     },
@@ -1866,7 +1866,7 @@
         {
           "code": "GAUGE_RATE_AS_STAT",
           "note": "状态内 gauge.rate 修正，同敏捷之手待裁定",
-          "landed": false
+          "landed": true
         }
       ]
     },
@@ -1901,19 +1901,19 @@
           "op": "sequence",
           "steps": [
             {
-              "type": "modify_resource",
+              "type": "modify_stat",
               "value": 15,
               "mode": "delta",
               "duration": 4,
-              "resource": "gauge.threshold"
+              "stat": "gauge.threshold"
             },
             {
-              "type": "modify_resource",
+              "type": "modify_stat",
               "value": -8,
               "mode": "delta",
               "duration": 4,
               "target": "self",
-              "resource": "gauge.threshold"
+              "stat": "gauge.threshold"
             }
           ]
         }
