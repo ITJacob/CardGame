@@ -13,31 +13,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 文档地图
 
 ```
-docs/ddd/            战斗内核 DDD 设计（权威正源）
+docs/meta/           流程·规范·提案（工作流与生成约束，先读 WORKFLOW.md）
+├─ WORKFLOW.md       当前 AI 工作流定义：设定→机制→技能→JSON→分析 五环节流水线与完成门槛
+├─ GENERATION_BRIEF.md  技能池生成规范，当前 v0.3；§7–§9 是旧框架编号 → DDD 落点速查
+├─ REGEN_v03_SPEC.md    v0.3 批量重构规范
+├─ SCHEMA.md         JSON 结构规范（改结构前必读；含已知待修数据清单）
+└─ proposals/        提案与分析底稿（原语扩展×2、SKILLS_ANALYSIS.md）
+docs/ddd/            战斗内核 DDD 设计（权威正源，纯内容）
 ├─ README.md         入口：上下文总览、依赖方向、一致性边界、54 条不变量总表
 ├─ contexts/         7 限界上下文 + 共享内核（结构/概念）
 └─ params/           各上下文参数与取值域（数值/枚举）
-docs/skill-design/   内容设计（非 DDD）
-├─ _GENERATION_BRIEF.md  技能池生成规范，当前 v0.3；§7–§9 是旧框架编号 → DDD 落点速查
-└─ <途径>_技能池_v0.2.md ×22（注意：池仍为 v0.2，brief 已升 v0.3，增量升级进行中）
-docs/json/           技能池 JSON 结构化产物（md → JSON，2026-09-10 从 skill-design/json/ 上移一层）
-├─ SCHEMA.md        结构规范（改结构前必读；含已知待修数据清单）
+docs/skill-design/   纯技能稿：<途径>_技能池_v0.3.md ×22（池已升 v0.3，增量升级中）
+docs/json/           技能池 JSON 纯数据（md → JSON）
 ├─ manifest.json    索引（schema 版本 / 稀有度映射 / 状态 ID / 各途径卡片数）
-├─ <途径>.skills.json ×22  结构化 AST 卡面；每份的 sourceFile 回指 ../skill-design/<途径>_技能池_v0.2.md
-├─ validate.py      语义校验器（无依赖）：python docs/json/validate.py
-└─ schema/          JSON Schema draft 2020-12 + 结构校验器
-   ├─ skills.schema.json / manifest.schema.json
-   └─ validate_schema.py  python docs/json/schema/validate_schema.py（需 jsonschema）
-docs/analysis/        统计与分析产物（2026-09-17 从 docs/ 根整合而来；产物勿手改，重跑脚本）
-├─ SKILLS_ANALYSIS.md                原语分析底稿（手维护）
+├─ <途径>.skills.json ×22  结构化 AST 卡面；每份的 sourceFile 回指 ../skill-design/<途径>_技能池_v0.3.md
+└─ schema/          JSON Schema draft 2020-12（skills/manifest.schema.json）
+docs/analysis/       纯分析产物（勿手改，重跑 docs/tools/ 脚本生成）
+├─ SKILLS_OVERVIEW.md              全库总览（22 途径分章 / 773 卡）
 ├─ SKILLS_ANALYSIS_BY_PROFESSION.md  原语用量 + modify_stat/modify_resource 属性与参数统计
-├─ build_profession_analysis.py      python docs/analysis/build_profession_analysis.py（读 ../json/）
-├─ build_axis_analysis.py            python docs/analysis/build_axis_analysis.py
-└─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告（每职业一份）
-docs/                根目录
-├─ SKILLS_OVERVIEW.md  全库总览（22 途径分章 / 773 卡；效果+机制+支持进度+拍板项）
-├─ build_overview.py   总览生成脚本：python docs/build_overview.py（读 docs/json/，产物勿手改）
-└─ 源素材（世界体系/界域机制/职业对照表）+ v1.6 提案 05_/06_（界域融入，未跟踪未融入）
+└─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告
+docs/tools/          全部脚本（校验 + 生成）
+├─ validate.py      语义校验器（无依赖）：python docs/tools/validate.py
+├─ validate_schema.py  结构校验器（需 jsonschema）：python docs/tools/validate_schema.py
+├─ build_overview.py / build_profession_analysis.py / build_axis_analysis.py
+docs/诡秘之主资料库/  原著设定源素材（世界体系/九大源质/界域机制/职业对照表）——工作流① 设定补全的落点
 ```
 
 新增设计内容先判断归属：结构/概念 → `contexts/`，取值域/数值 → `params/`，内容设计（技能卡）→ `skill-design/`。
@@ -53,11 +52,11 @@ docs/                根目录
 ## 编辑纪律（违反会踩坑）
 
 1. **`docs/ddd/` 保持"纯内容"**：只描述当前最终模型——不写拍板过程、不写版本变迁、不写例子、不标来源编号。来源与演进留在 git 提交里。
-2. **旧编号速查在 brief §7**：技能稿引用的 A–H 组 / v1.5 A1–A24 编号，落点全部并入 `_GENERATION_BRIEF.md` §7–§9。`LEGACY_REFS.md`、`框架改动记录.md`、`待拍板清单_来自v1.5.md` 均已删除，**不要引用**（原文在 git 历史）。⚠️ A 编号有两套来源，引用前查 §7 区分。
-3. **v0.3 新维度（界域/位格/迷失/性别/吟唱）已于 2026-09-06 融入 ddd**：界域三件套（DomainDef→Grant→Instance，base/hero/overlay 压制栈）、domain/translocate 第 10/11 原语、位格 rank（stat_compare 零新谓词）、迷失值（每英雄 Pool+阈值档）、gender_shift/gender_is、interrupt 打断标志。落点与拍板结论索引在 `_GENERATION_BRIEF.md` §14。
+2. **旧编号速查在 brief §7**：技能稿引用的 A–H 组 / v1.5 A1–A24 编号，落点全部并入 `docs/meta/GENERATION_BRIEF.md` §7–§9。`LEGACY_REFS.md`、`框架改动记录.md`、`待拍板清单_来自v1.5.md` 均已删除，**不要引用**（原文在 git 历史）。⚠️ A 编号有两套来源，引用前查 §7 区分。
+3. **v0.3 新维度（界域/位格/迷失/性别/吟唱）已于 2026-09-06 融入 ddd**：界域三件套（DomainDef→Grant→Instance，base/hero/overlay 压制栈）、domain/translocate 第 10/11 原语、位格 rank（stat_compare 零新谓词）、迷失值（每英雄 Pool+阈值档）、gender_shift/gender_is、interrupt 打断标志。落点与拍板结论索引在 `docs/meta/GENERATION_BRIEF.md` §14。
 4. **Edit 工具对部分中文短语会匹配失败**（疑似零宽字符/异码点，报 "String to replace not found"）。绕过法：Python 按行首前缀整行重写（`io.open(encoding="utf-8")` + `startswith` 定位 + 整行替换/插入）。
 5. **数值锚点与硬约束清单**：写/改技能稿前必读 brief §1–§3（九原语、15+burn 状态、单卡预算 ≈3能量≈6伤害≈10%最大生命）与 `.workbuddy/memory/MEMORY.md` 的「硬约束」节（B1/A22/A21/INV-S5/INV-P7/INV-C2）。
-6. **改 JSON 结构先改 schema**：`docs/json/schema/skills.schema.json` 是技能池的结构标准（规范说明在 `docs/json/SCHEMA.md`）。新增/删除字段、扩枚举都**先改 schema 再改数据**；改完跑 `validate_schema.py`（结构）+ `validate.py`（语义），两者都要 0 错误。
+6. **改 JSON 结构先改 schema**：`docs/json/schema/skills.schema.json` 是技能池的结构标准（规范说明在 `docs/meta/SCHEMA.md`）。新增/删除字段、扩枚举都**先改 schema 再改数据**；改完跑 `docs/tools/validate_schema.py`（结构）+ `docs/tools/validate.py`（语义），两者都要 0 错误。
 
 ## Git 工作方式（血泪教训）
 

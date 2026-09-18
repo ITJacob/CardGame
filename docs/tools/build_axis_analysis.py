@@ -15,13 +15,13 @@
       * 代表技能（flagship 卡名 + 描述）
 
 数据源：docs/json/*.skills.json（递归遍历全部效果节点）
-复用：python docs/analysis/build_axis_analysis.py
+复用：python docs/tools/build_axis_analysis.py
 """
 import json, glob, os, collections, datetime, re
 
-# 本脚本位于 docs/analysis/，技能池数据在上一层 docs/json/
+# 本脚本位于 docs/tools/，技能池数据在 docs/json/，产物写到 docs/analysis/
 JSON_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "json")
-OUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "analysis_by_profession")
+OUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "analysis", "analysis_by_profession")
 
 EFFECT_TYPES = {
     "damage", "dispel", "domain", "drain", "echo_last_skill", "gauge_shuffle",
@@ -209,7 +209,7 @@ def main():
         L = []
         L.append("# %s（%s）· 技能构筑轴分析\n" % (pname, pid))
         L.append("> 数据来源：`docs/json/%s.skills.json`（共 **%d** 张技能卡）。" % (pid, prof["cards"]))
-        L.append("> 由 `docs/analysis/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。")
+        L.append("> 由 `docs/tools/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。")
         L.append("> 生成日期：%s\n" % datetime.date.today().isoformat())
 
         # 职业总览
@@ -366,7 +366,7 @@ def main():
         L.append("- 挂载状态：统计每张卡 `statusDefs[]` 的 `category`（类型）与 `dispelable`（可驱散性）。")
         L.append("- 设计风格标签：由原语/属性/资源/状态类别映射到五大维度"
                  "（进攻/防御/控制/运营/续航）后取占比≥25%的维度，至多 2 个组合而成。")
-        L.append("- 生成脚本：`docs/analysis/build_axis_analysis.py`（可重复运行）。")
+        L.append("- 生成脚本：`docs/tools/build_axis_analysis.py`（可重复运行）。")
 
         out = "\n".join(L)
         out_path = os.path.join(OUT_DIR, "%s.md" % pid)

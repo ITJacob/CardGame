@@ -1,8 +1,8 @@
 # 技能池设计分析报告（职业维度 · 效果原语专项）
 
-> 数据来源：`docs/json/*.skills.json`（22 份途径技能池，共 **828 张卡**），由 `docs/analysis/build_profession_analysis.py` 递归遍历全部效果节点生成。
-> 对照基准：`docs/skill-design/_GENERATION_BRIEF.md` v0.3、`docs/ddd/params/*`。
-> 生成日期：2026-09-17
+> 数据来源：`docs/json/*.skills.json`（22 份途径技能池，共 **828 张卡**），由 `docs/tools/build_profession_analysis.py` 递归遍历全部效果节点生成。
+> 对照基准：`docs/meta/GENERATION_BRIEF.md` v0.3、`docs/ddd/params/*`。
+> 生成日期：2026-09-18
 
 ## 一、总览：各职业规模与原语/算子总量
 
@@ -462,4 +462,4 @@
 - 原语以效果节点 `type` 字段归类（19 类）；算子以效果节点 `op` 字段归类（9 类）。
 - `modify_stat`/`modify_resource` 统计：同样递归全量；`stat`/`resource` 取节点字段值，`mode`/`value`/`duration`/`condition`/`target`/`filter`/`spread`/`sourceRef`/`valueFrom`（资源侧另含 `op`/`between`/`maxTriggersPerBattle`）逐一记录。
 - 参数覆盖度：仅统计实际出现的字段（未在节点中出现的字段不计入）。
-- 生成脚本：`docs/analysis/build_profession_analysis.py`（可重复运行）。
+- 生成脚本：`docs/tools/build_profession_analysis.py`（可重复运行）。

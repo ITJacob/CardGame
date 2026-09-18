@@ -2,19 +2,19 @@
 """生成技能池全库总览（按途径分章）。
 
 用法:
-    python docs/build_overview.py
+    python docs/tools/build_overview.py
 
 输入: docs/json/*.skills.json + docs/json/manifest.json
-输出: docs/SKILLS_OVERVIEW.md
+输出: docs/analysis/SKILLS_OVERVIEW.md
 
 数据变了就重跑本脚本，不要手改输出文件。
-本脚本位于 docs/ 根目录，技能池数据在同级 json/ 下。
 """
 import io, os, glob, json
 
-HERE = os.path.dirname(os.path.abspath(__file__))       # docs/
-JSON_DIR = os.path.join(HERE, "json")                   # docs/json/
-OUT = os.path.join(HERE, "SKILLS_OVERVIEW.md")          # docs/SKILLS_OVERVIEW.md
+HERE = os.path.dirname(os.path.abspath(__file__))       # docs/tools/
+DOCS = os.path.dirname(HERE)                            # docs/
+JSON_DIR = os.path.join(DOCS, "json")                   # docs/json/
+OUT = os.path.join(DOCS, "analysis", "SKILLS_OVERVIEW.md")  # docs/analysis/SKILLS_OVERVIEW.md
 
 # ---------- 名称映射 ----------
 ELEM = {"fire": "火", "ice": "冰", "poison": "毒", "lightning": "电击", "mental": "精神",
@@ -352,7 +352,7 @@ def main():
     w = L.append
     w("# 技能池全库总览")
     w("")
-    w("> 由 `docs/build_overview.py` 从 `docs/json/*.skills.json` 自动生成——**数据变了就重跑脚本，不要手改本文件**。")
+    w("> 由 `docs/tools/build_overview.py` 从 `docs/json/*.skills.json` 自动生成——**数据变了就重跑脚本，不要手改本文件**。")
     w("> 生成范围：22 条途径 / 773 张卡。内容为设计稿现状，**全部数值处于 `tentative` 待拍板状态**。")
     w("")
 

@@ -19,37 +19,34 @@
 ## 目录
 
 ```
-docs/ddd/          战斗内核 DDD 设计（本仓库正源）
-├─ README.md       文档入口：上下文总览、依赖关系、不变量总表
-├─ contexts/       7 个限界上下文 + 共享内核
-└─ params/         各上下文的参数与取值域
+docs/meta/          流程·规范·提案
+├─ WORKFLOW.md          当前工作流：设定→机制→技能→JSON→分析 五环节流水线
+├─ GENERATION_BRIEF.md  技能池生成规范（当前 v0.3）；§7 承载旧框架编号 → DDD 落点速查
+├─ REGEN_v03_SPEC.md    v0.3 批量重构规范
+├─ SCHEMA.md            JSON 结构规范（字段表 + 枚举 + 严格度约定 + 已知待修数据）
+└─ proposals/           原语扩展提案与分析底稿
 
-docs/skill-design/ 诡秘之主 22 途径技能池 v0.2（内容设计，非 DDD）
-├─ _GENERATION_BRIEF.md   生成规范；§7 承载旧框架编号 → DDD 落点速查
-└─ <途径>_技能池_v0.2.md  ×22
+docs/ddd/           战斗内核 DDD 设计（本仓库正源）
+├─ README.md        文档入口：上下文总览、依赖关系、不变量总表
+├─ contexts/        7 个限界上下文 + 共享内核
+└─ params/          各上下文的参数与取值域
+
+docs/skill-design/  诡秘之主 22 途径技能池 v0.3（内容设计，非 DDD）
+└─ <途径>_技能池_v0.3.md  ×22
 
 docs/json/          技能池 JSON 结构化产物（由 skill-design 的 md 转换而来）
-├─ SCHEMA.md        结构规范（字段表 + 枚举 + 严格度约定 + 已知待修数据）
 ├─ manifest.json    索引：schema 版本、稀有度映射、状态 ID、22 途径卡片数
 ├─ <途径>.skills.json ×22  结构化 AST 卡面（sourceFile 回指 ../skill-design/）
-├─ validate.py      语义校验器（枚举/引用完整性，无依赖）
-└─ schema/          机器可读结构标准
-   ├─ skills.schema.json / manifest.schema.json  JSON Schema draft 2020-12
-   └─ validate_schema.py   结构 + 跨字段校验（需 pip install jsonschema）
+└─ schema/          机器可读结构标准（JSON Schema draft 2020-12）
 
-docs/analysis/       统计与分析产物（生成脚本 + 派生文档；产物勿手改，改数据后重跑脚本）
-├─ SKILLS_ANALYSIS.md                效果原语分析底稿（手维护）
-├─ SKILLS_ANALYSIS_BY_PROFESSION.md  效果原语用量 + modify_stat/modify_resource 属性与参数统计
-├─ build_profession_analysis.py      上一份的生成脚本（读 ../json/）
-├─ build_axis_analysis.py            各职业构筑轴分析生成脚本
-└─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告（每职业一份）
-
-docs/               根目录
+docs/analysis/      统计与分析产物（勿手改，重跑 docs/tools/ 脚本生成）
 ├─ SKILLS_OVERVIEW.md  全库总览：22 途径分章，每卡含效果/机制/支持进度/拍板项
-├─ build_overview.py   上面这份总览的生成脚本（读 docs/json/，数据变了重跑，勿手改产物）
-└─ 诡秘之主-世界体系素材库.md / 界域系统-场景切换机制设计.md / 职业路径与能力对照表.md
+├─ SKILLS_ANALYSIS_BY_PROFESSION.md  效果原语用量 + 属性参数统计
+└─ analysis_by_profession/  22 份「职业 × 构筑轴」设计风格报告
 
-docs/诡秘之主职业路径与能力对照表.md
+docs/tools/         校验与生成脚本（validate.py / validate_schema.py / build_*.py）
+
+docs/诡秘之主资料库/  原著设定源素材（世界体系 / 九大源质 / 界域机制 / 职业对照表）
 ```
 
 限界上下文：**战场 / 编队 / 调度 / 执行 / 效果 / 编目 / 随机性治理** + **共享内核**。

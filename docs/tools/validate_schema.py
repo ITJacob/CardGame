@@ -2,14 +2,14 @@
 """按 JSON Schema 校验技能池全库 + 跨字段一致性检查。
 
 用法:
-    python docs/json/schema/validate_schema.py            # 校验 manifest + 22 份技能池
-    python docs/json/schema/validate_schema.py --max 20   # 每文件最多打印 20 条错误
+    python docs/tools/validate_schema.py            # 校验 manifest + 22 份技能池
+    python docs/tools/validate_schema.py --max 20   # 每文件最多打印 20 条错误
 
 依赖: jsonschema（可选）
     pip install jsonschema
 未安装时只执行不依赖它的跨字段检查（第二部分）。
 
-与 docs/json/validate.py 的分工:
+与 docs/tools/validate.py 的分工:
     validate.py        —— 语义/枚举/引用完整性校验（原语与参数取值域、状态 id 存在性、
                           rarity↔sequence 映射、界域租金等）
     validate_schema.py —— 结构校验（字段是否存在、类型是否正确、有无未知字段）
@@ -18,8 +18,9 @@
 """
 import io, os, sys, glob, json
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-JSON_DIR = os.path.dirname(HERE)
+HERE = os.path.dirname(os.path.abspath(__file__))          # docs/tools/
+JSON_DIR = os.path.join(os.path.dirname(HERE), "json")      # docs/json/
+SCHEMA_DIR = os.path.join(JSON_DIR, "schema")               # docs/json/schema/
 
 try:
     from jsonschema import Draft202012Validator
@@ -29,7 +30,7 @@ except ImportError:
 
 
 def load(name):
-    return json.load(io.open(os.path.join(HERE, name), encoding="utf-8"))
+    return json.load(io.open(os.path.join(SCHEMA_DIR, name), encoding="utf-8"))
 
 
 def schema_check(schema, instance, label, errors, max_errors):

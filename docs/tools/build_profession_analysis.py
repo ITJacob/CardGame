@@ -11,11 +11,11 @@
      （mode/op/between/duration/maxTriggersPerBattle/condition/target/filter）
 
 产物：docs/analysis/SKILLS_ANALYSIS_BY_PROFESSION.md
-复用：python docs/analysis/build_profession_analysis.py
+复用：python docs/tools/build_profession_analysis.py
 """
 import json, glob, os, collections, datetime, re
 
-# 本脚本位于 docs/analysis/，技能池数据在上一层 docs/json/
+# 本脚本位于 docs/tools/，技能池数据在 docs/json/，产物写到 docs/analysis/
 JSON_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "json")
 MANIFEST = os.path.join(JSON_DIR, "manifest.json")
 
@@ -200,8 +200,8 @@ def main():
     L = []
     L.append("# 技能池设计分析报告（职业维度 · 效果原语专项）\n")
     L.append("> 数据来源：`docs/json/*.skills.json`（22 份途径技能池，共 **%d 张卡**），"
-             "由 `docs/analysis/build_profession_analysis.py` 递归遍历全部效果节点生成。" % total_cards)
-    L.append("> 对照基准：`docs/skill-design/_GENERATION_BRIEF.md` v0.3、`docs/ddd/params/*`。")
+             "由 `docs/tools/build_profession_analysis.py` 递归遍历全部效果节点生成。" % total_cards)
+    L.append("> 对照基准：`docs/meta/GENERATION_BRIEF.md` v0.3、`docs/ddd/params/*`。")
     L.append("> 生成日期：%s\n" % datetime.date.today().isoformat())
 
     # 一、总览
@@ -557,10 +557,10 @@ def main():
              "`mode`/`value`/`duration`/`condition`/`target`/`filter`/`spread`/`sourceRef`/`valueFrom`"
              "（资源侧另含 `op`/`between`/`maxTriggersPerBattle`）逐一记录。")
     L.append("- 参数覆盖度：仅统计实际出现的字段（未在节点中出现的字段不计入）。")
-    L.append("- 生成脚本：`docs/analysis/build_profession_analysis.py`（可重复运行）。")
+    L.append("- 生成脚本：`docs/tools/build_profession_analysis.py`（可重复运行）。")
 
     out = "\n".join(L)
-    out_path = os.path.join(os.path.dirname(__file__), "SKILLS_ANALYSIS_BY_PROFESSION.md")
+    out_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "analysis", "SKILLS_ANALYSIS_BY_PROFESSION.md")
     with open(out_path, "w", encoding="utf-8") as fh:
         fh.write(out)
 

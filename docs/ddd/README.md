@@ -85,7 +85,7 @@
 
 ### 辅助索引
 
-- **旧框架编号 → 本目录落点的对照表**（技能稿引用的《框架改动记录》A–H 组 / v1.5 决策记录编号，含 2026-09-04 裁决变更与暂缓项）已迁至 [`docs/skill-design/_GENERATION_BRIEF.md`](../skill-design/_GENERATION_BRIEF.md) §7–§9。
+- **旧框架编号 → 本目录落点的对照表**（技能稿引用的《框架改动记录》A–H 组 / v1.5 决策记录编号，含 2026-09-04 裁决变更与暂缓项）已迁至 [`docs/meta/GENERATION_BRIEF.md`](../meta/GENERATION_BRIEF.md) §7–§9。
 
   本目录不再维护该表——它服务的是技能稿，与技能稿放在一起更合理；原 `LEGACY_REFS.md` 已于 2026-09-05 删除。
 

@@ -1,18 +1,19 @@
 # 技能池 JSON 规范（schema v1.3.0）
 
 本文件是 `docs/json/*.skills.json` 与 `docs/json/manifest.json` 的**结构标准**。
-机器可读版本在同目录 `schema/` 下，两者必须保持一致：改结构先改 schema，再改数据。
+机器可读版本在 `docs/json/schema/` 下，两者必须保持一致：改结构先改 schema，再改数据。
 
 ```
 docs/json/
 ├─ manifest.json              全库索引
 ├─ <pathway>.skills.json ×22  途径技能池
+└─ schema/
+   ├─ skills.schema.json      ← 本文档的机器可读版（JSON Schema draft 2020-12）
+   └─ manifest.schema.json
+docs/meta/SCHEMA.md           ← 你在这里
+docs/tools/
 ├─ validate.py                语义校验器（枚举/引用完整性）
-├─ schema/
-│  ├─ skills.schema.json      ← 本文档的机器可读版（JSON Schema draft 2020-12）
-│  ├─ manifest.schema.json
-│  └─ validate_schema.py      结构校验器（字段/类型/跨字段一致性）
-└─ SCHEMA.md                  ← 你在这里
+└─ validate_schema.py         结构校验器（字段/类型/跨字段一致性）
 ```
 
 ## 1. 怎么用
@@ -20,18 +21,18 @@ docs/json/
 ```bash
 # 结构 + 跨字段校验（需 jsonschema）
 pip install jsonschema
-python docs/json/schema/validate_schema.py
+python docs/tools/validate_schema.py
 
 # 语义校验（无依赖，一直都有）
-python docs/json/validate.py
+python docs/tools/validate.py
 ```
 
 两个校验器分工不同，**都要为 0 错误**才算合规：
 
 | 校验器 | 管什么 |
 |---|---|
-| `schema/validate_schema.py` | 结构：字段是否存在、类型对不对、有无未知字段；跨字段：axis∈axes、id 前缀、rarity↔sequence、manifest 对齐 |
-| `validate.py` | 语义：原语与参数取值域、状态 id 是否登记、稀有度映射、界域租金、frameworkFlag 例外 |
+| `tools/validate_schema.py` | 结构：字段是否存在、类型对不对、有无未知字段；跨字段：axis∈axes、id 前缀、rarity↔sequence、manifest 对齐 |
+| `tools/validate.py` | 语义：原语与参数取值域、状态 id 是否登记、稀有度映射、界域租金、frameworkFlag 例外 |
 
 编辑器自动补全：在 VS Code 的 `settings.json` 加
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""技能池 JSON 全库校验器。用法: python docs/json/validate.py"""
+"""技能池 JSON 全库校验器。用法: python docs/tools/validate.py"""
 import json, io, sys, glob, os
 
 PRIMS = {"damage","heal","mount_status","modify_stat","modify_resource","move","spawn","dispel","drain","domain","translocate",
@@ -46,15 +46,16 @@ DOMAIN_OPS = {"overlay","swap","hero"}
 TRANS_OPS = {"pull_into","banish"}
 RARITY_BY_SEQ = lambda s: "common" if s>=8 else "uncommon" if s>=6 else "rare" if s>=4 else "epic" if s>=2 else "legendary"
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.abspath(__file__))          # docs/tools/
+JSON_DIR = os.path.join(os.path.dirname(HERE), "json")      # docs/json/
 
 def main():
-    m = json.load(io.open(os.path.join(HERE,'manifest.json'), encoding='utf-8'))
+    m = json.load(io.open(os.path.join(JSON_DIR,'manifest.json'), encoding='utf-8'))
     CLOSED = set(m["statusIds"].values())
     expect = {p["id"]: p["cardCount"] for p in m["pathways"]}
 
     globs = set()
-    files = sorted(glob.glob(os.path.join(HERE,'*.skills.json')))
+    files = sorted(glob.glob(os.path.join(JSON_DIR,'*.skills.json')))
     for f in files:
         d = json.load(io.open(f, encoding='utf-8'))
         for c in d.get("cards",[]):
