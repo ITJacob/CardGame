@@ -512,7 +512,16 @@
               ]
             }
           ],
-          "note": "复用 F10 beast_form 母版（atk+3 / gauge_rate+8 / dispelable:true），本卡追加 on_deal_damage 附毒 + on_tick 自愈两条触发器"
+          "note": "复用 F10 beast_form 母版（atk+3 / gauge_rate+8 / dispelable:true），本卡追加 on_deal_damage 附毒 + on_tick 自愈两条触发器",
+          "lineageStack": {
+            "push": "werewolf_form",
+            "depth": 1,
+            "maxDepth": 3,
+            "replay": {
+              "enabled": false
+            },
+            "note": "异类谱系栈（编队参数 §2.4）：狼人化为栈底形态之一；maxDepth ⚠️D 待平衡。"
+          }
         }
       ],
       "tentative": true,
@@ -968,7 +977,16 @@
             "damageElementOverride": "mental",
             "note": "直接攻击灵魂：damageElementOverride（效果参数 §1.1，新增项 5）"
           },
-          "note": "H5 潜行/虚化母版 + H27 moveImmune + damageElementOverride；原著「自由出入灵界」在单战场无第二维度，仅作 flavor"
+          "note": "H5 潜行/虚化母版 + H27 moveImmune + damageElementOverride；原著「自由出入灵界」在单战场无第二维度，仅作 flavor",
+          "lineageStack": {
+            "push": "spirit_form",
+            "depth": 1,
+            "maxDepth": 3,
+            "replay": {
+              "enabled": false
+            },
+            "note": "异类谱系栈（编队参数 §2.4）：灵体化可压栈于狼人化之上；maxDepth ⚠️D 待平衡。"
+          }
         }
       ],
       "sharedAcross": [
@@ -1250,15 +1268,25 @@
           ],
           "dispelable": true,
           "duration": 3,
-          "modifiers": {
-            "damageTransfer": {
-              "ratio": 1.0,
-              "direction": "to_target",
-              "selfKeep": true,
-              "linkedTo": "target",
-              "note": "H28 伤害转嫁母版（ratio × direction × split × selfKeep × linkedTo 五参，与 F5 pain_link 同母版，F5 即 ratio:0.5 档）；内置防循环：由本状态产生的伤害不再触发任何链接。selfKeep:true = 序列4 反噬未解（伤敌也伤己）；序列3 无反噬之咒翻为 false，序列0 万咒加身完成所有类型诅咒——三层同一母版"
-            }
-          }
+          "damageTransfer": {
+            "ratio": 1.0,
+            "direction": "to_target",
+            "split": "even",
+            "selfKeep": true,
+            "linkedTo": "target",
+            "network": {
+              "enabled": true,
+              "maxTargets": 3,
+              "splitCoefficient": {
+                "base": 1.0,
+                "perExtra": 0.2
+              },
+              "note": "诅咒链接网络母版（可堆叠）：链接 N 目标，全网分摊系数 = 1 + 0.2×(N−1)。maxTargets=3 为 ⚠️D 占位待平衡。"
+            },
+            "note": "H28 伤害转嫁母版（ratio × direction × split × selfKeep × linkedTo 五参，与 F5 pain_link 同母版，F5 即 ratio:0.5 档）；内置防循环：由本状态产生的伤害不再触发任何链接。selfKeep:true = 序列4 反噬未解（伤敌也伤己）；序列3 无反噬之咒翻为 false，序列0 万咒加身完成所有类型诅咒——三层同一母版。2026-09-18 升级为网络母版：可堆叠链接 N 目标，全网分摊系数 = base + perExtra×(N−1)。"
+          },
+          "maxStacks": 3,
+          "stackPolicy": "stack"
         }
       ],
       "sharedAcross": [
@@ -1368,6 +1396,29 @@
           "code": "SORT_ATK_ASC",
           "note": "按攻击升序（手动选己方单位取最弱者，源稿演出对象语义）。atk_asc 已于 2026-09-14 登记进共享内核参数 sort 取值域，schema sortKey 枚举 2026-09-16 同步——缺口已落入 DDD 内核",
           "landed": true
+        }
+      ],
+      "statusDefs": [
+        {
+          "id": "lineage_replay",
+          "name": "演出回放",
+          "category": [
+            "buff"
+          ],
+          "dispelable": false,
+          "duration": null,
+          "maxStacks": 1,
+          "stackPolicy": "stack",
+          "lineageStack": {
+            "depth": 0,
+            "maxDepth": 3,
+            "replay": {
+              "enabled": true,
+              "note": "演出回放：重演谱系栈内已推入的形态序列（编队参数 §2.4）"
+            },
+            "note": "异类谱系栈的回放承载；不自行 push，只读取并重演栈内形态。"
+          },
+          "note": "PENDING 囚犯「演出回放」承载状态（⚠️D 数值待平衡）。"
         }
       ]
     },
@@ -2136,7 +2187,17 @@
               "note": "天然压制：对异种加伤"
             }
           },
-          "note": "操纵物品 / 唤醒死尸 / 转化三条召唤转化线的共同收束"
+          "note": "操纵物品 / 唤醒死尸 / 转化三条召唤转化线的共同收束",
+          "lineageStack": {
+            "push": "aberration_king",
+            "depth": 2,
+            "maxDepth": 3,
+            "replay": {
+              "enabled": true,
+              "note": "异类之王：可重演栈内形态序列（演出回放）"
+            },
+            "note": "异类谱系栈（编队参数 §2.4）：栈顶端形态，启用演出回放；depth/maxDepth ⚠️D。"
+          }
         }
       ],
       "tentative": true,

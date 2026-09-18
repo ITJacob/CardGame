@@ -2681,6 +2681,116 @@
             "type": "string"
           },
           "description": "跨系读取白名单：列出可读取本 crossPathway 状态的途径 id（PathwayId）。未列入的途径即便 crossPathway:true 也不可读。见 源质维度与跨系枢纽.md §一.2。"
+        },
+        "damageTransfer": {
+          "type": "object",
+          "description": "伤害转嫁族（编队参数 §1.1b / H28）：ratio × direction × split × selfKeep × linkedTo。**必须内置防循环**：由本状态产生的伤害不再触发任何转嫁。囚犯「诅咒链接网络」即本母版的可堆叠网络形态。",
+          "additionalProperties": false,
+          "properties": {
+            "ratio": {
+              "type": "number",
+              "minimum": 0,
+              "description": "转嫁比例（0–1）。"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "to_caster",
+                "to_allies",
+                "to_target",
+                "to_third"
+              ],
+              "description": "转嫁方向。"
+            },
+            "split": {
+              "type": "string",
+              "enum": [
+                "single",
+                "even"
+              ],
+              "description": "单体 / 均摊。"
+            },
+            "selfKeep": {
+              "type": "boolean",
+              "description": "源头是否自留伤害（true = 反噬未解，伤敌亦伤己）。"
+            },
+            "linkedTo": {
+              "type": "string",
+              "description": "链接目标引用（target / 状态 / 单位选择器）。"
+            },
+            "network": {
+              "type": "object",
+              "description": "诅咒链接网络母版（可堆叠）：链接 N 目标时的全网分摊。",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "是否启用网络形态（多目标链接）。"
+                },
+                "maxTargets": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "可链接目标上限 N。"
+                },
+                "splitCoefficient": {
+                  "type": "object",
+                  "description": "全网分摊系数 = base + perExtra × (N−1)（囚犯：1 + 0.2×(N−1)）。",
+                  "additionalProperties": false,
+                  "properties": {
+                    "base": {
+                      "type": "number"
+                    },
+                    "perExtra": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "note": {
+                  "type": "string"
+                }
+              }
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "lineageStack": {
+          "type": "object",
+          "description": "异类谱系栈（编队参数 §2.4）：异类形态按栈叠加，支持 lineage_push（推入）/ lineage_depth（深度）/ 演出回放（栈内形态序列重演）。",
+          "additionalProperties": false,
+          "properties": {
+            "push": {
+              "type": "string",
+              "description": "lineage_push：推入谱系栈的形态 statusId。"
+            },
+            "depth": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "lineage_depth：当前谱系栈深度。"
+            },
+            "maxDepth": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "栈深上限。"
+            },
+            "replay": {
+              "type": "object",
+              "description": "演出回放：回放栈内形态序列。",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "note": {
+                  "type": "string"
+                }
+              }
+            },
+            "note": {
+              "type": "string"
+            }
+          }
         }
       }
     },
