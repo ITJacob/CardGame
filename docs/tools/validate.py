@@ -174,10 +174,13 @@ def main():
         if pid in expect and len(cards) != expect[pid]:
             errors.append("card count %d != manifest %d" % (len(cards), expect[pid]))
         ids = set()
+        names = {}  # 卡名 -> kind，供 sampleBuilds 交叉校验
         for c in cards:
             cid = c.get("id","?")
             if cid in ids: errors.append("dup id %s"%cid)
             ids.add(cid)
+            nm = c.get("name")
+            if nm is not None: names[nm] = c.get("kind")
             flags = c.get("frameworkFlags") or []
             for fld in ("id","name","kind","sequence","sequenceName","rarity","axis","lore","flavor","describe","effects"):
                 if fld not in c: errors.append("%s: missing %s"%(cid,fld))
@@ -219,6 +222,24 @@ def main():
             flat = json.dumps(c.get("effects",[]), ensure_ascii=False)
             if ('"domain"' in flat or '"translocate"' in flat) and '"lost"' not in flat:
                 errors.append("%s: domain/translocate without lost rent"%cid)
+        # ---- sampleBuilds 交叉校验：示例卡组可信化 ----
+        # 每个 Build 须 4 主动 + 4 被动，所列卡名必须存在于本文件 cards[]，
+        # 且 actives 只能指 kind=active 的卡、passives 只能指 kind=passive 的卡。
+        # 目的：让 sampleBuilds 从「会漂的设计说明」变为「被 Gate 兜住的示例卡组」。
+        sb = d.get("sampleBuilds")
+        if sb is not None:
+            for bi, b in enumerate(sb):
+                bn = b.get("name","?")
+                for slot, exp_kind in (("actives","active"),("passives","passive")):
+                    arr = b.get(slot) or []
+                    if len(arr) != 4:
+                        errors.append("sampleBuilds[%d] '%s': %s 应有 4 张，实际 %d 张"%(bi,bn,slot,len(arr)))
+                    for nm in arr:
+                        cd = names.get(nm)
+                        if cd is None:
+                            errors.append("sampleBuilds[%d] '%s': %s 卡名 '%s' 不在本文件 cards[]"%(bi,bn,slot,nm))
+                        elif cd != exp_kind:
+                            errors.append("sampleBuilds[%d] '%s': %s 卡名 '%s' 是 kind=%s，非预期 %s"%(bi,bn,slot,nm,cd,exp_kind))
         for e in errors: print("  E:", pid, e)
         for w in warns: print("  W:", pid, w)
         errors_all += [pid+": "+e for e in errors]
