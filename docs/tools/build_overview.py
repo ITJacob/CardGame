@@ -348,12 +348,15 @@ def main():
             snames.setdefault(sid, cn)
     R = Renderer(snames)
 
+    total_cards = sum(len(d["cards"]) for d in docs)
+    n_tentative = sum(1 for d in docs for c in d["cards"] if c.get("tentative"))
+
     L = []
     w = L.append
     w("# 技能池全库总览")
     w("")
     w("> 由 `docs/tools/build_overview.py` 从 `docs/json/*.skills.json` 自动生成——**数据变了就重跑脚本，不要手改本文件**。")
-    w("> 生成范围：22 条途径 / 773 张卡。内容为设计稿现状，**全部数值处于 `tentative` 待拍板状态**。")
+    w("> 生成范围：%d 条途径 / %d 张卡。内容为设计稿现状，**全部数值处于 `tentative` 待拍板状态**。" % (len(docs), total_cards))
     w("")
 
     # ---- 图例 ----
@@ -371,7 +374,7 @@ def main():
     w("")
     w("| 标记 | 含义 |")
     w("|---|---|")
-    w("| 待拍板 | `tentative: true`——当前 773 张**全部**为 true，即全库数值尚未拍板，这是基线状态而非个别问题 |")
+    w("| 待拍板 | `tentative: true`——当前 %d/%d 张为 true，即全库数值尚未拍板，这是基线状态而非个别问题 |" % (n_tentative, total_cards))
     w("| 存疑 | 有 `conversionNotes`——md 转 JSON 时口径存疑或做了语义迁移，需人工确认 |")
     w("")
     w("**其他字段**：`设定` = 原著出处（lore）；`风味` = 第二人称描述文本（flavor）；")

@@ -70,7 +70,7 @@ python docs/tools/validate.py
 | `flagship` | bool | ✓ | 是否旗舰卡 |
 | `lore` / `flavor` / `describe` | string | ✓ | 设定 / 风味 / **玩家可读效果描述**（`describe` 是唯一面向玩家的字段） |
 | `effects` | effect[] | ✓ | 卡面效果，至少 1 条 |
-| `tentative` | bool | ✓ | 数值待拍板；当前全库 773 张均为 `true` |
+| `tentative` | bool | ✓ | 数值待拍板；当前全库 828 张均为 `true` |
 | `cost` | object | active | `{ energy, cooldown, castTime }`，`castTime` 可为 `null` |
 | `reach` | `none`\|`melee`\|`ranged` | active | 攻击距离 |
 | `target` | object | active | 见 §4 |

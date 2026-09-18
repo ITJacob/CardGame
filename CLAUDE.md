@@ -29,7 +29,7 @@ docs/json/           技能池 JSON 纯数据（md → JSON）
 ├─ <途径>.skills.json ×22  结构化 AST 卡面；每份的 sourceFile 回指 ../skill-design/<途径>_技能池_v0.3.md
 └─ schema/          JSON Schema draft 2020-12（skills/manifest.schema.json）
 docs/analysis/       纯分析产物（勿手改，重跑 docs/tools/ 脚本生成）
-├─ SKILLS_OVERVIEW.md              全库总览（22 途径分章 / 773 卡）
+├─ SKILLS_OVERVIEW.md              全库总览（22 途径分章 / 828 卡）
 ├─ SKILLS_ANALYSIS_BY_PROFESSION.md  原语用量 + modify_stat/modify_resource 属性与参数统计
 └─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告
 docs/tools/          全部脚本（校验 + 生成）
