@@ -45,13 +45,34 @@
       "description": "示例 Build（4 主动 + 4 被动），源自技能稿 §二。卡名为设计示例，可能与现行卡名有出入，仅供构筑参考。",
       "items": {
         "type": "object",
-        "required": ["name", "actives", "passives", "playstyle"],
+        "required": [
+          "name",
+          "actives",
+          "passives",
+          "playstyle"
+        ],
         "additionalProperties": false,
         "properties": {
-          "name": { "type": "string", "description": "Build 名（含轴符号）。" },
-          "actives": { "type": "array", "items": { "type": "string" } },
-          "passives": { "type": "array", "items": { "type": "string" } },
-          "playstyle": { "type": "string", "description": "玩法一句话。" }
+          "name": {
+            "type": "string",
+            "description": "Build 名（含轴符号）。"
+          },
+          "actives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "passives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "playstyle": {
+            "type": "string",
+            "description": "玩法一句话。"
+          }
         }
       }
     },
@@ -90,12 +111,16 @@
         },
         "enablers": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "挂载/累积身份状态的卡名（源自技能稿轴表，仅保留可匹配到卡名的条目）。"
         },
         "payoffs": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "读取身份状态放大的卡名（同源，仅保留可匹配条目）。"
         },
         "note": {
@@ -755,6 +780,12 @@
         },
         {
           "$ref": "#/$defs/effTransferStatus"
+        },
+        {
+          "$ref": "#/$defs/effWriteRuleSlot"
+        },
+        {
+          "$ref": "#/$defs/effModifyRuleSlot"
         },
         {
           "$ref": "#/$defs/effSnapshot"
@@ -3353,6 +3384,99 @@
         "on_active_skill",
         "on_status_gain"
       ]
+    },
+    "effWriteRuleSlot": {
+      "type": "object",
+      "description": "写入规则槽：把一条规则写进战场级 Rules[3] 的指定槽位（与 transfer_status 同族，见 效果上下文 §2.1）。",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "write_rule_slot"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "slot": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2,
+          "description": "规则槽下标（Rules[3]，0–2）。"
+        },
+        "field": {
+          "type": "string",
+          "enum": [
+            "trigger",
+            "punish",
+            "exemptions",
+            "scope"
+          ],
+          "description": "规则槽字段枚举校验（防非法字段写入），见 lawyer PENDING / 效果上下文 §2.1。"
+        },
+        "value": {
+          "description": "写入的规则内容（结构按 field 语义：trigger=触发条件 / punish=惩罚载荷 / exemptions=豁免名单 / scope=作用范围）。"
+        },
+        "overwrite": {
+          "type": "boolean",
+          "description": "是否覆盖该槽既有规则（默认 true）。"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effModifyRuleSlot": {
+      "type": "object",
+      "description": "修改规则槽：改写/追加战场级 Rules[3] 指定槽位的既有规则（服务于僭越轴改规类卡）。",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "modify_rule_slot"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "slot": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2,
+          "description": "规则槽下标（Rules[3]，0–2）。"
+        },
+        "field": {
+          "type": "string",
+          "enum": [
+            "trigger",
+            "punish",
+            "exemptions",
+            "scope"
+          ],
+          "description": "规则槽字段枚举校验（防非法字段写入），见 lawyer PENDING / 效果上下文 §2.1。"
+        },
+        "value": {
+          "description": "改写的规则内容或增量。"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "replace",
+            "append",
+            "remove"
+          ],
+          "description": "改写模式，默认 replace。"
+        },
+        "filter": {
+          "$ref": "#/$defs/unitFilter",
+          "description": "可选：仅作用于符合过滤的阵营/单位。"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
     }
   }
 }

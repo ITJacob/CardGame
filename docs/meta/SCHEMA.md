@@ -143,7 +143,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `repeat` | `steps` | 重复；`count` 可用对象形式 `{valueFrom, filter, cap}` 做运行期计算 |
 | `if` | `condition`, `then` | 条件分支，`else` 可选 |
 
-### 5.2 原语（25 个，封闭集）
+### 5.2 原语（27 个，封闭集）
 
 | type | 关键字段 | 备注 |
 |---|---|---|
@@ -170,6 +170,8 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `reveal` | `target` `scope`(to_source/to_all) `dispel` `pierceTargetability` | 揭示 / 穿透隐匿。对应手写 14 种拼写（约 26 处）。⚠️ **纯驱散隐匿仍用 `dispel(filter.category=[conceal])`**，本原语用于「显形但不驱散」「仅对施法者显形」 |
 | `grant_immunity` | `target` `against`(statusCategory[]) `element` `damageType` `charges` `duration` | 授予免疫（临时/条件性）。此前仅 `statusDef.immune`（2 处）可用，需为每种免疫单写状态 |
 | `take_control` | `target` `duration` `onExpire`(revert/die/keep) `actionPolicy`(full/attack_only/move_only) | 夺取控制权 / 阵营翻转：持续期内目标视为己方行动。此前**完全空白**（0 处），而「操控/支配」被提及 72 次 |
+| `write_rule_slot` | `slot`(0–2) `field`(trigger/punish/exemptions/scope) `value` `overwrite` | **规则槽写入（一）**：把一条规则写进战场级 `Rules[3]` 的指定槽位。与 `transfer_status` 同族（效果上下文 §2.1），服务仲裁人律令轴全卡。2026-09-18 落地 |
+| `modify_rule_slot` | `slot`(0–2) `field` `value` `mode`(replace/append/remove) `filter` | **规则槽修改（二）**：改写/追加/移除既有槽位规则，服务律师与通识者的僭越轴改规类卡。`field` 闭枚举即律师侧要求的「防非法字段写入」校验。2026-09-18 落地 |
 
 ⚠️ `damage_taken_mul`、`heal_received_mul` 这类**不是原语**，属状态修正，必须写在 `statusDefs[].modifiers` 里。
 

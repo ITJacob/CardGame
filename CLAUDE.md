@@ -49,7 +49,7 @@ docs/诡秘之主资料库/  原著设定源素材（世界体系/九大源质/�
 - **整场战斗一个聚合，根是 `Combat`**；对外契约 `CombatSetup → CombatEnded`。Unit 不是聚合根。
 - **纯函数契约：结果 = f(初始状态, 输入序列, seed)**。为此 Catalog（全部定义态 Def）是独立不可变聚合，战斗启动时快照进战斗内；随机源可播种、可快照。可复现 ≠ 禁随机。
 - **Definition + Grant 三件套**（EffectDef→EffectRef→Effect、StatusDef→StatusGrant→StatusInstance 等）：默认值只写 Def、实例值只写 Grant，Grant 不可变。
-- **11 个效果原语**：damage / heal / mount_status / modify_stat / modify_resource / move / spawn / dispel / drain + domain（界域操作）/ translocate（跨层位移）（后两个 2026-09-06 界域融入时拍板新增）。**12 个触发点封闭集**（`docs/ddd/params/执行参数.md` §2.1）。
+- **效果原语 27 个**（以 `docs/json/schema/skills.schema.json` 的 `effect.oneOf` 为权威源，`check_enum_sync.py` 对账）：damage / heal / mount_status / modify_stat / modify_resource / move / spawn / dispel / drain / domain / translocate / snapshot / restore_snapshot / modify_damage / target_override / transfer_status / echo_last_skill / gauge_shuffle / status_shuffle / modify_skill / modify_status / modify_targetability / reveal / grant_immunity / take_control / write_rule_slot / modify_rule_slot。**12 个触发点封闭集**（`docs/ddd/params/执行参数.md` §2.1）。新增原语须先在 `docs/meta/SCHEMA.md` §5.2 登记再改 schema，否则 `check_enum_sync.py` 报漂移。
 - **随机性治理 R1–R6**：伤害/目标选择零随机；概率写成 `EffectRef.condition: {kind:'chance',p}`（没有 Chance 算子），须登记、单次抽样、只用于非伤害维度；落空/阻挡语义一律用 charges 次数型状态的确定性写法（2026-09-04 裁决，R5 不开例外）。
 
 ## 编辑纪律（违反会踩坑）
