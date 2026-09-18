@@ -1,26 +1,66 @@
 # -*- coding: utf-8 -*-
-"""技能池 JSON 全库校验器。用法: python docs/tools/validate.py"""
-import json, io, sys, glob, os
+"""技能池 JSON 全库校验器。用法: python docs/tools/validate.py
 
-PRIMS = {"damage","heal","mount_status","modify_stat","modify_resource","move","spawn","dispel","drain","domain","translocate",
-         "modify_damage","transfer_status","target_override","snapshot","restore_snapshot",
-         "echo_last_skill","gauge_shuffle","status_shuffle",
-         "modify_skill","modify_status",
-         "modify_targetability","reveal","grant_immunity","take_control"}
-OPS = {"sequence","repeat","if"}
+封闭取值域以 docs/json/schema/skills.schema.json 为机器正源（运行时加载，不另抄一份）；
+ddd 参数篇 / SCHEMA.md 文本侧与机器正源的漂移由 check_enum_sync.py 对账。
+"""
+import json, io, sys, glob, os, re
+
+HERE = os.path.dirname(os.path.abspath(__file__))          # docs/tools/
+JSON_DIR = os.path.join(os.path.dirname(HERE), "json")      # docs/json/
+DEFS = json.load(io.open(os.path.join(JSON_DIR, "schema", "skills.schema.json"),
+                         encoding="utf-8"))["$defs"]
+
+def _pat_literals(defn):
+    """从 ^(a|b|动态段)$ 提取字面量分支；含正则语法的分支属动态段（$ 变量、resist 族），跳过。"""
+    pat = defn["pattern"]
+    assert pat.startswith("^(") and pat.endswith(")$"), pat
+    body, alts, depth, cur, i = pat[2:-2], [], 0, "", 0
+    while i < len(body):
+        ch = body[i]
+        if ch == "\\" and i + 1 < len(body):
+            cur += body[i + 1]; i += 2; continue
+        if ch == "(": depth += 1
+        elif ch == ")": depth -= 1
+        if ch == "|" and depth == 0: alts.append(cur); cur = ""
+        else: cur += ch
+        i += 1
+    alts.append(cur)
+    return {a for a in alts if not re.search(r"[\[\]()$*+?]", a)}
+
+def _enum(*path):
+    node = DEFS
+    for k in path: node = node[k]
+    return set(node["enum"])
+
+ELEMENTS = _pat_literals(DEFS["element"])
+STATS = _pat_literals(DEFS["effModifyStat"]["properties"]["stat"]) | {"resist:*"} | {"resist:" + e for e in ELEMENTS - {"none"}}
+SORTS = _enum("sortKey")
+REACH = _enum("card", "properties", "reach")
+ACTION_LOCKS = _enum("actionLock")
+CATS = _enum("statusCategory")
+EFFECT_TARGETS = _enum("effectTarget")
+RESOURCES = _enum("effModifyResource", "properties", "resource")
+MOVE_OPS = _enum("effMove", "properties", "op")
+DOMAIN_OPS = _enum("effDomain", "properties", "op")
+TRANS_OPS = _enum("effTranslocate", "properties", "op")
+SKILL_SELECTORS = _enum("effModifySkill", "properties", "skillRef", "properties", "selector")
+TARGET_DIRECTIONS = _enum("effModifyTargetability", "properties", "direction")
+TARGET_PIERCE = _enum("effModifyTargetability", "properties", "pierce")
+REVEAL_SCOPES = _enum("effReveal", "properties", "scope")
+CONTROL_EXPIRE = _enum("effTakeControl", "properties", "onExpire")
+CONTROL_POLICY = _enum("effTakeControl", "properties", "actionPolicy")
+PRIMS, OPS = set(), set()
+for _r in DEFS["effect"]["oneOf"]:
+    _props = DEFS[_r["$ref"].split("/")[-1]].get("properties", {})
+    if "const" in _props.get("type", {}): PRIMS.add(_props["type"]["const"])
+    if "const" in _props.get("op", {}): OPS.add(_props["op"]["const"])
+
+# 触发点：语义封闭集 12 个（ddd 执行参数 §2.1）。schema triggerEvent 结构层额外放行
+# on_status_gain，语义层强制 frameworkFlag 登记（SCHEMA.md §8）——两处不一致是有意为之。
 EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill"}
-ELEMENTS = {"fire","ice","poison","lightning","mental","physical","holy","dark","none"}
-REACH = {"melee","ranged","none"}
-SORTS = {"none","hp_asc","hp_desc","atk_asc","atk_desc","index_asc","index_desc","energy_desc","armor_desc","buff_count_desc","debuff_count_desc","gauge_asc","gauge_desc","stat_max_desc"}
-STATS = {"attack","defense","armor","rank","hp_max","energy_max","energy_regen","stamina_rate","stamina_threshold","gauge.rate","gauge.threshold","summon_cap"} | {"resist:"+e for e in ELEMENTS - {"none"}} | {"resist:*"}
-RESOURCES = {"hp","energy","shield","armor","lost","gauge.current"}
-CATS = {"dot","hot","buff","debuff","control","reactive","aura","stance","fear","retarget","link","contract","conceal","seal"}
-ACTION_LOCKS = {"move","basic_attack","skill","skip","react","channel"}
-TARGET_DIRECTIONS = {"all","enemy_targeted","enemy_aoe","ally"}
-TARGET_PIERCE = {"none","source","all"}
-REVEAL_SCOPES = {"to_source","to_all"}
-CONTROL_EXPIRE = {"revert","die","keep"}
-CONTROL_POLICY = {"full","attack_only","move_only"}
+RARITY_BY_SEQ = lambda s: "common" if s>=8 else "uncommon" if s>=6 else "rare" if s>=4 else "epic" if s>=2 else "legendary"
+
 # 命名治理：modifiers 为开放结构，同义异写严重。别名 -> 规范拼写（非阻断，仅告警引导收敛）
 MODIFIER_ALIASES = {
     "damageTakenMul": "damage_taken_mul",
@@ -36,18 +76,6 @@ MODIFIER_ALIASES = {
     "dispelableOverwrite": "dispelableOverride",
     "runtimeDispelOverride": "dispelableOverride",
 }
-SKILL_SELECTORS = {"self_last","self","target","by_id"}
-EFFECT_TARGETS = {"self","caster","target","primary_target","same_target","secondary_target","attacker","holder","status_holder",
-                  "killed_unit","all_allies","allies_except_self","all_enemies","all_other_enemies","all_units","all",
-                  "adjacent_enemy","enemy","occupant_ally","occupant_enemy","splash_adjacent","splash_behind","one_own_snare_trap"}
-MOVE_OPS = {"swap_neighbor","insert_tail_cross_lane","swap_ally","param","pull_forward","push_back","charge_forward"}
-DOMAIN_OPS = {"overlay","swap","hero"}
-TRANS_OPS = {"pull_into","banish"}
-RARITY_BY_SEQ = lambda s: "common" if s>=8 else "uncommon" if s>=6 else "rare" if s>=4 else "epic" if s>=2 else "legendary"
-
-HERE = os.path.dirname(os.path.abspath(__file__))          # docs/tools/
-JSON_DIR = os.path.join(os.path.dirname(HERE), "json")      # docs/json/
-
 def main():
     m = json.load(io.open(os.path.join(JSON_DIR,'manifest.json'), encoding='utf-8'))
     CLOSED = set(m["statusIds"].values())

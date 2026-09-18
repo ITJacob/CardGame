@@ -21,7 +21,7 @@
 | ① | 设定补全 | `docs/诡秘之主资料库/` | 补充世界体系 / 源质 / 界域 / 职业对照等原著设定素材 | 设定自洽，可被 ② 引用 |
 | ② | 机制落地 | `docs/ddd/` | 把设定里的新维度（如界域/位格/性别/吟唱）落成原语、上下文、参数取值域 | 保持"纯内容"（无拍板过程/版本变迁）；拍板结论索引进 `GENERATION_BRIEF.md` §14 |
 | ③ | 技能生成 | `docs/skill-design/` | 按 `docs/meta/GENERATION_BRIEF.md` 约束写 22 途径技能池文字稿（md 是技能源数据） | 符合 brief §1–§3 硬约束（原语/状态/单卡预算） |
-| ④ | 结构化 | `docs/json/` | md → JSON AST；**改结构先改 schema 再改数据**（规范见 `docs/meta/SCHEMA.md`）；顺带补全 ddd 机制缺口 | `docs/tools/validate_schema.py` + `docs/tools/validate.py` 双 0 错误 |
+| ④ | 结构化 | `docs/json/` | md → JSON AST；**改结构先改 schema 再改数据**（规范见 `docs/meta/SCHEMA.md`）；顺带补全 ddd 机制缺口 | 四脚本全绿：`validate_schema.py` + `validate.py` 双 0 错误；`check_enum_sync.py`（ddd/SCHEMA.md ↔ schema 枚举对账）+ `check_pool_sync.py`（md ↔ JSON 骨架对账）0 漂移 |
 | ⑤ | 质量分析 | `docs/analysis/` | `docs/tools/` 脚本统计原语用量/构筑轴分布 + 全库总览（SKILLS_OVERVIEW.md），评估技能池质量 | 产物勿手改，重跑脚本生成 |
 
 ## 当前阶段
