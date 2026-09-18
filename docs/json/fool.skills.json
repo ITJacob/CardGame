@@ -2351,6 +2351,63 @@
         },
         "fallbackSort": "hp_desc"
       }
+    },
+    {
+      "id": "skill_fool_s4_secrecy_resonance",
+      "name": "隐秘共鸣",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "诡法师",
+      "rarity": "rare",
+      "axis": "trick",
+      "flagship": false,
+      "lore": "序列4 诡法师 —— 原著「隐秘」权柄：令自身隔绝占卜、窥探与追踪；源堡之主借此抹去自身在命运与信息层面的痕迹。",
+      "flavor": "你抬手一挥，周遭的注视便尽数滑开——他们仍在看，却什么也看不见。",
+      "describe": "自身防御 +1，持续 4 tick。战场隐秘值 ≥7 时，本卡伤害 +50%。",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 1,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self",
+          "note": "⚠️D 占位：自保增益待平衡。"
+        }
+      ],
+      "tentative": true,
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_asc"
+      },
+      "tags": [
+        "隐秘",
+        "愚弄"
+      ],
+      "dimHooks": [
+        {
+          "dim": "secrecy",
+          "comparator": ">=",
+          "threshold": 7,
+          "mul": 1.5,
+          "target": "damage",
+          "filterTags": [
+            "隐秘"
+          ],
+          "note": "愚者（源堡之主）secrecy 挂钩：补齐源堡三途径缺失的 secrecy 受益。⚠️D 占位待平衡。"
+        }
+      ],
+      "conversionNotes": "2026-09-19 新增：补建 fool 侧 secrecy 维度乘区挂钩的承载卡（PENDING 提的「隐秘共鸣/愚者·权柄」在 JSON 原无对应卡）。 ⚠️ 原设计含 modify_resource(secrecy,+2) 推高隐秘值，但 schema 的 modify_resource.resource 枚举仅 hp/energy/shield/armor/lost/gauge.current，secrecy 写入无原语承载（已移除该 effect）——此为独立缺口，需新增 secrecy/order/fate_value 资源或专用原语。"
     }
   ],
   "designNote": "> **隐秘值维度（源堡系 §2.2）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。占卜家经\"愚弄/隐秘\"类效果 +1/次。层级：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（提线轴直接受益）\n> - **≥7**：友方「愚弄 / 隐秘 / conceal」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：永暗之河（不眠者·隐秘 / 收尸人·灵之线 / 战士·隐蔽）、暗影世界（囚犯·诅咒之源 / 罪犯·污秽）、混沌海（秘祈人·阴影血肉）也写入同一 `secrecy` 维度，故占卜家是主消费方之一。",
