@@ -92,8 +92,8 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `tags` | string[] | | 界域交互标签（供 RulePatch 按 tag 过滤） |
 | `gender` | `any`\|`male`\|`female` | | 性别限制 |
 | `sharedAcross` | string[] | | 共享该卡的其他途径 |
-| `conversionNotes` | string\|string[] | | md → JSON 转换备注 |
-| `frameworkFlags` | flag[] | | 框架缺口登记（见 §8） |
+| `conversionNotes` | string\|string[] | | **仅**登记 md → JSON 转换期的口径问题（未能结构化的内容、语义存疑处）。**缺失 = 转换干净，不是遗漏，无需补写**（全库约 15% 的卡无此字段，属合法状态）。⚠️ **不承载框架缺口**——后者一律走 `frameworkFlags`，见 §8 |
+| `frameworkFlags` | flag[] | | 框架缺口登记（见 §8）。与 `conversionNotes` **职责互斥**：前者管「内核尚未支持」，后者管「转换口径存疑」 |
 | `dimHooks` | dimHook[] | | 维度乘区挂钩：本卡对战场全局维度的乘区声明（见 §7） |
 
 ### 3.2 kind 分支规则（schema 用 if/then 强制）
@@ -254,8 +254,19 @@ Gate（validate.py）：`dim` 须为已注册维度、`threshold` 须在值域�
 "frameworkFlags": [{ "code": "GAUGE_RATE_AS_STAT", "note": "gauge.rate 定价无锚点（D2）", "landed": true }]
 ```
 
-`landed: false` = 仍欠账。当前 104 张卡带 flag（共 109 条）。
+`landed: false` = 仍欠账。当前 104 张卡带 flag（共 109 条），其中 **46 条为 `landed: false`**。
 ⚠️ 触发点 `on_status_gain` 也在此列——它不在 12 触发点封闭集内，使用时必须同时登记 flag。
+
+**与 `conversionNotes` 的边界（2026-09-19 明确，避免重复排查）**
+
+| | `frameworkFlags` | `conversionNotes` |
+|---|---|---|
+| 管什么 | 内核**尚未支持**的机制 | md→JSON **转换口径**存疑 |
+| 可见性 | `build_overview.py` 的「⚠️缺口」列已独立列出 | 卡面字段 |
+| 缺失含义 | 无缺口 | **转换干净，不是遗漏** |
+
+→ 因此：**不要因为某卡缺 `conversionNotes` 就去补写**，也不要把框架缺口写进 `conversionNotes`。
+当前有 5 张卡同时缺 `conversionNotes` 且带 `landed:false` flag（arbiter 权威质变 / assassin 说服 / corpse_collector 灵之同类 / monster 意外之财 / thief 窃取锚）——**这是正常状态**，其缺口已由 `frameworkFlags` 完整承载并被 `build_overview` 列出，无需也不应补写 `conversionNotes`。
 
 ## 9. 严格度约定
 
