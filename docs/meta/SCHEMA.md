@@ -197,6 +197,8 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `triggers` / `effects` | | 状态自带触发器与载荷 |
 | `charges` `maxStacks` `stackPolicy`(stack/refresh) | | 层数与次数 |
 | `disallowActions` | `actionLock[]` | **行为封锁**：单位持有该状态时禁止相应行动，`actionLock` 封闭枚举 = `move`(禁止移动) / `basic_attack`(禁止普攻) / `skill`(禁止主动技能) / `skip`(禁止跳过行动周期) / `react`(禁止反应·反击) / `channel`(禁止吟唱)。经既有 `mount_status` 挂载，可驱散、可带 duration/stacks（行为层修改三，2026-09-17 拍板） |
+| `crossPathway` | bool | 枢纽状态跨系可读标志：true 时该状态可被非本途径友方技能读取（跨系 combo 依赖此标志 + `participants` 白名单）。定义见 源质维度与跨系枢纽.md §一 |
+| `participants` | PathwayId[] | 跨系读取白名单：列出可读取本 `crossPathway` 状态的途径 id。未列入的途径即便 `crossPathway:true` 也不可读。见 §一.2 运行时读取规则 |
 | 其余 | | `lethalProtect` `immune` `suppress` `redirectRule` `thresholdTrigger` `slots` `fields` `ramp` `behaviorModifiers` 等，见 schema |
 
 跨途径**同名状态视为共享状态**：同名但定义不同时会告警。2026-09-18 已将全部 28 条清零（同机制统一签名 / 异机制改名拆分，见 §10）。

@@ -2567,6 +2567,17 @@
         },
         "note": {
           "type": "string"
+        },
+        "crossPathway": {
+          "type": "boolean",
+          "description": "枢纽状态跨系可读标志：true 时该状态可被非本途径的友方技能读取（跨系 combo 依赖此标志 + participants 白名单）。见 源质维度与跨系枢纽.md §一。"
+        },
+        "participants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "跨系读取白名单：列出可读取本 crossPathway 状态的途径 id（PathwayId）。未列入的途径即便 crossPathway:true 也不可读。见 源质维度与跨系枢纽.md §一.2。"
         }
       }
     },

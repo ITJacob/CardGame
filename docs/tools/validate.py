@@ -56,6 +56,13 @@ for _r in DEFS["effect"]["oneOf"]:
     if "const" in _props.get("type", {}): PRIMS.add(_props["type"]["const"])
     if "const" in _props.get("op", {}): OPS.add(_props["op"]["const"])
 
+# 全库合法 pathwayId（用于 crossPathway.participants 校验）
+ALL_PIDS = set()
+for _f in glob.glob(os.path.join(JSON_DIR, "*.skills.json")):
+    try: ALL_PIDS.add(json.load(io.open(_f, encoding="utf-8")).get("pathwayId"))
+    except Exception: pass
+ALL_PIDS.discard(None)
+
 # 触发点：语义封闭集 12 个（ddd 执行参数 §2.1）。schema triggerEvent 结构层额外放行
 # on_status_gain，语义层强制 frameworkFlag 登记（SCHEMA.md §8）——两处不一致是有意为之。
 EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill"}
@@ -206,6 +213,17 @@ def main():
             for sd in c.get("statusDefs") or []:
                 for cat in sd.get("category",[]) or []:
                     if cat not in CATS: errors.append("%s sd %s: bad category %s"%(cid,sd.get("id"),cat))
+                # crossPathway 枢纽白名单：crossPathway=true 必须带非空且合法的 participants
+                if sd.get("crossPathway") is True:
+                    parts = sd.get("participants")
+                    if not isinstance(parts, list) or not parts:
+                        errors.append("%s sd %s: crossPathway=true 但 participants 为空/缺失"%(cid, sd.get("id")))
+                    else:
+                        for p in parts:
+                            if p not in ALL_PIDS:
+                                errors.append("%s sd %s: participants 含非法 pathwayId '%s'"%(cid, sd.get("id"), p))
+                elif sd.get("participants"):
+                    warns.append("%s sd %s: 有 participants 但未标 crossPathway=true"%(cid, sd.get("id")))
                 for a in sd.get("disallowActions") or []:
                     if a not in ACTION_LOCKS: errors.append("%s sd %s: bad disallowActions %s"%(cid,sd.get("id"),a))
                 # 命名治理：modifiers 开放结构内的同义异写，告警引导收敛到规范拼写
