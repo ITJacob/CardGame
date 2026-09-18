@@ -871,7 +871,61 @@
               "op": "target_override",
               "anchor": "self_faction_hp_desc"
             }
-          ]
+          ],
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "stackThreshold": {
+            "stacks": 2
+          },
+          "thresholdTrigger": {
+            "stacks": 2,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": -1,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批"
+              }
+            ],
+            "note": "挑衅：煽动层数达标 → 攻击下降（PENDING 挑衅轴身份状态，复用 incited 而非不存在的 taunt）"
+          }
+        },
+        {
+          "id": "vulnerable",
+          "name": "弱点",
+          "category": [
+            "debuff"
+          ],
+          "dispelable": true,
+          "duration": 3,
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "modifiers": {
+            "damage_taken_mul": 1.2,
+            "note": "⚠️D 占位：承伤放大待平衡"
+          },
+          "stackThreshold": {
+            "stacks": 2
+          },
+          "thresholdTrigger": {
+            "stacks": 2,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "defense",
+                "value": -1,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "⚠️D 占位待审批"
+              }
+            ],
+            "note": "弱点：暴露层数达标 → 防御进一步下降。"
+          },
+          "note": "PENDING 猎人「弱点」轴身份状态，原文称『复用既有 vulnerable』，但全库实无该 statusDef（2026-09-19 核实），故补建。PENDING 乘区规则多处引用 vulnerable 概念，补建后可被跨处复用。数值 ⚠️D。"
         }
       ],
       "sharedAcross": [

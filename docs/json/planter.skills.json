@@ -1875,9 +1875,27 @@
           ],
           "dispelable": false,
           "duration": null,
-          "maxStacks": 5,
+          "maxStacks": 3,
           "stackPolicy": "stack",
-          "note": "H11 计数型母版；初始 1 档；同场战斗不重置；旧人偶不换材质（规则③）。五档参数：泥土 hp18/atk3/物理/亡语相邻 gaugeRateMul0.85(2t)；植物 hp20/atk4/毒/再生1(整场)；岩浆 hp22/atk5/火/反伤2；矿石 hp26/atk5/物理/护甲+8；金属 hp24/atk7/shock/gauge.rate+8（全档 ⚠️D，召唤物基线统一重定）"
+          "note": "H11 计数型母版；初始 1 档；同场战斗不重置；旧人偶不换材质（规则③）。五档参数：泥土 hp18/atk3/物理/亡语相邻 gaugeRateMul0.85(2t)；植物 hp20/atk4/毒/再生1(整场)；岩浆 hp22/atk5/火/反伤2；矿石 hp26/atk5/物理/护甲+8；金属 hp24/atk7/shock/gauge.rate+8（全档 ⚠️D，召唤物基线统一重定）",
+          "stackThreshold": {
+            "stacks": 2
+          },
+          "thresholdTrigger": {
+            "stacks": 2,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 1,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批"
+              }
+            ],
+            "note": "炼成：材质阶梯层数达标 → 攻击提升（PENDING 炼成轴身份状态，复用 matter_ladder）"
+          }
         }
       ],
       "tentative": true,
