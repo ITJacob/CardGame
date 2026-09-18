@@ -628,7 +628,7 @@
           ],
           "dispelable": false,
           "duration": null,
-          "maxStacks": 1,
+          "maxStacks": 3,
           "stackPolicy": "stack",
           "note": "枢纽状态（ddd 源质维度 §1.4）：归属 通识者；律师『造物豁免』读取。另见 §一『造物入规则槽』：通识者 mount_status(rule_slot,{slot:auto,content:construct})。 ｜ 造物计数口径：on_field（当前在场，离场即减）。⚠️ 口径为待拍板项：alternative=cumulative（累计产出，只增不减），二者对「造物轴阈值 payoff」的激励方向相反，需平衡期裁定。",
           "crossPathway": true,
@@ -636,7 +636,25 @@
             "savant",
             "lawyer"
           ],
-          "countMode": "on_field"
+          "countMode": "on_field",
+          "stackThreshold": {
+            "stacks": 2
+          },
+          "thresholdTrigger": {
+            "stacks": 2,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "defense",
+                "value": 1,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+              }
+            ],
+            "note": "造物：造物计数达阈值（配合 countMode=on_field）。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+          }
         }
       ],
       "tentative": true,
@@ -872,7 +890,27 @@
               }
             ]
           },
-          "note": "C6 charges（迷惑两次）+ C7 behaviorModifiers；与愚者制造幻觉同族（C7），F 组合并候选 3 归并后作同母版参数档"
+          "note": "C6 charges（迷惑两次）+ C7 behaviorModifiers；与愚者制造幻觉同族（C7），F 组合并候选 3 归并后作同母版参数档",
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "stackThreshold": {
+            "stacks": 2
+          },
+          "thresholdTrigger": {
+            "stacks": 2,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 1,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+              }
+            ],
+            "note": "星象：虚假星象层数达标 → 攻击提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+          }
         }
       ],
       "sharedAcross": [
@@ -1398,7 +1436,27 @@
             },
             "damageElementOverride": "mental"
           },
-          "note": "H5 潜行母版 + damageElementOverride（效果参数 §1.1 行 33）：期间你已是\"知识\"，伤害元素视为 mental"
+          "note": "H5 潜行母版 + damageElementOverride（效果参数 §1.1 行 33）：期间你已是\"知识\"，伤害元素视为 mental",
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "stackThreshold": {
+            "stacks": 2
+          },
+          "thresholdTrigger": {
+            "stacks": 2,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 1,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+              }
+            ],
+            "note": "知识：知识妖精层数达标 → 攻击提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+          }
         },
         {
           "id": "fae_intrusion",
@@ -1627,7 +1685,27 @@
           "participants": [
             "savant",
             "reader"
-          ]
+          ],
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "stackThreshold": {
+            "stacks": 2
+          },
+          "thresholdTrigger": {
+            "stacks": 2,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "defense",
+                "value": 1,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+              }
+            ],
+            "note": "规律：规律改写层数达标 → 防御提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+          }
         }
       ],
       "variants": [

@@ -1405,7 +1405,27 @@
               "note": "低量 1/tick 常驻（H42）"
             }
           ],
-          "note": "H42 + §1.2b 单位类型过滤（新增项 10）"
+          "note": "H42 + §1.2b 单位类型过滤（新增项 10）",
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "stackThreshold": {
+            "stacks": 2
+          },
+          "thresholdTrigger": {
+            "stacks": 2,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "defense",
+                "value": 1,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+              }
+            ],
+            "note": "生命：生命充盈层数达标 → 防御提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+          }
         }
       ],
       "sharedAcross": [
@@ -1679,7 +1699,7 @@
           ],
           "dispelable": true,
           "duration": 4,
-          "stackPolicy": "refresh",
+          "stackPolicy": "stack",
           "modifiers": {
             "heal_received_mul": 0.5
           },
@@ -1696,7 +1716,26 @@
               ]
             }
           ],
-          "note": "H2 + H21（heal_received_mul 0.5 与 F20 petrify 同源复用）；「流逝至死」是过程故做 DOT"
+          "note": "H2 + H21（heal_received_mul 0.5 与 F20 petrify 同源复用）；「流逝至死」是过程故做 DOT",
+          "maxStacks": 3,
+          "stackThreshold": {
+            "stacks": 2
+          },
+          "thresholdTrigger": {
+            "stacks": 2,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": -1,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+              }
+            ],
+            "note": "荒芜：荒芜层数达标 → 攻击下降。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+          }
         }
       ],
       "tentative": true,
@@ -1752,7 +1791,27 @@
               }
             }
           },
-          "note": "H14 outgoing + H4 filter.element（新增项 7/8，与愚者 14 同源）"
+          "note": "H14 outgoing + H4 filter.element（新增项 7/8，与愚者 14 同源）",
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "stackThreshold": {
+            "stacks": 2
+          },
+          "thresholdTrigger": {
+            "stacks": 2,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "defense",
+                "value": 1,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+              }
+            ],
+            "note": "大地：大地权柄层数达标 → 防御提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+          }
         }
       ],
       "tentative": true,

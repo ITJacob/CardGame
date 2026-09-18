@@ -71,9 +71,17 @@ def cross_check(docs, manifest, errors, warns):
                 errors.append("%s %s: id 中的序列位阶与 sequence=%s 不一致" % (name, cid, seq))
 
     # 3) 状态 id 跨途径复用：同名必须同定义，定义冲突才是错误
+    #    例外：已登记为「有意分化」的同名状态（轴身份状态本就该独立于通用副本）
+    KNOWN_STATUS_DIVERGENCE = {
+        # 刺客 charm 已升级为「魅轴身份状态」（叠层 + 阈值 payoff），
+        # 与律师【贿赂·魅惑】的 F15 纯引用副本语义不同。2026-09-19 裁定：保持分化，不拆 id。
+        ("charm", "assassin", "lawyer"),
+    }
     seen = {}
     reused = set()
+    diverged = []
     for name, d in docs.items():
+        pid = d.get("pathwayId")
         for c in d.get("cards", []):
             for sd in c.get("statusDefs") or []:
                 sid = sd.get("id")
@@ -82,15 +90,24 @@ def cross_check(docs, manifest, errors, warns):
                                    "maxStacks", "stackPolicy", "charges")},
                                  ensure_ascii=False, sort_keys=True)
                 if sid in seen:
-                    old_sig, where = seen[sid]
+                    old_sig, where, old_pid = seen[sid]
                     if old_sig != sig:
-                        warns.append("%s %s: statusDef '%s' 与 %s 同名但定义不一致（需确认是否应拆分为两个状态）" % (name, c.get("id"), sid, where))
+                        pair = tuple(sorted((pid, old_pid)))
+                        if (sid,) + pair in KNOWN_STATUS_DIVERGENCE:
+                            diverged.append("%s/%s: statusDef '%s' 与 %s 同名异义（已登记为有意分化，不告警）"
+                                            % (pid, c.get("id"), sid, where))
+                        else:
+                            warns.append("%s %s: statusDef '%s' 与 %s 同名但定义不一致（需确认是否应拆分为两个状态）" % (name, c.get("id"), sid, where))
                     else:
                         reused.add(sid)
                 else:
-                    seen[sid] = (sig, "%s/%s" % (name, c.get("id")))
+                    seen[sid] = (sig, "%s/%s" % (name, c.get("id")), pid)
     if reused:
         print("  · 跨途径复用状态 %d 个（同名同定义，视为共享状态，非错误）" % len(reused))
+    if diverged:
+        print("  · 已登记的同名异义状态 %d 处（有意分化，见 KNOWN_STATUS_DIVERGENCE）：" % len(diverged))
+        for x in diverged:
+            print("      - %s" % x)
 
     if not manifest:
         return

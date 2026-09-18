@@ -695,7 +695,27 @@
                 }
               ]
             }
-          ]
+          ],
+          "maxStacks": 3,
+          "stackPolicy": "stack",
+          "stackThreshold": {
+            "stacks": 2
+          },
+          "thresholdTrigger": {
+            "stacks": 2,
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 1,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+              }
+            ],
+            "note": "火焰：附魔层数达标 → 攻击提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+          }
         }
       ],
       "tentative": true,
@@ -1339,16 +1359,24 @@
             "planter"
           ],
           "thresholdTrigger": {
-            "stacks": 4,
+            "stacks": 3,
             "effects": [
               {
-                "type": "mount_status",
-                "statusId": "massing_ascend",
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 1,
+                "mode": "delta",
                 "duration": null,
-                "note": "存活友军达阈值（⚠️D=4）触发集众质变"
+                "target": "self",
+                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
               }
             ],
-            "note": "集众团队资源池（编队参数 §1.1b）：随存活友军累积，达阈值触发质变。阈值 ⚠️D 待平衡。"
+            "note": "集众：存活友军累积达阈值（已有 thresholdTrigger，此处补叠层口径）。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+          },
+          "maxStacks": 4,
+          "stackPolicy": "stack",
+          "stackThreshold": {
+            "stacks": 3
           }
         },
         {
