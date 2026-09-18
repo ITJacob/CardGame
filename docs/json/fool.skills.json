@@ -1671,6 +1671,16 @@
       "conversionNotes": [
         "G6 已修正自推条错误（+20 永远指向友军 secondary，绝不指向自身）。",
         "翻译/语义：沿用 v0.1 双向（G6 修正自推条）。观诡轴旗舰：读 `预兆≥3` 放大拖后。与【占星术】差异：占星单向便宜，命运干扰双向贵。"
+      ],
+      "dimHooks": [
+        {
+          "dim": "fate_value",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.3,
+          "target": "damage",
+          "note": "维度乘区挂钩占位（⚠️D 待平衡）：board.fate_value≥+5 赐福×1.3"
+        }
       ]
     },
     {
@@ -2139,6 +2149,16 @@
       "conversionNotes": [
         "锚定自己（不被推动）+ 锚定敌人（死了就是死了），是本项目唯一的反复活手段；与灵之虫/奇迹的复活对冲优先级链已定（编队上下文 §十）。",
         "翻译/语义：锚定自己(不被推)+锚定敌人(死了即死)。依赖 gaugeReductionImmune(本稿新增项10)+revive_blocked(本稿新增项11)。"
+      ],
+      "dimHooks": [
+        {
+          "dim": "fate_value",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.3,
+          "target": "damage",
+          "note": "维度乘区挂钩占位（⚠️D 待平衡）：board.fate_value≥+5 赐福×1.3"
+        }
       ]
     },
     {

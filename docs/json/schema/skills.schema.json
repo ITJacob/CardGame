@@ -306,6 +306,13 @@
             "$ref": "#/$defs/frameworkFlag"
           },
           "description": "框架缺口登记：卡片用到但 DDD 内核尚未正式支持的机制。"
+        },
+        "dimHooks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dimHook"
+          },
+          "description": "本卡对战场全局维度的乘区挂钩列表（维度乘区挂钩机制，见 docs/ddd/params/源质维度与跨系枢纽.md §二）。"
         }
       },
       "allOf": [
@@ -346,6 +353,71 @@
           }
         }
       ]
+    },
+    "dimHook": {
+      "type": "object",
+      "description": "卡面对战场全局维度的乘区挂钩：当 board.<dim> 满足 comparator threshold 时，本卡相关结算乘区乘 mul。维度定义见 docs/ddd/params/源质维度与跨系枢纽.md §二，阈值档位见 docs/ddd/params/数值标定基准.md §五。",
+      "required": [
+        "dim",
+        "comparator",
+        "threshold",
+        "mul"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "dim": {
+          "type": "string",
+          "enum": [
+            "secrecy",
+            "order",
+            "fate_value"
+          ],
+          "description": "挂钩的战场维度：隐秘值 / 秩序度 / 命运值。"
+        },
+        "comparator": {
+          "type": "string",
+          "enum": [
+            ">=",
+            "<=",
+            ">",
+            "<",
+            "=="
+          ],
+          "description": "阈值比较符，默认 >="
+        },
+        "threshold": {
+          "type": "number",
+          "description": "触发阈值；须在维度取值域内（secrecy/order ∈ [0,10]、fate_value ∈ [−10,10]）。"
+        },
+        "mul": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "乘区系数（⚠️D 平衡占位）；单卡建议 0.8–1.5，超限需 note 说明（见 数值标定基准 §五）。"
+        },
+        "target": {
+          "type": "string",
+          "enum": [
+            "damage",
+            "damage_taken",
+            "heal",
+            "resource",
+            "rule_strength",
+            "all"
+          ],
+          "description": "乘区作用目标；默认 damage。rule_strength 用于秩序度类规则强度系数。"
+        },
+        "filterTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "仅当本卡带这些 tag 之一才生效（如 secrecy 要求 tag∈{愚弄,隐秘,conceal}）。"
+        },
+        "note": {
+          "type": "string",
+          "description": "乘区来源/口径说明，mul 超限或非常规时必填。"
+        }
+      }
     },
     "cost": {
       "type": "object",

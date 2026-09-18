@@ -94,6 +94,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `sharedAcross` | string[] | | 共享该卡的其他途径 |
 | `conversionNotes` | string\|string[] | | md → JSON 转换备注 |
 | `frameworkFlags` | flag[] | | 框架缺口登记（见 §8） |
+| `dimHooks` | dimHook[] | | 维度乘区挂钩：本卡对战场全局维度的乘区声明（见 §7） |
 
 ### 3.2 kind 分支规则（schema 用 if/then 强制）
 
@@ -210,6 +211,34 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 - `zoneDef`：`{ id, kind(hazard|blessing), trigger, affects, effects, duration }`
   - `effects` 元素有两种形态：直接是 effect，或 `{ side, payload: effect }` 按阵营分组
 - `unitDef`：`{ id, name, hpRatio, atkRatio, reach, element, tags, triggers }`
+
+## 7. 维度乘区挂钩（dimHook）
+
+战场全局标量维度（`secrecy` 隐秘值 / `order` 秩序度 / `fate_value` 命运值）的累积与阈值判定定义在 `docs/ddd/params/源质维度与跨系枢纽.md` §二，阈值档位对齐 `docs/ddd/params/数值标定基准.md` §五（隐秘值 4/7/10、秩序度 3/7/10、命运值 ±5/±8/±10）。`dimHook` 把这个「维度→乘区」的挂钩**结构化到卡面**，供结算层（效果上下文）在 `board.<dim>` 达阈值时对本卡相关结算乘 `mul`。
+
+```json
+"dimHooks": [{
+  "dim": "secrecy", "comparator": ">=", "threshold": 7,
+  "mul": 1.5, "target": "damage", "filterTags": ["隐秘"],
+  "note": "≥7 隐秘类 +50%（⚠️D 平衡占位）"
+}]
+```
+
+字段：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `dim` | `secrecy`\|`order`\|`fate_value` | 挂钩的战场维度（闭枚举） |
+| `comparator` | `>=`\|`<=`\|`>`\|`<`\|`==` | 阈值比较符，默认 `>=` |
+| `threshold` | number | 触发阈值，须在维度值域内（secrecy/order ∈ [0,10]、fate_value ∈ [−10,10]） |
+| `mul` | number>0 | 乘区系数（⚠️D 占位）；单卡建议 0.8–1.5，超限需 `note` 说明 |
+| `target` | `damage`\|`damage_taken`\|`heal`\|`resource`\|`rule_strength`\|`all` | 乘区作用目标，默认 `damage` |
+| `filterTags` | string[] | 仅当本卡带其一 tag 才生效（如 secrecy 要求 tag∈{愚弄,隐秘,conceal}） |
+| `note` | string | 口径说明，mul 超限或非常规时必填 |
+
+Gate（validate.py）：`dim` 须为已注册维度、`threshold` 须在值域内、`mul>0`；`mul` 越出 0.8–1.5 给出非阻断告警（平衡期再收紧）。
+
+> 维度本身是全局标量，不在此 per-pathway schema 内重复定义；本字段只声明「哪张卡在哪维度达阈值时放大什么」。维度注册表（range/tier）以 ddd 散文为权威源。
 
 ## 8. 框架缺口（frameworkFlags）
 

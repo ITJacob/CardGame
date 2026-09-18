@@ -63,6 +63,13 @@ for _f in glob.glob(os.path.join(JSON_DIR, "*.skills.json")):
     except Exception: pass
 ALL_PIDS.discard(None)
 
+# 维度乘区挂钩（dimHook）的维度值域：与 docs/ddd/params/源质维度与跨系枢纽.md §二 对齐
+DIM_RANGES = {
+    "secrecy": (0, 10),
+    "order": (0, 10),
+    "fate_value": (-10, 10),
+}
+
 # 触发点：语义封闭集 12 个（ddd 执行参数 §2.1）。schema triggerEvent 结构层额外放行
 # on_status_gain，语义层强制 frameworkFlag 登记（SCHEMA.md §8）——两处不一致是有意为之。
 EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill"}
@@ -240,6 +247,21 @@ def main():
             flat = json.dumps(c.get("effects",[]), ensure_ascii=False)
             if ('"domain"' in flat or '"translocate"' in flat) and '"lost"' not in flat:
                 errors.append("%s: domain/translocate without lost rent"%cid)
+            # 维度乘区挂钩 Gate：dim 须为已注册维度、threshold 在值域内、mul>0；mul 越界给非阻断告警
+            for h in (c.get("dimHooks") or []):
+                dim = h.get("dim")
+                if dim not in DIM_RANGES:
+                    errors.append("%s: dimHooks.dim '%s' 非法（须为 secrecy/order/fate_value）"%(cid, dim))
+                    continue
+                lo, hi = DIM_RANGES[dim]
+                th = h.get("threshold")
+                if not isinstance(th, (int, float)) or th < lo or th > hi:
+                    errors.append("%s: dimHooks threshold %s 越出 %s 值域 [%s,%s]"%(cid, th, dim, lo, hi))
+                mu = h.get("mul")
+                if not isinstance(mu, (int, float)) or mu <= 0:
+                    errors.append("%s: dimHooks mul %s 须为正"%(cid, mu))
+                elif mu < 0.8 or mu > 1.5:
+                    warns.append("%s: dimHooks mul %s 越出建议区间 0.8–1.5（平衡期需 note 说明）"%(cid, mu))
         # ---- sampleBuilds 交叉校验：示例卡组可信化 ----
         # 每个 Build 须 4 主动 + 4 被动，所列卡名必须存在于本文件 cards[]，
         # 且 actives 只能指 kind=active 的卡、passives 只能指 kind=passive 的卡。

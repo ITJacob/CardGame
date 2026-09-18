@@ -1591,6 +1591,16 @@
       "conversionNotes": [
         "退化方案：两条 modify_resource 各推差值一半，仍是双向但丢掉精确互换语义",
         "翻译/语义：时间轴旗舰 enabler+payload：互换未来+写 `时差`。依赖 swap_resource(新算子)。⚠️D。"
+      ],
+      "dimHooks": [
+        {
+          "dim": "fate_value",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.3,
+          "target": "damage",
+          "note": "维度乘区挂钩占位（⚠️D 待平衡）：board.fate_value≥+5 赐福×1.3"
+        }
       ]
     },
     {
@@ -1741,7 +1751,17 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：钻漏洞=专打即将出手者+写时差。依赖 TargetGaugeAbove 谓词(F52)。⚠️D。"
+      "conversionNotes": "翻译/语义：钻漏洞=专打即将出手者+写时差。依赖 TargetGaugeAbove 谓词(F52)。⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "fate_value",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.3,
+          "target": "damage",
+          "note": "维度乘区挂钩占位（⚠️D 待平衡）：board.fate_value≥+5 赐福×1.3"
+        }
+      ]
     },
     {
       "id": "skill_thief_s1_steal_time",
