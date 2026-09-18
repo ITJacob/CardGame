@@ -1,5 +1,32 @@
 # 技能池遗留与待办汇总
 
+## 零、落地状态总览（2026-09-19 更新）
+
+> 本节记录 2026-09-18/19 的框架落地进度。**条目正文仍是原始需求描述，未删改**；已落地者在本节登记并在条目前标 ✅。
+
+| 机制 | 状态 | commit |
+|---|---|---|
+| `crossPathway` 枢纽状态白名单 | ✅ 已落地（35 实例 / 32 去重） | 7a35e82 |
+| 补建 10 个跨系枢纽 statusDef（净化/黑焰/污秽/放牧槽/星界锚/重组/造物/兽群/奴役/丰饶）+ nightfall 标记 | ✅ 已落地 | a357dce |
+| 维度乘区挂钩 dimHook（secrecy/order/fate_value，19 张受益卡） | ✅ 已落地（数值 ⚠️D） | a231938 |
+| 规则槽读写算子 `write_rule_slot`/`modify_rule_slot` + field 闭枚举 | ✅ 机制已落；⚠️ **卡面迁移待做** | 3dac5dc |
+| 囚犯诅咒链接网络母版 + 异类谱系栈 `lineage_stack` | ✅ 已落地（数值 ⚠️D） | 91add5e |
+| 零散项：gender 约束 / 刻印→深渊召唤映射 / 造物计数口径 / 集众阈值 / on_deal_damage 元素过滤 / info 母版标注 | ✅ 已落地 | 9ff421a |
+| 5 途径 enabler→payoff 轴身份状态接线（17 处） | ✅ 已落地；⚠️ 3 处缺口 + 数值 ⚠️D | e891380, 15b414c |
+| 月相轮转 / unitType / DomainDef 三件套 | ✅ **经核早已支持且数据在用**，非缺口 | —（核查结论） |
+
+**仍未落地（真缺口）**
+- `streamlined_cast` 费用修正 —— 属 **progression 层**，不在本「纯战斗 DDD」仓库 scope，待定归属。
+- `规则槽 Rules[3]` 标 `crossPathway` + 参与途径白名单（失序之国/通识者）。
+- `domain_astral_field` / `domain_dominion` / `domain_civilization` 三个 DomainDef 三件套。
+- 罪犯「黑焰/丰饶 combo 读取介质」（跨系非 5 枢纽）登记。
+- enabler→payoff 3 处缺口：hunter `vulnerable`(弱点) / `taunt`(挑衅)、planter 炼成轴——均无对应 statusDef。
+- 规则槽**卡面迁移**（arbiter/lawyer/savant 改规卡仍用旧 `fields`/`slots`，未迁到新算子）。
+- 诅咒链接「三层同一母版」只接通 1/3（序列4 反噬）；序列3【无反噬之咒】`selfKeep=false`、序列0【万咒加身】未接。
+
+**待拍板口径**：造物计数口径（暂定 `on_field` vs `cumulative`）／spectator 元素过滤清单（暂 `mental`）／phantom 途径 占卜家·母巢（建文件还是修订 ddd）。
+
+
 > 2026-09-18 自技能稿 md（docs/archive/skill-design_v0.3/）迁移：§五 本稿遗留 + §六 框架改动未落项（🟡/🟢）。
 > ✅ 已落项与 §四 自检为过程产物，不迁移（见归档原稿与 git 历史）。
 
@@ -12,8 +39,8 @@
 - **【秘偶协奏】** 与愚者【秘偶大师·改】为对偶卡，需汇总阶段确认 `完全秘偶` 继承 `conceal` 的引擎承载。
 ---
 ### 框架改动未落项
-- 🟡 **`secrecy` 维度乘区挂钩**（≥7 隐秘类+50%） → 待补：结算读 `board.secrecy`（服务于 隐秘共鸣 / 隐秘权柄）
-- 🟢 **`crossPathway` 枢纽状态白名单**（`puppet_string` / `conceal` / `secrecy`） → StatusDef 新增标志 + 参与途径白名单（服务于 跨系 combo（§三））
+- 🟡 **`secrecy` 维度乘区挂钩**（≥7 隐秘类+50%） → 待补：结算读 `board.secrecy`（服务于 隐秘共鸣 / 隐秘权柄）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟢 **`crossPathway` 枢纽状态白名单**（`puppet_string` / `conceal` / `secrecy`） → StatusDef 新增标志 + 参与途径白名单（服务于 跨系 combo（§三））  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 仲裁人（arbiter）
 
@@ -26,7 +53,7 @@
 ---
 ### 框架改动未落项
 - 🟡 **`秩序度 Order`（0–10 战场量表）** → 与 `secrecy`/`fate` 同族；阈值 7/3/10/0 效果照搬系设定 §2.3（服务于 立规/审判之剑/底层规则/律师压低）
-- 🟢 `规则槽` 读写算子 `write_rule_slot` / `modify_rule_slot` → 效果上下文 §2.1（与 `transfer_status` 同族）（服务于 律令轴全卡）
+- 🟢 `规则槽` 读写算子 `write_rule_slot` / `modify_rule_slot` → 效果上下文 §2.1（与 `transfer_status` 同族）（服务于 律令轴全卡）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 偷盗者（thief）
 
@@ -37,7 +64,7 @@
 - **本途径零概率 / 零 on_turn_start / 零 G8 违例**：全 33 卡无 `condition:chance`；被动全挂 `on_battle_start`；唯一 `move` 是窃取距离的 `push_back`（锁 from.faction）。
 ---
 ### 框架改动未落项
-- 🟡 `secrecy` 维度乘区挂钩（≥4 提线+层 / ≥7 隐秘类+50% / =10 源堡共鸣） → 待补：结算读 `board.secrecy`（服务于 隐秘值维度）
+- 🟡 `secrecy` 维度乘区挂钩（≥4 提线+层 / ≥7 隐秘类+50% / =10 源堡共鸣） → 待补：结算读 `board.secrecy`（服务于 隐秘值维度）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 刺客（assassin）
 
@@ -48,11 +75,11 @@
 - **ID 冲突**：`petrification`（石化）与 F20 `petrify`（通识者·结晶）命名撞车，汇总需拍板是否合并。
 ---
 ### 框架改动未落项
-- 🟢 轴身份状态 `形`/`魅惑`/`镜`/`疫灾` → 状态表（复用 stealth/charm/mirror_substitute/disease）（服务于 四轴 enabler/payoff）
-- 🟡 `替身`(`mirror_substitute`/`puppet_string`) 标 `crossPathway:true`（三系枢纽，参与 刺客/占卜家/律师） → StatusDef 白名单（服务于 镜轴全卡 / 镜面替身·改）
-- 🟡 `命运`(`doom`) 标 `crossPathway:true`（参与 刺客/怪物） → StatusDef 白名单（服务于 命运诅咒 / 末日）
-- 🟡 `亡灵` 读接口（黑焰→燃灵） → **改走类型标签体系**：`unitType ∈ {UNDEAD,SPIRIT}` / `tags ∋ 'undead'`（2026-09-13 裁定，非 StatusDef）；`奴役` 仍为 StatusDef 白名单（服务于 死灵黑焰）
-- 🟢 性别 女 约束（序列4+ 高位 + 女巫之形） → Unit.gender + 获取期过滤（服务于 魅/镜/疫 高位谱系）
+- 🟢 轴身份状态 `形`/`魅惑`/`镜`/`疫灾` → 状态表（复用 stealth/charm/mirror_substitute/disease）（服务于 四轴 enabler/payoff）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟡 `替身`(`mirror_substitute`/`puppet_string`) 标 `crossPathway:true`（三系枢纽，参与 刺客/占卜家/律师） → StatusDef 白名单（服务于 镜轴全卡 / 镜面替身·改）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟡 `命运`(`doom`) 标 `crossPathway:true`（参与 刺客/怪物） → StatusDef 白名单（服务于 命运诅咒 / 末日）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟡 `亡灵` 读接口（黑焰→燃灵） → **改走类型标签体系**：`unitType ∈ {UNDEAD,SPIRIT}` / `tags ∋ 'undead'`（2026-09-13 裁定，非 StatusDef）；`奴役` 仍为 StatusDef 白名单（服务于 死灵黑焰）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟢 性别 女 约束（序列4+ 高位 + 女巫之形） → Unit.gender + 获取期过滤（服务于 魅/镜/疫 高位谱系）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 囚犯（prisoner）
 
@@ -64,8 +91,8 @@
 - **未单独成技能的原著能力**（有意省略）：序列6 控制幽魂（并入【唤醒死尸】升级）、序列5 镜面闪现/自由出入灵界（仅文案 flavor）、序列3 沉默具体形式（推导为【长久沉默】）。
 ---
 ### 框架改动未落项
-- 🟡 **`诅咒链接` 网络母版**（可堆叠：链接 N 目标 + 全网分摊系数 `1+0.2×(N−1)` + 源头转嫁比例 selfKeep） → 编队参数 §1.1b（替换 v0.2 单向 `curse_link`，H28）（服务于 诅咒之源/无反噬之咒/万咒加身/厄缚汲取）
-- 🟡 **异类谱系栈 `lineage_stack`**（`lineage_push` / `lineage_depth` / `演出回放`） → 编队参数 §2.4（服务于 狼人化/灵体化/演出/异类之王/转化）
+- 🟡 **`诅咒链接` 网络母版**（可堆叠：链接 N 目标 + 全网分摊系数 `1+0.2×(N−1)` + 源头转嫁比例 selfKeep） → 编队参数 §1.1b（替换 v0.2 单向 `curse_link`，H28）（服务于 诅咒之源/无反噬之咒/万咒加身/厄缚汲取）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟡 **异类谱系栈 `lineage_stack`**（`lineage_push` / `lineage_depth` / `演出回放`） → 编队参数 §2.4（服务于 狼人化/灵体化/演出/异类之王/转化）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 学徒（apprentice）
 
@@ -76,7 +103,7 @@
 - **记录轴退化上线路径**：状态数据槽（H33）已落 ddd，可按完整语义上线。
 ---
 ### 框架改动未落项
-- 🟡 `secrecy` 维度乘区挂钩（≥4 提线+层 / ≥7 隐秘类+50% / =10 源堡共鸣） → 待补：结算读 `board.secrecy`（服务于 隐秘值维度）
+- 🟡 `secrecy` 维度乘区挂钩（≥4 提线+层 / ≥7 隐秘类+50% / =10 源堡共鸣） → 待补：结算读 `board.secrecy`（服务于 隐秘值维度）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 律师（lawyer）
 
@@ -102,8 +129,8 @@
 - **厄运作为扩展枢纽**：总览 §6 五大枢纽未列 `厄运`，本稿按光之钥系 §2.3 将其列为扩展 `crossPathway:true`，是否并入五大枢纽待拍板。
 ---
 ### 框架改动未落项
-- 🟡 **`fate_value` 维度乘区挂钩**（≥+5 赐福×1.3 / 敌厄运×2） → 待补：结算读 `board.fate_value`（服务于 命运轴阈值 payoff）
-- 🟢 **`厄运` 是否并入五大枢纽状态** → StatusDef 白名单扩展（服务于 跨系厄运组合）
+- 🟡 **`fate_value` 维度乘区挂钩**（≥+5 赐福×1.3 / 敌厄运×2） → 待补：结算读 `board.fate_value`（服务于 命运轴阈值 payoff）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟢 **`厄运` 是否并入五大枢纽状态** → StatusDef 白名单扩展（服务于 跨系厄运组合）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 愚者（fool）
 
@@ -115,8 +142,8 @@
 - **【诡秘之境】Zone 落位**是否受 G8 约束需拍板（G8 仅约束单位位移，Zone 应豁免）。
 ---
 ### 框架改动未落项
-- 🟡 **`secrecy` 维度乘区挂钩**（≥7 隐秘类+50%） → 待补：战场参数/效果结算读 `board.secrecy`（服务于 隐秘共鸣/愚者·权柄）
-- 🟢 **`crossPathway` 枢纽状态白名单**（`puppet_string`/`flesh_parasite`/`替身`/`混乱`/`恶欲值`/`命运`） → StatusDef 新增标志 + 参与途径白名单（服务于 跨系 combo（§三））
+- 🟡 **`secrecy` 维度乘区挂钩**（≥7 隐秘类+50%） → 待补：战场参数/效果结算读 `board.secrecy`（服务于 隐秘共鸣/愚者·权柄）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟢 **`crossPathway` 枢纽状态白名单**（`puppet_string`/`flesh_parasite`/`替身`/`混乱`/`恶欲值`/`命运`） → StatusDef 新增标志 + 参与途径白名单（服务于 跨系 combo（§三））  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 战士（warrior）
 
@@ -127,8 +154,8 @@
 - **【借光隐藏】** 需汇总阶段确认 `untrackable`（不可被定位+占卜失效）的引擎承载，依赖占卜家侧 `conceal/secrecy` 枢纽状态跨源质落地。
 ---
 ### 框架改动未落项
-- 🟡 **`secrecy` 维度乘区挂钩**（≥7 隐秘类+50%） → 待补：结算读 `board.secrecy`（服务于 隐秘之影·承接 / 借光隐藏）
-- 🟢 **`crossPathway` 枢纽状态白名单**（`conceal/secrecy` / `guard`） → StatusDef 新增标志 + 参与途径白名单（服务于 跨系 combo（§三））
+- 🟡 **`secrecy` 维度乘区挂钩**（≥7 隐秘类+50%） → 待补：结算读 `board.secrecy`（服务于 隐秘之影·承接 / 借光隐藏）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟢 **`crossPathway` 枢纽状态白名单**（`conceal/secrecy` / `guard`） → StatusDef 新增标志 + 参与途径白名单（服务于 跨系 combo（§三））  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 收尸人（corpse_collector）
 
@@ -139,9 +166,9 @@
 - **【灵之线嫁接】** 与愚者【秘偶大师·改】为对偶卡，需汇总阶段确认 `完全秘偶` 继承 `undead` 的引擎承载；【亡灵净抗】需 `purify` 枢纽状态跨源质落地（混沌海侧）。
 ---
 ### 框架改动未落项
-- 🟡 **`secrecy` 维度乘区挂钩**（≥7 隐秘类+50%） → 待补：结算读 `board.secrecy`（服务于 魂枢·隐秘 / 冥界之门）
-- 🟢 **`crossPathway` 枢纽状态白名单**（`puppet_string` / `purify` / `black_flame`） → StatusDef 新增标志 + 参与途径白名单（服务于 跨系 combo（§三））
-- 🟡 **`purify` / `black_flame` 枢纽注册**（混沌海/灾祸之城侧） → 待对方系落 StatusDef（服务于 亡灵净抗 / 亡灵助燃）
+- 🟡 **`secrecy` 维度乘区挂钩**（≥7 隐秘类+50%） → 待补：结算读 `board.secrecy`（服务于 魂枢·隐秘 / 冥界之门）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟢 **`crossPathway` 枢纽状态白名单**（`puppet_string` / `purify` / `black_flame`） → StatusDef 新增标志 + 参与途径白名单（服务于 跨系 combo（§三））  → ✅ 已落地（见 §零，2026-09-19）
+- 🟡 **`purify` / `black_flame` 枢纽注册**（混沌海/灾祸之城侧） → 待对方系落 StatusDef（服务于 亡灵净抗 / 亡灵助燃）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 歌颂者（chanter）
 
@@ -153,7 +180,7 @@
 - **跨系 `undead`/`spirit`/`grazing_slot` 注册**：需 StatusDef 补 `crossPathway:true` 与参与途径白名单。
 ---
 ### 框架改动未落项
-- 🟢 `purify`/`grazing_slot` 标 `crossPathway:true`；`undead`/`spirit` **改走类型标签体系**（2026-09-13 裁定，非 StatusDef） → StatusDef 白名单扩展 + 类型标签（服务于 圣光克死灵/放牧·净化借能）
+- 🟢 `purify`/`grazing_slot` 标 `crossPathway:true`；`undead`/`spirit` **改走类型标签体系**（2026-09-13 裁定，非 StatusDef） → StatusDef 白名单扩展 + 类型标签（服务于 圣光克死灵/放牧·净化借能）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 水手（sailor）
 
@@ -166,7 +193,7 @@
 - **全稿零 heal / 零概率 / 零 on_turn_start**。
 ---
 ### 框架改动未落项
-- 🟢 `crossPathway` 枢纽状态白名单（`grazed_soul`/`净化`/`亡灵`/`提线木偶`/`替身`/`混乱`/`恶欲值`/`命运`） → StatusDef 新增标志+参与途径（服务于 跨系 combo（§三））
+- 🟢 `crossPathway` 枢纽状态白名单（`grazed_soul`/`净化`/`亡灵`/`提线木偶`/`替身`/`混乱`/`恶欲值`/`命运`） → StatusDef 新增标志+参与途径（服务于 跨系 combo（§三））  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 猎人（hunter）
 
@@ -177,10 +204,10 @@
 - **操纵天气**：v0.3 主题界域仅列【战争迷雾】；序列2 天气术士「操纵天气」可同框架补为第二张界域牌（与战争迷雾共用 ZoneDef 母版，换元素/载荷），留待汇总。
 ---
 ### 框架改动未落项
-- 🟢 轴身份状态 `弱点`/`挑衅`/`火焰`/`集众` → 状态表（复用既有 vulnerable/taunt/burn+massing）（服务于 四轴 enabler/payoff）
-- 🟢 `massing` 团队资源池（随存活友军累积 + 阈值触发） → 编队参数 §1.1b + thresholdTrigger（服务于 集众轴全卡）
-- 🟡 `beast_swarm` 标 `crossPathway:true`（兽群枢纽，参与 母巢/猎人） → StatusDef 白名单（服务于 集众·兽群）
-- 🟡 `亡灵/奴役` 读接口（猎人火焰→燃灵） → StatusDef 白名单（服务于 地狱之火·亡者）
+- 🟢 轴身份状态 `弱点`/`挑衅`/`火焰`/`集众` → 状态表（复用既有 vulnerable/taunt/burn+massing）（服务于 四轴 enabler/payoff）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟢 `massing` 团队资源池（随存活友军累积 + 阈值触发） → 编队参数 §1.1b + thresholdTrigger（服务于 集众轴全卡）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟡 `beast_swarm` 标 `crossPathway:true`（兽群枢纽，参与 母巢/猎人） → StatusDef 白名单（服务于 集众·兽群）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟡 `亡灵/奴役` 读接口（猎人火焰→燃灵） → StatusDef 白名单（服务于 地狱之火·亡者）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 秘祈人（supplicant）
 
@@ -192,7 +219,7 @@
 - **放牧槽读取边界**：`grazed_soul` 逐层记录的 `unitDef` 字段需与【驱使灵魂】外放模板对齐；跨途径读取（阅读者【解析·跨系共鸣】、水手【放牧·借雷】）依赖 `crossPathway:true` 白名单落地。
 ---
 ### 框架改动未落项
-- 🟢 `crossPathway` 枢纽状态白名单（`grazed_soul`/`flesh_parasite`/`提线木偶`/`替身`/`混乱`/`恶欲值`/`命运`） → StatusDef 新增标志+参与途径（服务于 跨系 combo（§三））
+- 🟢 `crossPathway` 枢纽状态白名单（`grazed_soul`/`flesh_parasite`/`提线木偶`/`替身`/`混乱`/`恶欲值`/`命运`） → StatusDef 新增标志+参与途径（服务于 跨系 combo（§三））  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 窥秘人（pryer）
 
@@ -203,11 +230,11 @@
 - **跨系桥依赖**：`命运`(光之钥)、`重组`(占卜家)、`星界锚`(学徒) 需全库批量落地 `crossPathway:true`。
 ---
 ### 框架改动未落项
-- 🟡 `窥秘`/`法术`/`星象`/`信息` 四身份状态（enabler→payoff 钩子） → 编队参数 §2.4 H11 + 状态表（服务于 四轴引擎）
-- 🟡 `命运(fate)` 标 `crossPathway:true` + 参与途径白名单（光之钥/窥秘人） → StatusDef 新增标志（服务于 命运删除 combo）
-- 🟡 `重组(reforge)` / `星界锚(astral_anchor)` 跨源质可读白名单 → StatusDef crossPathway（服务于 篡改·信息 / 星光囚笼·改 combo）
+- 🟡 `窥秘`/`法术`/`星象`/`信息` 四身份状态（enabler→payoff 钩子） → 编队参数 §2.4 H11 + 状态表（服务于 四轴引擎）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟡 `命运(fate)` 标 `crossPathway:true` + 参与途径白名单（光之钥/窥秘人） → StatusDef 新增标志（服务于 命运删除 combo）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟡 `重组(reforge)` / `星界锚(astral_anchor)` 跨源质可读白名单 → StatusDef crossPathway（服务于 篡改·信息 / 星光囚笼·改 combo）  → ✅ 已落地（见 §零，2026-09-19）
 - 🟡 域 `domain_astral_field` DomainDef 三件套 → 战场参数 §1.2（服务于 星象领域）
-- 🟢 `信息(info)` 形态母版（不可选中+减伤+攻击破除，参数化） → 编队参数 §2.4 H5 潜行母版（服务于 信息化 / 信息轴）
+- 🟢 `信息(info)` 形态母版（不可选中+减伤+攻击破除，参数化） → 编队参数 §2.4 H5 潜行母版（服务于 信息化 / 信息轴）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 罪犯（criminal）
 
@@ -218,7 +245,7 @@
 - **未完全落地原著能力**（有意省略）：序列9"身心处于恶欲统治下"未做理智/失控系统；序列7"恶魔知识"只以仪式表达；序列0"异类"权柄仅列【深渊即我】下位 flavor。
 ---
 ### 框架改动未落项
-- 🟡 **`仪式刻印`→`深渊召唤` 映射表**（刻印层数 N → 恶魔 强度/数量 = f(N)） → 召唤物基线（H1）+ spawn.companionBuff（服务于 恶魔仪式/深渊召唤（刻印链轴心））
+- 🟡 **`仪式刻印`→`深渊召唤` 映射表**（刻印层数 N → 恶魔 强度/数量 = f(N)） → 召唤物基线（H1）+ spawn.companionBuff（服务于 恶魔仪式/深渊召唤（刻印链轴心））  → ✅ 已落地（见 §零，2026-09-19）
 - 🟡 黑焰/丰饶 combo 读取介质（跨系，非 5 枢纽）登记 → §三 跨组线（服务于 双焰交汇/荒芜侵蚀·改）
 
 ## 耕种者（planter）
@@ -244,8 +271,8 @@
 - **集众/夜幕 状态跨途径可读**需随全库落地（StatusDef `crossPathway:true`）。
 ---
 ### 框架改动未落项
-- 🟢 **`月相` 5 相轮转状态 `moon_phase`（formGroup）扩展为 enabler→payoff 引擎** → 编队参数 §1.1b `formGroup/nextPhase/cycleTicks` + 状态分支乘区（服务于 月相轴全卡）
-- 🟢 **各月相加成乘区**（银月药剂×2/满月heal×2/血月drain×1.2/红月黑暗×1.3/缺月受伤×0.8） → 效果结算读 `月相` 分支（服务于 腐蚀之爪/预服药水/召唤之门/黑暗凝视/月光化）
+- 🟢 **`月相` 5 相轮转状态 `moon_phase`（formGroup）扩展为 enabler→payoff 引擎** → 编队参数 §1.1b `formGroup/nextPhase/cycleTicks` + 状态分支乘区（服务于 月相轴全卡）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟢 **各月相加成乘区**（银月药剂×2/满月heal×2/血月drain×1.2/红月黑暗×1.3/缺月受伤×0.8） → 效果结算读 `月相` 分支（服务于 腐蚀之爪/预服药水/召唤之门/黑暗凝视/月光化）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 观众（spectator）
 
@@ -256,8 +283,8 @@
 - **跨系 `omen`/`grazing_slot` 注册**：需 StatusDef 补 `crossPathway:true` 与参与途径白名单（与 6 大枢纽同批落地）。
 ---
 ### 框架改动未落项
-- 🟡 `on_deal_damage` 按元素过滤 → 共享内核参数 §三（服务于 观众·细微观察）
-- 🟢 `omen`(预兆)/`grazing_slot` 标 `crossPathway:true` → StatusDef 白名单扩展（服务于 读占卜家预兆/放牧·借能）
+- 🟡 `on_deal_damage` 按元素过滤 → 共享内核参数 §三（服务于 观众·细微观察）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟢 `omen`(预兆)/`grazing_slot` 标 `crossPathway:true` → StatusDef 白名单扩展（服务于 读占卜家预兆/放牧·借能）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 通识者（savant）
 
@@ -268,11 +295,11 @@
 - **跨系桥依赖**：`规则槽 Rules[3]` 共享棋盘（失序之国）、`规律` 跨源质同源（阅读者）需全库批量落地 `crossPathway:true`。
 ---
 ### 框架改动未落项
-- 🟡 `知识`/`造物`/`星象`/`规律` 四身份状态（enabler→payoff 钩子） → 编队参数 §2.4 H11（计数型）+ 状态表（服务于 四轴引擎）
+- 🟡 `知识`/`造物`/`星象`/`规律` 四身份状态（enabler→payoff 钩子） → 编队参数 §2.4 H11（计数型）+ 状态表（服务于 四轴引擎）  → ✅ 已落地（见 §零，2026-09-19）
 - 🟡 `规则槽(Rules[3])` 标 `crossPathway:true` + 参与途径白名单（失序之国/通识者） → StatusDef 新增标志（服务于 造物入规则槽 combo）
-- 🟢 `规律(law)` 跨源质同源（通识者↔阅读者）白名单 → StatusDef crossPathway（服务于 规律共振 combo）
+- 🟢 `规律(law)` 跨源质同源（通识者↔阅读者）白名单 → StatusDef crossPathway（服务于 规律共振 combo）  → ✅ 已落地（见 §零，2026-09-19）
 - 🟡 域 `domain_dominion` / `domain_civilization` DomainDef 三件套 → 战场参数 §1.2（服务于 环境掌控 / 文明图卷）
-- 🟢 造物计数口径（累计产/在场）决策 → 编队参数 §2.4（服务于 造物轴阈值）
+- 🟢 造物计数口径（累计产/在场）决策 → 编队参数 §2.4（服务于 造物轴阈值）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 阅读者（reader）
 
@@ -285,4 +312,4 @@
 ---
 ### 框架改动未落项
 - 🟡 `streamlined_cast` 费用修正 → progression 层（服务于 省略步骤）
-- 🟢 `crossPathway` 枢纽状态白名单（`grazed_soul`/`flesh_parasite`/`提线木偶`/`替身`/`混乱`/`恶欲值`/`命运`） → StatusDef 新增标志+参与途径（服务于 跨系 combo（§三））
+- 🟢 `crossPathway` 枢纽状态白名单（`grazed_soul`/`flesh_parasite`/`提线木偶`/`替身`/`混乱`/`恶欲值`/`命运`） → StatusDef 新增标志+参与途径（服务于 跨系 combo（§三））  → ✅ 已落地（见 §零，2026-09-19）
