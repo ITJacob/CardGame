@@ -24,7 +24,11 @@
 - 规则槽**卡面迁移**：arbiter【立规】(+2 write_rule_slot) 与 savant【规律权柄】(+1 modify_rule_slot) 已迁（加性，旧 `fields`/`slots` 保留兼容）；⚠️ **lawyer 僭越轴改规卡未迁**。
 - ~~诅咒链接「三层同一母版」只接通 1/3~~ —— ✅ **经核早已接通**（2026-09-19 更正此前误判）：序列4【诅咒之源】`selfKeep=true`、序列3【无反噬之咒】`params.selfKeep=false`、序列0【万咒加身】挂载多种诅咒状态表达「所有类型诅咒」。三层均走同一 `curse_link` 母版，无需再动。
 
-**待拍板口径**：造物计数口径（暂定 `on_field` vs `cumulative`）／spectator 元素过滤清单（暂 `mental`）／phantom 途径 占卜家·母巢（建文件还是修订 ddd）。
+**口径已裁定（2026-09-19，均已结案）**
+- **造物计数口径** = `on_field`（当前在场，离场即减）。理由：天然受 `summon_cap`(H39) 约束、阈值有界可预期；`cumulative` 无上限且可被低成本反复召唤刷高，与「乘区层禁止失控」的风险取向冲突。
+- **spectator 元素过滤清单** = `mental`。非推测——【观众·细微观察】卡面 describe 原文即「自身造成**精神伤害**时，「心象」层数 +1（上限 5 层）」，与 `insight` 状态 `maxStacks:5` 完全吻合。
+- **「占卜家」不是 phantom 途径**，而是 **`fool`（愚者）途径的序列 9 别名**（诡秘之主中占卜家途径即愚者途径）。证据：`fool` axes=预知/戏法/**秘偶**/奇迹、有卡名就叫「占卜」、含秘偶×4/命运×2/替身/`puppet_string`/`paper_substitute`。已把 `fool` 补回 ddd 指定的三处枢纽 participants（`puppet_string`、`doom`、`fate_gap`；「替身」本已含 fool）。**「母巢」亦非独立途径**：`planter` 已有 `mother_nest`（万物母巢）状态，且 `massing`/`beast_swarm` 的 participants 已含 planter，无需动作。
+  ⚠️ 教训：ddd 出现疑似途径名时，**先查现有 22 途径的 axes 与卡名主题**——往往是别名或已有概念，勿轻判 phantom。
 
 
 > 2026-09-18 自技能稿 md（docs/archive/skill-design_v0.3/）迁移：§五 本稿遗留 + §六 框架改动未落项（🟡/🟢）。
