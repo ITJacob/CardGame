@@ -366,13 +366,30 @@
           "category": [
             "buff"
           ],
-          "dispelable": false,
-          "duration": null,
-          "charges": 3,
+          "dispelable": true,
+          "duration": 10,
           "modifiers": {
-            "damage_taken_mul": 0.7
+            "damage_taken_mul": {
+              "value": 0.6,
+              "charges": 1,
+              "note": "次数型减伤（C6）：on_take_damage 响应式派发 -1，归零卸载"
+            }
           },
-          "note": "H3 参数化减伤状态母版（与愚者 premonition / wound_transfer / poise 同源），charges 每次受击 -1"
+          "triggers": [
+            {
+              "event": "on_remove",
+              "effects": [
+                {
+                  "type": "mount_status",
+                  "statusId": "danger_sense",
+                  "charges": 1,
+                  "duration": 10,
+                  "target": "self",
+                  "note": "自续链：预感一次次重新浮现（新增项 5，on_remove 合法化）"
+                }
+              ]
+            }
+          ]
         }
       ],
       "tentative": true

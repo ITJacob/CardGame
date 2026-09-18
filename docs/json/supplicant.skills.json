@@ -1828,14 +1828,14 @@
       "effects": [
         {
           "type": "mount_status",
-          "statusId": "flesh_immortal",
+          "statusId": "flesh_undying",
           "duration": null,
           "target": "self"
         }
       ],
       "statusDefs": [
         {
-          "id": "flesh_immortal",
+          "id": "flesh_undying",
           "name": "血肉不灭",
           "category": [
             "buff"
@@ -1999,7 +1999,7 @@
             },
             {
               "type": "mount_status",
-              "statusId": "fallen",
+              "statusId": "falling",
               "duration": 4,
               "target": "target"
             }
@@ -2008,14 +2008,13 @@
       ],
       "statusDefs": [
         {
-          "id": "fallen",
-          "name": "堕落",
+          "id": "falling",
+          "name": "堕落中",
           "category": [
             "debuff"
           ],
           "dispelable": true,
           "duration": 4,
-          "healReceivedMul": 0.5,
           "triggers": [
             {
               "event": "on_tick",
@@ -2041,7 +2040,10 @@
               ]
             }
           ],
-          "note": "H2 + on_remove 挂载载荷判例（heal_received_mul 与 F20 petrify 同源）；「精神上的灵肉之刃」走 mental 元素"
+          "note": "H2 + on_remove 挂载载荷判例（heal_received_mul 与 F20 petrify 同源）；「精神上的灵肉之刃」走 mental 元素",
+          "modifiers": {
+            "heal_received_mul": 0.5
+          }
         }
       ],
       "tentative": true

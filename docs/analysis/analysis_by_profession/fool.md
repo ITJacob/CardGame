@@ -22,6 +22,7 @@
 | buff | 13 | 61.9% |
 | control | 3 | 14.3% |
 | conceal | 2 | 9.5% |
+| retarget | 1 | 4.8% |
 | stance | 2 | 9.5% |
 | seal | 1 | 4.8% |
 
@@ -121,29 +122,29 @@
 
 **规模**：11 张技能（主动 10 / 被动 1）；稀有度分布：稀有×4、精良×3、传说×3、史诗×1。
 
-**效果原语构成**（type，全量递归，共 22 处）：
+**效果原语构成**（type，全量递归，共 21 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 6 | 27.3% |
-| `damage` | 2 | 9.1% |
-| `modify_stat` | 2 | 9.1% |
-| `modify_resource` | 2 | 9.1% |
-| `dispel` | 2 | 9.1% |
-| `spawn` | 1 | 4.5% |
-| `domain` | 1 | 4.5% |
-| `modify_damage` | 1 | 4.5% |
-| `transfer_status` | 2 | 9.1% |
-| `translocate` | 1 | 4.5% |
-| `target_override` | 2 | 9.1% |
+| `mount_status` | 6 | 28.6% |
+| `damage` | 2 | 9.5% |
+| `modify_stat` | 2 | 9.5% |
+| `modify_resource` | 2 | 9.5% |
+| `dispel` | 2 | 9.5% |
+| `spawn` | 1 | 4.8% |
+| `domain` | 1 | 4.8% |
+| `modify_damage` | 1 | 4.8% |
+| `transfer_status` | 2 | 9.5% |
+| `translocate` | 1 | 4.8% |
+| `target_override` | 1 | 4.8% |
 
-**算子构成**（op，共 7 处）：
+**算子构成**（op，共 8 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 3 |
 | `if` | 1 |
-| `target_override` | 2 |
+| `target_override` | 3 |
 | `overlay` | 1 |
 
 **改动的属性（modify_stat，共 2 处）**：
@@ -165,10 +166,11 @@
 |---|---:|---:|
 | buff | 1 | 16.7% |
 | control | 3 | 50.0% |
+| retarget | 1 | 16.7% |
 | stance | 2 | 33.3% |
 
 **设计风格总结**：本轴偏【控制·进攻】——以 debuff、换位、封印、重定向与驱散干扰敌方决策与站位；以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `mount_status`(6)、`modify_resource`(2)、`dispel`(2)；属性杠杆集中在 `attack`、`defense`，资源杠杆集中在 `lost`；挂载状态以 control、stance、buff 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(6)、`modify_resource`(2)、`dispel`(2)；属性杠杆集中在 `attack`、`defense`，资源杠杆集中在 `lost`；挂载状态以 control、stance、buff、retarget 类型为主，构成其核心交互骨架。
 代表技能：
 - **愚弄**：使一名敌人被愚弄 6 tick（2 层充能）：攻击打向空处；其每次发起攻击受到等于其自身攻击力的精神伤害（弄假成真）；行动条速率 -8、攻击 -3。
 

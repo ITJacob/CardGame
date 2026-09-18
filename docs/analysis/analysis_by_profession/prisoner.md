@@ -23,7 +23,7 @@
 | debuff | 4 | 21.1% |
 | control | 3 | 15.8% |
 | conceal | 2 | 10.5% |
-| retarget | 1 | 5.3% |
+| retarget | 2 | 10.5% |
 | stance | 1 | 5.3% |
 | aura | 2 | 10.5% |
 | link | 1 | 5.3% |
@@ -139,12 +139,13 @@
 | `move` | 1 | 2.9% |
 | `domain` | 1 | 2.9% |
 
-**算子构成**（op，共 9 处）：
+**算子构成**（op，共 10 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 6 |
 | `if` | 1 |
+| `target_override` | 1 |
 | `push_back` | 1 |
 | `overlay` | 1 |
 
@@ -171,10 +172,11 @@
 | buff | 5 | 83.3% |
 | control | 1 | 16.7% |
 | conceal | 1 | 16.7% |
+| retarget | 1 | 16.7% |
 | aura | 1 | 16.7% |
 
 **设计风格总结**：本轴偏【进攻·防御】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以叠甲、抬血上限与增益/架势类状态构筑防线，偏向站桩与减伤。
-签名原语为 `modify_stat`(13)、`mount_status`(10)、`damage`(3)；属性杠杆集中在 `attack`、`armor`、`resist:physical`，资源杠杆集中在 `gauge.current`、`lost`；挂载状态以 buff、control、conceal、aura 类型为主，构成其核心交互骨架。
+签名原语为 `modify_stat`(13)、`mount_status`(10)、`damage`(3)；属性杠杆集中在 `attack`、`armor`、`resist:physical`，资源杠杆集中在 `gauge.current`、`lost`；挂载状态以 buff、retarget、control、conceal 类型为主，构成其核心交互骨架。
 代表技能：
 - **转化**：将一名敌人转化为己方异种傀儡：阵营改判为己方、套用所选异种形态的属性模板、禁用其原有技能、落位到己方队尾，保留当前生命百分比。
 

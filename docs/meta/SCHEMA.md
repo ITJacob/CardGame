@@ -186,13 +186,13 @@ python docs/tools/validate.py
 | `category` | enum[] | `buff` `debuff` `control` `reactive` `aura` `stance` `fear` `retarget` `link` `contract` `conceal` `seal` |
 | `dispelable` | bool | |
 | `duration` | int\|null | |
-| `modifiers` | array\|object | **两种形态都合法**：数组（字符串/对象混合）或 `{修正名: 参数}` 映射表；开放结构 |
+| `modifiers` | array\|object | **两种形态都合法**：数组（字符串/对象混合）或 `{修正名: 参数}` 映射表；开放结构。数组形态的对象元素为封闭 `statusModifier`（2026-09-18 增补 `target`/`condition` 两字段，承载「对全体友军、阈值门控」类修饰） |
 | `triggers` / `effects` | | 状态自带触发器与载荷 |
 | `charges` `maxStacks` `stackPolicy`(stack/refresh) | | 层数与次数 |
 | `disallowActions` | `actionLock[]` | **行为封锁**：单位持有该状态时禁止相应行动，`actionLock` 封闭枚举 = `move`(禁止移动) / `basic_attack`(禁止普攻) / `skill`(禁止主动技能) / `skip`(禁止跳过行动周期) / `react`(禁止反应·反击) / `channel`(禁止吟唱)。经既有 `mount_status` 挂载，可驱散、可带 duration/stacks（行为层修改三，2026-09-17 拍板） |
 | 其余 | | `lethalProtect` `immune` `suppress` `redirectRule` `thresholdTrigger` `slots` `fields` `ramp` `behaviorModifiers` 等，见 schema |
 
-跨途径**同名状态视为共享状态**：同名但定义不同时会告警（当前 28 条），需确认是否应拆成两个状态。
+跨途径**同名状态视为共享状态**：同名但定义不同时会告警。2026-09-18 已将全部 28 条清零（同机制统一签名 / 异机制改名拆分，见 §10）。
 
 ## 7. 界域 / 区域 / 单位
 
@@ -224,25 +224,37 @@ python docs/tools/validate.py
 
 扩展新枚举值时，先去 `docs/ddd/params/` 对应参数篇登记，再改 schema，最后改数据。
 
-## 10. 当前校验结果（2026-09-17 更新）
+## 10. 当前校验结果（2026-09-18 更新）
 
 ```
-结构校验（validate_schema.py）: files 22 | errors 0 | warns 28
-语义校验（validate.py）       : cards 828 | errors 0 | warns 44
+结构校验（validate_schema.py）: files 22 | errors 0 | warns 0
+语义校验（validate.py）       : cards 828 | errors 0 | warns 0（已登记缺口 1 项汇总输出，不逐条告警）
 ```
 
-**命名治理（2026-09-17 起）**：`modifiers` 为开放结构，同义异写严重（如受伤倍率有 `damage_taken_mul`(74)/`damageTakenMul`(8)/`damageTakenBonus`(2) 三种拼写）。
-`validate.py` 已内置 `MODIFIER_ALIASES` 别名表，命中即产出**非阻断告警**引导收敛（当前 25 条）：
+**命名治理（2026-09-18 清零）**：`modifiers` 为开放结构，曾同义异写严重。`validate.py` 内置 `MODIFIER_ALIASES` 别名表，命中即产出非阻断告警引导收敛；全库 25 条已于 2026-09-18 一次性收敛完毕：
 
 | 别名 | 规范拼写 |
 |---|---|
-| `damageTakenMul` / `damageTakenBonus` | `damage_taken_mul` |
-| `damageMul` / `damageDealtMul` / `damageDealtMulFilter` / `damage_mul_2` | `damage_mul` |
-| `healReceivedMul` / `healInvert` | `heal_received_mul` |
+| `damageTakenMul` | `damage_taken_mul` |
+| `damageMul` / `damageDealtMul` / `damageDealtMulFilter` / `damage_mul_2` | `damage_mul`（同卡撞键合并为数组） |
+| `healReceivedMul` | `heal_received_mul` |
+| `healInvert` | `heal_invert`（ddd 效果上下文 §2.1 正典载荷名） |
+| `damageTakenBonus` | `damage_taken_add`（平加值非乘区，2026-09-18 登记进编队参数 StatusDef 修正表） |
 | `untargetable` / `untargetableByAll` | `untargetableByTargeted` |
 | `dispelOverride` / `dispelableOverwrite` / `runtimeDispelOverride` | `dispelableOverride` |
+| `behaviorOverride` | `behaviorModifiers` |
 
 收敛方式：优先改用规范拼写；语义上确属新能力的，改用对应原语（如 `reveal` / `modify_targetability` / `modify_status.dispelableOverride`）。
+
+**manual 卡 fallbackSort（17 张，2026-09-18 补齐）**：`selectionMode: manual` 但缺 `fallbackSort` 的 17 张卡已按卡面意图补默认排序键——敌方控制/debuff 与输出增益类取 `atk_desc`（notarize / miracle / historical_echo / corruption / chaos / choice_branch），治疗保护换位与补刀类取 `hp_asc`（blink / frost_armor / mirror_step / holy_water / marionette_swap / preserve / guardian_stance / sacrifice_prayer / mind_baptism / rage_swipe），wheel_of_fate 取 `gauge_desc`。
+
+**同名状态 28 条警告——2026-09-18 全部清零**，处置分两类：
+
+统一签名（同名同机制，8 个 id）：`shackle`（枷锁 ×6→apothecary 版）、`revive_blocked`（×3→fool 版永久）、`dread`（→sailor 版，statMods 方言转 effects）、`puppet_string`（×4→corpse 版）、`hallucination`（×3→control + charges 1 + 3t + behaviorModifiers）、`danger_sense`（→monster 版含自续链）、`spirit_sight`（→corpse 版原著限定 SPIRIT）、`stealth`（潜行，apothecary/sleepless 统一为 direction inbound + duration 2，挂载点均显式覆盖 duration；`charm` 正典 = 反向嘲讽 anchor self_faction_hp_desc，assassin/lawyer 归一）。签名对齐只动 8 个签名字段（name/category/dispelable/duration/modifiers/maxStacks/stackPolicy/charges），各卡 triggers/effects/note 保持本地差异。
+
+改名拆分（同名异机制，保留方不动，改名方同步卡内全部引用）：`beast_form`→`werewolf_form`（prisoner 狼人化）、`blessing`→`blessing_gift`（monster）、`charm`→`obsession` 迷恋（apothecary/criminal 的 anchor self 版）、`countersuit`→`distortion` 扭曲（lawyer）、`exiled`→`ostracized` 隔离（arbiter）、`fallen`→`falling` 堕落中（supplicant）、`flesh_immortal`→`flesh_undying`（supplicant）、`misfortune`→`bad_omen` 恶兆（sleepless）、`parasitized`→`deep_parasitized` 深度寄生（thief）、`sealed`→`occult_seal`（sleepless）、`spirit_sovereign`→`spirit_authority`（sleepless）、`submerged`→`quicksilver_submerge`（warrior，顺带修 gaugeRateMul null→0.5）、`concealed` 三方拆分：fool 保留正典 `concealed`，sleepless→`stealth` 潜行，warrior→`ambush_shroud` 伏击伪装（monster inspiration_sense 的 targetHasStatus 过滤同步扩为三 id）。
+
+跨卡引用同步修正：`arbiter authority_shift` 过滤 exiled→ostracized；`sleepless calamity` 挂载 misfortune→bad_omen。
 
 **原 3 处数据问题——已于 2026-09-16 全部清零**：
 
@@ -251,7 +263,5 @@ python docs/tools/validate.py
 | `assassin` / `skill_assassin_s5_repeated_charm` | `statusDefs[0].triggers[0].condition` 缺 `kind` | ✅ 该 condition 实为纯注释（无谓词），已将 note 上移到 `trigger.note` 并删除空 condition——省略 condition 即表示「无条件」，与 `always` 等价，无需为此新开枚举值 |
 | `fool` / `skill_fool_s1_mystery_realm` | `zoneDef.effects[0].then[1]` 用了 `type: "damage_taken_mul"`——不是原语 | ✅ 改写为既有原语 `modify_damage`（`scope:"taken"`, `mul:0.85`）。该原语已在库内使用 11 次，无需新登记；`duration` 字段该原语不支持，已移除（zone 为 `on_occupy_tick` 逐 tick 重挂，语义为「停留期间」） |
 | `prisoner` / `skill_prisoner_s4_performance`（演出） | `target.fallbackSort: "atk_asc"` 不在 sortKey 封闭集 | ✅ **裁定为登记 `atk_asc`**：权威取值域 `ddd/params/共享内核参数.md` §sort 早在 2026-09-14 就已含 `atk_asc`，是 schema 未同步。已补进 schema sortKey 枚举并同步本文件枚举清单，保留数据原意（按攻击升序取最弱己方） |
-
-**28 条警告**：跨途径同名状态但定义不一致（如 `charm`、`shackle`、`puppet_string`）。需逐条确认是「拆成两个状态」还是「统一定义」。
 
 `manifest.json` 结构与全库对齐检查 **0 错误**。

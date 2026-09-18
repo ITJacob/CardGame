@@ -91,15 +91,15 @@
 
 **规模**：10 张技能（主动 8 / 被动 2）；稀有度分布：精良×4、普通×2、史诗×2、传说×2。
 
-**效果原语构成**（type，全量递归，共 29 处）：
+**效果原语构成**（type，全量递归，共 30 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 17 | 58.6% |
-| `damage` | 9 | 31.0% |
-| `modify_stat` | 1 | 3.4% |
-| `modify_resource` | 1 | 3.4% |
-| `spawn` | 1 | 3.4% |
+| `mount_status` | 17 | 56.7% |
+| `damage` | 9 | 30.0% |
+| `modify_stat` | 2 | 6.7% |
+| `modify_resource` | 1 | 3.3% |
+| `spawn` | 1 | 3.3% |
 
 **算子构成**（op，共 7 处）：
 
@@ -108,10 +108,11 @@
 | `sequence` | 4 |
 | `if` | 3 |
 
-**改动的属性（modify_stat，共 1 处）**：
+**改动的属性（modify_stat，共 2 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
+| `attack` | 1 |
 | `gauge.rate` | 1 |
 
 **改动的资源（modify_resource，共 1 处）**：
@@ -130,7 +131,7 @@
 | fear | 1 | 14.3% |
 
 **设计风格总结**：本轴偏【进攻·控制】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以 debuff、换位、封印、重定向与驱散干扰敌方决策与站位。
-签名原语为 `mount_status`(17)、`damage`(9)、`modify_resource`(1)；属性杠杆集中在 `gauge.rate`，资源杠杆集中在 `energy`；挂载状态以 debuff、buff、fear、control 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(17)、`damage`(9)、`modify_stat`(2)；属性杠杆集中在 `attack`、`gauge.rate`，资源杠杆集中在 `energy`；挂载状态以 debuff、buff、fear、control 类型为主，构成其核心交互骨架。
 代表技能：
 - **入梦**：对一名敌人造成 2 点精神伤害，并使其入梦 4 tick：无法行动，且受伤 ×1.2。
 

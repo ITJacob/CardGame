@@ -1715,24 +1715,26 @@
             "maxStacksOverride": {
               "insight": 7
             },
-            "damage_mul": {
-              "dynamic": {
-                "perStackOf": "insight",
-                "value": 0.03,
-                "filter": {
-                  "element": [
-                    "mental"
-                  ]
+            "damage_mul": [
+              {
+                "dynamic": {
+                  "perStackOf": "insight",
+                  "value": 0.03,
+                  "filter": {
+                    "element": [
+                      "mental"
+                    ]
+                  }
                 }
-              }
-            },
-            "damage_mul_2": {
-              "value": 1.2,
-              "filter": {
-                "targetHpPercentBelow": 0.5
               },
-              "note": "「洞悉恐惧」：对 HP < 50% 目标伤害 ×1.2（hp_percent 谓词维度）"
-            }
+              {
+                "value": 1.2,
+                "filter": {
+                  "targetHpPercentBelow": 0.5
+                },
+                "note": "「洞悉恐惧」：对 HP < 50% 目标伤害 ×1.2（hp_percent 谓词维度）"
+              }
+            ]
           },
           "note": "H4 dynamic：按另一状态层数给伤害乘区（每层 +3% ⚠️D）已落；退化方案为固定 mental ×1.2。同向乘区取最高不叠乘（H42）"
         }
@@ -2183,14 +2185,6 @@
           "dispelable": false,
           "duration": null,
           "modifiers": {
-            "dispelableOverwrite": {
-              "scope": "outgoing",
-              "categories": [
-                "control"
-              ],
-              "value": false,
-              "note": "H8 运行时覆写：后续由你挂载的 control 类状态覆写为 dispelable:false（subconscious_edit/眩晕/沉默/drawn_in）"
-            },
             "damage_mul": {
               "value": 1.25,
               "filter": {
@@ -2201,6 +2195,14 @@
                   "mental"
                 ]
               }
+            },
+            "dispelableOverride": {
+              "scope": "outgoing",
+              "categories": [
+                "control"
+              ],
+              "value": false,
+              "note": "H8 运行时覆写：后续由你挂载的 control 类状态覆写为 dispelable:false（subconscious_edit/眩晕/沉默/drawn_in）"
             }
           },
           "note": "与愚者途径 v0.2 新增项 9 同源（H8），建议并入同一母版"

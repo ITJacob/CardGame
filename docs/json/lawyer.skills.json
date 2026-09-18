@@ -67,7 +67,7 @@
           "charges": 1,
           "duration": 3,
           "modifiers": {
-            "behaviorOverride": [
+            "behaviorModifiers": [
               {
                 "op": "target_override",
                 "anchor": "first_empty"
@@ -435,11 +435,11 @@
           "dispelable": true,
           "duration": 2,
           "modifiers": {
-            "behaviorOverride": [
+            "behaviorModifiers": [
               {
-                "op": "target_override",
                 "anchor": "self_faction_hp_desc",
-                "note": "强制指向其己方队友（F15 反向嘲讽母版）；持续生效（与扭曲的一次性 charges 分野）"
+                "op": "target_override",
+                "note": "反向嘲讽：被魅惑单位攻击其己方队友"
               }
             ]
           },
@@ -494,7 +494,7 @@
           "dispelable": true,
           "duration": 4,
           "modifiers": {
-            "damageTakenMul": {
+            "damage_taken_mul": {
               "value": 1.2,
               "note": "乘区刻意压在 1.2（低于易伤 1.3），避免叠乘失控"
             }
@@ -614,7 +614,7 @@
       "effects": [
         {
           "type": "mount_status",
-          "statusId": "countersuit",
+          "statusId": "distortion",
           "charges": 1,
           "duration": 4
         },
@@ -626,8 +626,8 @@
       ],
       "statusDefs": [
         {
-          "id": "countersuit",
-          "name": "扭曲（反噬）",
+          "id": "distortion",
+          "name": "扭曲",
           "category": [
             "retarget"
           ],
@@ -635,7 +635,7 @@
           "charges": 1,
           "duration": 4,
           "modifiers": {
-            "behaviorOverride": [
+            "behaviorModifiers": [
               {
                 "op": "target_override",
                 "anchor": "self_faction_hp_desc",
@@ -673,7 +673,7 @@
           "scope": "single",
           "spread": "splash_adjacent"
         },
-        "fallbackSort": null,
+        "fallbackSort": "atk_desc",
         "note": "稿面仅给 spread 未给 fallbackSort，manual 模式强制字段暂记 null 待补"
       },
       "effects": [
@@ -696,7 +696,7 @@
           "charges": 1,
           "duration": 4,
           "modifiers": {
-            "behaviorOverride": [
+            "behaviorModifiers": [
               {
                 "op": "target_override",
                 "anchor": "any_lowest_hp",
@@ -782,7 +782,7 @@
           "scope": "single",
           "spread": "splash_adjacent"
         },
-        "fallbackSort": null,
+        "fallbackSort": "atk_desc",
         "note": "稿面仅给 spread 未给 fallbackSort，manual 模式强制字段暂记 null 待补"
       },
       "effects": [
@@ -805,7 +805,7 @@
           "charges": 1,
           "duration": 4,
           "modifiers": {
-            "behaviorOverride": [
+            "behaviorModifiers": [
               {
                 "op": "target_override",
                 "anchor": "first_empty"
@@ -933,7 +933,7 @@
           "dispelable": false,
           "duration": null,
           "modifiers": {
-            "damageTakenMul": {
+            "damage_taken_mul": {
               "value": 0.9,
               "note": "0.9 刻意压得比 sanctuary（0.8）/glibness（0.75）薄——常驻被动不是一张卡"
             }
@@ -987,7 +987,7 @@
           "dispelable": true,
           "duration": 4,
           "modifiers": {
-            "damageTakenMul": {
+            "damage_taken_mul": {
               "dynamic": {
                 "perCount": {
                   "filter": {
@@ -1464,7 +1464,7 @@
           "dispelable": false,
           "duration": null,
           "modifiers": {
-            "damageTakenMul": {
+            "damage_taken_mul": {
               "value": 0.85,
               "filter": {
                 "statCompare": {
@@ -1474,7 +1474,7 @@
                 }
               }
             },
-            "damageMul": {
+            "damage_mul": {
               "value": 1.15,
               "filter": {
                 "statCompare": {
@@ -1833,9 +1833,6 @@
           "charges": 1,
           "duration": 4,
           "modifiers": {
-            "damageMul": {
-              "value": 2.5
-            },
             "ignoreRedirect": {
               "value": true,
               "note": "无视前排站位限制：可直接指定任意敌方单位（含被守护/嘲讽保护的后排）——ignore_guard（新增项 10 ✅ 执行参数 §一 EffectRef.params.ignore_redirect，ddd 明示律师「踏月」判例）"
@@ -1843,6 +1840,9 @@
             "armorPierceRatio": {
               "value": 1,
               "note": "ignore_armor 比例档 =1（新增项 11 ✅ 效果参数 §1.1）"
+            },
+            "damage_mul": {
+              "value": 2.5
             }
           },
           "note": "G8 合规声明：本技能不调用 move 原语，纯攻击进程 + 目标选择放宽（「跳到红月」译为「无视站位规则」，与「利用权柄」同源同义）"
@@ -1969,7 +1969,7 @@
           "dispelable": true,
           "duration": 5,
           "modifiers": {
-            "healInvert": {
+            "heal_invert": {
               "value": true,
               "note": "持有者获得的 heal 量转为等量 damage(element: none)，方向反转数值不变（新增项 6 ✅ 效果上下文 §2.1 heal_invert）"
             }
@@ -2016,7 +2016,7 @@
               "scope": "single_target_debuff",
               "note": "扭曲：你施加的单体减益额外作用于目标的一个相邻敌方单位（新增项 18 扩散载荷）"
             },
-            "damageTakenMul": {
+            "damage_taken_mul": {
               "value": 0.8,
               "filter": {
                 "statCompare": {

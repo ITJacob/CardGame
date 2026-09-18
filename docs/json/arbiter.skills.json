@@ -92,7 +92,7 @@
           "charges": 1,
           "duration": 3,
           "modifiers": {
-            "behaviorOverride": [
+            "behaviorModifiers": [
               {
                 "op": "target_override",
                 "anchor": "first_empty"
@@ -207,17 +207,17 @@
           "dispelable": false,
           "duration": null,
           "modifiers": {
-            "damageTakenBonus": {
+            "revealToSource": true,
+            "targetPriority": {
+              "sort": "status:marked:desc",
+              "note": "单体技能候选池优先命中被标记单位（C8 加权）"
+            },
+            "damage_taken_add": {
               "value": 1,
               "filter": {
                 "casterHasStatus": "marked_observer"
               },
               "note": "你对被标记单位造成的伤害 +1（施加者侧过滤）"
-            },
-            "revealToSource": true,
-            "targetPriority": {
-              "sort": "status:marked:desc",
-              "note": "单体技能候选池优先命中被标记单位（C8 加权）"
             }
           },
           "note": "识破分支（共享内核 §四）+ 排序键 status:marked:desc；施加者=被动持有者"
@@ -827,7 +827,7 @@
                   "silence",
                   "stun",
                   "shackle",
-                  "exiled",
+                  "ostracized",
                   "isolated",
                   "vulnerable"
                 ]
@@ -893,7 +893,7 @@
           "dispelable": false,
           "duration": null,
           "modifiers": {
-            "damageTakenMul": {
+            "damage_taken_mul": {
               "value": 1.4,
               "filter": {
                 "caster": "status_caster"
@@ -1255,7 +1255,7 @@
             },
             {
               "type": "mount_status",
-              "statusId": "exiled",
+              "statusId": "ostracized",
               "duration": 4
             }
           ]
@@ -1263,8 +1263,8 @@
       ],
       "statusDefs": [
         {
-          "id": "exiled",
-          "name": "放逐",
+          "id": "ostracized",
+          "name": "隔离",
           "category": [
             "debuff"
           ],
@@ -1280,7 +1280,7 @@
             }
           ],
           "modifiers": {
-            "untargetable": {
+            "untargetableByTargeted": {
               "direction": "inbound",
               "effectCategories": [
                 "buff",
@@ -1497,15 +1497,15 @@
           "dispelable": false,
           "duration": null,
           "modifiers": {
-            "damageTakenBonus": {
+            "revealToSource": true,
+            "targetPriority": {
+              "sort": "status:hunted:desc"
+            },
+            "damage_taken_add": {
               "value": 2,
               "filter": {
                 "casterIsStatusSource": true
               }
-            },
-            "revealToSource": true,
-            "targetPriority": {
-              "sort": "status:hunted:desc"
             }
           },
           "transferOnDeath": true,
@@ -1557,7 +1557,7 @@
           "dispelable": true,
           "duration": 5,
           "modifiers": {
-            "untargetable": {
+            "untargetableByTargeted": {
               "direction": "both",
               "effectCategories": [
                 "buff",
@@ -1806,13 +1806,13 @@
           "dispelable": false,
           "duration": null,
           "modifiers": {
-            "damageTakenMul": {
+            "revealToSource": true,
+            "damage_taken_mul": {
               "value": 1.2,
               "filter": {
                 "casterIsStatusSource": true
               }
-            },
-            "revealToSource": true
+            }
           }
         }
       ],

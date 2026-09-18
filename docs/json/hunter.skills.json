@@ -1682,7 +1682,7 @@
             "isSummon": true
           }
         },
-        "fallbackSort": null
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -2459,34 +2459,31 @@
               "metric": "alive_allies_count",
               "value": 1,
               "note": "与集众·铁血的动态攻击叠加（valueFrom battleStats）"
+            },
+            {
+              "kind": "damage_mul",
+              "target": "all_allies",
+              "value": 1.2,
+              "condition": {
+                "metric": "alive_allies",
+                "cmp": ">=",
+                "value": 3
+              },
+              "note": "阈值质变：存活友军 ≥3 时全队伤害 ×1.2（原 thresholdTrigger.effects 内 modify_stat stat:damage_mul 违规——damage_mul 非属性键，按 SCHEMA §5.2 归位 statusDef.modifiers）"
+            },
+            {
+              "kind": "damage_taken_mul",
+              "target": "self",
+              "value": 0.8,
+              "condition": {
+                "metric": "alive_allies",
+                "cmp": ">=",
+                "value": 3
+              },
+              "note": "阈值质变：存活友军 ≥3 时自身受伤 ×0.8（同上归位）"
             }
           ],
-          "thresholdTrigger": {
-            "metric": "alive_allies",
-            "cmp": ">=",
-            "value": 3,
-            "effects": [
-              {
-                "type": "modify_stat",
-                "stat": "damage_mul",
-                "value": 1.2,
-                "mode": "mul",
-                "duration": null,
-                "target": "all_allies",
-                "note": "质变：全体友军伤害 ×1.2"
-              },
-              {
-                "type": "modify_stat",
-                "stat": "damage_taken_mul",
-                "value": 0.8,
-                "mode": "mul",
-                "duration": null,
-                "target": "self",
-                "note": "质变：自身受伤 ×0.8"
-              }
-            ],
-            "note": "阈值触发运行时检查（编队参数 §1.1b thresholdTrigger，新增项 6）；阈值 ⚠️D 待标"
-          }
+          "note": "阈值门控（存活友军 ≥3）内联于 modifiers[].condition；阈值 ⚠️D 待标（原 thresholdTrigger 结构 2026-09-18 并入）"
         }
       ],
       "tentative": true

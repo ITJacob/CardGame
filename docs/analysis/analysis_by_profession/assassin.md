@@ -21,9 +21,9 @@
 |---|---:|---:|
 | buff | 14 | 46.7% |
 | debuff | 7 | 23.3% |
-| control | 3 | 10.0% |
+| control | 4 | 13.3% |
 | conceal | 2 | 6.7% |
-| retarget | 4 | 13.3% |
+| retarget | 3 | 10.0% |
 | stance | 1 | 3.3% |
 
 ## 二、各构筑轴详解
@@ -112,10 +112,11 @@
 |---|---:|---:|
 | buff | 2 | 33.3% |
 | debuff | 2 | 33.3% |
-| retarget | 2 | 33.3% |
+| control | 1 | 16.7% |
+| retarget | 1 | 16.7% |
 
 **设计风格总结**：本轴偏【进攻·控制】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以 debuff、换位、封印、重定向与驱散干扰敌方决策与站位。
-签名原语为 `mount_status`(9)、`modify_stat`(3)、`damage`(2)；属性杠杆集中在 `attack`、`defense`，资源杠杆集中在 —；挂载状态以 retarget、buff、debuff 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(9)、`modify_stat`(3)、`damage`(2)；属性杠杆集中在 `attack`、`defense`，资源杠杆集中在 —；挂载状态以 buff、debuff、control、retarget 类型为主，构成其核心交互骨架。
 代表技能：
 - **激化矛盾**：使一名敌人 2 tick 内转头攻击自己的队友、攻击 +3、防御 -3（打队友更狠，但也更容易被打死）。
 

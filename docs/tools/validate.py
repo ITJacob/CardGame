@@ -11,7 +11,7 @@ OPS = {"sequence","repeat","if"}
 EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill"}
 ELEMENTS = {"fire","ice","poison","lightning","mental","physical","holy","dark","none"}
 REACH = {"melee","ranged","none"}
-SORTS = {"none","hp_asc","hp_desc","atk_desc","index_asc","index_desc","energy_desc","armor_desc","buff_count_desc","debuff_count_desc","gauge_asc","gauge_desc","stat_max_desc"}
+SORTS = {"none","hp_asc","hp_desc","atk_asc","atk_desc","index_asc","index_desc","energy_desc","armor_desc","buff_count_desc","debuff_count_desc","gauge_asc","gauge_desc","stat_max_desc"}
 STATS = {"attack","defense","armor","rank","hp_max","energy_max","energy_regen","stamina_rate","stamina_threshold","gauge.rate","gauge.threshold","summon_cap"} | {"resist:"+e for e in ELEMENTS - {"none"}} | {"resist:*"}
 RESOURCES = {"hp","energy","shield","armor","lost","gauge.current"}
 CATS = {"dot","hot","buff","debuff","control","reactive","aura","stance","fear","retarget","link","contract","conceal","seal"}
@@ -24,13 +24,12 @@ CONTROL_POLICY = {"full","attack_only","move_only"}
 # 命名治理：modifiers 为开放结构，同义异写严重。别名 -> 规范拼写（非阻断，仅告警引导收敛）
 MODIFIER_ALIASES = {
     "damageTakenMul": "damage_taken_mul",
-    "damageTakenBonus": "damage_taken_mul",
     "damageMul": "damage_mul",
     "damageDealtMul": "damage_mul",
     "damageDealtMulFilter": "damage_mul",
     "damage_mul_2": "damage_mul",
     "healReceivedMul": "heal_received_mul",
-    "healInvert": "heal_received_mul",
+    "healInvert": "heal_invert",
     "untargetable": "untargetableByTargeted",
     "untargetableByAll": "untargetableByTargeted",
     "dispelOverride": "dispelableOverride",
@@ -63,6 +62,7 @@ def main():
     ALLSTATUS = CLOSED | globs
 
     errors_all, warns_all = [], []
+    flagged_gaps = []  # frameworkFlags 已登记的缺口（非标准 event/fallbackSort），不再逐条 warn
     total_cards = 0
 
     def walk(effs, cid, path, flags, errors, warns):
@@ -133,7 +133,7 @@ def main():
         for i,tr in enumerate(trs or []):
             ev = tr.get("event")
             if ev not in EVENTS:
-                if flags: warns.append("%s %s.%d: nonstandard event %s (frameworkFlagged)"%(cid,path,i,ev))
+                if flags: flagged_gaps.append("%s %s.%d: nonstandard event %s"%(cid,path,i,ev))
                 else: errors.append("%s %s.%d: bad event %s"%(cid,path,i,ev))
             walk(tr.get("effects"), cid, "%s.t%d"%(path,i), flags, errors, warns)
 
@@ -161,7 +161,7 @@ def main():
                 elif c["reach"] not in REACH: errors.append("%s: bad reach"%cid)
                 fs = (c.get("target") or {}).get("fallbackSort")
                 if fs and fs not in SORTS:
-                    if flags: warns.append("%s: nonstandard fallbackSort %s (flagged)"%(cid,fs))
+                    if flags: flagged_gaps.append("%s: nonstandard fallbackSort %s"%(cid,fs))
                     else: errors.append("%s: bad fallbackSort %s"%(cid,fs))
                 if (c.get("target") or {}).get("selectionMode")=="manual" and not fs:
                     warns.append("%s: manual but fallbackSort null"%cid)
@@ -186,6 +186,7 @@ def main():
                         warns.append("%s sd %s: modifier '%s' 建议收敛为 '%s'"%(cid, sd.get("id"), k, MODIFIER_ALIASES[k]))
                 walk(sd.get("effects"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
                 trigs(sd.get("triggers"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
+                walk((sd.get("thresholdTrigger") or {}).get("effects"), cid, "sd:"+sd.get("id","?")+".tt", flags, errors, warns)
             if c.get("domainDef"): trigs(c["domainDef"].get("triggers"), cid, "dd", flags, errors, warns)
             flat = json.dumps(c.get("effects",[]), ensure_ascii=False)
             if ('"domain"' in flat or '"translocate"' in flat) and '"lost"' not in flat:
@@ -197,6 +198,9 @@ def main():
 
     print("-"*60)
     print("TOTAL cards:", total_cards, "| errors:", len(errors_all), "| warns:", len(warns_all))
+    if flagged_gaps:
+        print("已登记缺口（frameworkFlags）%d 项，不再逐条告警：" % len(flagged_gaps))
+        for g in flagged_gaps: print("  F:", g)
     return 1 if errors_all else 0
 
 if __name__ == "__main__":

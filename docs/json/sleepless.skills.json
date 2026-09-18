@@ -362,15 +362,23 @@
             "debuff"
           ],
           "dispelable": true,
-          "duration": 2,
-          "maxStacks": 1,
+          "duration": 3,
           "modifiers": {
-            "damage_mul": 0.8
+            "damage_mul": 0.8,
+            "excludeCasterTargeting": true
           },
-          "statMods": {
-            "attack": -3
-          },
-          "note": "与水手 v0.2 新增项 3 同名同参，复用同一 StatusDef；恐惧链三级复用（惊惧诗/恐惧灵光/恐惧权柄）"
+          "note": "与水手 v0.2 新增项 3 同名同参，复用同一 StatusDef；恐惧链三级复用（惊惧诗/恐惧灵光/恐惧权柄）",
+          "stackPolicy": "refresh",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -3,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self"
+            }
+          ]
         }
       ],
       "tentative": true
@@ -755,7 +763,7 @@
       "statusDefs": [
         {
           "id": "spirit_sight",
-          "name": "通灵之眼",
+          "name": "天然灵视",
           "category": [
             "buff"
           ],
@@ -764,16 +772,16 @@
           "modifiers": {
             "seeThroughStealth": true,
             "damage_mul": {
-              "value": 1.25,
+              "value": 1.3,
               "filter": {
                 "unitType": [
-                  "SPIRIT",
-                  "UNDEAD"
+                  "SPIRIT"
                 ]
-              }
+              },
+              "note": "原著限定「部分恶灵」：只给 SPIRIT，不给 UNDEAD"
             }
           },
-          "note": "收尸人【天然灵视】与本条同源同族（H42 常驻模板），建议并入同一 StatusDef"
+          "note": "与不眠者【通灵之眼】同源同族（H42），建议并入同一 StatusDef；本条为序列9 档引用副本"
         }
       ],
       "sharedAcross": [
@@ -1287,12 +1295,12 @@
       "statusDefs": [
         {
           "id": "shackle",
-          "name": "束缚",
+          "name": "枷锁",
           "category": [
             "control"
           ],
           "dispelable": true,
-          "duration": 3,
+          "duration": 2,
           "modifiers": {
             "moveImmune": true,
             "gaugeRateMul": 0.7
@@ -1334,14 +1342,14 @@
       "effects": [
         {
           "type": "mount_status",
-          "statusId": "misfortune",
+          "statusId": "bad_omen",
           "duration": 4
         }
       ],
       "statusDefs": [
         {
-          "id": "misfortune",
-          "name": "厄运",
+          "id": "bad_omen",
+          "name": "恶兆",
           "category": [
             "debuff"
           ],
@@ -1679,20 +1687,20 @@
       "effects": [
         {
           "type": "mount_status",
-          "statusId": "concealed",
+          "statusId": "stealth",
           "duration": 3,
           "target": "target"
         }
       ],
       "statusDefs": [
         {
-          "id": "concealed",
+          "id": "stealth",
           "name": "潜行",
           "category": [
             "conceal"
           ],
           "dispelable": true,
-          "duration": 3,
+          "duration": 2,
           "modifiers": {
             "untargetableByTargeted": {
               "direction": "inbound",
@@ -1708,7 +1716,7 @@
                   "target": "self",
                   "dispelTarget": "unit",
                   "filter": {
-                    "statusId": "concealed",
+                    "statusId": "stealth",
                     "count": 1
                   },
                   "note": "on_deal_damage 自动破除"
@@ -1716,7 +1724,7 @@
               ]
             }
           ],
-          "note": "H5 潜行母版 + C8（F4 shadow_veil / F11 stealth 同源）；权威定义见状态表，此处为引用副本"
+          "note": "H5 潜行母版 + C8（F4 shadow_veil / F11 stealth 同源）；权威定义见状态表，此处为引用副本｜2026-09-18 与 apothecary 隐身药水统一签名：def duration 3→2（各挂载点显式指定 duration，def 默认不生效）"
         }
       ],
       "sharedAcross": [
@@ -1753,13 +1761,13 @@
       "effects": [
         {
           "type": "mount_status",
-          "statusId": "sealed",
+          "statusId": "occult_seal",
           "duration": 4
         }
       ],
       "statusDefs": [
         {
-          "id": "sealed",
+          "id": "occult_seal",
           "name": "隐秘封印",
           "category": [
             "seal",
@@ -1768,12 +1776,12 @@
           "dispelable": true,
           "duration": 4,
           "modifiers": {
-            "untargetableByAll": {
+            "disable": "all",
+            "gaugeRateMul": 0,
+            "untargetableByTargeted": {
               "direction": "both",
               "note": "共享内核参数 §四 direction: both——连友军的治疗/增益也选不中"
-            },
-            "disable": "all",
-            "gaugeRateMul": 0
+            }
           },
           "note": "封印不免疫伤害：已挂载 dot 正常结算"
         }
@@ -1872,7 +1880,7 @@
           "dispelable": false,
           "duration": null,
           "modifiers": {
-            "dispelOverride": {
+            "dispelableOverride": {
               "categories": [
                 "conceal"
               ],
@@ -1886,7 +1894,7 @@
               "effects": [
                 {
                   "type": "mount_status",
-                  "statusId": "concealed",
+                  "statusId": "stealth",
                   "duration": 2,
                   "target": "self",
                   "note": "受击后痕迹被抹去，重新隐去"
@@ -1929,7 +1937,7 @@
           "steps": [
             {
               "type": "mount_status",
-              "statusId": "misfortune",
+              "statusId": "bad_omen",
               "duration": 5,
               "target": "all_enemies"
             },
@@ -2114,12 +2122,12 @@
             "control"
           ],
           "dispelable": true,
-          "duration": 3,
+          "duration": 6,
           "modifiers": {
             "targetOverride": {
               "op": "target_override",
               "anchor": "index_asc_same_faction",
-              "note": "H12 target_override 族：攻击强制打向其同阵营存活友军；优先于嘲讽/守护"
+              "note": "H12 target_override 族；优先于嘲讽/守护"
             }
           },
           "note": "F9 已登记（C7 同落）；权威定义见状态表，此处为引用副本"
@@ -2221,14 +2229,14 @@
               "effects": [
                 {
                   "type": "mount_status",
-                  "statusId": "concealed",
+                  "statusId": "stealth",
                   "duration": null,
                   "target": "self",
                   "note": "隐藏痕迹：自身常驻 concealed"
                 },
                 {
                   "type": "mount_status",
-                  "statusId": "concealed",
+                  "statusId": "stealth",
                   "duration": null,
                   "target": "all_allies",
                   "note": "己方全部召唤物常驻 concealed（filter isSummon，实现侧细化）"
@@ -2243,7 +2251,7 @@
                   "target": "self",
                   "dispelTarget": "unit",
                   "filter": {
-                    "statusId": "concealed",
+                    "statusId": "stealth",
                     "count": 1
                   },
                   "note": "自身造成伤害后破除"
@@ -2252,7 +2260,7 @@
             }
           ],
           "modifiers": {
-            "dispelOverride": {
+            "dispelableOverride": {
               "categories": [
                 "conceal"
               ],
@@ -2341,14 +2349,14 @@
       "effects": [
         {
           "type": "mount_status",
-          "statusId": "spirit_sovereign",
+          "statusId": "spirit_authority",
           "duration": null,
           "target": "self"
         }
       ],
       "statusDefs": [
         {
-          "id": "spirit_sovereign",
+          "id": "spirit_authority",
           "name": "灵体灵性权柄",
           "category": [
             "buff",

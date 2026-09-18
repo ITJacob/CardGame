@@ -603,13 +603,14 @@
           "dispelable": true,
           "duration": 3,
           "charges": 1,
-          "behaviorModifiers": [
-            {
-              "op": "target_override",
-              "anchor": "first_empty"
-            }
-          ],
-          "note": "C7 target_override 空坐标已验证；幻觉是愚弄的低阶版（单体/1 次/短）"
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "anchor": "first_empty",
+                "op": "target_override"
+              }
+            ]
+          }
         }
       ],
       "sharedAcross": [
@@ -930,10 +931,12 @@
           "dispelable": false,
           "duration": null,
           "modifiers": {
-            "damageDealtMul": 1.3,
-            "damageDealtMulFilter": {
-              "pathway": "fool"
-            }
+            "damage_mul": [
+              1.3,
+              {
+                "pathway": "fool"
+              }
+            ]
           },
           "note": "H4 过滤乘区支持按途径过滤（编队参数 §1.1b）"
         }
@@ -987,26 +990,21 @@
       "statusDefs": [
         {
           "id": "puppet_string",
-          "name": "灵体之线操控",
+          "name": "提线木偶",
           "category": [
+            "retarget",
             "control"
           ],
           "dispelable": true,
           "duration": 6,
-          "triggers": [
-            {
-              "event": "on_attack",
-              "effects": [
-                {
-                  "type": "target_override",
-                  "faction": "same_as_holder",
-                  "sort": "index_asc",
-                  "note": "目标强制改写为其同阵营存活友军（index_asc 破平）；puppet_string 优先于嘲讽/守护；on_attack 即时节点不受 duration 尺度影响（G15-b 修正，执行参数 §2.1）"
-                }
-              ]
+          "modifiers": {
+            "targetOverride": {
+              "op": "target_override",
+              "anchor": "index_asc_same_faction",
+              "note": "H12 target_override 族；优先于嘲讽/守护"
             }
-          ],
-          "note": "F9 已登记（编队参数 §2.4），sharedAcross 罪犯途径；此处为引用副本"
+          },
+          "note": "F9 已登记；权威定义见状态表，此处为引用副本"
         }
       ],
       "sharedAcross": [
@@ -1125,7 +1123,7 @@
             "isPuppet": true
           }
         },
-        "fallbackSort": null
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -1317,7 +1315,7 @@
           "faction": "any",
           "scope": "single"
         },
-        "fallbackSort": null
+        "fallbackSort": "atk_desc"
       },
       "effects": [
         {
@@ -1679,7 +1677,7 @@
           "duration": 2,
           "modifiers": {
             "untargetableByTargeted": true,
-            "damageTakenMul": 0.85
+            "damage_taken_mul": 0.85
           },
           "note": "与不眠者 concealed 同源同一母版；此处为引用副本"
         }
@@ -1809,7 +1807,7 @@
           "faction": "ally",
           "scope": "single"
         },
-        "fallbackSort": null
+        "fallbackSort": "atk_desc"
       },
       "effects": [
         {

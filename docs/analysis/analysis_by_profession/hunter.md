@@ -113,18 +113,18 @@
 
 **规模**：16 张技能（主动 11 / 被动 5）；稀有度分布：史诗×7、稀有×5、传说×4。
 
-**效果原语构成**（type，全量递归，共 50 处）：
+**效果原语构成**（type，全量递归，共 48 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 15 | 30.0% |
-| `damage` | 7 | 14.0% |
-| `modify_stat` | 15 | 30.0% |
-| `modify_resource` | 5 | 10.0% |
-| `dispel` | 2 | 4.0% |
-| `spawn` | 3 | 6.0% |
-| `domain` | 2 | 4.0% |
-| `transfer_status` | 1 | 2.0% |
+| `mount_status` | 15 | 31.2% |
+| `damage` | 7 | 14.6% |
+| `modify_stat` | 13 | 27.1% |
+| `modify_resource` | 5 | 10.4% |
+| `dispel` | 2 | 4.2% |
+| `spawn` | 3 | 6.2% |
+| `domain` | 2 | 4.2% |
+| `transfer_status` | 1 | 2.1% |
 
 **算子构成**（op，共 14 处）：
 
@@ -136,7 +136,7 @@
 | `target_override` | 2 |
 | `overlay` | 2 |
 
-**改动的属性（modify_stat，共 15 处）**：
+**改动的属性（modify_stat，共 13 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
@@ -145,8 +145,6 @@
 | `gauge.rate` | 2 |
 | `resist:physical` | 1 |
 | `resist:fire` | 1 |
-| `damage_mul` | 1 |
-| `damage_taken_mul` | 1 |
 
 **改动的资源（modify_resource，共 5 处）**：
 
@@ -164,11 +162,9 @@
 | debuff | 2 | 18.2% |
 
 **设计风格总结**：本轴偏【进攻·防御】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以叠甲、抬血上限与增益/架势类状态构筑防线，偏向站桩与减伤。
-签名原语为 `mount_status`(15)、`modify_stat`(15)、`damage`(7)；属性杠杆集中在 `attack`、`armor`、`gauge.rate`，资源杠杆集中在 `gauge.current`、`lost`、`shield`；挂载状态以 buff、debuff 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(15)、`modify_stat`(13)、`damage`(7)；属性杠杆集中在 `attack`、`armor`、`gauge.rate`，资源杠杆集中在 `gauge.current`、`lost`、`shield`；挂载状态以 buff、debuff 类型为主，构成其核心交互骨架。
 代表技能：
 - **战争权柄**：全体敌人陷入战争狂热（6 tick）：攻击最近的任何单位（不分阵营，敌我不分）、攻击 +3、护甲 -5；男性目标受伤 ×1.15（男性权柄）。
-
-> ⚠️ 数据质量：本轴有 2 处 `modify_stat` 的 `stat` 键不符合 schema 取值域：`skill_hunter_s1_massing_ascend`:`damage_mul`、`skill_hunter_s1_massing_ascend`:`damage_taken_mul`。
 
 
 ### 🏹 收割（harvest）
@@ -212,13 +208,6 @@
 代表技能：
 - **毁灭权柄**：全体敌人：8 点火焰伤害；生命值 ≤ 30% 的目标直接抹除（毁灭的彻底性：不是打伤，是不存在了）。
 
-
-## 三、职业级数据质量提示
-
-| 卡 id | 非标准 stat 键 | 建议 |
-|---|---|---|
-| `skill_hunter_s1_massing_ascend` | `damage_mul` | 改用 `modify_damage`（scope: dealt/taken） |
-| `skill_hunter_s1_massing_ascend` | `damage_taken_mul` | 改用 `modify_damage`（scope: dealt/taken） |
 
 ## 附：统计口径
 

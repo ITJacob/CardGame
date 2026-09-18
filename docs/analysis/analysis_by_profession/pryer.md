@@ -20,10 +20,9 @@
 | 状态类型 | 次数 | 占状态% |
 |---|---:|---:|
 | buff | 11 | 61.1% |
-| debuff | 4 | 22.2% |
-| control | 1 | 5.6% |
+| debuff | 3 | 16.7% |
+| control | 2 | 11.1% |
 | conceal | 2 | 11.1% |
-| retarget | 1 | 5.6% |
 | aura | 1 | 5.6% |
 
 ## 二、各构筑轴详解
@@ -151,12 +150,11 @@
 | 状态类型 | 次数 | 占本轴状态% |
 |---|---:|---:|
 | buff | 3 | 50.0% |
-| debuff | 2 | 33.3% |
-| control | 1 | 16.7% |
-| retarget | 1 | 16.7% |
+| debuff | 1 | 16.7% |
+| control | 2 | 33.3% |
 
 **设计风格总结**：本轴偏【进攻·控制】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以 debuff、换位、封印、重定向与驱散干扰敌方决策与站位。
-签名原语为 `mount_status`(14)、`damage`(11)、`modify_stat`(8)；属性杠杆集中在 `attack`、`defense`、`gauge.rate`，资源杠杆集中在 `gauge.current`；挂载状态以 buff、debuff、control、retarget 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(14)、`damage`(11)、`modify_stat`(8)；属性杠杆集中在 `attack`、`defense`、`gauge.rate`，资源杠杆集中在 `gauge.current`；挂载状态以 buff、control、debuff 类型为主，构成其核心交互骨架。
 代表技能：
 - **神秘再现**：若自身有法术学识层数：消耗全部层数 N，对目标造成 N 段各 3 点无元素伤害；若 N≥3 额外在己方队尾召唤卷轴造物并使自己隐秘知识 +1。无层数时退化为 3 点无元素伤害并使法术学识 +1。
 

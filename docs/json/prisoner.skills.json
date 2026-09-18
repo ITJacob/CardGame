@@ -438,14 +438,14 @@
       "effects": [
         {
           "type": "mount_status",
-          "statusId": "beast_form",
+          "statusId": "werewolf_form",
           "duration": 4,
           "target": "self"
         }
       ],
       "statusDefs": [
         {
-          "id": "beast_form",
+          "id": "werewolf_form",
           "name": "狼人化",
           "category": [
             "buff"
@@ -621,19 +621,21 @@
       "statusDefs": [
         {
           "id": "puppet_string",
-          "name": "傀儡线",
+          "name": "提线木偶",
           "category": [
+            "retarget",
             "control"
           ],
           "dispelable": true,
           "duration": 6,
           "modifiers": {
             "targetOverride": {
-              "trigger": "on_attack",
-              "note": "G15-b：触发点改为「单位发动攻击」即时节点，不受 duration 尺度影响；duration 6t 兜底"
+              "op": "target_override",
+              "anchor": "index_asc_same_faction",
+              "note": "H12 target_override 族；优先于嘲讽/守护"
             }
           },
-          "note": "复用 F9 已登记定义（H12 target_override 族，sharedAcross 含罪犯），此处为引用副本；前置是毒（与怨魂附身 charges 型对照：duration 型持续控制）"
+          "note": "F9 已登记；权威定义见状态表，此处为引用副本"
         }
       ],
       "sharedAcross": [
@@ -1939,8 +1941,8 @@
           "duration": 4,
           "modifiers": {
             "disableAllActions": true,
-            "healReceivedMul": 0,
-            "note": "disable 全部四行为（编队参数 §2.2 眩晕同字段）+ H21 禁疗（heal_received_mul:0，与 F20 petrify 同字段）"
+            "note": "disable 全部四行为（编队参数 §2.2 眩晕同字段）+ H21 禁疗（heal_received_mul:0，与 F20 petrify 同字段）",
+            "heal_received_mul": 0
           },
           "note": "比眩晕更彻底的控制：不可驱散、禁疗、时长 4t（眩晕常规 1t）"
         }
@@ -2123,7 +2125,8 @@
           "modifiers": {
             "moveImmune": true,
             "gaugeReductionImmune": true,
-            "runtimeDispelOverride": {
+            "note": "moveImmune / gaugeReductionImmune 已落 ddd（编队参数 §1.1b，H27/H31，与 F7 同字段正反面）——被缚住了所以推不动、拖不慢",
+            "dispelableOverride": {
               "statusIds": [
                 "shackle",
                 "transmute_curse",
@@ -2131,8 +2134,7 @@
               ],
               "dispelable": false,
               "note": "H8 运行时覆写（挂载方声明指定类别 dispelable:false，新增项 9，与愚者 9 同源同落点）：封印的绝对性"
-            },
-            "note": "moveImmune / gaugeReductionImmune 已落 ddd（编队参数 §1.1b，H27/H31，与 F7 同字段正反面）——被缚住了所以推不动、拖不慢"
+            }
           }
         }
       ],
