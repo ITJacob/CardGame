@@ -1,24 +1,49 @@
 {
   "pathwayId": "hunter",
   "pathwayName": "猎人",
-  "sourceFile": "../skill-design/猎人途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/猎人途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "flame": {
       "symbol": "🔥",
-      "name": "燃焚"
+      "name": "燃焚",
+      "statusId": "flame",
+      "enablers": [
+        "火鸦术",
+        "注火",
+        "燃烧之墙"
+      ]
     },
     "intrigue": {
       "symbol": "🕸",
-      "name": "阴谋"
+      "name": "阴谋",
+      "statusId": "taunt",
+      "enablers": [
+        "挑衅"
+      ]
     },
     "massing": {
       "symbol": "⚔",
-      "name": "集众"
+      "name": "集众",
+      "statusId": "massing",
+      "enablers": [
+        "集众·铁血"
+      ],
+      "payoffs": [
+        "借用能力",
+        "无限制分享",
+        "战争权柄"
+      ]
     },
     "harvest": {
       "symbol": "🏹",
-      "name": "收割"
+      "name": "收割",
+      "statusId": "weak_point",
+      "enablers": [
+        "猎人的感官",
+        "结构要点",
+        "弱点侦察"
+      ]
     }
   },
   "cards": [
@@ -68,7 +93,8 @@
       "sharedAcross": [
         "assassin"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：感知能力拆两条：① \"看到隐藏\"=识破隐匿（C8 候选池过滤）；② \"听见心跳\"=目标优选。同时给收割轴起手挂 `弱点` 基础标记，让 payoff 有起手层。⚠️D。"
     },
     {
       "id": "skill_hunter_s9_structural_eye",
@@ -112,7 +138,8 @@
       "sharedAcross": [
         "assassin"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"直观找到结构要点\"=打在结构最薄弱处=破甲。收割轴低序列地基。⚠️ 依赖 `armor_pierce`（H16）。⚠️D。"
     },
     {
       "id": "skill_hunter_s9_wild_survival",
@@ -166,7 +193,8 @@
           "note": "gauge.rate +6 的 stat 键与 D2 定价盲区",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：熊的强壮=hp+atk，猫的轻灵=（INV-S5 合规）落 `gauge_rate`。⚠️D（gauge_rate 定价 D2）。"
     },
     {
       "id": "skill_hunter_s9_pounce",
@@ -238,7 +266,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：低序列唯一输出手段，纯伤害撑骨架（同愚者【飞牌】口径）。⚠️D。"
     },
     {
       "id": "skill_hunter_s8_provoke",
@@ -304,7 +333,8 @@
       "sharedAcross": [
         "assassin"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：原著\"挑衅\"四合一：嘲讽（强攻你）+ 易伤（戳中弱点）+ 失去理智（降攻降防）。同时挂 `挑衅` 供【误导】【煽动】改写目标。⚠️D。"
     },
     {
       "id": "skill_hunter_s8_humiliation",
@@ -332,7 +362,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "target: attacker 依赖 F61 RedirectRule.to attacker（✅ 执行参数 §一，已落地）"
+        "target: attacker 依赖 F61 RedirectRule.to attacker（✅ 执行参数 §一，已落地）",
+        "翻译/语义：挑衅闭环：挑衅把它拉来打你，羞辱让每次被它打你都更脆。⚠️ 依赖 F61 `attacker`。⚠️D。"
       ]
     },
     {
@@ -418,7 +449,8 @@
       },
       "tentative": true,
       "conversionNotes": [
-        "burn 折算依赖 D4（🔴 未标）：若按 tick 快速结算，能量需上调至 4 或直伤砍到 2"
+        "burn 折算依赖 D4（🔴 未标）：若按 tick 快速结算，能量需上调至 4 或直伤砍到 2",
+        "翻译/语义：燃焚轴起手式：直伤 + 引燃（挂 `火焰`）。⚠️D（burn 折算 D4）。"
       ]
     },
     {
@@ -456,7 +488,8 @@
           "armorPierceRatio": 1.0
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：燃焚轴旗舰：压缩到极限的火焰=全额破甲，专打重甲。⚠️D。"
     },
     {
       "id": "skill_hunter_s7_wall_of_fire",
@@ -512,7 +545,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "burn 折算（D4）与 gauge.current 定价（D2）均 ⚠️；范围技能按敌方人数线性放大，需 4 人满编复核"
+        "burn 折算（D4）与 gauge.current 定价（D2）均 ⚠️；范围技能按敌方人数线性放大，需 4 人满编复核",
+        "翻译/语义：火墙=伤害+持续烧+被挡住（推后节奏）。G8 合规：无位移。⚠️D。"
       ]
     },
     {
@@ -581,7 +615,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "触发限定 removeReason: expired——被 dispel 则哑弹（稿面认可的反制面）；remove_reason 过滤依赖 H29 语义"
+        "触发限定 removeReason: expired——被 dispel 则哑弹（稿面认可的反制面）；remove_reason 过滤依赖 H29 语义",
+        "翻译/语义：零新机制落地：`on_remove` 触发已 fire。⚠️D。"
       ]
     },
     {
@@ -703,7 +738,8 @@
           "else": []
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"注火\"=让火烧更旺（延长 duration），把 burn 从临时伤变持续压力。黏合燃焚轴。⚠️D。"
     },
     {
       "id": "skill_hunter_s6_deceived",
@@ -763,7 +799,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "C7 target_override → first_empty 已端到端验证；C6 charges 已落地，零新依赖"
+        "C7 target_override → first_empty 已端到端验证；C6 charges 已落地，零新依赖",
+        "翻译/语义：阴谋轴旗舰：让对手打空（C7 已验证）。与【挑衅】闭环。⚠️D。"
       ]
     },
     {
@@ -822,7 +859,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "与 F9 puppet_string / F15 charm / F3 puppeteered / F19 countersuit 同属 F 组 target_override 状态族合并候选 3，落地时随母版收敛"
+        "与 F9 puppet_string / F15 charm / F3 puppeteered / F19 countersuit 同属 F 组 target_override 状态族合并候选 3，落地时随母版收敛",
+        "翻译/语义：被挑衅者的敌意转向己方队友。⚠️D。"
       ]
     },
     {
@@ -871,7 +909,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：精细化塑形附带战术位移（马刀勾拽）。⚠️D。"
     },
     {
       "id": "skill_hunter_s5_weak_point",
@@ -926,7 +965,8 @@
       "sharedAcross": [
         "assassin"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"从神秘学角度\"=看穿超凡防护，剥增益+挂易伤。收割轴旗舰 enabler。⚠️D。"
     },
     {
       "id": "skill_hunter_s5_harvest",
@@ -990,7 +1030,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "drain 无既有定价锚点（数值盲区）"
+        "drain 无既有定价锚点（数值盲区）",
+        "翻译/语义：收割=吸血+弱点追加。与【毁灭之矛】构成阶梯。⚠️D。"
       ]
     },
     {
@@ -1040,7 +1081,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"精准命中预定位置\"=对抗一切目标干扰/保护。⚠️D。"
     },
     {
       "id": "skill_hunter_s4_steel_body",
@@ -1107,7 +1149,8 @@
       "tentative": true,
       "conversionNotes": [
         "稿面状态名 iron_body 与战士途径 iron_body 撞名，转换时更名为 steel_body",
-        "带 duration 的 modify_stat 回滚依赖 v1.5 已修的计时机制，需确认"
+        "带 duration 的 modify_stat 回滚依赖 v1.5 已修的计时机制，需确认",
+        "翻译/语义：铁血骑士三身改造之一，纯防御。同序列集众轴奠基件。⚠️D。"
       ]
     },
     {
@@ -1235,7 +1278,8 @@
       "tentative": true,
       "conversionNotes": [
         "与燃烧之墙构成 B6 升级阶梯（序列2 明写远程轰炸全面升级），重复抽到按 B5 duplicatePolicy: upgrade 处理",
-        "burn 折算（D4）+ 范围随人数放大，需 4 人满编复核"
+        "burn 折算（D4）+ 范围随人数放大，需 4 人满编复核",
+        "翻译/语义：\"5–10 公里\"=AOE 全体+不可反击（brief §3 尺度类不搬）。⚠️D。"
       ]
     },
     {
@@ -1315,7 +1359,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "稿面退化方案备查：① 改固定 attack +3 + 友军死亡 on_death 监听 -1；② 分摊只对相邻友军；③ 共享视野并入猎人的感官"
+        "稿面退化方案备查：① 改固定 attack +3 + 友军死亡 on_death 监听 -1；② 分摊只对相邻友军；③ 共享视野并入猎人的感官",
+        "翻译/语义：**本途径主轴 enabler**。原著三件事全落：集中全队力、替队友扛伤、共享视野。集众槽随存活友军数累积，驱动 §〇 三档阈值。⚠️D（团队类定价盲区）。"
       ]
     },
     {
@@ -1432,7 +1477,8 @@
           "landed": false
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：集众槽≥2 解锁的 payoff：借用队友能力（降级为借属性）。⚠️D。"
     },
     {
       "id": "skill_hunter_s3_war_cry",
@@ -1494,7 +1540,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：群体士气：加攻+驱控+推条（推友军，G5/G6 合规）。⚠️D。"
     },
     {
       "id": "skill_hunter_s3_war_mist",
@@ -1651,7 +1698,8 @@
       "tentative": true,
       "conversionNotes": [
         "归属勘误：战争主教 = 猎人序列3，战士池同名卡已删除（2026-09-08 界域牌批次落定）",
-        "己方受伤 ×0.9 由 domainDef 触发器（modify_stat stat: damage_taken_mul）归一为 rulePatches empower(side: ally, stat: damage_taken_mul, mul: 0.9)——乘区不走 modify_stat.stat，战场参数 §一"
+        "己方受伤 ×0.9 由 domainDef 触发器（modify_stat stat: damage_taken_mul）归一为 rulePatches empower(side: ally, stat: damage_taken_mul, mul: 0.9)——乘区不走 modify_stat.stat，战场参数 §一",
+        "翻译/语义：集众轴主题界域：信息遮蔽（非对称全规则）。⚠️D。"
       ]
     },
     {
@@ -1807,7 +1855,8 @@
       "tentative": true,
       "conversionNotes": [
         "祭品 targetSpec OWN_SUMMON 走 filter casterOwned+isSummon（§一）；Manual 但稿面未给 fallbackSort，fallbackSort 置 null 待裁定",
-        "消灭祭品用 lethal damage 承载（对己方单位造成伤害已落，新增项 16）"
+        "消灭祭品用 lethal damage 承载（对己方单位造成伤害已落，新增项 16）",
+        "翻译/语义：集众轴旗舰：献祭换一次性神助。⚠️D。"
       ]
     },
     {
@@ -1854,7 +1903,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：集众↔收割 唯一交叉点：情报共享。⚠️D。"
     },
     {
       "id": "skill_hunter_s2_extreme_weather",
@@ -2128,7 +2178,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "紫火表现层（VFX/文案切换）为纯表现层，不进战斗内核（新增项 22）"
+        "紫火表现层（VFX/文案切换）为纯表现层，不进战斗内核（新增项 22）",
+        "翻译/语义：燃焚轴终局开关：挂上后本途径全部火系技能同时升档。⚠️D。"
       ]
     },
     {
@@ -2194,7 +2245,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "遗留 4：多人持有或增益过多时复制可能叠加爆炸，建议设每个友军同时最多持有 N 个被复制的增益（⚠️D）"
+        "遗留 4：多人持有或增益过多时复制可能叠加爆炸，建议设每个友军同时最多持有 N 个被复制的增益（⚠️D）",
+        "翻译/语义：集众槽≥3 解锁的 payoff：力量在队内自由流动。⚠️D。"
       ]
     },
     {
@@ -2278,7 +2330,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "遗留 2：被征服单位带 miracle/reviveOf 时先复活还是先转化未决，本稿主张征服优先，需定进复活结算链"
+        "遗留 2：被征服单位带 miracle/reviveOf 时先复活还是先转化未决，本稿主张征服优先，需定进复活结算链",
+        "翻译/语义：集众轴传说：身心臣服+死后转化。⚠️D。"
       ]
     },
     {
@@ -2356,7 +2409,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：集众轴\"祭品经济学\"终点：陷阱→士兵。⚠️D。"
     },
     {
       "id": "skill_hunter_s1_spear_of_ruin",
@@ -2418,7 +2472,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "遗留 3：execute 建议对 Boss/精英类单位设免疫白名单"
+        "遗留 3：execute 建议对 Boss/精英类单位设免疫白名单",
+        "翻译/语义：收割轴终焉：弱点已标记→带走。⚠️D。"
       ]
     },
     {
@@ -2486,7 +2541,8 @@
           "note": "阈值门控（存活友军 ≥3）内联于 modifiers[].condition；阈值 ⚠️D 待标（原 thresholdTrigger 结构 2026-09-18 并入）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：集众槽≥4 解锁整体乘区。⚠️D。"
     },
     {
       "id": "skill_hunter_s0_war_mandate",
@@ -2569,7 +2625,8 @@
       "conversionNotes": [
         "遗留 5：nearest_any 若最近单位是施法者本人则等于变相嘲讽，需明确是否排除施法者",
         "与嘲讽/守护/precision 优先级已裁定（执行参数 §一 + 聚合规则覆盖 + §四 识破分支）",
-        "男性权柄 ×1.15 由 gender_is If + modify_stat(stat: damage_taken_mul) 归一为 modifiers.damage_taken_mul { value, filter: { gender: male } }（H4 过滤乘区）；filter.gender 待内核裁定并登记 frameworkFlags"
+        "男性权柄 ×1.15 由 gender_is If + modify_stat(stat: damage_taken_mul) 归一为 modifiers.damage_taken_mul { value, filter: { gender: male } }（H4 过滤乘区）；filter.gender 待内核裁定并登记 frameworkFlags",
+        "翻译/语义：集众轴终焉权柄：敌我不分双刃剑。男性目标受伤加深（性别条件面）。⚠️D。"
       ],
       "frameworkFlags": [
         {
@@ -2851,6 +2908,73 @@
         },
         "fallbackSort": null
       }
+    }
+  ],
+  "designNote": "> **集众维度（灾祸之城系 §2.2 / 总览 §1）**：团队资源池机制（全局唯一），由本途径技能写入 `集众` 状态（enabler），随**存活友军数**累积；到阈值触发团队效果（payoff）。层级（照搬总览，以「存活友军数=集中到的队伍力量」建模）：\n> - **集众槽 ≥2**（队伍含 ≥2 存活友军集中）：解锁【借用能力】——读取队友一项长板\n> - **集众槽 ≥3**：解锁【无限制分享】——自身增益自动分发全队、全队互摊伤害\n> - **集众槽 ≥4（集众质变）**：全体友军伤害 ×1.2 + 自身受伤 ×0.8（整体乘区）\n>\n> **跨源质写入方**：母巢药师「兽群」可纳入集众池（见 §三 集众·兽群 crossPathway），使猎人成为全 22 途径最通用的组队核心。另 地狱之火 ↔ 永暗之河 收尸人「亡灵」（见 §三 地狱之火·亡者）。",
+  "sampleBuilds": [
+    {
+      "name": "A 燃焚纵火 🔥",
+      "actives": [
+        "火鸦术",
+        "炽白之枪",
+        "燃烧之墙",
+        "紫色火焰"
+      ],
+      "passives": [
+        "注火",
+        "结构要点",
+        "野外生存",
+        "精准"
+      ],
+      "playstyle": "火鸦点燃→注火续燃→炽白破甲→紫火升档。破甲打底，全系火伤"
+    },
+    {
+      "name": "B 阴谋挑衅 🕸",
+      "actives": [
+        "挑衅",
+        "误导",
+        "煽动",
+        "战争迷雾"
+      ],
+      "passives": [
+        "羞辱",
+        "猎人的感官",
+        "结构要点",
+        "心灵沟通"
+      ],
+      "playstyle": "挑衅吸火→羞辱越打越脆→误导打空/煽动打队友→迷雾兜底"
+    },
+    {
+      "name": "C 收割处决 🏹",
+      "actives": [
+        "扑杀",
+        "弱点侦察",
+        "收割",
+        "毁灭之矛"
+      ],
+      "passives": [
+        "精准",
+        "结构要点",
+        "猎人的感官",
+        "注火"
+      ],
+      "playstyle": "结构破甲→弱点侦察开窗口→收割吸血→弱点即死。唯一斩杀流"
+    },
+    {
+      "name": "D 集众战争 ⚔",
+      "actives": [
+        "借用能力",
+        "战吼",
+        "献祭祈求",
+        "以偶为兵"
+      ],
+      "passives": [
+        "集众·铁血",
+        "心灵沟通",
+        "集众质变",
+        "无限制分享"
+      ],
+      "playstyle": "布陷阱→以偶为兵转兵→借队友长板+战吼→献祭换爆发。队伍越大越强"
     }
   ]
 }

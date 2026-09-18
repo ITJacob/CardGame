@@ -1,7 +1,7 @@
 {
   "pathwayId": "planter",
   "pathwayName": "耕种者",
-  "sourceFile": "../skill-design/耕种者途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/耕种者途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "harvest": {
@@ -14,11 +14,22 @@
     },
     "alchemy": {
       "symbol": "🧪",
-      "name": "炼成"
+      "name": "炼成",
+      "statusId": "forged",
+      "enablers": [
+        "生命炼成",
+        "人偶制造"
+      ]
     },
     "blight": {
       "symbol": "☠",
-      "name": "荒芜"
+      "name": "荒芜",
+      "statusId": "blight_mark",
+      "enablers": [
+        "恶灵化",
+        "剥夺生命",
+        "荒芜"
+      ]
     }
   },
   "cards": [
@@ -98,7 +109,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：本途径低序列唯一攻击手段，撑起输出骨架（2.0 汇率刻意高于基准）。⚠️D。"
     },
     {
       "id": "skill_planter_s9_weather_omen",
@@ -158,7 +170,8 @@
           "note": "gauge.rate 修正按 modify_stat 表达，待内核裁定",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：大地轴 enabler：先手+挂 `大地`。推全体友军（G5/G6 合规，被动 fire 在调度前）。⚠️D。"
     },
     {
       "id": "skill_planter_s9_cultivated_seed",
@@ -229,7 +242,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：大地轴 enabler：延时兑现+产 `大地`。⚠️D。"
     },
     {
       "id": "skill_planter_s8_heal",
@@ -283,7 +297,8 @@
       "sharedAcross": [
         "apothecary"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：生命轴 enabler：产 `生命`+清 1 负面。A22 走 `heal`。⚠️D。"
     },
     {
       "id": "skill_planter_s8_surgery",
@@ -326,7 +341,8 @@
       "sharedAcross": [
         "apothecary"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：直伤+易伤铺增伤。与【力气】分「自用/帮队友」。⚠️D。"
     },
     {
       "id": "skill_planter_s8_soul_stitch",
@@ -384,7 +400,8 @@
           "note": "H7 + C6 charges（每场一次）；致死保护优先级链与 C4/G4 跨途径统一裁定（编队上下文 §十）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：生命轴 payoff：读 `生命` 层数放大免死治疗。依赖 `lethal_protect`+C6。⚠️D。"
     },
     {
       "id": "skill_planter_s8_give_life",
@@ -506,7 +523,8 @@
           "note": "H24 减速族 + H27 moveImmune（单体强控档）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：大地轴 enabler：造物+控制+产 `大地`。`vine_snare`：禁位移+减速+减攻。⚠️D。"
     },
     {
       "id": "skill_planter_s7_vermin_swarm",
@@ -542,7 +560,8 @@
           "note": "H1 基线：≈8 血 / attack 2 (poison) / gauge_rate 偏高；亡语 on_death → 相邻敌人 mount_status(poison,2t)（用亡语不用 on_spawn，A2 合规）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：大地轴 enabler：快攻带毒虫群（亡语炸毒）。A2：用亡语非 on_spawn。⚠️D。"
     },
     {
       "id": "skill_planter_s7_rain_or_shine",
@@ -623,7 +642,8 @@
         }
       ],
       "conversionNotes": [
-        "稿面条件为「己方平均生命% < 50%」；谓词集无全体平均值谓词，暂以 hp_percent(side:self) 为代表，待内核裁定"
+        "稿面条件为「己方平均生命% < 50%」；谓词集无全体平均值谓词，暂以 hp_percent(side:self) 为代表，待内核裁定",
+        "翻译/语义：大地轴 enabler：按战况取仪式+产 `大地`。⚠️D。"
       ]
     },
     {
@@ -658,7 +678,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "on_spawn 正用（本条语义就是每次登场重复触发，非 A2 禁止的「开局」语义）；全局 on_spawn 监听已落 ddd（执行参数 §2.1）"
+        "on_spawn 正用（本条语义就是每次登场重复触发，非 A2 禁止的「开局」语义）；全局 on_spawn 监听已落 ddd（执行参数 §2.1）",
+        "翻译/语义：大地轴 enabler：召唤流总引擎。on_spawn 正用（A2 不误用）。⚠️D。"
       ]
     },
     {
@@ -709,7 +730,8 @@
       "sharedAcross": [
         "apothecary"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：炼成轴起手：易伤+剥 1 buff。C2。⚠️D。"
     },
     {
       "id": "skill_planter_s6_hybrid_spawn",
@@ -794,7 +816,8 @@
       "sharedAcross": [
         "apothecary"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：炼成轴 enabler：产 `炼成`+随机增益（R5 非伤害维度）。⚠️D。"
     },
     {
       "id": "skill_planter_s6_venomous",
@@ -853,7 +876,8 @@
       "sharedAcross": [
         "apothecary"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：攻击带毒+自身抗毒。⚠️D。"
     },
     {
       "id": "skill_planter_s5_bear_form",
@@ -942,7 +966,8 @@
           "note": "H10 参数化形态母版（与 F10 beast_form 同母版两档）；F46 结论：化身不产生第二个单位，仅表现层；带 duration 修正到期回滚走账本条目 remaining"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：大地轴 payoff：读 `大地` 层数放大巨熊。H10 形态母版。⚠️D。"
     },
     {
       "id": "skill_planter_s5_subterranean",
@@ -1015,7 +1040,8 @@
           "note": "H5 潜行/虚化母版（与 F4/F11/愚者 disguise_form 同族，F 组合并候选 1）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：脱离前排+不可锁定（C8）+产 `大地`。G8 合规。⚠️D。"
     },
     {
       "id": "skill_planter_s5_mire",
@@ -1067,7 +1093,8 @@
           "note": "H24 减速族全体软控档（与 F7 shackle / vine_snare 同母版三档）；刷新 duration 不叠层"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：全体软控（减速+禁位移）。F7 减速族。⚠️D。"
     },
     {
       "id": "skill_planter_s5_nature_abhorrence",
@@ -1124,7 +1151,8 @@
           "note": "anchor <指定单位=该目标自身>（H12，新增项 5）；原著未解释该法术，此为设计推演（见稿面「原著存疑」1）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：荒芜轴 payoff：挂 `荒芜`+引仇恨。⚠️D。"
     },
     {
       "id": "skill_planter_s5_oak_child",
@@ -1160,7 +1188,8 @@
           "note": "H1 基线；自带 mount_status(bulwark,null)（树皮）+ 亡语 on_death → 相邻敌人 damage(physical,3)（倒下的树）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：大地轴 enabler：植物坦克召唤物。⚠️D。"
     },
     {
       "id": "skill_planter_s4_life_alchemy",
@@ -1212,7 +1241,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：炼成轴 enabler：产 `炼成`；读 `生命` 强化造物。⚠️D。"
     },
     {
       "id": "skill_planter_s4_healing_touch",
@@ -1266,7 +1296,8 @@
       "sharedAcross": [
         "apothecary"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：生命轴 payoff：大额瞬疗+全清三类（唯一解控卡）。A22。⚠️D。"
     },
     {
       "id": "skill_planter_s4_vitality_field",
@@ -1385,7 +1416,8 @@
       "tentative": true,
       "conversionNotes": [
         "F25 条目挂有「两稿属性冲突（hp 8/atk 3 vs hp 16/atk 4）」警示，汇总时必须定档",
-        "与收尸人亡灵线划清：本条为战斗中现杀现转的增量，不共享 sharedAcross"
+        "与收尸人亡灵线划清：本条为战斗中现杀现转的增量，不共享 sharedAcross",
+        "翻译/语义：荒芜轴 payoff：敌死转恶灵+挂 `荒芜`。与收尸人亡灵线划清（现杀现转）。⚠️D。"
       ]
     },
     {
@@ -1483,7 +1515,8 @@
           "note": "H2 stackThreshold / §1.1b thresholdTrigger；25% 阈值为设计取值（原著未给）；元素 none 让大地权柄乘区可覆盖"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：荒芜轴 enabler：持续流逝+阈值爆发（考验）。元素 none。⚠️D。"
     },
     {
       "id": "skill_planter_s3_return_to_earth",
@@ -1577,7 +1610,8 @@
       ],
       "conversionNotes": [
         "sd:death_trial 的卸载已由归一脚本写为 dispel filter.statusId: death_trial，与源稿「考验失败并卸载自身，每场对同一目标只结算一次」语义一致",
-        "revive_blocked 引用显式落为 modifiers.revive_blocked 的死亡结算字段表达（非独立机制状态），源稿「禁止复活」语义不变"
+        "revive_blocked 引用显式落为 modifiers.revive_blocked 的死亡结算字段表达（非独立机制状态），源稿「禁止复活」语义不变",
+        "翻译/语义：荒芜轴对死灵特化克制。⚠️D。"
       ],
       "tentative": true
     },
@@ -1643,7 +1677,8 @@
           "note": "H2 + H21（heal_received_mul 0.5 与 F20 petrify 同源复用）；「流逝至死」是过程故做 DOT"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：序列2「男性晋升变女性」为原著明确依据 → 标 **性别 女**（brief §12.1）。荒芜轴 flagship payoff：读 `荒芜` 放大流逝。⚠️D。"
     },
     {
       "id": "skill_planter_s2_earth_authority",
@@ -1698,7 +1733,8 @@
           "note": "H14 outgoing + H4 filter.element（新增项 7/8，与愚者 14 同源）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：性别 女（荒芜主母谱系）。荒芜/大地乘区引擎。⚠️D。"
     },
     {
       "id": "skill_planter_s2_doll_making",
@@ -1763,7 +1799,8 @@
           "note": "H11 计数型母版；初始 1 档；同场战斗不重置；旧人偶不换材质（规则③）。五档参数：泥土 hp18/atk3/物理/亡语相邻 gaugeRateMul0.85(2t)；植物 hp20/atk4/毒/再生1(整场)；岩浆 hp22/atk5/火/反伤2；矿石 hp26/atk5/物理/护甲+8；金属 hp24/atk7/shock/gauge.rate+8（全档 ⚠️D，召唤物基线统一重定）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：性别 女（荒芜主母谱系）。炼成轴 enabler：材质阶梯+产 `炼成`；读 `生命` 提速材质。⚠️D。"
     },
     {
       "id": "skill_planter_s2_wither_bloom_cycle",
@@ -1884,7 +1921,8 @@
           "note": "H5 潜行/虚化母版 + on_tick heal 载荷"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：大地轴 payoff：读 `大地` 强化自然之子。G8 合规。⚠️D。"
     },
     {
       "id": "skill_planter_s1_create_world",
@@ -2036,7 +2074,8 @@
       "tags": [
         "自然"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：大地轴主题界域。✅ 依赖已落。⚠️D。"
     },
     {
       "id": "skill_planter_s0_mother_nest",
@@ -2115,7 +2154,8 @@
           "note": "H1 + H11；本途径唯一同时踩住「生」与「死」两端的被动"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：生命轴 flagship payoff：读 `生命` 放大孕育。依赖全局监听。⚠️D。"
     },
     {
       "id": "skill_planter_s0_last_return",
@@ -2174,7 +2214,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：荒芜轴 payoff：双面体顶点（敌命回归+己魂归来）。⚠️D。"
     },
     {
       "id": "skill_planter_s0_nature_authority",
@@ -2235,7 +2276,75 @@
           "note": "H14 incoming + H8 + G4；复活优先级链见编队上下文 §十（H23）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：荒芜/大地 payoff：读 `大地` 强化封印抗性。⚠️D。"
+    }
+  ],
+  "designNote": "> **月相 节拍器（母巢系签名机制，母巢系 §2.2 / 总览 §1 咬合器⑤）**：母巢系的签名机制挂在**药师**途径（月相轮转串其四轴）。耕种者作为同系相邻途径，**借用月相区间**获得增益——当友方药师处于某月相时，耕种者的「生命/大地/荒芜」对应轴获得协同加成（详见各卡 payoff）。本途径自身不轮转月相，而是通过【丰饶反哺】【秽土净化】等跨系卡与药师月相、罪犯污秽互动，形成母巢双途径的耦合。\n>\n> **本途径主轴：生长 ↔ 荒芜 双面体**。【枯荣循环】把敌方身上的每一道 DOT 直接换算成己方治疗——这是生命轴与荒芜轴唯一的**直接耦合件**，没有它两轴只是平行线。",
+  "sampleBuilds": [
+    {
+      "name": "A 丰饶铺场 🌾",
+      "actives": [
+        "力气",
+        "催化种子",
+        "驱使虫豸",
+        "橡树之子"
+      ],
+      "passives": [
+        "预测天气",
+        "繁衍生长",
+        "生命充盈",
+        "枯荣循环"
+      ],
+      "playstyle": "先手铺场+每登场再长一圈，靠数量再生磨死"
+    },
+    {
+      "name": "B 医师续航 ✚",
+      "actives": [
+        "治疗",
+        "外科手术",
+        "给予生命",
+        "触碰痊愈"
+      ],
+      "passives": [
+        "缝合灵魂",
+        "万物母巢",
+        "自然权柄",
+        "预测天气"
+      ],
+      "playstyle": "产 `生命`+低血治疗×1.5，缝合灵魂免死，丰饶反哺"
+    },
+    {
+      "name": "C 炼成造物 🧪",
+      "actives": [
+        "生物洞悉",
+        "杂交造物",
+        "生命炼成",
+        "人偶制造"
+      ],
+      "passives": [
+        "剧毒体质",
+        "大地权柄",
+        "繁衍生长",
+        "缝合灵魂"
+      ],
+      "playstyle": "造物动物园+毒伤，魔像顶前、人偶随材质越造越凶"
+    },
+    {
+      "name": "D 荒芜亡灵 ☠",
+      "actives": [
+        "剥夺生命",
+        "回归大地",
+        "荒芜",
+        "最后回归之地"
+      ],
+      "passives": [
+        "恶灵化",
+        "大地权柄",
+        "自然权柄",
+        "万物母巢"
+      ],
+      "playstyle": "双面体：荒芜流逝+DOT转治疗，死者化恶灵，恶灵化·改读收尸人奴役"
     }
   ]
 }

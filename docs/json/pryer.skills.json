@@ -1,12 +1,17 @@
 {
   "pathwayId": "pryer",
   "pathwayName": "窥秘人",
-  "sourceFile": "../skill-design/窥秘人途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/窥秘人途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "scrying": {
       "symbol": "🜁",
-      "name": "窥秘"
+      "name": "窥秘",
+      "statusId": "pry",
+      "enablers": [
+        "窥秘之眼",
+        "窥秘权柄"
+      ]
     },
     "combat": {
       "symbol": "🜂",
@@ -18,7 +23,13 @@
     },
     "astral": {
       "symbol": "🜄",
-      "name": "星象信息"
+      "name": "星象信息",
+      "statusId": "astral",
+      "enablers": [
+        "星之巨柱",
+        "星桥",
+        "本我星象"
+      ]
     }
   },
   "cards": [
@@ -75,7 +86,8 @@
           "note": "稿面自认：候选池过滤（C8）未实现，识破部分当前不生效；若长期不落地需整体重做",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：反隐匿地基；起手 1 层 `窥秘`。依赖 C8。⚠️D。"
     },
     {
       "id": "skill_pryer_s9_rapid_ritual",
@@ -121,7 +133,8 @@
         "reader",
         "savant"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"施法门槛降低\"= 能量 + 免吟唱。起手 `窥秘`。⚠️D。"
     },
     {
       "id": "skill_pryer_s9_astro_divination",
@@ -163,7 +176,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "G5 铁律：不自推 gauge.current（自回合释放时行动条已清零），故推友军"
+        "G5 铁律：不自推 gauge.current（自回合释放时行动条已清零），故推友军",
+        "翻译/语义：预知=提前量；推友军（G5 合规）。起手 `星象`。⚠️D。"
       ]
     },
     {
@@ -202,7 +216,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "稿面契约注意：引擎 StatKey 无「智力」，v0.1 的 modify_stat(int,+2) 为无效键，本版改 energy_max / energy_regen"
+        "稿面契约注意：引擎 StatKey 无「智力」，v0.1 的 modify_stat(int,+2) 为无效键，本版改 energy_max / energy_regen",
+        "翻译/语义：知识广=能量池更大+恢复更快。起手 1 层 `法术`。⚠️D。"
       ]
     },
     {
@@ -313,7 +328,8 @@
           "note": "「目标行动条最高」无对应谓词（§三仅 gauge_above 阈值比较），暂记 gauge_rank 伪谓词，待裁定",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：\"许多流派\"= 条件化选招。起手 `法术`。⚠️D。"
     },
     {
       "id": "skill_pryer_s8_scholar_physique",
@@ -346,7 +362,8 @@
           "target": "self"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：直译血上限+防御。起手 `法术`。⚠️D。"
     },
     {
       "id": "skill_pryer_s7_illumination",
@@ -393,7 +410,8 @@
           "note": "C2 数组类别：照明破除依附于黑暗的状态（隐匿类与增益类同属 buff）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：破黑暗附着物=驱散增益/隐匿。起手 `法术`。⚠️D。"
     },
     {
       "id": "skill_pryer_s7_lightning_bolt",
@@ -430,7 +448,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "元素取 shock（原著「闪电术」；F63 已否决 lightning 立项，雷电复用 shock）"
+        "元素取 shock（原著「闪电术」；F63 已否决 lightning 立项，雷电复用 shock）",
+        "翻译/语义：火球锚点直译；起手 `法术`。⚠️D。"
       ]
     },
     {
@@ -478,7 +497,8 @@
           "mode": "delta"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：风=推。起手 `法术`。⚠️D。"
     },
     {
       "id": "skill_pryer_s7_forceful_hand",
@@ -541,7 +561,8 @@
           "note": "复用 F7 已登记定义（禁位移 + gauge_rate ×0.7）；权威定义见状态表，此处为引用副本，本卡为途径内最低序列首登记"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：隔空抓取后排。起手 `法术`。依赖 F7。⚠️D。"
     },
     {
       "id": "skill_pryer_s7_scattered_materials",
@@ -634,7 +655,8 @@
       "tentative": true,
       "conversionNotes": [
         "三条互斥随机各 33%：R3 须登记 RandomUsageRegistry，R4 单次抽样",
-        "三种附加期望价值不等（burn≈3 伤 / shackle≈1 次节奏 / 驱散浮动），需统一标定"
+        "三种附加期望价值不等（burn≈3 伤 / shackle≈1 次节奏 / 驱散浮动），需统一标定",
+        "翻译/语义：\"不同材料\"= 一次施法多种可能（R5：概率只挂附加，伤害固定）。起手 `法术`。⚠️D。"
       ]
     },
     {
@@ -712,7 +734,8 @@
       "sharedAcross": [
         "reader"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：解析=看穿并瓦解，并攒 `法术` 库。法术轴旗舰 enabler+payload：层数够则解析伤害更高。⚠️D。"
     },
     {
       "id": "skill_pryer_s6_scroll_frost",
@@ -906,7 +929,8 @@
       "sharedAcross": [
         "savant"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：高伤+压制。起手 `星象`。⚠️D。"
     },
     {
       "id": "skill_pryer_s5_stellar_traversal",
@@ -986,7 +1010,8 @@
           "note": "SS10 参数化减伤状态（H3 母版，与 F 组合并候选 2 同源）；位移仅为己方半场内后退，穿梭本体为减伤 + 反抢节奏"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：位移闪现+减伤反抢。星象轴 payoff：星象层数够则减伤更深。⚠️D。"
     },
     {
       "id": "skill_pryer_s5_star_bridge",
@@ -1039,7 +1064,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "G5 合规：推的是友军的 gauge.current，不是自己"
+        "G5 合规：推的是友军的 gauge.current，不是自己",
+        "翻译/语义：调度友军。星象轴 payoff：已挂星象目标调度更赚。⚠️D。"
       ]
     },
     {
@@ -1090,7 +1116,8 @@
       "sharedAcross": [
         "savant"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：星象轴旗舰：禁锢（禁位移+禁施法）。起手 `星象`；层数够则囚禁更久。⚠️D。"
     },
     {
       "id": "skill_pryer_s5_ego_constellation",
@@ -1162,7 +1189,8 @@
           "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge.rate) 表达常驻速率修正，待内核裁定归一",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：自身节奏与保底反打。起手 `星象`。⚠️D。"
     },
     {
       "id": "skill_pryer_s4_mystery_reenactment",
@@ -1272,7 +1300,8 @@
       "tentative": true,
       "conversionNotes": [
         "吟唱 ⚠️D → castTime null",
-        "Repeat 段数取自 status.consume 消耗值（跨效果传值 valueFrom 族）"
+        "Repeat 段数取自 status.consume 消耗值（跨效果传值 valueFrom 族）",
+        "翻译/语义：法术轴核心：解析攒 `法术` → 此卡连炸。层数够则追加直伤。依赖 spell_lore/f50。⚠️D。"
       ]
     },
     {
@@ -1337,7 +1366,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "吟唱 ⚠️D → castTime null"
+        "吟唱 ⚠️D → castTime null",
+        "翻译/语义：童话幻觉=打空。法术轴 payoff：层数够则多一次打空。复用 C7。⚠️D。"
       ]
     },
     {
@@ -1539,7 +1569,8 @@
       "conversionNotes": [
         "吟唱 ⚠️D → castTime null",
         "护甲带 duration 为容量语义，按归一纪律写 modify_stat（稿面即此写法）",
-        "G8 合规：近战攻击进程不调 move，突刺为 flavor"
+        "G8 合规：近战攻击进程不调 move，突刺为 flavor",
+        "翻译/语义：强攻=破甲处决。法术轴 payoff：层数够则追加直伤。⚠️D。"
       ]
     },
     {
@@ -1597,7 +1628,8 @@
           "note": "SS3 计数型状态（H11 母版，与 F1 inscription 同源）；回充不写在状态上，由各知识类技能效果显式 +1（零新依赖主方案）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：窥秘轴引擎：招式被复用=被看穿=减弱；动新知=增强。⚠️D。"
     },
     {
       "id": "skill_pryer_s5_astral_field",
@@ -1753,7 +1785,8 @@
       ],
       "conversionNotes": [
         "吟唱 ⚠️D → castTime null",
-        "SS21：F47 zone_astral_field 的落实，最终形态为界域牌，Zone 形态不再单立（2026-09-08 界域牌批次新增）"
+        "SS21：F47 zone_astral_field 的落实，最终形态为界域牌，Zone 形态不再单立（2026-09-08 界域牌批次新增）",
+        "翻译/语义：星象轴旗舰界域牌（星象/信息类主题）。⚠️D。"
       ]
     },
     {
@@ -1820,7 +1853,8 @@
       "conversionNotes": [
         "吟唱 ⚠️D → castTime null",
         "G5/G6 修正：弃 v0.1「自身 +30 / 目标 −25」自推无效写法，改推友军 + 拖敌人（与愚者命运干扰同构）",
-        "与阅读者【预言】命名重叠，汇总阶段待裁定（建议改称「星占」/「大预言」）"
+        "与阅读者【预言】命名重叠，汇总阶段待裁定（建议改称「星占」/「大预言」）",
+        "翻译/语义：预知=节奏。星象轴 payoff：星象标记下推拉更强（G5/G6 合规）。⚠️D。"
       ]
     },
     {
@@ -1949,7 +1983,8 @@
           "note": "识破部分同窥秘之眼依赖 C8（稿面自认未实现）；退化方案：驱散 count +1 替代无视不可驱散",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：窥秘轴权柄；层数够则驱散多拆一层。依赖 SS4。⚠️D。"
     },
     {
       "id": "skill_pryer_s2_informatization",
@@ -2028,7 +2063,8 @@
         }
       ],
       "conversionNotes": [
-        "吟唱 ⚠️D → castTime null"
+        "吟唱 ⚠️D → castTime null",
+        "翻译/语义：信息轴 enabler：信息化=免伤/闪避/不可选中。依赖 F4 潜行母版。⚠️D。"
       ]
     },
     {
@@ -2141,7 +2177,8 @@
       "tentative": true,
       "conversionNotes": [
         "吟唱 ⚠️D → castTime null",
-        "知识类技能：命中后应回充隐秘知识 +1（写在回充方技能效果里，本卡不在自身效果内重复声明）"
+        "知识类技能：命中后应回充隐秘知识 +1（写在回充方技能效果里，本卡不在自身效果内重复声明）",
+        "翻译/语义：知识攻击=精神直伤+施法负担；信息轴 payoff：信息化时攻击更致命。⚠️D。"
       ]
     },
     {
@@ -2212,7 +2249,8 @@
       "tentative": true,
       "conversionNotes": [
         "吟唱 ⚠️D → castTime null",
-        "「无 buff 可删」判定用共享内核 dispelled_count 谓词（valueFrom dispelledAmount 族）承载"
+        "「无 buff 可删」判定用共享内核 dispelled_count 谓词（valueFrom dispelledAmount 族）承载",
+        "翻译/语义：\"删除\"=对状态删除。信息轴 payoff：信息化时删除更多。⚠️D。"
       ]
     },
     {
@@ -2284,7 +2322,8 @@
       "tentative": true,
       "conversionNotes": [
         "吟唱 ⚠️D → castTime null",
-        "映射表为示例（gauge_rate+ → shackle 一条为推演），待拍板；分阶段建议：先上保守版（dispel 1 buff + mount vulnerable），映射表列为后续增强"
+        "映射表为示例（gauge_rate+ → shackle 一条为推演），待拍板；分阶段建议：先上保守版（dispel 1 buff + mount vulnerable），映射表列为后续增强",
+        "翻译/语义：\"修改\"=状态改写。信息轴 payoff：信息化时改写更多。依赖 transfer_status。⚠️D。"
       ]
     },
     {
@@ -2491,7 +2530,8 @@
           "note": "不可选中部分依赖 C8 候选池过滤（稿面自认未实现）；若长期不落地本卡需整体重做",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：常驻半隐匿、攻击即破。窥秘轴 payoff：层数够则减伤更深。⚠️D。"
     },
     {
       "id": "skill_pryer_s0_numeric_symbolism",
@@ -2572,7 +2612,8 @@
       "tentative": true,
       "conversionNotes": [
         "吟唱 ⚠️D → castTime null",
-        "分支条件 = 自身血量（SS19 SelfHpBelow 已并入 hp_percent side:self）；护盾 6 超「5 一档」由传说档权重与 cd 8 兜住，待验证"
+        "分支条件 = 自身血量（SS19 SelfHpBelow 已并入 hp_percent side:self）；护盾 6 超「5 一档」由传说档权重与 cd 8 兜住，待验证",
+        "翻译/语义：创造 vs 归零。信息轴 payoff：信息化时双模式更强。⚠️D。"
       ]
     },
     {
@@ -2658,7 +2699,75 @@
           "note": "原著下位四权柄（备份/复制/删除/修改）最「隐者」的一条：从备份还原的是状态不是生命；与愚者灵之虫（on_death→spawn 死后召回 4 次）不同"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：从备份还原。信息轴 payoff：信息化时多一次备份。依赖 snapshot/lethal_protect。⚠️D。"
+    }
+  ],
+  "designNote": "> **知识荒野系签名维度（依据《九大源质总览》§5）**：本系**无独立量表**，靠两类跨系桥获得全网价值：\n> - **信息删除改写命运**（↔光之钥）：窥秘人「删除/修改信息」直接作用于怪物预知的未来命运——命运总线上唯一能反向编辑命运的节点（§6.5）。见【命运删除】combo 卡。\n> - **信息修改同源重组**（↔源堡占卜家）：「删除/修改信息」与「重组/篡改/嫁接定义」是同一类概念层操作（§6.3）。见【篡改·信息】combo 卡。\n> 本稿另将 `窥秘`/`法术`/`星象`/`信息` 四状态做成 enabler→payoff 自循环，使本途径在无独立量表时仍有完整构筑引擎。",
+  "sampleBuilds": [
+    {
+      "name": "A 卷轴法术 🜃",
+      "actives": [
+        "闪电术",
+        "洒材料",
+        "法术解析",
+        "神秘再现"
+      ],
+      "passives": [
+        "神秘知识",
+        "隐秘知识",
+        "窥秘之眼",
+        "学者体魄"
+      ],
+      "playstyle": "法术解析攒 `法术`→神秘再现连炸；隐秘知识层数控强度，法术越攒越强"
+    },
+    {
+      "name": "B 星象信息 🜄",
+      "actives": [
+        "星之巨柱",
+        "星桥",
+        "预言",
+        "星象领域"
+      ],
+      "passives": [
+        "本我星象",
+        "窥秘权柄",
+        "隐匿权柄",
+        "备份"
+      ],
+      "playstyle": "全程抢节奏：星桥调度+预言推拉，星象领域全场星辉灼魂；信息化躲关键一击"
+    },
+    {
+      "name": "C 信息删除 🜄",
+      "actives": [
+        "信息化",
+        "删除",
+        "修改",
+        "命运删除"
+      ],
+      "passives": [
+        "隐秘知识",
+        "窥秘之眼",
+        "隐匿权柄",
+        "学者体魄"
+      ],
+      "playstyle": "信息战：信息化免伤，删除/修改拆体系，命运删除接怪物预知改写命运（combo）"
+    },
+    {
+      "name": "D 格斗强攻 🜂",
+      "actives": [
+        "格斗术",
+        "力场之手",
+        "朗基努斯之枪",
+        "知识攻击"
+      ],
+      "passives": [
+        "学者体魄",
+        "隐秘知识",
+        "窥秘权柄",
+        "备份"
+      ],
+      "playstyle": "力场之手拽后排→格斗术选流派→朗基努斯之枪处决；知识攻击在 hidden_knowledge 满层打出高精神伤"
     }
   ]
 }

@@ -1,24 +1,50 @@
 {
   "pathwayId": "corpse_collector",
   "pathwayName": "收尸人",
-  "sourceFile": "../skill-design/收尸人途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/收尸人途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "spirit_sight": {
       "symbol": "🜁",
-      "name": "灵视"
+      "name": "灵视",
+      "statusId": "spirit_sight",
+      "enablers": [
+        "天然灵视",
+        "死亡之眼",
+        "通灵"
+      ]
     },
     "corpse": {
       "symbol": "🜂",
-      "name": "尸骸"
+      "name": "尸骸",
+      "statusId": "corpse_trait",
+      "enablers": [
+        "尸体特质"
+      ]
     },
     "undead": {
       "symbol": "🜃",
-      "name": "亡者"
+      "name": "亡者",
+      "statusId": "puppet_string",
+      "enablers": [
+        "亡者标记",
+        "亡者之语"
+      ],
+      "payoffs": [
+        "完全死亡"
+      ]
     },
     "end": {
       "symbol": "🜄",
-      "name": "终末"
+      "name": "终末",
+      "statusId": "underworld",
+      "enablers": [
+        "冥界放出",
+        "冥界之门"
+      ],
+      "payoffs": [
+        "苍白世界"
+      ]
     }
   },
   "cards": [
@@ -86,7 +112,8 @@
       "sharedAcross": [
         "sleepless"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：尸骸轴身份状态 `尸性` 挂载源；与不眠者【通灵之眼】同源\"灵体无害\"。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s9_natural_sight",
@@ -136,7 +163,8 @@
       "sharedAcross": [
         "sleepless"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：灵视轴身份状态 `灵视` 挂载源（与不眠者【通灵之眼】同源骨架，本系常驻）。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s9_decay_breath",
@@ -229,7 +257,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：尸骸轴属性地板。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s8_death_eye",
@@ -312,7 +341,8 @@
       "sharedAcross": [
         "sleepless"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：灵视轴揭示弱点的招牌（读 `灵视` 的入口）；同状态 `weak_spot` 复用。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s8_spirit_whisper",
@@ -444,7 +474,8 @@
       "sharedAcross": [
         "sleepless"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：灵视轴旗舰：挂 `灵视` + 借灵施法（payoff 一体）。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s7_kin_of_spirits",
@@ -694,7 +725,8 @@
           "note": "F35 已落 H1 召唤物基线（hp 24 / atk 2 量级 ⚠️D）；本途径唯一坦克型召唤物"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：亡者轴唤起亡灵的地基。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s6_word_of_dead",
@@ -737,7 +769,8 @@
           "note": "「驱使乃至奴役」另立主动卡【驱使亡者】，本条只承载「绕过血肉保护」"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：亡者轴身份状态 `奴役` 主挂载源（枢纽状态 `puppet_string`）。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s6_drive_dead",
@@ -932,7 +965,8 @@
           "note": "H24 减速族 + H21 heal_received_mul（与 F20 petrify 同型）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：终末轴生命力流逝支路（读 `冥界` 前置）。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s5_underworld",
@@ -1047,7 +1081,8 @@
       "sharedAcross": [
         "sleepless"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：终末轴冥界挂载源；囚禁魂体。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s4_underworld_gate",
@@ -1200,7 +1235,8 @@
         "亡灵",
         "死亡"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：终末轴旗舰主题界域；读 `冥界` 给亡灵增益（payoff 一体）+ 写隐秘值。✅ 依赖已落。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s4_flesh_undying",
@@ -1444,7 +1480,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：终末轴即死（概率落 R3 登记 G1）。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s3_left_hand",
@@ -1775,7 +1812,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：亡者轴统御 payoff（读 `奴役` 体系，敌方亡灵掉头）。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s2_pale_kingdom",
@@ -1852,7 +1890,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：终末轴终焉界域，读 `冥界` 即死转化（payoff 一体）+ 写隐秘值。✅ 依赖已落。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s1_death_sentence",
@@ -1932,7 +1971,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：终末轴指名即死（读血量阈值）。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s1_pale_world",
@@ -2105,7 +2145,8 @@
         "亡灵",
         "死亡"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：终末轴能力凋零 payoff（读 `冥界` 放大）。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s1_spirit_master",
@@ -2298,7 +2339,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：终末轴终焉：生命/联系/烙印皆死一次给全。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s0_journeys_end",
@@ -2591,7 +2633,8 @@
           "scope": "single"
         },
         "fallbackSort": null
-      }
+      },
+      "conversionNotes": "翻译/语义：弱化不死大军，合撑\"亡者之王\"量级。⚠️D。"
     },
     {
       "id": "skill_corpse_collector_s4_spirit_lookout",
@@ -2719,6 +2762,73 @@
         },
         "fallbackSort": null
       }
+    }
+  ],
+  "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方之一）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。收尸人经\"灵体之线 / 冥界（隐秘型）\"等 +1/次（见【魂枢·隐秘】、【冥界之门】）。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（收尸人·奴役目标最稳）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次（本系可借此操控占卜家秘偶，占卜家也可操控本系亡灵）\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，收尸人是主消费方之一。",
+  "sampleBuilds": [
+    {
+      "name": "A 冥界亡潮 ⚰",
+      "actives": [
+        "亡者之语",
+        "唤起活尸",
+        "亡者低语",
+        "冥界之门"
+      ],
+      "passives": [
+        "尸体特质",
+        "天然灵视",
+        "灵性亲和",
+        "不死者之身"
+      ],
+      "playstyle": "铺亡灵铺场，冥界之门侵蚀+写隐秘值"
+    },
+    {
+      "name": "B 苍白终末 ⚱",
+      "actives": [
+        "死神使者",
+        "苍白低语",
+        "苍白世界",
+        "死亡之国"
+      ],
+      "passives": [
+        "尸性坚韧",
+        "魂枢·隐秘",
+        "天然灵视",
+        "尸骸低语"
+      ],
+      "playstyle": "终末轴即死+凋零，魂枢推隐秘值吃共鸣"
+    },
+    {
+      "name": "C 灵枢统御 👁",
+      "actives": [
+        "通灵",
+        "借灵之击",
+        "沟通灵群",
+        "灵之主宰·微"
+      ],
+      "passives": [
+        "天然灵视",
+        "灵性亲和",
+        "尸性坚韧",
+        "苍白皇帝·灵主"
+      ],
+      "playstyle": "灵视压制全场具备灵者，亡灵掉头"
+    },
+    {
+      "name": "D 秘偶·对偶 ⚰",
+      "actives": [
+        "亡者标记",
+        "灵之线嫁接",
+        "亡灵助燃",
+        "完全死亡"
+      ],
+      "passives": [
+        "尸体特质",
+        "魂枢·隐秘",
+        "不死者之身",
+        "灵性亲和"
+      ],
+      "playstyle": "吃占卜家/刺客线做完全秘偶+燃灵，封复活"
     }
   ]
 }

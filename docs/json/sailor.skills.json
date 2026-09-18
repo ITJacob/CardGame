@@ -1,16 +1,28 @@
 {
   "pathwayId": "sailor",
   "pathwayName": "水手",
-  "sourceFile": "../skill-design/水手途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/水手途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "rage": {
       "symbol": "🜁",
-      "name": "愤怒"
+      "name": "愤怒",
+      "statusId": "rage",
+      "enablers": [
+        "愤怒爆发"
+      ],
+      "payoffs": [
+        "暴怒一击"
+      ]
     },
     "storm": {
       "symbol": "🜂",
-      "name": "风暴"
+      "name": "风暴",
+      "statusId": "storm",
+      "payoffs": [
+        "海啸",
+        "风刃军团"
+      ]
     },
     "authority": {
       "symbol": "🜃",
@@ -18,7 +30,16 @@
     },
     "ocean": {
       "symbol": "🜄",
-      "name": "海洋"
+      "name": "海洋",
+      "statusId": "ocean",
+      "enablers": [
+        "海洋眷顾",
+        "水幕",
+        "深潜"
+      ],
+      "payoffs": [
+        "深潜"
+      ]
     }
   },
   "cards": [
@@ -67,7 +88,8 @@
       "sharedAcross": [
         "chanter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：输出地基。升级阶梯 +2→+3→+4。⚠️D。"
     },
     {
       "id": "skill_sailor_s9_scale_veil",
@@ -109,7 +131,8 @@
       "sharedAcross": [
         "chanter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"平衡+难抓握\"→免疫位移；减伤低于 vulnerable 反向量级。依赖新增项 4。⚠️D。"
     },
     {
       "id": "skill_sailor_s9_aquatic_agility",
@@ -172,7 +195,8 @@
           "note": "C6 charges:1 = 一次性闪避"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：机动性，零直伤。⚠️D。"
     },
     {
       "id": "skill_sailor_s8_rage_burst",
@@ -236,7 +260,8 @@
           "note": "statPerStack 内含 gauge.rate 键，同战士强健体魄待裁定",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：愤怒轴资源引擎。INV-S5 合规。⚠️D。"
     },
     {
       "id": "skill_sailor_s8_rage_swipe",
@@ -286,7 +311,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "稿面未给 fallbackSort，置 null 待补"
+        "稿面未给 fallbackSort，置 null 待补",
+        "翻译/语义：火球术级循环件；叠层+清结算闭环起点。⚠️D。"
       ]
     },
     {
@@ -357,7 +383,8 @@
       "tentative": true,
       "conversionNotes": [
         "定价红线：层数上限经愤怒之源 +3、暴君权柄 +5 后可达 13 → 3+2×13=29 伤/3 能量严重越线，落地前必须同时 clamp 换算系数（建议 1.5）与层数上限（锁 8）",
-        "分档退化方案（跨效果传值不落地时）：0 层 3 伤 / 1-2 层 6 伤 / 3-4 层 9 伤 / ≥5 层 13 伤，走 has_status 层数比较谓词"
+        "分档退化方案（跨效果传值不落地时）：0 层 3 伤 / 1-2 层 6 伤 / 3-4 层 9 伤 / ≥5 层 13 伤，走 has_status 层数比较谓词",
+        "翻译/语义：愤怒轴旗舰清算技。依赖 `valueFrom: statusStacks`（新增项 2）。⚠️ **定价红线**：层数上限经【愤怒之源】+3、【暴君权柄】+5 可达 13 → 须 clamp（系数 1.5、上限 8）。"
       ]
     },
     {
@@ -412,7 +439,8 @@
       "sharedAcross": [
         "chanter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：开局推条+免疫被推后。G5/G6 合规（被动）。依赖新增项 5。⚠️D。"
     },
     {
       "id": "skill_sailor_s7_ocean_blessing",
@@ -456,7 +484,8 @@
       "sharedAcross": [
         "chanter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"全方位\"→三维小幅。海语义落 `armor`（水元素退役→tag，原 `resist:water` 槽撤销）。⚠️D。"
     },
     {
       "id": "skill_sailor_s6_gale",
@@ -531,7 +560,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：风系 AOE 骨架。群体位移是硬资源。⚠️D。"
     },
     {
       "id": "skill_sailor_s6_wind_blade",
@@ -600,7 +630,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：纯直伤锚点（3 能/5 伤）。可被卓越力量线性放大。⚠️D。"
     },
     {
       "id": "skill_sailor_s6_hurricane_coil",
@@ -682,7 +713,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：复用 F7。⚠️D。"
     },
     {
       "id": "skill_sailor_s6_accel_glide",
@@ -765,7 +797,8 @@
           "note": "gauge.rate +8 常驻修正，同强健体魄",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：速率+滑翔脱战。charges 避 G15。依赖新增项 10。⚠️D。"
     },
     {
       "id": "skill_sailor_s6_deep_dive",
@@ -822,7 +855,8 @@
           "note": "H5 潜行母版（与 F4 shadow_veil / F11 stealth 同源，F 组合并候选 1）；与战士水银化 submerged 同名同族，权威定义建议归并状态表，此处为引用副本"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：隐匿=不可被单体锁定。依赖新增项 7。⚠️D。"
     },
     {
       "id": "skill_sailor_s5_lightning_arrow",
@@ -857,7 +891,8 @@
           "value": 5
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：雷系直伤锚点（lightning；2026-09-13 由 shock 改名）。⚠️D。"
     },
     {
       "id": "skill_sailor_s5_thunder_strike",
@@ -923,7 +958,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "稿面声明默认按退化方案落地：数据层给亡灵/灵体单位预置负 resist:lightning（如 -25）；此处仍登记条件分支（target_has_tag，新增项 11）供母版实现后切换"
+        "稿面声明默认按退化方案落地：数据层给亡灵/灵体单位预置负 resist:lightning（如 -25）；此处仍登记条件分支（target_has_tag，新增项 11）供母版实现后切换",
+        "翻译/语义：麻痹=`眩晕`；克亡灵=条件追加。依赖新增项 11/12。退化：亡灵预置负 `resist:lightning`（雷抗）；暗系单位另见编队参数 §1.3 负 `resist:holy`。⚠️D。"
       ]
     },
     {
@@ -1035,7 +1071,8 @@
       "sharedAcross": [
         "chanter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：一能力三用法。零 heal（原著无治疗）。⚠️D。"
     },
     {
       "id": "skill_sailor_s5_water_veil",
@@ -1074,7 +1111,8 @@
       "sharedAcross": [
         "chanter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：群体护盾。依赖新增项 14。⚠️D。"
     },
     {
       "id": "skill_sailor_s4_blade_legion",
@@ -1117,7 +1155,8 @@
           "note": "G3 运行时展开；shareTarget:false + 全体目标 → 每名敌人各承受 3 段。敌方存活单位数少于段数时的分配规则需实现显式约定"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：风暴轴旗舰 AOE。多段破盾/触发 `on_take_damage` 链/被加攻件逐段放大。依赖 G3。⚠️D。"
     },
     {
       "id": "skill_sailor_s4_tsunami",
@@ -1200,7 +1239,8 @@
       },
       "tentative": true,
       "conversionNotes": [
-        "本稿定价风险最高的卡：群体直伤 + 群体 debuff + 群体位移三重叠加，群体溢价系数无既有锚点（D4）"
+        "本稿定价风险最高的卡：群体直伤 + 群体 debuff + 群体位移三重叠加，群体溢价系数无既有锚点（D4）",
+        "翻译/语义：推+淹+击退三重。水元素已退役→tag，伤害走 none（F63 撤销）。⚠️D（群体溢价盲区）。"
       ]
     },
     {
@@ -1276,7 +1316,8 @@
           "note": "地震震慑，约为击退 -50 的五分之一"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：水→雷 combo：drowning 让 lightning 增幅。依赖 F52。⚠️D。"
     },
     {
       "id": "skill_sailor_s4_tornado",
@@ -1343,7 +1384,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：单体最强阵型破坏。⚠️D。"
     },
     {
       "id": "skill_sailor_s4_true_flight",
@@ -1405,7 +1447,8 @@
           "note": "H3 + H27；与 F10 beast_form 同属变身/形态族，建议并入参数化变身母版"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：换道+减伤+免疫位移。依赖新增项 4/9。⚠️D。"
     },
     {
       "id": "skill_sailor_s4_don_armor",
@@ -1452,7 +1495,8 @@
       "sharedAcross": [
         "chanter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：常驻护甲（护甲5一档）。⚠️D。"
     },
     {
       "id": "skill_sailor_s3_sea_kingdom",
@@ -1606,7 +1650,8 @@
         }
       ],
       "conversionNotes": [
-        "hero 域由 CombatSetup 注入、不收迷失租金——效果清单不含 modify_resource(lost) 段，符合迷失租金铁律的例外口径（租金只约束打出式 domain/translocate）"
+        "hero 域由 CombatSetup 注入、不收迷失租金——效果清单不含 modify_resource(lost) 段，符合迷失租金铁律的例外口径（租金只约束打出式 domain/translocate）",
+        "翻译/语义：海洋轴旗舰，全库首个 hero 域实例。✅ 依赖已落。⚠️D。"
       ]
     },
     {
@@ -1663,7 +1708,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：召唤海兽（F32/F33）。A2 合规。⚠️D。"
     },
     {
       "id": "skill_sailor_s3_lightning_storm",
@@ -1733,7 +1779,8 @@
           "note": "序列2「电磁紊乱」并入本卡附加条款，不单独立项"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：雷系对应风刃军团。电磁紊乱并入附加条款。依赖新增项 13。⚠️D。"
     },
     {
       "id": "skill_sailor_s3_annihilation_drop",
@@ -1795,7 +1842,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：穿透=绕过去（剥增益+清甲+高伤）。⚠️D。"
     },
     {
       "id": "skill_sailor_s3_sonic_boom",
@@ -1843,7 +1891,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "全稿第二高风险卡（仅次于海啸）：群体沉默无既有锚点（D3），需过验证脚本重定"
+        "全稿第二高风险卡（仅次于海啸）：群体沉默无既有锚点（D3），需过验证脚本重定",
+        "翻译/语义：物理冲击波+沉默。⚠️D（群体控制高风险）。"
       ]
     },
     {
@@ -1872,7 +1921,8 @@
       "tentative": true,
       "conversionNotes": [
         "叠层规则改写 +1→+2：需覆写 rage 的 on_take_damage 触发器叠层参数（statusDef 级覆写），与愤怒爆发互斥——挂载本状态后替代原触发器，待内核裁定覆写口径",
-        "数值红线：与暴君权柄（+5）叠加后上限 13，必须与暴怒一击换算系数一起 clamp（上限锁 8）"
+        "数值红线：与暴君权柄（+5）叠加后上限 13，必须与暴怒一击换算系数一起 clamp（上限锁 8）",
+        "翻译/语义：愤怒轴上位放大。⚠️D（与暴怒一击 一并 clamp）。"
       ]
     },
     {
@@ -1936,7 +1986,8 @@
           "note": "与 taunt 方向相反（都不敢打施法者）；refresh duration 不叠层防乘区指数化；「无法以施法者为目标」走 C8 §四 排除分支（可选增强）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：恐惧+服从。与嘲讽反向。依赖新增项 3。⚠️D。"
     },
     {
       "id": "skill_sailor_s2_calamity_descent",
@@ -2029,7 +2080,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：三种天灾各一变体。7 能最贵档。⚠️D。"
     },
     {
       "id": "skill_sailor_s1_divine_punishment",
@@ -2094,7 +2146,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：瓦解+净化+摧毁三时序。传说档越线额度正当用法。⚠️D。"
     },
     {
       "id": "skill_sailor_s1_light_incarnate",
@@ -2171,7 +2224,8 @@
           "note": "gauge.rate +8 段同强健体魄",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：物质性攻击难奏效+速率。加负抗为代价。⚠️D。"
     },
     {
       "id": "skill_sailor_s1_storm_hell",
@@ -2313,7 +2367,8 @@
           "note": "Zone 风压 gauge.rate ×0.9 段",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：雷神级 AOE。✅ 依赖已落。⚠️D。"
     },
     {
       "id": "skill_sailor_s0_tyrant_mandate",
@@ -2387,7 +2442,8 @@
       "tentative": true,
       "conversionNotes": [
         "「每层额外 damage_mul +0.05」是对 rage statPerStack 的增益乘区扩展（本稿新增项 1 的扩展用法）；退化方案：层数 ≥5 时挂 frenzy（damage_mul 1.25，duration 3）",
-        "on_deal_damage 触发器挂在施法者侧的承载状态 tyrant_dread 上，dread 定义见恐惧之音"
+        "on_deal_damage 触发器挂在施法者侧的承载状态 tyrant_dread 上，dread 定义见恐惧之音",
+        "翻译/语义：权柄轴旗舰，风暴/愤怒交汇点。依赖新增项 1/3。⚠️D。"
       ]
     },
     {
@@ -2455,7 +2511,8 @@
       "tentative": true,
       "conversionNotes": [
         "退化方案：固定 damage(physical, 6) + 清除防护（退化为毁灭水滴的 physical 版）",
-        "fallbackSort armor_desc（新增项 14）实现「专打重甲」语义；不做则按 hp_desc 兜底"
+        "fallbackSort armor_desc（新增项 14）实现「专打重甲」语义；不做则按 hp_desc 兜底",
+        "翻译/语义：防御物质转攻击伤害。依赖 `valueFrom: dispelledAmount`（新增项 8）。⚠️D。"
       ]
     },
     {
@@ -2683,6 +2740,73 @@
         },
         "fallbackSort": null
       }
+    }
+  ],
+  "designNote": "> **三元素分工 + 水→雷导电联动**：风=`physical`、雷=`lightning`、水=已退役（原 `water` 元素，现作 tag）。处于 `drowning` 目标受 `lightning` 伤害时追加（见【连环闪电】），让海洋/雷霆两轴互相喂。\n> **混沌海系签名维度 = 放牧(Grazing)**：见下方维度说明；水手经 combo 卡（【雷霆·亡灵克星】读取友方歌颂者/永暗之河亡灵标记、【放牧·借雷】读取友方秘祈人 `放牧` 槽）接入。",
+  "sampleBuilds": [
+    {
+      "name": "A 愤怒清算 🜄",
+      "actives": [
+        "暴怒挥击",
+        "暴怒一击★",
+        "风刃",
+        "天罚"
+      ],
+      "passives": [
+        "愤怒爆发",
+        "愤怒之源",
+        "卓越力量",
+        "披甲"
+      ],
+      "playstyle": "前排挨打攒怒，风刃维持输出，暴怒一击清算，天罚收残血"
+    },
+    {
+      "name": "B 风暴洗地 🜃",
+      "actives": [
+        "风刃军团★",
+        "连环闪电",
+        "狂风",
+        "闪电风暴"
+      ],
+      "passives": [
+        "天文地理直觉",
+        "加速与滑翔",
+        "卓越力量",
+        "海洋眷顾"
+      ],
+      "playstyle": "抢先手，海啸/友方挂 drowning 后连环闪电导电，多段洗地"
+    },
+    {
+      "name": "C 海洋铺场 🜁",
+      "actives": [
+        "海啸",
+        "海兽呼唤",
+        "水幕",
+        "毁灭水滴"
+      ],
+      "passives": [
+        "海王领域★",
+        "深潜",
+        "海洋眷顾",
+        "幻鳞"
+      ],
+      "playstyle": "领域拖慢磨血，海兽铺场，水幕保队，毁灭水滴专杀护甲流"
+    },
+    {
+      "name": "D 暴君统治 🜃",
+      "actives": [
+        "恐惧之音",
+        "真正飞行",
+        "物质转化",
+        "天罚"
+      ],
+      "passives": [
+        "暴君权柄★",
+        "光之化身",
+        "幻鳞",
+        "愤怒爆发"
+      ],
+      "playstyle": "权柄削攻，恐惧压输出，真正飞行+光之化身双抗，天罚收割"
     }
   ]
 }

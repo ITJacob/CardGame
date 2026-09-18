@@ -1,24 +1,35 @@
 {
   "pathwayId": "arbiter",
   "pathwayName": "仲裁人",
-  "sourceFile": "../skill-design/仲裁人途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/仲裁人途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "jurisdiction": {
       "symbol": "🜁",
-      "name": "辖区"
+      "name": "辖区",
+      "statusId": "辖区"
     },
     "sanction": {
       "symbol": "🜂",
-      "name": "惩戒"
+      "name": "惩戒",
+      "statusId": "惩戒"
     },
     "inquest": {
       "symbol": "🜃",
-      "name": "审讯"
+      "name": "审讯",
+      "statusId": "过目标记",
+      "enablers": [
+        "过目不忘",
+        "察觉异常"
+      ]
     },
     "decree": {
       "symbol": "🜄",
-      "name": "律令"
+      "name": "律令",
+      "statusId": "律令（规则）",
+      "enablers": [
+        "立规"
+      ]
     }
   },
   "cards": [
@@ -45,7 +56,8 @@
           "target": "all_enemies"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：权威=削弱对手攻击意志（非减伤）。并挂 `辖区` 身份状态让辖区轴起手。⚠️D。"
     },
     {
       "id": "skill_arbiter_s9_submit",
@@ -105,7 +117,8 @@
       "sharedAcross": [
         "lawyer"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"不自觉屈服\"=下一次攻击打向空处（C7 已验证）。审讯轴起手标记（打空本身即\"让对方放弃这一击\"）。⚠️D。"
     },
     {
       "id": "skill_arbiter_s9_martial_arts",
@@ -173,7 +186,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：本途径「火球术」锚点：3 能 5 伤。G8 合规（`reach: melee` 不调 move）。⚠️D。"
     },
     {
       "id": "skill_arbiter_s8_photographic_memory",
@@ -226,7 +240,8 @@
       "sharedAcross": [
         "lawyer"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：审讯轴旗舰 enabler：体系入口，让后续所有\"针对\"有根。⚠️D。"
     },
     {
       "id": "skill_arbiter_s8_jurisdiction",
@@ -316,7 +331,8 @@
           "note": "ZoneDef 内 gauge_rate ×0.9 乘区表达，待内核裁定统一口径",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：辖区轴核心 enabler：区域增益+干扰双向。写入秩序度 +1 接通战场量表族。⚠️D。"
     },
     {
       "id": "skill_arbiter_s8_anomaly_sense",
@@ -366,7 +382,8 @@
       "sharedAcross": [
         "lawyer"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：审讯轴 enabler：被动常驻+对任何异常目标加成。与【混乱感应】差异：本条全体、被动。⚠️D。"
     },
     {
       "id": "skill_arbiter_s7_mind_pierce",
@@ -405,7 +422,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：审讯轴直伤 enabler：绕过 armor/shield 直接结算（与普伤唯一区别）。⚠️D。"
     },
     {
       "id": "skill_arbiter_s7_whip_of_pain",
@@ -460,7 +478,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：审讯具象化：mental 伤+抖出buff+闭嘴。⚠️D。"
     },
     {
       "id": "skill_arbiter_s7_demolition",
@@ -502,7 +521,8 @@
           "note": "对目标相邻单位（共享内核 §一 spread: splash_adjacent）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：惩戒轴 AOE 地基。⚠️D。"
     },
     {
       "id": "skill_arbiter_s7_weapon_mastery",
@@ -527,7 +547,8 @@
           "target": "self"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：惩戒轴数值地基，全输出卡吃此加成。⚠️D。"
     },
     {
       "id": "skill_arbiter_s6_decree",
@@ -630,7 +651,8 @@
           "note": "decree 状态族的 rule / punishment 字段未落 ddd，卡住立规 / 禁制追击 / 秩序领域 3 张卡",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：**本途径灵魂 enabler**：把 v0.2 的单体 `decree` 升级为**写入规则槽**（战场级共享棋盘）。立规同时挂 `律令（规则）` 身份状态、推秩序度 +1。律师可改此槽（见《律师 v0.3》）。⚠️ `规则槽 Rules[3]` 为新增战场物件（本稿框架改动 #1）。退化方案：单 `decree` 状态，代价失\"共享棋盘\"辨识度。"
     },
     {
       "id": "skill_arbiter_s6_forbid",
@@ -678,7 +700,8 @@
       "sharedAcross": [
         "lawyer"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：硬禁令（封口）；与【立规】分工=无条件的封 vs 有条件的立法。⚠️D。"
     },
     {
       "id": "skill_arbiter_s6_imprison",
@@ -739,7 +762,8 @@
           "note": "复用 F7 已登记定义（禁 move + gauge_rate ×0.7）；权威定义见状态表，此处为引用副本"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：双层锁定（不能动+不能被位移）。⚠️D。"
     },
     {
       "id": "skill_arbiter_s6_lashing",
@@ -784,7 +808,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：廉价连击件：4 伤+易伤为【处决】【审判之剑】铺路。⚠️D。"
     },
     {
       "id": "skill_arbiter_s6_authority_shift",
@@ -910,7 +935,8 @@
           "note": "全场唯一持有者 + 改判自动卸载语义未落 ddd（新增项 8 🟡）",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：惩戒轴核心 enabler：聚焦火力引擎。审讯轴闸门生效（被标记目标额外加成），把废轴变必过节点。⚠️D。"
     },
     {
       "id": "skill_arbiter_s5_punitive_pursuit",
@@ -965,7 +991,8 @@
           "note": "同立规，依赖 decree 状态族 rule / punishment 字段",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：律令轴 payoff：规则槽写入\"必中追击\"。与【惩戒】耦合=同敌叠\"7 点必中\"。⚠️D。"
     },
     {
       "id": "skill_arbiter_s5_full_moon",
@@ -1103,7 +1130,8 @@
         "秩序",
         "律令"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：主题界域牌（brief §10.4 列仲裁人满月）。不创规则，让已有律令更重、违背者更痛。⚠️D。"
     },
     {
       "id": "skill_arbiter_s4_edict_reality_rise",
@@ -1165,7 +1193,8 @@
         "秩序",
         "律令"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：律令轴形态跃迁：从单体禁令→全体持续压制。推秩序度 +1。⚠️D。"
     },
     {
       "id": "skill_arbiter_s4_deprivation",
@@ -1215,7 +1244,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：彻底收缴增益。⚠️D。"
     },
     {
       "id": "skill_arbiter_s4_exile",
@@ -1293,7 +1323,8 @@
           }
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：G8 合规（push_back 锁己方半场）。`exiled`=不可被同阵营增益/治疗/守护选中。⚠️D。"
     },
     {
       "id": "skill_arbiter_s4_execution",
@@ -1346,7 +1377,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：阈值斩杀。低血线 9 伤带审讯/惩戒标记更痛。⚠️D。"
     },
     {
       "id": "skill_arbiter_s4_intimidation",
@@ -1459,7 +1491,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：惩戒轴 payoff：对混乱/失控者直接审判。`never_miss` 无视规避。铁序加成接通秩序度维度。⚠️D。"
     },
     {
       "id": "skill_arbiter_s3_chaos_sense",
@@ -1512,7 +1545,8 @@
           "note": "可转移：目标死亡时经 on_death 全局监听重算并改锁下一个（效果上下文 §2.1 transfer_status）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：审讯轴 payoff 之追猎件。与【过目标记】叠加同目标可吃 +3。⚠️D。"
     },
     {
       "id": "skill_arbiter_s3_battlefield_split",
@@ -1579,7 +1613,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：辖区轴切断支援。G8 合规。⚠️D。"
     },
     {
       "id": "skill_arbiter_s3_blink_step",
@@ -1627,7 +1662,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：辖区轴机动+微续航。G8 合规（己方半场内）。⚠️D。"
     },
     {
       "id": "skill_arbiter_s2_equalize",
@@ -1699,7 +1735,8 @@
         }
       ],
       "conversionNotes": [
-        "稿面 equalize_stat 已落 ddd（modify_stat.mode: set + sourceRef，✅ 新增项 4）；排除 hp/hp_max/energy 系（稿面设计取值）"
+        "稿面 equalize_stat 已落 ddd（modify_stat.mode: set + sourceRef，✅ 新增项 4）；排除 hp/hp_max/energy 系（稿面设计取值）",
+        "翻译/语义：律令轴平衡件：拉平四项（排除 hp/energy）。INV-S5 合规。⚠️D。"
       ]
     },
     {
@@ -1767,7 +1804,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：律令轴：分割为了平衡（与序列3 分割为了猎杀互补）。⚠️D。"
     },
     {
       "id": "skill_arbiter_s2_imbalance_sense",
@@ -1886,7 +1924,8 @@
           "note": "decree 全体挂载 + 规则参数依赖新增项 2（🔴）；Zone 跨场落位待拍板（退化=己方全场 Zone + 敌方全体 decree，机制不变）",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：律令轴战场级立规（辖区的 Ⅲ 档）：全体挂规则+推秩序度。⚠️D。"
     },
     {
       "id": "skill_arbiter_s1_abolition",
@@ -1977,7 +2016,8 @@
         ],
         "note": "纯规则锁，无周期载荷——抽走既存界域由本卡 Sequence 前段的 dispel(domain) 承载，不入 DomainDef"
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：律令轴清场重写（非底层）。规则改写由界域承载（brief §9.1）。⚠️D。"
     },
     {
       "id": "skill_arbiter_s1_quell_anomaly",
@@ -2057,7 +2097,8 @@
           }
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：审讯轴反制：群体剥夺+后续压制。⚠️D。"
     },
     {
       "id": "skill_arbiter_s0_judgment",
@@ -2139,7 +2180,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "Repeat 按状态数量展开依赖 G3 valueFrom（✅ 已落：编目参数 §一 Repeat.count 支持 valueFrom）；退化方案：若 ≥3 个负面状态则追加 damage(mental,6)，失去逐条清算仪式感"
+        "Repeat 按状态数量展开依赖 G3 valueFrom（✅ 已落：编目参数 §一 Repeat.count 支持 valueFrom）；退化方案：若 ≥3 个负面状态则追加 damage(mental,6)，失去逐条清算仪式感",
+        "翻译/语义：惩戒轴终焉 payoff：按罪状累加+全场波及。规则槽非空时额外强化（与律师共享棋盘联动）。⚠️D。"
       ]
     },
     {
@@ -2271,7 +2313,8 @@
         "规则",
         "秩序"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：律令轴终焉：终局态 `秩序度=10` 解锁（改写底层+赋予豁免）。⚠️D。"
     },
     {
       "id": "skill_arbiter_s0_forced_balance",
@@ -2600,6 +2643,73 @@
           "note": "与 lawyer/stratum 同构的位格双乘区，压在 ±25% 内"
         }
       ]
+    }
+  ],
+  "designNote": "> **律令轴 = 规则槽发动机**：仲裁人经「立规 / 秩序领域 / 废止」写入规则槽；敌方（或友方律师）违背 `trigger` 时自动执行 `punishment`。规则槽是失序之国两途径**唯一共享棋盘**（详见本节「本系咬合器维度」）。\n> 律师不在本稿立规，但改规（扭曲/独享规则/重定义/定义·替身）——见《律师途径 v0.3》。**本系共享棋盘优先于共享状态**（P2）。",
+  "sampleBuilds": [
+    {
+      "name": "A 惩戒执行 🜂",
+      "actives": [
+        "格斗术",
+        "鞭打",
+        "惩戒",
+        "处决"
+      ],
+      "passives": [
+        "精通武器",
+        "过目不忘",
+        "察觉异常",
+        "混乱感应"
+      ],
+      "playstyle": "【惩戒】钉目标（被标记×1.1），格斗术+鞭打轮流砸，30%血【处决】收。四张主动全低费，靠频率+增伤"
+    },
+    {
+      "name": "B 立法审判 🜄",
+      "actives": [
+        "立规",
+        "禁止",
+        "律令·神秘减弱",
+        "审判"
+      ],
+      "passives": [
+        "过目不忘",
+        "混乱感应",
+        "中止奇异",
+        "信服与权威"
+      ],
+      "playstyle": "立规写入规则槽→序盘+1，律令压全场，审判按槽内规则数+负面累加。围绕规则槽与秩序度"
+    },
+    {
+      "name": "C 辖区分割 🜁",
+      "actives": [
+        "辖区",
+        "分割战场",
+        "五五开",
+        "秩序领域"
+      ],
+      "passives": [
+        "信服与权威",
+        "过目不忘",
+        "混乱感应",
+        "近瞬移"
+      ],
+      "playstyle": "铺辖区抢主场推秩序度，分割断链，五五开拉平核心，秩序领域为整场立法"
+    },
+    {
+      "name": "D 审讯追猎 🜃",
+      "actives": [
+        "精神刺穿",
+        "痛苦之鞭",
+        "审判之剑",
+        "安魂审判"
+      ],
+      "passives": [
+        "过目不忘",
+        "察觉异常",
+        "混乱感应",
+        "精通武器"
+      ],
+      "playstyle": "标记+感应算清谁该死，精神刺穿贯灵体，审判之剑对失控者直接审判，安魂审判超度亡灵（跨系）"
     }
   ]
 }

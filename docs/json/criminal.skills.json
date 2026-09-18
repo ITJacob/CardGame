@@ -1,24 +1,49 @@
 {
   "pathwayId": "criminal",
   "pathwayName": "罪犯",
-  "sourceFile": "../skill-design/罪犯途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/罪犯途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "vice": {
       "symbol": "🜁",
-      "name": "恶欲"
+      "name": "恶欲",
+      "statusId": "lust",
+      "enablers": [
+        "掌控欲望",
+        "欲望爆炸"
+      ]
     },
     "filth": {
       "symbol": "🜂",
-      "name": "污秽"
+      "name": "污秽",
+      "statusId": "filth",
+      "enablers": [
+        "污秽之语",
+        "侵蚀者"
+      ]
     },
     "elements": {
       "symbol": "🜃",
-      "name": "领域"
+      "name": "领域",
+      "enablers": [
+        "强酸沼泽",
+        "腐蚀毒雾"
+      ],
+      "payoffs": [
+        "地狱之火",
+        "深渊之火"
+      ]
     },
     "demon": {
       "symbol": "🜄",
-      "name": "恶魔"
+      "name": "恶魔",
+      "statusId": "rite_mark",
+      "enablers": [
+        "恶魔仪式"
+      ],
+      "payoffs": [
+        "深渊召唤"
+      ]
     }
   },
   "cards": [
@@ -53,7 +78,8 @@
           "target": "self"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：序列9 首词直译，恶魔化/身体权柄数值地基。⚠️D。"
     },
     {
       "id": "skill_criminal_s9_keen_intuition",
@@ -93,7 +119,8 @@
           "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge.rate) 表达常驻修正，待内核裁定归一",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：\"直觉\"落地为节奏+精神抗性。INV-S5 合规。⚠️D。"
     },
     {
       "id": "skill_criminal_s9_crime_abilities",
@@ -173,7 +200,8 @@
       "sharedAcross": [
         "prisoner"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：本途径\"火球术\"：低费直伤。同时推高恶欲值（产能方身份）。概率只作用于是否附加 `vulnerable`（R5 合规）。⚠️D。"
     },
     {
       "id": "skill_criminal_s9_weapon_mastery",
@@ -274,7 +302,8 @@
           }
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：恶欲轴广谱加伤（为后续读恶欲值阈值铺垫）。⚠️D。"
     },
     {
       "id": "skill_criminal_s8_slow",
@@ -332,7 +361,8 @@
       "sharedAcross": [
         "prisoner"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：污秽轴节奏工具。⚠️D。"
     },
     {
       "id": "skill_criminal_s8_demon_spells",
@@ -456,7 +486,8 @@
           "note": "释放时三选一变体依赖 SkillDef.modes（新增项 21，ddd 无落点，🟡 待拍）；退化方案：拆三张独立卡",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：三领域(火/毒)与污秽(诅咒)低序列第一次分野。\"因人而异\"=一张卡三选一。⚠️D。"
     },
     {
       "id": "skill_criminal_s7_demon_rite",
@@ -529,7 +560,8 @@
       "sharedAcross": [
         "prisoner"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：恶魔轴核心 enabler + 刻印链引擎改革（暗影世界系 §2.5/§4.2）：献祭换资源 + 累加计层。能量 1 因\"费用\"是血。⚠️D。"
     },
     {
       "id": "skill_criminal_s7_abyss_summon",
@@ -586,7 +618,8 @@
       "conversionNotes": [
         "consume_status 步骤为 status.consume（F48，效果上下文 §2.1）语义的 JSON 表达，非第 12 原语",
         "稿面未写 reach：非攻击卡取 none",
-        "源稿为消耗自身全部 rite_mark 层数：stacks 取 \"all\"（原脚本归一误为 -1）"
+        "源稿为消耗自身全部 rite_mark 层数：stacks 取 \"all\"（原脚本归一误为 -1）",
+        "翻译/语义：刻印链结算端。恶魔登场 fire `on_spawn`→对相邻敌方 `damage(fire,2)`（A2 合规）。⚠️D。"
       ]
     },
     {
@@ -666,7 +699,8 @@
       "sharedAcross": [
         "prisoner"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：v0.2 已落。恶魔轴防御向。⚠️D。"
     },
     {
       "id": "skill_criminal_s6_demonize",
@@ -776,7 +810,8 @@
           "note": "gauge.rate 修正段同敏锐直觉",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：恶魔轴变身载体（【精神冲击】的角在此才有）。⚠️D。"
     },
     {
       "id": "skill_criminal_s6_malice_sense",
@@ -819,7 +854,8 @@
           "note": "gauge.rate 修正同敏锐直觉",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：预知+扼杀=节奏+反伤。⚠️D。"
     },
     {
       "id": "skill_criminal_s6_magma_sword",
@@ -859,7 +895,8 @@
           "duration": 3
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：领域轴火系锚点。⚠️D。"
     },
     {
       "id": "skill_criminal_s6_sulfur_orb",
@@ -905,7 +942,8 @@
           "duration": 2
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：火+毒同卡（三领域同源口径）。⚠️D。"
     },
     {
       "id": "skill_criminal_s6_abyssalize",
@@ -1043,7 +1081,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "稿面 damage(element: void, 2)：void 不在九元素枚举内，归一为 none + pierce:[armor]，语义保留"
+        "稿面 damage(element: void, 2)：void 不在九元素枚举内，归一为 none + pierce:[armor]，语义保留",
+        "翻译/语义：罪犯领域轴旗舰主题界域牌（brief §10.4 列于罪犯，双向：无差别腐蚀 + 替身失效）。✅ 依赖已落。⚠️D。"
       ]
     },
     {
@@ -1178,7 +1217,8 @@
           "note": "modify_stat.mode 枚举为 delta/set/to_at_least/to_at_most，无 mul；卡面 ×0.6 速率按 mode:mul 表达，待内核裁定",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：污秽轴起手；\"堕落\"分支首次推高 `恶欲值`（产能）。⚠️D。"
     },
     {
       "id": "skill_criminal_s5_desire_control",
@@ -1263,7 +1303,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "If 判定刻意放在 mount_status(lust) 之后：语义是「目标此前已有欲望」则升级为 charm；引擎按顺序结算即可承载"
+        "If 判定刻意放在 mount_status(lust) 之后：语义是「目标此前已有欲望」则升级为 charm；引擎按顺序结算即可承载",
+        "翻译/语义：恶欲轴控制旗舰：挂 `lust`→再挂升级 `charm`。⚠️D。"
       ]
     },
     {
@@ -1334,7 +1375,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：延迟爆发=恶欲值堆到临界（=10 欲望爆炸的叙事前置）。⚠️D。"
     },
     {
       "id": "skill_criminal_s5_mind_shock",
@@ -1395,7 +1437,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：读恶魔化状态放大（途径内协同）。⚠️D。"
     },
     {
       "id": "skill_criminal_s5_desire_avatar",
@@ -1475,7 +1518,8 @@
           "note": "H5 潜行/虚化母版（与 F4/F11/囚犯灵体化同族）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：规避/隐匿/影响三合一；`on_deal_damage` 推高目标恶欲值（产能）。⚠️D。"
     },
     {
       "id": "skill_criminal_s4_mental_duelist",
@@ -1532,7 +1576,8 @@
           "note": "与【失去良知】分界：本条定向（本途径三污染状态，+25%），那条广谱（任何 debuff/dot，+15%）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：恶欲轴定向加伤（读自身污染状态）。⚠️D。"
     },
     {
       "id": "skill_criminal_s4_hallucinate",
@@ -1578,7 +1623,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：迷幻=打空 + 欲望膨胀=推高 `lust`。⚠️D。"
     },
     {
       "id": "skill_criminal_s4_acid_marsh",
@@ -1624,7 +1670,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "稿面 modify_stat(armor,-3,duration:4) 带 duration 的护甲修正常量化归一为 modify_stat(stat:armor) 容量语义"
+        "稿面 modify_stat(armor,-3,duration:4) 带 duration 的护甲修正常量化归一为 modify_stat(stat:armor) 容量语义",
+        "翻译/语义：领域轴削甲支点（为侵蚀者铺路）。⚠️D。"
       ]
     },
     {
@@ -1665,7 +1712,8 @@
           "duration": 3
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：领域轴纯爆发件（岩浆之剑直线上位）。⚠️D。"
     },
     {
       "id": "skill_criminal_s4_corrosive_fog",
@@ -1706,7 +1754,8 @@
           "target": "all_enemies"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：污秽轴铺场（喂污秽之王/深渊之火）。⚠️D（AOE 定价无锚点，沿用 D4）。"
     },
     {
       "id": "skill_criminal_s3_whispers",
@@ -1830,7 +1879,8 @@
           "note": "混乱分支 gauge.rate ×0.7 同污秽之语缓慢分支",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：污秽轴万能工具卡；恶欲值≥7 触发追加（产能→结算闭环）。⚠️D。"
     },
     {
       "id": "skill_criminal_s3_pollution_authority",
@@ -1883,7 +1933,8 @@
           "note": "H14 durationModifier（outgoing）+ H8 运行时覆写 dispelable"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：污秽轴\"权柄\"=量+质。⚠️D。"
     },
     {
       "id": "skill_criminal_s3_distant_voice",
@@ -1935,7 +1986,8 @@
           "else": []
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：远程点杀（处决残血）。⚠️D。"
     },
     {
       "id": "skill_criminal_s2_blood_master",
@@ -2008,7 +2060,8 @@
       "sharedAcross": [
         "prisoner"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：恶魔轴续航（吸血+失血）。⚠️D。"
     },
     {
       "id": "skill_criminal_s2_malice_avatar",
@@ -2092,7 +2145,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "复活材料消耗：源稿为命中单位身上 whisper/lust/charm 任一状态 1 层，JSON statusId 以 whisper 为代表（any_of 命中项由执行侧按谓词解析）"
+        "复活材料消耗：源稿为命中单位身上 whisper/lust/charm 任一状态 1 层，JSON statusId 以 whisper 为代表（any_of 命中项由执行侧按谓词解析）",
+        "翻译/语义：恶魔轴复活（此前污染作资源）。⚠️D。"
       ],
       "frameworkFlags": [
         {
@@ -2160,7 +2214,8 @@
       "sharedAcross": [
         "prisoner"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：与【侵蚀者】正反对照（你能腐蚀一切壁垒，但自己免疫削甲）。⚠️D。"
     },
     {
       "id": "skill_criminal_s1_filth_king",
@@ -2285,7 +2340,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "三个 If 逐目标判定（目标域为 all_enemies 时每单位独立结算）；稿面「各叠加 1 层并刷新至 3t」走挂载流程叠加分支（新增项 23）"
+        "三个 If 逐目标判定（目标域为 all_enemies 时每单位独立结算）；稿面「各叠加 1 层并刷新至 3t」走挂载流程叠加分支（新增项 23）",
+        "翻译/语义：污秽轴旗舰 payoff：接管已有污秽+回血。⚠️D。"
       ]
     },
     {
@@ -2361,7 +2417,8 @@
           "note": "H2 + H16；可被驱散是刻意弱点（「持续腐蚀会穿透」的前提是腐蚀持续下去）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：污秽轴招牌攻坚（穿甲持续钻，可被驱散）。⚠️D。"
     },
     {
       "id": "skill_criminal_s1_abyss_fire",
@@ -2422,7 +2479,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：领域轴顶点（火/毒/精神三元素同放）。⚠️D（AOE 无锚点，传说档超预算）。"
     },
     {
       "id": "skill_criminal_s0_abyss_is_me",
@@ -2492,7 +2550,8 @@
           "note": "② H8 覆写 dispelable；③ 深渊不是一种地方是一种状态（堕落者归你支配）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：恶欲轴终焉 payoff：读全场恶欲值总和解锁免疫失控（产能→安保闭环）。⚠️D。"
     },
     {
       "id": "skill_criminal_s0_fallen",
@@ -2567,7 +2626,8 @@
           "note": "H12 anchor self（新增项 4）+ H2 + H16 + H21；与【迷幻】分界：迷幻打向空处（charges 可驱散短），堕落打向自己（duration 不可驱散 6t）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：恶欲轴终极单点控制（自己打自己）。⚠️D。"
     },
     {
       "id": "skill_criminal_s0_abyss_curse",
@@ -2648,7 +2708,75 @@
           "note": "H2 + H38 buffBlocked（与 F17 lust 禁护盾同族，粒度由 categories 参数控制）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：污秽轴全能衰减诅咒（序列8→0 连贯主线）。⚠️D。"
+    }
+  ],
+  "designNote": "> **暗影世界系签名机制（咬合器维度）**：本系签名 = **恶欲值（单位级 0–10）+ 诅咒链接网 + 异类谱系**。\n> - **恶欲值（单位级）**：战场每单位各自持有一条。**罪犯是产能方**——不断推高（越强但越失控）；**囚犯是消纳方**——吸收转诅咒链接；**律师（失序之国）拧**——腐蚀直接推高敌人恶欲值。阈值（照搬《暗影世界系技能设定》§2.2）：\n>   - 0–3 正常；**4–6 躁动**：伤害 +20%，20% 概率改攻最近单位（含友军）；\n>   - **7–9 失控**：伤害 +50%，35% 概率攻友军，无法被治疗；\n>   - **=10 欲望爆炸**：受自身最大生命 25% 精神伤害，归零，向相邻各传 3 点。\n> - **刻印链（罪犯专属引擎改革）**：`恶魔仪式`（生命−6→能量+8→`仪式刻印`+1 层）→ `深渊召唤`（消耗全部刻印层 → 恶魔强度/数量 = f(N)）。把现存唯一完整 enabler→payoff 链扶正为轴心。\n> - 诅咒链接网 / 异类谱系 见囚犯稿 §〇（罪犯侧经\"转化\"把被欲望击垮的敌人 push 入囚犯谱系）。",
+  "sampleBuilds": [
+    {
+      "name": "A 恶魔化凶兽 🜄🜃",
+      "actives": [
+        "恶魔化",
+        "岩浆之剑",
+        "硫磺火球",
+        "深渊召唤"
+      ],
+      "passives": [
+        "恶意感知",
+        "强壮身体",
+        "敏锐直觉",
+        "武器上手"
+      ],
+      "playstyle": "先变身再火系打脸；恶魔仪式→深渊召唤补身位。*武器上手见 v0.2，本重构可补回"
+    },
+    {
+      "name": "B 欲望操控 🜁",
+      "actives": [
+        "掌控欲望",
+        "迷幻",
+        "精神冲击",
+        "欲望爆炸"
+      ],
+      "passives": [
+        "失去良知",
+        "精神交锋",
+        "恶意感知",
+        "深渊即我"
+      ],
+      "playstyle": "挂 lust→再挂升级打队友，欲望爆炸延迟收割；深渊即我对所有带 debuff 目标 +30%"
+    },
+    {
+      "name": "C 污秽侵蚀 🜂",
+      "actives": [
+        "污秽之语",
+        "腐蚀毒雾",
+        "侵蚀者",
+        "深渊之火"
+      ],
+      "passives": [
+        "污染权柄",
+        "身体权柄",
+        "干扰占卜与通灵",
+        "深渊即我"
+      ],
+      "playstyle": "铺 debuff→侵蚀者穿甲钻→污秽之王刷新回血→深渊之火四合一收尾"
+    },
+    {
+      "name": "D 深渊不死 🜄",
+      "actives": [
+        "鲜血主宰",
+        "深渊召唤",
+        "恶魔仪式",
+        "污秽之王"
+      ],
+      "passives": [
+        "恶意化身",
+        "身体权柄",
+        "强壮身体",
+        "污染权柄"
+      ],
+      "playstyle": "献祭攒刻印召唤更强恶魔，鲜血主宰回血，真死了从敌人心里的恶意爬起"
     }
   ]
 }

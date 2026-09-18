@@ -1,7 +1,7 @@
 {
   "pathwayId": "apprentice",
   "pathwayName": "学徒",
-  "sourceFile": "../skill-design/学徒途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/学徒途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "gate": {
@@ -10,15 +10,31 @@
     },
     "trick": {
       "symbol": "🜂",
-      "name": "戏法"
+      "name": "戏法",
+      "statusId": "戏法标记"
     },
     "record": {
       "symbol": "🜃",
-      "name": "记录"
+      "name": "记录",
+      "statusId": "记录槽",
+      "enablers": [
+        "记录"
+      ],
+      "payoffs": [
+        "重现"
+      ]
     },
     "astral": {
       "symbol": "🜄",
-      "name": "星界"
+      "name": "星界",
+      "statusId": "星界锚",
+      "enablers": [
+        "星相学"
+      ],
+      "payoffs": [
+        "空间隐藏",
+        "放逐"
+      ]
     }
   },
   "cards": [
@@ -70,7 +86,8 @@
       "sharedAcross": [
         "thief"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：门扉轴 enabler：穿门位移的同时挂 `门扉(坐标)` 状态，供后续传送零耗 payoff 读取；并写入 +1 隐秘值（源堡系 §2.2 学徒门扉写入方）。落点用空位锚点表达，不越中线。数值 ⚠️D。"
     },
     {
       "id": "skill_apprentice_s9_ritual_gate",
@@ -119,7 +136,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：延时生效的仪式魔法，先布置后爆发；落点门扉坐标供门扉轴 payoff 使用，并写入隐秘值。数值 ⚠️D。"
     },
     {
       "id": "skill_apprentice_s8_flash_trick",
@@ -185,7 +203,8 @@
           }
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：闪光=致盲(打空)+巨响=推条；同时自身挂 `戏法标记` 供戏法轴 payoff 读取。复用 C7 已验证。⚠️D。"
     },
     {
       "id": "skill_apprentice_s8_tri_element",
@@ -235,7 +254,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：点火/冰冻/电击合成\"三元素连击\"，挂 `戏法标记`。三段独立结算吃三次护甲。⚠️D。"
     },
     {
       "id": "skill_apprentice_s8_trip_push",
@@ -281,7 +301,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：摔倒+刮风+驱物=推挤；挂 `戏法标记`。与【无形之手】构成门扉轴调度对。⚠️D。"
     },
     {
       "id": "skill_apprentice_s8_escape_act",
@@ -335,7 +356,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：戏法轴旗舰 payoff：把零散 `戏法标记` 收束为\"行动条 +20 / 控制延长\"。⚠️ 依赖 G5/G6 自检（被动整场型，非自推条）。数值 ⚠️D。"
     },
     {
       "id": "skill_apprentice_s7_danger_sense",
@@ -392,7 +414,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"预感\"=减伤+星界锚挂载。已并入参数化减伤母版(H3)。⚠️D。"
     },
     {
       "id": "skill_apprentice_s7_divination_jam",
@@ -464,7 +487,8 @@
         "fool",
         "thief"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：干扰=削能+打空+挂星界锚+写隐秘值。⚠️D。"
     },
     {
       "id": "skill_apprentice_s7_astrology",
@@ -528,7 +552,8 @@
         "fool",
         "thief"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：定位=反隐匿+减速+星界锚+隐秘值。⚠️D。"
     },
     {
       "id": "skill_apprentice_s6_inscription",
@@ -598,7 +623,8 @@
       "sharedAcross": [
         "thief"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：记录轴 enabler：存储敌人招式入 `记录槽`。两层：层数回答\"记了多少\"，数据槽回答\"记的是哪一招\"。⚠️D。"
     },
     {
       "id": "skill_apprentice_s6_reenact_strike",
@@ -666,7 +692,8 @@
       "sharedAcross": [
         "thief"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：记录轴结算：读 `记录槽` 层数 + 数据槽元素原样还击。⚠️D。"
     },
     {
       "id": "skill_apprentice_s5_traveler_gate",
@@ -717,7 +744,8 @@
       "sharedAcross": [
         "thief"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：门扉轴旗舰：读取 `门扉` 坐标实现传送零耗；无坐标时退化为纯护盾。⚠️D。"
     },
     {
       "id": "skill_apprentice_s5_blink",
@@ -762,7 +790,8 @@
       "sharedAcross": [
         "thief"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：闪现=多段围攻；门扉坐标存在时减费。G8 合规（近战攻击进程，不越中线）。⚠️D。"
     },
     {
       "id": "skill_apprentice_s5_invisible_hand",
@@ -811,7 +840,8 @@
       "sharedAcross": [
         "fool"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：摄物=把目标从安全位拽出；门扉坐标存在时追加推条（远距操控）。⚠️D。"
     },
     {
       "id": "skill_apprentice_s5_semi_divine_record",
@@ -849,7 +879,8 @@
       "sharedAcross": [
         "thief"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：记录轴 enabler 升级：容量+范围。依赖全局 `on_take_damage` 第三方监听。⚠️D。"
     },
     {
       "id": "skill_apprentice_s4_secrecy",
@@ -888,7 +919,8 @@
           }
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：守秘=增益不可驱散+难锁定+挂星界锚。⚠️D。"
     },
     {
       "id": "skill_apprentice_s4_hidden_space",
@@ -962,7 +994,8 @@
         "fool",
         "thief"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：隐藏=单体不可选中；隐秘值≥7 时 conceal 类收益（减伤）。⚠️D。"
     },
     {
       "id": "skill_apprentice_s4_phantom_door",
@@ -1084,7 +1117,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：星界轴旗舰 payoff：读 `星界锚` 放逐（移出战斗）。⚠️D。"
     },
     {
       "id": "skill_apprentice_s3_space_rift",
@@ -1151,7 +1185,8 @@
           "note": "H3/H4 参数化受伤乘区（与 vulnerable 1.3 同族）：伤口不合拢，持续受伤加重"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：撕裂=伤口不愈合；门扉零耗加成。⚠️D。"
     },
     {
       "id": "skill_apprentice_s3_merge_space",
@@ -1272,7 +1307,8 @@
           }
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：突破屏障=对护盾增伤+位移穿透。⚠️D。"
     },
     {
       "id": "skill_apprentice_s3_starry_roam",
@@ -1298,7 +1334,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "稿面写 modify_stat(gauge_threshold)；ddd 口径 gauge.* 三键归 modify_resource，已归一为 modify_resource(gauge.threshold)。改阈值是自属性修正、非自推 gauge.current，G5/G6 合规"
+        "稿面写 modify_stat(gauge_threshold)；ddd 口径 gauge.* 三键归 modify_resource，已归一为 modify_resource(gauge.threshold)。改阈值是自属性修正、非自推 gauge.current，G5/G6 合规",
+        "翻译/语义：遨游星界=更早出手；带星界锚时写隐秘值。INV-S5 合规（改源属性）。⚠️D。"
       ]
     },
     {
@@ -1371,7 +1408,8 @@
           "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge_rate) 表达持续修正，待内核裁定归一",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：缩小=力量+速度同缩；星界锚零耗。⚠️D。"
     },
     {
       "id": "skill_apprentice_s2_reappear",
@@ -1436,7 +1474,8 @@
       "sharedAcross": [
         "thief"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：记录轴旗舰：把 `记录槽` 换成一具\"被记下的人\"的影像为己方作战。⚠️D。"
     },
     {
       "id": "skill_apprentice_s2_sigil_self",
@@ -1503,7 +1542,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：符号化=消失再位移；额外挂门扉坐标。G8 合规。⚠️D。"
     },
     {
       "id": "skill_apprentice_s2_reenactment_descent",
@@ -1644,7 +1684,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "己方 damage_mul ×1.1 改用 rulePatches empower(side:ally, stat:damage, mul:1.1) 承载（INV-D6 补丁纯声明，删除原 on_turn_start 1t 刷新触发器）"
+        "己方 damage_mul ×1.1 改用 rulePatches empower(side:ally, stat:damage, mul:1.1) 承载（INV-D6 补丁纯声明，删除原 on_turn_start 1t 刷新触发器）",
+        "翻译/语义：记录轴顶点界域：把战场换成你记得的那个。⚠️D。"
       ]
     },
     {
@@ -1721,7 +1762,8 @@
           "note": "自身 gauge.rate +6 段同强健体魄",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：双向定位：己方速率↑+星界锚；敌方更脆+打空。⚠️D。"
     },
     {
       "id": "skill_apprentice_s1_time_maze",
@@ -1800,7 +1842,8 @@
           "note": "gauge.rate -5 段同强健体魄",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：星界顶点旗舰：同时推条+减速；隐秘值≥7 时 conceal/隐秘类收益（折费）。⚠️D。"
     },
     {
       "id": "skill_apprentice_s1_space_shatter",
@@ -1855,7 +1898,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：重力塌陷=受伤+推后+破甲；门扉零耗。⚠️D。"
     },
     {
       "id": "skill_apprentice_s1_seal",
@@ -1924,7 +1968,8 @@
           "note": "与放逐差异：封印 4t / 5 伤 / 断治疗 / 更贵；gauge_freeze 走 H24 冻结档，heal_received_mul 与 F20 petrify 同源（H21）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：封印=门后(移出战斗)；星界锚延长。⚠️D。"
     },
     {
       "id": "skill_apprentice_s0_door_shut",
@@ -1976,7 +2021,8 @@
           "note": "三条断绝全部由已落机制拼出：moveImmune（F7/H27）、heal_received_mul（F20/H21）、buffBlocked（H38）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：关上门=断位移/治疗/增益；再标门扉坐标+写+2隐秘值。⚠️D。"
     },
     {
       "id": "skill_apprentice_s0_space_cage",
@@ -2041,7 +2087,8 @@
           "note": "与封印区分：封印是移出战斗，牢笼是困在原地照样挨打（最强点杀前置）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：牢笼=困在原地挨打；门扉零耗+坐标+隐秘值。⚠️D。"
     },
     {
       "id": "skill_apprentice_s0_ubiquity",
@@ -2102,7 +2149,75 @@
           "note": "gauge.rate +6 段同强健体魄",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：无处不在=频率+残影+不可推+门扉坐标+写+2隐秘值。⚠️D。"
+    }
+  ],
+  "designNote": "> **隐秘值维度（源堡系 §2.2）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。学徒经\"门扉 / 星界\"类效果 +1/次（开门、仪式·门、干扰占卜、星相学、门之概念、空间牢笼、无处不在、门·权柄 等）。层级：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（源堡系共享收益；学徒经【提线接门·改】读取占卜家 `puppet_string` 同享）\n> - **≥7**：友方「愚弄 / 隐秘 / conceal」类技能 **+50%**（学徒的 空间隐藏 / 幻化 / 自我符号 等 conceal 类受益）\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：占卜家（愚弄/观诡）、学徒（星界/门）、偷盗者（欺诈/寄生）、永暗之河（不眠者/收尸人/战士）、暗影世界（囚犯/罪犯）、混沌海（秘祈人）也写入同一 `secrecy` 维度。",
+  "sampleBuilds": [
+    {
+      "name": "A 门扉调度 🜁",
+      "actives": [
+        "开门",
+        "旅行家之门",
+        "闪现",
+        "空间牢笼"
+      ],
+      "passives": [
+        "仪式·门",
+        "破障之门",
+        "无处不在",
+        "漫游星空"
+      ],
+      "playstyle": "标门扉坐标→零耗传送友军、拽敌出列；空间牢笼收尾，无处不在谁也推不动"
+    },
+    {
+      "name": "B 戏法扰乱 🜂",
+      "actives": [
+        "戏法·闪光",
+        "戏法·三元素",
+        "戏法·摔倒术",
+        "空间破碎"
+      ],
+      "passives": [
+        "戏法大师",
+        "危险预感",
+        "守秘",
+        "破障之门"
+      ],
+      "playstyle": "低费花招铺满打空推条，戏法大师收束行动条，空间破碎一次性收场"
+    },
+    {
+      "name": "C 记录再现 🜃",
+      "actives": [
+        "重现",
+        "再现",
+        "记录共读·改",
+        "放逐"
+      ],
+      "passives": [
+        "记录",
+        "半神记录",
+        "守秘",
+        "危险预感"
+      ],
+      "playstyle": "挨打攒记录槽→用敌人招式打回→记录共读吃偷盗者误判升级→放逐最难缠者"
+    },
+    {
+      "name": "D 星界封印 🜄",
+      "actives": [
+        "干扰占卜",
+        "星相学",
+        "封印",
+        "时空迷宫"
+      ],
+      "passives": [
+        "守秘",
+        "漫游星空",
+        "危险预感",
+        "破障之门"
+      ],
+      "playstyle": "削能反隐匿→先封印核心再放时空迷宫拖全场；源堡共鸣由占卜家/偷盗者共同推"
     }
   ]
 }

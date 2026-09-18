@@ -1,24 +1,37 @@
 {
   "pathwayId": "prisoner",
   "pathwayName": "囚犯",
-  "sourceFile": "../skill-design/囚犯途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/囚犯途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "curse": {
       "symbol": "🜍",
-      "name": "诅咒"
+      "name": "诅咒",
+      "statusId": "curse_link",
+      "enablers": [
+        "诅咒之源",
+        "变形诅咒"
+      ]
     },
     "bondage": {
       "symbol": "🜎",
-      "name": "束缚"
+      "name": "束缚",
+      "statusId": "枷锁"
     },
     "aberration": {
       "symbol": "🜏",
-      "name": "异类"
+      "name": "异类",
+      "statusId": "狼人化"
     },
     "item": {
       "symbol": "🜐",
-      "name": "物品"
+      "name": "物品",
+      "statusId": "附身物体",
+      "enablers": [
+        "随手物品",
+        "操纵物品",
+        "附身物体"
+      ]
     }
   },
   "cards": [
@@ -80,7 +93,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：序列9 第一条\"体魄强化\"直译。异类轴变身地基（@v0.2 体魄强化）。⚠️D。"
     },
     {
       "id": "skill_prisoner_s9_keen_senses",
@@ -112,7 +126,8 @@
           "note": "稿面写 modify_stat(gauge_rate)；ddd 将 gauge.* 列为 modify_resource 键，卡面按 modify_stat(gauge.rate) 表达常驻修正，待内核裁定归一。被动改源属性、非自推 gauge.current，INV-S5/G5/G6 合规",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：\"知觉敏锐\"落地为节奏（先察觉=先出手），非隐藏信息维度。INV-S5 合规（被动改源属性）。⚠️D。"
     },
     {
       "id": "skill_prisoner_s9_improvised_weapon",
@@ -201,7 +216,8 @@
       "sharedAcross": [
         "criminal"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：本途径\"火球术\"：低费纯直伤。概率只作用于是否附加 `枷锁` 状态（非伤害维度，R5 合规），写 EffectRef.condition（G1）。物品轴 enabler（挂 `附身物体` 前置）。⚠️D。"
     },
     {
       "id": "skill_prisoner_s9_criminal_tricks",
@@ -247,7 +263,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "推条（gauge.current 推拉）定价无既有锚点，沿用 D2 待标"
+        "推条（gauge.current 推拉）定价无既有锚点，沿用 D2 待标",
+        "翻译/语义：节奏破坏=推条。束缚轴起手（控场）。⚠️D。"
       ]
     },
     {
@@ -347,7 +364,8 @@
           "note": "frenzy 内含 gauge.rate 修正，同知觉敏锐待内核裁定",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：原 v0.2 只做自身增益；本重构补\"恶欲值\"主题——囚犯版（暗影世界系 §5.1）把自身恶欲值全部转为吸收，落为 3 层 `诅咒链接`。⚠️ 依赖 `absorb` 算子（本稿新增项 1）。⚠️D。"
     },
     {
       "id": "skill_prisoner_s8_unhinged_resistance",
@@ -504,7 +522,8 @@
           "note": "beast_form 内含 gauge.rate 修正，同知觉敏锐待内核裁定",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：形态转换即 enabler，push 入异类谱系栈（暗影世界系 §2.4 改革）。若目标有 `中毒≥1`→`mount_status(puppet_string, 6t)`（原 v0.2 狼人化规则保留）。⚠️D。"
     },
     {
       "id": "skill_prisoner_s7_darkness_terror",
@@ -560,7 +579,8 @@
       "sharedAcross": [
         "criminal"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"驱光=驱散光明增益 / 黑暗恐惧=精神伤害\"。束缚轴封印前置。⚠️D。"
     },
     {
       "id": "skill_prisoner_s7_toxic_puppet",
@@ -641,7 +661,8 @@
       "sharedAcross": [
         "criminal"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：中毒为前置控制（与序列5 怨魂附身之分界：持续型 vs 次数型）。`puppet_string` 跨途径可读（`crossPathway:true`，见 §三）。⚠️D。"
     },
     {
       "id": "skill_prisoner_s7_anti_scry",
@@ -759,7 +780,8 @@
           "note": "冰的掌控（ice 直伤）+ 腐烂之力（既有 poison dot），不新立状态"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"冰的掌控\"=直伤 ice + \"腐烂之力\"=poison debuff。异类轴伴生控制。⚠️D。"
     },
     {
       "id": "skill_prisoner_s6_raise_corpse",
@@ -812,7 +834,8 @@
           "note": "控制幽魂升级档依赖 F25 unit_wraith，ID 冲突未解决前不落地",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：召唤物登场 fire `on_spawn`（A2 合规，非开局）。异类轴召唤 enabler。⚠️D。"
     },
     {
       "id": "skill_prisoner_s6_corpse_handler",
@@ -856,7 +879,8 @@
       "tentative": true,
       "conversionNotes": [
         "on_spawn 正向用例（A2 禁的是把 on_spawn 当开局，本条要的正是每召唤一次增强一次）；anchor spawned_unit 已落 ddd（共享内核 §一）",
-        "遗留：on_spawn fire 时新单位须已完成落位，否则 modify_stat 可能打在错误目标上，需引擎确认时序"
+        "遗留：on_spawn fire 时新单位须已完成落位，否则 modify_stat 可能打在错误目标上，需引擎确认时序",
+        "翻译/语义：\"培养傀儡\"=召唤物登场加成。`on_spawn` 正向用例（A2）。⚠️D。"
       ]
     },
     {
@@ -940,7 +964,8 @@
       "sharedAcross": [
         "criminal"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：灵体化即 enabler，push 怨魂入谱系栈。⚠️D。"
     },
     {
       "id": "skill_prisoner_s5_wraith_body",
@@ -1047,7 +1072,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"缠\"=持续受伤加深。读诅咒轴（配合链接网放大）。⚠️D。"
     },
     {
       "id": "skill_prisoner_s5_wraith_possession",
@@ -1110,7 +1136,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "puppet_string 定义见毒性傀儡（序列7 首登记），本条仅引用并覆写 charges/duration 实例值"
+        "puppet_string 定义见毒性傀儡（序列7 首登记），本条仅引用并覆写 charges/duration 实例值",
+        "翻译/语义：附身=此消彼长 + 次数型控制。`puppet_string` 跨途径可读。⚠️D。"
       ]
     },
     {
@@ -1161,7 +1188,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "AOE 定价无既有锚点（brief 只有单体锚点 3 能量 ≈ 6 伤害），按单目标折算再打对折粗定，沿用 D4，本稿最大数值风险点之一"
+        "AOE 定价无既有锚点（brief 只有单体锚点 3 能量 ≈ 6 伤害），按单目标折算再打对折粗定，沿用 D4，本稿最大数值风险点之一",
+        "翻译/语义：范围精神压制 + 震慑推条。⚠️D（AOE 定价无锚点，沿用 D4）。"
       ]
     },
     {
@@ -1228,7 +1256,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "稿面双目标（指定 1 敌人 + 木偶载体）：主目标取被诅咒敌人，载体段走 target:self 并以 binding.linkedTo 指回主目标；召唤物载体稿面未给选择规格，暂记 self 待裁定"
+        "稿面双目标（指定 1 敌人 + 木偶载体）：主目标取被诅咒敌人，载体段走 target:self 并以 binding.linkedTo 指回主目标；召唤物载体稿面未给选择规格，暂记 self 待裁定",
+        "翻译/语义：诅咒轴核心 enabler + 网络引擎（暗影世界系 §2.3 改革）。序列4 反噬未解（selfKeep:true）；到序列3【无反噬之咒】翻 false，序列0【万咒加身】沿网传染。⚠️ 依赖 `诅咒链接` 网络母版（本稿新增项 2）。⚠️D。"
       ]
     },
     {
@@ -1269,7 +1298,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "原著未给操纵数量上限，本稿按「一次唤起一具古物傀儡」处理，是设计选择而非原著原文"
+        "原著未给操纵数量上限，本稿按「一次唤起一具古物傀儡」处理，是设计选择而非原著原文",
+        "翻译/语义：物品轴 enabler。⚠️D。"
       ]
     },
     {
@@ -1320,7 +1350,8 @@
       "tentative": true,
       "conversionNotes": [
         "「弱序列4 基准值」具体 attack / defense 数值未定（⚠️D），需与参数层一起定",
-        "退化方案：改为 modify_stat(attack, +4, 4t) + modify_stat(defense, +2, 4t)，代价是失去「只补弱者」的原著语义"
+        "退化方案：改为 modify_stat(attack, +4, 4t) + modify_stat(defense, +2, 4t)，代价是失去「只补弱者」的原著语义",
+        "翻译/语义：异类轴旗舰 payoff：回放形态栈（暗影世界系 §2.4 改革）。退化：`modify_stat(attack,+4,4t)+modify_stat(defense,+2,4t)`。⚠️D。"
       ],
       "frameworkFlags": [
         {
@@ -1486,7 +1517,8 @@
       "tentative": true,
       "conversionNotes": [
         "2026-09-08 界域牌批次新增；与灵体化的关系：灵体化是自己潜入灵界（单体虚化），灵界潜域是把战场按进灵界（全场规则），同一权柄两种尺度",
-        "稿面把己方减伤写在域规则文本里，JSON 折为每回合刷新的 1t 承载状态 spirit_shroud_guard（乘区无对应原语，待内核确认更优承载）"
+        "稿面把己方减伤写在域规则文本里，JSON 折为每回合刷新的 1t 承载状态 spirit_shroud_guard（乘区无对应原语，待内核确认更优承载）",
+        "翻译/语义：异类/灵体主题界域牌（brief §10.4 列于囚犯）。✅ 依赖已落。⚠️D。"
       ]
     },
     {
@@ -1539,7 +1571,8 @@
           "note": "原著写的是自己在沉默中酝酿诅咒，不是让别人闭嘴（v0.1 全体封技 3 回合原著无据，已剔除）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：束缚轴\"以沉默为充能\"。⚠️D。"
     },
     {
       "id": "skill_prisoner_s3_object_possession",
@@ -1619,7 +1652,8 @@
           "note": "与灵体化互补的防守向形态（灵体化进攻向：攻击转精神、仍能施法），两者不可合并"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：物品轴防守向形态。⚠️D。"
     },
     {
       "id": "skill_prisoner_s3_transmute_curse",
@@ -1683,7 +1717,8 @@
           "note": "与刺客 petrification（石化全禁）、F20 petrify（物质转化禁疗）三者同名近义机制不同，落地时不可合并；变形诅咒 > 免吟唱（变形成野兽后不存在吟唱）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：诅咒轴 payoff：读链接网络放大。⚠️D。"
     },
     {
       "id": "skill_prisoner_s3_curse_no_backlash",
@@ -1732,7 +1767,8 @@
       "tentative": true,
       "conversionNotes": [
         "与诅咒之源同一状态母版（H28），仅 ratio/selfKeep/duration 参数档不同；curse_link 定义见诅咒之源（序列4 首登记），本条为参数覆写引用",
-        "载体默认自身可指定己方召唤物，同诅咒之源 conversionNotes"
+        "载体默认自身可指定己方召唤物，同诅咒之源 conversionNotes",
+        "翻译/语义：诅咒轴网络递进第二级（selfKeep 翻 false）。⚠️D。"
       ]
     },
     {
@@ -1798,7 +1834,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：读灵体状态放大（与【灵体化】联动）。⚠️D。"
     },
     {
       "id": "skill_prisoner_s2_eye_of_abomination",
@@ -1947,7 +1984,8 @@
           "note": "比眩晕更彻底的控制：不可驱散、禁疗、时长 4t（眩晕常规 1t）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：束缚轴旗舰 payoff：读恶欲值放大封印 + 消纳转链接网。⚠️D。"
     },
     {
       "id": "skill_prisoner_s1_conversion",
@@ -2021,7 +2059,8 @@
       "conversionNotes": [
         "原著「转化」是阵营 + 形态的双重改变，不是杀死再召唤，此语义必须保住",
         "退化方案（建议先上验证）：on_death（该目标）→ spawn(unit_ghoul, tail, hpRatio 0.5)，丢了「立即倒戈」的爆发感且需先击杀",
-        "遗留：被转化单位已挂载状态如何处理（保留/清空/反向）、原始技能组是否留「挣脱」窗口、落位 G8 约束，均待引擎确认"
+        "遗留：被转化单位已挂载状态如何处理（保留/清空/反向）、原始技能组是否留「挣脱」窗口、落位 G8 约束，均待引擎确认",
+        "翻译/语义：异类轴收束：转化即入谱系的形态。⚠️D。"
       ],
       "frameworkFlags": [
         {
@@ -2090,7 +2129,8 @@
           "note": "操纵物品 / 唤醒死尸 / 转化三条召唤转化线的共同收束"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：异类轴终焉 payoff：读谱系深度放大压制。⚠️D。"
     },
     {
       "id": "skill_prisoner_s0_the_bound",
@@ -2138,7 +2178,8 @@
           }
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：束缚轴终焉 payoff + 恶欲值消纳枢纽。⚠️D。"
     },
     {
       "id": "skill_prisoner_s0_item_authority",
@@ -2213,7 +2254,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：物品轴旗舰 payoff。⚠️D。"
     },
     {
       "id": "skill_prisoner_s0_all_curses",
@@ -2349,8 +2391,76 @@
       "tentative": true,
       "conversionNotes": [
         "传说档故意超预算（派发权重极低、一局最多 1 张），超标系数上限 ⚠️D",
-        "「完成所有类型诅咒」= 一次性挂满本途径从序列9 攒到序列3 的全部 debuff 类型（收束倾泻）；「本身极难被诅咒」= curse_ward + curse_ward_block，两段缺一都不是原著那条权柄"
+        "「完成所有类型诅咒」= 一次性挂满本途径从序列9 攒到序列3 的全部 debuff 类型（收束倾泻）；「本身极难被诅咒」= curse_ward + curse_ward_block，两段缺一都不是原著那条权柄",
+        "翻译/语义：诅咒轴终焉：链网密度触发网络传染（暗影世界系 §2.3）。⚠️D。"
       ]
+    }
+  ],
+  "designNote": "> **暗影世界系签名机制（咬合器维度）**：本系签名 = **恶欲值（单位级 0–10）+ 诅咒链接网 + 异类谱系**。\n> - **恶欲值（单位级）**：战场每单位各自持有一条（写入全局 `StatusDef`）。罪犯产、囚犯消、律师拧。阈值（照搬《暗影世界系技能设定》§2.2）：\n>   - 0–3 正常；**4–6 躁动**：造成伤害 +20%，20% 概率攻击最近单位（含友军）；\n>   - **7–9 失控**：伤害 +50%，35% 概率攻击友军，无法被治疗；\n>   - **=10 欲望爆炸**：受自身最大生命 25% 精神伤害，归零，向相邻单位各传 3 点恶欲值。\n> - **诅咒链接网**（囚犯专属引擎改革）：`诅咒链接 N` = 同时链接 N 个目标（含自身源头）；任一被链接单位受伤 → 全网分摊（分摊系数 = `1 + 0.2×(N−1)`）；囚犯自身为源头时损伤按比例转嫁网络。\n> - **异类谱系**（囚犯专属引擎改革）：形态转换 → push 入栈，谱系深度 D；`演出` 回放栈中前序形态（弱序列4 强度）；D → 异类之王压制力 +20%×D。\n>\n> **跨源质写入方**：恶欲值 → 罪犯（产）、律师（腐蚀·拧高）；诅咒链接网 → 囚犯主消费方；提线木偶 → 囚犯（毒性傀儡/怨魂附身）↔ 占卜家（源堡）；替身 → 囚犯（诅咒转嫁）↔ 律师（定义权）↔ 占卜家/刺客。",
+  "sampleBuilds": [
+    {
+      "name": "A 诅咒连锁 🜍",
+      "actives": [
+        "诅咒之源",
+        "无反噬之咒",
+        "变形诅咒",
+        "万咒加身"
+      ],
+      "passives": [
+        "长久沉默",
+        "诅咒权柄",
+        "体魄强化",
+        "被缚者"
+      ],
+      "playstyle": "主轴：木偶挂链接网→序列3 反噬剥离→链接≥4 沿网传染；被缚者保证施加不可解且消纳恶欲"
+    },
+    {
+      "name": "B 兽化异种 🜏",
+      "actives": [
+        "狼人化",
+        "爆发欲望",
+        "唤醒死尸",
+        "转化"
+      ],
+      "passives": [
+        "操纵活尸",
+        "异类之王",
+        "知觉敏锐",
+        "钢铁之躯"
+      ],
+      "playstyle": "放开欲望再兽化，双形态叠攻击；活尸/转化入谱系，异类之王按深度压制；*钢铁之躯见 v0.2，本重构可补回"
+    },
+    {
+      "name": "C 怨魂游走 🜏🜎",
+      "actives": [
+        "灵体化",
+        "死寒之握",
+        "毒性傀儡",
+        "怨魂尖啸"
+      ],
+      "passives": [
+        "怨灵之缠",
+        "黑暗恐惧",
+        "知觉敏锐",
+        "体魄强化"
+      ],
+      "playstyle": "灵体化物抗+70%、不可锁定；毒浸透后提线，尖啸压制节奏"
+    },
+    {
+      "name": "D 囚缚供需 🜎",
+      "actives": [
+        "厄缚汲取",
+        "侵蚀诅咒",
+        "诅咒木偶·改",
+        "双线同提"
+      ],
+      "passives": [
+        "被缚者",
+        "长久沉默",
+        "爆发欲望",
+        "操纵活尸"
+      ],
+      "playstyle": "跨系：吃罪犯/律师状态→消纳恶欲值转链网，链接网越密 payoff 越大"
     }
   ]
 }

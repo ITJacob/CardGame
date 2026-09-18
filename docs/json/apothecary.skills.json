@@ -1,16 +1,26 @@
 {
   "pathwayId": "apothecary",
   "pathwayName": "药师",
-  "sourceFile": "../skill-design/药师途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/药师途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "brew": {
       "symbol": "🜄",
-      "name": "药剂"
+      "name": "药剂",
+      "statusId": "draught",
+      "enablers": [
+        "药剂调配",
+        "草药敷贴"
+      ]
     },
     "beasts": {
       "symbol": "🐾",
-      "name": "兽群"
+      "name": "兽群",
+      "statusId": "beast_pack",
+      "enablers": [
+        "驯兽哨",
+        "动物感官"
+      ]
     },
     "crimson": {
       "symbol": "🜸",
@@ -18,7 +28,13 @@
     },
     "moon": {
       "symbol": "🌙",
-      "name": "月相"
+      "name": "月相",
+      "statusId": "moon_phase",
+      "enablers": [
+        "满月",
+        "银月切相",
+        "月相·轮转"
+      ]
     }
   },
   "cards": [
@@ -57,7 +73,8 @@
       "sharedAcross": [
         "planter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：药剂轴 enabler：产 `药剂` 状态为后续 payoff 叠层数。治疗汇率压到 1.0/能量（低于直伤 1.2，治疗不白嫖直伤）。严格 A22 走 `heal`。⚠️D。"
     },
     {
       "id": "skill_apothecary_s9_herbal_dressing",
@@ -104,7 +121,8 @@
       "sharedAcross": [
         "planter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：用植物治病→即时小治+持续恢复+产 `药剂`。与【药剂调配】差异：本卡叠 `再生` 持续段。⚠️D。"
     },
     {
       "id": "skill_apothecary_s9_toxin_resist",
@@ -163,7 +181,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：直接落 `resist:poison` + 小额自愈解毒。⚠️D。"
     },
     {
       "id": "skill_apothecary_s9_health_sight",
@@ -206,7 +225,8 @@
           "note": "heal_output_mul（施法者侧，handleHeal 读取）+ 目标血量过滤"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：药剂轴 payoff：读低血目标放大治疗。v0.2 仅作用于 heal，本版扩到 `药剂` 状态族，串起药剂轴。⚠️D。"
     },
     {
       "id": "skill_apothecary_s8_beast_whistle",
@@ -245,7 +265,8 @@
       "sharedAcross": [
         "planter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：兽群轴 enabler：召唤动物并挂 `兽群` 身份状态。动物类非构装。⚠️D；A2：禁给召唤物挂开局语义。"
     },
     {
       "id": "skill_apothecary_s8_beast_sense",
@@ -351,7 +372,8 @@
           "note": "gauge.rate 常驻修正",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：兽群轴 payoff：读 `兽群` 增益。推友军非自推条（G5/G6 合规）。⚠️D。"
     },
     {
       "id": "skill_apothecary_s7_vampire_body",
@@ -399,7 +421,8 @@
           "note": "gauge.rate 定价无锚点（D2）；INV-S5 合规（改源属性）",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：寿命折算为生命上限+护甲；速度折算 `gauge_rate`（INV-S5 合规）。⚠️D（gauge_rate 无锚点 D2）。"
     },
     {
       "id": "skill_apothecary_s7_vampire_charm",
@@ -445,7 +468,8 @@
           "note": "C7 first_empty（已验证）；duration 5 满足 G15-b（≥ 目标一个行动周期）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：复用 C7。与【美之震撼】同主题低阶表现。⚠️D。"
     },
     {
       "id": "skill_apothecary_s7_corrosive_claw",
@@ -487,7 +511,8 @@
           "duration": 3
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：月相轴 payoff：读血月放大腐蚀/drain。本途径唯一破甲。⚠️D。"
     },
     {
       "id": "skill_apothecary_s7_abyss_shackle",
@@ -543,7 +568,8 @@
           "note": "F7 已登记定义引用副本（H24 减速族），不重复立项"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：招牌控制，引用 F7。元素 none（不扩元素枚举）。⚠️D。"
     },
     {
       "id": "skill_apothecary_s7_dark_wings",
@@ -622,7 +648,8 @@
           "note": "gauge.rate 带 duration 修正",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：脱离前排+减伤+机动。⚠️D。"
     },
     {
       "id": "skill_apothecary_s7_blood_servant",
@@ -694,7 +721,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：兽群轴 payoff：转化即扩 `兽群`。`charm` 反向嘲讽。G15-b：duration≥目标一行动周期。⚠️D。"
     },
     {
       "id": "skill_apothecary_s6_invisibility_potion",
@@ -759,7 +787,8 @@
           "note": "F11 引用副本（H5 潜行母版 + C8 候选池过滤）｜2026-09-18 与 sleepless 潜行统一签名：direction both→inbound（敌方不可选中，正典潜行语义）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：产 `药剂`+潜行。C8 候选池过滤。⚠️D。"
     },
     {
       "id": "skill_apothecary_s6_scentless",
@@ -828,7 +857,8 @@
           "note": "G12 immune 字段（事前阻断，非事后清洗）；退化方案（on_tick 驱散）仍备"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：事前阻断（非事后清洗）。G12 `immune`。⚠️D。"
     },
     {
       "id": "skill_apothecary_s6_prepared_draught",
@@ -897,7 +927,8 @@
           "note": "gauge.rate 带 duration 修正",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：药剂轴旗舰 payoff：读银月翻倍预服增益。`on_battle_start` 起手（A2 禁 on_spawn）。⚠️D。"
     },
     {
       "id": "skill_apothecary_s6_spirit_material",
@@ -1137,7 +1168,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：月相轴 enabler：强制设满月（治疗/召唤轴受益）。唯一一档主动设相技。⚠️D。"
     },
     {
       "id": "skill_apothecary_s5_blink",
@@ -1196,7 +1228,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "友军指定的 fallbackSort 稿面未给，置 null 待补；swap_ally 锁定同 faction，G8 合规"
+        "友军指定的 fallbackSort 稿面未给，置 null 待补；swap_ally 锁定同 faction，G8 合规",
+        "翻译/语义：月相轴 payoff：读银月强化闪现（距离/伤害）。swap_ally 锁定同 faction（G8）。⚠️D。"
       ]
     },
     {
@@ -1263,7 +1296,8 @@
           "note": "H5 + H7 + C6；duration 5 满足 G15-b"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：月相轴 payoff：读缺月强化虚化减伤。免死同 `lethal_protect`。⚠️D。"
     },
     {
       "id": "skill_apothecary_s5_crimson_vitality",
@@ -1403,7 +1437,8 @@
           "note": "与愚者【纸人替身】同源（H7），本条多一层反噬"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：替身+反噬。序列4 起标吟唱。依赖 `lethal_protect`。⚠️D。"
     },
     {
       "id": "skill_apothecary_s4_dark_gaze",
@@ -1461,7 +1496,8 @@
           "note": "C7 first_empty；与【血仆转化】区分：凝视=打空，转化=打自己人"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：月相轴 payoff：读红月强化黑暗领域。C7 锚点。⚠️D。"
     },
     {
       "id": "skill_apothecary_s4_bat_swarm",
@@ -1556,7 +1592,8 @@
           "note": "H5 + H7；「场上存活蝙蝠数 > 0」判定走 caster_has_summon(unitId) 谓词"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：月相轴 payoff：读红月让重组更快（对抗面更松）。依赖 `lethal_protect`+C8+`unit_bat`。⚠️D。"
     },
     {
       "id": "skill_apothecary_s3_summon_gate",
@@ -1614,7 +1651,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：召唤轴 enabler+payload：产 `召唤` 并读满月强化。⚠️D。"
     },
     {
       "id": "skill_apothecary_s3_spirit_pact",
@@ -1677,7 +1715,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：召唤轴 payoff：读 `召唤` 增益+回流。依赖全局 `on_death` 监听。⚠️D。"
     },
     {
       "id": "skill_apothecary_s2_creation",
@@ -1745,7 +1784,8 @@
       "sharedAcross": [
         "planter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：药剂轴 payoff：读满月翻倍创生治疗。双向结构避自推条。⚠️D；依赖 `hp_max` 负值截断。"
     },
     {
       "id": "skill_apothecary_s2_self_mend",
@@ -1808,7 +1848,8 @@
           "note": "H42 常驻模板"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：常驻自愈底盘。⚠️D。"
     },
     {
       "id": "skill_apothecary_s2_pure_land",
@@ -1863,7 +1904,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "「给予土地新生命」无土地维度，折算为群体小额治疗（稿面诚实标注的唯一语义迁移）"
+        "「给予土地新生命」无土地维度，折算为群体小额治疗（稿面诚实标注的唯一语义迁移）",
+        "翻译/语义：产 `药剂`+群体驱散。⚠️D。"
       ]
     },
     {
@@ -1915,7 +1957,8 @@
           "note": "H24 减速族两参档；不写成眩晕：保留对抗面（可驱散、不影响已蓄满行动条）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：序列1「男性晋升转变为女性」为原著明确依据 → 标 **性别 女**（brief §12.1）。月相轴 payoff：读满月延长震撼。⚠️D。"
     },
     {
       "id": "skill_apothecary_s1_beauty_summon",
@@ -1965,7 +2008,8 @@
           "note": "extraSpawn 为 H8 同源挂载方覆写思路的扩展表达，语义偏差待内核裁定"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：性别 女（同美神谱系）。⚠️D。"
     },
     {
       "id": "skill_apothecary_s0_life_authority",
@@ -2050,7 +2094,8 @@
           "hpRatio": 0.4
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：月相轴 payoff：读缺月延长赐命。位格/收束走界域环境（§四）。⚠️D。"
     },
     {
       "id": "skill_apothecary_s0_moon_cycle",
@@ -2126,7 +2171,8 @@
           "note": "「沿 formGroup 顺序进一相、同组新相顶掉旧相」无效果原语；H50 已声明式落 ddd（StatusDef formGroup/nextPhase/cycleTicks），触发器效果列表留空由声明字段承载",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：月相轴核心 enabler：驱动整条节拍器。未持有本条时【满月】仍可单卡成立。依赖 `formGroup/nextPhase/cycleTicks`（H50）。⚠️D（周期/阈值待标）。"
     },
     {
       "id": "skill_apothecary_s0_spirit_root",
@@ -2191,7 +2237,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：灵性总量→能量；母亲→召唤护盾。⚠️D。"
     },
     {
       "id": "skill_apothecary_s0_blood_moon_rising",
@@ -2326,7 +2373,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "月相形态组的「血月」（挂自身，伤害 ×1.2/drain+2）与本界域牌（挂天上，全场规则）互补不冲突"
+        "月相形态组的「血月」（挂自身，伤害 ×1.2/drain+2）与本界域牌（挂天上，全场规则）互补不冲突",
+        "翻译/语义：月相形态组「血月」的天上版（全场规则）。与自身月相状态互补。✅ 依赖已落。⚠️D。"
       ]
     },
     {
@@ -2543,6 +2591,73 @@
         },
         "fallbackSort": null
       }
+    }
+  ],
+  "designNote": "> **月相 节拍器（母巢系签名机制，母巢系 §2.2 / 总览 §1 咬合器⑤）**：`月相` 为自身 5 相轮转状态 `moon_phase`（formGroup，同组互斥）：满 / 血 / 银 / 红 / 缺。\n> 轮转序：**满 → 血 → 银 → 红 → 缺 → 满**（每 ⚠️D tick 自动进一相，由传说【月相·轮转】挂载；【满月】【银月切相】可强制设定某相）。\n> 各相加成（⚠️D 全档待标）：\n> - **满月**：治疗与恢复 +100%（heal 输出/接收 ×2）；`召唤` 生物强度提升\n> - **血月**：drain/腐蚀类攻击 ×1.2；`兽群` 获得嗜血（攻击 +⚠️D）\n> - **银月**：`药剂` 类效果 ×2；闪现距离提升\n> - **红月**：黑暗领域法术 ×1.3；蝙蝠分解重组判定更松（重组更快）\n> - **缺月**：自身受伤 ×0.8；敌方单体治疗 ×0.5\n>\n> **enabler→payoff 闭环**：enabler 卡（满月 / 银月切相 / 月相·轮转）推进或设定月相；payoff 卡读取当前月相放大对应轴——腐蚀之爪读血月、预服药水读银月、召唤之门/创生读满月、黑暗凝视/蝙蝠分解读红月、月光化读缺月。四轴被同一节拍器串成 combo。",
+  "sampleBuilds": [
+    {
+      "name": "A 药剂续航 🜄",
+      "actives": [
+        "药剂调配",
+        "草药敷贴",
+        "净土净化",
+        "创生"
+      ],
+      "passives": [
+        "预服药水",
+        "自我治愈",
+        "健康灵视",
+        "毒素抗性"
+      ],
+      "playstyle": "银月下预服翻倍+创生翻倍；低血治疗×1.5 焊死血线"
+    },
+    {
+      "name": "B 兽群召门 🐾",
+      "actives": [
+        "驯兽哨",
+        "闪现",
+        "召唤之门",
+        "兽群指挥·改"
+      ],
+      "passives": [
+        "动物感官",
+        "灵界契印",
+        "血族体质",
+        "灵性根源"
+      ],
+      "playstyle": "铺场+集众；满月召唤物强化，兽群入猎人池"
+    },
+    {
+      "name": "C 血族猎食 🌙",
+      "actives": [
+        "腐蚀之爪",
+        "深渊枷锁",
+        "黑暗之翼",
+        "血仆转化"
+      ],
+      "passives": [
+        "血族体质",
+        "血族魅力",
+        "健康灵视",
+        "月相·轮转"
+      ],
+      "playstyle": "血月腐蚀吸血+兽群嗜血；轮转切相吃各相加成"
+    },
+    {
+      "name": "D 月相轮转 🌙",
+      "actives": [
+        "满月",
+        "月光化",
+        "黑暗凝视",
+        "血月当空"
+      ],
+      "passives": [
+        "月相·轮转",
+        "灵性根源",
+        "自我治愈",
+        "健康灵视"
+      ],
+      "playstyle": "节拍器形态战：满月奶+红月黑暗+缺月免死，界域收束"
     }
   ]
 }

@@ -25,8 +25,8 @@
     },
     "sourceFile": {
       "type": "string",
-      "pattern": "^\\.\\./skill-design/.+_技能池_v\\d+\\.\\d+\\.md$",
-      "description": "回指源 markdown 的相对路径（相对本文件所在目录）。目录结构调整时必须同步修改。"
+      "pattern": "^\\.\\./archive/skill-design_v0\\.3/.+_技能池_v\\d+\\.\\d+\\.md$",
+      "description": "溯源指针：生成期源技能稿 md 的相对路径（2026-09-18 起技能稿归档为只读快照，JSON 为唯一维护正源）。"
     },
     "sourceVersion": {
       "type": "string",
@@ -39,6 +39,25 @@
       "additionalProperties": {
         "$ref": "#/$defs/axis"
       }
+    },
+    "sampleBuilds": {
+      "type": "array",
+      "description": "示例 Build（4 主动 + 4 被动），源自技能稿 §二。卡名为设计示例，可能与现行卡名有出入，仅供构筑参考。",
+      "items": {
+        "type": "object",
+        "required": ["name", "actives", "passives", "playstyle"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "description": "Build 名（含轴符号）。" },
+          "actives": { "type": "array", "items": { "type": "string" } },
+          "passives": { "type": "array", "items": { "type": "string" } },
+          "playstyle": { "type": "string", "description": "玩法一句话。" }
+        }
+      }
+    },
+    "designNote": {
+      "type": "string",
+      "description": "途径级机制说明（如隐秘值/咬合器/恶欲值维度），源自技能稿轴表后的说明段。"
     },
     "cards": {
       "type": "array",
@@ -64,6 +83,24 @@
         "name": {
           "type": "string",
           "description": "轴中文名。"
+        },
+        "statusId": {
+          "type": "string",
+          "description": "轴身份状态 id：enabler 卡挂载/累积它，payoff 卡读取它放大。"
+        },
+        "enablers": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "挂载/累积身份状态的卡名（源自技能稿轴表，仅保留可匹配到卡名的条目）。"
+        },
+        "payoffs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "读取身份状态放大的卡名（同源，仅保留可匹配条目）。"
+        },
+        "note": {
+          "type": "string",
+          "description": "轴机制补充说明。"
         }
       }
     },

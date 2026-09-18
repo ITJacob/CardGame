@@ -1,7 +1,7 @@
 {
   "pathwayId": "reader",
   "pathwayName": "阅读者",
-  "sourceFile": "../skill-design/阅读者途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/阅读者途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "analysis": {
@@ -14,7 +14,8 @@
     },
     "mimic": {
       "symbol": "🜃",
-      "name": "模仿"
+      "name": "模仿",
+      "statusId": "mimic"
     },
     "foresight": {
       "symbol": "🜄",
@@ -55,7 +56,8 @@
       "sharedAcross": [
         "pryer"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：记忆力 → 开局即时资源；同时给知识轴挂起手层数。沿用 v0.1 量级 ⚠️D。"
     },
     {
       "id": "skill_reader_s9_comprehension",
@@ -84,7 +86,8 @@
       "sharedAcross": [
         "pryer"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：理解力 = 学得快 → 能量恢复（G14 合规：/tick）。⚠️D。"
     },
     {
       "id": "skill_reader_s9_ritual_magic",
@@ -149,7 +152,8 @@
       "sharedAcross": [
         "pryer"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：本途径输出地基（火球术锚点：3 能/4 伤 ≈1.33 汇率）。⚠️D。升级阶梯 4→6→8（序列8 仪式魔法专家为第二档）。"
     },
     {
       "id": "skill_reader_s8_logic_deduction",
@@ -203,7 +207,8 @@
       "sharedAcross": [
         "spectator"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：推理 → 破绽=`vulnerable`（×1.3 受伤乘区）；直伤压到 2，资源买在标记上。刷新 `observed` 让解析/模仿串链。⚠️D。"
     },
     {
       "id": "skill_reader_s8_observe",
@@ -269,7 +274,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "双触发点（on_deal_damage / on_take_damage）：hook 字段填主触发点，第二触发点见 triggers 数组"
+        "双触发点（on_deal_damage / on_take_damage）：hook 字段填主触发点，第二触发点见 triggers 数组",
+        "翻译/语义：模仿轴起点与整条链素材来源。挂载时快照目标 `lastSkillRef`。G15-b 合规（即时节点）。⚠️ 依赖新增项 1（`observed` 快照）+ 2。"
       ]
     },
     {
@@ -318,7 +324,8 @@
       "sharedAcross": [
         "pryer"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：协同引擎，让仪式魔法后期仍占槽。按元素过滤乘区（新增项 18）。⚠️D。"
     },
     {
       "id": "skill_reader_s9_knowledge_reserve",
@@ -357,7 +364,8 @@
       "sharedAcross": [
         "pryer"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：设定性描述落成资源，润滑\"解析→模仿\"两技能链路。⚠️D。"
     },
     {
       "id": "skill_reader_s7_weapon_mastery",
@@ -383,7 +391,8 @@
           "note": "modify_stat 账本条目，非 StatusInstance，天然不可驱散"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：原著招牌\"拿着武器站前排的学者\"，拆四条技能分别承载。整场常驻不可驱散。⚠️D。"
     },
     {
       "id": "skill_reader_s7_combat_master",
@@ -431,7 +440,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：本途径唯一物理直伤，G8 合规（近战攻击进程不调 move）。⚠️D。"
     },
     {
       "id": "skill_reader_s7_replay_event",
@@ -494,7 +504,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "退化方案：整条改为 dispel(category:[buff],count:1) + damage(mental,4)，零新依赖"
+        "退化方案：整条改为 dispel(category:[buff],count:1) + damage(mental,4)，零新依赖",
+        "翻译/语义：知识轴 payoff：重放真相。快照为空退化 `damage(mental, 4)`。依赖新增项 1。⚠️D。"
       ]
     },
     {
@@ -557,7 +568,8 @@
       "sharedAcross": [
         "pryer"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：单点精确剥增益+降防，刷新 `observed` 供模仿。⚠️D。"
     },
     {
       "id": "skill_reader_s6_mimic_novice",
@@ -672,7 +684,8 @@
       "sharedAcross": [
         "spectator"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：模仿线第一档，概率仅决定\"是否触发\"（R5 合规）。模仿轴 enabler+payload。⚠️ 依赖新增项 1/4/16。"
     },
     {
       "id": "skill_reader_s7_master_reasoner",
@@ -712,7 +725,8 @@
       "sharedAcross": [
         "spectator"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：先挂破绽再吃乘区，知识轴输出开关。⚠️D。"
     },
     {
       "id": "skill_reader_s7_ritual_master",
@@ -764,7 +778,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "与序列9「仪式魔法」是不同技能（非升级档），可同时占槽"
+        "与序列9「仪式魔法」是不同技能（非升级档），可同时占槽",
+        "翻译/语义：仪式魔法大师版：伤害 4→6 并附护盾（仪式兼具守护）。⚠️D。"
       ]
     },
     {
@@ -857,7 +872,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"自行发明创造\"→变体档选择。⚠️D。依赖新增项 13。"
     },
     {
       "id": "skill_reader_s5_streamlined_cast",
@@ -908,7 +924,8 @@
           "note": "技能费用修正属 progression 层（战外），ddd 未落；退化方案为 modify_stat(energy_regen,+0.3)（G14 需重标，约 5 倍时间尺度差）",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：连发引擎，让\"解析→模仿\"链路跑得起来。⚠️ 依赖新增项 11（🟡）。"
     },
     {
       "id": "skill_reader_s4_prophecy",
@@ -998,7 +1015,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：预知=节奏改写。G5/G6 合规（推友军不自推）。⚠️D。依赖新增项 7/3。"
     },
     {
       "id": "skill_reader_s4_astral_arcana",
@@ -1049,7 +1067,8 @@
       "sharedAcross": [
         "pryer"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：本途径唯一 AOE；星界侵蚀=削能。依赖新增项 14。⚠️D。"
     },
     {
       "id": "skill_reader_s5_mimic_arcana",
@@ -1098,7 +1117,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "与模仿·初解是同一条技能线（B6 duplicatePolicy:upgrade，0.2→0.5→0.6→0.8→0.9→1.0，不额外占槽）"
+        "与模仿·初解是同一条技能线（B6 duplicatePolicy:upgrade，0.2→0.5→0.6→0.8→0.9→1.0，不额外占槽）",
+        "翻译/语义：模仿线第二档，必定成功。与初解同线 B6 升级。⚠️D。"
       ]
     },
     {
@@ -1146,7 +1166,8 @@
           "note": "0.8 为效果保留门槛：附加效果（状态/驱散/资源修改）完整保留；mimic 定义见模仿·初解"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：0.8 为效果保留门槛（附加效果完整保留）。⚠️D。"
     },
     {
       "id": "skill_reader_s5_arcana_tutelage",
@@ -1187,7 +1208,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "原著存疑标注：对照表序列5 能力栏无\"传授他人\"描述，本条按职业名「导师」推断，是本稿对原著最大的一处推断"
+        "原著存疑标注：对照表序列5 能力栏无\"传授他人\"描述，本条按职业名「导师」推断，是本稿对原著最大的一处推断",
+        "翻译/语义：复用 F14 `tutelage`。⚠️ 原著推断（见遗留）。依赖新增项 14。"
       ]
     },
     {
@@ -1311,7 +1333,8 @@
       "tentative": true,
       "conversionNotes": [
         "2026-09-08 界域牌批次新增",
-        "on_turn_start 档的 damage_mul ×1.1 在 domainDef 内以占位 modify_stat 表达，引擎实现时应为伤害乘区（H4）1t 刷新"
+        "on_turn_start 档的 damage_mul ×1.1 在 domainDef 内以占位 modify_stat 表达，引擎实现时应为伤害乘区（H4）1t 刷新",
+        "翻译/语义：预言=节奏改写。✅ 依赖已落。⚠️D。"
       ]
     },
     {
@@ -1360,7 +1383,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：规律轴旗舰 payoff：全体易伤+降防。⚠️D。依赖新增项 14。"
     },
     {
       "id": "skill_reader_s3_law_breach",
@@ -1433,7 +1457,8 @@
           "note": "退化方案：去掉 pierce_shield，resist:all 改为逐元素 8 条 modify_stat（Repeat 展开，零新 StatKey）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：撬动规律=让规则失灵（降甲/降全抗/穿透护盾）。⚠️D。依赖新增项 5/6。"
     },
     {
       "id": "skill_reader_s2_mimic_cherub",
@@ -1480,7 +1505,8 @@
           "note": "0.9 第二道门槛：状态 duration 不再打折；mimic 定义见模仿·初解"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：90%=第二道门槛（状态 duration 不再打折）。⚠️D。"
     },
     {
       "id": "skill_reader_s2_wisdom_authority",
@@ -1540,7 +1566,8 @@
           "note": "gauge_rate 按 modify_stat(gauge.rate) 表达持续修正，ddd 将 gauge.* 列于 modify_resource 键族，待内核裁定归一",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：预知=节奏+必中+最优解。依赖新增项 3/8。⚠️D。"
     },
     {
       "id": "skill_reader_s2_optimal_choice",
@@ -1605,7 +1632,8 @@
           "note": "与 mimic 共用参数化乘区母版（参数 mul/charges）；H42 同向乘区取最高"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：智慧权柄对外版。G5/G6 合规。依赖新增项 4/14。⚠️D。"
     },
     {
       "id": "skill_reader_s3_law_authority",
@@ -1650,7 +1678,8 @@
           "note": "与愚者 v0.2 新增项 9、歌颂者 v0.2 新增项 11 同源（H8），建议并入同一母版"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：不可违抗=不可驱散，对抗驱散型对手核心资产。依赖新增项 9。⚠️D。"
     },
     {
       "id": "skill_reader_s1_omniscience_mark",
@@ -1693,7 +1722,8 @@
       "sharedAcross": [
         "spectator"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：解析轴终极形态：现在/过去/未来三用途合一。依赖新增项 3/10/14。⚠️D。"
     },
     {
       "id": "skill_reader_s1_astral_tutor",
@@ -1763,7 +1793,8 @@
           "note": "H12 target_override 族「锚点=空坐标 × 存续=charges:2」格，F 组合并候选 3 建议并入该母版"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：改写\"行为\"概念=target_override→first_empty。依赖新增项 15。⚠️D。"
     },
     {
       "id": "skill_reader_s1_mimic_omniscience",
@@ -1811,7 +1842,8 @@
           "note": "原著「不涉及权柄」落地：重放跳过 authority:true 标记条目（编目参数 §二，数据层标注）；mimic 定义见模仿·初解"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：模仿顶点，100%。⚠️D。依赖新增项 1/4/16。"
     },
     {
       "id": "skill_reader_s0_tower_creation",
@@ -1852,7 +1884,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "A2 合规：不挂任何 on_spawn 语义"
+        "A2 合规：不挂任何 on_spawn 语义",
+        "翻译/语义：创造=spawn 继承施法者属性造物。依赖新增项 12。A2 合规。⚠️D。"
       ]
     },
     {
@@ -1903,7 +1936,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "本稿全篇零 heal：原著阅读者途径无治疗能力，阶梯只负责离开、不负责治好（刻意设计）"
+        "本稿全篇零 heal：原著阅读者途径无治疗能力，阶梯只负责离开、不负责治好（刻意设计）",
+        "翻译/语义：脱离当前位置=己方半场后撤+护盾。零 heal（原著无治疗）。⚠️D。"
       ]
     },
     {
@@ -1964,7 +1998,75 @@
           "note": "与全知·现在与过去是两条独立被动（那条「看穿敌人」，本条「学得会敌人」），对应原著两个位阶的全知权柄，不合并"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：全知=免观察前置。⚠️D。依赖新增项 2/17。"
+    }
+  ],
+  "designNote": "> **全知/规律/解析 主题贯穿**：知识轴承载\"解析/全知\"的信息面，规律轴承载\"规律权柄\"的改写面，预言轴承载\"预知/最优解\"的节奏面——三者共同构成阅读者的**全知**内核；模仿轴是其招牌的\"以彼之道\"。\n> **混沌海系签名维度 = 放牧(Grazing)**（见下方维度说明）：阅读者本身无 `放牧` 轴，但经 combo 卡（【解析·跨系共鸣】）读取友方秘祈人的 `放牧` 槽，实现\"解析被放牧灵魂 → 模仿其能力\"的跨系联动。\n> 阅读者作为混沌海途径，在 §三 通过 `crossPathway:true` 读取 `放牧`/`寄生`/`提线木偶` 等枢纽状态，形成跨系 combo（非复刻）。",
+  "sampleBuilds": [
+    {
+      "name": "A 守知学者 🜁",
+      "actives": [
+        "格斗大师",
+        "仪式魔法",
+        "仪式魔法大师",
+        "秘术·自创"
+      ],
+      "passives": [
+        "武器精通",
+        "仪式魔法专家",
+        "省略步骤",
+        "理解力"
+      ],
+      "playstyle": "前排学者：武器精通抬攻、仪式专家×1.2、省略步骤连发"
+    },
+    {
+      "name": "B 解析破绽 🜁",
+      "actives": [
+        "逻辑推演",
+        "解析还原",
+        "解析",
+        "洞悉"
+      ],
+      "passives": [
+        "观察",
+        "推理大师",
+        "规律权柄",
+        "过目不忘"
+      ],
+      "playstyle": "先挂破绽吃×1.2；洞悉全体扒光，规律权柄锁减益不可驱散"
+    },
+    {
+      "name": "C 模仿 🜃",
+      "actives": [
+        "模仿·初解",
+        "星界秘术",
+        "知识储备",
+        "白塔·创造"
+      ],
+      "passives": [
+        "观察",
+        "过目不忘",
+        "智慧权柄",
+        "规律权柄"
+      ],
+      "playstyle": "观察积累快照，模仿还对手大招；白塔·创造补站场；重复模仿升级 20%→100%"
+    },
+    {
+      "name": "D 全知预言 🜄",
+      "actives": [
+        "预言",
+        "局势推演",
+        "规律·撬动",
+        "星界导师"
+      ],
+      "passives": [
+        "智慧权柄",
+        "全知·现在与过去",
+        "白塔·全知",
+        "理解力"
+      ],
+      "playstyle": "推友军抢先手（绝不自推），规律·撬动降抗破盾，星界导师改行为概念"
     }
   ]
 }

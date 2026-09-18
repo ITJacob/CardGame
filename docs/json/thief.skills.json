@@ -1,7 +1,7 @@
 {
   "pathwayId": "thief",
   "pathwayName": "偷盗者",
-  "sourceFile": "../skill-design/偷盗者途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/偷盗者途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "steal": {
@@ -10,11 +10,20 @@
     },
     "deceit": {
       "symbol": "🜂",
-      "name": "欺诈"
+      "name": "欺诈",
+      "statusId": "误判",
+      "enablers": [
+        "思维误导",
+        "精神干扰"
+      ]
     },
     "parasite": {
       "symbol": "🜃",
-      "name": "寄生"
+      "name": "寄生",
+      "statusId": "寄生",
+      "enablers": [
+        "寄生"
+      ]
     },
     "chrono": {
       "symbol": "🜄",
@@ -86,7 +95,8 @@
         "fool",
         "apprentice"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：窃物轴 enabler：偷能量+累积 `赃物`。用 `drain`（搬运语义=偷）。⚠️D。"
     },
     {
       "id": "skill_thief_s9_nimble_hands",
@@ -118,7 +128,8 @@
           "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge.rate) 表达持续/常驻修正，待内核裁定归一",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：频率提升=出手更快；与赃物协同（赃物越多摸得越多）。INV-S5 合规（改源属性）。⚠️D。"
     },
     {
       "id": "skill_thief_s9_keen_eye",
@@ -177,7 +188,8 @@
       "sharedAcross": [
         "fool"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：识破隐匿+对带增益增伤+累积赃物。⚠️D。"
     },
     {
       "id": "skill_thief_s8_misdirect",
@@ -236,7 +248,8 @@
       "sharedAcross": [
         "fool"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：误导=打空+挂 `误判`（欺诈轴 enabler）+写隐秘值。⚠️D。"
     },
     {
       "id": "skill_thief_s8_mind_jam",
@@ -280,7 +293,8 @@
       "sharedAcross": [
         "fool"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：干扰=推条+挂误判+写隐秘值。⚠️D。"
     },
     {
       "id": "skill_thief_s8_micro_read",
@@ -334,7 +348,8 @@
           "note": "并入 H3 参数化减伤母版（编队参数 §2.4）；与愚者【直觉预感】同源"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：读身体语言=减伤+自身挂误判。并入参数化减伤母版(H3)。⚠️D。"
     },
     {
       "id": "skill_thief_s8_silver_tongue",
@@ -382,7 +397,8 @@
           "note": "H14 durationModifier 行（本稿新增项 8，已落 ddd：编队参数 §1.1b）；退化方案：技能数据写死 +1 tick"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：说服力=你的谎更持久+持续写隐秘值。依赖 durationModifier(H14)。⚠️D。"
     },
     {
       "id": "skill_thief_s7_disillusion",
@@ -459,7 +475,8 @@
       "sharedAcross": [
         "fool"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：拆幻象+识破隐匿+挂误判。⚠️D。"
     },
     {
       "id": "skill_thief_s7_locator",
@@ -638,7 +655,8 @@
           "note": "退化方案：数据槽不落地时退化为固定 damage(mental, 3)"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：窃物轴旗舰：读 `赃物≥3` 做成\"禁用+自身获得\"双向结构（非复制伤害）。⚠️D。"
     },
     {
       "id": "skill_thief_s6_remote_snatch",
@@ -673,7 +691,8 @@
           "value": 5
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：隐蔽隔空偷=更高搬运量+赃物累积。⚠️D。"
     },
     {
       "id": "skill_thief_s6_plant_evidence",
@@ -746,7 +765,8 @@
           "note": "category 声明为 buff（伪装增益），敌方的 dispel(category:['debuff']) 清不掉它；category 与效果解耦为纯数据声明（本稿新增项 9，已落 ddd）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：塞假货=以假代真预演；误判存在时增强（欺诈轴 payoff）。⚠️D。"
     },
     {
       "id": "skill_thief_s6_mind_resist",
@@ -771,7 +791,8 @@
           "target": "self"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：直译抗性；整场被动取上限。⚠️D。"
     },
     {
       "id": "skill_thief_s5_steal_memory",
@@ -823,7 +844,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：记忆=禁技能+削攻；赃物加成。⚠️D。"
     },
     {
       "id": "skill_thief_s5_steal_thought",
@@ -971,7 +993,8 @@
         "fool",
         "apprentice"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：潜入+必杀；误判加成（欺诈轴 payoff）。⚠️D。"
     },
     {
       "id": "skill_thief_s5_dream_eater",
@@ -1112,7 +1135,8 @@
           "note": "寄生期间施法者受到的伤害 ×0.85（借助宿主隐藏）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：寄生轴旗舰 enabler+payload：两阶段进程挂 `寄生`+写隐秘值。依赖 F2/F56 + 阶段切换(H50)。⚠️D。"
     },
     {
       "id": "skill_thief_s4_steal_distance",
@@ -1169,7 +1193,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "原著同条的「窃取位置」因 G8 铁律禁止跨阵营 relocate 不做，列入稿面遗留"
+        "原著同条的「窃取位置」因 G8 铁律禁止跨阵营 relocate 不做，列入稿面遗留",
+        "翻译/语义：概念性窃取=推远+拉节奏+寄生+隐秘值。G8 合规（push_back 锁 from.faction）。⚠️D。"
       ]
     },
     {
@@ -1273,7 +1298,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：三选一=本途径原著节奏；赃物≥3 放大。⚠️D。"
     },
     {
       "id": "skill_thief_s4_borrow_body",
@@ -1336,7 +1362,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：初步寄生的保命面=伤害转嫁；挂寄生。依赖伤害转嫁(H28)。⚠️D。"
     },
     {
       "id": "skill_thief_s3_deceive_rule",
@@ -1396,7 +1423,8 @@
           "note": "只压制生效、不移除实例、到期自动恢复（suppress 已落 ddd：编队参数 §1.1b）；分阶段建议：先只作用于 shield，验证后放开全部 buff"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：欺诈轴旗舰 payoff：读 `误判` 欺诈规则（骗过状态生效层）。⚠️D。"
     },
     {
       "id": "skill_thief_s3_triple_steal",
@@ -1456,7 +1484,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：多项全偷；赃物门槛放大。⚠️D。"
     },
     {
       "id": "skill_thief_s3_master_of_deceit",
@@ -1502,7 +1531,8 @@
           "note": "运行时覆写 dispelable（H8，已落 ddd：编队参数 §1.1b，与愚者新增项 9 同源）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：质提升=不可驱散+持续写隐秘值。依赖运行时覆写 dispelable(H8)。⚠️D。"
     },
     {
       "id": "skill_thief_s2_graft_fate",
@@ -1553,7 +1583,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "退化方案：两条 modify_resource 各推差值一半，仍是双向但丢掉精确互换语义"
+        "退化方案：两条 modify_resource 各推差值一半，仍是双向但丢掉精确互换语义",
+        "翻译/语义：时间轴旗舰 enabler+payload：互换未来+写 `时差`。依赖 swap_resource(新算子)。⚠️D。"
       ]
     },
     {
@@ -1652,7 +1683,8 @@
           "note": "\"对该目标伤害 ×1.2\"需状态记录目标引用（F56 casterId 同族寻址）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：寄生轴顶点 payoff：读 `寄生` 顶替命运。⚠️D。"
     },
     {
       "id": "skill_thief_s2_fate_gap",
@@ -1695,7 +1727,8 @@
           "note": "gauge_above 谓词（已落 ddd：共享内核参数 §三，本稿新增项 7）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：钻漏洞=专打即将出手者+写时差。依赖 TargetGaugeAbove 谓词(F52)。⚠️D。"
     },
     {
       "id": "skill_thief_s1_steal_time",
@@ -1779,7 +1812,8 @@
           "note": "目标侧 gauge.rate 修正，同敏捷之手待裁定",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：抽时间=推条+减速+自回能；不给自己自推条（G5/G6）；写时差。⚠️D。"
     },
     {
       "id": "skill_thief_s1_aging",
@@ -1868,7 +1902,8 @@
           "note": "状态内 gauge.rate 修正，同敏捷之手待裁定",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：流失+衰老；时差≥2 延长（时间轴 payoff）。⚠️D。"
     },
     {
       "id": "skill_thief_s1_steal_anchor",
@@ -1999,7 +2034,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "unit_stone_clock 单位定义随 H1 召唤物基线登记（本稿新增项 5，已落 ddd：编队参数 §2.4）；on_spawn 触发器挂在召唤物自身"
+        "unit_stone_clock 单位定义随 H1 召唤物基线登记（本稿新增项 5，已落 ddd：编队参数 §2.4）；on_spawn 触发器挂在召唤物自身",
+        "翻译/语义：壁钟=登场/碎裂两响拖时间；写时差。A2 自检（on_spawn 挂召唤物自身）。⚠️D。"
       ]
     },
     {
@@ -2055,7 +2091,8 @@
       "sharedAcross": [
         "apprentice"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：分身替死：复活血量继承分身（原著味）。依赖 G4 + 死亡拦截。⚠️D。"
     },
     {
       "id": "skill_thief_s1_clock_tower_domain",
@@ -2170,7 +2207,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "2026-09-08 界域牌批次新增；G5/G6 合规——tick 结算时推全队，不走本回合自推"
+        "2026-09-08 界域牌批次新增；G5/G6 合规——tick 结算时推全队，不走本回合自推",
+        "翻译/语义：时间轴界域：每 tick 偷时间。⚠️D。"
       ]
     },
     {
@@ -2250,7 +2288,8 @@
       "sharedAcross": [
         "apprentice"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：两分身+不可区分；挂寄生。⚠️D。"
     },
     {
       "id": "skill_thief_s0_error",
@@ -2326,7 +2365,8 @@
           "note": "完全免疫 N 次伤害 + 被免疫值传出（H3×C6 + valueFrom lastEffectReturn，已落 ddd）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：序列0 终焉防御：伤害归零+反噬；隐秘值≥7 加成。⚠️D。"
     },
     {
       "id": "skill_thief_s0_steal_authority",
@@ -2392,7 +2432,75 @@
           "note": "H38 buffBlocked（已落 ddd：编队参数 §1.1b）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：窃物轴终点：读 `赃物≥5` 全搬+禁增益。⚠️D。"
+    }
+  ],
+  "designNote": "> **隐秘值维度（源堡系 §2.2）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。偷盗者经\"欺诈 / 寄生\"类效果 +1/次（思维误导、精神干扰、栽赃、寄生、窃取距离、寄生·血肉共生、欺诈规则、窃取身份、错误 等）。层级：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（源堡系共享；偷盗者经【提线接管·改】【寄生·血肉共生·改】同享）\n> - **≥7**：友方「愚弄 / 隐秘 / conceal」类技能 **+50%**（偷盗者的 误判 / 伪装·盗天机 / 寄生 等 conceal 类受益）\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：占卜家（愚弄/观诡）、学徒（星界/门）、偷盗者（欺诈/寄生）、永暗之河（不眠者/收尸人/战士）、暗影世界（囚犯/罪犯）、混沌海（秘祈人）也写入同一 `secrecy` 维度。",
+  "sampleBuilds": [
+    {
+      "name": "A 窃取搬运 🜁",
+      "actives": [
+        "窃取",
+        "隔空取物",
+        "精准窃取",
+        "窃取权柄"
+      ],
+      "passives": [
+        "敏捷之手",
+        "卓越观察",
+        "精神污染抗性",
+        "微表情"
+      ],
+      "playstyle": "全程掏空：偷能量、偷属性、偷增益，敌方大招永远攒不出；窃取权柄收尾"
+    },
+    {
+      "name": "B 欺诈误导 🜂",
+      "actives": [
+        "思维误导",
+        "精神干扰",
+        "栽赃",
+        "欺诈规则"
+      ],
+      "passives": [
+        "微表情",
+        "魅力口才",
+        "解析幻象",
+        "欺瞒导师"
+      ],
+      "playstyle": "让它打空、塞假货、让增益\"自以为还在\"；误判喂满后欺诈规则生效"
+    },
+    {
+      "name": "C 寄生顶替 🜃",
+      "actives": [
+        "寄生",
+        "窃取距离",
+        "窃取身份",
+        "混淆分身"
+      ],
+      "passives": [
+        "借宿",
+        "分身替换",
+        "卓越观察",
+        "精神污染抗性"
+      ],
+      "playstyle": "寄生抽干宿主→顶替身份无运渐死→分身扛伤替死，本体靠分身替换活"
+    },
+    {
+      "name": "D 时命侵蚀 🜄",
+      "actives": [
+        "嫁接命运",
+        "窃取时间",
+        "衰老",
+        "壁钟之域"
+      ],
+      "passives": [
+        "命运缝隙",
+        "敏捷之手",
+        "分身替换",
+        "欺瞒导师"
+      ],
+      "playstyle": "换顺序、抽时间、催衰老，把对手每次行动拖到最后；错误之域可作欺诈向替换"
     }
   ]
 }

@@ -1,4 +1,4 @@
-# 技能池 JSON 规范（schema v1.3.0）
+# 技能池 JSON 规范（schema v1.4.0）
 
 本文件是 `docs/json/*.skills.json` 与 `docs/json/manifest.json` 的**结构标准**。
 机器可读版本在 `docs/json/schema/` 下，两者必须保持一致：改结构先改 schema，再改数据。
@@ -14,8 +14,7 @@ docs/meta/SCHEMA.md           ← 你在这里
 docs/tools/
 ├─ validate.py                语义校验器（枚举/引用完整性；枚举运行时从 schema 加载）
 ├─ validate_schema.py         结构校验器（字段/类型/跨字段一致性）
-├─ check_enum_sync.py         枚举对账：ddd 参数篇/本文档（文本侧）↔ schema/validate（机器侧）
-└─ check_pool_sync.py         骨架对账：技能稿 md ↔ JSON（卡名/kind/序列/稀有度/构筑轴）
+└─ check_enum_sync.py         枚举对账：ddd 参数篇/本文档（文本侧）↔ schema/validate（机器侧）
 ```
 
 ## 1. 怎么用
@@ -28,9 +27,8 @@ python docs/tools/validate_schema.py
 # 语义校验（无依赖，一直都有）
 python docs/tools/validate.py
 
-# 一致性对账（无依赖；上游文本/稿件改动后必跑）
+# 一致性对账（无依赖；上游文本改动后必跑）
 python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema 枚举
-python docs/tools/check_pool_sync.py   # 技能稿 md ↔ JSON 骨架
 ```
 
 两个校验器分工不同，**都要为 0 错误**才算合规：
@@ -40,7 +38,6 @@ python docs/tools/check_pool_sync.py   # 技能稿 md ↔ JSON 骨架
 | `tools/validate_schema.py` | 结构：字段是否存在、类型对不对、有无未知字段；跨字段：axis∈axes、id 前缀、rarity↔sequence、manifest 对齐 |
 | `tools/validate.py` | 语义：原语与参数取值域、状态 id 是否登记、稀有度映射、界域租金、frameworkFlag 例外 |
 | `tools/check_enum_sync.py` | 枚举漂移：ddd 参数篇 / 本文档（文本侧）与 schema $defs / validate.py（机器侧）不一致即报错；有意分歧须登记进脚本 KNOWN 并注明理由 |
-| `tools/check_pool_sync.py` | 骨架漂移：md 卡名/kind/序列/位阶名/稀有度/构筑轴与 JSON 不一致即报错（机制与文案细节以 md 为准，不比语义） |
 
 编辑器自动补全：在 VS Code 的 `settings.json` 加
 
@@ -57,9 +54,11 @@ python docs/tools/check_pool_sync.py   # 技能稿 md ↔ JSON 骨架
 |---|---|:--:|---|
 | `pathwayId` | string | ✓ | 途径英文 ID，必须与文件名 `<pathwayId>.skills.json` 一致 |
 | `pathwayName` | string | ✓ | 途径中文名 |
-| `sourceFile` | string | ✓ | 回指源 md：`../skill-design/<途径>途径_技能池_v0.3.md`（目录变动时必须同步） |
+| `sourceFile` | string | ✓ | 溯源指针：`../archive/skill-design_v0.3/<途径>途径_技能池_v0.3.md`（2026-09-18 起技能稿归档为只读快照，JSON 为唯一维护正源） |
 | `sourceVersion` | string | ✓ | 源池版本，当前 `v0.3` |
-| `axes` | object | ✓ | 构筑轴，`{ "<axisId>": { symbol, name } }`；卡片 `axis` 必须取自这里的键 |
+| `axes` | object | ✓ | 构筑轴，`{ "<axisId>": { symbol, name, statusId?, enablers?, payoffs?, note? } }`；卡片 `axis` 必须取自这里的键。statusId = 轴身份状态；enablers/payoffs = 挂载/读取该状态的卡名（自技能稿轴表回收，仅保留可匹配卡名） |
+| `sampleBuilds` | array | – | 示例 Build `[{ name, actives[], passives[], playstyle }]`（自技能稿 §二回收；卡名为设计示例，可能与现行卡名有出入） |
+| `designNote` | string | – | 途径级机制说明（隐秘值/咬合器等维度，自技能稿轴表后说明段回收） |
 | `cards` | array | ✓ | 技能卡列表 |
 
 ## 3. 卡片（card）

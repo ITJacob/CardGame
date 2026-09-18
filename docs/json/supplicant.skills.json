@@ -1,16 +1,26 @@
 {
   "pathwayId": "supplicant",
   "pathwayName": "秘祈人",
-  "sourceFile": "../skill-design/秘祈人途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/秘祈人途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "shadow": {
       "symbol": "🜁",
-      "name": "阴影"
+      "name": "阴影",
+      "statusId": "shadow",
+      "enablers": [
+        "藏入阴影",
+        "召唤阴影",
+        "操纵阴影"
+      ]
     },
     "flesh": {
       "symbol": "🜂",
-      "name": "血肉"
+      "name": "血肉",
+      "statusId": "flesh",
+      "payoffs": [
+        "血肉不灭"
+      ]
     },
     "soul": {
       "symbol": "🜃",
@@ -59,7 +69,8 @@
           "note": "gauge_rate 修正在 ddd 属 modify_resource 键；卡面按 modify_stat(gauge.rate) 表达持续修正，待内核裁定归一（gauge.rate 定价无锚点，沿用 D2）",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：资源+节奏。G5/G6 合规（被动）。⚠️D。"
     },
     {
       "id": "skill_supplicant_s9_sacrifice_rite",
@@ -121,7 +132,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定",
+        "翻译/语义：以血肉为代价换力（与序列6「必须经常补充血肉」闭环）。依赖新增项 8(pay_hp)。⚠️D。"
       ]
     },
     {
@@ -222,7 +234,8 @@
           "note": "madness 的 gauge_rate 递减走 statPerStack(gauge.rate)，同待裁定",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：收益(能量恢复)+代价(生命上限↓/疯癫累积)。概率只用于非伤害判定(R5)。依赖新增项 10/11。⚠️D。"
     },
     {
       "id": "skill_supplicant_s8_whisper",
@@ -317,7 +330,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定",
+        "翻译/语义：本途径火球术级输出地基。3 伤/2 能=1.5 汇率（前四序列唯一输出）。⚠️D。"
       ]
     },
     {
@@ -360,7 +374,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "pay_hp 归一为 modify_resource(hp,-3,delta,self)；源稿不走伤害链语义以 note 标记，silent 标志待内核裁定"
+        "pay_hp 归一为 modify_resource(hp,-3,delta,self)；源稿不走伤害链语义以 note 标记，silent 标志待内核裁定",
+        "翻译/语义：倾听产出 madness → 扭曲之力兑换输出，疯癫 Build 引擎。依赖新增项 2。⚠️D。"
       ]
     },
     {
@@ -450,7 +465,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定",
+        "翻译/语义：阴影轴旗舰：不可选中+出手现形。依赖 C8+H5。⚠️D。"
       ]
     },
     {
@@ -582,7 +598,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定",
+        "翻译/语义：两序列同义合一张。⚠️D。依赖新增项 13。"
       ]
     },
     {
@@ -662,7 +679,8 @@
       "tentative": true,
       "conversionNotes": [
         "F53 charge_forward 本稿已建议撤销（位移全部走 C1 push_back / pull_forward）",
-        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定",
+        "翻译/语义：真实位移(己方队列内，G8)+影盾。⚠️D。B6 解锁前压版（pull_forward+atk）。"
       ]
     },
     {
@@ -736,7 +754,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：血肉轴旗舰，本途径唯一正经治疗。A22/INV-D5。⚠️D。"
     },
     {
       "id": "skill_supplicant_s6_flesh_cloak",
@@ -786,7 +805,8 @@
           "note": "H3 参数化减伤母版（与 C3 glibness / F22 sanctuary / F4 shadow_veil 同族）；比 shield 更贴「披风」持续吸伤语义，且不吃禁获护盾克制"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：持续吸伤比 shield 更贴\"披风\"。依赖新增项 12。⚠️D。"
     },
     {
       "id": "skill_supplicant_s6_flesh_bomb",
@@ -860,7 +880,8 @@
           "note": "延时用 duration + on_remove 表达，不引入新原语"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：植入+延时爆炸（on_remove，被驱散也炸）。依赖新增项 15。⚠️D。"
     },
     {
       "id": "skill_supplicant_s6_liquefy_parasite",
@@ -933,7 +954,8 @@
           "note": "直接复用 F2 parasitized 的最小副本；权威定义见 F2 登记（偷盗者序列4「寄生者」同源机制），此处参数照稿面；退化方案：施法者 on_tick heal(2) + 宿主 atk -1，丢掉吸取方向性"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：与偷盗者序列4「寄生者」同一机制（跨源质同源）。依赖 F56。⚠️D。"
     },
     {
       "id": "skill_supplicant_s6_flesh_servant",
@@ -1007,7 +1029,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "pay_hp 归一为 modify_resource(hp,-3,delta,self)；不走伤害链语义以 note 标记，silent 标志待内核裁定"
+        "pay_hp 归一为 modify_resource(hp,-3,delta,self)；不走伤害链语义以 note 标记，silent 标志待内核裁定",
+        "翻译/语义：代价面(自身撕肉)+亡语回血，与\"必须经常补充血肉\"闭环。依赖新增项 8/20。⚠️D。"
       ]
     },
     {
@@ -1106,7 +1129,8 @@
           "note": "H11 计数叠层（与 F1 inscription 同型共用计数型母版）；消耗走 F48 status.consume"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：消耗+补充+细胞掌控三语义落地。依赖新增项 4/11。⚠️D。"
     },
     {
       "id": "skill_supplicant_s5_graze_soul",
@@ -1212,7 +1236,8 @@
           "note": "H11 计数叠层 + F48 status.consume 扣层；maxStacks 由【灵魂牧场】/【三首形态】阶梯覆盖（7/9/13/18/22）；备选方案：按记录 unitDef 元素 / 攻击类型生成对应召唤物"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：**混沌海签名机制的写入端**：吃掉灵魂入 `放牧` 槽（enabler）。原著\"使用其三种能力\"落为三条属性维度（力量/厚度/灵动）稳定落地；灵魂本体记在 `grazed_soul` 层数，供【驱使灵魂】外放（payoff）。依赖新增项 1/9。⚠️D。"
     },
     {
       "id": "skill_supplicant_s5_soul_paddock",
@@ -1320,7 +1345,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：本途径唯一明确数字主线做成 B6 阶梯。依赖新增项 7(summon_cap)。⚠️D。"
     },
     {
       "id": "skill_supplicant_s5_drive_soul",
@@ -1388,7 +1414,8 @@
           "note": "H1 召唤物基线模板实例"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：**放牧 payoff**：释放被放牧单位能力（此处落为外放灵体）。依赖新增项 1/7/9。⚠️D。"
     },
     {
       "id": "skill_supplicant_s5_shadow_bind",
@@ -1472,7 +1499,8 @@
           "note": "gauge.rate 乘算修正（×0.8），同服从之音待裁定；若引擎 modify_stat 只支持加减则退化为 gauge.rate -6",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：三动词全落地（F7 参数化）。⚠️D。依赖新增项 16。"
     },
     {
       "id": "skill_supplicant_s4_black_armor",
@@ -1522,7 +1550,8 @@
           "note": "常驻形态而非一次性变身；moveImmune 与 F7 shackle 禁位移同字段正反两面（H27，已落）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：常驻减伤+庞大+厚血。依赖新增项 16。⚠️D。"
     },
     {
       "id": "skill_supplicant_s4_soul_flesh_blade",
@@ -1622,7 +1651,8 @@
           "note": "单位级标记：无法以任何方式复活（H23 复活优先级链，与愚者【命运锚点】新增项 11 同源母版，已落）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：三动词一比一。泯灭灵魂=稳定斩草除根。依赖新增项 6。⚠️D。"
     },
     {
       "id": "skill_supplicant_s4_fallen_shadow",
@@ -1685,7 +1715,8 @@
           "note": "F12 已登记状态的最小副本（🟡）；权威定义见通用状态表 F12 登记，此处仅引用参数槽位"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：群体覆盖+概率挂 defile（F12）。⚠️D。依赖新增项 17。"
     },
     {
       "id": "skill_supplicant_s3_three_headed",
@@ -1729,7 +1760,8 @@
           "note": "与【灵魂牧场】阶梯 III 同组数字，两卡共存取较大值"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：收益(驱使3/放牧13)+代价(分身难击)。依赖新增项 1/7。⚠️D。"
     },
     {
       "id": "skill_supplicant_s3_shadow_double",
@@ -1810,7 +1842,8 @@
           "note": "G15-b：触发点 on_take_damage 事件驱动不受 duration 尺度影响；duration 5 按覆盖 1 个自身回合取保守值"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：一次完全免伤+后撤。G15-b 合规。⚠️D。"
     },
     {
       "id": "skill_supplicant_s3_flesh_immortal",
@@ -1883,7 +1916,8 @@
           "note": "「+ 血肉补充」是复活前提：flesh_stock 由【补充血肉】击杀产出，没攒够就死透"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：最强防御，复活前提=攒血肉（与【补充血肉】闭环）。依赖新增项 3/4。⚠️D。"
     },
     {
       "id": "skill_supplicant_s2_word_spirit",
@@ -1960,7 +1994,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：秽堕轴旗舰：\"回答\"被扭曲成伤害。依赖 F56+charges。⚠️D。"
     },
     {
       "id": "skill_supplicant_s2_curse",
@@ -2046,7 +2081,8 @@
           }
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：即时诅咒+延时堕落进程。依赖新增项 14。⚠️D。"
     },
     {
       "id": "skill_supplicant_s1_dark_sea",
@@ -2196,7 +2232,8 @@
           "note": "界域载荷 gauge_rate ×0.85 乘算修正，同待裁定",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：秽堕轴顶点：吞噬敌方攻势+隐蔽己方。✅ 依赖已落。⚠️D。"
     },
     {
       "id": "skill_supplicant_s1_wasting",
@@ -2264,7 +2301,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：生命流逝(无属性)+给敌叠 madness（与本途径疯癫体系打通）。依赖新增项 10/17。⚠️D。"
     },
     {
       "id": "skill_supplicant_s1_shadow_sovereign",
@@ -2322,7 +2360,8 @@
           "note": "阴影轴与牧魂轴的汇合点；按 tags 筛选己方单位已落（编队参数 §1.2b + filter.tags）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：阴影轴与牧魂轴汇合点，召唤 Build 放大器。依赖新增项 2/18。⚠️D。"
     },
     {
       "id": "skill_supplicant_s1_fallen_kin",
@@ -2396,7 +2435,8 @@
           "note": "H1 召唤物基线模板实例；不占用同时驱使上限（与驱使灵魂两条独立约束）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：牧魂轴顶点：强度取决于前中期攒的 `grazed_soul`。依赖新增项 1/9。⚠️D。"
     },
     {
       "id": "skill_supplicant_s0_abomination",
@@ -2474,7 +2514,8 @@
           "note": "spawn.hpRatio 运行时表达式（deathsThisBattle）直接写法未见登记：valueFrom battleStats 已落，唯 hpRatio 直接表达式留尾，退化方案固定 hpRatio 0.7",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：凭空 spawn；用战场死亡总量喂养。依赖新增项 19。⚠️D。"
     },
     {
       "id": "skill_supplicant_s0_scapegoat",
@@ -2539,8 +2580,76 @@
       "tentative": true,
       "conversionNotes": [
         "未决优先级：替罪 lethal_redirect → 血肉不灭 lethal_protect → 灵肉之刃 revive_blocked 三者对冲，需先定致死/复活/反复活结算优先级链（稿面「本稿遗留」）",
-        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定"
+        "sharedAcross 目标占卜家途径未在 manifest 登记，id \"diviner\" 为推定",
+        "翻译/语义：序列0 核心权柄。方向=目标→你（与刺客 F5 反向）。依赖新增项 5/3。⚠️D。"
       ]
+    }
+  ],
+  "designNote": "> **v2 修订影响**：秘祈人由源堡移入混沌海，故\"寄生/血肉寄生\"与源堡偷盗者的同名主题变成**两个不同源质之间的共享**（跨源质联动，见 §三【蔷薇主教·改】）。本途径的「阴影/血肉/堕落」是**跨源质联动**语境（↔源堡偷盗者），而非组内 combo——v0.2 把寄生做成组内复刻是错误的，本版修正。\n> **混沌海系签名维度 = 放牧(Grazing)**：见下方维度说明，**秘祈人即该机制的写入方**。\n> 本途径是放牧的**承载者**：`放牧` 槽既是一条身份轴（③），也是全混沌海系跨系联动的地基（§三 枢纽状态 `crossPathway:true`）。",
+  "sampleBuilds": [
+    {
+      "name": "A 血肉祭礼 🜂",
+      "actives": [
+        "祭祀仪式",
+        "血肉治愈",
+        "血肉披风",
+        "血肉仆役"
+      ],
+      "passives": [
+        "补充血肉",
+        "黑甲",
+        "血肉不灭",
+        "灵感"
+      ],
+      "playstyle": "以血换能，击杀攒血肉储备，血肉不灭兜底两条命"
+    },
+    {
+      "name": "B 阴影潜行 🜁",
+      "actives": [
+        "藏入阴影",
+        "操纵阴影",
+        "阴影替身术",
+        "黑暗海洋"
+      ],
+      "passives": [
+        "阴影统治者",
+        "黑甲",
+        "补充血肉",
+        "灵感"
+      ],
+      "playstyle": "全程不可选中，一次免伤+后撤，黑暗海洋掩体"
+    },
+    {
+      "name": "C 牧魂军团 🜃",
+      "actives": [
+        "放牧灵魂",
+        "驱使灵魂",
+        "血肉仆役",
+        "堕落眷属"
+      ],
+      "passives": [
+        "灵魂牧场",
+        "三首形态",
+        "补充血肉",
+        "阴影统治者"
+      ],
+      "playstyle": "击杀攒灵魂，中期外放灵体，后期全放淹没战场"
+    },
+    {
+      "name": "D 秽语疯癫 🜄",
+      "actives": [
+        "耳语",
+        "阴影诅咒",
+        "秽语·诅咒",
+        "秽语·言灵"
+      ],
+      "passives": [
+        "倾听",
+        "扭曲之力",
+        "补充血肉",
+        "灵感"
+      ],
+      "playstyle": "疯癫换输出，四段 debuff 叠腐蚀+堕落+疯癫，言灵反噬收头"
     }
   ]
 }

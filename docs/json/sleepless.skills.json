@@ -1,24 +1,48 @@
 {
   "pathwayId": "sleepless",
   "pathwayName": "不眠者",
-  "sourceFile": "../skill-design/不眠者途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/不眠者途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "darkness": {
       "symbol": "🌑",
-      "name": "暗夜"
+      "name": "暗夜",
+      "statusId": "nightfall",
+      "enablers": [
+        "夜视",
+        "夜色渐浓"
+      ]
     },
     "nightmare": {
       "symbol": "🌙",
-      "name": "梦魇"
+      "name": "梦魇",
+      "statusId": "slumber",
+      "enablers": [
+        "入梦",
+        "塑梦",
+        "强制入梦"
+      ],
+      "payoffs": [
+        "梦魇世界",
+        "恐惧灵光"
+      ]
     },
     "requiem": {
       "symbol": "🕯",
-      "name": "安魂"
+      "name": "安魂",
+      "statusId": "pacified",
+      "enablers": [
+        "安魂"
+      ]
     },
     "secrecy": {
       "symbol": "🗝",
-      "name": "隐秘"
+      "name": "隐秘",
+      "statusId": "conceal",
+      "enablers": [
+        "隐秘化",
+        "无迹之影"
+      ]
     }
   },
   "cards": [
@@ -55,7 +79,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "稿面注明能量仅为'睡得少'的副产品，v0.1 的能量续航轴已废弃，本卡为唯一遗留"
+        "稿面注明能量仅为'睡得少'的副产品，v0.1 的能量续航轴已废弃，本卡为唯一遗留",
+        "翻译/语义：原著\"休息需求少\"折为能量骨架被动（暗夜轴起手资源）。⚠️D。"
       ]
     },
     {
@@ -117,7 +142,8 @@
       "sharedAcross": [
         "corpse_collector"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：识破隐匿（依赖 C8「识破」，与愚者【灵视】同源）。⚠️D。"
     },
     {
       "id": "skill_sleepless_s9_deepening_night",
@@ -168,7 +194,8 @@
           "note": "statPerStack 内含 gauge.rate 键；ddd modify_stat.stat 枚举无 gauge.rate（ gauge 三维度归 modify_resource），待内核裁定归一",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态 `夜幕` 累积源。⚠️D。"
     },
     {
       "id": "skill_sleepless_s8_midnight_prowess",
@@ -210,7 +237,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：暗夜轴属性地板。⚠️D。"
     },
     {
       "id": "skill_sleepless_s8_dazing_verse",
@@ -266,7 +294,8 @@
           "note": "H24 减速族 × H4 乘区；退化方案：modify_stat(attack, -2, duration:3)"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：诗篇三分支之一（敌人恍惚）。⚠️D。"
     },
     {
       "id": "skill_sleepless_s8_lullaby",
@@ -313,7 +342,8 @@
           }
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：安魂轴友军向预演（增益向），与序列6【安魂】削弱向区分。⚠️D。"
     },
     {
       "id": "skill_sleepless_s8_dread_verse",
@@ -381,7 +411,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：恐惧链最下环（惊惧诗→恐惧灵光→恐惧权柄），同状态 `dread` 三级复用。⚠️D。"
     },
     {
       "id": "skill_sleepless_s7_dream_pull",
@@ -437,7 +468,8 @@
           "note": "与「眩晕」同构（disable 全部四行为）+ H4 受伤乘区；睡眠族扩展：被延长走 H14 durationModifier、被永眠改写走 H32 transferStatus"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：梦魇轴旗舰 enabler：挂 `灵梦`(slumber)。⚠️D。"
     },
     {
       "id": "skill_sleepless_s7_dream_shaping",
@@ -539,7 +571,8 @@
           "note": "击溃精神；挂载时把宿主 slumber duration 刷新至 4（H14 durationModifier 口径）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：读 `灵梦` 二次操作（payoff）。⚠️D。"
     },
     {
       "id": "skill_sleepless_s7_dream_walker",
@@ -593,7 +626,8 @@
           }
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：梦魇轴运转前提。⚠️D。"
     },
     {
       "id": "skill_sleepless_s6_forced_dream",
@@ -636,7 +670,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "原著 150m/200m 两次范围提升合并为'单体升级群体'，距离数字不建模"
+        "原著 150m/200m 两次范围提升合并为'单体升级群体'，距离数字不建模",
+        "翻译/语义：单体→群体升级。⚠️D。"
       ]
     },
     {
@@ -737,7 +772,8 @@
       "sharedAcross": [
         "corpse_collector"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：安魂轴身份状态 `安宁`(pacified) 挂载源；对灵体特化支路。⚠️D。"
     },
     {
       "id": "skill_sleepless_s6_spirit_eye",
@@ -787,7 +823,8 @@
       "sharedAcross": [
         "corpse_collector"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：安魂轴灵体特化入口，与收尸人共享同源。⚠️D。"
     },
     {
       "id": "skill_sleepless_s5_spirit_fang",
@@ -839,7 +876,8 @@
       "sharedAcross": [
         "corpse_collector"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：安魂轴召唤地基（自然灵，与收尸人亡灵区分 ID）。⚠️D。"
     },
     {
       "id": "skill_sleepless_s5_split_mind",
@@ -890,7 +928,8 @@
       "sharedAcross": [
         "corpse_collector"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：安魂轴召唤发动机。⚠️D。"
     },
     {
       "id": "skill_sleepless_s5_spirit_swarm",
@@ -935,7 +974,8 @@
       "sharedAcross": [
         "corpse_collector"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：弱化双灵，合撑\"4-5 个灵\"量级。⚠️D。"
     },
     {
       "id": "skill_sleepless_s4_nightwatch_nature",
@@ -1074,7 +1114,8 @@
           "note": "正午阳光下被削弱 = 夜色未起时的攻防减值，零新机制"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：读 `夜幕` 阈值放大的暗夜轴 payoff。⚠️D。"
     },
     {
       "id": "skill_sleepless_s4_night_realm",
@@ -1252,7 +1293,8 @@
         "梦境",
         "灵体"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：暗夜轴旗舰主题界域；读 `夜幕` 给灵增益（payoff 一体）。✅ 依赖已落。⚠️D。"
     },
     {
       "id": "skill_sleepless_s4_hair_snare",
@@ -1311,7 +1353,8 @@
       "sharedAcross": [
         "corpse_collector"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：暗夜轴节奏压制。⚠️D。"
     },
     {
       "id": "skill_sleepless_s4_misfortune",
@@ -1390,7 +1433,8 @@
           "note": "零概率的确定性厄运：慢半拍 + 倒退 + 一次性加重；刷新不叠层（maxStacks 1）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：暗夜轴确定性厄运（慢/退/加重）。⚠️D。"
     },
     {
       "id": "skill_sleepless_s3_dark_sword",
@@ -1483,7 +1527,8 @@
           "note": "revive_blocked（编队参数 §1.1b 死亡结算行）；与收尸人【完全的死亡】/愚者【命运锚点】同源同一母版"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：暗夜轴处决。⚠️D。"
     },
     {
       "id": "skill_sleepless_s3_fear_aura",
@@ -1550,7 +1595,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "原著「失控」引擎无对应维度，不建模，只取「被吓死」"
+        "原著「失控」引擎无对应维度，不建模，只取「被吓死」",
+        "翻译/语义：读血量阈值的梦魇轴恐惧 payoff；与 `dread` 链同源。⚠️D。"
       ]
     },
     {
@@ -1656,7 +1702,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：梦魇轴渐进入睡旗舰，读 `灵梦` 深化。✅ 依赖已落。⚠️D。"
     },
     {
       "id": "skill_sleepless_s2_concealment",
@@ -1730,7 +1777,8 @@
       "sharedAcross": [
         "corpse_collector"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：隐秘轴中层 enabler：挂 `隐秘` + 推进战场隐秘值。⚠️D。"
     },
     {
       "id": "skill_sleepless_s2_hidden_land",
@@ -1786,7 +1834,8 @@
           "note": "封印不免疫伤害：已挂载 dot 正常结算"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：隐秘轴旗舰：连友军都够不到目标；封印即写隐秘值。⚠️D。"
     },
     {
       "id": "skill_sleepless_s2_unveiling",
@@ -1847,7 +1896,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：隐秘轴攻向（反制隐匿）。⚠️D。"
     },
     {
       "id": "skill_sleepless_s2_traceless_shadow",
@@ -1904,7 +1954,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：隐秘轴受击即隐循环。⚠️D。"
     },
     {
       "id": "skill_sleepless_s1_calamity",
@@ -1973,7 +2024,8 @@
       },
       "tentative": true,
       "conversionNotes": [
-        "序列1「厄难」与序列0「厄运和灾难权柄」合并为一张卡，升级阶梯区分强度"
+        "序列1「厄难」与序列0「厄运和灾难权柄」合并为一张卡，升级阶梯区分强度",
+        "翻译/语义：暗夜轴厄运/灾难 payoff。⚠️D。"
       ]
     },
     {
@@ -2034,7 +2086,8 @@
           "note": "序列1 与序列0 描述合并立项；与 eternal_sleep 对冲已由编队上下文 §十 裁定：revive_blocked > lethal_protect"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：暗夜轴终极回报（读 `夜幕` 条件）。⚠️D。"
     },
     {
       "id": "skill_sleepless_s1_spirit_commander",
@@ -2133,7 +2186,8 @@
           "note": "F9 已登记（C7 同落）；权威定义见状态表，此处为引用副本"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：安魂轴统御 payoff（读 `安宁` 体系，敌方亡灵掉头）。复用 F9。⚠️D。"
     },
     {
       "id": "skill_sleepless_s0_eternal_slumber",
@@ -2191,7 +2245,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：梦魇轴终焉：入梦/永眠/消融一次给全。⚠️D。"
     },
     {
       "id": "skill_sleepless_s0_secrecy_authority",
@@ -2271,7 +2326,8 @@
           "note": "破除后 2 tick 由 on_tick 触发器重新挂载"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：隐秘轴终极形态：整队长期不可选中 + 持续推隐秘值。⚠️D。"
     },
     {
       "id": "skill_sleepless_s0_fear_authority",
@@ -2404,6 +2460,73 @@
         "corpse_collector"
       ],
       "tentative": true
+    }
+  ],
+  "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。不眠者经\"隐秘化/隐秘之地/无迹之影/隐秘权柄\"等 +1/次。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（暗夜/梦魇轴经收尸人·奴役间接受益）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，不眠者是主消费方之一。",
+  "sampleBuilds": [
+    {
+      "name": "A 永夜梦魇 🌙",
+      "actives": [
+        "入梦",
+        "塑梦",
+        "强制入梦",
+        "恐惧灵光"
+      ],
+      "passives": [
+        "夜色渐浓",
+        "梦境行者",
+        "通灵之眼",
+        "恐惧权柄"
+      ],
+      "playstyle": "睡住全场后逐层塑梦，无视前排点名后排"
+    },
+    {
+      "name": "B 隐秘封印 🗝",
+      "actives": [
+        "隐秘化",
+        "掀幕",
+        "发丝缠绕",
+        "隐秘之地"
+      ],
+      "passives": [
+        "无迹之影",
+        "隐秘权柄",
+        "夜视",
+        "午夜武艺"
+      ],
+      "playstyle": "全队长期不可选中，把核心封进隐秘之地"
+    },
+    {
+      "name": "C 安魂役灵 🕯",
+      "actives": [
+        "安魂",
+        "灵之牙",
+        "灵群",
+        "灵之统帅"
+      ],
+      "passives": [
+        "通灵之眼",
+        "一心多用",
+        "隐秘共鸣",
+        "不眠之躯"
+      ],
+      "playstyle": "灵体铺场，安魂抹平增益；隐秘值爬升吃共鸣"
+    },
+    {
+      "name": "D 厄运暗夜 🌑",
+      "actives": [
+        "厄运",
+        "黑夜领域",
+        "黑暗之剑",
+        "厄难"
+      ],
+      "passives": [
+        "夜色渐浓",
+        "守夜人体质",
+        "黑暗仆人·不灭",
+        "秘偶协奏"
+      ],
+      "playstyle": "夜色叠满属性碾压，领域侵蚀；秘偶协奏吃占卜家线"
     }
   ]
 }

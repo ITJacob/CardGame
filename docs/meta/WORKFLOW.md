@@ -5,14 +5,16 @@
 ## 流水线总览
 
 ```
-① 设定补全        ② 机制落地         ③ 技能生成        ④ 结构化          ⑤ 质量分析
-诡秘之主资料库/ →  ddd/（权威正源）→  skill-design/  →  json/        →  analysis/
-（故事背景/源素材）  （战斗机制 DDD）   （技能文字稿 md）   （结构化 JSON）    （统计 + 总览）
+① 设定补全        ② 机制落地         ③ 技能结构化       ④ 质量分析
+诡秘之主资料库/ →  ddd/（权威正源）→  json/          →  analysis/
+（故事背景/源素材）  （战斗机制 DDD）   （技能池 JSON）    （统计 + 总览）
 ```
+
+> 2026-09-18 起技能稿 md 环节取消：文字稿已完成历史使命（差集信息已回收进 JSON），归档为只读快照 `docs/archive/skill-design_v0.3/`，技能内容唯一维护面 = `docs/json/`。
 
 流程规范与生成约束集中在 `docs/meta/`，全部脚本在 `docs/tools/`。
 
-**依赖方向**：①→②→③→④→⑤ 单向推进。唯一允许的反向流动是 **④→②**：JSON 落地时发现 ddd 语义缺口（如 snapshot / modify_damage 原语），先拍板补定义再回写 JSON，拍板结论登记到 `GENERATION_BRIEF.md` §14。
+**依赖方向**：①→②→③→④ 单向推进。唯一允许的反向流动是 **③→②**：JSON 落地时发现 ddd 语义缺口（如 snapshot / modify_damage 原语），先拍板补定义再回写 JSON，拍板结论登记到 `GENERATION_BRIEF.md` §14。
 
 ## 各环节职责与完成门槛
 
@@ -20,20 +22,20 @@
 |---|---|---|---|---|
 | ① | 设定补全 | `docs/诡秘之主资料库/` | 补充世界体系 / 源质 / 界域 / 职业对照等原著设定素材 | 设定自洽，可被 ② 引用 |
 | ② | 机制落地 | `docs/ddd/` | 把设定里的新维度（如界域/位格/性别/吟唱）落成原语、上下文、参数取值域 | 保持"纯内容"（无拍板过程/版本变迁）；拍板结论索引进 `GENERATION_BRIEF.md` §14 |
-| ③ | 技能生成 | `docs/skill-design/` | 按 `docs/meta/GENERATION_BRIEF.md` 约束写 22 途径技能池文字稿（md 是技能源数据） | 符合 brief §1–§3 硬约束（原语/状态/单卡预算） |
-| ④ | 结构化 | `docs/json/` | md → JSON AST；**改结构先改 schema 再改数据**（规范见 `docs/meta/SCHEMA.md`）；顺带补全 ddd 机制缺口 | 四脚本全绿：`validate_schema.py` + `validate.py` 双 0 错误；`check_enum_sync.py`（ddd/SCHEMA.md ↔ schema 枚举对账）+ `check_pool_sync.py`（md ↔ JSON 骨架对账）0 漂移 |
-| ⑤ | 质量分析 | `docs/analysis/` | `docs/tools/` 脚本统计原语用量/构筑轴分布 + 全库总览（SKILLS_OVERVIEW.md），评估技能池质量 | 产物勿手改，重跑脚本生成 |
+| ③ | 技能结构化 | `docs/json/` | 按 `GENERATION_BRIEF.md` 约束直接维护技能池 JSON（**改结构先改 schema 再改数据**，规范见 `docs/meta/SCHEMA.md`）；顺带补全 ddd 机制缺口 | 三脚本全绿：`validate_schema.py` + `validate.py` 双 0 错误；`check_enum_sync.py`（ddd/SCHEMA.md ↔ schema 枚举对账）0 漂移 |
+| ④ | 质量分析 | `docs/analysis/` | `docs/tools/` 脚本统计原语用量/构筑轴分布 + 全库总览（SKILLS_OVERVIEW.md），评估技能池质量 | 产物勿手改，重跑脚本生成 |
 
 ## 当前阶段
 
 **设定可玩度扩展期**（截至 2026-09-18）：
 
-- 重心在 ①–④：扩充设定维度（v0.3 界域/位格/性别/吟唱已融入）与技能覆盖度。
-- 数值平衡测试**未开始**，⑤ 的评价体系仅为初版（原语用量统计 + 设计风格报告），不作为平衡依据。
+- 重心在 ①–③：扩充设定维度（v0.3 界域/位格/性别/吟唱已融入）与技能覆盖度。
+- 数值平衡测试**未开始**，④ 的评价体系仅为初版（原语用量统计 + 设计风格报告），不作为平衡依据。
 - 技能池当前 v0.3（22 途径 / 828 卡），增量升级中，不重写。
+- 途径级遗留与待办集中在 `docs/meta/PENDING.md`（2026-09-18 自技能稿迁移）。
 
 ## 协作纪律（跨环节）
 
-1. **权威优先级**：`ddd/` > brief > 技能稿 md > JSON > 分析产物。冲突时以 ddd 为准回改下游。
-2. **源头唯一**：技能内容只改 md，JSON 与统计产物一律由脚本/转换生成，不手改。
+1. **权威优先级**：`ddd/` > brief > JSON > 分析产物。冲突时以 ddd 为准回改下游。
+2. **源头唯一**：技能内容只改 JSON，统计产物一律由脚本生成，不手改。
 3. **批量改动当轮 commit**，不留未提交改动跨会话。

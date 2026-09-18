@@ -1,24 +1,55 @@
 {
   "pathwayId": "assassin",
   "pathwayName": "刺客",
-  "sourceFile": "../skill-design/刺客途径_技能池_v0.3.md",
+  "sourceFile": "../archive/skill-design_v0.3/刺客途径_技能池_v0.3.md",
   "sourceVersion": "v0.3",
   "axes": {
     "mirror": {
       "symbol": "🜁",
-      "name": "镜"
+      "name": "镜",
+      "statusId": "mirror",
+      "enablers": [
+        "镜子替身",
+        "魔镜占卜"
+      ],
+      "payoffs": [
+        "镜中世界"
+      ]
     },
     "charm": {
       "symbol": "🜂",
-      "name": "魅"
+      "name": "魅",
+      "statusId": "charm",
+      "enablers": [
+        "魅惑",
+        "说服"
+      ]
     },
     "plague": {
       "symbol": "🜃",
-      "name": "疫"
+      "name": "疫",
+      "statusId": "plague",
+      "enablers": [
+        "疾病",
+        "黑焰"
+      ],
+      "payoffs": [
+        "末日"
+      ]
     },
     "form": {
       "symbol": "🜄",
-      "name": "形"
+      "name": "形",
+      "statusId": "body_form",
+      "enablers": [
+        "羽毛般轻盈",
+        "鹰的视力",
+        "阴影躲藏",
+        "隐形"
+      ],
+      "payoffs": [
+        "原初·静止"
+      ]
     }
   },
   "cards": [
@@ -98,7 +129,8 @@
           "note": "状态触发器载荷内调用 move 是否走 G8 faction 校验待确认（本稿新增项 16）",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：\"轻盈/灵巧\"=节奏（INV-S5 合规）+ 受击后撤。建 `形` 轴起手。⚠️D（gauge_rate 定价 D2）。"
     },
     {
       "id": "skill_assassin_s9_eagle_sight",
@@ -140,7 +172,8 @@
       "sharedAcross": [
         "hunter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：识破隐匿 + 能看见镜中人（刺客内部制衡）。⚠️D。"
     },
     {
       "id": "skill_assassin_s9_shadow_hide",
@@ -218,7 +251,8 @@
       "sharedAcross": [
         "hunter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：低配隐匿+一次性爆发，喂【力量爆发于一击】。⚠️D。"
     },
     {
       "id": "skill_assassin_s9_burst_strike",
@@ -293,7 +327,8 @@
           "note": "any_of 组合子待内核裁定",
           "landed": false
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：低序列输出地基：藏在阴影里追加伤害。⚠️D。"
     },
     {
       "id": "skill_assassin_s8_charm",
@@ -362,7 +397,8 @@
       "sharedAcross": [
         "hunter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：反向嘲讽：被魅惑者打己方队友。⚠️D。"
     },
     {
       "id": "skill_assassin_s8_mislead",
@@ -418,7 +454,8 @@
           "note": "C7 已验证（target_override → first_empty）；duration 受【说服】+1"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：与魅惑闭环：改打谁 vs 打空。⚠️D。"
     },
     {
       "id": "skill_assassin_s8_inflame_conflict",
@@ -597,7 +634,8 @@
           "note": "与 F4 shadow_veil 同源，建议并入统一潜行母版"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：阴影躲藏质变版（更长+减伤+出手不破）。⚠️D。"
     },
     {
       "id": "skill_assassin_s7_black_flame",
@@ -687,7 +725,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：招牌黑焰（引擎落 fire，辨识度靠外观/名）。⚠️D。"
     },
     {
       "id": "skill_assassin_s7_frost",
@@ -739,7 +778,8 @@
           "note": "gauge.rate 按 modify_stat 表达，待内核裁定归一",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：冰霜=减速（INV-S5 合规）。⚠️D。"
     },
     {
       "id": "skill_assassin_s7_mirror_divination",
@@ -792,7 +832,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：镜轴起手资源前置。⚠️D。"
     },
     {
       "id": "skill_assassin_s7_witch_form",
@@ -840,7 +881,8 @@
           "note": "\"男性变女性\"落在战外晋升事件（2026-09-07 拍板：战斗内无性别转换入口），故 gender: any；状态级不可驱散标志（H8，与愚者新增项 2 同源）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：\"男性变女性\"已在战外晋升序列7 完成（brief §12）；本卡承载战斗内后果（减伤+魅惑不可驱散）。⚠️D。"
     },
     {
       "id": "skill_assassin_s7_mirror_substitute",
@@ -954,7 +996,8 @@
           "note": "lethal_protect（H7，已落 ddd）+ caster_has_summon 谓词（本稿新增项 11）；与愚者【纸人替身】同机制不同代价"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：镜轴主轴第一层，写入 `替身` 枢纽。与【镜面替身·改】共读。⚠️D。"
     },
     {
       "id": "skill_assassin_s6_bliss_touch",
@@ -1024,7 +1067,8 @@
           "note": "与 F17 lust（受伤加重+禁护盾）不重叠；与 F14 tutelage 的 damage_mul 是正反两面"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：接触=近战，软控降输出。⚠️D。"
     },
     {
       "id": "skill_assassin_s6_silk_web",
@@ -1145,7 +1189,8 @@
           "note": "silk_bind 内 gauge.rate 修正，同冰霜待裁定",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：缠绕减速+勒甲；升阶结茧/横移。⚠️D。"
     },
     {
       "id": "skill_assassin_s6_frost_armor",
@@ -1328,7 +1373,8 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：加速感染（debuff 递增）+ 到期爆发。⚠️D（dot_ramp 折算 D4）。"
     },
     {
       "id": "skill_assassin_s5_repeated_charm",
@@ -1417,7 +1463,8 @@
           "note": "计数层（H11 计数型状态）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：反复魅惑质变=不可逆倒戈。⚠️D。"
     },
     {
       "id": "skill_assassin_s5_mirror_maze",
@@ -1635,7 +1682,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "v0.3 升级为降临类界域牌；「我方镜像/替身标签技能必定触发」= 其 condition:chance 豁免（p 直写 1，R3 登记）；maze_miss 状态为文字登记（target_override 一次性改写）"
+        "v0.3 升级为降临类界域牌；「我方镜像/替身标签技能必定触发」= 其 condition:chance 豁免（p 直写 1，R3 登记）；maze_miss 状态为文字登记（target_override 一次性改写）",
+        "翻译/语义：镜轴枢纽技能：集体打空+白得镜像分身，喂【镜子替身】【镜中人】。⚠️D。"
       ]
     },
     {
@@ -1684,7 +1732,8 @@
           "note": "伤口千疮百孔"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：多段切割收尾挂易伤。⚠️D。"
     },
     {
       "id": "skill_assassin_s4_plague",
@@ -1745,7 +1794,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "全体三合一数值 ⚠️D（本稿最大数值盲区）；disease 定义见【疾病】卡"
+        "全体三合一数值 ⚠️D（本稿最大数值盲区）；disease 定义见【疾病】卡",
+        "翻译/语义：疾病范围化+复合化。⚠️D。"
       ]
     },
     {
@@ -1821,7 +1871,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "目标 filter「is_ally_or_mirror」稿面语义（含镜像分身），引擎侧待确认为 filter.isSummon/casterOwned 组合；fallbackSort 稿面未给置 null"
+        "目标 filter「is_ally_or_mirror」稿面语义（含镜像分身），引擎侧待确认为 filter.isSummon/casterOwned 组合；fallbackSort 稿面未给置 null",
+        "翻译/语义：G8 合规：只与己方换位。⚠️D。"
       ]
     },
     {
@@ -1868,7 +1919,8 @@
           "note": "状态级 untransferable 标志（已落 ddd：编队参数 §1.1b suppress/untransferable 行）；与 G12 immune（阻挡施加）是同族字段的另一面（阻挡移除/搬运）；强度上抬须与疾病/瘟疫/命运诅咒数值联合标定"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：针对性优势：疾病/瘟疫洗不掉。⚠️D。"
     },
     {
       "id": "skill_assassin_s3_mirror_self",
@@ -1960,7 +2012,8 @@
           "note": "G4 reviveOf + position at_unit + caster_has_summon（均已落 ddd）"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：镜轴顶点：复活绑定镜像分身。⚠️D。"
     },
     {
       "id": "skill_assassin_s3_eternal_youth",
@@ -1991,7 +2044,8 @@
           "target": "self"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：更耐打+持续回血（regen 非 heal 原语）。⚠️D。"
     },
     {
       "id": "skill_assassin_s3_petrification",
@@ -2060,7 +2114,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "ID 冲突：F20 已占用 petrify（通识者·结晶，heal_received_mul 0.5），语义不同；本稿改名 petrification 避让，建议改名并存不合并（汇总时拍板）"
+        "ID 冲突：F20 已占用 petrify（通识者·结晶，heal_received_mul 0.5），语义不同；本稿改名 petrification 避让，建议改名并存不合并（汇总时拍板）",
+        "翻译/语义：真石化（非眩晕）：硬+脆+不可驱散。⚠️D。"
       ]
     },
     {
@@ -2165,7 +2220,8 @@
       "tentative": true,
       "conversionNotes": [
         "位格判定状态修正：目标处于 stun/freeze/weak 类 +35%、狂乱/失控类 +20%、Boss（位格 +2 以上）−20%，引擎侧待参数化，暂记文字",
-        "持有【鹰的视力】者可继续攻击 mirrored 单位（本稿内部制衡）"
+        "持有【鹰的视力】者可继续攻击 mirrored 单位（本稿内部制衡）",
+        "翻译/语义：拉入范式+位格判定；与鹰的视力自洽。迷失 +⚠️D。⚠️D。"
       ]
     },
     {
@@ -2258,7 +2314,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "全体 6 伤 + 全体眩晕 1t 收 6 能量按单卡预算明显超模，必须重定（建议 2+2 或去眩晕）"
+        "全体 6 伤 + 全体眩晕 1t 收 6 能量按单卡预算明显超模，必须重定（建议 2+2 或去眩晕）",
+        "翻译/语义：序列2 灾难两面的元素拆分。⚠️D。"
       ]
     },
     {
@@ -2331,7 +2388,8 @@
       "sharedAcross": [
         "hunter"
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：受击追加伤害（命运补刀），非概率。⚠️D。"
     },
     {
       "id": "skill_assassin_s2_collapse",
@@ -2456,7 +2514,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "7 能量 / 全体三重无既有锚点，最大定价盲区之一"
+        "7 能量 / 全体三重无既有锚点，最大定价盲区之一",
+        "翻译/语义：全体魅惑+命运诅咒收场。⚠️D。"
       ]
     },
     {
@@ -2504,7 +2563,8 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：魅轴终焉：敌无力+友治疗。⚠️D。"
     },
     {
       "id": "skill_assassin_s0_chaos_vortex",
@@ -2574,7 +2634,8 @@
           "note": "damage_intercept 母版（编队参数 §2.4 H3 乘区=0 档；action_nullify 已落 ddd：编队参数 §1.1b）；退化方案：damage_mul 0.4，彻底失去\"未发生\"的味道，不推荐"
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "conversionNotes": "翻译/语义：混沌=抹平增益+攻击未发生过。⚠️D。"
     },
     {
       "id": "skill_assassin_s0_mirror_world",
@@ -2717,7 +2778,8 @@
       "tentative": true,
       "conversionNotes": [
         "v0.3 升级为传说档降临界域（brief §11.3 传说 = 短而强）；吟唱 2 tick 是敌人打断窗口",
-        "位格判定：敌方单位位格 ≥ 施法者位格时按 brief §11.2 走成功率，具体嵌套 If 结构与【镜中囚禁】同模板"
+        "位格判定：敌方单位位格 ≥ 施法者位格时按 brief §11.2 走成功率，具体嵌套 If 结构与【镜中囚禁】同模板",
+        "翻译/语义：镜轴终局：全场镜化。迷失 +⚠️D。⚠️D。"
       ]
     },
     {
@@ -2763,7 +2825,8 @@
           "note": "gauge.rate 按 modify_stat 表达，待裁定",
           "landed": true
         }
-      ]
+      ],
+      "conversionNotes": "翻译/语义：原初=静止/停滞（INV-S5 合规）。⚠️D。"
     },
     {
       "id": "skill_assassin_s6_form_shadow",
@@ -2920,6 +2983,73 @@
           "note": "形态组登记（H50）：血，续航向；drainHealBonus 沿用药师月相先例"
         }
       ]
+    }
+  ],
+  "designNote": "> **替身枢纽维度（灾祸之城系 §2.2 / 总览 §3）**：`替身` 是跨**三源质**的枢纽状态（刺客镜替身 / 占卜家纸人替身 / 律师替身定义），在 `StatusDef` 标 `crossPathway:true` + 参与途径白名单。刺客经【镜子替身】【镜面替身·改】写入 `替身`，源堡/失序之国可读写。另 黑焰/地狱之火 ↔ 永暗之河 收尸人「亡灵」（见 §三 死灵黑焰）；命运诅咒 ↔ 光之钥「命运」（见 §三 命运枢纽）。",
+  "sampleBuilds": [
+    {
+      "name": "A 镜中替身 🜁",
+      "actives": [
+        "镜子替身",
+        "投影传送",
+        "镜像迷宫",
+        "镜中囚禁"
+      ],
+      "passives": [
+        "镜中人",
+        "鹰的视力",
+        "女巫之形",
+        "魔镜占卜"
+      ],
+      "playstyle": "镜像迷宫铺分身+打空，镜子替身吃镜像代死，镜中人在镜像位置复活；四条命骚扰"
+    },
+    {
+      "name": "B 魅惑内斗 🜂",
+      "actives": [
+        "魅惑",
+        "误导",
+        "激化矛盾",
+        "魅力权柄"
+      ],
+      "passives": [
+        "说服",
+        "反复魅惑",
+        "羽毛般轻盈",
+        "原初·静止"
+      ],
+      "playstyle": "全程目标改写：打队友/打空/门户大开；反复魅惑真爱倒戈"
+    },
+    {
+      "name": "C 疾病疫潮 🜃",
+      "actives": [
+        "黑焰",
+        "疾病",
+        "瘟疫",
+        "末日"
+      ],
+      "passives": [
+        "不可转移的诅咒",
+        "魔镜占卜",
+        "青春永驻",
+        "女巫之形"
+      ],
+      "playstyle": "疾病递增+到期爆发，瘟疫铺场剥buff，不可转移洗不掉；末日收场"
+    },
+    {
+      "name": "D 一击必杀 🜄",
+      "actives": [
+        "力量爆发于一击",
+        "阴影躲藏",
+        "无形蛛丝",
+        "石化"
+      ],
+      "passives": [
+        "羽毛般轻盈",
+        "鹰的视力",
+        "不可转移的诅咒",
+        "原初·静止"
+      ],
+      "playstyle": "躲阴影→一击爆发；蛛丝缠住，石化锁死奶妈；原初把最急的人钉住"
     }
   ]
 }
