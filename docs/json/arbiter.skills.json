@@ -586,6 +586,35 @@
             "rule": "no_skill",
             "note": "本序列开放两档：no_skill（不得发动主动技能）/ no_attack（不得发动攻击）"
           }
+        },
+        {
+          "type": "write_rule_slot",
+          "slot": 0,
+          "field": "trigger",
+          "value": {
+            "rule": "no_skill"
+          },
+          "overwrite": true,
+          "note": "规则槽写入（canonical，commit 迁移）：把律令触发条件写进 Rules[3] 槽 0。与 statusDef.decree.fields.rule 同源，后者为旧表达，保留兼容。"
+        },
+        {
+          "type": "write_rule_slot",
+          "slot": 0,
+          "field": "punish",
+          "value": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shackle",
+              "duration": 2
+            }
+          ],
+          "overwrite": true,
+          "note": "规则槽写入（canonical）：把违背律令的惩罚载荷写进 Rules[3] 槽 0。与 statusDef.decree.fields.punishment 同源。"
         }
       ],
       "statusDefs": [

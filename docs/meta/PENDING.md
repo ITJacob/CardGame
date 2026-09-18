@@ -21,8 +21,8 @@
 - `domain_astral_field` / `domain_dominion` / `domain_civilization` 三个 DomainDef 三件套。
 - 罪犯「黑焰/丰饶 combo 读取介质」（跨系非 5 枢纽）登记。
 - enabler→payoff 3 处缺口：hunter `vulnerable`(弱点) / `taunt`(挑衅)、planter 炼成轴——均无对应 statusDef。
-- 规则槽**卡面迁移**（arbiter/lawyer/savant 改规卡仍用旧 `fields`/`slots`，未迁到新算子）。
-- 诅咒链接「三层同一母版」只接通 1/3（序列4 反噬）；序列3【无反噬之咒】`selfKeep=false`、序列0【万咒加身】未接。
+- 规则槽**卡面迁移**：arbiter【立规】(+2 write_rule_slot) 与 savant【规律权柄】(+1 modify_rule_slot) 已迁（加性，旧 `fields`/`slots` 保留兼容）；⚠️ **lawyer 僭越轴改规卡未迁**。
+- ~~诅咒链接「三层同一母版」只接通 1/3~~ —— ✅ **经核早已接通**（2026-09-19 更正此前误判）：序列4【诅咒之源】`selfKeep=true`、序列3【无反噬之咒】`params.selfKeep=false`、序列0【万咒加身】挂载多种诅咒状态表达「所有类型诅咒」。三层均走同一 `curse_link` 母版，无需再动。
 
 **待拍板口径**：造物计数口径（暂定 `on_field` vs `cumulative`）／spectator 元素过滤清单（暂 `mental`）／phantom 途径 占卜家·母巢（建文件还是修订 ddd）。
 
