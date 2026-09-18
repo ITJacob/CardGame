@@ -2791,6 +2791,51 @@
               "type": "string"
             }
           }
+        },
+        "summonMapping": {
+          "type": "array",
+          "description": "召唤映射表：刻印/计数层数 N → 召唤物强度与数量 f(N)（罪犯「仪式刻印→深渊召唤」，编队参数 §2.4 H1 召唤物基线 + spawn.companionBuff）。",
+          "items": {
+            "type": "object",
+            "required": [
+              "stacks"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "stacks": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "触发该档所需的刻印层数 N。"
+              },
+              "count": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "该档召唤数量。"
+              },
+              "atkRatio": {
+                "type": "number",
+                "description": "该档召唤物攻击系数。"
+              },
+              "hpRatio": {
+                "type": "number",
+                "description": "该档召唤物生命系数。"
+              },
+              "unitId": {
+                "type": "string",
+                "description": "该档召唤物模板 unitId（可选，用于换模板）。"
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "countMode": {
+          "enum": [
+            "cumulative",
+            "on_field"
+          ],
+          "description": "计数型状态的口径（通识者造物轴）：cumulative=累计产出（只增不减）/ on_field=当前在场（离场即减）。口径决策见 编队参数 §2.4。"
         }
       }
     },
@@ -3247,6 +3292,14 @@
         },
         "note": {
           "type": "string"
+        },
+        "gender": {
+          "enum": [
+            "any",
+            "male",
+            "female"
+          ],
+          "description": "单位性别（Unit.gender）：供获取期过滤与性别限制判定（刺客序列4+ 高位谱系要求 female）。"
         }
       }
     },

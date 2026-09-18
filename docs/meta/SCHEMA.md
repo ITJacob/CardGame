@@ -204,6 +204,8 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `participants` | PathwayId[] | 跨系读取白名单：列出可读取本 `crossPathway` 状态的途径 id。未列入的途径即便 `crossPathway:true` 也不可读。见 §一.2 运行时读取规则 |
 | `damageTransfer` | object | **伤害转嫁族**（编队参数 §1.1b / H28）：`ratio` × `direction`(to_caster/to_allies/to_target/to_third) × `split`(single/even) × `selfKeep` × `linkedTo`；**必须内置防循环**——由本状态产生的伤害不再触发任何转嫁。`network` 子块即囚犯「诅咒链接网络」可堆叠形态：`maxTargets`=N、`splitCoefficient`{base,perExtra}，全网分摊系数 = base + perExtra×(N−1)（囚犯 1+0.2×(N−1)）。2026-09-18 从开放 `modifiers` 提升为一等字段 |
 | `lineageStack` | object | **异类谱系栈**（编队参数 §2.4）：`lineage_push`（推入的形态 statusId）× `lineage_depth`（当前栈深）× `maxDepth` × `replay.enabled`（演出回放，重演栈内形态序列）。与 `formGroup/nextPhase/cycleTicks`（月相轮转=轮换）是不同机制，不得混用 |
+| `summonMapping` | object[] | **召唤映射表**：`stacks`(N) × `count` × `atkRatio` × `hpRatio` × `unitId?`，表达「刻印层数 N → 召唤物强度/数量 f(N)」（罪犯 仪式刻印→深渊召唤；编队参数 §2.4 H1 召唤物基线 + `spawn.companionBuff`） |
+| `countMode` | `cumulative`\|`on_field` | **计数口径**（通识者造物轴）：`cumulative`=累计产出（只增不减）/ `on_field`=当前在场（离场即减）。⚠️ 口径为待拍板项，两者对造物轴阈值 payoff 的激励方向相反 |
 | 其余 | | `lethalProtect` `immune` `suppress` `redirectRule` `thresholdTrigger` `slots` `fields` `ramp` `behaviorModifiers` 等，见 schema |
 
 跨途径**同名状态视为共享状态**：同名但定义不同时会告警。2026-09-18 已将全部 28 条清零（同机制统一签名 / 异机制改名拆分，见 §10）。
@@ -214,7 +216,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
   - `rulePatches[]`：`{ kind, side, tag, mul }`，`tag` 可为数组
 - `zoneDef`：`{ id, kind(hazard|blessing), trigger, affects, effects, duration }`
   - `effects` 元素有两种形态：直接是 effect，或 `{ side, payload: effect }` 按阵营分组
-- `unitDef`：`{ id, name, hpRatio, atkRatio, reach, element, tags, triggers }`
+- `unitDef`：`{ id, name, hpRatio, atkRatio, reach, element, tags, triggers, unitType, gender }`——`gender`(`any`/`male`/`female`) 为 Unit.gender，供获取期过滤与性别限制判定（刺客序列4+ 高位谱系要求 `female`）。
 
 ## 7. 维度乘区挂钩（dimHook）
 
