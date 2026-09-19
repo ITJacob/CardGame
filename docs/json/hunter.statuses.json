@@ -1,0 +1,613 @@
+{
+  "statusDefs": [
+    {
+      "id": "hunter_sense",
+      "name": "猎人的感官",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": [
+        {
+          "kind": "see_through",
+          "note": "C8 识破分支：敌方 stealth/shadow_veil 等隐匿、不可选中类状态对持有者无效（共享内核参数 §四）"
+        },
+        {
+          "kind": "fallback_sort",
+          "sort": "hp_asc",
+          "note": "持有者的单体技能自动优选当前生命值最低的敌方单位"
+        }
+      ]
+    },
+    {
+      "id": "structural_eye",
+      "name": "结构要点",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": [
+        {
+          "kind": "armor_pierce",
+          "ratio": 0.5,
+          "note": "armorPierceRatio（效果参数 §1.1，H16）"
+        }
+      ]
+    },
+    {
+      "id": "delayed_blast",
+      "name": "延时爆炸",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "triggers": [
+        {
+          "event": "on_remove",
+          "condition": {
+            "kind": "remove_reason",
+            "value": "expired"
+          },
+          "effects": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 5,
+              "target": "target",
+              "spread": "splash_adjacent",
+              "note": "对目标及其相邻单位爆炸"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "flame_armament",
+      "name": "火焰附魔",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 2,
+              "target": "same_target",
+              "note": "武器附火：对同一目标追加火焰伤害"
+            }
+          ]
+        }
+      ],
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": 1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+          }
+        ],
+        "note": "火焰：附魔层数达标 → 攻击提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "deceived",
+      "name": "误导",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "charges": 1,
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "first_empty"
+        }
+      ]
+    },
+    {
+      "id": "incited",
+      "name": "煽动",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "self_faction_hp_desc"
+        }
+      ],
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": -1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批"
+          }
+        ],
+        "note": "挑衅：煽动层数达标 → 攻击下降（PENDING 挑衅轴身份状态，复用 incited 而非不存在的 taunt）"
+      }
+    },
+    {
+      "id": "precision",
+      "name": "精准",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": [
+        {
+          "kind": "ignore_redirect",
+          "note": "攻击不会被守护状态转移（§四 识破分支 / ignore_redirect 同出口）"
+        },
+        {
+          "kind": "see_through",
+          "note": "单体技能不受目标隐匿/不可选中状态影响（C8 候选池过滤）"
+        },
+        {
+          "kind": "override_priority",
+          "priority": "above_taunt_guard",
+          "note": "target_override 类效果优先级高于目标嘲讽/守护（执行参数 §一 转向优先级 + 聚合规则）"
+        }
+      ]
+    },
+    {
+      "id": "steel_body",
+      "name": "钢铁化",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 10,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:physical",
+          "value": 20,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        }
+      ]
+    },
+    {
+      "id": "flame_form",
+      "name": "火焰化",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:fire",
+          "value": 60,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 5,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "burn",
+              "duration": 2,
+              "target": "attacker",
+              "note": "碰到火焰身躯者被点燃（F61 attacker targetSpec）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "massing",
+      "name": "集众·铁血",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": [
+        {
+          "kind": "modify_stat_dynamic",
+          "stat": "attack",
+          "valueFrom": "battleStats",
+          "metric": "alive_allies_count",
+          "value": 1,
+          "note": "集中全队力量：attack +1 × 存活友军数（valueFrom battleStats，新增项 4）；友军死亡时动态重算"
+        }
+      ],
+      "crossPathway": true,
+      "participants": [
+        "hunter",
+        "planter"
+      ],
+      "thresholdTrigger": {
+        "stacks": 3,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": 1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+          }
+        ],
+        "note": "集众：存活友军累积达阈值（已有 thresholdTrigger，此处补叠层口径）。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+      },
+      "maxStacks": 4,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 3
+      }
+    },
+    {
+      "id": "massing_link",
+      "name": "集众链接",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": [
+        {
+          "kind": "see_through",
+          "note": "共享视野：敌方隐匿/不可选中状态对全体友军无效（C8 识破分支）"
+        },
+        {
+          "kind": "redirect_damage",
+          "ratio": 0.3,
+          "direction": "to_caster",
+          "linkedTo": "caster",
+          "note": "分摊伤害：持有者受伤 30% 转由集众者承受（H28 伤害转嫁族 ratio/direction/linkedTo，编队参数 §1.1b；寻址走 casterId F56，内置防循环）；由归一自触发器载荷移入 modifiers"
+        }
+      ]
+    },
+    {
+      "id": "beast_swarm",
+      "name": "兽群",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 1,
+      "stackPolicy": "stack",
+      "note": "枢纽状态（PENDING 猎人『集众·兽群』）：猎人写入；ddd §1.4 载耕种者/药师『兽群入池』可读。⚠️ ddd 另列『母巢』为参与方，但母巢不在 22 pathwayId 内（phantom，同占卜家），已从 participants 剔除。",
+      "crossPathway": true,
+      "participants": [
+        "hunter",
+        "planter",
+        "apothecary"
+      ]
+    },
+    {
+      "id": "iron_courage",
+      "name": "钢铁勇气",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "immune": [
+        "fear"
+      ],
+      "triggers": [
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "target": "self",
+              "filter": {
+                "category": [
+                  "control"
+                ],
+                "count": 1
+              },
+              "note": "一次性挣脱既有控制（不碰眩晕免疫，严格限定恐惧/精神压迫类）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "war_god_answer",
+      "name": "战争回应",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "charges": 1,
+      "modifiers": [
+        {
+          "kind": "damage_mul",
+          "value": 2,
+          "note": "该次伤害 ×2"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "duration": 1,
+              "target": "same_target",
+              "note": "附加眩晕 1t"
+            }
+          ],
+          "consume": 1,
+          "note": "触发后 charges -1 卸载（C6 次数型）"
+        }
+      ]
+    },
+    {
+      "id": "mind_link",
+      "name": "心灵沟通",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": [
+        {
+          "kind": "ally_damage_mul",
+          "filter": {
+            "targetHasStatus": [
+              "vulnerable"
+            ]
+          },
+          "mul": 1.15,
+          "note": "按目标状态条件化的友军伤害乘区（H4 filter.hasStatus + H42 群体常驻模板）"
+        }
+      ]
+    },
+    {
+      "id": "purple_flame",
+      "name": "紫色火焰",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": [
+        {
+          "kind": "damage_mul",
+          "filter": {
+            "element": "fire"
+          },
+          "mul": 1.3,
+          "note": "按伤害元素过滤的伤害乘区（H4 filter.element，与愚者 14 同族同母版）"
+        },
+        {
+          "kind": "status_duration_bonus",
+          "statusId": "burn",
+          "bonus": 1,
+          "note": "施加的 burn duration +1"
+        }
+      ]
+    },
+    {
+      "id": "sharing_unlimited",
+      "name": "无限制分享",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_apply",
+          "condition": {
+            "kind": "status_category",
+            "category": "buff",
+            "side": "self"
+          },
+          "effects": [
+            {
+              "type": "transfer_status",
+              "mode": "copy",
+              "target": "all_allies",
+              "durationMul": 0.5,
+              "stacksMul": 0.5,
+              "note": "复制不扣除源（H32 transfer_status mode: copy）；duration 与层数减半（⚠️D）"
+            }
+          ]
+        }
+      ],
+      "modifiers": [
+        {
+          "kind": "redirect_damage",
+          "ratio": 0.2,
+          "direction": "to_allies",
+          "split": "even",
+          "note": "全员互相分摊：任一友军受击，20% 均摊给其余存活友军（H28，内置防循环）"
+        }
+      ]
+    },
+    {
+      "id": "conquered",
+      "name": "征服",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "self_faction_hp_desc"
+        }
+      ],
+      "modifiers": {
+        "damage_taken_mul": 1.2
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -2,
+          "mode": "delta",
+          "duration": 6,
+          "target": "holder"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "spawn",
+              "unitId": "unit_war_soldier",
+              "template": "holder",
+              "hpRatio": 0.5,
+              "position": "tail",
+              "note": "彻底征服后永远效忠：跨阵营 spawn 落己方队尾（G8 合规）+ spawn.template 继承死者属性（新增项 18/19）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "massing_ascend",
+      "name": "集众质变",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": [
+        {
+          "kind": "modify_stat_dynamic",
+          "stat": "attack",
+          "valueFrom": "battleStats",
+          "metric": "alive_allies_count",
+          "value": 1,
+          "note": "与集众·铁血的动态攻击叠加（valueFrom battleStats）"
+        },
+        {
+          "kind": "damage_mul",
+          "target": "all_allies",
+          "value": 1.2,
+          "condition": {
+            "metric": "alive_allies",
+            "cmp": ">=",
+            "value": 3
+          },
+          "note": "阈值质变：存活友军 ≥3 时全队伤害 ×1.2（原 thresholdTrigger.effects 内 modify_stat stat:damage_mul 违规——damage_mul 非属性键，按 SCHEMA §5.2 归位 statusDef.modifiers）"
+        },
+        {
+          "kind": "damage_taken_mul",
+          "target": "self",
+          "value": 0.8,
+          "condition": {
+            "metric": "alive_allies",
+            "cmp": ">=",
+            "value": 3
+          },
+          "note": "阈值质变：存活友军 ≥3 时自身受伤 ×0.8（同上归位）"
+        }
+      ],
+      "note": "阈值门控（存活友军 ≥3）内联于 modifiers[].condition；阈值 ⚠️D 待标（原 thresholdTrigger 结构 2026-09-18 并入）"
+    },
+    {
+      "id": "warmonger",
+      "name": "战争狂热",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "nearest_any"
+        }
+      ],
+      "modifiers": {
+        "damage_taken_mul": {
+          "value": 1.15,
+          "filter": {
+            "gender": "male"
+          },
+          "note": "男性权柄：男性单位受伤 ×1.15（H4 过滤乘区，编队参数 §1.1b；filter.gender 待内核裁定，替代原 gender_is If + modify_stat 写法）"
+        }
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 3,
+          "mode": "delta",
+          "duration": 6,
+          "target": "holder"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": -5,
+          "mode": "delta",
+          "duration": 6,
+          "target": "holder"
+        }
+      ]
+    }
+  ]
+}
