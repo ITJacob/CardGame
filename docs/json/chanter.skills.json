@@ -56,35 +56,6 @@
           "target": "target"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "blessing",
-          "name": "祝福（歌颂）",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 2,
-              "mode": "delta",
-              "duration": 3,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": 1,
-              "mode": "delta",
-              "duration": 3,
-              "target": "self"
-            }
-          ]
-        }
-      ],
       "sharedAcross": [
         "sailor",
         "spectator"
@@ -225,34 +196,6 @@
               "target": "all_enemies"
             }
           ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "daylight",
-          "name": "白昼",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "modifiers": {
-            "revealConcealment": {
-              "direction": "inbound",
-              "note": "敌方隐匿 / 不可选中类状态对己方无效（C8 识破分支，已落共享内核参数 §四）"
-            },
-            "allyDamageMul": {
-              "value": 1.15,
-              "filter": {
-                "tags": [
-                  "undead",
-                  "foul",
-                  "dark"
-                ]
-              },
-              "note": "己方对不死 / 污秽 / 黑暗标签单位伤害 ×1.15"
-            }
-          }
         }
       ],
       "sharedAcross": [
@@ -405,35 +348,6 @@
           "statusId": "obedience",
           "duration": 3,
           "target": "target"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "obedience",
-          "name": "服从",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": -2,
-              "mode": "delta",
-              "duration": 3,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "gauge.rate",
-              "value": 0.9,
-              "mode": "mul",
-              "duration": 3,
-              "target": "self"
-            }
-          ]
         }
       ],
       "sharedAcross": [
@@ -648,35 +562,6 @@
           "target": "target"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "sacred_flame",
-          "name": "圣焰",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "slots": {
-            "element": "holy"
-          },
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "holy",
-                  "value": 2,
-                  "target": "self",
-                  "note": "圣焰灼烧；元素必须 holy，否则不死克制对 dot 不生效"
-                }
-              ]
-            }
-          ],
-          "note": "H2 参数化复合 debuff 母版实例（F6/F12/F16/F18/F13/F17/F8 同族）；特殊条款只有元素必须为 holy"
-        }
-      ],
       "upgradeLadder": {
         "ref": "B6",
         "tiers": [
@@ -718,32 +603,6 @@
           "target": "all_allies"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "sun_aura",
-          "name": "太阳光环",
-          "category": [
-            "aura",
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_taken_mul": 0.9,
-            "damage_mul": {
-              "value": 1.15,
-              "filter": {
-                "tags": [
-                  "undead",
-                  "foul",
-                  "dark"
-                ]
-              }
-            }
-          },
-          "note": "H42 光环母版（同向乘区取最高不叠乘，与正义光环 ×0.9 同向取 ×0.9）"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：光环=减伤+对不死污秽加成。依赖 F59 + 标签。数值 ⚠️D。"
     },
@@ -766,41 +625,6 @@
           "statusId": "fearless",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "fearless",
-          "name": "无畏",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "immune": {
-            "categories": [
-              "control"
-            ]
-          },
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "resist:poison",
-              "value": 20,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "resist:mental",
-              "value": 10,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
-            }
-          ],
-          "note": "免疫 control 依 G12 immune 字段（已落编队参数 §1.1b）"
         }
       ],
       "sharedAcross": [
@@ -845,25 +669,6 @@
             "mul": 1.5
           },
           "target": "target"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "notarize",
-          "name": "公证裁定",
-          "category": [
-            "contract"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "charges": 1,
-          "modifiers": {
-            "damage_mul": {
-              "valueFromParams": "mul",
-              "consumeOn": "on_deal_damage"
-            }
-          },
-          "note": "参数化裁定母版（稿面建议合并 notarized_true / notarized_false 为一个带 mul 参数的 notarize 状态）：挂载方以 params.mul 填 1.5（真）或 0.5（伪）；on_deal_damage 触发后消耗一层（C6）"
         }
       ],
       "variants": [
@@ -927,33 +732,6 @@
           "statusId": "oath",
           "duration": 5,
           "target": "target"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "oath",
-          "name": "誓约",
-          "category": [
-            "contract",
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 5,
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "holy",
-                  "value": 2,
-                  "target": "self",
-                  "note": "违约代价：伤害结算回持有者自身"
-                }
-              ]
-            }
-          ],
-          "note": "与既有「反伤」同族母版（差异：反伤只在攻击施法者时触发，本条攻击任何人都付代价）"
         }
       ],
       "tentative": true,
@@ -1074,25 +852,6 @@
       "conversionNotes": [
         "群体 heal / 群体护盾定价无既有锚点（稿面自述最大数值盲区，沿用 D3）",
         "翻译/语义：\"外扩+精准\"=清友军负面+灼敌。最强群体续航/清场复合。数值 ⚠️D（群体 heal 无锚点）。"
-      ],
-      "statusDefs": [
-        {
-          "id": "purify",
-          "name": "净化",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 1,
-          "stackPolicy": "stack",
-          "note": "枢纽状态（ddd 源质维度 §1.4）：归属 歌颂者/收尸人；收尸人侧『亡灵↔净化』双向克制读取。数值 ⚠️D 待平衡。",
-          "crossPathway": true,
-          "participants": [
-            "chanter",
-            "corpse_collector"
-          ]
-        }
       ]
     },
     {
@@ -1114,41 +873,6 @@
           "statusId": "foe_of_filth",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "foe_of_filth",
-          "name": "邪秽克星",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": {
-              "value": 1.5,
-              "filter": {
-                "tags": [
-                  "undead",
-                  "foul",
-                  "dark"
-                ]
-              }
-            },
-            "damage_taken_mul": {
-              "value": 0.85,
-              "filter": {
-                "tags": [
-                  "undead",
-                  "foul",
-                  "dark"
-                ]
-              },
-              "scope": "incoming"
-            }
-          },
-          "note": "退化方案：数据层给不死 / 污秽 / 黑暗单位预置 resist:holy -25，由抗性表自然生效（失去减伤条款）"
         }
       ],
       "tentative": true,
@@ -1360,43 +1084,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "sacred_armor",
-          "name": "神圣盔甲",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "armor",
-              "value": 5,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 2,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "shield",
-              "value": 5,
-              "duration": 3,
-              "target": "self",
-              "note": "开局一层圣光壳"
-            }
-          ]
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：攻防一体常驻防御被动。数值 ⚠️D。"
     },
@@ -1431,32 +1118,6 @@
           "statusId": "sun_oath",
           "duration": 5,
           "target": "all_enemies"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "sun_oath",
-          "name": "太阳誓约",
-          "category": [
-            "contract",
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 5,
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "holy",
-                  "value": 3,
-                  "target": "self"
-                }
-              ]
-            }
-          ],
-          "note": "oath 状态族群体版（神圣誓约的单体 2 伤 → 全体 3 伤）；权威机制同 oath，建议共用母版"
         }
       ],
       "tentative": true,
@@ -1504,49 +1165,6 @@
               "target": "all_enemies"
             }
           ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "justice_code",
-          "name": "正义准则",
-          "category": [
-            "contract"
-          ],
-          "dispelable": true,
-          "duration": 8,
-          "triggers": [
-            {
-              "event": "on_attack",
-              "condition": {
-                "kind": "hp_percent_compare",
-                "aSide": "target",
-                "bSide": "self",
-                "cmp": "<"
-              },
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "guilty",
-                  "duration": 6,
-                  "target": "self",
-                  "note": "违背准则（加害弱者）者被定罪；触发者为发动攻击的单位"
-                }
-              ],
-              "note": "默认档「不得加害弱者」；on_attack 触发点已落（执行参数 §2.1），规避 G15-b 时间尺度冲突"
-            }
-          ],
-          "note": "准则内容为数据层变体档（B6），引擎只承载「立法 + 违背判定 + 定罪」"
-        },
-        {
-          "id": "guilty",
-          "name": "罪责",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 6,
-          "note": "标记性状态：本身无载荷，是【正义审判】的判定条件（H2 族最小实例）"
         }
       ],
       "variants": [
@@ -1684,36 +1302,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "justice_aura",
-          "name": "正义光环",
-          "category": [
-            "aura",
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": 1.1,
-            "damage_taken_mul": 0.9
-          },
-          "note": "H42 光环母版；同向乘区取最高不叠乘（与太阳光环 ×0.9 同向取 ×0.9）"
-        },
-        {
-          "id": "injustice",
-          "name": "悖逆",
-          "category": [
-            "aura",
-            "debuff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": 0.9
-          }
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：双向乘区，压到 ±10% 避免与【邪秽克星】叠乘失控。数值 ⚠️D。"
     },
@@ -1749,48 +1337,6 @@
           "duration": 4,
           "charges": 2,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "photonic_form",
-          "name": "化光",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "charges": 2,
-          "modifiers": {
-            "damage_taken_mul": 0
-          },
-          "triggers": [
-            {
-              "event": "on_remove",
-              "effects": [
-                {
-                  "op": "sequence",
-                  "steps": [
-                    {
-                      "type": "heal",
-                      "value": 4,
-                      "target": "self",
-                      "note": "重组"
-                    },
-                    {
-                      "type": "move",
-                      "op": "push_back",
-                      "distance": 99,
-                      "target": "self",
-                      "note": "化光飞行：退回己方半场最后位（G8 合规）"
-                    }
-                  ]
-                }
-              ],
-              "note": "charges 归零或自然到期均 fire（C6 / H29）"
-            }
-          ],
-          "note": "H3 参数化减伤母版（支持 0 值）；与 zeal 同族（次数型完全免伤），差异在 charges / duration / 载荷"
         }
       ],
       "tentative": true,
@@ -1829,46 +1375,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "sun_herald",
-          "name": "太阳使者",
-          "category": [
-            "buff",
-            "stance"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 3,
-              "mode": "delta",
-              "duration": 4,
-              "target": "self"
-            }
-          ],
-          "modifiers": {
-            "damage_taken_mul": 0.8
-          },
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "holy",
-                  "value": 2,
-                  "target": "all_enemies",
-                  "note": "洒下光热净化；需 on_tick 承载「对全体敌人」目标解析"
-                }
-              ]
-            }
-          ],
-          "note": "H10 参数化形态母版（与 F10 beast_form / 观众变身同源，建议并入）"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：变身+持续群体净化伤害。与 F10 同源。数值 ⚠️D。"
     },
@@ -1891,28 +1397,6 @@
           "statusId": "light_authority",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "light_authority",
-          "name": "光之权柄",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": {
-              "value": 1.25,
-              "filter": {
-                "element": [
-                  "holy"
-                ]
-              }
-            }
-          },
-          "note": "H4 带过滤条件的伤害乘区（按元素过滤，已落）；退化方案：holy 伤害固定 +2"
         }
       ],
       "tentative": true,
@@ -2161,38 +1645,6 @@
           "target": "all_allies"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "zeal",
-          "name": "狂热",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "charges": 1,
-          "modifiers": {
-            "damage_taken_mul": 0
-          },
-          "triggers": [
-            {
-              "event": "on_take_damage",
-              "effects": [
-                {
-                  "type": "dispel",
-                  "target": "self",
-                  "dispelTarget": "unit",
-                  "filter": {
-                    "statusId": "zeal"
-                  },
-                  "note": "以 charges 归零卸载表达一次性免疫（C6）"
-                }
-              ]
-            }
-          ],
-          "note": "H3 支持 0 值；与 photonic_form 同族（全体 1 次整场 vs 自身 2 次短时）"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：一次性完全免疫。依赖 C6 + `damage_taken_mul:0`。数值 ⚠️D。"
     },
@@ -2215,37 +1667,6 @@
           "statusId": "divine_authority",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "divine_authority",
-          "name": "神圣权柄",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "minIntervalTicks": 1,
-              "effects": [
-                {
-                  "type": "dispel",
-                  "target": "target",
-                  "dispelTarget": "unit",
-                  "filter": {
-                    "category": [
-                      "buff"
-                    ],
-                    "count": 1
-                  }
-                }
-              ],
-              "note": "节流：同一目标每 tick 至多触发 1 次（稿面「本稿遗留」要求，借 TriggerDef.minIntervalTicks 表达）；可选增强（holy 无视正向 resist:holy）未实现"
-            }
-          ]
         }
       ],
       "tentative": true,
@@ -2273,22 +1694,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "light_immortal",
-          "name": "光之不朽",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "charges": 1,
-          "lethalProtect": {
-            "hpRatio": 0.3
-          },
-          "note": "H7 致死保护（已落，与愚者纸人替身 / 秘偶不死同源母版）；退化方案：C4 miracle + G4 reviveOf 走 spawn 流程"
-        }
-      ],
       "tentative": true,
       "conversionNotes": [
         "稿面「hook on_death → 挂载带 on_death 触发的状态」语义折为常驻挂载的 lethal_protect 状态（愚者稿同先例）",
@@ -2314,33 +1719,6 @@
           "statusId": "order_authority",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "order_authority",
-          "name": "秩序权柄",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "runtimeDispelLock": {
-              "scope": "self_buffs",
-              "note": "自我：自身所有增益（buff / 护盾）运行时覆写 dispelable:false（H8，已落）"
-            },
-            "contractDispelLock": {
-              "statusIds": [
-                "oath",
-                "sun_oath",
-                "justice_code",
-                "notarize"
-              ],
-              "note": "排它：由你施加的契约 / 誓约类状态不可被驱散"
-            }
-          },
-          "note": "偏正面 = 只保护不进攻；与愚者 / 观众同源 H8 母版"
         }
       ],
       "tentative": true,
