@@ -1,5 +1,5 @@
 """
-拆分 KNOWN_STATUS_DIVERGENCE 中两处有意的同名异义状态为独立 id。
+拆分两处有意的同名异义状态（charm/stealth）为独立 id，使全库强制单点定义（不再设豁免白名单）。
 - charm  -> assassin 轴身份状态改为 charm_axis；lawyer/criminal 的通用 charm 保持
 - stealth-> sleepless 影纱改为 shadow_veil；apothecary 的隐身药水 stealth 保持
 只改动 def.id 与 mount_status.statusId / filter.statusId，不碰 note 文本里出现的同名单词。

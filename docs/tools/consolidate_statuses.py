@@ -4,8 +4,8 @@
 - 每个状态只保留 1 个 owner 途径的 def，其余途径 .statuses.json 的同 id 副本删除。
 - 删除副本不影响挂载引用：loader 合并所有 *.statuses.json 为全局注册表，
   被删副本途径的卡 mount 该状态时靠全局注册表解析（owner 仍定义）。
-- stealth 为有意分化（apothecary 隐身药水 vs sleepless 影纱，破除行为不同），
-  不走收口，改在 validate_schema.py 的 KNOWN_STATUS_DIVERGENCE 登记。
+- 凡「同名异义」的状态（如 stealth：apothecary 隐身药水 vs sleepless 影纱破除行为不同）
+  不做收口，须改用 split_divergent_ids.py 拆为独立 id，全库强制单点定义。
 """
 import json, glob, os, sys
 

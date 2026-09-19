@@ -76,15 +76,10 @@ def cross_check(docs, manifest, errors, warns):
             if seq is not None and ("_s%s_" % seq) not in cid:
                 errors.append("%s %s: id 中的序列位阶与 sequence=%s 不一致" % (name, cid, seq))
 
-    # 3) 状态 id 跨途径复用：同名必须同定义，定义冲突才是错误
-    #    例外：已登记为「有意分化」的同名状态（轴身份状态本就该独立于通用副本）
-    KNOWN_STATUS_DIVERGENCE = {
-        # 注：charm / stealth 已于 2026-09-19 拆分为独立 id（charm_axis / shadow_veil），
-        # 不再同名异义，故此处不再登记。仅保留真正需有意分化的诅咒链接网络等。
-    }
+    # 3) 状态 id 跨途径复用：同名必须同定义（单点定义，INV-C2）。
+    #    同名但定义不一致一律告警，须拆分为独立 id，不设任何豁免白名单。
     seen = {}
     reused = set()
-    diverged = []
     # 收集所有 statusDef：卡内联（过渡期遗留）+ *.statuses.json（抽离后的权威源）
     ext_defs = []  # (pid, where, sd)
     for name, d in docs.items():
@@ -103,22 +98,13 @@ def cross_check(docs, manifest, errors, warns):
         if sid in seen:
             old_sig, old_where, old_pid = seen[sid]
             if old_sig != sig:
-                pair = tuple(sorted((pid, old_pid)))
-                if (sid,) + pair in KNOWN_STATUS_DIVERGENCE:
-                    diverged.append("%s/%s: statusDef '%s' 与 %s 同名异义（已登记为有意分化，不告警）"
-                                    % (pid, where, sid, old_where))
-                else:
-                    warns.append("%s %s: statusDef '%s' 与 %s 同名但定义不一致（需确认是否应拆分为两个状态）" % (where, sid, sid, old_where))
+                warns.append("%s %s: statusDef '%s' 与 %s 同名但定义不一致（须拆分为独立 id，禁止同名异义）" % (where, sid, sid, old_where))
             else:
                 reused.add(sid)
         else:
             seen[sid] = (sig, where, pid)
     if reused:
         print("  · 跨途径复用状态 %d 个（同名同定义，视为共享状态，非错误）" % len(reused))
-    if diverged:
-        print("  · 已登记的同名异义状态 %d 处（有意分化，见 KNOWN_STATUS_DIVERGENCE）：" % len(diverged))
-        for x in diverged:
-            print("      - %s" % x)
 
     if not manifest:
         return
