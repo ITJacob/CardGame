@@ -28,6 +28,12 @@ try:
 except ImportError:
     HAS_JSONSCHEMA = False
 
+try:
+    from status_loader import iter_status_defs
+except ImportError:
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from status_loader import iter_status_defs
+
 
 def load(name):
     return json.load(io.open(os.path.join(SCHEMA_DIR, name), encoding="utf-8"))
@@ -80,28 +86,34 @@ def cross_check(docs, manifest, errors, warns):
     seen = {}
     reused = set()
     diverged = []
+    # 收集所有 statusDef：卡内联（过渡期遗留）+ *.statuses.json（抽离后的权威源）
+    ext_defs = []  # (pid, where, sd)
     for name, d in docs.items():
         pid = d.get("pathwayId")
         for c in d.get("cards", []):
             for sd in c.get("statusDefs") or []:
-                sid = sd.get("id")
-                sig = json.dumps({k: sd.get(k) for k in
-                                  ("name", "category", "dispelable", "duration", "modifiers",
-                                   "maxStacks", "stackPolicy", "charges")},
-                                 ensure_ascii=False, sort_keys=True)
-                if sid in seen:
-                    old_sig, where, old_pid = seen[sid]
-                    if old_sig != sig:
-                        pair = tuple(sorted((pid, old_pid)))
-                        if (sid,) + pair in KNOWN_STATUS_DIVERGENCE:
-                            diverged.append("%s/%s: statusDef '%s' 与 %s 同名异义（已登记为有意分化，不告警）"
-                                            % (pid, c.get("id"), sid, where))
-                        else:
-                            warns.append("%s %s: statusDef '%s' 与 %s 同名但定义不一致（需确认是否应拆分为两个状态）" % (name, c.get("id"), sid, where))
-                    else:
-                        reused.add(sid)
+                ext_defs.append((pid, "%s/%s" % (name, c.get("id")), sd))
+    for spid, slabel, sd in iter_status_defs():
+        ext_defs.append((spid, slabel, sd))
+    for pid, where, sd in ext_defs:
+        sid = sd.get("id")
+        sig = json.dumps({k: sd.get(k) for k in
+                          ("name", "category", "dispelable", "duration", "modifiers",
+                           "maxStacks", "stackPolicy", "charges")},
+                         ensure_ascii=False, sort_keys=True)
+        if sid in seen:
+            old_sig, old_where, old_pid = seen[sid]
+            if old_sig != sig:
+                pair = tuple(sorted((pid, old_pid)))
+                if (sid,) + pair in KNOWN_STATUS_DIVERGENCE:
+                    diverged.append("%s/%s: statusDef '%s' 与 %s 同名异义（已登记为有意分化，不告警）"
+                                    % (pid, where, sid, old_where))
                 else:
-                    seen[sid] = (sig, "%s/%s" % (name, c.get("id")), pid)
+                    warns.append("%s %s: statusDef '%s' 与 %s 同名但定义不一致（需确认是否应拆分为两个状态）" % (where, sid, sid, old_where))
+            else:
+                reused.add(sid)
+        else:
+            seen[sid] = (sig, where, pid)
     if reused:
         print("  · 跨途径复用状态 %d 个（同名同定义，视为共享状态，非错误）" % len(reused))
     if diverged:
@@ -179,6 +191,23 @@ def main():
 
     for name in sorted(docs):
         schema_check(skills_schema, docs[name], name, errors, max_errors)
+
+    # 校验 *.statuses.json 中每个 statusDef 项（复用 skills_schema 的 $defs/statusDef）
+    sdef = skills_schema.get("$defs", {}).get("statusDef")
+    if sdef:
+        # 用带 $defs 的 wrapper 包住 $ref，确保 statusDef 内部 #/$defs/* 指针可解析
+        statusdef_validator = {
+            "$ref": "#/$defs/statusDef",
+            "$defs": skills_schema.get("$defs", {}),
+        }
+        for f in sorted(glob.glob(os.path.join(JSON_DIR, "*.statuses.json"))):
+            try:
+                d = json.load(io.open(f, encoding="utf-8"))
+            except Exception as e:
+                errors.append("%s: 解析失败 %s" % (os.path.basename(f), e))
+                continue
+            for i, sd in enumerate(d.get("statusDefs") or []):
+                schema_check(statusdef_validator, sd, "%s#/statusDefs/%d" % (os.path.basename(f), i), errors, max_errors)
 
     cross_check(docs, manifest, errors, warns)
 

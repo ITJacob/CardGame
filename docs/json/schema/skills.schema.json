@@ -2836,6 +2836,21 @@
             "on_field"
           ],
           "description": "计数型状态的口径（通识者造物轴）：cumulative=累计产出（只增不减）/ on_field=当前在场（离场即减）。口径决策见 编队参数 §2.4。"
+        },
+        "source_filter": {
+          "type": "string",
+          "description": "触发来源过滤（melee / ranged / skill / …），见 编队参数 §1.1。用于反伤等只响应特定来源伤害的状态。"
+        },
+        "priority": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "状态结算优先级（数值越大越先结算）。见 编队参数 §2.2（守护 priority 10 / 伤害转移 priority 5）。"
         }
       }
     },

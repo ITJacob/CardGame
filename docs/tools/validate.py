@@ -11,6 +11,12 @@ JSON_DIR = os.path.join(os.path.dirname(HERE), "json")      # docs/json/
 DEFS = json.load(io.open(os.path.join(JSON_DIR, "schema", "skills.schema.json"),
                          encoding="utf-8"))["$defs"]
 
+try:
+    from status_loader import iter_status_defs
+except ImportError:
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from status_loader import iter_status_defs
+
 def _pat_literals(defn):
     """从 ^(a|b|动态段)$ 提取字面量分支；含正则语法的分支属动态段（$ 变量、resist 族），跳过。"""
     pat = defn["pattern"]
@@ -101,7 +107,37 @@ def main():
         d = json.load(io.open(f, encoding='utf-8'))
         for c in d.get("cards",[]):
             for sd in c.get("statusDefs") or []: globs.add(sd["id"])
+    # 抽离后：状态定义权威源为 *.statuses.json（含 common）
+    for f in sorted(glob.glob(os.path.join(JSON_DIR,'*.statuses.json'))):
+        try:
+            d = json.load(io.open(f, encoding='utf-8'))
+            for sd in d.get("statusDefs") or []: globs.add(sd["id"])
+        except Exception:
+            pass
     ALLSTATUS = CLOSED | globs
+
+    # 状态定义层校验：*.statuses.json 中 statusDef 的 category / crossPathway.participants
+    # （抽离前这部分在卡内联 statusDefs 上做，抽离后改到此处，避免校验真空）
+    for f in sorted(glob.glob(os.path.join(JSON_DIR,'*.statuses.json'))):
+        pid = os.path.basename(f).replace('.statuses.json','')
+        try:
+            d = json.load(io.open(f, encoding='utf-8'))
+        except Exception:
+            errors.append("%s: 解析失败" % os.path.basename(f)); continue
+        for sd in d.get("statusDefs") or []:
+            cid = "%s:%s" % (pid, sd.get("id"))
+            for cat in sd.get("category",[]) or []:
+                if cat not in CATS: errors.append("%s sd %s: bad category %s"%(cid,sd.get("id"),cat))
+            if sd.get("crossPathway") is True:
+                parts = sd.get("participants")
+                if not isinstance(parts,list) or not parts:
+                    errors.append("%s sd %s: crossPathway=true 但 participants 为空/缺失"%(cid,sd.get("id")))
+                else:
+                    for p in parts:
+                        if p not in ALL_PIDS:
+                            errors.append("%s sd %s: participants 含非法 pathwayId '%s'"%(cid,sd.get("id"),p))
+            elif sd.get("participants"):
+                warns.append("%s sd %s: 有 participants 但未标 crossPathway=true"%(cid,sd.get("id")))
 
     errors_all, warns_all = [], []
     flagged_gaps = []  # frameworkFlags 已登记的缺口（非标准 event/fallbackSort），不再逐条 warn

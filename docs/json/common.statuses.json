@@ -1,0 +1,161 @@
+{
+  "_meta": {
+    "purpose": "公共（中立）状态注册表。承载不属于任何途径的中性战斗机制状态。",
+    "ownershipRules": [
+      "1. 途径私有状态 → <pathway>.statuses.json（未来抽离，本文件不收）",
+      "2. §2.2 通用战斗状态 + 被多途径广泛引用的中性机制 → 本文件（common）",
+      "3. 有 participants / crossPathway 标记的主题签名状态（如 puppet_string / charm / hallucination）→ 留在引入它的 owner 途径，不在 common",
+      "id 全局唯一，每个状态仅定义一次；跨途径引用只按 id，不再重复定义"
+    ],
+    "note": "本文件为 2026-09-19 首次建立。数值凡标 ⚠️D 者均为平衡期占位，待平衡期标定。",
+    "mergedFrom": [
+      "vulnerable：原仅 hunter 卡面内联 def，按 §2.2 裁定 mul 1.3 提为本文件权威定义",
+      "shackle：原 apothecary/arbiter/pryer/sailor/sleepless/warrior 共 6 份重复 def 合并为 1 份（F7 已登记定义，H24 减速族）"
+    ]
+  },
+  "statusDefs": [
+    {
+      "id": "poison",
+      "name": "中毒",
+      "category": ["debuff"],
+      "dispelable": true,
+      "duration": 5,
+      "maxStacks": 3,
+      "stackPolicy": "refresh",
+      "modifiers": { "dotOnTick": 1, "pierceArmor": true },
+      "note": "§2.2 已裁定：defaultDuration 5 / maxStacks 3 / stackPolicy refresh；实例 value 1/tick 穿透护甲。乘区数值 ⚠️D 待平衡。"
+    },
+    {
+      "id": "regen",
+      "name": "再生",
+      "category": ["buff"],
+      "dispelable": true,
+      "duration": 6,
+      "maxStacks": 1,
+      "modifiers": { "healOnTick": 2 },
+      "note": "§2.2 已裁定：defaultDuration 6；实例 value 2/tick（总回复 12）。⚠️ 原平衡结论失效，需重验。"
+    },
+    {
+      "id": "thorns",
+      "name": "反伤",
+      "category": ["reactive"],
+      "dispelable": true,
+      "duration": 8,
+      "maxStacks": 1,
+      "source_filter": "melee",
+      "modifiers": { "thornsDamage": 1 },
+      "note": "§2.2 已裁定：defaultDuration 8 / source_filter melee；实例 value 1。"
+    },
+    {
+      "id": "guard",
+      "name": "坚守",
+      "category": ["buff"],
+      "dispelable": true,
+      "duration": 4,
+      "maxStacks": 1,
+      "modifiers": { "damage_taken_mul": 0.7 },
+      "note": "§2.2 已裁定：mul 0.7 / duration 4。"
+    },
+    {
+      "id": "shield",
+      "name": "护盾",
+      "category": ["buff"],
+      "dispelable": true,
+      "duration": 6,
+      "maxStacks": 1,
+      "modifiers": { "shieldDelta": 5 },
+      "note": "§2.2 已裁定：defaultDuration 6；实例 delta 5，独立 shield 池先于 HP 扣减。"
+    },
+    {
+      "id": "silence",
+      "name": "沉默",
+      "category": ["control"],
+      "dispelable": true,
+      "duration": 8,
+      "maxStacks": 1,
+      "modifiers": { "disableSkill": true },
+      "note": "§2.2 已裁定：defaultDuration 8；禁用使用技能。"
+    },
+    {
+      "id": "taunt",
+      "name": "嘲讽",
+      "category": ["control"],
+      "dispelable": true,
+      "duration": 6,
+      "maxStacks": 1,
+      "modifiers": { "taunt": true },
+      "note": "§2.2 已裁定：defaultDuration 6；force 普攻 + target_override。"
+    },
+    {
+      "id": "energy_strain",
+      "name": "耗能加重",
+      "category": ["debuff"],
+      "dispelable": true,
+      "duration": 10,
+      "maxStacks": 1,
+      "modifiers": { "energyCostMul": 1.5 },
+      "note": "§2.2 已裁定：defaultDuration 10；energy_cost_mul 1.5。"
+    },
+    {
+      "id": "free_cast",
+      "name": "免吟唱",
+      "category": ["buff"],
+      "dispelable": true,
+      "duration": 5,
+      "maxStacks": 1,
+      "modifiers": { "castTimeSet": 0 },
+      "note": "§2.2 已裁定：defaultDuration 5；cast_time_set 0。"
+    },
+    {
+      "id": "stun",
+      "name": "眩晕",
+      "category": ["control"],
+      "dispelable": false,
+      "duration": 5,
+      "maxStacks": 1,
+      "modifiers": { "stun": true },
+      "note": "§2.2 已裁定：defaultDuration 5；剥夺全部四个行为（INV-P5 硬控清除 stance）。"
+    },
+    {
+      "id": "bulwark",
+      "name": "守护",
+      "category": ["stance"],
+      "dispelable": true,
+      "duration": 6,
+      "maxStacks": 1,
+      "priority": 10,
+      "modifiers": { "guardTarget": true },
+      "note": "§2.2 已裁定：defaultDuration 6 / priority 10；binding.guardTarget 被保护单位。"
+    },
+    {
+      "id": "vulnerable",
+      "name": "易伤",
+      "category": ["debuff"],
+      "dispelable": true,
+      "duration": 4,
+      "maxStacks": 1,
+      "modifiers": { "damage_taken_mul": 1.3 },
+      "note": "§2.2 已裁定：defaultDuration 4 / mul 1.3（与抗性同乘区加算）。⚠️ 与 hunter 卡面内联 def（mul 1.2 / duration 3 / maxStacks 3 + 叠层阈值）数值分歧，以本 §2.2 裁定为权威；提取后须删除 hunter 内联副本。"
+    },
+    {
+      "id": "shackle",
+      "name": "枷锁",
+      "category": ["control"],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": { "moveImmune": true, "gaugeRateMul": 0.7 },
+      "note": "F7 已登记定义（H24 减速族：禁位移 + gauge_rate ×0.7）。原 6 途径各一份重复 def 已合并为此权威定义（2026-09-19）。"
+    },
+    {
+      "id": "burn",
+      "name": "灼烧",
+      "category": ["debuff"],
+      "dispelable": true,
+      "duration": 3,
+      "maxStacks": 3,
+      "stackPolicy": "refresh",
+      "modifiers": { "dotOnTick": 2, "element": "fire" },
+      "note": "通用火属性 DOT，被 10 处引用但 §2.2 未单列裁定；数值 ⚠️D 占位（duration 3 / maxStacks 3 / 2 per tick），待补裁定。"
+    }
+  ]
+}
