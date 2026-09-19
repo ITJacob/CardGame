@@ -1,0 +1,470 @@
+{
+  "statusDefs": [
+    {
+      "id": "iron_body",
+      "name": "铁躯",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:*",
+          "value": 12,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ]
+    },
+    {
+      "id": "weapon_grandmaster",
+      "name": "武器大师",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 3,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "modifiers": {
+        "outgoingDamageParams": {
+          "filter": {
+            "element": [
+              "physical"
+            ]
+          },
+          "armorPierceRatio": 0.5
+        }
+      }
+    },
+    {
+      "id": "weapon_tamer",
+      "name": "驭器",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "durationModifier": {
+          "scope": "incoming",
+          "mode": "mul",
+          "value": 0.5,
+          "filter": {
+            "category": [
+              "debuff"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "dawn_blade",
+      "name": "晨曦之剑",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 4,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "note": "晨曦灼烧"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "abandon_attack",
+      "name": "放弃攻击",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": false,
+      "duration": 4,
+      "modifiers": {
+        "damage_mul": 0.5
+      },
+      "note": "守护状态的代价段：释放期间自身伤害 ×0.5"
+    },
+    {
+      "id": "unmoved",
+      "name": "无幻之心",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "immune": {
+          "categories": [
+            "control"
+          ]
+        },
+        "targetOverrideImmune": true
+      }
+    },
+    {
+      "id": "ambush_shroud",
+      "name": "伏击伪装",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        },
+        "damage_mul": [
+          {
+            "value": 1.3,
+            "filter": {
+              "unitType": [
+                "DEMON",
+                "UNDEAD",
+                "SPIRIT"
+              ]
+            },
+            "note": "恶魔的克星"
+          },
+          {
+            "value": 1.5,
+            "charges": 1,
+            "note": "掩盖行动意图：挂载后首次造成伤害 ×1.5"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hunter_eye",
+      "name": "猎魔之眼",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "damage_taken_mul": 1.2
+      },
+      "note": "弱点：刻意低于 vulnerable 的 1.3，避免叠乘"
+    },
+    {
+      "id": "anointed",
+      "name": "涂药",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hunter_mark",
+      "name": "印记",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": false,
+      "duration": 4,
+      "modifiers": {
+        "damage_taken_mul": 1.25
+      }
+    },
+    {
+      "id": "silver_armor",
+      "name": "银色全身盔甲",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 10,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:*",
+          "value": 10,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self"
+        }
+      ],
+      "modifiers": {
+        "damage_taken_mul": 0.8
+      }
+    },
+    {
+      "id": "quicksilver_submerge",
+      "name": "银液淹没",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "modifiers": {
+        "gaugeRateMul": 0.5
+      },
+      "note": "迟缓乘区数值稿面未定（H2 母版，与 F13 drowning 同族两档参数），待补"
+    },
+    {
+      "id": "inner_burst",
+      "name": "体内爆发",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 6
+            }
+          ],
+          "note": "到期爆发；稿面未限定 reason，被驱散同样触发"
+        }
+      ]
+    },
+    {
+      "id": "light_hiding",
+      "name": "借光隐藏",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "condition": {
+            "kind": "any_of",
+            "conditions": [
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "shield",
+                "cmp": ">=",
+                "n": 1
+              },
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "dawn_blade",
+                "cmp": ">=",
+                "n": 1
+              },
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "silver_armor",
+                "cmp": ">=",
+                "n": 1
+              }
+            ]
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "ambush_shroud",
+              "duration": 2,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "note": "稿面条件含「armor 增益」，无对应谓词，暂缺；持有 shield/dawn_blade/silver_armor 任一即刷新潜行"
+    },
+    {
+      "id": "aging",
+      "name": "衰败/老化",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "maxStacks": 5,
+      "stackPolicy": "stack",
+      "duration": 5,
+      "modifiers": {
+        "damage_taken_mul": 1.15
+      },
+      "statPerStack": {
+        "attack": -1,
+        "gauge.rate": -2
+      },
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "target": "self",
+              "note": "衰败侵蚀"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "aging",
+              "stacks": 1,
+              "stackMode": "add",
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "note": "每 1 层 attack -1、gauge.rate -2；到期/被驱散时层数与属性修正一并回滚（modifierRevert）。传说档 maxStacks 6（见黄昏·万物崩解）。退化方案：固定 damage_taken_mul 1.15 + on_tick damage 2 + attack -2（不随层数递进）"
+    },
+    {
+      "id": "mandate",
+      "name": "代行",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_mul": {
+          "value": 1.25,
+          "filter": {
+            "pathway": [
+              "warrior"
+            ]
+          }
+        },
+        "immune": {
+          "sourcePathways": [
+            "*",
+            "!warrior"
+          ]
+        }
+      },
+      "note": "收益：只有之前序列能力提升（本途径技能增强）；代价：无法获得其他权柄（一切非本途径来源的增益状态无法挂载）。治疗（heal 原语，非状态）不受影响"
+    },
+    {
+      "id": "collapse",
+      "name": "崩解",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": false,
+      "duration": 5,
+      "modifiers": {
+        "damage_taken_mul": 1.2
+      },
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 3,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "aging",
+              "stacks": 1,
+              "stackMode": "add",
+              "target": "self",
+              "note": "传说档 aging maxStacks 6"
+            }
+          ]
+        }
+      ],
+      "note": "权柄级 dispelable:false（运行时覆写，H8）。到期后残留 aging 层数不清空——aging 实例各自计 duration，到期独立回滚。原著「失控」引擎无对应维度，不做"
+    },
+    {
+      "id": "battle_authority",
+      "name": "战斗权柄",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "armor",
+          "value": 8,
+          "mode": "delta",
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 4,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:*",
+          "value": 10,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ]
+    }
+  ]
+}
