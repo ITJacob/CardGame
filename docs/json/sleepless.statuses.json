@@ -326,7 +326,7 @@
           "effects": [
             {
               "type": "mount_status",
-              "statusId": "eternal_sleep",
+              "statusId": "revive_blocked",
               "duration": null,
               "target": "self",
               "note": "死于消融 = 不可复活"
@@ -334,19 +334,6 @@
           ]
         }
       ]
-    },
-    {
-      "id": "eternal_sleep",
-      "name": "永眠",
-      "category": [
-        "seal"
-      ],
-      "dispelable": false,
-      "duration": null,
-      "modifiers": {
-        "revive_blocked": true
-      },
-      "note": "revive_blocked（编队参数 §1.1b 死亡结算行）；与收尸人【完全的死亡】/愚者【命运锚点】同源同一母版"
     },
     {
       "id": "dream_depth",
@@ -359,39 +346,6 @@
       "maxStacks": 3,
       "stackPolicy": "stack",
       "note": "H11 计数型 + H2 stackThreshold；满 3 层由卡面效果转 slumber 并 consume(3)"
-    },
-    {
-      "id": "shadow_veil",
-      "name": "潜行",
-      "category": [
-        "conceal"
-      ],
-      "dispelable": true,
-      "duration": 2,
-      "modifiers": {
-        "untargetableByTargeted": {
-          "direction": "inbound",
-          "scope": "single"
-        }
-      },
-      "triggers": [
-        {
-          "event": "on_deal_damage",
-          "effects": [
-            {
-              "type": "dispel",
-              "target": "self",
-              "dispelTarget": "unit",
-              "filter": {
-                "statusId": "shadow_veil",
-                "count": 1
-              },
-              "note": "on_deal_damage 自动破除"
-            }
-          ]
-        }
-      ],
-      "note": "H5 潜行母版 + C8（F4 shadow_veil / F11 stealth 同源）；权威定义见状态表，此处为引用副本｜2026-09-18 与 apothecary 隐身药水统一签名：def duration 3→2（各挂载点显式指定 duration，def 默认不生效）"
     },
     {
       "id": "occult_seal",
@@ -447,7 +401,7 @@
           "effects": [
             {
               "type": "mount_status",
-              "statusId": "shadow_veil",
+              "statusId": "conceal",
               "duration": 2,
               "target": "self",
               "note": "受击后痕迹被抹去，重新隐去"
@@ -504,14 +458,14 @@
           "effects": [
             {
               "type": "mount_status",
-              "statusId": "shadow_veil",
+              "statusId": "conceal",
               "duration": null,
               "target": "self",
               "note": "隐藏痕迹：自身常驻 concealed"
             },
             {
               "type": "mount_status",
-              "statusId": "shadow_veil",
+              "statusId": "conceal",
               "duration": null,
               "target": "all_allies",
               "note": "己方全部召唤物常驻 concealed（filter isSummon，实现侧细化）"
@@ -526,7 +480,7 @@
               "target": "self",
               "dispelTarget": "unit",
               "filter": {
-                "statusId": "shadow_veil",
+                "statusId": "conceal",
                 "count": 1
               },
               "note": "自身造成伤害后破除"

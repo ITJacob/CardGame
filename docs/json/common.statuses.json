@@ -9,7 +9,7 @@
       "5. 设计期决策两问（新状态放 common 还是私有）：① 是否中性、无主题 owner、任何途径都可能直接引用且系统/其它途径需按 id 识别它？→ 直接引用 common（不重新定义）；② 是否带本途径主题身份（专属触发/交互/命名）？→ 在 <pathway>.statuses.json 定义私有状态。注意：判据是『中性通用 vs 途径主题』，不是『简单 vs 复杂』——简单的纯主题标记照样进私有，复杂的中性机制照样进 common",
       "6. 换皮护栏（INV-C2）：若私有状态仅是某 common 关键词的换皮（机制完全相同、仅名字更带主题），须复用 common，不得造重复定义；只有当主题身份带来额外机制（额外 modifier / trigger / 跨状态交互）时，才是合法私有而非换皮"
     ],
-    "note": "本文件为 2026-09-19 首次建立。数值凡标 ⚠️D 者均为平衡期占位，待平衡期标定。",
+    "note": "本文件为 2026-09-19 首次建立。数值凡标 ⚠️D 者均为平衡期占位，待平衡期标定。\n2026-09-19 降格试点：新增 conceal（收口 shadow_veil/hidden_space/psych_invisibility）、revive_blocked（收口 eternal_sleep 副本，定义自 corpse_collector 迁入）。",
     "mergedFrom": [
       "vulnerable：原仅 hunter 卡面内联 def，按 §2.2 裁定 mul 1.3 提为本文件权威定义",
       "shackle：原 apothecary/arbiter/pryer/sailor/sleepless/warrior 共 6 份重复 def 合并为 1 份（F7 已登记定义，H24 减速族）"
@@ -158,6 +158,25 @@
       "stackPolicy": "refresh",
       "modifiers": { "dotOnTick": 2, "element": "fire" },
       "note": "通用火属性 DOT，被 10 处引用但 §2.2 未单列裁定；数值 ⚠️D 占位（duration 3 / maxStacks 3 / 2 per tick），待补裁定。"
+    },
+    {
+      "id": "conceal",
+      "name": "潜行",
+      "category": ["conceal"],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": { "untargetableByTargeted": { "direction": "inbound", "scope": "single" } },
+      "triggers": [ { "event": "on_deal_damage", "effects": [ { "type": "dispel", "target": "self", "dispelTarget": "unit", "filter": { "statusId": "conceal", "count": 1 }, "note": "出手自动破除潜行" } ] } ],
+      "note": "通用潜行：不可被指向选取，自身造成伤害后自动破除。原 shadow_veil / hidden_space / psych_invisibility 同核实现统一收口于此（2026-09-19 降格试点）。"
+    },
+    {
+      "id": "revive_blocked",
+      "name": "禁复活",
+      "category": ["seal"],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": { "revive_blocked": true },
+      "note": "通用禁复活：目标死亡后不可被复活。原 corpse_collector 母版与 sleepless.eternal_sleep 副本统一收口于此（2026-09-19 降格试点）。"
     }
   ]
 }
