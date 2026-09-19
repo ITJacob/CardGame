@@ -224,27 +224,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "weapon_mastery",
-          "name": "武器上手",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": {
-              "value": 1.15,
-              "filter": {
-                "element": [
-                  "physical"
-                ]
-              }
-            }
-          }
-        }
-      ],
       "sharedAcross": [
         "prisoner"
       ],
@@ -269,37 +248,6 @@
           "statusId": "lost_conscience",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "lost_conscience",
-          "name": "失去良知",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "resist:mental",
-              "value": 20,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
-            }
-          ],
-          "modifiers": {
-            "damage_mul": {
-              "value": 1.15,
-              "filter": {
-                "targetHasCategory": [
-                  "debuff"
-                ]
-              }
-            }
-          }
         }
       ],
       "tentative": true,
@@ -341,21 +289,6 @@
           "type": "mount_status",
           "statusId": "slow",
           "duration": 3
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "slow",
-          "name": "迟缓",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "modifiers": {
-            "gaugeRateMul": 0.75
-          },
-          "note": "H24 减速族（与 F7 shackle 同母版，0.75 档不带 moveImmune）"
         }
       ],
       "sharedAcross": [
@@ -402,27 +335,6 @@
           "statusId": "poison",
           "duration": 2,
           "note": "毒火分支"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "hallucination",
-          "name": "幻觉",
-          "category": [
-            "control"
-          ],
-          "dispelable": true,
-          "modifiers": {
-            "behaviorModifiers": [
-              {
-                "anchor": "first_empty",
-                "op": "target_override"
-              }
-            ]
-          },
-          "note": "最小副本：与愚者途径 v0.2「制造幻觉」同名同机制（C7 已验证），建议两稿共用；本条 charges/duration 由 Grant 传参",
-          "duration": 3,
-          "charges": 1
         }
       ],
       "variants": [
@@ -543,43 +455,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "rite_mark",
-          "name": "仪式刻印",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 3,
-          "stackPolicy": "stack",
-          "note": "H11 计数型母版；由深渊召唤经 status.consume（F48）消耗，每层使恶魔 attack +2（F54 companionBuff） ｜ 仪式刻印→深渊召唤映射表（编队参数 §2.4 H1 召唤物基线 + spawn.companionBuff）：层数 N → 强度/数量 f(N)，数值 ⚠️D 待平衡。",
-          "summonMapping": [
-            {
-              "stacks": 1,
-              "count": 1,
-              "atkRatio": 0.5,
-              "hpRatio": 0.4,
-              "note": "⚠️D 占位：1 层刻印 → 弱恶魔"
-            },
-            {
-              "stacks": 3,
-              "count": 1,
-              "atkRatio": 0.8,
-              "hpRatio": 0.6,
-              "note": "⚠️D 占位：3 层 → 中阶恶魔"
-            },
-            {
-              "stacks": 5,
-              "count": 2,
-              "atkRatio": 1.0,
-              "hpRatio": 0.8,
-              "note": "⚠️D 占位：5 层 → 双恶魔 / 换高阶模板"
-            }
-          ]
-        }
-      ],
       "sharedAcross": [
         "prisoner"
       ],
@@ -672,53 +547,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "divination_veil",
-          "name": "占卜遮蔽",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "charges": 2,
-          "modifiers": {
-            "redirect": {
-              "to": "first_empty",
-              "sourceFilter": "skill",
-              "direction": "inbound",
-              "scope": "single"
-            }
-          },
-          "note": "C7/H12 first_empty 确定性落空（2026-09-04 拍板取代概率），charges 每次生效 -1，归零卸载（C6）"
-        },
-        {
-          "id": "divination_block",
-          "name": "通灵阻断",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": {
-              "value": 1.3,
-              "filter": {
-                "anyOf": [
-                  {
-                    "unitType": [
-                      "SPIRIT"
-                    ]
-                  },
-                  {
-                    "isSummon": true
-                  }
-                ]
-              }
-            }
-          }
-        }
-      ],
       "sharedAcross": [
         "prisoner"
       ],
@@ -756,74 +584,6 @@
           "statusId": "demonize",
           "duration": 5,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "demonize",
-          "name": "恶魔化",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 5,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 4,
-              "mode": "delta",
-              "duration": 5,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "hp_max",
-              "value": 15,
-              "mode": "delta",
-              "duration": 5,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "armor",
-              "value": 2,
-              "mode": "delta",
-              "duration": 5,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "gauge.rate",
-              "value": 4,
-              "mode": "delta",
-              "duration": 5,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "resist:mental",
-              "value": -15,
-              "mode": "delta",
-              "duration": 5,
-              "target": "self",
-              "note": "代价段：与恶欲同流，理智下降"
-            }
-          ],
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "poison",
-                  "duration": 1,
-                  "note": "硫磺味"
-                }
-              ]
-            }
-          ],
-          "note": "H10 参数化形态增益母版（与 F10 beast_form 同母版保留独立 ID）；状态触发器产生的伤害不再触发同一状态触发器（防循环，与囚犯 curse_link 同族待框架裁定）"
         }
       ],
       "tentative": true,
@@ -1150,35 +910,6 @@
           "note": "缓慢分支"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "lust",
-          "name": "欲望",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "note": "F17 通用状态最小副本：受伤加重 + 禁获护盾（buffBlocked 同族）；权威数值定义见 F17 登记，此处不重复"
-        },
-        {
-          "id": "filth",
-          "name": "污秽",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": null,
-          "maxStacks": 1,
-          "stackPolicy": "stack",
-          "note": "ddd §九.2 显式登记：罪犯侧登记并标 crossPathway；耕种者『秽土净化』、怪物读取。侵蚀/中毒/深渊之咒降级为『施加本状态的三种来源』。数值 ⚠️D。",
-          "crossPathway": true,
-          "participants": [
-            "criminal",
-            "planter",
-            "monster"
-          ]
-        }
-      ],
       "variants": [
         {
           "id": "slowness",
@@ -1323,25 +1054,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "obsession",
-          "name": "迷恋",
-          "category": [
-            "control"
-          ],
-          "dispelable": true,
-          "modifiers": {
-            "behaviorModifiers": [
-              {
-                "op": "target_override",
-                "anchor": "self"
-              }
-            ]
-          },
-          "note": "F15 最小副本（H12 target_override 族）：反向嘲讽，攻击其己方队友；权威定义见 F15 登记"
-        }
-      ],
       "tentative": true,
       "conversionNotes": [
         "If 判定刻意放在 mount_status(lust) 之后：语义是「目标此前已有欲望」则升级为 charm；引擎按顺序结算即可承载",
@@ -1379,41 +1091,6 @@
           "type": "mount_status",
           "statusId": "desire_bomb",
           "duration": 3
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "desire_bomb",
-          "name": "欲望炸弹",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "triggers": [
-            {
-              "event": "on_remove",
-              "reason": [
-                "expired"
-              ],
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "mental",
-                  "value": 8,
-                  "target": "self",
-                  "note": "作用于原持有者"
-                },
-                {
-                  "type": "damage",
-                  "element": "mental",
-                  "value": 4,
-                  "spread": "splash_adjacent"
-                }
-              ],
-              "note": "H29 on_remove reason 过滤：仅自然到期爆炸，被驱散不炸"
-            }
-          ]
         }
       ],
       "tentative": true,
@@ -1526,39 +1203,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "desire_avatar",
-          "name": "欲望化身",
-          "category": [
-            "conceal"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "modifiers": {
-            "damage_taken_mul": 0.75,
-            "untargetableByTargeted": {
-              "direction": "both",
-              "scope": "single"
-            }
-          },
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "lust",
-                  "duration": 2,
-                  "note": "影响：被黑液沾到"
-                }
-              ],
-              "note": "on_break：首次造成伤害后失去 untargetable（液体溅出去藏不住了），减伤与感染保留"
-            }
-          ],
-          "note": "H5 潜行/虚化母版（与 F4/F11/囚犯灵体化同族）"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：规避/隐匿/影响三合一；`on_deal_damage` 推高目标恶欲值（产能）。⚠️D。"
     },
@@ -1581,40 +1225,6 @@
           "statusId": "mental_duelist",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "mental_duelist",
-          "name": "精神交锋",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "resist:mental",
-              "value": 20,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
-            }
-          ],
-          "modifiers": {
-            "damage_mul": {
-              "value": 1.25,
-              "filter": {
-                "targetHasStatus": [
-                  "lust",
-                  "charm",
-                  "whisper"
-                ]
-              }
-            }
-          },
-          "note": "与【失去良知】分界：本条定向（本途径三污染状态，+25%），那条广谱（任何 debuff/dot，+15%）"
         }
       ],
       "tentative": true,
@@ -1832,19 +1442,6 @@
           "note": "默认分支：失控"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "whisper",
-          "name": "呓语",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "maxStacks": 3,
-          "stackPolicy": "stack",
-          "note": "F16 通用状态最小副本：精神污染叠层（F51 stacks）；污染权柄（序列3）可将其运行时覆写为不可驱散。权威定义见 F16 登记"
-        }
-      ],
       "variants": [
         {
           "id": "lose_control",
@@ -1944,36 +1541,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "pollution_authority",
-          "name": "污染权柄",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "durationModifier": {
-              "scope": "outgoing",
-              "mode": "add",
-              "value": 1,
-              "filter": {
-                "category": [
-                  "debuff"
-                ]
-              }
-            },
-            "dispelableOverride": {
-              "statusIds": [
-                "whisper"
-              ],
-              "value": false
-            }
-          },
-          "note": "H14 durationModifier（outgoing）+ H8 运行时覆写 dispelable"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：污秽轴\"权柄\"=量+质。⚠️D。"
     },
@@ -2070,34 +1637,6 @@
           "duration": 3
         }
       ],
-      "statusDefs": [
-        {
-          "id": "hemorrhage",
-          "name": "失血",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "modifiers": {
-            "heal_received_mul": 0.5
-          },
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "physical",
-                  "value": 1,
-                  "target": "self"
-                }
-              ]
-            }
-          ],
-          "note": "H2 + H21；与「中毒」区分：中毒穿甲不禁疗，失血禁疗不穿甲"
-        }
-      ],
       "sharedAcross": [
         "prisoner"
       ],
@@ -2123,65 +1662,6 @@
           "statusId": "malice_avatar",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "malice_avatar",
-          "name": "恶意化身",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "charges": 1,
-          "triggers": [
-            {
-              "event": "on_death",
-              "condition": {
-                "kind": "any_of",
-                "conditions": [
-                  {
-                    "kind": "field_status_count",
-                    "id": "whisper",
-                    "cmp": ">=",
-                    "n": 1
-                  },
-                  {
-                    "kind": "field_status_count",
-                    "id": "lust",
-                    "cmp": ">=",
-                    "n": 1
-                  },
-                  {
-                    "kind": "field_status_count",
-                    "id": "charm",
-                    "cmp": ">=",
-                    "n": 1
-                  }
-                ],
-                "note": "场上存在由你施加污染的敌方单位（field_status_count + casterId 归属 F56）"
-              },
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "whisper",
-                  "stacks": -1,
-                  "stackMode": "consume",
-                  "note": "F48 消耗谓词命中单位身上的污染状态 1 层——源稿为 whisper/lust/charm 任一（any_of 命中项），JSON 以 whisper 为代表登记"
-                },
-                {
-                  "type": "spawn",
-                  "reviveOf": "self",
-                  "hpRatio": 0.3,
-                  "position": "tail",
-                  "oncePerBattle": true
-                }
-              ],
-              "note": "else：正常死亡"
-            }
-          ],
-          "note": "稿面 charges:1 承载一次性，JSON 折为 spawn.oncePerBattle；复活优先级链见编队上下文 §十（H23）"
         }
       ],
       "tentative": true,
@@ -2232,24 +1712,6 @@
           "statusId": "body_authority",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "body_authority",
-          "name": "身体权柄",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "immune_stat_reduction": [
-              "hp_max",
-              "armor"
-            ]
-          },
-          "note": "编队参数 §1.1b immune_stat_reduction（原文标注罪犯）；与【侵蚀者】的正反对照"
         }
       ],
       "sharedAcross": [
@@ -2418,46 +1880,6 @@
           "duration": 5
         }
       ],
-      "statusDefs": [
-        {
-          "id": "erosion",
-          "name": "侵蚀",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 5,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "armor",
-              "value": -2,
-              "mode": "delta",
-              "duration": 5,
-              "target": "self"
-            }
-          ],
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "poison",
-                  "value": 3,
-                  "pierce": [
-                    "armor",
-                    "shield",
-                    "resist"
-                  ],
-                  "target": "self"
-                }
-              ]
-            }
-          ],
-          "note": "H2 + H16；可被驱散是刻意弱点（「持续腐蚀会穿透」的前提是腐蚀持续下去）"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：污秽轴招牌攻坚（穿甲持续钻，可被驱散）。⚠️D。"
     },
@@ -2544,53 +1966,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "abyss_is_me",
-          "name": "深渊即我",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "resist:fire",
-              "value": 30,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "resist:poison",
-              "value": 30,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
-            }
-          ],
-          "modifiers": {
-            "dispelableOverride": {
-              "categories": [
-                "debuff"
-              ],
-              "value": false,
-              "scope": "outgoing"
-            },
-            "damage_mul": {
-              "value": 1.3,
-              "filter": {
-                "targetHasCategory": [
-                  "debuff"
-                ]
-              }
-            }
-          },
-          "note": "② H8 覆写 dispelable；③ 深渊不是一种地方是一种状态（堕落者归你支配）"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：恶欲轴终焉 payoff：读全场恶欲值总和解锁免疫失控（产能→安保闭环）。⚠️D。"
     },
@@ -2627,46 +2002,6 @@
           "duration": 6
         }
       ],
-      "statusDefs": [
-        {
-          "id": "fallen",
-          "name": "堕落",
-          "category": [
-            "control",
-            "debuff"
-          ],
-          "dispelable": false,
-          "duration": 6,
-          "modifiers": {
-            "behaviorModifiers": [
-              {
-                "op": "target_override",
-                "anchor": "self"
-              }
-            ],
-            "heal_received_mul": 0.5
-          },
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "poison",
-                  "value": 2,
-                  "pierce": [
-                    "armor",
-                    "shield",
-                    "resist"
-                  ],
-                  "target": "self"
-                }
-              ]
-            }
-          ],
-          "note": "H12 anchor self（新增项 4）+ H2 + H16 + H21；与【迷幻】分界：迷幻打向空处（charges 可驱散短），堕落打向自己（duration 不可驱散 6t）"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：恶欲轴终极单点控制（自己打自己）。⚠️D。"
     },
@@ -2701,52 +2036,6 @@
           "type": "mount_status",
           "statusId": "abyss_curse",
           "duration": 5
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "abyss_curse",
-          "name": "深渊之咒",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 5,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": -2,
-              "mode": "delta",
-              "duration": 5,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": -2,
-              "mode": "delta",
-              "duration": 5,
-              "target": "self"
-            }
-          ],
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "dark",
-                  "value": 2,
-                  "target": "self"
-                }
-              ]
-            }
-          ],
-          "modifiers": {
-            "buffBlocked": true
-          },
-          "note": "H2 + H38 buffBlocked（与 F17 lust 禁护盾同族，粒度由 categories 参数控制）"
         }
       ],
       "tentative": true,
