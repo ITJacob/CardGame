@@ -1,0 +1,676 @@
+{
+  "statusDefs": [
+    {
+      "id": "deluded",
+      "name": "诡辩（失心）",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": true,
+      "charges": 1,
+      "duration": 3,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "first_empty"
+          }
+        ]
+      },
+      "note": "次数型（C6）：下一次攻击落空后消耗 1 层归零卸载。C7 已端到端验证；「扭曲」暗线起点（一层雏形），与混乱/腐蚀同族"
+    },
+    {
+      "id": "chink_finding",
+      "name": "寻隙",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "armorPierceRatio": 1,
+        "note": "ignore_armor 取比例档 =1（新增项 11 ✅ 已落 ddd：效果参数 §1.1 armorPierceRatio）"
+      },
+      "note": "「利用规则漏洞」侧：绕过防御体系本身（与贿赂·削弱的削数值分野）"
+    },
+    {
+      "id": "glib_tongue",
+      "name": "滔滔不绝",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "durationModifier": {
+          "scope": "outgoing",
+          "mode": "add",
+          "value": 1,
+          "filter": {
+            "hasCategory": [
+              "debuff",
+              "control"
+            ]
+          }
+        }
+      },
+      "note": "debuff_duration_extend（新增项 12 ✅ 已落 ddd：编队参数 §1.1b durationModifier H14）"
+    },
+    {
+      "id": "charm",
+      "name": "魅惑",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "anchor": "self_faction_hp_desc",
+            "op": "target_override",
+            "note": "反向嘲讽：被魅惑单位攻击其己方队友"
+          }
+        ]
+      },
+      "note": "F15 已登记（罪犯+药师途径合并登记，机制=反向嘲讽），权威定义见状态表，此处为引用副本，不新立状态；与 corrupted 同持时 corrupted 优先（贪婪压过好感，裁定见腐蚀条）"
+    },
+    {
+      "id": "arrogance",
+      "name": "狂妄",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "damage_taken_mul": {
+          "value": 1.2,
+          "note": "乘区刻意压在 1.2（低于易伤 1.3），避免叠乘失控"
+        }
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -2,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": -20,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self",
+          "note": "本途径协同钩子：为后续 mental 伤害铺路"
+        }
+      ],
+      "note": "新状态 arrogance（新增项 13 ✅ 纯数据，H2 母版）；「心智降低」的可观测后果三合一"
+    },
+    {
+      "id": "connected",
+      "name": "关联",
+      "category": [
+        "link"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "caster",
+              "note": "收益归施法者（casterId 寻址，F56 ✅ 编队参数 §1.1b）"
+            }
+          ]
+        }
+      ],
+      "note": "新状态 connected（新增项 15 ✅ 纯数据）；本途径唯一能量引擎（对位愚者灵体之线的击杀回能，触发条件更稳）；与 F2 parasitized（吸血）同一底层、不同收益类型"
+    },
+    {
+      "id": "distortion",
+      "name": "扭曲",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": true,
+      "charges": 1,
+      "duration": 4,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "self_faction_hp_desc",
+            "note": "其自身阵营单位（F19 母版「阵营首位」锚点随状态表归一）；触发后 charges -1 卸载"
+          }
+        ]
+      },
+      "note": "F19 已登记（v0.1 律-2，保留 ID 与机制，本版从序列4 下移序列6——原著「扭曲」是序列6 能力）；权威定义见状态表，此处为引用副本。与诡辩（打空）/腐蚀（打最残血）构成目标扭曲谱系"
+    },
+    {
+      "id": "corrupted",
+      "name": "腐蚀（贪婪）",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": true,
+      "charges": 1,
+      "duration": 4,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "any_lowest_hp",
+            "note": "全场生命百分比最低（不分阵营）——贪婪不帮它分辨敌我，可能回头咬自己的残血同伴"
+          }
+        ]
+      },
+      "note": "新锚点 any_lowest_hp（新增项 1 ✅ 已落 ddd：共享内核参数 §一 锚点枚举）；与 charm 同持时本状态优先（贪婪压过好感，亦压过理智）；R5 完全确定性，不掷骰子"
+    },
+    {
+      "id": "confused",
+      "name": "混乱",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": true,
+      "charges": 1,
+      "duration": 4,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "first_empty"
+          }
+        ]
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": -6,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self",
+          "note": "拖慢行动节奏（INV-S5 合规：改源属性不改派生周期）"
+        }
+      ],
+      "note": "诡辩的群体升级版：打空（C7 ✅）+ 减速；R5 确定性 charges 写法，不使用概率",
+      "crossPathway": true,
+      "participants": [
+        "lawyer",
+        "monster",
+        "arbiter"
+      ]
+    },
+    {
+      "id": "shared_burden",
+      "name": "对半承担",
+      "category": [
+        "link"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "modifiers": {
+        "damageShare": {
+          "ratio": 0.5,
+          "direction": "both",
+          "linkedTo": "counterpart",
+          "note": "双向对半：你挨的打对方分一半，对方挨的打你也分一半；转移部分不再二次触发（H28 内置防循环）"
+        }
+      },
+      "note": "「扭曲」二层：被扭曲的是「谁承担」概念本身，必须双向才有原著味（单向退化成伤害转移）；damage_share（新增项 2 ✅ 已落 ddd：编队参数 §1.1b 伤害转嫁族 H28）"
+    },
+    {
+      "id": "untouchable_confusion",
+      "name": "难落身",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_taken_mul": {
+          "value": 0.9,
+          "note": "0.9 刻意压得比 sanctuary（0.8）/glibness（0.75）薄——常驻被动不是一张卡"
+        }
+      },
+      "note": "新状态 untouchable_confusion（新增项 17 ✅ 纯数据：H3 减伤母版）；与混乱分享同一句原著的另一半（主动群体一次性 vs 被动自身持续）"
+    },
+    {
+      "id": "rule_exploited",
+      "name": "被利用",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "damage_taken_mul": {
+          "dynamic": {
+            "perCount": {
+              "filter": {
+                "hasCategory": [
+                  "buff"
+                ]
+              },
+              "value": 0.1,
+              "cap": 0.4
+            }
+          },
+          "note": "按目标持有 buff 数动态递增（新增项 3 ✅ 已落 ddd：H4 damage_taken_mul {filter, dynamic}）"
+        }
+      },
+      "note": "本途径「利用规则」的定义性落地：让对手自己的优势反过来勒住它；与仲裁人「律令」的分野=立法 vs 改写受力方向"
+    },
+    {
+      "id": "amplified",
+      "name": "放大",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "charges": 1,
+      "duration": 3,
+      "fields": {
+        "nextAttack": {
+          "damageMul": 2.0,
+          "onHit": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "target",
+                "cmp": "<=",
+                "n": 0.35
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 0,
+                  "lethal": true,
+                  "note": "execute：直达死亡结算，不吃 armor/减伤/抗性（新增项 4 ✅ 效果参数 §1.1 damage.lethal）"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      },
+      "note": "原著「普通一击变处决」精确落地：本卡自身不造成伤害，只放大下一次攻击；条件谓词 target_hp_percent（新增项 5 ✅ 共享内核 §三）；charges:1（C6 ✅）"
+    },
+    {
+      "id": "endowed",
+      "name": "赠予",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 4,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 1,
+              "target": "self",
+              "note": "利息：A22 严守治疗方向——掉血走 damage 原语，不用负向 heal"
+            }
+          ]
+        }
+      ],
+      "note": "新状态 endowed（新增项 14 ✅ 纯数据，双 category 走 H40 增补）；本途径唯一增益卡，增益自带獠牙"
+    },
+    {
+      "id": "rule_monopoly",
+      "name": "独享规则",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "dispelableOverride": {
+          "scope": [
+            "self_gain_buff",
+            "self_outgoing_debuff"
+          ],
+          "value": false,
+          "note": "运行时覆写 dispelable（新增项 19 ✅ 已落 ddd：编队参数 §2.4 H8）"
+        }
+      },
+      "note": "律师与仲裁人最刺眼的一处对立：律师的规则只服务一个人（仲裁人的规则双向可验证）"
+    },
+    {
+      "id": "stratum",
+      "name": "阶层",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_taken_mul": {
+          "value": 0.85,
+          "filter": {
+            "statCompare": {
+              "key": "rank",
+              "cmp": "<",
+              "note": "攻击者位格低于持有者（新增项 5 ✅ 条件谓词 H4 filter）"
+            }
+          }
+        },
+        "damage_mul": {
+          "value": 1.15,
+          "filter": {
+            "statCompare": {
+              "key": "rank",
+              "cmp": "<",
+              "note": "目标位格低于持有者"
+            }
+          }
+        }
+      },
+      "note": "上位者·威严的常驻版（一次性位格碾压 vs 整场位格环境）；两乘区压在 ±15% 内（条件常驻非一次性）；位格基准=序列位阶（编队参数 §1.4），强度随晋升自然成长"
+    },
+    {
+      "id": "lifesteal",
+      "name": "吸血",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "charges": 1,
+      "duration": 4,
+      "modifiers": {
+        "lifesteal": {
+          "healRatio": 0.5,
+          "note": "数值 ⚠️D；吸血族与 F2 parasitized 同一底层"
+        }
+      },
+      "note": "权威定义见状态表（F 族吸血母版），此处为引用副本"
+    },
+    {
+      "id": "frantic",
+      "name": "狂乱适应",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "statPerStack": {
+          "attack": 1
+        },
+        "stackCount": {
+          "dynamic": {
+            "countStatuses": {
+              "side": "self",
+              "categories": [
+                "debuff",
+                "control"
+              ],
+              "cap": 3
+            }
+          },
+          "note": "层数=自身持有的 debuff/control/dot 状态数（上限 3），每 tick 重算（F51 stacks ✅ + 新增项 3 H4 dynamic ✅）"
+        }
+      },
+      "note": "「自身能力随机有益变化」的确定性翻译：混乱对你总是有益的，且越乱越强；与难落身构成完整的「你越打我我越强」"
+    },
+    {
+      "id": "entropy_decay",
+      "name": "熵蚀",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "maxStacks": 3,
+      "stackPolicy": "refresh",
+      "duration": 4,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "entropy_decay",
+              "stacks": 1,
+              "duration": 4,
+              "target": "adjacent_enemy",
+              "note": "对相邻敌方单位蔓延 1 层（重置 duration 4，每单位层数上限 3）"
+            }
+          ]
+        }
+      ],
+      "note": "F18 已登记（H2 母版，ID 保留），权威定义见状态表，此处为引用副本 + 本途径新增的「扩散」触发器；dot/乘区本体的具体数值随 F18 母版（⚠️D）；扩散顺序与层数上限全部确定，零随机（R5 ✅）；依赖新增项 20 adjacency ✅ + F51 stacks ✅"
+    },
+    {
+      "id": "moon_step",
+      "name": "踏月",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "charges": 1,
+      "duration": 4,
+      "modifiers": {
+        "ignoreRedirect": {
+          "value": true,
+          "note": "无视前排站位限制：可直接指定任意敌方单位（含被守护/嘲讽保护的后排）——ignore_guard（新增项 10 ✅ 执行参数 §一 EffectRef.params.ignore_redirect，ddd 明示律师「踏月」判例）"
+        },
+        "armorPierceRatio": {
+          "value": 1,
+          "note": "ignore_armor 比例档 =1（新增项 11 ✅ 效果参数 §1.1）"
+        },
+        "damage_mul": {
+          "value": 2.5
+        }
+      },
+      "note": "G8 合规声明：本技能不调用 move 原语，纯攻击进程 + 目标选择放宽（「跳到红月」译为「无视站位规则」，与「利用权柄」同源同义）"
+    },
+    {
+      "id": "defined_substitute",
+      "name": "定义·替身",
+      "category": [
+        "contract"
+      ],
+      "dispelable": false,
+      "duration": 6,
+      "modifiers": {
+        "suppress": [
+          "lethal_protect",
+          "miracle",
+          "spirit_worm",
+          "paper_substitute",
+          "puppet_immortality"
+        ],
+        "reviveBlocked": {
+          "value": true,
+          "note": "持有者死亡时进入 revive_blocked，所有复活结算前检查该标记（新增项 7 ✅）"
+        },
+        "damageShare": {
+          "ratio": 0.5,
+          "direction": "to_self",
+          "linkedFrom": {
+            "scope": "faction_original",
+            "sort": "atk_desc",
+            "note": "其所在阵营中 attack 最高的单位（按原阵营判定——定义改写的是身份不是阵营）；该单位受伤时 50% 转移给持有者，不占 damage_taken_mul 乘区（H28 ✅ 新增项 2）"
+          }
+        }
+      },
+      "note": "「扭曲」三层（身份定义）：恐怖之处不在伤害而在身份被改写——① 替身没有不死的特权 ② 替身的职责是替本体受创；defined_substitute 状态数据（新增项 21 ✅ 纯数据）",
+      "crossPathway": true,
+      "participants": [
+        "assassin",
+        "fool",
+        "lawyer",
+        "supplicant",
+        "prisoner"
+      ]
+    },
+    {
+      "id": "order_redefined",
+      "name": "重定义",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "modifiers": {
+        "heal_invert": {
+          "value": true,
+          "note": "持有者获得的 heal 量转为等量 damage(element: none)，方向反转数值不变（新增项 6 ✅ 效果上下文 §2.1 heal_invert）"
+        }
+      },
+      "note": "本作唯一反治疗手段（counter 治疗队）；选「治疗」是因为它有独立原语（heal，A22）可干净反转，且反转不破坏伤害数值体系"
+    },
+    {
+      "id": "autocrat",
+      "name": "独裁者",
+      "category": [
+        "contract"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "debuffSpread": {
+          "to": "adjacent_enemy",
+          "scope": "single_target_debuff",
+          "note": "扭曲：你施加的单体减益额外作用于目标的一个相邻敌方单位（新增项 18 扩散载荷）"
+        },
+        "damage_taken_mul": {
+          "value": 0.8,
+          "filter": {
+            "statCompare": {
+              "key": "rank",
+              "cmp": "<",
+              "note": "阶层：位格低于你的敌方单位（新增项 5 ✅ H4 filter）"
+            }
+          }
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_kill",
+          "params": {
+            "deathSettlement": {
+              "revive_blocked": true
+            },
+            "note": "定义：你击杀的敌方单位死亡结算写入 revive_blocked 字段（编队参数 §1.1b 死亡结算行，非状态挂载），所有复活结算前检查该字段"
+          },
+          "effects": [
+            {
+              "type": "drain",
+              "category": "buff",
+              "count": 1,
+              "target": "self",
+              "note": "利用：从死者身上 drain 1 个 buff 给自己（F50 ✅ 效果参数 §1.1 drain.category）"
+            }
+          ]
+        }
+      ],
+      "note": "新状态 autocrat（新增项 18 ✅ 纯数据）；四条权柄各取一条合成一个被动（扭曲←扭曲 / 利用←利用 / 定义←定义·替身 / 阶层←阶层），是本途径全部机制的收束件"
+    },
+    {
+      "id": "nine_tombs",
+      "name": "九座陵寝",
+      "category": [
+        "reactive"
+      ],
+      "dispelable": false,
+      "charges": 3,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "spawn",
+              "reviveOf": "self",
+              "hpRatio": 0.3,
+              "position": "original",
+              "note": "G4 ✅ 效果参数 §1.1 spawn.reviveOf + C5 hpRatio/position；从陵寝苏醒"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "$self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "charges - 1，归零后不再触发"
+            }
+          ]
+        }
+      ],
+      "note": "「九座」是世界观锚点，本场可唤醒层数 ⚠️D 待平衡裁定（建议 3——flavor：九座陵寝，本场你能唤醒的只有三座）；3 层强于愚者灵之虫 4 次但为被动档"
+    },
+    {
+      "id": "bribed",
+      "name": "被收买",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "damage_mul": 0.8
+      },
+      "healReceivedMul": 0.5
+    },
+    {
+      "id": "heavy_bribe",
+      "name": "重贿腐蚀",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bribed_mass",
+      "name": "被收买·众",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "modifiers": {
+        "damage_mul": 0.85
+      }
+    }
+  ]
+}
