@@ -1,0 +1,640 @@
+{
+  "statusDefs": [
+    {
+      "id": "weather_omen",
+      "name": "天时预兆",
+      "category": [
+        "aura"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 4,
+          "mode": "delta",
+          "duration": null,
+          "target": "all_allies"
+        }
+      ],
+      "note": "H42 常驻模板",
+      "crossPathway": true,
+      "participants": [
+        "planter",
+        "reader",
+        "spectator"
+      ]
+    },
+    {
+      "id": "cultivated",
+      "name": "培育种子",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "triggers": [
+        {
+          "event": "on_remove",
+          "reason": [
+            "expired"
+          ],
+          "effects": [
+            {
+              "type": "heal",
+              "value": 4,
+              "target": "self",
+              "note": "种子成熟破土"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 4,
+              "target": "self"
+            }
+          ],
+          "note": "H29：on_remove 自然到期（expired）同样 fire"
+        }
+      ]
+    },
+    {
+      "id": "soul_stitch",
+      "name": "缝合灵魂",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "charges": 1,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "condition": {
+            "kind": "hp_percent",
+            "side": "target",
+            "cmp": "<=",
+            "n": 0,
+            "note": "该次伤害将致其死亡"
+          },
+          "effects": [
+            {
+              "type": "heal",
+              "value": 3,
+              "note": "H7 lethalProtect：中断死亡、保留 1 血后治疗"
+            }
+          ],
+          "note": "触发器监听任一友军的 on_take_damage（全局监听，执行参数 §2.1）；响应后 charges -1 归零卸载；与 C4 miracle 方向相反（阻止死亡 ≠ 死后召回）"
+        }
+      ],
+      "lethalProtect": true,
+      "hpRatio": 0.03,
+      "note": "H7 + C6 charges（每场一次）；致死保护优先级链与 C4/G4 跨途径统一裁定（编队上下文 §十）"
+    },
+    {
+      "id": "vine_snare",
+      "name": "藤蔓纠缠",
+      "category": [
+        "debuff",
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "modifiers": {
+        "moveImmune": true,
+        "gaugeRateMul": 0.75,
+        "attackMod": -2
+      },
+      "note": "H24 减速族 + H27 moveImmune（单体强控档）"
+    },
+    {
+      "id": "abundance",
+      "name": "丰饶",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 1,
+      "stackPolicy": "stack",
+      "note": "枢纽状态（ddd 源质维度 §1.4）：归属 耕种者；罪犯『荒芜侵蚀·改』读取。数值 ⚠️D。",
+      "crossPathway": true,
+      "participants": [
+        "planter",
+        "criminal"
+      ]
+    },
+    {
+      "id": "venomous",
+      "name": "剧毒体质",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "poison",
+              "duration": 2,
+              "note": "刷新 duration 不叠层，防 DOT 指数化"
+            }
+          ]
+        }
+      ],
+      "note": "H10 on_deal_damage 附加段"
+    },
+    {
+      "id": "bear_form",
+      "name": "巨熊形态",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 5,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 3,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 5,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 8,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:physical",
+          "value": 10,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self"
+        }
+      ],
+      "note": "H10 参数化形态母版（与 F10 beast_form 同母版两档）；F46 结论：化身不产生第二个单位，仅表现层；带 duration 修正到期回滚走账本条目 remaining"
+    },
+    {
+      "id": "subterranean",
+      "name": "地底潜行",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "modifiers": {
+        "damage_taken_mul": 0.8,
+        "untargetableByTargeted": {
+          "direction": "both",
+          "scope": "single"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [],
+          "note": "on_break：出土（自动破除 untargetable）"
+        }
+      ],
+      "note": "H5 潜行/虚化母版（与 F4/F11/愚者 disguise_form 同族，F 组合并候选 1）"
+    },
+    {
+      "id": "mire",
+      "name": "沼泽",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "stackPolicy": "refresh",
+      "modifiers": {
+        "gaugeRateMul": 0.75,
+        "moveImmune": true
+      },
+      "note": "H24 减速族全体软控档（与 F7 shackle / vine_snare 同母版三档）；刷新 duration 不叠层"
+    },
+    {
+      "id": "nature_abhorrence",
+      "name": "自然憎恶",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "damage_taken_mul": 1.2,
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "unit",
+            "unitId": "self"
+          }
+        ]
+      },
+      "note": "anchor <指定单位=该目标自身>（H12，新增项 5）；原著未解释该法术，此为设计推演（见稿面「原著存疑」1）"
+    },
+    {
+      "id": "vitality_field",
+      "name": "生命充盈",
+      "category": [
+        "aura"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "all_allies",
+          "filter": {
+            "anyOf": [
+              {
+                "unitType": [
+                  "PLANT",
+                  "VERMIN",
+                  "CONSTRUCT"
+                ]
+              },
+              {
+                "isSummon": true
+              }
+            ]
+          }
+        },
+        {
+          "type": "mount_status",
+          "statusId": "regen",
+          "value": 1,
+          "duration": null,
+          "target": "all_allies",
+          "filter": {
+            "anyOf": [
+              {
+                "unitType": [
+                  "PLANT",
+                  "VERMIN",
+                  "CONSTRUCT"
+                ]
+              },
+              {
+                "isSummon": true
+              }
+            ]
+          },
+          "note": "低量 1/tick 常驻（H42）"
+        }
+      ],
+      "note": "H42 + §1.2b 单位类型过滤（新增项 10）",
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "defense",
+            "value": 1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+          }
+        ],
+        "note": "生命：生命充盈层数达标 → 防御提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "death_trial",
+      "name": "死亡考验",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 1,
+              "target": "self"
+            }
+          ]
+        },
+        {
+          "event": "on_tick",
+          "condition": {
+            "kind": "hp_percent",
+            "side": "self",
+            "cmp": "<",
+            "n": 25
+          },
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 6,
+              "target": "self",
+              "note": "考验失败"
+            },
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "death_trial"
+              },
+              "note": "卸载自身；每场对同一目标只结算一次"
+            }
+          ]
+        }
+      ],
+      "note": "H2 stackThreshold / §1.1b thresholdTrigger；25% 阈值为设计取值（原著未给）；元素 none 让大地权柄乘区可覆盖"
+    },
+    {
+      "id": "revive_blocked",
+      "name": "复活着禁",
+      "category": [
+        "seal"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "revive_blocked": true
+      },
+      "note": "死亡结算字段表达（编队参数 §1.1b 死亡结算行 + 编队上下文 §十 优先级链）；与愚者命运锚点、收尸人 s2_true_death、不眠者 eternal_sleep 同源同一母版；此处为引用副本"
+    },
+    {
+      "id": "blight",
+      "name": "荒芜",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "stackPolicy": "stack",
+      "modifiers": {
+        "heal_received_mul": 0.5
+      },
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "note": "H2 + H21（heal_received_mul 0.5 与 F20 petrify 同源复用）；「流逝至死」是过程故做 DOT",
+      "maxStacks": 3,
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": -1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+          }
+        ],
+        "note": "荒芜：荒芜层数达标 → 攻击下降。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "earth_authority",
+      "name": "大地权柄",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "durationModifier": {
+          "scope": "outgoing",
+          "mode": "add",
+          "value": 1,
+          "filter": {
+            "category": [
+              "debuff"
+            ]
+          }
+        },
+        "damage_mul": {
+          "value": 1.15,
+          "filter": {
+            "element": [
+              "none"
+            ]
+          }
+        }
+      },
+      "note": "H14 outgoing + H4 filter.element（新增项 7/8，与愚者 14 同源）",
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "defense",
+            "value": 1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+          }
+        ],
+        "note": "大地：大地权柄层数达标 → 防御提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "matter_ladder",
+      "name": "材质阶梯",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "note": "H11 计数型母版；初始 1 档；同场战斗不重置；旧人偶不换材质（规则③）。五档参数：泥土 hp18/atk3/物理/亡语相邻 gaugeRateMul0.85(2t)；植物 hp20/atk4/毒/再生1(整场)；岩浆 hp22/atk5/火/反伤2；矿石 hp26/atk5/物理/护甲+8；金属 hp24/atk7/shock/gauge.rate+8（全档 ⚠️D，召唤物基线统一重定）",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": 1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批"
+          }
+        ],
+        "note": "炼成：材质阶梯层数达标 → 攻击提升（PENDING 炼成轴身份状态，复用 matter_ladder）"
+      }
+    },
+    {
+      "id": "nature_child",
+      "name": "自然之子",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "modifiers": {
+        "damage_taken_mul": 0.8,
+        "untargetableByTargeted": {
+          "direction": "both",
+          "scope": "single"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 1,
+              "target": "self",
+              "note": "大地滋养"
+            }
+          ]
+        }
+      ],
+      "note": "H5 潜行/虚化母版 + on_tick heal 载荷"
+    },
+    {
+      "id": "mother_nest",
+      "name": "万物母巢",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_spawn",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 3,
+              "target": "target",
+              "note": "① 孕育：登场给护盾"
+            }
+          ],
+          "note": "全局 on_spawn 监听（执行参数 §2.1）"
+        },
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "all_allies",
+              "note": "② 回归：死亡反哺生者"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "A22：治疗走 heal 原语"
+            }
+          ],
+          "note": "全局 on_death 监听"
+        }
+      ],
+      "note": "H1 + H11；本途径唯一同时踩住「生」与「死」两端的被动"
+    },
+    {
+      "id": "nature_authority",
+      "name": "自然权柄",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "durationModifier": {
+          "scope": "incoming",
+          "mode": "mul",
+          "value": 0.5
+        },
+        "dispelableOverride": {
+          "value": false,
+          "scope": "self"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "spawn",
+              "reviveOf": "self",
+              "hpRatio": 0.3,
+              "position": "original",
+              "oncePerBattle": true,
+              "note": "③ 死亡不是终点；稿面 charges:1 折为 spawn.oncePerBattle"
+            }
+          ]
+        }
+      ],
+      "note": "H14 incoming + H8 + G4；复活优先级链见编队上下文 §十（H23）"
+    }
+  ]
+}
