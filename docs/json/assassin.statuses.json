@@ -1,0 +1,933 @@
+{
+  "statusDefs": [
+    {
+      "id": "featherlight",
+      "name": "羽毛般轻盈",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "charges": 3,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 6,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 1,
+              "target": "self",
+              "note": "灵巧步伐：己方半场内后撤一格（G8 合规），随后 charges - 1"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "$self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "eagle_sight",
+      "name": "鹰的视力",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "detectConceal": true,
+        "detectMirrored": true
+      },
+      "note": "C8 识破分支（与愚者【灵视】同源）；黑暗视觉 = 能看见 mirrored 单位，本途径内部制衡"
+    },
+    {
+      "id": "shadow_hide",
+      "name": "阴影躲藏",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "charges": 1,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        },
+        "damage_mul": {
+          "value": 1.5,
+          "charges": 1,
+          "note": "下一次攻击 ×1.5（爆发层，出手即消耗）"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "shadow_hide"
+              },
+              "note": "出手即暴露"
+            }
+          ]
+        }
+      ],
+      "note": "与 F4 shadow_veil / F11 stealth 同源，建议并入统一潜行母版"
+    },
+    {
+      "id": "charm",
+      "name": "魅惑",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "anchor": "self_faction_hp_desc",
+            "op": "target_override",
+            "note": "反向嘲讽：被魅惑单位攻击其己方队友"
+          }
+        ]
+      },
+      "note": "F15 已登记（权威定义见 F 组状态表，此处为引用最小副本）；duration 受【说服】+1 ｜ ⚠️ 有意分化：本副本已升级为【魅轴身份状态】（叠加 maxStacks/stackThreshold/thresholdTrigger 承载 enabler→payoff），与 lawyer【贿赂·魅惑】的纯 F15 引用副本不再同定义——后者仍为无叠层的通用魅惑。若引擎要求同名状态定义一致，应将本状态改挂独立 id（如 charm_axis）并把 lawyer 副本还原为唯一 charm。",
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": -1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线样板）"
+          }
+        ],
+        "note": "魅：魅惑层数达标 → 持有者攻击进一步下降。接线结构已落，数值 ⚠️D 待审批；遵守「乘区层禁止批量生成」，本处只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "mislead",
+      "name": "误导",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "charges": 1,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "first_empty"
+          }
+        ]
+      },
+      "note": "C7 已验证（target_override → first_empty）；duration 受【说服】+1"
+    },
+    {
+      "id": "persuasion",
+      "name": "说服",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "durationModifier": {
+          "scope": "outgoing",
+          "mode": "add",
+          "value": 1,
+          "filter": {
+            "statusId": [
+              "charm",
+              "mislead"
+            ]
+          },
+          "note": "按状态族（target_override 类）过滤的 duration 加成"
+        }
+      },
+      "note": "退化方案：只对 charm 单状态生效"
+    },
+    {
+      "id": "invisible",
+      "name": "隐形",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "charges": 1,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        },
+        "damage_taken_mul": 0.7,
+        "damage_mul": {
+          "value": 1.5,
+          "charges": 1,
+          "note": "下一次攻击 ×1.5（爆发层）；不会因出手而自动卸载"
+        }
+      },
+      "note": "与 F4 shadow_veil 同源，建议并入统一潜行母版",
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": 1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线样板）"
+          }
+        ],
+        "note": "形（潜行）：潜行层数达标 → 自身攻击提升（越隐蔽越致命）。接线结构已落，数值 ⚠️D 待审批；遵守「乘区层禁止批量生成」，本处只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "black_flame",
+      "name": "黑焰",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": null,
+      "maxStacks": 1,
+      "stackPolicy": "stack",
+      "note": "枢纽状态（ddd 源质维度 §1.4）：归属 刺客/收尸人；收尸人『死灵黑焰』、罪犯『双焰交汇』读取。持续/伤害数值 ⚠️D 待平衡。",
+      "crossPathway": true,
+      "participants": [
+        "assassin",
+        "corpse_collector",
+        "criminal"
+      ]
+    },
+    {
+      "id": "mirror_divination",
+      "name": "魔镜占卜",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "condition": {
+                "kind": "chance",
+                "p": 0.3
+              },
+              "note": "R3 登记、R5 限非伤害维度"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "witch_form",
+      "name": "女巫之形",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_taken_mul": 0.9,
+        "outgoingDispelOverride": {
+          "filter": {
+            "statusId": [
+              "charm",
+              "mislead"
+            ]
+          },
+          "dispelable": false
+        }
+      },
+      "note": "\"男性变女性\"落在战外晋升事件（2026-09-07 拍板：战斗内无性别转换入口），故 gender: any；状态级不可驱散标志（H8，与愚者新增项 2 同源）"
+    },
+    {
+      "id": "mirror_substitute",
+      "name": "镜子替身",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "charges": 1,
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "caster_has_summon",
+                "unitId": [
+                  "unit_mirror_image"
+                ]
+              },
+              "then": [
+                {
+                  "op": "sequence",
+                  "steps": [
+                    {
+                      "type": "dispel",
+                      "dispelTarget": "unit",
+                      "filter": {
+                        "unitId": "unit_mirror_image",
+                        "count": 1
+                      },
+                      "note": "销毁一具镜像分身代替你死"
+                    },
+                    {
+                      "type": "heal",
+                      "value": 1,
+                      "target": "self",
+                      "mode": "setHp",
+                      "note": "自身保留 1 血（致死保护 H7）"
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "type": "heal",
+                  "value": 1,
+                  "target": "self",
+                  "mode": "setHp",
+                  "note": "无镜像时动用致死保护"
+                }
+              ]
+            },
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "debuff"
+                ]
+              },
+              "note": "镜面崩裂：驱散自身全部减益/持续伤害（C2）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "$self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "note": "lethal_protect（H7，已落 ddd）+ caster_has_summon 谓词（本稿新增项 11）；与愚者【纸人替身】同机制不同代价",
+      "crossPathway": true,
+      "participants": [
+        "assassin",
+        "fool",
+        "lawyer",
+        "supplicant",
+        "prisoner"
+      ],
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "defense",
+            "value": 1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线样板）"
+          }
+        ],
+        "note": "镜：替身层数达标 → 替身承伤能力增强。接线结构已落，数值 ⚠️D 待审批；遵守「乘区层禁止批量生成」，本处只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "bliss",
+      "name": "沉溺欢愉",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "modifiers": {
+        "damage_mul": 0.75
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -2,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "note": "与 F17 lust（受伤加重+禁护盾）不重叠；与 F14 tutelage 的 damage_mul 是正反两面"
+    },
+    {
+      "id": "silk_bind",
+      "name": "缠绕",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": -8,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self",
+          "note": "缠绕减缓（INV-S5 合规）"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": -5,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self",
+          "note": "丝线勒进护甲的缝隙"
+        }
+      ],
+      "note": "与 F7 shackle 同源，建议并入"
+    },
+    {
+      "id": "cocoon",
+      "name": "结茧",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "action_nullify": true,
+        "damage_taken_mul": 0.7,
+        "note": "不能行动 + 茧壳护住了它"
+      }
+    },
+    {
+      "id": "frost_armor",
+      "name": "冰霜护甲",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 5,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self",
+          "note": "护甲 5 一档；带 duration 的护甲修正常量化（modify_stat 容量语义）"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -6,
+              "mode": "delta",
+              "duration": 2,
+              "target": "attacker",
+              "note": "寒气反噬（F61 attacker 寻址，🟡 已登记）；退化方案：全体敌人 gauge.rate -4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "disease",
+      "name": "疾病",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "ramp": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "valueFrom": {
+                "kind": "ramp"
+              },
+              "target": "self",
+              "note": "dot 递增（加速感染爆发，dot_ramp 已落 ddd：编队参数 §1.1b ramp 行）"
+            }
+          ]
+        },
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 4,
+              "target": "self",
+              "note": "感染爆发（\"2-3 分钟可致猝死\"）"
+            }
+          ]
+        }
+      ],
+      "note": "数值明显偏高 ⚠️D（建议 dot 降 1/1/2/2、爆发降 3）；退化方案：固定 dot 2/tick×4 + 爆发 4",
+      "maxStacks": 4,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 3
+      },
+      "thresholdTrigger": {
+        "stacks": 3,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": -1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线样板）"
+          }
+        ],
+        "note": "疫：疾病层数达 3（配合既有 ramp[1,2,3,4]）→ 病情恶化追加削减。接线结构已落，数值 ⚠️D 待审批；遵守「乘区层禁止批量生成」，本处只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "true_love",
+      "name": "真爱",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "infatuation",
+              "stacks": 1,
+              "stackMode": "add",
+              "binding": {
+                "recordedTarget": "target"
+              },
+              "note": "F51 stacks：对同一目标的迷恋计数 +1"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "infatuation",
+                "cmp": ">=",
+                "n": 3
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "charm",
+                  "stackMode": "override",
+                  "target": "target",
+                  "overrides": {
+                    "dispelable": false,
+                    "duration": null
+                  },
+                  "note": "真正爱上自己：魅惑不可驱散且持续整场"
+                }
+              ],
+              "else": []
+            }
+          ],
+          "note": "实际订阅事件：对目标施加 charm 时（挂载侦听）；此处按稿面计数语义登记"
+        }
+      ],
+      "note": "退化方案：阈值 2 层 + charges 计数"
+    },
+    {
+      "id": "infatuation",
+      "name": "迷恋",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "note": "计数层（H11 计数型状态）"
+    },
+    {
+      "id": "mirror_maze",
+      "name": "迷失镜像",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "charges": 1,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "first_empty"
+          }
+        ]
+      },
+      "note": "C7 target_override 族；仅降临瞬间入场效果，持续落空由 DomainDef 承载"
+    },
+    {
+      "id": "maze_daze",
+      "name": "迷宫迷失计数",
+      "category": [
+        "stance"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 4,
+      "note": "域内计数状态（源稿 domainDef 登记句直引）：敌方每次攻击 +1 层，满 4 层时该次攻击落空并 consume(4)（R5 确定性落空 ≈25%）；计数逻辑挂载于 domainDef 触发器"
+    },
+    {
+      "id": "maze_miss",
+      "name": "迷宫落空",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": false,
+      "duration": 0,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "first_empty"
+          }
+        ]
+      },
+      "note": "一次性落空标记（源稿「满 4 层时该次攻击 target_override → first_empty」的承载状态，duration 0 当次攻击结算后即消）：该次攻击改打空坐标（C7）"
+    },
+    {
+      "id": "mirror_step",
+      "name": "穿梭余韵",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "shield",
+          "value": 3,
+          "duration": 2,
+          "target": "self"
+        }
+      ],
+      "note": "引用副本；权威定义见卡面效果（shield 封闭状态承载）"
+    },
+    {
+      "id": "untransferable_curse",
+      "name": "不可转移的诅咒",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "outgoingDispelOverride": {
+          "filter": {
+            "category": [
+              "debuff"
+            ]
+          },
+          "dispelable": false,
+          "untransferable": true
+        }
+      },
+      "note": "状态级 untransferable 标志（已落 ddd：编队参数 §1.1b suppress/untransferable 行）；与 G12 immune（阻挡施加）是同族字段的另一面（阻挡移除/搬运）；强度上抬须与疾病/瘟疫/命运诅咒数值联合标定"
+    },
+    {
+      "id": "mirror_self",
+      "name": "镜中人",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "charges": 2,
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "caster_has_summon",
+                "unitId": [
+                  "unit_mirror_image"
+                ]
+              },
+              "then": [
+                {
+                  "op": "sequence",
+                  "steps": [
+                    {
+                      "type": "dispel",
+                      "dispelTarget": "unit",
+                      "filter": {
+                        "unitId": "unit_mirror_image",
+                        "count": 1
+                      },
+                      "note": "销毁一具镜像分身"
+                    },
+                    {
+                      "type": "spawn",
+                      "reviveOf": "self",
+                      "hpRatio": 0.3,
+                      "position": "at_unit",
+                      "note": "在该镜像的坐标复活（position: 'at_unit'，G4 扩展已落 ddd）"
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "type": "spawn",
+                  "reviveOf": "self",
+                  "hpRatio": 0.3,
+                  "position": "original",
+                  "note": "退化：原地爬起来"
+                }
+              ]
+            },
+            {
+              "type": "mount_status",
+              "statusId": "$self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "归零后不再触发"
+            }
+          ]
+        }
+      ],
+      "note": "G4 reviveOf + position at_unit + caster_has_summon（均已落 ddd）"
+    },
+    {
+      "id": "petrification",
+      "name": "石化",
+      "category": [
+        "control",
+        "debuff"
+      ],
+      "dispelable": false,
+      "duration": 3,
+      "modifiers": {
+        "action_nullify": true,
+        "damage_taken_mul": 0.6,
+        "note": "damage_taken_mul 0.6 是有意的负收益：石化等于给了它 3 tick 减伤，正确用法是锁住奶妈/核心先杀别人"
+      },
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 2,
+              "target": "self",
+              "note": "碎裂：从石头状态解除时满身裂纹"
+            }
+          ]
+        }
+      ],
+      "note": "与眩晕的三点差异：时长 3t / 带减伤 / 不可驱散且解除后附易伤"
+    },
+    {
+      "id": "mirrored",
+      "name": "镜中囚禁",
+      "category": [
+        "control"
+      ],
+      "dispelable": false,
+      "duration": 3,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "both",
+          "scope": "all"
+        },
+        "action_nullify": true,
+        "damage_taken_mul": 0,
+        "excludeFromActionOrder": true
+      },
+      "note": "不可被选中（C8）+ 不可行动 + 免疫一切伤害 + 不参与行动排序三合一（H5 潜行母版 damage_immune 参数位 + action_nullify）；duration 到期跌回原坐标；退化方案：去掉免疫伤害"
+    },
+    {
+      "id": "doom",
+      "name": "命运诅咒",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "charges": 3,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 3,
+              "target": "self",
+              "note": "祸不单行"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "$self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "note": "命运主题不译概率（brief §3.0 例外条款），做\"受击追加\"次数型状态；与 F21 astral_mark 同触发点不同载荷，建议并入\"受击反哺\"状态族；on_take_damage 响应式触发不受 G15-b 影响",
+      "crossPathway": true,
+      "participants": [
+        "assassin",
+        "fool",
+        "monster",
+        "pryer",
+        "thief"
+      ]
+    },
+    {
+      "id": "chaos_vortex",
+      "name": "混沌漩涡",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "charges": 2,
+      "modifiers": {
+        "action_nullify": {
+          "scope": "outgoing",
+          "charges": 2,
+          "note": "持有者接下来 2 次造成的伤害不产生任何效果（被漩涡融化成未发生的可能性），每次消耗一层"
+        }
+      },
+      "note": "damage_intercept 母版（编队参数 §2.4 H3 乘区=0 档；action_nullify 已落 ddd：编队参数 §1.1b）；退化方案：damage_mul 0.4，彻底失去\"未发生\"的味道，不推荐"
+    },
+    {
+      "id": "form_shadow",
+      "name": "影形态",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "formGroup": "assassin_form",
+      "nextPhase": "form_mist",
+      "cycleTicks": 5,
+      "modifiers": {
+        "damage_mul": 1.15
+      },
+      "note": "形态组登记（H50）：影，进攻向"
+    },
+    {
+      "id": "form_mist",
+      "name": "雾形态",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "formGroup": "assassin_form",
+      "nextPhase": "form_blood",
+      "cycleTicks": 5,
+      "modifiers": {
+        "damage_taken_mul": 0.85
+      },
+      "note": "形态组登记（H50）：雾，规避向"
+    },
+    {
+      "id": "form_blood",
+      "name": "血形态",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "formGroup": "assassin_form",
+      "nextPhase": "form_shadow",
+      "cycleTicks": 5,
+      "modifiers": {
+        "drainHealBonus": 2
+      },
+      "note": "形态组登记（H50）：血，续航向；drainHealBonus 沿用药师月相先例"
+    }
+  ]
+}
