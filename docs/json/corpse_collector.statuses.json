@@ -1,0 +1,616 @@
+{
+  "statusDefs": [
+    {
+      "id": "corpse_nature",
+      "name": "尸体特质",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:poison",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:ice",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "modifiers": {
+        "damage_taken_mul": {
+          "value": 0.7,
+          "filter": {
+            "sourceUnitType": [
+              "UNDEAD"
+            ]
+          },
+          "note": "避免亡灵袭击 = 对 UNDEAD 来源伤害减免（H4 filter 来源维度）"
+        }
+      }
+    },
+    {
+      "id": "spirit_sight",
+      "name": "天然灵视",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "seeThroughStealth": true,
+        "damage_mul": {
+          "value": 1.3,
+          "filter": {
+            "unitType": [
+              "SPIRIT"
+            ]
+          },
+          "note": "原著限定「部分恶灵」：只给 SPIRIT，不给 UNDEAD"
+        }
+      },
+      "note": "与不眠者【通灵之眼】同源同族（H42），建议并入同一 StatusDef；本条为序列9 档引用副本"
+    },
+    {
+      "id": "spirit_warning",
+      "name": "游灵示警",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "charges": 1,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "modify_damage",
+              "scope": "taken",
+              "mul": 0.6,
+              "target": "self",
+              "note": "该次伤害 x0.6：灵的预警替你挡下半数力道（modify_damage scope:taken 扩展原语）"
+            }
+          ],
+          "consumeCharge": true
+        }
+      ],
+      "note": "H3 参数化减伤母版（C6 charges）"
+    },
+    {
+      "id": "kin_of_spirits",
+      "name": "灵之同类",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_taken_mul": {
+          "value": 0.7,
+          "filter": {
+            "sourceUnitType": [
+              "SPIRIT",
+              "UNDEAD"
+            ]
+          },
+          "note": "「危险性低」是对方对你的危险感知低，必须按来源类型过滤，不是通用减伤"
+        },
+        "targetPriorityLowest": {
+          "filter": {
+            "sourceUnitType": [
+              "SPIRIT",
+              "UNDEAD"
+            ]
+          },
+          "note": "候选池加权分支（status:<id>:asc 排序键族，2026-09-04 拍板）；嘲讽/守护仍可覆盖"
+        }
+      }
+    },
+    {
+      "id": "rite_of_death",
+      "name": "死亡仪式",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 3,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "note": "H42 常驻母版；仅对 UNDEAD 单位挂载（targetSpec filter.unitType）"
+    },
+    {
+      "id": "word_of_the_dead",
+      "name": "亡者之语",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "outgoingDamageParams": {
+          "pierce": [
+            "armor"
+          ],
+          "note": "ignore_armor：armor 是唯一一层「血肉保护」（H16 整层跳过）"
+        }
+      },
+      "note": "「驱使乃至奴役」另立主动卡【驱使亡者】，本条只承载「绕过血肉保护」"
+    },
+    {
+      "id": "puppet_string",
+      "name": "提线木偶",
+      "category": [
+        "retarget",
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "modifiers": {
+        "targetOverride": {
+          "op": "target_override",
+          "anchor": "index_asc_same_faction",
+          "note": "H12 target_override 族；优先于嘲讽/守护"
+        }
+      },
+      "note": "F9 已登记；权威定义见状态表，此处为引用副本",
+      "crossPathway": true,
+      "participants": [
+        "apprentice",
+        "assassin",
+        "corpse_collector",
+        "fool",
+        "prisoner",
+        "sleepless",
+        "thief",
+        "warrior"
+      ]
+    },
+    {
+      "id": "countersuit",
+      "name": "反噬",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "charges": 1,
+      "modifiers": {
+        "targetOverride": {
+          "op": "target_override",
+          "anchor": "first_empty",
+          "note": "F19 → H12；下一次攻击强制打其阵营首位"
+        }
+      },
+      "note": "F19 已登记；权威定义见状态表，此处为引用副本"
+    },
+    {
+      "id": "blood_chill",
+      "name": "血液冻僵",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "gaugeRateMul": 0.8,
+        "heal_received_mul": 0.7
+      },
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 1,
+              "target": "self",
+              "note": "生命力流逝"
+            }
+          ]
+        }
+      ],
+      "note": "H24 减速族 + H21 heal_received_mul（与 F20 petrify 同型）"
+    },
+    {
+      "id": "underworld_cage",
+      "name": "小型冥界",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "triggers": [
+        {
+          "event": "on_death",
+          "global": true,
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "underworld_cage",
+              "stacks": 1,
+              "stackMode": "add",
+              "target": "self",
+              "note": "任意单位（敌我不限）死亡时魂数 +1；全局第三方监听（执行参数 §2.1）"
+            }
+          ]
+        }
+      ],
+      "note": "H11 计数型容器（F51 stacks + F48 consume 读写）；上限可被【亡者之王】覆写为 6"
+    },
+    {
+      "id": "flesh_immortal",
+      "name": "肉体不灭",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_cap": {
+          "ratio": 0.3,
+          "base": "hp_max",
+          "note": "除非完全摧毁：单次结算伤害截断至 30% 最大生命（编队参数 §1.1b 死亡结算行，截断非免死）"
+        }
+      },
+      "note": "退化方案：damage_taken_mul ×0.85 通用减伤"
+    },
+    {
+      "id": "undead_haste",
+      "name": "亡者疾行",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": 2,
+          "target": "self"
+        }
+      ]
+    },
+    {
+      "id": "enslave",
+      "name": "奴役",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": null,
+      "maxStacks": 1,
+      "stackPolicy": "stack",
+      "note": "枢纽状态（ddd §1.4 + §九.1 裁定）：归属 收尸人；耕种者『恶灵化·改』读取。按 §九.1，undead/spirit 走类型标签，而『被奴役』属关系语义故挂 StatusDef。超度=删 tags.undead + 清本状态 + 施加 revive_blocked。",
+      "crossPathway": true,
+      "participants": [
+        "corpse_collector",
+        "planter"
+      ]
+    },
+    {
+      "id": "doomed",
+      "name": "死亡印记",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": false,
+      "duration": 8,
+      "modifiers": {
+        "heal_received_mul": 0.5,
+        "damage_taken_mul": 1.15
+      },
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "note": "H2 参数化复合 debuff；「几乎不可逆」= dispelable:false，仅【右手触碰】按 statusId 精确解除（锁钥设计）"
+    },
+    {
+      "id": "ferryman_shroud",
+      "name": "摆渡人之躯",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "dot_cannot_kill": true,
+        "damage_taken_mul": {
+          "value": 0.6,
+          "filter": {
+            "element": [
+              "poison",
+              "ice"
+            ]
+          },
+          "note": "「净化外大部分攻击无效」折为死亡系元素减免（位格碾压不搬，brief §11）"
+        }
+      },
+      "note": "dot_cannot_kill（编队参数 §1.1b，trigger: dot 分支，与 lethal_protect 共用插桩）"
+    },
+    {
+      "id": "lifeless",
+      "name": "生命力剥夺",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "heal_received_mul": 0
+      },
+      "note": "生命被剥夺，补不回来（H21 支持 0）"
+    },
+    {
+      "id": "revive_blocked",
+      "name": "复活着禁",
+      "category": [
+        "seal"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "revive_blocked": true
+      },
+      "note": "与不眠者 eternal_sleep、愚者命运锚点同源同一母版（编队参数 §1.1b）；此处为引用副本"
+    },
+    {
+      "id": "death_sentence",
+      "name": "死亡宣告",
+      "category": [
+        "seal",
+        "debuff"
+      ],
+      "dispelable": false,
+      "duration": 2,
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "self",
+                "cmp": "<=",
+                "n": 0.4
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 0,
+                  "lethal": true,
+                  "note": "execute"
+                }
+              ],
+              "else": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 8
+                }
+              ]
+            }
+          ],
+          "note": "duration 到期 fire on_remove（执行参数 §2.1）；2 tick 为对手留的交互窗口"
+        }
+      ]
+    },
+    {
+      "id": "withered",
+      "name": "凋零",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "damage_mul": 0.8
+      },
+      "statMods": {
+        "attack": -3
+      },
+      "note": "H42 + H4 召唤物增益族"
+    },
+    {
+      "id": "spirit_sovereign",
+      "name": "灵之主宰",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_mul": {
+          "value": 1.5,
+          "filter": {
+            "unitType": [
+              "SPIRIT",
+              "UNDEAD"
+            ]
+          },
+          "note": "使其死去"
+        },
+        "damage_taken_mul": {
+          "value": 0.7,
+          "filter": {
+            "sourceUnitType": [
+              "SPIRIT",
+              "UNDEAD"
+            ]
+          },
+          "note": "压制；与灵之同类①同源同值，H42 同向取最高不叠乘"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_battle_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "target_unit_type",
+                "type": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ],
+                "side": "enemy"
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "puppet_string",
+                  "duration": 6,
+                  "note": "奴役：敌方 atk_desc 破平的 1 个 SPIRIT/UNDEAD（F9 + C7，G15-b 取 6t）"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "note": "与不眠者【灵体灵性权柄】同源同 ID 族；本条为序列1 档引用副本（权威定义见状态表）"
+    },
+    {
+      "id": "journeys_end",
+      "name": "一切的归宿",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_mul": [
+          {
+            "value": 1.6,
+            "filter": {
+              "targetHpPercentLe": 0.25
+            }
+          },
+          {
+            "value": 1.3,
+            "filter": {
+              "targetHpPercentLe": 0.5
+            }
+          }
+        ],
+        "note": "H4 {filter, dynamic} 条件乘区（按目标血量过滤），同向取最高不叠乘"
+      },
+      "triggers": [
+        {
+          "event": "on_kill",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "revive_blocked",
+              "duration": null,
+              "target": "target",
+              "note": "回不来"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "undead_authority",
+      "name": "亡灵权柄",
+      "category": [
+        "buff",
+        "aura"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_taken_mul": {
+          "value": 0.85,
+          "filter": {
+            "unitType": [
+              "UNDEAD"
+            ],
+            "casterOwned": true
+          }
+        },
+        "onDealDamageBonus": {
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 1
+            }
+          ],
+          "note": "死亡气息：走 F54 companionBuff 携带 on_deal_damage 附加段"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_death",
+          "global": true,
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "target_unit_type",
+                "type": [
+                  "UNDEAD"
+                ]
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "underworld_cage",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "ignoreMaxStacks": true,
+                  "target": "self",
+                  "note": "权柄级豁免：不计原上限（3/6）"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
