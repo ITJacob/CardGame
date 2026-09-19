@@ -1,0 +1,655 @@
+{
+  "statusDefs": [
+    {
+      "id": "keen_eye",
+      "name": "卓越观察",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "detectConceal": true,
+        "damage_mul": {
+          "value": 1.25,
+          "filter": {
+            "anyOf": [
+              {
+                "hasCategory": [
+                  "buff"
+                ]
+              },
+              {
+                "hasStatus": [
+                  "shield"
+                ]
+              }
+            ]
+          },
+          "note": "\"携带 ≥1 个 buff 或 shield\"判定；anyOf 组合子待内核确认（与 F52 同族）"
+        }
+      },
+      "note": "识破分支依赖 C8（已落 ddd：共享内核 §四）"
+    },
+    {
+      "id": "misdirect",
+      "name": "思维误导",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "charges": 1,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "first_empty"
+          }
+        ]
+      },
+      "note": "C7 已端到端验证 + C6 charges:1（只被骗一次）；duration 受【魅力口才】+1 加成"
+    },
+    {
+      "id": "micro_read",
+      "name": "微表情",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "charges": 3,
+      "modifiers": {
+        "damage_taken_mul": 0.75
+      },
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "$self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "charges - 1（C6 响应式派发消耗）"
+            }
+          ]
+        }
+      ],
+      "note": "并入 H3 参数化减伤母版（编队参数 §2.4）；与愚者【直觉预感】同源"
+    },
+    {
+      "id": "silver_tongue",
+      "name": "魅力口才",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "durationModifier": {
+          "scope": "outgoing",
+          "mode": "add",
+          "value": 1,
+          "filter": {
+            "category": [
+              "debuff",
+              "control"
+            ]
+          }
+        }
+      },
+      "note": "H14 durationModifier 行（本稿新增项 8，已落 ddd：编队参数 §1.1b）；退化方案：技能数据写死 +1 tick"
+    },
+    {
+      "id": "disillusioned",
+      "name": "被识破",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "concealInvalidForCaster": true
+      },
+      "note": "该单位身上的隐匿/潜行类状态对施法者无效（C8 识破分支）"
+    },
+    {
+      "id": "locator",
+      "name": "找出方位",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "ignoreFrontline": true,
+        "ignoreGuardIntercept": true,
+        "seeConceal": true
+      },
+      "note": "依赖 C8 候选池过滤（已落 ddd：共享内核 §四）；「无视前排」若引擎为硬编码需另开入口，待确认"
+    },
+    {
+      "id": "spirit_intuition",
+      "name": "灵性直觉",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "charges": 2,
+      "modifiers": {
+        "damage_taken_mul": 0.6
+      },
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "$self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "charges - 1"
+            }
+          ]
+        }
+      ],
+      "note": "H3 参数化减伤母版；与【微表情】分层：浅而多 ×0.75×3 / 深而少 ×0.6×2"
+    },
+    {
+      "id": "stolen_ability",
+      "name": "盗火",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "charges": 1,
+      "slots": {
+        "element": "$target.mainElement"
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "$recorded.element",
+              "value": 3,
+              "note": "下一次攻击取目标主元素并追加伤害；H33 状态数据槽读取语法"
+            }
+          ]
+        }
+      ],
+      "note": "退化方案：数据槽不落地时退化为固定 damage(mental, 3)"
+    },
+    {
+      "id": "framed",
+      "name": "栽赃",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "target": "self",
+              "note": "贴身的东西在咬它"
+            }
+          ]
+        },
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "target": "self",
+              "note": "终于被发现了"
+            }
+          ]
+        }
+      ],
+      "note": "category 声明为 buff（伪装增益），敌方的 dispel(category:['debuff']) 清不掉它；category 与效果解耦为纯数据声明（本稿新增项 9，已落 ddd）"
+    },
+    {
+      "id": "stupor",
+      "name": "呆滞",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": -6,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        },
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 2,
+          "target": "self"
+        }
+      ]
+    },
+    {
+      "id": "divine_mask",
+      "name": "伪装·盗天机",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "charges": 1,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        },
+        "damage_mul": {
+          "value": 1.5,
+          "charges": 1,
+          "note": "下一次造成伤害 ×1.5（出手就露馅）"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "divine_mask"
+              },
+              "note": "出手即暴露：自动移除自身伪装"
+            }
+          ]
+        }
+      ],
+      "note": "并入 H5 潜行母版（编队参数 §2.4）；duration 受【魅力口才】+1 加成"
+    },
+    {
+      "id": "deep_parasitized",
+      "name": "深度寄生",
+      "category": [
+        "debuff",
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "phases": [
+        {
+          "name": "初步寄生",
+          "ticks": [
+            1,
+            3
+          ],
+          "triggers": [
+            {
+              "event": "on_tick",
+              "effects": [
+                {
+                  "type": "drain",
+                  "resource": "hp",
+                  "value": 2,
+                  "target": "self",
+                  "note": "宿主 → 施法者（F56 casterId 寻址）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "全面控制",
+          "ticks": [
+            4,
+            6
+          ],
+          "modifiers": {
+            "behaviorModifiers": [
+              {
+                "op": "target_override",
+                "anchor": "self_faction_hp_desc",
+                "note": "宿主的攻击转向它自己的同伴（H12 target_override 族）"
+              }
+            ]
+          }
+        }
+      ],
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "duration": 6,
+          "target": "self"
+        }
+      ],
+      "note": "F2 扩展为两阶段（H50 formGroup/phases，已落 ddd：编队参数 §1.1b）；退化方案：parasitized(3t) → on_remove → puppeteered(2t) 两状态串联",
+      "crossPathway": true,
+      "participants": [
+        "supplicant",
+        "thief",
+        "fool"
+      ]
+    },
+    {
+      "id": "host_shelter",
+      "name": "宿主遮蔽",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "modifiers": {
+        "damage_taken_mul": 0.85
+      },
+      "note": "寄生期间施法者受到的伤害 ×0.85（借助宿主隐藏）"
+    },
+    {
+      "id": "host_body",
+      "name": "借宿",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "charges": 2,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "condition": {
+            "kind": "hp_percent",
+            "side": "self",
+            "cmp": "<",
+            "n": 0.3
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "$self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "charges - 1"
+            }
+          ],
+          "transfer": {
+            "ratio": 0.6,
+            "direction": "to_third",
+            "targetAnchor": "self_faction_hp_desc",
+            "exclude": "self",
+            "note": "该次伤害的 60% 转嫁给己方 HP 最高的其他友军（H28 伤害转嫁母版，与 F5 pain_link 同机制两向）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "rule_deceived",
+      "name": "规则被欺诈",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "suppress": [
+        "buff"
+      ],
+      "note": "只压制生效、不移除实例、到期自动恢复（suppress 已落 ddd：编队参数 §1.1b）；分阶段建议：先只作用于 shield，验证后放开全部 buff"
+    },
+    {
+      "id": "deceit_master",
+      "name": "欺瞒导师",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "outgoingDispelOverride": {
+          "filter": {
+            "category": [
+              "control",
+              "debuff"
+            ]
+          },
+          "dispelable": false
+        }
+      },
+      "note": "运行时覆写 dispelable（H8，已落 ddd：编队参数 §1.1b，与愚者新增项 9 同源）"
+    },
+    {
+      "id": "unfortuned",
+      "name": "无运者",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "modifiers": {
+        "damage_taken_mul": 1.15,
+        "buffBlocked": true
+      },
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 1,
+              "target": "self",
+              "note": "渐死：生命流失"
+            }
+          ]
+        }
+      ],
+      "note": "H2 参数化复合 debuff + H38 buffBlocked（已落 ddd）"
+    },
+    {
+      "id": "stolen_identity",
+      "name": "顶替",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "damage_taken_mul": 0.9,
+        "damage_mul": {
+          "value": 1.2,
+          "filter": {
+            "recordedTargetOnly": true
+          }
+        }
+      },
+      "note": "\"对该目标伤害 ×1.2\"需状态记录目标引用（F56 casterId 同族寻址）"
+    },
+    {
+      "id": "fate_gap",
+      "name": "命运缝隙",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_mul": {
+          "value": 1.3,
+          "filter": {
+            "gaugeAbove": 70
+          }
+        }
+      },
+      "note": "gauge_above 谓词（已落 ddd：共享内核参数 §三，本稿新增项 7）",
+      "crossPathway": true,
+      "participants": [
+        "assassin",
+        "fool",
+        "monster",
+        "pryer",
+        "thief"
+      ]
+    },
+    {
+      "id": "stolen_time",
+      "name": "偷来的时间",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "energy_regen",
+          "value": 0.2,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        }
+      ]
+    },
+    {
+      "id": "aged",
+      "name": "衰老",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "modifiers": {
+        "heal_received_mul": 0.7
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -2,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": -4,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 1,
+              "target": "self",
+              "note": "生命流失；衰老不属于七元素"
+            }
+          ]
+        }
+      ],
+      "note": "H2 复合 debuff + H21 heal_received_mul（已落 ddd）"
+    },
+    {
+      "id": "identity_confused",
+      "name": "分身与本体混淆",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "modifiers": {
+        "targetPriorityToSummons": {
+          "unitId": "unit_doppelganger",
+          "scope": "single",
+          "note": "敌方单体技能在候选池中优先选中施法者的分身（H12 锚点 <分身>，已落 ddd）"
+        },
+        "damage_taken_mul": {
+          "value": 0.9,
+          "condition": {
+            "kind": "field_status_count",
+            "id": "unit_doppelganger_alive",
+            "cmp": ">=",
+            "n": 1
+          },
+          "note": "只要场上仍有分身存活，自身受伤 ×0.9"
+        }
+      }
+    },
+    {
+      "id": "error",
+      "name": "错误",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "charges": 2,
+      "modifiers": {
+        "damage_taken_mul": 0,
+        "note": "H3 乘区 = 0 档：该次伤害完全无效（制造漏洞回避攻击）"
+      },
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "valueFrom": {
+                "kind": "lastEffectReturn",
+                "ratio": 0.4
+              },
+              "target": "attacker",
+              "note": "以假代真：被免疫的伤害值的 40% 反噬攻击者（F61 attacker 寻址）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "$self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "note": "完全免疫 N 次伤害 + 被免疫值传出（H3×C6 + valueFrom lastEffectReturn，已落 ddd）"
+    },
+    {
+      "id": "authority_lost",
+      "name": "权柄失落",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "buffBlocked": true
+      },
+      "note": "H38 buffBlocked（已落 ddd：编队参数 §1.1b）"
+    }
+  ]
+}
