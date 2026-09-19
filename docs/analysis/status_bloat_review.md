@@ -127,3 +127,28 @@
 - 纯增伤（16）/ 纯属性（23）/ 纯混乱（16）：抽 `common.amplify` / `common.stat_mod` / `common.confuse`。
 - 纯免疫（5→拆 debuff/control 两词）/ 纯减速（3）/ 潜行变体（2）/ 禁复活已做。
 - 拼凑体（A 类）：逐判拆多状态挂载。
+
+## 七、targetOverride 修饰键表达统一（2026-09-19 续）
+
+上一轮收尾遗留「4 个混淆态（targetOverride 两 schema 表达）待统一」。
+
+### 7.1 两种表达
+- 表达 A（无 `op`）：apprentice 的 `闪光`/`escape_act`/`star_mark` — `{anchor, note}`。
+- 表达 B（带 `op`）：corpse_collector `反噬`、fool `提线木偶` — `{op:"target_override", anchor, note}`。
+
+### 7.2 判定
+- schema 中 statusDef 修饰键 `targetOverride` 定义为 `{"type":"object"}`，并不识别 `op`。
+- `op` 是控制流算子层（opSequence/opRepeat/opIf）的专用判别字段；全库其他修饰键（immune / untargetableByTargeted / damage_taken_mul 等）均不带 `op`。
+- 无脚本读取 `targetOverride.op`。
+- → 表达 B 的 `op:"target_override"` 是从旧式 `behaviorModifiers:[{op:'target_override'}]` 迁移时的残留冗余字段。
+
+### 7.3 动作
+- 以表达 A 为 canonical，删除 corpse_collector.反噬 与 fool.提线木偶 内的 `op` 字段（共 2 处）。
+- 全库 5 处 statusDef 修饰键 `targetOverride` 现表达一致（均仅 `{anchor, note[，charges]}`）。
+- 注：skills.json 中另有 7 处 `variant.targetOverride`（卡牌变体目标阵营覆盖，字段为 faction/scope），属不同 schema 节点、不同语义，本身不带 `op`，无需改动。
+
+### 7.4 降格评估（结论：不降格）
+5 个状态机制上并非纯换皮：anchor 不同（first_empty vs index_asc_same_faction）、star_mark 另带 `damage_taken_mul`、category/duration/charges 各异；且 `targetOverride` 修饰键已通过 `anchor` 字段参数化，无额外公共词可抽。故仅做表达统一，不做降格。
+
+### 7.5 Gate
+- validate_schema 22 文件 0 错 0 警；validate.py 829 卡 0 错 0 警；check_enum_sync 全一致。
