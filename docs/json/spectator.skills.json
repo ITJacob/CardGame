@@ -54,20 +54,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "insight",
-          "name": "心象",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 5,
-          "stackPolicy": "stack",
-          "note": "计数型状态（H11 + F51），本身不提供任何属性，只作消耗品；洞察权柄可扩至 7 层。与 F1 inscription（学徒·默记）同源母版"
-        }
-      ],
       "tentative": true,
       "frameworkFlags": [
         {
@@ -268,27 +254,6 @@
           "statusId": "aura_sight",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "aura_sight",
-          "name": "气场感知",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "pierceConceal": true,
-            "damage_mul": {
-              "value": 1.25,
-              "filter": {
-                "targetConcealed": true
-              }
-            }
-          },
-          "note": "共享内核参数 §四 识破分支：忽略隐匿/不可选中 + 对隐匿目标伤害乘区；与凡有言必被知 / 洞察权柄构成三级反隐匿链（本条最廉价）"
         }
       ],
       "sharedAcross": [
@@ -579,40 +544,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "psych_invisibility",
-          "name": "心理学隐身",
-          "category": [
-            "conceal"
-          ],
-          "dispelable": true,
-          "duration": 2,
-          "modifiers": {
-            "untargetableByTargeted": {
-              "direction": "inbound",
-              "scope": "single"
-            }
-          },
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "dispel",
-                  "dispelTarget": "unit",
-                  "filter": {
-                    "statusId": "psych_invisibility"
-                  },
-                  "target": "self",
-                  "note": "出手即暴露（区别于 stealth 的受击破除）"
-                }
-              ]
-            }
-          ],
-          "note": "H5 潜行母版 + C8（共享内核 §四），与 F11 stealth / F4 shadow_veil 同源"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：心理学隐身=认知层漏掉，破除条件是主动出手。依赖 H5 + C8。数值 ⚠️D。"
     },
@@ -657,36 +588,6 @@
               "value": 2
             }
           ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "subconscious_edit",
-          "name": "潜意识篡改",
-          "category": [
-            "control",
-            "retarget"
-          ],
-          "dispelable": true,
-          "duration": 5,
-          "modifiers": {
-            "behaviorModifiers": [
-              {
-                "op": "target_override",
-                "anchor": "self_faction_hp_desc",
-                "tiebreak": "index_asc",
-                "priority": 15,
-                "note": "优先于嘲讽/守护（守护 priority 10）；改写为其同阵营 hp_desc 单位"
-              }
-            ]
-          },
-          "triggers": [
-            {
-              "event": "on_attack",
-              "note": "G15-b：走「单位发动攻击」即时节点，duration 5t 只是存续上限而非触发窗口"
-            }
-          ],
-          "note": "H12 target_override 族（锚点 <阵营hp_desc>）；与 F9 puppet_string / F15 charm 同源母版（F 组合并候选 3），语义差异：改敌我认定（认知）而非物理牵引"
         }
       ],
       "tentative": true,
@@ -811,34 +712,6 @@
           "duration": 4
         }
       ],
-      "statusDefs": [
-        {
-          "id": "dream_edit",
-          "name": "梦境修改",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "maxStacks": 3,
-          "stackPolicy": "stack",
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "mental",
-                  "value": 1,
-                  "target": "self",
-                  "note": "每层每 tick 1 伤"
-                }
-              ]
-            }
-          ],
-          "note": "H11 叠层 + F51 stacks；重复挂载叠层并刷新 duration。与 F16 whisper 同源，建议并入参数化复合 debuff 母版（F 组合并候选 4）"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：\"日积月累\"=叠层 debuff。与【狂乱】天作之合。依赖新项叠层 + F51。数值 ⚠️D。"
     },
@@ -885,24 +758,6 @@
               "target": "self"
             }
           ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "dream_phase",
-          "name": "梦境虚化",
-          "category": [
-            "conceal"
-          ],
-          "dispelable": true,
-          "duration": 2,
-          "modifiers": {
-            "untargetableByTargeted": {
-              "direction": "inbound",
-              "scope": "single"
-            }
-          },
-          "note": "C8 候选池过滤（§四），与 psych_invisibility 同一底层（H5 潜行母版）"
         }
       ],
       "tentative": true,
@@ -986,26 +841,6 @@
           "statusId": "virtual_persona",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "virtual_persona",
-          "name": "虚拟人格",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "charges": 3,
-          "modifiers": {
-            "immune": {
-              "categories": [
-                "control"
-              ]
-            }
-          },
-          "note": "G12 immune（StatusCategory[] 含 control）+ C6/H3 次数型：每次抵挡消耗 1 层，归零卸载。原著 13 人格，机制层数 3 为占位 ⚠️D（若标定接近 13 则改回）"
         }
       ],
       "tentative": true,
@@ -1162,45 +997,6 @@
           "duration": 4
         }
       ],
-      "statusDefs": [
-        {
-          "id": "mind_plague",
-          "name": "精神瘟疫",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "contagious": true,
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "mental",
-                  "value": 2,
-                  "target": "self"
-                }
-              ]
-            },
-            {
-              "event": "on_death",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "mind_plague",
-                  "duration": 4,
-                  "contagious": false,
-                  "target": "target",
-                  "note": "向相邻同阵营单位挂载二级实例（adjacent_allies，只传一代）；目标锚点 = 死者相邻同阵营"
-                }
-              ]
-            }
-          ],
-          "note": "H2 复合 debuff（contagious/spread）+ 新 targetSpec adjacent_allies；与 F6/F12/F16/F18 同源，「传染」为特有条款保留"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：\"瘟疫\"=传染。只传一代避免指数爆。依赖新项传染。数值 ⚠️D（优先标定）。"
     },
@@ -1235,45 +1031,6 @@
           "statusId": "dragon_form",
           "duration": 4,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "dragon_form",
-          "name": "龙化",
-          "category": [
-            "buff",
-            "stance"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 3,
-              "mode": "delta",
-              "duration": 4,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "armor",
-              "value": 5,
-              "mode": "delta",
-              "duration": 4,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "gauge.rate",
-              "value": 8,
-              "mode": "delta",
-              "duration": 4,
-              "target": "self"
-            }
-          ],
-          "note": "H10 参数化变身母版（含 armor 档位，F10 beast_form 需扩参）；与 F10 同源"
         }
       ],
       "tentative": true,
@@ -1371,29 +1128,6 @@
               ]
             }
           ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "drawn_in",
-          "name": "拉入梦境",
-          "category": [
-            "control",
-            "seal"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "modifiers": {
-            "disable": [
-              "attack",
-              "skill"
-            ],
-            "untargetableByTargeted": {
-              "direction": "both",
-              "scope": "all"
-            }
-          },
-          "note": "不能行动（复用眩晕语义）+ 双向不可选中（共享内核 §四 direction:both，己方也选不中，等于暂时移出战斗）"
         }
       ],
       "tentative": true,
@@ -1674,28 +1408,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "bewildered",
-          "name": "迷梦",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "charges": 1,
-          "modifiers": {
-            "behaviorModifiers": [
-              {
-                "op": "target_override",
-                "anchor": "first_empty",
-                "note": "走错方向，打空（C7 已验证）"
-              }
-            ]
-          },
-          "note": "复用 C7 target_override → first_empty + C6 charges；无新机制"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：\"迷宫\"=找不到路（拖条）+走错方向（打空）。复用 C7+C6。数值 ⚠️D。"
     },
@@ -1762,43 +1474,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "insight_authority",
-          "name": "洞察权柄",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "maxStacksOverride": {
-              "insight": 7
-            },
-            "damage_mul": [
-              {
-                "dynamic": {
-                  "perStackOf": "insight",
-                  "value": 0.03,
-                  "filter": {
-                    "element": [
-                      "mental"
-                    ]
-                  }
-                }
-              },
-              {
-                "value": 1.2,
-                "filter": {
-                  "targetHpPercentBelow": 0.5
-                },
-                "note": "「洞悉恐惧」：对 HP < 50% 目标伤害 ×1.2（hp_percent 谓词维度）"
-              }
-            ]
-          },
-          "note": "H4 dynamic：按另一状态层数给伤害乘区（每层 +3% ⚠️D）已落；退化方案为固定 mental ×1.2。同向乘区取最高不叠乘（H42）"
-        }
-      ],
       "sharedAcross": [
         "reader"
       ],
@@ -1836,51 +1511,6 @@
           "statusId": "dragon_true_form",
           "duration": 5,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "dragon_true_form",
-          "name": "巨龙",
-          "category": [
-            "buff",
-            "stance"
-          ],
-          "dispelable": true,
-          "duration": 5,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 6,
-              "mode": "delta",
-              "duration": 5,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "armor",
-              "value": 10,
-              "mode": "delta",
-              "duration": 5,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "gauge.rate",
-              "value": 8,
-              "mode": "delta",
-              "duration": 5,
-              "target": "self"
-            }
-          ],
-          "modifiers": {
-            "outgoingDamageParams": {
-              "spread": "splash_adjacent",
-              "splashRatio": 0.5
-            }
-          },
-          "note": "空想轴三级龙链第三级（龙鳞→龙化→巨龙）；spread splash_adjacent（共享内核 §一）"
         }
       ],
       "tentative": true,
@@ -1925,59 +1555,6 @@
           "statusId": "written_truth",
           "duration": 3,
           "note": "载荷为变体档数据（编目 B6 同族），不进引擎"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "written_truth",
-          "name": "书写成真",
-          "category": [
-            "seal"
-          ],
-          "dispelable": false,
-          "duration": 3,
-          "triggers": [
-            {
-              "event": "on_remove",
-              "reasonFilter": [
-                "expired"
-              ],
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "stun",
-                  "duration": 3,
-                  "condition": {
-                    "kind": "variant_is",
-                    "id": "sleep"
-                  },
-                  "note": "到期执行已记录载荷：变体·沉睡档（三选一在获得时写入状态数据槽）"
-                },
-                {
-                  "type": "damage",
-                  "element": "mental",
-                  "value": 12,
-                  "condition": {
-                    "kind": "variant_is",
-                    "id": "finale"
-                  },
-                  "note": "到期执行已记录载荷：变体·终章档"
-                },
-                {
-                  "type": "heal",
-                  "value": 12,
-                  "target": "target",
-                  "condition": {
-                    "kind": "variant_is",
-                    "id": "recovery"
-                  },
-                  "note": "到期执行已记录载荷：变体·痊愈档（目标为打写时锁定的友军）"
-                }
-              ],
-              "note": "dispelable:false → on_remove 只有「自然到期」一个出口（H29 reason 过滤）"
-            }
-          ],
-          "note": "延迟强制生效模式（本稿新增项 10，✅）：on_remove(expired) 而非 on_tick 计数，不新增计时机制"
         }
       ],
       "variants": [
@@ -2089,42 +1666,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "all_spoken_known",
-          "name": "凡有言必被知",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "pierceConceal": true,
-            "damage_mul": {
-              "value": 1.3,
-              "filter": {
-                "targetConcealed": true
-              }
-            }
-          },
-          "triggers": [
-            {
-              "event": "on_take_damage",
-              "effects": [
-                {
-                  "type": "modify_resource",
-                  "resource": "energy",
-                  "value": 1,
-                  "mode": "delta",
-                  "target": "self",
-                  "note": "它一出手，你就读到了它"
-                }
-              ]
-            }
-          ],
-          "note": "识破分支（共享内核 §四）+ 标准能量回流；与气场感知同族三级链（本条为最高级）"
-        }
-      ],
       "sharedAcross": [
         "reader"
       ],
@@ -2176,52 +1717,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "declared_fate",
-          "name": "宣告未来",
-          "category": [
-            "seal"
-          ],
-          "dispelable": false,
-          "duration": 4,
-          "triggers": [
-            {
-              "event": "on_remove",
-              "reasonFilter": [
-                "expired"
-              ],
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "mental",
-                  "value": 8,
-                  "target": "all_enemies"
-                }
-              ],
-              "note": "与书写成真共用「延迟强制生效」底层（本稿新增项 10）"
-            }
-          ]
-        },
-        {
-          "id": "fortify",
-          "name": "预兆守护",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "modifiers": {
-            "damage_taken_mul": 0.9
-          },
-          "note": "稿面仅给名字 fortify 未给数值效果，0.9 为占位解释（⚠️），待 D 组标定",
-          "crossPathway": true,
-          "participants": [
-            "spectator",
-            "reader"
-          ]
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：【书写成真】权柄级放大：单体→群体+友军先获守护。终局牌。数值 ⚠️D（最高风险数值项）。"
     },
@@ -2244,39 +1739,6 @@
           "statusId": "lord_of_mind",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "lord_of_mind",
-          "name": "心灵权柄",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": {
-              "value": 1.25,
-              "filter": {
-                "targetHasCategory": [
-                  "control"
-                ],
-                "element": [
-                  "mental"
-                ]
-              }
-            },
-            "dispelableOverride": {
-              "scope": "outgoing",
-              "categories": [
-                "control"
-              ],
-              "value": false,
-              "note": "H8 运行时覆写：后续由你挂载的 control 类状态覆写为 dispelable:false（subconscious_edit/眩晕/沉默/drawn_in）"
-            }
-          },
-          "note": "与愚者途径 v0.2 新增项 9 同源（H8），建议并入同一母版"
         }
       ],
       "tentative": true,
