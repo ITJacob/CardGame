@@ -1,0 +1,271 @@
+{
+  "statusDefs": [
+    {
+      "id": "scale_veil",
+      "name": "幻鳞",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "moveImmune": true,
+        "damage_taken_mul": 0.9
+      },
+      "note": "moveImmune 走 H27（与愚者新增项 6 同源并入）；减伤部分建议并入参数化减伤状态母版（F 组合并候选 2）"
+    },
+    {
+      "id": "elusive_wake",
+      "name": "水影",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "charges": 1,
+      "modifiers": {
+        "damage_taken_mul": 0.5
+      },
+      "note": "C6 charges:1 = 一次性闪避"
+    },
+    {
+      "id": "rage",
+      "name": "愤怒",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 5,
+      "stackPolicy": "stack",
+      "statPerStack": {
+        "attack": 1,
+        "gauge.rate": 2
+      },
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "rage",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self",
+              "note": "越挨打越强，达上限不再增"
+            }
+          ]
+        }
+      ],
+      "note": "H34 statPerStack + F51 stacks（本稿新增项 1）；INV-S5 合规（改 gauge.rate 源属性）。退化方案：满 5 层挂 frenzy（attack +3 / gauge.rate +8，duration 3）"
+    },
+    {
+      "id": "navigator_intuition",
+      "name": "天文地理直觉",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "gaugeReductionImmune": true
+      },
+      "note": "H31（与愚者新增项 10 命运锚点同源并入）"
+    },
+    {
+      "id": "glide",
+      "name": "滑翔",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "charges": 1,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "target": "self",
+              "note": "借风脱离：退到己方半场最后位，G8 合规"
+            }
+          ],
+          "note": "每次响应对应 charges -1；刻意做整场有限次数以规避 G15"
+        }
+      ]
+    },
+    {
+      "id": "submerged",
+      "name": "深潜",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": null,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "submerged"
+              },
+              "note": "一出手就暴露（先手伏击而非永久免伤）"
+            }
+          ]
+        }
+      ],
+      "note": "H5 潜行母版（与 F4 shadow_veil / F11 stealth 同源，F 组合并候选 1）；与战士水银化 submerged 同名同族，权威定义建议归并状态表，此处为引用副本"
+    },
+    {
+      "id": "drowning",
+      "name": "溺沉",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "note": "复用 F13 已登记定义（本途径 v0.1 已登记，连环闪电导电联动的载体）；权威定义见状态表，此处为引用副本"
+    },
+    {
+      "id": "flying",
+      "name": "飞行",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "damage_taken_mul": 0.85,
+        "moveImmune": true
+      },
+      "note": "H3 + H27；与 F10 beast_form 同属变身/形态族，建议并入参数化变身母版"
+    },
+    {
+      "id": "emc_disorder",
+      "name": "电磁紊乱",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "energy_regen",
+          "value": -0.2,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "note": "序列2「电磁紊乱」并入本卡附加条款，不单独立项"
+    },
+    {
+      "id": "dread",
+      "name": "恐惧",
+      "category": [
+        "fear",
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "stackPolicy": "refresh",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -3,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "modifiers": {
+        "damage_mul": 0.8,
+        "excludeCasterTargeting": true
+      },
+      "note": "与 taunt 方向相反（都不敢打施法者）；refresh duration 不叠层防乘区指数化；「无法以施法者为目标」走 C8 §四 排除分支（可选增强）"
+    },
+    {
+      "id": "light_form",
+      "name": "光之化身",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:physical",
+          "value": 0.3,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:lightning",
+          "value": 0.3,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": -0.1,
+          "mode": "delta",
+          "duration": null,
+          "target": "self",
+          "note": "平衡代价：能量体更易被精神与灵性伤害"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 8,
+          "mode": "delta",
+          "duration": null,
+          "target": "self",
+          "note": "接近光速飞行"
+        }
+      ]
+    },
+    {
+      "id": "tyrant_dread",
+      "name": "暴君之威",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "dread",
+              "duration": 2,
+              "note": "恐惧：刷新不叠层"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
