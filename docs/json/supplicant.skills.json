@@ -157,76 +157,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "listener",
-          "name": "倾听",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "energy_regen",
-              "value": 0.4,
-              "mode": "delta",
-              "duration": null,
-              "target": "self",
-              "note": "强大"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "hp_max",
-              "value": -8,
-              "mode": "delta",
-              "duration": null,
-              "target": "self",
-              "note": "扭曲（理智被侵蚀）；hp_max 削减即时截断且不回补"
-            }
-          ],
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "madness",
-                  "stacks": 1,
-                  "stackMode": "add",
-                  "target": "self",
-                  "condition": {
-                    "kind": "chance",
-                    "p": 0.25
-                  },
-                  "note": "隐藏的疯子：概率只用于非伤害维度（R5），单次抽样（R4）"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "madness",
-          "name": "疯癫",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": null,
-          "maxStacks": 5,
-          "stackPolicy": "stack",
-          "modifiers": {
-            "damage_taken_mul": {
-              "dynamic": "1 + 0.06 * stacks"
-            }
-          },
-          "statPerStack": {
-            "gauge.rate": -5
-          },
-          "note": "gauge_rate ×(1−0.05n) 以 statPerStack(gauge.rate, -5) 近似表达；H2 叠层族（与 F8 mind_taint / F16 whisper 同族，建议并入参数化复合 debuff 母版）"
-        }
-      ],
       "tentative": true,
       "frameworkFlags": [
         {
@@ -355,23 +285,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "twisted_power",
-          "name": "扭曲之力",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": {
-              "dynamic": "1 + 0.08 * min(madness.stacks, 5)"
-            }
-          },
-          "note": "H4 dynamic 条件动态乘区（按其它状态层数取值，已落）；与【倾听】构成疯癫闭环"
-        }
-      ],
       "tentative": true,
       "conversionNotes": [
         "pay_hp 归一为 modify_resource(hp,-3,delta,self)；源稿不走伤害链语义以 note 标记，silent 标志待内核裁定",
@@ -409,55 +322,6 @@
           "statusId": "shadow_dwell",
           "duration": 3,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "shadow_dwell",
-          "name": "藏入阴影",
-          "category": [
-            "conceal"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "modifiers": {
-            "untargetableByTargeted": {
-              "direction": "inbound",
-              "scope": "single"
-            },
-            "damage_taken_mul": 0.85
-          },
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "dispel",
-                  "target": "self",
-                  "dispelTarget": "unit",
-                  "filter": {
-                    "statusId": "shadow_dwell"
-                  },
-                  "note": "出手即现形"
-                }
-              ]
-            },
-            {
-              "event": "on_take_damage",
-              "effects": [
-                {
-                  "type": "dispel",
-                  "target": "self",
-                  "dispelTarget": "unit",
-                  "filter": {
-                    "statusId": "shadow_dwell"
-                  },
-                  "note": "挨打即现形"
-                }
-              ]
-            }
-          ],
-          "note": "H5 潜行母版（与 F4 shadow_veil / F11 stealth 同一机制，建议并入统一潜行母版）；不做位移（G8 禁止越中线）"
         }
       ],
       "sharedAcross": [
@@ -566,31 +430,6 @@
           "statusId": "flesh_corrode",
           "duration": 3,
           "target": "target"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "flesh_corrode",
-          "name": "血肉腐蚀",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "poison",
-                  "value": 2,
-                  "target": "self"
-                }
-              ]
-            }
-          ],
-          "note": "序列7「阴影诅咒」与序列6「血肉诅咒」语义重合合为一张；H2 复合 debuff 母版（与 F6/F12/F13/F16/F18 同族）；元素取 poison 与 burn（火）/ whisper（精神）区分"
         }
       ],
       "sharedAcross": [
@@ -790,21 +629,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "flesh_cloak",
-          "name": "血肉披风",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "modifiers": {
-            "damage_taken_mul": 0.85
-          },
-          "note": "H3 参数化减伤母版（与 C3 glibness / F22 sanctuary / F4 shadow_veil 同族）；比 shield 更贴「披风」持续吸伤语义，且不吃禁获护盾克制"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：持续吸伤比 shield 更贴\"披风\"。依赖新增项 12。⚠️D。"
     },
@@ -853,33 +677,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "flesh_bomb",
-          "name": "血肉炸弹",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 2,
-          "triggers": [
-            {
-              "event": "on_remove",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "physical",
-                  "value": 3,
-                  "spread": "splash_adjacent",
-                  "target": "self",
-                  "note": "到期或被驱散均爆炸（拆弹须付代价，刻意设计）"
-                }
-              ]
-            }
-          ],
-          "note": "延时用 duration + on_remove 表达，不引入新原语"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：植入+延时爆炸（on_remove，被驱散也炸）。依赖新增项 15。⚠️D。"
     },
@@ -915,49 +712,6 @@
           "statusId": "parasitized",
           "duration": 4,
           "target": "target"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "parasitized",
-          "name": "寄生",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "drain",
-                  "resource": "hp",
-                  "ratio": 1,
-                  "value": 2,
-                  "target": "self",
-                  "note": "宿主每 tick 被吸取 2 点生命给施法者（F56 施法者引用）"
-                }
-              ]
-            }
-          ],
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": -1,
-              "mode": "delta",
-              "duration": 4,
-              "target": "self"
-            }
-          ],
-          "note": "直接复用 F2 parasitized 的最小副本；权威定义见 F2 登记（偷盗者序列4「寄生者」同源机制），此处参数照稿面；退化方案：施法者 on_tick heal(2) + 宿主 atk -1，丢掉吸取方向性",
-          "crossPathway": true,
-          "participants": [
-            "supplicant",
-            "thief",
-            "fool"
-          ]
         }
       ],
       "tentative": true,
@@ -1060,81 +814,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "flesh_hunger",
-          "name": "血肉饥渴",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "hp_max",
-              "value": -5,
-              "mode": "delta",
-              "duration": null,
-              "target": "self",
-              "note": "持续消耗的代价"
-            }
-          ],
-          "triggers": [
-            {
-              "event": "on_kill",
-              "effects": [
-                {
-                  "type": "heal",
-                  "value": 3,
-                  "target": "self"
-                },
-                {
-                  "type": "mount_status",
-                  "statusId": "flesh_stock",
-                  "stacks": 1,
-                  "stackMode": "add",
-                  "target": "self",
-                  "note": "血肉储备，供【血肉不灭】当复活燃料"
-                }
-              ]
-            },
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "dispel",
-                  "target": "self",
-                  "dispelTarget": "unit",
-                  "filter": {
-                    "category": [
-                      "debuff"
-                    ],
-                    "count": 1
-                  },
-                  "condition": {
-                    "kind": "chance",
-                    "p": 0.3
-                  },
-                  "note": "深层掌控细胞：自行排出毒素（R5：驱散属非伤害维度）"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "flesh_stock",
-          "name": "血肉储备",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 5,
-          "stackPolicy": "stack",
-          "note": "H11 计数叠层（与 F1 inscription 同型共用计数型母版）；消耗走 F48 status.consume"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：消耗+补充+细胞掌控三语义落地。依赖新增项 4/11。⚠️D。"
     },
@@ -1225,54 +904,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "grazed_soul",
-          "name": "被放牧的灵魂",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 7,
-          "stackPolicy": "stack",
-          "slots": {
-            "unitDef": "被吞单位逐层记录（H33），供驱使 / 眷属按模板召唤（备选方案）"
-          },
-          "note": "H11 计数叠层 + F48 status.consume 扣层；maxStacks 由【灵魂牧场】/【三首形态】阶梯覆盖（7/9/13/18/22）；备选方案：按记录 unitDef 元素 / 攻击类型生成对应召唤物",
-          "crossPathway": true,
-          "participants": [
-            "spectator",
-            "chanter",
-            "reader",
-            "sailor",
-            "supplicant"
-          ]
-        },
-        {
-          "id": "grazing_slot",
-          "name": "放牧槽",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 7,
-          "stackPolicy": "stack",
-          "slots": {
-            "soul": "存储『任意途径灵魂 → 其能力引用』的动态槽（ddd §七.1），供混沌海五途径互读 / 外部经放牧接口借能"
-          },
-          "note": "枢纽状态（ddd §七.1）：混沌海五途径内部互读；外部借能（观众放牧·借能、水手放牧·借雷）。放牧释放的灵魂可被收尸人『净化』反制。",
-          "crossPathway": true,
-          "participants": [
-            "spectator",
-            "chanter",
-            "reader",
-            "sailor",
-            "supplicant"
-          ]
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：**混沌海签名机制的写入端**：吃掉灵魂入 `放牧` 槽（enabler）。原著\"使用其三种能力\"落为三条属性维度（力量/厚度/灵动）稳定落地；灵魂本体记在 `grazed_soul` 层数，供【驱使灵魂】外放（payoff）。依赖新增项 1/9。⚠️D。"
     },
@@ -1295,35 +926,6 @@
           "statusId": "soul_paddock",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "soul_paddock",
-          "name": "灵魂牧场",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "stackCapOverride": {
-              "statusId": "grazed_soul",
-              "maxStacks": 7
-            }
-          },
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "hp_max",
-              "value": 1,
-              "mode": "delta",
-              "duration": null,
-              "target": "self",
-              "valueFrom": "statusStacks:grazed_soul",
-              "note": "每层 grazed_soul → 自身 hp_max +1"
-            }
-          ]
         }
       ],
       "upgradeLadder": {
@@ -1488,47 +1090,6 @@
           "target": "target"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "shadow_bind",
-          "name": "阴影束缚",
-          "category": [
-            "control",
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "modifiers": {
-            "moveImmune": true
-          },
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "gauge.rate",
-              "value": 0.8,
-              "mode": "mul",
-              "duration": 3,
-              "target": "self",
-              "note": "压扁：改 gauge.rate 源属性，不碰派生行动周期（INV-S5 合规）"
-            }
-          ],
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "physical",
-                  "value": 1,
-                  "target": "self",
-                  "note": "腐蚀"
-                }
-              ]
-            }
-          ],
-          "note": "与 F7 shackle（禁位移 + gauge_rate ×0.7）机制重合，直接参数化填参（H24+H27，新增项 16 已落），不新立状态"
-        }
-      ],
       "tentative": true,
       "frameworkFlags": [
         {
@@ -1558,33 +1119,6 @@
           "statusId": "black_armor",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "black_armor",
-          "name": "黑甲",
-          "category": [
-            "buff",
-            "stance"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_taken_mul": 0.85,
-            "moveImmune": true
-          },
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "hp_max",
-              "value": 8,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
-            }
-          ],
-          "note": "常驻形态而非一次性变身；moveImmune 与 F7 shackle 禁位移同字段正反两面（H27，已落）"
         }
       ],
       "tentative": true,
@@ -1675,19 +1209,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "soul_annihilated",
-          "name": "灵魂泯灭",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "reviveBlocked": true,
-          "note": "单位级标记：无法以任何方式复活（H23 复活优先级链，与愚者【命运锚点】新增项 11 同源母版，已落）"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：三动词一比一。泯灭灵魂=稳定斩草除根。依赖新增项 6。⚠️D。"
     },
@@ -1740,18 +1261,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "defile",
-          "name": "玷污",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "note": "F12 已登记状态的最小副本（🟡）；权威定义见通用状态表 F12 登记，此处仅引用参数槽位"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：群体覆盖+概率挂 defile（F12）。⚠️D。依赖新增项 17。"
     },
@@ -1774,27 +1283,6 @@
           "statusId": "three_headed",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "three_headed",
-          "name": "三首形态",
-          "category": [
-            "buff",
-            "stance"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "stackCapOverride": {
-              "statusId": "grazed_soul",
-              "maxStacks": 13
-            },
-            "summonCapOverride": 3,
-            "damage_taken_mul": 0.85
-          },
-          "note": "与【灵魂牧场】阶梯 III 同组数字，两卡共存取较大值"
         }
       ],
       "tentative": true,
@@ -1834,59 +1322,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "shadow_double",
-          "name": "阴影替身",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 5,
-          "charges": 1,
-          "triggers": [
-            {
-              "event": "on_take_damage",
-              "effects": [
-                {
-                  "type": "modify_stat",
-                  "stat": "defense",
-                  "value": 0,
-                  "mode": "set",
-                  "duration": 0,
-                  "target": "self",
-                  "note": "该次伤害 ×0（替身承受）的表达锚点：以伤害链截断载荷承载，待内核裁定精确写法"
-                },
-                {
-                  "type": "move",
-                  "op": "push_back",
-                  "distance": 99,
-                  "target": "self",
-                  "note": "本体退回己方半场队尾（G8 合规）"
-                },
-                {
-                  "type": "dispel",
-                  "target": "self",
-                  "dispelTarget": "unit",
-                  "filter": {
-                    "statusId": "shadow_double"
-                  },
-                  "note": "消耗 1 层（C6）"
-                }
-              ]
-            }
-          ],
-          "note": "G15-b：触发点 on_take_damage 事件驱动不受 duration 尺度影响；duration 5 按覆盖 1 个自身回合取保守值",
-          "crossPathway": true,
-          "participants": [
-            "assassin",
-            "fool",
-            "lawyer",
-            "supplicant",
-            "prisoner"
-          ]
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：一次完全免伤+后撤。G15-b 合规。⚠️D。"
     },
@@ -1909,56 +1344,6 @@
           "statusId": "flesh_undying",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "flesh_undying",
-          "name": "血肉不灭",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "triggers": [
-            {
-              "event": "on_death",
-              "effects": [
-                {
-                  "op": "if",
-                  "condition": {
-                    "kind": "has_status",
-                    "side": "self",
-                    "id": "flesh_stock",
-                    "cmp": ">=",
-                    "n": 2
-                  },
-                  "then": [
-                    {
-                      "op": "sequence",
-                      "steps": [
-                        {
-                          "type": "mount_status",
-                          "statusId": "flesh_stock",
-                          "stacks": -2,
-                          "stackMode": "consume"
-                        },
-                        {
-                          "type": "heal",
-                          "value": 20,
-                          "mode": "to_ratio",
-                          "target": "self",
-                          "note": "lethal_protect：阻止死亡并回复至 20% 最大生命（H7，已落）"
-                        }
-                      ]
-                    }
-                  ],
-                  "else": []
-                }
-              ]
-            }
-          ],
-          "note": "「+ 血肉补充」是复活前提：flesh_stock 由【补充血肉】击杀产出，没攒够就死透"
         }
       ],
       "tentative": true,
@@ -1997,46 +1382,6 @@
           "duration": 6,
           "charges": 1,
           "target": "target"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "word_spirit",
-          "name": "言灵",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 6,
-          "charges": 1,
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "op": "sequence",
-                  "steps": [
-                    {
-                      "type": "damage",
-                      "element": "mental",
-                      "value": 4,
-                      "target": "self",
-                      "note": "目标自身受 4 点精神伤害（它的回答成了刀）"
-                    },
-                    {
-                      "type": "modify_resource",
-                      "resource": "energy",
-                      "value": 2,
-                      "mode": "delta",
-                      "target": "caster",
-                      "note": "收益结算归施法者（F56 施法者引用，已落）"
-                    }
-                  ]
-                }
-              ],
-              "note": "只等一次回答（charges 1，C6）；退化方案：去掉回能段"
-            }
-          ]
         }
       ],
       "tentative": true,
@@ -2084,46 +1429,6 @@
               "target": "target"
             }
           ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "falling",
-          "name": "堕落中",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "mental",
-                  "value": 1,
-                  "target": "self"
-                }
-              ]
-            },
-            {
-              "event": "on_remove",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "defile",
-                  "duration": 3,
-                  "target": "self",
-                  "note": "堕落完成：到期转为 defile（F12）"
-                }
-              ]
-            }
-          ],
-          "note": "H2 + on_remove 挂载载荷判例（heal_received_mul 与 F20 petrify 同源）；「精神上的灵肉之刃」走 mental 元素",
-          "modifiers": {
-            "heal_received_mul": 0.5
-          }
         }
       ],
       "tentative": true,
@@ -2313,39 +1618,6 @@
           "target": "all_enemies"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "wasting",
-          "name": "生命流逝",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "none",
-                  "value": 2,
-                  "target": "self",
-                  "note": "element: none 规避抗性维度，正合「流逝」不可抵抗"
-                },
-                {
-                  "type": "mount_status",
-                  "statusId": "madness",
-                  "stacks": 1,
-                  "stackMode": "add",
-                  "target": "self",
-                  "note": "疯狂加强：与本途径疯癫体系打通"
-                }
-              ]
-            }
-          ]
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：生命流逝(无属性)+给敌叠 madness（与本途径疯癫体系打通）。依赖新增项 10/17。⚠️D。"
     },
@@ -2368,41 +1640,6 @@
           "statusId": "shadow_sovereign",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "shadow_sovereign",
-          "name": "阴影统治者",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": {
-              "value": 1.3,
-              "condition": {
-                "kind": "caster_status_exists",
-                "id": "shadow_dwell"
-              },
-              "note": "处于 shadow_dwell / stealth / shadow_veil 时（H4 dynamic 按自身状态取值，已落）"
-            },
-            "allySummonAttackBonus": {
-              "stat": "attack",
-              "value": 2,
-              "filter": {
-                "tags": [
-                  "shadow",
-                  "spirit"
-                ],
-                "isSummon": true,
-                "side": "ally"
-              },
-              "note": "覆盖 unit_shadow_spawn / unit_grazed_wraith / unit_flesh_servant / unit_fallen_kin / unit_abomination"
-            }
-          },
-          "note": "阴影轴与牧魂轴的汇合点；按 tags 筛选己方单位已落（编队参数 §1.2b + filter.tags）"
         }
       ],
       "tentative": true,
@@ -2594,29 +1831,6 @@
           "statusId": "scapegoat",
           "duration": 4,
           "target": "target"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "scapegoat",
-          "name": "替罪",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "modifiers": {
-            "damageRedirect": {
-              "ratio": 1.0,
-              "direction": "to_caster",
-              "note": "该友军受到的伤害转嫁给施法者（H28 direction，与刺客 F5 pain_link 反方向同源母版，已落）；不占 damage_taken_mul 乘区"
-            },
-            "lethalRedirect": {
-              "to": "caster",
-              "note": "致死判定改由施法者承担，可触发施法者自身 lethal_protect（如血肉不灭）"
-            }
-          },
-          "note": "状态挂在友军身上、方向为目标→施法者（F56 施法者引用，已落）；退化方案：去掉 lethal_redirect 只做伤害转嫁"
         }
       ],
       "sharedAcross": [
