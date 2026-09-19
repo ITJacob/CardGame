@@ -104,41 +104,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "dark_sight",
-          "name": "夜视",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "seeThroughStealth": true,
-            "note": "C8 识破分支：敌方 concealed/shadow_veil/stealth 类状态对本单位无效（共享内核参数 §四 + H5）"
-          },
-          "triggers": [
-            {
-              "event": "on_take_damage",
-              "condition": {
-                "kind": "has_category",
-                "side": "attacker",
-                "categories": [
-                  "conceal"
-                ]
-              },
-              "effects": [
-                {
-                  "type": "modify_damage",
-                  "scope": "taken",
-                  "mul": 0.75,
-                  "note": "反伏击减伤：攻击者处于隐匿类状态时该次伤害 ×0.75（扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
-                }
-              ]
-            }
-          ]
-        }
-      ],
       "sharedAcross": [
         "corpse_collector"
       ],
@@ -166,30 +131,6 @@
           "stackMode": "add",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "nightfall",
-          "name": "夜色",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 5,
-          "stackPolicy": "stack",
-          "statPerStack": {
-            "attack": 1,
-            "gauge.rate": 2,
-            "energy_regen": 0.04
-          },
-          "note": "H34 statPerStack 按层数线性修正；'越黑暗越强'的主判据（守夜人体质 / 黑暗仆人·不灭 读取本状态层数） ｜ 枢纽状态（ddd §1.4）：归属 不眠者；药师『黑暗凝视·改』读取。",
-          "crossPathway": true,
-          "participants": [
-            "sleepless",
-            "apothecary"
-          ]
         }
       ],
       "tentative": true,
@@ -283,22 +224,6 @@
           "duration": 3
         }
       ],
-      "statusDefs": [
-        {
-          "id": "daze",
-          "name": "恍惚",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "modifiers": {
-            "damage_mul": 0.8,
-            "gaugeRateMul": 0.9
-          },
-          "note": "H24 减速族 × H4 乘区；退化方案：modify_stat(attack, -2, duration:3)"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：诗篇三分支之一（敌人恍惚）。⚠️D。"
     },
@@ -388,34 +313,6 @@
           "duration": 2
         }
       ],
-      "statusDefs": [
-        {
-          "id": "dread",
-          "name": "恐惧",
-          "category": [
-            "fear",
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "modifiers": {
-            "damage_mul": 0.8,
-            "excludeCasterTargeting": true
-          },
-          "note": "与水手 v0.2 新增项 3 同名同参，复用同一 StatusDef；恐惧链三级复用（惊惧诗/恐惧灵光/恐惧权柄）",
-          "stackPolicy": "refresh",
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": -3,
-              "mode": "delta",
-              "duration": 3,
-              "target": "self"
-            }
-          ]
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：恐惧链最下环（惊惧诗→恐惧灵光→恐惧权柄），同状态 `dread` 三级复用。⚠️D。"
     },
@@ -455,22 +352,6 @@
           "type": "mount_status",
           "statusId": "slumber",
           "duration": 4
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "slumber",
-          "name": "沉眠",
-          "category": [
-            "control"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "modifiers": {
-            "disable": "all",
-            "damage_taken_mul": 1.2
-          },
-          "note": "与「眩晕」同构（disable 全部四行为）+ H4 受伤乘区；睡眠族扩展：被延长走 H14 durationModifier、被永眠改写走 H32 transferStatus"
         }
       ],
       "tentative": true,
@@ -551,31 +432,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "nightmare_torment",
-          "name": "梦魇折磨",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "mental",
-                  "value": 2,
-                  "target": "self"
-                }
-              ]
-            }
-          ],
-          "note": "击溃精神；挂载时把宿主 slumber duration 刷新至 4（H14 durationModifier 口径）"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：读 `灵梦` 二次操作（payoff）。⚠️D。"
     },
@@ -598,37 +454,6 @@
           "statusId": "dream_walker",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "dream_walker",
-          "name": "梦境行者",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "ignoreRangeRestriction": {
-              "condition": {
-                "kind": "has_status",
-                "side": "target",
-                "id": "slumber",
-                "cmp": ">=",
-                "n": 1
-              },
-              "note": "对处于 slumber 的敌方单位施放技能时忽略 reach/前排限制；落点 = 执行参数 §一 EffectRef.params.ignore_redirect（律师「踏月」判例）"
-            },
-            "durationModifier": {
-              "scope": "outgoing",
-              "mode": "add",
-              "value": 1,
-              "filter": {
-                "statusId": "slumber"
-              }
-            }
-          }
         }
       ],
       "tentative": true,
@@ -755,25 +580,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "pacified",
-          "name": "安宁",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "modifiers": {
-            "damage_mul": 0.75,
-            "buffBlocked": true
-          },
-          "statMods": {
-            "attack": -2
-          },
-          "note": "H38 buffBlocked 禁止获得增益；质变分支由卡面 If 覆写 duration 为 8"
-        }
-      ],
       "sharedAcross": [
         "corpse_collector"
       ],
@@ -799,30 +605,6 @@
           "statusId": "spirit_sight",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "spirit_sight",
-          "name": "天然灵视",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "seeThroughStealth": true,
-            "damage_mul": {
-              "value": 1.3,
-              "filter": {
-                "unitType": [
-                  "SPIRIT"
-                ]
-              },
-              "note": "原著限定「部分恶灵」：只给 SPIRIT，不给 UNDEAD"
-            }
-          },
-          "note": "与不眠者【通灵之眼】同源同族（H42），建议并入同一 StatusDef；本条为序列9 档引用副本"
         }
       ],
       "sharedAcross": [
@@ -913,21 +695,6 @@
           "duration": null,
           "target": "self",
           "note": "实际走 spawn.companionBuff（F54）挂给自身 spawn 出的灵，此处为语义简写"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "split_mind_cap",
-          "name": "一心多用·驱使",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "summon_cap": 2
-          },
-          "note": "summon_cap 是 UnitDef/运行时参数（H39 编队参数 §1.1b），以状态 modifiers 承载对持有者召唤位上限的修正；由归一自 modify_stat(stat: summon_cap) 改写"
         }
       ],
       "sharedAcross": [
@@ -1051,72 +818,6 @@
               ]
             }
           ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "night_empower",
-          "name": "暗夜加持",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 2,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 3,
-              "mode": "delta",
-              "duration": 2,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": 2,
-              "mode": "delta",
-              "duration": 2,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "resist:mental",
-              "value": 10,
-              "mode": "delta",
-              "duration": 2,
-              "target": "self"
-            }
-          ],
-          "note": "刷新不叠层（maxStacks 1）"
-        },
-        {
-          "id": "sunlight_weakness",
-          "name": "天光未散",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 2,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": -2,
-              "mode": "delta",
-              "duration": 2,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": -1,
-              "mode": "delta",
-              "duration": 2,
-              "target": "self"
-            }
-          ],
-          "note": "正午阳光下被削弱 = 夜色未起时的攻防减值，零新机制"
         }
       ],
       "tentative": true,
@@ -1339,22 +1040,6 @@
           "duration": 3
         }
       ],
-      "statusDefs": [
-        {
-          "id": "shackle",
-          "name": "枷锁",
-          "category": [
-            "control"
-          ],
-          "dispelable": true,
-          "duration": 2,
-          "modifiers": {
-            "moveImmune": true,
-            "gaugeRateMul": 0.7
-          },
-          "note": "F7 已登记定义（H24 减速族）；权威定义见状态表，此处为引用副本"
-        }
-      ],
       "sharedAcross": [
         "corpse_collector"
       ],
@@ -1392,50 +1077,6 @@
           "type": "mount_status",
           "statusId": "bad_omen",
           "duration": 4
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "bad_omen",
-          "name": "恶兆",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "maxStacks": 1,
-          "modifiers": {
-            "gaugeRateMul": 0.85
-          },
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "modify_resource",
-                  "resource": "gauge.current",
-                  "value": -2,
-                  "mode": "delta",
-                  "target": "self",
-                  "note": "行动条持续倒退"
-                }
-              ]
-            },
-            {
-              "event": "on_take_damage",
-              "effects": [
-                {
-                  "type": "modify_damage",
-                  "scope": "taken",
-                  "mul": 1.25,
-                  "note": "首次受创加重（charges 型一次性，C6；扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
-                }
-              ],
-              "consumeCharge": true
-            }
-          ],
-          "charges": 1,
-          "note": "零概率的确定性厄运：慢半拍 + 倒退 + 一次性加重；刷新不叠层（maxStacks 1）"
         }
       ],
       "tentative": true,
@@ -1477,59 +1118,6 @@
           "type": "mount_status",
           "statusId": "dark_corrosion",
           "duration": 3
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "dark_corrosion",
-          "name": "黑暗侵蚀",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "modifiers": {
-            "heal_received_mul": 0.7
-          },
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "dark",
-                  "value": 2,
-                  "target": "self",
-                  "note": "消融"
-                }
-              ]
-            },
-            {
-              "event": "on_death",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "eternal_sleep",
-                  "duration": null,
-                  "target": "self",
-                  "note": "死于消融 = 不可复活"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "eternal_sleep",
-          "name": "永眠",
-          "category": [
-            "seal"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "revive_blocked": true
-          },
-          "note": "revive_blocked（编队参数 §1.1b 死亡结算行）；与收尸人【完全的死亡】/愚者【命运锚点】同源同一母版"
         }
       ],
       "tentative": true,
@@ -1671,20 +1259,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "dream_depth",
-          "name": "梦陷",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": null,
-          "maxStacks": 3,
-          "stackPolicy": "stack",
-          "note": "H11 计数型 + H2 stackThreshold；满 3 层由卡面效果转 slumber 并 consume(3)"
-        }
-      ],
       "zoneDef": {
         "id": "zone_nightmare_world",
         "kind": "hazard",
@@ -1744,41 +1318,6 @@
           "target": "target"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "stealth",
-          "name": "潜行",
-          "category": [
-            "conceal"
-          ],
-          "dispelable": true,
-          "duration": 2,
-          "modifiers": {
-            "untargetableByTargeted": {
-              "direction": "inbound",
-              "scope": "single"
-            }
-          },
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "dispel",
-                  "target": "self",
-                  "dispelTarget": "unit",
-                  "filter": {
-                    "statusId": "stealth",
-                    "count": 1
-                  },
-                  "note": "on_deal_damage 自动破除"
-                }
-              ]
-            }
-          ],
-          "note": "H5 潜行母版 + C8（F4 shadow_veil / F11 stealth 同源）；权威定义见状态表，此处为引用副本｜2026-09-18 与 apothecary 隐身药水统一签名：def duration 3→2（各挂载点显式指定 duration，def 默认不生效）"
-        }
-      ],
       "sharedAcross": [
         "corpse_collector"
       ],
@@ -1829,39 +1368,6 @@
           "type": "mount_status",
           "statusId": "occult_seal",
           "duration": 4
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "occult_seal",
-          "name": "隐秘封印",
-          "category": [
-            "seal",
-            "control"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "modifiers": {
-            "disable": "all",
-            "gaugeRateMul": 0,
-            "untargetableByTargeted": {
-              "direction": "both",
-              "note": "共享内核参数 §四 direction: both——连友军的治疗/增益也选不中"
-            }
-          },
-          "note": "封印不免疫伤害：已挂载 dot 正常结算",
-          "crossPathway": true,
-          "participants": [
-            "apprentice",
-            "corpse_collector",
-            "criminal",
-            "fool",
-            "prisoner",
-            "sleepless",
-            "supplicant",
-            "thief",
-            "warrior"
-          ]
         }
       ],
       "tentative": true,
@@ -1963,40 +1469,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "traceless",
-          "name": "无迹之影",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "dispelableOverride": {
-              "categories": [
-                "conceal"
-              ],
-              "dispelable": false,
-              "note": "H8 运行时覆写 dispelable（与愚者新增项 9 同源同落点）"
-            }
-          },
-          "triggers": [
-            {
-              "event": "on_take_damage",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "stealth",
-                  "duration": 2,
-                  "target": "self",
-                  "note": "受击后痕迹被抹去，重新隐去"
-                }
-              ]
-            }
-          ]
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：隐秘轴受击即隐循环。⚠️D。"
     },
@@ -2093,42 +1565,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "dark_vassal",
-          "name": "黑暗仆人",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "charges": 3,
-          "triggers": [
-            {
-              "event": "on_death",
-              "condition": {
-                "kind": "has_status",
-                "side": "self",
-                "id": "nightfall",
-                "cmp": ">=",
-                "n": 3
-              },
-              "effects": [
-                {
-                  "type": "heal",
-                  "value": 0.3,
-                  "mode": "hpMaxRatio",
-                  "target": "self",
-                  "note": "lethalProtect 中断死亡保留 1 血（H7）+ 回复 30% 最大生命"
-                }
-              ],
-              "consumeCharge": true,
-              "note": "主判据 nightfall ≥3；黑夜领域在场为备选判据（zone_active domain_night_realm）"
-            }
-          ],
-          "note": "序列1 与序列0 描述合并立项；与 eternal_sleep 对冲已由编队上下文 §十 裁定：revive_blocked > lethal_protect"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：暗夜轴终极回报（读 `夜幕` 条件）。⚠️D。"
     },
@@ -2206,37 +1642,6 @@
               ],
               "else": []
             }
-          ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "puppet_string",
-          "name": "提线木偶",
-          "category": [
-            "retarget",
-            "control"
-          ],
-          "dispelable": true,
-          "duration": 6,
-          "modifiers": {
-            "targetOverride": {
-              "op": "target_override",
-              "anchor": "index_asc_same_faction",
-              "note": "H12 target_override 族；优先于嘲讽/守护"
-            }
-          },
-          "note": "F9 已登记（C7 同落）；权威定义见状态表，此处为引用副本",
-          "crossPathway": true,
-          "participants": [
-            "apprentice",
-            "assassin",
-            "corpse_collector",
-            "fool",
-            "prisoner",
-            "sleepless",
-            "thief",
-            "warrior"
           ]
         }
       ],
@@ -2323,75 +1728,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "conceal_authority",
-          "name": "隐秘权柄",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "stealth",
-                  "duration": null,
-                  "target": "self",
-                  "note": "隐藏痕迹：自身常驻 concealed"
-                },
-                {
-                  "type": "mount_status",
-                  "statusId": "stealth",
-                  "duration": null,
-                  "target": "all_allies",
-                  "note": "己方全部召唤物常驻 concealed（filter isSummon，实现侧细化）"
-                }
-              ]
-            },
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "dispel",
-                  "target": "self",
-                  "dispelTarget": "unit",
-                  "filter": {
-                    "statusId": "stealth",
-                    "count": 1
-                  },
-                  "note": "自身造成伤害后破除"
-                }
-              ]
-            }
-          ],
-          "modifiers": {
-            "dispelableOverride": {
-              "categories": [
-                "conceal"
-              ],
-              "dispelable": false,
-              "note": "将任何事物变隐秘：己方 concealed 不可驱散（H8，与无迹之影同源）"
-            }
-          },
-          "note": "破除后 2 tick 由 on_tick 触发器重新挂载",
-          "crossPathway": true,
-          "participants": [
-            "apprentice",
-            "corpse_collector",
-            "criminal",
-            "fool",
-            "prisoner",
-            "sleepless",
-            "supplicant",
-            "thief",
-            "warrior"
-          ]
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：隐秘轴终极形态：整队长期不可选中 + 持续推隐秘值。⚠️D。",
       "dimHooks": [
@@ -2429,43 +1765,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "dread_authority",
-          "name": "恐惧权柄",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": {
-              "value": 1.3,
-              "filter": {
-                "targetHasStatus": [
-                  "slumber",
-                  "dread",
-                  "pacified"
-                ]
-              },
-              "note": "按目标状态过滤的施加方伤害乘区（H4 {filter, dynamic}，新增项 19 同族）"
-            }
-          },
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "dread",
-                  "duration": 2,
-                  "note": "刷新不叠层（dread maxStacks 1）"
-                }
-              ]
-            }
-          ]
-        }
-      ],
       "tentative": true
     },
     {
@@ -2487,52 +1786,6 @@
           "statusId": "spirit_authority",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "spirit_authority",
-          "name": "灵体灵性权柄",
-          "category": [
-            "buff",
-            "aura"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": {
-              "value": 1.3,
-              "filter": {
-                "unitType": [
-                  "SPIRIT",
-                  "UNDEAD"
-                ]
-              }
-            },
-            "damage_taken_mul": {
-              "value": 0.85,
-              "filter": {
-                "sourceUnitType": [
-                  "SPIRIT",
-                  "UNDEAD"
-                ]
-              },
-              "note": "按来源类型过滤的受伤乘区（H4 filter caster 维度）"
-            },
-            "immune": {
-              "categories": [
-                "control"
-              ],
-              "filter": {
-                "unitType": [
-                  "SPIRIT",
-                  "UNDEAD"
-                ]
-              },
-              "note": "己方灵体与亡灵免疫 control 类状态（G12 immune 字段 + filter.unitType 限定；由归一自 modify_stat(stat: control_immunity) 改写，语义不变）"
-            }
-          },
-          "note": "收尸人【灵之主宰】与本条共用 spirit_sovereign 族（H42 同向取最高不叠乘）"
         }
       ],
       "sharedAcross": [
