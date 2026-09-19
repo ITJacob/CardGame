@@ -152,3 +152,23 @@
 
 ### 7.5 Gate
 - validate_schema 22 文件 0 错 0 警；validate.py 829 卡 0 错 0 警；check_enum_sync 全一致。
+
+## 八、拼凑体设计评审（2026-09-19 续）
+
+对 §二.A 标记的 6 个「机制元素 ≥4」状态逐一判读，回答原假设「是否为互不依赖的独立机制乱拼、应拆分」。
+
+| 状态 | 途径 | 机制构成 | 判读 |
+|---|---|---|---|
+| demonize 恶魔化 | criminal | 5×modify_stat(攻/血上限/甲/行动率 + 代价 精神抗−15) + trigger 命中附毒 | 统一「恶魔化形态」母版（与 beast_form 同母版）；5 属性是同一变身膨胀，mental−15 是有意代价段，附毒是 flavor。KEEP |
+| werewolf_form 狼人化 | prisoner | 2×modify_stat + 2×trigger(附毒/自愈) + lineageStack | beast_form 母版复用，变身形态。KEEP（报告已注 legit 复合主题） |
+| object_possession 附身物体 | prisoner | modify_stat(物抗+40) + modifiers(不可选/禁施法) + trigger(命中精神伤) | 统一「物体化」形态：不可选+自废施法换生存+命中怨毒。note 明言不可合并。KEEP |
+| shadow_dwell 藏入阴影 | supplicant | modifiers(不可选+受伤减伤 0.85) + 2×trigger(出手/挨打现形) | 潜行母版变体（conceal + 减伤 + 双向现形）；主题统一。KEEP（其 note 自建议并入 unify 潜行母版，属降格轨道，非拆分） |
+| flesh_hunger 血肉饥渴 | supplicant | modify_stat(血上限−5 代价) + 2×trigger(击杀回血攒储备/定期排毒) | 统一「嗜血肉体」：代价+续航+自净三段一体。KEEP |
+| conceal_authority 隐秘权柄 | sleepless | modifiers(隐匿不可驱散) + 2×trigger(常驻隐匿己+召唤物 / 出手破除) | crossPathway 枢纽权柄：隐藏+不可驱散+出手破。主题统一。KEEP |
+
+### 8.1 结论
+6 个状态**均为主题统一的复合形态/权柄**，机制元素多是因为「丰富主题状态天然捆绑多条 effect/trigger/modifier」，并非「互不依赖的独立机制乱拼」。§二.A 的拆分假设（demonize 之类应拆多状态）经判读**不成立**。
+
+- → 全部 KEEP，不做拆分。
+- → 用户原担忧「简易拼凑」对纯换皮簇（B1 / C 各同构簇）成立，已在批次 1–5 降格收口；对这 6 个具体标记态不成立。
+- → 唯一可跟进项：shadow_dwell 自注「建议并入统一潜行母版」，属 conceal 降格轨道（common.conceal 已建）；但它是带减伤 + 双向现形的 conceal 变体，与 submerged 同理保留独立，不在本次拆分范围。
