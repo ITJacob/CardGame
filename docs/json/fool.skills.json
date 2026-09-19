@@ -61,21 +61,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "clairvoyance",
-          "name": "灵视",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "reveal_stealth": true
-          },
-          "note": "识破分支（C8，共享内核参数 §四）：敌方隐匿/潜行类状态对持有者无效"
-        }
-      ],
       "sharedAcross": [
         "apprentice",
         "thief"
@@ -264,34 +249,6 @@
           "duration": null
         }
       ],
-      "statusDefs": [
-        {
-          "id": "premonition",
-          "name": "预感",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": null,
-          "maxStacks": 3,
-          "charges": 1,
-          "triggers": [
-            {
-              "event": "on_take_damage",
-              "effects": [
-                {
-                  "type": "modify_damage",
-                  "scope": "taken",
-                  "mul": 0.6,
-                  "note": "该次伤害 ×0.6（H3 参数化减伤母版；扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
-                }
-              ],
-              "consumeCharge": true
-            }
-          ],
-          "note": "C6 charges 表达一次性预感；F51 mount_status.stacks 表达每回合补层（编队上下文 §六）"
-        }
-      ],
       "frameworkFlags": [
         {
           "code": "G15",
@@ -320,24 +277,6 @@
           "type": "mount_status",
           "statusId": "poise",
           "duration": null
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "poise",
-          "name": "完美协调",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "moveImmune": true,
-            "immune": [
-              "control"
-            ]
-          },
-          "note": "G12 immune + moveImmune（编队参数 §1.1b，H27）；与 F7 shackle 是同字段正反两面，建议统一为 move_immune 布尔"
         }
       ],
       "tentative": true,
@@ -478,45 +417,6 @@
           "duration": 4
         }
       ],
-      "statusDefs": [
-        {
-          "id": "paper_substitute",
-          "name": "纸人替身",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "charges": 1,
-          "lethalProtect": true,
-          "triggers": [
-            {
-              "event": "on_death",
-              "effects": [
-                {
-                  "type": "dispel",
-                  "target": "self",
-                  "category": [
-                    "debuff"
-                  ],
-                  "count": "all",
-                  "note": "「削弱诅咒」：触发时驱散自身全部负面"
-                }
-              ],
-              "consumeCharge": true
-            }
-          ],
-          "note": "lethalProtect（H7，编队参数 §1.1b）在死亡确认前分支、保留 1 血、不触发 on_death 后续链（编队上下文 §十）；on_death 钩子仅承载驱散时序",
-          "crossPathway": true,
-          "participants": [
-            "assassin",
-            "fool",
-            "lawyer",
-            "supplicant",
-            "prisoner"
-          ]
-        }
-      ],
       "tentative": true,
       "conversionNotes": [
         "「阻止死亡」走 lethal_protect（本稿新增项 1，已落 ddd），不走 C4 miracle 近似（避免丢保留原格与驱散时序）。",
@@ -557,33 +457,6 @@
           "duration": 4
         }
       ],
-      "statusDefs": [
-        {
-          "id": "wound_transfer",
-          "name": "伤害转移",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "charges": 3,
-          "triggers": [
-            {
-              "event": "on_take_damage",
-              "effects": [
-                {
-                  "type": "modify_damage",
-                  "scope": "taken",
-                  "mul": 0.5,
-                  "note": "把 N 次伤口挪走（H3 参数化减伤母版；扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
-                }
-              ],
-              "consumeCharge": true
-            }
-          ],
-          "note": "原著序列7 转移到自己不重要部位（伤害降级）；转移到别人是序列4【秽物转移】"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：原著核心能力，v0.1 漏掉。转移到**自己**不重要部位=伤害降级（转给别人是序列4 诡法师）。⚠️D。"
     },
@@ -619,26 +492,6 @@
           "statusId": "hallucination",
           "charges": 1,
           "duration": 3
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "hallucination",
-          "name": "幻觉",
-          "category": [
-            "control"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "charges": 1,
-          "modifiers": {
-            "behaviorModifiers": [
-              {
-                "anchor": "first_empty",
-                "op": "target_override"
-              }
-            ]
-          }
         }
       ],
       "sharedAcross": [
@@ -797,19 +650,6 @@
           "hand_hidden": true
         }
       },
-      "statusDefs": [
-        {
-          "id": "illusion_daze",
-          "name": "幻境落空计数",
-          "category": [
-            "stance"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 5,
-          "note": "域内计数状态：满 5 层时该次攻击 target_override → first_empty 并 consume(5)（计数逻辑挂载于 domainDef 触发器）"
-        }
-      ],
       "frameworkFlags": [
         {
           "code": "HAND_HIDDEN",
@@ -856,36 +696,6 @@
           "duration": 3
         }
       ],
-      "statusDefs": [
-        {
-          "id": "disguise_form",
-          "name": "变形",
-          "category": [
-            "conceal"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "modifiers": {
-            "untargetableByTargeted": true
-          },
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "modify_damage",
-                  "scope": "dealt",
-                  "mul": 1.5,
-                  "note": "对方认不出你、被近身一击（扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
-                }
-              ],
-              "consumeCharge": true
-            }
-          ],
-          "charges": 1,
-          "note": "H5 潜行母版（与 F4 shadow_veil、F11 stealth 同底层，C8 候选池过滤，共享内核参数 §四）"
-        }
-      ],
       "sharedAcross": [
         "apprentice",
         "thief"
@@ -918,22 +728,6 @@
           "duration": null
         }
       ],
-      "statusDefs": [
-        {
-          "id": "observe",
-          "name": "观察",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 3,
-          "modifiers": {
-            "damageDealtMulPerStack": 0.1
-          },
-          "note": "伤害 ×(1 + 0.1×层数)；H11 计数型母版（与 F1 inscription 学徒·默记共用，编队参数 §2.4）；F51 stacks"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：\"观察力+记忆力\"→越打越了解→伤害递增。依赖 F51，与 F1 `inscription` 共用 H11 计数母版。"
     },
@@ -955,26 +749,6 @@
           "type": "mount_status",
           "statusId": "power_refine",
           "duration": null
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "power_refine",
-          "name": "能力精进",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": [
-              1.3,
-              {
-                "pathway": "fool"
-              }
-            ]
-          },
-          "note": "H4 过滤乘区支持按途径过滤（编队参数 §1.1b）"
         }
       ],
       "tentative": true,
@@ -1026,37 +800,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "puppet_string",
-          "name": "提线木偶",
-          "category": [
-            "retarget",
-            "control"
-          ],
-          "dispelable": true,
-          "duration": 6,
-          "modifiers": {
-            "targetOverride": {
-              "op": "target_override",
-              "anchor": "index_asc_same_faction",
-              "note": "H12 target_override 族；优先于嘲讽/守护"
-            }
-          },
-          "note": "F9 已登记；权威定义见状态表，此处为引用副本",
-          "crossPathway": true,
-          "participants": [
-            "apprentice",
-            "assassin",
-            "corpse_collector",
-            "fool",
-            "prisoner",
-            "sleepless",
-            "thief",
-            "warrior"
-          ]
-        }
-      ],
       "sharedAcross": [
         "criminal"
       ],
@@ -1084,22 +827,6 @@
           "type": "mount_status",
           "statusId": "spirit_thread_vision",
           "duration": null
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "spirit_thread_vision",
-          "name": "灵体之线感知",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "reveal_stealth": true,
-            "damageDealtMulVsConcealed": 1.3
-          },
-          "note": "C8 识破分支（与【灵视】同源）；对隐匿/潜行状态单位伤害 ×1.3 走隐藏目标过滤乘区"
         }
       ],
       "tentative": true,
@@ -1282,22 +1009,6 @@
           "type": "mount_status",
           "statusId": "beast_form",
           "duration": 4
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "beast_form",
-          "name": "兽形",
-          "category": [
-            "stance"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "statPerStack": {
-            "attack": 3,
-            "gauge.rate": 8
-          },
-          "note": "F10 已登记（编队参数 §2.4），此处为引用副本；modify_stat duration 回滚 v1.5 已修"
         }
       ],
       "frameworkFlags": [
@@ -1484,34 +1195,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "spirit_worm",
-          "name": "灵之虫",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "charges": 4,
-          "triggers": [
-            {
-              "event": "on_death",
-              "effects": [
-                {
-                  "type": "spawn",
-                  "reviveOf": "self",
-                  "hpRatio": 0.3,
-                  "position": "original",
-                  "note": "G4 spawn.reviveOf（效果参数 §1.1）；复活结算前检查 revive_blocked（命运锚点对冲，编队上下文 §十 优先级链）"
-                }
-              ],
-              "consumeCharge": true
-            }
-          ],
-          "note": "原著明确 4 次（v0.1「每场一次」是偏离，本版改回）；归零后不再触发"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：原著明确 4 次（v0.1 写\"每场1次\"偏离）。依赖 G4+ C5。⚠️D。"
     },
@@ -1566,35 +1249,6 @@
               "target": "secondary_target"
             }
           ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "wish_fulfilled",
-          "name": "愿望成真",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "charges": 1,
-          "modifiers": {
-            "neverMiss": true
-          },
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "modify_damage",
-                  "scope": "dealt",
-                  "mul": 2
-                }
-              ],
-              "consumeCharge": true
-            }
-          ],
-          "note": "never_miss（H35，编队参数 §1.1b）；两段式结构（先人后己）一比一还原原著"
         }
       ],
       "variants": [
@@ -1755,22 +1409,6 @@
           "note": "保持 Zone 形态（H9 Zone 母版，阵地非全场界域）"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "concealed",
-          "name": "诡秘 concealed",
-          "category": [
-            "conceal"
-          ],
-          "dispelable": true,
-          "duration": 2,
-          "modifiers": {
-            "untargetableByTargeted": true,
-            "damage_taken_mul": 0.85
-          },
-          "note": "与不眠者 concealed 同源同一母版；此处为引用副本"
-        }
-      ],
       "zoneDef": {
         "id": "zone_mystery_realm",
         "kind": "blessing",
@@ -1911,31 +1549,6 @@
           "duration": 6
         }
       ],
-      "statusDefs": [
-        {
-          "id": "miracle",
-          "name": "奇迹",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 6,
-          "triggers": [
-            {
-              "event": "on_death",
-              "effects": [
-                {
-                  "type": "spawn",
-                  "reviveOf": "status_holder",
-                  "hpRatio": 0.5,
-                  "position": "original",
-                  "note": "C4 已登记（编队上下文 §十）+ G4 reviveOf；复活结算前检查 revive_blocked；此处为引用副本"
-                }
-              ]
-            }
-          ]
-        }
-      ],
       "tentative": true,
       "conversionNotes": [
         "与【纸人替身】差异：奇迹是给别人的复活且不阻止死亡（死后召回）；纸人替身是自身免死。稿面 targetSpec ALLY 无 fallbackSort，manual 记 null。",
@@ -1976,46 +1589,6 @@
           "duration": 6
         }
       ],
-      "statusDefs": [
-        {
-          "id": "fooled",
-          "name": "愚弄",
-          "category": [
-            "control"
-          ],
-          "dispelable": true,
-          "duration": 6,
-          "charges": 2,
-          "behaviorModifiers": [
-            {
-              "op": "target_override",
-              "anchor": "first_empty"
-            }
-          ],
-          "triggers": [
-            {
-              "event": "on_attack",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "mental",
-                  "valueFrom": {
-                    "kind": "target_stat",
-                    "stat": "attack"
-                  },
-                  "target": "status_holder",
-                  "note": "弄假成真：等于其攻击力的精神伤害给持有者自身；on_attack 在每次攻击行为发起时 fire、含落空（执行参数 §2.1 本稿新增项 3/12）"
-                }
-              ]
-            }
-          ],
-          "statPerStack": {
-            "gauge.rate": -8,
-            "attack": -3
-          },
-          "note": "四要素全落地：弄假（打空）/ 成真（反噬）/ 愚弄时间（gauge.rate -8）/ 降低智商（attack -3）；退化方案：去掉反噬，保留双次打空+减速+减攻"
-        }
-      ],
       "sharedAcross": [
         "thief"
       ],
@@ -2040,40 +1613,6 @@
           "type": "mount_status",
           "statusId": "lord_of_spirits",
           "duration": null
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "lord_of_spirits",
-          "name": "灵界掌控者",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "control_undispellable": true
-          },
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "condition": {
-                "kind": "hp_percent",
-                "target": "target",
-                "op": "le",
-                "value": 0.5
-              },
-              "effects": [
-                {
-                  "type": "modify_damage",
-                  "scope": "dealt",
-                  "mul": 1.3,
-                  "note": "灵性之线松动：残血目标易控（TargetHpBelow 谓词已存在于 EffectCondition 谓词集；扩展原语 modify_damage 仅用于状态/触发器内调整本次正在结算的伤害）"
-                }
-              ]
-            }
-          ],
-          "note": "运行时覆写 dispelable: false（H8，编队参数 §1.1b）：挂载方把后续施加的 puppet_string/hallucination/fooled/taunt 标为不可驱散"
         }
       ],
       "tentative": true,
@@ -2102,48 +1641,6 @@
               "duration": null
             }
           ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "fate_anchor",
-          "name": "命运锚点",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "gaugeReductionImmune": true
-          },
-          "triggers": [
-            {
-              "event": "on_kill",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "revive_blocked",
-                  "duration": null,
-                  "target": "killed_unit",
-                  "note": "被你钉住命运的敌人连死亡都收不走它"
-                }
-              ]
-            }
-          ],
-          "note": "gaugeReductionImmune（H31，编队参数 §1.1b）：需在所有减 gauge 效果入口检查"
-        },
-        {
-          "id": "revive_blocked",
-          "name": "复活着禁",
-          "category": [
-            "seal"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "revive_blocked": true
-          },
-          "note": "与收尸人 s2_true_death、不眠者 eternal_sleep 同源同一母版（编队参数 §1.1b + 编队上下文 §十 死亡结算链）；此处为引用副本"
         }
       ],
       "tentative": true,
