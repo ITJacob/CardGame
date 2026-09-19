@@ -31,19 +31,17 @@
 - **「占卜家」不是 phantom 途径**，而是 **`fool`（愚者）途径的序列 9 别名**（诡秘之主中占卜家途径即愚者途径）。证据：`fool` axes=预知/戏法/**秘偶**/奇迹、有卡名就叫「占卜」、含秘偶×4/命运×2/替身/`puppet_string`/`paper_substitute`。已把 `fool` 补回 ddd 指定的三处枢纽 participants（`puppet_string`、`doom`、`fate_gap`；「替身」本已含 fool）。**「母巢」亦非独立途径**：`planter` 已有 `mother_nest`（万物母巢）状态，且 `massing`/`beast_swarm` 的 participants 已含 planter，无需动作。
   ⚠️ 教训：ddd 出现疑似途径名时，**先查现有 22 途径的 axes 与卡名主题**——往往是别名或已有概念，勿轻判 phantom。
 
-### 新发现缺口（2026-09-19 全量审计，此前未登记）
+### 新发现缺口（2026-09-19 审计，2026-09-20 处置）
 
-> 以下三项均**未被三个校验脚本覆盖**，属 Gate 盲区，故长期未暴露。
-
-| # | 缺口 | 实测 | 处置建议 |
+| # | 缺口 | 处置 | 状态 |
 |---|---|---|---|
-| N1 | `axes.statusId` 大面积悬空 | 全库 90 个构筑轴中 **69 个** statusId 解析不到任何 statusDef。含中文占位（`戏法标记`/`辖区`/`狼人化`/`附身物体`/`蛮力`/`误判`/`寄生`/`律令（规则）` 等）与不存在英文名（`weak_point`/`forged`/`flame`/`dream`/`shadow`/`flesh`/`pry`/`astral`/`storm`/`ocean`/`corpse_trait`/`underworld`/`martial_skill`/`dawn`/`draught`/`beast_pack`/`moon_phase`/`mirror`/`plague`/`body_form`）| 先拍板「哪些轴真的该有身份状态」，无身份态的轴应删 `statusId` 而非留悬空；随后考虑把可解析性纳入 `validate.py` |
-| N2 | `axes.payoffs` / `enablers` 大面积缺失 | 90 轴中 **71 个无 payoffs**、**41 个无 enablers** | 与 N1 同批处理：轴元数据是 analysis 报告的数据源，悬空会污染职业设计风格报告 |
-| N3 | ddd §1.4 登记的 `规律 law` 状态不存在 | 全库只有 `law_breach` / `law_authority` / `law_edit`，**无 `law`**；ddd 与数据漂移 | 二选一：补 `law` statusDef（阅读者所有，participants 含通识者），或改 ddd 表指向 `law_edit` |
+| N1 | `axes.statusId` 悬空 | 原记「69/90」口径有误——其中 34 个属**合法未填**（schema 可选字段），真悬空为 **35 个**。2026-09-20 已全部处置：**19 个重映射**到真实 statusDef、**16 个删除**该字段并在 `axes.<axis>.note` 记录原值待设计评审。同时在 `validate.py` 新增 **axes.statusId 可解析性 Gate**（未填合法、填写必须解析得到），已反向注入验证可捕获 | ✅ **已闭环** |
+| N2 | `axes.payoffs` / `enablers` 缺失 | 机械推导只能从「卡面 mount_status / modify_status 显式引用」取证，实测**仅补出 3 条 enablers、0 条 payoffs**。结论：**这不是数据缺陷，是设计元数据**——payoff 卡靠运行时读层数放大，卡面无显式引用，无法从 AST 反推。现状 88 轴中缺 enablers 38 / 缺 payoffs 71，需**逐轴设计评审**补写，不属脚本可自动修复范围 | ⚠️ **转为设计待办** |
+| N3 | ddd §1.4 登记的 `规律 law` 状态不存在 | 经核：规律跨系桥**已由 3 个具体状态实现**——`law_breach`(reader) / `law_authority`(reader) / `law_edit`(savant)，三者均带 `crossPathway:true` + participants 含对方。ddd 原行的 `law` 是伞形名、落库时已拆为三个。**改 ddd 表述指向具体 id**，不新建空状态 | ✅ **已闭环** |
 
-**补充事实**：真实 payoff 钩子（`statPerStack` / `stackThreshold` / `thresholdTrigger` / `ramp`）共 **26 个 statusDef**，散布 11 个途径（assassin 4 / fool 2 / hunter 3 / monster 1 / planter 4 / pryer 4 / sailor 1 / savant 4 / sleepless 1 / supplicant 1 / warrior 1）。
+**附带修复（既有缺陷，非本次数据改动引入）**：`validate.py` 状态定义层校验段（category / crossPathway / participants）引用了**未定义的 `errors` / `warns`**，一旦真查出问题会 `UnboundLocalError` 崩溃 —— 即该 Gate 长期是**死代码**，从未真正生效。已改为 `pre_errors` / `pre_warns` 收集并接回汇总与打印，反向注入验证可捕获。
 
-
+**轴元数据现状（2026-09-20）**：88 轴 | statusId 可解析 38 | 未填（合法）50 | 悬空 **0** | 缺 enablers 38 | 缺 payoffs 71。
 > 2026-09-18 自技能稿 md（docs/archive/skill-design_v0.3/）迁移：§五 本稿遗留 + §六 框架改动未落项（🟡/🟢）。
 > ✅ 已落项与 §四 自检为过程产物，不迁移（见归档原稿与 git 历史）。
 

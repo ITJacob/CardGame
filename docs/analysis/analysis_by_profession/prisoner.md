@@ -2,7 +2,7 @@
 
 > 数据来源：`docs/json/prisoner.skills.json`（共 **36** 张技能卡）。
 > 由 `docs/tools/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。
-> 生成日期：2026-09-19
+> 生成日期：2026-09-20
 
 ## 一、职业总览：四条构筑轴一览
 

@@ -115,6 +115,7 @@ def main():
         except Exception:
             pass
     ALLSTATUS = CLOSED | globs
+    pre_errors, pre_warns = [], []   # 状态定义层 + 轴校验的前置收集（原代码引用了未定义的 errors/warns，属死代码 bug）
 
     # 状态定义层校验：*.statuses.json 中 statusDef 的 category / crossPathway.participants
     # （抽离前这部分在卡内联 statusDefs 上做，抽离后改到此处，避免校验真空）
@@ -123,23 +124,42 @@ def main():
         try:
             d = json.load(io.open(f, encoding='utf-8'))
         except Exception:
-            errors.append("%s: 解析失败" % os.path.basename(f)); continue
+            pre_errors.append("%s: 解析失败" % os.path.basename(f)); continue
         for sd in d.get("statusDefs") or []:
             cid = "%s:%s" % (pid, sd.get("id"))
             for cat in sd.get("category",[]) or []:
-                if cat not in CATS: errors.append("%s sd %s: bad category %s"%(cid,sd.get("id"),cat))
+                if cat not in CATS: pre_errors.append("%s sd %s: bad category %s"%(cid,sd.get("id"),cat))
             if sd.get("crossPathway") is True:
                 parts = sd.get("participants")
                 if not isinstance(parts,list) or not parts:
-                    errors.append("%s sd %s: crossPathway=true 但 participants 为空/缺失"%(cid,sd.get("id")))
+                    pre_errors.append("%s sd %s: crossPathway=true 但 participants 为空/缺失"%(cid,sd.get("id")))
                 else:
                     for p in parts:
                         if p not in ALL_PIDS:
-                            errors.append("%s sd %s: participants 含非法 pathwayId '%s'"%(cid,sd.get("id"),p))
+                            pre_errors.append("%s sd %s: participants 含非法 pathwayId '%s'"%(cid,sd.get("id"),p))
             elif sd.get("participants"):
-                warns.append("%s sd %s: 有 participants 但未标 crossPathway=true"%(cid,sd.get("id")))
+                pre_warns.append("%s sd %s: 有 participants 但未标 crossPathway=true"%(cid,sd.get("id")))
+
+    # 构筑轴身份状态可解析性 Gate（2026-09-20 新增）
+    # axes.<axis>.statusId 属 schema 可选字段，此前无任何校验，长期积累悬空引用。
+    # 约定：未填（None）= 该轴无身份状态，合法；一旦填写必须能在全库 statusDef 中解析到。
+    for f in files:
+        pid = os.path.basename(f).replace('.skills.json', '')
+        try:
+            _d = json.load(io.open(f, encoding='utf-8'))
+        except Exception:
+            continue
+        for aid, ax in (_d.get("axes") or {}).items():
+            sid = ax.get("statusId")
+            if sid is None:
+                continue
+            if sid not in ALLSTATUS:
+                pre_errors.append("%s axis %s: statusId '%s' 无法解析到任何 statusDef（悬空引用）" % (pid, aid, sid))
+
 
     errors_all, warns_all = [], []
+    errors_all += pre_errors
+    warns_all += pre_warns
     flagged_gaps = []  # frameworkFlags 已登记的缺口（非标准 event/fallbackSort），不再逐条 warn
     total_cards = 0
 
@@ -323,6 +343,8 @@ def main():
         errors_all += [pid+": "+e for e in errors]
         warns_all += warns
 
+    for e in pre_errors: print("  E:", e)
+    for w in pre_warns: print("  W:", w)
     print("-"*60)
     print("TOTAL cards:", total_cards, "| errors:", len(errors_all), "| warns:", len(warns_all))
     if flagged_gaps:

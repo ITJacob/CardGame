@@ -2,7 +2,7 @@
 
 > 数据来源：`docs/json/*.skills.json`（22 份途径技能池，共 **829 张卡**），由 `docs/tools/build_profession_analysis.py` 递归遍历全部效果节点生成。
 > 对照基准：`docs/meta/GENERATION_BRIEF.md` v0.3、`docs/ddd/params/*`。
-> 生成日期：2026-09-19
+> 生成日期：2026-09-20
 
 ## 一、总览：各职业规模与原语/算子总量
 
