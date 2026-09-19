@@ -1,0 +1,588 @@
+{
+  "statusDefs": [
+    {
+      "id": "ritual_gate",
+      "name": "仪式·门",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 4,
+              "target": "all_enemies",
+              "note": "锚点 front_line：门在敌阵前方洞开"
+            }
+          ],
+          "note": "稿面遗留：若被 dispel 也 fire 则成强度漏洞，建议加 removeReason: expired 过滤（H29 已落）"
+        }
+      ]
+    },
+    {
+      "id": "flash",
+      "name": "闪光",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "charges": 1,
+      "modifiers": {
+        "targetOverride": {
+          "anchor": "first_empty",
+          "note": "C7：下一次单体攻击改写至最近空坐标，只瞎一次（C6 charges）"
+        }
+      }
+    },
+    {
+      "id": "escape_act",
+      "name": "逃脱戏法",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "charges": 3,
+      "modifiers": {
+        "damage_taken_mul": 0.8
+      },
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 99,
+              "target": "self",
+              "note": "退回己方半场最后位，G8 合规；受击结算中途 relocate 时序见编队上下文 §十 H43"
+            }
+          ],
+          "note": "每次响应该次伤害 ×0.8 并退位，charges -1"
+        }
+      ]
+    },
+    {
+      "id": "danger_sense",
+      "name": "危险预感",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 10,
+      "modifiers": {
+        "damage_taken_mul": {
+          "value": 0.6,
+          "charges": 1,
+          "note": "次数型减伤（C6）：on_take_damage 响应式派发 -1，归零卸载"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "danger_sense",
+              "charges": 1,
+              "duration": 10,
+              "target": "self",
+              "note": "自续链：预感一次次重新浮现（新增项 5，on_remove 合法化）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "divination_jam",
+      "name": "干扰占卜",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": -1,
+              "mode": "delta",
+              "target": "self",
+              "note": "F55：对敌方削能下限截断为 0"
+            }
+          ]
+        }
+      ],
+      "modifiers": {
+        "targetOverride": {
+          "anchor": "first_empty",
+          "charges": 1,
+          "note": "C7：方位错乱，下一次单体攻击打空"
+        }
+      }
+    },
+    {
+      "id": "star_mark",
+      "name": "星相标记",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": -5,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "modifiers": {
+        "pierceConceal": true,
+        "note": "C8 识破分支：持有者身上的隐匿 / 不可选中类状态对己方无效"
+      }
+    },
+    {
+      "id": "astral_anchor",
+      "name": "星界锚",
+      "category": [
+        "link"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 1,
+      "stackPolicy": "stack",
+      "note": "枢纽状态（ddd 源质维度 §1.4）：归属 学徒；窥秘人『星光囚笼·改』读取（PENDING 窥秘人 #3）。数值 ⚠️D。",
+      "crossPathway": true,
+      "participants": [
+        "apprentice",
+        "pryer"
+      ]
+    },
+    {
+      "id": "inscription",
+      "name": "记录层数",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 8,
+      "stackPolicy": "stack",
+      "note": "F1 已登记（H11 计数型状态）；上限 8 对齐原著「序列5-6 可记录 8 个」。此处为引用副本，权威定义见 F1"
+    },
+    {
+      "id": "recorded",
+      "name": "已记录",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "stackPolicy": "refresh",
+      "slots": {
+        "element": null,
+        "tier": null
+      },
+      "note": "H33 状态数据槽：记录最近一招的元素与档位；退化方案为缺省按 mental 结算"
+    },
+    {
+      "id": "record_semi_divine",
+      "name": "半神记录",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "note": "① inscription maxStacks 8（H34 挂载方覆盖）；② 记录触发范围扩展为任意友军受击——走全局 on_take_damage 第三方监听（执行参数 §2.1，新增项 6）。退化方案：仅保留①"
+    },
+    {
+      "id": "secrecy",
+      "name": "守秘",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "buffUndispellable": true,
+        "candidateWeight": "status:secrecy:asc",
+        "note": "H8 运行时覆写 dispelable：自身已挂载 buff 类状态不可被敌方 dispel；C8 加权分支：排序键 status:secrecy:asc 使自身被单体选取时降权"
+      }
+    },
+    {
+      "id": "hidden_space",
+      "name": "空间隐藏",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "hidden_space"
+              },
+              "note": "一出手就暴露了"
+            }
+          ]
+        }
+      ],
+      "note": "H5 潜行母版（与 F4 shadow_veil / F11 stealth 同源），不新立机制"
+    },
+    {
+      "id": "phantom_door",
+      "name": "幻化",
+      "category": [
+        "stance"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "damage_taken_mul": 0.5
+      },
+      "note": "H3 参数化减伤母版（与 C3 glibness / F22 sanctuary 同源）；与空间隐藏分工：隐藏怕 AoE、幻化怕驱散"
+    },
+    {
+      "id": "exiled",
+      "name": "放逐",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "modifiers": {
+        "gaugeRateMul": 0,
+        "untargetableByTargeted": {
+          "direction": "both",
+          "scope": "single"
+        },
+        "note": "gauge_freeze = gaugeRateMul 冻结档 0（H24 行动条调制母版）；状态可被驱散打断（乱流还能游出来）"
+      },
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 4,
+              "target": "self",
+              "note": "乱流撕扯：归位时结算"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "space_rift",
+      "name": "空间裂隙",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "modifiers": {
+        "damage_taken_mul": 1.15
+      },
+      "note": "H3/H4 参数化受伤乘区（与 vulnerable 1.3 同族）：伤口不合拢，持续受伤加重"
+    },
+    {
+      "id": "merged",
+      "name": "融入空间",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "charges": 1,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        },
+        "damage_mul": {
+          "value": 1.5,
+          "charges": 1,
+          "note": "C6：一次性爆发窗口，探头一击"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "merged"
+              },
+              "note": "出手即暴露"
+            }
+          ]
+        }
+      ],
+      "note": "攻防一体潜行：与空间隐藏（纯防御、可给友军）区分"
+    },
+    {
+      "id": "breach",
+      "name": "破障之门",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_mul": {
+          "value": 1.3,
+          "filter": {
+            "hasStatus": [
+              "shield"
+            ]
+          },
+          "note": "F52 has_status：只对护盾屏障增伤，不做无脑无视护甲"
+        },
+        "movePierceImmune": true
+      }
+    },
+    {
+      "id": "diminished",
+      "name": "维度缩小",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -4,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": -5,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "note": "原著「覆盖一座城市」是位格描述，按 brief §3 不搬"
+    },
+    {
+      "id": "sigil_self",
+      "name": "自我符号",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        },
+        "damage_taken_mul": 0.7
+      },
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "move",
+              "op": "param",
+              "target": "self",
+              "note": "在别处现形：落点为己方半场指定空位（anchor: empty_ally_slot，G8 合规）"
+            }
+          ],
+          "note": "状态触发器内执行 move 时序见编队上下文 §十 H43"
+        }
+      ]
+    },
+    {
+      "id": "located",
+      "name": "被定位",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "charges": 1,
+      "modifiers": {
+        "damage_taken_mul": 1.15,
+        "targetOverride": {
+          "anchor": "first_empty",
+          "charges": 1,
+          "note": "C7：无法定位，下一次单体攻击打空"
+        }
+      }
+    },
+    {
+      "id": "time_maze",
+      "name": "时空迷宫",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": -5,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self",
+          "note": "时间混乱：速率源属性修正，INV-S5 合规"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -6,
+              "mode": "delta",
+              "target": "self",
+              "note": "空间循环：越走越回不去"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sealed",
+      "name": "封印",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "gaugeRateMul": 0,
+        "untargetableByTargeted": {
+          "direction": "both",
+          "scope": "single"
+        },
+        "heal_received_mul": 0
+      },
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 5,
+              "target": "self",
+              "note": "破封时的时空反噬"
+            }
+          ]
+        }
+      ],
+      "note": "与放逐差异：封印 4t / 5 伤 / 断治疗 / 更贵；gauge_freeze 走 H24 冻结档，heal_received_mul 与 F20 petrify 同源（H21）"
+    },
+    {
+      "id": "door_shut",
+      "name": "门关",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "moveImmune": true,
+        "heal_received_mul": 0,
+        "buffBlocked": true
+      },
+      "note": "三条断绝全部由已落机制拼出：moveImmune（F7/H27）、heal_received_mul（F20/H21）、buffBlocked（H38）"
+    },
+    {
+      "id": "space_cage",
+      "name": "空间牢笼",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "moveImmune": true,
+        "damage_taken_mul": 1.25
+      },
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 1,
+              "target": "self",
+              "note": "牢笼持续收缩，共 4 伤"
+            }
+          ]
+        }
+      ],
+      "note": "与封印区分：封印是移出战斗，牢笼是困在原地照样挨打（最强点杀前置）"
+    },
+    {
+      "id": "ubiquity",
+      "name": "无处不在",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 6,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "spawn",
+          "unitId": "unit_thoughtform",
+          "hpRatio": 0.3,
+          "position": "tail",
+          "note": "F23（H1 召唤物基线）不新立单位；C5 ✅"
+        }
+      ],
+      "modifiers": {
+        "moveImmune": true
+      }
+    }
+  ]
+}
