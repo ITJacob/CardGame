@@ -1,0 +1,733 @@
+{
+  "statusDefs": [
+    {
+      "id": "antivenom",
+      "name": "抗毒体质",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "condition": {
+            "kind": "element_is",
+            "element": "poison"
+          },
+          "effects": [
+            {
+              "type": "heal",
+              "value": 1,
+              "target": "self",
+              "note": "自行化解：小额回血，避免抗性堆到免疫"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "health_sight",
+      "name": "健康灵视",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "heal_output_mul": {
+          "value": 1.5,
+          "filter": {
+            "targetHpPercentBelow": 50
+          }
+        }
+      },
+      "note": "heal_output_mul（施法者侧，handleHeal 读取）+ 目标血量过滤"
+    },
+    {
+      "id": "beast_sense",
+      "name": "动物感官",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "all_allies",
+          "filter": {
+            "anyOf": [
+              {
+                "tags": [
+                  "beast"
+                ]
+              },
+              {
+                "isSummon": true
+              }
+            ]
+          },
+          "note": "驱使"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "all_allies",
+          "filter": {
+            "anyOf": [
+              {
+                "tags": [
+                  "beast"
+                ]
+              },
+              {
+                "isSummon": true
+              }
+            ]
+          }
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 10,
+              "mode": "delta",
+              "target": "all_allies",
+              "filter": {
+                "isSummon": true
+              },
+              "note": "分享感官：推友军不推自己（G5/G6 合规）"
+            }
+          ]
+        }
+      ],
+      "note": "§1.2b unitType/tags + §一 filter.isSummon（新增项 10）；「读懂想法」（信息）未做"
+    },
+    {
+      "id": "captivated",
+      "name": "着迷",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "charges": 1,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "first_empty"
+          }
+        ]
+      },
+      "note": "C7 first_empty（已验证）；duration 5 满足 G15-b（≥ 目标一个行动周期）"
+    },
+    {
+      "id": "dark_wings",
+      "name": "黑暗之翼",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 6,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "modifiers": {
+        "damage_taken_mul": 0.85
+      },
+      "note": "H10 形态母版（与 F10/耕种者 bear_form 同母版）"
+    },
+    {
+      "id": "obsession",
+      "name": "迷恋",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "self"
+          }
+        ]
+      },
+      "note": "F15 引用副本（H12 target_override 族）；duration 5 满足 G15-b"
+    },
+    {
+      "id": "stealth",
+      "name": "潜行",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [],
+          "note": "破除"
+        },
+        {
+          "event": "on_take_damage",
+          "effects": [],
+          "note": "破除"
+        }
+      ],
+      "note": "F11 引用副本（H5 潜行母版 + C8 候选池过滤）｜2026-09-18 与 sleepless 潜行统一签名：direction both→inbound（敌方不可选中，正典潜行语义）"
+    },
+    {
+      "id": "scentless",
+      "name": "无味",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "immune": {
+          "categories": [
+            "debuff"
+          ]
+        }
+      },
+      "note": "G12 immune 字段（事前阻断，非事后清洗）；退化方案（on_tick 驱散）仍备"
+    },
+    {
+      "id": "prepared_draught",
+      "name": "预服药水",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 10,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 2,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 8,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self"
+        }
+      ],
+      "note": "带 duration 的回滚走账本条目 remaining / revertBySource"
+    },
+    {
+      "id": "moon_blood",
+      "name": "血月",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "formGroup": "moon_phase",
+      "nextPhase": "moon_red",
+      "cycleTicks": 6,
+      "modifiers": {
+        "damage_mul": 1.2,
+        "drainHealBonus": 2
+      },
+      "note": "月相形态组登记（H50）：🌑 血月，掠夺/进攻"
+    },
+    {
+      "id": "moon_red",
+      "name": "红月",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "formGroup": "moon_phase",
+      "nextPhase": "moon_silver",
+      "cycleTicks": 6,
+      "modifiers": {
+        "durationModifier": {
+          "scope": "outgoing",
+          "mode": "add",
+          "value": 2,
+          "filter": {
+            "category": [
+              "debuff"
+            ]
+          }
+        }
+      },
+      "note": "🌘 红月，侵蚀/持久"
+    },
+    {
+      "id": "moon_silver",
+      "name": "银月",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "formGroup": "moon_phase",
+      "nextPhase": "moon_full",
+      "cycleTicks": 6,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "energy_regen",
+          "value": 0.2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": 20,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "note": "🌗 银月，灵性澄澈（对应「灵性权柄」）"
+    },
+    {
+      "id": "moon_full",
+      "name": "满月",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "formGroup": "moon_phase",
+      "nextPhase": "moon_waning",
+      "cycleTicks": 6,
+      "modifiers": {
+        "heal_output_mul": 1.4
+      },
+      "note": "🌕 满月，圆满/治愈（对应「难以想象的恢复能力」）"
+    },
+    {
+      "id": "moon_waning",
+      "name": "缺月",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "formGroup": "moon_phase",
+      "nextPhase": "moon_blood",
+      "cycleTicks": 6,
+      "modifiers": {
+        "damage_taken_mul": 0.8,
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        }
+      },
+      "note": "🌒 缺月，消退/隐匿（C8：敌方单体难以选中）"
+    },
+    {
+      "id": "moonlit",
+      "name": "月光",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "modifiers": {
+        "heal_received_mul": 1.3
+      },
+      "note": "heal_received_mul 正向档 1.3（H21，与 F20 同字段复用）"
+    },
+    {
+      "id": "moonlight_form",
+      "name": "月光化",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "charges": 1,
+      "modifiers": {
+        "damage_taken_mul": 0.85
+      },
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 0,
+              "target": "self",
+              "note": "H7 lethalProtect：阻止死亡、保留 1 血并 heal 至 25% 最大生命（重组），消耗该层"
+            }
+          ]
+        }
+      ],
+      "lethalProtect": true,
+      "hpRatio": 0.25,
+      "note": "H5 + H7 + C6；duration 5 满足 G15-b"
+    },
+    {
+      "id": "crimson_vitality",
+      "name": "深红活力",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 1,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "note": "H42 常驻模板（duration:null + on_tick）"
+    },
+    {
+      "id": "moon_paper_substitute",
+      "name": "月亮纸人",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "charges": 1,
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 0,
+              "target": "self",
+              "note": "H7：阻止死亡、保留 1 血并 heal 至 20% 最大生命"
+            },
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 3,
+              "target": "attacker",
+              "note": "纸屑反噬致死来源"
+            }
+          ]
+        }
+      ],
+      "lethalProtect": true,
+      "hpRatio": 0.2,
+      "note": "与愚者【纸人替身】同源（H7），本条多一层反噬"
+    },
+    {
+      "id": "dark_gaze",
+      "name": "黑暗凝视",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "charges": 2,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "first_empty"
+          }
+        ],
+        "damage_taken_mul": 1.15
+      },
+      "note": "C7 first_empty；与【血仆转化】区分：凝视=打空，转化=打自己人"
+    },
+    {
+      "id": "swarm_form",
+      "name": "蝠群形态",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "modifiers": {
+        "damage_taken_mul": 0.6,
+        "untargetableByTargeted": {
+          "direction": "both",
+          "scope": "single"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_death",
+          "condition": {
+            "kind": "caster_has_summon",
+            "unitId": "unit_bat"
+          },
+          "effects": [
+            {
+              "type": "heal",
+              "value": 0,
+              "target": "self",
+              "note": "H7：阻止死亡、保留 1 血并 heal 至 20%（重组）"
+            },
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "unitId": "unit_bat"
+              },
+              "target": "self",
+              "note": "销毁全部剩余蝙蝠（召唤物销毁走 dispel unit 写法，同 assassin 镜子替身先例）"
+            }
+          ],
+          "note": "除非全杀否则重组：蝙蝠清零则正常死亡（有解的免死）"
+        }
+      ],
+      "lethalProtect": true,
+      "hpRatio": 0.2,
+      "note": "H5 + H7；「场上存活蝙蝠数 > 0」判定走 caster_has_summon(unitId) 谓词"
+    },
+    {
+      "id": "spirit_pact",
+      "name": "灵界契印",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_spawn",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 3,
+              "target": "target",
+              "note": "契印护佑（spawn.companionBuff F54）"
+            }
+          ],
+          "note": "仅由你召唤的单位（casterOwned 过滤）"
+        },
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "self",
+              "note": "契约回流"
+            }
+          ],
+          "note": "全局 on_death 第三方监听（执行参数 §2.1，与 A4 on_kill 不冲突）"
+        }
+      ]
+    },
+    {
+      "id": "self_mend",
+      "name": "自我治愈",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 1,
+              "target": "self"
+            }
+          ]
+        },
+        {
+          "event": "on_take_damage",
+          "condition": {
+            "kind": "hp_percent",
+            "side": "self",
+            "cmp": "<",
+            "n": 50
+          },
+          "effects": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "note": "H42 常驻模板"
+    },
+    {
+      "id": "awestruck",
+      "name": "震撼",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "gaugeRateMul": 0.75,
+        "attackMod": -3
+      },
+      "note": "H24 减速族两参档；不写成眩晕：保留对抗面（可驱散、不影响已蓄满行动条）"
+    },
+    {
+      "id": "beauty_summon",
+      "name": "美神召唤",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "extraSpawn": {
+          "trigger": "summon_skill",
+          "unitId": "unit_beast",
+          "note": "「多来一个」：召唤类技能额外 spawn 一只 unit_beast"
+        },
+        "dispelableOverride": {
+          "statusIds": [
+            "charm",
+            "dark_gaze",
+            "captivated"
+          ],
+          "value": false
+        }
+      },
+      "note": "extraSpawn 为 H8 同源挂载方覆写思路的扩展表达，语义偏差待内核裁定"
+    },
+    {
+      "id": "eternal_life",
+      "name": "永恒生命",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 0,
+              "target": "self",
+              "note": "H7 lethalProtect + hpRatio 0.4：阻止死亡并 heal 至 40% 最大生命（不丢站位，与 C4 miracle 死后召回方向差异由 H7/H23 承载）"
+            }
+          ]
+        }
+      ],
+      "lethalProtect": true,
+      "hpRatio": 0.4
+    },
+    {
+      "id": "moon_cycle",
+      "name": "月相轮转",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "formGroup": "moon_phase",
+      "cycleTicks": 6,
+      "phases": [
+        "moon_blood",
+        "moon_red",
+        "moon_silver",
+        "moon_full",
+        "moon_waning"
+      ],
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [],
+          "note": "① 自发周期：每 6 tick 沿 phases 顺序进一相——语义由 H50 声明式字段（formGroup/nextPhase/cycleTicks，见五相 StatusDef 登记）承载，无效果原语，见 frameworkFlags"
+        },
+        {
+          "event": "on_tick",
+          "condition": {
+            "kind": "hp_percent",
+            "side": "self",
+            "cmp": "<",
+            "n": 30
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "moon_full",
+              "target": "self",
+              "note": "③ 条件触发：首次低于 30% 切至满月并保持到下一次自发轮转"
+            }
+          ],
+          "note": "首次：需 once 标记，语义待引擎确认"
+        }
+      ],
+      "note": "五相 StatusDef 登记在【满月】卡（序列最低首个登记点，H50 formGroup/nextPhase/cycleTicks/phases）；未持有本条时【满月】仍可单卡使用"
+    },
+    {
+      "id": "spirit_root",
+      "name": "灵性根源",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_spawn",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 3,
+              "target": "target",
+              "note": "母亲庇护（spawn.companionBuff F54）"
+            }
+          ],
+          "note": "仅由你召唤的单位（casterOwned 过滤）"
+        }
+      ]
+    }
+  ]
+}
