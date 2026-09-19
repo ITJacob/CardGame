@@ -489,13 +489,30 @@
           "duration": 4
         },
         {
+          "type": "modify_rule_slot",
+          "slot": 0,
+          "field": "trigger",
+          "mode": "replace",
+          "value": {
+            "trigger": "on_attack",
+            "retarget": "own_faction",
+            "charges": 1,
+            "duration": 4,
+            "durationUnit": "tick"
+          },
+          "note": "规则槽改写（canonical，2026-09-19 迁移）：把『下次攻击转打自身阵营』登记进 Rules[3] 槽 0 的 trigger 字段。加性迁移，旧 mount_status(distortion) 表达保留兼容。"
+        },
+        {
           "type": "damage",
           "element": "mental",
           "value": 2
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：**僭越轴灵魂 enabler**：把 v0.2 单体 `target_override` 升级为**改写规则槽的 trigger**（共享棋盘操作）。改规同时压秩序度 −1。依赖 `modify_rule_slot` 算子（ddd 已落）。⚠️D。"
+      "conversionNotes": [
+        "翻译/语义：**僭越轴灵魂 enabler**：把 v0.2 单体 `target_override` 升级为**改写规则槽的 trigger**（共享棋盘操作）。改规同时压秩序度 −1。依赖 `modify_rule_slot` 算子（ddd 已落）。⚠️D。",
+        "2026-09-19 规则槽迁移：已补 modify_rule_slot(slot:0, field:'trigger')，与 arbiter【立规】/ savant【规律权柄】同为加性迁移。⚠️ 原稿『改规同时压秩序度 −1』**无原语承载**——modify_resource.resource 枚举仅 hp/energy/shield/armor/lost/gauge.current，board 维度 order 的写入侧尚无算子（读侧已由 dimHook 落地），维持已知缺口不臆造。"
+      ]
     },
     {
       "id": "skill_lawyer_s6_corruption",

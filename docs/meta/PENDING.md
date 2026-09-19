@@ -6,22 +6,23 @@
 
 | 机制 | 状态 | commit |
 |---|---|---|
-| `crossPathway` 枢纽状态白名单 | ✅ 已落地（35 实例 / 32 去重） | 7a35e82 |
+| `crossPathway` 枢纽状态白名单 | ✅ 已落地（**32 实例 / 32 去重**，2026-09-19 核实；原记 35/32 系后期降格合并所致） | 7a35e82 |
 | 补建 10 个跨系枢纽 statusDef（净化/黑焰/污秽/放牧槽/星界锚/重组/造物/兽群/奴役/丰饶）+ nightfall 标记 | ✅ 已落地 | a357dce |
 | 维度乘区挂钩 dimHook（secrecy/order/fate_value，19 张受益卡） | ✅ 已落地（数值 ⚠️D） | a231938 |
 | 规则槽读写算子 `write_rule_slot`/`modify_rule_slot` + field 闭枚举 | ✅ 机制已落；⚠️ **卡面迁移待做** | 3dac5dc |
 | 囚犯诅咒链接网络母版 + 异类谱系栈 `lineage_stack` | ✅ 已落地（数值 ⚠️D） | 91add5e |
 | 零散项：gender 约束 / 刻印→深渊召唤映射 / 造物计数口径 / 集众阈值 / on_deal_damage 元素过滤 / info 母版标注 | ✅ 已落地 | 9ff421a |
-| 5 途径 enabler→payoff 轴身份状态接线（17 处） | ✅ 已落地；⚠️ 3 处缺口 + 数值 ⚠️D | e891380, 15b414c |
+| 5 途径 enabler→payoff 轴身份状态接线（17 处） | ✅ 已落地；⚠️ **仅 1 处缺口**（hunter `weak_point`）+ 数值 ⚠️D（2026-09-19 核实：原记 3 处有误） | e891380, 15b414c |
+| 规则槽 `rule_slot` statusDef（arbiter 所有）+ `crossPathway` + participants[arbiter/lawyer/savant]；【文明图卷】升格界域牌补 `domain_civilization`；lawyer【扭曲】迁 `modify_rule_slot` | ✅ 已落地（2026-09-19 本轮，三脚本全绿） | 本轮 |
 | 月相轮转 / unitType / DomainDef 三件套 | ✅ **经核早已支持且数据在用**，非缺口 | —（核查结论） |
 
-**仍未落地（真缺口）**
-- `streamlined_cast` 费用修正 —— 属 **progression 层**，不在本「纯战斗 DDD」仓库 scope，待定归属。
-- `规则槽 Rules[3]` 标 `crossPathway` + 参与途径白名单（失序之国/通识者）。
-- `domain_astral_field` / `domain_dominion` / `domain_civilization` 三个 DomainDef 三件套。
-- 罪犯「黑焰/丰饶 combo 读取介质」（跨系非 5 枢纽）登记。
-- enabler→payoff 3 处缺口：hunter `vulnerable`(弱点) / `taunt`(挑衅)、planter 炼成轴——均无对应 statusDef。
-- 规则槽**卡面迁移**：arbiter【立规】(+2 write_rule_slot) 与 savant【规律权柄】(+1 modify_rule_slot) 已迁（加性，旧 `fields`/`slots` 保留兼容）；⚠️ **lawyer 僭越轴改规卡未迁**。
+**仍未落地（真缺口）**（2026-09-19 全量核实后重列）
+- `streamlined_cast` 费用修正 —— 属 **progression 层**，不在本「纯战斗 DDD」仓库 scope，待定归属。（2026-09-19 核实：reader 已有该状态与卡面，缺的仅是「费用修正」语义，非状态缺失）
+- ~~`规则槽 Rules[3]` 标 `crossPathway` + 参与途径白名单（仲裁人 / 律师 / 通识者）~~ → ✅ **已落地**（2026-09-19 本轮）：`rule_slot` statusDef 建于 arbiter.statuses.json，`crossPathway:true` + participants `[arbiter, lawyer, savant]`。
+- ~~`domain_civilization` DomainDef 三件套~~ → ✅ **已落地**（2026-09-19 本轮）：【文明图卷】由平铺 buff 卡升格为界域牌，停靠 `domain(overlay)` + `modify_resource(lost,+1)` 租金，原效果迁入 `domainDef.triggers`，`rulePatches: empower(ally, [文明/造物], ×1.2)`。
+- 罪犯「黑焰/丰饶 combo」**消费卡缺失** —— 仍缺（介质已登记，需新增读取卡）。
+- enabler→payoff **1 处**缺口：hunter `weak_point`（弱点）—— ⚠️ 2026-09-19 核实：`taunt` 已在 common 可解析；planter 四轴（`vitality_field` / `blight` / `earth_authority` / `matter_ladder`）**均已带 stackThreshold + thresholdTrigger**，原记「3 处」有误。
+- ~~规则槽**卡面迁移**~~ → ✅ **本轮已迁 lawyer【扭曲】**（+1 `modify_rule_slot(slot:0, field:trigger)`，加性迁移，旧 `mount_status(distortion)` 保留兼容）。⚠️ 余 15 张 warp_rule 卡仍为普通减益表达，是否继续迁移待逐张评审。
 - ~~诅咒链接「三层同一母版」只接通 1/3~~ —— ✅ **经核早已接通**（2026-09-19 更正此前误判）：序列4【诅咒之源】`selfKeep=true`、序列3【无反噬之咒】`params.selfKeep=false`、序列0【万咒加身】挂载多种诅咒状态表达「所有类型诅咒」。三层均走同一 `curse_link` 母版，无需再动。
 
 **口径已裁定（2026-09-19，均已结案）**
@@ -29,6 +30,18 @@
 - **spectator 元素过滤清单** = `mental`。非推测——【观众·细微观察】卡面 describe 原文即「自身造成**精神伤害**时，「心象」层数 +1（上限 5 层）」，与 `insight` 状态 `maxStacks:5` 完全吻合。
 - **「占卜家」不是 phantom 途径**，而是 **`fool`（愚者）途径的序列 9 别名**（诡秘之主中占卜家途径即愚者途径）。证据：`fool` axes=预知/戏法/**秘偶**/奇迹、有卡名就叫「占卜」、含秘偶×4/命运×2/替身/`puppet_string`/`paper_substitute`。已把 `fool` 补回 ddd 指定的三处枢纽 participants（`puppet_string`、`doom`、`fate_gap`；「替身」本已含 fool）。**「母巢」亦非独立途径**：`planter` 已有 `mother_nest`（万物母巢）状态，且 `massing`/`beast_swarm` 的 participants 已含 planter，无需动作。
   ⚠️ 教训：ddd 出现疑似途径名时，**先查现有 22 途径的 axes 与卡名主题**——往往是别名或已有概念，勿轻判 phantom。
+
+### 新发现缺口（2026-09-19 全量审计，此前未登记）
+
+> 以下三项均**未被三个校验脚本覆盖**，属 Gate 盲区，故长期未暴露。
+
+| # | 缺口 | 实测 | 处置建议 |
+|---|---|---|---|
+| N1 | `axes.statusId` 大面积悬空 | 全库 90 个构筑轴中 **69 个** statusId 解析不到任何 statusDef。含中文占位（`戏法标记`/`辖区`/`狼人化`/`附身物体`/`蛮力`/`误判`/`寄生`/`律令（规则）` 等）与不存在英文名（`weak_point`/`forged`/`flame`/`dream`/`shadow`/`flesh`/`pry`/`astral`/`storm`/`ocean`/`corpse_trait`/`underworld`/`martial_skill`/`dawn`/`draught`/`beast_pack`/`moon_phase`/`mirror`/`plague`/`body_form`）| 先拍板「哪些轴真的该有身份状态」，无身份态的轴应删 `statusId` 而非留悬空；随后考虑把可解析性纳入 `validate.py` |
+| N2 | `axes.payoffs` / `enablers` 大面积缺失 | 90 轴中 **71 个无 payoffs**、**41 个无 enablers** | 与 N1 同批处理：轴元数据是 analysis 报告的数据源，悬空会污染职业设计风格报告 |
+| N3 | ddd §1.4 登记的 `规律 law` 状态不存在 | 全库只有 `law_breach` / `law_authority` / `law_edit`，**无 `law`**；ddd 与数据漂移 | 二选一：补 `law` statusDef（阅读者所有，participants 含通识者），或改 ddd 表指向 `law_edit` |
+
+**补充事实**：真实 payoff 钩子（`statPerStack` / `stackThreshold` / `thresholdTrigger` / `ramp`）共 **26 个 statusDef**，散布 11 个途径（assassin 4 / fool 2 / hunter 3 / monster 1 / planter 4 / pryer 4 / sailor 1 / savant 4 / sleepless 1 / supplicant 1 / warrior 1）。
 
 
 > 2026-09-18 自技能稿 md（docs/archive/skill-design_v0.3/）迁移：§五 本稿遗留 + §六 框架改动未落项（🟡/🟢）。
@@ -208,7 +221,7 @@
 - **操纵天气**：v0.3 主题界域仅列【战争迷雾】；序列2 天气术士「操纵天气」可同框架补为第二张界域牌（与战争迷雾共用 ZoneDef 母版，换元素/载荷），留待汇总。
 ---
 ### 框架改动未落项
-- 🟢 轴身份状态 `弱点`/`挑衅`/`火焰`/`集众` → 状态表（复用既有 vulnerable/taunt/burn+massing）（服务于 四轴 enabler/payoff）  → ✅ 已落地（见 §零，2026-09-19）
+- 🟢 轴身份状态 `弱点`/`挑衅`/`火焰`/`集众` → 状态表（复用既有 vulnerable/taunt/burn+massing）（服务于 四轴 enabler/payoff）  → ✅ 已落地（见 §零，2026-09-19）；⚠️ 仅 `weak_point`（弱点）无对应 statusDef，见 §零
 - 🟢 `massing` 团队资源池（随存活友军累积 + 阈值触发） → 编队参数 §1.1b + thresholdTrigger（服务于 集众轴全卡）  → ✅ 已落地（见 §零，2026-09-19）
 - 🟡 `beast_swarm` 标 `crossPathway:true`（兽群枢纽，参与 母巢/猎人） → StatusDef 白名单（服务于 集众·兽群）  → ✅ 已落地（见 §零，2026-09-19）
 - 🟡 `亡灵/奴役` 读接口（猎人火焰→燃灵） → StatusDef 白名单（服务于 地狱之火·亡者）  → ✅ 已落地（见 §零，2026-09-19）
@@ -263,7 +276,7 @@
 - **v0.2 沿用未重列技能**：【给予生命】【生命充盈】已并入本版语义（生命/丰饶轴），如需独立卡面可补回（本版按轴引擎重排，部分 v0.2 卡并入 payoff 表述）。
 ---
 ### 框架改动未落项
-- 🟢 **`生命`/`大地`/`炼成`/`荒芜` 状态升级为 enabler→payoff 引擎**（层数阈值读放大） → 全局状态目录 + 结算读层数（服务于 四轴全卡）
+- 🟢 **`生命`/`大地`/`炼成`/`荒芜` 状态升级为 enabler→payoff 引擎**（层数阈值读放大） → 全局状态目录 + 结算读层数（服务于 四轴全卡）  → ✅ 已落地（2026-09-19 核实：`vitality_field`/`earth_authority`/`matter_ladder`/`blight` 四者均带 stackThreshold + thresholdTrigger，此前漏标）
 
 ## 药师（apothecary）
 

@@ -1544,7 +1544,7 @@
       "flagship": true,
       "lore": "序列1 启蒙者 —— \"可展现完整的文明图卷\"",
       "flavor": "你在战场中央展开一幅完整的文明图卷：城市、田野、熔炉与学堂。同伴站在图上，忽然知道自己为何而战；而敌人脚下那些野蛮的、混乱的东西，开始自行崩解。",
-      "describe": "全体友军攻击 +3、防御 +3（6 tick），并驱散全体敌方各 1 个增益状态。",
+      "describe": "降临「文明图卷」界域 3 回合（可驱散）：己方每回合开始攻击 +3、防御 +3；敌方每 tick 被驱散 1 个增益状态；「文明 / 造物」标签卡效果 ×1.2。自身迷失值 +1。",
       "cost": {
         "energy": 6,
         "cooldown": 8,
@@ -1554,47 +1554,104 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "faction": "ally",
-          "scope": "all"
-        }
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
       },
       "effects": [
         {
           "op": "sequence",
           "steps": [
             {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 3,
-              "mode": "delta",
-              "duration": 6,
-              "target": "all_allies"
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_civilization",
+              "duration": 3,
+              "durationUnit": "turn"
             },
             {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": 3,
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
               "mode": "delta",
-              "duration": 6,
-              "target": "all_allies"
-            },
-            {
-              "type": "dispel",
-              "dispelTarget": "unit",
-              "filter": {
-                "category": [
-                  "buff"
-                ],
-                "count": 1
-              },
-              "target": "all_enemies",
-              "note": "文明对照之下野蛮自行崩解（混沌沉淀秩序支）"
+              "target": "self",
+              "note": "界域操作租金"
             }
           ]
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：文明权柄\"混沌沉淀出秩序\"落地为文明/造物类界域牌（主题界域要求）。⚠️D。"
+      "conversionNotes": [
+        "翻译/语义：文明权柄\"混沌沉淀出秩序\"落地为文明/造物类界域牌（主题界域要求）。⚠️D。",
+        "2026-09-19 由「属性 buff + 驱散」平铺卡升格为界域牌（PENDING §零 真缺口）：停靠 11 原语 domain + modify_resource(lost,+1) 租金，原平铺效果迁入 domainDef.triggers。数值沿用原卡（+3/+3、驱散 1、×1.2）保持强度不变，仍属 ⚠️D。"
+      ],
+      "domainDef": {
+        "id": "domain_civilization",
+        "tier": "overlay",
+        "dispelable": true,
+        "duration": 3,
+        "durationUnit": "turn",
+        "triggers": [
+          {
+            "event": "on_turn_start",
+            "filter": {
+              "side": "ally"
+            },
+            "effects": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 3,
+                "mode": "delta",
+                "duration": 1,
+                "target": "all_allies",
+                "note": "图上知己为何而战（1t 刷新）"
+              },
+              {
+                "type": "modify_stat",
+                "stat": "defense",
+                "value": 3,
+                "mode": "delta",
+                "duration": 1,
+                "target": "all_allies",
+                "note": "城垣与学堂之护（1t 刷新）"
+              }
+            ]
+          },
+          {
+            "event": "on_tick",
+            "filter": {
+              "side": "enemy"
+            },
+            "effects": [
+              {
+                "type": "dispel",
+                "dispelTarget": "unit",
+                "filter": {
+                  "category": [
+                    "buff"
+                  ],
+                  "count": 1
+                },
+                "target": "all_enemies",
+                "note": "文明对照之下野蛮自行崩解"
+              }
+            ]
+          }
+        ],
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "ally",
+            "tag": [
+              "文明",
+              "造物"
+            ],
+            "mul": 1.2
+          }
+        ]
+      }
     },
     {
       "id": "skill_savant_s1_ruinous_rebirth",
