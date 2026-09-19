@@ -297,7 +297,9 @@ def main():
                 if not isinstance(mu, (int, float)) or mu <= 0:
                     errors.append("%s: dimHooks mul %s 须为正"%(cid, mu))
                 elif mu < 0.8 or mu > 1.5:
-                    warns.append("%s: dimHooks mul %s 越出建议区间 0.8–1.5（平衡期需 note 说明）"%(cid, mu))
+                    # 越界但有 note 兜底（如已登记的 D2 占位 fate_value≤−5 ×2.0）视为有意，不再告警
+                    if not h.get("note"):
+                        warns.append("%s: dimHooks mul %s 越出建议区间 0.8–1.5（平衡期需 note 说明）"%(cid, mu))
         # ---- sampleBuilds 交叉校验：示例卡组可信化 ----
         # 每个 Build 须 4 主动 + 4 被动，所列卡名必须存在于本文件 cards[]，
         # 且 actives 只能指 kind=active 的卡、passives 只能指 kind=passive 的卡。
