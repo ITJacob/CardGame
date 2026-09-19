@@ -171,4 +171,4 @@
 
 - → 全部 KEEP，不做拆分。
 - → 用户原担忧「简易拼凑」对纯换皮簇（B1 / C 各同构簇）成立，已在批次 1–5 降格收口；对这 6 个具体标记态不成立。
-- → 唯一可跟进项：shadow_dwell 自注「建议并入统一潜行母版」，属 conceal 降格轨道（common.conceal 已建）；但它是带减伤 + 双向现形的 conceal 变体，与 submerged 同理保留独立，不在本次拆分范围。
+- → 唯一可跟进项：shadow_dwell 自注「建议并入统一潜行母版」，属 conceal 降格轨道（common.conceal 已建）；但它是带减伤 + 双向现形的 conceal 变体，与 submerged 同理保留独立。⚠️ **用户 2026-09-19 拍板：shadow_dwell 保留独立、不再追并入潜行母版**，本条关闭。
