@@ -1,0 +1,419 @@
+{
+  "statusDefs": [
+    {
+      "id": "hazard_ward",
+      "name": "危险规避",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "charges": 2,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "modify_damage",
+              "mul": 0.5,
+              "target": "self",
+              "note": "该次伤害 ×0.5（R5 裁决：阻挡语义走 charges）"
+            }
+          ],
+          "note": "每响应一次 charges -1，归零卸载（C6）"
+        }
+      ],
+      "note": "C6 charges 次数型 + H3 减伤母版；不设 duration 以规避 G15-b 时间尺度冲突"
+    },
+    {
+      "id": "relic_armament",
+      "name": "非凡物品",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 4,
+          "mode": "delta",
+          "duration": 6,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 5,
+          "mode": "delta",
+          "duration": 6,
+          "target": "self"
+        }
+      ],
+      "note": "退化方案：不建状态，直接用 modify_stat + modify_resource 两条表达（代价：不可被驱散、无状态图标）"
+    },
+    {
+      "id": "construct",
+      "name": "造物",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "note": "枢纽状态（ddd 源质维度 §1.4）：归属 通识者；律师『造物豁免』读取。另见 §一『造物入规则槽』：通识者 mount_status(rule_slot,{slot:auto,content:construct})。 ｜ 造物计数口径：on_field（当前在场，离场即减）。⚠️ 口径为待拍板项：alternative=cumulative（累计产出，只增不减），二者对「造物轴阈值 payoff」的激励方向相反，需平衡期裁定。",
+      "crossPathway": true,
+      "participants": [
+        "savant",
+        "lawyer"
+      ],
+      "countMode": "on_field",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "defense",
+            "value": 1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+          }
+        ],
+        "note": "造物：造物计数达阈值（配合 countMode=on_field）。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "false_astral",
+      "name": "虚假星象",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "charges": 2,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "first_empty",
+            "note": "认错目标，打空（C7 ✅ 已验证）"
+          }
+        ]
+      },
+      "note": "C6 charges（迷惑两次）+ C7 behaviorModifiers；与愚者制造幻觉同族（C7），F 组合并候选 3 归并后作同母版参数档",
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": 1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+          }
+        ],
+        "note": "星象：虚假星象层数达标 → 攻击提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "astral_curse",
+      "name": "星之诅咒",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -3,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self",
+          "note": "衰弱"
+        }
+      ],
+      "modifiers": {
+        "damage_taken_mul": 1.15,
+        "note": "创伤：伤口持续恶化"
+      },
+      "note": "H2/H3 复合 debuff 母版；与 F 组合并候选 4 同源"
+    },
+    {
+      "id": "improvised_tool",
+      "name": "即兴器物",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 2,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shield",
+          "value": 5,
+          "duration": 4,
+          "target": "self"
+        }
+      ]
+    },
+    {
+      "id": "ensouled",
+      "name": "注入灵魂",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 3,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 5,
+              "target": "target",
+              "note": "亡语：散架时仍在撕咬；目标域 = ADJACENT_ENEMY（共享内核 §一 filter.adjacency）"
+            }
+          ]
+        }
+      ],
+      "note": "duration:null = 灵魂永久；不可驱散（灵魂已注入）"
+    },
+    {
+      "id": "knowledge_fae",
+      "name": "知识妖精",
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        },
+        "damageElementOverride": "mental"
+      },
+      "note": "H5 潜行母版 + damageElementOverride（效果参数 §1.1 行 33）：期间你已是\"知识\"，伤害元素视为 mental",
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": 1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+          }
+        ],
+        "note": "知识：知识妖精层数达标 → 攻击提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "fae_intrusion",
+      "name": "妖精入脑",
+      "category": [
+        "link",
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "self",
+              "note": "目标受击 → 施法者回能（F56 casterId 寻址）"
+            }
+          ]
+        }
+      ],
+      "note": "F56 寻址施法者，与 F21 astral_mark 同构母版"
+    },
+    {
+      "id": "law_edit",
+      "name": "规律改写",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "modifiers": {
+        "damage_taken_mul": {
+          "value": 0.5,
+          "filter": {
+            "element": [
+              "$variant.element"
+            ]
+          },
+          "note": "仅对变体选定元素生效（H4 dynamic 条件乘区，元素 filter 维度 ✅）"
+        }
+      },
+      "slots": {
+        "element": "构筑时选定（fire/poison/ice/shock）"
+      },
+      "note": "退化方案为无条件 damage_taken_mul 0.75（失去\"改写某条具体规律\"的语义）",
+      "crossPathway": true,
+      "participants": [
+        "savant",
+        "reader"
+      ],
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "stackThreshold": {
+        "stacks": 2
+      },
+      "thresholdTrigger": {
+        "stacks": 2,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "defense",
+            "value": 1,
+            "mode": "delta",
+            "duration": null,
+            "target": "self",
+            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
+          }
+        ],
+        "note": "规律：规律改写层数达标 → 防御提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
+      }
+    },
+    {
+      "id": "analysis_authority",
+      "name": "解析权柄",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "pierceConceal": true,
+        "damage_mul": {
+          "value": 1.25,
+          "filter": {
+            "targetHasCategory": [
+              "buff"
+            ]
+          },
+          "note": "独立乘区，刻意不占 vulnerable 的 1.3（避免叠乘；H42 同向取最高）"
+        }
+      },
+      "note": "C8 识破分支（§四）；与愚者灵体之线同族共用实现"
+    },
+    {
+      "id": "tutored",
+      "name": "受教",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "modifiers": {
+        "damage_mul": 1.2
+      },
+      "triggers": [
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 3,
+              "mode": "delta",
+              "target": "self",
+              "note": "顿悟回能"
+            }
+          ]
+        }
+      ],
+      "note": "H3 参数化母版；与 F14 tutelage（阅读者）同源，本条为更高序列档位（5t + 回能）"
+    },
+    {
+      "id": "enlightened",
+      "name": "启迪",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "modifiers": {
+        "damage_mul": 1.25
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "energy_regen",
+          "value": 0.3,
+          "mode": "delta",
+          "duration": 6,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": 20,
+          "mode": "delta",
+          "duration": 6,
+          "target": "self"
+        }
+      ],
+      "note": "H3 参数化母版（energy_regen / resist:mental 标准载荷）；与 F14 tutelage 同源"
+    }
+  ]
+}
