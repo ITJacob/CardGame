@@ -82,6 +82,9 @@ def cross_check(docs, manifest, errors, warns):
         # 刺客 charm 已升级为「魅轴身份状态」（叠层 + 阈值 payoff），
         # 与律师【贿赂·魅惑】的 F15 纯引用副本语义不同。2026-09-19 裁定：保持分化，不拆 id。
         ("charm", "assassin", "lawyer"),
+        # 潜行 stealth 为「隐身药水(apothecary)」与「影纱(sleepless)」的有意分化：
+        # 前者破除无副作用，后者破除时连带驱散（dispelTarget）。2026-09-19 裁定：保持分化，不拆 id。
+        ("stealth", "apothecary", "sleepless"),
     }
     seen = {}
     reused = set()
@@ -99,7 +102,7 @@ def cross_check(docs, manifest, errors, warns):
         sid = sd.get("id")
         sig = json.dumps({k: sd.get(k) for k in
                           ("name", "category", "dispelable", "duration", "modifiers",
-                           "maxStacks", "stackPolicy", "charges")},
+                           "maxStacks", "stackPolicy", "charges", "triggers", "effects")},
                          ensure_ascii=False, sort_keys=True)
         if sid in seen:
             old_sig, old_where, old_pid = seen[sid]
