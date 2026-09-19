@@ -54,51 +54,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "scrying_eye",
-          "name": "窥秘之眼",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "detect": {
-              "ignoreUntargetable": true,
-              "direction": "inbound",
-              "note": "C8 候选池过滤：敌方 stealth / shadow_veil / 不可选中类状态对持有者无效"
-            },
-            "damage_mul": {
-              "value": 1.15,
-              "filter": {
-                "hasAnyStatus": true
-              },
-              "note": "对携带任意状态的目标 ×1.15；F52 的 any 语义用 has_category 全枚举承载"
-            }
-          },
-          "maxStacks": 3,
-          "stackPolicy": "stack",
-          "stackThreshold": {
-            "stacks": 2
-          },
-          "thresholdTrigger": {
-            "stacks": 2,
-            "effects": [
-              {
-                "type": "modify_stat",
-                "stat": "attack",
-                "value": 1,
-                "mode": "delta",
-                "duration": null,
-                "target": "self",
-                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
-              }
-            ],
-            "note": "窥秘：窥视层数达标 → 攻击提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
-          }
-        }
-      ],
       "tentative": true,
       "frameworkFlags": [
         {
@@ -578,22 +533,6 @@
           "duration": 2
         }
       ],
-      "statusDefs": [
-        {
-          "id": "shackle",
-          "name": "枷锁",
-          "category": [
-            "control"
-          ],
-          "dispelable": true,
-          "duration": 2,
-          "modifiers": {
-            "moveImmune": true,
-            "gaugeRateMul": 0.7
-          },
-          "note": "复用 F7 已登记定义（禁位移 + gauge_rate ×0.7）；权威定义见状态表，此处为引用副本，本卡为途径内最低序列首登记"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：隔空抓取后排。起手 `法术`。依赖 F7。⚠️D。"
     },
@@ -750,38 +689,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "spell_lore",
-          "name": "法术学识",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 3,
-          "stackPolicy": "stack",
-          "note": "SS2 计数型状态（H11 母版，与 F1 inscription 同源）；由技能显式 +1，消耗走 F48 status.consume",
-          "stackThreshold": {
-            "stacks": 2
-          },
-          "thresholdTrigger": {
-            "stacks": 2,
-            "effects": [
-              {
-                "type": "modify_stat",
-                "stat": "defense",
-                "value": 1,
-                "mode": "delta",
-                "duration": null,
-                "target": "self",
-                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
-              }
-            ],
-            "note": "法术：学识层数达标（已有 maxStacks=3，补阈值 payoff）。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
-          }
-        }
-      ],
       "sharedAcross": [
         "reader"
       ],
@@ -822,41 +729,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "scroll_frost",
-          "name": "冰冻卷轴",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "charges": 1,
-          "silent_immune": true,
-          "triggers": [
-            {
-              "event": "on_take_damage",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "shackle",
-                  "duration": 2,
-                  "target": "attacker",
-                  "note": "F7：冻住攻击者"
-                },
-                {
-                  "type": "damage",
-                  "element": "ice",
-                  "value": 2,
-                  "target": "attacker"
-                }
-              ],
-              "note": "触发后 charges 归零卸载（C6）"
-            }
-          ],
-          "note": "SS9 预存触发状态族：charges:1 + silent_immune + 触发事件 + 载荷"
-        }
-      ],
       "tentative": true,
       "conversionNotes": [
         "稿面 targetSpec 允许 SELF 或 ALLY，JSON 取 SELF 主目标"
@@ -894,41 +766,6 @@
           "charges": 1,
           "duration": 4,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "scroll_paralyze",
-          "name": "麻痹卷轴",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "charges": 1,
-          "silent_immune": true,
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "stun",
-                  "duration": 1,
-                  "target": "target",
-                  "note": "被击中的目标麻痹"
-                },
-                {
-                  "type": "damage",
-                  "element": "lightning",
-                  "value": 2,
-                  "target": "target"
-                }
-              ],
-              "note": "触发后 charges 归零卸载（C6）"
-            }
-          ],
-          "note": "SS9 预存触发状态族，进攻向；「眩晕 1t」强度高，若验证判超模则降级为 shackle 减速半段（差异改为 ice/shock 元素）"
         }
       ],
       "tentative": true,
@@ -1027,38 +864,6 @@
               "target": "self"
             }
           ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "stellar_phase",
-          "name": "星尘相位",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "charges": 1,
-          "modifiers": {
-            "damage_taken_mul": 0.4
-          },
-          "triggers": [
-            {
-              "event": "on_take_damage",
-              "effects": [
-                {
-                  "type": "modify_resource",
-                  "resource": "gauge.current",
-                  "value": 15,
-                  "mode": "delta",
-                  "target": "self",
-                  "note": "穿梭后抢先反击"
-                }
-              ],
-              "note": "触发后 charges 归零卸载（C6）"
-            }
-          ],
-          "note": "SS10 参数化减伤状态（H3 母版，与 F 组合并候选 2 同源）；位移仅为己方半场内后退，穿梭本体为减伤 + 反抢节奏"
         }
       ],
       "tentative": true,
@@ -1208,59 +1013,6 @@
           "charges": 1,
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "ego_constellation",
-          "name": "本我星象",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "charges": 1,
-          "triggers": [
-            {
-              "event": "on_take_damage",
-              "condition": {
-                "kind": "hp_percent",
-                "side": "self",
-                "cmp": "<",
-                "n": 0.4
-              },
-              "effects": [
-                {
-                  "type": "modify_resource",
-                  "resource": "gauge.current",
-                  "value": 20,
-                  "mode": "delta",
-                  "target": "self"
-                }
-              ],
-              "note": "SS13：hp_percent（side:self）谓词，SS19 SelfHpBelow 已并入；触发后 charges 归零（每场一次保底反打）"
-            }
-          ],
-          "maxStacks": 3,
-          "stackPolicy": "stack",
-          "stackThreshold": {
-            "stacks": 2
-          },
-          "thresholdTrigger": {
-            "stacks": 2,
-            "effects": [
-              {
-                "type": "modify_stat",
-                "stat": "attack",
-                "value": 1,
-                "mode": "delta",
-                "duration": null,
-                "target": "self",
-                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
-              }
-            ],
-            "note": "星象：本我星象层数达标 → 攻击提升。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
-          }
         }
       ],
       "tentative": true,
@@ -1425,26 +1177,6 @@
           "duration": 4
         }
       ],
-      "statusDefs": [
-        {
-          "id": "hallucination",
-          "name": "幻觉",
-          "category": [
-            "control"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "charges": 1,
-          "modifiers": {
-            "behaviorModifiers": [
-              {
-                "anchor": "first_empty",
-                "op": "target_override"
-              }
-            ]
-          }
-        }
-      ],
       "tentative": true,
       "conversionNotes": [
         "吟唱 ⚠️D → castTime null",
@@ -1482,47 +1214,6 @@
           "type": "mount_status",
           "statusId": "cinderella_form",
           "duration": 3
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "cinderella_form",
-          "name": "褴褛形态",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": -4,
-              "mode": "delta",
-              "duration": 3,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": -2,
-              "mode": "delta",
-              "duration": 3,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "gauge.rate",
-              "value": 0.85,
-              "mode": "mul",
-              "duration": 3,
-              "target": "self"
-            }
-          ],
-          "modifiers": {
-            "damage_taken_mul": 1.15
-          },
-          "note": "SS11 形态状态（H10 母版，与 F10 beast_form 同族）；到期回滚 = 十二点的钟声"
         }
       ],
       "variants": [
@@ -1674,39 +1365,6 @@
           "stacks": 3,
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "hidden_knowledge",
-          "name": "隐秘知识",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 5,
-          "stackPolicy": "stack",
-          "modifiers": {
-            "damage_mul": {
-              "dynamic": "1 + 0.1 × 层数",
-              "note": "H4 按层数动态乘区"
-            }
-          },
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "hidden_knowledge",
-                  "stacks": -1,
-                  "stackMode": "consume"
-                }
-              ]
-            }
-          ],
-          "note": "SS3 计数型状态（H11 母版，与 F1 inscription 同源）；回充不写在状态上，由各知识类技能效果显式 +1（零新依赖主方案）"
         }
       ],
       "tentative": true,
@@ -1984,36 +1642,6 @@
           "target": "all_enemies"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "doomsday",
-          "name": "末日",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 3,
-          "modifiers": {
-            "damage_taken_mul": 1.25
-          },
-          "triggers": [
-            {
-              "event": "on_remove",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "none",
-                  "value": 6,
-                  "target": "self",
-                  "note": "末日降临"
-                }
-              ],
-              "note": "倒计时爆发；on_remove 是否覆盖自然到期（expired）待实测，若只覆盖主动驱散则改 on_tick 计数"
-            }
-          ],
-          "note": "SS12 参数化复合 debuff（H2 含 on_remove 载荷参数，与 F 组合并候选 4 同源）"
-        }
-      ],
       "tentative": true,
       "frameworkFlags": [
         {
@@ -2045,29 +1673,6 @@
           "statusId": "scrying_authority",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "scrying_authority",
-          "name": "窥秘权柄",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "detect": {
-              "ignoreUntargetable": true,
-              "direction": "inbound",
-              "note": "C8 候选池过滤：隐匿 / 不可选中类状态对持有者无效"
-            },
-            "dispelParams": {
-              "ignoreDispelable": true,
-              "note": "SS4：驱散命中 dispelable:false 的状态也照常移除（窥见被隐藏的知识，强行揭示）"
-            }
-          },
-          "note": "序列 3 权柄，与序列 9 窥秘之眼（感官级）分层不重叠"
         }
       ],
       "tentative": true,
@@ -2125,56 +1730,6 @@
           "charges": 2,
           "duration": 4,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "info_form",
-          "name": "信息化",
-          "category": [
-            "conceal"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "charges": 2,
-          "modifiers": {
-            "untargetableByTargeted": {
-              "direction": "inbound",
-              "scope": "single"
-            },
-            "damage_taken_mul": 0.6
-          },
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "info_form",
-                  "stacks": -2,
-                  "stackMode": "consume",
-                  "note": "攻击即破除（显形即失效）：charges 2 一次清空，等同卸载本状态"
-                }
-              ]
-            }
-          ],
-          "note": "SS14：与 F4 shadow_veil 机制完全同族（0.7 减伤 / charges 2 / 攻击破除，此处 0.6），建议并入 F 组合并候选 1 潜行母版，本卡只填参数 ｜ H5 潜行/虚化母版三件套齐备：untargetableByTargeted（不可选中）+ damage_taken_mul（减伤）+ on_deal_damage 破除（攻击即显形）。"
-        },
-        {
-          "id": "reforge",
-          "name": "重组",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "maxStacks": 1,
-          "stackPolicy": "stack",
-          "note": "跨源质可读白名单（PENDING 窥秘人 #3）：服务于『篡改·信息』combo；愚者侧亦有【重组】卡，故并列参与者。数值 ⚠️D。",
-          "crossPathway": true,
-          "participants": [
-            "pryer"
-          ]
         }
       ],
       "tentative": true,
@@ -2470,33 +2025,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "edification",
-          "name": "教化",
-          "category": [
-            "buff",
-            "aura"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "energy_regen",
-              "value": 0.2,
-              "mode": "delta",
-              "duration": null,
-              "target": "all_allies"
-            }
-          ],
-          "modifiers": {
-            "damage_mul": 1.15,
-            "note": "「将力量赋予知识」的自用部分"
-          },
-          "note": "SS18 纯数据配置，零新机制；v0.1「全队智力 +3」为无效键，改 energy_regen"
-        }
-      ],
       "tentative": true
     },
     {
@@ -2534,56 +2062,6 @@
           "note": "沿灵体之线传播给相邻单位"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "false_info",
-          "name": "虚假信息",
-          "category": [
-            "buff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "modifiers": {
-            "damage_taken_mul": 1.2
-          },
-          "triggers": [
-            {
-              "event": "on_tick",
-              "effects": [
-                {
-                  "type": "modify_resource",
-                  "resource": "energy",
-                  "value": -2,
-                  "mode": "delta",
-                  "target": "self",
-                  "note": "F55：energy 键钳制下限 0"
-                }
-              ]
-            }
-          ],
-          "note": "SS15：category 写 buff（伪装成增益）但载荷有害——所有按 category 工作的机制（敌方净化减益 / 增益保护 / UI）都会被骗；零新字段纯数据",
-          "maxStacks": 3,
-          "stackPolicy": "stack",
-          "stackThreshold": {
-            "stacks": 2
-          },
-          "thresholdTrigger": {
-            "stacks": 2,
-            "effects": [
-              {
-                "type": "modify_stat",
-                "stat": "attack",
-                "value": -1,
-                "mode": "delta",
-                "duration": null,
-                "target": "self",
-                "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
-              }
-            ],
-            "note": "信息：虚假信息层数达标 → 攻击下降。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
-          }
-        }
-      ],
       "tentative": true,
       "frameworkFlags": [
         {
@@ -2615,55 +2093,6 @@
           "statusId": "concealment_authority",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "concealment_authority",
-          "name": "隐匿权柄",
-          "category": [
-            "conceal"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "untargetableByTargeted": {
-              "direction": "inbound",
-              "scope": "single"
-            },
-            "damage_taken_mul": 0.9
-          },
-          "triggers": [
-            {
-              "event": "on_deal_damage",
-              "effects": [
-                {
-                  "type": "mount_status",
-                  "statusId": "concealment_broken",
-                  "duration": 2,
-                  "target": "self",
-                  "note": "攻击即破：显形 2 tick"
-                }
-              ]
-            }
-          ],
-          "note": "SS17 潜行母版（H5，与 F4 shadow_veil / F11 stealth 同源建议并入）；显形段由伴随状态 concealment_broken 承载"
-        },
-        {
-          "id": "concealment_broken",
-          "name": "显形",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": false,
-          "duration": 2,
-          "modifiers": {
-            "suppress": [
-              "concealment_authority"
-            ],
-            "note": "显形期间隐匿权柄的不可选中与减伤失效（H38 suppress 语义）"
-          },
-          "note": "辅助状态：隐匿权柄的代价段承载"
         }
       ],
       "tentative": true,
@@ -2779,67 +2208,6 @@
           "charges": 1,
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "backup",
-          "name": "备份",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "charges": 1,
-          "lethalProtect": {
-            "hpRatio": 0.25
-          },
-          "triggers": [
-            {
-              "event": "on_apply",
-              "effects": [
-                {
-                  "type": "snapshot",
-                  "fields": [
-                    "statuses"
-                  ],
-                  "filter": {
-                    "category": [
-                      "buff"
-                    ]
-                  },
-                  "target": "self",
-                  "note": "SS6 status_snapshot：挂载时记录自身增益状态快照"
-                }
-              ]
-            },
-            {
-              "event": "on_death",
-              "effects": [
-                {
-                  "type": "dispel",
-                  "target": "self",
-                  "dispelTarget": "unit",
-                  "filter": {
-                    "category": [
-                      "debuff"
-                    ]
-                  },
-                  "note": "count 省略 = 全部清除"
-                },
-                {
-                  "type": "restore_snapshot",
-                  "fields": [
-                    "statuses"
-                  ],
-                  "target": "self",
-                  "note": "还原快照中的增益（保留剩余 duration）"
-                }
-              ],
-              "note": "致死保护（H7/SS7）中断死亡不进死亡结算；触发后 charges 归零（C6，每场一次）"
-            }
-          ],
-          "note": "原著下位四权柄（备份/复制/删除/修改）最「隐者」的一条：从备份还原的是状态不是生命；与愚者灵之虫（on_death→spawn 死后召回 4 次）不同"
         }
       ],
       "tentative": true,
