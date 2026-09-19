@@ -79,12 +79,8 @@ def cross_check(docs, manifest, errors, warns):
     # 3) 状态 id 跨途径复用：同名必须同定义，定义冲突才是错误
     #    例外：已登记为「有意分化」的同名状态（轴身份状态本就该独立于通用副本）
     KNOWN_STATUS_DIVERGENCE = {
-        # 刺客 charm 已升级为「魅轴身份状态」（叠层 + 阈值 payoff），
-        # 与律师【贿赂·魅惑】的 F15 纯引用副本语义不同。2026-09-19 裁定：保持分化，不拆 id。
-        ("charm", "assassin", "lawyer"),
-        # 潜行 stealth 为「隐身药水(apothecary)」与「影纱(sleepless)」的有意分化：
-        # 前者破除无副作用，后者破除时连带驱散（dispelTarget）。2026-09-19 裁定：保持分化，不拆 id。
-        ("stealth", "apothecary", "sleepless"),
+        # 注：charm / stealth 已于 2026-09-19 拆分为独立 id（charm_axis / shadow_veil），
+        # 不再同名异义，故此处不再登记。仅保留真正需有意分化的诅咒链接网络等。
     }
     seen = {}
     reused = set()
