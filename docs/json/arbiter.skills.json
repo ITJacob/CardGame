@@ -93,27 +93,6 @@
           "duration": 3
         }
       ],
-      "statusDefs": [
-        {
-          "id": "overawed",
-          "name": "屈服",
-          "category": [
-            "retarget"
-          ],
-          "dispelable": true,
-          "charges": 1,
-          "duration": 3,
-          "modifiers": {
-            "behaviorModifiers": [
-              {
-                "op": "target_override",
-                "anchor": "first_empty"
-              }
-            ]
-          },
-          "note": "次数型（C6）：下一次攻击落空后消耗 1 层归零卸载。C7 已端到端验证"
-        }
-      ],
       "sharedAcross": [
         "lawyer"
       ],
@@ -209,32 +188,6 @@
           "duration": null,
           "target": "all_enemies",
           "note": "新登场敌方单位（召唤物）补标记依赖 on_spawn 全局第三方监听；退化方案：只标记开局在场敌人"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "marked",
-          "name": "过目标记",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "revealToSource": true,
-            "targetPriority": {
-              "sort": "status:marked:desc",
-              "note": "单体技能候选池优先命中被标记单位（C8 加权）"
-            },
-            "damage_taken_add": {
-              "value": 1,
-              "filter": {
-                "casterHasStatus": "marked_observer"
-              },
-              "note": "你对被标记单位造成的伤害 +1（施加者侧过滤）"
-            }
-          },
-          "note": "识破分支（共享内核 §四）+ 排序键 status:marked:desc；施加者=被动持有者"
         }
       ],
       "sharedAcross": [
@@ -353,30 +306,6 @@
           "statusId": "evil_sense",
           "duration": null,
           "target": "self"
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "evil_sense",
-          "name": "察觉异常",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "reveal": true,
-            "damageBonus": {
-              "value": 1,
-              "filter": {
-                "targetHasCategory": [
-                  "debuff",
-                  "control"
-                ]
-              }
-            }
-          },
-          "note": "识破分支与【过目不忘】同源（共享 C8 同一分支实现）"
         }
       ],
       "sharedAcross": [
@@ -617,62 +546,6 @@
           "note": "规则槽写入（canonical）：把违背律令的惩罚载荷写进 Rules[3] 槽 0。与 statusDef.decree.fields.punishment 同源。"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "decree",
-          "name": "律令（规则）",
-          "category": [
-            "contract"
-          ],
-          "dispelable": true,
-          "duration": 6,
-          "charges": 2,
-          "fields": {
-            "rule": "no_skill",
-            "punishment": [
-              {
-                "type": "damage",
-                "element": "mental",
-                "value": 3
-              },
-              {
-                "type": "mount_status",
-                "statusId": "shackle",
-                "duration": 2
-              }
-            ]
-          },
-          "triggers": [
-            {
-              "event": "on_active_skill",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "mental",
-                  "value": 3,
-                  "target": "self",
-                  "note": "惩罚作用于违背者（持有者），结算归施法者（casterId F56）"
-                },
-                {
-                  "type": "mount_status",
-                  "statusId": "shackle",
-                  "duration": 2,
-                  "target": "self"
-                },
-                {
-                  "type": "mount_status",
-                  "statusId": "$self",
-                  "stacks": -1,
-                  "stackMode": "consume",
-                  "target": "self",
-                  "note": "charges - 1，归零卸载"
-                }
-              ]
-            }
-          ],
-          "note": "🔴 decree 状态族（rule / punishment 字段）未落 ddd（本稿新增项 2）；触发点 on_active_skill ✅、惩罚归施法者 casterId ✅ 均已落。退化方案：改为沉默 2t + mental 3 硬控（失去立法者辨识度，不推荐）"
-        }
-      ],
       "tentative": true,
       "frameworkFlags": [
         {
@@ -775,22 +648,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "shackle",
-          "name": "枷锁",
-          "category": [
-            "control"
-          ],
-          "dispelable": true,
-          "duration": 2,
-          "modifiers": {
-            "moveImmune": true,
-            "gaugeRateMul": 0.7
-          },
-          "note": "复用 F7 已登记定义（禁 move + gauge_rate ×0.7）；权威定义见状态表，此处为引用副本"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：双层锁定（不能动+不能被位移）。⚠️D。"
     },
@@ -861,40 +718,6 @@
           "target": "self"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "authority",
-          "name": "权威质变",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "durationModifier": {
-              "scope": "outgoing",
-              "mode": "add",
-              "value": 1,
-              "filter": {
-                "statusId": [
-                  "decree",
-                  "silence",
-                  "stun",
-                  "shackle",
-                  "ostracized",
-                  "isolated",
-                  "vulnerable"
-                ]
-              }
-            },
-            "regionValueBoost": {
-              "zoneDef": "zone_jurisdiction",
-              "mul": 1.5
-            }
-          },
-          "note": "duration +1 走 H14 durationModifier（✅ 已落）；区域数值倍率 🟡 随 zone_jurisdiction 一并落地"
-        }
-      ],
       "tentative": true,
       "frameworkFlags": [
         {
@@ -935,26 +758,6 @@
           "type": "mount_status",
           "statusId": "castigated",
           "duration": null
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "castigated",
-          "name": "惩戒",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_taken_mul": {
-              "value": 1.4,
-              "filter": {
-                "caster": "status_caster"
-              }
-            }
-          },
-          "note": "按施法者过滤的 ×1.4（H4，✅ 已落）；「全场唯一持有者 + 改判自动卸载」语义 ddd 尚无字段（🟡 新增项 8）。退化方案：改为易伤（×1.3 全员可用），代价=与既有状态重合失去输出引擎"
         }
       ],
       "tentative": true,
@@ -1330,38 +1133,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "ostracized",
-          "name": "隔离",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": -2,
-              "mode": "delta",
-              "duration": 4
-            }
-          ],
-          "modifiers": {
-            "untargetableByTargeted": {
-              "direction": "inbound",
-              "effectCategories": [
-                "buff",
-                "heal",
-                "guard"
-              ],
-              "scope": "same_faction",
-              "note": "不可被其同阵营增益/治疗/守护选中（C8 候选池过滤，方向 inbound）"
-            }
-          }
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：G8 合规（push_back 锁己方半场）。`exiled`=不可被同阵营增益/治疗/守护选中。⚠️D。"
     },
@@ -1569,31 +1340,6 @@
           "note": "自动锁定（平局 index_asc 破平）；目标死亡自动转移走 on_death 全局第三方监听（✅ 新增项 11 已落）"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "hunted",
-          "name": "追猎标记",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "revealToSource": true,
-            "targetPriority": {
-              "sort": "status:hunted:desc"
-            },
-            "damage_taken_add": {
-              "value": 2,
-              "filter": {
-                "casterIsStatusSource": true
-              }
-            }
-          },
-          "transferOnDeath": true,
-          "note": "可转移：目标死亡时经 on_death 全局监听重算并改锁下一个（效果上下文 §2.1 transfer_status）"
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：审讯轴 payoff 之追猎件。与【过目标记】叠加同目标可吃 +3。⚠️D。"
     },
@@ -1628,29 +1374,6 @@
           "type": "mount_status",
           "statusId": "isolated",
           "duration": 5
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "isolated",
-          "name": "分割",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 5,
-          "modifiers": {
-            "untargetableByTargeted": {
-              "direction": "both",
-              "effectCategories": [
-                "buff",
-                "heal",
-                "guard"
-              ],
-              "scope": "same_faction"
-            }
-          },
-          "note": "direction: both（共享内核 §四），与序列2【均衡分割】共用"
         }
       ],
       "upgradeLadder": {
@@ -1883,26 +1606,6 @@
           "note": "判据 attack 最高（平局 index_asc），stat_max_desc 排序键 ✅ 已落"
         }
       ],
-      "statusDefs": [
-        {
-          "id": "unbalanced",
-          "name": "失衡标记",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "revealToSource": true,
-            "damage_taken_mul": {
-              "value": 1.2,
-              "filter": {
-                "casterIsStatusSource": true
-              }
-            }
-          }
-        }
-      ],
       "tentative": true
     },
     {
@@ -2122,30 +1825,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "order_sense",
-          "name": "秩序感应",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": 6,
-          "modifiers": {
-            "durationModifier": {
-              "scope": "enemy_outgoing",
-              "mode": "mul",
-              "value": 0.5,
-              "filter": {
-                "category": [
-                  "buff"
-                ]
-              },
-              "note": "敌方新获得的增益 duration ×0.5（宿主侧缩放，🟡 与耕种者新增项 18 同源）"
-            }
-          }
-        }
-      ],
       "tentative": true,
       "conversionNotes": "翻译/语义：审讯轴反制：群体剥夺+后续压制。⚠️D。"
     },
@@ -2287,25 +1966,6 @@
               "note": "界域操作租金"
             }
           ]
-        }
-      ],
-      "statusDefs": [
-        {
-          "id": "immunity_writ",
-          "name": "豁免权",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": 8,
-          "modifiers": {
-            "immune": {
-              "categories": [
-                "debuff"
-              ]
-            }
-          },
-          "note": "G12 immune 字段 ✅（编队参数 §1.1b），由 A 施加给 B 属自然覆盖"
         }
       ],
       "domain": {
@@ -2459,24 +2119,6 @@
           ]
         }
       ],
-      "statusDefs": [
-        {
-          "id": "composure",
-          "name": "理智",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": 8,
-          "modifiers": {
-            "immune": {
-              "categories": [
-                "control"
-              ]
-            }
-          }
-        }
-      ],
       "tentative": true,
       "frameworkFlags": [
         {
@@ -2510,31 +2152,7 @@
         }
       ],
       "tentative": true,
-      "hook": "on_battle_start",
-      "statusDefs": [
-        {
-          "id": "rank_jurisdiction",
-          "name": "位格管辖",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_taken_mul": {
-              "value": 0.9,
-              "filter": {
-                "statCompare": {
-                  "key": "rank",
-                  "cmp": "<",
-                  "note": "攻击者位格低于持有者"
-                }
-              }
-            }
-          },
-          "note": "位格环境类常驻（共享内核参数 §1.4：位格比较走 stat_compare(key:rank)，不新增谓词）"
-        }
-      ]
+      "hook": "on_battle_start"
     },
     {
       "id": "skill_arbiter_s2_rank_sanction",
@@ -2639,22 +2257,7 @@
           "scope": "single"
         },
         "fallbackSort": "hp_desc"
-      },
-      "statusDefs": [
-        {
-          "id": "demeaned",
-          "name": "贬谪",
-          "category": [
-            "debuff"
-          ],
-          "dispelable": true,
-          "duration": 4,
-          "modifiers": {
-            "damage_taken_mul": 1.2
-          },
-          "note": "位格被压低后的连带脆弱"
-        }
-      ]
+      }
     },
     {
       "id": "skill_arbiter_s0_rank_decree",
@@ -2678,30 +2281,6 @@
       ],
       "tentative": true,
       "hook": "on_battle_start",
-      "statusDefs": [
-        {
-          "id": "rank_decree",
-          "name": "位格律令",
-          "category": [
-            "buff"
-          ],
-          "dispelable": false,
-          "duration": null,
-          "modifiers": {
-            "damage_mul": {
-              "value": 1.25,
-              "filter": {
-                "statCompare": {
-                  "key": "rank",
-                  "cmp": "<",
-                  "note": "目标位格低于持有者"
-                }
-              }
-            }
-          },
-          "note": "与 lawyer/stratum 同构的位格双乘区，压在 ±25% 内"
-        }
-      ],
       "dimHooks": [
         {
           "dim": "order",
