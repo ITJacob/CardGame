@@ -1,0 +1,282 @@
+{
+  "statusDefs": [
+    {
+      "id": "observed",
+      "name": "已解析",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "slots": {
+        "lastSkillRef": "挂载瞬间快照目标最近一次施放过的技能（H33 slots）"
+      },
+      "note": "G15-b 合规：duration 6 ≥ 敏捷 0 单位约 5 tick 行动周期，且挂载走即时节点（on_deal_damage / on_take_damage），不受 on_turn_start 时间尺度影响"
+    },
+    {
+      "id": "ritual_expertise",
+      "name": "仪式专精",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_mul": {
+          "value": 1.2,
+          "filter": {
+            "element": [
+              "mental"
+            ]
+          }
+        }
+      },
+      "note": "H4 按元素过滤的伤害乘区（✅）；退化方案为 modify_stat(attack,+1)（物理线也吃到）"
+    },
+    {
+      "id": "mimic",
+      "name": "模仿",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "charges": 1,
+      "triggers": [
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "echo_last_skill",
+              "potency": "$params.potency",
+              "note": "展开重放快照技能：伤害 ×potency（向上取整）；potency≥0.8 附加效果完整保留，否则只保留 mount_status 且 duration ×potency（最低 1）；potency≥0.9 状态 duration 不再打折；spawn/move/target_override 一律跳过（保守版）"
+            }
+          ]
+        }
+      ],
+      "note": "参数化一次性乘区状态母版（H3：charges × 乘区 × 触发点 × 载荷）；与 optimal_choice 共用母版。序列1 档重放跳过 authority:true 标记条目（权柄不可重放，编目参数 §二）"
+    },
+    {
+      "id": "streamlined_cast",
+      "name": "省略步骤",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "energyCostAdd": -1,
+        "energyCostMin": 1,
+        "filter": {
+          "pathway": [
+            "reader"
+          ]
+        }
+      },
+      "note": "本稿新增项 11（🟡）：progression 层 SkillDef.costDelta 属战外上下文、归主项目，本仓库 ddd 不含"
+    },
+    {
+      "id": "foresight",
+      "name": "预知",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "charges": 1,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "modify_damage",
+              "mul": 0.5,
+              "target": "self",
+              "note": "该次伤害 ×0.5"
+            }
+          ],
+          "note": "C6 charges：响应一次 -1，归零卸载；F 组合并候选 2 参数化减伤母版同源"
+        }
+      ]
+    },
+    {
+      "id": "tutelage",
+      "name": "秘术传授",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": null,
+      "modifiers": {
+        "damage_mul": 1.2
+      },
+      "note": "复用 F14 tutelage（权威出处：F14 v0.1 登记，机制 H12 + 标准 damage_mul 已落 ddd）；本稿把 duration 从 F14 登记的 4 改为 null（整场），若太强改回 4 ⚠️D"
+    },
+    {
+      "id": "law_breach",
+      "name": "规律撬动",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": -5,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:*",
+          "value": -20,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self",
+          "note": "resist:all 通配 = 8 元素全降（共享内核 §一 ResistanceSet 行）"
+        }
+      ],
+      "modifiers": {
+        "pierce": [
+          "shield"
+        ],
+        "pierceScope": "incoming_from_caster",
+        "note": "pierce_shield：期间施法者对其造成的伤害不结算 shield 吸收（效果参数 §一 pierce 行含 shield）"
+      },
+      "note": "退化方案：去掉 pierce_shield，resist:all 改为逐元素 8 条 modify_stat（Repeat 展开，零新 StatKey）",
+      "crossPathway": true,
+      "participants": [
+        "reader",
+        "savant"
+      ]
+    },
+    {
+      "id": "wisdom",
+      "name": "智慧",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "neverMiss": true,
+        "damage_mul": 1.15
+      },
+      "note": "H35 neverMiss + 标准 damage_mul；never_miss 若无法落地（引擎无 miss 维度）退化为 damage_mul 1.25"
+    },
+    {
+      "id": "optimal_choice",
+      "name": "最优选择",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "charges": 1,
+      "modifiers": {
+        "damage_mul": 1.4,
+        "note": "下一次造成的伤害 ×1.4，响应后消耗"
+      },
+      "note": "与 mimic 共用参数化乘区母版（参数 mul/charges）；H42 同向乘区取最高"
+    },
+    {
+      "id": "law_authority",
+      "name": "规律权柄",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "dispelableOverride": {
+          "scope": "outgoing",
+          "categories": [
+            "debuff"
+          ],
+          "value": false,
+          "note": "H8 运行时覆写：你施加的 vulnerable/observed/law_breach/omniscience_mark 等减益挂载时覆写为 dispelable:false"
+        }
+      },
+      "note": "与愚者 v0.2 新增项 9、歌颂者 v0.2 新增项 11 同源（H8），建议并入同一母版",
+      "crossPathway": true,
+      "participants": [
+        "reader",
+        "savant"
+      ]
+    },
+    {
+      "id": "omniscience_mark",
+      "name": "全知刻印",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": null,
+      "modifiers": {
+        "damage_taken_mul": 1.2,
+        "concealPiercedForCaster": true,
+        "casterNeverMiss": true
+      },
+      "note": "H2 复合 debuff + §四 识破分支 + H35 neverMiss；与 vulnerable（1.3）同向乘区取最高不叠乘（H42）"
+    },
+    {
+      "id": "astral_tutelage",
+      "name": "星界导师",
+      "category": [
+        "retarget",
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "charges": 2,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "first_empty",
+            "note": "修改\"行为\"概念本身：攻击打向空处（C7 ✅ 已验证）"
+          }
+        ]
+      },
+      "note": "H12 target_override 族「锚点=空坐标 × 存续=charges:2」格，F 组合并候选 3 建议并入该母版"
+    },
+    {
+      "id": "omniscience",
+      "name": "白塔全知",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_mul": {
+          "value": 1.15,
+          "filter": {
+            "faction": [
+              "enemy"
+            ]
+          }
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "observed",
+              "duration": 6,
+              "target": "target",
+              "note": "全知 = 不需要额外动作去观察：打谁，谁就被即时解析刷新快照"
+            }
+          ],
+          "note": "即时节点 ✅ 已 fire，规避 G15/G15-b；on_battle_start 时全体敌方先挂 observed（快照为空，靠本触发持续刷新）"
+        }
+      ],
+      "note": "与全知·现在与过去是两条独立被动（那条「看穿敌人」，本条「学得会敌人」），对应原著两个位阶的全知权柄，不合并"
+    }
+  ]
+}
