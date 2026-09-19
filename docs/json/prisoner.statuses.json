@@ -1,0 +1,587 @@
+{
+  "statusDefs": [
+    {
+      "id": "frenzy",
+      "name": "爆发欲望",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": 3,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 3,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 8,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 2,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -2,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": -20,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "note": "H10 参数化形态增益母版（增益段 × 代价段 × dispelable:false），与 F10 beast_form 同母版，差异在代价段与可否驱散；正负两段同挂一个可计时状态，到期自动回滚"
+    },
+    {
+      "id": "unhinged_mind",
+      "name": "疯癫",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "condition": {
+            "kind": "element_is",
+            "element": "mental"
+          },
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "note": "sourceFilter 按元素过滤走共享内核 §二 ElementIs 谓词"
+    },
+    {
+      "id": "werewolf_form",
+      "name": "狼人化",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 3,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 8,
+          "mode": "delta",
+          "duration": 4,
+          "target": "self"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "poison",
+              "duration": 2,
+              "note": "爪牙带毒：载荷目标为被击中的单位"
+            }
+          ]
+        },
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 1,
+              "target": "self",
+              "note": "恐怖自愈；A22 必须用 heal 原语，G14 tick ≠ 回合"
+            }
+          ]
+        }
+      ],
+      "note": "复用 F10 beast_form 母版（atk+3 / gauge_rate+8 / dispelable:true），本卡追加 on_deal_damage 附毒 + on_tick 自愈两条触发器",
+      "lineageStack": {
+        "push": "werewolf_form",
+        "depth": 1,
+        "maxDepth": 3,
+        "replay": {
+          "enabled": false
+        },
+        "note": "异类谱系栈（编队参数 §2.4）：狼人化为栈底形态之一；maxDepth ⚠️D 待平衡。"
+      }
+    },
+    {
+      "id": "puppet_string",
+      "name": "提线木偶",
+      "category": [
+        "retarget",
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "modifiers": {
+        "targetOverride": {
+          "op": "target_override",
+          "anchor": "index_asc_same_faction",
+          "note": "H12 target_override 族；优先于嘲讽/守护"
+        }
+      },
+      "note": "F9 已登记；权威定义见状态表，此处为引用副本",
+      "crossPathway": true,
+      "participants": [
+        "apprentice",
+        "assassin",
+        "corpse_collector",
+        "fool",
+        "prisoner",
+        "sleepless",
+        "thief",
+        "warrior"
+      ]
+    },
+    {
+      "id": "anti_scry",
+      "name": "反占卜",
+      "category": [
+        "conceal",
+        "retarget"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "charges": 1,
+      "redirectRule": {
+        "to": "first_empty",
+        "sourceFilter": "skill",
+        "scope": "single",
+        "direction": "inbound",
+        "note": "C7 已验证空坐标锚点：被敌方单体技能指向时转向生效、该次攻击打空，随后 charges 归零卸载"
+      },
+      "note": "确定性落空（2026-09-04 拍板取代原 chance 0.25，落空属目标选择维度、概率化违反 R1/R5，走 C6 charges 次数型）；次数 ⚠️D 待标定"
+    },
+    {
+      "id": "spirit_form",
+      "name": "灵体化",
+      "category": [
+        "buff",
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:physical",
+          "value": 50,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "modifiers": {
+        "moveImmune": true,
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single",
+          "note": "藏身镜子：C8 候选池过滤"
+        },
+        "damageElementOverride": "mental",
+        "note": "直接攻击灵魂：damageElementOverride（效果参数 §1.1，新增项 5）"
+      },
+      "note": "H5 潜行/虚化母版 + H27 moveImmune + damageElementOverride；原著「自由出入灵界」在单战场无第二维度，仅作 flavor",
+      "lineageStack": {
+        "push": "spirit_form",
+        "depth": 1,
+        "maxDepth": 3,
+        "replay": {
+          "enabled": false
+        },
+        "note": "异类谱系栈（编队参数 §2.4）：灵体化可压栈于狼人化之上；maxDepth ⚠️D 待平衡。"
+      }
+    },
+    {
+      "id": "wraith_body",
+      "name": "幽影",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "condition": {
+            "kind": "element_is",
+            "element": "physical"
+          },
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 8,
+              "mode": "delta",
+              "target": "self",
+              "note": "受击后散开一瞬 = 抢回一点节奏；被动状态内 on_take_damage 触发，非主动技能自推条，G5/G6 合规"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "curse_link",
+      "name": "诅咒链接",
+      "category": [
+        "link",
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "damageTransfer": {
+        "ratio": 1.0,
+        "direction": "to_target",
+        "split": "even",
+        "selfKeep": true,
+        "linkedTo": "target",
+        "network": {
+          "enabled": true,
+          "maxTargets": 3,
+          "splitCoefficient": {
+            "base": 1.0,
+            "perExtra": 0.2
+          },
+          "note": "诅咒链接网络母版（可堆叠）：链接 N 目标，全网分摊系数 = 1 + 0.2×(N−1)。maxTargets=3 为 ⚠️D 占位待平衡。"
+        },
+        "note": "H28 伤害转嫁母版（ratio × direction × split × selfKeep × linkedTo 五参，与 F5 pain_link 同母版，F5 即 ratio:0.5 档）；内置防循环：由本状态产生的伤害不再触发任何链接。selfKeep:true = 序列4 反噬未解（伤敌也伤己）；序列3 无反噬之咒翻为 false，序列0 万咒加身完成所有类型诅咒——三层同一母版。2026-09-18 升级为网络母版：可堆叠链接 N 目标，全网分摊系数 = base + perExtra×(N−1)。"
+      },
+      "maxStacks": 3,
+      "stackPolicy": "stack"
+    },
+    {
+      "id": "lineage_replay",
+      "name": "演出回放",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 1,
+      "stackPolicy": "stack",
+      "lineageStack": {
+        "depth": 0,
+        "maxDepth": 3,
+        "replay": {
+          "enabled": true,
+          "note": "演出回放：重演谱系栈内已推入的形态序列（编队参数 §2.4）"
+        },
+        "note": "异类谱系栈的回放承载；不自行 push，只读取并重演栈内形态。"
+      },
+      "note": "PENDING 囚犯「演出回放」承载状态（⚠️D 数值待平衡）。"
+    },
+    {
+      "id": "spirit_shroud_guard",
+      "name": "半沉灵界",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 1,
+      "modifiers": {
+        "damage_taken_mul": 0.85
+      },
+      "note": "界域己方减伤段的承载状态，由 domainDef on_turn_start 每回合刷新"
+    },
+    {
+      "id": "silent_vigil",
+      "name": "长久沉默",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "immune": {
+          "categories": [
+            "seal"
+          ],
+          "note": "G12 immune；silence 归 seal 类别（H40 增补）"
+        },
+        "damage_mul": {
+          "value": 1.3,
+          "filter": {
+            "targetHasStatus": [
+              "silence"
+            ]
+          },
+          "note": "H4 过滤伤害乘区（§三 has_status 条件乘区）：诅咒在沉默里发酵"
+        }
+      },
+      "note": "原著写的是自己在沉默中酝酿诅咒，不是让别人闭嘴（v0.1 全体封技 3 回合原著无据，已剔除）"
+    },
+    {
+      "id": "object_possession",
+      "name": "附身物体",
+      "category": [
+        "buff",
+        "stance"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "resist:physical",
+          "value": 40,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single",
+          "note": "C8 候选池过滤出口（H5 母版）"
+        },
+        "disableSkills": true,
+        "note": "disable 作用域=技能（执行参数 §一，与「沉默」同字段）；物体不会施法，自废施法换生存"
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "从物件里伸出的怨毒之手"
+            }
+          ]
+        }
+      ],
+      "note": "与灵体化互补的防守向形态（灵体化进攻向：攻击转精神、仍能施法），两者不可合并"
+    },
+    {
+      "id": "transmute_curse",
+      "name": "变形诅咒",
+      "category": [
+        "debuff",
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -2,
+          "mode": "delta",
+          "duration": 3,
+          "target": "self"
+        }
+      ],
+      "modifiers": {
+        "attackMod": 0.5,
+        "gaugeRateMul": 0.5,
+        "disableSkills": true,
+        "note": "H24 减速族（gaugeRateMul × attackMod）+ H10 属性段 + disable 技能作用域；变成生物、属性腰斩、忘掉技能，但还能咬人（非定身）"
+      },
+      "note": "与刺客 petrification（石化全禁）、F20 petrify（物质转化禁疗）三者同名近义机制不同，落地时不可合并；变形诅咒 > 免吟唱（变形成野兽后不存在吟唱）"
+    },
+    {
+      "id": "abomination",
+      "name": "邪物",
+      "category": [
+        "aura"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "mind_taint",
+              "stacks": 1,
+              "duration": 3,
+              "target": "all_enemies",
+              "condition": {
+                "kind": "chance",
+                "p": 0.2
+              },
+              "note": "状态挂在施法者身上、on_tick 载荷 target 覆写到敌方全体（新增项 18 已落：效果上下文 §二，歌颂者 8 / 窥秘人 SS15 同判例）；概率须登记 RandomUsageRegistry（R3）、单次抽样（R4）"
+            }
+          ]
+        }
+      ],
+      "note": "F8 mind_taint（H2 复合 debuff + H34 statPerStack，与战士 aging 同族，建议上限 3 层）+ F51 stacks；光环式持续渗透（v0.1 主动 AOE 挂 2 层原著无据，已改回）"
+    },
+    {
+      "id": "spirit_prison",
+      "name": "灵性囚笼",
+      "category": [
+        "control",
+        "debuff"
+      ],
+      "dispelable": false,
+      "duration": 4,
+      "modifiers": {
+        "disableAllActions": true,
+        "note": "disable 全部四行为（编队参数 §2.2 眩晕同字段）+ H21 禁疗（heal_received_mul:0，与 F20 petrify 同字段）",
+        "heal_received_mul": 0
+      },
+      "note": "比眩晕更彻底的控制：不可驱散、禁疗、时长 4t（眩晕常规 1t）"
+    },
+    {
+      "id": "aberration_king",
+      "name": "异类之王",
+      "category": [
+        "buff",
+        "aura"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "all_allies",
+          "filter": {
+            "unitType": [
+              "ABERRATION"
+            ]
+          },
+          "note": "掌控：unit_ghoul / unit_relic / 被 convert 的单位（新增项 7 类型定向已落：编队参数 §1.2b + 共享内核 §一 filter.unitType）"
+        }
+      ],
+      "modifiers": {
+        "damage_mul": {
+          "value": 1.5,
+          "filter": {
+            "targetUnitType": "ABERRATION"
+          },
+          "note": "天然压制：对异种加伤"
+        }
+      },
+      "note": "操纵物品 / 唤醒死尸 / 转化三条召唤转化线的共同收束",
+      "lineageStack": {
+        "push": "aberration_king",
+        "depth": 2,
+        "maxDepth": 3,
+        "replay": {
+          "enabled": true,
+          "note": "异类之王：可重演栈内形态序列（演出回放）"
+        },
+        "note": "异类谱系栈（编队参数 §2.4）：栈顶端形态，启用演出回放；depth/maxDepth ⚠️D。"
+      }
+    },
+    {
+      "id": "the_bound",
+      "name": "被缚者",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "moveImmune": true,
+        "gaugeReductionImmune": true,
+        "note": "moveImmune / gaugeReductionImmune 已落 ddd（编队参数 §1.1b，H27/H31，与 F7 同字段正反面）——被缚住了所以推不动、拖不慢",
+        "dispelableOverride": {
+          "statusIds": [
+            "shackle",
+            "transmute_curse",
+            "spirit_prison"
+          ],
+          "dispelable": false,
+          "note": "H8 运行时覆写（挂载方声明指定类别 dispelable:false，新增项 9，与愚者 9 同源同落点）：封印的绝对性"
+        }
+      }
+    },
+    {
+      "id": "curse_ward",
+      "name": "诅咒护体",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "durationModifier": {
+          "scope": "incoming",
+          "mode": "mul",
+          "value": 0.5,
+          "filter": {
+            "category": [
+              "debuff"
+            ]
+          },
+          "note": "H14 durationModifier：受到的 debuff/dot 类状态 duration ×0.5"
+        }
+      }
+    },
+    {
+      "id": "curse_ward_block",
+      "name": "咒壁",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "charges": 3,
+      "modifiers": {
+        "immune": {
+          "categories": [
+            "debuff"
+          ],
+          "note": "G12 immune；每阻挡一次施加 charges -1，归零卸载（C6 次数型）"
+        }
+      },
+      "note": "确定性阻挡（2026-09-04 拍板取代原 chance 0.5，理由同初步反占卜：阻挡属目标选择维度，概率化违反 R1/R5）；次数 ⚠️D 待标定"
+    },
+    {
+      "id": "mind_taint",
+      "name": "精神污染",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "note": "F8 通用状态最小副本：精神污染叠层（F51 stacks，上限 3 层为 F8 建议值）；按层修正属性（H34 statPerStack）数值待拍板，与 madness / whisper 同属叠层 debuff 母版。序列最低引用卡（s0）携带登记，s2 邪物同源引用"
+    }
+  ]
+}
