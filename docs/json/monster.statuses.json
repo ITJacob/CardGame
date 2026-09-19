@@ -1,0 +1,709 @@
+{
+  "statusDefs": [
+    {
+      "id": "inspiration_sense",
+      "name": "灵感超高",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "concealReveal": {
+          "value": true,
+          "note": "识破分支（共享内核 §四）：敌方隐匿/不可锁定/潜行类状态对持有者无效"
+        },
+        "damage_mul": {
+          "value": 1.2,
+          "filter": {
+            "targetHasStatus": [
+              "concealed",
+              "stealth",
+              "ambush_shroud"
+            ]
+          },
+          "note": "对隐匿目标伤害 ×1.2（同出口）"
+        }
+      }
+    },
+    {
+      "id": "danger_sense",
+      "name": "危险预感",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 10,
+      "modifiers": {
+        "damage_taken_mul": {
+          "value": 0.6,
+          "charges": 1,
+          "note": "次数型减伤（C6）：on_take_damage 响应式派发 -1，归零卸载"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "danger_sense",
+              "charges": 1,
+              "duration": 10,
+              "target": "self",
+              "note": "自续链：预感一次次重新浮现（新增项 5，on_remove 合法化）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "machine_mind",
+      "name": "恐怖计算",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 8,
+          "mode": "delta",
+          "duration": null,
+          "target": "self",
+          "note": "INV-S5 合规：改速率不改派生行动周期"
+        }
+      ],
+      "modifiers": {
+        "immune": {
+          "categories": [
+            "retarget"
+          ],
+          "note": "精准控制：自身攻击目标不会被改写（新 StatusCategory retarget，新增项 19）"
+        }
+      }
+    },
+    {
+      "id": "anti_divination",
+      "name": "反占卜",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "gaugeReductionImmune": {
+          "value": true,
+          "scope": "self",
+          "note": "免疫 gauge.current 减少（新增项 18，H27/H31）"
+        },
+        "concealRevealBlock": {
+          "value": true,
+          "scope": "self",
+          "note": "敌方识破/隐匿忽略/必定命中类状态对持有者无效（C8 反向，共享内核 §四 识破分支）"
+        }
+      }
+    },
+    {
+      "id": "lucky_streak",
+      "name": "幸运者",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "fortune",
+              "stacks": 1,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "lucky_streak",
+              "duration": 5,
+              "target": "self",
+              "note": "自续链：约每 5 tick +1 层幸运（高潮期 ×2 由命运潮汐调制）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fortune",
+      "name": "幸运",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": null,
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "note": "H11 计数型资源状态（新增项 1 主体已落：F51 stacks + F48 consume；唯「监听自身获得指定状态」触发面未落）。maxStacks 基础 3，可被绝对灵感 +1（→4）、赢家 +3（→6）提升。消耗出口：赢家 4 层换免死 / 赐福 2 层换祝福 / 重启循环 3 层续接"
+    },
+    {
+      "id": "tide_low",
+      "name": "命运潮汐·低潮",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": 6,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "fortune",
+              "stacks": 1,
+              "target": "self",
+              "note": "低潮期挨打攒运气"
+            }
+          ]
+        },
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "tide_high",
+              "duration": 6,
+              "target": "self",
+              "note": "双相位交替（H50 形态组，零新机制）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tide_high",
+      "name": "命运潮汐·高潮",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": 6,
+      "modifiers": {
+        "fortuneGainMul": {
+          "value": 2,
+          "note": "高潮期幸运层数获取 ×2（幸运者等来源）"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "tide_low",
+              "duration": 6,
+              "target": "self"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "windfall",
+      "name": "意外之财",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_status_gain",
+          "filter": {
+            "statusId": "fortune"
+          },
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "每次获得幸运层数 +1 能量，单次 2 层则 +2"
+            }
+          ],
+          "note": "「监听自身获得指定状态」触发面（伪事件，见 frameworkFlags）"
+        }
+      ]
+    },
+    {
+      "id": "calamity_foresight",
+      "name": "预见灾祸",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "brace",
+              "duration": 2,
+              "target": "self",
+              "note": "可预见并准备：2t 内刷新不叠层"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "misfortune",
+              "stacks": 1,
+              "duration": 4,
+              "target": "attacker",
+              "note": "灾祸反噬攻击者（F61 RedirectRule.to attacker）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "brace",
+      "name": "招架",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "damage_taken_mul": 0.85
+      },
+      "note": "H3 参数化减伤母版（与 F22 sanctuary / C3 glibness / F4 同族，新增项 20）"
+    },
+    {
+      "id": "misfortune",
+      "name": "厄运",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "maxStacks": 3,
+      "stackPolicy": "refresh",
+      "modifiers": {
+        "gaugeRateMul": {
+          "value": 0.9,
+          "perStack": true,
+          "note": "每层行动条速率 ×0.9 乘算（H24），3 层 = ×0.729，INV-S5 合规"
+        }
+      },
+      "stackThreshold": {
+        "stacks": 3,
+        "effects": [
+          {
+            "type": "target_override",
+            "anchor": "first_empty",
+            "note": "厄运爆发：立即打空一次并清空层数（H2 stackThreshold，R5 确定性写法，C7 锚点）"
+          }
+        ]
+      },
+      "note": "H2 参数化复合 debuff 母版（新增项 10）；挂载刷新不叠层，避免乘区指数化",
+      "crossPathway": true,
+      "participants": [
+        "sleepless",
+        "monster"
+      ]
+    },
+    {
+      "id": "mind_storm",
+      "name": "精神风暴",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "first_empty",
+          "note": "持有者打出的攻击被改写为最近空坐标（C7 ✅，每次生效消耗 1 charges）"
+        }
+      ]
+    },
+    {
+      "id": "near_death_save",
+      "name": "免死",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 6,
+      "modifiers": {
+        "lethalProtect": {
+          "value": true,
+          "hpFloor": 1,
+          "note": "H7 致死保护母版（新增项 3，与愚者同源同一母版）：化解下次致死伤害、保留 1 血；注意不是复活"
+        }
+      }
+    },
+    {
+      "id": "fortune_mastery",
+      "name": "赢家·掌控幸运",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "fortuneMaxStacksBonus": {
+          "value": 3,
+          "note": "fortune.maxStacks 3 → 6"
+        }
+      }
+    },
+    {
+      "id": "fate_sight",
+      "name": "超强预感",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 5,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "modifiers": {
+        "gaugeReductionImmune": {
+          "value": true,
+          "scope": "all_allies",
+          "note": "新增项 18：免疫推条布尔 + scope 参数（自身/全队两档），序列8 反占卜的全队版"
+        },
+        "concealRevealBlock": {
+          "value": true,
+          "scope": "all_allies",
+          "note": "敌方识破/隐匿忽略类状态对己方全体无效（C8 反向）"
+        }
+      }
+    },
+    {
+      "id": "absolute_inspiration",
+      "name": "绝对灵感",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": 5,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "energy_regen",
+          "value": 0.3,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "modifiers": {
+        "fortuneMaxStacksBonus": {
+          "value": 1,
+          "note": "fortune.maxStacks 3 → 4"
+        },
+        "damage_mul": {
+          "value": 1.2,
+          "filter": {
+            "targetHasStatus": [
+              "misfortune"
+            ]
+          },
+          "note": "H4 按状态过滤的伤害乘区（新增项 17 口径），🜁🜃 咬合"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "fortune",
+              "stacks": 1,
+              "target": "self",
+              "note": "灵感产出幸运：约每 5 tick +1 层（自续链同幸运者）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "absolute_inspiration",
+              "duration": 5,
+              "target": "self"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "blessing_gift",
+      "name": "赐福",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "modifiers": {
+        "damage_mul": 1.2,
+        "damage_taken_mul": 0.9
+      },
+      "note": "H10 参数化增益母版（新增项 11，与 F14 tutelage 同源）"
+    },
+    {
+      "id": "mercury_body",
+      "name": "水银之躯",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "modifiers": {
+        "incomingMiss": {
+          "to": "first_empty",
+          "charges": 2,
+          "note": "入射侧闪避型转向（新增项 4，执行参数 §一 RedirectRule.to first_empty，ddd 明示怪物·水银之躯即此承载）：打向持有者的攻击改写为空坐标，每次实际生效消耗 1 层；与 C7 出射侧目标改写共用锚点"
+        }
+      },
+      "note": "退化方案（damage_taken_mul: 0 的 charges 型状态）仍备，建议先上退化版验证强度"
+    },
+    {
+      "id": "fate_chaos",
+      "name": "混乱",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "nearest_any",
+          "note": "打向不分阵营的最近单位（新增项 13 锚点 nearest_any，已并入 H12 状态族母版）；状态 ID 按命名冲突提醒取 fate_chaos，避开律师途径 chaos 撞车"
+        }
+      ],
+      "note": "charges 2：前 2 次攻击生效，每次消耗 1 层",
+      "crossPathway": true,
+      "participants": [
+        "lawyer",
+        "monster",
+        "arbiter"
+      ]
+    },
+    {
+      "id": "mercury_form",
+      "name": "水银之躯·完整",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "note": "完整神话生物形态承载；mercury_body 实例由 mercury_cycle 周期发放，与主动技能共用同一状态（层数可叠加到 4）：保底窗口 + 主动补窗"
+    },
+    {
+      "id": "mercury_cycle",
+      "name": "水银之躯·循环",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": 10,
+      "triggers": [
+        {
+          "event": "on_remove",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "mercury_body",
+              "charges": 2,
+              "duration": 10,
+              "target": "self",
+              "note": "约每 10 tick 自动进入一次「不被命中」窗口（原著「十秒」「被动」逐字对应）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "mercury_cycle",
+              "duration": 10,
+              "target": "self",
+              "note": "自续链（新增项 5）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fate_loop",
+      "name": "命运循环",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "gauge.threshold",
+          "value": 60,
+          "mode": "delta",
+          "duration": 5,
+          "target": "self",
+          "note": "退化方案（新增项 7 拍板采用）：抬高行动条阈值延后填满时机，等效「循环往复」；INV-S5 合规（改源属性 threshold，原稿 modify_stat 写法不可用）"
+        }
+      ],
+      "note": "主方案「行动条填满即清零」需 on_gauge_full 事件，已不立项（不开第 13 触发点）"
+    },
+    {
+      "id": "rebirth_cycle",
+      "name": "重启循环",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "lethalProtect": {
+          "value": true,
+          "note": "H7 致死保护母版（新增项 3，愚者/耕种者/不眠者/歌颂者/秘祈人同源统一）：逆转为胚胎 = 回到初始态保住一命，非死后召回"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "heal",
+              "healToRatio": 0.3,
+              "target": "self",
+              "note": "A22：回复至 30% 最大生命"
+            },
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "debuff",
+                  "control"
+                ]
+              },
+              "note": "C2 数组：洗掉疯狂——清空自身全部负面"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "fortune",
+                "cmp": ">=",
+                "n": 3
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "fortune",
+                  "stacks": -3,
+                  "stackMode": "consume"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "rebirth_cycle",
+                  "charges": 1,
+                  "duration": null,
+                  "target": "self",
+                  "note": "循环不是无限的，得用运气去买：重新装填 1 次 charges（原实例已消耗归零卸载，此处重挂）"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "saved_fate",
+      "name": "保存",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "spawn",
+              "reviveOf": "self",
+              "hpRatio": 0.4,
+              "position": "original",
+              "note": "退化方案（C4 miracle 式死后召回）：把「死」替换为「以 40% 血归来」；G4 reviveOf + C5 hpRatio/position 已登记。与重启循环（自身致死保护）不同：本条是他人死后召回"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chosen_branch",
+      "name": "选择",
+      "category": [
+        "retarget"
+      ],
+      "dispelable": true,
+      "duration": 4,
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "manual",
+          "manualTarget": "secondary_target",
+          "note": "新增项 12：锚点 manual 已落 ddd（共享内核 §一 anchor 枚举 + 执行参数 §2.2）；本途径唯一由玩家决定改写方向的 target_override（H12 状态族多注册锚点，不新增机制）"
+        }
+      ]
+    },
+    {
+      "id": "probability_authority",
+      "name": "概率权柄",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "target": {
+            "faction": "enemy",
+            "scope": "single",
+            "sort": "gauge_desc",
+            "note": "确定性选取当前行动条最高的敌方单位（新增项 21：sort gauge_desc + faction enemy，H13 排序键族），目标选择零随机（R1）"
+          },
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -8,
+              "mode": "delta",
+              "condition": {
+                "kind": "chance",
+                "p": 0.5
+              },
+              "note": "全稿唯一概率（G1 口径：condition 挂在 EffectRef 上，无 Chance 算子）；只作用行动条这一非伤害维度（R5），单次抽样（R4），R3 登记可筛出"
+            }
+          ]
+        }
+      ],
+      "note": "R3 登记 / R4 单次抽样 / R5 非伤害维度，三条纪律全守"
+    }
+  ]
+}
