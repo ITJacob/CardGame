@@ -112,6 +112,8 @@ ENUM_TO_CAT = {
     "domainGrant.durationUnit": "durationUnit",
     "zoneDef.kind": "zoneKind",
     "zoneDef.trigger": "zoneTrigger",
+    "zoneDef.affects": "zoneAffects",
+    "zoneGrant.affects": "zoneAffects",
     "zoneDef.durationUnit": "durationUnit",
     "zoneGrant.durationUnit": "durationUnit",
     # $defs 顶层的独立枚举（与 validate.py 已覆盖的部分重叠，合并不冲突）

@@ -84,7 +84,7 @@ function zoneDomainHtml(card) {
     const head = [
       z.kind ? termSpan('zoneKind', z.kind) : '',
       z.trigger ? termSpan('zoneTrigger', z.trigger) : '',
-      z.affects ? `作用于 <span class="mono">${escapeHtml(z.affects)}</span>` : '',
+      z.affects ? `作用于${termSpan('zoneAffects', z.affects)}` : '',
       durationHtml(z),
       z.interval != null ? `触发间隔 ${z.interval}` : '',
     ].filter(Boolean);
@@ -151,7 +151,7 @@ export function renderCardDetail(view, id) {
     </div>
     <div class="muted" style="margin-top:2px"><span class="mono">${escapeHtml(c.id)}</span></div>
     <div class="badges" style="margin-top:6px">
-      <span class="badge">${termSpan('pathway', c._pathway)}</span>
+      <span class="badge">${escapeHtml(c._pathwayName)}</span>
       <span class="badge">轴：${axisSpan(c._pathway, c.axis)}</span>
       ${(c.tags || []).map((t) => `<span class="badge">${escapeHtml(t)}</span>`).join('')}
       ${c.gender && c.gender !== 'any' ? `<span class="badge">${g('gender', c.gender)}限定</span>` : ''}

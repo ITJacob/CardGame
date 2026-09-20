@@ -384,9 +384,9 @@
       "label": "取整方式",
       "source": "skills.schema.json echo_last_skill",
       "terms": {
-        "ceil": { "zh": "向上取整", "brief": "" },
-        "floor": { "zh": "向下取整", "brief": "" },
-        "round": { "zh": "四舍五入", "brief": "" }
+        "ceil": { "zh": "向上取整", "brief": "回响载荷折算后向上取整" },
+        "floor": { "zh": "向下取整", "brief": "回响载荷折算后向下取整" },
+        "round": { "zh": "四舍五入", "brief": "回响载荷折算后四舍五入" }
       }
     },
     "skillSelector": {
@@ -515,11 +515,11 @@
       "label": "比较符",
       "source": "skills.schema.json condition",
       "terms": {
-        ">": { "zh": "大于", "brief": "" },
-        ">=": { "zh": "大于等于", "brief": "" },
-        "<": { "zh": "小于", "brief": "" },
-        "<=": { "zh": "小于等于", "brief": "" },
-        "==": { "zh": "等于", "brief": "" }
+        ">": { "zh": "大于", "brief": "条件数值比较：左值严格大于右值" },
+        ">=": { "zh": "大于等于", "brief": "条件数值比较：左值不小于右值" },
+        "<": { "zh": "小于", "brief": "条件数值比较：左值严格小于右值" },
+        "<=": { "zh": "小于等于", "brief": "条件数值比较：左值不大于右值" },
+        "==": { "zh": "等于", "brief": "条件数值比较：左右相等" }
       }
     },
     "side": {
@@ -576,12 +576,12 @@
       "label": "行为封锁",
       "source": "SCHEMA.md §6 disallowActions",
       "terms": {
-        "move": { "zh": "禁止移动", "brief": "" },
-        "basic_attack": { "zh": "禁止普攻", "brief": "" },
-        "skill": { "zh": "禁止主动技能", "brief": "" },
-        "skip": { "zh": "禁止跳过行动", "brief": "" },
-        "react": { "zh": "禁止反应·反击", "brief": "" },
-        "channel": { "zh": "禁止吟唱", "brief": "" }
+        "move": { "zh": "禁止移动", "brief": "statusDef.disallowActions 取值：该单位无法位移" },
+        "basic_attack": { "zh": "禁止普攻", "brief": "statusDef.disallowActions 取值：无法发动普通攻击" },
+        "skill": { "zh": "禁止主动技能", "brief": "statusDef.disallowActions 取值：无法施放主动技能" },
+        "skip": { "zh": "禁止跳过行动", "brief": "statusDef.disallowActions 取值：不能主动跳过自己的行动" },
+        "react": { "zh": "禁止反应·反击", "brief": "statusDef.disallowActions 取值：无法触发反应与反击" },
+        "channel": { "zh": "禁止吟唱", "brief": "statusDef.disallowActions 取值：无法进行吟唱" }
       }
     },
     "zoneKind": {
@@ -599,6 +599,15 @@
         "on_occupy_tick": { "zh": "占据每 tick", "brief": "占据该区域的单位每 tick 触发" },
         "on_attack": { "zh": "攻击时", "brief": "占据者攻击时触发" },
         "summon_skill": { "zh": "召唤技能", "brief": "召唤类技能触发" }
+      }
+    },
+    "zoneAffects": {
+      "label": "区域作用面",
+      "source": "ddd/params/战场参数.md ZoneGrant.affects / SCHEMA.md §7 zoneDef",
+      "terms": {
+        "ally_of_owner": { "zh": "己方单位", "brief": "仅对 Zone 归属者一方生效" },
+        "enemy_of_owner": { "zh": "敌方单位", "brief": "仅对 Zone 归属者的敌方生效" },
+        "any": { "zh": "不限阵营", "brief": "对进入区域的任何单位生效" }
       }
     },
     "durationUnit": {
@@ -660,10 +669,10 @@
       "label": "转嫁方向",
       "source": "SCHEMA.md §6 damageTransfer",
       "terms": {
-        "to_caster": { "zh": "转给施法者", "brief": "" },
-        "to_allies": { "zh": "转给友军", "brief": "" },
-        "to_target": { "zh": "转给目标", "brief": "" },
-        "to_third": { "zh": "转给第三方", "brief": "" }
+        "to_caster": { "zh": "转给施法者", "brief": "damageTransfer 方向：承伤转嫁给伤害来源" },
+        "to_allies": { "zh": "转给友军", "brief": "damageTransfer 方向：承伤分摊给友方单位" },
+        "to_target": { "zh": "转给目标", "brief": "damageTransfer 方向：承伤转嫁给被攻击的目标" },
+        "to_third": { "zh": "转给第三方", "brief": "damageTransfer 方向：承伤转嫁给场上的第三方单位" }
       }
     },
     "split": {
