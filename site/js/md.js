@@ -66,8 +66,10 @@ function termLink(cat, key) {
 // inEnum：处于行内代码 / 表格单元格等「一眼是取值」的位置，通用档也关联
 function token(text, opts, inEnum) {
   const idx = indexPath();
-  // 前置字符排除 & 和 #：escapeHtml 产生的 &amp;/&lt;/&#39; 里会留下 amp/lt/39 这样的词
-  return text.replace(/(^|[^&#\w])([A-Za-z_][A-Za-z0-9_]*(?:[.:][A-Za-z0-9_*]+)*)/g, (m, pre, w) => {
+  // 前置字符排除 & 和 #：escapeHtml 产生的 &amp;/&lt;/&#39; 里会留下 amp/lt/39 这样的词。
+  // 尾部排除连字符：`skill-design_v0.3`、`enemy-self` 这类是文件名或连写词，
+  // 切开一半去查词条会命中 `skill`（禁止主动技能）这种风马牛不相及的同形词
+  return text.replace(/(^|[^&#\w])([A-Za-z_][A-Za-z0-9_]*(?:[.:][A-Za-z0-9_*]+)*)(?!-)/g, (m, pre, w) => {
     const cat = idx.exact[w] || idx.byPrefix(w);
     if (!cat) return m;
     if (!inEnum) {
@@ -289,4 +291,183 @@ export function parseToc(md) {
     if (li && cur) cur.items.push({ label: li[1].trim(), path: li[2].trim() });
   }
   return groups.filter((g) => g.items.length);
+}
+
+// ── 字段 / 概念速查抽取（领域模型页的数据面） ─────────────────────────
+// 把一篇设计文档拆成一条条可检索的条目，而不是把整篇正文铺在页面上（见
+// site/README.md 的「领域模型页」）。条目只有两个来源，都不猜语法：
+//
+//   ① 表格行——首列是「名字」的表才算字段表。首列是序号或纯数值的表（标定梯度、
+//      时相表、分布表、占位盘点）是**数据**不是字段，收进来只会用噪声淹没字段，
+//      它们留给每篇末尾的「原文」。
+//   ② 小节标题——标题里带 ASCII 标识符的（`## 二、TargetSpec（目标规格）`、
+//      `### Coordinate（坐标）`）是一个概念；`## 一、职责定位` 这类纯中文小节是
+//      散文，本身不收，但其中的表格照收。
+//
+// 表头原样当字段标签（取值 / 归属 / 说明 / 语义…）：文档已经写明了这一列是什么，
+// 不在这里重新解释。正文写不下的长说明由页面折叠，本文只负责拆。
+
+// 首列是「名字」的列头。首列命中其一即认作字段表；找不到就整张跳过。
+// 新写了一类字段表而没被收录时，把它的首列列头加到这里。
+const NAME_COLS = new Set([
+  '字段', '谓词', '组合子', '键', '原语', '算子', '参数', '维度', '概念', '编号',
+  '值对象', '上下文', '事件', '母版', '状态', '层', '系', '阶段', '节点', '规则',
+  '来源', 'type', 'op', 'kind', 'Def',
+]);
+
+// `## 三、Placement：唯一占位出口` —— 序号只在文档内排序，速查里没有意义
+const H2_NUM = /^[〇一二三四五六七八九十]+、\s*/;
+
+const stripMd = (s) => String(s).replace(/[`*]/g, '').trim();
+
+// 供搜索匹配的可见文本：抹掉标记，留下人眼能看到的字
+const plainOf = (s) => String(s)
+  .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+  .replace(/[`*]/g, '')
+  .replace(/\s+/g, ' ')
+  .trim();
+
+// 「Coordinate（坐标）」/「提线木偶 puppet_string」/「`faction`」→ { name, zh }
+function splitName(title) {
+  let t = stripMd(title);
+  let zh = '';
+  // 括号里是中文名才当中文名用；`（11 类）`、`（C-5）`、`（A22）` 是附注，留在名字里
+  const m = t.match(/^(.*?)\s*[（(]([^（()）]*)[)）]$/);
+  if (m && !/\d/.test(m[2])) { t = m[1].trim(); zh = m[2].trim(); }
+  // 中文在前、标识符在后（枢纽状态表里成片是这种写法）：拆开，ASCII 当 key、中文当名
+  if (!zh) {
+    const a = t.match(/^([^\x00-\x7f][^\x00-\x7f\s]*)\s+([A-Za-z][\w.:]*)$/);
+    if (a) { zh = a[1]; t = a[2]; }
+  }
+  return { name: t || stripMd(title), zh };
+}
+
+// opts 同 renderMarkdown（dir/docNames/base），条目里的链接要按所在文档的目录归一。
+// 返回 { intro, entries }：intro 是每篇唯一的那句导语（「最多给一个领域的介绍」）。
+export function parseRef(md, opts = {}) {
+  const lines = String(md).replace(/\r\n?/g, '\n').split('\n');
+  const entries = [];
+  let intro = '';
+  let h2 = '';
+  let h3 = '';
+  let nH2 = 0;          // 见过几个小节
+  let pending = null;   // 正在累积正文的条目（小节标题开的头）
+  let i = 0;
+
+  const concept = (title) => {
+    const { name, zh } = splitName(title);
+    const e = { name, zh, fields: [], paras: [], tag: h2 };
+    entries.push(e);
+    return e;
+  };
+
+  while (i < lines.length) {
+    const s = lines[i].trim();
+    if (!s) { i++; continue; }
+
+    const h = s.match(/^(#{1,3})\s+(.*)$/);
+    if (h) {
+      const lv = h[1].length;
+      pending = null;
+      if (lv === 1) { h2 = ''; h3 = ''; }
+      else if (lv === 2) {
+        h2 = stripMd(h[2]).replace(H2_NUM, '');
+        h3 = '';
+        nH2++;
+        if (/[A-Za-z]/.test(h2)) pending = concept(h2);
+      } else {
+        h3 = stripMd(h[2]);
+        pending = concept(h3);
+      }
+      i++;
+      continue;
+    }
+
+    // 围栏代码与引用块跳过：前者是示例，后者多是裁决过程与出处，速查里不站位置
+    if (s.startsWith('```')) {
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith('```')) i++;
+      i++;
+      continue;
+    }
+    if (s.startsWith('>')) {
+      while (i < lines.length && lines[i].trim().startsWith('>')) i++;
+      continue;
+    }
+
+    if (s.startsWith('|')) {
+      const rows = [];
+      while (i < lines.length && lines[i].trim().startsWith('|')) rows.push(lines[i++]);
+      const head = splitRow(rows[0]);
+      let k = head.findIndex((c) => NAME_COLS.has(stripMd(c)));
+      // 名字列只认第一列，或紧跟在行号列（`#`）之后的第二列。再往后说明这张表的
+      // 名字列不在开头（`| # | 问题 | 状态 |` 的「状态」是值不是名），整张跳过
+      if (k > 1 || (k === 1 && !/^#|序号/.test(stripMd(head[0])))) k = -1;
+      if (k < 0) continue;              // 不是字段表：数据表留给「原文」
+      pending = null;                   // 表格自成条目区，不再并进上面那个概念的说明
+      for (const r of rows.slice(1)) {
+        if (isTableSep(r)) continue;
+        const cells = splitRow(r);
+        if (!stripMd(cells[k] || '')) continue;
+        const { name, zh } = splitName(cells[k]);
+        const fields = [];
+        // k 之前的列（`#` 这类行号）只是排版，不随条目走
+        for (let c = k + 1; c < head.length; c++) {
+          if (!stripMd(cells[c] || '')) continue;
+          fields.push({ label: stripMd(head[c]), md: cells[c] });
+        }
+        entries.push({ name, zh, fields, paras: [], tag: h3 || h2 });
+      }
+      continue;
+    }
+
+    if (isListStart(s)) {
+      i++;
+      while (i < lines.length) {
+        const t = lines[i].trim();
+        if (!t) { if (isListStart((lines[i + 1] || '').trim())) { i++; continue; } break; }
+        if (isBlockStart(t) && !isListStart(t)) break;
+        i++;
+      }
+      continue;
+    }
+
+    const buf = [];
+    while (i < lines.length) {
+      const t = lines[i].trim();
+      if (!t || isBlockStart(t)) break;
+      buf.push(t);
+      i++;
+    }
+    if (!buf.length) { i++; continue; }
+    const text = joinLines(buf);
+    if (pending) pending.paras.push(text);   // 小节标题下的正文 = 该概念的说明
+    // 导语只认篇首或第一个小节里那一句（「本文件收容…」「…负责…」）。放开了取，
+    // 后面某一节里孤零零的一句「理由：…」会被当成整篇的导语
+    else if (!intro && nH2 <= 1) intro = text;
+  }
+
+  // 只剩标题、正文全在表格里的概念（`### Channel 与 Cooldown`）对速查没有价值：
+  // 它的内容已经作为表格条目在了，留一条空壳只会占位
+  const kept = entries.filter((e) => e.fields.length || e.paras.length);
+  entries.length = 0;
+  entries.push(...kept);
+
+  for (const e of entries) {
+    // 表格单元格是「数据位」，通用档枚举（all / self / none）也照关联；
+    // 散文（导语、概念说明）不进通用档，正文里的同形英文单词点成术语只会误导
+    e.nameHtml = inline(e.name, opts, true);
+    e.zhHtml = e.zh ? inline(e.zh, opts, true) : '';
+    e.isCode = /^[\x00-\x7f]+$/.test(e.name);
+    for (const f of e.fields) {
+      f.html = inline(f.md, opts, true);
+      f.text = plainOf(f.md);
+    }
+    const desc = e.paras.join(' ');
+    e.descHtml = desc ? inline(desc, opts, false) : '';
+    e.descText = plainOf(desc);
+    e.search = plainOf([e.name, e.zh, ...e.fields.map((f) => `${f.label} ${f.text}`), e.descText].join(' ')).toLowerCase();
+    delete e.paras;
+  }
+  return { intro: intro ? inline(intro, opts, false) : '', entries };
 }

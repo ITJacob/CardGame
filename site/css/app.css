@@ -286,3 +286,36 @@ h1.page-title { font-size: 18px; margin: 4px 0 14px; }
     position: sticky; left: 0; z-index: 1; background: var(--panel);
   }
 }
+
+/* 领域模型：字段 / 概念速查。
+   表格换成「一条一条」的块：长说明在表格里会被挤成竖条，读起来要横向来回找眼睛，
+   而这里每条的标题、取值、说明各占一行，扫一遍就够。 */
+.qr-band { margin: 18px 0 6px; font-size: 12px; color: var(--dim); letter-spacing: .04em; }
+#ddd-body > .qr-band:first-child { margin-top: 0; }
+.qr-doc { margin-bottom: 12px; }
+.qr-doc-title { font-size: 15px; margin: 0 0 6px; }
+.qr-count { font-weight: 400; font-size: 12px; margin-left: 8px; }
+.qr-intro { font-size: 13px; color: var(--dim); margin: 0 0 10px; }
+.qr-list { border-top: 1px solid var(--border); }
+.qr-item { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.qr-item-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+.qr-name { font-size: 13px; }
+code.qr-name { font-family: Consolas, monospace; color: var(--accent2); }
+.qr-zh { font-size: 12px; color: var(--dim); }
+/* 小节名推到行尾：它是定位用的路标，不该和字段名抢注意力 */
+.qr-tag { margin-left: auto; font-size: 11px; color: var(--dim); }
+.qr-fields {
+  display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 2px 10px;
+  margin: 6px 0 0; font-size: 12.5px;
+}
+.qr-fields dt { color: var(--dim); }
+.qr-fields dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+/* 折起来的长说明。line-clamp 只对 -webkit-box 生效，展开时把 display 摘掉即是取消 */
+.qr-clamp {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden; cursor: zoom-in;
+}
+.qr-clamp.open { display: block; overflow: visible; cursor: auto; }
+.qr-raw { margin-top: 10px; }
+.qr-raw > summary { font-size: 12px; color: var(--dim); cursor: pointer; }
+.qr-doc[hidden], .qr-item[hidden] { display: none; }
