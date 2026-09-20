@@ -111,20 +111,23 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `request` | object | ✓ | 选靶请求 |
 | `fallbackSort` | sortKey\|null | | 自动排序键 |
 | `consumption` | `summon`\|`domain`\|`zone`\|`instant`\|`translocate` | | 目标消耗的额外资源（对齐 DDD 共享内核 consumption）|
+| `mode` | `unit`\|`area` | | 目标形态：点目标 / 区域目标（DDD TargetSpec.mode，2026-09-20 回补）。与 `selectionMode` 是两个独立维度；`mode=unit` 时 `consumption` 强制 `instant` 或 `translocate` |
+| `pickCount` | integer | | 提交的目标数量（DDD I 节点 CandidatePool.pickCount，2026-09-20 回补）。`manual` 且候选数 > pickCount 才等待玩家选择，候选数 ≤ pickCount 直接全取不打断 |
 
-`request`（对应 DDD 的 faction × scope × anchor × sort × filter × laneRef）：
+`request`（对应 DDD 的 faction × scope × anchor × sort × filter × laneRef × spread）：
 
 | 字段 | 取值 |
 |---|---|
 | `faction` | `self` / `ally` / `enemy` / `any` / `none` / `self_or_ally` |
-| `scope` | `single` / `all` / `none` ⚠️漂移：DDD=single_point/whole_lane/adjacent，二者不等价；全套对齐需迁移数据，属独立项目，本轮不动 |
-| `anchor` | `front_line` / `spawned_unit` / `empty_ally_slot` / `empty_enemy_slot`（已删模糊的 `first_empty`） |
+| `scope` | `single` / `all` / `none` ✅ **2026-09-20 裁定为权威口径**——DDD 共享内核 §一 原有两行同名 `scope`（L12 几何 `single_point/whole_lane/adjacent` vs L19 覆盖 `single/all`）冲突，现以 **L19 为准**，L12 几何语义废弃、改由 `laneRef`+`spread`+`mode` 承载（避免改动 829 卡现有 scope 数据） |
+| `anchor` | `front_line` / `spawned_unit` / `first_empty` / `empty_ally_slot`（⚠️ `first_empty`=任意半场第一个空格、**`empty_ally_slot`=己方半场空格，二者不同义不可互换**；DDD anchor 共 ~17 值，schema 仅实现 4，缺 ~13 个属补齐待办） |
 | `sort` | 同 sortKey（见下） |
 | `filter` | 候选池过滤器（开放结构，unitFilter：unitType / tags / category / statusId / excludeSelf）——DDD 选靶范围三件套「锚点+区域+过滤」之过滤，词典此前缺位，本轮回补 |
 | `laneRef` | `same_lane` / `cross_lane` / `all_lanes` / `auto`（DDD 原设计有、schema 曾丢失，本轮回补；auto 在 I 节点前由施法者上下文预处理为具体值） |
-| `spread` / `excludeSelf` / `sortKey` | 见 schema |
+| `spread` | `none` / `lane_line` / `splash_adjacent` / `splash_behind` / `cross_same_index`（2026-09-20 由 1 值补齐为 DDD 5 值；承载上述废弃几何 scope 的语义） |
+| `excludeSelf` / `sortKey` | 见 schema |
 
-> **mode 命名撞车澄清**：DDD 的 `mode: unit|area`（点目标 vs 区域目标）与 schema 的 `selectionMode: manual|auto`（谁拍板最终目标）是**两个不同维度**，不可混用。schema 用 `scope`+`spread` 表达「点/区域」语义，`selectionMode` 只管「手动/自动」。align DDD `mode` 全套词汇（含 scope/spread 重定义）需迁移数据，单独立项。
+> **mode / selectionMode 维度澄清（2026-09-20）**：`mode: unit|area`（点目标 vs 区域目标）与 `selectionMode: manual|auto`（**谁拍板最终目标**）是两个**独立正交维度**，现已回补 `mode`，二者不可混用。配合已回补的 `laneRef`（扫描路线）与补齐的 `spread`（5 值），共同承载原 DDD L12 废弃几何 scope 的语义。
 
 **sortKey 封闭枚举**（新增须先登记到共享内核参数）：
 

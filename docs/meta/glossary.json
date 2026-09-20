@@ -92,9 +92,20 @@
       "label": "选靶方式",
       "desc": "目标交给玩家挑还是系统按规则自动落。候选数不超过取数时不触发玩家选择；自动分支必须给出兜底排序键，保证 AI 与状态触发也能确定性地取到目标。",
       "source": "SCHEMA.md §4",
+      "note": "desc 中「候选数不超过取数」的取数 = `cardTarget.pickCount`（DDD I 节点 CandidatePool.pickCount，2026-09-20 回补，此前 schema 完全未建模）：manual 且候选数 > pickCount 才等待玩家选择，候选数 ≤ pickCount 直接全取不打断。",
       "terms": {
         "manual": { "zh": "手动选择", "brief": "系统按 request（锚点+区域+过滤）圈出候选池，玩家从中选取；玩家未指定时按 fallbackSort 兜底" },
         "auto": { "zh": "自动选择", "brief": "在 manual 候选池基础上直接按 fallbackSort 取优先级最高者，无需玩家操作" }
+      }
+    },
+    "mode": {
+      "label": "目标形态",
+      "desc": "目标是「一个单位」还是「一片区域/坐标」。DDD 原 TargetSpec.mode，2026-09-20 回补（schema 曾丢失）。",
+      "source": "共享内核参数 §一 / skills.schema.json cardTarget.mode",
+      "note": "⚠️ 与 selectionMode（manual/auto，**谁拍板最终目标**）是两个独立维度，不可混用——selectionMode 管「手动还是自动」，mode 管「点还是区域」。mode=unit 时 consumption 强制 instant 或 translocate。",
+      "terms": {
+        "unit": { "zh": "点目标", "brief": "指定具体单位" },
+        "area": { "zh": "区域目标", "brief": "指定场上区域/坐标" }
       }
     },
     "faction": {
@@ -135,13 +146,14 @@
     },
     "anchor": {
       "label": "位置锚点",
-      "desc": "候选池的起点：前排、本次登场的召唤物、己方空位、敌方空位等。锚点定「从哪里开始找」，之后才叠加范围、过滤与排序。",
-      "source": "SCHEMA.md §4",
+      "desc": "候选池的起点：前排、本次登场的召唤物、首个空位、己方空位等。锚点定「从哪里开始找」，之后才叠加范围、过滤与排序。",
+      "source": "SCHEMA.md §4 / 共享内核参数 §一",
+      "note": "⚠️ 漂移：DDD anchor 取值域共 ~17 个（self / front_of_self / behind_self / cross_same_index / absolute / taunt_source / manual / nearest_any / any_lowest_hp / self_faction_hp_desc / last_dead_ally / index_asc_same_faction / <指定单位> 等），schema 仅实现 4 个，缺 ~13 个补齐待办（2026-09-20 核对登记）。**first_empty 与 empty_ally_slot 不同义**：前者=任意半场第一个空格（召唤/空坐标攻击用，空坐标是合法目标），后者=己方半场空格（自身位移落点用）。",
       "terms": {
         "front_line": { "zh": "前排", "brief": "锚定前排位置" },
-        "spawned_unit": { "zh": "召唤物", "brief": "锚定刚生成的召唤物（spawn 链专属）" },
-        "empty_ally_slot": { "zh": "友方空位", "brief": "己方空着的格子" },
-        "empty_enemy_slot": { "zh": "敌方空位", "brief": "敌方空着的格子" }
+        "spawned_unit": { "zh": "召唤物", "brief": "锚定刚生成的召唤物（本次登场的新单位，spawn 链专属）" },
+        "first_empty": { "zh": "首个空位", "brief": "第一个空着的格子（任意半场；召唤/空坐标攻击用）" },
+        "empty_ally_slot": { "zh": "己方空位", "brief": "己方半场空格（自身位移落点用，区别于 first_empty 的任意空格）" }
       }
     },
     "filter": {
@@ -160,9 +172,14 @@
     "spread": {
       "label": "溅射方式",
       "desc": "主目标被命中之后波及谁。与范围分工：范围决定取几个目标，溅射决定命中之后向邻近扩散。",
-      "source": "SCHEMA.md §4",
+      "source": "SCHEMA.md §4 / 共享内核参数 §一（2026-09-20 由 1 值对齐补齐为 DDD 5 值）",
+      "note": "承载原 DDD 旧拟几何 scope（single_point/whole_lane/adjacent）的语义——2026-09-20 裁定该 scope 废弃，几何范围改由 laneRef（扫描路线）+ spread（本类）+ mode（unit/area）共同表达。",
       "terms": {
-        "splash_adjacent": { "zh": "溅射相邻", "brief": "主目标之外的相邻单位也受影响" }
+        "none": { "zh": "不扩散", "brief": "仅作用于选定目标本身，不向邻近或路线扩散" },
+        "lane_line": { "zh": "整条路线", "brief": "沿路线向前扩散覆盖整条" },
+        "splash_adjacent": { "zh": "溅射相邻", "brief": "主目标之外的相邻单位也受影响" },
+        "splash_behind": { "zh": "溅射身后", "brief": "主目标身后的单位受影响" },
+        "cross_same_index": { "zh": "跨列同位", "brief": "扩散到其它列的相同站位序号" }
       }
     },
     "sortKey": {

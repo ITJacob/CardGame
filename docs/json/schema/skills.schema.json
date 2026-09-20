@@ -512,6 +512,17 @@
             "translocate"
           ]
         },
+        "mode": {
+          "enum": [
+            "unit",
+            "area"
+          ],
+          "description": "点目标 vs 区域目标（DDD TargetSpec.mode，2026-09-20 回补）。unit=指定单位；area=指定场上区域/坐标。与 selectionMode（谁拍板最终目标）是两个独立维度，不可混用。mode=unit 时 consumption 强制 instant 或 translocate。"
+        },
+        "pickCount": {
+          "type": "integer",
+          "description": "提交的目标数量（DDD I 节点 CandidatePool.pickCount，2026-09-20 回补）。selectionMode=manual 且候选数 > pickCount 时才等待玩家选择；候选数 ≤ pickCount 时不打断玩家直接全取。"
+        },
         "note": {
           "type": "string"
         }
@@ -581,8 +592,8 @@
           "enum": [
             "front_line",
             "spawned_unit",
-            "empty_ally_slot",
-            "empty_enemy_slot"
+            "first_empty",
+            "empty_ally_slot"
           ]
         },
         "sort": {
@@ -594,7 +605,11 @@
         },
         "spread": {
           "enum": [
-            "splash_adjacent"
+            "none",
+            "lane_line",
+            "splash_adjacent",
+            "splash_behind",
+            "cross_same_index"
           ]
         },
         "excludeSelf": {
