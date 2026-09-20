@@ -51,24 +51,64 @@ function unitDefsHtml(card) {
   return `<details class="fold"><summary>单位定义（${defs.length}）</summary>${rows.join('')}</details>`;
 }
 
+function durationHtml(d) {
+  if (d.duration == null) return null;
+  const unit = d.durationUnit ? ` ${termSpan('durationUnit', d.durationUnit, { showKey: false })}` : '';
+  return `持续 ${d.duration}${unit}`;
+}
+
+function rulePatchHtml(rp) {
+  if (!rp) return '';
+  const parts = [`规则补丁：${termSpan('rulePatchKind', rp.kind)}`];
+  if (rp.side) parts.push(termSpan('side', rp.side));
+  if (rp.tag) parts.push(`tag=${escapeHtml(JSON.stringify(rp.tag))}`);
+  if (rp.stat) parts.push(`属性 ${termSpan('stat', rp.stat)}`);
+  if (rp.effectType) parts.push(`原语 ${termSpan('primitive', rp.effectType)}`);
+  if (rp.mul != null) parts.push(`×${rp.mul}`);
+  const html = `<div>${parts.join(' · ')}</div>`;
+  return rp.note ? html + `<div class="ast-note">${escapeHtml(rp.note)}</div>` : html;
+}
+
+// 定义内触发与卡片级 trigger 同构，复用 renderEffects
+function defTriggersHtml(triggers) {
+  if (!triggers?.length) return '';
+  return `<div class="ast"><div class="ast-line muted">定义内触发（${triggers.length}）</div>
+    ${triggers.map((tr) => `<div class="ast-node"><div class="ast-line"><span class="muted">触发：</span>${termSpan('triggerEvent', tr.event)}</div>${renderEffects(tr.effects)}</div>`).join('')}
+  </div>`;
+}
+
 function zoneDomainHtml(card) {
   const out = [];
   if (card.zoneDef) {
     const z = card.zoneDef;
-    out.push(`<details class="fold"><summary>区域定义 ${escapeHtml(z.id || '')}</summary>
-      <div>${z.kind ? termSpan('zoneKind', z.kind) : ''} ${z.trigger ? termSpan('zoneTrigger', z.trigger) : ''}
-      ${z.duration != null ? `持续 ${z.duration}` : ''}</div>
+    const head = [
+      z.kind ? termSpan('zoneKind', z.kind) : '',
+      z.trigger ? termSpan('zoneTrigger', z.trigger) : '',
+      z.affects ? `作用于 <span class="mono">${escapeHtml(z.affects)}</span>` : '',
+      durationHtml(z),
+      z.interval != null ? `触发间隔 ${z.interval}` : '',
+    ].filter(Boolean);
+    out.push(`<details class="fold" open><summary>区域定义 ${escapeHtml(z.id || '')}</summary>
+      <div>${head.join(' · ')}</div>
+      ${z.modifiers ? `<div class="kv-raw">modifiers=${escapeHtml(JSON.stringify(z.modifiers))}</div>` : ''}
       ${z.effects ? renderEffects(z.effects.map((e) => e.payload || e)) : ''}
+      ${z.note ? `<div class="ast-note">${escapeHtml(z.note)}</div>` : ''}
     </details>`);
   }
   if (card.domainDef) {
     const d = card.domainDef;
-    out.push(`<details class="fold"><summary>界域定义 ${escapeHtml(d.id || '')}</summary>
-      <div>${d.tier ? termSpan('domainTier', d.tier) : ''} ${d.duration != null ? `持续 ${d.duration} ${d.durationUnit || ''}` : ''}</div>
-      ${(d.rulePatches || []).map((rp) => `<div>规则补丁：${termSpan('rulePatchKind', rp.kind)}
-        ${rp.side ? termSpan('side', rp.side) : ''}
-        ${rp.tag ? `tag=${escapeHtml(JSON.stringify(rp.tag))}` : ''}
-        ${rp.mul != null ? `×${rp.mul}` : ''}</div>`).join('')}
+    const head = [
+      d.tier ? termSpan('domainTier', d.tier) : '',
+      durationHtml(d),
+      d.dispelable === false ? '不可驱散' : (d.dispelable === true ? '可驱散' : ''),
+    ].filter(Boolean);
+    out.push(`<details class="fold" open><summary>界域定义 ${escapeHtml(d.id || '')}</summary>
+      <div>${head.join(' · ')}</div>
+      ${(d.rulePatches || []).map(rulePatchHtml).join('')}
+      ${defTriggersHtml(d.triggers)}
+      ${d.extraRuleNote ? `<div class="ast-note">${escapeHtml(d.extraRuleNote)}</div>` : ''}
+      ${d.envRules ? `<div class="kv-raw">envRules=${escapeHtml(JSON.stringify(d.envRules))}</div>` : ''}
+      ${d.note ? `<div class="ast-note">${escapeHtml(d.note)}</div>` : ''}
     </details>`);
   }
   return out.join('');
