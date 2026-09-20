@@ -41,8 +41,32 @@ function route() {
   window.scrollTo(0, restoreScroll ? listScrollY : 0);
 }
 
+// 回到页首：滚过一屏高度才出现。滚动事件用 rAF 合并，passive 不挡滚动；
+// route() 里的 scrollTo 也会触发 scroll，所以切页后显隐自动跟上
+const TOP_APPEAR_AT = 400;
+
+function initToTop() {
+  const btn = document.getElementById('to-top');
+  let queued = false;
+  const sync = () => {
+    queued = false;
+    btn.hidden = window.scrollY < TOP_APPEAR_AT;
+  };
+  window.addEventListener('scroll', () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(sync);
+  }, { passive: true });
+  btn.addEventListener('click', () => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+  });
+  sync();
+}
+
 async function main() {
   initTooltip();
+  initToTop();
   try {
     await loadAll((msg) => { status.textContent = msg; });
     status.textContent = '';
