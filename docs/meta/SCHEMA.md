@@ -110,18 +110,21 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `selectionMode` | `manual`\|`auto` | ✓ | 手选 / 引擎自动。两者都须有 `request` 范围（锚点+区域+过滤）；`manual` 由玩家拍板、未指定按 `fallbackSort` 兜底，`auto` 直接按 `fallbackSort` 取最高优先级 |
 | `request` | object | ✓ | 选靶请求 |
 | `fallbackSort` | sortKey\|null | | 自动排序键 |
-| `consumption` | `summon`\|`domain`\|`zone` | | 目标消耗的额外资源 |
+| `consumption` | `summon`\|`domain`\|`zone`\|`instant`\|`translocate` | | 目标消耗的额外资源（对齐 DDD 共享内核 consumption）|
 
-`request`（对应 DDD 的 faction × scope × anchor × sort）：
+`request`（对应 DDD 的 faction × scope × anchor × sort × filter × laneRef）：
 
 | 字段 | 取值 |
 |---|---|
 | `faction` | `self` / `ally` / `enemy` / `any` / `none` / `self_or_ally` |
-| `scope` | `single` / `all` / `none` |
-| `anchor` | `front_line` / `spawned_unit` / `first_empty` / `empty_ally_slot` |
+| `scope` | `single` / `all` / `none` ⚠️漂移：DDD=single_point/whole_lane/adjacent，二者不等价；全套对齐需迁移数据，属独立项目，本轮不动 |
+| `anchor` | `front_line` / `spawned_unit` / `empty_ally_slot` / `empty_enemy_slot`（已删模糊的 `first_empty`） |
 | `sort` | 同 sortKey（见下） |
-| `filter` | 候选池过滤器（开放结构） |
+| `filter` | 候选池过滤器（开放结构，unitFilter：unitType / tags / category / statusId / excludeSelf）——DDD 选靶范围三件套「锚点+区域+过滤」之过滤，词典此前缺位，本轮回补 |
+| `laneRef` | `same_lane` / `cross_lane` / `all_lanes` / `auto`（DDD 原设计有、schema 曾丢失，本轮回补；auto 在 I 节点前由施法者上下文预处理为具体值） |
 | `spread` / `excludeSelf` / `sortKey` | 见 schema |
+
+> **mode 命名撞车澄清**：DDD 的 `mode: unit|area`（点目标 vs 区域目标）与 schema 的 `selectionMode: manual|auto`（谁拍板最终目标）是**两个不同维度**，不可混用。schema 用 `scope`+`spread` 表达「点/区域」语义，`selectionMode` 只管「手动/自动」。align DDD `mode` 全套词汇（含 scope/spread 重定义）需迁移数据，单独立项。
 
 **sortKey 封闭枚举**（新增须先登记到共享内核参数）：
 
@@ -164,7 +167,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `snapshot` / `restore_snapshot` | `fields` | 成对使用 |
 | `echo_last_skill` | `potency` `rounding` | 权柄技能不可被重放 |
 | `gauge_shuffle` / `status_shuffle` | `resource` / `mode` `sort` | |
-| `modify_skill` | `skillRef`(selector/by_id) `clearCooldown` `costDelta` `setInstant` `targetingModeOverride` | **行为层修改（一）**：改写技能实例运行时属性——清 CD / 改施法消耗 / 吟唱转瞬发 / 单体转范围（2026-09-17 拍板，补原缺口） |
+| `modify_skill` | `skillRef`(selector/by_id) `clearCooldown` `costDelta` `setInstant` `targetSpecOverride` | **行为层修改（一）**：改写技能实例运行时属性——清 CD / 改施法消耗 / 吟唱转瞬发 / **完整改写 TargetSpec**（对齐 DDD：可改技能全部选靶属性，而非仅范围；`targetSpecOverride` 为对象，给出 selectionMode+request 全字段，未给出的沿用原值，2026-09-17 拍板补原缺口，2026-09-20 升级为完整 TargetSpec 补丁） |
 | `modify_status` | `statusId` `target` `addDuration` `setDuration` `maxStacksDelta` `dispelableOverride` | **行为层修改（二）**：改写已存在状态实例的持续 / 最大可叠加层数 / 可驱散性（区别于 mount_status 施加新状态；2026-09-17 拍板） |
 | `modify_targetability` | `target` `untargetable` `direction` `duration` `pierce` | 目标可选性：改单位「可被选为目标」的属性，带方向与穿透。对应手写 `untargetableByTargeted`(29)/`untargetable`(2)/`untargetableByAll`(1) |
 | `reveal` | `target` `scope`(to_source/to_all) `dispel` `pierceTargetability` | 揭示 / 穿透隐匿。对应手写 14 种拼写（约 26 处）。⚠️ **纯驱散隐匿仍用 `dispel(filter.category=[conceal])`**，本原语用于「显形但不驱散」「仅对施法者显形」 |

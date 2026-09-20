@@ -28,7 +28,7 @@
         "echo_last_skill": { "zh": "回响上一技能", "brief": "按比例重放上一个技能的效果", "detail": "potency × rounding(ceil/floor/round)。权柄技能不可被重放。" },
         "gauge_shuffle": { "zh": "行动条重排", "brief": "重排场上单位的行动条进度", "detail": "resource 固定 gauge.current。" },
         "status_shuffle": { "zh": "状态重排", "brief": "重排/轮换单位身上的状态", "detail": "mode/sort 控制重排方式。" },
-        "modify_skill": { "zh": "修改技能", "brief": "改写技能实例的运行时属性", "detail": "行为层修改：清 CD / 改施法消耗 / 吟唱转瞬发 / 单体转范围（targetingModeOverride）。" },
+        "modify_skill": { "zh": "修改技能", "brief": "改写技能实例的运行时属性", "detail": "行为层修改：清 CD / 改施法消耗 / 吟唱转瞬发 / 完整改写 TargetSpec（targetSpecOverride 对象：selectionMode+request 全字段，对齐 DDD 可改技能全部选靶属性，而非仅范围）。" },
         "modify_status": { "zh": "修改状态", "brief": "改写已存在状态实例的属性", "detail": "改持续/最大叠加层数/可驱散性；区别于 mount_status（施加新状态）。" },
         "modify_targetability": { "zh": "修改可选性", "brief": "改变单位「可被选为目标」的属性", "detail": "direction: all/enemy_targeted/enemy_aoe/ally；pierce 控制穿透。" },
         "reveal": { "zh": "揭示", "brief": "使隐匿单位显形", "detail": "scope: to_source/to_all。纯驱散隐匿仍用 dispel(category=conceal)，本原语用于「显形但不驱散」。" },
@@ -99,18 +99,28 @@
         "enemy": { "zh": "敌军", "brief": "对方单位" },
         "any": { "zh": "任意", "brief": "不限阵营" },
         "none": { "zh": "无", "brief": "不需要目标" },
-        "self_or_ally": { "zh": "自身或友军", "brief": "己方任一单位（含自己）" },
-        "ally_of_owner": { "zh": "拥有者的友军", "brief": "以归属者为参照的友方" },
-        "enemy_of_owner": { "zh": "拥有者的敌军", "brief": "以归属者为参照的敌方" }
+        "self_or_ally": { "zh": "自身或友军", "brief": "己方任一单位（含自己）" }
       }
     },
     "scope": {
       "label": "作用范围",
       "source": "SCHEMA.md §4",
+      "note": "⚠️ 漂移：DDD 共享内核 scope=single_point/whole_lane/adjacent，schema 现用 single/all/none，二者不等价；全套对齐需迁移数据，属独立项目，本轮不动。",
       "terms": {
         "single": { "zh": "单体", "brief": "作用于一个目标" },
         "all": { "zh": "全体", "brief": "作用于范围内全部单位" },
-        "none": { "zh": "无", "brief": "无作用对象" }
+        "none": { "zh": "无", "brief": "无作用对象（目标完全由 effectTarget 二级寻址）" }
+      }
+    },
+    "laneRef": {
+      "label": "扫描路线",
+      "source": "共享内核参数 / skills.schema.json unitRequest.laneRef（DDD 原设计有、schema 曾丢失，本轮回补）",
+      "note": "选靶扫描的路线/列维度。auto 在 I 节点之前由施法者上下文预处理为具体值，保持流水线纯函数。",
+      "terms": {
+        "same_lane": { "zh": "同列", "brief": "仅扫描施法者所在列" },
+        "cross_lane": { "zh": "跨列", "brief": "扫描其它列" },
+        "all_lanes": { "zh": "全列", "brief": "扫描所有列" },
+        "auto": { "zh": "自动", "brief": "由施法者上下文预处理为具体值" }
       }
     },
     "anchor": {
@@ -118,9 +128,21 @@
       "source": "SCHEMA.md §4",
       "terms": {
         "front_line": { "zh": "前排", "brief": "锚定前排位置" },
-        "spawned_unit": { "zh": "召唤物", "brief": "锚定刚生成的召唤物" },
-        "first_empty": { "zh": "首个空位", "brief": "第一个空着的格子" },
-        "empty_ally_slot": { "zh": "友方空位", "brief": "己方空着的格子" }
+        "spawned_unit": { "zh": "召唤物", "brief": "锚定刚生成的召唤物（spawn 链专属）" },
+        "empty_ally_slot": { "zh": "友方空位", "brief": "己方空着的格子" },
+        "empty_enemy_slot": { "zh": "敌方空位", "brief": "敌方空着的格子" }
+      }
+    },
+    "filter": {
+      "label": "候选池过滤器",
+      "source": "skills.schema.json unitRequest.filter / unitFilter",
+      "note": "request 的过滤维度（DDD 选靶范围三件套「锚点+区域+过滤」之过滤）。开放结构：布尔属性缺省即不约束。",
+      "terms": {
+        "unitType": { "zh": "单位类型", "brief": "按 unitType 过滤（如 UNDEAD）" },
+        "tags": { "zh": "标签", "brief": "按标签过滤" },
+        "category": { "zh": "状态类别", "brief": "按状态类别过滤（statusCategory）" },
+        "statusId": { "zh": "状态ID", "brief": "按持有指定状态过滤" },
+        "excludeSelf": { "zh": "排除自身", "brief": "布尔；为 true 时从候选池剔除施法者自己" }
       }
     },
     "spread": {
@@ -148,7 +170,7 @@
         "gauge_asc": { "zh": "行动条升序", "brief": "行动条进度最低者优先" },
         "gauge_desc": { "zh": "行动条降序", "brief": "行动条进度最高者优先" },
         "stat_max_desc": { "zh": "最高属性降序", "brief": "指定属性最高者优先" },
-        "attack": { "zh": "按攻击排序", "brief": "非标准 sortKey（数据直写属性名），按攻击排序" }
+        "attack": { "zh": "按攻击排序", "brief": "官方逃逸口：sortKey 自由字符串字段直写属性名（如 attack/atk）绕开封闭枚举；等价于 atk_asc/atk_desc 时优先用枚举。新增固定排序键须先登记共享内核参数" }
       }
     },
     "sourceRef": {
@@ -177,6 +199,7 @@
     "effectTarget": {
       "label": "效果目标锚点",
       "source": "SCHEMA.md §4",
+      "note": "效果级二次寻址（区别于 cardTarget.request 的选靶）。三组：①运行期角色 self/caster/target/primary_target/secondary_target/same_target/attacker/holder/status_holder/killed_unit（不可替代）；②全体集合 all_allies/allies_except_self/all_enemies/all_other_enemies/all_units/all（all=所有相关对象、all_units=场上所有单位）；③相对坐标 adjacent_enemy/occupant_ally/occupant_enemy/splash_adjacent/splash_behind（与 request 的 anchor/spread 是两套体系，前者相对主目标、后者相对锚点）。self≠caster（被动/链接场景作用者≠触发者）；target≠primary_target（多目标/二次寻址时不同）。",
       "terms": {
         "self": { "zh": "自身", "brief": "效果作用者自己" },
         "caster": { "zh": "施法者", "brief": "释放该技能的单位" },
@@ -205,11 +228,14 @@
     },
     "consumption": {
       "label": "目标消耗资源",
-      "source": "SCHEMA.md §4",
+      "source": "SCHEMA.md §4 / 共享内核参数",
+      "note": "选靶时一并消耗的资源对象（summon/domain/zone/instant/translocate），对齐 DDD 共享内核 consumption。与 effectTarget 区别：effectTarget=效果作用到谁；consumption=选靶时消耗哪个资源。",
       "terms": {
-        "summon": { "zh": "召唤物", "brief": "消耗一个召唤物" },
-        "domain": { "zh": "界域", "brief": "消耗界域" },
-        "zone": { "zh": "区域", "brief": "消耗区域" }
+        "summon": { "zh": "召唤物", "brief": "消耗一个召唤物（如引爆/转化）" },
+        "domain": { "zh": "界域", "brief": "消耗已展开的界域" },
+        "zone": { "zh": "区域", "brief": "消耗一个区域" },
+        "instant": { "zh": "瞬时", "brief": "即时消耗，无资源对象残留（mode=unit 时强制）" },
+        "translocate": { "zh": "跨层", "brief": "消耗跨层位移（单位离场为 detached，mode=unit 时强制）" }
       }
     },
     "element": {
@@ -399,18 +425,19 @@
         "by_id": { "zh": "按 ID", "brief": "按技能 ID 指定" }
       }
     },
-    "targetingModeOverride": {
-      "label": "选靶模式改写",
-      "source": "skills.schema.json modify_skill",
+    "targetSpecOverride": {
+      "label": "TargetSpec 完整改写",
+      "source": "skills.schema.json modify_skill（对齐 DDD：modify_skill 可改技能全部选靶属性）",
+      "note": "modify_skill 对技能 TargetSpec 的完整补丁（对象）：给出 selectionMode 与 request 全字段，未给出的沿用原值。区别于 target_override 原语（effect 级一次性覆盖）。",
       "terms": {
-        "single": { "zh": "单体", "brief": "改为单体目标" },
-        "all": { "zh": "全体", "brief": "改为全体目标" },
-        "splash_adjacent": { "zh": "溅射相邻", "brief": "改为溅射相邻" }
+        "selectionMode": { "zh": "选靶方式", "brief": "改写 manual/auto" },
+        "request": { "zh": "选靶请求", "brief": "改写 faction/scope/anchor/sort/filter/spread/laneRef/excludeSelf 全字段（同 unitRequest）" }
       }
     },
     "targetabilityDirection": {
       "label": "可选性方向",
       "source": "SCHEMA.md §5.2 modify_targetability",
+      "note": "定义「单位对哪些来源不可被选为目标」（持久/状态级资格）。区别于 target_override 原语（单次效果级覆盖选靶结果）：前者改资格、后者改结果。pierce 控制穿透。",
       "terms": {
         "all": { "zh": "全部", "brief": "对所有来源不可选" },
         "enemy_targeted": { "zh": "敌方单体指定", "brief": "对敌方单体技能不可选" },

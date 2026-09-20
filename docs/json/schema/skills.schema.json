@@ -507,7 +507,9 @@
           "enum": [
             "summon",
             "domain",
-            "zone"
+            "zone",
+            "instant",
+            "translocate"
           ]
         },
         "note": {
@@ -579,8 +581,8 @@
           "enum": [
             "front_line",
             "spawned_unit",
-            "first_empty",
-            "empty_ally_slot"
+            "empty_ally_slot",
+            "empty_enemy_slot"
           ]
         },
         "sort": {
@@ -597,6 +599,15 @@
         },
         "excludeSelf": {
           "type": "boolean"
+        },
+        "laneRef": {
+          "enum": [
+            "same_lane",
+            "cross_lane",
+            "all_lanes",
+            "auto"
+          ],
+          "description": "扫描路线/列维度（DDD 原设计有、schema 曾丢失，本轮回补）。auto 在 I 节点前由施法者上下文预处理为具体值，保持流水线纯函数。"
         }
       }
     },
@@ -1406,7 +1417,11 @@
         },
         "consumption": {
           "enum": [
-            "zone"
+            "summon",
+            "domain",
+            "zone",
+            "instant",
+            "translocate"
           ]
         },
         "duration": {
@@ -1958,13 +1973,21 @@
           "type": "boolean",
           "description": "将吟唱技能改为瞬发（castTime 置 0）。对应「修改吟唱技能为瞬发技能」。"
         },
-        "targetingModeOverride": {
-          "enum": [
-            "single",
-            "all",
-            "splash_adjacent"
-          ],
-          "description": "修改技能选取范围：single=单体、all=全体、splash_adjacent=溅射相邻。对应「修改单体技能为范围技能」。"
+        "targetSpecOverride": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "完整改写技能 TargetSpec（对齐 DDD：modify_skill 可改技能全部选靶属性，而非仅范围）。给出 selectionMode 与 request 全字段，未给出的沿用原值。区别于 target_override 原语（effect 级一次性覆盖）。",
+          "properties": {
+            "selectionMode": {
+              "enum": [
+                "manual",
+                "auto"
+              ]
+            },
+            "request": {
+              "$ref": "#/$defs/unitRequest"
+            }
+          }
         },
         "target": {
           "$ref": "#/$defs/effectTarget"

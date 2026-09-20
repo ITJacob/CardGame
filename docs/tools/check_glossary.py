@@ -56,6 +56,7 @@ ENUM_TO_CAT = {
     "unitRequest.scope": "scope",
     "unitRequest.anchor": "anchor",
     "unitRequest.spread": "spread",
+    "unitRequest.laneRef": "laneRef",
     "unitDef.reach": "reach",
     "unitDef.gender": "gender",
     "dimHook.dim": "dim",
@@ -92,7 +93,8 @@ ENUM_TO_CAT = {
     "effStatusShuffle.mode": "shuffleMode",
     "effModifySkill.skillRef.selector": "skillSelector",
     "effModifySkill.skillRef.ofSkill": None,
-    "effModifySkill.targetingModeOverride": "targetingModeOverride",
+    "effModifySkill.targetSpecOverride": None,
+    "effModifySkill.targetSpecOverride.selectionMode": "selectionMode",
     "effModifyTargetability.direction": "targetabilityDirection",
     # 与 effDamage.pierce 同名不同义（此处是「谁能看穿不可选取」），站点不渲染其值
     "effModifyTargetability.pierce": None,
