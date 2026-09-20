@@ -165,6 +165,11 @@ td.mono, .mono { font-family: Consolas, monospace; color: var(--accent); }
    就只剩一条空轨道（百分比宽度对非替换行内元素无效） */
 .bar-row .bar-fill { display: block; background: var(--accent); height: 100%; border-radius: 4px; min-width: 1px; }
 .bar-row .bar-val { width: 50px; color: var(--dim); }
+/* 长标签表（自由词表的修饰符键、schema 字段名）：默认 130px 会把
+   untargetableByTargeted 这类键省略成「untargetableB…」，认不出是哪个键 */
+.panel.wide-labels .bar-row .bar-label { width: 190px; }
+/* 面板内的口径说明：紧跟标题之下，字号小一档，不与图表标签抢注意力 */
+.panel-note { font-size: 12px; margin: -6px 0 10px; }
 table.heat { border-collapse: collapse; font-size: 11px; width: 100%; }
 table.heat th, table.heat td { border: 1px solid var(--border); padding: 2px 6px; text-align: center; }
 /* top 必须为 0：sticky 的参照系是最近的滚动祖先 .heat-wrap，而不是视口。
@@ -205,6 +210,7 @@ h1.page-title { font-size: 18px; margin: 4px 0 14px; }
   .kv { grid-template-columns: 1fr; }
   .kv dt { margin-top: 6px; }
   .bar-row .bar-label { width: 76px; }
+  .panel.wide-labels .bar-row .bar-label { width: 120px; }
   .bar-row .bar-val { width: 36px; }
   #to-top { right: 12px; bottom: 12px; width: 38px; height: 38px; }
 

@@ -32,6 +32,12 @@ export function lookup(cat, key) {
   return { zh: key, brief: '', key, cat, catLabel: g?.label || cat, source: g?.source || '', missing: true };
 }
 
+// 枚举值 → 中文名。统计页图表轴标签用：拿不到中文就原样显示 key，
+// 同时 lookup 会打一条「术语未收录」告警——图表上出现英文 key 即值域漂移的信号
+export function zh(cat, key) {
+  return lookup(cat, key)?.zh || key;
+}
+
 // 状态：优先 statuses 文件的 name/note
 export function lookupStatus(id) {
   const s = DB.statusMap.get(id);
