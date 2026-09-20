@@ -8,20 +8,34 @@ import { renderStats } from './views/stats.js';
 const view = document.getElementById('view');
 const status = document.getElementById('load-status');
 
+// 由 route() 统一接管滚动，避免浏览器的自动恢复在之后异步覆盖
+history.scrollRestoration = 'manual';
+
 function setNav(name) {
   document.querySelectorAll('[data-nav]').forEach((a) => {
     a.classList.toggle('active', a.dataset.nav === name);
   });
 }
 
+let prevPage = '';
+let listScrollY = 0;
+
 function route() {
   const hash = location.hash || '#/cards';
   const [, page, arg] = hash.split('/');
+  const isList = page !== 'card' && page !== 'glossary' && page !== 'stats';
+
+  // 离开列表页时记下滚动位置，从详情返回时还原
+  if (prevPage === 'cards' && !isList) listScrollY = window.scrollY;
+  const restoreScroll = isList && prevPage === 'card';
+
   if (page === 'card' && arg) { setNav('cards'); renderCardDetail(view, decodeURIComponent(arg)); }
   else if (page === 'glossary') { setNav('glossary'); renderGlossary(view); }
   else if (page === 'stats') { setNav('stats'); renderStats(view); }
   else { setNav('cards'); renderCards(view); }
-  window.scrollTo(0, 0);
+
+  prevPage = isList ? 'cards' : page;
+  window.scrollTo(0, restoreScroll ? listScrollY : 0);
 }
 
 async function main() {
