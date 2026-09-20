@@ -127,11 +127,18 @@ details.fold summary { cursor: pointer; color: var(--dim); font-size: 13px; }
 
 /* 词典 */
 .gloss-layout { display: grid; grid-template-columns: 200px 1fr; gap: 16px; }
+/* 网格轨道默认 min-width:auto，会拒绝收缩到内容的 min-content 以下——词典表格里
+   有「不可断行的 mono key + th 固定列宽」，整条轨道会被顶到内容宽度，撑出整页横向滚动 */
+.gloss-layout > * { min-width: 0; }
 .gloss-nav { position: sticky; top: 64px; align-self: start; max-height: calc(100vh - 90px); max-height: calc(100dvh - 90px); overflow: auto; }
 .gloss-nav a { display: block; padding: 3px 8px; color: var(--dim); border-radius: 4px; font-size: 13px; }
 .gloss-nav a:hover { background: var(--panel2); color: var(--text); }
 table.gloss { width: 100%; border-collapse: collapse; font-size: 13px; }
 table.gloss th, table.gloss td { border-bottom: 1px solid var(--border); padding: 6px 10px; text-align: left; vertical-align: top; }
+/* anywhere（而非 break-word）：既要真的换行，也要压低 min-content，
+   否则 push_back/pull_forward/... 这类斜杠串成的枚举清单是一整块不可断的内容，
+   窄屏下会把整列顶破、连累整页横向滚动 */
+table.gloss td { overflow-wrap: anywhere; }
 table.gloss th { color: var(--dim); font-weight: 400; }
 td.mono, .mono { font-family: Consolas, monospace; color: var(--accent); }
 
@@ -139,8 +146,10 @@ td.mono, .mono { font-family: Consolas, monospace; color: var(--accent); }
 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 14px; }
 .bar-row { display: flex; align-items: center; gap: 8px; margin: 3px 0; font-size: 12px; }
 .bar-row .bar-label { width: 130px; text-align: right; color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bar-row .bar-track { flex: 1; background: var(--panel2); border-radius: 4px; height: 16px; position: relative; }
-.bar-row .bar-fill { background: var(--accent); height: 100%; border-radius: 4px; min-width: 1px; }
+.bar-row .bar-track { flex: 1; display: block; background: var(--panel2); border-radius: 4px; height: 16px; position: relative; }
+/* display:block 不可省：.bar-fill 是 <span>，行内盒的 width/height 会被忽略，整个进度条
+   就只剩一条空轨道（百分比宽度对非替换行内元素无效） */
+.bar-row .bar-fill { display: block; background: var(--accent); height: 100%; border-radius: 4px; min-width: 1px; }
 .bar-row .bar-val { width: 50px; color: var(--dim); }
 table.heat { border-collapse: collapse; font-size: 11px; width: 100%; }
 table.heat th, table.heat td { border: 1px solid var(--border); padding: 2px 6px; text-align: center; }
@@ -169,11 +178,20 @@ h1.page-title { font-size: 18px; margin: 4px 0 14px; }
   #topbar { padding: 8px 12px; gap: 8px; flex-wrap: wrap; row-gap: 6px; }
   #topbar nav a { padding: 4px 8px; font-size: 13px; }
   #view { padding: 12px; }
+  .filters label { white-space: nowrap; }
   .filters select { flex: 1 1 auto; min-width: 0; }
   .filters label:last-of-type { flex: 1 1 100%; }
-  .filters input { width: 100%; }
+  .filters input { flex: 1 1 auto; width: auto; min-width: 0; }
   .kv { grid-template-columns: 1fr; }
   .kv dt { margin-top: 6px; }
   .bar-row .bar-label { width: 76px; }
   .bar-row .bar-val { width: 36px; }
+
+  /* 词典三列表格改卡片式堆叠：th 上的内联固定列宽随 thead 一起失效，
+     窄屏下不再需要横向滚动 */
+  table.gloss thead { display: none; }
+  table.gloss, table.gloss tbody, table.gloss tr, table.gloss td { display: block; width: auto; }
+  table.gloss tr { padding: 8px 0; border-bottom: 1px solid var(--border); }
+  table.gloss td { border-bottom: none; padding: 0 0 2px; }
+  table.gloss td.mono { font-size: 12px; }
 }

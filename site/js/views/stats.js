@@ -5,10 +5,11 @@ import { walkCardEffects } from '../ast.js';
 
 function barChart(rows, { max = null } = {}) {
   const m = max ?? Math.max(1, ...rows.map((r) => r.value));
+  // 值为 0 时不给填充条：.bar-fill 的 min-width:1px 会让 0 显示成一像素的假进度
   return rows.map((r) => `
     <div class="bar-row">
       <span class="bar-label" title="${escapeHtml(r.title || r.label)}">${escapeHtml(r.label)}</span>
-      <span class="bar-track"><span class="bar-fill" style="width:${(r.value / m) * 100}%"></span></span>
+      <span class="bar-track">${r.value ? `<span class="bar-fill" style="width:${(r.value / m) * 100}%"></span>` : ''}</span>
       <span class="bar-val num">${r.value}</span>
     </div>`).join('');
 }

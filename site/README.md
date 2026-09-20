@@ -27,7 +27,7 @@ Pages 源 = main 分支 / 仓库根。访问 `https://<user>.github.io/<repo>/si
 - **PWA（仅可安装）**：`manifest.webmanifest` + `sw.js`——SW 是最小实现，只用满足浏览器的「可安装」判定，**不缓存任何资源**。装到主屏后 standalone 全屏、无地址栏。图标为占位图（`icons/`），换正式图标改 manifest 的 `icons` 即可。
   **未启用离线**：断网打开会白屏。数据在 `../docs/json/`，位于 SW 的 scope 之外，要做离线须把 SW 挪到仓库根。
 - **术语浮层**：鼠标设备悬停跟随光标；触屏改为点击后居中弹出、点浮层外关闭（`js/tooltip.js` 用 `matchMedia('(hover: hover) and (pointer: fine)')` 分流，触屏分支走捕获阶段以拦下卡片列表自身的跳转点击）。
-- **响应式**：断点 768px（词典双栏转单栏、热图表头去 sticky）与 640px（顶栏换行、搜索框独占一行、键值表转单列）。网格轨道用 `minmax(min(Npx, 100%), 1fr)`，窄屏不会再横向溢出。
+- **响应式**：断点 768px（词典双栏转单栏、热图表头去 sticky）与 640px（顶栏换行、搜索框独占一行、键值表转单列、词典表格转卡片式堆叠——`thead` 隐藏后 `<th>` 上的内联固定列宽随之失效）。网格轨道用 `minmax(min(Npx, 100%), 1fr)`；词典表格的 key/解释列改用 `overflow-wrap: anywhere`，否则 `push_back/pull_forward/…` 这类斜杠串成的枚举清单是一整块不可断的内容，会把整列顶破。
 
 ## 维护约定
 
