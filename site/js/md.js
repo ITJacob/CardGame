@@ -306,6 +306,9 @@ export function parseToc(md) {
 //
 // 表头原样当字段标签（取值 / 归属 / 说明 / 语义…）：文档已经写明了这一列是什么，
 // 不在这里重新解释。正文写不下的长说明由页面折叠，本文只负责拆。
+//
+// 收不了的都记进 skipped（引用块里的表也算），由页面在页脚列成「抽取情况」：
+// 抽取规则是前端硬编码的，文档侧不可能知道，漏抽一旦静默就没人会发现。
 
 // 首列是「名字」的列头。首列命中其一即认作字段表；找不到就整张跳过。
 // 新写了一类字段表而没被收录时，把它的首列列头加到这里——页脚的「抽取情况」会把
@@ -400,7 +403,20 @@ export function parseRef(md, opts = {}) {
       continue;
     }
     if (s.startsWith('>')) {
-      while (i < lines.length && lines[i].trim().startsWith('>')) i++;
+      // 引用块整体不收（多是裁决过程、出处、旧名对照），但它里面的表也要进「抽取情况」：
+      // 不记就等于速查里没有、对账里也没有——静默漏抽最坏的一种
+      let quoted = null;
+      while (i < lines.length && lines[i].trim().startsWith('>')) {
+        const inner = lines[i].trim().replace(/^>\s?/, '');
+        if (inner.startsWith('|')) {
+          if (!quoted) {
+            quoted = inner;
+            skipped.push({ line: i + 1, sec: h3 || h2, quote: true,
+              head: splitRow(quoted).map(stripMd).join(' | ') });
+          }
+        } else quoted = null;
+        i++;
+      }
       continue;
     }
 

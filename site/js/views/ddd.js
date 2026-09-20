@@ -87,15 +87,16 @@ function coverageHtml(data) {
     if (!d.skipped?.length) continue;
     n += d.skipped.length;
     rows.push(`<li><b>${escapeHtml(d.label)}</b>${d.skipped.map((s) => `
-      <div class="qr-skip"><span class="muted">${escapeHtml(s.sec || '（篇首）')} · 第 ${s.line} 行</span>
+      <div class="qr-skip"><span class="muted">${s.quote ? '引用块 · ' : ''}${escapeHtml(s.sec || '（篇首）')} · 第 ${s.line} 行</span>
       <code>${escapeHtml(s.head)}</code></div>`).join('')}</li>`);
   }
   if (!n) return '';
   return `<details class="panel qr-coverage">
     <summary>抽取情况：共收 ${data.total} 条；另有 ${n} 张表按数据表跳过</summary>
     <p class="muted">速查条目现读自 <code>docs/ddd/*.md</code>，判据（首列算不算字段名）写在
-    <code>site/js/md.js</code> 的 <code>NAME_COLS</code>。下面这些表的首列不是字段名，按数值 / 清单表
-    跳过了，它们仍在各篇的「原文」里。<b>新写了一张字段表却出现在这里，就是它的首列名还没进 NAME_COLS。</b></p>
+    <code>site/js/md.js</code> 的 <code>NAME_COLS</code>。下面这些表的首列不是字段名（数值 / 清单表），
+    或整块在引用块里（裁决过程、出处、旧名对照，标了「引用块」），都按跳过处理，它们仍在各篇的
+    「原文」里。<b>新写了一张字段表却出现在这里，就是它的首列名还没进 NAME_COLS。</b></p>
     <ul>${rows.join('')}</ul></details>`;
 }
 
