@@ -55,6 +55,13 @@ def ddd_sorts():
             return {t.strip().strip("`") for t in cell.split("/") if t.strip()}
     raise AssertionError("共享内核参数.md 缺 sort 行")
 
+def ddd_affects():
+    for ln in read("ddd/params/战场参数.md").splitlines():
+        if ln.startswith("| ZoneGrant.affects |"):
+            cell = ln.split("|")[2]
+            return {t.strip().strip("`") for t in cell.split("/") if t.strip()}
+    raise AssertionError("战场参数.md 缺 ZoneGrant.affects 行")
+
 def schema_md_enums():
     txt = read("meta/SCHEMA.md")
     sorts = backtick_row(txt, "**sortKey 封闭枚举**")
@@ -105,6 +112,9 @@ def main():
     compare("element", sm["element"], validate.ELEMENTS, "SCHEMA.md §5.4", "schema element", errors)
     compare("statusCategory", sm["statusCategory"], validate.CATS, "SCHEMA.md §6", "schema statusCategory", errors)
     compare("primitive", sm["primitive"], validate.PRIMS, "SCHEMA.md §5.2", "schema effect.oneOf", errors)
+    affects = ddd_affects()
+    compare("zoneAffects", affects, set(validate.DEFS["zoneDef"]["properties"]["affects"]["enum"]), "ddd 战场参数", "schema zoneDef", errors)
+    compare("zoneAffects", affects, set(validate.DEFS["zoneGrant"]["properties"]["affects"]["enum"]), "ddd 战场参数", "schema zoneGrant", errors)
 
     print("-" * 60)
     if errors:
