@@ -278,7 +278,17 @@
         "sleepless"
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：灵视轴揭示弱点的招牌（读 `灵视` 的入口）；同状态 `weak_spot` 复用。⚠️D。"
+      "conversionNotes": "翻译/语义：灵视轴揭示弱点的招牌（读 `灵视` 的入口）；同状态 `weak_spot` 复用。⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "暗夜档（光照度 ≤2）亡灵/冥界类加成 ×1.2（⚠️D 平衡占位）；依据为源质「永暗之河」同源（不眠者/收尸人/战士共系），非死神途径自身的昼夜设定"
+        }
+      ]
     },
     {
       "id": "skill_corpse_collector_s8_spirit_whisper",
@@ -383,7 +393,17 @@
         "sleepless"
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：灵视轴旗舰：挂 `灵视` + 借灵施法（payoff 一体）。⚠️D。"
+      "conversionNotes": "翻译/语义：灵视轴旗舰：挂 `灵视` + 借灵施法（payoff 一体）。⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "暗夜档（光照度 ≤2）亡灵/冥界类加成 ×1.2（⚠️D 平衡占位）；依据为源质「永暗之河」同源（不眠者/收尸人/战士共系），非死神途径自身的昼夜设定"
+        }
+      ]
     },
     {
       "id": "skill_corpse_collector_s7_kin_of_spirits",
@@ -472,6 +492,16 @@
           "code": "GAUGE_RATE_AS_STAT",
           "note": "gauge_rate 修正面按 modify_stat(gauge.rate) 表达，同战士先例，待内核裁定归一",
           "landed": true
+        }
+      ],
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "target": "all",
+          "note": "暗夜档（光照度 ≤2）亡灵/冥界类加成 ×1.2（⚠️D 平衡占位）；依据为源质「永暗之河」同源（不眠者/收尸人/战士共系），非死神途径自身的昼夜设定"
         }
       ]
     },
@@ -967,12 +997,12 @@
       "conversionNotes": "翻译/语义：终末轴旗舰主题界域；读 `冥界` 给亡灵增益（payoff 一体）+ 写隐秘值。✅ 依赖已落。⚠️D。",
       "dimHooks": [
         {
-          "dim": "secrecy",
-          "comparator": ">=",
-          "threshold": 7,
-          "mul": 1.5,
-          "target": "damage",
-          "note": "PENDING 点名受益卡；本卡 tag 为亡灵/死亡，filterTags 待核（占位⚠️D）"
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "target": "all",
+          "note": "暗夜档（光照度 ≤2）亡灵/冥界类加成 ×1.2（⚠️D 平衡占位）；依据为源质「永暗之河」同源（不眠者/收尸人/战士共系），非死神途径自身的昼夜设定"
         }
       ]
     },
@@ -1369,7 +1399,17 @@
           }
         ]
       },
-      "tentative": true
+      "tentative": true,
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "target": "all",
+          "note": "暗夜档（光照度 ≤2）亡灵/冥界类加成 ×1.2（⚠️D 平衡占位）；依据为源质「永暗之河」同源（不眠者/收尸人/战士共系），非死神途径自身的昼夜设定"
+        }
+      ]
     },
     {
       "id": "skill_corpse_collector_s2_undead_king",
@@ -1507,7 +1547,17 @@
         ]
       },
       "tentative": true,
-      "conversionNotes": "翻译/语义：终末轴终焉界域，读 `冥界` 即死转化（payoff 一体）+ 写隐秘值。✅ 依赖已落。⚠️D。"
+      "conversionNotes": "翻译/语义：终末轴终焉界域，读 `冥界` 即死转化（payoff 一体）+ 写隐秘值。✅ 依赖已落。⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "target": "all",
+          "note": "暗夜档（光照度 ≤2）亡灵/冥界类加成 ×1.2（⚠️D 平衡占位）；依据为源质「永暗之河」同源（不眠者/收尸人/战士共系），非死神途径自身的昼夜设定"
+        }
+      ]
     },
     {
       "id": "skill_corpse_collector_s1_death_sentence",
@@ -1700,7 +1750,17 @@
         "死亡"
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：终末轴能力凋零 payoff（读 `冥界` 放大）。⚠️D。"
+      "conversionNotes": "翻译/语义：终末轴能力凋零 payoff（读 `冥界` 放大）。⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "target": "all",
+          "note": "暗夜档（光照度 ≤2）亡灵/冥界类加成 ×1.2（⚠️D 平衡占位）；依据为源质「永暗之河」同源（不眠者/收尸人/战士共系），非死神途径自身的昼夜设定"
+        }
+      ]
     },
     {
       "id": "skill_corpse_collector_s1_spirit_master",
@@ -1833,7 +1893,17 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：终末轴终焉：生命/联系/烙印皆死一次给全。⚠️D。"
+      "conversionNotes": "翻译/语义：终末轴终焉：生命/联系/烙印皆死一次给全。⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "暗夜档（光照度 ≤2）亡灵/冥界类加成 ×1.2（⚠️D 平衡占位）；依据为源质「永暗之河」同源（不眠者/收尸人/战士共系），非死神途径自身的昼夜设定"
+        }
+      ]
     },
     {
       "id": "skill_corpse_collector_s0_journeys_end",
@@ -1962,7 +2032,17 @@
           "scope": "single"
         },
         "fallbackSort": null
-      }
+      },
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "暗夜档（光照度 ≤2）亡灵/冥界类加成 ×1.2（⚠️D 平衡占位）；依据为源质「永暗之河」同源（不眠者/收尸人/战士共系），非死神途径自身的昼夜设定"
+        }
+      ]
     },
     {
       "id": "skill_corpse_collector_s6_spirit_touch",
@@ -2080,7 +2160,17 @@
           "scope": "single"
         },
         "fallbackSort": null
-      }
+      },
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "暗夜档（光照度 ≤2）亡灵/冥界类加成 ×1.2（⚠️D 平衡占位）；依据为源质「永暗之河」同源（不眠者/收尸人/战士共系），非死神途径自身的昼夜设定"
+        }
+      ]
     },
     {
       "id": "skill_corpse_collector_s3_death_omen",
@@ -2153,7 +2243,7 @@
       }
     }
   ],
-  "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方之一）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。收尸人经\"灵体之线 / 冥界（隐秘型）\"等 +1/次（见【魂枢·隐秘】、【冥界之门】）。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（收尸人·奴役目标最稳）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次（本系可借此操控占卜家秘偶，占卜家也可操控本系亡灵）\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，收尸人是主消费方之一。",
+  "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方之一）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。收尸人经\"灵体之线 / 冥界（隐秘型）\"等 +1/次（见【魂枢·隐秘】、【冥界之门】）。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（收尸人·奴役目标最稳）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次（本系可借此操控占卜家秘偶，占卜家也可操控本系亡灵）\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，收尸人是主消费方之一。\n\n> **昼夜时钟（2026-09-21）**：亡灵/冥界类卡挂**暗夜档**（光照度 ≤2）。⚠️ 依据说明：死神途径核心象征是「死亡、亡灵、冥界、奴役」，**原著本身没有昼夜设定**；此处挂钩依据的是源质归属——收尸人属**永暗之河系**（与不眠者、战士同系，「永暗」即永恒之暗），属同源系延伸而非途径自带。若后续判定不该跨系延伸，可整体摘除。系数 ⚠️D 平衡占位。",
   "sampleBuilds": [
     {
       "name": "A 冥界亡潮 ⚰",
