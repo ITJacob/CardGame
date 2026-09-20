@@ -12,7 +12,7 @@ const FIELD_ZH = {
   filter: '过滤', category: '类别', count: '数量', healRatio: '回复比例', def: '界域定义',
   returnPayload: '回归载荷', scope: '范围', slot: '槽位', field: '字段', overwrite: '覆盖',
   potency: '强度', rounding: '取整', skillRef: '技能', clearCooldown: '清冷却', costDelta: '消耗增减',
-  setInstant: '转瞬发', targetingModeOverride: '选靶改写', addDuration: '延长持续',
+  setInstant: '转瞬发', targetSpecOverride: '选靶改写', addDuration: '延长持续',
   setDuration: '设定持续', maxStacksDelta: '层数上限增减', dispelableOverride: '可驱散改写',
   untargetable: '不可选中', direction: '方向', against: '针对', onExpire: '到期处理',
   actionPolicy: '行为策略', steps: '步骤', then: '则', else: '否则', times: '次数',
@@ -245,12 +245,12 @@ const PRIMITIVE_TEMPLATES = {
     return `重排状态${e.mode ? `（${termSpan('shuffleMode', e.mode)}）` : ''}${e.sort ? `（按${termSpan('sortKey', e.sort)}）` : ''}`;
   },
   modify_skill: (e, used) => {
-    used.push('skillRef', 'clearCooldown', 'costDelta', 'setInstant', 'targetingModeOverride', 'selector', 'ofSkill');
+    used.push('skillRef', 'clearCooldown', 'costDelta', 'setInstant', 'targetSpecOverride', 'selector', 'ofSkill');
     const parts = [];
     if (e.clearCooldown) parts.push('清除冷却');
     if (e.costDelta != null) parts.push(`消耗 ${e.costDelta > 0 ? '+' : ''}${fmtVal(e.costDelta)}`);
     if (e.setInstant) parts.push('转为瞬发');
-    if (e.targetingModeOverride) parts.push(`选靶改为${termSpan('targetingModeOverride', e.targetingModeOverride)}`);
+    if (e.targetSpecOverride) parts.push(`选靶改为${termSpan('targetSpecOverride', e.targetSpecOverride)}`);
     return `修改技能：${parts.join('，') || '（运行时属性）'}`;
   },
   modify_status: (e, used) => {
