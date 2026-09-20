@@ -95,6 +95,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `conversionNotes` | string\|string[] | | **仅**登记 md → JSON 转换期的口径问题（未能结构化的内容、语义存疑处）。**缺失 = 转换干净，不是遗漏，无需补写**（全库约 15% 的卡无此字段，属合法状态）。⚠️ **不承载框架缺口**——后者一律走 `frameworkFlags`，见 §8 |
 | `frameworkFlags` | flag[] | | 框架缺口登记（见 §8）。与 `conversionNotes` **职责互斥**：前者管「内核尚未支持」，后者管「转换口径存疑」 |
 | `dimHooks` | dimHook[] | | 维度乘区挂钩：本卡对战场全局维度的乘区声明（见 §7） |
+| `phaseHooks` | phaseHook[] | | 相位乘区挂钩：本卡对战场枚举相位的乘区声明（见 §7.1） |
 
 ### 3.2 kind 分支规则（schema 用 if/then 强制）
 
@@ -229,7 +230,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 ## 7. 维度乘区挂钩（dimHook）
 
-战场全局标量维度（`secrecy` 隐秘值 / `order` 秩序度 / `fate_value` 命运值）的累积与阈值判定定义在 `docs/ddd/params/源质维度与跨系枢纽.md` §二，阈值档位对齐 `docs/ddd/params/数值标定基准.md` §五（隐秘值 4/7/10、秩序度 3/7/10、命运值 ±5/±8/±10）。`dimHook` 把这个「维度→乘区」的挂钩**结构化到卡面**，供结算层（效果上下文）在 `board.<dim>` 达阈值时对本卡相关结算乘 `mul`。
+战场全局标量维度（`secrecy` 隐秘值 / `order` 秩序度 / `fate_value` 命运值 / `luminance` 光照度）的累积与阈值判定定义在 `docs/ddd/params/源质维度与跨系枢纽.md` §二，阈值档位对齐 `docs/ddd/params/数值标定基准.md` §五（隐秘值 4/7/10、秩序度 3/7/10、命运值 ±5/±8/±10、光照度 2/5/8）。`dimHook` 把这个「维度→乘区」的挂钩**结构化到卡面**，供结算层（效果上下文）在 `board.<dim>` 达阈值时对本卡相关结算乘 `mul`。
 
 ```json
 "dimHooks": [{
@@ -243,9 +244,9 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| `dim` | `secrecy`\|`order`\|`fate_value` | 挂钩的战场维度（闭枚举） |
+| `dim` | `secrecy`\|`order`\|`fate_value`\|`luminance` | 挂钩的战场维度（闭枚举） |
 | `comparator` | `>=`\|`<=`\|`>`\|`<`\|`==` | 阈值比较符，默认 `>=` |
-| `threshold` | number | 触发阈值，须在维度值域内（secrecy/order ∈ [0,10]、fate_value ∈ [−10,10]） |
+| `threshold` | number | 触发阈值，须在维度值域内（secrecy/order/luminance ∈ [0,10]、fate_value ∈ [−10,10]） |
 | `mul` | number>0 | 乘区系数（⚠️D 占位）；单卡建议 0.8–1.5，超限需 `note` 说明 |
 | `target` | `damage`\|`damage_taken`\|`heal`\|`resource`\|`rule_strength`\|`all` | 乘区作用目标，默认 `damage` |
 | `filterTags` | string[] | 仅当本卡带其一 tag 才生效（如 secrecy 要求 tag∈{愚弄,隐秘,conceal}） |
@@ -254,6 +255,29 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 Gate（validate.py）：`dim` 须为已注册维度、`threshold` 须在值域内、`mul>0`；`mul` 越出 0.8–1.5 给出非阻断告警（平衡期再收紧）。
 
 > 维度本身是全局标量，不在此 per-pathway schema 内重复定义；本字段只声明「哪张卡在哪维度达阈值时放大什么」。维度注册表（range/tier）以 ddd 散文为权威源。
+
+### 7.1 相位乘区挂钩（phaseHook）
+
+**为什么单列、不塞进 `dimHook`**：相位是**枚举**（`midnight`/`dawn`/`day`/`dusk`/`night`），而 `dimHook.threshold` 是 number + comparator，装不下枚举；更关键的是**黎明与黄昏的光照度区间几乎完全重叠**（黎明 1→7、黄昏 6→1），用连续量 `luminance` 根本区分不开二者。凡「必须是黎明 / 必须是黄昏」的判定一律走本结构（2026-09-21 裁定）。
+
+```json
+"phaseHooks": [{
+  "phases": ["dawn"], "mul": 1.25, "target": "damage",
+  "note": "黎明窗口加成（⚠️D 平衡占位）"
+}]
+```
+
+字段：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `phases` | `midnight`\|`dawn`\|`day`\|`dusk`\|`night` 数组（≥1 项） | 生效相位集合；月夜 = `["night","midnight"]` + 月相条件 |
+| `mul` | number>0 | 乘区系数（⚠️D 占位）；单卡建议 0.8–1.5，超限需 `note` 说明 |
+| `target` | 同 §7 `dimHook.target` | 乘区作用目标，默认 `damage` |
+| `filterTags` | string[] | 仅当本卡带其一 tag 才生效 |
+| `note` | string | 口径说明，mul 超限或非常规时必填 |
+
+Gate（validate.py）：`phases` 非空且取值合法、`mul>0`；`mul` 越出 0.8–1.5 给出非阻断告警（与 dimHook 同一口径）。
 
 ## 8. 框架缺口（frameworkFlags）
 

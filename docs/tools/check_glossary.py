@@ -64,6 +64,8 @@ ENUM_TO_CAT = {
     "dimHook.dim": "dim",
     "dimHook.comparator": "cmp",
     "dimHook.target": "dimTarget",
+    "phaseHook.phases": "phase",
+    "phaseHook.target": "dimTarget",
     "condition.kind": "conditionKind",
     "condition.side": "side",
     "condition.cmp": "cmp",

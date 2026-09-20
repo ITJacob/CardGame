@@ -1467,6 +1467,14 @@
         "zone_active": {
           "zh": "区域激活",
           "brief": "指定区域在场上激活"
+        },
+        "luminance_compare": {
+          "zh": "光照度比较",
+          "brief": "board.luminance 与阈值比较；暗夜档 cmp<=/n=2，白昼档 cmp>=/n=8"
+        },
+        "phase_is": {
+          "zh": "相位判定",
+          "brief": "board.phase 属于 phases 集合之一即成立；月夜=[night,midnight]+月相条件"
         }
       }
     },
@@ -1891,6 +1899,33 @@
         "even": {
           "zh": "均摊",
           "brief": "均摊到多个单位"
+        }
+      }
+    },
+    "phase": {
+      "label": "战场相位",
+      "desc": "战场时钟 board.clock 的派生枚举视图（1 tick = 20 分钟，一天 72 tick）。与连续量「光照度 luminance」互补：光照度表达明暗强弱，相位表达时段身份；两者不严格同构，精确判定必须用相位。",
+      "source": "战场参数.md §1.3 / SCHEMA.md §7.1",
+      "terms": {
+        "midnight": {
+          "zh": "午夜",
+          "brief": "tick 0–11（00:00–04:00）；光照度 0–1，一夜最暗"
+        },
+        "dawn": {
+          "zh": "黎明",
+          "brief": "tick 12–23（04:00–08:00）；光照度 0→7，黎明前最暗"
+        },
+        "day": {
+          "zh": "白昼",
+          "brief": "tick 24–47（08:00–16:00）；光照度 7–10，正午 tick 30–40 峰值 10"
+        },
+        "dusk": {
+          "zh": "黄昏",
+          "brief": "tick 48–59（16:00–20:00）；光照度 6→2"
+        },
+        "night": {
+          "zh": "夜",
+          "brief": "tick 60–71（20:00–24:00）；光照度 2→1，月色微光"
         }
       }
     }

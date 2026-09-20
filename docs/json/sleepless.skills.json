@@ -121,16 +121,45 @@
       "flagship": false,
       "lore": "序列9 不眠者 —— \"夜越深精力越充沛，力量/敏捷/思维超越常人\"",
       "flavor": "夜色每浓一分，你的力量、身手与思绪便更清明一分——黎明之前，不会有人的锋芒比你更盛。",
-      "describe": "每 tick 自身「夜色」+1 层（最多 5 层，整场）：每层攻击 +1、行动条速率 +2、能量回复 +0.04，满层 +5/+10/+0.2。",
+      "describe": "每 tick 判定（光照驱动）：暗夜档（光照度 ≤2）自身「夜色」+1 层；白昼档（≥8）-1 层；晨昏档不变。夜色最多 5 层：每层攻击 +1、行动条速率 +2、能量回复 +0.04，满层 +5/+10/+0.2。",
       "hook": "on_tick",
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "nightfall",
-          "stacks": 1,
-          "stackMode": "add",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "luminance_compare",
+            "cmp": "<=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "nightfall",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "luminance_compare",
+                "cmp": ">=",
+                "n": 8
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "nightfall",
+                  "stacks": 1,
+                  "stackMode": "consume",
+                  "target": "self"
+                }
+              ]
+            }
+          ]
         }
       ],
       "tentative": true,
@@ -141,7 +170,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态 `夜幕` 累积源。⚠️D。"
+      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态 `夜幕` 累积源。⚠️D。 2026-09-21 改为光照驱动：叠层改由 board.luminance 判定，不再无条件每 tick +1。"
     },
     {
       "id": "skill_sleepless_s8_midnight_prowess",
@@ -225,7 +254,16 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：诗篇三分支之一（敌人恍惚）。⚠️D。"
+      "conversionNotes": "翻译/语义：诗篇三分支之一（敌人恍惚）。⚠️D。",
+      "phaseHooks": [
+        {
+          "phases": [
+            "midnight"
+          ],
+          "mul": 1.2,
+          "note": "午夜相位加成 ×1.2（⚠️D 平衡占位）"
+        }
+      ]
     },
     {
       "id": "skill_sleepless_s8_lullaby",
@@ -314,7 +352,16 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：恐惧链最下环（惊惧诗→恐惧灵光→恐惧权柄），同状态 `dread` 三级复用。⚠️D。"
+      "conversionNotes": "翻译/语义：恐惧链最下环（惊惧诗→恐惧灵光→恐惧权柄），同状态 `dread` 三级复用。⚠️D。",
+      "phaseHooks": [
+        {
+          "phases": [
+            "midnight"
+          ],
+          "mul": 1.2,
+          "note": "午夜相位加成 ×1.2（⚠️D 平衡占位）"
+        }
+      ]
     },
     {
       "id": "skill_sleepless_s7_dream_pull",
@@ -760,7 +807,7 @@
       "flagship": false,
       "lore": "序列4 守夜人 —— \"越黑暗越强，正午阳光下被削弱\"",
       "flavor": "你是为夜而生的——天光未散时你倦怠迟钝，而一旦夜色彻底落下，没有谁比你更清醒、更锋利。",
-      "describe": "每 tick 判定：若自身夜色 ≥3 层或处于黑夜领域中，获得 2 tick 增益（攻击 +3、防御 +2、精神抗性 +10%）；否则若夜色 ≤1 层，获得 2 tick 削弱（攻击 -2、防御 -1）。",
+      "describe": "每 tick 判定：若自身夜色 ≥3 层或处于黑夜领域中，获得 2 tick 增益（攻击 +3、防御 +2、精神抗性 +10%）；否则若夜色 ≤1 层**或光照度 ≥8（正午）**，获得 2 tick 削弱（攻击 -2、防御 -1）。",
       "hook": "on_tick",
       "effects": [
         {
@@ -799,11 +846,22 @@
                 {
                   "op": "if",
                   "condition": {
-                    "kind": "has_status",
-                    "side": "self",
-                    "id": "nightfall",
-                    "cmp": "<=",
-                    "n": 1
+                    "kind": "any_of",
+                    "conditions": [
+                      {
+                        "kind": "has_status",
+                        "side": "self",
+                        "id": "nightfall",
+                        "cmp": "<=",
+                        "n": 1
+                      },
+                      {
+                        "kind": "luminance_compare",
+                        "cmp": ">=",
+                        "n": 8
+                      }
+                    ],
+                    "note": "原著守夜人「正午阳光下被削弱」：夜色未起 或 光照度 ≥8 均触发天光未散"
                   },
                   "then": [
                     {
@@ -1121,7 +1179,16 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：暗夜轴处决。⚠️D。"
+      "conversionNotes": "翻译/语义：暗夜轴处决。⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "note": "暗夜档（光照度 ≤2）本卡伤害 ×1.2（⚠️D 平衡占位）"
+        }
+      ]
     },
     {
       "id": "skill_sleepless_s3_fear_aura",
@@ -1190,6 +1257,15 @@
       "conversionNotes": [
         "原著「失控」引擎无对应维度，不建模，只取「被吓死」",
         "翻译/语义：读血量阈值的梦魇轴恐惧 payoff；与 `dread` 链同源。⚠️D。"
+      ],
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "note": "暗夜档（光照度 ≤2）本卡伤害 ×1.2（⚠️D 平衡占位）"
+        }
       ]
     },
     {
@@ -1705,7 +1781,16 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：梦魇轴终焉：入梦/永眠/消融一次给全。⚠️D。"
+      "conversionNotes": "翻译/语义：梦魇轴终焉：入梦/永眠/消融一次给全。⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": "<=",
+          "threshold": 2,
+          "mul": 1.2,
+          "note": "暗夜档（光照度 ≤2）本卡伤害 ×1.2（⚠️D 平衡占位）"
+        }
+      ]
     },
     {
       "id": "skill_sleepless_s0_secrecy_authority",

@@ -37,7 +37,7 @@
       "payoffs": [
         "晨曦领域"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 dawn，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。"
+      "note": "2026-09-20 清理悬空 statusId（原为 dawn，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 2026-09-21：黎明轴，相位挂钩 dawn；与 twilight 轴互斥（黎明/黄昏光照度区间重叠，不可用 luminance 区分）。"
     },
     "twilight": {
       "symbol": "🜄",
@@ -45,7 +45,8 @@
       "statusId": "aging",
       "enablers": [
         "暮色侵蚀"
-      ]
+      ],
+      "note": "2026-09-21：黄昏轴，相位挂钩 dusk；与 hunt 轴互斥。"
     }
   },
   "cards": [
@@ -497,7 +498,17 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：猎魔轴破幻/驱怨招牌（读 `黎明` 前置）。⚠️D。"
+      "conversionNotes": "翻译/语义：猎魔轴破幻/驱怨招牌（读 `黎明` 前置）。⚠️D。",
+      "phaseHooks": [
+        {
+          "phases": [
+            "dawn"
+          ],
+          "mul": 1.2,
+          "target": "damage",
+          "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
+        }
+      ]
     },
     {
       "id": "skill_warrior_s6_dawn_armor",
@@ -554,6 +565,16 @@
       "conversionNotes": [
         "稿面写 modify_resource(armor,+6,duration:4)；ddd 口径带 duration 的护甲修正为容量语义（modify_stat），已归一",
         "翻译/语义：守护轴友军护甲（与 猎魔·晨曦同源）。⚠️D。"
+      ],
+      "phaseHooks": [
+        {
+          "phases": [
+            "dawn"
+          ],
+          "mul": 1.2,
+          "target": "all",
+          "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
+        }
       ]
     },
     {
@@ -728,7 +749,17 @@
         "净化"
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：猎魔轴旗舰主题界域；破幻/驱怨/削弱邪恶（payoff 一体）+ 隐蔽时写隐秘值。✅ 依赖已落。⚠️D。"
+      "conversionNotes": "翻译/语义：猎魔轴旗舰主题界域；破幻/驱怨/削弱邪恶（payoff 一体）+ 隐蔽时写隐秘值。✅ 依赖已落。⚠️D。",
+      "phaseHooks": [
+        {
+          "phases": [
+            "dawn"
+          ],
+          "mul": 1.2,
+          "target": "all",
+          "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
+        }
+      ]
     },
     {
       "id": "skill_warrior_s6_storm_of_light",
@@ -795,7 +826,17 @@
         ]
       },
       "tentative": true,
-      "conversionNotes": "翻译/语义：猎魔轴群体净化（克亡灵/怨魂/幻象）。⚠️D。"
+      "conversionNotes": "翻译/语义：猎魔轴群体净化（克亡灵/怨魂/幻象）。⚠️D。",
+      "phaseHooks": [
+        {
+          "phases": [
+            "dawn"
+          ],
+          "mul": 1.2,
+          "target": "damage",
+          "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
+        }
+      ]
     },
     {
       "id": "skill_warrior_s5_guardian_stance",
@@ -1489,7 +1530,17 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：读 `黄昏` 放大的黄昏轴 payoff（老化叠伤）。⚠️D。"
+      "conversionNotes": "翻译/语义：读 `黄昏` 放大的黄昏轴 payoff（老化叠伤）。⚠️D。",
+      "phaseHooks": [
+        {
+          "phases": [
+            "dusk"
+          ],
+          "mul": 1.2,
+          "target": "damage",
+          "note": "黄昏相位（tick 48–59）加成 ×1.2（⚠️D 平衡占位）；与黎明互斥，不共享晨昏档"
+        }
+      ]
     },
     {
       "id": "skill_warrior_s2_waning_dusk",
@@ -1531,6 +1582,16 @@
           "code": "GAUGE_RATE_AS_STAT",
           "note": "statPerStack 内含 gauge.rate 键，同强健体魄待裁定",
           "landed": true
+        }
+      ],
+      "phaseHooks": [
+        {
+          "phases": [
+            "dusk"
+          ],
+          "mul": 1.2,
+          "target": "damage",
+          "note": "黄昏相位（tick 48–59）加成 ×1.2（⚠️D 平衡占位）；与黎明互斥，不共享晨昏档"
         }
       ]
     },
@@ -1709,7 +1770,17 @@
           ]
         }
       ],
-      "tentative": true
+      "tentative": true,
+      "phaseHooks": [
+        {
+          "phases": [
+            "dusk"
+          ],
+          "mul": 1.2,
+          "target": "damage",
+          "note": "黄昏相位（tick 48–59）加成 ×1.2（⚠️D 平衡占位）；与黎明互斥，不共享晨昏档"
+        }
+      ]
     },
     {
       "id": "skill_warrior_s0_battle_authority",
@@ -1775,7 +1846,18 @@
       "sharedAcross": [
         "sleepless"
       ],
-      "tentative": true
+      "tentative": true,
+      "phaseHooks": [
+        {
+          "phases": [
+            "dawn",
+            "dusk"
+          ],
+          "mul": 1.2,
+          "target": "heal",
+          "note": "原著「荣耀即晨曦即黄昏」：黎明与黄昏双相位均 ×1.2（⚠️D 平衡占位）"
+        }
+      ]
     }
   ],
   "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方之一）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。战士经\"隐蔽 / 借光隐藏\"等 +1/次（见【隐蔽】、【隐秘之影·承接】）。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（收尸人·奴役目标最稳）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，战士是主消费方之一（隐蔽↔占卜家 隐秘值联动）。",

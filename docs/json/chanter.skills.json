@@ -165,7 +165,7 @@
       "flagship": false,
       "lore": "序列8 祈光人 —— \"『白昼』：周围10米获得光照\"",
       "flavor": "你点亮一圈白昼——在这圈光里，黑暗再也藏不住任何东西。",
-      "describe": "全场挂载「白昼」4 tick：敌方隐匿与不可选中类状态对己方失效；己方对不死 / 污秽 / 黑暗标签单位的伤害 ×1.15。",
+      "describe": "全场挂载「白昼」4 tick：敌方隐匿与不可选中类状态对己方失效；己方对不死 / 污秽 / 黑暗标签单位的伤害 ×1.15。（写入战场覆写层：光照度 = 10，持续 4 tick）",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -196,6 +196,13 @@
               "target": "all_enemies"
             }
           ]
+        },
+        {
+          "type": "set_luminance",
+          "value": 10,
+          "duration": 4,
+          "dispelable": true,
+          "note": "祈光人「白昼」：写战场覆写层为满光，与 daylight 状态同寿命"
         }
       ],
       "sharedAcross": [
@@ -262,7 +269,17 @@
         "sailor"
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：本途径最早直伤 + 阵营克制入门件。3伤/2能溢价买 `holy` 与克制条件。数值 ⚠️D。"
+      "conversionNotes": "翻译/语义：本途径最早直伤 + 阵营克制入门件。3伤/2能溢价买 `holy` 与克制条件。数值 ⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s8_blessing",
@@ -418,7 +435,17 @@
         ]
       },
       "tentative": true,
-      "conversionNotes": "翻译/语义：本途径\"火球术\"——低费纯直伤撑输出骨架。5伤/3能溢价买 `holy`。数值 ⚠️D。"
+      "conversionNotes": "翻译/语义：本途径\"火球术\"——低费纯直伤撑输出骨架。5伤/3能溢价买 `holy`。数值 ⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s7_holy_water",
@@ -526,7 +553,17 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：G8 合规（近战攻击进程不调 move）。\"净化\"首次以伤害+驱散复合出现。数值 ⚠️D。"
+      "conversionNotes": "翻译/语义：G8 合规（近战攻击进程不调 move）。\"净化\"首次以伤害+驱散复合出现。数值 ⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s7_sacred_flame",
@@ -580,7 +617,17 @@
         ]
       },
       "tentative": true,
-      "conversionNotes": "翻译/语义：持续灼烧神术=debuff，元素必 `holy`（否则克死灵失效）。依赖新项。数值 ⚠️D。"
+      "conversionNotes": "翻译/语义：持续灼烧神术=debuff，元素必 `holy`（否则克死灵失效）。依赖新项。数值 ⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s7_sun_aura",
@@ -792,7 +839,17 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：单点爆发顶点，8伤/5能同汇率。依赖 `holy`+标签。数值 ⚠️D。"
+      "conversionNotes": "翻译/语义：单点爆发顶点，8伤/5能同汇率。依赖 `holy`+标签。数值 ⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s5_purifying_nimbus",
@@ -852,6 +909,16 @@
       "conversionNotes": [
         "群体 heal / 群体护盾定价无既有锚点（稿面自述最大数值盲区，沿用 D3）",
         "翻译/语义：\"外扩+精准\"=清友军负面+灼敌。最强群体续航/清场复合。数值 ⚠️D（群体 heal 无锚点）。"
+      ],
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
       ]
     },
     {
@@ -960,6 +1027,16 @@
         "吟唱 ⚠️D 无值，castTime 置 null",
         "Zone 非界域牌（domain/translocate 之外），无迷失租金段；稿面登记行亦未含租金",
         "翻译/语义：原著\"无暗之域+净化\"=持续净化领域。双向环境规则照搬界域文档（我方光+50%/暗-25%，brief §10.2）。✅ 依赖已落。数值 ⚠️D。"
+      ],
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "all",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
       ]
     },
     {
@@ -1013,7 +1090,17 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：先驱散后伤害（破增益堆叠）。G8 合规。数值 ⚠️D。"
+      "conversionNotes": "翻译/语义：先驱散后伤害（破增益堆叠）。G8 合规。数值 ⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s4_pure_white_ray",
@@ -1061,7 +1148,17 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：\"射线\"=穿透直线。依赖 spread。数值 ⚠️D。"
+      "conversionNotes": "翻译/语义：\"射线\"=穿透直线。依赖 spread。数值 ⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s4_sacred_armor",
@@ -1376,7 +1473,17 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：变身+持续群体净化伤害。与 F10 同源。数值 ⚠️D。"
+      "conversionNotes": "翻译/语义：变身+持续群体净化伤害。与 F10 同源。数值 ⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "all",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s2_light_authority",
@@ -1556,7 +1663,17 @@
         "净化"
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：领域顶点，把庇护+净化+灼烧压进同一界域（【无暗之域】传说上位）。✅ 依赖已落。数值 ⚠️D。"
+      "conversionNotes": "翻译/语义：领域顶点，把庇护+净化+灼烧压进同一界域（【无暗之域】传说上位）。✅ 依赖已落。数值 ⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "all",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s1_pure_white_light",
@@ -1621,7 +1738,17 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：\"毁灭即净化\"=击杀转治疗。依赖 `on_kill`+F59。数值 ⚠️D。"
+      "conversionNotes": "翻译/语义：\"毁灭即净化\"=击杀转治疗。依赖 `on_kill`+F59。数值 ⚠️D。",
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s1_zeal",
@@ -1957,10 +2084,20 @@
           "scope": "single"
         },
         "fallbackSort": null
-      }
+      },
+      "dimHooks": [
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 8,
+          "mul": 1.2,
+          "target": "damage",
+          "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        }
+      ]
     }
   ],
-  "designNote": "> **放牧维度（混沌海系 §2.2 / 总览 §1 万能接口②）**：本系签名机制「放牧(Grazing)」= 战场级**动态能力槽** `grazing_slot`，存储被纳管的灵魂及其途径，可释放该途径能力（全局唯一跨系借技能）。歌颂者经「纳管残魂」参与此机制。\n> - **enabler**：友方击杀/控制一个单位 → `grazing_slot +1`（记录其途径与一项招牌能力）。\n> - **payoff**：释放被放牧单位的一项能力（一次）；若被放牧者为 `undead`/`spirit` → 该能力附 `净化` 联动（圣光克死灵的跨系延伸）。\n> - **阈级（⚠️D，自行设计）**：槽 ≥1 释放 1 项；≥3 ×1.3；≥5 `cd -1` 且 2 目标；=MAX(⚠️D 暂定 7) 本回合视为本途径技能（吃 `净化` 增益）。\n>\n> **阵营克制（原著招牌）**：序列8「克制死尸鬼魂」、序列5「污秽和死灵的克星」、序列4「净化堕落/污秽/黑暗/疾病」。主方案=单位标签 `undead`/`foul`/`dark` + 按标签乘区（已落 §1.2b）；退化=数据层预置负 `resist:holy`。",
+  "designNote": "> **放牧维度（混沌海系 §2.2 / 总览 §1 万能接口②）**：本系签名机制「放牧(Grazing)」= 战场级**动态能力槽** `grazing_slot`，存储被纳管的灵魂及其途径，可释放该途径能力（全局唯一跨系借技能）。歌颂者经「纳管残魂」参与此机制。\n> - **enabler**：友方击杀/控制一个单位 → `grazing_slot +1`（记录其途径与一项招牌能力）。\n> - **payoff**：释放被放牧单位的一项能力（一次）；若被放牧者为 `undead`/`spirit` → 该能力附 `净化` 联动（圣光克死灵的跨系延伸）。\n> - **阈级（⚠️D，自行设计）**：槽 ≥1 释放 1 项；≥3 ×1.3；≥5 `cd -1` 且 2 目标；=MAX(⚠️D 暂定 7) 本回合视为本途径技能（吃 `净化` 增益）。\n>\n> **阵营克制（原著招牌）**：序列8「克制死尸鬼魂」、序列5「污秽和死灵的克星」、序列4「净化堕落/污秽/黑暗/疾病」。主方案=单位标签 `undead`/`foul`/`dark` + 按标签乘区（已落 §1.2b）；退化=数据层预置负 `resist:holy`。\n\n> **昼夜时钟（2026-09-21）**：歌颂者只吃**白昼档增益**（光照度 ≥8 时圣光类 ×1.2，⚠️D）。**原著没有任何「歌颂者夜里变弱」的记载**——时间惩罚只见于不眠者守夜人「正午阳光下被削弱」，故本途径不设夜间减益，避免无据设计。",
   "sampleBuilds": [
     {
       "name": "A 颂歌鼓舞 🜁",

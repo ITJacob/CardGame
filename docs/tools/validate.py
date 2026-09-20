@@ -79,6 +79,7 @@ DIM_RANGES = {
 
 # 触发点：语义封闭集 13 个（ddd 执行参数 §2.1）。schema triggerEvent 结构层额外放行
 # on_status_gain，语义层强制 frameworkFlag 登记（SCHEMA.md §8）——两处不一致是有意为之。
+PHASES = {"midnight","dawn","day","dusk","night"}
 EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill","on_phase_change"}
 RARITY_BY_SEQ = lambda s: "common" if s>=8 else "uncommon" if s>=6 else "rare" if s>=4 else "epic" if s>=2 else "legendary"
 
@@ -321,6 +322,20 @@ def main():
                     # 越界但有 note 兜底（如已登记的 D2 占位 fate_value≤−5 ×2.0）视为有意，不再告警
                     if not h.get("note"):
                         warns.append("%s: dimHooks mul %s 越出建议区间 0.8–1.5（平衡期需 note 说明）"%(cid, mu))
+            # 相位乘区挂钩 Gate：phases 非空且合法、mul>0；mul 越界给非阻断告警
+            for h in (c.get("phaseHooks") or []):
+                ph = h.get("phases")
+                if not isinstance(ph, list) or not ph:
+                    errors.append("%s: phaseHooks.phases 须为非空数组" % cid); continue
+                bad = [x for x in ph if x not in PHASES]
+                if bad:
+                    errors.append("%s: phaseHooks.phases 非法值 %s（须为 %s）" % (cid, bad, "/".join(sorted(PHASES)))); continue
+                mu2 = h.get("mul")
+                if not isinstance(mu2, (int, float)) or mu2 <= 0:
+                    errors.append("%s: phaseHooks mul %s 须为正" % (cid, mu2))
+                elif mu2 < 0.8 or mu2 > 1.5:
+                    if not h.get("note"):
+                        warns.append("%s: phaseHooks mul %s 越出 0.8–1.5 且无 note 说明" % (cid, mu2))
         # ---- sampleBuilds 交叉校验：示例卡组可信化 ----
         # 每个 Build 须 4 主动 + 4 被动，所列卡名必须存在于本文件 cards[]，
         # 且 actives 只能指 kind=active 的卡、passives 只能指 kind=passive 的卡。

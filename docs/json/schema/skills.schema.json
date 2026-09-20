@@ -338,6 +338,13 @@
             "$ref": "#/$defs/dimHook"
           },
           "description": "本卡对战场全局维度的乘区挂钩列表（维度乘区挂钩机制，见 docs/ddd/params/源质维度与跨系枢纽.md §二）。"
+        },
+        "phaseHooks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/phaseHook"
+          },
+          "description": "本卡对战场相位的乘区挂钩列表（相位乘区挂钩机制，见 docs/ddd/params/战场参数.md §1.3b）。与 dimHooks 平行：dimHooks 管连续量维度，phaseHooks 管枚举相位。"
         }
       },
       "allOf": [
@@ -2315,6 +2322,8 @@
             "has_status",
             "hp_percent",
             "hp_percent_compare",
+            "luminance_compare",
+            "phase_is",
             "remove_reason",
             "stat_compare",
             "status_category",
@@ -2489,6 +2498,20 @@
         },
         "note": {
           "type": "string"
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "midnight",
+              "dawn",
+              "day",
+              "dusk",
+              "night"
+            ]
+          },
+          "description": "phase_is 谓词用的相位集合：当前 board.phase 属于其一即成立（见 战场参数.md §1.3b）。"
         }
       }
     },
@@ -3792,6 +3815,60 @@
         },
         "note": {
           "type": "string"
+        }
+      }
+    },
+    "phaseHook": {
+      "type": "object",
+      "description": "卡面对战场相位的乘区挂钩：当 board.phase 属于 phases 之一时，本卡相关结算乘区乘 mul。**相位是枚举，无法用连续量 dimHook 表达**（黎明 1–7 与黄昏 6→1 的光照度区间几乎完全重叠，dimHook 区分不了），故单列本结构。见 docs/ddd/params/战场参数.md §1.3b。",
+      "required": [
+        "phases",
+        "mul"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "phases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "midnight",
+              "dawn",
+              "day",
+              "dusk",
+              "night"
+            ]
+          },
+          "description": "生效相位集合；月夜 = [night, midnight] + 月相条件。"
+        },
+        "mul": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "乘区系数（⚠️D 平衡占位）；单卡建议 0.8–1.5，超限需 note 说明。"
+        },
+        "target": {
+          "type": "string",
+          "enum": [
+            "damage",
+            "damage_taken",
+            "heal",
+            "resource",
+            "rule_strength",
+            "all"
+          ],
+          "description": "乘区作用目标；默认 damage。"
+        },
+        "filterTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "仅当本卡带这些 tag 之一才生效。"
+        },
+        "note": {
+          "type": "string",
+          "description": "乘区来源/口径说明。"
         }
       }
     }
