@@ -5,7 +5,7 @@
 ## 页面
 
 - **卡片浏览** `#/cards`：按途径/构筑轴/稀有度/类型/序列/原语/距离筛选 + 关键词搜索，卡片详情含效果 AST 的中文精读
-- **术语词典** `#/glossary`：英文枚举 key → 中文名 + 解释（原语、算子、条件谓词、触发点、目标锚点等 57 类 300+ 词条），可搜索
+- **术语词典** `#/glossary`：英文枚举 key → 中文名 + 解释（原语、算子、条件谓词、触发点、目标锚点等 60 类 300+ 词条），可搜索
 - **统计分析** `#/stats`：稀有度/序列/途径分布、原语与算子用量、途径×原语热图等（口径对齐 `docs/tools/build_profession_analysis.py`）
 
 ## 本地运行
@@ -24,7 +24,7 @@ Pages 源 = main 分支 / 仓库根。访问 `https://<user>.github.io/<repo>/si
 
 ## 维护约定
 
-- 新增枚举值：先登记 schema/`docs/meta/SCHEMA.md`，再补 `docs/meta/glossary.json` 词条。
+- 新增枚举值：先登记 schema/`docs/meta/SCHEMA.md`，再补 `docs/meta/glossary.json` 词条；跑 `python docs/tools/check_glossary.py` 对账，它会列出待补录清单（0 缺词条即站点不会再出现橙色「未收录」）。
 - 页面上出现橙色「未收录」token = 词典缺词条（控制台同时有 `[术语未收录]` 告警）。
 - 状态/途径/构筑轴的中文名直接来自数据文件（`*.statuses.json`、`manifest.json`、各 `axes`），不进词典。
 - 悬停状态名时，除词典释义外还会展开该状态自身的 `duration/maxStacks/charges/dispelable` 与 `effects/triggers`（AST 复用 `ast.js` 渲染器）；`modifiers` 等其余字段尚未接入。
