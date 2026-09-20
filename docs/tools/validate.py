@@ -265,7 +265,7 @@ def main():
                     if flags: flagged_gaps.append("%s: nonstandard fallbackSort %s"%(cid,fs))
                     else: errors.append("%s: bad fallbackSort %s"%(cid,fs))
                 if (c.get("target") or {}).get("selectionMode")=="manual" and not fs:
-                    warns.append("%s: manual but fallbackSort null"%cid)
+                    errors.append("%s: 违反 INV-E6：selectionMode=manual 必须定义 fallbackSort（当前为 null/缺失）"%cid)
             elif c.get("kind")=="passive":
                 if c.get("hook") not in EVENTS: errors.append("%s: bad hook %s"%(cid,c.get("hook")))
             else: errors.append("%s: bad kind"%cid)

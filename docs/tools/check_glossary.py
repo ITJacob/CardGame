@@ -56,7 +56,7 @@ ENUM_TO_CAT = {
     "secondaryTarget.selectionMode": "selectionMode",
     "unitRequest.faction": "faction",
     "unitRequest.scope": "scope",
-    "unitRequest.anchor": "anchor",
+    "unitRequest.anchor.anyOf": "anchor",
     "unitRequest.spread": "spread",
     "unitRequest.laneRef": "laneRef",
     "unitDef.reach": "reach",

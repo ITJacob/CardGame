@@ -589,12 +589,36 @@
           "$ref": "#/$defs/unitFilter"
         },
         "anchor": {
-          "enum": [
-            "front_line",
-            "spawned_unit",
-            "first_empty",
-            "empty_ally_slot"
+          "description": "位置锚点：候选池的起点坐标。优先用下列关键字；也可直接写具体单位 id（DDD「<指定单位>」动态寻址，故用 anyOf 放宽为任意字符串——注意这会弱化拼写校验）。absolute 需配 fixedIndex。",
+          "anyOf": [
+            {
+              "enum": [
+                "front_line",
+                "spawned_unit",
+                "first_empty",
+                "empty_ally_slot",
+                "self",
+                "front_of_self",
+                "behind_self",
+                "cross_same_index",
+                "absolute",
+                "taunt_source",
+                "manual",
+                "nearest_any",
+                "any_lowest_hp",
+                "self_faction_hp_desc",
+                "last_dead_ally",
+                "index_asc_same_faction"
+              ]
+            },
+            {
+              "type": "string"
+            }
           ]
+        },
+        "fixedIndex": {
+          "type": "integer",
+          "description": "配合 anchor=absolute 的绝对站位序号（DDD：absolute 需配 fixedIndex）。"
         },
         "sort": {
           "$ref": "#/$defs/sortKey"
@@ -649,20 +673,7 @@
             "type": "string"
           }
         },
-        "category": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/statusCategory"
-            },
-            {
-              "type": "array",
-              "items": {
-                "$ref": "#/$defs/statusCategory"
-              }
-            }
-          ]
-        },
-        "statusId": {
+        "hasStatus": {
           "oneOf": [
             {
               "type": "string"
@@ -673,7 +684,34 @@
                 "type": "string"
               }
             }
-          ]
+          ],
+          "description": "DDD 维度：要求目标持有指定状态。旧名 statusId 已弃用（数据中实际从未使用，统一为 DDD 命名）。"
+        },
+        "hasCategory": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/statusCategory"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/statusCategory"
+              }
+            }
+          ],
+          "description": "DDD 维度：要求目标持有指定类别的状态。旧名 category 已弃用（数据中实际从未使用，统一为 DDD 命名）。"
+        },
+        "hpPercent": {
+          "type": "object",
+          "description": "DDD 维度：按生命百分比过滤。开放结构（如 cmp + value）。"
+        },
+        "casterHasSummon": {
+          "type": "boolean",
+          "description": "DDD 维度：要求施法者拥有召唤物。"
+        },
+        "adjacency": {
+          "type": "object",
+          "description": "DDD 维度：相邻性过滤，配合 spread 表达相邻 / 溅射目标域。"
         },
         "unitId": {
           "oneOf": [

@@ -111,13 +111,14 @@
     "faction": {
       "label": "阵营",
       "desc": "选靶的第一层过滤：以施法者为参照决定「找谁」——自己、友军、敌军或任意。它决定候选池，不决定取几个。",
-      "source": "SCHEMA.md §4",
+      "source": "SCHEMA.md §4 / 共享内核参数 §一",
+      "note": "⚠️ `any` 与 `none` **语义不同，不可互换**：`any` = **不限阵营**，跨敌我双方都纳入候选池（**有目标**，只是阵营随便）；`none` = **无目标对象**，配合 `scope: none`，候选池为空、I 节点直接跳过。二者原为 DDD 取值域缺失项（schema 有且数据在用），2026-09-20 已回补登记进 DDD，三源现已一致。",
       "terms": {
         "self": { "zh": "自身", "brief": "仅施法者自己" },
         "ally": { "zh": "友军", "brief": "己方其他单位" },
         "enemy": { "zh": "敌军", "brief": "对方单位" },
-        "any": { "zh": "任意", "brief": "不限阵营" },
-        "none": { "zh": "无", "brief": "不需要目标" },
+        "any": { "zh": "任意", "brief": "不限阵营，敌我双方都纳入候选池（有目标、阵营随便）" },
+        "none": { "zh": "无", "brief": "无目标对象，配合 scope:none 使候选池为空、I 节点跳过" },
         "self_or_ally": { "zh": "自身或友军", "brief": "己方任一单位（含自己）" }
       }
     },
@@ -146,27 +147,48 @@
     },
     "anchor": {
       "label": "位置锚点",
-      "desc": "候选池的起点：前排、本次登场的召唤物、首个空位、己方空位等。锚点定「从哪里开始找」，之后才叠加范围、过滤与排序。",
+      "desc": "候选池的起点坐标。锚点定「从哪里开始找」，之后才叠加范围、过滤与排序。也可直接写具体单位 id 做动态寻址（DDD「<指定单位>」）。",
       "source": "SCHEMA.md §4 / 共享内核参数 §一",
-      "note": "⚠️ 漂移：DDD anchor 取值域共 ~17 个（self / front_of_self / behind_self / cross_same_index / absolute / taunt_source / manual / nearest_any / any_lowest_hp / self_faction_hp_desc / last_dead_ally / index_asc_same_faction / <指定单位> 等），schema 仅实现 4 个，缺 ~13 个补齐待办（2026-09-20 核对登记）。**first_empty 与 empty_ally_slot 不同义**：前者=任意半场第一个空格（召唤/空坐标攻击用，空坐标是合法目标），后者=己方半场空格（自身位移落点用）。",
+      "note": "✅ 2026-09-20 已补齐 DDD 全部 16 个关键字取值（原仅实现 4 个）。**first_empty 与 empty_ally_slot 不同义**：前者=任意半场第一个空格（召唤/空坐标攻击用，空坐标是合法目标），后者=己方半场空格（自身位移落点用）。`absolute` 需配 `fixedIndex`。因支持「<指定单位>」动态寻址，schema 用 anyOf 放宽为任意字符串，**拼写校验被弱化**。",
       "terms": {
         "front_line": { "zh": "前排", "brief": "锚定前排位置" },
         "spawned_unit": { "zh": "召唤物", "brief": "锚定刚生成的召唤物（本次登场的新单位，spawn 链专属）" },
         "first_empty": { "zh": "首个空位", "brief": "第一个空着的格子（任意半场；召唤/空坐标攻击用）" },
-        "empty_ally_slot": { "zh": "己方空位", "brief": "己方半场空格（自身位移落点用，区别于 first_empty 的任意空格）" }
+        "empty_ally_slot": { "zh": "己方空位", "brief": "己方半场空格（自身位移落点用，区别于 first_empty 的任意空格）" },
+        "self": { "zh": "自身", "brief": "锚定施法者自身位置" },
+        "front_of_self": { "zh": "自身前方", "brief": "锚定施法者正前方的位置" },
+        "behind_self": { "zh": "自身后方", "brief": "锚定施法者正后方的位置" },
+        "cross_same_index": { "zh": "跨列同位", "brief": "锚定其它列的相同站位序号" },
+        "absolute": { "zh": "绝对站位", "brief": "锚定绝对站位序号，需配 fixedIndex" },
+        "taunt_source": { "zh": "嘲讽来源", "brief": "锚定发起嘲讽的单位" },
+        "manual": { "zh": "手动指定", "brief": "由玩家手动指定坐标" },
+        "nearest_any": { "zh": "最近任意", "brief": "距施法者最近的任意单位" },
+        "any_lowest_hp": { "zh": "全场最低血", "brief": "任意阵营中生命最低者" },
+        "self_faction_hp_desc": { "zh": "己方最低血", "brief": "己方阵营中生命最低者" },
+        "last_dead_ally": { "zh": "最近阵亡友军", "brief": "最近死亡的己方单位（死者寻址，配合 spawn.reviveOf 实现复活）" },
+        "index_asc_same_faction": { "zh": "同阵营首位", "brief": "同阵营内按站位升序取第一个" }
       }
     },
     "filter": {
       "label": "候选池过滤器",
       "desc": "候选池的最后一层筛选：按单位类型、标签、持有状态等排除。开放结构——不约束就不写，缺省即不参与过滤。",
-      "source": "skills.schema.json unitRequest.filter / unitFilter",
-      "note": "request 的过滤维度（DDD 选靶范围三件套「锚点+区域+过滤」之过滤）。开放结构：布尔属性缺省即不约束。",
+      "source": "skills.schema.json unitRequest.filter / unitFilter / 共享内核参数 §一",
+      "note": "request 的过滤维度（DDD 选靶范围三件套「锚点+区域+过滤」之过滤）。开放结构：属性缺省即不约束。**DDD 标准 9 维**（2026-09-20 已在 schema 全部声明）：unitType / tags / hasStatus / hasCategory / hpPercent / casterHasSummon / isSummon / casterOwned / adjacency。**项目扩展（数据已用）**：unitId / isAllyOrMirror / isPuppet / isOwnSummon / element / tier / count / dispelable / anyOf。⚠️ 旧名 `statusId`→`hasStatus`、`category`→`hasCategory` 已于 2026-09-20 统一为 DDD 命名（旧名在 request.filter 中实际从未被数据使用）。",
       "terms": {
-        "unitType": { "zh": "单位类型", "brief": "按 unitType 过滤（如 UNDEAD）" },
-        "tags": { "zh": "标签", "brief": "按标签过滤" },
-        "category": { "zh": "状态类别", "brief": "按状态类别过滤（statusCategory）" },
-        "statusId": { "zh": "状态ID", "brief": "按持有指定状态过滤" },
-        "excludeSelf": { "zh": "排除自身", "brief": "布尔；为 true 时从候选池剔除施法者自己" }
+        "unitType": { "zh": "单位类型", "brief": "DDD 维度：按 unitType 过滤（如 UNDEAD）" },
+        "tags": { "zh": "标签", "brief": "DDD 维度：按标签过滤" },
+        "hasStatus": { "zh": "持有状态", "brief": "DDD 维度：要求目标持有指定状态（原 statusId）" },
+        "hasCategory": { "zh": "持有状态类别", "brief": "DDD 维度：要求目标持有指定类别的状态（原 category）" },
+        "hpPercent": { "zh": "生命百分比", "brief": "DDD 维度：按生命百分比过滤" },
+        "casterHasSummon": { "zh": "施法者有召唤物", "brief": "DDD 维度：要求施法者拥有召唤物" },
+        "isSummon": { "zh": "是召唤物", "brief": "DDD 维度：目标是否为召唤物" },
+        "casterOwned": { "zh": "施法者所有", "brief": "DDD 维度：目标是否归属施法者" },
+        "adjacency": { "zh": "相邻性", "brief": "DDD 维度：相邻性过滤，配合 spread 表达相邻 / 溅射目标域" },
+        "unitId": { "zh": "单位ID", "brief": "扩展维度：按具体单位 id 过滤" },
+        "isAllyOrMirror": { "zh": "友军或镜像", "brief": "扩展维度：目标为友军或镜像分身" },
+        "isPuppet": { "zh": "是秘偶", "brief": "扩展维度：目标是否为秘偶（愚者途径）" },
+        "isOwnSummon": { "zh": "己方召唤物", "brief": "扩展维度：是否为施法者自己的召唤物" },
+        "excludeSelf": { "zh": "排除自身", "brief": "布尔；从候选池剔除施法者自己（位于 unitRequest 层，不在 filter 内）" }
       }
     },
     "spread": {

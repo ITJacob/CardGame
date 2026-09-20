@@ -120,9 +120,10 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 |---|---|
 | `faction` | `self` / `ally` / `enemy` / `any` / `none` / `self_or_ally` |
 | `scope` | `single` / `all` / `none` ✅ **2026-09-20 裁定为权威口径**——DDD 共享内核 §一 原有两行同名 `scope`（L12 几何 `single_point/whole_lane/adjacent` vs L19 覆盖 `single/all`）冲突，现以 **L19 为准**，L12 几何语义废弃、改由 `laneRef`+`spread`+`mode` 承载（避免改动 829 卡现有 scope 数据） |
-| `anchor` | `front_line` / `spawned_unit` / `first_empty` / `empty_ally_slot`（⚠️ `first_empty`=任意半场第一个空格、**`empty_ally_slot`=己方半场空格，二者不同义不可互换**；DDD anchor 共 ~17 值，schema 仅实现 4，缺 ~13 个属补齐待办） |
+| `anchor` | `front_line` / `spawned_unit` / `first_empty` / `empty_ally_slot` / `self` / `front_of_self` / `behind_self` / `cross_same_index` / `absolute` / `taunt_source` / `manual` / `nearest_any` / `any_lowest_hp` / `self_faction_hp_desc` / `last_dead_ally` / `index_asc_same_faction`，或直接写具体单位 id（2026-09-20 补齐至 DDD 全部 16 值）。⚠️ `first_empty`=任意半场空格 **≠** `empty_ally_slot`=己方半场空格，**不可互换**；`absolute` 需配 `fixedIndex`(int) |
+| `fixedIndex` | integer | 配合 `anchor: absolute` 的绝对站位序号（2026-09-20 补） |
 | `sort` | 同 sortKey（见下） |
-| `filter` | 候选池过滤器（开放结构，unitFilter：unitType / tags / category / statusId / excludeSelf）——DDD 选靶范围三件套「锚点+区域+过滤」之过滤，词典此前缺位，本轮回补 |
+| `filter` | 候选池过滤器（开放结构）。**DDD 标准 9 维**：`unitType` / `tags` / `hasStatus` / `hasCategory` / `hpPercent` / `casterHasSummon` / `isSummon` / `casterOwned` / `adjacency`；**项目扩展（数据已用）**：`unitId` / `isAllyOrMirror` / `isPuppet` / `isOwnSummon` / `element` / `tier` / `count` / `dispelable` / `anyOf`。2026-09-20 旧名 `statusId`→`hasStatus`、`category`→`hasCategory` 统一为 DDD 命名 |
 | `laneRef` | `same_lane` / `cross_lane` / `all_lanes` / `auto`（DDD 原设计有、schema 曾丢失，本轮回补；auto 在 I 节点前由施法者上下文预处理为具体值） |
 | `spread` | `none` / `lane_line` / `splash_adjacent` / `splash_behind` / `cross_same_index`（2026-09-20 由 1 值补齐为 DDD 5 值；承载上述废弃几何 scope 的语义） |
 | `excludeSelf` / `sortKey` | 见 schema |
