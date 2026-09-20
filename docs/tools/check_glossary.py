@@ -5,7 +5,8 @@
 站点渲染时按 glossary 查中文名，查不到即显示橙色「未收录」并在控制台告警；
 新增枚举值后跑本脚本，即得需要补录的词条清单。
 
-用法: python docs/tools/check_glossary.py   （只读；有缺词条时 exit 1）
+对账两项：① 每个取值域的值都有词条 ② 每个栏目都写了 desc（这一维是什么）。
+用法: python docs/tools/check_glossary.py   （只读；任一项不达标 exit 1）
 """
 import glob
 import io
@@ -238,6 +239,10 @@ def main():
         if cat not in values_by_cat:
             unchecked.append(cat)
 
+    # 每个栏目必须有一句「这一维是什么」的描述（不是出处）：站点把它渲染在栏目标题下，
+    # 缺了就退化成只有 key/中文/解释的裸表，读者看不出这一维在整体里管什么。
+    nondesc = sorted(c for c in cats if not (cats[c].get("desc") or "").strip())
+
     if missing:
         print(f"缺词条 {len(missing)} 条（需补 docs/meta/glossary.json）：")
         for cat, v, src in missing:
@@ -254,14 +259,20 @@ def main():
         print(f"\n无 schema 值域来源的类别 {len(unchecked)} 个（来源在文档侧，人工核对）：")
         print("  " + "、".join(f"{c}({len(cats[c].get('terms') or {})})" for c in unchecked))
 
+    if nondesc:
+        print(f"\n缺栏目描述 desc 的类别 {len(nondesc)} 个（每类必须写「这一维是什么」，不是出处）：")
+        print("  " + "、".join(nondesc))
+
     print("-" * 60)
-    if missing or unmapped:
+    if missing or unmapped or nondesc:
+        if nondesc:
+            print(f"处置：给上述类别补 desc 字段（站点渲染在栏目标题下，术语词典页可见）")
         if missing:
             print(f"处置：补齐 glossary 词条（先按编辑纪律确认 schema/SCHEMA.md 已登记）")
         if unmapped:
             print(f"处置：把上述 $defs 路径登记进本脚本 ENUM_TO_CAT")
         return 1
-    print("词典与值域一致")
+    print(f"词典与值域一致：{len(cats)} 类全部有词条与 desc")
     return 0
 
 

@@ -34,6 +34,9 @@ export function initTooltip() {
         if (!tip.contains(e.target)) tip.hidden = true;
         return;
       }
+      // 带词典深链的术语（领域模型页的 token）放行：触屏没有「悬停」，拦下点击等于废掉跳转，
+      // 而词典条目比浮层更全，跳过去本来就是更好的落点
+      if (el.classList.contains('md-tok')) { tip.hidden = true; return; }
       // 捕获阶段拦下：卡片列表的 .card-item 也绑了 click 跳转详情
       e.preventDefault();
       e.stopPropagation();

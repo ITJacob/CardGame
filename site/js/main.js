@@ -5,10 +5,11 @@ import { renderCardDetail } from './views/card.js';
 import { renderGlossary } from './views/glossary.js';
 import { renderStats } from './views/stats.js';
 import { renderStatuses } from './views/status.js';
+import { renderDdd } from './views/ddd.js';
 
 // 非列表页（卡片列表之外的都算，用于滚动位置还原）。新增页务必登记，
 // 否则从详情返回时会被当成列表页而错误还原滚动位置
-const NON_LIST_PAGES = new Set(['card', 'glossary', 'stats', 'statuses']);
+const NON_LIST_PAGES = new Set(['card', 'glossary', 'stats', 'statuses', 'ddd']);
 
 const view = document.getElementById('view');
 const status = document.getElementById('load-status');
@@ -29,8 +30,10 @@ let prevPage = '';
 let listScrollY = 0;
 
 function route() {
-  const hash = location.hash || '#/cards';
-  const [, page, arg] = hash.split('/');
+  // hash 形如 #/page/arg?cat=x&q=y：查询串只给「深链」用（领域模型页的术语 token →
+  // 术语词典对应栏目），先把 ? 之后摘掉再拆路径，否则 page 会被查询串污染
+  const [path, qs] = (location.hash || '#/cards').replace(/^#/, '').split('?');
+  const [, page, arg] = path.split('/');
   const isList = !NON_LIST_PAGES.has(page);
 
   // 离开列表页时记下滚动位置，从详情返回时还原
@@ -38,9 +41,10 @@ function route() {
   const restoreScroll = isList && prevPage === 'card';
 
   if (page === 'card' && arg) { setNav('cards'); renderCardDetail(view, decodeURIComponent(arg)); }
-  else if (page === 'glossary') { setNav('glossary'); renderGlossary(view); }
+  else if (page === 'glossary') { setNav('glossary'); renderGlossary(view, new URLSearchParams(qs || '')); }
   else if (page === 'stats') { setNav('stats'); renderStats(view); }
   else if (page === 'statuses') { setNav('statuses'); renderStatuses(view); }
+  else if (page === 'ddd') { setNav('ddd'); renderDdd(view, arg ? decodeURIComponent(arg) : ''); }
   else { setNav('cards'); renderCards(view); }
 
   prevPage = isList ? 'cards' : page;

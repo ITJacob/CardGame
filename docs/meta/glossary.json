@@ -5,6 +5,7 @@
   "categories": {
     "primitive": {
       "label": "效果原语",
+      "desc": "效果的最小执行单元——卡面效果与状态载荷都由原语搭出来。原语集封闭，权威源是 skills.schema.json 的 effect.oneOf；新增原语必须先登记 SCHEMA.md §5.2，否则枚举对账脚本报漂移。",
       "source": "SCHEMA.md §5.2",
       "terms": {
         "damage": { "zh": "伤害", "brief": "对目标造成指定元素的伤害", "detail": "关键字段 value/element/mul/spread/pierce/lethal/neverMiss。伤害数值零随机（R1）。" },
@@ -38,6 +39,7 @@
     },
     "operator": {
       "label": "效果算子",
+      "desc": "把多个原语组合成复合效果的三个结构算子（顺序 / 重复 / 条件分支）。算子自身不含结算语义，只决定原语在什么条件下、执行几次。",
       "source": "SCHEMA.md §5.1",
       "terms": {
         "sequence": { "zh": "顺序执行", "brief": "steps 依次执行，编目期展开为扁平 EffectRef" },
@@ -47,6 +49,7 @@
     },
     "cardKind": {
       "label": "卡牌类型",
+      "desc": "一张卡进入结算的路径。主动技能由单位在行动中施放，因此必填能量、攻击性质与选靶；被动常驻生效、由触发钩子唤起，没有施放期参数。",
       "source": "SCHEMA.md §3.2",
       "terms": {
         "active": { "zh": "主动", "brief": "需消耗能量主动施放；必须有 cost/reach/target" },
@@ -55,6 +58,7 @@
     },
     "rarity": {
       "label": "稀有度",
+      "desc": "投放强度档位，决定单卡预算上限与可出序列范围。强度按稀有度给基线，不靠单卡手调数值。",
       "source": "manifest.rarityMap / SCHEMA.md §3.1",
       "terms": {
         "common": { "zh": "普通", "brief": "序列 9–8" },
@@ -66,6 +70,7 @@
     },
     "reach": {
       "label": "攻击性质",
+      "desc": "这次攻击算不算贴身。它与站位、与选靶方式正交——只作为守卫姿态等来源过滤的判据，非攻击类行为填 none。",
       "source": "skills.schema.json",
       "terms": {
         "none": { "zh": "非攻击", "brief": "非攻击类行为（治疗/增益/位移/召唤等），不触发对撞、不可被拦截" },
@@ -75,6 +80,7 @@
     },
     "gender": {
       "label": "性别限制",
+      "desc": "单位性别及其获取期约束。战斗内不可变，只以条件谓词与候选过滤的形式参与结算，不进核心伤害/资源逻辑。",
       "source": "SCHEMA.md §3.1/§7",
       "terms": {
         "any": { "zh": "不限", "brief": "无性别要求" },
@@ -84,6 +90,7 @@
     },
     "selectionMode": {
       "label": "选靶方式",
+      "desc": "目标交给玩家挑还是系统按规则自动落。候选数不超过取数时不触发玩家选择；自动分支必须给出兜底排序键，保证 AI 与状态触发也能确定性地取到目标。",
       "source": "SCHEMA.md §4",
       "terms": {
         "manual": { "zh": "手动选择", "brief": "系统按 request（锚点+区域+过滤）圈出候选池，玩家从中选取；玩家未指定时按 fallbackSort 兜底" },
@@ -92,6 +99,7 @@
     },
     "faction": {
       "label": "阵营",
+      "desc": "选靶的第一层过滤：以施法者为参照决定「找谁」——自己、友军、敌军或任意。它决定候选池，不决定取几个。",
       "source": "SCHEMA.md §4",
       "terms": {
         "self": { "zh": "自身", "brief": "仅施法者自己" },
@@ -104,6 +112,7 @@
     },
     "scope": {
       "label": "作用范围",
+      "desc": "选靶的第二层：取一个还是取全部。与阵营、过滤、排序组合出全部目标形态，因此不为每种组合单开枚举。",
       "source": "SCHEMA.md §4",
       "note": "⚠️ 漂移：DDD 共享内核 scope=single_point/whole_lane/adjacent，schema 现用 single/all/none，二者不等价；全套对齐需迁移数据，属独立项目，本轮不动。",
       "terms": {
@@ -114,6 +123,7 @@
     },
     "laneRef": {
       "label": "扫描路线",
+      "desc": "选靶的列维度：只扫本列、扫其它列、扫全部列。auto 在进入流水线之前由施法者上下文预处理成具体值，以免把上下文塞进纯函数。",
       "source": "共享内核参数 / skills.schema.json unitRequest.laneRef（DDD 原设计有、schema 曾丢失，本轮回补）",
       "note": "选靶扫描的路线/列维度。auto 在 I 节点之前由施法者上下文预处理为具体值，保持流水线纯函数。",
       "terms": {
@@ -125,6 +135,7 @@
     },
     "anchor": {
       "label": "位置锚点",
+      "desc": "候选池的起点：前排、本次登场的召唤物、己方空位、敌方空位等。锚点定「从哪里开始找」，之后才叠加范围、过滤与排序。",
       "source": "SCHEMA.md §4",
       "terms": {
         "front_line": { "zh": "前排", "brief": "锚定前排位置" },
@@ -135,6 +146,7 @@
     },
     "filter": {
       "label": "候选池过滤器",
+      "desc": "候选池的最后一层筛选：按单位类型、标签、持有状态等排除。开放结构——不约束就不写，缺省即不参与过滤。",
       "source": "skills.schema.json unitRequest.filter / unitFilter",
       "note": "request 的过滤维度（DDD 选靶范围三件套「锚点+区域+过滤」之过滤）。开放结构：布尔属性缺省即不约束。",
       "terms": {
@@ -147,6 +159,7 @@
     },
     "spread": {
       "label": "溅射方式",
+      "desc": "主目标被命中之后波及谁。与范围分工：范围决定取几个目标，溅射决定命中之后向邻近扩散。",
       "source": "SCHEMA.md §4",
       "terms": {
         "splash_adjacent": { "zh": "溅射相邻", "brief": "主目标之外的相邻单位也受影响" }
@@ -154,6 +167,7 @@
     },
     "sortKey": {
       "label": "排序键",
+      "desc": "候选多于取数时的确定性取法。每个键末尾都带站位升序破平，保证同一战场状态永远得到同样的目标；参数化的状态键族用于按「是否持有某状态」加权。",
       "source": "SCHEMA.md §4",
       "terms": {
         "none": { "zh": "不排序", "brief": "保持原顺序" },
@@ -175,6 +189,7 @@
     },
     "sourceRef": {
       "label": "属性参照来源",
+      "desc": "取不低于 / 置值这类相对修正的参照对象：施法者、次目标或全场均值。用于「拉平」「取不低于某人」一类语义。",
       "source": "skills.schema.json modify_stat.sourceRef",
       "terms": {
         "caster": { "zh": "施法者", "brief": "以施法者的属性为参照" },
@@ -184,6 +199,7 @@
     },
     "shuffleMode": {
       "label": "重排方式",
+      "desc": "状态重排的执行方式（现仅轮转一种）：把一组状态实例在若干单位之间循环搬移，搬的是实例本身而非复制。",
       "source": "skills.schema.json status_shuffle",
       "terms": {
         "rotate": { "zh": "轮换", "brief": "状态按序轮转换位" }
@@ -191,6 +207,7 @@
     },
     "dispelMode": {
       "label": "驱散方式",
+      "desc": "驱散的粒度（现仅范围型一种）：在选定范围内对全部目标生效，而非逐个点名。",
       "source": "skills.schema.json dispel",
       "terms": {
         "area": { "zh": "范围驱散", "brief": "对范围内全部目标驱散" }
@@ -198,6 +215,7 @@
     },
     "effectTarget": {
       "label": "效果目标锚点",
+      "desc": "效果段内部承接者的锚点，与技能级选靶是两层：技能级选靶决定这一次打向谁，效果锚点决定这一段落在谁身上（自己 / 施法者 / 主目标 / 状态持有者 / 被击杀者…）。同一张卡的不同段可以指向不同锚点。",
       "source": "SCHEMA.md §4",
       "note": "效果级二次寻址（区别于 cardTarget.request 的选靶）。三组：①运行期角色 self/caster/target/primary_target/secondary_target/same_target/attacker/holder/status_holder/killed_unit（不可替代）；②全体集合 all_allies/allies_except_self/all_enemies/all_other_enemies/all_units/all（all=所有相关对象、all_units=场上所有单位）；③相对坐标 adjacent_enemy/occupant_ally/occupant_enemy/splash_adjacent/splash_behind（与 request 的 anchor/spread 是两套体系，前者相对主目标、后者相对锚点）。self≠caster（被动/链接场景作用者≠触发者）；target≠primary_target（多目标/二次寻址时不同）。",
       "terms": {
@@ -228,6 +246,7 @@
     },
     "consumption": {
       "label": "目标消耗资源",
+      "desc": "这条效果占用哪一类目标通道：单位、区域、召唤、界域或跨层位移。它约束的是目标兼容性（单位型只能落在瞬发或跨层位移上），不是能量花费。",
       "source": "SCHEMA.md §4 / 共享内核参数",
       "note": "选靶时一并消耗的资源对象（summon/domain/zone/instant/translocate），对齐 DDD 共享内核 consumption。与 effectTarget 区别：effectTarget=效果作用到谁；consumption=选靶时消耗哪个资源。",
       "terms": {
@@ -240,6 +259,7 @@
     },
     "element": {
       "label": "元素",
+      "desc": "效果的元素标签，封闭为八元素加 none。纯标签、无内建数值语义——元素本身不产生伤害差异，差异来自逐元素抗性槽与状态触发表。伤害类必填，其余填 none。",
       "source": "SCHEMA.md §5.4",
       "terms": {
         "fire": { "zh": "火焰", "brief": "火元素伤害" },
@@ -256,6 +276,7 @@
     },
     "stat": {
       "label": "属性",
+      "desc": "可被直接修正的属性键，覆盖战斗属性、资源上限、行动条的源属性（速率与阈值）以及逐元素抗性槽。行动周期是派生值，禁止直接改——要改周期就改速率或阈值。",
       "source": "效果参数.md §一 / skills.schema.json",
       "terms": {
         "attack": { "zh": "攻击力", "brief": "基础攻击" },
@@ -278,6 +299,7 @@
     },
     "statMode": {
       "label": "属性修正方式",
+      "desc": "属性改动的方式：加减、置值、乘性缩放、取不低于、取不高于。缩放与加减互斥；取上/下限承载「封顶」类语义。",
       "source": "SCHEMA.md §5.2 modify_stat",
       "terms": {
         "delta": { "zh": "增减", "brief": "在现值上加减" },
@@ -289,6 +311,7 @@
     },
     "resource": {
       "label": "资源",
+      "desc": "可被直接增减的资源池与行动条现值。补血不走这里（走治疗），这里只做直接扣除，下限截断为 0 不进负值。",
       "source": "SCHEMA.md §5.2 modify_resource / 编队参数.md §2.5",
       "terms": {
         "hp": { "zh": "生命", "brief": "当前生命值" },
@@ -301,6 +324,7 @@
     },
     "resourceMode": {
       "label": "资源修正方式",
+      "desc": "资源改动的方式：增减、置值、互换。置值配合参照对象实现「拉平 / 等于」语义。",
       "source": "skills.schema.json modify_resource",
       "terms": {
         "delta": { "zh": "增减", "brief": "在现值上加减" },
@@ -310,6 +334,7 @@
     },
     "healMode": {
       "label": "治疗方式",
+      "desc": "治疗的四种口径：按数值回复、直接置血、按最大生命比例置血、回复到某个比例。后三种承载复活与「血肉不灭」这类普通回复表达不了的语义。",
       "source": "skills.schema.json heal",
       "terms": {
         "setHp": { "zh": "直接设值", "brief": "生命设为指定值" },
@@ -319,6 +344,7 @@
     },
     "stackMode": {
       "label": "叠层方式",
+      "desc": "重复施加同一状态时如何对待已有层数：追加、消耗还是覆盖。",
       "source": "skills.schema.json mount_status",
       "terms": {
         "add": { "zh": "叠加", "brief": "在现有层数上累加" },
@@ -328,6 +354,7 @@
     },
     "moveOp": {
       "label": "位移方式",
+      "desc": "占位变更的写法族：推、拉、换位、插队、冲锋。位移在「双路各 4 格 + 坍缩」的结构里本身即硬资源，定价时不可与纯伤害同价。",
       "source": "SCHEMA.md §5.2 move",
       "terms": {
         "push_back": { "zh": "击退", "brief": "向后推开" },
@@ -341,6 +368,7 @@
     },
     "spawnPosition": {
       "label": "生成位置",
+      "desc": "召唤物与重生体的落点：路尾、指定单位所在处、或原坐标。跨阵营转化一律走路尾。",
       "source": "skills.schema.json spawn",
       "terms": {
         "tail": { "zh": "队尾", "brief": "在己方队尾生成" },
@@ -350,6 +378,7 @@
     },
     "reviveOf": {
       "label": "复活对象",
+      "desc": "复活语义复用召唤承载：指向谁死，就复用谁的模板与坐标。寻址死者走锚点，不为复活另开原语。",
       "source": "SCHEMA.md §5.2 spawn（G4）",
       "terms": {
         "self": { "zh": "自身", "brief": "复活自己" },
@@ -359,6 +388,7 @@
     },
     "dispelTarget": {
       "label": "驱散对象",
+      "desc": "驱散打在什么上：单位身上的状态，还是上层界域。基底层界域不可驱散；拆陷阱属于坐标侧驱散。",
       "source": "skills.schema.json dispel",
       "terms": {
         "unit": { "zh": "单位", "brief": "驱散单位身上的状态" },
@@ -367,6 +397,7 @@
     },
     "domainOp": {
       "label": "界域操作",
+      "desc": "界域能做的三件事：降临压栈、与底层置换、挂载英雄域。置换是改写底层的唯一出口。",
       "source": "GENERATION_BRIEF.md §10.3 / SCHEMA.md §5.2",
       "terms": {
         "overlay": { "zh": "投影·叠加", "brief": "在现有界域上叠加一层（压制栈）" },
@@ -376,6 +407,7 @@
     },
     "domainTier": {
       "label": "界域层级",
+      "desc": "界域所在的层：英雄域被动常驻、压制优先级最高；上层域按打出顺序压栈，被压制期间计时暂停。",
       "source": "SCHEMA.md §7",
       "terms": {
         "overlay": { "zh": "叠加层", "brief": "压制栈中的叠加层" },
@@ -384,6 +416,7 @@
     },
     "translocateOp": {
       "label": "跨层位移方式",
+      "desc": "把单位从战场上整体抽走而不是挪格：拉入（拖进某处）与放逐（离场若干 tick 后从己方队尾回归，可带回归载荷）。",
       "source": "SCHEMA.md §5.2 translocate",
       "terms": {
         "pull_into": { "zh": "拉入", "brief": "把目标拉入另一层（离场）" },
@@ -392,6 +425,7 @@
     },
     "modifyDamageScope": {
       "label": "伤害修正方向",
+      "desc": "一次性伤害修正作用在哪一侧：我方打出的伤害，还是我方承受的伤害。区别于状态上的持续乘区——它只改写单次伤害事件。",
       "source": "skills.schema.json modify_damage",
       "terms": {
         "taken": { "zh": "受到的伤害", "brief": "修正承伤" },
@@ -400,6 +434,7 @@
     },
     "transferMode": {
       "label": "状态转移方式",
+      "desc": "搬运状态时是复制一份留在原处，还是改写（搬走并改写归属）。",
       "source": "skills.schema.json transfer_status",
       "terms": {
         "copy": { "zh": "复制", "brief": "复制状态到目标" },
@@ -408,6 +443,7 @@
     },
     "rounding": {
       "label": "取整方式",
+      "desc": "按比例取值时的取整规则，决定「回响上一个技能」这类效果的可预期落点。",
       "source": "skills.schema.json echo_last_skill",
       "terms": {
         "ceil": { "zh": "向上取整", "brief": "回响载荷折算后向上取整" },
@@ -417,6 +453,7 @@
     },
     "skillSelector": {
       "label": "技能选择器",
+      "desc": "要改的是哪个技能：自己上一个用过的、自己持有的、目标的，还是按 id 点名。",
       "source": "skills.schema.json modify_skill",
       "terms": {
         "self_last": { "zh": "自身上一技能", "brief": "自己上一次用的技能" },
@@ -427,6 +464,7 @@
     },
     "targetSpecOverride": {
       "label": "TargetSpec 完整改写",
+      "desc": "改写技能的选靶属性：给出选靶方式与请求全字段，未给出的沿用原值。区别于效果级的目标改写——那个只改写本次结算的目标，不改变技能本身。",
       "source": "skills.schema.json modify_skill（对齐 DDD：modify_skill 可改技能全部选靶属性）",
       "note": "modify_skill 对技能 TargetSpec 的完整补丁（对象）：给出 selectionMode 与 request 全字段，未给出的沿用原值。区别于 target_override 原语（effect 级一次性覆盖）。",
       "terms": {
@@ -436,6 +474,7 @@
     },
     "targetabilityDirection": {
       "label": "可选性方向",
+      "desc": "「不可被选中」朝哪个方向生效：敌方单体、敌方范围、友方或全部。它是候选池的排除，不是命中判定。",
       "source": "SCHEMA.md §5.2 modify_targetability",
       "note": "定义「单位对哪些来源不可被选为目标」（持久/状态级资格）。区别于 target_override 原语（单次效果级覆盖选靶结果）：前者改资格、后者改结果。pierce 控制穿透。",
       "terms": {
@@ -447,6 +486,7 @@
     },
     "damagePierce": {
       "label": "伤害穿透",
+      "desc": "这次伤害跳过哪一层防护：护甲、护盾还是抗性。按比例破甲是另一档强度，与整层跳过并存。",
       "source": "skills.schema.json damage.pierce",
       "terms": {
         "armor": { "zh": "穿透护甲", "brief": "忽略护甲" },
@@ -456,6 +496,7 @@
     },
     "revealScope": {
       "label": "揭示范围",
+      "desc": "显形之后给谁看：只有效果来源，还是全场。纯驱散隐匿走驱散原语，这里只负责「看见」。",
       "source": "skills.schema.json reveal",
       "terms": {
         "to_source": { "zh": "仅对来源", "brief": "只对效果来源方显形" },
@@ -464,6 +505,7 @@
     },
     "onExpire": {
       "label": "控制到期处理",
+      "desc": "被夺取控制权的单位在控制结束时归谁：交还原主、就地处死，还是留给控制者。",
       "source": "skills.schema.json take_control",
       "terms": {
         "revert": { "zh": "还原", "brief": "控制结束归还控制权" },
@@ -473,6 +515,7 @@
     },
     "actionPolicy": {
       "label": "控制行为策略",
+      "desc": "被控制期间还允许做什么：全部行动、只能攻击，还是只能移动。",
       "source": "skills.schema.json take_control",
       "terms": {
         "full": { "zh": "完全控制", "brief": "可执行全部行动" },
@@ -482,6 +525,7 @@
     },
     "ruleSlotField": {
       "label": "规则槽字段",
+      "desc": "规则槽上可写可改的字段：触发条件、违令惩罚、豁免名单、适用范围。规则槽是写在战场上的规矩，读写都经既定流水线节点。",
       "source": "SCHEMA.md §5.2 write_rule_slot/modify_rule_slot",
       "terms": {
         "trigger": { "zh": "触发条件", "brief": "规则何时生效" },
@@ -492,6 +536,7 @@
     },
     "ruleSlotMode": {
       "label": "规则槽修改方式",
+      "desc": "对规则槽字段是替换、追加还是移除。",
       "source": "skills.schema.json modify_rule_slot",
       "terms": {
         "replace": { "zh": "替换", "brief": "整体替换字段值" },
@@ -501,6 +546,7 @@
     },
     "rulePatchKind": {
       "label": "规则补丁类型",
+      "desc": "界域改写规则的两类补丁：按类型或标签禁用、按阵营或标签增强。补丁是纯声明，必须绑定既有流水线节点，不得新增节点。",
       "source": "SCHEMA.md §7 rulePatches",
       "terms": {
         "empower": { "zh": "增强", "brief": "对匹配 tag 的效果乘算加强" },
@@ -509,6 +555,7 @@
     },
     "conditionKind": {
       "label": "条件谓词",
+      "desc": "条件判定统一为带参谓词族：状态、属性比较、计数、元素、标签等共用同一批谓词，不为每种比较新开一个 id；复合条件只用任一 / 全部 / 取反三个组合子。",
       "source": "SCHEMA.md §5.3",
       "terms": {
         "any_of": { "zh": "任一满足", "brief": "子条件任一成立即真" },
@@ -540,6 +587,7 @@
     },
     "cmp": {
       "label": "比较符",
+      "desc": "条件与阈值判定共用的比较符号。",
       "source": "skills.schema.json condition",
       "terms": {
         ">": { "zh": "大于", "brief": "条件数值比较：左值严格大于右值" },
@@ -551,6 +599,7 @@
     },
     "side": {
       "label": "作用方",
+      "desc": "条件作用在谁身上（自己 / 目标 / 友军 / 敌军 / 双方 / 全体 / 攻击者）。与选靶的阵营字段是两套语境，勿混用。",
       "source": "skills.schema.json condition / zoneDef",
       "terms": {
         "self": { "zh": "己方", "brief": "施放方" },
@@ -564,6 +613,7 @@
     },
     "triggerEvent": {
       "label": "触发点",
+      "desc": "状态与被动挂载的触发时机，封闭 12 个。它决定效果能在结算的哪个时刻插入；注意 tick 与「单位行动开始」是两个不同时间尺度。",
       "source": "执行参数.md §2.1（12+1 封闭集）",
       "terms": {
         "on_apply": { "zh": "状态施加时", "brief": "状态被挂载到单位时 fire" },
@@ -583,6 +633,7 @@
     },
     "statusCategory": {
       "label": "状态类别",
+      "desc": "状态的机制归类，供免疫、驱散、硬控清除等按类别批量处理（如「硬控清除全部姿态类」）。分类法是正向增益与负向减益两大类加机制子类，dot/hot 并入其中不再单列。",
       "source": "编队参数.md §1.1 / SCHEMA.md §6",
       "terms": {
         "buff": { "zh": "增益", "brief": "正面状态" },
@@ -601,6 +652,7 @@
     },
     "actionLock": {
       "label": "行为封锁",
+      "desc": "可被禁止的行为种类。封锁按行为种类枚举，不由每个控制类状态各写一套。",
       "source": "SCHEMA.md §6 disallowActions",
       "terms": {
         "move": { "zh": "禁止移动", "brief": "statusDef.disallowActions 取值：该单位无法位移" },
@@ -613,6 +665,7 @@
     },
     "zoneKind": {
       "label": "区域类型",
+      "desc": "区域的两种性质：危害型对占据者不利，祝福型对占据者有利。区域是坐标版的状态——占格、有载荷、可被拆除。",
       "source": "SCHEMA.md §7 zoneDef",
       "terms": {
         "hazard": { "zh": "危害区域", "brief": "对占据者不利的区域" },
@@ -621,6 +674,7 @@
     },
     "zoneTrigger": {
       "label": "区域触发",
+      "desc": "区域在什么时机结算载荷：占据者每 tick、占据者攻击时，或召唤它的技能触发时。",
       "source": "skills.schema.json zoneDef",
       "terms": {
         "on_occupy_tick": { "zh": "占据每 tick", "brief": "占据该区域的单位每 tick 触发" },
@@ -630,6 +684,7 @@
     },
     "zoneAffects": {
       "label": "区域作用面",
+      "desc": "区域对谁生效：以区域拥有者为参照的友方、敌方，或任意单位。",
       "source": "ddd/params/战场参数.md ZoneGrant.affects / SCHEMA.md §7 zoneDef",
       "terms": {
         "ally_of_owner": { "zh": "己方单位", "brief": "仅对 Zone 归属者一方生效" },
@@ -639,6 +694,7 @@
     },
     "durationUnit": {
       "label": "时长单位",
+      "desc": "持续时间的计时单位：tick（最小时间刻度）或回合（单位一次行动周期）。两者不可混用——换错会把「每回合」变成「每 tick」。",
       "source": "skills.schema.json",
       "terms": {
         "turn": { "zh": "回合", "brief": "以单位行动周期计" },
@@ -647,6 +703,7 @@
     },
     "dim": {
       "label": "源质维度",
+      "desc": "战场级全局标量维度，全队共享、随 tick 或事件累积、达阈值即兑现。它是跨途径的公共资源与流派枢纽，不是某个单位的属性。",
       "source": "源质维度与跨系枢纽.md §二 / SCHEMA.md §7 dimHook",
       "terms": {
         "secrecy": { "zh": "隐秘值", "brief": "战场全局维度；阈值档 4/7/10" },
@@ -656,6 +713,7 @@
     },
     "dimTarget": {
       "label": "维度乘区对象",
+      "desc": "维度达阈值时作用于哪一项结算：伤害、承伤、治疗、资源或规则强度。维度只通过这个挂钩影响数值，不得直接给位格。",
       "source": "SCHEMA.md §7 dimHook",
       "terms": {
         "damage": { "zh": "伤害", "brief": "对伤害结算乘区" },
@@ -668,6 +726,7 @@
     },
     "unitType": {
       "label": "单位类型",
+      "desc": "单位的主分类标签，供定向检索与克制类技能使用；细分的风味标签走开放的 tags，不塞进主分类。",
       "source": "skills.schema.json unitDef",
       "terms": {
         "UNDEAD": { "zh": "不死", "brief": "不死族单位" },
@@ -678,6 +737,7 @@
     },
     "stackPolicy": {
       "label": "叠层策略",
+      "desc": "重复施加时的层数策略：刷新时长、拒绝叠加，还是继续叠层。",
       "source": "SCHEMA.md §6",
       "terms": {
         "stack": { "zh": "叠层", "brief": "重复施加叠层数" },
@@ -686,6 +746,7 @@
     },
     "countMode": {
       "label": "计数口径",
+      "desc": "计数型机制的统计口径：累计产出（只增不减）还是当前在场（离场即减）。两种口径对「攒够阈值就兑现」的激励方向相反。",
       "source": "SCHEMA.md §6",
       "terms": {
         "cumulative": { "zh": "累计", "brief": "累计产出，只增不减" },
@@ -694,6 +755,7 @@
     },
     "transferDirection": {
       "label": "转嫁方向",
+      "desc": "伤害转嫁的承接方：转给施法者、友军、目标或第三方。",
       "source": "SCHEMA.md §6 damageTransfer",
       "terms": {
         "to_caster": { "zh": "转给施法者", "brief": "damageTransfer 方向：承伤转嫁给伤害来源" },
@@ -704,6 +766,7 @@
     },
     "split": {
       "label": "分摊方式",
+      "desc": "转嫁与链接的伤害由一人承受还是多人均摊。",
       "source": "SCHEMA.md §6 damageTransfer",
       "terms": {
         "single": { "zh": "单体承担", "brief": "由一个单位承担" },

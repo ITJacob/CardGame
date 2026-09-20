@@ -147,6 +147,11 @@ details.fold summary { cursor: pointer; color: var(--dim); font-size: 13px; }
 .gloss-nav { position: sticky; top: 64px; align-self: start; max-height: calc(100vh - 90px); max-height: calc(100dvh - 90px); overflow: auto; }
 .gloss-nav a { display: block; padding: 3px 8px; color: var(--dim); border-radius: 4px; font-size: 13px; }
 .gloss-nav a:hover { background: var(--panel2); color: var(--text); }
+/* 栏目导语：紧跟标题、正文色 13px（不进 .muted）。它是「这一维是什么」的概念说明，
+   与标题右侧那行出处（.muted）分工不同，所以不用 12px 的脚注观感 */
+.cat-desc { font-size: 13px; margin: -6px 0 10px; }
+/* 栏目的漂移备注：里面会整段引用字段名与枚举串成的原样写法，窄屏同样需要一个断点 */
+.cat-note { margin-top: 6px; overflow-wrap: anywhere; }
 table.gloss { width: 100%; border-collapse: collapse; font-size: 13px; }
 table.gloss th, table.gloss td { border-bottom: 1px solid var(--border); padding: 6px 10px; text-align: left; vertical-align: top; }
 /* anywhere（而非 break-word）：既要真的换行，也要压低 min-content，
@@ -155,6 +160,42 @@ table.gloss th, table.gloss td { border-bottom: 1px solid var(--border); padding
 table.gloss td { overflow-wrap: anywhere; }
 table.gloss th { color: var(--dim); font-weight: 400; }
 td.mono, .mono { font-family: Consolas, monospace; color: var(--accent); }
+/* 侧栏里的分组标题（领域模型页用：领域上下文 / 参数与取值域） */
+.gloss-nav .nav-group { margin: 10px 0 2px; padding: 0 8px; font-size: 11px; color: var(--dim); }
+.gloss-nav a.active { color: var(--text); background: var(--panel2); }
+
+/* ===== 领域模型页：docs/ddd/*.md 的渲染产物 =====
+   文档自身的 # 标题降级成面板 h2（面板标题已由 .panel 提供样式），
+   所以这里从 h3 起接管 */
+/* anywhere 而非 break-word：文档里到处是 `corpse_collector/skill_xxx_s9_yyy` 这类
+   下划线+斜杠拼成的长标识，normal 下没有断点，窄屏会把整页顶出横向滚动。
+   只有 anywhere 会同时压低 min-content（break-word 不影响 min-content 计算） */
+.md { font-size: 13px; overflow-wrap: anywhere; }
+.md p { margin: 8px 0; }
+.md h3 { margin: 16px 0 6px; font-size: 14px; }
+.md h4 { margin: 12px 0 4px; font-size: 13px; color: var(--dim); }
+.md h5 { margin: 10px 0 4px; font-size: 12px; color: var(--dim); }
+.md ul, .md ol { margin: 6px 0; padding-left: 22px; }
+.md li { margin: 3px 0; }
+.md blockquote { margin: 8px 0; padding: 2px 0 2px 12px; border-left: 3px solid var(--border); color: var(--dim); }
+.md pre {
+  margin: 8px 0; padding: 10px 12px; font-size: 12px; color: var(--dim);
+  background: var(--panel2); border: 1px solid var(--border); border-radius: 6px; overflow-x: auto;
+}
+.md code { font-family: Consolas, monospace; font-size: 12px; background: var(--panel2); border-radius: 3px; padding: 0 4px; color: var(--accent2); }
+.md pre code { background: none; padding: 0; color: inherit; }
+.md hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+/* 表格外包一层横向滚动：取值域表有 4~5 列，窄屏放不下，直接溢出会把整页顶宽 */
+.md-table-wrap { overflow-x: auto; margin: 8px 0; }
+.md table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.md th, .md td { border: 1px solid var(--border); padding: 5px 8px; text-align: left; vertical-align: top; }
+.md th { color: var(--dim); font-weight: 400; background: var(--panel2); }
+.md td { overflow-wrap: anywhere; }
+/* 术语 token：与全站一致的悬停释义，外加点击跳词典。不用 .term 的虚线下划线——
+   一页文档里 token 成百，全带下划线会把正文变成一条条链接 */
+.md-tok { color: var(--accent); border-bottom: none; white-space: nowrap; }
+.md-tok:hover { color: var(--accent2); border-bottom: 1px dashed var(--accent2); }
+.md-tok .tk { color: var(--dim); font-size: 11px; font-family: Consolas, monospace; }
 
 /* 统计 */
 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 14px; }
