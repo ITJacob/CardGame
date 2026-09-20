@@ -308,11 +308,19 @@ export function parseToc(md) {
 // 不在这里重新解释。正文写不下的长说明由页面折叠，本文只负责拆。
 
 // 首列是「名字」的列头。首列命中其一即认作字段表；找不到就整张跳过。
-// 新写了一类字段表而没被收录时，把它的首列列头加到这里。
+// 新写了一类字段表而没被收录时，把它的首列列头加到这里——页脚的「抽取情况」会把
+// 跳过的表连表头一起列出来，漏掉的字段表在那里一眼可见，不必逐篇翻原文。
+//
+// 判据是「这一列装的是不是可以被查的名字」：装名字的收（行名会被当条目的名字），
+// 装数值 / 长句 / 序号的收不了（`| 序列 | 9 | 8 |…` 的梯度表、`| 范围 | 一致性 |…`
+// 的边界表——收了会得到一堆叫「9」「一次结算步骤内的全部变更」的条目）。
 const NAME_COLS = new Set([
   '字段', '谓词', '组合子', '键', '原语', '算子', '参数', '维度', '概念', '编号',
   '值对象', '上下文', '事件', '母版', '状态', '层', '系', '阶段', '节点', '规则',
   '来源', 'type', 'op', 'kind', 'Def',
+  // 以下按上面的判据补的：触发点取值域（13 条）、五大枢纽状态、界域六范式、
+  // Placement / 溯源账本的 API 清单、三件套的角色、卡型到消费节点的分流
+  '触发点', '枢纽状态', '范式', '操作', '角色', '模式', 'tier',
 ]);
 
 // `## 三、Placement：唯一占位出口` —— 序号只在文档内排序，速查里没有意义
@@ -347,6 +355,7 @@ function splitName(title) {
 export function parseRef(md, opts = {}) {
   const lines = String(md).replace(/\r\n?/g, '\n').split('\n');
   const entries = [];
+  const skipped = [];   // 略过的表格，供页面报「抽取情况」
   let intro = '';
   let h2 = '';
   let h3 = '';
@@ -396,6 +405,7 @@ export function parseRef(md, opts = {}) {
     }
 
     if (s.startsWith('|')) {
+      const start = i;
       const rows = [];
       while (i < lines.length && lines[i].trim().startsWith('|')) rows.push(lines[i++]);
       const head = splitRow(rows[0]);
@@ -403,7 +413,12 @@ export function parseRef(md, opts = {}) {
       // 名字列只认第一列，或紧跟在行号列（`#`）之后的第二列。再往后说明这张表的
       // 名字列不在开头（`| # | 问题 | 状态 |` 的「状态」是值不是名），整张跳过
       if (k > 1 || (k === 1 && !/^#|序号/.test(stripMd(head[0])))) k = -1;
-      if (k < 0) continue;              // 不是字段表：数据表留给「原文」
+      if (k < 0) {
+        // 跳过的表记下来上报：跳的是数据表还是「首列名没进 NAME_COLS 的字段表」，
+        // 页面上分不出来，人一眼能分出来。静默跳过是这套抽取唯一会悄悄丢内容的地方
+        skipped.push({ line: start + 1, sec: h3 || h2, head: head.map(stripMd).join(' | ') });
+        continue;
+      }
       pending = null;                   // 表格自成条目区，不再并进上面那个概念的说明
       for (const r of rows.slice(1)) {
         if (isTableSep(r)) continue;
@@ -469,5 +484,5 @@ export function parseRef(md, opts = {}) {
     e.search = plainOf([e.name, e.zh, ...e.fields.map((f) => `${f.label} ${f.text}`), e.descText].join(' ')).toLowerCase();
     delete e.paras;
   }
-  return { intro: intro ? inline(intro, opts, false) : '', entries };
+  return { intro: intro ? inline(intro, opts, false) : '', entries, skipped };
 }

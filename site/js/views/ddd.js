@@ -65,13 +65,38 @@ async function load() {
 
   const docNames = new Set(docs.keys());
   for (const d of docs.values()) {
-    if (d.error) { d.intro = ''; d.entries = []; continue; }
+    if (d.error) { d.intro = ''; d.entries = []; d.skipped = []; continue; }
     const ref = parseRef(d.md, { dir: d.dir, docNames, base: BASE });
     d.intro = ref.intro;
     d.entries = ref.entries;
+    d.skipped = ref.skipped;
   }
   CACHE = { docs, order: [...docs.keys()], total: [...docs.values()].reduce((n, d) => n + d.entries.length, 0) };
   return CACHE;
+}
+
+// 抽取情况。规则（md.js 的 NAME_COLS 等）是前端硬编码的，文档那边不可能知道；
+// 新写一张字段表而首列名没进清单时，它会**静默消失**——不报错、页面上也没有痕迹，
+// 只有翻「原文」才发现。把跳过的表列出来，静默就变成可见：跳的是数值表还是漏掉的
+// 字段表，人扫一眼就分得出来
+function coverageHtml(data) {
+  const rows = [];
+  let n = 0;
+  for (const name of data.order) {
+    const d = data.docs.get(name);
+    if (!d.skipped?.length) continue;
+    n += d.skipped.length;
+    rows.push(`<li><b>${escapeHtml(d.label)}</b>${d.skipped.map((s) => `
+      <div class="qr-skip"><span class="muted">${escapeHtml(s.sec || '（篇首）')} · 第 ${s.line} 行</span>
+      <code>${escapeHtml(s.head)}</code></div>`).join('')}</li>`);
+  }
+  if (!n) return '';
+  return `<details class="panel qr-coverage">
+    <summary>抽取情况：共收 ${data.total} 条；另有 ${n} 张表按数据表跳过</summary>
+    <p class="muted">速查条目现读自 <code>docs/ddd/*.md</code>，判据（首列算不算字段名）写在
+    <code>site/js/md.js</code> 的 <code>NAME_COLS</code>。下面这些表的首列不是字段名，按数值 / 清单表
+    跳过了，它们仍在各篇的「原文」里。<b>新写了一张字段表却出现在这里，就是它的首列名还没进 NAME_COLS。</b></p>
+    <ul>${rows.join('')}</ul></details>`;
 }
 
 function itemHtml(e) {
@@ -213,7 +238,7 @@ export async function renderDdd(view, jumpTo = '') {
     </div>
     <div class="gloss-layout">
       <div class="gloss-nav panel">${nav.join('')}</div>
-      <div id="ddd-body">${body.join('')}</div>
+      <div id="ddd-body">${body.join('')}${coverageHtml(data)}</div>
     </div>`;
 
   const bodyEl = view.querySelector('#ddd-body');
