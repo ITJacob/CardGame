@@ -64,7 +64,10 @@ ENUM_TO_CAT = {
     "dimHook.dim": "dim",
     "dimHook.comparator": "cmp",
     "dimHook.target": "dimTarget",
-    "phaseHook.phases": "phase",
+    # phases 是数组，enum 挂在 items 上：路径按 JSON 结构取（含 items），
+    # 写成 `phaseHook.phases` 永远匹配不上，是「登记了却仍在未登记清单里」的那类静默漂移
+    "phaseHook.phases.items": "phase",
+    "condition.phases.items": "phase",
     "phaseHook.target": "dimTarget",
     "condition.kind": "conditionKind",
     "condition.side": "side",
