@@ -79,7 +79,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `effects` | effect[] | ✓ | 卡面效果，至少 1 条 |
 | `tentative` | bool | ✓ | 数值待拍板；当前全库 828 张均为 `true` |
 | `cost` | object | active | `{ energy, cooldown, castTime }`，`castTime` 可为 `null` |
-| `reach` | `none`\|`melee`\|`ranged` | active | 攻击距离 |
+| `reach` | `none`\|`melee`\|`ranged` | active | 攻击性质（近战/远程，与双方站位正交；仅决定同步对撞与可拦截性，非攻击类写 none） |
 | `target` | object | active | 见 §4 |
 | `hook` | enum | passive | 被动挂载的触发点 |
 | `statusDefs` | statusDef[] | | 卡引入的私有状态 |
@@ -107,7 +107,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 | 字段 | 类型 | 必填 | 说明 |
 |---|---|:--:|---|
-| `selectionMode` | `manual`\|`auto` | ✓ | 手选 / 引擎自动（按 `fallbackSort`） |
+| `selectionMode` | `manual`\|`auto` | ✓ | 手选 / 引擎自动。两者都须有 `request` 范围（锚点+区域+过滤）；`manual` 由玩家拍板、未指定按 `fallbackSort` 兜底，`auto` 直接按 `fallbackSort` 取最高优先级 |
 | `request` | object | ✓ | 选靶请求 |
 | `fallbackSort` | sortKey\|null | | 自动排序键 |
 | `consumption` | `summon`\|`domain`\|`zone` | | 目标消耗的额外资源 |

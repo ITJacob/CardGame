@@ -65,12 +65,12 @@
       }
     },
     "reach": {
-      "label": "攻击距离",
+      "label": "攻击性质",
       "source": "skills.schema.json",
       "terms": {
-        "none": { "zh": "无距离限制", "brief": "可打任意位置目标" },
-        "melee": { "zh": "近战", "brief": "只能打前排/近身目标" },
-        "ranged": { "zh": "远程", "brief": "可打后排目标" }
+        "none": { "zh": "非攻击", "brief": "非攻击类行为（治疗/增益/位移/召唤等），不触发对撞、不可被拦截" },
+        "melee": { "zh": "近战", "brief": "贴身互搏的攻击性质，与双方站位无关；受击方挂决斗姿态时触发同步对撞" },
+        "ranged": { "zh": "远程", "brief": "投射弹道的攻击性质，与双方站位无关；可被守卫姿态 sourceFilter:ranged 拦截" }
       }
     },
     "gender": {
@@ -86,8 +86,8 @@
       "label": "选靶方式",
       "source": "SCHEMA.md §4",
       "terms": {
-        "manual": { "zh": "手动选择", "brief": "玩家手选目标" },
-        "auto": { "zh": "自动选择", "brief": "引擎按 fallbackSort 排序自动定目标" }
+        "manual": { "zh": "手动选择", "brief": "系统按 request（锚点+区域+过滤）圈出候选池，玩家从中选取；玩家未指定时按 fallbackSort 兜底" },
+        "auto": { "zh": "自动选择", "brief": "在 manual 候选池基础上直接按 fallbackSort 取优先级最高者，无需玩家操作" }
       }
     },
     "faction": {
