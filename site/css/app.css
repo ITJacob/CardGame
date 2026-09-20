@@ -167,16 +167,23 @@ td.mono, .mono { font-family: Consolas, monospace; color: var(--accent); }
 .bar-row .bar-val { width: 50px; color: var(--dim); }
 table.heat { border-collapse: collapse; font-size: 11px; width: 100%; }
 table.heat th, table.heat td { border: 1px solid var(--border); padding: 2px 6px; text-align: center; }
-table.heat th { color: var(--dim); font-weight: 400; position: sticky; top: 56px; background: var(--panel); }
+/* top 必须为 0：sticky 的参照系是最近的滚动祖先 .heat-wrap，而不是视口。
+   原来写的 56px（想避开顶栏）会让表头下坠到容器内 56px 处，盖住头两行数据 */
+table.heat th { color: var(--dim); font-weight: 400; position: sticky; top: 0; background: var(--panel); }
 table.heat td.rowhead { text-align: left; white-space: nowrap; color: var(--text); }
 .heat-wrap { overflow: auto; max-height: 70vh; }
+/* 窄屏热图列折叠开关：桌面端本来就放得下 19 列，不显示 */
+.heat-toggle { display: none; align-items: center; gap: 6px; font-size: 13px; color: var(--dim); margin-bottom: 6px; cursor: pointer; }
+.heat-toggle input { accent-color: var(--accent); }
+.heat-hint { display: none; font-size: 12px; margin-bottom: 8px; }
 .num { font-family: Consolas, monospace; }
 
 .muted { color: var(--dim); }
 h1.page-title { font-size: 18px; margin: 4px 0 14px; }
 
 /* ===== 移动端适配 =====
-   768：词典双栏转单栏；热图表头去 sticky（top 值硬编码了桌面顶栏高度，换行后失效）
+   768：词典双栏转单栏（热图表头不再需要去 sticky——它的 top 已改为 0，
+   参照系是 .heat-wrap 而非视口，与顶栏是否换行无关）
    640：顶栏缩排并允许换行；筛选搜索框独占一行；键值表转单列
    滚动容器的上限用「先 vh 后 dvh」双声明：iOS 15.4+ 取 dvh（随地址栏收放自适应），
    更低版本忽略第二行退回 vh。dvh 只用于滚动上限，不用于布局关键属性 */
@@ -184,7 +191,6 @@ h1.page-title { font-size: 18px; margin: 4px 0 14px; }
   .gloss-layout { grid-template-columns: 1fr; gap: 10px; }
   .gloss-nav { position: static; max-height: none; overflow: visible; }
   .gloss-nav a { display: inline-block; margin: 2px 4px 2px 0; }
-  table.heat th { position: static; }
   .heat-wrap { max-height: 60vh; max-height: 60dvh; }
 }
 
@@ -202,6 +208,9 @@ h1.page-title { font-size: 18px; margin: 4px 0 14px; }
   .bar-row .bar-val { width: 36px; }
   #to-top { right: 12px; bottom: 12px; width: 38px; height: 38px; }
 
+  /* 去掉热图容器内的竖向滚动：22 行嵌在页面里再套一层滚动很难操作，交给页面滚 */
+  .heat-wrap { max-height: none; overscroll-behavior-x: contain; }
+
   /* 词典三列表格改卡片式堆叠：th 上的内联固定列宽随 thead 一起失效，
      窄屏下不再需要横向滚动 */
   table.gloss thead { display: none; }
@@ -209,4 +218,24 @@ h1.page-title { font-size: 18px; margin: 4px 0 14px; }
   table.gloss tr { padding: 8px 0; border-bottom: 1px solid var(--border); }
   table.gloss td { border-bottom: none; padding: 0 0 2px; }
   table.gloss td.mono { font-size: 12px; }
+}
+
+/* 热图列折叠。断点单列在 580px 而不是跟着上面的 640：表格最小宽 514px，
+   加上页面/面板左右内边距 56px，视口 ≈570px 起就放得下了——跟着 640 走会在
+   570~640 这段白白折掉 10 列。留 10px 余量。
+   首列是「途径」，所以从第 11 个子元素起隐藏，留下的正是第 2~10 个 = 前 9 列。
+   折的是列不是数据——色阶上限不受影响，同一数值在任何视图下颜色一致 */
+@media (max-width: 580px) {
+  .heat-wrap:not(.show-all) table.heat tr > *:nth-child(n+11) { display: none; }
+  /* 折到 9 列在 320px 视口下仍溢出 12px：表头是中文词，窄到一字一行，此时表格的
+     min-content 由单元格内边距决定。左右各收到 3px，9 列省下 54px。
+     只在表格贴着 min-content 的窄屏看得出来——宽屏列被 width:100% 拉伸，内边距无从体现 */
+  .heat-wrap table.heat th, .heat-wrap table.heat td { padding: 2px 3px; }
+  .heat-toggle { display: flex; }
+  .heat-hint { display: block; }
+  /* 展开后靠横滑看全 19 列，首列钉住才不至于滑丢了行身份 */
+  .heat-wrap.show-all table.heat th:first-child,
+  .heat-wrap.show-all table.heat td.rowhead {
+    position: sticky; left: 0; z-index: 1; background: var(--panel);
+  }
 }
