@@ -1,4 +1,4 @@
-import { loadAll } from './data.js';
+import { loadAll, loadDeferred } from './data.js';
 import { initTooltip } from './tooltip.js';
 import { renderCards } from './views/cards.js';
 import { renderCardDetail } from './views/card.js';
@@ -17,8 +17,11 @@ const status = document.getElementById('load-status');
 // 由 route() 统一接管滚动，避免浏览器的自动恢复在之后异步覆盖
 history.scrollRestoration = 'manual';
 
-// 注册 SW 以满足「可安装」判定；不启用离线能力，见 site/sw.js
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+// 注册 SW：满足「可安装」判定，并把 docs/ 下的数据缓存起来，见 site/sw.js。
+// localhost 不注册：本地改完 docs/json 刷新却还是上一版（SWR 先给缓存），
+// 调试时会以为改动没生效——数据缓存只在线上要
+const LOCAL = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+if ('serviceWorker' in navigator && !LOCAL) navigator.serviceWorker.register('./sw.js');
 
 function setNav(name) {
   document.querySelectorAll('[data-nav]').forEach((a) => {
@@ -90,6 +93,9 @@ async function main() {
   }
   window.addEventListener('hashchange', route);
   route();
+  // 首屏画完再补状态定义：卡片列表/卡面 AST/词典都不依赖它，只有状态统计页与
+  // 状态悬停详情要。依赖它的视图自己订阅（见 views/status.js）
+  loadDeferred();
 }
 
 main();

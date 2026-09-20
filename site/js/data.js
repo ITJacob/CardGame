@@ -37,6 +37,9 @@ async function fetchJson(url) {
   return r.json();
 }
 
+// 状态定义读不到不算致命：悬停只剩名字（manifest 的中→英兜底），统计页降级
+const fetchJsonSoft = (url) => fetchJson(url).catch(() => null);
+
 function mergeStatuses(statusesDoc, ownerPathway) {
   const defs = statusesDoc.statusDefs || [];
   const list = Array.isArray(defs) ? defs : Object.values(defs);
@@ -55,11 +58,13 @@ function mergeStatuses(statusesDoc, ownerPathway) {
   }
 }
 
+// 首屏：只拉卡片列表真正要用的四样——索引 / 词典 / schema / 22 份卡面。
+// 状态定义（23 份、约 85 KB gzip）不在其中，见 loadDeferred()。
 export async function loadAll(onProgress) {
   const [manifest, glossary, schema] = await Promise.all([
     fetchJson(JSON_BASE + 'manifest.json'),
     fetchJson(GLOSSARY_URL),
-    fetchJson(SCHEMA_URL).catch(() => null),
+    fetchJsonSoft(SCHEMA_URL),
   ]);
   DB.manifest = manifest;
   DB.glossary = glossary;
@@ -74,17 +79,10 @@ export async function loadAll(onProgress) {
     if (!DB.statusMap.has(en)) DB.statusMap.set(en, { id: en, name: zh });
   }
 
-  const results = await Promise.all(DB.pathways.map(async (p) => {
-    const skills = await fetchJson(JSON_BASE + p.file);
-    const statusFile = p.file.replace('.skills.json', '.statuses.json');
-    const statuses = await fetchJson(JSON_BASE + statusFile).catch(() => null);
-    return { p, skills, statuses };
-  }));
-  const common = await fetchJson(JSON_BASE + 'common.statuses.json').catch(() => null);
-  if (common) mergeStatuses(common, 'common');
-
-  for (const { p, skills, statuses } of results) {
-    if (statuses) mergeStatuses(statuses, p.id);
+  const results = await Promise.all(DB.pathways.map((p) => fetchJson(JSON_BASE + p.file)));
+  for (let i = 0; i < DB.pathways.length; i++) {
+    const p = DB.pathways[i];
+    const skills = results[i];
     DB.axesByPathway.set(p.id, skills.axes || {});
     if (skills.designNote) DB.designNotes.set(p.id, skills.designNote);
     for (const card of skills.cards || []) {
@@ -96,4 +94,37 @@ export async function loadAll(onProgress) {
   }
   onProgress?.(`已加载 ${DB.cards.length} 张卡`);
   return DB;
+}
+
+// 状态定义与途径无关，卡片列表、卡面 AST、词典都不依赖它——只有「状态统计」页
+// 和状态悬停详情要。放在首屏之后补拉：23 个请求 / 85 KB 从关键路径上摘掉，
+// 冷启动少等一大截，代价是最初一两秒里悬停状态只有名字（manifest 兜底的中文名）。
+let deferred = null;
+let ready = false;
+const waiters = [];
+
+// 幂等：首次调用发起 23 个请求，之后复用同一个 promise
+export function loadDeferred() {
+  if (deferred) return deferred;
+  deferred = (async () => {
+    // 全部并行取回后再合并，保持「common 优先」的原有次序：mergeStatuses 里
+    // 先落地的真实定义会挡住后来的同 id 定义
+    const [common, ...docs] = await Promise.all([
+      fetchJsonSoft(JSON_BASE + 'common.statuses.json'),
+      ...DB.pathways.map((p) => fetchJsonSoft(JSON_BASE + p.file.replace('.skills.json', '.statuses.json'))),
+    ]);
+    if (common) mergeStatuses(common, 'common');
+    docs.forEach((d, i) => { if (d) mergeStatuses(d, DB.pathways[i].id); });
+  })().then(() => {
+    ready = true;
+    waiters.splice(0).forEach((f) => f());
+  });
+  return deferred;
+}
+
+export const statusesReady = () => ready;
+
+export function onStatusesReady(fn) {
+  if (ready) fn();
+  else waiters.push(fn);
 }

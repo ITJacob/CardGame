@@ -2,7 +2,7 @@
 // 口径：docs/json/*.statuses.json 的 statusDefs——含 modifiers 表、triggers[].effects、
 // def 级 effects、thresholdTrigger / phases 等任意嵌套（递归用 ast.js 的 walkCardEffects，
 // 它与卡面同一套遍历规则，所以两页的「原语用量」可以直接对照）
-import { DB } from '../data.js';
+import { DB, statusesReady, onStatusesReady } from '../data.js';
 import { zh } from '../term.js';
 import { walkCardEffects } from '../ast.js';
 import { barChart, countBy, sortedRows, heatPanel, wireHeatToggle } from '../charts.js';
@@ -19,6 +19,15 @@ function modifierKeys(def) {
 }
 
 export function renderStatuses(view) {
+  // 状态定义在首屏之后才拉（见 data.js 的 loadDeferred）。深链直接落到本页时先画加载态，
+  // 到位后由 main.js 重跑 route() 重画——不在这里自己重画，免得和路由抢 view
+  if (!statusesReady()) {
+    view.innerHTML = `<h1 class="page-title">状态统计</h1>
+      <div class="panel" id="statuses-loading"><p class="panel-note muted">正在加载 ${DB.pathways.length} 个途径的状态定义…</p></div>`;
+    // 等数据的这段时间用户可能已经切走，只在自己那个加载态还在时重画
+    onStatusesReady(() => { if (view.querySelector('#statuses-loading')) renderStatuses(view); });
+    return;
+  }
   const defs = DB.statuses;
   const declared = DB.declaredStatusFields;
   const pathwayName = new Map(DB.pathways.map((p) => [p.id, p.name]));
