@@ -27,3 +27,4 @@ Pages 源 = main 分支 / 仓库根。访问 `https://<user>.github.io/<repo>/si
 - 新增枚举值：先登记 schema/`docs/meta/SCHEMA.md`，再补 `docs/meta/glossary.json` 词条。
 - 页面上出现橙色「未收录」token = 词典缺词条（控制台同时有 `[术语未收录]` 告警）。
 - 状态/途径/构筑轴的中文名直接来自数据文件（`*.statuses.json`、`manifest.json`、各 `axes`），不进词典。
+- 悬停状态名时，除词典释义外还会展开该状态自身的 `duration/maxStacks/charges/dispelable` 与 `effects/triggers`（AST 复用 `ast.js` 渲染器）；`modifiers` 等其余字段尚未接入。

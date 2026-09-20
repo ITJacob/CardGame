@@ -47,7 +47,8 @@ a:hover { color: var(--accent2); }
 .term.missing { color: var(--warn); border-bottom-color: var(--warn); }
 
 #tooltip {
-  position: fixed; z-index: 100; max-width: 360px;
+  position: fixed; z-index: 100; max-width: 400px;
+  max-height: calc(100vh - 16px); overflow: hidden;
   background: #0c0e11; border: 1px solid var(--border); border-radius: 8px;
   padding: 10px 12px; font-size: 12px; pointer-events: none;
   box-shadow: 0 6px 24px rgba(0,0,0,.5);
@@ -57,6 +58,11 @@ a:hover { color: var(--accent2); }
 #tooltip .tt-zh { font-weight: 700; margin: 2px 0; }
 #tooltip .tt-detail { color: var(--dim); margin-top: 4px; }
 #tooltip .tt-src { color: var(--dim); font-size: 11px; margin-top: 4px; }
+#tooltip .tt-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+#tooltip .tt-chips .badge { font-size: 10px; padding: 0 6px; }
+#tooltip .tt-sec { color: var(--dim); font-size: 11px; margin: 8px 0 2px; border-top: 1px solid var(--border); padding-top: 6px; }
+#tooltip .term { border-bottom: none; }
+#tooltip .term .tk { display: none; }
 
 /* 筛选条 */
 .filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }

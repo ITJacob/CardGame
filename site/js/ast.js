@@ -52,6 +52,15 @@ function tgt(e) {
   return e.target ? termSpan('effectTarget', e.target) : '目标';
 }
 
+// statusId 的统一入口：$ 前缀是状态定义内的运行时变量引用，不是状态 id，不能查词典
+const STATUS_VAR_ZH = { $self: '本状态' };
+function statusRef(id) {
+  if (typeof id !== 'string' || !id) return '状态';
+  if (id in STATUS_VAR_ZH) return `<span class="mono">${escapeHtml(STATUS_VAR_ZH[id])}</span>`;
+  if (id.startsWith('$')) return `<span class="mono">${escapeHtml(id)}</span>`;
+  return statusSpan(id);
+}
+
 function condToText(c) {
   if (!c || typeof c !== 'object') return '';
   const k = c.kind;
@@ -63,7 +72,7 @@ function condToText(c) {
       const ids = [].concat(raw);
       const who = k === 'caster_status_exists' ? '施法者' : (c.side ? termSpan('side', c.side) : '目标');
       const cmpN = c.cmp && c.n != null ? ` ${c.cmp} ${c.n} 层` : '';
-      return `${who}持有${ids.map(statusSpan).join(' 或 ')}${cmpN}`;
+      return `${who}持有${ids.map(statusRef).join(' 或 ')}${cmpN}`;
     }
     case 'has_category': return `${c.side ? termSpan('side', c.side) : '目标'}持有${termSpan('statusCategory', c.category)}类状态`;
     case 'chance': return `${Math.round((c.p ?? 0) * 100)}% 概率`;
@@ -132,7 +141,7 @@ const PRIMITIVE_TEMPLATES = {
     if (e.stacks != null) parts.push(`${fmtVal(e.stacks)} 层`);
     if (e.stackMode) parts.push(termSpan('stackMode', e.stackMode));
     if (e.charges != null) parts.push(`${fmtVal(e.charges)} 次`);
-    return `给${tgt(e)}挂载${id ? statusSpan(id) : '状态'}${parts.length ? `（${parts.join('，')}）` : ''}`;
+    return `给${tgt(e)}挂载${statusRef(id)}${parts.length ? `（${parts.join('，')}）` : ''}`;
   },
   modify_stat: (e, used) => {
     used.push('stat', 'value', 'mode', 'duration', 'sourceRef', 'spread');
@@ -251,7 +260,7 @@ const PRIMITIVE_TEMPLATES = {
     if (e.addDuration != null) parts.push(`持续 +${fmtVal(e.addDuration)}`);
     if (e.setDuration != null) parts.push(`持续设为 ${fmtVal(e.setDuration)}`);
     if (e.maxStacksDelta != null) parts.push(`层数上限 ${e.maxStacksDelta > 0 ? '+' : ''}${fmtVal(e.maxStacksDelta)}`);
-    return `修改${id ? statusSpan(id) : '状态'}：${parts.join('，') || '（实例属性）'}`;
+    return `修改${statusRef(id)}：${parts.join('，') || '（实例属性）'}`;
   },
   modify_targetability: (e, used) => {
     used.push('untargetable', 'direction', 'duration', 'pierce');
@@ -293,7 +302,7 @@ function renderRestFields(e, used) {
     const label = FIELD_ZH[k] || k;
     const cat = FIELD_VALUE_CAT[k];
     const valHtml = (cat && typeof v === 'string') ? termSpan(cat, v)
-      : (k === 'statusId' || k === 'status') && typeof v === 'string' ? statusSpan(v)
+      : (k === 'statusId' || k === 'status') && typeof v === 'string' ? statusRef(v)
       : fmtVal(v);
     items.push(`<span class="kv-raw">${escapeHtml(label)}=${valHtml}</span>`);
   }

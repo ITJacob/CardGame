@@ -1,5 +1,5 @@
 import { loadAll } from './data.js';
-import { initTooltip } from './term.js';
+import { initTooltip } from './tooltip.js';
 import { renderCards } from './views/cards.js';
 import { renderCardDetail } from './views/card.js';
 import { renderGlossary } from './views/glossary.js';
