@@ -22,6 +22,13 @@ python -m http.server 8000
 Pages 源 = main 分支 / 仓库根。访问 `https://<user>.github.io/<repo>/site/`。
 所有资源与数据引用均为相对路径（`../docs/...`），本地与 Pages 前缀环境通用。
 
+## 移动端
+
+- **PWA（仅可安装）**：`manifest.webmanifest` + `sw.js`——SW 是最小实现，只用满足浏览器的「可安装」判定，**不缓存任何资源**。装到主屏后 standalone 全屏、无地址栏。图标为占位图（`icons/`），换正式图标改 manifest 的 `icons` 即可。
+  **未启用离线**：断网打开会白屏。数据在 `../docs/json/`，位于 SW 的 scope 之外，要做离线须把 SW 挪到仓库根。
+- **术语浮层**：鼠标设备悬停跟随光标；触屏改为点击后居中弹出、点浮层外关闭（`js/tooltip.js` 用 `matchMedia('(hover: hover) and (pointer: fine)')` 分流，触屏分支走捕获阶段以拦下卡片列表自身的跳转点击）。
+- **响应式**：断点 768px（词典双栏转单栏、热图表头去 sticky）与 640px（顶栏换行、搜索框独占一行、键值表转单列）。网格轨道用 `minmax(min(Npx, 100%), 1fr)`，窄屏不会再横向溢出。
+
 ## 维护约定
 
 - 新增枚举值：先登记 schema/`docs/meta/SCHEMA.md`，再补 `docs/meta/glossary.json` 词条；跑 `python docs/tools/check_glossary.py` 对账，它会列出待补录清单（0 缺词条即站点不会再出现橙色「未收录」）。

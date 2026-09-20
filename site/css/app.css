@@ -64,6 +64,15 @@ a:hover { color: var(--accent2); }
 #tooltip .term { border-bottom: none; }
 #tooltip .term .tk { display: none; }
 
+/* 触屏浮层：居中显示。基础规则是跟随光标的 pointer-events:none，这里必须放开，
+   否则点击会穿透到文档、浮层刚显示就被自己的 click 关掉 */
+#tooltip.tip-center {
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(92vw, 480px); max-width: none;
+  max-height: 80vh; max-height: 80dvh; overflow: auto;
+  pointer-events: auto; font-size: 13px;
+}
+
 /* 筛选条 */
 .filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .filters label { color: var(--dim); font-size: 12px; display: flex; align-items: center; gap: 4px; }
@@ -74,7 +83,7 @@ a:hover { color: var(--accent2); }
 .filters input { width: 180px; }
 
 /* 卡片列表 */
-.card-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; }
+.card-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 10px; }
 .card-item { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; cursor: pointer; }
 .card-item:hover { border-color: var(--accent); }
 .card-item .ci-head { display: flex; align-items: baseline; gap: 8px; }
@@ -118,7 +127,7 @@ details.fold summary { cursor: pointer; color: var(--dim); font-size: 13px; }
 
 /* 词典 */
 .gloss-layout { display: grid; grid-template-columns: 200px 1fr; gap: 16px; }
-.gloss-nav { position: sticky; top: 64px; align-self: start; max-height: calc(100vh - 90px); overflow: auto; }
+.gloss-nav { position: sticky; top: 64px; align-self: start; max-height: calc(100vh - 90px); max-height: calc(100dvh - 90px); overflow: auto; }
 .gloss-nav a { display: block; padding: 3px 8px; color: var(--dim); border-radius: 4px; font-size: 13px; }
 .gloss-nav a:hover { background: var(--panel2); color: var(--text); }
 table.gloss { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -127,7 +136,7 @@ table.gloss th { color: var(--dim); font-weight: 400; }
 td.mono, .mono { font-family: Consolas, monospace; color: var(--accent); }
 
 /* 统计 */
-.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 14px; }
 .bar-row { display: flex; align-items: center; gap: 8px; margin: 3px 0; font-size: 12px; }
 .bar-row .bar-label { width: 130px; text-align: right; color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar-row .bar-track { flex: 1; background: var(--panel2); border-radius: 4px; height: 16px; position: relative; }
@@ -142,3 +151,29 @@ table.heat td.rowhead { text-align: left; white-space: nowrap; color: var(--text
 
 .muted { color: var(--dim); }
 h1.page-title { font-size: 18px; margin: 4px 0 14px; }
+
+/* ===== 移动端适配 =====
+   768：词典双栏转单栏；热图表头去 sticky（top 值硬编码了桌面顶栏高度，换行后失效）
+   640：顶栏缩排并允许换行；筛选搜索框独占一行；键值表转单列
+   滚动容器的上限用「先 vh 后 dvh」双声明：iOS 15.4+ 取 dvh（随地址栏收放自适应），
+   更低版本忽略第二行退回 vh。dvh 只用于滚动上限，不用于布局关键属性 */
+@media (max-width: 768px) {
+  .gloss-layout { grid-template-columns: 1fr; gap: 10px; }
+  .gloss-nav { position: static; max-height: none; overflow: visible; }
+  .gloss-nav a { display: inline-block; margin: 2px 4px 2px 0; }
+  table.heat th { position: static; }
+  .heat-wrap { max-height: 60vh; max-height: 60dvh; }
+}
+
+@media (max-width: 640px) {
+  #topbar { padding: 8px 12px; gap: 8px; flex-wrap: wrap; row-gap: 6px; }
+  #topbar nav a { padding: 4px 8px; font-size: 13px; }
+  #view { padding: 12px; }
+  .filters select { flex: 1 1 auto; min-width: 0; }
+  .filters label:last-of-type { flex: 1 1 100%; }
+  .filters input { width: 100%; }
+  .kv { grid-template-columns: 1fr; }
+  .kv dt { margin-top: 6px; }
+  .bar-row .bar-label { width: 76px; }
+  .bar-row .bar-val { width: 36px; }
+}

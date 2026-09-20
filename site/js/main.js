@@ -11,6 +11,9 @@ const status = document.getElementById('load-status');
 // 由 route() 统一接管滚动，避免浏览器的自动恢复在之后异步覆盖
 history.scrollRestoration = 'manual';
 
+// 注册 SW 以满足「可安装」判定；不启用离线能力，见 site/sw.js
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+
 function setNav(name) {
   document.querySelectorAll('[data-nav]').forEach((a) => {
     a.classList.toggle('active', a.dataset.nav === name);
