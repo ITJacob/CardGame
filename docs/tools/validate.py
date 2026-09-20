@@ -74,11 +74,12 @@ DIM_RANGES = {
     "secrecy": (0, 10),
     "order": (0, 10),
     "fate_value": (-10, 10),
+    "luminance": (0, 10),
 }
 
-# 触发点：语义封闭集 12 个（ddd 执行参数 §2.1）。schema triggerEvent 结构层额外放行
+# 触发点：语义封闭集 13 个（ddd 执行参数 §2.1）。schema triggerEvent 结构层额外放行
 # on_status_gain，语义层强制 frameworkFlag 登记（SCHEMA.md §8）——两处不一致是有意为之。
-EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill"}
+EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill","on_phase_change"}
 RARITY_BY_SEQ = lambda s: "common" if s>=8 else "uncommon" if s>=6 else "rare" if s>=4 else "epic" if s>=2 else "legendary"
 
 # 命名治理：modifiers 为开放结构，同义异写严重。别名 -> 规范拼写（非阻断，仅告警引导收敛）
@@ -307,7 +308,7 @@ def main():
             for h in (c.get("dimHooks") or []):
                 dim = h.get("dim")
                 if dim not in DIM_RANGES:
-                    errors.append("%s: dimHooks.dim '%s' 非法（须为 secrecy/order/fate_value）"%(cid, dim))
+                    errors.append("%s: dimHooks.dim '%s' 非法（须为 secrecy/order/fate_value/luminance）"%(cid, dim))
                     continue
                 lo, hi = DIM_RANGES[dim]
                 th = h.get("threshold")
