@@ -88,7 +88,8 @@ function cardItemHtml(c) {
     ? `<span class="badge">⚡${c.cost.energy}${c.cost.cooldown ? ` CD${c.cost.cooldown}` : ''}${c.cost.castTime ? ` 吟唱${c.cost.castTime}` : ''}</span>` : '';
   const hook = c.kind === 'passive' && c.hook
     ? `<span class="badge">${termSpan('triggerEvent', c.hook)}</span>` : '';
-  return `<div class="card-item" data-id="${escapeHtml(c.id)}">
+  const axSym = (DB.axesByPathway.get(c._pathway) || {})[c.axis]?.symbol || '';
+  return `<div class="card-item r-${c.rarity}" data-id="${escapeHtml(c.id)}" data-ax="${escapeHtml(axSym)}" style="--pc:var(--p-${c._pathway})">
     <div class="ci-head">
       <span class="ci-name">${escapeHtml(c.name)}</span>
       <span class="ci-seq">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')}</span>
@@ -97,7 +98,7 @@ function cardItemHtml(c) {
     <div class="badges">
       <span class="badge rarity-${c.rarity}">${zh('rarity', c.rarity)}</span>
       <span class="badge kind-${c.kind}">${c.kind === 'active' ? '主动' : '被动'}</span>
-      <span class="badge">${escapeHtml(c._pathwayName)}</span>
+      <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
       <span class="badge">${axisSpan(c._pathway, c.axis)}</span>
       ${c.flagship ? '<span class="badge flagship">旗舰</span>' : ''}
       ${cost}${hook}

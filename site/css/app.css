@@ -14,6 +14,31 @@
   --rare: #5aa3e0;
   --epic: #b07fe0;
   --legendary: #e0a34a;
+  /* 22 途径手选调色板（原著气质，暗色主题下取中等明度）。
+     只用于卡片背景 8% 晕染、途径 badge 着色这类低存在感的标识位，
+     不承担语义（语义色是 accent/warn/bad 与稀有度五色），相近无妨 */
+  --p-sleepless: #7a8fd0;
+  --p-arbiter: #b8c4d4;
+  --p-thief: #a08fc8;
+  --p-assassin: #4fa3a5;
+  --p-prisoner: #a8763e;
+  --p-apprentice: #4d94d0;
+  --p-lawyer: #a06ad0;
+  --p-monster: #7fb069;
+  --p-fool: #aab4c4;
+  --p-warrior: #d05b4a;
+  --p-corpse_collector: #8a9a72;
+  --p-chanter: #d4c27a;
+  --p-sailor: #4f9fd8;
+  --p-hunter: #c2503c;
+  --p-supplicant: #8e6fc0;
+  --p-pryer: #7c86d8;
+  --p-criminal: #b04848;
+  --p-planter: #6fae5f;
+  --p-apothecary: #5fb8a5;
+  --p-spectator: #c98fd0;
+  --p-savant: #d4a05a;
+  --p-reader: #7fb8d8;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
@@ -99,7 +124,34 @@ a:hover { color: var(--accent2); }
 /* 卡片列表 */
 .card-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 10px; }
 .card-item { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; cursor: pointer; }
-.card-item:hover { border-color: var(--accent); }
+/* 途径晕染 + 轴符号水印：纯 CSS 装饰，无动画无滤镜（移动端重绘成本≈0）。
+   color-mix 不支持时整条 background 声明失效，退回上一行纯色底——渐进增强 */
+.card-item {
+  position: relative; overflow: hidden;
+  background: radial-gradient(120% 100% at 88% 0%, color-mix(in srgb, var(--pc, transparent) 8%, transparent) 0%, transparent 60%), var(--panel);
+}
+.card-item::after {
+  content: attr(data-ax);
+  position: absolute; right: 6px; bottom: -12px;
+  font-size: 44px; line-height: 1; opacity: .08; pointer-events: none;
+}
+/* 稀有度五档递进：common 朴素 → 金框斜纹 */
+.card-item.r-uncommon { border-left: 3px solid var(--uncommon); }
+.card-item.r-rare { border-color: color-mix(in srgb, var(--rare) 55%, var(--border)); }
+.card-item.r-epic { border-color: color-mix(in srgb, var(--epic) 60%, var(--border)); }
+.card-item.r-epic::before, .card-item.r-legendary::before {
+  content: ''; position: absolute; inset: 0 0 auto 0; height: 2px; pointer-events: none;
+  background: linear-gradient(90deg, var(--epic), transparent 70%);
+}
+.card-item.r-legendary {
+  border-color: var(--legendary);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Cpath d='M0 14L14 0M-3.5 3.5L3.5 -3.5M10.5 17.5L17.5 10.5' stroke='%23e0a34a' stroke-opacity='0.07'/%3E%3C/svg%3E"),
+    radial-gradient(120% 100% at 88% 0%, color-mix(in srgb, var(--pc, transparent) 8%, transparent) 0%, transparent 60%),
+    var(--panel);
+}
+.card-item.r-legendary::before { background: linear-gradient(90deg, var(--legendary), transparent 70%); }
+.card-item:hover { filter: brightness(1.1); }
 .card-item .ci-head { display: flex; align-items: baseline; gap: 8px; }
 .card-item .ci-name { font-weight: 700; font-size: 15px; }
 .card-item .ci-seq { color: var(--dim); font-size: 12px; }
@@ -113,6 +165,8 @@ a:hover { color: var(--accent2); }
 .badge.rarity-legendary { color: var(--legendary); border-color: var(--legendary); }
 .badge.kind-active { color: var(--accent); }
 .badge.kind-passive { color: var(--uncommon); }
+/* 途径 badge 着途径色：--pc 由卡片根元素的内联变量继承下来 */
+.badge.pw { color: var(--pc); border-color: color-mix(in srgb, var(--pc, var(--border)) 65%, transparent); }
 .badge.flagship { color: var(--legendary); border-color: var(--legendary); }
 .badge.warn { color: var(--warn); border-color: var(--warn); }
 
