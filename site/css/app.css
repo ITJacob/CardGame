@@ -130,12 +130,17 @@ a:hover { color: var(--accent2); }
    声明失效，退回纯色底——渐进增强 */
 .card-face {
   position: relative; overflow: hidden;
+  /* 自成层叠上下文：让下面的水印能用 z-index:-1 落在「卡面底色之上、卡面文字之下」。
+     不给这条，负 z-index 的伪元素会一路穿到根层叠上下文去，直接沉到卡面底色背后（看不见）。
+     水印透明度抬到 0.16 之后尤其需要——压着徽章文字画，就不再是「背景的水印」而是「糊在
+     内容上的雾」 */
+  isolation: isolate;
   background: radial-gradient(120% 100% at 88% 0%, color-mix(in srgb, var(--pc, transparent) 8%, transparent) 0%, transparent 60%), var(--panel);
 }
 .card-face::after {
   content: attr(data-ax);
-  position: absolute; right: 6px; bottom: -12px;
-  font-size: 44px; line-height: 1; opacity: .08; pointer-events: none;
+  position: absolute; right: 6px; bottom: -12px; z-index: -1;
+  font-size: 44px; line-height: 1; opacity: .16; pointer-events: none;   /* 原 .08，抬高的理由见 .card-sheet::after */
 }
 /* 只给「本体近黑、铺在近黑卡面上看不见」的符号提亮（由 js/axis-ink.js 现算后打上这个类，
    实测全库 88 个轴符号里 12 个命中：🕳️ 污秽 0.04 / 🐾 兽群 0.05 / 🎩 戏法 0.07 / 🌑 暗夜 0.12…）。
@@ -217,7 +222,7 @@ body.page-card #view { max-width: none; padding: 0; }
 .card-stage > .cs-back { margin-left: max(0px, calc((100% - 760px) / 2)); }
 .card-sheet {
   --rc: transparent;
-  position: relative; overflow: hidden;
+  position: relative; overflow: hidden; isolation: isolate;   /* 同 .card-face：给水印留一层「在内容之下」 */
   max-width: 760px; margin: 0 auto; padding: 26px 30px 22px;
   background:
     radial-gradient(140% 45% at 50% -12%, color-mix(in srgb, var(--pc, transparent) 15%, transparent) 0%, transparent 65%),
@@ -230,10 +235,13 @@ body.page-card #view { max-width: none; padding: 0; }
   content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; pointer-events: none;
   background: linear-gradient(90deg, var(--rc), transparent 75%);
 }
-/* 轴符号水印：emoji 无字重概念，放大 + 低透明即可。深色符号的提亮见 .ax-lift */
+/* 轴符号水印：emoji 无字重概念，放大 + 低透明即可。深色符号的提亮见 .ax-lift。
+   透明度 0.18 是量出来的：0.09 时水印与卡面底色的 WCAG 对比度只有 1.14~1.21（1.5 都不到，
+   等于没画），提到 0.18 才有 1.5~1.9，颜色的差别也才回得来——低透明度下混合结果由底色主导，
+   压得越狠越是一层灰 */
 .card-sheet::after {
-  content: attr(data-ax); position: absolute; right: 18px; top: 6px; pointer-events: none;
-  font-size: clamp(88px, 20vw, 150px); line-height: 1; opacity: .09;
+  content: attr(data-ax); position: absolute; right: 18px; top: 6px; z-index: -1; pointer-events: none;
+  font-size: clamp(88px, 20vw, 150px); line-height: 1; opacity: .18;
 }
 .card-sheet.r-uncommon { --rc: var(--uncommon); border-color: color-mix(in srgb, var(--uncommon) 40%, var(--border)); }
 .card-sheet.r-rare { --rc: var(--rare); border-color: color-mix(in srgb, var(--rare) 60%, var(--border)); }
