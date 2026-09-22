@@ -342,9 +342,10 @@ const plainOf = (s) => String(s)
 function splitName(title) {
   let t = stripMd(title);
   let zh = '';
-  // 括号里是中文名才当中文名用；`（11 类）`、`（C-5）`、`（A22）` 是附注，留在名字里
+  // 括号里是中文名才当中文名用；`（11 类）`、`（C-5）`、`（A22）` 是附注，`（a, b）`
+  // 是函数签名——都留在名字里。判据：中文名必须含至少一个非 ASCII 字符
   const m = t.match(/^(.*?)\s*[（(]([^（()）]*)[)）]$/);
-  if (m && !/\d/.test(m[2])) { t = m[1].trim(); zh = m[2].trim(); }
+  if (m && !/\d/.test(m[2]) && /[^\x00-\x7f]/.test(m[2])) { t = m[1].trim(); zh = m[2].trim(); }
   // 中文在前、标识符在后（枢纽状态表里成片是这种写法）：拆开，ASCII 当 key、中文当名
   if (!zh) {
     const a = t.match(/^([^\x00-\x7f][^\x00-\x7f\s]*)\s+([A-Za-z][\w.:]*)$/);
@@ -368,7 +369,9 @@ export function parseRef(md, opts = {}) {
 
   const concept = (title) => {
     const { name, zh } = splitName(title);
-    const e = { name, zh, fields: [], paras: [], tag: h2 };
+    // fromHeading：条目即小节标题本身（正文是它的说明），渲染时折成分组导语，
+    // 不再以小节名下的一条同名条目重复出现
+    const e = { name, zh, fields: [], paras: [], sec: { h2, h3 }, fromHeading: true };
     entries.push(e);
     return e;
   };
@@ -447,7 +450,7 @@ export function parseRef(md, opts = {}) {
           if (!stripMd(cells[c] || '')) continue;
           fields.push({ label: stripMd(head[c]), md: cells[c] });
         }
-        entries.push({ name, zh, fields, paras: [], tag: h3 || h2 });
+        entries.push({ name, zh, fields, paras: [], sec: { h2, h3 } });
       }
       continue;
     }

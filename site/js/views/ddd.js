@@ -65,13 +65,14 @@ async function load() {
 
   const docNames = new Set(docs.keys());
   for (const d of docs.values()) {
-    if (d.error) { d.intro = ''; d.entries = []; d.skipped = []; continue; }
+    if (d.error) { d.intro = ''; d.entries = []; d.skipped = []; d.items = 0; continue; }
     const ref = parseRef(d.md, { dir: d.dir, docNames, base: BASE });
     d.intro = ref.intro;
     d.entries = ref.entries;
     d.skipped = ref.skipped;
+    d.items = d.entries.filter((e) => !e.fromHeading).length;
   }
-  CACHE = { docs, order: [...docs.keys()], total: [...docs.values()].reduce((n, d) => n + d.entries.length, 0) };
+  CACHE = { docs, order: [...docs.keys()], total: [...docs.values()].reduce((n, d) => n + d.items, 0) };
   return CACHE;
 }
 
@@ -105,7 +106,6 @@ function itemHtml(e) {
   const head = [
     name,
     e.zhHtml ? `<span class="qr-zh">${e.zhHtml}</span>` : '',
-    e.tag ? `<span class="qr-tag">${escapeHtml(e.tag)}</span>` : '',
   ].join('');
   const fields = e.fields.map((f) => `<dt>${escapeHtml(f.label)}</dt>
       <dd${f.text.length > CLAMP_AT ? ' class="qr-clamp" title="点击展开"' : ''}>${f.html}</dd>`).join('');
@@ -117,6 +117,34 @@ function itemHtml(e) {
     <div class="qr-item-head">${head}</div>${body}</div>`;
 }
 
+// 篇内按小节（h2/h3）分组：条目不再平铺成一串，同名字段各归各的小节，
+// 「编队篇的 id / 执行篇的 id」一眼分得开。概念条目（fromHeading）即小节标题本身，
+// 折成分组导语，不再以同名条目重复出现
+function listHtml(entries) {
+  const parts = [];
+  let cur2 = null, cur3 = null, open2 = false, open3 = false;
+  const close3 = () => { if (open3) { parts.push('</div>'); open3 = false; } };
+  const close2 = () => { close3(); if (open2) { parts.push('</div>'); open2 = false; } };
+  const introHtml = (e) => e.descHtml
+    ? `<p class="qr-sec-intro" data-text="${escapeHtml(e.search)}">${e.descHtml}</p>` : '';
+  for (const e of entries) {
+    const s2 = e.sec.h2, s3 = e.sec.h3;
+    if (s2 !== cur2) {
+      close2(); cur2 = s2; cur3 = null;
+      if (s2) { parts.push(`<div class="qr-sec"><h3 class="qr-sec2">${escapeHtml(s2)}</h3>`); open2 = true; }
+    }
+    if (e.fromHeading && !s3) { parts.push(introHtml(e)); continue; }
+    if (s3 !== cur3) {
+      close3(); cur3 = s3;
+      if (s3) { parts.push(`<div class="qr-sec"><h4 class="qr-sec3">${escapeHtml(s3)}</h4>`); open3 = true; }
+    }
+    if (e.fromHeading) { parts.push(introHtml(e)); continue; }
+    parts.push(itemHtml(e));
+  }
+  close2();
+  return parts.join('');
+}
+
 function docHtml(name, d) {
   if (d.error) {
     return `<section class="panel qr-doc" data-doc="${escapeHtml(name)}">
@@ -124,9 +152,9 @@ function docHtml(name, d) {
       <p class="warn-text">加载失败：${escapeHtml(d.error)}（${escapeHtml(d.path)}）</p></section>`;
   }
   if (!d.entries.length) return '';    // 抽不出条目又不影响别的篇：不占版面
-  const list = d.entries.map(itemHtml).join('');
+  const list = listHtml(d.entries);
   return `<section class="panel qr-doc" data-doc="${escapeHtml(name)}">
-    <h2 class="qr-doc-title">${escapeHtml(d.label)}<span class="qr-count muted">${d.entries.length} 条</span></h2>
+    <h2 class="qr-doc-title">${escapeHtml(d.label)}<span class="qr-count muted">${d.items} 条</span></h2>
     ${d.intro ? `<p class="qr-intro">${d.intro}</p>` : ''}
     <div class="qr-list">${list}</div>
     <details class="qr-raw"><summary>原文</summary><div class="md"></div></details>
@@ -148,8 +176,19 @@ function applyFilter(view) {
       it.hidden = !ok;
       if (ok) n++;
     });
-    sec.hidden = !n;
-    if (n) { hit += n; shown++; }
+    // 分组导语同样参与搜索；它命中时小节留着，没命中随空小节一起收起
+    sec.querySelectorAll('.qr-sec-intro').forEach((p) => {
+      p.hidden = !(scope && (!q || p.dataset.text.includes(q)));
+    });
+    // 空小节容器收起（内层先判，外层才能看到内层收起后的真实状态）。
+    // 留着空小节标题会让人以为那一节没加载出来
+    [...sec.querySelectorAll('.qr-sec')].reverse().forEach((box) => {
+      box.hidden = !box.querySelector('.qr-item:not([hidden]), .qr-sec-intro:not([hidden])');
+    });
+    const introVisible = !!sec.querySelector('.qr-sec-intro:not([hidden])');
+    sec.hidden = !(n || introVisible);
+    if (!sec.hidden) shown++;
+    hit += n;
     sec.querySelector('.qr-count').textContent = `${n} 条`;
   });
   const total = CACHE.total;
@@ -225,7 +264,7 @@ export async function renderDdd(view, jumpTo = '') {
     }
     if (!d.entries.length) continue;
     nav.push(`<a href="#/ddd/${encodeURIComponent(name)}" data-doc="${escapeHtml(name)}">${escapeHtml(d.label)}
-      <span class="qr-count muted">${d.entries.length}</span></a>`);
+      <span class="qr-count muted">${d.items}</span></a>`);
     body.push(docHtml(name, d));
   }
 
