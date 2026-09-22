@@ -38,6 +38,8 @@ function route() {
   const [path, qs] = (location.hash || '#/cards').replace(/^#/, '').split('?');
   const [, page, arg] = path.split('/');
   const isList = !NON_LIST_PAGES.has(page);
+  // 详情页是整页一张卡的画布：藏顶栏（含加载状态），离开即恢复
+  document.body.classList.toggle('page-card', page === 'card' && !!arg);
 
   // 离开列表页时记下滚动位置，从详情返回时还原
   if (prevPage === 'cards' && !isList) listScrollY = window.scrollY;

@@ -141,53 +141,56 @@ export function renderCardDetail(view, id) {
   const axSym = (DB.axesByPathway.get(c._pathway) || {})[c.axis]?.symbol || '';
 
   view.innerHTML = `
-  <div class="panel card-face r-${c.rarity}" data-ax="${escapeHtml(axSym)}" style="--pc:var(--p-${c._pathway})">
-    <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
-      <h2 style="margin:0">${escapeHtml(c.name)}</h2>
-      <span class="muted">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')}</span>
-      <span class="badge rarity-${c.rarity}">${cn}</span>
-      <span class="badge kind-${c.kind}">${c.kind === 'active' ? '主动' : '被动'}</span>
-      ${c.flagship ? '<span class="badge flagship">旗舰</span>' : ''}
-      <span style="margin-left:auto"><a href="#/cards">← 返回列表</a></span>
+  <div class="card-stage" style="--pc:var(--p-${c._pathway})">
+    <a class="cs-back" href="#/cards">← 返回列表</a>
+    <div class="card-sheet r-${c.rarity}" data-ax="${escapeHtml(axSym)}">
+      <header class="cs-head">
+        <div class="cs-title-row">
+          <h1 class="cs-name">${escapeHtml(c.name)}</h1>
+          ${c.flagship ? '<span class="badge flagship">旗舰</span>' : ''}
+        </div>
+        <div class="cs-sub">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')} · <span class="mono">${escapeHtml(c.id)}</span></div>
+        <div class="badges">
+          <span class="badge rarity-${c.rarity}">${cn}</span>
+          <span class="badge kind-${c.kind}">${c.kind === 'active' ? '主动' : '被动'}</span>
+          <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
+          <span class="badge">轴：${axisSpan(c._pathway, c.axis)}</span>
+          ${(c.tags || []).map((t) => `<span class="badge">${escapeHtml(t)}</span>`).join('')}
+          ${c.gender && c.gender !== 'any' ? `<span class="badge">${g('gender', c.gender)}限定</span>` : ''}
+          ${(c.sharedAcross || []).map((p) => `<span class="badge">共享→${escapeHtml(DB.pathways.find((x) => x.id === p)?.name || p)}</span>`).join('')}
+        </div>
+        ${c.kind === 'active' && c.cost ? `<div class="cs-cost">${costHtml(c)}</div>` : ''}
+      </header>
+
+      <section class="cs-sec cs-desc">
+        <div>${escapeHtml(c.describe || '（无）')}</div>
+        ${c.flavor ? `<div class="flavor">${escapeHtml(c.flavor)}</div>` : ''}
+        ${c.lore ? `<div class="muted cs-lore">${escapeHtml(c.lore)}</div>` : ''}
+      </section>
+
+      <section class="cs-sec">
+        <h2>施放与选靶</h2>
+        <dl class="kv">
+          ${c.kind === 'active' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
+          <dt>距离</dt><dd>${g('reach', c.reach)}</dd>
+          <dt>目标</dt><dd>${targetHtml(c.target)}</dd>` : `<dt>触发</dt><dd>${triggersHtml(c)}</dd>`}
+          ${(c.secondaryTargets || []).map((t, i) => `<dt>附属选靶${i + 1}</dt><dd>${targetHtml(t)}</dd>`).join('')}
+        </dl>
+        ${c.kind === 'active' && (c.triggers?.length) ? triggersHtml(c) : ''}
+      </section>
+
+      <section class="cs-sec">
+        <h2>效果结构</h2>
+        ${renderEffects(c.effects)}
+      </section>
+
+      ${(unitDefsHtml(c) || zoneDomainHtml(c) || miscHtml(c)) ? `<section class="cs-sec"><h2>附加定义</h2>${unitDefsHtml(c)}${zoneDomainHtml(c)}${miscHtml(c)}</section>` : ''}
+
+      ${c.frameworkFlags?.length ? `<section class="cs-sec"><h2 class="warn-text">框架缺口</h2>
+        ${c.frameworkFlags.map((f) => `<div class="warn-text">⚠ ${escapeHtml(typeof f === 'string' ? f : JSON.stringify(f))}</div>`).join('')}</section>` : ''}
+      ${c.conversionNotes ? `<section class="cs-sec"><h2>转换备注</h2>
+        ${[].concat(c.conversionNotes).map((n) => `<div class="muted">${escapeHtml(n)}</div>`).join('')}</section>` : ''}
     </div>
-    <div class="muted" style="margin-top:2px"><span class="mono">${escapeHtml(c.id)}</span></div>
-    <div class="badges" style="margin-top:6px">
-      <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
-      <span class="badge">轴：${axisSpan(c._pathway, c.axis)}</span>
-      ${(c.tags || []).map((t) => `<span class="badge">${escapeHtml(t)}</span>`).join('')}
-      ${c.gender && c.gender !== 'any' ? `<span class="badge">${g('gender', c.gender)}限定</span>` : ''}
-      ${(c.sharedAcross || []).map((p) => `<span class="badge">共享→${escapeHtml(DB.pathways.find((x) => x.id === p)?.name || p)}</span>`).join('')}
-    </div>
   </div>
-
-  <div class="panel">
-    <h2>卡面描述（玩家可读正典）</h2>
-    <div>${escapeHtml(c.describe || '（无）')}</div>
-    ${c.flavor ? `<div class="flavor" style="margin-top:6px">${escapeHtml(c.flavor)}</div>` : ''}
-    ${c.lore ? `<div class="muted" style="margin-top:4px;font-size:12px">${escapeHtml(c.lore)}</div>` : ''}
-  </div>
-
-  <div class="panel">
-    <h2>施放与选靶</h2>
-    <dl class="kv">
-      ${c.kind === 'active' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
-      <dt>距离</dt><dd>${g('reach', c.reach)}</dd>
-      <dt>目标</dt><dd>${targetHtml(c.target)}</dd>` : `<dt>触发</dt><dd>${triggersHtml(c)}</dd>`}
-      ${(c.secondaryTargets || []).map((t, i) => `<dt>附属选靶${i + 1}</dt><dd>${targetHtml(t)}</dd>`).join('')}
-    </dl>
-    ${c.kind === 'active' && (c.triggers?.length) ? triggersHtml(c) : ''}
-  </div>
-
-  <div class="panel">
-    <h2>效果结构（AST）</h2>
-    ${renderEffects(c.effects)}
-  </div>
-
-  ${(unitDefsHtml(c) || zoneDomainHtml(c) || miscHtml(c)) ? `<div class="panel"><h2>附加定义</h2>${unitDefsHtml(c)}${zoneDomainHtml(c)}${miscHtml(c)}</div>` : ''}
-
-  ${c.frameworkFlags?.length ? `<div class="panel"><h2 class="warn-text">框架缺口</h2>
-    ${c.frameworkFlags.map((f) => `<div class="warn-text">⚠ ${escapeHtml(typeof f === 'string' ? f : JSON.stringify(f))}</div>`).join('')}</div>` : ''}
-  ${c.conversionNotes ? `<div class="panel"><h2>转换备注</h2>
-    ${[].concat(c.conversionNotes).map((n) => `<div class="muted">${escapeHtml(n)}</div>`).join('')}</div>` : ''}
   `;
 }

@@ -183,6 +183,81 @@ a:hover { color: var(--accent2); }
 .kv { display: grid; grid-template-columns: 110px 1fr; gap: 4px 12px; font-size: 13px; }
 .kv dt { color: var(--dim); }
 .kv dd { margin: 0; }
+
+/* ===== 详情页 = 整页一张卡 =====
+   顶栏隐藏（body.page-card），页面本身作画布：::before 铺一层 fixed 的途径色氛围
+   （position:fixed 而非 background-attachment:fixed——后者 iOS 上失效），内容收进
+   居中的 .card-sheet。稀有度决定框体规格（--rc 顶部色线 + 边框/光晕递进），
+   途径色做卡面顶部晕染，轴符号放大为右上角水印。纯静态装饰，无动画 */
+body.page-card #topbar { display: none; }
+body.page-card #view { max-width: none; padding: 0; }
+.card-stage { position: relative; min-height: 100vh; min-height: 100dvh; padding: 28px 16px 48px; }
+.card-stage::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(90% 55% at 50% -8%, color-mix(in srgb, var(--pc, transparent) 16%, transparent) 0%, transparent 70%),
+    radial-gradient(60% 45% at 92% 108%, color-mix(in srgb, var(--pc, transparent) 10%, transparent) 0%, transparent 70%),
+    var(--bg);
+}
+.cs-back {
+  display: inline-block; margin: 0 0 14px; padding: 3px 12px;
+  border: 1px solid var(--border); border-radius: 14px; background: var(--panel);
+  color: var(--dim); font-size: 12px;
+}
+.cs-back:hover { color: var(--text); border-color: var(--dim); }
+.card-stage > .cs-back { margin-left: max(0px, calc((100% - 760px) / 2)); }
+.card-sheet {
+  --rc: transparent;
+  position: relative; overflow: hidden;
+  max-width: 760px; margin: 0 auto; padding: 26px 30px 22px;
+  background:
+    radial-gradient(140% 45% at 50% -12%, color-mix(in srgb, var(--pc, transparent) 15%, transparent) 0%, transparent 65%),
+    var(--panel);
+  border: 1px solid var(--border); border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.4);
+}
+/* 顶部稀有度色线 */
+.card-sheet::before {
+  content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; pointer-events: none;
+  background: linear-gradient(90deg, var(--rc), transparent 75%);
+}
+/* 轴符号水印：emoji 无字重概念，放大 + 低透明即可 */
+.card-sheet::after {
+  content: attr(data-ax);
+  position: absolute; right: 18px; top: 6px; pointer-events: none;
+  font-size: clamp(88px, 20vw, 150px); line-height: 1; opacity: .09;
+}
+.card-sheet.r-uncommon { --rc: var(--uncommon); border-color: color-mix(in srgb, var(--uncommon) 40%, var(--border)); }
+.card-sheet.r-rare { --rc: var(--rare); border-color: color-mix(in srgb, var(--rare) 60%, var(--border)); }
+.card-sheet.r-epic {
+  --rc: var(--epic); border-color: color-mix(in srgb, var(--epic) 65%, var(--border));
+  box-shadow: 0 10px 40px rgba(0,0,0,.4), inset 0 0 0 1px color-mix(in srgb, var(--epic) 22%, transparent);
+}
+.card-sheet.r-legendary {
+  --rc: var(--legendary); border-color: var(--legendary);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M0 16L16 0M-4 4L4 -4M12 20L20 12' stroke='%23e0a34a' stroke-opacity='0.06'/%3E%3C/svg%3E"),
+    radial-gradient(140% 45% at 50% -12%, color-mix(in srgb, var(--pc, transparent) 15%, transparent) 0%, transparent 65%),
+    var(--panel);
+  box-shadow: 0 10px 40px rgba(0,0,0,.4), inset 0 0 0 1px color-mix(in srgb, var(--legendary) 35%, transparent), 0 0 34px color-mix(in srgb, var(--legendary) 14%, transparent);
+}
+.cs-head { position: relative; }
+.cs-title-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.cs-name { margin: 0; font-size: 26px; letter-spacing: .02em; }
+.cs-sub { color: var(--dim); font-size: 12.5px; margin-top: 4px; }
+.cs-head .badges { margin-top: 10px; }
+.cs-cost { margin-top: 10px; font-size: 13.5px; color: var(--accent2); }
+/* 卡面小节：发丝分隔线 + 小标题，替代原来一块块嵌套面板 */
+.cs-sec { border-top: 1px solid var(--border); margin-top: 18px; padding-top: 12px; }
+.cs-sec h2 { margin: 0 0 8px; font-size: 12px; font-weight: 400; color: var(--dim); letter-spacing: .12em; }
+.cs-desc { font-size: 15px; line-height: 1.8; }
+.cs-desc .flavor { margin-top: 8px; }
+.cs-lore { font-size: 12px; margin-top: 6px; }
+@media (max-width: 640px) {
+  .card-stage { padding: 16px 10px 36px; }
+  .card-sheet { padding: 18px 16px 14px; border-radius: 14px; }
+  .cs-name { font-size: 21px; }
+}
 .ast { font-family: inherit; }
 .ast-node { margin: 4px 0 4px 0; }
 .ast-children { border-left: 2px solid var(--border); margin-left: 10px; padding-left: 12px; }
