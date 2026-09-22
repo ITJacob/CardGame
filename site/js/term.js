@@ -9,6 +9,8 @@ export function escapeHtml(s) {
 
 const warned = new Set();
 
+// 本函数的匹配规则（精确命中 + patterns 的 * 前缀匹配）被 docs/tools/check_glossary.py
+// 镜像（见其 match 注释）——改这里的匹配行为要同步那边，否则词典对账和站点实际渲染会分叉
 export function lookup(cat, key) {
   if (key == null || key === '') return null;
   const g = DB.glossary?.categories?.[cat];
