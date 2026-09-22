@@ -20,10 +20,11 @@
 
 ```
 docs/meta/          流程·规范·提案
-├─ WORKFLOW.md          当前工作流：设定→机制→技能→JSON→分析 五环节流水线
+├─ WORKFLOW.md          当前工作流：设定→机制→JSON→分析 四环节流水线
 ├─ GENERATION_BRIEF.md  技能池生成规范（当前 v0.3）；§7 承载旧框架编号 → DDD 落点速查
 ├─ REGEN_v03_SPEC.md    v0.3 批量重构规范
 ├─ SCHEMA.md            JSON 结构规范（字段表 + 枚举 + 严格度约定 + 已知待修数据）
+├─ glossary.json        术语词典（英文枚举 key → 中文名 + 解释，站点词典页数据源）
 └─ proposals/           原语扩展提案与分析底稿
 
 docs/ddd/           战斗内核 DDD 设计（本仓库正源）
@@ -31,22 +32,25 @@ docs/ddd/           战斗内核 DDD 设计（本仓库正源）
 ├─ contexts/        7 个限界上下文 + 共享内核
 └─ params/          各上下文的参数与取值域
 
-docs/skill-design/  诡秘之主 22 途径技能池 v0.3（内容设计，非 DDD）
-└─ <途径>_技能池_v0.3.md  ×22
-
-docs/json/          技能池 JSON 结构化产物（由 skill-design 的 md 转换而来）
+docs/json/          技能池 JSON（唯一维护面）
 ├─ manifest.json    纯索引：22 途径清单与卡片数 + rarityMap（稀有度↔序列校验基准）
-├─ <途径>.skills.json ×22  结构化 AST 卡面（sourceFile 回指 ../skill-design/）
+├─ <途径>.skills.json ×22    结构化 AST 卡面
+├─ <途径>.statuses.json ×22 + common.statuses.json  状态定义（唯一权威源）
 └─ schema/          机器可读结构标准（JSON Schema draft 2020-12）
+
+docs/archive/       只读历史快照
+└─ skill-design_v0.3/  22 份技能稿 md（生成期源数据，勿改；2026-09-18 起 JSON 为唯一维护正源）
 
 docs/analysis/      统计与分析产物（勿手改，重跑 docs/tools/ 脚本生成）
 ├─ SKILLS_OVERVIEW.md  全库总览：22 途径分章，每卡含效果/机制/支持进度/拍板项
 ├─ SKILLS_ANALYSIS_BY_PROFESSION.md  效果原语用量 + 属性参数统计
 └─ analysis_by_profession/  22 份「职业 × 构筑轴」设计风格报告
 
-docs/tools/         校验与生成脚本（validate.py / validate_schema.py / build_*.py）
+docs/tools/         校验与生成脚本（validate.py / validate_schema.py / check_enum_sync.py / check_glossary.py / build_*.py）
 
 docs/诡秘之主资料库/  原著设定源素材（世界体系 / 九大源质 / 界域机制 / 职业对照表）
+
+site/               技能池数据展示站（纯静态零依赖，详见「网页展示站」一节）
 ```
 
 限界上下文：**战场 / 编队 / 调度 / 执行 / 效果 / 编目 / 随机性治理** + **共享内核**。
@@ -55,9 +59,20 @@ docs/诡秘之主资料库/  原著设定源素材（世界体系 / 九大源质
 
 ## 阅读顺序
 
-从 `docs/ddd/README.md` 进入，它给出上下文总览、依赖方向、不变量总表（当前 49 条）与导航链接。
+从 `docs/ddd/README.md` 进入，它给出上下文总览、依赖方向、不变量总表（当前 54 条）与导航链接。
 
 参数与架构描述解耦：模型结构看 `contexts/`，取值域看 `params/`。
+
+## 网页展示站（site/）
+
+`site/` 是纯静态、零依赖的数据展示站（卡片浏览 / 领域模型速查 / 术语词典 / 统计分析），
+线上发布于 GitHub Pages（`itjacob.github.io/CardGame/site/`）。
+
+**数据流向是单向的**：站点运行时现读 `docs/`（`json/` 卡片与状态、`ddd/` 设计文档、`meta/glossary.json`
+词典），浏览器端现取现算，**无任何逆向写回**。因此它不进 docs 的工作流——改 `docs/` 不需要动站点
+（下次访问自动反映），改站点也不需要跑 `docs/tools/` 的校验脚本；两者的提交互不相干。
+本地预览需在**仓库根目录**起服务（`python -m http.server 8000` → `http://localhost:8000/site/`），
+设计细节见 `site/README.md`。
 
 ## 已迁出的内容
 
