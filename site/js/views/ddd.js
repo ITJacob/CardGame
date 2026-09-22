@@ -162,24 +162,37 @@ function docHtml(name, d) {
 }
 
 // 搜索 / 筛选后重算计数与空组显隐。词条全在 DOM 里，直接切 hidden 比重新渲染快得多，
-// 也免去把条目重新拼回字符串
+// 也免去把条目重新拼回字符串。
+//
+// 两套口径分清楚：`n` 是正文里留下的条目数（受侧栏选中的某篇影响），`h` 是搜索命中数
+// （只跟搜索词有关）。侧栏计数一律用 `h`——选中某篇是「切过去看那一篇」，不是「过滤掉
+// 别的篇」；拿选中去参与计数会让其余各篇一律显示 0，分组名随之整片收起，侧栏反而回不去
 function applyFilter(view) {
   const q = query.trim().toLowerCase();
-  let hit = 0;
-  let shown = 0;
+  let hit = 0;                     // 全库搜索命中
+  let shown = 0;                   // 正文里还剩几篇
+  const hits = new Map();          // 篇名 → 该篇搜索命中条目数，侧栏计数用
+  const alive = new Set();         // 篇名 → 这篇还留得下东西（含只有导语命中的）
   view.querySelectorAll('.qr-doc').forEach((sec) => {
     // 侧栏选定某篇时不参与搜索的文档整篇收起，命中数不受影响
     const scope = !docFilter || sec.dataset.doc === docFilter;
     let n = 0;
+    let h = 0;
+    let introHit = 0;
     sec.querySelectorAll('.qr-item').forEach((it) => {
-      const ok = scope && (!q || it.dataset.text.includes(q));
+      const qHit = !q || it.dataset.text.includes(q);
+      if (qHit) h++;
+      const ok = scope && qHit;
       it.hidden = !ok;
       if (ok) n++;
     });
     // 分组导语同样参与搜索；它命中时小节留着，没命中随空小节一起收起
     sec.querySelectorAll('.qr-sec-intro').forEach((p) => {
-      p.hidden = !(scope && (!q || p.dataset.text.includes(q)));
+      const qHit = !q || p.dataset.text.includes(q);
+      if (qHit) introHit++;
+      p.hidden = !(scope && qHit);
     });
+    if (h || introHit) alive.add(sec.dataset.doc);
     // 空小节容器收起（内层先判，外层才能看到内层收起后的真实状态）。
     // 留着空小节标题会让人以为那一节没加载出来
     [...sec.querySelectorAll('.qr-sec')].reverse().forEach((box) => {
@@ -188,44 +201,43 @@ function applyFilter(view) {
     const introVisible = !!sec.querySelector('.qr-sec-intro:not([hidden])');
     sec.hidden = !(n || introVisible);
     if (!sec.hidden) shown++;
-    hit += n;
+    hit += h;
+    hits.set(sec.dataset.doc, h);
     sec.querySelector('.qr-count').textContent = `${n} 条`;
   });
   const total = CACHE.total;
-  view.querySelector('#dq-count').textContent = q || docFilter
+  view.querySelector('#dq-count').textContent = q
     ? `命中 ${hit} 条 · ${shown} 篇`
-    : `共 ${total} 条 · ${CACHE.order.length} 篇`;
+    : docFilter
+      ? `已选「${docFilter}」· ${hits.get(docFilter) ?? 0} 条 / 共 ${total} 条`
+      : `共 ${total} 条 · ${CACHE.order.length} 篇`;
 
-  // 分组名下面一篇都没剩时一并收起：搜 `anchor` 却还挂着「领域上下文」这个空标题，
-  // 会让人以为那一组的内容没加载出来。正文与侧栏的分组名一一对应（同一个循环里生成），
-  // 所以按序号回填即可
+  // 正文里的分组路标（.qr-band）跟着正文自己的可见性收起：搜 `anchor` 却还挂着
+  // 「领域上下文」这个空标题，会让人以为那一组的内容没加载出来
   const bodyEl = view.querySelector('#ddd-body');
-  const bands = [];
   let band = null;
   let seen = 0;
+  const flushBand = () => { if (band) band.hidden = !seen; };
   for (const el of bodyEl.children) {
-    if (el.classList.contains('qr-band')) {
-      if (band) bands.push([band, seen]);
-      band = el;
-      seen = 0;
-    } else if (el.classList.contains('qr-doc') && !el.hidden) seen++;
+    if (el.classList.contains('qr-band')) { flushBand(); band = el; seen = 0; }
+    else if (el.classList.contains('qr-doc') && !el.hidden) seen++;
   }
-  if (band) bands.push([band, seen]);
-  const navGroups = [...view.querySelectorAll('.gloss-nav .nav-group')];
-  bands.forEach(([el, n], idx) => {
-    el.hidden = !n;
-    if (navGroups[idx]) navGroups[idx].hidden = !n;
-  });
+  flushBand();
 
-  view.querySelectorAll('.gloss-nav a[data-doc]').forEach((a) => {
-    const name = a.dataset.doc;
-    const sec = name ? view.querySelector(`.qr-doc[data-doc="${CSS.escape(name)}"]`) : null;
-    const n = name
-      ? (sec ? sec.querySelectorAll('.qr-item:not([hidden])').length : 0)
-      : hit;
-    a.querySelector('.qr-count').textContent = n;
-    a.classList.toggle('active', name === docFilter);
+  // 侧栏的分组名另算：它跟正文路标不是一回事——正文受选中影响（选中某篇时别的组
+  // 整片收起），侧栏要一直立着好让人切过去，所以只按搜索命中收起自己那一组
+  let group = null;
+  let groupN = 0;
+  const flushGroup = () => { if (group) group.hidden = !groupN; };
+  view.querySelectorAll('.gloss-nav .nav-group, .gloss-nav a[data-doc]').forEach((el) => {
+    if (el.classList.contains('nav-group')) { flushGroup(); group = el; groupN = 0; return; }
+    const name = el.dataset.doc;
+    const n = name ? (hits.get(name) ?? 0) : hit;
+    el.querySelector('.qr-count').textContent = n;
+    el.classList.toggle('active', name === docFilter);
+    if (name && alive.has(name)) groupN++;
   });
+  flushGroup();
 }
 
 export async function renderDdd(view, jumpTo = '') {
