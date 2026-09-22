@@ -136,9 +136,15 @@ a:hover { color: var(--accent2); }
   content: attr(data-ax);
   position: absolute; right: 6px; bottom: -12px;
   font-size: 44px; line-height: 1; opacity: .08; pointer-events: none;
-  /* 压成浅色剪影：深色 emoji（🌑 暗夜、🌚 梦魇、🕳️ 污秽）本体近黑，
-     铺在近黑卡面上只是一块暗斑，与其余轴的淡白水印反向；归零反相后等价 */
-  filter: brightness(0) invert(1);
+}
+/* 只给「本体近黑、铺在近黑卡面上看不见」的符号提亮（由 js/axis-ink.js 现算后打上这个类，
+   实测全库 88 个轴符号里 12 个命中：🕳️ 污秽 0.04 / 🐾 兽群 0.05 / 🎩 戏法 0.07 / 🌑 暗夜 0.12…）。
+   用 invert + hue-rotate 而不是 brightness(0) invert(1)：后者先把所有像素压成黑再反相，
+   等于按 alpha 取形状，🕸️ 的网眼、⛓️ 的链环、🎩 的帽带会塌成实心块、颜色全丢；
+   前者只做「明暗翻转」，字形内部的相对明暗与大致色相都还在（恶魔提亮后仍是红的）。
+   两件事必须一起做——只 invert 不 hue-rotate 会把暗红翻成亮青，色相整个反过来 */
+.card-face.ax-lift::after, .card-sheet.ax-lift::after {
+  filter: invert(1) hue-rotate(180deg);
 }
 /* 稀有度五档递进：common 朴素 → 金框斜纹 */
 .card-face.r-uncommon { border-left: 3px solid var(--uncommon); }
@@ -224,12 +230,10 @@ body.page-card #view { max-width: none; padding: 0; }
   content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; pointer-events: none;
   background: linear-gradient(90deg, var(--rc), transparent 75%);
 }
-/* 轴符号水印：emoji 无字重概念，放大 + 低透明即可；同样归零反相成浅色剪影 */
+/* 轴符号水印：emoji 无字重概念，放大 + 低透明即可。深色符号的提亮见 .ax-lift */
 .card-sheet::after {
-  content: attr(data-ax);
-  position: absolute; right: 18px; top: 6px; pointer-events: none;
+  content: attr(data-ax); position: absolute; right: 18px; top: 6px; pointer-events: none;
   font-size: clamp(88px, 20vw, 150px); line-height: 1; opacity: .09;
-  filter: brightness(0) invert(1);
 }
 .card-sheet.r-uncommon { --rc: var(--uncommon); border-color: color-mix(in srgb, var(--uncommon) 40%, var(--border)); }
 .card-sheet.r-rare { --rc: var(--rare); border-color: color-mix(in srgb, var(--rare) 60%, var(--border)); }
