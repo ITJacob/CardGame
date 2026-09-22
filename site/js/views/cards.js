@@ -6,7 +6,8 @@ import { walkCardEffects } from '../ast.js';
 const PAGE_SIZE = 100;
 
 const state = {
-  pathway: '', rarity: '', kind: '', sequence: '', axis: '', primitive: '', reach: '', q: '', page: 1,
+  pathway: '', rarity: '', kind: '', sequence: '', axis: '', primitive: '', reach: '',
+  sort: '', q: '', page: 1,     // sort 为空＝默认：不排，保持 DB.cards 原序（途径 → 序列）
 };
 
 let primitivesInUse = null;
@@ -43,15 +44,36 @@ function applyFilters() {
   });
 }
 
+// 稀有度名次：顺序读自 manifest（见 data.js 的 readRarityOrder），不在这里硬写档位
+const rarityRank = () => new Map(DB.rarityOrder.map((r, i) => [r, i]));
+
+// 排序。**不改 applyFilters**：那个函数是「纯 filter、保序」的约定，排序单独一层，
+// 只有 renderList 需要。filter() 已经返回新数组，就地 sort 不会动到 DB.cards
+function sortCards(list) {
+  if (!state.sort) return list;                       // 默认：原序，一个字节都不动
+  const dir = state.sort === 'rarity-desc' ? -1 : 1;  // 「高→低」＝名次降序
+  // 排序键 = 途径 → 稀有度 → 序列（降序）。途径与序列都**显式**进比较器，不靠
+  // 「DB.cards 恰好是 途径×序列 9→0」这条隐式前提——数据侧重新生成后它不会报错，只会悄悄换排法。
+  // 需求是「每个职业内部按稀有度排」：选中某途径时第一项恒相等，自然退化成纯稀有度排序；
+  // 不选途径时也不会把 22 个职业的传说卡糊成一堆。sort 自 ES2019 起稳定，同级保留原序
+  const pRank = new Map(DB.pathways.map((p, i) => [p.id, i]));
+  const rRank = rarityRank();
+  return list.sort((a, b) => (pRank.get(a._pathway) - pRank.get(b._pathway))
+    || (dir * (rRank.get(a.rarity) - rRank.get(b.rarity)))
+    || (b.sequence - a.sequence));
+}
+
 function filterBarHtml() {
-  const sel = (key, label, options) => `
+  // 第 4 参是首项文案：筛选器是「全部」，排序器是「默认（途径 → 序列）」——
+  // 排序没有「全部」这回事，空值表示不排
+  const sel = (key, label, options, emptyLabel = '全部') => `
     <label>${label}<select data-f="${key}">
-      <option value="">全部</option>
+      <option value="">${emptyLabel}</option>
       ${options.map(([v, l]) => `<option value="${escapeHtml(v)}" ${String(state[key]) === String(v) ? 'selected' : ''}>${escapeHtml(l)}</option>`).join('')}
     </select></label>`;
 
   const pathwayOpts = DB.pathways.map((p) => [p.id, p.name]);
-  const rarityOpts = ['common', 'uncommon', 'rare', 'epic', 'legendary'].map((r) => [r, zh('rarity', r)]);
+  const rarityOpts = DB.rarityOrder.map((r) => [r, zh('rarity', r)]);
   const kindOpts = [['active', '主动'], ['passive', '被动']];
   const seqOpts = [...Array(10)].map((_, i) => [String(9 - i), `序列 ${9 - i}`]);
   const reachOpts = [['none', '无距离'], ['melee', '近战'], ['ranged', '远程']];
@@ -72,6 +94,7 @@ function filterBarHtml() {
     ${sel('sequence', '序列', seqOpts)}
     ${sel('primitive', '原语', primOpts)}
     ${sel('reach', '距离', reachOpts)}
+    ${sel('sort', '排序', [['rarity-desc', '稀有度 高→低'], ['rarity-asc', '稀有度 低→高']], '默认（途径 → 序列）')}
     <label>搜索<input type="search" data-f="q" value="${escapeHtml(state.q)}" placeholder="卡名/描述/ID"></label>
     <span class="muted" id="filter-count"></span>
   </div>`;
@@ -131,7 +154,7 @@ export function renderCards(view) {
 }
 
 function renderList(view) {
-  const filtered = applyFilters();
+  const filtered = sortCards(applyFilters());
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   state.page = Math.min(state.page, pages);
   const start = (state.page - 1) * PAGE_SIZE;

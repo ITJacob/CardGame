@@ -353,6 +353,13 @@ table.heat th, table.heat td { border: 1px solid var(--border); padding: 2px 6px
 table.heat th { color: var(--dim); font-weight: 400; position: sticky; top: 0; background: var(--panel); }
 table.heat td.rowhead { text-align: left; white-space: nowrap; color: var(--text); }
 .heat-wrap { overflow: auto; max-height: 70vh; }
+/* 统计页的途径热图组：十几张同尺寸表纵向堆叠，**取消内层滚动**。各自留 70vh 的滚动区时，
+   滚轮落在哪张表上就只能滚那张表——想看下一张得先把指针挪出表格，刷一页要挪十几次，
+   是最容易把人卡住的那种嵌套滚动（横滑不受影响：overflow-x 仍是 auto）。
+   代价：表头从此不再 sticky——它的参照系是 .heat-wrap 这个滚动容器，容器不滚就只能
+   跟着页面滚走，短视口下长表看不到表头；每张表自带标题、列含义由表头中文承担，
+   这个代价换掉嵌套滚动是划算的。规则放在这里而不是窄屏媒体查询里：本页两种宽度都不要内层滚动 */
+.heat-stack .heat-wrap { max-height: none; }
 /* 窄屏热图列折叠开关：桌面端本来就放得下 19 列，不显示 */
 .heat-toggle { display: none; align-items: center; gap: 6px; font-size: 13px; color: var(--dim); margin-bottom: 6px; cursor: pointer; }
 .heat-toggle input { accent-color: var(--accent); }

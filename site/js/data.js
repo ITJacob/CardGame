@@ -15,7 +15,22 @@ export const DB = {
   statuses: [],               // 状态定义数组（带 _owner），供状态统计页用
   declaredPrimitives: [],     // schema effect.oneOf 声明的原语 type（27）
   declaredStatusFields: [],   // schema statusDef 声明的字段名（48）
+  rarityOrder: [],            // 稀有度档位顺序：低 → 高（普通 → 传说），读自 manifest.rarityMap
 };
+
+// 稀有度顺序读自 manifest.rarityMap（CLAUDE.md 里写的「稀有度↔序列唯一机器可读源」），
+// 不在前端硬写：stats.js:62、cards.js:54 已经各有一份硬写副本，排序与热图列再加两份就是四处，
+// 将来增删档位不会报错，只会悄悄分叉。rarityMap 的值是该档占用的序列区间，按区间**上界**
+// 降序排即 普通 → 传说（按值排而不是按 JSON 键序，改键序不会悄悄换掉全站顺序）
+const RARITY_FALLBACK = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+function readRarityOrder(manifest) {
+  const rm = manifest?.rarityMap;
+  if (!rm) return RARITY_FALLBACK;
+  const keys = Object.keys(rm).filter((k) => Array.isArray(rm[k]) && rm[k].length);
+  if (keys.length < 2) return RARITY_FALLBACK;
+  const top = (k) => Math.max(...rm[k].filter((n) => typeof n === 'number'));
+  return keys.sort((a, b) => top(b) - top(a));
+}
 
 // 从 schema 直读「声明面」而不是在前端硬写常量：27 条原语 / statusDef 字段表一旦改 schema
 // 就会变，硬写必然与 schema 漂移——而「声明了多少 / 实际用了多少」正是这两页要展示的东西
@@ -67,6 +82,7 @@ export async function loadAll(onProgress) {
   DB.manifest = manifest;
   DB.glossary = glossary;
   DB.pathways = manifest.pathways;
+  DB.rarityOrder = readRarityOrder(manifest);
   // schema 缺失不阻断加载：两个统计页会退回「声明面=实际用过」的降级展示
   if (schema) readDeclared(schema);
   if (common) mergeStatuses(common, 'common');
