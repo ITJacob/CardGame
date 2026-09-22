@@ -125,9 +125,9 @@ a:hover { color: var(--accent2); }
 .card-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 10px; }
 .card-item { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; cursor: pointer; }
 /* 卡面视觉编码（.card-face）：途径晕染 + 轴符号水印 + 稀有度五档。
-   列表卡片（.card-item）与详情页头部共用。纯 CSS 装饰，无动画无滤镜
-   （移动端重绘成本≈0）；color-mix 不支持时整条 background 声明失效，
-   退回纯色底——渐进增强 */
+   列表卡片（.card-item）与详情页头部共用。纯 CSS 装饰，无动画，滤镜只在
+   单个静态伪元素上生效（重绘成本≈0）；color-mix 不支持时整条 background
+   声明失效，退回纯色底——渐进增强 */
 .card-face {
   position: relative; overflow: hidden;
   background: radial-gradient(120% 100% at 88% 0%, color-mix(in srgb, var(--pc, transparent) 8%, transparent) 0%, transparent 60%), var(--panel);
@@ -136,6 +136,9 @@ a:hover { color: var(--accent2); }
   content: attr(data-ax);
   position: absolute; right: 6px; bottom: -12px;
   font-size: 44px; line-height: 1; opacity: .08; pointer-events: none;
+  /* 压成浅色剪影：深色 emoji（🌑 暗夜、🌚 梦魇、🕳️ 污秽）本体近黑，
+     铺在近黑卡面上只是一块暗斑，与其余轴的淡白水印反向；归零反相后等价 */
+  filter: brightness(0) invert(1);
 }
 /* 稀有度五档递进：common 朴素 → 金框斜纹 */
 .card-face.r-uncommon { border-left: 3px solid var(--uncommon); }
@@ -221,11 +224,12 @@ body.page-card #view { max-width: none; padding: 0; }
   content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; pointer-events: none;
   background: linear-gradient(90deg, var(--rc), transparent 75%);
 }
-/* 轴符号水印：emoji 无字重概念，放大 + 低透明即可 */
+/* 轴符号水印：emoji 无字重概念，放大 + 低透明即可；同样归零反相成浅色剪影 */
 .card-sheet::after {
   content: attr(data-ax);
   position: absolute; right: 18px; top: 6px; pointer-events: none;
   font-size: clamp(88px, 20vw, 150px); line-height: 1; opacity: .09;
+  filter: brightness(0) invert(1);
 }
 .card-sheet.r-uncommon { --rc: var(--uncommon); border-color: color-mix(in srgb, var(--uncommon) 40%, var(--border)); }
 .card-sheet.r-rare { --rc: var(--rare); border-color: color-mix(in srgb, var(--rare) 60%, var(--border)); }
