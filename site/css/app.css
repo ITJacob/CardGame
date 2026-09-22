@@ -142,12 +142,16 @@ a:hover { color: var(--accent2); }
   position: absolute; right: 6px; bottom: -12px; z-index: -1;
   font-size: 44px; line-height: 1; opacity: .16; pointer-events: none;   /* 原 .08，抬高的理由见 .card-sheet::after */
 }
-/* 只给「本体近黑、铺在近黑卡面上看不见」的符号提亮（由 js/axis-ink.js 现算后打上这个类，
+/* 只给「本体近黑、铺在近黑底上看不见」的符号提亮（由 js/axis-ink.js 现算后打上这个类，
    实测全库 88 个轴符号里 12 个命中：🕳️ 污秽 0.04 / 🐾 兽群 0.05 / 🎩 戏法 0.07 / 🌑 暗夜 0.12…）。
    用 invert + hue-rotate 而不是 brightness(0) invert(1)：后者先把所有像素压成黑再反相，
    等于按 alpha 取形状，🕸️ 的网眼、⛓️ 的链环、🎩 的帽带会塌成实心块、颜色全丢；
    前者只做「明暗翻转」，字形内部的相对明暗与大致色相都还在（恶魔提亮后仍是红的）。
-   两件事必须一起做——只 invert 不 hue-rotate 会把暗红翻成亮青，色相整个反过来 */
+   两件事必须一起做——只 invert 不 hue-rotate 会把暗红翻成亮青，色相整个反过来。
+   同一个类也用在 badge 与悬停浮层的轴符号上（term.js 的 axSymHtml）：那里只是把近黑
+   卡面换成了近黑 chip（--panel2），暗符号一样是块看不见的暗斑。滤镜只罩 ax-sym 这一层，
+   套在整段 .term 上会把旁边的中文轴名一起翻成反色 */
+.ax-sym.ax-lift,
 .card-face.ax-lift::after, .card-sheet.ax-lift::after {
   filter: invert(1) hue-rotate(180deg);
 }
@@ -353,6 +357,12 @@ td.mono, .mono { font-family: Consolas, monospace; color: var(--accent); }
 .stat-group-title { margin: 22px 0 8px; font-size: 12px; color: var(--dim); letter-spacing: .04em; }
 /* .panel 自带 margin-bottom:14px，组尾那条会叠在下一组标题的上边距上、把组间隔顶成 34px */
 .stat-group > .panel:last-child { margin-bottom: 0; }
+/* 组里的 bar 面板收窄，热图除外。热图的宽度就是「22 行 × N 列」的可用空间，越宽越好；
+   bar 不是——轨道拉满（#view 1400px 减去内边距）时标签在左、数值在右，读完标签得横穿
+   一千多像素去找数值，而长短比例在 660px 和 1300px 下完全一样，收窄不丢信息，只是把
+   两端收进同一视野。顺带让组内的主次对上：宽表是主角，bar 是它的全库切面。
+   窄屏本就放不满 900px，这条只在宽屏生效，不需要配媒体查询 */
+.stat-group > .panel:not(.heat-panel) { max-width: 900px; }
 .bar-row { display: flex; align-items: center; gap: 8px; margin: 3px 0; font-size: 12px; }
 .bar-row .bar-label { width: 130px; text-align: right; color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar-row .bar-track { flex: 1; display: block; background: var(--panel2); border-radius: 4px; height: 16px; position: relative; }
