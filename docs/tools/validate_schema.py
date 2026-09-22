@@ -121,25 +121,12 @@ def cross_check(docs, manifest, errors, warns):
             errors.append("manifest %s: cardCount %s != 实际 %d" % (pid, p.get("cardCount"), n))
         if p.get("file") != "%s.skills.json" % pid:
             errors.append("manifest %s: file 字段 %r 与 pathwayId 不匹配" % (pid, p.get("file")))
-        if p.get("status") != "done":
-            errors.append("manifest %s: status=%r（非 done）" % (pid, p.get("status")))
-        tent = sum(1 for c in d["cards"] if c.get("tentative"))
-        if "tentativeCount" in p and p["tentativeCount"] != tent:
-            errors.append("manifest %s: tentativeCount %d != 实际 %d" % (pid, p["tentativeCount"], tent))
-        ff = sum(1 for c in d["cards"] if c.get("frameworkFlags"))
-        if "frameworkFlagCount" in p and p["frameworkFlagCount"] != ff:
-            errors.append("manifest %s: frameworkFlagCount %d != 实际 %d" % (pid, p["frameworkFlagCount"], ff))
 
     for pid in m_by_id:
         if pid not in docs:
             errors.append("manifest: 途径 %s 在 manifest 中登记但缺文件" % pid)
 
-    # 5) totalCards
-    total = sum(len(d.get("cards", [])) for d in docs.values())
-    if manifest.get("totalCards") != total:
-        errors.append("manifest: totalCards %s != 实际 %d" % (manifest.get("totalCards"), total))
-
-    # 6) 稀有度映射（schema 无法表达 sequence → rarity 派生关系）
+    # 5) 稀有度映射（schema 无法表达 sequence → rarity 派生关系；manifest.rarityMap 是唯一机器可读基准）
     rev = {}
     for rar, seqs in (manifest.get("rarityMap") or {}).items():
         for s in seqs:

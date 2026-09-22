@@ -2,14 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cardgame.local/schema/manifest.schema.json",
   "title": "技能池全库索引（manifest.json）",
-  "description": "22 条途径技能池的汇总索引：schema 版本、稀有度映射、各途径文件与卡片数。每个 pathways[].cardCount 必须与实际文件一致（由 validate.py 校验）。状态定义唯一权威源为 common.statuses.json + 各途径 *.statuses.json，本索引不重复登记。",
+  "description": "22 条途径技能池的纯索引 + rarityMap 校验基准：途径清单（id/名称/文件/卡片数/溯源）与稀有度↔序列映射。pathways[].cardCount 与 rarityMap 由 validate_schema.py / validate.py 对账。状态定义唯一权威源为 common.statuses.json + 各途径 *.statuses.json，本索引不重复登记。",
   "type": "object",
-  "required": ["schemaVersion", "sourceVersion", "generatedAt", "rarityMap", "pathways", "totalCards"],
+  "required": ["schemaVersion", "sourceVersion", "rarityMap", "pathways"],
   "additionalProperties": false,
   "properties": {
     "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "本索引文件自身的 schema 版本。" },
     "sourceVersion": { "type": "string", "description": "源技能池版本，如 v0.3。" },
-    "generatedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "生成日期 YYYY-MM-DD。" },
     "rarityMap": {
       "type": "object",
       "description": "稀有度 → 序列位阶区间。9-8 common / 7-6 uncommon / 5-4 rare / 3-2 epic / 1-0 legendary。",
@@ -28,20 +27,16 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "name", "file", "cardCount", "sourceFile", "status"],
+        "required": ["id", "name", "file", "cardCount", "sourceFile"],
         "additionalProperties": false,
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "description": "途径英文 ID，与 <id>.skills.json 的 pathwayId 一致。" },
           "name": { "type": "string", "description": "途径中文名。" },
           "file": { "type": "string", "pattern": "^[a-z][a-z0-9_]*\\.skills\\.json$", "description": "文件名（与 manifest 同目录）。" },
-          "cardCount": { "type": "integer", "minimum": 0, "description": "卡片数，必须等于文件中的 cards.length。" },
-          "sourceFile": { "type": "string", "pattern": "^\\.\\./archive/skill-design_v0\\.3/.+_技能池_v\\d+\\.\\d+\\.md$", "description": "溯源指针：生成期源技能稿 md（2026-09-18 起归档为只读快照，JSON 为唯一维护正源）。" },
-          "status": { "enum": ["done", "wip", "todo"], "description": "转换状态。" },
-          "tentativeCount": { "type": "integer", "minimum": 0, "description": "其中 tentative=true 的卡片数。" },
-          "frameworkFlagCount": { "type": "integer", "minimum": 0, "description": "带 frameworkFlags 的卡片数。" }
+          "cardCount": { "type": "integer", "minimum": 0, "description": "卡片数，必须等于文件中的 cards.length（validate_schema.py / validate.py 对账）。" },
+          "sourceFile": { "type": "string", "pattern": "^\\.\\./archive/skill-design_v0\\.3/.+_技能池_v\\d+\\.\\d+\\.md$", "description": "溯源指针：生成期源技能稿 md（2026-09-18 起归档为只读快照，JSON 为唯一维护正源）。" }
         }
       }
-    },
-    "totalCards": { "type": "integer", "minimum": 0, "description": "全库卡片总数，必须等于各途径 cardCount 之和与实际统计值。" }
+    }
   }
 }

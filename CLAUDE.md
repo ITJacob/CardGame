@@ -25,7 +25,7 @@ docs/ddd/            战斗内核 DDD 设计（权威正源，纯内容）
 ├─ contexts/         7 限界上下文 + 共享内核（结构/概念）
 └─ params/           各上下文参数与取值域（数值/枚举）
 docs/json/           技能池 JSON（唯一维护面，2026-09-18 起技能稿 md 已归档）
-├─ manifest.json    索引（schema 版本 / 稀有度映射 / 各途径卡片数；状态定义权威源在 *.statuses.json）
+├─ manifest.json    纯索引（22 途径 id/名称/文件/卡片数）+ rarityMap 校验基准（稀有度↔序列唯一机器可读源）
 ├─ <途径>.skills.json ×22  结构化 AST 卡面；sourceFile 溯源回指归档技能稿
 └─ schema/          JSON Schema draft 2020-12（skills/manifest.schema.json）
 docs/archive/        只读历史快照

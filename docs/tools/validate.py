@@ -81,7 +81,6 @@ DIM_RANGES = {
 # on_status_gain，语义层强制 frameworkFlag 登记（SCHEMA.md §8）——两处不一致是有意为之。
 PHASES = {"midnight","dawn","day","dusk","night"}
 EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill","on_phase_change"}
-RARITY_BY_SEQ = lambda s: "common" if s>=8 else "uncommon" if s>=6 else "rare" if s>=4 else "epic" if s>=2 else "legendary"
 
 # 命名治理：modifiers 为开放结构，同义异写严重。别名 -> 规范拼写（非阻断，仅告警引导收敛）
 MODIFIER_ALIASES = {
@@ -101,6 +100,11 @@ MODIFIER_ALIASES = {
 def main():
     m = json.load(io.open(os.path.join(JSON_DIR,'manifest.json'), encoding='utf-8'))
     expect = {p["id"]: p["cardCount"] for p in m["pathways"]}
+    # rarity↔sequence 唯一机器可读基准为 manifest.rarityMap（文本正源 SCHEMA.md §3.1），不再硬编码
+    _rev = {}
+    for _rar, _seqs in m["rarityMap"].items():
+        for _s in _seqs: _rev[_s] = _rar
+    RARITY_BY_SEQ = _rev.get
 
     globs = set()
     files = sorted(glob.glob(os.path.join(JSON_DIR,'*.skills.json')))
