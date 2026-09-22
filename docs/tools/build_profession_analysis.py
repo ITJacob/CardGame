@@ -508,9 +508,12 @@ def main():
         diff = "" if o is None else ("%+d" % (new - o))
         L.append("| `type=%s` | %d | %s | %s |" % (t, new, "—" if o is None else str(o), diff))
     L.append("")
-    L.append("> 旧报告原语数基于较早快照；本库当前 828 张卡，数字随补卡上浮属正常。"
+    # 卡数必须来自 total_cards 而不是写死：这里曾经是字面量 828，补卡到 829 之后
+    # 重跑本脚本只会把陈旧的数字再印一遍——分析产物是生成物，不该有会烂掉的常量
+    L.append("> 旧报告原语数基于较早快照；本库当前 %d 张卡，数字随补卡上浮属正常。"
              "算子（§2.4）口径一致：sequence=%d / if=%d / target_override=%d / push_back=%d / "
              "overlay=%d / repeat=%d / pull_forward=%d / swap_ally=%d / insert_tail_cross_lane=%d。" % (
+                 total_cards,
                  global_op["sequence"], global_op["if"], global_op["target_override"],
                  global_op["push_back"], global_op["overlay"], global_op["repeat"],
                  global_op["pull_forward"], global_op["swap_ally"], global_op["insert_tail_cross_lane"]))

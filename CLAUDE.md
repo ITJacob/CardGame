@@ -31,7 +31,7 @@ docs/json/           技能池 JSON（唯一维护面，2026-09-18 起技能稿 
 docs/archive/        只读历史快照
 └─ skill-design_v0.3/  技能稿 md ×22（生成期源数据，勿改；差集信息已回收进 JSON）
 docs/analysis/       纯分析产物（勿手改，重跑 docs/tools/ 脚本生成）
-├─ SKILLS_OVERVIEW.md              全库总览（22 途径分章 / 828 卡）
+├─ SKILLS_OVERVIEW.md              全库总览（22 途径分章 / 829 卡）
 ├─ SKILLS_ANALYSIS_BY_PROFESSION.md  原语用量 + modify_stat/modify_resource 属性与参数统计
 └─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告
 docs/tools/          全部脚本（校验 + 生成）

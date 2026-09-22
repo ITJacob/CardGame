@@ -421,7 +421,7 @@
 | `type=translocate` | 4 | — |  |
 | `type=target_override` | 1 | — |  |
 
-> 旧报告原语数基于较早快照；本库当前 828 张卡，数字随补卡上浮属正常。算子（§2.4）口径一致：sequence=267 / if=89 / target_override=0 / push_back=20 / overlay=26 / repeat=19 / pull_forward=9 / swap_ally=3 / insert_tail_cross_lane=3。
+> 旧报告原语数基于较早快照；本库当前 829 张卡，数字随补卡上浮属正常。算子（§2.4）口径一致：sequence=267 / if=89 / target_override=0 / push_back=20 / overlay=26 / repeat=19 / pull_forward=9 / swap_ally=3 / insert_tail_cross_lane=3。
 
 ## 七、结论与观察
 
