@@ -138,9 +138,10 @@ export function renderCardDetail(view, id) {
   }
   const g = (cat, key) => termSpan(cat, key);
   const cn = DB.glossary?.categories?.rarity?.terms?.[c.rarity]?.zh || c.rarity;
+  const axSym = (DB.axesByPathway.get(c._pathway) || {})[c.axis]?.symbol || '';
 
   view.innerHTML = `
-  <div class="panel">
+  <div class="panel card-face r-${c.rarity}" data-ax="${escapeHtml(axSym)}" style="--pc:var(--p-${c._pathway})">
     <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
       <h2 style="margin:0">${escapeHtml(c.name)}</h2>
       <span class="muted">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')}</span>
@@ -151,7 +152,7 @@ export function renderCardDetail(view, id) {
     </div>
     <div class="muted" style="margin-top:2px"><span class="mono">${escapeHtml(c.id)}</span></div>
     <div class="badges" style="margin-top:6px">
-      <span class="badge">${escapeHtml(c._pathwayName)}</span>
+      <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
       <span class="badge">轴：${axisSpan(c._pathway, c.axis)}</span>
       ${(c.tags || []).map((t) => `<span class="badge">${escapeHtml(t)}</span>`).join('')}
       ${c.gender && c.gender !== 'any' ? `<span class="badge">${g('gender', c.gender)}限定</span>` : ''}
