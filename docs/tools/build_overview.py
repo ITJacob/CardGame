@@ -335,17 +335,16 @@ def main():
     files = sorted(glob.glob(os.path.join(JSON_DIR, "*.skills.json")))
     docs = [json.load(io.open(f, encoding="utf-8")) for f in files]
 
-    # 全局状态 id → 中文名
+    # 全局状态 id → 中文名：权威源为 *.statuses.json（含 common）
     snames = {}
+    for f in sorted(glob.glob(os.path.join(JSON_DIR, "*.statuses.json"))):
+        d = json.load(io.open(f, encoding="utf-8"))
+        for sd in d.get("statusDefs") or []:
+            snames.setdefault(sd["id"], sd.get("name"))
     for d in docs:
         for c in d["cards"]:
             for sd in c.get("statusDefs") or []:
                 snames.setdefault(sd["id"], sd["name"])
-    mani = os.path.join(JSON_DIR, "manifest.json")
-    if os.path.exists(mani):
-        m = json.load(io.open(mani, encoding="utf-8"))
-        for cn, sid in (m.get("statusIds") or {}).items():
-            snames.setdefault(sid, cn)
     R = Renderer(snames)
 
     total_cards = sum(len(d["cards"]) for d in docs)

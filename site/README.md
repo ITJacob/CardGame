@@ -17,15 +17,15 @@
 冷启动要拉 48 个文件（约 450 KB gzip：22 份卡面 + 23 份状态定义 + 索引 + 词典 + schema）。
 在手机 4G 上实测卡片可见约 4.1 秒，其中网络占 3.97 秒——**慢在网络上，不在渲染**。两条对策：
 
-**① 首屏只拉必需的四样**（`data.js`）。`loadAll` 拉 索引 / 词典 / schema / 22 份卡面；
-23 份 `*.statuses.json`（约 85 KB、23 个请求）挪到 `loadDeferred()`，在首屏画完之后补拉。
-只有「状态统计」页和状态悬停详情需要它，卡片列表、卡面 AST、词典都不依赖。代价是最初一
-两秒里悬停状态只有名字（manifest 兜底的中文名），没有持续/层数/详情。
+**① 首屏只拉必需的五样**（`data.js`）。`loadAll` 拉 索引 / 词典 / schema / common 状态定义
+（11 KB）/ 22 份卡面；22 份途径 `*.statuses.json`（约 74 KB、22 个请求）挪到 `loadDeferred()`，
+在首屏画完之后补拉。只有「状态统计」页和途径私有状态的悬停详情需要它，卡片列表、卡面 AST、
+词典都不依赖。代价是最初一两秒里途径私有状态的悬停只有 id，没有持续/层数/详情。
 
 - 依赖它的视图自己订阅：`views/status.js` 在 `statusesReady()` 为假时先画加载态，
   `onStatusesReady` 回调里**确认那个加载态还在**才重画（等数据的这段时间用户可能已经切走）。
   不放在 `main.js` 里按页面名判断——那样每加一个依赖页都要回去改路由。
-- 首屏请求数 48 → 25，字节 452 KB → 367 KB。实测状态定义的请求发起时间晚于最后一份卡面
+- 首屏请求数 48 → 26，字节 452 KB → 378 KB。实测途径状态定义的请求发起时间晚于最后一份卡面
   的完成时间，确实不在关键路径上。
 
 **② SW 缓存数据文件**（`sw.js`）。GitHub Pages 的 `cache-control` 只有 `max-age=600`
@@ -114,5 +114,5 @@ Pages 源 = main 分支 / 仓库根。访问 `https://<user>.github.io/<repo>/si
 - 页面上出现橙色「未收录」token = 词典缺词条（控制台同时有 `[术语未收录]` 告警）。
 - 状态/途径/构筑轴的中文名直接来自数据文件（`*.statuses.json`、`manifest.json`、各 `axes`），不进词典。
 - **「声明面」读自 schema 而不是前端硬写**：统计页的「schema 声明 27 条原语」「statusDef 声明的 44 个字段」都是从 `../docs/json/schema/skills.schema.json` 现读的（`data.js` 的 `readDeclared`）。硬写常量必然与 schema 漂移，而「声明了多少 / 实际用了多少」正是这两页要展示的东西。schema 取不到时退回「声明面 = 实际用过」的降级展示，不阻断加载。
-- `manifest.statusIds` 是**中→英兜底**（只带 id/name 的占位项），真实定义在 `*.statuses.json`。合并时真实定义必须能盖掉占位项——`mergeStatuses` 以「有没有 `category`」判定占位项（`category` 是 schema 里 statusDef 的 required 字段）。写反了的话，既在 manifest 里又有定义的 18 个状态（burn/poison/regen/conceal/guard…）会永远只剩一个名字，悬停看不到持续/层数/可驱散与 effects/triggers。
+- 状态定义的唯一权威源是 `common.statuses.json` + 各途径 `*.statuses.json`（manifest 不再登记状态表）。common 随首屏加载，途径文件由 `loadDeferred()` 补拉；`mergeStatuses` 同 id 先落地者优先，调用顺序（先 common 后途径）即优先级。
 - 悬停状态名时，除词典释义外还会展开该状态自身的 `duration/maxStacks/charges/dispelable` 与 `effects/triggers`（AST 复用 `ast.js` 渲染器）；`modifiers` 等其余字段尚未接入。

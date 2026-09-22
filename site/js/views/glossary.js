@@ -44,7 +44,7 @@ export function renderGlossary(view, params) {
     <h1 class="page-title">术语词典 <span class="muted" style="font-size:13px;font-weight:400">v${escapeHtml(DB.glossary.version)} · ${catKeys.length} 类 · 更新于 ${escapeHtml(DB.glossary.updated)}</span></h1>
     <div class="panel filters">
       <label>搜索<input type="search" id="gq" value="${escapeHtml(query)}" placeholder="key / 中文 / 解释"></label>
-      <span class="muted">状态与途径的中文名直接来自数据文件（manifest / *.statuses.json），不在本词典重复登记。</span>
+      <span class="muted">状态与途径的中文名直接来自数据文件（*.statuses.json / manifest 途径表），不在本词典重复登记。</span>
     </div>
     <div class="gloss-layout">
       <div class="gloss-nav panel">

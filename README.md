@@ -35,7 +35,7 @@ docs/skill-design/  诡秘之主 22 途径技能池 v0.3（内容设计，非 DD
 └─ <途径>_技能池_v0.3.md  ×22
 
 docs/json/          技能池 JSON 结构化产物（由 skill-design 的 md 转换而来）
-├─ manifest.json    索引：schema 版本、稀有度映射、状态 ID、22 途径卡片数
+├─ manifest.json    索引：schema 版本、稀有度映射、22 途径卡片数（状态定义权威源在 *.statuses.json）
 ├─ <途径>.skills.json ×22  结构化 AST 卡面（sourceFile 回指 ../skill-design/）
 └─ schema/          机器可读结构标准（JSON Schema draft 2020-12）
 

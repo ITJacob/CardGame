@@ -37,47 +37,41 @@ async function fetchJson(url) {
   return r.json();
 }
 
-// 状态定义读不到不算致命：悬停只剩名字（manifest 的中→英兜底），统计页降级
+// common.statuses.json 读不到不算致命：状态统计页降级，悬停在途径 statuses 到达前只剩 id
 const fetchJsonSoft = (url) => fetchJson(url).catch(() => null);
 
+// 状态定义唯一权威源：common.statuses.json + 各途径 *.statuses.json。
+// 同 id 时先落地者优先——调用方保证 common 先于各途径合并
 function mergeStatuses(statusesDoc, ownerPathway) {
   const defs = statusesDoc.statusDefs || [];
   const list = Array.isArray(defs) ? defs : Object.values(defs);
   for (const s of list) {
     if (!s || !s.id) continue;
-    // 占位项判定：manifest.statusIds 的中→英兜底只带 id/name，真实定义必有 category
-    //（schema 里 category 是 statusDef 的 required 字段）。这里必须让真实定义盖掉兜底项，
-    // 否则 burn/poison/regen 这 18 个「既在 manifest 里又有定义」的状态会永远只剩一个名字，
-    // 悬停详情看不到持续/层数/可驱散，也看不到 effects/triggers
-    const prev = DB.statusMap.get(s.id);
-    if (!prev || !prev.category) {
+    if (!DB.statusMap.has(s.id)) {
       const def = { ...s, _owner: ownerPathway };
       DB.statusMap.set(s.id, def);
-      DB.statuses.push(def);       // 只收真实定义，不含 manifest 兜底占位项
+      DB.statuses.push(def);
     }
   }
 }
 
-// 首屏：只拉卡片列表真正要用的四样——索引 / 词典 / schema / 22 份卡面。
-// 状态定义（23 份、约 85 KB gzip）不在其中，见 loadDeferred()。
+// 首屏：索引 / 词典 / schema / common 状态定义（11 KB，首屏悬停即完整定义）/ 22 份卡面。
+// 途径状态定义（22 份）不在其中，见 loadDeferred()。
 export async function loadAll(onProgress) {
-  const [manifest, glossary, schema] = await Promise.all([
+  const [manifest, glossary, schema, common] = await Promise.all([
     fetchJson(JSON_BASE + 'manifest.json'),
     fetchJson(GLOSSARY_URL),
     fetchJsonSoft(SCHEMA_URL),
+    fetchJsonSoft(JSON_BASE + 'common.statuses.json'),
   ]);
   DB.manifest = manifest;
   DB.glossary = glossary;
   DB.pathways = manifest.pathways;
   // schema 缺失不阻断加载：两个统计页会退回「声明面=实际用过」的降级展示
   if (schema) readDeclared(schema);
+  if (common) mergeStatuses(common, 'common');
 
   onProgress?.(`已加载索引，加载 ${DB.pathways.length} 个途径…`);
-
-  // manifest.statusIds 是 中→英，反转为 英→中 兜底（statuses 文件优先）
-  for (const [zh, en] of Object.entries(manifest.statusIds || {})) {
-    if (!DB.statusMap.has(en)) DB.statusMap.set(en, { id: en, name: zh });
-  }
 
   const results = await Promise.all(DB.pathways.map((p) => fetchJson(JSON_BASE + p.file)));
   for (let i = 0; i < DB.pathways.length; i++) {
@@ -96,24 +90,21 @@ export async function loadAll(onProgress) {
   return DB;
 }
 
-// 状态定义与途径无关，卡片列表、卡面 AST、词典都不依赖它——只有「状态统计」页
-// 和状态悬停详情要。放在首屏之后补拉：23 个请求 / 85 KB 从关键路径上摘掉，
-// 冷启动少等一大截，代价是最初一两秒里悬停状态只有名字（manifest 兜底的中文名）。
+// 途径状态定义与卡片列表、卡面 AST、词典都不相关——只有「状态统计」页和
+// 途径私有状态的悬停详情要。common 已随首屏加载，这里只补拉 22 份途径文件，
+// 代价是途径私有状态的悬停详情最初一两秒只有 id。
 let deferred = null;
 let ready = false;
 const waiters = [];
 
-// 幂等：首次调用发起 23 个请求，之后复用同一个 promise
+// 幂等：首次调用发起 22 个请求，之后复用同一个 promise
+// 调用时机在 loadAll 之后（main.js），common 已合并，「先落地者优先」即 common 优先
 export function loadDeferred() {
   if (deferred) return deferred;
   deferred = (async () => {
-    // 全部并行取回后再合并，保持「common 优先」的原有次序：mergeStatuses 里
-    // 先落地的真实定义会挡住后来的同 id 定义
-    const [common, ...docs] = await Promise.all([
-      fetchJsonSoft(JSON_BASE + 'common.statuses.json'),
-      ...DB.pathways.map((p) => fetchJsonSoft(JSON_BASE + p.file.replace('.skills.json', '.statuses.json'))),
-    ]);
-    if (common) mergeStatuses(common, 'common');
+    const docs = await Promise.all(
+      DB.pathways.map((p) => fetchJsonSoft(JSON_BASE + p.file.replace('.skills.json', '.statuses.json'))),
+    );
     docs.forEach((d, i) => { if (d) mergeStatuses(d, DB.pathways[i].id); });
   })().then(() => {
     ready = true;

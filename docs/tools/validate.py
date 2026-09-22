@@ -100,7 +100,6 @@ MODIFIER_ALIASES = {
 }
 def main():
     m = json.load(io.open(os.path.join(JSON_DIR,'manifest.json'), encoding='utf-8'))
-    CLOSED = set(m["statusIds"].values())
     expect = {p["id"]: p["cardCount"] for p in m["pathways"]}
 
     globs = set()
@@ -109,14 +108,14 @@ def main():
         d = json.load(io.open(f, encoding='utf-8'))
         for c in d.get("cards",[]):
             for sd in c.get("statusDefs") or []: globs.add(sd["id"])
-    # 抽离后：状态定义权威源为 *.statuses.json（含 common）
+    # 状态定义权威源为 *.statuses.json（含 common）
     for f in sorted(glob.glob(os.path.join(JSON_DIR,'*.statuses.json'))):
         try:
             d = json.load(io.open(f, encoding='utf-8'))
             for sd in d.get("statusDefs") or []: globs.add(sd["id"])
         except Exception:
             pass
-    ALLSTATUS = CLOSED | globs
+    ALLSTATUS = globs
     pre_errors, pre_warns = [], []   # 状态定义层 + 轴校验的前置收集（原代码引用了未定义的 errors/warns，属死代码 bug）
 
     # 状态定义层校验：*.statuses.json 中 statusDef 的 category / crossPathway.participants
