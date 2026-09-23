@@ -98,6 +98,7 @@ export async function loadAll(onProgress) {
     for (const card of skills.cards || []) {
       card._pathway = p.id;
       card._pathwayName = p.name;
+      card._artStyle = skills.artStyle || '';   // 途径级出图风格，详情页与 card.art 现拼
       DB.cards.push(card);
       DB.cardById.set(card.id, card);
     }

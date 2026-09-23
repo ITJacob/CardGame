@@ -59,6 +59,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `axes` | object | ✓ | 构筑轴，`{ "<axisId>": { symbol, name, statusId?, enablers?, payoffs?, note? } }`；卡片 `axis` 必须取自这里的键。statusId = 轴身份状态；enablers/payoffs = 挂载/读取该状态的卡名（自技能稿轴表回收，仅保留可匹配卡名） |
 | `sampleBuilds` | array | – | 示例 Build `[{ name, actives[], passives[], playstyle }]`（自技能稿 §二回收；卡名为设计示例，可能与现行卡名有出入） |
 | `designNote` | string | – | 途径级机制说明（隐秘值/咬合器等维度，自技能稿轴表后说明段回收） |
+| `artStyle` | string | – | 途径统一的 AI 出图风格模板（英文）：画风/材质/构图/调色；展示时与卡级 `art` 现拼成完整 prompt，不落盘 |
 | `cards` | array | ✓ | 技能卡列表 |
 
 ## 3. 卡片（card）
@@ -96,6 +97,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `frameworkFlags` | flag[] | | 框架缺口登记（见 §8）。与 `conversionNotes` **职责互斥**：前者管「内核尚未支持」，后者管「转换口径存疑」 |
 | `dimHooks` | dimHook[] | | 维度乘区挂钩：本卡对战场全局维度的乘区声明（见 §7） |
 | `phaseHooks` | phaseHook[] | | 相位乘区挂钩：本卡对战场枚举相位的乘区声明（见 §7.1） |
+| `art` | artBrief | | AI 出图特征（英文）`{ subject, elements[], mood }`——只写画面内容，风格在途径顶层 `artStyle` |
 
 ### 3.2 kind 分支规则（schema 用 if/then 强制）
 

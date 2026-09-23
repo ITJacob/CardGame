@@ -129,6 +129,22 @@ function miscHtml(card) {
   return out.join('');
 }
 
+// 出图 prompt = 途径 artStyle + 卡级 art 三件套，展示时现拼——换风格只改途径顶层一处，不动卡
+function artPrompt(c) {
+  const a = c.art;
+  if (!a) return '';
+  return [c._artStyle, a.subject, ...(a.elements || []), a.mood].filter(Boolean).join(', ');
+}
+
+function artHtml(c) {
+  const prompt = artPrompt(c);
+  if (!prompt) return '';
+  return `<section class="cs-sec">
+    <h2>AI 出图 <button type="button" class="cs-copy" data-prompt="${escapeHtml(prompt)}">复制 prompt</button></h2>
+    <div class="cs-prompt">${escapeHtml(prompt)}</div>
+  </section>`;
+}
+
 export function renderCardDetail(view, id) {
   const c = DB.cardById.get(id);
   if (!c) {
@@ -184,6 +200,8 @@ export function renderCardDetail(view, id) {
         ${renderEffects(c.effects)}
       </section>
 
+      ${artHtml(c)}
+
       ${(unitDefsHtml(c) || zoneDomainHtml(c) || miscHtml(c)) ? `<section class="cs-sec"><h2>附加定义</h2>${unitDefsHtml(c)}${zoneDomainHtml(c)}${miscHtml(c)}</section>` : ''}
 
       ${c.frameworkFlags?.length ? `<section class="cs-sec"><h2 class="warn-text">框架缺口</h2>
@@ -193,4 +211,21 @@ export function renderCardDetail(view, id) {
     </div>
   </div>
   `;
+
+  // 复制 prompt：站点首个剪贴板交互。clipboard API 要安全上下文（localhost/https 均满足），
+  // 失败时退回选中整段文本让用户手动 Ctrl+C
+  const copyBtn = view.querySelector('.cs-copy');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(copyBtn.dataset.prompt);
+        copyBtn.textContent = '已复制 ✓';
+      } catch {
+        const el = view.querySelector('.cs-prompt');
+        if (el) window.getSelection().selectAllChildren(el);
+        copyBtn.textContent = '已选中，Ctrl+C';
+      }
+      setTimeout(() => { copyBtn.textContent = '复制 prompt'; }, 1500);
+    });
+  }
 }

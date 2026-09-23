@@ -80,6 +80,10 @@
       "type": "string",
       "description": "途径级机制说明（如隐秘值/咬合器/恶欲值维度），源自技能稿轴表后的说明段。"
     },
+    "artStyle": {
+      "type": "string",
+      "description": "本途径统一的 AI 出图风格模板（英文撰写）：画风/材质/构图/调色。展示时与卡级 art 现拼成完整 prompt，不落盘——换风格只改这一处。"
+    },
     "cards": {
       "type": "array",
       "minItems": 1,
@@ -345,6 +349,10 @@
             "$ref": "#/$defs/phaseHook"
           },
           "description": "本卡对战场相位的乘区挂钩列表（相位乘区挂钩机制，见 docs/ddd/params/战场参数.md §1.3b）。与 dimHooks 平行：dimHooks 管连续量维度，phaseHooks 管枚举相位。"
+        },
+        "art": {
+          "$ref": "#/$defs/artBrief",
+          "description": "本卡的 AI 出图特征（英文撰写）：只写画面特征，不含风格——风格在途径顶层 artStyle，展示时现拼。"
         }
       },
       "allOf": [
@@ -385,6 +393,33 @@
           }
         }
       ]
+    },
+    "artBrief": {
+      "type": "object",
+      "description": "一张卡的 AI 出图特征（英文）。与途径顶层 artStyle 分工：artStyle 管风格（画法/材质/调色），art 管画面内容（主体/元素/氛围）。",
+      "required": [
+        "subject"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "description": "画面主体一句话（谁/什么，在做什么）。"
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "关键视觉元素清单（意象/符号/物件），逐项一条短语。"
+        },
+        "mood": {
+          "type": "string",
+          "description": "氛围词（如 ominous, still）。"
+        }
+      }
     },
     "dimHook": {
       "type": "object",
