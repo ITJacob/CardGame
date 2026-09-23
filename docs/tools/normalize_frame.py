@@ -247,17 +247,102 @@ def band_metrics(pixels: bytearray, width: int, height: int, channels: int,
     }
 
 
-def process(path: Path, threshold: int, check_only: bool) -> bool:
+def autocrop_to_content(pixels: bytearray, width: int, height: int, channels: int,
+                        threshold: int, pad: int = 8,
+                        ratio: tuple[int, int] = (3, 4)):
+    """裁到框体外扩 pad 像素，并把画布补齐到目标宽高比（只补黑边、不裁内容）。
+
+    ⚠️ 不能用全局 min/max bbox：右下角水印等离群亮块会把 bbox 撑大，
+    导致裁完框体偏位。这里按行/列扫描取**中位数**定位框沿——框沿在
+    数百行/列上恒定，水印只污染少数行/列，中位数天然抗离群。
+    返回 (新像素, 新宽, 新高)。
+    """
+    stride = width * channels
+
+    def _med(vals: list[int]) -> int:
+        s = sorted(vals)
+        return s[len(s) // 2]
+
+    lefts, rights = [], []
+    for y in range(0, height, 2):
+        base = y * stride
+        left = right = -1
+        for x in range(0, width, 2):
+            i = base + x * channels
+            v = pixels[i]
+            g = pixels[i + 1]
+            b = pixels[i + 2]
+            if g > v:
+                v = g
+            if b > v:
+                v = b
+            if v > threshold:
+                if left < 0:
+                    left = x
+                right = x
+        if left >= 0:
+            lefts.append(left)
+            rights.append(right)
+    if not lefts:
+        return pixels, width, height
+    tops, bottoms = [], []
+    for x in range(0, width, 2):
+        top = bottom = -1
+        for y in range(0, height, 2):
+            i = y * stride + x * channels
+            v = pixels[i]
+            g = pixels[i + 1]
+            b = pixels[i + 2]
+            if g > v:
+                v = g
+            if b > v:
+                v = b
+            if v > threshold:
+                if top < 0:
+                    top = y
+                bottom = y
+        if top >= 0:
+            tops.append(top)
+            bottoms.append(bottom)
+
+    x0 = max(0, _med(lefts) - pad)
+    x1 = min(width - 1, _med(rights) + pad)
+    y0 = max(0, _med(tops) - pad)
+    y1 = min(height - 1, _med(bottoms) + pad)
+    cw, chh = x1 - x0 + 1, y1 - y0 + 1
+
+    # 补齐到目标比例：只扩短边（补黑），绝不裁内容
+    tw, th = ratio
+    new_w, new_h = cw, chh
+    if cw * th < chh * tw:  # 太窄 → 补宽
+        new_w = chh * tw // th
+    else:  # 太矮 → 补高
+        new_h = cw * th // tw
+    out = bytearray(new_w * new_h * channels)
+    ox = (new_w - cw) // 2
+    oy = (new_h - chh) // 2
+    for y in range(chh):
+        src = ((y0 + y) * stride + x0 * channels)
+        dst = ((oy + y) * new_w + ox) * channels
+        out[dst:dst + cw * channels] = pixels[src:src + cw * channels]
+    return out, new_w, new_h
+
+
+def process(path: Path, threshold: int, check_only: bool, autocrop: int = 0) -> bool:
     try:
         width, height, channels, pixels, ctype = read_png(path)
     except ValueError as e:
         print(f"  [跳过] {path.name}: {e}")
         return False
 
+    if autocrop and not check_only:
+        pixels, width, height = autocrop_to_content(
+            pixels, width, height, channels, threshold, pad=autocrop)
+        ctype = 2 if channels == 3 else 6  # autocrop 不改通道数
+
     stats = _stats(pixels, width, height, channels, threshold)
     band = stats["band"]
     total = width * height
-
     print(f"  {path.name}: {width}x{height}, {channels}ch")
     print(f"    黑底纯度 : 中心区最亮 {stats['bg_max']}"
           f"  {'OK 纯黑' if stats['bg_max'] == 0 else '不纯(近黑灰)'}"
@@ -321,6 +406,8 @@ def main() -> int:
     ap.add_argument("files", nargs="+", help="PNG 文件路径")
     ap.add_argument("--threshold", type=int, default=24, help="压黑阈值，默认 24")
     ap.add_argument("--check", action="store_true", help="只体检，不改写文件")
+    ap.add_argument("--autocrop", type=int, default=0, metavar="PAD",
+                    help="裁到内容外扩 PAD 像素并补齐 3:4（顺带裁掉外圈水印），默认不裁")
     args = ap.parse_args()
 
     ok = True
@@ -330,7 +417,7 @@ def main() -> int:
             print(f"  [缺失] {f}")
             ok = False
             continue
-        ok = process(p, args.threshold, args.check) and ok
+        ok = process(p, args.threshold, args.check, args.autocrop) and ok
     print("体检完成（未改写）" if args.check else "压黑完成")
     return 0 if ok else 1
 

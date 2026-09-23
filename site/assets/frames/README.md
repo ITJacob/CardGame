@@ -34,11 +34,13 @@
 2. **黑底不纯（实测几乎必然发生）**：扩散模型出的「纯黑底」实测是 `#050402` 一类的近黑灰，**实测 `frame-common.png` 有 96.88% 的像素非纯黑、中心区最亮到 21**。screen 叠加会把整张卡面整体提灰发雾。prompt 只能缓解、无法保证，所以**出图后必须跑压黑**：
 
    ```bash
-   python docs/tools/normalize_frame.py site/assets/frames/frame-common.png   # 压黑并原地覆盖
-   python docs/tools/normalize_frame.py --check site/assets/frames/*.png      # 只体检不改写
+   # 标准后处理：裁边（顺带裁掉外圈水印）+ 压黑，一步到位
+   python docs/tools/normalize_frame.py --autocrop 8 frame-common.png
+   # 只体检不改写：看黑底纯度 / 框带宽度（目标 <4%）/ 外缘留白
+   python docs/tools/normalize_frame.py --check site/assets/frames/*.png
    ```
 
-   纯标准库实现（不依赖 Pillow），阈值默认 24：亮度 ≤24 归零、24–48 线性压缩（软过渡，避免灰雾边界出现硬边圆环），>48 的框线本体零损伤。实测压黑后中心区最亮 21→0、灰雾 96.88%→0.20%，框线占比 2.78% 保持不变。
+   纯标准库实现（不依赖 Pillow），阈值默认 24：亮度 ≤24 归零、24–48 线性压缩（软过渡，避免灰雾边界出现硬边圆环），>48 的框线本体零损伤。`--autocrop 8` 按行/列**中位数**定位框沿裁到外扩 8px 并补齐 3:4——不用全局 bbox，因为右下角水印等离群亮块会把 bbox 撑大导致裁偏（2026-09-23 实测踩过）。实测压黑后中心区最亮 21→0、灰雾 96.88%→0.20%，框线占比 2.78% 保持不变。
 3. **框带过宽**：同一脚本的 `--check` 会报出「框带深度占卡宽百分比」（目标 **<4%**）与四边外缘留白。实测旧版 `frame-common.png` 为 **12.79%**（左右深 64/67px、上下深 113/73px）——超标约 3 倍。注意其中一截是**灰雾外溢造成的视觉增宽**：压黑后同一张图降到 12.30%、上边深度 113→70px，所以**先压黑再量框宽**，否则会把灰雾误算成框线。
 
 同名覆盖即换图。要改框，改 `docs/json/manifest.json` 的 `artFrameFormat`/`artFrame` 或各途径 `*.skills.json` 的 `artFrameEpic`/`artFrameLegendary`，重跑 `build_frame_prompts.py`。
