@@ -157,7 +157,7 @@ function artHtml(c) {
     <div class="cs-artwrap">
       <img class="cs-art" src="assets/cards/${escapeHtml(c.id)}.webp" alt="${escapeHtml(c.name)}" loading="lazy" onerror="this.parentNode.remove()">
       <div class="cs-bezel"></div>
-      ${f ? `<img class="cs-frame" src="assets/frames/${f.file}.webp" alt="" onerror="this.remove()">` : ''}
+      ${f ? `<div class="cs-orn" style="border-image-source:url(assets/frames/${f.file}.webp)"></div>` : ''}
     </div>
     <div class="cs-prompt">${escapeHtml(prompt)}</div>
   </section>`;

@@ -264,6 +264,7 @@ body.page-card #view { max-width: none; padding: 0; }
 .cs-artwrap {
   position: relative; max-width: 420px; margin: 0 auto 8px;
   --frame-band: 34px;          /* 框宽：只改这一个数，框体与纹样层同时跟着变 */
+  --orn-slice: 40%;            /* 纹样切分：源图四角取这么多 → 卡的四角；中段 → 四边重复 */
   --bz: var(--common);         /* 框体主色；按稀有度覆盖，见下方 .r-* 规则 */
   /* 四边等宽带。框体与 AI 纹样层共用这**同一套**几何，所以两者永远严丝合缝。
      出图侧完全不管框宽——AI 画不准精确几何，47 张独立出图必然漂移 */
@@ -303,15 +304,23 @@ body.page-card #view { max-width: none; padding: 0; }
     inset 0 0 16px rgba(0,0,0,.55);
 }
 
-.cs-frame {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  pointer-events: none; mix-blend-mode: screen;
-  border-radius: 8px;          /* 对齐 .cs-art 的圆角，顺带把框带外角裁圆 */
-  object-fit: cover;           /* 出图比例未必精确，保比例裁切；默认 fill 会拉伸变形 */
-  opacity: .55;                /* 纹样当**浮雕**叠在金属上，不是发光贴纸；调高就往「发光金线」走 */
-  /* 纹样层与框体共用同一套 mask，只显示四条边带。出图只要「纹样铺满、中心纯黑」即可：
-     中心纯黑在 screen 混合下等于透明，mask 不被支持时也兜得住 */
-  -webkit-mask: var(--band-mask); mask: var(--band-mask);
+/* 纹样层：用 border-image 把整张纹样**切分**到卡上。
+   源图四角 → 卡的四角（真角饰），源图中段 → 四边重复成边饰。
+   框宽由 border-width 直接给出，精确等宽且不需要 mask。
+   早先用「mask 平铺」是错的：纹样在四个角上随机截断，读起来是壁纸而不是框。
+   文件缺失时 border-image 静默不生效，露出下面的 .cs-bezel，天然降级 */
+.cs-orn {
+  position: absolute; inset: 0; pointer-events: none;
+  border: var(--frame-band) solid transparent;
+  /* border-image-source 由 card.js 内联给出，**不能**写成 var(--orn-src)：
+     自定义属性里的相对 url() 按「消费它的样式表」的基址解析，写在这里会解析成
+     site/css/assets/... → 404 静默不出图。内联则按文档基址解析 */
+  border-image-slice: var(--orn-slice);
+  border-image-width: var(--frame-band);
+  border-image-outset: 0;
+  border-image-repeat: round;
+  mix-blend-mode: screen;
+  opacity: .8;                 /* 纹样当浮雕叠在金属上；调高就往「发光金线」走 */
 }
 .cs-prompt {
   font-family: Consolas, monospace; font-size: 12.5px; line-height: 1.7;
