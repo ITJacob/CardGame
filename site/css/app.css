@@ -290,6 +290,22 @@ body.page-card #view { max-width: none; padding: 0; }
   mix-blend-mode: screen;
   opacity: .82;
 }
+/* 可点复制的文本（cardId）：虚下划线暗示「能点」，反馈是上方浮出的小标签——
+   不改动文字本身，id 得留着给人对照 */
+.cs-copyable {
+  cursor: pointer; position: relative;
+  border-bottom: 1px dashed var(--dim);
+}
+.cs-copyable:hover { color: var(--text); border-bottom-color: #e0a34a; }
+.cs-copyable:focus-visible { outline: 1px solid #e0a34a; outline-offset: 2px; }
+.cs-copyable.copied::after {
+  content: '已复制 ✓';
+  position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%);
+  margin-bottom: 3px; white-space: nowrap;
+  font-size: 11px; padding: 1px 7px;
+  background: var(--panel2); border: 1px solid var(--border); border-radius: 9px;
+  color: var(--dim);
+}
 /* 多图缩略图条：同一卡存了多版时挑主图用（索引里第 2 张起才渲染，单图不占位） */
 .cs-thumbs {
   display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;

@@ -153,9 +153,10 @@ function frameFor(c) {
 // 卡面候选路径链（按顺序试，前一个 404/坏图就往下退）：
 //   ① 索引里的路径 —— assets/cards/<cardId>/<任意文件名>，由 gen_card_assets.py 扫目录得到；
 //      文件夹里多张图时全部进链，第一张是主图，其余走缩略图条手动切
-//   ② 旧扁平约定 —— assets/cards/<cardId>.png|.webp，没跑过生成脚本时靠它兜底
-// 文件名不可控（手机上传的 IMG_0042.jpg / 微信图片_xxx.png）才需要这套链；
-// 静态站列举不了目录，所以「文件夹里有什么」只能靠索引，猜不出来
+//   ② 扁平约定 —— assets/cards/<cardId>.png|.webp。**日常走的就是这条**：文件名由
+//      cardId 定死（详情页 id 点一下就复制，本地照着重命名即可），站点按 id 现拼，
+//      不用索引、不用跑脚本。索引只在文件名不可控（手机直传 IMG_0042.jpg 之类）时才需要，
+//      那时静态站列举不了目录，猜不出文件名，只能靠它。
 export function artCandidates(c) {
   const id = encodeURIComponent(c.id);
   const indexed = (DB.cardArt.get(c.id) || [])
@@ -180,7 +181,7 @@ function artHtml(c) {
       <img class="cs-art" src="${escapeHtml(artCandidates(c)[0])}" alt="${escapeHtml(c.name)}" loading="lazy">
       <div class="cs-vignette"></div>
       ${f ? `<img class="cs-orn" src="assets/frames/${f.file}.png" alt="" loading="lazy" onerror="this.remove()">` : ''}
-      <div class="cs-artmiss" hidden>卡面缺失（<span class="mono">assets/cards/${escapeHtml(c.id)}/</span> 下没有可用图片，或格式是 HEIC 之类浏览器渲染不了的）</div>
+      <div class="cs-artmiss" hidden>卡面缺失：把图命名为 <span class="mono">${escapeHtml(c.id)}.png</span> 放进 <span class="mono">assets/cards/</span>（上面 id 点一下就复制）。格式必须是 png/jpg/webp，HEIC 浏览器渲染不了</div>
     </div>
     ${thumbs}
     <div class="cs-prompt">${escapeHtml(prompt)}</div>
@@ -231,7 +232,7 @@ export function renderCardDetail(view, id) {
           <h1 class="cs-name">${escapeHtml(c.name)}</h1>
           ${c.flagship ? '<span class="badge flagship">旗舰</span>' : ''}
         </div>
-        <div class="cs-sub">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')} · <span class="mono">${escapeHtml(c.id)}</span></div>
+        <div class="cs-sub">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')} · <span class="mono cs-copyable" data-copy="${escapeHtml(c.id)}" title="点击复制 cardId（卡面图就命名为它）" tabindex="0" role="button">${escapeHtml(c.id)}</span></div>
         <div class="badges">
           <span class="badge rarity-${c.rarity}">${cn}</span>
           <span class="badge kind-${c.kind}">${c.kind === 'active' ? '主动' : '被动'}</span>
@@ -280,20 +281,50 @@ export function renderCardDetail(view, id) {
 
   wireCardArt(view, c);
 
-  // 复制 prompt：站点首个剪贴板交互。clipboard API 要安全上下文（localhost/https 均满足），
-  // 失败时退回选中整段文本让用户手动 Ctrl+C。画面/边框两个按钮共用同一逻辑
-  view.querySelectorAll('.cs-copy').forEach((copyBtn) => {
-    const label = copyBtn.textContent;
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(copyBtn.dataset.prompt);
-        copyBtn.textContent = '已复制 ✓';
-      } catch {
-        const el = view.querySelector('.cs-prompt');
-        if (el) window.getSelection().selectAllChildren(el);
-        copyBtn.textContent = '已选中，Ctrl+C';
-      }
-      setTimeout(() => { copyBtn.textContent = label; }, 1500);
+  wireCopy(view);
+}
+
+// 剪贴板：clipboard API 要安全上下文（localhost/https 均满足），失败时退回选中
+// 目标文本让用户手动 Ctrl+C。两类复制点共用这一段：
+//   .cs-copy[data-prompt]      —— 按钮（画面/边框 prompt），反馈落在按钮文字上
+//   .cs-copyable[data-copy]    —— 可点文本（cardId），反馈是浮在上方的小标签，
+//                                 不动文字本身——id 是给人对照着看的，变成「已复制」就没得对了
+// 复制 cardId 的用意：卡面图按 <cardId>.png 命名放进 assets/cards/，站点按 id 现拼路径，
+// 所以「复制 id → 本地重命名 → 丢进目录」就是完整的上图流程，不用跑任何脚本
+async function copyText(fallbackEl, text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    if (fallbackEl) window.getSelection().selectAllChildren(fallbackEl);
+    return false;
+  }
+}
+
+export function wireCopy(view) {
+  view.querySelectorAll('.cs-copy[data-prompt]').forEach((btn) => {
+    const label = btn.textContent;
+    btn.addEventListener('click', async () => {
+      // 按钮自身没文本可选，失败时选中整段 prompt 让它至少可手动复制
+      const ok = await copyText(view.querySelector('.cs-prompt'), btn.dataset.prompt);
+      btn.textContent = ok ? '已复制 ✓' : '已选中，Ctrl+C';
+      setTimeout(() => { btn.textContent = label; }, 1500);
+    });
+  });
+  view.querySelectorAll('.cs-copyable[data-copy]').forEach((el) => {
+    const run = async () => {
+      const ok = await copyText(el, el.dataset.copy);
+      el.classList.toggle('copied', ok);
+      el.title = ok ? '已复制 ✓' : '已选中，Ctrl+C';
+      setTimeout(() => {
+        el.classList.remove('copied');
+        el.title = el.dataset.title;
+      }, 1500);
+    };
+    el.dataset.title = el.title;
+    el.addEventListener('click', run);
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); run(); }
     });
   });
 }
