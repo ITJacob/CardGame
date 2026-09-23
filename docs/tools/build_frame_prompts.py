@@ -3,7 +3,7 @@
 数据源（权威）：manifest.json 的 artFrameFormat（全局共用约束）+ artFrame（全局三档主题层）
 + 各途径 *.skills.json 顶层的 artFrameEpic / artFrameLegendary（途径主题层）。
 每条输出 = artFrameFormat + 主题层，与画面 prompt 的 artFormat + artStyle + art 三段拼装对称。
-产物是**无缝纹样**清单——框体几何由站点 CSS 决定，出图不负责成框。
+产物是**直接出完整边框图**的 prompt 清单——出图即一张可复用的黑底框图，由站点以 screen 混合叠到全出血卡面复用；框线须细且贴边（风格基准见同目录 PROMPTS_REFERENCE.md）。
 边框 prompt 改版后重跑本脚本即可，勿手改产物。
 
 用法：python docs/tools/build_frame_prompts.py
