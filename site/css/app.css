@@ -261,30 +261,57 @@ body.page-card #view { max-width: none; padding: 0; }
 /* AI 出图小节：prompt 是待复制的物料，等宽 + 可横滚；复制按钮挂在节标题右侧 */
 /* 成品图按约定路径现拼，onerror 移除——存在即显示，无需索引。
    边框是独立图（assets/frames/），screen 混合把黑底融掉、只留边框叠在画面上 */
-.cs-artwrap { position: relative; max-width: 420px; margin: 0 auto 8px; }
+.cs-artwrap {
+  position: relative; max-width: 420px; margin: 0 auto 8px;
+  --frame-band: 34px;          /* 框宽：只改这一个数，框体与纹样层同时跟着变 */
+  --bz: var(--common);         /* 框体主色；按稀有度覆盖，见下方 .r-* 规则 */
+  /* 四边等宽带。框体与 AI 纹样层共用这**同一套**几何，所以两者永远严丝合缝。
+     出图侧完全不管框宽——AI 画不准精确几何，47 张独立出图必然漂移 */
+  --band-mask:
+    linear-gradient(#000 0 0) top    / 100% var(--frame-band) no-repeat,
+    linear-gradient(#000 0 0) bottom / 100% var(--frame-band) no-repeat,
+    linear-gradient(#000 0 0) left   / var(--frame-band) 100% no-repeat,
+    linear-gradient(#000 0 0) right  / var(--frame-band) 100% no-repeat;
+}
+.card-sheet.r-uncommon .cs-artwrap { --bz: var(--uncommon); }
+.card-sheet.r-rare .cs-artwrap { --bz: var(--rare); }
+.card-sheet.r-epic .cs-artwrap { --bz: var(--epic); }
+.card-sheet.r-legendary .cs-artwrap { --bz: var(--legendary); }
+
 .cs-art {
   display: block; width: 100%;
   border-radius: 8px; border: 1px solid var(--border);
 }
+/* 框体：CSS 画的不透明厚带。这是卡游 UI 的「框」，AI 纹样只是叠在它上面的装饰 */
+.cs-bezel { position: absolute; inset: 0; border-radius: 8px; pointer-events: none; }
+.cs-bezel::before {                    /* 带本体，被 mask 裁成四边等宽 */
+  content: ''; position: absolute; inset: 0; border-radius: 8px;
+  -webkit-mask: var(--band-mask); mask: var(--band-mask);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,0) 20%),   /* 上沿受光 */
+    linear-gradient(0deg, rgba(0,0,0,.6), rgba(0,0,0,0) 20%),                  /* 下沿背光 */
+    linear-gradient(168deg,                                                     /* 主体：够暗才有厚度感 */
+      color-mix(in srgb, var(--bz) 30%, #333941),
+      color-mix(in srgb, var(--bz) 10%, #0d1013));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);   /* 外沿高光圈 */
+}
+.cs-bezel::after {                     /* 内嵌槽：亮线 + 画面内缩阴影，做出「画嵌进去」的深度 */
+  content: ''; position: absolute; inset: var(--frame-band); border-radius: 3px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.2),
+    0 0 0 3px rgba(0,0,0,.55),
+    inset 0 0 16px rgba(0,0,0,.55);
+}
+
 .cs-frame {
   position: absolute; inset: 0; width: 100%; height: 100%;
   pointer-events: none; mix-blend-mode: screen;
   border-radius: 8px;          /* 对齐 .cs-art 的圆角，顺带把框带外角裁圆 */
-  object-fit: cover;           /* 出图比例未必精确 3:4，保比例裁切；默认 fill 会拉伸变形 */
-  /* 框宽由这里单点决定，不写进 prompt——AI 画不准精确几何，47 张独立出图必然漂移。
-     只留四条边带，中心开口与四边宽度全站一致；prompt 侧要求纹样填满外围 1/3 来保证够宽。
-     mask 不被支持时整条声明失效、退回整图，靠画面中心留黑（screen 下等于透明）兜底 */
-  --frame-band: 26px;
-  -webkit-mask:
-    linear-gradient(#000 0 0) top    / 100% var(--frame-band) no-repeat,
-    linear-gradient(#000 0 0) bottom / 100% var(--frame-band) no-repeat,
-    linear-gradient(#000 0 0) left   / var(--frame-band) 100% no-repeat,
-    linear-gradient(#000 0 0) right  / var(--frame-band) 100% no-repeat;
-  mask:
-    linear-gradient(#000 0 0) top    / 100% var(--frame-band) no-repeat,
-    linear-gradient(#000 0 0) bottom / 100% var(--frame-band) no-repeat,
-    linear-gradient(#000 0 0) left   / var(--frame-band) 100% no-repeat,
-    linear-gradient(#000 0 0) right  / var(--frame-band) 100% no-repeat;
+  object-fit: cover;           /* 出图比例未必精确，保比例裁切；默认 fill 会拉伸变形 */
+  opacity: .55;                /* 纹样当**浮雕**叠在金属上，不是发光贴纸；调高就往「发光金线」走 */
+  /* 纹样层与框体共用同一套 mask，只显示四条边带。出图只要「纹样铺满、中心纯黑」即可：
+     中心纯黑在 screen 混合下等于透明，mask 不被支持时也兜得住 */
+  -webkit-mask: var(--band-mask); mask: var(--band-mask);
 }
 .cs-prompt {
   font-family: Consolas, monospace; font-size: 12.5px; line-height: 1.7;
