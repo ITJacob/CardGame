@@ -12,8 +12,6 @@ function fillTip(tip, el) {
   else if (cat === 'axis') { const [pid, aid] = key.split('/'); t = lookupAxis(pid, aid); }
   else if (cat === 'pathway') t = lookupPathway(key);
   else t = lookup(cat, key);
-  // 构筑轴的符号要单独包一层才能提亮（深色 emoji 在浮层的近黑底上同样是块暗斑，
-  // 判定与卡面水印同源，见 term.js 的 axSymHtml）；整段套滤镜会把中文名翻成反色。
   // 判据是 cat 而不是「t 上有没有 symbol」：后者的成立与否取决于词典里恰好没人写
   // symbol 这个键，哪天有人写了，浮层就会只剩一个符号、中文名整条消失
   const zhHtml = cat === 'axis' ? `${axSymHtml(t.symbol)}${escapeHtml(t.name)}` : escapeHtml(t.zh);

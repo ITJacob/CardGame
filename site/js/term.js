@@ -1,6 +1,5 @@
 // 术语解析：枚举 token → 中文名 + 解释（唯一入口）
 import { DB } from './data.js';
-import { axisLiftClass } from './axis-ink.js';
 
 export function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -59,18 +58,12 @@ export function lookupPathway(id) {
 
 export function lookupAxis(pathwayId, axisId) {
   const ax = DB.axesByPathway.get(pathwayId)?.[axisId];
-  // symbol / name 分开给：符号要单独包一层才好套提亮滤镜，见 axSymHtml
   if (ax) return { zh: `${ax.symbol || ''}${ax.name}`.trim(), symbol: ax.symbol || '', name: ax.name, brief: ax.note || '', key: axisId, cat: 'axis', catLabel: '构筑轴', missing: false };
   return { zh: axisId, symbol: '', name: axisId, brief: '', key: axisId, cat: 'axis', catLabel: '构筑轴', missing: true };
 }
 
-// 轴符号的 span。深色的那几个（🌑 暗夜 / 🕳️ 污秽 / 🐾 兽群…）不只在水印里看不见，
-// 在近黑的 badge（--panel2）和悬停浮层里同样是块暗斑，所以三处共用这一份判定
-// （js/axis-ink.js，与卡面水印同一个门槛、同一条现算路径）。
-// **必须把符号单独包起来**：滤镜套在整段文字上，旁边的中文名会跟着一起翻成反色
 export function axSymHtml(symbol) {
-  if (!symbol) return '';
-  return `<span class="ax-sym ${axisLiftClass(symbol)}">${escapeHtml(symbol)}</span>`;
+  return escapeHtml(symbol || '');
 }
 
 // 渲染为带 tooltip 的 span；showKey=true 时附英文小字

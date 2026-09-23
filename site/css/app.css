@@ -125,15 +125,13 @@ a:hover { color: var(--accent2); }
 .card-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 10px; }
 .card-item { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; cursor: pointer; }
 /* 卡面视觉编码（.card-face）：途径晕染 + 轴符号水印 + 稀有度五档。
-   列表卡片（.card-item）与详情页头部共用。纯 CSS 装饰，无动画，滤镜只在
-   单个静态伪元素上生效（重绘成本≈0）；color-mix 不支持时整条 background
-   声明失效，退回纯色底——渐进增强 */
+   列表卡片（.card-item）用。纯 CSS 装饰，无动画无滤镜（移动端重绘成本≈0）；
+   color-mix 不支持时整条 background 声明失效，退回纯色底——渐进增强 */
 .card-face {
   position: relative; overflow: hidden;
   /* 自成层叠上下文：让下面的水印能用 z-index:-1 落在「卡面底色之上、卡面文字之下」。
-     不给这条，负 z-index 的伪元素会一路穿到根层叠上下文去，直接沉到卡面底色背后（看不见）。
-     水印透明度抬到 0.16 之后尤其需要——压着徽章文字画，就不再是「背景的水印」而是「糊在
-     内容上的雾」 */
+     不给这条，负 z-index 的伪元素会一路穿到根层叠上下文去，直接沉到卡面底色背后（看不见）
+     ——早先「深色轴符号看不见」的真凶就是它，不是符号本身暗 */
   isolation: isolate;
   background: radial-gradient(120% 100% at 88% 0%, color-mix(in srgb, var(--pc, transparent) 8%, transparent) 0%, transparent 60%), var(--panel);
 }
@@ -141,28 +139,6 @@ a:hover { color: var(--accent2); }
   content: attr(data-ax);
   position: absolute; right: 6px; bottom: -12px; z-index: -1;
   font-size: 44px; line-height: 1; opacity: .16; pointer-events: none;   /* 原 .08，抬高的理由见 .card-sheet::after */
-}
-/* 只给「本体近黑、铺在近黑底上看不见」的符号提亮（由 js/axis-ink.js 现算后打上这个类，
-   实测全库 88 个轴符号里 12 个命中：🕳️ 污秽 0.04 / 🐾 兽群 0.05 / 🎩 戏法 0.07 / 🌑 暗夜 0.12…）。
-   用 invert + hue-rotate 而不是 brightness(0) invert(1)：后者先把所有像素压成黑再反相，
-   等于按 alpha 取形状，🕸️ 的网眼、⛓️ 的链环、🎩 的帽带会塌成实心块、颜色全丢；
-   前者只做「明暗翻转」，字形内部的相对明暗与大致色相都还在（恶魔提亮后仍是红的）。
-   两件事必须一起做——只 invert 不 hue-rotate 会把暗红翻成亮青，色相整个反过来。
-   同一个类也用在 badge 与悬停浮层的轴符号上（term.js 的 axSymHtml）：那里只是把近黑
-   卡面换成了近黑 chip（--panel2），暗符号一样是块看不见的暗斑。滤镜只罩 ax-sym 这一层，
-   套在整段 .term 上会把旁边的中文轴名一起翻成反色 */
-.ax-sym.ax-lift,
-.card-face.ax-lift::after, .card-sheet.ax-lift::after {
-  filter: invert(1) hue-rotate(180deg);
-}
-/* 染色档（近中性灰符号，🌑🌚🕸️⛓️…）：invert 之后是零色度浅灰，hue-rotate 无可旋转，
-   铺出来就是一团白雾（「暗夜月亮白蒙蒙」的成因）。sepia 先给灰一个暖色基底，
-   saturate 放大色度，hue-rotate 转到紫域，brightness 压回与 🔮 提亮后同档的明度——
-   参数在 64×64 像素级模拟里对齐到 🔮 提亮均色 (176,156,215)：本链输出 (170,155,224)。
-   灰色饱和不出来，只能染；染的统一是紫色系，正好与不眠者/暗夜气质相合 */
-.ax-sym.ax-tint,
-.card-face.ax-tint::after, .card-sheet.ax-tint::after {
-  filter: invert(1) sepia(1) saturate(2.5) hue-rotate(195deg) brightness(0.88);
 }
 /* 稀有度五档递进：common 朴素 → 金框斜纹 */
 .card-face.r-uncommon { border-left: 3px solid var(--uncommon); }
@@ -248,7 +224,7 @@ body.page-card #view { max-width: none; padding: 0; }
   content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; pointer-events: none;
   background: linear-gradient(90deg, var(--rc), transparent 75%);
 }
-/* 轴符号水印：emoji 无字重概念，放大 + 低透明即可。深色符号的提亮见 .ax-lift。
+/* 轴符号水印：emoji 无字重概念，放大 + 低透明即可。
    透明度 0.18 是量出来的：0.09 时水印与卡面底色的 WCAG 对比度只有 1.14~1.21（1.5 都不到，
    等于没画），提到 0.18 才有 1.5~1.9，颜色的差别也才回得来——低透明度下混合结果由底色主导，
    压得越狠越是一层灰 */
