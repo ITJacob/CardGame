@@ -129,19 +129,33 @@ function miscHtml(card) {
   return out.join('');
 }
 
-// 出图 prompt = 途径 artStyle + 卡级 art 三件套，展示时现拼——换风格只改途径顶层一处，不动卡
+// 画面 prompt = 全局画幅（manifest.artFormat）+ 途径 artStyle + 卡级 art 三件套，展示时现拼——
+// 换风格只改途径顶层一处，不动卡
 function artPrompt(c) {
   const a = c.art;
   if (!a) return '';
-  return [c._artStyle, a.subject, ...(a.elements || []), a.mood].filter(Boolean).join(', ');
+  return [DB.artFormat, c._artStyle, a.subject, ...(a.elements || []), a.mood].filter(Boolean).join(', ');
+}
+
+// 边框是独立 AI 图，与画面分两张出、站点叠合：common/uncommon/rare 走 manifest 全局三档，
+// epic/legendary 走途径顶层（结合途径元素特殊化）
+function frameFor(c) {
+  if (c.rarity === 'epic' && c._frameEpic) return { file: `frame-${c._pathway}-epic`, prompt: c._frameEpic };
+  if (c.rarity === 'legendary' && c._frameLegendary) return { file: `frame-${c._pathway}-legendary`, prompt: c._frameLegendary };
+  const p = DB.artFrame?.[c.rarity];
+  return p ? { file: `frame-${c.rarity}`, prompt: p } : null;
 }
 
 function artHtml(c) {
   const prompt = artPrompt(c);
   if (!prompt) return '';
+  const f = frameFor(c);
   return `<section class="cs-sec">
-    <h2>AI 出图 <button type="button" class="cs-copy" data-prompt="${escapeHtml(prompt)}">复制 prompt</button></h2>
-    <img class="cs-art" src="assets/cards/${escapeHtml(c.id)}.webp" alt="${escapeHtml(c.name)}" loading="lazy" onerror="this.remove()">
+    <h2>AI 出图 <button type="button" class="cs-copy" data-prompt="${escapeHtml(prompt)}">复制画面 prompt</button>${f ? ` <button type="button" class="cs-copy" data-prompt="${escapeHtml(f.prompt)}">复制边框 prompt</button>` : ''}</h2>
+    <div class="cs-artwrap">
+      <img class="cs-art" src="assets/cards/${escapeHtml(c.id)}.webp" alt="${escapeHtml(c.name)}" loading="lazy" onerror="this.parentNode.remove()">
+      ${f ? `<img class="cs-frame" src="assets/frames/${f.file}.webp" alt="" onerror="this.remove()">` : ''}
+    </div>
     <div class="cs-prompt">${escapeHtml(prompt)}</div>
   </section>`;
 }
@@ -214,9 +228,9 @@ export function renderCardDetail(view, id) {
   `;
 
   // 复制 prompt：站点首个剪贴板交互。clipboard API 要安全上下文（localhost/https 均满足），
-  // 失败时退回选中整段文本让用户手动 Ctrl+C
-  const copyBtn = view.querySelector('.cs-copy');
-  if (copyBtn) {
+  // 失败时退回选中整段文本让用户手动 Ctrl+C。画面/边框两个按钮共用同一逻辑
+  view.querySelectorAll('.cs-copy').forEach((copyBtn) => {
+    const label = copyBtn.textContent;
     copyBtn.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(copyBtn.dataset.prompt);
@@ -226,7 +240,7 @@ export function renderCardDetail(view, id) {
         if (el) window.getSelection().selectAllChildren(el);
         copyBtn.textContent = '已选中，Ctrl+C';
       }
-      setTimeout(() => { copyBtn.textContent = '复制 prompt'; }, 1500);
+      setTimeout(() => { copyBtn.textContent = label; }, 1500);
     });
-  }
+  });
 }

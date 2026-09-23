@@ -19,8 +19,9 @@
 const CACHE = 'cardgame-data-v3';
 // 改数据缓存格式/策略时把版本号 +1，activate 会清掉上一代
 const DATA_RE = /\/docs\/(json\/.+\.json|meta\/glossary\.json)$/;
-// AI 出图成品：产物属性同卡面 JSON（批量换代、同名覆盖），走 SWR；缺席的 404 不进缓存
-const ART_RE = /\/site\/assets\/cards\/.+\.webp$/;
+// AI 出图成品（画面 cards/ 与边框 frames/）：产物属性同卡面 JSON（批量换代、同名覆盖），
+// 走 SWR；缺席的 404 不进缓存
+const ART_RE = /\/site\/assets\/(cards|frames)\/.+\.webp$/;
 // 上面的 DATA_RE 包含索引与设计文档，先行摘出来（下面那条判定在前，先命中的赢）
 const NETWORK_FIRST_RE = /\/docs\/(json\/manifest\.json|ddd\/.+\.md)$/;
 

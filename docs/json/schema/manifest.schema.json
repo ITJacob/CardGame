@@ -9,6 +9,18 @@
   "properties": {
     "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "本索引文件自身的 schema 版本。" },
     "sourceVersion": { "type": "string", "description": "源技能池版本，如 v0.3。" },
+    "artFormat": { "type": "string", "description": "AI 出图全局画幅约束（英文）：尺寸/宽高比/无边框无文字。拼画面 prompt 时置于最前；边框是独立图片（artFrame / 途径 artFrameEpic·artFrameLegendary），不在画面里。" },
+    "artFrame": {
+      "type": "object",
+      "description": "全局统一的边框图 prompt（英文）：common/uncommon/rare 三档共用模板；epic/legendary 走各途径顶层 artFrameEpic/artFrameLegendary。边框图独立生成，站点叠合展示。",
+      "required": ["common", "uncommon", "rare"],
+      "additionalProperties": false,
+      "properties": {
+        "common": { "type": "string" },
+        "uncommon": { "type": "string" },
+        "rare": { "type": "string" }
+      }
+    },
     "rarityMap": {
       "type": "object",
       "description": "稀有度 → 序列位阶区间。9-8 common / 7-6 uncommon / 5-4 rare / 3-2 epic / 1-0 legendary。",
