@@ -2,7 +2,7 @@
 
 > 数据来源：`docs/json/savant.skills.json`（共 **36** 张技能卡）。
 > 由 `docs/tools/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。
-> 生成日期：2026-09-22
+> 生成日期：2026-09-23
 
 ## 一、职业总览：四条构筑轴一览
 
@@ -68,17 +68,17 @@
 
 **规模**：14 张技能（主动 10 / 被动 4）；稀有度分布：普通×6、精良×3、稀有×3、史诗×2。
 
-**效果原语构成**（type，全量递归，共 32 处）：
+**效果原语构成**（type，全量递归，共 33 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 6 | 18.8% |
-| `damage` | 6 | 18.8% |
-| `modify_stat` | 6 | 18.8% |
-| `modify_resource` | 7 | 21.9% |
-| `dispel` | 1 | 3.1% |
-| `spawn` | 5 | 15.6% |
-| `heal` | 1 | 3.1% |
+| `mount_status` | 7 | 21.2% |
+| `damage` | 6 | 18.2% |
+| `modify_stat` | 6 | 18.2% |
+| `modify_resource` | 7 | 21.2% |
+| `dispel` | 1 | 3.0% |
+| `spawn` | 5 | 15.2% |
+| `heal` | 1 | 3.0% |
 
 **算子构成**（op，共 7 处）：
 
@@ -105,7 +105,7 @@
 | `energy` | 2 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `modify_resource`(7)、`damage`(6)、`mount_status`(6)；属性杠杆集中在 `hp_max`、`attack`、`armor`，资源杠杆集中在 `armor`、`gauge.current`、`energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(7)、`modify_resource`(7)、`damage`(6)；属性杠杆集中在 `hp_max`、`attack`、`armor`，资源杠杆集中在 `armor`、`gauge.current`、`energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **炼成**：在己方队尾炼成一具临时人偶（50% 生命），6 tick 后自行崩解。
 
