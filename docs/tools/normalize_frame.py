@@ -328,7 +328,8 @@ def autocrop_to_content(pixels: bytearray, width: int, height: int, channels: in
     return out, new_w, new_h
 
 
-def process(path: Path, threshold: int, check_only: bool, autocrop: int = 0) -> bool:
+def process(path: Path, threshold: int, check_only: bool, autocrop: int = 0,
+            masks: list[tuple[int, int, int, int]] | None = None) -> bool:
     try:
         width, height, channels, pixels, ctype = read_png(path)
     except ValueError as e:
@@ -339,6 +340,22 @@ def process(path: Path, threshold: int, check_only: bool, autocrop: int = 0) -> 
         pixels, width, height = autocrop_to_content(
             pixels, width, height, channels, threshold, pad=autocrop)
         ctype = 2 if channels == 3 else 6  # autocrop 不改通道数
+
+    if masks and not check_only:
+        stride = width * channels
+        for mx, my, mw, mh in masks:
+            mx = max(0, mx)
+            my = max(0, my)
+            mw = min(mw, width - mx)
+            mh = min(mh, height - my)
+            for y in range(my, my + mh):
+                base = y * stride + mx * channels
+                for x in range(mw):
+                    i = base + x * channels
+                    pixels[i] = pixels[i + 1] = pixels[i + 2] = 0
+                    if channels == 4:
+                        pixels[i + 3] = 255
+        print(f"    已涂黑 {len(masks)} 处 mask 区域")
 
     stats = _stats(pixels, width, height, channels, threshold)
     band = stats["band"]
@@ -408,7 +425,16 @@ def main() -> int:
     ap.add_argument("--check", action="store_true", help="只体检，不改写文件")
     ap.add_argument("--autocrop", type=int, default=0, metavar="PAD",
                     help="裁到内容外扩 PAD 像素并补齐 3:4（顺带裁掉外圈水印），默认不裁")
+    ap.add_argument("--mask", action="append", default=[], metavar="X,Y,W,H",
+                    help="把该矩形涂黑（可多次；坐标按 autocrop 之后的图像），用于清除框内侧水印")
     args = ap.parse_args()
+
+    masks = []
+    for spec in args.mask:
+        parts = [int(v) for v in spec.split(",")]
+        if len(parts) != 4:
+            ap.error(f"--mask 需要 X,Y,W,H 四个整数: {spec}")
+        masks.append(tuple(parts))
 
     ok = True
     for f in args.files:
@@ -417,7 +443,7 @@ def main() -> int:
             print(f"  [缺失] {f}")
             ok = False
             continue
-        ok = process(p, args.threshold, args.check, args.autocrop) and ok
+        ok = process(p, args.threshold, args.check, args.autocrop, masks) and ok
     print("体检完成（未改写）" if args.check else "压黑完成")
     return 0 if ok else 1
 
