@@ -15,7 +15,7 @@
 ## frame-common.png（冷钢银单细线，最简）
 
 ```
-an extremely minimal ornamental border frame for a vertical trading card, solid pure black background, one single thin cool steel-silver line with a pale bluish sheen running just inside the card edge with minimal margin, small simple geometric corner accents, all ornament strictly confined to a narrow band along the edges, no ornament spreading inward, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, understated and quiet, no characters, no scenery, no text, no watermark, no signature, no logo
+an extremely minimal ornamental border frame for a vertical trading card, solid pure black background, one single thin cool steel-silver line with a pale bluish sheen running just inside the card edge with minimal margin, no corner ornaments, only minimal small geometric corner ticks at the four corners, all ornament strictly confined to a narrow band along the edges, no ornament spreading inward, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, understated and quiet, no characters, no scenery, no text, no watermark, no signature, no logo
 ```
 
 ## frame-uncommon.png（青铜绿锈双线 + 连续角托）
@@ -27,5 +27,5 @@ an ornamental border frame for a vertical trading card, solid pure black backgro
 ## frame-rare.png（暖金双线 + 小符文）
 
 ```
-an ornamental border frame for a vertical trading card, solid pure black background, two thin warm gold lines with a clearly golden bright antique-gold tone running just inside the card edge with minimal margin, small neat rune-like corner accents only, no emblems, no heraldic shields, no central ornament, all ornament strictly confined to a narrow band along the edges, no ornament spreading inward, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, restrained, no characters, no scenery, no text, no watermark, no signature, no logo
+an ornamental border frame for a vertical trading card, solid pure black background, two thin warm gold lines with a clearly golden bright antique-gold tone (absolutely not bronze, not green patina) running just inside the card edge with minimal margin, small neat rune-like corner accents only, no emblems, no heraldic shields, no central ornament, all ornament strictly confined to a narrow band along the edges, no ornament spreading inward, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, restrained, no characters, no scenery, no text, no watermark, no signature, no logo
 ```
