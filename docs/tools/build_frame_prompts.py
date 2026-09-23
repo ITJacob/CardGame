@@ -20,13 +20,12 @@ HEADER = """# 边框图 prompt 清单
 
 产物，由 `python docs/tools/build_frame_prompts.py` 生成，**勿手改**；改了 JSON 里的边框 prompt 后重跑。
 
-共 {n} 张：全局三档 + 22 途径 × epic/legendary。每条 = 共用约束 + 主题层，两者逗号拼接。
-出图要求：**正方形无缝纹样**（tileable——不是画一个框；prompt 里已显式否定
-picture frame / bezel / border，模型一见「框」就会画成装裱画框）、卡游 UI 素材画法
-（干净图形、锐利边缘，非照片质感、非 3D 渲染）、纯黑底。
-**框体与框宽完全不归出图管**——站点用 CSS 画框（`.cs-bezel`）并把纹样 mask 成四边等宽带，
-出图只要做到「纹样铺满、无缝、中心纯黑」即可。成品按标题文件名存本目录。
-共用约束（47 条的开头完全相同，由 `manifest.artFrameFormat` 单点维护）：
+共 {n} 张：全局三档 + 22 途径 × epic/legendary。每条 = 共用约束（黑底金线框模板）+ 主题层，逗号拼接。
+**v3 用法（直接出框，非纹样）**：每条 prompt 让 AI 出「一张完整的黑底金线卡牌边框图」，在豆包 / 即梦 / Midjourney 等平台直接批量出图即可。
+- 推荐竖图比例（如 1024x1536）；出图须为**纯黑底、无任何水印 / 签名 / 平台 logo**，中心保持纯黑。
+- 金线应**贴近卡边**（margin 小）；若平台默认留白多，出图后裁掉外圈留白再叠。
+- 出图后以 `mix-blend-mode: screen` 叠到全出血卡面复用——黑底被 screen 吃透透出卡面、金线提亮叠加，一张框可复用于同档所有卡。
+共用约束（{n} 条的开头完全相同，由 `manifest.artFrameFormat` 单点维护，v3 框模板）：
 
 ```
 {fmt}
@@ -42,12 +41,12 @@ def main() -> None:
 
     entries: list[tuple[str, str]] = []
     for rarity in ("common", "uncommon", "rare"):
-        entries.append((f"frame-{rarity}.webp", manifest["artFrame"][rarity]))
+        entries.append((f"frame-{rarity}.png", manifest["artFrame"][rarity]))
 
     for pw in manifest["pathways"]:
         skills = json.loads((paths / pw["file"]).read_text(encoding="utf-8"))
-        entries.append((f"frame-{pw['id']}-epic.webp", skills["artFrameEpic"]))
-        entries.append((f"frame-{pw['id']}-legendary.webp", skills["artFrameLegendary"]))
+        entries.append((f"frame-{pw['id']}-epic.png", skills["artFrameEpic"]))
+        entries.append((f"frame-{pw['id']}-legendary.png", skills["artFrameLegendary"]))
 
     parts = [HEADER.format(n=len(entries), fmt=fmt)]
     for fname, material in entries:
