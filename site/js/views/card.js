@@ -150,20 +150,65 @@ function frameFor(c) {
   return p ? { file: `frame-${c.rarity}`, prompt: p, selfContained: true } : null;
 }
 
+// 卡面候选路径链（按顺序试，前一个 404/坏图就往下退）：
+//   ① 索引里的路径 —— assets/cards/<cardId>/<任意文件名>，由 gen_card_assets.py 扫目录得到；
+//      文件夹里多张图时全部进链，第一张是主图，其余走缩略图条手动切
+//   ② 旧扁平约定 —— assets/cards/<cardId>.png|.webp，没跑过生成脚本时靠它兜底
+// 文件名不可控（手机上传的 IMG_0042.jpg / 微信图片_xxx.png）才需要这套链；
+// 静态站列举不了目录，所以「文件夹里有什么」只能靠索引，猜不出来
+export function artCandidates(c) {
+  const id = encodeURIComponent(c.id);
+  const indexed = (DB.cardArt.get(c.id) || [])
+    .map((f) => `assets/cards/${id}/${encodeURIComponent(f.file)}`);
+  return [...indexed, `assets/cards/${id}.png`, `assets/cards/${id}.webp`];
+}
+
 function artHtml(c) {
   const prompt = artPrompt(c);
   if (!prompt) return '';
   const f = frameFor(c);
   const fprompt = f ? (f.selfContained ? f.prompt : [DB.artFrameFormat, f.prompt].filter(Boolean).join(', ')) : '';
+  const files = DB.cardArt.get(c.id) || [];
+  const id = encodeURIComponent(c.id);
+  // 多图缩略图条：同一张卡存了多版（手机连传几张）时用来挑主图，索引里第 2 张起
+  const thumbs = files.length > 1
+    ? `<div class="cs-thumbs">${files.map((x, i) => `<button type="button" class="cs-thumb${i === 0 ? ' on' : ''}" data-art="${escapeHtml(`assets/cards/${id}/${encodeURIComponent(x.file)}`)}" title="${escapeHtml(x.file)}"><img src="${escapeHtml(`assets/cards/${id}/${encodeURIComponent(x.file)}`)}" alt="第 ${i + 1} 张" loading="lazy"></button>`).join('')}</div>`
+    : '';
   return `<section class="cs-sec">
     <h2>AI 出图 <button type="button" class="cs-copy" data-prompt="${escapeHtml(prompt)}">复制画面 prompt</button>${f ? ` <button type="button" class="cs-copy" data-prompt="${escapeHtml(fprompt)}">复制边框 prompt</button>` : ''}</h2>
     <div class="cs-artwrap">
-      <img class="cs-art" src="assets/cards/${escapeHtml(c.id)}.png" alt="${escapeHtml(c.name)}" loading="lazy" onerror="this.style.display='none'">
+      <img class="cs-art" src="${escapeHtml(artCandidates(c)[0])}" alt="${escapeHtml(c.name)}" loading="lazy">
       <div class="cs-vignette"></div>
       ${f ? `<img class="cs-orn" src="assets/frames/${f.file}.png" alt="" loading="lazy" onerror="this.remove()">` : ''}
+      <div class="cs-artmiss" hidden>卡面缺失（<span class="mono">assets/cards/${escapeHtml(c.id)}/</span> 下没有可用图片，或格式是 HEIC 之类浏览器渲染不了的）</div>
     </div>
+    ${thumbs}
     <div class="cs-prompt">${escapeHtml(prompt)}</div>
   </section>`;
+}
+
+// 候选链与缩略图切换都是 DOM 行为，模板里只给个壳，渲染完在这里接线
+// （不用内联 onerror：ESM 模块作用域里的函数内联属性够不着）
+function wireCardArt(view, c) {
+  const img = view.querySelector('.cs-art');
+  if (!img) return;
+  const miss = view.querySelector('.cs-artmiss');
+  const list = artCandidates(c);
+  let i = 0;
+  img.addEventListener('error', () => {
+    i += 1;
+    if (i < list.length) { img.src = list[i]; return; }
+    img.style.display = 'none';        // 整条链都 404：不留破图占位
+    if (miss) miss.hidden = false;
+  });
+  view.querySelectorAll('.cs-thumb').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      img.style.display = '';
+      if (miss) miss.hidden = true;
+      img.src = btn.dataset.art;
+      view.querySelectorAll('.cs-thumb').forEach((b) => b.classList.toggle('on', b === btn));
+    });
+  });
 }
 
 export function renderCardDetail(view, id) {
@@ -232,6 +277,8 @@ export function renderCardDetail(view, id) {
     </div>
   </div>
   `;
+
+  wireCardArt(view, c);
 
   // 复制 prompt：站点首个剪贴板交互。clipboard API 要安全上下文（localhost/https 均满足），
   // 失败时退回选中整段文本让用户手动 Ctrl+C。画面/边框两个按钮共用同一逻辑

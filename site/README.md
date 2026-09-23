@@ -10,7 +10,7 @@
   - **轴符号统一原样渲染，不做提亮**：曾给「本体近黑」的符号单独分档提亮（canvas 现算亮度/色度 + invert 滤镜，`js/axis-ink.js`），后来确认「看不见」的真凶是**层叠**——`z-index:-1` 的水印伪元素会穿到根层叠上下文、沉到卡面底色背后（`.card-face`/`.card-sheet` 的 `isolation:isolate` 才是真修复），提亮治的是错病，还把 🌑 这类近中性灰符号翻成一团白雾（invert 后零色度浅灰，hue-rotate 无可保色相）。88 个符号回到同一套渲染：emoji 原样 + 低透明度水印
     - **水印的透明度也是量出来的**：0.08 时水印与卡面底色 `#1d2026` 的 WCAG 对比度只有 1.14~1.21（1.5 都不到，等于没画），低透明度下混合结果由底色主导、压得越狠越是一层灰，`saturate()` 之类的补救在 8% 上几乎没有杠杆——唯一有效的杠杆就是透明度，抬到 0.16 才回到 1.5 上下、颜色的差别才回得来。抬高之前必须先解决**层叠**：`position:relative` 且 `z-index:auto` 的元素**不**自成层叠上下文，`z-index:-1` 的伪元素会一路穿到根层叠上下文、沉到卡面底色背后（看不见），所以 `.card-face` / `.card-sheet` 各加了 `isolation:isolate`——水印这才落在「卡面底色之上、卡面文字之下」。这一步不补，0.16 的水印就不是背景水印而是糊在徽章与正文上的一层雾
   - **详情页 = 整页一张卡**（`body.page-card` + `.card-stage/.card-sheet`）：顶栏隐藏，页面本身作画布——`::before` 铺一层 `position:fixed` 的途径色氛围背景（不用 `background-attachment:fixed`，iOS 上失效），内容收进居中的大卡。稀有度在这张卡上决定框体规格：`--rc` 顶部色线 + 边框着色递进（uncommon 起有色边框，epic 加内描边，legendary 金框 + 斜纹底纹 + 外发光）；途径色做卡面顶部晕染，轴符号放大为右上角水印。小节用发丝分隔线 + 小字标题，不再嵌套面板
-  - **AI 出图小节**（有 `art` 的卡才显示）：画面与边框是**两张独立的图**。画面 prompt = 全局画幅（`manifest.artFormat`，3:4 竖版无边框无文字）+ 途径顶层 `artStyle` + 卡级 `art` 三件套（subject / elements / mood）；框体**由 CSS 画**，AI 只出叠在上面的一层**无缝纹样**。纹样 prompt = 全局画法约束（`manifest.artFrameFormat`，正方形无缝纹样 + 卡游 UI 素材画法 + 显式否定 picture frame / bezel / border + 纯黑底——模型一见「框」就画成装裱画框）+ 各档主题层——common/uncommon/rare 走 `manifest.artFrame` 全局三档（中性配色，不抢途径色），epic/legendary 走途径顶层 `artFrameEpic`/`artFrameLegendary`（结合途径意象特殊化，且禁写 apex/edge 这类构图定位词）。全部展示时现拼（`card.js` 的 `artPrompt`/`frameFor`），不落盘。**几何与成框全在 CSS**：`.cs-bezel` 画不透明厚带（金属渐变 + 外沿高光 + 内嵌槽，按稀有度着色），`.cs-orn` 用 `border-image` 把纹样**切分**到卡上——源图四角对到卡的四角（真角饰）、中段在四边重复，`--frame-band` 定框宽、`--orn-slice` 定切分比例。AI 画不准精确几何，47 张独立出图靠 prompt 约束必然漂移，只能由 CSS 兜。注意 `border-image-source` 必须内联（自定义属性里的相对 url 会按样式表基址解析而 404）。两个复制按钮分开复制。成品图：画面存 `site/assets/cards/<cardId>.webp`，边框存 `site/assets/frames/`（三档 `frame-<rarity>.webp`，两档 `frame-<途径>-<档>.webp`），详情页按约定路径现拼、`<img onerror>` 移除——存在即显示，无需索引文件；边框图黑底 + CSS `mix-blend-mode: screen` 叠在画面上（`object-fit: cover` 保比例，出图比例有偏差时裁切而非拉伸）。重出图同名覆盖
+  - **AI 出图小节**（有 `art` 的卡才显示）：画面与边框是**两张独立的图**。画面 prompt = 全局画幅（`manifest.artFormat`，3:4 竖版无边框无文字）+ 途径顶层 `artStyle` + 卡级 `art` 三件套（subject / elements / mood）；框体**由 CSS 画**，AI 只出叠在上面的一层**无缝纹样**。纹样 prompt = 全局画法约束（`manifest.artFrameFormat`，正方形无缝纹样 + 卡游 UI 素材画法 + 显式否定 picture frame / bezel / border + 纯黑底——模型一见「框」就画成装裱画框）+ 各档主题层——common/uncommon/rare 走 `manifest.artFrame` 全局三档（中性配色，不抢途径色），epic/legendary 走途径顶层 `artFrameEpic`/`artFrameLegendary`（结合途径意象特殊化，且禁写 apex/edge 这类构图定位词）。全部展示时现拼（`card.js` 的 `artPrompt`/`frameFor`），不落盘。**几何与成框全在 CSS**：`.cs-bezel` 画不透明厚带（金属渐变 + 外沿高光 + 内嵌槽，按稀有度着色），`.cs-orn` 用 `border-image` 把纹样**切分**到卡上——源图四角对到卡的四角（真角饰）、中段在四边重复，`--frame-band` 定框宽、`--orn-slice` 定切分比例。AI 画不准精确几何，47 张独立出图靠 prompt 约束必然漂移，只能由 CSS 兜。注意 `border-image-source` 必须内联（自定义属性里的相对 url 会按样式表基址解析而 404）。两个复制按钮分开复制。成品图：画面存 `site/assets/cards/<cardId>/<任意文件名>.<格式>`（**按卡建目录，文件名随意**，旧的扁平放法 `assets/cards/<cardId>.webp` 仍认），边框存 `site/assets/frames/`（三档 `frame-<rarity>.webp`，两档 `frame-<途径>-<档>.webp`）。静态站列不出目录、文件名又不可控，所以画面走**索引**：`python docs/tools/gen_card_assets.py` 扫目录生成 `assets/cards/index.json`，详情页照索引取路径（`card.js` 的 `artCandidates`/`wireCardArt`），索引缺席时退回按 id 现拼的旧约定，候选链全 404 才隐藏并提示；同目录多张图渲染缩略图条可切主图。边框图黑底 + CSS `mix-blend-mode: screen` 叠在画面上（`object-fit: cover` 保比例，出图比例有偏差时裁切而非拉伸）。重出图同名覆盖
 - **领域模型** `#/ddd`：把 `../docs/ddd/` 的全部设计文档渲染成一页，每篇一节，左侧目录按 README 的「文档导航」分组。正文里的英文枚举 token 自动挂上词典释义，点击跳到对应的词典栏目
 - **术语词典** `#/glossary`：英文枚举 key → 中文名 + 解释（原语、算子、条件谓词、触发点、目标锚点等），每类带一句「这一维是什么」的栏目导语，可搜索。类别数与词条数在页头现算，不在这里写死——词典在持续增补，写死必然过期
 - **统计分析** `#/stats`：**卡面口径**（只算 `*.skills.json` 的 effects）——**一个维度一组**，组内先该维度的全库 bar、再该维度的「途径 × X」热图，共 **11 张热图**（稀有度 / 序列 / 原语用量 / 原语构成 / 算子 / `modify_stat` 属性 / `modify_resource` 资源 / 伤害元素 / 攻击距离 / 选靶方式 / 触发点）；顺序是卡池结构（总览 / 稀有度 / 序列）→ 构件面（原语 / 算子）→ 数值面（属性 / 资源 / 元素）→ 目标面（距离 / 选靶 / 触发点）（口径对齐 `docs/tools/build_profession_analysis.py`）
@@ -49,12 +49,13 @@
 - **只缓存数据，不缓存 app shell**：数据和代码的失效节奏不同，shell 一旦也吃缓存，部署后
   就会出现「旧 JS 配新数据」这种最难查的组合。
 - **分两档，按「改了之后要不要立刻看见」**：
-  - **卡面 / 状态 JSON、词条、出图成品（`assets/cards/*.webp`）→ stale-while-revalidate**。它们是**产物**，只在批量生成时
+  - **卡面 / 状态 JSON、词条、出图成品（`assets/cards/<id>/*`、`assets/frames/*`，按扩展名匹配 png/jpg/webp/gif/avif/svg）→ stale-while-revalidate**。它们是**产物**，只在批量生成时
     整体换一次，先给缓存里的那份、后台静默换新，代价是数据更新后最多有一次加载看到上一版。
-  - **`manifest.json` 与 `docs/ddd/*.md` → 网络优先**（`NETWORK_FIRST_RE`）。这两个
+  - **`manifest.json`、`docs/ddd/*.md`、`assets/cards/index.json` → 网络优先**（`NETWORK_FIRST_RE`）。这三个
     是**正在被写的东西**：索引吃到旧的会让新加的途径整条不出现（连请求都不会发），文档吃到
-    旧的会让人以为改动没生效。两者都很小、也不在卡片列表的关键路径上（ddd 文档只在领域
-    模型页拉），值得用一次往返换「刷新即所见」。
+    旧的会让人以为改动没生效。三者都很小、也不在卡片列表的关键路径上（ddd 文档只在领域
+    模型页拉），值得用一次往返换「刷新即所见」。卡面索引（1 KB 级）同属此类——刚传完图
+    刷新却看不到，图上没水印，根本分不清是旧图还是图丢了。
 - **SW 的 scope 只决定它控制哪些页面，不限制它拦截哪些请求**。SW 装在 `site/` 下，照样
   拦得到 `../docs/` 的数据文件（这一点曾在 README 里写反过）。
 - **localhost 不注册 SW**（`main.js` 里判断）：本地改完 `docs/json` 刷新却还是上一版，
