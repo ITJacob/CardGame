@@ -16,9 +16,11 @@
 //
 // 注意 scope 只决定本 SW **控制哪些页面**，不限制它**拦截哪些请求**——SW 装在
 // site/ 下（scope 为 site/），照样拦得到 ../docs/ 的数据文件。
-const CACHE = 'cardgame-data-v2';
+const CACHE = 'cardgame-data-v3';
 // 改数据缓存格式/策略时把版本号 +1，activate 会清掉上一代
 const DATA_RE = /\/docs\/(json\/.+\.json|meta\/glossary\.json)$/;
+// AI 出图成品：产物属性同卡面 JSON（批量换代、同名覆盖），走 SWR；缺席的 404 不进缓存
+const ART_RE = /\/site\/assets\/cards\/.+\.webp$/;
 // 上面的 DATA_RE 包含索引与设计文档，先行摘出来（下面那条判定在前，先命中的赢）
 const NETWORK_FIRST_RE = /\/docs\/(json\/manifest\.json|ddd\/.+\.md)$/;
 
@@ -41,7 +43,7 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin) return;
   // 不在白名单里的请求不调 respondWith，走浏览器默认路径
   if (NETWORK_FIRST_RE.test(url.pathname)) { e.respondWith(networkFirst(e)); return; }
-  if (DATA_RE.test(url.pathname)) e.respondWith(staleWhileRevalidate(e));
+  if (DATA_RE.test(url.pathname) || ART_RE.test(url.pathname)) e.respondWith(staleWhileRevalidate(e));
 });
 
 // 索引与设计文档走网络优先。索引才 1 KB 且决定「有哪些途径」，吃到旧的会让新加的

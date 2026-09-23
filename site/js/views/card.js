@@ -141,6 +141,7 @@ function artHtml(c) {
   if (!prompt) return '';
   return `<section class="cs-sec">
     <h2>AI 出图 <button type="button" class="cs-copy" data-prompt="${escapeHtml(prompt)}">复制 prompt</button></h2>
+    <img class="cs-art" src="assets/cards/${escapeHtml(c.id)}.webp" alt="${escapeHtml(c.name)}" loading="lazy" onerror="this.remove()">
     <div class="cs-prompt">${escapeHtml(prompt)}</div>
   </section>`;
 }
