@@ -9,10 +9,11 @@
   "properties": {
     "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "本索引文件自身的 schema 版本。" },
     "sourceVersion": { "type": "string", "description": "源技能池版本，如 v0.3。" },
-    "artFormat": { "type": "string", "description": "AI 出图全局画幅约束（英文）：尺寸/宽高比/无边框无文字。拼画面 prompt 时置于最前；边框是独立图片（artFrame / 途径 artFrameEpic·artFrameLegendary），不在画面里。" },
+    "artFormat": { "type": "string", "description": "AI 出图全局画幅约束（英文）：尺寸/宽高比/无边框无文字。拼画面 prompt 时置于最前；边框是独立图片（artFrameFormat + artFrame / 途径 artFrameEpic·artFrameLegendary），不在画面里。" },
+    "artFrameFormat": { "type": "string", "description": "边框图全局共用约束（英文）：3:4 比例/手绘媒介/纯黑底/中心留空/四边等宽/无文字水印。拼边框 prompt 时置于最前，后接各档材质层（artFrame 或途径 artFrameEpic·artFrameLegendary）——与画面 prompt 的 artFormat + artStyle + art 三段拼装对称。换比例/换媒介只改这一处。" },
     "artFrame": {
       "type": "object",
-      "description": "全局统一的边框图 prompt（英文）：common/uncommon/rare 三档共用模板；epic/legendary 走各途径顶层 artFrameEpic/artFrameLegendary。边框图独立生成，站点叠合展示。",
+      "description": "全局统一的边框图材质层（英文）：common/uncommon/rare 三档共用模板，配色取中性色阶（灰/银/淡金），主题色交给途径特化的 epic/legendary；epic/legendary 走各途径顶层 artFrameEpic/artFrameLegendary。仅写材质与纹样，比例/媒介/黑底/留空/负向词由 artFrameFormat 统一承担。边框图独立生成，站点叠合展示。",
       "required": ["common", "uncommon", "rare"],
       "additionalProperties": false,
       "properties": {

@@ -17,7 +17,8 @@ export const DB = {
   declaredStatusFields: [],   // schema statusDef 声明的字段名（48）
   rarityOrder: [],            // 稀有度档位顺序：低 → 高（普通 → 传说），读自 manifest.rarityMap
   artFormat: '',              // 全局画幅约束（manifest.artFormat），画面 prompt 前缀
-  artFrame: null,             // 全局三档边框 prompt（manifest.artFrame：common/uncommon/rare）
+  artFrameFormat: '',         // 全局边框约束（manifest.artFrameFormat），边框 prompt 前缀
+  artFrame: null,             // 全局三档边框**材质层**（manifest.artFrame：common/uncommon/rare）
 };
 
 // 稀有度顺序读自 manifest.rarityMap（CLAUDE.md 里写的「稀有度↔序列唯一机器可读源」），
@@ -86,6 +87,7 @@ export async function loadAll(onProgress) {
   DB.pathways = manifest.pathways;
   DB.rarityOrder = readRarityOrder(manifest);
   DB.artFormat = manifest.artFormat || '';
+  DB.artFrameFormat = manifest.artFrameFormat || '';
   DB.artFrame = manifest.artFrame || null;
   // schema 缺失不阻断加载：两个统计页会退回「声明面=实际用过」的降级展示
   if (schema) readDeclared(schema);

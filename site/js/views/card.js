@@ -138,7 +138,8 @@ function artPrompt(c) {
 }
 
 // 边框是独立 AI 图，与画面分两张出、站点叠合：common/uncommon/rare 走 manifest 全局三档，
-// epic/legendary 走途径顶层（结合途径元素特殊化）
+// epic/legendary 走途径顶层（结合途径元素特殊化）。这里只取**材质层**，
+// 比例/手绘媒介/纯黑底/留空/负向词在 artFrameFormat，展示时现拼（与画面 prompt 三段拼装对称）
 function frameFor(c) {
   if (c.rarity === 'epic' && c._frameEpic) return { file: `frame-${c._pathway}-epic`, prompt: c._frameEpic };
   if (c.rarity === 'legendary' && c._frameLegendary) return { file: `frame-${c._pathway}-legendary`, prompt: c._frameLegendary };
@@ -150,8 +151,9 @@ function artHtml(c) {
   const prompt = artPrompt(c);
   if (!prompt) return '';
   const f = frameFor(c);
+  const fprompt = f ? [DB.artFrameFormat, f.prompt].filter(Boolean).join(', ') : '';
   return `<section class="cs-sec">
-    <h2>AI 出图 <button type="button" class="cs-copy" data-prompt="${escapeHtml(prompt)}">复制画面 prompt</button>${f ? ` <button type="button" class="cs-copy" data-prompt="${escapeHtml(f.prompt)}">复制边框 prompt</button>` : ''}</h2>
+    <h2>AI 出图 <button type="button" class="cs-copy" data-prompt="${escapeHtml(prompt)}">复制画面 prompt</button>${f ? ` <button type="button" class="cs-copy" data-prompt="${escapeHtml(fprompt)}">复制边框 prompt</button>` : ''}</h2>
     <div class="cs-artwrap">
       <img class="cs-art" src="assets/cards/${escapeHtml(c.id)}.webp" alt="${escapeHtml(c.name)}" loading="lazy" onerror="this.parentNode.remove()">
       ${f ? `<img class="cs-frame" src="assets/frames/${f.file}.webp" alt="" onerror="this.remove()">` : ''}

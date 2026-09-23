@@ -60,7 +60,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `sampleBuilds` | array | – | 示例 Build `[{ name, actives[], passives[], playstyle }]`（自技能稿 §二回收；卡名为设计示例，可能与现行卡名有出入） |
 | `designNote` | string | – | 途径级机制说明（隐秘值/咬合器等维度，自技能稿轴表后说明段回收） |
 | `artStyle` | string | – | 途径统一的 AI 出图风格模板（英文）：画风/材质/构图/调色；展示时与卡级 `art` 现拼成完整 prompt，不落盘 |
-| `artFrameEpic` / `artFrameLegendary` | string | – | 途径 epic / legendary 档**边框图**的独立出图 prompt（英文，结合途径元素）。边框与画面是两张图，站点叠合；common/uncommon/rare 三档与画幅约束（`artFormat`）在 `manifest.json` 全局登记 |
+| `artFrameEpic` / `artFrameLegendary` | string | – | 途径 epic / legendary 档**边框图**的材质层（英文，结合途径元素——**只写材质与纹样**）。边框与画面是两张图，站点叠合；共用格式约束（`artFrameFormat`）与 common/uncommon/rare 三档材质层（`artFrame`）在 `manifest.json` 全局登记 |
 | `cards` | array | ✓ | 技能卡列表 |
 
 ## 3. 卡片（card）
