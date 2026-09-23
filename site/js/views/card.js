@@ -150,18 +150,11 @@ function frameFor(c) {
   return p ? { file: `frame-${c.rarity}`, prompt: p, selfContained: true } : null;
 }
 
-// 卡面候选路径链（按顺序试，前一个 404/坏图就往下退）：
-//   ① 索引里的路径 —— assets/cards/<cardId>/<任意文件名>，由 gen_card_assets.py 扫目录得到；
-//      文件夹里多张图时全部进链，第一张是主图，其余走缩略图条手动切
-//   ② 扁平约定 —— assets/cards/<cardId>.png|.webp。**日常走的就是这条**：文件名由
-//      cardId 定死（详情页 id 点一下就复制，本地照着重命名即可），站点按 id 现拼，
-//      不用索引、不用跑脚本。索引只在文件名不可控（手机直传 IMG_0042.jpg 之类）时才需要，
-//      那时静态站列举不了目录，猜不出文件名，只能靠它。
+// 卡面路径：按 cardId 现拼，文件名由 id 定死（详情页 id 点一下就复制，本地照着重命名），
+// 站点不需要任何索引。png → webp 依次试，前一个 404/坏图就退到下一个——换格式不用改代码
 export function artCandidates(c) {
   const id = encodeURIComponent(c.id);
-  const indexed = (DB.cardArt.get(c.id) || [])
-    .map((f) => `assets/cards/${id}/${encodeURIComponent(f.file)}`);
-  return [...indexed, `assets/cards/${id}.png`, `assets/cards/${id}.webp`];
+  return [`assets/cards/${id}.png`, `assets/cards/${id}.webp`];
 }
 
 function artHtml(c) {
@@ -169,12 +162,6 @@ function artHtml(c) {
   if (!prompt) return '';
   const f = frameFor(c);
   const fprompt = f ? (f.selfContained ? f.prompt : [DB.artFrameFormat, f.prompt].filter(Boolean).join(', ')) : '';
-  const files = DB.cardArt.get(c.id) || [];
-  const id = encodeURIComponent(c.id);
-  // 多图缩略图条：同一张卡存了多版（手机连传几张）时用来挑主图，索引里第 2 张起
-  const thumbs = files.length > 1
-    ? `<div class="cs-thumbs">${files.map((x, i) => `<button type="button" class="cs-thumb${i === 0 ? ' on' : ''}" data-art="${escapeHtml(`assets/cards/${id}/${encodeURIComponent(x.file)}`)}" title="${escapeHtml(x.file)}"><img src="${escapeHtml(`assets/cards/${id}/${encodeURIComponent(x.file)}`)}" alt="第 ${i + 1} 张" loading="lazy"></button>`).join('')}</div>`
-    : '';
   return `<section class="cs-sec">
     <h2>AI 出图 <button type="button" class="cs-copy" data-prompt="${escapeHtml(prompt)}">复制画面 prompt</button>${f ? ` <button type="button" class="cs-copy" data-prompt="${escapeHtml(fprompt)}">复制边框 prompt</button>` : ''}</h2>
     <div class="cs-artwrap">
@@ -183,7 +170,6 @@ function artHtml(c) {
       ${f ? `<img class="cs-orn" src="assets/frames/${f.file}.png" alt="" loading="lazy" onerror="this.remove()">` : ''}
       <div class="cs-artmiss" hidden>卡面缺失：把图命名为 <span class="mono">${escapeHtml(c.id)}.png</span> 放进 <span class="mono">assets/cards/</span>（上面 id 点一下就复制）。格式必须是 png/jpg/webp，HEIC 浏览器渲染不了</div>
     </div>
-    ${thumbs}
     <div class="cs-prompt">${escapeHtml(prompt)}</div>
   </section>`;
 }
@@ -201,14 +187,6 @@ function wireCardArt(view, c) {
     if (i < list.length) { img.src = list[i]; return; }
     img.style.display = 'none';        // 整条链都 404：不留破图占位
     if (miss) miss.hidden = false;
-  });
-  view.querySelectorAll('.cs-thumb').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      img.style.display = '';
-      if (miss) miss.hidden = true;
-      img.src = btn.dataset.art;
-      view.querySelectorAll('.cs-thumb').forEach((b) => b.classList.toggle('on', b === btn));
-    });
   });
 }
 

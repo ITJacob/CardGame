@@ -20,13 +20,11 @@ const CACHE = 'cardgame-data-v4';
 // 改数据缓存格式/策略时把版本号 +1，activate 会清掉上一代
 const DATA_RE = /\/docs\/(json\/.+\.json|meta\/glossary\.json)$/;
 // AI 出图成品（画面 cards/ 与边框 frames/）：产物属性同卡面 JSON（批量换代、同名覆盖），
-// 走 SWR；缺席的 404 不进缓存。画面现在按 assets/cards/<cardId>/<任意文件名> 放，
-// 文件名不可控（手机上传），扩展名只能按浏览器渲染得了的那几种放开匹配
+// 走 SWR；缺席的 404 不进缓存。扩展名按浏览器渲染得了的那几种放开匹配（原来只认 webp，
+// 与实际 png 用法早就漂移了）
 const ART_RE = /\/site\/assets\/(cards|frames)\/.+\.(webp|png|jpe?g|gif|avif|svg)$/;
-// 上面的 DATA_RE 包含索引与设计文档，先行摘出来（下面那条判定在前，先命中的赢）。
-// 卡面索引单独走网络优先：它是「刚传完图就想看见」的东西，吃到旧的那份会整张卡不显示——
-// 比某张卡晚一版更难查（图上没水印，看不出是旧图还是新图）
-const NETWORK_FIRST_RE = /\/docs\/(json\/manifest\.json|ddd\/.+\.md)$|\/site\/assets\/cards\/index\.json$/;
+// 上面的 DATA_RE 包含索引与设计文档，先行摘出来（下面那条判定在前，先命中的赢）
+const NETWORK_FIRST_RE = /\/docs\/(json\/manifest\.json|ddd\/.+\.md)$/;
 
 self.addEventListener('install', () => self.skipWaiting());
 

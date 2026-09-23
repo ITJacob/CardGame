@@ -2,10 +2,6 @@
 const JSON_BASE = '../docs/json/';
 const GLOSSARY_URL = '../docs/meta/glossary.json';
 const SCHEMA_URL = JSON_BASE + 'schema/skills.schema.json';
-// 卡面成品索引：静态站列举不了目录，文件名又不可控（手机上传的 IMG_0042.HEIC 之类），
-// 只能由 docs/tools/gen_card_assets.py 扫目录落盘成索引，前端照索引取路径。
-// 缺索引不算致命——退化成「按 cardId 现拼」的旧约定（见 views/card.js 的 artCandidates）
-const CARD_ART_URL = 'assets/cards/index.json';
 
 export const DB = {
   manifest: null,
@@ -23,7 +19,6 @@ export const DB = {
   artFormat: '',              // 全局画幅约束（manifest.artFormat），画面 prompt 前缀
   artFrameFormat: '',         // 全局边框约束（manifest.artFrameFormat），边框 prompt 前缀
   artFrame: null,             // 全局三档边框**材质层**（manifest.artFrame：common/uncommon/rare）
-  cardArt: new Map(),         // cardId -> [{file, bytes, w, h}]，来自 assets/cards/index.json
 };
 
 // 稀有度顺序读自 manifest.rarityMap（CLAUDE.md 里写的「稀有度↔序列唯一机器可读源」），
@@ -81,20 +76,13 @@ function mergeStatuses(statusesDoc, ownerPathway) {
 // 首屏：索引 / 词典 / schema / common 状态定义（11 KB，首屏悬停即完整定义）/ 22 份卡面。
 // 途径状态定义（22 份）不在其中，见 loadDeferred()。
 export async function loadAll(onProgress) {
-  const [manifest, glossary, schema, common, cardArt] = await Promise.all([
+  const [manifest, glossary, schema, common] = await Promise.all([
     fetchJson(JSON_BASE + 'manifest.json'),
     fetchJson(GLOSSARY_URL),
     fetchJsonSoft(SCHEMA_URL),
     fetchJsonSoft(JSON_BASE + 'common.statuses.json'),
-    fetchJsonSoft(CARD_ART_URL),
   ]);
   DB.manifest = manifest;
-  // 索引缺席（还没跑过生成脚本 / 站点没放图）时留空 Map，详情页退回按 id 现拼
-  if (cardArt?.cards) {
-    for (const [id, files] of Object.entries(cardArt.cards)) {
-      if (Array.isArray(files) && files.length) DB.cardArt.set(id, files);
-    }
-  }
   DB.glossary = glossary;
   DB.pathways = manifest.pathways;
   DB.rarityOrder = readRarityOrder(manifest);
