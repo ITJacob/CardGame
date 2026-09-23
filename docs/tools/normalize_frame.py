@@ -247,6 +247,23 @@ def band_metrics(pixels: bytearray, width: int, height: int, channels: int,
     }
 
 
+def crop_rect(pixels: bytearray, width: int, height: int, channels: int,
+              box: tuple[int, int, int, int]):
+    """按绝对矩形裁剪（端点含）。用于截掉 AI 出图在画布边缘的伪影/残留线。"""
+    x0, y0, x1, y1 = box
+    x0 = max(0, x0)
+    y0 = max(0, y0)
+    x1 = min(width - 1, x1)
+    y1 = min(height - 1, y1)
+    cw, chh = x1 - x0 + 1, y1 - y0 + 1
+    stride = width * channels
+    out = bytearray(cw * chh * channels)
+    for y in range(chh):
+        src = (y0 + y) * stride + x0 * channels
+        out[y * cw * channels:(y + 1) * cw * channels] = pixels[src:src + cw * channels]
+    return out, cw, chh
+
+
 def resize_to(pixels: bytearray, width: int, height: int, channels: int,
               new_w: int, new_h: int) -> bytearray:
     """双线性重采样。用于「裁内容后拉伸铺满目标比例画布」——模型画的比例对不上
@@ -374,7 +391,8 @@ def autocrop_to_content(pixels: bytearray, width: int, height: int, channels: in
 
 def process(path: Path, threshold: int, check_only: bool, autocrop: int = 0,
             masks: list[tuple[int, int, int, int]] | None = None,
-            tight: bool = False, stretch: tuple[int, int] | None = None) -> bool:
+            tight: bool = False, stretch: tuple[int, int] | None = None,
+            crop: tuple[int, int, int, int] | None = None) -> bool:
     try:
         width, height, channels, pixels, ctype = read_png(path)
     except ValueError as e:
@@ -386,6 +404,11 @@ def process(path: Path, threshold: int, check_only: bool, autocrop: int = 0,
             pixels, width, height, channels, threshold, pad=autocrop, tight=tight,
             pad_ratio=not stretch)
         ctype = 2 if channels == 3 else 6  # autocrop 不改通道数
+
+    if crop and not check_only:
+        pixels, width, height = crop_rect(pixels, width, height, channels, crop)
+        ctype = 2 if channels == 3 else 6
+        print(f"    已按矩形裁切 -> {width}x{height}")
 
     if stretch and not check_only:
         sw, sh = stretch
@@ -481,11 +504,20 @@ def main() -> int:
                     help="裁到内容外扩 PAD 像素并补齐 3:4（顺带裁掉外圈水印），默认不裁")
     ap.add_argument("--tight", action="store_true",
                     help="严格按最外侧亮像素裁剪（默认中位数裁，用于抗水印离群）")
+    ap.add_argument("--crop", metavar="X0,Y0,X1,Y1",
+                    help="按绝对矩形裁剪（端点含），用于截掉 AI 出图的边缘残留/伪影")
     ap.add_argument("--stretch", metavar="WxH",
                     help="裁后拉伸到该尺寸铺满画布（如 1024x1536），消除比例不符造成的 margin")
     ap.add_argument("--mask", action="append", default=[], metavar="X,Y,W,H",
                     help="把该矩形涂黑（可多次；坐标按 autocrop 之后的图像），用于清除框内侧水印")
     args = ap.parse_args()
+
+    crop = None
+    if args.crop:
+        vals = [int(v) for v in args.crop.split(",")]
+        if len(vals) != 4:
+            ap.error(f"--crop 需要 X0,Y0,X1,Y1 四个整数: {args.crop}")
+        crop = tuple(vals)
 
     stretch = None
     if args.stretch:
@@ -510,7 +542,7 @@ def main() -> int:
             ok = False
             continue
         ok = process(p, args.threshold, args.check, args.autocrop, masks,
-                        args.tight, stretch) and ok
+                        args.tight, stretch, crop) and ok
     print("体检完成（未改写）" if args.check else "压黑完成")
     return 0 if ok else 1
 
