@@ -1,4 +1,4 @@
-# 愚者（fool）· 技能构筑轴分析
+# 占卜家（fool）· 技能构筑轴分析
 
 > 数据来源：`docs/json/fool.skills.json`（共 **39** 张技能卡）。
 > 由 `docs/tools/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。
