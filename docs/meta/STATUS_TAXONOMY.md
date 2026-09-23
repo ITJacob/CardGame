@@ -29,7 +29,7 @@
 | 3 | **挂载层级** | 挂在战场 / 单位 / 实例 | `board.*` / `unit.*` / StatusInstance / zone·domain | board.secrecy；unit.lust；普通状态实例 |
 | 4 | **主题来源（源质系）** | 属于 9 系哪系 | `docs/ddd/params/源质维度与跨系枢纽.md` §〇 | 源堡=隐秘值、暗影=恶欲值、光之钥=命运值 |
 | 5 | **机制角色** | 什么类状态 | `statusDef.category` 12 枚举 | buff/debuff/control/aura/stance/…/conceal/seal |
-| 6 | **途径轴身份** | 是否某构筑轴锚 | `axes[].statusId` + `enablers`/`payoffs` | fool 预知轴、刺客戏法轴 |
+| 6 | **途径轴身份** | 是否某构筑轴锚 | `axes[].statusId` + `enablers`/`payoffs` | 占卜家预知轴、刺客戏法轴 |
 | 7 | **昼夜 / 战场时间** | 受光照 / 时钟驱动 | `board.clock/luminance/phase` + `dimHook`/`phaseHook` | 歌颂者「白昼」、11 途径昼夜挂钩 |
 | 8 | **坐标域** | 占格效果吗 | `zoneDef` / `domainDef` | trap/blessing 地面、overlay 界域 |
 | 9 | **运行态 vs 定义态** | 模板还是实例 | statusDef（定义） vs StatusInstance（实例） | 定义只一份；实例可堆叠 / 到期 / 驱散 |

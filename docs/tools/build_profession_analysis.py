@@ -483,7 +483,7 @@ def main():
         L.append("")
         L.append("> 说明：`damage_mul` / `damage_taken_mul` 属「伤害乘区」语义，已有专用原语 "
                  "`modify_damage`（`scope: dealt|taken`, `mul`），无需挂在 modify_stat 上；"
-                 "此写法可能与 §七·补 7-5 中 fool 的同类修复（`damage_taken_mul`→`modify_damage`）"
+                 "此写法可能与 §七·补 7-5 中 seer 的同类修复（`damage_taken_mul`→`modify_damage`）"
                  "未对齐，建议统一。\n")
     else:
         L.append("未检测到非标准 stat 键。\n")

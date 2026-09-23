@@ -1,6 +1,6 @@
-# 占卜家（fool）· 技能构筑轴分析
+# 占卜家（seer）· 技能构筑轴分析
 
-> 数据来源：`docs/json/fool.skills.json`（共 **39** 张技能卡）。
+> 数据来源：`docs/json/seer.skills.json`（共 **39** 张技能卡）。
 > 由 `docs/tools/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。
 > 生成日期：2026-09-23
 
@@ -194,7 +194,7 @@
 
 ## 附：统计口径
 
-- 数据源：`docs/json/fool.skills.json` 的 `cards[]`，共 39 张卡。
+- 数据源：`docs/json/seer.skills.json` 的 `cards[]`，共 39 张卡。
 - 按 `axis` 字段分桶；`axis` 定义与符号取自文件级 `axes`。
 - 效果原语/算子：**递归遍历**每张卡全部效果节点（卡面 `effects`、`statusDefs[].triggers[].effects`、区域/界域等任意嵌套），同名多次计数。
 - 原语以效果节点 `type` 归类（19 类）；算子以 `op` 归类（9 类）。

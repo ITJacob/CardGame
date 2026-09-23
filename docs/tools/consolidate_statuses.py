@@ -14,8 +14,8 @@ JSON_DIR = os.path.join(HERE, "..", "json")
 
 # sid -> owner 途径（唯一保留 def 的途径）
 OWNER = {
-    "puppet_string":  "fool",             # 愚者·秘偶主题最契合「提线木偶」
-    "hallucination":  "fool",             # 愚者「制造幻觉」原始概念
+    "puppet_string":  "seer",             # 占卜家·秘偶主题最契合「提线木偶」
+    "hallucination":  "seer",             # 占卜家「制造幻觉」原始概念
     "dread":          "sleepless",        # 不眠者·恐惧灵光链
     "obsession":      "criminal",         # 迷恋=反向嘲讽控制轴
     "spirit_sight":   "corpse_collector", # 收尸人·天然灵视

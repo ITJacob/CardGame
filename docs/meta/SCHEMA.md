@@ -340,9 +340,9 @@ Gate（validate.py）：`phases` 非空且取值合法、`mul>0`；`mul` 越出 
 
 **同名状态 28 条警告——2026-09-18 全部清零**，处置分两类：
 
-统一签名（同名同机制，8 个 id）：`shackle`（枷锁 ×6→apothecary 版）、`revive_blocked`（×3→fool 版永久）、`dread`（→sailor 版，statMods 方言转 effects）、`puppet_string`（×4→corpse 版）、`hallucination`（×3→control + charges 1 + 3t + behaviorModifiers）、`danger_sense`（→monster 版含自续链）、`spirit_sight`（→corpse 版原著限定 SPIRIT）、`stealth`（潜行，apothecary/sleepless 统一为 direction inbound + duration 2，挂载点均显式覆盖 duration；`charm` 正典 = 反向嘲讽 anchor self_faction_hp_desc，assassin/lawyer 归一）。签名对齐只动 8 个签名字段（name/category/dispelable/duration/modifiers/maxStacks/stackPolicy/charges），各卡 triggers/effects/note 保持本地差异。
+统一签名（同名同机制，8 个 id）：`shackle`（枷锁 ×6→apothecary 版）、`revive_blocked`（×3→seer 版永久）、`dread`（→sailor 版，statMods 方言转 effects）、`puppet_string`（×4→corpse 版）、`hallucination`（×3→control + charges 1 + 3t + behaviorModifiers）、`danger_sense`（→monster 版含自续链）、`spirit_sight`（→corpse 版原著限定 SPIRIT）、`stealth`（潜行，apothecary/sleepless 统一为 direction inbound + duration 2，挂载点均显式覆盖 duration；`charm` 正典 = 反向嘲讽 anchor self_faction_hp_desc，assassin/lawyer 归一）。签名对齐只动 8 个签名字段（name/category/dispelable/duration/modifiers/maxStacks/stackPolicy/charges），各卡 triggers/effects/note 保持本地差异。
 
-改名拆分（同名异机制，保留方不动，改名方同步卡内全部引用）：`beast_form`→`werewolf_form`（prisoner 狼人化）、`blessing`→`blessing_gift`（monster）、`charm`→`obsession` 迷恋（apothecary/criminal 的 anchor self 版）、`countersuit`→`distortion` 扭曲（lawyer）、`exiled`→`ostracized` 隔离（arbiter）、`fallen`→`falling` 堕落中（supplicant）、`flesh_immortal`→`flesh_undying`（supplicant）、`misfortune`→`bad_omen` 恶兆（sleepless）、`parasitized`→`deep_parasitized` 深度寄生（thief）、`sealed`→`occult_seal`（sleepless）、`spirit_sovereign`→`spirit_authority`（sleepless）、`submerged`→`quicksilver_submerge`（warrior，顺带修 gaugeRateMul null→0.5）、`concealed` 三方拆分：fool 保留正典 `concealed`，sleepless→`stealth` 潜行，warrior→`ambush_shroud` 伏击伪装（monster inspiration_sense 的 targetHasStatus 过滤同步扩为三 id）。
+改名拆分（同名异机制，保留方不动，改名方同步卡内全部引用）：`beast_form`→`werewolf_form`（prisoner 狼人化）、`blessing`→`blessing_gift`（monster）、`charm`→`obsession` 迷恋（apothecary/criminal 的 anchor self 版）、`countersuit`→`distortion` 扭曲（lawyer）、`exiled`→`ostracized` 隔离（arbiter）、`fallen`→`falling` 堕落中（supplicant）、`flesh_immortal`→`flesh_undying`（supplicant）、`misfortune`→`bad_omen` 恶兆（sleepless）、`parasitized`→`deep_parasitized` 深度寄生（thief）、`sealed`→`occult_seal`（sleepless）、`spirit_sovereign`→`spirit_authority`（sleepless）、`submerged`→`quicksilver_submerge`（warrior，顺带修 gaugeRateMul null→0.5）、`concealed` 三方拆分：seer 保留正典 `concealed`，sleepless→`stealth` 潜行，warrior→`ambush_shroud` 伏击伪装（monster inspiration_sense 的 targetHasStatus 过滤同步扩为三 id）。
 
 跨卡引用同步修正：`arbiter authority_shift` 过滤 exiled→ostracized；`sleepless calamity` 挂载 misfortune→bad_omen。
 
@@ -351,7 +351,7 @@ Gate（validate.py）：`phases` 非空且取值合法、`mul>0`；`mul` 越出 
 | 位置 | 原问题 | 处置 |
 |---|---|---|
 | `assassin` / `skill_assassin_s5_repeated_charm` | `statusDefs[0].triggers[0].condition` 缺 `kind` | ✅ 该 condition 实为纯注释（无谓词），已将 note 上移到 `trigger.note` 并删除空 condition——省略 condition 即表示「无条件」，与 `always` 等价，无需为此新开枚举值 |
-| `fool` / `skill_fool_s1_mystery_realm` | `zoneDef.effects[0].then[1]` 用了 `type: "damage_taken_mul"`——不是原语 | ✅ 改写为既有原语 `modify_damage`（`scope:"taken"`, `mul:0.85`）。该原语已在库内使用 11 次，无需新登记；`duration` 字段该原语不支持，已移除（zone 为 `on_occupy_tick` 逐 tick 重挂，语义为「停留期间」） |
+| `seer` / `skill_seer_s1_mystery_realm` | `zoneDef.effects[0].then[1]` 用了 `type: "damage_taken_mul"`——不是原语 | ✅ 改写为既有原语 `modify_damage`（`scope:"taken"`, `mul:0.85`）。该原语已在库内使用 11 次，无需新登记；`duration` 字段该原语不支持，已移除（zone 为 `on_occupy_tick` 逐 tick 重挂，语义为「停留期间」） |
 | `prisoner` / `skill_prisoner_s4_performance`（演出） | `target.fallbackSort: "atk_asc"` 不在 sortKey 封闭集 | ✅ **裁定为登记 `atk_asc`**：权威取值域 `ddd/params/共享内核参数.md` §sort 早在 2026-09-14 就已含 `atk_asc`，是 schema 未同步。已补进 schema sortKey 枚举并同步本文件枚举清单，保留数据原意（按攻击升序取最弱己方） |
 
 `manifest.json` 结构与全库对齐检查 **0 错误**。

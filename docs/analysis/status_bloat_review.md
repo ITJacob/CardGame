@@ -134,7 +134,7 @@
 
 ### 7.1 两种表达
 - 表达 A（无 `op`）：apprentice 的 `闪光`/`escape_act`/`star_mark` — `{anchor, note}`。
-- 表达 B（带 `op`）：corpse_collector `反噬`、fool `提线木偶` — `{op:"target_override", anchor, note}`。
+- 表达 B（带 `op`）：corpse_collector `反噬`、seer `提线木偶` — `{op:"target_override", anchor, note}`。
 
 ### 7.2 判定
 - schema 中 statusDef 修饰键 `targetOverride` 定义为 `{"type":"object"}`，并不识别 `op`。
@@ -143,7 +143,7 @@
 - → 表达 B 的 `op:"target_override"` 是从旧式 `behaviorModifiers:[{op:'target_override'}]` 迁移时的残留冗余字段。
 
 ### 7.3 动作
-- 以表达 A 为 canonical，删除 corpse_collector.反噬 与 fool.提线木偶 内的 `op` 字段（共 2 处）。
+- 以表达 A 为 canonical，删除 corpse_collector.反噬 与 seer.提线木偶 内的 `op` 字段（共 2 处）。
 - 全库 5 处 statusDef 修饰键 `targetOverride` 现表达一致（均仅 `{anchor, note[，charges]}`）。
 - 注：skills.json 中另有 7 处 `variant.targetOverride`（卡牌变体目标阵营覆盖，字段为 faction/scope），属不同 schema 节点、不同语义，本身不带 `op`，无需改动。
 
