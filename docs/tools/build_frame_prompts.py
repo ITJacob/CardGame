@@ -20,8 +20,10 @@ HEADER = """# 边框图 prompt 清单
 产物，由 `python docs/tools/build_frame_prompts.py` 生成，**勿手改**；改了 JSON 里的边框 prompt 后重跑。
 
 共 {n} 张：全局三档 + 22 途径 × epic/legendary。每条 = 共用约束 + 材质层，两者逗号拼接。
-出图要求：3:4 竖版、纯黑底、中心留空、手绘媒介（与卡面 artStyle 同为绘画质感，非写实 3D 渲染）。
-成品按标题文件名存本目录。共用约束（47 条的开头完全相同，由 `manifest.artFrameFormat` 单点维护）：
+出图要求：3:4 竖版、手绘媒介（油画笔触与哑光颜料，非写实金属、非 3D 渲染）、纹样填满外围 1/3、
+纯黑底、中心留黑。**框宽不用管**——站点用 CSS mask 裁成固定宽度（`--frame-band`），
+出图只需保证纹样够宽。成品按标题文件名存本目录。
+共用约束（47 条的开头完全相同，由 `manifest.artFrameFormat` 单点维护）：
 
 ```
 {fmt}

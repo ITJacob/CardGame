@@ -269,8 +269,22 @@ body.page-card #view { max-width: none; padding: 0; }
 .cs-frame {
   position: absolute; inset: 0; width: 100%; height: 100%;
   pointer-events: none; mix-blend-mode: screen;
-  /* 出图比例未必精确等于 3:4，用 cover 保比例裁切；默认的 fill 会拉伸变形 */
-  object-fit: cover;
+  border-radius: 8px;          /* 对齐 .cs-art 的圆角，顺带把框带外角裁圆 */
+  object-fit: cover;           /* 出图比例未必精确 3:4，保比例裁切；默认 fill 会拉伸变形 */
+  /* 框宽由这里单点决定，不写进 prompt——AI 画不准精确几何，47 张独立出图必然漂移。
+     只留四条边带，中心开口与四边宽度全站一致；prompt 侧要求纹样填满外围 1/3 来保证够宽。
+     mask 不被支持时整条声明失效、退回整图，靠画面中心留黑（screen 下等于透明）兜底 */
+  --frame-band: 26px;
+  -webkit-mask:
+    linear-gradient(#000 0 0) top    / 100% var(--frame-band) no-repeat,
+    linear-gradient(#000 0 0) bottom / 100% var(--frame-band) no-repeat,
+    linear-gradient(#000 0 0) left   / var(--frame-band) 100% no-repeat,
+    linear-gradient(#000 0 0) right  / var(--frame-band) 100% no-repeat;
+  mask:
+    linear-gradient(#000 0 0) top    / 100% var(--frame-band) no-repeat,
+    linear-gradient(#000 0 0) bottom / 100% var(--frame-band) no-repeat,
+    linear-gradient(#000 0 0) left   / var(--frame-band) 100% no-repeat,
+    linear-gradient(#000 0 0) right  / var(--frame-band) 100% no-repeat;
 }
 .cs-prompt {
   font-family: Consolas, monospace; font-size: 12.5px; line-height: 1.7;
