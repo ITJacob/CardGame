@@ -262,65 +262,33 @@ body.page-card #view { max-width: none; padding: 0; }
 /* 成品图按约定路径现拼，onerror 移除——存在即显示，无需索引。
    边框是独立图（assets/frames/），screen 混合把黑底融掉、只留边框叠在画面上 */
 .cs-artwrap {
-  position: relative; max-width: 420px; margin: 0 auto 8px;
-  --frame-band: 34px;          /* 框宽：只改这一个数，框体与纹样层同时跟着变 */
-  --orn-slice: 40%;            /* 纹样切分：源图四角取这么多 → 卡的四角；中段 → 四边重复 */
-  --bz: var(--common);         /* 框体主色；按稀有度覆盖，见下方 .r-* 规则 */
-  /* 四边等宽带。框体与 AI 纹样层共用这**同一套**几何，所以两者永远严丝合缝。
-     出图侧完全不管框宽——AI 画不准精确几何，47 张独立出图必然漂移 */
-  --band-mask:
-    linear-gradient(#000 0 0) top    / 100% var(--frame-band) no-repeat,
-    linear-gradient(#000 0 0) bottom / 100% var(--frame-band) no-repeat,
-    linear-gradient(#000 0 0) left   / var(--frame-band) 100% no-repeat,
-    linear-gradient(#000 0 0) right  / var(--frame-band) 100% no-repeat;
+  /* 独立层叠上下文：让 .cs-orn 的 screen 只与容器内的卡面/暗边混合，
+     不往页面（途径色氛围背景）透。深色兜底：卡面图缺失时框线仍有底可叠 */
+  position: relative; isolation: isolate;
+  max-width: 420px; margin: 0 auto 8px;
+  background: #0c0e11; border-radius: 10px;
 }
-.card-sheet.r-uncommon .cs-artwrap { --bz: var(--uncommon); }
-.card-sheet.r-rare .cs-artwrap { --bz: var(--rare); }
-.card-sheet.r-epic .cs-artwrap { --bz: var(--epic); }
-.card-sheet.r-legendary .cs-artwrap { --bz: var(--legendary); }
 
 .cs-art {
   display: block; width: 100%;
-  border-radius: 8px; border: 1px solid var(--border);
+  border-radius: 10px; border: 1px solid var(--border);
 }
-/* 框体：CSS 画的不透明厚带。这是卡游 UI 的「框」，AI 纹样只是叠在它上面的装饰 */
-.cs-bezel { position: absolute; inset: 0; border-radius: 8px; pointer-events: none; }
-.cs-bezel::before {                    /* 带本体，被 mask 裁成四边等宽 */
-  content: ''; position: absolute; inset: 0; border-radius: 8px;
-  -webkit-mask: var(--band-mask); mask: var(--band-mask);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,0) 20%),   /* 上沿受光 */
-    linear-gradient(0deg, rgba(0,0,0,.6), rgba(0,0,0,0) 20%),                  /* 下沿背光 */
-    linear-gradient(168deg,                                                     /* 主体：够暗才有厚度感 */
-      color-mix(in srgb, var(--bz) 30%, #333941),
-      color-mix(in srgb, var(--bz) 10%, #0d1013));
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);   /* 外沿高光圈 */
-}
-.cs-bezel::after {                     /* 内嵌槽：亮线 + 画面内缩阴影，做出「画嵌进去」的深度 */
-  content: ''; position: absolute; inset: var(--frame-band); border-radius: 3px;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.2),
-    0 0 0 3px rgba(0,0,0,.55),
-    inset 0 0 16px rgba(0,0,0,.55);
+/* 压圈暗边：放在卡面之上、框线之下。把贴边那一圈亮卡面压暗，
+   框线（screen 叠加）浮在最顶不被盖。强度经主人确认（强两档）。
+   力度微调：↓ .7 / 80px / 30px，↑ .85 / 120px / 46px */
+.cs-vignette {
+  position: absolute; inset: 0; border-radius: 10px; pointer-events: none;
+  box-shadow: inset 0 0 100px 38px rgba(0, 0, 0, .8);
 }
 
-/* 纹样层：用 border-image 把整张纹样**切分**到卡上。
-   源图四角 → 卡的四角（真角饰），源图中段 → 四边重复成边饰。
-   框宽由 border-width 直接给出，精确等宽且不需要 mask。
-   早先用「mask 平铺」是错的：纹样在四个角上随机截断，读起来是壁纸而不是框。
-   文件缺失时 border-image 静默不生效，露出下面的 .cs-bezel，天然降级 */
+/* 框线层：一张 AI 出的「黑底金线框」PNG，mix-blend-mode:screen 叠到卡面。
+   黑底被 screen 吃透透出卡面、金线提亮叠加；一张框复用于同档所有卡。
+   缺失时 card.js 的 onerror 移除该层（退化为纯卡面）。改 opacity 调金线亮度 */
 .cs-orn {
-  position: absolute; inset: 0; pointer-events: none;
-  border: var(--frame-band) solid transparent;
-  /* border-image-source 由 card.js 内联给出，**不能**写成 var(--orn-src)：
-     自定义属性里的相对 url() 按「消费它的样式表」的基址解析，写在这里会解析成
-     site/css/assets/... → 404 静默不出图。内联则按文档基址解析 */
-  border-image-slice: var(--orn-slice);
-  border-image-width: var(--frame-band);
-  border-image-outset: 0;
-  border-image-repeat: round;
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; pointer-events: none;
   mix-blend-mode: screen;
-  opacity: .8;                 /* 纹样当浮雕叠在金属上；调高就往「发光金线」走 */
+  opacity: .82;
 }
 .cs-prompt {
   font-family: Consolas, monospace; font-size: 12.5px; line-height: 1.7;
