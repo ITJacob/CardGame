@@ -13,7 +13,7 @@
     "artFrameFormat": { "type": "string", "description": "边框**纹样**全局共用约束（英文）：正方形无缝纹样（tileable）、卡游 UI 素材画法（干净图形、锐利边缘），显式排除照片质感与 3D 渲染，并**显式否定 picture frame / bezel / border**——模型一见这些词就画成装裱画框；纯黑底、无文字水印。拼 prompt 时置于最前，后接各档材质层（artFrame 或途径 artFrameEpic·artFrameLegendary），与画面 prompt 的 artFormat + artStyle + art 三段拼装对称。**框体几何完全不在这里**：站点用 CSS 画框（.cs-bezel）并把纹样 mask 成四边等宽带，写进 prompt 只会失效。" },
     "artFrame": {
       "type": "object",
-      "description": "全局统一的边框图材质层（英文）：common/uncommon/rare 三档共用模板，配色取中性色阶（灰/银/淡金），主题色交给途径特化的 epic/legendary；epic/legendary 走各途径顶层 artFrameEpic/artFrameLegendary。仅写材质与纹样，比例/媒介/黑底/留空/负向词由 artFrameFormat 统一承担。边框图独立生成，站点叠合展示。",
+      "description": "全局前三档边框图 prompt（common/uncommon/rare）：自包含完整 prompt，风格基准见 site/assets/frames/PROMPTS_REFERENCE.md，出图时不套用 artFrameFormat（避免共用约束的通用描边/filigree 污染细线贴边效果）；epic/legendary 仍由 artFrameFormat + 各途径 artFrameEpic/artFrameLegendary 现拼。",
       "required": ["common", "uncommon", "rare"],
       "additionalProperties": false,
       "properties": {

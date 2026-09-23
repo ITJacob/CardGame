@@ -2,14 +2,17 @@
 
 产物，由 `python docs/tools/build_frame_prompts.py` 生成，**勿手改**；改了 JSON 里的边框 prompt 后重跑。
 
-共 47 张：全局三档 + 22 途径 × epic/legendary。每条 = 共用约束（黑底框构图模板）+ 主题层，逗号拼接。
+共 47 张：全局三档 + 22 途径 × epic/legendary。
+- **前三档（common / uncommon / rare）**：每条是**自包含完整 prompt**，直接照搬 `PROMPTS_REFERENCE.md` 的认可风格，出图时**不套用下方共用约束**（共用约束含通用描边/filigree，会污染细线贴边效果）。
+- **44 张职业框（epic / legendary）**：每条 = 共用约束 + 途径主题层，逗号拼接。
+
 **直接出框（非纹样）**：每条 prompt 让 AI 出「一张完整的黑底卡牌边框图」，在豆包 / 即梦 / Midjourney / Stable Diffusion 等平台直接批量出图即可。
 - 推荐竖图比例（如 1024x1536）；出图须为**纯黑底、无任何水印 / 签名 / 平台 logo**，中心保持纯黑。
 - 框线应**贴近卡边**（margin 小）；若平台默认留白多，出图后裁掉外圈留白再叠。
 - 出图后以 `mix-blend-mode: screen` 叠到全出血卡面复用——黑底被 screen 吃透透出卡面、框线提亮叠加，一张框可复用于同档所有卡。
 材质分层（数据源已定，平台无需另调）：前三档为非金递进——普通=冷钢银单线 / 精良=青铜绿锈双线+连续角托 / 稀有=暖金双线+小符文；职业 epic/legendary 由各主题层自带金线（传说档金线最适配）。
 
-共用约束（47 条的开头完全相同，由 `manifest.artFrameFormat` 单点维护）：
+职业框共用约束（44 条 epic/legendary 的开头完全相同，由 `manifest.artFrameFormat` 单点维护）：
 
 ```
 a complete ornamental border frame for a vertical trading card, solid pure black background, thin ornamental lines forming the border running just inside the card edge with minimal margin, all ornament strictly confined to a narrow band along the edges with no ornament spreading inward and no detached fragments, the entire central area empty pure black, classical occultist mystic filigree in the Victorian tarot and Lord of the Mysteries style, hand-painted oil-painting brushstrokes with subtle metallic sheen, slightly uneven hand-drawn lines, dark luxury mood, no characters, no scenery, no text, no watermark, no signature, no logo
@@ -18,19 +21,19 @@ a complete ornamental border frame for a vertical trading card, solid pure black
 ## frame-common.png
 
 ```
-a complete ornamental border frame for a vertical trading card, solid pure black background, thin ornamental lines forming the border running just inside the card edge with minimal margin, all ornament strictly confined to a narrow band along the edges with no ornament spreading inward and no detached fragments, the entire central area empty pure black, classical occultist mystic filigree in the Victorian tarot and Lord of the Mysteries style, hand-painted oil-painting brushstrokes with subtle metallic sheen, slightly uneven hand-drawn lines, dark luxury mood, no characters, no scenery, no text, no watermark, no signature, no logo, cool steel-silver tone, one single fine line, no corner ornaments, minimal small geometric corner ticks only, quiet and understated, no emblems
+an extremely minimal ornamental border frame for a vertical trading card, solid pure black background, one single thin cool steel-silver line with a pale bluish sheen running just inside the card edge with minimal margin, small simple geometric corner accents, all ornament strictly confined to a narrow band along the edges, no ornament spreading inward, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, understated and quiet, no characters, no scenery, no text, no watermark, no signature, no logo
 ```
 
 ## frame-uncommon.png
 
 ```
-a complete ornamental border frame for a vertical trading card, solid pure black background, thin ornamental lines forming the border running just inside the card edge with minimal margin, all ornament strictly confined to a narrow band along the edges with no ornament spreading inward and no detached fragments, the entire central area empty pure black, classical occultist mystic filigree in the Victorian tarot and Lord of the Mysteries style, hand-painted oil-painting brushstrokes with subtle metallic sheen, slightly uneven hand-drawn lines, dark luxury mood, no characters, no scenery, no text, no watermark, no signature, no logo, dark bronze with subtle green patina tone, two thin lines, small neat continuous geometric bracket corner ornaments that connect to the lines, no emblems
+an ornamental border frame for a vertical trading card, solid pure black background, two thin dark bronze lines with a subtle green patina tint running just inside the card edge with minimal margin, at each of the four corners a small neat continuous geometric bracket ornament that flows out of and connects the two border lines, no detached fragments, no emblems, no central ornament, no scrollwork, no runes, all ornament strictly confined to a narrow band along the edges, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, restrained, no characters, no scenery, no text, no watermark, no signature, no logo
 ```
 
 ## frame-rare.png
 
 ```
-a complete ornamental border frame for a vertical trading card, solid pure black background, thin ornamental lines forming the border running just inside the card edge with minimal margin, all ornament strictly confined to a narrow band along the edges with no ornament spreading inward and no detached fragments, the entire central area empty pure black, classical occultist mystic filigree in the Victorian tarot and Lord of the Mysteries style, hand-painted oil-painting brushstrokes with subtle metallic sheen, slightly uneven hand-drawn lines, dark luxury mood, no characters, no scenery, no text, no watermark, no signature, no logo, warm antique gold tone, two thin lines, small neat rune-like corner accents, no emblems, elegant but restrained
+an ornamental border frame for a vertical trading card, solid pure black background, two thin warm gold lines with a clearly golden bright antique-gold tone running just inside the card edge with minimal margin, small neat rune-like corner accents only, no emblems, no heraldic shields, no central ornament, all ornament strictly confined to a narrow band along the edges, no ornament spreading inward, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, restrained, no characters, no scenery, no text, no watermark, no signature, no logo
 ```
 
 ## frame-sleepless-epic.png

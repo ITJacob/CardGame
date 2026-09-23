@@ -5,13 +5,13 @@
 
 ## 怎么批量出图（别的平台也能用）
 
-`PROMPTS.md` 是全部 47 条**完整** prompt（= 共用约束 v3 框模板 + 主题层），由 `python docs/tools/build_frame_prompts.py` 从 JSON 生成（**勿手改**；改 JSON 后重跑）。
+`PROMPTS.md` 是全部 47 条**完整** prompt，由 `python docs/tools/build_frame_prompts.py` 从 JSON 生成（**勿手改**；改 JSON 后重跑）。其中**前三档 common/uncommon/rare 为自包含完整 prompt**（风格基准见 `PROMPTS_REFERENCE.md`，不套用共用约束）；**44 张职业框 epic/legendary = 共用约束 + 途径主题层**。
 把任意一条 prompt 复制到 豆包 / 即梦 / Midjourney / Stable Diffusion 等平台即可出图：
 
 - **比例**：竖图，建议 `1024×1536`（与卡面 3:4 对齐）。
 - **底**：必须**纯黑底、无任何水印 / 签名 / 平台 logo**；中心保持纯黑（screen 时黑底变透明、框线提亮叠加）。
 - **margin**：框线应**贴近卡边**（共用约束已强制 minimal margin）；若平台默认四周留白多，出图后裁掉外圈留白再叠。
-- **风格**：手绘金属质感笔触（与油画风卡面同语汇）；共用约束已强制，主题层只描述材质与职业母题/配色。
+- **风格**：手绘金属质感笔触（与油画风卡面同语汇）；职业框的共用约束已强制细线贴边/黑底/留空，主题层只描述材质与职业母题/配色；前三档为自包含 prompt，本身已含全部约束。
 
 材质分层（数据源 `manifest.artFrame` / 各途径 `artFrameEpic`/`artFrameLegendary` 已定，平台无需另调）：
 

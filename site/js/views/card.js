@@ -146,14 +146,15 @@ function frameFor(c) {
   if (c.rarity === 'epic' && c._frameEpic) return { file: `frame-${c._pathway}-epic`, prompt: c._frameEpic };
   if (c.rarity === 'legendary' && c._frameLegendary) return { file: `frame-${c._pathway}-legendary`, prompt: c._frameLegendary };
   const p = DB.artFrame?.[c.rarity];
-  return p ? { file: `frame-${c.rarity}`, prompt: p } : null;
+  // 前三档为自包含完整 prompt（见 PROMPTS_REFERENCE.md），不套 artFrameFormat
+  return p ? { file: `frame-${c.rarity}`, prompt: p, selfContained: true } : null;
 }
 
 function artHtml(c) {
   const prompt = artPrompt(c);
   if (!prompt) return '';
   const f = frameFor(c);
-  const fprompt = f ? [DB.artFrameFormat, f.prompt].filter(Boolean).join(', ') : '';
+  const fprompt = f ? (f.selfContained ? f.prompt : [DB.artFrameFormat, f.prompt].filter(Boolean).join(', ')) : '';
   return `<section class="cs-sec">
     <h2>AI 出图 <button type="button" class="cs-copy" data-prompt="${escapeHtml(prompt)}">复制画面 prompt</button>${f ? ` <button type="button" class="cs-copy" data-prompt="${escapeHtml(fprompt)}">复制边框 prompt</button>` : ''}</h2>
     <div class="cs-artwrap">
