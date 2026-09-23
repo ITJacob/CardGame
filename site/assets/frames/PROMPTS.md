@@ -9,8 +9,10 @@
 **直接出框（非纹样）**：每条 prompt 让 AI 出「一张完整的黑底卡牌边框图」，在豆包 / 即梦 / Midjourney / Stable Diffusion 等平台直接批量出图即可。
 - 推荐竖图比例（如 1024x1536）；出图须为**纯黑底、无任何水印 / 签名 / 平台 logo**，中心保持纯黑。
 - 框线应**贴近卡边**（margin 小）；若平台默认留白多，出图后裁掉外圈留白再叠。
+- ⚠️ **黑底必须是绝对纯黑**：screen 叠加时任何 #0a0a0a 一类的近黑都会把整张卡面轻微提灰。若出图黑底带灰雾/布纹颗粒，用 `python docs/tools/normalize_frame.py <图>` 压成纯黑再入库。
 - 出图后以 `mix-blend-mode: screen` 叠到全出血卡面复用——黑底被 screen 吃透透出卡面、框线提亮叠加，一张框可复用于同档所有卡。
-材质分层（数据源已定，平台无需另调）：前三档为非金递进——普通=冷钢银单线 / 精良=青铜绿锈双线+连续角托 / 稀有=暖金双线+小符文；职业 epic/legendary 由各主题层自带金线（传说档金线最适配）。
+材质分层（数据源已定，平台无需另调）：前三档为非金递进——普通=冷钢银单线 / 精良=青铜绿锈双线+连续角托 / 稀有=暖金三线+小符文；职业 epic/legendary 由各主题层自带金线（传说档金线最适配）。
+每条 prompt 内含的**四条硬约束**（勿删，删了就会回退成粗带/灰底）：纯黑背景前置并逐项否定纹理 / 笔触与光泽只在线上 / 辉光零外溢 / 边框带宽度量化为卡宽 3-4% 以内。详见 `PROMPTS_REFERENCE.md`。
 
 职业框共用约束（44 条 epic/legendary 的开头完全相同，由 `manifest.artFrameFormat` 单点维护）：
 
@@ -21,19 +23,19 @@ a complete ornamental border frame for a vertical trading card, solid pure black
 ## frame-common.png
 
 ```
-an extremely minimal ornamental border frame for a vertical trading card, solid pure black background, one single thin cool steel-silver line with a pale bluish sheen running just inside the card edge with minimal margin, no corner ornaments, only minimal small geometric corner ticks at the four corners, all ornament strictly confined to a narrow band along the edges, no ornament spreading inward, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, understated and quiet, no characters, no scenery, no text, no watermark, no signature, no logo
+A vertical trading card image on a flat, completely uniform, absolute pure black (#000000) background: no gradient, no vignette, no glow, no fog, no smoke, no ambient light, no canvas texture, no brushstroke texture and no grain anywhere in the background. The only decoration is one single ultra-fine hairline in cool steel-silver with a pale bluish sheen, drawn just inside the image edge with a very small margin, no corner ornaments, only tiny minimal geometric corner ticks at the four corners, no detached fragments. The entire border band is extremely narrow, well under 3 percent of the card width, hugging the edge. Hand-painted oil brushstroke texture and metallic sheen appear only on the hairline itself and never on the background. The whole central area is completely empty flat pure black. No characters, no scenery, no text, no watermark, no signature, no logo, no halo, no light bleed onto the black
 ```
 
 ## frame-uncommon.png
 
 ```
-an ornamental border frame for a vertical trading card, solid pure black background, two thin dark bronze lines with a subtle green patina tint running just inside the card edge with minimal margin, at each of the four corners a small neat continuous geometric bracket ornament that flows out of and connects the two border lines, no detached fragments, no emblems, no central ornament, no scrollwork, no runes, all ornament strictly confined to a narrow band along the edges, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, restrained, no characters, no scenery, no text, no watermark, no signature, no logo
+A vertical trading card image on a flat, completely uniform, absolute pure black (#000000) background: no gradient, no vignette, no glow, no fog, no smoke, no ambient light, no canvas texture, no brushstroke texture and no grain anywhere in the background. The only decoration is two ultra-fine hairlines in dark bronze with a subtle green patina tint, drawn just inside the image edge with a very small margin, and at each of the four corners one small neat continuous geometric bracket ornament that flows out of and connects the two hairlines, no detached fragments, no emblems, no scrollwork, no central ornament. The entire border band is extremely narrow, well under 4 percent of the card width, hugging the edge. Hand-painted oil brushstroke texture and metallic sheen appear only on the lines themselves and never on the background. The whole central area is completely empty flat pure black. No characters, no scenery, no text, no watermark, no signature, no logo, no halo, no light bleed onto the black
 ```
 
 ## frame-rare.png
 
 ```
-an ornamental border frame for a vertical trading card, solid pure black background, three thin warm gold lines (two main lines with a third ultra-thin inner keyline) with a clearly golden bright antique-gold tone and a subtle luminous gold glow (absolutely not bronze, not green patina) running just inside the card edge with minimal margin, small neat rune-like corner accents only, no emblems, no heraldic shields, no central ornament, all ornament strictly confined to a narrow band along the edges, no ornament spreading inward, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, restrained, no characters, no scenery, no text, no watermark, no signature, no logo
+A vertical trading card image on a flat, completely uniform, absolute pure black (#000000) background: no gradient, no vignette, no glow, no fog, no smoke, no ambient light, no canvas texture, no brushstroke texture and no grain anywhere in the background. The only decoration is three ultra-fine hairlines in bright warm antique gold (absolutely not bronze, not green patina): two main lines with a third even finer inner keyline, all three packed tightly together within the same narrow band just inside the image edge with a very small margin, the subtle luminous gold sheen stays on the lines themselves and produces zero spill onto the black, small neat rune-like corner accents only, no emblems, no heraldic shields, no central ornament. The entire border band is extremely narrow, well under 4 percent of the card width, hugging the edge. Hand-painted oil brushstroke texture appears only on the lines themselves and never on the background. The whole central area is completely empty flat pure black. No characters, no scenery, no text, no watermark, no signature, no logo, no halo, no light bleed onto the black
 ```
 
 ## frame-sleepless-epic.png
