@@ -33,7 +33,7 @@ an ornamental border frame for a vertical trading card, solid pure black backgro
 ## frame-rare.png
 
 ```
-an ornamental border frame for a vertical trading card, solid pure black background, two thin warm gold lines with a clearly golden bright antique-gold tone (absolutely not bronze, not green patina) running just inside the card edge with minimal margin, small neat rune-like corner accents only, no emblems, no heraldic shields, no central ornament, all ornament strictly confined to a narrow band along the edges, no ornament spreading inward, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, restrained, no characters, no scenery, no text, no watermark, no signature, no logo
+an ornamental border frame for a vertical trading card, solid pure black background, three thin warm gold lines (two main lines with a third ultra-thin inner keyline) with a clearly golden bright antique-gold tone and a subtle luminous gold glow (absolutely not bronze, not green patina) running just inside the card edge with minimal margin, small neat rune-like corner accents only, no emblems, no heraldic shields, no central ornament, all ornament strictly confined to a narrow band along the edges, no ornament spreading inward, the central area completely empty pure black, hand-painted oil-painting brushstrokes, slightly uneven hand-drawn lines, restrained, no characters, no scenery, no text, no watermark, no signature, no logo
 ```
 
 ## frame-sleepless-epic.png
