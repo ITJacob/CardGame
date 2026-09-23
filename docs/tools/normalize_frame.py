@@ -247,9 +247,44 @@ def band_metrics(pixels: bytearray, width: int, height: int, channels: int,
     }
 
 
+def resize_to(pixels: bytearray, width: int, height: int, channels: int,
+              new_w: int, new_h: int) -> bytearray:
+    """双线性重采样。用于「裁内容后拉伸铺满目标比例画布」——模型画的比例对不上
+    3:4 时，靠拉伸消除补黑边造成的左右 margin（线宽横纵拉伸比差异约 3%，不可察）。
+    """
+    out = bytearray(new_w * new_h * channels)
+    stride = width * channels
+    sx = (width - 1) / max(1, new_w - 1)
+    sy = (height - 1) / max(1, new_h - 1)
+    for y in range(new_h):
+        fy = y * sy
+        y0 = int(fy)
+        y1 = min(y0 + 1, height - 1)
+        wy = fy - y0
+        b0 = y0 * stride
+        b1 = y1 * stride
+        dst_row = y * new_w * channels
+        for x in range(new_w):
+            fx = x * sx
+            x0 = int(fx)
+            x1 = min(x0 + 1, width - 1)
+            wx = fx - x0
+            i00 = b0 + x0 * channels
+            i01 = b0 + x1 * channels
+            i10 = b1 + x0 * channels
+            i11 = b1 + x1 * channels
+            dst = dst_row + x * channels
+            for c in range(channels):
+                top = pixels[i00 + c] * (1 - wx) + pixels[i01 + c] * wx
+                bot = pixels[i10 + c] * (1 - wx) + pixels[i11 + c] * wx
+                out[dst + c] = int(top * (1 - wy) + bot * wy)
+    return out
+
+
 def autocrop_to_content(pixels: bytearray, width: int, height: int, channels: int,
                         threshold: int, pad: int = 8,
-                        ratio: tuple[int, int] = (3, 4)):
+                        ratio: tuple[int, int] = (3, 4),
+                        tight: bool = False, pad_ratio: bool = True):
     """裁到框体外扩 pad 像素，并把画布补齐到目标宽高比（只补黑边、不裁内容）。
 
     ⚠️ 不能用全局 min/max bbox：右下角水印等离群亮块会把 bbox 撑大，
@@ -305,19 +340,28 @@ def autocrop_to_content(pixels: bytearray, width: int, height: int, channels: in
             tops.append(top)
             bottoms.append(bottom)
 
-    x0 = max(0, _med(lefts) - pad)
-    x1 = min(width - 1, _med(rights) + pad)
-    y0 = max(0, _med(tops) - pad)
-    y1 = min(height - 1, _med(bottoms) + pad)
+    if tight:
+        # 严格外接矩形：输入图须已无离群亮块（水印已去 / 大画布小内容路线）
+        minx, maxx = min(lefts + rights), max(lefts + rights)
+        miny, maxy = min(tops + bottoms), max(tops + bottoms)
+    else:
+        minx, maxx = _med(lefts), _med(rights)
+        miny, maxy = _med(tops), _med(bottoms)
+    x0 = max(0, minx - pad)
+    x1 = min(width - 1, maxx + pad)
+    y0 = max(0, miny - pad)
+    y1 = min(height - 1, maxy + pad)
     cw, chh = x1 - x0 + 1, y1 - y0 + 1
 
-    # 补齐到目标比例：只扩短边（补黑），绝不裁内容
-    tw, th = ratio
     new_w, new_h = cw, chh
-    if cw * th < chh * tw:  # 太窄 → 补宽
-        new_w = chh * tw // th
-    else:  # 太矮 → 补高
-        new_h = cw * th // tw
+    if pad_ratio:
+        # 补齐到目标比例：只扩短边（补黑），绝不裁内容。
+        # 配合 --stretch 时须关闭，否则补齐的黑边会被一起拉伸、margin 消不掉。
+        tw, th = ratio
+        if cw * th < chh * tw:  # 太窄 → 补宽
+            new_w = chh * tw // th
+        else:  # 太矮 → 补高
+            new_h = cw * th // tw
     out = bytearray(new_w * new_h * channels)
     ox = (new_w - cw) // 2
     oy = (new_h - chh) // 2
@@ -329,7 +373,8 @@ def autocrop_to_content(pixels: bytearray, width: int, height: int, channels: in
 
 
 def process(path: Path, threshold: int, check_only: bool, autocrop: int = 0,
-            masks: list[tuple[int, int, int, int]] | None = None) -> bool:
+            masks: list[tuple[int, int, int, int]] | None = None,
+            tight: bool = False, stretch: tuple[int, int] | None = None) -> bool:
     try:
         width, height, channels, pixels, ctype = read_png(path)
     except ValueError as e:
@@ -338,8 +383,17 @@ def process(path: Path, threshold: int, check_only: bool, autocrop: int = 0,
 
     if autocrop and not check_only:
         pixels, width, height = autocrop_to_content(
-            pixels, width, height, channels, threshold, pad=autocrop)
+            pixels, width, height, channels, threshold, pad=autocrop, tight=tight,
+            pad_ratio=not stretch)
         ctype = 2 if channels == 3 else 6  # autocrop 不改通道数
+
+    if stretch and not check_only:
+        sw, sh = stretch
+        # 裁完后直接拉伸铺满目标画布：内容比例不对也能消除左右/上下 margin
+        if (width, height) != (sw, sh):
+            pixels = resize_to(pixels, width, height, channels, sw, sh)
+            width, height = sw, sh
+            ctype = 2 if channels == 3 else 6
 
     if masks and not check_only:
         stride = width * channels
@@ -425,9 +479,21 @@ def main() -> int:
     ap.add_argument("--check", action="store_true", help="只体检，不改写文件")
     ap.add_argument("--autocrop", type=int, default=0, metavar="PAD",
                     help="裁到内容外扩 PAD 像素并补齐 3:4（顺带裁掉外圈水印），默认不裁")
+    ap.add_argument("--tight", action="store_true",
+                    help="严格按最外侧亮像素裁剪（默认中位数裁，用于抗水印离群）")
+    ap.add_argument("--stretch", metavar="WxH",
+                    help="裁后拉伸到该尺寸铺满画布（如 1024x1536），消除比例不符造成的 margin")
     ap.add_argument("--mask", action="append", default=[], metavar="X,Y,W,H",
                     help="把该矩形涂黑（可多次；坐标按 autocrop 之后的图像），用于清除框内侧水印")
     args = ap.parse_args()
+
+    stretch = None
+    if args.stretch:
+        try:
+            sw, sh = (int(v) for v in args.stretch.lower().split("x"))
+            stretch = (sw, sh)
+        except ValueError:
+            ap.error(f"--stretch 需要 WxH 格式: {args.stretch}")
 
     masks = []
     for spec in args.mask:
@@ -443,7 +509,8 @@ def main() -> int:
             print(f"  [缺失] {f}")
             ok = False
             continue
-        ok = process(p, args.threshold, args.check, args.autocrop, masks) and ok
+        ok = process(p, args.threshold, args.check, args.autocrop, masks,
+                        args.tight, stretch) and ok
     print("体检完成（未改写）" if args.check else "压黑完成")
     return 0 if ok else 1
 
