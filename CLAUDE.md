@@ -34,12 +34,17 @@ docs/analysis/       纯分析产物（勿手改，重跑 docs/tools/ 脚本生�
 ├─ SKILLS_OVERVIEW.md              全库总览（22 途径分章 / 829 卡）
 ├─ SKILLS_ANALYSIS_BY_PROFESSION.md  原语用量 + modify_stat/modify_resource 属性与参数统计
 └─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告
-docs/tools/          全部脚本（校验 + 生成）
+docs/tools/          **只放设计侧脚本**（设计数据校验 + docs 文档生成），保持 docs 纯粹
 ├─ validate.py      语义校验器（无依赖）：python docs/tools/validate.py
 ├─ validate_schema.py  结构校验器（需 jsonschema）：python docs/tools/validate_schema.py
 ├─ check_enum_sync.py  枚举对账（ddd/SCHEMA.md ↔ schema）：python docs/tools/check_enum_sync.py
 ├─ check_glossary.py   词典对账（值域 ↔ meta/glossary.json）：python docs/tools/check_glossary.py
 ├─ build_overview.py / build_profession_analysis.py / build_axis_analysis.py
+└─ consolidate/extract/split_*.py + status_loader.py  设计数据迁移与共享 loader
+tools/               **与 docs 设计无关的周边工具**（产物落在 site/ 的美术资产生产）
+├─ build_frame_prompts.py  生成 site/assets/frames/PROMPTS.md（出图 prompt 清单）
+└─ normalize_frame.py      边框图后处理：--autocrop 裁边 / --crop 截残留 / --stretch 拉伸 / 压黑 / --check 体检
+（收纳原则：docs/ 只与设计有关；凡产物落在 site/、或处理图片等非设计事务的脚本，一律放 tools/）
 docs/诡秘之主资料库/  原著设定源素材（世界体系/九大源质/界域机制/职业对照表）——工作流① 设定补全的落点
 ```
 

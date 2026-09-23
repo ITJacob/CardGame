@@ -17,10 +17,10 @@
 
 用法
 ----
-  python docs/tools/normalize_frame.py 图.png [图2.png ...]      # 原地压黑并覆盖
-  python docs/tools/normalize_frame.py --check 图.png            # 只体检，不改写
-  python docs/tools/normalize_frame.py --threshold 32 图.png     # 调阈值（默认 24）
-  python docs/tools/normalize_frame.py --in-place 图.png         # 同默认；默认即原地
+  python tools/normalize_frame.py 图.png [图2.png ...]      # 原地压黑并覆盖
+  python tools/normalize_frame.py --check 图.png            # 只体检，不改写
+  python tools/normalize_frame.py --threshold 32 图.png     # 调阈值（默认 24）
+  python tools/normalize_frame.py --in-place 图.png         # 同默认；默认即原地
 
 阈值语义：亮度 v = max(r,g,b)。v <= t 归零；t < v <= 2t 线性压缩到 0（软过渡，
 避免辉光灰雾边界出现硬边圆环）；v > 2t 原样保留（框线本体不受影响）。

@@ -5,7 +5,7 @@
 
 ## 怎么批量出图（别的平台也能用）
 
-`PROMPTS.md` 是全部 47 条**完整** prompt，由 `python docs/tools/build_frame_prompts.py` 从 JSON 生成（**勿手改**；改 JSON 后重跑）。其中**前三档 common/uncommon/rare 为自包含完整 prompt**（风格基准见 `PROMPTS_REFERENCE.md`，不套用共用约束）；**44 张职业框 epic/legendary = 共用约束 + 途径主题层**。
+`PROMPTS.md` 是全部 47 条**完整** prompt，由 `python tools/build_frame_prompts.py` 从 JSON 生成（**勿手改**；改 JSON 后重跑）。其中**前三档 common/uncommon/rare 为自包含完整 prompt**（风格基准见 `PROMPTS_REFERENCE.md`，不套用共用约束）；**44 张职业框 epic/legendary = 共用约束 + 途径主题层**。
 把任意一条 prompt 复制到 豆包 / 即梦 / Midjourney / Stable Diffusion 等平台即可出图：
 
 - **比例**：竖图，建议 `1024×1536`（与卡面 3:4 对齐）。
@@ -35,9 +35,9 @@
 
    ```bash
    # 标准后处理：裁边（顺带裁掉外圈水印）+ 压黑，一步到位
-   python docs/tools/normalize_frame.py --autocrop 8 frame-common.png
+   python tools/normalize_frame.py --autocrop 8 frame-common.png
    # 只体检不改写：看黑底纯度 / 框带宽度（目标 <4%）/ 外缘留白
-   python docs/tools/normalize_frame.py --check site/assets/frames/*.png
+   python tools/normalize_frame.py --check site/assets/frames/*.png
    ```
 
    纯标准库实现（不依赖 Pillow），阈值默认 24：亮度 ≤24 归零、24–48 线性压缩（软过渡，避免灰雾边界出现硬边圆环），>48 的框线本体零损伤。`--autocrop 8` 按行/列**中位数**定位框沿裁到外扩 8px 并补齐 3:4——不用全局 bbox，因为右下角水印等离群亮块会把 bbox 撑大导致裁偏（2026-09-23 实测踩过）。实测压黑后中心区最亮 21→0、灰雾 96.88%→0.20%，框线占比 2.78% 保持不变。

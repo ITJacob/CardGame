@@ -1,6 +1,6 @@
 # 边框图 prompt 清单
 
-产物，由 `python docs/tools/build_frame_prompts.py` 生成，**勿手改**；改了 JSON 里的边框 prompt 后重跑。
+产物，由 `python tools/build_frame_prompts.py` 生成，**勿手改**；改了 JSON 里的边框 prompt 后重跑。
 
 共 47 张：全局三档 + 22 途径 × epic/legendary。
 - **前三档（common / uncommon / rare）**：每条是**自包含完整 prompt**，直接照搬 `PROMPTS_REFERENCE.md` 的认可风格，出图时**不套用下方共用约束**（共用约束含通用描边/filigree，会污染细线贴边效果）。
@@ -9,7 +9,7 @@
 **直接出框（非纹样）**：每条 prompt 让 AI 出「一张完整的黑底卡牌边框图」，在豆包 / 即梦 / Midjourney / Stable Diffusion 等平台直接批量出图即可。
 - 推荐竖图比例（如 1024x1536）；出图须为**纯黑底、无任何水印 / 签名 / 平台 logo**，中心保持纯黑。
 - 框线应**贴近卡边**（margin 小）；若平台默认留白多，出图后裁掉外圈留白再叠。
-- ⚠️ **黑底必须是绝对纯黑**：screen 叠加时任何 #0a0a0a 一类的近黑都会把整张卡面轻微提灰。若出图黑底带灰雾/布纹颗粒，用 `python docs/tools/normalize_frame.py <图>` 压成纯黑再入库。
+- ⚠️ **黑底必须是绝对纯黑**：screen 叠加时任何 #0a0a0a 一类的近黑都会把整张卡面轻微提灰。若出图黑底带灰雾/布纹颗粒，用 `python tools/normalize_frame.py <图>` 压成纯黑再入库。
 - 出图后以 `mix-blend-mode: screen` 叠到全出血卡面复用——黑底被 screen 吃透透出卡面、框线提亮叠加，一张框可复用于同档所有卡。
 材质分层（数据源已定，平台无需另调）：前三档为非金递进——普通=冷钢银单线 / 精良=青铜绿锈双线+连续角托 / 稀有=暖金三线+小符文；职业 epic/legendary 由各主题层自带金线（传说档金线最适配）。
 每条 prompt 内含的**四条硬约束**（勿删，删了就会回退成粗带/灰底）：纯黑背景前置并逐项否定纹理 / 笔触与光泽只在线上 / 辉光零外溢 / 边框带宽度量化为卡宽 3-4% 以内。详见 `PROMPTS_REFERENCE.md`。
