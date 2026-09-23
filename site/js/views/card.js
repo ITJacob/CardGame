@@ -2,7 +2,7 @@
 import { DB } from '../data.js';
 import { termSpan, statusSpan, axisSpan, escapeHtml } from '../term.js';
 import { renderEffects } from '../ast.js';
-import { axisNeedsLift } from '../axis-ink.js';
+import { axisLiftClass } from '../axis-ink.js';
 
 function targetHtml(t) {
   if (!t) return '';
@@ -140,12 +140,12 @@ export function renderCardDetail(view, id) {
   const g = (cat, key) => termSpan(cat, key);
   const cn = DB.glossary?.categories?.rarity?.terms?.[c.rarity]?.zh || c.rarity;
   const axSym = (DB.axesByPathway.get(c._pathway) || {})[c.axis]?.symbol || '';
-  const axLift = axisNeedsLift(axSym) ? ' ax-lift' : '';   // 近黑的轴符号才提亮，见 axis-ink.js
+  const axLift = axisLiftClass(axSym);   // 近黑的轴符号才提亮/染色，见 axis-ink.js
 
   view.innerHTML = `
   <div class="card-stage" style="--pc:var(--p-${c._pathway})">
     <a class="cs-back" href="#/cards">← 返回列表</a>
-    <div class="card-sheet${axLift} r-${c.rarity}" data-ax="${escapeHtml(axSym)}">
+    <div class="card-sheet ${axLift} r-${c.rarity}" data-ax="${escapeHtml(axSym)}">
       <header class="cs-head">
         <div class="cs-title-row">
           <h1 class="cs-name">${escapeHtml(c.name)}</h1>

@@ -155,6 +155,15 @@ a:hover { color: var(--accent2); }
 .card-face.ax-lift::after, .card-sheet.ax-lift::after {
   filter: invert(1) hue-rotate(180deg);
 }
+/* 染色档（近中性灰符号，🌑🌚🕸️⛓️…）：invert 之后是零色度浅灰，hue-rotate 无可旋转，
+   铺出来就是一团白雾（「暗夜月亮白蒙蒙」的成因）。sepia 先给灰一个暖色基底，
+   saturate 放大色度，hue-rotate 转到紫域，brightness 压回与 🔮 提亮后同档的明度——
+   参数在 64×64 像素级模拟里对齐到 🔮 提亮均色 (176,156,215)：本链输出 (170,155,224)。
+   灰色饱和不出来，只能染；染的统一是紫色系，正好与不眠者/暗夜气质相合 */
+.ax-sym.ax-tint,
+.card-face.ax-tint::after, .card-sheet.ax-tint::after {
+  filter: invert(1) sepia(1) saturate(2.5) hue-rotate(195deg) brightness(0.88);
+}
 /* 稀有度五档递进：common 朴素 → 金框斜纹 */
 .card-face.r-uncommon { border-left: 3px solid var(--uncommon); }
 .card-face.r-rare { border-color: color-mix(in srgb, var(--rare) 55%, var(--border)); }

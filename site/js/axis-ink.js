@@ -8,8 +8,14 @@
 // emoji 都拍成单色剪影：🕸️ 的网眼、⛓️ 的链环、🎩 的帽带全塌成实心块，颜色也全丢
 // ——修好了 12 个，弄坏了 88 个。
 //
-// 所以现在只对「确实暗到看不见」的那些加 .ax-lift（CSS 里 invert + hue-rotate：
-// 提亮但保留相对明暗与大致色相，比压成纯白多留一层细节）。剩下约 86% 保持 emoji 原样。
+// 所以现在只对「确实暗到看不见」的那些提亮，分两档（剩下约 86% 保持 emoji 原样）：
+//   - .ax-lift（有色相的深色符号，如 🔮）：CSS invert + hue-rotate(180deg)，
+//     明暗翻转、大致色相保留——暗紫的水晶球变成浅紫，而不是灰。
+//   - .ax-tint（色度≈0 的近中性符号，如 🌑🌚🕸️⛓️）：invert 之后是字面意义的浅灰，
+//     hue-rotate 对零色度无可旋转——出来就是一团白雾（「暗夜月亮白蒙蒙」的成因）。
+//     这类改走 invert + sepia + saturate + hue-rotate + brightness 的染色链，
+//     强制染成与 🔮 提亮后同款的浅紫（参数在 64×64 像素级模拟里对齐到
+//     (176,156,215) 附近）。灰色饱和不出来，只能染。
 //
 // **为什么是现算而不是写死一张深色符号清单**：
 //   ① 符号会换——2026-09 这批 emoji 刚整体换过一次，写死的清单当场作废；
@@ -24,7 +30,12 @@
 // 「哪些符号看起来是原色、哪些被提亮」，两侧相邻的两个符号观感会明显不同
 const LIFT_BELOW = 0.15;
 
-// 测不准时一律**不改动**（返回 false）：水印是装饰，退回 emoji 原样最多是某个符号
+// 染色档门槛：不透明像素的平均色度（逐像素 max(r,g,b)-min(r,g,b) 的均值）低于它
+// 就算「近中性灰」。实测灰色符号 0~4.3（🌑🌚🕸️⛓️🗡️🔭…），最低的有色符号 🎩 23.3，
+// 间隔干净。染色的输入就是 invert 后的浅灰，灰度差异只影响输出明暗、不影响色相
+const TINT_BELOW = 10;
+
+// 测不准时一律**不改动**（返回 ''）：水印是装饰，退回 emoji 原样最多是某个符号
 // 偏暗，比因为一次 getImageData 失败给整页符号套错滤镜要好
 const cache = new Map();
 
@@ -39,7 +50,7 @@ function measure(symbol) {
   x.textAlign = 'center';
   x.textBaseline = 'middle';
   x.fillText(symbol, 32, 34);
-  let sr = 0, sg = 0, sb = 0, n = 0;
+  let sr = 0, sg = 0, sb = 0, ch = 0, n = 0;
   let data;
   try {
     data = x.getImageData(0, 0, 64, 64).data;
@@ -48,26 +59,31 @@ function measure(symbol) {
   }
   for (let i = 0; i < data.length; i += 4) {
     if (data[i + 3] / 255 < 0.5) continue;   // 只算不透明像素：半透明边缘属于字形轮廓之外
-    sr += data[i]; sg += data[i + 1]; sb += data[i + 2]; n++;
+    const r = data[i], g = data[i + 1], b = data[i + 2];
+    sr += r; sg += g; sb += b;
+    ch += Math.max(r, g, b) - Math.min(r, g, b);
+    n++;
   }
   if (!n) return null;        // 画布上什么都没画出来（字体缺失 / 该码位没有字形）
   const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
   // WCAG 的相对亮度公式（sRGB 线性化后按人眼敏感度加权）。直接拿通道平均值是不行的：
   // 人眼对绿色远比对蓝色敏感，纯蓝 (0,0,255) 的均值 85 看着「中等亮」，实际亮度只有 0.07
-  return 0.2126 * lin(sr / n) + 0.7152 * lin(sg / n) + 0.0722 * lin(sb / n);
+  const lum = 0.2126 * lin(sr / n) + 0.7152 * lin(sg / n) + 0.0722 * lin(sb / n);
+  return { lum, chroma: ch / n };
 }
 
-// 该符号是否需要提亮。空符号、量不出来、或测出来不够暗，都返回 false
-export function axisNeedsLift(symbol) {
-  if (!symbol) return false;
-  if (cache.has(symbol)) return cache.get(symbol);
-  let lum = null;
-  try {
-    lum = measure(symbol);
-  } catch {
-    lum = null;
+// 该符号要打的提亮类名：'' = 原样；'ax-lift' = 有色相的深色符号，明暗翻转即可；
+// 'ax-tint' = 近中性灰符号，invert 后无可保的色相，必须染色。量不出来一律 ''
+export function axisLiftClass(symbol) {
+  if (!symbol) return '';
+  if (!cache.has(symbol)) {
+    let m = null;
+    try {
+      m = measure(symbol);
+    } catch {
+      m = null;
+    }
+    cache.set(symbol, !m || m.lum >= LIFT_BELOW ? '' : (m.chroma < TINT_BELOW ? 'ax-tint' : 'ax-lift'));
   }
-  const lift = lum !== null && lum < LIFT_BELOW;
-  cache.set(symbol, lift);
-  return lift;
+  return cache.get(symbol);
 }

@@ -1,6 +1,6 @@
 // 术语解析：枚举 token → 中文名 + 解释（唯一入口）
 import { DB } from './data.js';
-import { axisNeedsLift } from './axis-ink.js';
+import { axisLiftClass } from './axis-ink.js';
 
 export function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -70,7 +70,7 @@ export function lookupAxis(pathwayId, axisId) {
 // **必须把符号单独包起来**：滤镜套在整段文字上，旁边的中文名会跟着一起翻成反色
 export function axSymHtml(symbol) {
   if (!symbol) return '';
-  return `<span class="ax-sym${axisNeedsLift(symbol) ? ' ax-lift' : ''}">${escapeHtml(symbol)}</span>`;
+  return `<span class="ax-sym ${axisLiftClass(symbol)}">${escapeHtml(symbol)}</span>`;
 }
 
 // 渲染为带 tooltip 的 span；showKey=true 时附英文小字

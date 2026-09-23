@@ -2,7 +2,7 @@
 import { DB } from '../data.js';
 import { termSpan, axisSpan, escapeHtml } from '../term.js';
 import { walkCardEffects } from '../ast.js';
-import { axisNeedsLift } from '../axis-ink.js';
+import { axisLiftClass } from '../axis-ink.js';
 
 const PAGE_SIZE = 100;
 
@@ -113,8 +113,8 @@ function cardItemHtml(c) {
   const hook = c.kind === 'passive' && c.hook
     ? `<span class="badge">${termSpan('triggerEvent', c.hook)}</span>` : '';
   const axSym = (DB.axesByPathway.get(c._pathway) || {})[c.axis]?.symbol || '';
-  const axLift = axisNeedsLift(axSym) ? ' ax-lift' : '';   // 近黑的轴符号才提亮，见 axis-ink.js
-  return `<div class="card-item card-face${axLift} r-${c.rarity}" data-id="${escapeHtml(c.id)}" data-ax="${escapeHtml(axSym)}" style="--pc:var(--p-${c._pathway})">
+  const axLift = axisLiftClass(axSym);   // 近黑的轴符号才提亮/染色，见 axis-ink.js
+  return `<div class="card-item card-face ${axLift} r-${c.rarity}" data-id="${escapeHtml(c.id)}" data-ax="${escapeHtml(axSym)}" style="--pc:var(--p-${c._pathway})">
     <div class="ci-head">
       <span class="ci-name">${escapeHtml(c.name)}</span>
       <span class="ci-seq">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')}</span>
