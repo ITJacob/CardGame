@@ -2,7 +2,7 @@
 
 > 数据来源：`docs/json/apprentice.skills.json`（共 **34** 张技能卡）。
 > 由 `docs/tools/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。
-> 生成日期：2026-09-23
+> 生成日期：2026-09-24
 
 ## 一、职业总览：四条构筑轴一览
 
