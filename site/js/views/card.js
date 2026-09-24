@@ -2,6 +2,7 @@
 import { DB } from '../data.js';
 import { termSpan, statusSpan, axisSpan, escapeHtml } from '../term.js';
 import { renderEffects } from '../ast.js';
+import { showTipSticky } from '../tooltip.js';
 
 function targetHtml(t) {
   if (!t) return '';
@@ -170,7 +171,6 @@ function artHtml(c) {
       ${f ? `<img class="cs-orn" src="assets/frames/${f.file}.png" alt="" loading="lazy" onerror="this.remove()">` : ''}
       <div class="cs-artmiss" hidden>卡面缺失：把图命名为 <span class="mono">${escapeHtml(c.id)}.png</span> 放进 <span class="mono">assets/cards/</span>（上面 id 点一下就复制）。格式必须是 png/jpg/webp，HEIC 浏览器渲染不了</div>
     </div>
-    <div class="cs-prompt">${escapeHtml(prompt)}</div>
   </section>`;
 }
 
@@ -204,7 +204,7 @@ export function renderCardDetail(view, id) {
   view.innerHTML = `
   <div class="card-stage" style="--pc:var(--p-${c._pathway})">
     <a class="cs-back" href="#/cards">← 返回列表</a>
-    <div class="card-sheet r-${c.rarity}" data-ax="${escapeHtml(axSym)}">
+    <div class="card-sheet r-${c.rarity} k-${c.kind}" data-ax="${escapeHtml(axSym)}">
       <header class="cs-head">
         <div class="cs-title-row">
           <h1 class="cs-name">${escapeHtml(c.name)}</h1>
@@ -282,9 +282,14 @@ async function copyText(fallbackEl, text) {
 export function wireCopy(view) {
   view.querySelectorAll('.cs-copy[data-prompt]').forEach((btn) => {
     const label = btn.textContent;
-    btn.addEventListener('click', async () => {
-      // 按钮自身没文本可选，失败时选中整段 prompt 让它至少可手动复制
-      const ok = await copyText(view.querySelector('.cs-prompt'), btn.dataset.prompt);
+    btn.addEventListener('click', async (e) => {
+      // prompt 不常驻页面，点复制时以钉住式浮层（复用 #tooltip 的 tip-center 居中样式）弹出。
+      // stopPropagation：这次点击不能冒泡到 document，否则 tooltip.js 的「点外部关闭」
+      // 会立刻把刚打开的浮层关掉；失败时的兜底文本也选中浮层里那份
+      e.stopPropagation();
+      showTipSticky(`<div class="tt-cat">${escapeHtml(label.replace(/^复制| prompt$/g, ''))} prompt</div>
+        <div class="cs-prompt">${escapeHtml(btn.dataset.prompt)}</div>`);
+      const ok = await copyText(document.querySelector('#tooltip .cs-prompt'), btn.dataset.prompt);
       btn.textContent = ok ? '已复制 ✓' : '已选中，Ctrl+C';
       setTimeout(() => { btn.textContent = label; }, 1500);
     });

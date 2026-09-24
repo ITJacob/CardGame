@@ -112,7 +112,7 @@ function cardItemHtml(c) {
   const hook = c.kind === 'passive' && c.hook
     ? `<span class="badge">${termSpan('triggerEvent', c.hook)}</span>` : '';
   const axSym = (DB.axesByPathway.get(c._pathway) || {})[c.axis]?.symbol || '';
-  return `<div class="card-item card-face r-${c.rarity}" data-id="${escapeHtml(c.id)}" data-ax="${escapeHtml(axSym)}" style="--pc:var(--p-${c._pathway})">
+  return `<div class="card-item card-face r-${c.rarity} k-${c.kind}" data-id="${escapeHtml(c.id)}" data-ax="${escapeHtml(axSym)}" style="--pc:var(--p-${c._pathway})">
     <div class="ci-head">
       <span class="ci-name">${escapeHtml(c.name)}</span>
       <span class="ci-seq">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')}</span>

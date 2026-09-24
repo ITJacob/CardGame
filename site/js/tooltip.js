@@ -28,13 +28,21 @@ function fillTip(tip, el) {
 export function initTooltip() {
   const tip = document.getElementById('tooltip');
 
+  // 钉住态（tip-sticky，如出图 prompt 弹窗）：不随 hover 显隐，点外部或换路由才关。
+  // 复制按钮在自己的 click 里 stopPropagation，这里的冒泡监听收不到「打开」那次点击
+  const closeSticky = () => { tip.classList.remove('tip-sticky'); tip.hidden = true; };
+  document.addEventListener('click', (e) => {
+    if (tip.classList.contains('tip-sticky') && !tip.contains(e.target)) closeSticky();
+  });
+  window.addEventListener('hashchange', () => { tip.classList.remove('tip-sticky'); });
+
   // 触屏分支。用 hover/pointer 能力检测而非 'ontouchstart'（触屏笔记本会误判）
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     document.addEventListener('click', (e) => {
       const el = e.target.closest?.('.term');
       if (!el) {
         // 点浮层内的非术语区域（如长备注）不关闭，否则没法滚动阅读
-        if (!tip.contains(e.target)) tip.hidden = true;
+        if (!tip.contains(e.target)) closeSticky();
         return;
       }
       // 带词典深链的术语（领域模型页的 token）放行：触屏没有「悬停」，拦下点击等于废掉跳转，
@@ -53,13 +61,14 @@ export function initTooltip() {
   }
 
   document.addEventListener('mouseover', (e) => {
+    if (tip.classList.contains('tip-sticky')) return;
     const el = e.target.closest?.('.term');
     if (!el) { tip.hidden = true; return; }
     fillTip(tip, el);
     tip.hidden = false;
   });
   document.addEventListener('mousemove', (e) => {
-    if (tip.hidden) return;
+    if (tip.hidden || tip.classList.contains('tip-sticky')) return;
     const pad = 14;
     let x = e.clientX + pad, y = e.clientY + pad;
     const r = tip.getBoundingClientRect();
@@ -69,6 +78,16 @@ export function initTooltip() {
     tip.style.top = y + 'px';
   });
   document.addEventListener('mouseout', (e) => {
+    if (tip.classList.contains('tip-sticky')) return;
     if (e.target.closest?.('.term')) tip.hidden = true;
   });
+}
+
+// 钉住式弹窗（复用 #tooltip 的 tip-center 居中样式）：复制 prompt 这类「点了才给看」的内容。
+// 与 hover 浮层互斥——sticky 期间 hover 处理器全部短路，直到点外部/换路由关闭
+export function showTipSticky(html) {
+  const tip = document.getElementById('tooltip');
+  tip.innerHTML = html;
+  tip.classList.add('tip-center', 'tip-sticky');
+  tip.hidden = false;
 }
