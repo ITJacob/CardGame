@@ -187,6 +187,8 @@ class Renderer:
             return "带 %s 类状态" % "/".join(c.get("categories") or [])
         if k == "stat_compare":
             return "属性比较 %s" % c.get("key", "")
+        if k == "resource_compare":
+            return "%s%s%s%s" % (side or "目标", c.get("key", "?"), cmp_, n if n is not None else "")
         if k == "element_is":
             return "元素为 %s" % ELEM.get(c.get("element"), c.get("element"))
         if k == "field_status_count":

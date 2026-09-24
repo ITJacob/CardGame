@@ -10,7 +10,7 @@
     "vice": {
       "symbol": "😈",
       "name": "恶欲",
-      "statusId": "desire",
+      "note": "轴身份为单位级恶欲值 Pool（resource: lust，0-10，阈值档见 designNote）：产能走 modify_resource(lust,+N)，不是 statusDef，故无 statusId",
       "enablers": [
         "掌控欲望",
         "欲望爆炸"
@@ -183,6 +183,12 @@
             "p": 0.3
           },
           "note": "概率只作用于是否附加状态（非伤害维度，R5 合规），需登记 RandomUsageRegistry（R3）、单次抽样（R4）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "lust",
+          "value": 1,
+          "note": "产能方身份：推高目标恶欲值 ⚠️D"
         }
       ],
       "upgradeLadder": {
@@ -221,7 +227,7 @@
         "prisoner"
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：本途径\"火球术\"：低费直伤。同时推高恶欲值（产能方身份）。概率只作用于是否附加 `vulnerable`（R5 合规）。⚠️D。",
+      "conversionNotes": "翻译/语义：本途径\"火球术\"：低费直伤 + 推高恶欲值（modify_resource(lust,+1)，产能方身份——此前该语义无载体，Pool 路线后补段）。概率只作用于是否附加 `vulnerable`（R5 合规）。⚠️D。",
       "art": {
         "subject": "a gloved hand raising a poisoned dagger behind an unsuspecting victim",
         "elements": [
@@ -1096,9 +1102,10 @@
               "value": 2
             },
             {
-              "type": "mount_status",
-              "statusId": "desire",
-              "duration": 3
+              "type": "modify_resource",
+              "resource": "lust",
+              "value": 2,
+              "note": "首次推高恶欲值（产能）⚠️D"
             }
           ]
         }
@@ -1136,8 +1143,8 @@
       "axis": "vice",
       "flagship": false,
       "lore": "序列5 欲望使徒 —— \"『掌控欲望』：操纵情绪欲望，诱使堕落 / 情绪失控 / 欲望爆炸\"",
-      "flavor": "你伸手在它心里拨了一下那根弦，某个被压了很久的东西就松动了。它陷入「欲望」4 个 tick，并受到 2 点精神伤害——若它心里早已有欲望在烧，这次拨动就足以让它彻底失控，转身扑向自己人。",
-      "describe": "对一名敌人造成 2 点精神伤害并使其陷入欲望 4 tick；若施加前它已持有欲望，则转而魅惑 2 tick（攻击其己方队友）。",
+      "flavor": "你伸手在它心里拨了一下那根弦，某个被压了很久的东西就松动了。它的恶欲值被推高 2 点，并受到 2 点精神伤害——若它心里的欲望本就积得够深，这次拨动就足以让它彻底失控，转身扑向自己人。",
+      "describe": "对一名敌人造成 2 点精神伤害并使其恶欲值 +2；若其恶欲值因此进入躁动档（≥4），转而魅惑 2 tick（攻击其己方队友）。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1162,18 +1169,19 @@
               "value": 2
             },
             {
-              "type": "mount_status",
-              "statusId": "desire",
-              "duration": 4
+              "type": "modify_resource",
+              "resource": "lust",
+              "value": 2,
+              "note": "推高恶欲值（产能）⚠️D"
             },
             {
               "op": "if",
               "condition": {
-                "kind": "has_status",
+                "kind": "resource_compare",
                 "side": "target",
-                "id": "desire",
+                "key": "lust",
                 "cmp": ">=",
-                "n": 1
+                "n": 4
               },
               "then": [
                 {
@@ -1190,8 +1198,8 @@
       ],
       "tentative": true,
       "conversionNotes": [
-        "If 判定刻意放在 mount_status(desire) 之后：语义是「目标此前已有欲望」则升级为 charm；引擎按顺序结算即可承载",
-        "翻译/语义：恶欲轴控制旗舰：挂 `desire`→再挂升级 `charm`。⚠️D。"
+        "If 判定刻意放在 modify_resource(lust,+2) 之后：语义是「此次推高使其进入躁动档（≥4）」则升级为魅惑；引擎按顺序结算即可承载",
+        "翻译/语义：恶欲轴控制旗舰：推高恶欲值→达档升级魅惑。恶欲值是单位级 Pool（resource: lust），不再借 desire 状态承载。⚠️D。"
       ],
       "art": {
         "subject": "a shadowy puppeteer plucking an invisible string inside a victim's chest",
@@ -1327,7 +1335,7 @@
       "flagship": false,
       "lore": "序列5 欲望使徒 —— \"『欲望化身』：转化为黑色液体规避 / 隐匿 / 影响\"",
       "flavor": "你塌成了一摊漆黑的、缓慢流动的液体。3 个 tick 内没人能把你当作单体目标，打在你身上的力道也要少掉四分之一；而谁被这摊黑液沾到，心里就会长出点什么东西。",
-      "describe": "化作黑色液体并滑回己方最后位，持续 3 tick：不可被单体技能选中、受伤 ×0.75；造成伤害时使目标陷入欲望 2 tick，但首次造成伤害后失去不可选中。",
+      "describe": "化作黑色液体并滑回己方最后位，持续 3 tick：不可被单体技能选中、受伤 ×0.75；造成伤害时使目标恶欲值 +1，但首次造成伤害后失去不可选中。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1415,7 +1423,7 @@
       "flagship": false,
       "lore": "序列4 魔鬼 —— \"通过声音 / 眼神 / 动作让目标陷入迷幻，欲望膨胀\"",
       "flavor": "你说了句话，或者只是看了它一眼。它眼前的世界晃了一下——接下来的两次攻击都挥向了不存在的东西；而它心里那些本来还能压住的东西，开始膨胀。",
-      "describe": "使一名敌人迷幻 4 tick：接下来 2 次攻击挥向空处；并使其陷入欲望 3 tick。",
+      "describe": "使一名敌人迷幻 4 tick：接下来 2 次攻击挥向空处；并使其恶欲值 +1。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1441,15 +1449,16 @@
               "duration": 4
             },
             {
-              "type": "mount_status",
-              "statusId": "desire",
-              "duration": 3
+              "type": "modify_resource",
+              "resource": "lust",
+              "value": 1,
+              "note": "欲望膨胀=推高恶欲值（产能）⚠️D"
             }
           ]
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：迷幻=打空 + 欲望膨胀=推高 `desire`。⚠️D。",
+      "conversionNotes": "翻译/语义：迷幻=打空 + 欲望膨胀=推高恶欲值（modify_resource(lust,+1)）。⚠️D。",
       "art": {
         "subject": "a victim swinging wildly at phantom attackers in empty air",
         "elements": [
@@ -2356,7 +2365,7 @@
       }
     }
   ],
-  "designNote": "> **暗影世界系签名机制（咬合器维度）**：本系签名 = **恶欲值（单位级 0–10）+ 诅咒链接网 + 异类谱系**。\n> - **恶欲值（单位级）**：战场每单位各自持有一条。**罪犯是产能方**——不断推高（越强但越失控）；**囚犯是消纳方**——吸收转诅咒链接；**律师（失序之国）拧**——腐蚀直接推高敌人恶欲值。阈值（照搬《暗影世界系技能设定》§2.2）：\n>   - 0–3 正常；**4–6 躁动**：伤害 +20%，20% 概率改攻最近单位（含友军）；\n>   - **7–9 失控**：伤害 +50%，35% 概率攻友军，无法被治疗；\n>   - **=10 欲望爆炸**：受自身最大生命 25% 精神伤害，归零，向相邻各传 3 点。\n> - **刻印链（罪犯专属引擎改革）**：`恶魔仪式`（生命−6→能量+8→`仪式刻印`+1 层）→ `深渊召唤`（消耗全部刻印层 → 恶魔强度/数量 = f(N)）。把现存唯一完整 enabler→payoff 链扶正为轴心。\n> - 诅咒链接网 / 异类谱系 见囚犯稿 §〇（罪犯侧经\"转化\"把被欲望击垮的敌人 push 入囚犯谱系）。",
+  "designNote": "> **暗影世界系签名机制（咬合器维度）**：本系签名 = **恶欲值（单位级 0–10）+ 诅咒链接网 + 异类谱系**。\n> - **恶欲值（单位级 Pool，resource: lust）**：战场每单位各自持有一条，承载为单位级 Pool（modify_resource(lust,±N)），与迷失值 lost 同构；阈值档经 thresholdTrigger 挂载档位状态。**罪犯是产能方**——不断推高（越强但越失控）；**囚犯是消纳方**——吸收转诅咒链接；**律师（失序之国）拧**——腐蚀直接推高敌人恶欲值。阈值（照搬《暗影世界系技能设定》§2.2）：\n>   - 0–3 正常；**4–6 躁动**：伤害 +20%，20% 概率改攻最近单位（含友军）；\n>   - **7–9 失控**：伤害 +50%，35% 概率攻友军，无法被治疗；\n>   - **=10 欲望爆炸**：受自身最大生命 25% 精神伤害，归零，向相邻各传 3 点。\n> - **刻印链（罪犯专属引擎改革）**：`恶魔仪式`（生命−6→能量+8→`仪式刻印`+1 层）→ `深渊召唤`（消耗全部刻印层 → 恶魔强度/数量 = f(N)）。把现存唯一完整 enabler→payoff 链扶正为轴心。\n> - 诅咒链接网 / 异类谱系 见囚犯稿 §〇（罪犯侧经\"转化\"把被欲望击垮的敌人 push 入囚犯谱系）。",
   "sampleBuilds": [
     {
       "name": "A 恶魔化凶兽 👹🌋",
@@ -2388,7 +2397,7 @@
         "恶意感知",
         "深渊即我"
       ],
-      "playstyle": "挂 desire→再挂升级打队友，欲望爆炸延迟收割；深渊即我对所有带 debuff 目标 +30%"
+      "playstyle": "推高恶欲值→达档魅惑打队友，欲望爆炸延迟收割；深渊即我对所有带 debuff 目标 +30%"
     },
     {
       "name": "C 污秽侵蚀 🕳️",
