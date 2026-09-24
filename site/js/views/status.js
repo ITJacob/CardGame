@@ -147,10 +147,71 @@ export function renderStatuses(view) {
       .map(([c, m]) => ({ head: zh('statusCategory', c), values: m })),
   });
 
+  // ---- 途径 × 维度 热图（9 张，与上方同维度 bar 同口径、同遍历规则）----
+  const bump2 = (m, owner, key) => {
+    let r = m.get(owner);
+    if (!r) { r = new Map(); m.set(owner, r); }
+    r.set(key, (r.get(key) || 0) + 1);
+  };
+  const catByOwner = new Map(), trigByOwner = new Map(), durByOwner = new Map(),
+        stackByOwner = new Map(), chargeByOwner = new Map(), dispelByOwner = new Map(),
+        primByOwner = new Map(), mkeyByOwner = new Map(), fieldByOwner = new Map();
+  for (const s of defs) {
+    const o = s._owner;
+    for (const c of [].concat(s.category || [])) bump2(catByOwner, o, c);
+    for (const t of s.triggers || []) bump2(trigByOwner, o, t.event);
+    if (s.duration != null) bump2(durByOwner, o, s.duration);
+    if (s.maxStacks != null) bump2(stackByOwner, o, s.maxStacks);
+    if (s.charges != null) bump2(chargeByOwner, o, s.charges);
+    bump2(dispelByOwner, o, s.dispelable === false ? '不可驱散' : '可驱散');
+    for (const k of modifierKeys(s)) bump2(mkeyByOwner, o, k);
+    walkCardEffects(s, (n, kindOf) => { if (kindOf === 'primitive') bump2(primByOwner, o, n.type); });
+    for (const [k, v] of Object.entries(s)) {
+      if (k === '_owner' || v == null) continue;
+      if (Array.isArray(v) && !v.length) continue;
+      if (typeof v === 'object' && !Array.isArray(v) && !Object.keys(v).length) continue;
+      bump2(fieldByOwner, o, k);
+    }
+  }
+  // 行：22 个途径**全在**（manifest 序，一格都没有的途径留空行）+ 末尾一行「通用」。
+  // 行清单是「途径」而不是「有数据的途径」——少一行，相邻热图之间就对不上号了
+  const ownerRows = (m) => [
+    ...DB.pathways.map((p) => ({ head: p.name, values: m.get(p.id) || new Map() })),
+    { head: '通用', values: m.get('common') || new Map() },
+  ];
+  // 列序 = 折叠优先级：用量型维度按总量降序（默认措辞即此）；持续/叠层/次数是有序刻度，
+  // 升序排、折掉的是大数值端，措辞跟着改
+  const usageCols = (total, cat, topN) => [...total.entries()].sort((a, b) => b[1] - a[1])
+    .slice(0, topN).map(([k]) => ({ key: k, label: cat ? zh(cat, k) : String(k), title: String(k) }));
+  const scaleCols = (m, suffix) => [...new Set([...m.values()].flatMap((r) => [...r.keys()]))]
+    .sort((a, b) => a - b).map((k) => ({ key: k, label: `${k} ${suffix}`, title: String(k) }));
+  const dispelCols = [
+    { key: '可驱散', label: '可驱散', title: 'dispelable 未显式关闭' },
+    { key: '不可驱散', label: '不可驱散', title: 'dispelable: false' },
+  ];
+  const heatOf = (title, m, cols, extra = {}) => heatPanel({
+    title, cornerLabel: '途径', scopeLabel: '状态面', cols, rows: ownerRows(m), ...extra,
+  });
+
+  const heatSection = `
+    <div class="stat-group-title">途径 × 维度 热图</div>
+    <p class="panel-note muted">行 = ${DB.pathways.length} 个途径 + 末尾「通用」（common.statuses.json），
+    口径与上方同维度 bar 一致。分类是复选字段，一行合计可以超过该途径的状态数；
+    修饰符键与字段填充是长尾维度，只列 Top 列。</p>
+    ${heatOf('途径 × 分类', catByOwner, usageCols(byCat, 'statusCategory'), { unit: ' 次' })}
+    ${heatOf('途径 × 触发点', trigByOwner, usageCols(byTrigger, 'triggerEvent'), { unit: ' 条' })}
+    ${heatOf('途径 × 持续（duration）', durByOwner, scaleCols(durByOwner, 'tick'), { unit: ' 个', orderNote: '数值最小的 ' })}
+    ${heatOf('途径 × 层数上限（maxStacks）', stackByOwner, scaleCols(stackByOwner, '层'), { unit: ' 个', orderNote: '数值最小的 ' })}
+    ${heatOf('途径 × 次数（charges）', chargeByOwner, scaleCols(chargeByOwner, '次'), { unit: ' 个', orderNote: '数值最小的 ' })}
+    ${heatOf('途径 × 可驱散', dispelByOwner, dispelCols, { unit: ' 个' })}
+    ${heatOf('途径 × 原语（状态面）', primByOwner, usageCols(primTotal, 'primitive'))}
+    ${heatOf('途径 × 修饰符键 Top 12', mkeyByOwner, usageCols(mkeyTotal, null, 12))}
+    ${heatOf('途径 × statusDef 字段填充 Top 15', fieldByOwner, usageCols(fill, null, 15), { unit: ' 个' })}`;
+
   view.innerHTML = `<h1 class="page-title">状态统计</h1>
     <p class="panel-note muted">口径：docs/json/*.statuses.json 的 ${defs.length} 个状态定义。
-    卡面效果见「统计分析」页。</p>
-    ${overview}${triggerPanel}${primPanel}${mkeyPanel}${heat}${fieldPanel}`;
+    卡面效果见「统计分析」页。页面下方另附「途径 × 维度」热图（9 张）。</p>
+    ${overview}${triggerPanel}${primPanel}${mkeyPanel}${heat}${fieldPanel}${heatSection}`;
 
   wireHeatToggle(view);
 }
