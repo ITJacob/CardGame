@@ -156,6 +156,22 @@ a:hover { color: var(--accent2); }
     var(--panel);
 }
 .card-face.r-legendary::before { background: linear-gradient(90deg, var(--legendary), transparent 70%); }
+/* 类型纹理：被动卡铺细横纹，取「常驻生效」的刻度感。刻意用横纹而非斜纹——
+   斜纹已是传说稀有度的专属，一种纹理只承担一个含义，被动×传说叠加时两纹理方向错开互不混淆 */
+.card-face.k-passive {
+  background:
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--dim) 16%, transparent) 0 1px, transparent 1px 8px),
+    radial-gradient(120% 100% at 88% 0%, color-mix(in srgb, var(--pc, transparent) 8%, transparent) 0%, transparent 60%),
+    var(--panel);
+}
+/* 传说×被动叠加时两种纹理都降密度：横纹拉疏到 14px、斜纹透明度 0.07→0.045，否则两层纹理叠着太密 */
+.card-face.r-legendary.k-passive {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Cpath d='M0 14L14 0M-3.5 3.5L3.5 -3.5M10.5 17.5L17.5 10.5' stroke='%23e0a34a' stroke-opacity='0.045'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--dim) 11%, transparent) 0 1px, transparent 1px 14px),
+    radial-gradient(120% 100% at 88% 0%, color-mix(in srgb, var(--pc, transparent) 8%, transparent) 0%, transparent 60%),
+    var(--panel);
+}
 .card-item:hover { filter: brightness(1.1); }
 .card-item .ci-head { display: flex; align-items: baseline; gap: 8px; }
 .card-item .ci-name { font-weight: 700; font-size: 15px; }
@@ -245,6 +261,20 @@ body.page-card #view { max-width: none; padding: 0; }
     radial-gradient(140% 45% at 50% -12%, color-mix(in srgb, var(--pc, transparent) 15%, transparent) 0%, transparent 65%),
     var(--panel);
   box-shadow: 0 10px 40px rgba(0,0,0,.4), inset 0 0 0 1px color-mix(in srgb, var(--legendary) 35%, transparent), 0 0 34px color-mix(in srgb, var(--legendary) 14%, transparent);
+}
+/* 被动卡横纹（语义同 .card-face.k-passive）；详情页稀有度不改 background 的只有传说，只需补它一个叠加 */
+.card-sheet.k-passive {
+  background:
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--dim) 13%, transparent) 0 1px, transparent 1px 9px),
+    radial-gradient(140% 45% at 50% -12%, color-mix(in srgb, var(--pc, transparent) 15%, transparent) 0%, transparent 65%),
+    var(--panel);
+}
+.card-sheet.r-legendary.k-passive {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M0 16L16 0M-4 4L4 -4M12 20L20 12' stroke='%23e0a34a' stroke-opacity='0.04'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--dim) 9%, transparent) 0 1px, transparent 1px 15px),
+    radial-gradient(140% 45% at 50% -12%, color-mix(in srgb, var(--pc, transparent) 15%, transparent) 0%, transparent 65%),
+    var(--panel);
 }
 .cs-head { position: relative; }
 .cs-title-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
