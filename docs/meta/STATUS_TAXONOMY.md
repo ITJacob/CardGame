@@ -26,7 +26,7 @@
 |---|---|---|---|---|
 | 1 | **定义归属** | 写在哪、归谁所有 | `common.statuses.json` vs `<pathway>.statuses.json` | common 21 个（poison/shield/stun…）；私有占约 95% |
 | 2 | **跨系可读** | 非本途径能否读 | `statusDef.crossPathway` + `participants` 白名单 | puppet_string / fate / filth / grazing_slot / massing |
-| 3 | **挂载层级** | 挂在战场 / 单位 / 实例 | `board.*` / `unit.*` / StatusInstance / zone·domain | board.secrecy；unit.lust；普通状态实例 |
+| 3 | **挂载层级** | 挂在战场 / 单位 / 实例 | `board.*` / 单位级 Pool / StatusInstance / zone·domain | board.secrecy；Pool lust/lost；普通状态实例 |
 | 4 | **主题来源（源质系）** | 属于 9 系哪系 | `docs/ddd/params/源质维度与跨系枢纽.md` §〇 | 源堡=隐秘值、暗影=恶欲值、光之钥=命运值 |
 | 5 | **机制角色** | 什么类状态 | `statusDef.category` 12 枚举 | buff/debuff/control/aura/stance/…/conceal/seal |
 | 6 | **途径轴身份** | 是否某构筑轴锚 | `axes[].statusId` + `enablers`/`payoffs` | 占卜家预知轴、刺客戏法轴 |
@@ -50,7 +50,7 @@
 
 ### 维度 3 · 挂载层级（最易被误判）
 - **战场级标量** `board.*`：`secrecy`(隐秘值) / `order`(秩序度) / `fate_value`(命运值) / `luminance`(光照度) / `clock`(战场时钟)。**不是 statusDef**，是全局数值槽。
-- **单位级标量** `unit.*`：`unit.lust`(恶欲值) 挂单位身上，**非战场级、也不是 statusDef**（源质维度与跨系枢纽.md §五 明示「注意：非战场级」）。
+- **单位级 Pool**：`lust`(恶欲值) / `lost`(迷失值) 挂单位身上，**非战场级、也不是 statusDef**——与 hp/energy 同为 Pool，产能读写走 `modify_resource` / `resource_compare`，阈值档经 `thresholdTrigger` 挂载档位状态（源质维度与跨系枢纽.md §五、编队参数.md §2.5）。
 - **状态实例 StatusInstance**：`statusDef` 经 `mount_status` 落下去、挂在单位 / 场上的运行时实例，可堆叠、到期、被驱散。
 - 边界：维度 4 的源质标量 ≠ 维度 1 的状态定义。不要因为「隐秘值」看着像状态就建 StatusDef（见 §四）。
 
@@ -98,9 +98,9 @@
 ## 三、两个被混用的词（务必在文档/对话里分开）
 
 1. **「源质状态」同时指了两种不同层级的机制，建议拆称：**
-   - (a) **源质维度**：9 系各贡献的标量槽（战场级 secrecy/order/fate_value/luminance，或单位级 lust）。是 `board.*`/`unit.*` 上的数值总线，**不是 statusDef**。
-   - (b) **枢纽状态（crossPathway 状态）**：puppet_string / fate / filth / conceal / lust / grazing_slot / massing 等，是普通 statusDef 标 `crossPathway:true`+`participants`。
-   - 两者机制层级不同（a 是数值、b 是可读标志），混用「源质状态」一词会误导。
+   - (a) **源质维度**：9 系各贡献的标量槽（战场级 secrecy/order/fate_value/luminance，或单位级 Pool lust/lost）。是数值总线，**不是 statusDef**。
+   - (b) **枢纽状态（crossPathway 状态）**：puppet_string / fate / filth / conceal / grazing_slot / massing 等，是普通 statusDef 标 `crossPathway:true`+`participants`。
+   - 两者机制层级不同（a 是数值、b 是可读标志），混用「源质状态」一词会误导。⚠️ 本表 (b) 曾列 `lust`——2026-09-24 起 lust 已 Pool 化归 (a)，不再是枢纽状态（跨系读 Pool 走 `resource_compare`，无需 crossPathway 标志）。
 2. **「状态修饰 vs 原语」**：`damage_taken_mul` / `heal_received_mul` 等是状态**修饰键**，写在 `statusDefs[].modifiers`，不是 29 个效果原语之一。
 
 ---
@@ -108,7 +108,7 @@
 ## 四、判别卡（见到一条「状态」先问 5 问）
 
 1. **写在哪？** common 还是某途径 `<pathway>.statuses.json`？
-2. **挂在哪层？** board 标量 / unit 标量 / 单位状态实例 / 坐标域 zone·domain？
+2. **挂在哪层？** board 标量 / 单位级 Pool / 单位状态实例 / 坐标域 zone·domain？
 3. **属哪系？** 9 源质系维度，还是某途径主题？
 4. **要不要跨系读？** 要就 `crossPathway:true` + `participants`，否则纯私有。
 5. **模板还是实例？** 定义只写一次；运行是实例、可驱散堆叠。
