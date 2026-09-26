@@ -195,7 +195,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 `any_of` `caster_has_summon` `caster_status_exists` `chance` `consumed_count` `dead_count` `dispelled_count` `element_is` `field_status_count` `gauge_rank` `has_category` `has_status` `hp_percent` `hp_percent_compare` `remove_reason` `resource_compare` `stat_compare` `status_category` `target_dead` `target_faction_is` `target_has_tag` `target_is_summoned` `target_unit_type` `unit_faction` `variant_is` `zone_active`
 
 ⚠️ `chance` 必须遵守随机性治理 R1–R6：只用于**非伤害维度**、单次抽样、须可登记筛出。
-当前全库仅 1 处 `chance`（monster 行动条 −8，p=0.5）。
+当前全库 2 处 `chance`（登记册见 ddd 随机性治理 §四）：monster 行动条 −8（p=0.5）；lawyer【狂乱】（8 段 p=0.25，2026-09-26 拍板保留真随机）。
 
 `resource_compare` 另有可选字段 `aggregate:'sum'`（2026-09-26 增）：聚合读法——对 `side` 范围内全部单位的该 Pool 现值求和后与 n 比较（`side:'all'` 即全场∑；消费方【深渊即我】∑恶欲值≥15 免疫失控）。缺省 = 单单位现值。语义权威见 `ddd/params/共享内核参数.md` §三。
 
