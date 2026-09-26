@@ -16,7 +16,8 @@
         "欲望爆炸"
       ],
       "payoffs": [
-        "深渊即我"
+        "深渊即我",
+        "恶欲共鸣"
       ]
     },
     "filth": {
@@ -27,7 +28,9 @@
         "污秽之语",
         "侵蚀者"
       ],
-      "payoffs": [],
+      "payoffs": [
+        "荒芜侵蚀·改"
+      ],
       "note": "payoffs 2026-09-26 评审：filth 罪犯侧纯施加，消纳 payoff 在途径外（耕种者秽土净化等 crossPathway 读取方）"
     },
     "elements": {
@@ -40,7 +43,8 @@
       ],
       "payoffs": [
         "地狱之火",
-        "深渊之火"
+        "深渊之火",
+        "双焰交汇"
       ]
     },
     "demon": {
@@ -2367,6 +2371,245 @@
           "withering standards"
         ],
         "mood": "desiccating, terminal"
+      }
+    },
+    {
+      "id": "skill_criminal_s4_flame_confluence",
+      "name": "双焰交汇",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "魔鬼",
+      "rarity": "rare",
+      "axis": "elements",
+      "flagship": false,
+      "lore": "序列4 魔鬼 —— \"《暗影世界系》§6.4 黑焰/地狱之火跨组\"",
+      "flavor": "若友方刺客已对目标挂上「黑焰」，你便把地狱之火染成深渊版——这火不可驱散，且每跳伤都替对方再添一分恶欲。",
+      "describe": "对一名敌人造成 6 点火焰伤害并灼烧 3 tick；若其带黑焰（友方刺客挂的），升级为「黑焰·深渊版」：不可驱散的灼烧，每跳伤推高其恶欲值 1 点。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 6,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 6
+            },
+            {
+              "type": "mount_status",
+              "statusId": "burn",
+              "duration": 3,
+              "target": "target"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "black_flame",
+                "stacksAtLeast": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "black_flame_abyss",
+                  "duration": 3,
+                  "target": "target",
+                  "note": "升级：黑焰·深渊版（不可驱散+跳伤推 lust）⚠️D 与基础灼烧的叠合语义待平衡"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "STATUS_SOURCE_ATTRIBUTION",
+          "landed": false,
+          "note": "条件只判目标带 black_flame≥1 层；「友方刺客所挂」归属维度无谓词，以语义注记承载（black_flame 挂载方限刺客/收尸人，罪犯不能自挂自升级）"
+        }
+      ],
+      "conversionNotes": "翻译/语义：combo 卡——读友方刺客招牌状态 black_flame 再升级（crossPathway 白名单已含 criminal，源质维度 §一表）。2026-09-26 自归档技能稿重建入 JSON 正典。⚠️D。",
+      "art": {
+        "subject": "black abyssal flame fusing with a witch's dark fire over a writhing victim",
+        "elements": [
+          "two-tone flame convergence",
+          "ember-flecked shadow"
+        ],
+        "mood": "profane, combustive"
+      }
+    },
+    {
+      "id": "skill_criminal_s5_lust_resonance",
+      "name": "恶欲共鸣",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "欲望使徒",
+      "rarity": "rare",
+      "axis": "vice",
+      "flagship": false,
+      "lore": "序列5 欲望使徒 —— \"《暗影世界系》§6.5 恶欲↔腐蚀/审判双向\"",
+      "flavor": "若友方律师已对目标挂上「腐蚀（贪婪）」，你顺手把那股贪婪拧得更高——你推过去的恶欲多一分，律师也从这份沸腾里分到能量。",
+      "describe": "使一名敌人恶欲值 +2；若其带腐蚀（贪婪）（友方律师挂的），升级为恶欲值 +3，且友方全体 +2 能量。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 5,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_resource",
+              "resource": "lust",
+              "value": 2,
+              "note": "推高恶欲值（产能）⚠️D"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "corrupted",
+                "stacksAtLeast": 1
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "lust",
+                  "value": 1,
+                  "note": "升级：腐蚀共鸣，恶欲再 +1 ⚠️D"
+                },
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 2,
+                  "target": "all_allies",
+                  "note": "律师分润能量 ⚠️D"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "PATHWAY_TARGETED_ALLY",
+          "landed": false,
+          "note": "「友方律师」按途径定向：effectTarget/unitFilter 无 pathway 维度，暂用 all_allies 承载并登记缺口"
+        }
+      ],
+      "conversionNotes": "翻译/语义：lust 枢纽 combo 卡——读律师 corrupted 再放大（corrupted 补 crossPathway:true + participants 含 criminal）。lust 已 Pool 化，原 mount_status(lust) 改 modify_resource(lust,±N)。2026-09-26 自归档技能稿重建。⚠️D。",
+      "art": {
+        "subject": "a puppeteer's strings tightening around a greed-corrupted soul, embers flowing back to robed allies",
+        "elements": [
+          "ember thread circuit",
+          "robed figure catching sparks"
+        ],
+        "mood": "covetous, resonant"
+      }
+    },
+    {
+      "id": "skill_criminal_s1_blight_erode",
+      "name": "荒芜侵蚀·改",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "污秽君王",
+      "rarity": "legendary",
+      "axis": "filth",
+      "flagship": false,
+      "lore": "序列1 污秽君王 —— \"《暗影世界系》§6.7 污秽被荒芜净化（反向）\"",
+      "flavor": "若友方耕种者已挂上「丰饶」，你便让污秽地块持续啃噬它的丰饶区域——每回合剥落一层，直到那片沃土重新龟裂。",
+      "describe": "使全体敌人被侵蚀 5 tick；若友方耕种者的丰饶在场，升级为荒芜侵蚀：每 tick 剥丰饶持有者 1 层丰饶。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 8,
+        "castTime": null
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "erosion",
+              "duration": 5,
+              "target": "all_enemies"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "ally",
+                "id": "abundance",
+                "stacksAtLeast": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "blight_erode",
+                  "duration": 5,
+                  "target": "all_enemies",
+                  "note": "升级：荒芜侵蚀场——每 tick 剥丰饶 1 层 ⚠️D"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": true,
+      "frameworkFlags": [
+        {
+          "code": "STATUS_SOURCE_ATTRIBUTION",
+          "landed": false,
+          "note": "「友方耕种者的丰饶」以 side:ally + abundance 存在性承载；abundance 挂载方限耕种者，归属注记语义"
+        }
+      ],
+      "conversionNotes": "翻译/语义：combo 卡——读友方耕种者招牌状态 abundance（丰饶）再升级（crossPathway 白名单已含 criminal）。原「丰饶区域」概念以全场剥层承载。2026-09-26 自归档技能稿重建。⚠️D。",
+      "art": {
+        "subject": "a blighted waste gnawing outward from corrupted soil into a radiant fertile field",
+        "elements": [
+          "cracked blight front",
+          "wilting golden wheat"
+        ],
+        "mood": "parasitic, ruinous"
       }
     }
   ],
