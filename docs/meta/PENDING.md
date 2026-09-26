@@ -20,7 +20,7 @@
 - `streamlined_cast` 费用修正 —— 属 **progression 层**，不在本「纯战斗 DDD」仓库 scope，待定归属。（2026-09-19 核实：reader 已有该状态与卡面，缺的仅是「费用修正」语义，非状态缺失）
 - ~~`规则槽 Rules[3]` 标 `crossPathway` + 参与途径白名单（仲裁人 / 律师 / 通识者）~~ → ✅ **已落地**（2026-09-19 本轮）：`rule_slot` statusDef 建于 arbiter.statuses.json，`crossPathway:true` + participants `[arbiter, lawyer, savant]`。
 - ~~`domain_civilization` DomainDef 三件套~~ → ✅ **已落地**（2026-09-19 本轮）：【文明图卷】由平铺 buff 卡升格为界域牌，停靠 `domain(overlay)` + `modify_resource(lost,+1)` 租金，原效果迁入 `domainDef.triggers`，`rulePatches: empower(ally, [文明/造物], ×1.2)`。
-- 罪犯「黑焰/丰饶 combo」**消费卡缺失** —— 仍缺（介质已登记，需新增读取卡）。
+- ~~罪犯「黑焰/丰饶 combo」**消费卡缺失**~~ → ✅ **已闭环**（2026-09-26）：自归档技能稿重建三张跨系 combo 卡入 JSON 正典（罪犯 37→40 卡）——【双焰交汇】(s4, rare, 读 black_flame→升级 black_flame_abyss 载荷）【恶欲共鸣】(s5, rare, 读 lawyer corrupted→lust+1+友军能量；corrupted 补 crossPathway+participants)【荒芜侵蚀·改】(s1, legendary, 读 abundance→升级 blight_erode 全场剥丰饶）。**核查更正**：原登记只记黑焰/丰饶两张，实际【恶欲共鸣】也缺席（ddd §五验收项「律师恶欲共鸣·改」同名所指），一并补齐；lust 已 Pool 化，原 mount_status(lust) 语义改 modify_resource(lust,±N)。两个框架缺口登记 frameworkFlags（未落地=false）：STATUS_SOURCE_ATTRIBUTION（状态来源归属无谓词）、PATHWAY_TARGETED_ALLY（按途径定向友军无维度）。
 - enabler→payoff **1 处**缺口：hunter `weak_point`（弱点）—— ⚠️ 2026-09-19 核实：`taunt` 已在 common 可解析；planter 四轴（`vitality_field` / `blight` / `earth_authority` / `matter_ladder`）**均已带 stackThreshold + thresholdTrigger**，原记「3 处」有误。
 - ~~规则槽**卡面迁移**~~ → ✅ **本轮已迁 lawyer【扭曲】**（+1 `modify_rule_slot(slot:0, field:trigger)`，加性迁移，旧 `mount_status(distortion)` 保留兼容）。⚠️ 余 15 张 warp_rule 卡仍为普通减益表达，是否继续迁移待逐张评审。
 - ~~诅咒链接「三层同一母版」只接通 1/3~~ —— ✅ **经核早已接通**（2026-09-19 更正此前误判）：序列4【诅咒之源】`selfKeep=true`、序列3【无反噬之咒】`params.selfKeep=false`、序列0【万咒加身】挂载多种诅咒状态表达「所有类型诅咒」。三层均走同一 `curse_link` 母版，无需再动。
@@ -220,7 +220,7 @@
 - **操纵天气**：v0.3 主题界域仅列【战争迷雾】；序列2 天气术士「操纵天气」可同框架补为第二张界域牌（与战争迷雾共用 ZoneDef 母版，换元素/载荷），留待汇总。
 ---
 ### 框架改动未落项
-- 🟢 轴身份状态 `弱点`/`挑衅`/`火焰`/`集众` → 状态表（复用既有 vulnerable/taunt/burn+massing）（服务于 四轴 enabler/payoff）  → ✅ 已落地（见 §零，2026-09-19）；⚠️ 仅 `weak_point`（弱点）无对应 statusDef，见 §零
+- 🟢 轴身份状态 `弱点`/`挑衅`/`火焰`/`集众` → 状态表（复用既有 vulnerable/taunt/burn+massing）（服务于 四轴 enabler/payoff）  → ✅ 已落地（见 §零，2026-09-19）；~~⚠️ 仅 `weak_point`（弱点）无对应 statusDef~~ → 2026-09-26 核查更正：「弱点」轴身份已解析为 common `vulnerable`（收割轴 statusId=vulnerable，弱点侦察/收割/毁灭之矛全链路引用），全库无悬空 weak_point statusId——原记缺口系误判，无需新建
 - 🟢 `massing` 团队资源池（随存活友军累积 + 阈值触发） → 编队参数 §1.1b + thresholdTrigger（服务于 集众轴全卡）  → ✅ 已落地（见 §零，2026-09-19）
 - 🟡 `beast_swarm` 标 `crossPathway:true`（兽群枢纽，参与 母巢/猎人） → StatusDef 白名单（服务于 集众·兽群）  → ✅ 已落地（见 §零，2026-09-19）
 - 🟡 `亡灵/奴役` 读接口（猎人火焰→燃灵） → StatusDef 白名单（服务于 地狱之火·亡者）  → ✅ 已落地（见 §零，2026-09-19）

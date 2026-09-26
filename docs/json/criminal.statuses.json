@@ -673,6 +673,61 @@
         "buffBlocked": true
       },
       "note": "H2 + H38 buffBlocked（与 F17 desire 禁护盾同族，粒度由 categories 参数控制）"
+    },
+    {
+      "id": "black_flame_abyss",
+      "name": "黑焰·深渊版",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": false,
+      "duration": 3,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 2,
+              "target": "self",
+              "note": "⚠️D"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lust",
+              "value": 1,
+              "target": "self",
+              "note": "每跳伤推高持有者恶欲值（产能闭环）⚠️D"
+            }
+          ]
+        }
+      ],
+      "note": "双焰交汇升级载荷（2026-09-26 自归档技能稿重建）：地狱之火染成深渊版——不可驱散 + 跳伤推 lust；升级判定（目标带 black_flame）在卡面条件承载"
+    },
+    {
+      "id": "blight_erode",
+      "name": "荒芜侵蚀",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 5,
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "modify_status",
+              "statusId": "abundance",
+              "stacksDelta": -1,
+              "target": "all_units",
+              "note": "每 tick 对全体单位剥丰饶 1 层（无丰饶者无操作；污染侵蚀丰饶）⚠️D"
+            }
+          ]
+        }
+      ],
+      "note": "荒芜侵蚀·改升级载荷（2026-09-26 重建）：挂友方耕种者丰饶在场时由卡面条件启用"
     }
   ]
 }
