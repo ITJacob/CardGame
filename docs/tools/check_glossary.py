@@ -72,6 +72,8 @@ ENUM_TO_CAT = {
     "condition.kind": "conditionKind",
     "condition.side": "side",
     "condition.cmp": "cmp",
+    # 单值枚举（sum），站点 condToText 直接渲染「∑」符号文本，不查词典
+    "condition.aggregate": None,
     "effDamage.spread": "spread",
     "effHeal.mode": "healMode",
     "effMountStatus.stackMode": "stackMode",
