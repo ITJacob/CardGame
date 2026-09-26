@@ -257,7 +257,7 @@
 ### 本稿遗留
 - **数值全档待标**：所有能量/伤害/时长/层数 ⚠️D（沿用 D4）。`gauge` 推拉类、AOE 类（腐蚀毒雾/污秽之王/深渊之火）、变身类（恶魔化）、刻印 f(N) 映射为盲区。
 - **刻印链 f(N) 映射**：`仪式刻印` 层数 → 恶魔 `强度/数量` 具体映射表（暗影世界系 §7 第二批第 8 项）待补。
-- **恶欲值阈值结算**：呓语≥7 追加、深渊即我∑≥15 免疫失控，依赖 `恶欲值` 单位级 Pool（2026-09-24 Pool 化：`modify_resource(lust,±N)` 产能 + `resource_compare(lust,…)` 读档 + `thresholdTrigger(metric:'lust')` 挂档位状态，见 源质维度与跨系枢纽.md §五）。⚠️ 「深渊即我」读的是**全场恶欲值总和**（∑），`resource_compare` 只读单单位现值——全场聚合读法待框架裁定。
+- **恶欲值阈值结算**：呓语≥7 追加、深渊即我∑≥15 免疫失控，依赖 `恶欲值` 单位级 Pool（2026-09-24 Pool 化：`modify_resource(lust,±N)` 产能 + `resource_compare(lust,…)` 读档 + `thresholdTrigger(metric:'lust')` 挂档位状态，见 源质维度与跨系枢纽.md §五）。✅ 「深渊即我」全场∑读法 2026-09-26 已裁定落地：`resource_compare` 增可选 `aggregate:'sum'`（side:'all' = 双方全场求和），abyss_is_me 挂 on_turn_start 条件触发 → mount `abyss_sovereignty`（suppress 失控档）。档位状态本体（躁动/失控/欲望爆炸）仍是缺口，随 R5 确定性化一并建（见下条）。
 - **失控档「概率改攻友军」语义待确定性化**：暗影系 designNote 阈值档含「20%/35% 概率改攻最近单位（含友军）」——违反随机性治理 R5（无例外）。须转确定性写法（如档位状态挂 target_override / behaviorModifiers），数值与形式 ⚠️D 待拍板。
 - **未完全落地原著能力**（有意省略）：序列9"身心处于恶欲统治下"未做理智/失控系统；序列7"恶魔知识"只以仪式表达；序列0"异类"权柄仅列【深渊即我】下位 flavor。
 ---
