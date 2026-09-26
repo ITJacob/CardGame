@@ -42,7 +42,7 @@
 
 **附带修复（既有缺陷，非本次数据改动引入）**：`validate.py` 状态定义层校验段（category / crossPathway / participants）引用了**未定义的 `errors` / `warns`**，一旦真查出问题会 `UnboundLocalError` 崩溃 —— 即该 Gate 长期是**死代码**，从未真正生效。已改为 `pre_errors` / `pre_warns` 收集并接回汇总与打印，反向注入验证可捕获。
 
-**轴元数据现状（2026-09-23 收官复核）**：88 轴 | statusId **88/88**（悬空 0、可解析）| enablers **88/88**（缺 0）| payoffs **21/88**（缺 67，待逐轴设计评审）。
+**轴元数据现状（2026-09-26 收官复核）**：88 轴 | statusId **88/88**（悬空 0、可解析）| enablers **88/88**（缺 0）| payoffs **88/88 已评审**（58 轴有 payoff 卡、30 轴评审确认真无消费者——空数组+note 登记；原缺 67 已清零，2026-09-26 经 10 路并行评审落地，分两批提交 c3b8e5e 及本轮）。评审副产物：① 两处 enablers 误标已迁移（spectator insight 读心/洞察权柄、supplicant soul 驱使灵魂/堕落眷属——耗层端实为 payoff）；② 一批「conversionNotes 自称 payoff 但卡面未实现读层」的稿面意图缺口已逐轴登记在 axes.note（savant 四轴、prisoner 束缚/诅咒、seer 历史影像、apprentice 门扉、arbiter 审讯/律令等），待平衡期逐卡补条件段。
 > 2026-09-18 自技能稿 md（docs/archive/skill-design_v0.3/）迁移：§五 本稿遗留 + §六 框架改动未落项（🟡/🟢）。
 > ✅ 已落项与 §四 自检为过程产物，不迁移（见归档原稿与 git 历史）。
 
