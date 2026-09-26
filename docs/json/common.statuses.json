@@ -233,6 +233,112 @@
       "maxStacks": 1,
       "modifiers": { "immune": { "categories": ["control"] } },
       "note": "通用控制免疫：事前阻断 control 类状态挂载。归并纯 control 免疫私有换皮（composure/virtual_persona）所得机制桩（2026-09-19 降格批次5）。基准 dispelable:false/duration:null，卡面 mount_status 传 duration/charges 覆盖。"
+    },
+    {
+      "id": "lust_restless",
+      "name": "躁动",
+      "category": ["debuff"],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_mul": { "value": 1.2 }
+      },
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "lust_retarget",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "note": "R5 确定性化（2026-09-26 拍板）：原著『20% 概率改攻最近单位（含友军）』不落 chance——每回合开始发 1 次改向额度（lust_retarget, charges:1），实际改向时消耗。密度（每回合 1 次 vs 每 N 回合 1 次）⚠️D 待平衡"
+        }
+      ],
+      "note": "恶欲值档位状态（引擎 thresholdTrigger(metric:'lust') 越档挂载，4–6 档；档位状态 dispelable:false，量表不可驱散 INV-P7，见 编队参数 §2.6）。+20% 伤害（⚠️D）与改攻友军风险并存的『越强但越失控』下档"
+    },
+    {
+      "id": "lust_uncontrolled",
+      "name": "失控",
+      "category": ["debuff"],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "damage_mul": { "value": 1.5 },
+        "heal_received_mul": 0
+      },
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "lust_retarget",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "note": "R5 确定性化：原著『35% 概率攻友军』→ 每回合 1 次改向额度（lust_retarget, charges:1，密度 ⚠️D 待平衡）；『无法被治疗』= heal_received_mul 0"
+        }
+      ],
+      "note": "恶欲值 7–9 档（挂载方同 lust_restless）。被 罪犯【深渊即我】∑≥15 解锁的「深渊主权」（abyss_sovereignty）suppress——只压制生效、不移除实例"
+    },
+    {
+      "id": "lust_detonation",
+      "name": "欲望爆炸",
+      "category": ["debuff"],
+      "dispelable": false,
+      "duration": null,
+      "triggers": [
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": "$maxHp*0.25",
+              "target": "self",
+              "note": "自身最大生命 25% 精神伤害（⚠️D）；value 为动态引用占位，引擎落地时定语法"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lust",
+              "mode": "set",
+              "value": 0,
+              "target": "self",
+              "note": "恶欲值归零"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lust",
+              "value": 3,
+              "target": "splash_adjacent",
+              "note": "向相邻各传 3 点恶欲值（⚠️D；敌我不分待拍板，先按溅射邻格承载）"
+            }
+          ],
+          "note": "=10 档挂载即炸：自伤+归零+传染相邻；爆炸后量表归零自然跌出 10 档，档位状态由越档逻辑卸载"
+        }
+      ],
+      "note": "恶欲值 =10 档（一次性载荷，非持续修饰；挂载方同 lust_restless）"
+    },
+    {
+      "id": "lust_retarget",
+      "name": "恶欲改向",
+      "category": ["retarget"],
+      "dispelable": false,
+      "duration": null,
+      "charges": 1,
+      "modifiers": {
+        "behaviorModifiers": [
+          {
+            "op": "target_override",
+            "anchor": "nearest_any"
+          }
+        ]
+      },
+      "note": "恶欲值档位『改攻最近单位（含友军）』的确定性承载（R5，2026-09-26 拍板）：nearest_any = 最近任意单位不分敌我（H12 target_override 族）；charges:1——改向实际生效时 −1 归零卸载（charges 消耗场景含 RedirectRule 实际生效，编队参数 §1.1b）；每回合由档位状态（lust_restless/lust_uncontrolled）on_turn_start 重发 1 次额度，不作独立卡面引用"
     }
   ]
 }
