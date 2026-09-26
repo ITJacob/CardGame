@@ -14,7 +14,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 docs/meta/           流程·规范·提案（工作流与生成约束，先读 WORKFLOW.md）
-├─ WORKFLOW.md       当前 AI 工作流定义：设定→机制→JSON→分析 四环节流水线与完成门槛
+├─ WORKFLOW.md       当前 AI 工作流定义：设定→机制→JSON→分析→重设计迭代 五环节流水线与完成门槛
+├─ SCORING.md        职业设计评分体系（2026-09-26 建）：轴级/途径级六维指标与计分公式，
+│                    配套 score.py；逐职业重设计的取榜依据
+├─ REDESIGN_LOG.md   环节⑤逐职业重设计日志：一途径一迭代，改前改后分 + 改动摘要
 ├─ GENERATION_BRIEF.md  技能池生成规范，当前 v0.3；§7–§9 是旧框架编号 → DDD 落点速查
 ├─ REGEN_v03_SPEC.md    v0.3 批量重构规范
 ├─ SCHEMA.md         JSON 结构规范（改结构前必读；含已知待修数据清单）
@@ -36,6 +39,9 @@ docs/analysis/       纯分析产物（勿手改，重跑 docs/tools/ 脚本生�
 └─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告
 docs/tools/          **只放设计侧脚本**（设计数据校验 + docs 文档生成），保持 docs 纯粹
 ├─ validate.py      语义校验器（无依赖）：python docs/tools/validate.py
+├─ score.py         职业设计评分器（2026-09-26 建，只读）：python docs/tools/score.py；
+│                   产出 analysis/scorecard.md + analysis/scores.json（口径=meta/SCORING.md，
+│                   重设计迭代用它确认涨分；网页评分页同源消费 scores.json）
 ├─ validate_schema.py  结构校验器（需 jsonschema）：python docs/tools/validate_schema.py
 ├─ check_enum_sync.py  枚举对账（ddd/SCHEMA.md ↔ schema）：python docs/tools/check_enum_sync.py
 ├─ check_glossary.py   词典对账（值域 ↔ meta/glossary.json）：python docs/tools/check_glossary.py
