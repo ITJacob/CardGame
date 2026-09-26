@@ -197,6 +197,8 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 ⚠️ `chance` 必须遵守随机性治理 R1–R6：只用于**非伤害维度**、单次抽样、须可登记筛出。
 当前全库仅 1 处 `chance`（monster 行动条 −8，p=0.5）。
 
+`resource_compare` 另有可选字段 `aggregate:'sum'`（2026-09-26 增）：聚合读法——对 `side` 范围内全部单位的该 Pool 现值求和后与 n 比较（`side:'all'` 即全场∑；消费方【深渊即我】∑恶欲值≥15 免疫失控）。缺省 = 单单位现值。语义权威见 `ddd/params/共享内核参数.md` §三。
+
 ### 5.4 元素（element）
 
 `fire` `ice` `poison` `lightning` `mental` `physical` `holy` `dark` `none`；`$` 前缀表示运行期变量（如 `$recorded.element`）。

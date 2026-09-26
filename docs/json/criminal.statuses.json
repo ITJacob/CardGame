@@ -553,7 +553,44 @@
           }
         }
       },
-      "note": "② H8 覆写 dispelable；③ 深渊不是一种地方是一种状态（堕落者归你支配）"
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "condition": {
+            "kind": "resource_compare",
+            "side": "all",
+            "aggregate": "sum",
+            "key": "lust",
+            "cmp": ">=",
+            "n": 15
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "abyss_sovereignty",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "note": "全场恶欲值∑≥15（⚠️D）→ 深渊认领持有者，免疫失控档（产能→安保闭环）。聚合读法 resource_compare(aggregate:'sum')（共享内核参数 §三，2026-09-26 裁定）；每回合开始重判，已持有时重挂为无操作"
+        }
+      ],
+      "note": "② H8 覆写 dispelable；③ 深渊不是一种地方是一种状态（堕落者归你支配）；④ ∑≥15 免疫失控档见 triggers"
+    },
+    {
+      "id": "abyss_sovereignty",
+      "name": "深渊主权",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "modifiers": {
+        "suppress": [
+          "lust_uncontrolled"
+        ]
+      },
+      "note": "深渊即我 ∑≥15 解锁：压制失控档（lust_uncontrolled，恶欲值 7–9 档，common 档位状态）的生效——只压制生效、不移除实例（suppress 语义见 编队参数 §1.1b）；⚠️D：是否随 ∑ 回落而消退待平衡期定（当前挂载后常驻）"
     },
     {
       "id": "fallen",

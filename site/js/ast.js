@@ -96,7 +96,9 @@ function condToText(c) {
     case 'target_dead': return '目标已死亡';
     case 'zone_active': return `区域激活`;
     case 'gauge_rank': return `行动条位次 ${c.cmp || ''} ${fmtVal(c.value)}`;
-    case 'resource_compare': return `${c.side ? termSpan('side', c.side) : '目标'}的${termSpan('resource', c.key || '?')} ${c.cmp || ''} ${c.n ?? fmtVal(c.value)}`;
+    case 'resource_compare': return c.aggregate === 'sum'
+      ? `${c.side ? termSpan('side', c.side) : '双方'}全场的${termSpan('resource', c.key || '?')}总和 ${c.cmp || ''} ${c.n ?? fmtVal(c.value)}`
+      : `${c.side ? termSpan('side', c.side) : '目标'}的${termSpan('resource', c.key || '?')} ${c.cmp || ''} ${c.n ?? fmtVal(c.value)}`;
     case 'dead_count': return `死亡数 ${c.cmp || ''} ${fmtVal(c.value)}`;
     case 'dispelled_count': return `被驱散数 ${c.cmp || ''} ${fmtVal(c.value)}`;
     case 'consumed_count': return `已消耗数 ${c.cmp || ''} ${fmtVal(c.value)}`;
