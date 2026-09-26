@@ -6,6 +6,7 @@ const SCHEMA_URL = JSON_BASE + 'schema/skills.schema.json';
 export const DB = {
   manifest: null,
   glossary: null,
+  scores: null,              // 设计评分（score.py 预计算，懒加载：只有评分页消费）
   pathways: [],        // [{id, name, file, cardCount, ...}]
   cards: [],           // 全部卡，附带 _pathway
   cardById: new Map(),
@@ -143,4 +144,17 @@ export const statusesReady = () => ready;
 export function onStatusesReady(fn) {
   if (ready) fn();
   else waiters.push(fn);
+}
+
+// 设计评分：score.py 预计算的 scores.json（docs/analysis/ 下），懒加载 + 缓存。
+// 与 stats 页「浏览器现算」不同——评分口径单一来源在 score.py（SCORING.md），
+// 前端只展示不重算；评分页每次进入都重新 fetch（不跨页缓存 promise），保证重跑
+// score.py 后刷新即见新分
+const SCORES_URL = '../docs/analysis/scores.json';
+export async function loadScores() {
+  if (DB.scores) return DB.scores;
+  const r = await fetch(SCORES_URL, { cache: 'no-cache' });
+  if (!r.ok) throw new Error(`${SCORES_URL} HTTP ${r.status}`);
+  DB.scores = await r.json();
+  return DB.scores;
 }

@@ -4,12 +4,13 @@ import { renderCards } from './views/cards.js';
 import { renderCardDetail } from './views/card.js';
 import { renderGlossary } from './views/glossary.js';
 import { renderStats } from './views/stats.js';
+import { renderScore } from './views/score.js';
 import { renderStatuses } from './views/status.js';
 import { renderDdd } from './views/ddd.js';
 
 // 非列表页（卡片列表之外的都算，用于滚动位置还原）。新增页务必登记，
 // 否则从详情返回时会被当成列表页而错误还原滚动位置
-const NON_LIST_PAGES = new Set(['card', 'glossary', 'stats', 'statuses', 'ddd']);
+const NON_LIST_PAGES = new Set(['card', 'glossary', 'stats', 'score', 'statuses', 'ddd']);
 
 const view = document.getElementById('view');
 const status = document.getElementById('load-status');
@@ -48,6 +49,7 @@ function route() {
   if (page === 'card' && arg) { setNav('cards'); renderCardDetail(view, decodeURIComponent(arg)); }
   else if (page === 'glossary') { setNav('glossary'); renderGlossary(view, new URLSearchParams(qs || '')); }
   else if (page === 'stats') { setNav('stats'); renderStats(view); }
+  else if (page === 'score') { setNav('score'); renderScore(view, arg ? decodeURIComponent(arg) : ''); }
   else if (page === 'statuses') { setNav('statuses'); renderStatuses(view); }
   else if (page === 'ddd') { setNav('ddd'); renderDdd(view, arg ? decodeURIComponent(arg) : ''); }
   else { setNav('cards'); renderCards(view); }

@@ -583,3 +583,27 @@ code.qr-name { font-family: Consolas, monospace; color: var(--accent2); }
 .qr-coverage > ul > li { margin-bottom: 8px; }
 .qr-skip { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin-top: 2px; font-size: 12px; }
 .qr-skip code { overflow-wrap: anywhere; }
+
+/* ---------- 设计评分页（views/score.js） ---------- */
+.score-table { width: 100%; border-collapse: collapse; }
+.score-table th, .score-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.score-table th { color: var(--dim); font-weight: normal; font-size: 12px; }
+.score-table tr.score-row, .score-table tr.axis-row { cursor: pointer; }
+.score-table tr.score-row:hover, .score-table tr.axis-row:hover { filter: brightness(1.15); }
+.score-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.score-table .total { font-weight: 600; }
+.total.g-bad { color: #d05555; }
+.total.g-mid { color: #c9a13b; }
+.total.g-good { color: #4da36a; }
+/* 六维迷你条：一个 flex 容器里 6 段比例填充，宽度即得分占比 */
+.dim-bars { display: inline-flex; gap: 3px; width: 180px; height: 8px; }
+.dim-bars.single { width: 220px; }
+.dim-bar { display: block; height: 100%; background: var(--accent, #6a8caf); border-radius: 2px; min-width: 2px; opacity: .85; }
+.dim-table { border-collapse: collapse; }
+.dim-table td { padding: 4px 10px 4px 0; font-size: 13px; }
+.dim-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.deduction-list { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.7; }
+.axis-detail > td { padding: 0 8px 10px; border-bottom: 1px solid var(--border); }
+.axis-detail-inner { font-size: 13px; line-height: 1.8; padding: 8px 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; }
+.axis-detail-inner p { margin: 2px 0; }
+.small { font-size: 12px; }
