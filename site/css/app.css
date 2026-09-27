@@ -630,9 +630,10 @@ code.qr-name { font-family: Consolas, monospace; color: var(--accent2); }
 .nine-cell h3 { font-size: 12px; color: var(--dim); font-weight: normal; margin: 10px 0 4px; }
 .nine-cell .bar-row .bar-label { width: 84px; font-size: 12px; }
 
-/* 总览六维迷你条列：窄屏直接隐藏（总分/最低轴已足够取序），不压缩字号硬塞 */
+/* 总览六维迷你条列：窄屏整列隐藏（th 与 td 同挂 col-dimbars，只藏 span 会让行多出
+   空单元格、后续列整列错位），总分/最低轴已足够取序，不压缩字号硬塞 */
 @media (max-width: 480px) {
-  .score-table .col-dimbars, .score-table td .dim-bars { display: none; }
+  .score-table .col-dimbars { display: none; }
 }
 
 @media (max-width: 720px) {
