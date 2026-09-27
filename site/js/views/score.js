@@ -155,12 +155,12 @@ function checklistHtml(p) {
               <div class="fix-line">→ ${escapeHtml(d.fix)}</div></li>`).join('')}</ul></details>`
       : (v >= max - 0.05 ? '<div class="chk-okline muted">达标，无失分项。</div>'
                          : '<div class="chk-okline muted">部分得分（归一维），无具体失分条目。</div>');
-    return `<div class="chk-row">
+    return `<div class="chk-item"><div class="chk-row">
       <span class="chk-badge ${cls}">${badge}</span>
       <span class="chk-name">${k}</span>
       <span class="chk-bar"><span class="dim-bars single"><i class="dim-bar" style="width:${Math.max(pct, v ? 6 : 0)}%"></i></span></span>
       <span class="chk-score num">${v.toFixed(1)} <span class="muted">/ ${max}</span></span>
-    </div>${fix}`;
+    </div>${fix}</div>`;
   }).join('');
   return `<div class="panel"><h2>评价打分清单</h2>
     <p class="panel-note muted">✓ 满分 ｜ △ 部分得分 ｜ ✗ 有失分（点开看修改意见）。修改意见均为本途径内可执行动作。</p>
