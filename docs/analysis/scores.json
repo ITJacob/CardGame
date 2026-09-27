@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-26",
+ "generated": "2026-09-27",
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
@@ -19,53 +19,63 @@
    "deductions": [
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "pryer"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "pryer",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-13.1：枢纽状态 1 个 + combo 读取 0 次",
-     "ref": "pryer"
+     "ref": "pryer",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 C8_NOT_IMPLEMENTED",
-     "ref": "稿面自认：候选池过滤（C8）未实现，识破部分当前不生效；若长期不落地需整体重做"
+     "ref": "稿面自认：候选池过滤（C8）未实现，识破部分当前不生效；若长期不落地需整体重做",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 ANY_OF_PREDICATE",
-     "ref": "共享内核 §三无 any_of 组合子，暂内联两段 has_status 表达「护盾或坚守」，待内核裁定"
+     "ref": "共享内核 §三无 any_of 组合子，暂内联两段 has_status 表达「护盾或坚守」，待内核裁定",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 GAUGE_RANK_PREDICATE",
-     "ref": "「目标行动条最高」无对应谓词（§三仅 gauge_above 阈值比较），暂记 gauge_rank 伪谓词，待裁定"
+     "ref": "「目标行动条最高」无对应谓词（§三仅 gauge_above 阈值比较），暂记 gauge_rank 伪谓词，待裁定",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 ON_REMOVE_EXPIRY",
-     "ref": "稿面自认：on_remove 在自然到期时是否 fire 待实测确认；不成立则核心（倒计时爆发）需改为 on_tick "
+     "ref": "稿面自认：on_remove 在自然到期时是否 fire 待实测确认；不成立则核心（倒计时爆发）需改为 on_tick ",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 C8_NOT_IMPLEMENTED",
-     "ref": "识破部分同窥秘之眼依赖 C8（稿面自认未实现）；退化方案：驱散 count +1 替代无视不可驱散"
+     "ref": "识破部分同窥秘之眼依赖 C8（稿面自认未实现）；退化方案：驱散 count +1 替代无视不可驱散",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 C8_NOT_IMPLEMENTED",
-     "ref": "不可被选中部分依赖 C8 候选池过滤（稿面自认未实现）；若长期不落地需改为不依赖候选池的替代收益"
+     "ref": "不可被选中部分依赖 C8 候选池过滤（稿面自认未实现）；若长期不落地需改为不依赖候选池的替代收益",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 SPREAD_SPLASH_ADJACENT",
-     "ref": "SS16：spread 字段已登记（共享内核 §一），但实现状态待确认（愚者稿飞牌升级阶梯引用过同一字段）"
+     "ref": "SS16：spread 字段已登记（共享内核 §一），但实现状态待确认（愚者稿飞牌升级阶梯引用过同一字段）",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 C8_NOT_IMPLEMENTED",
-     "ref": "不可选中部分依赖 C8 候选池过滤（稿面自认未实现）；若长期不落地本卡需整体重做"
+     "ref": "不可选中部分依赖 C8 候选池过滤（稿面自认未实现）；若长期不落地本卡需整体重做",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -96,22 +106,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "窥秘之眼"
+       "ref": "窥秘之眼",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "窥秘权柄"
+       "ref": "窥秘权柄",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "知识攻击"
+       "ref": "知识攻击",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "知识攻击"
+       "ref": "知识攻击",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -140,22 +154,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "本我星象"
+       "ref": "本我星象",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "星之巨柱,星桥"
+       "ref": "星之巨柱,星桥",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "astral"
+       "ref": "astral",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       },
       {
        "dim": "规模均衡",
        "why": "-2：轴卡数 15 vs 理想 10（比值 1.58）",
-       "ref": "astral"
+       "ref": "astral",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
     },
@@ -185,12 +203,14 @@
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "combat"
+       "ref": "combat",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       },
       {
        "dim": "规模均衡",
        "why": "-1：轴卡数 5 vs 理想 10（比值 0.53）",
-       "ref": "combat"
+       "ref": "combat",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
     },
@@ -220,12 +240,14 @@
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "卷轴·冰冻,卷轴·麻痹"
+       "ref": "卷轴·冰冻,卷轴·麻痹",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "scroll"
+       "ref": "scroll",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     }
@@ -249,22 +271,26 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 38 分（<40）",
-     "ref": "notary"
+     "ref": "notary",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "chanter"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "chanter",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-13.1：枢纽状态 1 个 + combo 读取 0 次",
-     "ref": "chanter"
+     "ref": "chanter",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 G15_ON_TURN_START",
-     "ref": "稿面注明 on_turn_start 引擎从未 fire、当前不生效；退化方案为 on_battle_start + m"
+     "ref": "稿面注明 on_turn_start 引擎从未 fire、当前不生效；退化方案为 on_battle_start + m",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -293,17 +319,20 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "公证"
+       "ref": "公证",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "神圣誓约,太阳誓约"
+       "ref": "神圣誓约,太阳誓约",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "notary"
+       "ref": "notary",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -334,27 +363,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "obedience"
+       "ref": "obedience",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "服从之音"
+       "ref": "服从之音",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "太阳使者"
+       "ref": "太阳使者",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "正义审判"
+       "ref": "正义审判",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "正义审判"
+       "ref": "正义审判",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -386,12 +420,14 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "blessing"
+       "ref": "blessing",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "hymn"
+       "ref": "hymn",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -434,32 +470,38 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "daylight"
+       "ref": "daylight",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "白昼"
+       "ref": "白昼",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "太阳光环,光之权柄"
+       "ref": "太阳光环,光之权柄",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-0：payoff 13 张全部 notes 级（卡面无读层引用）",
-       "ref": "日照,召唤圣光,净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌"
+       "ref": "日照,召唤圣光,净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "规模均衡",
        "why": "-2：轴卡数 16 vs 理想 10（比值 1.56）",
-       "ref": "light"
+       "ref": "light",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "日照,召唤圣光,净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌"
+       "ref": "日照,召唤圣光,净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     }
@@ -483,27 +525,32 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 38 分（<40）",
-     "ref": "corpse"
+     "ref": "corpse",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "corpse_collector"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "corpse_collector",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-11.2：枢纽状态 1 个 + combo 读取 1 次",
-     "ref": "corpse_collector"
+     "ref": "corpse_collector",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "结构健康",
      "why": "-0：主被动比 1.33 不在 [1.5, 3.0]",
-     "ref": "corpse_collector"
+     "ref": "corpse_collector",
+     "fix": "补主动或被动卡，把主被动比调进 [1.5, 3.0]"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 TARGET_WEIGHTING",
-     "ref": "C8 候选池加权分支稿面标 🟢 未实现；若只落地一条优先保留减伤①"
+     "ref": "C8 候选池加权分支稿面标 🟢 未实现；若只落地一条优先保留减伤①",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -532,17 +579,20 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "corpse_nature"
+       "ref": "corpse_nature",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "尸体特质"
+       "ref": "尸体特质",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "corpse"
+       "ref": "corpse",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -569,17 +619,20 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "puppet_string"
+       "ref": "puppet_string",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-15：enablers 2 张均未实证挂载身份",
-       "ref": "亡者标记,亡者之语"
+       "ref": "亡者标记,亡者之语",
+       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
       },
       {
        "dim": "规模均衡",
        "why": "-1：轴卡数 16 vs 理想 10（比值 1.52）",
-       "ref": "undead"
+       "ref": "undead",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
     },
@@ -610,22 +663,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "journeys_end"
+       "ref": "journeys_end",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "一切的归宿"
+       "ref": "一切的归宿",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "苍白世界"
+       "ref": "苍白世界",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "苍白世界"
+       "ref": "苍白世界",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -658,27 +715,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "spirit_sight"
+       "ref": "spirit_sight",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "天然灵视"
+       "ref": "天然灵视",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "死亡之眼,通灵"
+       "ref": "死亡之眼,通灵",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "死亡之眼,幽冥窥视,灵界瞭望"
+       "ref": "死亡之眼,幽冥窥视,灵界瞭望",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "死亡之眼,幽冥窥视,灵界瞭望"
+       "ref": "死亡之眼,幽冥窥视,灵界瞭望",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     }
@@ -702,22 +764,26 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 31 分（<40）",
-     "ref": "brew"
+     "ref": "brew",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "apothecary"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "apothecary",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-15.0：枢纽状态 0 个 + combo 读取 0 次",
-     "ref": "apothecary"
+     "ref": "apothecary",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 ADVANCE_PHASE_DECLARATIVE",
-     "ref": "「沿 formGroup 顺序进一相、同组新相顶掉旧相」无效果原语；H50 已声明式落 ddd（StatusDef fo"
+     "ref": "「沿 formGroup 顺序进一相、同组新相顶掉旧相」无效果原语；H50 已声明式落 ddd（StatusDef fo",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -744,17 +810,20 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "prepared_draught"
+       "ref": "prepared_draught",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-15：enablers 2 张均未实证挂载身份",
-       "ref": "药剂调配,草药敷贴"
+       "ref": "药剂调配,草药敷贴",
+       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "brew"
+       "ref": "brew",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -783,22 +852,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "beast_sense"
+       "ref": "beast_sense",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "动物感官"
+       "ref": "动物感官",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "驯兽哨"
+       "ref": "驯兽哨",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "beasts"
+       "ref": "beasts",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -827,22 +900,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "crimson_vitality"
+       "ref": "crimson_vitality",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "深红体质"
+       "ref": "深红体质",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "血族魅力,黑暗之翼,血仆转化"
+       "ref": "血族魅力,黑暗之翼,血仆转化",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "crimson"
+       "ref": "crimson",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -883,27 +960,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "moon_cycle"
+       "ref": "moon_cycle",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "月相·轮转"
+       "ref": "月相·轮转",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "满月,银月切相"
+       "ref": "满月,银月切相",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-0：payoff 11 张全部 notes 级（卡面无读层引用）",
-       "ref": "腐蚀之爪,预服药水,闪现,月光化,黑暗凝视,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空"
+       "ref": "腐蚀之爪,预服药水,闪现,月光化,黑暗凝视,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "腐蚀之爪,预服药水,闪现,月光化,黑暗凝视,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空"
+       "ref": "腐蚀之爪,预服药水,闪现,月光化,黑暗凝视,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     }
@@ -927,47 +1009,56 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 40 分（<40）",
-     "ref": "inquest"
+     "ref": "inquest",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次（全库 max 6）",
-     "ref": "arbiter"
+     "why": "-12.5：本途径他轴身份读取 1 次",
+     "ref": "arbiter",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-13.1：枢纽状态 1 个 + combo 读取 0 次",
-     "ref": "arbiter"
+     "ref": "arbiter",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "结构健康",
      "why": "-0：主被动比 3.44 不在 [1.5, 3.0]",
-     "ref": "arbiter"
+     "ref": "arbiter",
+     "fix": "补主动或被动卡，把主被动比调进 [1.5, 3.0]"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 DECREE_STATUS_FAMILY",
-     "ref": "decree 状态族的 rule / punishment 字段未落 ddd，卡住立规 / 禁制追击 / 秩序领域 3 "
+     "ref": "decree 状态族的 rule / punishment 字段未落 ddd，卡住立规 / 禁制追击 / 秩序领域 3 ",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 REGION_VALUE_BOOST",
-     "ref": "辖区数值 +50% 倍率随 ZoneDef 落地，ddd 尚无区域数值倍率字段（🟡）"
+     "ref": "辖区数值 +50% 倍率随 ZoneDef 落地，ddd 尚无区域数值倍率字段（🟡）",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 CASTIGATED_UNIQUE_HOLDER",
-     "ref": "全场唯一持有者 + 改判自动卸载语义未落 ddd（新增项 8 🟡）"
+     "ref": "全场唯一持有者 + 改判自动卸载语义未落 ddd（新增项 8 🟡）",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 DECREE_STATUS_FAMILY",
-     "ref": "同立规，依赖 decree 状态族 rule / punishment 字段"
+     "ref": "同立规，依赖 decree 状态族 rule / punishment 字段",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 DECREE_STATUS_FAMILY",
-     "ref": "decree 全体挂载 + 规则参数依赖新增项 2（🔴）；Zone 跨场落位待拍板（退化=己方全场 Zone + 敌方全"
+     "ref": "decree 全体挂载 + 规则参数依赖新增项 2（🔴）；Zone 跨场落位待拍板（退化=己方全场 Zone + 敌方全",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -998,27 +1089,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "marked"
+       "ref": "marked",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "过目不忘"
+       "ref": "过目不忘",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "察觉异常"
+       "ref": "察觉异常",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "混乱感应"
+       "ref": "混乱感应",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "混乱感应"
+       "ref": "混乱感应",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -1051,22 +1147,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "castigated"
+       "ref": "castigated",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "惩戒"
+       "ref": "惩戒",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "读层闭环",
        "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "禁制追击,审判之剑,审判"
+       "ref": "禁制追击,审判之剑,审判",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "禁制追击,审判之剑,审判"
+       "ref": "禁制追击,审判之剑,审判",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -1100,27 +1200,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "authority"
+       "ref": "authority",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "权威质变"
+       "ref": "权威质变",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "位格管辖,分割战场,秩序领域"
+       "ref": "位格管辖,分割战场,秩序领域",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-9：payoff 4 张全部 notes 级（卡面无读层引用）",
-       "ref": "审判之剑,律令·神秘减弱，现实增强,底层规则,位格律令"
+       "ref": "审判之剑,律令·神秘减弱，现实增强,底层规则,位格律令",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "审判之剑,律令·神秘减弱，现实增强,底层规则,位格律令"
+       "ref": "审判之剑,律令·神秘减弱，现实增强,底层规则,位格律令",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -1152,12 +1257,14 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "立规"
+       "ref": "立规",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "读层闭环",
        "why": "-17：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "满月,审判"
+       "ref": "满月,审判",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     }
@@ -1180,28 +1287,33 @@
    "deductions": [
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "savant"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "savant",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-11.2：枢纽状态 2 个 + combo 读取 0 次",
-     "ref": "savant"
+     "ref": "savant",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 HAZARD_WARD_MODIFY_DAMAGE",
-     "ref": "hazard_ward 触发器载荷使用扩展原语 modify_damage（scope: taken ×0.5，R5 裁"
+     "ref": "hazard_ward 触发器载荷使用扩展原语 modify_damage（scope: taken ×0.5，R5 裁",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 ON_TURN_START_NOT_FIRED",
-     "ref": "G15：on_turn_start 引擎从未 fire，当前不生效；修 G15 后自动闭环"
+     "ref": "G15：on_turn_start 引擎从未 fire，当前不生效；修 G15 后自动闭环",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 BUILD_ELEMENT_RESIST",
-     "ref": "modify_stat stat: resist:$buildElement 使用构筑期槽位变量（元素在派发时选定，非战"
+     "ref": "modify_stat stat: resist:$buildElement 使用构筑期槽位变量（元素在派发时选定，非战",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -1233,27 +1345,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "analysis_authority"
+       "ref": "analysis_authority",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "解析权柄"
+       "ref": "解析权柄",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "鉴定,危险规避"
+       "ref": "鉴定,危险规避",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-17：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "学习权柄,现实知识"
+       "ref": "学习权柄,现实知识",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "学习权柄,现实知识"
+       "ref": "学习权柄,现实知识",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -1284,27 +1401,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "enlightened"
+       "ref": "enlightened",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "教化权柄"
+       "ref": "教化权柄",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "导师,知识妖精"
+       "ref": "导师,知识妖精",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "毁灭新生"
+       "ref": "毁灭新生",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "毁灭新生"
+       "ref": "毁灭新生",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -1337,22 +1459,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "规律权柄"
+       "ref": "规律权柄",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "虚假星象,星之诅咒"
+       "ref": "虚假星象,星之诅咒",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "星之祝福,完美之境,现实规律"
+       "ref": "星之祝福,完美之境,现实规律",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "星之祝福,完美之境,现实规律"
+       "ref": "星之祝福,完美之境,现实规律",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -1387,27 +1513,32 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "机械奇物"
+       "ref": "机械奇物",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 4 张（name 在列但卡面不挂身份）",
-       "ref": "硝酸甘油,王水,考古发掘,炼成"
+       "ref": "硝酸甘油,王水,考古发掘,炼成",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-5：payoff 5 张全部 notes 级（卡面无读层引用）",
-       "ref": "机械维修,注入灵魂,制造大师,灵魂熔炉,解离"
+       "ref": "机械维修,注入灵魂,制造大师,灵魂熔炉,解离",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "规模均衡",
        "why": "-2：轴卡数 14 vs 理想 9（比值 1.56）",
-       "ref": "craft"
+       "ref": "craft",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "机械维修,注入灵魂,制造大师,灵魂熔炉,解离"
+       "ref": "机械维修,注入灵魂,制造大师,灵魂熔炉,解离",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     }
@@ -1431,22 +1562,26 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 34 分（<40）",
-     "ref": "parasite"
+     "ref": "parasite",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "thief"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "thief",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-11.2：枢纽状态 2 个 + combo 读取 0 次",
-     "ref": "thief"
+     "ref": "thief",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 GAUGE_THRESHOLD_INV_S5",
-     "ref": "gauge_threshold 是合法 StatKey，但改它等价于改行动周期（threshold/rate），是否触碰"
+     "ref": "gauge_threshold 是合法 StatKey，但改它等价于改行动周期（threshold/rate），是否触碰",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -1475,22 +1610,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "deep_parasitized"
+       "ref": "deep_parasitized",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "寄生"
+       "ref": "寄生",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "parasite"
+       "ref": "parasite",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       },
       {
        "dim": "规模均衡",
        "why": "-1：轴卡数 5 vs 理想 9（比值 0.54）",
-       "ref": "parasite"
+       "ref": "parasite",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
     },
@@ -1519,22 +1658,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "stolen_time"
+       "ref": "stolen_time",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "窃取时间"
+       "ref": "窃取时间",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "命运缝隙,衰老"
+       "ref": "命运缝隙,衰老",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "chrono"
+       "ref": "chrono",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -1563,17 +1706,20 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "思维误导"
+       "ref": "思维误导",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "精神干扰"
+       "ref": "精神干扰",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "deceit"
+       "ref": "deceit",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -1602,22 +1748,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "盗火"
+       "ref": "盗火",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "卓越观察,窃取记忆,错误"
+       "ref": "卓越观察,窃取记忆,错误",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "steal"
+       "ref": "steal",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       },
       {
        "dim": "规模均衡",
        "why": "-2：轴卡数 15 vs 理想 9（比值 1.62）",
-       "ref": "steal"
+       "ref": "steal",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
     }
@@ -1640,28 +1790,33 @@
    "deductions": [
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "seer"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "seer",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-9.4：枢纽状态 2 个 + combo 读取 1 次",
-     "ref": "seer"
+     "ref": "seer",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 G15",
-     "ref": "on_turn_start 引擎从未 fire，当前完全不生效；修 G15 后自动闭环（执行参数 §2.1）"
+     "ref": "on_turn_start 引擎从未 fire，当前完全不生效；修 G15 后自动闭环（执行参数 §2.1）",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 G15",
-     "ref": "on_turn_start 引擎从未 fire（执行参数 §2.1）；修 G15 后自动闭环"
+     "ref": "on_turn_start 引擎从未 fire（执行参数 §2.1）；修 G15 后自动闭环",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 HAND_HIDDEN",
-     "ref": "环境规则「敌方无法查看我方手牌」= 信息层标志 hand_hidden，非补丁，待引擎信息层承载确认"
+     "ref": "环境规则「敌方无法查看我方手牌」= 信息层标志 hand_hidden，非补丁，待引擎信息层承载确认",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -1690,22 +1845,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "miracle"
+       "ref": "miracle",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "奇迹"
+       "ref": "奇迹",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "愿望,能力精进"
+       "ref": "愿望,能力精进",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "miracle"
+       "ref": "miracle",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -1734,17 +1893,20 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "纸人替身"
+       "ref": "纸人替身",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "完美协调,直觉预感"
+       "ref": "完美协调,直觉预感",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "trick"
+       "ref": "trick",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -1777,27 +1939,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "clairvoyance"
+       "ref": "clairvoyance",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "灵视"
+       "ref": "灵视",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "细微观察"
+       "ref": "细微观察",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "命运干扰,命运锚点,历史影像"
+       "ref": "命运干扰,命运锚点,历史影像",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "命运干扰,命运锚点,历史影像"
+       "ref": "命运干扰,命运锚点,历史影像",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -1830,22 +1997,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "puppet_string"
+       "ref": "puppet_string",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "秘偶"
+       "ref": "秘偶",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "伤害转移"
+       "ref": "伤害转移",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "秘偶不死,秘偶换位,灵界掌控者"
+       "ref": "秘偶不死,秘偶换位,灵界掌控者",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     }
@@ -1869,22 +2040,26 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 36 分（<40）",
-     "ref": "martial"
+     "ref": "martial",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次（全库 max 6）",
-     "ref": "warrior"
+     "why": "-12.5：本途径他轴身份读取 1 次",
+     "ref": "warrior",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-15.0：枢纽状态 0 个 + combo 读取 0 次",
-     "ref": "warrior"
+     "ref": "warrior",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 ANY_OF_PREDICATE",
-     "ref": "共享内核 §三谓词族无 any_of 组合子，且「armor 增益」无谓词，待内核裁定"
+     "ref": "共享内核 §三谓词族无 any_of 组合子，且「armor 增益」无谓词，待内核裁定",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -1915,32 +2090,38 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "weapon_grandmaster"
+       "ref": "weapon_grandmaster",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "武器大师"
+       "ref": "武器大师",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "兵械通晓"
+       "ref": "兵械通晓",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "神罚"
+       "ref": "神罚",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "规模均衡",
        "why": "-4：轴卡数 15 vs 理想 8（比值 1.82）",
-       "ref": "martial"
+       "ref": "martial",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "巨力挥击,神罚"
+       "ref": "巨力挥击,神罚",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -1971,27 +2152,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "ambush_shroud"
+       "ref": "ambush_shroud",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "隐蔽"
+       "ref": "隐蔽",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "猎魔之眼,晨曦领域"
+       "ref": "猎魔之眼,晨曦领域",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "晨曦领域"
+       "ref": "晨曦领域",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "晨曦领域"
+       "ref": "晨曦领域",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -2020,17 +2206,20 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "守护状态"
+       "ref": "守护状态",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "守护姿态"
+       "ref": "守护姿态",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "guard"
+       "ref": "guard",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -2062,7 +2251,8 @@
       {
        "dim": "产层闭环",
        "why": "-15：enablers 1 张均未实证挂载身份",
-       "ref": "暮色侵蚀"
+       "ref": "暮色侵蚀",
+       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
       }
      ]
     }
@@ -2085,58 +2275,69 @@
    "deductions": [
     {
      "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次（全库 max 6）",
-     "ref": "criminal"
+     "why": "-12.5：本途径他轴身份读取 1 次",
+     "ref": "criminal",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-11.2：枢纽状态 1 个 + combo 读取 1 次",
-     "ref": "criminal"
+     "ref": "criminal",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 SKILL_DEF_MODES",
-     "ref": "释放时三选一变体依赖 SkillDef.modes（新增项 21，ddd 无落点，🟡 待拍）；退化方案：拆三张独立卡"
+     "ref": "释放时三选一变体依赖 SkillDef.modes（新增项 21，ddd 无落点，🟡 待拍）；退化方案：拆三张独立卡",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 SKILL_DEF_MODES",
-     "ref": "三选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍）"
+     "ref": "三选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍）",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 GAUGE_RATE_MUL_STAT_MODE",
-     "ref": "modify_stat.mode 枚举为 delta/set/to_at_least/to_at_most，无 mul；"
+     "ref": "modify_stat.mode 枚举为 delta/set/to_at_least/to_at_most，无 mul；",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 SKILL_DEF_MODES",
-     "ref": "四选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍）；退化方案：拆四张独立史诗卡"
+     "ref": "四选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍）；退化方案：拆四张独立史诗卡",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 GAUGE_RATE_MUL_STAT_MODE",
-     "ref": "混乱分支 gauge.rate ×0.7 同污秽之语缓慢分支"
+     "ref": "混乱分支 gauge.rate ×0.7 同污秽之语缓慢分支",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 ANY_OF_PREDICATE",
-     "ref": "field_status_count 谓词单 id，三状态存在性需 any_of 组合子，待内核裁定"
+     "ref": "field_status_count 谓词单 id，三状态存在性需 any_of 组合子，待内核裁定",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 STATUS_SOURCE_ATTRIBUTION",
-     "ref": "条件只判目标带 black_flame≥1 层；「友方刺客所挂」归属维度无谓词，以语义注记承载（black_flame "
+     "ref": "条件只判目标带 black_flame≥1 层；「友方刺客所挂」归属维度无谓词，以语义注记承载（black_flame ",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 PATHWAY_TARGETED_ALLY",
-     "ref": "「友方律师」按途径定向：effectTarget/unitFilter 无 pathway 维度，暂用 all_alli"
+     "ref": "「友方律师」按途径定向：effectTarget/unitFilter 无 pathway 维度，暂用 all_alli",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 STATUS_SOURCE_ATTRIBUTION",
-     "ref": "「友方耕种者的丰饶」以 side:ally + abundance 存在性承载；abundance 挂载方限耕种者，归属"
+     "ref": "「友方耕种者的丰饶」以 side:ally + abundance 存在性承载；abundance 挂载方限耕种者，归属",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -2167,22 +2368,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "侵蚀者"
+       "ref": "侵蚀者",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "污秽之语"
+       "ref": "污秽之语",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "荒芜侵蚀·改"
+       "ref": "荒芜侵蚀·改",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "荒芜侵蚀·改"
+       "ref": "荒芜侵蚀·改",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -2213,12 +2418,14 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "恶魔仪式"
+       "ref": "恶魔仪式",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "深渊召唤"
+       "ref": "深渊召唤",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -2254,22 +2461,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：Pool 轴无层数引擎档位（thresholdTrigger(metric) 未挂）",
-       "ref": "lust"
+       "ref": "lust",
+       "fix": "给该 Pool 配 thresholdTrigger(metric) 档位状态（照恶欲值躁动/失控/爆炸四档先例）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "掌控欲望"
+       "ref": "掌控欲望",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "欲望爆炸"
+       "ref": "欲望爆炸",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-17：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "深渊即我,恶欲共鸣"
+       "ref": "深渊即我,恶欲共鸣",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     },
@@ -2303,17 +2514,20 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "腐蚀毒雾"
+       "ref": "腐蚀毒雾",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "强酸沼泽"
+       "ref": "强酸沼泽",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "注：notes 级 2 张（减半计）",
-       "ref": "地狱之火,双焰交汇"
+       "ref": "地狱之火,双焰交汇",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     }
@@ -2337,22 +2551,26 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 37 分（<40）",
-     "ref": "arcana"
+     "ref": "arcana",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次（全库 max 6）",
-     "ref": "reader"
+     "why": "-12.5：本途径他轴身份读取 1 次",
+     "ref": "reader",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-11.2：枢纽状态 2 个 + combo 读取 0 次",
-     "ref": "reader"
+     "ref": "reader",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 SKILL_COST_DELTA",
-     "ref": "技能费用修正属 progression 层（战外），ddd 未落；退化方案为 modify_stat(energy_re"
+     "ref": "技能费用修正属 progression 层（战外），ddd 未落；退化方案为 modify_stat(energy_re",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -2381,22 +2599,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "ritual_expertise"
+       "ref": "ritual_expertise",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "仪式魔法专家"
+       "ref": "仪式魔法专家",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "省略步骤"
+       "ref": "省略步骤",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "arcana"
+       "ref": "arcana",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -2425,17 +2647,20 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "预言"
+       "ref": "预言",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "局势推演,规律·撬动,规律权柄"
+       "ref": "局势推演,规律·撬动,规律权柄",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "foresight"
+       "ref": "foresight",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -2468,7 +2693,8 @@
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "mimic"
+       "ref": "mimic",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -2504,17 +2730,20 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "observed"
+       "ref": "observed",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "洞悉,全知·现在与过去"
+       "ref": "洞悉,全知·现在与过去",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-5：payoff 5 张全部 notes 级（卡面无读层引用）",
-       "ref": "模仿·初解,模仿·秘术导师,模仿·预言家,模仿·智天使,模仿·全知之眼"
+       "ref": "模仿·初解,模仿·秘术导师,模仿·预言家,模仿·智天使,模仿·全知之眼",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     }
@@ -2538,37 +2767,44 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 34 分（<40）",
-     "ref": "form"
+     "ref": "form",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次（全库 max 6）",
-     "ref": "assassin"
+     "why": "-12.5：本途径他轴身份读取 1 次",
+     "ref": "assassin",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-9.4：枢纽状态 3 个 + combo 读取 0 次",
-     "ref": "assassin"
+     "ref": "assassin",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 MOVE_IN_STATUS_TRIGGER",
-     "ref": "状态触发器载荷内调用 move 是否走 G8 faction 校验待确认（本稿新增项 16）"
+     "ref": "状态触发器载荷内调用 move 是否走 G8 faction 校验待确认（本稿新增项 16）",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 SELF_HAS_STATUS_PREDICATE",
-     "ref": "self_has_status 谓词（本稿新增项 12，🟡；F52 的 self 方向）待落地，暂以 any_of + "
+     "ref": "self_has_status 谓词（本稿新增项 12，🟡；F52 的 self 方向）待落地，暂以 any_of + ",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 ANY_OF_PREDICATE",
-     "ref": "any_of 组合子待内核裁定"
+     "ref": "any_of 组合子待内核裁定",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 DURATION_BY_STATUS_FAMILY",
-     "ref": "按状态族过滤的 duration 加成（本稿新增项 18/19，🟡）待落地"
+     "ref": "按状态族过滤的 duration 加成（本稿新增项 18/19，🟡）待落地",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -2597,27 +2833,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "assassin_form"
+       "ref": "assassin_form",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-15：enablers 3 张均未实证挂载身份",
-       "ref": "影形态,雾形态,血形态"
+       "ref": "影形态,雾形态,血形态",
+       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "原初·静止"
+       "ref": "原初·静止",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "规模均衡",
        "why": "-1：轴卡数 15 vs 理想 10（比值 1.54）",
-       "ref": "form"
+       "ref": "form",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "原初·静止"
+       "ref": "原初·静止",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -2648,22 +2889,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "疾病"
+       "ref": "疾病",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "黑焰"
+       "ref": "黑焰",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "末日"
+       "ref": "末日",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "末日"
+       "ref": "末日",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -2694,22 +2939,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "镜子替身"
+       "ref": "镜子替身",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "魔镜占卜"
+       "ref": "魔镜占卜",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "镜中世界"
+       "ref": "镜中世界",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "镜中世界"
+       "ref": "镜中世界",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -2758,23 +3007,27 @@
    "deductions": [
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "lawyer"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "lawyer",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-9.4：枢纽状态 3 个 + combo 读取 0 次",
-     "ref": "lawyer"
+     "ref": "lawyer",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 DEATH_SETTLEMENT_FIELD_WRITE",
-     "ref": "on_kill 触发器 params.deathSettlement 写死亡结算字段 revive_blocked 的载"
+     "ref": "on_kill 触发器 params.deathSettlement 写死亡结算字段 revive_blocked 的载",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 ORDER_SHUFFLE",
-     "ref": "gauge_shuffle（行动条集合守恒重排）+ status_shuffle（状态轮转搬运）双扩展原语用于本卡，已合"
+     "ref": "gauge_shuffle（行动条集合守恒重排）+ status_shuffle（状态轮转搬运）双扩展原语用于本卡，已合",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -2805,17 +3058,20 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "chink_finding"
+       "ref": "chink_finding",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "诡辩,陈词"
+       "ref": "诡辩,陈词",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "advocacy"
+       "ref": "advocacy",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -2844,17 +3100,20 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "放大"
+       "ref": "放大",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "野蛮体魄,力量解决,赠予"
+       "ref": "野蛮体魄,力量解决,赠予",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "brute"
+       "ref": "brute",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -2885,17 +3144,20 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "腐蚀"
+       "ref": "腐蚀",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "贿赂·关联,赠予,收买"
+       "ref": "贿赂·关联,赠予,收买",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "腐化回扣"
+       "ref": "腐化回扣",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     },
@@ -2926,22 +3188,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "扭曲"
+       "ref": "扭曲",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "利用,独享规则,重定义"
+       "ref": "利用,独享规则,重定义",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "秩序崩坏"
+       "ref": "秩序崩坏",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "秩序崩坏"
+       "ref": "秩序崩坏",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     }
@@ -2965,22 +3231,26 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 40 分（<40）",
-     "ref": "bondage"
+     "ref": "bondage",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "prisoner"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "prisoner",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 F25_UNIT_WRAITH_ID_CONFLICT",
-     "ref": "控制幽魂升级档依赖 F25 unit_wraith，ID 冲突未解决前不落地"
+     "ref": "控制幽魂升级档依赖 F25 unit_wraith，ID 冲突未解决前不落地",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 CONVERT_AS_DISPEL_SPAWN",
-     "ref": "「转化」四动词（改判阵营+换技能组+套模板+落队尾）无单一原语；按源稿退化口径以 dispel(移除原单位)+spawn"
+     "ref": "「转化」四动词（改判阵营+换技能组+套模板+落队尾）无单一原语；按源稿退化口径以 dispel(移除原单位)+spawn",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -3011,27 +3281,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "the_bound"
+       "ref": "the_bound",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "被缚者"
+       "ref": "被缚者",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "爆发欲望,长久沉默,邪物"
+       "ref": "爆发欲望,长久沉默,邪物",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "侵蚀诅咒"
+       "ref": "侵蚀诅咒",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "侵蚀诅咒"
+       "ref": "侵蚀诅咒",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -3062,27 +3337,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "object_possession"
+       "ref": "object_possession",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "附身物体"
+       "ref": "附身物体",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "随手物品,操纵物品"
+       "ref": "随手物品,操纵物品",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "物品权柄"
+       "ref": "物品权柄",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "物品权柄"
+       "ref": "物品权柄",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -3113,22 +3393,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "诅咒之源"
+       "ref": "诅咒之源",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "变形诅咒"
+       "ref": "变形诅咒",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "万咒加身"
+       "ref": "万咒加身",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "万咒加身"
+       "ref": "万咒加身",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -3161,27 +3445,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "werewolf_form"
+       "ref": "werewolf_form",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "狼人化"
+       "ref": "狼人化",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "读层闭环",
        "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "诅咒权柄,演出,异类之王"
+       "ref": "诅咒权柄,演出,异类之王",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "规模均衡",
        "why": "-0：轴卡数 13 vs 理想 9（比值 1.44）",
-       "ref": "aberration"
+       "ref": "aberration",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "诅咒权柄,演出,异类之王"
+       "ref": "诅咒权柄,演出,异类之王",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     }
@@ -3205,17 +3494,20 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 38 分（<40）",
-     "ref": "authority"
+     "ref": "authority",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次（全库 max 6）",
-     "ref": "sailor"
+     "why": "-12.5：本途径他轴身份读取 1 次",
+     "ref": "sailor",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-15.0：枢纽状态 0 个 + combo 读取 0 次",
-     "ref": "sailor"
+     "ref": "sailor",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     }
    ],
    "axes": [
@@ -3244,22 +3536,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "tyrant_dread"
+       "ref": "tyrant_dread",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "暴君权柄"
+       "ref": "暴君权柄",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "恐惧之音,幻鳞,光之化身"
+       "ref": "恐惧之音,幻鳞,光之化身",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "authority"
+       "ref": "authority",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -3291,27 +3587,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "emc_disorder"
+       "ref": "emc_disorder",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "闪电风暴"
+       "ref": "闪电风暴",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "飓风盘绕,加速与滑翔,雷击"
+       "ref": "飓风盘绕,加速与滑翔,雷击",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-17：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "风刃军团,风暴地狱"
+       "ref": "风刃军团,风暴地狱",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "风刃军团,风暴地狱"
+       "ref": "风刃军团,风暴地狱",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -3342,22 +3643,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "conceal"
+       "ref": "conceal",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "深潜"
+       "ref": "深潜",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "海洋眷顾,水幕"
+       "ref": "海洋眷顾,水幕",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "深潜"
+       "ref": "深潜",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -3391,7 +3696,8 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "愤怒爆发"
+       "ref": "愤怒爆发",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       }
      ]
     }
@@ -3415,17 +3721,20 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 34 分（<40）",
-     "ref": "fantasy"
+     "ref": "fantasy",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨系联动",
      "why": "-13.1：枢纽状态 1 个 + combo 读取 0 次",
-     "ref": "spectator"
+     "ref": "spectator",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 DAMAGE_ELEMENT_TRIGGER_FILTER",
-     "ref": "触发需按伤害元素过滤（仅 mental 伤害时 +1 层），ddd 触发条件侧无元素维度谓词，维持 🟡（本稿新增项 18"
+     "ref": "触发需按伤害元素过滤（仅 mental 伤害时 +1 层），ddd 触发条件侧无元素维度谓词，维持 🟡（本稿新增项 18",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -3454,22 +3763,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "written_truth"
+       "ref": "written_truth",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "书写成真"
+       "ref": "书写成真",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "龙化,巨龙"
+       "ref": "龙化,巨龙",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "fantasy"
+       "ref": "fantasy",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -3498,22 +3811,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "dream_phase"
+       "ref": "dream_phase",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "梦境穿梭"
+       "ref": "梦境穿梭",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "引导,修改"
+       "ref": "引导,修改",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "dream"
+       "ref": "dream",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -3543,17 +3860,20 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "subconscious_edit"
+       "ref": "subconscious_edit",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "心灵权柄"
+       "ref": "心灵权柄",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "suggestion"
+       "ref": "suggestion",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -3589,12 +3909,14 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "观众·细微观察"
+       "ref": "观众·细微观察",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "读层闭环",
        "why": "注：notes 级 1 张（减半计）",
-       "ref": "洞察权柄"
+       "ref": "洞察权柄",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     }
@@ -3617,13 +3939,15 @@
    "deductions": [
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "apprentice"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "apprentice",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-13.1：枢纽状态 1 个 + combo 读取 0 次",
-     "ref": "apprentice"
+     "ref": "apprentice",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     }
    ],
    "axes": [
@@ -3654,22 +3978,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "戏法·闪光"
+       "ref": "戏法·闪光",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "逃脱戏法"
+       "ref": "逃脱戏法",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "规模均衡",
        "why": "-1：轴卡数 4 vs 理想 8（比值 0.47）",
-       "ref": "trick"
+       "ref": "trick",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "逃脱戏法"
+       "ref": "逃脱戏法",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -3701,22 +4029,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "星相学"
+       "ref": "星相学",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "读层闭环",
        "why": "-17：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "空间隐藏,放逐"
+       "ref": "空间隐藏,放逐",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "规模均衡",
        "why": "-0：轴卡数 12 vs 理想 8（比值 1.41）",
-       "ref": "astral"
+       "ref": "astral",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "空间隐藏,放逐"
+       "ref": "空间隐藏,放逐",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -3750,32 +4082,38 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "ritual_gate"
+       "ref": "ritual_gate",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "仪式·门"
+       "ref": "仪式·门",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "破障之门,门之概念,无处不在"
+       "ref": "破障之门,门之概念,无处不在",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-9：payoff 4 张全部 notes 级（卡面无读层引用）",
-       "ref": "旅行家之门,闪现,撕裂空间,空间破碎"
+       "ref": "旅行家之门,闪现,撕裂空间,空间破碎",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "规模均衡",
        "why": "-1：轴卡数 13 vs 理想 8（比值 1.53）",
-       "ref": "gate"
+       "ref": "gate",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "旅行家之门,闪现,撕裂空间,空间破碎"
+       "ref": "旅行家之门,闪现,撕裂空间,空间破碎",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -3809,12 +4147,14 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "记录"
+       "ref": "记录",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "规模均衡",
        "why": "-0：轴卡数 5 vs 理想 8（比值 0.59）",
-       "ref": "record"
+       "ref": "record",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
     }
@@ -3838,17 +4178,20 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 38 分（<40）",
-     "ref": "corruption"
+     "ref": "corruption",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "supplicant"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "supplicant",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 SPAWN_HPRATIO_EXPRESSION",
-     "ref": "spawn.hpRatio 运行时表达式（deathsThisBattle）直接写法未见登记：valueFrom bat"
+     "ref": "spawn.hpRatio 运行时表达式（deathsThisBattle）直接写法未见登记：valueFrom bat",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -3877,22 +4220,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "defile"
+       "ref": "defile",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "堕落之影"
+       "ref": "堕落之影",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "耳语,秽语·诅咒"
+       "ref": "耳语,秽语·诅咒",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "corruption"
+       "ref": "corruption",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -3923,27 +4270,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "parasitized"
+       "ref": "parasitized",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "液化寄生"
+       "ref": "液化寄生",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "补充血肉,血肉炸弹"
+       "ref": "补充血肉,血肉炸弹",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "血肉不灭"
+       "ref": "血肉不灭",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "血肉不灭"
+       "ref": "血肉不灭",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -3976,17 +4328,20 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "shadow_dwell"
+       "ref": "shadow_dwell",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "藏入阴影"
+       "ref": "藏入阴影",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "召唤阴影,操纵阴影"
+       "ref": "召唤阴影,操纵阴影",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       }
      ]
     },
@@ -4019,12 +4374,14 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "放牧灵魂"
+       "ref": "放牧灵魂",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "驱使灵魂,堕落眷属,灵魂牧场"
+       "ref": "驱使灵魂,堕落眷属,灵魂牧场",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     }
@@ -4047,13 +4404,15 @@
    "deductions": [
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "planter"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "planter",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     },
     {
      "dim": "跨系联动",
      "why": "-11.2：枢纽状态 2 个 + combo 读取 0 次",
-     "ref": "planter"
+     "ref": "planter",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     }
    ],
    "axes": [
@@ -4082,22 +4441,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "人偶制造"
+       "ref": "人偶制造",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "生命炼成"
+       "ref": "生命炼成",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "alchemy"
+       "ref": "alchemy",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       },
       {
        "dim": "规模均衡",
        "why": "-0：轴卡数 5 vs 理想 8（比值 0.59）",
-       "ref": "alchemy"
+       "ref": "alchemy",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
     },
@@ -4130,32 +4493,38 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "cultivated"
+       "ref": "cultivated",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "分辨种子"
+       "ref": "分辨种子",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "繁衍生长,祈雨祈晴"
+       "ref": "繁衍生长,祈雨祈晴",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "化身巨熊,自然之子,自然权柄"
+       "ref": "化身巨熊,自然之子,自然权柄",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "规模均衡",
        "why": "-1：轴卡数 13 vs 理想 8（比值 1.53）",
-       "ref": "harvest"
+       "ref": "harvest",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "化身巨熊,自然之子,自然权柄"
+       "ref": "化身巨熊,自然之子,自然权柄",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -4188,22 +4557,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "荒芜"
+       "ref": "荒芜",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "恶灵化,剥夺生命"
+       "ref": "恶灵化,剥夺生命",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "自然憎恶,枯荣循环,最后回归之地"
+       "ref": "自然憎恶,枯荣循环,最后回归之地",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "自然憎恶,枯荣循环,最后回归之地"
+       "ref": "自然憎恶,枯荣循环,最后回归之地",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -4238,22 +4611,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "生命充盈"
+       "ref": "生命充盈",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "给予生命,缝合灵魂"
+       "ref": "给予生命,缝合灵魂",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-5：payoff 5 张全部 notes 级（卡面无读层引用）",
-       "ref": "缝合灵魂,触碰痊愈,万物母巢,生命炼成,人偶制造"
+       "ref": "缝合灵魂,触碰痊愈,万物母巢,生命炼成,人偶制造",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "缝合灵魂,触碰痊愈,万物母巢,生命炼成,人偶制造"
+       "ref": "缝合灵魂,触碰痊愈,万物母巢,生命炼成,人偶制造",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     }
@@ -4277,32 +4654,38 @@
     {
      "dim": "轴健康度",
      "why": "-5：最低轴 36 分（<40）",
-     "ref": "inspiration"
+     "ref": "inspiration",
+     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
     },
     {
      "dim": "跨系联动",
      "why": "-11.2：枢纽状态 2 个 + combo 读取 0 次",
-     "ref": "monster"
+     "ref": "monster",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "结构健康",
      "why": "-0：主被动比 1.19 不在 [1.5, 3.0]",
-     "ref": "monster"
+     "ref": "monster",
+     "fix": "补主动或被动卡，把主被动比调进 [1.5, 3.0]"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 STATUS_GAIN_LISTENER",
-     "ref": "新增项 1 遗留缺口：「监听自身获得指定状态」触发面未落（12 触发点封闭集无此钩子）；退化方案：并入幸运者自续链（on"
+     "ref": "新增项 1 遗留缺口：「监听自身获得指定状态」触发面未落（12 触发点封闭集无此钩子）；退化方案：并入幸运者自续链（on",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 FACTION_PREDICATE",
-     "ref": "共享内核 §三谓词族无「目标阵营」判定（仅 gender_is 等），If 分支的 target_faction_is "
+     "ref": "共享内核 §三谓词族无「目标阵营」判定（仅 gender_is 等），If 分支的 target_faction_is ",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 RESOURCE_DURATION_REVERT",
-     "ref": "modify_resource(gauge.threshold) 为持续修正，需随状态到期回滚；效果参数未列 modif"
+     "ref": "modify_resource(gauge.threshold) 为持续修正，需随状态到期回滚；效果参数未列 modif",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -4331,27 +4714,32 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "inspiration_sense"
+       "ref": "inspiration_sense",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "灵感超高"
+       "ref": "灵感超高",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "绝对灵感,超强预感"
+       "ref": "绝对灵感,超强预感",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "inspiration"
+       "ref": "inspiration",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       },
       {
        "dim": "规模均衡",
        "why": "-1：轴卡数 13 vs 理想 9（比值 1.49）",
-       "ref": "inspiration"
+       "ref": "inspiration",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
     },
@@ -4380,22 +4768,26 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "fate_loop"
+       "ref": "fate_loop",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "命运循环"
+       "ref": "命运循环",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "重启循环,水银之躯·完整"
+       "ref": "重启循环,水银之躯·完整",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "cycle"
+       "ref": "cycle",
+       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
       }
      ]
     },
@@ -4432,7 +4824,8 @@
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "预见灾祸"
+       "ref": "预见灾祸",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       }
      ]
     },
@@ -4474,12 +4867,14 @@
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "幸运者,命运潮汐"
+       "ref": "幸运者,命运潮汐",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "注：notes 级 2 张（减半计）",
-       "ref": "命运启示,命运循环"
+       "ref": "命运启示,命运循环",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     }
@@ -4502,8 +4897,9 @@
    "deductions": [
     {
      "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次（全库 max 6）",
-     "ref": "sleepless"
+     "why": "-15.0：本途径他轴身份读取 0 次",
+     "ref": "sleepless",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
     }
    ],
    "axes": [
@@ -4536,32 +4932,38 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "conceal"
+       "ref": "conceal",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "隐秘化"
+       "ref": "隐秘化",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "无迹之影"
+       "ref": "无迹之影",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "注：notes 级 1 张（减半计）",
-       "ref": "隐秘之地"
+       "ref": "隐秘之地",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "规模均衡",
        "why": "-0：轴卡数 5 vs 理想 8（比值 0.59）",
-       "ref": "secrecy"
+       "ref": "secrecy",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "隐秘之地,隐秘权柄"
+       "ref": "隐秘之地,隐秘权柄",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -4594,12 +4996,14 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "pacified"
+       "ref": "pacified",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "安魂"
+       "ref": "安魂",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       }
      ]
     },
@@ -4636,12 +5040,14 @@
       {
        "dim": "身份锚定",
        "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "slumber"
+       "ref": "slumber",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
       },
       {
        "dim": "读层闭环",
        "why": "注：notes 级 1 张（减半计）",
-       "ref": "恐惧灵光"
+       "ref": "恐惧灵光",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     },
@@ -4678,17 +5084,20 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "夜色渐浓"
+       "ref": "夜色渐浓",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "夜视"
+       "ref": "夜视",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       },
       {
        "dim": "读层闭环",
        "why": "注：notes 级 1 张（减半计）",
-       "ref": "黑暗之剑"
+       "ref": "黑暗之剑",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     }
@@ -4712,17 +5121,20 @@
     {
      "dim": "跨系联动",
      "why": "-11.2：枢纽状态 2 个 + combo 读取 0 次",
-     "ref": "hunter"
+     "ref": "hunter",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 DYNAMIC_STAT_RESOLVE",
-     "ref": "modify_stat.stat 需为合法枚举，本卡「四取一动态属性」以 valueFrom.select: highe"
+     "ref": "modify_stat.stat 需为合法枚举，本卡「四取一动态属性」以 valueFrom.select: highe",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     },
     {
      "dim": "机制落地",
      "why": "-：frameworkFlags 未落地 GENDER_FILTERED_MUL",
-     "ref": "damage_taken_mul 过滤乘区的 filter.gender 维度待内核裁定（编队参数 §1.1b H4 f"
+     "ref": "damage_taken_mul 过滤乘区的 filter.gender 维度待内核裁定（编队参数 §1.1b H4 f",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
     }
    ],
    "axes": [
@@ -4754,17 +5166,20 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "挑衅"
+       "ref": "挑衅",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "读层闭环",
        "why": "-17：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "误导,煽动"
+       "ref": "误导,煽动",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "误导,煽动"
+       "ref": "误导,煽动",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -4797,22 +5212,26 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "集众·铁血"
+       "ref": "集众·铁血",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "读层闭环",
        "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "借用能力,无限制分享,战争权柄"
+       "ref": "借用能力,无限制分享,战争权柄",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       },
       {
        "dim": "规模均衡",
        "why": "-1：轴卡数 16 vs 理想 11（比值 1.49）",
-       "ref": "massing"
+       "ref": "massing",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       },
       {
        "dim": "承接连通",
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "借用能力,无限制分享,战争权柄"
+       "ref": "借用能力,无限制分享,战争权柄",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     },
@@ -4849,7 +5268,8 @@
       {
        "dim": "读层闭环",
        "why": "注：notes 级 1 张（减半计）",
-       "ref": "炽白之枪"
+       "ref": "炽白之枪",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     },
@@ -4884,12 +5304,14 @@
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
-       "ref": "弱点侦察"
+       "ref": "弱点侦察",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
       },
       {
        "dim": "产层闭环",
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "猎人的感官,结构要点"
+       "ref": "猎人的感官,结构要点",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       }
      ]
     }
