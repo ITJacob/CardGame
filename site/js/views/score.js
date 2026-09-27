@@ -119,7 +119,7 @@ function overviewHtml(scores) {
       <td class="num">${i + 1}</td>
       <td><b>${escapeHtml(p.name)}</b> <span class="muted">${escapeHtml(p.id)}</span></td>
       <td class="num total ${gradeClass(p.total)}">${p.total.toFixed(1)}</td>
-      <td>${dimBars(p.dims, (k) => DIM_MAX[k])}</td>
+      <td class="col-dimbars">${dimBars(p.dims, (k) => DIM_MAX[k])}</td>
       <td class="num ${p.minAxis < 40 ? 'warn-text' : ''}">${p.minAxis.toFixed(0)}</td>
       <td class="num muted">${p.cards}</td>
       <td class="num muted" title="卡面用过的效果原语种类 / schema 声明的 ${total} 种">${primCover.get(p.id)?.size || 0}<span class="muted">/${total}</span></td>
@@ -232,7 +232,7 @@ function pathwayHtml(scores, pid) {
     <tr data-axis="${escapeHtml(a.id)}" class="axis-row">
       <td>${axisSpan(pid, a.id)}</td>
       <td class="num total ${gradeClass(a.total)}">${a.total.toFixed(1)}</td>
-      <td>${axisDimBars(a.dims)}</td>
+      <td class="col-dimbars">${axisDimBars(a.dims)}</td>
       <td class="muted small">${a.enablersVerified.length ? '产 ' + a.enablersVerified.length : '<span class="warn-text">产 0</span>'} ·
           ${a.payoffsLanded.length ? '读 ' + a.payoffsLanded.length : (a.vacuumAccepted ? '<span class="muted">真空✓</span>' : '<span class="warn-text">读 0</span>')}</td>
     </tr>
@@ -243,7 +243,7 @@ function pathwayHtml(scores, pid) {
     ${checklistHtml(p)}
     ${materialHtml(pid)}
     <div class="panel"><h2>构筑轴（点击行展开下钻）</h2>
-      <table class="score-table"><thead><tr><th>轴</th><th>总分</th><th>六维（身份/产层/读层/多样/规模/连通）</th><th>产读</th></tr></thead>
+      <table class="score-table"><thead><tr><th>轴</th><th>总分</th><th class="col-dimbars">六维（身份/产层/读层/多样/规模/连通）</th><th>产读</th></tr></thead>
       <tbody>${axisRows}</tbody></table></div>`;
 }
 
