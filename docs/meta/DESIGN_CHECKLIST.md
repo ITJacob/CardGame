@@ -1,0 +1,45 @@
+# 技能卡与状态设计清单（DESIGN CHECKLIST）
+
+> 新增/重设计一张技能卡或一个状态时依次过一遍的维度清单。
+> 约束来源：`GENERATION_BRIEF.md`（生成规范）、`SCHEMA.md`（结构规范）、
+> `skills.schema.json`（card 48 字段 / statusDef 38 字段的权威结构）、`SCORING.md`（评分口径）。
+> 2026-09-26 整理。
+
+## 设计一张技能卡：8 步
+
+| # | 维度 | 决策内容 / 约束来源 |
+|---|---|---|
+| 1 | **定位** | 落在哪个途径、哪个构筑轴；在轴里当产层（enabler）还是读层（payoff）——决定它在轴评分里的角色（SCORING.md 轴六维） |
+| 2 | **卡面骨架** | `kind` 主动/被动；被动挂 `hook`（触发点 12 个封闭集）；`sequence` + 序列名；`rarity`（rarityMap 由序列位定死，不可自选）；是否旗舰（flagship，理想 4 张/途径） |
+| 3 | **效果 AST** | `op` 结构（sequence / if / repeat…）+ 原语组合（27 个封闭集，schema `effect.oneOf` 为权威源）+ 参数（元素/属性/资源/锚点/条件谓词，全部走值域 + glossary 词典）——技能真正的设计主体 |
+| 4 | **硬约束自检** | 触发点封闭、R1–R6 随机治理（chance 须登记 + 单次抽样 + 只用于非伤害维）、G8 位移约束、数值锚点（≈3能量 ≈6伤害 ≈10%最大生命，brief §1–§3）——数值本身目前 ⚠️D 占位，只校结构不校大小 |
+| 5 | **文本三件套** | `describe`（机器可读复述）/ `flavor` / `lore`，缺一扣「文本完备」分 |
+| 6 | **附属定义块**（按需） | 卡面内嵌 `statusDefs` / `unitDefs` / `zoneDef` / `domainDef` / `upgradeLadder` / `variants` |
+| 7 | **元数据收尾** | `conversionNotes`（稿面意图）、`frameworkFlags`（用到的机制缺口登记 landed 状态）、`tentative`、`art` |
+| 8 | **过门禁** | 四脚本全绿（validate / validate_schema / check_enum_sync / check_glossary）+ validate 的稀有度与不变量校验 |
+
+## 设计一个状态：7 步
+
+statusDef 38 个字段，设计决策收敛为七组：
+
+| # | 维度 | 决策内容 |
+|---|---|---|
+| 1 | **身份** | `id` / `name` / `note` + `category` 分类（buff / debuff / 控制…词典值域）——状态统计页「分类 × 维度」的第一个轴 |
+| 2 | **时长模型** | 四件套怎么取：`duration`（tick 自然到期）/ `maxStacks`（叠层）/ `charges`（次数）/ `dispelable`——决定「层数语义」，也是评分「身份锚定」查的层数引擎 |
+| 3 | **读档能力** | `stackThreshold` + `thresholdTrigger`（到档触发什么）、`statPerStack`（每层载荷）、`ramp`、`phases`（形态轮转，如月相）——状态的 payoff 接口；「身份锚定」+7 分看这组是否非空 |
+| 4 | **行为载荷** | `triggers`（12 封闭触发点 → effects，状态的主动面）/ def 级 `effects` / `modifiers`（自由词表修饰符）/ `behaviorModifiers` / `disallowActions` / 防御语义件（`lethalProtect` / `reviveBlocked` / `immune` / `suppress` / `redirectRule`…） |
+| 5 | **跨系开关** | `crossPathway` + `participants` 白名单——不写默认途径私有；跨系联动评分维查这里 |
+| 6 | **特殊机制件**（按需） | `formGroup` / `cycleTicks`（月相轮转）、`slots`（放牧槽 / 规则槽）、`lineageStack`（异类谱系）、`summonMapping`（刻印链）、`contagious`、`transferOnDeath` 等——用到才取 |
+| 7 | **登记 + 数值** | 新 id 过词典对账、枚举过 check_enum_sync；数值 ⚠️D 同技能 |
+
+## 技能与状态的接口契约
+
+技能定义「一次性行为」，状态定义「持续语义」：卡面用 `mount_status` 产它、用
+`modify_status` / 条件谓词读它。轴评分三维正是这个接口的契约检查：
+
+- **身份锚定 ↔ statusId**：轴身份是否落到一个有层数引擎的状态上
+- **产层闭环 ↔ enabler 挂载实证**：enabler 卡面是否真的挂了该身份（AST 可验）
+- **读层闭环 ↔ payoff 读层引用**：payoff 卡面是否有读层引用（landed），还是只在 notes 里自称（notes 级）
+
+环节⑤重设计一张卡时，第 1–2 步（定位/骨架）基本不动，主要动第 3–4 步
+（AST 与状态载荷）——即评分页失分项「修改意见」指向的那些。
