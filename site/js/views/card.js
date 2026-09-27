@@ -214,6 +214,7 @@ export function renderCardDetail(view, id) {
         <div class="badges">
           <span class="badge rarity-${c.rarity}">${cn}</span>
           <span class="badge kind-${c.kind}">${c.kind === 'active' ? '主动' : '被动'}</span>
+          ${c.tentative ? '<span class="badge warn" title="数值待定（⚠️D 占位，平衡期逐条审批）">数值待定</span>' : ''}
           <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
           <span class="badge">轴：${axisSpan(c._pathway, c.axis)}</span>
           ${(c.tags || []).map((t) => `<span class="badge">${escapeHtml(t)}</span>`).join('')}
