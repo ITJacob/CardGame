@@ -9,7 +9,8 @@ import { barChart, countBy, sortedRows, heatPanel, wireHeatToggle } from '../cha
 
 // modifiers 是**自由词表**（不是封闭枚举）：对象形态 {键: 值}，键由卡面自定。
 // 数组形态的元素是 statusModifier，用 kind 作键。note 是附注，不算修饰符本身
-function modifierKeys(def) {
+// export 给评分页（score.js）复用——状态九维度口径只有这一份，别两边各写一份
+export function modifierKeys(def) {
   const m = def.modifiers;
   if (!m) return [];
   const keys = Array.isArray(m)

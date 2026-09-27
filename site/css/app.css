@@ -606,4 +606,47 @@ code.qr-name { font-family: Consolas, monospace; color: var(--accent2); }
 .axis-detail > td { padding: 0 8px 10px; border-bottom: 1px solid var(--border); }
 .axis-detail-inner { font-size: 13px; line-height: 1.8; padding: 8px 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; }
 .axis-detail-inner p { margin: 2px 0; }
+
+/* 评价打分清单：徽章 + 维度名 + 得分条 + 得分，失分条目用 <details> 原生折叠 */
+.chk-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); min-height: 40px; }
+.chk-row:last-of-type { border-bottom: none; }
+.chk-badge { flex: 0 0 26px; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; }
+.chk-badge.ok { background: rgba(77, 163, 106, .18); color: #4da36a; }
+.chk-badge.mid { background: rgba(201, 161, 59, .18); color: #c9a13b; }
+.chk-badge.bad { background: rgba(208, 85, 85, .18); color: #d05555; }
+.chk-name { flex: 0 0 76px; font-size: 14px; }
+.chk-bar { flex: 1 1 auto; min-width: 0; }
+.chk-bar .dim-bars.single { width: 100%; height: 10px; }
+.chk-score { flex: 0 0 auto; font-variant-numeric: tabular-nums; }
+.chk-fix { margin: 2px 0 10px 36px; }
+.chk-fix summary { cursor: pointer; color: var(--dim); font-size: 13px; padding: 4px 0; }
+.chk-fix[open] summary { color: var(--accent, #6a8caf); }
+.chk-okline { margin: 2px 0 10px 36px; font-size: 12px; padding: 4px 0; }
+.fix-line { margin: 2px 0 4px; padding-left: 10px; border-left: 2px solid var(--accent, #6a8caf); color: var(--text); font-size: 13px; }
+.deduction-list .fix-line { color: inherit; }
+
+/* 状态九维度：桌面 3 列、平板 2 列的迷你格 */
+.nine-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 18px; }
+.nine-cell h3 { font-size: 12px; color: var(--dim); font-weight: normal; margin: 10px 0 4px; }
+.nine-cell .bar-row .bar-label { width: 84px; font-size: 12px; }
+
+/* 总览六维迷你条列：窄屏直接隐藏（总分/最低轴已足够取序），不压缩字号硬塞 */
+@media (max-width: 480px) {
+  .score-table .col-dimbars, .score-table td .dim-bars { display: none; }
+}
+
+@media (max-width: 720px) {
+  /* 清单行纵向堆叠：徽章+维度名一行，得分条折到下一行全宽，得分贴右——
+     不做横向滚动的表格化布局 */
+  .chk-row { flex-wrap: wrap; row-gap: 4px; }
+  .chk-bar { flex: 1 1 100%; order: 3; }
+  .chk-fix, .chk-okline { margin-left: 0; }
+  /* 状态九维度 3 列 → 1 列 */
+  .nine-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .nine-cell .bar-row .bar-label { width: 76px; }
+  .chk-name { flex-basis: auto; }
+}
 .small { font-size: 12px; }
