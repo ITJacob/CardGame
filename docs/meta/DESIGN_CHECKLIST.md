@@ -14,7 +14,7 @@
 | 3 | **效果 AST** | `op` 结构（sequence / if / repeat…）+ 原语组合（27 个封闭集，schema `effect.oneOf` 为权威源）+ 参数（元素/属性/资源/锚点/条件谓词，全部走值域 + glossary 词典）——技能真正的设计主体 |
 | 4 | **硬约束自检** | 触发点封闭、R1–R6 随机治理（chance 须登记 + 单次抽样 + 只用于非伤害维）、G8 位移约束、数值锚点（≈3能量 ≈6伤害 ≈10%最大生命，brief §1–§3）——数值本身目前 ⚠️D 占位，只校结构不校大小 |
 | 5 | **文本三件套** | `describe`（机器可读复述）/ `flavor` / `lore`，缺一扣「文本完备」分 |
-| 6 | **附属定义块**（按需） | 卡面内嵌 `statusDefs` / `unitDefs` / `zoneDef` / `domainDef` / `upgradeLadder` / `variants` |
+| 6 | **附属定义块**（按需） | 卡面内嵌 `unitDefs` / `zoneDef` / `domainDef` / `upgradeLadder` / `variants`；界域/区域 def 与 grant 字段成对（`domainDef`↔`domain`、`zoneDef`↔`zone`）。新状态不落卡面，写 `<途径>.statuses.json`（跨途径共用进 `common.statuses.json`），卡面用 mount_status 的 statusId 引用 |
 | 7 | **元数据收尾** | `conversionNotes`（稿面意图）、`frameworkFlags`（用到的机制缺口登记 landed 状态）、`tentative`、`art` |
 | 8 | **过门禁** | 四脚本全绿（validate / validate_schema / check_enum_sync / check_glossary）+ validate 的稀有度与不变量校验 |
 
