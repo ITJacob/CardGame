@@ -1,7 +1,7 @@
 # 职业设计计分卡（scorecard）
 
 > 由 `docs/tools/score.py` 自动生成——**口径变了就改 SCORING.md 重跑，不要手改本文件**。
-> 生成时间：2026-09-26。评分标准见 `../meta/SCORING.md`；数值 ⚠️D 不参与计分（基线状态）。
+> 生成时间：2026-09-27。评分标准见 `../meta/SCORING.md`；数值 ⚠️D 不参与计分（基线状态）。
 
 ## 一、途径排行（升序 = 优先重设计）
 
@@ -42,18 +42,18 @@
 | 机制落地 | 4.1 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（pryer）
-- `跨系联动` -13.1：枢纽状态 1 个 + combo 读取 0 次（pryer）
-- `机制落地` -：frameworkFlags 未落地 C8_NOT_IMPLEMENTED（稿面自认：候选池过滤（C8）未实现，识破部分当前不生效；若长期不落地需整体重做）
-- `机制落地` -：frameworkFlags 未落地 ANY_OF_PREDICATE（共享内核 §三无 any_of 组合子，暂内联两段 has_status 表达「护盾或坚守」，待内核裁定）
-- `机制落地` -：frameworkFlags 未落地 GAUGE_RANK_PREDICATE（「目标行动条最高」无对应谓词（§三仅 gauge_above 阈值比较），暂记 gauge_rank 伪谓词，待裁定）
-- `机制落地` -：frameworkFlags 未落地 ON_REMOVE_EXPIRY（稿面自认：on_remove 在自然到期时是否 fire 待实测确认；不成立则核心（倒计时爆发）需改为 on_tick ）
-- `机制落地` -：frameworkFlags 未落地 C8_NOT_IMPLEMENTED（识破部分同窥秘之眼依赖 C8（稿面自认未实现）；退化方案：驱散 count +1 替代无视不可驱散）
-- `机制落地` -：frameworkFlags 未落地 C8_NOT_IMPLEMENTED（不可被选中部分依赖 C8 候选池过滤（稿面自认未实现）；若长期不落地需改为不依赖候选池的替代收益）
-- `机制落地` -：frameworkFlags 未落地 SPREAD_SPLASH_ADJACENT（SS16：spread 字段已登记（共享内核 §一），但实现状态待确认（愚者稿飞牌升级阶梯引用过同一字段））
-- `机制落地` -：frameworkFlags 未落地 C8_NOT_IMPLEMENTED（不可选中部分依赖 C8 候选池过滤（稿面自认未实现）；若长期不落地本卡需整体重做）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（pryer）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -13.1：枢纽状态 1 个 + combo 读取 0 次（pryer）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 C8_NOT_IMPLEMENTED（稿面自认：候选池过滤（C8）未实现，识破部分当前不生效；若长期不落地需整体重做）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 ANY_OF_PREDICATE（共享内核 §三无 any_of 组合子，暂内联两段 has_status 表达「护盾或坚守」，待内核裁定）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 GAUGE_RANK_PREDICATE（「目标行动条最高」无对应谓词（§三仅 gauge_above 阈值比较），暂记 gauge_rank 伪谓词，待裁定）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 ON_REMOVE_EXPIRY（稿面自认：on_remove 在自然到期时是否 fire 待实测确认；不成立则核心（倒计时爆发）需改为 on_tick ）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 C8_NOT_IMPLEMENTED（识破部分同窥秘之眼依赖 C8（稿面自认未实现）；退化方案：驱散 count +1 替代无视不可驱散）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 C8_NOT_IMPLEMENTED（不可被选中部分依赖 C8 候选池过滤（稿面自认未实现）；若长期不落地需改为不依赖候选池的替代收益）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 SPREAD_SPLASH_ADJACENT（SS16：spread 字段已登记（共享内核 §一），但实现状态待确认（愚者稿飞牌升级阶梯引用过同一字段））→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 C8_NOT_IMPLEMENTED（不可选中部分依赖 C8 候选池过滤（稿面自认未实现）；若长期不落地本卡需整体重做）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -62,29 +62,29 @@
 | 🥊 格斗 `combat` | **56.3** | 15 | 20 | 0 | 12.3 | 9 | 0 | 灌输知识,知识攻击 | — | — |
 | 📃 卷轴法术 `scroll` | **58.6** | 15 | 20 | 0 | 13.6 | 10 | 0 | 法术解析,神秘再现 | — | — |
 
-**🔭 窥秘 失分项**：
+**🔭 窥秘 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（窥秘之眼）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（窥秘权柄）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（知识攻击）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（知识攻击）
+- `产层闭环` -8：实证 enabler 仅 1 张（窥秘之眼）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（窥秘权柄）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（知识攻击）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（知识攻击）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**✨ 星象信息 失分项**：
+**✨ 星象信息 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（本我星象）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（星之巨柱,星桥）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（astral）
-- `规模均衡` -2：轴卡数 15 vs 理想 10（比值 1.58）（astral）
+- `产层闭环` -8：实证 enabler 仅 1 张（本我星象）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（星之巨柱,星桥）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（astral）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
+- `规模均衡` -2：轴卡数 15 vs 理想 10（比值 1.58）（astral）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
 
-**🥊 格斗 失分项**：
+**🥊 格斗 失分项（含修改意见）**：
 
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（combat）
-- `规模均衡` -1：轴卡数 5 vs 理想 10（比值 0.53）（combat）
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（combat）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
+- `规模均衡` -1：轴卡数 5 vs 理想 10（比值 0.53）（combat）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
 
-**📃 卷轴法术 失分项**：
+**📃 卷轴法术 失分项（含修改意见）**：
 
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（卷轴·冰冻,卷轴·麻痹）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（scroll）
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（卷轴·冰冻,卷轴·麻痹）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（scroll）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
 
 ## 歌颂者（chanter）· 46.5 分
@@ -98,12 +98,12 @@
 | 机制落地 | 7.5 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 38 分（<40）（notary）
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（chanter）
-- `跨系联动` -13.1：枢纽状态 1 个 + combo 读取 0 次（chanter）
-- `机制落地` -：frameworkFlags 未落地 G15_ON_TURN_START（稿面注明 on_turn_start 引擎从未 fire、当前不生效；退化方案为 on_battle_start + m）
+- `轴健康度` -5：最低轴 38 分（<40）（notary）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（chanter）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -13.1：枢纽状态 1 个 + combo 读取 0 次（chanter）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 G15_ON_TURN_START（稿面注明 on_turn_start 引擎从未 fire、当前不生效；退化方案为 on_battle_start + m）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -112,33 +112,33 @@
 | 🎵 颂歌 `hymn` | **44.8** | 8 | 20 | 0 | 6.8 | 10 | 0 | 歌颂,圣咏赐福,不息赞歌,光之赞礼 | — | — |
 | ☀️ 圣光 `light` | **65.3** | 8 | 12 | 25 | 12.3 | 8 | 0 | 白昼 | — | 日照,召唤圣光,净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌 |
 
-**🖋️ 公证 失分项**：
+**🖋️ 公证 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（公证）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（神圣誓约,太阳誓约）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（notary）
+- `产层闭环` -8：实证 enabler 仅 1 张（公证）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（神圣誓约,太阳誓约）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（notary）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**⚖️ 审判 失分项**：
+**⚖️ 审判 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（obedience）
-- `产层闭环` -8：实证 enabler 仅 1 张（服从之音）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（太阳使者）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（正义审判）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（正义审判）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（obedience）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（服从之音）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（太阳使者）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（正义审判）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（正义审判）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🎵 颂歌 失分项**：
+**🎵 颂歌 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（blessing）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（hymn）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（blessing）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（hymn）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**☀️ 圣光 失分项**：
+**☀️ 圣光 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（daylight）
-- `产层闭环` -8：实证 enabler 仅 1 张（白昼）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（太阳光环,光之权柄）
-- `读层闭环` -0：payoff 13 张全部 notes 级（卡面无读层引用）（日照,召唤圣光,净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌）
-- `规模均衡` -2：轴卡数 16 vs 理想 10（比值 1.56）（light）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（日照,召唤圣光,净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（daylight）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（白昼）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（太阳光环,光之权柄）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -0：payoff 13 张全部 notes 级（卡面无读层引用）（日照,召唤圣光,净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `规模均衡` -2：轴卡数 16 vs 理想 10（比值 1.56）（light）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（日照,召唤圣光,净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
 
 ## 收尸人（corpse_collector）· 47.5 分
@@ -152,13 +152,13 @@
 | 机制落地 | 7.5 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 38 分（<40）（corpse）
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（corpse_collector）
-- `跨系联动` -11.2：枢纽状态 1 个 + combo 读取 1 次（corpse_collector）
-- `结构健康` -0：主被动比 1.33 不在 [1.5, 3.0]（corpse_collector）
-- `机制落地` -：frameworkFlags 未落地 TARGET_WEIGHTING（C8 候选池加权分支稿面标 🟢 未实现；若只落地一条优先保留减伤①）
+- `轴健康度` -5：最低轴 38 分（<40）（corpse）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（corpse_collector）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -11.2：枢纽状态 1 个 + combo 读取 1 次（corpse_collector）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `结构健康` -0：主被动比 1.33 不在 [1.5, 3.0]（corpse_collector）→ 补主动或被动卡，把主被动比调进 [1.5, 3.0]
+- `机制落地` -：frameworkFlags 未落地 TARGET_WEIGHTING（C8 候选池加权分支稿面标 🟢 未实现；若只落地一条优先保留减伤①）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -167,32 +167,32 @@
 | ⚰️ 终末 `end` | **44.9** | 8 | 12 | 4 | 10.9 | 10 | 0 | 一切的归宿 | — | 苍白世界 |
 | 👁️ 灵视 `spirit_sight` | **47.5** | 8 | 12 | 12 | 5.5 | 10 | 0 | 天然灵视 | — | 死亡之眼,幽冥窥视,灵界瞭望 |
 
-**💀 尸骸 失分项**：
+**💀 尸骸 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（corpse_nature）
-- `产层闭环` -8：实证 enabler 仅 1 张（尸体特质）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（corpse）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（corpse_nature）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（尸体特质）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（corpse）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🧟 亡者 失分项**：
+**🧟 亡者 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（puppet_string）
-- `产层闭环` -15：enablers 2 张均未实证挂载身份（亡者标记,亡者之语）
-- `规模均衡` -1：轴卡数 16 vs 理想 10（比值 1.52）（undead）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（puppet_string）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -15：enablers 2 张均未实证挂载身份（亡者标记,亡者之语）→ 逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡
+- `规模均衡` -1：轴卡数 16 vs 理想 10（比值 1.52）（undead）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
 
-**⚰️ 终末 失分项**：
+**⚰️ 终末 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（journeys_end）
-- `产层闭环` -8：实证 enabler 仅 1 张（一切的归宿）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（苍白世界）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（苍白世界）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（journeys_end）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（一切的归宿）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（苍白世界）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（苍白世界）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**👁️ 灵视 失分项**：
+**👁️ 灵视 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（spirit_sight）
-- `产层闭环` -8：实证 enabler 仅 1 张（天然灵视）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（死亡之眼,通灵）
-- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（死亡之眼,幽冥窥视,灵界瞭望）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（死亡之眼,幽冥窥视,灵界瞭望）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（spirit_sight）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（天然灵视）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（死亡之眼,通灵）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（死亡之眼,幽冥窥视,灵界瞭望）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（死亡之眼,幽冥窥视,灵界瞭望）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
 
 ## 药师（apothecary）· 47.6 分
@@ -206,12 +206,12 @@
 | 机制落地 | 12.5 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 31 分（<40）（brew）
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（apothecary）
-- `跨系联动` -15.0：枢纽状态 0 个 + combo 读取 0 次（apothecary）
-- `机制落地` -：frameworkFlags 未落地 ADVANCE_PHASE_DECLARATIVE（「沿 formGroup 顺序进一相、同组新相顶掉旧相」无效果原语；H50 已声明式落 ddd（StatusDef fo）
+- `轴健康度` -5：最低轴 31 分（<40）（brew）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（apothecary）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -15.0：枢纽状态 0 个 + combo 读取 0 次（apothecary）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 ADVANCE_PHASE_DECLARATIVE（「沿 formGroup 顺序进一相、同组新相顶掉旧相」无效果原语；H50 已声明式落 ddd（StatusDef fo）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -220,33 +220,33 @@
 | 🩸 血月 `crimson` | **35.5** | 8 | 12 | 0 | 5.5 | 10 | 0 | 深红体质 | — | — |
 | 🌙 月相 `moon` | **64.5** | 8 | 12 | 25 | 9.5 | 10 | 0 | 月相·轮转 | — | 腐蚀之爪,预服药水,闪现,月光化,黑暗凝视,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空 |
 
-**⚗️ 药剂 失分项**：
+**⚗️ 药剂 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（prepared_draught）
-- `产层闭环` -15：enablers 2 张均未实证挂载身份（药剂调配,草药敷贴）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（brew）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（prepared_draught）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -15：enablers 2 张均未实证挂载身份（药剂调配,草药敷贴）→ 逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（brew）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🐾 兽群 失分项**：
+**🐾 兽群 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（beast_sense）
-- `产层闭环` -8：实证 enabler 仅 1 张（动物感官）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（驯兽哨）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（beasts）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（beast_sense）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（动物感官）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（驯兽哨）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（beasts）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🩸 血月 失分项**：
+**🩸 血月 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（crimson_vitality）
-- `产层闭环` -8：实证 enabler 仅 1 张（深红体质）
-- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（血族魅力,黑暗之翼,血仆转化）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（crimson）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（crimson_vitality）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（深红体质）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（血族魅力,黑暗之翼,血仆转化）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（crimson）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🌙 月相 失分项**：
+**🌙 月相 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（moon_cycle）
-- `产层闭环` -8：实证 enabler 仅 1 张（月相·轮转）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（满月,银月切相）
-- `读层闭环` -0：payoff 11 张全部 notes 级（卡面无读层引用）（腐蚀之爪,预服药水,闪现,月光化,黑暗凝视,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（腐蚀之爪,预服药水,闪现,月光化,黑暗凝视,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（moon_cycle）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（月相·轮转）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（满月,银月切相）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -0：payoff 11 张全部 notes 级（卡面无读层引用）（腐蚀之爪,预服药水,闪现,月光化,黑暗凝视,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（腐蚀之爪,预服药水,闪现,月光化,黑暗凝视,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
 
 ## 仲裁人（arbiter）· 47.9 分
@@ -260,17 +260,17 @@
 | 机制落地 | 5.6 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 40 分（<40）（inquest）
-- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（全库 max 6）（arbiter）
-- `跨系联动` -13.1：枢纽状态 1 个 + combo 读取 0 次（arbiter）
-- `结构健康` -0：主被动比 3.44 不在 [1.5, 3.0]（arbiter）
-- `机制落地` -：frameworkFlags 未落地 DECREE_STATUS_FAMILY（decree 状态族的 rule / punishment 字段未落 ddd，卡住立规 / 禁制追击 / 秩序领域 3 ）
-- `机制落地` -：frameworkFlags 未落地 REGION_VALUE_BOOST（辖区数值 +50% 倍率随 ZoneDef 落地，ddd 尚无区域数值倍率字段（🟡））
-- `机制落地` -：frameworkFlags 未落地 CASTIGATED_UNIQUE_HOLDER（全场唯一持有者 + 改判自动卸载语义未落 ddd（新增项 8 🟡））
-- `机制落地` -：frameworkFlags 未落地 DECREE_STATUS_FAMILY（同立规，依赖 decree 状态族 rule / punishment 字段）
-- `机制落地` -：frameworkFlags 未落地 DECREE_STATUS_FAMILY（decree 全体挂载 + 规则参数依赖新增项 2（🔴）；Zone 跨场落位待拍板（退化=己方全场 Zone + 敌方全）
+- `轴健康度` -5：最低轴 40 分（<40）（inquest）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（arbiter）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -13.1：枢纽状态 1 个 + combo 读取 0 次（arbiter）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `结构健康` -0：主被动比 3.44 不在 [1.5, 3.0]（arbiter）→ 补主动或被动卡，把主被动比调进 [1.5, 3.0]
+- `机制落地` -：frameworkFlags 未落地 DECREE_STATUS_FAMILY（decree 状态族的 rule / punishment 字段未落 ddd，卡住立规 / 禁制追击 / 秩序领域 3 ）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 REGION_VALUE_BOOST（辖区数值 +50% 倍率随 ZoneDef 落地，ddd 尚无区域数值倍率字段（🟡））→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 CASTIGATED_UNIQUE_HOLDER（全场唯一持有者 + 改判自动卸载语义未落 ddd（新增项 8 🟡））→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 DECREE_STATUS_FAMILY（同立规，依赖 decree 状态族 rule / punishment 字段）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 DECREE_STATUS_FAMILY（decree 全体挂载 + 规则参数依赖新增项 2（🔴）；Zone 跨场落位待拍板（退化=己方全场 Zone + 敌方全）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -279,33 +279,33 @@
 | 🏛️ 辖区 `jurisdiction` | **54.2** | 8 | 12 | 16 | 8.2 | 10 | 0 | 权威质变 | — | 审判之剑,律令·神秘减弱，现实增强,底层规则,位格律令 |
 | 📜 律令 `decree` | **58.9** | 15 | 12 | 8 | 10.9 | 10 | 3 | 立规 | — | 满月,审判 |
 
-**🔍 审讯 失分项**：
+**🔍 审讯 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（marked）
-- `产层闭环` -8：实证 enabler 仅 1 张（过目不忘）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（察觉异常）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（混乱感应）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（混乱感应）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（marked）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（过目不忘）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（察觉异常）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（混乱感应）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（混乱感应）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🔨 惩戒 失分项**：
+**🔨 惩戒 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（castigated）
-- `产层闭环` -8：实证 enabler 仅 1 张（惩戒）
-- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（禁制追击,审判之剑,审判）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（禁制追击,审判之剑,审判）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（castigated）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（惩戒）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（禁制追击,审判之剑,审判）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（禁制追击,审判之剑,审判）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🏛️ 辖区 失分项**：
+**🏛️ 辖区 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（authority）
-- `产层闭环` -8：实证 enabler 仅 1 张（权威质变）
-- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（位格管辖,分割战场,秩序领域）
-- `读层闭环` -9：payoff 4 张全部 notes 级（卡面无读层引用）（审判之剑,律令·神秘减弱，现实增强,底层规则,位格律令）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（审判之剑,律令·神秘减弱，现实增强,底层规则,位格律令）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（authority）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（权威质变）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（位格管辖,分割战场,秩序领域）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -9：payoff 4 张全部 notes 级（卡面无读层引用）（审判之剑,律令·神秘减弱，现实增强,底层规则,位格律令）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（审判之剑,律令·神秘减弱，现实增强,底层规则,位格律令）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**📜 律令 失分项**：
+**📜 律令 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（立规）
-- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（满月,审判）
+- `产层闭环` -8：实证 enabler 仅 1 张（立规）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（满月,审判）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
 ## 通识者（savant）· 49.9 分
@@ -319,13 +319,13 @@
 | 机制落地 | 6.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（savant）
-- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（savant）
-- `机制落地` -：frameworkFlags 未落地 HAZARD_WARD_MODIFY_DAMAGE（hazard_ward 触发器载荷使用扩展原语 modify_damage（scope: taken ×0.5，R5 裁）
-- `机制落地` -：frameworkFlags 未落地 ON_TURN_START_NOT_FIRED（G15：on_turn_start 引擎从未 fire，当前不生效；修 G15 后自动闭环）
-- `机制落地` -：frameworkFlags 未落地 BUILD_ELEMENT_RESIST（modify_stat stat: resist:$buildElement 使用构筑期槽位变量（元素在派发时选定，非战）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（savant）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（savant）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 HAZARD_WARD_MODIFY_DAMAGE（hazard_ward 触发器载荷使用扩展原语 modify_damage（scope: taken ×0.5，R5 裁）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 ON_TURN_START_NOT_FIRED（G15：on_turn_start 引擎从未 fire，当前不生效；修 G15 后自动闭环）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 BUILD_ELEMENT_RESIST（modify_stat stat: resist:$buildElement 使用构筑期槽位变量（元素在派发时选定，非战）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -334,36 +334,36 @@
 | ☄️ 星律 `astral` | **57.2** | 15 | 12 | 12 | 8.2 | 10 | 0 | 规律权柄 | — | 星之祝福,完美之境,现实规律 |
 | ⚙️ 造物 `craft` | **64.5** | 15 | 12 | 20 | 9.5 | 8 | 0 | 机械奇物 | — | 机械维修,注入灵魂,制造大师,灵魂熔炉,解离 |
 
-**📘 通识 失分项**：
+**📘 通识 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（analysis_authority）
-- `产层闭环` -8：实证 enabler 仅 1 张（解析权柄）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（鉴定,危险规避）
-- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（学习权柄,现实知识）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（学习权柄,现实知识）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（analysis_authority）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（解析权柄）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（鉴定,危险规避）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（学习权柄,现实知识）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（学习权柄,现实知识）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🏙️ 文明 失分项**：
+**🏙️ 文明 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（enlightened）
-- `产层闭环` -8：实证 enabler 仅 1 张（教化权柄）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（导师,知识妖精）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（毁灭新生）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（毁灭新生）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（enlightened）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（教化权柄）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（导师,知识妖精）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（毁灭新生）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（毁灭新生）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**☄️ 星律 失分项**：
+**☄️ 星律 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（规律权柄）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（虚假星象,星之诅咒）
-- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（星之祝福,完美之境,现实规律）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（星之祝福,完美之境,现实规律）
+- `产层闭环` -8：实证 enabler 仅 1 张（规律权柄）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（虚假星象,星之诅咒）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（星之祝福,完美之境,现实规律）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（星之祝福,完美之境,现实规律）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**⚙️ 造物 失分项**：
+**⚙️ 造物 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（机械奇物）
-- `产层闭环` 注：未实证 4 张（name 在列但卡面不挂身份）（硝酸甘油,王水,考古发掘,炼成）
-- `读层闭环` -5：payoff 5 张全部 notes 级（卡面无读层引用）（机械维修,注入灵魂,制造大师,灵魂熔炉,解离）
-- `规模均衡` -2：轴卡数 14 vs 理想 9（比值 1.56）（craft）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（机械维修,注入灵魂,制造大师,灵魂熔炉,解离）
+- `产层闭环` -8：实证 enabler 仅 1 张（机械奇物）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 4 张（name 在列但卡面不挂身份）（硝酸甘油,王水,考古发掘,炼成）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -5：payoff 5 张全部 notes 级（卡面无读层引用）（机械维修,注入灵魂,制造大师,灵魂熔炉,解离）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `规模均衡` -2：轴卡数 14 vs 理想 9（比值 1.56）（craft）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（机械维修,注入灵魂,制造大师,灵魂熔炉,解离）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
 
 ## 偷盗者（thief）· 50.7 分
@@ -377,12 +377,12 @@
 | 机制落地 | 12.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 34 分（<40）（parasite）
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（thief）
-- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（thief）
-- `机制落地` -：frameworkFlags 未落地 GAUGE_THRESHOLD_INV_S5（gauge_threshold 是合法 StatKey，但改它等价于改行动周期（threshold/rate），是否触碰）
+- `轴健康度` -5：最低轴 34 分（<40）（parasite）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（thief）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（thief）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 GAUGE_THRESHOLD_INV_S5（gauge_threshold 是合法 StatKey，但改它等价于改行动周期（threshold/rate），是否触碰）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -391,32 +391,32 @@
 | 🤥 欺诈 `deceit` | **42.5** | 15 | 12 | 0 | 5.5 | 10 | 0 | 思维误导 | — | — |
 | 🧤 窃取 `steal` | **43.2** | 15 | 12 | 0 | 8.2 | 8 | 0 | 盗火 | — | — |
 
-**🪱 寄生 失分项**：
+**🪱 寄生 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（deep_parasitized）
-- `产层闭环` -8：实证 enabler 仅 1 张（寄生）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（parasite）
-- `规模均衡` -1：轴卡数 5 vs 理想 9（比值 0.54）（parasite）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（deep_parasitized）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（寄生）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（parasite）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
+- `规模均衡` -1：轴卡数 5 vs 理想 9（比值 0.54）（parasite）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
 
-**🕰️ 时命 失分项**：
+**🕰️ 时命 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（stolen_time）
-- `产层闭环` -8：实证 enabler 仅 1 张（窃取时间）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（命运缝隙,衰老）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（chrono）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（stolen_time）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（窃取时间）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（命运缝隙,衰老）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（chrono）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🤥 欺诈 失分项**：
+**🤥 欺诈 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（思维误导）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（精神干扰）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（deceit）
+- `产层闭环` -8：实证 enabler 仅 1 张（思维误导）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（精神干扰）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（deceit）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🧤 窃取 失分项**：
+**🧤 窃取 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（盗火）
-- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（卓越观察,窃取记忆,错误）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（steal）
-- `规模均衡` -2：轴卡数 15 vs 理想 9（比值 1.62）（steal）
+- `产层闭环` -8：实证 enabler 仅 1 张（盗火）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（卓越观察,窃取记忆,错误）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（steal）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
+- `规模均衡` -2：轴卡数 15 vs 理想 9（比值 1.62）（steal）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
 
 
 ## 占卜家（seer）· 51.2 分
@@ -430,13 +430,13 @@
 | 机制落地 | 6.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（seer）
-- `跨系联动` -9.4：枢纽状态 2 个 + combo 读取 1 次（seer）
-- `机制落地` -：frameworkFlags 未落地 G15（on_turn_start 引擎从未 fire，当前完全不生效；修 G15 后自动闭环（执行参数 §2.1））
-- `机制落地` -：frameworkFlags 未落地 G15（on_turn_start 引擎从未 fire（执行参数 §2.1）；修 G15 后自动闭环）
-- `机制落地` -：frameworkFlags 未落地 HAND_HIDDEN（环境规则「敌方无法查看我方手牌」= 信息层标志 hand_hidden，非补丁，待引擎信息层承载确认）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（seer）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -9.4：枢纽状态 2 个 + combo 读取 1 次（seer）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 G15（on_turn_start 引擎从未 fire，当前完全不生效；修 G15 后自动闭环（执行参数 §2.1））→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 G15（on_turn_start 引擎从未 fire（执行参数 §2.1）；修 G15 后自动闭环）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 HAND_HIDDEN（环境规则「敌方无法查看我方手牌」= 信息层标志 hand_hidden，非补丁，待引擎信息层承载确认）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -445,33 +445,33 @@
 | 🔮 预知 `foresight` | **48.8** | 8 | 12 | 12 | 6.8 | 10 | 0 | 灵视 | — | 命运干扰,命运锚点,历史影像 |
 | 🪆 秘偶 `marionette` | **66.3** | 8 | 12 | 12 | 12.3 | 10 | 12 | 秘偶 | — | 秘偶不死,秘偶换位,灵界掌控者 |
 
-**🌟 奇迹 失分项**：
+**🌟 奇迹 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（miracle）
-- `产层闭环` -8：实证 enabler 仅 1 张（奇迹）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（愿望,能力精进）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（miracle）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（miracle）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（奇迹）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（愿望,能力精进）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（miracle）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🃏 戏法 失分项**：
+**🃏 戏法 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（纸人替身）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（完美协调,直觉预感）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（trick）
+- `产层闭环` -8：实证 enabler 仅 1 张（纸人替身）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（完美协调,直觉预感）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（trick）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🔮 预知 失分项**：
+**🔮 预知 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（clairvoyance）
-- `产层闭环` -8：实证 enabler 仅 1 张（灵视）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（细微观察）
-- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（命运干扰,命运锚点,历史影像）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（命运干扰,命运锚点,历史影像）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（clairvoyance）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（灵视）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（细微观察）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（命运干扰,命运锚点,历史影像）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（命运干扰,命运锚点,历史影像）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🪆 秘偶 失分项**：
+**🪆 秘偶 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（puppet_string）
-- `产层闭环` -8：实证 enabler 仅 1 张（秘偶）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（伤害转移）
-- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（秘偶不死,秘偶换位,灵界掌控者）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（puppet_string）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（秘偶）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（伤害转移）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（秘偶不死,秘偶换位,灵界掌控者）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
 ## 战士（warrior）· 51.2 分
@@ -485,12 +485,12 @@
 | 机制落地 | 12.5 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 36 分（<40）（martial）
-- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（全库 max 6）（warrior）
-- `跨系联动` -15.0：枢纽状态 0 个 + combo 读取 0 次（warrior）
-- `机制落地` -：frameworkFlags 未落地 ANY_OF_PREDICATE（共享内核 §三谓词族无 any_of 组合子，且「armor 增益」无谓词，待内核裁定）
+- `轴健康度` -5：最低轴 36 分（<40）（martial）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（warrior）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -15.0：枢纽状态 0 个 + combo 读取 0 次（warrior）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 ANY_OF_PREDICATE（共享内核 §三谓词族无 any_of 组合子，且「armor 增益」无谓词，待内核裁定）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -499,32 +499,32 @@
 | 🛡️ 守护 `guard` | **43.8** | 15 | 12 | 0 | 6.8 | 10 | 0 | 守护状态 | — | — |
 | 🌇 黄昏 `twilight` | **56.2** | 15 | 5 | 9 | 8.2 | 10 | 9 | — | 神罚 | — |
 
-**🗡️ 武艺 失分项**：
+**🗡️ 武艺 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（weapon_grandmaster）
-- `产层闭环` -8：实证 enabler 仅 1 张（武器大师）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（兵械通晓）
-- `读层闭环` -21：payoff 2 张全部 notes 级（卡面无读层引用）（神罚）
-- `规模均衡` -4：轴卡数 15 vs 理想 8（比值 1.82）（martial）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（巨力挥击,神罚）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（weapon_grandmaster）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（武器大师）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（兵械通晓）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 2 张全部 notes 级（卡面无读层引用）（神罚）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `规模均衡` -4：轴卡数 15 vs 理想 8（比值 1.82）（martial）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（巨力挥击,神罚）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🎯 猎魔 失分项**：
+**🎯 猎魔 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（ambush_shroud）
-- `产层闭环` -8：实证 enabler 仅 1 张（隐蔽）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（猎魔之眼,晨曦领域）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（晨曦领域）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（晨曦领域）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（ambush_shroud）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（隐蔽）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（猎魔之眼,晨曦领域）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（晨曦领域）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（晨曦领域）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🛡️ 守护 失分项**：
+**🛡️ 守护 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（守护状态）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（守护姿态）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（guard）
+- `产层闭环` -8：实证 enabler 仅 1 张（守护状态）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（守护姿态）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（guard）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🌇 黄昏 失分项**：
+**🌇 黄昏 失分项（含修改意见）**：
 
-- `产层闭环` -15：enablers 1 张均未实证挂载身份（暮色侵蚀）
+- `产层闭环` -15：enablers 1 张均未实证挂载身份（暮色侵蚀）→ 逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡
 
 
 ## 罪犯（criminal）· 51.6 分
@@ -538,19 +538,19 @@
 | 机制落地 | 3.8 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（全库 max 6）（criminal）
-- `跨系联动` -11.2：枢纽状态 1 个 + combo 读取 1 次（criminal）
-- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（释放时三选一变体依赖 SkillDef.modes（新增项 21，ddd 无落点，🟡 待拍）；退化方案：拆三张独立卡）
-- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（三选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍））
-- `机制落地` -：frameworkFlags 未落地 GAUGE_RATE_MUL_STAT_MODE（modify_stat.mode 枚举为 delta/set/to_at_least/to_at_most，无 mul；）
-- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（四选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍）；退化方案：拆四张独立史诗卡）
-- `机制落地` -：frameworkFlags 未落地 GAUGE_RATE_MUL_STAT_MODE（混乱分支 gauge.rate ×0.7 同污秽之语缓慢分支）
-- `机制落地` -：frameworkFlags 未落地 ANY_OF_PREDICATE（field_status_count 谓词单 id，三状态存在性需 any_of 组合子，待内核裁定）
-- `机制落地` -：frameworkFlags 未落地 STATUS_SOURCE_ATTRIBUTION（条件只判目标带 black_flame≥1 层；「友方刺客所挂」归属维度无谓词，以语义注记承载（black_flame ）
-- `机制落地` -：frameworkFlags 未落地 PATHWAY_TARGETED_ALLY（「友方律师」按途径定向：effectTarget/unitFilter 无 pathway 维度，暂用 all_alli）
-- `机制落地` -：frameworkFlags 未落地 STATUS_SOURCE_ATTRIBUTION（「友方耕种者的丰饶」以 side:ally + abundance 存在性承载；abundance 挂载方限耕种者，归属）
+- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（criminal）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -11.2：枢纽状态 1 个 + combo 读取 1 次（criminal）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（释放时三选一变体依赖 SkillDef.modes（新增项 21，ddd 无落点，🟡 待拍）；退化方案：拆三张独立卡）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（三选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍））→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 GAUGE_RATE_MUL_STAT_MODE（modify_stat.mode 枚举为 delta/set/to_at_least/to_at_most，无 mul；）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（四选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍）；退化方案：拆四张独立史诗卡）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 GAUGE_RATE_MUL_STAT_MODE（混乱分支 gauge.rate ×0.7 同污秽之语缓慢分支）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 ANY_OF_PREDICATE（field_status_count 谓词单 id，三状态存在性需 any_of 组合子，待内核裁定）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 STATUS_SOURCE_ATTRIBUTION（条件只判目标带 black_flame≥1 层；「友方刺客所挂」归属维度无谓词，以语义注记承载（black_flame ）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 PATHWAY_TARGETED_ALLY（「友方律师」按途径定向：effectTarget/unitFilter 无 pathway 维度，暂用 all_alli）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 STATUS_SOURCE_ATTRIBUTION（「友方耕种者的丰饶」以 side:ally + abundance 存在性承载；abundance 挂载方限耕种者，归属）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -559,30 +559,30 @@
 | 😈 恶欲 `vice` | **57.9** | 8 | 12 | 8 | 10.9 | 10 | 9 | 掌控欲望 | — | 深渊即我,恶欲共鸣 |
 | 🌋 领域 `elements` | **65.2** | 15 | 12 | 17 | 8.2 | 10 | 3 | 腐蚀毒雾 | 深渊之火 | 地狱之火,双焰交汇 |
 
-**🕳️ 污秽 失分项**：
+**🕳️ 污秽 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（侵蚀者）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（污秽之语）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（荒芜侵蚀·改）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（荒芜侵蚀·改）
+- `产层闭环` -8：实证 enabler 仅 1 张（侵蚀者）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（污秽之语）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（荒芜侵蚀·改）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（荒芜侵蚀·改）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**👹 恶魔 失分项**：
+**👹 恶魔 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（恶魔仪式）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（深渊召唤）
+- `产层闭环` -8：实证 enabler 仅 1 张（恶魔仪式）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（深渊召唤）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**😈 恶欲 失分项**：
+**😈 恶欲 失分项（含修改意见）**：
 
-- `身份锚定` -7：Pool 轴无层数引擎档位（thresholdTrigger(metric) 未挂）（lust）
-- `产层闭环` -8：实证 enabler 仅 1 张（掌控欲望）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（欲望爆炸）
-- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（深渊即我,恶欲共鸣）
+- `身份锚定` -7：Pool 轴无层数引擎档位（thresholdTrigger(metric) 未挂）（lust）→ 给该 Pool 配 thresholdTrigger(metric) 档位状态（照恶欲值躁动/失控/爆炸四档先例）
+- `产层闭环` -8：实证 enabler 仅 1 张（掌控欲望）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（欲望爆炸）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（深渊即我,恶欲共鸣）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
-**🌋 领域 失分项**：
+**🌋 领域 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（腐蚀毒雾）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（强酸沼泽）
-- `读层闭环` 注：notes 级 2 张（减半计）（地狱之火,双焰交汇）
+- `产层闭环` -8：实证 enabler 仅 1 张（腐蚀毒雾）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（强酸沼泽）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` 注：notes 级 2 张（减半计）（地狱之火,双焰交汇）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
 ## 阅读者（reader）· 51.6 分
@@ -596,12 +596,12 @@
 | 机制落地 | 7.5 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 37 分（<40）（arcana）
-- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（全库 max 6）（reader）
-- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（reader）
-- `机制落地` -：frameworkFlags 未落地 SKILL_COST_DELTA（技能费用修正属 progression 层（战外），ddd 未落；退化方案为 modify_stat(energy_re）
+- `轴健康度` -5：最低轴 37 分（<40）（arcana）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（reader）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（reader）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 SKILL_COST_DELTA（技能费用修正属 progression 层（战外），ddd 未落；退化方案为 modify_stat(energy_re）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -610,28 +610,28 @@
 | 🦜 模仿 `mimic` | **51.8** | 15 | 20 | 0 | 6.8 | 10 | 0 | 模仿·全知之眼,模仿·初解,模仿·智天使,模仿·秘术导师,模仿·预言家 | — | — |
 | 🧠 解析 `analysis` | **71.9** | 8 | 20 | 20 | 10.9 | 10 | 3 | 解析,逻辑推演 | — | 模仿·初解,模仿·秘术导师,模仿·预言家,模仿·智天使,模仿·全知之眼 |
 
-**📚 秘术 失分项**：
+**📚 秘术 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（ritual_expertise）
-- `产层闭环` -8：实证 enabler 仅 1 张（仪式魔法专家）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（省略步骤）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（arcana）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（ritual_expertise）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（仪式魔法专家）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（省略步骤）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（arcana）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**⏳ 预知 失分项**：
+**⏳ 预知 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（预言）
-- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（局势推演,规律·撬动,规律权柄）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（foresight）
+- `产层闭环` -8：实证 enabler 仅 1 张（预言）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（局势推演,规律·撬动,规律权柄）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（foresight）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🦜 模仿 失分项**：
+**🦜 模仿 失分项（含修改意见）**：
 
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（mimic）
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（mimic）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🧠 解析 失分项**：
+**🧠 解析 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（observed）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（洞悉,全知·现在与过去）
-- `读层闭环` -5：payoff 5 张全部 notes 级（卡面无读层引用）（模仿·初解,模仿·秘术导师,模仿·预言家,模仿·智天使,模仿·全知之眼）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（observed）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（洞悉,全知·现在与过去）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -5：payoff 5 张全部 notes 级（卡面无读层引用）（模仿·初解,模仿·秘术导师,模仿·预言家,模仿·智天使,模仿·全知之眼）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
 ## 刺客（assassin）· 53.6 分
@@ -645,15 +645,15 @@
 | 机制落地 | 8.3 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 34 分（<40）（form）
-- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（全库 max 6）（assassin）
-- `跨系联动` -9.4：枢纽状态 3 个 + combo 读取 0 次（assassin）
-- `机制落地` -：frameworkFlags 未落地 MOVE_IN_STATUS_TRIGGER（状态触发器载荷内调用 move 是否走 G8 faction 校验待确认（本稿新增项 16））
-- `机制落地` -：frameworkFlags 未落地 SELF_HAS_STATUS_PREDICATE（self_has_status 谓词（本稿新增项 12，🟡；F52 的 self 方向）待落地，暂以 any_of + ）
-- `机制落地` -：frameworkFlags 未落地 ANY_OF_PREDICATE（any_of 组合子待内核裁定）
-- `机制落地` -：frameworkFlags 未落地 DURATION_BY_STATUS_FAMILY（按状态族过滤的 duration 加成（本稿新增项 18/19，🟡）待落地）
+- `轴健康度` -5：最低轴 34 分（<40）（form）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（assassin）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -9.4：枢纽状态 3 个 + combo 读取 0 次（assassin）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 MOVE_IN_STATUS_TRIGGER（状态触发器载荷内调用 move 是否走 G8 faction 校验待确认（本稿新增项 16））→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 SELF_HAS_STATUS_PREDICATE（self_has_status 谓词（本稿新增项 12，🟡；F52 的 self 方向）待落地，暂以 any_of + ）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 ANY_OF_PREDICATE（any_of 组合子待内核裁定）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 DURATION_BY_STATUS_FAMILY（按状态族过滤的 duration 加成（本稿新增项 18/19，🟡）待落地）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -662,27 +662,27 @@
 | 🪞 镜 `mirror` | **51.9** | 15 | 12 | 4 | 10.9 | 10 | 0 | 镜子替身 | — | 镜中世界 |
 | 💋 魅 `charm` | **62.5** | 15 | 20 | 9 | 5.5 | 10 | 3 | 魅惑,激化矛盾 | 反复魅惑 | — |
 
-**🎭 形 失分项**：
+**🎭 形 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（assassin_form）
-- `产层闭环` -15：enablers 3 张均未实证挂载身份（影形态,雾形态,血形态）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（原初·静止）
-- `规模均衡` -1：轴卡数 15 vs 理想 10（比值 1.54）（form）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（原初·静止）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（assassin_form）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -15：enablers 3 张均未实证挂载身份（影形态,雾形态,血形态）→ 逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（原初·静止）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `规模均衡` -1：轴卡数 15 vs 理想 10（比值 1.54）（form）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（原初·静止）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🦠 疫 失分项**：
+**🦠 疫 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（疾病）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（黑焰）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（末日）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（末日）
+- `产层闭环` -8：实证 enabler 仅 1 张（疾病）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（黑焰）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（末日）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（末日）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🪞 镜 失分项**：
+**🪞 镜 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（镜子替身）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（魔镜占卜）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（镜中世界）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（镜中世界）
+- `产层闭环` -8：实证 enabler 仅 1 张（镜子替身）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（魔镜占卜）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（镜中世界）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（镜中世界）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
 
 ## 律师（lawyer）· 54.0 分
@@ -696,12 +696,12 @@
 | 机制落地 | 9.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（lawyer）
-- `跨系联动` -9.4：枢纽状态 3 个 + combo 读取 0 次（lawyer）
-- `机制落地` -：frameworkFlags 未落地 DEATH_SETTLEMENT_FIELD_WRITE（on_kill 触发器 params.deathSettlement 写死亡结算字段 revive_blocked 的载）
-- `机制落地` -：frameworkFlags 未落地 ORDER_SHUFFLE（gauge_shuffle（行动条集合守恒重排）+ status_shuffle（状态轮转搬运）双扩展原语用于本卡，已合）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（lawyer）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -9.4：枢纽状态 3 个 + combo 读取 0 次（lawyer）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 DEATH_SETTLEMENT_FIELD_WRITE（on_kill 触发器 params.deathSettlement 写死亡结算字段 revive_blocked 的载）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 ORDER_SHUFFLE（gauge_shuffle（行动条集合守恒重排）+ status_shuffle（状态轮转搬运）双扩展原语用于本卡，已合）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -710,30 +710,30 @@
 | 🪙 贿腐 `bribery` | **49.5** | 15 | 12 | 4 | 5.5 | 10 | 3 | 腐蚀 | — | 腐化回扣 |
 | 🌀 扭曲规则 `warp_rule` | **56.0** | 15 | 12 | 4 | 15.0 | 10 | 0 | 扭曲 | — | 秩序崩坏 |
 
-**🗣️ 讼辩 失分项**：
+**🗣️ 讼辩 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（chink_finding）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（诡辩,陈词）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（advocacy）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（chink_finding）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（诡辩,陈词）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（advocacy）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**👊 蛮力 失分项**：
+**👊 蛮力 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（放大）
-- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（野蛮体魄,力量解决,赠予）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（brute）
+- `产层闭环` -8：实证 enabler 仅 1 张（放大）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（野蛮体魄,力量解决,赠予）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（brute）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🪙 贿腐 失分项**：
+**🪙 贿腐 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（腐蚀）
-- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（贿赂·关联,赠予,收买）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（腐化回扣）
+- `产层闭环` -8：实证 enabler 仅 1 张（腐蚀）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（贿赂·关联,赠予,收买）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（腐化回扣）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
-**🌀 扭曲规则 失分项**：
+**🌀 扭曲规则 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（扭曲）
-- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（利用,独享规则,重定义）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（秩序崩坏）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（秩序崩坏）
+- `产层闭环` -8：实证 enabler 仅 1 张（扭曲）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（利用,独享规则,重定义）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（秩序崩坏）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（秩序崩坏）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
 
 ## 囚犯（prisoner）· 54.2 分
@@ -747,12 +747,12 @@
 | 机制落地 | 10.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 40 分（<40）（bondage）
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（prisoner）
-- `机制落地` -：frameworkFlags 未落地 F25_UNIT_WRAITH_ID_CONFLICT（控制幽魂升级档依赖 F25 unit_wraith，ID 冲突未解决前不落地）
-- `机制落地` -：frameworkFlags 未落地 CONVERT_AS_DISPEL_SPAWN（「转化」四动词（改判阵营+换技能组+套模板+落队尾）无单一原语；按源稿退化口径以 dispel(移除原单位)+spawn）
+- `轴健康度` -5：最低轴 40 分（<40）（bondage）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（prisoner）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `机制落地` -：frameworkFlags 未落地 F25_UNIT_WRAITH_ID_CONFLICT（控制幽魂升级档依赖 F25 unit_wraith，ID 冲突未解决前不落地）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 CONVERT_AS_DISPEL_SPAWN（「转化」四动词（改判阵营+换技能组+套模板+落队尾）无单一原语；按源稿退化口径以 dispel(移除原单位)+spawn）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -761,36 +761,36 @@
 | 👻 诅咒 `curse` | **45.1** | 15 | 12 | 4 | 4.1 | 10 | 0 | 诅咒之源 | — | 万咒加身 |
 | 🐺 异类 `aberration` | **54.3** | 8 | 12 | 12 | 12.3 | 10 | 0 | 狼人化 | — | 诅咒权柄,演出,异类之王 |
 
-**⛓️ 束缚 失分项**：
+**⛓️ 束缚 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（the_bound）
-- `产层闭环` -8：实证 enabler 仅 1 张（被缚者）
-- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（爆发欲望,长久沉默,邪物）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（侵蚀诅咒）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（侵蚀诅咒）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（the_bound）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（被缚者）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（爆发欲望,长久沉默,邪物）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（侵蚀诅咒）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（侵蚀诅咒）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🧿 物品 失分项**：
+**🧿 物品 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（object_possession）
-- `产层闭环` -8：实证 enabler 仅 1 张（附身物体）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（随手物品,操纵物品）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（物品权柄）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（物品权柄）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（object_possession）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（附身物体）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（随手物品,操纵物品）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（物品权柄）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（物品权柄）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**👻 诅咒 失分项**：
+**👻 诅咒 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（诅咒之源）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（变形诅咒）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（万咒加身）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（万咒加身）
+- `产层闭环` -8：实证 enabler 仅 1 张（诅咒之源）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（变形诅咒）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（万咒加身）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（万咒加身）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🐺 异类 失分项**：
+**🐺 异类 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（werewolf_form）
-- `产层闭环` -8：实证 enabler 仅 1 张（狼人化）
-- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（诅咒权柄,演出,异类之王）
-- `规模均衡` -0：轴卡数 13 vs 理想 9（比值 1.44）（aberration）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（诅咒权柄,演出,异类之王）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（werewolf_form）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（狼人化）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（诅咒权柄,演出,异类之王）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `规模均衡` -0：轴卡数 13 vs 理想 9（比值 1.44）（aberration）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（诅咒权柄,演出,异类之王）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
 
 ## 水手（sailor）· 55.1 分
@@ -804,11 +804,11 @@
 | 机制落地 | 15.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 38 分（<40）（authority）
-- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（全库 max 6）（sailor）
-- `跨系联动` -15.0：枢纽状态 0 个 + combo 读取 0 次（sailor）
+- `轴健康度` -5：最低轴 38 分（<40）（authority）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨轴耦合` -12.5：本途径他轴身份读取 1 次（sailor）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -15.0：枢纽状态 0 个 + combo 读取 0 次（sailor）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -817,31 +817,31 @@
 | 🌊 海洋 `ocean` | **51.3** | 8 | 12 | 9 | 12.3 | 10 | 0 | 深潜 | 深潜 | — |
 | 😡 愤怒 `rage` | **59.1** | 15 | 12 | 9 | 4.1 | 10 | 9 | 愤怒爆发 | 暴怒一击 | — |
 
-**👑 权柄 失分项**：
+**👑 权柄 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（tyrant_dread）
-- `产层闭环` -8：实证 enabler 仅 1 张（暴君权柄）
-- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（恐惧之音,幻鳞,光之化身）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（authority）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（tyrant_dread）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（暴君权柄）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（恐惧之音,幻鳞,光之化身）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（authority）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🌩️ 风暴 失分项**：
+**🌩️ 风暴 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（emc_disorder）
-- `产层闭环` -8：实证 enabler 仅 1 张（闪电风暴）
-- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（飓风盘绕,加速与滑翔,雷击）
-- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（风刃军团,风暴地狱）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（风刃军团,风暴地狱）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（emc_disorder）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（闪电风暴）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（飓风盘绕,加速与滑翔,雷击）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（风刃军团,风暴地狱）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（风刃军团,风暴地狱）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🌊 海洋 失分项**：
+**🌊 海洋 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（conceal）
-- `产层闭环` -8：实证 enabler 仅 1 张（深潜）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（海洋眷顾,水幕）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（深潜）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（conceal）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（深潜）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（海洋眷顾,水幕）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（深潜）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**😡 愤怒 失分项**：
+**😡 愤怒 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（愤怒爆发）
+- `产层闭环` -8：实证 enabler 仅 1 张（愤怒爆发）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
 
 
 ## 观众（spectator）· 56.7 分
@@ -855,11 +855,11 @@
 | 机制落地 | 10.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 34 分（<40）（fantasy）
-- `跨系联动` -13.1：枢纽状态 1 个 + combo 读取 0 次（spectator）
-- `机制落地` -：frameworkFlags 未落地 DAMAGE_ELEMENT_TRIGGER_FILTER（触发需按伤害元素过滤（仅 mental 伤害时 +1 层），ddd 触发条件侧无元素维度谓词，维持 🟡（本稿新增项 18）
+- `轴健康度` -5：最低轴 34 分（<40）（fantasy）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨系联动` -13.1：枢纽状态 1 个 + combo 读取 0 次（spectator）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 DAMAGE_ELEMENT_TRIGGER_FILTER（触发需按伤害元素过滤（仅 mental 伤害时 +1 层），ddd 触发条件侧无元素维度谓词，维持 🟡（本稿新增项 18）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -868,30 +868,30 @@
 | 💭 暗示 `suggestion` | **47.5** | 8 | 20 | 0 | 9.5 | 10 | 0 | 心理暗示·质变,操纵 | — | — |
 | 👀 洞察 `insight` | **76.5** | 15 | 12 | 22 | 5.5 | 10 | 12 | 观众·细微观察 | 读心,编织梦境 | 洞察权柄 |
 
-**🌈 空想 失分项**：
+**🌈 空想 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（written_truth）
-- `产层闭环` -8：实证 enabler 仅 1 张（书写成真）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（龙化,巨龙）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（fantasy）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（written_truth）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（书写成真）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（龙化,巨龙）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（fantasy）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**💤 梦境 失分项**：
+**💤 梦境 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（dream_phase）
-- `产层闭环` -8：实证 enabler 仅 1 张（梦境穿梭）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（引导,修改）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（dream）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（dream_phase）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（梦境穿梭）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（引导,修改）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（dream）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**💭 暗示 失分项**：
+**💭 暗示 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（subconscious_edit）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（心灵权柄）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（suggestion）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（subconscious_edit）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（心灵权柄）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（suggestion）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**👀 洞察 失分项**：
+**👀 洞察 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（观众·细微观察）
-- `读层闭环` 注：notes 级 1 张（减半计）（洞察权柄）
+- `产层闭环` -8：实证 enabler 仅 1 张（观众·细微观察）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `读层闭环` 注：notes 级 1 张（减半计）（洞察权柄）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
 ## 学徒（apprentice）· 56.8 分
@@ -905,10 +905,10 @@
 | 机制落地 | 15.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（apprentice）
-- `跨系联动` -13.1：枢纽状态 1 个 + combo 读取 0 次（apprentice）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（apprentice）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -13.1：枢纽状态 1 个 + combo 读取 0 次（apprentice）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -917,33 +917,33 @@
 | 🚪 开门 `gate` | **50.5** | 8 | 12 | 16 | 5.5 | 9 | 0 | 仪式·门 | — | 旅行家之门,闪现,撕裂空间,空间破碎 |
 | 📖 记录 `record` | **60.2** | 15 | 12 | 9 | 8.2 | 10 | 6 | 记录 | 重现 | — |
 
-**🎩 戏法 失分项**：
+**🎩 戏法 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（戏法·闪光）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（逃脱戏法）
-- `规模均衡` -1：轴卡数 4 vs 理想 8（比值 0.47）（trick）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（逃脱戏法）
+- `产层闭环` -8：实证 enabler 仅 1 张（戏法·闪光）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（逃脱戏法）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `规模均衡` -1：轴卡数 4 vs 理想 8（比值 0.47）（trick）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（逃脱戏法）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🌌 星界 失分项**：
+**🌌 星界 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（星相学）
-- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（空间隐藏,放逐）
-- `规模均衡` -0：轴卡数 12 vs 理想 8（比值 1.41）（astral）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（空间隐藏,放逐）
+- `产层闭环` -8：实证 enabler 仅 1 张（星相学）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（空间隐藏,放逐）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `规模均衡` -0：轴卡数 12 vs 理想 8（比值 1.41）（astral）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（空间隐藏,放逐）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🚪 开门 失分项**：
+**🚪 开门 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（ritual_gate）
-- `产层闭环` -8：实证 enabler 仅 1 张（仪式·门）
-- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（破障之门,门之概念,无处不在）
-- `读层闭环` -9：payoff 4 张全部 notes 级（卡面无读层引用）（旅行家之门,闪现,撕裂空间,空间破碎）
-- `规模均衡` -1：轴卡数 13 vs 理想 8（比值 1.53）（gate）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（旅行家之门,闪现,撕裂空间,空间破碎）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（ritual_gate）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（仪式·门）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 3 张（name 在列但卡面不挂身份）（破障之门,门之概念,无处不在）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -9：payoff 4 张全部 notes 级（卡面无读层引用）（旅行家之门,闪现,撕裂空间,空间破碎）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `规模均衡` -1：轴卡数 13 vs 理想 8（比值 1.53）（gate）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（旅行家之门,闪现,撕裂空间,空间破碎）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**📖 记录 失分项**：
+**📖 记录 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（记录）
-- `规模均衡` -0：轴卡数 5 vs 理想 8（比值 0.59）（record）
+- `产层闭环` -8：实证 enabler 仅 1 张（记录）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `规模均衡` -0：轴卡数 5 vs 理想 8（比值 0.59）（record）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
 
 
 ## 秘祈人（supplicant）· 57.2 分
@@ -957,11 +957,11 @@
 | 机制落地 | 12.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 38 分（<40）（corruption）
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（supplicant）
-- `机制落地` -：frameworkFlags 未落地 SPAWN_HPRATIO_EXPRESSION（spawn.hpRatio 运行时表达式（deathsThisBattle）直接写法未见登记：valueFrom bat）
+- `轴健康度` -5：最低轴 38 分（<40）（corruption）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（supplicant）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `机制落地` -：frameworkFlags 未落地 SPAWN_HPRATIO_EXPRESSION（spawn.hpRatio 运行时表达式（deathsThisBattle）直接写法未见登记：valueFrom bat）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -970,31 +970,31 @@
 | 🌗 阴影 `shadow` | **48.8** | 8 | 12 | 9 | 6.8 | 10 | 3 | 藏入阴影 | 阴影统治者 | — |
 | 🐑 牧魂 `soul` | **68.8** | 15 | 12 | 25 | 6.8 | 10 | 0 | 放牧灵魂 | 驱使灵魂,堕落眷属,灵魂牧场 | — |
 
-**☣️ 秽堕 失分项**：
+**☣️ 秽堕 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（defile）
-- `产层闭环` -8：实证 enabler 仅 1 张（堕落之影）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（耳语,秽语·诅咒）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（corruption）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（defile）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（堕落之影）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（耳语,秽语·诅咒）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（corruption）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**🥩 血肉 失分项**：
+**🥩 血肉 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（parasitized）
-- `产层闭环` -8：实证 enabler 仅 1 张（液化寄生）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（补充血肉,血肉炸弹）
-- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（血肉不灭）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（血肉不灭）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（parasitized）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（液化寄生）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（补充血肉,血肉炸弹）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -21：payoff 1 张全部 notes 级（卡面无读层引用）（血肉不灭）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（血肉不灭）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🌗 阴影 失分项**：
+**🌗 阴影 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（shadow_dwell）
-- `产层闭环` -8：实证 enabler 仅 1 张（藏入阴影）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（召唤阴影,操纵阴影）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（shadow_dwell）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（藏入阴影）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（召唤阴影,操纵阴影）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
 
-**🐑 牧魂 失分项**：
+**🐑 牧魂 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（放牧灵魂）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（驱使灵魂,堕落眷属,灵魂牧场）
+- `产层闭环` -8：实证 enabler 仅 1 张（放牧灵魂）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（驱使灵魂,堕落眷属,灵魂牧场）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
 
 ## 耕种者（planter）· 59.7 分
@@ -1008,10 +1008,10 @@
 | 机制落地 | 15.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（planter）
-- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（planter）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（planter）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
+- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（planter）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -1020,35 +1020,35 @@
 | 🥀 荒芜 `blight` | **59.9** | 15 | 12 | 12 | 10.9 | 10 | 0 | 荒芜 | — | 自然憎恶,枯荣循环,最后回归之地 |
 | 🌿 治疗 `healing` | **63.8** | 15 | 12 | 20 | 6.8 | 10 | 0 | 生命充盈 | — | 缝合灵魂,触碰痊愈,万物母巢,生命炼成,人偶制造 |
 
-**🧪 炼成 失分项**：
+**🧪 炼成 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（人偶制造）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（生命炼成）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（alchemy）
-- `规模均衡` -0：轴卡数 5 vs 理想 8（比值 0.59）（alchemy）
+- `产层闭环` -8：实证 enabler 仅 1 张（人偶制造）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（生命炼成）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（alchemy）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
+- `规模均衡` -0：轴卡数 5 vs 理想 8（比值 0.59）（alchemy）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
 
-**🌾 丰饶 失分项**：
+**🌾 丰饶 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（cultivated）
-- `产层闭环` -8：实证 enabler 仅 1 张（分辨种子）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（繁衍生长,祈雨祈晴）
-- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（化身巨熊,自然之子,自然权柄）
-- `规模均衡` -1：轴卡数 13 vs 理想 8（比值 1.53）（harvest）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（化身巨熊,自然之子,自然权柄）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（cultivated）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（分辨种子）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（繁衍生长,祈雨祈晴）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（化身巨熊,自然之子,自然权柄）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `规模均衡` -1：轴卡数 13 vs 理想 8（比值 1.53）（harvest）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（化身巨熊,自然之子,自然权柄）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🥀 荒芜 失分项**：
+**🥀 荒芜 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（荒芜）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（恶灵化,剥夺生命）
-- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（自然憎恶,枯荣循环,最后回归之地）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（自然憎恶,枯荣循环,最后回归之地）
+- `产层闭环` -8：实证 enabler 仅 1 张（荒芜）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（恶灵化,剥夺生命）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（自然憎恶,枯荣循环,最后回归之地）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（自然憎恶,枯荣循环,最后回归之地）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🌿 治疗 失分项**：
+**🌿 治疗 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（生命充盈）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（给予生命,缝合灵魂）
-- `读层闭环` -5：payoff 5 张全部 notes 级（卡面无读层引用）（缝合灵魂,触碰痊愈,万物母巢,生命炼成,人偶制造）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（缝合灵魂,触碰痊愈,万物母巢,生命炼成,人偶制造）
+- `产层闭环` -8：实证 enabler 仅 1 张（生命充盈）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（给予生命,缝合灵魂）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -5：payoff 5 张全部 notes 级（卡面无读层引用）（缝合灵魂,触碰痊愈,万物母巢,生命炼成,人偶制造）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（缝合灵魂,触碰痊愈,万物母巢,生命炼成,人偶制造）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
 
 ## 怪物（monster）· 64.8 分
@@ -1062,14 +1062,14 @@
 | 机制落地 | 6.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `轴健康度` -5：最低轴 36 分（<40）（inspiration）
-- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（monster）
-- `结构健康` -0：主被动比 1.19 不在 [1.5, 3.0]（monster）
-- `机制落地` -：frameworkFlags 未落地 STATUS_GAIN_LISTENER（新增项 1 遗留缺口：「监听自身获得指定状态」触发面未落（12 触发点封闭集无此钩子）；退化方案：并入幸运者自续链（on）
-- `机制落地` -：frameworkFlags 未落地 FACTION_PREDICATE（共享内核 §三谓词族无「目标阵营」判定（仅 gender_is 等），If 分支的 target_faction_is ）
-- `机制落地` -：frameworkFlags 未落地 RESOURCE_DURATION_REVERT（modify_resource(gauge.threshold) 为持续修正，需随状态到期回滚；效果参数未列 modif）
+- `轴健康度` -5：最低轴 36 分（<40）（inspiration）→ 优先重设计该最低分轴（轴表按分升序，第一行即它）
+- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（monster）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `结构健康` -0：主被动比 1.19 不在 [1.5, 3.0]（monster）→ 补主动或被动卡，把主被动比调进 [1.5, 3.0]
+- `机制落地` -：frameworkFlags 未落地 STATUS_GAIN_LISTENER（新增项 1 遗留缺口：「监听自身获得指定状态」触发面未落（12 触发点封闭集无此钩子）；退化方案：并入幸运者自续链（on）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 FACTION_PREDICATE（共享内核 §三谓词族无「目标阵营」判定（仅 gender_is 等），If 分支的 target_faction_is ）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 RESOURCE_DURATION_REVERT（modify_resource(gauge.threshold) 为持续修正，需随状态到期回滚；效果参数未列 modif）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -1078,29 +1078,29 @@
 | ⚡ 灾厄 `calamity` | **83.5** | 15 | 20 | 18 | 5.5 | 10 | 15 | 给予厄运,厄运诅咒 | 绝对灵感,命运看守者 | — |
 | 🎲 幸运 `fortune` | **87.7** | 15 | 20 | 25 | 2.7 | 10 | 15 | 引发灾祸,福祸之言 | 赢家,赐福,重启循环,命运潮汐,命运看守者 | 命运启示,命运循环 |
 
-**💡 灵感 失分项**：
+**💡 灵感 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（inspiration_sense）
-- `产层闭环` -8：实证 enabler 仅 1 张（灵感超高）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（绝对灵感,超强预感）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（inspiration）
-- `规模均衡` -1：轴卡数 13 vs 理想 9（比值 1.49）（inspiration）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（inspiration_sense）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（灵感超高）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（绝对灵感,超强预感）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（inspiration）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
+- `规模均衡` -1：轴卡数 13 vs 理想 9（比值 1.49）（inspiration）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
 
-**🔄 循环 失分项**：
+**🔄 循环 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（fate_loop）
-- `产层闭环` -8：实证 enabler 仅 1 张（命运循环）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（重启循环,水银之躯·完整）
-- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（cycle）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（fate_loop）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（命运循环）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（重启循环,水银之躯·完整）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` -25：真空轴（无 payoff 且未甄别接受）（cycle）→ 补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）
 
-**⚡ 灾厄 失分项**：
+**⚡ 灾厄 失分项（含修改意见）**：
 
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（预见灾祸）
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（预见灾祸）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
 
-**🎲 幸运 失分项**：
+**🎲 幸运 失分项（含修改意见）**：
 
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（幸运者,命运潮汐）
-- `读层闭环` 注：notes 级 2 张（减半计）（命运启示,命运循环）
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（幸运者,命运潮汐）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` 注：notes 级 2 张（减半计）（命运启示,命运循环）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
 ## 不眠者（sleepless）· 66.3 分
@@ -1114,9 +1114,9 @@
 | 机制落地 | 15.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（全库 max 6）（sleepless）
+- `跨轴耦合` -15.0：本途径他轴身份读取 0 次（sleepless）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -1125,30 +1125,30 @@
 | 🌚 梦魇 `nightmare` | **62.2** | 8 | 20 | 13 | 8.2 | 10 | 3 | 入梦,塑梦,强制入梦 | 梦魇世界 | 恐惧灵光 |
 | 🌃 暗夜 `darkness` | **77.3** | 15 | 12 | 22 | 12.3 | 10 | 6 | 夜色渐浓 | 守夜人体质,黑暗仆人·不灭 | 黑暗之剑 |
 
-**🗝️ 隐秘 失分项**：
+**🗝️ 隐秘 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（conceal）
-- `产层闭环` -8：实证 enabler 仅 1 张（隐秘化）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（无迹之影）
-- `读层闭环` 注：notes 级 1 张（减半计）（隐秘之地）
-- `规模均衡` -0：轴卡数 5 vs 理想 8（比值 0.59）（secrecy）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（隐秘之地,隐秘权柄）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（conceal）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（隐秘化）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（无迹之影）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` 注：notes 级 1 张（减半计）（隐秘之地）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `规模均衡` -0：轴卡数 5 vs 理想 8（比值 0.59）（secrecy）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（隐秘之地,隐秘权柄）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🕯️ 安魂 失分项**：
+**🕯️ 安魂 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（pacified）
-- `产层闭环` -8：实证 enabler 仅 1 张（安魂）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（pacified）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `产层闭环` -8：实证 enabler 仅 1 张（安魂）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
 
-**🌚 梦魇 失分项**：
+**🌚 梦魇 失分项（含修改意见）**：
 
-- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（slumber）
-- `读层闭环` 注：notes 级 1 张（减半计）（恐惧灵光）
+- `身份锚定` -7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）（slumber）→ 给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）
+- `读层闭环` 注：notes 级 1 张（减半计）（恐惧灵光）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
-**🌃 暗夜 失分项**：
+**🌃 暗夜 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（夜色渐浓）
-- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（夜视）
-- `读层闭环` 注：notes 级 1 张（减半计）（黑暗之剑）
+- `产层闭环` -8：实证 enabler 仅 1 张（夜色渐浓）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 1 张（name 在列但卡面不挂身份）（夜视）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+- `读层闭环` 注：notes 级 1 张（减半计）（黑暗之剑）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
 ## 猎人（hunter）· 67.2 分
@@ -1162,11 +1162,11 @@
 | 机制落地 | 5.0 |
 | 文本完备 | 10.0 |
 
-**途径失分项**：
+**途径失分项（含修改意见）**：
 
-- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（hunter）
-- `机制落地` -：frameworkFlags 未落地 DYNAMIC_STAT_RESOLVE（modify_stat.stat 需为合法枚举，本卡「四取一动态属性」以 valueFrom.select: highe）
-- `机制落地` -：frameworkFlags 未落地 GENDER_FILTERED_MUL（damage_taken_mul 过滤乘区的 filter.gender 维度待内核裁定（编队参数 §1.1b H4 f）
+- `跨系联动` -11.2：枢纽状态 2 个 + combo 读取 0 次（hunter）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 DYNAMIC_STAT_RESOLVE（modify_stat.stat 需为合法枚举，本卡「四取一动态属性」以 valueFrom.select: highe）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 GENDER_FILTERED_MUL（damage_taken_mul 过滤乘区的 filter.gender 维度待内核裁定（编队参数 §1.1b H4 f）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -1175,24 +1175,24 @@
 | 🔥 燃焚 `flame` | **72.2** | 15 | 20 | 13 | 8.2 | 10 | 6 | 火鸦术,注火,燃烧之墙 | 紫色火焰 | 炽白之枪 |
 | 🏹 收割 `harvest` | **79.5** | 15 | 12 | 18 | 9.5 | 10 | 15 | 弱点侦察 | 收割,毁灭之矛 | — |
 
-**🕸️ 阴谋 失分项**：
+**🕸️ 阴谋 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（挑衅）
-- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（误导,煽动）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（误导,煽动）
+- `产层闭环` -8：实证 enabler 仅 1 张（挑衅）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `读层闭环` -17：payoff 2 张全部 notes 级（卡面无读层引用）（误导,煽动）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（误导,煽动）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🚩 集众 失分项**：
+**🚩 集众 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（集众·铁血）
-- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（借用能力,无限制分享,战争权柄）
-- `规模均衡` -1：轴卡数 16 vs 理想 11（比值 1.49）（massing）
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（借用能力,无限制分享,战争权柄）
+- `产层闭环` -8：实证 enabler 仅 1 张（集众·铁血）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `读层闭环` -13：payoff 3 张全部 notes 级（卡面无读层引用）（借用能力,无限制分享,战争权柄）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+- `规模均衡` -1：轴卡数 16 vs 理想 11（比值 1.49）（massing）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（借用能力,无限制分享,战争权柄）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
 
-**🔥 燃焚 失分项**：
+**🔥 燃焚 失分项（含修改意见）**：
 
-- `读层闭环` 注：notes 级 1 张（减半计）（炽白之枪）
+- `读层闭环` 注：notes 级 1 张（减半计）（炽白之枪）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
-**🏹 收割 失分项**：
+**🏹 收割 失分项（含修改意见）**：
 
-- `产层闭环` -8：实证 enabler 仅 1 张（弱点侦察）
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（猎人的感官,结构要点）
+- `产层闭环` -8：实证 enabler 仅 1 张（弱点侦察）→ 再补 1 张产层卡，或给在列 enabler 卡面补挂身份段
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（猎人的感官,结构要点）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除

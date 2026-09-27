@@ -95,7 +95,31 @@ def card_mounts(card):
             if n.get("type") == "mount_status" and isinstance(n.get("statusId"), str)}
 
 
+# 修改意见按扣分类别生成，路径内可执行、不做职业间横向对比（呈现层的硬要求）
+FIX = {
+    "no_layer_engine": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）",
+    "pool_no_tiers": "给该 Pool 配 thresholdTrigger(metric) 档位状态（照恶欲值躁动/失控/爆炸四档先例）",
+    "no_identity": "给轴定身份：补 statusId，或给 enabler 卡加 modify_resource 产能段",
+    "dangling_sid": "把 statusId 改指真实 statusDef，或在途径 statuses.json 里建该定义",
+    "enabler_only1": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段",
+    "enabler_unverified": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡",
+    "enabler_empty": "给轴补 2 张以上产层卡并在 axes.enablers 登记",
+    "vacuum": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）",
+    "payoff_notes": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed",
+    "scale": "把轴卡数向途径轴均卡数收敛（补卡或并轴）",
+    "connect": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段",
+    "min_axis": "优先重设计该最低分轴（轴表按分升序，第一行即它）",
+    "crossaxis": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段",
+    "crosspath": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段",
+    "aratio": "补主动或被动卡，把主被动比调进 [1.5, 3.0]",
+    "flagship": "补/撤旗舰卡至 4 张",
+    "landed": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达",
+}
+FIX_NOTE = "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+
+
 # ---------- 主计分 ----------
+
 
 def main():
     pathways = load_skills()
@@ -138,7 +162,7 @@ def main():
                 if sdef.get("stackThreshold") or sdef.get("thresholdTrigger") or sdef.get("maxStacks") or sdef.get("charges"):
                     anchor += 7
                 else:
-                    deductions.append(("身份锚定", "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）", sid))
+                    deductions.append(("身份锚定", "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）", sid, FIX["no_layer_engine"]))
             elif not sid:
                 # Pool 轴：以 enabler 卡 modify_resource 的资源为身份
                 res_votes = {}
@@ -152,13 +176,13 @@ def main():
                 identity_pool = max(res_votes, key=res_votes.get) if res_votes else None
                 if identity_pool:
                     anchor = 8
-                    deductions.append(("身份锚定", "-7：Pool 轴无层数引擎档位（thresholdTrigger(metric) 未挂）", identity_pool))
+                    deductions.append(("身份锚定", "-7：Pool 轴无层数引擎档位（thresholdTrigger(metric) 未挂）", identity_pool, FIX["pool_no_tiers"]))
                 else:
                     anchor = 0
-                    deductions.append(("身份锚定", "-15：轴无 statusId 且 enabler 无 modify_resource 产能段", aid))
+                    deductions.append(("身份锚定", "-15：轴无 statusId 且 enabler 无 modify_resource 产能段", aid, FIX["no_identity"]))
             else:
                 anchor = 0
-                deductions.append(("身份锚定", "-15：statusId '%s' 悬空" % sid, sid))
+                deductions.append(("身份锚定", "-15：statusId '%s' 悬空" % sid, sid, FIX["dangling_sid"]))
 
             def _is_enabler(c):
                 if not c:
@@ -173,15 +197,15 @@ def main():
                 closure_e = 20
             elif len(en_verified) == 1:
                 closure_e = 12
-                deductions.append(("产层闭环", "-8：实证 enabler 仅 1 张", ",".join(en_verified)))
+                deductions.append(("产层闭环", "-8：实证 enabler 仅 1 张", ",".join(en_verified), FIX["enabler_only1"]))
             elif enablers:
                 closure_e = 5
-                deductions.append(("产层闭环", "-15：enablers %d 张均未实证挂载身份" % len(enablers), ",".join(en_missed)))
+                deductions.append(("产层闭环", "-15：enablers %d 张均未实证挂载身份" % len(enablers), ",".join(en_missed), FIX["enabler_unverified"]))
             else:
                 closure_e = 0
-                deductions.append(("产层闭环", "-20：enablers 为空", aid))
+                deductions.append(("产层闭环", "-20：enablers 为空", aid, FIX["enabler_empty"]))
             if en_missed and en_verified:
-                deductions.append(("产层闭环", "注：未实证 %d 张（name 在列但卡面不挂身份）" % len(en_missed), ",".join(en_missed)))
+                deductions.append(("产层闭环", "注：未实证 %d 张（name 在列但卡面不挂身份）" % len(en_missed), ",".join(en_missed), FIX_NOTE))
 
             # —— 读层闭环（实证 vs notes 级） ——
             def _payoff_evidence(c):
@@ -214,12 +238,12 @@ def main():
                 if ax.get("payoffVacuumAccepted"):
                     closure_p = 12
                 else:
-                    deductions.append(("读层闭环", "-25：真空轴（无 payoff 且未甄别接受）", aid))
+                    deductions.append(("读层闭环", "-25：真空轴（无 payoff 且未甄别接受）", aid, FIX["vacuum"]))
             else:
                 if notes_level and not landed:
-                    deductions.append(("读层闭环", "-%d：payoff %d 张全部 notes 级（卡面无读层引用）" % (25 - closure_p, len(payoffs)), ",".join(notes_level)))
+                    deductions.append(("读层闭环", "-%d：payoff %d 张全部 notes 级（卡面无读层引用）" % (25 - closure_p, len(payoffs)), ",".join(notes_level), FIX["payoff_notes"]))
                 elif notes_level:
-                    deductions.append(("读层闭环", "注：notes 级 %d 张（减半计）" % len(notes_level), ",".join(notes_level)))
+                    deductions.append(("读层闭环", "注：notes 级 %d 张（减半计）" % len(notes_level), ",".join(notes_level), FIX["payoff_notes"]))
 
             # —— 轴内多样性（归一后置） ——
             prim_kinds, cond_kinds = set(), set()
@@ -237,7 +261,7 @@ def main():
             else:
                 dev = abs(ratio - 1.0) - 0.4
                 scale = max(0, round(10 - dev * 10))
-                deductions.append(("规模均衡", "-%d：轴卡数 %d vs 理想 %d（比值 %.2f）" % (10 - scale, len(axis_cards), round(ideal), ratio), aid))
+                deductions.append(("规模均衡", "-%d：轴卡数 %d vs 理想 %d（比值 %.2f）" % (10 - scale, len(axis_cards), round(ideal), ratio), aid, FIX["scale"]))
 
             # —— 承接连通 ——
             patterns = set()
@@ -281,7 +305,7 @@ def main():
                         ext_consumers += 1
             connect = min(15, len(patterns) * 3 + ext_consumers * 3)
             if not patterns and not ext_consumers and payoffs:
-                deductions.append(("承接连通", "-15：payoff 无读层方式多样性且无跨轴消费", ",".join(payoffs)))
+                deductions.append(("承接连通", "-15：payoff 无读层方式多样性且无跨轴消费", ",".join(payoffs), FIX["connect"]))
 
             axis_rows.append({
                 "pathway": pid, "axis": aid, "name": ax.get("name"), "symbol": ax.get("symbol"),
@@ -318,20 +342,20 @@ def main():
         if min_axis < 25:
             health -= 10
             deductions.append(("轴健康度", "-10：最低轴 %.0f 分（<25）" % min_axis,
-                               min((r for r in arows), key=lambda r: r["total"])["axis"]))
+                               min((r for r in arows), key=lambda r: r["total"])["axis"], FIX["min_axis"]))
         elif min_axis < 40:
             health -= 5
             deductions.append(("轴健康度", "-5：最低轴 %.0f 分（<40）" % min_axis,
-                               min((r for r in arows), key=lambda r: r["total"])["axis"]))
+                               min((r for r in arows), key=lambda r: r["total"])["axis"], FIX["min_axis"]))
         health = max(0, round(health * 30 / 100, 1))
 
         crossaxis = round(15 * pw_crossaxis_refs.get(pid, 0) / (max_crossaxis or 1), 1)
         if crossaxis < 7.5:
-            deductions.append(("跨轴耦合", "-%s：本途径他轴身份读取 %d 次（全库 max %d）" % (15 - crossaxis, pw_crossaxis_refs.get(pid, 0), max_crossaxis), pid))
+            deductions.append(("跨轴耦合", "-%s：本途径他轴身份读取 %d 次" % (15 - crossaxis, pw_crossaxis_refs.get(pid, 0)), pid, FIX["crossaxis"]))
         crosspath_norm = (max_crosspath or 0) + max(pw_hub_statuses.values() or [1])
         crosspath = round(15 * (pw_crosspath_reads.get(pid, 0) + pw_hub_statuses.get(pid, 0)) / (crosspath_norm or 1), 1)
         if crosspath < 7.5:
-            deductions.append(("跨系联动", "-%s：枢纽状态 %d 个 + combo 读取 %d 次" % (15 - crosspath, pw_hub_statuses.get(pid, 0), pw_crosspath_reads.get(pid, 0)), pid))
+            deductions.append(("跨系联动", "-%s：枢纽状态 %d 个 + combo 读取 %d 次" % (15 - crosspath, pw_hub_statuses.get(pid, 0), pw_crosspath_reads.get(pid, 0)), pid, FIX["crosspath"]))
 
         # 结构健康
         struct = 0
@@ -349,11 +373,11 @@ def main():
         else:
             s5 = max(0, round(5 - abs(aratio - (1.5 if aratio < 1.5 else 3.0))))
             struct += s5
-            deductions.append(("结构健康", "-%s：主被动比 %.2f 不在 [1.5, 3.0]" % (5 - s5, aratio), pid))
+            deductions.append(("结构健康", "-%s：主被动比 %.2f 不在 [1.5, 3.0]" % (5 - s5, aratio), pid, FIX["aratio"]))
         n_flag = sum(1 for c in cards if c.get("flagship"))
         struct += max(0, 4 - abs(4 - n_flag))
         if n_flag != 4:
-            deductions.append(("结构健康", "-%d：旗舰卡 %d 张（理想 4）" % (abs(4 - n_flag), n_flag), pid))
+            deductions.append(("结构健康", "-%d：旗舰卡 %d 张（理想 4）" % (abs(4 - n_flag), n_flag), pid, FIX["flagship"]))
 
         # 机制落地
         flags = [f for c in cards for f in (c.get("frameworkFlags") or [])]
@@ -365,7 +389,7 @@ def main():
             for f in flags:
                 if not f.get("landed"):
                     deductions.append(("机制落地", "-：frameworkFlags 未落地 %s" % f.get("code", "?"),
-                                       f.get("note", "")[:60]))
+                                       f.get("note", "")[:60], FIX["landed"]))
 
         # 文本完备
         txt = sum(1 for c in cards if c.get("lore") and c.get("flavor") and c.get("describe"))
@@ -413,10 +437,10 @@ def write_scorecard(pw_rows):
             L.append("| %s | %.1f |" % (k, v))
         L.append("")
         if r["deductions"]:
-            L.append("**途径失分项**：")
+            L.append("**途径失分项（含修改意见）**：")
             L.append("")
-            for dim, why, ref in r["deductions"]:
-                L.append("- `%s` %s（%s）" % (dim, why, ref))
+            for dim, why, ref, fix in r["deductions"]:
+                L.append("- `%s` %s（%s）→ %s" % (dim, why, ref, fix))
             L.append("")
         L.append("| 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |")
         L.append("|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|")
@@ -429,10 +453,10 @@ def write_scorecard(pw_rows):
         L.append("")
         for a in sorted(r["axes"], key=lambda x: x["total"]):
             if a["deductions"]:
-                L.append("**%s %s 失分项**：" % (a["symbol"] or "", a["name"]))
+                L.append("**%s %s 失分项（含修改意见）**：" % (a["symbol"] or "", a["name"]))
                 L.append("")
-                for dim, why, ref in a["deductions"]:
-                    L.append("- `%s` %s（%s）" % (dim, why, ref))
+                for dim, why, ref, fix in a["deductions"]:
+                    L.append("- `%s` %s（%s）→ %s" % (dim, why, ref, fix))
                 L.append("")
     io.open(os.path.join(ANALYSIS_DIR, "scorecard.md"), "w", encoding="utf-8").write("\n".join(L))
 
@@ -444,14 +468,14 @@ def write_scores_json(pw_rows):
         "pathways": [{
             "id": r["id"], "name": r["name"], "total": r["total"], "dims": r["dims"],
             "minAxis": r["min_axis"], "cards": r["cards"],
-            "deductions": [{"dim": d, "why": w, "ref": x} for d, w, x in r["deductions"]],
+            "deductions": [{"dim": d, "why": w, "ref": x, "fix": f} for d, w, x, f in r["deductions"]],
             "axes": [{
                 "id": a["axis"], "name": a["name"], "symbol": a["symbol"], "total": a["total"],
                 "dims": a["dims"], "cards": a["cards"],
                 "enablersVerified": a["enablers_v"], "payoffsLanded": a["landed"],
                 "payoffsNotes": a["notes"], "patterns": a["patterns"],
                 "vacuumAccepted": a["vacuum_accepted"],
-                "deductions": [{"dim": d, "why": w, "ref": x} for d, w, x in a["deductions"]],
+                "deductions": [{"dim": d, "why": w, "ref": x, "fix": f} for d, w, x, f in a["deductions"]],
             } for a in sorted(r["axes"], key=lambda x: x["total"])],
         } for r in pw_rows],
     }
