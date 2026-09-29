@@ -6,6 +6,7 @@
 | 日期 | 途径 | 改前 → 改后 | 主要改动 | commit |
 |---|---|---|---|---|
 | 2026-09-26 | （基线建立） | — | score.py 首跑全库基线分，见 docs/analysis/scorecard.md；榜尾：pryer 45.9 / chanter 46.5 / corpse_collector 47.5 / apothecary 47.6 / arbiter 47.9 | c169205 |
+| 2026-09-29 | 窥秘人 `pryer` | 47.3 → **58.7**（基线 45.9） | 窥秘权柄补产层段（scrying 产层 12→20）；知识攻击补窥秘之眼读层（payoff notes→landed）；朗基努斯之枪 knowledge_strain 耗层换效（combat 读层 0→9，从补卡候选落地）；占星术读 knowledge_strain、知识攻击读 scrying_eye（跨轴 0→2 次）；星之巨柱/星桥补 ego_constellation、卷轴·冰冻/麻痹补 spell_lore（astral/scroll 产层注清零）；星之巨柱读 doom、星光囚笼读 astral_anchor（跨系 0→2 次，后者闭环稿面既定意图） | 本轮 |
 
 ## 真空轴甄别（2026-09-29 主人拍板，草案已结案）
 
