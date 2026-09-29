@@ -3,209 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "reader",
-   "name": "阅读者",
-   "total": 52.7,
-   "dims": {
-    "轴健康度": 13.9,
-    "跨轴耦合": 2.5,
-    "跨系联动": 3.8,
-    "结构健康": 15,
-    "机制落地": 7.5,
-    "文本完备": 10.0
-   },
-   "minAxis": 36.2,
-   "cards": 34,
-   "deductions": [
-    {
-     "dim": "轴健康度",
-     "why": "-5：最低轴 36 分（<40）",
-     "ref": "arcana",
-     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
-    },
-    {
-     "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次",
-     "ref": "reader",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-11.2：枢纽状态 2 个 + combo 读取 0 次",
-     "ref": "reader",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 SKILL_COST_DELTA",
-     "ref": "技能费用修正属 progression 层（战外），ddd 未落；退化方案为 modify_stat(energy_re",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    }
-   ],
-   "axes": [
-    {
-     "id": "arcana",
-     "name": "秘术",
-     "symbol": "📚",
-     "total": 36.2,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 0,
-      "轴内多样性": 6.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "仪式魔法专家"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "ritual_expertise",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "仪式魔法专家",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "省略步骤",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "arcana",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "foresight",
-     "name": "预知",
-     "symbol": "⏳",
-     "total": 55.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 12,
-      "轴内多样性": 6.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "预言"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "预言",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "局势推演,规律·撬动,规律权柄",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "mimic",
-     "name": "模仿",
-     "symbol": "🦜",
-     "total": 63.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "读层闭环": 12,
-      "轴内多样性": 6.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "模仿·全知之眼",
-      "模仿·初解",
-      "模仿·智天使",
-      "模仿·秘术导师",
-      "模仿·预言家"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": []
-    },
-    {
-     "id": "analysis",
-     "name": "解析",
-     "symbol": "🧠",
-     "total": 71.0,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 20,
-      "读层闭环": 20,
-      "轴内多样性": 10.0,
-      "规模均衡": 10,
-      "承接连通": 3
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "解析",
-      "逻辑推演"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "模仿·初解",
-      "模仿·秘术导师",
-      "模仿·预言家",
-      "模仿·智天使",
-      "模仿·全知之眼"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "observed",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "洞悉,全知·现在与过去",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-5：payoff 5 张全部 notes 级（卡面无读层引用）",
-       "ref": "模仿·初解,模仿·秘术导师,模仿·预言家,模仿·智天使,模仿·全知之眼",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "seer",
    "name": "占卜家",
    "total": 53.3,
@@ -3134,9 +2931,9 @@
   {
    "id": "savant",
    "name": "通识者",
-   "total": 62.9,
+   "total": 63.1,
    "dims": {
-    "轴健康度": 23.1,
+    "轴健康度": 23.3,
     "跨轴耦合": 5.0,
     "跨系联动": 3.8,
     "结构健康": 15,
@@ -3250,14 +3047,14 @@
      "id": "astral",
      "name": "星律",
      "symbol": "☄️",
-     "total": 76.8,
+     "total": 79.8,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "读层闭环": 17,
       "轴内多样性": 8.8,
       "规模均衡": 10,
-      "承接连通": 6
+      "承接连通": 9
      },
      "cards": 7,
      "enablersVerified": [
@@ -4076,6 +3873,153 @@
      ],
      "vacuumAccepted": false,
      "deductions": []
+    }
+   ]
+  },
+  {
+   "id": "reader",
+   "name": "阅读者",
+   "total": 66.5,
+   "dims": {
+    "轴健康度": 20.9,
+    "跨轴耦合": 7.5,
+    "跨系联动": 5.6,
+    "结构健康": 15,
+    "机制落地": 7.5,
+    "文本完备": 10.0
+   },
+   "minAxis": 63.2,
+   "cards": 34,
+   "deductions": [
+    {
+     "dim": "跨系联动",
+     "why": "-9.4：枢纽状态 2 个 + combo 读取 1 次",
+     "ref": "reader",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 SKILL_COST_DELTA",
+     "ref": "技能费用修正属 progression 层（战外），ddd 未落；退化方案为 modify_stat(energy_re",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    }
+   ],
+   "axes": [
+    {
+     "id": "arcana",
+     "name": "秘术",
+     "symbol": "📚",
+     "total": 63.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 12,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "仪式魔法专家",
+      "省略步骤"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "mimic",
+     "name": "模仿",
+     "symbol": "🦜",
+     "total": 64.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 12,
+      "轴内多样性": 7.5,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "模仿·全知之眼",
+      "模仿·初解",
+      "模仿·智天使",
+      "模仿·秘术导师",
+      "模仿·预言家"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "foresight",
+     "name": "预知",
+     "symbol": "⏳",
+     "total": 64.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 12,
+      "轴内多样性": 7.5,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "预言",
+      "智慧权柄"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "analysis",
+     "name": "解析",
+     "symbol": "🧠",
+     "total": 95.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 25,
+      "轴内多样性": 10.0,
+      "规模均衡": 10,
+      "承接连通": 15
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "解析",
+      "逻辑推演"
+     ],
+     "payoffsLanded": [
+      "模仿·全知之眼"
+     ],
+     "payoffsNotes": [
+      "模仿·初解",
+      "模仿·秘术导师",
+      "模仿·预言家",
+      "模仿·智天使"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 4 张（减半计）",
+       "ref": "模仿·初解,模仿·秘术导师,模仿·预言家,模仿·智天使",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
     }
    ]
   },
