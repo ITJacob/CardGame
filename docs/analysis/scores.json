@@ -230,238 +230,6 @@
    ]
   },
   {
-   "id": "apprentice",
-   "name": "学徒",
-   "total": 56.4,
-   "dims": {
-    "轴健康度": 14.9,
-    "跨轴耦合": 0.0,
-    "跨系联动": 1.5,
-    "结构健康": 15,
-    "机制落地": 15.0,
-    "文本完备": 10.0
-   },
-   "minAxis": 45.0,
-   "cards": 34,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次",
-     "ref": "apprentice",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-13.5：枢纽状态 1 个 + combo 读取 0 次",
-     "ref": "apprentice",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    }
-   ],
-   "axes": [
-    {
-     "id": "trick",
-     "name": "戏法",
-     "symbol": "🎩",
-     "total": 45.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 4,
-      "轴内多样性": 5.0,
-      "规模均衡": 9,
-      "承接连通": 0
-     },
-     "cards": 4,
-     "enablersVerified": [
-      "戏法·闪光"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "逃脱戏法"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "戏法·闪光",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "逃脱戏法",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 4 vs 理想 8（比值 0.47）",
-       "ref": "trick",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "逃脱戏法",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "gate",
-     "name": "开门",
-     "symbol": "🚪",
-     "total": 50.0,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 16,
-      "轴内多样性": 5.0,
-      "规模均衡": 9,
-      "承接连通": 0
-     },
-     "cards": 13,
-     "enablersVerified": [
-      "仪式·门"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "旅行家之门",
-      "闪现",
-      "撕裂空间",
-      "空间破碎"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "ritual_gate",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "仪式·门",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "破障之门,门之概念,无处不在",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-9：payoff 4 张全部 notes 级（卡面无读层引用）",
-       "ref": "旅行家之门,闪现,撕裂空间,空间破碎",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 13 vs 理想 8（比值 1.53）",
-       "ref": "gate",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "旅行家之门,闪现,撕裂空间,空间破碎",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "astral",
-     "name": "星界",
-     "symbol": "🌌",
-     "total": 50.5,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 8,
-      "轴内多样性": 2.5,
-      "规模均衡": 10,
-      "承接连通": 3
-     },
-     "cards": 12,
-     "enablersVerified": [
-      "星相学"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "空间隐藏",
-      "放逐"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "星相学",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-17：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "空间隐藏,放逐",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-0：轴卡数 12 vs 理想 8（比值 1.41）",
-       "ref": "astral",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    },
-    {
-     "id": "record",
-     "name": "记录",
-     "symbol": "📖",
-     "total": 59.5,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 9,
-      "轴内多样性": 7.5,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 5,
-     "enablersVerified": [
-      "记录"
-     ],
-     "payoffsLanded": [
-      "重现"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "记录",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-0：轴卡数 5 vs 理想 8（比值 0.59）",
-       "ref": "record",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "criminal",
    "name": "罪犯",
    "total": 57.9,
@@ -4032,6 +3800,190 @@
        "why": "注：notes 级 2 张（减半计）",
        "ref": "秘偶不死,秘偶换位",
        "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "apprentice",
+   "name": "学徒",
+   "total": 72.2,
+   "dims": {
+    "轴健康度": 20.2,
+    "跨轴耦合": 7.5,
+    "跨系联动": 4.5,
+    "结构健康": 15,
+    "机制落地": 15.0,
+    "文本完备": 10.0
+   },
+   "minAxis": 62.0,
+   "cards": 34,
+   "deductions": [
+    {
+     "dim": "跨系联动",
+     "why": "-10.5：枢纽状态 1 个 + combo 读取 2 次",
+     "ref": "apprentice",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    }
+   ],
+   "axes": [
+    {
+     "id": "trick",
+     "name": "戏法",
+     "symbol": "🎩",
+     "total": 62.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 12,
+      "读层闭环": 9,
+      "轴内多样性": 5.0,
+      "规模均衡": 9,
+      "承接连通": 12
+     },
+     "cards": 4,
+     "enablersVerified": [
+      "戏法·闪光"
+     ],
+     "payoffsLanded": [
+      "逃脱戏法"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "戏法·闪光",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      },
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 4 vs 理想 8（比值 0.47）",
+       "ref": "trick",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    },
+    {
+     "id": "record",
+     "name": "记录",
+     "symbol": "📖",
+     "total": 67.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 7.5,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 5,
+     "enablersVerified": [
+      "记录",
+      "再现"
+     ],
+     "payoffsLanded": [
+      "重现"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-0：轴卡数 5 vs 理想 8（比值 0.59）",
+       "ref": "record",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    },
+    {
+     "id": "astral",
+     "name": "星界",
+     "symbol": "🌌",
+     "total": 68.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 2.5,
+      "规模均衡": 10,
+      "承接连通": 12
+     },
+     "cards": 12,
+     "enablersVerified": [
+      "星相学",
+      "放逐"
+     ],
+     "payoffsLanded": [
+      "空间隐藏"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-0：轴卡数 12 vs 理想 8（比值 1.41）",
+       "ref": "astral",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    },
+    {
+     "id": "gate",
+     "name": "开门",
+     "symbol": "🚪",
+     "total": 78.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 21,
+      "轴内多样性": 7.5,
+      "规模均衡": 9,
+      "承接连通": 6
+     },
+     "cards": 13,
+     "enablersVerified": [
+      "仪式·门",
+      "无处不在"
+     ],
+     "payoffsLanded": [
+      "闪现"
+     ],
+     "payoffsNotes": [
+      "旅行家之门",
+      "撕裂空间",
+      "空间破碎"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 3 张（减半计）",
+       "ref": "旅行家之门,撕裂空间,空间破碎",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      },
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 13 vs 理想 8（比值 1.53）",
+       "ref": "gate",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
     }

@@ -13,8 +13,6 @@
       "statusId": "ritual_gate",
       "enablers": [
         "仪式·门",
-        "破障之门",
-        "门之概念",
         "无处不在"
       ],
       "payoffs": [
@@ -23,7 +21,7 @@
         "撕裂空间",
         "空间破碎"
       ],
-      "note": "payoffs 2026-09-26 评审：四卡 notes 级读门扉坐标（减费/零耗，卡面未编码 has_status）⚠️ 证据级=notes（与星界轴放逐先例同口径）"
+      "note": "payoffs 2026-09-26 评审：四卡 notes 级读门扉坐标（减费/零耗，卡面未编码 has_status）⚠️ 证据级=notes（与星界轴放逐先例同口径） ｜ 2026-09-29 环节⑤：ritual_gate 补层数引擎（身份 8→15）；无处不在补产层段（破障之门/门之概念不挂 ritual_gate 移出，产层 12→20）；闪现读 ritual_gate 升 landed（payoff notes→landed）；闪现读 flash 跨轴（gate→trick）；撕裂空间读 puppet_string 跨系（→seer）；旅行家之门读 conceal_authority 跨系（→sleepless）"
     },
     "trick": {
       "symbol": "🎩",
@@ -32,7 +30,7 @@
       "enablers": [
         "戏法·闪光"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 戏法标记，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审：逃脱戏法 notes 级收束戏法标记（axis 标 gate，语义属戏法轴）；flash 状态无卡面读取",
+      "note": "2026-09-20 清理悬空 statusId（原为 戏法标记，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审：逃脱戏法 notes 级收束戏法标记（axis 标 gate，语义属戏法轴）；flash 状态无卡面读取 ｜ 2026-09-29 环节⑤：逃脱戏法补 flash 读层段（payoff notes→landed，读层 4→9）；产层仍 12（轴仅 4 卡，补卡候选在册）；闪现（gate 轴）读 flash 自动成跨轴消费",
       "payoffs": [
         "逃脱戏法"
       ]
@@ -42,23 +40,26 @@
       "name": "记录",
       "statusId": "inscription",
       "enablers": [
-        "记录"
+        "记录",
+        "再现"
       ],
       "payoffs": [
         "重现"
-      ]
+      ],
+      "note": "2026-09-29 环节⑤：产层补实证（再现挂 inscription 入列，产层 12→20）"
     },
     "astral": {
       "symbol": "🌌",
       "name": "星界",
       "statusId": "astral_anchor",
       "enablers": [
-        "星相学"
+        "星相学",
+        "放逐"
       ],
       "payoffs": [
-        "空间隐藏",
-        "放逐"
-      ]
+        "空间隐藏"
+      ],
+      "note": "2026-09-29 环节⑤：放逐补 astral_anchor 产层段（产层 12→20）；空间隐藏读 astral_anchor 升 landed（payoff notes→landed，读层 8→13，兼跨轴 gate→astral）"
     }
   },
   "cards": [
@@ -340,7 +341,7 @@
       "flagship": false,
       "lore": "序列8 戏法大师 —— \"…逃脱戏法\"",
       "flavor": "你的袖子里永远留着一手——每一次被逼到绝路，你都能从原地消失，出现在后排。",
-      "describe": "战斗开始时获得 3 层逃脱戏法：每次受击时该次伤害 ×0.8，并退回己方半场最后位，每场共 3 次。",
+      "describe": "战斗开始时获得 3 层逃脱戏法：每次受击时该次伤害 ×0.8，并退回己方半场最后位，每场共 3 次。；若自身带戏法闪光，戏法回能，能量 +2。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -349,6 +350,27 @@
           "charges": 3,
           "duration": null,
           "target": "self"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "flash",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "self",
+              "note": "戏法回能：自身戏法闪光在场则逃脱顺手捞回 2 点能量（环节⑤ 2026-09-29 补读层段：flash payoff 升 landed）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -641,7 +663,7 @@
       "flagship": false,
       "lore": "序列5 旅行家 —— \"「旅行家之门」：灵界穿梭传送\"",
       "flavor": "一道门在它脚边打开——再出现时，它已经站在了队伍的另一头。",
-      "describe": "将一名友军跨路转移到己方另一路队尾，并为其提供 3 点护盾（3 tick）。",
+      "describe": "将一名友军跨路转移到己方另一路队尾，并为其提供 3 点护盾（3 tick）。；若自身带隐秘权柄，隐秘旅途，护盾加厚至 4 点。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -672,6 +694,27 @@
               "duration": 3,
               "target": "target",
               "note": "穿越灵界的擦伤补偿"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "conceal_authority",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "shield",
+                  "value": 4,
+                  "duration": 3,
+                  "target": "target",
+                  "note": "隐秘旅途：自身隐秘权柄在场则穿越护盾加厚至 4 点（环节⑤ 2026-09-29 跨系读层段：gate→sleepless conceal_authority）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -702,7 +745,7 @@
       "flagship": false,
       "lore": "序列5 旅行家 —— \"「闪现」：短距离不断闪现，制造围攻效果\"",
       "flavor": "你在它身周不断闪现——左、右、背后，三记短促的攻击几乎同时落下。",
-      "describe": "对一名近战敌人连续攻击 3 次，每次造成 2 点物理伤害（突进仅为表现，站位不变）。",
+      "describe": "对一名近战敌人连续攻击 3 次，每次造成 2 点物理伤害（突进仅为表现，站位不变）。；自身仪式之门在场则穿门闪现多出一段；自身带戏法闪光则戏法连闪，追加 2 点。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -729,6 +772,44 @@
               "value": 2
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "ritual_gate",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "note": "穿门闪现：自身仪式之门在场则多出一段 2 点（环节⑤ 2026-09-29 补读层段：ritual_gate payoff 升 landed）"
+            }
+          ],
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "flash",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "note": "戏法连闪：自身戏法闪光在场则闪得更快，追加 2 点（环节⑤ 2026-09-29 跨轴读层段：gate→trick）"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
@@ -895,7 +976,7 @@
       "flagship": false,
       "lore": "序列4 秘法师 —— \"「空间隐藏」：扭曲割裂空间并隐藏\"",
       "flavor": "你身边的空间被扭曲割裂——它还在那里，却再没有谁能准确地指向它。",
-      "describe": "使一名友军隐匿 2 tick：不可被单体技能选中（范围效果仍可命中），出手造成伤害时隐匿破除。",
+      "describe": "使一名友军隐匿 2 tick：不可被单体技能选中（范围效果仍可命中），出手造成伤害时隐匿破除。（自身带星界锚则延长至 3 tick，星界藏形）。",
       "cost": {
         "energy": 3,
         "cooldown": 5,
@@ -912,10 +993,31 @@
       },
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "conceal",
-          "duration": 2,
-          "target": "target"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "astral_anchor",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "conceal",
+              "duration": 3,
+              "target": "target",
+              "note": "星界藏形：自身星界锚在场则隐匿延长至 3 tick（环节⑤ 2026-09-29 补读层段：astral_anchor payoff 升 landed，兼跨轴 gate→astral）"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "conceal",
+              "duration": 2,
+              "target": "target"
+            }
+          ]
         }
       ],
       "sharedAcross": [
@@ -994,7 +1096,7 @@
       "flagship": false,
       "lore": "序列4 秘法师 —— \"「放逐」：将目标丢入时空乱流\"",
       "flavor": "它脚下的空间裂开一道缝——它被丢进乱流里，等它挣扎着爬回来时，身上已经没有一处完好。",
-      "describe": "将一名敌人放逐 3 tick：行动条冻结、不可被单体技能选中，归来时受到 4 点无元素伤害（乱流撕扯）。",
+      "describe": "将一名敌人放逐 3 tick：行动条冻结、不可被单体技能选中，归来时受到 4 点无元素伤害（乱流撕扯）。；放逐入锚：自身星界锚在场（整场，1 层）。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1014,6 +1116,13 @@
           "type": "mount_status",
           "statusId": "exiled",
           "duration": 3
+        },
+        {
+          "type": "mount_status",
+          "statusId": "astral_anchor",
+          "duration": null,
+          "target": "self",
+          "note": "放逐入锚：被逐者归处即星界锚（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -1039,7 +1148,7 @@
       "flagship": false,
       "lore": "序列3 漫游者 —— \"「漫游」：可进入星空，遨游星界，前往不同星球 /「开门」：能突破几乎所有屏障 /「融入空间」、「撕裂空间」\"",
       "flavor": "你伸手撕开一道裂隙——它和它身侧的同伴都被裂口咬住，而裂隙并不会合拢。",
-      "describe": "对一名敌人造成 5 点物理伤害（相邻敌人受到 2 点溅射），并撕开空间裂隙 3 tick：其受伤 ×1.15。",
+      "describe": "对一名敌人造成 5 点物理伤害（相邻敌人受到 2 点溅射），并撕开空间裂隙 3 tick：其受伤 ×1.15。；若目标带提线木偶，斩断提线，追加 2 点物理伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1075,6 +1184,25 @@
               "statusId": "vulnerable",
               "duration": 3,
               "value": 1.15
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "puppet_string",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 2,
+                  "note": "斩断提线：目标带提线木偶则空间撕裂波及操线，追加 2 点（环节⑤ 2026-09-29 跨系读层段：gate→seer puppet_string）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -1858,7 +1986,7 @@
       "flagship": true,
       "lore": "序列0 门 —— \"「无处不在」（闪现极致）、「概念化」\"",
       "flavor": "闪现到了极致，便是无处不在——你同时站在战场的每一处，敌人推不动一个并不只在原地的你。",
-      "describe": "战斗开始时获得无处不在：行动条速率 +6、无法被位移，并召唤一个留在星界的残影（30% 生命）助战。",
+      "describe": "战斗开始时获得无处不在：行动条速率 +6、无法被位移，并召唤一个留在星界的残影（30% 生命）助战。；无处不在皆穿门（仪式之门 3 tick）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1866,6 +1994,13 @@
           "statusId": "ubiquity",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "ritual_gate",
+          "duration": 3,
+          "target": "self",
+          "note": "无处不在皆穿门（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
