@@ -241,7 +241,7 @@
           "effects": [
             {
               "type": "mount_status",
-              "statusId": "burn",
+              "statusId": "combustion",
               "duration": 2,
               "target": "attacker",
               "note": "碰到火焰身躯者被点燃（F61 attacker targetSpec）"
@@ -438,7 +438,7 @@
         },
         {
           "kind": "status_duration_bonus",
-          "statusId": "burn",
+          "statusId": "combustion",
           "bonus": 1,
           "note": "施加的 burn duration +1"
         }
@@ -622,6 +622,22 @@
         "taunt": true
       },
       "note": "阴谋轴身份状态（2026-09-27 自 common taunt 分叉私有化，语义蓝本同源：force 普攻 + target_override）；common taunt 保留为全库通用嘲讽。"
+    },
+    {
+      "id": "combustion",
+      "name": "燃焚",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 3,
+      "maxStacks": 3,
+      "stackPolicy": "refresh",
+      "modifiers": {
+        "dotOnTick": 2,
+        "element": "fire"
+      },
+      "note": "燃焚轴身份状态（2026-09-29 自 common burn 分叉私有化，数值蓝本同源：火属性 2/tick DoT，叠层 refresh；§2.2 未单列裁定，数值 ⚠️D 照旧）；猎人全途径引用（火鸦术/燃烧之墙/注火/远程轰炸/献祭祈求·烈焰变体 + 火焰化触发 + 紫色火焰时长加成）统一改指此 id；common burn（灼烧）保留为刺客/罪犯/窥秘人/智者通用火 DoT。⚠️ 副作用：罪犯污秽之王不再放大猎人的燃焚（跨系涌现断开），平衡期裁定。"
     }
   ]
 }
