@@ -50,7 +50,7 @@
     "harvest": {
       "symbol": "🏹",
       "name": "收割",
-      "statusId": "vulnerable",
+      "statusId": "weak_point",
       "enablers": [
         "猎人的感官",
         "结构要点",
@@ -59,7 +59,8 @@
       "payoffs": [
         "收割",
         "毁灭之矛"
-      ]
+      ],
+      "note": "2026-09-29 私有化：轴身份自 common vulnerable 分叉为 weak_point（弱点，数值以 §2.2 裁定为权威）；弱点侦察产层、收割/毁灭之矛读层照旧"
     }
   },
   "cards": [
@@ -292,7 +293,7 @@
       "flagship": false,
       "lore": "序列8 挑衅者 —— \"『挑衅』（核心）：洞察目标敏感点，激怒对方失去理智 / 被动效果 + 主动激发（辱骂语言 + 羞辱行为）\"",
       "flavor": "你一句话精准戳在它最不敢被人提起的地方——它红了眼，脑子里只剩下\"弄死你\"，破绽和队形都忘了。",
-      "describe": "单体敌人：嘲讽 3 tick（强制攻击你）+ 易伤 3 tick + 攻击 -2、防御 -2（3 tick）。",
+      "describe": "单体敌人：嘲讽 3 tick（强制攻击你）+ 弱点 3 tick + 攻击 -2、防御 -2（3 tick）。",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -319,9 +320,10 @@
             },
             {
               "type": "mount_status",
-              "statusId": "vulnerable",
+              "statusId": "weak_point",
               "duration": 3,
-              "target": "target"
+              "target": "target",
+              "note": ""
             },
             {
               "type": "modify_stat",
@@ -368,14 +370,15 @@
       "flagship": false,
       "lore": "序列8 挑衅者 —— \"被动效果 + 主动激发（辱骂语言 + 羞辱行为）\"",
       "flavor": "它每打中你一次，你就笑着再补一句——它越怒，露出的破绽越大。",
-      "describe": "被动：每次你受到伤害时，对攻击者施加易伤 2 tick。",
+      "describe": "被动：每次你受到伤害时，对攻击者施加弱点 2 tick。",
       "hook": "on_take_damage",
       "effects": [
         {
           "type": "mount_status",
-          "statusId": "vulnerable",
+          "statusId": "weak_point",
           "duration": 2,
-          "target": "attacker"
+          "target": "attacker",
+          "note": ""
         }
       ],
       "sharedAcross": [
@@ -944,7 +947,7 @@
       "flagship": false,
       "lore": "序列5 收割者 —— \"『弱点侦察』：从神秘学角度发现目标弱点\"",
       "flavor": "你的目光从神秘学的角度扫过它——护甲的接缝、灵性的淤滞、那道还没长好的旧伤。你一清二楚。",
-      "describe": "单体敌人：易伤 4 tick（受伤 ×1.3）+ 剥除其 1 个增益状态（撕开神秘学防护）。",
+      "describe": "单体敌人：弱点 4 tick（受伤 ×1.3）+ 剥除其 1 个增益状态（撕开神秘学防护）。",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -965,9 +968,10 @@
           "steps": [
             {
               "type": "mount_status",
-              "statusId": "vulnerable",
+              "statusId": "weak_point",
               "duration": 4,
-              "target": "target"
+              "target": "target",
+              "note": ""
             },
             {
               "type": "dispel",
@@ -1009,7 +1013,7 @@
       "flagship": false,
       "lore": "序列5 收割者 —— \"『收割』：附加攻击收割生命，命中弱点一击致命\"",
       "flavor": "镰刃划过它的伤口，你把它正在流走的生命收进了自己体内；若这一刀正落在弱点上，那就不只是伤了。",
-      "describe": "单体敌人：吸取 4 点生命；若目标带有易伤，追加 3 点无元素伤害（命中弱点）。",
+      "describe": "单体敌人：吸取 4 点生命；若目标已标记弱点，追加 3 点无元素伤害（命中弱点）。",
       "cost": {
         "energy": 4,
         "cooldown": 4,
@@ -1039,7 +1043,7 @@
               "condition": {
                 "kind": "has_status",
                 "side": "target",
-                "id": "vulnerable"
+                "id": "weak_point"
               },
               "then": [
                 {
@@ -1790,7 +1794,7 @@
       "flagship": false,
       "lore": "序列3 战争主教 —— \"『心灵沟通』\"",
       "flavor": "你不需要开口——你看见的弱点，全队都看见了。",
-      "describe": "战斗开始时获得心灵链接（整场）：全体友军对被你施加易伤的目标造成的伤害 ×1.15（情报同步）。",
+      "describe": "战斗开始时获得心灵链接（整场）：全体友军对被你标记弱点的目标造成的伤害 ×1.15（情报同步）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -2262,7 +2266,7 @@
       "flagship": false,
       "lore": "序列1 征服者 —— \"『毁灭之矛』：『收割』质变版，命中弱点相当于必然死亡\"",
       "flavor": "你投出的不是矛，是一个已经写好的结局——如果它身上有你点明的那处弱点，那支矛落下的地方，就是终点。",
-      "describe": "单体敌人：5 点无元素伤害；若目标带有易伤（弱点已标记），直接致死——不管它还有多少血。",
+      "describe": "单体敌人：5 点无元素伤害；若目标已标记弱点，直接致死——不管它还有多少血。",
       "cost": {
         "energy": 6,
         "cooldown": 8,
@@ -2292,7 +2296,7 @@
               "condition": {
                 "kind": "has_status",
                 "side": "target",
-                "id": "vulnerable"
+                "id": "weak_point"
               },
               "then": [
                 {
@@ -2575,7 +2579,7 @@
       "flagship": false,
       "lore": "令其众叛亲离。",
       "flavor": "你的敌人，将自相残杀。",
-      "describe": "使目标陷入嘲讽（3 回合）与易伤（3 回合）。",
+      "describe": "使目标陷入嘲讽（3 回合）与弱点（3 回合）。",
       "effects": [
         {
           "type": "mount_status",
@@ -2585,9 +2589,10 @@
         },
         {
           "type": "mount_status",
-          "statusId": "vulnerable",
+          "statusId": "weak_point",
           "duration": 3,
-          "target": "target"
+          "target": "target",
+          "note": ""
         }
       ],
       "tentative": true,
@@ -2626,7 +2631,7 @@
       "flagship": false,
       "lore": "陷阱静候猎物。",
       "flavor": "踩上去吧，我知道你会来。",
-      "describe": "使目标陷入困惑（1 次）与易伤（3 回合）。",
+      "describe": "使目标陷入困惑（1 次）与弱点（3 回合）。",
       "effects": [
         {
           "type": "mount_status",
@@ -2637,9 +2642,10 @@
         },
         {
           "type": "mount_status",
-          "statusId": "vulnerable",
+          "statusId": "weak_point",
           "duration": 3,
-          "target": "target"
+          "target": "target",
+          "note": ""
         }
       ],
       "tentative": true,
@@ -2710,7 +2716,7 @@
       "flagship": false,
       "lore": "收网的时刻到了。",
       "flavor": "游戏结束。",
-      "describe": "造成 5 点物理伤害，并使目标陷入易伤（4 回合）。",
+      "describe": "造成 5 点物理伤害，并使目标陷入弱点（4 回合）。",
       "effects": [
         {
           "type": "damage",
@@ -2720,9 +2726,10 @@
         },
         {
           "type": "mount_status",
-          "statusId": "vulnerable",
+          "statusId": "weak_point",
           "duration": 4,
-          "target": "target"
+          "target": "target",
+          "note": ""
         }
       ],
       "tentative": true,
