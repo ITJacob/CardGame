@@ -3,233 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "sailor",
-   "name": "水手",
-   "total": 54.8,
-   "dims": {
-    "轴健康度": 12.3,
-    "跨轴耦合": 2.5,
-    "跨系联动": 0.0,
-    "结构健康": 15,
-    "机制落地": 15.0,
-    "文本完备": 10.0
-   },
-   "minAxis": 37.5,
-   "cards": 42,
-   "deductions": [
-    {
-     "dim": "轴健康度",
-     "why": "-5：最低轴 38 分（<40）",
-     "ref": "authority",
-     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
-    },
-    {
-     "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次",
-     "ref": "sailor",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-15.0：枢纽状态 0 个 + combo 读取 0 次",
-     "ref": "sailor",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    }
-   ],
-   "axes": [
-    {
-     "id": "authority",
-     "name": "权柄",
-     "symbol": "👑",
-     "total": 37.5,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 0,
-      "轴内多样性": 7.5,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 8,
-     "enablersVerified": [
-      "暴君权柄"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "tyrant_dread",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "暴君权柄",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "恐惧之音,幻鳞,光之化身",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "authority",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "storm",
-     "name": "风暴",
-     "symbol": "🌩️",
-     "total": 49.2,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 8,
-      "轴内多样性": 11.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 14,
-     "enablersVerified": [
-      "闪电风暴"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "风刃军团",
-      "风暴地狱"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "emc_disorder",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "闪电风暴",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "飓风盘绕,加速与滑翔,雷击",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-17：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "风刃军团,风暴地狱",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "风刃军团,风暴地狱",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "ocean",
-     "name": "海洋",
-     "symbol": "🌊",
-     "total": 50.2,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 9,
-      "轴内多样性": 11.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "深潜"
-     ],
-     "payoffsLanded": [
-      "深潜"
-     ],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "submerge",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "深潜",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "海洋眷顾,水幕",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "深潜",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "rage",
-     "name": "愤怒",
-     "symbol": "😡",
-     "total": 58.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 9,
-      "轴内多样性": 3.8,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "愤怒爆发"
-     ],
-     "payoffsLanded": [
-      "暴怒一击"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "愤怒爆发",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "supplicant",
    "name": "秘祈人",
    "total": 55.6,
@@ -3632,6 +3405,154 @@
        "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
        "ref": "猎人的感官,结构要点",
        "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sailor",
+   "name": "水手",
+   "total": 67.1,
+   "dims": {
+    "轴健康度": 19.6,
+    "跨轴耦合": 7.5,
+    "跨系联动": 0.0,
+    "结构健康": 15,
+    "机制落地": 15.0,
+    "文本完备": 10.0
+   },
+   "minAxis": 58.8,
+   "cards": 42,
+   "deductions": [
+    {
+     "dim": "跨系联动",
+     "why": "-15.0：枢纽状态 0 个 + combo 读取 0 次",
+     "ref": "sailor",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    }
+   ],
+   "axes": [
+    {
+     "id": "rage",
+     "name": "愤怒",
+     "symbol": "😡",
+     "total": 58.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 12,
+      "读层闭环": 9,
+      "轴内多样性": 3.8,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "愤怒爆发"
+     ],
+     "payoffsLanded": [
+      "暴怒一击"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "愤怒爆发",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      }
+     ]
+    },
+    {
+     "id": "authority",
+     "name": "权柄",
+     "symbol": "👑",
+     "total": 67.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 12,
+      "轴内多样性": 7.5,
+      "规模均衡": 10,
+      "承接连通": 3
+     },
+     "cards": 8,
+     "enablersVerified": [
+      "暴君权柄",
+      "光之化身"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "ocean",
+     "name": "海洋",
+     "symbol": "🌊",
+     "total": 68.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 11.2,
+      "规模均衡": 10,
+      "承接连通": 3
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "深潜",
+      "海洋眷顾"
+     ],
+     "payoffsLanded": [
+      "深潜"
+     ],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "storm",
+     "name": "风暴",
+     "symbol": "🌩️",
+     "total": 75.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 13,
+      "轴内多样性": 11.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 14,
+     "enablersVerified": [
+      "闪电风暴",
+      "雷击"
+     ],
+     "payoffsLanded": [
+      "风刃军团"
+     ],
+     "payoffsNotes": [
+      "风暴地狱"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 1 张（减半计）",
+       "ref": "风暴地狱",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     }
