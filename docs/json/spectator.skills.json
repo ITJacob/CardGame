@@ -12,14 +12,15 @@
       "name": "洞察",
       "statusId": "insight",
       "enablers": [
-        "观众·细微观察"
+        "观众·细微观察",
+        "引导"
       ],
       "payoffs": [
         "读心",
         "编织梦境",
         "洞察权柄"
       ],
-      "note": "2026-09-26 评审修正：读心（耗2层）/洞察权柄（perStack 读层）原误列 enablers，实为耗层 payoff 已迁移"
+      "note": "2026-09-26 评审修正：读心（耗2层）/洞察权柄（perStack 读层）原误列 enablers，实为耗层 payoff 已迁移 ｜ 2026-09-29 环节⑤：产层补实证（引导为 dream 轴卡但挂 insight 入列，产层 12→20；操纵/编织梦境挂 insight 自动成跨轴消费）"
     },
     "suggestion": {
       "symbol": "💭",
@@ -27,23 +28,23 @@
       "statusId": "subconscious_edit",
       "enablers": [
         "心理暗示·质变",
-        "操纵",
-        "心灵权柄"
+        "操纵"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：轴身份状态无消费者（纯产无收），待扩展期补读层卡"
+      "note": "payoffs 2026-09-26 评审：轴身份状态无消费者（纯产无收），待扩展期补读层卡 ｜ 2026-09-29 环节⑤：subconscious_edit 补层数引擎（身份 8→15）；enablers 核正（心灵权柄挂 lord_of_mind 移出）；纯产无收轴真空甄别拍板接受（payoffVacuumAccepted，待扩展读层卡）",
+      "payoffVacuumAccepted": true
     },
     "dream": {
       "symbol": "💤",
       "name": "梦境",
       "statusId": "dream_phase",
       "enablers": [
-        "引导",
-        "修改",
-        "梦境穿梭"
+        "梦境穿梭",
+        "修改"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 dream，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审：轴身份状态悬空（本 note 已自认），梦境修改有叠层但无卡读层，真无 payoff",
-      "payoffs": []
+      "note": "2026-09-20 清理悬空 statusId（原为 dream，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审：轴身份状态悬空（本 note 已自认），梦境修改有叠层但无卡读层，真无 payoff ｜ 2026-09-29 环节⑤：dream_phase 补层数引擎（身份 8→15）；修改补产层段（引导挂 insight 移出 enablers 但留 insight 轴产层位，产层 12→20）；纯产层轴真空甄别拍板接受（payoffVacuumAccepted）；巨龙（fantasy 轴）读 dream_phase 自动成跨轴消费",
+      "payoffs": [],
+      "payoffVacuumAccepted": true
     },
     "fantasy": {
       "symbol": "🌈",
@@ -51,11 +52,11 @@
       "statusId": "written_truth",
       "enablers": [
         "书写成真",
-        "龙化",
-        "巨龙"
+        "龙化"
       ],
-      "note": "2026-09-23 修正：原 enablers「操纵」实属 suggestion 轴，已改为本轴卡（书写成真/龙化/巨龙），与 statusId=written_truth 对齐 ｜ payoffs 2026-09-26 评审：轴身份状态无消费者（纯产无收），待扩展期补读层卡",
-      "payoffs": []
+      "note": "2026-09-23 修正：原 enablers「操纵」实属 suggestion 轴，已改为本轴卡（书写成真/龙化/巨龙），与 statusId=written_truth 对齐 ｜ payoffs 2026-09-26 评审：轴身份状态无消费者（纯产无收），待扩展期补读层卡 ｜ 2026-09-29 环节⑤：written_truth 补层数引擎（身份 8→15）；龙化补产层段（巨龙挂 dragon_true_form 移出，产层 12→20）；纯产无收轴真空甄别拍板接受（payoffVacuumAccepted，待扩展读层卡）；巨龙读 dream_phase 跨轴（fantasy→dream）",
+      "payoffs": [],
+      "payoffVacuumAccepted": true
     }
   },
   "cards": [
@@ -831,7 +832,7 @@
       "flagship": false,
       "lore": "序列5 梦境行者 —— \"『修改』：通过修改梦境日积月累影响目标\"",
       "flavor": "你每晚在它的梦里改掉一小块。改到第三夜，它已经不记得自己原本是什么样了。",
-      "describe": "使一名敌人进入「梦境修改」：最多叠 3 层、持续 4 tick，每层每 tick 受 1 点精神伤害；重复施放叠层并刷新持续。",
+      "describe": "使一名敌人进入「梦境修改」：最多叠 3 层、持续 4 tick，每层每 tick 受 1 点精神伤害；重复施放叠层并刷新持续。；修改即在梦中（自身梦境相位 2 tick）。",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -853,6 +854,13 @@
           "stacks": 1,
           "stackMode": "add",
           "duration": 4
+        },
+        {
+          "type": "mount_status",
+          "statusId": "dream_phase",
+          "duration": 2,
+          "target": "self",
+          "note": "修改即在梦中（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -1212,7 +1220,7 @@
       "flagship": false,
       "lore": "序列4 操纵师 —— \"『龙化』\"",
       "flavor": "你的脊背拱起，鳞片撑破衣服——你离那条龙，又近了一步。",
-      "describe": "化龙 4 tick：攻击 +3、护甲上限 +5、行动条速率 +8，可被驱散。",
+      "describe": "化龙 4 tick：攻击 +3、护甲上限 +5、行动条速率 +8，可被驱散。；书写龙化即成真（书写成真 2 tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 5,
@@ -1232,6 +1240,13 @@
           "statusId": "dragon_form",
           "duration": 4,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "written_truth",
+          "duration": 2,
+          "target": "self",
+          "note": "书写龙化即成真（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -1757,7 +1772,7 @@
       "flagship": false,
       "lore": "序列2 洞察者 —— \"『巨龙』（可化为真正巨龙）\"",
       "flavor": "这一次不是像了。这一次，你自己就是那条龙。",
-      "describe": "化为真正巨龙 5 tick：攻击 +6、护甲上限 +10、行动条速率 +8，攻击对相邻单位追加 50% 溅射伤害。",
+      "describe": "化为真正巨龙 5 tick：攻击 +6、护甲上限 +10、行动条速率 +8，攻击对相邻单位追加 50% 溅射伤害。（自身带梦境相位则延长至 6 tick，梦中巨龙）。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1773,10 +1788,31 @@
       },
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "dragon_true_form",
-          "duration": 5,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "dream_phase",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "dragon_true_form",
+              "duration": 6,
+              "target": "self",
+              "note": "梦中巨龙：自身梦境相位在场则巨龙真身延长至 6 tick（环节⑤ 2026-09-29 跨轴读层段：fantasy→dream）"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "dragon_true_form",
+              "duration": 5,
+              "target": "self"
+            }
+          ]
         }
       ],
       "tentative": true,
