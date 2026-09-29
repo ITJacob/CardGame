@@ -13,14 +13,14 @@
       "statusId": "analysis_authority",
       "enablers": [
         "解析权柄",
-        "鉴定",
-        "危险规避"
+        "鉴定"
       ],
       "payoffs": [
         "学习权柄",
-        "现实知识"
+        "现实知识",
+        "鉴定"
       ],
-      "note": "payoffs 2026-09-26 评审：学习权柄/现实知识 notes 级读层（卡面未实现 condition）⚠️ 证据级=notes；鉴定/危险规避已列 enabler 但 notes 自称 payoff，分类冲突待平衡期裁定"
+      "note": "payoffs 2026-09-26 评审：学习权柄/现实知识 notes 级读层（卡面未实现 condition）⚠️ 证据级=notes；鉴定/危险规避已列 enabler 但 notes 自称 payoff，分类冲突待平衡期裁定 ｜ 2026-09-29 环节⑤：enablers 核正（危险规避不挂 analysis_authority 移出）；鉴定补产层段+读层段（payoff 升 landed，产层 20）"
     },
     "craft": {
       "symbol": "⚙️",
@@ -40,7 +40,7 @@
         "灵魂熔炉",
         "解离"
       ],
-      "note": "payoffs 2026-09-26 评审：机械维修/注入灵魂卡面以造物身份定向（落地）；制造大师/灵魂熔炉/解离 notes 级读层；construct 自带 thresholdTrigger 达 2 层占位"
+      "note": "payoffs 2026-09-26 评审：机械维修/注入灵魂卡面以造物身份定向（落地）；制造大师/灵魂熔炉/解离 notes 级读层；construct 自带 thresholdTrigger 达 2 层占位 ｜ 2026-09-29 环节⑤：炼成/考古发掘补 construct 产层段（召唤者计数，产层 20）；机械维修补 construct 读层段（payoff 升 landed）"
     },
     "astral": {
       "symbol": "☄️",
@@ -48,15 +48,14 @@
       "statusId": "law_edit",
       "enablers": [
         "规律权柄",
-        "虚假星象",
-        "星之诅咒"
+        "虚假星象"
       ],
       "payoffs": [
         "星之祝福",
         "完美之境",
         "现实规律"
       ],
-      "note": "payoffs 2026-09-26 评审：三卡 notes 级读层（law_edit 标记放大）⚠️ 证据级=notes；规律权柄已列 enabler 但 notes 自称旗舰 payoff，分类冲突待裁定"
+      "note": "payoffs 2026-09-26 评审：三卡 notes 级读层（law_edit 标记放大）⚠️ 证据级=notes；规律权柄已列 enabler 但 notes 自称旗舰 payoff，分类冲突待裁定 ｜ 2026-09-29 环节⑤：enablers 核正（星之诅咒移出）；虚假星象补 law_edit 产层段（产层 20）；星之祝福补 law_edit 读层段（payoff 升 landed）+ enlightened 跨轴读段（astral→civilization）"
     },
     "civilization": {
       "symbol": "🏙️",
@@ -64,13 +63,12 @@
       "statusId": "enlightened",
       "enablers": [
         "教化权柄",
-        "导师",
-        "知识妖精"
+        "导师"
       ],
       "payoffs": [
         "毁灭新生"
       ],
-      "note": "payoffs 2026-09-26 评审：毁灭新生 notes 级（读 enlightened 未实现），该轴 payoff 最薄"
+      "note": "payoffs 2026-09-26 评审：毁灭新生 notes 级（读 enlightened 未实现），该轴 payoff 最薄 ｜ 2026-09-29 环节⑤：enablers 核正（知识妖精移出）；导师补 enlightened 产层段+construct 跨轴读段；毁灭新生补 enlightened 读层段（payoff 升 landed，产层 20）"
     }
   },
   "cards": [
@@ -417,7 +415,7 @@
       "flagship": false,
       "lore": "序列8 考古学家 —— \"拥有历史知识……\"（从遗迹中获取非凡物品）",
       "flavor": "你的铲子磕到了什么硬物——一具沉睡千年的古物傀儡，抖落尘土站了起来。",
-      "describe": "在己方队尾召唤一具古物傀儡（40% 生命）。",
+      "describe": "在己方队尾召唤一具古物傀儡（40% 生命）；自身造物计数 +1。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -440,6 +438,15 @@
           "position": "tail",
           "target": "self",
           "note": "F42 已登记，单位数据走 H1 基线模板"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "construct",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self",
+          "note": "ddd 源质维度 §1.4：造物为跨系枢纽状态，召唤者计数（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -512,7 +519,7 @@
       "flagship": false,
       "lore": "序列7 鉴定师 —— \"快速鉴定神奇物品，不用占卜推理\" / \"直觉把握超凡物品的能力和问题，规避危险使用\"",
       "flavor": "你扫了一眼就报出它的来路、能力与致命缺陷——那件被它当作依凭的东西，顿时失去了光泽。",
-      "describe": "驱散一名敌人 1 个增益状态，并使其易伤 4 tick。",
+      "describe": "驱散一名敌人 1 个增益状态，并使其易伤 4 tick；鉴定中解析权柄升华 +1 层；若解析权柄在场，解析透彻，额外再剥 1 个增益。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -545,6 +552,40 @@
               "type": "mount_status",
               "statusId": "vulnerable",
               "duration": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "analysis_authority",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self",
+              "note": "鉴定中解析权柄升华 +1 层（环节⑤ 2026-09-29 补产层段）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "analysis_authority",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "dispel",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "buff"
+                    ],
+                    "count": 1
+                  },
+                  "target": "target",
+                  "note": "解析透彻：多剥 1 个增益（环节⑤ 2026-09-29 补读层段：lore payoff 升 landed）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -720,7 +761,7 @@
       "flagship": false,
       "lore": "序列6 机械专家 —— \"能制造机械奇物\"（本稿明确引申：能造即能养）",
       "flavor": "你掀开它的外壳，用扳手和焊枪在火花里把它重新拼回能站的样子。",
-      "describe": "治疗一名造物单位 5 点生命。",
+      "describe": "治疗一名造物单位 5 点生命；若自身造物计数 ≥1，熟能生巧，额外治疗 2 点。",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -744,6 +785,24 @@
         {
           "type": "heal",
           "value": 5
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "construct",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "note": "熟能生巧：自身造物计数 ≥1 治疗 +2（环节⑤ 2026-09-29 补读层段：craft payoff 升 landed）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -917,7 +976,7 @@
       "flagship": false,
       "lore": "序列5 天文学家 —— \"'虚假星象'：伪造星空迷惑/干扰占星，百米内引起现象\"",
       "flavor": "你为它伪造了一整片星空——它抬头，看见的星座指向错误的方向，于是一拳砸向了空处。",
-      "describe": "对一名敌人造成 2 点精神伤害，并使其陷入「虚假星象」4 tick：接下来 2 次攻击打向空处。",
+      "describe": "对一名敌人造成 2 点精神伤害，并使其陷入「虚假星象」4 tick：接下来 2 次攻击打向空处；扰乱中改写局部规律，自身规律改写 +1 层（5 tick）。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -945,6 +1004,15 @@
               "type": "mount_status",
               "statusId": "false_astral",
               "duration": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "law_edit",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": 5,
+              "target": "self",
+              "note": "扰乱即改写局部规律：规律改写 +1 层（环节⑤ 2026-09-29 补产层段）"
             }
           ]
         }
@@ -985,7 +1053,7 @@
       "flagship": false,
       "lore": "序列5 天文学家 —— \"'星之祝福'：引来星光改变重力\"",
       "flavor": "星光落在同伴肩上，重力轻了几分——它抬起脚，比以往任何时候都更快。",
-      "describe": "使一名友军行动条速率 +8，持续 5 tick。",
+      "describe": "使一名友军行动条速率 +8，持续 5 tick；若自身规律改写在场，规律加持额外 +4；若自身持有启迪，额外再 +4。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -1007,6 +1075,50 @@
           "value": 8,
           "mode": "delta",
           "duration": 5
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "law_edit",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 4,
+              "mode": "delta",
+              "duration": 5,
+              "target": "target",
+              "note": "规律加持：自身规律改写在场，额外行动条速率 +4（环节⑤ 2026-09-29 补读层段：astral payoff 升 landed）"
+            }
+          ],
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "enlightened",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 4,
+              "mode": "delta",
+              "duration": 5,
+              "target": "target",
+              "note": "启迪下祝福更速：自身带 enlightened 额外行动条速率 +4（环节⑤ 2026-09-29 跨轴读层段：astral→civilization）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -1127,7 +1239,7 @@
       "flagship": true,
       "lore": "序列4 炼金术士 —— \"'炼成'（核心）：就地取材制造临时人偶和器物\"",
       "flavor": "你抓起脚下的碎石与铁屑，在掌心里捏成一具人形——它睁开眼，认你为主人，但它不会活太久。",
-      "describe": "在己方队尾炼成一具临时人偶（50% 生命），6 tick 后自行崩解。",
+      "describe": "在己方队尾炼成一具临时人偶（50% 生命），6 tick 后自行崩解；自身造物计数 +1。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1151,6 +1263,15 @@
           "lifetime": 6,
           "target": "self",
           "note": "临时造物：lifetime 到期自动消散（走 on_remove 消散路径）"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "construct",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self",
+          "note": "ddd 源质维度 §1.4：造物为跨系枢纽状态，召唤者计数（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "upgradeLadder": {
@@ -1825,7 +1946,7 @@
       "flagship": false,
       "lore": "序列2 知识导师 —— \"'导师'\"",
       "flavor": "你没有替它出手，你只是指了指——它便明白了一直没想通的那一招。",
-      "describe": "使一名友军伤害 ×1.2 并回复 3 点能量，持续 5 tick。",
+      "describe": "使一名友军伤害 ×1.2 并回复 3 点能量，持续 5 tick，同时启迪之（enlightened）；若目标带有造物计数，导师也懂造物学，额外回复 2 点能量。",
       "cost": {
         "energy": 3,
         "cooldown": 5,
@@ -1845,6 +1966,34 @@
           "type": "mount_status",
           "statusId": "tutored",
           "duration": 5
+        },
+        {
+          "type": "mount_status",
+          "statusId": "enlightened",
+          "duration": 5,
+          "target": "target",
+          "note": "导师即启迪： enlightened +（环节⑤ 2026-09-29 补产层段）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "construct",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "target",
+              "note": "导师也懂造物学：目标带造物计数额外能量 +2（环节⑤ 2026-09-29 跨轴读层段：civilization→craft）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -1996,7 +2145,7 @@
       "flagship": false,
       "lore": "序列1 启蒙者 —— \"'文明'权柄：让混沌沉淀秩序、毁灭焕发新生、黑暗迸发光芒\"",
       "flavor": "文明从不畏惧终结——废墟之上，你的同伴重新站了起来。",
-      "describe": "治疗全体友军 8 点生命；若存在已死亡的友军，复活最近死亡者（40% 生命，原坐标）。",
+      "describe": "治疗全体友军 8 点生命；若存在已死亡的友军，复活最近死亡者（40% 生命，原坐标）；若有友军持有启迪，治疗 +2。",
       "cost": {
         "energy": 6,
         "cooldown": 8,
@@ -2034,6 +2183,25 @@
                   "hpRatio": 0.4,
                   "position": "original",
                   "note": "G4 reviveOf：寻址死者用锚点 last_dead_ally（共享内核 §一）；复活不新增第 10 原语"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "ally",
+                "id": "enlightened",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "all_allies",
+                  "note": "启迪者获得更生：有友军持 enlightened 时治疗 +2（环节⑤ 2026-09-29 补读层段：civilization payoff 升 landed）"
                 }
               ],
               "else": []
