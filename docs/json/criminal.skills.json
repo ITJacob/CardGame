@@ -10,14 +10,15 @@
     "vice": {
       "symbol": "😈",
       "name": "恶欲",
-      "note": "轴身份为单位级恶欲值 Pool（resource: lust，0-10，阈值档见 designNote）：产能走 modify_resource(lust,+N)，不是 statusDef，故无 statusId",
+      "note": "轴身份为单位级恶欲值 Pool（resource: lust，0-10，阈值档见 designNote）：产能走 modify_resource(lust,+N)，不是 statusDef，故无 statusId ｜ 2026-09-29 环节⑤：恶欲共鸣具 lust 产能段入 enablers（产层 12→20）；欲望爆炸补 resource_compare(lust≥6) 读层段（payoff 升 landed）；Pool 轴阈值档 thresholdTrigger 框架件待内核落，留遗留",
       "enablers": [
         "掌控欲望",
-        "欲望爆炸"
+        "恶欲共鸣"
       ],
       "payoffs": [
         "深渊即我",
-        "恶欲共鸣"
+        "恶欲共鸣",
+        "欲望爆炸"
       ]
     },
     "filth": {
@@ -31,7 +32,7 @@
       "payoffs": [
         "荒芜侵蚀·改"
       ],
-      "note": "payoffs 2026-09-26 评审：filth 罪犯侧纯施加，消纳 payoff 在途径外（耕种者秽土净化等 crossPathway 读取方）"
+      "note": "payoffs 2026-09-26 评审：filth 罪犯侧纯施加，消纳 payoff 在途径外（耕种者秽土净化等 crossPathway 读取方） ｜ 2026-09-29 环节⑤：污秽之语补 filth 产层段（产层 12→20；其三选一 AST 缺死/堕落分支，缺口登记遗留）；荒芜侵蚀·改补 filth 读层段（payoff 升 landed）"
     },
     "elements": {
       "symbol": "🌋",
@@ -46,18 +47,20 @@
         "深渊之火",
         "双焰交汇"
       ],
-      "note": "2026-09-29 私有化：轴身份自 common poison 分叉为 sulfur_toxin（硫磺剧毒）；payoffs 2026-09-26 评审照旧（地狱之火/深渊之火/双焰交汇读火系载荷）"
+      "note": "2026-09-29 私有化：轴身份自 common poison 分叉为 sulfur_toxin（硫磺剧毒）；payoffs 2026-09-26 评审照旧（地狱之火/深渊之火/双焰交汇读火系载荷） ｜ 2026-09-29 环节⑤：强酸沼泽补 sulfur_toxin 产层段（产层 12→20）；地狱之火补 sulfur_toxin 读层段（payoff 升 landed）"
     },
     "demon": {
       "symbol": "👹",
       "name": "恶魔",
       "statusId": "rite_mark",
       "enablers": [
-        "恶魔仪式"
+        "恶魔仪式",
+        "恶魔化"
       ],
       "payoffs": [
         "深渊召唤"
-      ]
+      ],
+      "note": "2026-09-29 环节⑤：恶魔化补 rite_mark 产层段（产层 12→20）；深渊召唤读 sulfur_toxin 跨轴（demon→elements）"
     }
   },
   "cards": [
@@ -557,7 +560,7 @@
       "flagship": false,
       "lore": "序列7 连环杀手 —— \"能从深渊召唤恶魔投影获得帮助\"",
       "flavor": "裂隙在你脚边张开，硫磺味先涌了出来——一头恶魔的投影爬进战场，站到你队伍的末尾，身上还烧着你仪式留下的印记。",
-      "describe": "在己方队尾召唤一只恶魔投影（50% 生命/攻击），登场时对相邻敌人造成 2 点火焰伤害；消耗自身全部仪式刻印，每层使恶魔攻击 +2。",
+      "describe": "在己方队尾召唤一只恶魔投影（50% 生命/攻击），登场时对相邻敌人造成 2 点火焰伤害；消耗自身全部仪式刻印，每层使恶魔攻击 +2；若目标带硫磺剧毒，硫磺为祭，登场追加 2 点火焰伤害。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -590,6 +593,25 @@
               "stacks": "all",
               "stackMode": "consume",
               "note": "F48 消耗自身全部仪式刻印层数，每层使恶魔 attack +2（F54 companionBuff）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "sulfur_toxin",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "fire",
+                  "value": 2,
+                  "note": "硫磺为祭：目标带硫磺剧毒则恶魔投影登场追加 2 点火焰伤害（环节⑤ 2026-09-29 跨轴读层段：demon→elements）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -665,7 +687,7 @@
       "flagship": false,
       "lore": "序列6 恶魔 —— \"『恶魔化』：巨大化 3 米，山羊角 + 巨型翅膀 + 硫磺味\"",
       "flavor": "你的脊背裂开，一对巨翼撑破了衣服；你的颅骨上长出弯曲的羊角，身体一路撑到三米高——空气里全是硫磺的臭味。5 个 tick 内攻击力 +4、生命上限 +15、护甲 +2、行动条速率 +4；你的每一次攻击都带着那股恶臭，让对方中毒。代价是你的理智随身体一起膨胀——精神抗性 -15%。",
-      "describe": "变身恶魔 5 tick：攻击 +4、生命上限 +15、护甲 +2、行动条速率 +4、精神抗性 -15%；期间每次造成伤害使目标硫磺剧毒 1 tick。可被驱散。",
+      "describe": "恶魔化 5 tick：期间攻击 +4、护甲 +2、火焰抗性 +30%；化身即仪式，叠加 1 层仪式刻印（最多 3 层，整场）。",
       "cost": {
         "energy": 4,
         "cooldown": 7,
@@ -685,6 +707,15 @@
           "statusId": "demonize",
           "duration": 5,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "rite_mark",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self",
+          "note": "化身即仪式：恶魔化叠加仪式刻印（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -1021,7 +1052,7 @@
       "flagship": false,
       "lore": "序列6 恶魔 —— \"火焰 / 毒素 / 污秽三领域法术：『岩浆之剑』『硫磺火球』『污秽之语』（缓慢 / 死 / 堕落）\"",
       "flavor": "你说的不是人能发出的音节。你念出那个词——是让它慢下来，是判它死，还是让它堕落，全看你想说什么。",
-      "describe": "三选一：缓慢使目标行动条速率 ×0.6（3 tick）并造成 1 点毒素伤害；死使目标硫磺剧毒 4 tick，若其生命 ≤25% 再造成 6 点毒素伤害；堕落造成 2 点精神伤害并使其陷入欲望 3 tick。",
+      "describe": "三选一：缓慢使目标行动条速率 ×0.6（3 tick）并造成 1 点毒素伤害；死使目标硫磺剧毒 4 tick，若其生命 ≤25% 再造成 6 点毒素伤害；堕落造成 2 点精神伤害并使其陷入欲望 3 tick；恶语出口即成污秽：目标污秽 +1（4 tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -1050,6 +1081,12 @@
           "element": "poison",
           "value": 1,
           "note": "缓慢分支"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "filth",
+          "duration": 4,
+          "note": "恶语成秽：目标污秽 +1（环节⑤ 2026-09-29 补产层段）⚠️D 本卡 describe 三选一但 AST 仅缓慢分支，死/堕落分支缺失，缺口登记遗留"
         }
       ],
       "variants": [
@@ -1231,7 +1268,7 @@
       "flagship": false,
       "lore": "序列5 欲望使徒 —— \"掌控欲望：操纵情绪欲望，诱使堕落 / 情绪失控 / 欲望爆炸\"",
       "flavor": "你没去压它心里的欲望，你给它添了一把柴。三个 tick 后，它会从里到外炸开——8 点精神伤害，连旁边的人也要溅上 4 点。",
-      "describe": "使一名敌人成为「欲望炸弹」3 tick：到期时其受到 8 点精神伤害，相邻敌人受到 4 点精神伤害；被驱散则不爆炸。",
+      "describe": "使一名敌人成为「欲望炸弹」3 tick：到期时其受到 8 点精神伤害，相邻敌人受到 4 点精神伤害；被驱散则不爆炸；若其恶欲值 ≥6（失控档），失控即爆，追加 3 点精神伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1251,6 +1288,25 @@
           "type": "mount_status",
           "statusId": "desire_bomb",
           "duration": 3
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "resource_compare",
+            "side": "target",
+            "key": "lust",
+            "cmp": ">=",
+            "n": 6
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "note": "失控即爆：目标恶欲值 ≥6（失控档）则炸弹提前引爆追加 3 点精神伤害（环节⑤ 2026-09-29 补读层段：lust 池 payoff 升 landed）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -1489,7 +1545,7 @@
       "flagship": false,
       "lore": "序列4 魔鬼 —— \"新增：『强酸沼泽』、『地狱之火』、『腐蚀毒雾』等\"",
       "flavor": "它脚下的地面变成了冒泡的酸沼。目标及其左右相邻的单位护甲被蚀掉 3 点（持续 4 个 tick），并各自受到 2 点毒素伤害。",
-      "describe": "使目标及其相邻敌人的护甲 -3（4 tick），并各受到 2 点毒素伤害。",
+      "describe": "使目标及其相邻敌人的护甲 -3（4 tick），并各受到 2 点毒素伤害；酸凝为毒：主目标硫磺剧毒 3 tick。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1518,6 +1574,12 @@
           "element": "poison",
           "value": 2,
           "spread": "splash_adjacent"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "sulfur_toxin",
+          "duration": 3,
+          "note": "酸凝为毒：主目标硫磺剧毒 3 tick（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -1545,7 +1607,7 @@
       "flagship": false,
       "lore": "序列4 魔鬼 —— \"新增：『强酸沼泽』、『地狱之火』、『腐蚀毒雾』等\"",
       "flavor": "你把手按在地上，黑红色的火从它脚下窜起来。造成 6 点火焰伤害，并让它烧起来，持续 3 个 tick。",
-      "describe": "对一名远程敌人造成 6 点火焰伤害，并使其灼烧 3 tick（每 tick 2 点伤害）。",
+      "describe": "对一名远程敌人造成 6 点暗焰伤害，并使其灼烧 3 tick（每 tick 2 点伤害）；若目标带硫磺剧毒，硫磺助燃，伤害 +2。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1570,6 +1632,25 @@
           "type": "mount_status",
           "statusId": "burn",
           "duration": 3
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "sulfur_toxin",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 2,
+              "note": "硫磺助燃：目标带硫磺剧毒则伤害 +2（环节⑤ 2026-09-29 补读层段：sulfur_toxin payoff 升 landed）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -2548,7 +2629,7 @@
       "flagship": false,
       "lore": "序列1 污秽君王 —— \"《暗影世界系》§6.7 污秽被荒芜净化（反向）\"",
       "flavor": "若友方耕种者已挂上「丰饶」，你便让污秽地块持续啃噬它的丰饶区域——每回合剥落一层，直到那片沃土重新龟裂。",
-      "describe": "使全体敌人被侵蚀 5 tick；若友方耕种者的丰饶在场，升级为荒芜侵蚀：每 tick 剥丰饶持有者 1 层丰饶。",
+      "describe": "使全体敌人被侵蚀 5 tick；若友方耕种者的丰饶在场，升级为荒芜侵蚀：每 tick 剥丰饶持有者 1 层丰饶；对已被污秽的目标秽土深耕，追加 2 点毒素伤害。",
       "cost": {
         "energy": 6,
         "cooldown": 8,
@@ -2588,6 +2669,25 @@
                   "duration": 5,
                   "target": "all_enemies",
                   "note": "升级：荒芜侵蚀场——每 tick 剥丰饶 1 层 ⚠️D"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "filth",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "poison",
+                  "value": 2,
+                  "note": "秽土深耕：目标已污秽则追加 2 点毒素伤害（环节⑤ 2026-09-29 补读层段：filth payoff 升 landed）"
                 }
               ],
               "else": []
