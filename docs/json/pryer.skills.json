@@ -28,8 +28,10 @@
         "灌输知识",
         "知识攻击"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：knowledge_strain 全库无卡面读取（2026-09-29 自 common energy_strain 分叉为格斗轴私有身份）；格斗分支条件读 shield/bulwark/gauge_rank 非轴身份"
+      "payoffs": [
+        "朗基努斯之枪"
+      ],
+      "note": "payoffs 2026-09-26 评审：knowledge_strain 全库无卡面读取（2026-09-29 自 common energy_strain 分叉为格斗轴私有身份）；格斗分支条件读 shield/bulwark/gauge_rank 非轴身份 ｜ 2026-09-29 环节⑤：朗基努斯之枪补耗层读层段（knowledge_strain 耗 1 层+3 伤害），combat 从补卡候选清单落地"
     },
     "scroll": {
       "symbol": "📃",
@@ -179,7 +181,7 @@
       "flagship": false,
       "lore": "序列9 窥秘人 —— \"魔法、巫术、占星术等神秘知识全面掌握\"",
       "flavor": "你从星象里读出下一步。被你点到的同伴，脚步会比对手先落下。",
-      "describe": "使一名友军行动条 +20。",
+      "describe": "使一名友军行动条 +20；若其带有知识淤积，星象疏导其混乱思维：耗 1 层并额外行动条 +10。",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -201,6 +203,34 @@
           "value": 20,
           "mode": "delta",
           "target": "target"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "knowledge_strain",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_status",
+              "statusId": "knowledge_strain",
+              "stacksDelta": -1,
+              "target": "target",
+              "note": "星象疏导混乱思维：耗 1 层知识淤积"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 10,
+              "mode": "delta",
+              "target": "target",
+              "note": "环节⑤ 2026-09-29 跨轴读层段：astral 卡读 combat 身份"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
@@ -830,7 +860,7 @@
       "flagship": false,
       "lore": "序列6 卷轴教授 —— \"卷轴制作：念咒后卷轴燃烧释放能力\" / \"冰冻、麻痹等卷轴极大节约施法时间\"",
       "flavor": "你抽出一张卷轴，咒文在上头燃成灰烬。下一记打向你的拳头，会先撞上一堵看不见的冰墙。",
-      "describe": "自身获得冰冻卷轴 4 tick（1 次）：下次受击时对攻击者施加枷锁 2 tick 并造成 2 点冰霜伤害；卷轴不受沉默影响。",
+      "describe": "自身获得冰冻卷轴 4 tick（1 次）：下次受击时对攻击者施加枷锁 2 tick 并造成 2 点冰霜伤害；卷轴不受沉默影响；法术学识 +1 层。",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -851,6 +881,15 @@
           "charges": 1,
           "duration": 4,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "spell_lore",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self",
+          "note": "施用卷轴积累法术学识 +1 层（scroll 产层实证补齐）"
         }
       ],
       "tentative": true,
@@ -877,7 +916,7 @@
       "flagship": false,
       "lore": "序列6 卷轴教授 —— \"冰冻、麻痹等卷轴极大节约施法时间\"",
       "flavor": "你预先在卷轴上写下一道麻痹咒。等你出手时，它替你把那一击钉死。",
-      "describe": "自身获得麻痹卷轴 4 tick（1 次）：下次造成伤害时对目标施加眩晕 1 tick 并附加 2 点雷电伤害；卷轴不受沉默影响。",
+      "describe": "自身获得麻痹卷轴 4 tick（1 次）：下次造成伤害时对目标施加眩晕 1 tick 并附加 2 点雷电伤害；卷轴不受沉默影响；法术学识 +1 层。",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -898,6 +937,15 @@
           "charges": 1,
           "duration": 4,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "spell_lore",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self",
+          "note": "施用卷轴积累法术学识 +1 层（scroll 产层实证补齐）"
         }
       ],
       "tentative": true,
@@ -924,7 +972,7 @@
       "flagship": false,
       "lore": "序列5 星象师 —— \"星之巨柱、星海穿梭、星桥、本我星象、星光囚笼 / 初步掌握星象、星座、星辰、星光概念\"",
       "flavor": "你指向它脚下的阴影。星光自虚空垂落，凝成一柱，把它连同步伐一起砸进地里。",
-      "describe": "对一名敌人造成 7 点无元素伤害，并使其行动条 -20。",
+      "describe": "对一名敌人造成 7 点无元素伤害，并使其行动条 -20；若目标带有命运诅咒，星象共鸣追加 2 点无元素伤害；自身本我星象 +1 层。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -952,6 +1000,34 @@
           "value": -20,
           "mode": "delta",
           "note": "压制"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "note": "星象与命运共鸣：目标带命运诅咒（assassin 枢纽，pryer 在 participants）时追加（环节⑤ 2026-09-29 补跨系读层段）"
+            }
+          ],
+          "else": []
+        },
+        {
+          "type": "mount_status",
+          "statusId": "ego_constellation",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self",
+          "note": "施放星象法术观测本我星象 +1 层（astral 产层闭环第二实证）"
         }
       ],
       "sharedAcross": [
@@ -1047,7 +1123,7 @@
       "flagship": false,
       "lore": "序列5 星象师 —— \"星之巨柱、星海穿梭、星桥、本我星象、星光囚笼\"",
       "flavor": "一道星光在两条战线之间架起桥来，被你点到的同伴踏桥而过，赶在需要他的地方落位。",
-      "describe": "使一名友军跨路换线落另一路队尾，并使其行动条 +15。",
+      "describe": "使一名友军跨路换线落另一路队尾，并使其行动条 +15；自身本我星象 +1 层。",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -1078,6 +1154,15 @@
               "value": 15,
               "mode": "delta",
               "target": "target"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "ego_constellation",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self",
+              "note": "架设星桥观测本我星象 +1 层（astral 产层闭环实证）"
             }
           ]
         }
@@ -1110,7 +1195,7 @@
       "flagship": false,
       "lore": "序列5 星象师 —— \"星之巨柱、星海穿梭、星桥、本我星象、星光囚笼\"",
       "flavor": "星光在它四周织成笼子。它挪不动，也叫不出来。",
-      "describe": "对一名敌人造成 2 点无元素伤害，施加枷锁 3 tick（禁位移、行动条速率 ×0.7）并沉默 1 tick。",
+      "describe": "对一名敌人造成 2 点无元素伤害，施加枷锁 3 tick（禁位移、行动条速率 ×0.7）并沉默 1 tick；若目标带有星界锚（学徒枢纽），星光顺着锚链加固囚笼：枷锁延长 2 tick。",
       "cost": {
         "energy": 3,
         "cooldown": 5,
@@ -1142,6 +1227,26 @@
           "statusId": "silence",
           "duration": 1,
           "note": "原著本途径唯一封技点（单体 1t）；若验证判超模首选砍沉默保留 shackle"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "astral_anchor",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "shackle",
+              "duration": 2,
+              "target": "target",
+              "note": "星界锚定者无处可逃：枷锁延长 2 tick（环节⑤ 2026-09-29 落稿面既定意图——读学徒枢纽星界锚，PENDING 窥秘人 #3 闭环）"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
@@ -1516,7 +1621,7 @@
       "flagship": true,
       "lore": "序列4 神秘学家 —— \"童话魔法：卖火柴的小女孩（幻觉）、灰姑娘（变形）、朗基努斯之枪（强攻）等\"",
       "flavor": "那柄刺穿神子肋旁的枪出现在你手中。它不认得什么护甲、什么庇佑——它只认得要刺穿的东西。",
-      "describe": "对一名近战敌人造成 8 点物理伤害，驱散其 1 个增益状态，并使其护甲上限 -5（3 tick）。",
+      "describe": "对一名近战敌人造成 8 点物理伤害，驱散其 1 个增益状态，并使其护甲上限 -5（3 tick）；若目标带有知识淤积，耗 1 层并额外造成 3 点物理伤害。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1559,6 +1664,32 @@
               "mode": "delta",
               "duration": 3,
               "note": "破甲"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "knowledge_strain",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_status",
+                  "statusId": "knowledge_strain",
+                  "stacksDelta": -1,
+                  "target": "target",
+                  "note": "刺穿混乱的头脑：耗 1 层知识淤积"
+                },
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 3,
+                  "note": "耗层换效（环节⑤ 2026-09-29 补读层段：combat payoff 落地）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -1942,7 +2073,7 @@
       "flagship": false,
       "lore": "序列3 预言大师 —— \"『窥秘』权柄：窥探隐藏的秘密、知识、存在、命运秘密\"",
       "flavor": "世界上没有对你隐藏的东西。藏起来的存在，你照得见；被护住的知识，你也照样能撕开。",
-      "describe": "战斗开始时获得「窥秘权柄」：敌方隐匿 / 不可选中类状态对你无效；你的驱散无视不可驱散标志，持续整场。",
+      "describe": "战斗开始时获得「窥秘权柄」：敌方隐匿 / 不可选中类状态对你无效；你的驱散无视不可驱散标志；开场窥秘之眼 +1 层，持续整场。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1950,6 +2081,15 @@
           "statusId": "scrying_authority",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "scrying_eye",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self",
+          "note": "权柄开场即窥视：窥秘之眼 +1 层（环节⑤ 2026-09-29 补产层段，scrying 产层闭环第二实证）"
         }
       ],
       "tentative": true,
@@ -2081,7 +2221,7 @@
       "flagship": false,
       "lore": "序列2 贤者 —— \"灌输知识、知识攻击、同化、虚假信息\"",
       "flavor": "你把一整段悖论直接砸进它的意识。它的脑子先是疼，然后开始怀疑自己知道的一切。",
-      "describe": "对一名敌人造成 5 点精神伤害并施加「知识淤积」3 tick；若自身隐秘知识 ≥2 层，额外造成 3 点精神伤害。",
+      "describe": "对一名敌人造成 5 点精神伤害并施加「知识淤积」3 tick；若自身隐秘知识 ≥2 层，额外造成 3 点精神伤害；若自身窥秘之眼 ≥2 层，再额外造成 3 点精神伤害（窥见弱点）。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -2126,6 +2266,25 @@
                   "element": "mental",
                   "value": 3,
                   "note": "知识越隐秘攻击越致命"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "scrying_eye",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 3,
+                  "note": "窥见结构弱点（环节⑤ 2026-09-29 补读层段：scrying payoff 升 landed）"
                 }
               ],
               "else": []
