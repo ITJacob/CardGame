@@ -3,236 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "warrior",
-   "name": "战士",
-   "total": 51.7,
-   "dims": {
-    "轴健康度": 11.7,
-    "跨轴耦合": 2.5,
-    "跨系联动": 0.0,
-    "结构健康": 15,
-    "机制落地": 12.5,
-    "文本完备": 10.0
-   },
-   "minAxis": 35.0,
-   "cards": 33,
-   "deductions": [
-    {
-     "dim": "轴健康度",
-     "why": "-5：最低轴 35 分（<40）",
-     "ref": "martial",
-     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
-    },
-    {
-     "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次",
-     "ref": "warrior",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-15.0：枢纽状态 0 个 + combo 读取 0 次",
-     "ref": "warrior",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 ANY_OF_PREDICATE",
-     "ref": "共享内核 §三谓词族无 any_of 组合子，且「armor 增益」无谓词，待内核裁定",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    }
-   ],
-   "axes": [
-    {
-     "id": "martial",
-     "name": "武艺",
-     "symbol": "🗡️",
-     "total": 35.0,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 4,
-      "轴内多样性": 5.0,
-      "规模均衡": 6,
-      "承接连通": 0
-     },
-     "cards": 15,
-     "enablersVerified": [
-      "武器大师"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "神罚"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "weapon_grandmaster",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "武器大师",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "兵械通晓",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "神罚",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-4：轴卡数 15 vs 理想 8（比值 1.82）",
-       "ref": "martial",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "巨力挥击,神罚",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "hunt",
-     "name": "猎魔",
-     "symbol": "🎯",
-     "total": 42.8,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 4,
-      "轴内多样性": 8.8,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 5,
-     "enablersVerified": [
-      "隐蔽"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "晨曦领域"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "ambush_shroud",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "隐蔽",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "猎魔之眼,晨曦领域",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "晨曦领域",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "晨曦领域",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "guard",
-     "name": "守护",
-     "symbol": "🛡️",
-     "total": 55.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 12,
-      "轴内多样性": 6.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "守护状态"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "守护状态",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "守护姿态",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "twilight",
-     "name": "黄昏",
-     "symbol": "🌇",
-     "total": 55.5,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 5,
-      "读层闭环": 9,
-      "轴内多样性": 7.5,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 6,
-     "enablersVerified": [],
-     "payoffsLanded": [
-      "神罚"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-15：enablers 1 张均未实证挂载身份",
-       "ref": "暮色侵蚀",
-       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "reader",
    "name": "阅读者",
    "total": 52.7,
@@ -4143,6 +3913,169 @@
        "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
+    }
+   ]
+  },
+  {
+   "id": "warrior",
+   "name": "战士",
+   "total": 66.4,
+   "dims": {
+    "轴健康度": 20.1,
+    "跨轴耦合": 5.0,
+    "跨系联动": 3.8,
+    "结构健康": 15,
+    "机制落地": 12.5,
+    "文本完备": 10.0
+   },
+   "minAxis": 63.2,
+   "cards": 33,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-10.0：本途径他轴身份读取 2 次",
+     "ref": "warrior",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "跨系联动",
+     "why": "-11.2：枢纽状态 0 个 + combo 读取 2 次",
+     "ref": "warrior",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 ANY_OF_PREDICATE",
+     "ref": "共享内核 §三谓词族无 any_of 组合子，且「armor 增益」无谓词，待内核裁定",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    }
+   ],
+   "axes": [
+    {
+     "id": "guard",
+     "name": "守护",
+     "symbol": "🛡️",
+     "total": 63.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 12,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "守护状态",
+      "黎明铠甲"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "martial",
+     "name": "武艺",
+     "symbol": "🗡️",
+     "total": 69.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 13,
+      "轴内多样性": 6.2,
+      "规模均衡": 6,
+      "承接连通": 9
+     },
+     "cards": 15,
+     "enablersVerified": [
+      "兵械通晓",
+      "武器大师"
+     ],
+     "payoffsLanded": [
+      "无坚不摧"
+     ],
+     "payoffsNotes": [
+      "神罚"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 1 张（减半计）",
+       "ref": "神罚",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      },
+      {
+       "dim": "规模均衡",
+       "why": "-4：轴卡数 15 vs 理想 8（比值 1.82）",
+       "ref": "martial",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    },
+    {
+     "id": "hunt",
+     "name": "猎魔",
+     "symbol": "🎯",
+     "total": 70.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 10.0,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 5,
+     "enablersVerified": [
+      "隐蔽",
+      "猎魔之眼"
+     ],
+     "payoffsLanded": [
+      "晨曦领域"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "twilight",
+     "name": "黄昏",
+     "symbol": "🌇",
+     "total": 70.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 7.5,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 6,
+     "enablersVerified": [
+      "迟暮",
+      "黄昏重生"
+     ],
+     "payoffsLanded": [
+      "神罚"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
     }
    ]
   },
