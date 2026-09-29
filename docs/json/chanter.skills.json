@@ -27,8 +27,7 @@
       "statusId": "daylight",
       "enablers": [
         "白昼",
-        "太阳光环",
-        "光之权柄"
+        "召唤圣光"
       ],
       "payoffs": [
         "日照",
@@ -45,7 +44,7 @@
         "纯白之光",
         "终焉颂歌"
       ],
-      "note": "payoffs 2026-09-26 评审：光轴 payoff 实际读 luminance 白昼档 dimHook（≥8 ×1.2），非 daylight 状态本身；含跨轴卡（无暗之枪/纯白射线/纯白之光/神圣之光/终焉颂歌）"
+      "note": "payoffs 2026-09-26 评审：光轴 payoff 实际读 luminance 白昼档 dimHook（≥8 ×1.2），非 daylight 状态本身；含跨轴卡（无暗之枪/纯白射线/纯白之光/神圣之光/终焉颂歌） ｜ 2026-09-29 环节⑤：enablers 核正（太阳光环/光之权柄不挂 daylight 移出，召唤圣光补 daylight 产层段）；日照补 daylight 读层段（payoff 升 landed）"
     },
     "notary": {
       "symbol": "🖋️",
@@ -56,8 +55,10 @@
         "神圣誓约",
         "太阳誓约"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：notarize/oath/sun_oath/justice_code 纯挂载无读取，payoff 真空"
+      "payoffs": [
+        "太阳誓约"
+      ],
+      "note": "payoffs 2026-09-26 评审：notarize/oath/sun_oath/justice_code 纯挂载无读取，payoff 真空 ｜ 2026-09-29 环节⑤：神圣誓约/太阳誓约补 notarize 产层段（立约经公证），太阳誓约补 notarize 读层段（违约惩罚），payoff 从真空落地"
     },
     "judgment": {
       "symbol": "⚖️",
@@ -70,7 +71,7 @@
       "payoffs": [
         "正义审判"
       ],
-      "note": "payoffs 2026-09-26 评审：obedience 无卡读；正义审判读 guilty（notary 轴正义准则挂载）——跨轴 payoff 已计入"
+      "note": "payoffs 2026-09-26 评审：obedience 无卡读；正义审判读 guilty（notary 轴正义准则挂载）——跨轴 payoff 已计入 ｜ 2026-09-29 环节⑤：正义审判补 obedience 耗层读段（payoff 升 landed）+ notarize 跨轴读段；太阳使者补 obedience 产层段"
     }
   },
   "cards": [
@@ -308,7 +309,7 @@
       "flagship": false,
       "lore": "序列8 祈光人 —— \"『日照』：创造烈阳光芒伤害不死生物\"",
       "flavor": "你召来一道烈阳的光芒——凡是不洁的东西，在它下面都会燃烧起来。",
-      "describe": "对一名敌人造成 3 点圣光伤害；若其带不死 / 污秽 / 黑暗标签，伤害 ×1.5。",
+      "describe": "对一名敌人造成 3 点圣光伤害；若其带不死 / 污秽 / 黑暗标签，伤害 ×1.5；若自身处于白昼（层数 ≥1），光明天时追加 2 点圣光伤害。",
       "cost": {
         "energy": 2,
         "cooldown": 2,
@@ -349,6 +350,25 @@
               "value": 3
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "daylight",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "note": "光明天时：白昼在场伤害 +2（环节⑤ 2026-09-29 补读层段）"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
@@ -504,7 +524,7 @@
       "flagship": false,
       "lore": "序列7 太阳神官 —— \"『召唤圣光』\"",
       "flavor": "你举起手掌，一束圣光自虚空中降临，笔直地落在敌人的身上。",
-      "describe": "对一名敌人造成 5 点圣光伤害。",
+      "describe": "对一名敌人造成 5 点圣光伤害；圣光普照，自身白昼 +1 层（4 tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 3,
@@ -524,6 +544,15 @@
           "type": "damage",
           "element": "holy",
           "value": 5
+        },
+        {
+          "type": "mount_status",
+          "statusId": "daylight",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": 4,
+          "target": "self",
+          "note": "圣光普照：白昼 +1 层（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "upgradeLadder": {
@@ -927,7 +956,7 @@
       "flagship": false,
       "lore": "序列7 太阳神官 —— \"『神圣誓约』\"；序列6 公证人 —— \"擅制契约，序列5也无法违背，序列4违约付出代价\"",
       "flavor": "你与它立下誓约——它仍可以出手，但每挥一次刀，都要付一次血的代价。",
-      "describe": "使一名敌人立约 5 tick：它每次造成伤害时，自身受到 2 点圣光伤害。",
+      "describe": "使一名敌人立约 5 tick：它每次造成伤害时，自身受到 2 点圣光伤害；立约经公证，其下一次造成伤害 ×0.5。",
       "cost": {
         "energy": 2,
         "cooldown": 4,
@@ -948,6 +977,17 @@
           "statusId": "oath",
           "duration": 5,
           "target": "target"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "notarize",
+          "duration": 5,
+          "charges": 1,
+          "params": {
+            "mul": 0.5
+          },
+          "target": "target",
+          "note": "立约经公证：其下一次造成伤害 ×0.5（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -972,7 +1012,7 @@
       "flagship": false,
       "lore": "序列5 光之祭司 —— \"『神圣之光』：炽烈光柱从天而降，令敌人蒸发\"",
       "flavor": "一道炽烈的光柱自天而降——光柱散去的时候，那里什么都不剩了。",
-      "describe": "对一名敌人造成 8 点圣光伤害；若其带不死 / 污秽 / 黑暗标签，伤害 ×1.5。",
+      "describe": "对一名敌人造成 8 点圣光伤害；若其带不死 / 污秽 / 黑暗标签，伤害 ×1.5；若自身处于祝福（层数 ≥1），伤害 +2。",
       "cost": {
         "energy": 5,
         "cooldown": 5,
@@ -1013,6 +1053,25 @@
               "value": 8
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "blessing",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "note": "圣光在祝福声中增强：自身带祝福伤害 +2（环节⑤ 2026-09-29 跨轴读层段：judgment→hymn）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -1428,7 +1487,7 @@
       "flagship": false,
       "lore": "序列6 公证人 —— \"擅制契约……序列4 违约付出代价\"；序列4 无暗者 —— \"『太阳誓约』\"",
       "flavor": "你以太阳之名与它们全体立约——谁敢挥刀，谁就先被烧一次。",
-      "describe": "使敌方全体立约 5 tick：每次造成伤害时，自身受到 3 点圣光伤害。",
+      "describe": "使敌方全体立约 5 tick：每次造成伤害时，自身受到 3 点圣光伤害；立约经公证，其下一次造成伤害 ×0.5；已被公证者攻击 -1（2 tick，违约惩罚加重）。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1448,6 +1507,39 @@
           "statusId": "sun_oath",
           "duration": 5,
           "target": "all_enemies"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "notarize",
+          "duration": 5,
+          "charges": 1,
+          "params": {
+            "mul": 0.5
+          },
+          "target": "all_enemies",
+          "note": "立约经公证（全体）：其下一次造成伤害 ×0.5"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "notarize",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -1,
+              "mode": "delta",
+              "duration": 2,
+              "target": "target",
+              "note": "公证加重违约惩罚：已公证者攻击 -1（2 tick）（环节⑤ 2026-09-29 补读层段：notary payoff 落地）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -1543,7 +1635,7 @@
       "flagship": false,
       "lore": "序列3 正义导师 —— \"『正义审判』：指定目标不符合准则的力量被极大削弱，连天使都受影响\"",
       "flavor": "你宣判它有罪——于是它引以为傲的那份力量，在判决落下的瞬间就被削去了大半。",
-      "describe": "审判一名敌人：若其带「罪责」，造成 8 点圣光伤害、驱散其全部增益并使其攻击 -5（5 tick）；否则只造成 3 点圣光伤害。",
+      "describe": "审判一名敌人：若其带「罪责」，造成 8 点圣光伤害、驱散其全部增益并使其攻击 -5（5 tick），且若其带有服从，耗 1 层并追加 3 点圣光伤害；被公证者罪责难逃，再追加 2 点；否则只造成 3 点圣光伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1595,6 +1687,51 @@
                   "mode": "delta",
                   "duration": 5,
                   "target": "target"
+                },
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "has_status",
+                    "side": "target",
+                    "id": "obedience",
+                    "cmp": ">=",
+                    "n": 1
+                  },
+                  "then": [
+                    {
+                      "type": "modify_status",
+                      "statusId": "obedience",
+                      "stacksDelta": -1,
+                      "target": "target",
+                      "note": "服从罪状坐实：耗 1 层服从"
+                    },
+                    {
+                      "type": "damage",
+                      "element": "holy",
+                      "value": 3,
+                      "note": "耗层换效（环节⑤ 2026-09-29 补读层段：judgment payoff 升 landed）"
+                    }
+                  ],
+                  "else": []
+                },
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "has_status",
+                    "side": "target",
+                    "id": "notarize",
+                    "cmp": ">=",
+                    "n": 1
+                  },
+                  "then": [
+                    {
+                      "type": "damage",
+                      "element": "holy",
+                      "value": 2,
+                      "note": "公证铁证：被公证者罪责难逃，伤害 +2（环节⑤ 2026-09-29 跨轴读层段：judgment→notary）"
+                    }
+                  ],
+                  "else": []
                 }
               ]
             }
@@ -1723,7 +1860,7 @@
       "flagship": false,
       "lore": "序列2 逐光者 —— \"『太阳使者』：化身微缩太阳洒下光热净化\"",
       "flavor": "你化身为一轮微缩的太阳，悬在战场上方——光与热洒下来，一切不洁都在蒸发。",
-      "describe": "化身微缩太阳 4 tick：每 tick 对全体敌方造成 2 点圣光伤害；自身受伤 ×0.8、攻击 +3。",
+      "describe": "化身微缩太阳 4 tick：每 tick 对全体敌方造成 2 点圣光伤害；自身受伤 ×0.8、攻击 +3；出场威压使敌方全体服从 +1 层（3 tick）。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -1743,6 +1880,15 @@
           "statusId": "sun_herald",
           "duration": 4,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "obedience",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": 3,
+          "target": "all_enemies",
+          "note": "太阳威压：敌方全体服从 +1 层（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -2427,7 +2573,7 @@
       "flagship": false,
       "lore": "以终焉之歌颂尽敌孽。",
       "flavor": "此曲终了，汝命亦终。",
-      "describe": "造成 6 点圣光伤害，并驱散目标 1 个减益。",
+      "describe": "造成 6 点圣光伤害，并驱散目标 1 个减益；若目标带有被放牧的灵魂（supplicant 枢纽），安魂超度追加 2 点圣光伤害。",
       "effects": [
         {
           "type": "damage",
@@ -2445,6 +2591,25 @@
             ]
           },
           "count": 1
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "grazed_soul",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "note": "安魂超度：被放牧的灵魂获得解脱，伤害 +2（环节⑤ 2026-09-29 跨系读层段：读 supplicant 枢纽 grazed_soul）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
