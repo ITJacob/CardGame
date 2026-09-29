@@ -16,7 +16,8 @@
       ],
       "payoffs": [
         "暴怒一击"
-      ]
+      ],
+      "note": "2026-09-29 环节⑤：暴君裁决读 tyrant_dread 跨轴（rage→authority）；产层仍 12（愤怒之源/怒涛咆哮等挂载形式待核）"
     },
     "storm": {
       "symbol": "🌩️",
@@ -24,15 +25,13 @@
       "statusId": "emc_disorder",
       "enablers": [
         "闪电风暴",
-        "飓风盘绕",
-        "加速与滑翔",
         "雷击"
       ],
       "payoffs": [
         "风刃军团",
         "风暴地狱"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 storm，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审+主人裁定：原列海啸（ocean 轴卡）换成本轴风暴地狱；全轴唯一卡面读 emc_disorder 的是闪电风暴（已列 enabler），无实证读层 payoff，风刃军团/风暴地狱为主题收束卡"
+      "note": "2026-09-20 清理悬空 statusId（原为 storm，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审+主人裁定：原列海啸（ocean 轴卡）换成本轴风暴地狱；全轴唯一卡面读 emc_disorder 的是闪电风暴（已列 enabler），无实证读层 payoff，风刃军团/风暴地狱为主题收束卡 ｜ 2026-09-29 环节⑤：emc_disorder 补层数引擎（身份 8→15）；雷击补产层段（飓风盘绕/加速与滑翔不挂 emc_disorder 移出，产层 12→20）；风刃军团读 emc_disorder 升 landed（payoff notes→landed）；风暴地狱读 submerge 跨轴（storm→ocean）"
     },
     "authority": {
       "symbol": "👑",
@@ -40,26 +39,24 @@
       "statusId": "tyrant_dread",
       "enablers": [
         "暴君权柄",
-        "恐惧之音",
-        "幻鳞",
         "光之化身"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：tyrant_dread 为施法者侧载体，全轴无卡读 tyrant_dread/dread/scale_veil/light_form，纯堆常驻强度（待扩展读层卡）"
+      "note": "payoffs 2026-09-26 评审：tyrant_dread 为施法者侧载体，全轴无卡读 tyrant_dread/dread/scale_veil/light_form，纯堆常驻强度（待扩展读层卡） ｜ 2026-09-29 环节⑤：tyrant_dread 补层数引擎（身份 8→15）；光之化身补产层段（恐惧之音/幻鳞挂 dread/scale_veil 移出，产层 12→20）；纯堆常驻强度轴真空甄别拍板接受（payoffVacuumAccepted，待扩展读层卡）；暴君裁决读 tyrant_dread 跨轴（rage→authority）",
+      "payoffVacuumAccepted": true
     },
     "ocean": {
       "symbol": "🌊",
       "name": "海洋",
       "statusId": "submerge",
       "enablers": [
-        "海洋眷顾",
-        "水幕",
-        "深潜"
+        "深潜",
+        "海洋眷顾"
       ],
       "payoffs": [
         "深潜"
       ],
-      "note": "2026-09-29 私有化：轴身份自 common conceal 分叉为 submerge（深潜）；2026-09-20 原注（原为 ocean 悬空）已由此闭环"
+      "note": "2026-09-29 私有化：轴身份自 common conceal 分叉为 submerge（深潜）；2026-09-20 原注（原为 ocean 悬空）已由此闭环 ｜ 2026-09-29 环节⑤：submerge 补层数引擎（身份 8→15）；海洋眷顾补产层段（水幕挂 shield 移出，产层 12→20）；风暴地狱（storm 轴）读 submerge 自动成跨轴消费"
     }
   },
   "cards": [
@@ -452,7 +449,7 @@
       "flagship": false,
       "lore": "序列7 航海家 —— \"海洋眷顾：海上全方位提升\"",
       "flavor": "大海眷顾着它的水手——你的力量、韧性与对海水的耐受力都高出一截。",
-      "describe": "战斗开始时，自身攻击 +1、防御 +1、护甲 +5，持续整场。",
+      "describe": "战斗开始时，自身攻击 +1、防御 +1、护甲 +5，持续整场。；眷顾即没入海中（自身深潜 3 tick）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -478,6 +475,13 @@
           "mode": "delta",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "submerge",
+          "duration": 3,
+          "target": "self",
+          "note": "眷顾即没入海中（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "sharedAcross": [
@@ -887,7 +891,7 @@
       "flagship": false,
       "lore": "序列5 海洋歌者 —— \"'闪电掌控'：雷击（麻痹敌人，克制亡灵）\"",
       "flavor": "一道落雷劈中敌人，电流窜过它的躯体使其浑身麻痹；若是亡灵，这一击会格外致命。",
-      "describe": "对一名敌人造成 3 点雷电伤害并眩晕 1 tick；若其为亡灵或灵体，追加 4 点雷电伤害。",
+      "describe": "对一名敌人造成 3 点雷电伤害并眩晕 1 tick；若其为亡灵或灵体，追加 4 点雷电伤害。；雷击带电：目标电磁紊乱 2 tick。",
       "cost": {
         "energy": 4,
         "cooldown": 4,
@@ -910,6 +914,12 @@
               "type": "damage",
               "element": "lightning",
               "value": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "emc_disorder",
+              "duration": 2,
+              "note": "雷击带电：电磁紊乱 2 tick（环节⑤ 2026-09-29 补产层段）"
             },
             {
               "type": "mount_status",
@@ -1132,7 +1142,7 @@
       "flagship": true,
       "lore": "序列4 灾难主祭 —— \"'风刃军团'：数百上千道风刃\"",
       "flavor": "数百道风刃在你身后结成阵列，然后一齐倾泻而下——没有人能在这片刀雨里全身而退。",
-      "describe": "全体敌人各承受 3 段攻击，每段 2 点物理伤害（逐段独立结算，破盾与加攻件逐段放大）。",
+      "describe": "全体敌人各承受 3 段攻击，每段 2 点物理伤害（逐段独立结算，破盾与加攻件逐段放大）。；对电磁紊乱的目标，乱流风刃，全体敌方额外受 1 点物理伤害。",
       "cost": {
         "energy": 6,
         "cooldown": 6,
@@ -1160,6 +1170,26 @@
             }
           ],
           "note": "G3 运行时展开；shareTarget:false + 全体目标 → 每名敌人各承受 3 段。敌方存活单位数少于段数时的分配规则需实现显式约定"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "emc_disorder",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 1,
+              "target": "all_enemies",
+              "note": "乱流风刃：目标电磁紊乱则风刃更利，全体敌方额外受 1 点（环节⑤ 2026-09-29 补读层段：emc_disorder payoff 升 landed）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -2212,7 +2242,7 @@
       "flagship": false,
       "lore": "序列1 雷神 —— \"'光之化身'：转化能量体，接近光速飞行\"",
       "flavor": "你把自己转化成纯粹的能量体——刀剑与雷霆大半从你身上穿了过去，而你的速度快得近乎光。",
-      "describe": "战斗开始时转化为光之能量体（整场）：物理抗性 +30%、雷电抗性 +30%、行动条速率 +8，代价是精神抗性 -10%。",
+      "describe": "战斗开始时转化为光之能量体（整场）：物理抗性 +30%、雷电抗性 +30%、行动条速率 +8，代价是精神抗性 -10%。；光之化身即海上暴君（暴君威仪 +1 层，整场）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -2220,6 +2250,13 @@
           "statusId": "light_form",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "tyrant_dread",
+          "duration": null,
+          "target": "self",
+          "note": "光之化身即海上暴君（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -2251,7 +2288,7 @@
       "flagship": false,
       "lore": "序列1 雷神 —— \"'风暴地狱'\"（变体：'闪电海洋'、'雷霆之舞'）",
       "flavor": "你把一整片风暴地狱搬到了战场上——电蛇与狂风在其中永不停歇地撕咬。",
-      "describe": "降下风暴地狱区域（4 tick）：区域内敌方每 tick 受到 2 点雷电伤害且行动条速率 ×0.9（2 tick 刷新，不叠层）。",
+      "describe": "降下风暴地狱区域（4 tick）：区域内敌方每 tick 受到 2 点雷电伤害且行动条速率 ×0.9（2 tick 刷新，不叠层）。（自身带深潜则延长至 5 tick，深海风暴）。",
       "cost": {
         "energy": 7,
         "cooldown": 8,
@@ -2268,11 +2305,31 @@
       },
       "effects": [
         {
-          "type": "spawn",
-          "consumption": "zone",
-          "zone": "zone_storm_hell",
-          "duration": 4,
-          "note": "Zone 注册（consumption: zone + 卡面 zoneDef），非界域原语；H9 Zone 母版（2026-09-08 界域牌批次登记）"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "submerge",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "spawn",
+              "consumption": "zone",
+              "zone": "zone_storm_hell",
+              "duration": 5,
+              "note": "深海风暴：自身深潜在场则风暴地狱延长至 5 tick（环节⑤ 2026-09-29 跨轴读层段：storm→ocean）"
+            }
+          ],
+          "else": [
+            {
+              "type": "spawn",
+              "consumption": "zone",
+              "zone": "zone_storm_hell",
+              "duration": 4
+            }
+          ]
         }
       ],
       "zone": {
@@ -2762,7 +2819,7 @@
       "flagship": false,
       "lore": "以暴君之姿审判来犯者。",
       "flavor": "俯瞰众生，唯余怒火。",
-      "describe": "造成 8 点物理伤害，并叠加 2 层愤怒。",
+      "describe": "造成 8 点物理伤害，并叠加 2 层愤怒。；若自身暴君威仪在场，暴君之怒，追加 2 点物理伤害。",
       "effects": [
         {
           "type": "damage",
@@ -2777,6 +2834,25 @@
           "stackMode": "add",
           "duration": null,
           "target": "self"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "tyrant_dread",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "note": "暴君之怒：自身暴君威仪在场则裁决追加 2 点（环节⑤ 2026-09-29 跨轴读层段：rage→authority）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
