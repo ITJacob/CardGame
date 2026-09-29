@@ -55,7 +55,7 @@
 |---|---|---|---|
 | taunt | 猎人·阴谋 | 无 | ✅ **已私有化**（2026-09-27）：新建 `intrigue_taunt`（hunter.statuses.json，蓝本同源），轴 statusId 与 挑衅/离间之计 两卡改指 |
 | conceal | 水手·海洋 + 不眠者·隐秘 | 学徒、观众（双身份） | ⬜ 待拆：两途径各建私有身份，common conceal 保留通用 |
-| energy_strain | 窥秘人·格斗 | 仲裁人 | ⬜ 待分叉：新建私有身份，common 保留 |
+| energy_strain | 窥秘人·格斗 | 仲裁人 | ✅ **已分叉**（2026-09-29）：格斗轴私有身份 `knowledge_strain`（知识淤积，seed 自 common 定义），轴 statusId 与 灌输知识/知识攻击 两产层卡改指；仲裁人律令为通用挂载，留 common 不改指 |
 | guard | 战士·守护 | 学徒、水手、祈求者、盗贼 | ⬜ 待分叉：同上 |
 | poison | 罪犯·领域 | 收尸人、囚犯 | ⬜ 待分叉：同上 |
 | burn | 猎人·燃焚 | 刺客、罪犯、窥秘人、智者 | ⬜ 待分叉：同上 |

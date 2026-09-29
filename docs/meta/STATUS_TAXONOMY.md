@@ -39,7 +39,7 @@
 ## 二、逐维度展开与边界红线
 
 ### 维度 1 · 定义归属（common vs 私有）
-- `common.statuses.json`：收**中性机制、无主题 owner、任何途径可复用**的状态（现状 21 个：poison / regen / thorns / guard / shield / silence / taunt / energy_strain / free_cast / stun / bulwark / vulnerable / shackle / burn / conceal / revive_blocked / amplify / weaken / slow / debuff_immune / control_immune）。
+- `common.statuses.json`：收**中性机制、无主题 owner、任何途径可复用**的状态（现状 25 个：poison / regen / thorns / guard / shield / silence / taunt / energy_strain / free_cast / stun / bulwark / vulnerable / shackle / burn / conceal / revive_blocked / amplify / weaken / slow / debuff_immune / control_immune / lust_restless / lust_uncontrolled / lust_detonation / lust_retarget）。
 - `<pathway>.statuses.json`：收带**途径主题身份**的私有状态（约 95%）。
 - **红线**（common `_meta` ownershipRules）：判定是「中性通用 vs 途径主题」，不是「简单 vs 复杂」。简单的纯主题标记照样进私有，复杂的中性机制照样进 common。换皮护栏（INV-C2）：私有状态若仅是某 common 关键词的换皮（机制完全相同、仅名字更带主题），须复用 common，不得造重复定义。
 
