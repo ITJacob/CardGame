@@ -194,6 +194,39 @@
           ]
         }
       ]
+    },
+    {
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "submerge",
+                "count": 1
+              },
+              "note": "出手自动破除潜行"
+            }
+          ]
+        }
+      ],
+      "id": "submerge",
+      "name": "深潜",
+      "note": "海洋轴身份状态（2026-09-29 自 common conceal 分叉私有化，语义蓝本同源：不可被指向选取+出手破除；category 保留 conceal，分类级识破/驱散照常生效）；common conceal（潜行）保留为全库通用（学徒/观众等挂载不改指）。"
     }
   ]
 }

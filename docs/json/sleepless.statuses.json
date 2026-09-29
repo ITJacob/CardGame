@@ -401,7 +401,7 @@
           "effects": [
             {
               "type": "mount_status",
-              "statusId": "conceal",
+              "statusId": "covert_veil",
               "duration": 2,
               "target": "self",
               "note": "受击后痕迹被抹去，重新隐去"
@@ -458,14 +458,14 @@
           "effects": [
             {
               "type": "mount_status",
-              "statusId": "conceal",
+              "statusId": "covert_veil",
               "duration": null,
               "target": "self",
               "note": "隐藏痕迹：自身常驻 concealed"
             },
             {
               "type": "mount_status",
-              "statusId": "conceal",
+              "statusId": "covert_veil",
               "duration": null,
               "target": "all_allies",
               "note": "己方全部召唤物常驻 concealed（filter isSummon，实现侧细化）"
@@ -480,7 +480,7 @@
               "target": "self",
               "dispelTarget": "unit",
               "filter": {
-                "statusId": "conceal",
+                "statusId": "covert_veil",
                 "count": 1
               },
               "note": "自身造成伤害后破除"
@@ -589,6 +589,39 @@
         }
       },
       "note": "收尸人【灵之主宰】与本条共用 spirit_sovereign 族（H42 同向取最高不叠乘）"
+    },
+    {
+      "category": [
+        "conceal"
+      ],
+      "dispelable": true,
+      "duration": 2,
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "covert_veil",
+                "count": 1
+              },
+              "note": "出手自动破除潜行"
+            }
+          ]
+        }
+      ],
+      "id": "covert_veil",
+      "name": "潜匿",
+      "note": "隐秘轴身份状态（2026-09-29 自 common conceal 分叉私有化，语义蓝本同源；category 保留 conceal，夜视/分类驱散/不可驱散覆写照常生效）；不眠者全途径 statusId 级引用（隐秘权柄常驻挂载与自破、无迹之影受击重隐、隐秘化卡）统一改指此 id；common conceal 保留通用。"
     }
   ]
 }
