@@ -3,233 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "corpse_collector",
-   "name": "收尸人",
-   "total": 50.0,
-   "dims": {
-    "轴健康度": 13.7,
-    "跨轴耦合": 0.0,
-    "跨系联动": 3.8,
-    "结构健康": 15,
-    "机制落地": 7.5,
-    "文本完备": 10.0
-   },
-   "minAxis": 44.0,
-   "cards": 42,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次",
-     "ref": "corpse_collector",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-11.2：枢纽状态 1 个 + combo 读取 1 次",
-     "ref": "corpse_collector",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "结构健康",
-     "why": "-0：主被动比 1.33 不在 [1.5, 3.0]",
-     "ref": "corpse_collector",
-     "fix": "补主动或被动卡，把主被动比调进 [1.5, 3.0]"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 TARGET_WEIGHTING",
-     "ref": "C8 候选池加权分支稿面标 🟢 未实现；若只落地一条优先保留减伤①",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    }
-   ],
-   "axes": [
-    {
-     "id": "undead",
-     "name": "亡者",
-     "symbol": "🧟",
-     "total": 44.0,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 5,
-      "读层闭环": 0,
-      "轴内多样性": 10.0,
-      "规模均衡": 9,
-      "承接连通": 12
-     },
-     "cards": 16,
-     "enablersVerified": [],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "puppet_string",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-15：enablers 2 张均未实证挂载身份",
-       "ref": "亡者标记,亡者之语",
-       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 16 vs 理想 10（比值 1.52）",
-       "ref": "undead",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    },
-    {
-     "id": "end",
-     "name": "终末",
-     "symbol": "⚰️",
-     "total": 44.0,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 4,
-      "轴内多样性": 10.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "一切的归宿"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "苍白世界"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "journeys_end",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "一切的归宿",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "苍白世界",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "苍白世界",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "spirit_sight",
-     "name": "灵视",
-     "symbol": "👁️",
-     "total": 47.0,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 12,
-      "轴内多样性": 5.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "天然灵视"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "死亡之眼",
-      "幽冥窥视",
-      "灵界瞭望"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "spirit_sight",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "天然灵视",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "死亡之眼,通灵",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "死亡之眼,幽冥窥视,灵界瞭望",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "死亡之眼,幽冥窥视,灵界瞭望",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "corpse",
-     "name": "尸骸",
-     "symbol": "💀",
-     "total": 49.5,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 12,
-      "轴内多样性": 7.5,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "尸体特质"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "corpse_nature",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "尸体特质",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "thief",
    "name": "偷盗者",
    "total": 50.6,
@@ -1169,9 +942,9 @@
   {
    "id": "seer",
    "name": "占卜家",
-   "total": 52.8,
+   "total": 53.3,
    "dims": {
-    "轴健康度": 16.2,
+    "轴健康度": 16.7,
     "跨轴耦合": 0.0,
     "跨系联动": 5.6,
     "结构健康": 15,
@@ -1353,14 +1126,14 @@
      "id": "marionette",
      "name": "秘偶",
      "symbol": "🪆",
-     "total": 65.2,
+     "total": 75.2,
      "dims": {
-      "身份锚定": 8,
+      "身份锚定": 15,
       "产层闭环": 12,
       "读层闭环": 12,
       "轴内多样性": 11.2,
       "规模均衡": 10,
-      "承接连通": 12
+      "承接连通": 15
      },
      "cards": 11,
      "enablersVerified": [
@@ -1375,12 +1148,6 @@
      "patterns": [],
      "vacuumAccepted": false,
      "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "puppet_string",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
@@ -4073,6 +3840,174 @@
        "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
+    }
+   ]
+  },
+  {
+   "id": "corpse_collector",
+   "name": "收尸人",
+   "total": 65.0,
+   "dims": {
+    "轴健康度": 20.0,
+    "跨轴耦合": 5.0,
+    "跨系联动": 7.5,
+    "结构健康": 15,
+    "机制落地": 7.5,
+    "文本完备": 10.0
+   },
+   "minAxis": 59.5,
+   "cards": 42,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-10.0：本途径他轴身份读取 2 次",
+     "ref": "corpse_collector",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "结构健康",
+     "why": "-0：主被动比 1.33 不在 [1.5, 3.0]",
+     "ref": "corpse_collector",
+     "fix": "补主动或被动卡，把主被动比调进 [1.5, 3.0]"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 TARGET_WEIGHTING",
+     "ref": "C8 候选池加权分支稿面标 🟢 未实现；若只落地一条优先保留减伤①",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    }
+   ],
+   "axes": [
+    {
+     "id": "corpse",
+     "name": "尸骸",
+     "symbol": "💀",
+     "total": 59.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 12,
+      "读层闭环": 12,
+      "轴内多样性": 7.5,
+      "规模均衡": 10,
+      "承接连通": 3
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "尸体特质"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "尸体特质",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      }
+     ]
+    },
+    {
+     "id": "undead",
+     "name": "亡者",
+     "symbol": "🧟",
+     "total": 69.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 0,
+      "轴内多样性": 10.0,
+      "规模均衡": 9,
+      "承接连通": 15
+     },
+     "cards": 16,
+     "enablersVerified": [
+      "驱使亡者",
+      "通灵"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 16 vs 理想 10（比值 1.52）",
+       "ref": "undead",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    },
+    {
+     "id": "spirit_sight",
+     "name": "灵视",
+     "symbol": "👁️",
+     "total": 74.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 17,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "天然灵视",
+      "灵视觉醒",
+      "死兆预感"
+     ],
+     "payoffsLanded": [
+      "死亡之眼"
+     ],
+     "payoffsNotes": [
+      "幽冥窥视",
+      "灵界瞭望"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 2 张（减半计）",
+       "ref": "幽冥窥视,灵界瞭望",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "end",
+     "name": "终末",
+     "symbol": "⚰️",
+     "total": 74.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 11.2,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "一切的归宿",
+      "死亡权柄"
+     ],
+     "payoffsLanded": [
+      "苍白世界"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "乘区",
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
     }
    ]
   },
