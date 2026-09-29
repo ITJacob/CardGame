@@ -3,251 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "apothecary",
-   "name": "药师",
-   "total": 47.5,
-   "dims": {
-    "轴健康度": 10.0,
-    "跨轴耦合": 0.0,
-    "跨系联动": 0.0,
-    "结构健康": 15,
-    "机制落地": 12.5,
-    "文本完备": 10.0
-   },
-   "minAxis": 30.5,
-   "cards": 40,
-   "deductions": [
-    {
-     "dim": "轴健康度",
-     "why": "-5：最低轴 30 分（<40）",
-     "ref": "brew",
-     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
-    },
-    {
-     "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次",
-     "ref": "apothecary",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-15.0：枢纽状态 0 个 + combo 读取 0 次",
-     "ref": "apothecary",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 ADVANCE_PHASE_DECLARATIVE",
-     "ref": "「沿 formGroup 顺序进一相、同组新相顶掉旧相」无效果原语；H50 已声明式落 ddd（StatusDef fo",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    }
-   ],
-   "axes": [
-    {
-     "id": "brew",
-     "name": "药剂",
-     "symbol": "⚗️",
-     "total": 30.5,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 5,
-      "读层闭环": 0,
-      "轴内多样性": 7.5,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 11,
-     "enablersVerified": [],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "prepared_draught",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-15：enablers 2 张均未实证挂载身份",
-       "ref": "药剂调配,草药敷贴",
-       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "brew",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "beasts",
-     "name": "兽群",
-     "symbol": "🐾",
-     "total": 33.8,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 0,
-      "轴内多样性": 3.8,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "动物感官"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "beast_sense",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "动物感官",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "驯兽哨",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "beasts",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "crimson",
-     "name": "血月",
-     "symbol": "🩸",
-     "total": 35.0,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 0,
-      "轴内多样性": 5.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "深红体质"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "crimson_vitality",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "深红体质",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "血族魅力,黑暗之翼,血仆转化",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "crimson",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "moon",
-     "name": "月相",
-     "symbol": "🌙",
-     "total": 63.8,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 25,
-      "轴内多样性": 8.8,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 12,
-     "enablersVerified": [
-      "月相·轮转"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "腐蚀之爪",
-      "预服药水",
-      "闪现",
-      "月光化",
-      "黑暗凝视",
-      "蝙蝠分解",
-      "召唤之门",
-      "创生",
-      "美之震撼",
-      "生命之权",
-      "血月当空"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "moon_cycle",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "月相·轮转",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "满月,银月切相",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-0：payoff 11 张全部 notes 级（卡面无读层引用）",
-       "ref": "腐蚀之爪,预服药水,闪现,月光化,黑暗凝视,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "腐蚀之爪,预服药水,闪现,月光化,黑暗凝视,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "arbiter",
    "name": "仲裁人",
    "total": 47.7,
@@ -4452,11 +4207,195 @@
    ]
   },
   {
+   "id": "apothecary",
+   "name": "药师",
+   "total": 65.7,
+   "dims": {
+    "轴健康度": 21.3,
+    "跨轴耦合": 5.0,
+    "跨系联动": 1.9,
+    "结构健康": 15,
+    "机制落地": 12.5,
+    "文本完备": 10.0
+   },
+   "minAxis": 65.0,
+   "cards": 40,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-10.0：本途径他轴身份读取 2 次",
+     "ref": "apothecary",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "跨系联动",
+     "why": "-13.1：枢纽状态 0 个 + combo 读取 1 次",
+     "ref": "apothecary",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 ADVANCE_PHASE_DECLARATIVE",
+     "ref": "「沿 formGroup 顺序进一相、同组新相顶掉旧相」无效果原语；H50 已声明式落 ddd（StatusDef fo",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    }
+   ],
+   "axes": [
+    {
+     "id": "beasts",
+     "name": "兽群",
+     "symbol": "🐾",
+     "total": 65.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 5.0,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "动物感官",
+      "野性直觉"
+     ],
+     "payoffsLanded": [
+      "狂兽突袭"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "crimson",
+     "name": "血月",
+     "symbol": "🩸",
+     "total": 69.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "深红体质",
+      "黑暗之翼"
+     ],
+     "payoffsLanded": [
+      "腐蚀之爪"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
+       "ref": "血族魅力,血仆转化",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    },
+    {
+     "id": "brew",
+     "name": "药剂",
+     "symbol": "⚗️",
+     "total": 71.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 8.8,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 11,
+     "enablersVerified": [
+      "药剂调配",
+      "草药敷贴"
+     ],
+     "payoffsLanded": [
+      "草药敷贴"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "moon",
+     "name": "月相",
+     "symbol": "🌙",
+     "total": 86.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 25,
+      "轴内多样性": 10.0,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 12,
+     "enablersVerified": [
+      "满月",
+      "月相·轮转"
+     ],
+     "payoffsLanded": [
+      "黑暗凝视"
+     ],
+     "payoffsNotes": [
+      "腐蚀之爪",
+      "预服药水",
+      "闪现",
+      "月光化",
+      "蝙蝠分解",
+      "召唤之门",
+      "创生",
+      "美之震撼",
+      "生命之权",
+      "血月当空"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
+       "ref": "银月切相",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      },
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 10 张（减半计）",
+       "ref": "腐蚀之爪,预服药水,闪现,月光化,蝙蝠分解,召唤之门,创生,美之震撼,生命之权,血月当空",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    }
+   ]
+  },
+  {
    "id": "sleepless",
    "name": "不眠者",
-   "total": 66.1,
+   "total": 66.2,
    "dims": {
-    "轴健康度": 16.7,
+    "轴健康度": 16.8,
     "跨轴耦合": 0.0,
     "跨系联动": 9.4,
     "结构健康": 15,
@@ -4626,14 +4565,14 @@
      "id": "darkness",
      "name": "暗夜",
      "symbol": "🌃",
-     "total": 76.2,
+     "total": 79.2,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 12,
       "读层闭环": 22,
       "轴内多样性": 11.2,
       "规模均衡": 10,
-      "承接连通": 6
+      "承接连通": 9
      },
      "cards": 11,
      "enablersVerified": [

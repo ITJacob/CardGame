@@ -15,19 +15,23 @@
         "药剂调配",
         "草药敷贴"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：轴身份状态无消费者（真无 payoff），待扩展期补读层卡"
+      "payoffs": [
+        "草药敷贴"
+      ],
+      "note": "2026-09-29 环节⑤：药剂调配/草药敷贴补 prepared_draught 产层段（产层 5→20），草药敷贴补读层段（payoff 从真空落地，比照 moon 轴层数经济）"
     },
     "beasts": {
       "symbol": "🐾",
       "name": "兽群",
       "statusId": "beast_sense",
       "enablers": [
-        "驯兽哨",
-        "动物感官"
+        "动物感官",
+        "野性直觉"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 beast_pack，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审：轴身份状态无消费者（真无 payoff），待扩展期补读层卡",
-      "payoffs": []
+      "note": "2026-09-29 环节⑤：enablers 核正（驯兽哨为召唤卡移出，动物感官/野性直觉双实证产层 20）；狂兽突袭补 beast_sense 读层段 + prepared_draught 跨轴读段（payoff 从真空落地）",
+      "payoffs": [
+        "狂兽突袭"
+      ]
     },
     "crimson": {
       "symbol": "🩸",
@@ -39,8 +43,10 @@
         "黑暗之翼",
         "血仆转化"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：轴身份状态无消费者（真无 payoff），待扩展期补读层卡"
+      "payoffs": [
+        "腐蚀之爪"
+      ],
+      "note": "2026-09-29 环节⑤：黑暗之翼补 crimson_vitality 产层段（产层 20）；腐蚀之爪补 crimson_vitality 读层段（payoff 从真空落地，比照 moon 轴）"
     },
     "moon": {
       "symbol": "🌙",
@@ -63,7 +69,8 @@
         "美之震撼",
         "生命之权",
         "血月当空"
-      ]
+      ],
+      "note": " ｜ 2026-09-29 环节⑤：满月补 moon_cycle 产层实证（经形式组顶相）；黑暗凝视补 moon_cycle 读层段（payoff 升 landed）；血月当空加 nightfall 跨系读段（界域延长）+ crimson_vitality 跨轴读段（血族之月）"
     }
   },
   "cards": [
@@ -78,7 +85,7 @@
       "flagship": false,
       "lore": "序列9 药师 —— \"擅长调配药剂\"",
       "flavor": "你随手把几味药材捣碎调匀灌了下去，苦涩的暖流立刻淌遍全身。",
-      "describe": "治疗一名友军 4 点生命。",
+      "describe": "治疗一名友军 4 点生命，并交给其一瓶预服药水（攻击/防御提升，10 tick，可叠 3 层）。",
       "cost": {
         "energy": 2,
         "cooldown": 2,
@@ -97,6 +104,15 @@
         {
           "type": "heal",
           "value": 4
+        },
+        {
+          "type": "mount_status",
+          "statusId": "prepared_draught",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": 10,
+          "target": "target",
+          "note": "调配出一瓶备用药水交予友军（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "sharedAcross": [
@@ -125,7 +141,7 @@
       "flagship": false,
       "lore": "序列9 药师 —— \"驯化使用植物治病\"",
       "flavor": "你嚼碎一把活着的苔草敷上伤口，叶片仍在微微抽动，把生机一点点渡进血肉里。",
-      "describe": "治疗一名友军 3 点生命，并使其再生 3 tick（每 tick 2 点）。",
+      "describe": "治疗一名友军 3 点生命，并使其再生 3 tick（每 tick 2 点），备好一剂预服药水；若其已带预服药水，药效激发，额外治疗 2 点。",
       "cost": {
         "energy": 3,
         "cooldown": 3,
@@ -152,8 +168,35 @@
               "type": "mount_status",
               "statusId": "regen",
               "duration": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "prepared_draught",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": 10,
+              "target": "target",
+              "note": "敷贴时备好一剂药水"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "prepared_draught",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "note": "药水激效：带预服药水者治疗 +2（环节⑤ 2026-09-29 补读层段：brew payoff 落地）"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
@@ -441,7 +484,7 @@
       "flagship": false,
       "lore": "序列7 吸血鬼 —— \"『腐蚀之爪』\"",
       "flavor": "你的指甲暴长成漆黑的利爪，撕开的不只是皮肉 —— 连同它身上的护甲一并锈成了渣。",
-      "describe": "对一名近战敌人造成 4 点毒素伤害，并使其护甲 -2（3 tick）。",
+      "describe": "对一名近战敌人造成 4 点毒素伤害，并使其护甲 -2（3 tick）；若自身深红活力 ≥1 层，血族之爪追加 2 点毒素伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 2,
@@ -468,6 +511,25 @@
           "value": -2,
           "mode": "delta",
           "duration": 3
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "crimson_vitality",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 2,
+              "note": "血族之爪：深红活力加持，毒素伤害 +2（环节⑤ 2026-09-29 补读层段：crimson payoff 落地）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -543,7 +605,7 @@
       "flagship": false,
       "lore": "序列7 吸血鬼 —— \"『黑暗之翼』\"",
       "flavor": "你背后张开一双由黑暗凝成的巨翼，托着你掠回阵地深处 —— 而留在原地的只有几片融进夜色的羽毛。",
-      "describe": "退回己方半场最后位，并获得黑暗之翼 3 tick：受伤 ×0.85、行动条速率 +6。",
+      "describe": "退回己方半场最后位，并获得黑暗之翼 3 tick：受伤 ×0.85、行动条速率 +6；深红活力 +1 层。",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -573,6 +635,15 @@
               "statusId": "dark_wings",
               "duration": 3,
               "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "crimson_vitality",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self",
+              "note": "血族之翼焕活深红活力 +1 层（环节⑤ 2026-09-29 补产层段）"
             }
           ]
         }
@@ -877,7 +948,7 @@
       "flagship": false,
       "lore": "序列5 深红学者 —— \"『满月』：让范围处于满月状态\"",
       "flavor": "一轮满月在你头顶升起，银白色的光洒满整个战场 —— 所有伤口都在月光下急速愈合。",
-      "describe": "自身月相强制切换至满月（重置轮转计数）；全体友军沐浴月光 3 tick：受到的治疗 ×1.3。",
+      "describe": "自身月相强制切换至满月（经月相轮转形式组顶相并重置计数）；全体友军沐浴月光 3 tick：受到的治疗 ×1.3。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -907,6 +978,13 @@
               "statusId": "moonlit",
               "duration": 3,
               "target": "all_allies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "moon_cycle",
+              "duration": null,
+              "target": "self",
+              "note": "强制切相经月相轮转形式组承载（同组新相顶旧相，环节⑤ 2026-09-29 补产层实证）"
             }
           ]
         }
@@ -1226,7 +1304,7 @@
       "flagship": false,
       "lore": "序列4 巫王 —— \"『黑暗凝视』（眼球操作映射目标）\"",
       "flavor": "你把自己的眼珠映射到了它的眼里 —— 从这一刻起，它看见的一切都是你让它看见的。",
-      "describe": "使一名敌人被黑暗凝视 5 tick：接下来 2 次攻击落空，且受伤 ×1.15。",
+      "describe": "使一名敌人被黑暗凝视 5 tick：接下来 2 次攻击落空，且受伤 ×1.15；若自身月相轮转在场，夜幕凝视延长 2 tick。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -1247,6 +1325,26 @@
           "statusId": "dark_gaze",
           "charges": 2,
           "duration": 5
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "moon_cycle",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "dark_gaze",
+              "duration": 2,
+              "target": "target",
+              "note": "夜幕凝视：月相轮转在场延长 2 tick（环节⑤ 2026-09-29 补读层段：moon payoff 升 landed）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -1865,7 +1963,7 @@
       "flagship": false,
       "lore": "序列0 月亮 —— \"五种月相」之血月 +「生命权柄」的领域化",
       "flavor": "你把血月挂上了天——月光所及，万物渗血，而懂得饮血的东西全都兴奋了起来。",
-      "describe": "降临「血月当空」界域 3 回合：全场所有单位（双方）每 tick 受到 1 点无元素伤害；「血月/吸血/月亮」标签卡 ×1.3，「光/净化」标签卡 ×0.7。自身迷失值 +1。",
+      "describe": "降临「血月当空」界域 3 回合（夜色在场时延至 4 回合）：全场所有单位（双方）每 tick 受到 1 点无元素伤害；「血/吸血/月亮」标签卡 ×1.3，「光/净化」标签卡 ×0.7；若自身带有深红活力，血族之月共鸣，期间攻击 +2。自身迷失值 +1。",
       "cost": {
         "energy": 6,
         "cooldown": 8,
@@ -1882,22 +1980,108 @@
       },
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "nightfall",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
             {
-              "type": "domain",
-              "op": "overlay",
-              "def": "domain_blood_moon",
-              "duration": 3,
-              "durationUnit": "turn"
-            },
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "domain",
+                  "op": "overlay",
+                  "def": "domain_blood_moon",
+                  "duration": 4,
+                  "durationUnit": "turn"
+                },
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": 2,
+                  "mode": "delta",
+                  "duration": 3,
+                  "target": "self",
+                  "note": "血族之月：深红活力共鸣，血月期间攻击 +2（duration 3 按回合计）"
+                },
+                {
+                  "type": "modify_resource",
+                  "resource": "lost",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "界域操作租金"
+                }
+              ]
+            }
+          ],
+          "else": [
             {
-              "type": "modify_resource",
-              "resource": "lost",
-              "value": 1,
-              "mode": "delta",
-              "target": "self",
-              "note": "界域操作租金"
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "crimson_vitality",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "op": "sequence",
+                  "steps": [
+                    {
+                      "type": "domain",
+                      "op": "overlay",
+                      "def": "domain_blood_moon",
+                      "duration": 3,
+                      "durationUnit": "turn"
+                    },
+                    {
+                      "type": "modify_stat",
+                      "stat": "attack",
+                      "value": 2,
+                      "mode": "delta",
+                      "duration": 3,
+                      "target": "self",
+                      "note": "血族之月：深红活力共鸣，血月期间攻击 +2（duration 3 按回合计）"
+                    },
+                    {
+                      "type": "modify_resource",
+                      "resource": "lost",
+                      "value": 1,
+                      "mode": "delta",
+                      "target": "self",
+                      "note": "界域操作租金"
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "op": "sequence",
+                  "steps": [
+                    {
+                      "type": "domain",
+                      "op": "overlay",
+                      "def": "domain_blood_moon",
+                      "duration": 3,
+                      "durationUnit": "turn"
+                    },
+                    {
+                      "type": "modify_resource",
+                      "resource": "lost",
+                      "value": 1,
+                      "mode": "delta",
+                      "target": "self",
+                      "note": "界域操作租金"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
@@ -2195,7 +2379,7 @@
       "flagship": false,
       "lore": "狂兽自林间扑出。",
       "flavor": "猎杀开始。",
-      "describe": "召唤 2 只野兽，并造成 4 点物理伤害。",
+      "describe": "召唤 2 只野兽，并造成 4 点物理伤害；若自身兽群感应 ≥1 层，兽觉指引伤害 +2；若自身带有预服药水，药剂激发兽性，伤害再 +1。",
       "effects": [
         {
           "type": "spawn",
@@ -2208,6 +2392,44 @@
           "element": "physical",
           "value": 4,
           "target": "target"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "beast_sense",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "note": "兽觉指引：伤害 +2（环节⑤ 2026-09-29 补读层段：beasts payoff 落地）"
+            }
+          ],
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "prepared_draught",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 1,
+              "note": "药剂激发兽性：自身带预服药水伤害 +1（环节⑤ 2026-09-29 跨轴读层段：beasts→brew）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
