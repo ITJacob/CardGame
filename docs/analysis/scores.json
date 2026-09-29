@@ -3,223 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "lawyer",
-   "name": "律师",
-   "total": 53.3,
-   "dims": {
-    "轴健康度": 14.8,
-    "跨轴耦合": 0.0,
-    "跨系联动": 4.5,
-    "结构健康": 15,
-    "机制落地": 9.0,
-    "文本完备": 10.0
-   },
-   "minAxis": 44.2,
-   "cards": 46,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次",
-     "ref": "lawyer",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-10.5：枢纽状态 3 个 + combo 读取 0 次",
-     "ref": "lawyer",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 DEATH_SETTLEMENT_FIELD_WRITE",
-     "ref": "on_kill 触发器 params.deathSettlement 写死亡结算字段 revive_blocked 的载",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 ORDER_SHUFFLE",
-     "ref": "gauge_shuffle（行动条集合守恒重排）+ status_shuffle（状态轮转搬运）双扩展原语用于本卡，已合",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    }
-   ],
-   "axes": [
-    {
-     "id": "advocacy",
-     "name": "讼辩",
-     "symbol": "🗣️",
-     "total": 44.2,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 20,
-      "读层闭环": 0,
-      "轴内多样性": 6.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "寻隙",
-      "讼师之眼",
-      "律令加身"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "chink_finding",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "诡辩,陈词",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "advocacy",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "bribery",
-     "name": "贿腐",
-     "symbol": "🪙",
-     "total": 49.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 4,
-      "轴内多样性": 5.0,
-      "规模均衡": 10,
-      "承接连通": 3
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "腐蚀"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "腐化回扣"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "腐蚀",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "贿赂·关联,赠予,收买",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "腐化回扣",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    },
-    {
-     "id": "warp_rule",
-     "name": "扭曲规则",
-     "symbol": "🌀",
-     "total": 54.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 4,
-      "轴内多样性": 13.8,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 16,
-     "enablersVerified": [
-      "扭曲"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "秩序崩坏"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "扭曲",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "利用,独享规则,重定义",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "秩序崩坏",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "秩序崩坏",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "brute",
-     "name": "蛮力",
-     "symbol": "👊",
-     "total": 56.5,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 12,
-      "轴内多样性": 7.5,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "放大"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "放大",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "野蛮体魄,力量解决,赠予",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "sailor",
    "name": "水手",
    "total": 54.8,
@@ -1805,6 +1588,176 @@
        "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
+    }
+   ]
+  },
+  {
+   "id": "lawyer",
+   "name": "律师",
+   "total": 61.2,
+   "dims": {
+    "轴健康度": 20.2,
+    "跨轴耦合": 2.5,
+    "跨系联动": 4.5,
+    "结构健康": 15,
+    "机制落地": 9.0,
+    "文本完备": 10.0
+   },
+   "minAxis": 65.2,
+   "cards": 46,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-12.5：本途径他轴身份读取 1 次",
+     "ref": "lawyer",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "跨系联动",
+     "why": "-10.5：枢纽状态 3 个 + combo 读取 0 次",
+     "ref": "lawyer",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 DEATH_SETTLEMENT_FIELD_WRITE",
+     "ref": "on_kill 触发器 params.deathSettlement 写死亡结算字段 revive_blocked 的载",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 ORDER_SHUFFLE",
+     "ref": "gauge_shuffle（行动条集合守恒重排）+ status_shuffle（状态轮转搬运）双扩展原语用于本卡，已合",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    }
+   ],
+   "axes": [
+    {
+     "id": "bribery",
+     "name": "贿腐",
+     "symbol": "🪙",
+     "total": 65.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 12,
+      "读层闭环": 13,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "腐蚀"
+     ],
+     "payoffsLanded": [
+      "收买"
+     ],
+     "payoffsNotes": [
+      "腐化回扣"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "腐蚀",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      },
+      {
+       "dim": "产层闭环",
+       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
+       "ref": "腐化回扣",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      },
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 1 张（减半计）",
+       "ref": "腐化回扣",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "brute",
+     "name": "蛮力",
+     "symbol": "👊",
+     "total": 65.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 12,
+      "轴内多样性": 8.8,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "力量解决",
+      "放大"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "advocacy",
+     "name": "讼辩",
+     "symbol": "🗣️",
+     "total": 66.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 12,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 3
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "寻隙",
+      "讼师之眼",
+      "律令加身"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "warp_rule",
+     "name": "扭曲规则",
+     "symbol": "🌀",
+     "total": 75.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 15.0,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 16,
+     "enablersVerified": [
+      "扭曲",
+      "利用"
+     ],
+     "payoffsLanded": [
+      "秩序崩坏"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
     }
    ]
   },
