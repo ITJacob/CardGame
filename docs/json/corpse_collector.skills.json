@@ -13,15 +13,15 @@
       "statusId": "spirit_sight",
       "enablers": [
         "天然灵视",
-        "死亡之眼",
-        "通灵"
+        "灵视觉醒",
+        "死兆预感"
       ],
       "payoffs": [
         "死亡之眼",
         "幽冥窥视",
         "灵界瞭望"
       ],
-      "note": "payoffs 2026-09-26 评审：三卡读目标 conceal 类状态存在放大 ×1.5（spirit_sight 本体是被动透隐，无层数可读）"
+      "note": "payoffs 2026-09-26 评审：三卡读目标 conceal 类状态存在放大 ×1.5（spirit_sight 本体是被动透隐，无层数可读） ｜ 2026-09-29 环节⑤：enablers 核正（死亡之眼/通灵不挂 spirit_sight 移出，灵视觉醒/死兆预感补入，产层 20）；死亡之眼补 spirit_sight 读层段（payoff 升 landed）"
     },
     "corpse": {
       "symbol": "💀",
@@ -39,24 +39,26 @@
       "name": "亡者",
       "statusId": "puppet_string",
       "enablers": [
-        "亡者标记",
-        "亡者之语"
+        "驱使亡者",
+        "通灵"
       ],
       "payoffs": [
         "完全死亡"
-      ]
+      ],
+      "note": "2026-09-29 环节⑤：enablers 核正（亡者标记无此卡移除；亡者之语挂 word_of_the_dead 移出；通灵补 puppet_string 产层段，产层 5→20）"
     },
     "end": {
       "symbol": "⚰️",
       "name": "终末",
       "statusId": "journeys_end",
       "enablers": [
-        "一切的归宿"
+        "一切的归宿",
+        "死亡权柄"
       ],
       "payoffs": [
         "苍白世界"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 underworld，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-26 主人裁定：enablers 原列冥界放出/冥界之门（undead 轴卡）改列本轴卡一切的归宿（全轴唯一产 journeys_end）；冥界两卡留 undead 轴（N4 同 spectator/fantasy 修法）"
+      "note": "2026-09-20 清理悬空 statusId（原为 underworld，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-26 主人裁定：enablers 原列冥界放出/冥界之门（undead 轴卡）改列本轴卡一切的归宿（全轴唯一产 journeys_end）；冥界两卡留 undead 轴（N4 同 spectator/fantasy 修法） ｜ 2026-09-29 环节⑤：死亡权柄补 journeys_end 产层段（产层 20）；苍白世界补 journeys_end 读层段（payoff 升 landed，界域延长）"
     }
   },
   "cards": [
@@ -253,7 +255,7 @@
       "flagship": true,
       "lore": "序列8 掘墓人 —— \"『死亡之眼』：进入灵性世界，从更高层次俯视敌人找弱点\"；\"灵视更厉害\"",
       "flavor": "你的魂魄离体半寸，从灵性世界里俯下身——它的要害、它的破绽，一下子全浮了出来。",
-      "describe": "对一名敌人造成 3 点精神伤害（处于隐匿状态时 ×1.5），使其易伤 3 tick，并驱散其 1 个隐匿类状态。",
+      "describe": "对一名敌人造成 3 点精神伤害（处于隐匿状态时 ×1.5），使其易伤 3 tick，并驱散其 1 个隐匿类状态；若自身灵视在场，灵视锁定，伤害 +1。",
       "cost": {
         "energy": 3,
         "cooldown": 3,
@@ -316,6 +318,25 @@
                 "count": 1
               },
               "note": "俯视"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "spirit_sight",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 1,
+                  "note": "灵视锁定：自身灵视在场伤害 +1（环节⑤ 2026-09-29 补读层段：spirit_sight payoff 升 landed）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -404,7 +425,7 @@
       "flagship": false,
       "lore": "序列7 通灵者 —— \"『通灵』（核心）：直接与自然灵和亡魂沟通，借灵实现魔法\"",
       "flavor": "你向着空处开口，一缕亡魂应声而来——它替你把这道咒文推了出去，然后留在了这里。",
-      "describe": "对一名敌人造成 3 点精神伤害（借灵施法），并召来一只亡魂为己方作战（70% 生命，落位己方队尾）。",
+      "describe": "对一名敌人造成 3 点精神伤害（借灵施法），并召来一只亡魂为己方作战（70% 生命，落位己方队尾）；通灵时灵体之线缠绕自身（puppet_string +1 层，6 tick）。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -435,6 +456,15 @@
               "hpRatio": 0.7,
               "position": "tail",
               "note": "沟通：召来的灵留在场上（F25 + C5）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "puppet_string",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": 6,
+              "target": "self",
+              "note": "通灵时灵体之线缠绕自身，织就亡者网络（环节⑤ 2026-09-29 补产层段）"
             }
           ]
         }
@@ -1867,7 +1897,7 @@
       "flagship": false,
       "lore": "序列1 苍白皇帝 —— \"『苍白世界』：颜色死亡的国度，非凡能力凋零\"",
       "flavor": "你摊开手掌，颜色从这片世界里退了出去——随之退去的，还有它们身上那些自以为是的本事。",
-      "describe": "降临「苍白世界」3 回合：敌方每 tick 被剥 1 个增益并凋零 2 tick（攻击 -3、造成伤害 ×0.8）；己方亡灵受伤 ×0.85；「亡灵/死亡」标签卡效果 ×1.3，「光明/净化」标签卡 ×0.7。自身迷失值 +1。",
+      "describe": "降临「苍白世界」3 回合（自身一切的归宿在场时延至 4 回合）：敌方每 tick 被剥 1 个增益并凋零 2 tick（攻击 -3、造成伤害 ×0.8）；己方亡灵受伤 ×0.85；「亡灵/死亡」标签卡效果 ×1.3，「光明/净化」标签卡 ×0.7。自身迷失值 +1。",
       "cost": {
         "energy": 6,
         "cooldown": 8,
@@ -1884,22 +1914,56 @@
       },
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "journeys_end",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
             {
-              "type": "domain",
-              "op": "overlay",
-              "def": "domain_pale_world",
-              "duration": 3,
-              "durationUnit": "turn"
-            },
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "domain",
+                  "op": "overlay",
+                  "def": "domain_pale_world",
+                  "duration": 4,
+                  "durationUnit": "turn"
+                },
+                {
+                  "type": "modify_resource",
+                  "resource": "lost",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "界域操作租金"
+                }
+              ]
+            }
+          ],
+          "else": [
             {
-              "type": "modify_resource",
-              "resource": "lost",
-              "value": 1,
-              "mode": "delta",
-              "target": "self",
-              "note": "界域操作租金"
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "domain",
+                  "op": "overlay",
+                  "def": "domain_pale_world",
+                  "duration": 3,
+                  "durationUnit": "turn"
+                },
+                {
+                  "type": "modify_resource",
+                  "resource": "lost",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "界域操作租金"
+                }
+              ]
             }
           ]
         }
@@ -2111,7 +2175,7 @@
       "flagship": true,
       "lore": "序列0 死神 —— \"『死亡』权柄：生命 / 记忆 / 联系 / 烙印皆会死亡，非凡特性也短暂死亡\"",
       "flavor": "你说了那个字——它的生命、它的记忆、它与这世上一切的联系、它身上那些被赋予过的印记，一起熄灭了。连它赖以不凡的那点东西，也暗了片刻。",
-      "describe": "对一名敌人造成 6 点无属性伤害；驱散其 2 个增益与全部链接/契约类状态；使其 6 tick 内无法复活、攻击 -4（4 tick）。",
+      "describe": "对一名敌人造成 6 点无属性伤害；驱散其 2 个增益与全部链接/契约类状态；使其 6 tick 内无法复活、攻击 -4（4 tick）；自身一切的归宿 +1 层；若目标带有提线木偶，亡者归死亡权柄管辖，追加 2 点无属性伤害。",
       "cost": {
         "energy": 7,
         "cooldown": 8,
@@ -2174,6 +2238,34 @@
               "mode": "delta",
               "duration": 4,
               "note": "非凡特性短暂死亡"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "journeys_end",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self",
+              "note": "行使死亡权柄即归于一切的归宿（环节⑤ 2026-09-29 补产层段）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "puppet_string",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "note": "亡者归死亡权柄管辖：目标带提线木偶追加 2 点（环节⑤ 2026-09-29 跨轴读层段：end→undead）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -2307,7 +2399,7 @@
       "flagship": false,
       "lore": "幽冥之视洞穿伪装。",
       "flavor": "藏于暗处的，也逃不过你。",
-      "describe": "造成 3 点精神伤害；若目标处于隐匿类状态，本次伤害 ×1.5。",
+      "describe": "造成 3 点精神伤害；若目标处于隐匿类状态，本次伤害 ×1.5；若自身带有尸体特质，尸体之眼洞察，伤害 +1。",
       "effects": [
         {
           "op": "if",
@@ -2335,6 +2427,25 @@
               "target": "target"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "corpse_nature",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "note": "尸体之眼洞察：自身尸体特质在场伤害 +1（环节⑤ 2026-09-29 跨轴读层段：spirit_sight→corpse）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
