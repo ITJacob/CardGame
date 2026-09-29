@@ -7,6 +7,7 @@
 |---|---|---|---|---|
 | 2026-09-26 | （基线建立） | — | score.py 首跑全库基线分，见 docs/analysis/scorecard.md；榜尾：pryer 45.9 / chanter 46.5 / corpse_collector 47.5 / apothecary 47.6 / arbiter 47.9 | c169205 |
 | 2026-09-29 | 窥秘人 `pryer` | 47.3 → **58.7**（基线 45.9） | 窥秘权柄补产层段（scrying 产层 12→20）；知识攻击补窥秘之眼读层（payoff notes→landed）；朗基努斯之枪 knowledge_strain 耗层换效（combat 读层 0→9，从补卡候选落地）；占星术读 knowledge_strain、知识攻击读 scrying_eye（跨轴 0→2 次）；星之巨柱/星桥补 ego_constellation、卷轴·冰冻/麻痹补 spell_lore（astral/scroll 产层注清零）；星之巨柱读 doom、星光囚笼读 astral_anchor（跨系 0→2 次，后者闭环稿面既定意图） | 本轮 |
+| 2026-09-29 | 歌颂者 `chanter` | 47.0 → **62.8** | blessing/daylight/obedience 补层数引擎（身份锚定 8→15×3）；神圣誓约/太阳誓约「立约经公证」notarize 产层段（notary 产层 12→20）；太阳誓约读 notarize 违约惩罚（notary payoff 从真空落地 38.2→66.8）；正义审判 obedience 耗层+notarize 铁证双读段（judgment payoff landed，41.5→71.8）；太阳使者补 obedience 产层；召唤圣光 daylight 产层+日照 daylight 读层（light 产层 20、日照 landed）；神圣之光读 blessing、正义审判读 notarize（跨轴 0→2）；终焉颂歌读 grazed_soul（跨系 0→1，安魂超度）；light enablers 核正（太阳光环/光之权柄移出） | 本轮 |
 
 ## 真空轴甄别（2026-09-29 主人拍板，草案已结案）
 

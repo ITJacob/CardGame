@@ -3,254 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "chanter",
-   "name": "歌颂者",
-   "total": 47.0,
-   "dims": {
-    "轴健康度": 12.6,
-    "跨轴耦合": 0.0,
-    "跨系联动": 1.9,
-    "结构健康": 15,
-    "机制落地": 7.5,
-    "文本完备": 10.0
-   },
-   "minAxis": 38.2,
-   "cards": 41,
-   "deductions": [
-    {
-     "dim": "轴健康度",
-     "why": "-5：最低轴 38 分（<40）",
-     "ref": "notary",
-     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
-    },
-    {
-     "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次",
-     "ref": "chanter",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-13.1：枢纽状态 1 个 + combo 读取 0 次",
-     "ref": "chanter",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 G15_ON_TURN_START",
-     "ref": "稿面注明 on_turn_start 引擎从未 fire、当前不生效；退化方案为 on_battle_start + m",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    }
-   ],
-   "axes": [
-    {
-     "id": "notary",
-     "name": "公证",
-     "symbol": "🖋️",
-     "total": 38.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 0,
-      "轴内多样性": 1.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 8,
-     "enablersVerified": [
-      "公证"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "公证",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "神圣誓约,太阳誓约",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "notary",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "judgment",
-     "name": "审判",
-     "symbol": "⚖️",
-     "total": 41.5,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 4,
-      "轴内多样性": 7.5,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "服从之音"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "正义审判"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "obedience",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "服从之音",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "太阳使者",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "正义审判",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "正义审判",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "hymn",
-     "name": "颂歌",
-     "symbol": "🎵",
-     "total": 56.2,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 20,
-      "读层闭环": 12,
-      "轴内多样性": 6.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "歌颂",
-      "圣咏赐福",
-      "不息赞歌",
-      "光之赞礼"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "blessing",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      }
-     ]
-    },
-    {
-     "id": "light",
-     "name": "圣光",
-     "symbol": "☀️",
-     "total": 64.2,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 25,
-      "轴内多样性": 11.2,
-      "规模均衡": 8,
-      "承接连通": 0
-     },
-     "cards": 16,
-     "enablersVerified": [
-      "白昼"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "日照",
-      "召唤圣光",
-      "净化之斩",
-      "光明之火",
-      "神圣之光",
-      "净化光环",
-      "无暗之域",
-      "无暗之枪",
-      "纯白射线",
-      "太阳使者",
-      "神圣之国",
-      "纯白之光",
-      "终焉颂歌"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "daylight",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "白昼",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "太阳光环,光之权柄",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-0：payoff 13 张全部 notes 级（卡面无读层引用）",
-       "ref": "日照,召唤圣光,净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-2：轴卡数 16 vs 理想 10（比值 1.56）",
-       "ref": "light",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "日照,召唤圣光,净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "apothecary",
    "name": "药师",
    "total": 47.5,
@@ -3851,9 +3603,9 @@
   {
    "id": "supplicant",
    "name": "秘祈人",
-   "total": 56.9,
+   "total": 57.1,
    "dims": {
-    "轴健康度": 12.4,
+    "轴健康度": 12.6,
     "跨轴耦合": 0.0,
     "跨系联动": 7.5,
     "结构健康": 15,
@@ -4037,14 +3789,14 @@
      "id": "soul",
      "name": "牧魂",
      "symbol": "🐑",
-     "total": 68.2,
+     "total": 71.2,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 12,
       "读层闭环": 25,
       "轴内多样性": 6.2,
       "规模均衡": 10,
-      "承接连通": 0
+      "承接连通": 3
      },
      "cards": 5,
      "enablersVerified": [
@@ -4064,12 +3816,6 @@
        "why": "-8：实证 enabler 仅 1 张",
        "ref": "放牧灵魂",
        "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "驱使灵魂,堕落眷属,灵魂牧场",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
       }
      ]
     }
@@ -4522,6 +4268,184 @@
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
        "ref": "缝合灵魂,触碰痊愈,万物母巢,生命炼成,人偶制造",
        "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "chanter",
+   "name": "歌颂者",
+   "total": 62.8,
+   "dims": {
+    "轴健康度": 21.5,
+    "跨轴耦合": 5.0,
+    "跨系联动": 3.8,
+    "结构健康": 15,
+    "机制落地": 7.5,
+    "文本完备": 10.0
+   },
+   "minAxis": 66.8,
+   "cards": 41,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-10.0：本途径他轴身份读取 2 次",
+     "ref": "chanter",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "跨系联动",
+     "why": "-11.2：枢纽状态 1 个 + combo 读取 1 次",
+     "ref": "chanter",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 G15_ON_TURN_START",
+     "ref": "稿面注明 on_turn_start 引擎从未 fire、当前不生效；退化方案为 on_battle_start + m",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    }
+   ],
+   "axes": [
+    {
+     "id": "notary",
+     "name": "公证",
+     "symbol": "🖋️",
+     "total": 66.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 3.8,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 8,
+     "enablersVerified": [
+      "公证",
+      "神圣誓约",
+      "太阳誓约"
+     ],
+     "payoffsLanded": [
+      "太阳誓约"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "hymn",
+     "name": "颂歌",
+     "symbol": "🎵",
+     "total": 67.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 12,
+      "轴内多样性": 7.5,
+      "规模均衡": 10,
+      "承接连通": 3
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "歌颂",
+      "圣咏赐福",
+      "不息赞歌",
+      "光之赞礼"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "judgment",
+     "name": "审判",
+     "symbol": "⚖️",
+     "total": 71.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 8.8,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "服从之音",
+      "太阳使者"
+     ],
+     "payoffsLanded": [
+      "正义审判"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "耗层"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "light",
+     "name": "圣光",
+     "symbol": "☀️",
+     "total": 86.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 25,
+      "轴内多样性": 12.5,
+      "规模均衡": 8,
+      "承接连通": 6
+     },
+     "cards": 16,
+     "enablersVerified": [
+      "白昼",
+      "召唤圣光"
+     ],
+     "payoffsLanded": [
+      "日照",
+      "召唤圣光"
+     ],
+     "payoffsNotes": [
+      "净化之斩",
+      "光明之火",
+      "神圣之光",
+      "净化光环",
+      "无暗之域",
+      "无暗之枪",
+      "纯白射线",
+      "太阳使者",
+      "神圣之国",
+      "纯白之光",
+      "终焉颂歌"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 11 张（减半计）",
+       "ref": "净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      },
+      {
+       "dim": "规模均衡",
+       "why": "-2：轴卡数 16 vs 理想 10（比值 1.56）",
+       "ref": "light",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
     }
