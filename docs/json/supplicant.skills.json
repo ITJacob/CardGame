@@ -13,10 +13,9 @@
       "statusId": "shadow_dwell",
       "enablers": [
         "藏入阴影",
-        "召唤阴影",
         "操纵阴影"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 shadow，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。",
+      "note": "2026-09-20 清理悬空 statusId（原为 shadow，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-29 环节⑤：shadow_dwell 补层数引擎（身份 8→15）；操纵阴影补产层段（召唤阴影为纯 spawn 移出，产层 12→20）；阴影统治者读 shadow_dwell 升 landed + 读 mirror_substitute 跨系（→assassin）；操纵阴影读 parasitized 跨轴（shadow→flesh）",
       "payoffs": [
         "阴影统治者"
       ]
@@ -27,13 +26,12 @@
       "statusId": "parasitized",
       "enablers": [
         "液化寄生",
-        "补充血肉",
         "血肉炸弹"
       ],
       "payoffs": [
         "血肉不灭"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 flesh，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。"
+      "note": "2026-09-20 清理悬空 statusId（原为 flesh，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-29 环节⑤：parasitized 补层数引擎（身份 8→15）；血肉炸弹补产层段（补充血肉挂 flesh_hunger 移出，产层 12→20）；血肉不灭读 parasitized 升 landed（payoff notes→landed）"
     },
     "soul": {
       "symbol": "🐑",
@@ -47,7 +45,7 @@
         "堕落眷属",
         "灵魂牧场"
       ],
-      "note": "2026-09-26 评审修正：驱使灵魂（consume -1 层召灵）/堕落眷属（consume all 层批量 spawn）原误列 enablers，实为耗层 payoff 已迁移"
+      "note": "2026-09-26 评审修正：驱使灵魂（consume -1 层召灵）/堕落眷属（consume all 层批量 spawn）原误列 enablers，实为耗层 payoff 已迁移 ｜ 2026-09-29 环节⑤：放牧灵魂读 doom 跨系（soul→assassin）；产层仍 12（唯一产卡放牧灵魂，驱使/堕落眷属为耗层 payoff，第二产卡为补卡候选）"
     },
     "corruption": {
       "symbol": "☣️",
@@ -55,11 +53,11 @@
       "statusId": "defile",
       "enablers": [
         "堕落之影",
-        "耳语",
         "秽语·诅咒"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：defile 纯产无收（无卡读其存在/层数），待扩展期补读层卡"
+      "note": "payoffs 2026-09-26 评审：defile 纯产无收（无卡读其存在/层数），待扩展期补读层卡 ｜ 2026-09-29 环节⑤：defile 补层数引擎（身份 8→15）；秽语·诅咒补产层段（耳语挂 madness 移出，产层 12→20）；纯产无收轴真空甄别拍板接受（payoffVacuumAccepted，待扩展读层卡）；耳语读 grazed_soul 跨轴（corruption→soul）",
+      "payoffVacuumAccepted": true
     }
   },
   "cards": [
@@ -234,7 +232,7 @@
       "flagship": false,
       "lore": "序列8 倾听者 —— \"直接听到隐秘存在的耳语\"（把听到的东西塞进别人脑子里）",
       "flavor": "你把耳中那句不可名状的低语送进了它的脑袋——它的眼睛开始失焦。",
-      "describe": "对一名敌人造成 3 点精神伤害，并有 40% 概率叠加 1 层疯癫。",
+      "describe": "对一名敌人造成 3 点精神伤害，并有 40% 概率叠加 1 层疯癫。；自身放牧灵魂在场则耳语饲魂，伤害 +1。",
       "cost": {
         "energy": 2,
         "cooldown": 2,
@@ -268,6 +266,25 @@
                 "kind": "chance",
                 "p": 0.4
               }
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "grazed_soul",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 1,
+                  "note": "耳语饲魂：自身放牧灵魂在场则耳语多蚀 1 点（环节⑤ 2026-09-29 跨轴读层段：corruption→soul）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -567,7 +584,7 @@
       "flagship": false,
       "lore": "序列7 隐修士 —— \"'操纵阴影'\"、\"'阴影塑形'\"",
       "flavor": "脚下的影子托着你滑向队列另一侧，顺手凝出一面影盾挡在身前。",
-      "describe": "自身退至己方半场队尾，并获得 5 点护盾（3 tick）。",
+      "describe": "自身退至己方半场队尾，并获得 5 点护盾（3 tick）。；退入阴影（自身阴影栖息 2 tick）；目标已被寄生则影中血肉，追加 2 点暗伤。",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -598,8 +615,34 @@
               "value": 5,
               "duration": 3,
               "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shadow_dwell",
+              "duration": 2,
+              "target": "self",
+              "note": "退入阴影操纵（环节⑤ 2026-09-29 补产层段）"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "parasitized",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 2,
+              "note": "影中血肉：目标已被寄生则阴影绞索追加 2 点（环节⑤ 2026-09-29 跨轴读层段：shadow→flesh）"
+            }
+          ],
+          "else": []
         }
       ],
       "upgradeLadder": {
@@ -783,7 +826,7 @@
       "flagship": false,
       "lore": "序列6 蔷薇主教 —— \"'血肉炸弹'\"",
       "flavor": "你把一块还在跳动的血肉塞进它的伤口——两秒后，那块肉炸了，连它身边的同伴一起。",
-      "describe": "对一名敌人造成 4 点物理伤害并植入血肉炸弹：2 tick 后爆炸，对其及相邻单位造成 3 点物理伤害（被驱散也会炸）。",
+      "describe": "对一名敌人造成 4 点物理伤害并植入血肉炸弹：2 tick 后爆炸，对其及相邻单位造成 3 点物理伤害（被驱散也会炸）。；炸弹播寄：目标被寄生 2 tick。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -813,6 +856,12 @@
               "statusId": "flesh_bomb",
               "duration": 2,
               "target": "target"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "parasitized",
+              "duration": 2,
+              "note": "炸弹播寄：爆开的血肉溅上寄生体（环节⑤ 2026-09-29 补产层段）"
             }
           ]
         }
@@ -999,7 +1048,7 @@
       "flagship": false,
       "lore": "序列5 牧羊人 —— \"'放牧'（核心）：吞噬灵魂到体内驱使，使用其三种能力；最高放牧 7 个灵魂，一次驱使一个\"",
       "flavor": "你张口吞下它的灵魂——它在你体内尖叫，而它的力量、它的厚度、它的狡诈，都成了你的。",
-      "describe": "对一名敌人造成 5 点精神伤害；若其因此死亡，吞噬其灵魂：自身叠 1 层被放牧的灵魂，攻击 +1、生命上限 +2、能量上限 +1（均整场）。",
+      "describe": "对一名敌人造成 5 点精神伤害；若其因此死亡，吞噬其灵魂：自身叠 1 层被放牧的灵魂，攻击 +1、生命上限 +2、能量上限 +1（均整场）。；目标带厄运标记则厄运饲魂，伤害 +2。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1068,6 +1117,25 @@
                       "note": "灵动"
                     }
                   ]
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "doom",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "note": "厄运饲魂：目标带厄运标记则放牧多收 2 点（环节⑤ 2026-09-29 跨系读层段：soul→assassin doom）"
                 }
               ],
               "else": []
@@ -1598,7 +1666,7 @@
       "flagship": false,
       "lore": "序列3 三首圣堂 —— \"'血肉不灭'（只要剩一个细胞 + 血肉补充即可重塑）\"；序列0 倒吊人 —— \"'异变'：黑暗中凭空制造怪物，血肉不灭质变的复活\"",
       "flavor": "只要还剩一个细胞，只要还有血肉可用——你就会重新长回来。",
-      "describe": "战斗开始时获得「血肉不灭」整场：你死亡时若血肉储备 ≥2，消耗 2 层阻止死亡并回复至 20% 最大生命；否则正常死亡。",
+      "describe": "战斗开始时获得「血肉不灭」整场：你死亡时若血肉储备 ≥2，消耗 2 层阻止死亡并回复至 20% 最大生命；否则正常死亡。；场上有被寄生的敌人则血肉回响，自疗 2 点。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1606,6 +1674,25 @@
           "statusId": "flesh_undying",
           "duration": null,
           "target": "self"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "enemy",
+            "id": "parasitized",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "self",
+              "note": "血肉回响：场上有被寄生的敌人则不灭血肉共鸣，自疗 2 点（环节⑤ 2026-09-29 补读层段：parasitized payoff 升 landed）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -1676,7 +1763,7 @@
       "flagship": false,
       "lore": "序列2 秽语长老 —— \"'秽语'……直接诅咒；诱使目标堕落——精神上的灵肉之刃\"",
       "flavor": "你吐出一串污秽的音节。它的伤口开始发黑，而它心里有什么东西，正一点点松动。",
-      "describe": "对一名敌人造成 3 点精神伤害并诱使其堕落 4 tick：受到的治疗 ×0.5、每 tick 受到 1 点精神伤害；堕落结束时转为被玷污 3 tick。",
+      "describe": "对一名敌人造成 3 点精神伤害并诱使其堕落 4 tick：受到的治疗 ×0.5、每 tick 受到 1 点精神伤害；堕落结束时转为被玷污 3 tick。；秽语出口成污：目标堕落之影 3 tick。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1705,6 +1792,13 @@
               "statusId": "falling",
               "duration": 4,
               "target": "target"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "defile",
+              "duration": 3,
+              "target": "target",
+              "note": "秽语出口成污（环节⑤ 2026-09-29 补产层段）"
             }
           ]
         }
@@ -1944,7 +2038,7 @@
       "flagship": false,
       "lore": "序列1 暗天使 —— \"'阴影统治者'\"；序列0 倒吊人 —— \"权柄：阴影之主……\"",
       "flavor": "所有阴影都听你的——你藏在里面时，出手比任何时候都狠；而它们生出来的东西，也更强。",
-      "describe": "战斗开始时获得「阴影统治者」整场（不可驱散）：你处于藏入阴影/潜行类状态时造成伤害 ×1.3；己方阴影/灵体类召唤物攻击 +2。",
+      "describe": "战斗开始时获得「阴影统治者」整场（不可驱散）：你处于藏入阴影/潜行类状态时造成伤害 ×1.3；己方阴影/灵体类召唤物攻击 +2。；自身阴影栖息在场则栖影而王，攻击 +1；自身带镜子替身则镜影同主，防御 +1。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1952,6 +2046,50 @@
           "statusId": "shadow_sovereign",
           "duration": null,
           "target": "self"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "shadow_dwell",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self",
+              "note": "栖影而王：自身阴影栖息在场则统治力提升，攻击 +1（环节⑤ 2026-09-29 补读层段：shadow_dwell payoff 升 landed）"
+            }
+          ],
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "mirror_substitute",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 1,
+              "mode": "delta",
+              "duration": 3,
+              "target": "self",
+              "note": "镜影同主：自身镜子替身在场则镜中阴影共护，防御 +1（环节⑤ 2026-09-29 跨系读层段：shadow→assassin mirror_substitute）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
