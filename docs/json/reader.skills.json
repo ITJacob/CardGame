@@ -13,9 +13,7 @@
       "statusId": "observed",
       "enablers": [
         "解析",
-        "逻辑推演",
-        "洞悉",
-        "全知·现在与过去"
+        "逻辑推演"
       ],
       "payoffs": [
         "模仿·初解",
@@ -24,7 +22,7 @@
         "模仿·智天使",
         "模仿·全知之眼"
       ],
-      "note": "payoffs 2026-09-26 评审：五模仿卡 filter.hasStatus:observed 限定目标兑换重放大效（一卡双职：兼 mimic 轴 enabler）"
+      "note": "payoffs 2026-09-26 评审：五模仿卡 filter.hasStatus:observed 限定目标兑换重放大效（一卡双职：兼 mimic 轴 enabler） ｜ 2026-09-29 环节⑤：observed 补层数引擎（身份 8→15）；enablers 核正（洞悉/全知·现在与过去不挂 observed 移出）；模仿·全知之眼补 observed 读层段（payoff 升 landed，读层 20→25，兼跨轴 mimic→analysis）"
     },
     "arcana": {
       "symbol": "📚",
@@ -35,7 +33,8 @@
         "省略步骤"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：ritual_expertise 单向自 buff 无下游；纯 enabler 轴"
+      "note": "payoffs 2026-09-26 评审：ritual_expertise 单向自 buff 无下游；纯 enabler 轴 ｜ 2026-09-29 环节⑤：ritual_expertise 补层数引擎（身份 8→15）；省略步骤补产层段（产层 12→20）；纯产层轴真空甄别拍板接受（自 buff 直载无下游，payoffVacuumAccepted）",
+      "payoffVacuumAccepted": true
     },
     "mimic": {
       "symbol": "🦜",
@@ -58,12 +57,10 @@
       "statusId": "foresight",
       "enablers": [
         "预言",
-        "局势推演",
-        "规律·撬动",
-        "规律权柄"
+        "智慧权柄"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：foresight 为 charges 型自耗减伤载荷；optimal_choice/wisdom 各属其轴 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：charges 自耗减伤载荷，存在即收益；读层闭环维度记 12 分保底。",
+      "note": "payoffs 2026-09-26 评审：foresight 为 charges 型自耗减伤载荷；optimal_choice/wisdom 各属其轴 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：charges 自耗减伤载荷，存在即收益；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：enablers 核正（规律·撬动/局势推演/规律权柄不挂 foresight 移出；智慧权柄补产层段，产层 12→20）；预言读 observed 跨轴（foresight→analysis）、读 weather_omen 跨系（→planter）；规律·撬动读 law_edit 跨系（→savant）",
       "payoffVacuumAccepted": true
     }
   },
@@ -1004,7 +1001,7 @@
       "flagship": false,
       "lore": "序列5 秘术导师 —— \"可省略施法材料和步骤\"",
       "flavor": "那些繁琐的材料、冗长的咒文，你早就不需要了——你想，于是它发生。",
-      "describe": "战斗开始时获得「省略步骤」：你的本途径技能能量消耗 -1（最低 1），持续整场。",
+      "describe": "战斗开始时获得「省略步骤」：你的本途径技能能量消耗 -1（最低 1），持续整场。；并获得「仪式专精」整场：精神伤害 ×1.2。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1012,6 +1009,13 @@
           "statusId": "streamlined_cast",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "ritual_expertise",
+          "duration": null,
+          "target": "self",
+          "note": "省略的是步骤，专精在其中（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -1044,7 +1048,7 @@
       "flagship": false,
       "lore": "序列4 预言家 —— \"『预言』能力：看到未来最可能的几种可能性\"",
       "flavor": "你在无数条岔路里看见了最可能的那一条——同伴会先出手，而它会慢上半拍。",
-      "describe": "指定一名友军：其行动条 +25、获得「预知」（下次受击伤害 ×0.5，5 tick）；敌方主目标行动条 -20。",
+      "describe": "指定一名友军：其行动条 +25、获得「预知」（下次受击伤害 ×0.5，5 tick）；敌方主目标行动条 -20。；若目标已解析，预知的压制，其行动条再 -10；若自身带天时预兆，天时共鸣，友军行动条额外 +10。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -1091,6 +1095,46 @@
               "value": -20,
               "mode": "delta",
               "target": "secondary_target"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "observed",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": -10,
+                  "mode": "delta",
+                  "note": "预知的压制：目标已解析则再压其 10 行动条（环节⑤ 2026-09-29 跨轴读层段：foresight→analysis）"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "weather_omen",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 10,
+                  "mode": "delta",
+                  "note": "天时共鸣：自身天时预兆在场则友军行动条额外 +10（环节⑤ 2026-09-29 跨系读层段：foresight→planter weather_omen）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -1526,7 +1570,7 @@
       "flagship": false,
       "lore": "序列3 洞悉者 —— \"掌握『规律』权柄 / 通过撬动规律解决问题\"",
       "flavor": "你没有去打破它的甲——你只是轻轻拨动了一下\"甲能挡住什么\"这条规则。",
-      "describe": "使一名敌人护甲 -5、全元素抗性 -20（4 tick），期间你对其造成的伤害不结算护盾吸收。",
+      "describe": "使一名敌人护甲 -5、全元素抗性 -20（4 tick），期间你对其造成的伤害不结算护盾吸收。（自身带法则修订则延长至 5 tick，规律改写加持）。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1543,9 +1587,29 @@
       },
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "law_breach",
-          "duration": 4
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "law_edit",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "law_breach",
+              "duration": 5,
+              "note": "规律改写加持：自身法则修订在场则破绽延长至 5 tick（环节⑤ 2026-09-29 跨系读层段：foresight→savant law_edit）"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "law_breach",
+              "duration": 4
+            }
+          ]
         }
       ],
       "tentative": true,
@@ -1628,7 +1692,7 @@
       "flagship": true,
       "lore": "序列2 智天使 —— \"『智慧』权柄：总能提前看清局势，做出最正确选择\"",
       "flavor": "你永远比战场快半步——因为你站在的那一步，本来就是最正确的那一步。",
-      "describe": "战斗开始时获得「智慧」：你的攻击与技能必定命中、伤害 ×1.15，持续整场；自身行动条速率 +8，持续整场。",
+      "describe": "战斗开始时获得「智慧」：你的攻击与技能必定命中、伤害 ×1.15，持续整场；自身行动条速率 +8，持续整场。；并获得「预知」5 tick（受击伤害 ×0.5，一次）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1639,6 +1703,13 @@
               "statusId": "wisdom",
               "duration": null,
               "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "foresight",
+              "duration": 5,
+              "target": "self",
+              "note": "智慧含预知：看清的局势可挡一次（环节⑤ 2026-09-29 补产层段）"
             },
             {
               "type": "modify_stat",
@@ -1866,7 +1937,7 @@
       "flagship": false,
       "lore": "序列1 全知之眼 —— \"模仿效果达 100%（不涉及权柄）\"",
       "flavor": "一模一样。除了那一丝只属于权柄的东西——而那东西，你本来也不打算要。",
-      "describe": "完美模仿一名已解析敌人最近一次施放的技能（100% 效力，权柄类效果不被复制）；快照为空时改为造成 6 点精神伤害。",
+      "describe": "完美模仿一名已解析敌人最近一次施放的技能（100% 效力，权柄类效果不被复制）；快照为空时改为造成 6 点精神伤害。；若目标已解析，解析透彻，追加 2 点精神伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 3,
@@ -1899,6 +1970,25 @@
             "value": 6
           },
           "note": "原著「不涉及权柄」落地：重放跳过 authority:true 标记条目（编目参数 §二，数据层标注）；mimic 定义见模仿·初解"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "observed",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "解析透彻：目标已解析则重放前结算破绽，追加 2 点精神伤害（环节⑤ 2026-09-29 补读层段：observed payoff 升 landed，兼跨轴 mimic→analysis）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
