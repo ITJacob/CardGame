@@ -10,7 +10,7 @@
     "flame": {
       "symbol": "🔥",
       "name": "燃焚",
-      "statusId": "burn",
+      "statusId": "combustion",
       "enablers": [
         "火鸦术",
         "注火",
@@ -19,7 +19,8 @@
       "payoffs": [
         "炽白之枪",
         "紫色火焰"
-      ]
+      ],
+      "note": "2026-09-29 私有化：轴身份自 common burn 分叉为 combustion（燃焚）；enablers/payoffs 评审照旧"
     },
     "intrigue": {
       "symbol": "🕸️",
@@ -406,7 +407,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— \"『火鸦术』\"",
       "flavor": "你手心的火团扑腾着长出翅膀，化作一只火鸦撞进它的胸口，羽毛落处，火就烧了起来。",
-      "describe": "单体敌人：3 点火焰伤害 + 燃烧 3 tick。",
+      "describe": "单体敌人：3 点火焰伤害 + 燃焚 3 tick。",
       "cost": {
         "energy": 3,
         "cooldown": 3,
@@ -433,7 +434,7 @@
             },
             {
               "type": "mount_status",
-              "statusId": "burn",
+              "statusId": "combustion",
               "duration": 3,
               "target": "target"
             }
@@ -455,7 +456,7 @@
               },
               {
                 "type": "mount_status",
-                "statusId": "burn",
+                "statusId": "combustion",
                 "duration": 3,
                 "target": "target"
               }
@@ -549,7 +550,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— \"『燃烧之墙』\"",
       "flavor": "一道火墙自地面窜起横亘战场，把战线切成两半——谁要过去，就得先穿过它。",
-      "describe": "全体敌人：2 点火焰伤害 + 燃烧 3 tick + 行动条 -15（被火墙挡住，慢一步）。",
+      "describe": "全体敌人：2 点火焰伤害 + 燃焚 3 tick + 行动条 -15（被火墙挡住，慢一步）。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -575,7 +576,7 @@
             },
             {
               "type": "mount_status",
-              "statusId": "burn",
+              "statusId": "combustion",
               "duration": 3,
               "target": "all_enemies"
             },
@@ -733,7 +734,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— 火焰操控七技之「注火」",
       "flavor": "火一旦烧起来，你就往里再添一把——你打的每一处伤口，都在给那团火加柴。",
-      "describe": "被动：你造成伤害时，若目标带有燃烧，则刷新其燃烧时长并 +1 tick（单次上限 +2 tick）。",
+      "describe": "被动：你造成伤害时，若目标带有燃焚，则刷新其燃焚时长并 +1 tick（单次上限 +2 tick）。",
       "hook": "on_deal_damage",
       "effects": [
         {
@@ -741,12 +742,12 @@
           "condition": {
             "kind": "has_status",
             "side": "target",
-            "id": "burn"
+            "id": "combustion"
           },
           "then": [
             {
               "type": "mount_status",
-              "statusId": "burn",
+              "statusId": "combustion",
               "refresh": true,
               "durationDelta": 1,
               "maxBonusDuration": 2,
@@ -1209,7 +1210,7 @@
       "flagship": false,
       "lore": "序列4 铁血骑士 —— \"『远程轰炸』（5–10 公里）\"",
       "flavor": "火球自天而降，一颗接一颗砸在敌阵里——你甚至没有看向那边。",
-      "describe": "全体敌人：4 点火焰伤害 + 燃烧 2 tick（不可反击的远程全体轰炸）。",
+      "describe": "全体敌人：4 点火焰伤害 + 燃焚 2 tick（不可反击的远程全体轰炸）。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1235,7 +1236,7 @@
             },
             {
               "type": "mount_status",
-              "statusId": "burn",
+              "statusId": "combustion",
               "duration": 2,
               "target": "all_enemies"
             }
@@ -1720,7 +1721,7 @@
         {
           "id": "prayer_flame",
           "name": "祈求·烈焰",
-          "note": "收益改为附加 burn 3t + 对相邻单位溅射",
+          "note": "收益改为附加燃焚 3t + 对相邻单位溅射",
           "statusDefOverride": {
             "triggers": [
               {
@@ -1728,7 +1729,7 @@
                 "effects": [
                   {
                     "type": "mount_status",
-                    "statusId": "burn",
+                    "statusId": "combustion",
                     "duration": 3,
                     "target": "same_target",
                     "spread": "splash_adjacent"
