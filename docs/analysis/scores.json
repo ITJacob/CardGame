@@ -3,285 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "arbiter",
-   "name": "仲裁人",
-   "total": 47.7,
-   "dims": {
-    "轴健康度": 12.7,
-    "跨轴耦合": 2.5,
-    "跨系联动": 1.9,
-    "结构健康": 15,
-    "机制落地": 5.6,
-    "文本完备": 10.0
-   },
-   "minAxis": 39.0,
-   "cards": 40,
-   "deductions": [
-    {
-     "dim": "轴健康度",
-     "why": "-5：最低轴 39 分（<40）",
-     "ref": "inquest",
-     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
-    },
-    {
-     "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次",
-     "ref": "arbiter",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-13.1：枢纽状态 1 个 + combo 读取 0 次",
-     "ref": "arbiter",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "结构健康",
-     "why": "-0：主被动比 3.44 不在 [1.5, 3.0]",
-     "ref": "arbiter",
-     "fix": "补主动或被动卡，把主被动比调进 [1.5, 3.0]"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 DECREE_STATUS_FAMILY",
-     "ref": "decree 状态族的 rule / punishment 字段未落 ddd，卡住立规 / 禁制追击 / 秩序领域 3 ",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 REGION_VALUE_BOOST",
-     "ref": "辖区数值 +50% 倍率随 ZoneDef 落地，ddd 尚无区域数值倍率字段（🟡）",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 CASTIGATED_UNIQUE_HOLDER",
-     "ref": "全场唯一持有者 + 改判自动卸载语义未落 ddd（新增项 8 🟡）",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 DECREE_STATUS_FAMILY",
-     "ref": "同立规，依赖 decree 状态族 rule / punishment 字段",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 DECREE_STATUS_FAMILY",
-     "ref": "decree 全体挂载 + 规则参数依赖新增项 2（🔴）；Zone 跨场落位待拍板（退化=己方全场 Zone + 敌方全",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    }
-   ],
-   "axes": [
-    {
-     "id": "inquest",
-     "name": "审讯",
-     "symbol": "🔍",
-     "total": 39.0,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 4,
-      "轴内多样性": 5.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "过目不忘"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "混乱感应"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "marked",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "过目不忘",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "察觉异常",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "混乱感应",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "混乱感应",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "sanction",
-     "name": "惩戒",
-     "symbol": "🔨",
-     "total": 50.8,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 12,
-      "轴内多样性": 8.8,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "惩戒"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "禁制追击",
-      "审判之剑",
-      "审判"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "castigated",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "惩戒",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "禁制追击,审判之剑,审判",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "禁制追击,审判之剑,审判",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "jurisdiction",
-     "name": "辖区",
-     "symbol": "🏛️",
-     "total": 53.5,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 16,
-      "轴内多样性": 7.5,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 8,
-     "enablersVerified": [
-      "权威质变"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "审判之剑",
-      "律令·神秘减弱，现实增强",
-      "底层规则",
-      "位格律令"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "authority",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "权威质变",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "位格管辖,分割战场,秩序领域",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-9：payoff 4 张全部 notes 级（卡面无读层引用）",
-       "ref": "审判之剑,律令·神秘减弱，现实增强,底层规则,位格律令",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "审判之剑,律令·神秘减弱，现实增强,底层规则,位格律令",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "decree",
-     "name": "律令",
-     "symbol": "📜",
-     "total": 58.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 8,
-      "轴内多样性": 10.0,
-      "规模均衡": 10,
-      "承接连通": 3
-     },
-     "cards": 14,
-     "enablersVerified": [
-      "立规"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "满月",
-      "审判"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "立规",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-17：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "满月,审判",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "savant",
    "name": "通识者",
    "total": 49.7,
@@ -4023,6 +3744,219 @@
        "why": "-15：payoff 无读层方式多样性且无跨轴消费",
        "ref": "缝合灵魂,触碰痊愈,万物母巢,生命炼成,人偶制造",
        "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "arbiter",
+   "name": "仲裁人",
+   "total": 62.2,
+   "dims": {
+    "轴健康度": 22.2,
+    "跨轴耦合": 7.5,
+    "跨系联动": 1.9,
+    "结构健康": 15,
+    "机制落地": 5.6,
+    "文本完备": 10.0
+   },
+   "minAxis": 67.2,
+   "cards": 40,
+   "deductions": [
+    {
+     "dim": "跨系联动",
+     "why": "-13.1：枢纽状态 1 个 + combo 读取 0 次",
+     "ref": "arbiter",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    },
+    {
+     "dim": "结构健康",
+     "why": "-0：主被动比 3.44 不在 [1.5, 3.0]",
+     "ref": "arbiter",
+     "fix": "补主动或被动卡，把主被动比调进 [1.5, 3.0]"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 DECREE_STATUS_FAMILY",
+     "ref": "decree 状态族的 rule / punishment 字段未落 ddd，卡住立规 / 禁制追击 / 秩序领域 3 ",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 REGION_VALUE_BOOST",
+     "ref": "辖区数值 +50% 倍率随 ZoneDef 落地，ddd 尚无区域数值倍率字段（🟡）",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 CASTIGATED_UNIQUE_HOLDER",
+     "ref": "全场唯一持有者 + 改判自动卸载语义未落 ddd（新增项 8 🟡）",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 DECREE_STATUS_FAMILY",
+     "ref": "同立规，依赖 decree 状态族 rule / punishment 字段",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 DECREE_STATUS_FAMILY",
+     "ref": "decree 全体挂载 + 规则参数依赖新增项 2（🔴）；Zone 跨场落位待拍板（退化=己方全场 Zone + 敌方全",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    }
+   ],
+   "axes": [
+    {
+     "id": "decree",
+     "name": "律令",
+     "symbol": "📜",
+     "total": 67.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 8,
+      "轴内多样性": 11.2,
+      "规模均衡": 10,
+      "承接连通": 3
+     },
+     "cards": 14,
+     "enablersVerified": [
+      "立规",
+      "禁制追击",
+      "秩序领域"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [
+      "满月",
+      "审判"
+     ],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "-17：payoff 2 张全部 notes 级（卡面无读层引用）",
+       "ref": "满月,审判",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "inquest",
+     "name": "审讯",
+     "symbol": "🔍",
+     "total": 70.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 13,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "过目不忘",
+      "察觉异常"
+     ],
+     "payoffsLanded": [
+      "精神刺穿"
+     ],
+     "payoffsNotes": [
+      "混乱感应"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 1 张（减半计）",
+       "ref": "混乱感应",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "sanction",
+     "name": "惩戒",
+     "symbol": "🔨",
+     "total": 83.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 22,
+      "轴内多样性": 10.0,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "惩戒",
+      "处决"
+     ],
+     "payoffsLanded": [
+      "审判之剑",
+      "审判"
+     ],
+     "payoffsNotes": [
+      "禁制追击"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 1 张（减半计）",
+       "ref": "禁制追击",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "jurisdiction",
+     "name": "辖区",
+     "symbol": "🏛️",
+     "total": 85.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 21,
+      "轴内多样性": 7.5,
+      "规模均衡": 10,
+      "承接连通": 12
+     },
+     "cards": 8,
+     "enablersVerified": [
+      "权威质变",
+      "分割战场"
+     ],
+     "payoffsLanded": [
+      "审判之剑"
+     ],
+     "payoffsNotes": [
+      "律令·神秘减弱，现实增强",
+      "底层规则",
+      "位格律令"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 3 张（减半计）",
+       "ref": "律令·神秘减弱，现实增强,底层规则,位格律令",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
     }

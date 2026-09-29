@@ -13,11 +13,9 @@
       "statusId": "authority",
       "enablers": [
         "权威质变",
-        "位格管辖",
-        "分割战场",
-        "秩序领域"
+        "分割战场"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 辖区，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审：四卡挂 order≥7 dimHook ×1.5（维度读取语义已声明，hook 占位 ⚠️D）；authority 状态本身无卡读",
+      "note": "2026-09-20 清理悬空 statusId（原为 辖区，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审：四卡挂 order≥7 dimHook ×1.5（维度读取语义已声明，hook 占位 ⚠️D）；authority 状态本身无卡读 ｜ 2026-09-29 环节⑤：enablers 核正（位格管辖/秩序领域不挂 authority 移出，分割战场补 authority 产层段）；审判之剑读 authority（跨轴 sanction→jurisdiction，payoff 升 landed）",
       "payoffs": [
         "审判之剑",
         "律令·神秘减弱，现实增强",
@@ -30,14 +28,15 @@
       "name": "惩戒",
       "statusId": "castigated",
       "enablers": [
-        "惩戒"
+        "惩戒",
+        "处决"
       ],
       "payoffs": [
         "禁制追击",
         "审判之剑",
         "审判"
       ],
-      "note": "payoffs 2026-09-26 评审：禁制追击卡面读 castigated ×1.4（落地，decree 轴卡跨轴受益）；审判之剑按 debuff/control 类追加；审判按罪状计数逐条清算（valueFrom targetStatusCount）"
+      "note": "payoffs 2026-09-26 评审：禁制追击卡面读 castigated ×1.4（落地，decree 轴卡跨轴受益）；审判之剑按 debuff/control 类追加；审判按罪状计数逐条清算（valueFrom targetStatusCount） ｜ 2026-09-29 环节⑤：处决「先定罪后行刑」补 castigated 产层段（产层 20）；审判之剑/审判补 castigated 读层段（payoff 升 landed）"
     },
     "inquest": {
       "symbol": "🔍",
@@ -48,22 +47,25 @@
         "察觉异常"
       ],
       "payoffs": [
-        "混乱感应"
+        "混乱感应",
+        "精神刺穿"
       ],
-      "note": "payoffs 2026-09-26 评审：marked 无卡面读取；混乱感应 notes 级收束审讯标记为 hunted 集火（与过目标记叠加语义）"
+      "note": "payoffs 2026-09-26 评审：marked 无卡面读取；混乱感应 notes 级收束审讯标记为 hunted 集火（与过目标记叠加语义） ｜ 2026-09-29 环节⑤：察觉异常补 marked 产层段（产层 20）；精神刺穿补 marked 读层段（payoff 升 landed）"
     },
     "decree": {
       "symbol": "📜",
       "name": "律令",
       "statusId": "decree",
       "enablers": [
-        "立规"
+        "立规",
+        "禁制追击",
+        "秩序领域"
       ],
       "payoffs": [
         "满月",
         "审判"
       ],
-      "note": "payoffs 2026-09-26 评审：满月 rulePatches 按律令/秩序 tag ×1.3/×1.2 放大（落地）；审判 notes 级读规则槽存在（未编码）；禁制追击对 decree 是写入已计 sanction"
+      "note": "payoffs 2026-09-26 评审：满月 rulePatches 按律令/秩序 tag ×1.3/×1.2 放大（落地）；审判 notes 级读规则槽存在（未编码）；禁制追击对 decree 是写入已计 sanction ｜ 2026-09-29 环节⑤：enablers 补禁制追击/秩序领域（均挂 decree 状态，产层 20）；均衡分割补 authority 跨轴读层段（decree→jurisdiction）"
     }
   },
   "cards": [
@@ -377,7 +379,7 @@
       "flagship": false,
       "lore": "序列8 治安官 —— \"能察觉不正常因素、邪恶混乱相关事物\"",
       "flavor": "你总能先一步闻到不对劲——那些正在溃烂的、正在失控的、正在躲藏的，都瞒不过你。",
-      "describe": "战斗开始时获得「察觉异常」（整场）：敌方隐匿类状态对你无效；你对带有减益、持续伤害或控制状态的目标伤害 +1。",
+      "describe": "战斗开始时获得「察觉异常」（整场）：敌方隐匿类状态对你无效；你对带有减益、持续伤害或控制状态的目标伤害 +1；同时标记敌方全体（过目标记）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -385,6 +387,13 @@
           "statusId": "evil_sense",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "marked",
+          "duration": null,
+          "target": "all_enemies",
+          "note": "察觉即标记：异常无所遁形（环节⑤ 2026-09-29 补产层段，与过目不忘同族）"
         }
       ],
       "sharedAcross": [
@@ -413,7 +422,7 @@
       "flagship": true,
       "lore": "序列7 审讯者 —— \"『精神刺穿』：无视肉身穿刺灵体（5 米内）\"",
       "flavor": "你的意志化作一根细针，绕开血肉、绕开甲胄，直接钉进它的灵体——疼的是\"它自己\"，不是它的身体。",
-      "describe": "对一名近战敌人造成 4 点精神伤害，无视其护甲与护盾。",
+      "describe": "对一名近战敌人造成 4 点精神伤害，无视其护甲与护盾；若目标带有过目标记，精神破绽毕露，追加 2 点精神伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 3,
@@ -437,6 +446,25 @@
             "armor",
             "shield"
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "marked",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "标记目标精神破绽毕露：追加 2 点（环节⑤ 2026-09-29 补读层段：inquest payoff 升 landed）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -1370,7 +1398,7 @@
       "flagship": false,
       "lore": "序列4 律令法师 —— \"『处决』\"",
       "flavor": "判决只有一种执行方式。血线见底的那一刻，你的刀已经落下了。",
-      "describe": "对一名近战敌人造成 4 点物理伤害；若其生命不高于 30%，改为造成 9 点物理伤害。",
+      "describe": "先定罪后行刑：标记一名近战敌人为惩戒目标（整场，改判自动卸载），随后造成 4 点物理伤害；若其生命不高于 30%，改为造成 9 点物理伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -1386,6 +1414,13 @@
         "fallbackSort": "hp_asc"
       },
       "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "castigated",
+          "duration": null,
+          "target": "target",
+          "note": "定罪而后处决（环节⑤ 2026-09-29 补产层段：sanction 产层第二实证）"
+        },
         {
           "op": "if",
           "condition": {
@@ -1494,7 +1529,7 @@
       "flagship": false,
       "lore": "序列3 混乱猎手 —— \"部分'审判'权柄：'审判之剑'对混乱之物直接审判\"",
       "flavor": "你拔出的不是剑，是判决。而它身上每一道溃烂、每一分失控，都在替你签字。",
-      "describe": "对一名近战敌人造成 4 点精神伤害；若其持有任一减益/持续伤害/控制状态，再追加 5 点必定命中的精神伤害。",
+      "describe": "对一名近战敌人造成 4 点精神伤害；若其持有任一减益/持续伤害/控制状态，再追加 5 点必定命中的精神伤害；若其被惩戒标记，惩戒者之剑再追加 3 点；自身权威质变在场时，权威加持再追加 2 点。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1535,6 +1570,44 @@
                   "value": 5,
                   "neverMiss": true,
                   "note": "直接审判：判定已下、无法规避"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "castigated",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 3,
+                  "note": "惩戒者之剑：被惩戒目标追加 3 点（环节⑤ 2026-09-29 补读层段：sanction payoff 升 landed）"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "authority",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "note": "权威加持：自身权威质变在场伤害 +2（环节⑤ 2026-09-29 跨轴读层段：sanction→jurisdiction）"
                 }
               ],
               "else": []
@@ -1613,7 +1686,7 @@
       "flagship": false,
       "lore": "序列3 混乱猎手 —— \"能分割战场\"",
       "flavor": "你抬手划下一道看不见的界线。线的这一边和那一边，从此谁也够不着谁。",
-      "describe": "分割一名敌人 5 tick：它无法成为同阵营增益/治疗/守护效果的目标，也无法以这类效果指向同阵营单位。",
+      "describe": "分割一名敌人 5 tick：它无法成为同阵营增益/治疗/守护效果的目标，也无法以这类效果指向同阵营单位；行使管辖权威，自身权威质变 +1 层。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1633,6 +1706,15 @@
           "type": "mount_status",
           "statusId": "isolated",
           "duration": 5
+        },
+        {
+          "type": "mount_status",
+          "statusId": "authority",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self",
+          "note": "行使管辖权威：权威质变 +1 层（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "upgradeLadder": {
@@ -1808,7 +1890,7 @@
       "flagship": false,
       "lore": "序列2 平衡者 —— \"部分'平衡'权柄：分割战场保证实力平衡\"",
       "flavor": "你把战场一分为二，然后拨了拨天平——你们两边最强的那个，从此一样强。",
-      "describe": "自动选取敌方攻击最高者与己方攻击最高者：前者被分割 5 tick（无法与同阵营互给增益/治疗/守护），二者的攻击与防御被拉平（6 tick）。",
+      "describe": "自动选取敌方攻击最高者与己方攻击最高者：前者被分割 5 tick（无法与同阵营互给增益/治疗/守护），二者的攻击与防御被拉平（6 tick）；若自身权威质变在场，分割延长 2 tick。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1858,6 +1940,26 @@
               "mode": "set",
               "sourceRef": "secondary_target",
               "duration": 6
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "authority",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "isolated",
+                  "duration": 2,
+                  "target": "target",
+                  "note": "权威者的分割更彻底：延长 2 tick（环节⑤ 2026-09-29 跨轴读层段：decree→jurisdiction）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -2170,7 +2272,7 @@
       "flagship": true,
       "lore": "序列0 审判者 —— \"'审判'权柄：违背秩序者皆可审判，有整个世界意志和力量加持\"",
       "flavor": "你宣判的那一刻，整个世界的意志都站在你身后——它身上的每一道罪，都在这一击里被清算。",
-      "describe": "驱散一名敌人全部增益并造成 4 点精神伤害；其身上每有一道减益/持续伤害/控制状态，追加 2 点精神伤害（最多 5 段）；其余每个敌人受到 2 点精神伤害。",
+      "describe": "驱散一名敌人全部增益并造成 4 点精神伤害；其身上每有一道减益/持续伤害/控制状态，追加 2 点精神伤害（最多 5 段）；若其被惩戒标记，罪加一等再追加 4 点；其余每个敌人受到 2 点精神伤害。",
       "cost": {
         "energy": 6,
         "cooldown": 8,
@@ -2233,6 +2335,25 @@
               "value": 2,
               "target": "all_other_enemies",
               "note": "世界意志加持：判决余波波及全场其余敌人（不分摊，每人一份）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "castigated",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 4,
+                  "note": "罪加一等：被惩戒目标追加 4 点（环节⑤ 2026-09-29 补读层段）"
+                }
+              ],
+              "else": []
             }
           ]
         }
