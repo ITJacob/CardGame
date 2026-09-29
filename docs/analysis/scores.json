@@ -3,235 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "thief",
-   "name": "偷盗者",
-   "total": 50.6,
-   "dims": {
-    "轴健康度": 9.8,
-    "跨轴耦合": 0.0,
-    "跨系联动": 3.8,
-    "结构健康": 15,
-    "机制落地": 12.0,
-    "文本完备": 10.0
-   },
-   "minAxis": 34.0,
-   "cards": 37,
-   "deductions": [
-    {
-     "dim": "轴健康度",
-     "why": "-5：最低轴 34 分（<40）",
-     "ref": "parasite",
-     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
-    },
-    {
-     "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次",
-     "ref": "thief",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-11.2：枢纽状态 2 个 + combo 读取 0 次",
-     "ref": "thief",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 GAUGE_THRESHOLD_INV_S5",
-     "ref": "gauge_threshold 是合法 StatKey，但改它等价于改行动周期（threshold/rate），是否触碰",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    }
-   ],
-   "axes": [
-    {
-     "id": "parasite",
-     "name": "寄生",
-     "symbol": "🪱",
-     "total": 34.0,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 0,
-      "轴内多样性": 5.0,
-      "规模均衡": 9,
-      "承接连通": 0
-     },
-     "cards": 5,
-     "enablersVerified": [
-      "寄生"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "deep_parasitized",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "寄生",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "parasite",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 5 vs 理想 9（比值 0.54）",
-       "ref": "parasite",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    },
-    {
-     "id": "chrono",
-     "name": "时命",
-     "symbol": "🕰️",
-     "total": 36.2,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 0,
-      "轴内多样性": 6.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 6,
-     "enablersVerified": [
-      "窃取时间"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "stolen_time",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "窃取时间",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "命运缝隙,衰老",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "chrono",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "deceit",
-     "name": "欺诈",
-     "symbol": "🤥",
-     "total": 42.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 0,
-      "轴内多样性": 5.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 11,
-     "enablersVerified": [
-      "思维误导"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "思维误导",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "精神干扰",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "deceit",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "steal",
-     "name": "窃取",
-     "symbol": "🧤",
-     "total": 42.5,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 0,
-      "轴内多样性": 7.5,
-      "规模均衡": 8,
-      "承接连通": 0
-     },
-     "cards": 15,
-     "enablersVerified": [
-      "盗火"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "盗火",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 3 张（name 在列但卡面不挂身份）",
-       "ref": "卓越观察,窃取记忆,错误",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-25：真空轴（无 payoff 且未甄别接受）",
-       "ref": "steal",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-2：轴卡数 15 vs 理想 9（比值 1.62）",
-       "ref": "steal",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "criminal",
    "name": "罪犯",
    "total": 51.4,
@@ -4853,6 +4624,168 @@
        "why": "注：notes 级 2 张（减半计）",
        "ref": "命运启示,命运循环",
        "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "thief",
+   "name": "偷盗者",
+   "total": 70.3,
+   "dims": {
+    "轴健康度": 20.8,
+    "跨轴耦合": 5.0,
+    "跨系联动": 7.5,
+    "结构健康": 15,
+    "机制落地": 12.0,
+    "文本完备": 10.0
+   },
+   "minAxis": 66.2,
+   "cards": 37,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-10.0：本途径他轴身份读取 2 次",
+     "ref": "thief",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 GAUGE_THRESHOLD_INV_S5",
+     "ref": "gauge_threshold 是合法 StatKey，但改它等价于改行动周期（threshold/rate），是否触碰",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    }
+   ],
+   "axes": [
+    {
+     "id": "deceit",
+     "name": "欺诈",
+     "symbol": "🤥",
+     "total": 66.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 11,
+     "enablersVerified": [
+      "思维误导",
+      "精神干扰"
+     ],
+     "payoffsLanded": [
+      "欺诈规则"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "steal",
+     "name": "窃取",
+     "symbol": "🧤",
+     "total": 66.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 8.8,
+      "规模均衡": 8,
+      "承接连通": 6
+     },
+     "cards": 15,
+     "enablersVerified": [
+      "盗火",
+      "窃取权柄"
+     ],
+     "payoffsLanded": [
+      "窃取"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-2：轴卡数 15 vs 理想 9（比值 1.62）",
+       "ref": "steal",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    },
+    {
+     "id": "chrono",
+     "name": "时命",
+     "symbol": "🕰️",
+     "total": 70.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 7.5,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 6,
+     "enablersVerified": [
+      "窃取时间",
+      "衰老"
+     ],
+     "payoffsLanded": [
+      "嫁接命运"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "parasite",
+     "name": "寄生",
+     "symbol": "🪱",
+     "total": 78.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 18,
+      "轴内多样性": 7.5,
+      "规模均衡": 9,
+      "承接连通": 9
+     },
+     "cards": 5,
+     "enablersVerified": [
+      "寄生",
+      "窃取身份"
+     ],
+     "payoffsLanded": [
+      "窃取身份",
+      "混淆分身"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 5 vs 理想 9（比值 0.54）",
+       "ref": "parasite",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
     }
