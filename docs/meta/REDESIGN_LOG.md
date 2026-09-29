@@ -28,7 +28,7 @@
 - **chanter**：notary（公证裁定链，正义审判已读 guilty，notary 该有回款卡）
 - **lawyer**：advocacy（寻隙 chink_finding，穿甲体系该有读层 payoff）
 - **planter**：alchemy（炼成阶梯 matter_ladder，人偶制造产耗捆绑可拆独立读档卡）
-- **pryer**：combat（格斗 energy_strain 无人消费）
+- **pryer**：combat（格斗 knowledge_strain 无人消费——2026-09-29 已自 common energy_strain 分叉私有化）
 - **reader**：arcana（仪式专精 ritual_expertise 单向自 buff）
 - **sailor**：authority（tyrant_dread 无收束卡）
 - **spectator ×3**：suggestion（subconscious_edit）/ dream（梦境轴身份悬空）/ fantasy（written_truth）

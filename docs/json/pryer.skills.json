@@ -23,13 +23,13 @@
     "combat": {
       "symbol": "🥊",
       "name": "格斗",
-      "statusId": "energy_strain",
+      "statusId": "knowledge_strain",
       "enablers": [
         "灌输知识",
         "知识攻击"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：energy_strain 全库无卡面读取；格斗分支条件读 shield/bulwark/gauge_rank 非轴身份"
+      "note": "payoffs 2026-09-26 评审：knowledge_strain 全库无卡面读取（2026-09-29 自 common energy_strain 分叉为格斗轴私有身份）；格斗分支条件读 shield/bulwark/gauge_rank 非轴身份"
     },
     "scroll": {
       "symbol": "📃",
@@ -2047,15 +2047,15 @@
       "flagship": false,
       "lore": "序列2 贤者 —— \"灌输知识、知识攻击、同化、虚假信息\"",
       "flavor": "你每打中它一次，就把一段无用、错乱、自相矛盾的知识灌进它的脑子——它越想施法，越觉得吃力。",
-      "describe": "每当你造成伤害：目标获得「耗能加重」2 tick（能量消耗 ×1.5）。",
+      "describe": "每当你造成伤害：目标获得「知识淤积」2 tick（能量消耗 ×1.5）。",
       "hook": "on_deal_damage",
       "effects": [
         {
           "type": "mount_status",
-          "statusId": "energy_strain",
+          "statusId": "knowledge_strain",
           "duration": 2,
           "target": "target",
-          "note": "既有状态纯复用，零新机制"
+          "note": "格斗轴身份知识淤积（2026-09-29 自 common energy_strain 分叉私有化）"
         }
       ],
       "tentative": true,
@@ -2079,7 +2079,7 @@
       "flagship": false,
       "lore": "序列2 贤者 —— \"灌输知识、知识攻击、同化、虚假信息\"",
       "flavor": "你把一整段悖论直接砸进它的意识。它的脑子先是疼，然后开始怀疑自己知道的一切。",
-      "describe": "对一名敌人造成 5 点精神伤害并施加「耗能加重」3 tick；若自身隐秘知识 ≥2 层，额外造成 3 点精神伤害。",
+      "describe": "对一名敌人造成 5 点精神伤害并施加「知识淤积」3 tick；若自身隐秘知识 ≥2 层，额外造成 3 点精神伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -2106,7 +2106,7 @@
             },
             {
               "type": "mount_status",
-              "statusId": "energy_strain",
+              "statusId": "knowledge_strain",
               "duration": 3
             },
             {
