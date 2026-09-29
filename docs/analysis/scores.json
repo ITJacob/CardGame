@@ -3,280 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "savant",
-   "name": "通识者",
-   "total": 49.7,
-   "dims": {
-    "轴健康度": 14.9,
-    "跨轴耦合": 0.0,
-    "跨系联动": 3.8,
-    "结构健康": 15,
-    "机制落地": 6.0,
-    "文本完备": 10.0
-   },
-   "minAxis": 43.0,
-   "cards": 36,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-15.0：本途径他轴身份读取 0 次",
-     "ref": "savant",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-11.2：枢纽状态 2 个 + combo 读取 0 次",
-     "ref": "savant",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 HAZARD_WARD_MODIFY_DAMAGE",
-     "ref": "hazard_ward 触发器载荷使用扩展原语 modify_damage（scope: taken ×0.5，R5 裁",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 ON_TURN_START_NOT_FIRED",
-     "ref": "G15：on_turn_start 引擎从未 fire，当前不生效；修 G15 后自动闭环",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 BUILD_ELEMENT_RESIST",
-     "ref": "modify_stat stat: resist:$buildElement 使用构筑期槽位变量（元素在派发时选定，非战",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    }
-   ],
-   "axes": [
-    {
-     "id": "lore",
-     "name": "通识",
-     "symbol": "📘",
-     "total": 43.0,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 8,
-      "轴内多样性": 5.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 8,
-     "enablersVerified": [
-      "解析权柄"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "学习权柄",
-      "现实知识"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "analysis_authority",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "解析权柄",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "鉴定,危险规避",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-17：payoff 2 张全部 notes 级（卡面无读层引用）",
-       "ref": "学习权柄,现实知识",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "学习权柄,现实知识",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "civilization",
-     "name": "文明",
-     "symbol": "🏙️",
-     "total": 44.0,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "读层闭环": 4,
-      "轴内多样性": 10.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "教化权柄"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "毁灭新生"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "enlightened",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "教化权柄",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "导师,知识妖精",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "毁灭新生",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "毁灭新生",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "astral",
-     "name": "星律",
-     "symbol": "☄️",
-     "total": 56.5,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 12,
-      "轴内多样性": 7.5,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "规律权柄"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "星之祝福",
-      "完美之境",
-      "现实规律"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "规律权柄",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "虚假星象,星之诅咒",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
-       "ref": "星之祝福,完美之境,现实规律",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "星之祝福,完美之境,现实规律",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "craft",
-     "name": "造物",
-     "symbol": "⚙️",
-     "total": 63.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 20,
-      "轴内多样性": 8.8,
-      "规模均衡": 8,
-      "承接连通": 0
-     },
-     "cards": 14,
-     "enablersVerified": [
-      "机械奇物"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "机械维修",
-      "注入灵魂",
-      "制造大师",
-      "灵魂熔炉",
-      "解离"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "机械奇物",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 4 张（name 在列但卡面不挂身份）",
-       "ref": "硝酸甘油,王水,考古发掘,炼成",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-5：payoff 5 张全部 notes 级（卡面无读层引用）",
-       "ref": "机械维修,注入灵魂,制造大师,灵魂熔炉,解离",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-2：轴卡数 14 vs 理想 9（比值 1.56）",
-       "ref": "craft",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "机械维修,注入灵魂,制造大师,灵魂熔炉,解离",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "corpse_collector",
    "name": "收尸人",
    "total": 50.0,
@@ -4134,6 +3860,216 @@
        "dim": "规模均衡",
        "why": "-2：轴卡数 16 vs 理想 10（比值 1.56）",
        "ref": "light",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "savant",
+   "name": "通识者",
+   "total": 62.9,
+   "dims": {
+    "轴健康度": 23.1,
+    "跨轴耦合": 5.0,
+    "跨系联动": 3.8,
+    "结构健康": 15,
+    "机制落地": 6.0,
+    "文本完备": 10.0
+   },
+   "minAxis": 74.2,
+   "cards": 36,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-10.0：本途径他轴身份读取 2 次",
+     "ref": "savant",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "跨系联动",
+     "why": "-11.2：枢纽状态 2 个 + combo 读取 0 次",
+     "ref": "savant",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 HAZARD_WARD_MODIFY_DAMAGE",
+     "ref": "hazard_ward 触发器载荷使用扩展原语 modify_damage（scope: taken ×0.5，R5 裁",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 ON_TURN_START_NOT_FIRED",
+     "ref": "G15：on_turn_start 引擎从未 fire，当前不生效；修 G15 后自动闭环",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 BUILD_ELEMENT_RESIST",
+     "ref": "modify_stat stat: resist:$buildElement 使用构筑期槽位变量（元素在派发时选定，非战",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    }
+   ],
+   "axes": [
+    {
+     "id": "lore",
+     "name": "通识",
+     "symbol": "📘",
+     "total": 74.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 17,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 8,
+     "enablersVerified": [
+      "解析权柄",
+      "鉴定"
+     ],
+     "payoffsLanded": [
+      "鉴定"
+     ],
+     "payoffsNotes": [
+      "学习权柄",
+      "现实知识"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 2 张（减半计）",
+       "ref": "学习权柄,现实知识",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "civilization",
+     "name": "文明",
+     "symbol": "🏙️",
+     "total": 74.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 11.2,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "教化权柄",
+      "导师"
+     ],
+     "payoffsLanded": [
+      "毁灭新生"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "astral",
+     "name": "星律",
+     "symbol": "☄️",
+     "total": 76.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 17,
+      "轴内多样性": 8.8,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "规律权柄",
+      "虚假星象"
+     ],
+     "payoffsLanded": [
+      "星之祝福"
+     ],
+     "payoffsNotes": [
+      "完美之境",
+      "现实规律"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 2 张（减半计）",
+       "ref": "完美之境,现实规律",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "craft",
+     "name": "造物",
+     "symbol": "⚙️",
+     "total": 87.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 25,
+      "轴内多样性": 10.0,
+      "规模均衡": 8,
+      "承接连通": 9
+     },
+     "cards": 14,
+     "enablersVerified": [
+      "机械奇物",
+      "考古发掘",
+      "炼成"
+     ],
+     "payoffsLanded": [
+      "机械维修"
+     ],
+     "payoffsNotes": [
+      "注入灵魂",
+      "制造大师",
+      "灵魂熔炉",
+      "解离"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
+       "ref": "硝酸甘油,王水",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      },
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 4 张（减半计）",
+       "ref": "注入灵魂,制造大师,灵魂熔炉,解离",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      },
+      {
+       "dim": "规模均衡",
+       "why": "-2：轴卡数 14 vs 理想 9（比值 1.56）",
+       "ref": "craft",
        "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
