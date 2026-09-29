@@ -13,12 +13,12 @@
       "statusId": "curse_link",
       "enablers": [
         "诅咒之源",
-        "变形诅咒"
+        "无反噬之咒"
       ],
       "payoffs": [
         "万咒加身"
       ],
-      "note": "payoffs 2026-09-26 评审：万咒加身 notes 级（链网密度传染段未实现）；curse_link 层数卡面无读取（转嫁由状态本体承载）"
+      "note": "payoffs 2026-09-26 评审：万咒加身 notes 级（链网密度传染段未实现）；curse_link 层数卡面无读取（转嫁由状态本体承载） ｜ 2026-09-29 环节⑤：enablers 核正（变形诅咒挂 transmute_curse 移出，无反噬之咒实证挂 curse_link，产层 12→20）；万咒加身读 curse_link 升 landed（payoff notes→landed）"
     },
     "bondage": {
       "symbol": "⛓️",
@@ -26,11 +26,9 @@
       "statusId": "the_bound",
       "enablers": [
         "被缚者",
-        "爆发欲望",
-        "长久沉默",
-        "邪物"
+        "长久沉默"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 枷锁，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审：侵蚀诅咒 notes 级（读 lust 消纳段未实现，卡面仅挂 spirit_prison）；lust Pool 读档全库尚无双实现卡",
+      "note": "2026-09-20 清理悬空 statusId（原为 枷锁，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审：侵蚀诅咒 notes 级（读 lust 消纳段未实现，卡面仅挂 spirit_prison）；lust Pool 读档全库尚无双实现卡 ｜ 2026-09-29 环节⑤：the_bound 补层数引擎（身份 8→15）；长久沉默补产层段（爆发欲望/邪物不挂 the_bound 移出，产层 12→20）；侵蚀诅咒读 the_bound 升 landed（payoff notes→landed）；被缚者读 occult_seal 跨系（→sleepless）",
       "payoffs": [
         "侵蚀诅咒"
       ]
@@ -40,28 +38,28 @@
       "name": "异类",
       "statusId": "werewolf_form",
       "enablers": [
-        "狼人化"
+        "狼人化",
+        "异类之王"
       ],
       "payoffs": [
         "诅咒权柄",
         "演出",
         "异类之王"
       ],
-      "note": "payoffs 2026-09-26 评审：诅咒权柄卡面实证 has_status(spirit_form)×1.5（落地）；演出/异类之王 notes 级（谱系栈回放/深度压制未实现）"
+      "note": "payoffs 2026-09-26 评审：诅咒权柄卡面实证 has_status(spirit_form)×1.5（落地）；演出/异类之王 notes 级（谱系栈回放/深度压制未实现） ｜ 2026-09-29 环节⑤：werewolf_form 补层数引擎（身份 8→15）；异类之王补产层段（产层 12→20，兼 payoff 实证）；演出读 werewolf_form 升 landed（原三 payoff 全 notes 因口径核 werewolf_form 而非 spirit_form）"
     },
     "item": {
       "symbol": "🧿",
       "name": "物品",
       "statusId": "object_possession",
       "enablers": [
-        "随手物品",
-        "操纵物品",
-        "附身物体"
+        "附身物体",
+        "操纵物品"
       ],
       "payoffs": [
         "物品权柄"
       ],
-      "note": "payoffs 2026-09-26 评审：物品权柄读 ITEM 单位类型在场（落地，非状态层数）；object_possession 无卡读取"
+      "note": "payoffs 2026-09-26 评审：物品权柄读 ITEM 单位类型在场（落地，非状态层数）；object_possession 无卡读取 ｜ 2026-09-29 环节⑤：object_possession 补层数引擎（身份 8→15）；操纵物品补产层段（随手物品挂 shackle 移出，产层 12→20）；物品权柄读 object_possession 升 landed；操纵物品读 werewolf_form 跨轴（item→aberration）+ puppet_string 跨系（→seer）"
     }
   },
   "cards": [
@@ -1228,7 +1226,7 @@
       "flagship": false,
       "lore": "序列4 木偶 —— \"操纵全部无生命物品\"",
       "flavor": "地上的断刃、残椅、破碎的灯罩，全都颤了一下，然后僵硬地扑了上去。",
-      "describe": "在己方队尾召唤一具古物傀儡（生命 60%、攻击 50%）。",
+      "describe": "在己方队尾召唤一具古物傀儡（生命 60%、攻击 50%）。；操纵先附身（自身附身物体 3 tick）；自身狼人化在场则异类驱物，追加 2 点物理伤害；目标带提线木偶则夺线操纵，追加 2 点无属性伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1251,6 +1249,51 @@
           "hpRatio": 0.6,
           "atkRatio": 0.5,
           "note": "复用 F42 unit_relic 古物傀儡（不新立单位）；C5 hpRatio/position 已实现；物品权柄与异类之王的共同燃料"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "object_possession",
+          "duration": 3,
+          "target": "self",
+          "note": "操纵先附身（环节⑤ 2026-09-29 补产层段）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "werewolf_form",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "note": "异类驱物：自身狼人化在场则古物傀儡出击追加 2 点（环节⑤ 2026-09-29 跨轴读层段：item→aberration）"
+            }
+          ],
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "puppet_string",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "note": "夺线操纵：目标带提线木偶则斩断其线追加 2 点（环节⑤ 2026-09-29 跨系读层段：item→seer puppet_string）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -1279,7 +1322,7 @@
       "flagship": false,
       "lore": "序列4 木偶 —— \"『演出』：表演前序角色将其能力提升到弱序列4 层次\"",
       "flavor": "你给它安排了一个角色，让它照着演——本来就比这强的，分毫不动。",
-      "describe": "一名友军的攻击与防御被抬升到至少弱序列4 基准（4 tick）；已超过基准的不受影响。",
+      "describe": "一名友军的攻击与防御被抬升到至少弱序列4 基准（4 tick）；已超过基准的不受影响。；若自身狼人化在场，狼形演出，追加 3 点物理伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 5,
@@ -1311,6 +1354,25 @@
           "mode": "to_at_least",
           "duration": 4,
           "target": "target"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "werewolf_form",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3,
+              "note": "狼形演出：自身狼人化在场则演出带爪牙，追加 3 点物理伤害（环节⑤ 2026-09-29 补读层段：werewolf_form payoff 升 landed）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -1502,7 +1564,7 @@
       "flagship": false,
       "lore": "序列3 沉默门徒 —— \"可附身物体，在长久沉默中酝酿极致诅咒\"",
       "flavor": "沉默是你的道。你免疫一切封口；而在沉默里泡久了的那些人，被你的诅咒咬得格外深。",
-      "describe": "战斗开始时获得「长久沉默」：免疫沉默类状态，持续整场；对处于沉默 / 封技状态的目标造成的伤害 ×1.3。",
+      "describe": "战斗开始时获得「长久沉默」：免疫沉默类状态，持续整场；对处于沉默 / 封技状态的目标造成的伤害 ×1.3。；长守即缚：被缚者 +1 层（整场）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1510,6 +1572,13 @@
           "statusId": "silent_vigil",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "the_bound",
+          "duration": null,
+          "target": "self",
+          "note": "长守即缚：静默坚守中被缚更深（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -1843,7 +1912,7 @@
       "flagship": false,
       "lore": "序列1 神孽 —— \"『侵蚀诅咒』：让敌人灵性凝固，身体成灵的囚笼\"",
       "flavor": "它体内的灵性一点一点凝住了——它的身体成了自己灵魂的牢房。",
-      "describe": "使一名敌人灵性囚笼 4 回合：完全无法行动，且无法被任何治疗唤醒（不可驱散）。",
+      "describe": "使一名敌人灵性囚笼 4 回合：完全无法行动，且无法被任何治疗唤醒（不可驱散）。；若自身被缚者在场，缚中诅咒，追加 2 点精神伤害。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -1863,6 +1932,25 @@
           "type": "mount_status",
           "statusId": "spirit_prison",
           "duration": 4
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "the_bound",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "缚中诅咒：自身被缚者在场则灵监诅咒追加 2 点精神伤害（环节⑤ 2026-09-29 补读层段：the_bound payoff 升 landed，兼跨轴 curse→bondage）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -1980,7 +2068,7 @@
       "flagship": false,
       "lore": "序列0 被缚者 —— \"『异类』权柄：异类之王，转化掌控所有异种，天然压制\"",
       "flavor": "凡是不属于人的东西，都认得你。",
-      "describe": "战斗开始时获得「异类之王」：己方所有异种单位攻击 +2，持续整场；你对异种单位造成的伤害 ×1.5。",
+      "describe": "战斗开始时获得「异类之王」：己方所有异种单位攻击 +2，持续整场；你对异种单位造成的伤害 ×1.5。；王即狼：自身狼人化 4 tick。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1988,6 +2076,13 @@
           "statusId": "aberration_king",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "werewolf_form",
+          "duration": 4,
+          "target": "self",
+          "note": "王即狼：异类之王以狼形临阵（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -2013,7 +2108,7 @@
       "flagship": true,
       "lore": "序列0 被缚者 —— \"『束缚 / 节制』权柄：束缚 / 封印疯狂欲望物品生物\"",
       "flavor": "你不再挣脱枷锁——你成了枷锁本身。",
-      "describe": "战斗开始时获得「被缚者」：免疫一切位移与行动条后拨；你施加的枷锁、变形诅咒与灵性囚笼不可被驱散。",
+      "describe": "战斗开始时获得「被缚者」：免疫一切位移与行动条后拨；你施加的枷锁、变形诅咒与灵性囚笼不可被驱散。；若目标带诡秘封印，封印发缚，自疗 2 点。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -2021,6 +2116,25 @@
           "statusId": "the_bound",
           "duration": null,
           "target": "self"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "occult_seal",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "self",
+              "note": "封印发缚：目标带诡秘封印则缚印共鸣，自疗 2 点（环节⑤ 2026-09-29 跨系读层段：bondage→sleepless occult_seal）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
@@ -2046,7 +2160,7 @@
       "flagship": true,
       "lore": "序列0 被缚者 —— \"『物品』权柄：掌控各种物品\"",
       "flavor": "这战场上所有没有生命的东西，都是你的。",
-      "describe": "己方所有物品类单位攻击 +3（4 tick）并立刻获得 30 点行动条；同时驱散全体敌人各 2 个增益。",
+      "describe": "己方所有物品类单位攻击 +3（4 tick）并立刻获得 30 点行动条；同时驱散全体敌人各 2 个增益。；若自身附身物体在场，附身操纵，全体敌人额外受 2 点物理伤害。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -2104,6 +2218,26 @@
                 "count": 2
               },
               "note": "夺走其持有之物（C2 dispel.category 数组）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "object_possession",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 2,
+                  "target": "all_enemies",
+                  "note": "附身操纵：自身附身物体在场则权柄波及全体敌人 2 点（环节⑤ 2026-09-29 补读层段：object_possession payoff 升 landed）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -2131,7 +2265,7 @@
       "flagship": false,
       "lore": "序列0 被缚者 —— \"『诅咒』权柄：完成所有类型诅咒，本身极难被诅咒\"",
       "flavor": "你能想到的每一种诅咒，同时落在了它身上——枷锁、变形、剧毒、怨毒、精神污染，一层压着一层。而你自己，从来没有人诅咒得动。",
-      "describe": "全体敌人同时受到：枷锁 2 tick、变形诅咒 2 tick、中毒 3 回合、易伤 3 回合、精神污染 2 层（3 tick）；自身获得两条整场状态：受到的减益 / 持续伤害状态时长减半，以及 3 次确定性阻挡（免疫减益与持续伤害类状态）。",
+      "describe": "全体敌人同时受到：枷锁 2 tick、变形诅咒 2 tick、中毒 3 回合、易伤 3 回合、精神污染 2 层（3 tick）；自身获得两条整场状态：受到的减益 / 持续伤害状态时长减半，以及 3 次确定性阻挡（免疫减益与持续伤害类状态）。；若自身诅咒链接在场，链网传导，全体敌人额外受 2 点毒素伤害。",
       "cost": {
         "energy": 7,
         "cooldown": 9,
@@ -2194,6 +2328,26 @@
               "target": "self",
               "note": "本身极难被诅咒（后半）：3 次确定性阻挡",
               "charges": 3
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "curse_link",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "poison",
+                  "value": 2,
+                  "target": "all_enemies",
+                  "note": "链网传导：自身诅咒链接在场则咒网再烙 2 点（环节⑤ 2026-09-29 补读层段：curse_link payoff 升 landed）"
+                }
+              ],
+              "else": []
             }
           ]
         }
