@@ -17,7 +17,8 @@
       ],
       "payoffs": [
         "镜中世界"
-      ]
+      ],
+      "note": "2026-09-29 环节⑤：魔镜占卜补 mirror_substitute 产层段（产层 12→20）；镜中世界读 mirror_substitute 升 landed（读层 4→9）"
     },
     "charm": {
       "symbol": "💋",
@@ -41,7 +42,8 @@
       ],
       "payoffs": [
         "末日"
-      ]
+      ],
+      "note": "2026-09-29 环节⑤：黑焰补 disease 产层段（产层 12→20）；末日读 disease 升 landed（读层 4→9）；末日挂 charm_axis/doom 自动成跨轴消费"
     },
     "form": {
       "symbol": "🎭",
@@ -54,7 +56,8 @@
       ],
       "payoffs": [
         "原初·静止"
-      ]
+      ],
+      "note": "2026-09-29 环节⑤：assassin_form 补层数引擎（身份 8→15）；三形态卡各补产层段（原 enablers 均未实证，产层 5→20）；原初·静止读 assassin_form 升 landed + 跨轴读 mirror_substitute（form→mirror）；影形态读 conceal_authority 跨系（→sleepless）；石化读 puppet_string 跨系（→seer）"
     }
   },
   "cards": [
@@ -562,7 +565,7 @@
       "flagship": false,
       "lore": "序列7 女巫 —— \"操控黑焰\"；序列6 欢愉 —— \"黑焰可如子弹射出 / 驱除诅咒\"",
       "flavor": "一簇漆黑的火苗在你掌心燃起，它没有温度，却把碰到的东西连同诅咒一起烧成灰烬。",
-      "describe": "对一名敌人造成 4 点火焰伤害，并有 40% 几率使其燃烧。",
+      "describe": "对一名敌人造成 4 点火焰伤害，并有 40% 几率使其燃烧。；黑焰燎疾：目标疾病 3 tick。",
       "cost": {
         "energy": 3,
         "cooldown": 3,
@@ -592,6 +595,12 @@
             "p": 0.4
           },
           "note": "G1：概率写在 EffectRef.condition（R3 登记、R5 限非伤害维度）；元素取 fire（引擎无 dark，黑焰辨识度来自外观与技能名，不共享给猎人）"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "disease",
+          "duration": 3,
+          "note": "黑焰燎疾：疫由焰生（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "upgradeLadder": {
@@ -724,7 +733,7 @@
       "flagship": false,
       "lore": "序列7 女巫 —— \"镜子魔法：魔镜占卜\"",
       "flavor": "你向魔镜问过一个又一个答案，其中总有一句，在你受伤的瞬间恰好想起。",
-      "describe": "战斗开始时获得「魔镜占卜」：每次你受到伤害，有 30% 几率想起一句启示，能量 +1。",
+      "describe": "战斗开始时获得「魔镜占卜」：每次你受到伤害，有 30% 几率想起一句启示，能量 +1。；镜中藏替：获得镜子替身（4 tick，1 次）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -732,6 +741,14 @@
           "statusId": "mirror_divination",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "mirror_substitute",
+          "charges": 1,
+          "duration": 4,
+          "target": "self",
+          "note": "镜中藏替：占卜时预置替身（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -1612,7 +1629,7 @@
       "flagship": false,
       "lore": "序列3 不老 —— \"石化：真正石化能力，蛇发女妖形态\"",
       "flavor": "你撩开头发看了它一眼。它的血肉从指尖开始变成灰白的石头——而石头，是会碎的。",
-      "describe": "使一名敌人石化 3 tick：不能行动、受伤 ×0.6（石头比血肉硬）、不可驱散；解除时碎裂，易伤 2 tick。",
+      "describe": "使一名敌人石化 3 tick：不能行动、受伤 ×0.6（石头比血肉硬）、不可驱散；解除时碎裂，易伤 2 tick。（目标带提线木偶则延长至 4 tick，傀儡易石化）。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1629,9 +1646,29 @@
       },
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "petrification",
-          "duration": 3
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "puppet_string",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "petrification",
+              "duration": 4,
+              "note": "傀儡易石化：目标带提线木偶则石化延长至 4 tick（环节⑤ 2026-09-29 跨系读层段：form→seer puppet_string）"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "petrification",
+              "duration": 3
+            }
+          ]
         }
       ],
       "tentative": true,
@@ -1996,7 +2033,7 @@
       "flagship": true,
       "lore": "序列1 末日 —— \"末日权柄：让指定区域各种矛盾集中爆发，命运纠缠终结\"",
       "flavor": "你说，这里该结束了。于是所有的旧账在同一刻清算——它们互相撕咬，而命运替每一个人都写好了结尾。",
-      "describe": "全体敌人受到 4 点无元素伤害，被魅惑 2 tick（互相撕咬，F15），并各自受到命运诅咒 4 tick（2 次受击追伤）。",
+      "describe": "全体敌人受到 4 点无元素伤害，被魅惑 2 tick（互相撕咬，F15），并各自受到命运诅咒 4 tick（2 次受击追伤）。；对带病的目标疫中加末日，伤害 +2。",
       "cost": {
         "energy": 7,
         "cooldown": 8,
@@ -2034,6 +2071,25 @@
               "duration": 4,
               "target": "all_enemies",
               "note": "命运纠缠终结（各自的灾难接连落下）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "disease",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "note": "疫中加末日：目标带病则末日伤害 +2（环节⑤ 2026-09-29 补读层段：disease payoff 升 landed）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -2184,7 +2240,7 @@
       "flagship": false,
       "lore": "序列0 魔女 —— \"镜中世界权柄\"",
       "flavor": "你抬起手，整片战场被折进镜子里。敌人伸手碰不到任何人，而你的同伴，从每一面镜子中同时走了出来。",
-      "describe": "吟唱 2 tick 后降临「镜中世界」2 回合：敌方单位持续不可选中、不可行动、免疫伤害；我方「镜像/替身」标签卡 ×2、敌方「光/净化」标签卡削弱；我方登场/复活从镜像位置出现。入场瞬间：全体敌人被放逐 1 tick，全体友军行动条 +20。自身迷失值 +1。",
+      "describe": "吟唱 2 tick 后降临「镜中世界」2 回合：敌方单位持续不可选中、不可行动、免疫伤害；我方「镜像/替身」标签卡 ×2、敌方「光/净化」标签卡削弱；我方登场/复活从镜像位置出现。入场瞬间：全体敌人被放逐 1 tick，全体友军行动条 +20。自身迷失值 +1。；自身带镜子替身则镜替呼应，全体敌人再被拉入镜中 2 tick。",
       "cost": {
         "energy": 7,
         "cooldown": 8,
@@ -2235,6 +2291,26 @@
               "mode": "delta",
               "target": "self",
               "note": "界域操作租金（降临范式 +1）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "mirror_substitute",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "mirrored",
+                  "duration": 2,
+                  "target": "all_enemies",
+                  "note": "镜替呼应：自身镜子替身在场则全体敌人再被拉入镜中 2 tick（环节⑤ 2026-09-29 补读层段：mirror_substitute payoff 升 landed）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -2339,7 +2415,7 @@
       "flagship": true,
       "lore": "序列0 魔女 —— \"原初权柄：静止 / 停滞 / 全能，下位为『石化』\"",
       "flavor": "每一次有生命在你面前熄灭，就有一个正要行动的身影被钉在原地——不是被抓住，是被停住了。",
-      "describe": "每当你击杀一个单位：使行动条最接近满的一名敌人行动条立即清零（-999，截断为 0），行动条速率 -15（3 tick）。",
+      "describe": "每当你击杀一个单位：使行动条最接近满的一名敌人行动条立即清零（-999，截断为 0），行动条速率 -15（3 tick）。；自身形态掌握在场则形态极致，目标速率再 -3；自身带镜子替身则镜中静养，回补 3 点生命。",
       "hook": "on_kill",
       "effects": [
         {
@@ -2360,6 +2436,47 @@
               "mode": "delta",
               "duration": 3,
               "target": "enemy"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "assassin_form",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_stat",
+                  "stat": "gauge.rate",
+                  "value": -3,
+                  "mode": "delta",
+                  "duration": 3,
+                  "target": "enemy",
+                  "note": "形态极致：自身形态掌握在场则静止多压 3 点速率（环节⑤ 2026-09-29 补读层段：assassin_form payoff 升 landed）"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "mirror_substitute",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 3,
+                  "target": "self",
+                  "note": "镜中静养：自身镜子替身在场则静止后回补 3 点生命（环节⑤ 2026-09-29 跨轴读层段：form→mirror）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -2394,13 +2511,60 @@
       "flagship": false,
       "lore": "序列6 欢愉 —— 影子先到，然后才是刀",
       "flavor": "影子比人快。",
-      "describe": "切至影形态（形态组互斥，5 tick 后轮转至雾形态）：你造成的伤害 ×1.15。",
+      "describe": "切至影形态（形态组互斥，5 tick 后轮转至雾形态）：你造成的伤害 ×1.15。；形态掌握 +1 层（整场）。（自身带隐秘权柄则影形态延长至 7 tick，影中权威加持）；形态掌握 +1 层（整场）。",
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "form_shadow",
-          "duration": 5,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "conceal_authority",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "mount_status",
+                  "statusId": "form_shadow",
+                  "duration": 7,
+                  "target": "self"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "assassin_form",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "duration": null,
+                  "target": "self"
+                }
+              ],
+              "note": "影中权威加持（环节⑤ 2026-09-29 跨系读层段：form→sleepless conceal_authority）"
+            }
+          ],
+          "else": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "mount_status",
+                  "statusId": "form_shadow",
+                  "duration": 5,
+                  "target": "self"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "assassin_form",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "duration": null,
+                  "target": "self"
+                }
+              ]
+            }
+          ]
         }
       ],
       "tentative": true,
@@ -2448,13 +2612,22 @@
       "flagship": false,
       "lore": "序列2 灾难 —— 看不清的，才杀不死",
       "flavor": "雾里没有我。",
-      "describe": "切至雾形态（形态组互斥，5 tick 后轮转至血形态）：你受到的伤害 ×0.85。",
+      "describe": "切至雾形态（形态组互斥，5 tick 后轮转至血形态）：你受到的伤害 ×0.85。；形态掌握 +1 层（整场）。",
       "effects": [
         {
           "type": "mount_status",
           "statusId": "form_mist",
           "duration": 5,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "assassin_form",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self",
+          "note": "形态变换积累形态掌握（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,
@@ -2492,13 +2665,22 @@
       "flagship": false,
       "lore": "序列1 末日 —— 血是最后的形态",
       "flavor": "流得越多，活得越久。",
-      "describe": "切至血形态（形态组互斥，5 tick 后轮转回影形态）：你的吸血效果 +2。",
+      "describe": "切至血形态（形态组互斥，5 tick 后轮转回影形态）：你的吸血效果 +2。；形态掌握 +1 层（整场）。",
       "effects": [
         {
           "type": "mount_status",
           "statusId": "form_blood",
           "duration": 5,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "assassin_form",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self",
+          "note": "形态变换积累形态掌握（环节⑤ 2026-09-29 补产层段）"
         }
       ],
       "tentative": true,

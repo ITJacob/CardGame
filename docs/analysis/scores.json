@@ -3,247 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "assassin",
-   "name": "刺客",
-   "total": 53.4,
-   "dims": {
-    "轴健康度": 12.0,
-    "跨轴耦合": 2.5,
-    "跨系联动": 5.6,
-    "结构健康": 15,
-    "机制落地": 8.3,
-    "文本完备": 10.0
-   },
-   "minAxis": 33.5,
-   "cards": 39,
-   "deductions": [
-    {
-     "dim": "轴健康度",
-     "why": "-5：最低轴 34 分（<40）",
-     "ref": "form",
-     "fix": "优先重设计该最低分轴（轴表按分升序，第一行即它）"
-    },
-    {
-     "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次",
-     "ref": "assassin",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-9.4：枢纽状态 3 个 + combo 读取 0 次",
-     "ref": "assassin",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 MOVE_IN_STATUS_TRIGGER",
-     "ref": "状态触发器载荷内调用 move 是否走 G8 faction 校验待确认（本稿新增项 16）",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 SELF_HAS_STATUS_PREDICATE",
-     "ref": "self_has_status 谓词（本稿新增项 12，🟡；F52 的 self 方向）待落地，暂以 any_of + ",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 ANY_OF_PREDICATE",
-     "ref": "any_of 组合子待内核裁定",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    },
-    {
-     "dim": "机制落地",
-     "why": "-：frameworkFlags 未落地 DURATION_BY_STATUS_FAMILY",
-     "ref": "按状态族过滤的 duration 加成（本稿新增项 18/19，🟡）待落地",
-     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
-    }
-   ],
-   "axes": [
-    {
-     "id": "form",
-     "name": "形",
-     "symbol": "🎭",
-     "total": 33.5,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 5,
-      "读层闭环": 4,
-      "轴内多样性": 7.5,
-      "规模均衡": 9,
-      "承接连通": 0
-     },
-     "cards": 15,
-     "enablersVerified": [],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "原初·静止"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）",
-       "ref": "assassin_form",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-15：enablers 3 张均未实证挂载身份",
-       "ref": "影形态,雾形态,血形态",
-       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "原初·静止",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 15 vs 理想 10（比值 1.54）",
-       "ref": "form",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "原初·静止",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "plague",
-     "name": "疫",
-     "symbol": "🦠",
-     "total": 48.5,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 4,
-      "轴内多样性": 7.5,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "疾病"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "末日"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "疾病",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "黑焰",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "末日",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "末日",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "mirror",
-     "name": "镜",
-     "symbol": "🪞",
-     "total": 51.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 4,
-      "轴内多样性": 10.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 8,
-     "enablersVerified": [
-      "镜子替身"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "镜中世界"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "镜子替身",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "魔镜占卜",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "-21：payoff 1 张全部 notes 级（卡面无读层引用）",
-       "ref": "镜中世界",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无读层方式多样性且无跨轴消费",
-       "ref": "镜中世界",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段"
-      }
-     ]
-    },
-    {
-     "id": "charm",
-     "name": "魅",
-     "symbol": "💋",
-     "total": 62.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "读层闭环": 9,
-      "轴内多样性": 5.0,
-      "规模均衡": 10,
-      "承接连通": 3
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "魅惑",
-      "激化矛盾"
-     ],
-     "payoffsLanded": [
-      "反复魅惑"
-     ],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": []
-    }
-   ]
-  },
-  {
    "id": "prisoner",
    "name": "囚犯",
    "total": 54.0,
@@ -4003,6 +3762,176 @@
        "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       }
      ]
+    }
+   ]
+  },
+  {
+   "id": "assassin",
+   "name": "刺客",
+   "total": 67.8,
+   "dims": {
+    "轴健康度": 20.1,
+    "跨轴耦合": 5.0,
+    "跨系联动": 9.4,
+    "结构健康": 15,
+    "机制落地": 8.3,
+    "文本完备": 10.0
+   },
+   "minAxis": 62.0,
+   "cards": 39,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-10.0：本途径他轴身份读取 2 次",
+     "ref": "assassin",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 MOVE_IN_STATUS_TRIGGER",
+     "ref": "状态触发器载荷内调用 move 是否走 G8 faction 校验待确认（本稿新增项 16）",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 SELF_HAS_STATUS_PREDICATE",
+     "ref": "self_has_status 谓词（本稿新增项 12，🟡；F52 的 self 方向）待落地，暂以 any_of + ",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 ANY_OF_PREDICATE",
+     "ref": "any_of 组合子待内核裁定",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    },
+    {
+     "dim": "机制落地",
+     "why": "-：frameworkFlags 未落地 DURATION_BY_STATUS_FAMILY",
+     "ref": "按状态族过滤的 duration 加成（本稿新增项 18/19，🟡）待落地",
+     "fix": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达"
+    }
+   ],
+   "axes": [
+    {
+     "id": "charm",
+     "name": "魅",
+     "symbol": "💋",
+     "total": 62.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 5.0,
+      "规模均衡": 10,
+      "承接连通": 3
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "魅惑",
+      "激化矛盾"
+     ],
+     "payoffsLanded": [
+      "反复魅惑"
+     ],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "plague",
+     "name": "疫",
+     "symbol": "🦠",
+     "total": 68.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 8.8,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "疾病",
+      "黑焰"
+     ],
+     "payoffsLanded": [
+      "末日"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "form",
+     "name": "形",
+     "symbol": "🎭",
+     "total": 69.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 10.0,
+      "规模均衡": 9,
+      "承接连通": 6
+     },
+     "cards": 15,
+     "enablersVerified": [
+      "影形态",
+      "雾形态",
+      "血形态"
+     ],
+     "payoffsLanded": [
+      "原初·静止"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 15 vs 理想 10（比值 1.54）",
+       "ref": "form",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    },
+    {
+     "id": "mirror",
+     "name": "镜",
+     "symbol": "🪞",
+     "total": 74.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 11.2,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 8,
+     "enablersVerified": [
+      "镜子替身",
+      "魔镜占卜"
+     ],
+     "payoffsLanded": [
+      "镜中世界"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
     }
    ]
   },
