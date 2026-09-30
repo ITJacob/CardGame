@@ -10,7 +10,7 @@
     "vice": {
       "symbol": "😈",
       "name": "恶欲",
-      "note": "轴身份为单位级恶欲值 Pool（resource: lust，0-10，阈值档见 designNote）：产能走 modify_resource(lust,+N)，不是 statusDef，故无 statusId ｜ 2026-09-29 环节⑤：恶欲共鸣具 lust 产能段入 enablers（产层 12→20）；欲望爆炸补 resource_compare(lust≥6) 读层段（payoff 升 landed）；Pool 轴阈值档 thresholdTrigger 框架件待内核落，留遗留",
+      "note": "轴身份为单位级恶欲值 Pool（resource: lust，0-10，阈值档见 designNote）：产能走 modify_resource(lust,+N)，不是 statusDef，故无 statusId ｜ 2026-09-29 环节⑤：恶欲共鸣具 lust 产能段入 enablers（产层 12→20）；欲望爆炸补 resource_compare(lust≥6) 读层段（payoff 升 landed）；Pool 轴阈值档 thresholdTrigger 框架件待内核落，留遗留 ｜ 2026-09-29 环节⑤二轮：欲望爆炸读 corrupted 跨系（vice→lawyer，combo 加成）",
       "enablers": [
         "掌控欲望",
         "恶欲共鸣"
@@ -60,7 +60,7 @@
       "payoffs": [
         "深渊召唤"
       ],
-      "note": "2026-09-29 环节⑤：恶魔化补 rite_mark 产层段（产层 12→20）；深渊召唤读 sulfur_toxin 跨轴（demon→elements）"
+      "note": "2026-09-29 环节⑤：恶魔化补 rite_mark 产层段（产层 12→20）；深渊召唤读 sulfur_toxin 跨轴（demon→elements） ｜ 2026-09-29 环节⑤二轮：深渊召唤读 filth 跨轴（demon→filth，payoff 补读层方式）"
     }
   },
   "cards": [
@@ -560,7 +560,7 @@
       "flagship": false,
       "lore": "序列7 连环杀手 —— \"能从深渊召唤恶魔投影获得帮助\"",
       "flavor": "裂隙在你脚边张开，硫磺味先涌了出来——一头恶魔的投影爬进战场，站到你队伍的末尾，身上还烧着你仪式留下的印记。",
-      "describe": "在己方队尾召唤一只恶魔投影（50% 生命/攻击），登场时对相邻敌人造成 2 点火焰伤害；消耗自身全部仪式刻印，每层使恶魔攻击 +2；若目标带硫磺剧毒，硫磺为祭，登场追加 2 点火焰伤害。",
+      "describe": "在己方队尾召唤一只恶魔投影（50% 生命/攻击），登场时对相邻敌人造成 2 点火焰伤害；消耗自身全部仪式刻印，每层使恶魔攻击 +2；若目标带硫磺剧毒，硫磺为祭，登场追加 2 点火焰伤害。；若目标身处污秽，恶魔临秽土，追加 2 点暗伤。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -609,6 +609,25 @@
                   "element": "fire",
                   "value": 2,
                   "note": "硫磺为祭：目标带硫磺剧毒则恶魔投影登场追加 2 点火焰伤害（环节⑤ 2026-09-29 跨轴读层段：demon→elements）"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "filth",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "dark",
+                  "value": 2,
+                  "note": "恶魔临秽土：目标身处污秽则深渊投影顺势侵蚀，追加 2 点（环节⑤ 2026-09-29 二轮补读层段：demon→filth 跨轴）"
                 }
               ],
               "else": []
@@ -1268,7 +1287,7 @@
       "flagship": false,
       "lore": "序列5 欲望使徒 —— \"掌控欲望：操纵情绪欲望，诱使堕落 / 情绪失控 / 欲望爆炸\"",
       "flavor": "你没去压它心里的欲望，你给它添了一把柴。三个 tick 后，它会从里到外炸开——8 点精神伤害，连旁边的人也要溅上 4 点。",
-      "describe": "使一名敌人成为「欲望炸弹」3 tick：到期时其受到 8 点精神伤害，相邻敌人受到 4 点精神伤害；被驱散则不爆炸；若其恶欲值 ≥6（失控档），失控即爆，追加 3 点精神伤害。",
+      "describe": "使一名敌人成为「欲望炸弹」3 tick：到期时其受到 8 点精神伤害，相邻敌人受到 4 点精神伤害；被驱散则不爆炸；若其恶欲值 ≥6（失控档），失控即爆，追加 3 点精神伤害。；若目标已被腐蚀，腐蚀助燃，追加 2 点精神伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1304,6 +1323,25 @@
               "element": "mental",
               "value": 3,
               "note": "失控即爆：目标恶欲值 ≥6（失控档）则炸弹提前引爆追加 3 点精神伤害（环节⑤ 2026-09-29 补读层段：lust 池 payoff 升 landed）"
+            }
+          ],
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "corrupted",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "腐蚀助燃：目标已被腐蚀（友方律师所挂）则欲火更烈，追加 2 点（环节⑤ 2026-09-29 二轮跨系读层段：vice→lawyer corrupted）"
             }
           ],
           "else": []
