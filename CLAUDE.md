@@ -50,6 +50,8 @@ docs/tools/          **只放设计侧脚本**（设计数据校验 + docs 文�
 ├─ validate_schema.py  结构校验器（需 jsonschema）：python docs/tools/validate_schema.py
 ├─ check_enum_sync.py  枚举对账（ddd/SCHEMA.md ↔ schema）：python docs/tools/check_enum_sync.py
 ├─ check_glossary.py   词典对账（值域 ↔ meta/glossary.json）：python docs/tools/check_glossary.py
+├─ build_analysis.py  分析与评分统一入口（2026-09-30 建）：一键重生成 analysis/ 全部产物；
+│                     JSON 变更后四门禁全绿同轮跑（工作流见 meta/WORKFLOW.md「分析与评分工作流」）
 ├─ build_overview.py / build_profession_analysis.py / build_axis_analysis.py
 └─ status_loader.py  共享 loader（validate/score/validate_schema 在用；迁移脚本已归档 docs/archive/tools/）
 tools/               **与 docs 设计无关的周边工具**（产物落在 site/ 的美术资产生产）

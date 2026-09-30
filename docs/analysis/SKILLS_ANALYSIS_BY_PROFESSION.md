@@ -398,34 +398,10 @@
 
 未检测到非标准 stat 键。
 
-## 六、口径核对（与 SKILLS_ANALYSIS.md §2 对照）
+## 六、总量快照
 
-| 维度 | 本报告（递归全量） | 旧报告 §2 | 说明 |
-|---|---:|---:|---|
-| 效果节点总数 | 1878 | — | 递归全量 |
-| 原语节点 | 1878 | — | 19 类 type |
-| 算子节点 | 577 | — | 9 类 op |
-| `type=mount_status` | 781 | 728 | +53 |
-| `type=damage` | 410 | 376 | +34 |
-| `type=modify_stat` | 239 | 356 | -117 |
-| `type=modify_resource` | 154 | 150 | +4 |
-| `type=dispel` | 82 | 99 | -17 |
-| `type=spawn` | 70 | 73 | -3 |
-| `type=heal` | 48 | 55 | -7 |
-| `type=move` | 38 | 44 | -6 |
-| `type=domain` | 30 | 26 | +4 |
-| `type=drain` | 13 | 15 | -2 |
-| `type=modify_damage` | 2 | 11 | -9 |
-| `type=transfer_status` | 3 | 4 | -1 |
-| `type=echo_last_skill` | 1 | 2 | -1 |
-| `type=snapshot` | 0 | 1 | -1 |
-| `type=restore_snapshot` | 0 | 1 | -1 |
-| `type=gauge_shuffle` | 1 | 1 | +0 |
-| `type=status_shuffle` | 1 | 1 | +0 |
-| `type=translocate` | 4 | — |  |
-| `type=target_override` | 1 | — |  |
+> 算子口径：sequence=279 / if=215 / target_override=0 / push_back=20 / overlay=29 / repeat=19 / pull_forward=9 / swap_ally=3 / insert_tail_cross_lane=3；本库当前 832 张卡，数字随补卡浮动属正常。
 
-> 旧报告原语数基于较早快照；本库当前 832 张卡，数字随补卡上浮属正常。算子（§2.4）口径一致：sequence=279 / if=215 / target_override=0 / push_back=20 / overlay=29 / repeat=19 / pull_forward=9 / swap_ally=3 / insert_tail_cross_lane=3。
 
 ## 七、结论与观察
 
