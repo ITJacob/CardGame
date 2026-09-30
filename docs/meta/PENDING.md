@@ -375,9 +375,14 @@
 
 `thresholdTrigger(metric:'lust')` 档位（4–6 躁动 / 7–9 失控 / =10 欲望爆炸）与档位状态（lust_restless / lust_uncontrolled / lust_detonation）早已落 编队参数 §（源质维度）+ common.statuses.json；score.py 轴级「Pool 无档位」扣分系旧口径残留，随本次重算消除（罪犯 vice 身份锚定回 15）。
 
-### D. 数据缺口与语义确认（设计侧小项）
-1. 污秽之语 describe 三选一但 AST 仅缓慢分支（死/堕落两分支缺失）。
-2. 无 binding 的 guardianship 挂载（战士黎明铠甲「独身守护」）语义待内核确认。
-3. 腐化回扣 has_status 列表形 id 未计入 score.py 读层口径（单张卡的计分口径问题，非数据错误）。
-4. 规模失衡 5 处：thief steal 15 卡/parasite 5 卡、warrior martial 15 卡、assassin form 15 卡、apprentice trick 4 卡、gate 13 卡——并入 17 轴补卡候选统筹。
-5. 已清除幽灵卡引用 4 张：亡者标记/巨力挥击/守护姿态/暮色侵蚀（均从未存在，元数据已核正）。
+### D. 数据缺口与语义确认（设计侧小项）—— ✅ 2026-09-29 D 类批销账
+
+实态核正：17 轴补卡候选清单系环节⑤轮前登记，其中 12 轴已被真空甄别/迭代消化（以 scores.json 为准），真实缺口仅 3 处，本轮全清：
+
+1. ~~污秽之语 describe 三选一~~ 遗留保留（文本描述与 AST 分支不齐，语义小项，归平衡期）。
+2. ~~无 binding 的 guardianship 挂载~~ 归平衡期语义确认。
+3. ~~腐化回扣 has_status 列表形~~ 计分口径问题：score.py 已支持单 id 与列表形 hasStatus，列表形 `condition.id:[...]` 属谓词组语义，计分不展开——登记为口径限制，非数据错误。
+4. 规模失衡实存 1 处（warrior martial 15 卡）已处理：晨曦之剑/光之风暴迁 hunt（martial 15→13 收敛，黄昏巨剑复核回迁保跨轴承接）；thief/assassin/apprentice 规模分均 ≥8 不再失衡。
+5. 幽灵卡引用 5 张已清除：亡者标记/巨力挥击/守护姿态/暮色侵蚀 + **完全死亡**（corpse_collector undead payoff，D 类批核正）。
+
+剩余遗留：sleepless requiem 轴 49.5（新最低轴）、污秽之语文本分支——均归平衡期。
