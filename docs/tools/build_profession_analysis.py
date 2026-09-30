@@ -488,35 +488,17 @@ def main():
     else:
         L.append("未检测到非标准 stat 键。\n")
 
-    # 六、核对
-    L.append("## 六、口径核对（与 SKILLS_ANALYSIS.md §2 对照）\n")
-    L.append("| 维度 | 本报告（递归全量） | 旧报告 §2 | 说明 |")
-    L.append("|---|---:|---:|---|")
-    L.append("| 效果节点总数 | %d | — | 递归全量 |" % tot_eff)
-    L.append("| 原语节点 | %d | — | 19 类 type |" % tot_prim)
-    L.append("| 算子节点 | %d | — | 9 类 op |" % tot_op)
-    oldprim = {
-        "mount_status": 728, "damage": 376, "modify_stat": 356,
-        "modify_resource": 150, "dispel": 99, "spawn": 73, "heal": 55,
-        "move": 44, "domain": 26, "drain": 15, "modify_damage": 11,
-        "transfer_status": 4, "echo_last_skill": 2, "snapshot": 1,
-        "restore_snapshot": 1, "gauge_shuffle": 1, "status_shuffle": 1,
-    }
-    for t in PRIM_ORDER:
-        new = global_eff[t]
-        o = oldprim.get(t)
-        diff = "" if o is None else ("%+d" % (new - o))
-        L.append("| `type=%s` | %d | %s | %s |" % (t, new, "—" if o is None else str(o), diff))
-    L.append("")
-    # 卡数必须来自 total_cards 而不是写死：这里曾经是字面量 828，补卡到 829 之后
-    # 重跑本脚本只会把陈旧的数字再印一遍——分析产物是生成物，不该有会烂掉的常量
-    L.append("> 旧报告原语数基于较早快照；本库当前 %d 张卡，数字随补卡上浮属正常。"
-             "算子（§2.4）口径一致：sequence=%d / if=%d / target_override=%d / push_back=%d / "
-             "overlay=%d / repeat=%d / pull_forward=%d / swap_ally=%d / insert_tail_cross_lane=%d。" % (
-                 total_cards,
+    # 六、总量快照（原「口径核对」：基线底稿 SKILLS_ANALYSIS.md 已归档
+    # docs/archive/proposals/，与旧快照逐原语对差的表已撤——产物只反映当前 JSON，
+    # 不锚定历史常量，这正是本文件头「不该有会烂掉的常量」纪律的延伸）
+    L.append("## 六、总量快照\n")
+    L.append("> 算子口径：sequence=%d / if=%d / target_override=%d / push_back=%d / "
+             "overlay=%d / repeat=%d / pull_forward=%d / swap_ally=%d / insert_tail_cross_lane=%d；"
+             "本库当前 %d 张卡，数字随补卡浮动属正常。\n" % (
                  global_op["sequence"], global_op["if"], global_op["target_override"],
                  global_op["push_back"], global_op["overlay"], global_op["repeat"],
-                 global_op["pull_forward"], global_op["swap_ally"], global_op["insert_tail_cross_lane"]))
+                 global_op["pull_forward"], global_op["swap_ally"],
+                 global_op["insert_tail_cross_lane"], total_cards))
     L.append("")
 
     # 七、结论
