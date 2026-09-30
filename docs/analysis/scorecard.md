@@ -7,11 +7,11 @@
 
 | # | 途径 | 总分 | 轴健康 | 跨轴 | 跨系 | 结构 | 落地 | 文本 | 最低轴 | 卡数 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | **罪犯** `criminal` | **57.9** | 21.1 | 5.0 | 3.0 | 15.0 | 3.8 | 10.0 | 63 | 40 |
-| 2 | **窥秘人** `pryer` | **57.9** | 20.8 | 5.0 | 3.0 | 15.0 | 4.1 | 10.0 | 66 | 38 |
-| 3 | **律师** `lawyer` | **61.2** | 20.2 | 2.5 | 4.5 | 15.0 | 9.0 | 10.0 | 65 | 46 |
-| 4 | **仲裁人** `arbiter` | **61.8** | 22.2 | 7.5 | 1.5 | 15.0 | 5.6 | 10.0 | 67 | 40 |
-| 5 | **歌颂者** `chanter` | **62.0** | 21.5 | 5.0 | 3.0 | 15.0 | 7.5 | 10.0 | 67 | 41 |
+| 1 | **窥秘人** `pryer` | **57.9** | 20.8 | 5.0 | 3.0 | 15.0 | 4.1 | 10.0 | 66 | 38 |
+| 2 | **律师** `lawyer` | **61.4** | 20.4 | 2.5 | 4.5 | 15.0 | 9.0 | 10.0 | 66 | 46 |
+| 3 | **仲裁人** `arbiter` | **61.8** | 22.2 | 7.5 | 1.5 | 15.0 | 5.6 | 10.0 | 67 | 40 |
+| 4 | **歌颂者** `chanter` | **62.0** | 21.5 | 5.0 | 3.0 | 15.0 | 7.5 | 10.0 | 67 | 41 |
+| 5 | **罪犯** `criminal` | **62.1** | 21.3 | 7.5 | 4.5 | 15.0 | 3.8 | 10.0 | 63 | 40 |
 | 6 | **通识者** `savant` | **62.3** | 23.3 | 5.0 | 3.0 | 15.0 | 6.0 | 10.0 | 74 | 36 |
 | 7 | **收尸人** `corpse_collector` | **63.5** | 20.0 | 5.0 | 6.0 | 15.0 | 7.5 | 10.0 | 60 | 42 |
 | 8 | **不眠者** `sleepless` | **64.3** | 16.8 | 0.0 | 7.5 | 15.0 | 15.0 | 10.0 | 47 | 34 |
@@ -29,52 +29,6 @@
 | 20 | **秘祈人** `supplicant` | **70.6** | 21.1 | 5.0 | 7.5 | 15.0 | 12.0 | 10.0 | 66 | 33 |
 | 21 | **学徒** `apprentice` | **72.2** | 20.2 | 7.5 | 4.5 | 15.0 | 15.0 | 10.0 | 62 | 34 |
 | 22 | **囚犯** `prisoner` | **72.9** | 21.4 | 7.5 | 9.0 | 15.0 | 10.0 | 10.0 | 64 | 36 |
-
-
-## 罪犯（criminal）· 57.9 分
-
-| 维度 | 得分 |
-|---|---:|
-| 轴健康度 | 21.1 |
-| 跨轴耦合 | 5.0 |
-| 跨系联动 | 3.0 |
-| 结构健康 | 15.0 |
-| 机制落地 | 3.8 |
-| 文本完备 | 10.0 |
-
-**途径失分项（含修改意见）**：
-
-- `跨轴耦合` -10.0：本途径他轴身份读取 2 次（criminal）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
-- `跨系联动` -12.0：枢纽状态 1 个 + combo 读取 1 次（criminal）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
-- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（释放时三选一变体依赖 SkillDef.modes（新增项 21，ddd 无落点，🟡 待拍）；退化方案：拆三张独立卡）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
-- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（三选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍））→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
-- `机制落地` -：frameworkFlags 未落地 GAUGE_RATE_MUL_STAT_MODE（modify_stat.mode 枚举为 delta/set/to_at_least/to_at_most，无 mul；）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
-- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（四选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍）；退化方案：拆四张独立史诗卡）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
-- `机制落地` -：frameworkFlags 未落地 GAUGE_RATE_MUL_STAT_MODE（混乱分支 gauge.rate ×0.7 同污秽之语缓慢分支）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
-- `机制落地` -：frameworkFlags 未落地 ANY_OF_PREDICATE（field_status_count 谓词单 id，三状态存在性需 any_of 组合子，待内核裁定）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
-- `机制落地` -：frameworkFlags 未落地 STATUS_SOURCE_ATTRIBUTION（条件只判目标带 black_flame≥1 层；「友方刺客所挂」归属维度无谓词，以语义注记承载（black_flame ）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
-- `机制落地` -：frameworkFlags 未落地 PATHWAY_TARGETED_ALLY（「友方律师」按途径定向：effectTarget/unitFilter 无 pathway 维度，暂用 all_alli）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
-- `机制落地` -：frameworkFlags 未落地 STATUS_SOURCE_ATTRIBUTION（「友方耕种者的丰饶」以 side:ally + abundance 存在性承载；abundance 挂载方限耕种者，归属）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
-
-| 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
-|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
-| 👹 恶魔 `demon` | **62.8** | 15 | 20 | 9 | 8.8 | 10 | 0 | 恶魔仪式,恶魔化 | 深渊召唤 | — |
-| 🕳️ 污秽 `filth` | **68.8** | 15 | 20 | 9 | 8.8 | 10 | 6 | 污秽之语,侵蚀者 | 荒芜侵蚀·改 | — |
-| 😈 恶欲 `vice` | **74.0** | 8 | 20 | 17 | 10.0 | 10 | 9 | 掌控欲望,恶欲共鸣 | 欲望爆炸 | 深渊即我,恶欲共鸣 |
-| 🌋 领域 `elements` | **86.5** | 15 | 20 | 22 | 7.5 | 10 | 12 | 强酸沼泽,腐蚀毒雾 | 地狱之火,深渊之火 | 双焰交汇 |
-
-**👹 恶魔 失分项（含修改意见）**：
-
-- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（深渊召唤）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
-
-**😈 恶欲 失分项（含修改意见）**：
-
-- `身份锚定` -7：Pool 轴无层数引擎档位（thresholdTrigger(metric) 未挂）（lust）→ 给该 Pool 配 thresholdTrigger(metric) 档位状态（照恶欲值躁动/失控/爆炸四档先例）
-- `读层闭环` 注：notes 级 2 张（减半计）（深渊即我,恶欲共鸣）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
-
-**🌋 领域 失分项（含修改意见）**：
-
-- `读层闭环` 注：notes 级 1 张（减半计）（双焰交汇）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
 ## 窥秘人（pryer）· 57.9 分
@@ -117,11 +71,11 @@
 - `规模均衡` -1：轴卡数 5 vs 理想 10（比值 0.53）（combat）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
 
 
-## 律师（lawyer）· 61.2 分
+## 律师（lawyer）· 61.4 分
 
 | 维度 | 得分 |
 |---|---:|
-| 轴健康度 | 20.2 |
+| 轴健康度 | 20.4 |
 | 跨轴耦合 | 2.5 |
 | 跨系联动 | 4.5 |
 | 结构健康 | 15.0 |
@@ -137,9 +91,9 @@
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
-| 🪙 贿腐 `bribery` | **65.2** | 15 | 12 | 13 | 6.2 | 10 | 9 | 腐蚀 | 收买 | 腐化回扣 |
 | 👊 蛮力 `brute` | **65.8** | 15 | 20 | 12 | 8.8 | 10 | 0 | 力量解决,放大 | — | — |
 | 🗣️ 讼辩 `advocacy` | **66.2** | 15 | 20 | 12 | 6.2 | 10 | 3 | 寻隙,讼师之眼,律令加身 | — | — |
+| 🪙 贿腐 `bribery` | **68.2** | 15 | 12 | 13 | 6.2 | 10 | 12 | 腐蚀 | 收买 | 腐化回扣 |
 | 🌀 扭曲规则 `warp_rule` | **75.0** | 15 | 20 | 9 | 15.0 | 10 | 6 | 扭曲,利用 | 秩序崩坏 | — |
 
 **🪙 贿腐 失分项（含修改意见）**：
@@ -222,6 +176,51 @@
 
 - `读层闭环` 注：notes 级 11 张（减半计）（净化之斩,光明之火,神圣之光,净化光环,无暗之域,无暗之枪,纯白射线,太阳使者,神圣之国,纯白之光,终焉颂歌）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 - `规模均衡` -2：轴卡数 16 vs 理想 10（比值 1.56）（light）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+
+
+## 罪犯（criminal）· 62.1 分
+
+| 维度 | 得分 |
+|---|---:|
+| 轴健康度 | 21.3 |
+| 跨轴耦合 | 7.5 |
+| 跨系联动 | 4.5 |
+| 结构健康 | 15.0 |
+| 机制落地 | 3.8 |
+| 文本完备 | 10.0 |
+
+**途径失分项（含修改意见）**：
+
+- `跨系联动` -10.5：枢纽状态 1 个 + combo 读取 2 次（criminal）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（释放时三选一变体依赖 SkillDef.modes（新增项 21，ddd 无落点，🟡 待拍）；退化方案：拆三张独立卡）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（三选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍））→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 GAUGE_RATE_MUL_STAT_MODE（modify_stat.mode 枚举为 delta/set/to_at_least/to_at_most，无 mul；）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 SKILL_DEF_MODES（四选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍）；退化方案：拆四张独立史诗卡）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 GAUGE_RATE_MUL_STAT_MODE（混乱分支 gauge.rate ×0.7 同污秽之语缓慢分支）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 ANY_OF_PREDICATE（field_status_count 谓词单 id，三状态存在性需 any_of 组合子，待内核裁定）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 STATUS_SOURCE_ATTRIBUTION（条件只判目标带 black_flame≥1 层；「友方刺客所挂」归属维度无谓词，以语义注记承载（black_flame ）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 PATHWAY_TARGETED_ALLY（「友方律师」按途径定向：effectTarget/unitFilter 无 pathway 维度，暂用 all_alli）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+- `机制落地` -：frameworkFlags 未落地 STATUS_SOURCE_ATTRIBUTION（「友方耕种者的丰饶」以 side:ally + abundance 存在性承载；abundance 挂载方限耕种者，归属）→ 待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达
+
+| 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
+|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
+| 👹 恶魔 `demon` | **62.8** | 15 | 20 | 9 | 8.8 | 10 | 0 | 恶魔仪式,恶魔化 | 深渊召唤 | — |
+| 🕳️ 污秽 `filth` | **71.8** | 15 | 20 | 9 | 8.8 | 10 | 9 | 污秽之语,侵蚀者 | 荒芜侵蚀·改 | — |
+| 😈 恶欲 `vice` | **74.0** | 8 | 20 | 17 | 10.0 | 10 | 9 | 掌控欲望,恶欲共鸣 | 欲望爆炸 | 深渊即我,恶欲共鸣 |
+| 🌋 领域 `elements` | **86.5** | 15 | 20 | 22 | 7.5 | 10 | 12 | 强酸沼泽,腐蚀毒雾 | 地狱之火,深渊之火 | 双焰交汇 |
+
+**👹 恶魔 失分项（含修改意见）**：
+
+- `承接连通` -15：payoff 无读层方式多样性且无跨轴消费（深渊召唤）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段
+
+**😈 恶欲 失分项（含修改意见）**：
+
+- `身份锚定` -7：Pool 轴无层数引擎档位（thresholdTrigger(metric) 未挂）（lust）→ 给该 Pool 配 thresholdTrigger(metric) 档位状态（照恶欲值躁动/失控/爆炸四档先例）
+- `读层闭环` 注：notes 级 2 张（减半计）（深渊即我,恶欲共鸣）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+
+**🌋 领域 失分项（含修改意见）**：
+
+- `读层闭环` 注：notes 级 1 张（减半计）（双焰交汇）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
 ## 通识者（savant）· 62.3 分
