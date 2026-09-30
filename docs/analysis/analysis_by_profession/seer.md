@@ -2,7 +2,7 @@
 
 > 数据来源：`docs/json/seer.skills.json`（共 **39** 张技能卡）。
 > 由 `docs/tools/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。
-> 生成日期：2026-09-24
+> 生成日期：2026-09-30
 
 ## 一、职业总览：四条构筑轴一览
 
@@ -26,20 +26,21 @@
 
 **规模**：9 张技能（主动 3 / 被动 6）；稀有度分布：普通×3、史诗×2、传说×2、精良×1、稀有×1。
 
-**效果原语构成**（type，全量递归，共 13 处）：
+**效果原语构成**（type，全量递归，共 18 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 5 | 38.5% |
-| `modify_stat` | 1 | 7.7% |
-| `modify_resource` | 6 | 46.2% |
-| `translocate` | 1 | 7.7% |
+| `mount_status` | 7 | 38.9% |
+| `modify_stat` | 1 | 5.6% |
+| `modify_resource` | 9 | 50.0% |
+| `translocate` | 1 | 5.6% |
 
-**算子构成**（op，共 3 处）：
+**算子构成**（op，共 7 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 3 |
+| `if` | 4 |
 
 **改动的属性（modify_stat，共 1 处）**：
 
@@ -47,34 +48,34 @@
 |---|---:|
 | `energy_max` | 1 |
 
-**改动的资源（modify_resource，共 6 处）**：
+**改动的资源（modify_resource，共 9 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
-| `gauge.current` | 3 |
+| `gauge.current` | 6 |
 | `energy` | 2 |
 | `lost` | 1 |
 
 **设计风格总结**：本轴偏【运营】——以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `modify_resource`(6)、`mount_status`(5)、`modify_stat`(1)；属性杠杆集中在 `energy_max`，资源杠杆集中在 `gauge.current`、`energy`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `modify_resource`(9)、`mount_status`(7)、`modify_stat`(1)；属性杠杆集中在 `energy_max`，资源杠杆集中在 `gauge.current`、`energy`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
-- **灵界掌控者**：整场：你施加的控制类状态（puppet_string/hallucination/fooled/taunt）不可被驱散；对生命低于 50% 的目标伤害 ×1.3。
+- **灵界掌控者**：整场：你施加的控制类状态（puppet_string/hallucination/fooled/taunt）不可被驱散；对生命低于 50% 的目标伤害 ×1.3。；若目标带提线木偶，灵界支配反馈，自身获得 4 点护盾（3 tick）。
 
 
 ### 🃏 戏法（trick）
 
 **规模**：9 张技能（主动 7 / 被动 2）；稀有度分布：普通×3、精良×3、稀有×2、传说×1。
 
-**效果原语构成**（type，全量递归，共 16 处）：
+**效果原语构成**（type，全量递归，共 17 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 3 | 18.8% |
-| `damage` | 7 | 43.8% |
-| `modify_stat` | 1 | 6.2% |
-| `modify_resource` | 2 | 12.5% |
-| `move` | 2 | 12.5% |
-| `translocate` | 1 | 6.2% |
+| `mount_status` | 4 | 23.5% |
+| `damage` | 7 | 41.2% |
+| `modify_stat` | 1 | 5.9% |
+| `modify_resource` | 2 | 11.8% |
+| `move` | 2 | 11.8% |
+| `translocate` | 1 | 5.9% |
 
 **算子构成**（op，共 4 处）：
 
@@ -98,7 +99,7 @@
 | `lost` | 1 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `damage`(7)、`mount_status`(3)、`modify_resource`(2)；属性杠杆集中在 `defense`，资源杠杆集中在 `gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `damage`(7)、`mount_status`(4)、`modify_resource`(2)；属性杠杆集中在 `defense`，资源杠杆集中在 `gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **纸人替身**：自身获得「纸人替身」（1 层充能，4 tick）：受到致命一击时阻止死亡（保留 1 血）并驱散自身全部 debuff/dot，随后替身碎裂。
 
@@ -107,27 +108,28 @@
 
 **规模**：11 张技能（主动 10 / 被动 1）；稀有度分布：稀有×4、精良×3、传说×3、史诗×1。
 
-**效果原语构成**（type，全量递归，共 19 处）：
+**效果原语构成**（type，全量递归，共 21 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 6 | 31.6% |
-| `damage` | 1 | 5.3% |
-| `modify_stat` | 2 | 10.5% |
-| `modify_resource` | 2 | 10.5% |
-| `dispel` | 2 | 10.5% |
-| `spawn` | 1 | 5.3% |
-| `domain` | 1 | 5.3% |
-| `transfer_status` | 2 | 10.5% |
-| `translocate` | 1 | 5.3% |
-| `target_override` | 1 | 5.3% |
+| `mount_status` | 7 | 33.3% |
+| `damage` | 1 | 4.8% |
+| `modify_stat` | 2 | 9.5% |
+| `modify_resource` | 2 | 9.5% |
+| `dispel` | 2 | 9.5% |
+| `spawn` | 1 | 4.8% |
+| `heal` | 1 | 4.8% |
+| `domain` | 1 | 4.8% |
+| `transfer_status` | 2 | 9.5% |
+| `translocate` | 1 | 4.8% |
+| `target_override` | 1 | 4.8% |
 
-**算子构成**（op，共 5 处）：
+**算子构成**（op，共 6 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 3 |
-| `if` | 1 |
+| `if` | 2 |
 | `overlay` | 1 |
 
 **改动的属性（modify_stat，共 2 处）**：
@@ -144,7 +146,7 @@
 | `lost` | 2 |
 
 **设计风格总结**：本轴偏【控制·进攻】——以 debuff、换位、封印、重定向与驱散干扰敌方决策与站位；以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `mount_status`(6)、`modify_resource`(2)、`dispel`(2)；属性杠杆集中在 `attack`、`defense`，资源杠杆集中在 `lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(7)、`modify_resource`(2)、`dispel`(2)；属性杠杆集中在 `attack`、`defense`，资源杠杆集中在 `lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **愚弄**：使一名敌人被愚弄 6 tick（2 层充能）：攻击打向空处；其每次发起攻击受到等于其自身攻击力的精神伤害（弄假成真）；行动条速率 -8、攻击 -3。
 
@@ -153,18 +155,18 @@
 
 **规模**：10 张技能（主动 7 / 被动 3）；稀有度分布：史诗×5、精良×2、传说×2、稀有×1。
 
-**效果原语构成**（type，全量递归，共 17 处）：
+**效果原语构成**（type，全量递归，共 18 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 6 | 35.3% |
-| `modify_stat` | 2 | 11.8% |
-| `modify_resource` | 1 | 5.9% |
-| `dispel` | 1 | 5.9% |
-| `spawn` | 2 | 11.8% |
-| `heal` | 3 | 17.6% |
-| `modify_damage` | 1 | 5.9% |
-| `translocate` | 1 | 5.9% |
+| `mount_status` | 7 | 38.9% |
+| `modify_stat` | 2 | 11.1% |
+| `modify_resource` | 1 | 5.6% |
+| `dispel` | 1 | 5.6% |
+| `spawn` | 2 | 11.1% |
+| `heal` | 3 | 16.7% |
+| `modify_damage` | 1 | 5.6% |
+| `translocate` | 1 | 5.6% |
 
 **算子构成**（op，共 6 处）：
 
@@ -187,7 +189,7 @@
 | `lost` | 1 |
 
 **设计风格总结**：本轴偏【进攻·续航】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以回血、护盾与再生类状态维持血线，拉长战斗生命周期。
-签名原语为 `mount_status`(6)、`heal`(3)、`modify_stat`(2)；属性杠杆集中在 `attack`、`gauge.rate`，资源杠杆集中在 `lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(7)、`heal`(3)、`modify_stat`(2)；属性杠杆集中在 `attack`、`gauge.rate`，资源杠杆集中在 `lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **诡秘之境**：展开「诡秘之境」区域：区域内己方单位获得 concealed（敌方单体技能难以选中）且受伤 ×0.85；区域内敌方单位行动条速率 ×0.85（各 2 tick 刷新）。
 
