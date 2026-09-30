@@ -23,7 +23,8 @@ docs/meta/           流程·规范·提案（工作流与生成约束，先读 
 ├─ REGEN_v03_SPEC.md    v0.3 批量重构规范
 ├─ SCHEMA.md         JSON 结构规范（改结构前必读；含已知待修数据清单）
 ├─ PENDING.md        途径级遗留与待办汇总（自技能稿迁移）
-└─ proposals/        提案与分析底稿（原语扩展×2、SKILLS_ANALYSIS.md）
+├─ STATUS_TAXONOMY.md 状态概念九维分类索引（权威源指针表）
+└─ proposals/        （已清空归档——完成提案见 docs/archive/proposals/）
 docs/ddd/            战斗内核 DDD 设计（权威正源，纯内容）
 ├─ README.md         入口：上下文总览、依赖方向、一致性边界、54 条不变量总表
 ├─ contexts/         7 限界上下文 + 共享内核（结构/概念）
@@ -32,10 +33,13 @@ docs/json/           技能池 JSON（唯一维护面，2026-09-18 起技能稿 
 ├─ manifest.json    纯索引（22 途径 id/名称/文件/卡片数）+ rarityMap 校验基准（稀有度↔序列唯一机器可读源）
 ├─ <途径>.skills.json ×22  结构化 AST 卡面；sourceFile 溯源回指归档技能稿
 └─ schema/          JSON Schema draft 2020-12（skills/manifest.schema.json）
-docs/archive/        只读历史快照
-└─ skill-design_v0.3/  技能稿 md ×22（生成期源数据，勿改；差集信息已回收进 JSON）
+docs/archive/        只读历史快照（索引见 archive/README.md）
+├─ skill-design_v0.3/  技能稿 md ×22（生成期源数据，勿改；差集信息已回收进 JSON）
+├─ proposals/  REGEN 规范 + 四篇已完成机制提案（落地即归档）
+├─ status_bloat_review.md / REGEN_v03_SPEC.md  一次性报告与历史规范
+└─ tools/  三个一次性迁移脚本（跑完即归档）
 docs/analysis/       纯分析产物（勿手改，重跑 docs/tools/ 脚本生成）
-├─ SKILLS_OVERVIEW.md              全库总览（22 途径分章 / 829 卡）
+├─ SKILLS_OVERVIEW.md              全库总览（22 途径分章 / 832 卡，重生成产物）
 ├─ SKILLS_ANALYSIS_BY_PROFESSION.md  原语用量 + modify_stat/modify_resource 属性与参数统计
 └─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告
 docs/tools/          **只放设计侧脚本**（设计数据校验 + docs 文档生成），保持 docs 纯粹
@@ -47,7 +51,7 @@ docs/tools/          **只放设计侧脚本**（设计数据校验 + docs 文�
 ├─ check_enum_sync.py  枚举对账（ddd/SCHEMA.md ↔ schema）：python docs/tools/check_enum_sync.py
 ├─ check_glossary.py   词典对账（值域 ↔ meta/glossary.json）：python docs/tools/check_glossary.py
 ├─ build_overview.py / build_profession_analysis.py / build_axis_analysis.py
-└─ consolidate/extract/split_*.py + status_loader.py  设计数据迁移与共享 loader
+└─ status_loader.py  共享 loader（validate/score/validate_schema 在用；迁移脚本已归档 docs/archive/tools/）
 tools/               **与 docs 设计无关的周边工具**（产物落在 site/ 的美术资产生产）
 ├─ build_frame_prompts.py  生成 site/assets/frames/PROMPTS.md（出图 prompt 清单）
 └─ normalize_frame.py      边框图后处理：--autocrop 裁边 / --crop 截残留 / --stretch 拉伸 / 压黑 / --check 体检
@@ -62,7 +66,7 @@ docs/诡秘之主资料库/  原著设定源素材（世界体系/九大源质/�
 - **整场战斗一个聚合，根是 `Combat`**；对外契约 `CombatSetup → CombatEnded`。Unit 不是聚合根。
 - **纯函数契约：结果 = f(初始状态, 输入序列, seed)**。为此 Catalog（全部定义态 Def）是独立不可变聚合，战斗启动时快照进战斗内；随机源可播种、可快照。可复现 ≠ 禁随机。
 - **Definition + Grant 三件套**（EffectDef→EffectRef→Effect、StatusDef→StatusGrant→StatusInstance 等）：默认值只写 Def、实例值只写 Grant，Grant 不可变。
-- **效果原语 27 个**（以 `docs/json/schema/skills.schema.json` 的 `effect.oneOf` 为权威源，`check_enum_sync.py` 对账）：damage / heal / mount_status / modify_stat / modify_resource / move / spawn / dispel / drain / domain / translocate / snapshot / restore_snapshot / modify_damage / target_override / transfer_status / echo_last_skill / gauge_shuffle / status_shuffle / modify_skill / modify_status / modify_targetability / reveal / grant_immunity / take_control / write_rule_slot / modify_rule_slot。**12 个触发点封闭集**（`docs/ddd/params/执行参数.md` §2.1）。新增原语须先在 `docs/meta/SCHEMA.md` §5.2 登记再改 schema，否则 `check_enum_sync.py` 报漂移。
+- **效果原语 27 个**（以 `docs/json/schema/skills.schema.json` 的 `effect.oneOf` 为权威源，`check_enum_sync.py` 对账）：damage / heal / mount_status / modify_stat / modify_resource / move / spawn / dispel / drain / domain / translocate / snapshot / restore_snapshot / modify_damage / target_override / transfer_status / echo_last_skill / gauge_shuffle / status_shuffle / modify_skill / modify_status / modify_targetability / reveal / grant_immunity / take_control / write_rule_slot / modify_rule_slot。**14 个触发点封闭集**（`docs/ddd/params/执行参数.md` §2.1；2026-09-29 内核裁定增 `on_status_gain` 第 14 成员）。新增原语须先在 `docs/meta/SCHEMA.md` §5.2 登记再改 schema，否则 `check_enum_sync.py` 报漂移。
 - **随机性治理 R1–R6**：伤害/目标选择零随机；概率写成 `EffectRef.condition: {kind:'chance',p}`（没有 Chance 算子），须登记、单次抽样、只用于非伤害维度；落空/阻挡语义一律用 charges 次数型状态的确定性写法（2026-09-04 裁决，R5 不开例外）。
 
 ## 编辑纪律（违反会踩坑）

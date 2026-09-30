@@ -1,7 +1,7 @@
 # 职业设计评分体系（SCORING）
 
 > 2026-09-26 建立。配套脚本 `docs/tools/score.py`（唯一计分实现，本文件锁口径）；
-> 产物：`docs/analysis/scorecard.md`（勿手改）+ `site/data/scores.json`（网页端消费）。
+> 产物：`docs/analysis/scorecard.md`（勿手改）+ `docs/analysis/scores.json`（网页端消费，site 经 `../docs/analysis/scores.json` fetch，前端不重算）。
 > 用途：① 途径/轴设计质量的可比度量；② 逐职业重设计推进的取榜依据（WORKFLOW 环节⑤）。
 
 ## 一、原则

@@ -24,7 +24,7 @@
 
 | # | 维度 | 它回答的问题 | 权威字段 / 文件 | 典型例子 |
 |---|---|---|---|---|
-| 1 | **定义归属** | 写在哪、归谁所有 | `common.statuses.json` vs `<pathway>.statuses.json` | common 21 个（poison/shield/stun…）；私有占约 95% |
+| 1 | **定义归属** | 写在哪、归谁所有 | `common.statuses.json` vs `<pathway>.statuses.json` | common 25 个（poison/shield/stun…）；私有占约 95% |
 | 2 | **跨系可读** | 非本途径能否读 | `statusDef.crossPathway` + `participants` 白名单 | puppet_string / fate / filth / grazing_slot / massing |
 | 3 | **挂载层级** | 挂在战场 / 单位 / 实例 | `board.*` / 单位级 Pool / StatusInstance / zone·domain | board.secrecy；Pool lust/lost；普通状态实例 |
 | 4 | **主题来源（源质系）** | 属于 9 系哪系 | `docs/ddd/params/源质维度与跨系枢纽.md` §〇 | 源堡=隐秘值、暗影=恶欲值、光之钥=命运值 |
@@ -46,7 +46,7 @@
 ### 维度 2 · 跨系可读（crossPathway + participants）
 - `crossPathway:true` + `participants:[...]` 白名单 = 「跨系状态」。它本质是**普通 statusDef 加只读标志**，不是新类型。
 - 读规则：`crossPathway:true` 且 `participants` 含本途径 id，才可读；未列入的途径即便 `crossPathway:true` 也不可读（源质维度与跨系枢纽.md §一.2）。
-- 现状：18 条途径的 status 文件含 `crossPathway` 标记（占卜家 / 刺客 / 罪犯 / 暗影系 / 不眠者 / 收尸人等）。
+- 现状：21 个途径 status 文件含 `crossPathway` 标记、共 37 个跨系状态（2026-09-30 核；含跨系批新建 tide_call/remedy_mark/battle_banner）。
 
 ### 维度 3 · 挂载层级（最易被误判）
 - **战场级标量** `board.*`：`secrecy`(隐秘值) / `order`(秩序度) / `fate_value`(命运值) / `luminance`(光照度) / `clock`(战场时钟)。**不是 statusDef**，是全局数值槽。
