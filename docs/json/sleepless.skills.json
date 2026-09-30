@@ -41,12 +41,13 @@
    "name": "安魂",
    "statusId": "pacified",
    "enablers": [
-    "安魂"
+    "安魂",
+    "灵之统帅"
    ],
    "payoffs": [
     "恐惧权柄"
    ],
-   "note": "payoffs 2026-09-26 评审：恐惧权柄 damage_mul 按 slumber/dread/pacified 过滤（pacified=安魂轴身份，跨轴受益）；灵之统帅等读单位类型非 pacified 不计 ｜ payoffs 2026-09-26 评审：恐惧权柄 damage_mul 按 slumber/dread/pacified 过滤（pacified=安魂轴身份，跨轴受益）"
+   "note": "payoffs 2026-09-26 评审：恐惧权柄 damage_mul 按 slumber/dread/pacified 过滤（pacified=安魂轴身份，跨轴受益）；灵之统帅等读单位类型非 pacified 不计 ｜ payoffs 2026-09-26 评审：恐惧权柄 damage_mul 按 slumber/dread/pacified 过滤（pacified=安魂轴身份，跨轴受益） ｜ 2026-09-29 requiem 轴迭代（全库最低轴摘除）：pacified 补层数引擎（身份 8→15）；灵之统帅 if 分支补 pacified 产层段（产层 12→20，第二实证）；恐惧权柄补 pacified 耗层读档段（承接 patterns 扩）"
   },
   "secrecy": {
    "symbol": "🗝️",
@@ -2001,6 +2002,12 @@
          "statusId": "puppet_string",
          "duration": 3,
          "note": "统御亡灵：敌方 atk_desc 破平的 1 个 SPIRIT/UNDEAD"
+        },
+        {
+         "type": "mount_status",
+         "statusId": "pacified",
+         "duration": 3,
+         "note": "统御威压：被统御的亡灵同时陷入安宁（requiem 轴产层第二实证，2026-09-29）"
         }
        ],
        "else": []
@@ -2185,6 +2192,34 @@
      "statusId": "dread_authority",
      "duration": null,
      "target": "self"
+    },
+    {
+     "op": "if",
+     "condition": {
+      "kind": "has_status",
+      "side": "target",
+      "id": "pacified",
+      "cmp": ">=",
+      "n": 2
+     },
+     "then": [
+      {
+       "type": "modify_status",
+       "statusId": "pacified",
+       "stacksDelta": -1,
+       "target": "target",
+       "note": "安息收割：目标安宁≥2 层则消耗 1 层"
+      },
+      {
+       "type": "damage",
+       "element": "mental",
+       "value": 2,
+       "target": "target",
+       "note": "惊破安眠：耗层追打 2 点精神伤害"
+      }
+     ],
+     "else": [],
+     "note": "读层段：sleepless→pacified 层数读档+耗层（2026-09-29 requiem 轴迭代，承接 0  patterns 扩）"
     }
    ],
    "tentative": true,
