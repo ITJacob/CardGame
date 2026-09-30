@@ -358,14 +358,21 @@
 
 17 个职业迭代完成（score.py 复核全绿），全库途径分带 57.9–72.9、无 <40 轴。剩余失分不再能用卡面编辑消除，集中为四类，待内核裁定/平衡期处理：
 
-### A. frameworkFlags 机制落地（机制落地维度，10+ 途径失分主因）
-SKILL_DEF_MODES（×3）/ GAUGE_RATE_MUL_STAT_MODE（×2）/ STATUS_SOURCE_ATTRIBUTION（×2）/ ANY_OF_PREDICATE（×2）/ GAUGE_THRESHOLD_INV_S5 / SKILL_COST_DELTA / G15（×2）/ HAND_HIDDEN / MOVE_IN_STATUS_TRIGGER / DURATION_BY_STATUS_FAMILY / DURATION_BY_STATUS_FAMILY / SELF_HAS_STATUS_PREDICATE / PATHWAY_TARGETED_ALLY / F25_UNIT_WRAITH_ID_CONFLICT / CONVERT_AS_DISPEL_SPAWN / DEATH_SETTLEMENT_FIELD_WRITE / ORDER_SHUFFLE / SPAWN_HPRATIO_EXPRESSION / DAMAGE_ELEMENT_TRIGGER_FILTER。逐条裁定后销账。
+### A. frameworkFlags 机制落地 —— ✅ 2026-09-29 内核裁定销账
+
+35 个 code / 49 处登记全部裁定落地（机制落地维度全库 22 途径 15/15 满分）。裁定正文落点：
+
+- 新立机制：`faction_is` 谓词（共享内核 §三）、候选池 `weight` 加权（§四）、`on_status_gain` 触发点第 14 成员（执行参数 §2.1，KNOWN 分歧登记同步移除）、`modify_resource.duration` 回滚与 valueFrom 数值槽位读点（效果参数）、`fields` 承载 decree 族/全场唯一持有者（编队参数）、`ZoneDef.valueBoost`（战场参数）、战内分支正典/`hand_hidden`/`sourcePathway`（编目参数 §二点五）。
+- 伪谓词归并销账：unit_faction→faction_is、gauge_rank→sort:gauge_desc 等归并表 ⚠️未决清零。
+- 退化方案拍板为正典：SKILL_COST_DELTA（energy_regen）、CONVERT_AS_DISPEL_SPAWN（dispel+spawn）、SKILL_DEF_MODES（分支卡，不立 modes）。
+- 引擎义务登记（设计侧已闭环，主项目义务）：G15 on_turn_start 补 fire 点、ORDER_SHUFFLE 语义 finalize、MOVE_IN_STATUS_TRIGGER 的 G8 校验在引擎侧强制执行。
 
 ### B. 跨系联动结构性缺口（水手/观众/耕种者/罪犯/窥秘人等 5+ 途径）
 全库枢纽白名单无一含这些途径，且无 participants 留空的开放枢纽 → 结构性 -12~-15。待平衡期：给上述途径开自有枢纽，或把他途径枢纽白名单补入。
 
-### C. Pool 轴阈值档框架件
-罪犯 vice（lust 池）「thresholdTrigger(metric) 档位」未挂，身份锚定 -7 为框架级缺口，同 A 类销账。
+### C. Pool 轴阈值档框架件 —— ✅ 销账
+
+`thresholdTrigger(metric:'lust')` 档位（4–6 躁动 / 7–9 失控 / =10 欲望爆炸）与档位状态（lust_restless / lust_uncontrolled / lust_detonation）早已落 编队参数 §（源质维度）+ common.statuses.json；score.py 轴级「Pool 无档位」扣分系旧口径残留，随本次重算消除（罪犯 vice 身份锚定回 15）。
 
 ### D. 数据缺口与语义确认（设计侧小项）
 1. 污秽之语 describe 三选一但 AST 仅缓慢分支（死/堕落两分支缺失）。

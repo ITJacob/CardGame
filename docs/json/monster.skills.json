@@ -488,8 +488,8 @@
       "frameworkFlags": [
         {
           "code": "STATUS_GAIN_LISTENER",
-          "note": "新增项 1 遗留缺口：「监听自身获得指定状态」触发面未落（12 触发点封闭集无此钩子）；退化方案：并入幸运者自续链（on_remove → mount fortune + modify_resource energy +1），零新依赖",
-          "landed": false
+          "note": "新增项 1 遗留缺口：「监听自身获得指定状态」触发面未落（12 触发点封闭集无此钩子）；退化方案：并入幸运者自续链（on_remove → mount fortune + modify_resource energy +1），零新依赖 ｜ 2026-09-29 内核裁定：on_status_gain 采纳为触发点封闭集第 14 成员（执行参数 §2.1，2026-09-29），登记制即本 flag 本身",
+          "landed": true
         }
       ],
       "art": {
@@ -1363,8 +1363,8 @@
       "frameworkFlags": [
         {
           "code": "FACTION_PREDICATE",
-          "note": "共享内核 §三谓词族无「目标阵营」判定（仅 gender_is 等），If 分支的 target_faction_is 为伪谓词，待内核裁定",
-          "landed": false
+          "note": "共享内核 §三谓词族无「目标阵营」判定（仅 gender_is 等），If 分支的 target_faction_is 为伪谓词，待内核裁定 ｜ 2026-09-29 内核裁定：faction_is 谓词转正（共享内核 §三 2026-09-29），unit_faction/target_faction_is 为其稿面别名",
+          "landed": true
         }
       ],
       "conversionNotes": [
@@ -1623,8 +1623,8 @@
       "frameworkFlags": [
         {
           "code": "RESOURCE_DURATION_REVERT",
-          "note": "modify_resource(gauge.threshold) 为持续修正，需随状态到期回滚；效果参数未列 modify_resource 的 duration 记账口径，暂带 duration 字段，待内核裁定",
-          "landed": false
+          "note": "modify_resource(gauge.threshold) 为持续修正，需随状态到期回滚；效果参数未列 modify_resource 的 duration 记账口径，暂带 duration 字段，待内核裁定 ｜ 2026-09-29 内核裁定：modify_resource.duration 落地（效果参数 2026-09-29）：账本计时到期回滚，持续修资源正典",
+          "landed": true
         }
       ],
       "conversionNotes": "翻译/语义：命运轴\"重启\"：只清状态与行动条（非逆转时光，不回血不复活）。代价是清掉己方 buff。⚠️ 依赖 `dispel` 区域 scope + `modify_resource.set`。数值 ⚠️D。",
