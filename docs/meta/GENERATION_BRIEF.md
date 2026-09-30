@@ -62,11 +62,11 @@ v0.2 只锁效果不锁数值，但**框架的语义维度封得太死**——�
 | 伤害转移 | 伤害转嫁 |
 | **burn** | debuff，每 tick 2 伤，duration 3 |
 
-### 1.3 触发点（**取值域封闭，共 12 个**）
+### 1.3 触发点（**取值域封闭，共 14 个**；2026-09-29 增第 14）
 
 定义见 `../ddd/params/执行参数.md` §2.1：
 
-`on_apply` / `on_remove` / `on_tick` / `on_turn_start` / `on_battle_start` / `on_spawn` / `on_death` / `on_kill` / `on_attack` / `on_take_damage` / `on_deal_damage` / `on_active_skill`
+`on_apply` / `on_remove` / `on_tick` / `on_turn_start` / `on_battle_start` / `on_spawn` / `on_death` / `on_kill` / `on_attack` / `on_take_damage` / `on_deal_damage` / `on_active_skill` / `on_status_gain`
 
 三条易错纪律：
 
@@ -327,7 +327,7 @@ H 组不是旧账——`../ddd/params/编队参数.md` §2.4 母版表收录 H1�
 | 项 | 内容 | 状态 |
 |---|---|---|
 | 画中世界 / 高维俯视 | 原著表现为"高维俯视"而非战斗内场景切换 | 🔴 不做普通界域牌。更适合做**塔层主题**或**终局机制**（降维打击），归主项目承载 |
-| `on_status_gain` 触发点 | 「监听自身获得指定状态」，12 触发点封闭集无此钩子 | 🔴 暂缓（2026-09-14）：仅怪物·意外之财 1 张卡，维持稿面退化方案（并入幸运者自续链），不为单卡扩第 13 触发点 |
+| `on_status_gain` 触发点 | 「监听自身获得指定状态」，12 触发点封闭集无此钩子 | ✅ **已落地**（2026-09-29 内核裁定）：扩为第 14 触发点（fire 给获得者），ddd 执行参数 §2.1 + schema + validate EVENTS 同步；frameworkFlag 登记制随裁定批销账 |
 | `gauge_shuffle` / `status_shuffle` | 行动条集合守恒重排 / 状态轮转搬运 | 🔴 暂缓（2026-09-14）：仅律师·秩序崩坏 1 张传说卡；schema 已预留分支但语义不落 ddd，稿面维持 🟡 |
 | `SkillDef.modes`（释放时三选一）+ `variant_is` | 一张卡释放时三选一变体 | 🔴 暂缓（2026-09-14）：仅 3 处用量，**采用稿面已写好的退化方案——拆成三张独立卡**，不为少数卡扩 SkillDef 字段 |
 | `hand_hidden`（敌方无法查看我方手牌） | 信息层标志，非 rulePatch | ❌ 拒绝（2026-09-14）：手牌 / 派发已于 2026-09-05 迁出本仓库归主项目 Draft 层，ddd 不承载信息层；愚者·幻境该条环境规则须改写成战斗内可表达的替代效果 |

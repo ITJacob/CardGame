@@ -79,7 +79,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `flagship` | bool | ✓ | 是否旗舰卡 |
 | `lore` / `flavor` / `describe` | string | ✓ | 设定 / 风味 / **玩家可读效果描述**（`describe` 是唯一面向玩家的字段） |
 | `effects` | effect[] | ✓ | 卡面效果，至少 1 条 |
-| `tentative` | bool | ✓ | 数值待拍板；当前全库 829 张均为 `true` |
+| `tentative` | bool | ✓ | 数值待拍板；当前全库 832 张均为 `true` |
 | `cost` | object | active | `{ energy, cooldown, castTime }`，`castTime` 可为 `null` |
 | `reach` | `none`\|`melee`\|`ranged` | active | 攻击性质（近战/远程，与双方站位正交；仅决定同步对撞与可拦截性，非攻击类写 none） |
 | `target` | object | active | 见 §4 |
@@ -293,7 +293,7 @@ Gate（validate.py）：`phases` 非空且取值合法、`mul>0`；`mul` 越出 
 ```
 
 `landed: false` = 仍欠账。当前 104 张卡带 flag（共 109 条），其中 **46 条为 `landed: false`**。
-⚠️ 触发点 `on_status_gain` 也在此列——它不在 12 触发点封闭集内，使用时必须同时登记 flag。
+✅ 触发点 `on_status_gain` 已落地为第 14 触发点（2026-09-29 内核裁定，执行参数 §2.1）；frameworkFlag 登记随裁定批全量销账。
 
 **与 `conversionNotes` 的边界（2026-09-19 明确，避免重复排查）**
 
@@ -321,7 +321,7 @@ Gate（validate.py）：`phases` 非空且取值合法、`mul>0`；`mul` 越出 
 
 ```
 结构校验（validate_schema.py）: files 22 | errors 0 | warns 0
-语义校验（validate.py）       : cards 829 | errors 0 | warns 0（已登记缺口 1 项汇总输出，不逐条告警）
+语义校验（validate.py）       : cards 832 | errors 0 | warns 0（口径随跑随新，本表为 2026-09-30 快照）
 ```
 
 **命名治理（2026-09-18 清零）**：`modifiers` 为开放结构，曾同义异写严重。`validate.py` 内置 `MODIFIER_ALIASES` 别名表，命中即产出非阻断告警引导收敛；全库 25 条已于 2026-09-18 一次性收敛完毕：

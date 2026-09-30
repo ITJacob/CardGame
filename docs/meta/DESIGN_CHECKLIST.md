@@ -10,7 +10,7 @@
 | # | 维度 | 决策内容 / 约束来源 |
 |---|---|---|
 | 1 | **定位** | 落在哪个途径、哪个构筑轴；在轴里当产层（enabler）还是读层（payoff）——决定它在轴评分里的角色（SCORING.md 轴六维） |
-| 2 | **卡面骨架** | `kind` 主动/被动；被动挂 `hook`（触发点 12 个封闭集）；`sequence` + 序列名；`rarity`（rarityMap 由序列位定死，不可自选）；是否旗舰（flagship，理想 4 张/途径） |
+| 2 | **卡面骨架** | `kind` 主动/被动；被动挂 `hook`（触发点 14 个封闭集）；`sequence` + 序列名；`rarity`（rarityMap 由序列位定死，不可自选）；是否旗舰（flagship，理想 4 张/途径） |
 | 3 | **效果 AST** | `op` 结构（sequence / if / repeat…）+ 原语组合（27 个封闭集，schema `effect.oneOf` 为权威源）+ 参数（元素/属性/资源/锚点/条件谓词，全部走值域 + glossary 词典）——技能真正的设计主体 |
 | 4 | **硬约束自检** | 触发点封闭、R1–R6 随机治理（chance 须登记 + 单次抽样 + 只用于非伤害维）、G8 位移约束、数值锚点（≈3能量 ≈6伤害 ≈10%最大生命，brief §1–§3）——数值本身目前 ⚠️D 占位，只校结构不校大小 |
 | 5 | **文本三件套** | `describe`（机器可读复述）/ `flavor` / `lore`，缺一扣「文本完备」分 |
@@ -27,7 +27,7 @@ statusDef 38 个字段，设计决策收敛为七组：
 | 1 | **身份** | `id` / `name` / `note` + `category` 分类（buff / debuff / 控制…词典值域）——状态统计页「分类 × 维度」的第一个轴 |
 | 2 | **时长模型** | 四件套怎么取：`duration`（tick 自然到期）/ `maxStacks`（叠层）/ `charges`（次数）/ `dispelable`——决定「层数语义」，也是评分「身份锚定」查的层数引擎 |
 | 3 | **读档能力** | `stackThreshold` + `thresholdTrigger`（到档触发什么）、`statPerStack`（每层载荷）、`ramp`、`phases`（形态轮转，如月相）——状态的 payoff 接口；「身份锚定」+7 分看这组是否非空 |
-| 4 | **行为载荷** | `triggers`（12 封闭触发点 → effects，状态的主动面）/ def 级 `effects` / `modifiers`（自由词表修饰符）/ `behaviorModifiers` / `disallowActions` / 防御语义件（`lethalProtect` / `reviveBlocked` / `immune` / `suppress` / `redirectRule`…） |
+| 4 | **行为载荷** | `triggers`（14 封闭触发点 → effects，状态的主动面）/ def 级 `effects` / `modifiers`（自由词表修饰符）/ `behaviorModifiers` / `disallowActions` / 防御语义件（`lethalProtect` / `reviveBlocked` / `immune` / `suppress` / `redirectRule`…） |
 | 5 | **跨系开关** | `crossPathway` + `participants` 白名单——不写默认途径私有；跨系联动评分维查这里 |
 | 6 | **特殊机制件**（按需） | `formGroup` / `cycleTicks`（月相轮转）、`slots`（放牧槽 / 规则槽）、`lineageStack`（异类谱系）、`summonMapping`（刻印链）、`contagious`、`transferOnDeath` 等——用到才取 |
 | 7 | **登记 + 数值** | 新 id 过词典对账、枚举过 check_enum_sync；数值 ⚠️D 同技能 |
