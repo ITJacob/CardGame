@@ -352,3 +352,24 @@
 ### 框架改动未落项
 - 🟡 `streamlined_cast` 费用修正 → progression 层（服务于 省略步骤）
 - 🟢 `crossPathway` 枢纽状态白名单（`grazed_soul`/`flesh_parasite`/`提线木偶`/`替身`/`混乱`/`恶欲值`/`命运`） → StatusDef 新增标志+参与途径（服务于 跨系 combo（§三））  → ✅ 已落地（见 §零，2026-09-19）
+
+
+## 环节⑤重设计轮后遗留汇总（2026-09-29 登记）
+
+17 个职业迭代完成（score.py 复核全绿），全库途径分带 57.9–72.9、无 <40 轴。剩余失分不再能用卡面编辑消除，集中为四类，待内核裁定/平衡期处理：
+
+### A. frameworkFlags 机制落地（机制落地维度，10+ 途径失分主因）
+SKILL_DEF_MODES（×3）/ GAUGE_RATE_MUL_STAT_MODE（×2）/ STATUS_SOURCE_ATTRIBUTION（×2）/ ANY_OF_PREDICATE（×2）/ GAUGE_THRESHOLD_INV_S5 / SKILL_COST_DELTA / G15（×2）/ HAND_HIDDEN / MOVE_IN_STATUS_TRIGGER / DURATION_BY_STATUS_FAMILY / DURATION_BY_STATUS_FAMILY / SELF_HAS_STATUS_PREDICATE / PATHWAY_TARGETED_ALLY / F25_UNIT_WRAITH_ID_CONFLICT / CONVERT_AS_DISPEL_SPAWN / DEATH_SETTLEMENT_FIELD_WRITE / ORDER_SHUFFLE / SPAWN_HPRATIO_EXPRESSION / DAMAGE_ELEMENT_TRIGGER_FILTER。逐条裁定后销账。
+
+### B. 跨系联动结构性缺口（水手/观众/耕种者/罪犯/窥秘人等 5+ 途径）
+全库枢纽白名单无一含这些途径，且无 participants 留空的开放枢纽 → 结构性 -12~-15。待平衡期：给上述途径开自有枢纽，或把他途径枢纽白名单补入。
+
+### C. Pool 轴阈值档框架件
+罪犯 vice（lust 池）「thresholdTrigger(metric) 档位」未挂，身份锚定 -7 为框架级缺口，同 A 类销账。
+
+### D. 数据缺口与语义确认（设计侧小项）
+1. 污秽之语 describe 三选一但 AST 仅缓慢分支（死/堕落两分支缺失）。
+2. 无 binding 的 guardianship 挂载（战士黎明铠甲「独身守护」）语义待内核确认。
+3. 腐化回扣 has_status 列表形 id 未计入 score.py 读层口径（单张卡的计分口径问题，非数据错误）。
+4. 规模失衡 5 处：thief steal 15 卡/parasite 5 卡、warrior martial 15 卡、assassin form 15 卡、apprentice trick 4 卡、gate 13 卡——并入 17 轴补卡候选统筹。
+5. 已清除幽灵卡引用 4 张：亡者标记/巨力挥击/守护姿态/暮色侵蚀（均从未存在，元数据已核正）。
