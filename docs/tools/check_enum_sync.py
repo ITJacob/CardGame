@@ -17,7 +17,6 @@ BACKTICKS = re.compile(r"`([^`]+)`")
 
 # 有意分歧登记：文本侧与机器侧允许存在的差集，须注明理由
 KNOWN = {
-    ("triggerEvent", "on_status_gain"): "schema 结构层放行；语义层强制 frameworkFlag 登记（SCHEMA.md §8）",
     ("sortKey", "status:<id>:asc"): "ddd 参数化状态排序族（共享内核参数 §sort），字面量枚举不含",
     ("sortKey", "status:<id>:desc"): "ddd 参数化状态排序族（共享内核参数 §sort），字面量枚举不含",
 }
