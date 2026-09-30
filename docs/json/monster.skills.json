@@ -513,7 +513,7 @@
       "flagship": false,
       "lore": "序列6 灾祸教士 —— \"主动引发灾祸波及敌人，自身靠幸运规避\"",
       "flavor": "你伸手把灾祸拨向了敌人——它连同身边的人一起遭殃，而你毫发无伤地退开半步。",
-      "describe": "对一名敌人造成 4 点物理伤害并溅射相邻单位 2 点物理伤害，自身获得 1 层幸运。",
+      "describe": "对一名敌人造成 4 点物理伤害并溅射相邻单位 2 点物理伤害，自身获得 1 层幸运。；目标带厄运标记则灾祸叠厄，追加 2 点精神伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -547,6 +547,26 @@
           "stacks": 1,
           "target": "self",
           "note": "自身靠幸运规避"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "灾祸叠厄：目标带厄运标记则祸不单行 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：monster→assassin doom（2026-09-29 跨系批二）"
         }
       ],
       "sharedAcross": [],

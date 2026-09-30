@@ -1295,7 +1295,7 @@
       "flagship": false,
       "lore": "序列5 星象师 —— \"星之巨柱、星海穿梭、星桥、本我星象、星光囚笼 / 初步掌握星象、星座、星辰、星光概念\"",
       "flavor": "每个人头顶都悬着一片属于自己的星象。你认得你那一片——它让脚步轻快，也在你濒死时骤然亮起。",
-      "describe": "战斗开始时：自身行动条速率 +6（整场），并获得「本我星象」（每场 1 次）：自身生命低于 40% 受击时行动条 +20。",
+      "describe": "战斗开始时：自身行动条速率 +6（整场），并获得「本我星象」（每场 1 次）：自身生命低于 40% 受击时行动条 +20。；自身带命运缝隙则命运星象，追加 2 点精神伤害。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1312,6 +1312,26 @@
           "charges": 1,
           "duration": null,
           "target": "self"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "fate_gap",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "命运星象：自身带命运缝隙则星象叠运 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：pryer→thief fate_gap（2026-09-29 跨系批二）"
         }
       ],
       "tentative": true,
@@ -1517,7 +1537,7 @@
       "flagship": false,
       "lore": "序列4 神秘学家 —— \"童话魔法：卖火柴的小女孩（幻觉）、灰姑娘（变形）、朗基努斯之枪（强攻）等\"",
       "flavor": "你打了个响指。华服变回灰扑扑的旧裙，马车变回南瓜——它站在那儿，笨拙、迟缓、脆弱。等到十二点的钟声敲响，一切才会复原。",
-      "describe": "使一名敌人变形 3 tick：攻击 -4、防御 -2、行动条速率 ×0.85、受伤 ×1.15，到期自动复原。",
+      "describe": "使一名敌人变形 3 tick：攻击 -4、防御 -2、行动条速率 ×0.85、受伤 ×1.15，到期自动复原。；目标带厄运标记则厄运妆点，追加 2 点精神伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1537,6 +1557,26 @@
           "type": "mount_status",
           "statusId": "cinderella_form",
           "duration": 3
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "厄运妆点：目标带厄运标记则午夜魔法更烈 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：pryer→assassin doom（2026-09-29 跨系批）"
         }
       ],
       "variants": [

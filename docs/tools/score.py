@@ -299,7 +299,8 @@ def main():
                             part = sdef.get("participants") or []
                             if not (sdef.get("crossPathway") and (not part or pid2 in part)):
                                 continue
-                            pw_crosspath_reads[pid2] = pw_crosspath_reads.get(pid2, 0) + 1
+                            # 跨系读段统一在下方枢纽专项 pass 计数（口径见 SCORING.md 四：
+                            # 枢纽状态 = crossPathway:true 全体，不限轴身份），此处只记 ext_consumers
                         else:
                             pw_crossaxis_refs[pid] = pw_crossaxis_refs.get(pid, 0) + 1
                         ext_consumers += 1
@@ -326,6 +327,21 @@ def main():
                      "轴内多样性": r["diversity"], "规模均衡": r["scale"], "承接连通": r["connect"]}
 
     # ---------- 途径级 ----------
+    # 跨系读段专项：本途径卡读取他途径枢纽状态（crossPathway:true 即枢纽，不限是否轴身份），
+    # 每（卡×枢纽）计 1 次；白名单为空视为开放枢纽
+    hub_ids = {sid for sid, sd in status_by_id.items() if sd.get("crossPathway")}
+    for pid, d in pathways.items():
+        for c in d.get("cards") or []:
+            for hid in hub_ids:
+                if status_owner.get(hid) == pid:
+                    continue
+                if not card_refs_status(c, hid):
+                    continue
+                part = status_by_id[hid].get("participants") or []
+                if part and pid not in part:
+                    continue
+                pw_crosspath_reads[pid] = pw_crosspath_reads.get(pid, 0) + 1
+
     max_crossaxis = max(pw_crossaxis_refs.values()) if pw_crossaxis_refs else 0
     max_crosspath = max(pw_crosspath_reads.values()) if pw_crosspath_reads else 0
     pw_rows = []

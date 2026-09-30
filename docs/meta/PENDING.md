@@ -367,8 +367,9 @@
 - 退化方案拍板为正典：SKILL_COST_DELTA（energy_regen）、CONVERT_AS_DISPEL_SPAWN（dispel+spawn）、SKILL_DEF_MODES（分支卡，不立 modes）。
 - 引擎义务登记（设计侧已闭环，主项目义务）：G15 on_turn_start 补 fire 点、ORDER_SHUFFLE 语义 finalize、MOVE_IN_STATUS_TRIGGER 的 G8 校验在引擎侧强制执行。
 
-### B. 跨系联动结构性缺口（水手/观众/耕种者/罪犯/窥秘人等 5+ 途径）
-全库枢纽白名单无一含这些途径，且无 participants 留空的开放枢纽 → 结构性 -12~-15。待平衡期：给上述途径开自有枢纽，或把他途径枢纽白名单补入。
+### B. 跨系联动结构性缺口 —— ✅ 2026-09-29 跨系批销账
+
+白名单扩充 6 枢纽（doom/conceal_authority/occult_seal/corrupted/mirror_substitute/law_edit 共 12 途径入列）+ 新建 3 自有枢纽（sailor `tide_call` 潮汐号令、apothecary `remedy_mark` 药记、warrior `battle_banner` 战旗，均 maxStacks 3 refresh ⚠️D 待平衡）+ 跨系读段 20 段落卡；score.py 补枢纽读段专项计数（原实现漏计非轴身份的枢纽，与 SCORING.md 口径不合，已修）。跨系结构性 0 清零，全库分带 64.3–79.2。遗留：sleepless 跨系 7.5 为被读侧保底（自有 hub 未被他人读），归平衡期。
 
 ### C. Pool 轴阈值档框架件 —— ✅ 销账
 

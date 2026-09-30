@@ -224,7 +224,7 @@
       "flagship": false,
       "lore": "序列8 读心者 —— \"观察深入气场、以太体，异常准确地掌握人心\"",
       "flavor": "你读完了它。接下来的一击，你确切知道该落在哪儿。",
-      "describe": "对一名敌人造成 2 点精神伤害；若自身「心象」≥2 层，消耗 2 层，改为再造成 6 点精神伤害并使其易伤 2 tick。",
+      "describe": "对一名敌人造成 2 点精神伤害；若自身「心象」≥2 层，消耗 2 层，改为再造成 6 点精神伤害并使其易伤 2 tick。；目标灵魂被放牧则读魂，追加 2 点精神伤害。",
       "cost": {
         "energy": 2,
         "cooldown": 2,
@@ -278,6 +278,26 @@
               "else": []
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "grazed_soul",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "读魂：目标灵魂被放牧则心音更显，追加 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：spectator→supplicant grazed_soul（2026-09-29 跨系批）"
         }
       ],
       "sharedAcross": [
@@ -1278,7 +1298,7 @@
       "flagship": true,
       "lore": "序列3 织梦人 —— \"编织梦境并将目标拉入\"",
       "flavor": "你为它织了一场梦，然后请它进去坐一会儿——至于外面的仗，等它醒再说。",
-      "describe": "将一名敌人拉入梦境封印 3 tick（不能行动、双方都无法选中它）；若自身「心象」≥3 层，消耗 3 层延长为 5 tick。目标位格不低于你时，只有 40% 概率成功。",
+      "describe": "将一名敌人拉入梦境封印 3 tick（不能行动、双方都无法选中它）；若自身「心象」≥3 层，消耗 3 层延长为 5 tick。目标位格不低于你时，只有 40% 概率成功。；自身带镜子替身则镜中织梦，自疗 2 点。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1352,6 +1372,26 @@
               ]
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "mirror_substitute",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "self",
+              "note": "镜中织梦：自身带镜子替身则镜里缝梦，自愈 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：spectator→assassin mirror_substitute（2026-09-29 跨系批）"
         }
       ],
       "tentative": true,
