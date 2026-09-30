@@ -13,7 +13,6 @@
       "statusId": "cultivated",
       "enablers": [
         "分辨种子",
-        "繁衍生长",
         "祈雨祈晴"
       ],
       "payoffs": [
@@ -21,7 +20,7 @@
         "自然之子",
         "自然权柄"
       ],
-      "note": "payoffs 2026-09-26 评审：conversionNotes 明写读大地层数放大（自然权柄为跨轴）"
+      "note": "payoffs 2026-09-26 评审：conversionNotes 明写读大地层数放大（自然权柄为跨轴） ｜ 2026-09-29 环节⑤：cultivated 补层数引擎（身份 8→15）；祈雨祈晴补产层段（繁衍生长挂 regen 移出，产层 12→20）；自然之子读 cultivated 升 landed + 自然权柄（blight 轴）读 cultivated（payoff 2 landed，读层 12→22+）"
     },
     "healing": {
       "symbol": "🌿",
@@ -29,8 +28,7 @@
       "statusId": "vitality_field",
       "enablers": [
         "生命充盈",
-        "给予生命",
-        "缝合灵魂"
+        "触碰痊愈"
       ],
       "payoffs": [
         "缝合灵魂",
@@ -39,7 +37,7 @@
         "生命炼成",
         "人偶制造"
       ],
-      "note": "payoffs 2026-09-26 评审：前三卡自标读生命层放大；生命炼成/人偶制造跨轴读生命（计 enabler 卡兼跨轴 payoff）"
+      "note": "payoffs 2026-09-26 评审：前三卡自标读生命层放大；生命炼成/人偶制造跨轴读生命（计 enabler 卡兼跨轴 payoff） ｜ 2026-09-29 环节⑤：触碰痊愈补 vitality_field 产层段（给予生命/缝合灵魂不挂 vitality_field 移出，产层 12→20）；触碰痊愈/生命炼成实证挂/读 vitality_field（payoff 升 landed，读层 20→25）"
     },
     "alchemy": {
       "symbol": "🧪",
@@ -50,23 +48,23 @@
         "人偶制造"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：唯一读阶梯档位的人偶制造已列 enabler，产耗捆绑同卡，缺独立 payoff 卡（待扩展）"
+      "note": "payoffs 2026-09-26 评审：唯一读阶梯档位的人偶制造已列 enabler，产耗捆绑同卡，缺独立 payoff 卡（待扩展） ｜ 2026-09-29 环节⑤：生命炼成补 matter_ladder 产层段（产层 12→20）；产耗捆绑同卡缺独立 payoff，真空甄别拍板接受（payoffVacuumAccepted，待扩展）；生命炼成读 vitality_field 跨轴（alchemy→healing）",
+      "payoffVacuumAccepted": true
     },
     "blight": {
       "symbol": "🥀",
       "name": "荒芜",
       "statusId": "blight",
       "enablers": [
-        "恶灵化",
-        "剥夺生命",
-        "荒芜"
+        "荒芜",
+        "剥夺生命"
       ],
       "payoffs": [
         "自然憎恶",
         "枯荣循环",
         "最后回归之地"
       ],
-      "note": "payoffs 2026-09-26 评审：自然憎恶/最后回归之地自标 payoff；枯荣循环读敌方 DOT 存在（designNote 定为生长↔荒芜唯一直接耦合件）；恶灵化/荒芜已列 enabler 剔除"
+      "note": "payoffs 2026-09-26 评审：自然憎恶/最后回归之地自标 payoff；枯荣循环读敌方 DOT 存在（designNote 定为生长↔荒芜唯一直接耦合件）；恶灵化/荒芜已列 enabler 剔除 ｜ 2026-09-29 环节⑤：剥夺生命补 blight 产层段（恶灵化为纯 spawn 移出，产层 12→20）；最后回归之地读 blight 升 landed（payoff notes→landed）；自然权柄读 cultivated 跨轴（blight→harvest）"
     }
   },
   "cards": [
@@ -583,7 +581,7 @@
       "flagship": false,
       "lore": "序列7 丰收祭司 —— \"祈雨 / 祈晴仪式\"",
       "flavor": "你向天空举起双臂。缺水的年景里你求一场雨，晦暗的日子里你求一个晴天——大地从不拒绝你。",
-      "describe": "若我方生命偏低（平均 <50%）则祈雨：全体友军治疗 3 点并再生 2 tick；否则祈晴：全体友军行动条速率 +8（4 tick）并驱散 1 个持续伤害状态。（并写入战场覆写层：祈雨光照度 2 / 祈晴光照度 8，持续 6 tick）",
+      "describe": "若我方生命偏低（平均 <50%）则祈雨：全体友军治疗 3 点并再生 2 tick；否则祈晴：全体友军行动条速率 +8（4 tick）并驱散 1 个持续伤害状态。（并写入战场覆写层：祈雨光照度 2 / 祈晴光照度 8，持续 6 tick）；雨润大地：目标大地层数 +1（3 tick）。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -598,6 +596,12 @@
         }
       },
       "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "cultivated",
+          "duration": 3,
+          "note": "雨润大地（环节⑤ 2026-09-29 补产层段）"
+        },
         {
           "op": "if",
           "condition": {
@@ -1182,7 +1186,7 @@
       "flagship": false,
       "lore": "序列4 古代炼金师 —— \"『生命炼成』：创造普通人类或战斗魔像\"",
       "flavor": "你在地上画好阵图，把泥土、血和一点自己的寿命填进去。站起来的是个不会说话的东西，但它听你的。",
-      "describe": "在己方队尾召唤一只战斗魔像（≈26 血 / 攻击 5 物理 / 笨重，自带护甲 +5）。",
+      "describe": "在己方队尾召唤一只战斗魔像（≈26 血 / 攻击 5 物理 / 笨重，自带护甲 +5）。；炼成即登阶梯（物质阶梯 +1 层，整场）；自身生命充盈在场则生命炼成借场，自疗 2 点。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1203,6 +1207,34 @@
           "unitId": "unit_golem",
           "position": "tail",
           "note": "H1 基线；自带 modify_stat(armor,+5,null)"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "matter_ladder",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": null,
+          "target": "self",
+          "note": "炼成即登阶梯（环节⑤ 2026-09-29 补产层段）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "vitality_field",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "self",
+              "note": "生命炼成借场：自身生命充盈在场则炼成回哺 2 点（环节⑤ 2026-09-29 跨轴读层段：alchemy→healing）"
+            }
+          ],
+          "else": []
         }
       ],
       "upgradeLadder": {
@@ -1243,7 +1275,7 @@
       "flagship": false,
       "lore": "序列4 古代炼金师 —— \"能让触碰的生灵无论多严重伤势痊愈\"",
       "flavor": "你的手按上去的那一刻，伤口、诅咒，和那些说不清的毛病，一起安静了。",
-      "describe": "治疗一名友军 8 点生命，并驱散其全部减益、持续伤害与控制状态（含眩晕/沉默）。",
+      "describe": "治疗一名友军 8 点生命，并驱散其全部减益、持续伤害与控制状态（含眩晕/沉默）。；触碰即生命场（自身生命充盈 4 tick）。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1277,6 +1309,13 @@
                 ]
               },
               "note": "count 省略 = 全部清除；本途径唯一解眩晕/沉默的卡"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "vitality_field",
+              "duration": 4,
+              "target": "self",
+              "note": "触碰即生命场（环节⑤ 2026-09-29 补产层段）"
             }
           ]
         }
@@ -1385,7 +1424,7 @@
       "flagship": false,
       "lore": "序列3 抬棺人 —— \"『剥夺生命』：击中目标使其接受死亡考验\"",
       "flavor": "你的手落在它肩上，它的生命开始倒数。通不过这场考验的，就不必再留着了。",
-      "describe": "对一名敌人造成 3 点无元素伤害，并使其接受死亡考验 3 tick：每 tick 流失 1 点生命；若期间生命 <25%，立即受到 6 点无元素伤害（每目标只结算一次）。",
+      "describe": "对一名敌人造成 3 点无元素伤害，并使其接受死亡考验 3 tick：每 tick 流失 1 点生命；若期间生命 <25%，立即受到 6 点无元素伤害（每目标只结算一次）。；剥夺即荒芜：目标荒芜 2 tick。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1413,6 +1452,12 @@
               "type": "mount_status",
               "statusId": "death_trial",
               "duration": 3
+            },
+            {
+              "type": "mount_status",
+              "statusId": "blight",
+              "duration": 2,
+              "note": "剥夺即荒芜（环节⑤ 2026-09-29 补产层段）"
             }
           ]
         }
@@ -1713,7 +1758,7 @@
       "flagship": true,
       "lore": "序列1 自然行者 —— \"『自然之子』：与大地树林水流山峰矿石成为一体，可穿梭\"",
       "flavor": "你和大山、和溪流、和脚下的矿脉对了一下眼神，然后就不在这里了——你从身后的土里冒了出来。",
-      "describe": "移动至己方半场内指定空格，并化身自然之子 3 tick：不可被单体技能选中、受伤 ×0.8，每 tick 回复 1 点生命。",
+      "describe": "移动至己方半场内指定空格，并化身自然之子 3 tick：不可被单体技能选中、受伤 ×0.8，每 tick 回复 1 点生命。；若目标带大地层数，沃土滋养，自疗 2 点。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1745,6 +1790,25 @@
               "statusId": "nature_child",
               "duration": 3,
               "target": "self"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "cultivated",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "self",
+                  "note": "沃土滋养：目标大地层数在场则自然之子汲取沃土，自疗 2 点（环节⑤ 2026-09-29 补读层段：cultivated payoff 升 landed）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -1983,7 +2047,7 @@
       "flagship": true,
       "lore": "序列0 母亲 —— \"『大地』权柄：最后回归之地\"",
       "flavor": "你敲了敲地面，说了句「回来吧」。它们的生命开始往土里淌；而你们这边倒下过的，正从土里往外爬。",
-      "describe": "全体敌人受到 6 点无元素伤害；若己方有已死亡单位，以 40% 生命复活最近死亡的一名己方单位（落己方队尾）。",
+      "describe": "全体敌人受到 6 点无元素伤害；若己方有已死亡单位，以 40% 生命复活最近死亡的一名己方单位（落己方队尾）。；对荒芜的目标，荒芜归尘，全体敌方额外受 2 点。",
       "cost": {
         "energy": 6,
         "cooldown": 8,
@@ -2025,6 +2089,26 @@
                 }
               ],
               "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "blight",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "target": "all_enemies",
+                  "note": "荒芜归尘：目标已荒芜则归土更重，全体敌方额外受 2 点（环节⑤ 2026-09-29 补读层段：blight payoff 升 landed）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -2051,7 +2135,7 @@
       "flagship": false,
       "lore": "序列0 母亲 —— \"『自然』权柄：现实世界的一部分，难被摧毁封印\"",
       "flavor": "你不是站在自然里——你就是自然的一部分。要摧毁你，得先摧毁一整片大陆。",
-      "describe": "战斗开始时获得「自然权柄」：敌方施加于你的状态时长 ×0.5；你身上的状态不可被驱散；每场一次，死亡时以 30% 生命原地复活。",
+      "describe": "战斗开始时获得「自然权柄」：敌方施加于你的状态时长 ×0.5；你身上的状态不可被驱散；每场一次，死亡时以 30% 生命原地复活。；若目标带大地层数，权柄读大地，追加 2 点无属性伤害。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -2059,6 +2143,25 @@
           "statusId": "nature_authority",
           "duration": null,
           "target": "self"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "cultivated",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "note": "权柄读大地：目标大地层数在场则自然权柄顺势催熟为刃，追加 2 点（环节⑤ 2026-09-29 跨轴读层段：blight→harvest，conversionNotes 明写跨轴落地）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": true,
