@@ -857,7 +857,7 @@
       "flagship": false,
       "lore": "序列6 魔药教授 —— \"预服药水后非常难以应付\"",
       "flavor": "你在战前就把三瓶药水灌了下去 —— 开战那一刻，你的血是沸腾的。",
-      "describe": "战斗开始时获得「预服药水」10 tick：攻击 +2、防御 +2、行动条速率 +8。",
+      "describe": "战斗开始时获得「预服药水」10 tick：攻击 +2、防御 +2、行动条速率 +8。；并获得「药记」4 tick（己方伤害 ×1.1，跨系枢纽）。；目标已被腐蚀则以毒攻蚀，追加 2 点毒素伤害。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -866,6 +866,33 @@
           "duration": 10,
           "target": "self",
           "note": "绝不能写成 on_spawn（A2：召唤物登场重复触发）"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "remedy_mark",
+          "duration": 4,
+          "target": "self",
+          "note": "跨系枢纽挂载（2026-09-29 跨系批，产层兼枢纽计数）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "corrupted",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 2,
+              "note": "以毒攻蚀：目标已被腐蚀则药剂蚀穿 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：apothecary→lawyer corrupted（2026-09-29 跨系批）"
         }
       ],
       "tentative": true,

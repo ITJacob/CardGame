@@ -642,7 +642,7 @@
       "flagship": false,
       "lore": "序列6 法官 —— \"对一定区域立下新规则，违背则受束缚\"",
       "flavor": "你当着它的面宣判了一条规矩。它当然可以不听——但规矩之所以是规矩，是因为违背它的代价，它付不起。",
-      "describe": "对一名敌人立规 6 tick（可惩罚 2 次）：其每次发动主动技能时受到 3 点精神伤害并被束缚 2 tick，惩罚 2 次后规则失效。",
+      "describe": "对一名敌人立规 6 tick（可惩罚 2 次）：其每次发动主动技能时受到 3 点精神伤害并被束缚 2 tick，惩罚 2 次后规则失效。；自身带法则修订则法修订规，自疗 2 点。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -696,6 +696,26 @@
           ],
           "overwrite": true,
           "note": "规则槽写入（canonical）：把违背律令的惩罚载荷写进 Rules[3] 槽 0。与 statusDef.decree.fields.punishment 同源。"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "law_edit",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "self",
+              "note": "法修订规：自身带法则修订则立规更稳，自愈 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：arbiter→savant law_edit（2026-09-29 跨系批二）"
         }
       ],
       "tentative": true,
@@ -987,7 +1007,7 @@
       "flagship": false,
       "lore": "序列5 惩戒骑士 —— \"『禁止』（叠加）：敌人违背规则时以必定命中姿态攻击\"",
       "flavor": "你在它身上叠了第二道禁令。它若再敢动手，你的剑会自己找过去——那一击，躲不掉。",
-      "describe": "对一名敌人立规 6 tick（可惩罚 3 次）：其每次发动主动技能时受到你造成的 5 点必定命中的物理伤害；若它已被惩戒标记，该伤害 ×1.4。",
+      "describe": "对一名敌人立规 6 tick（可惩罚 3 次）：其每次发动主动技能时受到你造成的 5 点必定命中的物理伤害；若它已被惩戒标记，该伤害 ×1.4。；自身带隐秘权柄则密裁回护，自疗 2 点。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -1020,6 +1040,26 @@
               }
             ]
           }
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "conceal_authority",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "self",
+              "note": "密裁回护：自身带隐秘权柄则隐匿中自愈 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：arbiter→sleepless conceal_authority（2026-09-29 跨系批）"
         }
       ],
       "tentative": true,
@@ -1807,7 +1847,7 @@
       "flagship": false,
       "lore": "序列2 平衡者 —— \"单对单强制降低/提升敌人至自己水准（『五五开』）\"",
       "flavor": "你把它拉到了和你同一条线上。它比你强，就跌下来；它比你弱，就抬上来——总之，五五开。",
-      "describe": "将一名敌人的攻击、防御、护甲、行动条速率强制拉平到与你相同（双向：高则降、低则抬），持续 6 tick。",
+      "describe": "将一名敌人的攻击、防御、护甲、行动条速率强制拉平到与你相同（双向：高则降、低则抬），持续 6 tick。；目标带厄运标记则厄运同裁，追加 2 点。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1855,6 +1895,26 @@
               "duration": 6
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "note": "厄运同裁：目标带厄运标记则天秤倾压 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：arbiter→assassin doom（2026-09-29 跨系批）"
         }
       ],
       "tentative": true,

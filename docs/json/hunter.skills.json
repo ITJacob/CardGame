@@ -947,7 +947,7 @@
       "flagship": false,
       "lore": "序列5 收割者 —— \"『弱点侦察』：从神秘学角度发现目标弱点\"",
       "flavor": "你的目光从神秘学的角度扫过它——护甲的接缝、灵性的淤滞、那道还没长好的旧伤。你一清二楚。",
-      "describe": "单体敌人：弱点 4 tick（受伤 ×1.3）+ 剥除其 1 个增益状态（撕开神秘学防护）。",
+      "describe": "单体敌人：弱点 4 tick（受伤 ×1.3）+ 剥除其 1 个增益状态（撕开神秘学防护）。；目标带厄运标记则猎运锁定，追加 2 点。",
       "cost": {
         "energy": 2,
         "cooldown": 3,
@@ -985,6 +985,26 @@
               }
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "note": "猎运锁定：目标带厄运标记则弱点尽显，追加 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：hunter→assassin doom（2026-09-29 跨系批二）"
         }
       ],
       "sharedAcross": [

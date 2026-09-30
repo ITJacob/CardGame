@@ -468,7 +468,7 @@
       "flagship": false,
       "lore": "序列9 歌颂者 —— \"通过歌声带来勇气、力量、虔诚和服从\"",
       "flavor": "你的歌声落进敌人耳中，化作一句无法违拗的低语——它举刀的手，慢了下来。",
-      "describe": "使一名敌人服从 3 tick：攻击 -2、行动条速率 ×0.9。",
+      "describe": "使一名敌人服从 3 tick：攻击 -2、行动条速率 ×0.9。；目标灵魂被放牧则灵魂和声，追加 2 点精神伤害。",
       "cost": {
         "energy": 1,
         "cooldown": 2,
@@ -489,6 +489,26 @@
           "statusId": "obedience",
           "duration": 3,
           "target": "target"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "grazed_soul",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "灵魂和声：目标灵魂被放牧则圣歌共鸣 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：chanter→supplicant grazed_soul（2026-09-29 跨系批）"
         }
       ],
       "sharedAcross": [

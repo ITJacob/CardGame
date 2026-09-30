@@ -2030,7 +2030,7 @@
       "flagship": false,
       "lore": "序列2 鲜血大公 —— \"『恶意化身』：恶意不灭魔鬼不死，可在目标心里复活\"",
       "flavor": "你散在别人心里的那些恶意，从来不会真的散掉。每场战斗中第一次倒下时，只要场上还有一个人心里留着你的污染，你就会从那份恶意里重新长出来——以 30% 的生命回到队列末尾，而那个人心里的恶意也随之被消耗掉一层。",
-      "describe": "每场一次：自身死亡时，若场上仍有敌人持有你施加的呓语/欲望/魅惑，则消耗其中 1 层，以 30% 生命在己方队尾复活。",
+      "describe": "每场一次：自身死亡时，若场上仍有敌人持有你施加的呓语/欲望/魅惑，则消耗其中 1 层，以 30% 生命在己方队尾复活。；目标带提线木偶则傀儡藏恶，追加 2 点暗伤。",
       "hook": "on_death",
       "effects": [
         {
@@ -2038,6 +2038,26 @@
           "statusId": "malice_avatar",
           "duration": null,
           "target": "self"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "puppet_string",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 2,
+              "note": "傀儡藏恶：目标带提线木偶则恶意顺线漫 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：criminal→seer puppet_string（2026-09-29 跨系批）"
         }
       ],
       "tentative": true,

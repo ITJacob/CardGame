@@ -615,7 +615,7 @@
       "flagship": false,
       "lore": "序列7 鉴定师 —— \"规避危险使用\"（直觉把握超凡物品的问题，从而规避危险）",
       "flavor": "你早就看出哪里会出事——前两次落在你身上的重击，都被你提前挪开了半寸。",
-      "describe": "战斗开始时获得「危险规避」：可抵挡 2 次伤害（每次受到的伤害 ×0.5，消耗 1 层，归零卸载），持续整场。",
+      "describe": "战斗开始时获得「危险规避」：可抵挡 2 次伤害（每次受到的伤害 ×0.5，消耗 1 层，归零卸载），持续整场。；目标带厄运标记则推演厄运，追加 2 点。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -623,6 +623,26 @@
           "statusId": "hazard_ward",
           "duration": null,
           "target": "self"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "note": "推演厄运：目标带厄运标记则规避反打 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：savant→assassin doom（2026-09-29 跨系批二）"
         }
       ],
       "frameworkFlags": [
