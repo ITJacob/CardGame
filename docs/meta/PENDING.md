@@ -58,7 +58,8 @@
 | 猎人 | 集众·铁血 | 团队类定价盲区 |
 | 囚犯 | 怨魂尖啸 | AOE 定价无锚点（沿用 D4）+ 最大数值风险点之一 |
 | 水手 | 海啸 | 群体溢价盲区（推+淹+击退三重复合） |
-| 观众 | 书写成真 / 特性分离 | 延迟贴现率无锚点；特性分离次数原著未给（1 次占位，字义暗示 2 次，待拍板） |
+| 观众 | 书写成真 | 延迟贴现率无锚点（ tentative 保留） |
+| 观众 | 特性分离 | ~~次数原著未给~~ ✅ 2026-10-01 已拍板 1 次（量表批 e88e164），tentative 已翻 false |
 
 **状态 53 处**：threshold payoff「强度待平衡期逐条审批」样板（assassin 10 / pryer 8 / savant 8 / planter 7 / hunter 5 / prisoner 5 / common 4 / criminal 2）+ 枢纽持续/伤害数值待平衡（apothecary 1 / arbiter 1 / chanter 1 / lawyer 1）。
 
