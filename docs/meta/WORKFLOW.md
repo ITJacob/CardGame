@@ -58,6 +58,7 @@ score.py 评分 → 取总览榜尾途径 → 读计分卡失分项（scorecard.
 | `SKILLS_ANALYSIS_BY_PROFESSION.md` | build_profession_analysis.py | 职业 × 原语用量矩阵 + modify_stat/resource 参数统计 |
 | `analysis_by_profession/*.md` ×22 | build_axis_analysis.py | 职业 × 构筑轴设计风格报告 |
 | `ENTITIES_ANALYSIS.md` | build_entity_analysis.py | 编目三件套统计（召唤物 / 区域 / 界域：池清单 + 分布 + 卡面用法；口径与网页端统计分析页三子页一致） |
+| `STYLE_DISTANCE.md` | build_style_analysis.py | 途径风格距离基线（2026-10-01 差异化专项：指纹 + 22×22 距离矩阵 + 最近邻榜 + 签名键用量；口径与 score.py 第七维同源） |
 
 **纪律**：
 1. 产物不手改；脚本内禁写死快照数字（2026-09-14 基线底稿 SKILLS_ANALYSIS.md 已归档 docs/archive/proposals/，旧「口径核对」对差表已撤）。
