@@ -46,13 +46,13 @@ function route() {
   const restoreScroll = isList && prevPage === 'card';
 
   if (page === 'statuses') {
-    // 状态统计已并入统计分析页（页末「状态定义面」），旧链接/书签跳过去
-    location.replace('#/stats');
+    // 状态统计已拆成统计分析页的「状态」子页（#/stats/status），旧链接/书签跳过去
+    location.replace('#/stats/status');
     return;
   }
   if (page === 'card' && arg) { setNav('cards'); renderCardDetail(view, decodeURIComponent(arg)); }
   else if (page === 'glossary') { setNav('glossary'); renderGlossary(view, new URLSearchParams(qs || '')); }
-  else if (page === 'stats') { setNav('stats'); renderStats(view); }
+  else if (page === 'stats') { setNav('stats'); renderStats(view, arg ? decodeURIComponent(arg) : 'skills'); }
   else if (page === 'score') { setNav('score'); renderScore(view, arg ? decodeURIComponent(arg) : ''); }
   else if (page === 'ddd') { setNav('ddd'); renderDdd(view, arg ? decodeURIComponent(arg) : ''); }
   else { setNav('cards'); renderCards(view); }

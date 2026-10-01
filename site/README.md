@@ -13,7 +13,8 @@
   - **AI 出图小节**（有 `art` 的卡才显示）：画面与边框是**两张独立的图**。画面 prompt = 全局画幅（`manifest.artFormat`，3:4 竖版无边框无文字）+ 途径顶层 `artStyle` + 卡级 `art` 三件套（subject / elements / mood）；框体**由 CSS 画**，AI 只出叠在上面的一层**无缝纹样**。纹样 prompt = 全局画法约束（`manifest.artFrameFormat`，正方形无缝纹样 + 卡游 UI 素材画法 + 显式否定 picture frame / bezel / border + 纯黑底——模型一见「框」就画成装裱画框）+ 各档主题层——common/uncommon/rare 走 `manifest.artFrame` 全局三档（中性配色，不抢途径色），epic/legendary 走途径顶层 `artFrameEpic`/`artFrameLegendary`（结合途径意象特殊化，且禁写 apex/edge 这类构图定位词）。全部展示时现拼（`card.js` 的 `artPrompt`/`frameFor`），不落盘。**几何与成框全在 CSS**：`.cs-bezel` 画不透明厚带（金属渐变 + 外沿高光 + 内嵌槽，按稀有度着色），`.cs-orn` 用 `border-image` 把纹样**切分**到卡上——源图四角对到卡的四角（真角饰）、中段在四边重复，`--frame-band` 定框宽、`--orn-slice` 定切分比例。AI 画不准精确几何，47 张独立出图靠 prompt 约束必然漂移，只能由 CSS 兜。注意 `border-image-source` 必须内联（自定义属性里的相对 url 会按样式表基址解析而 404）。两个复制按钮分开复制。成品图：画面存 `site/assets/cards/<cardId>.png`（**扁平、按 id 命名**，站点按 id 现拼路径，无索引无脚本），边框存 `site/assets/frames/`（三档 `frame-<rarity>.webp`，两档 `frame-<途径>-<档>.webp`）。详情页标题行的 cardId **点一下就复制**（`wireCopy`），就是为了「复制 id → 本地重命名 → 丢进目录」这条链路不用手打 id。取图按 id 现拼 png → webp 依次试（`card.js` 的 `artCandidates`/`wireCardArt`），前一个 404 就往下退，全 404 才隐藏并提示缺图——换格式不用改代码。边框图黑底 + CSS `mix-blend-mode: screen` 叠在画面上（`object-fit: cover` 保比例，出图比例有偏差时裁切而非拉伸）。重出图同名覆盖
 - **领域模型** `#/ddd`：把 `../docs/ddd/` 的全部设计文档渲染成一页，每篇一节，左侧目录按 README 的「文档导航」分组。正文里的英文枚举 token 自动挂上词典释义，点击跳到对应的词典栏目
 - **术语词典** `#/glossary`：英文枚举 key → 中文名 + 解释（原语、算子、条件谓词、触发点、目标锚点等），每类带一句「这一维是什么」的栏目导语，可搜索。类别数与词条数在页头现算，不在这里写死——词典在持续增补，写死必然过期
-- **统计分析** `#/stats`：卡面 + 状态定义**两族口径同页**——卡面族（只算 `*.skills.json` 的 effects）**一个维度一组**，组内先该维度的全库 bar、再该维度的「途径 × X」热图，共 **11 张热图**（稀有度 / 序列 / 原语用量 / 原语构成 / 算子 / `modify_stat` 属性 / `modify_resource` 资源 / 伤害元素 / 攻击距离 / 选靶方式 / 触发点）；顺序是卡池结构（总览 / 稀有度 / 序列）→ 构件面（原语 / 算子）→ 数值面（属性 / 资源 / 元素）→ 目标面（距离 / 选靶 / 触发点）（口径对齐 `docs/tools/build_profession_analysis.py`）
+- **统计分析** `#/stats`：页首二级菜单五个子页，口径各异——
+  - **技能** `#/stats/skills`：卡面族（只算 `*.skills.json` 的 effects）**一个维度一组**，组内先该维度的全库 bar、再该维度的「途径 × X」热图，共 **11 张热图**（稀有度 / 序列 / 原语用量 / 原语构成 / 算子 / `modify_stat` 属性 / `modify_resource` 资源 / 伤害元素 / 攻击距离 / 选靶方式 / 触发点）；顺序是卡池结构（总览 / 稀有度 / 序列）→ 构件面（原语 / 算子）→ 数值面（属性 / 资源 / 元素）→ 目标面（距离 / 选靶 / 触发点）（口径对齐 `docs/tools/build_profession_analysis.py`）
   - **为什么配对摆**：bar 给全库尺度、热图给途径尺度，问的是同一个问题的两个切面。早先是「前面一堆 bar、末尾一叠热图」，看一个维度要在页面两头来回跳
   - **组标题是板外路标**（`.stat-group-title`：小字、暗色、加字距），沿用卡片详情页小节的取向，不套容器面板——套了就成「框里框」。组内一律上下相邻、不并排：热图列数从 2（选靶）到 27（原语）不等，半幅宽里宽表只能横滚。组尾面板的 14px 底边距由 `.stat-group > .panel:last-child` 清掉，否则叠在下一组标题上边距上会顶成 34px
   - **组里的 bar 面板收窄到 900px，热图不收**（`.stat-group > .panel:not(.heat-panel)`）：热图的宽度就是「22 行 × N 列」的可用空间，越宽越好；bar 不是——轨道拉满（`#view` 1400px 减内边距）时标签在左、数值在右，读完标签得横穿一千多像素才找到数值，而长短比例在 660px 与 1300px 下完全一样，收窄不丢信息，只是把两端收进同一视野。顺带把组内主次摆正：宽表是主角，bar 是它的全库切面。窄屏本就放不满 900px，这条只在宽屏生效，没配媒体查询
@@ -21,9 +22,11 @@
   - 11 张热图**行序一律是 manifest 途径顺序**、22 行齐全（该维度没有数据的途径留空行）。每张图色阶上限在**本图**内取，跨图比颜色无意义，要比就比格内数字
   - 计数口径分两族：属性 / 资源 / 元素 / 算子 / 原语按**效果节点**计（走 `ast.js` 的 `walkCardEffects`），稀有度 / 序列 / 距离 / 选靶 / 触发点按**卡**计。**同组的 bar 与热图口径相同**（判据逐字一致，实测 10 组 bar 各段之和 = 该组热图各行合计），两族之别只在跨组时出现
   - 「原语构成」按**行**归一化（每行 = 该途径自己 100%），比的是构成而不是用量；格内是 %，悬停补原值。它跟着「原语用量」留在同一组：维度就是原语，另立一组反而要读者自己把两张对起来
-  - **状态定义面**（页末一节，原独立的「状态统计」页已并入）：**状态定义口径**（只算 `*.statuses.json` 的 statusDefs）——分类/途径/触发点分布、持续与叠层刻度、状态面原语用量、分类×原语热图、`statusDef` 字段填充率，另附「途径 × 维度」热图 9 张。渲染逻辑在 `views/status.js`（`renderStatusStats`），`stats.js` 负责加载占位与就绪后注入；旧 `#/statuses` 链接 301 到 `#/stats`
+  - **状态** `#/stats/status`：**状态定义口径**（只算 `*.statuses.json` 的 statusDefs）——分类/途径/触发点分布、持续与叠层刻度、状态面原语用量、分类×原语热图、`statusDef` 字段填充率，另附「途径 × 维度」热图 9 张。渲染逻辑在 `views/status.js`（`renderStatusStats`），`stats.js` 负责加载占位与就绪后注入（状态定义是 deferred 数据）；旧 `#/statuses` 链接 301 到 `#/stats/status`
+  - **召唤物 / 区域 / 界域** `#/stats/units|zones|domains`：**编目三件套口径**——各途径 `*.skills.json` 顶层三池（unitDefs / zoneDefs / domainDefs，Def 编目独立化批 2026-10-01 落地）+ 卡面用法遍历（spawn / domain 原语、target.request 选靶约束、filter.unitType 乘区、target_unit_type / target_is_summoned 谓词、卡级 zone / domain 字段）。渲染逻辑在 `views/entities.js`，三池由 `data.js` 随 22 份卡面同文件收集（零额外请求，不走 deferred）。md 形态同源产物：`docs/analysis/ENTITIES_ANALYSIS.md`（`build_entity_analysis.py`）
+  - 五子页版面约定一致：一个维度一组（组标题 → 全库 bar → 途径 × 维度热图）、同组 bar 与热图列序同源、行 = 22 途径（manifest 序、全在）、色阶各图独立
 
-两族口径**不是同一批数据的两种视图**：卡面效果与状态定义里的效果是两族文件、两处统计。跨族看「原语」时注意这个区别。
+五子页口径**不是同一批数据的多种视图**：卡面 effects、状态定义（statuses.json）、编目三池（skills.json 顶层）是三族数据源、五处统计。跨子页看「原语」时注意这个区别——同名原语在三族各自计数，互不包含。
 
 ## 数据加载与缓存
 
