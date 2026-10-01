@@ -41,8 +41,8 @@ score.py 评分 → 取总览榜尾途径 → 读计分卡失分项（scorecard.
 
 ## 分析与评分工作流（2026-09-30 整合）
 
-评分（score.py）与统计（build_* ×3）同源同面：全部只读 JSON、产物全部落 `docs/analysis/`、全部勿手改。
-**统一入口**：`python docs/tools/build_analysis.py`——依次跑 score + 三个 build 脚本，任一失败非零退出。
+评分（score.py）与统计（build_* ×4）同源同面：全部只读 JSON、产物全部落 `docs/analysis/`、全部勿手改。
+**统一入口**：`python docs/tools/build_analysis.py`——依次跑 score + 四个 build 脚本，任一失败非零退出。
 
 **何时跑**：`docs/json/` 任何变更（改卡 / 改轴元数据 / 改状态），四门禁全绿后**同轮**跑本入口，
 产物与 JSON 变更进同一 commit——网页评分页与计分卡永远与 JSON 同代。数值标定期（下一批）改 JSON 后同样走本流程，时效性由「同轮 commit」保证。
@@ -56,6 +56,7 @@ score.py 评分 → 取总览榜尾途径 → 读计分卡失分项（scorecard.
 | `SKILLS_OVERVIEW.md` | build_overview.py | 全库总览（22 途径分章 / 832 卡） |
 | `SKILLS_ANALYSIS_BY_PROFESSION.md` | build_profession_analysis.py | 职业 × 原语用量矩阵 + modify_stat/resource 参数统计 |
 | `analysis_by_profession/*.md` ×22 | build_axis_analysis.py | 职业 × 构筑轴设计风格报告 |
+| `ENTITIES_ANALYSIS.md` | build_entity_analysis.py | 编目三件套统计（召唤物 / 区域 / 界域：池清单 + 分布 + 卡面用法；口径与网页端统计分析页三子页一致） |
 
 **纪律**：
 1. 产物不手改；脚本内禁写死快照数字（2026-09-14 基线底稿 SKILLS_ANALYSIS.md 已归档 docs/archive/proposals/，旧「口径核对」对差表已撤）。

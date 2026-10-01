@@ -1,8 +1,12 @@
 // 统计分析仪表盘（浏览器端现算，口径对齐 docs/tools/build_profession_analysis.py）
-// ⚠️ 本页口径分两族：卡面各组只统计 docs/json/*.skills.json 的 effects；
-// 页末「状态定义面」一组统计 *.statuses.json 的 statusDefs（渲染逻辑在 views/status.js）
+// 本页是**二级菜单调度器**：页首 .stat-tabs 五个子页——
+//   技能  = 卡面族各组（只统计 docs/json/*.skills.json 的 effects，原 stats 单页内容）
+//   状态  = 状态定义面（*.statuses.json 的 statusDefs，渲染逻辑在 views/status.js）
+//   召唤物 / 区域 / 界域 = 编目三件套（skills.json 顶层 unitDefs / zoneDefs / domainDefs
+//           池 + 卡面用法，渲染逻辑在 views/entities.js）
+// 口子页口径分两族：卡面各组只统计卡面 effects；状态子页统计状态定义；编目三页统计顶层三池。
 //
-// 版面：**一个维度一组**——组标题 → 该维度的全库 bar → 该维度的「途径 × 维度」热图。
+// 版面（技能子页）：**一个维度一组**——组标题 → 该维度的全库 bar → 该维度的「途径 × 维度」热图。
 // 早先是「前面一堆 bar、末尾一叠热图」，同一个维度要在页面两头看：bar 给全库尺度、
 // 热图给途径尺度，问的本来就是同一个问题的两个切面，所以配对摆。组间靠板外的组标题
 // 分隔、不套容器面板（同卡片详情页的取向：小字标题 + 留白，不层层套框）
@@ -11,8 +15,41 @@ import { zh, escapeHtml } from '../term.js';
 import { walkCardEffects } from '../ast.js';
 import { barChart, countBy, sortedRows, heatPanel, wireHeatToggle } from '../charts.js';
 import { renderStatusStats } from './status.js';
+import { renderUnitStats, renderZoneStats, renderDomainStats } from './entities.js';
 
-export function renderStats(view) {
+// 二级菜单。key 同时是 hash 段（#/stats/<key>）与 dispatch 判据；裸 #/stats 落到 skills
+const TABS = [
+  ['skills', '技能'],
+  ['status', '状态'],
+  ['units', '召唤物'],
+  ['zones', '区域'],
+  ['domains', '界域'],
+];
+const tabsHtml = (active) => `<nav class="stat-tabs">${TABS.map(([k, label]) =>
+  `<a href="#/stats/${k}"${k === active ? ' class="active"' : ''}>${label}</a>`).join('')}</nav>`;
+
+export function renderStats(view, sub = 'skills') {
+  sub = TABS.some(([k]) => k === sub) ? sub : 'skills';
+  view.innerHTML = `<h1 class="page-title">统计分析</h1>${tabsHtml(sub)}<div id="stats-sub"></div>`;
+  const box = view.querySelector('#stats-sub');
+  if (sub === 'status') return renderStatusSub(view, box);
+  if (sub === 'units') return renderUnitStats(box);
+  if (sub === 'zones') return renderZoneStats(box);
+  if (sub === 'domains') return renderDomainStats(box);
+  renderSkillStats(box);
+}
+
+// ---- 状态子页：状态定义是首屏之后才拉的数据（见 data.js 的 loadDeferred），
+// 就绪前先留加载占位，到位后填进来——等待期间用户可能已经切走，
+// 只在自己的占位还挂在文档里时才填（沿用原 stats 单页末尾的注入约定）
+function renderStatusSub(view, box) {
+  const fill = () => { if (box.isConnected) renderStatusStats(box); };
+  if (statusesReady()) return fill();
+  box.innerHTML = `<div class="panel"><p class="panel-note muted">正在加载 ${DB.pathways.length} 个途径的状态定义…</p></div>`;
+  onStatusesReady(fill);
+}
+
+function renderSkillStats(view) {
   const cards = DB.cards;
   const pathways = DB.pathways;
 
@@ -182,33 +219,16 @@ export function renderStats(view) {
     heatOf('途径 × 被动触发点（只算被动卡）', hookByPath, colsOf(byHook, 'triggerEvent'), { unit: ' 张' }));
 
   // 导语放在页面顶部而不是某一组里：口径两族、色阶独立这两条对 bar 与热图都成立
-  view.innerHTML = `<h1 class="page-title">统计分析</h1>
-    <p class="panel-note muted">本页<b>一个维度一组</b>：组内先全库 bar、再该维度的「途径 × 维度」热图。
+  view.innerHTML = `<p class="panel-note muted">本页<b>一个维度一组</b>：组内先全库 bar、再该维度的「途径 × 维度」热图。
     热图共用一套读法——行 = ${pathways.length} 个途径，列 = 该维度的取值，格 = 计数
     （只有「原语 构成」那张是行内归一化后的 %）。同组的 bar 与热图<b>口径相同</b>：bar 各段之和
     = 该组热图各行的合计；跨组不是一回事——属性 / 资源 / 元素 / 算子 / 原语按<b>效果节点</b>计，
     稀有度 / 序列 / 距离 / 选靶 / 触发点按<b>卡</b>计。每张图的色阶各自独立（上限取本图最大值），
     跨图比颜色没有意义——要比就比格内数字。行序一律是 manifest 途径顺序；列序是各自的用量或
-    刻度顺序，悬停表头看原始 key。页末另有「状态定义面」一组，口径换成
-    *.statuses.json 的状态定义（含分类/触发点/状态面原语等，下方各组的卡面口径不含它）。</p>
+    刻度顺序，悬停表头看原始 key。状态定义口径见「状态」子页，编目三池（召唤物 / 区域 / 界域）
+    见各自子页——本页各组均不含它们。</p>
     ${overview}${rarityGroup}${seqGroup}${primGroup}${opGroup}${statGroup}${resGroup}${elemGroup}${reachGroup}${selGroup}${hookGroup}`;
 
   // 窄屏展开全部列；桌面端该开关不显示（CSS 隐藏），勾选状态无副作用
   wireHeatToggle(view);
-
-  // ---- 状态定义面：卡面各组之后接一节状态定义统计（渲染逻辑在 views/status.js）----
-  // 状态定义是首屏之后才拉的数据（见 data.js 的 loadDeferred）：就绪前先留加载占位，
-  // 到位后填进来——等待期间用户可能已经切走，只在自己的占位还在时填
-  const statusBox = document.createElement('div');
-  statusBox.id = 'status-stats';
-  view.appendChild(statusBox);
-  const fillStatus = () => {
-    const box = view.querySelector('#status-stats');
-    if (box) renderStatusStats(box);
-  };
-  if (statusesReady()) fillStatus();
-  else {
-    statusBox.innerHTML = `<div class="panel"><p class="panel-note muted">正在加载 ${pathways.length} 个途径的状态定义…</p></div>`;
-    onStatusesReady(fillStatus);
-  }
 }

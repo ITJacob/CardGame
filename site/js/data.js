@@ -14,8 +14,14 @@ export const DB = {
   statusMap: new Map(),       // statusId -> {id, name, category, note, ...}
   designNotes: new Map(),     // pathwayId -> designNote
   statuses: [],               // 状态定义数组（带 _owner），供统计分析页「状态定义面」用
+  unitDefs: [],                // 召唤物编目池（各途径 skills.json 顶层 unitDefs，带 _pathway）
+  zoneDefs: [],                // 区域编目池（同上 zoneDefs）——随 22 份卡面同文件加载，零额外请求
+  domainDefs: [],              // 界域编目池（同上 domainDefs）
   declaredPrimitives: [],     // schema effect.oneOf 声明的原语 type（29=27 经典 + 光照度对 set_luminance/advance_clock）
   declaredStatusFields: [],   // schema statusDef 声明的字段名（48）
+  declaredUnitFields: [],     // schema unitDef 声明的字段名（编目三页「字段填充」面板的声明面）
+  declaredZoneFields: [],     // schema zoneDef 声明的字段名
+  declaredDomainFields: [],   // schema domainDef 声明的字段名
   rarityOrder: [],            // 稀有度档位顺序：低 → 高（普通 → 传说），读自 manifest.rarityMap
   artFormat: '',              // 全局画幅约束（manifest.artFormat），画面 prompt 前缀
   artFrameFormat: '',         // 全局边框约束（manifest.artFrameFormat），边框 prompt 前缀
@@ -48,6 +54,9 @@ function readDeclared(schema) {
   }
   DB.declaredPrimitives = prim;
   DB.declaredStatusFields = Object.keys(ref(defs.statusDef)?.properties || {});
+  DB.declaredUnitFields = Object.keys(ref(defs.unitDef)?.properties || {});
+  DB.declaredZoneFields = Object.keys(ref(defs.zoneDef)?.properties || {});
+  DB.declaredDomainFields = Object.keys(ref(defs.domainDef)?.properties || {});
 }
 
 async function fetchJson(url) {
@@ -102,6 +111,11 @@ export async function loadAll(onProgress) {
     const skills = results[i];
     DB.axesByPathway.set(p.id, skills.axes || {});
     if (skills.designNote) DB.designNotes.set(p.id, skills.designNote);
+    // 编目三池：unitDef / zoneDef / domainDef（Def 编目独立化批后集中于各文件顶层）。
+    // 与卡不同文件不存在——随卡面一起到达，这里只做事后收集，不加请求
+    for (const key of ['unitDefs', 'zoneDefs', 'domainDefs']) {
+      for (const def of skills[key] || []) DB[key].push({ ...def, _pathway: p.id });
+    }
     for (const card of skills.cards || []) {
       card._pathway = p.id;
       card._pathwayName = p.name;
