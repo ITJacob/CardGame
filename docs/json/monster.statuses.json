@@ -578,16 +578,12 @@
               "note": "A22：回复至 30% 最大生命"
             },
             {
-              "type": "dispel",
+              "type": "restore_snapshot",
+              "fields": [
+                "statuses"
+              ],
               "target": "self",
-              "dispelTarget": "unit",
-              "filter": {
-                "category": [
-                  "debuff",
-                  "control"
-                ]
-              },
-              "note": "C2 数组：洗掉疯狂——清空自身全部负面"
+              "note": "逆转为胚胎：状态回滚至开战快照（胚胎态存档由【重启循环】卡面建立）；比 dispel 更彻底——战后获得的一切状态一并还原"
             },
             {
               "op": "if",
@@ -618,7 +614,8 @@
             }
           ]
         }
-      ]
+      ],
+      "note": "主方案升格（2026-10-02 差异化风格迭代）：致死回滚 = restore_snapshot(statuses) 胚胎态还原 + 回复至 30% 生命；依赖卡面开战 snapshot 建档；「洗掉疯狂」从 dispel 升格为状态回滚"
     },
     {
       "id": "saved_fate",
