@@ -8,12 +8,12 @@ import { walkCardEffects } from '../ast.js';
 import { barChart, countBy, sortedRows } from '../charts.js';
 import { modifierKeys } from './status.js';
 
-const DIMS = ['轴健康度', '跨轴耦合', '跨系联动', '结构健康', '机制落地', '文本完备'];
-const DIM_MAX = { 轴健康度: 30, 跨轴耦合: 15, 跨系联动: 15, 结构健康: 15, 机制落地: 15, 文本完备: 10 };
+const DIMS = ['轴健康度', '跨轴耦合', '跨系联动', '结构健康', '机制落地', '文本完备', '风格签名'];
+const DIM_MAX = { 轴健康度: 30, 跨轴耦合: 15, 跨系联动: 15, 结构健康: 10, 机制落地: 10, 文本完备: 10, 风格签名: 10 };
 const AXIS_DIMS = ['身份锚定', '产层闭环', '读层闭环', '轴内多样性', '规模均衡', '承接连通'];
 const AXIS_DIM_MAX = { 身份锚定: 15, 产层闭环: 20, 读层闭环: 25, 轴内多样性: 15, 规模均衡: 10, 承接连通: 15 };
 
-// 六维迷你条：一个单元格里并排 6 条，hover 显示维度名与分值
+// 七维迷你条：一个单元格里并排 7 条，hover 显示维度名与分值
 function dimBars(dims, maxOf) {
   return `<span class="dim-bars">${DIMS.map((k) => {
     const v = dims[k] || 0;
@@ -130,14 +130,14 @@ function overviewHtml(scores) {
     <p class="muted">口径：<code>docs/meta/SCORING.md</code>（闭环优先）· 数据 <code>score.py</code> 预计算 ${escapeHtml(scores.generated)} · 前端不重算。
     升序 = 重设计优先级。点击行进途径计分卡（评价打分清单 + 用料明细）。</p>
     <div class="panel"><table class="score-table">
-      <thead><tr><th>#</th><th>途径</th><th>总分</th><th class="col-dimbars">六维（轴健康/跨轴/跨系/结构/落地/文本）</th><th>最低轴</th><th>卡数</th><th>原语覆盖</th><th>自有状态</th></tr></thead>
+      <thead><tr><th>#</th><th>途径</th><th>总分</th><th class="col-dimbars">七维（轴健康/跨轴/跨系/结构/落地/文本/风格）</th><th>最低轴</th><th>卡数</th><th>原语覆盖</th><th>自有状态</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>`;
 }
 
 // ---------- 途径计分卡 ----------
 
-// 评价打分清单：六维度逐行——徽章（✓ 满分 / △ 部分 / ✗ 有失分）+ 得分条 + 失分条目
+// 评价打分清单：七维度逐行——徽章（✓ 满分 / △ 部分 / ✗ 有失分）+ 得分条 + 失分条目
 // （每条 why + 修改意见 fix）。失分条用 <details> 原生折叠：零 JS、键盘可达、手机端无命中问题。
 function checklistHtml(p) {
   const rows = DIMS.map((k) => {
@@ -155,12 +155,18 @@ function checklistHtml(p) {
               <div class="fix-line">→ ${escapeHtml(d.fix)}</div></li>`).join('')}</ul></details>`
       : (v >= max - 0.05 ? '<div class="chk-okline muted">达标，无失分项。</div>'
                          : '<div class="chk-okline muted">部分得分（归一维），无具体失分条目。</div>');
+    // 风格签名维：附签名键用量明细（键表口径见 docs/meta/途径设计身份.md §一）
+    const sigDetail = (k === '风格签名' && p.sigHits)
+      ? `<div class="chk-okline muted">签名键用量（≥2 卡=落地）：
+          ${Object.entries(p.sigHits).map(([kk, vv]) => `${escapeHtml(kk)} ×${vv}`).join('；')}
+          ｜对他途径指纹均距 ${p.styleDist != null ? p.styleDist.toFixed(3) : '—'}</div>`
+      : '';
     return `<div class="chk-item"><div class="chk-row">
       <span class="chk-badge ${cls}">${badge}</span>
       <span class="chk-name">${k}</span>
       <span class="chk-bar"><span class="dim-bars single"><i class="dim-bar" style="width:${Math.max(pct, v ? 6 : 0)}%"></i></span></span>
       <span class="chk-score num">${v.toFixed(1)} <span class="muted">/ ${max}</span></span>
-    </div>${fix}</div>`;
+    </div>${fix}${sigDetail}</div>`;
   }).join('');
   return `<div class="panel"><h2>评价打分清单</h2>
     <p class="panel-note muted">✓ 满分 ｜ △ 部分得分 ｜ ✗ 有失分（点开看修改意见）。修改意见均为本途径内可执行动作。</p>

@@ -7,7 +7,7 @@
   - docs/analysis/scores.json   网页端评分页数据源（口径单一来源，前端不重算）
 只读脚本，不改任何数据文件。
 """
-import json, io, os, sys, glob, datetime
+import json, io, os, sys, glob, math, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))          # docs/tools/
 JSON_DIR = os.path.join(os.path.dirname(HERE), "json")      # docs/json/
@@ -114,8 +114,134 @@ FIX = {
     "aratio": "补主动或被动卡，把主被动比调进 [1.5, 3.0]",
     "flagship": "补/撤旗舰卡至 4 张",
     "landed": "待内核裁定该 frameworkFlag；短期用卡面 note 写的退化方案表达",
+    "signature": "按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证",
+    "uniqueness": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）",
 }
 FIX_NOTE = "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+
+
+# ---------- 风格签名（2026-10-01 差异化专项；口径 SCORING.md §三，键表与 docs/meta/途径设计身份.md §一 同表） ----------
+
+PATHWAY_SIGNATURES = {
+    "apprentice": ["prim:translocate", "prim:echo_last_skill", "prim:restore_snapshot"],
+    "monster": ["prim:restore_snapshot", "prim:advance_clock", "res:fate_value"],
+    "arbiter": ["flag:seal_effect", "flag:cost_mod", "res:order"],
+    "lawyer": ["prim:gauge_shuffle", "prim:status_shuffle", "prim:modify_rule_slot"],
+    "thief": ["prim:take_control", "prim:modify_targetability", "prim:target_override"],
+    "reader": ["prim:reveal", "sref:mimic", "prim:snapshot"],
+    "chanter": ["prim:grant_immunity", "prim:write_rule_slot", "trig:on_phase_change"],
+    "sleepless": ["trig:on_phase_change", "prim:advance_clock", "res:secrecy"],
+    "warrior": ["elem:holy", "flag:filter.unitType", "sref:guardianship"],
+    "assassin": ["prim:translocate", "elem:ice", "elem:dark"],
+    "hunter": ["prim:target_override", "flag:gender_is", "sref:massing"],
+    "spectator": ["stat:rank", "flag:template", "sref:insight"],
+    "seer": ["sref:puppet_string", "prim:write_rule_slot", "prim:translocate"],
+    "sailor": ["elem:ice", "elem:lightning", "sref:rage"],
+    "supplicant": ["sref:grazed_soul", "stat:hp_max", "sref:flesh_undying"],
+    "corpse_collector": ["flag:filter.unitType", "trig:on_kill", "prim:drain"],
+    "prisoner": ["sref:curse_link", "unitType:ITEM", "sref:lineage_stack"],
+    "criminal": ["res:lust", "elem:dark", "flag:companionBuff"],
+    "savant": ["prim:modify_rule_slot", "sref:law_edit", "unitType:CONSTRUCT"],
+    "pryer": ["flag:valueFrom", "flag:cast_time_set", "sref:info_form"],
+    "planter": ["flag:statPerStack", "unitType:PLANT", "sref:blight"],
+    "apothecary": ["sref:moon_cycle", "unitType:BEAST", "sref:prepared_draught"],
+}
+
+
+def _filter_unit_type_nodes(effects):
+    """filter 语义里的 unitType（区别于 unitDefs 池定义的 unitType）。"""
+    return [n for n in walk(effects)
+            if "unitType" in n and "base" not in n and not str(n.get("id", "")).startswith("unit_")]
+
+
+def signature_card_hit(card, key, unit_type_of=None):
+    """单卡是否实证某签名键（unit_type_of: unitId -> unitType 解析，供 unitType:X 键经 spawn 取证）。"""
+    kind, _, arg = key.partition(":")
+    if kind == "prim":
+        return arg in card_effect_types(card)
+    if kind == "elem":
+        return any(n.get("element") == arg for n in walk(card.get("effects")))
+    if kind == "res":
+        if card_refs_resource(card, arg):
+            return True
+        # 量表读取侧实证：dimHooks/phaseHook 以该维度为钩（board 级量表不以 modify_resource 表达）
+        return any(h.get("dim") == arg for h in (card.get("dimHooks") or []))
+    if kind == "stat":
+        return any(n.get("type") == "modify_stat" and n.get("stat") == arg
+                   for n in walk(card.get("effects")))
+    if kind == "trig":
+        evs = {t.get("event") for t in (card.get("triggers") or []) if isinstance(t, dict)}
+        return arg in evs or any(n.get("event") == arg for n in walk(card.get("effects")))
+    if kind == "sref":
+        return card_refs_status(card, arg)
+    if kind == "unitType":
+        if any(n.get("unitType") == arg for n in _filter_unit_type_nodes(card.get("effects"))):
+            return True
+        # 经 spawn unitId 解析（召唤物类型归属）
+        if unit_type_of:
+            for n in walk(card.get("effects")):
+                if n.get("type") == "spawn" and unit_type_of.get(n.get("unitId")) == arg:
+                    return True
+        return False
+    if kind == "flag":
+        if arg == "filter.unitType":
+            return bool(_filter_unit_type_nodes(card.get("effects")))
+        return arg in json.dumps(card, ensure_ascii=False)
+    return False
+
+
+def signature_counts(cards, keys, unit_type_of=None):
+    """key -> 实证卡数"""
+    return {k: sum(1 for c in cards if signature_card_hit(c, k, unit_type_of)) for k in keys}
+
+
+# ---------- 途径指纹与风格距离（STYLE_DISTANCE.md 同源口径） ----------
+
+def fingerprint(cards):
+    """原语分布 + 元素分布 + modify_stat 键分布"""
+    vec = {}
+    for c in cards:
+        for t in card_effect_types(c):
+            vec["prim:" + t] = vec.get("prim:" + t, 0) + 1
+        for n in walk(c.get("effects")):
+            if isinstance(n.get("element"), str):
+                vec["elem:" + n["element"]] = vec.get("elem:" + n["element"], 0) + 1
+            if n.get("type") == "modify_stat" and isinstance(n.get("stat"), str):
+                vec["stat:" + n["stat"]] = vec.get("stat:" + n["stat"], 0) + 1
+    return vec
+
+
+def cos_dist(a, b):
+    keys = set(a) | set(b)
+    dot = sum(a.get(k, 0) * b.get(k, 0) for k in keys)
+    na = math.sqrt(sum(v * v for v in a.values()))
+    nb = math.sqrt(sum(v * v for v in b.values()))
+    if not na or not nb:
+        return 1.0
+    return 1.0 - dot / (na * nb)
+
+
+def load_unit_types(pathways):
+    """unitId -> unitType。权威 = ddd 召唤物参数.md §一 36 具名单位归属表（多数单位 JSON 无 Def，仅被 spawn 引用）；
+    skills.json 顶层 unitDefs 池中的显式定义叠加覆盖。"""
+    out = {("unit_" + k): v for k, v in {
+        "skeleton": "UNDEAD", "zombie": "UNDEAD", "ghoul": "UNDEAD", "wraith": "UNDEAD",
+        "nature_spirit": "SPIRIT", "grazed_wraith": "SPIRIT", "fallen_kin": "SPIRIT",
+        "beast": "BEAST", "bat": "BEAST", "sea_beast": "BEAST", "leviathan": "BEAST", "beastling": "BEAST",
+        "vermin": "VERMIN", "vine": "PLANT", "oak_child": "PLANT",
+        "golem": "CONSTRUCT", "homunculus": "CONSTRUCT", "doll": "CONSTRUCT", "marionette": "CONSTRUCT",
+        "war_soldier": "CONSTRUCT", "tower_construct": "CONSTRUCT", "scroll_construct": "CONSTRUCT",
+        "automaton": "MACHINE", "flesh_servant": "FLESH", "demon": "DEMON",
+        "elder_thing": "ABERRATION", "abomination": "ABERRATION",
+        "mirror_image": "ILLUSION", "imagined": "ILLUSION", "split_identity": "ILLUSION",
+        "thoughtform": "ILLUSION", "historical_echo": "ILLUSION", "doppelganger": "ILLUSION",
+        "shadow_spawn": "ILLUSION", "relic": "ITEM", "stone_clock": "ITEM",
+    }.items()}
+    for pid, d in pathways.items():
+        for u in (d.get("unitDefs") or []):
+            if u.get("unitType"):
+                out[u.get("id")] = u.get("unitType")
+    return out
 
 
 # ---------- 主计分 ----------
@@ -344,6 +470,21 @@ def main():
 
     max_crossaxis = max(pw_crossaxis_refs.values()) if pw_crossaxis_refs else 0
     max_crosspath = max(pw_crosspath_reads.values()) if pw_crosspath_reads else 0
+
+    # 途径指纹与平均风格距离（2026-10-01 差异化专项）：对他 21 途径的 1-cos 均值，分位计分
+    all_unit_types = load_unit_types(pathways)
+    fps = {pid: fingerprint(d.get("cards") or []) for pid, d in pathways.items()}
+    mean_dists = {}
+    for pid in pathways:
+        others = [p2 for p2 in pathways if p2 != pid]
+        mean_dists[pid] = round(sum(cos_dist(fps[pid], fps[p2]) for p2 in others) / len(others), 4) if others else 0.0
+    _sorted_d = sorted(mean_dists.values())
+    _n_pw = len(_sorted_d)
+
+    def _dist_pts(m):
+        pct = (sum(1 for v in _sorted_d if v <= m)) / _n_pw if _n_pw else 0
+        return 5 if pct >= 0.75 else 3 if pct >= 0.5 else 1 if pct >= 0.25 else 0
+
     pw_rows = []
     for pid, d in pathways.items():
         axes = d.get("axes") or {}
@@ -380,28 +521,28 @@ def main():
             want = [r for r, seqs in rarity_map.items() if c.get("sequence") in seqs]
             if want and c.get("rarity") not in want:
                 bad_rarity += 1
-        struct += 6 if bad_rarity == 0 else max(0, 6 - bad_rarity * 2)
+        struct += 4 if bad_rarity == 0 else max(0, 4 - bad_rarity)
         actives = sum(1 for c in cards if c.get("kind") == "active")
         passives = len(cards) - actives
         aratio = actives / passives if passives else 99
         if 1.5 <= aratio <= 3.0:
-            struct += 5
+            struct += 3
         else:
-            s5 = max(0, round(5 - abs(aratio - (1.5 if aratio < 1.5 else 3.0))))
+            s5 = max(0, round(3 - abs(aratio - (1.5 if aratio < 1.5 else 3.0))))
             struct += s5
-            deductions.append(("结构健康", "-%s：主被动比 %.2f 不在 [1.5, 3.0]" % (5 - s5, aratio), pid, FIX["aratio"]))
+            deductions.append(("结构健康", "-%s：主被动比 %.2f 不在 [1.5, 3.0]" % (3 - s5, aratio), pid, FIX["aratio"]))
         n_flag = sum(1 for c in cards if c.get("flagship"))
-        struct += max(0, 4 - abs(4 - n_flag))
+        struct += max(0, 3 - abs(4 - n_flag))
         if n_flag != 4:
             deductions.append(("结构健康", "-%d：旗舰卡 %d 张（理想 4）" % (abs(4 - n_flag), n_flag), pid, FIX["flagship"]))
 
-        # 机制落地
+        # 机制落地（2026-10-01 起权重 15→10，三维全库满分无区分度，让位风格签名）
         flags = [f for c in cards for f in (c.get("frameworkFlags") or [])]
         if not flags:
-            landed_score = 15
+            landed_score = 10
         else:
             landed_n = sum(1 for f in flags if f.get("landed"))
-            landed_score = round(15 * landed_n / len(flags), 1)
+            landed_score = round(10 * landed_n / len(flags), 1)
             for f in flags:
                 if not f.get("landed"):
                     deductions.append(("机制落地", "-：frameworkFlags 未落地 %s" % f.get("code", "?"),
@@ -411,12 +552,26 @@ def main():
         txt = sum(1 for c in cards if c.get("lore") and c.get("flavor") and c.get("describe"))
         text_score = round(10 * txt / len(cards), 1) if cards else 0
 
-        total = round(health + crossaxis + crosspath + struct + landed_score + text_score, 1)
+        # 风格签名（2026-10-01 差异化专项，口径 SCORING.md §三）= 签名落地 5 + 途径距离 5
+        sig_keys = PATHWAY_SIGNATURES.get(pid, [])
+        sig_hits = signature_counts(cards, sig_keys, unit_type_of=all_unit_types)
+        signature_score = min(5, sum(2 if h >= 2 else h for h in sig_hits.values()))
+        dist_pts = _dist_pts(mean_dists[pid])
+        style_score = round(signature_score + dist_pts, 1)
+        if signature_score < 5:
+            blanks = [k for k, h in sig_hits.items() if h == 0]
+            deductions.append(("风格签名", "-%s：签名键零使用 %s" % (5 - signature_score, ",".join(blanks) or "（有键仅 1 卡，未落地）"), pid, FIX["signature"]))
+        if dist_pts <= 1:
+            deductions.append(("风格签名", "-：途径指纹距离垫底（对他 21 途径均距 %.3f，分位 <25%%）" % mean_dists[pid], pid, FIX["uniqueness"]))
+
+        total = round(health + crossaxis + crosspath + struct + landed_score + text_score + style_score, 1)
         pw_rows.append({
             "id": pid, "name": d.get("pathwayName"), "cards": len(cards),
             "total": total,
             "dims": {"轴健康度": health, "跨轴耦合": crossaxis, "跨系联动": crosspath,
-                     "结构健康": round(struct, 1), "机制落地": landed_score, "文本完备": text_score},
+                     "结构健康": round(struct, 1), "机制落地": landed_score, "文本完备": text_score,
+                     "风格签名": style_score},
+            "sigHits": sig_hits, "styleDist": mean_dists[pid],
             "axes": arows, "deductions": deductions,
             "min_axis": min_axis, "mean_axis": round(mean_axis, 1),
         })
@@ -436,13 +591,13 @@ def write_scorecard(pw_rows):
     L.append("> 生成时间：%s。评分标准见 `../meta/SCORING.md`；数值 ⚠️D 不参与计分（基线状态）。\n" % datetime.date.today())
 
     L.append("## 一、途径排行（升序 = 优先重设计）\n")
-    L.append("| # | 途径 | 总分 | 轴健康 | 跨轴 | 跨系 | 结构 | 落地 | 文本 | 最低轴 | 卡数 |")
-    L.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
+    L.append("| # | 途径 | 总分 | 轴健康 | 跨轴 | 跨系 | 结构 | 落地 | 文本 | 风格 | 最低轴 | 卡数 |")
+    L.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
     for i, r in enumerate(pw_rows, 1):
         d = r["dims"]
-        L.append("| %d | **%s** `%s` | **%.1f** | %.1f | %.1f | %.1f | %.1f | %.1f | %.1f | %.0f | %d |" % (
+        L.append("| %d | **%s** `%s` | **%.1f** | %.1f | %.1f | %.1f | %.1f | %.1f | %.1f | %.1f | %.0f | %d |" % (
             i, r["name"], r["id"], r["total"], d["轴健康度"], d["跨轴耦合"], d["跨系联动"],
-            d["结构健康"], d["机制落地"], d["文本完备"], r["min_axis"], r["cards"]))
+            d["结构健康"], d["机制落地"], d["文本完备"], d["风格签名"], r["min_axis"], r["cards"]))
     L.append("")
 
     for r in pw_rows:
@@ -452,6 +607,11 @@ def write_scorecard(pw_rows):
         for k, v in r["dims"].items():
             L.append("| %s | %.1f |" % (k, v))
         L.append("")
+        if r.get("sigHits"):
+            L.append("签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：" +
+                     "；".join("%s ×%d" % (k, v) for k, v in r["sigHits"].items()) +
+                     "；对他途径指纹均距 %.3f" % r.get("styleDist", 0))
+            L.append("")
         if r["deductions"]:
             L.append("**途径失分项（含修改意见）**：")
             L.append("")
@@ -484,6 +644,7 @@ def write_scores_json(pw_rows):
         "pathways": [{
             "id": r["id"], "name": r["name"], "total": r["total"], "dims": r["dims"],
             "minAxis": r["min_axis"], "cards": r["cards"],
+            "sigHits": r.get("sigHits", {}), "styleDist": r.get("styleDist", 0),
             "deductions": [{"dim": d, "why": w, "ref": x, "fix": f} for d, w, x, f in r["deductions"]],
             "axes": [{
                 "id": a["axis"], "name": a["name"], "symbol": a["symbol"], "total": a["total"],
