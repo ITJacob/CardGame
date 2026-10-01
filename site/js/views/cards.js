@@ -125,7 +125,7 @@ function cardItemHtml(c) {
       <span class="badge">${axisSpan(c._pathway, c.axis)}</span>
       ${c.flagship ? '<span class="badge flagship">旗舰</span>' : ''}
       ${cost}${hook}
-      ${c.frameworkFlags?.length ? '<span class="badge warn">有缺口</span>' : ''}
+      ${c.frameworkFlags?.some((f) => f && f.landed !== true) ? '<span class="badge warn">有缺口</span>' : ''}
     </div>
   </div>`;
 }

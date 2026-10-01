@@ -24,7 +24,8 @@ export function renderStats(view) {
   const bySel = countBy(cards.filter((c) => c.target), (c) => c.target.selectionMode);
   const byHook = countBy(cards.filter((c) => c.hook), (c) => c.hook);
   const flagshipCount = cards.filter((c) => c.flagship).length;
-  const flagCards = cards.filter((c) => c.frameworkFlags?.length);
+  const openFlags = (c) => (c.frameworkFlags || []).filter((f) => f && f.landed !== true);
+  const flagCards = cards.filter((c) => openFlags(c).length);
   const axisCount = pathways.reduce((s, p) => s + Object.keys(DB.axesByPathway.get(p.id) || {}).length, 0);
 
   // 原语 / 算子 / 属性 / 资源 / 元素 + 途径×维度（10 张热图共用这一趟，只为热图再走一遍
@@ -108,7 +109,8 @@ export function renderStats(view) {
       <dt>构筑轴</dt><dd class="num">${axisCount}</dd>
       <dt>主动 / 被动</dt><dd class="num">${byKind.get('active') || 0} / ${byKind.get('passive') || 0}</dd>
       <dt>旗舰卡</dt><dd class="num">${flagshipCount}</dd>
-      <dt>带框架缺口</dt><dd class="num">${flagCards.length} 张 / ${flagCards.reduce((s, c) => s + c.frameworkFlags.length, 0)} 条</dd>
+      <dt>带框架缺口</dt><dd class="num">${flagCards.length} 张 / ${flagCards.reduce((s, c) => s + openFlags(c).length, 0)} 条</dd>
+      <dt>框架登记（已落地）</dt><dd class="num">${cards.reduce((s, c) => s + (c.frameworkFlags || []).filter((f) => f && f.landed === true).length, 0)} 条</dd>
       <dt>待拍板数值</dt><dd class="num">${cards.filter((c) => c.tentative).length} 张</dd>
     </dl></div>`,
     barPanel('各途径卡数', pathways.map((p) => ({ label: p.name, title: p.id, value: p.cardCount }))));
