@@ -1,8 +1,10 @@
-// 状态定义统计（独立一页，与卡面统计分开）
+// 状态定义统计——统计分析页内的「状态定义面」一节（卡面各组之后），
+// 由 views/stats.js 调 renderStatusStats(container) 注入；数据未就绪时的
+// 加载占位与重画时机也归 stats.js 管（见该文件末尾）
 // 口径：docs/json/*.statuses.json 的 statusDefs——含 modifiers 表、triggers[].effects、
 // def 级 effects、thresholdTrigger / phases 等任意嵌套（递归用 ast.js 的 walkCardEffects，
-// 它与卡面同一套遍历规则，所以两页的「原语用量」可以直接对照）
-import { DB, statusesReady, onStatusesReady } from '../data.js';
+// 它与卡面同一套遍历规则，所以卡面/状态两族的「原语用量」可以直接对照）
+import { DB } from '../data.js';
 import { zh } from '../term.js';
 import { walkCardEffects } from '../ast.js';
 import { barChart, countBy, sortedRows, heatPanel, wireHeatToggle } from '../charts.js';
@@ -19,16 +21,9 @@ export function modifierKeys(def) {
   return keys.filter((k) => k && k !== 'note');
 }
 
-export function renderStatuses(view) {
-  // 状态定义在首屏之后才拉（见 data.js 的 loadDeferred）。深链直接落到本页时先画加载态，
-  // 到位后由 main.js 重跑 route() 重画——不在这里自己重画，免得和路由抢 view
-  if (!statusesReady()) {
-    view.innerHTML = `<h1 class="page-title">状态统计</h1>
-      <div class="panel" id="statuses-loading"><p class="panel-note muted">正在加载 ${DB.pathways.length} 个途径的状态定义…</p></div>`;
-    // 等数据的这段时间用户可能已经切走，只在自己那个加载态还在时重画
-    onStatusesReady(() => { if (view.querySelector('#statuses-loading')) renderStatuses(view); });
-    return;
-  }
+// 调用方保证状态定义已就绪（stats.js 在 statusesReady 为真才调本函数）。
+// 产出整节 HTML 填进 container，并就地接好热图折叠开关
+export function renderStatusStats(container) {
   const defs = DB.statuses;
   const declared = DB.declaredStatusFields;
   const pathwayName = new Map(DB.pathways.map((p) => [p.id, p.name]));
@@ -209,10 +204,10 @@ export function renderStatuses(view) {
     ${heatOf('途径 × 修饰符键 Top 12', mkeyByOwner, usageCols(mkeyTotal, null, 12))}
     ${heatOf('途径 × statusDef 字段填充 Top 15', fieldByOwner, usageCols(fill, null, 15), { unit: ' 个' })}`;
 
-  view.innerHTML = `<h1 class="page-title">状态统计</h1>
-    <p class="panel-note muted">口径：docs/json/*.statuses.json 的 ${defs.length} 个状态定义。
-    卡面效果见「统计分析」页。页面下方另附「途径 × 维度」热图（9 张）。</p>
+  container.innerHTML = `<div class="stat-group-title">状态定义面</div>
+    <p class="panel-note muted">口径：docs/json/*.statuses.json 的 ${defs.length} 个状态定义；
+    卡面效果见上方各组。本节下方另附「途径 × 维度」热图（9 张）。</p>
     ${overview}${triggerPanel}${primPanel}${mkeyPanel}${heat}${fieldPanel}${heatSection}`;
 
-  wireHeatToggle(view);
+  wireHeatToggle(container);
 }

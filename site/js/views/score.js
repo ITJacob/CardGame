@@ -1,7 +1,7 @@
 // 设计评分页：总览记分表 + 途径计分卡（评价打分清单 + 用料明细 + 轴级下钻）。
 // 分数与失分项来自 docs/tools/score.py 预计算的 scores.json（口径单一来源，见 docs/meta/SCORING.md）
-// ——前端不重算分；用料明细（原语/参数/状态九维度）前端从 DB 现算，遍历规则与统计分析、
-// 状态统计两页逐字一致（walkCardEffects 同一套），保证三页数字互相能对上。
+// ——前端不重算分；用料明细（原语/参数/状态九维度）前端从 DB 现算，遍历规则与统计分析页
+// 卡面各组、页末「状态定义面」逐字一致（walkCardEffects 同一套），保证各处数字互相能对上。
 import { DB, loadScores, statusesReady, onStatusesReady } from '../data.js';
 import { escapeHtml, zh, axisSpan } from '../term.js';
 import { walkCardEffects } from '../ast.js';
@@ -67,7 +67,7 @@ function cardStats(pid) {
 }
 
 // 状态九维度：本途径自有状态定义（_owner === pid）的九个统计面，
-// 维度清单与状态统计页「途径 × 维度」热图逐字对应，仅收为单途径视图
+// 维度清单与统计分析页「状态定义面」的「途径 × 维度」热图逐字对应，仅收为单途径视图
 function statusStats(pid) {
   const defs = DB.statuses.filter((s) => s._owner === pid);
   const prim = new Map();
@@ -220,7 +220,7 @@ function materialHtml(pid) {
       分布越散，卡面表达越丰富；一家独大说明该轴载荷集中。</p>
       ${paramHtml}</div>
     <div class="panel wide-labels"><h2>状态（九维度）· 自有 ${ss.count} 个状态定义</h2>
-      <p class="panel-note muted">九个维度与状态统计页「途径 × 维度」热图同口径，此处收为本途径视图
+      <p class="panel-note muted">九个维度与统计分析页「状态定义面」的「途径 × 维度」热图同口径，此处收为本途径视图
       （通用 common 状态不计入「自有」，其被卡面引用的情况隐含在原语/参数分布里）。</p>
       <div class="nine-grid">${nine}</div></div>`;
 }
@@ -272,7 +272,7 @@ function axisDetailHtml(pid, a) {
 
 export async function renderScore(view, arg) {
   // 用料明细要读状态定义（loadDeferred 首屏后才拉）。深链直接落到本页时先画加载态，
-  // 到位后由 onStatusesReady 重画——口径照状态统计页，不自己重画抢路由
+  // 到位后由 onStatusesReady 重画——口径照统计分析页「状态定义面」，不自己重画抢路由
   if (!statusesReady()) {
     view.innerHTML = `<h1 class="page-title">设计评分</h1>
       <div class="panel score-loading"><p class="panel-note muted">正在加载状态定义…</p></div>`;
