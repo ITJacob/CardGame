@@ -13,7 +13,7 @@ export const DB = {
   axesByPathway: new Map(),   // pathwayId -> {axisId: {name, symbol, ...}}
   statusMap: new Map(),       // statusId -> {id, name, category, note, ...}
   designNotes: new Map(),     // pathwayId -> designNote
-  statuses: [],               // 状态定义数组（带 _owner），供状态统计页用
+  statuses: [],               // 状态定义数组（带 _owner），供统计分析页「状态定义面」用
   declaredPrimitives: [],     // schema effect.oneOf 声明的原语 type（27）
   declaredStatusFields: [],   // schema statusDef 声明的字段名（48）
   rarityOrder: [],            // 稀有度档位顺序：低 → 高（普通 → 传说），读自 manifest.rarityMap
@@ -56,7 +56,7 @@ async function fetchJson(url) {
   return r.json();
 }
 
-// common.statuses.json 读不到不算致命：状态统计页降级，悬停在途径 statuses 到达前只剩 id
+// common.statuses.json 读不到不算致命：状态定义面降级，悬停在途径 statuses 到达前只剩 id
 const fetchJsonSoft = (url) => fetchJson(url).catch(() => null);
 
 // 状态定义唯一权威源：common.statuses.json + 各途径 *.statuses.json。
@@ -116,8 +116,8 @@ export async function loadAll(onProgress) {
   return DB;
 }
 
-// 途径状态定义与卡片列表、卡面 AST、词典都不相关——只有「状态统计」页和
-// 途径私有状态的悬停详情要。common 已随首屏加载，这里只补拉 22 份途径文件，
+// 途径状态定义与卡片列表、卡面 AST、词典都不相关——只有统计分析页末的
+// 「状态定义面」和途径私有状态的悬停详情要。common 已随首屏加载，这里只补拉 22 份途径文件，
 // 代价是途径私有状态的悬停详情最初一两秒只有 id。
 let deferred = null;
 let ready = false;

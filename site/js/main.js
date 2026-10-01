@@ -5,12 +5,11 @@ import { renderCardDetail } from './views/card.js';
 import { renderGlossary } from './views/glossary.js';
 import { renderStats } from './views/stats.js';
 import { renderScore } from './views/score.js';
-import { renderStatuses } from './views/status.js';
 import { renderDdd } from './views/ddd.js';
 
 // 非列表页（卡片列表之外的都算，用于滚动位置还原）。新增页务必登记，
 // 否则从详情返回时会被当成列表页而错误还原滚动位置
-const NON_LIST_PAGES = new Set(['card', 'glossary', 'stats', 'score', 'statuses', 'ddd']);
+const NON_LIST_PAGES = new Set(['card', 'glossary', 'stats', 'score', 'ddd']);
 
 const view = document.getElementById('view');
 const status = document.getElementById('load-status');
@@ -46,11 +45,15 @@ function route() {
   if (prevPage === 'cards' && !isList) listScrollY = window.scrollY;
   const restoreScroll = isList && prevPage === 'card';
 
+  if (page === 'statuses') {
+    // 状态统计已并入统计分析页（页末「状态定义面」），旧链接/书签跳过去
+    location.replace('#/stats');
+    return;
+  }
   if (page === 'card' && arg) { setNav('cards'); renderCardDetail(view, decodeURIComponent(arg)); }
   else if (page === 'glossary') { setNav('glossary'); renderGlossary(view, new URLSearchParams(qs || '')); }
   else if (page === 'stats') { setNav('stats'); renderStats(view); }
   else if (page === 'score') { setNav('score'); renderScore(view, arg ? decodeURIComponent(arg) : ''); }
-  else if (page === 'statuses') { setNav('statuses'); renderStatuses(view); }
   else if (page === 'ddd') { setNav('ddd'); renderDdd(view, arg ? decodeURIComponent(arg) : ''); }
   else { setNav('cards'); renderCards(view); }
 
@@ -97,8 +100,8 @@ async function main() {
   }
   window.addEventListener('hashchange', route);
   route();
-  // 首屏画完再补状态定义：卡片列表/卡面 AST/词典都不依赖它，只有状态统计页与
-  // 状态悬停详情要。依赖它的视图自己订阅（见 views/status.js）
+  // 首屏画完再补状态定义：卡片列表/卡面 AST/词典都不依赖它，只有统计分析页末的
+  // 状态定义面与状态悬停详情要。依赖它的视图自己订阅（见 views/stats.js）
   loadDeferred();
 }
 

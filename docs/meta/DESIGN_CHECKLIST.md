@@ -24,7 +24,7 @@ statusDef 38 个字段，设计决策收敛为七组：
 
 | # | 维度 | 决策内容 |
 |---|---|---|
-| 1 | **身份** | `id` / `name` / `note` + `category` 分类（buff / debuff / 控制…词典值域）——状态统计页「分类 × 维度」的第一个轴 |
+| 1 | **身份** | `id` / `name` / `note` + `category` 分类（buff / debuff / 控制…词典值域）——网页统计分析页「状态定义面」分类 × 原语热图的第一个轴 |
 | 2 | **时长模型** | 四件套怎么取：`duration`（tick 自然到期）/ `maxStacks`（叠层）/ `charges`（次数）/ `dispelable`——决定「层数语义」，也是评分「身份锚定」查的层数引擎 |
 | 3 | **读档能力** | `stackThreshold` + `thresholdTrigger`（到档触发什么）、`statPerStack`（每层载荷）、`ramp`、`phases`（形态轮转，如月相）——状态的 payoff 接口；「身份锚定」+7 分看这组是否非空 |
 | 4 | **行为载荷** | `triggers`（14 封闭触发点 → effects，状态的主动面）/ def 级 `effects` / `modifiers`（自由词表修饰符）/ `behaviorModifiers` / `disallowActions` / 防御语义件（`lethalProtect` / `reviveBlocked` / `immune` / `suppress` / `redirectRule`…） |
