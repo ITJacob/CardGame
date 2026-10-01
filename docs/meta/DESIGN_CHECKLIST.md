@@ -11,7 +11,7 @@
 |---|---|---|
 | 1 | **定位** | 落在哪个途径、哪个构筑轴；在轴里当产层（enabler）还是读层（payoff）——决定它在轴评分里的角色（SCORING.md 轴六维） |
 | 2 | **卡面骨架** | `kind` 主动/被动；被动挂 `hook`（触发点 14 个封闭集）；`sequence` + 序列名；`rarity`（rarityMap 由序列位定死，不可自选）；是否旗舰（flagship，理想 4 张/途径） |
-| 3 | **效果 AST** | `op` 结构（sequence / if / repeat…）+ 原语组合（27 个封闭集，schema `effect.oneOf` 为权威源）+ 参数（元素/属性/资源/锚点/条件谓词，全部走值域 + glossary 词典）——技能真正的设计主体 |
+| 3 | **效果 AST** | `op` 结构（sequence / if / repeat…）+ 原语组合（27 个封闭集，schema `effect.oneOf` 为权威源）+ 参数（元素/属性/资源/锚点/条件谓词，全部走值域 + glossary 词典）——技能真正的设计主体。攻击行为先想清目标规格：**缺省基准 = 敌方同路最前排**（同路排首；front_line 语义、溅射时点见 `ddd/params/共享内核参数.md` §一，brief §1.6），偏离缺省要在卡面写明 targetSpec |
 | 4 | **硬约束自检** | 触发点封闭、R1–R6 随机治理（chance 须登记 + 单次抽样 + 只用于非伤害维）、G8 位移约束、数值锚点（≈3能量 ≈6伤害 ≈10%最大生命，brief §1–§3）——数值本身目前 ⚠️D 占位，只校结构不校大小 |
 | 5 | **文本三件套** | `describe`（机器可读复述）/ `flavor` / `lore`，缺一扣「文本完备」分 |
 | 6 | **附属定义块**（按需） | 卡面内嵌 `unitDefs` / `zoneDef` / `domainDef` / `upgradeLadder` / `variants`；界域/区域 def 与 grant 字段成对（`domainDef`↔`domain`、`zoneDef`↔`zone`）。新状态不落卡面，写 `<途径>.statuses.json`（跨途径共用进 `common.statuses.json`），卡面用 mount_status 的 statusId 引用 |
