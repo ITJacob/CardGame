@@ -25,12 +25,14 @@ EFFECT_TYPES = {
     "heal", "if", "modify_damage", "modify_resource", "modify_stat", "mount_status",
     "move", "repeat", "restore_snapshot", "sequence", "snapshot", "spawn",
     "status_shuffle", "target_override", "transfer_status", "translocate",
+    "set_luminance", "advance_clock",   # 光照度对（2026-09-21 落地，schema 声明 29）
 }
 # 真实以 type 出现的原语（if/sequence/repeat 实为 op 算子，不是 type）
 PRIM_ORDER = ["mount_status", "damage", "modify_stat", "modify_resource", "dispel",
               "spawn", "heal", "move", "domain", "drain", "modify_damage",
               "transfer_status", "echo_last_skill", "snapshot", "restore_snapshot",
-              "gauge_shuffle", "status_shuffle", "translocate", "target_override"]
+              "gauge_shuffle", "status_shuffle", "translocate", "target_override",
+              "set_luminance", "advance_clock"]
 # 算子（以 op 出现）
 OP_ORDER = ["sequence", "if", "repeat", "target_override", "push_back", "overlay",
             "pull_forward", "swap_ally", "insert_tail_cross_lane"]

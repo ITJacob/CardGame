@@ -28,11 +28,13 @@ EFFECT_TYPES = {
     "heal", "if", "modify_damage", "modify_resource", "modify_stat", "mount_status",
     "move", "repeat", "restore_snapshot", "sequence", "snapshot", "spawn",
     "status_shuffle", "target_override", "transfer_status", "translocate",
+    "set_luminance", "advance_clock",   # 光照度对（2026-09-21 落地，schema 声明 29）
 }
 PRIM_ORDER = ["mount_status", "damage", "modify_stat", "modify_resource", "dispel",
               "spawn", "heal", "move", "domain", "drain", "modify_damage",
               "transfer_status", "echo_last_skill", "snapshot", "restore_snapshot",
-              "gauge_shuffle", "status_shuffle", "translocate", "target_override"]
+              "gauge_shuffle", "status_shuffle", "translocate", "target_override",
+              "set_luminance", "advance_clock"]
 OP_ORDER = ["sequence", "if", "repeat", "target_override", "push_back", "overlay",
             "pull_forward", "swap_ally", "insert_tail_cross_lane"]
 OPERATOR_OPS = set(OP_ORDER)
@@ -57,6 +59,8 @@ PRIM_TO_DIM = {
     "move": "控制", "dispel": "控制", "transfer_status": "控制",
     "status_shuffle": "控制", "target_override": "控制",
     "heal": "续航",
+    # 光照度对：战场环境（时钟/昼夜）操控，归运营
+    "set_luminance": "运营", "advance_clock": "运营",
 }
 STAT_TO_DIM = {
     "attack": "进攻", "defense": "防御", "armor": "防御", "hp_max": "防御",

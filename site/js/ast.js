@@ -19,7 +19,7 @@ const FIELD_ZH = {
   sort: '排序', mapping: '映射', fallback: '兜底', statusesFrom: '状态来源', to: '去向',
   between: '双方', collect: '收集', snapshot: '快照', variant: '变体', template: '模板',
   unit: '单位', zone: '区域', consumption: '消耗', kind: '类型', side: '作用方', tag: '标签',
-  durationUnit: '时长单位', anchor: '锚点', sortKey: '排序键', faction: '阵营',
+  durationUnit: '时长单位', anchor: '锚点', sortKey: '排序键', faction: '阵营', ticks: '推进',
 };
 
 // 字段名 → 值所在枚举类别（用于值翻译）
@@ -295,6 +295,17 @@ const PRIMITIVE_TEMPLATES = {
     if (parts.length) s += `（${parts.join('，')}）`;
     return s;
   },
+  set_luminance: (e, used) => {
+    used.push('value', 'duration', 'dispelable');
+    let s = `覆写战场光照度为 ${fmtVal(e.value)}`;
+    const parts = [];
+    if (e.duration != null) parts.push(`持续 ${fmtVal(e.duration)} tick${e.dispelable === false ? '（不可驱散）' : ''}`);
+    return s + (parts.length ? `（${parts.join('，')}）` : '');
+  },
+  advance_clock: (e, used) => {
+    used.push('ticks');
+    return `推进战场时钟 ${fmtVal(e.ticks)} tick（只进不退）`;
+  },
 };
 
 function renderRestFields(e, used) {
@@ -373,6 +384,7 @@ const PRIMITIVE_TYPES = new Set([
   'transfer_status', 'write_rule_slot', 'modify_rule_slot', 'snapshot', 'restore_snapshot',
   'echo_last_skill', 'gauge_shuffle', 'status_shuffle', 'modify_skill', 'modify_status',
   'modify_targetability', 'reveal', 'grant_immunity', 'take_control',
+  'set_luminance', 'advance_clock',   // 光照度对（2026-09-21 落地，schema 声明 29）
 ]);
 export function walkCardEffects(card, cb) {
   const walk = (n) => {
