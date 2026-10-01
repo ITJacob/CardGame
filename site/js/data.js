@@ -14,7 +14,7 @@ export const DB = {
   statusMap: new Map(),       // statusId -> {id, name, category, note, ...}
   designNotes: new Map(),     // pathwayId -> designNote
   statuses: [],               // 状态定义数组（带 _owner），供统计分析页「状态定义面」用
-  declaredPrimitives: [],     // schema effect.oneOf 声明的原语 type（27）
+  declaredPrimitives: [],     // schema effect.oneOf 声明的原语 type（29=27 经典 + 光照度对 set_luminance/advance_clock）
   declaredStatusFields: [],   // schema statusDef 声明的字段名（48）
   rarityOrder: [],            // 稀有度档位顺序：低 → 高（普通 → 传说），读自 manifest.rarityMap
   artFormat: '',              // 全局画幅约束（manifest.artFormat），画面 prompt 前缀

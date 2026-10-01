@@ -51,6 +51,22 @@
 
 **状态 53 处**：threshold payoff「强度待平衡期逐条审批」样板（assassin 10 / pryer 8 / savant 8 / planter 7 / hunter 5 / prisoner 5 / common 4 / criminal 2）+ 枢纽持续/伤害数值待平衡（apothecary 1 / arbiter 1 / chanter 1 / lawyer 1）。
 
+### 零使用原语首批出卡候选（2026-10-01 盘点登记，7/29）
+
+schema 声明 29 原语（27 经典 + 光照度对），22 个有卡在用、**7 个能力先行的零使用原语**——不是重复定义，是已登记的承载等第一张卡：
+
+| 原语 | 已有替代/邻接承载 | 出卡方向（资料库 flavor） |
+|---|---|---|
+| `advance_clock` | set_luminance 已在用；昼夜靠时钟推进 | 光照度循环驱动卡（夜晚降临类，与 luminance phaseHook 互补） |
+| `reveal` | 反隐现走 modifiers.see_through（C8 识破分支） | 显形类——与 see_through 的口径分工需在首张卡拍板（见下） |
+| `grant_immunity` | 免疫族现走 immune/silent_immune 修饰符 | 免控/免驱散罩（高序列守护） |
+| `take_control` | 放牧/提线借技能走规则槽、crossPathway | 神话生物级威压夺取（序列 0-1 专属） |
+| `modify_skill` | clearCooldown 类需求现无承载 | 改技能运行时（充能/换目标） |
+| `modify_targetability` | 候选池 weight 行已登记"同出口"；嘲讽走 taunt 状态 | 锁定/禁选类（与 taunt 互斥对） |
+| `target_override` |  redirectRule 覆盖单体重定向 | 群体级目标改写（战阵翻转） |
+
+⚠️ `reveal` 与 see_through 存在语义重叠风险：首个出卡时须拍板分工（建议：see_through=持续视野修正，reveal=一次性显形事件+短暂窗口）。
+
 ### 召唤物数值待平衡（2026-10-01 召唤物批登记，ddd 召唤物参数.md §二 ⚠️D 全表）
 
 > 结构已落盘（unitType 12 值定稿 + 36 具名单位归属 + 合成公式 + per-spawn 覆盖裁定），欠账全是数值：
