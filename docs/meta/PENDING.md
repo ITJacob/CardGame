@@ -62,13 +62,13 @@
 
 **状态 53 处**：threshold payoff「强度待平衡期逐条审批」样板（assassin 10 / pryer 8 / savant 8 / planter 7 / hunter 5 / prisoner 5 / common 4 / criminal 2）+ 枢纽持续/伤害数值待平衡（apothecary 1 / arbiter 1 / chanter 1 / lawyer 1）。
 
-### 量表写入侧（2026-10-01 量表批：写入已挂 / 折费缺口仍待）
+### 量表写入侧（2026-10-01 量表批：写入与折费均已挂，本节闭环）
 
 > 读取侧（dimHook/phaseHook）已全量结构化落地（88 段）；写入侧原语（modify_resource.resource 增 secrecy/order/fate_value）与卡面写入 2026-10-01 同批落地（target board 锚点同批登记）：
 
 - ✅ **order 写入已挂（2026-10-01）**：仲裁人立规/辖区/律令 +1、底层规则 +2，律师扭曲/熵/利用 −1、秩序崩坏 set 0（共 8 卡）。
 - ✅ **fate_value 写入已挂（2026-10-01）**：怪物命运之轮/命运启示 +1、命运循环 −1（共 3 卡；怪物为 ddd 登记唯一写入方）。
-- **dimHook cost 目标缺口**：折费类收益（时空迷宫「隐秘值≥7 折费」）无承载——dimHook target 枚举（damage/damage_taken/heal/resource/rule_strength/all）不含 cost；若下批要落折费，需扩 target 或改表达。
+- ✅ **dimHook cost 目标已挂（2026-10-01 时空迷宫批）**：target 枚举 += cost（schema + SCHEMA.md §7 同步，含 phaseHook 引用行）；时空迷宫挂 secrecy≥7 折费 ×0.67（6→4 能），mul 低于建议带 0.8–1.5 已写 note。
 
 ### 公有轴身份私有化（2026-09-27 起）
 

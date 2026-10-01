@@ -1737,7 +1737,7 @@
       "flagship": true,
       "lore": "序列1 星之匙 —— \"「时空迷宫」：时间即空间，制造时间混乱或空间循环迷宫\"",
       "flavor": "你把所有向前走的路都折成了同一个拐角——它们在迷宫里越走越远，而时间也开始乱了顺序。",
-      "describe": "对全体敌方施加时空迷宫 3 tick：每 tick 行动条 -6，且行动条速率 -5。",
+      "describe": "对全体敌方施加时空迷宫 3 tick：每 tick 行动条 -6，且行动条速率 -5；隐秘值≥7 时本卡能量费 6→4。",
       "cost": {
         "energy": 6,
         "cooldown": 8,
@@ -1767,7 +1767,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：星界顶点旗舰：同时推条+减速；隐秘值≥7 时 conceal/隐秘类收益（折费）——dimHook 无 cost 目标、无法承载折费，登记 PENDING 待挂（2026-10-01 量表批）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：星界顶点旗舰：同时推条+减速；隐秘值≥7 时 conceal/隐秘类收益（折费）——dimHook target=cost 2026-10-01 已开通并挂本卡（secrecy≥7 折费 ×0.67，6→4 能）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
       "art": {
         "subject": "endless corridors folding into one corner, time flowing backward overhead",
         "elements": [
@@ -1776,7 +1776,17 @@
           "marching lost silhouettes"
         ],
         "mood": "bewildering, endless"
-      }
+      },
+      "dimHooks": [
+        {
+          "dim": "secrecy",
+          "comparator": ">=",
+          "threshold": 7,
+          "mul": 0.67,
+          "target": "cost",
+          "note": "源堡隐秘档折费：board.secrecy≥7 时本卡能量费 ×0.67（6→4）；mul 低于建议带 0.8–1.5，按折费语义核定（2026-10-01 时空迷宫批）。"
+        }
+      ]
     },
     {
       "id": "skill_apprentice_s1_space_shatter",
