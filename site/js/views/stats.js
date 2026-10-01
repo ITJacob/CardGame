@@ -73,6 +73,9 @@ function renderSkillStats(view) {
   const statCount = new Map();
   const resCount = new Map();
   const elemCount = new Map();
+  const condTotal = new Map();       // condition.kind -> count（含 if 算子分支条件）
+  const condByPath = new Map();
+  const msModeTotal = new Map();     // modify_stat mode -> count
   const bump = (m, row, col) => {
     let r = m.get(row);
     if (!r) { r = new Map(); m.set(row, r); }
@@ -85,11 +88,12 @@ function renderSkillStats(view) {
         kindByPath = new Map(), energyByPath = new Map(), cdByPath = new Map(),
         castByPath = new Map(), rankByPath = new Map(), genderByPath = new Map(),
         depthByPath = new Map(), factionByPath = new Map(), scopeByPath = new Map(),
-        sortByPath = new Map(), reqFilterByPath = new Map();
+        sortByPath = new Map(), reqFilterByPath = new Map(),
+        cxByPath = new Map(), budgetByPath = new Map();
   const byEnergy = new Map(), byCd = new Map(), byCast = new Map(),
         byGender = new Map(), byDepth = new Map(), tagsTotal = new Map(),
         byFaction = new Map(), byScope = new Map(), bySort = new Map(),
-        reqFilterTotal = new Map();
+        reqFilterTotal = new Map(), byCx = new Map(), byBudget = new Map();
   for (const c of cards) {
     const p = c._pathway;
     bump(rarityByPath, p, c.rarity);
@@ -130,16 +134,20 @@ function renderSkillStats(view) {
       bump(reqFilterByPath, p, k);
     }
     if (c.hook) bump(hookByPath, p, c.hook);
+    // 每卡累计：复杂度（原语节点数）与数值预算（数值伤害加总）在 walk 里攒，走完再分桶
+    let cardNodes = 0, cardDmg = 0;
     walkCardEffects(c, (n, kindOf) => {
       if (kindOf === 'op') {
         opTotal.set(n.op, (opTotal.get(n.op) || 0) + 1);
         bump(opByPath, p, n.op);
       } else {
+        cardNodes++;
         primTotal.set(n.type, (primTotal.get(n.type) || 0) + 1);
         bump(primByPath, p, n.type);
         if (n.type === 'modify_stat' && n.stat) {
           statCount.set(n.stat, (statCount.get(n.stat) || 0) + 1);
           bump(statByPath, p, n.stat);
+          if (n.mode) msModeTotal.set(n.mode, (msModeTotal.get(n.mode) || 0) + 1);
         }
         if (n.type === 'modify_resource' && n.resource) {
           resCount.set(n.resource, (resCount.get(n.resource) || 0) + 1);
@@ -149,6 +157,15 @@ function renderSkillStats(view) {
           elemCount.set(n.element, (elemCount.get(n.element) || 0) + 1);
           bump(elemByPath, p, n.element);
         }
+        // 数值预算分子：数值伤害加总（9999 是即死占位，不参与预算）
+        if (n.type === 'damage' && typeof n.value === 'number' && n.value !== 9999) {
+          cardDmg += n.value;
+        }
+      }
+      // 条件谓词（原语与 if/repeat 算子节点都带 condition）：「这张卡在什么情况下生效」
+      if (n.condition?.kind) {
+        condTotal.set(n.condition.kind, (condTotal.get(n.condition.kind) || 0) + 1);
+        bump(condByPath, p, n.condition.kind);
       }
       // 位格承载（稀疏先行维度）：stat_compare(key=rank) 谓词 + modify_stat(rank)。
       // 位格没有独立卡面字段，承载全埋在效果节点里——零新谓词裁定（rank 走 stat_compare）
@@ -159,6 +176,15 @@ function renderSkillStats(view) {
         bump(rankByPath, p, 'modify_stat');
       }
     });
+    // 复杂度分桶：每卡原语节点数（含状态载荷，同一原语多次计数）
+    const cxKey = cardNodes <= 1 ? '1' : cardNodes <= 3 ? '2–3' : cardNodes <= 6 ? '4–6' : '7+';
+    bump(byCx, 0, cxKey); bump(cxByPath, p, cxKey);
+    // 数值预算分桶：只算带数值伤害的主动卡；energy=0 没有费用可比，跳过
+    if (c.kind === 'active' && cardDmg > 0 && c.cost && c.cost.energy > 0) {
+      const r = cardDmg / c.cost.energy;
+      const bKey = r < 1 ? '<1' : r < 2 ? '1–2' : r < 3 ? '2–3' : r < 4 ? '3–4' : '≥4';
+      bump(byBudget, 0, bKey); bump(budgetByPath, p, bKey);
+    }
   }
   // 有序刻度（费用/冷却/吟唱）的 bar 行数据：上面为走 bump 统一成 行 0 的矩阵，
   // 这里摊平回 取值→计数
@@ -245,6 +271,23 @@ function renderSkillStats(view) {
       sortedRows(flat(byDepth)).map((r) => ({ key: r.title, label: r.label, title: r.title })),
       { unit: ' 张' }));
 
+  // 构筑轴是封闭集（22 途径 × 4 = 88），标签带途径前缀消歧；轴的热图列有 88 个，
+  // 折叠取前 9 列会碎成误导，所以本组只有 bar——途径内轴构成见 analysis_by_profession 文档
+  const axisRows = [];
+  for (const p of pathways) {
+    const axes = DB.axesByPathway.get(p.id) || {};
+    for (const [axId, def] of Object.entries(axes)) {
+      const n = cards.filter((c) => c._pathway === p.id && c.axis === axId).length;
+      axisRows.push({ label: `${p.name}·${def.name || axId}`, title: axId, value: n });
+    }
+  }
+  axisRows.sort((a, b) => b.value - a.value);
+  const axisGroup = group('卡池结构 · 构筑轴',
+    barPanel('构筑轴卡数分布', axisRows,
+      `<p class="panel-note muted">封闭集：每途径 4 轴、共 ${axisRows.length} 轴，标签 = 途径·轴名。
+      不画热图——88 列折到前 9 列就碎了；途径内轴构成视角见
+      docs/analysis/analysis_by_profession/ 各篇。</p>`));
+
   const declared = DB.declaredPrimitives.length;
   const primGroup = group('构件面 · 原语',
     barPanel('原语用量（卡面）', sortedRows(primTotal, (k) => zh('primitive', k)),
@@ -260,6 +303,25 @@ function renderSkillStats(view) {
     barPanel('算子用量', sortedRows(opTotal, (k) => zh('operator', k))),
     heatOf('途径 × 算子', opByPath, colsOf(opTotal, 'operator')));
 
+  const condGrand = [...condTotal.values()].reduce((a, b) => a + b, 0);
+  const condGroup = group('构件面 · 条件谓词',
+    barPanel('条件谓词分布（condition.kind）', sortedRows(condTotal, (k) => zh('conditionKind', k)),
+      `<p class="panel-note muted">效果节点的成立条件（原语自带 condition 与 if/repeat 算子的
+      分支条件都算）：全库 ${condGrand} 处。has_status 一家占大半——「持有某状态时强化」
+      是最常用的条件形态；chance 概率受随机性治理 R1–R6 约束（只用于非伤害维度、单次抽样）。</p>`),
+    heatOf('途径 × 条件谓词', condByPath, colsOf(condTotal, 'conditionKind'), { unit: ' 处' }));
+
+  const cxCols = ['1', '2–3', '4–6', '7+'].map((k) => ({ key: k, label: `${k} 个`, title: k }));
+  const primGrand = [...primTotal.values()].reduce((a, b) => a + b, 0);
+  const cxGrand = flat(byCx);
+  const cxGroup = group('构件面 · 卡面复杂度',
+    barPanel('每卡原语节点数分布', cxCols.map((c) => ({ label: c.label, title: c.title, value: cxGrand.get(c.key) || 0 })),
+      `<p class="panel-note muted">一张卡 effects 树里的原语节点总数（含状态载荷，同一原语多次
+      计数）：全库均值 ${(primGrand / cards.length).toFixed(1)}。这是单卡预算纪律
+      （brief §1：≈3 能量 ≈ 6 伤害）的配套检视——7+ 节点的臃肿卡全库只有
+      ${cxGrand.get('7+') || 0} 张。</p>`),
+    heatOf('途径 × 卡面复杂度', cxByPath, cxCols, { unit: ' 张' }));
+
   const tagsGroup = group('构件面 · 卡面标签',
     barPanel('卡面标签 Top 20', sortedRows(new Map([...tagsTotal.entries()]
       .sort((a, b) => b[1] - a[1]).slice(0, 20))),
@@ -269,6 +331,9 @@ function renderSkillStats(view) {
 
   const statGroup = group('数值面 · 属性（modify_stat）',
     barPanel('modify_stat 属性分布', sortedRows(statCount, (k) => zh('stat', k))),
+    barPanel('modify_stat 改写方式（mode）', sortedRows(msModeTotal, (k) => zh('statMode', k)),
+      `<p class="panel-note muted">delta 增减是绝对主流；mul 乘算只有 ${msModeTotal.get('mul') || 0} 处——
+      属性乘区刻意稀缺，乘区主要由 modify_damage（dealt/taken）承载，防止增伤叠乘失控。</p>`),
     heatOf('途径 × modify_stat 属性', statByPath, colsOf(statCount, 'stat')));
 
   const resGroup = group('数值面 · 资源（modify_resource）',
@@ -278,6 +343,18 @@ function renderSkillStats(view) {
   const elemGroup = group('数值面 · 伤害元素',
     barPanel('伤害元素分布', sortedRows(elemCount, (k) => zh('element', k))),
     heatOf('途径 × 伤害元素', elemByPath, colsOf(elemCount, 'element')));
+
+  // 数值预算：伤害费用比，锚点 brief §1「≈3 能量 ≈ 6 伤害」→ 2.0 伤/能为预算线
+  const budgetCols = ['<1', '1–2', '2–3', '3–4', '≥4'].map((k) => ({ key: k, label: `${k} 伤/能`, title: k }));
+  const budgetGrand = flat(byBudget);
+  const budgetCards = [...budgetGrand.values()].reduce((a, b) => a + b, 0);
+  const budgetGroup = group('数值面 · 数值预算（伤害/能量）',
+    barPanel('伤害费用比分桶（主动卡）', budgetCols.map((c) => ({ label: c.label, title: c.title, value: budgetGrand.get(c.key) || 0 })),
+      `<p class="panel-note muted">口径：卡面全部数值伤害节点加总（含多段与分支，剔除 9999 即死
+      占位）÷ cost.energy，按商分桶。锚点 brief §1：≈3 能量 ≈ 6 伤害 → 2.0 伤/能是预算线。
+      只统计带数值伤害的主动卡（共 ${budgetCards} 张）；持续伤害（mount_status 载荷）、
+      非数值伤害（按属性换算的）不计入分子，所以这是保守下界。</p>`),
+    heatOf('途径 × 伤害费用比（只算带数值伤害的主动卡）', budgetByPath, budgetCols, { unit: ' 张' }));
 
   const energyGroup = group('费用面 · 能量（cost.energy）',
     barPanel('能量费用分布（主动卡，有序刻度）', sortedRows(flat(byEnergy), (k) => `${k} 能`, { byKey: true })),
@@ -354,12 +431,12 @@ function renderSkillStats(view) {
   view.innerHTML = `<p class="panel-note muted">本页<b>一个维度一组</b>：组内先全库 bar、再该维度的「途径 × 维度」热图。
     热图共用一套读法——行 = ${pathways.length} 个途径，列 = 该维度的取值，格 = 计数
     （只有「原语 构成」那张是行内归一化后的 %）。同组的 bar 与热图<b>口径相同</b>：bar 各段之和
-    = 该组热图各行的合计；跨组不是一回事——属性 / 资源 / 元素 / 算子 / 原语 / 位格按<b>效果节点</b>计，
-    稀有度 / 序列 / 卡型 / 费用 / 冷却 / 吟唱 / 性别 / 构筑深度按<b>卡</b>计。每张图的色阶各自独立
+    = 该组热图各行的合计；跨组不是一回事——属性 / 资源 / 元素 / 算子 / 原语 / 位格 / 条件谓词按<b>效果节点</b>计，
+    稀有度 / 序列 / 卡型 / 费用 / 冷却 / 吟唱 / 性别 / 构筑深度 / 卡面复杂度 / 数值预算按<b>卡</b>计。每张图的色阶各自独立
     （上限取本图最大值），跨图比颜色没有意义——要比就比格内数字。行序一律是 manifest 途径顺序；
     列序是各自的用量或刻度顺序，悬停表头看原始 key。状态定义口径见「状态」子页，编目三池
     （召唤物 / 区域 / 界域）见各自子页——本页各组均不含它们。</p>
-    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${primGroup}${opGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${energyGroup}${cdGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}${genderGroup}`;
+    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${axisGroup}${primGroup}${opGroup}${condGroup}${cxGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${budgetGroup}${energyGroup}${cdGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}${genderGroup}`;
 
   // 窄屏展开全部列；桌面端该开关不显示（CSS 隐藏），勾选状态无副作用
   wireHeatToggle(view);
