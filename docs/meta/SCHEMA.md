@@ -252,7 +252,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `dim` | `secrecy`\|`order`\|`fate_value`\|`luminance` | 挂钩的战场维度（闭枚举） |
 | `comparator` | `>=`\|`<=`\|`>`\|`<`\|`==` | 阈值比较符，默认 `>=` |
 | `threshold` | number | 触发阈值，须在维度值域内（secrecy/order/luminance ∈ [0,10]、fate_value ∈ [−10,10]） |
-| `mul` | number>0 | 乘区系数（⚠️D 占位）；单卡建议 0.8–1.5，超限需 `note` 说明 |
+| `mul` | number>0 | 乘区系数；单卡建议 0.8–1.5，超限需 `note` 说明（2026-10-01 乘区审批批 182 项全量过堂） |
 | `target` | `damage`\|`damage_taken`\|`heal`\|`resource`\|`rule_strength`\|`all` | 乘区作用目标，默认 `damage` |
 | `filterTags` | string[] | 仅当本卡带其一 tag 才生效（如 secrecy 要求 tag∈{愚弄,隐秘,conceal}） |
 | `note` | string | 口径说明，mul 超限或非常规时必填 |
@@ -277,7 +277,7 @@ Gate（validate.py）：`dim` 须为已注册维度、`threshold` 须在值域�
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | `phases` | `midnight`\|`dawn`\|`day`\|`dusk`\|`night` 数组（≥1 项） | 生效相位集合；月夜 = `["night","midnight"]` + 月相条件 |
-| `mul` | number>0 | 乘区系数（⚠️D 占位）；单卡建议 0.8–1.5，超限需 `note` 说明 |
+| `mul` | number>0 | 乘区系数；单卡建议 0.8–1.5，超限需 `note` 说明（2026-10-01 乘区审批批 182 项全量过堂） |
 | `target` | 同 §7 `dimHook.target` | 乘区作用目标，默认 `damage` |
 | `filterTags` | string[] | 仅当本卡带其一 tag 才生效 |
 | `note` | string | 口径说明，mul 超限或非常规时必填 |
