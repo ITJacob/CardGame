@@ -25,223 +25,341 @@
     {
       "id": "poison",
       "name": "中毒",
-      "category": ["debuff"],
+      "category": [
+        "debuff"
+      ],
       "dispelable": true,
       "duration": 5,
       "maxStacks": 3,
       "stackPolicy": "refresh",
-      "modifiers": { "dotOnTick": 1, "pierceArmor": true },
+      "modifiers": {
+        "dotOnTick": 1,
+        "pierceArmor": true
+      },
       "note": "§2.2 已裁定：defaultDuration 5 / maxStacks 3 / stackPolicy refresh；实例 value 1/tick 穿透护甲。乘区数值 ⚠️D 待平衡。"
     },
     {
       "id": "regen",
       "name": "再生",
-      "category": ["buff"],
+      "category": [
+        "buff"
+      ],
       "dispelable": true,
       "duration": 6,
       "maxStacks": 1,
-      "modifiers": { "healOnTick": 2 },
+      "modifiers": {
+        "healOnTick": 2
+      },
       "note": "§2.2 已裁定：defaultDuration 6；实例 value 2/tick（总回复 12）。⚠️ 原平衡结论失效，需重验。"
     },
     {
       "id": "thorns",
       "name": "反伤",
-      "category": ["reactive"],
+      "category": [
+        "reactive"
+      ],
       "dispelable": true,
       "duration": 8,
       "maxStacks": 1,
       "source_filter": "melee",
-      "modifiers": { "thornsDamage": 1 },
+      "modifiers": {
+        "thornsDamage": 1
+      },
       "note": "§2.2 已裁定：defaultDuration 8 / source_filter melee；实例 value 1。"
     },
     {
       "id": "guard",
       "name": "坚守",
-      "category": ["buff"],
+      "category": [
+        "buff"
+      ],
       "dispelable": true,
       "duration": 4,
       "maxStacks": 1,
-      "modifiers": { "damage_taken_mul": 0.7 },
-      "note": "§2.2 已裁定：mul 0.7 / duration 4。"
+      "modifiers": {
+        "damage_taken_mul": 0.7
+      },
+      "note": "§2.2 已裁定：mul 0.7 / duration 4。 乘区审批：0.7=标准减伤母版档（H3 已裁定）/0.75=轻减档"
     },
     {
       "id": "shield",
       "name": "护盾",
-      "category": ["buff"],
+      "category": [
+        "buff"
+      ],
       "dispelable": true,
       "duration": 6,
       "maxStacks": 1,
-      "modifiers": { "shieldDelta": 5 },
+      "modifiers": {
+        "shieldDelta": 5
+      },
       "note": "§2.2 已裁定：defaultDuration 6；实例 delta 5，独立 shield 池先于 HP 扣减。"
     },
     {
       "id": "silence",
       "name": "沉默",
-      "category": ["control"],
+      "category": [
+        "control"
+      ],
       "dispelable": true,
       "duration": 8,
       "maxStacks": 1,
-      "modifiers": { "disableSkill": true },
+      "modifiers": {
+        "disableSkill": true
+      },
       "note": "§2.2 已裁定：defaultDuration 8；禁用使用技能。"
     },
     {
       "id": "taunt",
       "name": "嘲讽",
-      "category": ["control"],
+      "category": [
+        "control"
+      ],
       "dispelable": true,
       "duration": 6,
       "maxStacks": 1,
-      "modifiers": { "taunt": true },
+      "modifiers": {
+        "taunt": true
+      },
       "note": "§2.2 已裁定：defaultDuration 6；force 普攻 + target_override。"
     },
     {
       "id": "energy_strain",
       "name": "耗能加重",
-      "category": ["debuff"],
+      "category": [
+        "debuff"
+      ],
       "dispelable": true,
       "duration": 10,
       "maxStacks": 1,
-      "modifiers": { "energyCostMul": 1.5 },
+      "modifiers": {
+        "energyCostMul": 1.5
+      },
       "note": "§2.2 已裁定：defaultDuration 10；energy_cost_mul 1.5。"
     },
     {
       "id": "free_cast",
       "name": "免吟唱",
-      "category": ["buff"],
+      "category": [
+        "buff"
+      ],
       "dispelable": true,
       "duration": 5,
       "maxStacks": 1,
-      "modifiers": { "castTimeSet": 0 },
+      "modifiers": {
+        "castTimeSet": 0
+      },
       "note": "§2.2 已裁定：defaultDuration 5；cast_time_set 0。"
     },
     {
       "id": "stun",
       "name": "眩晕",
-      "category": ["control"],
+      "category": [
+        "control"
+      ],
       "dispelable": false,
       "duration": 5,
       "maxStacks": 1,
-      "modifiers": { "stun": true },
+      "modifiers": {
+        "stun": true
+      },
       "note": "§2.2 已裁定：defaultDuration 5；剥夺全部四个行为（INV-P5 硬控清除 stance）。"
     },
     {
       "id": "bulwark",
       "name": "守护",
-      "category": ["stance"],
+      "category": [
+        "stance"
+      ],
       "dispelable": true,
       "duration": 6,
       "maxStacks": 1,
       "priority": 10,
-      "modifiers": { "guardTarget": true },
+      "modifiers": {
+        "guardTarget": true
+      },
       "note": "§2.2 已裁定：defaultDuration 6 / priority 10；binding.guardTarget 被保护单位。"
     },
     {
       "id": "vulnerable",
       "name": "易伤",
-      "category": ["debuff"],
+      "category": [
+        "debuff"
+      ],
       "dispelable": true,
       "duration": 4,
       "maxStacks": 1,
-      "modifiers": { "damage_taken_mul": 1.3 },
+      "modifiers": {
+        "damage_taken_mul": 1.3
+      },
       "note": "§2.2 已裁定：defaultDuration 4 / mul 1.3（与抗性同乘区加算）。⚠️ 与 hunter 卡面内联 def（mul 1.2 / duration 3 / maxStacks 3 + 叠层阈值）数值分歧，以本 §2.2 裁定为权威；提取后须删除 hunter 内联副本。"
     },
     {
       "id": "shackle",
       "name": "枷锁",
-      "category": ["control"],
+      "category": [
+        "control"
+      ],
       "dispelable": true,
       "duration": 2,
-      "modifiers": { "moveImmune": true, "gaugeRateMul": 0.7 },
-      "note": "F7 已登记定义（H24 减速族：禁位移 + gauge_rate ×0.7）。原 6 途径各一份重复 def 已合并为此权威定义（2026-09-19）。"
+      "modifiers": {
+        "moveImmune": true,
+        "gaugeRateMul": 0.7
+      },
+      "note": "F7 已登记定义（H24 减速族：禁位移 + gauge_rate ×0.7）。原 6 途径各一份重复 def 已合并为此权威定义（2026-09-19）。 乘区审批：0.7=标准减伤母版档（H3 已裁定）/0.75=轻减档"
     },
     {
       "id": "burn",
       "name": "灼烧",
-      "category": ["debuff"],
+      "category": [
+        "debuff"
+      ],
       "dispelable": true,
       "duration": 3,
       "maxStacks": 3,
       "stackPolicy": "refresh",
-      "modifiers": { "dotOnTick": 2, "element": "fire" },
+      "modifiers": {
+        "dotOnTick": 2,
+        "element": "fire"
+      },
       "note": "通用火属性 DOT，被 10 处引用但 §2.2 未单列裁定；数值 ⚠️D 占位（duration 3 / maxStacks 3 / 2 per tick），待补裁定。"
     },
     {
       "id": "conceal",
       "name": "潜行",
-      "category": ["conceal"],
+      "category": [
+        "conceal"
+      ],
       "dispelable": true,
       "duration": 2,
-      "modifiers": { "untargetableByTargeted": { "direction": "inbound", "scope": "single" } },
-      "triggers": [ { "event": "on_deal_damage", "effects": [ { "type": "dispel", "target": "self", "dispelTarget": "unit", "filter": { "statusId": "conceal", "count": 1 }, "note": "出手自动破除潜行" } ] } ],
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "conceal",
+                "count": 1
+              },
+              "note": "出手自动破除潜行"
+            }
+          ]
+        }
+      ],
       "note": "通用潜行：不可被指向选取，自身造成伤害后自动破除。原 shadow_veil / hidden_space / psych_invisibility 同核实现统一收口于此（2026-09-19 降格试点）。"
     },
     {
       "id": "revive_blocked",
       "name": "禁复活",
-      "category": ["seal"],
+      "category": [
+        "seal"
+      ],
       "dispelable": false,
       "duration": null,
-      "modifiers": { "revive_blocked": true },
+      "modifiers": {
+        "revive_blocked": true
+      },
       "note": "通用禁复活：目标死亡后不可被复活。原 corpse_collector 母版与 sleepless.eternal_sleep 副本统一收口于此（2026-09-19 降格试点）。"
     },
     {
       "id": "amplify",
       "name": "增伤",
-      "category": ["buff"],
+      "category": [
+        "buff"
+      ],
       "dispelable": true,
       "duration": 4,
       "maxStacks": 1,
-      "modifiers": { "damage_mul": 1.2 },
+      "modifiers": {
+        "damage_mul": 1.2
+      },
       "note": "通用增伤：造成伤害 ×mul（mul>1）。归并纯增伤私有换皮所得机制桩（2026-09-19 降格批次2）。基准 mul 1.2，卡面 mount_status 传 value 覆盖。"
     },
     {
       "id": "weaken",
       "name": "虚弱",
-      "category": ["debuff"],
+      "category": [
+        "debuff"
+      ],
       "dispelable": true,
       "duration": 4,
       "maxStacks": 1,
-      "modifiers": { "damage_mul": 0.85 },
+      "modifiers": {
+        "damage_mul": 0.85
+      },
       "note": "通用虚弱：造成伤害 ×mul（mul<1，输出削弱）。归并纯输出削弱私有换皮所得机制桩（2026-09-19 降格批次2）。基准 mul 0.85，卡面 mount_status 传 value 覆盖。"
     },
     {
       "id": "slow",
       "name": "减速",
-      "category": ["debuff"],
+      "category": [
+        "debuff"
+      ],
       "dispelable": true,
       "duration": 3,
       "maxStacks": 1,
-      "modifiers": { "gaugeRateMul": 0.7 },
-      "note": "通用减速：行动速率 ×mul（mul<1）。归并纯减速私有换皮所得机制桩（2026-09-19 降格批次4）。基准 gaugeRateMul 0.7，卡面 mount_status 传 value 覆盖。纯禁位移(moveImmune) 不在此，另见 immobilize（待建）。"
+      "modifiers": {
+        "gaugeRateMul": 0.7
+      },
+      "note": "通用减速：行动速率 ×mul（mul<1）。归并纯减速私有换皮所得机制桩（2026-09-19 降格批次4）。基准 gaugeRateMul 0.7，卡面 mount_status 传 value 覆盖。纯禁位移(moveImmune) 不在此，另见 immobilize（待建）。 乘区审批：0.7=标准减伤母版档（H3 已裁定）/0.75=轻减档"
     },
     {
       "id": "debuff_immune",
       "name": "免疫减益",
-      "category": ["buff"],
+      "category": [
+        "buff"
+      ],
       "dispelable": false,
       "duration": null,
       "maxStacks": 1,
-      "modifiers": { "immune": { "categories": ["debuff"] } },
+      "modifiers": {
+        "immune": {
+          "categories": [
+            "debuff"
+          ]
+        }
+      },
       "note": "通用减益免疫：事前阻断 debuff 类状态挂载。归并纯 debuff 免疫私有换皮（immunity_writ/curse_ward_block）所得机制桩（2026-09-19 降格批次5）。基准 dispelable:false/duration:null，卡面 mount_status 传 duration/charges 覆盖。scentless 因 dispelable:true(褪色短免疫) 保留私有不降格。"
     },
     {
       "id": "control_immune",
       "name": "免疫控制",
-      "category": ["buff"],
+      "category": [
+        "buff"
+      ],
       "dispelable": false,
       "duration": null,
       "maxStacks": 1,
-      "modifiers": { "immune": { "categories": ["control"] } },
+      "modifiers": {
+        "immune": {
+          "categories": [
+            "control"
+          ]
+        }
+      },
       "note": "通用控制免疫：事前阻断 control 类状态挂载。归并纯 control 免疫私有换皮（composure/virtual_persona）所得机制桩（2026-09-19 降格批次5）。基准 dispelable:false/duration:null，卡面 mount_status 传 duration/charges 覆盖。"
     },
     {
       "id": "lust_restless",
       "name": "躁动",
-      "category": ["debuff"],
+      "category": [
+        "debuff"
+      ],
       "dispelable": false,
       "duration": null,
       "modifiers": {
-        "damage_mul": { "value": 1.2 }
+        "damage_mul": {
+          "value": 1.2
+        }
       },
       "triggers": [
         {
@@ -262,11 +380,15 @@
     {
       "id": "lust_uncontrolled",
       "name": "失控",
-      "category": ["debuff"],
+      "category": [
+        "debuff"
+      ],
       "dispelable": false,
       "duration": null,
       "modifiers": {
-        "damage_mul": { "value": 1.5 },
+        "damage_mul": {
+          "value": 1.5
+        },
         "heal_received_mul": 0
       },
       "triggers": [
@@ -283,12 +405,14 @@
           "note": "R5 确定性化：原著『35% 概率攻友军』→ 每回合 1 次改向额度（lust_retarget, charges:1，密度 ⚠️D 待平衡）；『无法被治疗』= heal_received_mul 0"
         }
       ],
-      "note": "恶欲值 7–9 档（挂载方同 lust_restless）。被 罪犯【深渊即我】∑≥15 解锁的「深渊主权」（abyss_sovereignty）suppress——只压制生效、不移除实例"
+      "note": "恶欲值 7–9 档（挂载方同 lust_restless）。被 罪犯【深渊即我】∑≥15 解锁的「深渊主权」（abyss_sovereignty）suppress——只压制生效、不移除实例 乘区审批（2026-10-01）：0 值=绝对语义档（完全免除/封印/断绝），非渐变乘区，单列登记"
     },
     {
       "id": "lust_detonation",
       "name": "欲望爆炸",
-      "category": ["debuff"],
+      "category": [
+        "debuff"
+      ],
       "dispelable": false,
       "duration": null,
       "triggers": [
@@ -326,7 +450,9 @@
     {
       "id": "lust_retarget",
       "name": "恶欲改向",
-      "category": ["retarget"],
+      "category": [
+        "retarget"
+      ],
       "dispelable": false,
       "duration": null,
       "charges": 1,
