@@ -1222,86 +1222,12 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_mirror_maze",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 3,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_attack",
-            "filter": {
-              "side": "enemy"
-            },
-            "effects": [
-              {
-                "type": "mount_status",
-                "statusId": "maze_daze",
-                "stacks": 1,
-                "stackMode": "add",
-                "target": "self",
-                "note": "计数 maze_daze stacks +1"
-              },
-              {
-                "op": "if",
-                "condition": {
-                  "kind": "has_status",
-                  "side": "target",
-                  "id": "maze_daze",
-                  "cmp": ">=",
-                  "n": 4
-                },
-                "then": [
-                  {
-                    "type": "mount_status",
-                    "statusId": "maze_daze",
-                    "stacks": -4,
-                    "stackMode": "consume",
-                    "target": "self",
-                    "note": "满 4 层消耗"
-                  },
-                  {
-                    "type": "mount_status",
-                    "statusId": "maze_miss",
-                    "duration": 0,
-                    "target": "self",
-                    "note": "该次攻击 target_override → first_empty（R5 确定性落空 ≈25%，卡面「25% 落空」的合规转写）"
-                  }
-                ],
-                "else": []
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "ally",
-            "tag": [
-              "镜像",
-              "替身"
-            ],
-            "mul": 2.0
-          },
-          {
-            "kind": "empower",
-            "side": "ally",
-            "tag": "非镜像单体",
-            "mul": 0.9,
-            "note": "⚠️D 取反过滤待 tag 体系支持"
-          }
-        ]
-      },
       "tags": [
         "镜像",
         "替身"
       ],
       "tentative": false,
-      "conversionNotes": [
-        "v0.3 升级为降临类界域牌；「我方镜像/替身标签技能必定触发」= 其 condition:chance 豁免（p 直写 1，R3 登记）；maze_miss 状态为文字登记（target_override 一次性改写）",
-        "翻译/语义：镜轴枢纽技能：集体打空+白得镜像分身，喂【镜子替身】【镜中人】。"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "an enemy slashing at endless reflections of the same assassin",
         "elements": [
@@ -2351,57 +2277,12 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_mirror_world",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 2,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_tick",
-            "effects": [
-              {
-                "type": "mount_status",
-                "statusId": "mirrored",
-                "duration": 2,
-                "target": "all_enemies",
-                "note": "环境规则的持续化承载：不可选中 / 不可行动 / 免疫伤害每 tick 刷新"
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "ally",
-            "tag": [
-              "镜像",
-              "替身"
-            ],
-            "mul": 2.0
-          },
-          {
-            "kind": "disable_effect",
-            "side": "enemy",
-            "tag": [
-              "光",
-              "净化"
-            ]
-          }
-        ]
-      },
       "tags": [
         "镜像",
         "替身"
       ],
       "tentative": false,
-      "conversionNotes": [
-        "v0.3 升级为传说档降临界域（brief §11.3 传说 = 短而强）；吟唱 2 tick 是敌人打断窗口",
-        "位格判定：敌方单位位格 ≥ 施法者位格时按 brief §11.2 走成功率，具体嵌套 If 结构与【镜中囚禁】同模板",
-        "翻译/语义：镜轴终局：全场镜化。迷失 +。。",
-        "2026-10-01 吟唱重标：仪式类（prim）castTime 2→3 tick（对齐拍板表）"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "gender": "female",
       "art": {
         "subject": "an entire battlefield folded into a vast mirror world",
@@ -2718,6 +2599,119 @@
         "mood": "vital, predatory"
       },
       "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 5→2 tick（对齐拍板表）"
+    }
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_mirror_maze",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 3,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_attack",
+          "filter": {
+            "side": "enemy"
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "maze_daze",
+              "stacks": 1,
+              "stackMode": "add",
+              "target": "self",
+              "note": "计数 maze_daze stacks +1"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "maze_daze",
+                "cmp": ">=",
+                "n": 4
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "maze_daze",
+                  "stacks": -4,
+                  "stackMode": "consume",
+                  "target": "self",
+                  "note": "满 4 层消耗"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "maze_miss",
+                  "duration": 0,
+                  "target": "self",
+                  "note": "该次攻击 target_override → first_empty（R5 确定性落空 ≈25%，卡面「25% 落空」的合规转写）"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "ally",
+          "tag": [
+            "镜像",
+            "替身"
+          ],
+          "mul": 2.0
+        },
+        {
+          "kind": "empower",
+          "side": "ally",
+          "tag": "非镜像单体",
+          "mul": 0.9,
+          "note": "⚠️D 取反过滤待 tag 体系支持"
+        }
+      ]
+    },
+    {
+      "id": "domain_mirror_world",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 2,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "mirrored",
+              "duration": 2,
+              "target": "all_enemies",
+              "note": "环境规则的持续化承载：不可选中 / 不可行动 / 免疫伤害每 tick 刷新"
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "ally",
+          "tag": [
+            "镜像",
+            "替身"
+          ],
+          "mul": 2.0
+        },
+        {
+          "kind": "disable_effect",
+          "side": "enemy",
+          "tag": [
+            "光",
+            "净化"
+          ]
+        }
+      ]
     }
   ],
   "designNote": "> **替身枢纽维度（灾祸之城系 §2.2 / 总览 §3）**：`替身` 是跨**三源质**的枢纽状态（刺客镜替身 / 占卜家纸人替身 / 律师替身定义），在 `StatusDef` 标 `crossPathway:true` + 参与途径白名单。刺客经【镜子替身】【镜面替身·改】写入 `替身`，源堡/失序之国可读写。另 黑焰/地狱之火 ↔ 永暗之河 收尸人「亡灵」（见 §三 死灵黑焰）；命运诅咒 ↔ 光之钥「命运」（见 §三 命运枢纽）。",

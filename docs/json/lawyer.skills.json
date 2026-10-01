@@ -1219,66 +1219,6 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_distorted_order",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 3,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_tick",
-            "filter": {
-              "side": "both"
-            },
-            "effects": [
-              {
-                "type": "dispel",
-                "dispelTarget": "unit",
-                "filter": {
-                  "category": [
-                    "buff"
-                  ],
-                  "count": 1
-                },
-                "note": "全场（双方）每 tick 剥 1 层 buff"
-              },
-              {
-                "type": "modify_stat",
-                "stat": "gauge.rate",
-                "value": -1,
-                "mode": "delta",
-                "duration": 2,
-                "target": "self",
-                "note": "gauge_rate ×0.9 的近似 delta 表达，2t 刷新不叠层（ddd 无 gauge 乘区键，归一见 GAUGE_RATE_AS_STAT）"
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "混乱",
-              "扭曲"
-            ],
-            "mul": 1.3,
-            "note": "O 节点"
-          },
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "秩序",
-              "律令"
-            ],
-            "mul": 0.7,
-            "note": "O 节点"
-          }
-        ],
-        "extraRuleNote": "与仲裁人【满月】恰成对位：满月立法（公开双向自己也守），扭曲秩序坏法（扭曲拖垮谁也别想干净）；周期载荷只走 on_tick，不引 on_turn_start（G15 规避）；（2026-09-08 界域牌批次新增，同时销掉遗留「混乱区域维度未做真区域」——区域的正解是界域不是 Zone）"
-      },
       "frameworkFlags": [
         {
           "code": "GAUGE_RATE_AS_STAT",
@@ -1292,7 +1232,7 @@
         "失序"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：主题界域牌：把规则本身弄脏（双向），你（混乱/僭越构筑）在扭曲里如鱼得水。与仲裁人【满月】成对位。压秩序度 −1。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 2→1 tick（对齐拍板表）",
+      "conversionNotes": "翻译/语义：主题界域牌：把规则本身弄脏（双向），你（混乱/僭越构筑）在扭曲里如鱼得水。与仲裁人【满月】成对位。压秩序度 −1。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 2→1 tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a lawyer smiling as all arrows on a signpost spin and point wrong",
         "elements": [
@@ -2665,6 +2605,68 @@
         "mood": "all-owning, calm"
       },
       "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 5→2 tick（对齐拍板表）"
+    }
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_distorted_order",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 3,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_tick",
+          "filter": {
+            "side": "both"
+          },
+          "effects": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              },
+              "note": "全场（双方）每 tick 剥 1 层 buff"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -1,
+              "mode": "delta",
+              "duration": 2,
+              "target": "self",
+              "note": "gauge_rate ×0.9 的近似 delta 表达，2t 刷新不叠层（ddd 无 gauge 乘区键，归一见 GAUGE_RATE_AS_STAT）"
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "混乱",
+            "扭曲"
+          ],
+          "mul": 1.3,
+          "note": "O 节点"
+        },
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "秩序",
+            "律令"
+          ],
+          "mul": 0.7,
+          "note": "O 节点"
+        }
+      ],
+      "extraRuleNote": "与仲裁人【满月】恰成对位：满月立法（公开双向自己也守），扭曲秩序坏法（扭曲拖垮谁也别想干净）；周期载荷只走 on_tick，不引 on_turn_start（G15 规避）；（2026-09-08 界域牌批次新增，同时销掉遗留「混乱区域维度未做真区域」——区域的正解是界域不是 Zone）"
     }
   ],
   "designNote": "> 拆轴依据《失序之国系技能设定》§4.1：原「讼辩 + 贿腐」合并为 ① 寻隙，原「失序」18 张拆出 ③ 熵蚀（混乱/熵/狂乱）与 ④ 僭越（扭曲/利用/放大/独享规则/阶层/重定义/定义·替身/独裁者）。每轴一个身份状态；enabler 卡挂载/累积该状态，payoff 卡读取该状态放大。\n> **僭越轴 = 规则槽的改规发动机**：律师不立规（立规归仲裁人），但**改规**——`扭曲` 改写 trigger、`利用` 加倍/转向 punish、`独享规则` 把自己加进 exempt、`重定义` 改写作用对象、`定义·替身` 互换身份。规则槽是失序之国两途径**唯一共享棋盘**（详见本节「本系咬合器维度」）。\n> 仲裁人 = **立法者**（造法、执法）；律师 = **法律掮客**（不废法，而是让法为自己服务）。两途径强度都取决于**槽里有几条规则**——仲裁人希望槽满且严苛，律师希望槽满且被自己改写。**利益一致在「槽要满」，冲突在「归谁解释」**。",

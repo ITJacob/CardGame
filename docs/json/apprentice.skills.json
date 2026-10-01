@@ -1600,56 +1600,12 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_reenactment",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 3,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_tick",
-            "filter": {
-              "side": "enemy"
-            },
-            "effects": [
-              {
-                "type": "modify_resource",
-                "resource": "gauge.current",
-                "value": -3,
-                "mode": "delta"
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "ally",
-            "stat": "damage",
-            "mul": 1.1
-          },
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "星界",
-              "记录"
-            ],
-            "mul": 1.3
-          }
-        ]
-      },
       "tags": [
         "星界",
         "记录"
       ],
       "tentative": false,
-      "conversionNotes": [
-        "己方 damage_mul ×1.1 改用 rulePatches empower(side:ally, stat:damage, mul:1.1) 承载（INV-D6 补丁纯声明，删除原 on_turn_start 1t 刷新触发器）",
-        "翻译/语义：记录轴顶点界域：把战场换成你记得的那个。",
-        "2026-10-01 吟唱重标：仪式类（prim）castTime 4→2 tick（对齐拍板表）"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "an old battlefield descending from an open book over the present field",
         "elements": [
@@ -2034,6 +1990,48 @@
         ],
         "mood": "omnipresent, unreal"
       }
+    }
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_reenactment",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 3,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_tick",
+          "filter": {
+            "side": "enemy"
+          },
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -3,
+              "mode": "delta"
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "ally",
+          "stat": "damage",
+          "mul": 1.1
+        },
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "星界",
+            "记录"
+          ],
+          "mul": 1.3
+        }
+      ]
     }
   ],
   "designNote": "> **隐秘值维度（源堡系 §2.2）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。学徒经\"门扉 / 星界\"类效果 +1/次（开门、仪式·门、干扰占卜、星相学、门之概念、空间牢笼、无处不在、门·权柄 等）。层级：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（源堡系共享收益；学徒经【提线接门·改】读取占卜家 `puppet_string` 同享）\n> - **≥7**：友方「愚弄 / 隐秘 / conceal」类技能 **+50%**（学徒的 空间隐藏 / 幻化 / 自我符号 等 conceal 类受益）\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：占卜家（愚弄/观诡）、学徒（星界/门）、偷盗者（欺诈/寄生）、永暗之河（不眠者/收尸人/战士）、暗影世界（囚犯/罪犯）、混沌海（秘祈人）也写入同一 `secrecy` 维度。",

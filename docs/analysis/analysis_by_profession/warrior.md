@@ -101,17 +101,17 @@
 
 **规模**：7 张技能（主动 6 / 被动 1）；稀有度分布：精良×3、稀有×3、史诗×1。
 
-**效果原语构成**（type，全量递归，共 29 处）：
+**效果原语构成**（type，全量递归，共 27 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 9 | 31.0% |
-| `damage` | 8 | 27.6% |
-| `modify_stat` | 5 | 17.2% |
-| `modify_resource` | 4 | 13.8% |
-| `dispel` | 1 | 3.4% |
-| `heal` | 1 | 3.4% |
-| `domain` | 1 | 3.4% |
+| `mount_status` | 9 | 33.3% |
+| `damage` | 7 | 25.9% |
+| `modify_stat` | 4 | 14.8% |
+| `modify_resource` | 4 | 14.8% |
+| `dispel` | 1 | 3.7% |
+| `heal` | 1 | 3.7% |
+| `domain` | 1 | 3.7% |
 
 **算子构成**（op，共 8 处）：
 
@@ -121,11 +121,11 @@
 | `if` | 5 |
 | `overlay` | 1 |
 
-**改动的属性（modify_stat，共 5 处）**：
+**改动的属性（modify_stat，共 4 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
-| `attack` | 3 |
+| `attack` | 2 |
 | `gauge.rate` | 1 |
 | `resist:*` | 1 |
 
@@ -138,7 +138,7 @@
 | `gauge.current` | 1 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `mount_status`(9)、`damage`(8)、`modify_stat`(5)；属性杠杆集中在 `attack`、`gauge.rate`、`resist:*`，资源杠杆集中在 `armor`、`lost`、`gauge.current`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(9)、`damage`(7)、`modify_stat`(4)；属性杠杆集中在 `attack`、`gauge.rate`、`resist:*`，资源杠杆集中在 `armor`、`lost`、`gauge.current`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **猎魔药剂**：为一名友军涂药 4 tick：其每次造成伤害时附加 3 点毒素伤害。变体——圣膏：改为治疗 5 点并全抗性 +10%（2 tick）；精油：额外造成 2 点毒素伤害并使目标行动条 -15；印记：改为标记一名敌人，使其受伤 ×1.25（4 tick，不可驱散）。
 

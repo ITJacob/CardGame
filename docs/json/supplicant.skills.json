@@ -465,33 +465,6 @@
           "position": "tail"
         }
       ],
-      "unitDefs": [
-        {
-          "id": "unit_shadow_spawn",
-          "name": "阴影生物",
-          "hpRatio": 0.35,
-          "atkRatio": 0.5,
-          "element": "dark",
-          "tags": [
-            "shadow"
-          ],
-          "triggers": [
-            {
-              "event": "on_death",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "dark",
-                  "value": 2,
-                  "spread": "splash_adjacent",
-                  "note": "亡语：对相邻敌方单位造成 2 点精神伤害（A2：只挂亡语，禁挂登场光环）"
-                }
-              ]
-            }
-          ],
-          "note": "H1 召唤物基线模板实例（新增项 20，已落）"
-        }
-      ],
       "tentative": false,
       "dimHooks": [
         {
@@ -510,7 +483,8 @@
           "torn shadow membrane"
         ],
         "mood": "summoning, ominous"
-      }
+      },
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。"
     },
     {
       "id": "skill_supplicant_s7_shadow_curse",
@@ -965,37 +939,8 @@
           "position": "tail"
         }
       ],
-      "unitDefs": [
-        {
-          "id": "unit_flesh_servant",
-          "name": "血肉仆役",
-          "hpRatio": 0.5,
-          "atkRatio": 0.4,
-          "element": "physical",
-          "tags": [
-            "flesh"
-          ],
-          "triggers": [
-            {
-              "event": "on_death",
-              "effects": [
-                {
-                  "type": "heal",
-                  "value": 3,
-                  "target": "caster",
-                  "note": "仆役死了，血肉回到主人身上（F56 施法者引用）"
-                }
-              ]
-            }
-          ],
-          "note": "H1 召唤物基线模板实例；你召唤的不是灵体，是你自己的肉"
-        }
-      ],
       "tentative": false,
-      "conversionNotes": [
-        "pay_hp 归一为 modify_resource(hp,-3,delta,self)；不走伤害链语义以 note 标记，silent 标志待内核裁定",
-        "翻译/语义：代价面(自身撕肉)+亡语回血，与\"必须经常补充血肉\"闭环。依赖新增项 8/20。"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a torn lump of flesh sprouting limbs on the floor",
         "elements": [
@@ -1294,21 +1239,8 @@
           ]
         }
       ],
-      "unitDefs": [
-        {
-          "id": "unit_grazed_wraith",
-          "name": "被放牧的灵体",
-          "hpRatio": 0.4,
-          "atkRatio": 0.5,
-          "element": "mental",
-          "tags": [
-            "spirit"
-          ],
-          "note": "H1 召唤物基线模板实例"
-        }
-      ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：**放牧 payoff**：释放被放牧单位能力（此处落为外放灵体）。依赖新增项 1/7/9。",
+      "conversionNotes": "翻译/语义：**放牧 payoff**：释放被放牧单位能力（此处落为外放灵体）。依赖新增项 1/7/9。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a chained soul hurling itself from a supplicant's chest",
         "elements": [
@@ -1891,65 +1823,6 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_dark_sea",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 4,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_turn_start",
-            "effects": [
-              {
-                "type": "modify_stat",
-                "stat": "attack",
-                "value": 0.75,
-                "mode": "mul",
-                "duration": 1,
-                "target": "all_enemies",
-                "note": "吞噬攻势：作用在攻击方 damage_mul（不含本次入射），乘区表达待内核确认精确承载字段"
-              },
-              {
-                "type": "modify_stat",
-                "stat": "gauge.rate",
-                "value": 0.85,
-                "mode": "mul",
-                "duration": 1,
-                "target": "all_enemies"
-              },
-              {
-                "type": "mount_status",
-                "statusId": "concealed",
-                "duration": 1,
-                "target": "all_allies",
-                "note": "黑暗掩体：隐匿 1t 刷新；C8 候选池过滤承载（H5 母版参数实例）；statusId 依源稿 DomainDef 登记（mount_status(concealed, 1t)）由 concealed_domain_cover 修正为 concealed"
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "暗影",
-              "黑暗",
-              "污秽"
-            ],
-            "mul": 1.3
-          },
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "光",
-              "净化"
-            ],
-            "mul": 0.7
-          }
-        ]
-      },
       "tags": [
         "暗影",
         "黑暗",
@@ -1963,7 +1836,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：秽堕轴顶点：吞噬敌方攻势+隐蔽己方。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 5→2 tick（对齐拍板表）",
+      "conversionNotes": "翻译/语义：秽堕轴顶点：吞噬敌方攻势+隐蔽己方。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 5→2 tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "dimHooks": [
         {
           "dim": "luminance",
@@ -2160,22 +2033,8 @@
           ]
         }
       ],
-      "unitDefs": [
-        {
-          "id": "unit_fallen_kin",
-          "name": "堕落眷属",
-          "hpRatio": 0.25,
-          "atkRatio": 0.3,
-          "element": "mental",
-          "tags": [
-            "shadow",
-            "spirit"
-          ],
-          "note": "H1 召唤物基线模板实例；不占用同时驱使上限（与驱使灵魂两条独立约束）"
-        }
-      ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：牧魂轴顶点：强度取决于前中期攒的 `grazed_soul`。依赖新增项 1/9。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 2 tick（序列 1 档，基准 §三之二）",
+      "conversionNotes": "翻译/语义：牧魂轴顶点：强度取决于前中期攒的 `grazed_soul`。依赖新增项 1/9。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 2 tick（序列 1 档，基准 §三之二） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "twenty-two twisted soul-figures massing behind their releaser",
         "elements": [
@@ -2225,34 +2084,6 @@
           "position": "tail"
         }
       ],
-      "unitDefs": [
-        {
-          "id": "unit_abomination",
-          "name": "异变怪物",
-          "hpRatio": "动态（见卡面效果）",
-          "atkRatio": 0.7,
-          "element": "physical",
-          "tags": [
-            "shadow",
-            "spirit",
-            "flesh"
-          ],
-          "triggers": [
-            {
-              "event": "on_death",
-              "effects": [
-                {
-                  "type": "damage",
-                  "element": "physical",
-                  "value": 3,
-                  "target": "all_enemies"
-                }
-              ]
-            }
-          ],
-          "note": "H1 召唤物基线模板实例；用战场死亡总量喂养（血肉不灭质变的复活）"
-        }
-      ],
       "tentative": false,
       "frameworkFlags": [
         {
@@ -2261,7 +2092,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：凭空 spawn；用战场死亡总量喂养。依赖新增项 19。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 3 tick（序列 0 档，基准 §三之二）",
+      "conversionNotes": "翻译/语义：凭空 spawn；用战场死亡总量喂养。依赖新增项 19。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 3 tick（序列 0 档，基准 §三之二） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a monster assembling itself from corpses' stitched flesh",
         "elements": [
@@ -2323,6 +2154,167 @@
         ],
         "mood": "sacrificial, solemn"
       }
+    }
+  ],
+  "unitDefs": [
+    {
+      "id": "unit_shadow_spawn",
+      "name": "阴影生物",
+      "hpRatio": 0.35,
+      "atkRatio": 0.5,
+      "element": "dark",
+      "tags": [
+        "shadow"
+      ],
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 2,
+              "spread": "splash_adjacent",
+              "note": "亡语：对相邻敌方单位造成 2 点精神伤害（A2：只挂亡语，禁挂登场光环）"
+            }
+          ]
+        }
+      ],
+      "note": "H1 召唤物基线模板实例（新增项 20，已落）"
+    },
+    {
+      "id": "unit_flesh_servant",
+      "name": "血肉仆役",
+      "hpRatio": 0.5,
+      "atkRatio": 0.4,
+      "element": "physical",
+      "tags": [
+        "flesh"
+      ],
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 3,
+              "target": "caster",
+              "note": "仆役死了，血肉回到主人身上（F56 施法者引用）"
+            }
+          ]
+        }
+      ],
+      "note": "H1 召唤物基线模板实例；你召唤的不是灵体，是你自己的肉"
+    },
+    {
+      "id": "unit_grazed_wraith",
+      "name": "被放牧的灵体",
+      "hpRatio": 0.4,
+      "atkRatio": 0.5,
+      "element": "mental",
+      "tags": [
+        "spirit"
+      ],
+      "note": "H1 召唤物基线模板实例"
+    },
+    {
+      "id": "unit_fallen_kin",
+      "name": "堕落眷属",
+      "hpRatio": 0.25,
+      "atkRatio": 0.3,
+      "element": "mental",
+      "tags": [
+        "shadow",
+        "spirit"
+      ],
+      "note": "H1 召唤物基线模板实例；不占用同时驱使上限（与驱使灵魂两条独立约束）"
+    },
+    {
+      "id": "unit_abomination",
+      "name": "异变怪物",
+      "hpRatio": "动态（见卡面效果）",
+      "atkRatio": 0.7,
+      "element": "physical",
+      "tags": [
+        "shadow",
+        "spirit",
+        "flesh"
+      ],
+      "triggers": [
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "note": "H1 召唤物基线模板实例；用战场死亡总量喂养（血肉不灭质变的复活）"
+    }
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_dark_sea",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 4,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 0.75,
+              "mode": "mul",
+              "duration": 1,
+              "target": "all_enemies",
+              "note": "吞噬攻势：作用在攻击方 damage_mul（不含本次入射），乘区表达待内核确认精确承载字段"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 0.85,
+              "mode": "mul",
+              "duration": 1,
+              "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "concealed",
+              "duration": 1,
+              "target": "all_allies",
+              "note": "黑暗掩体：隐匿 1t 刷新；C8 候选池过滤承载（H5 母版参数实例）；statusId 依源稿 DomainDef 登记（mount_status(concealed, 1t)）由 concealed_domain_cover 修正为 concealed"
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "暗影",
+            "黑暗",
+            "污秽"
+          ],
+          "mul": 1.3
+        },
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "光",
+            "净化"
+          ],
+          "mul": 0.7
+        }
+      ]
     }
   ],
   "designNote": "> **v2 修订影响**：秘祈人由源堡移入混沌海，故\"寄生/血肉寄生\"与源堡偷盗者的同名主题变成**两个不同源质之间的共享**（跨源质联动，见 §三【蔷薇主教·改】）。本途径的「阴影/血肉/堕落」是**跨源质联动**语境（↔源堡偷盗者），而非组内 combo——v0.2 把寄生做成组内复刻是错误的，本版修正。\n> **混沌海系签名维度 = 放牧(Grazing)**：见下方维度说明，**秘祈人即该机制的写入方**。\n> 本途径是放牧的**承载者**：`放牧` 槽既是一条身份轴（③），也是全混沌海系跨系联动的地基（§三 枢纽状态 `crossPathway:true`）。",

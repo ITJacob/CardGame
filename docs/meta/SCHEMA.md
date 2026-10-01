@@ -6,7 +6,7 @@
 ```
 docs/json/
 ├─ manifest.json              全库索引
-├─ <pathway>.skills.json ×22  途径技能池
+├─ <pathway>.skills.json ×22  途径技能池（顶层含编目层三池：unitDefs 召唤单位 / zoneDefs 区域 / domainDefs 界域——2026-10-01 Def 编目独立化批由卡级内联迁至，同途径多卡共享）
 └─ schema/
    ├─ skills.schema.json      ← 本文档的机器可读版（JSON Schema draft 2020-12）
    └─ manifest.schema.json

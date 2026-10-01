@@ -830,24 +830,11 @@
      "unitId": "unit_nature_spirit"
     }
    ],
-   "unitDefs": [
-    {
-     "id": "unit_nature_spirit",
-     "name": "自然灵",
-     "unitType": "SPIRIT",
-     "base": {
-      "hpRatio": 1.0,
-      "atkRatio": null,
-      "reach": "melee"
-     },
-     "note": "H1 召唤物基线模板四参（hpRatio/atkRatio/reach/亡语载荷）；与 F25 unit_wraith 的 ID 冲突已裁决——wraith 归收尸人亡灵线（UNDEAD），本 ID 另立（SPIRIT）；数值 ⚠️D"
-    }
-   ],
    "sharedAcross": [
     "corpse_collector"
    ],
    "tentative": false,
-   "conversionNotes": "翻译/语义：安魂轴召唤地基（自然灵，与收尸人亡灵区分 ID）。 ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。",
+   "conversionNotes": "翻译/语义：安魂轴召唤地基（自然灵，与收尸人亡灵区分 ID）。 ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
    "art": {
     "subject": "a small spectral beast-spirit trailing pale cold light as it streaks across a dark battlefield toward a recoiling enemy",
     "elements": [
@@ -1130,107 +1117,13 @@
      }
     ]
    },
-   "domainDef": {
-    "id": "domain_night_realm",
-    "tier": "overlay",
-    "dispelable": true,
-    "duration": 4,
-    "durationUnit": "turn",
-    "triggers": [
-     {
-      "event": "on_tick",
-      "filter": {
-       "side": "enemy"
-      },
-      "effects": [
-       {
-        "type": "damage",
-        "element": "dark",
-        "value": 1
-       }
-      ]
-     },
-     {
-      "event": "on_turn_start",
-      "filter": {
-       "side": "ally"
-      },
-      "effects": [
-       {
-        "type": "modify_stat",
-        "stat": "defense",
-        "value": 0.85,
-        "mode": "mul",
-        "duration": 1,
-        "note": "黑暗护持：受伤 ×0.85（1t 刷新）"
-       }
-      ]
-     },
-     {
-      "event": "on_turn_start",
-      "filter": {
-       "side": "ally",
-       "unitType": [
-        "SPIRIT",
-        "UNDEAD"
-       ]
-      },
-      "effects": [
-       {
-        "type": "modify_stat",
-        "stat": "attack",
-        "value": 2,
-        "mode": "delta",
-        "duration": 1
-       }
-      ]
-     },
-     {
-      "event": "on_turn_start",
-      "filter": {
-       "side": "enemy"
-      },
-      "effects": [
-       {
-        "type": "modify_stat",
-        "stat": "gauge.rate",
-        "value": 0.9,
-        "mode": "mul",
-        "duration": 1,
-        "note": "步履维艰（1t 刷新，乘算 INV-S5 合规）"
-       }
-      ]
-     }
-    ],
-    "rulePatches": [
-     {
-      "kind": "empower",
-      "side": "both",
-      "tag": [
-       "暗影",
-       "梦境",
-       "灵体"
-      ],
-      "mul": 1.3
-     },
-     {
-      "kind": "empower",
-      "side": "both",
-      "tag": [
-       "光",
-       "净化"
-      ],
-      "mul": 0.7
-     }
-    ]
-   },
    "tags": [
     "暗影",
     "梦境",
     "灵体"
    ],
    "tentative": false,
-   "conversionNotes": "翻译/语义：暗夜轴旗舰主题界域；读 `夜幕` 给灵增益（payoff 一体）。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 2→1 tick（对齐拍板表）",
+   "conversionNotes": "翻译/语义：暗夜轴旗舰主题界域；读 `夜幕` 给灵增益（payoff 一体）。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 2→1 tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
    "art": {
     "subject": "pure darkness flooding outward from a watchman's feet",
     "elements": [
@@ -1553,30 +1446,8 @@
      ]
     }
    ],
-   "zoneDef": {
-    "id": "zone_nightmare_world",
-    "kind": "hazard",
-    "trigger": "on_occupy_tick",
-    "affects": "enemy_of_owner",
-    "duration": 4,
-    "effects": [
-     {
-      "type": "mount_status",
-      "statusId": "dream_depth",
-      "stacks": 1,
-      "stackMode": "add"
-     },
-     {
-      "type": "modify_stat",
-      "stat": "gauge.rate",
-      "value": 0.9,
-      "mode": "mul",
-      "duration": 2
-     }
-    ]
-   },
    "tentative": false,
-   "conversionNotes": "翻译/语义：梦魇轴渐进入睡旗舰，读 `灵梦` 深化。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 3→1 tick（对齐拍板表）",
+   "conversionNotes": "翻译/语义：梦魇轴渐进入睡旗舰，读 `灵梦` 深化。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 3→1 tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
    "art": {
     "subject": "a dream-world city dissolving as sleepers walk inside",
     "elements": [
@@ -2269,6 +2140,139 @@
     ],
     "mood": "sovereign, untouchable"
    }
+  }
+ ],
+ "unitDefs": [
+  {
+   "id": "unit_nature_spirit",
+   "name": "自然灵",
+   "unitType": "SPIRIT",
+   "base": {
+    "hpRatio": 1.0,
+    "atkRatio": null,
+    "reach": "melee"
+   },
+   "note": "H1 召唤物基线模板四参（hpRatio/atkRatio/reach/亡语载荷）；与 F25 unit_wraith 的 ID 冲突已裁决——wraith 归收尸人亡灵线（UNDEAD），本 ID 另立（SPIRIT）；数值 ⚠️D"
+  }
+ ],
+ "zoneDefs": [
+  {
+   "id": "zone_nightmare_world",
+   "kind": "hazard",
+   "trigger": "on_occupy_tick",
+   "affects": "enemy_of_owner",
+   "duration": 4,
+   "effects": [
+    {
+     "type": "mount_status",
+     "statusId": "dream_depth",
+     "stacks": 1,
+     "stackMode": "add"
+    },
+    {
+     "type": "modify_stat",
+     "stat": "gauge.rate",
+     "value": 0.9,
+     "mode": "mul",
+     "duration": 2
+    }
+   ]
+  }
+ ],
+ "domainDefs": [
+  {
+   "id": "domain_night_realm",
+   "tier": "overlay",
+   "dispelable": true,
+   "duration": 4,
+   "durationUnit": "turn",
+   "triggers": [
+    {
+     "event": "on_tick",
+     "filter": {
+      "side": "enemy"
+     },
+     "effects": [
+      {
+       "type": "damage",
+       "element": "dark",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "event": "on_turn_start",
+     "filter": {
+      "side": "ally"
+     },
+     "effects": [
+      {
+       "type": "modify_stat",
+       "stat": "defense",
+       "value": 0.85,
+       "mode": "mul",
+       "duration": 1,
+       "note": "黑暗护持：受伤 ×0.85（1t 刷新）"
+      }
+     ]
+    },
+    {
+     "event": "on_turn_start",
+     "filter": {
+      "side": "ally",
+      "unitType": [
+       "SPIRIT",
+       "UNDEAD"
+      ]
+     },
+     "effects": [
+      {
+       "type": "modify_stat",
+       "stat": "attack",
+       "value": 2,
+       "mode": "delta",
+       "duration": 1
+      }
+     ]
+    },
+    {
+     "event": "on_turn_start",
+     "filter": {
+      "side": "enemy"
+     },
+     "effects": [
+      {
+       "type": "modify_stat",
+       "stat": "gauge.rate",
+       "value": 0.9,
+       "mode": "mul",
+       "duration": 1,
+       "note": "步履维艰（1t 刷新，乘算 INV-S5 合规）"
+      }
+     ]
+    }
+   ],
+   "rulePatches": [
+    {
+     "kind": "empower",
+     "side": "both",
+     "tag": [
+      "暗影",
+      "梦境",
+      "灵体"
+     ],
+     "mul": 1.3
+    },
+    {
+     "kind": "empower",
+     "side": "both",
+     "tag": [
+      "光",
+      "净化"
+     ],
+     "mul": 0.7
+    }
+   ]
   }
  ],
  "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。不眠者经\"隐秘化/隐秘之地/无迹之影/隐秘权柄\"等 +1/次。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（暗夜/梦魇轴经收尸人·奴役间接受益）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，不眠者是主消费方之一。",

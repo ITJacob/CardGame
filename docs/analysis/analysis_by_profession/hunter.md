@@ -97,17 +97,17 @@
 
 **规模**：16 张技能（主动 11 / 被动 5）；稀有度分布：史诗×7、稀有×5、传说×4。
 
-**效果原语构成**（type，全量递归，共 36 处）：
+**效果原语构成**（type，全量递归，共 32 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 13 | 36.1% |
-| `damage` | 7 | 19.4% |
-| `modify_stat` | 6 | 16.7% |
-| `modify_resource` | 5 | 13.9% |
-| `dispel` | 1 | 2.8% |
-| `spawn` | 2 | 5.6% |
-| `domain` | 2 | 5.6% |
+| `mount_status` | 13 | 40.6% |
+| `damage` | 6 | 18.8% |
+| `modify_stat` | 4 | 12.5% |
+| `modify_resource` | 4 | 12.5% |
+| `dispel` | 1 | 3.1% |
+| `spawn` | 2 | 6.2% |
+| `domain` | 2 | 6.2% |
 
 **算子构成**（op，共 12 处）：
 
@@ -118,23 +118,23 @@
 | `repeat` | 1 |
 | `overlay` | 2 |
 
-**改动的属性（modify_stat，共 6 处）**：
+**改动的属性（modify_stat，共 4 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
-| `attack` | 4 |
-| `gauge.rate` | 2 |
+| `attack` | 3 |
+| `gauge.rate` | 1 |
 
-**改动的资源（modify_resource，共 5 处）**：
+**改动的资源（modify_resource，共 4 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
-| `gauge.current` | 2 |
 | `lost` | 2 |
+| `gauge.current` | 1 |
 | `shield` | 1 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `mount_status`(13)、`damage`(7)、`modify_stat`(6)；属性杠杆集中在 `attack`、`gauge.rate`，资源杠杆集中在 `gauge.current`、`lost`、`shield`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(13)、`damage`(6)、`modify_stat`(4)；属性杠杆集中在 `attack`、`gauge.rate`，资源杠杆集中在 `lost`、`gauge.current`、`shield`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **战争权柄**：全体敌人陷入战争狂热（6 tick）：攻击最近的任何单位（不分阵营，敌我不分）、攻击 +3、护甲 -5；男性目标受伤 ×1.15（男性权柄）。
 
