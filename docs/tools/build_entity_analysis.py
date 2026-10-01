@@ -26,6 +26,7 @@ PRIMITIVE_TYPES = {
     "snapshot", "restore_snapshot", "echo_last_skill", "gauge_shuffle",
     "status_shuffle", "modify_skill", "modify_status", "modify_targetability",
     "reveal", "grant_immunity", "take_control",
+    "set_luminance", "advance_clock",   # 光照度对（2026-09-21 落地，schema 声明 29）
 }
 DYNAMIC_TEMPLATES = {"killed_unit", "primary_target", "holder"}
 

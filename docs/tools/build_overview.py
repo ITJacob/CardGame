@@ -323,6 +323,12 @@ class Renderer:
             s = "重排行动条"
         elif t == "status_shuffle":
             s = "重排状态"
+        elif t == "set_luminance":
+            s = "光照度覆写 %s" % e.get("value")
+            if e.get("duration") is not None:
+                s += "（%d tick）" % e["duration"]
+        elif t == "advance_clock":
+            s = "推进时钟 %s tick" % e.get("ticks")
         else:
             s = str(t)
         if e.get("condition"):
