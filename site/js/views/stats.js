@@ -81,11 +81,36 @@ function renderSkillStats(view) {
   // 热图的行数据：pathwayId -> Map(维度取值 -> 计数)
   const rarityByPath = new Map(), seqByPath = new Map(), reachByPath = new Map(),
         selByPath = new Map(), hookByPath = new Map(), statByPath = new Map(),
-        resByPath = new Map(), elemByPath = new Map(), opByPath = new Map();
+        resByPath = new Map(), elemByPath = new Map(), opByPath = new Map(),
+        kindByPath = new Map(), energyByPath = new Map(), cdByPath = new Map(),
+        castByPath = new Map(), rankByPath = new Map(), genderByPath = new Map(),
+        depthByPath = new Map();
+  const byEnergy = new Map(), byCd = new Map(), byCast = new Map(),
+        byGender = new Map(), byDepth = new Map(), tagsTotal = new Map();
   for (const c of cards) {
     const p = c._pathway;
     bump(rarityByPath, p, c.rarity);
     bump(seqByPath, p, c.sequence);        // key 是 number，列定义同类型，见 seqCols
+    bump(kindByPath, p, c.kind);
+    // 费用三件套（energy / cooldown / castTime）同住在卡级 cost 对象上，只算主动卡——
+    // 全库主动卡 100% 带 cost（被动卡不带也不该带），缺 cost 的主动卡会被这里静默漏掉，
+    // 那是数据事故，页面不兜底
+    if (c.kind === 'active' && c.cost) {
+      if (c.cost.energy != null) { bump(byEnergy, 0, c.cost.energy); bump(energyByPath, p, c.cost.energy); }
+      if (c.cost.cooldown != null) { bump(byCd, 0, c.cost.cooldown); bump(cdByPath, p, c.cost.cooldown); }
+      if (c.cost.castTime != null) { bump(byCast, 0, c.cost.castTime); bump(castByPath, p, c.cost.castTime); }
+    }
+    if (c.gender) { bump(byGender, 0, c.gender); bump(genderByPath, p, c.gender); }
+    // 构筑深度特征（复选维度，一张卡可占多项）：升级阶梯 / 变体 / 跨序列共享 / 次要目标
+    const depthFeats = [];
+    if (c.upgradeLadder) depthFeats.push('带升级阶梯');
+    if (c.variants) depthFeats.push('带变体');
+    if (c.sharedAcross) depthFeats.push('跨序列共享');
+    if (c.secondaryTargets) depthFeats.push('带次要目标');
+    for (const f of depthFeats) { bump(byDepth, 0, f); bump(depthByPath, p, f); }
+    for (const t of c.tags || []) {
+      tagsTotal.set(t, (tagsTotal.get(t) || 0) + 1);
+    }
     // 距离 / 选靶 / 触发点三个维度的口径与同组的条形图逐字一致，别在这里换判据：
     // 选靶用 c.target 判存在（而不是 c.kind === 'active'）——有一张被动卡
     // （skill_prisoner_s6_corpse_handler）带 target，换个判据两张图会差 1，反而像 bug
@@ -112,8 +137,19 @@ function renderSkillStats(view) {
           bump(elemByPath, p, n.element);
         }
       }
+      // 位格承载（稀疏先行维度）：stat_compare(key=rank) 谓词 + modify_stat(rank)。
+      // 位格没有独立卡面字段，承载全埋在效果节点里——零新谓词裁定（rank 走 stat_compare）
+      if (n.condition?.kind === 'stat_compare' && n.condition.key === 'rank') {
+        bump(rankByPath, p, 'stat_compare 谓词');
+      }
+      if (n.type === 'modify_stat' && n.stat === 'rank') {
+        bump(rankByPath, p, 'modify_stat');
+      }
     });
   }
+  // 有序刻度（费用/冷却/吟唱）的 bar 行数据：上面为走 bump 统一成 行 0 的矩阵，
+  // 这里摊平回 取值→计数
+  const flat = (m) => m.get(0) || new Map();
 
   // 途径×原语热图（列按总用量降序，折叠取前 HEAT_TOP_COLS 列）
   // 存成 {key,label,title} 而不是裸 key 字符串：两张原语热图（绝对用量 + 行内占比）共用，
@@ -170,6 +206,11 @@ function renderSkillStats(view) {
     return { key: s, label: `序列 ${s}`, title: `序列 ${s}` };
   });
   const rarityCols = DB.rarityOrder.map((r) => ({ key: r, label: zh('rarity', r), title: r }));
+  // 有序刻度列（费用 / 冷却 / 吟唱）：数值升序，折掉的是大数值端，提示语措辞跟着改。
+  // 与状态页 scaleCols 同规则，本地一份是因为列格式（单位后缀）各组不同
+  const scaleCols = (m, suffix) => [...new Set([...m.values()].flatMap((r) => [...r.keys()]))]
+    .sort((a, b) => a - b)
+    .map((k) => ({ key: k, label: `${k}${suffix}`, title: String(k) }));
 
   const rarityGroup = group('卡池结构 · 稀有度',
     barPanel('稀有度分布', DB.rarityOrder.map((r) => ({ label: zh('rarity', r), title: r, value: byRarity.get(r) || 0 }))),
@@ -178,6 +219,18 @@ function renderSkillStats(view) {
   const seqGroup = group('卡池结构 · 序列',
     barPanel('序列位阶分布', [...Array(10)].map((_, i) => 9 - i).map((s) => ({ label: `序列 ${s}`, value: bySeq.get(s) || 0 }))),
     heatOf('途径 × 序列', seqByPath, seqCols, { orderNote: '序列最高的 ', unit: ' 张' }));
+
+  const kindGroup = group('卡池结构 · 卡型',
+    barPanel('主动 / 被动', sortedRows(byKind, (k) => zh('cardKind', k))),
+    heatOf('途径 × 卡型', kindByPath, colsOf(byKind, 'cardKind'), { unit: ' 张' }));
+
+  const depthGroup = group('卡池结构 · 构筑深度',
+    barPanel('构筑深度特征分布', sortedRows(flat(byDepth)),
+      `<p class="panel-note muted">复选维度，一张卡可占多项：跨序列共享（sharedAcross）是同一张卡
+      服务多个序列位阶的重复构件；升级阶梯 / 变体是卡内的数值档体系。</p>`),
+    heatOf('途径 × 构筑深度特征', depthByPath,
+      sortedRows(flat(byDepth)).map((r) => ({ key: r.title, label: r.label, title: r.title })),
+      { unit: ' 张' }));
 
   const declared = DB.declaredPrimitives.length;
   const primGroup = group('构件面 · 原语',
@@ -194,6 +247,13 @@ function renderSkillStats(view) {
     barPanel('算子用量', sortedRows(opTotal, (k) => zh('operator', k))),
     heatOf('途径 × 算子', opByPath, colsOf(opTotal, 'operator')));
 
+  const tagsGroup = group('构件面 · 卡面标签',
+    barPanel('卡面标签 Top 20', sortedRows(new Map([...tagsTotal.entries()]
+      .sort((a, b) => b[1] - a[1]).slice(0, 20))),
+      `<p class="panel-note muted">tags 是自由词表而非封闭枚举：全库共 ${tagsTotal.size} 种
+      / ${[...tagsTotal.values()].reduce((a, b) => a + b, 0)} 处（域 rulePatches 的 tag 匹配、
+      条件谓词 target_has_tag 都消费它）。此处只列前 20 种，不画热图——长尾词表的热图全是空格。</p>`));
+
   const statGroup = group('数值面 · 属性（modify_stat）',
     barPanel('modify_stat 属性分布', sortedRows(statCount, (k) => zh('stat', k))),
     heatOf('途径 × modify_stat 属性', statByPath, colsOf(statCount, 'stat')));
@@ -205,6 +265,35 @@ function renderSkillStats(view) {
   const elemGroup = group('数值面 · 伤害元素',
     barPanel('伤害元素分布', sortedRows(elemCount, (k) => zh('element', k))),
     heatOf('途径 × 伤害元素', elemByPath, colsOf(elemCount, 'element')));
+
+  const energyGroup = group('费用面 · 能量（cost.energy）',
+    barPanel('能量费用分布（主动卡，有序刻度）', sortedRows(flat(byEnergy), (k) => `${k} 能`, { byKey: true })),
+    heatOf('途径 × 能量费用（只算主动卡）', energyByPath, scaleCols(energyByPath, ' 能'),
+      { unit: ' 张', orderNote: '数值最小的 ' }));
+
+  const cdGroup = group('费用面 · 冷却（cost.cooldown）',
+    barPanel('冷却分布（主动卡，有序刻度）', sortedRows(flat(byCd), (k) => `${k} cd`, { byKey: true }),
+      `<p class="panel-note muted">cd 0 = 无冷却（一次性或被动触发类）。</p>`),
+    heatOf('途径 × 冷却（只算主动卡）', cdByPath, scaleCols(cdByPath, ' cd'),
+      { unit: ' 张', orderNote: '数值最小的 ' }));
+
+  const castGroup = group('费用面 · 吟唱（cost.castTime）',
+    barPanel('吟唱分布（主动卡，有序刻度）', sortedRows(flat(byCast), (k) => (k ? `${k} tick` : '瞬发（0）'), { byKey: true }),
+      `<p class="panel-note muted">brief §13：序列 7–5 即时技能默认 0（瞬发）不标；序列 4 以上
+      或仪式类必标。可被「免吟唱」免除、被控制打断。</p>`),
+    heatOf('途径 × 吟唱（只算主动卡）', castByPath, scaleCols(castByPath, ' tick'),
+      { unit: ' 张', orderNote: '数值最小的 ' }));
+
+  // rank 的行数据直接按途径 bump（与其他热图一致），bar 需先摊平成全库计数
+  const rankFlat = new Map();
+  for (const r of rankByPath.values()) for (const [k, v] of r) rankFlat.set(k, (rankFlat.get(k) || 0) + v);
+  const rankGroup = group('数值面 · 位格（rank）',
+    barPanel('位格承载分布', sortedRows(rankFlat),
+      `<p class="panel-note muted">位格没有独立卡面字段（零新谓词裁定：rank 走 stat_compare），
+      承载全埋在效果节点里——当前全库仅 ${[...rankFlat.values()].reduce((a, b) => a + b, 0)} 处，
+      是「能力先行」的稀疏维度，等位格体系铺卡后会涨。</p>`),
+    heatOf('途径 × 位格承载', rankByPath,
+      sortedRows(rankFlat).map((r) => ({ key: r.title, label: r.label, title: r.title }))));
 
   const reachGroup = group('目标面 · 攻击距离',
     barPanel('攻击距离（主动卡）', sortedRows(byReach, (k) => zh('reach', k))),
@@ -218,16 +307,23 @@ function renderSkillStats(view) {
     barPanel('被动触发点分布', sortedRows(byHook, (k) => zh('triggerEvent', k))),
     heatOf('途径 × 被动触发点（只算被动卡）', hookByPath, colsOf(byHook, 'triggerEvent'), { unit: ' 张' }));
 
+  const genderGroup = group('身份面 · 性别',
+    barPanel('卡级 gender 字段分布', sortedRows(flat(byGender), (k) => zh('gender', k)),
+      `<p class="panel-note muted">gender_shift / gender_is 谓词当前零使用；卡级字段也仅
+      ${[...flat(byGender).values()].reduce((a, b) => a + b, 0)} 张标注——性别机制已登记（v0.3），
+      等第一批承载卡。</p>`),
+    heatOf('途径 × 性别', genderByPath, colsOf(flat(byGender), 'gender'), { unit: ' 张' }));
+
   // 导语放在页面顶部而不是某一组里：口径两族、色阶独立这两条对 bar 与热图都成立
   view.innerHTML = `<p class="panel-note muted">本页<b>一个维度一组</b>：组内先全库 bar、再该维度的「途径 × 维度」热图。
     热图共用一套读法——行 = ${pathways.length} 个途径，列 = 该维度的取值，格 = 计数
     （只有「原语 构成」那张是行内归一化后的 %）。同组的 bar 与热图<b>口径相同</b>：bar 各段之和
-    = 该组热图各行的合计；跨组不是一回事——属性 / 资源 / 元素 / 算子 / 原语按<b>效果节点</b>计，
-    稀有度 / 序列 / 距离 / 选靶 / 触发点按<b>卡</b>计。每张图的色阶各自独立（上限取本图最大值），
-    跨图比颜色没有意义——要比就比格内数字。行序一律是 manifest 途径顺序；列序是各自的用量或
-    刻度顺序，悬停表头看原始 key。状态定义口径见「状态」子页，编目三池（召唤物 / 区域 / 界域）
-    见各自子页——本页各组均不含它们。</p>
-    ${overview}${rarityGroup}${seqGroup}${primGroup}${opGroup}${statGroup}${resGroup}${elemGroup}${reachGroup}${selGroup}${hookGroup}`;
+    = 该组热图各行的合计；跨组不是一回事——属性 / 资源 / 元素 / 算子 / 原语 / 位格按<b>效果节点</b>计，
+    稀有度 / 序列 / 卡型 / 费用 / 冷却 / 吟唱 / 性别 / 构筑深度按<b>卡</b>计。每张图的色阶各自独立
+    （上限取本图最大值），跨图比颜色没有意义——要比就比格内数字。行序一律是 manifest 途径顺序；
+    列序是各自的用量或刻度顺序，悬停表头看原始 key。状态定义口径见「状态」子页，编目三池
+    （召唤物 / 区域 / 界域）见各自子页——本页各组均不含它们。</p>
+    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${primGroup}${opGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${energyGroup}${cdGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${hookGroup}${genderGroup}`;
 
   // 窄屏展开全部列；桌面端该开关不显示（CSS 隐藏），勾选状态无副作用
   wireHeatToggle(view);
