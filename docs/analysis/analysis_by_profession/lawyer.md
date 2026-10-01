@@ -136,19 +136,19 @@
 
 **规模**：16 张技能（主动 11 / 被动 5）；稀有度分布：稀有×6、传说×5、史诗×4、精良×1。
 
-**效果原语构成**（type，全量递归，共 36 处）：
+**效果原语构成**（type，全量递归，共 40 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 19 | 52.8% |
-| `damage` | 6 | 16.7% |
-| `modify_stat` | 4 | 11.1% |
-| `modify_resource` | 2 | 5.6% |
-| `dispel` | 1 | 2.8% |
-| `move` | 1 | 2.8% |
-| `domain` | 1 | 2.8% |
-| `gauge_shuffle` | 1 | 2.8% |
-| `status_shuffle` | 1 | 2.8% |
+| `mount_status` | 19 | 47.5% |
+| `damage` | 6 | 15.0% |
+| `modify_stat` | 4 | 10.0% |
+| `modify_resource` | 6 | 15.0% |
+| `dispel` | 1 | 2.5% |
+| `move` | 1 | 2.5% |
+| `domain` | 1 | 2.5% |
+| `gauge_shuffle` | 1 | 2.5% |
+| `status_shuffle` | 1 | 2.5% |
 
 **算子构成**（op，共 10 处）：
 
@@ -166,15 +166,16 @@
 | `gauge.rate` | 2 |
 | `attack` | 2 |
 
-**改动的资源（modify_resource，共 2 处）**：
+**改动的资源（modify_resource，共 6 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
+| `order` | 4 |
 | `lost` | 1 |
 | `shield` | 1 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `mount_status`(19)、`damage`(6)、`modify_stat`(4)；属性杠杆集中在 `gauge.rate`、`attack`，资源杠杆集中在 `lost`、`shield`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(19)、`damage`(6)、`modify_resource`(6)；属性杠杆集中在 `gauge.rate`、`attack`，资源杠杆集中在 `order`、`lost`、`shield`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **独裁者**：被动：整场战斗中——你施加的单体减益额外蔓延到目标相邻的敌人；你击杀敌人时偷取其 1 个增益且该敌人无法复活；位格低于你的敌人对你造成的伤害 ×0.8。；自身带镜子替身则镜中独裁，追加 2 点精神伤害。
 
