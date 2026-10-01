@@ -250,8 +250,10 @@ export function renderCardDetail(view, id) {
 
       ${(unitDefsHtml(c) || zoneDomainHtml(c) || miscHtml(c)) ? `<section class="cs-sec"><h2>附加定义</h2>${unitDefsHtml(c)}${zoneDomainHtml(c)}${miscHtml(c)}</section>` : ''}
 
-      ${c.frameworkFlags?.length ? `<section class="cs-sec"><h2 class="warn-text">框架缺口</h2>
-        ${c.frameworkFlags.map((f) => `<div class="warn-text">⚠ ${escapeHtml(typeof f === 'string' ? f : JSON.stringify(f))}</div>`).join('')}</section>` : ''}
+      ${c.frameworkFlags?.some((f) => f && f.landed !== true) ? `<section class="cs-sec"><h2 class="warn-text">框架缺口</h2>
+        ${c.frameworkFlags.filter((f) => f && f.landed !== true).map((f) => `<div class="warn-text">⚠ ${escapeHtml(typeof f === 'string' ? f : JSON.stringify(f))}</div>`).join('')}</section>` : ''}
+      ${c.frameworkFlags?.some((f) => f && f.landed === true) ? `<section class="cs-sec"><h2>框架登记（已落地）</h2>
+        ${c.frameworkFlags.filter((f) => f && f.landed === true).map((f) => `<div class="muted">✓ ${escapeHtml((f.code || '') + (f.note ? '：' + f.note : ''))}</div>`).join('')}</section>` : ''}
       ${c.conversionNotes ? `<section class="cs-sec"><h2>转换备注</h2>
         ${[].concat(c.conversionNotes).map((n) => `<div class="muted">${escapeHtml(n)}</div>`).join('')}</section>` : ''}
     </div>
