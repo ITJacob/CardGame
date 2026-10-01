@@ -253,7 +253,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `comparator` | `>=`\|`<=`\|`>`\|`<`\|`==` | 阈值比较符，默认 `>=` |
 | `threshold` | number | 触发阈值，须在维度值域内（secrecy/order/luminance ∈ [0,10]、fate_value ∈ [−10,10]） |
 | `mul` | number>0 | 乘区系数；单卡建议 0.8–1.5，超限需 `note` 说明（2026-10-01 乘区审批批 182 项全量过堂） |
-| `target` | `damage`\|`damage_taken`\|`heal`\|`resource`\|`rule_strength`\|`all` | 乘区作用目标，默认 `damage` |
+| `target` | `damage`\|`damage_taken`\|`heal`\|`resource`\|`rule_strength`\|`cost`\|`all` | 乘区作用目标，默认 `damage`；`cost`=折费（支付阶段读 board 维度、能量费乘 mul，2026-10-01 时空迷宫批开通） |
 | `filterTags` | string[] | 仅当本卡带其一 tag 才生效（如 secrecy 要求 tag∈{愚弄,隐秘,conceal}） |
 | `note` | string | 口径说明，mul 超限或非常规时必填 |
 
