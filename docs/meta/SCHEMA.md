@@ -164,7 +164,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `modify_stat` | `stat` `value` `mode`(delta/set/mul/to_at_least) `duration` | 无宿主、不可驱散；要可见/可驱散用 mount_status |
 | `modify_resource` | `resource` `value` `mode` | `hp/energy/shield/armor/lost/gauge.current` |
 | `move` | `op` `distance` | 7 种 op |
-| `spawn` | `unitId`/`unit`/`template` `position` `hpRatio` `reviveOf` | 复活走 `reviveOf`，不新增原语（G4） |
+| `spawn` | `unitId`/`template` `position` `hpRatio` `reviveOf` | 复活走 `reviveOf`，不新增原语（G4）；键名裁定 2026-10-01：unitId=静态引用唯一正键、template=动态模板，原 `unit` 键已撤（单位定义见 ddd 召唤物参数.md） |
 | `dispel` | `dispelTarget`(unit/domain) `filter` `category` `count` | 只作用于 StatusInstance（INV-P7） |
 | `drain` | `resource` `value` `healRatio` | |
 | `domain` | `op`(overlay/swap/hero) `def` `duration` | 界域三件套 |

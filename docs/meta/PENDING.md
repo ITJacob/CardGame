@@ -62,6 +62,17 @@
 
 **状态 53 处**：threshold payoff「强度待平衡期逐条审批」样板（assassin 10 / pryer 8 / savant 8 / planter 7 / hunter 5 / prisoner 5 / common 4 / criminal 2）+ 枢纽持续/伤害数值待平衡（apothecary 1 / arbiter 1 / chanter 1 / lawyer 1）。
 
+### 召唤物数值待平衡（2026-10-01 召唤物批登记，ddd 召唤物参数.md §二 ⚠️D 全表）
+
+> 结构已落盘（unitType 12 值定稿 + 36 具名单位归属 + 合成公式 + per-spawn 覆盖裁定），欠账全是数值：
+
+- **H1 基线档 12 行**：各 unitType 的 hp/atk/reach/亡语默认 ⚠️D（骷髅 hp12/atk3、活尸 hp24/atk2、亡魂 hp16/atk4、橡树之子 ≈20 血为仅有的卡面锚点，已收编）。
+- **36 具名单位逐条**：每单位 hp/atk base 实填 + 特殊载荷数值（魔像 armor+5、异变成长系数、壁钟推条量、人偶材质 5 档等）——逐条审批入口见 ddd 召唤物参数.md §一归属表。
+- **reach 远程召唤物档**：现全默认近战，远程档平衡期再开。
+- **shadow_spawn 归类复议**：ILLUSION vs SPIRIT（ddd §一已标注）。
+- **数据侧欠账**：全局 summon_cap 仅秘祈人放牧系铺设（H39 语义已裁，各途径按体系补）；companionBuff（F54）零卡使用，待首张卡。
+- **克制数值**：现有克制卡（晨曦领域/安魂/灵性材料辨识/海洋之歌/灵肉之刃等，清单见 ddd §四）的克制乘区数值随 H4 过滤族同轮审批；水手「闪电克亡灵」flavor 待出卡。
+
 ### 量表写入侧（2026-10-01 量表批：写入与折费均已挂，本节闭环）
 
 > 读取侧（dimHook/phaseHook）已全量结构化落地（88 段）；写入侧原语（modify_resource.resource 增 secrecy/order/fate_value）与卡面写入 2026-10-01 同批落地（target board 锚点同批登记）：
