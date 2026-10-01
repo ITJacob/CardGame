@@ -62,13 +62,12 @@
 
 **状态 53 处**：threshold payoff「强度待平衡期逐条审批」样板（assassin 10 / pryer 8 / savant 8 / planter 7 / hunter 5 / prisoner 5 / common 4 / criminal 2）+ 枢纽持续/伤害数值待平衡（apothecary 1 / arbiter 1 / chanter 1 / lawyer 1）。
 
-### 量表写入侧待挂（2026-10-01 量表批登记）
+### 量表写入侧（2026-10-01 量表批：写入已挂 / 折费缺口仍待）
 
-> 读取侧（dimHook/phaseHook）已全量结构化落地（88 段）；写入侧本轮只通了**原语**（modify_resource.resource 增 secrecy/order/fate_value，SCHEMA.md/效果参数 已同步），卡面写入为下批待挂：
+> 读取侧（dimHook/phaseHook）已全量结构化落地（88 段）；写入侧原语（modify_resource.resource 增 secrecy/order/fate_value）与卡面写入 2026-10-01 同批落地（target board 锚点同批登记）：
 
-- **order 写入**：仲裁人律令套（立规/辖区/律令系，+1/次）与律师熵蚀套（扭曲/熵系，−1/次）卡面加 `modify_resource(order,±N)`——当前 0 卡写入，秩序度永不变化，7 张 dimHook order 读取是死 text。
-- **fate_value 写入**：怪物命运套（命运之轮/命运潮汐/命运循环等，±1/次）卡面加 `modify_resource(fate_value,±N)`——当前 0 卡写入（怪物为 ddd 登记唯一写入方）；7 张 dimHook fate 读取同理死 text。
-- **secrecy 写入**：已走结算层规则（tag∈{愚弄,隐秘,conceal} 效果结算 +1，cap 10），**无需卡面改动**（源质维度 §二）。
+- ✅ **order 写入已挂（2026-10-01）**：仲裁人立规/辖区/律令 +1、底层规则 +2，律师扭曲/熵/利用 −1、秩序崩坏 set 0（共 8 卡）。
+- ✅ **fate_value 写入已挂（2026-10-01）**：怪物命运之轮/命运启示 +1、命运循环 −1（共 3 卡；怪物为 ddd 登记唯一写入方）。
 - **dimHook cost 目标缺口**：折费类收益（时空迷宫「隐秘值≥7 折费」）无承载——dimHook target 枚举（damage/damage_taken/heal/resource/rule_strength/all）不含 cost；若下批要落折费，需扩 target 或改表达。
 
 ### 公有轴身份私有化（2026-09-27 起）

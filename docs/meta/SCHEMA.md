@@ -138,9 +138,9 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 `none` `hp_asc` `hp_desc` `atk_asc` `atk_desc` `index_asc` `index_desc` `energy_desc` `armor_desc` `buff_count_desc` `debuff_count_desc` `gauge_asc` `gauge_desc` `stat_max_desc`
 
-**effect 级 target 锚点**（效果内二次寻址，23 个封闭值）：
+**effect 级 target 锚点**（效果内二次寻址，24 个封闭值）：
 
-`self` `caster` `target` `primary_target` `same_target` `secondary_target` `attacker` `holder` `status_holder` `killed_unit` `all_allies` `allies_except_self` `all_enemies` `all_other_enemies` `all_units` `all` `adjacent_enemy` `enemy` `occupant_ally` `occupant_enemy` `splash_adjacent` `splash_behind` `one_own_snare_trap`
+`self` `caster` `target` `primary_target` `same_target` `secondary_target` `attacker` `holder` `status_holder` `killed_unit` `all_allies` `allies_except_self` `all_enemies` `all_other_enemies` `all_units` `all` `adjacent_enemy` `enemy` `occupant_ally` `occupant_enemy` `splash_adjacent` `splash_behind` `one_own_snare_trap` `board`
 
 ## 5. 效果模型（effect）
 

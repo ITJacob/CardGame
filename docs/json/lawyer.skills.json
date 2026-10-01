@@ -615,7 +615,7 @@
       "flagship": false,
       "lore": "序列6 腐化男爵 —— \"『扭曲』：扭曲目标语言/行动/意图含义，构建有利秩序\"",
       "flavor": "它抬起手想把你撕碎——可\"撕碎\"这个词在你嘴里转了一圈，落到它同伴身上去了。",
-      "describe": "使一名敌人的下次攻击转打其自身阵营（持续 4 tick，触发 1 次后失效），并造成 2 点精神伤害。；若目标带提线木偶，扭曲提线，追加 2 点无属性伤害。",
+      "describe": "使一名敌人的下次攻击转打其自身阵营（持续 4 tick，触发 1 次后失效），并造成 2 点精神伤害。；若目标带提线木偶，扭曲提线，追加 2 点无属性伤害。；秩序被扭曲：战场秩序度 -1。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -674,12 +674,21 @@
             }
           ],
           "else": []
+        },
+        {
+          "type": "modify_resource",
+          "resource": "order",
+          "value": -1,
+          "mode": "delta",
+          "target": "board",
+          "note": "秩序度写入（2026-10-01 量表写入批）：规则扭曲秩序 -1（律师压低）。"
         }
       ],
       "tentative": false,
       "conversionNotes": [
         "翻译/语义：**僭越轴灵魂 enabler**：把 v0.2 单体 `target_override` 升级为**改写规则槽的 trigger**（共享棋盘操作）。改规同时压秩序度 −1。依赖 `modify_rule_slot` 算子（ddd 已落）。",
-        "2026-09-19 规则槽迁移：已补 modify_rule_slot(slot:0, field:'trigger')，与 arbiter【立规】/ savant【规律权柄】同为加性迁移。⚠️ 原稿『改规同时压秩序度 −1』**无原语承载**——modify_resource.resource 枚举仅 hp/energy/shield/armor/lost/gauge.current，board 维度 order 的写入侧尚无算子（读侧已由 dimHook 落地），维持已知缺口不臆造。"
+        "2026-09-19 规则槽迁移：已补 modify_rule_slot(slot:0, field:'trigger')，与 arbiter【立规】/ savant【规律权柄】同为加性迁移。⚠️ 原稿『改规同时压秩序度 −1』**无原语承载**——modify_resource.resource 枚举仅 hp/energy/shield/armor/lost/gauge.current，board 维度 order 的写入侧尚无算子（读侧已由 dimHook 落地），维持已知缺口不臆造。",
+        "秩序度写入（2026-10-01 量表写入批）：规则扭曲秩序 -1（律师压低）。"
       ],
       "art": {
         "subject": "a lawyer twisting a spoken word in mid-air like a wrung cloth",
@@ -949,7 +958,7 @@
       "flagship": false,
       "lore": "序列4 堕落伯爵 —— \"篡改/增加/利用规则，营造有利战斗环境\"",
       "flavor": "你什么都没定。你只是把已经写在它身上的那些条文，一条条勒紧了——它倚仗的越多，勒得越深。",
-      "describe": "使一名敌人被规则反勒 4 tick：其每持有 1 个增益状态，受到的伤害 +10%（至多 +40%）。；利用即扭曲规则（扭曲 4 tick，1 次）。",
+      "describe": "使一名敌人被规则反勒 4 tick：其每持有 1 个增益状态，受到的伤害 +10%（至多 +40%）。；利用即扭曲规则（扭曲 4 tick，1 次）。；规则被反勒：战场秩序度 -1。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -977,10 +986,18 @@
           "charges": 1,
           "duration": 4,
           "note": "利用即扭曲规则（环节⑤ 2026-09-29 补产层段）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "order",
+          "value": -1,
+          "mode": "delta",
+          "target": "board",
+          "note": "秩序度写入（2026-10-01 量表写入批）：扭曲规则秩序 -1。"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：**僭越轴定义性落地**：把规则 punish 加倍（操作棋盘）+\"利用对手优势反勒\"双效。压秩序度 −1。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：**僭越轴定义性落地**：把规则 punish 加倍（操作棋盘）+\"利用对手优势反勒\"双效。压秩序度 −1。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；秩序度写入（2026-10-01 量表写入批）：扭曲规则秩序 -1。",
       "art": {
         "subject": "a lawyer tightening invisible cords already knotted around a giant",
         "elements": [
@@ -1626,7 +1643,7 @@
       "flagship": false,
       "lore": "序列2 熵之公爵 —— \"部分『混乱』权柄→『熵』：战斗越久，敌人能力/思维/状态越随机混乱\"",
       "flavor": "熵是会蔓延的。它从一个人身上开始，然后顺着队列爬过去——拖得越久，爬得越远。",
-      "describe": "使一名敌人染上熵蚀（1 层，持续 4 tick）：每 tick 向相邻敌方单位蔓延 1 层（每单位至多 3 层）——拖得越久，被卷入的单位越多。",
+      "describe": "使一名敌人染上熵蚀（1 层，持续 4 tick）：每 tick 向相邻敌方单位蔓延 1 层（每单位至多 3 层）——拖得越久，被卷入的单位越多。；熵蚀蔓延：战场秩序度 -1。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1648,6 +1665,14 @@
           "statusId": "entropy_decay",
           "stacks": 1,
           "duration": 4
+        },
+        {
+          "type": "modify_resource",
+          "resource": "order",
+          "value": -1,
+          "mode": "delta",
+          "target": "board",
+          "note": "秩序度写入（2026-10-01 量表写入批）：熵蚀污染秩序 -1。"
         }
       ],
       "sharedAcross": [
@@ -1656,7 +1681,8 @@
       "conversionNotes": [
         "共享为稿面「谨慎」项：entropy_decay 是通用登记状态（F18），非本途径私有；「扩散」是本途径新增语义，共享前需确认状态定义归属公共 catalog",
         "翻译/语义：**熵蚀轴灵魂卡**：扩散=熵增（确定性，无随机）。每层压秩序度，失序态（≤3）再自动 +1 层。",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+        "2026-10-01 吟唱重标：非仪式，castTime 空→0",
+        "秩序度写入（2026-10-01 量表写入批）：熵蚀污染秩序 -1。"
       ],
       "tentative": false,
       "art": {
@@ -1923,7 +1949,7 @@
       "flagship": false,
       "lore": "序列0 黑皇帝 —— \"大部分『混乱』权柄：让秩序和规则本身陷入混乱 / 能让世界底层规则出现扭曲和混乱\"",
       "flavor": "你把这两样东西——\"谁先动手\"和\"谁担着什么\"——同时扔进了粉碎机。于是最先出手的那个忽然沉默了，而最慢的那个已经冲到了你面前。",
-      "describe": "敌方全体秩序崩坏：其行动条进度按集合守恒重新分配（总量不变、归属打乱），且每个敌人与相邻敌人按序轮转交换 1 个状态。；若自身扭曲在场，扭曲加速崩坏，全体敌方额外受 2 点无属性伤害。",
+      "describe": "敌方全体秩序崩坏：其行动条进度按集合守恒重新分配（总量不变、归属打乱），且每个敌人与相邻敌人按序轮转交换 1 个状态。；若自身扭曲在场，扭曲加速崩坏，全体敌方额外受 2 点无属性伤害。；战场秩序度归零（崩坏）。",
       "cost": {
         "energy": 6,
         "cooldown": 8,
@@ -1976,13 +2002,22 @@
               "else": []
             }
           ]
+        },
+        {
+          "type": "modify_resource",
+          "resource": "order",
+          "value": 0,
+          "mode": "set",
+          "target": "board",
+          "note": "秩序度写入（2026-10-01 量表写入批）：秩序崩坏 = set 0（拉平全场规则强度，dimHook order 读取随之失效）。"
         }
       ],
       "conversionNotes": [
         "R5 合规声明（关键）：gauge_shuffle 不是随机生成行动条数值，是把已有的一组数重新分配——集合守恒，不产生任何新的随机量",
         "不改任何数值、不造成任何伤害，却把对手一整局的节奏规划全部作废——「不参与秩序，而是让秩序失效」",
         "翻译/语义：僭越轴终焉：清空规则槽+重排秩序，把对手节奏规划连根拔起。**`秩序度=0` 时才可满效**（与仲裁人 `底层规则` 对位）。R5 合规（集合守恒重排，非随机生成）。",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+        "2026-10-01 吟唱重标：非仪式，castTime 空→0",
+        "秩序度写入（2026-10-01 量表写入批）：秩序崩坏 = set 0（拉平全场规则强度，dimHook order 读取随之失效）。"
       ],
       "frameworkFlags": [
         {

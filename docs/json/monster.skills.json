@@ -1536,7 +1536,7 @@
       "flagship": false,
       "lore": "序列2 先知 —— \"命运启示\"",
       "flavor": "开战前你已看过这一战的开头——全队都比对手先迈出了半步。",
-      "describe": "战斗开始时（一次性）：己方全体行动条 +10。",
+      "describe": "战斗开始时（一次性）：己方全体行动条 +10。；启示乍现：战场命运值 +1。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1546,6 +1546,14 @@
           "mode": "delta",
           "target": "all_allies",
           "note": "F59 ALL_ALLIES scope（共享内核 §一 scope: all + faction 过滤，H18）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "fate_value",
+          "value": 1,
+          "mode": "delta",
+          "target": "board",
+          "note": "命运值写入（2026-10-01 量表写入批）：战斗开始时一次性 +1。"
         }
       ],
       "sharedAcross": [],
@@ -1568,7 +1576,8 @@
           "first light of dawn"
         ],
         "mood": "assured, prophetic"
-      }
+      },
+      "conversionNotes": "命运值写入（2026-10-01 量表写入批）：战斗开始时一次性 +1。"
     },
     {
       "id": "skill_monster_s2_mercury_form",
@@ -1620,7 +1629,7 @@
       "flagship": false,
       "lore": "序列1 水银之蛇 —— \"『命运循环』：让人陷入时间循环往复状态\"",
       "flavor": "你把它锁进了同一段循环里——它一次次冲到终点，然后又一次次回到起点。",
-      "describe": "使一名敌人陷入循环 5 tick：行动条阈值 +60（近乎永远攒不满，等效原地打转）。",
+      "describe": "使一名敌人陷入循环 5 tick：行动条阈值 +60（近乎永远攒不满，等效原地打转）。；厄运闭环：战场命运值 -1（厄运侧）。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -1640,6 +1649,14 @@
           "type": "mount_status",
           "statusId": "fate_loop",
           "duration": 5
+        },
+        {
+          "type": "modify_resource",
+          "resource": "fate_value",
+          "value": -1,
+          "mode": "delta",
+          "target": "board",
+          "note": "命运值写入（2026-10-01 量表写入批）：-1 推向 ≤−5 反噬档（怪物自身承担反噬风险，R5 合规语义）。"
         }
       ],
       "sharedAcross": [],
@@ -1651,7 +1668,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：命运轴\"重启\"：只清状态与行动条（非逆转时光，不回血不复活）。代价是清掉己方 buff。⚠️ 依赖 `dispel` 区域 scope + `modify_resource.set`。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：命运轴\"重启\"：只清状态与行动条（非逆转时光，不回血不复活）。代价是清掉己方 buff。⚠️ 依赖 `dispel` 区域 scope + `modify_resource.set`。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；命运值写入（2026-10-01 量表写入批）：-1 推向 ≤−5 反噬档（怪物自身承担反噬风险，R5 合规语义）。",
       "dimHooks": [
         {
           "dim": "fate_value",
@@ -1901,7 +1918,7 @@
       "flagship": true,
       "lore": "序列0 命运之轮 —— \"『命运』权柄：命运化身，既是好运也是厄运，更擅长预知\"",
       "flavor": "你转动命运之轮——它的未来给了你，你的过去给了它。轮子停下的地方，你正站在好运那一边。",
-      "describe": "双目标：互换一名敌人与一名友军的行动条进度，自身 +3 层幸运（既是好运也是厄运）。",
+      "describe": "双目标：互换一名敌人与一名友军的行动条进度，自身 +3 层幸运（既是好运也是厄运）。；命运流转：战场命运值 +1（好运侧）。",
       "cost": {
         "energy": 6,
         "cooldown": 8,
@@ -1948,6 +1965,14 @@
               "note": "「更擅长预知」的体现"
             }
           ]
+        },
+        {
+          "type": "modify_resource",
+          "resource": "fate_value",
+          "value": 1,
+          "mode": "delta",
+          "target": "board",
+          "note": "命运值写入（2026-10-01 量表写入批）：怪物为 fate_value 唯一登记写入方；+1 推向 ≥+5 好运档。"
         }
       ],
       "sharedAcross": [],
@@ -1955,7 +1980,8 @@
       "conversionNotes": [
         "退化方案（敌方 -30 / 友军 +30 双向修正，零新依赖）仍备；敌方侧 manual fallbackSort 稿面未给，置 null 待补",
         "翻译/语义：\"既是好运也是厄运\"=直接对调行动条（救己斩敌）。push 命运值；≥+8 总线满载可二次调度。⚠️ 依赖 `swap_resource`。",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+        "2026-10-01 吟唱重标：非仪式，castTime 空→0",
+        "命运值写入（2026-10-01 量表写入批）：怪物为 fate_value 唯一登记写入方；+1 推向 ≥+5 好运档。"
       ],
       "art": {
         "subject": "a colossal wheel of fortune turning above a turning-point battlefield",

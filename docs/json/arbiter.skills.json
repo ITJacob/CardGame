@@ -279,7 +279,7 @@
       "flagship": false,
       "lore": "序列8 治安官 —— \"『辖区』：指定区域获得超凡实力和环境帮助\"",
       "flavor": "这里是你的辖区。脚下的路、墙里的砖、风里的味道都站在你这边——而踏进来的外人，寸步难行。",
-      "describe": "在己方半场铺设「辖区」（Ⅰ 档，持续 6 tick）：区域内己方单位攻击 +2、受伤 ×0.9；区域内敌方单位行动条速率 ×0.9。",
+      "describe": "在己方半场铺设「辖区」（Ⅰ 档，持续 6 tick）：区域内己方单位攻击 +2、受伤 ×0.9；区域内敌方单位行动条速率 ×0.9。；辖区铺设：战场秩序度 +1。",
       "cost": {
         "energy": 3,
         "cooldown": 5,
@@ -301,6 +301,14 @@
           "zone": "zone_jurisdiction",
           "duration": 6,
           "note": "Zone 注册（consumption: zone + 卡面 zoneDef，H9 Zone 母版），非界域原语；落点：己方半场一块（约 2 格）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "order",
+          "value": 1,
+          "mode": "delta",
+          "target": "board",
+          "note": "秩序度写入（2026-10-01 量表写入批）：辖区成立秩序 +1。"
         }
       ],
       "zoneDef": {
@@ -357,7 +365,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：辖区轴核心 enabler：区域增益+干扰双向。写入秩序度 +1 接通战场量表族。",
+      "conversionNotes": "翻译/语义：辖区轴核心 enabler：区域增益+干扰双向。写入秩序度 +1 接通战场量表族。；秩序度写入（2026-10-01 量表写入批）：辖区成立秩序 +1。",
       "art": {
         "subject": "an arbiter at the center of a district where streets and lampposts stand at attention",
         "elements": [
@@ -642,7 +650,7 @@
       "flagship": false,
       "lore": "序列6 法官 —— \"对一定区域立下新规则，违背则受束缚\"",
       "flavor": "你当着它的面宣判了一条规矩。它当然可以不听——但规矩之所以是规矩，是因为违背它的代价，它付不起。",
-      "describe": "对一名敌人立规 6 tick（可惩罚 2 次）：其每次发动主动技能时受到 3 点精神伤害并被束缚 2 tick，惩罚 2 次后规则失效。；自身带法则修订则法修订规，自疗 2 点。",
+      "describe": "对一名敌人立规 6 tick（可惩罚 2 次）：其每次发动主动技能时受到 3 点精神伤害并被束缚 2 tick，惩罚 2 次后规则失效。；自身带法则修订则法修订规，自疗 2 点。；立规生效：战场秩序度 +1。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -716,6 +724,14 @@
           ],
           "else": [],
           "note": "跨系读层段：arbiter→savant law_edit（2026-09-29 跨系批二）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "order",
+          "value": 1,
+          "mode": "delta",
+          "target": "board",
+          "note": "秩序度写入（2026-10-01 量表写入批）：立规落地秩序 +1（仲裁人推高，dimHook order≥7 律令 ×1.5 的供源）。"
         }
       ],
       "tentative": false,
@@ -726,7 +742,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：**本途径灵魂 enabler**：把 v0.2 的单体 `decree` 升级为**写入规则槽**（战场级共享棋盘）。立规同时挂 `律令（规则）` 身份状态、推秩序度 +1。律师可改此槽（见《律师 v0.3》）。⚠️ `规则槽 Rules[3]` 为新增战场物件（本稿框架改动 #1）。退化方案：单 `decree` 状态，代价失\"共享棋盘\"辨识度。",
+      "conversionNotes": "翻译/语义：**本途径灵魂 enabler**：把 v0.2 的单体 `decree` 升级为**写入规则槽**（战场级共享棋盘）。立规同时挂 `律令（规则）` 身份状态、推秩序度 +1。律师可改此槽（见《律师 v0.3》）。⚠️ `规则槽 Rules[3]` 为新增战场物件（本稿框架改动 #1）。退化方案：单 `decree` 状态，代价失\"共享棋盘\"辨识度。；秩序度写入（2026-10-01 量表写入批）：立规落地秩序 +1（仲裁人推高，dimHook order≥7 律令 ×1.5 的供源）。",
       "art": {
         "subject": "a judge declaring a rule aloud while golden letters of law hang in the air",
         "elements": [
@@ -1240,7 +1256,7 @@
       "flagship": false,
       "lore": "序列4 律令法师 —— \"『律令』（核心）：制定宽泛限制维持 30 秒到一刻钟 / 如'神秘减弱，现实增强'——削弱所有非凡能力\"",
       "flavor": "「于此地，神秘减弱，现实增强。」话音落下，敌人的非凡能力开始迟滞、走形、变得昂贵——而你脚下的大地，比刚才更实了。",
-      "describe": "律令持续 8 tick：敌方全体耗能加重（技能费用 ×1.5）且攻击 -3；己方全体护甲 +3。",
+      "describe": "律令持续 8 tick：敌方全体耗能加重（技能费用 ×1.5）且攻击 -3；己方全体护甲 +3。；律令降临：战场秩序度 +1。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -1283,6 +1299,14 @@
               "note": "现实增强；modify_resource 为量池 delta，无 duration 不回滚（稿面原文如此）"
             }
           ]
+        },
+        {
+          "type": "modify_resource",
+          "resource": "order",
+          "value": 1,
+          "mode": "delta",
+          "target": "board",
+          "note": "秩序度写入（2026-10-01 量表写入批）：律令展开秩序 +1。"
         }
       ],
       "tags": [
@@ -1290,7 +1314,7 @@
         "律令"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：律令轴形态跃迁：从单体禁令→全体持续压制。推秩序度 +1。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：律令轴形态跃迁：从单体禁令→全体持续压制。推秩序度 +1。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；秩序度写入（2026-10-01 量表写入批）：律令展开秩序 +1。",
       "dimHooks": [
         {
           "dim": "order",
@@ -2447,7 +2471,7 @@
       "flagship": true,
       "lore": "序列0 审判者 —— \"'秩序'权柄：修改世界底层规则、制定/去除规则、赋予豁免权\"",
       "flavor": "你改写了这条世界的一行底层。于是有人获得了豁免——而另一些人，连求饶的资格都被抹掉了。",
-      "describe": "降临「底层规则」界域 8 tick：全场治疗量 ×2、护盾不再吸收伤害（敌我同改）；己方全体获得豁免（免疫减益类状态）8 tick。自身迷失值 +1。",
+      "describe": "降临「底层规则」界域 8 tick：全场治疗量 ×2、护盾不再吸收伤害（敌我同改）；己方全体获得豁免（免疫减益类状态）8 tick。自身迷失值 +1。；底层规则降临：战场秩序度 +2。",
       "cost": {
         "energy": 7,
         "cooldown": 9,
@@ -2490,6 +2514,14 @@
               "note": "界域操作租金"
             }
           ]
+        },
+        {
+          "type": "modify_resource",
+          "resource": "order",
+          "value": 2,
+          "mode": "delta",
+          "target": "board",
+          "note": "秩序度写入（2026-10-01 量表写入批）：序列0 界域权重 +2（其余律令卡 +1）。"
         }
       ],
       "domain": {
@@ -2547,7 +2579,7 @@
         "秩序"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：律令轴终焉：终局态 `秩序度=10` 解锁（改写底层+赋予豁免）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 6→3 tick（对齐拍板表）",
+      "conversionNotes": "翻译/语义：律令轴终焉：终局态 `秩序度=10` 解锁（改写底层+赋予豁免）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 6→3 tick（对齐拍板表）；秩序度写入（2026-10-01 量表写入批）：序列0 界域权重 +2（其余律令卡 +1）。",
       "dimHooks": [
         {
           "dim": "order",
