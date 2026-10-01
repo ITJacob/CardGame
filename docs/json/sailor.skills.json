@@ -260,7 +260,7 @@
       "flagship": false,
       "lore": "序列8 暴怒之民（愤怒积攒机制在低序列的常规表达）",
       "flavor": "你带着火气抡出一记重击——挨打的人疼，你自己却越打越上头。",
-      "describe": "对一名近战敌人造成 4 点物理伤害，自身愤怒层数 +1。",
+      "describe": "对一名近战敌人造成 2 点物理伤害，自身愤怒层数 +1。",
       "cost": {
         "energy": 3,
         "cooldown": 2,
@@ -282,7 +282,7 @@
             {
               "type": "damage",
               "element": "physical",
-              "value": 4
+              "value": 2
             },
             {
               "type": "mount_status",
@@ -298,7 +298,8 @@
       "tentative": true,
       "conversionNotes": [
         "稿面未给 fallbackSort，置 null 待补",
-        "翻译/语义：火球术级循环件；叠层+清结算闭环起点。⚠️D。"
+        "翻译/语义：火球术级循环件；叠层+清结算闭环起点。⚠️D。",
+        "直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格2 基准2）。条件/读层追加段不动。"
       ],
       "art": {
         "subject": "a furious sailor swinging one heavy fist in a wild brutal arc",
@@ -891,7 +892,7 @@
       "flagship": false,
       "lore": "序列5 海洋歌者 —— \"'闪电掌控'：雷击（麻痹敌人，克制亡灵）\"",
       "flavor": "一道落雷劈中敌人，电流窜过它的躯体使其浑身麻痹；若是亡灵，这一击会格外致命。",
-      "describe": "对一名敌人造成 3 点雷电伤害并眩晕 1 tick；若其为亡灵或灵体，追加 4 点雷电伤害。；雷击带电：目标电磁紊乱 2 tick。",
+      "describe": "对一名敌人造成 5 点雷电伤害并眩晕 1 tick；若其为亡灵或灵体，追加 4 点雷电伤害。；雷击带电：目标电磁紊乱 2 tick。",
       "cost": {
         "energy": 4,
         "cooldown": 4,
@@ -913,7 +914,7 @@
             {
               "type": "damage",
               "element": "lightning",
-              "value": 3
+              "value": 5
             },
             {
               "type": "mount_status",
@@ -951,7 +952,8 @@
       "tentative": true,
       "conversionNotes": [
         "稿面声明默认按退化方案落地：数据层给亡灵/灵体单位预置负 resist:lightning（如 -25）；此处仍登记条件分支（target_has_tag，新增项 11）供母版实现后切换",
-        "翻译/语义：麻痹=`眩晕`；克亡灵=条件追加。依赖新增项 11/12。退化：亡灵预置负 `resist:lightning`（雷抗）；暗系单位另见编队参数 §1.3 负 `resist:holy`。⚠️D。"
+        "翻译/语义：麻痹=`眩晕`；克亡灵=条件追加。依赖新增项 11/12。退化：亡灵预置负 `resist:lightning`（雷抗）；暗系单位另见编队参数 §1.3 负 `resist:holy`。⚠️D。",
+        "直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 3→5（位格5 基准5）。条件/读层追加段不动。"
       ],
       "art": {
         "subject": "a bolt of lightning striking down and crawling over a paralyzed foe",
@@ -1142,7 +1144,7 @@
       "flagship": true,
       "lore": "序列4 灾难主祭 —— \"'风刃军团'：数百上千道风刃\"",
       "flavor": "数百道风刃在你身后结成阵列，然后一齐倾泻而下——没有人能在这片刀雨里全身而退。",
-      "describe": "全体敌人各承受 3 段攻击，每段 2 点物理伤害（逐段独立结算，破盾与加攻件逐段放大）。；对电磁紊乱的目标，乱流风刃，全体敌方额外受 1 点物理伤害。",
+      "describe": "全体敌人各承受 3 段攻击，每段 1 点物理伤害（逐段独立结算，破盾与加攻件逐段放大）。；对电磁紊乱的目标，乱流风刃，全体敌方额外受 1 点物理伤害。",
       "cost": {
         "energy": 6,
         "cooldown": 6,
@@ -1165,7 +1167,7 @@
             {
               "type": "damage",
               "element": "physical",
-              "value": 2,
+              "value": 1,
               "target": "all_enemies"
             }
           ],
@@ -1193,7 +1195,7 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：风暴轴旗舰 AOE。多段破盾/触发 `on_take_damage` 链/被加攻件逐段放大。依赖 G3。⚠️D。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：风暴轴旗舰 AOE。多段破盾/触发 `on_take_damage` 链/被加攻件逐段放大。依赖 G3。⚠️D。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→3（位格6 基准5，群体×0.6）。条件/读层追加段不动。",
       "art": {
         "subject": "hundreds of wind blades arrayed behind the sailor, raining down as one",
         "elements": [
@@ -1296,7 +1298,7 @@
       "flagship": false,
       "lore": "序列4 灾难主祭 —— \"'连环闪电'+地震制造\"",
       "flavor": "一道电蛇咬住第一个目标，随即跳跃到下一个、再下一个——脚下的大地也随之震颤。",
-      "describe": "雷电在 3 个不同目标间跳跃，各造成 3 点雷电伤害；命中溺沉目标追加 2 点雷电（导电）；全体敌人行动条 -10（地震震慑）。",
+      "describe": "雷电在 3 个不同目标间跳跃，各造成 2 点雷电伤害；命中溺沉目标追加 2 点雷电（导电）；全体敌人行动条 -10（地震震慑）。",
       "cost": {
         "energy": 5,
         "cooldown": 5,
@@ -1322,7 +1324,7 @@
                 {
                   "type": "damage",
                   "element": "lightning",
-                  "value": 3,
+                  "value": 2,
                   "note": "3 个不同目标各 3 伤"
                 },
                 {
@@ -1359,7 +1361,7 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：水→雷 combo：drowning 让 lightning 增幅。依赖 F52。⚠️D。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：水→雷 combo：drowning 让 lightning 增幅。依赖 F52。⚠️D。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 9→5（位格6 基准5）。条件/读层追加段不动。",
       "art": {
         "subject": "a living arc of lightning biting one target after another across scorched ground",
         "elements": [
@@ -1804,7 +1806,7 @@
       "flagship": false,
       "lore": "序列3 海王 —— \"'闪电风暴'：密集电蛇笼罩数百米\"（附加：序列2「电磁紊乱」）",
       "flavor": "数百米内电蛇密布，每一次炸响都让敌人的非凡能力变得迟滞而不稳。",
-      "describe": "全体敌人承受 2 段雷电，每段 3 点；并被电磁紊乱 3 tick：能量恢复 -0.2。",
+      "describe": "全体敌人承受 2 段雷电，每段 2 点；并被电磁紊乱 3 tick：能量恢复 -0.2。",
       "cost": {
         "energy": 6,
         "cooldown": 6,
@@ -1827,7 +1829,7 @@
             {
               "type": "damage",
               "element": "lightning",
-              "value": 3,
+              "value": 2,
               "target": "all_enemies"
             }
           ]
@@ -1840,7 +1842,7 @@
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：雷系对应风刃军团。电磁紊乱并入附加条款。依赖新增项 13。⚠️D。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：雷系对应风刃军团。电磁紊乱并入附加条款。依赖新增项 13。⚠️D。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→3（位格7 基准5，群体×0.6）。条件/读层追加段不动。",
       "art": {
         "subject": "a field crackling with hundreds of serpentine lightning bolts under a black sky",
         "elements": [
@@ -1864,7 +1866,7 @@
       "flagship": false,
       "lore": "序列3 海王 —— \"'毁灭水滴'\"",
       "flavor": "所有海水被压缩成一滴——它轻飘飘地落下，却穿透了一切阻挡。",
-      "describe": "驱散一名敌人全部增益、将其护甲清零，然后造成 8 点伤害。",
+      "describe": "驱散一名敌人全部增益、将其护甲清零，然后造成 5 点伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -1905,13 +1907,13 @@
             {
               "type": "damage",
               "element": "none",
-              "value": 8
+              "value": 5
             }
           ]
         }
       ],
       "tentative": true,
-      "conversionNotes": "翻译/语义：穿透=绕过去（剥增益+清甲+高伤）。⚠️D。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：穿透=绕过去（剥增益+清甲+高伤）。⚠️D。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→5（位格7 基准5）。条件/读层追加段不动。",
       "art": {
         "subject": "a single drop of infinitely compressed seawater drifting down through every barrier",
         "elements": [
@@ -2628,12 +2630,12 @@
       "flagship": false,
       "lore": "源自水手在风暴中宣泄的狂怒。",
       "flavor": "浪涛裹着你的怒意拍碎敌舰。",
-      "describe": "造成 4 点物理伤害，并为自己叠加 1 层愤怒。",
+      "describe": "造成 2 点物理伤害，并为自己叠加 1 层愤怒。",
       "effects": [
         {
           "type": "damage",
           "element": "physical",
-          "value": 4,
+          "value": 2,
           "target": "target"
         },
         {
@@ -2668,7 +2670,8 @@
           "splintered hull"
         ],
         "mood": "crushing, vengeful"
-      }
+      },
+      "conversionNotes": "直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。"
     },
     {
       "id": "skill_sailor_s7_raging_sea",
@@ -2821,12 +2824,12 @@
       "flagship": false,
       "lore": "将怒意灌注于一击。",
       "flavor": "这一下，连钢铁都会弯曲。",
-      "describe": "造成 5 点物理伤害，并使目标陷入易伤（3 回合）。",
+      "describe": "造成 7 点物理伤害，并使目标陷入易伤（3 回合）。",
       "effects": [
         {
           "type": "damage",
           "element": "physical",
-          "value": 5,
+          "value": 7,
           "target": "target"
         },
         {
@@ -2860,7 +2863,7 @@
         ],
         "mood": "unyielding, crushing"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→1 tick（对齐拍板表）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→1 tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→7（位格6 基准5×1.3）。条件/读层追加段不动。"
     },
     {
       "id": "skill_sailor_s3_tyrant_edict",
