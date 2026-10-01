@@ -534,7 +534,7 @@
       "flagship": false,
       "lore": "序列6 记录官 —— \"「记录」：重现目标使用的非凡能力并存储 / 序列7-9 能力可记录 20 个（效果接近原版），序列5-6 可记录 8 个（效果减半）\"",
       "flavor": "它打在你身上的每一招，都被你原样拓进灵性拓片里——连同那一招的属性与力道。",
-      "describe": "自身每次受击时记录层数 +1（至多 8 层），并记下这一击的元素与档位，供重现与再现使用。",
+      "describe": "自身每次受击时记录层数 +1（至多 8 层），记下这一击的元素与档位，并为本体状态（生命/能量池/行动条）存档，供重现与定位使用。",
       "hook": "on_take_damage",
       "effects": [
         {
@@ -555,6 +555,16 @@
               "duration": null,
               "target": "self",
               "note": "刷新两个数据槽：element = 本次伤害元素、tier = 本次伤害档位（H33 slots，读取语法 $recorded.<key>）"
+            },
+            {
+              "type": "snapshot",
+              "fields": [
+                "hp",
+                "pools",
+                "gauge"
+              ],
+              "target": "self",
+              "note": "记录官存档：本体状态入档（供 重现 时间回滚 / 定位 归位）"
             }
           ]
         }
@@ -563,7 +573,7 @@
         "thief"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：记录轴 enabler：存储敌人招式入 `记录槽`。两层：层数回答\"记了多少\"，数据槽回答\"记的是哪一招\"。",
+      "conversionNotes": "翻译/语义：记录轴 enabler：存储敌人招式入 `记录槽`。两层：层数回答\"记了多少\"，数据槽回答\"记的是哪一招\"。 ｜ 2026-10-02 差异化风格迭代（学徒=时空族正主）：记录补 snapshot 存档段——回放族的存档半边的入口",
       "art": {
         "subject": "glowing rubbings of incoming strikes etching into spectral tablets",
         "elements": [
@@ -585,7 +595,7 @@
       "flagship": false,
       "lore": "序列6 记录官 —— \"「记录」：重现目标使用的非凡能力…\"",
       "flavor": "你翻开拓片，把它刚刚用来打你的那一招，原封不动地还了回去。",
-      "describe": "若记录层数 ≥3：消耗 3 层，以被记录那一招的元素造成 3 + 2×(层数÷3) 点伤害；否则造成 2 点精神伤害。",
+      "describe": "若记录层数 ≥3：消耗 3 层，行动条回滚至最近记录点，并重现上一段伤害（60% 效能，元素同源）；否则造成 2 点精神伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 4,
@@ -612,14 +622,24 @@
           },
           "then": [
             {
-              "type": "damage",
-              "element": "none",
-              "value": 3,
-              "valueFrom": {
-                "statusStacks": "inscription",
-                "formula": "3 + 2 * floor(stacks / 3)"
+              "type": "restore_snapshot",
+              "fields": [
+                "gauge"
+              ],
+              "target": "self",
+              "note": "时间回滚：行动条回至最近记录点（⚠️D 待平衡）"
+            },
+            {
+              "type": "echo_last_skill",
+              "snapshot": "lastDamageSnapshot",
+              "potency": 0.6,
+              "rounding": "ceil",
+              "fallback": {
+                "type": "damage",
+                "element": "mental",
+                "value": 3
               },
-              "note": "元素取 $recorded.element（H33）；退化方案固定 mental"
+              "note": "重现上一段伤害（元素同源，⚠️D 待平衡）"
             },
             {
               "type": "mount_status",
@@ -641,7 +661,7 @@
         "thief"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：记录轴结算：读 `记录槽` 层数 + 数据槽元素原样还击。",
+      "conversionNotes": "翻译/语义：记录轴结算：读 `记录槽` 层数 + 数据槽元素原样还击。 ｜ 2026-10-02 差异化风格迭代（学徒=时空族正主）：重现改 restore_snapshot(行动条)+echo_last_skill(伤害 60%)——记录轴从「条件读层」升级为「快照回放」",
       "art": {
         "subject": "a mage hurling back a mirrored copy of the foe own strike",
         "elements": [
@@ -897,7 +917,7 @@
       "flagship": false,
       "lore": "序列5 旅行家 —— \"「记录」提升至半神层次\"",
       "flavor": "成为旅行家后，你的拓片能容纳更多内容——不止打向你的，连落在同伴身上的招式也被一并记下。",
-      "describe": "战斗开始时记录升华：记录层数上限 8 层，且任意友军受击都会为你累积记录层数。",
+      "describe": "战斗开始时记录升华：记录层数上限 8 层，任意友军受击都会为你累积记录层数，并为自身状态（生命/行动条）存档。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -905,13 +925,22 @@
           "statusId": "record_semi_divine",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "snapshot",
+          "fields": [
+            "hp",
+            "gauge"
+          ],
+          "target": "self",
+          "note": "开场存档：高位记录官的自动备份（供 定位 归位回滚）"
         }
       ],
       "sharedAcross": [
         "thief"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：记录轴 enabler 升级：容量+范围。依赖全局 `on_take_damage` 第三方监听。",
+      "conversionNotes": "翻译/语义：记录轴 enabler 升级：容量+范围。依赖全局 `on_take_damage` 第三方监听。 ｜ 2026-10-02 差异化风格迭代（学徒=时空族正主）：半神记录补 snapshot 开场存档段",
       "art": {
         "subject": "spectral tablets orbiting the recorder, each glowing with borrowed spells",
         "elements": [
@@ -1097,7 +1126,7 @@
       "flagship": false,
       "lore": "序列4 秘法师 —— \"「放逐」：将目标丢入时空乱流\"",
       "flavor": "它脚下的空间裂开一道缝——它被丢进乱流里，等它挣扎着爬回来时，身上已经没有一处完好。",
-      "describe": "将一名敌人放逐 3 tick：行动条冻结、不可被单体技能选中，归来时受到 4 点无元素伤害（乱流撕扯）。；放逐入锚：自身星界锚在场（整场，1 层）。",
+      "describe": "将一名敌人放逐入时空乱流 3 tick：完全离场，到期归回；归来时受到 2 点精神伤害（乱流撕扯）。放逐入锚：自身星界锚在场（整场，1 层）。",
       "cost": {
         "energy": 4,
         "cooldown": 6,
@@ -1114,9 +1143,18 @@
       },
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "exiled",
-          "duration": 3
+          "type": "translocate",
+          "op": "banish",
+          "duration": 3,
+          "returnPayload": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "时空乱流回卷撕扯（⚠️D 数值待平衡）"
+            }
+          ],
+          "note": "放逐状态升格 translocate 原语（banish；原著上限 ≤20 秒 = 4 tick，本场取 3）"
         },
         {
           "type": "mount_status",
@@ -1124,10 +1162,18 @@
           "duration": null,
           "target": "self",
           "note": "放逐入锚：被逐者归处即星界锚（环节⑤ 2026-09-29 补产层段）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "lost",
+          "value": 1,
+          "mode": "delta",
+          "target": "self",
+          "note": "跨层租金（与界域同口径：translocate 须付迷失租金）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：星界轴旗舰 payoff：读 `星界锚` 放逐（移出战斗）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：星界轴旗舰 payoff：读 `星界锚` 放逐（移出战斗）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（学徒=时空族正主）：放逐(exiled 状态)升格 translocate banish 原语——时空税落地第一卡",
       "art": {
         "subject": "an enemy swallowed by a widening rift of swirling time and space",
         "elements": [
@@ -1231,7 +1277,7 @@
       "flagship": false,
       "lore": "序列3 漫游者 —— \"「融入空间」\"",
       "flavor": "你融进了身后的空间——再探出手时，那一击从谁也预料不到的角度落下。",
-      "describe": "自身融入空间 2 tick：不可被单体技能选中，下一次造成伤害 ×1.5，出手后隐匿破除。",
+      "describe": "自身融入空间 2 tick：完全离场（跨层），到期于己方队尾归回。",
       "cost": {
         "energy": 3,
         "cooldown": 5,
@@ -1247,10 +1293,19 @@
       },
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "merged",
+          "type": "translocate",
+          "op": "banish",
           "duration": 2,
-          "target": "self"
+          "target": "self",
+          "note": "融入空间升格 translocate 自放逐（秘法师短促跨层；同 seer 遁入灵界写法）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "lost",
+          "value": 1,
+          "mode": "delta",
+          "target": "self",
+          "note": "跨层租金（与界域同口径：translocate 须付迷失租金）"
         }
       ],
       "tentative": false,
@@ -1263,7 +1318,7 @@
         ],
         "mood": "surreal, lethal"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（学徒=时空族正主）：融入空间(merged 状态)升格 translocate 自放逐——潜行从「不可选中」升级为「不在场上」"
     },
     {
       "id": "skill_apprentice_s3_breach_gate",
@@ -1398,7 +1453,7 @@
       "flagship": true,
       "lore": "序列2 旅法师 —— \"「再现」：记录场景 / 人物 / 非凡能力，可转移至记录场景或让场景降临\"",
       "flavor": "你翻开那卷记录——被你记下的\"他\"从纸面上走了下来，替你挡在前头。",
-      "describe": "若记录层数 ≥4：消耗 4 层，召唤一具被记录者的影像为己方作战（40% 生命、50% 攻击）；否则造成 4 点精神伤害。",
+      "describe": "若记录层数 ≥4：消耗 4 层，再现上一张打出的技能卡（50% 效能）；否则显出一具被记录者的半成品影像为己方作战（40% 生命、50% 攻击）。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -1424,12 +1479,16 @@
           },
           "then": [
             {
-              "type": "spawn",
-              "unitId": "unit_thoughtform",
-              "hpRatio": 0.4,
-              "atkRatio": 0.5,
-              "position": "tail",
-              "note": "F23 已登记（H1 召唤物基线），不新立单位"
+              "type": "echo_last_skill",
+              "snapshot": "lastSkillSnapshot",
+              "potency": 0.5,
+              "rounding": "ceil",
+              "fallback": {
+                "type": "damage",
+                "element": "mental",
+                "value": 4
+              },
+              "note": "再现——记录官重演上一张技能卡（50% 效能，⚠️D 待平衡）"
             },
             {
               "type": "mount_status",
@@ -1440,9 +1499,12 @@
           ],
           "else": [
             {
-              "type": "damage",
-              "element": "mental",
-              "value": 4
+              "type": "spawn",
+              "unitId": "unit_thoughtform",
+              "hpRatio": 0.4,
+              "atkRatio": 0.5,
+              "position": "tail",
+              "note": "F23 已登记（H1 召唤物基线）；层数不足时只显出被记录者的半成品影像"
             }
           ]
         }
@@ -1451,7 +1513,7 @@
         "thief"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：记录轴旗舰：把 `记录槽` 换成一具\"被记下的人\"的影像为己方作战。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 2 tick（序列 2 档，基准 §三之二）",
+      "conversionNotes": "翻译/语义：记录轴旗舰：把 `记录槽` 换成一具\"被记下的人\"的影像为己方作战。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 2 tick（序列 2 档，基准 §三之二） ｜ 2026-10-02 差异化风格迭代（学徒=时空族正主）：再现主段改 echo_last_skill（重演上一技能 50%），影像召唤降为低层兜底",
       "art": {
         "subject": "a recorded figure stepping down off a page of glowing script to fight",
         "elements": [
@@ -1627,7 +1689,7 @@
       "flagship": false,
       "lore": "序列1 星之匙 —— \"「定位」权柄：自身永不迷失，让敌人无法定位\"",
       "flavor": "你握住了这颗星球上所有的坐标——你永远不会走错，而它们，从此找不到北。",
-      "describe": "对全体敌方定位 4 tick：受伤 ×1.15 且下一次单体攻击落空；自身行动条速率 +6（4 tick）。",
+      "describe": "对全体敌方定位 4 tick：受伤 ×1.15 且下一次单体攻击落空；自身行动条速率 +6（4 tick）；并归位于最近记录时刻（生命与行动条回到记录点）。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1659,6 +1721,15 @@
               "duration": 4,
               "target": "self",
               "note": "自身永不迷失"
+            },
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp",
+                "gauge"
+              ],
+              "target": "self",
+              "note": "定位即归位：自身回到最近记录时刻的状态（撤销最近一击，⚠️D 待平衡）"
             }
           ]
         }
@@ -1671,7 +1742,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：双向定位：己方速率↑+星界锚；敌方更脆+打空。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：双向定位：己方速率↑+星界锚；敌方更脆+打空。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（学徒=时空族正主）：定位补 restore_snapshot 归位段——记录轴的回放半边落点",
       "art": {
         "subject": "a key of starlight fixing every enemy in glowing coordinate threads",
         "elements": [
@@ -1910,7 +1981,7 @@
       "flagship": false,
       "lore": "序列0 门 —— \"「空间」权柄：制造空间牢笼、令空间毁灭坍塌、瞬间前往任何空间、开辟异度空间\"",
       "flavor": "六面看不见的墙在它四周合拢——空间开始向内收缩，而它连一步都挪不动。",
-      "describe": "将一名敌人困入空间牢笼 4 tick：无法被位移、受伤 ×1.25，且每 tick 受到 1 点物理伤害。",
+      "describe": "将一名敌人折叠入空间牢笼（时空乱流）4 tick：完全离场，到期归回。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -1927,13 +1998,22 @@
       },
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "space_cage",
-          "duration": 4
+          "type": "translocate",
+          "op": "banish",
+          "duration": 4,
+          "note": "空间折叠囚禁 = banish 上限档（原著 ≤20 秒 = 4 tick，本场最高；原 space_cage 状态的锁身+受伤放大语义由「完全离场」取代）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "lost",
+          "value": 1,
+          "mode": "delta",
+          "target": "self",
+          "note": "跨层租金（与界域同口径：translocate 须付迷失租金）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：牢笼=困在原地挨打；门扉零耗+坐标+隐秘值。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：牢笼=困在原地挨打；门扉零耗+坐标+隐秘值。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（学徒=时空族正主）：空间牢笼(space_cage 状态)升格 translocate banish 4 tick 上限档",
       "art": {
         "subject": "six invisible walls closing in around a trapped shrinking figure",
         "elements": [
