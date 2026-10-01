@@ -1591,69 +1591,12 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_shared_dream",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 3,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_tick",
-            "effects": [
-              {
-                "type": "damage",
-                "element": "mental",
-                "value": 1,
-                "target": "all_enemies",
-                "note": "梦境侵蚀"
-              },
-              {
-                "type": "heal",
-                "value": 1,
-                "target": "all_allies",
-                "note": "梦里疗养"
-              }
-            ]
-          },
-          {
-            "event": "on_turn_start",
-            "effects": [
-              {
-                "type": "modify_stat",
-                "stat": "gauge.rate",
-                "value": 0.85,
-                "mode": "mul",
-                "duration": 1,
-                "target": "all_enemies",
-                "note": "梦里跑不快（1t 刷新）"
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "梦境",
-              "心灵"
-            ],
-            "mul": 1.3
-          }
-        ]
-      },
       "tags": [
         "梦境",
         "心灵"
       ],
       "tentative": false,
-      "conversionNotes": [
-        "2026-09-08 界域牌批次新增（编织梦境的群体化 / 领域化）",
-        "域内 gauge_rate 按 ddd 口径应走 modify_resource(gauge.rate)，此处沿用战士档 modify_stat(gauge.rate) 写法待裁定",
-        "翻译/语义：【编织梦境】的群体尺度，空想/梦境轴主场。✅ 依赖已落。",
-        "2026-10-01 吟唱重标：仪式类（prim）castTime 3→1 tick（对齐拍板表）"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "an entire battlefield draped under one vast shared dream veil",
         "elements": [
@@ -2174,6 +2117,60 @@
         ],
         "mood": "resurgent, detached"
       }
+    }
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_shared_dream",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 3,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "target": "all_enemies",
+              "note": "梦境侵蚀"
+            },
+            {
+              "type": "heal",
+              "value": 1,
+              "target": "all_allies",
+              "note": "梦里疗养"
+            }
+          ]
+        },
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 0.85,
+              "mode": "mul",
+              "duration": 1,
+              "target": "all_enemies",
+              "note": "梦里跑不快（1t 刷新）"
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "梦境",
+            "心灵"
+          ],
+          "mul": 1.3
+        }
+      ]
     }
   ],
   "designNote": "> **放牧维度（混沌海系 §2.2 / 总览 §1 万能接口②）**：本系签名机制「放牧(Grazing)」= 战场级**动态能力槽** `grazing_slot`，存储被纳管的灵魂及其途径，可释放该途径能力（全局唯一跨系借技能）。观众/歌颂者经「纳管」参与此机制。\n> - **enabler**：友方击杀 / 控制一个单位 → `grazing_slot +1`（记录该单位途径与其一项招牌能力）。\n> - **payoff**：释放被放牧单位的一项能力（一次）。\n> - **阈级（⚠️D，自行设计）**：槽 ≥1 释放 1 项；≥3 释放时该能力 ×1.3；≥5 释放 `cd -1` 且可指定 2 目标；=MAX(⚠️D 暂定 7) 本回合被放牧能力视为本途径技能（吃 `空想`/`净化` 增益）。\n>\n> **跨源质写入方**：秘祈人（牧羊人）主承载放牧；观众/歌颂者可经「纳管残响」「放牧·借能」卡接入同一 `grazing_slot`，形成混沌海内部五途径互为相邻的联动网。",

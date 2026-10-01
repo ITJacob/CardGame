@@ -2087,56 +2087,12 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_clock_tower",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 3,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_tick",
-            "effects": [
-              {
-                "type": "modify_resource",
-                "resource": "gauge.current",
-                "value": -2,
-                "mode": "delta",
-                "target": "all_enemies",
-                "note": "偷时间：drain 语义在周期层的展开"
-              },
-              {
-                "type": "modify_resource",
-                "resource": "gauge.current",
-                "value": 2,
-                "mode": "delta",
-                "target": "all_allies"
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "ally",
-            "tag": [
-              "窃取",
-              "欺诈"
-            ],
-            "mul": 1.3
-          }
-        ]
-      },
       "tags": [
         "窃取",
         "欺诈"
       ],
       "tentative": false,
-      "conversionNotes": [
-        "2026-09-08 界域牌批次新增；G5/G6 合规——tick 结算时推全队，不走本回合自推",
-        "翻译/语义：时间轴界域：每 tick 偷时间。",
-        "2026-10-01 吟唱重标：仪式类（prim）castTime 5→2 tick（对齐拍板表）"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a whole battlefield sealed inside the gear-work belly of a colossal clock",
         "elements": [
@@ -2355,6 +2311,48 @@
         ],
         "mood": "usurping, grandiose"
       }
+    }
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_clock_tower",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 3,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -2,
+              "mode": "delta",
+              "target": "all_enemies",
+              "note": "偷时间：drain 语义在周期层的展开"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 2,
+              "mode": "delta",
+              "target": "all_allies"
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "ally",
+          "tag": [
+            "窃取",
+            "欺诈"
+          ],
+          "mul": 1.3
+        }
+      ]
     }
   ],
   "designNote": "> **隐秘值维度（源堡系 §2.2）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。偷盗者经\"欺诈 / 寄生\"类效果 +1/次（思维误导、精神干扰、栽赃、寄生、窃取距离、寄生·血肉共生、欺诈规则、窃取身份、错误 等）。层级：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（源堡系共享；偷盗者经【提线接管·改】【寄生·血肉共生·改】同享）\n> - **≥7**：友方「愚弄 / 隐秘 / conceal」类技能 **+50%**（偷盗者的 误判 / 伪装·盗天机 / 寄生 等 conceal 类受益）\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：占卜家（愚弄/观诡）、学徒（星界/门）、偷盗者（欺诈/寄生）、永暗之河（不眠者/收尸人/战士）、暗影世界（囚犯/罪犯）、混沌海（秘祈人）也写入同一 `secrecy` 维度。",

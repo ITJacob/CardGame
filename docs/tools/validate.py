@@ -240,6 +240,27 @@ def main():
                 else: errors.append("%s %s.%d: bad event %s"%(cid,path,i,ev))
             walk(tr.get("effects"), cid, "%s.t%d"%(path,i), flags, errors, warns)
 
+    # Def 编目池（2026-10-01 独立化批）：顶层 unitDefs/zoneDefs/domainDefs 的触发器与 id 唯一性
+    for f in files:
+        pid = os.path.basename(f).replace('.skills.json', '')
+        try:
+            _pd = json.load(io.open(f, encoding='utf-8'))
+        except Exception:
+            continue
+        seen = {}
+        for pool_key, ref in (('unitDefs','unitDef'), ('zoneDefs','zoneDef'), ('domainDefs','domainDef')):
+            for _d in _pd.get(pool_key) or []:
+                _id = _d.get('id')
+                if not _id:
+                    pre_errors.append('%s pool %s: 缺 id' % (pid, pool_key)); continue
+                if _id in seen:
+                    pre_errors.append('%s pool %s: id %s 与 %s 重复' % (pid, pool_key, _id, seen[_id]))
+                seen[_id] = ref
+                trigs(_d.get('triggers'), pid+' '+pool_key+':'+_id, pool_key+':'+_id, [], pre_errors, pre_warns)
+                for _e in _d.get('effects') or []:
+                    _pl = _e.get('payload') if isinstance(_e, dict) and 'payload' in _e else _e
+                    walk(_pl if isinstance(_pl, list) else [_pl], pid+' '+pool_key+':'+_id, pool_key+':'+_id, [], pre_errors, pre_warns)
+
     for f in files:
         d = json.load(io.open(f, encoding='utf-8'))
         pid = d.get("pathwayId", os.path.basename(f))
@@ -304,7 +325,6 @@ def main():
                 walk(sd.get("effects"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
                 trigs(sd.get("triggers"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
                 walk((sd.get("thresholdTrigger") or {}).get("effects"), cid, "sd:"+sd.get("id","?")+".tt", flags, errors, warns)
-            if c.get("domainDef"): trigs(c["domainDef"].get("triggers"), cid, "dd", flags, errors, warns)
             flat = json.dumps(c.get("effects",[]), ensure_ascii=False)
             if ('"domain"' in flat or '"translocate"' in flat) and '"lost"' not in flat:
                 errors.append("%s: domain/translocate without lost rent"%cid)

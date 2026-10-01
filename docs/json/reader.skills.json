@@ -1435,64 +1435,12 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_astral_sanctum",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 3,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_tick",
-            "effects": [
-              {
-                "type": "modify_resource",
-                "resource": "gauge.current",
-                "value": -2,
-                "mode": "delta",
-                "target": "all_enemies",
-                "note": "行动被预读"
-              }
-            ]
-          },
-          {
-            "event": "on_turn_start",
-            "effects": [
-              {
-                "type": "modify_stat",
-                "stat": "attack",
-                "value": 0,
-                "mode": "delta",
-                "duration": 1,
-                "target": "all_allies",
-                "note": "占位写法：洞见先机 = 己方 damage_mul ×1.1（1t 刷新），引擎侧走 damageMulMul: 1.1"
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "ally",
-            "tag": [
-              "秘术",
-              "预知"
-            ],
-            "mul": 1.3
-          }
-        ]
-      },
       "tags": [
         "秘术",
         "预知"
       ],
       "tentative": false,
-      "conversionNotes": [
-        "2026-09-08 界域牌批次新增",
-        "on_turn_start 档的 damage_mul ×1.1 在 domainDef 内以占位 modify_stat 表达，引擎实现时应为伤害乘区（H4）1t 刷新",
-        "翻译/语义：预言=节奏改写。✅ 依赖已落。",
-        "2026-10-01 吟唱重标：仪式类（prim）castTime 2→1 tick（对齐拍板表）"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a reader opening a star-field domain where the future lies flat like an open book",
         "elements": [
@@ -2152,6 +2100,55 @@
         ],
         "mood": "omniscient, vast, tranquil"
       }
+    }
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_astral_sanctum",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 3,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -2,
+              "mode": "delta",
+              "target": "all_enemies",
+              "note": "行动被预读"
+            }
+          ]
+        },
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 0,
+              "mode": "delta",
+              "duration": 1,
+              "target": "all_allies",
+              "note": "占位写法：洞见先机 = 己方 damage_mul ×1.1（1t 刷新），引擎侧走 damageMulMul: 1.1"
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "ally",
+          "tag": [
+            "秘术",
+            "预知"
+          ],
+          "mul": 1.3
+        }
+      ]
     }
   ],
   "designNote": "> **全知/规律/解析 主题贯穿**：知识轴承载\"解析/全知\"的信息面，规律轴承载\"规律权柄\"的改写面，预言轴承载\"预知/最优解\"的节奏面——三者共同构成阅读者的**全知**内核；模仿轴是其招牌的\"以彼之道\"。\n> **混沌海系签名维度 = 放牧(Grazing)**（见下方维度说明）：阅读者本身无 `放牧` 轴，但经 combo 卡（【解析·跨系共鸣】）读取友方秘祈人的 `放牧` 槽，实现\"解析被放牧灵魂 → 模仿其能力\"的跨系联动。\n> 阅读者作为混沌海途径，在 §三 通过 `crossPathway:true` 读取 `放牧`/`寄生`/`提线木偶` 等枢纽状态，形成跨系 combo（非复刻）。",

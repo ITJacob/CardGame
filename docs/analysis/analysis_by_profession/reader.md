@@ -146,15 +146,15 @@
 
 **规模**：7 张技能（主动 5 / 被动 2）；稀有度分布：史诗×4、稀有×2、传说×1。
 
-**效果原语构成**（type，全量递归，共 19 处）：
+**效果原语构成**（type，全量递归，共 17 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 8 | 42.1% |
-| `modify_stat` | 2 | 10.5% |
-| `modify_resource` | 7 | 36.8% |
-| `move` | 1 | 5.3% |
-| `domain` | 1 | 5.3% |
+| `mount_status` | 8 | 47.1% |
+| `modify_stat` | 1 | 5.9% |
+| `modify_resource` | 6 | 35.3% |
+| `move` | 1 | 5.9% |
+| `domain` | 1 | 5.9% |
 
 **算子构成**（op，共 10 处）：
 
@@ -165,22 +165,21 @@
 | `push_back` | 1 |
 | `overlay` | 1 |
 
-**改动的属性（modify_stat，共 2 处）**：
+**改动的属性（modify_stat，共 1 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
-| `attack` | 1 |
 | `gauge.rate` | 1 |
 
-**改动的资源（modify_resource，共 7 处）**：
+**改动的资源（modify_resource，共 6 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
-| `gauge.current` | 6 |
+| `gauge.current` | 5 |
 | `lost` | 1 |
 
 **设计风格总结**：本轴偏【运营】——以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `mount_status`(8)、`modify_resource`(7)、`modify_stat`(2)；属性杠杆集中在 `attack`、`gauge.rate`，资源杠杆集中在 `gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(8)、`modify_resource`(6)、`domain`(1)；属性杠杆集中在 `gauge.rate`，资源杠杆集中在 `gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **智慧权柄**：战斗开始时获得「智慧」：你的攻击与技能必定命中、伤害 ×1.15，持续整场；自身行动条速率 +8，持续整场。；并获得「预知」5 tick（受击伤害 ×0.5，一次）。
 

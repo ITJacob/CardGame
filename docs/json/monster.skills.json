@@ -908,31 +908,9 @@
         "placement": "enemy_half",
         "envRulesText": "区域内敌方单位每 2 tick 叠 1 层 misfortune（受 3 层上限约束；叠满即触发 target_override → first_empty 打空并清空）"
       },
-      "zoneDef": {
-        "id": "zone_doom_field",
-        "kind": "hazard",
-        "trigger": "on_occupy_tick",
-        "interval": 2,
-        "affects": "enemy_of_owner",
-        "duration": 8,
-        "durationUnit": "tick",
-        "effects": [
-          {
-            "type": "mount_status",
-            "statusId": "misfortune",
-            "stacks": 1,
-            "duration": 4
-          }
-        ],
-        "note": "H9 Zone 母版（新增项 9，2026-09-08 界域牌批次已登记）；Zone 跨半场落敌方半场已拍板（战场上下文 §二）"
-      },
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": [
-        "稿面 consumption: zone 但保持 Zone 载荷（非 domain 界域牌），按批次 8 拍板照转；Zone 租金（lost）口径稿面未给，待裁定",
-        "翻译/语义：原著\"自然染上厄运\"=区域载荷而非指向 debuff。命运值未直接写，但领域持续产出厄运即持续 push 命运值（见 §〇）。⚠️ ZoneDef 已落 ddd。",
-        "2026-10-01 吟唱重标：仪式类（prim）castTime 2→1 tick（对齐拍板表）"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a patch of battlefield rotting under a dome of sickly green miasma",
         "elements": [
@@ -2026,6 +2004,26 @@
         ],
         "mood": "arbitrary, implacable"
       }
+    }
+  ],
+  "zoneDefs": [
+    {
+      "id": "zone_doom_field",
+      "kind": "hazard",
+      "trigger": "on_occupy_tick",
+      "interval": 2,
+      "affects": "enemy_of_owner",
+      "duration": 8,
+      "durationUnit": "tick",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "misfortune",
+          "stacks": 1,
+          "duration": 4
+        }
+      ],
+      "note": "H9 Zone 母版（新增项 9，2026-09-08 界域牌批次已登记）；Zone 跨半场落敌方半场已拍板（战场上下文 §二）"
     }
   ],
   "designNote": "> **命运值维度（光之钥系 §2.2 / 总览 §1 咬合器③）**：战场双极量表 **−10↔+10**，怪物专用写入，他人（占卜家 / 偷盗者 / 刺客 / 不眠者）可触发读取。怪物经「预知 / 厄运 / 循环」类效果写入：我方好运类 enabler 命运值 **+1/次**；施加敌方厄运 **+1/次**（从敌方抽取运气）；消耗类（赢家免死 / 赐福）**−N**。阈值档（全部 ⚠️D）：\n> - **≥ +5**：我方「幸运 / 好运」类 payoff 放大（赐福 ×1.3、赢家免死阈值 4→3）；敌方「厄运」叠层速度 ×2（每 tick +1 而非 +0.5）。\n> - **≥ +8**：命运总线满载——怪物可远端调度一次命运（命运之轮减费 / 强制判定生效）。\n> - **≤ −5**：反噬风险——怪物施放技能后自身 `mount_status(厄运, stacks:1)`（确定性 debuff，非伤害，R5 合规），或敌人从总线抽头获利。\n> - **= +10 / −10**：命运洪流 / 命运债务——终焉卡触发全屏改写。\n>\n> **跨源质写入方**：占卜家（命运干扰 / 锚点）、偷盗者（嫁接命运 / 命运木马）、刺客（命运诅咒）、不眠者（厄难）也读写同一组枢纽状态；怪物是主调度方（见 §三 枢纽白名单）。",

@@ -470,24 +470,11 @@
      ]
     }
    ],
-   "unitDefs": [
-    {
-     "id": "unit_wraith",
-     "name": "亡魂",
-     "unitType": "UNDEAD",
-     "base": {
-      "hpRatio": 0.7,
-      "atkRatio": null,
-      "reach": "melee"
-     },
-     "note": "F25 已落 H1 召唤物基线（hp 16 / atk 4 量级 ⚠️D）；ID 归属已裁决：归收尸人亡灵线，不眠者自然灵另立 unit_nature_spirit"
-    }
-   ],
    "sharedAcross": [
     "sleepless"
    ],
    "tentative": false,
-   "conversionNotes": "翻译/语义：灵视轴旗舰：挂 `灵视` + 借灵施法（payoff 一体）。 ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。",
+   "conversionNotes": "翻译/语义：灵视轴旗舰：挂 `灵视` + 借灵施法（payoff 一体）。 ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
    "dimHooks": [
     {
      "dim": "luminance",
@@ -659,19 +646,6 @@
      "unitId": "unit_skeleton"
     }
    ],
-   "unitDefs": [
-    {
-     "id": "unit_skeleton",
-     "name": "骷髅",
-     "unitType": "UNDEAD",
-     "base": {
-      "hpRatio": 1.0,
-      "atkRatio": null,
-      "reach": "melee"
-     },
-     "note": "F34 已落 H1 召唤物基线（hp 12 / atk 3 量级 ⚠️D）；廉价铺量定位"
-    }
-   ],
    "tentative": false,
    "art": {
     "subject": "scattered bones assembling into a standing skeleton",
@@ -682,7 +656,7 @@
     ],
     "mood": "macabre, obedient"
    },
-   "conversionNotes": "spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。"
+   "conversionNotes": "spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。"
   },
   {
    "id": "skill_corpse_collector_s6_raise_zombie",
@@ -718,21 +692,8 @@
      "unitId": "unit_zombie"
     }
    ],
-   "unitDefs": [
-    {
-     "id": "unit_zombie",
-     "name": "活尸",
-     "unitType": "UNDEAD",
-     "base": {
-      "hpRatio": 1.0,
-      "atkRatio": null,
-      "reach": "melee"
-     },
-     "note": "F35 已落 H1 召唤物基线（hp 24 / atk 2 量级 ⚠️D）；本途径唯一坦克型召唤物"
-    }
-   ],
    "tentative": false,
-   "conversionNotes": "翻译/语义：亡者轴唤起亡灵的地基。 ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。",
+   "conversionNotes": "翻译/语义：亡者轴唤起亡灵的地基。 ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
    "art": {
     "subject": "a rotting corpse clawing out of cracked earth",
     "elements": [
@@ -1133,83 +1094,12 @@
      }
     ]
    },
-   "domainDef": {
-    "id": "domain_underworld_gate",
-    "tier": "overlay",
-    "dispelable": true,
-    "duration": 4,
-    "durationUnit": "turn",
-    "triggers": [
-     {
-      "event": "on_turn_start",
-      "filter": {
-       "side": "ally",
-       "unitType": [
-        "UNDEAD"
-       ]
-      },
-      "effects": [
-       {
-        "type": "modify_stat",
-        "stat": "attack",
-        "value": 2,
-        "mode": "delta",
-        "duration": 1
-       },
-       {
-        "type": "modify_stat",
-        "stat": "defense",
-        "value": 0.85,
-        "mode": "mul",
-        "duration": 1,
-        "note": "亡者得利：受伤 ×0.85（1t 刷新）"
-       }
-      ]
-     },
-     {
-      "event": "on_turn_start",
-      "filter": {
-       "side": "enemy"
-      },
-      "effects": [
-       {
-        "type": "modify_stat",
-        "stat": "gauge.rate",
-        "value": 0.85,
-        "mode": "mul",
-        "duration": 1,
-        "note": "生灵受阻（1t 刷新，乘算 INV-S5 合规）"
-       }
-      ]
-     }
-    ],
-    "rulePatches": [
-     {
-      "kind": "empower",
-      "side": "ally",
-      "tag": [
-       "亡灵",
-       "死亡"
-      ],
-      "mul": 1.5
-     },
-     {
-      "kind": "empower",
-      "side": "both",
-      "tag": [
-       "光明",
-       "净化"
-      ],
-      "mul": 0.7
-     }
-    ]
-   },
    "tags": [
     "亡灵",
     "死亡"
    ],
    "tentative": false,
-   "conversionNotes": "翻译/语义：终末轴旗舰主题界域；读 `冥界` 给亡灵增益（payoff 一体）+ 写隐秘值。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 2→1 tick（对齐拍板表）",
+   "conversionNotes": "翻译/语义：终末轴旗舰主题界域；读 `冥界` 给亡灵增益（payoff 一体）+ 写隐秘值。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 2→1 tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
    "dimHooks": [
     {
      "dim": "luminance",
@@ -1654,36 +1544,6 @@
      "note": "保持 Zone 形态（H9 Zone 母版）"
     }
    ],
-   "zoneDef": {
-    "id": "zone_true_death",
-    "kind": "hazard",
-    "trigger": "on_occupy_tick",
-    "affects": "enemy_of_owner",
-    "duration": null,
-    "effects": [
-     {
-      "op": "sequence",
-      "steps": [
-       {
-        "type": "damage",
-        "element": "none",
-        "value": 2,
-        "note": "剥夺生命力"
-       },
-       {
-        "type": "mount_status",
-        "statusId": "lifeless",
-        "duration": 2
-       },
-       {
-        "type": "mount_status",
-        "statusId": "revive_blocked",
-        "duration": 2
-       }
-      ]
-     }
-    ]
-   },
    "tentative": false,
    "dimHooks": [
     {
@@ -1703,7 +1563,7 @@
     ],
     "mood": "absolute, silent"
    },
-   "conversionNotes": "2026-10-01 吟唱重标：仪式类（prim）读条 2 tick（序列 2 档，基准 §三之二）"
+   "conversionNotes": "2026-10-01 吟唱重标：仪式类（prim）读条 2 tick（序列 2 档，基准 §三之二） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。"
   },
   {
    "id": "skill_corpse_collector_s2_undead_king",
@@ -1807,49 +1667,8 @@
      "note": "保持 Zone 形态"
     }
    ],
-   "zoneDef": {
-    "id": "zone_pale_kingdom",
-    "kind": "hazard",
-    "trigger": "on_occupy_tick",
-    "affects": "enemy_of_owner",
-    "duration": null,
-    "effects": [
-     {
-      "op": "if",
-      "condition": {
-       "kind": "hp_percent",
-       "side": "target",
-       "cmp": "<=",
-       "n": 0.2
-      },
-      "then": [
-       {
-        "op": "sequence",
-        "steps": [
-         {
-          "type": "damage",
-          "element": "none",
-          "value": 0,
-          "lethal": true,
-          "note": "立刻死亡（execute / damage.lethal）"
-         },
-         {
-          "type": "spawn",
-          "hpRatio": 0.6,
-          "position": "tail",
-          "note": "转为不死（归属己方，跨阵营 spawn G8 合规）",
-          "unitId": "unit_skeleton"
-         }
-        ]
-       }
-      ],
-      "else": [],
-      "note": "每单位限判定一次（附 charges:1 判定标记）"
-     }
-    ]
-   },
    "tentative": false,
-   "conversionNotes": "翻译/语义：终末轴终焉界域，读 `冥界` 即死转化（payoff 一体）+ 写隐秘值。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 2 tick（序列 2 档，基准 §三之二） ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。",
+   "conversionNotes": "翻译/语义：终末轴终焉界域，读 `冥界` 即死转化（payoff 一体）+ 写隐秘值。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 2 tick（序列 2 档，基准 §三之二） ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
    "dimHooks": [
     {
      "dim": "luminance",
@@ -2024,86 +1843,12 @@
      }
     ]
    },
-   "domainDef": {
-    "id": "domain_pale_world",
-    "tier": "overlay",
-    "dispelable": true,
-    "duration": 3,
-    "durationUnit": "turn",
-    "triggers": [
-     {
-      "event": "on_tick",
-      "filter": {
-       "side": "enemy"
-      },
-      "effects": [
-       {
-        "type": "dispel",
-        "target": "target",
-        "dispelTarget": "unit",
-        "filter": {
-         "category": [
-          "buff"
-         ],
-         "count": 1
-        },
-        "note": "非凡能力凋零：每 tick 自动剥一层 buff"
-       },
-       {
-        "type": "mount_status",
-        "statusId": "weaken",
-        "duration": 2,
-        "value": 0.8
-       }
-      ]
-     },
-     {
-      "event": "on_turn_start",
-      "filter": {
-       "side": "ally",
-       "unitType": [
-        "UNDEAD"
-       ]
-      },
-      "effects": [
-       {
-        "type": "modify_stat",
-        "stat": "defense",
-        "value": 0.85,
-        "mode": "mul",
-        "duration": 1,
-        "note": "亡者得庇护（1t 刷新）"
-       }
-      ]
-     }
-    ],
-    "rulePatches": [
-     {
-      "kind": "empower",
-      "side": "both",
-      "tag": [
-       "亡灵",
-       "死亡"
-      ],
-      "mul": 1.3
-     },
-     {
-      "kind": "empower",
-      "side": "both",
-      "tag": [
-       "光明",
-       "净化"
-      ],
-      "mul": 0.7
-     }
-    ]
-   },
    "tags": [
     "亡灵",
     "死亡"
    ],
    "tentative": false,
-   "conversionNotes": "翻译/语义：终末轴能力凋零 payoff（读 `冥界` 放大）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 5→2 tick（对齐拍板表）",
+   "conversionNotes": "翻译/语义：终末轴能力凋零 payoff（读 `冥界` 放大）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 5→2 tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
    "dimHooks": [
     {
      "dim": "luminance",
@@ -2778,6 +2523,261 @@
     "mood": "merciless, revealing"
    },
    "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→2 tick（对齐拍板表）"
+  }
+ ],
+ "unitDefs": [
+  {
+   "id": "unit_wraith",
+   "name": "亡魂",
+   "unitType": "UNDEAD",
+   "base": {
+    "hpRatio": 0.7,
+    "atkRatio": null,
+    "reach": "melee"
+   },
+   "note": "F25 已落 H1 召唤物基线（hp 16 / atk 4 量级 ⚠️D）；ID 归属已裁决：归收尸人亡灵线，不眠者自然灵另立 unit_nature_spirit"
+  },
+  {
+   "id": "unit_skeleton",
+   "name": "骷髅",
+   "unitType": "UNDEAD",
+   "base": {
+    "hpRatio": 1.0,
+    "atkRatio": null,
+    "reach": "melee"
+   },
+   "note": "F34 已落 H1 召唤物基线（hp 12 / atk 3 量级 ⚠️D）；廉价铺量定位"
+  },
+  {
+   "id": "unit_zombie",
+   "name": "活尸",
+   "unitType": "UNDEAD",
+   "base": {
+    "hpRatio": 1.0,
+    "atkRatio": null,
+    "reach": "melee"
+   },
+   "note": "F35 已落 H1 召唤物基线（hp 24 / atk 2 量级 ⚠️D）；本途径唯一坦克型召唤物"
+  }
+ ],
+ "zoneDefs": [
+  {
+   "id": "zone_true_death",
+   "kind": "hazard",
+   "trigger": "on_occupy_tick",
+   "affects": "enemy_of_owner",
+   "duration": null,
+   "effects": [
+    {
+     "op": "sequence",
+     "steps": [
+      {
+       "type": "damage",
+       "element": "none",
+       "value": 2,
+       "note": "剥夺生命力"
+      },
+      {
+       "type": "mount_status",
+       "statusId": "lifeless",
+       "duration": 2
+      },
+      {
+       "type": "mount_status",
+       "statusId": "revive_blocked",
+       "duration": 2
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "zone_pale_kingdom",
+   "kind": "hazard",
+   "trigger": "on_occupy_tick",
+   "affects": "enemy_of_owner",
+   "duration": null,
+   "effects": [
+    {
+     "op": "if",
+     "condition": {
+      "kind": "hp_percent",
+      "side": "target",
+      "cmp": "<=",
+      "n": 0.2
+     },
+     "then": [
+      {
+       "op": "sequence",
+       "steps": [
+        {
+         "type": "damage",
+         "element": "none",
+         "value": 0,
+         "lethal": true,
+         "note": "立刻死亡（execute / damage.lethal）"
+        },
+        {
+         "type": "spawn",
+         "hpRatio": 0.6,
+         "position": "tail",
+         "note": "转为不死（归属己方，跨阵营 spawn G8 合规）",
+         "unitId": "unit_skeleton"
+        }
+       ]
+      }
+     ],
+     "else": [],
+     "note": "每单位限判定一次（附 charges:1 判定标记）"
+    }
+   ]
+  }
+ ],
+ "domainDefs": [
+  {
+   "id": "domain_underworld_gate",
+   "tier": "overlay",
+   "dispelable": true,
+   "duration": 4,
+   "durationUnit": "turn",
+   "triggers": [
+    {
+     "event": "on_turn_start",
+     "filter": {
+      "side": "ally",
+      "unitType": [
+       "UNDEAD"
+      ]
+     },
+     "effects": [
+      {
+       "type": "modify_stat",
+       "stat": "attack",
+       "value": 2,
+       "mode": "delta",
+       "duration": 1
+      },
+      {
+       "type": "modify_stat",
+       "stat": "defense",
+       "value": 0.85,
+       "mode": "mul",
+       "duration": 1,
+       "note": "亡者得利：受伤 ×0.85（1t 刷新）"
+      }
+     ]
+    },
+    {
+     "event": "on_turn_start",
+     "filter": {
+      "side": "enemy"
+     },
+     "effects": [
+      {
+       "type": "modify_stat",
+       "stat": "gauge.rate",
+       "value": 0.85,
+       "mode": "mul",
+       "duration": 1,
+       "note": "生灵受阻（1t 刷新，乘算 INV-S5 合规）"
+      }
+     ]
+    }
+   ],
+   "rulePatches": [
+    {
+     "kind": "empower",
+     "side": "ally",
+     "tag": [
+      "亡灵",
+      "死亡"
+     ],
+     "mul": 1.5
+    },
+    {
+     "kind": "empower",
+     "side": "both",
+     "tag": [
+      "光明",
+      "净化"
+     ],
+     "mul": 0.7
+    }
+   ]
+  },
+  {
+   "id": "domain_pale_world",
+   "tier": "overlay",
+   "dispelable": true,
+   "duration": 3,
+   "durationUnit": "turn",
+   "triggers": [
+    {
+     "event": "on_tick",
+     "filter": {
+      "side": "enemy"
+     },
+     "effects": [
+      {
+       "type": "dispel",
+       "target": "target",
+       "dispelTarget": "unit",
+       "filter": {
+        "category": [
+         "buff"
+        ],
+        "count": 1
+       },
+       "note": "非凡能力凋零：每 tick 自动剥一层 buff"
+      },
+      {
+       "type": "mount_status",
+       "statusId": "weaken",
+       "duration": 2,
+       "value": 0.8
+      }
+     ]
+    },
+    {
+     "event": "on_turn_start",
+     "filter": {
+      "side": "ally",
+      "unitType": [
+       "UNDEAD"
+      ]
+     },
+     "effects": [
+      {
+       "type": "modify_stat",
+       "stat": "defense",
+       "value": 0.85,
+       "mode": "mul",
+       "duration": 1,
+       "note": "亡者得庇护（1t 刷新）"
+      }
+     ]
+    }
+   ],
+   "rulePatches": [
+    {
+     "kind": "empower",
+     "side": "both",
+     "tag": [
+      "亡灵",
+      "死亡"
+     ],
+     "mul": 1.3
+    },
+    {
+     "kind": "empower",
+     "side": "both",
+     "tag": [
+      "光明",
+      "净化"
+     ],
+     "mul": 0.7
+    }
+   ]
   }
  ],
  "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方之一）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。收尸人经\"灵体之线 / 冥界（隐秘型）\"等 +1/次（见【魂枢·隐秘】、【冥界之门】）。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（收尸人·奴役目标最稳）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次（本系可借此操控占卜家秘偶，占卜家也可操控本系亡灵）\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，收尸人是主消费方之一。\n\n> **昼夜时钟（2026-09-21）**：亡灵/冥界类卡挂**暗夜档**（光照度 ≤2）。⚠️ 依据说明：死神途径核心象征是「死亡、亡灵、冥界、奴役」，**原著本身没有昼夜设定**；此处挂钩依据的是源质归属——收尸人属**永暗之河系**（与不眠者、战士同系，「永暗」即永恒之暗），属同源系延伸而非途径自带。若后续判定不该跨系延伸，可整体摘除。系数 ⚠️D 平衡占位。",

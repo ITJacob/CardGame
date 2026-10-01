@@ -1481,76 +1481,12 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_spirit_shroud",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 3,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_tick",
-            "filter": {
-              "side": "enemy"
-            },
-            "effects": [
-              {
-                "type": "damage",
-                "element": "mental",
-                "value": 1,
-                "note": "怨气蚀魂：mental 直伤不走物理抗性"
-              }
-            ]
-          },
-          {
-            "event": "on_turn_start",
-            "filter": {
-              "side": "ally"
-            },
-            "effects": [
-              {
-                "type": "mount_status",
-                "statusId": "guard",
-                "duration": 1,
-                "target": "all_allies",
-                "note": "半沉灵界：己方全体 damage_taken_mul ×0.85 每回合刷新",
-                "value": 0.85
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "诅咒",
-              "灵体"
-            ],
-            "mul": 1.3
-          },
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "光",
-              "净化"
-            ],
-            "mul": 0.7
-          }
-        ]
-      },
       "tags": [
         "诅咒",
         "灵体"
       ],
       "tentative": false,
-      "conversionNotes": [
-        "2026-09-08 界域牌批次新增；与灵体化的关系：灵体化是自己潜入灵界（单体虚化），灵界潜域是把战场按进灵界（全场规则），同一权柄两种尺度",
-        "稿面把己方减伤写在域规则文本里，JSON 折为每回合刷新的 1t 承载状态 spirit_shroud_guard（乘区无对应原语，待内核确认更优承载）",
-        "翻译/语义：异类/灵体主题界域牌（brief §10.4 列于囚犯）。✅ 依赖已落。",
-        "2026-10-01 吟唱补漏：castTime null→0（非仪式）。"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "an entire battlefield sinking halfway into the spirit realm",
         "elements": [
@@ -2382,6 +2318,67 @@
         ],
         "mood": "doomed, crushing"
       }
+    }
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_spirit_shroud",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 3,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_tick",
+          "filter": {
+            "side": "enemy"
+          },
+          "effects": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "note": "怨气蚀魂：mental 直伤不走物理抗性"
+            }
+          ]
+        },
+        {
+          "event": "on_turn_start",
+          "filter": {
+            "side": "ally"
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "guard",
+              "duration": 1,
+              "target": "all_allies",
+              "note": "半沉灵界：己方全体 damage_taken_mul ×0.85 每回合刷新",
+              "value": 0.85
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "诅咒",
+            "灵体"
+          ],
+          "mul": 1.3
+        },
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "光",
+            "净化"
+          ],
+          "mul": 0.7
+        }
+      ]
     }
   ],
   "designNote": "> **暗影世界系签名机制（咬合器维度）**：本系签名 = **恶欲值（单位级 0–10）+ 诅咒链接网 + 异类谱系**。\n> - **恶欲值（单位级）**：战场每单位各自持有一条（写入全局 `StatusDef`）。罪犯产、囚犯消、律师拧。阈值（照搬《暗影世界系技能设定》§2.2）：\n>   - 0–3 正常；**4–6 躁动**：造成伤害 +20%，20% 概率攻击最近单位（含友军）；\n>   - **7–9 失控**：伤害 +50%，35% 概率攻击友军，无法被治疗；\n>   - **=10 欲望爆炸**：受自身最大生命 25% 精神伤害，归零，向相邻单位各传 3 点恶欲值。\n> - **诅咒链接网**（囚犯专属引擎改革）：`诅咒链接 N` = 同时链接 N 个目标（含自身源头）；任一被链接单位受伤 → 全网分摊（分摊系数 = `1 + 0.2×(N−1)`）；囚犯自身为源头时损伤按比例转嫁网络。\n> - **异类谱系**（囚犯专属引擎改革）：形态转换 → push 入栈，谱系深度 D；`演出` 回放栈中前序形态（弱序列4 强度）；D → 异类之王压制力 +20%×D。\n>\n> **跨源质写入方**：恶欲值 → 罪犯（产）、律师（腐蚀·拧高）；诅咒链接网 → 囚犯主消费方；提线木偶 → 囚犯（毒性傀儡/怨魂附身）↔ 占卜家（源堡）；替身 → 囚犯（诅咒转嫁）↔ 律师（定义权）↔ 占卜家/刺客。\n\n> **昼夜时钟（2026-09-21）**：仅「黑暗恐惧」挂**暗夜档**（光照度 ≤2）。原著依据：序列7 狼人「『驱光』、『黑暗恐惧』」——驱光即驱散光明增益，属**直接昼夜锚点**。其余诅咒/束缚/异类轴无昼夜设定，不挂钩。",

@@ -768,79 +768,6 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_illusion",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 3,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_attack",
-            "filter": {
-              "side": "ally"
-            },
-            "effects": [
-              {
-                "op": "if",
-                "condition": {
-                  "kind": "has_status",
-                  "target": "self",
-                  "statusId": "illusion_daze",
-                  "stacksAtLeast": 5
-                },
-                "then": [
-                  {
-                    "type": "dispel",
-                    "target": "self",
-                    "statusId": [
-                      "illusion_daze"
-                    ],
-                    "count": "all",
-                    "note": "consume(5) 落空计数清零"
-                  },
-                  {
-                    "type": "target_override",
-                    "anchor": "first_empty",
-                    "note": "该次攻击打向幻象本身（C7 空坐标）；R5 确定性落空 ≈ 卡面 20%"
-                  }
-                ],
-                "else": [
-                  {
-                    "type": "mount_status",
-                    "statusId": "illusion_daze",
-                    "stacks": 1,
-                    "target": "self"
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "幻象",
-              "镜像"
-            ],
-            "mul": 1.5
-          },
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "光",
-              "净化"
-            ],
-            "mul": 0.7
-          }
-        ],
-        "envRules": {
-          "hand_hidden": true
-        }
-      },
       "frameworkFlags": [
         {
           "code": "HAND_HIDDEN",
@@ -849,10 +776,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": [
-        "与【诡秘之境】（传说）的区别：幻境是低序列可用的软遮蔽，诡秘之境是权柄级的现实改写。",
-        "翻译/语义：【制造幻觉】领域版。双向性照搬界域文档。✅ 依赖已落（2026-09-08 界域批次）。⚠️ `hand_hidden` 引擎承载待确认；。"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a street melting into flowing, overlapping dreamlike scenery",
         "elements": [
@@ -1391,23 +1315,8 @@
           "unitId": "unit_historical_echo"
         }
       ],
-      "unitDefs": [
-        {
-          "id": "unit_historical_echo",
-          "name": "历史影像",
-          "baseOn": "template_target",
-          "hpRatio": 0.35,
-          "atkRatio": 0.6,
-          "note": "H1 召唤物基线模板（编队参数 §2.4 本稿新增项 15）"
-        }
-      ],
       "tentative": false,
-      "conversionNotes": [
-        "「了解越详细成功率越高」→ 若模板单位本场已被攻击/观察过（有 observe 层数），影像属性按比例提升；稿面 targetSpec faction ANY 无 fallbackSort，manual 记 null。",
-        "翻译/语义：可指定**敌方**为单位模板（原著\"人或物\"）。与观诡轴 `observe` 联动：观察越深影像越强。⚠️ 依赖 `spawn.template`（本稿新增项4）。",
-        "2026-10-01 吟唱重标：仪式类（prim）读条 1 tick（序列 3 档，基准 §三之二）",
-        "spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a translucent historical figure stepping out of a foggy time gap",
         "elements": [
@@ -1734,18 +1643,8 @@
           "unitId": "unit_marionette"
         }
       ],
-      "unitDefs": [
-        {
-          "id": "unit_marionette",
-          "name": "秘偶",
-          "baseOn": "summon_baseline",
-          "hpRatio": 0.25,
-          "atkRatio": 0.4,
-          "note": "H1 召唤物基线模板（编队参数 §2.4 本稿新增项 15）"
-        }
-      ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：提线轴召唤引擎，给【秘偶不死】【秘偶换位】供耗材。依赖全局 `on_death` 第三方监听（本稿新增项5）。 ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。",
+      "conversionNotes": "翻译/语义：提线轴召唤引擎，给【秘偶不死】【秘偶换位】供耗材。依赖全局 `on_death` 第三方监听（本稿新增项5）。 ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a puppeteer stitching loose spirit threads from a fallen body into a new marionette",
         "elements": [
@@ -1790,54 +1689,6 @@
           "note": "保持 Zone 形态（H9 Zone 母版，阵地非全场界域）"
         }
       ],
-      "zoneDef": {
-        "id": "zone_mystery_realm",
-        "kind": "blessing",
-        "trigger": "on_occupy_tick",
-        "affects": "any",
-        "duration": null,
-        "effects": [
-          {
-            "op": "if",
-            "condition": {
-              "kind": "unit_faction",
-              "faction": "ally_of_owner"
-            },
-            "then": [
-              {
-                "type": "mount_status",
-                "statusId": "concealed",
-                "duration": 2
-              },
-              {
-                "type": "modify_damage",
-                "scope": "taken",
-                "mul": 0.85,
-                "note": "区域内己方受伤害 ×0.85（zone 为 on_occupy_tick 逐 tick 重挂，语义=停留期间生效）"
-              }
-            ],
-            "else": []
-          },
-          {
-            "op": "if",
-            "condition": {
-              "kind": "unit_faction",
-              "faction": "enemy_of_owner"
-            },
-            "then": [
-              {
-                "type": "modify_stat",
-                "stat": "gauge.rate",
-                "value": 0.85,
-                "mode": "mul",
-                "duration": 2,
-                "note": "区域内敌方 gauge_rate ×0.85（隐秘拖慢）"
-              }
-            ],
-            "else": []
-          }
-        ]
-      },
       "frameworkFlags": [
         {
           "code": "GAUGE_RATE_AS_STAT",
@@ -1846,11 +1697,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": [
-        "Zone 落位不受 G8 约束（G8 原文只约束单位位移，战场上下文 §二已拍板）。",
-        "翻译/语义：原著\"神国雏形+隐秘\"。Zone 落敌方半场已拍板（G8 只约束单位位移）。✅ 依赖已落。",
-        "2026-10-01 吟唱重标：仪式类（prim）读条 2 tick（序列 1 档，基准 §三之二）"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a corner of the battlefield folding into a hidden mist-shrouded sanctum",
         "elements": [
@@ -2401,6 +2248,149 @@
           "gray secrecy veil"
         ],
         "mood": "slippery, unseen"
+      }
+    }
+  ],
+  "unitDefs": [
+    {
+      "id": "unit_historical_echo",
+      "name": "历史影像",
+      "baseOn": "template_target",
+      "hpRatio": 0.35,
+      "atkRatio": 0.6,
+      "note": "H1 召唤物基线模板（编队参数 §2.4 本稿新增项 15）"
+    },
+    {
+      "id": "unit_marionette",
+      "name": "秘偶",
+      "baseOn": "summon_baseline",
+      "hpRatio": 0.25,
+      "atkRatio": 0.4,
+      "note": "H1 召唤物基线模板（编队参数 §2.4 本稿新增项 15）"
+    }
+  ],
+  "zoneDefs": [
+    {
+      "id": "zone_mystery_realm",
+      "kind": "blessing",
+      "trigger": "on_occupy_tick",
+      "affects": "any",
+      "duration": null,
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "unit_faction",
+            "faction": "ally_of_owner"
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "concealed",
+              "duration": 2
+            },
+            {
+              "type": "modify_damage",
+              "scope": "taken",
+              "mul": 0.85,
+              "note": "区域内己方受伤害 ×0.85（zone 为 on_occupy_tick 逐 tick 重挂，语义=停留期间生效）"
+            }
+          ],
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "unit_faction",
+            "faction": "enemy_of_owner"
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 0.85,
+              "mode": "mul",
+              "duration": 2,
+              "note": "区域内敌方 gauge_rate ×0.85（隐秘拖慢）"
+            }
+          ],
+          "else": []
+        }
+      ]
+    }
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_illusion",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 3,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_attack",
+          "filter": {
+            "side": "ally"
+          },
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "target": "self",
+                "statusId": "illusion_daze",
+                "stacksAtLeast": 5
+              },
+              "then": [
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "statusId": [
+                    "illusion_daze"
+                  ],
+                  "count": "all",
+                  "note": "consume(5) 落空计数清零"
+                },
+                {
+                  "type": "target_override",
+                  "anchor": "first_empty",
+                  "note": "该次攻击打向幻象本身（C7 空坐标）；R5 确定性落空 ≈ 卡面 20%"
+                }
+              ],
+              "else": [
+                {
+                  "type": "mount_status",
+                  "statusId": "illusion_daze",
+                  "stacks": 1,
+                  "target": "self"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "幻象",
+            "镜像"
+          ],
+          "mul": 1.5
+        },
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "光",
+            "净化"
+          ],
+          "mul": 0.7
+        }
+      ],
+      "envRules": {
+        "hand_hidden": true
       }
     }
   ],

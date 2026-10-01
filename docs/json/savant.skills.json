@@ -1676,72 +1676,12 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_dominion",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 3,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_tick",
-            "effects": [
-              {
-                "type": "mount_status",
-                "statusId": "vulnerable",
-                "duration": 2,
-                "target": "all_enemies",
-                "note": "暴露破绽（每 tick 刷新）"
-              }
-            ]
-          },
-          {
-            "event": "on_turn_start",
-            "effects": [
-              {
-                "type": "modify_stat",
-                "stat": "gauge.rate",
-                "value": 0.85,
-                "mode": "mul",
-                "duration": 1,
-                "target": "all_enemies",
-                "note": "地形拖慢（1t 刷新）"
-              },
-              {
-                "type": "modify_stat",
-                "stat": "gauge.rate",
-                "value": 1.1,
-                "mode": "mul",
-                "duration": 1,
-                "target": "all_allies",
-                "note": "风向相助（1t 刷新）"
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "ally",
-            "tag": [
-              "机械",
-              "知识"
-            ],
-            "mul": 1.2
-          }
-        ]
-      },
       "tags": [
         "机械",
         "知识"
       ],
       "tentative": false,
-      "conversionNotes": [
-        "2026-09-08 由 Zone 升格为界域牌（双向性按 brief §10.2 补齐：v0.2 只压敌方，现补己方 ×1.1 受益面）；Zone 形态废止",
-        "域内 gauge_rate 按 ddd 口径应走 modify_resource(gauge.rate)，此处沿用 modify_stat(gauge.rate) 写法待裁定",
-        "翻译/语义：规律轴旗舰界域牌（文明/造物类主题）。停靠 11 原语 `domain` + `modify_resource(lost,+1)` 租金。",
-        "2026-10-01 吟唱重标：仪式类（prim）castTime 3→1 tick（对齐拍板表）"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a battlefield bending to one man's will, wind and terrain tripping every enemy",
         "elements": [
@@ -2078,77 +2018,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": [
-        "翻译/语义：文明权柄\"混沌沉淀出秩序\"落地为文明/造物类界域牌（主题界域要求）。",
-        "2026-09-19 由「属性 buff + 驱散」平铺卡升格为界域牌（PENDING §零 真缺口）：停靠 11 原语 domain + modify_resource(lost,+1) 租金，原平铺效果迁入 domainDef.triggers。数值沿用原卡（+3/+3、驱散 1、×1.2）保持强度不变，仍属 。",
-        "2026-10-01 吟唱重标：仪式类（prim）读条 2 tick（序列 1 档，基准 §三之二）"
-      ],
-      "domainDef": {
-        "id": "domain_civilization",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 3,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_turn_start",
-            "filter": {
-              "side": "ally"
-            },
-            "effects": [
-              {
-                "type": "modify_stat",
-                "stat": "attack",
-                "value": 3,
-                "mode": "delta",
-                "duration": 1,
-                "target": "all_allies",
-                "note": "图上知己为何而战（1t 刷新）"
-              },
-              {
-                "type": "modify_stat",
-                "stat": "defense",
-                "value": 3,
-                "mode": "delta",
-                "duration": 1,
-                "target": "all_allies",
-                "note": "城垣与学堂之护（1t 刷新）"
-              }
-            ]
-          },
-          {
-            "event": "on_tick",
-            "filter": {
-              "side": "enemy"
-            },
-            "effects": [
-              {
-                "type": "dispel",
-                "dispelTarget": "unit",
-                "filter": {
-                  "category": [
-                    "buff"
-                  ],
-                  "count": 1
-                },
-                "target": "all_enemies",
-                "note": "文明对照之下野蛮自行崩解"
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "ally",
-            "tag": [
-              "文明",
-              "造物"
-            ],
-            "mul": 1.2
-          }
-        ]
-      },
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "a vast painted scroll unrolling cities, fields, forges and schools across the battlefield",
         "elements": [
@@ -2520,6 +2390,129 @@
         ],
         "mood": "final, preemptive"
       }
+    }
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_dominion",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 3,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 2,
+              "target": "all_enemies",
+              "note": "暴露破绽（每 tick 刷新）"
+            }
+          ]
+        },
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 0.85,
+              "mode": "mul",
+              "duration": 1,
+              "target": "all_enemies",
+              "note": "地形拖慢（1t 刷新）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 1.1,
+              "mode": "mul",
+              "duration": 1,
+              "target": "all_allies",
+              "note": "风向相助（1t 刷新）"
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "ally",
+          "tag": [
+            "机械",
+            "知识"
+          ],
+          "mul": 1.2
+        }
+      ]
+    },
+    {
+      "id": "domain_civilization",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 3,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "filter": {
+            "side": "ally"
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 1,
+              "target": "all_allies",
+              "note": "图上知己为何而战（1t 刷新）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 3,
+              "mode": "delta",
+              "duration": 1,
+              "target": "all_allies",
+              "note": "城垣与学堂之护（1t 刷新）"
+            }
+          ]
+        },
+        {
+          "event": "on_tick",
+          "filter": {
+            "side": "enemy"
+          },
+          "effects": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              },
+              "target": "all_enemies",
+              "note": "文明对照之下野蛮自行崩解"
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "ally",
+          "tag": [
+            "文明",
+            "造物"
+          ],
+          "mul": 1.2
+        }
+      ]
     }
   ],
   "designNote": "> **知识荒野系签名维度（依据《九大源质总览》§5）**：本系**无独立量表**，靠两类跨系桥获得全网价值：\n> - **造物入规则槽**（↔失序之国）：通识者「造物」产出实体物件，是最该被规则槽 `Rules[3]` 约束的对象——造物一旦违规，正好落在仲裁人审判范围；律师可为其争豁免。见 §三 / 稀有档【造物入规则槽】combo 卡。\n> - **信息删除**（↔光之钥）：由同系窥秘人承载，见窥秘人稿。\n> 本稿另将 `知识`/`造物`/`星象`/`规律` 四状态做成enabler→payoff 自循环，使本途径在无独立量表时仍有完整构筑引擎。\n\n> **昼夜时钟（2026-09-21）**：天文学家序列（虚假星象 / 星之祝福 / 星之诅咒）挂**夜间相位**——星光只在夜空可见，与窥秘人星象师同判据。原著依据：序列5 天文学家「星之祝福：引来星光改变重力」「星之诅咒：星光射线带来衰弱/变异/创伤」。「解离」（发射光芒）属人造光非星光，不挂钩。",

@@ -1260,56 +1260,8 @@
           "note": "Zone 注册（consumption: zone + 卡面 zoneDef），非界域原语；H9 Zone 母版已落"
         }
       ],
-      "zoneDef": {
-        "id": "zone_no_darkness",
-        "kind": "blessing",
-        "trigger": "on_occupy_tick",
-        "affects": "any",
-        "effects": [
-          {
-            "side": "enemy",
-            "payload": {
-              "op": "sequence",
-              "steps": [
-                {
-                  "type": "damage",
-                  "element": "holy",
-                  "value": 2
-                },
-                {
-                  "type": "dispel",
-                  "dispelTarget": "unit",
-                  "filter": {
-                    "category": [
-                      "buff"
-                    ],
-                    "count": 1
-                  }
-                }
-              ],
-              "note": "持续净化：黑暗 / 污秽被逐 tick 剥落"
-            }
-          },
-          {
-            "side": "ally",
-            "payload": {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": 0.85,
-              "mode": "mul",
-              "duration": 1,
-              "note": "区域内己方受伤 ×0.85；ddd 口径减伤走乘区，Zone 载荷以乘区表达"
-            }
-          }
-        ]
-      },
       "tentative": false,
-      "conversionNotes": [
-        "无值，castTime 置 null",
-        "Zone 非界域牌（domain/translocate 之外），无迷失租金段；稿面登记行亦未含租金",
-        "翻译/语义：原著\"无暗之域+净化\"=持续净化领域。双向环境规则照搬界域文档（我方光+50%/暗-25%，brief §10.2）。✅ 依赖已落。",
-        "2026-10-01 吟唱重标：仪式类（prim）读条 1 tick（序列 4 档，基准 §三之二）"
-      ],
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "dimHooks": [
         {
           "dim": "luminance",
@@ -2046,85 +1998,12 @@
           }
         ]
       },
-      "domainDef": {
-        "id": "domain_holy_nation",
-        "tier": "overlay",
-        "dispelable": true,
-        "duration": 4,
-        "durationUnit": "turn",
-        "triggers": [
-          {
-            "event": "on_tick",
-            "effects": [
-              {
-                "type": "heal",
-                "value": 1,
-                "target": "all_allies"
-              },
-              {
-                "type": "damage",
-                "element": "holy",
-                "value": 2,
-                "target": "all_enemies"
-              },
-              {
-                "type": "dispel",
-                "target": "all_enemies",
-                "dispelTarget": "unit",
-                "filter": {
-                  "category": [
-                    "buff"
-                  ],
-                  "count": 1
-                }
-              }
-            ],
-            "note": "灼烧与净化"
-          },
-          {
-            "event": "on_turn_start",
-            "filter": {
-              "side": "ally"
-            },
-            "effects": [
-              {
-                "type": "modify_stat",
-                "stat": "defense",
-                "value": 0.75,
-                "mode": "mul",
-                "duration": 1,
-                "note": "庇护：受伤 ×0.75（乘区表达，逐回合刷新）"
-              }
-            ]
-          }
-        ],
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "光",
-              "净化"
-            ],
-            "mul": 1.3
-          },
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "暗影",
-              "污秽"
-            ],
-            "mul": 0.7
-          }
-        ]
-      },
       "tags": [
         "光",
         "净化"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：领域顶点，把庇护+净化+灼烧压进同一界域（【无暗之域】传说上位）。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 5→2 tick（对齐拍板表）",
+      "conversionNotes": "翻译/语义：领域顶点，把庇护+净化+灼烧压进同一界域（【无暗之域】传说上位）。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 5→2 tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "dimHooks": [
         {
           "dim": "luminance",
@@ -2676,6 +2555,126 @@
         "mood": "final, transcendent"
       },
       "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→2 tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→8（位格8 基准6×1.3）。条件/读层追加段不动。"
+    }
+  ],
+  "zoneDefs": [
+    {
+      "id": "zone_no_darkness",
+      "kind": "blessing",
+      "trigger": "on_occupy_tick",
+      "affects": "any",
+      "effects": [
+        {
+          "side": "enemy",
+          "payload": {
+            "op": "sequence",
+            "steps": [
+              {
+                "type": "damage",
+                "element": "holy",
+                "value": 2
+              },
+              {
+                "type": "dispel",
+                "dispelTarget": "unit",
+                "filter": {
+                  "category": [
+                    "buff"
+                  ],
+                  "count": 1
+                }
+              }
+            ],
+            "note": "持续净化：黑暗 / 污秽被逐 tick 剥落"
+          }
+        },
+        {
+          "side": "ally",
+          "payload": {
+            "type": "modify_stat",
+            "stat": "defense",
+            "value": 0.85,
+            "mode": "mul",
+            "duration": 1,
+            "note": "区域内己方受伤 ×0.85；ddd 口径减伤走乘区，Zone 载荷以乘区表达"
+          }
+        }
+      ]
+    }
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_holy_nation",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 4,
+      "durationUnit": "turn",
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 1,
+              "target": "all_allies"
+            },
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "target": "all_enemies"
+            },
+            {
+              "type": "dispel",
+              "target": "all_enemies",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              }
+            }
+          ],
+          "note": "灼烧与净化"
+        },
+        {
+          "event": "on_turn_start",
+          "filter": {
+            "side": "ally"
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 0.75,
+              "mode": "mul",
+              "duration": 1,
+              "note": "庇护：受伤 ×0.75（乘区表达，逐回合刷新）"
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "光",
+            "净化"
+          ],
+          "mul": 1.3
+        },
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "暗影",
+            "污秽"
+          ],
+          "mul": 0.7
+        }
+      ]
     }
   ],
   "designNote": "> **放牧维度（混沌海系 §2.2 / 总览 §1 万能接口②）**：本系签名机制「放牧(Grazing)」= 战场级**动态能力槽** `grazing_slot`，存储被纳管的灵魂及其途径，可释放该途径能力（全局唯一跨系借技能）。歌颂者经「纳管残魂」参与此机制。\n> - **enabler**：友方击杀/控制一个单位 → `grazing_slot +1`（记录其途径与一项招牌能力）。\n> - **payoff**：释放被放牧单位的一项能力（一次）；若被放牧者为 `undead`/`spirit` → 该能力附 `净化` 联动（圣光克死灵的跨系延伸）。\n> - **阈级（⚠️D，自行设计）**：槽 ≥1 释放 1 项；≥3 ×1.3；≥5 `cd -1` 且 2 目标；=MAX(⚠️D 暂定 7) 本回合视为本途径技能（吃 `净化` 增益）。\n>\n> **阵营克制（原著招牌）**：序列8「克制死尸鬼魂」、序列5「污秽和死灵的克星」、序列4「净化堕落/污秽/黑暗/疾病」。主方案=单位标签 `undead`/`foul`/`dark` + 按标签乘区（已落 §1.2b）；退化=数据层预置负 `resist:holy`。\n\n> **昼夜时钟（2026-09-21）**：歌颂者只吃**白昼档增益**（光照度 ≥8 时圣光类 ×1.2，⚠️D）。**原著没有任何「歌颂者夜里变弱」的记载**——时间惩罚只见于不眠者守夜人「正午阳光下被削弱」，故本途径不设夜间减益，避免无据设计。",
