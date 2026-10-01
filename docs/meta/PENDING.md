@@ -17,7 +17,7 @@
 | 月相轮转 / unitType / DomainDef 三件套 | ✅ **经核早已支持且数据在用**，非缺口 | —（核查结论） |
 
 **仍未落地（真缺口）**（2026-09-19 全量核实后重列）
-- `streamlined_cast` 费用修正 —— 属 **progression 层**，不在本「纯战斗 DDD」仓库 scope，待定归属。（2026-09-19 核实：reader 已有该状态与卡面，缺的仅是「费用修正」语义，非状态缺失）
+- `streamlined_cast` 费用修正 —— 属 **progression 层**，不在本「纯战斗 DDD」仓库 scope。✅ **2026-10-01 结案转主项目**（reader 已有该状态与卡面，缺的费用修正语义随主项目 progression 层登记）。
 - ~~`规则槽 Rules[3]` 标 `crossPathway` + 参与途径白名单（仲裁人 / 律师 / 通识者）~~ → ✅ **已落地**（2026-09-19 本轮）：`rule_slot` statusDef 建于 arbiter.statuses.json，`crossPathway:true` + participants `[arbiter, lawyer, savant]`。
 - ~~`domain_civilization` DomainDef 三件套~~ → ✅ **已落地**（2026-09-19 本轮）：【文明图卷】由平铺 buff 卡升格为界域牌，停靠 `domain(overlay)` + `modify_resource(lost,+1)` 租金，原效果迁入 `domainDef.triggers`，`rulePatches: empower(ally, [文明/造物], ×1.2)`。
 - ~~罪犯「黑焰/丰饶 combo」**消费卡缺失**~~ → ✅ **已闭环**（2026-09-26）：自归档技能稿重建三张跨系 combo 卡入 JSON 正典（罪犯 37→40 卡）——【双焰交汇】(s4, rare, 读 black_flame→升级 black_flame_abyss 载荷）【恶欲共鸣】(s5, rare, 读 lawyer corrupted→lust+1+友军能量；corrupted 补 crossPathway+participants)【荒芜侵蚀·改】(s1, legendary, 读 abundance→升级 blight_erode 全场剥丰饶）。**核查更正**：原登记只记黑焰/丰饶两张，实际【恶欲共鸣】也缺席（ddd §五验收项「律师恶欲共鸣·改」同名所指），一并补齐；lust 已 Pool 化，原 mount_status(lust) 语义改 modify_resource(lust,±N)。两个框架缺口登记 frameworkFlags（未落地=false）：STATUS_SOURCE_ATTRIBUTION（状态来源归属无谓词）、PATHWAY_TARGETED_ALLY（按途径定向友军无维度）。
@@ -128,7 +128,7 @@
 - **【均衡分割】与【分割战场】机制重叠**最高，可并。
 ---
 ### 框架改动未落项
-- 🟡 **`秩序度 Order`（0–10 战场量表）** → 与 `secrecy`/`fate` 同族；阈值 7/3/10/0 效果照搬系设定 §2.3（服务于 立规/审判之剑/底层规则/律师压低）
+- 🟡 **`秩序度 Order`（0–10 战场量表）** → 与 `secrecy`/`fate` 同族；✅ **已落地**（2026-10-01 量表批：modify_resource.resource 增 order、8 卡写入、dimHook 读取 7 卡、ddd 源质维度 §三 全节）——；阈值 7/3/10/0 效果照搬系设定 §2.3（服务于 立规/审判之剑/底层规则/律师压低）
 - 🟢 `规则槽` 读写算子 `write_rule_slot` / `modify_rule_slot` → 效果上下文 §2.1（与 `transfer_status` 同族）（服务于 律令轴全卡）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 偷盗者（thief）
@@ -194,8 +194,8 @@
 - **【赠予】`on_tick` 自伤**会高频触发 `on_take_damage`，需确认是否污染【对半承担】转移、是否计入【狂乱适应】debuff（不应计）。
 ---
 ### 框架改动未落项
-- 🟡 **`秩序度 Order`（0–10 战场量表）** → 与仲裁人 v0.3 #2 同源；律师侧 −1/次扭曲、`熵蚀` 每 tick −0.5、秩序崩坏拉 0（服务于 扭曲/利用/重定义/熵/秩序崩坏）
-- 🟢 规则槽 `field` 枚举校验（trigger/punish/exemptions/scope） → 效果上下文 §2.1（建议优化：防非法字段写入）（服务于 僭越轴改规类卡）
+- 🟡 **`秩序度 Order`（0–10 战场量表）** → 与仲裁人 v0.3 #2 同源；✅ **已落地**（2026-10-01 量表批，律师扭曲/熵/利用 −1、秩序崩坏 set 0）——；律师侧 −1/次扭曲、`熵蚀` 每 tick −0.5、秩序崩坏拉 0（服务于 扭曲/利用/重定义/熵/秩序崩坏）
+- 🟢 规则槽 `field` 枚举校验（trigger/punish/exemptions/scope） → ✅ **已落地**（schema write_rule_slot.field 枚举已带"防非法字段写入"description；效果上下文 §2.1 同族登记）——原条目：效果上下文 §2.1（建议优化：防非法字段写入）（服务于 僭越轴改规类卡）
 
 ## 怪物（monster）
 
@@ -310,7 +310,7 @@
 - 🟡 `窥秘`/`法术`/`星象`/`信息` 四身份状态（enabler→payoff 钩子） → 编队参数 §2.4 H11 + 状态表（服务于 四轴引擎）  → ✅ 已落地（见 §零，2026-09-19）
 - 🟡 `命运(fate)` 标 `crossPathway:true` + 参与途径白名单（光之钥/窥秘人） → StatusDef 新增标志（服务于 命运删除 combo）  → ✅ 已落地（见 §零，2026-09-19）
 - 🟡 `重组(reforge)` / `星界锚(astral_anchor)` 跨源质可读白名单 → StatusDef crossPathway（服务于 篡改·信息 / 星光囚笼·改 combo）  → ✅ 已落地（见 §零，2026-09-19）
-- 🟡 域 `domain_astral_field` DomainDef 三件套 → 战场参数 §1.2（服务于 星象领域）
+- 🟡 域 `domain_astral_field` DomainDef 三件套 → ✅ **已落地**（定义在 pryer.skills.json 顶层 domainDefs 池，字段合规过 validate_schema；战场参数 §1.2 为通用字段规范，不逐域枚举）——原条目：战场参数 §1.2（服务于 星象领域）
 - 🟢 `信息(info)` 形态母版（不可选中+减伤+攻击破除，参数化） → 编队参数 §2.4 H5 潜行母版（服务于 信息化 / 信息轴）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 罪犯（criminal）
@@ -324,7 +324,7 @@
 ---
 ### 框架改动未落项
 - 🟡 **`仪式刻印`→`深渊召唤` 映射表**（刻印层数 N → 恶魔 强度/数量 = f(N)） → 召唤物基线（H1）+ spawn.companionBuff（服务于 恶魔仪式/深渊召唤（刻印链轴心））  → ✅ 已落地（见 §零，2026-09-19）
-- 🟡 黑焰/丰饶 combo 读取介质（跨系，非 5 枢纽）登记 → §三 跨组线（服务于 双焰交汇/荒芜侵蚀·改）
+- 🟡 黑焰/丰饶 combo 读取介质（跨系，非 5 枢纽）登记 → ✅ **已落地**（源质维度 §三 表行：黑焰=收尸人主/罪犯消费、丰饶=耕种者主/罪犯消费）——原条目：§三 跨组线（服务于 双焰交汇/荒芜侵蚀·改）
 
 ## 耕种者（planter）
 
@@ -374,9 +374,9 @@
 ---
 ### 框架改动未落项
 - 🟡 `知识`/`造物`/`星象`/`规律` 四身份状态（enabler→payoff 钩子） → 编队参数 §2.4 H11（计数型）+ 状态表（服务于 四轴引擎）  → ✅ 已落地（见 §零，2026-09-19）
-- 🟡 `规则槽(Rules[3])` 标 `crossPathway:true` + 参与途径白名单（失序之国/通识者） → StatusDef 新增标志（服务于 造物入规则槽 combo）
+- 🟡 `规则槽(Rules[3])` 标 `crossPathway:true` + 参与途径白名单（失序之国/通识者） → ✅ **已落地**（arbiter.statuses.json rule_slot：crossPathway:true + participants [arbiter, lawyer, savant]）——原条目：StatusDef 新增标志（服务于 造物入规则槽 combo）
 - 🟢 `规律(law)` 跨源质同源（通识者↔阅读者）白名单 → StatusDef crossPathway（服务于 规律共振 combo）  → ✅ 已落地（见 §零，2026-09-19）
-- 🟡 域 `domain_dominion` / `domain_civilization` DomainDef 三件套 → 战场参数 §1.2（服务于 环境掌控 / 文明图卷）
+- 🟡 域 `domain_dominion` / `domain_civilization` DomainDef 三件套 → ✅ **已落地**（定义在 savant.skills.json 顶层 domainDefs 池，字段合规过 validate_schema）——原条目：战场参数 §1.2（服务于 环境掌控 / 文明图卷）
 - 🟢 造物计数口径（累计产/在场）决策 → 编队参数 §2.4（服务于 造物轴阈值）  → ✅ 已落地（见 §零，2026-09-19）
 
 ## 阅读者（reader）
@@ -389,7 +389,7 @@
 - **放牧槽读取边界**：【解析·跨系共鸣】读取 `放牧` 槽中灵魂快照的具体字段（unitDef 记录）需与秘祈人【放牧灵魂】的 `grazed_soul` slots 对齐。
 ---
 ### 框架改动未落项
-- 🟡 `streamlined_cast` 费用修正 → progression 层（服务于 省略步骤）
+- 🟡 `streamlined_cast` 费用修正 → ⏸ **转主项目**（progression 属战外，不在本仓 scope；reader 状态与卡面已齐，缺的费用修正语义随主项目 progression 层登记，本仓结案）——原条目：progression 层（服务于 省略步骤）
 - 🟢 `crossPathway` 枢纽状态白名单（`grazed_soul`/`flesh_parasite`/`提线木偶`/`替身`/`混乱`/`恶欲值`/`命运`） → StatusDef 新增标志+参与途径（服务于 跨系 combo（§三））  → ✅ 已落地（见 §零，2026-09-19）
 
 
