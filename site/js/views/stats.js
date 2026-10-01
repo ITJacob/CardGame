@@ -84,9 +84,12 @@ function renderSkillStats(view) {
         resByPath = new Map(), elemByPath = new Map(), opByPath = new Map(),
         kindByPath = new Map(), energyByPath = new Map(), cdByPath = new Map(),
         castByPath = new Map(), rankByPath = new Map(), genderByPath = new Map(),
-        depthByPath = new Map();
+        depthByPath = new Map(), factionByPath = new Map(), scopeByPath = new Map(),
+        sortByPath = new Map(), reqFilterByPath = new Map();
   const byEnergy = new Map(), byCd = new Map(), byCast = new Map(),
-        byGender = new Map(), byDepth = new Map(), tagsTotal = new Map();
+        byGender = new Map(), byDepth = new Map(), tagsTotal = new Map(),
+        byFaction = new Map(), byScope = new Map(), bySort = new Map(),
+        reqFilterTotal = new Map();
   for (const c of cards) {
     const p = c._pathway;
     bump(rarityByPath, p, c.rarity);
@@ -116,6 +119,16 @@ function renderSkillStats(view) {
     // （skill_prisoner_s6_corpse_handler）带 target，换个判据两张图会差 1，反而像 bug
     if (c.kind === 'active' && c.reach) bump(reachByPath, p, c.reach);
     if (c.target?.selectionMode) bump(selByPath, p, c.target.selectionMode);
+    // 目标选择三件套（阵营 / 范围 / 排序）+ 选靶过滤键：口径与「选靶方式」组逐字一致——
+    // 用 c.target 判存在（全库 570 主动卡全带 target，另有 1 张被动卡带 target）
+    const rq = c.target?.request;
+    if (rq?.faction) { bump(byFaction, 0, rq.faction); bump(factionByPath, p, rq.faction); }
+    if (rq?.scope) { bump(byScope, 0, rq.scope); bump(scopeByPath, p, rq.scope); }
+    if (c.target?.fallbackSort) { bump(bySort, 0, c.target.fallbackSort); bump(sortByPath, p, c.target.fallbackSort); }
+    for (const k of Object.keys(rq?.filter || {})) {
+      reqFilterTotal.set(k, (reqFilterTotal.get(k) || 0) + 1);
+      bump(reqFilterByPath, p, k);
+    }
     if (c.hook) bump(hookByPath, p, c.hook);
     walkCardEffects(c, (n, kindOf) => {
       if (kindOf === 'op') {
@@ -303,6 +316,29 @@ function renderSkillStats(view) {
     barPanel('选靶方式', sortedRows(bySel, (k) => zh('selectionMode', k))),
     heatOf('途径 × 选靶方式（只算有 target 的卡）', selByPath, colsOf(bySel, 'selectionMode'), { unit: ' 张' }));
 
+  const factionGroup = group('目标面 · 目标阵营',
+    barPanel('目标阵营（request.faction）', sortedRows(flat(byFaction), (k) => zh('faction', k)),
+      `<p class="panel-note muted">口径与「选靶方式」组一致：有 target 即算（含 1 张被动卡）。
+      self 占比如此之高，是大量自保/变身类主动卡的选靶写 self。</p>`),
+    heatOf('途径 × 目标阵营', factionByPath, colsOf(flat(byFaction), 'faction'), { unit: ' 张' }));
+
+  const scopeGroup = group('目标面 · 目标范围',
+    barPanel('目标范围（request.scope）', sortedRows(flat(byScope), (k) => zh('scope', k))),
+    heatOf('途径 × 目标范围', scopeByPath, colsOf(flat(byScope), 'scope'), { unit: ' 张' }));
+
+  const sortGroup = group('目标面 · 选靶排序',
+    barPanel('fallbackSort 分布', sortedRows(flat(bySort), (k) => zh('sortKey', k)),
+      `<p class="panel-note muted">auto（自动选靶）卡的选中排序；manual 卡带它时是并列目标的决选序。
+      键语义见词典 sortKey 栏目（hp_asc = 最残优先 之类）。</p>`),
+    heatOf('途径 × 选靶排序', sortByPath, colsOf(flat(bySort), 'sortKey'), { unit: ' 张' }));
+
+  const reqFilterGroup = group('目标面 · 选靶过滤',
+    barPanel('request.filter 过滤键', sortedRows(reqFilterTotal),
+      `<p class="panel-note muted">选靶约束的过滤键（自由键名，非封闭枚举）：全库
+      ${[...reqFilterTotal.values()].reduce((a, b) => a + b, 0)} 处 / ${reqFilterTotal.size} 种——
+      hasStatus / unitType / isSummon / casterOwned 等，是「精确指向某类单位」的结构化承载。
+      稀疏，不画热图。</p>`));
+
   const hookGroup = group('目标面 · 被动触发点',
     barPanel('被动触发点分布', sortedRows(byHook, (k) => zh('triggerEvent', k))),
     heatOf('途径 × 被动触发点（只算被动卡）', hookByPath, colsOf(byHook, 'triggerEvent'), { unit: ' 张' }));
@@ -323,7 +359,7 @@ function renderSkillStats(view) {
     （上限取本图最大值），跨图比颜色没有意义——要比就比格内数字。行序一律是 manifest 途径顺序；
     列序是各自的用量或刻度顺序，悬停表头看原始 key。状态定义口径见「状态」子页，编目三池
     （召唤物 / 区域 / 界域）见各自子页——本页各组均不含它们。</p>
-    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${primGroup}${opGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${energyGroup}${cdGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${hookGroup}${genderGroup}`;
+    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${primGroup}${opGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${energyGroup}${cdGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}${genderGroup}`;
 
   // 窄屏展开全部列；桌面端该开关不显示（CSS 隐藏），勾选状态无副作用
   wireHeatToggle(view);
