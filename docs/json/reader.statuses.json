@@ -11,9 +11,25 @@
       "slots": {
         "lastSkillRef": "挂载瞬间快照目标最近一次施放过的技能（H33 slots）"
       },
-      "note": "G15-b 合规：duration 6 ≥ 敏捷 0 单位约 25tick 行动周期，且挂载走即时节点（on_deal_damage / on_take_damage），不受 on_turn_start 时间尺度影响 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
+      "note": "G15-b 合规：duration 6 ≥ 敏捷 0 单位约 25tick 行动周期，且挂载走即时节点（on_deal_damage / on_take_damage），不受 on_turn_start 时间尺度影响 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。 ｜ 2026-10-02 补漏批③：on_active_skill 施法解析状态面（矩阵触发点阅读者正主落地——被解析者越施法越被看穿）",
       "maxStacks": 3,
-      "stackPolicy": "refresh"
+      "stackPolicy": "refresh",
+      "triggers": [
+        {
+          "event": "on_active_skill",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "observed",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": 30,
+              "target": "self",
+              "note": "施法解析：被观察者每次发动主动技能，解析立即深化 +1 层（上限 maxStacks 3）——on_active_skill 状态面正主第二承载（观众 insight 之后，⚠️D 待平衡）"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "ritual_expertise",
