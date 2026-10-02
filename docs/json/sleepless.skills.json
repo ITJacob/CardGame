@@ -277,7 +277,7 @@
       "flagship": false,
       "lore": "序列8 午夜诗人 —— \"擅长格斗、射击、攀爬和感应\"",
       "flavor": "你在午夜里练就的身手从不需要灯火照明——拳脚、准头与攀爬的本能，早已刻进骨子里。",
-      "describe": "战斗开始时，自身攻击 +2、防御 +1，持续整场。",
+      "describe": "战斗开始时，自身攻击 +2、防御 +1，持续整场。此外，光照度≤3 时每次受击将「恐惧」反挂给攻击者 10tick（每 10tick 至多一次）；正午受击不回击。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -307,7 +307,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴属性地板。",
+      "conversionNotes": "翻译/语义：暗夜轴属性地板。 ｜ 2026-10-02 矩阵复审·四批（不眠者=on_take_damage 反应式被动正主）：补恐惧回击第二触发点，主触发点 on_battle_start 维持",
       "art": {
         "subject": "a fighter shadow-boxing under a single street lamp at midnight",
         "elements": [
@@ -316,7 +316,34 @@
           "climbing wall"
         ],
         "mood": "disciplined, fluid"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "luminance_compare",
+                "cmp": "<=",
+                "n": 3
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "dread",
+                  "duration": 10,
+                  "note": "午夜回击：暗夜受击，反将恐惧钉进攻击者（⚠️D 待平衡）"
+                }
+              ],
+              "else": [],
+              "note": "回击门槛：光照度≤3 才触发——正午受击不回击（途径红线：天光破晓弱项）"
+            }
+          ],
+          "minIntervalTicks": 10,
+          "note": "反应式被动（矩阵复审·四批 2026-10-02）：不眠者=on_take_damage 恐惧回击正主，把空置触发点转为途径签名；目标省略=事件对侧（攻击者），同阅读者 观察 口径"
+        }
+      ]
     },
     {
       "id": "skill_sleepless_s8_dazing_verse",
