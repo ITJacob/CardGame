@@ -48,7 +48,7 @@
         "人偶制造"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：唯一读阶梯档位的人偶制造已列 enabler，产耗捆绑同卡，缺独立 payoff 卡（待扩展） ｜ 2026-09-29 环节⑤：生命炼成补 matter_ladder 产层段（产层 12→20）；产耗捆绑同卡缺独立 payoff，真空甄别拍板接受（payoffVacuumAccepted，待扩展）；生命炼成读 vitality_field 跨轴（alchemy→healing）",
+      "note": "payoffs 2026-09-26 评审：唯一读阶梯档位的人偶制造已列 enabler，产耗捆绑同卡，缺独立 payoff 卡（待扩展） ｜ 2026-09-29 环节⑤：生命炼成补 matter_ladder 产层段（产层 12→20）；产耗捆绑同卡缺独立 payoff，真空甄别拍板接受（payoffVacuumAccepted，待扩展）；生命炼成读 vitality_field 跨轴（alchemy→healing） ｜ 2026-10-02 批次十一：杂交造物补 matter_ladder 读层段（材质驾驭——payoff 真空补读）",
       "payoffVacuumAccepted": true
     },
     "blight": {
@@ -64,7 +64,7 @@
         "枯荣循环",
         "最后回归之地"
       ],
-      "note": "payoffs 2026-09-26 评审：自然憎恶/最后回归之地自标 payoff；枯荣循环读敌方 DOT 存在（designNote 定为生长↔荒芜唯一直接耦合件）；恶灵化/荒芜已列 enabler 剔除 ｜ 2026-09-29 环节⑤：剥夺生命补 blight 产层段（恶灵化为纯 spawn 移出，产层 12→20）；最后回归之地读 blight 升 landed（payoff notes→landed）；自然权柄读 cultivated 跨轴（blight→harvest）"
+      "note": "payoffs 2026-09-26 评审：自然憎恶/最后回归之地自标 payoff；枯荣循环读敌方 DOT 存在（designNote 定为生长↔荒芜唯一直接耦合件）；恶灵化/荒芜已列 enabler 剔除 ｜ 2026-09-29 环节⑤：剥夺生命补 blight 产层段（恶灵化为纯 spawn 移出，产层 12→20）；最后回归之地读 blight 升 landed（payoff notes→landed）；自然权柄读 cultivated 跨轴（blight→harvest） ｜ 2026-10-02 批次十一：枯荣循环 vitality_field 跨轴读段；最后回归之地 corrupted 跨系读段"
     }
   },
   "cards": [
@@ -806,7 +806,7 @@
       "flagship": false,
       "lore": "序列6 生物学家 —— \"能杂交各种生物产生奇奇怪怪产物\"",
       "flavor": "你把两只谁也看不上谁的生物揉成了一团。落地的东西谁也没见过，连你也不太确定它明天会不会变异。",
-      "describe": "在己方队尾召唤一只杂交兽（F41 unit_beastling），并随机附加一种变异：反伤 2 / 再生 15tick / 攻击附带中毒 10tick / 护盾 +4（15tick）。",
+      "describe": "在己方队尾召唤一只杂交兽（F41 unit_beastling），并随机附加一种变异：反伤 2 / 再生 15tick / 攻击附带中毒 10tick / 护盾 +4（15tick）。；若自身材质阶梯 ≥2 档，材质驾驭：杂交兽取优良材质，护甲 +4。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -873,13 +873,34 @@
             "p": 0.25
           },
           "note": "变异 4/4"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "matter_ladder",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": 4,
+              "mode": "delta",
+              "target": "target",
+              "note": "材质驾驭：自身材质阶梯 ≥2 档（泥土→植物→岩浆…逐级炼成），杂交造物取优良材质护甲 +4——alchemy payoff 读层段（批次十一 2026-10-02，⚠️D 待平衡）"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
         "apothecary"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：炼成轴 enabler：产 `炼成`+随机增益（R5 非伤害维度）。",
+      "conversionNotes": "翻译/语义：炼成轴 enabler：产 `炼成`+随机增益（R5 非伤害维度）。 ｜ 2026-10-02 批次十一：matter_ladder 读层段（材质驾驭——催化成长 payooff 接线，alchemy payoff 真空补读）",
       "art": {
         "subject": "a newly born two-beast hybrid stumbling to its feet",
         "elements": [
@@ -1753,7 +1774,7 @@
       "flagship": false,
       "lore": "序列2 荒芜主母「部分『丰收』『生命』权柄」+ 序列0 下位「荒芜」「丰收」并列",
       "flavor": "它们枯萎的地方，你们的种子正破土而出——同一片土地，只换了一只看它的眼睛。",
-      "describe": "每 tick：若场上存在处于持续伤害状态的敌人，己方生命最低的友军回复 1 点生命。",
+      "describe": "每 tick：若场上存在处于持续伤害状态的敌人，己方生命最低的友军回复 1 点生命。；若己方有生命充盈（vitality_field）在场，荣段更盛：治疗 2 点。",
       "hook": "on_tick",
       "effects": [
         {
@@ -1774,12 +1795,32 @@
             }
           ],
           "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "ally",
+            "id": "vitality_field",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "target",
+              "note": "荣段更盛：己方生命充盈（healing 轴身份）在场，枯荣循环的「荣」治疗 1→2——blight 读 healing 跨轴段（批次十一 2026-10-02）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
       "conversionNotes": [
         "稿面条件「场上存在处于 dot 状态的敌方单位」：field_status_count 谓词按状态 id 计数、无 dot 类别版，暂以 has_category(side:enemy) 表达，语义差异待内核裁定",
-        "on_tick 频率是本卡最大数值盲区（每 tick 回 1 ≈ 每自身回合回 5），需按 tick 频率重标"
+        "on_tick 频率是本卡最大数值盲区（每 tick 回 1 ≈ 每自身回合回 5），需按 tick 频率重标",
+        "2026-10-02 批次十一：vitality_field 跨轴读段（荣段更盛——枯荣循环跨 healing 轴）"
       ],
       "art": {
         "subject": "withered stalks falling as new green shoots break the same soil",
@@ -2019,7 +2060,7 @@
       "flagship": true,
       "lore": "序列0 母亲 —— \"『大地』权柄：最后回归之地\"",
       "flavor": "你敲了敲地面，说了句「回来吧」。它们的生命开始往土里淌；而你们这边倒下过的，正从土里往外爬。",
-      "describe": "全体敌人受到 6 点无元素伤害；若己方有已死亡单位，以 40% 生命复活最近死亡的一名己方单位（落己方队尾）。；对荒芜的目标，荒芜归尘，全体敌方额外受 2 点。",
+      "describe": "全体敌人受到 6 点无元素伤害；若己方有已死亡单位，以 40% 生命复活最近死亡的一名己方单位（落己方队尾）。；对荒芜的目标，荒芜归尘，全体敌方额外受 2 点。；若主目标带有堕落（corrupted），堕落归土，全体敌方再受 1 点。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2081,12 +2122,32 @@
                 }
               ],
               "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "corrupted",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 1,
+                  "target": "all_enemies",
+                  "note": "堕落归土：主目标已堕落（corrupted 枢纽）则归土更重，全体敌方再受 1 点——跨系读段（批次十一 2026-10-02）"
+                }
+              ],
+              "else": []
             }
           ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：荒芜轴 payoff：双面体顶点（敌命回归+己魂归来）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 15tick（序列 0 档，基准 §三之二）",
+      "conversionNotes": "翻译/语义：荒芜轴 payoff：双面体顶点（敌命回归+己魂归来）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 15tick（序列 0 档，基准 §三之二） ｜ 2026-10-02 批次十一：corrupted 跨系读段（堕落归土——荒芜×堕落双腐归土）",
       "art": {
         "subject": "fallen warriors rising from tilled soil while enemies sink into it",
         "elements": [
