@@ -279,13 +279,19 @@
           "type": "mount_status",
           "statusId": "misdirect",
           "duration": 3
+        },
+        {
+          "type": "target_override",
+          "faction": "enemy",
+          "anchor": "first_empty",
+          "note": "目标改写正主承载：被误导者的下一次攻击锚定重定向到空坐标（砍向空位；计时与次数由 misdirect 状态承载）"
         }
       ],
       "sharedAcross": [
         "seer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：误导=打空+挂 `误判`（欺诈轴 enabler）+写隐秘值。",
+      "conversionNotes": "翻译/语义：误导=打空+挂 `误判`（欺诈轴 enabler）+写隐秘值。 ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 target_override(anchor:first_empty)——目标改写正主第一卡（欺诈轴『骗』的机制化）",
       "art": {
         "subject": "a flickering afterimage of a thief left where the enemy strikes empty air",
         "elements": [
@@ -880,6 +886,15 @@
           "statusId": "divine_mask",
           "duration": 3,
           "target": "self"
+        },
+        {
+          "type": "modify_targetability",
+          "target": "self",
+          "untargetable": true,
+          "direction": "enemy_targeted",
+          "duration": 3,
+          "pierce": "none",
+          "note": "伪装正主承载：敌方单体技能无法选中你（原 divine_mask 状态表达保留兼容）"
         }
       ],
       "sharedAcross": [
@@ -887,7 +902,7 @@
         "apprentice"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：潜入+必杀；误判加成（欺诈轴 payoff）。",
+      "conversionNotes": "翻译/语义：潜入+必杀；误判加成（欺诈轴 payoff）。 ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 modify_targetability(enemy_targeted)『盗天机伪装』——不可被选中正主第一卡",
       "art": {
         "subject": "a thief cloaked in a stolen divine silhouette gliding past kneeling believers",
         "elements": [
@@ -940,7 +955,7 @@
       "flagship": false,
       "lore": "序列4 寄生者 —— \"「寄生」：初步寄生（借助宿主隐藏 / 恢复）→ 全面控制（接管身体）\"",
       "flavor": "你钻进了它的身体——先是借它喘口气，接着，它的手就不再听它的了。",
-      "describe": "寄生一名敌人 6 tick（目标带提线木偶则 8 tick）：前 3 tick 每 tick 偷取它 2 点生命归自己，且你受到的伤害 ×0.85；后 3 tick 接管它的身体，它的攻击转向它自己的同伴；期间其攻击 -1。宿主死亡则寄生移除。",
+      "describe": "寄生一名敌人 6 tick（目标带提线木偶则 8 tick）：前 3 tick 每 tick 偷取它 2 点生命归自己，且你受到的伤害 ×0.85、敌方单体技能无法选中你（宿主遮蔽）；后 3 tick 接管它的身体，它的攻击转向它自己的同伴（到期归还）；期间其攻击 -1。宿主死亡则寄生移除。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -982,6 +997,23 @@
                   "target": "self",
                   "note": "施法者侧：借助宿主隐藏",
                   "value": 0.85
+                },
+                {
+                  "type": "take_control",
+                  "duration": 3,
+                  "actionPolicy": "attack_only",
+                  "onExpire": "revert",
+                  "note": "后 3 tick 接管宿主身体：其攻击转向它自己的同伴（寄生轴『接管』正主承载；到期归还=revert，夺取须注明归还/时限——途径红线）",
+                  "target": "target"
+                },
+                {
+                  "type": "modify_targetability",
+                  "target": "self",
+                  "untargetable": true,
+                  "direction": "enemy_targeted",
+                  "duration": 3,
+                  "pierce": "none",
+                  "note": "宿主遮蔽：寄居期间敌方单体技能选不中你（寄生=藏在别人身体里）"
                 }
               ]
             }
@@ -1003,6 +1035,23 @@
                   "target": "self",
                   "note": "施法者侧：借助宿主隐藏",
                   "value": 0.85
+                },
+                {
+                  "type": "take_control",
+                  "duration": 3,
+                  "actionPolicy": "attack_only",
+                  "onExpire": "revert",
+                  "note": "后 3 tick 接管宿主身体：其攻击转向它自己的同伴（寄生轴『接管』正主承载；到期归还=revert，夺取须注明归还/时限——途径红线）",
+                  "target": "target"
+                },
+                {
+                  "type": "modify_targetability",
+                  "target": "self",
+                  "untargetable": true,
+                  "direction": "enemy_targeted",
+                  "duration": 3,
+                  "pierce": "none",
+                  "note": "宿主遮蔽：寄居期间敌方单体技能选不中你（寄生=藏在别人身体里）"
                 }
               ]
             }
@@ -1011,7 +1060,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：寄生轴旗舰 enabler+payload：两阶段进程挂 `寄生`+写隐秘值。依赖 F2/F56 + 阶段切换(H50)。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：寄生轴旗舰 enabler+payload：两阶段进程挂 `寄生`+写隐秘值。依赖 F2/F56 + 阶段切换(H50)。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 take_control(attack_only, revert)『接管身体』+ modify_targetability『宿主遮蔽』——夺取与顶替的机制正主承载",
       "art": {
         "subject": "a shadowy figure coiled inside a host's silhouette, strings on its limbs",
         "elements": [
@@ -1530,7 +1579,7 @@
       "flagship": false,
       "lore": "序列2 命运木马 —— \"窃取身份：顶替身份使目标成为「无运者」渐死\"",
       "flavor": "你顶替了它在命运里的名字——从这一刻起，没有人再认得它，连好运也绕着它走；它开始一点点地凋谢。",
-      "describe": "使一名敌人成为「无运者」5 tick：每 tick 流失 1 点生命、受伤 ×1.15、无法再获得增益；先以灵丝寄居 2 tick（深度寄生·仅吸血段）；你获得「顶替」4 tick：受伤 ×0.9，且你对该目标伤害 ×1.2；若目标已被深度寄生，寄生者取而代之，追加 2 点精神伤害。",
+      "describe": "使一名敌人成为「无运者」5 tick：每 tick 流失 1 点生命、受伤 ×1.15、无法再获得增益；先以灵丝寄居 2 tick（深度寄生·仅吸血段）；后 2 tick 顶替其身（仅接管移动，到期归还）；你获得「顶替」4 tick：受伤 ×0.9，且你对该目标伤害 ×1.2；若目标已被深度寄生，寄生者取而代之，追加 2 点精神伤害。",
       "cost": {
         "energy": 5,
         "cooldown": 6,
@@ -1570,6 +1619,14 @@
               }
             },
             {
+              "type": "take_control",
+              "duration": 2,
+              "actionPolicy": "move_only",
+              "onExpire": "revert",
+              "note": "顶替其身：后 2 tick 接管目标行动（仅移动——身份只够骗过脚步，骗不过刀口；到期归还=revert）",
+              "target": "target"
+            },
+            {
               "op": "if",
               "condition": {
                 "kind": "has_status",
@@ -1592,7 +1649,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：寄生轴顶点 payoff：读 `寄生` 顶替命运。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：寄生轴顶点 payoff：读 `寄生` 顶替命运。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 take_control(move_only, revert)『顶替其身』——占巢顶替正主第二卡（与寄生 attack_only 分工：接刀 vs 接腿）",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -2140,6 +2197,13 @@
               "position": "tail"
             },
             {
+              "type": "target_override",
+              "faction": "enemy",
+              "anchor": "unit_doppelganger",
+              "sort": "hp_desc",
+              "note": "目标改写正主承载：敌方单体技能锚点被改写为你的分身（优先生命最高那具；存续 5 tick 由 identity_confused 状态计时）"
+            },
+            {
               "type": "mount_status",
               "statusId": "identity_confused",
               "duration": 5,
@@ -2172,7 +2236,7 @@
         "apprentice"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：两分身+不可区分；挂寄生。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 3 tick（序列 0 档，基准 §三之二）",
+      "conversionNotes": "翻译/语义：两分身+不可区分；挂寄生。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 3 tick（序列 0 档，基准 §三之二） ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 target_override(anchor:unit_doppelganger)『分身冒充』——目标改写正主第二卡（与思维误导 first_empty 分工）",
       "art": {
         "subject": "three identical thieves grinning in a fog, each daring you to choose",
         "elements": [
