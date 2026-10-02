@@ -174,7 +174,7 @@
       "describe": "对一名敌人造成 2 点精神伤害。",
       "cost": {
         "energy": 3,
-        "cooldown": 2,
+        "cooldown": 10,
         "castTime": 0
       },
       "reach": "ranged",
@@ -246,10 +246,10 @@
       "flagship": false,
       "lore": "序列8 推理学员 —— \"观察力、逻辑思维能力提升\"",
       "flavor": "你顺着它挥刀的轨迹倒推回去，找到了那条最不合理的弧线——那里就是破绽。",
-      "describe": "使一名敌人易伤 4 tick，造成 2 点精神伤害，并解析它（刷新技能快照 6 tick）。",
+      "describe": "使一名敌人易伤 20tick，造成 2 点精神伤害，并解析它（刷新技能快照 30tick）。",
       "cost": {
         "energy": 2,
-        "cooldown": 2,
+        "cooldown": 10,
         "castTime": 0
       },
       "reach": "ranged",
@@ -268,7 +268,7 @@
             {
               "type": "mount_status",
               "statusId": "vulnerable",
-              "duration": 4
+              "duration": 20
             },
             {
               "type": "damage",
@@ -278,7 +278,7 @@
             {
               "type": "mount_status",
               "statusId": "observed",
-              "duration": 6,
+              "duration": 30,
               "note": "解析类技能命中即刷新快照（通用设计）"
             }
           ]
@@ -310,13 +310,13 @@
       "flagship": false,
       "lore": "序列8 推理学员 —— \"观察力、逻辑思维能力提升\"（并作为序列6「模仿解析过的能力」的前置）",
       "flavor": "你盯着它的手——每一次挥击、每一个起手式，都被你记了下来。",
-      "describe": "你造成伤害、或受到伤害时，解析本次交互的对方单位（快照其最近一次施放的技能，6 tick）。",
+      "describe": "你造成伤害、或受到伤害时，解析本次交互的对方单位（快照其最近一次施放的技能，30tick）。",
       "hook": "on_deal_damage",
       "effects": [
         {
           "type": "mount_status",
           "statusId": "observed",
-          "duration": 6
+          "duration": 30
         }
       ],
       "triggers": [
@@ -326,7 +326,7 @@
             {
               "type": "mount_status",
               "statusId": "observed",
-              "duration": 6,
+              "duration": 30,
               "note": "你打中的目标被解析"
             }
           ]
@@ -337,7 +337,7 @@
             {
               "type": "mount_status",
               "statusId": "observed",
-              "duration": 6,
+              "duration": 30,
               "note": "打你的单位被解析（挨打也是一种观察）"
             }
           ]
@@ -411,7 +411,7 @@
       "describe": "自身能量 +4。",
       "cost": {
         "energy": 1,
-        "cooldown": 3,
+        "cooldown": 15,
         "castTime": 0
       },
       "reach": "none",
@@ -496,7 +496,7 @@
       "describe": "对最前排一名敌人造成 4 点物理伤害，击退其行动条 50。",
       "cost": {
         "energy": 3,
-        "cooldown": 2,
+        "cooldown": 10,
         "castTime": 0
       },
       "reach": "melee",
@@ -554,7 +554,7 @@
       "describe": "重放目标本场最近一次对己方造成的伤害（原元素，六成效力的向上取整），并驱散其 1 个增益状态；若目标尚未造成过伤害，改为造成 4 点精神伤害。",
       "cost": {
         "energy": 3,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "ranged",
@@ -625,10 +625,10 @@
       "flagship": false,
       "lore": "序列6 博学者 —— \"『解析』：解析对手非凡能力，辨识具体情况和缺陷\"",
       "flavor": "你把它身上那层\"非凡\"剥开来看——里面是什么、缺了什么，一目了然。",
-      "describe": "驱散一名敌人 1 个增益状态，防御 -2（4 tick），并解析它（刷新技能快照 6 tick）。",
+      "describe": "驱散一名敌人 1 个增益状态，防御 -2（20tick），并解析它（刷新技能快照 30tick）。",
       "cost": {
         "energy": 3,
-        "cooldown": 3,
+        "cooldown": 15,
         "castTime": 0
       },
       "reach": "ranged",
@@ -660,13 +660,13 @@
               "stat": "defense",
               "value": -2,
               "mode": "delta",
-              "duration": 4,
+              "duration": 20,
               "note": "辨识缺陷（到期回滚，v1.5 已修）"
             },
             {
               "type": "mount_status",
               "statusId": "observed",
-              "duration": 6
+              "duration": 30
             }
           ]
         }
@@ -700,7 +700,7 @@
       "describe": "模仿一名已解析敌人最近一次施放的技能（20% 效力）；50% 概率成功，失败或快照为空时改为造成 2 点精神伤害。",
       "cost": {
         "energy": 2,
-        "cooldown": 2,
+        "cooldown": 10,
         "castTime": 0
       },
       "reach": "none",
@@ -719,7 +719,7 @@
         {
           "type": "mount_status",
           "statusId": "mimic",
-          "duration": 3,
+          "duration": 15,
           "params": {
             "potency": 0.2
           },
@@ -847,10 +847,10 @@
       "flagship": false,
       "lore": "序列7 守知者 —— \"武器精通、格斗大师、推理大师、仪式魔法大师\"",
       "flavor": "这次的仪式足足画了七重阵纹——阵成之时，你在阵心，而灾祸落在它头上。",
-      "describe": "对一名敌人造成 4 点精神伤害，自身获得 4 点护盾（3 tick）。",
+      "describe": "对一名敌人造成 4 点精神伤害，自身获得 4 点护盾（15tick）。",
       "cost": {
         "energy": 4,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "ranged",
@@ -875,7 +875,7 @@
               "type": "mount_status",
               "statusId": "shield",
               "value": 4,
-              "duration": 3,
+              "duration": 15,
               "target": "self"
             }
           ]
@@ -911,10 +911,10 @@
       "flagship": true,
       "lore": "序列5 秘术导师 —— \"掌握独特罕见的秘术，能自行发明创造法术\"",
       "flavor": "书上没有这一条——因为它是你昨晚自己写出来的。",
-      "describe": "释放你自创的法术（获得时三选一）：锋锐——5 点精神伤害；守护——3 点精神伤害并为自身与相邻友军套 5 点护盾（3 tick）；洞察——3 点精神伤害、易伤 4 tick 并解析目标。",
+      "describe": "释放你自创的法术（获得时三选一）：锋锐——5 点精神伤害；守护——3 点精神伤害并为自身与相邻友军套 5 点护盾（15tick）；洞察——3 点精神伤害、易伤 20tick 并解析目标。",
       "cost": {
         "energy": 3,
-        "cooldown": 3,
+        "cooldown": 15,
         "castTime": 0
       },
       "reach": "ranged",
@@ -961,7 +961,7 @@
               "type": "mount_status",
               "statusId": "shield",
               "value": 5,
-              "duration": 3,
+              "duration": 15,
               "target": "self",
               "note": "相邻友军同享（spread splash_adjacent）"
             }
@@ -980,12 +980,12 @@
             {
               "type": "mount_status",
               "statusId": "vulnerable",
-              "duration": 4
+              "duration": 20
             },
             {
               "type": "mount_status",
               "statusId": "observed",
-              "duration": 6
+              "duration": 30
             }
           ]
         }
@@ -1060,10 +1060,10 @@
       "flagship": false,
       "lore": "序列4 预言家 —— \"『预言』能力：看到未来最可能的几种可能性\"",
       "flavor": "你在无数条岔路里看见了最可能的那一条——同伴会先出手，而它会慢上半拍。",
-      "describe": "指定一名友军：其行动条 +25、获得「预知」（下次受击伤害 ×0.5，5 tick）；敌方主目标行动条 -20。；若目标已解析，预知的压制，其行动条再 -10；若自身带天时预兆，天时共鸣，友军行动条额外 +10。",
+      "describe": "指定一名友军：其行动条 +25、获得「预知」（下次受击伤害 ×0.5，25tick）；敌方主目标行动条 -20。；若目标已解析，预知的压制，其行动条再 -10；若自身带天时预兆，天时共鸣，友军行动条额外 +10。",
       "cost": {
         "energy": 3,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "none",
@@ -1099,7 +1099,7 @@
             {
               "type": "mount_status",
               "statusId": "foresight",
-              "duration": 5
+              "duration": 25
             },
             {
               "type": "modify_resource",
@@ -1177,7 +1177,7 @@
       "describe": "全体敌人受到 3 点精神伤害，并失去 2 点能量（下限 0）。",
       "cost": {
         "energy": 4,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "none",
@@ -1238,7 +1238,7 @@
       "describe": "必定成功：模仿一名已解析敌人最近一次施放的技能（60% 效力）；快照为空时改为造成 3 点精神伤害。",
       "cost": {
         "energy": 3,
-        "cooldown": 3,
+        "cooldown": 15,
         "castTime": 0
       },
       "reach": "none",
@@ -1257,7 +1257,7 @@
         {
           "type": "mount_status",
           "statusId": "mimic",
-          "duration": 3,
+          "duration": 15,
           "params": {
             "potency": 0.6
           },
@@ -1298,7 +1298,7 @@
       "describe": "模仿一名已解析敌人最近一次施放的技能（80% 效力，附加效果自此档起完整保留）；快照为空时改为造成 4 点精神伤害。",
       "cost": {
         "energy": 3,
-        "cooldown": 3,
+        "cooldown": 15,
         "castTime": 0
       },
       "reach": "none",
@@ -1317,7 +1317,7 @@
         {
           "type": "mount_status",
           "statusId": "mimic",
-          "duration": 3,
+          "duration": 15,
           "params": {
             "potency": 0.8
           },
@@ -1393,7 +1393,7 @@
       "describe": "降临「星界秘域」3 回合：敌方每 tick 行动条 -2，己方伤害 ×1.1；「秘术 / 预知」标签卡效果 ×1.3。自身迷失值 +1。",
       "cost": {
         "energy": 5,
-        "cooldown": 7,
+        "cooldown": 35,
         "castTime": 1
       },
       "reach": "none",
@@ -1413,8 +1413,8 @@
               "type": "domain",
               "op": "overlay",
               "def": "domain_astral_sanctum",
-              "duration": 3,
-              "durationUnit": "turn"
+              "duration": 15,
+              "durationUnit": "tick"
             },
             {
               "type": "modify_resource",
@@ -1430,8 +1430,8 @@
       "domain": {
         "tier": "overlay",
         "def": "domain_astral_sanctum",
-        "duration": 3,
-        "durationUnit": "turn",
+        "duration": 15,
+        "durationUnit": "tick",
         "dispelable": true,
         "envRulesText": "全场：敌方单位每 tick gauge.current -2（未来被预读，行动被拖延）；己方单位 damage_mul ×1.1（洞见先机）——双向：滞敌 / 利己",
         "rulePatches": [
@@ -1473,10 +1473,10 @@
       "flagship": false,
       "lore": "序列3 洞悉者 —— \"『洞悉』：洞悉世界规则，敌人弱点暴露无遗\"",
       "flavor": "你看见的不再是一个敌人，而是一整套正在运转的规则——而这套规则，此刻到处都是裂缝。",
-      "describe": "全体敌人易伤 5 tick、防御 -3（5 tick）。",
+      "describe": "全体敌人易伤 25tick、防御 -3（25tick）。",
       "cost": {
         "energy": 4,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "none",
@@ -1494,7 +1494,7 @@
             {
               "type": "mount_status",
               "statusId": "vulnerable",
-              "duration": 5,
+              "duration": 25,
               "target": "all_enemies"
             },
             {
@@ -1502,7 +1502,7 @@
               "stat": "defense",
               "value": -3,
               "mode": "delta",
-              "duration": 5,
+              "duration": 25,
               "target": "all_enemies"
             }
           ]
@@ -1531,10 +1531,10 @@
       "flagship": false,
       "lore": "序列3 洞悉者 —— \"掌握『规律』权柄 / 通过撬动规律解决问题\"",
       "flavor": "你没有去打破它的甲——你只是轻轻拨动了一下\"甲能挡住什么\"这条规则。",
-      "describe": "使一名敌人护甲 -5、全元素抗性 -20（4 tick），期间你对其造成的伤害不结算护盾吸收。（自身带法则修订则延长至 5 tick，规律改写加持）。",
+      "describe": "使一名敌人护甲 -5、全元素抗性 -20（20tick），期间你对其造成的伤害不结算护盾吸收。（自身带法则修订则延长至 25tick，规律改写加持）。",
       "cost": {
         "energy": 4,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "ranged",
@@ -1560,15 +1560,15 @@
             {
               "type": "mount_status",
               "statusId": "law_breach",
-              "duration": 5,
-              "note": "规律改写加持：自身法则修订在场则破绽延长至 5 tick（环节⑤ 2026-09-29 跨系读层段：foresight→savant law_edit）"
+              "duration": 25,
+              "note": "规律改写加持：自身法则修订在场则破绽延长至 25tick（环节⑤ 2026-09-29 跨系读层段：foresight→savant law_edit）"
             }
           ],
           "else": [
             {
               "type": "mount_status",
               "statusId": "law_breach",
-              "duration": 4
+              "duration": 20
             }
           ]
         }
@@ -1599,7 +1599,7 @@
       "describe": "模仿一名已解析敌人最近一次施放的技能（90% 效力，状态持续不再打折）；快照为空时改为造成 5 点精神伤害。",
       "cost": {
         "energy": 3,
-        "cooldown": 3,
+        "cooldown": 15,
         "castTime": 0
       },
       "reach": "none",
@@ -1618,7 +1618,7 @@
         {
           "type": "mount_status",
           "statusId": "mimic",
-          "duration": 3,
+          "duration": 15,
           "params": {
             "potency": 0.9
           },
@@ -1653,7 +1653,7 @@
       "flagship": true,
       "lore": "序列2 智天使 —— \"『智慧』权柄：总能提前看清局势，做出最正确选择\"",
       "flavor": "你永远比战场快半步——因为你站在的那一步，本来就是最正确的那一步。",
-      "describe": "战斗开始时获得「智慧」：你的攻击与技能必定命中、伤害 ×1.15，持续整场；自身行动条速率 +8，持续整场。；并获得「预知」5 tick（受击伤害 ×0.5，一次）。",
+      "describe": "战斗开始时获得「智慧」：你的攻击与技能必定命中、伤害 ×1.15，持续整场；自身行动条速率 +8，持续整场。；并获得「预知」25tick（受击伤害 ×0.5，一次）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1668,7 +1668,7 @@
             {
               "type": "mount_status",
               "statusId": "foresight",
-              "duration": 5,
+              "duration": 25,
               "target": "self",
               "note": "智慧含预知：看清的局势可挡一次（环节⑤ 2026-09-29 补产层段）"
             },
@@ -1714,10 +1714,10 @@
       "flagship": false,
       "lore": "序列2 智天使 —— \"总能提前看清局势，做出最正确选择\"（把\"最正确选择\"施加于同伴）",
       "flavor": "你在他耳边说了一句话——于是他做出了这一整场里最正确的那次出手。",
-      "describe": "指定一名其他友军：行动条 +30，其下一次造成的伤害 ×1.4（5 tick 内）。",
+      "describe": "指定一名其他友军：行动条 +30，其下一次造成的伤害 ×1.4（25tick 内）。",
       "cost": {
         "energy": 3,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "none",
@@ -1744,7 +1744,7 @@
             {
               "type": "mount_status",
               "statusId": "optimal_choice",
-              "duration": 5
+              "duration": 25
             }
           ]
         }
@@ -1849,10 +1849,10 @@
       "flagship": true,
       "lore": "序列1 全知之眼 —— \"『星界导师』权柄：触及星界概念修改目标行为\"",
       "flavor": "你伸手在星界那侧改了一个概念——它抬起刀，却再也想不起来要砍向哪里。",
-      "describe": "使一名敌人攻击 -3（6 tick），并修改其行为概念 6 tick：接下来 2 次攻击打向空处。",
+      "describe": "使一名敌人攻击 -3（30tick），并修改其行为概念 30tick：接下来 2 次攻击打向空处。",
       "cost": {
         "energy": 5,
-        "cooldown": 6,
+        "cooldown": 30,
         "castTime": 0
       },
       "reach": "ranged",
@@ -1871,14 +1871,14 @@
             {
               "type": "mount_status",
               "statusId": "astral_tutelage",
-              "duration": 6
+              "duration": 30
             },
             {
               "type": "modify_stat",
               "stat": "attack",
               "value": -3,
               "mode": "delta",
-              "duration": 6
+              "duration": 30
             }
           ]
         }
@@ -1909,7 +1909,7 @@
       "describe": "完美模仿一名已解析敌人最近一次施放的技能（100% 效力，权柄类效果不被复制）；快照为空时改为造成 6 点精神伤害。；若目标已解析，解析透彻，追加 2 点精神伤害。",
       "cost": {
         "energy": 3,
-        "cooldown": 3,
+        "cooldown": 15,
         "castTime": 0
       },
       "reach": "none",
@@ -1928,7 +1928,7 @@
         {
           "type": "mount_status",
           "statusId": "mimic",
-          "duration": 3,
+          "duration": 15,
           "params": {
             "potency": 1.0,
             "skipAuthority": true
@@ -1986,7 +1986,7 @@
       "describe": "在己方队尾凭空创造一个白塔造物（40% 生命 / 50% 攻击，继承施法者属性）。",
       "cost": {
         "energy": 5,
-        "cooldown": 7,
+        "cooldown": 35,
         "castTime": 3
       },
       "reach": "none",
@@ -2013,7 +2013,7 @@
       "conversionNotes": [
         "A2 合规：不挂任何 on_spawn 语义",
         "翻译/语义：创造=spawn 继承施法者属性造物。依赖新增项 12。A2 合规。",
-        "2026-10-01 吟唱重标：仪式类（prim）读条 3 tick（序列 0 档，基准 §三之二）"
+        "2026-10-01 吟唱重标：仪式类（prim）读条 15tick（序列 0 档，基准 §三之二）"
       ],
       "art": {
         "subject": "a white tower blooming from open pages, birthing a living construct",
@@ -2036,10 +2036,10 @@
       "flagship": false,
       "lore": "序列0 白塔 —— \"『星界阶梯』权柄\"",
       "flavor": "你为同伴在星界开了一道阶梯——他踩上去，从刀口消失了；再落下时，已在安全的后方。",
-      "describe": "指定一名其他友军：其退至己方半场最后位，并获得 8 点护盾（4 tick）。",
+      "describe": "指定一名其他友军：其退至己方半场最后位，并获得 8 点护盾（20tick）。",
       "cost": {
         "energy": 4,
-        "cooldown": 6,
+        "cooldown": 30,
         "castTime": 0
       },
       "reach": "none",
@@ -2066,7 +2066,7 @@
               "type": "mount_status",
               "statusId": "shield",
               "value": 8,
-              "duration": 4
+              "duration": 20
             }
           ]
         }
@@ -2143,8 +2143,8 @@
       "id": "domain_astral_sanctum",
       "tier": "overlay",
       "dispelable": true,
-      "duration": 3,
-      "durationUnit": "turn",
+      "duration": 15,
+      "durationUnit": "tick",
       "triggers": [
         {
           "event": "on_tick",
@@ -2167,9 +2167,9 @@
               "stat": "attack",
               "value": 0,
               "mode": "delta",
-              "duration": 1,
+              "duration": 5,
               "target": "all_allies",
-              "note": "占位写法：洞见先机 = 己方 damage_mul ×1.1（1t 刷新），引擎侧走 damageMulMul: 1.1"
+              "note": "占位写法：洞见先机 = 己方 damage_mul ×1.1（5t 刷新），引擎侧走 damageMulMul: 1.1"
             }
           ]
         }

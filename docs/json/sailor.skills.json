@@ -163,10 +163,10 @@
       "flagship": false,
       "lore": "序列9 水手 —— \"水中灵活如海族，无保护下潜 15 米\"",
       "flavor": "你像海族一样滑进浪里，闪到一处更安全的落脚点，只留下一片抓不住的水影。",
-      "describe": "自身移动到己方半场内一个指定空位，并获得一次性水影：3 tick 内下一次受击伤害 ×0.5。",
+      "describe": "自身移动到己方半场内一个指定空位，并获得一次性水影：15tick 内下一次受击伤害 ×0.5。",
       "cost": {
         "energy": 2,
-        "cooldown": 3,
+        "cooldown": 15,
         "castTime": 0
       },
       "reach": "none",
@@ -191,7 +191,7 @@
               "type": "mount_status",
               "statusId": "guard",
               "charges": 1,
-              "duration": 3,
+              "duration": 15,
               "target": "self",
               "value": 0.5
             }
@@ -263,7 +263,7 @@
       "describe": "对一名近战敌人造成 2 点物理伤害，自身愤怒层数 +1。",
       "cost": {
         "energy": 3,
-        "cooldown": 2,
+        "cooldown": 10,
         "castTime": 0
       },
       "reach": "melee",
@@ -324,7 +324,7 @@
       "describe": "若自身有愤怒层数：消耗全部层数，造成 3 + 2×层数 点物理伤害；否则造成 3 点物理伤害。",
       "cost": {
         "energy": 3,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "melee",
@@ -450,7 +450,7 @@
       "flagship": false,
       "lore": "序列7 航海家 —— \"海洋眷顾：海上全方位提升\"",
       "flavor": "大海眷顾着它的水手——你的力量、韧性与对海水的耐受力都高出一截。",
-      "describe": "战斗开始时，自身攻击 +1、防御 +1、护甲 +5，持续整场。；眷顾即没入海中（自身深潜 3 tick）。",
+      "describe": "战斗开始时，自身攻击 +1、防御 +1、护甲 +5，持续整场。；眷顾即没入海中（自身深潜 15tick）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -480,7 +480,7 @@
         {
           "type": "mount_status",
           "statusId": "submerge",
-          "duration": 3,
+          "duration": 15,
           "target": "self",
           "note": "眷顾即没入海中（环节⑤ 2026-09-29 补产层段）"
         }
@@ -516,7 +516,7 @@
       "describe": "全体敌人受到 2 点物理伤害，并各自在自己队列内后移 1 格。",
       "cost": {
         "energy": 3,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "none",
@@ -552,7 +552,7 @@
         "tiers": [
           {
             "name": "暴风雪",
-            "note": "序列4档：改为 damage(none, 3) + gauge.rate ×0.85（3t）",
+            "note": "序列4档：改为 damage(none, 3) + gauge.rate ×0.85（15t）",
             "effects": [
               {
                 "type": "damage",
@@ -565,7 +565,7 @@
                 "stat": "gauge.rate",
                 "value": 0.85,
                 "mode": "mul",
-                "duration": 3,
+                "duration": 15,
                 "target": "all_enemies"
               }
             ]
@@ -598,7 +598,7 @@
       "describe": "对一名敌人造成 5 点物理伤害。",
       "cost": {
         "energy": 3,
-        "cooldown": 2,
+        "cooldown": 10,
         "castTime": 0
       },
       "reach": "ranged",
@@ -673,10 +673,10 @@
       "flagship": false,
       "lore": "序列6 风眷者 —— \"'风之掌控'：飓风盘绕\"",
       "flavor": "一道飓风盘绕住敌人的身躯，把它卷在半空——它既挪不动，也慢了下来。",
-      "describe": "对一名敌人造成 3 点物理伤害，并束缚 2 tick：无法位移、行动条速率 ×0.7。",
+      "describe": "对一名敌人造成 3 点物理伤害，并束缚 10tick：无法位移、行动条速率 ×0.7。",
       "cost": {
         "energy": 3,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "ranged",
@@ -700,7 +700,7 @@
             {
               "type": "mount_status",
               "statusId": "shackle",
-              "duration": 2
+              "duration": 10
             }
           ]
         }
@@ -715,7 +715,7 @@
               {
                 "type": "mount_status",
                 "statusId": "shackle",
-                "duration": 2,
+                "duration": 10,
                 "target": "all_enemies"
               }
             ]
@@ -851,7 +851,7 @@
       "describe": "对一名敌人造成 5 点雷电伤害。",
       "cost": {
         "energy": 3,
-        "cooldown": 2,
+        "cooldown": 10,
         "castTime": 0
       },
       "reach": "ranged",
@@ -892,10 +892,10 @@
       "flagship": false,
       "lore": "序列5 海洋歌者 —— \"'闪电掌控'：雷击（麻痹敌人，克制亡灵）\"",
       "flavor": "一道落雷劈中敌人，电流窜过它的躯体使其浑身麻痹；若是亡灵，这一击会格外致命。",
-      "describe": "对一名敌人造成 5 点雷电伤害并眩晕 1 tick；若其为亡灵或灵体，追加 4 点雷电伤害。；雷击带电：目标电磁紊乱 2 tick。",
+      "describe": "对一名敌人造成 5 点雷电伤害并眩晕 5tick；若其为亡灵或灵体，追加 4 点雷电伤害。；雷击带电：目标电磁紊乱 10tick。",
       "cost": {
         "energy": 4,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "ranged",
@@ -919,13 +919,13 @@
             {
               "type": "mount_status",
               "statusId": "emc_disorder",
-              "duration": 2,
-              "note": "雷击带电：电磁紊乱 2 tick（环节⑤ 2026-09-29 补产层段）"
+              "duration": 10,
+              "note": "雷击带电：电磁紊乱 10tick（环节⑤ 2026-09-29 补产层段）"
             },
             {
               "type": "mount_status",
               "statusId": "stun",
-              "duration": 1
+              "duration": 5
             },
             {
               "op": "if",
@@ -975,10 +975,10 @@
       "flagship": false,
       "lore": "序列5 海洋歌者 —— \"'歌唱'：干扰灵体 / 提升爆发 / 模拟雷鸣震慑\"",
       "flavor": "你唱起海洋的歌——可以扰得灵体神魂不宁，可以把同伴的血烧热，也可以让嗓中滚出真正的雷鸣。",
-      "describe": "三种唱法（派发时随机其一）：干扰之歌——对一名敌人造成 3 点精神伤害并沉默 2 tick，召唤物或灵体追加 3 点；爆发之歌——使一名友军伤害 +20%（4 tick）；雷鸣之歌——全体敌人受到 2 点雷电伤害且攻击 -2（3 tick）。",
+      "describe": "三种唱法（派发时随机其一）：干扰之歌——对一名敌人造成 3 点精神伤害并沉默 10tick，召唤物或灵体追加 3 点；爆发之歌——使一名友军伤害 +20%（20tick）；雷鸣之歌——全体敌人受到 2 点雷电伤害且攻击 -2（15tick）。",
       "cost": {
         "energy": 3,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "ranged",
@@ -1002,7 +1002,7 @@
             {
               "type": "mount_status",
               "statusId": "silence",
-              "duration": 2
+              "duration": 10
             },
             {
               "op": "if",
@@ -1065,7 +1065,7 @@
               "stat": "attack",
               "value": -2,
               "mode": "delta",
-              "duration": 3,
+              "duration": 15,
               "target": "all_enemies"
             }
           ]
@@ -1096,10 +1096,10 @@
       "flagship": false,
       "lore": "序列5 海洋歌者 —— \"'水幕'\"",
       "flavor": "一层流动的水幕张开在队伍身前，替所有人挡下第一波打击。",
-      "describe": "为全体友军提供 4 点护盾，持续 3 tick。",
+      "describe": "为全体友军提供 4 点护盾，持续 15tick。",
       "cost": {
         "energy": 3,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "none",
@@ -1115,7 +1115,7 @@
           "type": "mount_status",
           "statusId": "shield",
           "value": 4,
-          "duration": 3,
+          "duration": 15,
           "target": "all_allies"
         }
       ],
@@ -1147,7 +1147,7 @@
       "describe": "全体敌人各承受 3 段攻击，每段 1 点物理伤害（逐段独立结算，破盾与加攻件逐段放大）。；对电磁紊乱的目标，乱流风刃，全体敌方额外受 1 点物理伤害。",
       "cost": {
         "energy": 6,
-        "cooldown": 6,
+        "cooldown": 30,
         "castTime": 0
       },
       "reach": "none",
@@ -1219,10 +1219,10 @@
       "flagship": false,
       "lore": "序列4 灾难主祭 —— \"'海啸'\"（序列3 海王\"掀起四五十米海啸\"）",
       "flavor": "一道数十米高的水墙横推过来，把整条敌阵卷进水里。",
-      "describe": "全体敌人受到 4 点伤害、被溺沉 3 tick，并各自在自己队列内后移 1 格。",
+      "describe": "全体敌人受到 4 点伤害、被溺沉 15tick，并各自在自己队列内后移 1 格。",
       "cost": {
         "energy": 5,
-        "cooldown": 6,
+        "cooldown": 30,
         "castTime": 0
       },
       "reach": "none",
@@ -1246,7 +1246,7 @@
             {
               "type": "mount_status",
               "statusId": "drowning",
-              "duration": 3,
+              "duration": 15,
               "target": "all_enemies"
             },
             {
@@ -1301,7 +1301,7 @@
       "describe": "雷电在 3 个不同目标间跳跃，各造成 2 点雷电伤害；命中溺沉目标追加 2 点雷电（导电）；全体敌人行动条 -10（地震震慑）。",
       "cost": {
         "energy": 5,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "ranged",
@@ -1385,7 +1385,7 @@
       "describe": "对一名敌人造成 5 点物理伤害，并将其吹到自己队伍的最后位。",
       "cost": {
         "energy": 4,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "ranged",
@@ -1458,10 +1458,10 @@
       "flagship": false,
       "lore": "序列4 灾难主祭 —— \"真正飞行（时速 500 公里）\"",
       "flavor": "你真正地飞了起来——离地的那一刻，地面上的一切都抓不住你，也打不太疼你。",
-      "describe": "换到己方另一路队尾，并进入飞行 4 tick：受伤 ×0.85、无法被位移。",
+      "describe": "换到己方另一路队尾，并进入飞行 20tick：受伤 ×0.85、无法被位移。",
       "cost": {
         "energy": 3,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "none",
@@ -1485,7 +1485,7 @@
             {
               "type": "mount_status",
               "statusId": "flying",
-              "duration": 4,
+              "duration": 20,
               "target": "self"
             }
           ]
@@ -1573,7 +1573,7 @@
       "flagship": true,
       "lore": "序列3 海王 —— \"领域主宰：掌控海域内自由行走海底，掀起四五十米海啸\"",
       "flavor": "这片海域归你主宰——你的人在水中如履平地，而敌人每走一步都要与海水搏斗。",
-      "describe": "战斗开始时注入英雄域「海王国度」（常驻）：己方行动条速率 ×1.1、护甲 +5，敌方行动条速率 ×0.9 且每 tick 受到 1 点伤害；「海洋/水」标签卡效果 ×1.3、「火」标签卡 ×0.8。；并获得「潮汐号令」4 tick（己方伤害 ×1.1，跨系枢纽）。",
+      "describe": "战斗开始时注入英雄域「海王国度」（常驻）：己方行动条速率 ×1.1、护甲 +5，敌方行动条速率 ×0.9 且每 tick 受到 1 点伤害；「海洋/水」标签卡效果 ×1.3、「火」标签卡 ×0.8。；并获得「潮汐号令」20tick（己方伤害 ×1.1，跨系枢纽）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1595,7 +1595,7 @@
         {
           "type": "mount_status",
           "statusId": "tide_call",
-          "duration": 4,
+          "duration": 20,
           "target": "self",
           "note": "跨系枢纽挂载（2026-09-29 跨系批，产层兼枢纽计数）"
         }
@@ -1631,7 +1631,7 @@
       "frameworkFlags": [
         {
           "code": "GAUGE_RATE_AS_STAT",
-          "note": "域内 gauge_rate ×1.1 / ×0.9（1t 刷新）走 modify_stat(gauge.rate)，同强健体魄待裁定",
+          "note": "域内 gauge_rate ×1.1 / ×0.9（5t 刷新）走 modify_stat(gauge.rate)，同强健体魄待裁定",
           "landed": true
         }
       ],
@@ -1659,7 +1659,7 @@
       "describe": "召唤一头海兽助战（40% 生命、50% 攻击，落己方队尾）。",
       "cost": {
         "energy": 4,
-        "cooldown": 6,
+        "cooldown": 30,
         "castTime": 1
       },
       "reach": "none",
@@ -1700,7 +1700,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：召唤海兽（F32/F33）。A2 合规。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 1 tick（序列 3 档，基准 §三之二）",
+      "conversionNotes": "翻译/语义：召唤海兽（F32/F33）。A2 合规。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 5tick（序列 3 档，基准 §三之二）",
       "art": {
         "subject": "a colossal sea beast breaching the waves to answer its caller's command",
         "elements": [
@@ -1722,10 +1722,10 @@
       "flagship": false,
       "lore": "序列3 海王 —— \"'闪电风暴'：密集电蛇笼罩数百米\"（附加：序列2「电磁紊乱」）",
       "flavor": "数百米内电蛇密布，每一次炸响都让敌人的非凡能力变得迟滞而不稳。",
-      "describe": "全体敌人承受 2 段雷电，每段 2 点；并被电磁紊乱 3 tick：能量恢复 -0.2。",
+      "describe": "全体敌人承受 2 段雷电，每段 2 点；并被电磁紊乱 15tick：能量恢复 -0.2。",
       "cost": {
         "energy": 6,
-        "cooldown": 6,
+        "cooldown": 30,
         "castTime": 0
       },
       "reach": "none",
@@ -1753,7 +1753,7 @@
         {
           "type": "mount_status",
           "statusId": "emc_disorder",
-          "duration": 3,
+          "duration": 15,
           "target": "all_enemies"
         }
       ],
@@ -1785,7 +1785,7 @@
       "describe": "驱散一名敌人全部增益、将其护甲清零，然后造成 5 点伤害。",
       "cost": {
         "energy": 4,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "ranged",
@@ -1850,10 +1850,10 @@
       "flagship": false,
       "lore": "序列3 海王 —— \"'音爆'\"",
       "flavor": "你吐出一个音节，空气炸开——整条敌阵被震得耳中嗡鸣，一时间谁也念不出咒文。",
-      "describe": "全体敌人受到 3 点物理伤害并沉默 1 tick。",
+      "describe": "全体敌人受到 3 点物理伤害并沉默 5tick。",
       "cost": {
         "energy": 5,
-        "cooldown": 6,
+        "cooldown": 30,
         "castTime": 0
       },
       "reach": "none",
@@ -1877,7 +1877,7 @@
             {
               "type": "mount_status",
               "statusId": "silence",
-              "duration": 1,
+              "duration": 5,
               "target": "all_enemies"
             }
           ]
@@ -1947,10 +1947,10 @@
       "flagship": false,
       "lore": "序列2 天灾 —— \"'恐惧之音'：上百公里范围生灵恐惧服从\"",
       "flavor": "你说出那个音节——范围内所有生灵都从骨子里感到恐惧，它们的双手开始发抖，再不敢直视你。",
-      "describe": "全体敌人陷入恐惧 3 tick：攻击 -3、造成伤害 ×0.8，且无法以你为攻击目标。",
+      "describe": "全体敌人陷入恐惧 15tick：攻击 -3、造成伤害 ×0.8，且无法以你为攻击目标。",
       "cost": {
         "energy": 5,
-        "cooldown": 7,
+        "cooldown": 35,
         "castTime": 0
       },
       "reach": "none",
@@ -1965,7 +1965,7 @@
         {
           "type": "mount_status",
           "statusId": "dread",
-          "duration": 3,
+          "duration": 15,
           "target": "all_enemies"
         }
       ],
@@ -1995,10 +1995,10 @@
       "flagship": false,
       "lore": "序列2 天灾 —— \"'天灾降临'：雷灾 / 雪难 / 海啸，毁灭港口或岛屿\"",
       "flavor": "你以天灾之名降下裁决——雷灾、雪难，或是海啸，由你选择用哪一种来毁灭这里。",
-      "describe": "三种天灾择一（派发时随机）：雷灾——全体敌人 4 点雷电伤害并各后退 1 格；雪难——全体敌人 3 点伤害且行动条速率 ×0.85（3 tick）；海啸——全体敌人 4 点伤害并溺沉 3 tick。",
+      "describe": "三种天灾择一（派发时随机）：雷灾——全体敌人 4 点雷电伤害并各后退 1 格；雪难——全体敌人 3 点伤害且行动条速率 ×0.85（15tick）；海啸——全体敌人 4 点伤害并溺沉 15tick。",
       "cost": {
         "energy": 7,
-        "cooldown": 8,
+        "cooldown": 40,
         "castTime": 2
       },
       "reach": "none",
@@ -2046,7 +2046,7 @@
               "stat": "gauge.rate",
               "value": 0.85,
               "mode": "mul",
-              "duration": 3,
+              "duration": 15,
               "target": "all_enemies",
               "note": "乘算，INV-S5 合规"
             }
@@ -2066,14 +2066,14 @@
             {
               "type": "mount_status",
               "statusId": "drowning",
-              "duration": 3,
+              "duration": 15,
               "target": "all_enemies"
             }
           ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：三种天灾各一变体。7 能最贵档。 ｜ 2026-10-01 吟唱重标：仪式类（kw:降临）castTime 4→2 tick（对齐拍板表）",
+      "conversionNotes": "翻译/语义：三种天灾各一变体。7 能最贵档。 ｜ 2026-10-01 吟唱重标：仪式类（kw:降临）castTime 4→10tick（对齐拍板表）",
       "art": {
         "subject": "a calamity herald descending amid lightning, blizzard and crushing tidal waves",
         "elements": [
@@ -2095,10 +2095,10 @@
       "flagship": false,
       "lore": "序列1 雷神 —— \"'天罚'：巨大闪电附带瓦解、净化、摧毁力量\"",
       "flavor": "一道天罚自云端垂落——它先劈碎你的护持、瓦解你的加持，然后才轮到你的身体。",
-      "describe": "驱散一名敌人全部增益、护甲清零，造成 8 点雷电伤害，并施加易伤 3 tick。",
+      "describe": "驱散一名敌人全部增益、护甲清零，造成 8 点雷电伤害，并施加易伤 15tick。",
       "cost": {
         "energy": 6,
-        "cooldown": 7,
+        "cooldown": 35,
         "castTime": 0
       },
       "reach": "ranged",
@@ -2141,7 +2141,7 @@
             {
               "type": "mount_status",
               "statusId": "vulnerable",
-              "duration": 3,
+              "duration": 15,
               "note": "摧毁：留下易伤残骸"
             }
           ]
@@ -2215,10 +2215,10 @@
       "flagship": false,
       "lore": "序列1 雷神 —— \"'风暴地狱'\"（变体：'闪电海洋'、'雷霆之舞'）",
       "flavor": "你把一整片风暴地狱搬到了战场上——电蛇与狂风在其中永不停歇地撕咬。",
-      "describe": "降下风暴地狱区域（4 tick）：区域内敌方每 tick 受到 2 点雷电伤害且行动条速率 ×0.9（2 tick 刷新，不叠层）。（自身带深潜则延长至 5 tick，深海风暴）。；自身带诡秘封印则封禁风暴，全体敌方额外受 2 点雷伤。",
+      "describe": "降下风暴地狱区域（20tick）：区域内敌方每 tick 受到 2 点雷电伤害且行动条速率 ×0.9（10tick 刷新，不叠层）。（自身带深潜则延长至 25tick，深海风暴）。；自身带诡秘封印则封禁风暴，全体敌方额外受 2 点雷伤。",
       "cost": {
         "energy": 7,
-        "cooldown": 8,
+        "cooldown": 40,
         "castTime": 2
       },
       "reach": "none",
@@ -2245,8 +2245,8 @@
               "type": "spawn",
               "consumption": "zone",
               "zone": "zone_storm_hell",
-              "duration": 5,
-              "note": "深海风暴：自身深潜在场则风暴地狱延长至 5 tick（环节⑤ 2026-09-29 跨轴读层段：storm→ocean）"
+              "duration": 25,
+              "note": "深海风暴：自身深潜在场则风暴地狱延长至 25tick（环节⑤ 2026-09-29 跨轴读层段：storm→ocean）"
             }
           ],
           "else": [
@@ -2254,8 +2254,8 @@
               "type": "spawn",
               "consumption": "zone",
               "zone": "zone_storm_hell",
-              "duration": 20,
-              "note": "（2026-09-30 时间回归：稿期 4 回合 → 20 tick，1 回合=5 tick）"
+              "duration": 100,
+              "note": "（2026-09-30 时间回归：稿期 4 回合 → 100tick，1 回合=25tick）"
             }
           ]
         },
@@ -2284,9 +2284,9 @@
       "zone": {
         "kind": "hazard",
         "def": "zone_storm_hell",
-        "duration": 4,
+        "duration": 20,
         "affects": "enemy_of_owner",
-        "envRulesText": "区域内敌方 on_tick：damage(shock, 2) + gauge.rate ×0.9（2t 刷新，不叠层，风压）"
+        "envRulesText": "区域内敌方 on_tick：damage(shock, 2) + gauge.rate ×0.9（10t 刷新，不叠层，风压）"
       },
       "variants": [
         {
@@ -2359,7 +2359,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：雷神级 AOE。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 2 tick（序列 1 档，基准 §三之二） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
+      "conversionNotes": "翻译/语义：雷神级 AOE。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 10tick（序列 1 档，基准 §三之二） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
       "art": {
         "subject": "an entire storm-hell transplanted onto the battlefield, lightning serpents tearing endlessly",
         "elements": [
@@ -2380,7 +2380,7 @@
       "flagship": true,
       "lore": "序列0 暴君 —— \"'暴君'权柄：万王之王（威慑、愤怒、恐惧）\"",
       "flavor": "你是万王之王——敌人一进场就矮了半截，你的怒火比谁都烧得旺，而凡是被你击中的，都会记起恐惧的滋味。",
-      "describe": "战斗开始时敌方全体攻击 -2（整场）；自身愤怒上限 +5、开局获得 3 层、每层额外使伤害 +5%；你每次造成伤害给目标施加恐惧 2 tick。",
+      "describe": "战斗开始时敌方全体攻击 -2（整场）；自身愤怒上限 +5、开局获得 3 层、每层额外使伤害 +5%；你每次造成伤害给目标施加恐惧 10tick。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -2443,7 +2443,7 @@
       "describe": "驱散一名敌人全部增益并护甲清零，把被清除的护盾与护甲总量转化为等量物理伤害打回它身上。",
       "cost": {
         "energy": 5,
-        "cooldown": 6,
+        "cooldown": 30,
         "castTime": 0
       },
       "reach": "ranged",
@@ -2649,7 +2649,7 @@
       "tentative": false,
       "cost": {
         "energy": 3,
-        "cooldown": 1,
+        "cooldown": 5,
         "castTime": 0
       },
       "reach": "melee",
@@ -2724,15 +2724,15 @@
         {
           "type": "mount_status",
           "statusId": "vulnerable",
-          "duration": 15,
+          "duration": 75,
           "target": "target",
-          "note": "（2026-09-30 时间回归：稿期 3 回合 → 15 tick，1 回合=5 tick）"
+          "note": "（2026-09-30 时间回归：稿期 3 回合 → 75tick，1 回合=25tick）"
         }
       ],
       "tentative": false,
       "cost": {
         "energy": 4,
-        "cooldown": 1,
+        "cooldown": 5,
         "castTime": 1
       },
       "reach": "melee",
@@ -2752,7 +2752,7 @@
         ],
         "mood": "unyielding, crushing"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→1 tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→7（位格6 基准5×1.3）。条件/读层追加段不动。"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→7（位格6 基准5×1.3）。条件/读层追加段不动。"
     },
     {
       "id": "skill_sailor_s3_tyrant_edict",
@@ -2804,7 +2804,7 @@
       "tentative": false,
       "cost": {
         "energy": 5,
-        "cooldown": 2,
+        "cooldown": 10,
         "castTime": 1
       },
       "reach": "melee",
@@ -2825,7 +2825,7 @@
         ],
         "mood": "contemptuous, final"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 3→1 tick（对齐拍板表）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表）"
     }
   ],
   "zoneDefs": [
@@ -2834,7 +2834,7 @@
       "kind": "hazard",
       "trigger": "on_occupy_tick",
       "affects": "enemy_of_owner",
-      "duration": 4,
+      "duration": 20,
       "effects": [
         {
           "op": "sequence",
@@ -2849,7 +2849,7 @@
               "stat": "gauge.rate",
               "value": 0.9,
               "mode": "mul",
-              "duration": 2,
+              "duration": 10,
               "target": "self",
               "note": "风压：刷新不叠层"
             }
@@ -2890,7 +2890,7 @@
               "stat": "gauge.rate",
               "value": 1.1,
               "mode": "mul",
-              "duration": 1,
+              "duration": 5,
               "target": "self"
             },
             {
@@ -2898,7 +2898,7 @@
               "stat": "armor",
               "value": 5,
               "mode": "delta",
-              "duration": 1,
+              "duration": 5,
               "target": "self"
             }
           ]
@@ -2914,7 +2914,7 @@
               "stat": "gauge.rate",
               "value": 0.9,
               "mode": "mul",
-              "duration": 1,
+              "duration": 5,
               "target": "self"
             }
           ]

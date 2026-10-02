@@ -62,7 +62,7 @@
         "conceal"
       ],
       "dispelable": true,
-      "duration": 2,
+      "duration": 10,
       "charges": 1,
       "modifiers": {
         "untargetableByTargeted": {
@@ -100,7 +100,7 @@
         "control"
       ],
       "dispelable": true,
-      "duration": 2,
+      "duration": 10,
       "modifiers": {
         "behaviorModifiers": [
           {
@@ -139,7 +139,7 @@
         "retarget"
       ],
       "dispelable": true,
-      "duration": 3,
+      "duration": 15,
       "charges": 1,
       "modifiers": {
         "behaviorModifiers": [
@@ -182,7 +182,7 @@
         "conceal"
       ],
       "dispelable": true,
-      "duration": 3,
+      "duration": 15,
       "charges": 1,
       "modifiers": {
         "untargetableByTargeted": {
@@ -293,7 +293,7 @@
         "buff"
       ],
       "dispelable": true,
-      "duration": 4,
+      "duration": 20,
       "charges": 1,
       "triggers": [
         {
@@ -399,7 +399,7 @@
         "debuff"
       ],
       "dispelable": true,
-      "duration": 3,
+      "duration": 15,
       "modifiers": {
         "damage_mul": 0.75
       },
@@ -409,7 +409,7 @@
           "stat": "attack",
           "value": -2,
           "mode": "delta",
-          "duration": 3,
+          "duration": 15,
           "target": "self"
         }
       ],
@@ -422,14 +422,14 @@
         "debuff"
       ],
       "dispelable": true,
-      "duration": 3,
+      "duration": 15,
       "effects": [
         {
           "type": "modify_stat",
           "stat": "gauge.rate",
           "value": -8,
           "mode": "delta",
-          "duration": 3,
+          "duration": 15,
           "target": "self",
           "note": "缠绕减缓（INV-S5 合规）"
         },
@@ -438,7 +438,7 @@
           "stat": "armor",
           "value": -5,
           "mode": "delta",
-          "duration": 3,
+          "duration": 15,
           "target": "self",
           "note": "丝线勒进护甲的缝隙"
         }
@@ -452,7 +452,7 @@
         "control"
       ],
       "dispelable": true,
-      "duration": 2,
+      "duration": 10,
       "modifiers": {
         "action_nullify": true,
         "damage_taken_mul": 0.7,
@@ -467,14 +467,14 @@
         "buff"
       ],
       "dispelable": true,
-      "duration": 4,
+      "duration": 20,
       "effects": [
         {
           "type": "modify_stat",
           "stat": "armor",
           "value": 5,
           "mode": "delta",
-          "duration": 4,
+          "duration": 20,
           "target": "self",
           "note": "护甲 5 一档；带 duration 的护甲修正常量化（modify_stat 容量语义）"
         }
@@ -488,7 +488,7 @@
               "stat": "gauge.rate",
               "value": -6,
               "mode": "delta",
-              "duration": 2,
+              "duration": 10,
               "target": "attacker",
               "note": "寒气反噬（F61 attacker 寻址，🟡 已登记）；退化方案：全体敌人 gauge.rate -4"
             }
@@ -503,7 +503,7 @@
         "debuff"
       ],
       "dispelable": true,
-      "duration": 4,
+      "duration": 20,
       "ramp": [
         1,
         1,
@@ -538,7 +538,7 @@
           ]
         }
       ],
-      "note": "数值拍板（2026-10-01 待拍板数值批②/A 案）：ramp 1/2/3/4→1/1/2/2、爆发 4→2——单体 4tick 总 8，对齐位格5 锚 5 × DoT 延迟兑现 1.5 = 7.5（容忍 +1）；瘟疫（全体 3tick）读 ramp 前三项 + 爆发 = 5/敌，对齐真群体 3×1.5=4.5。共享方：疾病/黑焰/末日。",
+      "note": "数值拍板（2026-10-01 待拍板数值批②/A 案）：ramp 1/2/3/4→1/1/2/2、爆发 4→2——单体 20tick 总 8，对齐位格5 锚 5 × DoT 延迟兑现 1.5 = 7.5（容忍 +1）；瘟疫（全体 15tick）读 ramp 前三项 + 爆发 = 5/敌，对齐真群体 3×1.5=4.5。共享方：疾病/黑焰/末日。",
       "maxStacks": 4,
       "stackPolicy": "stack",
       "stackThreshold": {
@@ -631,7 +631,7 @@
         "retarget"
       ],
       "dispelable": true,
-      "duration": 4,
+      "duration": 20,
       "charges": 1,
       "modifiers": {
         "behaviorModifiers": [
@@ -679,13 +679,13 @@
         "buff"
       ],
       "dispelable": true,
-      "duration": 2,
+      "duration": 10,
       "effects": [
         {
           "type": "mount_status",
           "statusId": "shield",
           "value": 3,
-          "duration": 2,
+          "duration": 10,
           "target": "self"
         }
       ],
@@ -787,11 +787,11 @@
         "debuff"
       ],
       "dispelable": false,
-      "duration": 3,
+      "duration": 15,
       "modifiers": {
         "action_nullify": true,
         "damage_taken_mul": 0.6,
-        "note": "damage_taken_mul 0.6 是有意的负收益：石化等于给了它 3 tick 减伤，正确用法是锁住奶妈/核心先杀别人"
+        "note": "damage_taken_mul 0.6 是有意的负收益：石化等于给了它 15tick 减伤，正确用法是锁住奶妈/核心先杀别人"
       },
       "triggers": [
         {
@@ -800,14 +800,14 @@
             {
               "type": "mount_status",
               "statusId": "vulnerable",
-              "duration": 2,
+              "duration": 10,
               "target": "self",
               "note": "碎裂：从石头状态解除时满身裂纹"
             }
           ]
         }
       ],
-      "note": "与眩晕的三点差异：时长 3t / 带减伤 / 不可驱散且解除后附易伤 乘区审批：0.6=深度减免档（石化/集群/直觉类重态）"
+      "note": "与眩晕的三点差异：时长 15t / 带减伤 / 不可驱散且解除后附易伤 乘区审批：0.6=深度减免档（石化/集群/直觉类重态）"
     },
     {
       "id": "mirrored",
@@ -816,7 +816,7 @@
         "control"
       ],
       "dispelable": false,
-      "duration": 3,
+      "duration": 15,
       "modifiers": {
         "untargetableByTargeted": {
           "direction": "both",
@@ -835,7 +835,7 @@
         "debuff"
       ],
       "dispelable": true,
-      "duration": 6,
+      "duration": 30,
       "charges": 3,
       "triggers": [
         {
@@ -882,7 +882,7 @@
         "debuff"
       ],
       "dispelable": true,
-      "duration": 6,
+      "duration": 30,
       "charges": 2,
       "modifiers": {
         "action_nullify": {
