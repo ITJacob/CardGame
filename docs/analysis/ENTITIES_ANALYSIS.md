@@ -31,7 +31,7 @@
 | 形态 | 次数 |
 |---|---:|
 | 具名单位引用 | 46 |
-| 区域蓝本引用 | 9 |
+| 区域蓝本引用 | 10 |
 | 复活（不产生新单位） | 6 |
 | 固定蓝本模板 | 6 |
 | 动态模板 | 2 |
@@ -73,18 +73,19 @@
 
 ### 1.4 按 unitType 分道的承载（卡面）
 
-三路承载合并：效果节点 filter.unitType 乘区 **0** 处（登记口径，当前数据零使用——晨曦领域的类型约束写在域 envRulesText 文本里，结构不可统计）、target.request 选靶约束 **6** 张卡、target_unit_type 条件谓词 **4** 处；另有 target_is_summoned 笼统召唤物谓词 **3** 处（此表按类型拆，不含它）。filter 不区分敌我（克制 / 加益只由效果方向决定）。
+三路承载合并：效果节点 filter.unitType 乘区 **0** 处（登记口径，当前数据零使用——晨曦领域的类型约束写在域 envRulesText 文本里，结构不可统计）、target.request 选靶约束 **6** 张卡、target_unit_type 条件谓词 **6** 处；另有 target_is_summoned 笼统召唤物谓词 **3** 处（此表按类型拆，不含它）。filter 不区分敌我（克制 / 加益只由效果方向决定）。
 
 | unitType | 次数 |
 |---|---:|
-| `UNDEAD` | 7 |
-| `SPIRIT` | 5 |
+| `UNDEAD` | 9 |
+| `SPIRIT` | 6 |
 | `CONSTRUCT` | 3 |
+| `DEMON` | 2 |
 | `ITEM` | 1 |
 
 ## 二、区域（zoneDefs 池 + 卡面 zone 用法）
 
-池内蓝本 **8** 条（覆盖 7 途径）；卡级 zone 字段（注册）**2** 张；spawn 召唤区域 **9** 次 / 8 种。Zone 是纯坐标效果、不占格，与召唤物的判别权威在 ddd《战场参数》§一；与 statusDef 同族但**不是** statusDef（驱散不作用于 zone 标量）。
+池内蓝本 **9** 条（覆盖 8 途径）；卡级 zone 字段（注册）**2** 张；spawn 召唤区域 **10** 次 / 9 种。Zone 是纯坐标效果、不占格，与召唤物的判别权威在 ddd《战场参数》§一；与 statusDef 同族但**不是** statusDef（驱散不作用于 zone 标量）。
 
 ### 2.1 池内蓝本清单
 
@@ -98,24 +99,26 @@
 | `zone_storm_hell` | `hazard` | `enemy_of_owner` | `on_occupy_tick` | 20 | 水手 |
 | `zone_mystery_realm` | `blessing` | `any` | `on_occupy_tick` | None | 占卜家 |
 | `zone_nightmare_world` | `hazard` | `enemy_of_owner` | `on_occupy_tick` | 20 | 不眠者 |
+| `zone_dawn_bastion` | `blessing` | `ally_of_owner` | `on_occupy_tick` | 20 | 战士 |
 
 ### 2.2 结构维度分布
 
 | 维度 | 取值 | 次数 |
 |---|---|---:|
 | kind | `hazard` | 5 |
-| kind | `blessing` | 3 |
+| kind | `blessing` | 4 |
 | affects | `enemy_of_owner` | 5 |
 | affects | `any` | 3 |
-| trigger | `on_occupy_tick` | 8 |
-| durationUnit | `tick（缺省）` | 3 |
+| affects | `ally_of_owner` | 1 |
+| trigger | `on_occupy_tick` | 9 |
+| durationUnit | `tick（缺省）` | 4 |
 | durationUnit | `tick` | 1 |
 
 ### 2.3 区域载荷原语（zoneDefs 内效果节点）
 
 | 原语 | 次数 |
 |---|---:|
-| `modify_stat` | 6 |
+| `modify_stat` | 7 |
 | `mount_status` | 5 |
 | `damage` | 4 |
 | `dispel` | 1 |
