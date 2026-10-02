@@ -70,7 +70,24 @@
             ]
           }
         }
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_attack",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": 10,
+              "target": "self",
+              "note": "武技精进：每次发起攻击攻击 +1（10tick 可叠）——on_attack 状态面正主落地（矩阵触发点：战士武技反击系，⚠️D 待平衡）"
+            }
+          ]
+        }
+      ],
+      "note": " ｜ 2026-10-02 补漏批②：on_attack 武技精进状态面"
     },
     {
       "id": "dawn_blade",
@@ -444,7 +461,23 @@
           "duration": null,
           "target": "self"
         }
-      ]
+      ],
+      "triggers": [
+        {
+          "event": "on_kill",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 15,
+              "mode": "delta",
+              "target": "self",
+              "note": "收割结算：击杀时行动条 +15——on_kill 状态面正主落地（矩阵触发点：战士收割结算，⚠️D 待平衡）"
+            }
+          ]
+        }
+      ],
+      "note": " ｜ 2026-10-02 补漏批②：on_kill 收割结算状态面（战斗权柄持有者即收割者）"
     },
     {
       "id": "guardianship",
