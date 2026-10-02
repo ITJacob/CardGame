@@ -75,6 +75,7 @@ DIM_RANGES = {
     "order": (0, 10),
     "fate_value": (-10, 10),
     "luminance": (0, 10),
+    "death_tally": (0, 10),
 }
 
 # 触发点：语义封闭集 13 个（ddd 执行参数 §2.1）。schema triggerEvent 结构层额外放行
@@ -332,7 +333,7 @@ def main():
             for h in (c.get("dimHooks") or []):
                 dim = h.get("dim")
                 if dim not in DIM_RANGES:
-                    errors.append("%s: dimHooks.dim '%s' 非法（须为 secrecy/order/fate_value/luminance）"%(cid, dim))
+                    errors.append("%s: dimHooks.dim '%s' 非法（须为 secrecy/order/fate_value/luminance/death_tally）"%(cid, dim))
                     continue
                 lo, hi = DIM_RANGES[dim]
                 th = h.get("threshold")

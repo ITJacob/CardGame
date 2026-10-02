@@ -22,11 +22,11 @@
 | apprentice | lawyer | 0.045 | 0.126 |
 | warrior | hunter | 0.043 | 0.129 |
 | apothecary | planter | 0.038 | 0.132 |
-| arbiter | reader | 0.047 | 0.136 |
 | seer | monster | 0.077 | 0.136 |
-| planter | apothecary | 0.038 | 0.141 |
+| arbiter | reader | 0.047 | 0.137 |
+| planter | apothecary | 0.038 | 0.142 |
 | sailor | apprentice | 0.078 | 0.173 |
-| savant | seer | 0.128 | 0.206 |
+| savant | seer | 0.128 | 0.207 |
 | chanter | assassin | 0.229 | 0.273 |
 
 ## 二、22×22 距离矩阵
@@ -35,7 +35,7 @@
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | **apothecary** | 0.00 | 0.14 | 0.21 | 0.07 | 0.28 | 0.09 | 0.12 | 0.10 | 0.13 | 0.12 | 0.04 | 0.08 | 0.18 | 0.19 | 0.20 | 0.16 | 0.13 | 0.13 | 0.10 | 0.05 | 0.12 | 0.13 |
 | **apprentice** | 0.14 | 0.00 | 0.12 | 0.08 | 0.30 | 0.16 | 0.10 | 0.12 | 0.05 | 0.08 | 0.17 | 0.10 | 0.10 | 0.12 | 0.08 | 0.24 | 0.11 | 0.13 | 0.12 | 0.08 | 0.13 | 0.13 |
-| **arbiter** | 0.21 | 0.12 | 0.00 | 0.16 | 0.30 | 0.11 | 0.13 | 0.18 | 0.08 | 0.16 | 0.22 | 0.06 | 0.08 | 0.05 | 0.14 | 0.18 | 0.15 | 0.07 | 0.09 | 0.11 | 0.08 | 0.16 |
+| **arbiter** | 0.21 | 0.12 | 0.00 | 0.16 | 0.30 | 0.11 | 0.13 | 0.18 | 0.08 | 0.16 | 0.22 | 0.06 | 0.08 | 0.05 | 0.14 | 0.19 | 0.15 | 0.07 | 0.09 | 0.12 | 0.08 | 0.16 |
 | **assassin** | 0.07 | 0.08 | 0.16 | 0.00 | 0.23 | 0.08 | 0.07 | 0.04 | 0.05 | 0.04 | 0.07 | 0.08 | 0.11 | 0.13 | 0.16 | 0.23 | 0.11 | 0.09 | 0.07 | 0.03 | 0.10 | 0.07 |
 | **chanter** | 0.28 | 0.30 | 0.30 | 0.23 | 0.00 | 0.25 | 0.26 | 0.25 | 0.26 | 0.26 | 0.25 | 0.26 | 0.26 | 0.29 | 0.31 | 0.38 | 0.28 | 0.25 | 0.26 | 0.25 | 0.29 | 0.25 |
 | **corpse_collector** | 0.09 | 0.16 | 0.11 | 0.08 | 0.25 | 0.00 | 0.11 | 0.11 | 0.10 | 0.10 | 0.08 | 0.08 | 0.12 | 0.08 | 0.22 | 0.21 | 0.13 | 0.04 | 0.04 | 0.04 | 0.07 | 0.13 |
@@ -48,11 +48,11 @@
 | **pryer** | 0.18 | 0.10 | 0.08 | 0.11 | 0.26 | 0.12 | 0.10 | 0.09 | 0.06 | 0.15 | 0.14 | 0.08 | 0.00 | 0.10 | 0.08 | 0.21 | 0.15 | 0.11 | 0.14 | 0.12 | 0.13 | 0.04 |
 | **reader** | 0.19 | 0.12 | 0.05 | 0.13 | 0.29 | 0.08 | 0.08 | 0.15 | 0.07 | 0.12 | 0.21 | 0.07 | 0.10 | 0.00 | 0.18 | 0.18 | 0.14 | 0.03 | 0.05 | 0.09 | 0.06 | 0.17 |
 | **sailor** | 0.20 | 0.08 | 0.14 | 0.16 | 0.31 | 0.22 | 0.14 | 0.15 | 0.09 | 0.20 | 0.22 | 0.10 | 0.08 | 0.18 | 0.00 | 0.27 | 0.21 | 0.19 | 0.22 | 0.16 | 0.20 | 0.12 |
-| **savant** | 0.16 | 0.24 | 0.18 | 0.23 | 0.38 | 0.21 | 0.20 | 0.22 | 0.18 | 0.23 | 0.21 | 0.14 | 0.21 | 0.18 | 0.27 | 0.00 | 0.13 | 0.22 | 0.20 | 0.18 | 0.15 | 0.20 |
+| **savant** | 0.16 | 0.24 | 0.19 | 0.23 | 0.38 | 0.21 | 0.20 | 0.22 | 0.18 | 0.23 | 0.21 | 0.14 | 0.21 | 0.18 | 0.27 | 0.00 | 0.13 | 0.22 | 0.20 | 0.18 | 0.15 | 0.20 |
 | **seer** | 0.13 | 0.11 | 0.15 | 0.11 | 0.28 | 0.13 | 0.14 | 0.14 | 0.10 | 0.08 | 0.13 | 0.12 | 0.15 | 0.14 | 0.21 | 0.13 | 0.00 | 0.14 | 0.10 | 0.08 | 0.12 | 0.16 |
 | **sleepless** | 0.13 | 0.13 | 0.07 | 0.09 | 0.25 | 0.04 | 0.07 | 0.11 | 0.07 | 0.09 | 0.15 | 0.05 | 0.11 | 0.03 | 0.19 | 0.22 | 0.14 | 0.00 | 0.02 | 0.04 | 0.05 | 0.15 |
 | **spectator** | 0.10 | 0.12 | 0.09 | 0.07 | 0.26 | 0.04 | 0.08 | 0.11 | 0.07 | 0.06 | 0.11 | 0.06 | 0.14 | 0.05 | 0.22 | 0.20 | 0.10 | 0.02 | 0.00 | 0.03 | 0.04 | 0.16 |
-| **supplicant** | 0.05 | 0.08 | 0.11 | 0.03 | 0.25 | 0.04 | 0.07 | 0.08 | 0.05 | 0.04 | 0.08 | 0.05 | 0.12 | 0.09 | 0.16 | 0.18 | 0.08 | 0.04 | 0.03 | 0.00 | 0.06 | 0.12 |
+| **supplicant** | 0.05 | 0.08 | 0.12 | 0.03 | 0.25 | 0.04 | 0.07 | 0.08 | 0.05 | 0.04 | 0.08 | 0.05 | 0.12 | 0.09 | 0.16 | 0.18 | 0.08 | 0.04 | 0.03 | 0.00 | 0.06 | 0.12 |
 | **thief** | 0.12 | 0.13 | 0.08 | 0.10 | 0.29 | 0.07 | 0.10 | 0.12 | 0.08 | 0.11 | 0.15 | 0.06 | 0.13 | 0.06 | 0.20 | 0.15 | 0.12 | 0.05 | 0.04 | 0.06 | 0.00 | 0.15 |
 | **warrior** | 0.13 | 0.13 | 0.16 | 0.07 | 0.25 | 0.13 | 0.12 | 0.04 | 0.07 | 0.14 | 0.09 | 0.09 | 0.04 | 0.17 | 0.12 | 0.20 | 0.16 | 0.15 | 0.16 | 0.12 | 0.15 | 0.00 |
 
@@ -73,13 +73,13 @@
 | planter | prim:mount_status ×26；prim:spawn ×8；prim:damage ×7；prim:heal ×7；elem:none ×7 |
 | prisoner | prim:mount_status ×23；prim:damage ×12；prim:modify_stat ×9；stat:attack ×6；elem:physical ×5 |
 | pryer | prim:mount_status ×26；prim:damage ×18；elem:none ×9；prim:modify_resource ×8；elem:physical ×7 |
-| reader | prim:mount_status ×22；prim:damage ×12；elem:mental ×12；prim:modify_resource ×7；prim:modify_stat ×7 |
+| reader | prim:mount_status ×22；prim:damage ×12；elem:mental ×12；prim:modify_stat ×7；prim:modify_resource ×7 |
 | sailor | prim:mount_status ×29；prim:damage ×24；elem:physical ×16；elem:lightning ×9；prim:move ×6 |
 | savant | prim:mount_status ×15；prim:modify_resource ×12；prim:modify_stat ×11；prim:damage ×7；prim:spawn ×5 |
 | seer | prim:mount_status ×19；prim:modify_resource ×10；prim:damage ×5；prim:modify_stat ×4；prim:heal ×4 |
 | sleepless | prim:mount_status ×28；prim:damage ×12；elem:mental ×12；prim:modify_stat ×6；stat:attack ×5 |
 | spectator | prim:mount_status ×25；elem:mental ×9；prim:modify_stat ×6；prim:damage ×6；prim:modify_resource ×4 |
-| supplicant | prim:mount_status ×26；prim:damage ×7；elem:mental ×5；prim:spawn ×5；prim:modify_resource ×4 |
+| supplicant | prim:mount_status ×26；prim:damage ×7；elem:mental ×5；prim:spawn ×5；prim:modify_stat ×4 |
 | thief | prim:mount_status ×24；elem:mental ×9；prim:damage ×8；prim:modify_stat ×8；prim:modify_resource ×6 |
 | warrior | prim:mount_status ×24；prim:damage ×13；elem:none ×11；prim:modify_resource ×6；elem:physical ×5 |
 
