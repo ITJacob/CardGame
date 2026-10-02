@@ -1165,7 +1165,7 @@
       "flagship": false,
       "lore": "序列4 律令法师 —— \"『律令』（核心）：制定宽泛限制维持 30 秒到一刻钟 / 如'神秘减弱，现实增强'——削弱所有非凡能力\"",
       "flavor": "「于此地，神秘减弱，现实增强。」话音落下，敌人的非凡能力开始迟滞、走形、变得昂贵——而你脚下的大地，比刚才更实了。",
-      "describe": "律令持续 8 tick：敌方全体耗能加重（技能费用 ×1.5）且攻击 -3；己方全体护甲 +3。；律令降临：战场秩序度 +1。",
+      "describe": "降临「现实增强」律令域 8 tick：敌我全体技能费用 +1（现实沉重，双刃）；敌方全体攻击 -3；己方全体护甲 +3。自身迷失值 +1。；律令降临：战场秩序度 +1。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -1186,10 +1186,12 @@
           "op": "sequence",
           "steps": [
             {
-              "type": "mount_status",
-              "statusId": "energy_strain",
+              "type": "domain",
+              "op": "overlay",
+              "def": "reality_press",
               "duration": 8,
-              "target": "all_enemies"
+              "durationUnit": "tick",
+              "note": "现实增强律令域：敌我技能费用 +1（双刃，替代原 energy_strain 敌方 ×1.5 状态表达 ⚠️D）"
             },
             {
               "type": "modify_stat",
@@ -1206,6 +1208,14 @@
               "mode": "delta",
               "target": "all_allies",
               "note": "现实增强；modify_resource 为量池 delta，无 duration 不回滚（稿面原文如此）"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
             }
           ]
         },
@@ -1223,7 +1233,7 @@
         "律令"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：律令轴形态跃迁：从单体禁令→全体持续压制。推秩序度 +1。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；秩序度写入（2026-10-01 量表写入批）：律令展开秩序 +1。",
+      "conversionNotes": "翻译/语义：律令轴形态跃迁：从单体禁令→全体持续压制。推秩序度 +1。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；秩序度写入（2026-10-01 量表写入批）：律令展开秩序 +1。 ｜ 2026-10-02 差异化风格迭代（仲裁人=立规正主）：耗能加重由 energy_strain 状态升格 cost_mod 域（立规『价』正主承载，敌我同价双刃 ⚠️D）；energy_strain 退回 common 通用池",
       "dimHooks": [
         {
           "dim": "order",
@@ -1242,6 +1252,20 @@
           "proclamation text"
         ],
         "mood": "grounding, austere, final"
+      },
+      "domain": {
+        "tier": "overlay",
+        "def": "reality_press",
+        "duration": 8,
+        "durationUnit": "tick",
+        "dispelable": true,
+        "envRulesText": "全场（双向）：技能费用 +1（现实沉重，敌我同价）",
+        "rulePatches": [
+          {
+            "kind": "cost_mod",
+            "delta": 1
+          }
+        ]
       }
     },
     {
@@ -2155,14 +2179,13 @@
         "envRulesText": "全场（敌我同禁）：本域存续期间一切 consumption: domain 行为失效——无人能再切换界域",
         "rulePatches": [
           {
-            "kind": "disable_effect",
-            "side": "both",
+            "kind": "seal_effect",
             "effectType": "domain"
           }
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：律令轴清场重写（非底层）。规则改写由界域承载（brief §9.1）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 5→2 tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
+      "conversionNotes": "翻译/语义：律令轴清场重写（非底层）。规则改写由界域承载（brief §9.1）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 5→2 tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 2026-10-02 差异化风格迭代（仲裁人=立规正主）：废止域升格 seal_effect（禁用效果类型正主，天然敌我同禁）——立规『禁』的承载键落地",
       "art": {
         "subject": "a hand erasing one line of glowing law, the letters crumbling to dust",
         "elements": [
@@ -2184,7 +2207,7 @@
       "flagship": false,
       "lore": "序列1 秩序之手 —— \"能中止混乱奇异，感应秩序变化\"",
       "flavor": "秩序落下的地方，混乱无处存身——那些诡异的加持、畸变的庇护，一并散了形。",
-      "describe": "驱散敌方全体全部增益状态并各造成 3 点精神伤害；随后 6 tick 内，敌方新获得的增益持续时间减半。",
+      "describe": "驱散敌方全体全部增益状态并各造成 3 点精神伤害；随后 6 tick 内，敌方新获得的增益持续时间减半，且敌我全体技能费用 +1（现实沉重）。自身迷失值 +1。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -2223,12 +2246,28 @@
               "statusId": "order_sense",
               "duration": 6,
               "target": "self"
+            },
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "reality_press",
+              "duration": 6,
+              "durationUnit": "tick",
+              "note": "神秘抑制域：敌我技能费用 +1（中止奇异的余威，双刃 ⚠️D）"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
             }
           ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：审讯轴反制：群体剥夺+后续压制。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：审讯轴反制：群体剥夺+后续压制。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（仲裁人=立规正主）：补 reality_press 域（cost_mod +1）——反制大招带价域余威，cost_mod 第二卡落地",
       "art": {
         "subject": "order falling like white light, dissolving grotesque mutations and twisted blessings",
         "elements": [
@@ -2237,6 +2276,20 @@
           "restoring forms"
         ],
         "mood": "purifying, stern, cleansing"
+      },
+      "domain": {
+        "tier": "overlay",
+        "def": "reality_press",
+        "duration": 6,
+        "durationUnit": "tick",
+        "dispelable": true,
+        "envRulesText": "全场（双向）：技能费用 +1（现实沉重，敌我同价）",
+        "rulePatches": [
+          {
+            "kind": "cost_mod",
+            "delta": 1
+          }
+        ]
       }
     },
     {
@@ -2363,7 +2416,7 @@
       "flagship": true,
       "lore": "序列0 审判者 —— \"'秩序'权柄：修改世界底层规则、制定/去除规则、赋予豁免权\"",
       "flavor": "你改写了这条世界的一行底层。于是有人获得了豁免——而另一些人，连求饶的资格都被抹掉了。",
-      "describe": "降临「底层规则」界域 8 tick：全场治疗量 ×2、护盾不再吸收伤害（敌我同改）；己方全体获得豁免（免疫减益类状态）8 tick。自身迷失值 +1。；底层规则降临：战场秩序度 +2。",
+      "describe": "降临「底层规则」界域 8 tick：全场治疗量 ×2、护盾不再吸收伤害、放逐与传送类效果封印（敌我同改）；己方全体获得豁免（免疫减益类状态）8 tick。自身迷失值 +1。；底层规则降临：战场秩序度 +2。",
       "cost": {
         "energy": 7,
         "cooldown": 9,
@@ -2422,7 +2475,7 @@
         "duration": 8,
         "durationUnit": "tick",
         "dispelable": true,
-        "envRulesText": "全场（双向）：治疗量 ×2；护盾不再吸收伤害——生命可被抚慰，外物不再庇佑",
+        "envRulesText": "全场（双向）：治疗量 ×2；护盾不再吸收伤害；放逐与传送类效果封印——生命可被抚慰，外物不再庇佑，空间不再漏隙",
         "rulePatches": [
           {
             "kind": "empower",
@@ -2437,6 +2490,10 @@
               "护盾"
             ],
             "note": "全场护盾不再吸收伤害"
+          },
+          {
+            "kind": "seal_effect",
+            "effectType": "translocate"
           }
         ]
       },
@@ -2445,7 +2502,7 @@
         "秩序"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：律令轴终焉：终局态 `秩序度=10` 解锁（改写底层+赋予豁免）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 6→3 tick（对齐拍板表）；秩序度写入（2026-10-01 量表写入批）：序列0 界域权重 +2（其余律令卡 +1）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
+      "conversionNotes": "翻译/语义：律令轴终焉：终局态 `秩序度=10` 解锁（改写底层+赋予豁免）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 6→3 tick（对齐拍板表）；秩序度写入（2026-10-01 量表写入批）：序列0 界域权重 +2（其余律令卡 +1）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 2026-10-02 差异化风格迭代（仲裁人=立规正主）：补 seal_effect(translocate) 现实锚定——秩序锁空间，与时空族（学徒/刺客位移轴）形成权柄对抗",
       "dimHooks": [
         {
           "dim": "order",
@@ -2876,10 +2933,9 @@
       "triggers": [],
       "rulePatches": [
         {
-          "kind": "disable_effect",
-          "side": "both",
+          "kind": "seal_effect",
           "effectType": "domain",
-          "note": "I 节点：本域存续期间一切界域操作失效（天然双向）"
+          "note": "I 节点候选池正主：本域存续期间一切界域操作封印（天然双向，seal_effect 无 side 字段）"
         }
       ],
       "note": "纯规则锁，无周期载荷——抽走既存界域由本卡 Sequence 前段的 dispel(domain) 承载，不入 DomainDef"
@@ -2906,9 +2962,30 @@
             "护盾"
           ],
           "note": "全场护盾不再吸收伤害（I 节点）"
+        },
+        {
+          "kind": "seal_effect",
+          "effectType": "translocate",
+          "note": "现实锚定：放逐/传送类效果全场封印（敌我同禁，⚠️D 待平衡）——神秘减弱、现实增强的空间面"
         }
       ],
       "note": "纯规则改写，无周期载荷；己方全体豁免由本卡 Sequence 的 mount_status(immunity_writ) 承载，不入 DomainDef。交互规则「规则」标签卡 duration +2：RulePatch 初批四 kind 无 duration 档，登记于此待 kind 扩充（⚠️D 不阻塞派发）"
+    },
+    {
+      "id": "reality_press",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 6,
+      "durationUnit": "tick",
+      "triggers": [],
+      "rulePatches": [
+        {
+          "kind": "cost_mod",
+          "delta": 1,
+          "note": "现实沉重：敌我全体技能费用 +1（commit 成本校验节点读取，双刃 ⚠️D 待平衡）——cost_mod 正主承载"
+        }
+      ],
+      "note": "神秘抑制/现实增强域（2026-10-02 差异化风格迭代建）：仲裁人立规『价』的承载——代价域"
     }
   ],
   "designNote": "> **律令轴 = 规则槽发动机**：仲裁人经「立规 / 秩序领域 / 废止」写入规则槽；敌方（或友方律师）违背 `trigger` 时自动执行 `punishment`。规则槽是失序之国两途径**唯一共享棋盘**（详见本节「本系咬合器维度」）。\n> 律师不在本稿立规，但改规（扭曲/独享规则/重定义/定义·替身）——见《律师途径 v0.3》。**本系共享棋盘优先于共享状态**（P2）。",

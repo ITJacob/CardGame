@@ -124,7 +124,7 @@
 
 ## 三、界域（domainDefs 池 + 卡面 domain 用法）
 
-池内蓝本 **27** 条（覆盖 21 途径）；卡面 domain 原语 **30** 次；卡级 domain 字段 **26** 张（引用池 def **26** 张——卡级字段是「引用 + 展示副本」，权威定义在池）。界域 = 战场级规则改写包（声明式补丁 + 战场级触发器），三件套压制栈（base / hero / overlay）见 ddd 共享内核。
+池内蓝本 **28** 条（覆盖 21 途径）；卡面 domain 原语 **32** 次；卡级 domain 字段 **28** 张（引用池 def **28** 张——卡级字段是「引用 + 展示副本」，权威定义在池）。界域 = 战场级规则改写包（声明式补丁 + 战场级触发器），三件套压制栈（base / hero / overlay）见 ddd 共享内核。
 
 ### 3.1 池内蓝本清单
 
@@ -134,7 +134,8 @@
 | `domain_reenactment` | `overlay` | 3 | turn | 是 | 2 | 1 | 学徒 |
 | `domain_full_moon` | `overlay` | 3 | turn | 是 | 2 | 1 | 仲裁人 |
 | `edict_seal` | `overlay` | 4 | tick | 是 | 1 | 0 | 仲裁人 |
-| `order_bedrock` | `overlay` | 8 | tick | 是 | 2 | 0 | 仲裁人 |
+| `order_bedrock` | `overlay` | 8 | tick | 是 | 3 | 0 | 仲裁人 |
+| `reality_press` | `overlay` | 6 | tick | 是 | 1 | 0 | 仲裁人 |
 | `domain_mirror_maze` | `overlay` | 3 | turn | 是 | 2 | 1 | 刺客 |
 | `domain_mirror_world` | `overlay` | 2 | turn | 是 | 2 | 1 | 刺客 |
 | `domain_holy_nation` | `overlay` | 4 | turn | 是 | 2 | 2 | 歌颂者 |
@@ -162,19 +163,21 @@
 
 | 维度 | 取值 | 次数 |
 |---|---|---:|
-| tier | `overlay` | 26 |
+| tier | `overlay` | 27 |
 | tier | `hero` | 1 |
-| dispelable | 可驱散 | 26 |
+| dispelable | 可驱散 | 27 |
 | dispelable | 不可驱散 | 1 |
 | durationUnit | `turn` | 25 |
-| durationUnit | `tick` | 2 |
+| durationUnit | `tick` | 3 |
 
 ### 3.3 rulePatches 规则补丁 kind 分布
 
 | kind | 条数 |
 |---|---:|
 | `empower` | 44 |
-| `disable_effect` | 4 |
+| `disable_effect` | 3 |
+| `seal_effect` | 2 |
+| `cost_mod` | 1 |
 
 ### 3.4 域内触发点与载荷原语
 
@@ -198,7 +201,7 @@
 
 | op | 次数 |
 |---|---:|
-| `overlay` | 29 |
+| `overlay` | 31 |
 | `hero` | 1 |
 
 ### 附：统计口径
