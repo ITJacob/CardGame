@@ -1975,6 +1975,7 @@
   },
   "effGaugeShuffle": {
    "type": "object",
+   "description": "行动条数值集合守恒重排（R5 合规：重分配既有数值，非随机生成）。作用域随 target 锚点，省略 = 卡面目标全集。2026-10-02 转正（律师差异化迭代），语义见 docs/ddd/params/效果参数.md。",
    "required": [
     "type",
     "resource"
@@ -1987,6 +1988,10 @@
     "resource": {
      "type": "string"
     },
+    "target": {
+     "$ref": "#/$defs/effectTarget",
+     "description": "重排作用域锚点（如 all_enemies / splash_adjacent）；省略 = 卡面目标全集。"
+    },
     "note": {
      "type": "string"
     }
@@ -1994,6 +1999,7 @@
   },
   "effStatusShuffle": {
    "type": "object",
+   "description": "状态乱序：mode rotate = 作用域内单位按 sort 排序后轮转易主 count 个状态。作用域随 target 锚点，省略 = 卡面目标全集。2026-10-02 转正（律师差异化迭代）。",
    "required": [
     "type"
    ],
@@ -2001,6 +2007,10 @@
    "properties": {
     "type": {
      "const": "status_shuffle"
+    },
+    "target": {
+     "$ref": "#/$defs/effectTarget",
+     "description": "轮转作用域锚点（如 all_enemies / splash_adjacent）；省略 = 卡面目标全集。"
     },
     "mode": {
      "enum": [

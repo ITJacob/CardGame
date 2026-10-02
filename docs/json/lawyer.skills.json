@@ -815,7 +815,7 @@
       "flagship": false,
       "lore": "序列5 混乱导师 —— \"『混乱』：使目标/区域出现混乱，攻击难落身\"",
       "flavor": "你在这片地方撒下一把混乱——它们的刀都挥向了自己以为的方向，而那里什么也没有。",
-      "describe": "使目标及其相邻敌人下次攻击落空（持续 4 tick，触发 1 次后失效），且行动条速率 -6。",
+      "describe": "使目标及其相邻敌人陷入混乱 4 tick（触发 1 次后失效）：下次攻击落空；集群行动条进度按集合守恒重排、集群间状态轮转易主 1 个——节奏与归属一并搅乱。",
       "cost": {
         "energy": 4,
         "cooldown": 5,
@@ -834,11 +834,30 @@
       },
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "confused",
-          "charges": 1,
-          "duration": 4,
-          "note": "目标与其相邻敌方单位同挂（splash_adjacent）"
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "confused",
+              "charges": 1,
+              "duration": 4,
+              "note": "目标与其相邻敌方单位同挂（splash_adjacent），下次攻击落空"
+            },
+            {
+              "type": "gauge_shuffle",
+              "resource": "gauge.current",
+              "target": "splash_adjacent",
+              "note": "混乱集群（目标+相邻敌方）行动条进度集合守恒重排——节奏被搅乱（R5 合规，非随机生成 ⚠️D 待平衡）"
+            },
+            {
+              "type": "status_shuffle",
+              "mode": "rotate",
+              "sort": "index_asc",
+              "count": 1,
+              "target": "splash_adjacent",
+              "note": "混乱集群状态轮转易主 1 个：敌我不分的错乱（确定性 rotate ⚠️D 待平衡）"
+            }
+          ]
         }
       ],
       "frameworkFlags": [
@@ -853,7 +872,8 @@
       ],
       "conversionNotes": [
         "稿面 targetSpec 未给 fallbackSort（manual 必填），暂记 null 待数值阶段补",
-        "翻译/语义：熵蚀轴 enabler：群体打空+拖节奏。完全确定性（R5 合规）。"
+        "翻译/语义：熵蚀轴 enabler：群体打空+拖节奏。完全确定性（R5 合规）。",
+        "2026-10-02 差异化风格迭代（律师=扭曲与熵正主）：升格 gauge_shuffle+status_shuffle 双 shuffle（集群作用域 splash_adjacent）——熵蚀轴「乱」的机制正主承载；原「行动条速率 -6」describe 与卡面缺载的存量缺口一并修正"
       ],
       "tentative": false,
       "art": {
@@ -1742,7 +1762,7 @@
       "flagship": false,
       "lore": "序列1 弑序亲王 —— \"通过重新『定义』和『扭曲』让秩序有利于自身\"",
       "flavor": "你重新定义了一件小事：从现在起，你们所谓的\"恢复\"，叫作\"流失\"。",
-      "describe": "使敌方全体被重定义 5 tick：其获得的治疗转为等量无属性伤害。",
+      "describe": "改写战场规则槽（slot 1，5 tick）：敌方全体获得的治疗转为等量无属性伤害（重定义规则的作用对象与语义）。；秩序被重定义。",
       "cost": {
         "energy": 5,
         "cooldown": 7,
@@ -1762,11 +1782,40 @@
           "type": "mount_status",
           "statusId": "order_redefined",
           "duration": 5,
-          "note": "targetSpec ALL_ENEMIES（scope:all，F59 族通用扩展不重复立项）"
+          "note": "targetSpec ALL_ENEMIES（scope:all，F59 族通用扩展不重复立项）；状态表达保留兼容"
+        },
+        {
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "trigger",
+          "mode": "replace",
+          "value": {
+            "trigger": "on_heal",
+            "scope": "all_enemies",
+            "invert": "heal_to_damage",
+            "duration": 5,
+            "durationUnit": "tick"
+          },
+          "note": "规则槽改写（slot 1 trigger）：把『治疗结算』事件登记为重定义触发——改写既有规则的作用（僭越轴『先立后破』：规则槽已有仲裁人立的规，此处改写其语义）"
+        },
+        {
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "replace",
+          "value": [
+            {
+              "type": "damage",
+              "element": "none",
+              "valueFrom": "triggeredHeal",
+              "note": "载荷：治疗量等量转为无属性伤害（与 order_redefined 状态 heal_invert 载荷同源，槽写为 canonical 登记）"
+            }
+          ],
+          "note": "规则槽改写（slot 1 punish）：重定义的违例载荷=治疗反转为等量伤害"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：僭越轴：改写规则作用对象（\"全体\"→\"除我方律师外\"）+ 反治疗双效。压秩序度 −1。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：僭越轴：改写规则作用对象（\"全体\"→\"除我方律师外\"）+ 反治疗双效。压秩序度 −1。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（律师=扭曲与熵正主）：升格 modify_rule_slot(slot 1 trigger+punish)——僭越轴第二卡：改写既有规则槽语义（治疗→伤害），与扭曲(slot 0)成槽位分工",
       "art": {
         "subject": "a lawyer erasing one word on a page and inking a new one over flesh",
         "elements": [
@@ -1912,14 +1961,16 @@
             {
               "type": "gauge_shuffle",
               "resource": "gauge.current",
-              "note": "行动条数值集合守恒重排：把敌方全体现有 gauge.current 作为一组数重新分配（总量不变，归属打乱）——不是随机生成数值（新增项 8 ✅ 效果上下文 §2.1）；确定性退化=按 gauge.current 降序反转分配"
+              "note": "行动条数值集合守恒重排：把敌方全体现有 gauge.current 作为一组数重新分配（总量不变，归属打乱）——不是随机生成数值（新增项 8 ✅ 效果上下文 §2.1）；确定性退化=按 gauge.current 降序反转分配；2026-10-02 补显式作用域锚点 target:all_enemies（shuffle 转正批）",
+              "target": "all_enemies"
             },
             {
               "type": "status_shuffle",
               "mode": "rotate",
               "sort": "index_asc",
               "count": 1,
-              "note": "每个敌方单位与其相邻的敌方单位交换 1 个状态，按 index_asc 轮转一位，确定性（新增项 9 ✅ transfer_status rotate 模式）"
+              "note": "每个敌方单位与其相邻的敌方单位交换 1 个状态，按 index_asc 轮转一位，确定性（新增项 9 ✅ transfer_status rotate 模式）；2026-10-02 补显式作用域锚点 target:all_enemies（shuffle 转正批）",
+              "target": "all_enemies"
             },
             {
               "op": "if",
@@ -1957,7 +2008,8 @@
         "不改任何数值、不造成任何伤害，却把对手一整局的节奏规划全部作废——「不参与秩序，而是让秩序失效」",
         "翻译/语义：僭越轴终焉：清空规则槽+重排秩序，把对手节奏规划连根拔起。**`秩序度=0` 时才可满效**（与仲裁人 `底层规则` 对位）。R5 合规（集合守恒重排，非随机生成）。",
         "2026-10-01 吟唱重标：非仪式，castTime 空→0",
-        "秩序度写入（2026-10-01 量表写入批）：秩序崩坏 = set 0（拉平全场规则强度，dimHook order 读取随之失效）。"
+        "秩序度写入（2026-10-01 量表写入批）：秩序崩坏 = set 0（拉平全场规则强度，dimHook order 读取随之失效）。",
+        "2026-10-02 差异化风格迭代（律师=扭曲与熵正主）：gauge_shuffle/status_shuffle 转正补登：显式作用域 all_enemies（原语语义 2026-10-02 落 ddd 效果参数）"
       ],
       "frameworkFlags": [
         {
