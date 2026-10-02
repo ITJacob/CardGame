@@ -28,13 +28,12 @@
       ],
       "dispelable": false,
       "duration": null,
-      "modifiers": [
-        {
-          "kind": "armor_pierce",
+      "modifiers": {
+        "armor_pierce_ratio": {
           "ratio": 0.5,
           "note": "armorPierceRatio（效果参数 §1.1，H16）"
         }
-      ]
+      }
     },
     {
       "id": "delayed_blast",
@@ -167,21 +166,17 @@
       ],
       "dispelable": false,
       "duration": null,
-      "modifiers": [
-        {
-          "kind": "ignore_redirect",
-          "note": "攻击不会被守护状态转移（§四 识破分支 / ignore_redirect 同出口）"
-        },
-        {
-          "kind": "see_through",
+      "modifiers": {
+        "see_through": {
           "note": "单体技能不受目标隐匿/不可选中状态影响（C8 候选池过滤）"
         },
-        {
-          "kind": "override_priority",
+        "override_priority": {
           "priority": "above_taunt_guard",
           "note": "target_override 类效果优先级高于目标嘲讽/守护（执行参数 §一 转向优先级 + 聚合规则）"
-        }
-      ]
+        },
+        "ignore_guard": true
+      },
+      "note": "攻击不会被守护状态转移（§四 识破分支 / ignore_redirect 同出口）"
     },
     {
       "id": "steel_body",
@@ -304,19 +299,17 @@
       ],
       "dispelable": false,
       "duration": null,
-      "modifiers": [
-        {
-          "kind": "see_through",
+      "modifiers": {
+        "see_through": {
           "note": "共享视野：敌方隐匿/不可选中状态对全体友军无效（C8 识破分支）"
-        },
-        {
-          "kind": "redirect_damage",
-          "ratio": 0.3,
-          "direction": "to_caster",
-          "linkedTo": "caster",
-          "note": "分摊伤害：持有者受伤 30% 转由集众者承受（H28 伤害转嫁族 ratio/direction/linkedTo，编队参数 §1.1b；寻址走 casterId F56，内置防循环）；由归一自触发器载荷移入 modifiers"
         }
-      ]
+      },
+      "damageTransfer": {
+        "ratio": 0.3,
+        "direction": "to_caster",
+        "linkedTo": "caster",
+        "note": "分摊伤害：持有者受伤 30% 转由集众者承受（H28 伤害转嫁族 ratio/direction/linkedTo，编队参数 §1.1b；寻址走 casterId F56，内置防循环）；由归一自触发器载荷移入 modifiers"
+      }
     },
     {
       "id": "beast_swarm",
@@ -474,15 +467,13 @@
           ]
         }
       ],
-      "modifiers": [
-        {
-          "kind": "redirect_damage",
-          "ratio": 0.2,
-          "direction": "to_allies",
-          "split": "even",
-          "note": "全员互相分摊：任一友军受击，20% 均摊给其余存活友军（H28，内置防循环）"
-        }
-      ]
+      "modifiers": {},
+      "damageTransfer": {
+        "ratio": 0.2,
+        "direction": "to_allies",
+        "split": "even",
+        "note": "全员互相分摊：任一友军受击，20% 均摊给其余存活友军（H28，内置防循环）"
+      }
     },
     {
       "id": "conquered",
@@ -637,7 +628,7 @@
       "stackPolicy": "refresh",
       "modifiers": {
         "dotOnTick": 2,
-        "element": "fire"
+        "dot_element": "fire"
       },
       "note": "燃焚轴身份状态（2026-09-29 自 common burn 分叉私有化，数值蓝本同源：火属性 2/tick DoT，叠层 refresh；§2.2 未单列裁定，数值定档（2026-10-01）：蓝本同 common burn 基准档（3 层 refresh / 2 per tick））；猎人全途径引用（火鸦术/燃烧之墙/注火/远程轰炸/献祭祈求·烈焰变体 + 火焰化触发 + 紫色火焰时长加成）统一改指此 id；common burn（灼烧）保留为刺客/罪犯/窥秘人/智者通用火 DoT。⚠️ 副作用：罪犯污秽之王不再放大猎人的燃焚（跨系涌现断开），平衡期裁定。"
     },

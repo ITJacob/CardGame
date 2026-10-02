@@ -98,6 +98,31 @@ MODIFIER_ALIASES = {
     "dispelableOverwrite": "dispelableOverride",
     "runtimeDispelOverride": "dispelableOverride",
 }
+# 修饰键正典集：词典 modifierKey 栏目（2026-10-02 治理批新建）。
+# 开放结构不变，但新键须先登记词条——未登记键给非阻断告警，与别名收敛同一出口。
+def _load_modifier_canon():
+    p = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'meta', 'glossary.json')
+    try:
+        g = json.load(io.open(p, encoding='utf-8'))
+        return set(((g.get('categories') or {}).get('modifierKey') or {}).get('terms') or {})
+    except Exception:
+        return set()
+MODIFIER_CANON = _load_modifier_canon()
+
+def check_mod_keys(mods, cid, warns):
+    if isinstance(mods, dict):
+        mkeys = list(mods.keys())
+    elif isinstance(mods, list):
+        mkeys = [it if isinstance(it, str) else it.get('kind') for it in mods if isinstance(it, (str, dict))]
+    else:
+        return
+    for k in mkeys:
+        if not k:
+            continue
+        if k in MODIFIER_ALIASES:
+            warns.append("%s: modifier '%s' 建议收敛为 '%s'" % (cid, k, MODIFIER_ALIASES[k]))
+        elif MODIFIER_CANON and k not in MODIFIER_CANON:
+            warns.append("%s: modifier '%s' 未登记（先补词典 modifierKey 词条）" % (cid, k))
 def main():
     m = json.load(io.open(os.path.join(JSON_DIR,'manifest.json'), encoding='utf-8'))
     expect = {p["id"]: p["cardCount"] for p in m["pathways"]}
@@ -145,6 +170,7 @@ def main():
                             pre_errors.append("%s sd %s: participants 含非法 pathwayId '%s'"%(cid,sd.get("id"),p))
             elif sd.get("participants"):
                 pre_warns.append("%s sd %s: 有 participants 但未标 crossPathway=true"%(cid,sd.get("id")))
+            check_mod_keys(sd.get("modifiers"), "%s sd %s" % (cid, sd.get("id")), pre_warns)
 
     # 构筑轴身份状态可解析性 Gate（2026-09-20 新增）
     # axes.<axis>.statusId 属 schema 可选字段，此前无任何校验，长期积累悬空引用。
@@ -266,6 +292,10 @@ def main():
         d = json.load(io.open(f, encoding='utf-8'))
         pid = d.get("pathwayId", os.path.basename(f))
         errors, warns = [], []
+        # 编目三池的 modifiers（unitDef/zoneDef 带修正集合）与状态池同一治理闸
+        for _pool in ('unitDefs', 'zoneDefs', 'domainDefs'):
+            for _e in d.get(_pool) or []:
+                check_mod_keys(_e.get('modifiers'), "%s %s:%s" % (pid, _pool, _e.get('id', '?')), warns)
         cards = d.get("cards", [])
         total_cards += len(cards)
         if pid in expect and len(cards) != expect[pid]:
@@ -317,12 +347,7 @@ def main():
                 for a in sd.get("disallowActions") or []:
                     if a not in ACTION_LOCKS: errors.append("%s sd %s: bad disallowActions %s"%(cid,sd.get("id"),a))
                 # 命名治理：modifiers 开放结构内的同义异写，告警引导收敛到规范拼写
-                mods = sd.get("modifiers")
-                mkeys = list(mods.keys()) if isinstance(mods, dict) else \
-                        [k for it in (mods or []) if isinstance(it, dict) for k in it]
-                for k in mkeys:
-                    if k in MODIFIER_ALIASES:
-                        warns.append("%s sd %s: modifier '%s' 建议收敛为 '%s'"%(cid, sd.get("id"), k, MODIFIER_ALIASES[k]))
+                check_mod_keys(sd.get("modifiers"), "%s sd %s" % (cid, sd.get("id")), warns)
                 walk(sd.get("effects"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
                 trigs(sd.get("triggers"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
                 walk((sd.get("thresholdTrigger") or {}).get("effects"), cid, "sd:"+sd.get("id","?")+".tt", flags, errors, warns)

@@ -9,15 +9,14 @@
       "dispelable": true,
       "charges": 1,
       "duration": 75,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "first_empty"
-          }
-        ]
-      },
-      "note": "默认时长同源于稿期 3 回合 → 75tick（2026-09-30 时间回归）；次数型（C6）：下一次攻击落空后消耗 1 层归零卸载。C7 已端到端验证；「扭曲」暗线起点（一层雏形），与混乱/腐蚀同族"
+      "modifiers": {},
+      "note": "默认时长同源于稿期 3 回合 → 75tick（2026-09-30 时间回归）；次数型（C6）：下一次攻击落空后消耗 1 层归零卸载。C7 已端到端验证；「扭曲」暗线起点（一层雏形），与混乱/腐蚀同族",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "first_empty"
+        }
+      ]
     },
     {
       "id": "chink_finding",
@@ -28,10 +27,11 @@
       "dispelable": false,
       "duration": null,
       "modifiers": {
-        "armorPierceRatio": 1,
-        "note": "ignore_armor 取比例档 =1（新增项 11 ✅ 已落 ddd：效果参数 §1.1 armorPierceRatio）"
+        "armor_pierce_ratio": {
+          "ratio": 1
+        }
       },
-      "note": "「利用规则漏洞」侧：绕过防御体系本身（与贿赂·削弱的削数值分野） 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
+      "note": "「利用规则漏洞」侧：绕过防御体系本身（与贿赂·削弱的削数值分野） 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。；ignore_armor 取比例档 =1（新增项 11 ✅ 已落 ddd：效果参数 §1.1 armorPierceRatio）",
       "maxStacks": 3,
       "stackPolicy": "refresh"
     },
@@ -66,16 +66,15 @@
       ],
       "dispelable": true,
       "duration": 10,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "anchor": "self_faction_hp_desc",
-            "op": "target_override",
-            "note": "反向嘲讽：被魅惑单位攻击其己方队友"
-          }
-        ]
-      },
-      "note": "F15 已登记（罪犯+药师途径合并登记，机制=反向嘲讽），权威定义见状态表，此处为引用副本，不新立状态；与 corrupted 同持时 corrupted 优先（贪婪压过好感，裁定见腐蚀条）"
+      "modifiers": {},
+      "note": "F15 已登记（罪犯+药师途径合并登记，机制=反向嘲讽），权威定义见状态表，此处为引用副本，不新立状态；与 corrupted 同持时 corrupted 优先（贪婪压过好感，裁定见腐蚀条）",
+      "behaviorModifiers": [
+        {
+          "anchor": "self_faction_hp_desc",
+          "op": "target_override",
+          "note": "反向嘲讽：被魅惑单位攻击其己方队友"
+        }
+      ]
     },
     {
       "id": "arrogance",
@@ -146,16 +145,15 @@
       "dispelable": true,
       "charges": 1,
       "duration": 20,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "self_faction_hp_desc",
-            "note": "其自身阵营单位（F19 母版「阵营首位」锚点随状态表归一）；触发后 charges -1 卸载"
-          }
-        ]
-      },
-      "note": "F19 已登记（v0.1 律-2，保留 ID 与机制，本版从序列4 下移序列6——原著「扭曲」是序列6 能力）；权威定义见状态表，此处为引用副本。与诡辩（打空）/腐蚀（打最残血）构成目标扭曲谱系"
+      "modifiers": {},
+      "note": "F19 已登记（v0.1 律-2，保留 ID 与机制，本版从序列4 下移序列6——原著「扭曲」是序列6 能力）；权威定义见状态表，此处为引用副本。与诡辩（打空）/腐蚀（打最残血）构成目标扭曲谱系",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "self_faction_hp_desc",
+          "note": "其自身阵营单位（F19 母版「阵营首位」锚点随状态表归一）；触发后 charges -1 卸载"
+        }
+      ]
     },
     {
       "id": "corrupted",
@@ -166,15 +164,7 @@
       "dispelable": true,
       "charges": 1,
       "duration": 20,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "any_lowest_hp",
-            "note": "全场生命百分比最低（不分阵营）——贪婪不帮它分辨敌我，可能回头咬自己的残血同伴"
-          }
-        ]
-      },
+      "modifiers": {},
       "note": "新锚点 any_lowest_hp（新增项 1 ✅ 已落 ddd：共享内核参数 §一 锚点枚举）；与 charm 同持时本状态优先（贪婪压过好感，亦压过理智）；R5 完全确定性，不掷骰子 ｜ 2026-09-26 补 crossPathway:true——罪犯【恶欲共鸣】读取（暗影世界系 §6.5 combo，源质维度 §一表登记）",
       "crossPathway": true,
       "participants": [
@@ -182,6 +172,13 @@
         "criminal",
         "planter",
         "apothecary"
+      ],
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "any_lowest_hp",
+          "note": "全场生命百分比最低（不分阵营）——贪婪不帮它分辨敌我，可能回头咬自己的残血同伴"
+        }
       ]
     },
     {
@@ -193,14 +190,7 @@
       "dispelable": true,
       "charges": 1,
       "duration": 20,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "first_empty"
-          }
-        ]
-      },
+      "modifiers": {},
       "effects": [
         {
           "type": "modify_stat",
@@ -218,6 +208,12 @@
         "lawyer",
         "monster",
         "arbiter"
+      ],
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "first_empty"
+        }
       ]
     },
     {
@@ -429,9 +425,6 @@
       "dispelable": false,
       "duration": null,
       "modifiers": {
-        "statPerStack": {
-          "attack": 1
-        },
         "stackCount": {
           "dynamic": {
             "countStatuses": {
@@ -446,7 +439,10 @@
           "note": "层数=自身持有的 debuff/control/dot 状态数（上限 3），每 tick 重算（F51 stacks ✅ + 新增项 3 H4 dynamic ✅）"
         }
       },
-      "note": "「自身能力随机有益变化」的确定性翻译：混乱对你总是有益的，且越乱越强；与难落身构成完整的「你越打我我越强」"
+      "note": "「自身能力随机有益变化」的确定性翻译：混乱对你总是有益的，且越乱越强；与难落身构成完整的「你越打我我越强」",
+      "statPerStack": {
+        "attack": 1
+      }
     },
     {
       "id": "entropy_decay",
@@ -485,20 +481,17 @@
       "charges": 1,
       "duration": 20,
       "modifiers": {
-        "ignoreRedirect": {
-          "value": true,
-          "note": "无视前排站位限制：可直接指定任意敌方单位（含被守护/嘲讽保护的后排）——ignore_guard（新增项 10 ✅ 执行参数 §一 EffectRef.params.ignore_redirect，ddd 明示律师「踏月」判例）"
-        },
-        "armorPierceRatio": {
-          "value": 1,
-          "note": "ignore_armor 比例档 =1（新增项 11 ✅ 效果参数 §1.1）"
-        },
         "damage_mul": {
           "value": 1.5,
           "note": "；2026-10-01 乘区审批：超 1.5 上限，2.5→1.5（封顶，语义保留）"
-        }
+        },
+        "armor_pierce_ratio": {
+          "ratio": 1,
+          "note": "ignore_armor 比例档 =1（新增项 11 ✅ 效果参数 §1.1）"
+        },
+        "ignore_guard": true
       },
-      "note": "G8 合规声明：本技能不调用 move 原语，纯攻击进程 + 目标选择放宽（「跳到红月」译为「无视站位规则」，与「利用权柄」同源同义） 2026-10-01 乘区审批：×2.5→×1.5 封顶（无视护甲+无视前排为叠加豁免，乘区不再超限）"
+      "note": "G8 合规声明：本技能不调用 move 原语，纯攻击进程 + 目标选择放宽（「跳到红月」译为「无视站位规则」，与「利用权柄」同源同义） 2026-10-01 乘区审批：×2.5→×1.5 封顶（无视护甲+无视前排为叠加豁免，乘区不再超限）；无视前排站位限制：可直接指定任意敌方单位（含被守护/嘲讽保护的后排）——ignore_guard（新增项 10 ✅ 执行参数 §一 EffectRef.params.ignore_redirect，ddd 明示律师「踏月」判例）"
     },
     {
       "id": "defined_substitute",
@@ -509,17 +502,6 @@
       "dispelable": false,
       "duration": 30,
       "modifiers": {
-        "suppress": [
-          "lethal_protect",
-          "miracle",
-          "spirit_worm",
-          "paper_substitute",
-          "puppet_immortality"
-        ],
-        "reviveBlocked": {
-          "value": true,
-          "note": "持有者死亡时进入 revive_blocked，所有复活结算前检查该标记（新增项 7 ✅）"
-        },
         "damageShare": {
           "ratio": 0.5,
           "direction": "to_self",
@@ -530,7 +512,7 @@
           }
         }
       },
-      "note": "「扭曲」三层（身份定义）：恐怖之处不在伤害而在身份被改写——① 替身没有不死的特权 ② 替身的职责是替本体受创；defined_substitute 状态数据（新增项 21 ✅ 纯数据）",
+      "note": "「扭曲」三层（身份定义）：恐怖之处不在伤害而在身份被改写——① 替身没有不死的特权 ② 替身的职责是替本体受创；defined_substitute 状态数据（新增项 21 ✅ 纯数据）；持有者死亡时进入 revive_blocked，所有复活结算前检查该标记（新增项 7 ✅）",
       "crossPathway": true,
       "participants": [
         "assassin",
@@ -538,7 +520,15 @@
         "lawyer",
         "supplicant",
         "prisoner"
-      ]
+      ],
+      "suppress": [
+        "lethal_protect",
+        "miracle",
+        "spirit_worm",
+        "paper_substitute",
+        "puppet_immortality"
+      ],
+      "reviveBlocked": true
     },
     {
       "id": "order_redefined",

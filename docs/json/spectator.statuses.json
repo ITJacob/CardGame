@@ -40,17 +40,7 @@
       ],
       "dispelable": true,
       "duration": 25,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "self_faction_hp_desc",
-            "tiebreak": "index_asc",
-            "priority": 15,
-            "note": "优先于嘲讽/守护（守护 priority 10）；改写为其同阵营 hp_desc 单位"
-          }
-        ]
-      },
+      "modifiers": {},
       "triggers": [
         {
           "event": "on_attack",
@@ -59,7 +49,16 @@
       ],
       "note": "H12 target_override 族（锚点 <阵营hp_desc>）；与 F9 puppet_string / F15 charm 同源母版（F 组合并候选 3），语义差异：改敌我认定（认知）而非物理牵引 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
       "maxStacks": 3,
-      "stackPolicy": "refresh"
+      "stackPolicy": "refresh",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "self_faction_hp_desc",
+          "tiebreak": "index_asc",
+          "priority": 15,
+          "note": "优先于嘲讽/守护（守护 priority 10）；改写为其同阵营 hp_desc 单位"
+        }
+      ]
     },
     {
       "id": "dream_edit",
@@ -189,16 +188,20 @@
       "dispelable": true,
       "duration": 15,
       "modifiers": {
-        "disable": [
-          "attack",
-          "skill"
-        ],
         "untargetableByTargeted": {
           "direction": "both",
           "scope": "all"
         }
       },
-      "note": "不能行动（复用眩晕语义）+ 双向不可选中（共享内核 §四 direction:both，己方也选不中，等于暂时移出战斗）"
+      "note": "不能行动（复用眩晕语义）+ 双向不可选中（共享内核 §四 direction:both，己方也选不中，等于暂时移出战斗）",
+      "disallowActions": [
+        "move",
+        "basic_attack",
+        "skill",
+        "skip",
+        "react",
+        "channel"
+      ]
     },
     {
       "id": "bewildered",
@@ -209,16 +212,15 @@
       "dispelable": true,
       "duration": 15,
       "charges": 1,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "first_empty",
-            "note": "走错方向，打空（C7 已验证）"
-          }
-        ]
-      },
-      "note": "复用 C7 target_override → first_empty + C6 charges；无新机制"
+      "modifiers": {},
+      "note": "复用 C7 target_override → first_empty + C6 charges；无新机制",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "first_empty",
+          "note": "走错方向，打空（C7 已验证）"
+        }
+      ]
     },
     {
       "id": "insight_authority",

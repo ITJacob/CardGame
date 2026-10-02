@@ -50,8 +50,8 @@
       "dispelable": false,
       "duration": null,
       "modifiers": {
-        "detectConceal": true,
-        "detectMirrored": true
+        "detectMirrored": true,
+        "see_through": true
       },
       "note": "C8 识破分支（与愚者【灵视】同源）；黑暗视觉 = 能看见 mirrored 单位，本途径内部制衡"
     },
@@ -101,15 +101,7 @@
       ],
       "dispelable": true,
       "duration": 10,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "anchor": "self_faction_hp_desc",
-            "op": "target_override",
-            "note": "反向嘲讽：被魅惑单位攻击其己方队友"
-          }
-        ]
-      },
+      "modifiers": {},
       "note": "F15 已登记（权威定义见 F 组状态表，此处为引用最小副本）；duration 受【说服】+1 ｜ ⚠️ 有意分化：本副本已升级为【魅轴身份状态】（叠加 maxStacks/stackThreshold/thresholdTrigger 承载 enabler→payoff），与 lawyer【贿赂·魅惑】的纯 F15 引用副本不再同定义——后者仍为无叠层的通用魅惑。若引擎要求同名状态定义一致，应将本状态改挂独立 id（如 charm_axis）并把 lawyer 副本还原为唯一 charm。",
       "maxStacks": 3,
       "stackPolicy": "stack",
@@ -130,7 +122,14 @@
           }
         ],
         "note": "魅：魅惑层数达标 → 持有者攻击进一步下降。接线结构已落，数值 ⚠️D 待审批；遵守「乘区层禁止批量生成」，本处只用属性修正不用伤害乘区。"
-      }
+      },
+      "behaviorModifiers": [
+        {
+          "anchor": "self_faction_hp_desc",
+          "op": "target_override",
+          "note": "反向嘲讽：被魅惑单位攻击其己方队友"
+        }
+      ]
     },
     {
       "id": "mislead",
@@ -141,15 +140,14 @@
       "dispelable": true,
       "duration": 15,
       "charges": 1,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "first_empty"
-          }
-        ]
-      },
-      "note": "C7 已验证（target_override → first_empty）；duration 受【说服】+1"
+      "modifiers": {},
+      "note": "C7 已验证（target_override → first_empty）；duration 受【说服】+1",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "first_empty"
+        }
+      ]
     },
     {
       "id": "persuasion",
@@ -455,10 +453,9 @@
       "duration": 10,
       "modifiers": {
         "action_nullify": true,
-        "damage_taken_mul": 0.7,
-        "note": "不能行动 + 茧壳护住了它"
+        "damage_taken_mul": 0.7
       },
-      "note": "乘区审批：0.7=标准减伤母版档（H3 已裁定）/0.75=轻减档"
+      "note": "乘区审批：0.7=标准减伤母版档（H3 已裁定）/0.75=轻减档；不能行动 + 茧壳护住了它"
     },
     {
       "id": "frost_armor",
@@ -633,15 +630,14 @@
       "dispelable": true,
       "duration": 20,
       "charges": 1,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "first_empty"
-          }
-        ]
-      },
-      "note": "C7 target_override 族；仅降临瞬间入场效果，持续落空由 DomainDef 承载"
+      "modifiers": {},
+      "note": "C7 target_override 族；仅降临瞬间入场效果，持续落空由 DomainDef 承载",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "first_empty"
+        }
+      ]
     },
     {
       "id": "maze_daze",
@@ -662,15 +658,14 @@
       ],
       "dispelable": false,
       "duration": 0,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "first_empty"
-          }
-        ]
-      },
-      "note": "一次性落空标记（源稿「满 4 层时该次攻击 target_override → first_empty」的承载状态，duration 0 当次攻击结算后即消）：该次攻击改打空坐标（C7）"
+      "modifiers": {},
+      "note": "一次性落空标记（源稿「满 4 层时该次攻击 target_override → first_empty」的承载状态，duration 0 当次攻击结算后即消）：该次攻击改打空坐标（C7）",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "first_empty"
+        }
+      ]
     },
     {
       "id": "mirror_step",
@@ -790,8 +785,7 @@
       "duration": 15,
       "modifiers": {
         "action_nullify": true,
-        "damage_taken_mul": 0.6,
-        "note": "damage_taken_mul 0.6 是有意的负收益：石化等于给了它 15tick 减伤，正确用法是锁住奶妈/核心先杀别人"
+        "damage_taken_mul": 0.6
       },
       "triggers": [
         {
@@ -807,7 +801,7 @@
           ]
         }
       ],
-      "note": "与眩晕的三点差异：时长 15t / 带减伤 / 不可驱散且解除后附易伤 乘区审批：0.6=深度减免档（石化/集群/直觉类重态）"
+      "note": "与眩晕的三点差异：时长 15t / 带减伤 / 不可驱散且解除后附易伤 乘区审批：0.6=深度减免档（石化/集群/直觉类重态）；damage_taken_mul 0.6 是有意的负收益：石化等于给了它 15tick 减伤，正确用法是锁住奶妈/核心先杀别人"
     },
     {
       "id": "mirrored",

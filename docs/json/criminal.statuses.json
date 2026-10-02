@@ -93,7 +93,7 @@
       "duration": null,
       "charges": 2,
       "modifiers": {
-        "redirect": {
+        "redirect_attack": {
           "to": "first_empty",
           "sourceFilter": "skill",
           "direction": "inbound",
@@ -228,15 +228,14 @@
         "control"
       ],
       "dispelable": true,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "self"
-          }
-        ]
-      },
-      "note": "F15 最小副本（H12 target_override 族）：反向嘲讽，攻击其己方队友；权威定义见 F15 登记"
+      "modifiers": {},
+      "note": "F15 最小副本（H12 target_override 族）：反向嘲讽，攻击其己方队友；权威定义见 F15 登记",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "self"
+        }
+      ]
     },
     {
       "id": "desire_bomb",
@@ -585,12 +584,11 @@
       ],
       "dispelable": false,
       "duration": null,
-      "modifiers": {
-        "suppress": [
-          "lust_uncontrolled"
-        ]
-      },
-      "note": "深渊即我 ∑≥15 解锁：压制失控档（lust_uncontrolled，恶欲值 7–9 档，common 档位状态）的生效——只压制生效、不移除实例（suppress 语义见 编队参数 §1.1b）；⚠️D：是否随 ∑ 回落而消退待平衡期定（当前挂载后常驻）"
+      "modifiers": {},
+      "note": "深渊即我 ∑≥15 解锁：压制失控档（lust_uncontrolled，恶欲值 7–9 档，common 档位状态）的生效——只压制生效、不移除实例（suppress 语义见 编队参数 §1.1b）；⚠️D：是否随 ∑ 回落而消退待平衡期定（当前挂载后常驻）",
+      "suppress": [
+        "lust_uncontrolled"
+      ]
     },
     {
       "id": "fallen",
@@ -602,12 +600,6 @@
       "dispelable": false,
       "duration": 30,
       "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "self"
-          }
-        ],
         "heal_received_mul": 0.5
       },
       "triggers": [
@@ -628,7 +620,13 @@
           ]
         }
       ],
-      "note": "H12 anchor self（新增项 4）+ H2 + H16 + H21；与【迷幻】分界：迷幻打向空处（charges 可驱散短），堕落打向自己（duration 不可驱散 30t） 乘区审批：0.4–0.5=深度减免档（重控/代价/位格压制态），单列登记"
+      "note": "H12 anchor self（新增项 4）+ H2 + H16 + H21；与【迷幻】分界：迷幻打向空处（charges 可驱散短），堕落打向自己（duration 不可驱散 30t） 乘区审批：0.4–0.5=深度减免档（重控/代价/位格压制态），单列登记",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "self"
+        }
+      ]
     },
     {
       "id": "abyss_curse",
@@ -741,7 +739,9 @@
       "stackPolicy": "refresh",
       "modifiers": {
         "dotOnTick": 1,
-        "pierceArmor": true
+        "armor_pierce_ratio": {
+          "ratio": 1
+        }
       },
       "note": "领域轴身份状态（2026-09-29 自 common poison 分叉私有化，数值蓝本同源：1/tick 穿透护甲 DoT，叠层 refresh）；罪犯全途径（领域/污秽轴产层 + 污秽之王读层 + 恶魔化触发）统一改指此 id；common poison（中毒）保留为收尸人/囚犯/耕种者通用毒。⚠️ 副作用登记：污秽之王不再放大敌方的通用中毒（跨途径涌现 combo 断开），平衡期再裁定是否走 crossPathway 接回。"
     }

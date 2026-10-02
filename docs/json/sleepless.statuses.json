@@ -9,8 +9,7 @@
       "dispelable": false,
       "duration": null,
       "modifiers": {
-        "seeThroughStealth": true,
-        "note": "C8 识破分支：敌方 concealed/shadow_veil/stealth 类状态对本单位无效（共享内核参数 §四 + H5）"
+        "see_through": true
       },
       "triggers": [
         {
@@ -31,7 +30,8 @@
             }
           ]
         }
-      ]
+      ],
+      "note": "C8 识破分支：敌方 concealed/shadow_veil/stealth 类状态对本单位无效（共享内核参数 §四 + H5）"
     },
     {
       "id": "nightfall",
@@ -104,10 +104,17 @@
       "dispelable": true,
       "duration": 20,
       "modifiers": {
-        "disable": "all",
         "damage_taken_mul": 1.2
       },
-      "note": "与「眩晕」同构（disable 全部四行为）+ H4 受伤乘区；睡眠族扩展：被延长走 H14 durationModifier、被永眠改写走 H32 transferStatus"
+      "note": "与「眩晕」同构（disable 全部四行为）+ H4 受伤乘区；睡眠族扩展：被延长走 H14 durationModifier、被永眠改写走 H32 transferStatus",
+      "disallowActions": [
+        "move",
+        "basic_attack",
+        "skill",
+        "skip",
+        "react",
+        "channel"
+      ]
     },
     {
       "id": "nightmare_torment",
@@ -189,7 +196,7 @@
       "dispelable": false,
       "duration": null,
       "modifiers": {
-        "summon_cap": 2
+        "summon_cap_override": 2
       },
       "note": "summon_cap 是 UnitDef/运行时参数（H39 编队参数 §1.1b），以状态 modifiers 承载对持有者召唤位上限的修正；由归一自 modify_stat(stat: summon_cap) 改写"
     },
@@ -360,7 +367,6 @@
       "dispelable": true,
       "duration": 20,
       "modifiers": {
-        "disable": "all",
         "gaugeRateMul": 0,
         "untargetableByTargeted": {
           "direction": "both",
@@ -380,6 +386,14 @@
         "thief",
         "warrior",
         "apothecary"
+      ],
+      "disallowActions": [
+        "move",
+        "basic_attack",
+        "skill",
+        "skip",
+        "react",
+        "channel"
       ]
     },
     {
@@ -580,21 +594,21 @@
             ]
           },
           "note": "按来源类型过滤的受伤乘区（H4 filter caster 维度）"
-        },
-        "immune": {
-          "categories": [
-            "control"
-          ],
-          "filter": {
-            "unitType": [
-              "SPIRIT",
-              "UNDEAD"
-            ]
-          },
-          "note": "己方灵体与亡灵免疫 control 类状态（G12 immune 字段 + filter.unitType 限定；由归一自 modify_stat(stat: control_immunity) 改写，语义不变）"
         }
       },
-      "note": "收尸人【灵之主宰】与本条共用 spirit_sovereign 族（H42 同向取最高不叠乘）"
+      "note": "收尸人【灵之主宰】与本条共用 spirit_sovereign 族（H42 同向取最高不叠乘）",
+      "immune": {
+        "categories": [
+          "control"
+        ],
+        "filter": {
+          "unitType": [
+            "SPIRIT",
+            "UNDEAD"
+          ]
+        },
+        "note": "己方灵体与亡灵免疫 control 类状态（G12 immune 字段 + filter.unitType 限定；由归一自 modify_stat(stat: control_immunity) 改写，语义不变）"
+      }
     },
     {
       "category": [

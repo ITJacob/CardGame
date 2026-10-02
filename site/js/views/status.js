@@ -9,7 +9,9 @@ import { zh } from '../term.js';
 import { walkCardEffects } from '../ast.js';
 import { barChart, countBy, sortedRows, heatPanel, wireHeatToggle } from '../charts.js';
 
-// modifiers 是**自由词表**（不是封闭枚举）：对象形态 {键: 值}，键由卡面自定。
+// modifiers 是**开放结构**（不是封闭枚举）：对象形态 {键: 值}，键持续扩展。
+// 2026-10-02 治理批起实行登记制：键入词典 modifierKey 栏目（中文名+释义），
+// validate.py 对未登记键告警；页面标签走 zh('modifierKey', k)。
 // 数组形态的元素是 statusModifier，用 kind 作键。note 是附注，不算修饰符本身
 // export 给评分页（score.js）复用——状态九维度口径只有这一份，别两边各写一份
 export function modifierKeys(def) {
@@ -117,9 +119,11 @@ export function renderStatusStats(container) {
 
   const mkeyPanel = `
     <div class="panel wide-labels"><h2>修饰符键 Top 20</h2>
-      <p class="panel-note muted">modifiers 是自由词表而非封闭枚举：共 <b>${mkeyTotal.size}</b> 种键 / ${mkeySum} 处，
-      其中 <b>${mkeyOnce}</b> 种只出现 1 次（长尾）。此处只列前 20 种。</p>
-      ${barChart(sortedRows(new Map([...mkeyTotal.entries()].sort((a, b) => b[1] - a[1]).slice(0, 20))))}</div>`;
+      <p class="panel-note muted">modifiers 是开放结构但实行登记制（词典 modifierKey 栏目，悬停看原键与释义）：
+      共 <b>${mkeyTotal.size}</b> 种键 / ${mkeySum} 处，其中 <b>${mkeyOnce}</b> 种只出现 1 次（长尾）。
+      未登记键 validate.py 会告警。此处只列前 20 种。</p>
+      ${barChart(sortedRows(new Map([...mkeyTotal.entries()].sort((a, b) => b[1] - a[1]).slice(0, 20)),
+        (k) => zh('modifierKey', k)))}</div>`;
 
   const primPanel = `
     <div class="panel"><h2>状态面原语用量</h2>
@@ -201,7 +205,7 @@ export function renderStatusStats(container) {
     ${heatOf('途径 × 次数（charges）', chargeByOwner, scaleCols(chargeByOwner, '次'), { unit: ' 个', orderNote: '数值最小的 ' })}
     ${heatOf('途径 × 可驱散', dispelByOwner, dispelCols, { unit: ' 个' })}
     ${heatOf('途径 × 原语（状态面）', primByOwner, usageCols(primTotal, 'primitive'))}
-    ${heatOf('途径 × 修饰符键 Top 12', mkeyByOwner, usageCols(mkeyTotal, null, 12))}
+    ${heatOf('途径 × 修饰符键 Top 12', mkeyByOwner, usageCols(mkeyTotal, 'modifierKey', 12))}
     ${heatOf('途径 × statusDef 字段填充 Top 15', fieldByOwner, usageCols(fill, null, 15), { unit: ' 个' })}`;
 
   container.innerHTML = `<div class="stat-group-title">状态定义面</div>
