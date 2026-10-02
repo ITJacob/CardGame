@@ -20,7 +20,7 @@
         "编织梦境",
         "洞察权柄"
       ],
-      "note": "2026-09-26 评审修正：读心（耗2层）/洞察权柄（perStack 读层）原误列 enablers，实为耗层 payoff 已迁移 ｜ 2026-09-29 环节⑤：产层补实证（引导为 dream 轴卡但挂 insight 入列，产层 12→20；操纵/编织梦境挂 insight 自动成跨轴消费）"
+      "note": "2026-09-26 评审修正：读心（耗2层）/洞察权柄（perStack 读层）原误列 enablers，实为耗层 payoff 已迁移 ｜ 2026-09-29 环节⑤：产层补实证（引导为 dream 轴卡但挂 insight 入列，产层 12→20；操纵/编织梦境挂 insight 自动成跨轴消费） ｜ 2026-10-02 批次六：rank_gap 谓词首发（读心/操纵），insight 状态补 on_active_skill 读心触发器——位格洞察从卡面下沉到状态面"
     },
     "suggestion": {
       "symbol": "💭",
@@ -224,7 +224,7 @@
       "flagship": false,
       "lore": "序列8 读心者 —— \"观察深入气场、以太体，异常准确地掌握人心\"",
       "flavor": "你读完了它。接下来的一击，你确切知道该落在哪儿。",
-      "describe": "对一名敌人造成 2 点精神伤害；若自身「心象」≥2 层，消耗 2 层，改为再造成 6 点精神伤害并使其易伤 10tick。；目标灵魂被放牧则读魂，追加 2 点精神伤害。",
+      "describe": "对一名敌人造成 2 点精神伤害；若自身「心象」≥2 层，消耗 2 层，改为再造成 6 点精神伤害并使其易伤 10tick。；目标灵魂被放牧则读魂，追加 2 点精神伤害。位格差≥2 时再追加 2 点精神伤害。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -276,6 +276,25 @@
                 }
               ],
               "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "rank_gap",
+                "aUnit": "self",
+                "bUnit": "target",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "note": "位格压制读心：位格差≥2 时目标心防形同虚设，追加 2 点——rank_gap 谓词全库首发（⚠️D 待平衡）"
+                }
+              ],
+              "else": []
             }
           ]
         },
@@ -306,7 +325,8 @@
       "tentative": false,
       "conversionNotes": [
         "心象消耗补 statusId:insight，stacks 依源稿订正为 -2（原脚本归一误为 -1）",
-        "翻译/语义：序列8\"掌握人心\"非攻击。价值在消耗洞察层后的爆发——\"观察→读心\"循环收口。依赖新项 `insight` + F48。"
+        "翻译/语义：序列8\"掌握人心\"非攻击。价值在消耗洞察层后的爆发——\"观察→读心\"循环收口。依赖新项 `insight` + F48。",
+        "2026-10-02 差异化风格迭代·批次六（观众：位格洞察首发+读心状态面）"
       ],
       "art": {
         "subject": "a mind reader peeling open a glowing book of someone's inner thoughts",
@@ -961,7 +981,7 @@
       "flagship": false,
       "lore": "序列4 操纵师 —— \"『操纵』（核心）：通过集体潜意识大海篡改潜意识、读取想法、驱使目标\"",
       "flavor": "你把手指探进那片所有人都连着的、黑沉沉的海——捞起一个念头，改掉它，顺便读到了它周围所有的窃窃私语。",
-      "describe": "篡改一名敌人的潜意识 25tick（其攻击目标被改写为同阵营友军），对全体敌方造成 2 点精神伤害，自身「心象」+2。",
+      "describe": "篡改一名敌人的潜意识（其攻击目标被改写为同阵营友军）：位格差≥1 持续 25tick，否则衰减为 15tick；对全体敌方造成 2 点精神伤害，自身「心象」+2（衰减档 +1）。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -978,8 +998,15 @@
       },
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
+          "op": "if",
+          "condition": {
+            "kind": "rank_gap",
+            "aUnit": "self",
+            "bUnit": "target",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
             {
               "type": "mount_status",
               "statusId": "subconscious_edit",
@@ -1000,14 +1027,39 @@
               "target": "self",
               "note": "读取想法"
             }
-          ]
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "subconscious_edit",
+              "duration": 15,
+              "note": "位格不足：目标位格≥施法者，篡改力度衰减（25t→15t）——身份卡红线「控制须带位格前提」落地（⚠️D 待平衡）"
+            },
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "target": "all_enemies",
+              "note": "集体潜意识大海的余波"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "insight",
+              "stacks": 1,
+              "stackMode": "add",
+              "target": "self",
+              "note": "读取想法（衰减档 +1）"
+            }
+          ],
+          "note": "rank_gap 谓词第二实证：位格差≥1 满档，否则衰减——观众控制系全卡将逐批补位格前提"
         }
       ],
       "tentative": false,
       "conversionNotes": [
         "subconscious_edit 定义见心理暗示·质变（本档复用）；无值 → castTime:null",
         "翻译/语义：一段原文三动作全落地：篡改（改主目标）+驱使（同状态）+读取（自身+2洞察）。\"集体潜意识大海\"→AoE 精神伤害。情绪轴旗舰。",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+        "2026-10-01 吟唱重标：非仪式，castTime 空→0",
+        "2026-10-02 差异化风格迭代·批次六（观众：位格洞察首发+读心状态面）"
       ],
       "art": {
         "subject": "a hand dipping into a dark ocean of whispering connected minds",
@@ -1393,13 +1445,34 @@
           ],
           "else": [],
           "note": "跨系读层段：spectator→assassin mirror_substitute（2026-09-29 跨系批）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "astral_anchor",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "星界震荡：目标挂学徒星界锚，梦境与星界接壤扯出裂隙，追加 2 点精神伤害（⚠️D 待平衡）"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层段：spectator→apprentice astral_anchor（梦境×星界枢纽）"
         }
       ],
       "tentative": false,
       "conversionNotes": [
         "心象消耗补 statusId:insight，stacks 依源稿订正为 -3（原脚本归一误为 -1）",
         "翻译/语义：\"拉入\"=人还在场但不在战斗里=封印。梦境轴旗舰。依赖双向过滤 + 新项。",
-        "2026-10-01 吟唱重标：仪式类（kw:封印）读条 5tick（序列 3 档，基准 §三之二）"
+        "2026-10-01 吟唱重标：仪式类（kw:封印）读条 5tick（序列 3 档，基准 §三之二）",
+        "2026-10-02 批次六：补 astral_anchor 跨系读段（星界锚引梦，学徒枢纽 participants 补录观众）"
       ],
       "art": {
         "subject": "a dream weaver knitting a sleeping enemy into a silken cocoon",
