@@ -146,12 +146,27 @@
       "charges": 1,
       "duration": 20,
       "modifiers": {},
-      "note": "F19 已登记（v0.1 律-2，保留 ID 与机制，本版从序列4 下移序列6——原著「扭曲」是序列6 能力）；权威定义见状态表，此处为引用副本。与诡辩（打空）/腐蚀（打最残血）构成目标扭曲谱系",
+      "note": "F19 已登记（v0.1 律-2，保留 ID 与机制，本版从序列4 下移序列6——原著「扭曲」是序列6 能力）；权威定义见状态表，此处为引用副本。与诡辩（打空）/腐蚀（打最残血）构成目标扭曲谱系 ｜ 2026-10-02 补漏批②：on_take_damage→modify_damage(taken ×0.75)——扭曲伤害定义状态面（矩阵状态面原语 modify_damage 律师正主落地）",
       "behaviorModifiers": [
         {
           "op": "target_override",
           "anchor": "self_faction_hp_desc",
           "note": "其自身阵营单位（F19 母版「阵营首位」锚点随状态表归一）；触发后 charges -1 卸载"
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "modify_damage",
+              "scope": "taken",
+              "mul": 0.75,
+              "target": "self",
+              "note": "扭曲伤害定义：受力方向被改写，该次受击伤害 ×0.75——modify_damage 状态面正主落地（律师签名：扭曲=改写规则含伤害定义，与观众想象干预语义分叉；⚠️D 待平衡）"
+            }
+          ],
+          "note": "charges 1 随扭曲一并卸载（同 behaviorModifiers 消耗口径）"
         }
       ]
     },
@@ -224,12 +239,20 @@
       ],
       "dispelable": true,
       "duration": 25,
-      "note": "「扭曲」二层：被扭曲的是「谁承担」概念本身，必须双向才有原著味（单向退化成伤害转移）；damage_share（新增项 2 ✅ 已落 ddd：编队参数 §1.1b 伤害转嫁族 H28）",
+      "note": "「扭曲」二层：被扭曲的是「谁承担」概念本身，必须双向才有原著味（单向退化成伤害转移）；damage_share（新增项 2 ✅ 已落 ddd：编队参数 §1.1b 伤害转嫁族 H28） ｜ 2026-10-02 补漏批②：modifiers.damageShare 登记制补录（与顶层 damageTransfer 同值双写，glossary 同步）",
       "damageTransfer": {
         "ratio": 0.5,
         "direction": "both",
         "linkedTo": "counterpart",
         "note": "双向对半：你挨的打对方分一半，对方挨的打你也分一半；转移部分不再二次触发（H28 内置防循环）"
+      },
+      "modifiers": {
+        "damageShare": {
+          "see": "damageTransfer",
+          "ratio": 0.5,
+          "direction": "both",
+          "note": "伤害分摊签名追认（补漏批② 2026-10-02）：权威承载=顶层 damageTransfer 字段（H28 伤害转嫁族），修饰键登记制补录与字段同值——对半双向分摊"
+        }
       }
     },
     {
