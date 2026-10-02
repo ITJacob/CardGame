@@ -73,13 +73,13 @@
 | planter | prim:mount_status ×26；prim:spawn ×8；prim:damage ×7；prim:heal ×7；elem:none ×7 |
 | prisoner | prim:mount_status ×23；prim:damage ×12；prim:modify_stat ×9；stat:attack ×6；elem:physical ×5 |
 | pryer | prim:mount_status ×26；prim:damage ×18；elem:none ×9；prim:modify_resource ×8；elem:physical ×7 |
-| reader | prim:mount_status ×22；prim:damage ×12；elem:mental ×12；prim:modify_stat ×7；prim:modify_resource ×7 |
+| reader | prim:mount_status ×22；prim:damage ×12；elem:mental ×12；prim:modify_resource ×7；prim:modify_stat ×7 |
 | sailor | prim:mount_status ×29；prim:damage ×24；elem:physical ×16；elem:lightning ×12；prim:move ×6 |
 | savant | prim:mount_status ×15；prim:modify_resource ×12；prim:modify_stat ×11；prim:damage ×7；prim:spawn ×5 |
 | seer | prim:mount_status ×19；prim:modify_resource ×10；prim:damage ×5；prim:modify_stat ×4；prim:heal ×4 |
 | sleepless | prim:mount_status ×28；prim:damage ×12；elem:mental ×12；prim:modify_stat ×6；stat:attack ×5 |
 | spectator | prim:mount_status ×25；elem:mental ×9；prim:modify_stat ×6；prim:damage ×6；prim:modify_resource ×4 |
-| supplicant | prim:mount_status ×26；prim:damage ×7；elem:mental ×5；prim:spawn ×5；prim:modify_stat ×4 |
+| supplicant | prim:mount_status ×26；prim:damage ×7；elem:mental ×5；prim:spawn ×5；prim:modify_resource ×4 |
 | thief | prim:mount_status ×24；elem:mental ×9；prim:damage ×8；prim:modify_stat ×8；prim:modify_resource ×6 |
 | warrior | prim:mount_status ×24；prim:damage ×13；elem:none ×12；prim:modify_resource ×6；elem:physical ×5 |
 

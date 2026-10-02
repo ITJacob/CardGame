@@ -36,6 +36,11 @@ function kvRow(label, inner) {
   return `<div class="tt-kv"><span class="muted">${escapeHtml(label)}</span> ${inner}</div>`;
 }
 
+// label 已是 HTML（术语 span）的版本——修饰键等行首要走词典悬停，不能过 escapeHtml
+function kvRowHtml(labelHtml, inner) {
+  return `<div class="tt-kv"><span class="muted">${labelHtml}</span> ${inner}</div>`;
+}
+
 function triggersHtml(triggers) {
   return triggers.map((tr) => `<div class="ast-node">
     <div class="ast-line"><span class="muted">触发：</span>${termSpan('triggerEvent', tr.event)}</div>
@@ -64,16 +69,17 @@ function readLayerHtml(def) {
   return rows.join('');
 }
 
-// modifiers 两种形态：对象 {键: 值} / 数组 [{kind, ...}]（口径同 views/status.js 的 modifierKeys）
+// modifiers 两种形态：对象 {键: 值} / 数组 [{kind, ...}]（口径同 views/status.js 的 modifierKeys）。
+// 行首走词典 modifierKey 术语（中文名+释义悬停，未登记键带 missing 标红——治理批 2026-10-02 的同一正典）
 function modifiersRows(def) {
   const m = def.modifiers;
   if (!m) return '';
   if (Array.isArray(m)) {
     return m.map((x) => typeof x === 'string'
-      ? kvRow('修饰', escapeHtml(x))
-      : kvRow(x.kind || '修饰', valHtml({ ...x, kind: undefined }))).join('');
+      ? kvRowHtml(termSpan('modifierKey', x), '✓')
+      : kvRowHtml(termSpan('modifierKey', x.kind || '?'), valHtml({ ...x, kind: undefined }))).join('');
   }
-  return Object.entries(m).map(([k, v]) => kvRow(k, valHtml(v))).join('');
+  return Object.entries(m).map(([k, v]) => kvRowHtml(termSpan('modifierKey', k), valHtml(v))).join('');
 }
 
 // 第 4 步「行为载荷」：modifiers / 行为修正 / 禁行动 / 防御语义件
@@ -83,7 +89,7 @@ function behaviorHtml(def) {
     rows.push(def.behaviorModifiers.map((x) => kvRow('行为修正', valHtml(x))).join(''));
   }
   if (def.disallowActions?.length) {
-    rows.push(kvRow('禁行动', def.disallowActions.map((a) => escapeHtml(String(a))).join('、')));
+    rows.push(kvRow('禁行动', def.disallowActions.map((a) => termSpan('actionLock', a, { showKey: false })).join('、')));
   }
   if (def.lethalProtect) rows.push(kvRow('免死保护', '✓'));
   if (def.reviveBlocked) rows.push(kvRow('阻断复活', '✓'));
@@ -96,8 +102,20 @@ function behaviorHtml(def) {
   }
   if (def.healReceivedMul != null) rows.push(kvRow('受疗倍率', `×${def.healReceivedMul}`));
   if (def.damageTransfer) {
-    rows.push(kvRow('伤害转嫁', valHtml(def.damageTransfer)));
-    if (def.damageTransfer.note) rows.push(`<div class="ast-note">${escapeHtml(def.damageTransfer.note)}</div>`);
+    const t = def.damageTransfer;
+    const segs = [];
+    if (t.ratio != null) segs.push(`比例 ${Math.round(t.ratio * 100)}%`);
+    if (t.direction) segs.push(termSpan('transferDirection', t.direction, { showKey: false }));
+    if (t.split) segs.push(`分摊 ${escapeHtml(t.split)}`);
+    if (t.selfKeep != null) segs.push(t.selfKeep ? '源头自留' : '源头不留');
+    if (t.linkedTo) segs.push(`链接 ${escapeHtml(String(t.linkedTo))}`);
+    if (t.linkedFrom) {
+      const lf = t.linkedFrom;
+      segs.push(`承伤方 ${escapeHtml(lf.scope)}·${escapeHtml(lf.sort)}`);
+    }
+    rows.push(kvRow('伤害转嫁', segs.join(' · ')));
+    if (t.linkedFrom?.note) rows.push(`<div class="ast-note">${escapeHtml(t.linkedFrom.note)}</div>`);
+    if (t.note) rows.push(`<div class="ast-note">${escapeHtml(t.note)}</div>`);
   }
   if (def.statMods) rows.push(kvRow('属性修正', inlineKv(def.statMods)));
   return rows.join('');

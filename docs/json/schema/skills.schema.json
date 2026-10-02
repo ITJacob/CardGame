@@ -1,3956 +1,3977 @@
 {
- "$schema": "https://json-schema.org/draft/2020-12/schema",
- "$id": "https://cardgame.local/schema/skills.schema.json",
- "title": "途径技能池文档（<pathway>.skills.json）",
- "description": "单条诡秘之主途径的技能池结构化产物：一份文件 = 一条途径，含构筑轴（axes）与全部技能卡（cards）。字段语义与约定见 docs/json/SCHEMA.md。",
- "type": "object",
- "required": [
-  "pathwayId",
-  "pathwayName",
-  "sourceFile",
-  "sourceVersion",
-  "axes",
-  "cards"
- ],
- "additionalProperties": false,
- "properties": {
-  "pathwayId": {
-   "type": "string",
-   "pattern": "^[a-z][a-z0-9_]*$",
-   "description": "途径英文 ID，必须与文件名 <pathwayId>.skills.json 一致、且与 manifest.json 的 pathways[].id 对齐。"
-  },
-  "pathwayName": {
-   "type": "string",
-   "description": "途径中文名。"
-  },
-  "sourceFile": {
-   "type": "string",
-   "pattern": "^\\.\\./archive/skill-design_v0\\.3/.+_技能池_v\\d+\\.\\d+\\.md$",
-   "description": "溯源指针：生成期源技能稿 md 的相对路径（2026-09-18 起技能稿归档为只读快照，JSON 为唯一维护正源）。"
-  },
-  "sourceVersion": {
-   "type": "string",
-   "description": "源技能池版本，当前 v0.3。"
-  },
-  "axes": {
-   "type": "object",
-   "description": "本途径的构筑轴；键为 axis id，卡片 axis 字段必须取自这里的键。",
-   "minProperties": 1,
-   "additionalProperties": {
-    "$ref": "#/$defs/axis"
-   }
-  },
-  "sampleBuilds": {
-   "type": "array",
-   "description": "示例 Build（4 主动 + 4 被动），源自技能稿 §二。卡名为设计示例，可能与现行卡名有出入，仅供构筑参考。",
-   "items": {
-    "type": "object",
-    "required": [
-     "name",
-     "actives",
-     "passives",
-     "playstyle"
-    ],
-    "additionalProperties": false,
-    "properties": {
-     "name": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cardgame.local/schema/skills.schema.json",
+  "title": "途径技能池文档（<pathway>.skills.json）",
+  "description": "单条诡秘之主途径的技能池结构化产物：一份文件 = 一条途径，含构筑轴（axes）与全部技能卡（cards）。字段语义与约定见 docs/json/SCHEMA.md。",
+  "type": "object",
+  "required": [
+    "pathwayId",
+    "pathwayName",
+    "sourceFile",
+    "sourceVersion",
+    "axes",
+    "cards"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "pathwayId": {
       "type": "string",
-      "description": "Build 名（含轴符号）。"
-     },
-     "actives": {
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "途径英文 ID，必须与文件名 <pathwayId>.skills.json 一致、且与 manifest.json 的 pathways[].id 对齐。"
+    },
+    "pathwayName": {
+      "type": "string",
+      "description": "途径中文名。"
+    },
+    "sourceFile": {
+      "type": "string",
+      "pattern": "^\\.\\./archive/skill-design_v0\\.3/.+_技能池_v\\d+\\.\\d+\\.md$",
+      "description": "溯源指针：生成期源技能稿 md 的相对路径（2026-09-18 起技能稿归档为只读快照，JSON 为唯一维护正源）。"
+    },
+    "sourceVersion": {
+      "type": "string",
+      "description": "源技能池版本，当前 v0.3。"
+    },
+    "axes": {
+      "type": "object",
+      "description": "本途径的构筑轴；键为 axis id，卡片 axis 字段必须取自这里的键。",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/axis"
+      }
+    },
+    "sampleBuilds": {
       "type": "array",
+      "description": "示例 Build（4 主动 + 4 被动），源自技能稿 §二。卡名为设计示例，可能与现行卡名有出入，仅供构筑参考。",
       "items": {
-       "type": "string"
-      }
-     },
-     "passives": {
-      "type": "array",
-      "items": {
-       "type": "string"
-      }
-     },
-     "playstyle": {
-      "type": "string",
-      "description": "玩法一句话。"
-     }
-    }
-   }
-  },
-  "designNote": {
-   "type": "string",
-   "description": "途径级机制说明（如隐秘值/咬合器/恶欲值维度），源自技能稿轴表后的说明段。"
-  },
-  "artStyle": {
-   "type": "string",
-   "description": "本途径统一的 AI 出图风格模板（英文撰写）：画风/材质/构图/调色。展示时与卡级 art 现拼成完整 prompt，不落盘——换风格只改这一处。"
-  },
-  "artFrameEpic": {
-   "type": "string",
-   "description": "本途径 epic 档边框**纹样**的主题层（英文撰写）：写途径意象（动机/配色）即可，如 cold silver starlight in deep indigo night, intricate repeating filigree。**不要写 frame / border / bezel / apex / edge / corner / side 这类构图定位词**——模型一见「框」就画成装裱画框，一见 apex/edge 就围绕画心做构图；纹样是否成框、框多宽，全部由 CSS 决定。画法约束（无缝纹样/排除写实与 3D/纯黑底/负向词）由 manifest.artFrameFormat 统一承担，展示时现拼在前。common/uncommon/rare 三档走 manifest.artFrame。"
-  },
-  "artFrameLegendary": {
-   "type": "string",
-   "description": "本途径 legendary 档边框纹样的主题层（英文撰写）：比 artFrameEpic 更华丽（金饰/途径核心意象）。同样只写纹样主题，禁写构图定位词；格式约束同 artFrameEpic。"
-  },
-  "cards": {
-   "type": "array",
-   "minItems": 1,
-   "items": {
-    "$ref": "#/$defs/card"
-   }
-  },
-  "unitDefs": {
-   "type": "array",
-   "items": {
-    "$ref": "#/$defs/unitDef"
-   },
-   "description": "编目层召唤物/单位蓝本池（2026-10-01 Def 编目独立化批）：同途径多卡共享，原卡级 unitDefs 字段已撤并至此。"
-  },
-  "zoneDefs": {
-   "type": "array",
-   "items": {
-    "$ref": "#/$defs/zoneDef"
-   },
-   "description": "编目层区域定义池（2026-10-01 Def 编目独立化批）：同途径多卡共享，原卡级 zoneDef 字段已撤并至此。"
-  },
-  "domainDefs": {
-   "type": "array",
-   "items": {
-    "$ref": "#/$defs/domainDef"
-   },
-   "description": "编目层界域定义池（2026-10-01 Def 编目独立化批）：同途径多卡共享，原卡级 domainDef 字段已撤并至此。"
-  }
- },
- "$defs": {
-  "axis": {
-   "type": "object",
-   "required": [
-    "symbol",
-    "name"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "symbol": {
-     "type": "string",
-     "description": "轴符号（emoji 或炼金符号），用于 UI 展示。"
-    },
-    "name": {
-     "type": "string",
-     "description": "轴中文名。"
-    },
-    "statusId": {
-     "type": "string",
-     "description": "轴身份状态 id：enabler 卡挂载/累积它，payoff 卡读取它放大。"
-    },
-    "enablers": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     },
-     "description": "挂载/累积身份状态的卡名（源自技能稿轴表，仅保留可匹配到卡名的条目）。"
-    },
-    "payoffs": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     },
-     "description": "读取身份状态放大的卡名（同源，仅保留可匹配条目）。"
-    },
-    "note": {
-     "type": "string",
-     "description": "轴机制补充说明。"
-    },
-    "payoffVacuumAccepted": {
-     "type": "boolean",
-     "description": "真空轴甄别标记（2026-09-26 评分体系引入）：payoffs 为空（无读层消费者）时，true = 评审认定「纯产层轴」属合法设计、读层闭环维度不扣分；缺省/false = 真空计低分、列入补卡候选。甄别结论须在 note 记录理由。见 docs/meta/SCORING.md。"
-    }
-   }
-  },
-  "card": {
-   "type": "object",
-   "description": "一张技能卡。kind 决定必填分支：active 需 cost/reach/target；passive 需 hook。",
-   "required": [
-    "id",
-    "name",
-    "kind",
-    "sequence",
-    "sequenceName",
-    "rarity",
-    "axis",
-    "flagship",
-    "lore",
-    "flavor",
-    "describe",
-    "effects",
-    "tentative"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "id": {
-     "type": "string",
-     "pattern": "^skill_[a-z0-9_]+_s[0-9]_[a-z0-9_]+$",
-     "description": "全局唯一 ID：skill_<pathwayId>_s<序列位阶>_<英文短名>。"
-    },
-    "name": {
-     "type": "string",
-     "description": "卡片中文名。"
-    },
-    "kind": {
-     "enum": [
-      "active",
-      "passive"
-     ]
-    },
-    "sequence": {
-     "type": "integer",
-     "minimum": 0,
-     "maximum": 9,
-     "description": "序列位阶 9→0。"
-    },
-    "sequenceName": {
-     "type": "string",
-     "description": "该序列位阶名称，如「药师」「驯兽师」。"
-    },
-    "rarity": {
-     "enum": [
-      "common",
-      "uncommon",
-      "rare",
-      "epic",
-      "legendary"
-     ],
-     "description": "稀有度，必须与 sequence 满足 manifest.rarityMap 映射（由 validate_schema.py 校验，schema 不表达）。"
-    },
-    "axis": {
-     "type": "string",
-     "description": "构筑轴 id，必须存在于顶层 axes 的键中（跨字段约束，由 validate_schema.py 校验）。"
-    },
-    "flagship": {
-     "type": "boolean",
-     "description": "是否为该途径的代表性旗舰卡。"
-    },
-    "lore": {
-     "type": "string",
-     "description": "设定出处文本。"
-    },
-    "flavor": {
-     "type": "string",
-     "description": "风味文本（第二人称叙事口吻）。"
-    },
-    "describe": {
-     "type": "string",
-     "description": "玩家可读的效果描述——唯一面向玩家的字段，须与 effects 语义一致。"
-    },
-    "effects": {
-     "type": "array",
-     "minItems": 1,
-     "items": {
-      "$ref": "#/$defs/effect"
-     },
-     "description": "卡面效果序列（可嵌套算子）。"
-    },
-    "tentative": {
-     "type": "boolean",
-     "description": "数值待拍板。当前全库 829 张均为 true。"
-    },
-    "cost": {
-     "$ref": "#/$defs/cost"
-    },
-    "reach": {
-     "enum": [
-      "none",
-      "melee",
-      "ranged"
-     ],
-     "description": "攻击性质（近战/远程），与双方站位正交；仅决定同步对撞与可拦截性；非攻击类写 none。"
-    },
-    "target": {
-     "$ref": "#/$defs/cardTarget"
-    },
-    "hook": {
-     "$ref": "#/$defs/triggerEvent",
-     "description": "被动技能的挂载触发点。"
-    },
-    "statusDefs": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/statusDef"
-     },
-     "description": "本卡引入的状态定义（id 需全局唯一）。"
-    },
-    "triggers": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/trigger"
-     },
-     "description": "卡片级触发器；状态自身的触发器写在 statusDefs[].triggers。"
-    },
-    "domain": {
-     "$ref": "#/$defs/domainGrant",
-     "description": "界域挂载（DomainDef → Grant 的实例值：时长/可否驱散等）。"
-    },
-    "zone": {
-     "$ref": "#/$defs/zoneGrant",
-     "description": "区域挂载（ZoneDef → Grant 的实例值）。"
-    },
-    "upgradeLadder": {
-     "$ref": "#/$defs/upgradeLadder",
-     "description": "升级阶梯（同名卡多档强化）。"
-    },
-    "variants": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/variant"
-     },
-     "description": "变体（同卡的不同形态/分支）。"
-    },
-    "secondaryTargets": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/secondaryTarget"
-     },
-     "description": "附属目标请求（多段效果各自选靶）。"
-    },
-    "tags": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     },
-     "description": "界域交互标签（供 RulePatch 按 tag 过滤）。"
-    },
-    "gender": {
-     "enum": [
-      "any",
-      "male",
-      "female"
-     ],
-     "description": "性别限制（部分途径序列有性别要求）。"
-    },
-    "sharedAcross": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     },
-     "description": "共享该卡的其他途径 pathwayId 列表。"
-    },
-    "conversionNotes": {
-     "description": "md → JSON 转换期备注（未能结构化的内容、口径存疑处）。",
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "frameworkFlags": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/frameworkFlag"
-     },
-     "description": "框架缺口登记：卡片用到但 DDD 内核尚未正式支持的机制。"
-    },
-    "dimHooks": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/dimHook"
-     },
-     "description": "本卡对战场全局维度的乘区挂钩列表（维度乘区挂钩机制，见 docs/ddd/params/源质维度与跨系枢纽.md §二）。"
-    },
-    "phaseHooks": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/phaseHook"
-     },
-     "description": "本卡对战场相位的乘区挂钩列表（相位乘区挂钩机制，见 docs/ddd/params/战场参数.md §1.3b）。与 dimHooks 平行：dimHooks 管连续量维度，phaseHooks 管枚举相位。"
-    },
-    "art": {
-     "$ref": "#/$defs/artBrief",
-     "description": "本卡的 AI 出图特征（英文撰写）：只写画面特征，不含风格——风格在途径顶层 artStyle，展示时现拼。"
-    }
-   },
-   "allOf": [
-    {
-     "if": {
-      "properties": {
-       "kind": {
-        "const": "active"
-       }
-      },
-      "required": [
-       "kind"
-      ]
-     },
-     "then": {
-      "required": [
-       "cost",
-       "reach",
-       "target"
-      ]
-     }
-    },
-    {
-     "if": {
-      "properties": {
-       "kind": {
-        "const": "passive"
-       }
-      },
-      "required": [
-       "kind"
-      ]
-     },
-     "then": {
-      "required": [
-       "hook"
-      ]
-     }
-    }
-   ]
-  },
-  "artBrief": {
-   "type": "object",
-   "description": "一张卡的 AI 出图特征（英文）。与途径顶层 artStyle 分工：artStyle 管风格（画法/材质/调色），art 管画面内容（主体/元素/氛围）。",
-   "required": [
-    "subject"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "subject": {
-     "type": "string",
-     "minLength": 1,
-     "description": "画面主体一句话（谁/什么，在做什么）。"
-    },
-    "elements": {
-     "type": "array",
-     "items": {
-      "type": "string",
-      "minLength": 1
-     },
-     "description": "关键视觉元素清单（意象/符号/物件），逐项一条短语。"
-    },
-    "mood": {
-     "type": "string",
-     "description": "氛围词（如 ominous, still）。"
-    }
-   }
-  },
-  "dimHook": {
-   "type": "object",
-   "description": "卡面对战场全局维度的乘区挂钩：当 board.<dim> 满足 comparator threshold 时，本卡相关结算乘区乘 mul。维度定义见 docs/ddd/params/源质维度与跨系枢纽.md §二，阈值档位见 docs/ddd/params/数值标定基准.md §五。",
-   "required": [
-    "dim",
-    "comparator",
-    "threshold",
-    "mul"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "dim": {
-     "type": "string",
-     "enum": [
-      "secrecy",
-      "order",
-      "fate_value",
-      "luminance",
-      "death_tally"
-     ],
-     "description": "挂钩的战场维度：隐秘值 / 秩序度 / 命运值 / 光照度 / 死亡簿（2026-10-02 量表族第 6 员，死亡结算 +1、cap 10，见 源质维度与跨系枢纽.md §一点五）。光照度取值域 int[0,10]，官方档位 2 / 5 / 8（见 docs/ddd/params/战场参数.md §1.3b）。"
-    },
-    "comparator": {
-     "type": "string",
-     "enum": [
-      ">=",
-      "<=",
-      ">",
-      "<",
-      "=="
-     ],
-     "description": "阈值比较符，默认 >="
-    },
-    "threshold": {
-     "type": "number",
-     "description": "触发阈值；须在维度取值域内（secrecy/order ∈ [0,10]、fate_value ∈ [−10,10]）。"
-    },
-    "mul": {
-     "type": "number",
-     "exclusiveMinimum": 0,
-     "description": "乘区系数；单卡建议 0.8–1.5，超限需 note 说明（数值标定基准 §五；2026-10-01 乘区审批批 182 项已全量过堂）。"
-    },
-    "target": {
-     "type": "string",
-     "enum": [
-      "damage",
-      "damage_taken",
-      "heal",
-      "resource",
-      "rule_strength",
-      "all",
-      "cost"
-     ],
-     "description": "乘区作用目标；默认 damage。rule_strength 用于秩序度类规则强度系数；cost 用于折费（2026-10-01 时空迷宫批：支付阶段读取 board.<dim>，本卡能量费乘 mul，mul<1 为折扣）。"
-    },
-    "filterTags": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     },
-     "description": "仅当本卡带这些 tag 之一才生效（如 secrecy 要求 tag∈{愚弄,隐秘,conceal}）。"
-    },
-    "note": {
-     "type": "string",
-     "description": "乘区来源/口径说明，mul 超限或非常规时必填。"
-    }
-   }
-  },
-  "cost": {
-   "type": "object",
-   "required": [
-    "energy",
-    "cooldown",
-    "castTime"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "energy": {
-     "type": "integer",
-     "minimum": 0
-    },
-    "cooldown": {
-     "type": "integer",
-     "minimum": 0
-    },
-    "castTime": {
-     "type": [
-      "integer",
-      "null"
-     ],
-     "minimum": 0,
-     "description": "吟唱时长；null = 无吟唱。"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "cardTarget": {
-   "type": "object",
-   "required": [
-    "selectionMode",
-    "request"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "selectionMode": {
-     "enum": [
-      "manual",
-      "auto"
-     ],
-     "description": "manual = 玩家手选；auto = 引擎按 fallbackSort 自动选。"
-    },
-    "request": {
-     "$ref": "#/$defs/unitRequest"
-    },
-    "fallbackSort": {
-     "oneOf": [
-      {
-       "$ref": "#/$defs/sortKey"
-      },
-      {
-       "type": "null"
-      }
-     ],
-     "description": "自动选靶/手选缺省时的排序规则。"
-    },
-    "consumption": {
-     "enum": [
-      "summon",
-      "domain",
-      "zone",
-      "instant",
-      "translocate"
-     ]
-    },
-    "mode": {
-     "enum": [
-      "unit",
-      "area"
-     ],
-     "description": "点目标 vs 区域目标（DDD TargetSpec.mode，2026-09-20 回补）。unit=指定单位；area=指定场上区域/坐标。与 selectionMode（谁拍板最终目标）是两个独立维度，不可混用。mode=unit 时 consumption 强制 instant 或 translocate。"
-    },
-    "pickCount": {
-     "type": "integer",
-     "description": "提交的目标数量（DDD I 节点 CandidatePool.pickCount，2026-09-20 回补）。selectionMode=manual 且候选数 > pickCount 时才等待玩家选择；候选数 ≤ pickCount 时不打断玩家直接全取。"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "secondaryTarget": {
-   "type": "object",
-   "required": [
-    "request"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "request": {
-     "$ref": "#/$defs/unitRequest"
-    },
-    "selectionMode": {
-     "enum": [
-      "manual",
-      "auto"
-     ]
-    },
-    "fallbackSort": {
-     "oneOf": [
-      {
-       "$ref": "#/$defs/sortKey"
-      },
-      {
-       "type": "null"
-      }
-     ]
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "unitRequest": {
-   "type": "object",
-   "description": "目标选择请求（faction × scope × 过滤 × 锚点 × 排序）。",
-   "required": [
-    "faction",
-    "scope"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "faction": {
-     "enum": [
-      "self",
-      "ally",
-      "enemy",
-      "any",
-      "none",
-      "self_or_ally"
-     ]
-    },
-    "scope": {
-     "enum": [
-      "single",
-      "all",
-      "none"
-     ]
-    },
-    "filter": {
-     "$ref": "#/$defs/unitFilter"
-    },
-    "anchor": {
-     "description": "位置锚点：候选池的起点坐标。优先用下列关键字；也可直接写具体单位 id（DDD「<指定单位>」动态寻址，故用 anyOf 放宽为任意字符串——注意这会弱化拼写校验）。absolute 需配 fixedIndex。",
-     "anyOf": [
-      {
-       "enum": [
-        "front_line",
-        "spawned_unit",
-        "first_empty",
-        "empty_ally_slot",
-        "self",
-        "front_of_self",
-        "behind_self",
-        "cross_same_index",
-        "absolute",
-        "taunt_source",
-        "manual",
-        "nearest_any",
-        "any_lowest_hp",
-        "self_faction_hp_desc",
-        "last_dead_ally",
-        "index_asc_same_faction"
-       ]
-      },
-      {
-       "type": "string"
-      }
-     ]
-    },
-    "fixedIndex": {
-     "type": "integer",
-     "description": "配合 anchor=absolute 的绝对站位序号（DDD：absolute 需配 fixedIndex）。"
-    },
-    "sort": {
-     "$ref": "#/$defs/sortKey"
-    },
-    "sortKey": {
-     "type": "string",
-     "description": "状态键排序，形如 status:<id>:asc|desc。"
-    },
-    "spread": {
-     "enum": [
-      "none",
-      "lane_line",
-      "splash_adjacent",
-      "splash_behind",
-      "cross_same_index"
-     ]
-    },
-    "excludeSelf": {
-     "type": "boolean"
-    },
-    "laneRef": {
-     "enum": [
-      "same_lane",
-      "cross_lane",
-      "all_lanes",
-      "auto"
-     ],
-     "description": "扫描路线/列维度（DDD 原设计有、schema 曾丢失，本轮回补）。auto 在 I 节点前由施法者上下文预处理为具体值，保持流水线纯函数。"
-    }
-   }
-  },
-  "unitFilter": {
-   "type": "object",
-   "description": "候选池过滤器。开放结构：布尔属性缺省即不约束；新增维度须先在共享内核参数登记。",
-   "properties": {
-    "unitType": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "tags": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     }
-    },
-    "hasStatus": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ],
-     "description": "DDD 维度：要求目标持有指定状态。旧名 statusId 已弃用（数据中实际从未使用，统一为 DDD 命名）。"
-    },
-    "hasCategory": {
-     "oneOf": [
-      {
-       "$ref": "#/$defs/statusCategory"
-      },
-      {
-       "type": "array",
-       "items": {
-        "$ref": "#/$defs/statusCategory"
-       }
-      }
-     ],
-     "description": "DDD 维度：要求目标持有指定类别的状态。旧名 category 已弃用（数据中实际从未使用，统一为 DDD 命名）。"
-    },
-    "hpPercent": {
-     "type": "object",
-     "description": "DDD 维度：按生命百分比过滤。开放结构（如 cmp + value）。"
-    },
-    "casterHasSummon": {
-     "type": "boolean",
-     "description": "DDD 维度：要求施法者拥有召唤物。"
-    },
-    "adjacency": {
-     "type": "object",
-     "description": "DDD 维度：相邻性过滤，配合 spread 表达相邻 / 溅射目标域。"
-    },
-    "unitId": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "element": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "tier": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "integer"
-      }
-     ]
-    },
-    "count": {
-     "oneOf": [
-      {
-       "type": "number"
-      },
-      {
-       "type": "string"
-      },
-      {
-       "type": "object"
-      },
-      {
-       "type": "null"
-      }
-     ]
-    },
-    "dispelable": {
-     "type": "boolean"
-    },
-    "isSummon": {
-     "type": "boolean"
-    },
-    "isOwnSummon": {
-     "type": "boolean"
-    },
-    "isAllyOrMirror": {
-     "type": "boolean"
-    },
-    "isPuppet": {
-     "type": "boolean"
-    },
-    "casterOwned": {
-     "type": "boolean"
-    },
-    "anyOf": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/unitFilter"
-     }
-    }
-   }
-  },
-  "effect": {
-   "description": "一个效果节点：算子（op）或原语（type）。递归结构。",
-   "oneOf": [
-    {
-     "$ref": "#/$defs/opSequence"
-    },
-    {
-     "$ref": "#/$defs/opRepeat"
-    },
-    {
-     "$ref": "#/$defs/opIf"
-    },
-    {
-     "$ref": "#/$defs/effDamage"
-    },
-    {
-     "$ref": "#/$defs/effHeal"
-    },
-    {
-     "$ref": "#/$defs/effMountStatus"
-    },
-    {
-     "$ref": "#/$defs/effModifyStat"
-    },
-    {
-     "$ref": "#/$defs/effModifyResource"
-    },
-    {
-     "$ref": "#/$defs/effMove"
-    },
-    {
-     "$ref": "#/$defs/effSpawn"
-    },
-    {
-     "$ref": "#/$defs/effDispel"
-    },
-    {
-     "$ref": "#/$defs/effDrain"
-    },
-    {
-     "$ref": "#/$defs/effDomain"
-    },
-    {
-     "$ref": "#/$defs/effTranslocate"
-    },
-    {
-     "$ref": "#/$defs/effModifyDamage"
-    },
-    {
-     "$ref": "#/$defs/effTargetOverride"
-    },
-    {
-     "$ref": "#/$defs/effTransferStatus"
-    },
-    {
-     "$ref": "#/$defs/effWriteRuleSlot"
-    },
-    {
-     "$ref": "#/$defs/effModifyRuleSlot"
-    },
-    {
-     "$ref": "#/$defs/effSnapshot"
-    },
-    {
-     "$ref": "#/$defs/effRestoreSnapshot"
-    },
-    {
-     "$ref": "#/$defs/effEchoLastSkill"
-    },
-    {
-     "$ref": "#/$defs/effGaugeShuffle"
-    },
-    {
-     "$ref": "#/$defs/effStatusShuffle"
-    },
-    {
-     "$ref": "#/$defs/effModifySkill"
-    },
-    {
-     "$ref": "#/$defs/effModifyStatus"
-    },
-    {
-     "$ref": "#/$defs/effModifyTargetability"
-    },
-    {
-     "$ref": "#/$defs/effReveal"
-    },
-    {
-     "$ref": "#/$defs/effGrantImmunity"
-    },
-    {
-     "$ref": "#/$defs/effTakeControl"
-    },
-    {
-     "$ref": "#/$defs/effAdvanceClock"
-    },
-    {
-     "$ref": "#/$defs/effSetLuminance"
-    }
-   ]
-  },
-  "opSequence": {
-   "type": "object",
-   "required": [
-    "op",
-    "steps"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "op": {
-     "const": "sequence",
-     "description": "顺序执行 steps，编目期展开为扁平 EffectRef。"
-    },
-    "steps": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/effect"
-     }
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "opRepeat": {
-   "type": "object",
-   "required": [
-    "op",
-    "steps"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "op": {
-     "const": "repeat"
-    },
-    "count": {
-     "$ref": "#/$defs/countValue",
-     "description": "重复次数，可写状态动态值（对象形式为 {valueFrom, filter, cap} 等）。"
-    },
-    "countFrom": {
-     "type": "string",
-     "description": "次数来源，如 statusStacks。"
-    },
-    "shareTarget": {
-     "type": "boolean",
-     "description": "每次重复是否复用同一目标。"
-    },
-    "statusId": {
-     "type": "string"
-    },
-    "steps": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/effect"
-     }
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "opIf": {
-   "type": "object",
-   "required": [
-    "op",
-    "condition",
-    "then"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "op": {
-     "const": "if"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "then": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/effect"
-     }
-    },
-    "else": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/effect"
-     }
-    },
-    "note": {
-     "type": "string"
-    },
-    "noteElse": {
-     "type": "string"
-    },
-    "params": {
-     "type": "object"
-    }
-   }
-  },
-  "effDamage": {
-   "type": "object",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "damage"
-    },
-    "value": {
-     "$ref": "#/$defs/scalar"
-    },
-    "element": {
-     "$ref": "#/$defs/element"
-    },
-    "mul": {
-     "type": "number",
-     "description": "伤害乘区系数。"
-    },
-    "valueFrom": {
-     "oneOf": [
-      {
-       "type": "object"
-      },
-      {
-       "type": "string"
-      }
-     ]
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "spread": {
-     "enum": [
-      "splash_adjacent"
-     ]
-    },
-    "pierce": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     }
-    },
-    "neverMiss": {
-     "type": "boolean"
-    },
-    "lethal": {
-     "type": "boolean"
-    },
-    "damageCategory": {
-     "type": "string"
-    },
-    "armorPierceRatio": {
-     "oneOf": [
-      {
-       "type": "number"
-      },
-      {
-       "type": "object"
-      }
-     ]
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effHeal": {
-   "type": "object",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "heal"
-    },
-    "value": {
-     "$ref": "#/$defs/scalar"
-    },
-    "mode": {
-     "enum": [
-      "setHp",
-      "hpMaxRatio",
-      "to_ratio"
-     ]
-    },
-    "healToRatio": {
-     "type": "number"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effMountStatus": {
-   "type": "object",
-   "required": [
-    "type",
-    "statusId"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "mount_status"
-    },
-    "statusId": {
-     "type": "string",
-     "description": "状态 id；$self 表示引用宿主自身状态。"
-    },
-    "duration": {
-     "oneOf": [
-      {
-       "type": "integer"
-      },
-      {
-       "type": "null"
-      }
-     ],
-     "description": "持续 tick 数（1 回合 = 5 tick）；null = 跟随状态定义/常驻。"
-    },
-    "stacks": {
-     "oneOf": [
-      {
-       "type": "number"
-      },
-      {
-       "type": "string"
-      }
-     ],
-     "description": "层数增减；all = 全部。"
-    },
-    "stackMode": {
-     "enum": [
-      "add",
-      "consume",
-      "override"
-     ]
-    },
-    "maxStacks": {
-     "type": "number"
-    },
-    "maxStacksOverride": {
-     "oneOf": [
-      {
-       "type": "number"
-      },
-      {
-       "type": "object"
-      }
-     ]
-    },
-    "ignoreMaxStacks": {
-     "type": "boolean"
-    },
-    "charges": {
-     "type": "integer",
-     "description": "次数型状态（charges）初始次数——落空/阻挡语义的确定性写法。"
-    },
-    "value": {
-     "$ref": "#/$defs/scalar"
-    },
-    "params": {
-     "type": "object",
-     "description": "传给状态载荷的实例化参数。"
-    },
-    "request": {
-     "$ref": "#/$defs/unitRequest"
-    },
-    "binding": {
-     "type": "object",
-     "description": "状态与目标的绑定关系（如 link 双向绑定）。"
-    },
-    "overrides": {
-     "type": "object"
-    },
-    "statusDefOverride": {
-     "type": "object"
-    },
-    "fallback": {
-     "type": "object"
-    },
-    "filter": {
-     "$ref": "#/$defs/unitFilter"
-    },
-    "refresh": {
-     "type": "boolean"
-    },
-    "durationDelta": {
-     "type": "number"
-    },
-    "maxBonusDuration": {
-     "type": "number"
-    },
-    "dispelable": {
-     "type": "boolean"
-    },
-    "contagious": {
-     "type": "boolean"
-    },
-    "spread": {
-     "enum": [
-      "splash_adjacent"
-     ]
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effModifyStat": {
-   "type": "object",
-   "required": [
-    "type",
-    "stat",
-    "mode"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "modify_stat"
-    },
-    "stat": {
-     "type": "string",
-     "pattern": "^(attack|defense|armor|rank|hp_max|energy_max|energy_regen|gauge\\.rate|gauge\\.threshold|summon_cap|resist:(\\*|[a-z]+|\\$[A-Za-z]+))$",
-     "description": "属性键。以代码为准用 gauge.rate / gauge.threshold（不是 stamina_*）。"
-    },
-    "value": {
-     "$ref": "#/$defs/scalar"
-    },
-    "mode": {
-     "enum": [
-      "delta",
-      "set",
-      "mul",
-      "to_at_least",
-      "to_at_most"
-     ]
-    },
-    "duration": {
-     "oneOf": [
-      {
-       "type": "integer"
-      },
-      {
-       "type": "null"
-      }
-     ]
-    },
-    "sourceRef": {
-     "enum": [
-      "caster",
-      "secondary_target",
-      "field_average"
-     ],
-     "description": "取值参照源。"
-    },
-    "valueFrom": {
-     "oneOf": [
-      {
-       "type": "object"
-      },
-      {
-       "type": "string"
-      }
-     ]
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "filter": {
-     "$ref": "#/$defs/unitFilter"
-    },
-    "spread": {
-     "enum": [
-      "splash_adjacent"
-     ]
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effModifyResource": {
-   "type": "object",
-   "required": [
-    "type",
-    "resource"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "modify_resource"
-    },
-    "resource": {
-     "enum": [
-      "hp",
-      "energy",
-      "shield",
-      "armor",
-      "lost",
-      "lust",
-      "gauge.current",
-      "secrecy",
-      "order",
-      "fate_value"
-     ],
-     "description": "资源标识。单位级 Pool：hp/energy/shield/armor/lust（下限截断 0）；迷失值 lost（界域租金/清零）；行动条 Gauge：gauge.current。战场级量表（2026-10-01 起，值域截断见 源质维度与跨系枢纽.md §二–§四）：secrecy/order（[0,10]）、fate_value（[−10,+10]）；战场量表写入仅限 ddd 登记写入方（fate_value 仅怪物）。加血请用 heal。"
-    },
-    "value": {
-     "$ref": "#/$defs/scalar"
-    },
-    "mode": {
-     "enum": [
-      "delta",
-      "set",
-      "swap"
-     ]
-    },
-    "op": {
-     "enum": [
-      "swap"
-     ]
-    },
-    "between": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/effectTarget"
-     }
-    },
-    "duration": {
-     "type": "integer"
-    },
-    "maxTriggersPerBattle": {
-     "type": "integer"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "filter": {
-     "$ref": "#/$defs/unitFilter"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effMove": {
-   "type": "object",
-   "required": [
-    "type",
-    "op"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "move"
-    },
-    "op": {
-     "enum": [
-      "swap_neighbor",
-      "insert_tail_cross_lane",
-      "swap_ally",
-      "param",
-      "pull_forward",
-      "push_back",
-      "charge_forward"
-     ]
-    },
-    "distance": {
-     "type": "number"
-    },
-    "to": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "object"
-      }
-     ]
-    },
-    "params": {
-     "type": "object"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effSpawn": {
-   "type": "object",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "spawn"
-    },
-    "unitId": {
-     "type": "string",
-     "description": "召唤物单位 id（引用 unitDefs 或全局单位蓝本；静态具名单位唯一正键，2026-10-01 裁定原 unit 键并入本键）"
-    },
-    "template": {
-     "type": "string",
-     "description": "模板来源——动态模板（killed_unit / primary_target / holder）或固定蓝本 template 名（2026-10-01 补登记）。"
-    },
-    "def": {
-     "type": "string",
-     "description": "定义 id（spawn 区域时指向 zoneDef）。"
-    },
-    "kind": {
-     "type": "string"
-    },
-    "zone": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "object"
-      }
-     ]
-    },
-    "variant": {
-     "type": "string"
-    },
-    "position": {
-     "enum": [
-      "tail",
-      "at_unit",
-      "original"
-     ]
-    },
-    "count": {
-     "$ref": "#/$defs/countValue"
-    },
-    "hpRatio": {
-     "oneOf": [
-      {
-       "type": "number"
-      },
-      {
-       "type": "string"
-      },
-      {
-       "type": "object"
-      }
-     ]
-    },
-    "atkRatio": {
-     "oneOf": [
-      {
-       "type": "number"
-      },
-      {
-       "type": "null"
-      }
-     ]
-    },
-    "consumption": {
-     "enum": [
-      "summon",
-      "domain",
-      "zone",
-      "instant",
-      "translocate"
-     ]
-    },
-    "duration": {
-     "type": "integer"
-    },
-    "lifetime": {
-     "type": "integer"
-    },
-    "reviveOf": {
-     "enum": [
-      "self",
-      "status_holder",
-      "last_dead_ally"
-     ],
-     "description": "复活语义（G4：不新增原语）。"
-    },
-    "oncePerBattle": {
-     "type": "boolean"
-    },
-    "inheritSkills": {
-     "type": "boolean"
-    },
-    "summonCap": {
-     "type": "object"
-    },
-    "summonCapOverride": {
-     "type": "integer"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effDispel": {
-   "type": "object",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "dispel"
-    },
-    "dispelTarget": {
-     "enum": [
-      "unit",
-      "domain"
-     ],
-     "description": "驱散对象：单位身上的状态 / 界域本身。"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "filter": {
-     "$ref": "#/$defs/unitFilter"
-    },
-    "category": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/statusCategory"
-     }
-    },
-    "statusId": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "count": {
-     "$ref": "#/$defs/countValue"
-    },
-    "collect": {
-     "type": "string"
-    },
-    "mode": {
-     "enum": [
-      "area"
-     ]
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effDrain": {
-   "type": "object",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "drain"
-    },
-    "resource": {
-     "enum": [
-      "hp",
-      "energy"
-     ]
-    },
-    "value": {
-     "$ref": "#/$defs/scalar"
-    },
-    "ratio": {
-     "type": "number"
-    },
-    "healRatio": {
-     "type": "number",
-     "description": "吸血比例（归施法者，F2）。"
-    },
-    "category": {
-     "enum": [
-      "buff"
-     ],
-     "description": "增益转移（F50）。"
-    },
-    "count": {
-     "$ref": "#/$defs/countValue"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effDomain": {
-   "type": "object",
-   "required": [
-    "type",
-    "op"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "domain"
-    },
-    "op": {
-     "enum": [
-      "overlay",
-      "swap",
-      "hero"
-     ],
-     "description": "overlay = 覆盖层压制；hero = 英雄位格界域。"
-    },
-    "def": {
-     "type": "string",
-     "description": "指向 domainDef.id。"
-    },
-    "duration": {
-     "type": "integer"
-    },
-    "durationUnit": {
-     "enum": [
-      "turn",
-      "tick"
-     ]
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effTranslocate": {
-   "type": "object",
-   "required": [
-    "type",
-    "op",
-    "duration"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "translocate"
-    },
-    "op": {
-     "enum": [
-      "pull_into",
-      "banish"
-     ],
-     "description": "拉入 / 放逐（ddd 效果参数：op: pull_into / banish）"
-    },
-    "duration": {
-     "type": "integer",
-     "description": "detached 持续 tick 数，到期于己方队尾回归"
-    },
-    "returnPayload": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/effect"
-     },
-     "description": "banish 回归时结算的载荷（时空乱流；Chance 走 R3/R4）"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effModifyDamage": {
-   "type": "object",
-   "required": [
-    "type",
-    "mul"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "modify_damage"
-    },
-    "scope": {
-     "enum": [
-      "taken",
-      "dealt"
-     ]
-    },
-    "mul": {
-     "type": "number"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effTargetOverride": {
-   "type": "object",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "target_override"
-    },
-    "faction": {
-     "type": "string"
-    },
-    "anchor": {
-     "type": "string"
-    },
-    "sort": {
-     "$ref": "#/$defs/sortKey"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effTransferStatus": {
-   "type": "object",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "transfer_status"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "statusesFrom": {
-     "type": "string"
-    },
-    "from": {
-     "type": "object"
-    },
-    "to": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "object"
-      }
-     ]
-    },
-    "mapping": {
-     "type": "object"
-    },
-    "mode": {
-     "enum": [
-      "copy",
-      "rewrite"
-     ]
-    },
-    "keepDuration": {
-     "type": "boolean"
-    },
-    "durationMul": {
-     "type": "number"
-    },
-    "stacksMul": {
-     "type": "number"
-    },
-    "count": {
-     "$ref": "#/$defs/scalar"
-    },
-    "filter": {
-     "$ref": "#/$defs/unitFilter"
-    },
-    "fallback": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/effect"
-     }
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effSnapshot": {
-   "type": "object",
-   "required": [
-    "type",
-    "fields"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "snapshot"
-    },
-    "fields": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     }
-    },
-    "filter": {
-     "$ref": "#/$defs/unitFilter"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effRestoreSnapshot": {
-   "type": "object",
-   "required": [
-    "type",
-    "fields"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "restore_snapshot"
-    },
-    "fields": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     }
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effEchoLastSkill": {
-   "type": "object",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "echo_last_skill"
-    },
-    "potency": {
-     "oneOf": [
-      {
-       "type": "number"
-      },
-      {
-       "type": "string"
-      }
-     ]
-    },
-    "snapshot": {
-     "type": "string"
-    },
-    "rounding": {
-     "enum": [
-      "ceil",
-      "floor",
-      "round"
-     ]
-    },
-    "fallback": {
-     "type": "object"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effGaugeShuffle": {
-   "type": "object",
-   "description": "行动条数值集合守恒重排（R5 合规：重分配既有数值，非随机生成）。作用域随 target 锚点，省略 = 卡面目标全集。2026-10-02 转正（律师差异化迭代），语义见 docs/ddd/params/效果参数.md。",
-   "required": [
-    "type",
-    "resource"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "gauge_shuffle"
-    },
-    "resource": {
-     "type": "string"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget",
-     "description": "重排作用域锚点（如 all_enemies / splash_adjacent）；省略 = 卡面目标全集。"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effStatusShuffle": {
-   "type": "object",
-   "description": "状态乱序：mode rotate = 作用域内单位按 sort 排序后轮转易主 count 个状态。作用域随 target 锚点，省略 = 卡面目标全集。2026-10-02 转正（律师差异化迭代）。",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "status_shuffle"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget",
-     "description": "轮转作用域锚点（如 all_enemies / splash_adjacent）；省略 = 卡面目标全集。"
-    },
-    "mode": {
-     "enum": [
-      "rotate"
-     ]
-    },
-    "sort": {
-     "$ref": "#/$defs/sortKey"
-    },
-    "count": {
-     "$ref": "#/$defs/countValue"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effModifySkill": {
-   "type": "object",
-   "description": "行为层修改（一）：改写技能实例的运行时属性——清 CD / 改施法消耗 / 吟唱转瞬发 / 单体转范围。作用于已存在的技能实例，不是卡静态字段。",
-   "required": [
-    "type",
-    "skillRef"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "modify_skill"
-    },
-    "skillRef": {
-     "type": "object",
-     "required": [
-      "selector"
-     ],
-     "additionalProperties": false,
-     "properties": {
-      "selector": {
-       "enum": [
-        "self_last",
-        "self",
-        "target",
-        "by_id"
-       ],
-       "description": "self_last=施法者最近一次使用的主动技能实例（对应「清除当前技能的 CD」）；self=施法者指定技能（配 skillId）；target=目标单位身上指定技能（配 target + ofSkill）；by_id=按卡 id 直接定位。"
-      },
-      "skillId": {
-       "type": "string",
-       "description": "selector 为 self / by_id 时指定卡 id；selector=target 时可省（取 ofSkill 指定的技能）。"
-      },
-      "ofSkill": {
-       "enum": [
-        "active",
-        "channeling",
-        "last"
-       ],
-       "description": "selector=target 时，取目标的哪种技能：active=当前激活、channeling=施放中、last=最近使用。"
-      },
-      "target": {
-       "$ref": "#/$defs/effectTarget"
-      }
-     }
-    },
-    "clearCooldown": {
-     "type": "boolean",
-     "description": "将匹配技能的剩余冷却清零（清除当前技能 CD）。"
-    },
-    "cooldownDelta": {
-     "type": "integer",
-     "description": "剩余冷却 +/- 修正；负=减少。"
-    },
-    "costDelta": {
-     "type": "object",
-     "additionalProperties": false,
-     "properties": {
-      "energy": {
-       "type": "integer",
-       "description": "能量消耗修正。"
-      },
-      "cooldown": {
-       "type": "integer"
-      },
-      "castTime": {
-       "type": "integer"
-      }
-     },
-     "description": "施法消耗修正（cost 三件套：energy 能量 / cooldown 冷却 / castTime 吟唱）；负=减少。对应「减少/增加技能施法消耗」。"
-    },
-    "castTimeDelta": {
-     "type": "integer",
-     "description": "吟唱时长 +/- 修正。"
-    },
-    "setInstant": {
-     "type": "boolean",
-     "description": "将吟唱技能改为瞬发（castTime 置 0）。对应「修改吟唱技能为瞬发技能」。"
-    },
-    "targetSpecOverride": {
-     "type": "object",
-     "additionalProperties": false,
-     "description": "完整改写技能 TargetSpec（对齐 DDD：modify_skill 可改技能全部选靶属性，而非仅范围）。给出 selectionMode 与 request 全字段，未给出的沿用原值。区别于 target_override 原语（effect 级一次性覆盖）。",
-     "properties": {
-      "selectionMode": {
-       "enum": [
-        "manual",
-        "auto"
-       ]
-      },
-      "request": {
-       "$ref": "#/$defs/unitRequest"
-      }
-     }
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effModifyStatus": {
-   "type": "object",
-   "description": "行为层修改（二）：改写一个已存在的状态实例——延长/重设持续时间、调整最大可叠加层数。区别于 mount_status（施加新状态），本原语作用于运行中的实例。",
-   "required": [
-    "type",
-    "statusId",
-    "target"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "modify_status"
-    },
-    "statusId": {
-     "type": "string",
-     "description": "要修改的已存在状态实例 id；$self 表示引用宿主自身状态。"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget",
-     "description": "持有该状态实例的单位。"
-    },
-    "addDuration": {
-     "type": "integer",
-     "description": "给剩余持续时间 +/- 修正；正=延长。对应「修改状态的持续时间」。"
-    },
-    "setDuration": {
-     "oneOf": [
-      {
-       "type": "integer"
-      },
-      {
-       "type": "null"
-      }
-     ],
-     "description": "覆盖剩余持续时间；null=常驻。"
-    },
-    "maxStacksDelta": {
-     "type": "integer",
-     "description": "最大可叠加层数 +/- 修正。"
-    },
-    "maxStacksSet": {
-     "type": "integer",
-     "description": "直接设定最大可叠加层数。对应「修改状态的最大可叠加层数」。"
-    },
-    "stacksDelta": {
-     "type": "integer",
-     "description": "当前层数 +/- 修正（可选，配合层数玩法）。"
-    },
-    "dispelableOverride": {
-     "type": "boolean",
-     "description": "覆盖该状态实例的可驱散性（true=强制可驱散 / false=强制不可驱散）。对应此前手写的 dispelableOverride / dispelOverride / dispelableOverwrite / runtimeDispelLock 等 8 种拼写（约 16 处）。"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effModifyTargetability": {
-   "type": "object",
-   "description": "改单位的「可被选为目标」属性，带方向与持续。对应此前手写的 untargetableByTargeted(29) / untargetable(2) / untargetableByAll(1)。",
-   "required": [
-    "type",
-    "target"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "modify_targetability"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "untargetable": {
-     "type": "boolean",
-     "description": "true=不可被选为目标；false=解除不可选取。"
-    },
-    "direction": {
-     "enum": [
-      "all",
-      "enemy_targeted",
-      "enemy_aoe",
-      "ally"
-     ],
-     "description": "对谁不可选：all=全体 / enemy_targeted=敌方指定类 / enemy_aoe=敌方范围类 / ally=友方。"
-    },
-    "duration": {
-     "type": "integer"
-    },
-    "pierce": {
-     "enum": [
-      "none",
-      "source",
-      "all"
-     ],
-     "description": "谁能看穿该不可选取：none=无人 / source=仅施法者 / all=所有人。"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effReveal": {
-   "type": "object",
-   "description": "揭示 / 穿透隐匿。对应此前手写的 14 种拼写（pierceConceal / revealToSource / seeThroughStealth / detectConceal …，约 26 处）。⚠️ 纯驱散隐匿仍应用 dispel(filter.category=[conceal])，本原语用于「显形但不驱散」「仅对施法者显形」等场景。",
-   "required": [
-    "type",
-    "target"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "reveal"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "scope": {
-     "enum": [
-      "to_source",
-      "to_all"
-     ],
-     "description": "显形范围：to_source=仅对施法者显形 / to_all=对全体显形。"
-    },
-    "dispel": {
-     "type": "boolean",
-     "description": "是否顺带驱散隐匿类状态。false=仅显形、保留状态。"
-    },
-    "pierceTargetability": {
-     "type": "boolean",
-     "description": "是否同时穿透「不可被选为目标」（modify_targetability）。"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effGrantImmunity": {
-   "type": "object",
-   "description": "授予免疫。此前仅 statusDef.immune（2 处）可用，需为每种免疫单写状态；本原语让「临时/条件性免疫」可直接表达（手写 immune 约 19 处）。",
-   "required": [
-    "type",
-    "target"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "grant_immunity"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "against": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/statusCategory"
-     },
-     "description": "对哪些状态类别免疫（如 control / fear / debuff）。"
-    },
-    "element": {
-     "$ref": "#/$defs/element",
-     "description": "对哪种元素伤害免疫。"
-    },
-    "damageType": {
-     "type": "string",
-     "description": "对哪种伤害类型免疫（如 dot / direct / lethal）。"
-    },
-    "charges": {
-     "type": "integer",
-     "description": "免疫次数（确定性，落空/阻挡语义沿用 charges 约定）。"
-    },
-    "duration": {
-     "type": "integer"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effTakeControl": {
-   "type": "object",
-   "description": "夺取控制权 / 阵营翻转：目标在持续期内视为己方单位行动。此前**完全空白**（0 处），而「操控/支配」被提及 72 次，仅靠 target_override / gaugeRateMul:0 / untargetableByTargeted 三招凑。",
-   "required": [
-    "type",
-    "target"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "take_control"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "duration": {
-     "type": "integer"
-    },
-    "onExpire": {
-     "enum": [
-      "revert",
-      "die",
-      "keep"
-     ],
-     "description": "到期处置：revert=回归原阵营 / die=死亡 / keep=保持。"
-    },
-    "actionPolicy": {
-     "enum": [
-      "full",
-      "attack_only",
-      "move_only"
-     ],
-     "description": "被控单位可执行哪些行动：full=全权 / attack_only=仅攻击 / move_only=仅移动。"
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "condition": {
-   "type": "object",
-   "description": "效果生效条件谓词。开放结构：字段随 kind 变化。chance 类须遵守随机性治理 R1–R6（只用于非伤害维度、单次抽样、须登记）。",
-   "required": [
-    "kind"
-   ],
-   "properties": {
-    "kind": {
-     "enum": [
-      "any_of",
-      "caster_has_summon",
-      "caster_status_exists",
-      "chance",
-      "consumed_count",
-      "dead_count",
-      "dispelled_count",
-      "element_is",
-      "field_status_count",
-      "gauge_rank",
-      "has_category",
-      "has_status",
-      "hp_percent",
-      "hp_percent_compare",
-      "luminance_compare",
-      "phase_is",
-      "rank_gap",
-      "remove_reason",
-      "resource_compare",
-      "stat_compare",
-      "status_category",
-      "tag_chain",
-      "target_dead",
-      "target_faction_is",
-      "target_has_tag",
-      "target_is_summoned",
-      "target_unit_type",
-      "unit_faction",
-      "variant_is",
-      "zone_active"
-     ]
-    },
-    "side": {
-     "enum": [
-      "self",
-      "target",
-      "ally",
-      "enemy",
-      "both",
-      "all",
-      "attacker"
-     ]
-    },
-    "cmp": {
-     "enum": [
-      ">",
-      ">=",
-      "<",
-      "<=",
-      "=="
-     ]
-    },
-    "n": {
-     "type": "number"
-    },
-    "id": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "p": {
-     "type": "number",
-     "description": "chance 的概率值 0–1。"
-    },
-    "value": {
-     "$ref": "#/$defs/scalar"
-    },
-    "categories": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/statusCategory"
-     }
-    },
-    "category": {
-     "$ref": "#/$defs/statusCategory"
-    },
-    "conditions": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/condition"
-     }
-    },
-    "statusId": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "stacksAtLeast": {
-     "type": "integer"
-    },
-    "unitId": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "unitTypes": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     }
-    },
-    "type": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "tag": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "element": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "faction": {
-     "type": "string"
-    },
-    "aUnit": {
-     "type": "string"
-    },
-    "bUnit": {
-     "type": "string"
-    },
-    "aSide": {
-     "type": "string"
-    },
-    "bSide": {
-     "type": "string"
-    },
-    "key": {
-     "type": "string"
-    },
-    "aggregate": {
-     "enum": [
-      "sum"
-     ],
-     "description": "仅 resource_compare：聚合模式。'sum' = 对 side 范围内全部单位的该 Pool 现值求和后与 n 比较（全场∑读法，如深渊即我 ∑恶欲值≥15 免疫失控）。缺省 = 单单位现值。见 共享内核参数.md §三。"
-    },
-    "op": {
-     "type": "string"
-    },
-    "target": {
-     "type": "string"
-    },
-    "zoneId": {
-     "type": "string"
-    },
-    "note": {
-     "type": "string"
-    },
-    "phases": {
-     "type": "array",
-     "items": {
-      "type": "string",
-      "enum": [
-       "midnight",
-       "dawn",
-       "day",
-       "dusk",
-       "night"
-      ]
-     },
-     "description": "phase_is 谓词用的相位集合：当前 board.phase 属于其一即成立（见 战场参数.md §1.3b）。"
-    }
-   }
-  },
-  "trigger": {
-   "type": "object",
-   "required": [
-    "event"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "event": {
-     "$ref": "#/$defs/triggerEvent"
-    },
-    "effects": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/effect"
-     }
-    },
-    "condition": {
-     "$ref": "#/$defs/condition"
-    },
-    "consumeCharge": {
-     "oneOf": [
-      {
-       "type": "boolean"
-      },
-      {
-       "type": "integer"
-      }
-     ]
-    },
-    "consume": {
-     "type": "integer"
-    },
-    "global": {
-     "type": "boolean"
-    },
-    "reason": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "reasonFilter": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ]
-    },
-    "minIntervalTicks": {
-     "type": "integer"
-    },
-    "params": {
-     "type": "object"
-    },
-    "filter": {
-     "$ref": "#/$defs/unitFilter"
-    },
-    "target": {
-     "oneOf": [
-      {
-       "$ref": "#/$defs/effectTarget"
-      },
-      {
-       "type": "object"
-      }
-     ],
-     "description": "触发目标：字符串锚点，或直接给一个目标请求对象。"
-    },
-    "transfer": {
-     "type": "object"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "statusDef": {
-   "type": "object",
-   "description": "状态定义（StatusDef）。实例值写在 mount_status 侧（INV-C2 数值单点定义）。",
-   "required": [
-    "id",
-    "name",
-    "category",
-    "dispelable"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "id": {
-     "type": "string",
-     "pattern": "^[a-z][a-z0-9_]*$"
-    },
-    "name": {
-     "type": "string"
-    },
-    "category": {
-     "type": "array",
-     "minItems": 1,
-     "items": {
-      "$ref": "#/$defs/statusCategory"
-     }
-    },
-    "dispelable": {
-     "type": "boolean"
-    },
-    "duration": {
-     "oneOf": [
-      {
-       "type": "integer"
-      },
-      {
-       "type": "null"
-      }
-     ]
-    },
-    "modifiers": {
-     "$ref": "#/$defs/modifierSet",
-     "description": "状态修正集合。"
-    },
-    "triggers": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/trigger"
-     }
-    },
-    "effects": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/effect"
-     }
-    },
-    "charges": {
-     "type": "integer"
-    },
-    "maxStacks": {
-     "type": "integer"
-    },
-    "stackPolicy": {
-     "enum": [
-      "stack",
-      "refresh"
-     ]
-    },
-    "stackThreshold": {
-     "type": "object"
-    },
-    "stackCapOverride": {
-     "type": "object"
-    },
-    "statPerStack": {
-     "type": "object"
-    },
-    "statMods": {
-     "type": "object"
-    },
-    "behaviorModifiers": {
-     "type": "array"
-    },
-    "disallowActions": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/actionLock"
-     },
-     "description": "行为封锁：单位持有该状态时禁止相应行动。move=禁止移动（禁用 move 原语/站位变动）；basic_attack=禁止普攻；skill=禁止使用主动技能；skip=禁止跳过自身行动周期；react=禁止反应/反击（reactive）；channel=禁止吟唱。对应「行为层面上的修改」。通过既有 mount_status 挂载，可驱散、可带 duration/stacks。"
-    },
-    "lethalProtect": {
-     "oneOf": [
-      {
-       "type": "boolean"
-      },
-      {
-       "type": "object"
-      }
-     ]
-    },
-    "reviveBlocked": {
-     "oneOf": [
-      {
-       "type": "boolean"
-      },
-      {
-       "type": "object"
-      }
-     ]
-    },
-    "transferOnDeath": {
-     "type": "boolean"
-    },
-    "contagious": {
-     "type": "boolean"
-    },
-    "immune": {
-     "oneOf": [
-      {
-       "type": "object"
-      },
-      {
-       "type": "array"
-      }
-     ]
-    },
-    "silent_immune": {
-     "type": "boolean"
-    },
-    "suppress": {
-     "type": "array"
-    },
-    "redirectRule": {
-     "type": "object"
-    },
-    "thresholdTrigger": {
-     "type": "object"
-    },
-    "healReceivedMul": {
-     "type": "number"
-    },
-    "formGroup": {
-     "type": "string"
-    },
-    "cycleTicks": {
-     "type": "integer"
-    },
-    "nextPhase": {
-     "type": "string"
-    },
-    "phases": {
-     "type": "array"
-    },
-    "slots": {
-     "type": "object"
-    },
-    "fields": {
-     "oneOf": [
-      {
-       "type": "array"
-      },
-      {
-       "type": "object"
-      }
-     ]
-    },
-    "ramp": {
-     "type": "array"
-    },
-    "hpRatio": {
-     "type": "number"
-    },
-    "note": {
-     "type": "string"
-    },
-    "crossPathway": {
-     "type": "boolean",
-     "description": "枢纽状态跨系可读标志：true 时该状态可被非本途径的友方技能读取（跨系 combo 依赖此标志 + participants 白名单）。见 源质维度与跨系枢纽.md §一。"
-    },
-    "participants": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     },
-     "description": "跨系读取白名单：列出可读取本 crossPathway 状态的途径 id（PathwayId）。未列入的途径即便 crossPathway:true 也不可读。见 源质维度与跨系枢纽.md §一.2。"
-    },
-    "damageTransfer": {
-     "type": "object",
-     "description": "伤害转嫁族（编队参数 §1.1b / H28）：ratio × direction × split × selfKeep × linkedTo。**必须内置防循环**：由本状态产生的伤害不再触发任何转嫁。囚犯「诅咒链接网络」即本母版的可堆叠网络形态。",
-     "additionalProperties": false,
-     "properties": {
-      "ratio": {
-       "type": "number",
-       "minimum": 0,
-       "description": "转嫁比例（0–1）。"
-      },
-      "direction": {
-       "type": "string",
-       "enum": [
-        "to_caster",
-        "to_allies",
-        "to_target",
-        "to_third"
-       ],
-       "description": "转嫁方向。"
-      },
-      "split": {
-       "type": "string",
-       "enum": [
-        "single",
-        "even"
-       ],
-       "description": "单体 / 均摊。"
-      },
-      "selfKeep": {
-       "type": "boolean",
-       "description": "源头是否自留伤害（true = 反噬未解，伤敌亦伤己）。"
-      },
-      "linkedTo": {
-       "type": "string",
-       "description": "链接目标引用（target / 状态 / 单位选择器）。"
-      },
-      "network": {
-       "type": "object",
-       "description": "诅咒链接网络母版（可堆叠）：链接 N 目标时的全网分摊。",
-       "additionalProperties": false,
-       "properties": {
-        "enabled": {
-         "type": "boolean",
-         "description": "是否启用网络形态（多目标链接）。"
-        },
-        "maxTargets": {
-         "type": "integer",
-         "minimum": 1,
-         "description": "可链接目标上限 N。"
-        },
-        "splitCoefficient": {
-         "type": "object",
-         "description": "全网分摊系数 = base + perExtra × (N−1)（囚犯：1 + 0.2×(N−1)）。",
-         "additionalProperties": false,
-         "properties": {
-          "base": {
-           "type": "number"
+        "type": "object",
+        "required": [
+          "name",
+          "actives",
+          "passives",
+          "playstyle"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Build 名（含轴符号）。"
           },
-          "perExtra": {
-           "type": "number"
+          "actives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "passives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "playstyle": {
+            "type": "string",
+            "description": "玩法一句话。"
           }
-         }
-        },
-        "note": {
-         "type": "string"
         }
-       }
-      },
-      "note": {
-       "type": "string"
       }
-     }
     },
-    "lineageStack": {
-     "type": "object",
-     "description": "异类谱系栈（编队参数 §2.4）：异类形态按栈叠加，支持 lineage_push（推入）/ lineage_depth（深度）/ 演出回放（栈内形态序列重演）。",
-     "additionalProperties": false,
-     "properties": {
-      "push": {
-       "type": "string",
-       "description": "lineage_push：推入谱系栈的形态 statusId。"
-      },
-      "depth": {
-       "type": "integer",
-       "minimum": 0,
-       "description": "lineage_depth：当前谱系栈深度。"
-      },
-      "maxDepth": {
-       "type": "integer",
-       "minimum": 1,
-       "description": "栈深上限。"
-      },
-      "replay": {
-       "type": "object",
-       "description": "演出回放：回放栈内形态序列。",
-       "additionalProperties": false,
-       "properties": {
-        "enabled": {
-         "type": "boolean"
-        },
-        "note": {
-         "type": "string"
-        }
-       }
-      },
-      "note": {
-       "type": "string"
+    "designNote": {
+      "type": "string",
+      "description": "途径级机制说明（如隐秘值/咬合器/恶欲值维度），源自技能稿轴表后的说明段。"
+    },
+    "artStyle": {
+      "type": "string",
+      "description": "本途径统一的 AI 出图风格模板（英文撰写）：画风/材质/构图/调色。展示时与卡级 art 现拼成完整 prompt，不落盘——换风格只改这一处。"
+    },
+    "artFrameEpic": {
+      "type": "string",
+      "description": "本途径 epic 档边框**纹样**的主题层（英文撰写）：写途径意象（动机/配色）即可，如 cold silver starlight in deep indigo night, intricate repeating filigree。**不要写 frame / border / bezel / apex / edge / corner / side 这类构图定位词**——模型一见「框」就画成装裱画框，一见 apex/edge 就围绕画心做构图；纹样是否成框、框多宽，全部由 CSS 决定。画法约束（无缝纹样/排除写实与 3D/纯黑底/负向词）由 manifest.artFrameFormat 统一承担，展示时现拼在前。common/uncommon/rare 三档走 manifest.artFrame。"
+    },
+    "artFrameLegendary": {
+      "type": "string",
+      "description": "本途径 legendary 档边框纹样的主题层（英文撰写）：比 artFrameEpic 更华丽（金饰/途径核心意象）。同样只写纹样主题，禁写构图定位词；格式约束同 artFrameEpic。"
+    },
+    "cards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/card"
       }
-     }
     },
-    "summonMapping": {
-     "type": "array",
-     "description": "召唤映射表：刻印/计数层数 N → 召唤物强度与数量 f(N)（罪犯「仪式刻印→深渊召唤」，编队参数 §2.4 H1 召唤物基线 + spawn.companionBuff）。",
-     "items": {
+    "unitDefs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/unitDef"
+      },
+      "description": "编目层召唤物/单位蓝本池（2026-10-01 Def 编目独立化批）：同途径多卡共享，原卡级 unitDefs 字段已撤并至此。"
+    },
+    "zoneDefs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/zoneDef"
+      },
+      "description": "编目层区域定义池（2026-10-01 Def 编目独立化批）：同途径多卡共享，原卡级 zoneDef 字段已撤并至此。"
+    },
+    "domainDefs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/domainDef"
+      },
+      "description": "编目层界域定义池（2026-10-01 Def 编目独立化批）：同途径多卡共享，原卡级 domainDef 字段已撤并至此。"
+    }
+  },
+  "$defs": {
+    "axis": {
       "type": "object",
       "required": [
-       "stacks"
+        "symbol",
+        "name"
       ],
       "additionalProperties": false,
       "properties": {
-       "stacks": {
-        "type": "integer",
-        "minimum": 1,
-        "description": "触发该档所需的刻印层数 N。"
-       },
-       "count": {
-        "type": "integer",
-        "minimum": 1,
-        "description": "该档召唤数量。"
-       },
-       "atkRatio": {
-        "type": "number",
-        "description": "该档召唤物攻击系数。"
-       },
-       "hpRatio": {
-        "type": "number",
-        "description": "该档召唤物生命系数。"
-       },
-       "unitId": {
-        "type": "string",
-        "description": "该档召唤物模板 unitId（可选，用于换模板）。"
-       },
-       "note": {
-        "type": "string"
-       }
+        "symbol": {
+          "type": "string",
+          "description": "轴符号（emoji 或炼金符号），用于 UI 展示。"
+        },
+        "name": {
+          "type": "string",
+          "description": "轴中文名。"
+        },
+        "statusId": {
+          "type": "string",
+          "description": "轴身份状态 id：enabler 卡挂载/累积它，payoff 卡读取它放大。"
+        },
+        "enablers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "挂载/累积身份状态的卡名（源自技能稿轴表，仅保留可匹配到卡名的条目）。"
+        },
+        "payoffs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "读取身份状态放大的卡名（同源，仅保留可匹配条目）。"
+        },
+        "note": {
+          "type": "string",
+          "description": "轴机制补充说明。"
+        },
+        "payoffVacuumAccepted": {
+          "type": "boolean",
+          "description": "真空轴甄别标记（2026-09-26 评分体系引入）：payoffs 为空（无读层消费者）时，true = 评审认定「纯产层轴」属合法设计、读层闭环维度不扣分；缺省/false = 真空计低分、列入补卡候选。甄别结论须在 note 记录理由。见 docs/meta/SCORING.md。"
+        }
       }
-     }
     },
-    "countMode": {
-     "enum": [
-      "cumulative",
-      "on_field"
-     ],
-     "description": "计数型状态的口径（通识者造物轴）：cumulative=累计产出（只增不减）/ on_field=当前在场（离场即减）。口径决策见 编队参数 §2.4。"
-    },
-    "source_filter": {
-     "type": "string",
-     "description": "触发来源过滤（melee / ranged / skill / …），见 编队参数 §1.1。用于反伤等只响应特定来源伤害的状态。"
-    },
-    "priority": {
-     "oneOf": [
-      {
-       "type": "number"
+    "card": {
+      "type": "object",
+      "description": "一张技能卡。kind 决定必填分支：active 需 cost/reach/target；passive 需 hook。",
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "sequence",
+        "sequenceName",
+        "rarity",
+        "axis",
+        "flagship",
+        "lore",
+        "flavor",
+        "describe",
+        "effects",
+        "tentative"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^skill_[a-z0-9_]+_s[0-9]_[a-z0-9_]+$",
+          "description": "全局唯一 ID：skill_<pathwayId>_s<序列位阶>_<英文短名>。"
+        },
+        "name": {
+          "type": "string",
+          "description": "卡片中文名。"
+        },
+        "kind": {
+          "enum": [
+            "active",
+            "passive"
+          ]
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9,
+          "description": "序列位阶 9→0。"
+        },
+        "sequenceName": {
+          "type": "string",
+          "description": "该序列位阶名称，如「药师」「驯兽师」。"
+        },
+        "rarity": {
+          "enum": [
+            "common",
+            "uncommon",
+            "rare",
+            "epic",
+            "legendary"
+          ],
+          "description": "稀有度，必须与 sequence 满足 manifest.rarityMap 映射（由 validate_schema.py 校验，schema 不表达）。"
+        },
+        "axis": {
+          "type": "string",
+          "description": "构筑轴 id，必须存在于顶层 axes 的键中（跨字段约束，由 validate_schema.py 校验）。"
+        },
+        "flagship": {
+          "type": "boolean",
+          "description": "是否为该途径的代表性旗舰卡。"
+        },
+        "lore": {
+          "type": "string",
+          "description": "设定出处文本。"
+        },
+        "flavor": {
+          "type": "string",
+          "description": "风味文本（第二人称叙事口吻）。"
+        },
+        "describe": {
+          "type": "string",
+          "description": "玩家可读的效果描述——唯一面向玩家的字段，须与 effects 语义一致。"
+        },
+        "effects": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/effect"
+          },
+          "description": "卡面效果序列（可嵌套算子）。"
+        },
+        "tentative": {
+          "type": "boolean",
+          "description": "数值待拍板。当前全库 829 张均为 true。"
+        },
+        "cost": {
+          "$ref": "#/$defs/cost"
+        },
+        "reach": {
+          "enum": [
+            "none",
+            "melee",
+            "ranged"
+          ],
+          "description": "攻击性质（近战/远程），与双方站位正交；仅决定同步对撞与可拦截性；非攻击类写 none。"
+        },
+        "target": {
+          "$ref": "#/$defs/cardTarget"
+        },
+        "hook": {
+          "$ref": "#/$defs/triggerEvent",
+          "description": "被动技能的挂载触发点。"
+        },
+        "statusDefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/statusDef"
+          },
+          "description": "本卡引入的状态定义（id 需全局唯一）。"
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/trigger"
+          },
+          "description": "卡片级触发器；状态自身的触发器写在 statusDefs[].triggers。"
+        },
+        "domain": {
+          "$ref": "#/$defs/domainGrant",
+          "description": "界域挂载（DomainDef → Grant 的实例值：时长/可否驱散等）。"
+        },
+        "zone": {
+          "$ref": "#/$defs/zoneGrant",
+          "description": "区域挂载（ZoneDef → Grant 的实例值）。"
+        },
+        "upgradeLadder": {
+          "$ref": "#/$defs/upgradeLadder",
+          "description": "升级阶梯（同名卡多档强化）。"
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/variant"
+          },
+          "description": "变体（同卡的不同形态/分支）。"
+        },
+        "secondaryTargets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/secondaryTarget"
+          },
+          "description": "附属目标请求（多段效果各自选靶）。"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "界域交互标签（供 RulePatch 按 tag 过滤）。"
+        },
+        "gender": {
+          "enum": [
+            "any",
+            "male",
+            "female"
+          ],
+          "description": "性别限制（部分途径序列有性别要求）。"
+        },
+        "sharedAcross": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "共享该卡的其他途径 pathwayId 列表。"
+        },
+        "conversionNotes": {
+          "description": "md → JSON 转换期备注（未能结构化的内容、口径存疑处）。",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "frameworkFlags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/frameworkFlag"
+          },
+          "description": "框架缺口登记：卡片用到但 DDD 内核尚未正式支持的机制。"
+        },
+        "dimHooks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dimHook"
+          },
+          "description": "本卡对战场全局维度的乘区挂钩列表（维度乘区挂钩机制，见 docs/ddd/params/源质维度与跨系枢纽.md §二）。"
+        },
+        "phaseHooks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/phaseHook"
+          },
+          "description": "本卡对战场相位的乘区挂钩列表（相位乘区挂钩机制，见 docs/ddd/params/战场参数.md §1.3b）。与 dimHooks 平行：dimHooks 管连续量维度，phaseHooks 管枚举相位。"
+        },
+        "art": {
+          "$ref": "#/$defs/artBrief",
+          "description": "本卡的 AI 出图特征（英文撰写）：只写画面特征，不含风格——风格在途径顶层 artStyle，展示时现拼。"
+        }
       },
-      {
-       "type": "string"
-      }
-     ],
-     "description": "状态结算优先级（数值越大越先结算）。见 编队参数 §2.2（守护 priority 10 / 伤害转移 priority 5）。"
-    }
-   }
-  },
-  "modifierSet": {
-   "description": "状态修正集合：既可以是数组（字符串/对象混合），也可以是「修正名 → 参数」的映射表。开放结构。",
-   "oneOf": [
-    {
-     "type": "array",
-     "items": {
-      "oneOf": [
-       {
-        "type": "string"
-       },
-       {
-        "$ref": "#/$defs/statusModifier"
-       }
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "active"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "cost",
+              "reach",
+              "target"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "passive"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "hook"
+            ]
+          }
+        }
       ]
-     }
     },
-    {
-     "type": "object"
-    }
-   ]
-  },
-  "statusModifier": {
-   "type": "object",
-   "required": [
-    "kind"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "kind": {
-     "type": "string"
-    },
-    "stat": {
-     "type": "string"
-    },
-    "value": {
-     "$ref": "#/$defs/scalar"
-    },
-    "ratio": {
-     "type": "number"
-    },
-    "mul": {
-     "type": "number"
-    },
-    "bonus": {
-     "type": "number"
-    },
-    "valueFrom": {
-     "oneOf": [
-      {
-       "type": "object"
-      },
-      {
-       "type": "string"
+    "artBrief": {
+      "type": "object",
+      "description": "一张卡的 AI 出图特征（英文）。与途径顶层 artStyle 分工：artStyle 管风格（画法/材质/调色），art 管画面内容（主体/元素/氛围）。",
+      "required": [
+        "subject"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "description": "画面主体一句话（谁/什么，在做什么）。"
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "关键视觉元素清单（意象/符号/物件），逐项一条短语。"
+        },
+        "mood": {
+          "type": "string",
+          "description": "氛围词（如 ominous, still）。"
+        }
       }
-     ]
     },
-    "metric": {
-     "type": "string"
-    },
-    "direction": {
-     "type": "string"
-    },
-    "sort": {
-     "$ref": "#/$defs/sortKey"
-    },
-    "priority": {
-     "oneOf": [
-      {
-       "type": "number"
-      },
-      {
-       "type": "string"
+    "dimHook": {
+      "type": "object",
+      "description": "卡面对战场全局维度的乘区挂钩：当 board.<dim> 满足 comparator threshold 时，本卡相关结算乘区乘 mul。维度定义见 docs/ddd/params/源质维度与跨系枢纽.md §二，阈值档位见 docs/ddd/params/数值标定基准.md §五。",
+      "required": [
+        "dim",
+        "comparator",
+        "threshold",
+        "mul"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "dim": {
+          "type": "string",
+          "enum": [
+            "secrecy",
+            "order",
+            "fate_value",
+            "luminance",
+            "death_tally"
+          ],
+          "description": "挂钩的战场维度：隐秘值 / 秩序度 / 命运值 / 光照度 / 死亡簿（2026-10-02 量表族第 6 员，死亡结算 +1、cap 10，见 源质维度与跨系枢纽.md §一点五）。光照度取值域 int[0,10]，官方档位 2 / 5 / 8（见 docs/ddd/params/战场参数.md §1.3b）。"
+        },
+        "comparator": {
+          "type": "string",
+          "enum": [
+            ">=",
+            "<=",
+            ">",
+            "<",
+            "=="
+          ],
+          "description": "阈值比较符，默认 >="
+        },
+        "threshold": {
+          "type": "number",
+          "description": "触发阈值；须在维度取值域内（secrecy/order ∈ [0,10]、fate_value ∈ [−10,10]）。"
+        },
+        "mul": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "乘区系数；单卡建议 0.8–1.5，超限需 note 说明（数值标定基准 §五；2026-10-01 乘区审批批 182 项已全量过堂）。"
+        },
+        "target": {
+          "type": "string",
+          "enum": [
+            "damage",
+            "damage_taken",
+            "heal",
+            "resource",
+            "rule_strength",
+            "all",
+            "cost"
+          ],
+          "description": "乘区作用目标；默认 damage。rule_strength 用于秩序度类规则强度系数；cost 用于折费（2026-10-01 时空迷宫批：支付阶段读取 board.<dim>，本卡能量费乘 mul，mul<1 为折扣）。"
+        },
+        "filterTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "仅当本卡带这些 tag 之一才生效（如 secrecy 要求 tag∈{愚弄,隐秘,conceal}）。"
+        },
+        "note": {
+          "type": "string",
+          "description": "乘区来源/口径说明，mul 超限或非常规时必填。"
+        }
       }
-     ]
     },
-    "split": {
-     "type": "string"
+    "cost": {
+      "type": "object",
+      "required": [
+        "energy",
+        "cooldown",
+        "castTime"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "energy": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cooldown": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "castTime": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "吟唱时长；null = 无吟唱。"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
     },
-    "linkedTo": {
-     "type": "string"
+    "cardTarget": {
+      "type": "object",
+      "required": [
+        "selectionMode",
+        "request"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "selectionMode": {
+          "enum": [
+            "manual",
+            "auto"
+          ],
+          "description": "manual = 玩家手选；auto = 引擎按 fallbackSort 自动选。"
+        },
+        "request": {
+          "$ref": "#/$defs/unitRequest"
+        },
+        "fallbackSort": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sortKey"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "自动选靶/手选缺省时的排序规则。"
+        },
+        "consumption": {
+          "enum": [
+            "summon",
+            "domain",
+            "zone",
+            "instant",
+            "translocate"
+          ]
+        },
+        "mode": {
+          "enum": [
+            "unit",
+            "area"
+          ],
+          "description": "点目标 vs 区域目标（DDD TargetSpec.mode，2026-09-20 回补）。unit=指定单位；area=指定场上区域/坐标。与 selectionMode（谁拍板最终目标）是两个独立维度，不可混用。mode=unit 时 consumption 强制 instant 或 translocate。"
+        },
+        "pickCount": {
+          "type": "integer",
+          "description": "提交的目标数量（DDD I 节点 CandidatePool.pickCount，2026-09-20 回补）。selectionMode=manual 且候选数 > pickCount 时才等待玩家选择；候选数 ≤ pickCount 时不打断玩家直接全取。"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
     },
-    "statusId": {
-     "type": "string"
+    "secondaryTarget": {
+      "type": "object",
+      "required": [
+        "request"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/unitRequest"
+        },
+        "selectionMode": {
+          "enum": [
+            "manual",
+            "auto"
+          ]
+        },
+        "fallbackSort": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sortKey"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      }
     },
-    "filter": {
-     "$ref": "#/$defs/unitFilter"
+    "unitRequest": {
+      "type": "object",
+      "description": "目标选择请求（faction × scope × 过滤 × 锚点 × 排序）。",
+      "required": [
+        "faction",
+        "scope"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "faction": {
+          "enum": [
+            "self",
+            "ally",
+            "enemy",
+            "any",
+            "none",
+            "self_or_ally"
+          ]
+        },
+        "scope": {
+          "enum": [
+            "single",
+            "all",
+            "none"
+          ]
+        },
+        "filter": {
+          "$ref": "#/$defs/unitFilter"
+        },
+        "anchor": {
+          "description": "位置锚点：候选池的起点坐标。优先用下列关键字；也可直接写具体单位 id（DDD「<指定单位>」动态寻址，故用 anyOf 放宽为任意字符串——注意这会弱化拼写校验）。absolute 需配 fixedIndex。",
+          "anyOf": [
+            {
+              "enum": [
+                "front_line",
+                "spawned_unit",
+                "first_empty",
+                "empty_ally_slot",
+                "self",
+                "front_of_self",
+                "behind_self",
+                "cross_same_index",
+                "absolute",
+                "taunt_source",
+                "manual",
+                "nearest_any",
+                "any_lowest_hp",
+                "self_faction_hp_desc",
+                "last_dead_ally",
+                "index_asc_same_faction"
+              ]
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "fixedIndex": {
+          "type": "integer",
+          "description": "配合 anchor=absolute 的绝对站位序号（DDD：absolute 需配 fixedIndex）。"
+        },
+        "sort": {
+          "$ref": "#/$defs/sortKey"
+        },
+        "sortKey": {
+          "type": "string",
+          "description": "状态键排序，形如 status:<id>:asc|desc。"
+        },
+        "spread": {
+          "enum": [
+            "none",
+            "lane_line",
+            "splash_adjacent",
+            "splash_behind",
+            "cross_same_index"
+          ]
+        },
+        "excludeSelf": {
+          "type": "boolean"
+        },
+        "laneRef": {
+          "enum": [
+            "same_lane",
+            "cross_lane",
+            "all_lanes",
+            "auto"
+          ],
+          "description": "扫描路线/列维度（DDD 原设计有、schema 曾丢失，本轮回补）。auto 在 I 节点前由施法者上下文预处理为具体值，保持流水线纯函数。"
+        }
+      }
     },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
+    "unitFilter": {
+      "type": "object",
+      "description": "候选池过滤器。开放结构：布尔属性缺省即不约束；新增维度须先在共享内核参数登记。",
+      "properties": {
+        "unitType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hasStatus": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "description": "DDD 维度：要求目标持有指定状态。旧名 statusId 已弃用（数据中实际从未使用，统一为 DDD 命名）。"
+        },
+        "hasCategory": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/statusCategory"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/statusCategory"
+              }
+            }
+          ],
+          "description": "DDD 维度：要求目标持有指定类别的状态。旧名 category 已弃用（数据中实际从未使用，统一为 DDD 命名）。"
+        },
+        "hpPercent": {
+          "type": "object",
+          "description": "DDD 维度：按生命百分比过滤。开放结构（如 cmp + value）。"
+        },
+        "casterHasSummon": {
+          "type": "boolean",
+          "description": "DDD 维度：要求施法者拥有召唤物。"
+        },
+        "adjacency": {
+          "type": "object",
+          "description": "DDD 维度：相邻性过滤，配合 spread 表达相邻 / 溅射目标域。"
+        },
+        "unitId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "element": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "tier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ]
+        },
+        "count": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dispelable": {
+          "type": "boolean"
+        },
+        "isSummon": {
+          "type": "boolean"
+        },
+        "isOwnSummon": {
+          "type": "boolean"
+        },
+        "isAllyOrMirror": {
+          "type": "boolean"
+        },
+        "isPuppet": {
+          "type": "boolean"
+        },
+        "casterOwned": {
+          "type": "boolean"
+        },
+        "anyOf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unitFilter"
+          }
+        }
+      }
+    },
+    "effect": {
+      "description": "一个效果节点：算子（op）或原语（type）。递归结构。",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/opSequence"
+        },
+        {
+          "$ref": "#/$defs/opRepeat"
+        },
+        {
+          "$ref": "#/$defs/opIf"
+        },
+        {
+          "$ref": "#/$defs/effDamage"
+        },
+        {
+          "$ref": "#/$defs/effHeal"
+        },
+        {
+          "$ref": "#/$defs/effMountStatus"
+        },
+        {
+          "$ref": "#/$defs/effModifyStat"
+        },
+        {
+          "$ref": "#/$defs/effModifyResource"
+        },
+        {
+          "$ref": "#/$defs/effMove"
+        },
+        {
+          "$ref": "#/$defs/effSpawn"
+        },
+        {
+          "$ref": "#/$defs/effDispel"
+        },
+        {
+          "$ref": "#/$defs/effDrain"
+        },
+        {
+          "$ref": "#/$defs/effDomain"
+        },
+        {
+          "$ref": "#/$defs/effTranslocate"
+        },
+        {
+          "$ref": "#/$defs/effModifyDamage"
+        },
+        {
+          "$ref": "#/$defs/effTargetOverride"
+        },
+        {
+          "$ref": "#/$defs/effTransferStatus"
+        },
+        {
+          "$ref": "#/$defs/effWriteRuleSlot"
+        },
+        {
+          "$ref": "#/$defs/effModifyRuleSlot"
+        },
+        {
+          "$ref": "#/$defs/effSnapshot"
+        },
+        {
+          "$ref": "#/$defs/effRestoreSnapshot"
+        },
+        {
+          "$ref": "#/$defs/effEchoLastSkill"
+        },
+        {
+          "$ref": "#/$defs/effGaugeShuffle"
+        },
+        {
+          "$ref": "#/$defs/effStatusShuffle"
+        },
+        {
+          "$ref": "#/$defs/effModifySkill"
+        },
+        {
+          "$ref": "#/$defs/effModifyStatus"
+        },
+        {
+          "$ref": "#/$defs/effModifyTargetability"
+        },
+        {
+          "$ref": "#/$defs/effReveal"
+        },
+        {
+          "$ref": "#/$defs/effGrantImmunity"
+        },
+        {
+          "$ref": "#/$defs/effTakeControl"
+        },
+        {
+          "$ref": "#/$defs/effAdvanceClock"
+        },
+        {
+          "$ref": "#/$defs/effSetLuminance"
+        }
+      ]
+    },
+    "opSequence": {
+      "type": "object",
+      "required": [
+        "op",
+        "steps"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "sequence",
+          "description": "顺序执行 steps，编目期展开为扁平 EffectRef。"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "opRepeat": {
+      "type": "object",
+      "required": [
+        "op",
+        "steps"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "repeat"
+        },
+        "count": {
+          "$ref": "#/$defs/countValue",
+          "description": "重复次数，可写状态动态值（对象形式为 {valueFrom, filter, cap} 等）。"
+        },
+        "countFrom": {
+          "type": "string",
+          "description": "次数来源，如 statusStacks。"
+        },
+        "shareTarget": {
+          "type": "boolean",
+          "description": "每次重复是否复用同一目标。"
+        },
+        "statusId": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "opIf": {
+      "type": "object",
+      "required": [
+        "op",
+        "condition",
+        "then"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "if"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "then": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        },
+        "else": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        },
+        "note": {
+          "type": "string"
+        },
+        "noteElse": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object"
+        }
+      }
+    },
+    "effDamage": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "damage"
+        },
+        "value": {
+          "$ref": "#/$defs/scalar"
+        },
+        "element": {
+          "$ref": "#/$defs/element"
+        },
+        "mul": {
+          "type": "number",
+          "description": "伤害乘区系数。"
+        },
+        "valueFrom": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "spread": {
+          "enum": [
+            "splash_adjacent"
+          ]
+        },
+        "pierce": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "neverMiss": {
+          "type": "boolean"
+        },
+        "lethal": {
+          "type": "boolean"
+        },
+        "damageCategory": {
+          "type": "string"
+        },
+        "armorPierceRatio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effHeal": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "heal"
+        },
+        "value": {
+          "$ref": "#/$defs/scalar"
+        },
+        "mode": {
+          "enum": [
+            "setHp",
+            "hpMaxRatio",
+            "to_ratio"
+          ]
+        },
+        "healToRatio": {
+          "type": "number"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effMountStatus": {
+      "type": "object",
+      "required": [
+        "type",
+        "statusId"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "mount_status"
+        },
+        "statusId": {
+          "type": "string",
+          "description": "状态 id；$self 表示引用宿主自身状态。"
+        },
+        "duration": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "持续 tick 数（1 回合 = 5 tick）；null = 跟随状态定义/常驻。"
+        },
+        "stacks": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "层数增减；all = 全部。"
+        },
+        "stackMode": {
+          "enum": [
+            "add",
+            "consume",
+            "override"
+          ]
+        },
+        "maxStacks": {
+          "type": "number"
+        },
+        "maxStacksOverride": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "ignoreMaxStacks": {
+          "type": "boolean"
+        },
+        "charges": {
+          "type": "integer",
+          "description": "次数型状态（charges）初始次数——落空/阻挡语义的确定性写法。"
+        },
+        "value": {
+          "$ref": "#/$defs/scalar"
+        },
+        "params": {
+          "type": "object",
+          "description": "传给状态载荷的实例化参数。"
+        },
+        "request": {
+          "$ref": "#/$defs/unitRequest"
+        },
+        "binding": {
+          "type": "object",
+          "description": "状态与目标的绑定关系（如 link 双向绑定）。"
+        },
+        "overrides": {
+          "type": "object"
+        },
+        "statusDefOverride": {
+          "type": "object"
+        },
+        "fallback": {
+          "type": "object"
+        },
+        "filter": {
+          "$ref": "#/$defs/unitFilter"
+        },
+        "refresh": {
+          "type": "boolean"
+        },
+        "durationDelta": {
+          "type": "number"
+        },
+        "maxBonusDuration": {
+          "type": "number"
+        },
+        "dispelable": {
+          "type": "boolean"
+        },
+        "contagious": {
+          "type": "boolean"
+        },
+        "spread": {
+          "enum": [
+            "splash_adjacent"
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effModifyStat": {
+      "type": "object",
+      "required": [
+        "type",
+        "stat",
+        "mode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "modify_stat"
+        },
+        "stat": {
+          "type": "string",
+          "pattern": "^(attack|defense|armor|rank|hp_max|energy_max|energy_regen|gauge\\.rate|gauge\\.threshold|summon_cap|resist:(\\*|[a-z]+|\\$[A-Za-z]+))$",
+          "description": "属性键。以代码为准用 gauge.rate / gauge.threshold（不是 stamina_*）。"
+        },
+        "value": {
+          "$ref": "#/$defs/scalar"
+        },
+        "mode": {
+          "enum": [
+            "delta",
+            "set",
+            "mul",
+            "to_at_least",
+            "to_at_most"
+          ]
+        },
+        "duration": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceRef": {
+          "enum": [
+            "caster",
+            "secondary_target",
+            "field_average"
+          ],
+          "description": "取值参照源。"
+        },
+        "valueFrom": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "filter": {
+          "$ref": "#/$defs/unitFilter"
+        },
+        "spread": {
+          "enum": [
+            "splash_adjacent"
+          ]
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effModifyResource": {
+      "type": "object",
+      "required": [
+        "type",
+        "resource"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "modify_resource"
+        },
+        "resource": {
+          "enum": [
+            "hp",
+            "energy",
+            "shield",
+            "armor",
+            "lost",
+            "lust",
+            "gauge.current",
+            "secrecy",
+            "order",
+            "fate_value"
+          ],
+          "description": "资源标识。单位级 Pool：hp/energy/shield/armor/lust（下限截断 0）；迷失值 lost（界域租金/清零）；行动条 Gauge：gauge.current。战场级量表（2026-10-01 起，值域截断见 源质维度与跨系枢纽.md §二–§四）：secrecy/order（[0,10]）、fate_value（[−10,+10]）；战场量表写入仅限 ddd 登记写入方（fate_value 仅怪物）。加血请用 heal。"
+        },
+        "value": {
+          "$ref": "#/$defs/scalar"
+        },
+        "mode": {
+          "enum": [
+            "delta",
+            "set",
+            "swap"
+          ]
+        },
+        "op": {
+          "enum": [
+            "swap"
+          ]
+        },
+        "between": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effectTarget"
+          }
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "maxTriggersPerBattle": {
+          "type": "integer"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "filter": {
+          "$ref": "#/$defs/unitFilter"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effMove": {
+      "type": "object",
+      "required": [
+        "type",
+        "op"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "move"
+        },
+        "op": {
+          "enum": [
+            "swap_neighbor",
+            "insert_tail_cross_lane",
+            "swap_ally",
+            "param",
+            "pull_forward",
+            "push_back",
+            "charge_forward"
+          ]
+        },
+        "distance": {
+          "type": "number"
+        },
+        "to": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "params": {
+          "type": "object"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effSpawn": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "spawn"
+        },
+        "unitId": {
+          "type": "string",
+          "description": "召唤物单位 id（引用 unitDefs 或全局单位蓝本；静态具名单位唯一正键，2026-10-01 裁定原 unit 键并入本键）"
+        },
+        "template": {
+          "type": "string",
+          "description": "模板来源——动态模板（killed_unit / primary_target / holder）或固定蓝本 template 名（2026-10-01 补登记）。"
+        },
+        "def": {
+          "type": "string",
+          "description": "定义 id（spawn 区域时指向 zoneDef）。"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "zone": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "variant": {
+          "type": "string"
+        },
+        "position": {
+          "enum": [
+            "tail",
+            "at_unit",
+            "original"
+          ]
+        },
+        "count": {
+          "$ref": "#/$defs/countValue"
+        },
+        "hpRatio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "atkRatio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "consumption": {
+          "enum": [
+            "summon",
+            "domain",
+            "zone",
+            "instant",
+            "translocate"
+          ]
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "lifetime": {
+          "type": "integer"
+        },
+        "reviveOf": {
+          "enum": [
+            "self",
+            "status_holder",
+            "last_dead_ally"
+          ],
+          "description": "复活语义（G4：不新增原语）。"
+        },
+        "oncePerBattle": {
+          "type": "boolean"
+        },
+        "inheritSkills": {
+          "type": "boolean"
+        },
+        "summonCap": {
+          "type": "object"
+        },
+        "summonCapOverride": {
+          "type": "integer"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effDispel": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "dispel"
+        },
+        "dispelTarget": {
+          "enum": [
+            "unit",
+            "domain"
+          ],
+          "description": "驱散对象：单位身上的状态 / 界域本身。"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "filter": {
+          "$ref": "#/$defs/unitFilter"
+        },
+        "category": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/statusCategory"
+          }
+        },
+        "statusId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "count": {
+          "$ref": "#/$defs/countValue"
+        },
+        "collect": {
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "area"
+          ]
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effDrain": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "drain"
+        },
+        "resource": {
+          "enum": [
+            "hp",
+            "energy"
+          ]
+        },
+        "value": {
+          "$ref": "#/$defs/scalar"
+        },
+        "ratio": {
+          "type": "number"
+        },
+        "healRatio": {
+          "type": "number",
+          "description": "吸血比例（归施法者，F2）。"
+        },
+        "category": {
+          "enum": [
+            "buff"
+          ],
+          "description": "增益转移（F50）。"
+        },
+        "count": {
+          "$ref": "#/$defs/countValue"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effDomain": {
+      "type": "object",
+      "required": [
+        "type",
+        "op"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "domain"
+        },
+        "op": {
+          "enum": [
+            "overlay",
+            "swap",
+            "hero"
+          ],
+          "description": "overlay = 覆盖层压制；hero = 英雄位格界域。"
+        },
+        "def": {
+          "type": "string",
+          "description": "指向 domainDef.id。"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "durationUnit": {
+          "enum": [
+            "turn",
+            "tick"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effTranslocate": {
+      "type": "object",
+      "required": [
+        "type",
+        "op",
+        "duration"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "translocate"
+        },
+        "op": {
+          "enum": [
+            "pull_into",
+            "banish"
+          ],
+          "description": "拉入 / 放逐（ddd 效果参数：op: pull_into / banish）"
+        },
+        "duration": {
+          "type": "integer",
+          "description": "detached 持续 tick 数，到期于己方队尾回归"
+        },
+        "returnPayload": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          },
+          "description": "banish 回归时结算的载荷（时空乱流；Chance 走 R3/R4）"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effModifyDamage": {
+      "type": "object",
+      "required": [
+        "type",
+        "mul"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "modify_damage"
+        },
+        "scope": {
+          "enum": [
+            "taken",
+            "dealt"
+          ]
+        },
+        "mul": {
+          "type": "number"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effTargetOverride": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "target_override"
+        },
+        "faction": {
+          "type": "string"
+        },
+        "anchor": {
+          "type": "string"
+        },
+        "sort": {
+          "$ref": "#/$defs/sortKey"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effTransferStatus": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "transfer_status"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "statusesFrom": {
+          "type": "string"
+        },
+        "from": {
+          "type": "object"
+        },
+        "to": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "mapping": {
+          "type": "object"
+        },
+        "mode": {
+          "enum": [
+            "copy",
+            "rewrite"
+          ]
+        },
+        "keepDuration": {
+          "type": "boolean"
+        },
+        "durationMul": {
+          "type": "number"
+        },
+        "stacksMul": {
+          "type": "number"
+        },
+        "count": {
+          "$ref": "#/$defs/scalar"
+        },
+        "filter": {
+          "$ref": "#/$defs/unitFilter"
+        },
+        "fallback": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effSnapshot": {
+      "type": "object",
+      "required": [
+        "type",
+        "fields"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "snapshot"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "filter": {
+          "$ref": "#/$defs/unitFilter"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effRestoreSnapshot": {
+      "type": "object",
+      "required": [
+        "type",
+        "fields"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "restore_snapshot"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effEchoLastSkill": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "echo_last_skill"
+        },
+        "potency": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "snapshot": {
+          "type": "string"
+        },
+        "rounding": {
+          "enum": [
+            "ceil",
+            "floor",
+            "round"
+          ]
+        },
+        "fallback": {
+          "type": "object"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effGaugeShuffle": {
+      "type": "object",
+      "description": "行动条数值集合守恒重排（R5 合规：重分配既有数值，非随机生成）。作用域随 target 锚点，省略 = 卡面目标全集。2026-10-02 转正（律师差异化迭代），语义见 docs/ddd/params/效果参数.md。",
+      "required": [
+        "type",
+        "resource"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "gauge_shuffle"
+        },
+        "resource": {
+          "type": "string"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget",
+          "description": "重排作用域锚点（如 all_enemies / splash_adjacent）；省略 = 卡面目标全集。"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effStatusShuffle": {
+      "type": "object",
+      "description": "状态乱序：mode rotate = 作用域内单位按 sort 排序后轮转易主 count 个状态。作用域随 target 锚点，省略 = 卡面目标全集。2026-10-02 转正（律师差异化迭代）。",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "status_shuffle"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget",
+          "description": "轮转作用域锚点（如 all_enemies / splash_adjacent）；省略 = 卡面目标全集。"
+        },
+        "mode": {
+          "enum": [
+            "rotate"
+          ]
+        },
+        "sort": {
+          "$ref": "#/$defs/sortKey"
+        },
+        "count": {
+          "$ref": "#/$defs/countValue"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effModifySkill": {
+      "type": "object",
+      "description": "行为层修改（一）：改写技能实例的运行时属性——清 CD / 改施法消耗 / 吟唱转瞬发 / 单体转范围。作用于已存在的技能实例，不是卡静态字段。",
+      "required": [
+        "type",
+        "skillRef"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "modify_skill"
+        },
+        "skillRef": {
+          "type": "object",
+          "required": [
+            "selector"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "selector": {
+              "enum": [
+                "self_last",
+                "self",
+                "target",
+                "by_id"
+              ],
+              "description": "self_last=施法者最近一次使用的主动技能实例（对应「清除当前技能的 CD」）；self=施法者指定技能（配 skillId）；target=目标单位身上指定技能（配 target + ofSkill）；by_id=按卡 id 直接定位。"
+            },
+            "skillId": {
+              "type": "string",
+              "description": "selector 为 self / by_id 时指定卡 id；selector=target 时可省（取 ofSkill 指定的技能）。"
+            },
+            "ofSkill": {
+              "enum": [
+                "active",
+                "channeling",
+                "last"
+              ],
+              "description": "selector=target 时，取目标的哪种技能：active=当前激活、channeling=施放中、last=最近使用。"
+            },
+            "target": {
+              "$ref": "#/$defs/effectTarget"
+            }
+          }
+        },
+        "clearCooldown": {
+          "type": "boolean",
+          "description": "将匹配技能的剩余冷却清零（清除当前技能 CD）。"
+        },
+        "cooldownDelta": {
+          "type": "integer",
+          "description": "剩余冷却 +/- 修正；负=减少。"
+        },
+        "costDelta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "energy": {
+              "type": "integer",
+              "description": "能量消耗修正。"
+            },
+            "cooldown": {
+              "type": "integer"
+            },
+            "castTime": {
+              "type": "integer"
+            }
+          },
+          "description": "施法消耗修正（cost 三件套：energy 能量 / cooldown 冷却 / castTime 吟唱）；负=减少。对应「减少/增加技能施法消耗」。"
+        },
+        "castTimeDelta": {
+          "type": "integer",
+          "description": "吟唱时长 +/- 修正。"
+        },
+        "setInstant": {
+          "type": "boolean",
+          "description": "将吟唱技能改为瞬发（castTime 置 0）。对应「修改吟唱技能为瞬发技能」。"
+        },
+        "targetSpecOverride": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "完整改写技能 TargetSpec（对齐 DDD：modify_skill 可改技能全部选靶属性，而非仅范围）。给出 selectionMode 与 request 全字段，未给出的沿用原值。区别于 target_override 原语（effect 级一次性覆盖）。",
+          "properties": {
+            "selectionMode": {
+              "enum": [
+                "manual",
+                "auto"
+              ]
+            },
+            "request": {
+              "$ref": "#/$defs/unitRequest"
+            }
+          }
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effModifyStatus": {
+      "type": "object",
+      "description": "行为层修改（二）：改写一个已存在的状态实例——延长/重设持续时间、调整最大可叠加层数。区别于 mount_status（施加新状态），本原语作用于运行中的实例。",
+      "required": [
+        "type",
+        "statusId",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "modify_status"
+        },
+        "statusId": {
+          "type": "string",
+          "description": "要修改的已存在状态实例 id；$self 表示引用宿主自身状态。"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget",
+          "description": "持有该状态实例的单位。"
+        },
+        "addDuration": {
+          "type": "integer",
+          "description": "给剩余持续时间 +/- 修正；正=延长。对应「修改状态的持续时间」。"
+        },
+        "setDuration": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "覆盖剩余持续时间；null=常驻。"
+        },
+        "maxStacksDelta": {
+          "type": "integer",
+          "description": "最大可叠加层数 +/- 修正。"
+        },
+        "maxStacksSet": {
+          "type": "integer",
+          "description": "直接设定最大可叠加层数。对应「修改状态的最大可叠加层数」。"
+        },
+        "stacksDelta": {
+          "type": "integer",
+          "description": "当前层数 +/- 修正（可选，配合层数玩法）。"
+        },
+        "dispelableOverride": {
+          "type": "boolean",
+          "description": "覆盖该状态实例的可驱散性（true=强制可驱散 / false=强制不可驱散）。对应此前手写的 dispelableOverride / dispelOverride / dispelableOverwrite / runtimeDispelLock 等 8 种拼写（约 16 处）。"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effModifyTargetability": {
+      "type": "object",
+      "description": "改单位的「可被选为目标」属性，带方向与持续。对应此前手写的 untargetableByTargeted(29) / untargetable(2) / untargetableByAll(1)。",
+      "required": [
+        "type",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "modify_targetability"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "untargetable": {
+          "type": "boolean",
+          "description": "true=不可被选为目标；false=解除不可选取。"
+        },
+        "direction": {
+          "enum": [
+            "all",
+            "enemy_targeted",
+            "enemy_aoe",
+            "ally"
+          ],
+          "description": "对谁不可选：all=全体 / enemy_targeted=敌方指定类 / enemy_aoe=敌方范围类 / ally=友方。"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "pierce": {
+          "enum": [
+            "none",
+            "source",
+            "all"
+          ],
+          "description": "谁能看穿该不可选取：none=无人 / source=仅施法者 / all=所有人。"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effReveal": {
+      "type": "object",
+      "description": "揭示 / 穿透隐匿。对应此前手写的 14 种拼写（pierceConceal / revealToSource / seeThroughStealth / detectConceal …，约 26 处）。⚠️ 纯驱散隐匿仍应用 dispel(filter.category=[conceal])，本原语用于「显形但不驱散」「仅对施法者显形」等场景。",
+      "required": [
+        "type",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "reveal"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "scope": {
+          "enum": [
+            "to_source",
+            "to_all"
+          ],
+          "description": "显形范围：to_source=仅对施法者显形 / to_all=对全体显形。"
+        },
+        "dispel": {
+          "type": "boolean",
+          "description": "是否顺带驱散隐匿类状态。false=仅显形、保留状态。"
+        },
+        "pierceTargetability": {
+          "type": "boolean",
+          "description": "是否同时穿透「不可被选为目标」（modify_targetability）。"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effGrantImmunity": {
+      "type": "object",
+      "description": "授予免疫。此前仅 statusDef.immune（2 处）可用，需为每种免疫单写状态；本原语让「临时/条件性免疫」可直接表达（手写 immune 约 19 处）。",
+      "required": [
+        "type",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "grant_immunity"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "against": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/statusCategory"
+          },
+          "description": "对哪些状态类别免疫（如 control / fear / debuff）。"
+        },
+        "element": {
+          "$ref": "#/$defs/element",
+          "description": "对哪种元素伤害免疫。"
+        },
+        "damageType": {
+          "type": "string",
+          "description": "对哪种伤害类型免疫（如 dot / direct / lethal）。"
+        },
+        "charges": {
+          "type": "integer",
+          "description": "免疫次数（确定性，落空/阻挡语义沿用 charges 约定）。"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effTakeControl": {
+      "type": "object",
+      "description": "夺取控制权 / 阵营翻转：目标在持续期内视为己方单位行动。此前**完全空白**（0 处），而「操控/支配」被提及 72 次，仅靠 target_override / gaugeRateMul:0 / untargetableByTargeted 三招凑。",
+      "required": [
+        "type",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "take_control"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "onExpire": {
+          "enum": [
+            "revert",
+            "die",
+            "keep"
+          ],
+          "description": "到期处置：revert=回归原阵营 / die=死亡 / keep=保持。"
+        },
+        "actionPolicy": {
+          "enum": [
+            "full",
+            "attack_only",
+            "move_only"
+          ],
+          "description": "被控单位可执行哪些行动：full=全权 / attack_only=仅攻击 / move_only=仅移动。"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
     },
     "condition": {
-     "type": "object",
-     "description": "修饰生效的门槛条件（如阈值 {metric, cmp, value}）。开放结构——勿用 $defs/condition 的封闭 kind 枚举，这里承载的是修饰维度而非效果谓词。"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "domainDef": {
-   "type": "object",
-   "required": [
-    "id",
-    "tier",
-    "dispelable",
-    "duration",
-    "durationUnit",
-    "triggers",
-    "rulePatches"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "id": {
-     "type": "string",
-     "pattern": "^[a-z][a-z0-9_]*$"
-    },
-    "tier": {
-     "enum": [
-      "overlay",
-      "hero"
-     ]
-    },
-    "dispelable": {
-     "type": "boolean"
-    },
-    "duration": {
-     "type": "integer"
-    },
-    "durationUnit": {
-     "enum": [
-      "turn",
-      "tick"
-     ]
-    },
-    "triggers": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/trigger"
-     }
-    },
-    "rulePatches": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/rulePatch"
-     }
-    },
-    "envRules": {
-     "oneOf": [
-      {
-       "type": "object"
-      },
-      {
-       "type": "array"
+      "type": "object",
+      "description": "效果生效条件谓词。开放结构：字段随 kind 变化。chance 类须遵守随机性治理 R1–R6（只用于非伤害维度、单次抽样、须登记）。",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "any_of",
+            "caster_has_summon",
+            "caster_status_exists",
+            "chance",
+            "consumed_count",
+            "dead_count",
+            "dispelled_count",
+            "element_is",
+            "field_status_count",
+            "gauge_rank",
+            "has_category",
+            "has_status",
+            "hp_percent",
+            "hp_percent_compare",
+            "luminance_compare",
+            "phase_is",
+            "rank_gap",
+            "remove_reason",
+            "resource_compare",
+            "stat_compare",
+            "status_category",
+            "tag_chain",
+            "target_dead",
+            "target_faction_is",
+            "target_has_tag",
+            "target_is_summoned",
+            "target_unit_type",
+            "unit_faction",
+            "variant_is",
+            "zone_active"
+          ]
+        },
+        "side": {
+          "enum": [
+            "self",
+            "target",
+            "ally",
+            "enemy",
+            "both",
+            "all",
+            "attacker"
+          ]
+        },
+        "cmp": {
+          "enum": [
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "=="
+          ]
+        },
+        "n": {
+          "type": "number"
+        },
+        "id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "p": {
+          "type": "number",
+          "description": "chance 的概率值 0–1。"
+        },
+        "value": {
+          "$ref": "#/$defs/scalar"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/statusCategory"
+          }
+        },
+        "category": {
+          "$ref": "#/$defs/statusCategory"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        },
+        "statusId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "stacksAtLeast": {
+          "type": "integer"
+        },
+        "unitId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "unitTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "tag": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "element": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "faction": {
+          "type": "string"
+        },
+        "aUnit": {
+          "type": "string"
+        },
+        "bUnit": {
+          "type": "string"
+        },
+        "aSide": {
+          "type": "string"
+        },
+        "bSide": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "aggregate": {
+          "enum": [
+            "sum"
+          ],
+          "description": "仅 resource_compare：聚合模式。'sum' = 对 side 范围内全部单位的该 Pool 现值求和后与 n 比较（全场∑读法，如深渊即我 ∑恶欲值≥15 免疫失控）。缺省 = 单单位现值。见 共享内核参数.md §三。"
+        },
+        "op": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "zoneId": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "midnight",
+              "dawn",
+              "day",
+              "dusk",
+              "night"
+            ]
+          },
+          "description": "phase_is 谓词用的相位集合：当前 board.phase 属于其一即成立（见 战场参数.md §1.3b）。"
+        }
       }
-     ]
-    },
-    "extraRuleNote": {
-     "type": "string"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "rulePatch": {
-   "type": "object",
-   "required": [
-    "kind"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "kind": {
-     "type": "string",
-     "description": "规则补丁类型，封闭取值见 docs/ddd/params/战场参数.md §1.2：seal_effect / disable_effect / cost_mod / empower。"
-    },
-    "side": {
-     "type": "string",
-     "description": "作用侧（all / ally / enemy / both）——disable_effect 与 empower 必填；seal_effect 与 cost_mod 天然敌我双向，不写本字段（2026-10-02 对齐 ddd 正典，原必填修正）。"
-    },
-    "tag": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "array",
-       "items": {
-        "type": "string"
-       }
-      }
-     ],
-     "description": "按 SkillDef.tags 过滤的作用面，可多值。"
-    },
-    "mul": {
-     "type": "number"
-    },
-    "stat": {
-     "type": "string"
-    },
-    "effectType": {
-     "type": "string"
-    },
-    "delta": {
-     "type": "integer",
-     "description": "cost_mod 的成本增减（如 1 = 费用 +1）；仅 cost_mod kind 使用，2026-10-02 补登（口径见 docs/ddd/params/战场参数.md §1.2）。"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "domainGrant": {
-   "type": "object",
-   "required": [
-    "tier",
-    "def",
-    "duration",
-    "durationUnit",
-    "dispelable",
-    "rulePatches"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "tier": {
-     "enum": [
-      "overlay",
-      "hero"
-     ]
-    },
-    "def": {
-     "type": "string"
-    },
-    "duration": {
-     "type": "integer"
-    },
-    "durationUnit": {
-     "enum": [
-      "turn",
-      "tick"
-     ]
-    },
-    "dispelable": {
-     "type": "boolean"
-    },
-    "rulePatches": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/rulePatch"
-     }
-    },
-    "envRulesText": {
-     "type": "string"
-    }
-   }
-  },
-  "zoneDef": {
-   "type": "object",
-   "required": [
-    "id",
-    "kind",
-    "trigger",
-    "affects",
-    "effects"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "id": {
-     "type": "string",
-     "pattern": "^[a-z][a-z0-9_]*$"
-    },
-    "kind": {
-     "enum": [
-      "hazard",
-      "blessing"
-     ]
     },
     "trigger": {
-     "enum": [
-      "on_occupy_tick",
-      "on_attack",
-      "summon_skill"
-     ]
-    },
-    "affects": {
-     "enum": [
-      "ally_of_owner",
-      "enemy_of_owner",
-      "any"
-     ],
-     "description": "作用面：Zone 载荷按阵营分派生效分支。"
-    },
-    "effects": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/zoneEffect"
-     }
-    },
-    "duration": {
-     "oneOf": [
-      {
-       "type": "integer"
-      },
-      {
-       "type": "null"
+      "type": "object",
+      "required": [
+        "event"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "event": {
+          "$ref": "#/$defs/triggerEvent"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "consumeCharge": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            }
+          ]
+        },
+        "consume": {
+          "type": "integer"
+        },
+        "global": {
+          "type": "boolean"
+        },
+        "reason": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "reasonFilter": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "minIntervalTicks": {
+          "type": "integer"
+        },
+        "params": {
+          "type": "object"
+        },
+        "filter": {
+          "$ref": "#/$defs/unitFilter"
+        },
+        "target": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/effectTarget"
+            },
+            {
+              "type": "object"
+            }
+          ],
+          "description": "触发目标：字符串锚点，或直接给一个目标请求对象。"
+        },
+        "transfer": {
+          "type": "object"
+        },
+        "note": {
+          "type": "string"
+        }
       }
-     ]
     },
-    "durationUnit": {
-     "enum": [
-      "turn",
-      "tick"
-     ]
-    },
-    "interval": {
-     "type": "integer"
-    },
-    "modifiers": {
-     "$ref": "#/$defs/modifierSet"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "zoneEffect": {
-   "description": "区域载荷：直接是一个效果，或 {side, payload} 的分组形式（按阵营分别结算）。",
-   "oneOf": [
-    {
-     "$ref": "#/$defs/effect"
-    },
-    {
-     "type": "object",
-     "required": [
-      "side",
-      "payload"
-     ],
-     "additionalProperties": false,
-     "properties": {
-      "side": {
-       "type": "string"
-      },
-      "payload": {
-       "$ref": "#/$defs/effect"
+    "statusDef": {
+      "type": "object",
+      "description": "状态定义（StatusDef）。实例值写在 mount_status 侧（INV-C2 数值单点定义）。",
+      "required": [
+        "id",
+        "name",
+        "category",
+        "dispelable"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/statusCategory"
+          }
+        },
+        "dispelable": {
+          "type": "boolean"
+        },
+        "duration": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "modifiers": {
+          "$ref": "#/$defs/modifierSet",
+          "description": "状态修正集合。"
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/trigger"
+          }
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        },
+        "charges": {
+          "type": "integer"
+        },
+        "maxStacks": {
+          "type": "integer"
+        },
+        "stackPolicy": {
+          "enum": [
+            "stack",
+            "refresh"
+          ]
+        },
+        "stackThreshold": {
+          "type": "object"
+        },
+        "stackCapOverride": {
+          "type": "object"
+        },
+        "statPerStack": {
+          "type": "object"
+        },
+        "statMods": {
+          "type": "object"
+        },
+        "behaviorModifiers": {
+          "type": "array"
+        },
+        "disallowActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/actionLock"
+          },
+          "description": "行为封锁：单位持有该状态时禁止相应行动。move=禁止移动（禁用 move 原语/站位变动）；basic_attack=禁止普攻；skill=禁止使用主动技能；skip=禁止跳过自身行动周期；react=禁止反应/反击（reactive）；channel=禁止吟唱。对应「行为层面上的修改」。通过既有 mount_status 挂载，可驱散、可带 duration/stacks。"
+        },
+        "lethalProtect": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "reviveBlocked": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "transferOnDeath": {
+          "type": "boolean"
+        },
+        "contagious": {
+          "type": "boolean"
+        },
+        "immune": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "array"
+            }
+          ]
+        },
+        "silent_immune": {
+          "type": "boolean"
+        },
+        "suppress": {
+          "type": "array"
+        },
+        "redirectRule": {
+          "type": "object"
+        },
+        "thresholdTrigger": {
+          "type": "object"
+        },
+        "healReceivedMul": {
+          "type": "number"
+        },
+        "formGroup": {
+          "type": "string"
+        },
+        "cycleTicks": {
+          "type": "integer"
+        },
+        "nextPhase": {
+          "type": "string"
+        },
+        "phases": {
+          "type": "array"
+        },
+        "slots": {
+          "type": "object"
+        },
+        "fields": {
+          "oneOf": [
+            {
+              "type": "array"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "ramp": {
+          "type": "array"
+        },
+        "hpRatio": {
+          "type": "number"
+        },
+        "note": {
+          "type": "string"
+        },
+        "crossPathway": {
+          "type": "boolean",
+          "description": "枢纽状态跨系可读标志：true 时该状态可被非本途径的友方技能读取（跨系 combo 依赖此标志 + participants 白名单）。见 源质维度与跨系枢纽.md §一。"
+        },
+        "participants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "跨系读取白名单：列出可读取本 crossPathway 状态的途径 id（PathwayId）。未列入的途径即便 crossPathway:true 也不可读。见 源质维度与跨系枢纽.md §一.2。"
+        },
+        "damageTransfer": {
+          "type": "object",
+          "description": "伤害转嫁族（编队参数 §1.1b / H28）：ratio × direction × split × selfKeep × linkedTo。**必须内置防循环**：由本状态产生的伤害不再触发任何转嫁。囚犯「诅咒链接网络」即本母版的可堆叠网络形态。",
+          "additionalProperties": false,
+          "properties": {
+            "ratio": {
+              "type": "number",
+              "minimum": 0,
+              "description": "转嫁比例（0–1）。"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "to_caster",
+                "to_allies",
+                "to_target",
+                "to_third",
+                "both",
+                "to_self"
+              ],
+              "description": "转嫁方向：to_caster 转给施法者 / to_allies 转给队友（均摊见 split）/ to_target 转给目标 / to_third 转给第三方 / both 链接双方互分（你挨的打对方分一半、反之亦然）/ to_self 承伤收归持有者（linkedFrom 指定的单位受伤时按比例转给持有者）。"
+            },
+            "split": {
+              "type": "string",
+              "enum": [
+                "single",
+                "even"
+              ],
+              "description": "单体 / 均摊。"
+            },
+            "selfKeep": {
+              "type": "boolean",
+              "description": "源头是否自留伤害（true = 反噬未解，伤敌亦伤己）。"
+            },
+            "linkedTo": {
+              "type": "string",
+              "description": "链接目标引用（target / 状态 / 单位选择器）。"
+            },
+            "linkedFrom": {
+              "type": "object",
+              "description": "来向链接选择器（direction=to_self 时用）：承伤方是选择器选中的单位，伤害按比例转给持有者。定义改写的是身份不是阵营，scope 按原阵营判定。",
+              "additionalProperties": false,
+              "properties": {
+                "scope": {
+                  "type": "string",
+                  "description": "选择域，如 faction_original（持有者原阵营）。"
+                },
+                "sort": {
+                  "type": "string",
+                  "description": "排序取头，如 atk_desc（attack 最高）。"
+                },
+                "note": {
+                  "type": "string",
+                  "description": "附注。"
+                }
+              }
+            },
+            "network": {
+              "type": "object",
+              "description": "诅咒链接网络母版（可堆叠）：链接 N 目标时的全网分摊。",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "是否启用网络形态（多目标链接）。"
+                },
+                "maxTargets": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "可链接目标上限 N。"
+                },
+                "splitCoefficient": {
+                  "type": "object",
+                  "description": "全网分摊系数 = base + perExtra × (N−1)（囚犯：1 + 0.2×(N−1)）。",
+                  "additionalProperties": false,
+                  "properties": {
+                    "base": {
+                      "type": "number"
+                    },
+                    "perExtra": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "note": {
+                  "type": "string"
+                }
+              }
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "lineageStack": {
+          "type": "object",
+          "description": "异类谱系栈（编队参数 §2.4）：异类形态按栈叠加，支持 lineage_push（推入）/ lineage_depth（深度）/ 演出回放（栈内形态序列重演）。",
+          "additionalProperties": false,
+          "properties": {
+            "push": {
+              "type": "string",
+              "description": "lineage_push：推入谱系栈的形态 statusId。"
+            },
+            "depth": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "lineage_depth：当前谱系栈深度。"
+            },
+            "maxDepth": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "栈深上限。"
+            },
+            "replay": {
+              "type": "object",
+              "description": "演出回放：回放栈内形态序列。",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "note": {
+                  "type": "string"
+                }
+              }
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "summonMapping": {
+          "type": "array",
+          "description": "召唤映射表：刻印/计数层数 N → 召唤物强度与数量 f(N)（罪犯「仪式刻印→深渊召唤」，编队参数 §2.4 H1 召唤物基线 + spawn.companionBuff）。",
+          "items": {
+            "type": "object",
+            "required": [
+              "stacks"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "stacks": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "触发该档所需的刻印层数 N。"
+              },
+              "count": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "该档召唤数量。"
+              },
+              "atkRatio": {
+                "type": "number",
+                "description": "该档召唤物攻击系数。"
+              },
+              "hpRatio": {
+                "type": "number",
+                "description": "该档召唤物生命系数。"
+              },
+              "unitId": {
+                "type": "string",
+                "description": "该档召唤物模板 unitId（可选，用于换模板）。"
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "countMode": {
+          "enum": [
+            "cumulative",
+            "on_field"
+          ],
+          "description": "计数型状态的口径（通识者造物轴）：cumulative=累计产出（只增不减）/ on_field=当前在场（离场即减）。口径决策见 编队参数 §2.4。"
+        },
+        "source_filter": {
+          "type": "string",
+          "description": "触发来源过滤（melee / ranged / skill / …），见 编队参数 §1.1。用于反伤等只响应特定来源伤害的状态。"
+        },
+        "priority": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "状态结算优先级（数值越大越先结算）。见 编队参数 §2.2（守护 priority 10 / 伤害转移 priority 5）。"
+        }
       }
-     }
-    }
-   ]
-  },
-  "zoneGrant": {
-   "type": "object",
-   "required": [
-    "def",
-    "duration"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "def": {
-     "type": "string"
     },
-    "duration": {
-     "type": "integer"
+    "modifierSet": {
+      "description": "状态修正集合：既可以是数组（字符串/对象混合），也可以是「修正名 → 参数」的映射表。开放结构。",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/statusModifier"
+              }
+            ]
+          }
+        },
+        {
+          "type": "object"
+        }
+      ]
     },
-    "durationUnit": {
-     "enum": [
-      "turn",
-      "tick"
-     ]
-    },
-    "placement": {
-     "type": "string"
-    },
-    "kind": {
-     "type": "string"
-    },
-    "affects": {
-     "enum": [
-      "ally_of_owner",
-      "enemy_of_owner",
-      "any"
-     ]
-    },
-    "envRulesText": {
-     "type": "string"
-    }
-   }
-  },
-  "unitDef": {
-   "type": "object",
-   "required": [
-    "id",
-    "name"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "id": {
-     "type": "string",
-     "pattern": "^[a-z][a-z0-9_]*$"
-    },
-    "name": {
-     "type": "string"
-    },
-    "base": {
-     "oneOf": [
-      {
-       "type": "string"
-      },
-      {
-       "type": "object"
-      },
-      {
-       "type": "number"
+    "statusModifier": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "stat": {
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/scalar"
+        },
+        "ratio": {
+          "type": "number"
+        },
+        "mul": {
+          "type": "number"
+        },
+        "bonus": {
+          "type": "number"
+        },
+        "valueFrom": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "metric": {
+          "type": "string"
+        },
+        "direction": {
+          "type": "string"
+        },
+        "sort": {
+          "$ref": "#/$defs/sortKey"
+        },
+        "priority": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "split": {
+          "type": "string"
+        },
+        "linkedTo": {
+          "type": "string"
+        },
+        "statusId": {
+          "type": "string"
+        },
+        "filter": {
+          "$ref": "#/$defs/unitFilter"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "condition": {
+          "type": "object",
+          "description": "修饰生效的门槛条件（如阈值 {metric, cmp, value}）。开放结构——勿用 $defs/condition 的封闭 kind 枚举，这里承载的是修饰维度而非效果谓词。"
+        },
+        "note": {
+          "type": "string"
+        }
       }
-     ]
     },
-    "baseOn": {
-     "type": "string"
-    },
-    "unitType": {
-     "type": "string"
-    },
-    "hpRatio": {
-     "oneOf": [
-      {
-       "type": "number"
-      },
-      {
-       "type": "string"
+    "domainDef": {
+      "type": "object",
+      "required": [
+        "id",
+        "tier",
+        "dispelable",
+        "duration",
+        "durationUnit",
+        "triggers",
+        "rulePatches"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "tier": {
+          "enum": [
+            "overlay",
+            "hero"
+          ]
+        },
+        "dispelable": {
+          "type": "boolean"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "durationUnit": {
+          "enum": [
+            "turn",
+            "tick"
+          ]
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/trigger"
+          }
+        },
+        "rulePatches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rulePatch"
+          }
+        },
+        "envRules": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "array"
+            }
+          ]
+        },
+        "extraRuleNote": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        }
       }
-     ]
     },
-    "atkRatio": {
-     "oneOf": [
-      {
-       "type": "number"
-      },
-      {
-       "type": "string"
+    "rulePatch": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "规则补丁类型，封闭取值见 docs/ddd/params/战场参数.md §1.2：seal_effect / disable_effect / cost_mod / empower。"
+        },
+        "side": {
+          "type": "string",
+          "description": "作用侧（all / ally / enemy / both）——disable_effect 与 empower 必填；seal_effect 与 cost_mod 天然敌我双向，不写本字段（2026-10-02 对齐 ddd 正典，原必填修正）。"
+        },
+        "tag": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "description": "按 SkillDef.tags 过滤的作用面，可多值。"
+        },
+        "mul": {
+          "type": "number"
+        },
+        "stat": {
+          "type": "string"
+        },
+        "effectType": {
+          "type": "string"
+        },
+        "delta": {
+          "type": "integer",
+          "description": "cost_mod 的成本增减（如 1 = 费用 +1）；仅 cost_mod kind 使用，2026-10-02 补登（口径见 docs/ddd/params/战场参数.md §1.2）。"
+        },
+        "note": {
+          "type": "string"
+        }
       }
-     ]
+    },
+    "domainGrant": {
+      "type": "object",
+      "required": [
+        "tier",
+        "def",
+        "duration",
+        "durationUnit",
+        "dispelable",
+        "rulePatches"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tier": {
+          "enum": [
+            "overlay",
+            "hero"
+          ]
+        },
+        "def": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "durationUnit": {
+          "enum": [
+            "turn",
+            "tick"
+          ]
+        },
+        "dispelable": {
+          "type": "boolean"
+        },
+        "rulePatches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rulePatch"
+          }
+        },
+        "envRulesText": {
+          "type": "string"
+        }
+      }
+    },
+    "zoneDef": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "trigger",
+        "affects",
+        "effects"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "kind": {
+          "enum": [
+            "hazard",
+            "blessing"
+          ]
+        },
+        "trigger": {
+          "enum": [
+            "on_occupy_tick",
+            "on_attack",
+            "summon_skill"
+          ]
+        },
+        "affects": {
+          "enum": [
+            "ally_of_owner",
+            "enemy_of_owner",
+            "any"
+          ],
+          "description": "作用面：Zone 载荷按阵营分派生效分支。"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/zoneEffect"
+          }
+        },
+        "duration": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "durationUnit": {
+          "enum": [
+            "turn",
+            "tick"
+          ]
+        },
+        "interval": {
+          "type": "integer"
+        },
+        "modifiers": {
+          "$ref": "#/$defs/modifierSet"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "zoneEffect": {
+      "description": "区域载荷：直接是一个效果，或 {side, payload} 的分组形式（按阵营分别结算）。",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/effect"
+        },
+        {
+          "type": "object",
+          "required": [
+            "side",
+            "payload"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "side": {
+              "type": "string"
+            },
+            "payload": {
+              "$ref": "#/$defs/effect"
+            }
+          }
+        }
+      ]
+    },
+    "zoneGrant": {
+      "type": "object",
+      "required": [
+        "def",
+        "duration"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "def": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "durationUnit": {
+          "enum": [
+            "turn",
+            "tick"
+          ]
+        },
+        "placement": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "affects": {
+          "enum": [
+            "ally_of_owner",
+            "enemy_of_owner",
+            "any"
+          ]
+        },
+        "envRulesText": {
+          "type": "string"
+        }
+      }
+    },
+    "unitDef": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "base": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "baseOn": {
+          "type": "string"
+        },
+        "unitType": {
+          "type": "string"
+        },
+        "hpRatio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "atkRatio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "element": {
+          "$ref": "#/$defs/element"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/trigger"
+          }
+        },
+        "note": {
+          "type": "string"
+        },
+        "gender": {
+          "enum": [
+            "any",
+            "male",
+            "female"
+          ],
+          "description": "单位性别（Unit.gender）：供获取期过滤与性别限制判定（刺客序列4+ 高位谱系要求 female）。"
+        }
+      }
+    },
+    "upgradeLadder": {
+      "type": "object",
+      "required": [
+        "ref",
+        "tiers"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "type": "string",
+          "description": "阶梯引用（同 id 卡的强化链）。"
+        },
+        "tiers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/ladderTier"
+          }
+        },
+        "duplicatePolicy": {
+          "type": "string"
+        }
+      }
+    },
+    "ladderTier": {
+      "type": "object",
+      "required": [
+        "name",
+        "note"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        },
+        "statusDefOverride": {
+          "type": "object"
+        }
+      }
+    },
+    "variant": {
+      "type": "object",
+      "required": [
+        "name",
+        "note"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        },
+        "targetOverride": {
+          "type": "object"
+        },
+        "statusDefOverride": {
+          "type": "object"
+        },
+        "domainDefOverride": {
+          "type": "object"
+        },
+        "costOverride": {
+          "type": "object"
+        }
+      }
+    },
+    "frameworkFlag": {
+      "type": "object",
+      "required": [
+        "code",
+        "note",
+        "landed"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "缺口代号，如 GAUGE_RATE_AS_STAT。"
+        },
+        "note": {
+          "type": "string",
+          "description": "缺口说明与待办。"
+        },
+        "landed": {
+          "type": "boolean",
+          "description": "是否已落入 DDD 内核。false = 仍欠账。"
+        }
+      }
+    },
+    "countValue": {
+      "description": "数量：数值为主；字符串用于 all / 动态引用；对象用于 {valueFrom, filter, cap} 形式的运行期计算。",
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "scalar": {
+      "description": "标量取值：数值为主；字符串用于动态引用（如 statusStacks:<id>、$var）或占位描述；布尔/null 为个别遗留写法。",
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "effectTarget": {
+      "type": "string",
+      "description": "效果级目标锚点（相对卡面 target 的二次寻址）。新增取值须先在共享内核参数登记。 board = 战场级锚点（2026-10-01 量表批）：承载 board 量表写入（modify_resource 的 secrecy/order/fate_value）。",
+      "enum": [
+        "self",
+        "caster",
+        "target",
+        "primary_target",
+        "same_target",
+        "secondary_target",
+        "attacker",
+        "holder",
+        "status_holder",
+        "killed_unit",
+        "all_allies",
+        "allies_except_self",
+        "all_enemies",
+        "all_other_enemies",
+        "all_units",
+        "all",
+        "adjacent_enemy",
+        "enemy",
+        "occupant_ally",
+        "occupant_enemy",
+        "splash_adjacent",
+        "splash_behind",
+        "one_own_snare_trap",
+        "board"
+      ]
+    },
+    "sortKey": {
+      "type": "string",
+      "description": "目标排序键。取值域见 ddd/params/共享内核参数.md（该处于 2026-09-14 已登记 atk_asc，schema 于 2026-09-16 同步）。",
+      "enum": [
+        "none",
+        "hp_asc",
+        "hp_desc",
+        "atk_asc",
+        "atk_desc",
+        "index_asc",
+        "index_desc",
+        "energy_desc",
+        "armor_desc",
+        "buff_count_desc",
+        "debuff_count_desc",
+        "gauge_asc",
+        "gauge_desc",
+        "stat_max_desc"
+      ]
     },
     "element": {
-     "$ref": "#/$defs/element"
+      "type": "string",
+      "pattern": "^(fire|ice|poison|lightning|mental|physical|holy|dark|none|\\$[A-Za-z.]+)$",
+      "description": "元素；$ 前缀表示运行期变量引用（如 $recorded.element）。"
     },
-    "tags": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     }
+    "actionLock": {
+      "type": "string",
+      "description": "行为封锁类型（statusDef.disallowActions 的取值枚举）。",
+      "enum": [
+        "move",
+        "basic_attack",
+        "skill",
+        "skip",
+        "react",
+        "channel"
+      ]
     },
-    "triggers": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/trigger"
-     }
-    },
-    "note": {
-     "type": "string"
-    },
-    "gender": {
-     "enum": [
-      "any",
-      "male",
-      "female"
-     ],
-     "description": "单位性别（Unit.gender）：供获取期过滤与性别限制判定（刺客序列4+ 高位谱系要求 female）。"
-    }
-   }
-  },
-  "upgradeLadder": {
-   "type": "object",
-   "required": [
-    "ref",
-    "tiers"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "ref": {
-     "type": "string",
-     "description": "阶梯引用（同 id 卡的强化链）。"
-    },
-    "tiers": {
-     "type": "array",
-     "minItems": 1,
-     "items": {
-      "$ref": "#/$defs/ladderTier"
-     }
-    },
-    "duplicatePolicy": {
-     "type": "string"
-    }
-   }
-  },
-  "ladderTier": {
-   "type": "object",
-   "required": [
-    "name",
-    "note"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "name": {
-     "type": "string"
-    },
-    "note": {
-     "type": "string"
-    },
-    "effects": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/effect"
-     }
-    },
-    "statusDefOverride": {
-     "type": "object"
-    }
-   }
-  },
-  "variant": {
-   "type": "object",
-   "required": [
-    "name",
-    "note"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "id": {
-     "type": "string"
-    },
-    "name": {
-     "type": "string"
-    },
-    "note": {
-     "type": "string"
-    },
-    "effects": {
-     "type": "array",
-     "items": {
-      "$ref": "#/$defs/effect"
-     }
-    },
-    "targetOverride": {
-     "type": "object"
-    },
-    "statusDefOverride": {
-     "type": "object"
-    },
-    "domainDefOverride": {
-     "type": "object"
-    },
-    "costOverride": {
-     "type": "object"
-    }
-   }
-  },
-  "frameworkFlag": {
-   "type": "object",
-   "required": [
-    "code",
-    "note",
-    "landed"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "code": {
-     "type": "string",
-     "description": "缺口代号，如 GAUGE_RATE_AS_STAT。"
-    },
-    "note": {
-     "type": "string",
-     "description": "缺口说明与待办。"
-    },
-    "landed": {
-     "type": "boolean",
-     "description": "是否已落入 DDD 内核。false = 仍欠账。"
-    }
-   }
-  },
-  "countValue": {
-   "description": "数量：数值为主；字符串用于 all / 动态引用；对象用于 {valueFrom, filter, cap} 形式的运行期计算。",
-   "oneOf": [
-    {
-     "type": "number"
-    },
-    {
-     "type": "string"
-    },
-    {
-     "type": "object"
-    },
-    {
-     "type": "null"
-    }
-   ]
-  },
-  "scalar": {
-   "description": "标量取值：数值为主；字符串用于动态引用（如 statusStacks:<id>、$var）或占位描述；布尔/null 为个别遗留写法。",
-   "oneOf": [
-    {
-     "type": "number"
-    },
-    {
-     "type": "string"
-    },
-    {
-     "type": "boolean"
-    },
-    {
-     "type": "null"
-    }
-   ]
-  },
-  "effectTarget": {
-   "type": "string",
-   "description": "效果级目标锚点（相对卡面 target 的二次寻址）。新增取值须先在共享内核参数登记。 board = 战场级锚点（2026-10-01 量表批）：承载 board 量表写入（modify_resource 的 secrecy/order/fate_value）。",
-   "enum": [
-    "self",
-    "caster",
-    "target",
-    "primary_target",
-    "same_target",
-    "secondary_target",
-    "attacker",
-    "holder",
-    "status_holder",
-    "killed_unit",
-    "all_allies",
-    "allies_except_self",
-    "all_enemies",
-    "all_other_enemies",
-    "all_units",
-    "all",
-    "adjacent_enemy",
-    "enemy",
-    "occupant_ally",
-    "occupant_enemy",
-    "splash_adjacent",
-    "splash_behind",
-    "one_own_snare_trap",
-    "board"
-   ]
-  },
-  "sortKey": {
-   "type": "string",
-   "description": "目标排序键。取值域见 ddd/params/共享内核参数.md（该处于 2026-09-14 已登记 atk_asc，schema 于 2026-09-16 同步）。",
-   "enum": [
-    "none",
-    "hp_asc",
-    "hp_desc",
-    "atk_asc",
-    "atk_desc",
-    "index_asc",
-    "index_desc",
-    "energy_desc",
-    "armor_desc",
-    "buff_count_desc",
-    "debuff_count_desc",
-    "gauge_asc",
-    "gauge_desc",
-    "stat_max_desc"
-   ]
-  },
-  "element": {
-   "type": "string",
-   "pattern": "^(fire|ice|poison|lightning|mental|physical|holy|dark|none|\\$[A-Za-z.]+)$",
-   "description": "元素；$ 前缀表示运行期变量引用（如 $recorded.element）。"
-  },
-  "actionLock": {
-   "type": "string",
-   "description": "行为封锁类型（statusDef.disallowActions 的取值枚举）。",
-   "enum": [
-    "move",
-    "basic_attack",
-    "skill",
-    "skip",
-    "react",
-    "channel"
-   ]
-  },
-  "statusCategory": {
-   "type": "string",
-   "enum": [
-    "buff",
-    "debuff",
-    "control",
-    "reactive",
-    "aura",
-    "stance",
-    "fear",
-    "retarget",
-    "link",
-    "contract",
-    "conceal",
-    "seal"
-   ]
-  },
-  "triggerEvent": {
-   "type": "string",
-   "description": "触发点封闭集（13 个）。⚠️ on_status_gain 为未登记项，使用时必须同时登记 frameworkFlags。",
-   "enum": [
-    "on_apply",
-    "on_remove",
-    "on_tick",
-    "on_turn_start",
-    "on_battle_start",
-    "on_spawn",
-    "on_death",
-    "on_kill",
-    "on_attack",
-    "on_take_damage",
-    "on_deal_damage",
-    "on_active_skill",
-    "on_status_gain",
-    "on_phase_change"
-   ]
-  },
-  "effWriteRuleSlot": {
-   "type": "object",
-   "description": "写入规则槽：把一条规则写进战场级 Rules[3] 的指定槽位（与 transfer_status 同族，见 效果上下文 §2.1）。",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "write_rule_slot"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "slot": {
-     "type": "integer",
-     "minimum": 0,
-     "maximum": 2,
-     "description": "规则槽下标（Rules[3]，0–2）。"
-    },
-    "field": {
-     "type": "string",
-     "enum": [
-      "trigger",
-      "punish",
-      "exemptions",
-      "scope"
-     ],
-     "description": "规则槽字段枚举校验（防非法字段写入），见 lawyer PENDING / 效果上下文 §2.1。"
-    },
-    "value": {
-     "description": "写入的规则内容（结构按 field 语义：trigger=触发条件 / punish=惩罚载荷 / exemptions=豁免名单 / scope=作用范围）。"
-    },
-    "overwrite": {
-     "type": "boolean",
-     "description": "是否覆盖该槽既有规则（默认 true）。"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effModifyRuleSlot": {
-   "type": "object",
-   "description": "修改规则槽：改写/追加战场级 Rules[3] 指定槽位的既有规则（服务于僭越轴改规类卡）。",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "modify_rule_slot"
-    },
-    "target": {
-     "$ref": "#/$defs/effectTarget"
-    },
-    "slot": {
-     "type": "integer",
-     "minimum": 0,
-     "maximum": 2,
-     "description": "规则槽下标（Rules[3]，0–2）。"
-    },
-    "field": {
-     "type": "string",
-     "enum": [
-      "trigger",
-      "punish",
-      "exemptions",
-      "scope"
-     ],
-     "description": "规则槽字段枚举校验（防非法字段写入），见 lawyer PENDING / 效果上下文 §2.1。"
-    },
-    "value": {
-     "description": "改写的规则内容或增量。"
-    },
-    "mode": {
-     "type": "string",
-     "enum": [
-      "replace",
-      "append",
-      "remove"
-     ],
-     "description": "改写模式，默认 replace。"
-    },
-    "filter": {
-     "$ref": "#/$defs/unitFilter",
-     "description": "可选：仅作用于符合过滤的阵营/单位。"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effAdvanceClock": {
-   "type": "object",
-   "description": "战场时钟推进：board.clock += N（mod 72）。触发 on_phase_change。时钟只进不退——不提供回拨算子，「回到过去」走已有的 保存/重启/命运循环（快照回滚，原著水银之蛇「非逆转时光」）。见 docs/ddd/params/战场参数.md §1.3",
-   "required": [
-    "type"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "advance_clock"
-    },
-    "ticks": {
-     "type": "integer",
-     "minimum": 1,
-     "maximum": 72,
-     "description": "推进的 tick 数（1 tick = 20 分钟，一天 72 tick）；超过 72 按环绕处理。"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "effSetLuminance": {
-   "type": "object",
-   "description": "光照度覆写：写入战场级覆写层 board.lumOverride，压栈顶、到期回落由 clock 派生的值。触发 on_phase_change。服务权柄卡「黑夜降临」「白昼」等昼夜覆盖类。见 docs/ddd/params/战场参数.md §1.3",
-   "required": [
-    "type",
-    "value"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "type": {
-     "const": "set_luminance"
-    },
-    "value": {
-     "type": "integer",
-     "minimum": 0,
-     "maximum": 10,
-     "description": "目标光照度：0 = 深夜无光，10 = 正午满光。官方档位 ≤2 暗夜 / 3–7 晨昏 / ≥8 白昼。"
-    },
-    "duration": {
-     "type": "integer",
-     "minimum": -1,
-     "description": "覆写持续 tick 数；-1 = 常驻（随界域或整场），省略则由承载方决定。"
-    },
-    "dispelable": {
-     "type": "boolean",
-     "description": "覆写层可否被驱散，默认 false（权柄类覆写不可驱散）。"
-    },
-    "note": {
-     "type": "string"
-    }
-   }
-  },
-  "phaseHook": {
-   "type": "object",
-   "description": "卡面对战场相位的乘区挂钩：当 board.phase 属于 phases 之一时，本卡相关结算乘区乘 mul。**相位是枚举，无法用连续量 dimHook 表达**（黎明 1–7 与黄昏 6→1 的光照度区间几乎完全重叠，dimHook 区分不了），故单列本结构。见 docs/ddd/params/战场参数.md §1.3b。",
-   "required": [
-    "phases",
-    "mul"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "phases": {
-     "type": "array",
-     "minItems": 1,
-     "items": {
+    "statusCategory": {
       "type": "string",
       "enum": [
-       "midnight",
-       "dawn",
-       "day",
-       "dusk",
-       "night"
+        "buff",
+        "debuff",
+        "control",
+        "reactive",
+        "aura",
+        "stance",
+        "fear",
+        "retarget",
+        "link",
+        "contract",
+        "conceal",
+        "seal"
       ]
-     },
-     "description": "生效相位集合；月夜 = [night, midnight] + 月相条件。"
     },
-    "mul": {
-     "type": "number",
-     "exclusiveMinimum": 0,
-     "description": "乘区系数（⚠️D 平衡占位）；单卡建议 0.8–1.5，超限需 note 说明。"
+    "triggerEvent": {
+      "type": "string",
+      "description": "触发点封闭集（13 个）。⚠️ on_status_gain 为未登记项，使用时必须同时登记 frameworkFlags。",
+      "enum": [
+        "on_apply",
+        "on_remove",
+        "on_tick",
+        "on_turn_start",
+        "on_battle_start",
+        "on_spawn",
+        "on_death",
+        "on_kill",
+        "on_attack",
+        "on_take_damage",
+        "on_deal_damage",
+        "on_active_skill",
+        "on_status_gain",
+        "on_phase_change"
+      ]
     },
-    "target": {
-     "type": "string",
-     "enum": [
-      "damage",
-      "damage_taken",
-      "heal",
-      "resource",
-      "rule_strength",
-      "all"
-     ],
-     "description": "乘区作用目标；默认 damage。"
+    "effWriteRuleSlot": {
+      "type": "object",
+      "description": "写入规则槽：把一条规则写进战场级 Rules[3] 的指定槽位（与 transfer_status 同族，见 效果上下文 §2.1）。",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "write_rule_slot"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "slot": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2,
+          "description": "规则槽下标（Rules[3]，0–2）。"
+        },
+        "field": {
+          "type": "string",
+          "enum": [
+            "trigger",
+            "punish",
+            "exemptions",
+            "scope"
+          ],
+          "description": "规则槽字段枚举校验（防非法字段写入），见 lawyer PENDING / 效果上下文 §2.1。"
+        },
+        "value": {
+          "description": "写入的规则内容（结构按 field 语义：trigger=触发条件 / punish=惩罚载荷 / exemptions=豁免名单 / scope=作用范围）。"
+        },
+        "overwrite": {
+          "type": "boolean",
+          "description": "是否覆盖该槽既有规则（默认 true）。"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
     },
-    "filterTags": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     },
-     "description": "仅当本卡带这些 tag 之一才生效。"
+    "effModifyRuleSlot": {
+      "type": "object",
+      "description": "修改规则槽：改写/追加战场级 Rules[3] 指定槽位的既有规则（服务于僭越轴改规类卡）。",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "modify_rule_slot"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "slot": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2,
+          "description": "规则槽下标（Rules[3]，0–2）。"
+        },
+        "field": {
+          "type": "string",
+          "enum": [
+            "trigger",
+            "punish",
+            "exemptions",
+            "scope"
+          ],
+          "description": "规则槽字段枚举校验（防非法字段写入），见 lawyer PENDING / 效果上下文 §2.1。"
+        },
+        "value": {
+          "description": "改写的规则内容或增量。"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "replace",
+            "append",
+            "remove"
+          ],
+          "description": "改写模式，默认 replace。"
+        },
+        "filter": {
+          "$ref": "#/$defs/unitFilter",
+          "description": "可选：仅作用于符合过滤的阵营/单位。"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
     },
-    "note": {
-     "type": "string",
-     "description": "乘区来源/口径说明。"
+    "effAdvanceClock": {
+      "type": "object",
+      "description": "战场时钟推进：board.clock += N（mod 72）。触发 on_phase_change。时钟只进不退——不提供回拨算子，「回到过去」走已有的 保存/重启/命运循环（快照回滚，原著水银之蛇「非逆转时光」）。见 docs/ddd/params/战场参数.md §1.3",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "advance_clock"
+        },
+        "ticks": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 72,
+          "description": "推进的 tick 数（1 tick = 20 分钟，一天 72 tick）；超过 72 按环绕处理。"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effSetLuminance": {
+      "type": "object",
+      "description": "光照度覆写：写入战场级覆写层 board.lumOverride，压栈顶、到期回落由 clock 派生的值。触发 on_phase_change。服务权柄卡「黑夜降临」「白昼」等昼夜覆盖类。见 docs/ddd/params/战场参数.md §1.3",
+      "required": [
+        "type",
+        "value"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "set_luminance"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "目标光照度：0 = 深夜无光，10 = 正午满光。官方档位 ≤2 暗夜 / 3–7 晨昏 / ≥8 白昼。"
+        },
+        "duration": {
+          "type": "integer",
+          "minimum": -1,
+          "description": "覆写持续 tick 数；-1 = 常驻（随界域或整场），省略则由承载方决定。"
+        },
+        "dispelable": {
+          "type": "boolean",
+          "description": "覆写层可否被驱散，默认 false（权柄类覆写不可驱散）。"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "phaseHook": {
+      "type": "object",
+      "description": "卡面对战场相位的乘区挂钩：当 board.phase 属于 phases 之一时，本卡相关结算乘区乘 mul。**相位是枚举，无法用连续量 dimHook 表达**（黎明 1–7 与黄昏 6→1 的光照度区间几乎完全重叠，dimHook 区分不了），故单列本结构。见 docs/ddd/params/战场参数.md §1.3b。",
+      "required": [
+        "phases",
+        "mul"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "phases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "midnight",
+              "dawn",
+              "day",
+              "dusk",
+              "night"
+            ]
+          },
+          "description": "生效相位集合；月夜 = [night, midnight] + 月相条件。"
+        },
+        "mul": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "乘区系数（⚠️D 平衡占位）；单卡建议 0.8–1.5，超限需 note 说明。"
+        },
+        "target": {
+          "type": "string",
+          "enum": [
+            "damage",
+            "damage_taken",
+            "heal",
+            "resource",
+            "rule_strength",
+            "all"
+          ],
+          "description": "乘区作用目标；默认 damage。"
+        },
+        "filterTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "仅当本卡带这些 tag 之一才生效。"
+        },
+        "note": {
+          "type": "string",
+          "description": "乘区来源/口径说明。"
+        }
+      }
     }
-   }
   }
- }
 }
