@@ -18,7 +18,7 @@
       "payoffs": [
         "草药敷贴"
       ],
-      "note": "2026-09-29 环节⑤：药剂调配/草药敷贴补 prepared_draught 产层段（产层 5→20），草药敷贴补读层段（payoff 从真空落地，比照 moon 轴层数经济）"
+      "note": "2026-09-29 环节⑤：药剂调配/草药敷贴补 prepared_draught 产层段（产层 5→20），草药敷贴补读层段（payoff 从真空落地，比照 moon 轴层数经济） ｜ 2026-10-02 批次十一：隐身药剂预服兑现结构化（当场半数 vs 预服全效——红线卡面化）"
     },
     "beasts": {
       "symbol": "🐾",
@@ -46,7 +46,7 @@
       "payoffs": [
         "腐蚀之爪"
       ],
-      "note": "2026-09-29 环节⑤：黑暗之翼补 crimson_vitality 产层段（产层 20）；腐蚀之爪补 crimson_vitality 读层段（payoff 从真空落地，比照 moon 轴）"
+      "note": "2026-09-29 环节⑤：黑暗之翼补 crimson_vitality 产层段（产层 20）；腐蚀之爪补 crimson_vitality 读层段（payoff 从真空落地，比照 moon 轴） ｜ 2026-10-02 批次十一：腐蚀之爪 moon_cycle 跨轴读段；黑暗之翼 nightfall 跨系读段"
     },
     "moon": {
       "symbol": "🌙",
@@ -484,7 +484,7 @@
       "flagship": false,
       "lore": "序列7 吸血鬼 —— \"『腐蚀之爪』\"",
       "flavor": "你的指甲暴长成漆黑的利爪，撕开的不只是皮肉 —— 连同它身上的护甲一并锈成了渣。",
-      "describe": "对一名近战敌人造成 4 点毒素伤害，并使其护甲 -2（15tick）；若自身深红活力 ≥1 层，血族之爪追加 2 点毒素伤害。",
+      "describe": "对一名近战敌人造成 4 点毒素伤害，并使其护甲 -2（15tick）；若自身深红活力 ≥1 层，血族之爪追加 2 点毒素伤害。；若自身月相在场（moon_cycle），月相毒爪，毒素伤害 +1。",
       "cost": {
         "energy": 3,
         "cooldown": 10,
@@ -530,10 +530,30 @@
             }
           ],
           "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "moon_cycle",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 1,
+              "target": "target",
+              "note": "月相毒爪：月相流转加持血族之爪，毒素伤害 +1——crimson 读 moon 跨轴段（批次十一 2026-10-02）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：月相轴 payoff：读血月放大腐蚀/drain。本途径唯一破甲。",
+      "conversionNotes": "翻译/语义：月相轴 payoff：读血月放大腐蚀/drain。本途径唯一破甲。 ｜ 2026-10-02 批次十一：moon_cycle 跨轴读段（月相毒爪——血族×月相两轴耦合）",
       "art": {
         "subject": "a blackened claw raking through armor that crumbles to rust",
         "elements": [
@@ -605,7 +625,7 @@
       "flagship": false,
       "lore": "序列7 吸血鬼 —— \"『黑暗之翼』\"",
       "flavor": "你背后张开一双由黑暗凝成的巨翼，托着你掠回阵地深处 —— 而留在原地的只有几片融进夜色的羽毛。",
-      "describe": "退回己方半场最后位，并获得黑暗之翼 15tick：受伤 ×0.85、行动条速率 +6；深红活力 +1 层。",
+      "describe": "退回己方半场最后位，并获得黑暗之翼 15tick：受伤 ×0.85、行动条速率 +6；深红活力 +1 层。；若自身带有夜幕（nightfall），夜幕同盟，行动条 +10。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -644,6 +664,27 @@
               "duration": null,
               "target": "self",
               "note": "血族之翼焕活深红活力 +1 层（环节⑤ 2026-09-29 补产层段）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "nightfall",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 10,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "夜幕同盟：自身带夜幕（nightfall 枢纽）则夜翼借夜色更沉，行动条 +10——读不眠者枢纽（批次十一 2026-10-02）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -656,7 +697,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：脱离前排+减伤+机动。",
+      "conversionNotes": "翻译/语义：脱离前排+减伤+机动。 ｜ 2026-10-02 批次十一：nightfall 跨系读段（夜幕同盟——血族×暗夜枢纽，participants 既有 apothecary）",
       "phaseHooks": [
         {
           "phases": [
@@ -752,7 +793,7 @@
       "flagship": false,
       "lore": "序列6 魔药教授 —— \"调配超凡药剂和香水（隐身药剂、无味香水等）\"",
       "flavor": "你摔碎那瓶银灰色的药剂，雾气散开时，你已经不在原地了。",
-      "describe": "自身隐身 10tick：不可被单体技能选中（攻击或受击后现身）。",
+      "describe": "自身隐身 10tick：不可被单体技能选中（攻击或受击后现身）——当场服用只发挥半数；若自身带有预服药水，耗 1 层兑现全效：隐身 20tick。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -771,11 +812,40 @@
           "type": "mount_status",
           "statusId": "stealth",
           "duration": 10,
-          "target": "self"
+          "target": "self",
+          "note": "当场摔瓶只发挥半数：隐身 10tick（⚠️D 半效档）——药剂必须预服/延迟的身份红线的卡面化（批次十一 2026-10-02）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "prepared_draught",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "prepared_draught",
+              "stacks": 1,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "耗 1 层预服药水兑现全效"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "stealth",
+              "duration": 20,
+              "target": "self",
+              "note": "预服全效：战前调服的药剂发挥完全隐身 20tick——预服延迟兑现结构化（红线：当场喝半数以下，批次十一 2026-10-02，⚠️D 待平衡）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：产 `药剂`+潜行。C8 候选池过滤。",
+      "conversionNotes": "翻译/语义：产 `药剂`+潜行。C8 候选池过滤。 ｜ 2026-10-02 批次十一：预服延迟兑现结构化——当场 10tick（半数）vs 耗预服层 20tick（全效），身份红线「当场喝只能发挥半数以下」卡面化",
       "art": {
         "subject": "a shattered silver vial dissolving its drinker into mist",
         "elements": [
