@@ -76,7 +76,7 @@
       "flagship": false,
       "lore": "序列9 阅读者 —— \"记忆力、理解力提升\"",
       "flavor": "你读过的每一页都还在脑子里——开战的第一秒，你就已经想起了该怎么打。",
-      "describe": "战斗开始时，自身能量 +5、能量上限 +5，持续整场。",
+      "describe": "战斗开始时，自身能量 +5、能量上限 +5，持续整场；并封存自身全状态记忆快照（过目不忘）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -93,13 +93,24 @@
           "mode": "delta",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "snapshot",
+          "fields": [
+            "hp",
+            "pools",
+            "statuses",
+            "gauge"
+          ],
+          "target": "self",
+          "note": "过目不忘正主承载：开战封存自身全状态记忆——知识轴快照族数据源（与解析还原的 lastDamageSnapshot 同族）"
         }
       ],
       "sharedAcross": [
         "pryer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：记忆力 → 开局即时资源；同时给知识轴挂起手层数。沿用 v0.1 量级 。",
+      "conversionNotes": "翻译/语义：记忆力 → 开局即时资源；同时给知识轴挂起手层数。沿用 v0.1 量级 。 ｜ 2026-10-02 差异化风格迭代（阅读者=全知模仿正主）：升格 snapshot(self)『记忆存档』——snapshot 键第二卡落地",
       "art": {
         "subject": "a scholar with glowing pages of memorized books swirling inside his open mind",
         "elements": [
@@ -1802,13 +1813,21 @@
           "statusId": "omniscience_mark",
           "duration": null,
           "target": "all_enemies"
+        },
+        {
+          "type": "reveal",
+          "target": "all_enemies",
+          "scope": "to_source",
+          "dispel": false,
+          "pierceTargetability": true,
+          "note": "全知刻印正主承载：隐匿/不可选中单位仅对你显形——reveal 只显形不附加（dispel:false 不驱散隐匿状态，途径红线），整场由刻印状态计时"
         }
       ],
       "sharedAcross": [
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：解析轴终极形态：现在/过去/未来三用途合一。依赖新增项 3/10/14。",
+      "conversionNotes": "翻译/语义：解析轴终极形态：现在/过去/未来三用途合一。依赖新增项 3/10/14。 ｜ 2026-10-02 差异化风格迭代（阅读者=全知模仿正主）：升格 reveal(to_source, pierceTargetability)『全知刻印』——全知权柄『看』的机制正主第一卡",
       "art": {
         "subject": "an all-seeing eye marking every enemy with a glowing sigil of total knowledge",
         "elements": [
@@ -2083,6 +2102,23 @@
       "hook": "on_battle_start",
       "effects": [
         {
+          "type": "reveal",
+          "target": "all_enemies",
+          "scope": "to_source",
+          "dispel": false,
+          "pierceTargetability": true,
+          "note": "白塔全知正主承载：全体敌人对你无所遁形（显形而不驱散）"
+        },
+        {
+          "type": "snapshot",
+          "fields": [
+            "stats",
+            "statuses"
+          ],
+          "target": "all_enemies",
+          "note": "全知建档：开战即封存敌方全体属性/状态解析快照——知识轴『解析』的数据源，供重放族（解析还原等）消费"
+        },
+        {
           "type": "mount_status",
           "statusId": "omniscience",
           "duration": null,
@@ -2090,7 +2126,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：全知=免观察前置。依赖新增项 2/17。",
+      "conversionNotes": "翻译/语义：全知=免观察前置。依赖新增项 2/17。 ｜ 2026-10-02 差异化风格迭代（阅读者=全知模仿正主）：升格 reveal(to_source)+snapshot(all_enemies)『全知建档』——序列0 权柄卡：看（reveal）与记（snapshot）双正主归位",
       "art": {
         "subject": "a white tower summit where all knowledge of past present future streams as one",
         "elements": [
