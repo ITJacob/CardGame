@@ -12,8 +12,8 @@
 | assassin | monster | 0.045 | 0.101 |
 | sleepless | spectator | 0.017 | 0.108 |
 | corpse_collector | spectator | 0.039 | 0.114 |
+| criminal | lawyer | 0.063 | 0.115 |
 | thief | spectator | 0.046 | 0.115 |
-| criminal | lawyer | 0.063 | 0.116 |
 | spectator | sleepless | 0.017 | 0.117 |
 | hunter | assassin | 0.046 | 0.120 |
 | monster | assassin | 0.045 | 0.122 |
@@ -39,8 +39,8 @@
 | **assassin** | 0.08 | 0.07 | 0.15 | 0.00 | 0.24 | 0.08 | 0.08 | 0.05 | 0.05 | 0.04 | 0.07 | 0.08 | 0.10 | 0.13 | 0.16 | 0.22 | 0.10 | 0.09 | 0.10 | 0.04 | 0.10 | 0.08 |
 | **chanter** | 0.30 | 0.31 | 0.31 | 0.24 | 0.00 | 0.27 | 0.27 | 0.26 | 0.27 | 0.27 | 0.27 | 0.27 | 0.27 | 0.30 | 0.33 | 0.39 | 0.29 | 0.26 | 0.29 | 0.27 | 0.30 | 0.22 |
 | **corpse_collector** | 0.09 | 0.16 | 0.11 | 0.08 | 0.27 | 0.00 | 0.11 | 0.11 | 0.10 | 0.10 | 0.08 | 0.08 | 0.12 | 0.08 | 0.23 | 0.21 | 0.13 | 0.04 | 0.04 | 0.05 | 0.07 | 0.14 |
-| **criminal** | 0.12 | 0.10 | 0.13 | 0.08 | 0.27 | 0.11 | 0.00 | 0.07 | 0.06 | 0.10 | 0.15 | 0.07 | 0.10 | 0.08 | 0.15 | 0.20 | 0.14 | 0.07 | 0.09 | 0.07 | 0.10 | 0.14 |
-| **hunter** | 0.11 | 0.12 | 0.18 | 0.05 | 0.26 | 0.11 | 0.07 | 0.00 | 0.07 | 0.10 | 0.09 | 0.09 | 0.09 | 0.15 | 0.17 | 0.22 | 0.14 | 0.11 | 0.14 | 0.08 | 0.12 | 0.06 |
+| **criminal** | 0.12 | 0.10 | 0.13 | 0.08 | 0.27 | 0.11 | 0.00 | 0.08 | 0.06 | 0.10 | 0.15 | 0.07 | 0.10 | 0.08 | 0.15 | 0.20 | 0.14 | 0.07 | 0.09 | 0.07 | 0.10 | 0.14 |
+| **hunter** | 0.11 | 0.12 | 0.18 | 0.05 | 0.26 | 0.11 | 0.08 | 0.00 | 0.07 | 0.10 | 0.09 | 0.09 | 0.09 | 0.15 | 0.17 | 0.22 | 0.14 | 0.11 | 0.14 | 0.08 | 0.12 | 0.06 |
 | **lawyer** | 0.13 | 0.05 | 0.08 | 0.05 | 0.27 | 0.10 | 0.06 | 0.07 | 0.00 | 0.05 | 0.14 | 0.05 | 0.06 | 0.07 | 0.11 | 0.18 | 0.10 | 0.07 | 0.08 | 0.05 | 0.08 | 0.09 |
 | **monster** | 0.12 | 0.08 | 0.16 | 0.04 | 0.27 | 0.10 | 0.10 | 0.10 | 0.05 | 0.00 | 0.14 | 0.12 | 0.15 | 0.12 | 0.21 | 0.23 | 0.08 | 0.09 | 0.08 | 0.05 | 0.11 | 0.16 |
 | **planter** | 0.04 | 0.17 | 0.22 | 0.07 | 0.27 | 0.08 | 0.15 | 0.09 | 0.14 | 0.14 | 0.00 | 0.11 | 0.14 | 0.21 | 0.23 | 0.21 | 0.14 | 0.15 | 0.15 | 0.08 | 0.15 | 0.10 |
@@ -73,13 +73,13 @@
 | planter | prim:mount_status ×26；prim:spawn ×8；prim:damage ×7；prim:heal ×7；elem:none ×7 |
 | prisoner | prim:mount_status ×23；prim:damage ×12；prim:modify_stat ×9；stat:attack ×6；elem:physical ×5 |
 | pryer | prim:mount_status ×26；prim:damage ×18；elem:none ×9；prim:modify_resource ×8；elem:physical ×7 |
-| reader | prim:mount_status ×22；prim:damage ×12；elem:mental ×12；prim:modify_stat ×7；prim:modify_resource ×7 |
+| reader | prim:mount_status ×22；prim:damage ×12；elem:mental ×12；prim:modify_resource ×7；prim:modify_stat ×7 |
 | sailor | prim:mount_status ×29；prim:damage ×24；elem:physical ×16；elem:lightning ×12；prim:move ×6 |
 | savant | prim:mount_status ×15；prim:modify_resource ×12；prim:modify_stat ×11；prim:damage ×7；prim:spawn ×5 |
 | seer | prim:mount_status ×19；prim:modify_resource ×10；prim:damage ×5；prim:modify_stat ×4；prim:heal ×4 |
 | sleepless | prim:mount_status ×28；prim:damage ×12；elem:mental ×12；prim:modify_stat ×6；stat:attack ×5 |
 | spectator | prim:mount_status ×25；elem:mental ×12；prim:damage ×7；prim:modify_stat ×6；prim:modify_resource ×4 |
-| supplicant | prim:mount_status ×26；prim:damage ×7；prim:modify_stat ×5；prim:modify_resource ×5；elem:mental ×5 |
+| supplicant | prim:mount_status ×26；prim:damage ×7；prim:modify_resource ×5；prim:modify_stat ×5；elem:mental ×5 |
 | thief | prim:mount_status ×24；elem:mental ×9；prim:damage ×8；prim:modify_stat ×8；prim:modify_resource ×6 |
 | warrior | prim:mount_status ×24；prim:damage ×13；elem:none ×12；prim:modify_resource ×6；elem:physical ×5 |
 
@@ -93,7 +93,7 @@
 | assassin | prim:translocate ×2；elem:ice ×3；elem:dark ×1（发芽） |
 | chanter | prim:grant_immunity ×2；prim:write_rule_slot ×2；trig:on_phase_change ×2 |
 | corpse_collector | flag:filter.unitType ×1（发芽）；trig:on_kill ×0（空白）；prim:drain ×0（空白） |
-| criminal | res:lust ×5；elem:dark ×4；flag:companionBuff ×1（发芽） |
+| criminal | res:lust ×5；elem:dark ×4；flag:companionBuff ×2 |
 | hunter | prim:target_override ×2；flag:gender_is ×1（发芽）；sref:massing ×1（发芽） |
 | lawyer | prim:gauge_shuffle ×2；prim:status_shuffle ×2；prim:modify_rule_slot ×2 |
 | monster | prim:restore_snapshot ×1（发芽）；prim:advance_clock ×2；res:fate_value ×5 |

@@ -32,7 +32,7 @@
       "payoffs": [
         "荒芜侵蚀·改"
       ],
-      "note": "payoffs 2026-09-26 评审：filth 罪犯侧纯施加，消纳 payoff 在途径外（耕种者秽土净化等 crossPathway 读取方） ｜ 2026-09-29 环节⑤：污秽之语补 filth 产层段（产层 12→20；其三选一 AST 缺死/堕落分支，缺口登记遗留）；荒芜侵蚀·改补 filth 读层段（payoff 升 landed）"
+      "note": "payoffs 2026-09-26 评审：filth 罪犯侧纯施加，消纳 payoff 在途径外（耕种者秽土净化等 crossPathway 读取方） ｜ 2026-09-29 环节⑤：污秽之语补 filth 产层段（产层 12→20；其三选一 AST 缺死/堕落分支，缺口登记遗留）；荒芜侵蚀·改补 filth 读层段（payoff 升 landed） ｜ 2026-10-02 批次八：污秽连锁连击体系（污秽之语/呓语/侵蚀者挂污秽 tag，侵蚀者 tag_chain≥2 读层 payoff——矩阵连击行罪犯正主产读链）"
     },
     "elements": {
       "symbol": "🌋",
@@ -60,7 +60,7 @@
       "payoffs": [
         "深渊召唤"
       ],
-      "note": "2026-09-29 环节⑤：恶魔化补 rite_mark 产层段（产层 12→20）；深渊召唤读 sulfur_toxin 跨轴（demon→elements） ｜ 2026-09-29 环节⑤二轮：深渊召唤读 filth 跨轴（demon→filth，payoff 补读层方式）"
+      "note": "2026-09-29 环节⑤：恶魔化补 rite_mark 产层段（产层 12→20）；深渊召唤读 sulfur_toxin 跨轴（demon→elements） ｜ 2026-09-29 环节⑤二轮：深渊召唤读 filth 跨轴（demon→filth，payoff 补读层方式） ｜ 2026-10-02 批次八：刻印链第二承载——鲜血主宰血祭刻印（companionBuff 1→2 实证，F54 仪式刻印→恶魔加成链成环）"
     }
   },
   "cards": [
@@ -1140,7 +1140,10 @@
           "black speech glyphs"
         ],
         "mood": "corrupting, blasphemous"
-      }
+      },
+      "tags": [
+        "污秽"
+      ]
     },
     {
       "id": "skill_criminal_s5_desire_control",
@@ -1814,7 +1817,10 @@
           "torn throat scar"
         ],
         "mood": "maddening, infectious"
-      }
+      },
+      "tags": [
+        "污秽"
+      ]
     },
     {
       "id": "skill_criminal_s3_pollution_authority",
@@ -1920,7 +1926,7 @@
       "flagship": false,
       "lore": "序列2 鲜血大公 —— \"『鲜血主宰』：掌握自身和他人鲜血体液\"",
       "flavor": "你伸手一握，它血管里的东西就听你的了。造成 7 点伤害并汲取其中 5 点化为自身生命；而它的伤口不会合拢——3 个 tick 内持续失血，且任何治疗都只能起一半作用。",
-      "describe": "对一名近战敌人造成 7 点伤害并汲取 5 点化为自身生命；使其失血 15tick：每 tick 流失 1 点生命，受到的治疗减半。",
+      "describe": "对一名近战敌人造成 7 点伤害并汲取 5 点化为自身生命；使其失血 15tick：每 tick 流失 1 点生命，受到的治疗减半。自身有仪式刻印时消耗 1 层：本次多回 2 点生命，溢出部分转哺恶魔投影（无投影则仅自疗）。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1947,13 +1953,40 @@
           "type": "mount_status",
           "statusId": "hemorrhage",
           "duration": 15
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "rite_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "rite_mark",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "血祭刻印：消耗 1 层仪式刻印"
+            },
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "self",
+              "note": "汲取 +2；回复溢出部分转哺恶魔投影（companionBuff：仪式刻印→恶魔加成链第二承载——F54 链上新增一环，场上无恶魔投影则仅自疗 +2，⚠️D 待平衡）"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
         "prisoner"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：恶魔轴续航（吸血+失血）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：恶魔轴续航（吸血+失血）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次八（罪犯：污秽连锁+刻印链第二承载）",
       "art": {
         "subject": "a blood-red armored count clenching a fist as crimson streams obey",
         "elements": [
@@ -2223,7 +2256,7 @@
       "flagship": true,
       "lore": "序列1 污秽君王 —— \"『侵蚀者』：再坚固的壁垒持续腐蚀也会穿透\"",
       "flavor": "你把手贴在那面墙上。5 个 tick 内，它每时每刻都被腐蚀掉 3 点生命——这腐蚀无视它的一切护甲、护盾与抗性；而那面墙本身，也在一点点变薄（护甲 -2）。",
-      "describe": "使一名敌人被侵蚀 25tick：每 tick 受到 3 点无视护甲、护盾与抗性的毒素伤害，护甲 -2（25tick）。可被驱散。",
+      "describe": "使一名敌人被侵蚀 25tick：每 tick 受到 3 点无视护甲、护盾与抗性的毒素伤害，护甲 -2（25tick）。可被驱散。上一张施放的技能同为污秽系（连锁≥2）时，额外叠加 1 层污秽。",
       "cost": {
         "energy": 4,
         "cooldown": 30,
@@ -2249,10 +2282,30 @@
           "statusId": "filth",
           "duration": 25,
           "note": "ddd §九.2：侵蚀为 filth 三种施加来源之一（污秽记账，供耕种者秽土净化与怪物读取）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "tag_chain",
+            "tag": "污秽",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "filth",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": 25,
+              "note": "污秽连锁：连施污秽技≥2，侵蚀额外积 1 层污——连击正主读层 payoff（⚠️D 待平衡）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：污秽轴招牌攻坚（穿甲持续钻，可被驱散）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：污秽轴招牌攻坚（穿甲持续钻，可被驱散）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次八（罪犯：污秽连锁+刻印链第二承载）",
       "art": {
         "subject": "a withered hand pressed against a fortress wall crumbling to dust",
         "elements": [
@@ -2260,7 +2313,10 @@
           "falling mortar streams"
         ],
         "mood": "inexorable, patient"
-      }
+      },
+      "tags": [
+        "污秽"
+      ]
     },
     {
       "id": "skill_criminal_s1_abyss_fire",
