@@ -114,7 +114,7 @@
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"带来勇气、力量\"=攻防增益。祝福轴节奏起点。",
+      "conversionNotes": "翻译/语义：\"带来勇气、力量\"=攻防增益。祝福轴节奏起点。 ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff",
       "art": {
         "subject": "a chanter singing as golden notes flow into a companion's chest",
         "elements": [
@@ -123,7 +123,10 @@
           "glowing hymn scroll"
         ],
         "mood": "uplifting, warm"
-      }
+      },
+      "tags": [
+        "圣咏"
+      ]
     },
     {
       "id": "skill_chanter_s9_battle_hymn",
@@ -136,7 +139,7 @@
       "flagship": false,
       "lore": "序列9 歌颂者 —— \"消除恐惧……附带灵性恢复\"",
       "flavor": "一句高昂的赞歌驱散了同伴心头的寒意，也让他重新感到力量在身体里流淌。",
-      "describe": "驱散一名友军的 1 个控制或减益状态，并为其回复 2 点能量。",
+      "describe": "驱散一名友军的 1 个控制或减益状态，并为其回复 2 点能量。若上一张施放的技能同为圣咏（连唱≥2），目标额外回复 1 点能量。",
       "cost": {
         "energy": 1,
         "cooldown": 10,
@@ -173,6 +176,27 @@
               "value": 2,
               "mode": "delta",
               "target": "target"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "tag_chain",
+                "tag": "圣咏",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "target",
+                  "note": "圣咏连唱≥2：歌声不断，目标额外回能 +1（⚠️D 待平衡）"
+                }
+              ],
+              "else": [],
+              "note": "连击正主读层：tag_chain(圣咏)——同标签连施计数读取（执行参数 §2.3）"
             }
           ]
         }
@@ -182,7 +206,7 @@
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"消除恐惧\"=驱散 control/debuff；\"灵性恢复\"=能量。",
+      "conversionNotes": "翻译/语义：\"消除恐惧\"=驱散 control/debuff；\"灵性恢复\"=能量。 ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff",
       "art": {
         "subject": "a warrior straightening his back as a bright hymn rings out",
         "elements": [
@@ -190,7 +214,10 @@
           "steadied blade"
         ],
         "mood": "rousing, bright"
-      }
+      },
+      "tags": [
+        "圣咏"
+      ]
     },
     {
       "id": "skill_chanter_s9_spirit_recovery",
@@ -222,7 +249,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：本途径能量引擎。G15：修后闭环。",
+      "conversionNotes": "翻译/语义：本途径能量引擎。G15：修后闭环。 ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff",
       "art": {
         "subject": "a chanter breathing in light as holy radiance refills his spirit",
         "elements": [
@@ -231,7 +258,10 @@
           "renewed inner glow"
         ],
         "mood": "serene, renewing"
-      }
+      },
+      "tags": [
+        "圣咏"
+      ]
     },
     {
       "id": "skill_chanter_s8_daylight",
@@ -902,7 +932,7 @@
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：免疫恐惧=control免疫；体质=抗性。唯一常驻自保被动。依赖 G12。 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 grant_immunity(against:control)『无畏』——免疫正主第一卡",
+      "conversionNotes": "翻译/语义：免疫恐惧=control免疫；体质=抗性。唯一常驻自保被动。依赖 G12。 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 grant_immunity(against:control)『无畏』——免疫正主第一卡 ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff",
       "art": {
         "subject": "an unshaken chanter standing firm as shadows and plague recoil",
         "elements": [
@@ -910,7 +940,10 @@
           "steady stance"
         ],
         "mood": "fearless, steadfast"
-      }
+      },
+      "tags": [
+        "圣咏"
+      ]
     },
     {
       "id": "skill_chanter_s6_notarize",
@@ -2393,7 +2426,10 @@
         ],
         "mood": "soothing, devout"
       },
-      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。"
+      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff",
+      "tags": [
+        "圣咏"
+      ]
     },
     {
       "id": "skill_chanter_s6_valiant_hymn",
@@ -2451,7 +2487,10 @@
         ],
         "mood": "valiant, stirring"
       },
-      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。"
+      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff",
+      "tags": [
+        "圣咏"
+      ]
     },
     {
       "id": "skill_chanter_s5_endless_hymn",
@@ -2482,7 +2521,11 @@
           "endless hymn"
         ],
         "mood": "endless, mournful"
-      }
+      },
+      "tags": [
+        "圣咏"
+      ],
+      "conversionNotes": " ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff"
     },
     {
       "id": "skill_chanter_s4_purify_chant",
@@ -2538,7 +2581,10 @@
         ],
         "mood": "repelling, pure"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff",
+      "tags": [
+        "圣咏"
+      ]
     },
     {
       "id": "skill_chanter_s3_light_blessing",
@@ -2569,7 +2615,11 @@
           "recoiling shadows"
         ],
         "mood": "confident, blessed"
-      }
+      },
+      "tags": [
+        "圣咏"
+      ],
+      "conversionNotes": " ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff"
     },
     {
       "id": "skill_chanter_s2_finale_hymn",
@@ -2582,7 +2632,7 @@
       "flagship": false,
       "lore": "以终焉之歌颂尽敌孽。",
       "flavor": "此曲终了，汝命亦终。",
-      "describe": "造成 8 点圣光伤害，并驱散目标 1 个减益；若目标带有被放牧的灵魂（supplicant 枢纽），安魂超度追加 2 点圣光伤害。",
+      "describe": "造成 8 点圣光伤害，并驱散目标 1 个减益；若目标带有被放牧的灵魂（supplicant 枢纽），安魂超度追加 2 点圣光伤害。若圣咏连唱≥3，终章轰鸣追加 4 点圣光伤害。",
       "effects": [
         {
           "type": "damage",
@@ -2619,6 +2669,26 @@
             }
           ],
           "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "tag_chain",
+            "tag": "圣咏",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 4,
+              "target": "target",
+              "note": "圣咏连唱≥3：终章轰鸣，圣光伤害 +4（⚠️D 待平衡）"
+            }
+          ],
+          "else": [],
+          "note": "连击正主读层：tag_chain(圣咏)——同标签连施计数读取（执行参数 §2.3）"
         }
       ],
       "tentative": false,
@@ -2654,7 +2724,10 @@
         ],
         "mood": "final, transcendent"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→8（位格8 基准6×1.3）。条件/读层追加段不动。"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→8（位格8 基准6×1.3）。条件/读层追加段不动。 ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff",
+      "tags": [
+        "圣咏"
+      ]
     }
   ],
   "zoneDefs": [
