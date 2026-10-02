@@ -18,7 +18,7 @@
       "payoffs": [
         "镜中世界"
       ],
-      "note": "2026-09-29 环节⑤：魔镜占卜补 mirror_substitute 产层段（产层 12→20）；镜中世界读 mirror_substitute 升 landed（读层 4→9）"
+      "note": "2026-09-29 环节⑤：魔镜占卜补 mirror_substitute 产层段（产层 12→20）；镜中世界读 mirror_substitute 升 landed（读层 4→9） ｜ 2026-10-02 批次七：镜中拉入 translocate 原语化——镜中囚禁/镜中世界 detached 化（mirrored 状态退役），translocate 签名 0→2 实证；rank_gap 谓词第三实证"
     },
     "charm": {
       "symbol": "💋",
@@ -43,7 +43,7 @@
       "payoffs": [
         "末日"
       ],
-      "note": "2026-09-29 环节⑤：黑焰补 disease 产层段（产层 12→20）；末日读 disease 升 landed（读层 4→9）；末日挂 charm_axis/doom 自动成跨轴消费"
+      "note": "2026-09-29 环节⑤：黑焰补 disease 产层段（产层 12→20）；末日读 disease 升 landed（读层 4→9）；末日挂 charm_axis/doom 自动成跨轴消费 ｜ 2026-10-02 批次七：末日补 witch_form 跨轴读层、命运诅咒补 fate_value 跨系读层"
     },
     "form": {
       "symbol": "🎭",
@@ -1626,7 +1626,7 @@
       "flagship": false,
       "lore": "序列3 不老 —— \"可强制拉人/房屋/街道入镜中世界\"",
       "flavor": "你把它拽进镜子里。外面的人看不见它，它也碰不到外面的世界——等它跌出来的时候，这里已经打完了。",
-      "describe": "位格判定后把一名敌人拉入镜中世界 15tick：不可被选中、不能行动、免疫一切伤害、不参与行动排序；到期跌回原坐标。位格低于你必定成功且目标无察觉；位格不低于你时基础 40% 成功率（眩晕/冰冻/虚弱 +35%、狂乱/失控 +20%、Boss −20%）。迷失 +0.5。",
+      "describe": "位格判定后把一名敌人拉入镜中世界 15tick（translocate detached：不可选中、不能行动、免疫伤害、不参与行动排序，到期跌回原坐标）；位格低于你必定成功且目标无察觉，位格不低于你时基础 40% 成功率（眩晕/冰冻/虚弱 +35%、狂乱/失控 +20%、Boss −20%）。迷失 +0.5。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1656,10 +1656,10 @@
           },
           "then": [
             {
-              "type": "mount_status",
-              "statusId": "mirrored",
+              "type": "translocate",
+              "op": "pull_into",
               "duration": 15,
-              "note": "位格低于施法者：必定生效，且目标\"不会有任何察觉\"——不触发亡语、不触发反击、不触发敌方增益"
+              "note": "位格低于施法者：必定拉入镜中（detached：不持坐标/不进候选池/计时冻结，到期跌回原坐标），且目标「不会有任何察觉」——不触发亡语、不触发反击、不触发敌方增益。原语化：mirrored 状态模拟退役（批次七），与效果上下文 §三 detached 语义对齐"
             }
           ],
           "else": [
@@ -1675,9 +1675,15 @@
               },
               "then": [
                 {
-                  "type": "mount_status",
-                  "statusId": "mirrored",
-                  "duration": 15
+                  "type": "translocate",
+                  "op": "pull_into",
+                  "duration": 15,
+                  "condition": {
+                    "kind": "chance",
+                    "p": 0.4,
+                    "note": "基础 40%；眩晕/冰冻/虚弱 +35%、狂乱/失控 +20%、Boss −20%（⚠️D 状态修正待参数化）；R3 登记、单次抽样（R4）、非伤害维度（R5）"
+                  },
+                  "note": "目标位格 ≥ 施法者：40% 概率拉入镜中"
                 }
               ],
               "else": []
@@ -1698,7 +1704,8 @@
         "位格判定状态修正：目标处于 stun/freeze/weak 类 +35%、狂乱/失控类 +20%、Boss（位格 +2 以上）−20%，引擎侧待参数化，暂记文字",
         "持有【鹰的视力】者可继续攻击 mirrored 单位（本稿内部制衡）",
         "翻译/语义：拉入范式+位格判定；与鹰的视力自洽。迷失 +。。",
-        "2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表）"
+        "2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表）",
+        "2026-10-02 差异化风格迭代·批次七（刺客：镜中拉入 translocate 原语化）：mirrored 状态退役，拉入镜中改走 translocate(pull_into) 原语——效果上下文 detached 语义（免疫伤害/不进候选池/计时冻结）原样继承；鹰的视力制衡件随状态退役待 kernel 以 filter 扩展镜中寻址"
       ],
       "gender": "female",
       "art": {
@@ -1828,7 +1835,7 @@
       "flagship": false,
       "lore": "序列2 灾难 —— \"命运诅咒：在命运上诅咒，让目标接连遭遇灾难\"",
       "flavor": "你在它的命运上划了一道口子。从这一刻起，每一件倒霉事都会追着它跑——你打它一下，命运会替你再补一下。",
-      "describe": "诅咒一名敌人 30tick（3 次）：每当它受到伤害，命运追加 3 点无元素伤害。",
+      "describe": "诅咒一名敌人 30tick（3 次）：每当它受到伤害，命运追加 3 点无元素伤害；命运值≥+5 时追伤 ×1.3。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1848,21 +1855,29 @@
           "type": "mount_status",
           "statusId": "doom",
           "duration": 30
+        },
+        {
+          "type": "modify_resource",
+          "resource": "lost",
+          "value": 1,
+          "mode": "delta",
+          "target": "self",
+          "note": "跨层租金同口径——命运改写付迷失"
         }
       ],
       "sharedAcross": [
         "hunter"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：受击追加伤害（命运补刀），非概率。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；2026-10-01 乘区收敛：dimHook fate_value mul 2.0→1.5（放大侧封顶 1.5）。",
+      "conversionNotes": "翻译/语义：受击追加伤害（命运补刀），非概率。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；2026-10-01 乘区收敛：dimHook fate_value mul 2.0→1.5（放大侧封顶 1.5）。 ｜ 2026-10-02 差异化风格迭代·批次七（刺客：镜中拉入 translocate 原语化）：补 fate_value 跨系读层（命运同调），随卡付迷失租金",
       "dimHooks": [
         {
           "dim": "fate_value",
-          "comparator": "<=",
-          "threshold": -5,
-          "mul": 1.5,
-          "target": "damage_taken",
-          "note": "命运值 ≤−5（反噬档）：厄运叠层效率 ×1.5（2026-10-01 收敛，原 ×2 超放大侧封顶 1.5，乘区审批批纪律）。"
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.3,
+          "target": "damage",
+          "note": "命运同调（跨系读层段 2026-10-02）：board.fate_value≥+5 时，命运诅咒追伤 ×1.3——读怪物命运值维度（⚠️D 待平衡）"
         }
       ],
       "gender": "female",
@@ -1887,7 +1902,7 @@
       "flagship": false,
       "lore": "序列2 灾难 —— \"可延伸至权柄和概念：诱导问题爆发让系统崩解\"",
       "flavor": "你什么都没破坏，你只是让它本来就有的问题，一次性全部爆发了出来。",
-      "describe": "驱散一名敌人的全部增益；若驱散了至少 2 个，造成 4 点无元素伤害，否则造成 1 点（目标身上的增益越多崩得越惨）。",
+      "describe": "驱散一名敌人的全部增益；若驱散了至少 2 个，造成 4 点无元素伤害，否则造成 1 点（目标身上的增益越多崩得越惨）。目标带病则冰霜并发症追加 2 点冰霜伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1938,6 +1953,25 @@
                   "value": 1
                 }
               ]
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "disease",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "ice",
+                  "value": 2,
+                  "note": "冰霜并发症：疫病侵蚀下的身躯一触即溃，追加 2 点冰霜伤害——黑焰+冰霜权柄的冰霜侧补强（⚠️D 待平衡）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -1953,7 +1987,7 @@
         ],
         "mood": "implosive, hollow"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次七：补 disease→ice 并发症段（冰霜权柄侧补强）"
     },
     {
       "id": "skill_assassin_s1_apocalypse",
@@ -1966,7 +2000,7 @@
       "flagship": true,
       "lore": "序列1 末日 —— \"末日权柄：让指定区域各种矛盾集中爆发，命运纠缠终结\"",
       "flavor": "你说，这里该结束了。于是所有的旧账在同一刻清算——它们互相撕咬，而命运替每一个人都写好了结尾。",
-      "describe": "全体敌人受到 4 点无元素伤害，被魅惑 10tick（互相撕咬，F15），并各自受到命运诅咒 20tick（2 次受击追伤）。；对带病的目标疫中加末日，伤害 +2。",
+      "describe": "全体敌人受到 4 点无元素伤害，被魅惑 10tick（互相撕咬，F15），并各自受到命运诅咒 20tick（2 次受击追伤）。；对带病的目标疫中加末日，伤害 +2。自身女巫之形在场时，伤害再 +2。",
       "cost": {
         "energy": 7,
         "cooldown": 40,
@@ -2023,6 +2057,26 @@
                 }
               ],
               "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "witch_form",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "target": "all_enemies",
+                  "note": "魔女临末日：自身女巫之形在场，末日审判更狠 +2——跨轴读层段（plague→form，⚠️D 待平衡）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -2031,7 +2085,8 @@
       "conversionNotes": [
         "7 能量 / 全体三重无既有锚点，最大定价盲区之一",
         "翻译/语义：全体魅惑+命运诅咒收场。",
-        "2026-10-01 吟唱重标：仪式类（existing）castTime 5→10tick（对齐拍板表）"
+        "2026-10-01 吟唱重标：仪式类（existing）castTime 5→10tick（对齐拍板表）",
+        "2026-10-02 差异化风格迭代·批次七（刺客：镜中拉入 translocate 原语化）：补 witch_form 跨轴读层段"
       ],
       "gender": "female",
       "art": {
@@ -2174,7 +2229,7 @@
       "flagship": false,
       "lore": "序列0 魔女 —— \"镜中世界权柄\"",
       "flavor": "你抬起手，整片战场被折进镜子里。敌人伸手碰不到任何人，而你的同伴，从每一面镜子中同时走了出来。",
-      "describe": "吟唱 2 tick 后降临「镜中世界」2 回合：敌方单位持续不可选中、不可行动、免疫伤害；我方「镜像/替身」标签卡 ×2、敌方「光/净化」标签卡削弱；我方登场/复活从镜像位置出现。入场瞬间：全体敌人被放逐 5tick，全体友军行动条 +20。自身迷失值 +1。；自身带镜子替身则镜替呼应，全体敌人再被拉入镜中 10tick。",
+      "describe": "吟唱 2 tick 后降临「镜中世界」2 回合：敌方单位持续不可选中、不可行动、免疫伤害；我方「镜像/替身」标签卡 ×2、敌方「光/净化」标签卡削弱；我方登场/复活从镜像位置出现。入场瞬间：全体敌人被拉入镜中 5tick（translocate），全体友军行动条 +20。自身迷失值 +1。；自身带镜子替身则镜替呼应，全体敌人再被拉入镜中 10tick。",
       "cost": {
         "energy": 7,
         "cooldown": 40,
@@ -2201,14 +2256,18 @@
               "durationUnit": "tick"
             },
             {
-              "type": "mount_status",
-              "statusId": "mirrored",
+              "type": "translocate",
+              "op": "pull_into",
               "duration": 5,
               "target": "all_enemies",
-              "params": {
-                "rankCheck": true
+              "condition": {
+                "kind": "rank_gap",
+                "aUnit": "self",
+                "bUnit": "target",
+                "cmp": ">",
+                "n": 0
               },
-              "note": "强制拉入镜中世界（入场瞬间，短暂放逐）；位格 ≥ 施法者的敌方单位走 brief §11.2 成功率判定（序列 0 位格基准 10，仅对 Boss/同序列敌人需掷判定）"
+              "note": "强制拉入镜中世界（入场瞬间 5tick）：位格低于施法者的敌方必中；位格 ≥ 施法者走 brief §11.2 成功率判定（序列 0 位格基准 10）——原语化，rank_gap 谓词第三实证"
             },
             {
               "type": "modify_resource",
@@ -2237,11 +2296,11 @@
               },
               "then": [
                 {
-                  "type": "mount_status",
-                  "statusId": "mirrored",
+                  "type": "translocate",
+                  "op": "pull_into",
                   "duration": 10,
                   "target": "all_enemies",
-                  "note": "镜替呼应：自身镜子替身在场则全体敌人再被拉入镜中 10tick（环节⑤ 2026-09-29 补读层段：mirror_substitute payoff 升 landed）"
+                  "note": "镜替呼应：自身镜子替身在场则全体敌人再被拉入镜中 10tick（translocate 原语化，mirror_substitute payoff 维持 landed）"
                 }
               ],
               "else": []
@@ -2282,7 +2341,7 @@
         "替身"
       ],
       "tentative": false,
-      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 2026-10-02 差异化风格迭代·批次七（刺客：镜中拉入 translocate 原语化）：强制拉入两段 mirrored 状态改 translocate(pull_into)；rank_gap 谓词承接原 rankCheck 参数桩",
       "gender": "female",
       "art": {
         "subject": "an entire battlefield folded into a vast mirror world",

@@ -3,177 +3,6 @@
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
-   "id": "assassin",
-   "name": "刺客",
-   "total": 65.1,
-   "dims": {
-    "轴健康度": 20.4,
-    "跨轴耦合": 5.0,
-    "跨系联动": 6.7,
-    "结构健康": 10,
-    "机制落地": 10.0,
-    "文本完备": 10.0,
-    "风格签名": 3
-   },
-   "minAxis": 62.0,
-   "cards": 39,
-   "sigHits": {
-    "prim:translocate": 0,
-    "elem:ice": 2,
-    "elem:dark": 1
-   },
-   "styleDist": 0.102,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-10.0：本途径他轴身份读取 2 次",
-     "ref": "assassin",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-8.3：枢纽状态 3 个 + combo 读取 1 次",
-     "ref": "assassin",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "风格签名",
-     "why": "-2：签名键零使用 prim:translocate",
-     "ref": "assassin",
-     "fix": "按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证"
-    },
-    {
-     "dim": "风格签名",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.102，分位 <25%）",
-     "ref": "assassin",
-     "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
-    }
-   ],
-   "axes": [
-    {
-     "id": "charm",
-     "name": "魅",
-     "symbol": "💋",
-     "total": 62.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "读层闭环": 9,
-      "轴内多样性": 5.0,
-      "规模均衡": 10,
-      "承接连通": 3
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "魅惑",
-      "激化矛盾"
-     ],
-     "payoffsLanded": [
-      "反复魅惑"
-     ],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "plague",
-     "name": "疫",
-     "symbol": "🦠",
-     "total": 68.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "读层闭环": 9,
-      "轴内多样性": 8.8,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "疾病",
-      "黑焰"
-     ],
-     "payoffsLanded": [
-      "末日"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "form",
-     "name": "形",
-     "symbol": "🎭",
-     "total": 69.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "读层闭环": 9,
-      "轴内多样性": 10.0,
-      "规模均衡": 9,
-      "承接连通": 6
-     },
-     "cards": 15,
-     "enablersVerified": [
-      "影形态",
-      "雾形态",
-      "血形态"
-     ],
-     "payoffsLanded": [
-      "原初·静止"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 15 vs 理想 10（比值 1.54）",
-       "ref": "form",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    },
-    {
-     "id": "mirror",
-     "name": "镜",
-     "symbol": "🪞",
-     "total": 80.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "读层闭环": 9,
-      "轴内多样性": 11.2,
-      "规模均衡": 10,
-      "承接连通": 15
-     },
-     "cards": 8,
-     "enablersVerified": [
-      "镜子替身",
-      "魔镜占卜"
-     ],
-     "payoffsLanded": [
-      "镜中世界"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    }
-   ]
-  },
-  {
    "id": "sleepless",
    "name": "不眠者",
    "total": 65.3,
@@ -193,7 +22,7 @@
     "prim:advance_clock": 2,
     "res:secrecy": 3
    },
-   "styleDist": 0.1079,
+   "styleDist": 0.1081,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -383,6 +212,171 @@
        "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
+    }
+   ]
+  },
+  {
+   "id": "assassin",
+   "name": "刺客",
+   "total": 67.3,
+   "dims": {
+    "轴健康度": 20.6,
+    "跨轴耦合": 5.0,
+    "跨系联动": 6.7,
+    "结构健康": 10,
+    "机制落地": 10.0,
+    "文本完备": 10.0,
+    "风格签名": 5
+   },
+   "minAxis": 62.0,
+   "cards": 39,
+   "sigHits": {
+    "prim:translocate": 2,
+    "elem:ice": 3,
+    "elem:dark": 1
+   },
+   "styleDist": 0.1005,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-10.0：本途径他轴身份读取 2 次",
+     "ref": "assassin",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "跨系联动",
+     "why": "-8.3：枢纽状态 3 个 + combo 读取 1 次",
+     "ref": "assassin",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    },
+    {
+     "dim": "风格签名",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.101，分位 <25%）",
+     "ref": "assassin",
+     "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
+    }
+   ],
+   "axes": [
+    {
+     "id": "charm",
+     "name": "魅",
+     "symbol": "💋",
+     "total": 62.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 5.0,
+      "规模均衡": 10,
+      "承接连通": 3
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "魅惑",
+      "激化矛盾"
+     ],
+     "payoffsLanded": [
+      "反复魅惑"
+     ],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "form",
+     "name": "形",
+     "symbol": "🎭",
+     "total": 69.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 10.0,
+      "规模均衡": 9,
+      "承接连通": 6
+     },
+     "cards": 15,
+     "enablersVerified": [
+      "影形态",
+      "雾形态",
+      "血形态"
+     ],
+     "payoffsLanded": [
+      "原初·静止"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 15 vs 理想 10（比值 1.54）",
+       "ref": "form",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    },
+    {
+     "id": "plague",
+     "name": "疫",
+     "symbol": "🦠",
+     "total": 70.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 10.0,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "疾病",
+      "黑焰"
+     ],
+     "payoffsLanded": [
+      "末日"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "mirror",
+     "name": "镜",
+     "symbol": "🪞",
+     "total": 82.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 13.8,
+      "规模均衡": 10,
+      "承接连通": 15
+     },
+     "cards": 8,
+     "enablersVerified": [
+      "镜子替身",
+      "魔镜占卜"
+     ],
+     "payoffsLanded": [
+      "镜中世界"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
     }
    ]
   },
@@ -593,7 +587,7 @@
     "prim:status_shuffle": 2,
     "prim:modify_rule_slot": 2
    },
-   "styleDist": 0.0927,
+   "styleDist": 0.0926,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -934,7 +928,7 @@
     "stat:hp_max": 1,
     "sref:flesh_undying": 1
    },
-   "styleDist": 0.0901,
+   "styleDist": 0.0904,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1095,7 +1089,7 @@
     "prim:modify_targetability": 2,
     "prim:target_override": 2
    },
-   "styleDist": 0.1159,
+   "styleDist": 0.116,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1270,7 +1264,7 @@
     "unitType:BEAST": 8,
     "sref:prepared_draught": 4
    },
-   "styleDist": 0.1355,
+   "styleDist": 0.1358,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1455,7 +1449,7 @@
     "flag:cast_time_set": 0,
     "sref:info_form": 1
    },
-   "styleDist": 0.1237,
+   "styleDist": 0.1232,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1838,7 +1832,7 @@
     "prim:echo_last_skill": 2,
     "prim:restore_snapshot": 2
    },
-   "styleDist": 0.1287,
+   "styleDist": 0.1285,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -2029,7 +2023,7 @@
     "prim:write_rule_slot": 2,
     "trig:on_phase_change": 2
    },
-   "styleDist": 0.283,
+   "styleDist": 0.2832,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -2208,7 +2202,7 @@
     "elem:lightning": 8,
     "sref:rage": 10
    },
-   "styleDist": 0.189,
+   "styleDist": 0.1888,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -2363,7 +2357,7 @@
     "sref:law_edit": 3,
     "unitType:CONSTRUCT": 1
    },
-   "styleDist": 0.209,
+   "styleDist": 0.2084,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -2568,7 +2562,7 @@
     "elem:dark": 4,
     "flag:companionBuff": 1
    },
-   "styleDist": 0.1149,
+   "styleDist": 0.115,
    "deductions": [
     {
      "dim": "风格签名",
@@ -3101,7 +3095,7 @@
     "flag:template": 1,
     "sref:insight": 5
    },
-   "styleDist": 0.1168,
+   "styleDist": 0.1171,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -3249,7 +3243,7 @@
     "prim:write_rule_slot": 2,
     "prim:translocate": 4
    },
-   "styleDist": 0.1412,
+   "styleDist": 0.1405,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -3407,7 +3401,7 @@
     "flag:cost_mod": 2,
     "res:order": 6
    },
-   "styleDist": 0.1382,
+   "styleDist": 0.1379,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -3597,7 +3591,7 @@
     "flag:filter.unitType": 2,
     "sref:guardianship": 2
    },
-   "styleDist": 0.142,
+   "styleDist": 0.1414,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -3748,7 +3742,7 @@
     "prim:advance_clock": 2,
     "res:fate_value": 5
    },
-   "styleDist": 0.1217,
+   "styleDist": 0.1219,
    "deductions": [
     {
      "dim": "跨系联动",
