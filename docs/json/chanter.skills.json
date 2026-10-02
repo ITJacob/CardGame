@@ -288,7 +288,7 @@
         "sailor"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"10米光照\"=反隐匿+光对不死更狠。依赖 C8 + 标签乘区。",
+      "conversionNotes": "翻译/语义：\"10米光照\"=反隐匿+光对不死更狠。依赖 C8 + 标签乘区。 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 on_phase_change 触发器『颂诗回响』——仪式昼夜正主第一卡",
       "art": {
         "subject": "a ring of white daylight spreading across dark ground, shadows fleeing",
         "elements": [
@@ -296,7 +296,21 @@
           "fleeing shadows"
         ],
         "mood": "revelatory, calm"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_phase_change",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 1,
+              "target": "all_allies",
+              "note": "昼夜流转，白昼颂诗回响：每次相位更替，己方全体回复 1（仪式昼夜正主承载，⚠️D 待平衡）"
+            }
+          ],
+          "note": "仪式昼夜：白昼与战场相位绑定——相位每更替一次，颂诗回响一次"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s8_sunshine",
@@ -874,13 +888,21 @@
           "statusId": "fearless",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "grant_immunity",
+          "target": "self",
+          "against": [
+            "control"
+          ],
+          "note": "无畏正主承载：免疫控制类状态整场（原 fearless 状态表达保留兼容）"
         }
       ],
       "sharedAcross": [
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：免疫恐惧=control免疫；体质=抗性。唯一常驻自保被动。依赖 G12。",
+      "conversionNotes": "翻译/语义：免疫恐惧=control免疫；体质=抗性。唯一常驻自保被动。依赖 G12。 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 grant_immunity(against:control)『无畏』——免疫正主第一卡",
       "art": {
         "subject": "an unshaken chanter standing firm as shadows and plague recoil",
         "elements": [
@@ -1009,10 +1031,37 @@
           },
           "target": "target",
           "note": "立约经公证：其下一次造成伤害 ×0.5（环节⑤ 2026-09-29 补产层段）"
+        },
+        {
+          "type": "write_rule_slot",
+          "slot": 2,
+          "field": "trigger",
+          "value": {
+            "trigger": "on_deal_damage",
+            "scope": "oath_holder",
+            "duration": 5,
+            "durationUnit": "tick"
+          },
+          "note": "誓约写槽（slot 2 trigger）：契约触发条件登记进 Rules[3] 槽 2——与仲裁人律令(slot 0)/律师重定义(slot 1)三途径共盘"
+        },
+        {
+          "type": "write_rule_slot",
+          "slot": 2,
+          "field": "punish",
+          "value": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "target": "rule_breaker",
+              "note": "违约载荷：立约者每次造成伤害，自身受 2 点圣光伤害（契约双边成文：trigger+punish，途径红线）"
+            }
+          ],
+          "note": "誓约写槽（slot 2 punish）：违约代价成文"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：契约味=不禁止、只索价。依赖新项（反伤族）。",
+      "conversionNotes": "翻译/语义：契约味=不禁止、只索价。依赖新项（反伤族）。 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 write_rule_slot(slot 2 trigger+punish)『誓约写槽』——契约正主第一卡，双边成文",
       "art": {
         "subject": "two figures bound by glowing covenant runes drawn between them",
         "elements": [
@@ -1568,6 +1617,33 @@
               "statusId": "justice_code",
               "duration": 8,
               "target": "all_enemies"
+            },
+            {
+              "type": "write_rule_slot",
+              "slot": 2,
+              "field": "trigger",
+              "value": {
+                "trigger": "on_attack",
+                "condition": "target_hp_percent_lower_than_attacker",
+                "duration": 8,
+                "durationUnit": "tick"
+              },
+              "note": "立法写槽（slot 2 trigger）：准则「不得加害弱者」登记——攻击生命百分比低于自身的目标即违约"
+            },
+            {
+              "type": "write_rule_slot",
+              "slot": 2,
+              "field": "punish",
+              "value": [
+                {
+                  "type": "mount_status",
+                  "statusId": "guilty",
+                  "duration": 6,
+                  "target": "rule_breaker",
+                  "note": "违约载荷：被定罪 6 tick（与 justice_code 状态载荷同源，槽写为 canonical 登记）"
+                }
+              ],
+              "note": "立法写槽（slot 2 punish）：定罪成文"
             }
           ]
         }
@@ -1589,7 +1665,8 @@
         "稿面分阶段建议：可先上保守版（直接给敌方全体挂 guilty，无需违背判定）验证【正义审判】收益后再启用判定逻辑",
         "判定条件「目标 HP% < 自身 HP%」用 hp_percent_compare 谓词（共享内核参数 §三 歌颂者判例）",
         "翻译/语义：\"立法+亲自判定违约\"。依赖 `on_attack`+hp_percent_compare。分阶段先直接给敌方全体挂 `guilty`。",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+        "2026-10-01 吟唱重标：非仪式，castTime 空→0",
+        "2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 write_rule_slot(slot 2 trigger+punish)『立法写槽』——契约正主第二卡"
       ],
       "art": {
         "subject": "a chanter inscribing a glowing code of justice across the battlefield",
@@ -1870,7 +1947,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：变身+持续群体净化伤害。与 F10 同源。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：变身+持续群体净化伤害。与 F10 同源。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 on_phase_change 触发器『日轮威压』——仪式昼夜正主第二卡",
       "dimHooks": [
         {
           "dim": "luminance",
@@ -1888,7 +1965,24 @@
           "purifying heat rays"
         ],
         "mood": "overwhelming, purifying"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_phase_change",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "obedience",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": 2,
+              "target": "all_enemies",
+              "note": "日轮流转威压：每次相位更替，太阳使者威压再临，敌方全体服从 +1（2 tick，⚠️D 待平衡）"
+            }
+          ],
+          "note": "仪式昼夜：微缩太阳随相位流转持续施压"
+        }
+      ]
     },
     {
       "id": "skill_chanter_s2_light_authority",
@@ -2126,10 +2220,16 @@
           "duration": null,
           "charges": 1,
           "target": "all_allies"
+        },
+        {
+          "type": "grant_immunity",
+          "target": "all_allies",
+          "charges": 1,
+          "note": "狂热正主承载：各免疫一次受到的伤害（charges 确定性次数语义，R5 合规；原 zeal 状态保留计时）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：一次性完全免疫。依赖 C6 + `damage_taken_mul:0`。",
+      "conversionNotes": "翻译/语义：一次性完全免疫。依赖 C6 + `damage_taken_mul:0`。 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 grant_immunity(charges:1)『狂热』——免疫正主第二卡",
       "art": {
         "subject": "fervent believers bathed in burning faith, wounds ignored",
         "elements": [
