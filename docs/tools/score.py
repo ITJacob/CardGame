@@ -182,6 +182,7 @@ def signature_card_hit(card, key, unit_type_of=None):
         return False
     if kind == "trig":
         evs = {t.get("event") for t in (card.get("triggers") or []) if isinstance(t, dict)}
+        evs.add(card.get("hook"))  # passive 触发点挂 hook 字段（与 triggers 数组同口径，2026-10-02 批次九对齐）
         return arg in evs or any(n.get("event") == arg for n in walk(card.get("effects")))
     if kind == "sref":
         return card_refs_status(card, arg)
