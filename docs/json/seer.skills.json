@@ -182,10 +182,10 @@
       "flagship": false,
       "lore": "序列9 占卜家 —— 占星术，\"提前判断\"",
       "flavor": "你从星象中读出一丝先机，指定一名同伴被向前拨动行动条，抢在对手之前出手。",
-      "describe": "指定一名友军，行动条 +25（delta）。；占星开启灵视（自身灵视 4 tick）；自身带命运缝隙则命运缝隙共鸣，行动条再 +10。",
+      "describe": "指定一名友军，行动条 +25（delta）。；占星开启灵视（自身灵视 20tick）；自身带命运缝隙则命运缝隙共鸣，行动条再 +10。",
       "cost": {
         "energy": 2,
-        "cooldown": 3,
+        "cooldown": 15,
         "castTime": 0
       },
       "reach": "none",
@@ -207,7 +207,7 @@
         {
           "type": "mount_status",
           "statusId": "clairvoyance",
-          "duration": 4,
+          "duration": 20,
           "target": "self",
           "note": "占星开启灵视（环节⑤ 2026-09-29 补产层段）"
         },
@@ -264,7 +264,7 @@
       "describe": "远程对一名敌人造成 2 点物理伤害（低费纯直伤，本途径输出地基）。",
       "cost": {
         "energy": 2,
-        "cooldown": 2,
+        "cooldown": 10,
         "castTime": 0
       },
       "reach": "ranged",
@@ -338,7 +338,7 @@
       "flagship": false,
       "lore": "序列8 小丑 —— \"可凭直觉预感目标下一步行动\"",
       "flavor": "你直觉地预感到对手的下一步，每回合开始凝成一层「预感」；受到攻击时它替你挡下半数力道。",
-      "describe": "每回合开始叠加 1 层「预感」（上限 3 层，整场）；受击时该次伤害 ×0.6 并消耗 1 层。；危机预感凝为纸人替身（4 tick，1 次）。",
+      "describe": "每回合开始叠加 1 层「预感」（上限 3 层，整场）；受击时该次伤害 ×0.6 并消耗 1 层。；危机预感凝为纸人替身（20tick，1 次）。",
       "hook": "on_turn_start",
       "effects": [
         {
@@ -352,7 +352,7 @@
           "type": "mount_status",
           "statusId": "paper_substitute",
           "charges": 1,
-          "duration": 4,
+          "duration": 20,
           "target": "self",
           "note": "危机预感凝为纸人（环节⑤ 2026-09-29 补产层段）"
         }
@@ -420,7 +420,7 @@
       "describe": "远程对一名敌人造成 3 点物理伤害，并将其行动条 -50（击退，推后 2/3 行动周期）。",
       "cost": {
         "energy": 3,
-        "cooldown": 3,
+        "cooldown": 15,
         "castTime": 0
       },
       "reach": "ranged",
@@ -479,7 +479,7 @@
       "describe": "近战攻击进程对前排敌人造成 4 点火焰伤害，随后自身退回己方半场最后位。",
       "cost": {
         "energy": 3,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "melee",
@@ -534,10 +534,10 @@
       "flagship": true,
       "lore": "序列7 魔术师 —— \"『纸人替身』：纸人变自身挡致命一击，削弱诅咒\"",
       "flavor": "剪好的纸人在你受致命一击的刹那替你碎裂——你活了下来，而附着在你身上的诅咒也随之被削弱。",
-      "describe": "自身获得「纸人替身」（1 层充能，4 tick）：受到致命一击时阻止死亡（保留 1 血）并驱散自身全部 debuff/dot，随后替身碎裂。",
+      "describe": "自身获得「纸人替身」（1 层充能，20tick）：受到致命一击时阻止死亡（保留 1 血）并驱散自身全部 debuff/dot，随后替身碎裂。",
       "cost": {
         "energy": 3,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "none",
@@ -554,7 +554,7 @@
           "type": "mount_status",
           "statusId": "paper_substitute",
           "charges": 1,
-          "duration": 4
+          "duration": 20
         }
       ],
       "tentative": false,
@@ -582,10 +582,10 @@
       "flagship": false,
       "lore": "序列7 魔术师 —— \"『伤害转移』：将要害伤口转移至手臂等不重要部位\"",
       "flavor": "你把即将落在要害的伤口挪到了无关紧要的地方——接下来几次打击，都只伤到皮肉。",
-      "describe": "自身获得「伤害转移」（3 层充能，4 tick）：受击时该次伤害 ×0.5 并消耗 1 层。；以线牵之：目标提线木偶 +1 层（4 tick）；自身带纸人替身则纸人代承，转移后回补 2 点生命。",
+      "describe": "自身获得「伤害转移」（3 层充能，20tick）：受击时该次伤害 ×0.5 并消耗 1 层。；以线牵之：目标提线木偶 +1 层（20tick）；自身带纸人替身则纸人代承，转移后回补 2 点生命。",
       "cost": {
         "energy": 2,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "none",
@@ -602,14 +602,14 @@
           "type": "mount_status",
           "statusId": "wound_transfer",
           "charges": 3,
-          "duration": 4
+          "duration": 20
         },
         {
           "type": "mount_status",
           "statusId": "puppet_string",
           "stacks": 1,
           "stackMode": "add",
-          "duration": 4,
+          "duration": 20,
           "note": "以线牵之：转移伤害前先以灵体之线系住目标（环节⑤ 2026-09-29 补产层段）"
         },
         {
@@ -654,10 +654,10 @@
       "flagship": false,
       "lore": "序列7 魔术师 —— \"『制造幻觉』\"",
       "flavor": "你让敌人看见并不存在的景象——它的下一击挥向幻影，落在空处。",
-      "describe": "使一名敌人产生幻觉（1 层充能，3 tick）：其下一次攻击改打向空坐标。",
+      "describe": "使一名敌人产生幻觉（1 层充能，15tick）：其下一次攻击改打向空坐标。",
       "cost": {
         "energy": 3,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "none",
@@ -674,7 +674,7 @@
           "type": "mount_status",
           "statusId": "hallucination",
           "charges": 1,
-          "duration": 3
+          "duration": 15
         }
       ],
       "sharedAcross": [
@@ -705,7 +705,7 @@
       "describe": "降临「幻境」域（overlay，3 回合）：敌方无法查看我方手牌；我方普通攻击按落空计数（每 5 次攻击落空 1 次）；幻象/镜像标签效果 ×1.5，光/净化标签效果 ×0.7。",
       "cost": {
         "energy": 4,
-        "cooldown": 6,
+        "cooldown": 30,
         "castTime": 0
       },
       "reach": "none",
@@ -726,8 +726,8 @@
               "type": "domain",
               "op": "overlay",
               "def": "domain_illusion",
-              "duration": 3,
-              "durationUnit": "turn"
+              "duration": 15,
+              "durationUnit": "tick"
             },
             {
               "type": "modify_resource",
@@ -743,8 +743,8 @@
       "domain": {
         "tier": "overlay",
         "def": "domain_illusion",
-        "duration": 3,
-        "durationUnit": "turn",
+        "duration": 15,
+        "durationUnit": "tick",
         "dispelable": true,
         "envRulesText": "全场：敌方无法查看我方手牌（信息遮蔽）；我方普通攻击按落空计数（每 5 次落空 1 次，R5 确定性转写 ≈20%）；幻象/镜像标签卡效果 ×1.5；光/净化标签卡效果 ×0.7（幻境畏光）",
         "rulePatches": [
@@ -797,10 +797,10 @@
       "flagship": false,
       "lore": "序列6 无面人 —— \"『变形』：永久变化容貌（拔高 / 变矮 10cm），模拟声音\"",
       "flavor": "你把自己的面容与身形揉成另一个人的模样——敌人的攻击认不出你，而你的利刃已经贴上它的后背。",
-      "describe": "自身变形 3 tick：敌方单体技能无法选中你；期间首次造成伤害 ×1.5（近身一击）。",
+      "describe": "自身变形 15tick：敌方单体技能无法选中你；期间首次造成伤害 ×1.5（近身一击）。",
       "cost": {
         "energy": 3,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "none",
@@ -816,7 +816,7 @@
         {
           "type": "mount_status",
           "statusId": "disguise_form",
-          "duration": 3
+          "duration": 15
         }
       ],
       "sharedAcross": [
@@ -915,10 +915,10 @@
       "flagship": false,
       "lore": "序列5 秘偶大师 —— \"看见并操纵『灵体之线』，通过灵体之线控制目标的灵体、心智体、以太体和身躯……可将目标彻底变成秘偶\"",
       "flavor": "你牵住那条看不见的灵体之线，敌人的身躯不再属于它——它转身，扑向自己的同伴。",
-      "describe": "远程使一名敌人被灵体之线操控 6 tick（发动攻击时目标被强制改为其同阵营友军，优先于嘲讽/守护），并造成 2 点精神伤害。",
+      "describe": "远程使一名敌人被灵体之线操控 30tick（发动攻击时目标被强制改为其同阵营友军，优先于嘲讽/守护），并造成 2 点精神伤害。",
       "cost": {
         "energy": 4,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "ranged",
@@ -937,7 +937,7 @@
             {
               "type": "mount_status",
               "statusId": "puppet_string",
-              "duration": 6
+              "duration": 30
             },
             {
               "type": "damage",
@@ -952,8 +952,8 @@
       ],
       "tentative": false,
       "conversionNotes": [
-        "G15-b：v0.1 duration 3t + on_turn_start 大概率不生效；本版 duration 6t（≈覆盖目标 1 个自身回合）+ 攻击即时节点，两处都取稳。",
-        "翻译/语义：提线轴核心 enabler+payload。挂 `提线木偶` 即触发调位/替死 payoff。**G15-b**：duration 6t 覆盖目标1个自身回合，触发改「单位发动攻击」即时节点（本稿新增项3）。"
+        "G15-b：v0.1 duration 15t + on_turn_start 大概率不生效；本版 duration 30t（≈覆盖目标 1 个自身回合）+ 攻击即时节点，两处都取稳。",
+        "翻译/语义：提线轴核心 enabler+payload。挂 `提线木偶` 即触发调位/替死 payoff。**G15-b**：duration 30t 覆盖目标1个自身回合，触发改「单位发动攻击」即时节点（本稿新增项3）。"
       ],
       "art": {
         "subject": "an enemy soldier turned marionette, lunging at his own ally",
@@ -1065,7 +1065,7 @@
       "describe": "与指定秘偶交换位置（swap_ally 锁定同阵营，G8 合规）。",
       "cost": {
         "energy": 2,
-        "cooldown": 3,
+        "cooldown": 15,
         "castTime": 0
       },
       "reach": "none",
@@ -1116,7 +1116,7 @@
       "describe": "驱散自身全部 debuff/dot 并将其（保留剩余时长）转移到一名敌人身上——是搬运不是复制。",
       "cost": {
         "energy": 3,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "none",
@@ -1178,10 +1178,10 @@
       "flagship": false,
       "lore": "序列4 诡法师 —— \"可变成体型差距不大的动物\"",
       "flavor": "你的骨骼与肌肉在扭曲中重铸，化身为一头与体型相仿的野兽。",
-      "describe": "自身化身为兽 4 tick：攻击 +3、行动条速率 +8（可驱散）。",
+      "describe": "自身化身为兽 20tick：攻击 +3、行动条速率 +8（可驱散）。",
       "cost": {
         "energy": 3,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "none",
@@ -1197,7 +1197,7 @@
         {
           "type": "mount_status",
           "statusId": "beast_form",
-          "duration": 4
+          "duration": 20
         }
       ],
       "frameworkFlags": [
@@ -1233,10 +1233,10 @@
       "flagship": false,
       "lore": "序列3 古代学者 —— \"从过去的自己处借取力量\"",
       "flavor": "你向历史深处的那个自己伸出手，借来他尚未褪去的锋芒。",
-      "describe": "自身攻击增益 4 tick：N = 本场战斗自身历史最高攻击 − 当前攻击（为负取 0），即恢复到历史峰值。",
+      "describe": "自身攻击增益 20tick：N = 本场战斗自身历史最高攻击 − 当前攻击（为负取 0），即恢复到历史峰值。",
       "cost": {
         "energy": 3,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "none",
@@ -1259,7 +1259,7 @@
             "minusCurrent": true,
             "floor": 0
           },
-          "duration": 4,
+          "duration": 20,
           "note": "valueFrom maxStatThisBattle（效果参数 §1.1 本稿新增项 8）"
         }
       ],
@@ -1292,7 +1292,7 @@
       "describe": "以指定单位（可敌方）为模板召唤一具历史影像为己方作战（35% 生命 / 60% 攻击，己方队尾）。",
       "cost": {
         "energy": 5,
-        "cooldown": 7,
+        "cooldown": 35,
         "castTime": 1
       },
       "reach": "none",
@@ -1337,10 +1337,10 @@
       "flagship": false,
       "lore": "序列3 古代学者 —— \"可将纸人部位转移给目标，在其发现是假之前正常运行\"",
       "flavor": "你悄悄把它的手臂换成纸做的——在它发现之前，这只\"手臂\"一样能挥，只是轻飘飘毫无力气。",
-      "describe": "使一名敌人攻击 -5、防御 -2，持续 4 tick，到期自动回滚（「发现是假」）。",
+      "describe": "使一名敌人攻击 -5、防御 -2，持续 20tick，到期自动回滚（「发现是假」）。",
       "cost": {
         "energy": 3,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "none",
@@ -1358,14 +1358,14 @@
           "stat": "attack",
           "value": -5,
           "mode": "delta",
-          "duration": 4
+          "duration": 20
         },
         {
           "type": "modify_stat",
           "stat": "defense",
           "value": -2,
           "mode": "delta",
-          "duration": 4
+          "duration": 20
         }
       ],
       "tentative": false,
@@ -1427,10 +1427,10 @@
       "flagship": false,
       "lore": "序列2 奇迹师 —— \"『愿望』：先满足别人愿望才能满足自身，战斗时通过向自己许愿将情况变为现实\"",
       "flavor": "你先为同伴实现一个愿望，然后向自己许下另一个——你说的，就会成真。",
-      "describe": "双目标：先治疗一名友军 6 点（满足别人的愿望），再使自身下次攻击必定命中且伤害 ×2（向自己许愿）。；许愿引奇迹（自身奇迹 6 tick）。",
+      "describe": "双目标：先治疗一名友军 6 点（满足别人的愿望），再使自身下次攻击必定命中且伤害 ×2（向自己许愿）。；许愿引奇迹（自身奇迹 30tick）。",
       "cost": {
         "energy": 5,
-        "cooldown": 6,
+        "cooldown": 30,
         "castTime": 0
       },
       "reach": "none",
@@ -1463,13 +1463,13 @@
               "type": "mount_status",
               "statusId": "wish_fulfilled",
               "charges": 1,
-              "duration": 4,
+              "duration": 20,
               "target": "secondary_target"
             },
             {
               "type": "mount_status",
               "statusId": "miracle",
-              "duration": 6,
+              "duration": 30,
               "target": "self",
               "note": "许愿引奇迹（环节⑤ 2026-09-29 补产层段）"
             }
@@ -1511,7 +1511,7 @@
       "describe": "双目标：主目标（敌人）行动条 -20；行动条最低的一名友军行动条 +20。；自身灵视在场则灵视锁定，干扰再压目标 10 行动条；目标带提线木偶则提线者命运易扰，再压 10。",
       "cost": {
         "energy": 4,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "none",
@@ -1665,10 +1665,10 @@
       "flagship": true,
       "lore": "序列1 诡秘侍者 —— \"『诡秘之境』：创造神国雏形，带隐秘效果\"",
       "flavor": "你在战场的一角张开神国的雏形——其中的一切都被隐秘笼罩，敌人看不清，也打不中。",
-      "describe": "展开「诡秘之境」区域：区域内己方单位获得 concealed（敌方单体技能难以选中）且受伤 ×0.85；区域内敌方单位行动条速率 ×0.85（各 2 tick 刷新）。",
+      "describe": "展开「诡秘之境」区域：区域内己方单位获得 concealed（敌方单体技能难以选中）且受伤 ×0.85；区域内敌方单位行动条速率 ×0.85（各 10tick 刷新）。",
       "cost": {
         "energy": 6,
-        "cooldown": 8,
+        "cooldown": 40,
         "castTime": 2
       },
       "reach": "none",
@@ -1721,7 +1721,7 @@
       "describe": "把目标 1 个增益重组为对应减益（搬运而非驱散+新挂）；无对应映射时退化为驱散 1 个增益并造成 3 点精神伤害。",
       "cost": {
         "energy": 4,
-        "cooldown": 6,
+        "cooldown": 30,
         "castTime": 0
       },
       "reach": "none",
@@ -1773,10 +1773,10 @@
       "flagship": false,
       "lore": "序列2 奇迹师 / 序列0 愚者「奇迹」权柄",
       "flavor": "你降下一个奇迹——即便同伴倒下，也会在光芒中重新站起。",
-      "describe": "使一名友军获得「奇迹」（6 tick）：其死亡时以 50% 生命原地复活（死后召回，不阻止死亡）。",
+      "describe": "使一名友军获得「奇迹」（30tick）：其死亡时以 50% 生命原地复活（死后召回，不阻止死亡）。",
       "cost": {
         "energy": 5,
-        "cooldown": 8,
+        "cooldown": 40,
         "castTime": 0
       },
       "reach": "none",
@@ -1792,7 +1792,7 @@
         {
           "type": "mount_status",
           "statusId": "miracle",
-          "duration": 6
+          "duration": 30
         }
       ],
       "tentative": false,
@@ -1821,10 +1821,10 @@
       "flagship": true,
       "lore": "序列0 愚者 —— \"『愚弄』权柄（核心）：弄假成真，降低敌人智商，愚弄时间 / 历史\"",
       "flavor": "你愚弄了它——它挥向幻影，错愕之间时间也乱了方寸；而当它终于挥出那一击，假象便成了真的伤口。",
-      "describe": "使一名敌人被愚弄 6 tick（2 层充能）：攻击打向空处；其每次发起攻击受到等于其自身攻击力的精神伤害（弄假成真）；行动条速率 -8、攻击 -3。",
+      "describe": "使一名敌人被愚弄 30tick（2 层充能）：攻击打向空处；其每次发起攻击受到等于其自身攻击力的精神伤害（弄假成真）；行动条速率 -8、攻击 -3。",
       "cost": {
         "energy": 6,
-        "cooldown": 8,
+        "cooldown": 40,
         "castTime": 0
       },
       "reach": "none",
@@ -1841,7 +1841,7 @@
           "type": "mount_status",
           "statusId": "fooled",
           "charges": 2,
-          "duration": 6
+          "duration": 30
         }
       ],
       "sharedAcross": [
@@ -1869,7 +1869,7 @@
       "flagship": true,
       "lore": "序列0 愚者 —— \"『灵界掌控者』：操纵灵体之线和唤起灵性之线\"",
       "flavor": "你是灵界的主宰——所有灵体之线都在你掌心，敌人的灵魂越虚弱，你牵动它们越轻易。",
-      "describe": "整场：你施加的控制类状态（puppet_string/hallucination/fooled/taunt）不可被驱散；对生命低于 50% 的目标伤害 ×1.3。；若目标带提线木偶，灵界支配反馈，自身获得 4 点护盾（3 tick）。",
+      "describe": "整场：你施加的控制类状态（puppet_string/hallucination/fooled/taunt）不可被驱散；对生命低于 50% 的目标伤害 ×1.3。；若目标带提线木偶，灵界支配反馈，自身获得 4 点护盾（15tick）。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1891,7 +1891,7 @@
               "type": "mount_status",
               "statusId": "shield",
               "value": 4,
-              "duration": 3,
+              "duration": 15,
               "target": "self",
               "note": "灵界支配反馈：目标带提线木偶则自身获得 4 点护盾（环节⑤ 2026-09-29 补读层段：puppet_string payoff 升 landed）"
             }
@@ -1970,12 +1970,12 @@
       "flagship": false,
       "lore": "序列5 秘偶大师 —— 把碍事的存在暂时挪出现在的层面",
       "flavor": "他还在，只是不在这里了。",
-      "describe": "使一名敌人被放逐 3 tick：其离场为 detached（不持坐标、不进候选池、计时冻结），到期于其己方队尾回归。",
+      "describe": "使一名敌人被放逐 15tick：其离场为 detached（不持坐标、不进候选池、计时冻结），到期于其己方队尾回归。",
       "effects": [
         {
           "type": "translocate",
           "op": "banish",
-          "duration": 3,
+          "duration": 15,
           "note": "跨层位移：放逐（ddd 效果参数 11 号）"
         },
         {
@@ -1990,7 +1990,7 @@
       "tentative": false,
       "cost": {
         "energy": 4,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 0
       },
       "reach": "ranged",
@@ -2023,12 +2023,12 @@
       "flagship": false,
       "lore": "序列2 奇迹师 —— 最安全的藏身处，是另一个层面",
       "flavor": "回来时，伤口已经不在了。",
-      "describe": "使一名友军被拉入灵界 2 tick（detached，规避期间一切伤害与指向），回归时恢复 6 点生命。",
+      "describe": "使一名友军被拉入灵界 10tick（detached，规避期间一切伤害与指向），回归时恢复 6 点生命。",
       "effects": [
         {
           "type": "translocate",
           "op": "pull_into",
-          "duration": 2,
+          "duration": 10,
           "returnPayload": [
             {
               "type": "heal",
@@ -2050,7 +2050,7 @@
       "tentative": false,
       "cost": {
         "energy": 5,
-        "cooldown": 4,
+        "cooldown": 20,
         "castTime": 2
       },
       "reach": "ranged",
@@ -2070,7 +2070,7 @@
         ],
         "mood": "sheltering, still"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（prim）castTime 4→2 tick（对齐拍板表）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（prim）castTime 4→10tick（对齐拍板表）"
     },
     {
       "id": "skill_seer_s3_spirit_retreat",
@@ -2083,12 +2083,12 @@
       "flagship": false,
       "lore": "序列3 古代学者 —— 知道什么时候该不在场",
       "flavor": "我看见它来了，所以我不在这里。",
-      "describe": "使自身被放逐 1 tick：脱离战场规避一次指向性打击，到期于己方队尾回归。",
+      "describe": "使自身被放逐 5tick：脱离战场规避一次指向性打击，到期于己方队尾回归。",
       "effects": [
         {
           "type": "translocate",
           "op": "banish",
-          "duration": 1,
+          "duration": 5,
           "target": "self",
           "note": "预知后的规避：短促跨层"
         },
@@ -2104,7 +2104,7 @@
       "tentative": false,
       "cost": {
         "energy": 4,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 1
       },
       "reach": "ranged",
@@ -2123,7 +2123,7 @@
         ],
         "mood": "evasive, cool"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（prim）castTime 3→1 tick（对齐拍板表）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（prim）castTime 3→5tick（对齐拍板表）"
     },
     {
       "id": "skill_seer_s1_puppet_displace",
@@ -2136,12 +2136,12 @@
       "flagship": false,
       "lore": "序列1 诡秘侍者 —— 回来的路，从来不是原路",
       "flavor": "把他送走容易，让他完整地回来难。",
-      "describe": "使一名敌人被放逐 2 tick；其回归时受到 5 点精神伤害（时空乱流）。",
+      "describe": "使一名敌人被放逐 10tick；其回归时受到 5 点精神伤害（时空乱流）。",
       "effects": [
         {
           "type": "translocate",
           "op": "banish",
-          "duration": 2,
+          "duration": 10,
           "returnPayload": [
             {
               "type": "damage",
@@ -2163,7 +2163,7 @@
       "tentative": false,
       "cost": {
         "energy": 6,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 2
       },
       "reach": "ranged",
@@ -2183,7 +2183,7 @@
         ],
         "mood": "violent, displaced"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（prim）castTime 5→2 tick（对齐拍板表）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（prim）castTime 5→10tick（对齐拍板表）"
     },
     {
       "id": "skill_seer_s4_secrecy_resonance",
@@ -2196,14 +2196,14 @@
       "flagship": false,
       "lore": "序列4 诡法师 —— 原著「隐秘」权柄：令自身隔绝占卜、窥探与追踪；源堡之主借此抹去自身在命运与信息层面的痕迹。",
       "flavor": "你抬手一挥，周遭的注视便尽数滑开——他们仍在看，却什么也看不见。",
-      "describe": "自身防御 +1，持续 4 tick。战场隐秘值 ≥7 时，本卡伤害 +50%。",
+      "describe": "自身防御 +1，持续 20tick。战场隐秘值 ≥7 时，本卡伤害 +50%。",
       "effects": [
         {
           "type": "modify_stat",
           "stat": "defense",
           "value": 1,
           "mode": "delta",
-          "duration": 4,
+          "duration": 20,
           "target": "self",
           "note": "⚠️D 占位：自保增益待平衡。"
         }
@@ -2211,7 +2211,7 @@
       "tentative": false,
       "cost": {
         "energy": 4,
-        "cooldown": 5,
+        "cooldown": 25,
         "castTime": 0
       },
       "reach": "none",
@@ -2287,7 +2287,7 @@
             {
               "type": "mount_status",
               "statusId": "concealed",
-              "duration": 2
+              "duration": 10
             },
             {
               "type": "modify_damage",
@@ -2310,7 +2310,7 @@
               "stat": "gauge.rate",
               "value": 0.85,
               "mode": "mul",
-              "duration": 2,
+              "duration": 10,
               "note": "区域内敌方 gauge_rate ×0.85（隐秘拖慢）"
             }
           ],
@@ -2324,8 +2324,8 @@
       "id": "domain_illusion",
       "tier": "overlay",
       "dispelable": true,
-      "duration": 3,
-      "durationUnit": "turn",
+      "duration": 15,
+      "durationUnit": "tick",
       "triggers": [
         {
           "event": "on_attack",

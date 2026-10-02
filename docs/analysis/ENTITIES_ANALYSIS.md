@@ -90,14 +90,14 @@
 
 | 区域 | kind | 作用方 | 触发 | duration | 途径 |
 |---|---|---|---|---|---|
-| `zone_jurisdiction` | `blessing` | `any` | `on_occupy_tick` | 6 | 仲裁人 |
+| `zone_jurisdiction` | `blessing` | `any` | `on_occupy_tick` | 30 | 仲裁人 |
 | `zone_no_darkness` | `blessing` | `any` | `on_occupy_tick` | — | 歌颂者 |
 | `zone_true_death` | `hazard` | `enemy_of_owner` | `on_occupy_tick` | None | 收尸人 |
 | `zone_pale_kingdom` | `hazard` | `enemy_of_owner` | `on_occupy_tick` | None | 收尸人 |
-| `zone_doom_field` | `hazard` | `enemy_of_owner` | `on_occupy_tick` | 8 | 怪物 |
-| `zone_storm_hell` | `hazard` | `enemy_of_owner` | `on_occupy_tick` | 4 | 水手 |
+| `zone_doom_field` | `hazard` | `enemy_of_owner` | `on_occupy_tick` | 40 | 怪物 |
+| `zone_storm_hell` | `hazard` | `enemy_of_owner` | `on_occupy_tick` | 20 | 水手 |
 | `zone_mystery_realm` | `blessing` | `any` | `on_occupy_tick` | None | 占卜家 |
-| `zone_nightmare_world` | `hazard` | `enemy_of_owner` | `on_occupy_tick` | 4 | 不眠者 |
+| `zone_nightmare_world` | `hazard` | `enemy_of_owner` | `on_occupy_tick` | 20 | 不眠者 |
 
 ### 2.2 结构维度分布
 
@@ -130,34 +130,34 @@
 
 | 界域 | tier | duration | durationUnit | 可驱散 | rulePatches | 域内触发器 | 途径 |
 |---|---|---|---|---|---:|---:|---|
-| `domain_blood_moon` | `overlay` | 3 | turn | 是 | 2 | 1 | 药师 |
-| `domain_reenactment` | `overlay` | 3 | turn | 是 | 2 | 1 | 学徒 |
-| `domain_full_moon` | `overlay` | 3 | turn | 是 | 2 | 1 | 仲裁人 |
-| `edict_seal` | `overlay` | 4 | tick | 是 | 1 | 0 | 仲裁人 |
-| `order_bedrock` | `overlay` | 8 | tick | 是 | 3 | 0 | 仲裁人 |
-| `reality_press` | `overlay` | 6 | tick | 是 | 1 | 0 | 仲裁人 |
-| `domain_mirror_maze` | `overlay` | 3 | turn | 是 | 2 | 1 | 刺客 |
-| `domain_mirror_world` | `overlay` | 2 | turn | 是 | 2 | 1 | 刺客 |
-| `domain_holy_nation` | `overlay` | 4 | turn | 是 | 2 | 2 | 歌颂者 |
-| `domain_underworld_gate` | `overlay` | 4 | turn | 是 | 2 | 2 | 收尸人 |
-| `domain_pale_world` | `overlay` | 3 | turn | 是 | 2 | 2 | 收尸人 |
-| `domain_abyssal` | `overlay` | 3 | turn | 是 | 2 | 1 | 罪犯 |
-| `domain_war_mist` | `overlay` | 3 | turn | 是 | 3 | 2 | 猎人 |
-| `domain_extreme_weather` | `overlay` | 4 | turn | 是 | 1 | 2 | 猎人 |
-| `domain_distorted_order` | `overlay` | 3 | turn | 是 | 2 | 1 | 律师 |
-| `domain_nature_world` | `overlay` | 4 | turn | 是 | 2 | 2 | 耕种者 |
-| `domain_spirit_shroud` | `overlay` | 3 | turn | 是 | 2 | 2 | 囚犯 |
-| `domain_astral_field` | `overlay` | 3 | turn | 是 | 2 | 2 | 窥秘人 |
-| `domain_astral_sanctum` | `overlay` | 3 | turn | 是 | 1 | 2 | 阅读者 |
+| `domain_blood_moon` | `overlay` | 15 | tick | 是 | 2 | 1 | 药师 |
+| `domain_reenactment` | `overlay` | 15 | tick | 是 | 2 | 1 | 学徒 |
+| `domain_full_moon` | `overlay` | 15 | tick | 是 | 2 | 1 | 仲裁人 |
+| `edict_seal` | `overlay` | 20 | tick | 是 | 1 | 0 | 仲裁人 |
+| `order_bedrock` | `overlay` | 40 | tick | 是 | 3 | 0 | 仲裁人 |
+| `reality_press` | `overlay` | 30 | tick | 是 | 1 | 0 | 仲裁人 |
+| `domain_mirror_maze` | `overlay` | 15 | tick | 是 | 2 | 1 | 刺客 |
+| `domain_mirror_world` | `overlay` | 10 | tick | 是 | 2 | 1 | 刺客 |
+| `domain_holy_nation` | `overlay` | 20 | tick | 是 | 2 | 2 | 歌颂者 |
+| `domain_underworld_gate` | `overlay` | 20 | tick | 是 | 2 | 2 | 收尸人 |
+| `domain_pale_world` | `overlay` | 15 | tick | 是 | 2 | 2 | 收尸人 |
+| `domain_abyssal` | `overlay` | 15 | tick | 是 | 2 | 1 | 罪犯 |
+| `domain_war_mist` | `overlay` | 15 | tick | 是 | 3 | 2 | 猎人 |
+| `domain_extreme_weather` | `overlay` | 20 | tick | 是 | 1 | 2 | 猎人 |
+| `domain_distorted_order` | `overlay` | 15 | tick | 是 | 2 | 1 | 律师 |
+| `domain_nature_world` | `overlay` | 20 | tick | 是 | 2 | 2 | 耕种者 |
+| `domain_spirit_shroud` | `overlay` | 15 | tick | 是 | 2 | 2 | 囚犯 |
+| `domain_astral_field` | `overlay` | 15 | tick | 是 | 2 | 2 | 窥秘人 |
+| `domain_astral_sanctum` | `overlay` | 15 | tick | 是 | 1 | 2 | 阅读者 |
 | `domain_sea_kingdom` | `hero` | -1 | turn | 否 | 2 | 3 | 水手 |
-| `domain_dominion` | `overlay` | 3 | turn | 是 | 1 | 2 | 通识者 |
-| `domain_civilization` | `overlay` | 3 | turn | 是 | 1 | 2 | 通识者 |
-| `domain_illusion` | `overlay` | 3 | turn | 是 | 2 | 1 | 占卜家 |
-| `domain_night_realm` | `overlay` | 4 | turn | 是 | 2 | 4 | 不眠者 |
-| `domain_shared_dream` | `overlay` | 3 | turn | 是 | 1 | 2 | 观众 |
-| `domain_dark_sea` | `overlay` | 4 | turn | 是 | 2 | 1 | 秘祈人 |
-| `domain_clock_tower` | `overlay` | 3 | turn | 是 | 1 | 1 | 偷盗者 |
-| `domain_dawn` | `overlay` | 3 | turn | 是 | 2 | 2 | 战士 |
+| `domain_dominion` | `overlay` | 15 | tick | 是 | 1 | 2 | 通识者 |
+| `domain_civilization` | `overlay` | 15 | tick | 是 | 1 | 2 | 通识者 |
+| `domain_illusion` | `overlay` | 15 | tick | 是 | 2 | 1 | 占卜家 |
+| `domain_night_realm` | `overlay` | 20 | tick | 是 | 2 | 4 | 不眠者 |
+| `domain_shared_dream` | `overlay` | 15 | tick | 是 | 1 | 2 | 观众 |
+| `domain_dark_sea` | `overlay` | 20 | tick | 是 | 2 | 1 | 秘祈人 |
+| `domain_clock_tower` | `overlay` | 15 | tick | 是 | 1 | 1 | 偷盗者 |
+| `domain_dawn` | `overlay` | 15 | tick | 是 | 2 | 2 | 战士 |
 
 ### 3.2 结构维度分布
 
@@ -167,8 +167,8 @@
 | tier | `hero` | 1 |
 | dispelable | 可驱散 | 27 |
 | dispelable | 不可驱散 | 1 |
-| durationUnit | `turn` | 25 |
-| durationUnit | `tick` | 3 |
+| durationUnit | `tick` | 27 |
+| durationUnit | `turn` | 1 |
 
 ### 3.3 rulePatches 规则补丁 kind 分布
 

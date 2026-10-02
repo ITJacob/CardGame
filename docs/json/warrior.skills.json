@@ -1,2374 +1,2374 @@
 {
- "pathwayId": "warrior",
- "pathwayName": "战士",
- "sourceFile": "../archive/skill-design_v0.3/战士途径_技能池_v0.3.md",
- "sourceVersion": "v0.3",
- "artStyle": "heroic 19th-century European romantic oil painting, bronze and dawn-orange palette with fading gold light, monumental low-angle compositions, battered steel texture and dust haze",
- "artFrameEpic": "four corner ornaments as greatsword blades, top emblem a rising sun, bottom emblem battle-scarred armor, battered silver-grey, bronze and dawn-orange",
- "artFrameLegendary": "four corner ornaments as a colossal greatsword with a rising sun crest, top emblem a radiant sun disk, bottom emblem heroic banners, gold-painted full plate, bronze and dawn-orange",
- "axes": {
-  "martial": {
-   "symbol": "🗡️",
-   "name": "武艺",
-   "statusId": "weapon_grandmaster",
-   "enablers": [
-    "兵械通晓",
-    "武器大师"
-   ],
-   "payoffs": [
-    "无坚不摧",
-    "神罚"
-   ],
-   "note": "2026-09-20 清理悬空 statusId（原为 martial_skill，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-29 环节⑤：兵械通晓补 weapon_grandmaster 产层段（产层 12→20）；payoffs 核正（巨力挥击无此卡移除，换无坚不摧补读层段升 landed）；weapon_grandmaster 补层数引擎（身份 8→15）"
-  },
-  "guard": {
-   "symbol": "🛡️",
-   "name": "守护",
-   "statusId": "guardianship",
-   "enablers": [
-    "守护状态",
-    "黎明铠甲"
-   ],
-   "payoffs": [],
-   "note": "payoffs 2026-09-26 评审：guardianship 仅守护状态自挂（2026-09-29 自 common guard 分叉为守护轴私有身份「守护」，承伤重定向+自身减伤），全途径无卡读其层数/存在 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：guardianship 收益=承伤重定向运行时语义（执行上下文 R 节点），消费者是被保护友军而非层数读档（2026-09-29 私有化后 rationale 改写，原「借 common 机制桩」已不成立）；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：守护姿态无此卡移除，黎明铠甲补 guardianship 产层段（产层 12→20）；无 binding 的 guardianship 语义待内核确认",
-   "payoffVacuumAccepted": true
-  },
-  "hunt": {
-   "symbol": "🎯",
-   "name": "猎魔",
-   "statusId": "ambush_shroud",
-   "enablers": [
-    "隐蔽",
-    "猎魔之眼"
-   ],
-   "payoffs": [
-    "晨曦领域"
-   ],
-   "note": "2026-09-20 清理悬空 statusId（原为 dawn，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 2026-09-21：黎明轴，相位挂钩 dawn；与 twilight 轴互斥（黎明/黄昏光照度区间重叠，不可用 luminance 区分）。 ｜ 2026-09-29 环节⑤：ambush_shroud 补层数引擎（身份 8→15）；猎魔之眼补 ambush_shroud 产层段、晨曦领域补读层段（payoff 升 landed）；晨曦领域不挂 ambush_shroud 移出 enablers（产层 12→20）；猎魔之眼读 weapon_grandmaster 跨轴 + puppet_string 跨系（hunt→seer）；隐蔽读 conceal_authority 跨系（hunt→sleepless）"
-  },
-  "twilight": {
-   "symbol": "🌇",
-   "name": "黄昏",
-   "statusId": "aging",
-   "enablers": [
-    "迟暮",
-    "黄昏重生"
-   ],
-   "note": "2026-09-21：黄昏轴，相位挂钩 dusk；与 hunt 轴互斥。 ｜ 2026-09-29 环节⑤：enablers 核正（暮色侵蚀无此卡移除，迟暮/黄昏重生实证挂 aging，产层 5→20）；黄昏巨剑（martial 轴）挂 aging 自动成跨轴消费",
-   "payoffs": [
-    "神罚"
-   ]
-  }
- },
- "cards": [
-  {
-   "id": "skill_warrior_s9_martial_combo",
-   "name": "格斗术·连击",
-   "kind": "active",
-   "sequence": 9,
-   "sequenceName": "战士",
-   "rarity": "common",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列9 战士 —— \"各种武器防具精通、各种格斗术掌握\"",
-   "flavor": "你熟稔每一种徒手与持械的打法，两记连贯的拳脚砸在同一个破绽上。",
-   "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害。",
-   "cost": {
-    "energy": 2,
-    "cooldown": 2,
-    "castTime": 0
-   },
-   "reach": "melee",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
+  "pathwayId": "warrior",
+  "pathwayName": "战士",
+  "sourceFile": "../archive/skill-design_v0.3/战士途径_技能池_v0.3.md",
+  "sourceVersion": "v0.3",
+  "artStyle": "heroic 19th-century European romantic oil painting, bronze and dawn-orange palette with fading gold light, monumental low-angle compositions, battered steel texture and dust haze",
+  "artFrameEpic": "four corner ornaments as greatsword blades, top emblem a rising sun, bottom emblem battle-scarred armor, battered silver-grey, bronze and dawn-orange",
+  "artFrameLegendary": "four corner ornaments as a colossal greatsword with a rising sun crest, top emblem a radiant sun disk, bottom emblem heroic banners, gold-painted full plate, bronze and dawn-orange",
+  "axes": {
+    "martial": {
+      "symbol": "🗡️",
+      "name": "武艺",
+      "statusId": "weapon_grandmaster",
+      "enablers": [
+        "兵械通晓",
+        "武器大师"
+      ],
+      "payoffs": [
+        "无坚不摧",
+        "神罚"
+      ],
+      "note": "2026-09-20 清理悬空 statusId（原为 martial_skill，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-29 环节⑤：兵械通晓补 weapon_grandmaster 产层段（产层 12→20）；payoffs 核正（巨力挥击无此卡移除，换无坚不摧补读层段升 landed）；weapon_grandmaster 补层数引擎（身份 8→15）"
     },
-    "fallbackSort": "hp_desc"
-   },
-   "effects": [
-    {
-     "op": "repeat",
-     "count": 2,
-     "shareTarget": true,
-     "steps": [
-      {
-       "type": "damage",
-       "element": "physical",
-       "value": 1
-      }
-     ]
-    }
-   ],
-   "upgradeLadder": {
-    "ref": "B6",
-    "tiers": [
-     {
-      "name": "段数提升",
-      "note": "段数 2→3→4（序列8 格斗家档）",
-      "effects": [
-       {
-        "op": "repeat",
-        "count": 4,
-        "shareTarget": true,
-        "steps": [
-         {
-          "type": "damage",
-          "element": "physical",
-          "value": 2
-         }
-        ]
-       }
+    "guard": {
+      "symbol": "🛡️",
+      "name": "守护",
+      "statusId": "guardianship",
+      "enablers": [
+        "守护状态",
+        "黎明铠甲"
+      ],
+      "payoffs": [],
+      "note": "payoffs 2026-09-26 评审：guardianship 仅守护状态自挂（2026-09-29 自 common guard 分叉为守护轴私有身份「守护」，承伤重定向+自身减伤），全途径无卡读其层数/存在 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：guardianship 收益=承伤重定向运行时语义（执行上下文 R 节点），消费者是被保护友军而非层数读档（2026-09-29 私有化后 rationale 改写，原「借 common 机制桩」已不成立）；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：守护姿态无此卡移除，黎明铠甲补 guardianship 产层段（产层 12→20）；无 binding 的 guardianship 语义待内核确认",
+      "payoffVacuumAccepted": true
+    },
+    "hunt": {
+      "symbol": "🎯",
+      "name": "猎魔",
+      "statusId": "ambush_shroud",
+      "enablers": [
+        "隐蔽",
+        "猎魔之眼"
+      ],
+      "payoffs": [
+        "晨曦领域"
+      ],
+      "note": "2026-09-20 清理悬空 statusId（原为 dawn，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 2026-09-21：黎明轴，相位挂钩 dawn；与 twilight 轴互斥（黎明/黄昏光照度区间重叠，不可用 luminance 区分）。 ｜ 2026-09-29 环节⑤：ambush_shroud 补层数引擎（身份 8→15）；猎魔之眼补 ambush_shroud 产层段、晨曦领域补读层段（payoff 升 landed）；晨曦领域不挂 ambush_shroud 移出 enablers（产层 12→20）；猎魔之眼读 weapon_grandmaster 跨轴 + puppet_string 跨系（hunt→seer）；隐蔽读 conceal_authority 跨系（hunt→sleepless）"
+    },
+    "twilight": {
+      "symbol": "🌇",
+      "name": "黄昏",
+      "statusId": "aging",
+      "enablers": [
+        "迟暮",
+        "黄昏重生"
+      ],
+      "note": "2026-09-21：黄昏轴，相位挂钩 dusk；与 hunt 轴互斥。 ｜ 2026-09-29 环节⑤：enablers 核正（暮色侵蚀无此卡移除，迟暮/黄昏重生实证挂 aging，产层 5→20）；黄昏巨剑（martial 轴）挂 aging 自动成跨轴消费",
+      "payoffs": [
+        "神罚"
       ]
-     },
-     {
-      "name": "关节技",
-      "note": "末段附加 gauge.current -15",
-      "effects": [
-       {
-        "op": "repeat",
-        "count": 2,
-        "shareTarget": true,
-        "steps": [
-         {
-          "type": "damage",
-          "element": "physical",
-          "value": 2
-         }
-        ]
-       },
-       {
-        "type": "modify_resource",
-        "resource": "gauge.current",
-        "value": -15,
-        "mode": "delta"
-       }
-      ]
-     }
-    ]
-   },
-   "tentative": false,
-   "art": {
-    "subject": "a scarred brawler driving two chained punches into a single crack",
-    "elements": [
-     "calloused fists",
-     "splintered training post",
-     "dust kicked up"
-    ],
-    "mood": "kinetic, relentless"
-   },
-   "conversionNotes": "直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。"
+    }
   },
-  {
-   "id": "skill_warrior_s9_strong_physique",
-   "name": "强健体魄",
-   "kind": "passive",
-   "sequence": 9,
-   "sequenceName": "战士",
-   "rarity": "common",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列9 战士 —— \"超越常人的力量与敏捷\"",
-   "flavor": "你的力量与敏捷早已越过常人的极限，出手更重，步子也更快。",
-   "describe": "战斗开始时，自身攻击 +2、行动条速率 +3，持续整场。",
-   "hook": "on_battle_start",
-   "effects": [
+  "cards": [
     {
-     "type": "modify_stat",
-     "stat": "attack",
-     "value": 2,
-     "mode": "delta",
-     "duration": null,
-     "target": "self"
-    },
-    {
-     "type": "modify_stat",
-     "stat": "gauge.rate",
-     "value": 3,
-     "mode": "delta",
-     "duration": null,
-     "target": "self"
-    }
-   ],
-   "sharedAcross": [
-    "sleepless"
-   ],
-   "tentative": false,
-   "frameworkFlags": [
-    {
-     "code": "GAUGE_RATE_AS_STAT",
-     "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge_rate) 表达持续/常驻修正，待内核裁定归一",
-     "landed": true
-    }
-   ],
-   "art": {
-    "subject": "a broad-shouldered fighter stretching sinewy muscle at dawn",
-    "elements": [
-     "rope-veined arms",
-     "morning mist",
-     "worn leather straps"
-    ],
-    "mood": "vigorous, grounded"
-   }
-  },
-  {
-   "id": "skill_warrior_s9_arms_mastery",
-   "name": "兵械通晓",
-   "kind": "passive",
-   "sequence": 9,
-   "sequenceName": "战士",
-   "rarity": "common",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列9 战士 —— \"各种武器防具精通\"",
-   "flavor": "你懂每一种兵器的重心，也懂每一副护甲的接缝——手上更有力，身上更耐打。",
-   "describe": "战斗开始时，自身攻击 +1、护甲 +3，并获得「武器大师」整场：攻击 +3、物理伤害无视目标一半护甲。",
-   "hook": "on_battle_start",
-   "effects": [
-    {
-     "type": "modify_stat",
-     "stat": "attack",
-     "value": 1,
-     "mode": "delta",
-     "duration": null,
-     "target": "self"
-    },
-    {
-     "type": "modify_resource",
-     "resource": "armor",
-     "value": 3,
-     "mode": "delta",
-     "target": "self"
-    },
-    {
-     "type": "mount_status",
-     "statusId": "weapon_grandmaster",
-     "duration": null,
-     "target": "self",
-     "note": "通晓兵械者即武器大师（环节⑤ 2026-09-29 补产层段）⚠️D 与同名旗舰被动叠加语义待平衡"
-    }
-   ],
-   "sharedAcross": [
-    "sleepless"
-   ],
-   "tentative": false,
-   "conversionNotes": "翻译/语义：武艺轴身份状态 `武技` 挂载源（武器精通）。",
-   "art": {
-    "subject": "a warrior weighing a well-worn blade across both palms",
-    "elements": [
-     "racked polearms and axes",
-     "oil-stained whetstone",
-     "patched gambeson"
-    ],
-    "mood": "practiced, calm"
-   }
-  },
-  {
-   "id": "skill_warrior_s8_iron_body",
-   "name": "铁躯",
-   "kind": "passive",
-   "sequence": 8,
-   "sequenceName": "格斗家",
-   "rarity": "common",
-   "axis": "guard",
-   "flagship": false,
-   "lore": "序列8 格斗家 —— \"格斗专家，能凭借身体减弱超自然力量影响\"",
-   "flavor": "非凡力量落在你身上，就像雨水落在铁板上——滑开，只留下一点湿痕。",
-   "describe": "战斗开始时获得「铁躯」：全元素抗性 +12%，持续整场，不可驱散。；并获得「战旗」4 tick（己方伤害 ×1.1，跨系枢纽）。",
-   "hook": "on_battle_start",
-   "effects": [
-    {
-     "type": "mount_status",
-     "statusId": "iron_body",
-     "duration": null,
-     "target": "self"
-    },
-    {
-     "type": "mount_status",
-     "statusId": "battle_banner",
-     "duration": 4,
-     "target": "self",
-     "note": "跨系枢纽挂载（2026-09-29 跨系批，产层兼枢纽计数）"
-    }
-   ],
-   "sharedAcross": [
-    "sleepless"
-   ],
-   "tentative": false,
-   "art": {
-    "subject": "a pugilist whose skin turns to dull iron as rain slides off",
-    "elements": [
-     "beading rainwater",
-     "dull metallic sheen on skin",
-     "stoic stance"
-    ],
-    "mood": "unyielding, stoic"
-   }
-  },
-  {
-   "id": "skill_warrior_s8_close_grapple",
-   "name": "近身缠斗",
-   "kind": "active",
-   "sequence": 8,
-   "sequenceName": "格斗家",
-   "rarity": "common",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列8 格斗家 —— \"擅长近距离战斗\"",
-   "flavor": "你贴上去，用身体和兵刃缠住它——它想挥下一击，却发现节奏已经被你踩住了。",
-   "describe": "对一名近战敌人造成 2 点物理伤害，并使其行动条进度 -20。",
-   "cost": {
-    "energy": 2,
-    "cooldown": 2,
-    "castTime": 0
-   },
-   "reach": "melee",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
-    },
-    "fallbackSort": "gauge_desc"
-   },
-   "effects": [
-    {
-     "type": "damage",
-     "element": "physical",
-     "value": 2
-    },
-    {
-     "type": "modify_resource",
-     "resource": "gauge.current",
-     "value": -20,
-     "mode": "delta"
-    }
-   ],
-   "sharedAcross": [
-    "sleepless"
-   ],
-   "tentative": false,
-   "art": {
-    "subject": "a grappler locking a hulking foe in a crushing clinch",
-    "elements": [
-     "intertwined limbs",
-     "pressed-in armor",
-     "strained enemy blade"
-    ],
-    "mood": "suffocating, tense"
-   },
-   "conversionNotes": "直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格2 基准2）。条件/读层追加段不动。"
-  },
-  {
-   "id": "skill_warrior_s8_force_deflect",
-   "name": "卸力",
-   "kind": "active",
-   "sequence": 8,
-   "sequenceName": "格斗家",
-   "rarity": "common",
-   "axis": "guard",
-   "flagship": false,
-   "lore": "序列8 格斗家 —— \"能凭借身体减弱超自然力量影响\"",
-   "flavor": "你卸掉那一道缠上来的异力，顺势在身前凝出一面薄薄的银光。",
-   "describe": "驱散自身 1 个减益或持续伤害状态，并获得 4 点护盾，持续 2 tick。",
-   "cost": {
-    "energy": 1,
-    "cooldown": 3,
-    "castTime": 0
-   },
-   "reach": "none",
-   "target": {
-    "selectionMode": "auto",
-    "request": {
-     "faction": "self",
-     "scope": "single"
-    }
-   },
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "dispel",
-       "target": "self",
-       "dispelTarget": "unit",
-       "filter": {
-        "category": [
-         "debuff"
-        ],
-        "count": 1
-       }
+      "id": "skill_warrior_s9_martial_combo",
+      "name": "格斗术·连击",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "战士",
+      "rarity": "common",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列9 战士 —— \"各种武器防具精通、各种格斗术掌握\"",
+      "flavor": "你熟稔每一种徒手与持械的打法，两记连贯的拳脚砸在同一个破绽上。",
+      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 10,
+        "castTime": 0
       },
-      {
-       "type": "mount_status",
-       "statusId": "shield",
-       "value": 4,
-       "duration": 2,
-       "target": "self"
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "art": {
-    "subject": "a fighter brushing aside a writhing force and raising a thin silver ward",
-    "elements": [
-     "deflected shadowy tendril",
-     "thin silver light-shield",
-     "flowing redirecting hands"
-    ],
-    "mood": "fluid, guarded"
-   }
-  },
-  {
-   "id": "skill_warrior_s7_weapon_grandmaster",
-   "name": "武器大师",
-   "kind": "passive",
-   "sequence": 7,
-   "sequenceName": "武器大师",
-   "rarity": "uncommon",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列7 武器大师 —— \"任何武器到手即大师级水准（含非凡武器）\"",
-   "flavor": "凡是能被握在手里的东西，到你手上就是杀器——连甲缝在哪里，你一摸就知道。",
-   "describe": "战斗开始时获得「武器大师」：攻击 +3，自身造成的物理伤害无视目标一半护甲，持续整场。",
-   "hook": "on_battle_start",
-   "effects": [
-    {
-     "type": "mount_status",
-     "statusId": "weapon_grandmaster",
-     "duration": null,
-     "target": "self"
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": "翻译/语义：武艺轴旗舰：挂 `武技` + 任意武器大师级（payoff 一体）。",
-   "art": {
-    "subject": "a master sweeping through a dozen weapons in one seamless arc",
-    "elements": [
-     "spinning sword into axe",
-     "floating weapon silhouettes",
-     "precise footwork"
-    ],
-    "mood": "effortless, lethal"
-   }
-  },
-  {
-   "id": "skill_warrior_s7_weapon_tamer",
-   "name": "驭器",
-   "kind": "passive",
-   "sequence": 7,
-   "sequenceName": "武器大师",
-   "rarity": "uncommon",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列7 武器大师 —— \"有效降低武器负面影响\"",
-   "flavor": "非凡武器反噬的那一半代价，到你手里总要打个对折。",
-   "describe": "战斗开始时获得「驭器」：施加到你身上的减益与持续伤害状态，持续时间减半，持续整场。",
-   "hook": "on_battle_start",
-   "effects": [
-    {
-     "type": "mount_status",
-     "statusId": "weapon_tamer",
-     "duration": null,
-     "target": "self"
-    }
-   ],
-   "tentative": false,
-   "art": {
-    "subject": "a warrior calmly gripping a cursed blade that stops struggling",
-    "elements": [
-     "black resentment curling off steel",
-     "steadied trembling edge",
-     "firm gauntleted hand"
-    ],
-    "mood": "dominant, quiet"
-   }
-  },
-  {
-   "id": "skill_warrior_s7_armor_crusher",
-   "name": "破甲重击",
-   "kind": "active",
-   "sequence": 7,
-   "sequenceName": "武器大师",
-   "rarity": "uncommon",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列7 武器大师 —— \"超强力量、体质和敏捷\"",
-   "flavor": "你抡圆了砸下去，力量不止落在它身上，也砸碎了它身上的甲。",
-   "describe": "对一名近战敌人造成 4 点物理伤害，并击碎其 3 点护甲。",
-   "cost": {
-    "energy": 3,
-    "cooldown": 3,
-    "castTime": 0
-   },
-   "reach": "melee",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
-    },
-    "fallbackSort": "armor_desc"
-   },
-   "effects": [
-    {
-     "type": "damage",
-     "element": "physical",
-     "value": 4
-    },
-    {
-     "type": "modify_resource",
-     "resource": "armor",
-     "value": -3,
-     "mode": "delta"
-    }
-   ],
-   "tentative": false,
-   "art": {
-    "subject": "a heavy overhead blow shattering a breastplate into flying shards",
-    "elements": [
-     "raised great maul",
-     "bursting armor fragments",
-     "shockwave of dust"
-    ],
-    "mood": "crushing, explosive"
-   }
-  },
-  {
-   "id": "skill_warrior_s6_dawn_blade",
-   "name": "晨曦之剑",
-   "kind": "active",
-   "sequence": 6,
-   "sequenceName": "黎明骑士",
-   "rarity": "uncommon",
-   "axis": "hunt",
-   "flagship": false,
-   "lore": "序列6 黎明骑士 —— \"『晨曦之剑』：凝聚武器（最强为双手巨剑）\"",
-   "flavor": "晨曦在你掌心凝成一柄剑；你若愿把它铸成双手巨剑，它便沉重到能劈开城墙——只是挥起来，慢了些。",
-   "describe": "凝聚晨曦之剑，持续 4 tick：攻击 +4，每次造成伤害时附加 2 点无元素伤害。",
-   "cost": {
-    "energy": 3,
-    "cooldown": 4,
-    "castTime": 0
-   },
-   "reach": "none",
-   "target": {
-    "selectionMode": "auto",
-    "request": {
-     "faction": "self",
-     "scope": "single"
-    }
-   },
-   "effects": [
-    {
-     "type": "mount_status",
-     "statusId": "dawn_blade",
-     "duration": 4,
-     "target": "self"
-    }
-   ],
-   "upgradeLadder": {
-    "ref": "B6",
-    "tiers": [
-     {
-      "name": "双手巨剑",
-      "note": "attack +6 但 gauge_rate -3（巨剑笨重）",
-      "statusDefOverride": {
-       "effects": [
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
         {
-         "type": "modify_stat",
-         "stat": "attack",
-         "value": 6,
-         "mode": "delta",
-         "duration": 4,
-         "target": "self"
+          "op": "repeat",
+          "count": 2,
+          "shareTarget": true,
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 1
+            }
+          ]
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "段数提升",
+            "note": "段数 2→3→4（序列8 格斗家档）",
+            "effects": [
+              {
+                "op": "repeat",
+                "count": 4,
+                "shareTarget": true,
+                "steps": [
+                  {
+                    "type": "damage",
+                    "element": "physical",
+                    "value": 2
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "关节技",
+            "note": "末段附加 gauge.current -15",
+            "effects": [
+              {
+                "op": "repeat",
+                "count": 2,
+                "shareTarget": true,
+                "steps": [
+                  {
+                    "type": "damage",
+                    "element": "physical",
+                    "value": 2
+                  }
+                ]
+              },
+              {
+                "type": "modify_resource",
+                "resource": "gauge.current",
+                "value": -15,
+                "mode": "delta"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": false,
+      "art": {
+        "subject": "a scarred brawler driving two chained punches into a single crack",
+        "elements": [
+          "calloused fists",
+          "splintered training post",
+          "dust kicked up"
+        ],
+        "mood": "kinetic, relentless"
+      },
+      "conversionNotes": "直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。"
+    },
+    {
+      "id": "skill_warrior_s9_strong_physique",
+      "name": "强健体魄",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "战士",
+      "rarity": "common",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列9 战士 —— \"超越常人的力量与敏捷\"",
+      "flavor": "你的力量与敏捷早已越过常人的极限，出手更重，步子也更快。",
+      "describe": "战斗开始时，自身攻击 +2、行动条速率 +3，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
         },
         {
-         "type": "modify_stat",
-         "stat": "gauge.rate",
-         "value": -3,
-         "mode": "delta",
-         "duration": 4,
-         "target": "self"
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 3,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
         }
-       ]
-      }
-     }
-    ]
-   },
-   "tentative": false,
-   "frameworkFlags": [
-    {
-     "code": "GAUGE_RATE_AS_STAT",
-     "note": "升级档的 gauge_rate 修正面同强健体魄",
-     "landed": true
-    }
-   ],
-   "conversionNotes": "翻译/语义：猎魔轴破幻/驱怨招牌（读 `黎明` 前置）。 ｜ 2026-09-29 D 类批：轴标签 martial→hunt（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12）",
-   "phaseHooks": [
-    {
-     "phases": [
-      "dawn"
-     ],
-     "mul": 1.2,
-     "target": "damage",
-     "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
-    }
-   ],
-   "art": {
-    "subject": "a knight condensing sunrise light into a two-handed greatsword",
-    "elements": [
-     "golden light gathering in palm",
-     "massive glowing blade",
-     "first rays over battlefield"
-    ],
-    "mood": "radiant, resolute"
-   }
-  },
-  {
-   "id": "skill_warrior_s6_dawn_armor",
-   "name": "黎明铠甲",
-   "kind": "active",
-   "sequence": 6,
-   "sequenceName": "黎明骑士",
-   "rarity": "uncommon",
-   "axis": "guard",
-   "flagship": false,
-   "lore": "序列6 黎明骑士 —— \"『黎明铠甲』：精炼全身盔甲\"",
-   "flavor": "晨曦在你的躯体上锻成一副贴身的甲，罩住你的同时，也烧掉了附着其上的污秽。",
-   "describe": "自身护甲 +6（4 tick），并驱散自身 1 个减益状态；黎明之甲自成守护（守护 2 tick：自身受伤 ×0.7）。",
-   "cost": {
-    "energy": 2,
-    "cooldown": 3,
-    "castTime": 0
-   },
-   "reach": "none",
-   "target": {
-    "selectionMode": "auto",
-    "request": {
-     "faction": "self",
-     "scope": "single"
-    }
-   },
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "modify_stat",
-       "stat": "armor",
-       "value": 6,
-       "mode": "delta",
-       "duration": 4,
-       "target": "self"
-      },
-      {
-       "type": "dispel",
-       "target": "self",
-       "dispelTarget": "unit",
-       "filter": {
-        "category": [
-         "debuff"
-        ],
-        "count": 1
-       }
-      },
-      {
-       "type": "mount_status",
-       "statusId": "guardianship",
-       "duration": 2,
-       "target": "self",
-       "note": "独身守护：无被守护者，仅取自身减伤语义（环节⑤ 2026-09-29 补产层段）⚠️D 无 binding 的 guardianship 语义待内核确认"
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": [
-    "稿面写 modify_resource(armor,+6,duration:4)；ddd 口径带 duration 的护甲修正为容量语义（modify_stat），已归一",
-    "翻译/语义：守护轴友军护甲（与 猎魔·晨曦同源）。"
-   ],
-   "phaseHooks": [
-    {
-     "phases": [
-      "dawn"
-     ],
-     "mul": 1.2,
-     "target": "all",
-     "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
-    }
-   ],
-   "art": {
-    "subject": "a warrior forged anew in close-fitting armor of living dawnlight",
-    "elements": [
-     "molten gold seams",
-     "purifying flames along the plates",
-     "dark taint burning away"
-    ],
-    "mood": "sacred, steadfast"
-   }
-  },
-  {
-   "id": "skill_warrior_s6_dawn_domain",
-   "name": "晨曦领域",
-   "kind": "active",
-   "sequence": 6,
-   "sequenceName": "黎明骑士",
-   "rarity": "uncommon",
-   "axis": "hunt",
-   "flagship": false,
-   "lore": "序列6 黎明骑士 —— \"『晨曦领域』：破除幻觉、驱散怨魂、削弱邪恶\"",
-   "flavor": "晨曦铺开一片领域：同伴眼前的幻象碎了，而那些邪物在光里矮了一截。",
-   "describe": "降临「晨曦领域」，持续 3 回合：驱散全体友军各 1 个负面状态，全体敌方攻击 -2；领域内不死与幻象单位每 tick 受 1 点神圣伤害，己方「光」标签单位攻击 +1；「光/净化」系卡牌效果 ×1.3，「暗影/幻象」系 ×0.7；自身从隐匿中破晓突袭：若自身伏击伪装在场，全体敌方额外受 2 点神圣伤害。自身迷失值 +1。",
-   "cost": {
-    "energy": 4,
-    "cooldown": 5,
-    "castTime": 0
-   },
-   "reach": "none",
-   "target": {
-    "selectionMode": "auto",
-    "request": {
-     "faction": "self",
-     "scope": "single"
-    },
-    "consumption": "domain"
-   },
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "domain",
-       "op": "overlay",
-       "def": "domain_dawn",
-       "duration": 3,
-       "durationUnit": "turn"
-      },
-      {
-       "type": "dispel",
-       "target": "all_allies",
-       "dispelTarget": "unit",
-       "filter": {
-        "category": [
-         "debuff",
-         "control"
-        ],
-        "count": 1
-       }
-      },
-      {
-       "type": "modify_stat",
-       "stat": "attack",
-       "value": -2,
-       "mode": "delta",
-       "duration": 3,
-       "target": "all_enemies"
-      },
-      {
-       "type": "modify_resource",
-       "resource": "lost",
-       "value": 1,
-       "mode": "delta",
-       "target": "self",
-       "note": "界域操作租金"
-      },
-      {
-       "op": "if",
-       "condition": {
-        "kind": "has_status",
-        "side": "self",
-        "id": "ambush_shroud",
-        "cmp": ">=",
-        "n": 1
-       },
-       "then": [
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": false,
+      "frameworkFlags": [
         {
-         "type": "damage",
-         "element": "holy",
-         "value": 2,
-         "target": "all_enemies",
-         "note": "破晓突袭：自身伏击伪装在场则晨曦额外灼伤全体敌方 2 点（环节⑤ 2026-09-29 补读层段：ambush_shroud payoff 升 landed）"
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "ddd 将 gauge.* 列为 modify_resource 键；卡面按 modify_stat(gauge_rate) 表达持续/常驻修正，待内核裁定归一",
+          "landed": true
         }
-       ],
-       "else": []
+      ],
+      "art": {
+        "subject": "a broad-shouldered fighter stretching sinewy muscle at dawn",
+        "elements": [
+          "rope-veined arms",
+          "morning mist",
+          "worn leather straps"
+        ],
+        "mood": "vigorous, grounded"
       }
-     ]
-    }
-   ],
-   "domain": {
-    "tier": "overlay",
-    "def": "domain_dawn",
-    "duration": 3,
-    "durationUnit": "turn",
-    "dispelable": true,
-    "envRulesText": "全场：unitType UNDEAD 或持 illusion 标签的单位每 tick 受 damage(holy, 1)（晨曦灼邪）；己方「光」标签单位 attack +1（双向：灼邪 / 扶光）",
-    "rulePatches": [
-     {
-      "kind": "empower",
-      "side": "both",
-      "tag": [
-       "光",
-       "净化"
-      ],
-      "mul": 1.3
-     },
-     {
-      "kind": "empower",
-      "side": "both",
-      "tag": [
-       "暗影",
-       "幻象"
-      ],
-      "mul": 0.7
-     }
-    ]
-   },
-   "tags": [
-    "光",
-    "净化"
-   ],
-   "tentative": false,
-   "conversionNotes": "翻译/语义：猎魔轴旗舰主题界域；破幻/驱怨/削弱邪恶（payoff 一体）+ 隐蔽时写隐秘值。✅ 依赖已落。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
-   "phaseHooks": [
-    {
-     "phases": [
-      "dawn"
-     ],
-     "mul": 1.2,
-     "target": "all",
-     "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
-    }
-   ],
-   "art": {
-    "subject": "a knight expanding a dome of morning light that withers lurking shades",
-    "elements": [
-     "expanding golden dome",
-     "shattering illusions like glass",
-     "recoiling shadow creatures"
-    ],
-    "mood": "purifying, majestic"
-   }
-  },
-  {
-   "id": "skill_warrior_s6_storm_of_light",
-   "name": "光之风暴",
-   "kind": "active",
-   "sequence": 6,
-   "sequenceName": "黎明骑士",
-   "rarity": "uncommon",
-   "axis": "hunt",
-   "flagship": false,
-   "lore": "序列6 黎明骑士 —— \"『光之风暴』：最强攻击，锐利飓风摧毁人体\"",
-   "flavor": "你掀起的不是风，是无数片薄到看不见的光——它们在敌人之间掠过，留下一道道细而深的口子。",
-   "describe": "对全体敌方造成 2 点无元素伤害，并击碎各自 2 点护甲。",
-   "cost": {
-    "energy": 4,
-    "cooldown": 5,
-    "castTime": 0
-   },
-   "reach": "none",
-   "target": {
-    "selectionMode": "auto",
-    "request": {
-     "faction": "enemy",
-     "scope": "all"
-    }
-   },
-   "effects": [
-    {
-     "type": "damage",
-     "element": "none",
-     "value": 2,
-     "target": "all_enemies"
     },
     {
-     "type": "modify_resource",
-     "resource": "armor",
-     "value": -2,
-     "mode": "delta",
-     "target": "all_enemies"
-    }
-   ],
-   "upgradeLadder": {
-    "ref": "B6",
-    "tiers": [
-     {
-      "name": "战斗权柄档",
-      "note": "序列2 荣耀者的战斗权柄版本（同技能强化档）",
+      "id": "skill_warrior_s9_arms_mastery",
+      "name": "兵械通晓",
+      "kind": "passive",
+      "sequence": 9,
+      "sequenceName": "战士",
+      "rarity": "common",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列9 战士 —— \"各种武器防具精通\"",
+      "flavor": "你懂每一种兵器的重心，也懂每一副护甲的接缝——手上更有力，身上更耐打。",
+      "describe": "战斗开始时，自身攻击 +1、护甲 +3，并获得「武器大师」整场：攻击 +3、物理伤害无视目标一半护甲。",
+      "hook": "on_battle_start",
       "effects": [
-       {
-        "type": "damage",
-        "element": "none",
-        "value": 6,
-        "target": "all_enemies"
-       },
-       {
-        "type": "modify_resource",
-        "resource": "armor",
-        "value": -3,
-        "mode": "delta",
-        "target": "all_enemies"
-       }
-      ]
-     }
-    ]
-   },
-   "tentative": false,
-   "conversionNotes": "翻译/语义：猎魔轴群体净化（克亡灵/怨魂/幻象）。 ｜ 2026-09-29 D 类批：轴标签 martial→hunt（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格4 基准4，群体×0.6）。条件/读层追加段不动。",
-   "phaseHooks": [
-    {
-     "phases": [
-      "dawn"
-     ],
-     "mul": 1.2,
-     "target": "damage",
-     "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
-    }
-   ],
-   "art": {
-    "subject": "a standing knight wrapped in a razor hurricane of invisible light",
-    "elements": [
-     "thousands of thin light streaks",
-     "deep cuts blooming on foes",
-     "rising luminous gale"
-    ],
-    "mood": "scouring, blinding"
-   }
-  },
-  {
-   "id": "skill_warrior_s5_guardian_stance",
-   "name": "守护状态",
-   "kind": "active",
-   "sequence": 5,
-   "sequenceName": "守护者",
-   "rarity": "rare",
-   "axis": "guard",
-   "flagship": false,
-   "lore": "序列5 守护者 —— \"『守护状态』：巨剑插地，竖立无形墙壁，帮同伴承担伤害\"；\"放弃攻击后高序列以下极少能打破防御\"",
-   "flavor": "你把巨剑插进地面，一道看不见的墙随之立起——打向同伴的那一击，落在了你的身上。",
-   "describe": "选择一名友军：自身进入守护姿态 4 tick，替其承担伤害；自身受伤 ×0.7，该友军获得 5 点护盾；期间自身伤害 ×0.5。",
-   "cost": {
-    "energy": 3,
-    "cooldown": 4,
-    "castTime": 0
-   },
-   "reach": "none",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "ally",
-     "scope": "single"
-    },
-    "fallbackSort": "hp_asc"
-   },
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "mount_status",
-       "statusId": "guardianship",
-       "duration": 4,
-       "target": "self",
-       "binding": {
-        "guardTarget": "target"
-       },
-       "note": "守护轴身份状态（2026-09-29 自 common guard 分叉私有化）"
-      },
-      {
-       "type": "mount_status",
-       "statusId": "bulwark",
-       "duration": 4,
-       "target": "self"
-      },
-      {
-       "type": "mount_status",
-       "statusId": "shield",
-       "value": 5,
-       "duration": 4,
-       "target": "target"
-      },
-      {
-       "type": "mount_status",
-       "statusId": "abandon_attack",
-       "duration": 4,
-       "target": "self"
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": [
-    "稿面双目标（指定 1 友军 + SELF）：主目标取被保护友军，自身段走 target:self；友军选择的 fallbackSort 稿面未给，置 null 待补",
-    "翻译/语义：守护轴身份状态 `守护` 主挂载源 + 承伤壁垒。"
-   ],
-   "art": {
-    "subject": "a guardian plunging a greatsword into the earth behind an invisible wall",
-    "elements": [
-     "sword buried hilt-deep",
-     "shimmering translucent barrier",
-     "shielded comrades behind"
-    ],
-    "mood": "protective, immovable"
-   }
-  },
-  {
-   "id": "skill_warrior_s5_unmoved_heart",
-   "name": "无幻之心",
-   "kind": "passive",
-   "sequence": 5,
-   "sequenceName": "守护者",
-   "rarity": "rare",
-   "axis": "guard",
-   "flagship": false,
-   "lore": "序列5 守护者 —— \"不被幻觉迷惑\"",
-   "flavor": "幻象在你面前只是幻象——它骗不了你，也没法替你挑中该打的人。",
-   "describe": "战斗开始时获得「无幻之心」：免疫控制类状态，敌方对你的攻击目标改写无效，持续整场。",
-   "hook": "on_battle_start",
-   "effects": [
-    {
-     "type": "mount_status",
-     "statusId": "unmoved",
-     "duration": null,
-     "target": "self"
-    }
-   ],
-   "upgradeLadder": {
-    "ref": "balance",
-    "tiers": [
-     {
-      "name": "平衡档（建议）",
-      "note": "整场免疫 control 偏强，建议降为每场前 2 次",
-      "statusDefOverride": {
-       "charges": 2
-      }
-     }
-    ]
-   },
-   "tentative": false,
-   "art": {
-    "subject": "a steadfast knight gazing through swirling illusions unfooled",
-    "elements": [
-     "mirror-like phantom fragments",
-     "steady unblinking eyes",
-     "undisturbed silhouette"
-    ],
-    "mood": "lucid, unshaken"
-   }
-  },
-  {
-   "id": "skill_warrior_s5_unstoppable",
-   "name": "无坚不摧",
-   "kind": "active",
-   "sequence": 5,
-   "sequenceName": "守护者",
-   "rarity": "rare",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列5 守护者 —— \"能对任何怪物造成伤害\"",
-   "flavor": "没有你砍不动的东西——甲也好，护体的异力也好，在这一斩之下都不算数。",
-   "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；若自身武器大师在场，大师之威，伤害 +2。",
-   "cost": {
-    "energy": 3,
-    "cooldown": 4,
-    "castTime": 0
-   },
-   "reach": "melee",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
-    },
-    "fallbackSort": "armor_desc"
-   },
-   "effects": [
-    {
-     "type": "damage",
-     "element": "none",
-     "value": 5,
-     "armorPierceRatio": 1.0,
-     "pierce": [
-      "resist"
-     ]
-    },
-    {
-     "op": "if",
-     "condition": {
-      "kind": "has_status",
-      "side": "self",
-      "id": "weapon_grandmaster",
-      "cmp": ">=",
-      "n": 1
-     },
-     "then": [
-      {
-       "type": "damage",
-       "element": "none",
-       "value": 2,
-       "note": "大师之威：自身武器大师在场则伤害 +2（环节⑤ 2026-09-29 补读层段：weapon_grandmaster payoff 升 landed）"
-      }
-     ],
-     "else": []
-    }
-   ],
-   "tentative": false,
-   "art": {
-    "subject": "a single cleaving arc cutting through armor and warding force alike",
-    "elements": [
-     "edge parting glowing ward",
-     "splitting dark carapace",
-     "single unstoppable swing"
-    ],
-    "mood": "decisive, overwhelming"
-   }
-  },
-  {
-   "id": "skill_warrior_s4_conceal",
-   "name": "隐蔽",
-   "kind": "active",
-   "sequence": 4,
-   "sequenceName": "猎魔者",
-   "rarity": "rare",
-   "axis": "hunt",
-   "flagship": false,
-   "lore": "序列4 猎魔者 —— \"『隐蔽』：掩盖行动意图，干扰占卜预言，恶魔的克星\"",
-   "flavor": "你把自己藏进光与尘的缝隙——没有人能\"算出\"你在哪里；而当你从暗处走出来，第一刀总是留给恶魔。",
-   "describe": "进入潜行 3 tick（自身带隐秘权柄则 4 tick）：不可被敌方单体技能选中；对恶魔、不死、灵体单位伤害 ×1.3；潜行后首次造成伤害 ×1.5。",
-   "cost": {
-    "energy": 2,
-    "cooldown": 4,
-    "castTime": 0
-   },
-   "reach": "none",
-   "target": {
-    "selectionMode": "auto",
-    "request": {
-     "faction": "self",
-     "scope": "single"
-    }
-   },
-   "effects": [
-    {
-     "op": "if",
-     "condition": {
-      "kind": "has_status",
-      "side": "self",
-      "id": "conceal_authority",
-      "cmp": ">=",
-      "n": 1
-     },
-     "then": [
-      {
-       "type": "mount_status",
-       "statusId": "ambush_shroud",
-       "duration": 4,
-       "target": "self",
-       "note": "潜行权威加持（环节⑤ 2026-09-29 跨系读层段：hunt→sleepless conceal_authority）"
-      }
-     ],
-     "else": [
-      {
-       "type": "mount_status",
-       "statusId": "ambush_shroud",
-       "duration": 3,
-       "target": "self"
-      }
-     ]
-    }
-   ],
-   "sharedAcross": [
-    "sleepless"
-   ],
-   "tentative": false,
-   "conversionNotes": "翻译/语义：猎魔轴隐蔽招牌 + 推进战场隐秘值（隐蔽↔占卜家 隐秘值联动的写入端）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
-   "art": {
-    "subject": "a demon-hunter dissolving into the seam between light and dust",
-    "elements": [
-     "half-transparent figure",
-     "drifting motes in a sunbeam",
-     "folded blade at the ready"
-    ],
-    "mood": "elusive, patient"
-   }
-  },
-  {
-   "id": "skill_warrior_s4_hunter_eye",
-   "name": "猎魔之眼",
-   "kind": "active",
-   "sequence": 4,
-   "sequenceName": "猎魔者",
-   "rarity": "rare",
-   "axis": "hunt",
-   "flagship": false,
-   "lore": "序列4 猎魔者 —— \"『猎魔之眼』：辨识目标性质、弱点、是否被污染\"",
-   "flavor": "你看清了它是什么、哪里最软——以及，它是否已经脏了。若已被污染，光会自己找上门。",
-   "describe": "标记一名敌人 4 tick：其受伤 ×1.2；若其已带有减益或持续伤害状态，立即受到 3 点无元素伤害；猎手先匿于晨雾（自身伏击伪装 2 tick）；自身武器大师在场则兵械克魔追加 1 点；目标带提线木偶则提线尽断，追加 2 点。",
-   "cost": {
-    "energy": 2,
-    "cooldown": 3,
-    "castTime": 0
-   },
-   "reach": "ranged",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
-    },
-    "fallbackSort": "buff_count_desc"
-   },
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "mount_status",
-       "statusId": "vulnerable",
-       "duration": 4,
-       "value": 1.2
-      },
-      {
-       "op": "if",
-       "condition": {
-        "kind": "has_category",
-        "side": "target",
-        "categories": [
-         "debuff"
-        ]
-       },
-       "then": [
         {
-         "type": "damage",
-         "element": "none",
-         "value": 3
-        }
-       ],
-       "else": []
-      },
-      {
-       "type": "mount_status",
-       "statusId": "ambush_shroud",
-       "duration": 2,
-       "target": "self",
-       "note": "猎手先匿于晨雾（环节⑤ 2026-09-29 补产层段）"
-      },
-      {
-       "op": "if",
-       "condition": {
-        "kind": "has_status",
-        "side": "self",
-        "id": "weapon_grandmaster",
-        "cmp": ">=",
-        "n": 1
-       },
-       "then": [
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 1,
+          "mode": "delta",
+          "duration": null,
+          "target": "self"
+        },
         {
-         "type": "damage",
-         "element": "none",
-         "value": 1,
-         "note": "兵械克魔：自身武器大师在场则标记追加 1 点（环节⑤ 2026-09-29 跨轴读层段：hunt→martial）"
-        }
-       ],
-       "else": []
-      },
-      {
-       "op": "if",
-       "condition": {
-        "kind": "has_status",
-        "side": "target",
-        "id": "puppet_string",
-        "cmp": ">=",
-        "n": 1
-       },
-       "then": [
+          "type": "modify_resource",
+          "resource": "armor",
+          "value": 3,
+          "mode": "delta",
+          "target": "self"
+        },
         {
-         "type": "damage",
-         "element": "none",
-         "value": 2,
-         "note": "提线尽断：目标带提线木偶则追加 2 点（环节⑤ 2026-09-29 跨系读层段：hunt→seer puppet_string）"
+          "type": "mount_status",
+          "statusId": "weapon_grandmaster",
+          "duration": null,
+          "target": "self",
+          "note": "通晓兵械者即武器大师（环节⑤ 2026-09-29 补产层段）⚠️D 与同名旗舰被动叠加语义待平衡"
         }
-       ],
-       "else": []
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": "翻译/语义：猎魔轴辨识/污染揭示（读 `黎明` 放大）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
-   "art": {
-    "subject": "a hunter's silver-lit eye revealing a monster's weak points",
-    "elements": [
-     "glowing silver iris",
-     "outlined vulnerable spots",
-     "corruption glowing faintly"
-    ],
-    "mood": "penetrating, cold"
-   }
-  },
-  {
-   "id": "skill_warrior_s4_hunter_concoction",
-   "name": "猎魔药剂",
-   "kind": "active",
-   "sequence": 4,
-   "sequenceName": "猎魔者",
-   "rarity": "rare",
-   "axis": "hunt",
-   "flagship": true,
-   "lore": "序列4 猎魔者 —— \"能调配神奇药剂 / 圣膏 / 精油 / 印记，针对性克制\"",
-   "flavor": "你从行囊里取出那一小瓶——涂抹、点燃，或画在它的门上；猎魔人的准备，从来在动手之前。",
-   "describe": "为一名友军涂药 4 tick：其每次造成伤害时附加 3 点毒素伤害。变体——圣膏：改为治疗 5 点并全抗性 +10%（2 tick）；精油：额外造成 2 点毒素伤害并使目标行动条 -15；印记：改为标记一名敌人，使其受伤 ×1.25（4 tick，不可驱散）。",
-   "cost": {
-    "energy": 3,
-    "cooldown": 4,
-    "castTime": 0
-   },
-   "reach": "none",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "ally",
-     "scope": "single"
-    },
-    "fallbackSort": "atk_desc"
-   },
-   "effects": [
-    {
-     "type": "mount_status",
-     "statusId": "anointed",
-     "duration": 4,
-     "target": "target"
-    }
-   ],
-   "variants": [
-    {
-     "id": "salve",
-     "name": "圣膏",
-     "note": "涂抹护佑（改为治疗与护佑）",
-     "effects": [
-      {
-       "type": "heal",
-       "value": 5,
-       "target": "target"
-      },
-      {
-       "type": "modify_stat",
-       "stat": "resist:*",
-       "value": 10,
-       "mode": "delta",
-       "duration": 2,
-       "target": "target"
-      }
-     ]
-    },
-    {
-     "id": "oil",
-     "name": "精油",
-     "note": "迟滞侵蚀（基础附魔之外附加）",
-     "effects": [
-      {
-       "type": "mount_status",
-       "statusId": "anointed",
-       "duration": 4,
-       "target": "target"
-      },
-      {
-       "type": "damage",
-       "element": "poison",
-       "value": 2,
-       "target": "target"
-      },
-      {
-       "type": "modify_resource",
-       "resource": "gauge.current",
-       "value": -15,
-       "mode": "delta",
-       "target": "target"
-      }
-     ]
-    },
-    {
-     "id": "mark",
-     "name": "印记",
-     "note": "改为对敌方目标施加印记",
-     "targetOverride": {
-      "faction": "enemy"
-     },
-     "effects": [
-      {
-       "type": "mount_status",
-       "statusId": "hunter_mark",
-       "duration": 4,
-       "target": "target"
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": [
-    "精油变体的 damage(poison,2) 作用对象稿面未明（卡面主目标为友军），暂记 target 待裁定",
-    "翻译/语义：猎魔轴针对性克制（恶魔/亡灵特化）。",
-    "2026-10-01 吟唱重标：非仪式，castTime 空→0"
-   ],
-   "art": {
-    "subject": "a demon-hunter anointing a blade from a small vial of silvered oil",
-    "elements": [
-     "glowing concoction vial",
-     "smeared sacred ointment",
-     "chalk sigil on a door"
-    ],
-    "mood": "prepared, ritualistic"
-   }
-  },
-  {
-   "id": "skill_warrior_s4_gale_charge",
-   "name": "疾风奔袭",
-   "kind": "active",
-   "sequence": 4,
-   "sequenceName": "猎魔者",
-   "rarity": "rare",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列4 猎魔者 —— \"夸张力量和飓风级高速奔跑\"",
-   "flavor": "你跑起来像一阵飓风——撞进敌阵的那一瞬，身后队友的脚步也被带快了。",
-   "describe": "对一名近战敌人造成 4 点物理伤害；自身行动条速率 +6（4 tick），当前行动最慢的一名友军行动条 +15。",
-   "cost": {
-    "energy": 3,
-    "cooldown": 4,
-    "castTime": 0
-   },
-   "reach": "melee",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
-    },
-    "fallbackSort": "hp_desc"
-   },
-   "secondaryTargets": [
-    {
-     "request": {
-      "faction": "ally",
-      "scope": "single",
-      "sort": "gauge_asc"
-     }
-    }
-   ],
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "damage",
-       "element": "physical",
-       "value": 4,
-       "note": "近战攻击进程，不调 move（G8 合规）"
-      },
-      {
-       "type": "modify_stat",
-       "stat": "gauge.rate",
-       "value": 6,
-       "mode": "delta",
-       "duration": 4,
-       "target": "self"
-      },
-      {
-       "type": "modify_resource",
-       "resource": "gauge.current",
-       "value": 15,
-       "mode": "delta",
-       "target": "secondary_target"
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "frameworkFlags": [
-    {
-     "code": "GAUGE_RATE_AS_STAT",
-     "note": "同强健体魄；G5/G6 禁自推 gauge.current，自身侧只能写 gauge.rate",
-     "landed": true
-    }
-   ],
-   "art": {
-    "subject": "a hunter sprinting like a hurricane slamming into the enemy line",
-    "elements": [
-     "streaking motion blur",
-     "upturned dust trail",
-     "comrades rushing behind"
-    ],
-    "mood": "ferocious, swift"
-   },
-   "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0"
-  },
-  {
-   "id": "skill_warrior_s3_silver_full_armor",
-   "name": "银色全身盔甲",
-   "kind": "active",
-   "sequence": 3,
-   "sequenceName": "银骑士",
-   "rarity": "epic",
-   "axis": "guard",
-   "flagship": false,
-   "lore": "序列3 银骑士 —— \"『银色全身盔甲』：守护力量实质化，比\"巨龙\"还能承受打击\"",
-   "flavor": "守护不再是姿态——它凝成了一副银色的全身甲，连龙的爪牙也只能在上面留下一道白痕。",
-   "describe": "获得银色全身甲，持续 5 tick：护甲上限 +10、全元素抗性 +10%、受伤 ×0.8。",
-   "cost": {
-    "energy": 4,
-    "cooldown": 5,
-    "castTime": 0
-   },
-   "reach": "none",
-   "target": {
-    "selectionMode": "auto",
-    "request": {
-     "faction": "self",
-     "scope": "single"
-    }
-   },
-   "effects": [
-    {
-     "type": "mount_status",
-     "statusId": "silver_armor",
-     "duration": 5,
-     "target": "self"
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": [
-    "稿面写 modify_resource(armor,+10,duration:5)；同黎明铠甲归一为 modify_stat 容量语义",
-    "2026-10-01 吟唱重标：非仪式，castTime 空→0"
-   ],
-   "art": {
-    "subject": "a silver knight in gleaming full plate shrugging off dragon claws",
-    "elements": [
-     "mirror-bright full plate",
-     "fading white scratch on pauldron",
-     "towering dragon talons"
-    ],
-    "mood": "unbreakable, luminous"
-   }
-  },
-  {
-   "id": "skill_warrior_s3_quicksilver",
-   "tags": [
-    "水"
-   ],
-   "name": "水银化",
-   "kind": "active",
-   "sequence": 3,
-   "sequenceName": "银骑士",
-   "rarity": "epic",
-   "axis": "guard",
-   "flagship": true,
-   "lore": "序列3 银骑士 —— \"『水银化』：融化成银色液体快速移动 / 淹没敌人\"",
-   "flavor": "你化作一滩流动的银，贴着地面淌过去——然后在它脚下重新立起来，把它整颗头按进银液里。",
-   "describe": "化作银液前压至己方最前排，对一名敌人造成 4 点伤害，并使其被银液淹没 3 tick（行动迟缓）。",
-   "cost": {
-    "energy": 4,
-    "cooldown": 5,
-    "castTime": 0
-   },
-   "reach": "melee",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
-    },
-    "fallbackSort": "gauge_desc"
-   },
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "move",
-       "op": "pull_forward",
-       "distance": 99,
-       "target": "self",
-       "note": "前压至己方半场最前排，G8 合规"
-      },
-      {
-       "type": "damage",
-       "element": "none",
-       "value": 4
-      },
-      {
-       "type": "mount_status",
-       "statusId": "slow",
-       "duration": 3,
-       "value": 0.5
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": "翻译/语义：守护轴位移/潜入（银液机动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
-   "art": {
-    "subject": "a warrior flowing as liquid silver across the ground then rising",
-    "elements": [
-     "rippling mercury pool",
-     "reforming human silhouette",
-     "reflective silver surface"
-    ],
-    "mood": "unnerving, fluid"
-   }
-  },
-  {
-   "id": "skill_warrior_s3_silver_rapier",
-   "name": "银白细剑",
-   "kind": "active",
-   "sequence": 3,
-   "sequenceName": "银骑士",
-   "rarity": "epic",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列3 银骑士 —— \"『银白细剑』：拥有传送（闪现）能力，可从目标体内爆发\"",
-   "flavor": "剑光一闪，你已经站在它背后——那一剑刺进去时并不重；重的是两息之后，从它体内绽开的那一朵银。",
-   "describe": "闪现至一名敌人身后造成 2 点物理伤害，并植入「体内爆发」：2 tick 后从其体内绽开，造成 6 点物理伤害。",
-   "cost": {
-    "energy": 4,
-    "cooldown": 5,
-    "castTime": 0
-   },
-   "reach": "ranged",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
-    },
-    "fallbackSort": "hp_desc"
-   },
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "damage",
-       "element": "physical",
-       "value": 2
-      },
-      {
-       "type": "mount_status",
-       "statusId": "inner_burst",
-       "duration": 2
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": "翻译/语义：守护轴闪现爆发（与黄昏轴联动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
-   "art": {
-    "subject": "a fencer flashing behind the foe as a silver bloom bursts within",
-    "elements": [
-     "slender shining rapier",
-     "afterimage of a blink",
-     "silver bloom erupting from shadow"
-    ],
-    "mood": "precise, lethal"
-   }
-  },
-  {
-   "id": "skill_warrior_s3_hide_in_light",
-   "name": "借光隐藏",
-   "kind": "passive",
-   "sequence": 3,
-   "sequenceName": "银骑士",
-   "rarity": "epic",
-   "axis": "hunt",
-   "flagship": false,
-   "lore": "序列3 银骑士 —— \"借光隐藏\"",
-   "flavor": "有光的地方就有你的藏身处——晨曦未散、银甲未褪，你就始终在敌人的视野之外。",
-   "describe": "战斗开始时获得「借光隐藏」：每 tick 检测，只要持有护盾、晨曦之剑或银色全身盔甲之一，自动刷新 2 tick 潜行。",
-   "hook": "on_battle_start",
-   "effects": [
-    {
-     "type": "mount_status",
-     "statusId": "light_hiding",
-     "duration": null,
-     "target": "self"
-    }
-   ],
-   "tentative": false,
-   "frameworkFlags": [
-    {
-     "code": "ANY_OF_PREDICATE",
-     "note": "共享内核 §三谓词族无 any_of 组合子，且「armor 增益」无谓词，待内核裁定 ｜ 2026-09-29 内核裁定：组合子 any_of/all_of/not 已落共享内核 §三（2026-09-14），转正",
-     "landed": true
-    }
-   ],
-   "conversionNotes": "翻译/语义：把\"复刻卡\"改为\"combo 卡\"：读取友方占卜家的招牌状态 `隐秘(conceal)` / 共享 `secrecy` 再升级（枢纽状态 `conceal/secrecy` 跨途径可读，见 §三）。",
-   "art": {
-    "subject": "an empty gleam of light where a silver knight stands unseen",
-    "elements": [
-     "silhouette-shaped absence",
-     "unfaded dawn light",
-     "unnoticed blade half-drawn"
-    ],
-    "mood": "ghostly, serene"
-   }
-  },
-  {
-   "id": "skill_warrior_s2_cage",
-   "name": "牢笼",
-   "kind": "active",
-   "sequence": 2,
-   "sequenceName": "荣耀者",
-   "rarity": "epic",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列2 荣耀者 —— \"『战斗』权柄（简化）：『牢笼』、『黄昏巨剑』、『光之风暴』\"",
-   "flavor": "战斗的权柄落下，四面光壁合拢——它还在呼吸，但它哪儿也去不了。",
-   "describe": "使一名敌人眩晕 1 tick，并施加枷锁 3 tick：无法被位移，行动条速率 ×0.7。",
-   "cost": {
-    "energy": 4,
-    "cooldown": 5,
-    "castTime": 0
-   },
-   "reach": "none",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
-    },
-    "fallbackSort": "gauge_desc"
-   },
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "mount_status",
-       "statusId": "stun",
-       "duration": 1
-      },
-      {
-       "type": "mount_status",
-       "statusId": "shackle",
-       "duration": 3
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": "翻译/语义：黄昏轴控制支路（读 `黄昏` 锁行动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
-   "art": {
-    "subject": "walls of solid light closing into a prison around a roaring monster",
-    "elements": [
-     "converging light walls",
-     "pounding fists of the trapped beast",
-     "sealing radiant bars"
-    ],
-    "mood": "inescapable, solemn"
-   }
-  },
-  {
-   "id": "skill_warrior_s2_twilight_greatsword",
-   "name": "黄昏巨剑",
-   "kind": "active",
-   "sequence": 2,
-   "sequenceName": "荣耀者",
-   "rarity": "epic",
-   "axis": "martial",
-   "flagship": false,
-   "lore": "序列2 荣耀者 —— \"『战斗』权柄（简化）：『牢笼』、『黄昏巨剑』、『光之风暴』；『神圣』权柄（简化）：荣耀即晨曦即黄昏，摧毁即净化\"",
-   "flavor": "巨剑带着黄昏的颜色劈下——被它摧毁的，同时也被净化了；而活下来的，从此开始变老。",
-   "describe": "对一名近战敌人造成 6 点无元素伤害，并附加 2 层老化（5 tick）。本卡击杀敌人时，全体友军回复 3 点生命。",
-   "cost": {
-    "energy": 5,
-    "cooldown": 6,
-    "castTime": 0
-   },
-   "reach": "melee",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
-    },
-    "fallbackSort": "hp_desc"
-   },
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "damage",
-       "element": "none",
-       "value": 6
-      },
-      {
-       "type": "mount_status",
-       "statusId": "aging",
-       "stacks": 2,
-       "duration": 5
-      }
-     ]
-    }
-   ],
-   "triggers": [
-    {
-     "event": "on_kill",
-     "effects": [
-      {
-       "type": "heal",
-       "value": 3,
-       "target": "all_allies"
-      }
-     ],
-     "note": "摧毁即净化"
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": "翻译/语义：读 `黄昏` 放大的黄昏轴 payoff（老化叠伤）。 ｜ 2026-09-29 D 类批：轴标签保持 martial（D 类批复核：黄昏巨剑挂 aging 是 twilight 身份的跨轴消费段，迁入即断承接）（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12） ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→6（位格8 基准6）。条件/读层追加段不动。",
-   "phaseHooks": [
-    {
-     "phases": [
-      "dusk"
-     ],
-     "mul": 1.2,
-     "target": "damage",
-     "note": "黄昏相位（tick 48–59）加成 ×1.2（⚠️D 平衡占位）；与黎明互斥，不共享晨昏档"
-    }
-   ],
-   "art": {
-    "subject": "a colossal greatsword of dusk color falling in a purifying cleave",
-    "elements": [
-     "amber-violet twilight blade",
-     "purifying radiance along the edge",
-     "age-withered ground below"
-    ],
-    "mood": "cataclysmic, sacred"
-   }
-  },
-  {
-   "id": "skill_warrior_s2_waning_dusk",
-   "name": "迟暮",
-   "kind": "active",
-   "sequence": 2,
-   "sequenceName": "荣耀者",
-   "rarity": "epic",
-   "axis": "twilight",
-   "flagship": false,
-   "lore": "序列2 荣耀者 —— \"『黄昏』权柄（简化）：让目标逐渐老化至死\"",
-   "flavor": "你把一截黄昏塞进了它的身体——从这一刻起，它每喘一口气，都更老一分，也更慢一分。",
-   "describe": "使一名敌人开始老化：每 tick 受 2 点无元素伤害并叠 1 层；每层使其攻击 -1、行动条速率 -2，受伤 ×1.15，最多 5 层，持续 5 tick。",
-   "cost": {
-    "energy": 4,
-    "cooldown": 5,
-    "castTime": 0
-   },
-   "reach": "ranged",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
-    },
-    "fallbackSort": "hp_desc"
-   },
-   "effects": [
-    {
-     "type": "mount_status",
-     "statusId": "aging",
-     "stacks": 1,
-     "duration": 5
-    }
-   ],
-   "tentative": false,
-   "frameworkFlags": [
-    {
-     "code": "GAUGE_RATE_AS_STAT",
-     "note": "statPerStack 内含 gauge.rate 键，同强健体魄待裁定",
-     "landed": true
-    }
-   ],
-   "phaseHooks": [
-    {
-     "phases": [
-      "dusk"
-     ],
-     "mul": 1.2,
-     "target": "damage",
-     "note": "黄昏相位（tick 48–59）加成 ×1.2（⚠️D 平衡占位）；与黎明互斥，不共享晨昏档"
-    }
-   ],
-   "art": {
-    "subject": "a knight pressing a fragment of dusk into a gasping enemy's chest",
-    "elements": [
-     "dark amber glow entering the body",
-     "withering straining foe",
-     "slowing drooping limbs"
-    ],
-    "mood": "inexorable, eerie"
-   },
-   "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0"
-  },
-  {
-   "id": "skill_warrior_s2_twilight_rebirth",
-   "name": "黄昏重生",
-   "kind": "passive",
-   "sequence": 2,
-   "sequenceName": "荣耀者",
-   "rarity": "epic",
-   "axis": "twilight",
-   "flagship": false,
-   "lore": "序列2 荣耀者 —— \"『黄昏』权柄（简化）：让自身老去蒸发后灵界重生\"",
-   "flavor": "你在暮色里老去、蒸发——然后从灵界的那一侧走回来。回来的人还是你，只是更老了。",
-   "describe": "自身死亡时触发一次：以 40% 生命在己方队尾重生，代价是携带 2 层老化（5 tick）。",
-   "hook": "on_death",
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "spawn",
-       "reviveOf": "self",
-       "hpRatio": 0.4,
-       "position": "tail",
-       "oncePerBattle": true
-      },
-      {
-       "type": "mount_status",
-       "statusId": "aging",
-       "stacks": 2,
-       "duration": 5,
-       "target": "self",
-       "note": "重生的代价是继续衰老"
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": [
-    "稿面以状态 twilight_return（charges:1）承载一次性，JSON 折为 spawn.oncePerBattle"
-   ],
-   "art": {
-    "subject": "an old warrior dissolving into dusk mist at the spirit realm's threshold",
-    "elements": [
-     "evaporating aged silhouette",
-     "path of fading light",
-     "reforming figure beyond the veil"
-    ],
-    "mood": "transcendent, somber"
-   }
-  },
-  {
-   "id": "skill_warrior_s1_mandate",
-   "name": "代行",
-   "kind": "passive",
-   "sequence": 1,
-   "sequenceName": "神明之手",
-   "rarity": "legendary",
-   "axis": "twilight",
-   "flagship": false,
-   "lore": "序列1 神明之手 —— \"『代行』权柄（简化）：代表效忠神明 / 旧日展现威能、降下神罚\"；\"因\"代行\"存在，无法获得其他权柄，只有之前序列能力提升\"",
-   "flavor": "你不是在自己战斗——你代那位存在行事。于是你先前走过的每一级序列，都被推到了更远的地方；而你再也接不住任何一份来自别处的力量。",
-   "describe": "战斗开始时获得「代行」：本途径技能伤害 ×1.25；无法获得任何非本途径来源的增益状态，持续整场，不可驱散。",
-   "hook": "on_battle_start",
-   "effects": [
-    {
-     "type": "mount_status",
-     "statusId": "mandate",
-     "duration": null,
-     "target": "self"
-    }
-   ],
-   "tentative": false,
-   "art": {
-    "subject": "a herald of a god standing still as borrowed radiance pours in",
-    "elements": [
-     "descending column of light",
-     "outstretched receiving hand",
-     "distant colossal shadow"
-    ],
-    "mood": "suffused, awe-struck"
-   }
-  },
-  {
-   "id": "skill_warrior_s1_divine_punishment",
-   "name": "神罚",
-   "kind": "active",
-   "sequence": 1,
-   "sequenceName": "神明之手",
-   "rarity": "legendary",
-   "axis": "twilight",
-   "flagship": false,
-   "lore": "序列1 神明之手 —— \"代行权柄：代表效忠神明 / 旧日展现威能、降下神罚\"",
-   "flavor": "你抬起手，替那位存在落下判决——光不是照下来的，是压下来的；凡已被黄昏侵蚀的，压得更狠。",
-   "describe": "对全体敌方造成 5 点无元素伤害；对已老化的目标伤害 ×1.5，并使每个敌人叠 1 层老化（4 tick）。",
-   "cost": {
-    "energy": 6,
-    "cooldown": 7,
-    "castTime": 0
-   },
-   "reach": "none",
-   "target": {
-    "selectionMode": "auto",
-    "request": {
-     "faction": "enemy",
-     "scope": "all"
-    }
-   },
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "op": "if",
-       "condition": {
-        "kind": "has_status",
-        "side": "target",
-        "id": "aging",
-        "cmp": ">=",
-        "n": 1
-       },
-       "then": [
-        {
-         "type": "damage",
-         "element": "none",
-         "value": 5,
-         "mul": 1.5,
-         "target": "all_enemies"
-        }
-       ],
-       "else": [
-        {
-         "type": "damage",
-         "element": "none",
-         "value": 5,
-         "target": "all_enemies"
-        }
-       ]
-      },
-      {
-       "type": "mount_status",
-       "statusId": "aging",
-       "stacks": 1,
-       "duration": 4,
-       "target": "all_enemies"
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "conversionNotes": "翻译/语义：武艺轴代行神罚 payoff（读 `武技`）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
-   "art": {
-    "subject": "a raised hand pressing down a verdict of crushing vertical light",
-    "elements": [
-     "palm open to the sky",
-     "hammering column of radiance",
-     "eroded darkened victims below"
-    ],
-    "mood": "judging, crushing"
-   }
-  },
-  {
-   "id": "skill_warrior_s0_all_things_collapse",
-   "name": "黄昏·万物崩解",
-   "kind": "active",
-   "sequence": 0,
-   "sequenceName": "黄昏巨人",
-   "rarity": "legendary",
-   "axis": "twilight",
-   "flagship": true,
-   "lore": "序列0 黄昏巨人 —— \"『黄昏』权柄：物质、意志乃至虚空衰败崩溃消亡；让目标飞快衰老 / 衰败 / 失控\"",
-   "flavor": "黄昏落在它身上——先是甲，然后是骨，然后是它还想站着的那点念头。最后连它脚下的那片空处，也开始往下掉。",
-   "describe": "对一名敌人造成 4 点无元素伤害并施加「崩解」5 tick：每 tick 受 3 点无元素伤害并叠 1 层老化（最多 6 层），受伤 ×1.2，不可驱散。",
-   "cost": {
-    "energy": 6,
-    "cooldown": 8,
-    "castTime": 0
-   },
-   "reach": "ranged",
-   "target": {
-    "selectionMode": "manual",
-    "request": {
-     "faction": "enemy",
-     "scope": "single"
-    },
-    "fallbackSort": "hp_desc"
-   },
-   "effects": [
-    {
-     "op": "sequence",
-     "steps": [
-      {
-       "type": "damage",
-       "element": "none",
-       "value": 4
-      },
-      {
-       "type": "mount_status",
-       "statusId": "collapse",
-       "duration": 5
-      }
-     ]
-    }
-   ],
-   "tentative": false,
-   "phaseHooks": [
-    {
-     "phases": [
-      "dusk"
-     ],
-     "mul": 1.2,
-     "target": "damage",
-     "note": "黄昏相位（tick 48–59）加成 ×1.2（⚠️D 平衡占位）；与黎明互斥，不共享晨昏档"
-    }
-   ],
-   "art": {
-    "subject": "a twilight giant's presence rotting armor bone and even the ground",
-    "elements": [
-     "crumbling armor fragments",
-     "disintegrating skeletal hand",
-     "collapsing dark earth"
-    ],
-    "mood": "entropic, desolate"
-   },
-   "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0"
-  },
-  {
-   "id": "skill_warrior_s0_battle_authority",
-   "name": "战斗权柄",
-   "kind": "passive",
-   "sequence": 0,
-   "sequenceName": "黄昏巨人",
-   "rarity": "legendary",
-   "axis": "martial",
-   "flagship": true,
-   "lore": "序列0 黄昏巨人 —— \"『战斗』权柄：最恐怖力量 + 最巨大身形 + 最强力摧毁 + 最坚固守护 + 技巧\"",
-   "flavor": "战斗的权柄在你身上展开：更重的拳、更高的身量、更硬的壳，以及一个老兵才有的、恰到好处的分寸。",
-   "describe": "战斗开始时获得「战斗权柄」：攻击 +5、护甲 +8、行动条速率 +4、全元素抗性 +10%，持续整场，不可驱散。",
-   "hook": "on_battle_start",
-   "effects": [
-    {
-     "type": "mount_status",
-     "statusId": "battle_authority",
-     "duration": null,
-     "target": "self"
-    }
-   ],
-   "tentative": false,
-   "frameworkFlags": [
-    {
-     "code": "GAUGE_RATE_AS_STAT",
-     "note": "同强健体魄",
-     "landed": true
-    }
-   ],
-   "art": {
-    "subject": "a towering veteran giant flexing fists of immense measured power",
-    "elements": [
-     "colossal armored frame",
-     "measured veteran stance",
-     "battlefield spread below"
-    ],
-    "mood": "dominant, seasoned"
-   }
-  },
-  {
-   "id": "skill_warrior_s0_holy_glory",
-   "name": "神圣·荣耀即晨曦即黄昏",
-   "kind": "passive",
-   "sequence": 0,
-   "sequenceName": "黄昏巨人",
-   "rarity": "legendary",
-   "axis": "twilight",
-   "flagship": false,
-   "lore": "序列0 黄昏巨人 / 序列2 荣耀者 —— \"『神圣』权柄 + 部分『代行』权柄\"；\"荣耀即晨曦即黄昏，摧毁即净化\"",
-   "flavor": "你摧毁的每一具躯壳，都变成洒在同伴身上的光——在你这里，杀戮与净化从来是同一件事。",
-   "describe": "每当你击杀敌人：全体友军回复 3 点生命，并驱散自身 1 个减益状态。",
-   "hook": "on_kill",
-   "effects": [
-    {
-     "type": "heal",
-     "value": 3,
-     "target": "all_allies"
-    },
-    {
-     "type": "dispel",
-     "target": "self",
-     "dispelTarget": "unit",
-     "filter": {
-      "category": [
-       "debuff"
       ],
-      "count": 1
-     }
-    }
-   ],
-   "sharedAcross": [
-    "sleepless"
-   ],
-   "tentative": false,
-   "phaseHooks": [
-    {
-     "phases": [
-      "dawn",
-      "dusk"
-     ],
-     "mul": 1.2,
-     "target": "heal",
-     "note": "原著「荣耀即晨曦即黄昏」：黎明与黄昏双相位均 ×1.2（⚠️D 平衡占位）"
-    }
-   ],
-   "art": {
-    "subject": "a giant's fallen foes dissolving into light raining on comrades",
-    "elements": [
-     "bodies turning to golden light",
-     "light streaming onto allies",
-     "crimson-to-gold horizon"
-    ],
-    "mood": "redemptive, triumphant"
-   }
-  }
- ],
- "domainDefs": [
-  {
-   "id": "domain_dawn",
-   "tier": "overlay",
-   "dispelable": true,
-   "duration": 3,
-   "durationUnit": "turn",
-   "triggers": [
-    {
-     "event": "on_tick",
-     "filter": {
-      "anyOf": [
-       {
-        "unitType": [
-         "UNDEAD"
-        ]
-       },
-       {
-        "tags": [
-         "illusion"
-        ]
-       }
-      ]
-     },
-     "effects": [
-      {
-       "type": "damage",
-       "element": "holy",
-       "value": 1
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": false,
+      "conversionNotes": "翻译/语义：武艺轴身份状态 `武技` 挂载源（武器精通）。",
+      "art": {
+        "subject": "a warrior weighing a well-worn blade across both palms",
+        "elements": [
+          "racked polearms and axes",
+          "oil-stained whetstone",
+          "patched gambeson"
+        ],
+        "mood": "practiced, calm"
       }
-     ]
     },
     {
-     "event": "on_turn_start",
-     "filter": {
-      "side": "ally",
+      "id": "skill_warrior_s8_iron_body",
+      "name": "铁躯",
+      "kind": "passive",
+      "sequence": 8,
+      "sequenceName": "格斗家",
+      "rarity": "common",
+      "axis": "guard",
+      "flagship": false,
+      "lore": "序列8 格斗家 —— \"格斗专家，能凭借身体减弱超自然力量影响\"",
+      "flavor": "非凡力量落在你身上，就像雨水落在铁板上——滑开，只留下一点湿痕。",
+      "describe": "战斗开始时获得「铁躯」：全元素抗性 +12%，持续整场，不可驱散。；并获得「战旗」20tick（己方伤害 ×1.1，跨系枢纽）。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "iron_body",
+          "duration": null,
+          "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "battle_banner",
+          "duration": 20,
+          "target": "self",
+          "note": "跨系枢纽挂载（2026-09-29 跨系批，产层兼枢纽计数）"
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": false,
+      "art": {
+        "subject": "a pugilist whose skin turns to dull iron as rain slides off",
+        "elements": [
+          "beading rainwater",
+          "dull metallic sheen on skin",
+          "stoic stance"
+        ],
+        "mood": "unyielding, stoic"
+      }
+    },
+    {
+      "id": "skill_warrior_s8_close_grapple",
+      "name": "近身缠斗",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "格斗家",
+      "rarity": "common",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列8 格斗家 —— \"擅长近距离战斗\"",
+      "flavor": "你贴上去，用身体和兵刃缠住它——它想挥下一击，却发现节奏已经被你踩住了。",
+      "describe": "对一名近战敌人造成 2 点物理伤害，并使其行动条进度 -20。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 10,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 2
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -20,
+          "mode": "delta"
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": false,
+      "art": {
+        "subject": "a grappler locking a hulking foe in a crushing clinch",
+        "elements": [
+          "intertwined limbs",
+          "pressed-in armor",
+          "strained enemy blade"
+        ],
+        "mood": "suffocating, tense"
+      },
+      "conversionNotes": "直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格2 基准2）。条件/读层追加段不动。"
+    },
+    {
+      "id": "skill_warrior_s8_force_deflect",
+      "name": "卸力",
+      "kind": "active",
+      "sequence": 8,
+      "sequenceName": "格斗家",
+      "rarity": "common",
+      "axis": "guard",
+      "flagship": false,
+      "lore": "序列8 格斗家 —— \"能凭借身体减弱超自然力量影响\"",
+      "flavor": "你卸掉那一道缠上来的异力，顺势在身前凝出一面薄薄的银光。",
+      "describe": "驱散自身 1 个减益或持续伤害状态，并获得 4 点护盾，持续 10tick。",
+      "cost": {
+        "energy": 1,
+        "cooldown": 15,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "debuff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 4,
+              "duration": 10,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "art": {
+        "subject": "a fighter brushing aside a writhing force and raising a thin silver ward",
+        "elements": [
+          "deflected shadowy tendril",
+          "thin silver light-shield",
+          "flowing redirecting hands"
+        ],
+        "mood": "fluid, guarded"
+      }
+    },
+    {
+      "id": "skill_warrior_s7_weapon_grandmaster",
+      "name": "武器大师",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "武器大师",
+      "rarity": "uncommon",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列7 武器大师 —— \"任何武器到手即大师级水准（含非凡武器）\"",
+      "flavor": "凡是能被握在手里的东西，到你手上就是杀器——连甲缝在哪里，你一摸就知道。",
+      "describe": "战斗开始时获得「武器大师」：攻击 +3，自身造成的物理伤害无视目标一半护甲，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "weapon_grandmaster",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "翻译/语义：武艺轴旗舰：挂 `武技` + 任意武器大师级（payoff 一体）。",
+      "art": {
+        "subject": "a master sweeping through a dozen weapons in one seamless arc",
+        "elements": [
+          "spinning sword into axe",
+          "floating weapon silhouettes",
+          "precise footwork"
+        ],
+        "mood": "effortless, lethal"
+      }
+    },
+    {
+      "id": "skill_warrior_s7_weapon_tamer",
+      "name": "驭器",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "武器大师",
+      "rarity": "uncommon",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列7 武器大师 —— \"有效降低武器负面影响\"",
+      "flavor": "非凡武器反噬的那一半代价，到你手里总要打个对折。",
+      "describe": "战斗开始时获得「驭器」：施加到你身上的减益与持续伤害状态，持续时间减半，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "weapon_tamer",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": false,
+      "art": {
+        "subject": "a warrior calmly gripping a cursed blade that stops struggling",
+        "elements": [
+          "black resentment curling off steel",
+          "steadied trembling edge",
+          "firm gauntleted hand"
+        ],
+        "mood": "dominant, quiet"
+      }
+    },
+    {
+      "id": "skill_warrior_s7_armor_crusher",
+      "name": "破甲重击",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "武器大师",
+      "rarity": "uncommon",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列7 武器大师 —— \"超强力量、体质和敏捷\"",
+      "flavor": "你抡圆了砸下去，力量不止落在它身上，也砸碎了它身上的甲。",
+      "describe": "对一名近战敌人造成 4 点物理伤害，并击碎其 3 点护甲。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 15,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "armor_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 4
+        },
+        {
+          "type": "modify_resource",
+          "resource": "armor",
+          "value": -3,
+          "mode": "delta"
+        }
+      ],
+      "tentative": false,
+      "art": {
+        "subject": "a heavy overhead blow shattering a breastplate into flying shards",
+        "elements": [
+          "raised great maul",
+          "bursting armor fragments",
+          "shockwave of dust"
+        ],
+        "mood": "crushing, explosive"
+      }
+    },
+    {
+      "id": "skill_warrior_s6_dawn_blade",
+      "name": "晨曦之剑",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "黎明骑士",
+      "rarity": "uncommon",
+      "axis": "hunt",
+      "flagship": false,
+      "lore": "序列6 黎明骑士 —— \"『晨曦之剑』：凝聚武器（最强为双手巨剑）\"",
+      "flavor": "晨曦在你掌心凝成一柄剑；你若愿把它铸成双手巨剑，它便沉重到能劈开城墙——只是挥起来，慢了些。",
+      "describe": "凝聚晨曦之剑，持续 20tick：攻击 +4，每次造成伤害时附加 2 点无元素伤害。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "dawn_blade",
+          "duration": 20,
+          "target": "self"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "双手巨剑",
+            "note": "attack +6 但 gauge_rate -3（巨剑笨重）",
+            "statusDefOverride": {
+              "effects": [
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": 6,
+                  "mode": "delta",
+                  "duration": 20,
+                  "target": "self"
+                },
+                {
+                  "type": "modify_stat",
+                  "stat": "gauge.rate",
+                  "value": -3,
+                  "mode": "delta",
+                  "duration": 20,
+                  "target": "self"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "tentative": false,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "升级档的 gauge_rate 修正面同强健体魄",
+          "landed": true
+        }
+      ],
+      "conversionNotes": "翻译/语义：猎魔轴破幻/驱怨招牌（读 `黎明` 前置）。 ｜ 2026-09-29 D 类批：轴标签 martial→hunt（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12）",
+      "phaseHooks": [
+        {
+          "phases": [
+            "dawn"
+          ],
+          "mul": 1.2,
+          "target": "damage",
+          "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
+        }
+      ],
+      "art": {
+        "subject": "a knight condensing sunrise light into a two-handed greatsword",
+        "elements": [
+          "golden light gathering in palm",
+          "massive glowing blade",
+          "first rays over battlefield"
+        ],
+        "mood": "radiant, resolute"
+      }
+    },
+    {
+      "id": "skill_warrior_s6_dawn_armor",
+      "name": "黎明铠甲",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "黎明骑士",
+      "rarity": "uncommon",
+      "axis": "guard",
+      "flagship": false,
+      "lore": "序列6 黎明骑士 —— \"『黎明铠甲』：精炼全身盔甲\"",
+      "flavor": "晨曦在你的躯体上锻成一副贴身的甲，罩住你的同时，也烧掉了附着其上的污秽。",
+      "describe": "自身护甲 +6（20tick），并驱散自身 1 个减益状态；黎明之甲自成守护（守护 10tick：自身受伤 ×0.7）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 15,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 6,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
+            },
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "debuff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "guardianship",
+              "duration": 10,
+              "target": "self",
+              "note": "独身守护：无被守护者，仅取自身减伤语义（环节⑤ 2026-09-29 补产层段）⚠️D 无 binding 的 guardianship 语义待内核确认"
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": [
+        "稿面写 modify_resource(armor,+6,duration:4)；ddd 口径带 duration 的护甲修正为容量语义（modify_stat），已归一",
+        "翻译/语义：守护轴友军护甲（与 猎魔·晨曦同源）。"
+      ],
+      "phaseHooks": [
+        {
+          "phases": [
+            "dawn"
+          ],
+          "mul": 1.2,
+          "target": "all",
+          "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
+        }
+      ],
+      "art": {
+        "subject": "a warrior forged anew in close-fitting armor of living dawnlight",
+        "elements": [
+          "molten gold seams",
+          "purifying flames along the plates",
+          "dark taint burning away"
+        ],
+        "mood": "sacred, steadfast"
+      }
+    },
+    {
+      "id": "skill_warrior_s6_dawn_domain",
+      "name": "晨曦领域",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "黎明骑士",
+      "rarity": "uncommon",
+      "axis": "hunt",
+      "flagship": false,
+      "lore": "序列6 黎明骑士 —— \"『晨曦领域』：破除幻觉、驱散怨魂、削弱邪恶\"",
+      "flavor": "晨曦铺开一片领域：同伴眼前的幻象碎了，而那些邪物在光里矮了一截。",
+      "describe": "降临「晨曦领域」，持续 3 回合：驱散全体友军各 1 个负面状态，全体敌方攻击 -2；领域内不死与幻象单位每 tick 受 1 点神圣伤害，己方「光」标签单位攻击 +1；「光/净化」系卡牌效果 ×1.3，「暗影/幻象」系 ×0.7；自身从隐匿中破晓突袭：若自身伏击伪装在场，全体敌方额外受 2 点神圣伤害。自身迷失值 +1。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 25,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        },
+        "consumption": "domain"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "domain",
+              "op": "overlay",
+              "def": "domain_dawn",
+              "duration": 15,
+              "durationUnit": "tick"
+            },
+            {
+              "type": "dispel",
+              "target": "all_allies",
+              "dispelTarget": "unit",
+              "filter": {
+                "category": [
+                  "debuff",
+                  "control"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 15,
+              "target": "all_enemies"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "界域操作租金"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "ambush_shroud",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "holy",
+                  "value": 2,
+                  "target": "all_enemies",
+                  "note": "破晓突袭：自身伏击伪装在场则晨曦额外灼伤全体敌方 2 点（环节⑤ 2026-09-29 补读层段：ambush_shroud payoff 升 landed）"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "domain": {
+        "tier": "overlay",
+        "def": "domain_dawn",
+        "duration": 15,
+        "durationUnit": "tick",
+        "dispelable": true,
+        "envRulesText": "全场：unitType UNDEAD 或持 illusion 标签的单位每 tick 受 damage(holy, 1)（晨曦灼邪）；己方「光」标签单位 attack +1（双向：灼邪 / 扶光）",
+        "rulePatches": [
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "光",
+              "净化"
+            ],
+            "mul": 1.3
+          },
+          {
+            "kind": "empower",
+            "side": "both",
+            "tag": [
+              "暗影",
+              "幻象"
+            ],
+            "mul": 0.7
+          }
+        ]
+      },
       "tags": [
-       "光"
-      ]
-     },
-     "effects": [
-      {
-       "type": "modify_stat",
-       "stat": "attack",
-       "value": 1,
-       "mode": "delta",
-       "duration": 1
+        "光",
+        "净化"
+      ],
+      "tentative": false,
+      "conversionNotes": "翻译/语义：猎魔轴旗舰主题界域；破幻/驱怨/削弱邪恶（payoff 一体）+ 隐蔽时写隐秘值。✅ 依赖已落。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
+      "phaseHooks": [
+        {
+          "phases": [
+            "dawn"
+          ],
+          "mul": 1.2,
+          "target": "all",
+          "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
+        }
+      ],
+      "art": {
+        "subject": "a knight expanding a dome of morning light that withers lurking shades",
+        "elements": [
+          "expanding golden dome",
+          "shattering illusions like glass",
+          "recoiling shadow creatures"
+        ],
+        "mood": "purifying, majestic"
       }
-     ]
-    }
-   ],
-   "rulePatches": [
-    {
-     "kind": "empower",
-     "side": "both",
-     "tag": [
-      "光",
-      "净化"
-     ],
-     "mul": 1.3
     },
     {
-     "kind": "empower",
-     "side": "both",
-     "tag": [
-      "暗影",
-      "幻象"
-     ],
-     "mul": 0.7
+      "id": "skill_warrior_s6_storm_of_light",
+      "name": "光之风暴",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "黎明骑士",
+      "rarity": "uncommon",
+      "axis": "hunt",
+      "flagship": false,
+      "lore": "序列6 黎明骑士 —— \"『光之风暴』：最强攻击，锐利飓风摧毁人体\"",
+      "flavor": "你掀起的不是风，是无数片薄到看不见的光——它们在敌人之间掠过，留下一道道细而深的口子。",
+      "describe": "对全体敌方造成 2 点无元素伤害，并击碎各自 2 点护甲。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 25,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "none",
+          "value": 2,
+          "target": "all_enemies"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "armor",
+          "value": -2,
+          "mode": "delta",
+          "target": "all_enemies"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "B6",
+        "tiers": [
+          {
+            "name": "战斗权柄档",
+            "note": "序列2 荣耀者的战斗权柄版本（同技能强化档）",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "none",
+                "value": 6,
+                "target": "all_enemies"
+              },
+              {
+                "type": "modify_resource",
+                "resource": "armor",
+                "value": -3,
+                "mode": "delta",
+                "target": "all_enemies"
+              }
+            ]
+          }
+        ]
+      },
+      "tentative": false,
+      "conversionNotes": "翻译/语义：猎魔轴群体净化（克亡灵/怨魂/幻象）。 ｜ 2026-09-29 D 类批：轴标签 martial→hunt（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格4 基准4，群体×0.6）。条件/读层追加段不动。",
+      "phaseHooks": [
+        {
+          "phases": [
+            "dawn"
+          ],
+          "mul": 1.2,
+          "target": "damage",
+          "note": "黎明相位（tick 12–23）加成 ×1.2（⚠️D 平衡占位）；与黄昏互斥，不共享晨昏档"
+        }
+      ],
+      "art": {
+        "subject": "a standing knight wrapped in a razor hurricane of invisible light",
+        "elements": [
+          "thousands of thin light streaks",
+          "deep cuts blooming on foes",
+          "rising luminous gale"
+        ],
+        "mood": "scouring, blinding"
+      }
+    },
+    {
+      "id": "skill_warrior_s5_guardian_stance",
+      "name": "守护状态",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "守护者",
+      "rarity": "rare",
+      "axis": "guard",
+      "flagship": false,
+      "lore": "序列5 守护者 —— \"『守护状态』：巨剑插地，竖立无形墙壁，帮同伴承担伤害\"；\"放弃攻击后高序列以下极少能打破防御\"",
+      "flavor": "你把巨剑插进地面，一道看不见的墙随之立起——打向同伴的那一击，落在了你的身上。",
+      "describe": "选择一名友军：自身进入守护姿态 20tick，替其承担伤害；自身受伤 ×0.7，该友军获得 5 点护盾；期间自身伤害 ×0.5。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "guardianship",
+              "duration": 20,
+              "target": "self",
+              "binding": {
+                "guardTarget": "target"
+              },
+              "note": "守护轴身份状态（2026-09-29 自 common guard 分叉私有化）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "bulwark",
+              "duration": 20,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 5,
+              "duration": 20,
+              "target": "target"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "abandon_attack",
+              "duration": 20,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": [
+        "稿面双目标（指定 1 友军 + SELF）：主目标取被保护友军，自身段走 target:self；友军选择的 fallbackSort 稿面未给，置 null 待补",
+        "翻译/语义：守护轴身份状态 `守护` 主挂载源 + 承伤壁垒。"
+      ],
+      "art": {
+        "subject": "a guardian plunging a greatsword into the earth behind an invisible wall",
+        "elements": [
+          "sword buried hilt-deep",
+          "shimmering translucent barrier",
+          "shielded comrades behind"
+        ],
+        "mood": "protective, immovable"
+      }
+    },
+    {
+      "id": "skill_warrior_s5_unmoved_heart",
+      "name": "无幻之心",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "守护者",
+      "rarity": "rare",
+      "axis": "guard",
+      "flagship": false,
+      "lore": "序列5 守护者 —— \"不被幻觉迷惑\"",
+      "flavor": "幻象在你面前只是幻象——它骗不了你，也没法替你挑中该打的人。",
+      "describe": "战斗开始时获得「无幻之心」：免疫控制类状态，敌方对你的攻击目标改写无效，持续整场。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "unmoved",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "upgradeLadder": {
+        "ref": "balance",
+        "tiers": [
+          {
+            "name": "平衡档（建议）",
+            "note": "整场免疫 control 偏强，建议降为每场前 2 次",
+            "statusDefOverride": {
+              "charges": 2
+            }
+          }
+        ]
+      },
+      "tentative": false,
+      "art": {
+        "subject": "a steadfast knight gazing through swirling illusions unfooled",
+        "elements": [
+          "mirror-like phantom fragments",
+          "steady unblinking eyes",
+          "undisturbed silhouette"
+        ],
+        "mood": "lucid, unshaken"
+      }
+    },
+    {
+      "id": "skill_warrior_s5_unstoppable",
+      "name": "无坚不摧",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "守护者",
+      "rarity": "rare",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列5 守护者 —— \"能对任何怪物造成伤害\"",
+      "flavor": "没有你砍不动的东西——甲也好，护体的异力也好，在这一斩之下都不算数。",
+      "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；若自身武器大师在场，大师之威，伤害 +2。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "armor_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "none",
+          "value": 5,
+          "armorPierceRatio": 1.0,
+          "pierce": [
+            "resist"
+          ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "weapon_grandmaster",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "note": "大师之威：自身武器大师在场则伤害 +2（环节⑤ 2026-09-29 补读层段：weapon_grandmaster payoff 升 landed）"
+            }
+          ],
+          "else": []
+        }
+      ],
+      "tentative": false,
+      "art": {
+        "subject": "a single cleaving arc cutting through armor and warding force alike",
+        "elements": [
+          "edge parting glowing ward",
+          "splitting dark carapace",
+          "single unstoppable swing"
+        ],
+        "mood": "decisive, overwhelming"
+      }
+    },
+    {
+      "id": "skill_warrior_s4_conceal",
+      "name": "隐蔽",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "猎魔者",
+      "rarity": "rare",
+      "axis": "hunt",
+      "flagship": false,
+      "lore": "序列4 猎魔者 —— \"『隐蔽』：掩盖行动意图，干扰占卜预言，恶魔的克星\"",
+      "flavor": "你把自己藏进光与尘的缝隙——没有人能\"算出\"你在哪里；而当你从暗处走出来，第一刀总是留给恶魔。",
+      "describe": "进入潜行 15tick（自身带隐秘权柄则 20tick）：不可被敌方单体技能选中；对恶魔、不死、灵体单位伤害 ×1.3；潜行后首次造成伤害 ×1.5。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "conceal_authority",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "ambush_shroud",
+              "duration": 20,
+              "target": "self",
+              "note": "潜行权威加持（环节⑤ 2026-09-29 跨系读层段：hunt→sleepless conceal_authority）"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "ambush_shroud",
+              "duration": 15,
+              "target": "self"
+            }
+          ]
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": false,
+      "conversionNotes": "翻译/语义：猎魔轴隐蔽招牌 + 推进战场隐秘值（隐蔽↔占卜家 隐秘值联动的写入端）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "art": {
+        "subject": "a demon-hunter dissolving into the seam between light and dust",
+        "elements": [
+          "half-transparent figure",
+          "drifting motes in a sunbeam",
+          "folded blade at the ready"
+        ],
+        "mood": "elusive, patient"
+      }
+    },
+    {
+      "id": "skill_warrior_s4_hunter_eye",
+      "name": "猎魔之眼",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "猎魔者",
+      "rarity": "rare",
+      "axis": "hunt",
+      "flagship": false,
+      "lore": "序列4 猎魔者 —— \"『猎魔之眼』：辨识目标性质、弱点、是否被污染\"",
+      "flavor": "你看清了它是什么、哪里最软——以及，它是否已经脏了。若已被污染，光会自己找上门。",
+      "describe": "标记一名敌人 20tick：其受伤 ×1.2；若其已带有减益或持续伤害状态，立即受到 3 点无元素伤害；猎手先匿于晨雾（自身伏击伪装 10tick）；自身武器大师在场则兵械克魔追加 1 点；目标带提线木偶则提线尽断，追加 2 点。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 15,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "vulnerable",
+              "duration": 20,
+              "value": 1.2
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_category",
+                "side": "target",
+                "categories": [
+                  "debuff"
+                ]
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 3
+                }
+              ],
+              "else": []
+            },
+            {
+              "type": "mount_status",
+              "statusId": "ambush_shroud",
+              "duration": 10,
+              "target": "self",
+              "note": "猎手先匿于晨雾（环节⑤ 2026-09-29 补产层段）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "weapon_grandmaster",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 1,
+                  "note": "兵械克魔：自身武器大师在场则标记追加 1 点（环节⑤ 2026-09-29 跨轴读层段：hunt→martial）"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "puppet_string",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "note": "提线尽断：目标带提线木偶则追加 2 点（环节⑤ 2026-09-29 跨系读层段：hunt→seer puppet_string）"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "翻译/语义：猎魔轴辨识/污染揭示（读 `黎明` 放大）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "art": {
+        "subject": "a hunter's silver-lit eye revealing a monster's weak points",
+        "elements": [
+          "glowing silver iris",
+          "outlined vulnerable spots",
+          "corruption glowing faintly"
+        ],
+        "mood": "penetrating, cold"
+      }
+    },
+    {
+      "id": "skill_warrior_s4_hunter_concoction",
+      "name": "猎魔药剂",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "猎魔者",
+      "rarity": "rare",
+      "axis": "hunt",
+      "flagship": true,
+      "lore": "序列4 猎魔者 —— \"能调配神奇药剂 / 圣膏 / 精油 / 印记，针对性克制\"",
+      "flavor": "你从行囊里取出那一小瓶——涂抹、点燃，或画在它的门上；猎魔人的准备，从来在动手之前。",
+      "describe": "为一名友军涂药 20tick：其每次造成伤害时附加 3 点毒素伤害。变体——圣膏：改为治疗 5 点并全抗性 +10%（10tick）；精油：额外造成 2 点毒素伤害并使目标行动条 -15；印记：改为标记一名敌人，使其受伤 ×1.25（20tick，不可驱散）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "ally",
+          "scope": "single"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "anointed",
+          "duration": 20,
+          "target": "target"
+        }
+      ],
+      "variants": [
+        {
+          "id": "salve",
+          "name": "圣膏",
+          "note": "涂抹护佑（改为治疗与护佑）",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 5,
+              "target": "target"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:*",
+              "value": 10,
+              "mode": "delta",
+              "duration": 10,
+              "target": "target"
+            }
+          ]
+        },
+        {
+          "id": "oil",
+          "name": "精油",
+          "note": "迟滞侵蚀（基础附魔之外附加）",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "anointed",
+              "duration": 20,
+              "target": "target"
+            },
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 2,
+              "target": "target"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -15,
+              "mode": "delta",
+              "target": "target"
+            }
+          ]
+        },
+        {
+          "id": "mark",
+          "name": "印记",
+          "note": "改为对敌方目标施加印记",
+          "targetOverride": {
+            "faction": "enemy"
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "hunter_mark",
+              "duration": 20,
+              "target": "target"
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": [
+        "精油变体的 damage(poison,2) 作用对象稿面未明（卡面主目标为友军），暂记 target 待裁定",
+        "翻译/语义：猎魔轴针对性克制（恶魔/亡灵特化）。",
+        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+      ],
+      "art": {
+        "subject": "a demon-hunter anointing a blade from a small vial of silvered oil",
+        "elements": [
+          "glowing concoction vial",
+          "smeared sacred ointment",
+          "chalk sigil on a door"
+        ],
+        "mood": "prepared, ritualistic"
+      }
+    },
+    {
+      "id": "skill_warrior_s4_gale_charge",
+      "name": "疾风奔袭",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "猎魔者",
+      "rarity": "rare",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列4 猎魔者 —— \"夸张力量和飓风级高速奔跑\"",
+      "flavor": "你跑起来像一阵飓风——撞进敌阵的那一瞬，身后队友的脚步也被带快了。",
+      "describe": "对一名近战敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "secondaryTargets": [
+        {
+          "request": {
+            "faction": "ally",
+            "scope": "single",
+            "sort": "gauge_asc"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 4,
+              "note": "近战攻击进程，不调 move（G8 合规）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 6,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 15,
+              "mode": "delta",
+              "target": "secondary_target"
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "同强健体魄；G5/G6 禁自推 gauge.current，自身侧只能写 gauge.rate",
+          "landed": true
+        }
+      ],
+      "art": {
+        "subject": "a hunter sprinting like a hurricane slamming into the enemy line",
+        "elements": [
+          "streaking motion blur",
+          "upturned dust trail",
+          "comrades rushing behind"
+        ],
+        "mood": "ferocious, swift"
+      },
+      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+    },
+    {
+      "id": "skill_warrior_s3_silver_full_armor",
+      "name": "银色全身盔甲",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "银骑士",
+      "rarity": "epic",
+      "axis": "guard",
+      "flagship": false,
+      "lore": "序列3 银骑士 —— \"『银色全身盔甲』：守护力量实质化，比\"巨龙\"还能承受打击\"",
+      "flavor": "守护不再是姿态——它凝成了一副银色的全身甲，连龙的爪牙也只能在上面留下一道白痕。",
+      "describe": "获得银色全身甲，持续 25tick：护甲上限 +10、全元素抗性 +10%、受伤 ×0.8。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 25,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "self",
+          "scope": "single"
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "silver_armor",
+          "duration": 25,
+          "target": "self"
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": [
+        "稿面写 modify_resource(armor,+10,duration:5)；同黎明铠甲归一为 modify_stat 容量语义",
+        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+      ],
+      "art": {
+        "subject": "a silver knight in gleaming full plate shrugging off dragon claws",
+        "elements": [
+          "mirror-bright full plate",
+          "fading white scratch on pauldron",
+          "towering dragon talons"
+        ],
+        "mood": "unbreakable, luminous"
+      }
+    },
+    {
+      "id": "skill_warrior_s3_quicksilver",
+      "tags": [
+        "水"
+      ],
+      "name": "水银化",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "银骑士",
+      "rarity": "epic",
+      "axis": "guard",
+      "flagship": true,
+      "lore": "序列3 银骑士 —— \"『水银化』：融化成银色液体快速移动 / 淹没敌人\"",
+      "flavor": "你化作一滩流动的银，贴着地面淌过去——然后在它脚下重新立起来，把它整颗头按进银液里。",
+      "describe": "化作银液前压至己方最前排，对一名敌人造成 4 点伤害，并使其被银液淹没 15tick（行动迟缓）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 25,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "move",
+              "op": "pull_forward",
+              "distance": 99,
+              "target": "self",
+              "note": "前压至己方半场最前排，G8 合规"
+            },
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "slow",
+              "duration": 15,
+              "value": 0.5
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "翻译/语义：守护轴位移/潜入（银液机动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "art": {
+        "subject": "a warrior flowing as liquid silver across the ground then rising",
+        "elements": [
+          "rippling mercury pool",
+          "reforming human silhouette",
+          "reflective silver surface"
+        ],
+        "mood": "unnerving, fluid"
+      }
+    },
+    {
+      "id": "skill_warrior_s3_silver_rapier",
+      "name": "银白细剑",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "银骑士",
+      "rarity": "epic",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列3 银骑士 —— \"『银白细剑』：拥有传送（闪现）能力，可从目标体内爆发\"",
+      "flavor": "剑光一闪，你已经站在它背后——那一剑刺进去时并不重；重的是两息之后，从它体内绽开的那一朵银。",
+      "describe": "闪现至一名敌人身后造成 2 点物理伤害，并植入「体内爆发」：10tick 后从其体内绽开，造成 6 点物理伤害。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 25,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2
+            },
+            {
+              "type": "mount_status",
+              "statusId": "inner_burst",
+              "duration": 10
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "翻译/语义：守护轴闪现爆发（与黄昏轴联动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "art": {
+        "subject": "a fencer flashing behind the foe as a silver bloom bursts within",
+        "elements": [
+          "slender shining rapier",
+          "afterimage of a blink",
+          "silver bloom erupting from shadow"
+        ],
+        "mood": "precise, lethal"
+      }
+    },
+    {
+      "id": "skill_warrior_s3_hide_in_light",
+      "name": "借光隐藏",
+      "kind": "passive",
+      "sequence": 3,
+      "sequenceName": "银骑士",
+      "rarity": "epic",
+      "axis": "hunt",
+      "flagship": false,
+      "lore": "序列3 银骑士 —— \"借光隐藏\"",
+      "flavor": "有光的地方就有你的藏身处——晨曦未散、银甲未褪，你就始终在敌人的视野之外。",
+      "describe": "战斗开始时获得「借光隐藏」：每 tick 检测，只要持有护盾、晨曦之剑或银色全身盔甲之一，自动刷新 10tick 潜行。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "light_hiding",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": false,
+      "frameworkFlags": [
+        {
+          "code": "ANY_OF_PREDICATE",
+          "note": "共享内核 §三谓词族无 any_of 组合子，且「armor 增益」无谓词，待内核裁定 ｜ 2026-09-29 内核裁定：组合子 any_of/all_of/not 已落共享内核 §三（2026-09-14），转正",
+          "landed": true
+        }
+      ],
+      "conversionNotes": "翻译/语义：把\"复刻卡\"改为\"combo 卡\"：读取友方占卜家的招牌状态 `隐秘(conceal)` / 共享 `secrecy` 再升级（枢纽状态 `conceal/secrecy` 跨途径可读，见 §三）。",
+      "art": {
+        "subject": "an empty gleam of light where a silver knight stands unseen",
+        "elements": [
+          "silhouette-shaped absence",
+          "unfaded dawn light",
+          "unnoticed blade half-drawn"
+        ],
+        "mood": "ghostly, serene"
+      }
+    },
+    {
+      "id": "skill_warrior_s2_cage",
+      "name": "牢笼",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "荣耀者",
+      "rarity": "epic",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列2 荣耀者 —— \"『战斗』权柄（简化）：『牢笼』、『黄昏巨剑』、『光之风暴』\"",
+      "flavor": "战斗的权柄落下，四面光壁合拢——它还在呼吸，但它哪儿也去不了。",
+      "describe": "使一名敌人眩晕 5tick，并施加枷锁 15tick：无法被位移，行动条速率 ×0.7。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 25,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "duration": 5
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shackle",
+              "duration": 15
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "翻译/语义：黄昏轴控制支路（读 `黄昏` 锁行动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "art": {
+        "subject": "walls of solid light closing into a prison around a roaring monster",
+        "elements": [
+          "converging light walls",
+          "pounding fists of the trapped beast",
+          "sealing radiant bars"
+        ],
+        "mood": "inescapable, solemn"
+      }
+    },
+    {
+      "id": "skill_warrior_s2_twilight_greatsword",
+      "name": "黄昏巨剑",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "荣耀者",
+      "rarity": "epic",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列2 荣耀者 —— \"『战斗』权柄（简化）：『牢笼』、『黄昏巨剑』、『光之风暴』；『神圣』权柄（简化）：荣耀即晨曦即黄昏，摧毁即净化\"",
+      "flavor": "巨剑带着黄昏的颜色劈下——被它摧毁的，同时也被净化了；而活下来的，从此开始变老。",
+      "describe": "对一名近战敌人造成 6 点无元素伤害，并附加 2 层老化（25tick）。本卡击杀敌人时，全体友军回复 3 点生命。",
+      "cost": {
+        "energy": 5,
+        "cooldown": 30,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 6
+            },
+            {
+              "type": "mount_status",
+              "statusId": "aging",
+              "stacks": 2,
+              "duration": 25
+            }
+          ]
+        }
+      ],
+      "triggers": [
+        {
+          "event": "on_kill",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 3,
+              "target": "all_allies"
+            }
+          ],
+          "note": "摧毁即净化"
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "翻译/语义：读 `黄昏` 放大的黄昏轴 payoff（老化叠伤）。 ｜ 2026-09-29 D 类批：轴标签保持 martial（D 类批复核：黄昏巨剑挂 aging 是 twilight 身份的跨轴消费段，迁入即断承接）（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12） ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→6（位格8 基准6）。条件/读层追加段不动。",
+      "phaseHooks": [
+        {
+          "phases": [
+            "dusk"
+          ],
+          "mul": 1.2,
+          "target": "damage",
+          "note": "黄昏相位（tick 48–59）加成 ×1.2（⚠️D 平衡占位）；与黎明互斥，不共享晨昏档"
+        }
+      ],
+      "art": {
+        "subject": "a colossal greatsword of dusk color falling in a purifying cleave",
+        "elements": [
+          "amber-violet twilight blade",
+          "purifying radiance along the edge",
+          "age-withered ground below"
+        ],
+        "mood": "cataclysmic, sacred"
+      }
+    },
+    {
+      "id": "skill_warrior_s2_waning_dusk",
+      "name": "迟暮",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "荣耀者",
+      "rarity": "epic",
+      "axis": "twilight",
+      "flagship": false,
+      "lore": "序列2 荣耀者 —— \"『黄昏』权柄（简化）：让目标逐渐老化至死\"",
+      "flavor": "你把一截黄昏塞进了它的身体——从这一刻起，它每喘一口气，都更老一分，也更慢一分。",
+      "describe": "使一名敌人开始老化：每 tick 受 2 点无元素伤害并叠 1 层；每层使其攻击 -1、行动条速率 -2，受伤 ×1.15，最多 5 层，持续 25tick。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 25,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "aging",
+          "stacks": 1,
+          "duration": 25
+        }
+      ],
+      "tentative": false,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "statPerStack 内含 gauge.rate 键，同强健体魄待裁定",
+          "landed": true
+        }
+      ],
+      "phaseHooks": [
+        {
+          "phases": [
+            "dusk"
+          ],
+          "mul": 1.2,
+          "target": "damage",
+          "note": "黄昏相位（tick 48–59）加成 ×1.2（⚠️D 平衡占位）；与黎明互斥，不共享晨昏档"
+        }
+      ],
+      "art": {
+        "subject": "a knight pressing a fragment of dusk into a gasping enemy's chest",
+        "elements": [
+          "dark amber glow entering the body",
+          "withering straining foe",
+          "slowing drooping limbs"
+        ],
+        "mood": "inexorable, eerie"
+      },
+      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+    },
+    {
+      "id": "skill_warrior_s2_twilight_rebirth",
+      "name": "黄昏重生",
+      "kind": "passive",
+      "sequence": 2,
+      "sequenceName": "荣耀者",
+      "rarity": "epic",
+      "axis": "twilight",
+      "flagship": false,
+      "lore": "序列2 荣耀者 —— \"『黄昏』权柄（简化）：让自身老去蒸发后灵界重生\"",
+      "flavor": "你在暮色里老去、蒸发——然后从灵界的那一侧走回来。回来的人还是你，只是更老了。",
+      "describe": "自身死亡时触发一次：以 40% 生命在己方队尾重生，代价是携带 2 层老化（25tick）。",
+      "hook": "on_death",
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "spawn",
+              "reviveOf": "self",
+              "hpRatio": 0.4,
+              "position": "tail",
+              "oncePerBattle": true
+            },
+            {
+              "type": "mount_status",
+              "statusId": "aging",
+              "stacks": 2,
+              "duration": 25,
+              "target": "self",
+              "note": "重生的代价是继续衰老"
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": [
+        "稿面以状态 twilight_return（charges:1）承载一次性，JSON 折为 spawn.oncePerBattle"
+      ],
+      "art": {
+        "subject": "an old warrior dissolving into dusk mist at the spirit realm's threshold",
+        "elements": [
+          "evaporating aged silhouette",
+          "path of fading light",
+          "reforming figure beyond the veil"
+        ],
+        "mood": "transcendent, somber"
+      }
+    },
+    {
+      "id": "skill_warrior_s1_mandate",
+      "name": "代行",
+      "kind": "passive",
+      "sequence": 1,
+      "sequenceName": "神明之手",
+      "rarity": "legendary",
+      "axis": "twilight",
+      "flagship": false,
+      "lore": "序列1 神明之手 —— \"『代行』权柄（简化）：代表效忠神明 / 旧日展现威能、降下神罚\"；\"因\"代行\"存在，无法获得其他权柄，只有之前序列能力提升\"",
+      "flavor": "你不是在自己战斗——你代那位存在行事。于是你先前走过的每一级序列，都被推到了更远的地方；而你再也接不住任何一份来自别处的力量。",
+      "describe": "战斗开始时获得「代行」：本途径技能伤害 ×1.25；无法获得任何非本途径来源的增益状态，持续整场，不可驱散。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "mandate",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": false,
+      "art": {
+        "subject": "a herald of a god standing still as borrowed radiance pours in",
+        "elements": [
+          "descending column of light",
+          "outstretched receiving hand",
+          "distant colossal shadow"
+        ],
+        "mood": "suffused, awe-struck"
+      }
+    },
+    {
+      "id": "skill_warrior_s1_divine_punishment",
+      "name": "神罚",
+      "kind": "active",
+      "sequence": 1,
+      "sequenceName": "神明之手",
+      "rarity": "legendary",
+      "axis": "twilight",
+      "flagship": false,
+      "lore": "序列1 神明之手 —— \"代行权柄：代表效忠神明 / 旧日展现威能、降下神罚\"",
+      "flavor": "你抬起手，替那位存在落下判决——光不是照下来的，是压下来的；凡已被黄昏侵蚀的，压得更狠。",
+      "describe": "对全体敌方造成 5 点无元素伤害；对已老化的目标伤害 ×1.5，并使每个敌人叠 1 层老化（20tick）。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 35,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "faction": "enemy",
+          "scope": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "aging",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 5,
+                  "mul": 1.5,
+                  "target": "all_enemies"
+                }
+              ],
+              "else": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 5,
+                  "target": "all_enemies"
+                }
+              ]
+            },
+            {
+              "type": "mount_status",
+              "statusId": "aging",
+              "stacks": 1,
+              "duration": 20,
+              "target": "all_enemies"
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "翻译/语义：武艺轴代行神罚 payoff（读 `武技`）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "art": {
+        "subject": "a raised hand pressing down a verdict of crushing vertical light",
+        "elements": [
+          "palm open to the sky",
+          "hammering column of radiance",
+          "eroded darkened victims below"
+        ],
+        "mood": "judging, crushing"
+      }
+    },
+    {
+      "id": "skill_warrior_s0_all_things_collapse",
+      "name": "黄昏·万物崩解",
+      "kind": "active",
+      "sequence": 0,
+      "sequenceName": "黄昏巨人",
+      "rarity": "legendary",
+      "axis": "twilight",
+      "flagship": true,
+      "lore": "序列0 黄昏巨人 —— \"『黄昏』权柄：物质、意志乃至虚空衰败崩溃消亡；让目标飞快衰老 / 衰败 / 失控\"",
+      "flavor": "黄昏落在它身上——先是甲，然后是骨，然后是它还想站着的那点念头。最后连它脚下的那片空处，也开始往下掉。",
+      "describe": "对一名敌人造成 4 点无元素伤害并施加「崩解」25tick：每 tick 受 3 点无元素伤害并叠 1 层老化（最多 6 层），受伤 ×1.2，不可驱散。",
+      "cost": {
+        "energy": 6,
+        "cooldown": 40,
+        "castTime": 0
+      },
+      "reach": "ranged",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "faction": "enemy",
+          "scope": "single"
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "sequence",
+          "steps": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 4
+            },
+            {
+              "type": "mount_status",
+              "statusId": "collapse",
+              "duration": 25
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "phaseHooks": [
+        {
+          "phases": [
+            "dusk"
+          ],
+          "mul": 1.2,
+          "target": "damage",
+          "note": "黄昏相位（tick 48–59）加成 ×1.2（⚠️D 平衡占位）；与黎明互斥，不共享晨昏档"
+        }
+      ],
+      "art": {
+        "subject": "a twilight giant's presence rotting armor bone and even the ground",
+        "elements": [
+          "crumbling armor fragments",
+          "disintegrating skeletal hand",
+          "collapsing dark earth"
+        ],
+        "mood": "entropic, desolate"
+      },
+      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+    },
+    {
+      "id": "skill_warrior_s0_battle_authority",
+      "name": "战斗权柄",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "黄昏巨人",
+      "rarity": "legendary",
+      "axis": "martial",
+      "flagship": true,
+      "lore": "序列0 黄昏巨人 —— \"『战斗』权柄：最恐怖力量 + 最巨大身形 + 最强力摧毁 + 最坚固守护 + 技巧\"",
+      "flavor": "战斗的权柄在你身上展开：更重的拳、更高的身量、更硬的壳，以及一个老兵才有的、恰到好处的分寸。",
+      "describe": "战斗开始时获得「战斗权柄」：攻击 +5、护甲 +8、行动条速率 +4、全元素抗性 +10%，持续整场，不可驱散。",
+      "hook": "on_battle_start",
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "battle_authority",
+          "duration": null,
+          "target": "self"
+        }
+      ],
+      "tentative": false,
+      "frameworkFlags": [
+        {
+          "code": "GAUGE_RATE_AS_STAT",
+          "note": "同强健体魄",
+          "landed": true
+        }
+      ],
+      "art": {
+        "subject": "a towering veteran giant flexing fists of immense measured power",
+        "elements": [
+          "colossal armored frame",
+          "measured veteran stance",
+          "battlefield spread below"
+        ],
+        "mood": "dominant, seasoned"
+      }
+    },
+    {
+      "id": "skill_warrior_s0_holy_glory",
+      "name": "神圣·荣耀即晨曦即黄昏",
+      "kind": "passive",
+      "sequence": 0,
+      "sequenceName": "黄昏巨人",
+      "rarity": "legendary",
+      "axis": "twilight",
+      "flagship": false,
+      "lore": "序列0 黄昏巨人 / 序列2 荣耀者 —— \"『神圣』权柄 + 部分『代行』权柄\"；\"荣耀即晨曦即黄昏，摧毁即净化\"",
+      "flavor": "你摧毁的每一具躯壳，都变成洒在同伴身上的光——在你这里，杀戮与净化从来是同一件事。",
+      "describe": "每当你击杀敌人：全体友军回复 3 点生命，并驱散自身 1 个减益状态。",
+      "hook": "on_kill",
+      "effects": [
+        {
+          "type": "heal",
+          "value": 3,
+          "target": "all_allies"
+        },
+        {
+          "type": "dispel",
+          "target": "self",
+          "dispelTarget": "unit",
+          "filter": {
+            "category": [
+              "debuff"
+            ],
+            "count": 1
+          }
+        }
+      ],
+      "sharedAcross": [
+        "sleepless"
+      ],
+      "tentative": false,
+      "phaseHooks": [
+        {
+          "phases": [
+            "dawn",
+            "dusk"
+          ],
+          "mul": 1.2,
+          "target": "heal",
+          "note": "原著「荣耀即晨曦即黄昏」：黎明与黄昏双相位均 ×1.2（⚠️D 平衡占位）"
+        }
+      ],
+      "art": {
+        "subject": "a giant's fallen foes dissolving into light raining on comrades",
+        "elements": [
+          "bodies turning to golden light",
+          "light streaming onto allies",
+          "crimson-to-gold horizon"
+        ],
+        "mood": "redemptive, triumphant"
+      }
     }
-   ]
-  }
- ],
- "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方之一）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。战士经\"隐蔽 / 借光隐藏\"等 +1/次（见【隐蔽】、【隐秘之影·承接】）。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（收尸人·奴役目标最稳）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，战士是主消费方之一（隐蔽↔占卜家 隐秘值联动）。",
- "sampleBuilds": [
-  {
-   "name": "A 黎明壁垒 🛡",
-   "actives": [
-    "守护状态",
-    "格斗术·连击",
-    "晨曦领域",
-    "黎明铠甲"
-   ],
-   "passives": [
-    "强健体魄",
-    "铁躯",
-    "武器大师",
-    "兵械通晓"
-   ],
-   "playstyle": "竖墙承伤+晨曦领域破幻，团队最硬壁垒"
-  },
-  {
-   "name": "B 武艺神罚 ⚔",
-   "actives": [
-    "格斗术·连击",
-    "近身缠斗",
-    "卸力",
-    "神罚"
-   ],
-   "passives": [
-    "强健体魄",
-    "兵械通晓",
-    "铁躯",
-    "驭器"
-   ],
-   "playstyle": "武技叠满武器大师级，神罚收尾"
-  },
-  {
-   "name": "C 猎魔隐秘 🌅",
-   "actives": [
-    "隐蔽",
-    "猎魔之眼",
-    "格斗术·连击",
-    "晨曦之剑"
-   ],
-   "passives": [
-    "强健体魄",
-    "兵械通晓",
-    "铁躯",
-    "武器大师"
-   ],
-   "playstyle": "隐蔽写隐秘值吃共鸣，借光隐藏锁占卜"
-  },
-  {
-   "name": "D 黄昏衰败 🌇",
-   "actives": [
-    "格斗术·连击",
-    "黄昏巨剑",
-    "近身缠斗",
-    "卸力"
-   ],
-   "passives": [
-    "强健体魄",
-    "兵械通晓",
-    "铁躯",
-    "武器大师"
-   ],
-   "playstyle": "老化叠满→衰败失控，自身老去重生续命"
-  }
- ]
+  ],
+  "domainDefs": [
+    {
+      "id": "domain_dawn",
+      "tier": "overlay",
+      "dispelable": true,
+      "duration": 15,
+      "durationUnit": "tick",
+      "triggers": [
+        {
+          "event": "on_tick",
+          "filter": {
+            "anyOf": [
+              {
+                "unitType": [
+                  "UNDEAD"
+                ]
+              },
+              {
+                "tags": [
+                  "illusion"
+                ]
+              }
+            ]
+          },
+          "effects": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "event": "on_turn_start",
+          "filter": {
+            "side": "ally",
+            "tags": [
+              "光"
+            ]
+          },
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": 5
+            }
+          ]
+        }
+      ],
+      "rulePatches": [
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "光",
+            "净化"
+          ],
+          "mul": 1.3
+        },
+        {
+          "kind": "empower",
+          "side": "both",
+          "tag": [
+            "暗影",
+            "幻象"
+          ],
+          "mul": 0.7
+        }
+      ]
+    }
+  ],
+  "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方之一）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。战士经\"隐蔽 / 借光隐藏\"等 +1/次（见【隐蔽】、【隐秘之影·承接】）。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（收尸人·奴役目标最稳）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，战士是主消费方之一（隐蔽↔占卜家 隐秘值联动）。",
+  "sampleBuilds": [
+    {
+      "name": "A 黎明壁垒 🛡",
+      "actives": [
+        "守护状态",
+        "格斗术·连击",
+        "晨曦领域",
+        "黎明铠甲"
+      ],
+      "passives": [
+        "强健体魄",
+        "铁躯",
+        "武器大师",
+        "兵械通晓"
+      ],
+      "playstyle": "竖墙承伤+晨曦领域破幻，团队最硬壁垒"
+    },
+    {
+      "name": "B 武艺神罚 ⚔",
+      "actives": [
+        "格斗术·连击",
+        "近身缠斗",
+        "卸力",
+        "神罚"
+      ],
+      "passives": [
+        "强健体魄",
+        "兵械通晓",
+        "铁躯",
+        "驭器"
+      ],
+      "playstyle": "武技叠满武器大师级，神罚收尾"
+    },
+    {
+      "name": "C 猎魔隐秘 🌅",
+      "actives": [
+        "隐蔽",
+        "猎魔之眼",
+        "格斗术·连击",
+        "晨曦之剑"
+      ],
+      "passives": [
+        "强健体魄",
+        "兵械通晓",
+        "铁躯",
+        "武器大师"
+      ],
+      "playstyle": "隐蔽写隐秘值吃共鸣，借光隐藏锁占卜"
+    },
+    {
+      "name": "D 黄昏衰败 🌇",
+      "actives": [
+        "格斗术·连击",
+        "黄昏巨剑",
+        "近身缠斗",
+        "卸力"
+      ],
+      "passives": [
+        "强健体魄",
+        "兵械通晓",
+        "铁躯",
+        "武器大师"
+      ],
+      "playstyle": "老化叠满→衰败失控，自身老去重生续命"
+    }
+  ]
 }

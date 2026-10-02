@@ -7,14 +7,14 @@
         "buff"
       ],
       "dispelable": false,
-      "duration": 15,
+      "duration": 75,
       "effects": [
         {
           "type": "modify_stat",
           "stat": "attack",
           "value": 3,
           "mode": "delta",
-          "duration": 3,
+          "duration": 15,
           "target": "self"
         },
         {
@@ -22,7 +22,7 @@
           "stat": "gauge.rate",
           "value": 8,
           "mode": "delta",
-          "duration": 3,
+          "duration": 15,
           "target": "self"
         },
         {
@@ -30,7 +30,7 @@
           "stat": "armor",
           "value": 2,
           "mode": "delta",
-          "duration": 3,
+          "duration": 15,
           "target": "self"
         },
         {
@@ -38,7 +38,7 @@
           "stat": "defense",
           "value": -2,
           "mode": "delta",
-          "duration": 3,
+          "duration": 15,
           "target": "self"
         },
         {
@@ -46,11 +46,11 @@
           "stat": "resist:mental",
           "value": -20,
           "mode": "delta",
-          "duration": 3,
+          "duration": 15,
           "target": "self"
         }
       ],
-      "note": "默认时长同源于稿期 3 回合 → 15 tick（2026-09-30 时间回归）；H10 参数化形态增益母版（增益段 × 代价段 × dispelable:false），与 F10 beast_form 同母版，差异在代价段与可否驱散；正负两段同挂一个可计时状态，到期自动回滚"
+      "note": "默认时长同源于稿期 3 回合 → 75tick（2026-09-30 时间回归）；H10 参数化形态增益母版（增益段 × 代价段 × dispelable:false），与 F10 beast_form 同母版，差异在代价段与可否驱散；正负两段同挂一个可计时状态，到期自动回滚"
     },
     {
       "id": "unhinged_mind",
@@ -87,14 +87,14 @@
         "buff"
       ],
       "dispelable": true,
-      "duration": 20,
+      "duration": 100,
       "effects": [
         {
           "type": "modify_stat",
           "stat": "attack",
           "value": 3,
           "mode": "delta",
-          "duration": 4,
+          "duration": 20,
           "target": "self"
         },
         {
@@ -102,7 +102,7 @@
           "stat": "gauge.rate",
           "value": 8,
           "mode": "delta",
-          "duration": 4,
+          "duration": 20,
           "target": "self"
         }
       ],
@@ -113,7 +113,7 @@
             {
               "type": "mount_status",
               "statusId": "poison",
-              "duration": 2,
+              "duration": 10,
               "note": "爪牙带毒：载荷目标为被击中的单位"
             }
           ]
@@ -125,12 +125,12 @@
               "type": "heal",
               "value": 1,
               "target": "self",
-              "note": "恐怖自愈；A22 必须用 heal 原语，G14 tick ≠ 回合"
+              "note": "恐怖自愈；A22 必须用 heal 原语，G70tick ≠ 回合"
             }
           ]
         }
       ],
-      "note": "默认时长同源于稿期 4 回合 → 20 tick（2026-09-30 时间回归）；复用 F10 beast_form 母版（atk+3 / gauge_rate+8 / dispelable:true），本卡追加 on_deal_damage 附毒 + on_tick 自愈两条触发器 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
+      "note": "默认时长同源于稿期 4 回合 → 100tick（2026-09-30 时间回归）；复用 F10 beast_form 母版（atk+3 / gauge_rate+8 / dispelable:true），本卡追加 on_deal_damage 附毒 + on_tick 自愈两条触发器 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
       "lineageStack": {
         "push": "werewolf_form",
         "depth": 1,
@@ -170,14 +170,14 @@
         "conceal"
       ],
       "dispelable": true,
-      "duration": 15,
+      "duration": 75,
       "effects": [
         {
           "type": "modify_stat",
           "stat": "resist:physical",
           "value": 50,
           "mode": "delta",
-          "duration": 3,
+          "duration": 15,
           "target": "self"
         }
       ],
@@ -191,7 +191,7 @@
         "damageElementOverride": "mental",
         "note": "直接攻击灵魂：damageElementOverride（效果参数 §1.1，新增项 5）"
       },
-      "note": "默认时长同源于稿期 3 回合 → 15 tick（2026-09-30 时间回归）；H5 潜行/虚化母版 + H27 moveImmune + damageElementOverride；原著「自由出入灵界」在单战场无第二维度，仅作 flavor",
+      "note": "默认时长同源于稿期 3 回合 → 75tick（2026-09-30 时间回归）；H5 潜行/虚化母版 + H27 moveImmune + damageElementOverride；原著「自由出入灵界」在单战场无第二维度，仅作 flavor",
       "lineageStack": {
         "push": "spirit_form",
         "depth": 1,
@@ -238,7 +238,7 @@
         "debuff"
       ],
       "dispelable": true,
-      "duration": 3,
+      "duration": 15,
       "damageTransfer": {
         "ratio": 1.0,
         "direction": "to_target",
@@ -315,14 +315,14 @@
         "stance"
       ],
       "dispelable": true,
-      "duration": 15,
+      "duration": 75,
       "effects": [
         {
           "type": "modify_stat",
           "stat": "resist:physical",
           "value": 40,
           "mode": "delta",
-          "duration": 3,
+          "duration": 15,
           "target": "self"
         }
       ],
@@ -348,7 +348,7 @@
           ]
         }
       ],
-      "note": "默认时长同源于稿期 3 回合 → 15 tick（2026-09-30 时间回归）；与灵体化互补的防守向形态（灵体化进攻向：攻击转精神、仍能施法），两者不可合并 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
+      "note": "默认时长同源于稿期 3 回合 → 75tick（2026-09-30 时间回归）；与灵体化互补的防守向形态（灵体化进攻向：攻击转精神、仍能施法），两者不可合并 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
       "maxStacks": 3,
       "stackPolicy": "refresh"
     },
@@ -360,14 +360,14 @@
         "control"
       ],
       "dispelable": true,
-      "duration": 15,
+      "duration": 75,
       "effects": [
         {
           "type": "modify_stat",
           "stat": "defense",
           "value": -2,
           "mode": "delta",
-          "duration": 3,
+          "duration": 15,
           "target": "self"
         }
       ],
@@ -377,7 +377,7 @@
         "disableSkills": true,
         "note": "H24 减速族（gaugeRateMul × attackMod）+ H10 属性段 + disable 技能作用域；变成生物、属性腰斩、忘掉技能，但还能咬人（非定身）"
       },
-      "note": "默认时长同源于稿期 3 回合 → 15 tick（2026-09-30 时间回归）；与刺客 petrification（石化全禁）、F20 petrify（物质转化禁疗）三者同名近义机制不同，落地时不可合并；变形诅咒 > 免吟唱（变形成野兽后不存在吟唱） 乘区审批：0.4–0.5=深度减免档（重控/代价/位格压制态），单列登记"
+      "note": "默认时长同源于稿期 3 回合 → 75tick（2026-09-30 时间回归）；与刺客 petrification（石化全禁）、F20 petrify（物质转化禁疗）三者同名近义机制不同，落地时不可合并；变形诅咒 > 免吟唱（变形成野兽后不存在吟唱） 乘区审批：0.4–0.5=深度减免档（重控/代价/位格压制态），单列登记"
     },
     {
       "id": "abomination",
@@ -395,7 +395,7 @@
               "type": "mount_status",
               "statusId": "mind_taint",
               "stacks": 1,
-              "duration": 3,
+              "duration": 15,
               "target": "all_enemies",
               "condition": {
                 "kind": "chance",
@@ -416,13 +416,13 @@
         "debuff"
       ],
       "dispelable": false,
-      "duration": 20,
+      "duration": 100,
       "modifiers": {
         "disableAllActions": true,
         "note": "disable 全部四行为（编队参数 §2.2 眩晕同字段）+ H21 禁疗（heal_received_mul:0，与 F20 petrify 同字段）",
         "heal_received_mul": 0
       },
-      "note": "默认时长同源于稿期 4 回合 → 20 tick（2026-09-30 时间回归）；比眩晕更彻底的控制：不可驱散、禁疗、时长 4t（眩晕常规 1t） 乘区审批（2026-10-01）：0 值=绝对语义档（完全免除/封印/断绝），非渐变乘区，单列登记"
+      "note": "默认时长同源于稿期 4 回合 → 100tick（2026-09-30 时间回归）；比眩晕更彻底的控制：不可驱散、禁疗、时长 20t（眩晕常规 5t） 乘区审批（2026-10-01）：0 值=绝对语义档（完全免除/封印/断绝），非渐变乘区，单列登记"
     },
     {
       "id": "aberration_king",
