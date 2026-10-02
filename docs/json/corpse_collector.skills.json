@@ -21,7 +21,7 @@
         "幽冥窥视",
         "灵界瞭望"
       ],
-      "note": "payoffs 2026-09-26 评审：三卡读目标 conceal 类状态存在放大 ×1.5（spirit_sight 本体是被动透隐，无层数可读） ｜ 2026-09-29 环节⑤：enablers 核正（死亡之眼/通灵不挂 spirit_sight 移出，灵视觉醒/死兆预感补入，产层 20）；死亡之眼补 spirit_sight 读层段（payoff 升 landed）"
+      "note": "payoffs 2026-09-26 评审：三卡读目标 conceal 类状态存在放大 ×1.5（spirit_sight 本体是被动透隐，无层数可读） ｜ 2026-09-29 环节⑤：enablers 核正（死亡之眼/通灵不挂 spirit_sight 移出，灵视觉醒/死兆预感补入，产层 20）；死亡之眼补 spirit_sight 读层段（payoff 升 landed） ｜ 2026-10-02 批次九：灵视汲取体系——死神使者/死亡之眼 target_unit_type[UNDEAD/SPIRIT]→drain 段（drain 签名 0→2 实证、灵视克灵体结构化 1→3）；亡者之王补 spirit_sight 跨轴读层"
     },
     "corpse": {
       "symbol": "💀",
@@ -256,7 +256,7 @@
       "flagship": true,
       "lore": "序列8 掘墓人 —— \"『死亡之眼』：进入灵性世界，从更高层次俯视敌人找弱点\"；\"灵视更厉害\"",
       "flavor": "你的魂魄离体半寸，从灵性世界里俯下身——它的要害、它的破绽，一下子全浮了出来。",
-      "describe": "对一名敌人造成 3 点精神伤害（处于隐匿状态时 ×1.5），使其易伤 15tick，并驱散其 1 个隐匿类状态；若自身灵视在场，灵视锁定，伤害 +1。",
+      "describe": "对一名敌人造成 3 点精神伤害（处于隐匿状态时 ×1.5），使其易伤 15tick，并驱散其 1 个隐匿类状态；若自身灵视在场，灵视锁定，伤害 +1。目标为灵体/亡灵时再汲取 2 点生命。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -338,6 +338,26 @@
                 }
               ],
               "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "target_unit_type",
+                "type": [
+                  "UNDEAD",
+                  "SPIRIT"
+                ]
+              },
+              "then": [
+                {
+                  "type": "drain",
+                  "resource": "hp",
+                  "value": 2,
+                  "healRatio": 0.5,
+                  "note": "亡者凝视：灵体/亡灵在死亡之眼下泄出本源，汲取 2 点——drain 实证②+灵视克灵体结构化③"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -346,7 +366,7 @@
         "sleepless"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：灵视轴揭示弱点的招牌（读 `灵视` 的入口）；同状态 `weak_spot` 复用。",
+      "conversionNotes": "翻译/语义：灵视轴揭示弱点的招牌（读 `灵视` 的入口）；同状态 `weak_spot` 复用。 ｜ 2026-10-02 差异化风格迭代·批次九（收尸人：灵视汲取体系+跨轴统御）",
       "dimHooks": [
         {
           "dim": "luminance",
@@ -847,7 +867,7 @@
       "flagship": false,
       "lore": "序列5 看门人 —— \"『死神使者』：低泣声让目标血液冻僵、生命力流逝\"",
       "flavor": "你低低地哭了一声——它的血停住了，而它身体里的什么东西，正一点一点地往外漏。",
-      "describe": "对一名敌人造成 5 点冰霜伤害，并使其血液冻僵 20tick：行动条速率 ×0.8、每 tick 1 点无属性伤害、受到的治疗 ×0.7。",
+      "describe": "对一名敌人造成 5 点冰霜伤害，并使其血液冻僵 20tick：行动条速率 ×0.8、每 tick 1 点无属性伤害、受到的治疗 ×0.7。目标为灵体/亡灵时额外汲取 3 点生命（半数归自身）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -876,12 +896,32 @@
               "type": "mount_status",
               "statusId": "blood_chill",
               "duration": 20
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "target_unit_type",
+                "type": [
+                  "UNDEAD",
+                  "SPIRIT"
+                ]
+              },
+              "then": [
+                {
+                  "type": "drain",
+                  "resource": "hp",
+                  "value": 3,
+                  "healRatio": 0.5,
+                  "note": "灵视汲取：对灵体/亡灵额外汲取 3 点生命半归自身——drain 签名实证①+灵视克灵体结构化②（⚠️D 待平衡）"
+                }
+              ],
+              "else": []
             }
           ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：终末轴生命力流逝支路（读 `冥界` 前置）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 3→5（位格5 基准5）。条件/读层追加段不动。",
+      "conversionNotes": "翻译/语义：终末轴生命力流逝支路（读 `冥界` 前置）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 3→5（位格5 基准5）。条件/读层追加段不动。 ｜ 2026-10-02 差异化风格迭代·批次九（收尸人：灵视汲取体系+跨轴统御）",
       "art": {
         "subject": "a weeping figure whose cry drains the life from a victim",
         "elements": [
@@ -1576,7 +1616,7 @@
       "flagship": false,
       "lore": "序列2 死亡执政官 —— \"『亡者之王』：小型冥界容纳不死生物大军\"",
       "flavor": "你体内的冥界向外撑开了一圈——它不再只装得下三个魂，而站在你身后的，也不再只是一小队亡者。",
-      "describe": "战斗开始时：小型冥界容量 3→6；自身召唤位上限 +2；你召唤的亡灵攻击 +2、生命上限 +5（常驻）。",
+      "describe": "战斗开始时：小型冥界容量 3→6；自身召唤位上限 +2；你召唤的亡灵攻击 +2、生命上限 +5（常驻）。自身灵视觉醒在场时，攻击再 +1。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1618,12 +1658,34 @@
               "duration": null,
               "target": "self",
               "note": "同上，companionBuff 段"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "spirit_sight",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": 1,
+                  "mode": "delta",
+                  "duration": null,
+                  "target": "self",
+                  "note": "灵视统御：自身灵视觉醒在场，王对亡灵的号令更彻——跨轴读层段（undead→spirit_sight，⚠️D 待平衡）"
+                }
+              ],
+              "else": []
             }
           ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：亡者轴统御 payoff（读 `奴役` 体系，敌方亡灵掉头）。",
+      "conversionNotes": "翻译/语义：亡者轴统御 payoff（读 `奴役` 体系，敌方亡灵掉头）。 ｜ 2026-10-02 差异化风格迭代·批次九（收尸人：灵视汲取体系+跨轴统御）",
       "art": {
         "subject": "a small inner underworld swelling into an army of the dead",
         "elements": [
