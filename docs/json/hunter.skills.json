@@ -45,7 +45,8 @@
         "借用能力",
         "无限制分享",
         "战争权柄"
-      ]
+      ],
+      "note": " ｜ 2026-10-02 批次七：target_override 指挥调防原语化（误导/煽动实证×2，签名 0→2）；战阵号令连击体系（战吼/战争权柄/集众·铁血挂战阵 tag，战吼 tag_chain 读层 payoff）；征服补 doom 跨系读层"
     },
     "harvest": {
       "symbol": "🏹",
@@ -784,7 +785,7 @@
       "flagship": true,
       "lore": "序列6 阴谋家 —— \"误导、迷惑和欺骗的超凡能力（『阴谋』核心）\"",
       "flavor": "你让它以为你还在原地——它挥出的那一击又狠又准，只是砍在了空气上。",
-      "describe": "单体敌人被误导（15tick，1 次）：它的下一次攻击打向空位（目标改写 → first_empty）。",
+      "describe": "单体敌人被误导（15tick，1 次）：它的下一次攻击打向空位（目标改写 → first_empty）。（目标改写由 target_override 原语结构化承载）",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -806,6 +807,11 @@
           "charges": 1,
           "duration": 15,
           "target": "target"
+        },
+        {
+          "type": "target_override",
+          "anchor": "first_empty",
+          "note": "误导调防（原语化实证①）：下一次攻击目标改写为空位——target_override 只做指挥/调防语义（身份红线）；存续窗口由 deceived 状态承载，原语承载改写语义"
         }
       ],
       "sharedAcross": [
@@ -814,7 +820,8 @@
       "tentative": false,
       "conversionNotes": [
         "C7 target_override → first_empty 已端到端验证；C6 charges 已落地，零新依赖",
-        "翻译/语义：阴谋轴旗舰：让对手打空（C7 已验证）。与【挑衅】闭环。"
+        "翻译/语义：阴谋轴旗舰：让对手打空（C7 已验证）。与【挑衅】闭环。",
+        "2026-10-02 差异化风格迭代·批次七（猎人：指挥调防原语化+战阵号令连击）"
       ],
       "art": {
         "subject": "an enemy blade slicing through the hunter's dissolving afterimage",
@@ -837,7 +844,7 @@
       "flagship": false,
       "lore": "序列6 阴谋家 —— \"『煽动 / 鼓动』能力\"",
       "flavor": "你在它耳边说了句什么——它回过头，看向了刚才还站在自己身边的那个人。",
-      "describe": "单体敌人被煽动（15tick）：其攻击目标改写为己方队友（同阵营生命值最高者）。",
+      "describe": "单体敌人被煽动（15tick）：其攻击目标改写为己方队友（同阵营生命值最高者）。（目标改写由 target_override 原语结构化承载）",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -858,6 +865,12 @@
           "statusId": "incited",
           "duration": 15,
           "target": "target"
+        },
+        {
+          "type": "target_override",
+          "anchor": "self_faction_hp_desc",
+          "sort": "hp_desc",
+          "note": "煽动调防（原语化实证②）：攻击目标改写为其同阵营生命值最高者——与潜意识篡改同锚族；存续窗口由 incited 状态承载"
         }
       ],
       "sharedAcross": [
@@ -866,7 +879,8 @@
       "tentative": false,
       "conversionNotes": [
         "与 F9 puppet_string / F15 charm / F3 puppeteered / F19 countersuit 同属 F 组 target_override 状态族合并候选 3，落地时随母版收敛",
-        "翻译/语义：被挑衅者的敌意转向己方队友。"
+        "翻译/语义：被挑衅者的敌意转向己方队友。",
+        "2026-10-02 差异化风格迭代·批次七（猎人：指挥调防原语化+战阵号令连击）"
       ],
       "art": {
         "subject": "a whispered word turning one soldier's blade toward his own comrade",
@@ -1331,7 +1345,10 @@
           "knight's planted banner stance"
         ],
         "mood": "unified, steadfast"
-      }
+      },
+      "tags": [
+        "战阵"
+      ]
     },
     {
       "id": "skill_hunter_s4_iron_courage",
@@ -1446,7 +1463,7 @@
       "flagship": false,
       "lore": "序列3 战争主教 —— \"『战吼 / 战歌』\"",
       "flavor": "你吼出的不是声音，是一整支军队的士气——每个人的血都热了一分，压在心头的那点恐惧也散了。",
-      "describe": "全体友军：攻击 +2（20tick）+ 驱散 1 个控制/减益 + 行动条 +10（不含施法者，彻底规避 G5/G6）。",
+      "describe": "全体友军攻击 +2、驱散 1 个控制/减益，除施法者外行动条 +10；若上一张施放的技能同为战阵号令（连号令≥2），改为攻击 +3、行动条 +15。",
       "cost": {
         "energy": 4,
         "cooldown": 30,
@@ -1462,8 +1479,45 @@
       },
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
+          "op": "if",
+          "condition": {
+            "kind": "tag_chain",
+            "tag": "战阵",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 20,
+              "target": "all_allies",
+              "note": "战阵连号令≥2：号令层层传下去，攻击 +3（⚠️D 待平衡）"
+            },
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "target": "all_allies",
+              "filter": {
+                "category": [
+                  "control",
+                  "debuff"
+                ],
+                "count": 1
+              }
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 15,
+              "mode": "delta",
+              "target": "allies_except_self",
+              "note": "G5/G6 规避：推条受益方为除施法者外全体友军；连号令档 +15"
+            }
+          ],
+          "else": [
             {
               "type": "modify_stat",
               "stat": "attack",
@@ -1490,13 +1544,14 @@
               "value": 10,
               "mode": "delta",
               "target": "allies_except_self",
-              "note": "G5/G6 规避：推条受益方明确为除施法者外的全体友军；施法者只吃 attack +2 与驱散"
+              "note": "G5/G6 规避"
             }
-          ]
+          ],
+          "note": "连击正主读层：tag_chain(战阵)——战阵号令连施（矩阵 §三 连击行猎人正主落地）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：群体士气：加攻+驱控+推条（推友军，G5/G6 合规）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：群体士气：加攻+驱控+推条（推友军，G5/G6 合规）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次七（猎人：指挥调防原语化+战阵号令连击）",
       "art": {
         "subject": "a warlord's roar visibly swelling the morale of the whole battle line",
         "elements": [
@@ -1505,7 +1560,10 @@
           "surging lifted banners"
         ],
         "mood": "rousing, thunderous"
-      }
+      },
+      "tags": [
+        "战阵"
+      ]
     },
     {
       "id": "skill_hunter_s3_war_mist",
@@ -2033,7 +2091,7 @@
       "flagship": false,
       "lore": "序列1 征服者 —— \"『征服』权柄：让目标身心臣服，彻底征服后永远效忠\"",
       "flavor": "你看着它的眼睛，说了一个字。它的膝盖先软下去，然后是它的意志——从这一刻起，它不再是它自己的人了。",
-      "describe": "单体敌人被征服（30tick）：掉头攻向自己人（同阵营生命最高者）、攻击 -2、受伤 ×1.2；它在此期间死亡则以士兵身份永远效忠（以 50% 生命在己方队尾复活为 war_soldier）。",
+      "describe": "单体敌人被征服：掉头攻向自己人（同阵营生命最高者）、攻击 -2、受伤 ×1.2（30tick；目标带命运诅咒则 40tick）；它在此期间死亡则以士兵身份永远效忠（以 50% 生命在己方队尾复活为 war_soldier）。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2050,17 +2108,39 @@
       },
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "conquered",
-          "duration": 30,
-          "target": "target"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "conquered",
+              "duration": 40,
+              "target": "target",
+              "note": "厄运助征服：被征服者已携命运诅咒，臣服更深——持续 40tick（跨系读层段：hunter→assassin doom）"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "conquered",
+              "duration": 30,
+              "target": "target"
+            }
+          ]
         }
       ],
       "tentative": false,
       "conversionNotes": [
         "遗留 2：被征服单位带 miracle/reviveOf 时先复活还是先转化未决，本稿主张征服优先，需定进复活结算链",
         "翻译/语义：集众轴传说：身心臣服+死后转化。",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+        "2026-10-01 吟唱重标：非仪式，castTime 空→0",
+        "2026-10-02 差异化风格迭代·批次七（猎人：指挥调防原语化+战阵号令连击）"
       ],
       "art": {
         "subject": "a conqueror's single word dropping an enemy to its knees",
@@ -2323,7 +2403,10 @@
           "soaring war banner"
         ],
         "mood": "frenzied, sovereign"
-      }
+      },
+      "tags": [
+        "战阵"
+      ]
     },
     {
       "id": "skill_hunter_s0_ruin_mandate",
