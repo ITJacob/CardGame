@@ -30,7 +30,7 @@
         "黎明铠甲"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：guardianship 仅守护状态自挂（2026-09-29 自 common guard 分叉为守护轴私有身份「守护」，承伤重定向+自身减伤），全途径无卡读其层数/存在 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：guardianship 收益=承伤重定向运行时语义（执行上下文 R 节点），消费者是被保护友军而非层数读档（2026-09-29 私有化后 rationale 改写，原「借 common 机制桩」已不成立）；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：守护姿态无此卡移除，黎明铠甲补 guardianship 产层段（产层 12→20）；无 binding 的 guardianship 语义待内核确认 ｜ 2026-10-02 批次五：晨曦阵地 zone 落地（黎明铠甲 spawn blessing 阵地）",
+      "note": "payoffs 2026-09-26 评审：guardianship 仅守护状态自挂（2026-09-29 自 common guard 分叉为守护轴私有身份「守护」，承伤重定向+自身减伤），全途径无卡读其层数/存在 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：guardianship 收益=承伤重定向运行时语义（执行上下文 R 节点），消费者是被保护友军而非层数读档（2026-09-29 私有化后 rationale 改写，原「借 common 机制桩」已不成立）；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：守护姿态无此卡移除，黎明铠甲补 guardianship 产层段（产层 12→20）；无 binding 的 guardianship 语义待内核确认 ｜ 2026-10-02 批次五：晨曦阵地 zone 落地（黎明铠甲 spawn blessing 阵地） ｜ 2026-10-02：守护状态挂反击姿态（挑衅反击共享列落地）",
       "payoffVacuumAccepted": true
     },
     "hunt": {
@@ -977,7 +977,7 @@
       "flagship": false,
       "lore": "序列5 守护者 —— \"『守护状态』：巨剑插地，竖立无形墙壁，帮同伴承担伤害\"；\"放弃攻击后高序列以下极少能打破防御\"",
       "flavor": "你把巨剑插进地面，一道看不见的墙随之立起——打向同伴的那一击，落在了你的身上。",
-      "describe": "选择一名友军：自身进入守护姿态 20tick，替其承担伤害；自身受伤 ×0.7，该友军获得 5 点护盾；期间自身伤害 ×0.5。",
+      "describe": "选择一名友军：自身进入守护姿态 20tick，替其承担伤害；自身受伤 ×0.7，该友军获得 5 点护盾；期间自身伤害 ×0.5。；同挂「反击姿态」15tick（2 次）：守护期间受远程攻击时顺序反击攻击者。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1026,12 +1026,20 @@
               "target": "self"
             }
           ]
+        },
+        {
+          "type": "mount_status",
+          "statusId": "counter_stance",
+          "duration": 15,
+          "target": "self",
+          "note": "守护不止于挡：同挂反击姿态 15tick（2 次）——守护期间受远程攻击顺序反击（执行上下文 §六；⚠️D 待平衡）"
         }
       ],
       "tentative": false,
       "conversionNotes": [
         "稿面双目标（指定 1 友军 + SELF）：主目标取被保护友军，自身段走 target:self；友军选择的 fallbackSort 稿面未给，置 null 待补",
-        "翻译/语义：守护轴身份状态 `守护` 主挂载源 + 承伤壁垒。"
+        "翻译/语义：守护轴身份状态 `守护` 主挂载源 + 承伤壁垒。",
+        "2026-10-02 反击姿态首发承载①：守护+反击双姿态——矩阵 stance 行战士共享列落地"
       ],
       "art": {
         "subject": "a guardian plunging a greatsword into the earth behind an invisible wall",
