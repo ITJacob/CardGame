@@ -8,7 +8,7 @@
 
 | 职业（途径） | 卡数 | 效果节点总数 | 原语节点 | 算子节点 |
 |---|---:|---:|---:|---:|
-| 不眠者 sleepless | 34 | 72 | 72 | 23 |
+| 不眠者 sleepless | 34 | 77 | 77 | 26 |
 | 仲裁人 arbiter | 40 | 104 | 104 | 37 |
 | 偷盗者 thief | 37 | 89 | 89 | 29 |
 | 刺客 assassin | 39 | 91 | 91 | 30 |
@@ -30,7 +30,7 @@
 | 观众 spectator | 36 | 69 | 69 | 24 |
 | 通识者 savant | 36 | 83 | 83 | 26 |
 | 阅读者 reader | 34 | 75 | 75 | 20 |
-| **全库** | **832** | **1833** | **1833** | **572** |
+| **全库** | **832** | **1838** | **1838** | **575** |
 
 > 口径：一张卡含多层嵌套效果（卡面 `effects`、状态触发器、区域/界域定义等），故「效果节点总数」≥ 卡数。原语=以 `type` 表达的 19 类 leaf 效果；算子=以 `op` 表达的 9 类控制流/改写节点（`sequence/if/repeat/target_override/push_back/overlay/pull_forward/swap_ally/insert_tail_cross_lane`）。算子节点内部包裹的原语已计入原语统计，二者存在少量重叠（如 `move`+`push_back`）。
 
@@ -40,7 +40,7 @@
 
 | 职业 | `mount_status` | `damage` | `modify_stat` | `modify_resource` | `dispel` | `spawn` | `heal` | `move` | `domain` | `drain` | `modify_damage` | `transfer_status` | `echo_last_skill` | `snapshot` | `restore_snapshot` | `gauge_shuffle` | `status_shuffle` | `translocate` | `target_override` | `set_luminance` | `advance_clock` | 合计 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 不眠者 | 39 | 13 | 9 | 3 | 3 | 3 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 72 |
+| 不眠者 | 42 | 13 | 9 | 3 | 3 | 3 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 77 |
 | 仲裁人 | 32 | 28 | 15 | 13 | 6 | 1 | 2 | 2 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 104 |
 | 偷盗者 | 33 | 14 | 15 | 9 | 2 | 3 | 0 | 1 | 1 | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 89 |
 | 刺客 | 51 | 18 | 6 | 5 | 4 | 1 | 2 | 2 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 91 |
@@ -62,13 +62,13 @@
 | 观众 | 38 | 11 | 6 | 4 | 2 | 3 | 3 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 69 |
 | 通识者 | 24 | 9 | 21 | 13 | 3 | 6 | 4 | 0 | 2 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 83 |
 | 阅读者 | 31 | 18 | 7 | 10 | 2 | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 1 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 75 |
-| **全库** | 764 | 393 | 206 | 164 | 74 | 69 | 46 | 38 | 32 | 13 | 1 | 3 | 3 | 6 | 3 | 2 | 2 | 7 | 2 | 3 | 2 | **1833** |
+| **全库** | 767 | 393 | 206 | 164 | 74 | 69 | 46 | 38 | 32 | 13 | 1 | 3 | 3 | 6 | 3 | 2 | 2 | 7 | 2 | 3 | 4 | **1838** |
 
 ### 2.1 全库原语用量排行（含占比）
 
 | 原语 | 用量 | 占比 |
 |---|---:|---:|
-| `mount_status` | 764 | 41.7% |
+| `mount_status` | 767 | 41.7% |
 | `damage` | 393 | 21.4% |
 | `modify_stat` | 206 | 11.2% |
 | `modify_resource` | 164 | 8.9% |
@@ -80,6 +80,7 @@
 | `drain` | 13 | 0.7% |
 | `translocate` | 7 | 0.4% |
 | `snapshot` | 6 | 0.3% |
+| `advance_clock` | 4 | 0.2% |
 | `transfer_status` | 3 | 0.2% |
 | `echo_last_skill` | 3 | 0.2% |
 | `restore_snapshot` | 3 | 0.2% |
@@ -87,7 +88,6 @@
 | `gauge_shuffle` | 2 | 0.1% |
 | `status_shuffle` | 2 | 0.1% |
 | `target_override` | 2 | 0.1% |
-| `advance_clock` | 2 | 0.1% |
 | `modify_damage` | 1 | 0.1% |
 
 ### 2.2 各职业算子用量矩阵（op 维度）
@@ -96,7 +96,7 @@
 
 | 职业 | `sequence` | `if` | `repeat` | `target_override` | `push_back` | `overlay` | `pull_forward` | `swap_ally` | `insert_tail_cross_lane` | 合计 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 不眠者 | 9 | 12 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 23 |
+| 不眠者 | 9 | 15 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 26 |
 | 仲裁人 | 18 | 11 | 1 | 0 | 1 | 5 | 1 | 0 | 0 | 37 |
 | 偷盗者 | 17 | 10 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 29 |
 | 刺客 | 15 | 10 | 1 | 0 | 0 | 2 | 1 | 1 | 0 | 30 |
@@ -118,7 +118,7 @@
 | 观众 | 15 | 7 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 24 |
 | 通识者 | 14 | 8 | 2 | 0 | 0 | 2 | 0 | 0 | 0 | 26 |
 | 阅读者 | 13 | 5 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 20 |
-| **全库** | 277 | 210 | 19 | 0 | 20 | 31 | 9 | 3 | 3 | **572** |
+| **全库** | 277 | 213 | 19 | 0 | 20 | 31 | 9 | 3 | 3 | **575** |
 
 > `target_override` 在全库另有 **2** 处作为 `type` 原语（`effTargetOverride`）出现，与算子的 0 处合计 **2** 处「改写目标」表达。
 
@@ -126,7 +126,7 @@
 
 | 职业 | Top1 | Top2 | Top3 |
 |---|---|---|---|
-| 不眠者 | `mount_status`(39) | `damage`(13) | `modify_stat`(9) |
+| 不眠者 | `mount_status`(42) | `damage`(13) | `modify_stat`(9) |
 | 仲裁人 | `mount_status`(32) | `damage`(28) | `modify_stat`(15) |
 | 偷盗者 | `mount_status`(33) | `modify_stat`(15) | `damage`(14) |
 | 刺客 | `mount_status`(51) | `damage`(18) | `modify_stat`(6) |
@@ -406,12 +406,12 @@
 
 ## 六、总量快照
 
-> 算子口径：sequence=277 / if=210 / target_override=0 / push_back=20 / overlay=31 / repeat=19 / pull_forward=9 / swap_ally=3 / insert_tail_cross_lane=3；本库当前 832 张卡，数字随补卡浮动属正常。
+> 算子口径：sequence=277 / if=213 / target_override=0 / push_back=20 / overlay=31 / repeat=19 / pull_forward=9 / swap_ally=3 / insert_tail_cross_lane=3；本库当前 832 张卡，数字随补卡浮动属正常。
 
 
 ## 七、结论与观察
 
-1. **原语总量**：全库共 1833 个原语节点 + 572 个算子节点；`mount_status`(42%) 与 `damage`(21%) 仍是绝对主力，状态驱动风格延续。
+1. **原语总量**：全库共 1838 个原语节点 + 575 个算子节点；`mount_status`(42%) 与 `damage`(21%) 仍是绝对主力，状态驱动风格延续。
 2. **modify_stat 最常被改的属性**：`attack`(77)、`gauge.rate`(36)、`defense`(20) —— 敏捷原生的 `gauge.rate`、攻防 `attack/defense`、资源速率与独立资源槽是首选。
 3. **modify_resource 最常被改的资源**：`gauge.current`(59)、`lost`(41)、`energy`(28) —— `energy` 是第一杠杆，`lost`（迷失租金）已随界域/跨层普及成为常态成本，`gauge.current`（推条）用量高于直接 hp/shield。
 4. **参数使用**：modify_stat 中带 `duration` 的占 53%（持续型修正为主），带 `condition` 的仅 1%（绝大多数无条件是确定性修正，符合 B1 铁律）；`sourceRef`/`valueFrom` 动态取值共 12 处，属「按参照源缩放」的高级表达。
