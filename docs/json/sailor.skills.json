@@ -31,7 +31,7 @@
         "风刃军团",
         "风暴地狱"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 storm，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审+主人裁定：原列海啸（ocean 轴卡）换成本轴风暴地狱；全轴唯一卡面读 emc_disorder 的是闪电风暴（已列 enabler），无实证读层 payoff，风刃军团/风暴地狱为主题收束卡 ｜ 2026-09-29 环节⑤：emc_disorder 补层数引擎（身份 8→15）；雷击补产层段（飓风盘绕/加速与滑翔不挂 emc_disorder 移出，产层 12→20）；风刃军团读 emc_disorder 升 landed（payoff notes→landed）；风暴地狱读 submerge 跨轴（storm→ocean）"
+      "note": "2026-09-20 清理悬空 statusId（原为 storm，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审+主人裁定：原列海啸（ocean 轴卡）换成本轴风暴地狱；全轴唯一卡面读 emc_disorder 的是闪电风暴（已列 enabler），无实证读层 payoff，风刃军团/风暴地狱为主题收束卡 ｜ 2026-09-29 环节⑤：emc_disorder 补层数引擎（身份 8→15）；雷击补产层段（飓风盘绕/加速与滑翔不挂 emc_disorder 移出，产层 12→20）；风刃军团读 emc_disorder 升 landed（payoff notes→landed）；风暴地狱读 submerge 跨轴（storm→ocean） ｜ 2026-10-02 批次五：元素轮转补白——狂风/龙卷风挂 ice 段（ice 签名 0→2 实证）；龙卷风/天灾降临补 zone_active(风暴海) 读层，zone 正主产读链闭合；天灾降临补 misfortune 跨系读层"
     },
     "authority": {
       "symbol": "👑",
@@ -513,7 +513,7 @@
       "flagship": false,
       "lore": "序列6 风眷者 —— \"'风之掌控'：刮出狂风\"",
       "flavor": "你卷起一阵狂风，把整条敌阵吹得踉跄后退。",
-      "describe": "全体敌人受到 2 点物理伤害，并各自在自己队列内后移 1 格。",
+      "describe": "全体敌人受到 2 点物理伤害，并各自在自己队列内后移 1 格。风卷冰砾：追加 1 点冰霜伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -543,6 +543,13 @@
               "distance": 1,
               "target": "all_enemies",
               "note": "C1 锁定 from.faction，G8 合规"
+            },
+            {
+              "type": "damage",
+              "element": "ice",
+              "value": 1,
+              "target": "all_enemies",
+              "note": "风卷冰砾：狂风卷起高空气流中的冰晶——元素轮转（风→冰）补白段（⚠️D 待平衡）"
             }
           ]
         }
@@ -552,11 +559,11 @@
         "tiers": [
           {
             "name": "暴风雪",
-            "note": "序列4档：改为 damage(none, 3) + gauge.rate ×0.85（15t）",
+            "note": "序列4档：改为 damage(none, 3) + gauge.rate ×0.85（15t）（2026-10-02 元素归位：暴风雪伤害元素 none→ice）",
             "effects": [
               {
                 "type": "damage",
-                "element": "none",
+                "element": "ice",
                 "value": 3,
                 "target": "all_enemies"
               },
@@ -573,7 +580,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：风系 AOE 骨架。群体位移是硬资源。",
+      "conversionNotes": "翻译/语义：风系 AOE 骨架。群体位移是硬资源。 ｜ 2026-10-02 差异化风格迭代·批次五（水手：元素轮转 ice 补白+风暴海产读链）",
       "art": {
         "subject": "a howling gale slamming into an enemy line and staggering soldiers backward",
         "elements": [
@@ -1382,7 +1389,7 @@
       "flagship": false,
       "lore": "序列4 灾难主祭 —— \"'龙卷风'\"",
       "flavor": "一道龙卷拔地而起，把敌人整个卷起，甩到它自己队伍的最后头。",
-      "describe": "对一名敌人造成 5 点物理伤害，并将其吹到自己队伍的最后位。",
+      "describe": "对一名敌人造成 5 点物理伤害，并将其吹到自己队伍的最后位。龙卷冰砾追加 2 点冰霜伤害；己方风暴海在场时再引雷追加 2 点雷电。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1411,6 +1418,28 @@
               "op": "push_back",
               "distance": 99,
               "note": "C1 锁定 from.faction，吹到其自己队列最后位，G8 合规"
+            },
+            {
+              "type": "damage",
+              "element": "ice",
+              "value": 2,
+              "note": "卷起的冰砾雪骸：龙卷裹挟高寒气旋，追加 2 点冰霜伤害——元素轮转（风→冰）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "zone_active",
+                "zoneId": "zone_storm_hell"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "lightning",
+                  "value": 2,
+                  "note": "风暴海引雷：己方风暴海在场，龙卷带入雷暴追加 2 点雷电——zone 产读链①（元素轮转 风→冰→雷 三环齐转）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -1437,7 +1466,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：单体最强阵型破坏。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：单体最强阵型破坏。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次五（水手：元素轮转 ice 补白+风暴海产读链）",
       "art": {
         "subject": "a tornado ripping up from the ground and hurling a foe to the far end of the field",
         "elements": [
@@ -1995,7 +2024,7 @@
       "flagship": false,
       "lore": "序列2 天灾 —— \"'天灾降临'：雷灾 / 雪难 / 海啸，毁灭港口或岛屿\"",
       "flavor": "你以天灾之名降下裁决——雷灾、雪难，或是海啸，由你选择用哪一种来毁灭这里。",
-      "describe": "三种天灾择一（派发时随机）：雷灾——全体敌人 4 点雷电伤害并各后退 1 格；雪难——全体敌人 3 点伤害且行动条速率 ×0.85（15tick）；海啸——全体敌人 4 点伤害并溺沉 15tick。",
+      "describe": "三种天灾择一（派发时随机）：雷灾——全体敌人 4 点雷电伤害并各后退 1 格；雪难——全体敌人 3 点伤害且行动条速率 ×0.85（15tick）；海啸——全体敌人 4 点伤害并溺沉 15tick。己方风暴海在场追加 2 点雷电；带厄运的敌人额外受 2 点雷电。",
       "cost": {
         "energy": 7,
         "cooldown": 40,
@@ -2025,6 +2054,43 @@
               "distance": 1,
               "target": "all_enemies",
               "note": "雷灾：C1 ✅"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "zone_active",
+                "zoneId": "zone_storm_hell"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "lightning",
+                  "value": 2,
+                  "target": "all_enemies",
+                  "note": "风暴海增幅：雷灾在自家风暴海中轰鸣，追加 2 点雷电——zone 产读链②"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "misfortune",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "lightning",
+                  "value": 2,
+                  "target": "all_enemies",
+                  "note": "天灾乘厄运：受灾者身上的厄运放大天罚，追加 2 点雷电——跨系读层段（storm→monster misfortune）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -2073,7 +2139,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：三种天灾各一变体。7 能最贵档。 ｜ 2026-10-01 吟唱重标：仪式类（kw:降临）castTime 4→10tick（对齐拍板表）",
+      "conversionNotes": "翻译/语义：三种天灾各一变体。7 能最贵档。 ｜ 2026-10-01 吟唱重标：仪式类（kw:降临）castTime 4→10tick（对齐拍板表） ｜ 2026-10-02 差异化风格迭代·批次五（水手：元素轮转 ice 补白+风暴海产读链）",
       "art": {
         "subject": "a calamity herald descending amid lightning, blizzard and crushing tidal waves",
         "elements": [
