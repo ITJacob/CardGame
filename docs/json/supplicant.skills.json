@@ -15,7 +15,7 @@
         "藏入阴影",
         "操纵阴影"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 shadow，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-29 环节⑤：shadow_dwell 补层数引擎（身份 8→15）；操纵阴影补产层段（召唤阴影为纯 spawn 移出，产层 12→20）；阴影统治者读 shadow_dwell 升 landed + 读 mirror_substitute 跨系（→assassin）；操纵阴影读 parasitized 跨轴（shadow→flesh）",
+      "note": "2026-09-20 清理悬空 statusId（原为 shadow，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-29 环节⑤：shadow_dwell 补层数引擎（身份 8→15）；操纵阴影补产层段（召唤阴影为纯 spawn 移出，产层 12→20）；阴影统治者读 shadow_dwell 升 landed + 读 mirror_substitute 跨系（→assassin）；操纵阴影读 parasitized 跨轴（shadow→flesh） ｜ 2026-10-02 批次八：阴影统治者补 grazed_soul 跨轴读层（魂多势众）",
       "payoffs": [
         "阴影统治者"
       ]
@@ -31,7 +31,7 @@
       "payoffs": [
         "血肉不灭"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 flesh，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-29 环节⑤：parasitized 补层数引擎（身份 8→15）；血肉炸弹补产层段（补充血肉挂 flesh_hunger 移出，产层 12→20）；血肉不灭读 parasitized 升 landed（payoff notes→landed）"
+      "note": "2026-09-20 清理悬空 statusId（原为 flesh，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-29 环节⑤：parasitized 补层数引擎（身份 8→15）；血肉炸弹补产层段（补充血肉挂 flesh_hunger 移出，产层 12→20）；血肉不灭读 parasitized 升 landed（payoff notes→landed） ｜ 2026-10-02 批次八：血肉经济量化——血肉披风 hp_max +2（签名实证②）、血肉炸弹自残充能段（自残换效体系）；祭祀仪式/放牧灵魂原有自残/上限段维持"
     },
     "soul": {
       "symbol": "🐑",
@@ -755,7 +755,7 @@
       "flagship": false,
       "lore": "序列6 蔷薇主教 —— \"'血肉披风'\"",
       "flavor": "你把一层仍在蠕动的血肉披在身上——它替你吃下大部分力道。",
-      "describe": "获得「血肉披风」20tick：受到的伤害 ×0.85。",
+      "describe": "获得「血肉披风」20tick：受到的伤害 ×0.85。披风与血肉同化：生命上限 +2（整场）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -776,10 +776,19 @@
           "duration": 20,
           "target": "self",
           "value": 0.85
+        },
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self",
+          "note": "血肉增厚：披风与自身血肉同化，生命上限 +2（整场）——血肉经济量化，hp_max 签名实证②"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：持续吸伤比 shield 更贴\"披风\"。依赖新增项 12。",
+      "conversionNotes": "翻译/语义：持续吸伤比 shield 更贴\"披风\"。依赖新增项 12。 ｜ 2026-10-02 差异化风格迭代·批次八（秘祈人：血肉经济量化）",
       "art": {
         "subject": "a supplicant draped in a cloak of writhing living flesh",
         "elements": [
@@ -800,7 +809,7 @@
       "flagship": false,
       "lore": "序列6 蔷薇主教 —— \"'血肉炸弹'\"",
       "flavor": "你把一块还在跳动的血肉塞进它的伤口——两秒后，那块肉炸了，连它身边的同伴一起。",
-      "describe": "对一名敌人造成 4 点物理伤害并植入血肉炸弹：10tick 后爆炸，对其及相邻单位造成 3 点物理伤害（被驱散也会炸）。；炸弹播寄：目标被寄生 10tick。",
+      "describe": "对一名敌人造成 4 点物理伤害并植入血肉炸弹：10tick 后爆炸，对其及相邻单位造成 3 点物理伤害（被驱散也会炸）。；炸弹播寄：目标被寄生 10tick。自身生命≥40% 时可自残充能：再付 2 点生命（不走伤害链），本次伤害 +2。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -836,12 +845,38 @@
               "statusId": "parasitized",
               "duration": 10,
               "note": "炸弹播寄：爆开的血肉溅上寄生体（环节⑤ 2026-09-29 补产层段）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "self",
+                "cmp": ">=",
+                "n": 40
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "hp",
+                  "value": -2,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "自残充能：割开自己的血肉喂 bomb（pay_hp 不走伤害链，不 fire on_take_damage/亡语/致死判定）"
+                },
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 2,
+                  "note": "血肉炸弹伤害 +2——自残换效体系段（身份红线：血肉经济只许自残换效，⚠️D 待平衡）"
+                }
+              ],
+              "else": []
             }
           ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：植入+延时爆炸（on_remove，被驱散也炸）。依赖新增项 15。",
+      "conversionNotes": "翻译/语义：植入+延时爆炸（on_remove，被驱散也炸）。依赖新增项 15。 ｜ 2026-10-02 差异化风格迭代·批次八（秘祈人：血肉经济量化）",
       "art": {
         "subject": "a supplicant stuffing a pulsing chunk of flesh into a wound",
         "elements": [
@@ -1911,7 +1946,7 @@
       "flagship": false,
       "lore": "序列1 暗天使 —— \"'阴影统治者'\"；序列0 倒吊人 —— \"权柄：阴影之主……\"",
       "flavor": "所有阴影都听你的——你藏在里面时，出手比任何时候都狠；而它们生出来的东西，也更强。",
-      "describe": "战斗开始时获得「阴影统治者」整场（不可驱散）：你处于藏入阴影/潜行类状态时造成伤害 ×1.3；己方阴影/灵体类召唤物攻击 +2。；自身阴影栖息在场则栖影而王，攻击 +1；自身带镜子替身则镜影同主，防御 +1。",
+      "describe": "战斗开始时获得「阴影统治者」整场（不可驱散）：你处于藏入阴影/潜行类状态时造成伤害 ×1.3；己方阴影/灵体类召唤物攻击 +2。；自身阴影栖息在场则栖影而王，攻击 +1；自身带镜子替身则镜影同主，防御 +1。自身放牧灵魂≥3 层则攻击再 +2。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1963,10 +1998,32 @@
             }
           ],
           "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "grazed_soul",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self",
+              "note": "魂多势众：放牧灵魂≥3 层，阴影统治更彻——跨轴读层段（shadow→soul，⚠️D 待平衡）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：阴影轴与牧魂轴汇合点，召唤 Build 放大器。依赖新增项 2/18。",
+      "conversionNotes": "翻译/语义：阴影轴与牧魂轴汇合点，召唤 Build 放大器。依赖新增项 2/18。 ｜ 2026-10-02 差异化风格迭代·批次八（秘祈人：血肉经济量化）",
       "art": {
         "subject": "a supplicant seated on a throne of kneeling shadows",
         "elements": [
