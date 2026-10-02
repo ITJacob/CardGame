@@ -32,8 +32,12 @@ def main():
     # 签名键用量（与 score.py 第七维同算法；lineage_ids 口径同步——sref:lineage_stack 读侧
     # 取带 lineageStack 字段的状态集，2026-10-02 批次九对齐，免报告与评分漂移）
     lineage_ids = {sd["id"] for pid_, label_, sd in score.iter_status_defs() if "lineageStack" in sd}
+    casttime_ids = {sd["id"] for pid_, label_, sd in score.iter_status_defs()
+                    if any(bm.get("op") == "cast_time_set" for bm in (sd.get("behaviorModifiers") or [])
+                           if isinstance(bm, dict))}
     sig = {pid: score.signature_counts(d.get("cards") or [], score.PATHWAY_SIGNATURES.get(pid, []),
-                                       unit_type_of=unit_types, lineage_ids=lineage_ids)
+                                       unit_type_of=unit_types, lineage_ids=lineage_ids,
+                                       casttime_ids=casttime_ids)
            for pid, d in pathways.items()}
 
     L = []
