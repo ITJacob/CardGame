@@ -73,13 +73,13 @@
 
 ### 1.4 按 unitType 分道的承载（卡面）
 
-三路承载合并：效果节点 filter.unitType 乘区 **0** 处（登记口径，当前数据零使用——晨曦领域的类型约束写在域 envRulesText 文本里，结构不可统计）、target.request 选靶约束 **6** 张卡、target_unit_type 条件谓词 **8** 处；另有 target_is_summoned 笼统召唤物谓词 **3** 处（此表按类型拆，不含它）。filter 不区分敌我（克制 / 加益只由效果方向决定）。
+三路承载合并：效果节点 filter.unitType 乘区 **0** 处（登记口径，当前数据零使用——晨曦领域的类型约束写在域 envRulesText 文本里，结构不可统计）、target.request 选靶约束 **6** 张卡、target_unit_type 条件谓词 **9** 处；另有 target_is_summoned 笼统召唤物谓词 **3** 处（此表按类型拆，不含它）。filter 不区分敌我（克制 / 加益只由效果方向决定）。
 
 | unitType | 次数 |
 |---|---:|
 | `UNDEAD` | 11 |
 | `SPIRIT` | 8 |
-| `CONSTRUCT` | 3 |
+| `CONSTRUCT` | 4 |
 | `DEMON` | 2 |
 | `ITEM` | 1 |
 

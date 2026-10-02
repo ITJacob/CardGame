@@ -44,7 +44,7 @@
         "卷轴·麻痹"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：唯一耗层卡神秘再现已列 enabler；层数 payoff 由 spell_lore 自带 thresholdTrigger 承载；其余「层数够则」均为模板话术未实现 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：层数 payoff 由 spell_lore 自带 thresholdTrigger 承载（def 内闭环）；读层闭环维度记 12 分保底。",
+      "note": "payoffs 2026-09-26 评审：唯一耗层卡神秘再现已列 enabler；层数 payoff 由 spell_lore 自带 thresholdTrigger 承载；其余「层数够则」均为模板话术未实现 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：层数 payoff 由 spell_lore 自带 thresholdTrigger 承载（def 内闭环）；读层闭环维度记 12 分保底。 ｜ 2026-10-02 批次十：spell_lore 挂 behaviorModifiers cast_time_set 卷轴技法（学识省时——cast_time_set 签名 0→2 实证）",
       "payoffVacuumAccepted": true
     },
     "astral": {
@@ -57,7 +57,7 @@
         "本我星象"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：ego_constellation 全库无卡面读取；星象系「层数够则」均模板话术；层数 payoff 由状态自带 thresholdTrigger 承载 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：ego_constellation 自带 thresholdTrigger 承载，同 scroll；读层闭环维度记 12 分保底。",
+      "note": "payoffs 2026-09-26 评审：ego_constellation 全库无卡面读取；星象系「层数够则」均模板话术；层数 payoff 由状态自带 thresholdTrigger 承载 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：ego_constellation 自带 thresholdTrigger 承载，同 scroll；读层闭环维度记 12 分保底。 ｜ 2026-10-02 批次十：星海穿梭补 info_form 挂段（签名 1→2）；星光囚笼 occult_seal 跨系读段（封印正主）",
       "payoffVacuumAccepted": true
     }
   },
@@ -1066,7 +1066,7 @@
       "flagship": false,
       "lore": "序列5 星象师 —— \"星之巨柱、星海穿梭、星桥、本我星象、星光囚笼\"",
       "flavor": "你的身形散作一片星尘，退到战阵之后；下一道打向你的攻击穿过漫天光点，只擦走了几粒。",
-      "describe": "自身退回己方队尾，并获得星尘相位 15tick（1 次）：下次受击时该次伤害 ×0.4，自身行动条 +15。",
+      "describe": "自身退回己方队尾，并获得星尘相位 15tick（1 次）：下次受击时该次伤害 ×0.4，自身行动条 +15。；穿梭期间自身信息化（info_form 15tick，不可被单体技能选中）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1097,12 +1097,19 @@
               "charges": 1,
               "duration": 15,
               "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "info_form",
+              "duration": 15,
+              "target": "self",
+              "note": "信息化穿星：穿梭期间自身信息化（不可被单体选中）——info_form 签名第二实证（批次十 2026-10-02）"
             }
           ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：位移闪现+减伤反抢。星象轴 payoff：星象层数够则减伤更深。",
+      "conversionNotes": "翻译/语义：位移闪现+减伤反抢。星象轴 payoff：星象层数够则减伤更深。 ｜ 2026-10-02 批次十：info_form 挂段（信息化穿星——信息掌控权柄的卡面级表达，签名 1→2）",
       "art": {
         "subject": "a mage dissolving into drifting stardust, retreating beyond the battle line",
         "elements": [
@@ -1195,7 +1202,7 @@
       "flagship": false,
       "lore": "序列5 星象师 —— \"星之巨柱、星海穿梭、星桥、本我星象、星光囚笼\"",
       "flavor": "星光在它四周织成笼子。它挪不动，也叫不出来。",
-      "describe": "对一名敌人造成 2 点无元素伤害，施加枷锁 15tick（禁位移、行动条速率 ×0.7）并沉默 5tick；若目标带有星界锚（学徒枢纽），星光顺着锚链加固囚笼：枷锁延长 10tick。",
+      "describe": "对一名敌人造成 2 点无元素伤害，施加枷锁 15tick（禁位移、行动条速率 ×0.7）并沉默 5tick；若目标带有星界锚（学徒枢纽），星光顺着锚链加固囚笼：枷锁延长 10tick。；若目标带有封印（occult_seal），星封共鸣，枷锁再延长 5tick。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1247,13 +1254,33 @@
             }
           ],
           "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "occult_seal",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "shackle",
+              "duration": 5,
+              "target": "target",
+              "note": "星封共鸣：目标已处封印之中，星光囚笼与其共鸣，枷锁再延长 5tick——读不眠者枢纽 occult_seal（封印正主批次十落地，participants 补录窥秘人）"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
         "savant"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：星象轴旗舰：禁锢（禁位移+禁施法）。起手 `星象`；层数够则囚禁更久。",
+      "conversionNotes": "翻译/语义：星象轴旗舰：禁锢（禁位移+禁施法）。起手 `星象`；层数够则囚禁更久。 ｜ 2026-10-02 批次十：occult_seal 跨系读段（星封共鸣——窥秘人封印正主落地）",
       "dimHooks": [
         {
           "dim": "fate_value",

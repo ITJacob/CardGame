@@ -53,7 +53,7 @@
       "duration": null,
       "maxStacks": 3,
       "stackPolicy": "stack",
-      "note": "SS2 计数型状态（H11 母版，与 F1 inscription 同源）；由技能显式 +1，消耗走 F48 status.consume",
+      "note": "SS2 计数型状态（H11 母版，与 F1 inscription 同源）；由技能显式 +1，消耗走 F48 status.consume ｜ 2026-10-02 批次十：behaviorModifiers cast_time_set 卷轴技法（省时 不归零）",
       "stackThreshold": {
         "stacks": 2
       },
@@ -71,7 +71,16 @@
           }
         ],
         "note": "法术：学识层数达标（已有 maxStacks=3，补阈值 payoff）。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
-      }
+      },
+      "behaviorModifiers": [
+        {
+          "op": "cast_time_set",
+          "value": -2,
+          "perStack": true,
+          "minResult": 1,
+          "note": "卷轴技法：每层法术学识使自身吟唱 -2tick（聚合取最小，但不归零——卷轴是省施法不是免施法，身份红线；执行参数 §12 cast_time_set）"
+        }
+      ]
     },
     {
       "id": "scroll_frost",

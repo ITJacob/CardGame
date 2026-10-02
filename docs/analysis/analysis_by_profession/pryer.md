@@ -141,25 +141,25 @@
 
 **规模**：15 张技能（主动 12 / 被动 3）；稀有度分布：稀有×6、史诗×5、传说×3、普通×1。
 
-**效果原语构成**（type，全量递归，共 35 处）：
+**效果原语构成**（type，全量递归，共 37 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 12 | 34.3% |
-| `damage` | 7 | 20.0% |
-| `modify_stat` | 2 | 5.7% |
-| `modify_resource` | 7 | 20.0% |
-| `dispel` | 3 | 8.6% |
-| `move` | 2 | 5.7% |
-| `domain` | 1 | 2.9% |
-| `transfer_status` | 1 | 2.9% |
+| `mount_status` | 14 | 37.8% |
+| `damage` | 7 | 18.9% |
+| `modify_stat` | 2 | 5.4% |
+| `modify_resource` | 7 | 18.9% |
+| `dispel` | 3 | 8.1% |
+| `move` | 2 | 5.4% |
+| `domain` | 1 | 2.7% |
+| `transfer_status` | 1 | 2.7% |
 
-**算子构成**（op，共 14 处）：
+**算子构成**（op，共 15 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 5 |
-| `if` | 6 |
+| `if` | 7 |
 | `push_back` | 1 |
 | `overlay` | 1 |
 | `insert_tail_cross_lane` | 1 |
@@ -179,7 +179,7 @@
 | `lost` | 1 |
 
 **设计风格总结**：本轴偏【进攻·运营】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `mount_status`(12)、`modify_resource`(7)、`damage`(7)；属性杠杆集中在 `gauge.rate`、`attack`，资源杠杆集中在 `gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(14)、`modify_resource`(7)、`damage`(7)；属性杠杆集中在 `gauge.rate`、`attack`，资源杠杆集中在 `gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **数字象征·零与一**：若自身生命低于 50%：全体友军获得 6 点护盾（20tick）且攻击 +2（20tick）（「一」·造物主）；否则：驱散全体敌人全部增益并造成 5 点无元素伤害（「零」·混沌）。
 
