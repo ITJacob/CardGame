@@ -394,7 +394,21 @@
       "dispelable": true,
       "duration": 30,
       "modifiers": {
-        "damage_mul": 1.25
+        "damage_mul": 1.25,
+        "civilization_scale": {
+          "scaleWith": {
+            "faction": "ally",
+            "unitType": [
+              "CONSTRUCT",
+              "MACHINE"
+            ]
+          },
+          "bonusPerUnit": {
+            "energy_regen": 0.1
+          },
+          "cap": 0.2,
+          "note": "文明量尺：己方每有一具造物（CONSTRUCT/MACHINE）在场，启迪的能量恢复 +0.1/tick（封顶 +0.2，⚠️D 待平衡）——通识者修饰键签名（2026-10-02 批次十登记制落地）"
+        }
       },
       "effects": [
         {
@@ -414,7 +428,7 @@
           "target": "self"
         }
       ],
-      "note": "H3 参数化母版（energy_regen / resist:mental 标准载荷）；与 F14 tutelage 同源 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
+      "note": "H3 参数化母版（energy_regen / resist:mental 标准载荷）；与 F14 tutelage 同源 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。 ｜ 2026-10-02 批次十：modifiers.civilization_scale 文明量尺（矩阵修饰键义务兑现）",
       "maxStacks": 3,
       "stackPolicy": "refresh"
     }
