@@ -77,13 +77,12 @@
           "note": "INV-S5 合规：改速率不改派生行动周期"
         }
       ],
-      "modifiers": {
-        "immune": {
-          "categories": [
-            "retarget"
-          ],
-          "note": "精准控制：自身攻击目标不会被改写（新 StatusCategory retarget，新增项 19）"
-        }
+      "modifiers": {},
+      "immune": {
+        "categories": [
+          "retarget"
+        ],
+        "note": "精准控制：自身攻击目标不会被改写（新 StatusCategory retarget，新增项 19）"
       }
     },
     {
@@ -330,13 +329,9 @@
       ],
       "dispelable": true,
       "duration": 30,
-      "modifiers": {
-        "lethalProtect": {
-          "value": true,
-          "hpFloor": 1,
-          "note": "H7 致死保护母版（新增项 3，与愚者同源同一母版）：化解下次致死伤害、保留 1 血；注意不是复活"
-        }
-      }
+      "modifiers": {},
+      "lethalProtect": true,
+      "note": "H7 致死保护母版（新增项 3，与愚者同源同一母版）：化解下次致死伤害、保留 1 血；注意不是复活；hpFloor=1"
     },
     {
       "id": "fortune_mastery",
@@ -562,12 +557,7 @@
       ],
       "dispelable": false,
       "duration": null,
-      "modifiers": {
-        "lethalProtect": {
-          "value": true,
-          "note": "H7 致死保护母版（新增项 3，愚者/耕种者/不眠者/歌颂者/秘祈人同源统一）：逆转为胚胎 = 回到初始态保住一命，非死后召回"
-        }
-      },
+      "modifiers": {},
       "triggers": [
         {
           "event": "on_death",
@@ -616,7 +606,8 @@
           ]
         }
       ],
-      "note": "主方案升格（2026-10-02 差异化风格迭代）：致死回滚 = restore_snapshot(statuses) 胚胎态还原 + 回复至 30% 生命；依赖卡面开战 snapshot 建档；「洗掉疯狂」从 dispel 升格为状态回滚"
+      "note": "主方案升格（2026-10-02 差异化风格迭代）：致死回滚 = restore_snapshot(statuses) 胚胎态还原 + 回复至 30% 生命；依赖卡面开战 snapshot 建档；「洗掉疯狂」从 dispel 升格为状态回滚；H7 致死保护母版（新增项 3，愚者/耕种者/不眠者/歌颂者/秘祈人同源统一）：逆转为胚胎 = 回到初始态保住一命，非死后召回",
+      "lethalProtect": true
     },
     {
       "id": "saved_fate",

@@ -205,7 +205,7 @@ function materialHtml(pid) {
     ['次数（charges）', ss.charges, (k) => `${k} 次`, 'byKey'],
     ['可驱散', ss.dispel, (k) => k, null],
     ['状态面原语', ss.prim, (k) => zh('primitive', k), null],
-    ['修饰符键', ss.mkeys, (k) => k, null],
+    ['修饰符键', ss.mkeys, (k) => zh('modifierKey', k), null],
     ['字段填充', ss.fill, (k) => k, null],
   ].map(([title, m, labelFn, byKey]) => `
     <div class="nine-cell">

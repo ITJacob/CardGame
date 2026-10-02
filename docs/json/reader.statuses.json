@@ -71,7 +71,7 @@
       "modifiers": {
         "energyCostAdd": -1,
         "energyCostMin": 1,
-        "filter": {
+        "target_filter_override": {
           "pathway": [
             "reader"
           ]
@@ -131,13 +131,12 @@
         }
       ],
       "modifiers": {
-        "pierce": [
-          "shield"
-        ],
         "pierceScope": "incoming_from_caster",
-        "note": "pierce_shield：期间施法者对其造成的伤害不结算 shield 吸收（效果参数 §一 pierce 行含 shield）"
+        "pierce_shield": [
+          "shield"
+        ]
       },
-      "note": "退化方案：去掉 pierce_shield，resist:all 改为逐元素 8 条 modify_stat（Repeat 展开，零新 StatKey）",
+      "note": "退化方案：去掉 pierce_shield，resist:all 改为逐元素 8 条 modify_stat（Repeat 展开，零新 StatKey）；pierce_shield：期间施法者对其造成的伤害不结算 shield 吸收（效果参数 §一 pierce 行含 shield）",
       "crossPathway": true,
       "participants": [
         "reader",
@@ -168,10 +167,9 @@
       "duration": 25,
       "charges": 1,
       "modifiers": {
-        "damage_mul": 1.4,
-        "note": "下一次造成的伤害 ×1.4，响应后消耗"
+        "damage_mul": 1.4
       },
-      "note": "与 mimic 共用参数化乘区母版（参数 mul/charges）；H42 同向乘区取最高"
+      "note": "与 mimic 共用参数化乘区母版（参数 mul/charges）；H42 同向乘区取最高；下一次造成的伤害 ×1.4，响应后消耗"
     },
     {
       "id": "law_authority",
@@ -209,7 +207,7 @@
       "modifiers": {
         "damage_taken_mul": 1.2,
         "concealPiercedForCaster": true,
-        "casterNeverMiss": true
+        "neverMiss": true
       },
       "note": "H2 复合 debuff + §四 识破分支 + H35 neverMiss；与 vulnerable（1.3）同向乘区取最高不叠乘（H42）"
     },
@@ -223,16 +221,15 @@
       "dispelable": true,
       "duration": 30,
       "charges": 2,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "first_empty",
-            "note": "修改\"行为\"概念本身：攻击打向空处（C7 ✅ 已验证）"
-          }
-        ]
-      },
-      "note": "H12 target_override 族「锚点=空坐标 × 存续=charges:2」格，F 组合并候选 3 建议并入该母版"
+      "modifiers": {},
+      "note": "H12 target_override 族「锚点=空坐标 × 存续=charges:2」格，F 组合并候选 3 建议并入该母版",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "first_empty",
+          "note": "修改\"行为\"概念本身：攻击打向空处（C7 ✅ 已验证）"
+        }
+      ]
     },
     {
       "id": "omniscience",

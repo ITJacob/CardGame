@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "updated": "2026-10-01",
+  "updated": "2026-10-02",
   "purpose": "技能池展示站点的术语词典：英文枚举 key → 中文名 + 解释。权威来源为 docs/meta/SCHEMA.md 与 docs/ddd/params/ 各篇；新增枚举值须先按编辑纪律登记 schema/SCHEMA.md，再回本文件补词条。",
   "categories": {
     "primitive": {
@@ -2006,6 +2006,369 @@
         "night": {
           "zh": "夜",
           "brief": "tick 60–71（20:00–24:00）；光照度 2→1，月色微光"
+        }
+      }
+    },
+    "modifierKey": {
+      "label": "修饰键",
+      "desc": "状态修正集合（statusDef.modifiers）的修正名取值域。开放结构（谓词与修正维度持续扩展，封闭会阻碍内容生产），但新键须先在本栏目登记——validate.py 对未登记键给非阻断告警。命名取向：乘区/加算族 snake_case，机制名存量 camel 保留。2026-10-02 治理批：117 键收敛至 89（同义合并 27 处、顶层错位回迁 69 处）。",
+      "source": "SCHEMA.md §5 / STATUS_TAXONOMY",
+      "terms": {
+        "damage_taken_mul": {
+          "zh": "受伤乘区",
+          "brief": "持有者受到伤害 ×mul（0.7=标准减伤母版档 / 0.85=轻减档）"
+        },
+        "damage_mul": {
+          "zh": "增伤乘区",
+          "brief": "持有者造成伤害 ×mul"
+        },
+        "damage_taken_add": {
+          "zh": "受伤加算",
+          "brief": "受到伤害 +N，加算面不走乘区"
+        },
+        "damageBonus": {
+          "zh": "定向增伤",
+          "brief": "对满足 filter 的目标伤害 +N（固定加算，evil_sense 对 debuff/control 目标）"
+        },
+        "damageDealtMulPerStack": {
+          "zh": "叠层增伤",
+          "brief": "每层 ×mul，随本状态层数递增（观察 母版）"
+        },
+        "damageDealtMulVsConcealed": {
+          "zh": "反隐匿增伤",
+          "brief": "对隐匿目标伤害 ×mul（灵视线）"
+        },
+        "damage_cap": {
+          "zh": "伤害封顶",
+          "brief": "单次受到伤害上限 N（血肉不灭档）"
+        },
+        "dot_cannot_kill": {
+          "zh": "DoT 免死",
+          "brief": "持续伤害不致死，最低留 1 血（摆渡人罩）"
+        },
+        "thornsDamage": {
+          "zh": "反伤",
+          "brief": "受击反弹 N 点伤害（荆棘）"
+        },
+        "lifesteal": {
+          "zh": "吸血",
+          "brief": "造成伤害按比率回复生命"
+        },
+        "damageElementOverride": {
+          "zh": "伤害元素覆写",
+          "brief": "持有者的伤害元素改为指定值（魂体/知识精类）"
+        },
+        "dot_element": {
+          "zh": "DoT 元素",
+          "brief": "dotOnTick 持续伤害的元素（fire/poison 等）"
+        },
+        "armor_pierce_ratio": {
+          "zh": "护甲穿透",
+          "brief": "无视目标 ratio 比例的护甲（含完全穿透档 ratio=1）"
+        },
+        "pierce_shield": {
+          "zh": "护盾穿透",
+          "brief": "伤害跳过指定护盾层（law_breach 穿透 shield）"
+        },
+        "pierceScope": {
+          "zh": "选靶穿透",
+          "brief": "指定方向的不可选中可被穿透（incoming_from_caster）"
+        },
+        "heal_received_mul": {
+          "zh": "受疗乘区",
+          "brief": "持有者受到治疗 ×mul（1.3=月光档正向）"
+        },
+        "heal_output_mul": {
+          "zh": "治疗输出乘区",
+          "brief": "持有者施加治疗 ×mul（施法者侧，handleHeal 读取）"
+        },
+        "heal_invert": {
+          "zh": "治疗反转",
+          "brief": "受疗变等量伤害"
+        },
+        "drainHealBonus": {
+          "zh": "吸血加成",
+          "brief": "drain 原语的回复加成"
+        },
+        "healOnTick": {
+          "zh": "每拍回复",
+          "brief": "on_tick 回复 N 点（再生）"
+        },
+        "untargetableByTargeted": {
+          "zh": "单体不可选中",
+          "brief": "不可被单体技能选中，direction 分 inbound/outbound"
+        },
+        "targetOverride": {
+          "zh": "选靶覆写",
+          "brief": "强制改写目标的选靶规则（anchor 承载，魅惑/迷茫类）"
+        },
+        "targetOverrideImmune": {
+          "zh": "反选靶覆写",
+          "brief": "免疫他人施加的选靶覆写（不动如山）"
+        },
+        "taunt": {
+          "zh": "嘲讽",
+          "brief": "入站攻击强制改向持有者（守护反向 anchor 承载）"
+        },
+        "guardTarget": {
+          "zh": "守护",
+          "brief": "替锚定友军挡刀"
+        },
+        "ignore_guard": {
+          "zh": "无视守护",
+          "brief": "攻击无视前排站位/守护/嘲讽拦截（ignore_guard 母版，新增项 10）"
+        },
+        "ignoreRangeRestriction": {
+          "zh": "无视射程",
+          "brief": "选靶不受 reach 限制（梦行者）"
+        },
+        "targetPriority": {
+          "zh": "选靶加权",
+          "brief": "被选取优先级加权（hunted/marked 排序键）"
+        },
+        "targetPriorityLowest": {
+          "zh": "最低优先",
+          "brief": "被选取时永远最后考虑（亲灵）"
+        },
+        "targetPriorityToSummons": {
+          "zh": "指向召唤物",
+          "brief": "敌方选靶优先指向召唤物（身份混淆）"
+        },
+        "excludeCasterTargeting": {
+          "zh": "排除施法者",
+          "brief": "全体效果不波及施法者自身（惧影）"
+        },
+        "excludeFromActionOrder": {
+          "zh": "退出行动序",
+          "brief": "不计入行动条排序（镜像/纸人替身类）"
+        },
+        "redirect_attack": {
+          "zh": "攻击改向",
+          "brief": "入站攻击改向指定落点（to:first_empty，占卜面纱）"
+        },
+        "lethalRedirect": {
+          "zh": "致死转嫁",
+          "brief": "致死判定改由指定对象承担（可触发其致死保护，替罪羊）"
+        },
+        "candidateWeight": {
+          "zh": "候选加权",
+          "brief": "选靶候选池权重调整（C8 排序分支，secrecy）"
+        },
+        "fallback_sort": {
+          "zh": "决选排序覆写",
+          "brief": "并列候选的决选排序键覆写（猎手直觉）"
+        },
+        "target_filter_override": {
+          "zh": "选靶过滤覆写",
+          "brief": "目标 filter 覆写（streamlined_cast 精简施法族）"
+        },
+        "neverMiss": {
+          "zh": "必中",
+          "brief": "攻击不会落空"
+        },
+        "incomingMiss": {
+          "zh": "受击落空",
+          "brief": "对持有者的攻击落空（汞身，与必中对冲）"
+        },
+        "see_through": {
+          "zh": "识破隐匿",
+          "brief": "敌方隐匿/不可选中类状态对持有者无效（C8 识破分支母版）"
+        },
+        "detect": {
+          "zh": "侦测",
+          "brief": "看见区域内单位/情报（占卜权威/占卜之眼）"
+        },
+        "detectMirrored": {
+          "zh": "识破镜像",
+          "brief": "可辨识镜像/复制体（鹰眼镜像分支）"
+        },
+        "reveal": {
+          "zh": "显形",
+          "brief": "使隐匿单位现形（恶感）"
+        },
+        "revealConcealment": {
+          "zh": "群体显隐",
+          "brief": "照出场上隐匿（昼光）"
+        },
+        "revealToSource": {
+          "zh": "向来源可见",
+          "brief": "持有者对施加者可见（hunted/marked）"
+        },
+        "concealReveal": {
+          "zh": "隐匿感知",
+          "brief": "可感知隐匿单位的存在（灵感感知）"
+        },
+        "concealRevealBlock": {
+          "zh": "反识破",
+          "brief": "隐匿不被识破类效果穿透（反占卜/命运视）"
+        },
+        "concealInvalidForCaster": {
+          "zh": "对施法者无效",
+          "brief": "持有者的隐匿对施加者无效（幻灭）"
+        },
+        "concealPiercedForCaster": {
+          "zh": "被施法者穿透",
+          "brief": "持有者隐匿可被施加者穿透（全知印记）"
+        },
+        "pierceConceal": {
+          "zh": "穿透隐匿",
+          "brief": "选靶穿透隐匿类状态（星标/解析权威）"
+        },
+        "moveImmune": {
+          "zh": "位移免疫",
+          "brief": "不可被位移效果移动"
+        },
+        "movePierceImmune": {
+          "zh": "防穿透位移",
+          "brief": "免疫带穿透的位移（breach 反向）"
+        },
+        "buffBlocked": {
+          "zh": "增益封锁",
+          "brief": "无法获得 buff（门关）"
+        },
+        "buffUndispellable": {
+          "zh": "增益不可驱散",
+          "brief": "已持有的 buff 不可被敌方驱散（secrecy H8）"
+        },
+        "gaugeReductionImmune": {
+          "zh": "推条免疫",
+          "brief": "行动条不被推后/削减（反占卜/命运视）"
+        },
+        "immune_stat_reduction": {
+          "zh": "属性减益免疫",
+          "brief": "免疫属性降低（身体权威）"
+        },
+        "control_undispellable": {
+          "zh": "控制不可驱散",
+          "brief": "控制类状态不可被驱散（灵体之主）"
+        },
+        "gaugeRateMul": {
+          "zh": "行动条速率乘区",
+          "brief": "行动条累积速率 ×mul（H24 减速/加速母版）"
+        },
+        "energyCostMul": {
+          "zh": "能耗乘区",
+          "brief": "技能能量消耗 ×mul"
+        },
+        "energyCostAdd": {
+          "zh": "能耗加算",
+          "brief": "技能能量消耗 +N（streamlined_cast 族）"
+        },
+        "energyCostMin": {
+          "zh": "能耗下限",
+          "brief": "技能能量消耗最低为 N（streamlined_cast 族）"
+        },
+        "castTimeSet": {
+          "zh": "吟唱设定",
+          "brief": "吟唱时长覆写为 N（免吟唱=0，free_cast）"
+        },
+        "dispelableOverride": {
+          "zh": "可驱散性覆写",
+          "brief": "运行时覆写 dispelable（H8，运行时驱散覆写）"
+        },
+        "outgoingDispelOverride": {
+          "zh": "出向驱散覆写",
+          "brief": "持有者施加的驱散效果被覆写（不可转移诅咒/女巫形态）"
+        },
+        "dispelParams": {
+          "zh": "驱散参数",
+          "brief": "驱散行为参数（范围/目标，占卜权威）"
+        },
+        "runtimeDispelLock": {
+          "zh": "运行时驱散锁",
+          "brief": "自身所有增益运行时不可驱散（scope:self_buffs，H8）"
+        },
+        "contractDispelLock": {
+          "zh": "契约驱散锁",
+          "brief": "由持有者施加的契约/誓约类状态不可被驱散（排它名单，秩序权威）"
+        },
+        "debuffSpread": {
+          "zh": "减益扩散",
+          "brief": "减益传播给链接/相邻目标（独裁者）"
+        },
+        "durationModifier": {
+          "zh": "时长覆写",
+          "brief": "改写其他状态挂载的时长（月红/权威）"
+        },
+        "status_duration_bonus": {
+          "zh": "时长加成",
+          "brief": "施加的状态时长 +N（紫焰）"
+        },
+        "stackCapOverride": {
+          "zh": "叠层上限覆写",
+          "brief": "指定状态叠层上限改写为 N（魂场/三头）"
+        },
+        "maxStacksOverride": {
+          "zh": "叠层上限按维覆写",
+          "brief": "按维度（insight 等）覆盖叠层上限（洞见权威）"
+        },
+        "stackCount": {
+          "zh": "层数引用",
+          "brief": "读取本状态层数的运行时钩子（frantic）"
+        },
+        "modify_stat_dynamic": {
+          "zh": "动态属性修正",
+          "brief": "按运行时条件动态改属性（集众/集众升腾）"
+        },
+        "attackMod": {
+          "zh": "攻击修正",
+          "brief": "攻击 ±N 固定加算（敬畏/藤蔓缠绕）"
+        },
+        "override_priority": {
+          "zh": "覆写优先级",
+          "brief": "同键覆写冲突时的优先级裁决（精准）"
+        },
+        "regionValueBoost": {
+          "zh": "区域数值增益",
+          "brief": "区域内效果数值加成（权威区域值）"
+        },
+        "dotOnTick": {
+          "zh": "每拍伤害",
+          "brief": "on_tick 造成 N 点持续伤害（burn/poison 母版）"
+        },
+        "summon_cap_override": {
+          "zh": "召唤上限覆写",
+          "brief": "召唤上限改写为 N（分神上限/三头/单位定义）"
+        },
+        "allySummonAttackBonus": {
+          "zh": "友召唤加成",
+          "brief": "友方召唤物攻击加成（影主）"
+        },
+        "extraSpawn": {
+          "zh": "额外召唤",
+          "brief": "召唤数量 +N（H8 扩展表达，美人召唤）"
+        },
+        "damageShare": {
+          "zh": "伤害分摊",
+          "brief": "双向/定向分摊伤害（连带/代罪者）。提升候选：direction both/to_self 超出现行 damageTransfer 枚举，待扩展后回迁顶层"
+        },
+        "ally_damage_mul": {
+          "zh": "友军伤害乘区",
+          "brief": "友方单位伤害 ×mul，filter 条件化（昼光/心灵链接）"
+        },
+        "onDealDamageBonus": {
+          "zh": "出伤附加",
+          "brief": "造成伤害时追加效果载荷（on_deal_damage，亡灵权威）"
+        },
+        "outgoingDamageParams": {
+          "zh": "出伤参数覆写",
+          "brief": "持有者造成伤害的参数覆写（死者真言/真龙形态）"
+        },
+        "shieldDelta": {
+          "zh": "护盾增量",
+          "brief": "获得/调整 N 点护盾（护盾状态）"
+        },
+        "fortuneGainMul": {
+          "zh": "幸运获取乘区",
+          "brief": "幸运值获取 ×mul（潮起）"
+        },
+        "fortuneMaxStacksBonus": {
+          "zh": "幸运叠层加成",
+          "brief": "幸运状态叠层上限 +N（绝对灵感/幸运精通）"
+        },
+        "action_nullify": {
+          "zh": "行动落空",
+          "brief": "下一次行动/攻击落空（混沌漩涡/茧）"
         }
       }
     }

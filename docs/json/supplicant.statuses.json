@@ -471,8 +471,8 @@
           "statusId": "grazed_soul",
           "maxStacks": 13
         },
-        "summonCapOverride": 3,
-        "damage_taken_mul": 0.85
+        "damage_taken_mul": 0.85,
+        "summon_cap_override": 3
       },
       "note": "与【灵魂牧场】阶梯 III 同组数字，两卡共存取较大值"
     },
@@ -724,17 +724,17 @@
       "dispelable": true,
       "duration": 20,
       "modifiers": {
-        "damageRedirect": {
-          "ratio": 1.0,
-          "direction": "to_caster",
-          "note": "该友军受到的伤害转嫁给施法者（H28 direction，与刺客 F5 pain_link 反方向同源母版，已落）；不占 damage_taken_mul 乘区"
-        },
         "lethalRedirect": {
           "to": "caster",
           "note": "致死判定改由施法者承担，可触发施法者自身 lethal_protect（如血肉不灭）"
         }
       },
-      "note": "状态挂在友军身上、方向为目标→施法者（F56 施法者引用，已落）；退化方案：去掉 lethal_redirect 只做伤害转嫁"
+      "note": "状态挂在友军身上、方向为目标→施法者（F56 施法者引用，已落）；退化方案：去掉 lethal_redirect 只做伤害转嫁",
+      "damageTransfer": {
+        "ratio": 1.0,
+        "direction": "to_caster",
+        "note": "该友军受到的伤害转嫁给施法者（H28 direction，与刺客 F5 pain_link 反方向同源母版，已落）；不占 damage_taken_mul 乘区"
+      }
     }
   ]
 }

@@ -34,7 +34,9 @@
       "stackPolicy": "refresh",
       "modifiers": {
         "dotOnTick": 1,
-        "pierceArmor": true
+        "armor_pierce_ratio": {
+          "ratio": 1
+        }
       },
       "note": "defaultDuration 5 / maxStacks 3 / stackPolicy refresh；实例 value 1/tick。2026-10-02 拍板归拢：DoT 走伤害链旁路——绕过护盾/护甲/防御，只过属性抵抗（pierceArmor 字段名保留，语义=穿透 ①②④ 全链；乘区数值 层数档 2026-10-01 标定批已定）。"
     },
@@ -103,10 +105,11 @@
       "dispelable": true,
       "duration": 40,
       "maxStacks": 1,
-      "modifiers": {
-        "disableSkill": true
-      },
-      "note": "§2.2 已裁定：defaultDuration 8；禁用使用技能。"
+      "modifiers": {},
+      "note": "§2.2 已裁定：defaultDuration 8；禁用使用技能。",
+      "disallowActions": [
+        "skill"
+      ]
     },
     {
       "id": "taunt",
@@ -159,10 +162,16 @@
       "dispelable": false,
       "duration": 25,
       "maxStacks": 1,
-      "modifiers": {
-        "stun": true
-      },
-      "note": "§2.2 已裁定：defaultDuration 5；剥夺全部四个行为（INV-P5 硬控清除 stance）。"
+      "modifiers": {},
+      "note": "§2.2 已裁定：defaultDuration 5；剥夺全部四个行为（INV-P5 硬控清除 stance）。",
+      "disallowActions": [
+        "move",
+        "basic_attack",
+        "skill",
+        "skip",
+        "react",
+        "channel"
+      ]
     },
     {
       "id": "bulwark",
@@ -219,7 +228,7 @@
       "stackPolicy": "refresh",
       "modifiers": {
         "dotOnTick": 2,
-        "element": "fire"
+        "dot_element": "fire"
       },
       "note": "通用火属性 DOT，被 10 处引用但 §2.2 未单列裁定；数值定档（2026-10-01）：duration 15tick / maxStacks 3 refresh / 2 per tick = 通用火 DoT 基准档（平衡期如需 5 层档须全库引用重审）。"
     },
@@ -264,10 +273,9 @@
       ],
       "dispelable": false,
       "duration": null,
-      "modifiers": {
-        "revive_blocked": true
-      },
-      "note": "通用禁复活：目标死亡后不可被复活。原 corpse_collector 母版与 sleepless.eternal_sleep 副本统一收口于此（2026-09-19 降格试点）。"
+      "modifiers": {},
+      "note": "通用禁复活：目标死亡后不可被复活。原 corpse_collector 母版与 sleepless.eternal_sleep 副本统一收口于此（2026-09-19 降格试点）。",
+      "reviveBlocked": true
     },
     {
       "id": "amplify",
@@ -320,14 +328,13 @@
       "dispelable": false,
       "duration": null,
       "maxStacks": 1,
-      "modifiers": {
-        "immune": {
-          "categories": [
-            "debuff"
-          ]
-        }
-      },
-      "note": "通用减益免疫：事前阻断 debuff 类状态挂载。归并纯 debuff 免疫私有换皮（immunity_writ/curse_ward_block）所得机制桩（2026-09-19 降格批次5）。基准 dispelable:false/duration:null，卡面 mount_status 传 duration/charges 覆盖。scentless 因 dispelable:true(褪色短免疫) 保留私有不降格。"
+      "modifiers": {},
+      "note": "通用减益免疫：事前阻断 debuff 类状态挂载。归并纯 debuff 免疫私有换皮（immunity_writ/curse_ward_block）所得机制桩（2026-09-19 降格批次5）。基准 dispelable:false/duration:null，卡面 mount_status 传 duration/charges 覆盖。scentless 因 dispelable:true(褪色短免疫) 保留私有不降格。",
+      "immune": {
+        "categories": [
+          "debuff"
+        ]
+      }
     },
     {
       "id": "control_immune",
@@ -338,14 +345,13 @@
       "dispelable": false,
       "duration": null,
       "maxStacks": 1,
-      "modifiers": {
-        "immune": {
-          "categories": [
-            "control"
-          ]
-        }
-      },
-      "note": "通用控制免疫：事前阻断 control 类状态挂载。归并纯 control 免疫私有换皮（composure/virtual_persona）所得机制桩（2026-09-19 降格批次5）。基准 dispelable:false/duration:null，卡面 mount_status 传 duration/charges 覆盖。"
+      "modifiers": {},
+      "note": "通用控制免疫：事前阻断 control 类状态挂载。归并纯 control 免疫私有换皮（composure/virtual_persona）所得机制桩（2026-09-19 降格批次5）。基准 dispelable:false/duration:null，卡面 mount_status 传 duration/charges 覆盖。",
+      "immune": {
+        "categories": [
+          "control"
+        ]
+      }
     },
     {
       "id": "lust_restless",
@@ -455,15 +461,14 @@
       "dispelable": false,
       "duration": null,
       "charges": 1,
-      "modifiers": {
-        "behaviorModifiers": [
-          {
-            "op": "target_override",
-            "anchor": "nearest_any"
-          }
-        ]
-      },
-      "note": "恶欲值档位『改攻最近单位（含友军）』的确定性承载（R5，2026-09-26 拍板）：nearest_any = 最近任意单位不分敌我（H12 target_override 族）；charges:1——改向实际生效时 −1 归零卸载（charges 消耗场景含 RedirectRule 实际生效，编队参数 §1.1b）；每回合由档位状态（lust_restless/lust_uncontrolled）on_turn_start 重发 1 次额度，不作独立卡面引用"
+      "modifiers": {},
+      "note": "恶欲值档位『改攻最近单位（含友军）』的确定性承载（R5，2026-09-26 拍板）：nearest_any = 最近任意单位不分敌我（H12 target_override 族）；charges:1——改向实际生效时 −1 归零卸载（charges 消耗场景含 RedirectRule 实际生效，编队参数 §1.1b）；每回合由档位状态（lust_restless/lust_uncontrolled）on_turn_start 重发 1 次额度，不作独立卡面引用",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
+          "anchor": "nearest_any"
+        }
+      ]
     }
   ]
 }
