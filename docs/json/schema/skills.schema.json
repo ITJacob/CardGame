@@ -3190,18 +3190,17 @@
   "rulePatch": {
    "type": "object",
    "required": [
-    "kind",
-    "side"
+    "kind"
    ],
    "additionalProperties": false,
    "properties": {
     "kind": {
      "type": "string",
-     "description": "规则补丁类型，如 damage_mul / stat_mod。"
+     "description": "规则补丁类型，封闭取值见 docs/ddd/params/战场参数.md §1.2：seal_effect / disable_effect / cost_mod / empower。"
     },
     "side": {
      "type": "string",
-     "description": "作用侧，如 all / ally / enemy。"
+     "description": "作用侧（all / ally / enemy / both）——disable_effect 与 empower 必填；seal_effect 与 cost_mod 天然敌我双向，不写本字段（2026-10-02 对齐 ddd 正典，原必填修正）。"
     },
     "tag": {
      "oneOf": [
@@ -3225,6 +3224,10 @@
     },
     "effectType": {
      "type": "string"
+    },
+    "delta": {
+     "type": "integer",
+     "description": "cost_mod 的成本增减（如 1 = 费用 +1）；仅 cost_mod kind 使用，2026-10-02 补登（口径见 docs/ddd/params/战场参数.md §1.2）。"
     },
     "note": {
      "type": "string"

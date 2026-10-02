@@ -228,7 +228,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 ## 7. 界域 / 区域 / 单位
 
 - `domainDef`：`{ id, tier(overlay|hero), dispelable, duration, durationUnit, triggers, rulePatches }`
-  - `rulePatches[]`：`{ kind, side, tag, mul }`，`tag` 可为数组
+  - `rulePatches[]`：`{ kind, side?, tag?（可数组）, mul?, stat?, effectType?, delta?, note? }`——kind 取值域（seal_effect / disable_effect / cost_mod / empower）与字段口径以 `docs/ddd/params/战场参数.md` §1.2 为权威；`delta` 为 cost_mod 的成本增减整数（2026-10-02 补登，schema 同步）；`tag` 过滤取自 SkillDef.tags
 - `zoneDef`：`{ id, kind(hazard|blessing), trigger, affects(ally_of_owner|enemy_of_owner|any), effects, duration }`——`affects` 值域对齐 `docs/ddd/params/战场参数.md` 的 `ZoneGrant.affects`
   - `effects` 元素有两种形态：直接是 effect，或 `{ side, payload: effect }` 按阵营分组
 - `unitDef`：`{ id, name, hpRatio, atkRatio, reach, element, tags, triggers, unitType, gender }`——`gender`(`any`/`male`/`female`) 为 Unit.gender，供获取期过滤与性别限制判定（刺客序列4+ 高位谱系要求 `female`）。
