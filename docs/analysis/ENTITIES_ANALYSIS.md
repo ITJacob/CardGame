@@ -15,16 +15,16 @@
 | `unit_wraith` | 亡魂 | UNDEAD | 收尸人 | reach melee、hpRatio 0.7 |
 | `unit_skeleton` | 骷髅 | UNDEAD | 收尸人 | reach melee、hpRatio 1.0 |
 | `unit_zombie` | 活尸 | UNDEAD | 收尸人 | reach melee、hpRatio 1.0 |
-| `unit_historical_echo` | 历史影像 | —（未登记） | 占卜家 | hpRatio 0.35 |
-| `unit_marionette` | 秘偶 | —（未登记） | 占卜家 | hpRatio 0.25 |
+| `unit_historical_echo` | 历史影像 | ILLUSION | 占卜家 | hpRatio 0.35 |
+| `unit_marionette` | 秘偶 | CONSTRUCT | 占卜家 | hpRatio 0.25 |
 | `unit_nature_spirit` | 自然灵 | SPIRIT | 不眠者 | reach melee、hpRatio 1.0 |
-| `unit_shadow_spawn` | 阴影生物 | —（未登记） | 秘祈人 | 触发载荷、tags、元素、hpRatio 0.35 |
-| `unit_flesh_servant` | 血肉仆役 | —（未登记） | 秘祈人 | 触发载荷、tags、元素、hpRatio 0.5 |
-| `unit_grazed_wraith` | 被放牧的灵体 | —（未登记） | 秘祈人 | tags、元素、hpRatio 0.4 |
-| `unit_fallen_kin` | 堕落眷属 | —（未登记） | 秘祈人 | tags、元素、hpRatio 0.25 |
-| `unit_abomination` | 异变怪物 | —（未登记） | 秘祈人 | 触发载荷、tags、元素、hpRatio 动态（见卡面效果） |
+| `unit_shadow_spawn` | 阴影生物 | ILLUSION | 秘祈人 | 触发载荷、tags、元素、hpRatio 0.35 |
+| `unit_flesh_servant` | 血肉仆役 | FLESH | 秘祈人 | 触发载荷、tags、元素、hpRatio 0.5 |
+| `unit_grazed_wraith` | 被放牧的灵体 | SPIRIT | 秘祈人 | tags、元素、hpRatio 0.4 |
+| `unit_fallen_kin` | 堕落眷属 | SPIRIT | 秘祈人 | tags、元素、hpRatio 0.25 |
+| `unit_abomination` | 异变怪物 | ABERRATION | 秘祈人 | 触发载荷、tags、元素、hpRatio 动态（见卡面效果） |
 
-> unitType 登记率：**4/11**——未登记单位的种类归属见《召唤物参数》§一归属表。
+> unitType 登记率：**11/11**——未登记单位的种类归属见《召唤物参数》§一归属表。
 
 ### 1.2 spawn 引用形态（卡面，按节点计）
 
