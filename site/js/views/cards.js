@@ -108,7 +108,7 @@ function zh(cat, key) {
 
 function cardItemHtml(c) {
   const cost = c.kind === 'active' && c.cost
-    ? `<span class="badge">⚡${c.cost.energy}${c.cost.cooldown ? ` CD${c.cost.cooldown}` : ''}${c.cost.castTime ? ` 吟唱${c.cost.castTime}` : ''}</span>` : '';
+    ? `<span class="badge">⚡${c.cost.energy}${c.cost.cooldown ? ` 冷却 ${c.cost.cooldown} tick` : ''}${c.cost.castTime ? ` 吟唱${c.cost.castTime}` : ''}</span>` : '';
   const hook = c.kind === 'passive' && c.hook
     ? `<span class="badge">${termSpan('triggerEvent', c.hook)}</span>` : '';
   const axSym = (DB.axesByPathway.get(c._pathway) || {})[c.axis]?.symbol || '';

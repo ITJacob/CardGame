@@ -24,7 +24,7 @@ function targetHtml(t) {
 function costHtml(c) {
   if (!c.cost) return '';
   const co = c.cost;
-  return `⚡能量 ${co.energy} · 冷却 ${co.cooldown} · 吟唱 ${co.castTime ?? 0}`;
+  return `⚡能量 ${co.energy} · 冷却 ${co.cooldown} tick · 吟唱 ${co.castTime ?? 0}`;
 }
 
 function triggersHtml(card) {

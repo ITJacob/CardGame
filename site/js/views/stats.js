@@ -85,12 +85,12 @@ function renderSkillStats(view) {
   const rarityByPath = new Map(), seqByPath = new Map(), reachByPath = new Map(),
         selByPath = new Map(), hookByPath = new Map(), statByPath = new Map(),
         resByPath = new Map(), elemByPath = new Map(), opByPath = new Map(),
-        kindByPath = new Map(), energyByPath = new Map(), cdByPath = new Map(),
+        kindByPath = new Map(), energyByPath = new Map(), cooldownByPath = new Map(),
         castByPath = new Map(), rankByPath = new Map(), genderByPath = new Map(),
         depthByPath = new Map(), factionByPath = new Map(), scopeByPath = new Map(),
         sortByPath = new Map(), reqFilterByPath = new Map(),
         cxByPath = new Map(), budgetByPath = new Map();
-  const byEnergy = new Map(), byCd = new Map(), byCast = new Map(),
+  const byEnergy = new Map(), byCooldown = new Map(), byCast = new Map(),
         byGender = new Map(), byDepth = new Map(), tagsTotal = new Map(),
         byFaction = new Map(), byScope = new Map(), bySort = new Map(),
         reqFilterTotal = new Map(), byCx = new Map(), byBudget = new Map();
@@ -104,7 +104,7 @@ function renderSkillStats(view) {
     // 那是数据事故，页面不兜底
     if (c.kind === 'active' && c.cost) {
       if (c.cost.energy != null) { bump(byEnergy, 0, c.cost.energy); bump(energyByPath, p, c.cost.energy); }
-      if (c.cost.cooldown != null) { bump(byCd, 0, c.cost.cooldown); bump(cdByPath, p, c.cost.cooldown); }
+      if (c.cost.cooldown != null) { bump(byCooldown, 0, c.cost.cooldown); bump(cooldownByPath, p, c.cost.cooldown); }
       if (c.cost.castTime != null) { bump(byCast, 0, c.cost.castTime); bump(castByPath, p, c.cost.castTime); }
     }
     if (c.gender) { bump(byGender, 0, c.gender); bump(genderByPath, p, c.gender); }
@@ -361,10 +361,10 @@ function renderSkillStats(view) {
     heatOf('途径 × 能量费用（只算主动卡）', energyByPath, scaleCols(energyByPath, ' 能'),
       { unit: ' 张', orderNote: '数值最小的 ' }));
 
-  const cdGroup = group('费用面 · 冷却（cost.cooldown）',
-    barPanel('冷却分布（主动卡，有序刻度）', sortedRows(flat(byCd), (k) => `${k} cd`, { byKey: true }),
-      `<p class="panel-note muted">cd 0 = 无冷却（一次性或被动触发类）。</p>`),
-    heatOf('途径 × 冷却（只算主动卡）', cdByPath, scaleCols(cdByPath, ' cd'),
+  const cooldownGroup = group('费用面 · 冷却（cost.cooldown）',
+    barPanel('冷却分布（主动卡，有序刻度）', sortedRows(flat(byCooldown), (k) => `${k} tick`, { byKey: true }),
+      `<p class="panel-note muted">冷却以 tick 计时（与吟唱同单位）；0 tick = 无冷却（一次性或被动触发类）。</p>`),
+    heatOf('途径 × 冷却（只算主动卡）', cooldownByPath, scaleCols(cooldownByPath, ' tick'),
       { unit: ' 张', orderNote: '数值最小的 ' }));
 
   const castGroup = group('费用面 · 吟唱（cost.castTime）',
@@ -436,7 +436,7 @@ function renderSkillStats(view) {
     （上限取本图最大值），跨图比颜色没有意义——要比就比格内数字。行序一律是 manifest 途径顺序；
     列序是各自的用量或刻度顺序，悬停表头看原始 key。状态定义口径见「状态」子页，编目三池
     （召唤物 / 区域 / 界域）见各自子页——本页各组均不含它们。</p>
-    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${axisGroup}${primGroup}${opGroup}${condGroup}${cxGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${budgetGroup}${energyGroup}${cdGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}${genderGroup}`;
+    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${axisGroup}${primGroup}${opGroup}${condGroup}${cxGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${budgetGroup}${energyGroup}${cooldownGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}${genderGroup}`;
 
   // 窄屏展开全部列；桌面端该开关不显示（CSS 隐藏），勾选状态无副作用
   wireHeatToggle(view);
