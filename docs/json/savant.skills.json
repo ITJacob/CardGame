@@ -40,7 +40,7 @@
         "灵魂熔炉",
         "解离"
       ],
-      "note": "payoffs 2026-09-26 评审：机械维修/注入灵魂卡面以造物身份定向（落地）；制造大师/灵魂熔炉/解离 notes 级读层；construct 自带 thresholdTrigger 达 2 层占位 ｜ 2026-09-29 环节⑤：炼成/考古发掘补 construct 产层段（召唤者计数，产层 20）；机械维修补 construct 读层段（payoff 升 landed）"
+      "note": "payoffs 2026-09-26 评审：机械维修/注入灵魂卡面以造物身份定向（落地）；制造大师/灵魂熔炉/解离 notes 级读层；construct 自带 thresholdTrigger 达 2 层占位 ｜ 2026-09-29 环节⑤：炼成/考古发掘补 construct 产层段（召唤者计数，产层 20）；机械维修补 construct 读层段（payoff 升 landed） ｜ 2026-10-02 批次十：制造大师补 CONSTRUCT 出厂协议段（签名 1→2）；机械维修 reforge 跨系读段"
     },
     "astral": {
       "symbol": "☄️",
@@ -55,7 +55,7 @@
         "完美之境",
         "现实规律"
       ],
-      "note": "payoffs 2026-09-26 评审：三卡 notes 级读层（law_edit 标记放大）⚠️ 证据级=notes；规律权柄已列 enabler 但 notes 自称旗舰 payoff，分类冲突待裁定 ｜ 2026-09-29 环节⑤：enablers 核正（星之诅咒移出）；虚假星象补 law_edit 产层段（产层 20）；星之祝福补 law_edit 读层段（payoff 升 landed）+ enlightened 跨轴读段（astral→civilization）"
+      "note": "payoffs 2026-09-26 评审：三卡 notes 级读层（law_edit 标记放大）⚠️ 证据级=notes；规律权柄已列 enabler 但 notes 自称旗舰 payoff，分类冲突待裁定 ｜ 2026-09-29 环节⑤：enablers 核正（星之诅咒移出）；虚假星象补 law_edit 产层段（产层 20）；星之祝福补 law_edit 读层段（payoff 升 landed）+ enlightened 跨轴读段（astral→civilization） ｜ 2026-10-02 批次十：完美之境 modify_rule_slot(append 完美引力) 签名第二实证 + construct 跨轴读层段"
     },
     "civilization": {
       "symbol": "🏙️",
@@ -781,7 +781,7 @@
       "flagship": false,
       "lore": "序列6 机械专家 —— \"能制造机械奇物\"（本稿明确引申：能造即能养）",
       "flavor": "你掀开它的外壳，用扳手和焊枪在火花里把它重新拼回能站的样子。",
-      "describe": "治疗一名造物单位 5 点生命；若自身造物计数 ≥1，熟能生巧，额外治疗 2 点。",
+      "describe": "治疗一名造物单位 5 点生命；若自身造物计数 ≥1，熟能生巧，额外治疗 2 点。；若目标带有再现重铸（窥秘人枢纽），再现修理共鸣，额外治疗 2 点。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -823,13 +823,32 @@
             }
           ],
           "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "reforge",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "note": "再现修理共鸣：目标带窥秘人枢纽「再现重铸」时，修理术与其再现之力共鸣，额外治疗 +2——跨系读段（批次十 2026-10-02）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
       "conversionNotes": [
         "原著引申（原著只写\"能制造\"），标注存疑；A22：治疗必须走 heal 原语",
         "CONSTRUCT unitType + tags 细分（mechanical/relic/homunculus）已落编队参数 §1.2b（F62 扩展，本稿新增项 #20）",
-        "翻译/语义：造物轴续航件；层数够则维修同时强化造物。"
+        "翻译/语义：造物轴续航件；层数够则维修同时强化造物。",
+        "2026-10-02 批次十：reforge 跨系读段（再现修理共鸣——通识者修理术×窥秘人再现之力）"
       ],
       "art": {
         "subject": "a mechanic welding a wounded construct back together in a shower of sparks",
@@ -851,7 +870,7 @@
       "flagship": false,
       "lore": "序列6 机械专家 —— \"'制造大师'：成形的超凡物品负面影响低、效果好\"",
       "flavor": "出自你手的东西，总是比图纸上更好一点——更硬、更利，也更不容易出岔子。",
-      "describe": "你召唤的造物登场时攻击 +2、生命上限 +6、护甲 +2（随 spawn 载荷结算，不占触发点）。",
+      "describe": "你召唤的造物登场时攻击 +2、生命上限 +6、护甲 +2（随 spawn 载荷结算，不占触发点）。；若登场造物为构装体（CONSTRUCT），出厂协议预充能：其行动条 +10。",
       "hook": "on_spawn",
       "effects": [
         {
@@ -880,6 +899,26 @@
               "value": 2,
               "mode": "delta",
               "target": "target"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "target_unit_type",
+                "type": [
+                  "CONSTRUCT"
+                ]
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 10,
+                  "mode": "delta",
+                  "target": "target",
+                  "note": "构装出厂协议：登场造物为构装体（人偶/魔像系）即预充能行动条 +10——CONSTRUCT 签名第二实证（批次十 2026-10-02）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -887,7 +926,8 @@
       "tentative": false,
       "conversionNotes": [
         "实现走 F54 spawn.companionBuff（效果参数 §1.1）：增益挂在 spawn 载荷上登场即结算，不挂 on_spawn 触发点（A2 歧义规避）；hook 字段仅作归类占位",
-        "翻译/语义：造物轴品质引擎；层数够则品质进一步放大。依赖 F54。"
+        "翻译/语义：造物轴品质引擎；层数够则品质进一步放大。依赖 F54。",
+        "2026-10-02 批次十：target_unit_type CONSTRUCT 出厂协议段——CONSTRUCT 签名 1→2 实证，矩阵 on_spawn 造物出厂协议落地"
       ],
       "art": {
         "subject": "a master craftsman tightening the last bolt on a construct finer than any blueprint",
@@ -2174,7 +2214,7 @@
       "flagship": false,
       "lore": "序列0 完美者 —— （\"完美\"：己方趋近完美，敌方显出残缺）",
       "flavor": "你在战场上写下\"完美\"二字——你的同伴忽然没有短板，而敌人身上每一处将就，都被照了出来。",
-      "describe": "全体友军获得 6 点护盾（25tick）、行动条速率 +6（25tick）；全体敌方护甲 -8、行动条速率 -6（25tick）。",
+      "describe": "全体友军获得 6 点护盾（25tick）、行动条速率 +6（25tick）；全体敌方护甲 -8、行动条速率 -6（25tick）。；并向战场规则追加「完美引力」（物理规律改写，不覆盖既有规则）；若自身造物计数 ≥1，文明底蕴，全体友军额外护盾 +2（25tick）。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2221,6 +2261,38 @@
               "mode": "delta",
               "duration": 25,
               "target": "all_enemies"
+            },
+            {
+              "type": "modify_rule_slot",
+              "slot": 0,
+              "field": "scope",
+              "value": {
+                "gravity": "perfected",
+                "note": "完美引力：位移规则松弛（物理规律语义，不碰社会规则/定义嫁接——身份红线）"
+              },
+              "mode": "append",
+              "note": "物理规律改写②（完美之境）：向 Rules[3] 槽 0 scope 追加完美引力规则——modify_rule_slot 签名第二实证（批次十 2026-10-02）；append 不覆盖槽内既有规则"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "construct",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "shield",
+                  "value": 2,
+                  "duration": 25,
+                  "target": "all_allies",
+                  "note": "文明底蕴：场上造物见证完美之境，全体护盾 +2——astral 读 craft 身份跨轴段（批次十 2026-10-02）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -2229,7 +2301,8 @@
       "conversionNotes": [
         "G6/INV-S5 合规：gauge_rate 用速率不用 current；不搬位格碾压，只借\"完美\"概念",
         "翻译/语义：序列0 全场双向改写；规律轴 payoff 放大削甲。INV-S5 合规（改 gauge_rate 源属性）。",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+        "2026-10-01 吟唱重标：非仪式，castTime 空→0",
+        "2026-10-02 批次十：modify_rule_slot(append) 完美引力段（物理规律语义红线成文）+ construct 跨轴读层段"
       ],
       "frameworkFlags": [
         {
