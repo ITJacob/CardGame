@@ -22,7 +22,7 @@
     "prim:advance_clock": 0,
     "res:secrecy": 3
    },
-   "styleDist": 0.1034,
+   "styleDist": 0.1036,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -44,7 +44,7 @@
     },
     {
      "dim": "风格签名",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.103，分位 <25%）",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.104，分位 <25%）",
      "ref": "sleepless",
      "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
     }
@@ -241,7 +241,7 @@
     "prim:modify_targetability": 0,
     "prim:target_override": 0
    },
-   "styleDist": 0.1068,
+   "styleDist": 0.1071,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -422,7 +422,7 @@
     "elem:ice": 2,
     "elem:dark": 1
    },
-   "styleDist": 0.0972,
+   "styleDist": 0.0974,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -574,177 +574,6 @@
    ]
   },
   {
-   "id": "lawyer",
-   "name": "律师",
-   "total": 66.1,
-   "dims": {
-    "轴健康度": 20.6,
-    "跨轴耦合": 2.5,
-    "跨系联动": 10.0,
-    "结构健康": 10,
-    "机制落地": 10.0,
-    "文本完备": 10.0,
-    "风格签名": 3
-   },
-   "minAxis": 65.8,
-   "cards": 46,
-   "sigHits": {
-    "prim:gauge_shuffle": 1,
-    "prim:status_shuffle": 1,
-    "prim:modify_rule_slot": 1
-   },
-   "styleDist": 0.0863,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 1 次",
-     "ref": "lawyer",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "风格签名",
-     "why": "-2：签名键零使用 （有键仅 1 卡，未落地）",
-     "ref": "lawyer",
-     "fix": "按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证"
-    },
-    {
-     "dim": "风格签名",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.086，分位 <25%）",
-     "ref": "lawyer",
-     "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
-    }
-   ],
-   "axes": [
-    {
-     "id": "brute",
-     "name": "蛮力",
-     "symbol": "👊",
-     "total": 65.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "读层闭环": 12,
-      "轴内多样性": 8.8,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "力量解决",
-      "放大"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": []
-    },
-    {
-     "id": "advocacy",
-     "name": "讼辩",
-     "symbol": "🗣️",
-     "total": 66.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "读层闭环": 12,
-      "轴内多样性": 6.2,
-      "规模均衡": 10,
-      "承接连通": 3
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "寻隙",
-      "讼师之眼",
-      "律令加身"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": []
-    },
-    {
-     "id": "bribery",
-     "name": "贿腐",
-     "symbol": "🪙",
-     "total": 71.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 13,
-      "轴内多样性": 6.2,
-      "规模均衡": 10,
-      "承接连通": 15
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "腐蚀"
-     ],
-     "payoffsLanded": [
-      "收买"
-     ],
-     "payoffsNotes": [
-      "腐化回扣"
-     ],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "腐蚀",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "腐化回扣",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "注：notes 级 1 张（减半计）",
-       "ref": "腐化回扣",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    },
-    {
-     "id": "warp_rule",
-     "name": "扭曲规则",
-     "symbol": "🌀",
-     "total": 75.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "读层闭环": 9,
-      "轴内多样性": 15.0,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 16,
-     "enablersVerified": [
-      "扭曲",
-      "利用"
-     ],
-     "payoffsLanded": [
-      "秩序崩坏"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    }
-   ]
-  },
-  {
    "id": "warrior",
    "name": "战士",
    "total": 66.2,
@@ -764,7 +593,7 @@
     "flag:filter.unitType": 0,
     "sref:guardianship": 2
    },
-   "styleDist": 0.1286,
+   "styleDist": 0.1283,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -934,7 +763,7 @@
     "prim:write_rule_slot": 0,
     "trig:on_phase_change": 0
    },
-   "styleDist": 0.2612,
+   "styleDist": 0.2613,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1119,7 +948,7 @@
     "trig:on_kill": 0,
     "prim:drain": 0
    },
-   "styleDist": 0.1102,
+   "styleDist": 0.1104,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1287,6 +1116,171 @@
    ]
   },
   {
+   "id": "lawyer",
+   "name": "律师",
+   "total": 68.1,
+   "dims": {
+    "轴健康度": 20.6,
+    "跨轴耦合": 2.5,
+    "跨系联动": 10.0,
+    "结构健康": 10,
+    "机制落地": 10.0,
+    "文本完备": 10.0,
+    "风格签名": 5
+   },
+   "minAxis": 65.8,
+   "cards": 46,
+   "sigHits": {
+    "prim:gauge_shuffle": 2,
+    "prim:status_shuffle": 2,
+    "prim:modify_rule_slot": 2
+   },
+   "styleDist": 0.0889,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-12.5：本途径他轴身份读取 1 次",
+     "ref": "lawyer",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "风格签名",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.089，分位 <25%）",
+     "ref": "lawyer",
+     "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
+    }
+   ],
+   "axes": [
+    {
+     "id": "brute",
+     "name": "蛮力",
+     "symbol": "👊",
+     "total": 65.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 12,
+      "轴内多样性": 8.8,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "力量解决",
+      "放大"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "advocacy",
+     "name": "讼辩",
+     "symbol": "🗣️",
+     "total": 66.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 12,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 3
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "寻隙",
+      "讼师之眼",
+      "律令加身"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "bribery",
+     "name": "贿腐",
+     "symbol": "🪙",
+     "total": 71.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 12,
+      "读层闭环": 13,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 15
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "腐蚀"
+     ],
+     "payoffsLanded": [
+      "收买"
+     ],
+     "payoffsNotes": [
+      "腐化回扣"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "腐蚀",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      },
+      {
+       "dim": "产层闭环",
+       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
+       "ref": "腐化回扣",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      },
+      {
+       "dim": "读层闭环",
+       "why": "注：notes 级 1 张（减半计）",
+       "ref": "腐化回扣",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "warp_rule",
+     "name": "扭曲规则",
+     "symbol": "🌀",
+     "total": 75.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "读层闭环": 9,
+      "轴内多样性": 15.0,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 16,
+     "enablersVerified": [
+      "扭曲",
+      "利用"
+     ],
+     "payoffsLanded": [
+      "秩序崩坏"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    }
+   ]
+  },
+  {
    "id": "prisoner",
    "name": "囚犯",
    "total": 68.6,
@@ -1306,7 +1300,7 @@
     "unitType:ITEM": 1,
     "sref:lineage_stack": 0
    },
-   "styleDist": 0.091,
+   "styleDist": 0.0911,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -1482,7 +1476,7 @@
     "stat:hp_max": 1,
     "sref:flesh_undying": 1
    },
-   "styleDist": 0.0857,
+   "styleDist": 0.086,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1643,7 +1637,7 @@
     "flag:template": 1,
     "sref:insight": 5
    },
-   "styleDist": 0.1006,
+   "styleDist": 0.1009,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -1797,7 +1791,7 @@
     "unitType:BEAST": 8,
     "sref:prepared_draught": 4
    },
-   "styleDist": 0.1308,
+   "styleDist": 0.131,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1982,7 +1976,7 @@
     "elem:lightning": 7,
     "sref:rage": 10
    },
-   "styleDist": 0.1728,
+   "styleDist": 0.1727,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -2143,7 +2137,7 @@
     "flag:cast_time_set": 0,
     "sref:info_form": 1
    },
-   "styleDist": 0.1211,
+   "styleDist": 0.1208,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -2305,7 +2299,7 @@
     "sref:mimic": 5,
     "prim:snapshot": 0
    },
-   "styleDist": 0.1171,
+   "styleDist": 0.1172,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -2459,7 +2453,7 @@
     "flag:gender_is": 1,
     "sref:massing": 1
    },
-   "styleDist": 0.1142,
+   "styleDist": 0.1141,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -2680,7 +2674,7 @@
     "prim:echo_last_skill": 2,
     "prim:restore_snapshot": 2
    },
-   "styleDist": 0.1249,
+   "styleDist": 0.1251,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -2871,7 +2865,7 @@
     "sref:law_edit": 3,
     "unitType:CONSTRUCT": 1
    },
-   "styleDist": 0.2054,
+   "styleDist": 0.2055,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -3076,7 +3070,7 @@
     "elem:dark": 4,
     "flag:companionBuff": 1
    },
-   "styleDist": 0.1112,
+   "styleDist": 0.1113,
    "deductions": [
     {
      "dim": "风格签名",
@@ -3255,7 +3249,7 @@
     "unitType:PLANT": 2,
     "sref:blight": 3
    },
-   "styleDist": 0.1402,
+   "styleDist": 0.1403,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -3461,7 +3455,7 @@
     "prim:write_rule_slot": 0,
     "prim:translocate": 4
    },
-   "styleDist": 0.1341,
+   "styleDist": 0.1344,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -3815,7 +3809,7 @@
     "prim:advance_clock": 2,
     "res:fate_value": 5
    },
-   "styleDist": 0.1172,
+   "styleDist": 0.1176,
    "deductions": [
     {
      "dim": "跨系联动",
