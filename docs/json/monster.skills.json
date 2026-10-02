@@ -910,7 +910,7 @@
       },
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 2026-10-02 矩阵复审（怪物=死亡簿正主）：补死亡簿折费 dimHook（≥6 费用×0.75）——死亡簿正主第二卡",
       "art": {
         "subject": "a patch of battlefield rotting under a dome of sickly green miasma",
         "elements": [
@@ -919,7 +919,17 @@
           "blackened ground"
         ],
         "mood": "suffocating, cursed"
-      }
+      },
+      "dimHooks": [
+        {
+          "dim": "death_tally",
+          "comparator": ">=",
+          "threshold": 6,
+          "mul": 0.75,
+          "target": "cost",
+          "note": "死亡簿折费（2026-10-02 矩阵复审）：board.death_tally≥6 时，本卡能量费 ×0.75——崩坏中的世界处处是厄运（⚠️D 待平衡）"
+        }
+      ]
     },
     {
       "id": "skill_monster_s4_misfortune_curse",
@@ -1220,7 +1230,7 @@
       "flagship": false,
       "lore": "序列3 混乱行者 —— \"命运看守者：看见命运中混乱疯狂的部分\"",
       "flavor": "你看见那些被混乱和厄运缠住的命运线——顺着线摸过去，你总能捞到点什么。",
-      "describe": "被动：你对处于混乱或厄运状态的敌人造成伤害时，自身 +1 层幸运。",
+      "describe": "被动：你对处于混乱或厄运状态的敌人造成伤害时，自身 +1 层幸运；且战场死亡越多（死亡簿 ≥3），你对这些弃运者的伤害越高（×1.5）。",
       "hook": "on_deal_damage",
       "effects": [
         {
@@ -1274,6 +1284,14 @@
           "mul": 1.3,
           "target": "damage",
           "note": "维度乘区挂钩占位（⚠️D 待平衡）：board.fate_value≥+5 赐福×1.3"
+        },
+        {
+          "dim": "death_tally",
+          "comparator": ">=",
+          "threshold": 3,
+          "mul": 1.5,
+          "target": "damage",
+          "note": "死亡簿读层（2026-10-02 矩阵复审）：board.death_tally≥3 时，看守者对混乱/厄运敌人的伤害 ×1.5——死者的命运归于看守者（⚠️D 待平衡）"
         }
       ],
       "art": {
@@ -1284,7 +1302,8 @@
           "glinting prize at the end"
         ],
         "mood": "patient, covetous"
-      }
+      },
+      "conversionNotes": "2026-10-02 矩阵复审（怪物=死亡簿正主）：补死亡簿读层 dimHook（≥3 伤害×1.5）——死亡簿正主第一卡"
     },
     {
       "id": "skill_monster_s3_mind_baptism",
