@@ -36,7 +36,7 @@
         "dotOnTick": 1,
         "pierceArmor": true
       },
-      "note": "§2.2 已裁定：defaultDuration 5 / maxStacks 3 / stackPolicy refresh；实例 value 1/tick 穿透护甲。乘区数值 层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。"
+      "note": "defaultDuration 5 / maxStacks 3 / stackPolicy refresh；实例 value 1/tick。2026-10-02 拍板归拢：DoT 走伤害链旁路——绕过护盾/护甲/防御，只过属性抵抗（pierceArmor 字段名保留，语义=穿透 ①②④ 全链；乘区数值 层数档 2026-10-01 标定批已定）。"
     },
     {
       "id": "regen",
@@ -89,11 +89,10 @@
       ],
       "dispelable": true,
       "duration": 6,
-      "maxStacks": 1,
       "modifiers": {
         "shieldDelta": 5
       },
-      "note": "§2.2 已裁定：defaultDuration 6；实例 delta 5，独立 shield 池先于 HP 扣减。"
+      "note": "2026-10-02 拍板层叠制（弃 maxStacks:1，层数不设上限）：各层独立 shield 层池，后加持先结算 LIFO；每层时限/次数独立（defaultDuration 6 / delta 5），不融合、不刷新、不顶替——重复加持行为须卡面特殊说明；不抵 DoT；减伤顺序=护盾→护甲→抗性→防御（效果上下文 §三）。"
     },
     {
       "id": "silence",
