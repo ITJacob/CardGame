@@ -29,9 +29,11 @@ def main():
     nearest = {a: min((b for b in ids if b != a), key=lambda b: dist[a][b]) for a in ids}
     mean_d = {a: sum(dist[a][b] for b in ids if b != a) / (len(ids) - 1) for a in ids}
 
-    # 签名键用量（与 score.py 第七维同算法）
+    # 签名键用量（与 score.py 第七维同算法；lineage_ids 口径同步——sref:lineage_stack 读侧
+    # 取带 lineageStack 字段的状态集，2026-10-02 批次九对齐，免报告与评分漂移）
+    lineage_ids = {sd["id"] for pid_, label_, sd in score.iter_status_defs() if "lineageStack" in sd}
     sig = {pid: score.signature_counts(d.get("cards") or [], score.PATHWAY_SIGNATURES.get(pid, []),
-                                       unit_type_of=unit_types)
+                                       unit_type_of=unit_types, lineage_ids=lineage_ids)
            for pid, d in pathways.items()}
 
     L = []

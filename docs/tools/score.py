@@ -157,8 +157,9 @@ def _filter_unit_type_nodes(effects):
             and "base" not in n and not str(n.get("id", "")).startswith("unit_")]
 
 
-def signature_card_hit(card, key, unit_type_of=None):
-    """单卡是否实证某签名键（unit_type_of: unitId -> unitType 解析，供 unitType:X 键经 spawn 取证）。"""
+def signature_card_hit(card, key, unit_type_of=None, lineage_ids=None):
+    """单卡是否实证某签名键（unit_type_of: unitId -> unitType 解析，供 unitType:X 键经 spawn 取证；
+    lineage_ids: 带 lineageStack 字段的状态 id 集，供 sref:lineage_stack 读侧取证，2026-10-02 批次九对齐）。"""
     kind, _, arg = key.partition(":")
     if kind == "prim":
         return arg in card_effect_types(card)
@@ -185,6 +186,10 @@ def signature_card_hit(card, key, unit_type_of=None):
         evs.add(card.get("hook"))  # passive 触发点挂 hook 字段（与 triggers 数组同口径，2026-10-02 批次九对齐）
         return arg in evs or any(n.get("event") == arg for n in walk(card.get("effects")))
     if kind == "sref":
+        # 谱系栈读侧口径（2026-10-02 批次九对齐）：卡引用任何带 lineageStack 字段的状态（狼人化/灵体化/
+        # 异类之王/演出回放）即计使用——原口径按 statusId=="lineage_stack" 取证，该 id 非状态，键永零。
+        if arg == "lineage_stack" and lineage_ids:
+            return any(card_refs_status(card, s) for s in lineage_ids)
         return card_refs_status(card, arg)
     if kind == "unitType":
         if any(n.get("unitType") == arg for n in _filter_unit_type_nodes(card.get("effects"))):
@@ -202,9 +207,9 @@ def signature_card_hit(card, key, unit_type_of=None):
     return False
 
 
-def signature_counts(cards, keys, unit_type_of=None):
+def signature_counts(cards, keys, unit_type_of=None, lineage_ids=None):
     """key -> 实证卡数"""
-    return {k: sum(1 for c in cards if signature_card_hit(c, k, unit_type_of)) for k in keys}
+    return {k: sum(1 for c in cards if signature_card_hit(c, k, unit_type_of, lineage_ids)) for k in keys}
 
 
 # ---------- 途径指纹与风格距离（STYLE_DISTANCE.md 同源口径） ----------
@@ -485,6 +490,7 @@ def main():
 
     # 途径指纹与平均风格距离（2026-10-01 差异化专项）：对他 21 途径的 1-cos 均值，分位计分
     all_unit_types = load_unit_types(pathways)
+    lineage_status_ids = {sid for sid, sd in status_by_id.items() if "lineageStack" in sd}
     fps = {pid: fingerprint(d.get("cards") or []) for pid, d in pathways.items()}
     mean_dists = {}
     for pid in pathways:
@@ -566,7 +572,8 @@ def main():
 
         # 风格签名（2026-10-01 差异化专项，口径 SCORING.md §三）= 签名落地 5 + 途径距离 5
         sig_keys = PATHWAY_SIGNATURES.get(pid, [])
-        sig_hits = signature_counts(cards, sig_keys, unit_type_of=all_unit_types)
+        sig_hits = signature_counts(cards, sig_keys, unit_type_of=all_unit_types,
+                                    lineage_ids=lineage_status_ids)
         signature_score = min(5, sum(2 if h >= 2 else h for h in sig_hits.values()))
         dist_pts = _dist_pts(mean_dists[pid])
         style_score = round(signature_score + dist_pts, 1)
