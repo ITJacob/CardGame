@@ -119,12 +119,12 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 5.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×2；prim:status_shuffle ×2；prim:modify_rule_slot ×2；对他途径指纹均距 0.093
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×2；prim:status_shuffle ×2；prim:modify_rule_slot ×2；对他途径指纹均距 0.092
 
 **途径失分项（含修改意见）**：
 
 - `跨轴耦合` -12.5：本途径他轴身份读取 1 次（lawyer）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.093，分位 <25%）（lawyer）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.092，分位 <25%）（lawyer）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -397,12 +397,12 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 6.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：stat:rank ×3；flag:template ×1；sref:insight ×5；对他途径指纹均距 0.118
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：stat:rank ×3；flag:template ×1；sref:insight ×5；对他途径指纹均距 0.117
 
 **途径失分项（含修改意见）**：
 
 - `跨系联动` -8.3：枢纽状态 1 个 + combo 读取 3 次（spectator）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.118，分位 <25%）（spectator）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.117，分位 <25%）（spectator）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -644,13 +644,13 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 5.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:target_override ×2；flag:gender_is ×1；sref:massing ×1；对他途径指纹均距 0.121
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:target_override ×2；flag:gender_is ×1；sref:massing ×1；对他途径指纹均距 0.120
 
 **途径失分项（含修改意见）**：
 
 - `跨系联动` -8.3：枢纽状态 2 个 + combo 读取 2 次（hunter）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
 - `风格签名` -1：签名键零使用 （有键仅 1 卡，未落地）（hunter）→ 按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.121，分位 <25%）（hunter）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.120，分位 <25%）（hunter）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|

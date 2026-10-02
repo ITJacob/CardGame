@@ -1423,15 +1423,16 @@
               }
             },
             {
-              "type": "modify_resource",
-              "resource": "shield",
+              "type": "mount_status",
+              "statusId": "shield",
               "value": 5,
-              "mode": "delta",
+              "duration": 20,
               "target": "self",
               "condition": {
                 "kind": "chance",
                 "p": 0.25
-              }
+              },
+              "note": "规范化：直写 shield 池改走层叠制状态（2026-10-02），时长对齐本卡其余自身增益 20t"
             },
             {
               "type": "modify_stat",
@@ -1545,7 +1546,8 @@
         "确定性退化方案（平衡审计备选）：自身固定获得 attack +3（20t）+ 打空 1 次，目标固定获得 attack -3（20t）+ 易伤 15t",
         "翻译/语义：熵蚀轴：本途径唯一保留随机的一条（R5 边界：随机只决定得哪个**定值**添头，不碰伤害数值）。R3 登记。退化方案见 §五。",
         "2026-09-26 主人拍板：保留真随机（8 段独立伯努利 p=0.25），退化方案不启用；登记见 ddd 随机性治理 §四登记册",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+        "2026-10-01 吟唱重标：非仪式，castTime 空→0",
+        "2026-10-02 护盾规范化：modify_resource(shield) 直写池改 mount_status(shield)——层叠制（LIFO 独立层）拍板后直写池无层无时限属未定义口子，封死；时长对齐本卡其余自身增益 20t"
       ],
       "tentative": false,
       "art": {

@@ -140,10 +140,10 @@
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 19 | 46.3% |
+| `mount_status` | 20 | 48.8% |
 | `damage` | 7 | 17.1% |
 | `modify_stat` | 3 | 7.3% |
-| `modify_resource` | 6 | 14.6% |
+| `modify_resource` | 5 | 12.2% |
 | `move` | 1 | 2.4% |
 | `domain` | 1 | 2.4% |
 | `gauge_shuffle` | 2 | 4.9% |
@@ -165,16 +165,15 @@
 | `attack` | 2 |
 | `gauge.rate` | 1 |
 
-**改动的资源（modify_resource，共 6 处）**：
+**改动的资源（modify_resource，共 5 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
 | `order` | 4 |
 | `lost` | 1 |
-| `shield` | 1 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `mount_status`(19)、`damage`(7)、`modify_resource`(6)；属性杠杆集中在 `attack`、`gauge.rate`，资源杠杆集中在 `order`、`lost`、`shield`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(20)、`damage`(7)、`modify_resource`(5)；属性杠杆集中在 `attack`、`gauge.rate`，资源杠杆集中在 `order`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **独裁者**：被动：整场战斗中——你施加的单体减益额外蔓延到目标相邻的敌人；你击杀敌人时偷取其 1 个增益且该敌人无法复活；位格低于你的敌人对你造成的伤害 ×0.8。；自身带镜子替身则镜中独裁，追加 2 点精神伤害。
 
