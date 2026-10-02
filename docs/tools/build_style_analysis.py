@@ -35,9 +35,11 @@ def main():
     casttime_ids = {sd["id"] for pid_, label_, sd in score.iter_status_defs()
                     if any(bm.get("op") == "cast_time_set" for bm in (sd.get("behaviorModifiers") or [])
                            if isinstance(bm, dict))}
+    grow_ids = {sd["id"] for pid_, label_, sd in score.iter_status_defs() if sd.get("statPerStack")}
+    flag_index = {"cast_time_set": casttime_ids, "statPerStack": grow_ids}
     sig = {pid: score.signature_counts(d.get("cards") or [], score.PATHWAY_SIGNATURES.get(pid, []),
                                        unit_type_of=unit_types, lineage_ids=lineage_ids,
-                                       casttime_ids=casttime_ids)
+                                       flag_status_index=flag_index)
            for pid, d in pathways.items()}
 
     L = []

@@ -157,11 +157,12 @@ def _filter_unit_type_nodes(effects):
             and "base" not in n and not str(n.get("id", "")).startswith("unit_")]
 
 
-def signature_card_hit(card, key, unit_type_of=None, lineage_ids=None, casttime_ids=None):
+def signature_card_hit(card, key, unit_type_of=None, lineage_ids=None, flag_status_index=None):
     """单卡是否实证某签名键（unit_type_of: unitId -> unitType 解析，供 unitType:X 键经 spawn 取证；
     lineage_ids: 带 lineageStack 字段的状态 id 集，供 sref:lineage_stack 读侧取证，2026-10-02 批次九对齐；
-    casttime_ids: 带 behaviorModifiers cast_time_set 的状态 id 集，供 flag:cast_time_set 读侧取证，
-    2026-10-02 批次十对齐——卷轴技法挂状态面，卡经 mount 引用即计）。"""
+    flag_status_index: flag 键 -> 具有该特征的状态 id 集（读侧取证通用索引）——
+    cast_time_set（批次十：behaviorModifiers 挂状态面，卷轴技法）/
+    statPerStack（批次十一：成长引擎挂状态面，催化成长），卡经 mount/引用即计）。"""
     kind, _, arg = key.partition(":")
     if kind == "prim":
         return arg in card_effect_types(card)
@@ -208,24 +209,26 @@ def signature_card_hit(card, key, unit_type_of=None, lineage_ids=None, casttime_
     if kind == "flag":
         if arg == "filter.unitType":
             return bool(_filter_unit_type_nodes(card.get("effects")))
-        if arg == "cast_time_set" and casttime_ids:
-            # 卷轴读侧口径（2026-10-02 批次十对齐）：cast_time_set 是行为层算子（执行参数 §12），
-            # 卡面权威承载 = 挂载带该 behaviorModifier 的状态（如 spell_lore 卷轴技法），
-            # 亦认 modify_skill 的 castTimeDelta/setInstant（技能实例级省时）。
-            if any(card_refs_status(card, sid) for sid in casttime_ids):
+        if flag_status_index and arg in flag_status_index:
+            ids = flag_status_index[arg]
+            # 状态面读侧口径：机制键（cast_time_set 行为算子 / statPerStack 成长引擎）的权威承载
+            # 在状态 def，卡经 mount/引用该状态即计使用。
+            if any(card_refs_status(card, sid) for sid in ids):
                 return True
-            for n in walk(card.get("effects")):
-                if n.get("type") == "modify_skill" and (
-                        n.get("castTimeDelta") is not None or n.get("setInstant") is True):
-                    return True
+            if arg == "cast_time_set":
+                # 亦认 modify_skill 的 castTimeDelta/setInstant（技能实例级省时）。
+                for n in walk(card.get("effects")):
+                    if n.get("type") == "modify_skill" and (
+                            n.get("castTimeDelta") is not None or n.get("setInstant") is True):
+                        return True
             return False
         return arg in json.dumps(card, ensure_ascii=False)
     return False
 
 
-def signature_counts(cards, keys, unit_type_of=None, lineage_ids=None, casttime_ids=None):
+def signature_counts(cards, keys, unit_type_of=None, lineage_ids=None, flag_status_index=None):
     """key -> 实证卡数"""
-    return {k: sum(1 for c in cards if signature_card_hit(c, k, unit_type_of, lineage_ids, casttime_ids))
+    return {k: sum(1 for c in cards if signature_card_hit(c, k, unit_type_of, lineage_ids, flag_status_index))
             for k in keys}
 
 
@@ -511,6 +514,9 @@ def main():
     casttime_status_ids = {sid for sid, sd in status_by_id.items()
                            if any(bm.get("op") == "cast_time_set" for bm in (sd.get("behaviorModifiers") or [])
                                   if isinstance(bm, dict))}
+    grow_status_ids = {sid for sid, sd in status_by_id.items() if sd.get("statPerStack")}
+    # flag 读侧通用索引（批次十/十一对齐）：机制键的权威承载在状态 def
+    flag_status_index = {"cast_time_set": casttime_status_ids, "statPerStack": grow_status_ids}
     fps = {pid: fingerprint(d.get("cards") or []) for pid, d in pathways.items()}
     mean_dists = {}
     for pid in pathways:
@@ -593,7 +599,7 @@ def main():
         # 风格签名（2026-10-01 差异化专项，口径 SCORING.md §三）= 签名落地 5 + 途径距离 5
         sig_keys = PATHWAY_SIGNATURES.get(pid, [])
         sig_hits = signature_counts(cards, sig_keys, unit_type_of=all_unit_types,
-                                    lineage_ids=lineage_status_ids, casttime_ids=casttime_status_ids)
+                                    lineage_ids=lineage_status_ids, flag_status_index=flag_status_index)
         signature_score = min(5, sum(2 if h >= 2 else h for h in sig_hits.values()))
         dist_pts = _dist_pts(mean_dists[pid])
         style_score = round(signature_score + dist_pts, 1)
