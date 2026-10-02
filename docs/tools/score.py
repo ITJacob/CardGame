@@ -149,9 +149,12 @@ PATHWAY_SIGNATURES = {
 
 
 def _filter_unit_type_nodes(effects):
-    """filter 语义里的 unitType（区别于 unitDefs 池定义的 unitType）。"""
+    """filter 语义里的 unitType（区别于 unitDefs 池定义的 unitType）。
+    键名口径：旧键 unitType 与 2026-10-01 归一键 type（target_unit_type 谓词）双认——
+    归一裁定（召唤物批）后存量卡用 type，计数器须与归一对齐。"""
     return [n for n in walk(effects)
-            if "unitType" in n and "base" not in n and not str(n.get("id", "")).startswith("unit_")]
+            if ("unitType" in n or (n.get("kind") == "target_unit_type" and "type" in n))
+            and "base" not in n and not str(n.get("id", "")).startswith("unit_")]
 
 
 def signature_card_hit(card, key, unit_type_of=None):
