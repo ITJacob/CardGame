@@ -1465,7 +1465,7 @@
       "flagship": false,
       "lore": "序列4 律令法师 —— \"『震慑』\"",
       "flavor": "你甚至没有出手，只是抬了抬眼——对面齐齐一顿，动作慢了半拍。",
-      "describe": "敌方全体行动条 -25，攻击 -2（15tick）。",
+      "describe": "敌方全体行动条 -25，攻击 -2（15 tick）；若己方辖区在场，辖区威慑令敌方全体防御再 -2（15 tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1497,6 +1497,26 @@
               "mode": "delta",
               "duration": 15,
               "target": "all_enemies"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "zone_active",
+                "zoneId": "zone_jurisdiction"
+              },
+              "then": [
+                {
+                  "type": "modify_stat",
+                  "stat": "defense",
+                  "value": -2,
+                  "mode": "delta",
+                  "duration": 15,
+                  "target": "all_enemies",
+                  "note": "辖区威慑：己方辖区在场时，震慑波及敌方防御 -2（辖区产读链 payoff，⚠️D 待平衡）"
+                }
+              ],
+              "else": [],
+              "note": "区域正主读层：zone_active(zone_jurisdiction)——辖区不再只生不读"
             }
           ]
         }
@@ -1514,7 +1534,7 @@
         ],
         "mood": "suffocating, regal, paralyzing"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 矩阵复审（仲裁人=区域正主补产读链）：震慑补 zone_active 读层——辖区产读链闭环"
     },
     {
       "id": "skill_arbiter_s3_judgment_sword",
