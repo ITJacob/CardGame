@@ -224,15 +224,13 @@
       ],
       "dispelable": true,
       "duration": 25,
-      "modifiers": {
-        "damageShare": {
-          "ratio": 0.5,
-          "direction": "both",
-          "linkedTo": "counterpart",
-          "note": "双向对半：你挨的打对方分一半，对方挨的打你也分一半；转移部分不再二次触发（H28 内置防循环）"
-        }
-      },
-      "note": "「扭曲」二层：被扭曲的是「谁承担」概念本身，必须双向才有原著味（单向退化成伤害转移）；damage_share（新增项 2 ✅ 已落 ddd：编队参数 §1.1b 伤害转嫁族 H28）"
+      "note": "「扭曲」二层：被扭曲的是「谁承担」概念本身，必须双向才有原著味（单向退化成伤害转移）；damage_share（新增项 2 ✅ 已落 ddd：编队参数 §1.1b 伤害转嫁族 H28）",
+      "damageTransfer": {
+        "ratio": 0.5,
+        "direction": "both",
+        "linkedTo": "counterpart",
+        "note": "双向对半：你挨的打对方分一半，对方挨的打你也分一半；转移部分不再二次触发（H28 内置防循环）"
+      }
     },
     {
       "id": "untouchable_confusion",
@@ -501,17 +499,6 @@
       ],
       "dispelable": false,
       "duration": 30,
-      "modifiers": {
-        "damageShare": {
-          "ratio": 0.5,
-          "direction": "to_self",
-          "linkedFrom": {
-            "scope": "faction_original",
-            "sort": "atk_desc",
-            "note": "其所在阵营中 attack 最高的单位（按原阵营判定——定义改写的是身份不是阵营）；该单位受伤时 50% 转移给持有者，不占 damage_taken_mul 乘区（H28 ✅ 新增项 2）"
-          }
-        }
-      },
       "note": "「扭曲」三层（身份定义）：恐怖之处不在伤害而在身份被改写——① 替身没有不死的特权 ② 替身的职责是替本体受创；defined_substitute 状态数据（新增项 21 ✅ 纯数据）；持有者死亡时进入 revive_blocked，所有复活结算前检查该标记（新增项 7 ✅）",
       "crossPathway": true,
       "participants": [
@@ -528,7 +515,16 @@
         "paper_substitute",
         "puppet_immortality"
       ],
-      "reviveBlocked": true
+      "reviveBlocked": true,
+      "damageTransfer": {
+        "ratio": 0.5,
+        "direction": "to_self",
+        "linkedFrom": {
+          "scope": "faction_original",
+          "sort": "atk_desc",
+          "note": "其所在阵营中 attack 最高的单位（按原阵营判定——定义改写的是身份不是阵营）；该单位受伤时 50% 转移给持有者，不占 damage_taken_mul 乘区（H28 ✅ 新增项 2）"
+        }
+      }
     },
     {
       "id": "order_redefined",

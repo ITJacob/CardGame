@@ -99,23 +99,35 @@ export function renderStatusStats(container) {
       <div class="panel"><h2>各途径状态数</h2>${barChart(sortedRows(byOwner, ownerLabel))}</div>
     </div>`;
 
+  // 一个维度一组（与技能子页同约定）：组内先该维度的全库 bar、再该维度的途径热图，
+  // 紧跟着看。早先所有热图堆在末尾「途径 × 维度」一节，看一个维度要两头跳
+  const group = (title, ...panels) => `
+    <section class="stat-group">
+      <div class="stat-group-title">${title}</div>
+      ${panels.join('')}
+    </section>`;
+
   const triggerPanel = `
-    <div class="stat-grid">
-      <div class="panel"><h2>触发点分布</h2>
-        <p class="panel-note muted">共 ${triggers.length} 条触发器，覆盖 ${byTrigger.size} 个触发点。</p>
-        ${barChart(sortedRows(byTrigger, (k) => zh('triggerEvent', k)))}</div>
-      <div class="panel"><h2>持续 / 叠层 / 次数</h2>
-        <p class="panel-note muted">三张都是有序刻度，按数值升序排（不是按数量）。</p>
-        <h3>持续（duration）</h3>${barChart(sortedRows(
-          countBy(defs.filter((s) => s.duration != null), (s) => s.duration),
-          (k) => `${k} tick`, { byKey: true }))}
-        <h3>层数上限（maxStacks）</h3>${barChart(sortedRows(
-          countBy(defs.filter((s) => s.maxStacks != null), (s) => s.maxStacks),
-          (k) => `${k} 层`, { byKey: true }))}
-        <h3>次数（charges）</h3>${barChart(sortedRows(
-          countBy(defs.filter((s) => s.charges != null), (s) => s.charges),
-          (k) => `${k} 次`, { byKey: true }))}</div>
-    </div>`;
+    <div class="panel"><h2>触发点分布</h2>
+      <p class="panel-note muted">共 ${triggers.length} 条触发器，覆盖 ${byTrigger.size} 个触发点。</p>
+      ${barChart(sortedRows(byTrigger, (k) => zh('triggerEvent', k)))}</div>`;
+
+  const durationPanel = `
+    <div class="panel"><h2>持续 / 叠层 / 次数</h2>
+      <p class="panel-note muted">三张都是有序刻度，按数值升序排（不是按数量）。</p>
+      <h3>持续（duration）</h3>${barChart(sortedRows(
+        countBy(defs.filter((s) => s.duration != null), (s) => s.duration),
+        (k) => `${k} tick`, { byKey: true }))}
+      <h3>层数上限（maxStacks）</h3>${barChart(sortedRows(
+        countBy(defs.filter((s) => s.maxStacks != null), (s) => s.maxStacks),
+        (k) => `${k} 层`, { byKey: true }))}
+      <h3>次数（charges）</h3>${barChart(sortedRows(
+        countBy(defs.filter((s) => s.charges != null), (s) => s.charges),
+        (k) => `${k} 次`, { byKey: true }))}</div>`;
+
+  const dispelPanel = `
+    <div class="panel"><h2>可驱散性</h2>
+      ${barChart(sortedRows(countBy(defs, (s) => (s.dispelable === false ? '不可驱散' : '可驱散'))))}</div>`;
 
   const mkeyPanel = `
     <div class="panel wide-labels"><h2>修饰符键 Top 20</h2>
@@ -147,7 +159,7 @@ export function renderStatusStats(container) {
       .map(([c, m]) => ({ head: zh('statusCategory', c), values: m })),
   });
 
-  // ---- 途径 × 维度 热图（9 张，与上方同维度 bar 同口径、同遍历规则）----
+  // ---- 途径 × 维度 热图数据（9 张；渲染时各归各维度组、紧跟对应 bar）----
   const bump2 = (m, owner, key) => {
     let r = m.get(owner);
     if (!r) { r = new Map(); m.set(owner, r); }
@@ -193,25 +205,21 @@ export function renderStatusStats(container) {
     title, cornerLabel: '途径', scopeLabel: '状态面', cols, rows: ownerRows(m), ...extra,
   });
 
-  const heatSection = `
-    <div class="stat-group-title">途径 × 维度 热图</div>
-    <p class="panel-note muted">行 = ${DB.pathways.length} 个途径 + 末尾「通用」（common.statuses.json），
-    口径与上方同维度 bar 一致。分类是复选字段，一行合计可以超过该途径的状态数；
-    修饰符键与字段填充是长尾维度，只列 Top 列。</p>
-    ${heatOf('途径 × 分类', catByOwner, usageCols(byCat, 'statusCategory'), { unit: ' 次' })}
-    ${heatOf('途径 × 触发点', trigByOwner, usageCols(byTrigger, 'triggerEvent'), { unit: ' 条' })}
-    ${heatOf('途径 × 持续（duration）', durByOwner, scaleCols(durByOwner, 'tick'), { unit: ' 个', orderNote: '数值最小的 ' })}
-    ${heatOf('途径 × 层数上限（maxStacks）', stackByOwner, scaleCols(stackByOwner, '层'), { unit: ' 个', orderNote: '数值最小的 ' })}
-    ${heatOf('途径 × 次数（charges）', chargeByOwner, scaleCols(chargeByOwner, '次'), { unit: ' 个', orderNote: '数值最小的 ' })}
-    ${heatOf('途径 × 可驱散', dispelByOwner, dispelCols, { unit: ' 个' })}
-    ${heatOf('途径 × 原语（状态面）', primByOwner, usageCols(primTotal, 'primitive'))}
-    ${heatOf('途径 × 修饰符键 Top 12', mkeyByOwner, usageCols(mkeyTotal, 'modifierKey', 12))}
-    ${heatOf('途径 × statusDef 字段填充 Top 15', fieldByOwner, usageCols(fill, null, 15), { unit: ' 个' })}`;
-
   container.innerHTML = `<div class="stat-group-title">状态定义面</div>
     <p class="panel-note muted">口径：docs/json/*.statuses.json 的 ${defs.length} 个状态定义；
-    卡面效果见上方各组。本节下方另附「途径 × 维度」热图（9 张）。</p>
-    ${overview}${triggerPanel}${primPanel}${mkeyPanel}${heat}${fieldPanel}${heatSection}`;
+    卡面效果见上方各组。本节按维度分组，每组内途径热图紧跟同维度 bar，行 = ${DB.pathways.length} 途径
+    + 末尾「通用」（common.statuses.json），口径与 bar 一致；分类是复选字段，一行合计可超过该途径状态数。</p>
+    ${group('分类与总览', overview, heatOf('途径 × 分类', catByOwner, usageCols(byCat, 'statusCategory'), { unit: ' 次' }))}
+    ${group('触发点', triggerPanel, heatOf('途径 × 触发点', trigByOwner, usageCols(byTrigger, 'triggerEvent'), { unit: ' 条' }))}
+    ${group('时长模型', durationPanel,
+      heatOf('途径 × 持续（duration）', durByOwner, scaleCols(durByOwner, 'tick'), { unit: ' 个', orderNote: '数值最小的 ' }),
+      heatOf('途径 × 层数上限（maxStacks）', stackByOwner, scaleCols(stackByOwner, '层'), { unit: ' 个', orderNote: '数值最小的 ' }),
+      heatOf('途径 × 次数（charges）', chargeByOwner, scaleCols(chargeByOwner, '次'), { unit: ' 个', orderNote: '数值最小的 ' }))}
+    ${group('可驱散性', dispelPanel, heatOf('途径 × 可驱散', dispelByOwner, dispelCols, { unit: ' 个' }))}
+    ${group('状态面原语', primPanel, heat,
+      heatOf('途径 × 原语（状态面）', primByOwner, usageCols(primTotal, 'primitive')))}
+    ${group('修饰符键', mkeyPanel, heatOf('途径 × 修饰符键 Top 12', mkeyByOwner, usageCols(mkeyTotal, 'modifierKey', 12)))}
+    ${group('字段填充', fieldPanel, heatOf('途径 × statusDef 字段填充 Top 15', fieldByOwner, usageCols(fill, null, 15), { unit: ' 个' }))}`;
 
   wireHeatToggle(container);
 }
