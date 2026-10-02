@@ -170,8 +170,16 @@ def signature_card_hit(card, key, unit_type_of=None):
         # 量表读取侧实证：dimHooks/phaseHook 以该维度为钩（board 级量表不以 modify_resource 表达）
         return any(h.get("dim") == arg for h in (card.get("dimHooks") or []))
     if kind == "stat":
-        return any(n.get("type") == "modify_stat" and n.get("stat") == arg
-                   for n in walk(card.get("effects")))
+        if any(n.get("type") == "modify_stat" and n.get("stat") == arg
+               for n in walk(card.get("effects"))):
+            return True
+        # 位格洞察读侧口径（2026-10-02 批次六对齐）：stat_compare(key=rank) 与 rank_gap 谓词
+        # 同为位格使用——洞察途径读位格而非改位格，原口径只认 modify_stat 致签名键永零。
+        if arg == "rank":
+            return any((n.get("kind") == "stat_compare" and n.get("key") == "rank")
+                       or n.get("kind") == "rank_gap"
+                       for n in walk(card.get("effects")))
+        return False
     if kind == "trig":
         evs = {t.get("event") for t in (card.get("triggers") or []) if isinstance(t, dict)}
         return arg in evs or any(n.get("event") == arg for n in walk(card.get("effects")))

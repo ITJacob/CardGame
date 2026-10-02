@@ -10,7 +10,27 @@
       "duration": null,
       "maxStacks": 5,
       "stackPolicy": "stack",
-      "note": "计数型状态（H11 + F51），本身不提供任何属性，只作消耗品；洞察权柄可扩至 7 层。与 F1 inscription（学徒·默记）同源母版"
+      "note": "计数型状态（H11 + F51），本身不提供任何属性，只作消耗品；洞察权柄可扩至 7 层。与 F1 inscription（学徒·默记）同源母版 ｜ 2026-10-02 批次六：补 on_active_skill 触发器（读心正主状态面），心象从纯堆层计数升级为「敌方施法即被解析」的活性引擎",
+      "triggers": [
+        {
+          "event": "on_active_skill",
+          "condition": {
+            "kind": "unit_faction",
+            "faction": "enemy_of_owner"
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "insight",
+              "stacks": 1,
+              "stackMode": "add",
+              "target": "self",
+              "note": "凡有言必被知：敌方每次施放主动技能，心象 +1（⚠️D 待平衡）"
+            }
+          ],
+          "note": "on_active_skill 状态面全库空置点归观众读心正主（状态层矩阵 §十三，2026-10-02 批次六）"
+        }
+      ]
     },
     {
       "id": "aura_sight",
@@ -347,9 +367,22 @@
             }
           ],
           "note": "dispelable:false → on_remove 只有「自然到期」一个出口（H29 reason 过滤）"
+        },
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "modify_damage",
+              "scope": "dealt",
+              "mul": 1.2,
+              "target": "self",
+              "note": "书写成真·想象干预：持态者造成的伤害被书写放大 ×1.2——modify_damage 状态面正主（观众，矩阵 §十四，⚠️D 待平衡）"
+            }
+          ],
+          "note": "modify_damage 状态面正主落地：想象干预伤害走向"
         }
       ],
-      "note": "延迟强制生效模式（本稿新增项 10，✅）：on_remove(expired) 而非 on_tick 计数，不新增计时机制 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
+      "note": "延迟强制生效模式（本稿新增项 10，✅）：on_remove(expired) 而非 on_tick 计数，不新增计时机制 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。 ｜ 2026-10-02 批次六：补 on_deal_damage→modify_damage 想象干预段",
       "maxStacks": 3,
       "stackPolicy": "refresh"
     },
