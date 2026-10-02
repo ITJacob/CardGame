@@ -20,7 +20,7 @@
         "命运锚点",
         "历史影像"
       ],
-      "note": "payoffs 2026-09-26 评审：命运干扰/命运锚点卡面挂 fate_value≥5 dimHook（落地证据）；历史影像的 observe 联动与命运干扰的「预兆≥3」均 notes 级自述、卡面未挂条件（稿面意图缺口）⚠️ 证据级混合 ｜ payoffs 2026-09-26 评审：命运干扰/命运锚点卡面挂 fate_value≥5 dimHook（落地）；历史影像 observe 联动为 notes 级自述未挂条件（稿面意图缺口） ｜ 2026-09-29 环节⑤：clairvoyance 补层数引擎（身份 8→15）；占星术补产层段（细微观察挂 observe 移出 enablers，产层 12→20）；命运干扰补 clairvoyance 读层段（payoff 升 landed）+ 跨轴读 puppet_string；占星术读 fate_gap 跨系（→thief）"
+      "note": "payoffs 2026-09-26 评审：命运干扰/命运锚点卡面挂 fate_value≥5 dimHook（落地证据）；历史影像的 observe 联动与命运干扰的「预兆≥3」均 notes 级自述、卡面未挂条件（稿面意图缺口）⚠️ 证据级混合 ｜ payoffs 2026-09-26 评审：命运干扰/命运锚点卡面挂 fate_value≥5 dimHook（落地）；历史影像 observe 联动为 notes 级自述未挂条件（稿面意图缺口） ｜ 2026-09-29 环节⑤：clairvoyance 补层数引擎（身份 8→15）；占星术补产层段（细微观察挂 observe 移出 enablers，产层 12→20）；命运干扰补 clairvoyance 读层段（payoff 升 landed）+ 跨轴读 puppet_string；占星术读 fate_gap 跨系（→thief） ｜ 2026-10-02 批次六：命运干扰补 fate_value 跨系读层（命运同调）"
     },
     "trick": {
       "symbol": "🃏",
@@ -47,7 +47,7 @@
         "秘偶换位",
         "灵界掌控者"
       ],
-      "note": "payoffs 2026-09-26 评审：秘偶不死（caster_has_summon 替死）/秘偶换位（filter.isPuppet 存在性）卡面落地；灵界掌控者 axis 标 foresight 但内容服务提线轴（控制不可驱散） ｜ payoffs 2026-09-26 评审：秘偶不死（caster_has_summon 替死）/秘偶换位（filter.isPuppet）卡面落地；灵界掌控者 axis 标 foresight 但内容服务提线轴 ｜ 2026-09-29 环节⑤：伤害转移补 puppet_string 产层段（产层 12→20）；伤害转移读 paper_substitute 跨轴（marionette→trick）；灵界掌控者补 puppet_string 读层段（payoff 升 landed）"
+      "note": "payoffs 2026-09-26 评审：秘偶不死（caster_has_summon 替死）/秘偶换位（filter.isPuppet 存在性）卡面落地；灵界掌控者 axis 标 foresight 但内容服务提线轴（控制不可驱散） ｜ payoffs 2026-09-26 评审：秘偶不死（caster_has_summon 替死）/秘偶换位（filter.isPuppet）卡面落地；灵界掌控者 axis 标 foresight 但内容服务提线轴 ｜ 2026-09-29 环节⑤：伤害转移补 puppet_string 产层段（产层 12→20）；伤害转移读 paper_substitute 跨轴（marionette→trick）；灵界掌控者补 puppet_string 读层段（payoff 升 landed） ｜ 2026-10-02 批次六：嫁接重组落地——伤害转移/命运干扰 write_rule_slot slot 1（scope 宿主嫁接，与律师共盘不覆盖），write_rule_slot 签名 0→2 实证"
     },
     "miracle": {
       "symbol": "🌟",
@@ -582,7 +582,7 @@
       "flagship": false,
       "lore": "序列7 魔术师 —— \"『伤害转移』：将要害伤口转移至手臂等不重要部位\"",
       "flavor": "你把即将落在要害的伤口挪到了无关紧要的地方——接下来几次打击，都只伤到皮肉。",
-      "describe": "自身获得「伤害转移」（3 层充能，20tick）：受击时该次伤害 ×0.5 并消耗 1 层。；以线牵之：目标提线木偶 +1 层（20tick）；自身带纸人替身则纸人代承，转移后回补 2 点生命。",
+      "describe": "自身获得「伤害转移」（3 层充能，20tick）：受击时该次伤害 ×0.5 并消耗 1 层。；以线牵之：目标提线木偶 +1 层（20tick）；自身带纸人替身则纸人代承，转移后回补 2 点生命。同时将「伤口宿主嫁接」写入战场规则槽：要害伤口的承载改挂不重要部位（与律师重定义共盘，不覆盖其规则）。",
       "cost": {
         "energy": 2,
         "cooldown": 20,
@@ -630,10 +630,23 @@
             }
           ],
           "else": []
+        },
+        {
+          "type": "write_rule_slot",
+          "slot": 1,
+          "field": "scope",
+          "overwrite": false,
+          "value": {
+            "graft": "wound_host",
+            "from": "vital_part",
+            "to": "trivial_part",
+            "note": "嫁接：伤口的承载宿主从要害改到不重要部位——只改宿主指向，不改规则文本（身份红线）"
+          },
+          "note": "嫁接重组写槽（slot 1 scope，与律师共盘语义分叉：律师写 punish/trigger 文本，占卜家只写 scope 宿主嫁接；overwrite:false 不覆盖律师既有规则）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：原著核心能力，v0.1 漏掉。转移到**自己**不重要部位=伤害降级（转给别人是序列4 诡法师）。",
+      "conversionNotes": "翻译/语义：原著核心能力，v0.1 漏掉。转移到**自己**不重要部位=伤害降级（转给别人是序列4 诡法师）。 ｜ 2026-10-02 差异化风格迭代·批次六（占卜家：嫁接重组 write_rule_slot 落地）",
       "art": {
         "subject": "a mage sliding a bleeding gash off his chest like a decal",
         "elements": [
@@ -1508,7 +1521,7 @@
       "flagship": false,
       "lore": "序列2 奇迹师 —— \"对未来施加影响，干扰目标命运\"",
       "flavor": "你拨动命运的丝线——同伴被推向未来，敌人被拖回过去。",
-      "describe": "双目标：主目标（敌人）行动条 -20；行动条最低的一名友军行动条 +20。；自身灵视在场则灵视锁定，干扰再压目标 10 行动条；目标带提线木偶则提线者命运易扰，再压 10。",
+      "describe": "双目标：主目标（敌人）行动条 -20；行动条最低的一名友军行动条 +20。；自身灵视在场则灵视锁定，干扰再压目标 10 行动条；目标带提线木偶则提线者命运易扰，再压 10。并把「命运宿主嫁接」写入规则槽；命运值≥+5 时干扰幅度 ×1.25。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1588,6 +1601,19 @@
                 }
               ],
               "else": []
+            },
+            {
+              "type": "write_rule_slot",
+              "slot": 1,
+              "field": "scope",
+              "overwrite": false,
+              "value": {
+                "graft": "fate_host",
+                "from": "target_self",
+                "to": "fate_thread",
+                "note": "嫁接：受扰命运的承载宿主改挂灵体之线——线断之前命运无法归位"
+              },
+              "note": "嫁接重组写槽②（slot 1 scope，共盘不覆盖）"
             }
           ]
         }
@@ -1599,7 +1625,8 @@
       "conversionNotes": [
         "G6 已修正自推条错误（+20 永远指向友军 secondary，绝不指向自身）。",
         "翻译/语义：沿用 v0.1 双向（G6 修正自推条）。观诡轴旗舰：读 `预兆≥3` 放大拖后。与【占星术】差异：占星单向便宜，命运干扰双向贵。",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+        "2026-10-01 吟唱重标：非仪式，castTime 空→0",
+        "2026-10-02 差异化风格迭代·批次六（占卜家：嫁接重组 write_rule_slot 落地）"
       ],
       "dimHooks": [
         {
@@ -1609,6 +1636,14 @@
           "mul": 1.3,
           "target": "damage",
           "note": "维度乘区挂钩占位（⚠️D 待平衡）：board.fate_value≥+5 赐福×1.3"
+        },
+        {
+          "dim": "fate_value",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.25,
+          "target": "resource",
+          "note": "命运同调（跨系读层段 2026-10-02）：board.fate_value≥+5 时干扰幅度 ×1.25——读怪物命运值维度（⚠️D 待平衡）"
         }
       ],
       "art": {
