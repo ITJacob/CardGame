@@ -57,6 +57,9 @@ ENUM_TO_CAT = {
     "unitRequest.faction": "faction",
     "unitRequest.scope": "scope",
     "unitRequest.anchor.anyOf": "anchor",
+    # unitFilter 是开放结构，但 gender 用了封闭 enum（取值域与 card.gender 同源），
+    # schema_enums 会抽到它——不登记会落进「未登记的 schema 枚举」清单
+    "unitFilter.gender": "gender",
     "unitRequest.spread": "spread",
     "unitRequest.selectionMode": "selectionMode",
     "unitRequest.pickCount.oneOf": None,
