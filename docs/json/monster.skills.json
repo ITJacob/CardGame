@@ -613,9 +613,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "board"
         },
-        "fallbackSort": "gauge_desc"
+        "fallbackSort": "atk_desc"
       },
       "effects": [
         {
@@ -678,7 +679,7 @@
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：三要素全落地：直伤 + 溅射 + 自身得幸运。灾祸→运气闭环，并轻推命运值。⚠️ 依赖 `spread`。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：三要素全落地：直伤 + 溅射 + 自身得幸运。灾祸→运气闭环，并轻推命运值。⚠️ 依赖 `spread`。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：calamity轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
       "art": {
         "subject": "a black cat shadow crossing beneath an enemy's feet as beams crack",
         "elements": [
@@ -752,7 +753,8 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "board"
         },
         "fallbackSort": "atk_desc"
       },
@@ -789,7 +791,7 @@
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：精神伤害 + 短时错乱（下一击挥空）。与【混乱】区分：精神风暴=打空（first_empty），混乱=打向最近单位（nearest_any）。⚠️ 依赖 C7。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：精神伤害 + 短时错乱（下一击挥空）。与【混乱】区分：精神风暴=打空（first_empty），混乱=打向最近单位（nearest_any）。⚠️ 依赖 C7。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：calamity轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
       "art": {
         "subject": "a storm of swirling thoughts ripping through a warrior's mind",
         "elements": [
@@ -995,9 +997,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "board"
         },
-        "fallbackSort": "gauge_desc"
+        "fallbackSort": "atk_desc"
       },
       "effects": [
         {
@@ -1028,7 +1031,7 @@
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"有限度\"=只给 2 层（不到 3 层爆发线）。施放厄运同时 push 命运值。⚠️ 依赖 misforture 母版。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：\"有限度\"=只给 2 层（不到 3 层爆发线）。施放厄运同时 push 命运值。⚠️ 依赖 misforture 母版。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：calamity轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
       "art": {
         "subject": "a figure handing a black wilted flower to an unsuspecting foe",
         "elements": [
@@ -1103,10 +1106,11 @@
         "selectionMode": "auto",
         "request": {
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "board",
           "pickCount": "all"
         },
-        "consumption": "zone"
+        "consumption": "zone",
+        "fallbackSort": "atk_desc"
       },
       "effects": [
         {
@@ -1126,7 +1130,7 @@
       },
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 2026-10-02 矩阵复审（怪物=死亡簿正主）：补死亡簿折费 dimHook（≥6 费用×0.75）——死亡簿正主第二卡 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 2026-10-02 矩阵复审（怪物=死亡簿正主）：补死亡簿折费 dimHook（≥6 费用×0.75）——死亡簿正主第二卡 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排） ｜ 选靶签名：calamity轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
       "art": {
         "subject": "a patch of battlefield rotting under a dome of sickly green miasma",
         "elements": [
@@ -1168,7 +1172,8 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "board"
         },
         "fallbackSort": "atk_desc"
       },
@@ -1244,7 +1249,7 @@
       },
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：与【给予厄运】档位差：一次塞满 3 层当场触发厄运爆发（确定性打空）。push 命运值。⚠️ 依赖 C7 + misforture 阈值。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：与【给予厄运】档位差：一次塞满 3 层当场触发厄运爆发（确定性打空）。push 命运值。⚠️ 依赖 C7 + misforture 阈值。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：calamity轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
       "art": {
         "subject": "a curse spoken aloud coiling black smoke around a victim",
         "elements": [
@@ -1276,7 +1281,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "ally"
+          "faction": "ally",
+          "scope": "board",
+          "pickCount": "all"
         },
         "fallbackSort": "atk_desc"
       },
@@ -1345,7 +1352,7 @@
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：幸运资源第二出口（第一是赢家免死）。命运值≥+5 时赐福放大，体现命运轴对幸运轴的加成。⚠️ 依赖 F48 + `If` + fate_value 阈值读取。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "翻译/语义：幸运资源第二出口（第一是赢家免死）。命运值≥+5 时赐福放大，体现命运轴对幸运轴的加成。⚠️ 依赖 F48 + `If` + fate_value 阈值读取。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：fortune轴 ally+board pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "a benefactor pressing a glowing blessing onto a comrade's shoulder",
         "elements": [
@@ -1377,7 +1384,9 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "faction": "self"
+          "faction": "self",
+          "scope": "point",
+          "pickCount": "all"
         }
       },
       "effects": [
@@ -1399,7 +1408,7 @@
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：确定性落空（R5 合规，非概率闪避）。改写\"打向持有者\"的攻击（入射侧），与 C7 共用锚点。`If(fate_value>=+5)` → 持续时长 ×1.5（命运值放大）。⚠️ 依赖 `incoming_miss`。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "翻译/语义：确定性落空（R5 合规，非概率闪避）。改写\"打向持有者\"的攻击（入射侧），与 C7 共用锚点。`If(fate_value>=+5)` → 持续时长 ×1.5（命运值放大）。⚠️ 依赖 `incoming_miss`。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：cycle轴 self+point pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "a humanoid figure liquefying into flowing silver mercury",
         "elements": [
@@ -1431,7 +1440,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "board",
+          "pickCount": "all"
         },
         "fallbackSort": "gauge_desc"
       },
@@ -1500,7 +1511,7 @@
       },
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：混乱轴旗舰：① \"既定\"=已攒行动条→抹掉（字面前功尽弃）；② \"重新混乱\"=打向最近单位（可能自己人）。push 命运值（产噪即产命运）。⚠️ 依赖 `nearest_any` 锚点。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：混乱轴旗舰：① \"既定\"=已攒行动条→抹掉（字面前功尽弃）；② \"重新混乱\"=打向最近单位（可能自己人）。push 命运值（产噪即产命运）。⚠️ 依赖 `nearest_any` 锚点。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：cycle轴 enemy+board pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "tangled severed threads of fate spilling from a broken spindle",
         "elements": [
@@ -1644,7 +1655,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "any"
+          "faction": "any",
+          "scope": "board",
+          "pickCount": "all"
         },
         "fallbackSort": "hp_asc"
       },
@@ -1720,7 +1733,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "manual 目标稿面未给 fallbackSort，置 null 待补 ｜ 翻译/语义：混乱轴\"重置\"表达（非逆转时间，是洗回干净状态）。对友军洗负面、对敌洗增益。本途径唯一净化手段。⚠️ 依赖 `If` 算子。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "manual 目标稿面未给 fallbackSort，置 null 待补 ｜ 翻译/语义：混乱轴\"重置\"表达（非逆转时间，是洗回干净状态）。对友军洗负面、对敌洗增益。本途径唯一净化手段。⚠️ 依赖 `If` 算子。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：cycle轴 any+board pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "a serene hand laid on a brow, black madness washing away like ink",
         "elements": [
@@ -2042,7 +2055,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "board",
+          "pickCount": "all"
         },
         "fallbackSort": "gauge_desc"
       },
@@ -2075,7 +2090,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：命运轴\"重启\"：只清状态与行动条（非逆转时光，不回血不复活）。代价是清掉己方 buff。⚠️ 依赖 `dispel` 区域 scope + `modify_resource.set`。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；命运值写入（2026-10-01 量表写入批）：-1 推向 ≤−5 反噬档（怪物自身承担反噬风险，R5 合规语义）。 ｜ 2026-10-02 差异化风格迭代（怪物=命运族正主）：循环=同一段时间反复走：被困者打转、世界照走——advance_clock 落地（时钟推进 5 tick，⚠️D） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：命运轴\"重启\"：只清状态与行动条（非逆转时光，不回血不复活）。代价是清掉己方 buff。⚠️ 依赖 `dispel` 区域 scope + `modify_resource.set`。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；命运值写入（2026-10-01 量表写入批）：-1 推向 ≤−5 反噬档（怪物自身承担反噬风险，R5 合规语义）。 ｜ 2026-10-02 差异化风格迭代（怪物=命运族正主）：循环=同一段时间反复走：被困者打转、世界照走——advance_clock 落地（时钟推进 5 tick，⚠️D） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：cycle轴 enemy+board pick:all（轴选靶签名设计 §4）",
       "dimHooks": [
         {
           "dim": "fate_value",
@@ -2218,7 +2233,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "ally"
+          "faction": "ally",
+          "scope": "board",
+          "pickCount": "all"
         },
         "fallbackSort": "hp_asc"
       },
@@ -2249,7 +2266,7 @@
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "主方案 snapshot(target) 已落 ddd（新增项 8，不再阻塞）；退化方案照稿面转写；若采用退化方案建议按稿面 4.3 改名避免文案与机制脱节 ｜ manual 目标稿面未给 fallbackSort，置 null 待补 ｜ 翻译/语义：他人死后召回（与【重启循环】自身免死区分）。⚠️ 依赖 G4 `reviveOf` + snapshot。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（怪物=命运族正主）：主方案升格：snapshot(target) 存盘 + saved_fate 死后召回不变——『保存』成为重启的回溯锚点 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "主方案 snapshot(target) 已落 ddd（新增项 8，不再阻塞）；退化方案照稿面转写；若采用退化方案建议按稿面 4.3 改名避免文案与机制脱节 ｜ manual 目标稿面未给 fallbackSort，置 null 待补 ｜ 翻译/语义：他人死后召回（与【重启循环】自身免死区分）。⚠️ 依赖 G4 `reviveOf` + snapshot。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（怪物=命运族正主）：主方案升格：snapshot(target) 存盘 + saved_fate 死后召回不变——『保存』成为重启的回溯锚点 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：cycle轴 ally+board pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "an archivist copying a glowing thread of fate into a crystal vial",
         "elements": [
@@ -2281,7 +2298,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "board",
+          "pickCount": "all"
         },
         "fallbackSort": "atk_desc"
       },
@@ -2321,7 +2340,7 @@
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "双目标（敌方施动者 + 其下次攻击目标）与愚者 v0.2【愿望】同款写法；manual 目标稿面未给 fallbackSort，置 null 待补 ｜ 翻译/语义：混乱轴唯一玩家决定改写方向的 `target_override`（让它打队友 / 打空 / 打你触发免伤窗口）。⚠️ 依赖 `manual` 锚点。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）；删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "双目标（敌方施动者 + 其下次攻击目标）与愚者 v0.2【愿望】同款写法；manual 目标稿面未给 fallbackSort，置 null 待补 ｜ 翻译/语义：混乱轴唯一玩家决定改写方向的 `target_override`（让它打队友 / 打空 / 打你触发免伤窗口）。⚠️ 依赖 `manual` 锚点。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）；删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：cycle轴 enemy+board pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "countless branching rivers of light, a hand selecting one stream",
         "elements": [

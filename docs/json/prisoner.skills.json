@@ -246,7 +246,8 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "point"
         },
         "fallbackSort": "hp_desc"
       },
@@ -319,7 +320,7 @@
         "criminal"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：本途径\"火球术\"：低费纯直伤。概率只作用于是否附加 `枷锁` 状态（非伤害维度，R5 合规），写 EffectRef.condition（G1）。物品轴 enabler（挂 `附身物体` 前置）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：本途径\"火球术\"：低费纯直伤。概率只作用于是否附加 `枷锁` 状态（非伤害维度，R5 合规），写 EffectRef.condition（G1）。物品轴 enabler（挂 `附身物体` 前置）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：item轴 enemy+point（轴选靶签名设计 §4）",
       "art": {
         "subject": "a prisoner hurling a heavy chain at a shadowy foe",
         "elements": [
@@ -351,7 +352,8 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "point"
         },
         "fallbackSort": "gauge_desc"
       },
@@ -379,7 +381,7 @@
         "criminal"
       ],
       "tentative": false,
-      "conversionNotes": "推条（gauge.current 推拉）定价无既有锚点，沿用 D2 待标 ｜ 翻译/语义：节奏破坏=推条。束缚轴起手（控场）。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "推条（gauge.current 推拉）定价无既有锚点，沿用 D2 待标 ｜ 翻译/语义：节奏破坏=推条。束缚轴起手（控场）。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：item轴 enemy+point（轴选靶签名设计 §4）",
       "art": {
         "subject": "a prisoner tripping an enemy from behind in a dark alley",
         "elements": [
@@ -557,7 +559,8 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "faction": "self"
+          "faction": "self",
+          "scope": "point"
         }
       },
       "effects": [
@@ -602,7 +605,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：形态转换即 enabler，push 入异类谱系栈（暗影世界系 §2.4 改革）。若目标有 `中毒≥1`→`mount_status(puppet_string, 30t)`（原 v0.2 狼人化规则保留）。 ｜ 2026-10-02 批次九：谱系栈产层标注——werewolf_form def 带 lineageStack（栈底形态，编队参数 §2.4），卡面 describe 明写推栈；sref:lineage_stack 签名键读侧口径同步对齐 score.py ｜ 2026-10-02 批次九：modify_damage(dealt,element:poison) 兽性淬毒段——狼人毒爪卡面化（与 supplicant 指纹拉开：毒元素差异化） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "翻译/语义：形态转换即 enabler，push 入异类谱系栈（暗影世界系 §2.4 改革）。若目标有 `中毒≥1`→`mount_status(puppet_string, 30t)`（原 v0.2 狼人化规则保留）。 ｜ 2026-10-02 批次九：谱系栈产层标注——werewolf_form def 带 lineageStack（栈底形态，编队参数 §2.4），卡面 describe 明写推栈；sref:lineage_stack 签名键读侧口径同步对齐 score.py ｜ 2026-10-02 批次九：modify_damage(dealt,element:poison) 兽性淬毒段——狼人毒爪卡面化（与 supplicant 指纹拉开：毒元素差异化） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：aberration轴 self+point（轴选靶签名设计 §4）",
       "art": {
         "subject": "a hulking werewolf with dripping black fangs under a blood moon",
         "elements": [
@@ -635,7 +638,7 @@
         "selectionMode": "auto",
         "request": {
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "behind_1",
           "pickCount": "all"
         }
       },
@@ -676,7 +679,7 @@
         "criminal"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"驱光=驱散光明增益 / 黑暗恐惧=精神伤害\"。束缚轴封印前置。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：\"驱光=驱散光明增益 / 黑暗恐惧=精神伤害\"。束缚轴封印前置。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排） ｜ 选靶签名：bondage轴 enemy+behind_1（轴选靶签名设计 §4）",
       "dimHooks": [
         {
           "dim": "luminance",
@@ -983,7 +986,8 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "faction": "self"
+          "faction": "self",
+          "scope": "point"
         },
         "consumption": "summon"
       },
@@ -1013,7 +1017,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：召唤物登场 fire `on_spawn`（A2 合规，非开局）。异类轴召唤 enabler。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "翻译/语义：召唤物登场 fire `on_spawn`（A2 合规，非开局）。异类轴召唤 enabler。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：aberration轴 self+point（轴选靶签名设计 §4）",
       "art": {
         "subject": "a twitching corpse clawing its way out of cracked earth",
         "elements": [
@@ -1041,7 +1045,8 @@
         "selectionMode": "auto",
         "request": {
           "faction": "ally",
-          "anchor": "spawned_unit"
+          "anchor": "spawned_unit",
+          "scope": "point"
         }
       },
       "effects": [
@@ -1088,7 +1093,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "on_spawn 正向用例（A2 禁的是把 on_spawn 当开局，本条要的正是每召唤一次增强一次）；anchor spawned_unit 已落 ddd（共享内核 §一） ｜ 遗留：on_spawn fire 时新单位须已完成落位，否则 modify_stat 可能打在错误目标上，需引擎确认时序 ｜ 翻译/语义：\"培养傀儡\"=召唤物登场加成。`on_spawn` 正向用例（A2）。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=stat） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "on_spawn 正向用例（A2 禁的是把 on_spawn 当开局，本条要的正是每召唤一次增强一次）；anchor spawned_unit 已落 ddd（共享内核 §一） ｜ 遗留：on_spawn fire 时新单位须已完成落位，否则 modify_stat 可能打在错误目标上，需引擎确认时序 ｜ 翻译/语义：\"培养傀儡\"=召唤物登场加成。`on_spawn` 正向用例（A2）。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=stat） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：item轴 ally+point（轴选靶签名设计 §4）",
       "art": {
         "subject": "a gaunt necromancer tending a row of obedient zombies",
         "elements": [
@@ -1120,7 +1125,8 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "faction": "self"
+          "faction": "self",
+          "scope": "point"
         }
       },
       "effects": [
@@ -1148,7 +1154,7 @@
         "criminal"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：灵体化即 enabler，push 怨魂入谱系栈。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "翻译/语义：灵体化即 enabler，push 怨魂入谱系栈。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：aberration轴 self+point（轴选靶签名设计 §4）",
       "art": {
         "subject": "a body dissolving into gray mist at the edge of a mirror",
         "elements": [
@@ -1246,7 +1252,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "chain_2",
+          "pickCount": "all"
         },
         "fallbackSort": "hp_desc"
       },
@@ -1276,7 +1284,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"缠\"=持续受伤加深。读诅咒轴（配合链接网放大）。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：\"缠\"=持续受伤加深。读诅咒轴（配合链接网放大）。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "a clinging shadow wrapping tighter around a victim's back",
         "elements": [
@@ -1455,7 +1463,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "chain_2",
+          "pickCount": "all"
         },
         "fallbackSort": "hp_desc"
       },
@@ -1500,7 +1510,7 @@
         "criminal"
       ],
       "tentative": false,
-      "conversionNotes": "稿面双目标（指定 1 敌人 + 木偶载体）：主目标取被诅咒敌人，载体段走 target:self 并以 binding.linkedTo 指回主目标；召唤物载体稿面未给选择规格，暂记 self 待裁定 ｜ 翻译/语义：诅咒轴核心 enabler + 网络引擎（暗影世界系 §2.3 改革）。序列4 反噬未解（selfKeep:true）；到序列3【无反噬之咒】翻 false，序列0【万咒加身】沿网传染。⚠️ 依赖 `诅咒链接` 网络母版（本稿新增项 2）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "稿面双目标（指定 1 敌人 + 木偶载体）：主目标取被诅咒敌人，载体段走 target:self 并以 binding.linkedTo 指回主目标；召唤物载体稿面未给选择规格，暂记 self 待裁定 ｜ 翻译/语义：诅咒轴核心 enabler + 网络引擎（暗影世界系 §2.3 改革）。序列4 反噬未解（selfKeep:true）；到序列3【无反噬之咒】翻 false，序列0【万咒加身】沿网传染。⚠️ 依赖 `诅咒链接` 网络母版（本稿新增项 2）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "a craftsman carving an exact wooden effigy of his enemy",
         "elements": [
@@ -1532,7 +1542,8 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "faction": "self"
+          "faction": "self",
+          "scope": "point"
         },
         "consumption": "summon"
       },
@@ -1592,7 +1603,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "原著未给操纵数量上限，本稿按「一次唤起一具古物傀儡」处理，是设计选择而非原著原文 ｜ 翻译/语义：物品轴 enabler。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 5tick（序列 4 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "原著未给操纵数量上限，本稿按「一次唤起一具古物傀儡」处理，是设计选择而非原著原文 ｜ 翻译/语义：物品轴 enabler。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 5tick（序列 4 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：item轴 self+point（轴选靶签名设计 §4）",
       "art": {
         "subject": "broken blades and shattered chairs lurching upright",
         "elements": [
@@ -1624,7 +1635,8 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "ally"
+          "faction": "ally",
+          "scope": "point"
         },
         "fallbackSort": "atk_asc"
       },
@@ -1681,7 +1693,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "「弱序列4 基准值」具体 attack / defense 数值未定（），需与参数层一起定 ｜ 退化方案：改为 modify_stat(attack, +4, 20t) + modify_stat(defense, +2, 20t)，代价是失去「只补弱者」的原著语义 ｜ 翻译/语义：异类轴旗舰 payoff：回放形态栈（暗影世界系 §2.4 改革）。退化：`modify_stat(attack,+4,20t)+modify_stat(defense,+2,20t)`。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 批次九：演出回放正主落地——狼形演出分支挂 mount_status(lineage_replay)（谱系栈重演，编队参数 §2.4）；异类轴 payoff 谱系栈回放 notes→landed ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "「弱序列4 基准值」具体 attack / defense 数值未定（），需与参数层一起定 ｜ 退化方案：改为 modify_stat(attack, +4, 20t) + modify_stat(defense, +2, 20t)，代价是失去「只补弱者」的原著语义 ｜ 翻译/语义：异类轴旗舰 payoff：回放形态栈（暗影世界系 §2.4 改革）。退化：`modify_stat(attack,+4,20t)+modify_stat(defense,+2,20t)`。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 批次九：演出回放正主落地——狼形演出分支挂 mount_status(lineage_replay)（谱系栈重演，编队参数 §2.4）；异类轴 payoff 谱系栈回放 notes→landed ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：item轴 ally+point（轴选靶签名设计 §4）",
       "frameworkFlags": [
         {
           "code": "SORT_ATK_ASC",
@@ -1720,7 +1732,8 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "faction": "self"
+          "faction": "self",
+          "scope": "point"
         },
         "consumption": "domain"
       },
@@ -1779,7 +1792,7 @@
         "灵体"
       ],
       "tentative": false,
-      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：aberration轴 self+point（轴选靶签名设计 §4）",
       "art": {
         "subject": "an entire battlefield sinking halfway into the spirit realm",
         "elements": [
@@ -1876,7 +1889,8 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "faction": "self"
+          "faction": "self",
+          "scope": "point"
         }
       },
       "effects": [
@@ -1914,7 +1928,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：物品轴防守向形态。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "翻译/语义：物品轴防守向形态。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：item轴 self+point（轴选靶签名设计 §4）",
       "art": {
         "subject": "a spectral hand reaching out from inside an old wardrobe",
         "elements": [
@@ -1946,7 +1960,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "chain_2",
+          "pickCount": "all"
         },
         "fallbackSort": "atk_desc"
       },
@@ -1970,7 +1986,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：诅咒轴 payoff：读链接网络放大。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：诅咒轴 payoff：读链接网络放大。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "an armored knight dropping to all fours and snarling like a beast",
         "elements": [
@@ -2002,7 +2018,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "chain_2",
+          "pickCount": "all"
         },
         "fallbackSort": "hp_desc"
       },
@@ -2050,7 +2068,7 @@
         "criminal"
       ],
       "tentative": false,
-      "conversionNotes": "与诅咒之源同一状态母版（H28），仅 ratio/selfKeep/duration 参数档不同；curse_link 定义见诅咒之源（序列4 首登记），本条为参数覆写引用 ｜ 载体默认自身可指定己方召唤物，同诅咒之源 conversionNotes ｜ 翻译/语义：诅咒轴网络递进第二级（selfKeep 翻 false）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "与诅咒之源同一状态母版（H28），仅 ratio/selfKeep/duration 参数档不同；curse_link 定义见诅咒之源（序列4 首登记），本条为参数覆写引用 ｜ 载体默认自身可指定己方召唤物，同诅咒之源 conversionNotes ｜ 翻译/语义：诅咒轴网络递进第二级（selfKeep 翻 false）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "a wooden effigy with its connecting red thread cleanly cut",
         "elements": [
@@ -2082,7 +2100,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "chain_2",
+          "pickCount": "all"
         },
         "fallbackSort": "hp_desc"
       },
@@ -2131,7 +2151,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：读灵体状态放大（与【灵体化】联动）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→8（位格8 基准6×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：读灵体状态放大（与【灵体化】联动）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→8（位格8 基准6×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "a dark bolt flying straight through a spectral barrier",
         "elements": [
@@ -2164,7 +2184,7 @@
         "selectionMode": "auto",
         "request": {
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "chain_2",
           "pickCount": "all"
         }
       },
@@ -2189,7 +2209,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "AOE 定价 （沿用 D4） ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "AOE 定价 （沿用 D4） ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "a huge monstrous eye opening where a face should be",
         "elements": [
@@ -2282,7 +2302,9 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "chain_2",
+          "pickCount": "all"
         },
         "fallbackSort": "atk_desc"
       },
@@ -2321,7 +2343,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：束缚轴旗舰 payoff：读恶欲值放大封印 + 消纳转链接网。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 5→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：束缚轴旗舰 payoff：读恶欲值放大封印 + 消纳转链接网。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 5→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "a victim frozen mid-scream inside a cage of its own body",
         "elements": [
@@ -2582,8 +2604,7 @@
         "selectionMode": "auto",
         "request": {
           "faction": "enemy",
-          "scope": "whole_lane",
-          "pickCount": "all"
+          "scope": "point"
         }
       },
       "secondaryTargets": [
@@ -2664,7 +2685,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：物品轴旗舰 payoff。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 批次九：权柄唤物段——spawn unit_relic 落物品权柄签名（原著『掌控各种物品』），unitType:ITEM 签名 1→2 卡实证 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排）；scope:all(+None) → board+pickCount:all（群体/全场）",
+      "conversionNotes": "翻译/语义：物品轴旗舰 payoff。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 批次九：权柄唤物段——spawn unit_relic 落物品权柄签名（原著『掌控各种物品』），unitType:ITEM 签名 1→2 卡实证 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排）；scope:all(+None) → board+pickCount:all（群体/全场） ｜ 选靶签名：item轴 enemy+point（轴选靶签名设计 §4）",
       "art": {
         "subject": "weapons and relics across a battlefield trembling toward one raised hand",
         "elements": [
@@ -2697,7 +2718,7 @@
         "selectionMode": "auto",
         "request": {
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "chain_2",
           "pickCount": "all"
         }
       },
@@ -2782,7 +2803,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "传说档故意超预算（派发权重极低、一局最多 1 张），超标系数上限 ｜ 「完成所有类型诅咒」= 一次性挂满本途径从序列9 攒到序列3 的全部 debuff 类型（收束倾泻）；「本身极难被诅咒」= curse_ward + curse_ward_block，两段缺一都不是原著那条权柄 ｜ 翻译/语义：诅咒轴终焉：链网密度触发网络传染（暗影世界系 §2.3）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 6→15tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "传说档故意超预算（派发权重极低、一局最多 1 张），超标系数上限 ｜ 「完成所有类型诅咒」= 一次性挂满本途径从序列9 攒到序列3 的全部 debuff 类型（收束倾泻）；「本身极难被诅咒」= curse_ward + curse_ward_block，两段缺一都不是原著那条权柄 ｜ 翻译/语义：诅咒轴终焉：链网密度触发网络传染（暗影世界系 §2.3）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 6→15tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）",
       "art": {
         "subject": "a lone figure crushed under layered chains, claws and poison",
         "elements": [
