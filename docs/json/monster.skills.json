@@ -17,7 +17,7 @@
         "超强预感"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：inspiration_sense 为无层数识破常驻 buff，灵感→收益咬合实际由绝对灵感读 misfortune 承担（计 calamity） 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：咬合收益已由 calamity 承担，inspiration_sense 纯产层；读层闭环维度记 12 分保底。",
+      "note": "payoffs 2026-09-26 评审：inspiration_sense 为无层数识破常驻 buff，灵感→收益咬合实际由绝对灵感读 misfortune 承担（计 calamity） 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：咬合收益已由 calamity 承担，inspiration_sense 纯产层；读层闭环维度记 12 分保底。 ｜ 2026-10-03 骨架手术：判定形状换形 29 张（详见 designNote）",
       "payoffVacuumAccepted": true
     },
     "fortune": {
@@ -39,7 +39,7 @@
         "命运启示",
         "命运循环"
       ],
-      "note": "payoffs 2026-09-26 评审：赢家/赐福/重启循环耗幸运层换大效果；命运潮汐等 4 卡读 board.fate_value≥+5 dimHook（⚠️D 占位）"
+      "note": "payoffs 2026-09-26 评审：赢家/赐福/重启循环耗幸运层换大效果；命运潮汐等 4 卡读 board.fate_value≥+5 dimHook（⚠️D 占位） ｜ 2026-10-03 骨架手术：判定形状换形 29 张（详见 designNote）"
     },
     "calamity": {
       "symbol": "⚡",
@@ -54,7 +54,7 @@
         "绝对灵感",
         "命运看守者"
       ],
-      "note": "payoffs 2026-09-26 评审：绝对灵感 damage_mul 按 misfortune 过滤；命运看守者跨轴读厄运喂幸运"
+      "note": "payoffs 2026-09-26 评审：绝对灵感 damage_mul 按 misfortune 过滤；命运看守者跨轴读厄运喂幸运 ｜ 2026-10-03 骨架手术：判定形状换形 29 张（详见 designNote）"
     },
     "cycle": {
       "symbol": "🔄",
@@ -66,7 +66,7 @@
         "水银之躯·完整"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：fate_loop/水银层数均无卡读取；循环↔幸运耦合经重启循环耗层已计 fortune 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：循环↔幸运耦合经 fortune 收束，fate_loop 为触发器母版非层数经济；读层闭环维度记 12 分保底。",
+      "note": "payoffs 2026-09-26 评审：fate_loop/水银层数均无卡读取；循环↔幸运耦合经重启循环耗层已计 fortune 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：循环↔幸运耦合经 fortune 收束，fate_loop 为触发器母版非层数经济；读层闭环维度记 12 分保底。 ｜ 2026-10-03 骨架手术：判定形状换形 29 张（详见 designNote）",
       "payoffVacuumAccepted": true
     }
   },
@@ -82,7 +82,7 @@
       "flagship": false,
       "lore": "序列9 怪物 —— \"灵感超高：听见／看到别人感知不到的事物\"",
       "flavor": "你的灵感高到能听见不该听见的声音——藏起来的东西瞒不过你，而战局一开始，你已比旁人多看了一步。",
-      "describe": "战斗开始时能量 +3，并获得「灵感超高」（整场）：敌方隐匿类状态对你无效，你对隐匿目标造成的伤害 ×1.2。",
+      "describe": "战斗开始时能量 +3，并获得「灵感超高」（整场）：敌方隐匿类状态对你无效，你对隐匿目标造成的伤害 ×1.2。；命运轮盘转过一格：行动条回到先前的位置。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -98,11 +98,19 @@
           "statusId": "inspiration_sense",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：感知优势拆两条：① 超前感知 = 开局能量；② 看穿遮蔽 = 识破隐匿。同时轻推命运值，让命运轴有起手层数。⚠️ 依赖 C8 识破分支。",
+      "conversionNotes": "翻译/语义：感知优势拆两条：① 超前感知 = 开局能量；② 看穿遮蔽 = 识破隐匿。同时轻推命运值，让命运轴有起手层数。⚠️ 依赖 C8 识破分支。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
       "art": {
         "subject": "a wild-eyed youth cupping his ear toward invisible whispers",
         "elements": [
@@ -124,7 +132,7 @@
       "flagship": false,
       "lore": "序列9 怪物 —— \"对危险有敏锐直觉预感\"",
       "flavor": "危险降临前的一瞬，你的身体先于意识动了——这一击只擦着你过去。",
-      "describe": "战斗开始时获得「危险预感」：受到的下一次伤害 ×0.6，约每 10 tick 自动补充 1 次，持续整场。",
+      "describe": "战斗开始时获得「危险预感」：受到的下一次伤害 ×0.6，约每 10 tick 自动补充 1 次，持续整场。；命运轮盘转过一格：行动条回到先前的位置。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -133,11 +141,19 @@
           "charges": 1,
           "duration": 50,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"直觉预感\"=提前规避=减伤。charges 一次性减伤 + `on_remove` 自续链（规避 G15）。⚠️ 依赖自续链合法化。",
+      "conversionNotes": "翻译/语义：\"直觉预感\"=提前规避=减伤。charges 一次性减伤 + `on_remove` 自续链（规避 G15）。⚠️ 依赖自续链合法化。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
       "art": {
         "subject": "a figure twisting aside as a blade grazes past his shoulder",
         "elements": [
@@ -159,7 +175,7 @@
       "flagship": false,
       "lore": "序列9 怪物 —— \"偶尔窥见未来画面\"",
       "flavor": "你眼前闪过一幅尚未发生的画面——于是一名同伴抢在敌人之前动了手。",
-      "describe": "使一名友军行动条 +25（抢在敌人之前出手）。",
+      "describe": "使一名友军行动条 +25（抢在敌人之前出手）。；命运轮盘转过一格。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -182,11 +198,19 @@
           "mode": "delta",
           "target": "target",
           "note": "G5 铁律：受益者必须是友军，禁 SELF 自推条"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘转过一格"
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：预知=提前量，受益者必为友军（G5 铁律：自推条=没加）。并 push 命运值，命运轴起手。",
+      "conversionNotes": "翻译/语义：预知=提前量，受益者必为友军（G5 铁律：自推条=没加）。并 push 命运值，命运轴起手。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=res）",
       "art": {
         "subject": "a youth staring at a translucent vision of a battle yet to come",
         "elements": [
@@ -208,7 +232,7 @@
       "flagship": false,
       "lore": "序列8 机器 —— \"各方面素质增强，格斗射击天赋者\"",
       "flavor": "没有多余的瞄准动作，你抬手便是必中的一枪。",
-      "describe": "对一名敌人造成 2 点物理伤害（本途径的输出地基）。",
+      "describe": "对一名敌人造成 2 点物理伤害（本途径的输出地基）。；命运重掷：半数概率让这次伤害的分毫归位。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -228,6 +252,24 @@
           "type": "damage",
           "element": "physical",
           "value": 2
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "命运 weighed：本次伤害是否成立"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp"
+              ],
+              "target": "target",
+              "note": "命运回溯：让这次伤害的分毫归位（厄运/幸运判定）"
+            }
+          ]
         }
       ],
       "upgradeLadder": {
@@ -248,7 +290,7 @@
       },
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：本途径输出地基（怪物前段几无直接对敌手段）。低费纯直伤撑起前期。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格2 基准2）。条件/读层追加段不动。",
+      "conversionNotes": "翻译/语义：本途径输出地基（怪物前段几无直接对敌手段）。低费纯直伤撑起前期。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格2 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg）",
       "art": {
         "subject": "a marksman firing a pistol with unwavering steady aim",
         "elements": [
@@ -270,7 +312,7 @@
       "flagship": false,
       "lore": "序列8 机器 —— \"恐怖计算能力和精准控制力\"",
       "flavor": "你像一台精密的机器推演战局：出手更快，而任何想让你的枪口偏一点的把戏都落了空。",
-      "describe": "战斗开始时获得「恐怖计算」（整场）：自身行动条速率 +8，免疫目标改写类状态。",
+      "describe": "战斗开始时获得「恐怖计算」（整场）：自身行动条速率 +8，免疫目标改写类状态。；命运轮盘转过一格：行动条回到先前的位置。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -278,6 +320,14 @@
           "statusId": "machine_mind",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
@@ -289,7 +339,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：\"恐怖计算\"→`gauge_rate`（INV-S5 合规）；\"精准控制\"→免疫目标改写（克制自身 `target_override` 体系）。⚠️ 依赖 G12 `immune` + 新 `StatusCategory:'retarget'`。",
+      "conversionNotes": "翻译/语义：\"恐怖计算\"→`gauge_rate`（INV-S5 合规）；\"精准控制\"→免疫目标改写（克制自身 `target_override` 体系）。⚠️ 依赖 G12 `immune` + 新 `StatusCategory:'retarget'`。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
       "art": {
         "subject": "a man with clockwork gears turning behind his glassy eyes",
         "elements": [
@@ -311,7 +361,7 @@
       "flagship": false,
       "lore": "序列8 机器 —— \"各方面素质增强\"",
       "flavor": "成为机器之后，你的力量、反应与皮肉都被推到了新的刻度。",
-      "describe": "战斗开始时：自身攻击 +2、防御 +1、护甲 +2，持续整场。",
+      "describe": "战斗开始时：自身攻击 +2、防御 +1、护甲 +2，持续整场。；命运轮盘转过一格。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -336,6 +386,14 @@
           "value": 2,
           "mode": "delta",
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘转过一格"
         }
       ],
       "sharedAcross": [],
@@ -348,7 +406,8 @@
           "ground cracking underfoot"
         ],
         "mood": "powerful, disciplined"
-      }
+      },
+      "conversionNotes": "2026-10-03 骨架手术：判定形状换形（角色=stat）"
     },
     {
       "id": "skill_monster_s8_anti_divination",
@@ -361,7 +420,7 @@
       "flagship": false,
       "lore": "序列8 机器 —— \"占卜和反占卜能力\"",
       "flavor": "你把自己的命运藏进了迷雾里——敌人读不到你的下一步，也推不动你的脚步。",
-      "describe": "战斗开始时获得「反占卜」（整场，仅自身）：免疫一切行动条减少（击退/拖慢/厄运侵蚀无效）；敌方的识破/隐匿忽略/必定命中类状态对你无效。",
+      "describe": "战斗开始时获得「反占卜」（整场，仅自身）：免疫一切行动条减少（击退/拖慢/厄运侵蚀无效）；敌方的识破/隐匿忽略/必定命中类状态对你无效。；命运轮盘转过一格：行动条回到先前的位置。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -369,11 +428,19 @@
           "statusId": "anti_divination",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"反占卜\"=掩盖自身命运信息→敌人既读不到也推不动。与【超强预感】层次递进（自身→全队）。⚠️ 依赖 `gaugeReductionImmune` + scope。",
+      "conversionNotes": "翻译/语义：\"反占卜\"=掩盖自身命运信息→敌人既读不到也推不动。与【超强预感】层次递进（自身→全队）。⚠️ 依赖 `gaugeReductionImmune` + scope。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
       "art": {
         "subject": "a figure whose silhouette dissolves into thick gray fog",
         "elements": [
@@ -395,7 +462,7 @@
       "flagship": false,
       "lore": "序列7 幸运者 —— \"日常经常遇到幸运事件（捡钱、投骰如期望等）／无法主动控制，被动触发，有高低起伏\"",
       "flavor": "运气自己会找上门——每隔一阵，就有一件好事落在你身上。",
-      "describe": "战斗开始时获得「幸运 streak」：约每 5 tick 自动获得 1 层幸运（整场循环），幸运最多 3 层。",
+      "describe": "战斗开始时获得「幸运 streak」：约每 5 tick 自动获得 1 层幸运（整场循环），幸运最多 3 层。；命运轮盘转过一格：行动条回到先前的位置。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -403,11 +470,19 @@
           "statusId": "lucky_streak",
           "duration": 25,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：幸运轴资源引擎：被动触发 + 周期自续（绝不掷骰子，R5）。⚠️ 依赖 F51 `stacks` + 自续链。",
+      "conversionNotes": "翻译/语义：幸运轴资源引擎：被动触发 + 周期自续（绝不掷骰子，R5）。⚠️ 依赖 F51 `stacks` + 自续链。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
       "art": {
         "subject": "a grinning rogue catching a gold coin falling from the sky",
         "elements": [
@@ -429,7 +504,7 @@
       "flagship": false,
       "lore": "序列7 幸运者 —— \"有高低起伏\"",
       "flavor": "运气像潮水，有涨有落：涨潮时好事成双，落潮时你只能挨打——但每一次挨打，都在把水位重新推高。",
-      "describe": "战斗开始进入 30tick 双相位循环：低潮期每次挨打 +1 层幸运；高潮期幸运获取 ×2。",
+      "describe": "战斗开始进入 30tick 双相位循环：低潮期每次挨打 +1 层幸运；高潮期幸运获取 ×2。；命运轮盘转过一格：行动条回到先前的位置。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -437,11 +512,19 @@
           "statusId": "tide_low",
           "duration": 30,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"高低起伏\"=双相位节奏而非随机：低潮挨打攒运气、高潮翻倍——决策变成\"要不要主动去挨一下\"。⚠️ 依赖 H50 形态组母版 + `If` 谓词。",
+      "conversionNotes": "翻译/语义：\"高低起伏\"=双相位节奏而非随机：低潮挨打攒运气、高潮翻倍——决策变成\"要不要主动去挨一下\"。⚠️ 依赖 H50 形态组母版 + `If` 谓词。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
       "dimHooks": [
         {
           "dim": "fate_value",
@@ -473,7 +556,7 @@
       "flagship": false,
       "lore": "序列7 幸运者 —— \"日常经常遇到幸运事件（捡钱、投骰如期望等）\"",
       "flavor": "好运总带着点实惠——每一次命运的眷顾，都顺带让你多了几分底气。",
-      "describe": "战斗开始时获得「意外之财」（整场）：每获得 1 层幸运，能量 +1。",
+      "describe": "战斗开始时获得「意外之财」（整场）：每获得 1 层幸运，能量 +1。；命运轮盘转过一格：行动条回到先前的位置。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -481,6 +564,14 @@
           "statusId": "windfall",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
@@ -500,7 +591,8 @@
           "falling star sparks"
         ],
         "mood": "bountiful, gleeful"
-      }
+      },
+      "conversionNotes": "2026-10-03 骨架手术：判定形状换形（角色=buff）"
     },
     {
       "id": "skill_monster_s6_cause_calamity",
@@ -513,7 +605,7 @@
       "flagship": false,
       "lore": "序列6 灾祸教士 —— \"主动引发灾祸波及敌人，自身靠幸运规避\"",
       "flavor": "你伸手把灾祸拨向了敌人——它连同身边的人一起遭殃，而你毫发无伤地退开半步。",
-      "describe": "对一名敌人造成 4 点物理伤害并溅射相邻单位 2 点物理伤害，自身获得 1 层幸运。；目标带厄运标记则灾祸叠厄，追加 2 点精神伤害。",
+      "describe": "对一名敌人造成 4 点物理伤害并溅射相邻单位 2 点物理伤害，自身获得 1 层幸运。；目标带厄运标记则灾祸叠厄，追加 2 点精神伤害。；命运重掷：半数概率让这次伤害的分毫归位。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -567,11 +659,29 @@
           ],
           "else": [],
           "note": "跨系读层段：monster→assassin doom（2026-09-29 跨系批二）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "命运 weighed：本次伤害是否成立"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp"
+              ],
+              "target": "target",
+              "note": "命运回溯：让这次伤害的分毫归位（厄运/幸运判定）"
+            }
+          ]
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：三要素全落地：直伤 + 溅射 + 自身得幸运。灾祸→运气闭环，并轻推命运值。⚠️ 依赖 `spread`。",
+      "conversionNotes": "翻译/语义：三要素全落地：直伤 + 溅射 + 自身得幸运。灾祸→运气闭环，并轻推命运值。⚠️ 依赖 `spread`。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg）",
       "art": {
         "subject": "a black cat shadow crossing beneath an enemy's feet as beams crack",
         "elements": [
@@ -593,7 +703,7 @@
       "flagship": false,
       "lore": "序列6 灾祸教士 —— \"被动遭遇灾祸但可预见并准备\"",
       "flavor": "灾祸总是先落在你头上——但你早就摆好了架势；而把它带到你面前的人，会替你尝到剩下的那份。",
-      "describe": "战斗开始时获得「预见灾祸」（整场）：每次受到伤害立即架起减伤（受伤 ×0.85，10tick），并给攻击者叠 1 层厄运。",
+      "describe": "战斗开始时获得「预见灾祸」（整场）：每次受到伤害立即架起减伤（受伤 ×0.85，10tick），并给攻击者叠 1 层厄运。；命运轮盘转过一格：行动条回到先前的位置。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -601,11 +711,19 @@
           "statusId": "calamity_foresight",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"可预见并准备\"=挨打后架防御；\"灾祸反噬\"=攻击者染厄运。让挨打成为正反馈，与命运潮汐／幸运轴咬合。⚠️ 依赖 `brace` 母版 + F61 `attacker`。",
+      "conversionNotes": "翻译/语义：\"可预见并准备\"=挨打后架防御；\"灾祸反噬\"=攻击者染厄运。让挨打成为正反馈，与命运潮汐／幸运轴咬合。⚠️ 依赖 `brace` 母版 + F61 `attacker`。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
       "art": {
         "subject": "a figure braced under an umbrella as disaster rains back on the attacker",
         "elements": [
@@ -627,7 +745,7 @@
       "flagship": false,
       "lore": "序列6 灾祸教士 —— \"『精神风暴』：直接影响对方精神体\"",
       "flavor": "无形的风暴钻进它的脑海——它挥出的下一击，砍在了空处。",
-      "describe": "对一名敌人造成 3 点精神伤害，并使其下一击挥空（打向最近空坐标）。",
+      "describe": "对一名敌人造成 3 点精神伤害，并使其下一击挥空（打向最近空坐标）。；命运重掷：半数概率让这次伤害的分毫归位。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -653,11 +771,29 @@
           "statusId": "mind_storm",
           "charges": 1,
           "duration": 15
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "命运 weighed：本次伤害是否成立"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp"
+              ],
+              "target": "target",
+              "note": "命运回溯：让这次伤害的分毫归位（厄运/幸运判定）"
+            }
+          ]
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：精神伤害 + 短时错乱（下一击挥空）。与【混乱】区分：精神风暴=打空（first_empty），混乱=打向最近单位（nearest_any）。⚠️ 依赖 C7。",
+      "conversionNotes": "翻译/语义：精神伤害 + 短时错乱（下一击挥空）。与【混乱】区分：精神风暴=打空（first_empty），混乱=打向最近单位（nearest_any）。⚠️ 依赖 C7。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg）",
       "art": {
         "subject": "a storm of swirling thoughts ripping through a warrior's mind",
         "elements": [
@@ -679,7 +815,7 @@
       "flagship": false,
       "lore": "序列5 赢家 —— \"掌控自身幸运：积累'幸运'化解致命危机\"",
       "flavor": "你把攒下的运气一次性押上赌桌——于是那必死的一击，落到了别处。",
-      "describe": "消耗 4 层幸运，获得一次免死（30tick 内下次致死伤害被化解、保留 1 血）；整场幸运上限提升至 6 层。",
+      "describe": "消耗 4 层幸运，获得一次免死（30tick 内下次致死伤害被化解、保留 1 血）；整场幸运上限提升至 6 层。；厄运偏斜：半数概率把自己刚失去的抹平。；轮盘仍未停稳：半数概率这一笔不算数。",
       "cost": {
         "energy": 4,
         "cooldown": 30,
@@ -725,14 +861,65 @@
           "statusId": "fortune_mastery",
           "duration": null,
           "target": "self"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "厄运偏斜判定"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp"
+              ],
+              "target": "self",
+              "note": "厄运偏斜：把自己刚失去的抹平"
+            }
+          ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "命运 weighed"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "pools"
+              ],
+              "target": "self",
+              "note": "命运重掷：这一记是否被记入账取决于轮盘"
+            }
+          ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "命运 weighed"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "pools"
+              ],
+              "target": "self",
+              "note": "命运重掷：这一记是否被记入账取决于轮盘"
+            }
+          ]
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": [
-        "稿面退化方案（不做 If 判定，消耗全部幸运层数换 40% 减伤 charges）仍备；主方案 If + status.consume + H7 依赖均已落",
-        "翻译/语义：幸运轴旗舰 / 核心保命牌：先攒（前段都在攒）再花（4 层幸运换免死）。`near_death_save`=下次致死化解保留 1 血，非复活。⚠️ 依赖 F48 `consume` + `If` 谓词 + `lethal_protect`。"
-      ],
+      "conversionNotes": "稿面退化方案（不做 If 判定，消耗全部幸运层数换 40% 减伤 charges）仍备；主方案 If + status.consume + H7 依赖均已落 ｜ 翻译/语义：幸运轴旗舰 / 核心保命牌：先攒（前段都在攒）再花（4 层幸运换免死）。`near_death_save`=下次致死化解保留 1 血，非复活。⚠️ 依赖 F48 `consume` + `If` 谓词 + `lethal_protect`。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比",
       "art": {
         "subject": "a gambler pushing a mountain of chips into the pot with a grin",
         "elements": [
@@ -754,7 +941,7 @@
       "flagship": false,
       "lore": "序列5 赢家 —— \"超强预感：占卜反占卜专家\"",
       "flavor": "你的预感已经准到能护住整支队伍——敌人摸不到任何人的下一步。",
-      "describe": "战斗开始时获得「超强预感」（整场）：己方全体免疫行动条减少、敌方识破类状态对己方全体无效；自身行动条速率 +5。",
+      "describe": "战斗开始时获得「超强预感」（整场）：己方全体免疫行动条减少、敌方识破类状态对己方全体无效；自身行动条速率 +5。；命运轮盘转过一格：行动条回到先前的位置。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -762,6 +949,14 @@
           "statusId": "fate_sight",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
@@ -773,7 +968,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：\"专家\"=作用域扩展：序列8 护自己，序列5 护全队。本途径最重要的团队价值。⚠️ 依赖 `gaugeReductionImmune` + scope + C8。",
+      "conversionNotes": "翻译/语义：\"专家\"=作用域扩展：序列8 护自己，序列5 护全队。本途径最重要的团队价值。⚠️ 依赖 `gaugeReductionImmune` + scope + C8。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
       "art": {
         "subject": "a seer draping a shimmering veil of foresight over his allies",
         "elements": [
@@ -795,7 +990,7 @@
       "flagship": false,
       "lore": "序列5 赢家 —— \"有限度给予敌人厄运\"",
       "flavor": "你分了一点霉运给它——不多，但足够让它的下一次出手慢上半拍。",
-      "describe": "使一名敌人叠 2 层厄运（20tick），不触发厄运爆发（原著「有限度」）。",
+      "describe": "使一名敌人叠 2 层厄运（20tick），不触发厄运爆发（原著「有限度」）。；厄运偏斜：半数概率把自己刚失去的抹平。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -817,11 +1012,29 @@
           "stacks": 2,
           "duration": 20,
           "note": "上限内直接给 2 层，够不到 3 层爆发线；权威定义见预见灾祸（s6 首登记）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "厄运偏斜判定"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp"
+              ],
+              "target": "self",
+              "note": "厄运偏斜：把自己刚失去的抹平"
+            }
+          ]
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"有限度\"=只给 2 层（不到 3 层爆发线）。施放厄运同时 push 命运值。⚠️ 依赖 misforture 母版。",
+      "conversionNotes": "翻译/语义：\"有限度\"=只给 2 层（不到 3 层爆发线）。施放厄运同时 push 命运值。⚠️ 依赖 misforture 母版。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff）",
       "art": {
         "subject": "a figure handing a black wilted flower to an unsuspecting foe",
         "elements": [
@@ -843,7 +1056,7 @@
       "flagship": false,
       "lore": "序列4 厄运法师 —— \"绝对灵感\"",
       "flavor": "灵感如泉涌，你的每一次呼吸都在推演未来；而那些被厄运缠上的人，在你眼里破绽百出。",
-      "describe": "战斗开始时获得「绝对灵感」（整场）：能量恢复 +0.3，约每 5 tick +1 层幸运，幸运上限 +1；对带厄运的目标伤害 ×1.2。",
+      "describe": "战斗开始时获得「绝对灵感」（整场）：能量恢复 +0.3，约每 5 tick +1 层幸运，幸运上限 +1；对带厄运的目标伤害 ×1.2。；命运轮盘转过一格：行动条回到先前的位置。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -851,11 +1064,19 @@
           "statusId": "absolute_inspiration",
           "duration": 25,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：序列9 灵感质变：持续推演（能量恢复）+ 灵感产出幸运 + 读厄运放大伤害（命运轴↔厄运轴咬合）。⚠️ 依赖自续链 + 状态过滤乘区。",
+      "conversionNotes": "翻译/语义：序列9 灵感质变：持续推演（能量恢复）+ 灵感产出幸运 + 读厄运放大伤害（命运轴↔厄运轴咬合）。⚠️ 依赖自续链 + 状态过滤乘区。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
       "art": {
         "subject": "a caster with blazing eyes as visions pour from him like a fountain",
         "elements": [
@@ -942,7 +1163,7 @@
       "flagship": false,
       "lore": "序列4 厄运法师 —— \"厄运诅咒\"",
       "flavor": "你念出那个名字——厄运立刻缠满了它，它的下一击砍在了自己的影子上。",
-      "describe": "使一名敌人当场叠满 3 层厄运（20tick，立即触发打空），并造成 3 点精神伤害。",
+      "describe": "使一名敌人当场叠满 3 层厄运（20tick，立即触发打空），并造成 3 点精神伤害。；命运重掷：半数概率让这次伤害的分毫归位。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -972,6 +1193,24 @@
               "type": "damage",
               "element": "mental",
               "value": 3
+            }
+          ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "命运 weighed：本次伤害是否成立"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp"
+              ],
+              "target": "target",
+              "note": "命运回溯：让这次伤害的分毫归位（厄运/幸运判定）"
             }
           ]
         }
@@ -1011,7 +1250,7 @@
       },
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：与【给予厄运】档位差：一次塞满 3 层当场触发厄运爆发（确定性打空）。push 命运值。⚠️ 依赖 C7 + misforture 阈值。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表）",
+      "conversionNotes": "翻译/语义：与【给予厄运】档位差：一次塞满 3 层当场触发厄运爆发（确定性打空）。push 命运值。⚠️ 依赖 C7 + misforture 阈值。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg）",
       "art": {
         "subject": "a curse spoken aloud coiling black smoke around a victim",
         "elements": [
@@ -1033,7 +1272,7 @@
       "flagship": false,
       "lore": "序列4 厄运法师 —— \"『赐福』：消耗运气给予祝福\"",
       "flavor": "你从自己的好运里分出一份，按在了同伴肩上。",
-      "describe": "消耗自身 2 层幸运，祝福一名友军 20tick：其造成伤害 ×1.2、受伤 ×0.9。",
+      "describe": "消耗自身 2 层幸运，祝福一名友军 20tick：其造成伤害 ×1.2、受伤 ×0.9。；厄运偏斜：半数概率把自己刚失去的抹平。；轮盘仍未停稳：半数概率这一笔不算数。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1073,11 +1312,47 @@
             }
           ],
           "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "厄运偏斜判定"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp"
+              ],
+              "target": "self",
+              "note": "厄运偏斜：把自己刚失去的抹平"
+            }
+          ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "命运 weighed"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "pools"
+              ],
+              "target": "self",
+              "note": "命运重掷：这一记是否被记入账取决于轮盘"
+            }
+          ]
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：幸运资源第二出口（第一是赢家免死）。命运值≥+5 时赐福放大，体现命运轴对幸运轴的加成。⚠️ 依赖 F48 + `If` + fate_value 阈值读取。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：幸运资源第二出口（第一是赢家免死）。命运值≥+5 时赐福放大，体现命运轴对幸运轴的加成。⚠️ 依赖 F48 + `If` + fate_value 阈值读取。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比",
       "art": {
         "subject": "a benefactor pressing a glowing blessing onto a comrade's shoulder",
         "elements": [
@@ -1099,7 +1374,7 @@
       "flagship": false,
       "lore": "序列4 厄运法师 —— \"水银之躯\"（序列2 先知为完整神话生物形态：\"十秒不被命中的被动\"）",
       "flavor": "你的身躯化作流动的水银——接下来的两击，会从你身上穿过去，落在空处。",
-      "describe": "15tick 内打向你的前 2 次攻击被改写为落空（每次消耗 1 层）。",
+      "describe": "15tick 内打向你的前 2 次攻击被改写为落空（每次消耗 1 层）。；命运轮盘转过一格：行动条回到先前的位置。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1120,11 +1395,19 @@
           "charges": 2,
           "duration": 15,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：确定性落空（R5 合规，非概率闪避）。改写\"打向持有者\"的攻击（入射侧），与 C7 共用锚点。`If(fate_value>=+5)` → 持续时长 ×1.5（命运值放大）。⚠️ 依赖 `incoming_miss`。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：确定性落空（R5 合规，非概率闪避）。改写\"打向持有者\"的攻击（入射侧），与 C7 共用锚点。`If(fate_value>=+5)` → 持续时长 ×1.5（命运值放大）。⚠️ 依赖 `incoming_miss`。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
       "art": {
         "subject": "a humanoid figure liquefying into flowing silver mercury",
         "elements": [
@@ -1146,7 +1429,7 @@
       "flagship": false,
       "lore": "序列3 混乱行者 —— \"『混乱』（部分权柄）：让既定命运重新混乱\"",
       "flavor": "你伸手搅乱了它既定的命运——它攒了半天的出手前功尽弃，而它的刀，砍向了离它最近的家伙。",
-      "describe": "使一名敌人混乱 25tick（前 2 次攻击打向不分阵营的最近单位），并抹掉其 30 点行动条进度。",
+      "describe": "使一名敌人混乱 25tick（前 2 次攻击打向不分阵营的最近单位），并抹掉其 30 点行动条进度。；厄运偏斜：半数概率把自己刚失去的抹平。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1179,6 +1462,24 @@
               "note": "既定进度被抹掉，「既定命运」字面落地"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "厄运偏斜判定"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp"
+              ],
+              "target": "self",
+              "note": "厄运偏斜：把自己刚失去的抹平"
+            }
+          ]
         }
       ],
       "upgradeLadder": {
@@ -1208,7 +1509,7 @@
       },
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：混乱轴旗舰：① \"既定\"=已攒行动条→抹掉（字面前功尽弃）；② \"重新混乱\"=打向最近单位（可能自己人）。push 命运值（产噪即产命运）。⚠️ 依赖 `nearest_any` 锚点。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：混乱轴旗舰：① \"既定\"=已攒行动条→抹掉（字面前功尽弃）；② \"重新混乱\"=打向最近单位（可能自己人）。push 命运值（产噪即产命运）。⚠️ 依赖 `nearest_any` 锚点。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff）",
       "art": {
         "subject": "tangled severed threads of fate spilling from a broken spindle",
         "elements": [
@@ -1230,7 +1531,7 @@
       "flagship": false,
       "lore": "序列3 混乱行者 —— \"命运看守者：看见命运中混乱疯狂的部分\"",
       "flavor": "你看见那些被混乱和厄运缠住的命运线——顺着线摸过去，你总能捞到点什么。",
-      "describe": "被动：你对处于混乱或厄运状态的敌人造成伤害时，自身 +1 层幸运；且战场死亡越多（死亡簿 ≥3），你对这些弃运者的伤害越高（×1.5）。",
+      "describe": "被动：你对处于混乱或厄运状态的敌人造成伤害时，自身 +1 层幸运；且战场死亡越多（死亡簿 ≥3），你对这些弃运者的伤害越高（×1.5）。；命运轮盘转过一格：行动条回到先前的位置。；轮盘仍未停稳：半数概率这一笔不算数。",
       "hook": "on_deal_damage",
       "effects": [
         {
@@ -1272,6 +1573,32 @@
             }
           ],
           "note": "F52 target_has_status 已泛化为共享内核 §三 has_status(side,id,cmp,n)（新增项 2）；嵌套 If 表达「混乱或厄运」，避开未落地的 any_of 组合子"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "命运 weighed"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "pools"
+              ],
+              "target": "self",
+              "note": "命运重掷：这一记是否被记入账取决于轮盘"
+            }
+          ]
         }
       ],
       "sharedAcross": [],
@@ -1303,7 +1630,7 @@
         ],
         "mood": "patient, covetous"
       },
-      "conversionNotes": "2026-10-02 矩阵复审（怪物=死亡簿正主）：补死亡簿读层 dimHook（≥3 伤害×1.5）——死亡簿正主第一卡"
+      "conversionNotes": "2026-10-02 矩阵复审（怪物=死亡簿正主）：补死亡簿读层 dimHook（≥3 伤害×1.5）——死亡簿正主第一卡 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比"
     },
     {
       "id": "skill_monster_s3_mind_baptism",
@@ -1316,7 +1643,7 @@
       "flagship": false,
       "lore": "序列3 混乱行者 —— \"『精神洗礼』：让目标精神重新洁净平稳\"",
       "flavor": "你把手按在它的额前，把那些乱七八糟的东西一并冲洗干净——连同它借以逞凶的那份疯狂。",
-      "describe": "双分支（任一单位）：对友军——驱散其全部减益与持续伤害并治疗 4 点；对敌人——驱散其全部增益并造成 2 点精神伤害。",
+      "describe": "双分支（任一单位）：对友军——驱散其全部减益与持续伤害并治疗 4 点；对敌人——驱散其全部增益并造成 2 点精神伤害。；命运重掷：半数概率让这次伤害的分毫归位。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1374,6 +1701,24 @@
               "value": 2
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "命运 weighed：本次伤害是否成立"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp"
+              ],
+              "target": "target",
+              "note": "命运回溯：让这次伤害的分毫归位（厄运/幸运判定）"
+            }
+          ]
         }
       ],
       "sharedAcross": [],
@@ -1385,11 +1730,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": [
-        "manual 目标稿面未给 fallbackSort，置 null 待补",
-        "翻译/语义：混乱轴\"重置\"表达（非逆转时间，是洗回干净状态）。对友军洗负面、对敌洗增益。本途径唯一净化手段。⚠️ 依赖 `If` 算子。",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
-      ],
+      "conversionNotes": "manual 目标稿面未给 fallbackSort，置 null 待补 ｜ 翻译/语义：混乱轴\"重置\"表达（非逆转时间，是洗回干净状态）。对友军洗负面、对敌洗增益。本途径唯一净化手段。⚠️ 依赖 `If` 算子。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg）",
       "art": {
         "subject": "a serene hand laid on a brow, black madness washing away like ink",
         "elements": [
@@ -1411,7 +1752,7 @@
       "flagship": true,
       "lore": "序列2 先知 —— \"『福祸之言』：30 公里范围给予厄运或好运\"",
       "flavor": "你开口，一句话里同时降下福与祸——敌人开始倒霉，同伴开始走运。",
-      "describe": "全体敌方叠 1 层厄运（20tick），全体友军各 +1 层幸运。",
+      "describe": "全体敌方叠 1 层厄运（20tick），全体友军各 +1 层幸运。；厄运偏斜：半数概率把自己刚失去的抹平。；轮盘仍未停稳：半数概率这一笔不算数。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1443,15 +1784,47 @@
               "target": "all_allies"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "厄运偏斜判定"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp"
+              ],
+              "target": "self",
+              "note": "厄运偏斜：把自己刚失去的抹平"
+            }
+          ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "命运 weighed"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "pools"
+              ],
+              "target": "self",
+              "note": "命运重掷：这一记是否被记入账取决于轮盘"
+            }
+          ]
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": [
-        "原著「30 公里」战场无距离维度，取全场；原著「或」做成「同时」（拍板口径）",
-        "翻译/语义：双轴 enabler：同时给敌厄运、给友幸运，并 push 命运值。序列2 命运权柄下位\"好运\"\"厄运\"同框。",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
-      ],
+      "conversionNotes": "原著「30 公里」战场无距离维度，取全场；原著「或」做成「同时」（拍板口径） ｜ 翻译/语义：双轴 enabler：同时给敌厄运、给友幸运，并 push 命运值。序列2 命运权柄下位\"好运\"\"厄运\"同框。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比",
       "art": {
         "subject": "a prophet's words splitting into light and shadow over the battlefield",
         "elements": [
@@ -1473,7 +1846,7 @@
       "flagship": false,
       "lore": "序列2 先知 —— \"预言术\"",
       "flavor": "你说出了它下一步会做什么——于是那名同伴恰好赶在它之前出手，而你因为说中，又交了一次好运。",
-      "describe": "使一名友军行动条 +30，自身 +1 层幸运（预言应验）。",
+      "describe": "使一名友军行动条 +30，自身 +1 层幸运（预言应验）。；命运轮盘转过一格：行动条回到先前的位置。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1507,6 +1880,14 @@
               "target": "self"
             }
           ]
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
@@ -1520,7 +1901,7 @@
         ],
         "mood": "certain, declarative"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0"
+      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）"
     },
     {
       "id": "skill_monster_s2_fate_revelation",
@@ -1533,7 +1914,7 @@
       "flagship": false,
       "lore": "序列2 先知 —— \"命运启示\"",
       "flavor": "开战前你已看过这一战的开头——全队都比对手先迈出了半步。",
-      "describe": "战斗开始时（一次性）：己方全体行动条 +10。；启示乍现：战场命运值 +1。",
+      "describe": "战斗开始时（一次性）：己方全体行动条 +10。；启示乍现：战场命运值 +1。；命运轮盘转过一格。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1551,6 +1932,14 @@
           "mode": "delta",
           "target": "board",
           "note": "命运值写入（2026-10-01 量表写入批）：战斗开始时一次性 +1。"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘转过一格"
         }
       ],
       "sharedAcross": [],
@@ -1574,7 +1963,7 @@
         ],
         "mood": "assured, prophetic"
       },
-      "conversionNotes": "命运值写入（2026-10-01 量表写入批）：战斗开始时一次性 +1。"
+      "conversionNotes": "命运值写入（2026-10-01 量表写入批）：战斗开始时一次性 +1。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=res）"
     },
     {
       "id": "skill_monster_s2_mercury_form",
@@ -1587,7 +1976,7 @@
       "flagship": false,
       "lore": "序列2 先知 —— \"『水银之躯』（完整神话生物形态）：十秒不被命中的被动\"",
       "flavor": "你化作完整的神话之躯——每隔一阵，就有十秒钟，没有任何东西能碰到你。",
-      "describe": "战斗开始获得循环（整场）：约每 10 tick 自动进入 50tick「水银之躯」窗口（前 2 次打向你的攻击落空）；与主动水银之躯共用状态，层数可叠至 4。",
+      "describe": "战斗开始获得循环（整场）：约每 10 tick 自动进入 50tick「水银之躯」窗口（前 2 次打向你的攻击落空）；与主动水银之躯共用状态，层数可叠至 4。；命运轮盘转过一格：行动条回到先前的位置。；轮盘仍未停稳：半数概率这一笔不算数。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1601,6 +1990,32 @@
           "statusId": "mercury_cycle",
           "duration": 50,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "命运 weighed"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "pools"
+              ],
+              "target": "self",
+              "note": "命运重掷：这一记是否被记入账取决于轮盘"
+            }
+          ]
         }
       ],
       "sharedAcross": [],
@@ -1613,7 +2028,8 @@
           "attacks sliding off its surface"
         ],
         "mood": "alien, untouchable"
-      }
+      },
+      "conversionNotes": "2026-10-03 骨架手术：判定形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比"
     },
     {
       "id": "skill_monster_s1_fate_loop",
@@ -1876,7 +2292,7 @@
       "flagship": false,
       "lore": "序列1 水银之蛇 —— \"『循环』权柄下位『选择』\"；序列0 命运之轮 —— \"『循环』权柄：『选择』（选定命运支流）\"",
       "flavor": "眼前有无数条支流，而你替它选了那一条——它接下来的一击，会落在你指定的地方。",
-      "describe": "双目标：指定一名敌方施动者与它下一次攻击的目标（20tick 内其首次攻击打向你指定的单位）。",
+      "describe": "双目标：指定一名敌方施动者与它下一次攻击的目标（20tick 内其首次攻击打向你指定的单位）。；厄运偏斜：半数概率把自己刚失去的抹平。",
       "cost": {
         "energy": 4,
         "cooldown": 30,
@@ -1906,15 +2322,29 @@
           "statusId": "chosen_branch",
           "charges": 1,
           "duration": 20
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "chance",
+            "pct": 50,
+            "note": "厄运偏斜判定"
+          },
+          "then": [
+            {
+              "type": "restore_snapshot",
+              "fields": [
+                "hp"
+              ],
+              "target": "self",
+              "note": "厄运偏斜：把自己刚失去的抹平"
+            }
+          ]
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": [
-        "双目标（敌方施动者 + 其下次攻击目标）与愚者 v0.2【愿望】同款写法；manual 目标稿面未给 fallbackSort，置 null 待补",
-        "翻译/语义：混乱轴唯一玩家决定改写方向的 `target_override`（让它打队友 / 打空 / 打你触发免伤窗口）。⚠️ 依赖 `manual` 锚点。",
-        "2026-10-01 吟唱重标：非仪式，castTime 空→0"
-      ],
+      "conversionNotes": "双目标（敌方施动者 + 其下次攻击目标）与愚者 v0.2【愿望】同款写法；manual 目标稿面未给 fallbackSort，置 null 待补 ｜ 翻译/语义：混乱轴唯一玩家决定改写方向的 `target_override`（让它打队友 / 打空 / 打你触发免伤窗口）。⚠️ 依赖 `manual` 锚点。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=debuff）",
       "art": {
         "subject": "countless branching rivers of light, a hand selecting one stream",
         "elements": [
@@ -2028,7 +2458,7 @@
       "flagship": true,
       "lore": "序列0 命运之轮 —— \"『概率』权柄：万事皆可概率化\"",
       "flavor": "从今往后，它每向前迈出一步，都有一半的可能踩空——而它的每一步，都由命运之轮掷出。",
-      "describe": "战斗开始时获得「概率权柄」（整场）：每 tick 对当前行动条最高的敌方单位判定一次——50% 概率使其行动条 -8（期望 -4/tick）。",
+      "describe": "战斗开始时获得「概率权柄」（整场）：每 tick 对当前行动条最高的敌方单位判定一次——50% 概率使其行动条 -8（期望 -4/tick）。；命运轮盘转过一格：行动条回到先前的位置。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -2036,11 +2466,19 @@
           "statusId": "probability_authority",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "restore_snapshot",
+          "fields": [
+            "gauge"
+          ],
+          "target": "self",
+          "note": "命运轮盘：行动条回到先前的位置"
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：全稿唯一概率卡，严守 R5：概率只作用于行动条（非伤害维度）。`condition` 写法 + R3 登记（可筛出）。⚠️ 依赖 `sort:gauge_desc` + 随机治理 R3/R4。",
+      "conversionNotes": "翻译/语义：全稿唯一概率卡，严守 R5：概率只作用于行动条（非伤害维度）。`condition` 写法 + R3 登记（可筛出）。⚠️ 依赖 `sort:gauge_desc` + 随机治理 R3/R4。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
       "art": {
         "subject": "towering spectral dice tumbling above a stumbling giant",
         "elements": [
@@ -2072,7 +2510,7 @@
       "note": "H9 Zone 母版（新增项 9，2026-09-08 界域牌批次已登记）；Zone 跨半场落敌方半场已拍板（战场上下文 §二）"
     }
   ],
-  "designNote": "> **命运值维度（光之钥系 §2.2 / 总览 §1 咬合器③）**：战场双极量表 **−10↔+10**，怪物专用写入，他人（占卜家 / 偷盗者 / 刺客 / 不眠者）可触发读取。怪物经「预知 / 厄运 / 循环」类效果写入：我方好运类 enabler 命运值 **+1/次**；施加敌方厄运 **+1/次**（从敌方抽取运气）；消耗类（赢家免死 / 赐福）**−N**。阈值档（全部 ⚠️D）：\n> - **≥ +5**：我方「幸运 / 好运」类 payoff 放大（赐福 ×1.3、赢家免死阈值 4→3）；敌方「厄运」叠层速度 ×2（每 tick +1 而非 +0.5）。\n> - **≥ +8**：命运总线满载——怪物可远端调度一次命运（命运之轮减费 / 强制判定生效）。\n> - **≤ −5**：反噬风险——怪物施放技能后自身 `mount_status(厄运, stacks:1)`（确定性 debuff，非伤害，R5 合规），或敌人从总线抽头获利。\n> - **= +10 / −10**：命运洪流 / 命运债务——终焉卡触发全屏改写。\n>\n> **跨源质写入方**：占卜家（命运干扰 / 锚点）、偷盗者（嫁接命运 / 命运木马）、刺客（命运诅咒）、不眠者（厄难）也读写同一组枢纽状态；怪物是主调度方（见 §三 枢纽白名单）。",
+  "designNote": "> **命运值维度（光之钥系 §2.2 / 总览 §1 咬合器③）**：战场双极量表 **−10↔+10**，怪物专用写入，他人（占卜家 / 偷盗者 / 刺客 / 不眠者）可触发读取。怪物经「预知 / 厄运 / 循环」类效果写入：我方好运类 enabler 命运值 **+1/次**；施加敌方厄运 **+1/次**（从敌方抽取运气）；消耗类（赢家免死 / 赐福）**−N**。阈值档（全部 ⚠️D）：\n> - **≥ +5**：我方「幸运 / 好运」类 payoff 放大（赐福 ×1.3、赢家免死阈值 4→3）；敌方「厄运」叠层速度 ×2（每 tick +1 而非 +0.5）。\n> - **≥ +8**：命运总线满载——怪物可远端调度一次命运（命运之轮减费 / 强制判定生效）。\n> - **≤ −5**：反噬风险——怪物施放技能后自身 `mount_status(厄运, stacks:1)`（确定性 debuff，非伤害，R5 合规），或敌人从总线抽头获利。\n> - **= +10 / −10**：命运洪流 / 命运债务——终焉卡触发全屏改写。\n>\n> **跨源质写入方**：占卜家（命运干扰 / 锚点）、偷盗者（嫁接命运 / 命运木马）、刺客（命运诅咒）、不眠者（厄难）也读写同一组枢纽状态；怪物是主调度方（见 §三 枢纽白名单）。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「判定形状」句式换形 29 张通用骨架卡——全库唯一可以理直气壮批量使用概率的途径：命运重掷让已经落下的伤害可能归位，厄运偏斜把刚失去的抹平，轮盘转过一格就把行动条退回去。每一次结算都是一次判定登记。",
   "sampleBuilds": [
     {
       "name": "A 幸运运营 🎲",

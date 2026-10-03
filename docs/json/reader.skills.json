@@ -22,7 +22,7 @@
         "模仿·智天使",
         "模仿·全知之眼"
       ],
-      "note": "payoffs 2026-09-26 评审：五模仿卡 filter.hasStatus:observed 限定目标兑换重放大效（一卡双职：兼 mimic 轴 enabler） ｜ 2026-09-29 环节⑤：observed 补层数引擎（身份 8→15）；enablers 核正（洞悉/全知·现在与过去不挂 observed 移出）；模仿·全知之眼补 observed 读层段（payoff 升 landed，读层 20→25，兼跨轴 mimic→analysis）"
+      "note": "payoffs 2026-09-26 评审：五模仿卡 filter.hasStatus:observed 限定目标兑换重放大效（一卡双职：兼 mimic 轴 enabler） ｜ 2026-09-29 环节⑤：observed 补层数引擎（身份 8→15）；enablers 核正（洞悉/全知·现在与过去不挂 observed 移出）；模仿·全知之眼补 observed 读层段（payoff 升 landed，读层 20→25，兼跨轴 mimic→analysis） ｜ 2026-10-03 骨架手术：先解析后放大换形 26 张（详见 designNote）"
     },
     "arcana": {
       "symbol": "📚",
@@ -33,7 +33,7 @@
         "省略步骤"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：ritual_expertise 单向自 buff 无下游；纯 enabler 轴 ｜ 2026-09-29 环节⑤：ritual_expertise 补层数引擎（身份 8→15）；省略步骤补产层段（产层 12→20）；纯产层轴真空甄别拍板接受（自 buff 直载无下游，payoffVacuumAccepted）",
+      "note": "payoffs 2026-09-26 评审：ritual_expertise 单向自 buff 无下游；纯 enabler 轴 ｜ 2026-09-29 环节⑤：ritual_expertise 补层数引擎（身份 8→15）；省略步骤补产层段（产层 12→20）；纯产层轴真空甄别拍板接受（自 buff 直载无下游，payoffVacuumAccepted） ｜ 2026-10-03 骨架手术：先解析后放大换形 26 张（详见 designNote）",
       "payoffVacuumAccepted": true
     },
     "mimic": {
@@ -48,7 +48,7 @@
         "模仿·预言家"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：mimic 状态 on_apply 自耗 echo 即全部 payoff 语义，无独立读层卡 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：on_apply 自耗 echo 即 payoff 语义（自产自耗闭环）；读层闭环维度记 12 分保底。",
+      "note": "payoffs 2026-09-26 评审：mimic 状态 on_apply 自耗 echo 即全部 payoff 语义，无独立读层卡 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：on_apply 自耗 echo 即 payoff 语义（自产自耗闭环）；读层闭环维度记 12 分保底。 ｜ 2026-10-03 骨架手术：先解析后放大换形 26 张（详见 designNote）",
       "payoffVacuumAccepted": true
     },
     "foresight": {
@@ -60,7 +60,7 @@
         "智慧权柄"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：foresight 为 charges 型自耗减伤载荷；optimal_choice/wisdom 各属其轴 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：charges 自耗减伤载荷，存在即收益；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：enablers 核正（规律·撬动/局势推演/规律权柄不挂 foresight 移出；智慧权柄补产层段，产层 12→20）；预言读 observed 跨轴（foresight→analysis）、读 weather_omen 跨系（→planter）；规律·撬动读 law_edit 跨系（→savant）",
+      "note": "payoffs 2026-09-26 评审：foresight 为 charges 型自耗减伤载荷；optimal_choice/wisdom 各属其轴 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：charges 自耗减伤载荷，存在即收益；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：enablers 核正（规律·撬动/局势推演/规律权柄不挂 foresight 移出；智慧权柄补产层段，产层 12→20）；预言读 observed 跨轴（foresight→analysis）、读 weather_omen 跨系（→planter）；规律·撬动读 law_edit 跨系（→savant） ｜ 2026-10-03 骨架手术：先解析后放大换形 26 张（详见 designNote）",
       "payoffVacuumAccepted": true
     }
   },
@@ -132,7 +132,7 @@
       "flagship": false,
       "lore": "序列9 阅读者 —— \"记忆力、理解力提升\"",
       "flavor": "你理解事物的速度比别人快上一截——别人的灵性还在积蓄，你的已经溢出来了。",
-      "describe": "战斗开始时，自身能量恢复 +0.2/tick，持续整场。",
+      "describe": "战斗开始时，自身能量恢复 +0.2/tick，持续整场。；模仿习得：下一式少读一段。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -143,13 +143,23 @@
           "duration": null,
           "target": "self",
           "note": "G14：单位 per tick"
+        },
+        {
+          "type": "modify_skill",
+          "skillRef": {
+            "selector": "self_last"
+          },
+          "costDelta": {
+            "energy": -1
+          },
+          "note": "模仿习得：下一式少读一段"
         }
       ],
       "sharedAcross": [
         "pryer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：理解力 = 学得快 → 能量恢复（G14 合规：/tick）。",
+      "conversionNotes": "翻译/语义：理解力 = 学得快 → 能量恢复（G14 合规：/tick）。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=stat）",
       "art": {
         "subject": "a reader tracing a speeding line of script that unwinds into light",
         "elements": [
@@ -171,7 +181,7 @@
       "flagship": false,
       "lore": "序列9 阅读者 —— \"能使用仪式魔法，大量阅读获得知识储备\"",
       "flavor": "你按着书上的步骤摆完最后一枚蜡烛——仪式完成，某种看不见的东西咬住了它。",
-      "describe": "对一名敌人造成 2 点精神伤害。",
+      "describe": "对一名敌人造成 2 点精神伤害。；先读透再落笔。",
       "cost": {
         "energy": 3,
         "cooldown": 10,
@@ -187,6 +197,12 @@
         "fallbackSort": "index_asc"
       },
       "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
         {
           "type": "damage",
           "element": "mental",
@@ -224,7 +240,7 @@
         "pryer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：本途径输出地基（火球术锚点：3 能/4 伤 ≈1.33 汇率）。升级阶梯 4→6→8（序列8 仪式魔法专家为第二档）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。",
+      "conversionNotes": "翻译/语义：本途径输出地基（火球术锚点：3 能/4 伤 ≈1.33 汇率）。升级阶梯 4→6→8（序列8 仪式魔法专家为第二档）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg）",
       "art": {
         "subject": "a robed reader finishing a candle circle as a spectral fang bites downward",
         "elements": [
@@ -246,7 +262,7 @@
       "flagship": false,
       "lore": "序列8 推理学员 —— \"观察力、逻辑思维能力提升\"",
       "flavor": "你顺着它挥刀的轨迹倒推回去，找到了那条最不合理的弧线——那里就是破绽。",
-      "describe": "使一名敌人易伤 20tick，造成 2 点精神伤害，并解析它（刷新技能快照 30tick）。",
+      "describe": "使一名敌人易伤 20tick，造成 2 点精神伤害，并解析它（刷新技能快照 30tick）。；先读透再落笔。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -262,6 +278,12 @@
         "fallbackSort": "atk_desc"
       },
       "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
         {
           "op": "sequence",
           "steps": [
@@ -288,7 +310,7 @@
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：推理 → 破绽=`vulnerable`（×1.3 受伤乘区）；直伤压到 2，资源买在标记上。刷新 `observed` 让解析/模仿串链。",
+      "conversionNotes": "翻译/语义：推理 → 破绽=`vulnerable`（×1.3 受伤乘区）；直伤压到 2，资源买在标记上。刷新 `observed` 让解析/模仿串链。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg）",
       "art": {
         "subject": "a detective-like scholar tracing a glowing dotted arc back to a flaw",
         "elements": [
@@ -310,9 +332,18 @@
       "flagship": false,
       "lore": "序列8 推理学员 —— \"观察力、逻辑思维能力提升\"（并作为序列6「模仿解析过的能力」的前置）",
       "flavor": "你盯着它的手——每一次挥击、每一个起手式，都被你记了下来。",
-      "describe": "你造成伤害、或受到伤害时，解析本次交互的对方单位（快照其最近一次施放的技能，30tick）。",
+      "describe": "你造成伤害、或受到伤害时，解析本次交互的对方单位（快照其最近一次施放的技能，30tick）。；先把它的状态抄录下来，再谈动摇。",
       "hook": "on_deal_damage",
       "effects": [
+        {
+          "type": "snapshot",
+          "fields": [
+            "hp",
+            "pools"
+          ],
+          "target": "target",
+          "note": "先解析：抄录目标当前状态"
+        },
         {
           "type": "mount_status",
           "statusId": "observed",
@@ -347,10 +378,7 @@
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": [
-        "双触发点（on_deal_damage / on_take_damage）：hook 字段填主触发点，第二触发点见 triggers 数组",
-        "翻译/语义：模仿轴起点与整条链素材来源。挂载时快照目标 `lastSkillRef`。G15-b 合规（即时节点）。⚠️ 依赖新增项 1（`observed` 快照）+ 2。"
-      ],
+      "conversionNotes": "双触发点（on_deal_damage / on_take_damage）：hook 字段填主触发点，第二触发点见 triggers 数组 ｜ 翻译/语义：模仿轴起点与整条链素材来源。挂载时快照目标 `lastSkillRef`。G15-b 合规（即时节点）。⚠️ 依赖新增项 1（`observed` 快照）+ 2。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=debuff）",
       "art": {
         "subject": "a scholar's eye reflecting every strike of his foe in miniature",
         "elements": [
@@ -372,7 +400,7 @@
       "flagship": false,
       "lore": "序列8 推理学员 —— \"成为仪式魔法专家\"",
       "flavor": "同样的步骤，你念出来的咒文比书上多出了三个音节——而效果，强了不止一点。",
-      "describe": "战斗开始时获得「仪式专精」：你造成的精神伤害 ×1.2，持续整场。",
+      "describe": "战斗开始时获得「仪式专精」：你造成的精神伤害 ×1.2，持续整场。；模仿习得：抄来的招式使起来更省力。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -380,13 +408,23 @@
           "statusId": "ritual_expertise",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "modify_skill",
+          "skillRef": {
+            "selector": "self_last"
+          },
+          "costDelta": {
+            "energy": -1
+          },
+          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "sharedAcross": [
         "pryer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：协同引擎，让仪式魔法后期仍占槽。按元素过滤乘区（新增项 18）。",
+      "conversionNotes": "翻译/语义：协同引擎，让仪式魔法后期仍占槽。按元素过滤乘区（新增项 18）。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff）",
       "art": {
         "subject": "a reader chanting over a grimoire, extra syllables glowing between his lips",
         "elements": [
@@ -408,7 +446,7 @@
       "flagship": false,
       "lore": "序列9 阅读者 —— \"大量阅读获得知识储备\"",
       "flavor": "你翻遍脑中那座图书馆，终于抽出了此刻恰好有用的那一册。",
-      "describe": "自身能量 +4。",
+      "describe": "自身能量 +4。；模仿习得：下一式更省力。",
       "cost": {
         "energy": 1,
         "cooldown": 15,
@@ -429,13 +467,23 @@
           "value": 4,
           "mode": "delta",
           "target": "self"
+        },
+        {
+          "type": "modify_skill",
+          "skillRef": {
+            "selector": "self_last"
+          },
+          "costDelta": {
+            "energy": -1
+          },
+          "note": "模仿习得：下一式更省力"
         }
       ],
       "sharedAcross": [
         "pryer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：设定性描述落成资源，润滑\"解析→模仿\"两技能链路。",
+      "conversionNotes": "翻译/语义：设定性描述落成资源，润滑\"解析→模仿\"两技能链路。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=res）",
       "art": {
         "subject": "a reader pulling exactly one glowing tome from a vast mental library",
         "elements": [
@@ -457,7 +505,7 @@
       "flagship": false,
       "lore": "序列7 守知者 —— \"武器精通、格斗大师、推理大师、仪式魔法大师\"",
       "flavor": "任何东西到了你手里都能杀人——而你现在手里，恰好握着一把剑。",
-      "describe": "战斗开始时，自身攻击 +2，持续整场（不可驱散）。",
+      "describe": "战斗开始时，自身攻击 +2，持续整场（不可驱散）。；模仿习得：下一式少读一段。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -468,10 +516,20 @@
           "duration": null,
           "target": "self",
           "note": "modify_stat 账本条目，非 StatusInstance，天然不可驱散"
+        },
+        {
+          "type": "modify_skill",
+          "skillRef": {
+            "selector": "self_last"
+          },
+          "costDelta": {
+            "energy": -1
+          },
+          "note": "模仿习得：下一式少读一段"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：原著招牌\"拿着武器站前排的学者\"，拆四条技能分别承载。整场常驻不可驱散。",
+      "conversionNotes": "翻译/语义：原著招牌\"拿着武器站前排的学者\"，拆四条技能分别承载。整场常驻不可驱散。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=stat）",
       "art": {
         "subject": "a scholar in reading robes gripping a sword with textbook-perfect form",
         "elements": [
@@ -493,7 +551,7 @@
       "flagship": false,
       "lore": "序列7 守知者 —— \"武器精通、格斗大师……附带格斗和器械能力\"",
       "flavor": "你贴近它、卸力、反手一送——它踉跄着退开，而你已经在等它的下一招。",
-      "describe": "对最前排一名敌人造成 4 点物理伤害，击退其行动条 50。",
+      "describe": "对最前排一名敌人造成 4 点物理伤害，击退其行动条 50。；先读透再落笔。",
       "cost": {
         "energy": 3,
         "cooldown": 10,
@@ -509,6 +567,12 @@
         }
       },
       "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
         {
           "op": "sequence",
           "steps": [
@@ -529,7 +593,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：本途径唯一物理直伤，G8 合规（近战攻击进程不调 move）。",
+      "conversionNotes": "翻译/语义：本途径唯一物理直伤，G8 合规（近战攻击进程不调 move）。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg）",
       "art": {
         "subject": "a scholar redirecting a lunging foe with a flawless deflecting palm",
         "elements": [
@@ -625,7 +689,7 @@
       "flagship": false,
       "lore": "序列6 博学者 —— \"『解析』：解析对手非凡能力，辨识具体情况和缺陷\"",
       "flavor": "你把它身上那层\"非凡\"剥开来看——里面是什么、缺了什么，一目了然。",
-      "describe": "驱散一名敌人 1 个增益状态，防御 -2（20tick），并解析它（刷新技能快照 30tick）。",
+      "describe": "驱散一名敌人 1 个增益状态，防御 -2（20tick），并解析它（刷新技能快照 30tick）。；先把它的状态抄录下来，再谈动摇。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -641,6 +705,15 @@
         "fallbackSort": "atk_desc"
       },
       "effects": [
+        {
+          "type": "snapshot",
+          "fields": [
+            "hp",
+            "pools"
+          ],
+          "target": "target",
+          "note": "先解析：抄录目标当前状态"
+        },
         {
           "op": "sequence",
           "steps": [
@@ -675,7 +748,7 @@
         "pryer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：单点精确剥增益+降防，刷新 `observed` 供模仿。",
+      "conversionNotes": "翻译/语义：单点精确剥增益+降防，刷新 `observed` 供模仿。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=debuff）",
       "art": {
         "subject": "a scholar peeling glowing layers off a foe like translucent pages",
         "elements": [
@@ -697,7 +770,7 @@
       "flagship": false,
       "lore": "序列6 博学者 —— \"『模仿』：有几率模仿解析过的能力（20%–50% 效果） / 无使用次数限制\"",
       "flavor": "你照着它刚刚那一招比划了一下——形似而神不足，但确实打中了。",
-      "describe": "模仿一名已解析敌人最近一次施放的技能（20% 效力）；50% 概率成功，失败或快照为空时改为造成 2 点精神伤害。",
+      "describe": "模仿一名已解析敌人最近一次施放的技能（20% 效力）；50% 概率成功，失败或快照为空时改为造成 2 点精神伤害。；先读透再落笔。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -716,6 +789,12 @@
         "fallbackSort": "atk_desc"
       },
       "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
         {
           "type": "mount_status",
           "statusId": "mimic",
@@ -775,7 +854,7 @@
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：模仿线第一档，概率仅决定\"是否触发\"（R5 合规）。模仿轴 enabler+payload。⚠️ 依赖新增项 1/4/16。",
+      "conversionNotes": "翻译/语义：模仿线第一档，概率仅决定\"是否触发\"（R5 合规）。模仿轴 enabler+payload。⚠️ 依赖新增项 1/4/16。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg）",
       "art": {
         "subject": "a scholar mirroring an enemy's strike with a clumsy but true imitation",
         "elements": [
@@ -847,7 +926,7 @@
       "flagship": false,
       "lore": "序列7 守知者 —— \"武器精通、格斗大师、推理大师、仪式魔法大师\"",
       "flavor": "这次的仪式足足画了七重阵纹——阵成之时，你在阵心，而灾祸落在它头上。",
-      "describe": "对一名敌人造成 4 点精神伤害，自身获得 4 点护盾（15tick）。",
+      "describe": "对一名敌人造成 4 点精神伤害，自身获得 4 点护盾（15tick）。；先读透再落笔。",
       "cost": {
         "energy": 4,
         "cooldown": 20,
@@ -863,6 +942,12 @@
         "fallbackSort": "hp_desc"
       },
       "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
         {
           "op": "sequence",
           "steps": [
@@ -885,11 +970,7 @@
         "pryer"
       ],
       "tentative": false,
-      "conversionNotes": [
-        "与序列9「仪式魔法」是不同技能（非升级档），可同时占槽",
-        "翻译/语义：仪式魔法大师版：伤害 4→6 并附护盾（仪式兼具守护）。",
-        "直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→4（位格3 基准4）。条件/读层追加段不动。"
-      ],
+      "conversionNotes": "与序列9「仪式魔法」是不同技能（非升级档），可同时占槽 ｜ 翻译/语义：仪式魔法大师版：伤害 4→6 并附护盾（仪式兼具守护）。 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→4（位格3 基准4）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg）",
       "art": {
         "subject": "a reader standing at the heart of a seven-layered array as disaster falls outward",
         "elements": [
@@ -911,7 +992,7 @@
       "flagship": true,
       "lore": "序列5 秘术导师 —— \"掌握独特罕见的秘术，能自行发明创造法术\"",
       "flavor": "书上没有这一条——因为它是你昨晚自己写出来的。",
-      "describe": "释放你自创的法术（获得时三选一）：锋锐——5 点精神伤害；守护——3 点精神伤害并为自身与相邻友军套 5 点护盾（15tick）；洞察——3 点精神伤害、易伤 20tick 并解析目标。",
+      "describe": "释放你自创的法术（获得时三选一）：锋锐——5 点精神伤害；守护——3 点精神伤害并为自身与相邻友军套 5 点护盾（15tick）；洞察——3 点精神伤害、易伤 20tick 并解析目标。；先读透再落笔。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -927,6 +1008,12 @@
         "fallbackSort": "atk_desc"
       },
       "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
         {
           "type": "damage",
           "element": "mental",
@@ -991,7 +1078,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"自行发明创造\"→变体档选择。依赖新增项 13。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 7→5（位格5 基准5）。条件/读层追加段不动。",
+      "conversionNotes": "翻译/语义：\"自行发明创造\"→变体档选择。依赖新增项 13。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 7→5（位格5 基准5）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg）",
       "art": {
         "subject": "a scholar writing a brand-new spell into the air with a glowing pen",
         "elements": [
@@ -1013,7 +1100,7 @@
       "flagship": false,
       "lore": "序列5 秘术导师 —— \"可省略施法材料和步骤\"",
       "flavor": "那些繁琐的材料、冗长的咒文，你早就不需要了——你想，于是它发生。",
-      "describe": "战斗开始时获得「省略步骤」：你的本途径技能能量消耗 -1（最低 1），持续整场。；并获得「仪式专精」整场：精神伤害 ×1.2。",
+      "describe": "战斗开始时获得「省略步骤」：你的本途径技能能量消耗 -1（最低 1），持续整场。；并获得「仪式专精」整场：精神伤害 ×1.2。；模仿习得：抄来的招式使起来更省力。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1028,6 +1115,16 @@
           "duration": null,
           "target": "self",
           "note": "省略的是步骤，专精在其中（环节⑤ 2026-09-29 补产层段）"
+        },
+        {
+          "type": "modify_skill",
+          "skillRef": {
+            "selector": "self_last"
+          },
+          "costDelta": {
+            "energy": -1
+          },
+          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
@@ -1038,7 +1135,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：连发引擎，让\"解析→模仿\"链路跑得起来。⚠️ 依赖新增项 11（🟡）。",
+      "conversionNotes": "翻译/语义：连发引擎，让\"解析→模仿\"链路跑得起来。⚠️ 依赖新增项 11（🟡）。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff）",
       "art": {
         "subject": "a reader snapping his fingers as ritual candles and ingredients dissolve into light",
         "elements": [
@@ -1060,7 +1157,7 @@
       "flagship": false,
       "lore": "序列4 预言家 —— \"『预言』能力：看到未来最可能的几种可能性\"",
       "flavor": "你在无数条岔路里看见了最可能的那一条——同伴会先出手，而它会慢上半拍。",
-      "describe": "指定一名友军：其行动条 +25、获得「预知」（下次受击伤害 ×0.5，25tick）；敌方主目标行动条 -20。；若目标已解析，预知的压制，其行动条再 -10；若自身带天时预兆，天时共鸣，友军行动条额外 +10。",
+      "describe": "指定一名友军：其行动条 +25、获得「预知」（下次受击伤害 ×0.5，25tick）；敌方主目标行动条 -20。；若目标已解析，预知的压制，其行动条再 -10；若自身带天时预兆，天时共鸣，友军行动条额外 +10。；模仿习得：抄来的招式使起来更省力。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1149,10 +1246,20 @@
               "else": []
             }
           ]
+        },
+        {
+          "type": "modify_skill",
+          "skillRef": {
+            "selector": "self_last"
+          },
+          "costDelta": {
+            "energy": -1
+          },
+          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：预知=节奏改写。G5/G6 合规（推友军不自推）。依赖新增项 7/3。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：预知=节奏改写。G5/G6 合规（推友军不自推）。依赖新增项 7/3。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff）",
       "art": {
         "subject": "a prophet watching branching future paths unfold above an hourglass",
         "elements": [
@@ -1174,7 +1281,7 @@
       "flagship": false,
       "lore": "序列4 预言家 —— \"『星界秘术』：利用星界力量创造秘术\"",
       "flavor": "你从星界那侧借来一点东西——它不属于这个世界，所以这个世界挡不住它。",
-      "describe": "全体敌人受到 3 点精神伤害，并失去 2 点能量（下限 0）。",
+      "describe": "全体敌人受到 3 点精神伤害，并失去 2 点能量（下限 0）。；先读透再落笔。",
       "cost": {
         "energy": 4,
         "cooldown": 20,
@@ -1189,6 +1296,12 @@
         }
       },
       "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
         {
           "op": "sequence",
           "steps": [
@@ -1213,7 +1326,7 @@
         "pryer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：本途径唯一 AOE；星界侵蚀=削能。依赖新增项 14。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：本途径唯一 AOE；星界侵蚀=削能。依赖新增项 14。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg）",
       "art": {
         "subject": "a reader drawing pale star-fire from a rift in the night sky",
         "elements": [
@@ -1235,7 +1348,7 @@
       "flagship": false,
       "lore": "序列5 秘术导师 —— \"模仿效果达 60%\"",
       "flavor": "你把它那一招学了个六成——力道差了些，但路数分毫不差。",
-      "describe": "必定成功：模仿一名已解析敌人最近一次施放的技能（60% 效力）；快照为空时改为造成 3 点精神伤害。",
+      "describe": "必定成功：模仿一名已解析敌人最近一次施放的技能（60% 效力）；快照为空时改为造成 3 点精神伤害。；先读透再落笔。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -1255,6 +1368,12 @@
       },
       "effects": [
         {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
+        {
           "type": "mount_status",
           "statusId": "mimic",
           "duration": 15,
@@ -1270,10 +1389,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": [
-        "与模仿·初解是同一条技能线（B6 duplicatePolicy:upgrade，0.2→0.5→0.6→0.8→0.9→1.0，不额外占槽）",
-        "翻译/语义：模仿线第二档，必定成功。与初解同线 B6 升级。"
-      ],
+      "conversionNotes": "与模仿·初解是同一条技能线（B6 duplicatePolicy:upgrade，0.2→0.5→0.6→0.8→0.9→1.0，不额外占槽） ｜ 翻译/语义：模仿线第二档，必定成功。与初解同线 B6 升级。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg）",
       "art": {
         "subject": "a scholar replicating an enemy's spell with a near-perfect ghost hand",
         "elements": [
@@ -1295,7 +1411,7 @@
       "flagship": false,
       "lore": "序列4 预言家 —— \"模仿效果达 80%\"",
       "flavor": "你不但学会了它的招式，还学会了它使出那一招时的想法——八成，已经足以乱真。",
-      "describe": "模仿一名已解析敌人最近一次施放的技能（80% 效力，附加效果自此档起完整保留）；快照为空时改为造成 4 点精神伤害。",
+      "describe": "模仿一名已解析敌人最近一次施放的技能（80% 效力，附加效果自此档起完整保留）；快照为空时改为造成 4 点精神伤害。；先读透再落笔。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -1315,6 +1431,12 @@
       },
       "effects": [
         {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
+        {
           "type": "mount_status",
           "statusId": "mimic",
           "duration": 15,
@@ -1330,7 +1452,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：0.8 为效果保留门槛（附加效果完整保留）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：0.8 为效果保留门槛（附加效果完整保留）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg）",
       "art": {
         "subject": "a reader replaying a foe's technique while sharing its very thoughts",
         "elements": [
@@ -1352,9 +1474,18 @@
       "flagship": false,
       "lore": "序列5 秘术导师 —— （职业名「导师」，及\"掌握独特罕见的秘术\"）",
       "flavor": "你把一段咒文压进同伴的掌心——他不懂原理，但他念得出来，而且好用。",
-      "describe": "战斗开始时，使攻击力最高的一名其他友军伤害 ×1.2，持续整场。",
+      "describe": "战斗开始时，使攻击力最高的一名其他友军伤害 ×1.2，持续整场。；先把它的状态抄录下来，再谈动摇。",
       "hook": "on_battle_start",
       "effects": [
+        {
+          "type": "snapshot",
+          "fields": [
+            "hp",
+            "pools"
+          ],
+          "target": "target",
+          "note": "先解析：抄录目标当前状态"
+        },
         {
           "type": "mount_status",
           "statusId": "amplify",
@@ -1365,10 +1496,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": [
-        "原著存疑标注：对照表序列5 能力栏无\"传授他人\"描述，本条按职业名「导师」推断，是本稿对原著最大的一处推断",
-        "翻译/语义：复用 F14 `tutelage`。⚠️ 原著推断（见遗留）。依赖新增项 14。"
-      ],
+      "conversionNotes": "原著存疑标注：对照表序列5 能力栏无\"传授他人\"描述，本条按职业名「导师」推断，是本稿对原著最大的一处推断 ｜ 翻译/语义：复用 F14 `tutelage`。⚠️ 原著推断（见遗留）。依赖新增项 14。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=debuff）",
       "art": {
         "subject": "a mentor pressing a glowing line of scripture into a companion's palm",
         "elements": [
@@ -1473,7 +1601,7 @@
       "flagship": false,
       "lore": "序列3 洞悉者 —— \"『洞悉』：洞悉世界规则，敌人弱点暴露无遗\"",
       "flavor": "你看见的不再是一个敌人，而是一整套正在运转的规则——而这套规则，此刻到处都是裂缝。",
-      "describe": "全体敌人易伤 25tick、防御 -3（25tick）。",
+      "describe": "全体敌人易伤 25tick、防御 -3（25tick）。；先把它的状态抄录下来，再谈动摇。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1488,6 +1616,15 @@
         }
       },
       "effects": [
+        {
+          "type": "snapshot",
+          "fields": [
+            "hp",
+            "pools"
+          ],
+          "target": "target",
+          "note": "先解析：抄录目标当前状态"
+        },
         {
           "op": "sequence",
           "steps": [
@@ -1509,7 +1646,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：规律轴旗舰 payoff：全体易伤+降防。依赖新增项 14。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：规律轴旗舰 payoff：全体易伤+降防。依赖新增项 14。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=debuff）",
       "art": {
         "subject": "an insight master seeing enemies as cracked clockwork rule-machines",
         "elements": [
@@ -1531,7 +1668,7 @@
       "flagship": false,
       "lore": "序列3 洞悉者 —— \"掌握『规律』权柄 / 通过撬动规律解决问题\"",
       "flavor": "你没有去打破它的甲——你只是轻轻拨动了一下\"甲能挡住什么\"这条规则。",
-      "describe": "使一名敌人护甲 -5、全元素抗性 -20（20tick），期间你对其造成的伤害不结算护盾吸收。（自身带法则修订则延长至 25tick，规律改写加持）。",
+      "describe": "使一名敌人护甲 -5、全元素抗性 -20（20tick），期间你对其造成的伤害不结算护盾吸收。（自身带法则修订则延长至 25tick，规律改写加持）。；模仿习得：抄来的招式使起来更省力。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1571,10 +1708,20 @@
               "duration": 20
             }
           ]
+        },
+        {
+          "type": "modify_skill",
+          "skillRef": {
+            "selector": "self_last"
+          },
+          "costDelta": {
+            "energy": -1
+          },
+          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：撬动规律=让规则失灵（降甲/降全抗/穿透护盾）。依赖新增项 5/6。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：撬动规律=让规则失灵（降甲/降全抗/穿透护盾）。依赖新增项 5/6。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff）",
       "art": {
         "subject": "a scholar flicking one line of the world's laws so a foe's armor unravels",
         "elements": [
@@ -1596,7 +1743,7 @@
       "flagship": false,
       "lore": "序列2 智天使 —— \"模仿效果达 90%\"",
       "flavor": "九成。除了那一点点只属于它自己的东西，你把它整个搬了过来。",
-      "describe": "模仿一名已解析敌人最近一次施放的技能（90% 效力，状态持续不再打折）；快照为空时改为造成 5 点精神伤害。",
+      "describe": "模仿一名已解析敌人最近一次施放的技能（90% 效力，状态持续不再打折）；快照为空时改为造成 5 点精神伤害。；先读透再落笔。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -1616,6 +1763,12 @@
       },
       "effects": [
         {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
+        {
           "type": "mount_status",
           "statusId": "mimic",
           "duration": 15,
@@ -1631,7 +1784,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：90%=第二道门槛（状态 duration 不再打折）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：90%=第二道门槛（状态 duration 不再打折）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg）",
       "art": {
         "subject": "a cherub-faced scholar copying a foe down to its shadow",
         "elements": [
@@ -1653,7 +1806,7 @@
       "flagship": true,
       "lore": "序列2 智天使 —— \"『智慧』权柄：总能提前看清局势，做出最正确选择\"",
       "flavor": "你永远比战场快半步——因为你站在的那一步，本来就是最正确的那一步。",
-      "describe": "战斗开始时获得「智慧」：你的攻击与技能必定命中、伤害 ×1.15，持续整场；自身行动条速率 +8，持续整场。；并获得「预知」25tick（受击伤害 ×0.5，一次）。",
+      "describe": "战斗开始时获得「智慧」：你的攻击与技能必定命中、伤害 ×1.15，持续整场；自身行动条速率 +8，持续整场。；并获得「预知」25tick（受击伤害 ×0.5，一次）。；模仿习得：抄来的招式使起来更省力。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1682,6 +1835,16 @@
               "note": "「总能提前看清局势」；INV-S5 合规：改 gauge.rate 源属性；G5/G6 合规：on_battle_start 被动"
             }
           ]
+        },
+        {
+          "type": "modify_skill",
+          "skillRef": {
+            "selector": "self_last"
+          },
+          "costDelta": {
+            "energy": -1
+          },
+          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
@@ -1692,7 +1855,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：预知=节奏+必中+最优解。依赖新增项 3/8。",
+      "conversionNotes": "翻译/语义：预知=节奏+必中+最优解。依赖新增项 3/8。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff）",
       "art": {
         "subject": "a wise commander standing half a step ahead on a glowing path of best choices",
         "elements": [
@@ -1714,7 +1877,7 @@
       "flagship": false,
       "lore": "序列2 智天使 —— \"总能提前看清局势，做出最正确选择\"（把\"最正确选择\"施加于同伴）",
       "flavor": "你在他耳边说了一句话——于是他做出了这一整场里最正确的那次出手。",
-      "describe": "指定一名其他友军：行动条 +30，其下一次造成的伤害 ×1.4（25tick 内）。",
+      "describe": "指定一名其他友军：行动条 +30，其下一次造成的伤害 ×1.4（25tick 内）。；模仿习得：抄来的招式使起来更省力。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1747,10 +1910,20 @@
               "duration": 25
             }
           ]
+        },
+        {
+          "type": "modify_skill",
+          "skillRef": {
+            "selector": "self_last"
+          },
+          "costDelta": {
+            "energy": -1
+          },
+          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：智慧权柄对外版。G5/G6 合规。依赖新增项 4/14。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：智慧权柄对外版。G5/G6 合规。依赖新增项 4/14。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff）",
       "art": {
         "subject": "a whispered word from a sage guiding an ally's strike onto the perfect line",
         "elements": [
@@ -1772,7 +1945,7 @@
       "flagship": false,
       "lore": "序列3 洞悉者 —— \"掌握『规律』权柄\"",
       "flavor": "你写在敌人身上的东西，就是规律——而规律，不会被轻易抹去。",
-      "describe": "战斗开始时获得「规律权柄」：你施加的减益类状态不可被驱散，持续整场。",
+      "describe": "战斗开始时获得「规律权柄」：你施加的减益类状态不可被驱散，持续整场。；模仿习得：抄来的招式使起来更省力。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1780,10 +1953,20 @@
           "statusId": "law_authority",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "modify_skill",
+          "skillRef": {
+            "selector": "self_last"
+          },
+          "costDelta": {
+            "energy": -1
+          },
+          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：不可违抗=不可驱散，对抗驱散型对手核心资产。依赖新增项 9。",
+      "conversionNotes": "翻译/语义：不可违抗=不可驱散，对抗驱散型对手核心资产。依赖新增项 9。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff）",
       "art": {
         "subject": "a judge-like scholar writing unerasable decrees onto the battlefield",
         "elements": [
@@ -1849,7 +2032,7 @@
       "flagship": true,
       "lore": "序列1 全知之眼 —— \"『星界导师』权柄：触及星界概念修改目标行为\"",
       "flavor": "你伸手在星界那侧改了一个概念——它抬起刀，却再也想不起来要砍向哪里。",
-      "describe": "使一名敌人攻击 -3（30tick），并修改其行为概念 30tick：接下来 2 次攻击打向空处。",
+      "describe": "使一名敌人攻击 -3（30tick），并修改其行为概念 30tick：接下来 2 次攻击打向空处。；先把它的状态抄录下来，再谈动摇。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1865,6 +2048,15 @@
         "fallbackSort": "atk_desc"
       },
       "effects": [
+        {
+          "type": "snapshot",
+          "fields": [
+            "hp",
+            "pools"
+          ],
+          "target": "target",
+          "note": "先解析：抄录目标当前状态"
+        },
         {
           "op": "sequence",
           "steps": [
@@ -1884,7 +2076,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：改写\"行为\"概念=target_override→first_empty。依赖新增项 15。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：改写\"行为\"概念=target_override→first_empty。依赖新增项 15。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=debuff）",
       "art": {
         "subject": "a tutor editing a foe's intent in the star-realm, its blade swinging at empty air",
         "elements": [
@@ -1906,7 +2098,7 @@
       "flagship": false,
       "lore": "序列1 全知之眼 —— \"模仿效果达 100%（不涉及权柄）\"",
       "flavor": "一模一样。除了那一丝只属于权柄的东西——而那东西，你本来也不打算要。",
-      "describe": "完美模仿一名已解析敌人最近一次施放的技能（100% 效力，权柄类效果不被复制）；快照为空时改为造成 6 点精神伤害。；若目标已解析，解析透彻，追加 2 点精神伤害。",
+      "describe": "完美模仿一名已解析敌人最近一次施放的技能（100% 效力，权柄类效果不被复制）；快照为空时改为造成 6 点精神伤害。；若目标已解析，解析透彻，追加 2 点精神伤害。；先读透再落笔。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -1925,6 +2117,12 @@
         "fallbackSort": "atk_desc"
       },
       "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
         {
           "type": "mount_status",
           "statusId": "mimic",
@@ -1961,7 +2159,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：模仿顶点，100%。依赖新增项 1/4/16。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0",
+      "conversionNotes": "翻译/语义：模仿顶点，100%。依赖新增项 1/4/16。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg）",
       "art": {
         "subject": "a scholar producing a flawless double of a foe's ultimate technique",
         "elements": [
@@ -2187,7 +2385,7 @@
       ]
     }
   ],
-  "designNote": "> **全知/规律/解析 主题贯穿**：知识轴承载\"解析/全知\"的信息面，规律轴承载\"规律权柄\"的改写面，预言轴承载\"预知/最优解\"的节奏面——三者共同构成阅读者的**全知**内核；模仿轴是其招牌的\"以彼之道\"。\n> **混沌海系签名维度 = 放牧(Grazing)**（见下方维度说明）：阅读者本身无 `放牧` 轴，但经 combo 卡（【解析·跨系共鸣】）读取友方秘祈人的 `放牧` 槽，实现\"解析被放牧灵魂 → 模仿其能力\"的跨系联动。\n> 阅读者作为混沌海途径，在 §三 通过 `crossPathway:true` 读取 `放牧`/`寄生`/`提线木偶` 等枢纽状态，形成跨系 combo（非复刻）。",
+  "designNote": "> **全知/规律/解析 主题贯穿**：知识轴承载\"解析/全知\"的信息面，规律轴承载\"规律权柄\"的改写面，预言轴承载\"预知/最优解\"的节奏面——三者共同构成阅读者的**全知**内核；模仿轴是其招牌的\"以彼之道\"。\n> **混沌海系签名维度 = 放牧(Grazing)**（见下方维度说明）：阅读者本身无 `放牧` 轴，但经 combo 卡（【解析·跨系共鸣】）读取友方秘祈人的 `放牧` 槽，实现\"解析被放牧灵魂 → 模仿其能力\"的跨系联动。\n> 阅读者作为混沌海途径，在 §三 通过 `crossPathway:true` 读取 `放牧`/`寄生`/`提线木偶` 等枢纽状态，形成跨系 combo（非复刻）。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「先解析后放大」句式换形 26 张通用骨架卡——先解析后放大——输出之前必先读透目标（揭示底牌 / 抄录当前状态），增益则写成「模仿习得」的折扣：抄来的招式使起来更省力。**协作面**：折扣与解析结论可被队友沿用。",
   "sampleBuilds": [
     {
       "name": "A 守知学者 🧠",
