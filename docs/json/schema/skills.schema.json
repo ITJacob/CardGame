@@ -642,20 +642,22 @@
         },
         "scope": {
           "type": "string",
-          "pattern": "^(point|front(_[1-3])?|behind(_[1-3])?|cross_lane|diamond(_[1-2])?|whole_lane|board|none)$",
-          "description": "以 anchor 为原点的几何范围。缺省=whole_lane（被施法侧整条半场 4 格）。point=仅锚点；front_n/behind_n=锚点含前/后 n 格（front=朝中线，behind=朝己方后排；敌锚点 behind_n=前 n 敌）；cross_lane=跨路并排；diamond_n=曼哈顿距离≤n；whole_lane=被施法侧半场；board=全场 16 格；none=无目标。"
+          "pattern": "^(point|front(_[1-3])?|behind(_[1-3])?|cross_lane_row|cross_lane|diamond(_[1-2])?|chain(_[1-3])?|whole_lane|board|none)$",
+          "description": "以 anchor 为原点的几何范围。缺省=whole_lane（被施法侧整条半场 4 格）。point=仅锚点；front_n/behind_n=锚点含前/后 n 格（front=朝中线，behind=朝己方后排；敌锚点 behind_n=前 n 敌）；cross_lane=跨路并排（同 index 的另一路 1 格）；cross_lane_row=另一路整条半场 4 格（提案F）；diamond_n=曼哈顿距离≤n；chain_n=沿相邻/链接跳跃 n 次（传染/连锁闪电/诅咒链接，提案E）；whole_lane=被施法侧半场；board=全场 16 格；none=无目标。"
         },
         "filter": {
           "$ref": "#/$defs/unitFilter"
         },
         "anchor": {
-          "description": "几何原点/参照，只回答『从哪量几何』。缺省按 faction 推导（enemy→enemy_front，ally/self→self）。specific_unit(<id>)/fixed_cell(<index>)/unit_doppelganger 等动态寻址用 anyOf 放宽为字符串。净化后不再承载阵营/排序/位置（§10.1）。",
+          "description": "几何原点/参照，只回答『从哪量几何』。缺省按 faction 推导（enemy→enemy_front，ally/self→self）。ally_front=我方同路排首（守护/替承/前排增益语义，2026-10-03 §轴签名 提案A）；enemy_back=敌方同路最后排（暗杀/狙击后排，提案B）。specific_unit(<id>)/fixed_cell(<index>)/unit_doppelganger 等动态寻址用 anyOf 放宽为字符串。净化后不再承载阵营/排序/位置（§10.1）。",
           "anyOf": [
             {
               "enum": [
                 "self",
                 "caster",
                 "enemy_front",
+                "ally_front",
+                "enemy_back",
                 "specific_unit",
                 "spawned_unit",
                 "last_dead_ally",
@@ -692,13 +694,23 @@
         },
         "pickCount": {
           "oneOf": [
-            {"type": "integer", "minimum": 1},
-            {"enum": ["all"]}
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "enum": [
+                "all"
+              ]
+            }
           ],
           "description": "提交的目标数量（DDD I 节点 CandidatePool.pickCount）。1=取 1（单体），'all'=取框内全部（群体）。缺省=1。"
         },
         "selectionMode": {
-          "enum": ["manual", "auto"],
+          "enum": [
+            "manual",
+            "auto"
+          ],
           "description": "谁拍板：manual=框定范围内由玩家选（候选数>pickCount 时等待）；auto=引擎按 sort 取前 pickCount。"
         }
       }
@@ -841,6 +853,30 @@
           "items": {
             "$ref": "#/$defs/unitFilter"
           }
+        },
+        "rankBelowCaster": {
+          "type": "boolean",
+          "description": "位格筛选：仅位格低于施法者者可入选（原著高位格压制低位格；§1.4 位格判定 + 轴签名提案C）。"
+        },
+        "rankAboveCaster": {
+          "type": "boolean",
+          "description": "位格筛选：仅位格高于施法者者可入选（提案C）。"
+        },
+        "rankMax": {
+          "type": "integer",
+          "description": "位格筛选：位格上限（含），提案C。"
+        },
+        "rankMin": {
+          "type": "integer",
+          "description": "位格筛选：位格下限（含），提案C。"
+        },
+        "gender": {
+          "enum": [
+            "any",
+            "male",
+            "female"
+          ],
+          "description": "性别筛选（魔女/猎人系原著机制；取值域与 card.gender 同源），提案D。"
         }
       }
     },

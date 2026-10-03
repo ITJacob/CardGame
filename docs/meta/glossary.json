@@ -341,12 +341,33 @@
         "none": {
           "zh": "无",
           "brief": "无作用对象（目标完全由 effectTarget 二级寻址）"
+        },
+        "cross_lane_row": {
+          "zh": "另一路整条",
+          "brief": "另一条路的整条半场 4 格（跨路 AoE；提案F）"
         }
       },
       "patterns": [
-        { "match": "front_", "zh": "前方{1}格", "brief": "锚点朝中线方向前 n 格（敌锚点=最前 n 敌）" },
-        { "match": "behind_", "zh": "后方{1}格", "brief": "锚点朝己方后排方向后 n 格（敌锚点=前 n 敌之后）" },
-        { "match": "diamond_", "zh": "菱形{1}格", "brief": "锚点周围菱形外延 n 圈" }
+        {
+          "match": "front_",
+          "zh": "前方{1}格",
+          "brief": "锚点朝中线方向前 n 格（敌锚点=最前 n 敌）"
+        },
+        {
+          "match": "behind_",
+          "zh": "后方{1}格",
+          "brief": "锚点朝己方后排方向后 n 格（敌锚点=前 n 敌之后）"
+        },
+        {
+          "match": "diamond_",
+          "zh": "菱形{1}格",
+          "brief": "锚点周围菱形外延 n 圈"
+        },
+        {
+          "match": "chain_",
+          "zh": "连锁{1}跳",
+          "brief": "沿相邻/链接跳跃 n 次（传染/连锁闪电/诅咒链接；提案E）"
+        }
       ]
     },
     "laneRef": {
@@ -458,6 +479,14 @@
         "index_asc_same_faction": {
           "zh": "同阵营首位",
           "brief": "同阵营内按站位升序取第一个"
+        },
+        "ally_front": {
+          "zh": "我方排首",
+          "brief": "我方同路最靠中线的单位（守护/替承/前排增益的原点；提案A）"
+        },
+        "enemy_back": {
+          "zh": "敌方后排",
+          "brief": "敌方同路最远离中线的单位（暗杀/狙击后排的原点；提案B）"
         }
       }
     },
@@ -522,6 +551,26 @@
         "excludeSelf": {
           "zh": "排除自身",
           "brief": "布尔；从候选池剔除施法者自己（位于 unitRequest 层，不在 filter 内）"
+        },
+        "rankBelowCaster": {
+          "zh": "位格低于我",
+          "brief": "仅位格低于施法者者可入选（高位格压制；提案C）"
+        },
+        "rankAboveCaster": {
+          "zh": "位格高于我",
+          "brief": "仅位格高于施法者者可入选（提案C）"
+        },
+        "rankMax": {
+          "zh": "位格上限",
+          "brief": "位格 ≤ N 者可入选（提案C）"
+        },
+        "rankMin": {
+          "zh": "位格下限",
+          "brief": "位格 ≥ N 者可入选（提案C）"
+        },
+        "gender": {
+          "zh": "性别",
+          "brief": "按性别筛选（取值域 any/male/female，与 card.gender 同源；提案D）"
         }
       }
     },
