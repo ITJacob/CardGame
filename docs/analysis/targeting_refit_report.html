@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>选靶回归重构报告</title>
+<style>
+  *{box-sizing:border-box;}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;margin:0;background:#f5f6f8;color:#1f2329;}
+  .wrap{max-width:1180px;margin:0 auto;padding:18px 14px 60px;}
+  h1{font-size:20px;margin:0 0 4px;}
+  .sub{color:#6b7280;font-size:13px;margin-bottom:14px;}
+  .dec{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.7;}
+  .dec ol{margin:6px 0 0;padding-left:20px;}
+  .sum{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .pill{background:#eef2ff;border:1px solid #c7d2fe;color:#3730a3;border-radius:20px;padding:4px 12px;font-size:12px;}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+  select,input{padding:7px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;background:#fff;}
+  .grid{display:grid;grid-template-columns:96px 1fr 92px 110px 130px 200px;gap:1px;background:#e5e7eb;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;font-size:12px;}
+  .grid > div{background:#fff;padding:7px 9px;line-height:1.45;word-break:break-word;}
+  .h{background:#374151;color:#fff;font-weight:600;position:sticky;top:0;}
+  .c-pid{color:#7c3aed;font-weight:600;}
+  .c-chg{color:#047857;}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#374151;}
+  .row:hover > div{background:#fafcff;}
+  @media(max-width:760px){
+    .grid{grid-template-columns:1fr;}
+    .h{display:none;}
+    .grid > div{padding:8px 12px;}
+    .grid > div::before{content:attr(data-l);display:block;font-size:10px;color:#9ca3af;margin-bottom:2px;font-weight:600;}
+    .row{border-bottom:8px solid #e5e7eb;}
+  }
+</style></head><body><div class="wrap">
+<h1>选靶回归重构报告</h1>
+<div class="sub">targeting_refit.py 全量回归结果 · 362 张卡补 lane 候选池 + 9 张叙事特化 · 四门禁全绿</div>
+<div class="dec"><b>四决策（按设计稿推荐锁定）</b>
+    <ol>
+      <li><b>全部 enemy 卡补 laneRef（池=整路）</b>：候选池从「同路排首 1 个」扩为「同路全部可锁定单位」，manual 才有真实候选；scope:single=路内选 1，scope:all=路内全部。仅叙事特化卡另补 sort/filter。</li>
+      <li><b>pickCount 落库</b>：仅卡面显式「对 N 个」时补（本轮 0 张命中，字段机制已就绪）。</li>
+      <li><b>splashRatio 落点</b>：走 <code>damage.splashRatio</code> 字段（现有字段，不新开）；观众 splashRatio 已由其 statusDef 承载，本轮不重复补。</li>
+      <li><b>跨路暗杀红线</b>：守序途径（lawyer/arbiter）禁 cross_lane，laneRef 强制 same_lane（核验 0 张 cross_lane）。</li>
+    </ol>
+<div style="margin-top:10px"><b>统计</b><table style="border-collapse:collapse;font-size:12px;margin-top:4px"><tbody><tr><td>enemy_laneRef_added</td><td>0</td></tr><tr><td>enemy_anchor_added</td><td>0</td></tr><tr><td>sort_added</td><td>0</td></tr><tr><td>filter_added</td><td>0</td></tr><tr><td>spread_added</td><td>0</td></tr><tr><td>pickCount_added</td><td>0</td></tr><tr><td>ally_lane_added</td><td>0</td></tr><tr><td>cards_changed</td><td>0</td></tr><tr><td>redline</td><td>0</td></tr></tbody></table></div>
+</div>
+<div class="sum"><span class="pill">enemy_laneRef_added: 0</span> <span class="pill">enemy_anchor_added: 0</span> <span class="pill">sort_added: 0</span> <span class="pill">filter_added: 0</span> <span class="pill">spread_added: 0</span> <span class="pill">pickCount_added: 0</span> <span class="pill">ally_lane_added: 0</span> <span class="pill">cards_changed: 0</span> <span class="pill">redline: 0</span></div>
+<div class="bar"><label>途径 <select id="f-pid"><option value="">全部</option></select></label>
+<label>增补 <select id="f-chg"><option value="">全部</option><option value="laneRef">仅laneRef</option><option value="sort">sort</option><option value="filter">filter</option><option value="spread">spread</option></select></label>
+<label>搜索 <input id="f-q" placeholder="卡名/备注"></label></div>
+<div class="grid" id="grid">
+  <div class="h">途径</div><div class="h">卡 / 阵营·范围</div><div class="h">旧laneRef</div><div class="h">新laneRef</div><div class="h">增补维</div><div class="h">target 变更</div>
+</div>
+<script>
+var DATA=[];
+var grid=document.getElementById('grid');
+function oldLane(c){try{return JSON.parse(c.old_target).request.laneRef||'—'}catch(e){return '—'}}
+function newLane(c){try{return JSON.parse(c.new_target).request.laneRef||'—'}catch(e){return '—'}}
+function row(c){
+  var d=document.createElement('div');d.className='row';
+  var fac=c.faction+'/'+(c.scope||'?');
+  d.innerHTML='<div class="c-pid" data-l="途径">'+c.pid+'</div>'+
+    '<div data-l="卡/阵营·范围"><b>'+c.name+'</b><br><span class="mono">'+fac+'</span></div>'+
+    '<div data-l="旧laneRef" class="mono">'+oldLane(c)+'</div>'+
+    '<div data-l="新laneRef" class="mono">'+newLane(c)+'</div>'+
+    '<div class="c-chg" data-l="增补维">'+c.changes.join('<br>')+'</div>'+
+    '<div data-l="target变更" class="mono">'+c.new_target+'</div>';
+  return d;
+}
+function render(){
+  var fp=document.getElementById('f-pid').value, fc=document.getElementById('f-chg').value, q=document.getElementById('f-q').value.trim();
+  grid.querySelectorAll('.row').forEach(function(e){e.remove();});
+  DATA.filter(function(c){
+    if(fp&&c.pid!==fp)return false;
+    if(fc&&!(' '+c.changes.join(' ')+' ').includes(fc))return false;
+    if(q&&!(c.name+q+c.changes.join(' ')).includes(q))return false;
+    return true;
+  }).forEach(function(c){grid.appendChild(row(c));});
+}
+document.getElementById('f-pid').onchange=render;
+document.getElementById('f-chg').onchange=render;
+document.getElementById('f-q').oninput=render;
+render();
+</script>
+</div></body></html>
