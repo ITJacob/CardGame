@@ -123,11 +123,11 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | 字段 | 取值 |
 |---|---|
 | `faction` | `self` / `ally` / `enemy` / `any` / `none` / `self_or_ally` |
-| `scope` | `point` / `front_n`(n∈1,2,3) / `behind_n`(n∈1,2,3) / `cross_lane` / `diamond_n`(n∈1,2) / `whole_lane` / `board` / `none`。**几何范围（基于 anchor 原点量起）**。缺省=`whole_lane`（被施法侧整条半场 4 格）。`point`=仅锚点；`front_n`/`behind_n`=锚点含前/后 n 格（`front`=朝中线，`behind`=朝己方后排；**敌锚点 `behind_n`=前 n 敌**）；`cross_lane`=跨路并排；`diamond_n`=曼哈顿距离≤n；`whole_lane`=被施法侧半场；`board`=全场 16 格；`none`=无目标 |
-| `anchor` | `self` / `caster` / `enemy_front` / `specific_unit` / `spawned_unit` / `last_dead_ally` / `fixed_cell`，或任意字符串（`<指定单位>`/`fixed_cell(<index>)` 动态寻址）。**净化后只回答「从哪量几何」**，不承载阵营/排序/位置（§10.1）。缺省按 `faction` 推导：`enemy`→`enemy_front`（敌方同路排首 i=0），`ally`/`self`→`self`（我方施法者） |
+| `scope` | `point` / `front_n`(n∈1,2,3) / `behind_n`(n∈1,2,3) / `cross_lane` / `cross_lane_row` / `diamond_n`(n∈1,2) / `chain_n`(n∈1,2,3) / `whole_lane` / `board` / `none`。**几何范围（基于 anchor 原点量起）**。缺省=`whole_lane`（被施法侧整条半场 4 格）。`point`=仅锚点；`front_n`/`behind_n`=锚点含前/后 n 格（`front`=朝中线，`behind`=朝己方后排；**敌锚点 `behind_n`=前 n 敌**）；`cross_lane`=跨路并排（同 index 的另一路 1 格）；`cross_lane_row`=另一路整条半场 4 格（2026-10-03 轴签名提案 F）；`diamond_n`=曼哈顿距离≤n；`chain_n`=沿相邻/链接**跳跃** n 次（传染 / 连锁闪电 / 诅咒链接，非静态半径，提案 E）；`whole_lane`=被施法侧半场；`board`=全场 16 格；`none`=无目标 |
+| `anchor` | `self` / `caster` / `enemy_front` / `ally_front` / `enemy_back` / `specific_unit` / `spawned_unit` / `last_dead_ally` / `fixed_cell`，或任意字符串（`<指定单位>`/`fixed_cell(<index>)` 动态寻址）。**净化后只回答「从哪量几何」**，不承载阵营/排序/位置（§10.1）。缺省按 `faction` 推导：`enemy`→`enemy_front`（敌方同路排首 i=0），`ally`/`self`→`self`（我方施法者）。`ally_front`=我方同路排首（守护/替承/前排增益，提案 A）；`enemy_back`=敌方同路最后排（暗杀/狙击后排，提案 B） |
 | `fixedIndex` | integer | 配合 `anchor: fixed_cell` 的绝对站位序号 |
 | `sort` | 同 sortKey（见下） |
-| `filter` | 候选池过滤器（开放结构）。**DDD 标准 9 维**：`unitType` / `tags` / `hasStatus` / `hasCategory` / `hpPercent` / `casterHasSummon` / `isSummon` / `casterOwned` / `adjacency`；**项目扩展（数据已用）**：`unitId` / `isAllyOrMirror` / `isPuppet` / `isOwnSummon` / `element` / `tier` / `count` / `dispelable` / `anyOf` / `emptySlot` |
+| `filter` | 候选池过滤器（开放结构）。**DDD 标准 9 维**：`unitType` / `tags` / `hasStatus` / `hasCategory` / `hpPercent` / `casterHasSummon` / `isSummon` / `casterOwned` / `adjacency`；**项目扩展（数据已用）**：`unitId` / `isAllyOrMirror` / `isPuppet` / `isOwnSummon` / `element` / `tier` / `count` / `dispelable` / `anyOf` / `emptySlot`；**位格与性别（2026-10-03 轴签名提案 C/D）**：`rankBelowCaster` / `rankAboveCaster`（bool，位格压制，§1.4 判定）/ `rankMax` / `rankMin`（int）/ `gender`（`any`/`male`/`female`，与 `card.gender` 同源） |
 | `spread` | `none` / `lane_line` / `splash_adjacent` / `splash_behind` / `cross_same_index`（I-2 收缩后从 committedTargets 扩散，不回池） |
 | `excludeSelf` / `sortKey` / `pickCount` / `selectionMode` | 见 schema（pickCount: `1`=取 1、`"all"`=取框内全部，缺省 `1`；selectionMode: `manual`=框内由玩家选 / `auto`=按 sort 取前） |
 
