@@ -134,6 +134,8 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 > **mode / selectionMode 维度澄清（2026-09-20）**：`mode: unit|area`（点目标 vs 区域目标）与 `selectionMode: manual|auto`（**谁拍板最终目标**）是两个**独立正交维度**，现已回补 `mode`，二者不可混用。配合已回补的 `laneRef`（扫描路线）与补齐的 `spread`（5 值），共同承载原 DDD L12 废弃几何 scope 的语义。
 
+> **scope × laneRef 2D 模型约定（2026-10-03 Path A 决策）**：`scope` 只表达**取几个**（single / all / none），几何范围（整路 / 同路）由 `laneRef` 承载，二者正交。**映射**：`单体` = scope:single（从候选池选 1）；`整路` = scope:all + laneRef:same_lane（同路全部，即「基准位置一整路」）；`群体` = scope:all + laneRef:all_lanes / cross_lane（跨路 / 全场全部）。**维持 scope 三值、不新增枚举**——`整路` 与 `群体` 在 scope 单字段下都显示 all，须结合 `laneRef` 才能区分。统计页「目标面 · 范围形状（scope × laneRef）」已把此 2D 模型摊开呈现。
+
 **sortKey 封闭枚举**（新增须先登记到共享内核参数）：
 
 `none` `hp_asc` `hp_desc` `atk_asc` `atk_desc` `index_asc` `index_desc` `energy_desc` `armor_desc` `buff_count_desc` `debuff_count_desc` `gauge_asc` `gauge_desc` `stat_max_desc`
