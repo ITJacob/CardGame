@@ -93,10 +93,7 @@ function renderSkillStats(view) {
   const byEnergy = new Map(), byCooldown = new Map(), byCast = new Map(),
         byGender = new Map(), byDepth = new Map(), tagsTotal = new Map(),
         byFaction = new Map(), byScope = new Map(), bySort = new Map(),
-        reqFilterTotal = new Map(), byCx = new Map(), byBudget = new Map(),
-        byLaneRef = new Map(), laneRefByPath = new Map(),
-        byShape = new Map(), shapeByPath = new Map(),
-        shapeMatrix = new Map();   // scopeKey -> Map(laneRefKey -> count)：scope×laneRef 2D 矩阵
+        reqFilterTotal = new Map(), byCx = new Map(), byBudget = new Map();
   for (const c of cards) {
     const p = c._pathway;
     bump(rarityByPath, p, c.rarity);
@@ -130,19 +127,11 @@ function renderSkillStats(view) {
     // 用 c.target 判存在（全库 570 主动卡全带 target，另有 1 张被动卡带 target）
     const rq = c.target?.request;
     if (rq?.faction) { bump(byFaction, 0, rq.faction); bump(factionByPath, p, rq.faction); }
-    if (rq?.scope) { bump(byScope, 0, rq.scope); bump(scopeByPath, p, rq.scope); }
-    // 选靶路线（laneRef）：几何范围的「池维度」，与 scope（取几个）正交——2D 模型的核心。
-    // 2026-09-20 裁定把 L12 几何语义（whole_lane/adjacent）废弃出 scope，改由 laneRef+spread+mode 承载
-    if (rq?.laneRef) { bump(byLaneRef, 0, rq.laneRef); bump(laneRefByPath, p, rq.laneRef); }
-    // 派生「范围形状」语义标签（单体/整路/群体/未定）：scope × laneRef 的组合含义
-    if (rq?.scope) {
-      const shape = rq.scope === 'single' ? '单体（从池选1）'
-        : rq.scope === 'all' ? (rq.laneRef === 'same_lane' ? '整路' : '群体（跨/全路）')
-        : '未定';
-      bump(byShape, 0, shape); bump(shapeByPath, p, shape);
-    }
-    // scope × laneRef 2D 矩阵：行=scope，列=laneRef（rangeShapeGroup 的 heat 复用）
-    bump(shapeMatrix, rq?.scope || '(无)', rq?.laneRef || '(无)');
+    // 几何范围（scope）：2026-10-03 §10 几何化——scope 直接表达「取哪片区域」（围绕 anchor
+    // 原点划定），缺省 whole_lane（见 schema unitRequest.scope）。与选数 pickCount 正交。
+    // 显式带默认：约 511 张请求靠 schema 缺省 whole_lane、本身不落 scope 字段，须补默认才计入
+    const sc = rq?.scope || 'whole_lane';
+    bump(byScope, 0, sc); bump(scopeByPath, p, sc);
     if (c.target?.fallbackSort) { bump(bySort, 0, c.target.fallbackSort); bump(sortByPath, p, c.target.fallbackSort); }
     for (const k of Object.keys(rq?.filter || {})) {
       reqFilterTotal.set(k, (reqFilterTotal.get(k) || 0) + 1);
@@ -414,43 +403,16 @@ function renderSkillStats(view) {
       self 占比如此之高，是大量自保/变身类主动卡的选靶写 self。</p>`),
     heatOf('途径 × 目标阵营', factionByPath, colsOf(flat(byFaction), 'faction'), { unit: ' 张' }));
 
-  const scopeGroup = group('目标面 · 目标范围',
-    barPanel('目标范围（request.scope）', sortedRows(flat(byScope), (k) => zh('scope', k)),
-      `<p class="panel-note muted">scope 只表达<b>取几个</b>（单体 / 群体 / 无），<b>不表达几何范围</b>。
-      真实的「范围形状」由 scope × laneRef 共同决定，见下两组「扫描路线」「范围形状」。</p>`),
-    heatOf('途径 × 目标范围', scopeByPath, colsOf(flat(byScope), 'scope'), { unit: ' 张' }));
-
-  // 扫描路线（laneRef）：几何范围的池维度。scope 决定取几个、laneRef 决定从哪条路取，二者正交——
-  // 「整路」= same_lane + all，「群体」= all_lanes/cross_lane + all。2026-10-03 Path A：维持 scope 三值、
-  // 不新增枚举，几何范围靠 laneRef 表达（约定见 SCHEMA.md request 表）
-  const laneRefGroup = group('目标面 · 扫描路线（laneRef）',
-    barPanel('扫描路线分布（request.laneRef）', sortedRows(flat(byLaneRef), (k) => zh('laneRef', k)),
-      `<p class="panel-note muted">几何范围的<b>池维度</b>：同路 / 跨路 / 全场 / 自动。与「目标范围」(scope)
-      正交——scope 决定取几个、laneRef 决定从哪条路取。2026-09-20 裁定把 L12 几何语义（whole_lane/adjacent）
-      废弃出 scope，改由 laneRef+spread+mode 承载（避免改动 829 卡现有 scope 数据）。</p>`),
-    heatOf('途径 × 扫描路线', laneRefByPath, colsOf(flat(byLaneRef), 'laneRef'), { unit: ' 张' }));
-
-  // 范围形状：scope × laneRef 的派生语义。直接回答「整路 vs 群体」——两者在 scope 单字段下都显示
-  // all，须结合 laneRef 才能区分。矩阵行=scope、列=laneRef，格=卡数，把 2D 模型摊开给读者看
-  const SHAPE_ORDER = ['单体（从池选1）', '整路', '群体（跨/全路）', '未定'];
-  const shapeGrand = flat(byShape);
-  const laneRefColsMatrix = ['same_lane', 'cross_lane', 'all_lanes', 'auto', '(无)']
-    .map((l) => ({ key: l, label: zh('laneRef', l), title: l }));
-  const scopeRowsMatrix = ['single', 'all', 'none', '(无)']
-    .map((s) => ({ head: zh('scope', s), values: shapeMatrix.get(s) || new Map() }));
-  const rangeShapeGroup = group('目标面 · 范围形状（scope × laneRef）',
-    barPanel('范围形状语义分布', SHAPE_ORDER.map((k) => ({ label: k, title: k, value: shapeGrand.get(k) || 0 })),
-      `<p class="panel-note muted"><b>scope 只表达「取几个」，不表达几何范围</b>。真实的「范围形状」是
-      scope × laneRef 的组合：<b>单体</b>=scope:single（从候选池选 1）；<b>整路</b>=scope:all + laneRef:same_lane
-      （同路全部，即「基准位置一整路」）；<b>群体</b>=scope:all + laneRef:all_lanes/cross_lane（跨路/全场全部）。
-      2026-10-03 决策（Path A）：维持 scope 三值、不新增枚举，几何范围靠 laneRef 表达——<b>「整路」是真实独立的
-      范围</b>，与「群体」在 scope 单字段下都显示 all、须结合 laneRef 才能区分。全库：整路
-      ${shapeGrand.get('整路') || 0} 张、群体 ${shapeGrand.get('群体（跨/全路）') || 0} 张、单体
-      ${shapeGrand.get('单体（从池选1）') || 0} 张、未定 ${shapeGrand.get('未定') || 0} 张。</p>`),
-    heatPanel({
-      title: '范围形状矩阵（行=scope，列=laneRef，格=卡数）',
-      rows: scopeRowsMatrix, cols: laneRefColsMatrix, cornerLabel: '作用范围', scopeLabel: '全库', unit: ' 张',
-    }));
+  const scopeGroup = group('目标面 · 几何范围（scope）',
+    barPanel('几何范围分布（request.scope）', sortedRows(flat(byScope), (k) => zh('scope', k)),
+      `<p class="panel-note muted">2026-10-03 §10 几何化：scope 直接表达<b>取哪片区域</b>
+      （围绕 anchor 原点划定），与选数 pickCount 正交，二者是选靶流水线的两个独立层。
+      取值域：point / front_n / behind_n / cross_lane / diamond_n / whole_lane / board / none
+      （中文见 glossary scope 栏目）。<b>缺省 whole_lane</b>（被施法侧半场 4 格）——约 511 张请求
+      不落 scope 字段、靠此缺省，故 bar 里 whole_lane 占比最高是预期。laneRef 维度已并入 scope
+      （几何化后无独立的「扫描路线」——「整路 / 全场 / 跨路」本就是 scope 枚举值），旧「扫描路线 /
+      范围形状（scope×laneRef）」两组面板已移除。</p>`),
+    heatOf('途径 × 几何范围', scopeByPath, colsOf(flat(byScope), 'scope'), { unit: ' 张' }));
 
   const sortGroup = group('目标面 · 选靶排序',
     barPanel('fallbackSort 分布', sortedRows(flat(bySort), (k) => zh('sortKey', k)),
@@ -485,7 +447,7 @@ function renderSkillStats(view) {
     （上限取本图最大值），跨图比颜色没有意义——要比就比格内数字。行序一律是 manifest 途径顺序；
     列序是各自的用量或刻度顺序，悬停表头看原始 key。状态定义口径见「状态」子页，编目三池
     （召唤物 / 区域 / 界域）见各自子页——本页各组均不含它们。</p>
-    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${axisGroup}${primGroup}${opGroup}${condGroup}${cxGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${budgetGroup}${energyGroup}${cooldownGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${scopeGroup}${laneRefGroup}${rangeShapeGroup}${sortGroup}${reqFilterGroup}${hookGroup}${genderGroup}`;
+    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${axisGroup}${primGroup}${opGroup}${condGroup}${cxGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${budgetGroup}${energyGroup}${cooldownGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}${genderGroup}`;
 
   // 窄屏展开全部列；桌面端该开关不显示（CSS 隐藏），勾选状态无副作用
   wireHeatToggle(view);
