@@ -231,7 +231,7 @@
       "flagship": false,
       "lore": "序列9 猎人 —— \"身体素质全面超越常人（熊的强壮 + 猫的轻灵）\"",
       "flavor": "你像熊一样压上去，又像猫一样快——它还没看清你的动作，已经被撞翻在地。",
-      "describe": "对单体敌人造成 2 点物理伤害（近战，无附加）。；指挥调防：这一击改指友军中血最厚者。",
+      "describe": "对单体敌人造成 2 点物理伤害（近战，无附加）。；团队计价：集众记账，友军分润（不再误伤友军）。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -254,10 +254,18 @@
           "target": "target"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "note": "指挥调防：这一击改指友军中生命最高者（集众语义）",
-          "sort": "hp_desc"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "upgradeLadder": {
@@ -297,7 +305,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：低序列唯一输出手段，纯伤害撑骨架（同愚者【飞牌】口径）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg）",
+      "conversionNotes": "翻译/语义：低序列唯一输出手段，纯伤害撑骨架（同愚者【飞牌】口径）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "a hunter pouncing like a beast onto its startled prey",
         "elements": [
@@ -382,23 +390,39 @@
           "note": "羞辱调防：被迫改指挑衅者"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "sort": "hp_desc",
-          "note": "再一次调度：攻击改指阵中人"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "sort": "hp_desc",
-          "note": "再一次调度：攻击改指阵中人"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "sharedAcross": [
         "assassin"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：原著\"挑衅\"四合一：嘲讽（强攻你）+ 易伤（戳中弱点）+ 失去理智（降攻降防）。同时挂 `挑衅` 供【误导】【煽动】改写目标。 ｜ 2026-10-02 反击姿态首发承载②：挑衅+反击联动——矩阵 stance 行猎人共享列落地 ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比",
+      "conversionNotes": "翻译/语义：原著\"挑衅\"四合一：嘲讽（强攻你）+ 易伤（戳中弱点）+ 失去理智（降攻降防）。同时挂 `挑衅` 供【误导】【煽动】改写目标。 ｜ 2026-10-02 反击姿态首发承载②：挑衅+反击联动——矩阵 stance 行猎人共享列落地 ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "a smirking hunter taunting an enraged brute into a reckless charge",
         "elements": [
@@ -462,7 +486,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— \"『火鸦术』\"",
       "flavor": "你手心的火团扑腾着长出翅膀，化作一只火鸦撞进它的胸口，羽毛落处，火就烧了起来。",
-      "describe": "单体敌人：3 点火焰伤害 + 燃焚 15tick。；指挥调防：这一击改指友军中血最厚者。",
+      "describe": "单体敌人：3 点火焰伤害 + 燃焚 15tick。；团队计价：集众记账，友军分润（不再误伤友军）。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -496,10 +520,18 @@
           ]
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "note": "指挥调防：这一击改指友军中生命最高者（集众语义）",
-          "sort": "hp_desc"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "upgradeLadder": {
@@ -539,7 +571,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "burn 折算依赖 D4（🔴 未标）：若按 tick 快速结算，能量需上调至 4 或直伤砍到 2 ｜ 翻译/语义：燃焚轴起手式：直伤 + 引燃（挂 `火焰`）。（burn 折算 D4）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg）",
+      "conversionNotes": "burn 折算依赖 D4（🔴 未标）：若按 tick 快速结算，能量需上调至 4 或直伤砍到 2 ｜ 翻译/语义：燃焚轴起手式：直伤 + 引燃（挂 `火焰`）。（burn 折算 D4）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "a crow of living flame bursting from a caster's outstretched palm",
         "elements": [
@@ -561,7 +593,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— \"『炽白之枪』\"",
       "flavor": "火焰被压缩到极致，褪去橙红，只剩一缕炽得发白的光——它贯穿护甲，也贯穿了它。",
-      "describe": "单体敌人：4 点火焰伤害，完全无视护甲（破甲比例 1.0），自动优选护甲最高的敌人。；指挥调防：这一击改指友军中血最厚者。",
+      "describe": "单体敌人：4 点火焰伤害，完全无视护甲（破甲比例 1.0），自动优选护甲最高的敌人。；团队计价：集众记账，友军分润（不再误伤友军）。",
       "cost": {
         "energy": 5,
         "cooldown": 20,
@@ -585,14 +617,22 @@
           "armorPierceRatio": 1.0
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "note": "指挥调防：这一击改指友军中生命最高者（集众语义）",
-          "sort": "hp_desc"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：燃焚轴旗舰：压缩到极限的火焰=全额破甲，专打重甲。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→4（位格3 基准4）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg）",
+      "conversionNotes": "翻译/语义：燃焚轴旗舰：压缩到极限的火焰=全额破甲，专打重甲。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→4（位格3 基准4）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "a blinding white-hot spear of compressed fire piercing heavy plate armor",
         "elements": [
@@ -614,7 +654,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— \"『燃烧之墙』\"",
       "flavor": "一道火墙自地面窜起横亘战场，把战线切成两半——谁要过去，就得先穿过它。",
-      "describe": "全体敌人：2 点火焰伤害 + 燃焚 15tick + 行动条 -15（被火墙挡住，慢一步）。；指挥调防：这一击改指友军中血最厚者。",
+      "describe": "全体敌人：2 点火焰伤害 + 燃焚 15tick + 行动条 -15（被火墙挡住，慢一步）。；团队计价：集众记账，友军分润（不再误伤友军）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -655,14 +695,22 @@
           ]
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "note": "指挥调防：这一击改指友军中生命最高者（集众语义）",
-          "sort": "hp_desc"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "burn 折算（D4）与 gauge.current 定价（D2）均 ⚠️；范围技能按敌方人数线性放大，需 4 人满编复核 ｜ 翻译/语义：火墙=伤害+持续烧+被挡住（推后节奏）。G8 合规：无位移。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg）",
+      "conversionNotes": "burn 折算（D4）与 gauge.current 定价（D2）均 ⚠️；范围技能按敌方人数线性放大，需 4 人满编复核 ｜ 翻译/语义：火墙=伤害+持续烧+被挡住（推后节奏）。G8 合规：无位移。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "a towering wall of fire splitting the battlefield cleanly in two",
         "elements": [
@@ -784,20 +832,36 @@
           "note": "战阵调度：把自己插回阵列尾部"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "sort": "hp_desc",
-          "note": "再一次调度：攻击改指阵中人"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "sort": "hp_desc",
-          "note": "再一次调度：攻击改指阵中人"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "反伤既有状态登记未定 value 字段口径（🟡 数值待标） ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比",
+      "conversionNotes": "反伤既有状态登记未定 value 字段口径（🟡 数值待标） ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "flames crawling up a hunter's blade and spreading beneath his skin",
         "elements": [
@@ -953,21 +1017,25 @@
           "target": "target"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "sort": "hp_desc",
-          "note": "煽动调防（原语化实证②）：攻击目标改写为其同阵营生命值最高者——与潜意识篡改同锚族；存续窗口由 incited 状态承载"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "sharedAcross": [
         "assassin"
       ],
       "tentative": false,
-      "conversionNotes": [
-        "与 F9 puppet_string / F15 charm / F3 puppeteered / F19 countersuit 同属 F 组 target_override 状态族合并候选 3，落地时随母版收敛",
-        "翻译/语义：被挑衅者的敌意转向己方队友。",
-        "2026-10-02 差异化风格迭代·批次七（猎人：指挥调防原语化+战阵号令连击）"
-      ],
+      "conversionNotes": "与 F9 puppet_string / F15 charm / F3 puppeteered / F19 countersuit 同属 F 组 target_override 状态族合并候选 3，落地时随母版收敛 ｜ 翻译/语义：被挑衅者的敌意转向己方队友。 ｜ 2026-10-02 差异化风格迭代·批次七（猎人：指挥调防原语化+战阵号令连击） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "a whispered word turning one soldier's blade toward his own comrade",
         "elements": [
@@ -1047,7 +1115,7 @@
       "flagship": false,
       "lore": "序列5 收割者 —— \"『弱点侦察』：从神秘学角度发现目标弱点\"",
       "flavor": "你的目光从神秘学的角度扫过它——护甲的接缝、灵性的淤滞、那道还没长好的旧伤。你一清二楚。",
-      "describe": "单体敌人：弱点 20tick（受伤 ×1.3）+ 剥除其 1 个增益状态（撕开神秘学防护）。；目标带厄运标记则猎运锁定，追加 2 点。；指挥调防：这一击改指友军中血最厚者。",
+      "describe": "单体敌人：弱点 20tick（受伤 ×1.3）+ 剥除其 1 个增益状态（撕开神秘学防护）。；目标带厄运标记则猎运锁定，追加 2 点。；团队计价：集众记账，友军分润（不再误伤友军）。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -1107,17 +1175,25 @@
           "note": "跨系读层段：hunter→assassin doom（2026-09-29 跨系批二）"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "note": "指挥调防：这一击改指友军中生命最高者（集众语义）",
-          "sort": "hp_desc"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "sharedAcross": [
         "assassin"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"从神秘学角度\"=看穿超凡防护，剥增益+挂易伤。收割轴旗舰 enabler。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg）",
+      "conversionNotes": "翻译/语义：\"从神秘学角度\"=看穿超凡防护，剥增益+挂易伤。收割轴旗舰 enabler。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "a hunter's mystical sight laying bare every seam, scar and stagnant spirit",
         "elements": [
@@ -1355,7 +1431,7 @@
       "flagship": false,
       "lore": "序列4 铁血骑士 —— \"『远程轰炸』（5–10 公里）\"",
       "flavor": "火球自天而降，一颗接一颗砸在敌阵里——你甚至没有看向那边。",
-      "describe": "全体敌人：4 点火焰伤害 + 燃焚 10tick（不可反击的远程全体轰炸）。；指挥调防：这一击改指友军中血最厚者。",
+      "describe": "全体敌人：4 点火焰伤害 + 燃焚 10tick（不可反击的远程全体轰炸）。；团队计价：集众记账，友军分润（不再误伤友军）。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1388,14 +1464,22 @@
           ]
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "note": "指挥调防：这一击改指友军中生命最高者（集众语义）",
-          "sort": "hp_desc"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "与燃烧之墙构成 B6 升级阶梯（序列2 明写远程轰炸全面升级），重复抽到按 B5 duplicatePolicy: upgrade 处理 ｜ burn 折算（D4）+ 范围随人数放大，需 4 人满编复核 ｜ 翻译/语义：\"5–10 公里\"=AOE 全体+不可反击（brief §3 尺度类不搬）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg）",
+      "conversionNotes": "与燃烧之墙构成 B6 升级阶梯（序列2 明写远程轰炸全面升级），重复抽到按 B5 duplicatePolicy: upgrade 处理 ｜ burn 折算（D4）+ 范围随人数放大，需 4 人满编复核 ｜ 翻译/语义：\"5–10 公里\"=AOE 全体+不可反击（brief §3 尺度类不搬）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "fireballs raining from the sky onto a distant battlefield",
         "elements": [
@@ -1444,20 +1528,36 @@
           "note": "战阵调度：把自己插回阵列尾部"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "sort": "hp_desc",
-          "note": "再一次调度：攻击改指阵中人"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "sort": "hp_desc",
-          "note": "再一次调度：攻击改指阵中人"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "稿面退化方案备查：① 改固定 attack +3 + 友军死亡 on_death 监听 -1；② 分摊只对相邻友军；③ 共享视野并入猎人的感官 ｜ 翻译/语义：**本途径主轴 enabler**。原著三件事全落：集中全队力、替队友扛伤、共享视野。集众槽随存活友军数累积（封顶 3 层，2026-10-01 拍板批⑥/A 案），驱动 §〇 三档阈值。✅ D5 团队槽锚立项（团队 buff ×2 预算、转嫁 0.2/0.3/0.5 三档，本卡 30%=标准档）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比",
+      "conversionNotes": "稿面退化方案备查：① 改固定 attack +3 + 友军死亡 on_death 监听 -1；② 分摊只对相邻友军；③ 共享视野并入猎人的感官 ｜ 翻译/语义：**本途径主轴 enabler**。原著三件事全落：集中全队力、替队友扛伤、共享视野。集众槽随存活友军数累积（封顶 3 层，2026-10-01 拍板批⑥/A 案），驱动 §〇 三档阈值。✅ D5 团队槽锚立项（团队 buff ×2 预算、转嫁 0.2/0.3/0.5 三档，本卡 30%=标准档）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "a knight anchoring a glowing web that links every ally on the field",
         "elements": [
@@ -1814,7 +1914,7 @@
       "flagship": false,
       "lore": "序列3 战争主教 —— \"献祭祈求：献出祭品向战争本源祈求一次帮助\"",
       "flavor": "你把一个士兵推到刀口上——不，是把它献了出去。作为交换，战争本源回应了你一次。",
-      "describe": "献祭一个己方召唤物（无召唤物则以自己 8 血为祭）：获得战争回应（25tick，1 次）——你下一次造成的伤害 ×2 并附加眩晕 5tick。；指挥调防：这一击改指友军中血最厚者。",
+      "describe": "献祭一个己方召唤物（无召唤物则以自己 8 血为祭）：获得战争回应（25tick，1 次）——你下一次造成的伤害 ×2 并附加眩晕 5tick。；团队计价：集众记账，友军分润（不再误伤友军）。",
       "cost": {
         "energy": 2,
         "cooldown": 30,
@@ -1872,10 +1972,18 @@
           ]
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "note": "指挥调防：这一击改指友军中生命最高者（集众语义）",
-          "sort": "hp_desc"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "variants": [
@@ -1925,7 +2033,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "祭品 targetSpec OWN_SUMMON 走 filter casterOwned+isSummon（§一）；Manual 但稿面未给 fallbackSort，fallbackSort 置 null 待裁定 ｜ 消灭祭品用 lethal damage 承载（对己方单位造成伤害已落，新增项 16） ｜ 翻译/语义：集众轴旗舰：献祭换一次性神助。 ｜ 2026-10-01 吟唱重标：仪式类（kw:献祭/召唤）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg）",
+      "conversionNotes": "祭品 targetSpec OWN_SUMMON 走 filter casterOwned+isSummon（§一）；Manual 但稿面未给 fallbackSort，fallbackSort 置 null 待裁定 ｜ 消灭祭品用 lethal damage 承载（对己方单位造成伤害已落，新增项 16） ｜ 翻译/语义：集众轴旗舰：献祭换一次性神助。 ｜ 2026-10-01 吟唱重标：仪式类（kw:献祭/召唤）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "an offering pushed forward as a vast spectral war-god eye opens above",
         "elements": [
@@ -2292,14 +2400,22 @@
           "note": "羞辱调防：被迫改指挑衅者"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "sort": "hp_desc",
-          "note": "再一次调度：攻击改指阵中人"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "遗留 2：被征服单位带 miracle/reviveOf 时先复活还是先转化未决，本稿主张征服优先，需定进复活结算链 ｜ 翻译/语义：集众轴传说：身心臣服+死后转化。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次七（猎人：指挥调防原语化+战阵号令连击） ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比",
+      "conversionNotes": "遗留 2：被征服单位带 miracle/reviveOf 时先复活还是先转化未决，本稿主张征服优先，需定进复活结算链 ｜ 翻译/语义：集众轴传说：身心臣服+死后转化。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次七（猎人：指挥调防原语化+战阵号令连击） ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "a conqueror's single word dropping an enemy to its knees",
         "elements": [
@@ -2408,7 +2524,7 @@
       "flagship": false,
       "lore": "序列1 征服者 —— \"『毁灭之矛』：『收割』质变版，命中弱点相当于必然死亡\"",
       "flavor": "你投出的不是矛，是一个已经写好的结局——如果它身上有你点明的那处弱点，那支矛落下的地方，就是终点。",
-      "describe": "单体敌人：7 点无元素伤害；若目标已标记弱点，直接致死——不管它还有多少血。；指挥调防：这一击改指友军中血最厚者。",
+      "describe": "单体敌人：7 点无元素伤害；若目标已标记弱点，直接致死——不管它还有多少血。；团队计价：集众记账，友军分润（不再误伤友军）。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2455,14 +2571,22 @@
           ]
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "note": "指挥调防：这一击改指友军中生命最高者（集众语义）",
-          "sort": "hp_desc"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "遗留 3：execute 建议对 Boss/精英类单位设免疫白名单 ｜ 翻译/语义：收割轴终焉：弱点已标记→带走。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→7（位格9 基准7）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg）",
+      "conversionNotes": "遗留 3：execute 建议对 Boss/精英类单位设免疫白名单 ｜ 翻译/语义：收割轴终焉：弱点已标记→带走。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→7（位格9 基准7）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "a thrown spear trailing a foretold fate toward a marked weak point",
         "elements": [
@@ -2583,7 +2707,7 @@
       "flagship": true,
       "lore": "序列0 红祭司 —— \"『毁灭』权柄：上可毁灭星球，下可杀死真神\"",
       "flavor": "那不是火焰，是\"消失\"本身。凡是还没死透的，都会被一并抹掉。",
-      "describe": "全体敌人：4 点火焰伤害；生命值 ≤ 30% 的目标直接抹除（毁灭的彻底性：不是打伤，是不存在了）。；指挥调防：这一击改指友军中血最厚者。",
+      "describe": "全体敌人：4 点火焰伤害；生命值 ≤ 30% 的目标直接抹除（毁灭的彻底性：不是打伤，是不存在了）。；团队计价：集众记账，友军分润（不再误伤友军）。",
       "cost": {
         "energy": 7,
         "cooldown": 50,
@@ -2630,14 +2754,22 @@
           ]
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "note": "指挥调防：这一击改指友军中生命最高者（集众语义）",
-          "sort": "hp_desc"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "范围技能随敌方人数线性放大，需 4 人满编复核；execute 的 Boss 白名单见遗留 3 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→4（位格10 基准7，群体×0.6）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg）",
+      "conversionNotes": "范围技能随敌方人数线性放大，需 4 人满编复核；execute 的 Boss 白名单见遗留 3 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→4（位格10 基准7，群体×0.6）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）",
       "art": {
         "subject": "everything not yet dead unraveling into nothingness at a gesture",
         "elements": [
@@ -2773,10 +2905,18 @@
           "note": "羞辱调防：被迫改指挑衅者"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "sort": "hp_desc",
-          "note": "再一次调度：攻击改指阵中人"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
@@ -2803,7 +2943,7 @@
         ],
         "mood": "treacherous, divisive"
       },
-      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比"
+      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）"
     },
     {
       "id": "skill_hunter_s4_lay_trap",
@@ -2839,10 +2979,18 @@
           "note": "羞辱调防：被迫改指挑衅者"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "sort": "hp_desc",
-          "note": "再一次调度：攻击改指阵中人"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
@@ -2869,7 +3017,7 @@
         ],
         "mood": "patient, deadly"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）"
     },
     {
       "id": "skill_hunter_s3_shadow_planner",
@@ -2921,7 +3069,7 @@
       "flagship": false,
       "lore": "收网的时刻到了。",
       "flavor": "游戏结束。",
-      "describe": "造成 8 点物理伤害，并使目标陷入弱点（4 回合）。；指挥调防：这一击改指友军中血最厚者。",
+      "describe": "造成 8 点物理伤害，并使目标陷入弱点（4 回合）。；团队计价：集众记账，友军分润（不再误伤友军）。",
       "effects": [
         {
           "type": "damage",
@@ -2937,10 +3085,18 @@
           "note": "（2026-09-30 时间回归：稿期 4 回合 → 100tick，1 回合=25tick）"
         },
         {
-          "type": "target_override",
-          "anchor": "self_faction_hp_desc",
-          "note": "指挥调防：这一击改指友军中生命最高者（集众语义）",
-          "sort": "hp_desc"
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": {
+            "type": "modify_resource",
+            "resource": "energy",
+            "value": 1,
+            "mode": "delta",
+            "target": "all_allies"
+          },
+          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
@@ -2967,7 +3123,7 @@
         ],
         "mood": "decisive, terminal"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→8（位格8 基准6×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→8（位格8 基准6×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤）"
     }
   ],
   "domainDefs": [
