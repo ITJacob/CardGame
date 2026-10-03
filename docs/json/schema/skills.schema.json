@@ -624,10 +624,9 @@
     },
     "unitRequest": {
       "type": "object",
-      "description": "目标选择请求（faction × scope × 过滤 × 锚点 × 排序）。",
+      "description": "目标选择请求（faction × scope（几何）× filter × anchor（原点）× sort × pickCount × selectionMode）。scope 缺省=whole_lane（被施法侧整条半场 4 格）；anchor 缺省按 faction 推导：enemy→enemy_front（敌方同路排首 i=0），ally/self→self（我方施法者）；pickCount 缺省=1。§10 几何化重构（2026-10-03，推翻 Path A / 2026-09-20 裁定）。",
       "required": [
-        "faction",
-        "scope"
+        "faction"
       ],
       "additionalProperties": false,
       "properties": {
@@ -642,36 +641,25 @@
           ]
         },
         "scope": {
-          "enum": [
-            "single",
-            "all",
-            "none"
-          ]
+          "type": "string",
+          "pattern": "^(point|front(_[1-3])?|behind(_[1-3])?|cross_lane|diamond(_[1-2])?|whole_lane|board|none)$",
+          "description": "以 anchor 为原点的几何范围。缺省=whole_lane（被施法侧整条半场 4 格）。point=仅锚点；front_n/behind_n=锚点含前/后 n 格（front=朝中线，behind=朝己方后排；敌锚点 behind_n=前 n 敌）；cross_lane=跨路并排；diamond_n=曼哈顿距离≤n；whole_lane=被施法侧半场；board=全场 16 格；none=无目标。"
         },
         "filter": {
           "$ref": "#/$defs/unitFilter"
         },
         "anchor": {
-          "description": "位置锚点：候选池的起点坐标。优先用下列关键字；也可直接写具体单位 id（DDD「<指定单位>」动态寻址，故用 anyOf 放宽为任意字符串——注意这会弱化拼写校验）。absolute 需配 fixedIndex。",
+          "description": "几何原点/参照，只回答『从哪量几何』。缺省按 faction 推导（enemy→enemy_front，ally/self→self）。specific_unit(<id>)/fixed_cell(<index>)/unit_doppelganger 等动态寻址用 anyOf 放宽为字符串。净化后不再承载阵营/排序/位置（§10.1）。",
           "anyOf": [
             {
               "enum": [
-                "front_line",
-                "spawned_unit",
-                "first_empty",
-                "empty_ally_slot",
                 "self",
-                "front_of_self",
-                "behind_self",
-                "cross_same_index",
-                "absolute",
-                "taunt_source",
-                "manual",
-                "nearest_any",
-                "any_lowest_hp",
-                "self_faction_hp_desc",
+                "caster",
+                "enemy_front",
+                "specific_unit",
+                "spawned_unit",
                 "last_dead_ally",
-                "index_asc_same_faction"
+                "fixed_cell"
               ]
             },
             {
@@ -702,14 +690,16 @@
         "excludeSelf": {
           "type": "boolean"
         },
-        "laneRef": {
-          "enum": [
-            "same_lane",
-            "cross_lane",
-            "all_lanes",
-            "auto"
+        "pickCount": {
+          "oneOf": [
+            {"type": "integer", "minimum": 1},
+            {"enum": ["all"]}
           ],
-          "description": "扫描路线/列维度（DDD 原设计有、schema 曾丢失，本轮回补）。auto 在 I 节点前由施法者上下文预处理为具体值，保持流水线纯函数。"
+          "description": "提交的目标数量（DDD I 节点 CandidatePool.pickCount）。1=取 1（单体），'all'=取框内全部（群体）。缺省=1。"
+        },
+        "selectionMode": {
+          "enum": ["manual", "auto"],
+          "description": "谁拍板：manual=框定范围内由玩家选（候选数>pickCount 时等待）；auto=引擎按 sort 取前 pickCount。"
         }
       }
     },

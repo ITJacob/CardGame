@@ -317,24 +317,37 @@
       }
     },
     "scope": {
-      "label": "作用范围",
-      "desc": "选靶的第二层：取一个还是取全部。与阵营、过滤、排序组合出全部目标形态，因此不为每种组合单开枚举。",
-      "source": "SCHEMA.md §4",
-      "note": "⚠️ 漂移：DDD 共享内核 scope=single_point/whole_lane/adjacent，schema 现用 single/all/none，二者不等价；全套对齐需迁移数据，属独立项目，本轮不动。",
+      "label": "几何范围",
+      "desc": "选靶的几何层：anchor（原点）确定后，scope 以锚点为中心划定「取哪片区域」。与选数 pickCount 正交——scope 管区域形态、pickCount 管从区域里取几个。缺省 whole_lane（被施法侧半场 4 格）。",
+      "source": "SCHEMA.md §4 / 选靶重构设计.md §10",
+      "note": "2026-10-03 §10 几何化重构：scope 由 single/all/none 翻案回归几何枚举（推翻 2026-09-20 裁定）。laneRef 维度已并入 scope——「整路/全场/跨路」是 scope 的枚举值，不再靠 scope×laneRef 组合表达。front_/behind_/diamond_ 带数字后缀（1–3 / 1–2），用 patterns 收录。",
       "terms": {
-        "single": {
-          "zh": "单体",
-          "brief": "作用于一个目标"
+        "point": {
+          "zh": "单体点",
+          "brief": "围绕锚点 1 格"
         },
-        "all": {
-          "zh": "全体",
-          "brief": "作用于范围内全部单位"
+        "cross_lane": {
+          "zh": "跨路",
+          "brief": "与锚点同 index 的敌我两路对应格"
+        },
+        "whole_lane": {
+          "zh": "整路",
+          "brief": "被施法侧半场整路 4 格"
+        },
+        "board": {
+          "zh": "全场",
+          "brief": "全场 16 格"
         },
         "none": {
           "zh": "无",
           "brief": "无作用对象（目标完全由 effectTarget 二级寻址）"
         }
-      }
+      },
+      "patterns": [
+        { "match": "front_", "zh": "前方{1}格", "brief": "锚点朝中线方向前 n 格（敌锚点=最前 n 敌）" },
+        { "match": "behind_", "zh": "后方{1}格", "brief": "锚点朝己方后排方向后 n 格（敌锚点=前 n 敌之后）" },
+        { "match": "diamond_", "zh": "菱形{1}格", "brief": "锚点周围菱形外延 n 圈" }
+      ]
     },
     "laneRef": {
       "label": "扫描路线",
@@ -362,9 +375,9 @@
     },
     "anchor": {
       "label": "位置锚点",
-      "desc": "候选池的起点坐标。锚点定「从哪里开始找」，之后才叠加范围、过滤与排序。也可直接写具体单位 id 做动态寻址（DDD「<指定单位>」）。",
+      "desc": "候选池的几何原点。只回答「从哪开始量几何」，不承载阵营/排序/位置（§10.1 净化）。敌方目标默认锚敌方排首 enemy_front，己方目标默认锚 self（按 faction 推导，§10.3）。也可写具体单位 id 做动态寻址（DDD「<指定单位>」）。",
       "source": "SCHEMA.md §4 / 共享内核参数 §一",
-      "note": "✅ 2026-09-20 已补齐 DDD 全部 16 个关键字取值（原仅实现 4 个）。**first_empty 与 empty_ally_slot 不同义**：前者=任意半场第一个空格（召唤/空坐标攻击用，空坐标是合法目标），后者=己方半场空格（自身位移落点用）。`absolute` 需配 `fixedIndex`。因支持「<指定单位>」动态寻址，schema 用 anyOf 放宽为任意字符串，**拼写校验被弱化**。",
+      "note": "✅ 2026-10-03 几何化重构：anchor 净化为 7 个原点值（self/caster/enemy_front/specific_unit/spawned_unit/last_dead_ally/fixed_cell），原 front_line/first_empty 等 16 值已迁出——front_line→默认 sort 最前排，first_empty/empty_ally_slot→filter.emptySlot，taunt_source→filter.hasStatus，几何由 scope 承载（§10.1）。enemy_front 为本次新增（敌 spell 默认原点，纠正此前 anchor:self 误写）。specific_unit(<id>)/fixed_cell(<index>) 经 anyOf 放宽为任意字符串，拼写校验弱化。",
       "terms": {
         "front_line": {
           "zh": "前排",
@@ -384,7 +397,23 @@
         },
         "self": {
           "zh": "自身",
-          "brief": "锚定施法者自身位置"
+          "brief": "锚定施法者自身位置（我方目标默认原点）"
+        },
+        "caster": {
+          "zh": "释放者",
+          "brief": "锚定释放者（被动/链接/转移场景中作用者≠触发者时）"
+        },
+        "enemy_front": {
+          "zh": "敌方排首",
+          "brief": "锚定敌方同路排首（敌 i=0，隔中线与己排首面对面）；敌 spell 默认原点（§10.0 拓扑订正）"
+        },
+        "specific_unit": {
+          "zh": "指定单位",
+          "brief": "锚定指定单位 id（DDD「<指定单位>」动态寻址，anyOf 放宽为字符串）"
+        },
+        "fixed_cell": {
+          "zh": "固定格",
+          "brief": "锚定绝对站位坐标，需配 fixedIndex"
         },
         "front_of_self": {
           "zh": "自身前方",

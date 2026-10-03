@@ -116,25 +116,24 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `fallbackSort` | sortKey\|null | | 自动排序键 |
 | `consumption` | `summon`\|`domain`\|`zone`\|`instant`\|`translocate` | | 目标消耗的额外资源（对齐 DDD 共享内核 consumption）|
 | `mode` | `unit`\|`area` | | 目标形态：点目标 / 区域目标（DDD TargetSpec.mode，2026-09-20 回补）。与 `selectionMode` 是两个独立维度；`mode=unit` 时 `consumption` 强制 `instant` 或 `translocate` |
-| `pickCount` | integer | | 提交的目标数量（DDD I 节点 CandidatePool.pickCount，2026-09-20 回补）。`manual` 且候选数 > pickCount 才等待玩家选择，候选数 ≤ pickCount 直接全取不打断 |
+| `pickCount` | integer / `"all"` | | 提交的目标数量（DDD I 节点 CandidatePool.pickCount）。`1`=取 1（单体），`"all"`=取框内全部（群体），缺省 `1`；`manual` 且候选数 > pickCount 才等待玩家选择，候选数 ≤ pickCount 直接全取不打断 |
 
-`request`（对应 DDD 的 faction × scope × anchor × sort × filter × laneRef × spread）：
+`request`（对应 DDD 的 faction × scope（几何）× anchor（原点）× sort × filter × spread × pickCount × selectionMode；2026-10-03 几何化重构，推翻 Path A / 2026-09-20 裁定）：
 
 | 字段 | 取值 |
 |---|---|
 | `faction` | `self` / `ally` / `enemy` / `any` / `none` / `self_or_ally` |
-| `scope` | `single` / `all` / `none` ✅ **2026-09-20 裁定为权威口径**——DDD 共享内核 §一 原有两行同名 `scope`（L12 几何 `single_point/whole_lane/adjacent` vs L19 覆盖 `single/all`）冲突，现以 **L19 为准**，L12 几何语义废弃、改由 `laneRef`+`spread`+`mode` 承载（避免改动 829 卡现有 scope 数据） |
-| `anchor` | `front_line` / `spawned_unit` / `first_empty` / `empty_ally_slot` / `self` / `front_of_self` / `behind_self` / `cross_same_index` / `absolute` / `taunt_source` / `manual` / `nearest_any` / `any_lowest_hp` / `self_faction_hp_desc` / `last_dead_ally` / `index_asc_same_faction`，或直接写具体单位 id（2026-09-20 补齐至 DDD 全部 16 值）。⚠️ `first_empty`=任意半场空格 **≠** `empty_ally_slot`=己方半场空格，**不可互换**；`absolute` 需配 `fixedIndex`(int) |
-| `fixedIndex` | integer | 配合 `anchor: absolute` 的绝对站位序号（2026-09-20 补） |
+| `scope` | `point` / `front_n`(n∈1,2,3) / `behind_n`(n∈1,2,3) / `cross_lane` / `diamond_n`(n∈1,2) / `whole_lane` / `board` / `none`。**几何范围（基于 anchor 原点量起）**。缺省=`whole_lane`（被施法侧整条半场 4 格）。`point`=仅锚点；`front_n`/`behind_n`=锚点含前/后 n 格（`front`=朝中线，`behind`=朝己方后排；**敌锚点 `behind_n`=前 n 敌**）；`cross_lane`=跨路并排；`diamond_n`=曼哈顿距离≤n；`whole_lane`=被施法侧半场；`board`=全场 16 格；`none`=无目标 |
+| `anchor` | `self` / `caster` / `enemy_front` / `specific_unit` / `spawned_unit` / `last_dead_ally` / `fixed_cell`，或任意字符串（`<指定单位>`/`fixed_cell(<index>)` 动态寻址）。**净化后只回答「从哪量几何」**，不承载阵营/排序/位置（§10.1）。缺省按 `faction` 推导：`enemy`→`enemy_front`（敌方同路排首 i=0），`ally`/`self`→`self`（我方施法者） |
+| `fixedIndex` | integer | 配合 `anchor: fixed_cell` 的绝对站位序号 |
 | `sort` | 同 sortKey（见下） |
-| `filter` | 候选池过滤器（开放结构）。**DDD 标准 9 维**：`unitType` / `tags` / `hasStatus` / `hasCategory` / `hpPercent` / `casterHasSummon` / `isSummon` / `casterOwned` / `adjacency`；**项目扩展（数据已用）**：`unitId` / `isAllyOrMirror` / `isPuppet` / `isOwnSummon` / `element` / `tier` / `count` / `dispelable` / `anyOf`。2026-09-20 旧名 `statusId`→`hasStatus`、`category`→`hasCategory` 统一为 DDD 命名 |
-| `laneRef` | `same_lane` / `cross_lane` / `all_lanes` / `auto`（DDD 原设计有、schema 曾丢失，本轮回补；auto 在 I 节点前由施法者上下文预处理为具体值） |
-| `spread` | `none` / `lane_line` / `splash_adjacent` / `splash_behind` / `cross_same_index`（2026-09-20 由 1 值补齐为 DDD 5 值；承载上述废弃几何 scope 的语义） |
-| `excludeSelf` / `sortKey` | 见 schema |
+| `filter` | 候选池过滤器（开放结构）。**DDD 标准 9 维**：`unitType` / `tags` / `hasStatus` / `hasCategory` / `hpPercent` / `casterHasSummon` / `isSummon` / `casterOwned` / `adjacency`；**项目扩展（数据已用）**：`unitId` / `isAllyOrMirror` / `isPuppet` / `isOwnSummon` / `element` / `tier` / `count` / `dispelable` / `anyOf` / `emptySlot` |
+| `spread` | `none` / `lane_line` / `splash_adjacent` / `splash_behind` / `cross_same_index`（I-2 收缩后从 committedTargets 扩散，不回池） |
+| `excludeSelf` / `sortKey` / `pickCount` / `selectionMode` | 见 schema（pickCount: `1`=取 1、`"all"`=取框内全部，缺省 `1`；selectionMode: `manual`=框内由玩家选 / `auto`=按 sort 取前） |
 
-> **mode / selectionMode 维度澄清（2026-09-20）**：`mode: unit|area`（点目标 vs 区域目标）与 `selectionMode: manual|auto`（**谁拍板最终目标**）是两个**独立正交维度**，现已回补 `mode`，二者不可混用。配合已回补的 `laneRef`（扫描路线）与补齐的 `spread`（5 值），共同承载原 DDD L12 废弃几何 scope 的语义。
+> **战场拓扑（§10.0 订正）**：上下两路、每路敌我各 4 格头对头向中线塌陷，index 越小越近中线（=排首）。几何锚点必须落在**被施法一侧**——敌 spell 锚 `enemy_front`、己 spell 锚 `self`，恢复并固化 §1.3 原缺省「敌方同路最前排」。
 
-> **scope × laneRef 2D 模型约定（2026-10-03 Path A 决策）**：`scope` 只表达**取几个**（single / all / none），几何范围（整路 / 同路）由 `laneRef` 承载，二者正交。**映射**：`单体` = scope:single（从候选池选 1）；`整路` = scope:all + laneRef:same_lane（同路全部，即「基准位置一整路」）；`群体` = scope:all + laneRef:all_lanes / cross_lane（跨路 / 全场全部）。**维持 scope 三值、不新增枚举**——`整路` 与 `群体` 在 scope 单字段下都显示 all，须结合 `laneRef` 才能区分。统计页「目标面 · 范围形状（scope × laneRef）」已把此 2D 模型摊开呈现。
+> **几何范围与选数的正交（§10）**：`scope` 只框几何大小（从 anchor 量起），`pickCount` 管取几个（`1` / `"all"` / N），二者正交。原 2026-09-20 裁定把几何从 scope 剥离（改由 `laneRef`+`spread` 承载）是临时妥协，本重构正名回 scope，并**删除 `laneRef` 字段**（几何全部由 scope 承载）。
 
 **sortKey 封闭枚举**（新增须先登记到共享内核参数）：
 
