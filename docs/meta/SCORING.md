@@ -43,4 +43,4 @@
   1. `docs/analysis/scorecard.md`——全库途径排行（记分表）、逐途径计分卡、逐轴计分卡与失分清单；
   2. `docs/analysis/scores.json`——网页端评分总览页/途径详情页的直接数据源（口径单一来源，网页不重算分，只展示；前端经 `../docs/analysis/scores.json` fetch）。
 - **进门禁**：`score.py` 为只读脚本，与四脚本同轮跑（不阻塞通过），重设计迭代里用它确认「改后涨分」。
-- 重设计推进按途径总分升序取榜（最低分先做），一途径一 commit，改前改后分记入 `docs/meta/REDESIGN_LOG.md`。
+- 重设计推进按途径总分升序取榜（最低分先做），一途径一 commit，改前改后分记入 `docs/archive/meta/REDESIGN_LOG.md`。
