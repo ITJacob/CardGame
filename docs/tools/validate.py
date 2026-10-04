@@ -324,7 +324,13 @@ def main():
                 if (c.get("target") or {}).get("selectionMode")=="manual" and not fs:
                     errors.append("%s: 违反 INV-E6：selectionMode=manual 必须定义 fallbackSort（当前为 null/缺失）"%cid)
             elif c.get("kind")=="passive":
-                if c.get("hook") not in EVENTS: errors.append("%s: bad hook %s"%(cid,c.get("hook")))
+                # hook 自 2026-10-04 起为数组（与 triggers[].event 同源 triggerEvent）；
+                # 仍兼容标量以便历史数据排查
+                hk = c.get("hook")
+                hk_list = [hk] if isinstance(hk, str) else (hk or [])
+                if not hk_list: errors.append("%s: passive 缺 hook"%cid)
+                for _h in hk_list:
+                    if _h not in EVENTS: errors.append("%s: bad hook %s"%(cid,_h))
             else: errors.append("%s: bad kind"%cid)
             walk(c.get("effects"), cid, "eff", flags, errors, warns)
             for t in (c.get("upgradeLadder") or {}).get("tiers",[]): walk(t.get("effects"), cid, "lad", flags, errors, warns)

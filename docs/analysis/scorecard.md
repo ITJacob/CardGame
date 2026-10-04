@@ -43,7 +43,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 5.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×11；prim:advance_clock ×11；res:secrecy ×3；对他途径指纹均距 0.345
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×2；prim:advance_clock ×11；res:secrecy ×3；对他途径指纹均距 0.345
 
 **途径失分项（含修改意见）**：
 

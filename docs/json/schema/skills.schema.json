@@ -269,8 +269,11 @@
           "$ref": "#/$defs/cardTarget"
         },
         "hook": {
-          "$ref": "#/$defs/triggerEvent",
-          "description": "被动技能的挂载触发点。"
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/triggerEvent"
+          },
+          "description": "被动技能的挂载触发点（数组；与 triggers[].event 同源 triggerEvent 枚举，任一事件触发即执行主体 effects）。2026-10-04 由标量改为数组：标量与 triggers[] 本是同一级事件，但 hook 单选导致 t=0 兜底只能塞进 triggers[]，故统一为数组。"
         },
         "statusDefs": {
           "type": "array",

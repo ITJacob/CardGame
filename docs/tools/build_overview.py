@@ -456,7 +456,9 @@ def main():
                       (ct.get("energy"), ct.get("cooldown"), cast,
                        {"none": "无", "melee": "近战", "ranged": "远程"}.get(c.get("reach"), c.get("reach"))))
                 else:
-                    w("- **触发**：`%s`" % c.get("hook"))
+                    _hk = c.get("hook")
+                    _hk_s = " / ".join(_hk) if isinstance(_hk, list) else (_hk or "—")
+                    w("- **触发**：`%s`" % _hk_s)
                 w("- **效果**：%s" % c.get("describe", ""))
                 w("- **机制**：`%s`" % R.render(c.get("effects")))
                 if c.get("statusDefs"):
