@@ -1,5 +1,5 @@
 // 卡片详情页
-import { DB } from '../data.js';
+import { DB, hookEvents } from '../data.js';
 import { termSpan, statusSpan, axisSpan, escapeHtml } from '../term.js';
 import { renderEffects } from '../ast.js';
 import { showTipSticky } from '../tooltip.js';
@@ -29,11 +29,13 @@ function costHtml(c) {
 
 function triggersHtml(card) {
   const blocks = [];
-  if (card.hook) {
-    // 被动钩子是持续监听，其具体效果在下方「效果结构」中呈现，这里只标明监听的事件
+  const hookEvs = hookEvents(card);
+  if (hookEvs.length) {
+    // hook 自 2026-10-04 起为数组：任一事件触发即执行主体 effects，
+    // 具体效果在下方「效果结构」呈现，这里只列出监听的事件
     blocks.push(`<div class="trigger-block">
-      <div class="trigger-title">被动钩子 · ${termSpan('triggerEvent', card.hook)}</div>
-      <div class="trigger-body"><span class="muted">持续监听；具体效果见下方「效果结构」</span></div>
+      <div class="trigger-title">被动钩子 · ${hookEvs.map((e) => termSpan('triggerEvent', e)).join(' · ')}</div>
+      <div class="trigger-body"><span class="muted">任一事件触发即执行；具体效果见下方「效果结构」</span></div>
     </div>`);
   }
   for (const tr of card.triggers || []) {

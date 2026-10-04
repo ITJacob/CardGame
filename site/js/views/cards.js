@@ -1,5 +1,5 @@
 // 卡片浏览页：筛选 + 分页列表
-import { DB } from '../data.js';
+import { DB, hookEvents } from '../data.js';
 import { termSpan, axisSpan, escapeHtml } from '../term.js';
 import { walkCardEffects } from '../ast.js';
 
@@ -109,8 +109,9 @@ function zh(cat, key) {
 function cardItemHtml(c) {
   const cost = c.kind === 'active' && c.cost
     ? `<span class="badge">⚡${c.cost.energy}${c.cost.cooldown ? ` 冷却 ${c.cost.cooldown} tick` : ''}${c.cost.castTime ? ` 吟唱${c.cost.castTime}` : ''}</span>` : '';
-  const hook = c.kind === 'passive' && c.hook
-    ? `<span class="badge">${termSpan('triggerEvent', c.hook)}</span>` : '';
+  const hookEvs = c.kind === 'passive' ? hookEvents(c) : [];
+  const hook = hookEvs.length
+    ? hookEvs.map((e) => `<span class="badge">${termSpan('triggerEvent', e)}</span>`).join('') : '';
   const axSym = (DB.axesByPathway.get(c._pathway) || {})[c.axis]?.symbol || '';
   return `<div class="card-item card-face r-${c.rarity} k-${c.kind}" data-id="${escapeHtml(c.id)}" data-ax="${escapeHtml(axSym)}" style="--pc:var(--p-${c._pathway})">
     <div class="ci-head">

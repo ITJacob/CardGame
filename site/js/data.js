@@ -160,6 +160,14 @@ export function onStatusesReady(fn) {
   else waiters.push(fn);
 }
 
+// 被动卡的挂载触发点。2026-10-04 起 hook 是数组（与 triggers[].event 同源 triggerEvent，
+// 任一事件触发即执行主体 effects）；保留标量兼容，避免历史数据/手写稿把渲染打空。
+export function hookEvents(card) {
+  const h = card && card.hook;
+  if (!h) return [];
+  return Array.isArray(h) ? h : [h];
+}
+
 // 设计评分：score.py 预计算的 scores.json（docs/analysis/ 下），懒加载 + 缓存。
 // 与 stats 页「浏览器现算」不同——评分口径单一来源在 score.py（SCORING.md），
 // 前端只展示不重算；评分页每次进入都重新 fetch（不跨页缓存 promise），保证重跑

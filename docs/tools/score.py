@@ -186,7 +186,13 @@ def signature_card_hit(card, key, unit_type_of=None, lineage_ids=None, flag_stat
         return False
     if kind == "trig":
         evs = {t.get("event") for t in (card.get("triggers") or []) if isinstance(t, dict)}
-        evs.add(card.get("hook"))  # passive 触发点挂 hook 字段（与 triggers 数组同口径，2026-10-02 批次九对齐）
+        # passive 触发点挂 hook 字段（与 triggers 数组同口径，2026-10-02 批次九对齐）；
+        # hook 自 2026-10-04 起为数组，逐项并入事件集（兼容标量）
+        _hk = card.get("hook")
+        if isinstance(_hk, str):
+            evs.add(_hk)
+        else:
+            evs.update(_hk or [])
         return arg in evs or any(n.get("event") == arg for n in walk(card.get("effects")))
     if kind == "sref":
         # 谱系栈读侧口径（2026-10-02 批次九对齐）：卡引用任何带 lineageStack 字段的状态（狼人化/灵体化/

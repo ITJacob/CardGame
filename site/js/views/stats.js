@@ -10,7 +10,7 @@
 // 早先是「前面一堆 bar、末尾一叠热图」，同一个维度要在页面两头看：bar 给全库尺度、
 // 热图给途径尺度，问的本来就是同一个问题的两个切面，所以配对摆。组间靠板外的组标题
 // 分隔、不套容器面板（同卡片详情页的取向：小字标题 + 留白，不层层套框）
-import { DB, statusesReady, onStatusesReady } from '../data.js';
+import { DB, statusesReady, onStatusesReady, hookEvents } from '../data.js';
 import { zh, escapeHtml } from '../term.js';
 import { walkCardEffects } from '../ast.js';
 import { barChart, countBy, sortedRows, heatPanel, wireHeatToggle } from '../charts.js';
@@ -59,7 +59,9 @@ function renderSkillStats(view) {
   const bySeq = countBy(cards, (c) => c.sequence);
   const byReach = countBy(cards.filter((c) => c.kind === 'active'), (c) => c.reach);
   const bySel = countBy(cards.filter((c) => c.target), (c) => c.target.selectionMode);
-  const byHook = countBy(cards.filter((c) => c.hook), (c) => c.hook);
+  // hook 是数组，一张卡可挂多个触发点：逐个事件计数（countBy 一卡只出一键，会漏）
+  const byHook = {};
+  for (const c of cards) for (const h of hookEvents(c)) byHook[h] = (byHook[h] || 0) + 1;
   const flagshipCount = cards.filter((c) => c.flagship).length;
   const openFlags = (c) => (c.frameworkFlags || []).filter((f) => f && f.landed !== true);
   const flagCards = cards.filter((c) => openFlags(c).length);
@@ -137,7 +139,7 @@ function renderSkillStats(view) {
       reqFilterTotal.set(k, (reqFilterTotal.get(k) || 0) + 1);
       bump(reqFilterByPath, p, k);
     }
-    if (c.hook) bump(hookByPath, p, c.hook);
+    for (const h of hookEvents(c)) bump(hookByPath, p, h);
     // 每卡累计：复杂度（原语节点数）与数值预算（数值伤害加总）在 walk 里攒，走完再分桶
     let cardNodes = 0, cardDmg = 0;
     walkCardEffects(c, (n, kindOf) => {
