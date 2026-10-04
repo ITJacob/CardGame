@@ -231,7 +231,7 @@ export function renderCardDetail(view, id) {
       </section>
 
       <section class="cs-sec">
-        <h2>施放与选靶</h2>
+        ${c.kind === 'active' ? '<h2>施放与选靶</h2>' : '<h2>触发条件</h2>'}
         <dl class="kv">
           ${c.kind === 'active' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
           <dt>距离</dt><dd>${g('reach', c.reach)}</dd>

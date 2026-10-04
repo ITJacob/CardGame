@@ -76,36 +76,31 @@
       "axis": "darkness",
       "flagship": false,
       "lore": "序列9 不眠者 —— \"每天只需 3-4 小时休息\"",
-      "flavor": "你的身体早已习惯不眠，别人睡一整夜才攒下的精力，你在片刻的假寐里就能补回。",
-      "describe": "战斗开始时，自身能量上限 +5、能量回复 +0.2/tick，持续整场。；夜越长，这份力量越实。",
-      "hook": "on_battle_start",
+      "flavor": "你的身体早已习惯不眠，别人睡一整夜才攒下的精力，你在片刻的假寐里就能补回——但唯有夜色垂落时，这份禀赋才会真正苏醒。",
+      "describe": "进入黑夜（光照度 ≤2）后，自身能量上限 +5、能量回复 +0.2/tick，持续整场。不眠之躯不主动拨弄光照，只是随夜幕降临而苏醒。",
+      "hook": "on_phase_change",
       "effects": [
         {
-          "type": "modify_stat",
-          "stat": "energy_max",
-          "value": 5,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "energy_regen",
-          "value": 0.2,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "set_luminance",
-          "value": 2,
-          "duration": 15,
-          "dispelable": false,
-          "note": "夜色为凭：压至暗夜档"
+          "op": "if",
+          "condition": {
+            "kind": "luminance_compare",
+            "cmp": "<=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "sleepless_body_power",
+              "duration": null,
+              "target": "self",
+              "note": "夜幕降临：不眠之躯苏醒，常驻能量增益"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "稿面注明能量仅为'睡得少'的副产品，v0.1 的能量续航轴已废弃，本卡为唯一遗留 ｜ 翻译/语义：原著\"休息需求少\"折为能量骨架被动（暗夜轴起手资源）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=stat）",
+      "conversionNotes": "稿面注明能量仅为'睡得少'的副产品，v0.1 的能量续航轴已废弃，本卡为唯一遗留 ｜ 翻译/语义：原著\"休息需求少\"折为能量骨架被动（暗夜轴起手资源）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=stat）。 ｜ 2026-10-04 修订②：删 set_luminance（不眠之躯不应直接操作光照，语义不符）；改为 on_phase_change 入夜(luminance≤2)后挂载 sleepless_body_power 常驻状态(能量+5/+0.2)——'进入黑夜后生效的被动'，只响应夜、不制造夜",
       "art": {
         "subject": "a watchman resting upright in a moonlit chair, eyes half-open",
         "elements": [
@@ -127,7 +122,7 @@
       "flagship": false,
       "lore": "序列9 不眠者 —— \"无需光照具备卓越视力\"；\"敏锐察觉黑暗里的危险\"",
       "flavor": "黑暗于你并非阻碍——藏在暗处的身形瞒不过你的眼睛，而它们自以为得手的偷袭，也总是慢了半步。",
-      "describe": "战斗开始时获得「夜视」：敌方隐匿类状态对你无效；受到处于隐匿状态敌人的攻击时，该次伤害 ×0.75。；增益以夜色为凭——光照度压暗一档。",
+      "describe": "战斗开始时获得「夜视」：敌方隐匿类状态对你无效；受到处于隐匿状态敌人的攻击时，该次伤害 ×0.75。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -135,20 +130,13 @@
           "statusId": "dark_sight",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "set_luminance",
-          "value": 2,
-          "duration": 15,
-          "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：识破隐匿（依赖 C8「识破」，与愚者【灵视】同源）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：识破隐匿（依赖 C8「识破」，与愚者【灵视】同源）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
       "art": {
         "subject": "a night watchman's eyes glinting silver in pitch black",
         "elements": [
@@ -212,17 +200,17 @@
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         }
       ],
       "tentative": false,
@@ -233,7 +221,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态 `夜幕` 累积源。 2026-09-21 改为光照驱动：叠层改由 board.luminance 判定，不再无条件每 tick +1。 ｜ 2026-10-02 差异化风格迭代（不眠者=暗夜正主）：升格 on_phase_change 触发器『昼夜涨落』——相位触发正主第一卡（与歌颂者仪式昼夜语义分叉：不眠者=夜幕加深） ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比",
+      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态 `夜幕` 累积源。 2026-09-21 改为光照驱动：叠层改由 board.luminance 判定，不再无条件每 tick +1。 ｜ 2026-10-02 差异化风格迭代（不眠者=暗夜正主）：升格 on_phase_change 触发器『昼夜涨落』——相位触发正主第一卡（与歌颂者仪式昼夜语义分叉：不眠者=夜幕加深） ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
       "art": {
         "subject": "shadows thickening and climbing up a lone standing figure",
         "elements": [
@@ -303,7 +291,7 @@
       "flagship": false,
       "lore": "序列8 午夜诗人 —— \"擅长格斗、射击、攀爬和感应\"",
       "flavor": "你在午夜里练就的身手从不需要灯火照明——拳脚、准头与攀爬的本能，早已刻进骨子里。",
-      "describe": "战斗开始时，自身攻击 +2、防御 +1，持续整场。此外，光照度≤3 时每次受击将「恐惧」反挂给攻击者 10tick（每 10tick 至多一次）；正午受击不回击。；夜越长，这份力量越实。",
+      "describe": "战斗开始时，自身攻击 +2、防御 +1，持续整场。此外，光照度≤3 时每次受击将「恐惧」反挂给攻击者 10tick（每 10tick 至多一次）；正午受击不回击。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -321,13 +309,6 @@
           "mode": "delta",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "set_luminance",
-          "value": 2,
-          "duration": 15,
-          "dispelable": false,
-          "note": "夜色为凭：压至暗夜档"
         }
       ],
       "upgradeLadder": {
@@ -340,7 +321,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴属性地板。 ｜ 2026-10-02 矩阵复审·四批（不眠者=on_take_damage 反应式被动正主）：补恐惧回击第二触发点，主触发点 on_battle_start 维持 ｜ 2026-10-03 骨架手术：相位形状换形（角色=stat）",
+      "conversionNotes": "翻译/语义：暗夜轴属性地板。 ｜ 2026-10-02 矩阵复审·四批（不眠者=on_take_damage 反应式被动正主）：补恐惧回击第二触发点，主触发点 on_battle_start 维持 ｜ 2026-10-03 骨架手术：相位形状换形（角色=stat）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
       "art": {
         "subject": "a fighter shadow-boxing under a single street lamp at midnight",
         "elements": [
@@ -492,14 +473,14 @@
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "夜色掩护：压至暗夜档"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴友军向预演（增益向），与序列6【安魂】削弱向区分。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=heal） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：requiem轴 ally+board filter:unitType pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：安魂轴友军向预演（增益向），与序列6【安魂】削弱向区分。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=heal） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：requiem轴 ally+board filter:unitType pick:all（轴选靶签名设计 §4）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
       "art": {
         "subject": "a hummed lullaby settling over a resting companion",
         "elements": [
@@ -710,21 +691,21 @@
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：读 `灵梦` 二次操作（payoff）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：读 `灵梦` 二次操作（payoff）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
       "art": {
         "subject": "hands reshaping a dreamscape while hidden whispers leak out",
         "elements": [
@@ -746,7 +727,7 @@
       "flagship": false,
       "lore": "序列7 梦魇 —— \"自由出入极大范围熟睡者的梦\"",
       "flavor": "只要有谁还沉在梦里，就没有你够不到的地方——距离与前排，都拦不住一个走在梦里的人。",
-      "describe": "战斗开始时获得「梦境行者」：对入梦敌人的技能无视射程与前排限制；你施加的入梦持续时间 +1。；增益以夜色为凭——光照度压暗一档。",
+      "describe": "战斗开始时获得「梦境行者」：对入梦敌人的技能无视射程与前排限制；你施加的入梦持续时间 +1。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -754,17 +735,10 @@
           "statusId": "dream_walker",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "set_luminance",
-          "value": 2,
-          "duration": 15,
-          "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：梦魇轴运转前提。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：梦魇轴运转前提。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
       "art": {
         "subject": "a walker stepping through an endless corridor of sleeping faces",
         "elements": [
@@ -907,24 +881,24 @@
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "黑暗加深：写战场覆写层为暗夜档（≤2，暗夜主场不可驱散）"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴身份状态 `安宁`(pacified) 挂载源；对灵体特化支路。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：安魂轴身份状态 `安宁`(pacified) 挂载源；对灵体特化支路。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
       "art": {
         "subject": "a solemn chant calming a restless spirit into stillness",
         "elements": [
@@ -946,7 +920,7 @@
       "flagship": false,
       "lore": "序列6 安魂师 —— \"能直接看见灵体生物\"",
       "flavor": "那些游荡在世间的灵体，在你眼里从来不是虚无的影子——它们轮廓分明，也无处躲藏。",
-      "describe": "战斗开始时获得「通灵之眼」：对灵体与亡灵造成的伤害 ×1.25，且它们的隐匿类状态对你无效。；增益以夜色为凭——光照度压暗一档。",
+      "describe": "战斗开始时获得「通灵之眼」：对灵体与亡灵造成的伤害 ×1.25，且它们的隐匿类状态对你无效。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -954,20 +928,13 @@
           "statusId": "spirit_sight",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "set_luminance",
-          "value": 2,
-          "duration": 15,
-          "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴灵体特化入口，与收尸人共享同源。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：安魂轴灵体特化入口，与收尸人共享同源。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
       "art": {
         "subject": "a seer's eyes revealing spirits hidden in plain air",
         "elements": [
@@ -1037,7 +1004,7 @@
       "flagship": false,
       "lore": "序列5 灵巫 —— \"可驱使 4-5 个灵，一心多用\"",
       "flavor": "你的意识被拆成许多股，各自牵着一只灵——旁人操控一只都要分神，你同时驱使一群仍游刃有余。",
-      "describe": "战斗开始时，自身召唤位上限 +2；你召唤的灵攻击 +1。；增益以夜色为凭——光照度压暗一档。",
+      "describe": "战斗开始时，自身召唤位上限 +2；你召唤的灵攻击 +1。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1055,20 +1022,13 @@
           "duration": null,
           "target": "self",
           "note": "实际走 spawn.companionBuff（F54）挂给自身 spawn 出的灵，此处为语义简写"
-        },
-        {
-          "type": "set_luminance",
-          "value": 2,
-          "duration": 15,
-          "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴召唤发动机。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：安魂轴召唤发动机。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
       "art": {
         "subject": "a figure with strands of will each tethered to a spirit",
         "elements": [
@@ -1216,28 +1176,28 @@
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：读 `夜幕` 阈值放大的暗夜轴 payoff。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比",
+      "conversionNotes": "翻译/语义：读 `夜幕` 阈值放大的暗夜轴 payoff。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
       "art": {
         "subject": "a night watchman growing sharper as full darkness falls",
         "elements": [
@@ -1464,14 +1424,14 @@
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "黑暗加深：写战场覆写层为暗夜档（≤2，暗夜主场不可驱散）"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴确定性厄运（慢/退/加重）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=debuff） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：darkness轴 enemy+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：暗夜轴确定性厄运（慢/退/加重）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=debuff） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：darkness轴 enemy+board pick:all（轴选靶签名设计 §4）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
       "art": {
         "subject": "a small patch of night clinging to a staggering enemy",
         "elements": [
@@ -1703,21 +1663,21 @@
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：梦魇轴渐进入睡旗舰，读 `灵梦` 深化。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 3→5tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "翻译/语义：梦魇轴渐进入睡旗舰，读 `灵梦` 深化。✅ 依赖已落。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 3→5tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
       "art": {
         "subject": "a dream-world city dissolving as sleepers walk inside",
         "elements": [
@@ -1764,17 +1724,17 @@
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "黑暗加深：写战场覆写层为暗夜档（≤2，暗夜主场不可驱散）"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴中层 enabler：挂 `隐秘` + 推进战场隐秘值。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：secrecy轴 self_or_ally+point（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：隐秘轴中层 enabler：挂 `隐秘` + 推进战场隐秘值。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：secrecy轴 self_or_ally+point（轴选靶签名设计 §4）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -1831,14 +1791,14 @@
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴旗舰：连友军都够不到目标；封印即写隐秘值。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：隐秘轴旗舰：连友军都够不到目标；封印即写隐秘值。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -1950,7 +1910,7 @@
       "flagship": false,
       "lore": "序列2 隐秘之仆 —— \"『隐秘』权柄：让发生的一切不被窥见\"",
       "flavor": "你的行迹从不在世上留下痕迹——每次被击中，你就像从未站在那里一样，重新隐入无人的暗处。",
-      "describe": "战斗开始时获得「无迹之影」：自身与己方单位的隐匿状态不可被驱散；自身每次受击后获得 10tick 潜行。；增益以夜色为凭——光照度压暗一档。；每用一次夜色，战场就暗一分。",
+      "describe": "战斗开始时获得「无迹之影」：自身与己方单位的隐匿状态不可被驱散；自身每次受击后获得 10tick 潜行。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -1965,24 +1925,10 @@
           "duration": 15,
           "target": "self",
           "note": "影无迹身潜匿：无迹之影常驻自持潜匿（D 类批 2026-09-29 产层第二实证）"
-        },
-        {
-          "type": "set_luminance",
-          "value": 2,
-          "duration": 15,
-          "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
-        },
-        {
-          "type": "set_luminance",
-          "value": 2,
-          "duration": 15,
-          "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴受击即隐循环。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比",
+      "conversionNotes": "翻译/语义：隐秘轴受击即隐循环。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
       "art": {
         "subject": "a struck figure dissolving back into the dark without a trace",
         "elements": [
@@ -2087,7 +2033,7 @@
       "flagship": false,
       "lore": "序列1 厄难骑士 —— \"『黑暗仆人』：黑夜中几乎无法被杀死，每次从黑暗中回归\"；序列0 黑暗 —— \"黑暗权柄：黑暗中不死，借助黑暗复活\"",
       "flavor": "你已是黑暗的仆人——只要夜色还在，死亡就只是暂时。每一次倒下，你都会从黑暗里重新走回来。",
-      "describe": "战斗开始时获得 3 层「黑暗仆人」：自身死亡时若夜色 ≥3 层或黑夜领域在场，则中断死亡、保留 1 血并回复 30% 最大生命，消耗 1 层；层数耗尽后正常死亡。；增益以夜色为凭——光照度压暗一档。",
+      "describe": "战斗开始时获得 3 层「黑暗仆人」：自身死亡时若夜色 ≥3 层或黑夜领域在场，则中断死亡、保留 1 血并回复 30% 最大生命，消耗 1 层；层数耗尽后正常死亡。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -2096,17 +2042,10 @@
           "charges": 3,
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "set_luminance",
-          "value": 2,
-          "duration": 15,
-          "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴终极回报（读 `夜幕` 条件）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：暗夜轴终极回报（读 `夜幕` 条件）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
       "art": {
         "subject": "a fallen servant rising again out of the night",
         "elements": [
@@ -2199,21 +2138,21 @@
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴统御 payoff（读 `安宁` 体系，敌方亡灵掉头）。复用 F9。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes(仪式场) ｜ 选靶V2：删 laneRef=all_lanes；scope:all(+all_lanes) → board+pickCount:all（群体/全场） ｜ 选靶签名：requiem轴 ally+board filter:unitType pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：安魂轴统御 payoff（读 `安宁` 体系，敌方亡灵掉头）。复用 F9。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes(仪式场) ｜ 选靶V2：删 laneRef=all_lanes；scope:all(+all_lanes) → board+pickCount:all（群体/全场） ｜ 选靶签名：requiem轴 ally+board filter:unitType pick:all（轴选靶签名设计 §4）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
       "art": {
         "subject": "a commander raising a hand as spirits bow their heads",
         "elements": [
@@ -2286,21 +2225,21 @@
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         },
         {
           "type": "set_luminance",
-          "value": 2,
           "duration": 15,
           "dispelable": false,
-          "note": "入夜：每用一次夜色，战场就暗一分"
+          "note": "相对压暗 delta:-1（非硬设暗夜档）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：梦魇轴终焉：入梦/永眠/消融一次给全。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→7（位格10 基准7）。条件/读层追加段不动。 ｜ 2026-10-02 差异化风格迭代（不眠者=暗夜正主）：升格 advance_clock(20tick)『梦中老去』——时钟推进正主第一卡（与怪物命运回拨语义分叉：不眠者=推向夜幕） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：梦魇轴终焉：入梦/永眠/消融一次给全。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→7（位格10 基准7）。条件/读层追加段不动。 ｜ 2026-10-02 差异化风格迭代（不眠者=暗夜正主）：升格 advance_clock(20tick)『梦中老去』——时钟推进正主第一卡（与怪物命运回拨语义分叉：不眠者=推向夜幕） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
       "dimHooks": [
         {
           "dim": "luminance",
@@ -2331,7 +2270,7 @@
       "flagship": false,
       "lore": "序列0 黑暗 —— \"『隐秘』权柄：隐藏痕迹、误导窥探，将任何事物变隐秘\"",
       "flavor": "你走到哪里，痕迹就消失到哪里——连你召来的那些灵，也一并隐没在无人能窥的暗处。",
-      "describe": "战斗开始时获得「隐秘权柄」：自身与己方全部召唤物常驻潜行（造成伤害后破除 10tick 再重新隐匿），且己方单位的潜行不可被驱散。；增益以夜色为凭——光照度压暗一档。",
+      "describe": "战斗开始时获得「隐秘权柄」：自身与己方全部召唤物常驻潜行（造成伤害后破除 10tick 再重新隐匿），且己方单位的潜行不可被驱散。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -2362,17 +2301,10 @@
           ],
           "else": [],
           "note": "读层段：sleepless→covert_veil 存在性读档（D 类批 2026-09-29 承接连通 0 摘除）"
-        },
-        {
-          "type": "set_luminance",
-          "value": 2,
-          "duration": 15,
-          "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴终极形态：整队长期不可选中 + 持续推隐秘值。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：隐秘轴终极形态：整队长期不可选中 + 持续推隐秘值。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -2467,7 +2399,7 @@
       "flagship": false,
       "lore": "序列0 黑暗 —— \"『灵体灵性』权柄\"",
       "flavor": "一切具备灵性的存在，都在你的意志之下——你的灵永不失控，而别人的灵，在你面前脆弱得不堪一击。",
-      "describe": "战斗开始时获得「灵体灵性权柄」：己方灵体与亡灵免疫控制；你对灵体与亡灵造成的伤害 ×1.3；灵体与亡灵对你造成的伤害 ×0.85。；增益以夜色为凭——光照度压暗一档。",
+      "describe": "战斗开始时获得「灵体灵性权柄」：己方灵体与亡灵免疫控制；你对灵体与亡灵造成的伤害 ×1.3；灵体与亡灵对你造成的伤害 ×0.85。",
       "hook": "on_battle_start",
       "effects": [
         {
@@ -2475,13 +2407,6 @@
           "statusId": "spirit_authority",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "set_luminance",
-          "value": 2,
-          "duration": 15,
-          "dispelable": false,
-          "note": "夜幕：写战场覆写层为暗夜档，增益以夜色为凭"
         }
       ],
       "sharedAcross": [
@@ -2497,7 +2422,7 @@
         ],
         "mood": "sovereign, untouchable"
       },
-      "conversionNotes": "2026-10-03 骨架手术：相位形状换形（角色=buff）"
+      "conversionNotes": "2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句"
     }
   ],
   "unitDefs": [
