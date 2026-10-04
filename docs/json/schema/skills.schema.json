@@ -273,7 +273,7 @@
           "items": {
             "$ref": "#/$defs/triggerEvent"
           },
-          "description": "被动技能的挂载触发点（数组；与 triggers[].event 同源 triggerEvent 枚举，任一事件触发即执行主体 effects）。2026-10-04 由标量改为数组：标量与 triggers[] 本是同一级事件，但 hook 单选导致 t=0 兜底只能塞进 triggers[]，故统一为数组。"
+          "description": "被动技能的挂载触发点（数组；与 triggers[].event 同源 triggerEvent 枚举，任一事件触发即执行主体 effects）。2026-10-04 由标量改为数组：标量与 triggers[] 本是同一级事件，但 hook 单选导致 t=0 兜底只能塞进 triggers[]，故统一为数组。语义边界：多个事件共享同一套主体 effects，而非每事件配一套 effects；effects 内无法判断本次被哪个事件触发（condition 全集 30 种均为世界状态判断，无 trigger_is/event_is），故数组只适用于「同效多挂载点」（各事件跑出来的结果语义等价、重复执行无害）。若不同事件需执行不同效果（异效），主事件放 hook、其余事件放 triggers[]——其每项自带 event + inline effects + condition + consumeCharge/consume + global。"
         },
         "statusDefs": {
           "type": "array",
