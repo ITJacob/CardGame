@@ -77,19 +77,41 @@
       "flagship": false,
       "lore": "序列9 不眠者 —— \"每天只需 3-4 小时休息\"",
       "flavor": "你的身体早已习惯不眠，别人睡一整夜才攒下的精力，你在片刻的假寐里就能补回——但唯有夜色垂落时，这份禀赋才会真正苏醒。",
-      "describe": "战斗开始即进入守夜监听：当前处于夜相位（night / midnight）时，自身能量上限 +5、能量回复 +0.2/tick；一旦相位转入黎明 / 白昼 / 黄昏，增益立即撤除。不眠之躯不主动拨弄光照，只随昼夜流转醒眠——天亮即沉眠。",
-      "hook": "on_battle_start",
+      "describe": "不眠之躯直接以光照度判断醒眠：当前光照度 ≤2（暗夜档）时，自身能量上限 +5、能量回复 +0.2/tick 苏醒；一旦光照回升超过暗夜档，增益立即撤除。不眠之躯不主动拨弄光照，只随战场明暗醒眠——天亮即沉眠。",
+      "hook": "on_tick",
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "sleepless_body_watch",
-          "duration": null,
-          "target": "self",
-          "note": "开局挂载昼夜控制器；夜相位苏醒 / 非夜相位沉眠由控制器监听相位"
+          "op": "if",
+          "condition": {
+            "kind": "luminance_compare",
+            "cmp": "<=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "sleepless_body_power",
+              "duration": null,
+              "target": "self",
+              "note": "暗夜档(luminance<=2)：不眠之躯苏醒"
+            }
+          ],
+          "else": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "sleepless_body_power",
+                "count": 1
+              },
+              "note": "光照回升(>2)：不眠之躯沉眠"
+            }
+          ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "稿面注明能量仅为'睡得少'的副产品，v0.1 的能量续航轴已废弃，本卡为唯一遗留 ｜ 翻译/语义：原著\"休息需求少\"折为能量骨架被动（暗夜轴起手资源）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=stat）。 ｜ 2026-10-04 修订②：删 set_luminance（不眠之躯不应直接操作光照，语义不符）；改为 on_phase_change 入夜(luminance≤2)后挂载 sleepless_body_power 常驻状态(能量+5/+0.2)——'进入黑夜后生效的被动'，只响应夜、不制造夜 ｜ 2026-10-04 修订③：按夜相位口径重写——删 on_phase_change 直接挂载+天亮不退，改 hook=on_battle_start 挂载 sleepless_body_watch 控制器；控制器在 on_apply 及 on_phase_change 监听相位：night/midnight 挂 sleepless_body_power、dawn/day/dusk 撤除，覆盖开局即夜与全程昼夜流转（暗夜档 luminance≤2 会多吞黎明头/黄昏尾，故弃用）",
+      "conversionNotes": "稿面注明能量仅为'睡得少'的副产品，v0.1 的能量续航轴已废弃，本卡为唯一遗留 ｜ 翻译/语义：原著\"休息需求少\"折为能量骨架被动（暗夜轴起手资源）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=stat）。 ｜ 2026-10-04 修订②：删 set_luminance（不眠之躯不应直接操作光照，语义不符）；改为 on_phase_change 入夜(luminance≤2)后挂载 sleepless_body_power 常驻状态(能量+5/+0.2)——'进入黑夜后生效的被动'，只响应夜、不制造夜 ｜ 2026-10-04 修订③：按夜相位口径重写——删 on_phase_change 直接挂载+天亮不退，改 hook=on_battle_start 挂载 sleepless_body_watch 控制器；控制器在 on_apply 及 on_phase_change 监听相位：night/midnight 挂 sleepless_body_power、dawn/day/dusk 撤除，覆盖开局即夜与全程昼夜流转（暗夜档 luminance≤2 会多吞黎明头/黄昏尾，故弃用） ｜ 2026-10-04 修订④：按用户要求去掉相位依赖，不再经 sleepless_body_watch 控制器监听 phase_is；改为卡自身 hook=on_tick + op:if(luminance_compare<=2) 直接挂/撤 sleepless_body_power（暗=醒、亮=睡），并补 on_battle_start 触发器兜住开局即夜的 t=0 情形。控制器 sleepless_body_watch 已删除",
       "art": {
         "subject": "a watchman resting upright in a moonlit chair, eyes half-open",
         "elements": [
@@ -98,7 +120,26 @@
           "cold candle stub"
         ],
         "mood": "restless, watchful"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_battle_start",
+          "condition": {
+            "kind": "luminance_compare",
+            "cmp": "<=",
+            "n": 2
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "sleepless_body_power",
+              "duration": null,
+              "target": "self",
+              "note": "开局即夜：立即苏醒"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_sleepless_s9_night_vision",
