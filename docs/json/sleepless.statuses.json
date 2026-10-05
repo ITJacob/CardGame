@@ -44,11 +44,10 @@
       "maxStacks": 5,
       "stackPolicy": "stack",
       "statPerStack": {
-        "attack": 1,
         "gauge.rate": 2,
         "energy_regen": 0.04
       },
-      "note": "H34 statPerStack 按层数线性修正；夜色=贮存的黑夜电池，由 夜色渐浓 单卡自洽管理（暗夜档 accumulate、白昼档 倾泻压暗全场）。读取层数者：黑暗仆人·不灭（不死判定 nightfall≥3）、药师『黑暗凝视·改』。 ｜ 枢纽状态（ddd §1.4）：归属 不眠者；crossPathway 参与者见 participants。",
+      "note": "H34 statPerStack 按层数线性修正；夜色=贮存的黑夜电池，由 夜色渐浓 单卡自洽管理（暗夜档 accumulate、白昼档 倾泻压暗全场）。读取层数者：黑暗仆人·不灭（不死判定 nightfall≥3）、药师『黑暗凝视·改』。 ｜ 枢纽状态（ddd §1.4）：归属 不眠者；crossPathway 参与者见 participants。 ｜ 2026-10-05 v7（用户指令）：去掉 statPerStack.attack（满层攻击+0），夜色=纯电池/敏捷资源（gauge.rate+2、energy_regen+0.04/层），『黑夜赐敏捷与清醒而非蛮力』——削弱此前满层+5攻击爆点。读取层数者不变（黑暗仆人·不灭 nightfall≥3、药师）。",
       "crossPathway": true,
       "participants": [
         "sleepless",
@@ -686,7 +685,35 @@
           "target": "self"
         }
       ],
-      "note": "暗夜轴『越黑暗越强』身份增益：攻+3/防+2/精抗+10%。v4 重构由 夜色渐浓 释放『花 nightfall 换自身 night_empower』挂载（≥2 花2→15tick / ≥1 花1→10tick），守夜人体质/夜色渐浓释放复用。恢复挂载：本状态在 976c71d(v4 重构) 中被误删，仅引用未定义，本次补回（形态对齐 midnight_prowess_power 的 effects 写法）。刷新不叠层（maxStacks 1）。"
+      "note": "暗夜轴『越黑暗越强』身份增益：攻+3/防+2/精抗+10%。守夜人体质暗夜档复用（攻击向）。刷新不叠层（maxStacks 1）。2026-10-05 v5：原白天释放共用此态、被用户指令临时改防守；同轮拆出 night_empower_ward（防守向）专供 夜色渐浓 白昼释放，本态还原攻击向归守夜人体质。"
+    },
+    {
+      "id": "night_empower_ward",
+      "name": "暗夜守御",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 10,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 3,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": 10,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self"
+        }
+      ],
+      "note": "暗夜守御（防守向）：防+3/精抗+10%，不给攻击。专供 夜色渐浓 白昼释放『花 nightfall 换自身』挂载（≥2 花2→15tick / ≥1 花1→10tick），对应『白天转防御』用户指令。与 night_empower（攻击向，守夜人体质复用）互斥、各 maxStacks 1。2026-10-05 v5 由 night_empower 拆出。"
     }
   ]
 }
