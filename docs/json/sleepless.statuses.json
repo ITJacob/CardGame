@@ -48,7 +48,7 @@
         "gauge.rate": 2,
         "energy_regen": 0.04
       },
-      "note": "H34 statPerStack 按层数线性修正；'越黑暗越强'的主判据（守夜人体质 / 黑暗仆人·不灭 读取本状态层数） ｜ 枢纽状态（ddd §1.4）：归属 不眠者；药师『黑暗凝视·改』读取。",
+      "note": "H34 statPerStack 按层数线性修正；夜色=贮存的黑夜电池，由 夜色渐浓 单卡自洽管理（暗夜档 accumulate、白昼档 倾泻压暗全场）。读取层数者：黑暗仆人·不灭（不死判定 nightfall≥3）、药师『黑暗凝视·改』。 ｜ 枢纽状态（ddd §1.4）：归属 不眠者；crossPathway 参与者见 participants。",
       "crossPathway": true,
       "participants": [
         "sleepless",
@@ -199,42 +199,6 @@
         "summon_cap_override": 2
       },
       "note": "summon_cap 是 UnitDef/运行时参数（H39 编队参数 §1.1b），以状态 modifiers 承载对持有者召唤位上限的修正；由归一自 modify_stat(stat: summon_cap) 改写"
-    },
-    {
-      "id": "night_empower",
-      "name": "暗夜加持",
-      "category": [
-        "buff"
-      ],
-      "dispelable": true,
-      "duration": 10,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 3,
-          "mode": "delta",
-          "duration": 10,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "defense",
-          "value": 2,
-          "mode": "delta",
-          "duration": 10,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "resist:mental",
-          "value": 10,
-          "mode": "delta",
-          "duration": 10,
-          "target": "self"
-        }
-      ],
-      "note": "刷新不叠层（maxStacks 1）"
     },
     {
       "id": "sunlight_weakness",
