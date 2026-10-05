@@ -1,7 +1,7 @@
 # 职业设计计分卡（scorecard）
 
 > 由 `docs/tools/score.py` 自动生成——**口径变了就改 SCORING.md 重跑，不要手改本文件**。
-> 生成时间：2026-10-05。评分标准见 `../meta/SCORING.md`；数值 ⚠️D 不参与计分（基线状态）。
+> 生成时间：2026-10-06。评分标准见 `../meta/SCORING.md`；数值 ⚠️D 不参与计分（基线状态）。
 
 ## 一、途径排行（升序 = 优先重设计）
 
@@ -43,13 +43,13 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 5.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×1；prim:advance_clock ×11；res:secrecy ×3；对他途径指纹均距 0.340
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×1；prim:advance_clock ×11；res:secrecy ×3；对他途径指纹均距 0.344
 
 **途径失分项（含修改意见）**：
 
 - `跨轴耦合` -12.5：本途径他轴身份读取 1 次（sleepless）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
 - `跨系联动` -9.0：枢纽状态 3 个 + combo 读取 1 次（sleepless）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.340，分位 <25%）（sleepless）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.344，分位 <25%）（sleepless）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -87,13 +87,13 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 5.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:take_control ×5；prim:modify_targetability ×2；prim:target_override ×8；对他途径指纹均距 0.334
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:take_control ×5；prim:modify_targetability ×2；prim:target_override ×8；对他途径指纹均距 0.335
 
 **途径失分项（含修改意见）**：
 
 - `跨轴耦合` -10.0：本途径他轴身份读取 2 次（thief）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
 - `跨系联动` -9.0：枢纽状态 2 个 + combo 读取 2 次（thief）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.334，分位 <25%）（thief）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.335，分位 <25%）（thief）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -168,7 +168,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 8.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×11；elem:ice ×3；elem:dark ×1；对他途径指纹均距 0.389
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×11；elem:ice ×3；elem:dark ×1；对他途径指纹均距 0.390
 
 **途径失分项（含修改意见）**：
 
@@ -461,7 +461,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 8.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:seal_effect ×2；flag:cost_mod ×2；res:order ×6；对他途径指纹均距 0.403
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:seal_effect ×2；flag:cost_mod ×2；res:order ×6；对他途径指纹均距 0.404
 
 **途径失分项（含修改意见）**：
 
