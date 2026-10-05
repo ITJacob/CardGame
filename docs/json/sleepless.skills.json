@@ -146,7 +146,7 @@
       "flagship": false,
       "lore": "序列9 不眠者 —— \"无需光照具备卓越视力\"；\"敏锐察觉黑暗里的危险\"",
       "flavor": "黑暗于你并非阻碍——藏在暗处的身形瞒不过你的眼睛，而它们自以为得手的偷袭，也总是慢了半步。",
-      "describe": "战斗开始时获得「夜视」：敌方隐匿类状态对你无效；受到处于隐匿状态敌人的攻击时，该次伤害 ×0.75。",
+      "describe": "夜视以光照度判断：当前光照度 ≤2（暗夜档）时获得「夜视」——敌方隐匿类状态对你无效，受隐匿状态敌人攻击时该次伤害 ×0.75；光照回升至白昼档（>8）时夜视消退；明暗过渡带（3–8）维持现状，不随单次微光抖动。",
       "hook": [
         "on_tick",
         "on_battle_start"
@@ -164,18 +164,39 @@
               "type": "mount_status",
               "statusId": "dark_sight",
               "duration": null,
-              "target": "self"
+              "target": "self",
+              "note": "暗夜档(luminance<=2)：夜视苏醒"
             }
           ],
-          "else": [],
-          "note": "入夜苏醒：暗夜降临（光照度≤2）方显本色——呼应 不眠之躯 入夜响应范式；被动不再无脑推钟，改为响应夜。"
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "luminance_compare",
+            "cmp": ">",
+            "n": 8
+          },
+          "then": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "dark_sight",
+                "count": 1
+              },
+              "note": "白昼档(luminance>8)：夜视消退（整夜维持，过渡带不撤）；呼应 不眠之躯 迟滞双阈值范式"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：识破隐匿（依赖 C8「识破」，与愚者【灵视】同源）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
+      "conversionNotes": "翻译/语义：识破隐匿（依赖 C8「识破」，与愚者【灵视】同源）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句 ｜ 2026-10-05: 按不眠之躯迟滞范式补撤除分支——原 effect 仅 luminance<=2 挂 dark_sight、else 空，非黑夜不取消导致状态残留；改双阈值(<=2 挂 / >8 撤)，过渡带 3-8 维持",
       "art": {
         "subject": "a night watchman's eyes glinting silver in pitch black",
         "elements": [
@@ -332,7 +353,7 @@
       "flagship": false,
       "lore": "序列8 午夜诗人 —— \"擅长格斗、射击、攀爬和感应\"",
       "flavor": "你在午夜里练就的身手从不需要灯火照明——拳脚、准头与攀爬的本能，早已刻进骨子里。",
-      "describe": "战斗开始时，自身攻击 +2、防御 +1，持续整场。此外，光照度≤3 时每次受击将「恐惧」反挂给攻击者 10tick（每 10tick 至多一次）；正午受击不回击。",
+      "describe": "午夜武艺以光照度判断：当前光照度 ≤2（暗夜档）自身攻击 +2、防御 +1 苏醒；光照回升至白昼档（>8）时消退；明暗过渡带（3–8）维持现状。此外，光照度≤3 时每次受击将「恐惧」反挂给攻击者 10tick（每 10tick 至多一次）；正午受击不回击。",
       "hook": [
         "on_tick",
         "on_battle_start"
@@ -347,24 +368,35 @@
           },
           "then": [
             {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 2,
-              "mode": "delta",
+              "type": "mount_status",
+              "statusId": "midnight_prowess_power",
               "duration": null,
-              "target": "self"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": 1,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
+              "target": "self",
+              "note": "暗夜档(luminance<=2)：午夜武艺苏醒（攻+2/防+1 走 midnight_prowess_power 状态）"
             }
           ],
-          "else": [],
-          "note": "入夜苏醒：暗夜降临（光照度≤2）方显本色——呼应 不眠之躯 入夜响应范式；被动不再无脑推钟，改为响应夜。"
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "luminance_compare",
+            "cmp": ">",
+            "n": 8
+          },
+          "then": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "midnight_prowess_power",
+                "count": 1
+              },
+              "note": "白昼档(luminance>8)：午夜武艺沉寂（整夜维持，过渡带不撤）；呼应 不眠之躯 迟滞双阈值范式"
+            }
+          ],
+          "else": []
         }
       ],
       "upgradeLadder": {
@@ -377,7 +409,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴属性地板。 ｜ 2026-10-02 矩阵复审·四批（不眠者=on_take_damage 反应式被动正主）：补恐惧回击第二触发点，主触发点 on_battle_start 维持 ｜ 2026-10-03 骨架手术：相位形状换形（角色=stat）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
+      "conversionNotes": "翻译/语义：暗夜轴属性地板。 ｜ 2026-10-02 矩阵复审·四批（不眠者=on_take_damage 反应式被动正主）：补恐惧回击第二触发点，主触发点 on_battle_start 维持 ｜ 2026-10-03 骨架手术：相位形状换形（角色=stat）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句 ｜ 2026-10-05: 直改 modify_stat(attack+2/def+1,duration:null) 为挂载 midnight_prowess_power 状态（effects 内 modify_stat 承载，与不眠之躯·醒 同范）；原效果非黑夜不撤除导致白天仍持攻防，补齐 >8 撤除分支，过渡带 3-8 维持",
       "art": {
         "subject": "a fighter shadow-boxing under a single street lamp at midnight",
         "elements": [
@@ -783,7 +815,7 @@
       "flagship": false,
       "lore": "序列7 梦魇 —— \"自由出入极大范围熟睡者的梦\"",
       "flavor": "只要有谁还沉在梦里，就没有你够不到的地方——距离与前排，都拦不住一个走在梦里的人。",
-      "describe": "战斗开始时获得「梦境行者」：对入梦敌人的技能无视射程与前排限制；你施加的入梦持续时间 +1。",
+      "describe": "梦境行者以光照度判断：当前光照度 ≤2（暗夜档）获得「梦境行者」——对入梦敌人的技能无视射程与前排限制，施加的入梦持续时间 +1；光照回升至白昼档（>8）时消退；明暗过渡带（3–8）维持现状，不随单次微光抖动。",
       "hook": [
         "on_tick",
         "on_battle_start"
@@ -801,15 +833,36 @@
               "type": "mount_status",
               "statusId": "dream_walker",
               "duration": null,
-              "target": "self"
+              "target": "self",
+              "note": "暗夜档(luminance<=2)：梦境行者苏醒"
             }
           ],
-          "else": [],
-          "note": "入夜苏醒：暗夜降临（光照度≤2）方显本色——呼应 不眠之躯 入夜响应范式；被动不再无脑推钟，改为响应夜。"
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "luminance_compare",
+            "cmp": ">",
+            "n": 8
+          },
+          "then": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "dream_walker",
+                "count": 1
+              },
+              "note": "白昼档(luminance>8)：梦境行者消退（整夜维持，过渡带不撤）；呼应 不眠之躯 迟滞双阈值范式"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：梦魇轴运转前提。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
+      "conversionNotes": "翻译/语义：梦魇轴运转前提。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句 ｜ 2026-10-05: 按不眠之躯迟滞范式补撤除分支——原 effect 仅 luminance<=2 挂 dream_walker、else 空，非黑夜不取消导致状态残留；改双阈值(<=2 挂 / >8 撤)，过渡带 3-8 维持",
       "art": {
         "subject": "a walker stepping through an endless corridor of sleeping faces",
         "elements": [
@@ -2125,7 +2178,7 @@
       "flagship": false,
       "lore": "序列1 厄难骑士 —— \"『黑暗仆人』：黑夜中几乎无法被杀死，每次从黑暗中回归\"；序列0 黑暗 —— \"黑暗权柄：黑暗中不死，借助黑暗复活\"",
       "flavor": "你已是黑暗的仆人——只要夜色还在，死亡就只是暂时。每一次倒下，你都会从黑暗里重新走回来。",
-      "describe": "战斗开始时获得 3 层「黑暗仆人」：自身死亡时若夜色 ≥3 层或黑夜领域在场，则中断死亡、保留 1 血并回复 30% 最大生命，消耗 1 层；层数耗尽后正常死亡。",
+      "describe": "黑暗仆人·不灭以光照度判断：当前光照度 ≤2（暗夜档）获得 3 层「黑暗仆人」——自身死亡时若夜色 ≥3 层或黑夜领域在场，则中断死亡、保留 1 血并回复 30% 最大生命，消耗 1 层；层数耗尽后正常死亡；光照回升至白昼档（>8）时黑暗庇护消退；明暗过渡带（3–8）维持现状。",
       "hook": [
         "on_tick",
         "on_battle_start"
@@ -2144,15 +2197,36 @@
               "statusId": "dark_vassal",
               "charges": 3,
               "duration": null,
-              "target": "self"
+              "target": "self",
+              "note": "暗夜档(luminance<=2)：黑暗仆人苏醒"
             }
           ],
-          "else": [],
-          "note": "入夜苏醒：暗夜降临（光照度≤2）方显本色——呼应 不眠之躯 入夜响应范式；被动不再无脑推钟，改为响应夜。"
+          "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "luminance_compare",
+            "cmp": ">",
+            "n": 8
+          },
+          "then": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "dark_vassal",
+                "count": 1
+              },
+              "note": "白昼档(luminance>8)：黑暗庇护消退（整夜维持，过渡带不撤）；呼应 不眠之躯 迟滞双阈值范式"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴终极回报（读 `夜幕` 条件）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句",
+      "conversionNotes": "翻译/语义：暗夜轴终极回报（读 `夜幕` 条件）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff）。 ｜ 2026-10-04: 删开局压暗(value:2),夜改由战局推进(不眠之躯开局起手+主动牌施法+on_tick);清理 describe 夜色悬空句 ｜ 2026-10-05: 按不眠之躯迟滞范式补撤除分支——原 effect 仅 luminance<=2 挂 dark_vassal(charges:3)、else 空，非黑夜不取消导致黑暗庇护白日长存；改双阈值(<=2 挂 / >8 撤)，过渡带 3-8 维持",
       "art": {
         "subject": "a fallen servant rising again out of the night",
         "elements": [
