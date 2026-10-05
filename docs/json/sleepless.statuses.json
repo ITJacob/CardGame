@@ -651,6 +651,42 @@
         }
       ],
       "note": "午夜武艺在暗夜档（luminance ≤2）激活的攻防增益：攻击 +2、防御 +1。由 skill_sleepless_s8_midnight_prowess 以光照度驱动——每 tick 判 luminance_compare≤2 则挂、>8 则撤，故天亮即沉眠，与不眠之躯·醒 同源范式。本状态 duration:null，仅表示暗夜档内常驻。"
+    },
+    {
+      "id": "night_empower",
+      "name": "暗夜加持",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 10,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 3,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 2,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "resist:mental",
+          "value": 10,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self"
+        }
+      ],
+      "note": "暗夜轴『越黑暗越强』身份增益：攻+3/防+2/精抗+10%。v4 重构由 夜色渐浓 释放『花 nightfall 换自身 night_empower』挂载（≥2 花2→15tick / ≥1 花1→10tick），守夜人体质/夜色渐浓释放复用。恢复挂载：本状态在 976c71d(v4 重构) 中被误删，仅引用未定义，本次补回（形态对齐 midnight_prowess_power 的 effects 写法）。刷新不叠层（maxStacks 1）。"
     }
   ]
 }
