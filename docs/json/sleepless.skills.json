@@ -12,15 +12,15 @@
       "name": "暗夜",
       "statusId": "nightfall",
       "enablers": [
-        "夜视",
-        "夜色渐浓"
+        "夜色渐浓",
+        "黑夜领域"
       ],
       "payoffs": [
         "守夜人体质",
         "黑暗仆人·不灭",
         "黑暗之剑"
       ],
-      "note": "payoffs 2026-09-26 评审：守夜人体质/黑暗仆人·不灭卡面读 nightfall≥3（落地）；黑暗之剑读 luminance≤2 暗夜档 dimHook；黑夜领域 domain 载荷未挂 nightfall 条件不计 ｜ payoffs 2026-09-26 评审：守夜人体质/黑暗仆人·不灭卡面读 nightfall≥3（落地）；黑暗之剑读 luminance≤2 暗夜档 dimHook ｜ 2026-10-03 骨架手术：相位形状换形 29 张（详见 designNote）"
+      "note": "暗夜轴『夜色=夜晚专属个人资源』模型（2026-10-05 v4 重构，取代 v3『白昼倾泻压暗全场』的自持设计）：夜色(nightfall)由 夜色渐浓 单卡管理——相位进入夜晚(phase=night)每 tick accumulate +1、出夜（黎明/白昼/黄昏）即不攒且自动释放为自身 night_empower（≥2 花2→15tick / ≥1 花1→10tick）。**彻底去掉 set_luminance 压暗**，故：① 不自持积累（board.phase 严格 clock 派生，set_luminance 不改 phase，且本卡已不 set_luminance）；② 不触发全队读 luminance≤2 的黑暗被动加成（守夜人体质/不眠之躯等只承接真实昼夜与他人光照覆写）。黑夜领域 仍作可选额外产层源（域存续每相位 +1）。守夜人体质=纯光照读取被动（night_empower/sunlight_weakness），不碰 nightfall。night_empower 状态恢复挂载。｜ 2026-10-03 骨架手术：相位形状换形 29 张（详见 designNote）"
     },
     "nightmare": {
       "symbol": "🌚",
@@ -218,7 +218,7 @@
       "flagship": false,
       "lore": "序列9 不眠者 —— \"夜越深精力越充沛，力量/敏捷/思维超越常人\"",
       "flavor": "夜色每浓一分，你的力量、身手与思绪便更清明一分——黎明之前，不会有人的锋芒比你更盛。",
-      "describe": "每 tick 判定（光照驱动）：暗夜档（光照度 ≤2）自身「夜色」+1 层；白昼档（≥8）-1 层；晨昏档不变。夜色最多 5 层：每层攻击 +1、行动条速率 +2、能量回复 +0.04，满层 +5/+10/+0.2。；增益以夜色为凭——光照度压暗一档。；每用一次夜色，战场就暗一分。",
+      "describe": "夜色渐浓随真实昼夜节律管理『夜色』：相位进入夜晚或午夜（phase=night / midnight）后每 tick 自身「夜色」+1 层（最多 5 层，每层攻击 +1、行动条速率 +2、能量回复 +0.04）；离开夜晚/午夜相位后不再积累，黎明与黄昏为夜色延续窗口（不释放、夜色持续留存）。仅当相位进入白昼（phase=day）才将贮存的夜色释放为自身暗夜加持——夜色 ≥2 层花 2 层获得强化暗夜加持（攻击 +3、防御 +2、精神抗性 +10%，15tick）；≥1 层花 1 层获得暗夜加持（10tick）；0 层无夜可释。夜色只在真实夜晚与午夜积累、仅于白昼释放，不通过覆写光照伪造夜晚，故不会触发全队读 luminance 的黑暗被动加成。",
       "hook": [
         "on_tick"
       ],
@@ -226,9 +226,11 @@
         {
           "op": "if",
           "condition": {
-            "kind": "luminance_compare",
-            "cmp": "<=",
-            "n": 2
+            "kind": "phase_is",
+            "phases": [
+              "night",
+              "midnight"
+            ]
           },
           "then": [
             {
@@ -237,42 +239,81 @@
               "stacks": 1,
               "stackMode": "add",
               "duration": null,
-              "target": "self"
+              "target": "self",
+              "note": "真实夜晚/午夜相位（phase=night/midnight）：积累夜色 +1（贮存的黑夜）"
             }
           ],
           "else": [
             {
               "op": "if",
               "condition": {
-                "kind": "luminance_compare",
-                "cmp": ">=",
-                "n": 8
+                "kind": "phase_is",
+                "phases": [
+                  "day"
+                ]
               },
               "then": [
                 {
-                  "type": "mount_status",
-                  "statusId": "nightfall",
-                  "stacks": 1,
-                  "stackMode": "consume",
-                  "target": "self"
+                  "op": "if",
+                  "condition": {
+                    "kind": "has_status",
+                    "side": "self",
+                    "id": "nightfall",
+                    "cmp": ">=",
+                    "n": 2
+                  },
+                  "then": [
+                    {
+                      "type": "mount_status",
+                      "statusId": "nightfall",
+                      "stacks": -2,
+                      "stackMode": "consume",
+                      "target": "self",
+                      "note": "白昼释放：花 2 层夜色"
+                    },
+                    {
+                      "type": "mount_status",
+                      "statusId": "night_empower",
+                      "duration": 15,
+                      "target": "self",
+                      "note": "释放夜色→自身暗夜加持·浓（攻+3/防+2/精抗+10%，15tick）"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "op": "if",
+                      "condition": {
+                        "kind": "has_status",
+                        "side": "self",
+                        "id": "nightfall",
+                        "cmp": ">=",
+                        "n": 1
+                      },
+                      "then": [
+                        {
+                          "type": "mount_status",
+                          "statusId": "nightfall",
+                          "stacks": -1,
+                          "stackMode": "consume",
+                          "target": "self",
+                          "note": "白昼释放：花 1 层夜色"
+                        },
+                        {
+                          "type": "mount_status",
+                          "statusId": "night_empower",
+                          "duration": 10,
+                          "target": "self",
+                          "note": "释放夜色→自身暗夜加持（攻+3/防+2/精抗+10%，10tick）"
+                        }
+                      ],
+                      "else": []
+                    }
+                  ]
                 }
-              ]
+              ],
+              "else": []
             }
           ]
-        },
-        {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
-        },
-        {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
         }
       ],
       "tentative": false,
@@ -283,7 +324,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态 `夜幕` 累积源。 2026-09-21 改为光照驱动：叠层改由 board.luminance 判定，不再无条件每 tick +1。 ｜ 2026-10-02 差异化风格迭代（不眠者=暗夜正主）：升格 on_phase_change 触发器『昼夜涨落』——相位触发正主第一卡（与歌颂者仪式昼夜语义分叉：不眠者=夜幕加深） ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
+      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态 `夜幕` 累积源。 2026-09-21 改为光照驱动。 ｜ 2026-10-05 重构①：删 on_phase_change、删自暗 set_luminance。 ｜ 2026-10-05 重构②（v3）：存+放单卡自洽，白昼倾泻 set_luminance 压暗。 ｜ 2026-10-05 重构③（v4 当前）：按用户指令『积累绑定真实夜晚相位、释放不压暗全场』——积累改 phase_is(night/midnight)（出夜不攒，黎明/黄昏为延续窗口不释放）；释放仅在 phase_is(day) 触发『花 nightfall 换自身 night_empower』（≥2 花2→15tick / ≥1 花1→10tick），**彻底去掉 set_luminance 压暗**，故：① 不自持积累（board.phase 严格由 clock 派生，set_luminance 不改 phase；本次本卡已不 set_luminance），双保险；② 不触发全队读 luminance≤2 的黑暗被动加成（守夜人体质/不眠之躯等只承接真实昼夜与他人光照覆写，不由本卡伪造）。夜色=夜晚专属个人资源，深夜攒、天亮前自耗为自身增益。night_empower 状态恢复挂载（守夜人体质与本卡释放复用）。",
       "art": {
         "subject": "shadows thickening and climbing up a lone standing figure",
         "elements": [
@@ -292,55 +333,7 @@
           "dimming horizon"
         ],
         "mood": "deepening, quiet"
-      },
-      "triggers": [
-        {
-          "event": "on_phase_change",
-          "effects": [
-            {
-              "op": "if",
-              "condition": {
-                "kind": "luminance_compare",
-                "cmp": "<=",
-                "n": 2
-              },
-              "then": [
-                {
-                  "type": "mount_status",
-                  "statusId": "nightfall",
-                  "stacks": 1,
-                  "stackMode": "add",
-                  "duration": null,
-                  "target": "self",
-                  "note": "昼夜更替夜幕骤降：相位入夜侧，夜色额外 +1（⚠️D 待平衡）"
-                }
-              ],
-              "else": [
-                {
-                  "op": "if",
-                  "condition": {
-                    "kind": "luminance_compare",
-                    "cmp": ">=",
-                    "n": 8
-                  },
-                  "then": [
-                    {
-                      "type": "mount_status",
-                      "statusId": "nightfall",
-                      "stacks": 1,
-                      "stackMode": "consume",
-                      "target": "self",
-                      "note": "昼夜更替天光破晓：相位入昼侧，夜色额外 -1（正午弱项，途径红线）"
-                    }
-                  ],
-                  "else": []
-                }
-              ]
-            }
-          ],
-          "note": "暗夜正主承载：昼夜交替时夜色涨落加倍——「越夜越强」挂在相位更替上"
-        }
-      ]
+      }
     },
     {
       "id": "skill_sleepless_s8_midnight_prowess",
@@ -1244,7 +1237,7 @@
       "flagship": false,
       "lore": "序列4 守夜人 —— \"越黑暗越强，正午阳光下被削弱\"",
       "flavor": "你是为夜而生的——天光未散时你倦怠迟钝，而一旦夜色彻底落下，没有谁比你更清醒、更锋利。",
-      "describe": "每 tick 判定：若自身夜色 ≥3 层或处于黑夜领域中，获得 10tick 增益（攻击 +3、防御 +2、精神抗性 +10%）；否则若夜色 ≤1 层**或光照度 ≥8（正午）**，获得 10tick 削弱（攻击 -2、防御 -1）。；增益以夜色为凭——光照度压暗一档。；每用一次夜色，战场就暗一分。",
+      "describe": "守夜人体质以战场光照判断自身强弱：光照度 ≤2（暗夜档）获得暗夜加持（攻击 +3、防御 +2、精神抗性 +10%，10tick）；光照回升至白昼档（≥8）陷入天光未散（攻击 -2、防御 -1）。明暗过渡带（3–8）维持现状，不随单次微光抖动。自身不操控光照，只承接战场真实的昼夜明暗而醒眠（由 clock 与歌颂者/耕种者等光照覆写决定）。",
       "hook": [
         "on_tick"
       ],
@@ -1252,94 +1245,43 @@
         {
           "op": "if",
           "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "nightfall",
-            "cmp": ">=",
-            "n": 3
+            "kind": "luminance_compare",
+            "cmp": "<=",
+            "n": 2
           },
           "then": [
             {
               "type": "mount_status",
               "statusId": "night_empower",
               "duration": 10,
-              "target": "self"
+              "target": "self",
+              "note": "暗夜档(luminance<=2)：守夜人苏醒（暗夜加持）"
             }
           ],
           "else": [
             {
               "op": "if",
               "condition": {
-                "kind": "zone_active",
-                "zoneId": "domain_night_realm"
+                "kind": "luminance_compare",
+                "cmp": ">=",
+                "n": 8
               },
               "then": [
                 {
                   "type": "mount_status",
-                  "statusId": "night_empower",
+                  "statusId": "sunlight_weakness",
                   "duration": 10,
-                  "target": "self"
+                  "target": "self",
+                  "note": "白昼档(luminance>=8)：天光未散（正午虚弱）"
                 }
               ],
-              "else": [
-                {
-                  "op": "if",
-                  "condition": {
-                    "kind": "any_of",
-                    "conditions": [
-                      {
-                        "kind": "has_status",
-                        "side": "self",
-                        "id": "nightfall",
-                        "cmp": "<=",
-                        "n": 1
-                      },
-                      {
-                        "kind": "luminance_compare",
-                        "cmp": ">=",
-                        "n": 8
-                      }
-                    ],
-                    "note": "原著守夜人「正午阳光下被削弱」：夜色未起 或 光照度 ≥8 均触发天光未散"
-                  },
-                  "then": [
-                    {
-                      "type": "mount_status",
-                      "statusId": "sunlight_weakness",
-                      "duration": 10,
-                      "target": "self"
-                    }
-                  ],
-                  "else": []
-                }
-              ]
+              "else": []
             }
           ]
-        },
-        {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
-        },
-        {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
-        },
-        {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：读 `夜幕` 阈值放大的暗夜轴 payoff。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广)",
+      "conversionNotes": "翻译/语义：暗夜轴『越黑暗越强』身份卡——纯光照读取，自身不操控光照，只承接战场明暗醒眠。 ｜ 2026-10-05 重构①：删 3 段自暗 set_luminance 失控。 ｜ 2026-10-05 重构②（v3）：改回 passive 纯光照读取：暗夜档(luminance≤2)挂 night_empower、白昼档(≥8)挂 sunlight_weakness。 ｜ 2026-10-05 v4：夜色渐浓释放改『花 nightfall 换自身 night_empower』（不压暗全场），本卡仍纯光照读取、不碰 nightfall，只承接战场真实明暗。night_empower 状态恢复供本卡挂载（与夜色渐浓释放复用）。",
       "art": {
         "subject": "a night watchman growing sharper as full darkness falls",
         "elements": [
