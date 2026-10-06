@@ -20,7 +20,7 @@
         "黑暗仆人·不灭",
         "黑暗之剑"
       ],
-      "note": "暗夜轴『夜色=夜晚专属个人资源』模型（v4 2026-10-05 立项，v6 2026-10-06 定型）：nightfall 由『夜色渐浓』单卡自洽管理——相位进入 night/midnight 每 tick +1（上限 3 层，每层 gauge.rate +1 / energy_regen +0.04），出夜不攒；光照 >2 且 ≤8 时倾泻：花 2 层→光照 -6（下限 0）8tick + 夜释之护 8tick，花 1 层→4tick + 护持 4tick，倾泻后 10tick 冷却。**倾泻走 set_luminance 的相对 delta 模式（-6），不是硬钉暗夜档**：正午（光照 9–10）压不进暗夜档、夜色留存不放，只在晨昏/黎明边缘生效，与途径内 18 张「光照 -N」主动卡同构（v4 阶段曾彻底去掉 set_luminance，v6 回补为相对压暗）。**积累仍走 phase_is(night/midnight) 而非 luminance_compare**——故倾泻窗口内不会自我续杯，这是防止无限永夜的唯一安全阀，不得放宽为 lum≤2。夜释之护不再独立计时，随倾泻窗口生灭。守夜人体质=纯光照读取被动（night_empower/sunlight_weakness），不碰 nightfall。｜ 2026-10-03 骨架手术：相位形状换形 29 张（详见 designNote）"
+      "note": "暗夜轴『夜色=夜晚专属个人资源』模型（v4 2026-10-05 立项，v8 2026-10-07 极简化定型）：nightfall 由『夜色渐浓』单卡自洽管理——相位进入 night/midnight 每 tick +1（上限 3 层，每层 gauge.rate +1 / energy_regen +0.04），出夜不攒；光照 >2 时每 tick 花 1 层，set_luminance 强制压为绝对值 2（暗夜档）并续 12tick，窗口内光照再升回 >2 且仍有夜色则再次释放刷新。**积累走 phase_is(night/midnight) 而非 luminance_compare，且 set_luminance 不改 board.phase**——压暗窗口内不会自我续杯，这是防无限永夜的安全阀，不得放宽为 lum≤2。守夜人体质=纯光照读取被动（night_empower/sunlight_weakness），不碰 nightfall。｜ 2026-10-03 骨架手术：相位形状换形 29 张（详见 designNote）"
     },
     "nightmare": {
       "symbol": "🌚",
@@ -198,7 +198,7 @@
       "flagship": false,
       "lore": "序列9 不眠者 —— \"夜越深精力越充沛，力量/敏捷/思维超越常人\"",
       "flavor": "夜色每浓一分，你的力量、身手与思绪便更清明一分——黎明之前，不会有人的锋芒比你更盛。",
-      "describe": "夜晚/午夜相位每 tick 夜色 +1（至多 3 层，每层行动条速率 +1、能量回复 +0.04），离开夜相位停止积累。光照 >2 且 ≤8 时可倾泻：≥2 层花 2 层、≥1 层花 1 层，把光照压低 6 档（下限 0，花 2 层 8tick、花 1 层 4tick），并获夜释之护（防 +3/精抗 +10%，与倾泻窗口等长，窗口结束即消失）；光照 9–10 的正午压不进暗夜档，夜色留存不放。一次倾泻后 10tick 内不得再次倾泻。",
+      "describe": "夜晚/午夜相位每 tick 夜色 +1（至多 3 层，每层行动条速率 +1、能量回复 +0.04），离开夜相位停止积累。光照 >2 时每 tick 消耗 1 层夜色，把战场光照强制压为 2（暗夜档）并续 12tick；窗口内光照再升回 >2 且仍有夜色，则再次释放刷新 12tick；夜色耗尽即停。",
       "hook": [
         "on_tick"
       ],
@@ -220,7 +220,7 @@
               "stackMode": "add",
               "duration": null,
               "target": "self",
-              "note": "真实夜晚/午夜相位（phase=night/midnight）：积累夜色 +1（上限 3 层；v6 用户指令由仅 midnight 回退为 night+midnight，夜晚 tick60-71 lum2/1 与午夜 tick0-12 均 ≤2；积累走 phase_is 而非 luminance_compare，故倾泻窗口内不自我续杯——防无限永夜的安全阀，勿放宽）"
+              "note": "真实夜晚/午夜相位（phase=night/midnight）：积累夜色 +1（上限 3 层；积累走 phase_is 而非 luminance_compare，set_luminance 覆写不改 board.phase，故压暗窗口内不自我续杯——防无限永夜的安全阀，勿放宽）"
             }
           ],
           "else": [
@@ -237,109 +237,28 @@
                   "condition": {
                     "kind": "has_status",
                     "side": "self",
-                    "id": "night_release_lock",
+                    "id": "nightfall",
                     "cmp": ">=",
                     "n": 1
                   },
-                  "then": [],
-                  "else": [
+                  "then": [
                     {
-                      "op": "if",
-                      "condition": {
-                        "kind": "luminance_compare",
-                        "cmp": "<=",
-                        "n": 8
-                      },
-                      "then": [
-                        {
-                          "op": "if",
-                          "condition": {
-                            "kind": "has_status",
-                            "side": "self",
-                            "id": "nightfall",
-                            "cmp": ">=",
-                            "n": 2
-                          },
-                          "then": [
-                            {
-                              "type": "mount_status",
-                              "statusId": "nightfall",
-                              "stacks": -2,
-                              "stackMode": "consume",
-                              "target": "self",
-                              "note": "倾泻：花 2 层夜色"
-                            },
-                            {
-                              "type": "mount_status",
-                              "statusId": "night_release_ward",
-                              "duration": 8,
-                              "target": "self",
-                              "note": "花 2 层→夜释之护（防 +3/精抗 +10%，8tick，与倾泻窗口等长、窗口结束即消失，不独立计时）"
-                            },
-                            {
-                              "type": "set_luminance",
-                              "delta": -6,
-                              "duration": 8,
-                              "dispelable": false,
-                              "note": "花 2 层→相对压暗 delta:-6（clamp 下限 0），8tick；非硬钉暗夜档，正午压不进"
-                            },
-                            {
-                              "type": "mount_status",
-                              "statusId": "night_release_lock",
-                              "duration": 10,
-                              "target": "self",
-                              "note": "倾泻后冷却 10tick（夜色未盈）"
-                            }
-                          ],
-                          "else": [
-                            {
-                              "op": "if",
-                              "condition": {
-                                "kind": "has_status",
-                                "side": "self",
-                                "id": "nightfall",
-                                "cmp": ">=",
-                                "n": 1
-                              },
-                              "then": [
-                                {
-                                  "type": "mount_status",
-                                  "statusId": "nightfall",
-                                  "stacks": -1,
-                                  "stackMode": "consume",
-                                  "target": "self",
-                                  "note": "倾泻：花 1 层夜色"
-                                },
-                                {
-                                  "type": "mount_status",
-                                  "statusId": "night_release_ward",
-                                  "duration": 4,
-                                  "target": "self",
-                                  "note": "花 1 层→夜释之护（防 +3/精抗 +10%，4tick，与倾泻窗口等长、窗口结束即消失，不独立计时）"
-                                },
-                                {
-                                  "type": "set_luminance",
-                                  "delta": -6,
-                                  "duration": 4,
-                                  "dispelable": false,
-                                  "note": "花 1 层→相对压暗 delta:-6（clamp 下限 0），4tick；非硬钉暗夜档，正午压不进"
-                                },
-                                {
-                                  "type": "mount_status",
-                                  "statusId": "night_release_lock",
-                                  "duration": 10,
-                                  "target": "self",
-                                  "note": "倾泻后冷却 10tick（夜色未盈）"
-                                }
-                              ],
-                              "else": []
-                            }
-                          ]
-                        }
-                      ],
-                      "else": []
+                      "type": "mount_status",
+                      "statusId": "nightfall",
+                      "stacks": -1,
+                      "stackMode": "consume",
+                      "target": "self",
+                      "note": "倾泻：花 1 层夜色（一层一层放）"
+                    },
+                    {
+                      "type": "set_luminance",
+                      "value": 2,
+                      "duration": 12,
+                      "dispelable": false,
+                      "note": "强制压光照为 2（暗夜档）并续 12tick；窗口内光照再升回 >2 且仍有夜色则再次释放刷新。压暗后 luminance=2，释放条件自动失活，天然防连拍，无需冷却锁"
                     }
-                  ]
+                  ],
+                  "else": []
                 }
               ],
               "else": []
@@ -355,7 +274,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态「夜色」累积源。 ｜ 2026-10-06 收敛：① maxStacks 5→3（观测带 1–3）；② gauge.rate 每层 2→1（满层 +10→+3，原满层 +10 落 D2「重加速 ≥+10 须挂代价」档却零代价，属硬违规）；③ 释放由 set_luminance 绝对值 value:2 改为相对 delta:-6——与途径内 18 张「光照 -N」主动卡同构，消除「S9 被动做到 S0 权柄卡做不到的事」的成本倒置，正午不再可人造永夜；④ 新增倾泻冷却 10tick（night_release_lock）；⑤ 夜释之护不再独立计时，随倾泻窗口生灭。",
+      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态「夜色」累积源。 ｜ 2026-10-06 收敛：① maxStacks 5→3（观测带 1–3）；② gauge.rate 每层 2→1（满层 +10→+3，原满层 +10 落 D2「重加速 ≥+10 须挂代价」档却零代价，属硬违规）；③ 释放由 set_luminance 绝对值 value:2 改为相对 delta:-6——与途径内 18 张「光照 -N」主动卡同构，消除「S9 被动做到 S0 权柄卡做不到的事」的成本倒置，正午不再可人造永夜；④ 新增倾泻冷却 10tick（night_release_lock）；⑤ 夜释之护不再独立计时，随倾泻窗口生灭。｜ 2026-10-07 v8 极简化（用户指令）：废除花 2/花 1 双档、夜释之护、夜色未盈冷却与 ≤8 上限/正午豁免——释放收敛为单规则：光照 >2 且有夜色，每 tick 花 1 层，set_luminance 强制压为绝对值 2（暗夜档）并续 12tick（再释放即刷新）。压暗后 luminance=2 令释放条件自动失活，天然防连拍，无需冷却锁；积累仍绑 phase_is(night/midnight)，覆写不改 board.phase，无自持漏洞。night_release_ward / night_release_lock 两个 StatusDef 同步删除。",
       "art": {
         "subject": "shadows thickening and climbing up a lone standing figure",
         "elements": [
@@ -2771,7 +2690,7 @@
         "黑暗仆人·不灭",
         "不眠之躯"
       ],
-      "playstyle": "夜色三叠在晨昏倾泻，窗口内守夜人体质+夜释之护齐开；黑夜领域接续侵蚀"
+      "playstyle": "晨昏转亮即逐层倾泻夜色压暗，窗口内守夜人体质齐开；黑夜领域接续侵蚀"
     }
   ]
 }
