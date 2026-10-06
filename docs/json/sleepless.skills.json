@@ -434,7 +434,7 @@
       "flagship": false,
       "lore": "序列8 午夜诗人 —— \"用不同风格的诗篇影响生灵：使敌人精神恍惚\"",
       "flavor": "你念起一支节拍错乱的诗——它的思绪散了，挥出的拳也失了准头。",
-      "describe": "对一名敌人造成 2 点精神伤害，并使其恍惚 15tick：造成伤害 ×0.8、行动条速率 ×0.9。；这一击把战场往深夜又推了一格。",
+      "describe": "对一名敌人造成 2 点精神伤害，并使其恍惚 15tick：造成伤害 ×0.8、行动条速率 ×0.9；这一击把战场的光压低一分（光照 -1，5 tick）。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -461,13 +461,15 @@
           "duration": 15
         },
         {
-          "type": "advance_clock",
-          "ticks": 1,
-          "note": "拖入深夜：时间推进一格（相位驱动）"
+          "type": "set_luminance",
+          "duration": 5,
+          "dispelable": false,
+          "note": "压暗：delta -1（5 tick）——拨光不拨时（替代 advance_clock）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：诗篇三分支之一（敌人恍惚）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：诗篇三分支之一（敌人恍惚）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）。 ｜ 2026-10-06 v11（用户指令）：advance_clock 改 set_luminance 压暗——黑夜权柄不操作时间，只收拢光照（delta/时长按卡强度定档）；describe 同步。",
       "phaseHooks": [
         {
           "phases": [
@@ -566,7 +568,7 @@
       "flagship": false,
       "lore": "序列8 午夜诗人 —— \"用不同风格的诗篇影响生灵：使目标恐惧\"",
       "flavor": "你吟出一行不该被听见的句子——它的瞳孔骤然收缩，握武器的手开始发抖。",
-      "describe": "对一名敌人造成 3 点精神伤害，并使其恐惧 10tick：攻击 -3、造成伤害 ×0.8。；这一击把战场往深夜又推了一格。",
+      "describe": "对一名敌人造成 3 点精神伤害，并使其恐惧 10tick：攻击 -3、造成伤害 ×0.8；诗声把战场的光压低一分（光照 -1，5 tick）。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -593,13 +595,15 @@
           "duration": 10
         },
         {
-          "type": "advance_clock",
-          "ticks": 1,
-          "note": "拖入深夜：时间推进一格（相位驱动）"
+          "type": "set_luminance",
+          "duration": 5,
+          "dispelable": false,
+          "note": "压暗：delta -1（5 tick）——拨光不拨时（替代 advance_clock）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：恐惧链最下环（惊惧诗→恐惧灵光→恐惧权柄），同状态 `dread` 三级复用。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：恐惧链最下环（惊惧诗→恐惧灵光→恐惧权柄），同状态 `dread` 三级复用。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）。 ｜ 2026-10-06 v11（用户指令）：advance_clock 改 set_luminance 压暗——黑夜权柄不操作时间，只收拢光照（delta/时长按卡强度定档）；describe 同步。",
       "phaseHooks": [
         {
           "phases": [
@@ -630,7 +634,7 @@
       "flagship": true,
       "lore": "序列7 梦魇 —— \"『入梦』：自由出入极大范围熟睡者的梦，强行拉人入梦\"",
       "flavor": "你伸手探进它的睡意，把它整个人拽了进去——在它自己的梦里，它连抬手都做不到。",
-      "describe": "对一名敌人造成 2 点精神伤害，并使其入梦 20tick：无法行动，且受伤 ×1.2。；这一击把战场往深夜又推了一格。",
+      "describe": "对一名敌人造成 2 点精神伤害，并使其入梦 20tick：无法行动，且受伤 ×1.2；这一击把战场的光压低一分（光照 -1，8 tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -657,13 +661,15 @@
           "duration": 20
         },
         {
-          "type": "advance_clock",
-          "ticks": 1,
-          "note": "拖入深夜：时间推进一格（相位驱动）"
+          "type": "set_luminance",
+          "duration": 8,
+          "dispelable": false,
+          "note": "压暗：delta -1（8 tick）——拨光不拨时（替代 advance_clock）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：梦魇轴旗舰 enabler：挂 `灵梦`(slumber)。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：梦魇轴旗舰 enabler：挂 `灵梦`(slumber)。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）。 ｜ 2026-10-06 v11（用户指令）：advance_clock 改 set_luminance 压暗——黑夜权柄不操作时间，只收拢光照（delta/时长按卡强度定档）；describe 同步。",
       "art": {
         "subject": "a figure pulling a struggling enemy down into a dream",
         "elements": [
@@ -685,7 +691,7 @@
       "flagship": false,
       "lore": "序列7 梦魇 —— \"『塑梦』：让梦境按设想发展，引导秘密或击溃精神\"",
       "flavor": "你替它把这场梦改了走向——梦里的东西开始啃食它的精神，而它藏得最深的那个秘密，已经落在了你手里。",
-      "describe": "若目标已入梦：折磨其 20tick（每 tick 2 点精神伤害）、使其易伤 20tick、自身能量 +2；否则造成 2 点精神伤害并使其入梦 15tick。；这一击把战场往深夜又推了一格。；每用一次夜色，战场就暗一分。",
+      "describe": "若目标已入梦：折磨其 20tick（每 tick 2 点精神伤害）、使其易伤 20tick、自身能量 +2；否则造成 2 点精神伤害并使其入梦 15tick。；每用一次夜色，战场就暗一分（光照 -1，15 tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -749,11 +755,6 @@
           ]
         },
         {
-          "type": "advance_clock",
-          "ticks": 1,
-          "note": "拖入深夜：时间推进一格（相位驱动）"
-        },
-        {
           "type": "set_luminance",
           "duration": 15,
           "dispelable": false,
@@ -762,7 +763,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：读 `灵梦` 二次操作（payoff）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广) ｜ 2026-10-05 去重：删除与首段完全相同的重复段（骨架手术补强轮产物，会导致同一效果实际结算两次），保留 1 条。",
+      "conversionNotes": "翻译/语义：读 `灵梦` 二次操作（payoff）。 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广) ｜ 2026-10-05 去重：删除与首段完全相同的重复段（骨架手术补强轮产物，会导致同一效果实际结算两次），保留 1 条。。 ｜ 2026-10-06 v11（用户指令）：advance_clock 改 set_luminance 压暗——黑夜权柄不操作时间，只收拢光照（delta/时长按卡强度定档）；describe 同步。",
       "art": {
         "subject": "hands reshaping a dreamscape while hidden whispers leak out",
         "elements": [
@@ -843,7 +844,7 @@
       "flagship": false,
       "lore": "序列6 安魂师 —— \"强制入梦范围提升至 150 米\"（序列5 再提升至 200 米）",
       "flavor": "你不再一个一个地请它们入睡——夜色所及之处，所有站着的东西都开始发困。",
-      "describe": "对全体敌人造成 2 点精神伤害，并使其入梦 15tick。",
+      "describe": "对全体敌人造成 2 点精神伤害，并使其入梦 15tick。；全场坠入梦境，光照 -2（10 tick）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -871,13 +872,15 @@
           "target": "all_enemies"
         },
         {
-          "type": "advance_clock",
-          "ticks": 2,
-          "note": "入梦耗时：全场坠入梦境的一瞬，时钟推进 2 tick（40 分钟）——暗夜正主『向夜幕推进』（⚠️D 待平衡）"
+          "type": "set_luminance",
+          "duration": 10,
+          "dispelable": false,
+          "note": "压暗：delta -2（10 tick）——拨光不拨时（替代 advance_clock）",
+          "delta": -2
         }
       ],
       "tentative": false,
-      "conversionNotes": "原著 150m/200m 两次范围提升合并为'单体升级群体'，距离数字不建模 ｜ 翻译/语义：单体→群体升级。 ｜ 2026-10-02 差异化风格迭代（不眠者=暗夜正主）：升格 advance_clock(10tick)『入梦耗时』——时钟推进正主第二卡 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；scope:all(+all_lanes) → board+pickCount:all（群体/全场）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）",
+      "conversionNotes": "原著 150m/200m 两次范围提升合并为'单体升级群体'，距离数字不建模 ｜ 翻译/语义：单体→群体升级。 ｜ 2026-10-02 差异化风格迭代（不眠者=暗夜正主）：升格 advance_clock(10tick)『入梦耗时』——时钟推进正主第二卡 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；scope:all(+all_lanes) → board+pickCount:all（群体/全场）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）。 ｜ 2026-10-06 v11（用户指令）：advance_clock 改 set_luminance 压暗——黑夜权柄不操作时间，只收拢光照（delta/时长按卡强度定档）；describe 同步。",
       "art": {
         "subject": "drowsiness spreading over a whole field of standing figures",
         "elements": [
@@ -1415,7 +1418,7 @@
       "flagship": false,
       "lore": "序列4 守夜人 —— \"『发丝缠绕』\"",
       "flavor": "你的长发无声地散开、缠上它的手脚——越是挣扎，缠得越紧。",
-      "describe": "对一名近战敌人造成 2 点精神伤害，并束缚其 15tick：无法被位移，行动条速率 ×0.7。；这一击把战场往深夜又推了一格。",
+      "describe": "对一名近战敌人造成 2 点精神伤害，并束缚其 15tick：无法被位移，行动条速率 ×0.7；这一击把战场的光压低一分（光照 -1，10 tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1443,16 +1446,18 @@
           "duration": 15
         },
         {
-          "type": "advance_clock",
-          "ticks": 1,
-          "note": "拖入深夜：时间推进一格（相位驱动）"
+          "type": "set_luminance",
+          "duration": 10,
+          "dispelable": false,
+          "note": "压暗：delta -1（10 tick）——拨光不拨时（替代 advance_clock）",
+          "delta": -1
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴节奏压制。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：darkness轴 enemy+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：暗夜轴节奏压制。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：darkness轴 enemy+board pick:all（轴选靶签名设计 §4）。 ｜ 2026-10-06 v11（用户指令）：advance_clock 改 set_luminance 压暗——黑夜权柄不操作时间，只收拢光照（delta/时长按卡强度定档）；describe 同步。",
       "art": {
         "subject": "long hair silently coiling around a struggling enemy's limbs",
         "elements": [
@@ -1527,7 +1532,7 @@
       "flagship": false,
       "lore": "序列3 恐惧主教 —— \"『黑暗之剑』：骨制长剑，目标被黑暗力量感染直接消融\"",
       "flavor": "一柄骨白色的长剑自黑暗里探出——被它划开的地方没有血，只有正在一点点消融的、连光都透不进去的黑。",
-      "describe": "对一名近战敌人造成 5 点精神伤害，并侵蚀其 15tick：每 tick 2 点精神伤害、受到的治疗 ×0.7；若其在此期间死亡，则不可复活。；这一击把战场往深夜又推了一格。",
+      "describe": "对一名近战敌人造成 5 点精神伤害，并侵蚀其 15tick：每 tick 2 点精神伤害、受到的治疗 ×0.7；若其在此期间死亡，则不可复活；这一击把战场的光压低两分（光照 -2，10 tick）。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1555,13 +1560,15 @@
           "duration": 15
         },
         {
-          "type": "advance_clock",
-          "ticks": 1,
-          "note": "拖入深夜：时间推进一格（相位驱动）"
+          "type": "set_luminance",
+          "duration": 10,
+          "dispelable": false,
+          "note": "压暗：delta -2（10 tick）——拨光不拨时（替代 advance_clock）",
+          "delta": -2
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴处决。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：darkness轴 enemy+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：暗夜轴处决。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：darkness轴 enemy+board pick:all（轴选靶签名设计 §4）。 ｜ 2026-10-06 v11（用户指令）：advance_clock 改 set_luminance 压暗——黑夜权柄不操作时间，只收拢光照（delta/时长按卡强度定档）；describe 同步。",
       "dimHooks": [
         {
           "dim": "luminance",
@@ -1592,7 +1599,7 @@
       "flagship": false,
       "lore": "序列3 恐惧主教 —— \"『恐惧灵光』：不够强大的非凡者直接被吓死或失控\"",
       "flavor": "你身上腾起一层看不见的灵光——弱一些的家伙连看都不敢看，心脏在胸腔里停了下来。",
-      "describe": "对全体敌人造成 3 点精神伤害并恐惧 15tick；生命低于 30% 的敌人额外受到 6 点精神伤害。；这一击把战场往深夜又推了一格。",
+      "describe": "对全体敌人造成 3 点精神伤害并恐惧 15tick；生命低于 30% 的敌人额外受到 6 点精神伤害；恐慌如潮蔓延，光照 -1（15 tick）。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1644,13 +1651,15 @@
           ]
         },
         {
-          "type": "advance_clock",
-          "ticks": 1,
-          "note": "拖入深夜：时间推进一格（相位驱动）"
+          "type": "set_luminance",
+          "duration": 15,
+          "dispelable": false,
+          "note": "压暗：delta -1（15 tick）——拨光不拨时（替代 advance_clock）",
+          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "原著「失控」引擎无对应维度，不建模，只取「被吓死」 ｜ 翻译/语义：读血量阈值的梦魇轴恐惧 payoff；与 `dread` 链同源。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；scope:all(+all_lanes) → board+pickCount:all（群体/全场）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）",
+      "conversionNotes": "原著「失控」引擎无对应维度，不建模，只取「被吓死」 ｜ 翻译/语义：读血量阈值的梦魇轴恐惧 payoff；与 `dread` 链同源。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；scope:all(+all_lanes) → board+pickCount:all（群体/全场）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）。 ｜ 2026-10-06 v11（用户指令）：advance_clock 改 set_luminance 压暗——黑夜权柄不操作时间，只收拢光照（delta/时长按卡强度定档）；describe 同步。",
       "dimHooks": [
         {
           "dim": "luminance",
@@ -1900,7 +1909,7 @@
       "flagship": false,
       "lore": "序列2 隐秘之仆 —— \"『隐秘』权柄：让发生的一切不被窥见，也能展现被隐秘的内容\"",
       "flavor": "你伸手揭开了那层幕布——所有藏起来的东西都重新现形，而在刺眼的真实面前，它们连站都站不稳。",
-      "describe": "驱散全体敌人的隐匿与封印类状态，每个被驱散的敌人受到 3 点精神伤害并易伤 15tick。；这一击把战场往深夜又推了一格。",
+      "describe": "驱散全体敌人的隐匿与封印类状态，每个被驱散的敌人受到 3 点精神伤害并易伤 15tick；夜幕随这一击合拢，光照 -2（10 tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1949,13 +1958,15 @@
           ]
         },
         {
-          "type": "advance_clock",
-          "ticks": 1,
-          "note": "拖入深夜：时间推进一格（相位驱动）"
+          "type": "set_luminance",
+          "duration": 10,
+          "dispelable": false,
+          "note": "压暗：delta -2（10 tick）——拨光不拨时（替代 advance_clock）",
+          "delta": -2
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴攻向（反制隐匿）。 ｜ 2026-10-01 吟唱重标：仪式类（kw:封印）读条 10tick（序列 2 档，基准 §三之二） ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；scope:all(+all_lanes) → board+pickCount:all（群体/全场）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：隐秘轴攻向（反制隐匿）。 ｜ 2026-10-01 吟唱重标：仪式类（kw:封印）读条 10tick（序列 2 档，基准 §三之二） ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；scope:all(+all_lanes) → board+pickCount:all（群体/全场）；删 anchor:front_line（默认最前排）。 ｜ 2026-10-06 v11（用户指令）：advance_clock 改 set_luminance 压暗——黑夜权柄不操作时间，只收拢光照（delta/时长按卡强度定档）；describe 同步。",
       "art": {
         "subject": "a hand lifting a dark curtain to expose what hides beneath",
         "elements": [
@@ -2020,7 +2031,7 @@
       "flagship": false,
       "lore": "序列1 厄难骑士 —— \"『厄难』：给予敌人厄运——黑暗的『厄运』权柄\"；序列0 黑暗 —— \"厄运和灾难权柄\"",
       "flavor": "你宣判了它们的厄难——从今夜起，厄运和灾难会自己找上门，一步慢，步步慢。",
-      "describe": "全体敌人厄运缠身 25tick，受到 3 点精神伤害，行动条 -10。；这一击把战场往深夜又推了一格。",
+      "describe": "全体敌人厄运缠身 25tick，受到 3 点精神伤害，行动条 -10；厄运降临之处，光照 -2（15 tick）。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2062,9 +2073,11 @@
           ]
         },
         {
-          "type": "advance_clock",
-          "ticks": 1,
-          "note": "拖入深夜：时间推进一格（相位驱动）"
+          "type": "set_luminance",
+          "duration": 15,
+          "dispelable": false,
+          "note": "压暗：delta -2（15 tick）——拨光不拨时（替代 advance_clock）",
+          "delta": -2
         }
       ],
       "upgradeLadder": {
@@ -2081,7 +2094,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "序列1「厄难」与序列0「厄运和灾难权柄」合并为一张卡，升级阶梯区分强度 ｜ 翻译/语义：暗夜轴厄运/灾难 payoff。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；scope:all(+all_lanes) → board+pickCount:all（群体/全场）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "序列1「厄难」与序列0「厄运和灾难权柄」合并为一张卡，升级阶梯区分强度 ｜ 翻译/语义：暗夜轴厄运/灾难 payoff。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：相位形状换形（角色=dmg） ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；scope:all(+all_lanes) → board+pickCount:all（群体/全场）；删 anchor:front_line（默认最前排）。 ｜ 2026-10-06 v11（用户指令）：advance_clock 改 set_luminance 压暗——黑夜权柄不操作时间，只收拢光照（delta/时长按卡强度定档）；describe 同步。",
       "art": {
         "subject": "misfortune and disaster stalking every enemy in the dark",
         "elements": [
@@ -2263,7 +2276,7 @@
       "flagship": false,
       "lore": "序列0 黑暗 —— \"『黑暗』权柄：让目标入梦 / 永眠 / 消融\"",
       "flavor": "你把它送进了一场没有尽头的睡眠——在梦里，它仍在，只是再也不会醒来；连死亡也无法把它从这场梦里带走。",
-      "describe": "对一名敌人造成 7 点精神伤害，并使其入梦 30tick、被黑暗侵蚀 30tick（每 tick 2 点精神伤害、受治疗 ×0.7）、期间死亡不可复活。；每用一次夜色，战场就暗一分。",
+      "describe": "对一名敌人造成 7 点精神伤害，并使其入梦 30tick、被黑暗侵蚀 30tick（每 tick 2 点精神伤害、受治疗 ×0.7）、期间死亡不可复活。；永眠之中，光亦消融（光照 -2，20 tick）。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2304,24 +2317,19 @@
               "statusId": "revive_blocked",
               "duration": 30,
               "note": "永眠：期间死亡不可被任何复活效果召回"
-            },
-            {
-              "type": "advance_clock",
-              "ticks": 4,
-              "note": "永眠消融时间：被蚀者在梦中老去，战场时钟推进 4 tick（2 小时）——暗夜正主『向夜幕推进』（⚠️D 待平衡）"
             }
           ]
         },
         {
           "type": "set_luminance",
-          "duration": 15,
+          "duration": 20,
           "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
+          "note": "相对压暗 delta:-2（非硬设暗夜档）",
+          "delta": -2
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：梦魇轴终焉：入梦/永眠/消融一次给全。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→7（位格10 基准7）。条件/读层追加段不动。 ｜ 2026-10-02 差异化风格迭代（不眠者=暗夜正主）：升格 advance_clock(20tick)『梦中老去』——时钟推进正主第一卡（与怪物命运回拨语义分叉：不眠者=推向夜幕） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广) ｜ 2026-10-05 去重：删除与首段完全相同的重复段（骨架手术补强轮产物，会导致同一效果实际结算两次），保留 1 条。",
+      "conversionNotes": "翻译/语义：梦魇轴终焉：入梦/永眠/消融一次给全。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→7（位格10 基准7）。条件/读层追加段不动。 ｜ 2026-10-02 差异化风格迭代（不眠者=暗夜正主）：升格 advance_clock(20tick)『梦中老去』——时钟推进正主第一卡（与怪物命运回拨语义分叉：不眠者=推向夜幕） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=all_lanes anchor=front_line ｜ 选靶V2：删 laneRef=all_lanes；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：nightmare轴 enemy+point（轴选靶签名设计 §4）。 ｜ 2026-10-04: set_luminance value:2→delta:-1(相对压暗,推广) ｜ 2026-10-05 去重：删除与首段完全相同的重复段（骨架手术补强轮产物，会导致同一效果实际结算两次），保留 1 条。。 ｜ 2026-10-06 v11（用户指令）：advance_clock 改 set_luminance 压暗——黑夜权柄不操作时间，只收拢光照（delta/时长按卡强度定档）；describe 同步。",
       "dimHooks": [
         {
           "dim": "luminance",
