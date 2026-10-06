@@ -404,6 +404,11 @@
       "triggers": [
         {
           "event": "on_death",
+          "condition": {
+            "kind": "luminance_compare",
+            "cmp": "<=",
+            "n": 2
+          },
           "effects": [
             {
               "type": "heal",
@@ -414,10 +419,10 @@
             }
           ],
           "consumeCharge": true,
-          "note": "不死判定=本状态在场（光照>2 时卡面已撤除本状态，故天然限暗夜）"
+          "note": "不死判定=状态在场 ∧ 死亡瞬间光照 ≤2（状态仅暗夜档存在、>2 卡面每 tick 撤除；光照条件双保险，防 tick 间隙光照已升但撤除未执行的边界）"
         }
       ],
-      "note": "序列1 与序列0 描述合并立项；与 eternal_sleep 对冲已由编队上下文 §十 裁定：revive_blocked > lethal_protect。｜ 2026-10-05 v8（用户指令）：不死判定删 nightfall≥3 二次门槛（产夜色的卡太少、强依赖夜色过牵强），改判据=状态本身在场；黑夜领域备选判据同步删除。"
+      "note": "序列1 与序列0 描述合并立项；与 eternal_sleep 对冲已由编队上下文 §十 裁定：revive_blocked > lethal_protect。｜ 2026-10-05 v8（用户指令）：不死判定删 nightfall≥3 二次门槛（产夜色的卡太少、强依赖夜色过牵强），改判据=状态本身在场；黑夜领域备选判据同步删除。 ｜ 2026-10-06 v9（用户指令）：不死判定追加死亡瞬间 luminance≤2 双条件——状态在场是上一轮 tick 的滞后判断，光照条件才是即时判据。"
     },
     {
       "id": "conceal_authority",
