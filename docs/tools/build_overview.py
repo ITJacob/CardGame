@@ -324,7 +324,10 @@ class Renderer:
         elif t == "status_shuffle":
             s = "重排状态"
         elif t == "set_luminance":
-            s = "光照度覆写 %s" % e.get("value")
+            if "delta" in e:
+                s = "光照度压暗 %+d" % e["delta"]
+            else:
+                s = "光照度覆写 %s" % e.get("value")
             if e.get("duration") is not None:
                 s += "（%d tick）" % e["duration"]
         elif t == "advance_clock":
