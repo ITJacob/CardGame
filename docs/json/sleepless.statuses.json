@@ -47,7 +47,7 @@
         "gauge.rate": 2,
         "energy_regen": 0.04
       },
-      "note": "H34 statPerStack 按层数线性修正；夜色=贮存的黑夜电池，由 夜色渐浓 单卡自洽管理（暗夜档 accumulate、白昼档 倾泻压暗全场）。读取层数者：黑暗仆人·不灭（不死判定 nightfall≥3）、药师『黑暗凝视·改』。 ｜ 枢纽状态（ddd §1.4）：归属 不眠者；crossPathway 参与者见 participants。 ｜ 2026-10-05 v7（用户指令）：去掉 statPerStack.attack（满层攻击+0），夜色=纯电池/敏捷资源（gauge.rate+2、energy_regen+0.04/层），『黑夜赐敏捷与清醒而非蛮力』——削弱此前满层+5攻击爆点。读取层数者不变（黑暗仆人·不灭 nightfall≥3、药师）。",
+      "note": "H34 statPerStack 按层数线性修正；夜色=贮存的黑夜电池，由 夜色渐浓 单卡自洽管理（暗夜档 accumulate、白昼档 倾泻压暗全场）。 ｜ 枢纽状态（ddd §1.4）：归属 不眠者；crossPathway 参与者见 participants。 ｜ 2026-10-05 v7（用户指令）：去掉 statPerStack.attack（满层攻击+0），夜色=纯电池/敏捷资源（gauge.rate+2、energy_regen+0.04/层），『黑夜赐敏捷与清醒而非蛮力』——削弱此前满层+5攻击爆点。读取层数者：药师（黑暗之翼、血月当空）。",
       "crossPathway": true,
       "participants": [
         "sleepless",
@@ -404,13 +404,6 @@
       "triggers": [
         {
           "event": "on_death",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "nightfall",
-            "cmp": ">=",
-            "n": 3
-          },
           "effects": [
             {
               "type": "heal",
@@ -421,10 +414,10 @@
             }
           ],
           "consumeCharge": true,
-          "note": "主判据 nightfall ≥3；黑夜领域在场为备选判据（zone_active domain_night_realm）"
+          "note": "不死判定=本状态在场（光照>2 时卡面已撤除本状态，故天然限暗夜）"
         }
       ],
-      "note": "序列1 与序列0 描述合并立项；与 eternal_sleep 对冲已由编队上下文 §十 裁定：revive_blocked > lethal_protect"
+      "note": "序列1 与序列0 描述合并立项；与 eternal_sleep 对冲已由编队上下文 §十 裁定：revive_blocked > lethal_protect。｜ 2026-10-05 v8（用户指令）：不死判定删 nightfall≥3 二次门槛（产夜色的卡太少、强依赖夜色过牵强），改判据=状态本身在场；黑夜领域备选判据同步删除。"
     },
     {
       "id": "conceal_authority",
@@ -688,13 +681,15 @@
       "note": "暗夜轴『越黑暗越强』身份增益：攻+3/防+2/精抗+10%。守夜人体质暗夜档复用（攻击向）。刷新不叠层（maxStacks 1）。2026-10-05 v5：原白天释放共用此态、被用户指令临时改防守；同轮拆出 night_empower_ward（防守向）专供 夜色渐浓 白昼释放，本态还原攻击向归守夜人体质。"
     },
     {
-      "id": "night_empower_ward",
-      "name": "暗夜守御",
+      "id": "night_release_ward",
+      "name": "夜释之护",
       "category": [
         "buff"
       ],
       "dispelable": true,
       "duration": 10,
+      "maxStacks": 1,
+      "stackPolicy": "refresh",
       "effects": [
         {
           "type": "modify_stat",
@@ -713,7 +708,7 @@
           "target": "self"
         }
       ],
-      "note": "暗夜守御（防守向）：防+3/精抗+10%，不给攻击。专供 夜色渐浓 白昼释放『花 nightfall 换自身』挂载（≥2 花2→15tick / ≥1 花1→10tick），对应『白天转防御』用户指令。与 night_empower（攻击向，守夜人体质复用）互斥、各 maxStacks 1。2026-10-05 v5 由 night_empower 拆出。"
+      "note": "夜释之护（防守向）：防+3/精抗+10%，不给攻击。专供 夜色渐浓 释放夜色『花 nightfall 换自身』挂载（≥2 花2→15tick / ≥1 花1→10tick），对应『白天转防御』用户指令。与守夜人体质的 night_empower（攻击向）解耦、独立 id。2026-10-06 v6：由 night_empower_ward/暗夜守御 改名（旧名易与守夜人体质 buff 混淆），补 maxStacks 1 + refresh。"
     }
   ]
 }
