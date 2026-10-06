@@ -236,6 +236,7 @@
       "dispelable": true,
       "duration": 20,
       "maxStacks": 1,
+      "stackPolicy": "refresh",
       "modifiers": {
         "gaugeRateMul": 0.85
       },
@@ -267,7 +268,7 @@
         }
       ],
       "charges": 1,
-      "note": "确定性厄运：行动条减速 + 每 tick 倒退 + 一次性受伤加重；刷新不叠层。"
+      "note": "确定性厄运：行动条减速 + 每 tick 倒退 + 一次性受伤加重；刷新不叠层（显式 stackPolicy refresh；maxStacks 1 已在字段）。"
     },
     {
       "id": "dark_corrosion",
@@ -656,6 +657,8 @@
         "buff"
       ],
       "dispelable": true,
+      "maxStacks": 1,
+      "stackPolicy": "refresh",
       "duration": 10,
       "effects": [
         {
@@ -683,7 +686,7 @@
           "target": "self"
         }
       ],
-      "note": "暗夜轴身份增益（攻击向），守夜人体质暗夜档挂载；刷新不叠层。"
+      "note": "暗夜轴身份增益（攻击向），守夜人体质暗夜档挂载；刷新不叠层（显式 maxStacks 1 + stackPolicy refresh，不依赖引擎缺省——挂载伪代码以 def.maxStacks 为叠层判据，缺省无定义）。"
     }
   ]
 }
