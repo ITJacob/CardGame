@@ -31,7 +31,7 @@
           ]
         }
       ],
-      "note": "C8 识破分支：敌方 concealed/shadow_veil/stealth 类状态对本单位无效（共享内核参数 §四 + H5）"
+      "note": "识破：敌方隐匿类状态对本单位无效，受隐匿敌人攻击的伤害 ×0.75。"
     },
     {
       "id": "nightfall",
@@ -47,7 +47,7 @@
         "gauge.rate": 2,
         "energy_regen": 0.04
       },
-      "note": "H34 statPerStack 按层数线性修正；夜色=贮存的黑夜电池，由 夜色渐浓 单卡自洽管理（暗夜档 accumulate、白昼档 倾泻压暗全场）。 ｜ 枢纽状态（ddd §1.4）：归属 不眠者；crossPathway 参与者见 participants。 ｜ 2026-10-05 v7（用户指令）：去掉 statPerStack.attack（满层攻击+0），夜色=纯电池/敏捷资源（gauge.rate+2、energy_regen+0.04/层），『黑夜赐敏捷与清醒而非蛮力』——削弱此前满层+5攻击爆点。读取层数者：药师（黑暗之翼、血月当空）。",
+      "note": "贮存型层数资源，由『夜色渐浓』单卡自洽管理（夜相位积累、光照 >2 花层释放）。枢纽状态（ddd §1.4）。读取层数者：药师（黑暗之翼、血月当空）。",
       "crossPathway": true,
       "participants": [
         "sleepless",
@@ -66,7 +66,7 @@
         "damage_mul": 0.8,
         "gaugeRateMul": 0.9
       },
-      "note": "H24 减速族 × H4 乘区；退化方案：modify_stat(attack, -2, duration:3)"
+      "note": "减速族复合减益。"
     },
     {
       "id": "dread",
@@ -81,7 +81,7 @@
         "damage_mul": 0.8,
         "excludeCasterTargeting": true
       },
-      "note": "与水手 v0.2 新增项 3 同名同参，复用同一 StatusDef；恐惧链三级复用（惊惧诗/恐惧灵光/恐惧权柄）",
+      "note": "恐惧链三级复用（惊惧诗/恐惧灵光/恐惧权柄）；与水手途径同名同参共用。",
       "stackPolicy": "refresh",
       "effects": [
         {
@@ -105,7 +105,7 @@
       "modifiers": {
         "damage_taken_mul": 1.2
       },
-      "note": "与「眩晕」同构（disable 全部四行为）+ H4 受伤乘区；睡眠族扩展：被延长走 H14 durationModifier、被永眠改写走 H32 transferStatus",
+      "note": "硬控（禁用全部行动）+ 受伤 ×1.2；睡眠族扩展：被延长走 durationModifier、被永眠改写走 transferStatus。",
       "disallowActions": [
         "move",
         "basic_attack",
@@ -136,7 +136,7 @@
           ]
         }
       ],
-      "note": "击溃精神；挂载时把宿主 slumber duration 刷新至 4（H14 durationModifier 口径）"
+      "note": "击溃精神：挂载时把宿主沉眠持续时间刷新至 4 tick。"
     },
     {
       "id": "dream_walker",
@@ -182,7 +182,7 @@
       "statMods": {
         "attack": -2
       },
-      "note": "H38 buffBlocked 禁止获得增益；质变分支由卡面 If 覆写 duration 为 8；层数引擎 maxStacks 3 refresh（2026-09-29 requiem 轴迭代，身份锚定 8→15）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。 乘区审批：0.7=标准减伤母版档（H3 已裁定）/0.75=轻减档",
+      "note": "禁止获得增益；层数=强度档（maxStacks 3 + refresh）；质变分支由卡面 If 覆写 duration 为 8。",
       "maxStacks": 3,
       "stackPolicy": "refresh"
     },
@@ -197,7 +197,7 @@
       "modifiers": {
         "summon_cap_override": 2
       },
-      "note": "summon_cap 是 UnitDef/运行时参数（H39 编队参数 §1.1b），以状态 modifiers 承载对持有者召唤位上限的修正；由归一自 modify_stat(stat: summon_cap) 改写"
+      "note": "以状态 modifiers 承载召唤位上限 +2。"
     },
     {
       "id": "sunlight_weakness",
@@ -267,7 +267,7 @@
         }
       ],
       "charges": 1,
-      "note": "零概率的确定性厄运：慢半拍 + 倒退 + 一次性加重；刷新不叠层（maxStacks 1）"
+      "note": "确定性厄运：行动条减速 + 每 tick 倒退 + 一次性受伤加重；刷新不叠层。"
     },
     {
       "id": "dark_corrosion",
@@ -306,7 +306,7 @@
           ]
         }
       ],
-      "note": "乘区审批：0.7=标准减伤母版档（H3 已裁定）/0.75=轻减档"
+      "note": "黑暗 dot + 受治疗 ×0.7；死于消融者不可复活。"
     },
     {
       "id": "dream_depth",
@@ -318,7 +318,7 @@
       "duration": null,
       "maxStacks": 3,
       "stackPolicy": "stack",
-      "note": "H11 计数型 + H2 stackThreshold；满 3 层由卡面效果转 slumber 并 consume(3)"
+      "note": "计数型：满 3 层由卡面转沉眠并清空。"
     },
     {
       "id": "occult_seal",
@@ -336,7 +336,7 @@
           "note": "共享内核参数 §四 direction: both——连友军的治疗/增益也选不中"
         }
       },
-      "note": "封印不免疫伤害：已挂载 dot 正常结算 乘区审批（2026-10-01）：0 值=绝对语义档（完全免除/封印/断绝），非渐变乘区，单列登记 ｜ 2026-10-02 批次十：participants 补录窥秘人（状态层矩阵 seal 正主=观众/窥秘人；星光囚笼星封共鸣读档）",
+      "note": "绝对封印（行动条速率归零、双向不可选中、禁行动），但不免疫已挂载的持续伤害。",
       "crossPathway": true,
       "participants": [
         "apprentice",
@@ -422,7 +422,7 @@
           "note": "不死判定=状态在场 ∧ 死亡瞬间光照 ≤2（状态仅暗夜档存在、>2 卡面每 tick 撤除；光照条件双保险，防 tick 间隙光照已升但撤除未执行的边界）"
         }
       ],
-      "note": "序列1 与序列0 描述合并立项；与 eternal_sleep 对冲已由编队上下文 §十 裁定：revive_blocked > lethal_protect。｜ 2026-10-05 v8（用户指令）：不死判定删 nightfall≥3 二次门槛（产夜色的卡太少、强依赖夜色过牵强），改判据=状态本身在场；黑夜领域备选判据同步删除。 ｜ 2026-10-06 v9（用户指令）：不死判定追加死亡瞬间 luminance≤2 双条件——状态在场是上一轮 tick 的滞后判断，光照条件才是即时判据。"
+      "note": "暗夜免死：死亡时（光照 ≤2）中断死亡、保留 1 血并回复 30% 最大生命，消耗 1 层，共 3 层；与永眠的 revive_blocked 对冲时后者优先。"
     },
     {
       "id": "conceal_authority",
@@ -477,7 +477,7 @@
           "note": "将任何事物变隐秘：己方 concealed 不可驱散（H8，与无迹之影同源）"
         }
       },
-      "note": "破除后 10tick 由 on_tick 触发器重新挂载",
+      "note": "出手破除的潜匿 10 tick 后自动重新挂载。",
       "crossPathway": true,
       "participants": [
         "apprentice",
@@ -558,7 +558,7 @@
           "note": "按来源类型过滤的受伤乘区（H4 filter caster 维度）"
         }
       },
-      "note": "收尸人【灵之主宰】与本条共用 spirit_sovereign 族（H42 同向取最高不叠乘）",
+      "note": "与收尸人【灵之主宰】共用 spirit_sovereign 族：同向取最高、不叠乘。",
       "immune": {
         "categories": [
           "control"
@@ -603,7 +603,7 @@
       ],
       "id": "covert_veil",
       "name": "潜匿",
-      "note": "隐秘轴身份状态（2026-09-29 自 common conceal 分叉私有化，语义蓝本同源；category 保留 conceal，夜视/分类驱散/不可驱散覆写照常生效）；不眠者全途径 statusId 级引用（隐秘权柄常驻挂载与自破、无迹之影受击重隐、隐秘化卡）统一改指此 id；common conceal 保留通用。；层数引擎 maxStacks 3 refresh（D 类批 2026-09-29 身份锚定 8→15）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
+      "note": "不眠者私有隐匿状态（自 common conceal 分叉，语义同源，夜视/分类驱散/不可驱散覆写照常生效）；全途径 statusId 级引用统一指此 id。层数=强度档（maxStacks 3 + refresh）。",
       "maxStacks": 3,
       "stackPolicy": "refresh"
     },
@@ -619,7 +619,7 @@
         "energy_max": 5,
         "energy_regen": 0.2
       },
-      "note": "不眠之躯在暗夜档（luminance ≤2）激活的能量增益：能量上限 +5、能量回复 +0.2/tick。由 skill_sleepless_s9_sleepless_body 直接以光照度驱动——每 tick 判 luminance_compare≤2 则挂、否则撤除，故天亮即沉眠。本状态自身 duration:null，仅表示暗夜档内常驻。"
+      "note": "『不眠之躯』的暗夜档能量增益载体：由卡面每 tick 随光照（≤2）挂/撤；duration:null 表示暗夜档内常驻。"
     },
     {
       "id": "midnight_prowess_power",
@@ -647,7 +647,7 @@
           "target": "self"
         }
       ],
-      "note": "午夜武艺在暗夜档（luminance ≤2）激活的攻防增益：攻击 +2、防御 +1。由 skill_sleepless_s8_midnight_prowess 以光照度驱动——每 tick 判 luminance_compare≤2 则挂、否则撤除（v6 收紧：撤除阈值由 >8 改 >2，严格随光照），故天亮即沉眠，与不眠之躯·醒 同源范式。本状态 duration:null，仅表示暗夜档内常驻。"
+      "note": "『午夜武艺』的暗夜档攻防增益载体：由卡面每 tick 随光照（≤2）挂/撤；duration:null 表示暗夜档内常驻。"
     },
     {
       "id": "night_empower",
@@ -683,7 +683,7 @@
           "target": "self"
         }
       ],
-      "note": "暗夜轴『越黑暗越强』身份增益：攻+3/防+2/精抗+10%。守夜人体质暗夜档复用（攻击向）。刷新不叠层（maxStacks 1）。2026-10-05 v5：原白天释放共用此态、被用户指令临时改防守；同轮拆出 night_empower_ward（防守向）专供 夜色渐浓 白昼释放，本态还原攻击向归守夜人体质。"
+      "note": "暗夜轴身份增益（攻击向），守夜人体质暗夜档挂载；刷新不叠层。"
     },
     {
       "id": "night_release_ward",
@@ -713,7 +713,7 @@
           "target": "self"
         }
       ],
-      "note": "夜释之护（防守向）：防+3/精抗+10%，不给攻击。专供 夜色渐浓 释放夜色『花 nightfall 换自身』挂载（≥2 花2→15tick / ≥1 花1→10tick），对应『白天转防御』用户指令。与守夜人体质的 night_empower（攻击向）解耦、独立 id。2026-10-06 v6：由 night_empower_ward/暗夜守御 改名（旧名易与守夜人体质 buff 混淆），补 maxStacks 1 + refresh。"
+      "note": "『夜色渐浓』释放夜色的防守向回报：防 +3/精抗 +10%，不给攻击；与守夜人体质的暗夜加持（攻击向）解耦。刷新不叠层。"
     }
   ]
 }
