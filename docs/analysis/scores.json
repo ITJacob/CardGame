@@ -5,9 +5,9 @@
   {
    "id": "sleepless",
    "name": "不眠者",
-   "total": 64.6,
+   "total": 64.3,
    "dims": {
-    "轴健康度": 21.1,
+    "轴健康度": 20.8,
     "跨轴耦合": 2.5,
     "跨系联动": 6.0,
     "结构健康": 10,
@@ -15,14 +15,14 @@
     "文本完备": 10.0,
     "风格签名": 5
    },
-   "minAxis": 65.8,
+   "minAxis": 65.7,
    "cards": 34,
    "sigHits": {
     "trig:on_phase_change": 1,
     "prim:advance_clock": 11,
     "res:secrecy": 3
    },
-   "styleDist": 0.3439,
+   "styleDist": 0.3457,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -38,12 +38,58 @@
     },
     {
      "dim": "风格签名",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.344，分位 <25%）",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.346，分位 <25%）",
      "ref": "sleepless",
      "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
     }
    ],
    "axes": [
+    {
+     "id": "darkness",
+     "name": "暗夜",
+     "symbol": "🌃",
+     "total": 65.7,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 12,
+      "读层闭环": 12,
+      "轴内多样性": 10.7,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 11,
+     "enablersVerified": [
+      "夜色渐浓"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [
+      "守夜人体质",
+      "黑暗仆人·不灭",
+      "黑暗之剑"
+     ],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "夜色渐浓",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      },
+      {
+       "dim": "产层闭环",
+       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
+       "ref": "黑夜领域",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      },
+      {
+       "dim": "读层闭环",
+       "why": "-13：payoff 3 张全部 notes 级（卡面无读层引用）",
+       "ref": "守夜人体质,黑暗仆人·不灭,黑暗之剑",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
     {
      "id": "nightmare",
      "name": "梦魇",
@@ -84,53 +130,6 @@
        "dim": "读层闭环",
        "why": "注：notes 级 1 张（减半计）",
        "ref": "恐惧灵光",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    },
-    {
-     "id": "darkness",
-     "name": "暗夜",
-     "symbol": "🌃",
-     "total": 70.7,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "读层闭环": 17,
-      "轴内多样性": 10.7,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 11,
-     "enablersVerified": [
-      "夜色渐浓"
-     ],
-     "payoffsLanded": [
-      "黑暗仆人·不灭"
-     ],
-     "payoffsNotes": [
-      "守夜人体质",
-      "黑暗之剑"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "夜色渐浓",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "黑夜领域",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "读层闭环",
-       "why": "注：notes 级 2 张（减半计）",
-       "ref": "守夜人体质,黑暗之剑",
        "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
@@ -232,7 +231,7 @@
     "prim:modify_targetability": 2,
     "prim:target_override": 8
    },
-   "styleDist": 0.3345,
+   "styleDist": 0.3346,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -407,7 +406,7 @@
     "prim:echo_last_skill": 11,
     "prim:restore_snapshot": 2
    },
-   "styleDist": 0.3584,
+   "styleDist": 0.3586,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -417,7 +416,7 @@
     },
     {
      "dim": "风格签名",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.358，分位 <25%）",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.359，分位 <25%）",
      "ref": "apprentice",
      "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
     }
@@ -604,7 +603,7 @@
     "elem:ice": 3,
     "elem:dark": 1
    },
-   "styleDist": 0.3895,
+   "styleDist": 0.3896,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -763,7 +762,7 @@
     "prim:write_rule_slot": 2,
     "prim:translocate": 4
    },
-   "styleDist": 0.3804,
+   "styleDist": 0.3805,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -773,7 +772,7 @@
     },
     {
      "dim": "风格签名",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.380，分位 <25%）",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.381，分位 <25%）",
      "ref": "seer",
      "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
     }
@@ -927,7 +926,7 @@
     "sref:mimic": 5,
     "prim:snapshot": 7
    },
-   "styleDist": 0.3675,
+   "styleDist": 0.3676,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -937,7 +936,7 @@
     },
     {
      "dim": "风格签名",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.367，分位 <25%）",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.368，分位 <25%）",
      "ref": "reader",
      "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
     }
@@ -1081,7 +1080,7 @@
     "prim:write_rule_slot": 2,
     "trig:on_phase_change": 2
    },
-   "styleDist": 0.5096,
+   "styleDist": 0.5095,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1722,7 +1721,7 @@
     "unitType:BEAST": 8,
     "sref:prepared_draught": 5
    },
-   "styleDist": 0.3872,
+   "styleDist": 0.3873,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -1901,7 +1900,7 @@
     "unitType:ITEM": 2,
     "sref:lineage_stack": 6
    },
-   "styleDist": 0.354,
+   "styleDist": 0.3541,
    "deductions": [
     {
      "dim": "风格签名",
@@ -2065,7 +2064,7 @@
     "flag:cost_mod": 2,
     "res:order": 6
    },
-   "styleDist": 0.4035,
+   "styleDist": 0.4036,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -2255,7 +2254,7 @@
     "flag:gender_is": 1,
     "sref:massing": 1
    },
-   "styleDist": 0.3491,
+   "styleDist": 0.3492,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -2476,7 +2475,7 @@
     "elem:dark": 4,
     "flag:companionBuff": 2
    },
-   "styleDist": 0.3922,
+   "styleDist": 0.3923,
    "deductions": [],
    "axes": [
     {
@@ -2648,7 +2647,7 @@
     "trig:on_kill": 2,
     "prim:drain": 9
    },
-   "styleDist": 0.3674,
+   "styleDist": 0.3675,
    "deductions": [
     {
      "dim": "结构健康",
@@ -2823,7 +2822,7 @@
     "sref:law_edit": 3,
     "unitType:CONSTRUCT": 3
    },
-   "styleDist": 0.4345,
+   "styleDist": 0.4346,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -3016,7 +3015,7 @@
     "flag:template": 1,
     "sref:insight": 5
    },
-   "styleDist": 0.4171,
+   "styleDist": 0.4173,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -3158,7 +3157,7 @@
     "unitType:PLANT": 8,
     "sref:blight": 3
    },
-   "styleDist": 0.4408,
+   "styleDist": 0.4409,
    "deductions": [],
    "axes": [
     {
@@ -3345,7 +3344,7 @@
     "prim:advance_clock": 2,
     "res:fate_value": 5
    },
-   "styleDist": 0.4865,
+   "styleDist": 0.4867,
    "deductions": [
     {
      "dim": "跨系联动",
@@ -3560,7 +3559,7 @@
     "prim:status_shuffle": 5,
     "prim:modify_rule_slot": 18
    },
-   "styleDist": 0.3367,
+   "styleDist": 0.3369,
    "deductions": [
     {
      "dim": "风格签名",
@@ -3700,11 +3699,11 @@
     "stat:hp_max": 5,
     "sref:flesh_undying": 2
    },
-   "styleDist": 0.3844,
+   "styleDist": 0.3845,
    "deductions": [
     {
      "dim": "风格签名",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.384，分位 <25%）",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.385，分位 <25%）",
      "ref": "supplicant",
      "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
     }
