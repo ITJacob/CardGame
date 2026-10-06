@@ -20,7 +20,7 @@
         "黑暗仆人·不灭",
         "黑暗之剑"
       ],
-      "note": "暗夜轴『夜色=夜晚专属个人资源』模型（v4 2026-10-05 立项，v8 2026-10-07 极简化定型）：nightfall 由『夜色渐浓』单卡自洽管理——相位进入 night/midnight 每 tick +1（上限 3 层，每层 gauge.rate +1 / energy_regen +0.04），出夜不攒；光照 >2 时每 tick 花 1 层，set_luminance 强制压为绝对值 2（暗夜档）覆盖 4tick；覆盖到期光照回升 >2 且仍有夜色则再花 1 层续 4tick——1 层 = 4tick 暗夜，3 层全放 = 12tick 总覆盖。**积累走 phase_is(night/midnight) 而非 luminance_compare，且 set_luminance 不改 board.phase**——压暗窗口内不会自我续杯，这是防无限永夜的安全阀，不得放宽为 lum≤2。守夜人体质=纯光照读取被动（night_empower/sunlight_weakness），不碰 nightfall。｜ 2026-10-03 骨架手术：相位形状换形 29 张（详见 designNote）"
+      "note": "暗夜轴『夜色=夜晚专属个人资源』模型：nightfall 由『夜色渐浓』单卡自洽管理——相位进入 night/midnight 每 tick +1（上限 3 层，每层 gauge.rate +1 / energy_regen +0.04），出夜不攒；光照 >2 时每 tick 花 1 层，set_luminance 强制压为绝对值 2（暗夜档）覆盖 4tick；覆盖到期光照回升 >2 且仍有夜色则再花 1 层续 4tick——1 层 = 4tick 暗夜，3 层全放 = 12tick 总覆盖；花层同时挂夜释之护（防 +3/精抗 +10%）4tick。**积累走 phase_is(night/midnight) 而非 luminance_compare，且 set_luminance 不改 board.phase**——压暗窗口内不会自我续杯，这是防无限永夜的安全阀，不得放宽为 lum≤2。守夜人体质=纯光照读取被动（night_empower/sunlight_weakness），不碰 nightfall。"
     },
     "nightmare": {
       "symbol": "🌚",
@@ -198,7 +198,7 @@
       "flagship": false,
       "lore": "序列9 不眠者 —— \"夜越深精力越充沛，力量/敏捷/思维超越常人\"",
       "flavor": "夜色每浓一分，你的力量、身手与思绪便更清明一分——黎明之前，不会有人的锋芒比你更盛。",
-      "describe": "夜晚/午夜相位每 tick 夜色 +1（至多 3 层，每层行动条速率 +1、能量回复 +0.04），离开夜相位停止积累。光照 >2 时每 tick 消耗 1 层夜色，把战场光照强制压为 2（暗夜档）覆盖 4tick；覆盖到期光照回升 >2 且仍有夜色，则再花 1 层续 4tick——每层夜色买 4tick 暗夜，3 层全放合计覆盖 12tick；夜色耗尽即停。",
+      "describe": "夜晚/午夜相位每 tick 夜色 +1（至多 3 层，每层行动条速率 +1、能量回复 +0.04）；离开夜相位停止积累。光照 >2 且有夜色时每 tick 花 1 层，把战场光照压为 2（暗夜档）覆盖 4tick 并获得夜释之护（防御 +3、精神抗性 +10%）4tick；夜色耗尽即停。",
       "hook": [
         "on_tick"
       ],
@@ -256,6 +256,13 @@
                       "duration": 4,
                       "dispelable": false,
                       "note": "强制压光照为 2（暗夜档）覆盖 4tick：1 层夜色 = 4tick 暗夜，3 层全放 = 12tick。覆盖到期后光照回升 >2 且仍有夜色则再花 1 层续 4tick（累计而非刷新）。覆盖期内 luminance=2，释放条件自动失活，天然防连拍，无需冷却锁"
+                    },
+                    {
+                      "type": "mount_status",
+                      "statusId": "night_release_ward",
+                      "duration": 4,
+                      "target": "self",
+                      "note": "倾泻伴生护持：与单次暗夜覆盖等长（4tick），覆盖到期即消失，不独立计时；不给攻击"
                     }
                   ],
                   "else": []
@@ -274,7 +281,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态「夜色」累积源。 ｜ 2026-10-06 收敛：① maxStacks 5→3（观测带 1–3）；② gauge.rate 每层 2→1（满层 +10→+3，原满层 +10 落 D2「重加速 ≥+10 须挂代价」档却零代价，属硬违规）；③ 释放由 set_luminance 绝对值 value:2 改为相对 delta:-6——与途径内 18 张「光照 -N」主动卡同构，消除「S9 被动做到 S0 权柄卡做不到的事」的成本倒置，正午不再可人造永夜；④ 新增倾泻冷却 10tick（night_release_lock）；⑤ 夜释之护不再独立计时，随倾泻窗口生灭。｜ 2026-10-07 v8 极简化（用户指令）：废除花 2/花 1 双档、夜释之护、夜色未盈冷却与 ≤8 上限/正午豁免——释放收敛为单规则：光照 >2 且有夜色，每 tick 花 1 层，set_luminance 强制压为绝对值 2（暗夜档）并续 12tick（再释放即刷新）。压暗后 luminance=2 令释放条件自动失活，天然防连拍，无需冷却锁；积累仍绑 phase_is(night/midnight)，覆写不改 board.phase，无自持漏洞。night_release_ward / night_release_lock 两个 StatusDef 同步删除。｜ v8.1 修正（2026-10-07 用户澄清）：覆盖时长不是「每次释放都给 12tick」——每花 1 层夜色换 4tick 暗夜覆盖（set_luminance value:2 duration:4），覆盖到期、光照回升 >2 且仍有夜色则再花 1 层续 4tick，即「3 层夜色 = 12tick 总覆盖」，与「夜色=电池」的逐层定价对齐。",
+      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态「夜色」的累积与倾泻源。",
       "art": {
         "subject": "shadows thickening and climbing up a lone standing figure",
         "elements": [
