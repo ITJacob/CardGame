@@ -1,6 +1,6 @@
 # 途径风格距离（STYLE DISTANCE）
 
-> 由 `docs/tools/build_style_analysis.py` 自动生成——**勿手改**；指纹口径与 score.py 第七维同源（原语分布 + 元素分布 + modify_stat 键分布，1−cos 距离）。差异化迭代后重跑本报告看距离拉开。生成时间：2026-10-06。
+> 由 `docs/tools/build_style_analysis.py` 自动生成——**勿手改**；指纹口径与 score.py 第七维同源（原语分布 + 元素分布 + modify_stat 键分布，1−cos 距离）。差异化迭代后重跑本报告看距离拉开。生成时间：2026-10-07。
 
 ## 一、最近邻榜（距离越小越雷同，差异化迭代优先拆这些对）
 
@@ -66,7 +66,7 @@
 | assassin | prim:mount_status ×33；prim:modify_targetability ×26；prim:modify_resource ×14；prim:translocate ×11；prim:damage ×9 |
 | chanter | prim:mount_status ×25；elem:holy ×21；prim:set_luminance ×20；prim:grant_immunity ×16；prim:damage ×12 |
 | corpse_collector | prim:mount_status ×28；prim:reveal ×16；prim:spawn ×15；elem:mental ×10；prim:damage ×9 |
-| criminal | prim:move ×37；prim:modify_resource ×37；prim:mount_status ×35；prim:damage ×19；prim:modify_stat ×7 |
+| criminal | prim:modify_resource ×37；prim:move ×37；prim:mount_status ×35；prim:damage ×19；prim:modify_stat ×7 |
 | hunter | prim:mount_status ×31；prim:modify_resource ×20；prim:move ×18；prim:modify_rule_slot ×17；prim:damage ×13 |
 | lawyer | prim:mount_status ×33；prim:modify_rule_slot ×18；prim:damage ×15；prim:modify_status ×14；elem:mental ×11 |
 | monster | prim:restore_snapshot ×30；prim:mount_status ×28；prim:modify_resource ×8；prim:damage ×5；elem:mental ×4 |
@@ -104,7 +104,7 @@
 | sailor | elem:ice ×2；elem:lightning ×8；sref:rage ×10 |
 | savant | prim:modify_rule_slot ×13；sref:law_edit ×3；unitType:CONSTRUCT ×3 |
 | seer | sref:puppet_string ×4；prim:write_rule_slot ×2；prim:translocate ×4 |
-| sleepless | trig:on_phase_change ×1（发芽）；prim:advance_clock ×0（空白）；res:secrecy ×3 |
+| sleepless | trig:on_phase_change ×0（空白）；prim:advance_clock ×0（空白）；res:secrecy ×3 |
 | spectator | stat:rank ×3；flag:template ×1（发芽）；sref:insight ×5 |
 | supplicant | sref:grazed_soul ×7；stat:hp_max ×5；sref:flesh_undying ×2 |
 | thief | prim:take_control ×5；prim:modify_targetability ×2；prim:target_override ×8 |

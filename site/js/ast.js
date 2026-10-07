@@ -296,8 +296,12 @@ const PRIMITIVE_TEMPLATES = {
     return s;
   },
   set_luminance: (e, used) => {
-    used.push('value', 'duration', 'dispelable');
-    let s = `覆写战场光照度为 ${fmtVal(e.value)}`;
+    // 两种模式互斥：value=绝对档位，delta=相对增减（负压暗/正提亮）。
+    // 只读 value 会让全库 18 张 delta 卡（不眠者压暗系）渲染成「覆写战场光照度为 （持续 N tick）」空值。
+    used.push('value', 'delta', 'duration', 'dispelable');
+    let s = e.delta != null
+      ? `战场光照相对${e.delta < 0 ? '压暗' : '提亮'} ${Math.abs(e.delta)}`
+      : `覆写战场光照度为 ${fmtVal(e.value)}`;
     const parts = [];
     if (e.duration != null) parts.push(`持续 ${fmtVal(e.duration)} tick${e.dispelable === false ? '（不可驱散）' : ''}`);
     return s + (parts.length ? `（${parts.join('，')}）` : '');
