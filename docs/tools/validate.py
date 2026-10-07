@@ -208,8 +208,22 @@ def _claim_elems(text):
     return claims
 
 
+def _documented(words, notes):
+    """空结构下，声称的元素能否在卡面注解（note）里找到佐证。"""
+    if not notes:
+        return False
+    for _w in words:
+        if _w in notes:
+            return True
+        for _el in _ZH2ELEM.get(_w, ()):
+            if _el in notes:
+                return True
+    return False
+
+
 def _check_desc_elems(node, cid, refs, errors, warns):
     elems, wild = _damage_elems_of(node, refs)
+    notes = " ".join(txt for k, txt in _strings(node) if k == "note")
     for key, txt in _strings(node):
         if key not in _STRICT_FIELDS and key not in _NARRATIVE_FIELDS:
             continue
@@ -221,8 +235,13 @@ def _check_desc_elems(node, cid, refs, errors, warns):
             cid, key, "/".join(bad), ",".join(sorted(elems)) or "空")
         if key in _NARRATIVE_FIELDS:
             warns.append(msg); continue
-        if wild or not elems:
-            warns.append(msg + "（结构内无可核验 damage，暂不可核验）")
+        if wild:
+            warns.append(msg + "（含 $ 动态元素，暂不可核验）")
+        elif not elems:
+            # 池外单位为常态（ENTITIES_ANALYSIS：单卡单位内联在 spawn 段、无 unitDef）：
+            # 空结构下若声称的元素能在卡面注解（note）里找到佐证，即视为已按约定内联，不再告警。
+            if not _documented(bad, notes):
+                warns.append(msg + "（结构内无可核验 damage，暂不可核验）")
         else:
             errors.append(msg)
 
