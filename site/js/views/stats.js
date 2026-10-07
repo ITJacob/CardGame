@@ -59,9 +59,10 @@ function renderSkillStats(view) {
   const bySeq = countBy(cards, (c) => c.sequence);
   const byReach = countBy(cards.filter((c) => c.kind === 'active'), (c) => c.reach);
   const bySel = countBy(cards.filter((c) => c.target), (c) => c.target.selectionMode);
-  // hook 是数组，一张卡可挂多个触发点：逐个事件计数（countBy 一卡只出一键，会漏）
-  const byHook = {};
-  for (const c of cards) for (const h of hookEvents(c)) byHook[h] = (byHook[h] || 0) + 1;
+  // hook 是数组，一张卡可挂多个触发点：逐个事件计数（countBy 一卡只出一键，会漏）。
+  // 必须是 Map——下游 sortedRows / colsOf 都走 m.entries()，普通对象会抛 map.entries is not a function
+  const byHook = new Map();
+  for (const c of cards) for (const h of hookEvents(c)) byHook.set(h, (byHook.get(h) || 0) + 1);
   const flagshipCount = cards.filter((c) => c.flagship).length;
   const openFlags = (c) => (c.frameworkFlags || []).filter((f) => f && f.landed !== true);
   const flagCards = cards.filter((c) => openFlags(c).length);
