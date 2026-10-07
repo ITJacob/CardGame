@@ -1,11 +1,12 @@
 // 悬停浮层：查询 term.js 的词条 / status.js 的状态详情
-// 桌面（有精确指针 + hover）：短内容跟随光标；长内容钉住就地可滚（.tip-scroll）
+// 桌面（有精确指针 + hover）：内容短且没有嵌套术语时跟随光标；否则钉住（.tip-pin），
+// 鼠标可移进来滚、也可悬停里面的嵌套术语就地换内容
 // 触屏：点击后居中弹出（.tip-center）
 import { lookup, lookupStatus, lookupAxis, lookupPathway, axSymHtml, escapeHtml } from './term.js';
 import { renderStatusDetail } from './status.js';
 
-// 长浮层的判据与上限：内容高于视口 80% 就转「钉住可滚」态。
-// 0.8 与 css #tooltip.tip-scroll 的 max-height: 80vh 是一对——判据若大于上限，
+// 高度判据与上限：内容高于视口 80% 就转钉住态（内容里含嵌套术语时同样钉住，见下）。
+// 0.8 与 css #tooltip.tip-pin 的 max-height: 80vh 是一对——判据若大于上限，
 // 就会出现「判定为长、钉住之后却装得下」的错位：钉住了，底下空一段，读者不知道滚什么
 const PIN_RATIO = 0.8;
 // 从词上离开、到鼠标移进浮层，要跨过浮层外侧那 14px 的空隙。给的宽限够慢手鼠标用，
@@ -70,7 +71,7 @@ function fillTip(tip, el) {
 export function initTooltip() {
   const tip = document.getElementById('tooltip');
 
-  let pinned = false; // 长浮层：不跟随光标、就地钉住、鼠标可进入
+  let pinned = false; // 钉住态：不跟随光标、就地钉住、鼠标可进入（长内容或含嵌套术语）
   let hideTimer = 0;
 
   const cancelHide = () => { if (hideTimer) { clearTimeout(hideTimer); hideTimer = 0; } };
@@ -80,11 +81,11 @@ export function initTooltip() {
     cancelHide();
     tip.hidden = true;
     pinned = false;
-    tip.classList.remove('tip-scroll', 'tip-center');
+    tip.classList.remove('tip-pin', 'tip-center');
     unlockScroll(); // 唯一的出口都在这里，居中弹窗的锁也只在这里还回去
   };
   const scheduleHide = () => { cancelHide(); hideTimer = setTimeout(hide, HIDE_DELAY); };
-  // 关掉一切态：点外部、ESC、换路由三处共用（钉住弹窗与长浮层都收）
+  // 关掉一切态：点外部、ESC、换路由三处共用（钉住弹窗与悬停浮层都收）
   const closeAll = () => { tip.classList.remove('tip-sticky'); hide(); };
 
   // 钉住态（tip-sticky，如出图 prompt 弹窗）：不随 hover 显隐，点外部、ESC 或换路由才关。
@@ -156,8 +157,11 @@ export function initTooltip() {
     fillTip(tip, el);
     tip.hidden = false;
     // 量在钉住之前：overflow:hidden 的元素 scrollHeight 仍是完整内容高
-    pinned = tip.scrollHeight > Math.round(innerHeight * PIN_RATIO) + 4;
-    tip.classList.toggle('tip-scroll', pinned);
+    const over = tip.scrollHeight > Math.round(innerHeight * PIN_RATIO) + 4;
+    // 内容里有嵌套术语（状态详情里的分类 / 原语 / 谓词）时也必须钉住：跟随态是
+    // pointer-events:none，鼠标根本进不来，那些词有没有下划线都一样点不到
+    pinned = over || tip.querySelector('.term') !== null;
+    tip.classList.toggle('tip-pin', pinned);
     if (pinned) tip.scrollTop = 0; // 同一个元素复用，上一份内容的滚动位置要清掉
     placeAt(e.clientX, e.clientY);
   });
@@ -167,7 +171,7 @@ export function initTooltip() {
     placeAt(e.clientX, e.clientY);
   });
 
-  // 从词上离开：短浮层立即关；长浮层留一点时间给鼠标跨过空隙移进来
+  // 从词上离开：跟随态立即关；钉住态留一点时间给鼠标跨过空隙移进来
   document.addEventListener('mouseout', (e) => {
     if (tip.classList.contains('tip-sticky')) return;
     const term = e.target.closest?.('.term');
@@ -191,7 +195,7 @@ export function initTooltip() {
 // 与 hover 浮层互斥——sticky 期间 hover 处理器全部短路，直到点外部/ESC/换路由关闭
 export function showTipSticky(html) {
   const tip = document.getElementById('tooltip');
-  tip.classList.remove('tip-scroll'); // 长浮层残留的滚动条不该带到居中弹窗上
+  tip.classList.remove('tip-pin'); // 悬停浮层残留的滚动条不该带到居中弹窗上
   tip.innerHTML = html;
   tip.scrollTop = 0;
   tip.classList.add('tip-center', 'tip-sticky');
