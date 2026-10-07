@@ -123,6 +123,109 @@ def check_mod_keys(mods, cid, warns):
             warns.append("%s: modifier '%s' 建议收敛为 '%s'" % (cid, k, MODIFIER_ALIASES[k]))
         elif MODIFIER_CANON and k not in MODIFIER_CANON:
             warns.append("%s: modifier '%s' 未登记（先补词典 modifierKey 词条）" % (cid, k))
+# ---- 描述↔元素一致性 Gate（2026-10-07 新增）----
+# 背景：describe 里的元素措辞曾与效果结构的 element 字段脱节——例如描述写「2 点精神伤害」
+#   而结构里 damage.element 是 dark。结构为权威源，描述须与之一致。
+# 规则：describe 内「N 点<中文元素>伤害」（以及界域 prose 的 damage(<element>, N)）声称的每个
+#   元素，都必须出现在该卡能造成的伤害元素集合里——集合含经 statusId / unitId / template /
+#   def / zone 引用解析到的定义（unitDef/zoneDef/domainDef/statusDef，递归至 3 层）。
+#   · 不符 → 报错（阻断 Gate）。
+#   · 结构内解析不到任何 damage，或含 '$' 动态元素 → 只告警（池外内联 / 未编码，无法核验）。
+#   · 叙事字段（flavor/lore/note/conversionNotes/designNote/envRulesText）与编目三池定义 → 一律告警。
+_ELEM_ZH = {
+    "fire": ("火焰", "烈焰"),
+    "ice": ("冰霜", "冰冻", "寒冰"),
+    "poison": ("剧毒", "毒素", "中毒"),
+    "lightning": ("闪电", "雷电", "雷霆"),
+    "mental": ("精神", "心灵", "意志"),
+    "physical": ("物理",),
+    "holy": ("神圣", "圣光", "光明"),
+    "dark": ("暗黑", "黑暗", "暗影", "暗焰", "暗伤"),
+    "none": ("无属性",),
+}
+_ZH2ELEM = {}
+for _el, _zhs in _ELEM_ZH.items():
+    for _z in _zhs:
+        _ZH2ELEM.setdefault(_z, set()).add(_el)
+_CLAIM_RE = re.compile(r"\d+\s*点\s*([一-龥]{1,3}?)\s*伤害")
+_PROSE_RE = re.compile(r"damage\(\s*([a-z_]+)\s*,")
+# 只对规范字段设卡：describe / envRulesText 不符即报错；flavor 属叙事，不符只告警。
+# 其余字段（note / conversionNotes / designNote / 升级档 note 等）是设计过程注解，含历史值与
+# 有意保留的变迁记录，不参与扫描，避免永久噪音。
+_STRICT_FIELDS = ("describe", "envRulesText")
+_NARRATIVE_FIELDS = ("flavor",)
+
+
+def _walk(o):
+    if isinstance(o, dict):
+        yield o
+        for v in o.values(): yield from _walk(v)
+    elif isinstance(o, list):
+        for v in o: yield from _walk(v)
+
+
+def _strings(o, key=None):
+    """产出 (最近的字典键, 字符串值)。用于区分 describe（阻断）与叙事字段（告警）。"""
+    if isinstance(o, dict):
+        for k, v in o.items(): yield from _strings(v, k)
+    elif isinstance(o, list):
+        for v in o: yield from _strings(v, key)
+    elif isinstance(o, str):
+        yield key, o
+
+
+def _damage_elems_of(node, refs, depth=0):
+    """结构内可直接 / 经引用解析到的伤害元素集合；以及是否含 '$' 动态元素（不可完全核验）。"""
+    elems, wild = set(), False
+    for n in _walk(node):
+        if not isinstance(n, dict):
+            continue
+        if n.get("type") == "damage":
+            el = n.get("element")
+            if isinstance(el, str):
+                if el.startswith("$"): wild = True
+                else: elems.add(el)
+        if depth >= 3:
+            continue
+        for key in ("statusId", "unitId", "template", "def", "zone"):
+            v = n.get(key)
+            if isinstance(v, dict): v = v.get("def")
+            if not isinstance(v, str): continue
+            table = refs["status"] if key == "statusId" else refs["defs"]
+            if v in table:
+                e2, w2 = _damage_elems_of(table[v], refs, depth + 1)
+                elems |= e2; wild = wild or w2
+    return elems, wild
+
+
+def _claim_elems(text):
+    claims = set()
+    for _w in _CLAIM_RE.findall(text or ""):
+        for _el in _ZH2ELEM.get(_w, ()):
+            claims.add((_w, _el))
+    for _el in _PROSE_RE.findall(text or ""):
+        if _el in ELEMENTS: claims.add((_el, _el))
+    return claims
+
+
+def _check_desc_elems(node, cid, refs, errors, warns):
+    elems, wild = _damage_elems_of(node, refs)
+    for key, txt in _strings(node):
+        if key not in _STRICT_FIELDS and key not in _NARRATIVE_FIELDS:
+            continue
+        claims = _claim_elems(txt)
+        if not claims: continue
+        bad = sorted({w for w, el in claims if el not in elems})
+        if not bad: continue
+        msg = "%s: %s 声称「%s」伤害，结构可解析元素为 %s" % (
+            cid, key, "/".join(bad), ",".join(sorted(elems)) or "空")
+        if key in _NARRATIVE_FIELDS:
+            warns.append(msg); continue
+        if wild or not elems:
+            warns.append(msg + "（结构内无可核验 damage，暂不可核验）")
+        else:
+            errors.append(msg)
+
 def main():
     m = json.load(io.open(os.path.join(JSON_DIR,'manifest.json'), encoding='utf-8'))
     expect = {p["id"]: p["cardCount"] for p in m["pathways"]}
@@ -146,6 +249,19 @@ def main():
         except Exception:
             pass
     ALLSTATUS = globs
+
+    # 描述↔元素一致性 Gate 的引用索引（statusId / def / zone / unitId 解析用）
+    _refs = {"status": {}, "defs": {}}
+    for _pid, _lbl, _sd in iter_status_defs():
+        if isinstance(_sd, dict) and _sd.get("id"):
+            _refs["status"][_sd["id"]] = _sd
+    for _f in files:
+        try: _dd = json.load(io.open(_f, encoding="utf-8"))
+        except Exception: continue
+        for _pool in ("unitDefs", "zoneDefs", "domainDefs"):
+            for _x in _dd.get(_pool) or []:
+                if isinstance(_x, dict) and _x.get("id"):
+                    _refs["defs"].setdefault(_x["id"], _x)
     pre_errors, pre_warns = [], []   # 状态定义层 + 轴校验的前置收集（原代码引用了未定义的 errors/warns，属死代码 bug）
 
     # 状态定义层校验：*.statuses.json 中 statusDef 的 category / crossPathway.participants
@@ -296,6 +412,7 @@ def main():
         for _pool in ('unitDefs', 'zoneDefs', 'domainDefs'):
             for _e in d.get(_pool) or []:
                 check_mod_keys(_e.get('modifiers'), "%s %s:%s" % (pid, _pool, _e.get('id', '?')), warns)
+                _check_desc_elems(_e, "%s %s:%s" % (pid, _pool, _e.get('id', '?')), _refs, errors, warns)
         cards = d.get("cards", [])
         total_cards += len(cards)
         if pid in expect and len(cards) != expect[pid]:
@@ -391,6 +508,8 @@ def main():
                 elif mu2 < 0.8 or mu2 > 1.5:
                     if not h.get("note"):
                         warns.append("%s: phaseHooks mul %s 越出 0.8–1.5 且无 note 说明" % (cid, mu2))
+            # 描述↔元素一致性：describe 声称的元素须与结构可解析的伤害元素一致（2026-10-07）
+            _check_desc_elems(c, cid, _refs, errors, warns)
         # ---- sampleBuilds 交叉校验：示例卡组可信化 ----
         # 每个 Build 须 4 主动 + 4 被动，所列卡名必须存在于本文件 cards[]，
         # 且 actives 只能指 kind=active 的卡、passives 只能指 kind=passive 的卡。
