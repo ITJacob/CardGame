@@ -126,7 +126,11 @@ Pages 源 = main 分支 / 仓库根。访问 `https://<user>.github.io/<repo>/si
 - **量高要在钉住之前**：`overflow: hidden` 的元素 `scrollHeight` 仍是完整内容高，所以先量 `scrollHeight > 80vh` 再贴 class。同一个元素复用，新内容要 `scrollTop = 0`。
 - **这条路径主要在矮窗口触发**：全库 476 条状态详情里最高 709px（`mirror_substitute`），800px 视口（阈值 640）下只有 1 条越过阈值；窗口矮到 600px（阈值 480）就有十几条。大窗口下几乎看不到它，别以为没用——13 寸屏开着开发者工具就是这个尺寸。
 - **跨空隙的宽限**：浮层摆在光标外侧 14px，鼠标从术语移进浮层要跨过去，所以离开术语后先挂 160ms（`HIDE_DELAY`）再关，移进来就取消。短浮层不挂这个延迟，移开即关，手感不变。
-- **关掉一切态只有一个入口**（`closeAll`）：点外部、ESC、换路由三处共用。**`tip-center` 必须在这收掉**——`showTipSticky` 加上它，之前没人摘；它带 `translate(-50%, -50%)` 与固定宽度，留在元素上会让之后每次悬停浮层都偏移半个自己（这个残留是随这条改动一并修的）。
+- **居中弹窗锁背景滚动**：`.tip-center` 开着时给 `body` 加 `tip-lock` 并锁住滚动——弹窗是 `position: fixed`，页面在它背后照滚的话，关掉之后人已经不在原来那一段了。用 **`position: fixed` + `top: -scrollY`** 那套而不是给 `html` 加 `overflow: hidden`：后者在 iOS 上锁不住橡皮筋，而且两者都要在关掉时把滚动位置还回去。三个附带的细节都是实测出来的：
+  - 滚动条一没收，桌面端内容会**横向抖**一下，按 `innerWidth - documentElement.clientWidth` 的差值补右内边距（真窗口实测 15px；补上后标记元素 `left` 245 → 245 不动）。全局 `box-sizing: border-box` 是这条能生效的前提。
+  - **`#topbar` 是 `sticky`，这套锁法下依然粘在视口顶**——sticky 的参照是视口，`body` 只是被整体上移。
+  - 锁住期间 `body.tip-lock #to-top { display: none }`：页面这时滚不动，回顶键按下去只是空转；而且 `body` 变 fixed 后 `scrollY` 归零，它会先自己闪一下。
+- **关掉一切态只有一个入口**（`closeAll`）：点外部、ESC、换路由三处共用。锁也只在 `hide()` 里还回去——凡是绕过它直接写 `tip.hidden = true` 的地方，都会把锁漏在那儿（触屏分支里那处 `md-tok` 放行就是这类）。**`tip-center` 必须在这收掉**——`showTipSticky` 加上它，之前没人摘；它带 `translate(-50%, -50%)` 与固定宽度，留在元素上会让之后每次悬停浮层都偏移半个自己（这个残留是随这条改动一并修的）。
 
 ## 移动端
 
