@@ -92,12 +92,28 @@ a:hover { color: var(--accent2); }
 #tooltip .term { border-bottom: none; }
 #tooltip .term .tk { display: none; }
 
+/* 长浮层：内容装不下一屏时不再跟随光标（跟随就永远追不上、鼠标进不去，长内容只能被裁掉），
+   改为就地钉住、鼠标可移进来滚。三条缺一不可——
+   pointer-events:auto 才收得到滚轮；overflow:auto 才是滚动容器；
+   overscroll-behavior:contain 才不让滚到底之后的余量传给页面，
+   「滚浮层却动了后面的正文」正是这条漏了的结果。
+   80vh 这个数与 js/tooltip.js 的 PIN_RATIO 是一对，改一处必须同步改另一处 */
+#tooltip.tip-scroll {
+  pointer-events: auto; overflow: auto; overscroll-behavior: contain;
+  max-height: 80vh; scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+/* 滚动条本身是「这里能滚」的唯一提示，给了 auto 就别藏它 */
+#tooltip.tip-scroll::-webkit-scrollbar { width: 8px; }
+#tooltip.tip-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+#tooltip.tip-scroll::-webkit-scrollbar-track { background: transparent; }
+
 /* 触屏浮层：居中显示。基础规则是跟随光标的 pointer-events:none，这里必须放开，
    否则点击会穿透到文档、浮层刚显示就被自己的 click 关掉 */
 #tooltip.tip-center {
   left: 50%; top: 50%; transform: translate(-50%, -50%);
   width: min(92vw, 480px); max-width: none;
   max-height: 80vh; max-height: 80dvh; overflow: auto;
+  overscroll-behavior: contain;
   pointer-events: auto; font-size: 13px;
 }
 

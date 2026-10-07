@@ -115,10 +115,23 @@ python -m http.server 8000
 Pages 源 = main 分支 / 仓库根。访问 `https://<user>.github.io/<repo>/site/`。
 所有资源与数据引用均为相对路径（`../docs/...`），本地与 Pages 前缀环境通用。
 
+## 浮层交互（`js/tooltip.js`）
+
+同一个 `#tooltip` 元素按指针能力分流：**桌面跟随光标、触屏点击后居中**（`matchMedia('(hover: hover) and (pointer: fine)')`）。
+桌面这一支还分两态——**短内容跟随光标，长内容就地钉住 + 可滚**（`.tip-scroll`）。
+
+- **为什么长浮层必须放弃跟随**：跟随式浮层摆在光标外侧 14px，鼠标一往它挪它就同步挪，**永远追不上**，读者进不去 → 长内容只能被 `overflow: hidden` 裁掉，而 `pointer-events: none` 让滚轮穿透到文档，**滚的是后面的正文页**（实测：A/B 同一浮层，带 `tip-scroll` 时浮层滚 123px、页面不动；摘掉后浮层不动、页面从 399 跳到 628）。钉住之后鼠标才进得来，浮层自己才是滚动容器。
+- **三条 CSS 缺一不可**（`css/app.css` 的 `#tooltip.tip-scroll`）：`pointer-events: auto` 才收得到滚轮、`overflow: auto` 才是滚动容器、`overscroll-behavior: contain` 才不让滚到底之后的余量传给页面。第三条就是「滚浮层却动了正文」的正解，`.tip-center` 同样需要它。
+- **判据与上限是一对**：`js/tooltip.js` 的 `PIN_RATIO = 0.8` 判「内容是否超过视口 80%」，`css/app.css` 的 `max-height: 80vh` 定钉住后的可见高。**改一处必须同步改另一处**——判据大于上限就会出现「判定为长、钉住之后却装得下」的错位：钉住了，底下空一段，读者不知道要滚什么。
+- **量高要在钉住之前**：`overflow: hidden` 的元素 `scrollHeight` 仍是完整内容高，所以先量 `scrollHeight > 80vh` 再贴 class。同一个元素复用，新内容要 `scrollTop = 0`。
+- **这条路径主要在矮窗口触发**：全库 476 条状态详情里最高 709px（`mirror_substitute`），800px 视口（阈值 640）下只有 1 条越过阈值；窗口矮到 600px（阈值 480）就有十几条。大窗口下几乎看不到它，别以为没用——13 寸屏开着开发者工具就是这个尺寸。
+- **跨空隙的宽限**：浮层摆在光标外侧 14px，鼠标从术语移进浮层要跨过去，所以离开术语后先挂 160ms（`HIDE_DELAY`）再关，移进来就取消。短浮层不挂这个延迟，移开即关，手感不变。
+- **关掉一切态只有一个入口**（`closeAll`）：点外部、ESC、换路由三处共用。**`tip-center` 必须在这收掉**——`showTipSticky` 加上它，之前没人摘；它带 `translate(-50%, -50%)` 与固定宽度，留在元素上会让之后每次悬停浮层都偏移半个自己（这个残留是随这条改动一并修的）。
+
 ## 移动端
 
 - **PWA**：`manifest.webmanifest` + `sw.js`。装到主屏后 standalone 全屏、无地址栏。图标为占位图（`icons/`），换正式图标改 manifest 的 `icons` 即可。SW 的缓存策略见「数据加载与缓存」一节。
-- **术语浮层**：鼠标设备悬停跟随光标；触屏改为点击后居中弹出、点浮层外关闭（`js/tooltip.js` 用 `matchMedia('(hover: hover) and (pointer: fine)')` 分流，触屏分支走捕获阶段以拦下卡片列表自身的跳转点击）。
+- **术语浮层**：鼠标设备悬停跟随光标；触屏改为点击后居中弹出、点浮层外关闭（`js/tooltip.js` 用 `matchMedia('(hover: hover) and (pointer: fine)')` 分流，触屏分支走捕获阶段以拦下卡片列表自身的跳转点击）。桌面端长浮层的「钉住可滚」见「浮层交互」一节。
 - **响应式**：断点 768px（词典/领域模型双栏转单栏）、640px（顶栏换行、搜索框独占一行、键值表转单列、词典表格转卡片式堆叠——`thead` 隐藏后 `<th>` 上的内联固定列宽随之失效）与 580px（热图列折叠，见下）。网格轨道用 `minmax(min(Npx, 100%), 1fr)`。
   **长标识要 `overflow-wrap: anywhere` 而非 `break-word`**：`push_back/pull_forward/…`、`corpse_collector/skill_xxx_s9_yyy` 这类下划线+斜杠串成的枚举清单是一整块没有断点的内容，`normal` 下会把整页顶出横向滚动；`anywhere` 与 `break-word` 的区别在于只有前者会压低 min-content。词典表格的 key/解释列、`.md` 正文（领域模型页）、栏目备注（`.cat-note`）各有一处。
 - **热图列折叠**：≤580px 默认只显示**列序**前 9 列，勾「显示全部」才展开（展开态钉住首列）。**折叠列数在 `js/charts.js` 的 `HEAT_TOP_COLS` 与 `css/app.css` 的 `:nth-child(n+11)` 两处写死，改一处必须同步改另一处**——选择器把「1 列行头 + 9 列数据」刻进 CSS，两边不一致会露出 10 列却提示 9 列。折的是列不是数据：色阶上限始终在整个矩阵上取，同一数值在任何视图下颜色一致（否则就是「筛掉一列就换配色」那类误导）。两个统计页共用 `js/charts.js`，不各写一份。
