@@ -83,12 +83,14 @@ a:hover { color: var(--accent2); }
 #tooltip .tt-zh { font-weight: 700; margin: 2px 0; }
 #tooltip .tt-detail { color: var(--dim); margin-top: 4px; }
 #tooltip .tt-src { color: var(--dim); font-size: 11px; margin-top: 4px; }
-#tooltip .tt-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-#tooltip .tt-chips .badge { font-size: 10px; padding: 0 6px; }
-#tooltip .tt-sec { color: var(--dim); font-size: 11px; margin: 8px 0 2px; border-top: 1px solid var(--border); padding-top: 6px; }
 /* 状态弹窗 k/v 行（读档/行为/机制件各节共用）：键灰、值允许换行，长 JSON 不撑破浮层 */
-#tooltip .tt-kv { font-size: 12px; margin: 3px 0; word-break: break-all; }
-#tooltip .tt-kv .muted { margin-right: 4px; }
+/* 这几个块两处渲染：悬停浮层（#tooltip）与卡面「界域定义 / 区域定义」折叠块（.def-detail，
+   同一份 renderDefDetail 输出），所以选择器要覆盖两处 */
+#tooltip .tt-chips, .def-detail .tt-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+#tooltip .tt-chips .badge, .def-detail .tt-chips .badge { font-size: 10px; padding: 0 6px; }
+#tooltip .tt-sec, .def-detail .tt-sec { color: var(--dim); font-size: 11px; margin: 8px 0 2px; border-top: 1px solid var(--border); padding-top: 6px; }
+#tooltip .tt-kv, .def-detail .tt-kv { font-size: 12px; margin: 3px 0; word-break: break-all; }
+#tooltip .tt-kv .muted, .def-detail .tt-kv .muted { margin-right: 4px; }
 /* 浮层内的嵌套术语（状态详情里的分类 / 原语 / 谓词，由 ast.js 与 status.js 的 termSpan 产出）：
    看得见才谈得上点得着。本行与「内容含嵌套术语即钉住」是一对——跟随态是 pointer-events:none，
    鼠标根本进不来，光有下划线是句空话。悬停反馈（换色换线）不新开浮层，是在原处换内容。

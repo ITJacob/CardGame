@@ -101,6 +101,14 @@
 - **`#/glossary?cat=&q=` 深链**：`cat` 用于滚动定位到栏目（`#g-<类别>`），`q` 用于预填搜索框并顺手筛出该词条。不带参数从导航进来时**保留上次的筛选**，便于跳过去看完再回来接着看。
 - **触屏**：`.md-tok` 在 `js/tooltip.js` 的触屏分支里被放行（不 `preventDefault`）——触屏没有悬停，拦下点击等于废掉跳转，而词典条目比全库更全，跳过去本来就是更好的落点。
 
+### 编目 def 悬停（`js/defs.js`）
+
+效果行里的 def 引用（`domain` 原语的 `def`、`spawn` 的 `unitId`/`template`/`def`/`zone`）现在是可悬停术语，浮层内容是**池里的权威定义**——`unitDefs` / `zoneDefs` / `domainDefs` 三个顶层池，渲染器 `renderDefDetail(cat, id)` 与 `status.js` 的 `renderStatusDetail` 同构（分组 + 末段兜底列其余字段）。同一份输出还渲染在卡面的「界域定义 / 区域定义」折叠块里（`views/card.js`，外层 `.def-detail`），所以 `css/app.css` 里那几个 `.tt-*` 选择器同时挂 `#tooltip` 和 `.def-detail`。
+
+- **显示名从哪来**：`unitDef` 自带 `name`；`zoneDef` / `domainDef` **没有** `name` 字段（schema 面就对不齐——`unitDef` 有、这两个没有），只能从「引用它的卡」推：卡级 `zone`/`domain` 是「引用池 def + 展示副本」，卡名即域名（全库 28 张带 `domain`、2 张带 `zone`，28/28 可映射）。同一 def 被多张卡引用时（`reality_press` 被「中止奇异」与「律令·神秘减弱，现实增强」两张引用）取**卡面副本 `duration` 与池 def 一致**的那张，都不一致再退到 `sequence` 最小。推导在 `data.js` 的 `buildDefNames()`。
+- **查不到就退回裸 mono**：`term.js` 的 `defSpan` 在池里找不到 id 时不加下划线、不给弹窗，退回原来的 `<span class="mono">`。全库 38 个 `spawn` 引用里 **27 个根本不在 `unitDefs` 池里**（`unit_beast` / `unit_vermin` / `unit_automaton` …）——那是设计数据缺口，不是站点能补的；标成「未收录」就是半屏红字，而给一个查不到的 def 加下划线等于承诺一个空弹窗（与「浮层内嵌套术语看得见才点得着」同一条纪律）。`defSpanAuto` 是 `spawn` 用的无类别版本，按池成员判定。
+- **卡面折叠块此前是死代码**：`views/card.js` 读的是 `card.zoneDef` / `card.domainDef`，而 schema 的 card 字段叫 `zone` / `domain`——全库 832 张卡一次都没命中，两个折叠块从来没渲染出来。改字段名后折叠块显示卡面副本的 `envRulesText` + 池 def 的完整内容；卡面副本 `duration` 与池不一致时显式点出来（`reality_press` 卡面 40 / 池 30），静默取池会让两处对不上。
+
 ## 本地运行
 
 必须在**仓库根目录**起本地服务（浏览器 fetch 不支持 file://）：

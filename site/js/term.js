@@ -66,6 +66,43 @@ export function axSymHtml(symbol) {
   return escapeHtml(symbol || '');
 }
 
+// 编目 def（召唤物 / 区域 / 界域）：查池里的定义。三池都是「Def 编目独立化」批之后的
+// 权威定义（卡级 zone/domain 只是引用 + 展示副本，两出同名时以池为准）
+const DEF_CAT = { unitDef: 'unitDefMap', zoneDef: 'zoneDefMap', domainDef: 'domainDefMap' };
+const DEF_LABEL = { unitDef: '召唤物', zoneDef: '区域', domainDef: '界域' };
+
+// def 的 brief 留空：状态用 note 当一句话摘要有信息量，def 的 tier/kind/duration 由
+// renderDefDetail 的 chips 以徽章呈现，这里再写一遍就是同一行信息出现两次
+export function lookupDef(cat, id) {
+  const label = DEF_LABEL[cat] || cat;
+  const d = DB[DEF_CAT[cat]]?.get(id);
+  if (d) {
+    return { zh: d.name || DB.defName?.get(id) || id, brief: '', key: id, cat, catLabel: label, missing: false };
+  }
+  return { zh: id, brief: '', key: id, cat, catLabel: label, missing: true };
+}
+
+// def 引用 → 可悬停 span。池里查不到就退回原来的裸 mono：给一个查不到的 def 加下划线，
+// 等于承诺一个空弹窗（与浮层内嵌套术语「看得见才点得着」是同一条纪律）
+export function defSpan(cat, id, { showKey = true } = {}) {
+  if (id == null || id === '') return '';
+  const t = lookupDef(cat, id);
+  if (t.missing) return `<span class="mono">${escapeHtml(String(id))}</span>`;
+  const keyHtml = showKey && t.zh !== id ? `<span class="tk">${escapeHtml(id)}</span>` : '';
+  return `<span class="term" data-cat="${cat}" data-key="${escapeHtml(id)}">${escapeHtml(t.zh)}${keyHtml}</span>`;
+}
+
+// spawn 的引用字段（unitId / template / def / zone 四选一）不自带类别，按池成员判定。
+// 全库 38 个 spawn 引用里 27 个（unit_beast / unit_vermin / unit_automaton 等）根本不在 unitDefs 池里
+// ——那是设计数据缺口，不是站点能补的，这里一律退回裸 mono，不标未收录（标了就是半屏红字）
+export function defSpanAuto(id) {
+  if (id == null || id === '') return '';
+  if (DB.unitDefMap?.has(id)) return defSpan('unitDef', id);
+  if (DB.zoneDefMap?.has(id)) return defSpan('zoneDef', id);
+  if (DB.domainDefMap?.has(id)) return defSpan('domainDef', id);
+  return `<span class="mono">${escapeHtml(String(id))}</span>`;
+}
+
 // 渲染为带 tooltip 的 span；showKey=true 时附英文小字
 export function termSpan(cat, key, { showKey = true } = {}) {
   if (key == null || key === '') return '';

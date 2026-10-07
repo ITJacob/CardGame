@@ -1,6 +1,6 @@
 // effects AST → 中文渲染
 // 三级兜底：① 原语句式模板 ② 未覆盖字段 key=value 灰显 ③ note 附注行；describe 恒在详情页顶部
-import { termSpan, statusSpan, escapeHtml } from './term.js';
+import { termSpan, statusSpan, defSpan, defSpanAuto, escapeHtml } from './term.js';
 
 // 字段名 → 中文（原始键兜底展示用）
 const FIELD_ZH = {
@@ -173,7 +173,7 @@ const PRIMITIVE_TEMPLATES = {
     used.push('unitId', 'unit', 'template', 'position', 'hpRatio', 'atkRatio', 'reviveOf', 'kind', 'zone', 'def', 'consumption', 'variant');
     const what = e.unitId || e.unit || e.template || e.def || e.zone;
     if (e.reviveOf) return `复活${termSpan('reviveOf', e.reviveOf)}${e.hpRatio != null ? `（生命 ${Math.round(e.hpRatio * 100)}%）` : ''}`;
-    let s = `召唤 <span class="mono">${escapeHtml(String(what || '?'))}</span>`;
+    let s = `召唤 ${what ? defSpanAuto(what) : '<span class="mono">?</span>'}`;
     const parts = [];
     if (e.position) parts.push(`位置：${termSpan('spawnPosition', e.position)}`);
     if (e.hpRatio != null) parts.push(`生命比例 ${fmtVal(e.hpRatio)}`);
@@ -200,7 +200,7 @@ const PRIMITIVE_TEMPLATES = {
   },
   domain: (e, used) => {
     used.push('op', 'def', 'duration', 'durationUnit');
-    let s = `${termSpan('domainOp', e.op)}界域 <span class="mono">${escapeHtml(String(e.def || '?'))}</span>`;
+    let s = `${termSpan('domainOp', e.op)}界域 ${e.def ? defSpan('domainDef', e.def) : '<span class="mono">?</span>'}`;
     if (e.duration != null) s += `（持续 ${fmtVal(e.duration)}${e.durationUnit ? ' ' + termSpan('durationUnit', e.durationUnit, { showKey: false }) : ''}）`;
     return s;
   },
