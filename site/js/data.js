@@ -17,6 +17,10 @@ export const DB = {
   unitDefs: [],                // 召唤物编目池（各途径 skills.json 顶层 unitDefs，带 _pathway）
   zoneDefs: [],                // 区域编目池（同上 zoneDefs）——随 22 份卡面同文件加载，零额外请求
   domainDefs: [],              // 界域编目池（同上 domainDefs）
+  unitDefMap: new Map(),       // id -> unitDef（悬停查找表，loadAll 末建）
+  zoneDefMap: new Map(),       // id -> zoneDef
+  domainDefMap: new Map(),     // id -> domainDef
+  defName: new Map(),          // zoneDef/domainDef id -> 显示名（池里没 name，从引用卡名推）
   declaredPrimitives: [],     // schema effect.oneOf 声明的原语 type（29=27 经典 + 光照度对 set_luminance/advance_clock）
   declaredStatusFields: [],   // schema statusDef 声明的字段名（48）
   declaredUnitFields: [],     // schema unitDef 声明的字段名（编目三页「字段填充」面板的声明面）
@@ -126,8 +130,40 @@ export async function loadAll(onProgress) {
       DB.cardById.set(card.id, card);
     }
   }
+  // 编目 def 的悬停查找表（term.js 的 lookupDef / defSpan 消费）。池随卡面在同一轮到达，
+  // 这里只建索引。显示名：unitDef 自带 name；zoneDef / domainDef 没有（schema 面就对不齐——
+  // unitDef 有 name、这两个没有），只能从「引用它的卡」推，见 buildDefNames
+  DB.unitDefMap = new Map(DB.unitDefs.map((d) => [d.id, d]));
+  DB.zoneDefMap = new Map(DB.zoneDefs.map((d) => [d.id, d]));
+  DB.domainDefMap = new Map(DB.domainDefs.map((d) => [d.id, d]));
+  DB.defName = buildDefNames();
   onProgress?.(`已加载 ${DB.cards.length} 张卡`);
   return DB;
+}
+
+// zoneDef / domainDef 缺 name 字段，但卡级 zone/domain 是「引用池 def + 展示副本」，且卡名即域/区名
+// （全库 28 张带 domain、2 张带 zone，def → 卡名 28/28 可映射）。同一 def 被多张卡引用时
+// （reality_press 被「中止奇异」与「律令·神秘减弱，现实增强」两张引用）取卡面副本 duration
+// 与池 def 一致的那张——池是权威源、卡面是展示副本，对得上说明这张才是域的正主；
+// 都不对得上再退到 sequence 最小（最早的那张）
+function buildDefNames() {
+  const cand = new Map(); // id -> [{name, duration, seq}]
+  for (const c of DB.cards) {
+    for (const f of ['zone', 'domain']) {
+      const ref = c[f];
+      if (!ref?.def) continue;
+      if (!cand.has(ref.def)) cand.set(ref.def, []);
+      cand.get(ref.def).push({ name: c.name, duration: ref.duration, seq: c.sequence ?? 99 });
+    }
+  }
+  const out = new Map();
+  for (const [id, list] of cand) {
+    if (list.length === 1) { out.set(id, list[0].name); continue; }
+    const pool = DB.zoneDefMap.get(id) || DB.domainDefMap.get(id);
+    const exact = list.filter((x) => pool && x.duration === pool.duration);
+    out.set(id, (exact.length ? exact : list).sort((a, b) => a.seq - b.seq)[0].name);
+  }
+  return out;
 }
 
 // 途径状态定义与卡片列表、卡面 AST、词典都不相关——只有统计分析页末的

@@ -2,8 +2,9 @@
 // 桌面（有精确指针 + hover）：内容短且没有嵌套术语时跟随光标；否则钉住（.tip-pin），
 // 鼠标可移进来滚、也可悬停里面的嵌套术语就地换内容
 // 触屏：点击后居中弹出（.tip-center）
-import { lookup, lookupStatus, lookupAxis, lookupPathway, axSymHtml, escapeHtml } from './term.js';
+import { lookup, lookupStatus, lookupAxis, lookupPathway, lookupDef, axSymHtml, escapeHtml } from './term.js';
 import { renderStatusDetail } from './status.js';
+import { renderDefDetail } from './defs.js';
 
 // 高度判据与上限：内容高于视口 80% 就转钉住态（内容里含嵌套术语时同样钉住，见下）。
 // 0.8 与 css #tooltip.tip-pin 的 max-height: 80vh 是一对——判据若大于上限，
@@ -52,6 +53,8 @@ function fillTip(tip, el) {
   let t;
   let detail = '';
   if (cat === 'status') { t = lookupStatus(key); detail = renderStatusDetail(key); }
+  // 编目 def 三池：池里的权威定义（卡级 zone/domain 只是引用 + 展示副本）
+  else if (cat === 'unitDef' || cat === 'zoneDef' || cat === 'domainDef') { t = lookupDef(cat, key); detail = renderDefDetail(cat, key); }
   else if (cat === 'axis') { const [pid, aid] = key.split('/'); t = lookupAxis(pid, aid); }
   else if (cat === 'pathway') t = lookupPathway(key);
   else t = lookup(cat, key);

@@ -1,7 +1,8 @@
 // 卡片详情页
 import { DB, hookEvents } from '../data.js';
-import { termSpan, statusSpan, axisSpan, escapeHtml } from '../term.js';
+import { termSpan, statusSpan, axisSpan, defSpan, escapeHtml } from '../term.js';
 import { renderEffects } from '../ast.js';
+import { renderDefDetail } from '../defs.js';
 import { showTipSticky } from '../tooltip.js';
 
 function targetHtml(t) {
@@ -64,66 +65,24 @@ function unitDefsHtml(card) {
   return `<details class="fold"><summary>单位定义（${defs.length}）</summary>${rows.join('')}</details>`;
 }
 
-function durationHtml(d) {
-  if (d.duration == null) return null;
-  const unit = d.durationUnit ? ` ${termSpan('durationUnit', d.durationUnit, { showKey: false })}` : '';
-  return `持续 ${d.duration}${unit}`;
-}
-
-function rulePatchHtml(rp) {
-  if (!rp) return '';
-  const parts = [`规则补丁：${termSpan('rulePatchKind', rp.kind)}`];
-  if (rp.side) parts.push(termSpan('side', rp.side));
-  if (rp.tag) parts.push(`tag=${escapeHtml(JSON.stringify(rp.tag))}`);
-  if (rp.stat) parts.push(`属性 ${termSpan('stat', rp.stat)}`);
-  if (rp.effectType) parts.push(`原语 ${termSpan('primitive', rp.effectType)}`);
-  if (rp.mul != null) parts.push(`×${rp.mul}`);
-  const html = `<div>${parts.join(' · ')}</div>`;
-  return rp.note ? html + `<div class="ast-note">${escapeHtml(rp.note)}</div>` : html;
-}
-
-// 定义内触发与卡片级 trigger 同构，复用 renderEffects
-function defTriggersHtml(triggers) {
-  if (!triggers?.length) return '';
-  return `<div class="ast"><div class="ast-line muted">定义内触发（${triggers.length}）</div>
-    ${triggers.map((tr) => `<div class="ast-node"><div class="ast-line"><span class="muted">触发：</span>${termSpan('triggerEvent', tr.event)}</div>${renderEffects(tr.effects)}</div>`).join('')}
-  </div>`;
-}
-
 function zoneDomainHtml(card) {
   const out = [];
-  if (card.zoneDef) {
-    const z = card.zoneDef;
-    const head = [
-      z.kind ? termSpan('zoneKind', z.kind) : '',
-      z.trigger ? termSpan('zoneTrigger', z.trigger) : '',
-      z.affects ? `作用于${termSpan('zoneAffects', z.affects)}` : '',
-      durationHtml(z),
-      z.interval != null ? `触发间隔 ${z.interval}` : '',
-    ].filter(Boolean);
-    out.push(`<details class="fold" open><summary>区域定义 ${escapeHtml(z.id || '')}</summary>
-      <div>${head.join(' · ')}</div>
-      ${z.modifiers ? `<div class="kv-raw">modifiers=${escapeHtml(JSON.stringify(z.modifiers))}</div>` : ''}
-      ${z.effects ? renderEffects(z.effects.map((e) => e.payload || e)) : ''}
-      ${z.note ? `<div class="ast-note">${escapeHtml(z.note)}</div>` : ''}
+  // 卡级字段是 zone / domain（schema 的 card.properties），不是 zoneDef / domainDef——
+  // 此前这两段读的是后两个名字，全库 832 张卡一次都没命中过，两个折叠块从来没渲染出来
+  const fold = (title, cat, ref) => {
+    if (!ref?.def) return;
+    const pool = (cat === 'zoneDef' ? DB.zoneDefMap : DB.domainDefMap).get(ref.def);
+    // 卡面副本 duration 与池不一致时点一下：池是权威源、卡面是展示副本，静默取池会让两处对不上
+    const drift = pool && ref.duration != null && pool.duration !== ref.duration
+      ? `<div class="ast-note">卡面副本 duration=${ref.duration}，池 def 为 ${pool.duration}——以池为准</div>` : '';
+    out.push(`<details class="fold" open><summary>${title} ${defSpan(cat, ref.def)}</summary>
+      ${ref.envRulesText ? `<div class="ast-note">${escapeHtml(ref.envRulesText)}</div>` : ''}
+      ${drift}
+      <div class="def-detail">${renderDefDetail(cat, ref.def)}</div>
     </details>`);
-  }
-  if (card.domainDef) {
-    const d = card.domainDef;
-    const head = [
-      d.tier ? termSpan('domainTier', d.tier) : '',
-      durationHtml(d),
-      d.dispelable === false ? '不可驱散' : (d.dispelable === true ? '可驱散' : ''),
-    ].filter(Boolean);
-    out.push(`<details class="fold" open><summary>界域定义 ${escapeHtml(d.id || '')}</summary>
-      <div>${head.join(' · ')}</div>
-      ${(d.rulePatches || []).map(rulePatchHtml).join('')}
-      ${defTriggersHtml(d.triggers)}
-      ${d.extraRuleNote ? `<div class="ast-note">${escapeHtml(d.extraRuleNote)}</div>` : ''}
-      ${d.envRules ? `<div class="kv-raw">envRules=${escapeHtml(JSON.stringify(d.envRules))}</div>` : ''}
-      ${d.note ? `<div class="ast-note">${escapeHtml(d.note)}</div>` : ''}
-    </details>`);
-  }
+  };
+  fold('区域定义', 'zoneDef', card.zone);
+  fold('界域定义', 'domainDef', card.domain);
   return out.join('');
 }
 
