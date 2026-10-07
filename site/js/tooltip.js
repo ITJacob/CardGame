@@ -12,6 +12,39 @@ const PIN_RATIO = 0.8;
 // 又不至于让「移开就该消失」变得粘滞
 const HIDE_DELAY = 160;
 
+// 居中弹窗（.tip-center）开着时锁住背景滚动：弹窗是 position:fixed，页面在它背后照滚的话，
+// 关掉之后人已经不在原来那一段了。用 position:fixed + top:-scrollY 这套而不是给 html
+// 加 overflow:hidden——后者在 iOS 上锁不住橡皮筋，而且都要在关掉时把滚动位置还回去。
+// #topbar 是 sticky，这套锁法下依然粘在视口顶（sticky 的参照还是视口，body 只是被上移）
+let lockY = 0;
+let locked = false;
+
+function lockScroll() {
+  if (locked) return;
+  locked = true;
+  lockY = window.scrollY;
+  // 滚动条一没收，桌面端内容会横向抖一下；按差值补一条右内边距（全局 border-box，补得进去）
+  const sbw = innerWidth - document.documentElement.clientWidth;
+  document.body.classList.add('tip-lock');
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${lockY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  if (sbw > 0) document.body.style.paddingRight = `${sbw}px`;
+}
+
+function unlockScroll() {
+  if (!locked) return;
+  locked = false;
+  document.body.classList.remove('tip-lock');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.paddingRight = '';
+  if (lockY) window.scrollTo(0, lockY);
+}
+
 function fillTip(tip, el) {
   const cat = el.dataset.cat;
   const key = el.dataset.key;
@@ -48,6 +81,7 @@ export function initTooltip() {
     tip.hidden = true;
     pinned = false;
     tip.classList.remove('tip-scroll', 'tip-center');
+    unlockScroll(); // 唯一的出口都在这里，居中弹窗的锁也只在这里还回去
   };
   const scheduleHide = () => { cancelHide(); hideTimer = setTimeout(hide, HIDE_DELAY); };
   // 关掉一切态：点外部、ESC、换路由三处共用（钉住弹窗与长浮层都收）
@@ -73,13 +107,14 @@ export function initTooltip() {
       }
       // 带词典深链的术语（领域模型页的 token）放行：触屏没有「悬停」，拦下点击等于废掉跳转，
       // 而词典条目比浮层更全，跳过去本来就是更好的落点
-      if (el.classList.contains('md-tok')) { tip.hidden = true; return; }
+      if (el.classList.contains('md-tok')) { hide(); return; } // 走 hide 而不是直接 hidden：锁也要还回去
       // 捕获阶段拦下：卡片列表的 .card-item 也绑了 click 跳转详情
       e.preventDefault();
       e.stopPropagation();
       fillTip(tip, el);
       tip.classList.add('tip-center');
       tip.hidden = false;
+      lockScroll();
     }, true);
     return;
   }
@@ -161,4 +196,5 @@ export function showTipSticky(html) {
   tip.scrollTop = 0;
   tip.classList.add('tip-center', 'tip-sticky');
   tip.hidden = false;
+  lockScroll();
 }
