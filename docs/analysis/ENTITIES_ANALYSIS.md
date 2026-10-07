@@ -2,7 +2,7 @@
 
 > 数据来源：`docs/json/*.skills.json` 顶层三池（unitDefs / zoneDefs / domainDefs） + 全库卡面递归遍历，由 `docs/tools/build_entity_analysis.py` 生成。
 > 口径与网页端统计分析页的「召唤物 / 区域 / 界域」三个子页一致；状态定义（*.statuses.json）不在本报告口径。
-> 生成日期：2026-10-06
+> 生成日期：2026-10-07
 
 ## 一、召唤物（unitDefs 池 + 卡面 spawn 引用）
 
