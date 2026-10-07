@@ -118,12 +118,14 @@ Pages 源 = main 分支 / 仓库根。访问 `https://<user>.github.io/<repo>/si
 ## 浮层交互（`js/tooltip.js`）
 
 同一个 `#tooltip` 元素按指针能力分流：**桌面跟随光标、触屏点击后居中**（`matchMedia('(hover: hover) and (pointer: fine)')`）。
-桌面这一支还分两态——**短内容跟随光标，长内容就地钉住 + 可滚**（`.tip-scroll`）。
+桌面这一支还分两态——**内容短且不含嵌套术语时跟随光标；否则就地钉住**（`.tip-pin`），钉住态可滚、鼠标可移进来悬停里面的术语。
 
-- **为什么长浮层必须放弃跟随**：跟随式浮层摆在光标外侧 14px，鼠标一往它挪它就同步挪，**永远追不上**，读者进不去 → 长内容只能被 `overflow: hidden` 裁掉，而 `pointer-events: none` 让滚轮穿透到文档，**滚的是后面的正文页**（实测：A/B 同一浮层，带 `tip-scroll` 时浮层滚 123px、页面不动；摘掉后浮层不动、页面从 399 跳到 628）。钉住之后鼠标才进得来，浮层自己才是滚动容器。
-- **三条 CSS 缺一不可**（`css/app.css` 的 `#tooltip.tip-scroll`）：`pointer-events: auto` 才收得到滚轮、`overflow: auto` 才是滚动容器、`overscroll-behavior: contain` 才不让滚到底之后的余量传给页面。第三条就是「滚浮层却动了正文」的正解，`.tip-center` 同样需要它。
+- **两个触发条件，同一个原因**：内容**装不下一屏**（`scrollHeight > 80vh`），或**内容里还有可再展开的嵌套术语**（`tip.querySelector('.term')`）。跟随式浮层摆在光标外侧 14px，鼠标一往它挪它就同步挪，**永远追不上**，读者进不去。于是前者是长内容只能被 `overflow: hidden` 裁掉，而 `pointer-events: none` 让滚轮穿透到文档，**滚的是后面的正文页**（实测：A/B 同一浮层，带 `tip-pin` 时浮层滚 123px、页面不动；摘掉后浮层不动、页面从 399 跳到 628）；后者更彻底——那些词连悬停都悬不到，样式再显眼也是空头支票。钉住之后鼠标才进得来，浮层自己才是滚动容器。
+  类名是 `tip-pin` 而不是 `tip-scroll`：第二个触发条件跟滚动无关，短内容钉住之后根本没有滚动条。
+- **浮层内的嵌套术语必须有下划线**（`#tooltip .term { border-bottom: 1px dashed var(--dim) }`，悬停换 `--accent` + `--accent2`）：它们由 `status.js` / `ast.js` 的 `termSpan` 产出，密集出现在状态详情的分类、原语、谓词与 effects/triggers AST 里（`prepared_draught` 一个浮层里就有 9 个）。这一行曾是 `border-bottom: none`——跟随态反正进不去，摘掉下划线等于「承认点不到」；钉住之后必须还回来，否则是自己把入口藏了。**下划线与钉住判据是一对**：只补样式不补判据，就是给读者一个看得见点不着的承诺。`#tooltip .term .tk { display: none }` 继续隐藏英文 key（浮层内地窄，key 堆满反而压掉中文）。悬停它们是**在原处换内容**（`fillTip` + `reclamp` 重新夹进视口），不是另开一个浮层——也因此**钻进去就没有回头路**，要回去得重新悬停外面那个词。
+- **三条 CSS 缺一不可**（`css/app.css` 的 `#tooltip.tip-pin`）：`pointer-events: auto` 才收得到滚轮、`overflow: auto` 才是滚动容器、`overscroll-behavior: contain` 才不让滚到底之后的余量传给页面。第三条就是「滚浮层却动了正文」的正解，`.tip-center` 同样需要它。
 - **判据与上限是一对**：`js/tooltip.js` 的 `PIN_RATIO = 0.8` 判「内容是否超过视口 80%」，`css/app.css` 的 `max-height: 80vh` 定钉住后的可见高。**改一处必须同步改另一处**——判据大于上限就会出现「判定为长、钉住之后却装得下」的错位：钉住了，底下空一段，读者不知道要滚什么。
-- **量高要在钉住之前**：`overflow: hidden` 的元素 `scrollHeight` 仍是完整内容高，所以先量 `scrollHeight > 80vh` 再贴 class。同一个元素复用，新内容要 `scrollTop = 0`。
+- **量高要在钉住之前**：`overflow: hidden` 的元素 `scrollHeight` 仍是完整内容高，所以先量 `scrollHeight > 80vh` 再贴 class。同一个元素复用，上一份内容的 `scrollTop` 要清掉。嵌套术语那个判据不依赖量高，跟着同一个 `pinned` 走。
 - **这条路径主要在矮窗口触发**：全库 476 条状态详情里最高 709px（`mirror_substitute`），800px 视口（阈值 640）下只有 1 条越过阈值；窗口矮到 600px（阈值 480）就有十几条。大窗口下几乎看不到它，别以为没用——13 寸屏开着开发者工具就是这个尺寸。
 - **跨空隙的宽限**：浮层摆在光标外侧 14px，鼠标从术语移进浮层要跨过去，所以离开术语后先挂 160ms（`HIDE_DELAY`）再关，移进来就取消。短浮层不挂这个延迟，移开即关，手感不变。
 - **居中弹窗锁背景滚动**：`.tip-center` 开着时给 `body` 加 `tip-lock` 并锁住滚动——弹窗是 `position: fixed`，页面在它背后照滚的话，关掉之后人已经不在原来那一段了。用 **`position: fixed` + `top: -scrollY`** 那套而不是给 `html` 加 `overflow: hidden`：后者在 iOS 上锁不住橡皮筋，而且两者都要在关掉时把滚动位置还回去。三个附带的细节都是实测出来的：
@@ -135,7 +137,7 @@ Pages 源 = main 分支 / 仓库根。访问 `https://<user>.github.io/<repo>/si
 ## 移动端
 
 - **PWA**：`manifest.webmanifest` + `sw.js`。装到主屏后 standalone 全屏、无地址栏。图标为占位图（`icons/`），换正式图标改 manifest 的 `icons` 即可。SW 的缓存策略见「数据加载与缓存」一节。
-- **术语浮层**：鼠标设备悬停跟随光标；触屏改为点击后居中弹出、点浮层外关闭（`js/tooltip.js` 用 `matchMedia('(hover: hover) and (pointer: fine)')` 分流，触屏分支走捕获阶段以拦下卡片列表自身的跳转点击）。桌面端长浮层的「钉住可滚」见「浮层交互」一节。
+- **术语浮层**：鼠标设备悬停跟随光标；触屏改为点击后居中弹出、点浮层外关闭（`js/tooltip.js` 用 `matchMedia('(hover: hover) and (pointer: fine)')` 分流，触屏分支走捕获阶段以拦下卡片列表自身的跳转点击）。桌面端浮层的钉住与嵌套术语见「浮层交互」一节。
 - **响应式**：断点 768px（词典/领域模型双栏转单栏）、640px（顶栏换行、搜索框独占一行、键值表转单列、词典表格转卡片式堆叠——`thead` 隐藏后 `<th>` 上的内联固定列宽随之失效）与 580px（热图列折叠，见下）。网格轨道用 `minmax(min(Npx, 100%), 1fr)`。
   **长标识要 `overflow-wrap: anywhere` 而非 `break-word`**：`push_back/pull_forward/…`、`corpse_collector/skill_xxx_s9_yyy` 这类下划线+斜杠串成的枚举清单是一整块没有断点的内容，`normal` 下会把整页顶出横向滚动；`anywhere` 与 `break-word` 的区别在于只有前者会压低 min-content。词典表格的 key/解释列、`.md` 正文（领域模型页）、栏目备注（`.cat-note`）各有一处。
 - **热图列折叠**：≤580px 默认只显示**列序**前 9 列，勾「显示全部」才展开（展开态钉住首列）。**折叠列数在 `js/charts.js` 的 `HEAT_TOP_COLS` 与 `css/app.css` 的 `:nth-child(n+11)` 两处写死，改一处必须同步改另一处**——选择器把「1 列行头 + 9 列数据」刻进 CSS，两边不一致会露出 10 列却提示 9 列。折的是列不是数据：色阶上限始终在整个矩阵上取，同一数值在任何视图下颜色一致（否则就是「筛掉一列就换配色」那类误导）。两个统计页共用 `js/charts.js`，不各写一份。
