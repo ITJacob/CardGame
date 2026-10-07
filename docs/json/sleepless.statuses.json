@@ -485,7 +485,11 @@
       ],
       "dispelable": false,
       "duration": null,
-      "charges": 3,
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "statPerStack": {
+        "attack": 1
+      },
       "triggers": [
         {
           "event": "on_death",
@@ -501,13 +505,20 @@
               "mode": "hpMaxRatio",
               "target": "self",
               "note": "lethalProtect 中断死亡保留 1 血（H7）+ 回复 30% 最大生命"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "dark_vassal",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "替死消耗 1 个黑暗仆人（层数 -1，攻击加成同步下降）"
             }
           ],
-          "consumeCharge": true,
           "note": "不死判定=状态在场 ∧ 死亡瞬间光照 ≤2（双保险，防 tick 间隙光照已升但撤除未执行的边界）"
         }
       ],
-      "note": "暗夜免死：死亡时（光照 ≤2）中断死亡、保留 1 血并回复 30% 最大生命，消耗 1 层，共 3 层；与永眠的 revive_blocked 对冲时后者优先。"
+      "note": "暗夜不死 + 层数攻击引擎（H34 statPerStack）：每层 = 1 个黑暗仆人（attack +1）；死亡时（光照 ≤2）中断死亡、保留 1 血、回复 30% 最大生命并消耗 1 层（补充由卡侧「入夜」驱动，全场至多 3 次），层数归零卸载。光照 >2 仅令替死分支失活——层数与攻击加成保留（2026-10-08 移除旧 else 驱散）。与永眠的 revive_blocked 对冲时后者优先。"
     },
     {
       "id": "conceal_authority",
