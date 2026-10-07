@@ -7952,10 +7952,10 @@
 
 - **类型**：传说 / 主动 / 🪆秘偶
 - **消耗**：能量 4 · 冷却 30 · 瞬发 · 距离 无
-- **效果**：把目标 1 个增益重组为对应减益（搬运而非驱散+新挂）；无对应映射时退化为驱散 1 个增益并造成 3 点精神伤害。
+- **效果**：把目标 1 个增益重组为对应减益（搬运而非驱散+新挂）；无对应映射时退化为驱散 1 个增益。
 - **机制**：`转移状态 `
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：分阶段建议：先上保守版（dispel buff×1 + 挂 1 vulnerable，不建映射表）验证收益，映射表列为后续增强。与【秽物转移】区分：重组是改造，搬运是位移。buff_count_desc 排序已落 ddd（共享内核参数 §一 sorts）。 ｜ 翻译/语义："篡改定义"=把状态反过来。与【秽物转移】区分：重组=改造，搬运=位移。依赖 `transfer_status`+映射表+`buff_count_desc` 排序（本稿新增项13）。分阶段：先保守版（驱散1 buff+挂1 vulnerable）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：marionette轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：分阶段建议：先上保守版（dispel buff×1 + 挂 1 vulnerable，不建映射表）验证收益，映射表列为后续增强。与【秽物转移】区分：重组是改造，搬运是位移。buff_count_desc 排序已落 ddd（共享内核参数 §一 sorts）。 ｜ 翻译/语义："篡改定义"=把状态反过来。与【秽物转移】区分：重组=改造，搬运=位移。依赖 `transfer_status`+映射表+`buff_count_desc` 排序（本稿新增项13）。分阶段：先保守版（驱散1 buff+挂1 vulnerable）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：marionette轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-07 描述对齐：兜底分支的「造成 3 点精神伤害」在结构内无对应节点（transfer_status 不带伤害兜底），描述删去该数字、仅留驱散兜底；兜底伤害与映射表列为后续增强
 - **设定**：序列1 诡秘侍者 —— "『重组』（『篡改』/『嫁接』）：将实体事物或抽象概念重新组合，篡改定义、逻辑、规则"
 - **风味**：你把它身上那道"祝福"的定义改写了一下——于是祝福成了诅咒。
 
