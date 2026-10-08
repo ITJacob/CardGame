@@ -8,9 +8,9 @@
       ],
       "dispelable": true,
       "charges": 1,
-      "duration": 75,
+      "duration": 15,
       "modifiers": {},
-      "note": "默认时长同源于稿期 3 回合 → 75tick（2026-09-30 时间回归）；次数型（C6）：下一次攻击落空后消耗 1 层归零卸载。C7 已端到端验证；「扭曲」暗线起点（一层雏形），与混乱/腐蚀同族",
+      "note": "默认时长同源于稿期 3 回合 → 15tick（2026-10-09 时长校正）；次数型（C6）：下一次攻击落空后消耗 1 层归零卸载。C7 已端到端验证；「扭曲」暗线起点（一层雏形），与混乱/腐蚀同族",
       "behaviorModifiers": [
         {
           "op": "target_override",
@@ -478,6 +478,8 @@
       "triggers": [
         {
           "event": "on_tick",
+          "minIntervalTicks": 5,
+          "note": "2026-10-09 节流：每 5tick 一次（1 回合=5tick，执行参数 §2.2 权宜规避）",
           "effects": [
             {
               "type": "mount_status",
@@ -485,7 +487,7 @@
               "stacks": 1,
               "duration": 20,
               "target": "adjacent_enemy",
-              "note": "对相邻敌方单位蔓延 1 层（重置 duration 4，每单位层数上限 3）"
+              "note": "对相邻敌方单位蔓延 1 层（重置 duration 20，每单位层数上限 3）"
             }
           ]
         }

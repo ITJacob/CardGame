@@ -386,6 +386,8 @@
       "triggers": [
         {
           "event": "on_tick",
+          "minIntervalTicks": 5,
+          "note": "2026-10-09 节流：每 5tick 一次（1 回合=5tick，执行参数 §2.2 权宜规避）",
           "effects": [
             {
               "type": "modify_resource",
@@ -393,7 +395,7 @@
               "value": -2,
               "mode": "delta",
               "target": "self",
-              "note": "行动条持续倒退"
+              "note": "行动条每 5tick 倒退（节流）"
             }
           ]
         },
@@ -411,7 +413,7 @@
         }
       ],
       "charges": 1,
-      "note": "确定性厄运：行动条减速 + 每 tick 倒退 + 一次性受伤加重；刷新不叠层。"
+      "note": "确定性厄运：行动条减速 + 每 5tick 倒退 + 一次性受伤加重；刷新不叠层。"
     },
     {
       "id": "dark_corrosion",

@@ -690,15 +690,22 @@
               "value": 0.4,
               "target": "self",
               "note": ""
-            },
+            }
+          ]
+        },
+        {
+          "event": "on_tick",
+          "minIntervalTicks": 5,
+          "effects": [
             {
               "type": "modify_resource",
               "resource": "lust",
               "value": 1,
               "target": "self",
-              "note": "每跳伤推高持有者恶欲值（产能闭环）"
+              "note": "每 5tick 随跳伤推高持有者恶欲值（产能闭环）"
             }
-          ]
+          ],
+          "note": "2026-10-09 节流：每 5tick 一次（1 回合=5tick，执行参数 §2.2 权宜规避）"
         }
       ],
       "note": "双焰交汇升级载荷（2026-09-26 自归档技能稿重建）：地狱之火染成深渊版——不可驱散 + 跳伤推 lust；升级判定（目标带 black_flame）在卡面条件承载"
@@ -714,13 +721,15 @@
       "triggers": [
         {
           "event": "on_tick",
+          "minIntervalTicks": 5,
+          "note": "2026-10-09 节流：每 5tick 一次（1 回合=5tick，执行参数 §2.2 权宜规避）",
           "effects": [
             {
               "type": "modify_status",
               "statusId": "abundance",
               "stacksDelta": -1,
               "target": "all_units",
-              "note": "每 tick 对全体单位剥丰饶 1 层（无丰饶者无操作；污染侵蚀丰饶）"
+              "note": "每 5tick 对全体单位剥丰饶 1 层（无丰饶者无操作；污染侵蚀丰饶）"
             }
           ]
         }

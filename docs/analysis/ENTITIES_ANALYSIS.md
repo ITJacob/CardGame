@@ -141,7 +141,7 @@
 | `reality_press` | `overlay` | 30 | tick | 是 | 1 | 0 | 仲裁人 |
 | `domain_mirror_maze` | `overlay` | 15 | tick | 是 | 2 | 1 | 刺客 |
 | `domain_mirror_world` | `overlay` | 10 | tick | 是 | 2 | 1 | 刺客 |
-| `domain_holy_nation` | `overlay` | 20 | tick | 是 | 2 | 2 | 歌颂者 |
+| `domain_holy_nation` | `overlay` | 20 | tick | 是 | 2 | 3 | 歌颂者 |
 | `domain_underworld_gate` | `overlay` | 20 | tick | 是 | 2 | 2 | 收尸人 |
 | `domain_pale_world` | `overlay` | 15 | tick | 是 | 2 | 2 | 收尸人 |
 | `domain_abyssal` | `overlay` | 15 | tick | 是 | 2 | 1 | 罪犯 |
@@ -186,7 +186,7 @@
 
 | 触发点 | 条数 |
 |---|---:|
-| `on_tick` | 21 |
+| `on_tick` | 22 |
 | `on_turn_start` | 20 |
 | `on_attack` | 2 |
 
