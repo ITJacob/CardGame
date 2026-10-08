@@ -247,18 +247,40 @@
       "duration": 20,
       "triggers": [
         {
+          "event": "on_apply",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "slumber",
+            "cmp": ">=",
+            "n": 1
+          },
+          "effects": [
+            {
+              "type": "modify_status",
+              "statusId": "slumber",
+              "target": "self",
+              "addDuration": 20,
+              "note": "续眠：沉眠剩余时长 +20 tick"
+            }
+          ],
+          "note": "击溃精神：挂载时续眠"
+        },
+        {
           "event": "on_tick",
+          "minIntervalTicks": 5,
           "effects": [
             {
               "type": "damage",
               "element": "mental",
               "value": 2,
-              "target": "self"
+              "target": "self",
+              "note": "折磨（每 5 tick 结算一次）"
             }
           ]
         }
       ],
-      "note": "击溃精神：挂载时把宿主沉眠持续时间刷新至 4 tick。"
+      "note": "击溃精神：每 5 tick 结算 2 点精神伤害；挂载时把宿主沉眠剩余时长延长 20 tick。"
     },
     {
       "id": "dream_walker",
@@ -406,13 +428,14 @@
       "triggers": [
         {
           "event": "on_tick",
+          "minIntervalTicks": 5,
           "effects": [
             {
               "type": "damage",
               "element": "dark",
               "value": 2,
               "target": "self",
-              "note": "消融"
+              "note": "消融（每 5 tick 结算一次）"
             }
           ]
         },
@@ -429,7 +452,7 @@
           ]
         }
       ],
-      "note": "黑暗 dot + 受治疗 ×0.7；死于消融者不可复活。"
+      "note": "黑暗 dot：每 5 tick 结算 2 点暗黑伤害 + 受治疗 ×0.7；死于消融者不可复活。"
     },
     {
       "id": "dream_depth",

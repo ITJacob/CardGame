@@ -71,7 +71,7 @@
 | lawyer | prim:mount_status ×33；prim:modify_rule_slot ×18；cond:has_status ×17；prim:damage ×15；prim:modify_status ×14 |
 | monster | prim:restore_snapshot ×30；prim:mount_status ×28；cond:chance ×16；prim:modify_resource ×8；prim:damage ×5 |
 | planter | prim:spawn ×30；prim:mount_status ×26；cond:has_status ×9；elem:none ×8；prim:damage ×7 |
-| prisoner | prim:mount_status ×24；prim:transfer_status ×20；prim:modify_resource ×20；prim:damage ×12；prim:modify_status ×10 |
+| prisoner | prim:mount_status ×24；prim:modify_resource ×20；prim:transfer_status ×20；prim:damage ×12；prim:modify_status ×10 |
 | pryer | prim:modify_skill ×28；prim:mount_status ×26；prim:damage ×18；cond:has_status ×12；elem:none ×9 |
 | reader | prim:mount_status ×22；prim:reveal ×13；prim:damage ×12；elem:mental ×12；prim:modify_skill ×10 |
 | sailor | prim:move ×39；prim:mount_status ×29；prim:damage ×24；elem:physical ×16；elem:lightning ×12 |
