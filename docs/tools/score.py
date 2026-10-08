@@ -171,8 +171,11 @@ def signature_card_hit(card, key, unit_type_of=None, lineage_ids=None, flag_stat
     if kind == "res":
         if card_refs_resource(card, arg):
             return True
-        # 量表读取侧实证：dimHooks/phaseHook 以该维度为钩（board 级量表不以 modify_resource 表达）
-        return any(h.get("dim") == arg for h in (card.get("dimHooks") or []))
+        # 量表读取侧实证：dimHooks(dim:X) 实证 res:X、phaseHooks 实证 res:phase
+        # （board 级量表不以 modify_resource 表达）
+        if any(h.get("dim") == arg for h in (card.get("dimHooks") or [])):
+            return True
+        return arg == "phase" and bool(card.get("phaseHooks"))
     if kind == "stat":
         if any(n.get("type") == "modify_stat" and n.get("stat") == arg
                for n in walk(card.get("effects"))):
@@ -240,8 +243,34 @@ def signature_counts(cards, keys, unit_type_of=None, lineage_ids=None, flag_stat
 
 # ---------- 途径指纹与风格距离（STYLE_DISTANCE.md 同源口径） ----------
 
+def _cond_kinds(node):
+    """效果树内全部谓词 kind（condition/conditions 键递归；通用下钻跳过这两键防重复计数）。"""
+    out = []
+
+    def visit(n):
+        if isinstance(n, dict):
+            c = n.get("condition")
+            if isinstance(c, dict):
+                out.append(c.get("kind"))
+                visit(c)
+            for x in n.get("conditions") or []:
+                if isinstance(x, dict):
+                    out.append(x.get("kind"))
+                    visit(x)
+            for k, v in n.items():
+                if k not in ("condition", "conditions"):
+                    visit(v)
+        elif isinstance(n, list):
+            for v in n:
+                visit(v)
+
+    visit(node)
+    return out
+
+
 def fingerprint(cards):
-    """原语分布 + 元素分布 + modify_stat 键分布"""
+    """原语分布 + 元素分布 + modify_stat 键分布 + 效果树谓词分布（2026-10-08 增：
+    判定语言是轴身份的一阶载体——夜轨/位格体系不进指纹会让相位途径的风格距离失真）"""
     vec = {}
     for c in cards:
         for t in card_effect_types(c):
@@ -251,6 +280,9 @@ def fingerprint(cards):
                 vec["elem:" + n["element"]] = vec.get("elem:" + n["element"], 0) + 1
             if n.get("type") == "modify_stat" and isinstance(n.get("stat"), str):
                 vec["stat:" + n["stat"]] = vec.get("stat:" + n["stat"], 0) + 1
+        for k in _cond_kinds(c.get("effects")):
+            if isinstance(k, str):
+                vec["cond:" + k] = vec.get("cond:" + k, 0) + 1
     return vec
 
 
