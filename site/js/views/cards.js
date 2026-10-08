@@ -97,6 +97,7 @@ function filterBarHtml() {
     ${sel('reach', '距离', reachOpts)}
     ${sel('sort', '排序', [['rarity-desc', '稀有度 高→低'], ['rarity-asc', '稀有度 低→高']], '默认（途径 → 序列）')}
     <label>搜索<input type="search" data-f="q" value="${escapeHtml(state.q)}" placeholder="卡名/描述/ID"></label>
+    <button type="button" id="art-reprobe" title="清掉「有图」探测缓存并重新探一遍（刚丢进 assets/cards/ 的新图用这个）">重探图</button>
     <span class="muted" id="filter-count"></span>
   </div>`;
 }
@@ -111,15 +112,55 @@ function zh(cat, key) {
 // 路径按 cardId 现拼（复用详情页那套 artCandidates，见 views/card.js）。
 // 走 HEAD 而非 GET：卡面是 2.7MB 级大图（全出血 PNG），只为问一句「在不在」就把正文
 // 拖下来不值当，HEAD 只有响应头。sw.js 的 fetch 只拦 GET（sw.js:43），HEAD 直连网络、
-// 不进 SWR 缓存，所以本地往 assets/cards/ 丢一张新图、刷新就在列表里出现标记，
-// 不会被缓存里的旧 404 挡住。
-// 缓存的是 **promise** 而非解析结果：renderList 在搜索框每次按键都会重跑，缓存结果能
-// 挡住重复探测，缓存 promise 则连「同一轮内并发探同一张卡」也只发一轮请求。
+// 不进 SWR 缓存，所以往 assets/cards/ 丢一张新图能立刻探测到，不会被缓存里的旧 404 挡住。
+//
+// 三层缓存，各挡一类重复：
+//   1) artProbe —— 本轮页面内存 Map，值是 promise。搜索框每次按键都会重跑 renderList，
+//      缓存 promise 让同一张卡在同一轮里也只发一次请求
+//   2) localStorage 命中项（有图）—— 长期有效，跨页面加载也不再发请求
+//   3) localStorage 未命中项（无图）—— 带 MISS_TTL。「无图」是随出图进度会变旧的
+//      信息，留太久会让列表假性地缺失「有图」标记；刚丢进来的新图点筛选栏
+//      尾部的「重探图」立即刷新。
+const ART_KEY = 'cg.artmap.v1';
+const MISS_TTL = 60 * 60 * 1000;   // 无图结果的有效期：同一轮工作内不重探，隔一轮自然重探
 const artProbe = new Map();
+
+const artStore = (() => {
+  try {
+    const v = JSON.parse(localStorage.getItem(ART_KEY));
+    return { hits: (v && v.hits) || {}, miss: (v && v.miss) || {} };
+  } catch { return { hits: {}, miss: {} }; }   // 存坏 / 隐私模式：当空表，不影响列表
+})();
+
+function saveArtStore() {
+  try { localStorage.setItem(ART_KEY, JSON.stringify(artStore)); } catch { /* 配额满/隐私模式：内存里照样准 */ }
+}
+
+// 命中返回布尔，未命中（含过期）返回 null 表示得实探
+function cachedArt(id) {
+  if (artStore.hits[id]) return true;                 // 有图：不设过期
+  const t = artStore.miss[id];
+  if (t) {
+    if (Date.now() - t < MISS_TTL) return false;
+    delete artStore.miss[id];                         // 过期即丢
+  }
+  return null;
+}
+
+function clearArtCache() {
+  artStore.hits = {};
+  artStore.miss = {};
+  artProbe.clear();
+  saveArtStore();
+}
 
 function probeArt(card) {
   let p = artProbe.get(card.id);
-  if (!p) {
+  if (p) return p;
+  const hit = cachedArt(card.id);
+  if (hit !== null) {
+    p = Promise.resolve(hit);
+  } else {
     p = (async () => {
       for (const url of artCandidates(card)) {
         try {
@@ -127,9 +168,13 @@ function probeArt(card) {
         } catch { /* 网络异常按「无图」处理，不让列表挂掉 */ }
       }
       return false;
-    })();
-    artProbe.set(card.id, p);
+    })().then((has) => {
+      if (has) artStore.hits[card.id] = 1; else artStore.miss[card.id] = Date.now();
+      saveArtStore();
+      return has;
+    });
   }
+  artProbe.set(card.id, p);
   return p;
 }
 
@@ -178,6 +223,10 @@ export function renderCards(view) {
         renderList(view);
       });
     }
+  });
+  view.querySelector('#art-reprobe').addEventListener('click', () => {
+    clearArtCache();
+    renderList(view);
   });
   renderList(view);
 }
