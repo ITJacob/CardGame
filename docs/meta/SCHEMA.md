@@ -81,7 +81,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `effects` | effect[] | ✓ | 卡面效果，至少 1 条 |
 | `tentative` | bool | ✓ | 数值待拍板；当前全库 832 张均为 `true` |
 | `cost` | object | active | `{ energy, cooldown, castTime }`，`castTime` 可为 `null` |
-| `reach` | `none`\|`melee`\|`ranged` | active | 攻击性质（近战/远程，与双方站位正交；仅决定同步对撞与可拦截性，非攻击类写 none） |
+| `reach` | `none`\|`melee`\|`thrown`\|`spell` | active | 攻击作用形态（与双方站位正交；仅决定同步对撞与可拦截性，非攻击类写 none）：melee=近身对抗、thrown=有形投射、spell=无形作用；原 ranged 已按形态拆为 thrown/spell |
 | `target` | object | active | 见 §4 |
 | `hook` | enum | passive | 被动挂载的触发点 |
 | `statusDefs` | statusDef[] | | 卡引入的私有状态 |
