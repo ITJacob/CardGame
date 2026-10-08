@@ -61,23 +61,23 @@
 | 途径 | Top-5 指纹键 |
 |---|---|
 | apothecary | prim:mount_status ×27；prim:transfer_status ×18；prim:grant_immunity ×12；cond:has_status ×11；prim:modify_stat ×9 |
-| apprentice | prim:mount_status ×25；prim:modify_resource ×16；prim:translocate ×14；prim:echo_last_skill ×11；prim:damage ×10 |
-| arbiter | prim:take_control ×27；prim:mount_status ×26；prim:damage ×16；elem:mental ×16；elem:physical ×9 |
+| apprentice | prim:mount_status ×25；prim:modify_resource ×16；prim:translocate ×14；prim:echo_last_skill ×11；elem:physical ×10 |
+| arbiter | prim:take_control ×27；prim:mount_status ×26；elem:mental ×16；prim:damage ×16；elem:physical ×9 |
 | assassin | prim:mount_status ×33；prim:modify_targetability ×26；prim:modify_resource ×14；prim:translocate ×11；prim:damage ×9 |
 | chanter | prim:mount_status ×25；elem:holy ×21；prim:set_luminance ×20；prim:grant_immunity ×16；prim:damage ×12 |
 | corpse_collector | prim:mount_status ×28；prim:reveal ×16；prim:spawn ×15；elem:mental ×10；prim:damage ×9 |
 | criminal | prim:modify_resource ×37；prim:move ×37；prim:mount_status ×35；prim:damage ×19；cond:has_status ×13 |
 | hunter | prim:mount_status ×31；prim:modify_resource ×20；prim:move ×18；prim:modify_rule_slot ×17；prim:damage ×13 |
 | lawyer | prim:mount_status ×33；prim:modify_rule_slot ×18；cond:has_status ×17；prim:damage ×15；prim:modify_status ×14 |
-| monster | prim:restore_snapshot ×30；prim:mount_status ×28；cond:chance ×16；prim:modify_resource ×8；prim:damage ×5 |
+| monster | prim:restore_snapshot ×30；prim:mount_status ×28；cond:chance ×16；prim:modify_resource ×8；cond:has_status ×5 |
 | planter | prim:spawn ×30；prim:mount_status ×26；cond:has_status ×9；elem:none ×8；prim:damage ×7 |
 | prisoner | prim:mount_status ×24；prim:modify_resource ×20；prim:transfer_status ×20；prim:damage ×12；prim:modify_status ×10 |
 | pryer | prim:modify_skill ×28；prim:mount_status ×26；prim:damage ×18；cond:has_status ×12；elem:none ×9 |
-| reader | prim:mount_status ×22；prim:reveal ×13；prim:damage ×12；elem:mental ×12；prim:modify_skill ×10 |
+| reader | prim:mount_status ×22；prim:reveal ×13；elem:mental ×12；prim:damage ×12；prim:modify_skill ×10 |
 | sailor | prim:move ×39；prim:mount_status ×29；prim:damage ×24；elem:physical ×16；elem:lightning ×12 |
 | savant | prim:spawn ×20；prim:mount_status ×15；prim:modify_rule_slot ×13；prim:modify_resource ×12；prim:modify_stat ×11 |
 | seer | prim:mount_status ×19；prim:modify_resource ×18；prim:take_control ×14；prim:modify_rule_slot ×11；cond:has_status ×5 |
-| sleepless | prim:mount_status ×31；cond:phase_is ×14；prim:damage ×12；elem:mental ×12；prim:dispel ×8 |
+| sleepless | prim:mount_status ×31；cond:phase_is ×14；elem:mental ×12；prim:damage ×12；prim:dispel ×8 |
 | spectator | prim:mount_status ×25；prim:modify_status ×17；prim:write_rule_slot ×16；elem:mental ×12；prim:damage ×7 |
 | supplicant | prim:modify_resource ×28；prim:mount_status ×26；prim:drain ×22；cond:has_status ×18；prim:modify_stat ×9 |
 | thief | prim:mount_status ×24；prim:transfer_status ×14；cond:has_status ×9；elem:mental ×9；prim:damage ×8 |
