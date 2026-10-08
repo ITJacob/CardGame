@@ -20,7 +20,7 @@
         "黑暗仆人·不灭",
         "黑暗之剑"
       ],
-      "note": "暗夜轴『夜色=夜晚专属个人资源』模型（2026-10-08 夜轨改造：判定读相位、操控拨时钟——重点在夜不在光）：nightfall 由『夜色渐浓』自洽管理——相位进入 night/midnight 每 tick +1（上限 3 层，每层 gauge.rate +1 / energy_regen +0.04），出夜不攒；非夜相位（黎明/白昼/黄昏）每 tick 花 1 层 advance_clock +4 tick 赶夜（时钟只进不退，抵夜即停；1 层 = 4 tick，3 层全放 = 12 tick），花层同时挂夜释之护（防 +3/精抗 +10%）4tick。积累走 phase_is(night/midnight)、倾泻走 phase_is(dawn/day/dusk)——时钟只进不退且倾泻条件在非夜相位，无自我续杯环，勿放宽。被动醒眠（不眠之躯/夜视/午夜武艺/守夜人体质/黑暗仆人替死）全部读真实夜相位；操控卡（发丝缠绕/厄运/黑暗之剑/厄难）拨时钟赶夜；黑夜领域保留压暗但转为遮蔽天光的对外压制。"
+      "note": "夜色=夜晚专属个人资源：夜晚/午夜相位或『黑夜领域』存续期每 tick +1（上限 3 层，每层行动条速率 +1、能量回复 +0.04）；非夜相位每 tick 花 1 层推进战场时钟 4 tick（赶夜）并获夜释之护 4tick，时钟抵夜即停。"
     },
     "nightmare": {
       "symbol": "🌚",
@@ -35,7 +35,7 @@
         "梦魇世界",
         "恐惧灵光"
       ],
-      "note": " ｜ 2026-10-03 骨架手术：相位形状换形 29 张（详见 designNote）"
+      "note": "沉眠层数经济：入梦/塑梦/强制入梦产层，梦魇世界/恐惧灵光读层爆发。"
     },
     "requiem": {
       "symbol": "🕯️",
@@ -48,7 +48,7 @@
       "payoffs": [
         "恐惧权柄"
       ],
-      "note": "payoffs 2026-09-26 评审：恐惧权柄 damage_mul 按 slumber/dread/pacified 过滤（pacified=安魂轴身份，跨轴受益）；灵之统帅等读单位类型非 pacified 不计 ｜ payoffs 2026-09-26 评审：恐惧权柄 damage_mul 按 slumber/dread/pacified 过滤（pacified=安魂轴身份，跨轴受益） ｜ 2026-09-29 requiem 轴迭代（全库最低轴摘除）：pacified 补层数引擎（身份 8→15）；灵之统帅 if 分支补 pacified 产层段（产层 12→20，第二实证）；恐惧权柄补 pacified 耗层读档段（承接 patterns 扩） ｜ 2026-10-03 骨架手术：相位形状换形 29 张（详见 designNote）"
+      "note": "安宁层数经济：安魂/灵之统帅产层，恐惧权柄按安宁层数读档耗层（跨轴受益沉眠/恐惧）。"
     },
     "secrecy": {
       "symbol": "🗝️",
@@ -62,7 +62,7 @@
         "隐秘之地",
         "隐秘权柄"
       ],
-      "note": "payoffs 2026-09-26 评审：两卡挂 secrecy≥7 dimHook ×1.5（落地）；隐秘化同钩但已列 enabler 剔除 ｜ payoffs 2026-09-26 评审：两卡挂 secrecy≥7 dimHook ×1.5（落地）；隐秘化同钩但已列 enabler 剔除 ｜ 2026-09-29 D 类批：covert_veil 补层数引擎（身份 8→15）；无迹之影补 covert_veil 自持产层段（产层 12→20，第二实证）；隐秘权柄补 covert_veil 读层段（承接连通 0→有） ｜ 2026-10-03 骨架手术：相位形状换形 29 张（详见 designNote）"
+      "note": "潜匿层数经济：隐秘化/无迹之影产层，隐秘之地/隐秘权柄按隐秘值 ≥7 放大（×1.5）。"
     }
   },
   "cards": [
@@ -98,7 +98,7 @@
               "statusId": "sleepless_body_power",
               "duration": null,
               "target": "self",
-              "note": "夜相位（night/midnight）：不眠之躯苏醒"
+              "note": "夜晚/午夜相位：不眠之躯苏醒"
             }
           ],
           "else": [
@@ -110,7 +110,7 @@
                 "statusId": "sleepless_body_power",
                 "count": 1
               },
-              "note": "相位转亮（黎明/白昼/黄昏）：不眠之躯沉眠（真实相位判定，无过渡带）"
+              "note": "相位转亮：不眠之躯沉眠"
             }
           ]
         }
@@ -159,7 +159,7 @@
               "statusId": "dark_sight",
               "duration": null,
               "target": "self",
-              "note": "夜相位（night/midnight）：夜视苏醒"
+              "note": "夜晚/午夜相位：夜视苏醒"
             }
           ],
           "else": [
@@ -171,7 +171,7 @@
                 "statusId": "dark_sight",
                 "count": 1
               },
-              "note": "相位转亮（黎明/白昼/黄昏）：夜视消退（真实相位判定，无过渡带）"
+              "note": "相位转亮：夜视消退"
             }
           ]
         }
@@ -224,7 +224,7 @@
               "stackMode": "add",
               "duration": null,
               "target": "self",
-              "note": "积累夜色 +1（上限 3 层）：真实夜晚/午夜相位。倾泻（赶夜）只发生在非夜相位，且时钟只进不退——抵达夜相位后倾泻自动停止，无自我续杯环，勿放宽。倾泻逻辑在 nightfall 状态自身 on_tick。"
+              "note": "积累夜色 +1（上限 3 层）：夜晚/午夜相位"
             }
           ],
           "else": [
@@ -258,7 +258,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态「夜色」的累积源（夜/午夜相位 + 黑夜领域双源）；倾泻已移入 nightfall 状态自身 on_tick 自主触发。｜2026-10-08 夜轨改造：倾泻由「买压暗窗口」改为「advance_clock 赶夜」，安全阀由「覆写不改相位」改为「时钟只进不退」。",
+      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态「夜色」的累积源（夜/午夜相位 + 黑夜领域双源）；倾泻已移入 nightfall 状态自身 on_tick 自主触发。｜2026-10-08 夜轨改造：倾泻由「买压暗窗口」改为「advance_clock 赶夜」，安全阀由「覆写不改相位」改为「时钟只进不退」。｜卡面精简：积累注的安全阀论证（时钟只进不退无续杯环）已移至 axes.darkness.note 之外的 conversionNotes 留存——倾泻只发生在非夜相位、时钟只进不退，无自我续杯环，勿放宽；倾泻逻辑在 nightfall 状态自身 on_tick。",
       "art": {
         "subject": "shadows thickening and climbing up a lone standing figure",
         "elements": [
@@ -301,7 +301,7 @@
               "statusId": "midnight_prowess_power",
               "duration": null,
               "target": "self",
-              "note": "夜相位（night/midnight）：午夜武艺苏醒（攻+2/防+1 走 midnight_prowess_power 状态）"
+              "note": "夜晚/午夜相位：午夜武艺苏醒（攻+2/防+1）"
             }
           ],
           "else": [
@@ -313,7 +313,7 @@
                 "statusId": "midnight_prowess_power",
                 "count": 1
               },
-              "note": "相位转亮（黎明/白昼/黄昏）：午夜武艺沉寂（真实相位判定，无过渡带）"
+              "note": "相位转亮：午夜武艺沉寂"
             }
           ]
         }
@@ -328,7 +328,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴属性地板。｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight），醒眠与回击门槛同源。",
+      "conversionNotes": "翻译/语义：暗夜轴属性地板。｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight），醒眠与回击门槛同源。｜午夜回击数值⚠️D 待平衡；天光下不回击守途径红线（天光破晓弱项）。",
       "art": {
         "subject": "a fighter shadow-boxing under a single street lamp at midnight",
         "elements": [
@@ -356,15 +356,15 @@
                   "type": "mount_status",
                   "statusId": "dread",
                   "duration": 10,
-                  "note": "午夜回击：暗夜受击，反将恐惧钉进攻击者（⚠️D 待平衡）"
+                  "note": "午夜回击：暗夜受击，反将恐惧钉进攻击者"
                 }
               ],
               "else": [],
-              "note": "回击门槛：夜晚/午夜相位才触发——天光下受击不回击（途径红线：天光破晓弱项）"
+              "note": "回击门槛：仅夜晚/午夜相位触发"
             }
           ],
           "minIntervalTicks": 10,
-          "note": "反应式被动（矩阵复审·四批 2026-10-02）：不眠者=on_take_damage 恐惧回击正主，把空置触发点转为途径签名；目标省略=事件对侧（攻击者），同阅读者 观察 口径"
+          "note": "受击反击被动；目标=事件对侧（攻击者）"
         }
       ]
     },
@@ -409,19 +409,19 @@
           "type": "set_luminance",
           "duration": 5,
           "dispelable": false,
-          "note": "压暗：delta -1（5 tick）——拨光不拨时（替代 advance_clock）",
+          "note": "压暗：delta -1（5 tick）",
           "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：诗篇三分支之一（敌人恍惚）。",
+      "conversionNotes": "翻译/语义：诗篇三分支之一（敌人恍惚）。｜phaseHook ×1.2 ⚠️D 平衡占位。",
       "phaseHooks": [
         {
           "phases": [
             "midnight"
           ],
           "mul": 1.2,
-          "note": "午夜相位加成 ×1.2（⚠️D 平衡占位）"
+          "note": "午夜相位加成 ×1.2"
         }
       ],
       "art": {
@@ -543,19 +543,19 @@
           "type": "set_luminance",
           "duration": 5,
           "dispelable": false,
-          "note": "压暗：delta -1（5 tick）——拨光不拨时（替代 advance_clock）",
+          "note": "压暗：delta -1（5 tick）",
           "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：恐惧链最下环（惊惧诗→恐惧灵光→恐惧权柄），同状态 `dread` 三级复用。",
+      "conversionNotes": "翻译/语义：恐惧链最下环（惊惧诗→恐惧灵光→恐惧权柄），同状态 `dread` 三级复用。｜phaseHook ×1.2 ⚠️D 平衡占位。",
       "phaseHooks": [
         {
           "phases": [
             "midnight"
           ],
           "mul": 1.2,
-          "note": "午夜相位加成 ×1.2（⚠️D 平衡占位）"
+          "note": "午夜相位加成 ×1.2"
         }
       ],
       "art": {
@@ -609,7 +609,7 @@
           "type": "set_luminance",
           "duration": 8,
           "dispelable": false,
-          "note": "压暗：delta -1（8 tick）——拨光不拨时（替代 advance_clock）",
+          "note": "压暗：delta -1（8 tick）",
           "delta": -1
         }
       ],
@@ -820,7 +820,7 @@
           "type": "set_luminance",
           "duration": 10,
           "dispelable": false,
-          "note": "压暗：delta -2（10 tick）——拨光不拨时（替代 advance_clock）",
+          "note": "压暗：delta -2（10 tick）",
           "delta": -2
         }
       ],
@@ -1164,7 +1164,7 @@
               "statusId": "night_empower",
               "duration": null,
               "target": "self",
-              "note": "夜相位（night/midnight）：守夜人苏醒（暗夜加持）"
+              "note": "夜晚/午夜相位：守夜人苏醒（暗夜加持）"
             },
             {
               "type": "dispel",
@@ -1174,7 +1174,7 @@
                 "statusId": "sunlight_weakness",
                 "count": 1
               },
-              "note": "夜相位同步撤除天光未散"
+              "note": "同步撤除天光未散"
             }
           ],
           "else": [
@@ -1186,7 +1186,7 @@
                 "statusId": "night_empower",
                 "count": 1
               },
-              "note": "出离夜相位：暗夜加持即撤（相位判定，不靠 duration 残留）"
+              "note": "出离夜相位：暗夜加持即撤"
             },
             {
               "op": "if",
@@ -1202,7 +1202,7 @@
                   "statusId": "sunlight_weakness",
                   "duration": null,
                   "target": "self",
-                  "note": "白昼相位（day）：天光未散（正午虚弱）"
+                  "note": "白昼相位：天光未散（正午虚弱）"
                 }
               ],
               "else": [
@@ -1276,7 +1276,7 @@
               "delta": -1,
               "duration": 20,
               "dispelable": false,
-              "note": "黑夜领域：全场相对压暗 delta -1（随界域 20 tick，不可驱散）——遮蔽天光的对外压制：削弱敌方白昼/黎明档收益。本途径被动已改读真实夜相位（2026-10-08 夜轨改造），压暗不再点亮自己，旧「免费点亮 6 张被动」红线自然失效"
+              "note": "全场光照 −1（随界域 20 tick，不可驱散）——遮蔽天光：压制敌方白昼/黎明收益"
             },
             {
               "type": "modify_resource",
@@ -1376,14 +1376,14 @@
         {
           "type": "advance_clock",
           "ticks": 3,
-          "note": "赶夜：推进战场时钟 3 tick——拨时不拨光（时钟只进不退，全场生效，⚠️D 待平衡）"
+          "note": "赶夜：推进战场时钟 3 tick（全场）"
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴节奏压制。｜2026-10-08 夜轨改造：压暗 -1/10t → advance_clock 3t。",
+      "conversionNotes": "翻译/语义：暗夜轴节奏压制。｜2026-10-08 夜轨改造：压暗 -1/10t → advance_clock 3t。｜赶夜步长⚠️D 待平衡。",
       "art": {
         "subject": "long hair silently coiling around a struggling enemy's limbs",
         "elements": [
@@ -1430,11 +1430,11 @@
         {
           "type": "advance_clock",
           "ticks": 3,
-          "note": "赶夜：推进战场时钟 3 tick——拨时不拨光（时钟只进不退，全场生效，⚠️D 待平衡）"
+          "note": "赶夜：推进战场时钟 3 tick（全场）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴确定性厄运（慢/退/加重）。｜2026-10-08 夜轨改造：压暗 -1/15t → advance_clock 3t。",
+      "conversionNotes": "翻译/语义：暗夜轴确定性厄运（慢/退/加重）。｜2026-10-08 夜轨改造：压暗 -1/15t → advance_clock 3t。｜赶夜步长⚠️D 待平衡。",
       "art": {
         "subject": "a small patch of night clinging to a staggering enemy",
         "elements": [
@@ -1486,11 +1486,11 @@
         {
           "type": "advance_clock",
           "ticks": 5,
-          "note": "赶夜：推进战场时钟 5 tick——拨时不拨光（时钟只进不退，全场生效，⚠️D 待平衡）"
+          "note": "赶夜：推进战场时钟 5 tick（全场）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴处决。｜2026-10-08 夜轨改造：压暗 -2/10t → advance_clock 5t；dimHook(luminance≤2) → phaseHook(night/midnight)。",
+      "conversionNotes": "翻译/语义：暗夜轴处决。｜2026-10-08 夜轨改造：压暗 -2/10t → advance_clock 5t；dimHook(luminance≤2) → phaseHook(night/midnight)。｜赶夜步长⚠️D 待平衡。｜phaseHook ×1.2 ⚠️D 平衡占位。",
       "phaseHooks": [
         {
           "phases": [
@@ -1499,7 +1499,7 @@
           ],
           "mul": 1.2,
           "target": "damage",
-          "note": "夜相位（night/midnight）本卡伤害 ×1.2（⚠️D 平衡占位）"
+          "note": "夜晚/午夜相位本卡伤害 ×1.2"
         }
       ],
       "art": {
@@ -1578,19 +1578,19 @@
           "type": "set_luminance",
           "duration": 15,
           "dispelable": false,
-          "note": "压暗：delta -1（15 tick）——拨光不拨时（替代 advance_clock）",
+          "note": "压暗：delta -1（15 tick）",
           "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "原著「失控」引擎无对应维度，不建模，只取「被吓死」",
+      "conversionNotes": "原著「失控」引擎无对应维度，不建模，只取「被吓死」｜dimHook ×1.2 ⚠️D 平衡占位。",
       "dimHooks": [
         {
           "dim": "luminance",
           "comparator": "<=",
           "threshold": 2,
           "mul": 1.2,
-          "note": "暗夜档（光照度 ≤2）本卡伤害 ×1.2（⚠️D 平衡占位）"
+          "note": "暗夜档（光照度 ≤2）本卡伤害 ×1.2"
         }
       ],
       "art": {
@@ -1637,7 +1637,7 @@
               "consumption": "zone",
               "zone": "zone_nightmare_world",
               "duration": 100,
-              "note": "spawn_zone（H9 Zone 母版）；保持 Zone 形态（2026-09-30 时间回归：稿期 4 回合 → 100tick，1 回合=25tick）"
+              "note": "降临梦魇世界区域 100tick"
             },
             {
               "op": "if",
@@ -1720,7 +1720,7 @@
           "statusId": "covert_veil",
           "duration": 15,
           "target": "target",
-          "note": "隐秘轴身份潜匿（2026-09-29 自 common conceal 分叉私有化）"
+          "note": "潜匿：隐秘轴身份锚点"
         },
         {
           "type": "set_luminance",
@@ -1734,7 +1734,7 @@
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴中层 enabler：挂 `隐秘` + 推进战场隐秘值。",
+      "conversionNotes": "翻译/语义：隐秘轴中层 enabler：挂 `隐秘` + 推进战场隐秘值。｜dimHook 数值⚠️D 待平衡。",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -1745,7 +1745,7 @@
           "filterTags": [
             "隐秘"
           ],
-          "note": "维度乘区挂钩占位（⚠️D 待平衡）：board.secrecy≥7 隐秘类+50%"
+          "note": "维度乘区：隐秘值 ≥7 时隐秘类 +50%"
         }
       ],
       "art": {
@@ -1798,7 +1798,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴旗舰：连友军都够不到目标；封印即写隐秘值。",
+      "conversionNotes": "翻译/语义：隐秘轴旗舰：连友军都够不到目标；封印即写隐秘值。｜dimHook 数值⚠️D 待平衡。",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -1809,7 +1809,7 @@
           "filterTags": [
             "隐秘"
           ],
-          "note": "维度乘区挂钩占位（⚠️D 待平衡）：board.secrecy≥7 隐秘类+50%"
+          "note": "维度乘区：隐秘值 ≥7 时隐秘类 +50%"
         }
       ],
       "art": {
@@ -1885,7 +1885,7 @@
           "type": "set_luminance",
           "duration": 10,
           "dispelable": false,
-          "note": "压暗：delta -2（10 tick）——拨光不拨时（替代 advance_clock）",
+          "note": "压暗：delta -2（10 tick）",
           "delta": -2
         }
       ],
@@ -1929,7 +1929,7 @@
           "statusId": "covert_veil",
           "duration": null,
           "target": "self",
-          "note": "无迹之影为 隐秘 轴恒常身份锚点：战斗开始即自持潜匿，建立 secrecy 身份供 隐秘权柄 身份闸读取（解 2026-10-04 夜闸鸡生蛋）。"
+          "note": "战斗开始即自持潜匿，建立隐秘值身份供隐秘权柄读取"
         }
       ],
       "tentative": false,
@@ -1999,7 +1999,7 @@
         {
           "type": "advance_clock",
           "ticks": 6,
-          "note": "赶夜：推进战场时钟 6 tick——拨时不拨光（时钟只进不退，全场生效，⚠️D 待平衡）"
+          "note": "赶夜：推进战场时钟 6 tick（全场）"
         }
       ],
       "upgradeLadder": {
@@ -2016,7 +2016,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "序列1「厄难」与序列0「厄运和灾难权柄」合并为一张卡，升级阶梯区分强度｜2026-10-08 夜轨改造：压暗 -2/15t → advance_clock 6t。",
+      "conversionNotes": "序列1「厄难」与序列0「厄运和灾难权柄」合并为一张卡，升级阶梯区分强度｜2026-10-08 夜轨改造：压暗 -2/15t → advance_clock 6t。｜赶夜步长⚠️D 待平衡。",
       "art": {
         "subject": "misfortune and disaster stalking every enemy in the dark",
         "elements": [
@@ -2060,7 +2060,7 @@
               "duration": null,
               "target": "self",
               "maxTriggersPerBattle": 3,
-              "note": "入夜（phase_is night）补 1 个黑暗仆人，全场至多 3 次；层数上限 3 另由状态 maxStacks 把关。非夜相位不撤除状态（2026-10-08 删旧 else 驱散）——替死由状态内 on_death 的 phase_is 条件自行把关"
+              "note": "入夜补 1 个黑暗仆人（全场至多 3 次，至多同时 3 个）；非夜相位不撤除状态，替死判定在状态内"
             }
           ]
         }
@@ -2150,7 +2150,7 @@
                   "type": "mount_status",
                   "statusId": "pacified",
                   "duration": 15,
-                  "note": "统御威压：被统御的亡灵同时陷入安宁（requiem 轴产层第二实证，2026-09-29）"
+                  "note": "统御威压：被统御的亡灵同时陷入安宁"
                 }
               ],
               "else": []
@@ -2241,14 +2241,14 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：梦魇轴终焉：入梦/永眠/消融一次给全。",
+      "conversionNotes": "翻译/语义：梦魇轴终焉：入梦/永眠/消融一次给全。｜dimHook ×1.2 ⚠️D 平衡占位。",
       "dimHooks": [
         {
           "dim": "luminance",
           "comparator": "<=",
           "threshold": 2,
           "mul": 1.2,
-          "note": "暗夜档（光照度 ≤2）本卡伤害 ×1.2（⚠️D 平衡占位）"
+          "note": "暗夜档（光照度 ≤2）本卡伤害 ×1.2"
         }
       ],
       "art": {
@@ -2309,7 +2309,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴终极形态：整队长期不可选中 + 持续推隐秘值。",
+      "conversionNotes": "翻译/语义：隐秘轴终极形态：整队长期不可选中 + 持续推隐秘值。｜dimHook 数值⚠️D 待平衡。",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -2320,7 +2320,7 @@
           "filterTags": [
             "隐秘"
           ],
-          "note": "维度乘区挂钩占位（⚠️D 待平衡）：board.secrecy≥7 隐秘类+50%"
+          "note": "维度乘区：隐秘值 ≥7 时隐秘类 +50%"
         }
       ],
       "art": {
@@ -2381,7 +2381,7 @@
             }
           ],
           "else": [],
-          "note": "读层段：sleepless→pacified 层数读档+耗层（2026-09-29 requiem 轴迭代，承接 0  patterns 扩）"
+          "note": "读层段：按安宁层数读档并耗层"
         }
       ],
       "tentative": false,
