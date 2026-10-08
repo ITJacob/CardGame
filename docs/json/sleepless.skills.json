@@ -20,7 +20,7 @@
         "黑暗仆人·不灭",
         "黑暗之剑"
       ],
-      "note": "暗夜轴『夜色=夜晚专属个人资源』模型：nightfall 由『夜色渐浓』单卡自洽管理——相位进入 night/midnight 每 tick +1（上限 3 层，每层 gauge.rate +1 / energy_regen +0.04），出夜不攒；光照 >2 时每 tick 花 1 层，set_luminance 强制压为绝对值 2（暗夜档）覆盖 4tick；覆盖到期光照回升 >2 且仍有夜色则再花 1 层续 4tick——1 层 = 4tick 暗夜，3 层全放 = 12tick 总覆盖；花层同时挂夜释之护（防 +3/精抗 +10%）4tick。**积累走 phase_is(night/midnight) 而非 luminance_compare，且 set_luminance 不改 board.phase**——压暗窗口内不会自我续杯，这是防无限永夜的安全阀，不得放宽为 lum≤2。守夜人体质=纯光照读取被动（night_empower/sunlight_weakness），不碰 nightfall。"
+      "note": "暗夜轴『夜色=夜晚专属个人资源』模型（2026-10-08 夜轨改造：判定读相位、操控拨时钟——重点在夜不在光）：nightfall 由『夜色渐浓』自洽管理——相位进入 night/midnight 每 tick +1（上限 3 层，每层 gauge.rate +1 / energy_regen +0.04），出夜不攒；非夜相位（黎明/白昼/黄昏）每 tick 花 1 层 advance_clock +4 tick 赶夜（时钟只进不退，抵夜即停；1 层 = 4 tick，3 层全放 = 12 tick），花层同时挂夜释之护（防 +3/精抗 +10%）4tick。积累走 phase_is(night/midnight)、倾泻走 phase_is(dawn/day/dusk)——时钟只进不退且倾泻条件在非夜相位，无自我续杯环，勿放宽。被动醒眠（不眠之躯/夜视/午夜武艺/守夜人体质/黑暗仆人替死）全部读真实夜相位；操控卡（发丝缠绕/厄运/黑暗之剑/厄难）拨时钟赶夜；黑夜领域保留压暗但转为遮蔽天光的对外压制。"
     },
     "nightmare": {
       "symbol": "🌚",
@@ -77,7 +77,7 @@
       "flagship": false,
       "lore": "序列9 不眠者 —— \"每天只需 3-4 小时休息\"",
       "flavor": "你的身体早已习惯不眠，别人睡一整夜才攒下的精力，你在片刻的假寐里就能补回——但唯有夜色垂落时，这份禀赋才会真正苏醒。",
-      "describe": "不眠之躯随光照醒眠：光照 ≤2 时能量上限 +5、能量回复 +0.2/tick；光照 >2（天亮）即沉眠，增益消失。",
+      "describe": "不眠之躯随夜醒眠：夜晚/午夜相位时能量上限 +5、能量回复 +0.2/tick；天色转亮（黎明起）即沉眠，增益消失。",
       "hook": [
         "on_tick",
         "on_battle_start"
@@ -86,9 +86,11 @@
         {
           "op": "if",
           "condition": {
-            "kind": "luminance_compare",
-            "cmp": "<=",
-            "n": 2
+            "kind": "phase_is",
+            "phases": [
+              "night",
+              "midnight"
+            ]
           },
           "then": [
             {
@@ -96,7 +98,7 @@
               "statusId": "sleepless_body_power",
               "duration": null,
               "target": "self",
-              "note": "暗夜档(luminance<=2)：不眠之躯苏醒"
+              "note": "夜相位（night/midnight）：不眠之躯苏醒"
             }
           ],
           "else": [
@@ -108,13 +110,13 @@
                 "statusId": "sleepless_body_power",
                 "count": 1
               },
-              "note": "光照回升 >2（luminance>2，黎明起转亮）：不眠之躯沉眠（严格阈值，不再保留过渡带）"
+              "note": "相位转亮（黎明/白昼/黄昏）：不眠之躯沉眠（真实相位判定，无过渡带）"
             }
           ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "稿面注明能量仅为'睡得少'的副产品，v0.1 的能量续航轴已废弃，本卡为唯一遗留",
+      "conversionNotes": "稿面注明能量仅为'睡得少'的副产品，v0.1 的能量续航轴已废弃，本卡为唯一遗留｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight），重点在夜不在光。",
       "art": {
         "subject": "a watchman resting upright in a moonlit chair, eyes half-open",
         "elements": [
@@ -136,7 +138,7 @@
       "flagship": false,
       "lore": "序列9 不眠者 —— \"无需光照具备卓越视力\"；\"敏锐察觉黑暗里的危险\"",
       "flavor": "黑暗于你并非阻碍——藏在暗处的身形瞒不过你的眼睛，而它们自以为得手的偷袭，也总是慢了半步。",
-      "describe": "光照 ≤2 时获得夜视：敌方隐匿对你无效，受隐匿敌人攻击的伤害 ×0.75；光照 >2 即消退。",
+      "describe": "夜晚/午夜相位时获得夜视：敌方隐匿对你无效，受隐匿敌人攻击的伤害 ×0.75；天色转亮即消退。",
       "hook": [
         "on_tick",
         "on_battle_start"
@@ -145,9 +147,11 @@
         {
           "op": "if",
           "condition": {
-            "kind": "luminance_compare",
-            "cmp": "<=",
-            "n": 2
+            "kind": "phase_is",
+            "phases": [
+              "night",
+              "midnight"
+            ]
           },
           "then": [
             {
@@ -155,7 +159,7 @@
               "statusId": "dark_sight",
               "duration": null,
               "target": "self",
-              "note": "暗夜档(luminance<=2)：夜视苏醒"
+              "note": "夜相位（night/midnight）：夜视苏醒"
             }
           ],
           "else": [
@@ -167,7 +171,7 @@
                 "statusId": "dark_sight",
                 "count": 1
               },
-              "note": "光照回升 >2（luminance>2，黎明起转亮）：夜视消退（严格阈值，不再保留过渡带）"
+              "note": "相位转亮（黎明/白昼/黄昏）：夜视消退（真实相位判定，无过渡带）"
             }
           ]
         }
@@ -176,7 +180,7 @@
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：识破隐匿（依赖 C8「识破」，与愚者【灵视】同源）。",
+      "conversionNotes": "翻译/语义：识破隐匿（依赖 C8「识破」，与愚者【灵视】同源）。｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight）。",
       "art": {
         "subject": "a night watchman's eyes glinting silver in pitch black",
         "elements": [
@@ -198,7 +202,7 @@
       "flagship": false,
       "lore": "序列9 不眠者 —— \"夜越深精力越充沛，力量/敏捷/思维超越常人\"",
       "flavor": "夜色每浓一分，你的力量、身手与思绪便更清明一分——黎明之前，不会有人的锋芒比你更盛。",
-      "describe": "夜晚/午夜相位或『黑夜领域』界域存续期间，每 tick 夜色 +1（至多 3 层，每层行动条速率 +1、能量回复 +0.04）；上述条件皆失则停止积累。夜色由『夜色』状态自身在光照 >2 时自主逐层倾泻——花 1 层把战场光照压为 2（暗夜档）覆盖 4tick 并获得夜释之护（防御 +3、精神抗性 +10%）4tick，耗尽即停。",
+      "describe": "夜晚/午夜相位或『黑夜领域』界域存续期间，每 tick 夜色 +1（至多 3 层，每层行动条速率 +1、能量回复 +0.04）；上述条件皆失则停止积累。夜色由『夜色』状态自身在非夜相位（黎明/白昼/黄昏）自主逐层倾泻赶夜——花 1 层推进战场时钟 4 tick 并获得夜释之护（防御 +3、精神抗性 +10%）4tick，时钟抵夜即停，耗尽即停。",
       "hook": [
         "on_tick"
       ],
@@ -220,7 +224,7 @@
               "stackMode": "add",
               "duration": null,
               "target": "self",
-              "note": "积累夜色 +1（上限 3 层）：真实夜晚/午夜相位。set_luminance 覆写不改 board.phase，压暗窗口内不自我续杯——防无限永夜的安全阀，勿放宽。倾泻逻辑已移入 nightfall 状态自身 on_tick 自主触发。"
+              "note": "积累夜色 +1（上限 3 层）：真实夜晚/午夜相位。倾泻（赶夜）只发生在非夜相位，且时钟只进不退——抵达夜相位后倾泻自动停止，无自我续杯环，勿放宽。倾泻逻辑在 nightfall 状态自身 on_tick。"
             }
           ],
           "else": [
@@ -254,7 +258,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态「夜色」的累积源（夜/午夜相位 + 黑夜领域双源）；倾泻已移入 nightfall 状态自身 on_tick 自主触发。",
+      "conversionNotes": "翻译/语义：「越黑暗越强」主判据：暗夜轴身份状态「夜色」的累积源（夜/午夜相位 + 黑夜领域双源）；倾泻已移入 nightfall 状态自身 on_tick 自主触发。｜2026-10-08 夜轨改造：倾泻由「买压暗窗口」改为「advance_clock 赶夜」，安全阀由「覆写不改相位」改为「时钟只进不退」。",
       "art": {
         "subject": "shadows thickening and climbing up a lone standing figure",
         "elements": [
@@ -276,7 +280,7 @@
       "flagship": false,
       "lore": "序列8 午夜诗人 —— \"擅长格斗、射击、攀爬和感应\"",
       "flavor": "你在午夜里练就的身手从不需要灯火照明——拳脚、准头与攀爬的本能，早已刻进骨子里。",
-      "describe": "光照 ≤2 时攻击 +2、防御 +1，且受击将恐惧反挂攻击者 10tick（每 10tick 至多一次）；光照 >2 即消退。",
+      "describe": "夜晚/午夜相位时攻击 +2、防御 +1，且受击将恐惧反挂攻击者 10tick（每 10tick 至多一次）；天色转亮即消退。",
       "hook": [
         "on_tick",
         "on_battle_start"
@@ -285,9 +289,11 @@
         {
           "op": "if",
           "condition": {
-            "kind": "luminance_compare",
-            "cmp": "<=",
-            "n": 2
+            "kind": "phase_is",
+            "phases": [
+              "night",
+              "midnight"
+            ]
           },
           "then": [
             {
@@ -295,7 +301,7 @@
               "statusId": "midnight_prowess_power",
               "duration": null,
               "target": "self",
-              "note": "暗夜档(luminance<=2)：午夜武艺苏醒（攻+2/防+1 走 midnight_prowess_power 状态）"
+              "note": "夜相位（night/midnight）：午夜武艺苏醒（攻+2/防+1 走 midnight_prowess_power 状态）"
             }
           ],
           "else": [
@@ -307,7 +313,7 @@
                 "statusId": "midnight_prowess_power",
                 "count": 1
               },
-              "note": "光照回升 >2（luminance>2，黎明起转亮）：午夜武艺沉寂（严格阈值，不再保留过渡带）"
+              "note": "相位转亮（黎明/白昼/黄昏）：午夜武艺沉寂（真实相位判定，无过渡带）"
             }
           ]
         }
@@ -322,7 +328,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴属性地板。",
+      "conversionNotes": "翻译/语义：暗夜轴属性地板。｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight），醒眠与回击门槛同源。",
       "art": {
         "subject": "a fighter shadow-boxing under a single street lamp at midnight",
         "elements": [
@@ -339,9 +345,11 @@
             {
               "op": "if",
               "condition": {
-                "kind": "luminance_compare",
-                "cmp": "<=",
-                "n": 2
+                "kind": "phase_is",
+                "phases": [
+                  "night",
+                  "midnight"
+                ]
               },
               "then": [
                 {
@@ -352,7 +360,7 @@
                 }
               ],
               "else": [],
-              "note": "回击门槛：光照度≤2 才触发——正午受击不回击（途径红线：天光破晓弱项）"
+              "note": "回击门槛：夜晚/午夜相位才触发——天光下受击不回击（途径红线：天光破晓弱项）"
             }
           ],
           "minIntervalTicks": 10,
@@ -1136,7 +1144,7 @@
       "flagship": false,
       "lore": "序列4 守夜人 —— \"越黑暗越强，正午阳光下被削弱\"",
       "flavor": "你是为夜而生的——天光未散时你倦怠迟钝，而一旦夜色彻底落下，没有谁比你更清醒、更锋利。",
-      "describe": "光照 ≤2 时获得暗夜加持（攻 +3/防 +2/精抗 +10%），光照 >2 即消退；光照 ≥8 时陷入天光未散（攻 -2/防 -1），<8 解除；过渡带（3–7）两者皆无。自身不操控光照，只承接战场明暗。",
+      "describe": "夜晚/午夜相位时获得暗夜加持（攻 +3/防 +2/精抗 +10%），出离夜相位即消退；白昼相位时陷入天光未散（攻 -2/防 -1），出离白昼即解除；黎明/黄昏为过渡带，两者皆无。自身不拨时钟，只承接战场昼夜。",
       "hook": [
         "on_tick"
       ],
@@ -1144,9 +1152,11 @@
         {
           "op": "if",
           "condition": {
-            "kind": "luminance_compare",
-            "cmp": "<=",
-            "n": 2
+            "kind": "phase_is",
+            "phases": [
+              "night",
+              "midnight"
+            ]
           },
           "then": [
             {
@@ -1154,7 +1164,7 @@
               "statusId": "night_empower",
               "duration": null,
               "target": "self",
-              "note": "暗夜档(luminance<=2)：守夜人苏醒（暗夜加持）"
+              "note": "夜相位（night/midnight）：守夜人苏醒（暗夜加持）"
             },
             {
               "type": "dispel",
@@ -1164,7 +1174,7 @@
                 "statusId": "sunlight_weakness",
                 "count": 1
               },
-              "note": "暗夜档同步撤除天光未散"
+              "note": "夜相位同步撤除天光未散"
             }
           ],
           "else": [
@@ -1176,14 +1186,15 @@
                 "statusId": "night_empower",
                 "count": 1
               },
-              "note": "光照回升 >2（luminance>2，黎明起转亮）：暗夜加持即撤（严格阈值，不再靠 duration 残留）"
+              "note": "出离夜相位：暗夜加持即撤（相位判定，不靠 duration 残留）"
             },
             {
               "op": "if",
               "condition": {
-                "kind": "luminance_compare",
-                "cmp": ">=",
-                "n": 8
+                "kind": "phase_is",
+                "phases": [
+                  "day"
+                ]
               },
               "then": [
                 {
@@ -1191,7 +1202,7 @@
                   "statusId": "sunlight_weakness",
                   "duration": null,
                   "target": "self",
-                  "note": "白昼档(luminance>=8)：天光未散（正午虚弱）"
+                  "note": "白昼相位（day）：天光未散（正午虚弱）"
                 }
               ],
               "else": [
@@ -1203,7 +1214,7 @@
                     "statusId": "sunlight_weakness",
                     "count": 1
                   },
-                  "note": "光照回落 <8：天光未散即解（严格阈值）"
+                  "note": "出离白昼相位：天光未散即解"
                 }
               ]
             }
@@ -1211,7 +1222,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴『越黑暗越强』身份卡——纯光照读取，自身不操控光照，只承接战场明暗醒眠。",
+      "conversionNotes": "翻译/语义：暗夜轴『越黑暗越强』身份卡——纯相位读取，自身不拨时钟，只承接战场昼夜醒眠。｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight 加持、day 惩罚；黎明/黄昏为天然过渡带，替代旧光照 3–7 过渡带）。",
       "art": {
         "subject": "a night watchman growing sharper as full darkness falls",
         "elements": [
@@ -1233,7 +1244,7 @@
       "flagship": true,
       "lore": "序列4 守夜人 —— \"『黑夜领域』：纯粹黑暗构成领域，防御 / 侵蚀敌人 / 为灵提供增益\"",
       "flavor": "纯粹的黑暗从你脚下漫开——它替你挡下劈来的刀，啃咬着困在其中的敌人，而你那些灵的爪牙，在黑暗里变得愈发锋利。",
-      "describe": "降临「黑夜领域」20 tick：全体敌人每 tick 受 1 点暗黑伤害、行动条速率 ×0.9；己方全体受伤 ×0.85，其中灵体与亡灵攻击 +2；「暗影/梦境/灵体」标签卡效果 ×1.3，「光/净化」标签卡 ×0.7。全场光照相对压暗 −1（随界域 20 tick，非硬设暗夜档）。自身迷失值 +1。",
+      "describe": "降临「黑夜领域」20 tick：全体敌人每 tick 受 1 点暗黑伤害、行动条速率 ×0.9；己方全体受伤 ×0.85，其中灵体与亡灵攻击 +2；「暗影/梦境/灵体」标签卡效果 ×1.3，「光/净化」标签卡 ×0.7。全场光照压暗 −1（随界域 20 tick，遮蔽天光、压制光系收益）。自身迷失值 +1。",
       "cost": {
         "energy": 5,
         "cooldown": 35,
@@ -1265,7 +1276,7 @@
               "delta": -1,
               "duration": 20,
               "dispelable": false,
-              "note": "黑夜领域：全场相对压暗 delta -1（随界域 20 tick；非硬设暗夜档；不可驱散＝拨光不拨时口径）"
+              "note": "黑夜领域：全场相对压暗 delta -1（随界域 20 tick，不可驱散）——遮蔽天光的对外压制：削弱敌方白昼/黎明档收益。本途径被动已改读真实夜相位（2026-10-08 夜轨改造），压暗不再点亮自己，旧「免费点亮 6 张被动」红线自然失效"
             },
             {
               "type": "modify_resource",
@@ -1313,7 +1324,7 @@
         "灵体"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴旗舰主题界域；读 `夜幕` 给灵增益（payoff 一体）。✅ 依赖已落。2026-10-07：补全场光照相对压暗 delta -1。用**相对**压暗而非硬设 value=2——硬设会一步把光照压进 ≤2 档，免费点亮不眠者 6 张 lum≤2 被动（不眠之躯/夜视/午夜武艺/梦境行者/守夜人体质/黑暗仆人·不灭），绕过夜色资源的成本。dispelable=false 跟本途径其余 18 张压暗卡口径一致（拨光不拨时、替代 advance_clock，不可驱散）。挂**一次性** effects 步（随界域 20 tick），不挂 domainDef 的 on_turn_start 刷新——delta 每次施加按当时生效值压栈，逐回合刷新会叠加成硬设暗夜，正踩 designNote「不得放宽为 lum≤2」的红线。",
+      "conversionNotes": "翻译/语义：暗夜轴旗舰主题界域；读 `夜幕` 给灵增益（payoff 一体）。✅ 依赖已落。2026-10-07：补全场光照相对压暗 delta -1（相对压暗而非硬设 value=2）。2026-10-08 夜轨改造：被动判定全面改读相位后，压暗职能由「点亮自己」转为「遮蔽天光」的对外压制（削弱敌方白昼/黎明档收益）；仍挂一次性 effects 步随界域 20 tick，不挂 domainDef on_turn_start 刷新（delta 叠加风险不变）。",
       "art": {
         "subject": "pure darkness flooding outward from a watchman's feet",
         "elements": [
@@ -1335,7 +1346,7 @@
       "flagship": false,
       "lore": "序列4 守夜人 —— \"『发丝缠绕』\"",
       "flavor": "你的长发无声地散开、缠上它的手脚——越是挣扎，缠得越紧。",
-      "describe": "对一名近战敌人造成 2 点精神伤害并束缚 15tick（无法位移、行动条 ×0.7）；光照 -1（10 tick）。",
+      "describe": "对一名近战敌人造成 2 点精神伤害并束缚 15tick（无法位移、行动条 ×0.7）；战场时钟推进 3 tick（赶夜）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1363,18 +1374,16 @@
           "duration": 15
         },
         {
-          "type": "set_luminance",
-          "duration": 10,
-          "dispelable": false,
-          "note": "压暗：delta -1（10 tick）——拨光不拨时（替代 advance_clock）",
-          "delta": -1
+          "type": "advance_clock",
+          "ticks": 3,
+          "note": "赶夜：推进战场时钟 3 tick——拨时不拨光（时钟只进不退，全场生效，⚠️D 待平衡）"
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴节奏压制。",
+      "conversionNotes": "翻译/语义：暗夜轴节奏压制。｜2026-10-08 夜轨改造：压暗 -1/10t → advance_clock 3t。",
       "art": {
         "subject": "long hair silently coiling around a struggling enemy's limbs",
         "elements": [
@@ -1396,7 +1405,7 @@
       "flagship": false,
       "lore": "序列4 守夜人 —— \"可给予厄运\"",
       "flavor": "你往它身上挂了一小片夜色——从这一刻起，它迈出的每一步都比预想的更慢、更沉，而第一记落下的重击，总会挑中最疼的地方。",
-      "describe": "使一名敌人厄运缠身 20tick：行动条 ×0.85、每 tick 行动条 -2、下次受伤 ×1.25；光照 -1（15 tick）。",
+      "describe": "使一名敌人厄运缠身 20tick：行动条 ×0.85、每 tick 行动条 -2、下次受伤 ×1.25；战场时钟推进 3 tick（赶夜）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1419,15 +1428,13 @@
           "duration": 20
         },
         {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
+          "type": "advance_clock",
+          "ticks": 3,
+          "note": "赶夜：推进战场时钟 3 tick——拨时不拨光（时钟只进不退，全场生效，⚠️D 待平衡）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴确定性厄运（慢/退/加重）。",
+      "conversionNotes": "翻译/语义：暗夜轴确定性厄运（慢/退/加重）。｜2026-10-08 夜轨改造：压暗 -1/15t → advance_clock 3t。",
       "art": {
         "subject": "a small patch of night clinging to a staggering enemy",
         "elements": [
@@ -1449,7 +1456,7 @@
       "flagship": false,
       "lore": "序列3 恐惧主教 —— \"『黑暗之剑』：骨制长剑，目标被黑暗力量感染直接消融\"",
       "flavor": "一柄骨白色的长剑自黑暗里探出——被它划开的地方没有血，只有正在一点点消融的、连光都透不进去的黑。",
-      "describe": "对一名近战敌人造成 5 点暗黑伤害并侵蚀 15tick（每 tick 2 点暗黑伤害、受治疗 ×0.7），期间死亡不可复活；光照 -2（10 tick）。",
+      "describe": "对一名近战敌人造成 5 点暗黑伤害并侵蚀 15tick（每 tick 2 点暗黑伤害、受治疗 ×0.7），期间死亡不可复活；战场时钟推进 5 tick（赶夜）。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1477,22 +1484,22 @@
           "duration": 15
         },
         {
-          "type": "set_luminance",
-          "duration": 10,
-          "dispelable": false,
-          "note": "压暗：delta -2（10 tick）——拨光不拨时（替代 advance_clock）",
-          "delta": -2
+          "type": "advance_clock",
+          "ticks": 5,
+          "note": "赶夜：推进战场时钟 5 tick——拨时不拨光（时钟只进不退，全场生效，⚠️D 待平衡）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴处决。",
-      "dimHooks": [
+      "conversionNotes": "翻译/语义：暗夜轴处决。｜2026-10-08 夜轨改造：压暗 -2/10t → advance_clock 5t；dimHook(luminance≤2) → phaseHook(night/midnight)。",
+      "phaseHooks": [
         {
-          "dim": "luminance",
-          "comparator": "<=",
-          "threshold": 2,
+          "phases": [
+            "night",
+            "midnight"
+          ],
           "mul": 1.2,
-          "note": "暗夜档（光照度 ≤2）本卡伤害 ×1.2（⚠️D 平衡占位）"
+          "target": "damage",
+          "note": "夜相位（night/midnight）本卡伤害 ×1.2（⚠️D 平衡占位）"
         }
       ],
       "art": {
@@ -1948,7 +1955,7 @@
       "flagship": false,
       "lore": "序列1 厄难骑士 —— \"『厄难』：给予敌人厄运——黑暗的『厄运』权柄\"；序列0 黑暗 —— \"厄运和灾难权柄\"",
       "flavor": "你宣判了它们的厄难——从今夜起，厄运和灾难会自己找上门，一步慢，步步慢。",
-      "describe": "全体敌人厄运缠身 25tick、受到 3 点精神伤害、行动条 -10；光照 -2（15 tick）。",
+      "describe": "全体敌人厄运缠身 25tick、受到 3 点精神伤害、行动条 -10；战场时钟推进 6 tick（赶夜）。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -1990,11 +1997,9 @@
           ]
         },
         {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "压暗：delta -2（15 tick）——拨光不拨时（替代 advance_clock）",
-          "delta": -2
+          "type": "advance_clock",
+          "ticks": 6,
+          "note": "赶夜：推进战场时钟 6 tick——拨时不拨光（时钟只进不退，全场生效，⚠️D 待平衡）"
         }
       ],
       "upgradeLadder": {
@@ -2011,7 +2016,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "序列1「厄难」与序列0「厄运和灾难权柄」合并为一张卡，升级阶梯区分强度",
+      "conversionNotes": "序列1「厄难」与序列0「厄运和灾难权柄」合并为一张卡，升级阶梯区分强度｜2026-10-08 夜轨改造：压暗 -2/15t → advance_clock 6t。",
       "art": {
         "subject": "misfortune and disaster stalking every enemy in the dark",
         "elements": [
@@ -2033,7 +2038,7 @@
       "flagship": false,
       "lore": "序列1 厄难骑士 —— \"『黑暗仆人』：黑夜中几乎无法被杀死，每次从黑暗中回归\"；序列0 黑暗 —— \"黑暗权柄：黑暗中不死，借助黑暗复活\"",
       "flavor": "你已是黑暗的仆人——只要夜色还在，死亡就只是暂时。每一次倒下，你都会从黑暗里重新走回来。",
-      "describe": "每次入夜获得 1 个黑暗仆人（全场至多补 3 次，至多同时 3 个），每个仆人使攻击 +1；死亡时若光照 ≤2，中断死亡、保留 1 血并回复 30% 最大生命（消耗 1 个仆人）；光照 >2 仅令替死失效，仆人与攻击加成保留。",
+      "describe": "每次入夜获得 1 个黑暗仆人（全场至多补 3 次，至多同时 3 个），每个仆人使攻击 +1；死亡时若处于夜晚/午夜相位，中断死亡、保留 1 血并回复 30% 最大生命（消耗 1 个仆人）；非夜相位仅令替死失效，仆人与攻击加成保留。",
       "hook": [
         "on_phase_change"
       ],
@@ -2055,13 +2060,13 @@
               "duration": null,
               "target": "self",
               "maxTriggersPerBattle": 3,
-              "note": "入夜（phase_is night）补 1 个黑暗仆人，全场至多 3 次；层数上限 3 另由状态 maxStacks 把关。光照 >2 不再撤除状态（2026-10-08 删旧 else 驱散）——替死由状态内 on_death 的 luminance 条件自行把关"
+              "note": "入夜（phase_is night）补 1 个黑暗仆人，全场至多 3 次；层数上限 3 另由状态 maxStacks 把关。非夜相位不撤除状态（2026-10-08 删旧 else 驱散）——替死由状态内 on_death 的 phase_is 条件自行把关"
             }
           ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴终极回报（暗夜免死）。 ｜ 2026-10-08 机制改造：由「光照≤2 挂 3 层 charges（光照>2 整体驱散）」改为「每次入夜补 1 个仆人（phase_is night + maxTriggersPerBattle 3），每个仆人 attack +1（statPerStack H34），替死消耗 1 层」；触发点由 on_tick/on_battle_start 改为 on_phase_change（入夜即补，不再逐 tick 轮询光照）；光照 >2 只封替死（状态内 on_death 的 luminance 条件），状态与攻击加成保留。",
+      "conversionNotes": "翻译/语义：暗夜轴终极回报（暗夜免死）。 ｜ 2026-10-08 机制改造：由「光照≤2 挂 3 层 charges（光照>2 整体驱散）」改为「每次入夜补 1 个仆人（phase_is night + maxTriggersPerBattle 3），每个仆人 attack +1（statPerStack H34），替死消耗 1 层」；触发点由 on_tick/on_battle_start 改为 on_phase_change（入夜即补，不再逐 tick 轮询光照）；光照 >2 只封替死（状态内 on_death 的 luminance 条件），状态与攻击加成保留。｜2026-10-08 夜轨改造：替死判定 luminance ≤2 → phase_is(night/midnight)，与卡侧入夜判定同源。",
       "art": {
         "subject": "a fallen servant rising again out of the night",
         "elements": [
