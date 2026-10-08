@@ -636,7 +636,7 @@
       "flagship": false,
       "lore": "序列7 梦魇 —— \"『塑梦』：让梦境按设想发展，引导秘密或击溃精神\"",
       "flavor": "你替它把这场梦改了走向——梦里的东西开始啃食它的精神，而它藏得最深的那个秘密，已经落在了你手里。",
-      "describe": "目标已入梦：折磨 20tick（每 tick 0.4 点精神伤害）、易伤 20tick、沉眠延长 20tick、自身能量 +2；否则造成 2 点精神伤害并使其入梦 15tick。",
+      "describe": "目标已入梦：折磨 20tick（每 tick 0.4 点精神伤害）、易伤 20tick、沉眠延长 10tick、自身能量 +2；否则造成 2 点精神伤害并使其入梦 15tick。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -701,7 +701,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：读 `灵梦` 二次操作（payoff）。｜2026-10-08 梦魇轴撤光照：set_luminance 摘除（赶夜语义留暗夜轴，梦魇身份由沉眠/恐惧机制自撑；不补数值，归平衡期）｜2026-10-08 tick 口径清算：折磨伤害节奏改每 5 tick（原 on_tick 每 tick ×2 = 40 点，超预算锚）；『续眠』落地为 addDuration +20 tick（原先只写在 note 里未实现，且被 1:1 强转成 4 tick）。｜2026-10-08 费率式表述：伤害改按每 tick 0.4 点（原 2 点/5 tick，总量不变），同时摆脱 minIntervalTicks 权宜写法",
+      "conversionNotes": "翻译/语义：读 `灵梦` 二次操作（payoff）。｜2026-10-08 梦魇轴撤光照：set_luminance 摘除（赶夜语义留暗夜轴，梦魇身份由沉眠/恐惧机制自撑；不补数值，归平衡期）｜2026-10-08 tick 口径清算：折磨伤害节奏改每 5 tick（原 on_tick 每 tick ×2 = 40 点，超预算锚）；『续眠』落地为 addDuration +20 tick（原先只写在 note 里未实现，且被 1:1 强转成 4 tick）。｜2026-10-08 费率式表述：伤害改按每 tick 0.4 点（原 2 点/5 tick，总量不变），同时摆脱 minIntervalTicks 权宜写法｜2026-10-09 续眠减半：沉眠延长 20→10 tick（原与折磨/易伤同档 20，叠加基础睡眠后单次可锁 40 tick（夜相位 45）偏长）",
       "art": {
         "subject": "hands reshaping a dreamscape while hidden whispers leak out",
         "elements": [
@@ -723,7 +723,7 @@
       "flagship": false,
       "lore": "序列7 梦魇 —— \"自由出入极大范围熟睡者的梦\"",
       "flavor": "只要有谁还沉在梦里，就没有你够不到的地方——距离与前排，都拦不住一个走在梦里的人。",
-      "describe": "场上有敌人陷入沉眠或梦陷时获得梦境行者：对入梦敌人的技能无视射程与前排限制，入梦持续时间 +1；场上无人入梦即消退。",
+      "describe": "场上有敌人陷入沉眠或梦陷时获得梦境行者：对入梦敌人的技能无视射程与前排限制，入梦持续时间 +5tick；场上无人入梦即消退。",
       "hook": [
         "on_tick",
         "on_battle_start"
