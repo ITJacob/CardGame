@@ -2069,7 +2069,7 @@
       "flagship": false,
       "lore": "序列2 天气术士 —— \"『操纵天气』（核心权柄）：创造极端天气\"",
       "flavor": "云层在你头顶翻涌着压下来——雷声、雪幕、沙暴，随便哪一种，都够它们受的。",
-      "describe": "降临极端天气域（4 回合，可驱散）：全场每 tick 受 1 点雷电伤害（无差别天灾，己方同样挨砸）；敌方行动速率 -6。",
+      "describe": "降临极端天气域（4 回合，可驱散）：全场每 tick 受 0.2 点雷电伤害（无差别天灾，己方同样挨砸）；敌方行动速率 -6。",
       "cost": {
         "energy": 5,
         "cooldown": 40,
@@ -2111,7 +2111,7 @@
         "duration": 20,
         "durationUnit": "tick",
         "dispelable": true,
-        "envRulesText": "全场：所有单位每 tick 受 damage(shock, 1)（无差别天灾，己方同样挨砸）；敌方单位 gauge.rate -6（风压迟滞）——双向性 = 天灾不认人，但风只压敌人",
+        "envRulesText": "全场：所有单位每 tick 受 damage(shock, 0.2)（无差别天灾，己方同样挨砸）；敌方单位 gauge.rate -6（风压迟滞）——双向性 = 天灾不认人，但风只压敌人",
         "rulePatches": [
           {
             "kind": "empower",
@@ -2138,7 +2138,7 @@
         {
           "id": "blizzard",
           "name": "暴雪",
-          "note": "ice 元素：掉节奏翻倍、伤害减半（tick damage 1→0.5，风压 -6→-12，⚠️D）",
+          "note": "ice 元素：掉节奏翻倍、伤害减半（tick damage 0.2→0.1，风压 -6→-12，⚠️D）",
           "domainDefOverride": {
             "triggers": [
               {
@@ -2150,7 +2150,7 @@
                   {
                     "type": "damage",
                     "element": "ice",
-                    "value": 0.5
+                    "value": 0.1
                   }
                 ]
               },
@@ -2187,7 +2187,7 @@
                   {
                     "type": "damage",
                     "element": "physical",
-                    "value": 1
+                    "value": 0.2
                   }
                 ]
               },
@@ -3194,7 +3194,7 @@
             {
               "type": "damage",
               "element": "lightning",
-              "value": 1
+              "value": 0.2
             }
           ]
         },

@@ -458,7 +458,7 @@
       "flagship": false,
       "lore": "序列8 医师 —— \"给予生命\"",
       "flavor": "你把一口气吹进同伴的胸膛——那口气在它体内生了根，开始自己长。",
-      "describe": "治疗一名友军 3 点生命，并使其再生 15tick（每 tick 2 点）。；先埋下种子：这份收益要花时间才长成（拒绝瞬发全额）。",
+      "describe": "治疗一名友军 3 点生命，并使其再生 15tick（每 tick 0.4 点）。；先埋下种子：这份收益要花时间才长成（拒绝瞬发全额）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1941,7 +1941,7 @@
       "flagship": false,
       "lore": "序列2 荒芜主母「部分『丰收』『生命』权柄」+ 序列0 下位「荒芜」「丰收」并列",
       "flavor": "它们枯萎的地方，你们的种子正破土而出——同一片土地，只换了一只看它的眼睛。",
-      "describe": "每 tick：若场上存在处于持续伤害状态的敌人，己方生命最低的友军回复 1 点生命。；若己方有生命充盈（vitality_field）在场，荣段更盛：治疗 2 点。；泥土自己会合上伤口——慢，但稳。",
+      "describe": "每 tick：若场上存在处于持续伤害状态的敌人，己方生命最低的友军回复 0.2 点生命。；若己方有生命充盈（vitality_field）在场，荣段更盛：治疗 0.4 点。；泥土自己会合上伤口——慢，但稳。",
       "hook": [
         "on_tick"
       ],
@@ -1958,7 +1958,7 @@
           "then": [
             {
               "type": "heal",
-              "value": 1,
+              "value": 0.2,
               "target": "target",
               "note": "锚 self_faction_hp_desc（己方生命最低者，F60）"
             }
@@ -1977,7 +1977,7 @@
           "then": [
             {
               "type": "heal",
-              "value": 2,
+              "value": 0.4,
               "target": "target",
               "note": "荣段更盛：己方生命充盈（healing 轴身份）在场，枯荣循环的「荣」治疗 1→2——blight 读 healing 跨轴段（批次十一 2026-10-02）"
             }
@@ -1994,7 +1994,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "稿面条件「场上存在处于 dot 状态的敌方单位」：field_status_count 谓词按状态 id 计数、无 dot 类别版，暂以 has_category(side:enemy) 表达，语义差异待内核裁定 ｜ on_tick 频率是本卡最大数值盲区（每 tick 回 1 ≈ 每自身回合回 5），需按 tick 频率重标 ｜ 2026-10-02 批次十一：vitality_field 跨轴读段（荣段更盛——枯荣循环跨 healing 轴） ｜ 2026-10-03 骨架手术：孕育换形（角色=heal）",
+      "conversionNotes": "稿面条件「场上存在处于 dot 状态的敌方单位」：field_status_count 谓词按状态 id 计数、无 dot 类别版，暂以 has_category(side:enemy) 表达，语义差异待内核裁定 ｜ 2026-10-09 全库 DoT 校正：每 tick 回血 1→0.2（原 1/tick ≈ 每自身回合 5 点，系回合→tick 换算残留），总量回归草案口径 ｜ 2026-10-02 批次十一：vitality_field 跨轴读段（荣段更盛——枯荣循环跨 healing 轴） ｜ 2026-10-03 骨架手术：孕育换形（角色=heal）",
       "art": {
         "subject": "withered stalks falling as new green shoots break the same soil",
         "elements": [
@@ -2015,7 +2015,7 @@
       "flagship": true,
       "lore": "序列1 自然行者 —— \"『自然之子』：与大地树林水流山峰矿石成为一体，可穿梭\"",
       "flavor": "你和大山、和溪流、和脚下的矿脉对了一下眼神，然后就不在这里了——你从身后的土里冒了出来。",
-      "describe": "移动至己方半场内指定空格，并化身自然之子 15tick：不可被单体技能选中、受伤 ×0.8，每 tick 回复 1 点生命。；若目标带大地层数，沃土滋养，自疗 2 点。",
+      "describe": "移动至己方半场内指定空格，并化身自然之子 15tick：不可被单体技能选中、受伤 ×0.8，每 tick 回复 0.2 点生命。；若目标带大地层数，沃土滋养，自疗 2 点。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -2091,7 +2091,7 @@
       "flagship": false,
       "lore": "序列1 自然行者 —— \"『创造世界』：孕育创造属于『自然』概念的世界\"",
       "flavor": "你孕育了一个小小的世界——里面只有树、只有虫、只有会自己长回来的东西。你邀请同伴进去，然后把门带上。",
-      "describe": "降临「自然世界」界域 4 回合：己方单位每回合被滋养（再生 10tick + 攻击 +2），敌方全体行动条速率 ×0.85 且每 tick 受 1 点毒素伤害；「自然/植物/毒」标签卡 ×1.3，「火」标签卡 ×0.8。自身迷失值 +1。",
+      "describe": "降临「自然世界」界域 4 回合：己方单位每回合被滋养（再生 10tick + 攻击 +2），敌方全体行动条速率 ×0.85 且每 tick 受 0.2 点毒素伤害；「自然/植物/毒」标签卡 ×1.3，「火」标签卡 ×0.8。自身迷失值 +1。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2133,7 +2133,7 @@
         "duration": 20,
         "durationUnit": "tick",
         "dispelable": true,
-        "envRulesText": "全场双向：己方每回合刷新 再生(10t)+攻击+2；敌方 gauge_rate ×0.85 且每 tick 受 1 点毒素伤害（滋养/侵蚀）",
+        "envRulesText": "全场双向：己方每回合刷新 再生(10t)+攻击+2；敌方 gauge_rate ×0.85 且每 tick 受 0.2 点毒素伤害（滋养/侵蚀）",
         "rulePatches": [
           {
             "kind": "empower",
@@ -2416,7 +2416,7 @@
             {
               "type": "damage",
               "element": "poison",
-              "value": 1,
+              "value": 0.2,
               "target": "all_enemies",
               "note": "自然侵蚀"
             }
