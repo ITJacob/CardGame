@@ -66,7 +66,8 @@ def main():
     L.append("| 途径 | Top-5 指纹键 |")
     L.append("|---|---|")
     for a in ids:
-        top = sorted(fps[a].items(), key=lambda kv: -kv[1])[:5]
+        # 并列按键名兜底排序：数量打平时输出才稳定（否则每次重跑换序，diff 满天飞）
+        top = sorted(fps[a].items(), key=lambda kv: (-kv[1], kv[0]))[:5]
         L.append("| %s | %s |" % (a, "；".join("%s ×%d" % kv for kv in top) or "—"))
     L.append("")
 

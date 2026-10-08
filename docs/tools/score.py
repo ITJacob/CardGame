@@ -273,7 +273,9 @@ def fingerprint(cards):
     判定语言是轴身份的一阶载体——夜轨/位格体系不进指纹会让相位途径的风格距离失真）"""
     vec = {}
     for c in cards:
-        for t in card_effect_types(c):
+        # sorted：card_effect_types 返回集合，迭代序随 PYTHONHASHSEED 变，
+        # 会让并列指纹在 STYLE_DISTANCE 里随机换序（产物每次重跑都抖动）
+        for t in sorted(card_effect_types(c)):
             vec["prim:" + t] = vec.get("prim:" + t, 0) + 1
         for n in walk(c.get("effects")):
             if isinstance(n.get("element"), str):
