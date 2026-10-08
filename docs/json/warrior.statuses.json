@@ -348,7 +348,13 @@
               "value": 0.4,
               "target": "self",
               "note": "衰败侵蚀"
-            },
+            }
+          ]
+        },
+        {
+          "event": "on_tick",
+          "minIntervalTicks": 5,
+          "effects": [
             {
               "type": "mount_status",
               "statusId": "aging",
@@ -356,7 +362,8 @@
               "stackMode": "add",
               "target": "self"
             }
-          ]
+          ],
+          "note": "2026-10-09 节流：每 5tick 一次（1 回合=5tick，执行参数 §2.2 权宜规避）"
         }
       ],
       "note": "每 1 层 attack -1、gauge.rate -2；到期/被驱散时层数与属性修正一并回滚（modifierRevert）。传说档 maxStacks 6（见黄昏·万物崩解）。退化方案：固定 damage_taken_mul 1.15 + on_tick damage 2 + attack -2（不随层数递进）"
@@ -407,7 +414,13 @@
               "element": "none",
               "value": 0.6,
               "target": "self"
-            },
+            }
+          ]
+        },
+        {
+          "event": "on_tick",
+          "minIntervalTicks": 5,
+          "effects": [
             {
               "type": "mount_status",
               "statusId": "aging",
@@ -416,7 +429,8 @@
               "target": "self",
               "note": "传说档 aging maxStacks 6"
             }
-          ]
+          ],
+          "note": "2026-10-09 节流：每 5tick 一次（1 回合=5tick，执行参数 §2.2 权宜规避）"
         }
       ],
       "note": "权柄级 dispelable:false（运行时覆写，H8）。到期后残留 aging 层数不清空——aging 实例各自计 duration，到期独立回滚。原著「失控」引擎无对应维度，不做"
