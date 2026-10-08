@@ -191,9 +191,9 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 ### 5.3 条件（condition）
 
-开放结构（`additionalProperties: true`），字段随 `kind` 变化。`kind` 为封闭枚举（26 个）：
+开放结构（`additionalProperties: true`），字段随 `kind` 变化。`kind` 为封闭枚举（31 个）：
 
-`any_of` `caster_has_summon` `caster_status_exists` `chance` `consumed_count` `dead_count` `dispelled_count` `element_is` `field_status_count` `gauge_rank` `has_category` `has_status` `hp_percent` `hp_percent_compare` `remove_reason` `resource_compare` `stat_compare` `status_category` `target_dead` `target_faction_is` `target_has_tag` `target_is_summoned` `target_unit_type` `unit_faction` `variant_is` `zone_active`
+`any_of` `caster_has_summon` `caster_status_exists` `chance` `consumed_count` `damage_source_is` `dead_count` `dispelled_count` `element_is` `field_status_count` `gauge_rank` `has_category` `has_status` `hp_percent` `hp_percent_compare` `luminance_compare` `phase_is` `rank_gap` `remove_reason` `resource_compare` `stat_compare` `status_category` `tag_chain` `target_dead` `target_faction_is` `target_has_tag` `target_is_summoned` `target_unit_type` `unit_faction` `variant_is` `zone_active`
 
 ⚠️ `chance` 必须遵守随机性治理 R1–R6：只用于**非伤害维度**、单次抽样、须可登记筛出。
 当前全库 2 处 `chance`（登记册见 ddd 随机性治理 §四）：monster 行动条 −8（p=0.5）；lawyer【狂乱】（8 段 p=0.25，2026-09-26 拍板保留真随机）。

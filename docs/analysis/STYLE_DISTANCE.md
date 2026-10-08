@@ -66,12 +66,12 @@
 | assassin | prim:mount_status ×33；prim:modify_targetability ×26；prim:modify_resource ×14；prim:translocate ×11；prim:damage ×9 |
 | chanter | prim:mount_status ×25；elem:holy ×21；prim:set_luminance ×20；prim:grant_immunity ×16；prim:damage ×12 |
 | corpse_collector | prim:mount_status ×28；prim:reveal ×16；prim:spawn ×15；elem:mental ×10；prim:damage ×9 |
-| criminal | prim:move ×37；prim:modify_resource ×37；prim:mount_status ×35；prim:damage ×19；prim:modify_stat ×7 |
+| criminal | prim:modify_resource ×37；prim:move ×37；prim:mount_status ×35；prim:damage ×19；prim:modify_stat ×7 |
 | hunter | prim:mount_status ×31；prim:modify_resource ×20；prim:move ×18；prim:modify_rule_slot ×17；prim:damage ×13 |
 | lawyer | prim:mount_status ×33；prim:modify_rule_slot ×18；prim:damage ×15；prim:modify_status ×14；elem:mental ×11 |
 | monster | prim:restore_snapshot ×30；prim:mount_status ×28；prim:modify_resource ×8；prim:damage ×5；elem:mental ×4 |
 | planter | prim:spawn ×30；prim:mount_status ×26；elem:none ×8；prim:damage ×7；prim:heal ×7 |
-| prisoner | prim:mount_status ×24；prim:transfer_status ×20；prim:modify_resource ×20；prim:damage ×12；prim:modify_status ×10 |
+| prisoner | prim:mount_status ×24；prim:modify_resource ×20；prim:transfer_status ×20；prim:damage ×12；prim:modify_status ×10 |
 | pryer | prim:modify_skill ×28；prim:mount_status ×26；prim:damage ×18；elem:none ×9；prim:modify_resource ×8 |
 | reader | prim:mount_status ×22；prim:reveal ×13；prim:damage ×12；elem:mental ×12；prim:modify_skill ×10 |
 | sailor | prim:move ×39；prim:mount_status ×29；prim:damage ×24；elem:physical ×16；elem:lightning ×12 |
