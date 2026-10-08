@@ -187,10 +187,25 @@
       ],
       "dispelable": true,
       "duration": 20,
-      "modifiers": {
-        "damage_taken_mul": 1.2
-      },
-      "note": "硬控（禁用全部行动）+ 受伤 ×1.2；睡眠族扩展：被延长走 durationModifier、被永眠改写走 transferStatus。",
+      "modifiers": [
+        {
+          "kind": "damage_taken_mul",
+          "value": 1.2,
+          "note": "基础：受伤 ×1.2"
+        },
+        {
+          "kind": "damage_taken_mul",
+          "value": 1.4,
+          "condition": {
+            "kind": "phase_is",
+            "phases": [
+              "midnight"
+            ]
+          },
+          "note": "午夜深眠：午夜相位受伤 ×1.4（覆盖基础档）"
+        }
+      ],
+      "note": "硬控（禁用全部行动）+ 受伤 ×1.2（午夜相位 ×1.4 深眠）；被行为伤害命中即醒，状态来源 DoT 不醒（damage_source_is）。睡眠族扩展：被延长走 durationModifier、被永眠改写走 transferStatus。",
       "disallowActions": [
         "move",
         "basic_attack",
@@ -198,6 +213,28 @@
         "skip",
         "react",
         "channel"
+      ],
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "condition": {
+            "kind": "damage_source_is",
+            "sources": [
+              "behavior"
+            ]
+          },
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "filter": {
+                "statusId": "slumber"
+              },
+              "note": "受击苏醒：行为伤害命中即醒（DoT 状态伤害不醒）"
+            }
+          ]
+        }
       ]
     },
     {

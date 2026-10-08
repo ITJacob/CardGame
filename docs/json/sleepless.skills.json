@@ -567,7 +567,7 @@
       "flagship": true,
       "lore": "序列7 梦魇 —— \"『入梦』：自由出入极大范围熟睡者的梦，强行拉人入梦\"",
       "flavor": "你伸手探进它的睡意，把它整个人拽了进去——在它自己的梦里，它连抬手都做不到。",
-      "describe": "对一名敌人造成 2 点精神伤害并使其入梦 20tick（无法行动、受伤 ×1.2）。",
+      "describe": "对一名敌人造成 2 点精神伤害并使其入梦 20tick（无法行动、受伤 ×1.2，被攻击会醒）；夜晚/午夜相位入梦 25tick。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -589,13 +589,32 @@
           "value": 2
         },
         {
-          "type": "mount_status",
-          "statusId": "slumber",
-          "duration": 20
+          "op": "if",
+          "condition": {
+            "kind": "phase_is",
+            "phases": [
+              "night",
+              "midnight"
+            ]
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "slumber",
+              "duration": 25
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "slumber",
+              "duration": 20
+            }
+          ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：梦魇轴旗舰 enabler：挂 `灵梦`(slumber)。｜2026-10-08 梦魇轴撤光照：set_luminance 摘除（赶夜语义留暗夜轴，梦魇身份由沉眠/恐惧机制自撑；不补数值，归平衡期）",
+      "conversionNotes": "翻译/语义：梦魇轴旗舰 enabler：挂 `灵梦`(slumber)。｜2026-10-08 梦魇轴撤光照：set_luminance 摘除（赶夜语义留暗夜轴，梦魇身份由沉眠/恐惧机制自撑；不补数值，归平衡期）｜2026-10-08 夜相位时长加成：夜/午夜相位沉眠 +5 tick（梦魇轴相位联动 C 案）",
       "art": {
         "subject": "a figure pulling a struggling enemy down into a dream",
         "elements": [
@@ -775,7 +794,7 @@
       "flagship": false,
       "lore": "序列6 安魂师 —— \"强制入梦范围提升至 150 米\"（序列5 再提升至 200 米）",
       "flavor": "你不再一个一个地请它们入睡——夜色所及之处，所有站着的东西都开始发困。",
-      "describe": "全体敌人受到 2 点精神伤害并入梦 15tick。",
+      "describe": "全体敌人受到 2 点精神伤害并入梦 15tick（被攻击会醒）；夜晚/午夜相位入梦 20tick。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -797,14 +816,34 @@
           "target": "all_enemies"
         },
         {
-          "type": "mount_status",
-          "statusId": "slumber",
-          "duration": 15,
-          "target": "all_enemies"
+          "op": "if",
+          "condition": {
+            "kind": "phase_is",
+            "phases": [
+              "night",
+              "midnight"
+            ]
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "slumber",
+              "duration": 20,
+              "target": "all_enemies"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "slumber",
+              "duration": 15,
+              "target": "all_enemies"
+            }
+          ]
         }
       ],
       "tentative": false,
-      "conversionNotes": "原著 150m/200m 两次范围提升合并为'单体升级群体'，距离数字不建模｜2026-10-08 梦魇轴撤光照：set_luminance 摘除（赶夜语义留暗夜轴，梦魇身份由沉眠/恐惧机制自撑；不补数值，归平衡期）",
+      "conversionNotes": "原著 150m/200m 两次范围提升合并为'单体升级群体'，距离数字不建模｜2026-10-08 梦魇轴撤光照：set_luminance 摘除（赶夜语义留暗夜轴，梦魇身份由沉眠/恐惧机制自撑；不补数值，归平衡期）｜2026-10-08 夜相位时长加成：夜/午夜相位沉眠 +5 tick（梦魇轴相位联动 C 案）",
       "art": {
         "subject": "drowsiness spreading over a whole field of standing figures",
         "elements": [
