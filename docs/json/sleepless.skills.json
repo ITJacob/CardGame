@@ -1713,47 +1713,15 @@
       },
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
-            {
-              "type": "spawn",
-              "consumption": "zone",
-              "zone": "zone_nightmare_world",
-              "duration": 20,
-              "note": "降临梦魇世界区域 20tick"
-            },
-            {
-              "op": "if",
-              "condition": {
-                "kind": "has_status",
-                "side": "target",
-                "id": "dream_depth",
-                "cmp": ">=",
-                "n": 3
-              },
-              "then": [
-                {
-                  "type": "mount_status",
-                  "statusId": "slumber",
-                  "duration": 15
-                },
-                {
-                  "type": "mount_status",
-                  "statusId": "dream_depth",
-                  "stacks": -3,
-                  "stackMode": "consume",
-                  "target": "target",
-                  "note": "F48 status.consume"
-                }
-              ],
-              "else": [],
-              "note": "对区域内每个敌方单位判定（叠满判定留在卡面效果行，ZoneDef 载荷不含）"
-            }
-          ]
+          "type": "spawn",
+          "consumption": "zone",
+          "zone": "zone_nightmare_world",
+          "duration": 20,
+          "note": "降临梦魇世界区域 20tick"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：梦魇轴渐进入睡旗舰，读 `灵梦` 深化。✅ 依赖已落。｜2026-10-08 梦魇轴撤光照：set_luminance 摘除（赶夜语义留暗夜轴，梦魇身份由沉眠/恐惧机制自撑；不补数值，归平衡期）",
+      "conversionNotes": "翻译/语义：梦魇轴渐进入睡旗舰，读 `灵梦` 深化。✅ 依赖已落。｜2026-10-08 梦魇轴撤光照：set_luminance 摘除（赶夜语义留暗夜轴，梦魇身份由沉眠/恐惧机制自撑；不补数值，归平衡期）｜2026-10-09 叠满判定自卡面一次性 if 迁入 ZoneDef effects（原写法打出瞬间求值、梦陷恒 0 故永不触发）；叠加节流 interval:5（每回合 +1）。",
       "art": {
         "subject": "a dream-world city dissolving as sleepers walk inside",
         "elements": [
@@ -2569,6 +2537,33 @@
           "statusId": "dream_depth",
           "stacks": 1,
           "stackMode": "add"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "dream_depth",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "slumber",
+              "duration": 15
+            },
+            {
+              "type": "mount_status",
+              "statusId": "dream_depth",
+              "stacks": -3,
+              "stackMode": "consume",
+              "target": "target",
+              "note": "F48 status.consume"
+            }
+          ],
+          "else": [],
+          "note": "梦陷满 3 层 → 沉眠 15tick 并清空；每 occupy tick 判定（2026-10-09 自卡面一次性 if 迁入 ZoneDef）"
         },
         {
           "type": "modify_stat",
