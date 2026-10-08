@@ -6,81 +6,81 @@
 
 | 途径 | 最近邻 | 距离 | 对他途径均距 |
 |---|---|---:|---:|
-| sleepless | corpse_collector | 0.196 | 0.309 |
-| thief | prisoner | 0.154 | 0.332 |
-| lawyer | hunter | 0.212 | 0.335 |
-| hunter | criminal | 0.147 | 0.347 |
-| prisoner | thief | 0.154 | 0.352 |
-| apprentice | assassin | 0.249 | 0.357 |
-| corpse_collector | reader | 0.186 | 0.365 |
-| reader | corpse_collector | 0.186 | 0.366 |
-| seer | hunter | 0.216 | 0.379 |
-| supplicant | prisoner | 0.249 | 0.383 |
-| apothecary | thief | 0.175 | 0.385 |
-| assassin | warrior | 0.153 | 0.388 |
-| criminal | hunter | 0.147 | 0.391 |
-| warrior | assassin | 0.153 | 0.391 |
-| arbiter | seer | 0.217 | 0.402 |
-| pryer | reader | 0.206 | 0.411 |
-| spectator | sleepless | 0.239 | 0.415 |
-| savant | planter | 0.187 | 0.433 |
-| planter | savant | 0.187 | 0.439 |
-| sailor | criminal | 0.182 | 0.459 |
-| monster | sleepless | 0.362 | 0.485 |
-| chanter | sleepless | 0.301 | 0.509 |
+| thief | prisoner | 0.147 | 0.326 |
+| lawyer | hunter | 0.238 | 0.330 |
+| prisoner | thief | 0.147 | 0.345 |
+| apprentice | criminal | 0.244 | 0.349 |
+| hunter | criminal | 0.149 | 0.351 |
+| sleepless | thief | 0.250 | 0.352 |
+| reader | corpse_collector | 0.194 | 0.363 |
+| corpse_collector | reader | 0.194 | 0.368 |
+| supplicant | prisoner | 0.240 | 0.372 |
+| apothecary | thief | 0.164 | 0.374 |
+| seer | arbiter | 0.213 | 0.375 |
+| assassin | warrior | 0.153 | 0.382 |
+| criminal | hunter | 0.149 | 0.382 |
+| warrior | assassin | 0.153 | 0.383 |
+| arbiter | seer | 0.213 | 0.396 |
+| pryer | reader | 0.204 | 0.397 |
+| spectator | lawyer | 0.259 | 0.417 |
+| savant | planter | 0.178 | 0.418 |
+| planter | savant | 0.178 | 0.427 |
+| sailor | criminal | 0.180 | 0.454 |
+| chanter | warrior | 0.327 | 0.499 |
+| monster | lawyer | 0.417 | 0.503 |
 
 ## 二、22×22 距离矩阵
 
 | | apothecary | apprentice | arbiter | assassin | chanter | corpse_collector | criminal | hunter | lawyer | monster | planter | prisoner | pryer | reader | sailor | savant | seer | sleepless | spectator | supplicant | thief | warrior |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **apothecary** | 0.00 | 0.41 | 0.46 | 0.41 | 0.41 | 0.34 | 0.47 | 0.41 | 0.39 | 0.48 | 0.31 | 0.20 | 0.45 | 0.42 | 0.48 | 0.39 | 0.43 | 0.31 | 0.43 | 0.43 | 0.17 | 0.30 |
-| **apprentice** | 0.41 | 0.00 | 0.37 | 0.25 | 0.52 | 0.40 | 0.25 | 0.28 | 0.29 | 0.39 | 0.48 | 0.31 | 0.38 | 0.33 | 0.35 | 0.45 | 0.28 | 0.30 | 0.43 | 0.29 | 0.34 | 0.38 |
-| **arbiter** | 0.46 | 0.37 | 0.00 | 0.44 | 0.53 | 0.38 | 0.44 | 0.42 | 0.33 | 0.51 | 0.52 | 0.39 | 0.40 | 0.33 | 0.45 | 0.50 | 0.22 | 0.27 | 0.36 | 0.43 | 0.26 | 0.43 |
-| **assassin** | 0.41 | 0.25 | 0.44 | 0.00 | 0.51 | 0.40 | 0.39 | 0.35 | 0.35 | 0.45 | 0.46 | 0.38 | 0.42 | 0.39 | 0.49 | 0.49 | 0.36 | 0.31 | 0.44 | 0.37 | 0.34 | 0.15 |
-| **chanter** | 0.41 | 0.52 | 0.53 | 0.51 | 0.00 | 0.49 | 0.58 | 0.52 | 0.49 | 0.57 | 0.54 | 0.53 | 0.52 | 0.50 | 0.59 | 0.62 | 0.56 | 0.30 | 0.51 | 0.57 | 0.50 | 0.34 |
-| **corpse_collector** | 0.34 | 0.40 | 0.38 | 0.40 | 0.49 | 0.00 | 0.47 | 0.41 | 0.35 | 0.46 | 0.21 | 0.39 | 0.41 | 0.19 | 0.51 | 0.32 | 0.44 | 0.20 | 0.35 | 0.32 | 0.27 | 0.38 |
-| **criminal** | 0.47 | 0.25 | 0.44 | 0.39 | 0.58 | 0.47 | 0.00 | 0.15 | 0.37 | 0.51 | 0.54 | 0.31 | 0.41 | 0.39 | 0.18 | 0.46 | 0.31 | 0.39 | 0.48 | 0.25 | 0.40 | 0.45 |
-| **hunter** | 0.41 | 0.28 | 0.42 | 0.35 | 0.52 | 0.41 | 0.15 | 0.00 | 0.21 | 0.47 | 0.45 | 0.33 | 0.37 | 0.38 | 0.26 | 0.32 | 0.22 | 0.33 | 0.45 | 0.29 | 0.32 | 0.35 |
-| **lawyer** | 0.39 | 0.29 | 0.33 | 0.35 | 0.49 | 0.35 | 0.37 | 0.21 | 0.00 | 0.43 | 0.47 | 0.28 | 0.30 | 0.28 | 0.40 | 0.35 | 0.28 | 0.22 | 0.24 | 0.35 | 0.30 | 0.36 |
-| **monster** | 0.48 | 0.39 | 0.51 | 0.45 | 0.57 | 0.46 | 0.51 | 0.47 | 0.43 | 0.00 | 0.54 | 0.48 | 0.52 | 0.45 | 0.58 | 0.59 | 0.49 | 0.36 | 0.49 | 0.48 | 0.44 | 0.50 |
-| **planter** | 0.31 | 0.48 | 0.52 | 0.46 | 0.54 | 0.21 | 0.54 | 0.45 | 0.47 | 0.54 | 0.00 | 0.46 | 0.48 | 0.48 | 0.53 | 0.19 | 0.48 | 0.33 | 0.47 | 0.47 | 0.41 | 0.41 |
-| **prisoner** | 0.20 | 0.31 | 0.39 | 0.38 | 0.53 | 0.39 | 0.31 | 0.33 | 0.28 | 0.48 | 0.46 | 0.00 | 0.40 | 0.35 | 0.49 | 0.37 | 0.30 | 0.31 | 0.33 | 0.25 | 0.15 | 0.41 |
-| **pryer** | 0.45 | 0.38 | 0.40 | 0.42 | 0.52 | 0.41 | 0.41 | 0.37 | 0.30 | 0.52 | 0.48 | 0.40 | 0.00 | 0.21 | 0.40 | 0.53 | 0.48 | 0.31 | 0.44 | 0.46 | 0.38 | 0.37 |
-| **reader** | 0.42 | 0.33 | 0.33 | 0.39 | 0.50 | 0.19 | 0.39 | 0.38 | 0.28 | 0.45 | 0.48 | 0.35 | 0.21 | 0.00 | 0.46 | 0.46 | 0.42 | 0.20 | 0.35 | 0.39 | 0.29 | 0.41 |
-| **sailor** | 0.48 | 0.35 | 0.45 | 0.49 | 0.59 | 0.51 | 0.18 | 0.26 | 0.40 | 0.58 | 0.53 | 0.49 | 0.40 | 0.46 | 0.00 | 0.59 | 0.52 | 0.42 | 0.54 | 0.50 | 0.46 | 0.44 |
-| **savant** | 0.39 | 0.45 | 0.50 | 0.49 | 0.62 | 0.32 | 0.46 | 0.32 | 0.35 | 0.59 | 0.19 | 0.37 | 0.53 | 0.46 | 0.59 | 0.00 | 0.29 | 0.42 | 0.51 | 0.35 | 0.41 | 0.49 |
-| **seer** | 0.43 | 0.28 | 0.22 | 0.36 | 0.56 | 0.44 | 0.31 | 0.22 | 0.28 | 0.49 | 0.48 | 0.30 | 0.48 | 0.42 | 0.52 | 0.29 | 0.00 | 0.38 | 0.45 | 0.28 | 0.32 | 0.46 |
-| **sleepless** | 0.31 | 0.30 | 0.27 | 0.31 | 0.30 | 0.20 | 0.39 | 0.33 | 0.22 | 0.36 | 0.33 | 0.31 | 0.31 | 0.20 | 0.42 | 0.42 | 0.38 | 0.00 | 0.24 | 0.37 | 0.20 | 0.31 |
-| **spectator** | 0.43 | 0.43 | 0.36 | 0.44 | 0.51 | 0.35 | 0.48 | 0.45 | 0.24 | 0.49 | 0.47 | 0.33 | 0.44 | 0.35 | 0.54 | 0.51 | 0.45 | 0.24 | 0.00 | 0.42 | 0.34 | 0.47 |
-| **supplicant** | 0.43 | 0.29 | 0.43 | 0.37 | 0.57 | 0.32 | 0.25 | 0.29 | 0.35 | 0.48 | 0.47 | 0.25 | 0.46 | 0.39 | 0.50 | 0.35 | 0.28 | 0.37 | 0.42 | 0.00 | 0.30 | 0.46 |
-| **thief** | 0.17 | 0.34 | 0.26 | 0.34 | 0.50 | 0.27 | 0.40 | 0.32 | 0.30 | 0.44 | 0.41 | 0.15 | 0.38 | 0.29 | 0.46 | 0.41 | 0.32 | 0.20 | 0.34 | 0.30 | 0.00 | 0.36 |
-| **warrior** | 0.30 | 0.38 | 0.43 | 0.15 | 0.34 | 0.38 | 0.45 | 0.35 | 0.36 | 0.50 | 0.41 | 0.41 | 0.37 | 0.41 | 0.44 | 0.49 | 0.46 | 0.31 | 0.47 | 0.46 | 0.36 | 0.00 |
+| **apothecary** | 0.00 | 0.38 | 0.44 | 0.39 | 0.39 | 0.34 | 0.45 | 0.41 | 0.36 | 0.51 | 0.30 | 0.19 | 0.42 | 0.41 | 0.47 | 0.37 | 0.42 | 0.35 | 0.43 | 0.39 | 0.16 | 0.28 |
+| **apprentice** | 0.38 | 0.00 | 0.36 | 0.24 | 0.50 | 0.40 | 0.24 | 0.28 | 0.28 | 0.42 | 0.46 | 0.29 | 0.36 | 0.32 | 0.34 | 0.43 | 0.27 | 0.34 | 0.42 | 0.28 | 0.32 | 0.36 |
+| **arbiter** | 0.44 | 0.36 | 0.00 | 0.43 | 0.52 | 0.38 | 0.42 | 0.42 | 0.33 | 0.53 | 0.50 | 0.38 | 0.39 | 0.32 | 0.44 | 0.48 | 0.21 | 0.31 | 0.36 | 0.42 | 0.25 | 0.42 |
+| **assassin** | 0.39 | 0.24 | 0.43 | 0.00 | 0.50 | 0.39 | 0.38 | 0.35 | 0.34 | 0.46 | 0.44 | 0.36 | 0.41 | 0.38 | 0.48 | 0.47 | 0.35 | 0.35 | 0.43 | 0.37 | 0.33 | 0.15 |
+| **chanter** | 0.39 | 0.50 | 0.52 | 0.50 | 0.00 | 0.49 | 0.56 | 0.51 | 0.48 | 0.59 | 0.52 | 0.51 | 0.50 | 0.49 | 0.57 | 0.60 | 0.54 | 0.34 | 0.50 | 0.55 | 0.48 | 0.33 |
+| **corpse_collector** | 0.34 | 0.40 | 0.38 | 0.39 | 0.49 | 0.00 | 0.47 | 0.41 | 0.35 | 0.48 | 0.21 | 0.38 | 0.40 | 0.19 | 0.51 | 0.32 | 0.44 | 0.25 | 0.36 | 0.32 | 0.27 | 0.38 |
+| **criminal** | 0.45 | 0.24 | 0.42 | 0.38 | 0.56 | 0.47 | 0.00 | 0.15 | 0.36 | 0.52 | 0.52 | 0.30 | 0.39 | 0.38 | 0.18 | 0.44 | 0.30 | 0.42 | 0.47 | 0.25 | 0.39 | 0.44 |
+| **hunter** | 0.41 | 0.28 | 0.42 | 0.35 | 0.51 | 0.41 | 0.15 | 0.00 | 0.24 | 0.50 | 0.45 | 0.32 | 0.37 | 0.38 | 0.26 | 0.33 | 0.21 | 0.37 | 0.45 | 0.31 | 0.32 | 0.35 |
+| **lawyer** | 0.36 | 0.28 | 0.33 | 0.34 | 0.48 | 0.35 | 0.36 | 0.24 | 0.00 | 0.42 | 0.44 | 0.27 | 0.28 | 0.29 | 0.40 | 0.32 | 0.28 | 0.28 | 0.26 | 0.31 | 0.29 | 0.35 |
+| **monster** | 0.51 | 0.42 | 0.53 | 0.46 | 0.59 | 0.48 | 0.52 | 0.50 | 0.42 | 0.00 | 0.53 | 0.50 | 0.52 | 0.47 | 0.60 | 0.58 | 0.50 | 0.44 | 0.51 | 0.50 | 0.47 | 0.52 |
+| **planter** | 0.30 | 0.46 | 0.50 | 0.44 | 0.52 | 0.21 | 0.52 | 0.45 | 0.44 | 0.53 | 0.00 | 0.44 | 0.46 | 0.47 | 0.52 | 0.18 | 0.46 | 0.37 | 0.46 | 0.44 | 0.39 | 0.39 |
+| **prisoner** | 0.19 | 0.29 | 0.38 | 0.36 | 0.51 | 0.38 | 0.30 | 0.32 | 0.27 | 0.50 | 0.44 | 0.00 | 0.38 | 0.34 | 0.47 | 0.35 | 0.29 | 0.35 | 0.33 | 0.24 | 0.15 | 0.40 |
+| **pryer** | 0.42 | 0.36 | 0.39 | 0.41 | 0.50 | 0.40 | 0.39 | 0.37 | 0.28 | 0.52 | 0.46 | 0.38 | 0.00 | 0.20 | 0.39 | 0.49 | 0.46 | 0.35 | 0.44 | 0.42 | 0.36 | 0.35 |
+| **reader** | 0.41 | 0.32 | 0.32 | 0.38 | 0.49 | 0.19 | 0.38 | 0.38 | 0.29 | 0.47 | 0.47 | 0.34 | 0.20 | 0.00 | 0.45 | 0.45 | 0.41 | 0.25 | 0.34 | 0.38 | 0.28 | 0.40 |
+| **sailor** | 0.47 | 0.34 | 0.44 | 0.48 | 0.57 | 0.51 | 0.18 | 0.26 | 0.40 | 0.60 | 0.52 | 0.47 | 0.39 | 0.45 | 0.00 | 0.57 | 0.51 | 0.45 | 0.53 | 0.49 | 0.45 | 0.44 |
+| **savant** | 0.37 | 0.43 | 0.48 | 0.47 | 0.60 | 0.32 | 0.44 | 0.33 | 0.32 | 0.58 | 0.18 | 0.35 | 0.49 | 0.45 | 0.57 | 0.00 | 0.29 | 0.45 | 0.50 | 0.32 | 0.39 | 0.46 |
+| **seer** | 0.42 | 0.27 | 0.21 | 0.35 | 0.54 | 0.44 | 0.30 | 0.21 | 0.28 | 0.50 | 0.46 | 0.29 | 0.46 | 0.41 | 0.51 | 0.29 | 0.00 | 0.42 | 0.45 | 0.28 | 0.32 | 0.45 |
+| **sleepless** | 0.35 | 0.34 | 0.31 | 0.35 | 0.34 | 0.25 | 0.42 | 0.37 | 0.28 | 0.44 | 0.37 | 0.35 | 0.35 | 0.25 | 0.45 | 0.45 | 0.42 | 0.00 | 0.29 | 0.41 | 0.25 | 0.35 |
+| **spectator** | 0.43 | 0.42 | 0.36 | 0.43 | 0.50 | 0.36 | 0.47 | 0.45 | 0.26 | 0.51 | 0.46 | 0.33 | 0.44 | 0.34 | 0.53 | 0.50 | 0.45 | 0.29 | 0.00 | 0.42 | 0.34 | 0.46 |
+| **supplicant** | 0.39 | 0.28 | 0.42 | 0.37 | 0.55 | 0.32 | 0.25 | 0.31 | 0.31 | 0.50 | 0.44 | 0.24 | 0.42 | 0.38 | 0.49 | 0.32 | 0.28 | 0.41 | 0.42 | 0.00 | 0.28 | 0.43 |
+| **thief** | 0.16 | 0.32 | 0.25 | 0.33 | 0.48 | 0.27 | 0.39 | 0.32 | 0.29 | 0.47 | 0.39 | 0.15 | 0.36 | 0.28 | 0.45 | 0.39 | 0.32 | 0.25 | 0.34 | 0.28 | 0.00 | 0.34 |
+| **warrior** | 0.28 | 0.36 | 0.42 | 0.15 | 0.33 | 0.38 | 0.44 | 0.35 | 0.35 | 0.52 | 0.39 | 0.40 | 0.35 | 0.40 | 0.44 | 0.46 | 0.45 | 0.35 | 0.46 | 0.43 | 0.34 | 0.00 |
 
 ## 三、途径指纹（各途径 Top-5 指纹键）
 
 | 途径 | Top-5 指纹键 |
 |---|---|
-| apothecary | prim:mount_status ×27；prim:transfer_status ×18；prim:grant_immunity ×12；prim:modify_stat ×9；prim:spawn ×8 |
+| apothecary | prim:mount_status ×27；prim:transfer_status ×18；prim:grant_immunity ×12；cond:has_status ×11；prim:modify_stat ×9 |
 | apprentice | prim:mount_status ×25；prim:modify_resource ×16；prim:translocate ×14；prim:echo_last_skill ×11；prim:damage ×10 |
 | arbiter | prim:take_control ×27；prim:mount_status ×26；prim:damage ×16；elem:mental ×16；elem:physical ×9 |
 | assassin | prim:mount_status ×33；prim:modify_targetability ×26；prim:modify_resource ×14；prim:translocate ×11；prim:damage ×9 |
 | chanter | prim:mount_status ×25；elem:holy ×21；prim:set_luminance ×20；prim:grant_immunity ×16；prim:damage ×12 |
 | corpse_collector | prim:mount_status ×28；prim:reveal ×16；prim:spawn ×15；elem:mental ×10；prim:damage ×9 |
-| criminal | prim:modify_resource ×37；prim:move ×37；prim:mount_status ×35；prim:damage ×19；prim:modify_stat ×7 |
+| criminal | prim:modify_resource ×37；prim:move ×37；prim:mount_status ×35；prim:damage ×19；cond:has_status ×13 |
 | hunter | prim:mount_status ×31；prim:modify_resource ×20；prim:move ×18；prim:modify_rule_slot ×17；prim:damage ×13 |
-| lawyer | prim:mount_status ×33；prim:modify_rule_slot ×18；prim:damage ×15；prim:modify_status ×14；elem:mental ×11 |
-| monster | prim:restore_snapshot ×30；prim:mount_status ×28；prim:modify_resource ×8；prim:damage ×5；elem:mental ×4 |
-| planter | prim:spawn ×30；prim:mount_status ×26；elem:none ×8；prim:damage ×7；prim:heal ×7 |
-| prisoner | prim:mount_status ×24；prim:modify_resource ×20；prim:transfer_status ×20；prim:damage ×12；prim:modify_status ×10 |
-| pryer | prim:modify_skill ×28；prim:mount_status ×26；prim:damage ×18；elem:none ×9；prim:modify_resource ×8 |
+| lawyer | prim:mount_status ×33；prim:modify_rule_slot ×18；cond:has_status ×17；prim:damage ×15；prim:modify_status ×14 |
+| monster | prim:restore_snapshot ×30；prim:mount_status ×28；cond:chance ×16；prim:modify_resource ×8；prim:damage ×5 |
+| planter | prim:spawn ×30；prim:mount_status ×26；cond:has_status ×9；elem:none ×8；prim:damage ×7 |
+| prisoner | prim:mount_status ×24；prim:transfer_status ×20；prim:modify_resource ×20；prim:damage ×12；prim:modify_status ×10 |
+| pryer | prim:modify_skill ×28；prim:mount_status ×26；prim:damage ×18；cond:has_status ×12；elem:none ×9 |
 | reader | prim:mount_status ×22；prim:reveal ×13；prim:damage ×12；elem:mental ×12；prim:modify_skill ×10 |
 | sailor | prim:move ×39；prim:mount_status ×29；prim:damage ×24；elem:physical ×16；elem:lightning ×12 |
 | savant | prim:spawn ×20；prim:mount_status ×15；prim:modify_rule_slot ×13；prim:modify_resource ×12；prim:modify_stat ×11 |
-| seer | prim:mount_status ×19；prim:modify_resource ×18；prim:take_control ×14；prim:modify_rule_slot ×11；prim:damage ×5 |
-| sleepless | prim:mount_status ×31；prim:damage ×12；elem:mental ×12；prim:dispel ×8；prim:set_luminance ×7 |
+| seer | prim:mount_status ×19；prim:modify_resource ×18；prim:take_control ×14；prim:modify_rule_slot ×11；cond:has_status ×5 |
+| sleepless | prim:mount_status ×31；cond:phase_is ×14；prim:damage ×12；elem:mental ×12；prim:dispel ×8 |
 | spectator | prim:mount_status ×25；prim:modify_status ×17；prim:write_rule_slot ×16；elem:mental ×12；prim:damage ×7 |
-| supplicant | prim:modify_resource ×28；prim:mount_status ×26；prim:drain ×22；prim:modify_stat ×9；prim:damage ×7 |
-| thief | prim:mount_status ×24；prim:transfer_status ×14；elem:mental ×9；prim:damage ×8；prim:modify_stat ×8 |
+| supplicant | prim:modify_resource ×28；prim:mount_status ×26；prim:drain ×22；cond:has_status ×18；prim:modify_stat ×9 |
+| thief | prim:mount_status ×24；prim:transfer_status ×14；cond:has_status ×9；elem:mental ×9；prim:damage ×8 |
 | warrior | prim:mount_status ×24；prim:modify_targetability ×16；prim:damage ×13；prim:grant_immunity ×13；elem:none ×12 |
 
 ## 四、签名键用量（≥2 卡 = 落地；空白键 = 差异化迭代立项依据）
