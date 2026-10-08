@@ -95,6 +95,23 @@ def card_mounts(card):
             if n.get("type") == "mount_status" and isinstance(n.get("statusId"), str)}
 
 
+def card_def_refs(card, def_index):
+    """卡片 spawn/domain 出的区域(zoneDef)/界域(domainDef) def 对象；读层判定跟随其载荷
+    （与 card_mounts 跟挂载状态 def 同理，SCORING.md 口径「condition/filter/触发器引用身份状态」）。"""
+    out, seen = [], set()
+    for n in walk(card.get("effects")):
+        if n.get("type") == "spawn" and isinstance(n.get("zone"), str):
+            i = n["zone"]
+        elif n.get("type") == "domain" and isinstance(n.get("def"), str):
+            i = n["def"]
+        else:
+            continue
+        if i in def_index and i not in seen:
+            seen.add(i)
+            out.append(def_index[i])
+    return out
+
+
 # 修改意见按扣分类别生成，路径内可执行、不做职业间横向对比（呈现层的硬要求）
 FIX = {
     "no_layer_engine": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）",
@@ -326,6 +343,12 @@ def load_unit_types(pathways):
 
 def main():
     pathways = load_skills()
+    def_index = {}                       # 区域/界域 def id -> def（读层判定跟随卡 spawn/domain 出的载荷）
+    for _d in pathways.values():
+        for _z in _d.get("zoneDefs") or []:
+            def_index[_z["id"]] = _z
+        for _m in _d.get("domainDefs") or []:
+            def_index[_m["id"]] = _m
     status_by_id = {}
     status_owner = {}
     for pid, label, sd in iter_status_defs():
@@ -422,13 +445,17 @@ def main():
                         mdef = status_by_id.get(m)
                         if mdef and refs_in_obj(mdef, sid):
                             return "landed"
+                    for dref in card_def_refs(c, def_index):
+                        if refs_in_obj(dref, sid):
+                            return "landed"
                     return "notes"
                 if identity_pool:
-                    for n in walk(c.get("effects")):
-                        if n.get("kind") == "resource_compare" and n.get("key") == identity_pool:
-                            return "landed"
-                        if n.get("type") == "modify_resource" and n.get("resource") == identity_pool and (n.get("value") or 0) < 0:
-                            return "landed"
+                    for ob in [c.get("effects")] + card_def_refs(c, def_index):
+                        for n in walk(ob):
+                            if n.get("kind") == "resource_compare" and n.get("key") == identity_pool:
+                                return "landed"
+                            if n.get("type") == "modify_resource" and n.get("resource") == identity_pool and (n.get("value") or 0) < 0:
+                                return "landed"
                     return "notes"
                 return None
 
@@ -472,21 +499,24 @@ def main():
                 c = card_by_name.get(n)
                 if not c:
                     continue
+                defrefs = card_def_refs(c, def_index)
                 mounted = [status_by_id.get(m) for m in card_mounts(c)]
-                blob = [c] + [m for m in mounted if m]
+                blob = [c] + [m for m in mounted if m] + defrefs
+                # 读层检索空间：卡面 effects + 挂载状态 def + spawn/domain 出的区域/界域 def
+                space = list(walk(c.get("effects"))) + [n2 for dref in defrefs for n2 in walk(dref)]
                 has_mul = any(refs_in_obj(o, sid) and True for o in blob) and any(
                     "damage_mul" in json.dumps(o, ensure_ascii=False) and refs_in_obj(o, sid) for o in blob)
                 if has_mul:
                     patterns.add("乘区")
-                if any(n2.get("op") == "if" and refs_in_obj(n2, sid) for n2 in walk(c.get("effects"))) or \
-                   any(n2.get("kind") in ("resource_compare", "stat_compare") for n2 in walk(c.get("effects"))):
+                if any(n2.get("op") == "if" and refs_in_obj(n2, sid) for n2 in space) or \
+                   any(n2.get("kind") in ("resource_compare", "stat_compare") for n2 in space):
                     patterns.add("条件分支")
-                for n2 in walk(c.get("effects")):
+                for n2 in space:
                     if n2.get("type") == "modify_status" and n2.get("statusId") == sid and \
                        ((n2.get("stacksDelta") or 0) < 0 or n2.get("stackMode") == "consume"):
                         patterns.add("耗层")
-                if any(n2.get("hasStatus") == sid for n2 in walk(c.get("effects"))) or \
-                   any(n2.get("kind") == "has_status" and n2.get("id") == sid for n2 in walk(c.get("effects"))):
+                if any(n2.get("hasStatus") == sid for n2 in space) or \
+                   any(n2.get("kind") == "has_status" and n2.get("id") == sid for n2 in space):
                     patterns.add("存在性")
             # 跨轴/跨系消费：身份被他轴卡（本途径或他途径，限 crossPathway 白名单）读取
             ext_consumers = 0
