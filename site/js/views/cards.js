@@ -2,6 +2,7 @@
 import { DB, hookEvents } from '../data.js';
 import { termSpan, axisSpan, escapeHtml } from '../term.js';
 import { walkCardEffects } from '../ast.js';
+import { artCandidates } from './card.js';
 
 const PAGE_SIZE = 100;
 
@@ -106,6 +107,32 @@ function zh(cat, key) {
   return t ? t.zh : key;
 }
 
+// 卡面背景图存在性探测。数据侧没有「有图」字段，图片只存在于 assets/cards/，
+// 路径按 cardId 现拼（复用详情页那套 artCandidates，见 views/card.js）。
+// 走 HEAD 而非 GET：卡面是 2.7MB 级大图（全出血 PNG），只为问一句「在不在」就把正文
+// 拖下来不值当，HEAD 只有响应头。sw.js 的 fetch 只拦 GET（sw.js:43），HEAD 直连网络、
+// 不进 SWR 缓存，所以本地往 assets/cards/ 丢一张新图、刷新就在列表里出现标记，
+// 不会被缓存里的旧 404 挡住。
+// 缓存的是 **promise** 而非解析结果：renderList 在搜索框每次按键都会重跑，缓存结果能
+// 挡住重复探测，缓存 promise 则连「同一轮内并发探同一张卡」也只发一轮请求。
+const artProbe = new Map();
+
+function probeArt(card) {
+  let p = artProbe.get(card.id);
+  if (!p) {
+    p = (async () => {
+      for (const url of artCandidates(card)) {
+        try {
+          if ((await fetch(url, { method: 'HEAD' })).ok) return true;
+        } catch { /* 网络异常按「无图」处理，不让列表挂掉 */ }
+      }
+      return false;
+    })();
+    artProbe.set(card.id, p);
+  }
+  return p;
+}
+
 function cardItemHtml(c) {
   const cost = c.kind === 'active' && c.cost
     ? `<span class="badge">⚡${c.cost.energy}${c.cost.cooldown ? ` 冷却 ${c.cost.cooldown} tick` : ''}${c.cost.castTime ? ` 吟唱${c.cost.castTime}` : ''}</span>` : '';
@@ -124,6 +151,7 @@ function cardItemHtml(c) {
       <span class="badge kind-${c.kind}">${c.kind === 'active' ? '主动' : '被动'}</span>
       <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
       <span class="badge">${axisSpan(c._pathway, c.axis)}</span>
+      <span class="badge art" hidden>有图</span>
       ${c.flagship ? '<span class="badge flagship">旗舰</span>' : ''}
       ${cost}${hook}
       ${c.frameworkFlags?.some((f) => f && f.landed !== true) ? '<span class="badge warn">有缺口</span>' : ''}
@@ -165,6 +193,13 @@ function renderList(view) {
   view.querySelector('#card-list').innerHTML = `<div class="card-list">${slice.map(cardItemHtml).join('')}</div>`;
   view.querySelectorAll('.card-item').forEach((el) => {
     el.addEventListener('click', () => { location.hash = `#/card/${encodeURIComponent(el.dataset.id)}`; });
+    // 只在当前页 slice 上探测，不预探全库。renderList 整块重写 #card-list 的 innerHTML，
+    // 翻页/搜索会把这里的元素摘掉，用 isConnected 挡掉对已废弃节点的回填
+    const c = DB.cardById.get(el.dataset.id);
+    if (!c) return;
+    probeArt(c).then((has) => {
+      if (has && el.isConnected) el.querySelector('.badge.art').hidden = false;
+    });
   });
 
   const pager = view.querySelector('#pager');
