@@ -119,7 +119,7 @@
 | 原语 | 次数 |
 |---|---:|
 | `modify_stat` | 7 |
-| `mount_status` | 5 |
+| `mount_status` | 7 |
 | `damage` | 4 |
 | `dispel` | 1 |
 | `spawn` | 1 |
