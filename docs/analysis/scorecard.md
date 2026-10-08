@@ -7,9 +7,9 @@
 
 | # | 途径 | 总分 | 轴健康 | 跨轴 | 跨系 | 结构 | 落地 | 文本 | 风格 | 最低轴 | 卡数 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | **不眠者** `sleepless` | **63.0** | 20.5 | 2.5 | 6.0 | 10.0 | 10.0 | 10.0 | 4.0 | 65 | 34 |
+| 1 | **不眠者** `sleepless` | **64.0** | 20.5 | 2.5 | 6.0 | 10.0 | 10.0 | 10.0 | 5.0 | 65 | 34 |
 | 2 | **偷盗者** `thief` | **67.8** | 21.8 | 5.0 | 6.0 | 10.0 | 10.0 | 10.0 | 5.0 | 69 | 37 |
-| 3 | **学徒** `apprentice` | **67.9** | 20.9 | 7.5 | 4.5 | 10.0 | 10.0 | 10.0 | 5.0 | 62 | 34 |
+| 3 | **学徒** `apprentice` | **68.9** | 20.9 | 7.5 | 4.5 | 10.0 | 10.0 | 10.0 | 6.0 | 62 | 34 |
 | 4 | **刺客** `assassin` | **70.0** | 21.0 | 5.0 | 6.0 | 10.0 | 10.0 | 10.0 | 8.0 | 64 | 39 |
 | 5 | **占卜家** `seer` | **70.4** | 22.4 | 7.5 | 4.5 | 10.0 | 10.0 | 10.0 | 6.0 | 69 | 39 |
 | 6 | **阅读者** `reader` | **70.8** | 21.3 | 7.5 | 6.0 | 10.0 | 10.0 | 10.0 | 6.0 | 64 | 34 |
@@ -31,7 +31,7 @@
 | 22 | **秘祈人** `supplicant` | **82.7** | 22.2 | 12.5 | 12.0 | 10.0 | 10.0 | 10.0 | 6.0 | 68 | 33 |
 
 
-## 不眠者（sleepless）· 63.0 分
+## 不眠者（sleepless）· 64.0 分
 
 | 维度 | 得分 |
 |---|---:|
@@ -41,16 +41,15 @@
 | 结构健康 | 10.0 |
 | 机制落地 | 10.0 |
 | 文本完备 | 10.0 |
-| 风格签名 | 4.0 |
+| 风格签名 | 5.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×1；prim:advance_clock ×0；res:secrecy ×3；对他途径指纹均距 0.368
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×1；prim:advance_clock ×4；res:secrecy ×3；对他途径指纹均距 0.346
 
 **途径失分项（含修改意见）**：
 
 - `跨轴耦合` -12.5：本途径他轴身份读取 1 次（sleepless）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
 - `跨系联动` -9.0：枢纽状态 3 个 + combo 读取 1 次（sleepless）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
-- `风格签名` -2：签名键零使用 prim:advance_clock（sleepless）→ 按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.368，分位 <25%）（sleepless）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.346，分位 <25%）（sleepless）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -88,13 +87,13 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 5.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:take_control ×5；prim:modify_targetability ×2；prim:target_override ×8；对他途径指纹均距 0.336
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:take_control ×5；prim:modify_targetability ×2；prim:target_override ×8；对他途径指纹均距 0.335
 
 **途径失分项（含修改意见）**：
 
 - `跨轴耦合` -10.0：本途径他轴身份读取 2 次（thief）→ 挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段
 - `跨系联动` -9.0：枢纽状态 2 个 + combo 读取 2 次（thief）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.336，分位 <25%）（thief）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.335，分位 <25%）（thief）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -112,7 +111,7 @@
 - `规模均衡` -1：轴卡数 5 vs 理想 9（比值 0.54）（parasite）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
 
 
-## 学徒（apprentice）· 67.9 分
+## 学徒（apprentice）· 68.9 分
 
 | 维度 | 得分 |
 |---|---:|
@@ -122,14 +121,14 @@
 | 结构健康 | 10.0 |
 | 机制落地 | 10.0 |
 | 文本完备 | 10.0 |
-| 风格签名 | 5.0 |
+| 风格签名 | 6.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×14；prim:echo_last_skill ×11；prim:restore_snapshot ×2；对他途径指纹均距 0.360
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×14；prim:echo_last_skill ×11；prim:restore_snapshot ×2；对他途径指纹均距 0.359
 
 **途径失分项（含修改意见）**：
 
 - `跨系联动` -10.5：枢纽状态 1 个 + combo 读取 2 次（apprentice）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.360，分位 <25%）（apprentice）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.359，分位 <25%）（apprentice）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -169,7 +168,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 8.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×11；elem:ice ×3；elem:dark ×1；对他途径指纹均距 0.391
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×11；elem:ice ×3；elem:dark ×1；对他途径指纹均距 0.390
 
 **途径失分项（含修改意见）**：
 
@@ -200,12 +199,12 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 6.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:puppet_string ×4；prim:write_rule_slot ×2；prim:translocate ×4；对他途径指纹均距 0.382
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:puppet_string ×4；prim:write_rule_slot ×2；prim:translocate ×4；对他途径指纹均距 0.381
 
 **途径失分项（含修改意见）**：
 
 - `跨系联动` -10.5：枢纽状态 2 个 + combo 读取 1 次（seer）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.382，分位 <25%）（seer）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.381，分位 <25%）（seer）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -235,12 +234,12 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 6.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:reveal ×13；sref:mimic ×5；prim:snapshot ×7；对他途径指纹均距 0.369
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:reveal ×13；sref:mimic ×5；prim:snapshot ×7；对他途径指纹均距 0.368
 
 **途径失分项（含修改意见）**：
 
 - `跨系联动` -9.0：枢纽状态 2 个 + combo 读取 2 次（reader）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.369，分位 <25%）（reader）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.368，分位 <25%）（reader）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -266,7 +265,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 10.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:grant_immunity ×16；prim:write_rule_slot ×2；trig:on_phase_change ×2；对他途径指纹均距 0.506
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:grant_immunity ×16；prim:write_rule_slot ×2；trig:on_phase_change ×2；对他途径指纹均距 0.507
 
 **途径失分项（含修改意见）**：
 
@@ -298,7 +297,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 10.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:ice ×2；elem:lightning ×8；sref:rage ×10；对他途径指纹均距 0.462
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:ice ×2；elem:lightning ×8；sref:rage ×10；对他途径指纹均距 0.461
 
 **途径失分项（含修改意见）**：
 
@@ -332,7 +331,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 8.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:valueFrom ×2；flag:cast_time_set ×29；sref:info_form ×2；对他途径指纹均距 0.414
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:valueFrom ×2；flag:cast_time_set ×29；sref:info_form ×2；对他途径指纹均距 0.413
 
 **途径失分项（含修改意见）**：
 
@@ -366,7 +365,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 8.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×4；flag:filter.unitType ×2；sref:guardianship ×2；对他途径指纹均距 0.395
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×4；flag:filter.unitType ×2；sref:guardianship ×2；对他途径指纹均距 0.394
 
 **途径失分项（含修改意见）**：
 
@@ -396,7 +395,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 8.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:moon_cycle ×4；unitType:BEAST ×8；sref:prepared_draught ×5；对他途径指纹均距 0.389
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:moon_cycle ×4；unitType:BEAST ×8；sref:prepared_draught ×5；对他途径指纹均距 0.387
 
 **途径失分项（含修改意见）**：
 
@@ -431,11 +430,11 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 5.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:curse_link ×3；unitType:ITEM ×2；sref:lineage_stack ×6；对他途径指纹均距 0.355
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:curse_link ×3；unitType:ITEM ×2；sref:lineage_stack ×6；对他途径指纹均距 0.354
 
 **途径失分项（含修改意见）**：
 
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.355，分位 <25%）（prisoner）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.354，分位 <25%）（prisoner）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -462,7 +461,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 8.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:seal_effect ×2；flag:cost_mod ×2；res:order ×6；对他途径指纹均距 0.405
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:seal_effect ×2；flag:cost_mod ×2；res:order ×6；对他途径指纹均距 0.404
 
 **途径失分项（含修改意见）**：
 
@@ -505,13 +504,13 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 4.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:target_override ×10；flag:gender_is ×1；sref:massing ×1；对他途径指纹均距 0.350
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:target_override ×10；flag:gender_is ×1；sref:massing ×1；对他途径指纹均距 0.349
 
 **途径失分项（含修改意见）**：
 
 - `跨系联动` -9.0：枢纽状态 2 个 + combo 读取 2 次（hunter）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
 - `风格签名` -1：签名键零使用 （有键仅 1 卡，未落地）（hunter）→ 按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.350，分位 <25%）（hunter）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.349，分位 <25%）（hunter）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -555,7 +554,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 8.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：res:lust ×36；elem:dark ×4；flag:companionBuff ×2；对他途径指纹均距 0.393
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：res:lust ×36；elem:dark ×4；flag:companionBuff ×2；对他途径指纹均距 0.392
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -590,12 +589,12 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 6.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:filter.unitType ×3；trig:on_kill ×2；prim:drain ×9；对他途径指纹均距 0.369
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:filter.unitType ×3；trig:on_kill ×2；prim:drain ×9；对他途径指纹均距 0.368
 
 **途径失分项（含修改意见）**：
 
 - `结构健康` -0：主被动比 1.33 不在 [1.5, 3.0]（corpse_collector）→ 补主动或被动卡，把主被动比调进 [1.5, 3.0]
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.369，分位 <25%）（corpse_collector）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.368，分位 <25%）（corpse_collector）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -629,7 +628,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 10.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:modify_rule_slot ×13；sref:law_edit ×3；unitType:CONSTRUCT ×3；对他途径指纹均距 0.436
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:modify_rule_slot ×13；sref:law_edit ×3；unitType:CONSTRUCT ×3；对他途径指纹均距 0.435
 
 **途径失分项（含修改意见）**：
 
@@ -669,7 +668,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 10.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：stat:rank ×3；flag:template ×1；sref:insight ×5；对他途径指纹均距 0.419
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：stat:rank ×3；flag:template ×1；sref:insight ×5；对他途径指纹均距 0.417
 
 **途径失分项（含修改意见）**：
 
@@ -699,7 +698,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 10.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:statPerStack ×3；unitType:PLANT ×8；sref:blight ×3；对他途径指纹均距 0.442
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:statPerStack ×3；unitType:PLANT ×8；sref:blight ×3；对他途径指纹均距 0.441
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -739,7 +738,7 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 10.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:restore_snapshot ×30；prim:advance_clock ×2；res:fate_value ×5；对他途径指纹均距 0.488
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:restore_snapshot ×30；prim:advance_clock ×2；res:fate_value ×5；对他途径指纹均距 0.487
 
 **途径失分项（含修改意见）**：
 
@@ -788,11 +787,11 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 5.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:status_shuffle ×5；prim:modify_rule_slot ×18；对他途径指纹均距 0.338
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:status_shuffle ×5；prim:modify_rule_slot ×18；对他途径指纹均距 0.337
 
 **途径失分项（含修改意见）**：
 
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.338，分位 <25%）（lawyer）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.337，分位 <25%）（lawyer）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -814,11 +813,11 @@
 | 文本完备 | 10.0 |
 | 风格签名 | 6.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:grazed_soul ×7；stat:hp_max ×5；sref:flesh_undying ×2；对他途径指纹均距 0.386
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:grazed_soul ×7；stat:hp_max ×5；sref:flesh_undying ×2；对他途径指纹均距 0.385
 
 **途径失分项（含修改意见）**：
 
-- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.386，分位 <25%）（supplicant）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
+- `风格签名` -：途径指纹距离垫底（对他 21 途径均距 0.385，分位 <25%）（supplicant）→ 降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）
 
 | 轴 | 总分 | 身份 | 产层 | 读层 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
