@@ -43,12 +43,13 @@
       "statusId": "pacified",
       "enablers": [
         "安魂",
-        "灵之统帅"
+        "灵之统帅",
+        "灵体灵性权柄"
       ],
       "payoffs": [
         "恐惧权柄"
       ],
-      "note": "安宁层数经济：安魂/灵之统帅产层，恐惧权柄按安宁层数读档耗层（跨轴受益沉眠/恐惧）。"
+      "note": "双轨：对敌安宁（抹平情绪——禁增益/免恐惧/伤害×0.75；安魂/灵之统帅/灵体灵性权柄产层，恐惧权柄跨轴读档）；对友灵凝实（伤害×1.2，夜与午夜×1.4；受伤×0.85——安眠谣/灵之统帅/一心多用授予灵体·亡灵，跨轴受益暗夜赶夜）。"
     },
     "secrecy": {
       "symbol": "🗝️",
@@ -440,7 +441,7 @@
       "flagship": false,
       "lore": "序列8 午夜诗人 —— \"用不同风格的诗篇影响生灵：使队友安静\"",
       "flavor": "你低声哼起一支安眠的调子——同伴急促的呼吸平复下来，身上的诅咒也松动了几分。",
-      "describe": "治疗一名友军 5 点生命，并驱散其 1 个控制或减益状态；光照 -1（15 tick）。",
+      "describe": "治疗己方灵体 5 点生命，驱散其 1 个控制或减益状态，并使其凝实 20tick（伤害 ×1.2、受伤 ×0.85，夜与午夜相位伤害 ×1.4）。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -478,15 +479,15 @@
           }
         },
         {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
+          "type": "mount_status",
+          "statusId": "solidified",
+          "duration": 20,
+          "target": "target",
+          "note": "歌谣安魂定形：灵体友军凝实 20tick"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴友军向预演（增益向），与序列6【安魂】削弱向区分。",
+      "conversionNotes": "翻译/语义：安魂轴友军向预演（增益向），与序列6【安魂】削弱向区分。｜2026-10-09 安魂轴重设计：摘 set_luminance（光照语义归暗夜轴）；治疗目标即己方灵体，直接挂凝实（轴身份转向对友灵正向增益）。",
       "art": {
         "subject": "a hummed lullaby settling over a resting companion",
         "elements": [
@@ -865,7 +866,7 @@
       "flagship": true,
       "lore": "序列6 安魂师 —— \"『安魂』（核心）：安抚灵魂，抹平欲望和情绪\"；序列4 守夜人 —— \"安魂质变：死灵怨魂也变缓慢安宁\"",
       "flavor": "你为它念起安魂的词句——它眼底的光一点点黯下去，那些驱使它厮杀的渴望，也一并被抹平了。",
-      "describe": "驱散一名敌人 1 个增益并使其安宁 20tick（攻击 -2、伤害 ×0.75、无法获得增益）；灵体或亡灵持续时间翻倍且行动条 ×0.8；光照 -1（15 tick）。",
+      "describe": "驱散一名敌人 1 个增益并使其安宁 20tick（伤害 ×0.75、无法获得增益、不会陷入恐惧）；灵体或亡灵持续时间翻倍且行动条 ×0.8。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -927,20 +928,13 @@
               "else": []
             }
           ]
-        },
-        {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴身份状态 `安宁`(pacified) 挂载源；对灵体特化支路。",
+      "conversionNotes": "翻译/语义：安魂轴身份状态 `安宁`(pacified) 挂载源；对灵体特化支路。｜2026-10-09 安魂轴重设计：摘 set_luminance；describe 跟安宁新键面（去攻击-2，补情绪绝缘）。",
       "art": {
         "subject": "a solemn chant calming a restless spirit into stillness",
         "elements": [
@@ -1049,7 +1043,7 @@
       "flagship": false,
       "lore": "序列5 灵巫 —— \"可驱使 4-5 个灵，一心多用\"",
       "flavor": "你的意识被拆成许多股，各自牵着一只灵——旁人操控一只都要分神，你同时驱使一群仍游刃有余。",
-      "describe": "战斗开始时，自身召唤位上限 +2；你召唤的灵攻击 +1。",
+      "describe": "战斗开始时，自身召唤位上限 +2；你召唤的灵落地自带凝实 20tick（伤害 ×1.2、受伤 ×0.85，夜与午夜相位伤害 ×1.4）。",
       "hook": [
         "on_tick",
         "on_battle_start"
@@ -1069,13 +1063,11 @@
               "note": "自身召唤位上限 +2 走 statusDef modifiers.summon_cap"
             },
             {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 1,
-              "mode": "delta",
-              "duration": null,
+              "type": "mount_status",
+              "statusId": "solidified",
+              "duration": 20,
               "target": "self",
-              "note": "实际走 spawn.companionBuff 挂给自身 spawn 出的灵，此处为语义简写"
+              "note": "实际走 spawn.companionBuff 挂给自身 spawn 出的灵（落地自带凝实 20tick），此处为语义简写"
             }
           ],
           "else": [],
@@ -1086,7 +1078,7 @@
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴召唤发动机。",
+      "conversionNotes": "翻译/语义：安魂轴召唤发动机。｜2026-10-09 安魂轴重设计：灵攻击+1 升级为落地凝实（召唤链接入轴正向增益族）。",
       "art": {
         "subject": "a figure with strands of will each tethered to a spirit",
         "elements": [
@@ -2154,7 +2146,7 @@
       "flagship": false,
       "lore": "序列1 厄难骑士 —— \"『灵之统帅』：统御自然灵和亡灵\"；\"大天使层面的骑士水准\"",
       "flavor": "你抬起手，凡是带灵性的东西都低下头去——连站在对面的那些亡灵，也调转了它们空洞的眼窝。",
-      "describe": "己方全体灵体与亡灵及自身攻击 +3（20tick）；若敌方有灵体或亡灵，操纵其中攻击最高者反戈 15tick；光照 -1（15 tick）。",
+      "describe": "己方全体灵体与亡灵凝实 20tick（伤害 ×1.2、受伤 ×0.85，夜与午夜相位伤害 ×1.4），自身攻击 +3（20tick）；若敌方有灵体或亡灵，操纵其中攻击最高者反戈 15tick 并陷于安宁。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2177,13 +2169,17 @@
           "op": "sequence",
           "steps": [
             {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 3,
-              "mode": "delta",
+              "type": "mount_status",
+              "statusId": "solidified",
               "duration": 20,
               "target": "all_allies",
-              "note": "统御自然灵：全体己方 SPIRIT/UNDEAD（含自身若为灵体）"
+              "filter": {
+                "unitType": [
+                  "SPIRIT",
+                  "UNDEAD"
+                ]
+              },
+              "note": "统御自然灵：己方全体灵体/亡灵凝实 20tick"
             },
             {
               "type": "modify_stat",
@@ -2222,17 +2218,10 @@
               "else": []
             }
           ]
-        },
-        {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴统御 payoff（读 `安宁` 体系，敌方亡灵掉头）。复用 F9。",
+      "conversionNotes": "翻译/语义：安魂轴统御 payoff（读 `安宁` 体系，敌方亡灵掉头）。复用 F9。｜2026-10-09 安魂轴重设计：群体攻击+3 升级为凝实（由虚转实语义）；摘 set_luminance。",
       "art": {
         "subject": "a commander raising a hand as spirits bow their heads",
         "elements": [
@@ -2467,7 +2456,7 @@
       "flagship": false,
       "lore": "序列0 黑暗 —— \"『灵体灵性』权柄\"",
       "flavor": "一切具备灵性的存在，都在你的意志之下——你的灵永不失控，而别人的灵，在你面前脆弱得不堪一击。",
-      "describe": "战斗开始时获得「灵体灵性权柄」：己方灵体与亡灵免疫控制；你对灵体与亡灵造成的伤害 ×1.3；灵体与亡灵对你造成的伤害 ×0.85。",
+      "describe": "战斗开始时获得「灵体灵性权柄」：己方灵体与亡灵免疫控制；你对灵体与亡灵造成的伤害 ×1.3；灵体与亡灵对你造成的伤害 ×0.85；攻击你的灵体或亡灵陷入安宁 10tick。",
       "hook": [
         "on_tick",
         "on_battle_start"
@@ -2506,7 +2495,8 @@
           "bowed spectral heads"
         ],
         "mood": "sovereign, untouchable"
-      }
+      },
+      "conversionNotes": "2026-10-09 安魂轴重设计：权柄新增受击反安（statusDef spirit_authority triggers 承载），安宁产层第 3 来源。"
     }
   ],
   "unitDefs": [
