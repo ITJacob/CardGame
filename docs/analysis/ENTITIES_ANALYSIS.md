@@ -17,7 +17,7 @@
 | `unit_zombie` | 活尸 | UNDEAD | 收尸人 | reach melee、hpRatio 1.0 |
 | `unit_historical_echo` | 历史影像 | ILLUSION | 占卜家 | hpRatio 0.35 |
 | `unit_marionette` | 秘偶 | CONSTRUCT | 占卜家 | hpRatio 0.25 |
-| `unit_nature_spirit` | 自然灵 | SPIRIT | 不眠者 | reach melee、hpRatio 1.0 |
+| `unit_nature_spirit` | 自然灵 | SPIRIT | 不眠者 | 元素、reach melee、hpRatio 1.0 |
 | `unit_shadow_spawn` | 阴影生物 | ILLUSION | 秘祈人 | 触发载荷、tags、元素、hpRatio 0.35 |
 | `unit_flesh_servant` | 血肉仆役 | FLESH | 秘祈人 | 触发载荷、tags、元素、hpRatio 0.5 |
 | `unit_grazed_wraith` | 被放牧的灵体 | SPIRIT | 秘祈人 | tags、元素、hpRatio 0.4 |
