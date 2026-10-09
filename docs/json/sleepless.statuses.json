@@ -322,10 +322,49 @@
         "damage_mul": 0.75,
         "buffBlocked": true
       },
-      "statMods": {
-        "attack": -2
-      },
-      "note": "禁止获得增益；层数=强度档；质变分支由卡面 If 覆写 duration 为 8。",
+      "note": "禁增益 + 情绪绝缘（免疫 fear 类）+ 伤害 ×0.75：与恐惧（回避恐惧源/降攻）键面零重叠的对立面。层数=强度档；质变分支由卡面 If 覆写 duration 为 8。",
+      "maxStacks": 3,
+      "stackPolicy": "refresh",
+      "immune": {
+        "categories": [
+          "fear"
+        ],
+        "note": "情绪绝缘：被抹平欲望与情绪者不会再恐惧"
+      }
+    },
+    {
+      "id": "solidified",
+      "name": "凝实",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 20,
+      "modifiers": [
+        {
+          "kind": "damage_mul",
+          "value": 1.2,
+          "note": "由虚转实：打击更具实体"
+        },
+        {
+          "kind": "damage_mul",
+          "value": 1.4,
+          "condition": {
+            "kind": "phase_is",
+            "phases": [
+              "night",
+              "midnight"
+            ]
+          },
+          "note": "夜晚的灵更凝实：夜/午夜相位伤害 ×1.4（覆盖基础档；跨轴受益暗夜赶夜）"
+        },
+        {
+          "kind": "damage_taken_mul",
+          "value": 0.85,
+          "note": "魂体凝定不易溃散"
+        }
+      ],
+      "note": "安魂轴正向增益族载体（安眠谣/灵之统帅/一心多用授予灵体·亡灵）。层数=强度档。",
       "maxStacks": 3,
       "stackPolicy": "refresh"
     },
@@ -729,7 +768,29 @@
           ]
         },
         "note": "己方灵体与亡灵免疫 control 类状态"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "condition": {
+            "kind": "target_unit_type",
+            "side": "attacker",
+            "type": [
+              "SPIRIT",
+              "UNDEAD"
+            ]
+          },
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "pacified",
+              "duration": 10,
+              "target": "attacker",
+              "note": "权柄威压：来犯怨灵怒意尽消（F61 attacker 寻址）"
+            }
+          ]
+        }
+      ]
     },
     {
       "category": [
