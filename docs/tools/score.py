@@ -385,10 +385,11 @@ def main():
             if sid and sid in status_by_id:
                 anchor = 8
                 sdef = status_by_id[sid]
-                if sdef.get("stackThreshold") or sdef.get("thresholdTrigger") or sdef.get("maxStacks") or sdef.get("charges"):
+                _ms = sdef.get("maxStacks")
+                if sdef.get("stackThreshold") or sdef.get("thresholdTrigger") or (isinstance(_ms, int) and _ms > 1) or sdef.get("charges"):
                     anchor += 7
                 else:
-                    deductions.append(("身份锚定", "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks 皆无）", sid, FIX["no_layer_engine"]))
+                    deductions.append(("身份锚定", "-7：身份状态无层数引擎（stackThreshold/thresholdTrigger/maxStacks>1 皆无）", sid, FIX["no_layer_engine"]))
             elif not sid:
                 # Pool 轴：以 enabler 卡 modify_resource 的资源为身份
                 res_votes = {}
