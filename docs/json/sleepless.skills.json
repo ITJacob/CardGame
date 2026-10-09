@@ -1075,35 +1075,25 @@
       ],
       "effects": [
         {
-          "op": "if",
-          "condition": {
-            "kind": "caster_has_summon"
-          },
-          "then": [
-            {
-              "type": "mount_status",
-              "statusId": "split_mind_cap",
-              "duration": null,
-              "target": "self",
-              "note": "自身召唤位上限 +2 走 statusDef modifiers.summon_cap"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "solidified",
-              "duration": 20,
-              "target": "self",
-              "note": "实际走 spawn.companionBuff 挂给自身 spawn 出的灵（落地自带凝实 20tick），此处为语义简写"
-            }
-          ],
-          "else": [],
-          "note": "身份响应：caster 持有召唤物（灵之牙/灵群）方显分心多用——锚定 召唤 身份而非夜。"
+          "type": "mount_status",
+          "statusId": "split_mind_cap",
+          "duration": null,
+          "target": "self",
+          "note": "自身召唤位上限 +2 走 statusDef modifiers.summon_cap"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "solidified",
+          "duration": 20,
+          "target": "self",
+          "note": "实际走 spawn.companionBuff 挂给自身 spawn 出的灵（落地自带凝实 20tick），此处为语义简写"
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴召唤发动机。｜2026-10-09 安魂轴重设计：灵攻击+1 升级为落地凝实（召唤链接入轴正向增益族）。",
+      "conversionNotes": "翻译/语义：安魂轴召唤发动机。｜2026-10-09 安魂轴重设计：灵攻击+1 升级为落地凝实（召唤链接入轴正向增益族）。｜2026-10-09 拆身份闸：恢复常驻挂载（原 3461e00 身份闸经实测为空转——条件恒真/自指，纯占位；见提交）",
       "art": {
         "subject": "a figure with strands of will each tethered to a spirit",
         "elements": [
@@ -2361,6 +2351,12 @@
       ],
       "effects": [
         {
+          "type": "mount_status",
+          "statusId": "conceal_authority",
+          "duration": null,
+          "target": "self"
+        },
+        {
           "op": "if",
           "condition": {
             "kind": "has_status",
@@ -2370,12 +2366,6 @@
             "n": 1
           },
           "then": [
-            {
-              "type": "mount_status",
-              "statusId": "conceal_authority",
-              "duration": null,
-              "target": "self"
-            },
             {
               "type": "modify_stat",
               "stat": "attack",
@@ -2387,11 +2377,11 @@
             }
           ],
           "else": [],
-          "note": "身份响应：self 持有 covert_veil（无迹之影/隐秘化 建立的 secrecy 身份）方显隐秘权柄——锚定潜匿身份而非夜；原嵌套 if 已外提为身份闸。"
+          "note": "读层段：身处潜匿则权威更不可察（covert_veil 存在性读档，attack +1）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴终极形态：整队长期不可选中 + 持续推隐秘值。｜dimHook 数值⚠️D 待平衡。",
+      "conversionNotes": "翻译/语义：隐秘轴终极形态：整队长期不可选中 + 持续推隐秘值。｜dimHook 数值⚠️D 待平衡。｜2026-10-09 拆身份闸：恢复常驻挂载（原 3461e00 身份闸经实测为空转——条件恒真/自指，纯占位；见提交）",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -2495,24 +2485,10 @@
       ],
       "effects": [
         {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "spirit_sight",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "mount_status",
-              "statusId": "spirit_authority",
-              "duration": null,
-              "target": "self"
-            }
-          ],
-          "else": [],
-          "note": "身份响应：self 持有 spirit_sight（通灵之眼 恒常身份）方显灵体权柄——锚定 灵 身份而非夜。"
+          "type": "mount_status",
+          "statusId": "spirit_authority",
+          "duration": null,
+          "target": "self"
         }
       ],
       "sharedAcross": [
@@ -2528,7 +2504,7 @@
         ],
         "mood": "sovereign, untouchable"
       },
-      "conversionNotes": "2026-10-09 安魂轴重设计：权柄新增受击反安（statusDef spirit_authority triggers 承载），安宁产层第 3 来源。"
+      "conversionNotes": "2026-10-09 安魂轴重设计：权柄新增受击反安（statusDef spirit_authority triggers 承载），安宁产层第 3 来源。｜2026-10-09 拆身份闸：恢复常驻挂载（原 3461e00 身份闸经实测为空转——条件恒真/自指，纯占位；见提交）"
     }
   ],
   "unitDefs": [

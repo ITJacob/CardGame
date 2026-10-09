@@ -8,7 +8,7 @@
 
 | 职业（途径） | 卡数 | 效果节点总数 | 原语节点 | 算子节点 |
 |---|---:|---:|---:|---:|
-| 不眠者 sleepless | 34 | 91 | 91 | 35 |
+| 不眠者 sleepless | 34 | 91 | 91 | 33 |
 | 仲裁人 arbiter | 40 | 105 | 105 | 38 |
 | 偷盗者 thief | 37 | 109 | 109 | 29 |
 | 刺客 assassin | 39 | 112 | 112 | 32 |
@@ -30,7 +30,7 @@
 | 观众 spectator | 36 | 74 | 74 | 26 |
 | 通识者 savant | 36 | 101 | 101 | 29 |
 | 阅读者 reader | 34 | 80 | 80 | 20 |
-| **全库** | **832** | **2384** | **2384** | **773** |
+| **全库** | **832** | **2384** | **2384** | **771** |
 
 > 口径：一张卡含多层嵌套效果（卡面 `effects`、状态触发器、区域/界域定义等），故「效果节点总数」≥ 卡数。原语=以 `type` 表达的 19 类 leaf 效果；算子=以 `op` 表达的 9 类控制流/改写节点（`sequence/if/repeat/target_override/push_back/overlay/pull_forward/swap_ally/insert_tail_cross_lane`）。算子节点内部包裹的原语已计入原语统计，二者存在少量重叠（如 `move`+`push_back`）。
 
@@ -96,7 +96,7 @@
 
 | 职业 | `sequence` | `if` | `repeat` | `target_override` | `push_back` | `overlay` | `pull_forward` | `swap_ally` | `insert_tail_cross_lane` | 合计 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 不眠者 | 8 | 25 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 35 |
+| 不眠者 | 8 | 23 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 33 |
 | 仲裁人 | 18 | 12 | 1 | 0 | 1 | 5 | 1 | 0 | 0 | 38 |
 | 偷盗者 | 17 | 10 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 29 |
 | 刺客 | 15 | 12 | 1 | 0 | 0 | 2 | 1 | 1 | 0 | 32 |
@@ -118,7 +118,7 @@
 | 观众 | 14 | 10 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 26 |
 | 通识者 | 14 | 11 | 2 | 0 | 0 | 2 | 0 | 0 | 0 | 29 |
 | 阅读者 | 13 | 5 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 20 |
-| **全库** | 315 | 296 | 19 | 0 | 45 | 31 | 30 | 7 | 30 | **773** |
+| **全库** | 315 | 294 | 19 | 0 | 45 | 31 | 30 | 7 | 30 | **771** |
 
 > `target_override` 在全库另有 **18** 处作为 `type` 原语（`effTargetOverride`）出现，与算子的 0 处合计 **18** 处「改写目标」表达。
 
@@ -408,12 +408,12 @@
 
 ## 六、总量快照
 
-> 算子口径：sequence=315 / if=296 / target_override=0 / push_back=45 / overlay=31 / repeat=19 / pull_forward=30 / swap_ally=7 / insert_tail_cross_lane=30；本库当前 832 张卡，数字随补卡浮动属正常。
+> 算子口径：sequence=315 / if=294 / target_override=0 / push_back=45 / overlay=31 / repeat=19 / pull_forward=30 / swap_ally=7 / insert_tail_cross_lane=30；本库当前 832 张卡，数字随补卡浮动属正常。
 
 
 ## 七、结论与观察
 
-1. **原语总量**：全库共 2384 个原语节点 + 773 个算子节点；`mount_status`(33%) 与 `damage`(17%) 仍是绝对主力，状态驱动风格延续。
+1. **原语总量**：全库共 2384 个原语节点 + 771 个算子节点；`mount_status`(33%) 与 `damage`(17%) 仍是绝对主力，状态驱动风格延续。
 2. **modify_stat 最常被改的属性**：`attack`(77)、`gauge.rate`(36)、`hp_max`(23) —— 敏捷原生的 `gauge.rate`、攻防 `attack/defense`、资源速率与独立资源槽是首选。
 3. **modify_resource 最常被改的资源**：`lost`(78)、`gauge.current`(63)、`energy`(58) —— `energy` 是第一杠杆，`lost`（迷失租金）已随界域/跨层普及成为常态成本，`gauge.current`（推条）用量高于直接 hp/shield。
 4. **参数使用**：modify_stat 中带 `duration` 的占 53%（持续型修正为主），带 `condition` 的仅 1%（绝大多数无条件是确定性修正，符合 B1 铁律）；`sourceRef`/`valueFrom` 动态取值共 12 处，属「按参照源缩放」的高级表达。
