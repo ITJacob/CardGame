@@ -1068,7 +1068,7 @@
       "flagship": false,
       "lore": "序列5 灵巫 —— \"可驱使 4-5 个灵，一心多用\"",
       "flavor": "你的意识被拆成许多股，各自牵着一只灵——旁人操控一只都要分神，你同时驱使一群仍游刃有余。",
-      "describe": "战斗开始时，自身召唤位上限 +2；你召唤的灵落地自带凝实 20tick（伤害 ×1.2、受伤 ×0.85，夜与午夜相位伤害 ×1.4）。",
+      "describe": "战斗开始时，自身召唤位上限 +2；你召唤的灵常驻凝实（伤害 ×1.2、受伤 ×0.85，夜与午夜相位伤害 ×1.4）。",
       "hook": [
         "on_tick",
         "on_battle_start"
@@ -1084,16 +1084,19 @@
         {
           "type": "mount_status",
           "statusId": "solidified",
-          "duration": 20,
-          "target": "self",
-          "note": "实际走 spawn.companionBuff 挂给自身 spawn 出的灵（落地自带凝实 20tick），此处为语义简写"
+          "duration": null,
+          "target": "all_allies",
+          "filter": {
+            "isSummon": true
+          },
+          "note": "维护通道：为自身 spawn 出的灵续期凝实（filter isSummon，对齐灵之统帅 target all_allies 写法）。每 tick 重执行 → 召唤物存活期间持续保有（remaining ← max(remaining, 20)），本体不受益。原记『走 spawn.companionBuff（F54）』不成立：该载荷只挂在 spawn 节点上，本卡不 spawn；且 F54 至今未进 skills.schema.json（数据零使用），无从落地"
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴召唤发动机。｜2026-10-09 安魂轴重设计：灵攻击+1 升级为落地凝实（召唤链接入轴正向增益族）。｜2026-10-09 拆身份闸：恢复常驻挂载（原 3461e00 身份闸经实测为空转——条件恒真/自指，纯占位；见提交）",
+      "conversionNotes": "翻译/语义：安魂轴召唤发动机。｜2026-10-09 安魂轴重设计：灵攻击+1 升级为落地凝实（召唤链接入轴正向增益族）。｜2026-10-09 拆身份闸：恢复常驻挂载（原 3461e00 身份闸经实测为空转——条件恒真/自指，纯占位；见提交）｜2026-10-10 对账：凝实挂载由 target self 改为 all_allies + filter isSummon——原写法把增益挂到施法者本体，与 describe『你召唤的灵』不符（挂错人）；同时纠正『走 spawn.companionBuff（F54）』的伪实现说明。改后语义为召唤物存活期间常驻凝实，describe 的『落地自带 20tick』同步改述为『常驻』",
       "art": {
         "subject": "a figure with strands of will each tethered to a spirit",
         "elements": [
