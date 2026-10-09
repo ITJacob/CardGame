@@ -16,7 +16,7 @@
 
 | 维度 | 权重 | 判据与计分 |
 |---|---:|---|
-| 身份锚定 | 15 | statusId 可解析到 statusDef（或轴身份为已登记 Pool，如 lust）得 8；身份状态带层数引擎（`stackThreshold`/`thresholdTrigger`/`maxStacks` 玩法/档位状态）再 +7；无身份锚点 0 |
+| 身份锚定 | 15 | statusId 可解析到 statusDef（或轴身份为已登记 Pool，如 lust）得 8；身份状态带层数引擎（`stackThreshold`/`thresholdTrigger` 任一，或 `maxStacks` > 1，或 `charges`）再 +7；无身份锚点 0（2026-10-10 收紧：`maxStacks` 原按「字段是否存在」计，现须 > 1——全库 7 途径掉分，逐轴见 scorecard） |
 | 产层闭环 | 20 | enablers 逐张 **AST 实证**挂载身份状态（或 Pool 轴的 `modify_resource` 产能段）：实证 ≥2 张得 20，1 张 12；enablers 非空但全部未实证 5；空 0 |
 | 读层闭环 | 25 | payoffs 逐张 AST 实证读层（condition/filter/触发器引用身份状态或 Pool 读档；检索面 = 卡面 effects + 卡挂载的状态 def + 卡 spawn/domain 出的区域/界域 def 载荷，三者同权）与 notes 级（以上均无引用、仅 conversionNotes 自述）分两档：实证每张 9、notes 级每张 4，封顶 25；payoffs 空 → 真空轴：甄别接受（`payoffVacuumAccepted:true`）得 12，未接受 0 |
 | 轴内多样性 | 15 | 轴内卡的 effect 原语种类数 + condition 谓词种类数，对全库轴最大值归一：15 × 本轴种类和 / 全库最大种类和 |
