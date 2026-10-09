@@ -387,8 +387,8 @@
           "note": "魂体凝定不易溃散"
         }
       ],
-      "note": "安魂轴正向增益族载体（安眠谣/灵之统帅/一心多用授予灵体·亡灵）。层数=强度档。",
-      "maxStacks": 3,
+      "note": "安魂轴正向增益族载体（安眠谣/灵之统帅/一心多用授予灵体·亡灵）。单层状态（maxStacks 1 / refresh）：重复施加只刷新剩余时长（remaining ← max(remaining, grant.duration)），不叠层、不叠加计时——同一灵被多张卡重复授予时取最长剩余，强度不随来源数量爬升。",
+      "maxStacks": 1,
       "stackPolicy": "refresh"
     },
     {
@@ -662,36 +662,33 @@
       "duration": null,
       "triggers": [
         {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "covert_veil",
+              "duration": null,
+              "target": "self",
+              "note": "授予即自持潜匿（一次性）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "covert_veil",
+              "duration": null,
+              "target": "allies_except_self",
+              "note": "己方其余单位（含召唤物）同时隐去——不含自身，自身走上面的 on_apply"
+            }
+          ]
+        },
+        {
           "event": "on_tick",
           "effects": [
             {
               "type": "mount_status",
               "statusId": "covert_veil",
               "duration": null,
-              "target": "self",
-              "note": "隐藏痕迹：自身常驻 concealed"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "covert_veil",
-              "duration": null,
-              "target": "all_allies",
-              "note": "己方全部召唤物常驻 concealed（filter isSummon，实现侧细化）"
-            }
-          ]
-        },
-        {
-          "event": "on_deal_damage",
-          "effects": [
-            {
-              "type": "dispel",
-              "target": "self",
-              "dispelTarget": "unit",
-              "filter": {
-                "statusId": "covert_veil",
-                "count": 1
-              },
-              "note": "自身造成伤害后破除"
+              "target": "allies_except_self",
+              "note": "维护通道：为后登场的召唤物补挂潜匿；对已持有者只是刷新时长"
             }
           ]
         }
@@ -705,7 +702,7 @@
           "note": "将任何事物变隐秘：己方 conceal 类状态不可驱散"
         }
       },
-      "note": "出手破除的潜匿 10 tick 后自动重新挂载。",
+      "note": "授予一次性：自身潜匿不再每 tick 补回——出手自破（covert_veil 自身 on_deal_damage 触发器）或被隐秘之地消耗后不复原，再隐靠无迹之影受击重挂或隐秘化重挂。友军/召唤物走 on_tick 维护通道（只为后登场者补挂，不含自身）。原记『出手破除的潜匿 10 tick 后自动重新挂载』无实现载体（无延迟原语），作废。",
       "crossPathway": true,
       "participants": [
         "apprentice",
