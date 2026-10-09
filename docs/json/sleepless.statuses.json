@@ -180,32 +180,13 @@
       ]
     },
     {
-      "id": "slumber",
-      "name": "沉眠",
+      "id": "dream",
+      "name": "入梦",
       "category": [
         "control"
       ],
       "dispelable": true,
-      "duration": 20,
-      "modifiers": [
-        {
-          "kind": "damage_taken_mul",
-          "value": 1.2,
-          "note": "基础：受伤 ×1.2"
-        },
-        {
-          "kind": "damage_taken_mul",
-          "value": 1.4,
-          "condition": {
-            "kind": "phase_is",
-            "phases": [
-              "midnight"
-            ]
-          },
-          "note": "午夜深眠：午夜相位受伤 ×1.4（覆盖基础档）"
-        }
-      ],
-      "note": "硬控（禁用全部行动）+ 受伤 ×1.2（午夜相位 ×1.4 深眠）；被行为伤害命中即醒，状态来源 DoT 不醒（damage_source_is）。睡眠族扩展：被延长走 durationModifier、被永眠改写走 transferStatus。",
+      "duration": 15,
       "disallowActions": [
         "move",
         "basic_attack",
@@ -229,12 +210,38 @@
               "target": "self",
               "dispelTarget": "unit",
               "filter": {
-                "statusId": "slumber"
+                "statusId": "dream"
               },
               "note": "受击苏醒：行为伤害命中即醒（DoT 状态伤害不醒）"
             }
           ]
         }
+      ],
+      "note": "轻档睡眠：硬控（禁用全部行动）、无受伤加成；被行为伤害命中即醒（DoT 不醒）。深一档见 `slumber`（沉眠：不被打断 + 受伤 ×1.4）。入梦不叠层。"
+    },
+    {
+      "id": "slumber",
+      "name": "沉眠",
+      "category": [
+        "control"
+      ],
+      "dispelable": true,
+      "duration": 15,
+      "modifiers": [
+        {
+          "kind": "damage_taken_mul",
+          "value": 1.4,
+          "note": "深眠：受伤 ×1.4"
+        }
+      ],
+      "note": "重档睡眠：硬控 + 受伤 ×1.4，**不因行为伤害打断**（与入梦的关键差别——靠时长自然到期或驱散解除）。仅由『梦陷满 3 层』（梦魇世界）与『永眠』交付。",
+      "disallowActions": [
+        "move",
+        "basic_attack",
+        "skill",
+        "skip",
+        "react",
+        "channel"
       ]
     },
     {
@@ -251,20 +258,20 @@
           "condition": {
             "kind": "has_status",
             "side": "self",
-            "id": "slumber",
+            "id": "dream",
             "cmp": ">=",
             "n": 1
           },
           "effects": [
             {
               "type": "modify_status",
-              "statusId": "slumber",
+              "statusId": "dream",
               "target": "self",
               "addDuration": 10,
-              "note": "续眠：沉眠剩余时长 +10 tick"
+              "note": "续眠：入梦剩余时长 +10 tick"
             }
           ],
-          "note": "击溃精神：挂载时续眠"
+          "note": "击溃精神：挂载时续眠（入梦）"
         },
         {
           "event": "on_tick",
@@ -279,7 +286,7 @@
           ]
         }
       ],
-      "note": "击溃精神：每 tick 0.4 点精神伤害；挂载时把宿主沉眠剩余时长延长 10 tick。"
+      "note": "击溃精神：每 tick 0.4 点精神伤害；挂载时把宿主入梦剩余时长延长 10 tick。"
     },
     {
       "id": "dream_walker",
@@ -292,20 +299,35 @@
       "modifiers": {
         "ignoreRangeRestriction": {
           "condition": {
-            "kind": "has_status",
-            "side": "target",
-            "id": "slumber",
-            "cmp": ">=",
-            "n": 1
+            "kind": "any_of",
+            "conditions": [
+              {
+                "kind": "has_status",
+                "side": "target",
+                "id": "dream",
+                "cmp": ">=",
+                "n": 1
+              },
+              {
+                "kind": "has_status",
+                "side": "target",
+                "id": "slumber",
+                "cmp": ">=",
+                "n": 1
+              }
+            ]
           },
-          "note": "对处于 slumber 的敌方单位施放技能时忽略 reach/前排限制"
+          "note": "对处于入梦/沉眠的敌方单位施放技能时忽略 reach/前排限制"
         },
         "durationModifier": {
           "scope": "outgoing",
           "mode": "add",
           "value": 5,
           "filter": {
-            "statusId": "slumber"
+            "targetHasStatus": [
+              "dream",
+              "slumber"
+            ]
           }
         }
       }
@@ -503,7 +525,7 @@
       "duration": null,
       "maxStacks": 3,
       "stackPolicy": "stack",
-      "note": "计数型：满 3 层由卡面转沉眠并清空。"
+      "note": "梦魇轴身份计数：入梦/塑梦/强制入梦产层（+1），满 3 层由『梦魇世界』区域读层转 `slumber`（沉眠 15tick）并清空。仅计数，无自身载荷。"
     },
     {
       "id": "occult_seal",
@@ -704,6 +726,7 @@
           "value": 1.3,
           "filter": {
             "targetHasStatus": [
+              "dream",
               "slumber",
               "dread",
               "pacified"
