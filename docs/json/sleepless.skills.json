@@ -63,7 +63,7 @@
         "隐秘之地",
         "隐秘权柄"
       ],
-      "note": "潜匿层数经济：隐秘化/无迹之影产层，隐秘之地/隐秘权柄按隐秘值 ≥7 放大（×1.5）。"
+      "note": "潜匿层数经济：隐秘化/无迹之影产层（自持+受击再隐循环）；隐秘权柄存在性读层（常驻潜行+不可驱散），隐秘之地耗 1 层潜匿延长封印 10tick（耗层换效）。"
     }
   },
   "cards": [
@@ -1735,7 +1735,7 @@
       "flagship": false,
       "lore": "序列2 隐秘之仆 —— \"『隐秘化』：使目标进入不被外界感应的状态\"",
       "flavor": "你把它从世界上暂时抹去了——眼睛看不见，感应够不着，它站在那里，却像不在那里。",
-      "describe": "使一名友军（含自身）潜匿 15tick：无法被敌方单体技能选中，造成伤害后破除；光照 -1（15 tick）。",
+      "describe": "使一名友军（含自身）潜匿 15tick：无法被敌方单体技能选中，造成伤害后破除。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1757,20 +1757,13 @@
           "duration": 15,
           "target": "target",
           "note": "潜匿：隐秘轴身份锚点"
-        },
-        {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
         }
       ],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴中层 enabler：挂 `隐秘` + 推进战场隐秘值。｜dimHook 数值⚠️D 待平衡。",
+      "conversionNotes": "翻译/语义：隐秘轴中层 enabler：挂 `隐秘` + 推进战场隐秘值。｜dimHook 数值⚠️D 待平衡。｜2026-10-09 隐秘轴清理：摘 set_luminance（光照语义归暗夜轴）。",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -1805,7 +1798,7 @@
       "flagship": true,
       "lore": "序列2 隐秘之仆 —— \"『隐秘之地』：封印目标于隐秘区域\"",
       "flavor": "你为它在世界之外找了个角落——它还在，但无论是它的同伴还是它的敌人，都再也够不到它了。",
-      "describe": "将一名敌人封入隐秘之地 20tick：任何技能无法选中它（含友军治疗/增益），无法行动、不参与行动排序，已挂载的持续伤害正常结算；光照 -1（15 tick）。",
+      "describe": "将一名敌人封入隐秘之地 20tick：任何技能无法选中它（含友军治疗/增益），无法行动、不参与行动排序，已挂载的持续伤害正常结算；若自身处于潜匿，消耗 1 层潜匿使封印延长 10tick。",
       "cost": {
         "energy": 5,
         "cooldown": 35,
@@ -1826,15 +1819,36 @@
           "duration": 20
         },
         {
-          "type": "set_luminance",
-          "duration": 15,
-          "dispelable": false,
-          "note": "相对压暗 delta:-1（非硬设暗夜档）",
-          "delta": -1
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "covert_veil",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_status",
+              "statusId": "covert_veil",
+              "target": "self",
+              "stacksDelta": -1,
+              "note": "耗 1 层潜匿（modify_status stacksDelta 负值=耗层换效）"
+            },
+            {
+              "type": "modify_status",
+              "statusId": "occult_seal",
+              "target": "target",
+              "addDuration": 10,
+              "note": "耗层延封：对隐秘的掌控让封印更牢（+10tick）"
+            }
+          ],
+          "else": [],
+          "note": "读层实证段：潜匿耗层换效——secrecy payoff 落地"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴旗舰：连友军都够不到目标；封印即写隐秘值。｜dimHook 数值⚠️D 待平衡。",
+      "conversionNotes": "翻译/语义：隐秘轴旗舰：连友军都够不到目标；封印即写隐秘值。｜dimHook 数值⚠️D 待平衡。｜2026-10-09 隐秘轴清理：摘 set_luminance；补耗层延封读层段（payoff notes 级→landed）。",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -1869,7 +1883,7 @@
       "flagship": false,
       "lore": "序列2 隐秘之仆 —— \"『隐秘』权柄：让发生的一切不被窥见，也能展现被隐秘的内容\"",
       "flavor": "你伸手揭开了那层幕布——所有藏起来的东西都重新现形，而在刺眼的真实面前，它们连站都站不稳。",
-      "describe": "驱散全体敌人的隐匿与封印状态，每个被驱散的敌人受到 3 点精神伤害并易伤 15tick；光照 -2（10 tick）。",
+      "describe": "驱散全体敌人的隐匿与封印状态，每个被驱散的敌人受到 3 点精神伤害并易伤 15tick。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1916,17 +1930,10 @@
               "note": "仅对被驱散者（稿面语义，实现侧按 dispelled 集合过滤）"
             }
           ]
-        },
-        {
-          "type": "set_luminance",
-          "duration": 10,
-          "dispelable": false,
-          "note": "压暗：delta -2（10 tick）",
-          "delta": -2
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴攻向（反制隐匿）。",
+      "conversionNotes": "翻译/语义：隐秘轴攻向（反制隐匿）。｜2026-10-09 隐秘轴清理：摘 set_luminance（压暗与「暴露在光下」语义反向，属残留）。",
       "art": {
         "subject": "a hand lifting a dark curtain to expose what hides beneath",
         "elements": [
