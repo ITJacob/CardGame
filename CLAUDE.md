@@ -2,13 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 仓库性质：纯文档库，无代码
+## 仓库性质：设计文档 + 数据 + Web 游戏端
 
-本仓库是 Roguelike 爬塔卡牌游戏**战斗内核**的 DDD 领域设计文档库（全部中文），不含实现代码——没有 package.json、没有构建/测试/ lint 命令，不要去寻找。
+本仓库承载 Roguelike 爬塔卡牌游戏的**战斗内核 DDD 设计文档**（`docs/`，全中文）、**技能池数据**（`docs/json/`，唯一权威源）与 **Web 游戏端**（`game/`，TypeScript + Vite + 原生 DOM）。设计文档与数据是权威正源，游戏端实现落在 `game/`（框架方案见 `game/DESIGN.md`）。
 
-- 曾有一套 TypeScript 实现（约 8600 行 + 89 测试），2026-09-05 随仓库重新定位移除，完整保留在 git 历史 `7e6d01f`，需要时可全量取回。
-- 实现落点在游戏主项目（仓库外）；爬塔派发/构筑（Draft/Progression）等战外上下文也归主项目，不在此处。
-- 文档即产物：改文档就是改设计。提交信息用中文 + conventional 前缀（`docs:` / `refactor:` 等）。
+- `docs/ddd/` 保持「纯内容」：只描述最终模型，不得被实现细节反向污染。
+- `docs/json/` 是卡池数据唯一权威源：游戏端只读、**不拷贝**（运行时相对路径直读；dev 由 Vite 中间件把 `/docs` 映射到仓库 `docs/`，prod 由部署把 `docs/` 铺在与游戏同层）。
+- `game/` 目前是 **P0 骨架**（主菜单 + hash 路由 + 数据加载 + 部署流程）；战斗内核**尚未实现**，内核对外契约见 `game/DESIGN.md` 第三节。
+- 曾有一套 TypeScript 实现（约 8600 行 + 89 测试），2026-09-05 随仓库重定位移除，完整保留在 git 历史 `7e6d01f`，需要时可全量取回。
+- 爬塔派发/构筑（Draft/Progression）等战外上下文归游戏主项目；游戏端自带的战外层（英雄生成/解锁/编队/匹配/存档）在 `game/src/meta/`。
+- 文档即产物：改文档就是改设计。提交信息用中文 + conventional 前缀（`docs:` / `refactor:` / `feat:` 等）。
 
 ## 文档地图
 
@@ -59,6 +62,14 @@ tools/               **与 docs 设计无关的周边工具**（产物落在 sit
 └─ normalize_frame.py      边框图后处理：--autocrop 裁边 / --crop 截残留 / --stretch 拉伸 / 压黑 / --check 体检
 （收纳原则：docs/ 只与设计有关；凡产物落在 site/、或处理图片等非设计事务的脚本，一律放 tools/）
 docs/诡秘之主资料库/  原著设定源素材（世界体系/九大源质/界域机制/职业对照表）——工作流① 设定补全的落点
+site/               技能池 wiki（现网静态站，托管于 /CardGame/site/；游戏首页链入）
+game/               Web 游戏端（TypeScript + Vite + 原生 DOM；当前 P0 骨架）
+├─ DESIGN.md        游戏端框架设计方案（分层/内核契约/战外上下文/构建部署/分期）
+└─ src/
+   ├─ kernel/       战斗内核（零 DOM / 零 I/O / 确定性）——尚未实现，契约见 DESIGN.md §3
+   ├─ data/         数据接入层（唯一触碰 docs/json 之处）
+   ├─ meta/         战外上下文（英雄生成/解锁/编队/匹配/存档）
+   └─ ui/           原生 DOM（router + views + components + styles）
 ```
 
 新增设计内容先判断归属：结构/概念 → `contexts/`，取值域/数值 → `params/`，内容设计（技能卡）→ `json/`（直接改 JSON，先改 schema）。
