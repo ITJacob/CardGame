@@ -58,6 +58,8 @@ export interface EffectOps {
   applyTargetOverride(unit: CombatUnit, spec: { anchor?: string; faction?: string; sort?: string }): void
   writeRuleSlot(node: EffectNode, caster: CombatUnit | null): void
   modifyRuleSlot(node: EffectNode, caster: CombatUnit | null): void
+  /** 战场级量表（secrecy / order / fate_value） */
+  boardMeter(key: string, value: number, set: boolean): void
 }
 
 /** 用 EffectRef.params 覆写节点上的同名参数 */

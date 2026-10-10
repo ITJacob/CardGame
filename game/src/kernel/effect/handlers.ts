@@ -117,7 +117,7 @@ export function handleModifyResource(node: EffModifyResource, target: CombatUnit
     return
   }
   if (res === 'secrecy' || res === 'order' || res === 'fate_value') {
-    ctx.unsupported('modify_resource', `战场量表 ${res} 未建模（P2b）`)
+    ctx.ops.boardMeter(res, value, node.mode === 'set')
     return
   }
   if (!POOL_KEYS.includes(res as PoolKey)) {
