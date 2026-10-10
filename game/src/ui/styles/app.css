@@ -336,6 +336,32 @@ a { color: inherit; text-decoration: none; }
 }
 .ci-cost { flex: none; color: var(--accent); text-shadow: 0 1px 2px #000; }
 
+/*
+ * 卡池档：卡面本身就是 <button>，不再在外面套一层带 padding/背景的面板框
+ * （那层框以前还捎带重复一遍名字与「被动 · common / 已解锁」）。这里只清掉按钮的
+ * UA 外观，卡面尺寸/圆角仍由 .card-face 决定。状态只剩右上角角标 + 置灰。
+ */
+button.card-face {
+  padding: 0; border: 0; background: none; font: inherit; color: inherit;
+  cursor: pointer; appearance: none;
+}
+button.card-face:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* 槽满（不可装备）的卡不响应点击；未解锁的卡仍可点开解锁，故只跟 aria-disabled 绑定 */
+button.card-face[aria-disabled="true"] { cursor: default; }
+/* 置灰：未解锁 / 槽位已满。只降透明度，hover 详情浮层照常弹 */
+.card-face.dim { opacity: 0.5; }
+.card-face.dim:hover { opacity: 0.75; }
+/* 右上角角标：未解锁 🔒 / 已装备 ✓。排在边框层之后绘制，不会被 screen 混色吃掉 */
+.card-corner {
+  position: absolute; top: 3px; right: 3px; z-index: 3;
+  min-width: 15px; height: 15px; padding: 0 3px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; line-height: 1;
+  background: rgba(8, 10, 14, 0.72); border: 1px solid var(--border); color: var(--text);
+  text-shadow: 0 1px 2px #000; pointer-events: none;
+}
+.card-face.full .card-corner { min-width: 18px; height: 18px; font-size: 12px; }
+
 .decision {
   position: sticky; bottom: 0; z-index: 5;
   padding: 12px; border-top: 1px solid var(--accent-dim);
@@ -453,19 +479,6 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .pool-head .btn { width: auto; padding: 8px 14px; }
 .pool-main .hint { font-size: 12.5px; color: var(--text-dim); }
 .pool-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-.pool-card {
-  display: flex; flex-direction: column; align-items: center; gap: 5px;
-  font: inherit; padding: 8px; width: 116px; /* full 档卡面 96 + padding 16 + 边框 2 */
-  background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
-  color: var(--text); cursor: pointer;
-}
-.pool-card.on { border-color: var(--accent-dim); }
-.pool-card.off { opacity: 0.5; }
-.pool-meta { display: flex; flex-direction: column; text-align: center; }
-.pool-meta b { font-size: 11px; }
-.pool-meta small { font-size: 10px; color: var(--text-dim); }
-.pool-flag { font-size: 10px; color: var(--text-dim); }
-.pool-card.on .pool-flag { color: var(--ok); }
 
 @media (max-width: 700px) {
   .pool-page { grid-template-columns: 1fr; }
@@ -541,10 +554,6 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 }
 .slot-op:hover { color: var(--text); border-color: var(--accent-dim); }
 .slot-op.danger:hover { color: #d98b8b; border-color: var(--warn); }
-
-.prep .pool-card { cursor: pointer; }
-.prep .pool-card.on { cursor: default; }
-.prep .pool-card.off { cursor: default; }
 
 /* ---------- 拖拽（阵型摆位 + 主动槽调序） ---------- */
 /* touch-action:none 让触屏上的拖动不被页面滚动抢走；拖源才有，不影响别处滚动 */

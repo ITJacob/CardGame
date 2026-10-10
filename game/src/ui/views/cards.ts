@@ -43,16 +43,24 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
       const tpl = catalog.behaviorTemplates.get(cardId)
       const name = skill?.name ?? tpl?.name ?? cardId
       const rarity = skill?.rarity ?? tpl?.rarity ?? 'common'
-      const kind = skill ? '主动' : tpl ? '被动' : '?'
       const cardKind = tpl && !skill ? ('passive' as const) : ('active' as const)
       const on = available.has(cardId)
-      // 不给 title：悬停卡面时浏览器会弹原生 tooltip，跟我们的详情浮层打架。卡名本来就在
-      // 卡面信息条上，浮层里还有完整名字。
-      return `<button type="button" class="pool-card${on ? ' on' : ' off'}" data-card="${escapeHtml(cardId)}">
-        ${cardFaceHtml({ cardId, name, rarity, pathwayId: skill?.pathwayId ?? tpl?.pathwayId, kind: cardKind, cost: skill?.cost?.energy, size: 'full' })}
-        <span class="pool-meta"><b>${escapeHtml(name)}</b><small>${kind} · ${rarity}</small></span>
-        <span class="pool-flag">${on ? '已解锁' : '未解锁'}</span>
-      </button>`
+      // 卡面本身就是按钮：外面不再套一层带 padding/背景的面板框，也不在卡下重复名字与
+      // 「被动 · common / 已解锁」——名字在卡面信息条上，其余细节在 hover 浮层里。
+      // 状态只剩右上角一个锁标 + 整张卡置灰。不给 title：原生 tooltip 会跟浮层打架。
+      return cardFaceHtml({
+        cardId,
+        name,
+        rarity,
+        pathwayId: skill?.pathwayId ?? tpl?.pathwayId,
+        kind: cardKind,
+        cost: skill?.cost?.energy,
+        size: 'full',
+        as: 'button',
+        attrs: `aria-pressed="${on}"`,
+        corner: on ? '' : '🔒',
+        dim: !on,
+      })
     })
     .join('')
 
@@ -90,9 +98,8 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
     draw(host, catalog, current)
   })
 
-  // 只认外层的 .pool-card 按钮：卡面 figure 上也带着 data-card，若用裸 [data-card] 会同时命中
-  // 两层，一次点击触发两次 toggleCardUnlock（净效果 = 没解锁），等于按钮失灵。
-  host.querySelectorAll<HTMLElement>('.pool-card[data-card]').forEach((el) => {
+  // 卡面即按钮，整页只有它带 data-card（外层已无包裹元素），点一次翻一次。
+  host.querySelectorAll<HTMLElement>('.pool-grid [data-card]').forEach((el) => {
     el.addEventListener('click', () => {
       saveProfile(toggleCardUnlock(loadProfile(), catalog, el.dataset.card ?? ''))
       draw(host, catalog, current)

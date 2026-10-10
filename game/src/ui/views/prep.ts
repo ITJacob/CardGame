@@ -2,6 +2,7 @@
 // 编辑写回出战草稿（ui/draft），开战/建房时照常从草稿读名册——内核与在线 wire 零改动。
 import { escapeHtml, subBarHtml } from '../components/chrome'
 import { avatarEmoji, cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import type { CardFaceOpts } from '../components/cardFace'
 import { enableDrag } from '../drag'
 import { enableHoverCard, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
@@ -269,7 +270,13 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
 
 // ---------- 渲染片段 ----------
 
-function cardOf(catalog: Catalog, id: string, kind: SlotKind, size: 'compact' | 'full'): string {
+function cardOf(
+  catalog: Catalog,
+  id: string,
+  kind: SlotKind,
+  size: 'compact' | 'full',
+  extra: Partial<CardFaceOpts> = {},
+): string {
   const def = catalog.skillDefs.get(id)
   const tpl = catalog.behaviorTemplates.get(id)
   return cardFaceHtml({
@@ -280,6 +287,7 @@ function cardOf(catalog: Catalog, id: string, kind: SlotKind, size: 'compact' | 
     kind,
     cost: def?.cost?.energy,
     size,
+    ...extra,
   })
 }
 
@@ -376,14 +384,16 @@ function poolGridHtml(catalog: Catalog, hero: PlacedHero, pool: SkillPool, kind:
     .map((id) => {
       const on = equipped.has(id)
       const off = !on && full
-      const flag = on ? '已装备' : off ? '槽位已满' : ''
-      // 用 aria-disabled 而不是 disabled：disabled 的按钮连同子节点都收不到鼠标事件，
-      // 卡面就 hover 不出详情浮层了（槽满的卡恰恰是最想看清楚的）。挡操作改由 equipSkill
-      // 自己兜底——槽满时它原样返回，applyHero 会提示「该操作无效」。
-      return `<button type="button" class="pool-card${on ? ' on' : ''}${off ? ' off' : ''}" data-equip="${kind}:${escapeHtml(id)}"${off ? ' aria-disabled="true"' : ''}>
-        ${cardOf(catalog, id, kind, 'full')}
-        <span class="pool-flag">${flag}</span>
-      </button>`
+      // 卡面本身就是按钮，外面不再套面板框：状态走右上角 ✓ 角标 + 槽满置灰。
+      // 用 aria-disabled 而不是 disabled：disabled 的按钮收不到鼠标事件，卡面就 hover 不出
+      // 详情浮层了（槽满的卡恰恰是最想看清楚的）。挡操作改由 equipSkill 自己兜底——槽满时
+      // 它原样返回，applyHero 会提示「该操作无效」。
+      return cardOf(catalog, id, kind, 'full', {
+        as: 'button',
+        attrs: `data-equip="${kind}:${escapeHtml(id)}"${off ? ' aria-disabled="true"' : ''}`,
+        corner: on ? '✓' : '',
+        dim: off,
+      })
     })
     .join('')
 

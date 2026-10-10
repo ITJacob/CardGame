@@ -58,6 +58,17 @@ export interface CardFaceOpts {
   /** 能量消耗，仅主动卡有 */
   cost?: number | null
   size?: 'compact' | 'full'
+  /**
+   * 'button' 时卡面本身就是交互元素（卡池档），'figure' 是只读展示（名册 / 技能槽）。
+   * 卡池外层不再套面板框——卡面即按钮，状态走右上角角标 + 置灰。
+   */
+  as?: 'figure' | 'button'
+  /** 追加到根元素的属性串（调用方负责转义），如 data-equip、aria-disabled、aria-pressed */
+  attrs?: string
+  /** 右上角角标（调用方负责转义的 HTML），如未解锁的 🔒、已装备的 ✓ */
+  corner?: string
+  /** 置灰：未解锁 / 槽位已满。只降透明度，hover 详情照常弹 */
+  dim?: boolean
 }
 
 /**
@@ -69,22 +80,34 @@ export interface CardFaceOpts {
  * 必须 lazy。
  */
 export function cardFaceHtml(opts: CardFaceOpts): string {
-  const { cardId, name, rarity = 'common', pathwayId, kind = 'active', cost, size = 'compact' } = opts
+  const {
+    cardId, name, rarity = 'common', pathwayId, kind = 'active', cost, size = 'compact',
+    as = 'figure', attrs, corner, dim,
+  } = opts
   const emoji = RARITY_EMOJI[rarity] ?? '▫️'
   const fallback = frameFallbackUrl(rarity)
   // 主动必有 ⚡ 费用、被动必无 —— 这一条本身就足以分辨主/被动，不再单挂一个「主/被」角标。
   // kind 仍需保留：它决定要不要出费用，也落在 k-<kind> 类上给样式/测试当锚。
   const costHtml = kind === 'active' && cost != null ? `<span class="ci-cost">⚡${cost}</span>` : ''
+  const tag = as === 'button' ? 'button' : 'figure'
+  // figcaption 只在 figure 里合法；按钮档换成 div（样式挂类不挂标签，外观不变）
+  const infoTag = as === 'button' ? 'div' : 'figcaption'
+  const cls = ['card-face', `r-${escapeHtml(rarity)}`, `k-${kind}`, size === 'full' ? 'full' : '', dim ? 'dim' : '']
+    .filter(Boolean)
+    .join(' ')
+  const extra = [as === 'button' ? 'type="button"' : '', attrs ?? ''].filter(Boolean).join(' ')
+  // 角标放在最后：它晚于边框层绘制，不会被 mix-blend-mode:screen 吃掉
+  const cornerHtml = corner ? `<span class="card-corner">${corner}</span>` : ''
   return `
-  <figure class="card-face r-${escapeHtml(rarity)} k-${kind}${size === 'full' ? ' full' : ''}" data-card="${escapeHtml(cardId)}">
+  <${tag} ${extra} class="${cls}" data-card="${escapeHtml(cardId)}">
     <div class="card-noart" aria-hidden="true"><span class="noart-glyph">${emoji}</span></div>
     <img class="card-art" src="${cardArtUrl(cardId)}" alt="" loading="lazy" data-art>
     <div class="card-shade" aria-hidden="true"></div>
     <img class="card-frame" src="${frameUrl(rarity, pathwayId)}" alt="" aria-hidden="true" data-frame data-frame-fallback="${fallback ?? ''}">
-    <figcaption class="card-info">
+    <${infoTag} class="card-info">
       <span class="ci-name">${escapeHtml(name)}</span>${costHtml}
-    </figcaption>
-  </figure>`
+    </${infoTag}>${cornerHtml}
+  </${tag}>`
 }
 
 /** 挂上降级：卡图失败 → .no-art；边框失败 → 第二跳 → 再失败就摘层走内描边色环 */

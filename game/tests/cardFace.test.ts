@@ -83,6 +83,33 @@ describe('cardFaceHtml 骨架', () => {
     expect(html).toContain('&lt;img&gt;')
     expect(html).toContain('data-card="x&quot;&gt;&lt;b"')
   })
+
+  it('默认渲染 figure + figcaption（名册 / 技能槽的只读档）', () => {
+    const html = face({ cardId: 'a', name: 'A' })
+    expect(html).toContain('<figure')
+    expect(html).toContain('<figcaption class="card-info">')
+    expect(html).not.toContain('<button')
+    expect(html).not.toContain('card-corner')
+    expect(html).not.toContain(' dim')
+  })
+
+  it('as:button 时卡面本身即按钮：type/attrs 落在根上，信息条换 div，不再套外层', () => {
+    const html = face({ cardId: 'a', name: 'A', as: 'button', attrs: 'data-equip="active:a" aria-disabled="true"' })
+    expect(html).toContain('<button type="button" data-equip="active:a" aria-disabled="true" class="card-face')
+    expect(html).toContain('<div class="card-info">')
+    expect(html).not.toContain('<figure')
+    // 整页只此一个 data-card（不再有外层包裹元素 → 不会一次点击翻两次）
+    expect(html.match(/data-card=/g)).toHaveLength(1)
+  })
+
+  it('corner 出右上角角标、dim 出置灰类', () => {
+    const locked = face({ cardId: 'a', name: 'A', as: 'button', corner: '🔒', dim: true })
+    expect(locked).toContain('<span class="card-corner">🔒</span>')
+    expect(locked).toContain('class="card-face r-common k-active dim"')
+    const on = face({ cardId: 'b', name: 'B', as: 'button', corner: '✓' })
+    expect(on).toContain('✓')
+    expect(on).not.toContain(' dim')
+  })
 })
 
 describe('cardDetailHtml 详情浮层', () => {
