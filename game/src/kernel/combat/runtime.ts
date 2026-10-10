@@ -1,11 +1,11 @@
 // 战斗运行时：聚合根 Combat 的实现。持事件总线 / 随机源 / id 生成器 / 注册表 /
 // 战场 / Placement / Scheduler，并把一次 step 停在 Manual 决策点。
-import type { FactionId, UnitId } from '../ids'
+import type { FactionId, Phase, UnitId } from '../ids'
 import type { Battle, Faction, Lane } from '../battle/types'
 import { LANE_CAPACITY } from '../battle/types'
 import { BattlePlacement } from '../battle/placement'
 import { createLookup, type CatalogLookup } from '../catalog/lookup'
-import type { Catalog, TriggerDef } from '../catalog/types'
+import type { Catalog, EffectNode, TriggerDef } from '../catalog/types'
 import { EventBus } from '../shared/events'
 import { SequentialIdGenerator } from '../shared/id-generator'
 import { Mulberry32RandomSource, RandomUsageRegistry, type RandomSource } from '../shared/random-source'
@@ -66,6 +66,9 @@ class CombatRuntime implements CombatRuntimeHandle {
   private tickCount = 0
   private unsupportedCount = 0
   private readonly stats: CombatStats
+  private timers: { kind: 'translocate' | 'control'; unitId: UnitId; remaining: number; payload: readonly EffectNode[] }[] = []
+  private readonly lastAttacker = new Map<UnitId, UnitId>()
+  private prevPhase: Phase = 'day'
 
   constructor(opts: RuntimeOptions) {
     this.setupData = opts.setup
@@ -100,6 +103,8 @@ class CombatRuntime implements CombatRuntimeHandle {
       },
     })
     this.placeUnits()
+    this.prevPhase = this.battle.phase
+    for (const u of this.units.all()) this.fireStatusTriggers(u, 'on_battle_start')
   }
 
   // ---------- 初始化 ----------
@@ -195,6 +200,14 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.stats.ticks = this.tickCount
 
     const crossed = this.scheduler.tick()
+    this.tickTimers()
+    if (this.battle.phase !== this.prevPhase) {
+      this.prevPhase = this.battle.phase
+      for (const u of this.units.all()) this.fireStatusTriggers(u, 'on_phase_change')
+    }
+    if (this.tickCount % 5 === 0) {
+      for (const u of this.units.all()) this.fireStatusTriggers(u, 'on_turn_start')
+    }
     const opportunities: ActionOpportunity[] = resolveInitiative(
       crossed,
       this.factions,
@@ -223,9 +236,13 @@ class CombatRuntime implements CombatRuntimeHandle {
       if (!r.ok) {
         opp.consumedBy = 'wasted'
         unit.gauge.settleOverflow()
-      } else if (r.value) {
-        const awaiting = r.value
-        this.pending = { request: awaiting.request, continueWith: (p) => awaiting.continueWith(p) }
+      } else {
+        if (slot.kind === 'basic_attack') this.fireStatusTriggers(unit, 'on_attack')
+        else this.fireStatusTriggers(unit, 'on_active_skill')
+        if (r.value) {
+          const awaiting = r.value
+          this.pending = { request: awaiting.request, continueWith: (p) => awaiting.continueWith(p) }
+        }
       }
       this.checkDeaths()
       if (this.pending) break
@@ -290,19 +307,178 @@ class CombatRuntime implements CombatRuntimeHandle {
       emit: (e) => this.emit(e),
       mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant),
       effectNode: (id) => this.lookup.effectNode(id),
+      defCategory: (id) => this.lookup.statusDef(id)?.category,
       unsupported: (k, d) => this.unsupported(k, d),
       reportDamage: (faction, amount) => {
         if (faction) this.stats.damageDealt[faction] = round2((this.stats.damageDealt[faction] ?? 0) + amount)
       },
+      onDamage: (attacker, defender, amount) => {
+        if (attacker) this.lastAttacker.set(defender.id, attacker.id)
+        if (attacker) this.fireStatusTriggers(attacker, 'on_deal_damage')
+        this.fireStatusTriggers(defender, 'on_take_damage')
+        void amount
+      },
+      ops: {
+        move: (u, op, dist, c) => this.opMove(u, op, dist, c),
+        spawn: (c, node, near) => this.opSpawn(c, node, near),
+        translocate: (u, dur, payload) => this.opTranslocate(u, dur, payload),
+        takeControl: (u, dur, c) => this.opTakeControl(u, dur, c),
+        grantImmunity: (u, node) => {
+          u.immunities.push({ categories: node.against ?? [], charges: node.charges ?? null, remaining: node.duration ?? null })
+        },
+        damageMod: (u, scope, delta, rem) => { u.damageMods.push({ scope, delta, remaining: rem }) },
+        targetability: (u, untargetable, rem) => { u.manualUntargetable.push({ untargetable, remaining: rem }) },
+      },
     }
+  }
+
+  // ---------- 战力类操作（move / spawn / translocate / take_control） ----------
+
+  private opMove(unit: CombatUnit, op: string, distance: number, _caster: CombatUnit | null): void {
+    const pos = unit.position
+    if (!pos) return
+    if (op === 'swap_ally') {
+      const ally = this.units
+        .aliveIn(unit.faction)
+        .find((u) => u.id !== unit.id && u.position?.lane === pos.lane)
+      if (ally?.position) this.placement.swap(pos, ally.position)
+      return
+    }
+    let target = pos.index
+    switch (op) {
+      case 'pull_forward':
+      case 'charge_forward':
+      case 'swap_neighbor':
+        target = Math.max(0, pos.index - Math.max(1, distance))
+        break
+      case 'push_back':
+        target = Math.min(LANE_CAPACITY - 1, pos.index + distance)
+        break
+      default:
+        this.unsupported(`move:${op}`)
+        return
+    }
+    this.placement.applyExternal((battle) => {
+      const lane = battle.factions.find((f) => f.id === pos.faction)?.lanes.get(pos.lane)
+      if (!lane) return battle
+      const occ = lane.slots.map((s) => s.occupant).filter((o): o is UnitId => o != null)
+      const from = occ.indexOf(unit.id)
+      if (from < 0) return battle
+      occ.splice(from, 1)
+      occ.splice(Math.max(0, Math.min(target, occ.length)), 0, unit.id)
+      for (let i = 0; i < lane.slots.length; i += 1) lane.slots[i] = { occupant: occ[i] ?? null }
+      return battle
+    })
+  }
+
+  private opSpawn(caster: CombatUnit | null, node: { unitId?: string; def?: string; kind?: string; position?: string; hpRatio?: unknown; atkRatio?: unknown }, near: CombatUnit | null): void {
+    const defId = node.unitId ?? node.def ?? node.kind
+    const def = defId ? this.lookup.unitDef(defId) : undefined
+    if (!def) {
+      this.unsupported('spawn', `未知召唤物 ${String(defId)}`)
+      return
+    }
+    const owner = caster
+    if (!owner) return
+    const base = typeof def.base === 'object' && def.base ? (def.base as { hp?: number; atk?: number }) : {}
+    const hp = typeof base.hp === 'number' ? base.hp : 12
+    const atk = typeof base.atk === 'number' ? base.atk : 3
+    const id = this.ids.next('summon')
+    const unit = new CombatUnit(
+      id,
+      owner.faction,
+      { strength: Math.max(0, Math.round((hp - 30) / 10)), agility: 0, intelligence: 0, rank: 0 },
+      owner.gender,
+      { statusDefs: { statusDef: (sid) => this.lookup.statusDef(sid) }, nextStatusId: () => this.ids.next('status') },
+      def.tags ?? [],
+    )
+    this.units.add(unit)
+    unit.behaviorSlots.push(this.basicAttackSlot(unit))
+    const nearPos = near?.position ?? owner.position
+    const placed = this.placeAtFree(unit.id, owner.faction, nearPos?.lane ?? 'lane0')
+    if (!placed) {
+      this.units.remove(unit.id)
+      this.warn(`召唤失败：无可落位（${defId}）`)
+      return
+    }
+    this.emit({ type: 'UnitSpawned', unitId: unit.id })
+    this.fireStatusTriggers(owner, 'on_spawn')
+    void atk
+  }
+
+  private placeAtFree(unitId: UnitId, faction: FactionId, lane: string): boolean {
+    const f = this.battle.factions.find((x) => x.id === faction)
+    const l = f?.lanes.get(lane)
+    if (!l) return false
+    const idx = l.slots.findIndex((s) => s.occupant == null)
+    if (idx < 0) return false
+    return this.placement.insert(unitId, { faction, lane, index: idx }).ok
+  }
+
+  private opTranslocate(unit: CombatUnit, duration: number, payload: readonly EffectNode[]): void {
+    if (unit.detached) return
+    const r = this.placement.remove(unit.id)
+    if (!r.ok) return
+    unit.detached = true
+    this.timers.push({ kind: 'translocate', unitId: unit.id, remaining: Math.max(1, duration), payload })
+  }
+
+  private opTakeControl(unit: CombatUnit, duration: number, caster: CombatUnit): void {
+    if (unit.faction === caster.faction) return
+    unit.originalFaction = unit.faction
+    unit.faction = caster.faction
+    this.timers.push({ kind: 'control', unitId: unit.id, remaining: Math.max(1, duration), payload: [] })
   }
 
   private mountStatus(host: CombatUnit, statusId: string, grant: Omit<StatusGrant, 'sourceId'>): void {
     if (!statusId) return
+    const def = this.lookup.statusDef(statusId)
+    // 免疫拦截（grant_immunity）
+    const cats = def?.category ?? []
+    const idx = host.immunities.findIndex((r) => (r.charges === null || r.charges > 0) && r.categories.some((c) => cats.includes(c)))
+    if (idx >= 0) {
+      const rec = host.immunities[idx] as { charges: number | null }
+      if (rec.charges !== null) {
+        rec.charges -= 1
+        if (rec.charges <= 0) host.immunities.splice(idx, 1)
+      }
+      return
+    }
     const inst = host.statuses.mount(statusId, { ...grant, sourceId: this.ids.next('status') })
     if (!inst) return
     this.emit({ type: 'StatusMounted', instanceId: inst.instanceId, defId: statusId })
-    this.fireTriggers(host, 'on_apply', this.lookup.statusDef(statusId)?.triggers, host)
+    this.fireTriggers(host, 'on_apply', def?.triggers, host)
+    this.fireStatusTriggers(host, 'on_status_gain')
+  }
+
+  /** 每 tick 处理限时记录（translocate 回归 / take_control 归还 / 临时增减伤与可选中性） */
+  private tickTimers(): void {
+    const keep: typeof this.timers = []
+    for (const t of this.timers) {
+      t.remaining -= 1
+      const unit = this.units.get(t.unitId)
+      if (t.remaining > 0) {
+        keep.push(t)
+        continue
+      }
+      if (t.kind === 'translocate' && unit) {
+        unit.detached = false
+        const lane = unit.position?.lane ?? 'lane0'
+        const placed = this.placeAtFree(unit.id, unit.faction, lane)
+        if (!placed) this.placeAtFree(unit.id, unit.faction, [...(this.battle.factions[0]?.lanes.keys() ?? [])][0] ?? 'lane0')
+        this.emit({ type: 'UnitReturned', unitId: unit.id })
+        if (t.payload.length > 0) executeNodes(t.payload, [unit], this.makeContext(this.ids.next('trig'), unit))
+      } else if (t.kind === 'control' && unit && unit.originalFaction) {
+        unit.faction = unit.originalFaction
+        unit.originalFaction = null
+      }
+    }
+    this.timers = keep
+    for (const u of this.units.all()) {
+      tickRecords(u.damageMods)
+      tickRecords(u.manualUntargetable)
+      tickImmunities(u)
+    }
   }
 
   private fireStatusTriggers(unit: CombatUnit, event: string, onlyDefId?: string): void {
@@ -328,6 +504,10 @@ class CombatRuntime implements CombatRuntimeHandle {
       this.dead.add(u.id)
       this.emit({ type: 'UnitDied', unitId: u.id })
       this.stats.unitsLost[u.faction] = (this.stats.unitsLost[u.faction] ?? 0) + 1
+      this.fireStatusTriggers(u, 'on_death')
+      const killerId = this.lastAttacker.get(u.id)
+      const killer = killerId ? this.units.get(killerId) : undefined
+      if (killer && !killer.isDead) this.fireStatusTriggers(killer, 'on_kill')
       u.provenance.revertAll()
       this.placement.remove(u.id)
     }
@@ -413,4 +593,22 @@ class CombatRuntime implements CombatRuntimeHandle {
 
 function sgDefId(sg: unknown): string | undefined {
   return (sg as { defId?: string }).defId
+}
+
+function tickRecords(list: { remaining: number | null }[]): void {
+  for (let i = list.length - 1; i >= 0; i -= 1) {
+    const r = list[i] as { remaining: number | null }
+    if (r.remaining === null) continue
+    r.remaining -= 1
+    if (r.remaining <= 0) list.splice(i, 1)
+  }
+}
+
+function tickImmunities(u: CombatUnit): void {
+  for (let i = u.immunities.length - 1; i >= 0; i -= 1) {
+    const r = u.immunities[i] as { remaining: number | null }
+    if (r.remaining === null) continue
+    r.remaining -= 1
+    if (r.remaining <= 0) u.immunities.splice(i, 1)
+  }
 }

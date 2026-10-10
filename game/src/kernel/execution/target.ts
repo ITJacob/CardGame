@@ -79,7 +79,7 @@ export function resolveCandidates(request: TargetRequest, ctx: TargetContext): R
     if (lanePool.length > 0) pool = lanePool
   }
 
-  pool = pool.filter((u) => !u.isDead && !u.detached && u.position != null)
+  pool = pool.filter((u) => !u.isDead && !u.detached && u.position != null && !u.isUntargetable())
   if (request.excludeSelf) pool = pool.filter((u) => u.id !== self.id)
   pool = sortCandidates(pool, request.sort ?? 'index_asc')
 

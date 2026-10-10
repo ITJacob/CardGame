@@ -24,6 +24,12 @@ export interface ConditionContext {
   readonly phase: Phase
   readonly caster: ConditionUnit | null
   resolveUnit?: (id: string) => ConditionUnit | null
+  /** 状态定义的类别（has_category / status_category 用） */
+  defCategory?: (defId: string) => readonly string[] | undefined
+  /** 全场单位（field_status_count / dead_count 用） */
+  allUnits?: () => readonly ConditionUnit[]
+  /** 池资源读数（resource_compare 用） */
+  resourceOf?: (unit: ConditionUnit, key: string) => number
 }
 
 function compare(actual: number, cmp: Cmp, bound: number): boolean {
@@ -62,6 +68,35 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
       return target != null && compare((target.hp / Math.max(1, target.hpMax)) * 100, cond.cmp ?? '<=', cond.n ?? 0)
     case 'phase_is':
       return (cond.phases ?? []).includes(ctx.phase)
+    case 'caster_status_exists':
+      return ctx.caster != null && ctx.caster.statusStacks(prefixOf(cond)) > 0
+    case 'has_category':
+    case 'status_category': {
+      const cats = cond.categories ?? (cond.category ? [cond.category] : [])
+      const subject = cond.side === 'self' ? ctx.caster : target
+      if (!subject) return false
+      const ids = cond.id ? (Array.isArray(cond.id) ? cond.id : [cond.id]) : undefined
+      return ids
+        ? ids.some((id) => (ctx.defCategory?.(id) ?? []).some((c) => cats.includes(c)))
+        : cats.length === 0
+    }
+    case 'field_status_count': {
+      const id = prefixOf(cond)
+      const count = (ctx.allUnits?.() ?? []).filter((u) => u.statusStacks(id) > 0).length
+      return compare(count, cond.cmp ?? '>=', cond.n ?? 1)
+    }
+    case 'dead_count': {
+      const dead = (ctx.allUnits?.() ?? []).filter((u) => u.isDead).length
+      return compare(dead, cond.cmp ?? '>=', cond.n ?? 1)
+    }
+    case 'resource_compare': {
+      const subject = cond.side === 'self' ? ctx.caster : target
+      if (!subject) return false
+      return compare(ctx.resourceOf?.(subject, String(cond.key ?? 'hp')) ?? 0, cond.cmp ?? '>=', cond.n ?? 0)
+    }
+    case 'target_faction_is':
+    case 'unit_faction':
+      return target != null && target.faction === String(cond.faction ?? cond.value ?? '')
     case 'stat_compare':
     case 'rank_gap': {
       const a = ctx.resolveUnit?.(String(cond.aUnit ?? ''))

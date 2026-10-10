@@ -9,7 +9,11 @@ interface Handle extends CombatFacade {
 }
 
 function runOnce(seed: number): { fingerprint: string; ticks: number; events: number; unsupported: number; warnings: string[] } {
-  const setup = buildAiVsAiSetup({ seed, unitsPerSide: 3, skills: ['fix_strike', 'fix_hex', 'fix_bless', 'fix_crush', 'fix_gamble'] })
+  const setup = buildAiVsAiSetup({
+    seed,
+    unitsPerSide: 3,
+    skills: ['fix_strike', 'fix_hex', 'fix_bless', 'fix_crush', 'fix_gamble', 'fix_yank', 'fix_purge', 'fix_siphon', 'fix_summon', 'fix_ward'],
+  })
   const combat = createCombat(setup) as Handle
   runToEnd(combat)
   const ended = combat.ended()

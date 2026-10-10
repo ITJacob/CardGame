@@ -5,6 +5,7 @@ import type { Condition } from '../shared/types'
 import { evaluateCondition, type ConditionContext } from '../shared/effect-condition'
 import type { EffectContext } from './context'
 import * as H from './handlers'
+import * as H2 from './handlers2'
 import type { CombatUnit } from '../roster/unit'
 
 type Handler = (node: EffectNode, target: CombatUnit | null, ctx: EffectContext) => void
@@ -15,6 +16,19 @@ const HANDLERS: Record<string, Handler> = {
   mount_status: H.handleMountStatus as unknown as Handler,
   modify_stat: H.handleModifyStat as unknown as Handler,
   modify_resource: H.handleModifyResource as unknown as Handler,
+  // P2b-1
+  move: H2.handleMove as unknown as Handler,
+  spawn: H2.handleSpawn as unknown as Handler,
+  dispel: H2.handleDispel as unknown as Handler,
+  drain: H2.handleDrain as unknown as Handler,
+  modify_status: H2.handleModifyStatus as unknown as Handler,
+  transfer_status: H2.handleTransferStatus as unknown as Handler,
+  modify_damage: H2.handleModifyDamage as unknown as Handler,
+  grant_immunity: H2.handleGrantImmunity as unknown as Handler,
+  modify_targetability: H2.handleModifyTargetability as unknown as Handler,
+  reveal: H2.handleReveal as unknown as Handler,
+  take_control: H2.handleTakeControl as unknown as Handler,
+  translocate: H2.handleTranslocate as unknown as Handler,
 }
 
 function conditionContext(ctx: EffectContext): ConditionContext {
@@ -25,6 +39,16 @@ function conditionContext(ctx: EffectContext): ConditionContext {
     phase: ctx.phase,
     caster: ctx.caster,
     resolveUnit: (id: string) => ctx.units.get(id) ?? null,
+    defCategory: ctx.defCategory,
+    allUnits: () => ctx.units.all(),
+    resourceOf: (u, key) => {
+      const real = ctx.units.get(u.id)
+      try {
+        return real?.pool(key as never).current ?? 0
+      } catch {
+        return 0
+      }
+    },
   }
 }
 
