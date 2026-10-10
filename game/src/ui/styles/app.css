@@ -290,6 +290,14 @@ a { color: inherit; text-decoration: none; }
 }
 .card-emoji { font-size: 18px; }
 .card-name { font-size: 9px; color: var(--text-dim); line-height: 1.15; }
+/*
+ * hydrateArt 用 hidden 属性在「真图 ↔ 占位块」之间切。但 [hidden] 只是 UA 样式表里的
+ * display:none，上面两条作者规则（.card-art 的 display:block、.card-fallback 的
+ * display:flex）优先级更高，把它盖掉了 —— 于是占位块永远浮在已加载的卡图上，卡图
+ * 一张也看不见。这里把 hidden 的语义还回去。
+ */
+.card-art[hidden],
+.card-fallback[hidden] { display: none; }
 
 .decision {
   position: sticky; bottom: 0; z-index: 5;
