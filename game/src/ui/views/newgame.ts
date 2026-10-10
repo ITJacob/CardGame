@@ -82,6 +82,7 @@ function render(host: HTMLElement, catalog: Catalog, profile: Profile): void {
 
 /** 名册的技能切换按钮。主动/被动的次序语义不同，标题里各说一句，省得看串 */
 function switchBtn(kind: SlotKind): string {
-  const tip = kind === 'active' ? '主动技能按槽位顺序在战斗里轮转释放' : '被动技能常驻，按触发点发动（顺序无影响）'
+  const tip =
+    kind === 'active' ? '主动技能按槽位顺序在战斗里轮转释放' : '被动技能常驻；同一触发点上有多张时按槽位顺序发动'
   return `<button type="button" class="switch-btn${skillView === kind ? ' on' : ''}" data-skill-view="${kind}" title="${tip}">${SLOT_LABEL[kind]}</button>`
 }

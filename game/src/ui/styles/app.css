@@ -461,20 +461,20 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .slot {
   display: flex; flex-direction: column; align-items: center; gap: 5px;
   padding: 7px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
-  /* 槽宽由内容撑开，空槽没有 ◀▶✕ 会窄一截；给足最宽那一行（◀▶✕ 三格）的下限，
-     空槽与满槽、主动槽与被动槽就都一样宽了 */
-  min-width: 84px;
+  /* 槽宽由内容撑开：满槽最宽的是卡面（定宽 46 + 左右 padding 14 = 60），
+     空槽只剩序号与「空」，给个下限兜到同宽。 */
+  min-width: 62px;
 }
 .slot.empty { justify-content: center; min-height: 108px; border-style: dashed; }
 .slot-num { font-size: 10px; color: var(--text-dim); }
 .slot-blank { font-size: 18px; color: var(--text-dim); opacity: 0.6; }
-.slot-ops { display: flex; gap: 3px; }
+/* 槽底只剩一个 ✕：槽是 flex 列 + align-items:center，单独一个子元素就居中 */
+.slot-ops { display: flex; justify-content: center; }
 .slot-op {
   font: inherit; font-size: 10px; line-height: 1; padding: 3px 5px;
   border: 1px solid var(--border); border-radius: 5px;
   background: var(--bg-deep); color: var(--text-dim); cursor: pointer;
 }
-.slot-op.ghost { visibility: hidden; }
 .slot-op:hover { color: var(--text); border-color: var(--accent-dim); }
 .slot-op.danger:hover { color: #d98b8b; border-color: var(--warn); }
 

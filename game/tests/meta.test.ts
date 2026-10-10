@@ -188,4 +188,23 @@ describe('整备：技能槽', () => {
     expect(moveSlot(h, 'active', 0, 9)).toBe(h)
     expect(moveSlot(h, 'active', 2, 2)).toBe(h)
   })
+
+  it('被动槽调序生效，且顺序原样进 setup.passiveSlots（内核按槽序发动）', () => {
+    // fixture 里只有 fix_passive 一张被动的真卡，这里用四个占位 id：
+    // moveSlot 与 buildCombatSetup 都只是搬 id，「顺序有没有被打乱」与 id 真假无关。
+    const h: Hero = { ...base, passiveSkillIds: ['p1', 'p2', 'p3', 'p4'] }
+
+    const moved = moveSlot(h, 'passive', 3, 0)
+    expect(moved.passiveSkillIds).toEqual(['p4', 'p1', 'p2', 'p3'])
+    expect(moved.activeSkillIds).toEqual(h.activeSkillIds) // 不串侧
+    expect(moveSlot(h, 'passive', 0, 9)).toBe(h) // 越界原样返回
+
+    const setup = buildCombatSetup({
+      seed: 1,
+      catalog,
+      own: autoFormation([moved], 'A'),
+      enemy: autoFormation([base], 'B'),
+    })
+    expect(setup.factions[0].units[0]!.passiveSlots?.map((s) => s.defId)).toEqual(['p4', 'p1', 'p2', 'p3'])
+  })
 })

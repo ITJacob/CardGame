@@ -48,7 +48,12 @@ export function unequipSkill(hero: Hero, kind: SlotKind, index: number): Hero {
   return withIds(hero, kind, ids.filter((_, i) => i !== index))
 }
 
-/** 槽位调序：主动槽的次序就是内核的释放轮转次序（runtime.chooseBehavior），故需要它 */
+/**
+ * 槽位调序。两侧的次序在战斗里都算数：
+ * - 主动槽 = 内核的释放轮转次序（runtime.chooseBehavior 按 tick 轮转 behaviorSlots）；
+ * - 被动槽 = 同一触发点上多张被动的发动次序（runtime.fireStatusTriggers 按 unit.passives 顺序遍历，
+ *   而 installPassives 就是按槽位顺序 push 的）。
+ */
 export function moveSlot(hero: Hero, kind: SlotKind, from: number, to: number): Hero {
   const ids = [...idsOf(hero, kind)]
   if (from < 0 || from >= ids.length || to < 0 || to >= ids.length || from === to) return hero

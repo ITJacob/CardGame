@@ -32,7 +32,7 @@ import type { Catalog } from '../../kernel/catalog/types'
 
 const LANES: readonly string[] = DEFAULT_LANES
 
-/** 拖拽载荷：阵型里拖英雄 / 主动槽之间拖技能（被动槽顺序无语义，不做拖源也不收落点） */
+/** 拖拽载荷：阵型里拖英雄 / 技能槽之间同侧调序（主动进主动槽、被动进被动槽，两类不相通） */
 type DragPayload = { kind: 'hero'; id: string } | { kind: 'slot'; at: string }
 
 export function renderPrep(host: HTMLElement): void {
@@ -171,7 +171,7 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
   const wireDrag = (): void => {
     enableDrag<DragPayload>(host, {
       grab: (el) => {
-        if (el.closest('.slot-op')) return null // 槽位上的 ◀▶✕ 是按钮，别当拖源
+        if (el.closest('.slot-op')) return null // 槽上的 ✕ 是按钮，别当拖源
         const tile = el.closest<HTMLElement>('.prep-board .tile[data-hero]')
         const id = tile?.dataset.hero
         if (tile && id) return { payload: { kind: 'hero', id }, source: tile }
@@ -183,8 +183,8 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
         if (p.kind === 'hero') return el.closest<HTMLElement>('.prep-board .tile')
         const slot = el.closest<HTMLElement>('.slot[data-slot]')
         if (!slot) return null
-        const [kind] = split2(slot.dataset.slot ?? '')
-        return kind === 'active' ? slot : null
+        // 同侧槽才亮：拖着主动卡扫过被动槽时不该给「这儿能放」的错觉
+        return split2(p.at)[0] === split2(slot.dataset.slot ?? '')[0] ? slot : null
       },
       drop: (el, p) => {
         if (p.kind === 'hero') {
@@ -198,14 +198,17 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
         }
         const [fk, fi] = split2(p.at)
         const [tk, ti] = split2(el.dataset.slot ?? '')
-        if (fk !== 'active' || fk !== tk) return
+        // 同侧才收：主动卡进不了被动槽（两类卡本来也不相通，这里只是把话说死）
+        if (!isSlotKind(fk) || fk !== tk) return
         const hero = getDraft()?.own.find((h) => h.id === selectedId)
-        if (!hero || hero.activeSkillIds.length === 0) return
+        if (!hero) return
+        const ids = fk === 'active' ? hero.activeSkillIds : hero.passiveSkillIds
+        if (ids.length === 0) return
         const from = Number(fi)
         // 空槽（下标 >= 已有张数）就是「放到最后」，与格子里看得出来的一致
-        const to = Math.min(Number(ti), hero.activeSkillIds.length - 1)
+        const to = Math.min(Number(ti), ids.length - 1)
         if (from === to) return
-        applyHero((h) => moveSlot(h, 'active', from, to))
+        applyHero((h) => moveSlot(h, fk, from, to))
       },
     })
   }
@@ -237,13 +240,6 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
       el.addEventListener('click', () => {
         const [kind, idx] = split2(el.dataset.unequip ?? '')
         applyHero((h) => unequipSkill(h, kind as SlotKind, Number(idx)))
-      }),
-    )
-    host.querySelectorAll<HTMLElement>('[data-move]').forEach((el) =>
-      el.addEventListener('click', () => {
-        const [kind, rest] = split2(el.dataset.move ?? '')
-        const [from, dir] = split2(rest)
-        applyHero((h) => moveSlot(h, kind as SlotKind, Number(from), Number(from) + Number(dir)))
       }),
     )
     host.querySelectorAll<HTMLElement>('[data-equip]').forEach((el) =>
@@ -332,7 +328,8 @@ function loadoutHtml(catalog: Catalog, profile: Profile, own: readonly PlacedHer
 function slotRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): string {
   const ids = kind === 'active' ? hero.activeSkillIds : hero.passiveSkillIds
   const limit = SLOT_LIMIT[kind]
-  const tip = kind === 'active' ? '按槽位顺序轮转释放，拖动可调序' : '被动常驻，按触发点发动（顺序无影响）'
+  const tip =
+    kind === 'active' ? '按槽位顺序轮转释放，拖动可调序' : '常驻；同一触发点上有多张时按槽位顺序发动，拖动可调序'
 
   const slots: string[] = []
   for (let i = 0; i < limit; i += 1) {
@@ -341,21 +338,12 @@ function slotRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): string
       slots.push(`<div class="slot empty" data-slot="${kind}:${i}"><span class="slot-num">${i + 1}</span><span class="slot-blank">空</span></div>`)
       continue
     }
-    // ◀▶✕ 三格定死。首尾槽少一个箭头，若直接省掉按钮，槽宽会跟着在 2 / 3 个按钮之间跳，
-    // ✕ 也会一行一个位置。用一个不可见占位顶住，槽宽与按钮位置就都稳了。
-    const arrow = (dir: -1 | 1, show: boolean): string =>
-      show
-        ? `<button type="button" class="slot-op" data-move="${kind}:${i}:${dir}" title="${dir < 0 ? '前移' : '后移'}">${dir < 0 ? '◀' : '▶'}</button>`
-        : `<button type="button" class="slot-op ghost" tabindex="-1" aria-hidden="true">${dir < 0 ? '◀' : '▶'}</button>`
-    const ops = [
-      arrow(-1, kind === 'active' && i > 0),
-      arrow(1, kind === 'active' && i < ids.length - 1),
-      `<button type="button" class="slot-op danger" data-unequip="${kind}:${i}" title="卸下">✕</button>`,
-    ].join('')
-    // 只有主动槽可拖：被动槽的次序在战斗里没有任何意义
-    const draggable = kind === 'active' && ids.length > 1
+    // 槽底只剩一个 ✕，居中（槽是 flex 列 + align-items:center，单个子元素自然居中）。
+    // 原先的 ◀▶ 是拖拽的备用入口，既然两类槽都能拖，按钮就多余了。
+    // 只有一张时没有可调的顺序，也就不给拖柄。
+    const draggable = ids.length > 1
 
-    slots.push(`<div class="slot${draggable ? ' draggable' : ''}" data-slot="${kind}:${i}"><span class="slot-num">${i + 1}</span>${cardOf(catalog, id)}<div class="slot-ops">${ops}</div></div>`)
+    slots.push(`<div class="slot${draggable ? ' draggable' : ''}" data-slot="${kind}:${i}"><span class="slot-num">${i + 1}</span>${cardOf(catalog, id)}<div class="slot-ops"><button type="button" class="slot-op danger" data-unequip="${kind}:${i}" title="卸下">✕</button></div></div>`)
   }
 
   return `<div class="slot-block">
@@ -385,6 +373,11 @@ function poolGridHtml(catalog: Catalog, hero: PlacedHero, pool: SkillPool, kind:
     <h3>${SLOT_LABEL[kind]}卡池 <small class="hint">${pool[kind].length} 张</small></h3>
     ${body}
   </div>`
+}
+
+/** data-* 里回来的都是字符串，落库前先认一下是不是有效的槽侧 */
+function isSlotKind(k: string): k is SlotKind {
+  return k === 'active' || k === 'passive'
 }
 
 /** 'a:b:c' → ['a', 'b:c']（卡 id 不含英文冒号，但这样切更稳） */
