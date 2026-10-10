@@ -26,7 +26,7 @@ export function heroToUnitSetup(hero: PlacedHero): UnitSetup {
       intelligence: hero.combo.intelligence,
       rank: 0,
     },
-    gender: 'male',
+    gender: hero.gender,
     anchor: 0,
     activeSlots: hero.activeSkillIds.map((skillDefId) => ({ skillDefId })),
     passiveSlots: hero.passiveSkillIds.map((defId) => ({ defId })),
