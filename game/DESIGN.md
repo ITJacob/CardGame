@@ -312,7 +312,7 @@ push main → npm ci && vite build (game/dist)
 | P4 战外：英雄生成 / 卡池解锁 / 编队 | ✅ 完成（名册→CombatSetup→真卡对战闭环；vitest 42 用例） |
 | P5 交互战斗 UI + 决策点 + 日志 | ✅ 完成（棋盘双朝向 / 技能卡面 / 决策点选靶 / 战斗日志 / 新游戏流程） |
 | P6 排行榜 + 设置 + 现有卡池 | ✅ 完成（对局落战绩；本地榜按胜负→阵亡→用时；设置含 uuid/用户名/重置；卡池页可解锁职业/按张锁卡） |
-| P7 Firebase 在线匹配 | ⏳ 未开始 |
+| P7 Firebase 在线匹配 | 📋 方案就绪（见 [P7_PLAN.md](P7_PLAN.md)），未实现 |
 
 ### P3 真实卡池覆盖扫描（`npm run check:realrun`）
 
