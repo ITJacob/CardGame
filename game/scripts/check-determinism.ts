@@ -12,7 +12,7 @@ function runOnce(seed: number): { fingerprint: string; ticks: number; events: nu
   const setup = buildAiVsAiSetup({
     seed,
     unitsPerSide: 3,
-    skills: ['fix_strike', 'fix_hex', 'fix_bless', 'fix_crush', 'fix_gamble', 'fix_yank', 'fix_purge', 'fix_siphon', 'fix_summon', 'fix_ward'],
+    skills: ['fix_strike', 'fix_hex', 'fix_bless', 'fix_crush', 'fix_gamble', 'fix_yank', 'fix_purge', 'fix_siphon', 'fix_summon', 'fix_ward', 'fix_bright', 'fix_hasten', 'fix_recall', 'fix_rewind', 'fix_echo', 'fix_scramble', 'fix_rotate', 'fix_sap', 'fix_domain', 'fix_zone'],
   })
   const combat = createCombat(setup) as Handle
   runToEnd(combat)

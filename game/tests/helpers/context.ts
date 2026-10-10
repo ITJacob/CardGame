@@ -9,6 +9,10 @@ import { Mulberry32RandomSource, RandomUsageRegistry } from '../../src/kernel/sh
 const NOOP_OPS: EffectOps = {
   move: () => {}, spawn: () => {}, translocate: () => {}, takeControl: () => {},
   grantImmunity: () => {}, damageMod: () => {}, targetability: () => {},
+  setLuminance: () => {}, advanceClock: () => {}, applyDomain: () => {}, placeZone: () => {},
+  snapshotUnit: () => {}, restoreUnit: () => {}, echoLastSkill: () => {},
+  shuffleGauges: () => {}, shuffleStatuses: () => {}, modifySkillOf: () => {},
+  applyTargetOverride: () => {}, writeRuleSlot: () => {}, modifyRuleSlot: () => {},
 }
 
 export function stubContext(

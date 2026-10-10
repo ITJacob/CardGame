@@ -44,6 +44,8 @@ export class CombatUnit implements Unit {
   detached = false
   /** take_control：被夺取时的原阵营（用于回归） */
   originalFaction: FactionId | null = null
+  /** target_override：下一次选靶的覆盖（消费后清空） */
+  pendingTargetOverride: { anchor?: string; faction?: string; sort?: string } | null = null
 
   private readonly statusDefs: StatusDefLookup
 

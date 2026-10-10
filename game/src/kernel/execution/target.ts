@@ -50,8 +50,20 @@ function wantsSameLane(request: TargetRequest): boolean {
   return request.anchor === 'enemy_front' || request.anchor === 'ally_front' || request.anchor === 'caster'
 }
 
-export function resolveCandidates(request: TargetRequest, ctx: TargetContext): ResolvedTarget[] {
+export function resolveCandidates(rawRequest: TargetRequest, ctx: TargetContext): ResolvedTarget[] {
   const self = ctx.self
+  // target_override：消费被作用单位的下一次选靶覆写（层级最高）
+  let request = rawRequest
+  const ov = self.pendingTargetOverride
+  if (ov) {
+    self.pendingTargetOverride = null
+    request = {
+      ...request,
+      faction: (ov.faction as TargetRequest['faction']) ?? request.faction,
+      anchor: ov.anchor ?? request.anchor,
+      sort: (ov.sort as TargetRequest['sort']) ?? request.sort,
+    }
+  }
   let pool: CombatUnit[]
   switch (request.faction) {
     case 'self':

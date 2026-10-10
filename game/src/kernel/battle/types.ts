@@ -71,6 +71,7 @@ export interface ZoneGrant {
 export interface Zone {
   def: ZoneDef
   grant: ZoneGrant
+  coord: Coordinate
   status: 'Created' | 'Active' | 'Expired' | 'Removed'
 }
 

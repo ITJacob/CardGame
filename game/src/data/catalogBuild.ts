@@ -198,6 +198,8 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
           effects,
           triggers: card.triggers,
           authority: card.flagship,
+          zoneGrant: card.zone as SkillDef['zoneGrant'],
+          domainGrant: card.domain as SkillDef['domainGrant'],
         }, warnings, 'skillDef')
       } else {
         register(behaviorTemplates, card.id, {

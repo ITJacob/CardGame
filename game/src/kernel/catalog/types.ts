@@ -375,6 +375,10 @@ export interface SkillDef {
   tags?: string[]
   /** 权柄标记：模仿/复制排除（编目参数 §二） */
   authority?: boolean
+  /** consumption=zone 时由卡面携带的区域授予 */
+  zoneGrant?: { def: string; duration?: number; durationUnit?: 'turn' | 'tick'; affects?: string }
+  /** consumption=domain 时由卡面携带的界域授予 */
+  domainGrant?: { def: string; tier?: string; duration?: number; durationUnit?: 'turn' | 'tick' }
 }
 
 /** 被动行为模板（kind=passive 的卡） */

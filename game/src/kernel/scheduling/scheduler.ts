@@ -29,7 +29,7 @@ export function phaseOf(clock: number): Phase {
   return (['midnight', 'dawn', 'day', 'dusk', 'night'] as const)[Math.min(4, seg)] as Phase
 }
 
-const PHASE_LUMINANCE: Record<Phase, number> = { midnight: 1, dawn: 4, day: 8, dusk: 5, night: 2 }
+export const PHASE_LUMINANCE: Record<Phase, number> = { midnight: 1, dawn: 4, day: 8, dusk: 5, night: 2 }
 
 export class CombatScheduler implements Scheduler {
   constructor(private readonly deps: SchedulerDeps) {}

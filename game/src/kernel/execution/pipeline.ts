@@ -23,6 +23,8 @@ export interface PipelineDeps {
   emit(e: DomainEvent): void
   nextActionId(): string
   unsupported(kind: string, detail?: string): void
+  /** 结算完成后回调（runtime 用它在 zone/domain 分流时登记实例） */
+  onAction?(info: { caster: CombatUnit; consumption: Consumption; targets: readonly ResolvedTarget[]; zoneGrant?: { def: string; duration?: number }; domainGrant?: { def: string; duration?: number } }): void
 }
 
 export interface BehaviorSource {
@@ -30,6 +32,9 @@ export interface BehaviorSource {
   effects: readonly EffectNode[]
   targetSpec: TargetSpec
   consumption: Consumption
+  /** consumption=zone / domain 时的卡面授予（由 runtime 消费） */
+  zoneGrant?: { def: string; duration?: number }
+  domainGrant?: { def: string; duration?: number }
 }
 
 export interface AwaitingDecision {
@@ -98,9 +103,9 @@ function settle(
 
   deps.emit({ type: 'TargetsResolved', actionId, targets: action.finalTargets })
 
-  // M：consumption 分流（P2b-1：instant/summon/translocate 走 O；zone/domain 留 P2b-2）
+  // M：consumption 分流（zone/domain 由 runtime 经 onAction 登记，不走 O）
+  deps.onAction?.({ caster, consumption: source.consumption, targets: action.finalTargets, zoneGrant: source.zoneGrant, domainGrant: source.domainGrant })
   if (source.consumption === 'zone' || source.consumption === 'domain') {
-    deps.unsupported(`consumption:${source.consumption}`)
     return
   }
 
