@@ -446,10 +446,11 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .slot-row { display: flex; flex-wrap: wrap; gap: 10px; }
 .slot {
   display: flex; flex-direction: column; align-items: center; gap: 5px;
+  position: relative; /* ✕ 徽标的定位上下文 */
   padding: 7px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
-  /* 槽宽由内容撑开，空槽没有 ◀▶✕ 会窄一截；给足最宽那一行（◀▶✕ 三格）的下限，
-     空槽与满槽、主动槽与被动槽就都一样宽了 */
-  min-width: 84px;
+  /* 槽宽由内容撑开。满槽最宽的是卡面（定宽 46 + 左右 padding 14 = 60），
+     空槽只剩序号与「空」会窄一截，所以给个下限把空槽也撑到同宽。 */
+  min-width: 62px;
 }
 .slot.empty { justify-content: center; min-height: 108px; border-style: dashed; }
 .slot-num { font-size: 10px; color: var(--text-dim); }
@@ -462,7 +463,14 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 }
 .slot-op.ghost { visibility: hidden; }
 .slot-op:hover { color: var(--text); border-color: var(--accent-dim); }
-.slot-op.danger:hover { color: #d98b8b; border-color: var(--warn); }
+/* 卸下挂在槽右上角、压住卡面一角：一来不跟 ◀▶ 挤同一行（那行少一格槽宽就跟着变），
+   二来离序号与卡名远，误点不到。半透明底让它不至于糊住卡图。 */
+.slot-op.danger {
+  position: absolute; top: 2px; right: 2px;
+  padding: 1px 4px; font-size: 11px; border-radius: 5px;
+  background: rgba(16, 18, 22, 0.72); border-color: transparent;
+}
+.slot-op.danger:hover { color: #fff; background: var(--warn); border-color: var(--warn); }
 
 .prep .pool-card { cursor: pointer; }
 .prep .pool-card.on { cursor: default; }
