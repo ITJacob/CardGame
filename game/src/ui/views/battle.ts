@@ -1,17 +1,28 @@
 // 战斗界面：棋盘（双朝向投影）+ 日志 + 决策点选靶 + 推进。
+// 两种驱动：
+//   离线人机 —— 用户点「推进一 tick / 自动播放」，决策直接 submitDecision；
+//   联机 lockstep —— MatchRunner 自动推进，本侧决策走 MatchRunner.publish，
+//                    对侧决策只等待（绝不本地回退，P7_PLAN §3.4 铁律 1）。
 import { escapeHtml, subBarHtml } from '../components/chrome'
 import { avatarEmoji, cardFaceHtml, hydrateArt } from '../components/cardFace'
 import { getSession } from '../session'
 import { gridSpec, laneIndexer, orientationOf, type Orientation } from '../battle/projection'
 import type { DomainEvent } from '../../kernel/combat/types'
 import type { CombatStats, CombatView, UnitViewLite } from '../../kernel/combat/types'
+import type { DecisionInput, DecisionRequest } from '../../kernel/execution/types'
+import type { FactionId } from '../../kernel/ids'
 import type { MatchRecord } from '../../meta/matchLog'
+import { fingerprintOf } from '../../kernel/combat/fingerprint'
+import { MatchRunner } from '../../meta/match/runner'
 
 type CombatOutcome = 'side_a' | 'side_b' | 'draw' | 'aborted'
 import type { BattleSession } from '../session'
 import { createLocalStorageMatchStore } from '../../meta/matchLog'
 
 let autoTimer: number | null = null
+/** 联机每 tick 的观战节拍（毫秒）；0 会让整局在一帧内跑完 */
+const ONLINE_STEP_MS = 450
+const FINGERPRINT_WAIT_MS = 20000
 const matchStore = createLocalStorageMatchStore()
 
 export function renderBattle(host: HTMLElement): void {
@@ -23,32 +34,107 @@ export function renderBattle(host: HTMLElement): void {
   }
 
   const s = session
+  /** 联机时本侧决策的兑现句柄（由 MatchRunner.chooseLocally 挂上） */
+  let pendingResolve: ((d: DecisionInput) => void) | null = null
+  /** 已在本地选定、等 MatchRunner 把决策同步过去（此时禁用按钮，避免重复点） */
+  let submitted = false
+
   const refresh = (): void => {
     const view = s.facade.state()
     const pending = s.facade.pendingDecision()
     const ended = s.facade.ended()
     if (ended && !s.recorded) {
       s.recorded = true
-      matchStore.append(recordOf(s, ended.outcome, ended.stats))
+      if (s.online) void finishOnline(s).then(refresh)
+      else matchStore.append(recordOf(s, ended.outcome, ended.stats))
     }
+    const runner = s.online?.runner
+    const myTurn = pending != null && casterFaction(s, pending.caster) === myFactionOf(s)
     host.innerHTML = `
-      ${subBarHtml('对局')}
+      ${subBarHtml(s.online ? '联机对局' : '对局')}
       <div class="battle" data-orient="${currentOrientation()}">
         <div class="board-wrap">${boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [])}</div>
         <div class="battle-side">
-          ${statusBarHtml(view, pending != null, ended != null)}
+          ${statusBarHtml(s, view, pending != null, ended != null)}
+          ${runner?.lastError ? `<p class="warn">联机中断：${escapeHtml(errMsg(runner.lastError))}</p>` : ''}
+          ${runner?.waiting ? '<p class="wait-note">等待对手决策…</p>' : ''}
           ${rosterPanelHtml(s)}
           <div class="log" id="battle-log">${logHtml(s.facade.drainEvents())}</div>
         </div>
       </div>
-      ${pending ? decisionBarHtml(s, pending) : ''}
-      ${ended ? endedHtml(ended.outcome) : ''}`
+      ${pending && (!s.online || myTurn) ? decisionBarHtml(s, pending, submitted) : ''}
+      ${ended ? endedHtml(s, ended.outcome) : ''}`
     hydrateArt(host)
-    wire(s, refresh)
+    wire(s, refresh, submit)
+  }
+
+  const submit = (picks: DecisionInput): void => {
+    if (s.online) {
+      const resolve = pendingResolve
+      pendingResolve = null
+      submitted = true
+      resolve?.(picks)
+    } else {
+      s.facade.submitDecision(picks)
+    }
+    refresh()
+  }
+
+  // 联机：驱动循环只建一次（同一会话内多视图重入不重复起跑）
+  if (s.online && !s.online.runner) {
+    const runner = new MatchRunner({
+      facade: s.facade,
+      channel: s.online.channel,
+      myFaction: s.online.myFaction,
+      chooseLocally: () => new Promise<DecisionInput>((resolve) => {
+        pendingResolve = resolve
+        submitted = false
+        refresh()
+      }),
+      onUpdate: refresh,
+      stepDelayMs: ONLINE_STEP_MS,
+    })
+    s.online.runner = runner
+    runner.start()
   }
 
   refresh()
   window.addEventListener('resize', refresh, { once: true })
+}
+
+function myFactionOf(s: BattleSession): FactionId {
+  return s.myFaction ?? s.setup.factions[0].id
+}
+
+function foeFactionOf(s: BattleSession): FactionId {
+  const mine = myFactionOf(s)
+  return s.setup.factions.find((f) => f.id !== mine)?.id ?? s.setup.factions[1].id
+}
+
+/** 结算用 outcome 是按 factions[0]/[1] 编号的，换算成本侧的「胜」 */
+function winOutcomeOf(s: BattleSession): CombatOutcome {
+  return myFactionOf(s) === s.setup.factions[0].id ? 'side_a' : 'side_b'
+}
+
+function casterFaction(s: BattleSession, unitId: string): FactionId | undefined {
+  return s.facade.state().units.find((u) => u.id === unitId)?.faction
+}
+
+function errMsg(e: unknown): string {
+  return e instanceof Error ? e.message : String(e)
+}
+
+/** 结束：交换事件指纹（§3.4 铁律 4），一致才落正常战绩，否则记 aborted */
+async function finishOnline(s: BattleSession): Promise<void> {
+  const ended = s.facade.ended()
+  const online = s.online
+  if (!ended || !online) return
+  const mine = fingerprintOf(ended.events)
+  await online.channel.publishFingerprint(mine).catch(() => undefined)
+  const theirs = await online.channel.receiveFingerprint(FINGERPRINT_WAIT_MS)
+  const ok = theirs === mine
+  online.verify = { mine, theirs, ok }
+  matchStore.append(ok ? recordOf(s, ended.outcome, ended.stats) : recordOf(s, 'aborted', ended.stats))
 }
 
 function currentOrientation(): Orientation {
@@ -94,18 +180,20 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
   </div>`
 }
 
-function statusBarHtml(view: CombatView, pending: boolean, ended: boolean): string {
+function statusBarHtml(s: BattleSession, view: CombatView, pending: boolean, ended: boolean): string {
   const phaseName: Record<string, string> = { midnight: '午夜', dawn: '黎明', day: '白昼', dusk: '黄昏', night: '黑夜' }
+  const controls = s.online
+    ? `<button type="button" id="btn-pause">${s.online.runner?.isPaused ? '继续' : '暂停'}</button>
+       <span class="hud-count">决策 #${s.online.runner?.decisionSeq ?? 0}</span>`
+    : `<button type="button" id="btn-step" ${pending || ended ? 'disabled' : ''}>推进一 tick</button>
+       <button type="button" id="btn-auto" ${ended ? 'disabled' : ''}>自动播放</button>`
   return `
   <div class="hud">
     <span class="hud-tick">tick ${view.tick}</span>
     <span class="hud-phase">${phaseName[view.phase] ?? view.phase}</span>
     <span class="hud-count">场上 ${view.units.filter((u) => u.hp > 0).length}</span>
   </div>
-  <div class="controls">
-    <button type="button" id="btn-step" ${pending || ended ? 'disabled' : ''}>推进一 tick</button>
-    <button type="button" id="btn-auto" ${ended ? 'disabled' : ''}>自动播放</button>
-  </div>`
+  <div class="controls">${controls}</div>`
 }
 
 /** 我方技能卡面（用 web 端卡图，缺失走占位） */
@@ -128,43 +216,58 @@ function rosterPanelHtml(s: BattleSession): string {
   return `<details class="roster"><summary>我方技能（主动 ${s.own.reduce((n, h) => n + h.activeSkillIds.length, 0)} 张）</summary>${rows}</details>`
 }
 
-function decisionBarHtml(s: BattleSession, pending: NonNullable<ReturnType<BattleSession['facade']['pendingDecision']>>): string {
+function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = false): string {
   const cards = pending.candidates
     .map((c) => {
       const meta = c.occupant ? s.unitMeta.get(c.occupant) : undefined
       const name = meta?.name ?? c.occupant ?? '空位'
       const emoji = meta ? avatarEmoji(meta.constitutionId, meta.gender) : '⬜'
-      return `<button type="button" class="pick" data-pick="${escapeHtml(c.occupant ?? '')}">
+      return `<button type="button" class="pick" data-pick="${escapeHtml(c.occupant ?? '')}" ${disabled ? 'disabled' : ''}>
         <span class="pick-face">${emoji}</span><span class="pick-name">${escapeHtml(name)}</span></button>`
     })
     .join('')
   return `
   <div class="decision">
-    <div class="decision-title">选择目标（${escapeHtml(pending.caster)} 的技能）</div>
+    <div class="decision-title">选择目标（${escapeHtml(pending.caster)} 的技能）${disabled ? ' · 已提交，等待同步…' : ''}</div>
     <div class="picks">${cards}</div>
-    <button type="button" class="pick-auto" id="btn-auto-pick">交给 AI（自动选择）</button>
+    <button type="button" class="pick-auto" id="btn-auto-pick" ${disabled ? 'disabled' : ''}>交给 AI（自动选择）</button>
   </div>`
 }
 
-function endedHtml(outcome: string): string {
-  const text: Record<string, string> = { side_a: '我方胜利', side_b: '敌方胜利', draw: '平局', aborted: '中断' }
+function endedHtml(s: BattleSession, outcome: string): string {
+  const win = winOutcomeOf(s)
+  const label = outcome === 'aborted' ? '本局中断' : outcome === win ? '我方胜利' : outcome === 'draw' ? '平局' : '敌方胜利'
+  const v = s.online?.verify
+  const note = !s.online
+    ? ''
+    : !v
+      ? '<p class="hint">正在与对手比对事件指纹…</p>'
+      : v.ok
+        ? `<p class="hint ok">指纹一致 ${escapeHtml(v.mine)}</p>`
+        : v.theirs === null
+          ? '<p class="hint warn">对手未回传指纹，本局未验证（记为中断）</p>'
+          : `<p class="hint warn">指纹不一致，本局未验证（记为中断）：我方 ${escapeHtml(v.mine)} / 对手 ${escapeHtml(v.theirs)}</p>`
+  const again = s.online
+    ? '<a class="btn primary" href="#/online">再来一局</a>'
+    : '<a class="btn primary" href="#/new">再来一局</a>'
   return `<div class="ended"><div class="ended-card">
-    <h2>${text[outcome] ?? outcome}</h2>
-    <a class="btn primary" href="#/new">再来一局</a>
+    <h2>${label}</h2>
+    ${note}
+    ${again}
     <a class="btn" href="#/leaderboard">看排行榜</a>
     <a class="btn" href="#/">返回主菜单</a>
   </div></div>`
 }
 
 function recordOf(s: BattleSession, outcome: CombatOutcome, stats: CombatStats): MatchRecord {
-  const own = s.setup.factions[0].id
-  const foe = s.setup.factions[1].id
+  const own = myFactionOf(s)
+  const foe = foeFactionOf(s)
   return {
     id: `${Date.now().toString(36)}-${Math.floor(Math.random() * 1e6).toString(36)}`,
     at: Date.now(),
     seed: s.setup.seed,
     outcome,
-    win: outcome === 'side_a',
+    win: outcome === winOutcomeOf(s),
     ticks: stats.ticks,
     unitsLostOwn: stats.unitsLost[own] ?? 0,
     unitsLostEnemy: stats.unitsLost[foe] ?? 0,
@@ -174,7 +277,7 @@ function recordOf(s: BattleSession, outcome: CombatOutcome, stats: CombatStats):
   }
 }
 
-function wire(s: BattleSession, refresh: () => void): void {
+function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInput) => void): void {
   const step = document.getElementById('btn-step')
   step?.addEventListener('click', () => {
     stepOnce(s)
@@ -198,21 +301,26 @@ function wire(s: BattleSession, refresh: () => void): void {
     }, 450)
     refresh()
   })
+  document.getElementById('btn-pause')?.addEventListener('click', () => {
+    const runner = s.online?.runner
+    if (!runner) return
+    if (runner.isPaused) runner.resume()
+    else runner.pause()
+    refresh()
+  })
   document.querySelectorAll<HTMLElement>('[data-pick]').forEach((el) => {
     el.addEventListener('click', () => {
       const id = el.dataset.pick ?? ''
       const pending = s.facade.pendingDecision()
       if (!pending) return
       const pick = pending.candidates.filter((c) => c.occupant === id).slice(0, pending.pickCount)
-      s.facade.submitDecision(pick.length > 0 ? pick : pending.candidates.slice(0, pending.pickCount))
-      refresh()
+      submit(pick.length > 0 ? pick : pending.candidates.slice(0, pending.pickCount))
     })
   })
   document.getElementById('btn-auto-pick')?.addEventListener('click', () => {
     const pending = s.facade.pendingDecision()
     if (!pending) return
-    s.facade.submitDecision(pending.candidates.slice(0, pending.pickCount))
-    refresh()
+    submit(pending.candidates.slice(0, pending.pickCount))
   })
 }
 

@@ -5,6 +5,7 @@ import { renderNewGame } from './views/newgame'
 import { renderBattle } from './views/battle'
 import { renderLeaderboard } from './views/leaderboard'
 import { renderCards } from './views/cards'
+import { renderOnline } from './views/online'
 
 type RenderFn = (host: HTMLElement, arg: string) => void | Promise<void>
 
@@ -14,6 +15,7 @@ const placeholder = (title: string, desc: string): RenderFn => (host) =>
 const ROUTES: Record<string, RenderFn> = {
   '': renderMenu,
   new: renderNewGame,
+  online: renderOnline,
   battle: renderBattle,
   continue: placeholder('继续游戏', '本地存档恢复（P4 落地）'),
   cards: renderCards,

@@ -9,6 +9,7 @@ export function renderMenu(host: HTMLElement): void {
       <p class="menu-sub">Roguelike 爬塔 · 队伍对战</p>
       <nav class="menu-actions">
         <a class="btn primary" href="#/new">开始新游戏</a>
+        <a class="btn" href="#/online">在线对战</a>
         <a class="btn" href="#/continue">继续游戏</a>
         <a class="btn" href="#/cards">现有卡池</a>
         <a class="btn" href="#/leaderboard">排行榜</a>

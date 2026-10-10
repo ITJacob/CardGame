@@ -159,7 +159,7 @@ Pipeline 的 R 阶段遇 `selectionMode: 'Manual'` 时（Manual 必填 `fallback
 ### 5.4 匹配与对手 `meta/match`
 
 - 初版 `AiController`：实现与人类相同的 `DecisionInput` 产生接口，用启发式策略（贪伤 / 保残血 / 技能优先级）。内核**完全无感**是人还是 AI。
-- 预留 `MatchTransport` 端口：`LocalAiTransport`（现在）→ `FirebaseTransport`（后续）。因内核确定性 + 输入序列，在线对战走**确定性 lockstep**：双方各跑内核，只交换 `inputs`；或服务端权威跑一份内核。二选一在接入 Firebase 时定。
+- 预留 `MatchTransport` 端口：`LocalAiTransport`（现在）→ `FirebaseTransport`（后续）。因内核确定性 + 输入序列，在线对战走**确定性 lockstep**：双方各跑内核，只交换 `inputs`；或服务端权威跑一份内核。**2026-10-10 拍板：Spark 计划 + 客户端 lockstep（不加服务端）**，落点 `meta/match/`（`MatchLobby`/`MatchChannel`/`MatchRunner`），方案与铁律见 [P7_PLAN.md](P7_PLAN.md)。
 
 ### 5.5 存档与排行榜 `meta/persistence`
 
@@ -225,7 +225,7 @@ push main → npm ci && vite build (game/dist)
 | P4 | 战外：英雄生成 / 卡池解锁 / 编队 | 能拼出一支合规队伍 |
 | P5 | 交互战斗 UI + 决策点选择 + 日志 | 人机对战可玩 |
 | P6 | 排行榜 + 设置(uuid/用户名) | 战绩入榜 |
-| P7 | Firebase 在线匹配 | — |
+| P7 | Firebase 在线匹配 | 两个浏览器能开局并同步打完（lockstep） |
 
 ---
 
@@ -312,7 +312,7 @@ push main → npm ci && vite build (game/dist)
 | P4 战外：英雄生成 / 卡池解锁 / 编队 | ✅ 完成（名册→CombatSetup→真卡对战闭环；vitest 42 用例） |
 | P5 交互战斗 UI + 决策点 + 日志 | ✅ 完成（棋盘双朝向 / 技能卡面 / 决策点选靶 / 战斗日志 / 新游戏流程） |
 | P6 排行榜 + 设置 + 现有卡池 | ✅ 完成（对局落战绩；本地榜按胜负→阵亡→用时；设置含 uuid/用户名/重置；卡池页可解锁职业/按张锁卡） |
-| P7 Firebase 在线匹配 | 📋 方案就绪（见 [P7_PLAN.md](P7_PLAN.md)），未实现 |
+| P7 Firebase 在线匹配 | ✅ 完成（P7a 内存通道 + 驱动循环单测；P7b Firestore 建房/加入/快速匹配 + 联机战斗，双浏览器实测同步打完并指纹互校；P7c 云榜单未做） —— 见 [P7_PLAN.md](P7_PLAN.md) |
 
 ### P3 真实卡池覆盖扫描（`npm run check:realrun`）
 
