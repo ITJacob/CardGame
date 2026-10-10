@@ -1,15 +1,17 @@
 {
   "_note": "英雄立绘 art 数据源（游戏侧概念，非 DDD 战斗面）。prompt 组装口径与技能卡一致：[manifest.artFormat, heroArtStyle, subject, ...elements, mood].filter(Boolean).join(', ')。改风格只改 heroArtStyle 一处。",
   "_keyFormat": "hero_s{strength}a{agility}i{intelligence}_{gender}.png —— 与 herogen.ts COMBOS 顺序一致（s 0..3, a 0..3-s, i 3-s-a）。",
-  "_designRule": "英雄与职业随机搭配，故画面不出现任何职业特征：无制服、无徽章、无武器、无职业专属道具，只以体型/体态/气质区分力敏智倾向。",
-  "heroArtStyle": "Victorian-era full-body character illustration in a clean semi-realistic painted trading-card style, smooth digital painterly rendering with crisp detail, no heavy impasto, no visible canvas texture, no thick brushwork, a lived-in atmospheric Victorian setting behind the figure such as a gaslit cobblestone street, a foggy brick alley or a candlelit interior with tall windows, soft depth-of-field background, muted earth-and-ash palette with warm gaslight accents, plain civilian period clothing, no uniform, no insignia, no weapon, no class-specific gear, anatomically correct human figure with exactly two arms and two hands, no extra or deformed limbs",
+  "_designRule": "1) 英雄与职业随机搭配，故画面不出现任何职业特征：无制服、无徽章、无武器、无职业专属道具，只以体型/体态/气质区分力敏智倾向。2) 时代锚定诡秘之主背景：19 世纪维多利亚工业时代。3) 场景须多样：城市/乡村/旷野/海岸/交通工具均有，以日光为主，不堆煤气灯与夜色（避免整体滑向某途径的夜调）。",
+  "_pairRule": "同一 combo 的男女为一组：elements[0] 背景 setting 男女逐字相同、elements[1] 着装同色系同材质同正式度、mood 共享；只有 subject 与 elements[2] 的体型/体态随性别与属性倾向变化。",
+  "_framingRule": "构图一致性由 heroArtStyle 的 consistent full-body framing 条款统一约束（全身入镜、人物占画面比例稳定、居中匀光），避免各图人物比例偏差过大。",
+  "heroArtStyle": "Victorian-era full-body character illustration in a clean semi-realistic painted trading-card style, smooth digital painterly rendering with crisp detail, no heavy impasto, no visible canvas texture, no thick brushwork, a lived-in Victorian setting behind the figure, soft depth-of-field background, natural muted period colour palette, consistent full-body framing with the head-to-toe figure occupying a similar proportion of the frame, centred and evenly lit, plain civilian period clothing, no uniform, no insignia, no weapon, no class-specific gear, anatomically correct human figure with exactly two arms and two hands, no extra or deformed limbs",
   "heroes": [
     {
       "key": "hero_s0a0i3_male",
       "combo": { "strength": 0, "agility": 0, "intelligence": 3 },
       "gender": "male",
       "subject": "a slight stooped man with ink-stained fingers, standing in quiet abstraction",
-      "elements": ["thin scholarly frame", "worn civilian frock coat", "downcast thoughtful gaze"],
+      "elements": ["in a daylight study with tall windows and rows of books", "worn dark scholarly frock coat", "thin frame with a downcast thoughtful gaze"],
       "mood": "cerebral, absent-minded"
     },
     {
@@ -17,7 +19,7 @@
       "combo": { "strength": 0, "agility": 0, "intelligence": 3 },
       "gender": "female",
       "subject": "a slight stooped woman with ink-stained fingers, standing in quiet abstraction",
-      "elements": ["thin scholarly frame", "worn plain day dress", "downcast thoughtful gaze"],
+      "elements": ["in a daylight study with tall windows and rows of books", "worn dark scholarly long coat over a plain skirt", "thin frame with a downcast thoughtful gaze"],
       "mood": "cerebral, absent-minded"
     },
     {
@@ -25,7 +27,7 @@
       "combo": { "strength": 0, "agility": 1, "intelligence": 2 },
       "gender": "male",
       "subject": "a lean man with a watchful posture, one shoulder slightly turned as if listening",
-      "elements": ["light restless stance", "close-fitting civilian jacket", "alert sidelong glance"],
+      "elements": ["on a sunlit village lane with stone cottages and a low hedge", "close-fitting dark civilian jacket", "alert sidelong glance"],
       "mood": "perceptive, restless"
     },
     {
@@ -33,7 +35,7 @@
       "combo": { "strength": 0, "agility": 1, "intelligence": 2 },
       "gender": "female",
       "subject": "a lean woman with a watchful posture, one shoulder slightly turned as if listening",
-      "elements": ["light restless stance", "close-fitting civilian bodice", "alert sidelong glance"],
+      "elements": ["on a sunlit village lane with stone cottages and a low hedge", "close-fitting dark civilian bodice", "alert sidelong glance"],
       "mood": "perceptive, restless"
     },
     {
@@ -41,7 +43,7 @@
       "combo": { "strength": 0, "agility": 2, "intelligence": 1 },
       "gender": "male",
       "subject": "a wiry man balanced on the balls of his feet, poised to move",
-      "elements": ["taut coiled stance", "plain rolled-sleeve shirt", "sharp forward focus"],
+      "elements": ["on an open heath with dry-stone walls and wind-bent grass", "plain dark work shirt with sleeves rolled", "taut coiled stance with sharp forward focus"],
       "mood": "nimble, attentive"
     },
     {
@@ -49,7 +51,7 @@
       "combo": { "strength": 0, "agility": 2, "intelligence": 1 },
       "gender": "female",
       "subject": "a wiry woman balanced on the balls of her feet, poised to move",
-      "elements": ["taut coiled stance", "plain long skirt with sleeves rolled", "sharp forward focus"],
+      "elements": ["on an open heath with dry-stone walls and wind-bent grass", "plain dark blouse with long skirt, sleeves rolled", "taut coiled stance with sharp forward focus"],
       "mood": "nimble, attentive"
     },
     {
@@ -57,7 +59,7 @@
       "combo": { "strength": 0, "agility": 3, "intelligence": 0 },
       "gender": "male",
       "subject": "a lithe man in a springy weightless stance, barely settling",
-      "elements": ["crouched readiness", "short civilian coat", "wind-caught hair"],
+      "elements": ["on a windswept coastal cliff path with pale sea haze", "short dark civilian coat", "wind-caught hair over a crouched readiness"],
       "mood": "agile, untethered"
     },
     {
@@ -65,23 +67,23 @@
       "combo": { "strength": 0, "agility": 3, "intelligence": 0 },
       "gender": "female",
       "subject": "a lithe woman in a springy weightless stance, barely settling",
-      "elements": ["crouched readiness", "short civilian coat over skirt", "wind-caught hair"],
+      "elements": ["on a windswept coastal cliff path with pale sea haze", "short dark civilian coat over a plain skirt", "wind-caught hair over a crouched readiness"],
       "mood": "agile, untethered"
     },
     {
       "key": "hero_s1a0i2_male",
       "combo": { "strength": 1, "agility": 0, "intelligence": 2 },
       "gender": "male",
-      "subject": "a solidly built man with a scholar's bearing, broad shoulders under a plain coat",
-      "elements": ["sturdy frame", "bookish upright posture", "calm steady gaze"],
+      "subject": "a solidly built man with a scholar's bearing, broad shoulders squared",
+      "elements": ["in a market square with timber stalls under morning light", "sturdy dark wool coat", "calm steady gaze"],
       "mood": "grounded, thoughtful"
     },
     {
       "key": "hero_s1a0i2_female",
       "combo": { "strength": 1, "agility": 0, "intelligence": 2 },
       "gender": "female",
-      "subject": "a solidly built woman with a scholar's bearing, shoulders squared under a plain coat",
-      "elements": ["sturdy frame", "bookish upright posture", "calm steady gaze"],
+      "subject": "a solidly built woman with a scholar's bearing, shoulders squared",
+      "elements": ["in a market square with timber stalls under morning light", "sturdy dark wool coat over a plain skirt", "calm steady gaze"],
       "mood": "grounded, thoughtful"
     },
     {
@@ -89,7 +91,7 @@
       "combo": { "strength": 1, "agility": 1, "intelligence": 1 },
       "gender": "male",
       "subject": "a well-proportioned man at ease, weight evenly set",
-      "elements": ["balanced upright stance", "simple period attire", "composed neutral expression"],
+      "elements": ["on a quiet daytime street corner with brick facades and a distant omnibus", "simple well-kept dark period coat", "balanced upright stance with a composed neutral expression"],
       "mood": "composed, adaptable"
     },
     {
@@ -97,7 +99,7 @@
       "combo": { "strength": 1, "agility": 1, "intelligence": 1 },
       "gender": "female",
       "subject": "a well-proportioned woman at ease, weight evenly set",
-      "elements": ["balanced upright stance", "simple period attire", "composed neutral expression"],
+      "elements": ["on a quiet daytime street corner with brick facades and a distant omnibus", "simple well-kept dark period coat over a long skirt", "balanced upright stance with a composed neutral expression"],
       "mood": "composed, adaptable"
     },
     {
@@ -105,7 +107,7 @@
       "combo": { "strength": 1, "agility": 2, "intelligence": 0 },
       "gender": "male",
       "subject": "a man of wiry strength in a forward-leaning ready stance",
-      "elements": ["corded forearms", "practical civilian clothes", "keen level gaze"],
+      "elements": ["on the open deck of a river steamer with railings and stacked crates", "practical dark work jacket", "corded forearms and a keen level gaze"],
       "mood": "spry, capable"
     },
     {
@@ -113,7 +115,7 @@
       "combo": { "strength": 1, "agility": 2, "intelligence": 0 },
       "gender": "female",
       "subject": "a woman of wiry strength in a forward-leaning ready stance",
-      "elements": ["corded forearms", "practical civilian clothes", "keen level gaze"],
+      "elements": ["on the open deck of a river steamer with railings and stacked crates", "practical dark work jacket over a plain skirt", "corded forearms and a keen level gaze"],
       "mood": "spry, capable"
     },
     {
@@ -121,7 +123,7 @@
       "combo": { "strength": 2, "agility": 0, "intelligence": 1 },
       "gender": "male",
       "subject": "a heavy-set man with a deliberate measured bearing",
-      "elements": ["thick shoulders", "plain heavy coat", "slow considering look"],
+      "elements": ["in a farmyard with a hay wagon and a split-rail fence", "heavy dark canvas coat", "thick shoulders and a slow considering look"],
       "mood": "sturdy, deliberate"
     },
     {
@@ -129,7 +131,7 @@
       "combo": { "strength": 2, "agility": 0, "intelligence": 1 },
       "gender": "female",
       "subject": "a heavy-set woman with a deliberate measured bearing",
-      "elements": ["broad frame", "plain heavy coat", "slow considering look"],
+      "elements": ["in a farmyard with a hay wagon and a split-rail fence", "heavy dark canvas coat over a plain skirt", "broad frame and a slow considering look"],
       "mood": "sturdy, deliberate"
     },
     {
@@ -137,7 +139,7 @@
       "combo": { "strength": 2, "agility": 1, "intelligence": 0 },
       "gender": "male",
       "subject": "a broad-shouldered man carrying his weight easily, light on his feet for his size",
-      "elements": ["thick chest", "sleeves rolled once", "measured but mobile stance"],
+      "elements": ["on a railway platform beside a waiting steam train with luggage carts", "thick dark leather work coat", "thick chest in a measured but mobile stance"],
       "mood": "powerful, mobile"
     },
     {
@@ -145,7 +147,7 @@
       "combo": { "strength": 2, "agility": 1, "intelligence": 0 },
       "gender": "female",
       "subject": "a broad-shouldered woman carrying her weight easily, light on her feet for her size",
-      "elements": ["thick build", "sleeves rolled once", "measured but mobile stance"],
+      "elements": ["on a railway platform beside a waiting steam train with luggage carts", "thick dark leather work coat over a plain skirt", "strong build in a measured but mobile stance"],
       "mood": "powerful, mobile"
     },
     {
@@ -153,7 +155,7 @@
       "combo": { "strength": 3, "agility": 0, "intelligence": 0 },
       "gender": "male",
       "subject": "a heavily muscled man in a grounded immovable stance",
-      "elements": ["massive shoulders", "thick worker's coat", "steady level gaze"],
+      "elements": ["in a sunlit stone quarry with cut blocks and a hand winch", "thick dark worker's coat", "massive shoulders and a steady level gaze"],
       "mood": "immovable, blunt"
     },
     {
@@ -161,7 +163,7 @@
       "combo": { "strength": 3, "agility": 0, "intelligence": 0 },
       "gender": "female",
       "subject": "a heavily muscled woman in a grounded immovable stance",
-      "elements": ["massive shoulders", "thick worker's coat", "steady level gaze"],
+      "elements": ["in a sunlit stone quarry with cut blocks and a hand winch", "thick dark worker's coat over a plain skirt", "massive shoulders and a steady level gaze"],
       "mood": "immovable, blunt"
     }
   ]
