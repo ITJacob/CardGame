@@ -20,13 +20,41 @@ import type { BattleSession } from '../session'
 import { createLocalStorageMatchStore } from '../../meta/matchLog'
 
 let autoTimer: number | null = null
+/** 前台战斗视图的重画钩子（离开视图即置空），供模块级 resize 监听转发 */
+let activeRefresh: (() => void) | null = null
+let resizeHooked = false
 /** 联机每 tick 的观战节拍（毫秒）；0 会让整局在一帧内跑完 */
 const ONLINE_STEP_MS = 450
 const FINGERPRINT_WAIT_MS = 20000
 const matchStore = createLocalStorageMatchStore()
 
+/**
+ * 本视图是否仍在前台。路由没有卸载钩子，所以异步回调（resize 转发、
+ * 联机 MatchRunner.onUpdate、自动播放定时器）在本视图被顶掉后仍会触发；
+ * 它们必须先问这一句，否则会把战斗画面重绘到当前视图上。
+ */
+function onBattleRoute(): boolean {
+  return location.hash.startsWith('#/battle')
+}
+
+/**
+ * 朝向变化要重画棋盘。监听只挂一次、转发给当前视图（`activeRefresh`）——
+ * 若改成每次进入战斗页挂一个 `{once: true}`，来回进出会越积越多，
+ * 且旧闭包会拿着旧会话在下次 resize 时重画。
+ */
+function hookResize(): void {
+  if (resizeHooked) return
+  resizeHooked = true
+  window.addEventListener('resize', () => {
+    if (!onBattleRoute()) return
+    activeRefresh?.()
+  })
+}
+
 export function renderBattle(host: HTMLElement): void {
   stopAuto()
+  // 先摘掉旧钩子：下面无会话的早退分支会让它指向上一局，之后 resize 会重画旧棋盘
+  activeRefresh = null
   const session = getSession()
   if (!session) {
     host.innerHTML = `${subBarHtml('对局')}<main class="placeholder"><h1>没有进行中的对局</h1><p><a href="#/">返回主菜单</a></p></main>`
@@ -48,6 +76,10 @@ export function renderBattle(host: HTMLElement): void {
       if (s.online) void finishOnline(s).then(refresh)
       else matchStore.append(recordOf(s, ended.outcome, ended.stats))
     }
+    // 已离开战斗页就只保留副作用（上面落战绩），不再画 DOM：
+    // resize 转发与联机 MatchRunner 的 onUpdate 都会在本视图被顶掉后继续触发，
+    // 若照画就会把棋盘重绘到当前视图上（整备页/大厅被战斗画面盖掉）。
+    if (!onBattleRoute()) return
     const runner = s.online?.runner
     const myTurn = pending != null && casterFaction(s, pending.caster) === myFactionOf(s)
     /** 本侧该决策且未提交 → 板面高亮 tile 可点选 */
@@ -101,7 +133,8 @@ export function renderBattle(host: HTMLElement): void {
   }
 
   refresh()
-  window.addEventListener('resize', refresh, { once: true })
+  activeRefresh = refresh
+  hookResize()
 }
 
 function myFactionOf(s: BattleSession): FactionId {
@@ -294,6 +327,11 @@ function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInp
       return
     }
     autoTimer = window.setInterval(() => {
+      // 人已离开战斗页：停表，别在后台把整局推完（会记下一场没人看过的胜负）
+      if (!onBattleRoute()) {
+        stopAuto()
+        return
+      }
       if (s.facade.ended() || s.facade.pendingDecision()) {
         stopAuto()
         refresh()
