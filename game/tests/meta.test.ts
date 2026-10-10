@@ -5,7 +5,7 @@ import { CONSTITUTIONS } from '../src/meta/constitution'
 import { COMBOS, generateHeroes, type RosterContext } from '../src/meta/herogen'
 import { autoFormation, validateFormation } from '../src/meta/formation'
 import { buildCombatSetup } from '../src/meta/buildSetup'
-import { createMemoryStore, newProfile, unlockClass } from '../src/meta/progression'
+import { availableCardSet, createMemoryStore, newProfile, toggleCardUnlock, toggleClassUnlock, unlockClass } from '../src/meta/progression'
 import { buildFixtureCatalog, runToEnd } from './helpers/fixture'
 
 const constitutionIds = CONSTITUTIONS.map((c) => c.id)
@@ -59,6 +59,26 @@ describe('P4 战外', () => {
     expect(ended).not.toBeNull()
     expect(ended!.events.length).toBeGreaterThan(0)
     expect(fingerprintOf(ended!.events)).toMatch(/^[0-9a-f]{8}$/)
+  })
+
+  it('卡池解锁：职业闸 + 卡牌闸（首次改动物化为显式白名单）', () => {
+    const catalog = buildFixtureCatalog()
+    let p = newProfile('fixture')
+    const all = availableCardSet(p, catalog)
+    expect(all.size).toBeGreaterThan(0)
+
+    const one = [...all][0] as string
+    p = toggleCardUnlock(p, catalog, one)
+    expect(p.unlockedCards).toHaveLength(all.size - 1)
+    expect(availableCardSet(p, catalog).has(one)).toBe(false)
+
+    p = toggleCardUnlock(p, catalog, one)
+    expect(availableCardSet(p, catalog).has(one)).toBe(true)
+
+    // 锁掉整个职业 → 该职业卡全部不可用
+    p = toggleClassUnlock(p, catalog, 'fixture')
+    expect(p.unlockedClasses).toEqual([])
+    expect(availableCardSet(p, catalog).size).toBe(0)
   })
 
   it('档案：默认解锁起始职业，可解锁更多', () => {

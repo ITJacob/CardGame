@@ -344,3 +344,43 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .row-actions .btn { width: auto; flex: 1; text-align: center; }
 .btn.danger { border-color: #6b3a3a; color: #d98b8b; }
 .btn.danger:hover { background: #3a2426; border-color: var(--warn); }
+
+/* ---------- 现有卡池 ---------- */
+.pool-page { display: grid; grid-template-columns: 190px 1fr; gap: 16px; max-width: 1100px; margin: 0 auto; padding: 18px; }
+.cls-list { display: flex; flex-direction: column; gap: 3px; max-height: 76vh; overflow: auto; }
+.cls-row {
+  display: flex; align-items: center; gap: 7px; font: inherit; text-align: left;
+  padding: 6px 8px; border-radius: 7px; border: 1px solid transparent;
+  background: transparent; color: var(--text-dim); cursor: pointer; font-size: 13px;
+}
+.cls-row:hover { background: var(--panel); color: var(--text); }
+.cls-row.active { background: var(--panel-2); color: var(--text); border-color: var(--accent-dim); }
+.cls-row.unlocked .cls-dot { color: var(--ok); }
+.cls-dot { font-size: 10px; }
+.cls-name { flex: 1; }
+.cls-n { font-size: 11px; color: var(--text-dim); }
+
+.pool-main { min-width: 0; }
+.pool-head { display: flex; align-items: center; gap: 14px; }
+.pool-head h2 { margin: 0; color: var(--accent); font-size: 18px; }
+.pool-head .btn { width: auto; padding: 8px 14px; }
+.pool-main .hint { font-size: 12.5px; color: var(--text-dim); }
+.pool-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.pool-card {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  font: inherit; padding: 8px; width: 108px;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  color: var(--text); cursor: pointer;
+}
+.pool-card.on { border-color: var(--accent-dim); }
+.pool-card.off { opacity: 0.5; }
+.pool-meta { display: flex; flex-direction: column; text-align: center; }
+.pool-meta b { font-size: 11px; }
+.pool-meta small { font-size: 10px; color: var(--text-dim); }
+.pool-flag { font-size: 10px; color: var(--text-dim); }
+.pool-card.on .pool-flag { color: var(--ok); }
+
+@media (max-width: 700px) {
+  .pool-page { grid-template-columns: 1fr; }
+  .cls-list { flex-direction: row; flex-wrap: wrap; max-height: none; }
+}

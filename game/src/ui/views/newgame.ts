@@ -8,7 +8,7 @@ import { generateHeroes } from '../../meta/herogen'
 import { autoFormation, validateFormation, type PlacedHero } from '../../meta/formation'
 import { buildCombatSetup } from '../../meta/buildSetup'
 import { loadProfile } from '../profile'
-import type { Profile } from '../../meta/progression'
+import { availableCardSet, type Profile } from '../../meta/progression'
 import { Mulberry32RandomSource } from '../../kernel/shared/random-source'
 import { createCombat } from '../../kernel'
 import type { Catalog } from '../../kernel/catalog/types'
@@ -25,7 +25,7 @@ export function renderNewGame(host: HTMLElement): void {
         catalog,
         random: new Mulberry32RandomSource(s),
         unlockedClasses: profile.unlockedClasses,
-        unlockedCards: profile.unlockedCards.length > 0 ? profile.unlockedCards : undefined, // 空 = 全解锁
+        unlockedCards: [...availableCardSet(profile, catalog)],
         constitutionIds,
       })
       const own = autoFormation(generateHeroes(ctxOf(seed), 5, 'A'), 'A')
