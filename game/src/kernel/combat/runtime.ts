@@ -147,6 +147,7 @@ class CombatRuntime implements CombatRuntimeHandle {
         unit.unitType = us.defId ? (this.lookup.unitDef(us.defId)?.unitType ?? null) : null
         this.units.add(unit)
         this.installBehaviors(unit, us.activeSlots ?? [])
+        this.installPassives(unit, us.passiveSlots ?? [])
         for (const sg of us.initialStatuses ?? []) this.mountStatus(unit, sgDefId(sg) ?? '', sg as Omit<StatusGrant, 'sourceId'>)
         assigned.push({ faction: fs.id, lane: us.coordinate.lane, index: us.coordinate.index, id })
       }
@@ -182,6 +183,31 @@ class CombatRuntime implements CombatRuntimeHandle {
         cooldownRemaining: 0,
       })
     }
+  }
+
+  /** 装配被动卡：hook 事件 → 卡面 effects（含模板自带 triggers） */
+  private installPassives(unit: CombatUnit, slots: readonly { defId: string }[]): void {
+    for (const s of slots) {
+      const tpl = this.lookup.behaviorTemplate(s.defId)
+      if (!tpl) {
+        this.warn(`未知被动 ${s.defId}`)
+        continue
+      }
+      const nodes = this.resolveEffectNodes(tpl.effects)
+      const triggers: TriggerDef[] = []
+      for (const ev of tpl.hook ?? []) if (nodes.length > 0) triggers.push({ event: ev, effects: nodes })
+      for (const t of tpl.triggers ?? []) triggers.push(t)
+      if (triggers.length > 0) unit.passives.push({ defId: tpl.id, triggers })
+    }
+  }
+
+  private resolveEffectNodes(refs: readonly { ref: string; params?: unknown }[]): EffectNode[] {
+    return refs
+      .map((r) => {
+        const node = this.lookup.effectNode(r.ref)
+        return node ? withParams(node, r.params as Record<string, unknown> | undefined) : undefined
+      })
+      .filter((n): n is EffectNode => n !== undefined)
   }
 
   private basicAttackSlot(unit: CombatUnit): BehaviorSlot {
@@ -740,6 +766,10 @@ class CombatRuntime implements CombatRuntimeHandle {
     for (const inst of unit.statuses.all()) {
       if (onlyDefId && inst.defId !== onlyDefId) continue
       this.fireTriggers(unit, event, this.lookup.statusDef(inst.defId)?.triggers, unit)
+    }
+    // 被动卡（无 onlyDefId 时全部参与）
+    if (!onlyDefId) {
+      for (const p of unit.passives) this.fireTriggers(unit, event, p.triggers, unit)
     }
   }
 

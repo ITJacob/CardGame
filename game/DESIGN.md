@@ -324,7 +324,6 @@ push main → npm ci && vite build (game/dist)
   `modify_resource` 的战场量表 `secrecy`/`order`/`fate_value`、条件 `target_unit_type` / `caster_has_summon`。
   未支持命中从 305 降到 229（余下全为上述数据缺口）。
 - 剩余已知降级：条件 `dispelled_count`（16 次）仍按「视为真」处理。
-- **未接入**：262 张**被动卡**（`BehaviorTemplate`）在运行时尚未装配——当前只把 active 卡装入 `behaviorSlots`；
-  被动钩子（`on_tick`/`on_kill`…）自**状态**侧已可用，但**卡面 passive** 未挂到单位。这是接入真实构筑（P4）的前置。
+- **被动卡已接入**：262 张 `BehaviorTemplate` 经 `UnitSetup.passiveSlots` 装配——被动 = `hook` 事件触发卡面 `effects`（实测 220 张是 `on_battle_start` 开局被动）。装配后多条途径降级归零（学徒 40→0、水手 50→0、怪物 24→0），事件流显著变丰富。
 
 移动端为**跨期横切**要求：战场投影双朝向在 P5 交互战斗 UI 落地；编队拖拽在 P4 即需按投影层实现；PWA manifest 与安全区在 P0 骨架已预留（CSS 变量 + `viewport-fit`）。

@@ -1,7 +1,7 @@
 // 单位：聚合内的实体（不是聚合根）。装配属性/资源/状态/修正层。
 import type { Element, FactionId, Gender, InstanceId, PoolKey, StatKey, UnitId } from '../ids'
 import type { Coordinate } from '../battle/types'
-import type { StatusDef } from '../catalog/types'
+import type { StatusDef, TriggerDef } from '../catalog/types'
 import { StatModifiers } from './attributes'
 import { computeEffective, deriveBaseProfile } from './profile'
 import { StatProvenance } from './provenance'
@@ -34,6 +34,8 @@ export class CombatUnit implements Unit {
   readonly cooldowns = new Map<string, number>()
   readonly tags: readonly string[]
   readonly immunities: ImmunityRecord[] = []
+  /** 被动卡：hook 事件触发卡面 effects（BehaviorTemplate） */
+  readonly passives: { defId: string; triggers: readonly TriggerDef[] }[] = []
   /** 临时增减伤修正（modify_damage）：scope → 桶增量 */
   readonly damageMods: { scope: 'dealt' | 'taken'; delta: number; remaining: number | null }[] = []
   /** 临时可选中性覆写（modify_targetability） */

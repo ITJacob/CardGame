@@ -24,6 +24,15 @@ describe('战斗聚合闭环', () => {
     expect(run(1)).not.toBe(run(999983))
   })
 
+  it('被动卡生效：装配 fix_passive 后事件流与未装配不同', () => {
+    const run = (passives: string[]): string => {
+      const c = createCombat(buildAiVsAiSetup({ seed: 9, unitsPerSide: 2, skills: ['fix_strike'], passives }))
+      runToEnd(c)
+      return fingerprintOf(c.ended()?.events ?? c.drainEvents())
+    }
+    expect(run(['fix_passive'])).not.toBe(run([]))
+  })
+
   it('战斗会结束并产出结果', () => {
     const c: CombatFacade = createCombat(buildAiVsAiSetup({ seed: 5, unitsPerSide: 2, skills: SKILLS }))
     runToEnd(c)
