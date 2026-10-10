@@ -53,6 +53,7 @@ export interface CardFaceOpts {
   rarity?: string
   /** epic/legendary 的途径边框取档用 */
   pathwayId?: string
+  /** 主动 / 被动：决定要不要出 ⚡ 费用（有费用即主动，不再另标角标） */
   kind?: 'active' | 'passive'
   /** 能量消耗，仅主动卡有 */
   cost?: number | null
@@ -71,6 +72,8 @@ export function cardFaceHtml(opts: CardFaceOpts): string {
   const { cardId, name, rarity = 'common', pathwayId, kind = 'active', cost, size = 'compact' } = opts
   const emoji = RARITY_EMOJI[rarity] ?? '▫️'
   const fallback = frameFallbackUrl(rarity)
+  // 主动必有 ⚡ 费用、被动必无 —— 这一条本身就足以分辨主/被动，不再单挂一个「主/被」角标。
+  // kind 仍需保留：它决定要不要出费用，也落在 k-<kind> 类上给样式/测试当锚。
   const costHtml = kind === 'active' && cost != null ? `<span class="ci-cost">⚡${cost}</span>` : ''
   return `
   <figure class="card-face r-${escapeHtml(rarity)} k-${kind}${size === 'full' ? ' full' : ''}" data-card="${escapeHtml(cardId)}">
@@ -79,7 +82,7 @@ export function cardFaceHtml(opts: CardFaceOpts): string {
     <div class="card-shade" aria-hidden="true"></div>
     <img class="card-frame" src="${frameUrl(rarity, pathwayId)}" alt="" aria-hidden="true" data-frame data-frame-fallback="${fallback ?? ''}">
     <figcaption class="card-info">
-      <span class="ci-name">${escapeHtml(name)}</span>${costHtml}<span class="ci-kind">${kind === 'passive' ? '被' : '主'}</span>
+      <span class="ci-name">${escapeHtml(name)}</span>${costHtml}
     </figcaption>
   </figure>`
 }

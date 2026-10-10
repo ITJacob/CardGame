@@ -45,7 +45,7 @@ describe('frameFallbackUrl 降级目标', () => {
 describe('cardFaceHtml 骨架', () => {
   const face = (opts: Parameters<typeof cardFaceHtml>[0]): string => cardFaceHtml(opts)
 
-  it('卡图/边框/信息条各一层，且带稀有度与主被角标类', () => {
+  it('卡图/边框/信息条各一层，且带稀有度与主被类', () => {
     const html = face({ cardId: 'c1', name: '低语', rarity: 'epic', pathwayId: 'sleepless', kind: 'passive' })
     expect(html.match(/data-art/g)).toHaveLength(1)
     expect(html.match(/data-frame/g)).toHaveLength(2) // 一处属性 + 一处 data-frame-fallback
@@ -53,6 +53,17 @@ describe('cardFaceHtml 骨架', () => {
     expect(html).toContain('class="card-face r-epic k-passive"')
     expect(html).toContain(`src="${cardArtUrl('c1')}"`)
     expect(html).toContain('./site/assets/frames/frame-rare.png') // epic 的降级目标
+  })
+
+  it('信息条只有名字与费用：不再单挂「主/被」角标', () => {
+    const active = face({ cardId: 'a', name: 'A', kind: 'active', cost: 2 })
+    const passive = face({ cardId: 'b', name: 'B', kind: 'passive' })
+    for (const html of [active, passive]) expect(html).not.toContain('ci-kind')
+    expect(active).toContain('class="ci-cost"')
+    expect(passive).not.toContain('ci-cost')
+    // 主/被动靠 ⚡ 的有无分辨，k-<kind> 类只当样式/测试锚
+    expect(active).toContain('k-active')
+    expect(passive).toContain('k-passive')
   })
 
   it('主动有费用角标，被动与无费用主动都不出', () => {
