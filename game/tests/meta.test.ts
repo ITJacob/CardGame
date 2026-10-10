@@ -3,7 +3,7 @@ import { createCombat, fingerprintOf } from '../src/kernel'
 import { Mulberry32RandomSource } from '../src/kernel/shared/random-source'
 import { CONSTITUTIONS } from '../src/meta/constitution'
 import { COMBOS, generateHeroes, type Hero, type RosterContext } from '../src/meta/herogen'
-import { autoFormation, fromLaneLists, toLaneLists, validateFormation } from '../src/meta/formation'
+import { autoFormation, fromLaneLists, moveHeroTo, swapHeroes, toLaneLists, validateFormation } from '../src/meta/formation'
 import { equipSkill, moveSlot, skillPoolOf, unequipSkill } from '../src/meta/loadout'
 import { buildCombatSetup } from '../src/meta/buildSetup'
 import { availableCardSet, createMemoryStore, newProfile, toggleCardUnlock, toggleClassUnlock, unlockClass } from '../src/meta/progression'
@@ -110,15 +110,32 @@ describe('整备：阵型有序表', () => {
     )
   })
 
-  it('交换两英雄格位后仍前缀紧凑（摆位编辑的核心不变量）', () => {
+  it('swapHeroes：交换两英雄格位后仍前缀紧凑（摆位编辑的核心不变量）', () => {
     const placed = autoFormation(generateHeroes(ctx(6, ['fixture']), 5, 'H'), 'A')
-    const lists = toLaneLists(placed)
-    const tmp = lists[0]![0]!
-    lists[0]![0] = lists[1]![0]!
-    lists[1]![0] = tmp
-    const next = fromLaneLists(lists, 'A')
+    const next = swapHeroes(placed, 'H_1', 'H_5')
     expect(validateFormation(next)).toEqual([])
     expect(next.find((h) => h.id === 'H_1')?.coordinate).toEqual({ faction: 'A', lane: 'lane1', index: 0 })
+    expect(next.find((h) => h.id === 'H_5')?.coordinate).toEqual({ faction: 'A', lane: 'lane0', index: 0 })
+    // 越界/自身：原样返回（引用不变，视图据此判断「未生效」）
+    expect(swapHeroes(placed, 'H_1', 'H_1')).toBe(placed)
+    expect(swapHeroes(placed, 'H_1', '不存在')).toBe(placed)
+  })
+
+  it('moveHeroTo：跨路移入落到队尾，同路即路内重排，路满则拒绝', () => {
+    const placed = autoFormation(generateHeroes(ctx(7, ['fixture']), 5, 'H'), 'A')
+    // lane1 只有 1 人，任何空格下标都夹到队尾（前缀紧凑 ⇒ 空洞只可能在队尾）
+    const moved = moveHeroTo(placed, 'H_1', 'lane1', 3)
+    expect(validateFormation(moved)).toEqual([])
+    expect(moved).toHaveLength(5)
+    expect(moved.find((h) => h.id === 'H_1')?.coordinate).toEqual({ faction: 'A', lane: 'lane1', index: 1 })
+    expect(moved.find((h) => h.id === 'H_5')?.coordinate).toEqual({ faction: 'A', lane: 'lane1', index: 0 })
+    // 同路拖到末位 = 路内重排，人数与格位集合都不变
+    const reordered = moveHeroTo(placed, 'H_1', 'lane0', 3)
+    expect(validateFormation(reordered)).toEqual([])
+    expect(reordered.find((h) => h.id === 'H_1')?.coordinate).toEqual({ faction: 'A', lane: 'lane0', index: 3 })
+    // 跨路搬进已满的路会把别人挤掉 → 拒绝，原样返回
+    expect(moveHeroTo(placed, 'H_5', 'lane0', 0)).toBe(placed)
+    expect(moveHeroTo(placed, '不存在', 'lane1', 0)).toBe(placed)
   })
 })
 

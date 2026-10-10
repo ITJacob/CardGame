@@ -464,6 +464,27 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .prep .pool-card.on { cursor: default; }
 .prep .pool-card:disabled { cursor: default; }
 
+/* ---------- 拖拽（阵型摆位 + 主动槽调序） ---------- */
+/* touch-action:none 让触屏上的拖动不被页面滚动抢走；拖源才有，不影响别处滚动 */
+.prep-board .tile[data-hero],
+.slot.draggable { cursor: grab; touch-action: none; }
+.prep-board .tile[data-hero]:active,
+.slot.draggable:active { cursor: grabbing; }
+.dragging { opacity: 0.35; }
+.drop-on {
+  border-color: var(--accent);
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
+  background: rgba(200, 162, 74, 0.12);
+}
+/* 跟随指针的幽灵：挂在 body 上，故需自带全部尺寸与叠放；命中测试必须穿过去 */
+.drag-ghost {
+  position: fixed; z-index: 80; margin: 0; pointer-events: none;
+  opacity: 0.92; border-color: var(--accent);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+}
+.is-dragging, .is-dragging * { cursor: grabbing !important; user-select: none; }
+
 @media (max-width: 760px) {
   .prep { padding: 14px 12px 48px; }
   .slot-row { gap: 8px; }

@@ -2,14 +2,15 @@
 // 编辑写回出战草稿（ui/draft），开战/建房时照常从草稿读名册——内核与在线 wire 零改动。
 import { escapeHtml, subBarHtml } from '../components/chrome'
 import { avatarEmoji, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { enableDrag } from '../drag'
 import { getCatalog } from '../catalog'
 import { loadProfile } from '../profile'
 import { getDraft, patchOwnHero, rerollDraft, setOwn } from '../draft'
 import {
   DEFAULT_LANES,
   autoFormation,
-  fromLaneLists,
-  toLaneLists,
+  moveHeroTo,
+  swapHeroes,
   validateFormation,
   type PlacedHero,
 } from '../../meta/formation'
@@ -30,6 +31,9 @@ import type { Profile } from '../../meta/progression'
 import type { Catalog } from '../../kernel/catalog/types'
 
 const LANES: readonly string[] = DEFAULT_LANES
+
+/** 拖拽载荷：阵型里拖英雄 / 主动槽之间拖技能（被动槽顺序无语义，不做拖源也不收落点） */
+type DragPayload = { kind: 'hero'; id: string } | { kind: 'slot'; at: string }
 
 export function renderPrep(host: HTMLElement): void {
   const draft = getDraft()
@@ -98,24 +102,20 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
     draw()
   }
 
-  const swapHeroes = (a: string, b: string): void => {
+  /**
+   * 整体置换名册：mutator 返回的是原数组即视为未生效（目标路已满 / id 不存在），只提示不落库。
+   * 摆位改动一律走这里，成功即清掉选中态——光标承诺的动作做完就收手。
+   */
+  const edit = (mutator: (own: readonly PlacedHero[]) => PlacedHero[]): void => {
     const draft = getDraft()
     if (!draft) return
-    const lanes = toLaneLists(draft.own)
-    const posOf = (id: string): [number, number] | null => {
-      for (let li = 0; li < lanes.length; li += 1) {
-        const i = (lanes[li] as PlacedHero[]).findIndex((h) => h.id === id)
-        if (i >= 0) return [li, i]
-      }
-      return null
+    const next = mutator(draft.own)
+    if (next === draft.own) {
+      notice = '这步无效：目标路已满，或该英雄不在场上'
+      draw()
+      return
     }
-    const pa = posOf(a)
-    const pb = posOf(b)
-    if (!pa || !pb) return
-    const tmp = lanes[pa[0]]?.[pa[1]]
-    lanes[pa[0]]![pa[1]] = lanes[pb[0]]![pb[1]] as PlacedHero
-    lanes[pb[0]]![pb[1]] = tmp as PlacedHero
-    setOwn(fromLaneLists(lanes, 'A'))
+    setOwn(next)
     selectedId = null
     notice = ''
     draw()
@@ -126,40 +126,26 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
     if (!selectedId) {
       selectedId = id
       draw()
-    } else if (selectedId === id) {
+      return
+    }
+    if (selectedId === id) {
       selectedId = null
       draw()
-    } else {
-      swapHeroes(selectedId, id)
+      return
     }
+    const from = selectedId
+    edit((own) => swapHeroes(own, from, id))
   }
 
-  /** 点空格：把选中英雄移入该路队尾（同路即调到队尾）；前缀紧凑由 fromLaneLists 保证 */
-  const onCellClick = (lane: string, _index: number): void => {
+  /** 点空格：与拖拽落到同一格是同一条路径（meta/formation 的 moveHeroTo），语义不会两套 */
+  const onCellClick = (lane: string, index: number): void => {
     if (!selectedId) {
-      notice = '先在阵型里点一名英雄，再点空格移入'
+      notice = '先拖一名英雄到格子上，或点一名英雄再点空格'
       draw()
       return
     }
-    const draft = getDraft()
-    if (!draft) return
-    const lanes = toLaneLists(draft.own)
-    const fromLi = lanes.findIndex((l) => l.some((h) => h.id === selectedId))
-    const toLi = LANES.indexOf(lane)
-    if (fromLi < 0 || toLi < 0) return
-    const target = lanes[toLi] as PlacedHero[]
-    if (target.length >= LANE_CAPACITY) {
-      notice = `路 ${lane} 已满`
-      draw()
-      return
-    }
-    const src = lanes[fromLi] as PlacedHero[]
-    const [hero] = src.splice(src.findIndex((h) => h.id === selectedId), 1)
-    target.push(hero as PlacedHero)
-    setOwn(fromLaneLists(lanes, 'A'))
-    selectedId = null
-    notice = ''
-    draw()
+    const id = selectedId
+    edit((own) => moveHeroTo(own, id, lane, index))
   }
 
   const autoArrange = (): void => {
@@ -176,6 +162,52 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
     selectedId = d.own[0]?.id ?? null
     notice = ''
     draw()
+  }
+
+  // ---------- 拖拽 ----------
+  // 挂一次就够：事件委托在 host 上，回调每次现读草稿，故 draw() 重建 DOM 不影响它。
+  // 落点高亮只改 class、不重画，避免拖到一半被换掉的元素吃掉指针捕获。
+
+  const wireDrag = (): void => {
+    enableDrag<DragPayload>(host, {
+      grab: (el) => {
+        if (el.closest('.slot-op')) return null // 槽位上的 ◀▶✕ 是按钮，别当拖源
+        const tile = el.closest<HTMLElement>('.prep-board .tile[data-hero]')
+        const id = tile?.dataset.hero
+        if (tile && id) return { payload: { kind: 'hero', id }, source: tile }
+        const slot = el.closest<HTMLElement>('.slot.draggable')
+        const at = slot?.dataset.slot
+        return slot && at ? { payload: { kind: 'slot', at }, source: slot } : null
+      },
+      resolveDrop: (el, p) => {
+        if (p.kind === 'hero') return el.closest<HTMLElement>('.prep-board .tile')
+        const slot = el.closest<HTMLElement>('.slot[data-slot]')
+        if (!slot) return null
+        const [kind] = split2(slot.dataset.slot ?? '')
+        return kind === 'active' ? slot : null
+      },
+      drop: (el, p) => {
+        if (p.kind === 'hero') {
+          const onto = el.dataset.hero
+          if (onto) {
+            edit((own) => swapHeroes(own, p.id, onto)) // 落到别人身上 → 交换
+          } else {
+            edit((own) => moveHeroTo(own, p.id, el.dataset.lane ?? '', Number(el.dataset.index ?? 0)))
+          }
+          return
+        }
+        const [fk, fi] = split2(p.at)
+        const [tk, ti] = split2(el.dataset.slot ?? '')
+        if (fk !== 'active' || fk !== tk) return
+        const hero = getDraft()?.own.find((h) => h.id === selectedId)
+        if (!hero || hero.activeSkillIds.length === 0) return
+        const from = Number(fi)
+        // 空槽（下标 >= 已有张数）就是「放到最后」，与格子里看得出来的一致
+        const to = Math.min(Number(ti), hero.activeSkillIds.length - 1)
+        if (from === to) return
+        applyHero((h) => moveSlot(h, 'active', from, to))
+      },
+    })
   }
 
   // ---------- 事件 ----------
@@ -227,6 +259,7 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
     host.querySelector('#btn-reroll')?.addEventListener('click', reroll)
   }
 
+  wireDrag()
   draw()
 }
 
@@ -260,13 +293,13 @@ function formationHtml(own: readonly PlacedHero[], selectedId: string | null): s
           <div class="tpos">${escapeHtml(lane)} #${index + 1}</div>
         </div>`)
       } else {
-        cells.push(`<div class="tile empty" style="${style}" data-cell="1" data-lane="${escapeHtml(lane)}" data-index="${index}" role="button" tabindex="0" title="把选中英雄移到这里"></div>`)
+        cells.push(`<div class="tile empty" style="${style}" data-cell="1" data-lane="${escapeHtml(lane)}" data-index="${index}" role="button" tabindex="0" title="把英雄拖到这里（或先点选英雄再点此格）"></div>`)
       }
     }
   }
 
   return `<section class="prep-sec">
-    <h2>阵型 <small class="hint">点英雄选中 → 点另一英雄交换 / 点空格移入；#1 靠近中线</small></h2>
+    <h2>阵型 <small class="hint">拖动英雄：落到别人身上交换、落到空格移入（也可以点选）；#1 靠近中线</small></h2>
     <div class="board-wrap"><div class="board prep-board" style="grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr)">${cells.join('')}</div></div>
   </section>`
 }
@@ -299,13 +332,13 @@ function loadoutHtml(catalog: Catalog, profile: Profile, own: readonly PlacedHer
 function slotRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): string {
   const ids = kind === 'active' ? hero.activeSkillIds : hero.passiveSkillIds
   const limit = SLOT_LIMIT[kind]
-  const tip = kind === 'active' ? '按槽位顺序轮转释放' : '被动常驻，按触发点发动'
+  const tip = kind === 'active' ? '按槽位顺序轮转释放，拖动可调序' : '被动常驻，按触发点发动（顺序无影响）'
 
   const slots: string[] = []
   for (let i = 0; i < limit; i += 1) {
     const id = ids[i]
     if (!id) {
-      slots.push(`<div class="slot empty"><span class="slot-num">${i + 1}</span><span class="slot-blank">空</span></div>`)
+      slots.push(`<div class="slot empty" data-slot="${kind}:${i}"><span class="slot-num">${i + 1}</span><span class="slot-blank">空</span></div>`)
       continue
     }
     const ops = [
@@ -313,8 +346,10 @@ function slotRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): string
       kind === 'active' && i < ids.length - 1 ? `<button type="button" class="slot-op" data-move="${kind}:${i}:1" title="后移">▶</button>` : '',
       `<button type="button" class="slot-op danger" data-unequip="${kind}:${i}" title="卸下">✕</button>`,
     ].join('')
+    // 只有主动槽可拖：被动槽的次序在战斗里没有任何意义
+    const draggable = kind === 'active' && ids.length > 1
 
-    slots.push(`<div class="slot"><span class="slot-num">${i + 1}</span>${cardOf(catalog, id)}<div class="slot-ops">${ops}</div></div>`)
+    slots.push(`<div class="slot${draggable ? ' draggable' : ''}" data-slot="${kind}:${i}"><span class="slot-num">${i + 1}</span>${cardOf(catalog, id)}<div class="slot-ops">${ops}</div></div>`)
   }
 
   return `<div class="slot-block">

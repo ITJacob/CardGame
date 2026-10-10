@@ -86,3 +86,62 @@ export function fromLaneLists(
   })
   return out
 }
+
+function factionOf(heroes: readonly PlacedHero[]): string {
+  return heroes[0]?.coordinate.faction ?? 'A'
+}
+
+/**
+ * 把英雄 `id` 摆到 `lane` 的第 `index` 位——同路即路内重排，跨路即移入。
+ * `index` 夹到 [0, 该路长度]：占用恒为前缀，所以空格只会出现在队尾，
+ * 「落到第 n 格」与「排到该路队尾」是同一件事，格子上的空洞和最终落点对得上。
+ * 目标路已满（且是跨路搬迁，会挤掉别人）时原样返回，调用方可用 `===` 判断未生效。
+ */
+export function moveHeroTo(
+  heroes: readonly PlacedHero[],
+  id: string,
+  lane: string,
+  index: number,
+  lanes: readonly string[] = DEFAULT_LANES,
+): PlacedHero[] {
+  const lists = toLaneLists(heroes, lanes)
+  const fromLi = lists.findIndex((l) => l.some((h) => h.id === id))
+  const toLi = lanes.indexOf(lane)
+  if (fromLi < 0 || toLi < 0) return heroes as PlacedHero[]
+  const src = lists[fromLi] as PlacedHero[]
+  const dst = lists[toLi] as PlacedHero[]
+  if (fromLi !== toLi && dst.length >= LANE_CAPACITY) return heroes as PlacedHero[]
+  const [hero] = src.splice(
+    src.findIndex((h) => h.id === id),
+    1,
+  )
+  dst.splice(Math.max(0, Math.min(index, dst.length)), 0, hero as PlacedHero)
+  return fromLaneLists(lists, factionOf(heroes), lanes)
+}
+
+/** 两名英雄互换格位（路固定，故两路长度都不变）。任一 id 不存在时原样返回。 */
+export function swapHeroes(
+  heroes: readonly PlacedHero[],
+  aId: string,
+  bId: string,
+  lanes: readonly string[] = DEFAULT_LANES,
+): PlacedHero[] {
+  if (aId === bId) return heroes as PlacedHero[]
+  const lists = toLaneLists(heroes, lanes)
+  const find = (id: string): [number, number] | null => {
+    for (let li = 0; li < lists.length; li += 1) {
+      const i = (lists[li] as PlacedHero[]).findIndex((h) => h.id === id)
+      if (i >= 0) return [li, i]
+    }
+    return null
+  }
+  const pa = find(aId)
+  const pb = find(bId)
+  if (!pa || !pb) return heroes as PlacedHero[]
+  const laneA = lists[pa[0]] as PlacedHero[]
+  const laneB = lists[pb[0]] as PlacedHero[]
+  const tmp = laneA[pa[1]] as PlacedHero
+  laneA[pa[1]] = laneB[pb[1]] as PlacedHero
+  laneB[pb[1]] = tmp
+  return fromLaneLists(lists, factionOf(heroes), lanes)
+}
