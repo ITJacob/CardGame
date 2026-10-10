@@ -94,3 +94,59 @@ export function unlockCard(p: Profile, cardId: string): Profile {
   if (p.unlockedCards.includes(cardId)) return p
   return { ...p, unlockedCards: [...p.unlockedCards, cardId] }
 }
+
+// ---------- 卡池可用性与解锁（职业闸 + 卡牌闸） ----------
+
+/** 某职业的全部卡（active + passive） */
+export function cardsOfClass(catalog: { classDefs: ReadonlyMap<string, { knownSkills: string[] }> }, classId: string): string[] {
+  return catalog.classDefs.get(classId)?.knownSkills ?? []
+}
+
+/**
+ * 当前可用卡集合。
+ * 规则：`unlockedCards` 为空 = 「已解锁职业的全部卡」；非空 = 显式白名单（仍受职业闸限制）。
+ * UI 首次改动卡牌时会把它物化成显式列表。
+ */
+export function availableCardSet(
+  p: Profile,
+  catalog: { classDefs: ReadonlyMap<string, { knownSkills: string[] }> },
+): Set<string> {
+  const classCards = p.unlockedClasses.flatMap((c) => cardsOfClass(catalog, c))
+  if (p.unlockedCards.length === 0) return new Set(classCards)
+  const allowed = new Set(p.unlockedCards)
+  return new Set(classCards.filter((id) => allowed.has(id)))
+}
+
+export function toggleCardUnlock(
+  p: Profile,
+  catalog: { classDefs: ReadonlyMap<string, { knownSkills: string[] }> },
+  cardId: string,
+): Profile {
+  const set = availableCardSet(p, catalog)
+  if (set.has(cardId)) set.delete(cardId)
+  else set.add(cardId)
+  return { ...p, unlockedCards: [...set].sort() }
+}
+
+export function toggleClassUnlock(
+  p: Profile,
+  catalog: { classDefs: ReadonlyMap<string, { knownSkills: string[] }> },
+  classId: string,
+): Profile {
+  const has = p.unlockedClasses.includes(classId)
+  const explicit = p.unlockedCards.length > 0
+  if (has) {
+    const set = availableCardSet(p, catalog)
+    for (const id of cardsOfClass(catalog, classId)) set.delete(id)
+    return {
+      ...p,
+      unlockedClasses: p.unlockedClasses.filter((c) => c !== classId),
+      unlockedCards: explicit ? [...set].sort() : [],
+    }
+  }
+  const classes = [...p.unlockedClasses, classId].sort()
+  if (!explicit) return { ...p, unlockedClasses: classes }
+  const set = availableCardSet(p, catalog)
+  for (const id of cardsOfClass(catalog, classId)) set.add(id)
+  return { ...p, unlockedClasses: classes, unlockedCards: [...set].sort() }
+}
