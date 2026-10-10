@@ -7,21 +7,13 @@ import { CONSTITUTIONS } from '../../meta/constitution'
 import { generateHeroes } from '../../meta/herogen'
 import { autoFormation, validateFormation, type PlacedHero } from '../../meta/formation'
 import { buildCombatSetup } from '../../meta/buildSetup'
-import { createLocalStorageStore, newProfile, type Profile } from '../../meta/progression'
+import { loadProfile } from '../profile'
+import type { Profile } from '../../meta/progression'
 import { Mulberry32RandomSource } from '../../kernel/shared/random-source'
 import { createCombat } from '../../kernel'
 import type { Catalog } from '../../kernel/catalog/types'
 
-const store = createLocalStorageStore()
 const constitutionIds = CONSTITUTIONS.map((c) => c.id)
-
-function loadProfile(): Profile {
-  const existing = store.load()
-  if (existing) return existing
-  const fresh = newProfile('sleepless')
-  store.save(fresh)
-  return fresh
-}
 
 export function renderNewGame(host: HTMLElement): void {
   host.innerHTML = `${subBarHtml('新游戏')}<main class="placeholder"><p>正在加载卡池与生成英雄…</p></main>`

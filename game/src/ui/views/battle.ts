@@ -4,10 +4,15 @@ import { avatarEmoji, cardFaceHtml, hydrateArt } from '../components/cardFace'
 import { getSession } from '../session'
 import { gridSpec, laneIndexer, orientationOf, type Orientation } from '../battle/projection'
 import type { DomainEvent } from '../../kernel/combat/types'
-import type { CombatView, UnitViewLite } from '../../kernel/combat/types'
+import type { CombatStats, CombatView, UnitViewLite } from '../../kernel/combat/types'
+import type { MatchRecord } from '../../meta/matchLog'
+
+type CombatOutcome = 'side_a' | 'side_b' | 'draw' | 'aborted'
 import type { BattleSession } from '../session'
+import { createLocalStorageMatchStore } from '../../meta/matchLog'
 
 let autoTimer: number | null = null
+const matchStore = createLocalStorageMatchStore()
 
 export function renderBattle(host: HTMLElement): void {
   stopAuto()
@@ -22,6 +27,10 @@ export function renderBattle(host: HTMLElement): void {
     const view = s.facade.state()
     const pending = s.facade.pendingDecision()
     const ended = s.facade.ended()
+    if (ended && !s.recorded) {
+      s.recorded = true
+      matchStore.append(recordOf(s, ended.outcome, ended.stats))
+    }
     host.innerHTML = `
       ${subBarHtml('对局')}
       <div class="battle" data-orient="${currentOrientation()}">
@@ -139,7 +148,30 @@ function decisionBarHtml(s: BattleSession, pending: NonNullable<ReturnType<Battl
 
 function endedHtml(outcome: string): string {
   const text: Record<string, string> = { side_a: '我方胜利', side_b: '敌方胜利', draw: '平局', aborted: '中断' }
-  return `<div class="ended"><div class="ended-card"><h2>${text[outcome] ?? outcome}</h2><a class="btn" href="#/">返回主菜单</a></div></div>`
+  return `<div class="ended"><div class="ended-card">
+    <h2>${text[outcome] ?? outcome}</h2>
+    <a class="btn primary" href="#/new">再来一局</a>
+    <a class="btn" href="#/leaderboard">看排行榜</a>
+    <a class="btn" href="#/">返回主菜单</a>
+  </div></div>`
+}
+
+function recordOf(s: BattleSession, outcome: CombatOutcome, stats: CombatStats): MatchRecord {
+  const own = s.setup.factions[0].id
+  const foe = s.setup.factions[1].id
+  return {
+    id: `${Date.now().toString(36)}-${Math.floor(Math.random() * 1e6).toString(36)}`,
+    at: Date.now(),
+    seed: s.setup.seed,
+    outcome,
+    win: outcome === 'side_a',
+    ticks: stats.ticks,
+    unitsLostOwn: stats.unitsLost[own] ?? 0,
+    unitsLostEnemy: stats.unitsLost[foe] ?? 0,
+    damageDealtOwn: stats.damageDealt[own] ?? 0,
+    damageDealtEnemy: stats.damageDealt[foe] ?? 0,
+    heroes: s.own.map((h) => ({ name: h.name, classId: h.classId, constitutionId: h.constitutionId })),
+  }
 }
 
 function wire(s: BattleSession, refresh: () => void): void {
