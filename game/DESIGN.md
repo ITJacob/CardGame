@@ -305,7 +305,9 @@ push main → npm ci && vite build (game/dist)
 |---|---|
 | P0 工程骨架 + Pages 发布 | ✅ 完成（`/CardGame/` 为主菜单，Actions 组装发布） |
 | P1 内核 IDL + 数据接入层 + 数据版本锚点 | ✅ 完成（`check:catalog` 22 途径全绿；`data:pin` / `data:status` 就位） |
-| P2 内核实现（五上下文） | ⏳ 未开始 |
-| P3–P7 | ⏳ 未开始 |
+| P2a 内核核心闭环 + 确定性验收 | ✅ 完成（5 原语 + 内置普攻跑通 AI vs AI；同 seed 逐位相同；vitest 24 用例） |
+| P2b 补齐其余 24 原语 / 9 触发点 / 4 种 consumption 分流 | ⏳ 未开始 |
+| P3 无头对战（现有 AI 已可跑，待接真实卡池） | ⏳ 未开始 |
+| P4–P7 | ⏳ 未开始 |
 
 移动端为**跨期横切**要求：战场投影双朝向在 P5 交互战斗 UI 落地；编队拖拽在 P4 即需按投影层实现；PWA manifest 与安全区在 P0 骨架已预留（CSS 变量 + `viewport-fit`）。
