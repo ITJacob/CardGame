@@ -42,7 +42,8 @@ export interface RosterContext {
   passiveSlots?: number
 }
 
-function classSkills(catalog: Catalog, classId: string, unlocked?: ReadonlySet<string>): { active: string[]; passive: string[] } {
+/** 职业技能池：职业已知卡按 active/passive 拆分，可选按「已解锁」过滤（整备卡池同一口径）。 */
+export function classSkills(catalog: Catalog, classId: string, unlocked?: ReadonlySet<string>): { active: string[]; passive: string[] } {
   const known = catalog.classDefs.get(classId)?.knownSkills ?? []
   const active: string[] = []
   const passive: string[] = []

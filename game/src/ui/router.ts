@@ -2,6 +2,7 @@ import { renderMenu } from './views/menu'
 import { renderPlaceholder } from './views/placeholder'
 import { renderSettings } from './views/settings'
 import { renderNewGame } from './views/newgame'
+import { renderPrep } from './views/prep'
 import { renderBattle } from './views/battle'
 import { renderLeaderboard } from './views/leaderboard'
 import { renderCards } from './views/cards'
@@ -15,6 +16,7 @@ const placeholder = (title: string, desc: string): RenderFn => (host) =>
 const ROUTES: Record<string, RenderFn> = {
   '': renderMenu,
   new: renderNewGame,
+  prep: renderPrep,
   online: renderOnline,
   battle: renderBattle,
   continue: placeholder('继续游戏', '本地存档恢复（P4 落地）'),

@@ -1,23 +1,20 @@
-// 在线对战大厅（P7）：生成名册 → 建房/加入/快速匹配 → 等对手 → 进 #/battle。
+// 在线对战大厅（P7）：生成名册 → 整备（可选）→ 建房/加入/快速匹配 → 等对手 → 进 #/battle。
 // 传输走 Firestore（firebaseChannel）；数据版本不符一律拒绝开局（§3.4 铁律 2）。
 import { subBarHtml, escapeHtml } from '../components/chrome'
-import { avatarEmoji, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { hydrateArt } from '../components/cardFace'
+import { heroRowHtml } from '../components/hero'
 import { getCatalog } from '../catalog'
 import { setSession, type UnitMeta } from '../session'
 import { loadProfile } from '../profile'
-import { CONSTITUTIONS } from '../../meta/constitution'
-import { generateHeroes } from '../../meta/herogen'
-import { autoFormation, validateFormation, type PlacedHero } from '../../meta/formation'
-import { availableCardSet, type Profile } from '../../meta/progression'
-import { Mulberry32RandomSource } from '../../kernel/shared/random-source'
+import { ensureDraft, getDraft, rerollDraft } from '../draft'
+import { validateFormation, type PlacedHero } from '../../meta/formation'
 import { createCombat } from '../../kernel'
 import { createFirebaseMatch, type FirebaseMatch } from '../../meta/match/firebaseChannel'
 import { buildOnlineCombatSetup, factionOfSide } from '../../meta/match/buildOnlineSetup'
 import type { Side } from '../../meta/match/types'
 import type { Catalog } from '../../kernel/catalog/types'
+import type { Profile } from '../../meta/progression'
 import { dataVersion, shortHash } from '../../data/version'
-
-const constitutionIds = CONSTITUTIONS.map((c) => c.id)
 
 let conn: FirebaseMatch | null = null
 /** 每次进入本页 +1：异步续跑前比对，避免「已离开还在跳转」 */
@@ -28,18 +25,6 @@ function connection(): FirebaseMatch {
   return conn
 }
 
-function newRoster(catalog: Catalog, profile: Profile): PlacedHero[] {
-  const seed = (Date.now() ^ Math.floor(Math.random() * 0xffffffff)) >>> 0
-  const ctx = {
-    catalog,
-    random: new Mulberry32RandomSource(seed),
-    unlockedClasses: profile.unlockedClasses,
-    unlockedCards: [...availableCardSet(profile, catalog)],
-    constitutionIds,
-  }
-  return autoFormation(generateHeroes(ctx, 5, 'hero'), 'A')
-}
-
 export function renderOnline(host: HTMLElement): void {
   const token = ++navToken
   host.innerHTML = `${subBarHtml('在线对战')}<main class="placeholder"><p>正在加载卡池与生成英雄…</p></main>`
@@ -47,7 +32,8 @@ export function renderOnline(host: HTMLElement): void {
     .then((catalog) => {
       if (token !== navToken) return
       const profile = loadProfile()
-      renderLobby(host, token, catalog, profile, newRoster(catalog, profile))
+      ensureDraft('online', catalog, profile)
+      renderLobby(host, token, catalog, profile)
     })
     .catch((e: unknown) => {
       if (token !== navToken) return
@@ -55,24 +41,9 @@ export function renderOnline(host: HTMLElement): void {
     })
 }
 
-function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile: Profile, roster: PlacedHero[]): void {
-  const rows = roster
-    .map((h) => {
-      const cards = h.activeSkillIds
-        .map((id) => cardFaceHtml({ cardId: id, name: catalog.skillDefs.get(id)?.name ?? id, rarity: catalog.skillDefs.get(id)?.rarity, compact: true }))
-        .join('')
-      const combo = `${h.combo.strength}力 / ${h.combo.agility}敏 / ${h.combo.intelligence}智`
-      return `<div class="hero-row">
-        <span class="hero-avatar">${avatarEmoji(h.constitutionId, h.gender)}</span>
-        <span class="hero-info">
-          <b>${escapeHtml(h.name)}</b>
-          <small>${escapeHtml(h.classId)} · ${escapeHtml(h.constitutionId)} · ${combo} · ${h.coordinate.lane}#${h.coordinate.index}</small>
-        </span>
-        <div class="hero-cards">${cards}</div>
-      </div>`
-    })
-    .join('')
-
+function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile: Profile): void {
+  const roster = getDraft()?.own ?? []
+  const rows = roster.map((h) => heroRowHtml(h, catalog)).join('')
   const errors = validateFormation(roster)
 
   host.innerHTML = `
@@ -82,6 +53,10 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
       <h2>我方阵容（${roster.length}）</h2>
       <div class="hero-list">${rows}</div>
       ${errors.length > 0 ? `<p class="warn">编队问题：${escapeHtml(errors.join(' / '))}</p>` : '<p class="ok">编队合法</p>'}
+      <div class="row-actions">
+        <a class="btn" href="#/prep">整备 · 技能 / 阵型</a>
+        <button type="button" class="btn" id="btn-reroll">重新生成英雄</button>
+      </div>
       <div class="row-actions">
         <button type="button" class="btn" id="btn-quick">快速匹配</button>
         <button type="button" class="btn primary" id="btn-create">创建房间</button>
@@ -113,8 +88,9 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
     busy(false)
   }
   // 上线前按座位改 id + 阵营：双方名册是同构生成的，hero_1 会撞车（内核要求 unitId 全局唯一）
+  // 每次都从草稿现读，确保先在 #/prep 整备过再建房/加入时带上编辑结果
   const wireRoster = (side: Side): PlacedHero[] =>
-    roster.map((h, i) => ({
+    (getDraft()?.own ?? []).map((h, i) => ({
       ...h,
       id: `${factionOfSide(side)}_h${i + 1}`,
       coordinate: { ...h.coordinate, faction: factionOfSide(side) },
@@ -155,6 +131,10 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
       .catch(fail)
   }
 
+  document.getElementById('btn-reroll')?.addEventListener('click', () => {
+    rerollDraft(catalog, profile)
+    renderLobby(host, token, catalog, profile)
+  })
   document.getElementById('btn-create')?.addEventListener('click', create)
   document.getElementById('btn-quick')?.addEventListener('click', quick)
   document.getElementById('btn-join')?.addEventListener('click', () => join(codeInput?.value ?? ''))

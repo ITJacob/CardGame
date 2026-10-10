@@ -57,3 +57,32 @@ export function autoFormation(heroes: readonly Hero[], faction: string, lanes: r
   }
   return out
 }
+
+/** 按路拆成有序表（每路按 index 升序，index 即路内次序）。摆位编辑器的工作形态。 */
+export function toLaneLists(heroes: readonly PlacedHero[], lanes: readonly string[] = DEFAULT_LANES): PlacedHero[][] {
+  return lanes.map((lane) =>
+    heroes
+      .filter((h) => h.coordinate.lane === lane)
+      .sort((a, b) => a.coordinate.index - b.coordinate.index),
+  )
+}
+
+/**
+ * 每路有序表 → 前缀紧凑的 PlacedHero[]（index 由路内次序重写）。
+ * 摆位编辑的唯一出口：空洞在结构上不可能出现；越容量部分被截断（调用方应先行约束）。
+ */
+export function fromLaneLists(
+  lists: readonly (readonly Hero[])[],
+  faction: string,
+  lanes: readonly string[] = DEFAULT_LANES,
+): PlacedHero[] {
+  const out: PlacedHero[] = []
+  lists.forEach((list, li) => {
+    const lane = lanes[li]
+    if (!lane) return
+    list.slice(0, LANE_CAPACITY).forEach((h, index) => {
+      out.push({ ...(h as Hero), coordinate: { faction, lane, index } })
+    })
+  })
+  return out
+}

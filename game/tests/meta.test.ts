@@ -2,8 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { createCombat, fingerprintOf } from '../src/kernel'
 import { Mulberry32RandomSource } from '../src/kernel/shared/random-source'
 import { CONSTITUTIONS } from '../src/meta/constitution'
-import { COMBOS, generateHeroes, type RosterContext } from '../src/meta/herogen'
-import { autoFormation, validateFormation } from '../src/meta/formation'
+import { COMBOS, generateHeroes, type Hero, type RosterContext } from '../src/meta/herogen'
+import { autoFormation, fromLaneLists, toLaneLists, validateFormation } from '../src/meta/formation'
+import { equipSkill, moveSlot, skillPoolOf, unequipSkill } from '../src/meta/loadout'
 import { buildCombatSetup } from '../src/meta/buildSetup'
 import { availableCardSet, createMemoryStore, newProfile, toggleCardUnlock, toggleClassUnlock, unlockClass } from '../src/meta/progression'
 import { buildFixtureCatalog, runToEnd } from './helpers/fixture'
@@ -91,5 +92,83 @@ describe('P4 战外', () => {
     const store = createMemoryStore()
     store.save(p1)
     expect(store.load()?.unlockedClasses).toEqual(['sleepless', 'arbiter'])
+  })
+})
+
+describe('整备：阵型有序表', () => {
+  it('toLaneLists（按 index 升序）与 fromLaneLists 互逆且前缀紧凑', () => {
+    const placed = autoFormation(generateHeroes(ctx(5, ['fixture']), 5, 'H'), 'A')
+    const lists = toLaneLists(placed)
+    expect(lists).toHaveLength(2)
+    expect(lists[0]!.map((h) => h.id)).toEqual(['H_1', 'H_2', 'H_3', 'H_4'])
+    expect(lists[1]!.map((h) => h.id)).toEqual(['H_5'])
+
+    const back = fromLaneLists(lists, 'A')
+    expect(validateFormation(back)).toEqual([])
+    expect(back.map((h) => `${h.coordinate.lane}#${h.coordinate.index}:${h.id}`).sort()).toEqual(
+      placed.map((h) => `${h.coordinate.lane}#${h.coordinate.index}:${h.id}`).sort(),
+    )
+  })
+
+  it('交换两英雄格位后仍前缀紧凑（摆位编辑的核心不变量）', () => {
+    const placed = autoFormation(generateHeroes(ctx(6, ['fixture']), 5, 'H'), 'A')
+    const lists = toLaneLists(placed)
+    const tmp = lists[0]![0]!
+    lists[0]![0] = lists[1]![0]!
+    lists[1]![0] = tmp
+    const next = fromLaneLists(lists, 'A')
+    expect(validateFormation(next)).toEqual([])
+    expect(next.find((h) => h.id === 'H_1')?.coordinate).toEqual({ faction: 'A', lane: 'lane1', index: 0 })
+  })
+})
+
+describe('整备：技能槽', () => {
+  const catalog = buildFixtureCatalog()
+  const profile = newProfile('fixture')
+  const base: Hero = {
+    id: 'h1',
+    name: 'h1',
+    gender: 'male',
+    combo: { strength: 1, agility: 1, intelligence: 1 },
+    constitutionId: 'robust',
+    classId: 'fixture',
+    activeSkillIds: [],
+    passiveSkillIds: [],
+  }
+
+  it('卡池 = 职业已知卡 ∩ 已解锁，按主动/被动分区', () => {
+    const pool = skillPoolOf(catalog, base, profile)
+    const known = new Set(catalog.classDefs.get('fixture')!.knownSkills)
+    for (const id of pool.active) {
+      expect(known.has(id)).toBe(true)
+      expect(catalog.skillDefs.has(id)).toBe(true)
+    }
+    for (const id of pool.passive) {
+      expect(known.has(id)).toBe(true)
+      expect(catalog.behaviorTemplates.has(id)).toBe(true)
+    }
+  })
+
+  it('装备受「池内 / 不重复 / 不超 4 槽」约束，卸下与调序保持不变量', () => {
+    const pool = skillPoolOf(catalog, base, profile)
+    const ids = pool.active
+    expect(ids.length).toBeGreaterThanOrEqual(5)
+    const [a, b, c, d, e] = [ids[0]!, ids[1]!, ids[2]!, ids[3]!, ids[4]!]
+
+    let h = base
+    for (const id of [a, b, c, d]) h = equipSkill(h, 'active', id, pool)
+    expect(h.activeSkillIds).toEqual([a, b, c, d])
+
+    expect(equipSkill(h, 'active', a, pool)).toBe(h) // 重复
+    expect(equipSkill(h, 'active', e, pool)).toBe(h) // 满槽
+    expect(equipSkill(h, 'active', 'not_a_card', pool)).toBe(h) // 池外
+    expect(h.activeSkillIds).toHaveLength(4)
+
+    expect(moveSlot(h, 'active', 0, 3).activeSkillIds).toEqual([b, c, d, a])
+    expect(unequipSkill(moveSlot(h, 'active', 0, 3), 'active', 1).activeSkillIds).toEqual([b, d, a])
+
+    expect(unequipSkill(h, 'active', 9)).toBe(h) // 越界
+    expect(moveSlot(h, 'active', 0, 9)).toBe(h)
+    expect(moveSlot(h, 'active', 2, 2)).toBe(h)
   })
 })

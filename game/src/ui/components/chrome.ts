@@ -23,10 +23,10 @@ export function topbarHtml(): string {
   </header>`
 }
 
-export function subBarHtml(title: string): string {
+export function subBarHtml(title: string, backHref = '#/'): string {
   return `
   <header class="topbar sub">
-    <a class="back" href="#/">← 返回</a>
+    <a class="back" href="${escapeHtml(backHref)}">← 返回</a>
     <span class="sub-title">${escapeHtml(title)}</span>
   </header>`
 }
