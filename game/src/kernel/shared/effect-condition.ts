@@ -13,6 +13,8 @@ export interface ConditionUnit {
   readonly hpMax: number
   readonly tags: readonly string[]
   readonly isDead: boolean
+  readonly unitType?: string | null
+  readonly summonerId?: string | null
   statusStacks(defId: string): number
   stat(key: string): number
 }
@@ -64,6 +66,16 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
       return target != null && target.statusStacks(prefixOf(cond)) >= (cond.n ?? 1)
     case 'target_dead':
       return target != null && target.isDead
+    case 'target_unit_type': {
+      const types = cond.unitTypes ?? (cond.type ? (Array.isArray(cond.type) ? cond.type : [cond.type]) : [])
+      return target != null && target.unitType != null && types.includes(target.unitType)
+    }
+    case 'caster_has_summon': {
+      const c = ctx.caster
+      if (!c) return false
+      const tag = cond.tag ? String(cond.tag) : undefined
+      return (ctx.allUnits?.() ?? []).some((u) => u.summonerId === c.id && (!tag || u.tags.includes(tag)))
+    }
     case 'hp_percent':
       return target != null && compare((target.hp / Math.max(1, target.hpMax)) * 100, cond.cmp ?? '<=', cond.n ?? 0)
     case 'phase_is':

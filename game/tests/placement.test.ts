@@ -8,7 +8,7 @@ function makeBattle(): Battle {
     id,
     lanes: new Map(lanes.map((l) => [l, { id: l, slots: Array.from({ length: 4 }, () => ({ occupant: null })) }])),
   }))
-  return { factions, zones: [], domains: [], clock: 0, luminance: 0, phase: 'day', lumOverride: null }
+  return { factions, zones: [], domains: [], clock: 0, luminance: 0, phase: 'day', lumOverride: null, meters: {} }
 }
 
 function makePlacement() {

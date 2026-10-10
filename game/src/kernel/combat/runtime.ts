@@ -75,6 +75,7 @@ class CombatRuntime implements CombatRuntimeHandle {
   private readonly ruleSlots: { field: string; value: unknown }[][] = [[], [], []]
   private domainSeq = 0
   private echoing = false
+  private readonly unsupportedKinds = new Map<string, number>()
 
   constructor(opts: RuntimeOptions) {
     this.setupData = opts.setup
@@ -122,7 +123,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       lanes: new Map<string, Lane>(laneIds.map((l) => [l, { id: l, slots: Array.from({ length: LANE_CAPACITY }, () => ({ occupant: null })) }])),
     }))
     const clock = ((this.setupData.board.clock.base % 72) + 72) % 72
-    return { factions, zones: [], domains: [], clock, luminance: 0, phase: phaseOf(clock), lumOverride: null }
+    return { factions, zones: [], domains: [], clock, luminance: 0, phase: phaseOf(clock), lumOverride: null, meters: { secrecy: 0, order: 0, fate_value: 0 } }
   }
 
   private placeUnits(): void {
@@ -143,6 +144,7 @@ class CombatRuntime implements CombatRuntimeHandle {
           { statusDefs: { statusDef: (sid) => this.lookup.statusDef(sid) }, nextStatusId: () => this.ids.next('status') },
           this.tagsOfUnit(us.defId),
         )
+        unit.unitType = us.defId ? (this.lookup.unitDef(us.defId)?.unitType ?? null) : null
         this.units.add(unit)
         this.installBehaviors(unit, us.activeSlots ?? [])
         for (const sg of us.initialStatuses ?? []) this.mountStatus(unit, sgDefId(sg) ?? '', sg as Omit<StatusGrant, 'sourceId'>)
@@ -364,6 +366,11 @@ class CombatRuntime implements CombatRuntimeHandle {
         applyTargetOverride: (u, spec) => { u.pendingTargetOverride = spec },
         writeRuleSlot: (node, caster) => this.opWriteRuleSlot(node, caster),
         modifyRuleSlot: (node, caster) => this.opModifyRuleSlot(node, caster),
+        boardMeter: (key, value, set) => {
+          const cur = this.battle.meters[key] ?? 0
+          const next = set ? value : cur + value
+          this.battle.meters[key] = Math.max(-10, Math.min(10, round2(next)))
+        },
       },
     }
   }
@@ -564,6 +571,10 @@ class CombatRuntime implements CombatRuntimeHandle {
       case 'push_back':
         target = Math.min(LANE_CAPACITY - 1, pos.index + distance)
         break
+      case 'insert_tail_cross_lane':
+      case 'param':
+        this.moveToFreeSlot(unit)
+        return
       default:
         this.unsupported(`move:${op}`)
         return
@@ -602,18 +613,52 @@ class CombatRuntime implements CombatRuntimeHandle {
       { statusDefs: { statusDef: (sid) => this.lookup.statusDef(sid) }, nextStatusId: () => this.ids.next('status') },
       def.tags ?? [],
     )
+    unit.unitType = def.unitType ?? null
+    unit.summonerId = owner.id
     this.units.add(unit)
     unit.behaviorSlots.push(this.basicAttackSlot(unit))
     const nearPos = near?.position ?? owner.position
-    const placed = this.placeAtFree(unit.id, owner.faction, nearPos?.lane ?? 'lane0')
+    const ownLanes = [...(this.battle.factions.find((x) => x.id === owner.faction)?.lanes.keys() ?? [])].sort()
+    const ordered = nearPos ? [nearPos.lane, ...ownLanes.filter((l) => l !== nearPos.lane)] : ownLanes
+    let placed = false
+    for (const lane of ordered) {
+      if (this.placeAtFree(unit.id, owner.faction, lane)) {
+        placed = true
+        break
+      }
+    }
     if (!placed) {
       this.units.remove(unit.id)
-      this.warn(`召唤失败：无可落位（${defId}）`)
+      this.warn(`召唤失败：己方半场已满（${defId}）`)
       return
     }
     this.emit({ type: 'UnitSpawned', unitId: unit.id })
     this.fireStatusTriggers(owner, 'on_spawn')
     void atk
+  }
+
+  /** 移到己方半场的第一个空位（param / insert_tail_cross_lane 的落点语义） */
+  private moveToFreeSlot(unit: CombatUnit): void {
+    const f = this.battle.factions.find((x) => x.id === unit.faction)
+    if (!f) return
+    const laneIds = [...f.lanes.keys()].sort()
+    for (const laneId of laneIds) {
+      const lane = f.lanes.get(laneId) as Lane
+      if (lane.slots.filter((s) => s.occupant != null).length >= lane.slots.length) continue
+      const idx = lane.slots.findIndex((s) => s.occupant == null)
+      this.placement.applyExternal((battle) => {
+        const l = battle.factions.find((x) => x.id === unit.faction)?.lanes.get(laneId)
+        if (!l) return battle
+        for (const other of f.lanes.values()) {
+          const o = battle.factions.find((x) => x.id === unit.faction)?.lanes.get(other.id)
+          if (!o) continue
+          for (let i = 0; i < o.slots.length; i += 1) if (o.slots[i]!.occupant === unit.id) o.slots[i] = { occupant: null }
+        }
+        l.slots[idx] = { occupant: unit.id }
+        return battle
+      })
+      return
+    }
   }
 
   private placeAtFree(unitId: UnitId, faction: FactionId, lane: string): boolean {
@@ -783,8 +828,10 @@ class CombatRuntime implements CombatRuntimeHandle {
     return this.setupData
   }
 
-  diagnostic(): { warnings: readonly string[]; unsupported: number } {
-    return { warnings: this.warnings, unsupported: this.unsupportedCount }
+  diagnostic(): { warnings: readonly string[]; unsupported: number; unsupportedKinds: Record<string, number> } {
+    const kinds: Record<string, number> = {}
+    for (const [k, v] of [...this.unsupportedKinds.entries()].sort()) kinds[k] = v
+    return { warnings: this.warnings, unsupported: this.unsupportedCount, unsupportedKinds: kinds }
   }
 
   private emit(event: DomainEvent): void {
@@ -797,6 +844,7 @@ class CombatRuntime implements CombatRuntimeHandle {
 
   private unsupported(kind: string, detail?: string): void {
     this.unsupportedCount += 1
+    this.unsupportedKinds.set(kind, (this.unsupportedKinds.get(kind) ?? 0) + 1)
     if (this.warnings.length < 50) this.warnings.push(`未实现：${kind}${detail ? ` (${detail})` : ''}`)
   }
 }

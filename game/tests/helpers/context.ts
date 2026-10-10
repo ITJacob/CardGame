@@ -12,7 +12,7 @@ const NOOP_OPS: EffectOps = {
   setLuminance: () => {}, advanceClock: () => {}, applyDomain: () => {}, placeZone: () => {},
   snapshotUnit: () => {}, restoreUnit: () => {}, echoLastSkill: () => {},
   shuffleGauges: () => {}, shuffleStatuses: () => {}, modifySkillOf: () => {},
-  applyTargetOverride: () => {}, writeRuleSlot: () => {}, modifyRuleSlot: () => {},
+  applyTargetOverride: () => {}, writeRuleSlot: () => {}, modifyRuleSlot: () => {}, boardMeter: () => {},
 }
 
 export function stubContext(

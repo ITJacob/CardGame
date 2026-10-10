@@ -308,7 +308,23 @@ push main → npm ci && vite build (game/dist)
 | P2a 内核核心闭环 + 确定性验收 | ✅ 完成（5 原语 + 内置普攻跑通 AI vs AI；同 seed 逐位相同；vitest 24 用例） |
 | P2b-1 战力类原语 + spawn/translocate 分流 + 触发点/条件 | ✅ 完成（+11 原语共 17/29；14 触发点全接；条件补 7 类；vitest 30 用例） |
 | P2b-2 界域与规则类原语（+12，共 29/29）+ zone/domain 分流 | ✅ 完成（规则槽 write/modify 仅存储、求值缓决，与设计一致；vitest 35 用例） |
-| P3 无头对战（现有 AI 已可跑，待接真实卡池） | ⏳ 未开始 |
+| P3 真实卡池无头对战 + 覆盖扫描 | ✅ 完成（22/22 途径可跑且确定性；残余降级收敛为单一数据缺口） |
 | P4–P7 | ⏳ 未开始 |
+
+### P3 真实卡池覆盖扫描（`npm run check:realrun`）
+
+对 22 途径各跑一场真卡 AI vs AI（2 队 × 3 人 × 4 技能，全库 Catalog）：
+
+- **22/22 途径可完整跑完**，事件流**全部确定性**（同 seed 两次指纹一致；1 场因 maxTicks 平局）。
+- 降级点收敛为**单一数据缺口**：`spawn` 引用了未定义的召唤单位。
+  `docs/json` 只定义 **11 个 `unitDefs`**（corpse_collector 3 / seer 2 / sleepless 1 / supplicant 5），
+  而 spawn 节点引用 **~24 个不同 `unitId`**（`unit_automaton` 16、`unit_beastling` 11、`unit_beast` 7、`unit_vermin` 7、`unit_vine` 5 …）。
+  → **内核侧无需改**；需数据侧补 `unitDefs`，或把 spawn 改用 `template`。
+- 本轮顺手修掉的内核缺口：`move:param`（落点 `empty_ally_slot`）、`move:insert_tail_cross_lane`、
+  `modify_resource` 的战场量表 `secrecy`/`order`/`fate_value`、条件 `target_unit_type` / `caster_has_summon`。
+  未支持命中从 305 降到 229（余下全为上述数据缺口）。
+- 剩余已知降级：条件 `dispelled_count`（16 次）仍按「视为真」处理。
+- **未接入**：262 张**被动卡**（`BehaviorTemplate`）在运行时尚未装配——当前只把 active 卡装入 `behaviorSlots`；
+  被动钩子（`on_tick`/`on_kill`…）自**状态**侧已可用，但**卡面 passive** 未挂到单位。这是接入真实构筑（P4）的前置。
 
 移动端为**跨期横切**要求：战场投影双朝向在 P5 交互战斗 UI 落地；编队拖拽在 P4 即需按投影层实现；PWA manifest 与安全区在 P0 骨架已预留（CSS 变量 + `viewport-fit`）。

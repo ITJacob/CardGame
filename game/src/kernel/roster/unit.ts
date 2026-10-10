@@ -44,6 +44,10 @@ export class CombatUnit implements Unit {
   detached = false
   /** take_control：被夺取时的原阵营（用于回归） */
   originalFaction: FactionId | null = null
+  /** 召唤物类别（unitDef.unitType / spawn def） */
+  unitType: string | null = null
+  /** 召唤者（spawn 时记录，供 caster_has_summon 谓词） */
+  summonerId: UnitId | null = null
   /** target_override：下一次选靶的覆盖（消费后清空） */
   pendingTargetOverride: { anchor?: string; faction?: string; sort?: string } | null = null
 

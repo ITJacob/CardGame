@@ -53,6 +53,8 @@ export interface Battle {
   luminance: number
   phase: Phase
   lumOverride: LumOverride | null
+  /** 战场级量表：secrecy / order / fate_value */
+  meters: Record<string, number>
 }
 
 export type BattlePhase = 'Created' | 'Ready' | 'Running' | 'Finished'
