@@ -46,7 +46,9 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
       const kind = skill ? '主动' : tpl ? '被动' : '?'
       const cardKind = tpl && !skill ? ('passive' as const) : ('active' as const)
       const on = available.has(cardId)
-      return `<button type="button" class="pool-card${on ? ' on' : ' off'}" data-card="${escapeHtml(cardId)}" title="${escapeHtml(name)}">
+      // 不给 title：悬停卡面时浏览器会弹原生 tooltip，跟我们的详情浮层打架。卡名本来就在
+      // 卡面信息条上，浮层里还有完整名字。
+      return `<button type="button" class="pool-card${on ? ' on' : ' off'}" data-card="${escapeHtml(cardId)}">
         ${cardFaceHtml({ cardId, name, rarity, pathwayId: skill?.pathwayId ?? tpl?.pathwayId, kind: cardKind, cost: skill?.cost?.energy, size: 'full' })}
         <span class="pool-meta"><b>${escapeHtml(name)}</b><small>${kind} · ${rarity}</small></span>
         <span class="pool-flag">${on ? '已解锁' : '未解锁'}</span>
