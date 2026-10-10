@@ -10,10 +10,39 @@ import type { CombatUnit } from '../roster/unit'
 
 const POOL_KEYS: readonly PoolKey[] = ['hp', 'energy', 'shield', 'armor', 'lost', 'lust']
 
+/** 解析 valueFrom 引用（P2b-1 支持 targetStat / statusStacks / maxStatThisBattle） */
+function resolveValueFrom(
+  ref: unknown,
+  unit: CombatUnit | null,
+  stat: string | undefined,
+  ctx: EffectContext,
+): number {
+  const key = typeof ref === 'string' ? ref : (ref && typeof ref === 'object' ? String((ref as { kind?: string }).kind ?? '') : '')
+  if (!unit) return 0
+  switch (key) {
+    case 'targetStat':
+      return stat ? unit.stat(stat) : 0
+    case 'statusStacks': {
+      const sid = String((ref as { statusId?: string })?.statusId ?? '')
+      return sid ? unit.statusStacks(sid) : 0
+    }
+    case 'maxStatThisBattle':
+      return stat ? unit.stat(stat) : 0
+    default:
+      ctx.unsupported('valueFrom', key || 'unknown')
+      return 0
+  }
+}
+
 export function handleDamage(node: EffDamage, target: CombatUnit | null, ctx: EffectContext): void {
   if (!target || target.isDead) return
   const attacker = ctx.caster
-  const base = typeof node.value === 'number' ? node.value : (attacker?.effectiveProfile.attack ?? 0)
+  const base =
+    typeof node.value === 'number'
+      ? node.value
+      : node.valueFrom !== undefined
+        ? resolveValueFrom(node.valueFrom, attacker, undefined, ctx)
+        : (attacker?.effectiveProfile.attack ?? 0)
   const raw = round2(base * (node.mul ?? 1))
   const element = node.element ?? 'physical'
   const result = resolveDamage({
@@ -27,6 +56,7 @@ export function handleDamage(node: EffDamage, target: CombatUnit | null, ctx: Ef
   })
   applyDamageResult(target, result)
   ctx.reportDamage?.(attacker?.faction ?? '', result.final)
+  ctx.onDamage?.(attacker ?? null, target, result.final)
 }
 
 export function handleHeal(node: EffHeal, target: CombatUnit | null, _ctx: EffectContext): void {
@@ -60,7 +90,7 @@ export function handleMountStatus(node: EffMountStatus, target: CombatUnit | nul
 export function handleModifyStat(node: EffModifyStat, target: CombatUnit | null, ctx: EffectContext): void {
   if (!target || target.isDead) return
   const stat = node.stat
-  const value = numeric(node.value, 0)
+  const value = typeof node.value === 'number' ? node.value : resolveValueFrom(node.valueFrom, target, stat, ctx)
   const current = target.stat(stat)
   let delta: number
   switch (node.mode) {

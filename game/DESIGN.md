@@ -306,7 +306,8 @@ push main → npm ci && vite build (game/dist)
 | P0 工程骨架 + Pages 发布 | ✅ 完成（`/CardGame/` 为主菜单，Actions 组装发布） |
 | P1 内核 IDL + 数据接入层 + 数据版本锚点 | ✅ 完成（`check:catalog` 22 途径全绿；`data:pin` / `data:status` 就位） |
 | P2a 内核核心闭环 + 确定性验收 | ✅ 完成（5 原语 + 内置普攻跑通 AI vs AI；同 seed 逐位相同；vitest 24 用例） |
-| P2b 补齐其余 24 原语 / 9 触发点 / 4 种 consumption 分流 | ⏳ 未开始 |
+| P2b-1 战力类原语 + spawn/translocate 分流 + 触发点/条件 | ✅ 完成（+11 原语共 17/29；14 触发点全接；条件补 7 类；vitest 30 用例） |
+| P2b-2 界域与规则类（domain/zone/snapshot/rule slots/luminance/clock/shuffle/modify_skill/echo/target_override） | ⏳ 未开始 |
 | P3 无头对战（现有 AI 已可跑，待接真实卡池） | ⏳ 未开始 |
 | P4–P7 | ⏳ 未开始 |
 

@@ -98,8 +98,8 @@ function settle(
 
   deps.emit({ type: 'TargetsResolved', actionId, targets: action.finalTargets })
 
-  // M：consumption 分流（P2a 仅 instant）
-  if (source.consumption !== 'instant') {
+  // M：consumption 分流（P2b-1：instant/summon/translocate 走 O；zone/domain 留 P2b-2）
+  if (source.consumption === 'zone' || source.consumption === 'domain') {
     deps.unsupported(`consumption:${source.consumption}`)
     return
   }

@@ -2,7 +2,7 @@
 // 再构造 AI vs AI 的 CombatSetup。
 import { buildCatalog } from '../../src/data/catalogBuild'
 import type { PathwayFile } from '../../src/data/schema.types'
-import type { Catalog } from '../../src/kernel/catalog/types'
+import type { Catalog, StatusDef } from '../../src/kernel/catalog/types'
 import type { CombatFacade, CombatSetup } from '../../src/kernel/combat/types'
 import type { DecisionInput } from '../../src/kernel/execution/types'
 import { CombatUnit } from '../../src/kernel/roster/unit'
@@ -135,8 +135,99 @@ export const FIXTURE: PathwayFile = {
       target: { request: { faction: 'enemy', scope: 'board', sort: 'index_asc', pickCount: 1 }, selectionMode: 'manual' },
       effects: [{ type: 'damage', value: 3, element: 'dark' }],
     },
+    {
+      id: 'fix_yank',
+      name: '拖拽',
+      kind: 'active',
+      sequence: 3,
+      sequenceName: 's3',
+      rarity: 'common',
+      axis: 'a',
+      flagship: false,
+      lore: '',
+      flavor: '',
+      describe: '',
+      tentative: false,
+      cost: { energy: 0, cooldown: 0, castTime: null },
+      reach: 'melee',
+      target: { request: { faction: 'enemy', anchor: 'enemy_front', sort: 'index_asc', pickCount: 1 }, selectionMode: 'auto' },
+      effects: [{ type: 'move', op: 'pull_forward', distance: 1 }],
+    },
+    {
+      id: 'fix_purge',
+      name: '净化',
+      kind: 'active',
+      sequence: 3,
+      sequenceName: 's3',
+      rarity: 'common',
+      axis: 'a',
+      flagship: false,
+      lore: '',
+      flavor: '',
+      describe: '',
+      tentative: false,
+      cost: { energy: 0, cooldown: 0, castTime: null },
+      reach: 'spell',
+      target: { request: { faction: 'enemy', anchor: 'enemy_front', sort: 'index_asc', pickCount: 1 }, selectionMode: 'auto' },
+      effects: [{ type: 'dispel', category: ['buff'], count: 1 }],
+    },
+    {
+      id: 'fix_siphon',
+      name: '汲取',
+      kind: 'active',
+      sequence: 3,
+      sequenceName: 's3',
+      rarity: 'common',
+      axis: 'a',
+      flagship: false,
+      lore: '',
+      flavor: '',
+      describe: '',
+      tentative: false,
+      cost: { energy: 0, cooldown: 0, castTime: null },
+      reach: 'spell',
+      target: { request: { faction: 'enemy', anchor: 'enemy_front', sort: 'index_asc', pickCount: 1 }, selectionMode: 'auto' },
+      effects: [{ type: 'drain', resource: 'hp', ratio: 0.2, healRatio: 1 }],
+    },
+    {
+      id: 'fix_summon',
+      name: '召唤',
+      kind: 'active',
+      sequence: 3,
+      sequenceName: 's3',
+      rarity: 'common',
+      axis: 'a',
+      flagship: false,
+      lore: '',
+      flavor: '',
+      describe: '',
+      tentative: false,
+      cost: { energy: 0, cooldown: 0, castTime: null },
+      reach: 'spell',
+      // summon 分流：落位由 spawn 处理器找空位
+      target: { request: { faction: 'self', anchor: 'caster', pickCount: 1 }, selectionMode: 'auto', consumption: 'summon' },
+      effects: [{ type: 'spawn', unitId: 'fix_skeleton' }],
+    },
+    {
+      id: 'fix_ward',
+      name: '守御',
+      kind: 'active',
+      sequence: 3,
+      sequenceName: 's3',
+      rarity: 'common',
+      axis: 'a',
+      flagship: false,
+      lore: '',
+      flavor: '',
+      describe: '',
+      tentative: false,
+      cost: { energy: 0, cooldown: 0, castTime: null },
+      reach: 'spell',
+      target: { request: { faction: 'self', anchor: 'caster', pickCount: 1 }, selectionMode: 'auto' },
+      effects: [{ type: 'grant_immunity', against: ['debuff'], charges: 1, duration: 10 }],
+    },
   ],
-  unitDefs: [],
+  unitDefs: [{ id: 'fix_skeleton', name: '骸骨', unitType: 'UNDEAD', base: { hp: 40, atk: 3 }, tags: [] }],
   zoneDefs: [],
   domainDefs: [],
 }
@@ -145,18 +236,20 @@ export function buildFixtureCatalog(): Catalog {
   return buildCatalog([FIXTURE]).catalog
 }
 
-/** 直接造一个单位（用于单测属性/资源/伤害链） */
+/** 直接造一个单位（用于单测属性/资源/伤害链/状态修饰） */
 export function makeUnit(
   id: string,
   faction = 'A',
   attr: { strength?: number; agility?: number; intelligence?: number } = {},
+  defs: StatusDef[] = [],
 ): CombatUnit {
+  const map = new Map(defs.map((d) => [d.id, d]))
   return new CombatUnit(
     id,
     faction,
     { strength: attr.strength ?? 1, agility: attr.agility ?? 1, intelligence: attr.intelligence ?? 1, rank: 0 },
     'male',
-    { statusDefs: { statusDef: () => undefined }, nextStatusId: (() => { let n = 0; return () => `st#${++n}` })() },
+    { statusDefs: { statusDef: (sid) => map.get(sid) }, nextStatusId: (() => { let n = 0; return () => `st#${++n}` })() },
   )
 }
 

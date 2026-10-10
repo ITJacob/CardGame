@@ -124,10 +124,15 @@ export interface PathwayFile {
   artFrameEpic?: string
   artFrameLegendary?: string
   cards: RawCard[]
-  unitDefs?: UnitDef[]
-  zoneDefs?: ZoneDef[]
-  domainDefs?: DomainDef[]
+  /** 途径级池：pathwayId 由 catalogBuild 注入，故原始文件里缺省 */
+  unitDefs?: RawUnitDef[]
+  zoneDefs?: RawZoneDef[]
+  domainDefs?: RawDomainDef[]
 }
+
+export type RawUnitDef = Omit<UnitDef, 'pathwayId'>
+export type RawZoneDef = Omit<ZoneDef, 'pathwayId'>
+export type RawDomainDef = Omit<DomainDef, 'pathwayId'>
 
 export interface PathwayEntry {
   id: string
