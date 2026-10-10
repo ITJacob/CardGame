@@ -1,7 +1,8 @@
 // P2a 测试夹具：内联一个小 PathwayFile，经 buildCatalog 编译成 Catalog，
 // 再构造 AI vs AI 的 CombatSetup。
 import { buildCatalog } from '../../src/data/catalogBuild'
-import type { PathwayFile } from '../../src/data/schema.types'
+import type { PathwayFile, RawCard } from '../../src/data/schema.types'
+import type { EffectNode } from '../../src/kernel/catalog/types'
 import type { Catalog, StatusDef } from '../../src/kernel/catalog/types'
 import type { CombatFacade, CombatSetup } from '../../src/kernel/combat/types'
 import type { DecisionInput } from '../../src/kernel/execution/types'
@@ -226,10 +227,62 @@ export const FIXTURE: PathwayFile = {
       target: { request: { faction: 'self', anchor: 'caster', pickCount: 1 }, selectionMode: 'auto' },
       effects: [{ type: 'grant_immunity', against: ['debuff'], charges: 1, duration: 10 }],
     },
+    p2b2('fix_bright', '白昼', 'spell', [{ type: 'set_luminance', value: 8, duration: 10, dispelable: true }]),
+    p2b2('fix_hasten', '加速', 'spell', [{ type: 'advance_clock', ticks: 3 }]),
+    p2b2('fix_recall', '存档', 'spell', [{ type: 'snapshot', fields: ['hp', 'gauge'], target: 'self' }], 'self'),
+    p2b2('fix_rewind', '回溯', 'spell', [{ type: 'restore_snapshot', fields: ['hp', 'gauge'], target: 'self' }], 'self'),
+    p2b2('fix_echo', '回响', 'spell', [{ type: 'echo_last_skill', potency: 0.5 }]),
+    p2b2('fix_scramble', '扰乱', 'spell', [{ type: 'gauge_shuffle', resource: 'gauge.current' }]),
+    p2b2('fix_rotate', '轮转', 'spell', [{ type: 'status_shuffle', mode: 'rotate', count: 1 }]),
+    p2b2('fix_sap', '削弱', 'spell', [{ type: 'modify_skill', skillRef: { selector: 'target' }, costDelta: { energy: 1 } }]),
+    p2b2('fix_domain', '血月', 'spell', [], 'self', 'domain'),
+    p2b2('fix_zone', '火场', 'spell', [], 'self', 'zone'),
   ],
   unitDefs: [{ id: 'fix_skeleton', name: '骸骨', unitType: 'UNDEAD', base: { hp: 40, atk: 3 }, tags: [] }],
-  zoneDefs: [],
-  domainDefs: [],
+  zoneDefs: [
+    {
+      id: 'fix_zone',
+      kind: 'hazard',
+      trigger: 'on_occupy_tick',
+      affects: 'any',
+      duration: 6,
+      effects: [{ type: 'damage', value: 1, element: 'fire' }],
+    },
+  ],
+  domainDefs: [{ id: 'fix_domain', tier: 'overlay', dispelable: true, duration: 12, durationUnit: 'tick' }],
+}
+
+/** P2b-2 卡面简写 */
+function p2b2(
+  id: string,
+  name: string,
+  reach: 'none' | 'melee' | 'thrown' | 'spell',
+  effects: unknown[],
+  faction: 'enemy' | 'self' = 'enemy',
+  consumption?: 'zone' | 'domain' | 'summon' | 'instant',
+): RawCard {
+  return {
+    id,
+    name,
+    kind: 'active',
+    sequence: 2,
+    sequenceName: 's2',
+    rarity: 'common',
+    axis: 'a',
+    flagship: false,
+    lore: '',
+    flavor: '',
+    describe: '',
+    tentative: false,
+    cost: { energy: 0, cooldown: 0, castTime: null },
+    reach,
+    target: {
+      request: { faction, anchor: faction === 'self' ? 'caster' : 'enemy_front', sort: 'index_asc', pickCount: faction === 'self' ? 1 : 2 },
+      selectionMode: 'auto',
+      ...(consumption ? { consumption } : {}),
+    },
+    effects: effects as EffectNode[],
+  }
 }
 
 export function buildFixtureCatalog(): Catalog {

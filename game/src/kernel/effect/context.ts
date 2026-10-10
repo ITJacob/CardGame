@@ -44,6 +44,20 @@ export interface EffectOps {
   grantImmunity(unit: CombatUnit, node: EffGrantImmunity): void
   damageMod(unit: CombatUnit, scope: 'dealt' | 'taken', delta: number, remaining: number | null): void
   targetability(unit: CombatUnit, untargetable: boolean, remaining: number | null): void
+  // ---- P2b-2 ----
+  setLuminance(value: number | null, delta: number | null, duration: number | null, dispelable: boolean): void
+  advanceClock(ticks: number): void
+  applyDomain(op: string, defId: string | undefined, duration: number, caster: CombatUnit | null): void
+  placeZone(caster: CombatUnit | null, defId: string | undefined, duration: number, targets: readonly CombatUnit[]): void
+  snapshotUnit(unit: CombatUnit, fields: readonly string[]): void
+  restoreUnit(unit: CombatUnit, fields: readonly string[]): void
+  echoLastSkill(unit: CombatUnit, potency: number): void
+  shuffleGauges(units: readonly CombatUnit[], resource: string): void
+  shuffleStatuses(units: readonly CombatUnit[], count: number): void
+  modifySkillOf(unit: CombatUnit, node: EffectNode): void
+  applyTargetOverride(unit: CombatUnit, spec: { anchor?: string; faction?: string; sort?: string }): void
+  writeRuleSlot(node: EffectNode, caster: CombatUnit | null): void
+  modifyRuleSlot(node: EffectNode, caster: CombatUnit | null): void
 }
 
 /** 用 EffectRef.params 覆写节点上的同名参数 */

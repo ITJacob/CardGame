@@ -1,5 +1,5 @@
 // Catalog 只读解析包装（编目上下文）。运行时只经此访问定义态。
-import type { BehaviorTemplate, Catalog, EffectNode, SkillDef, StatusDef, UnitDef } from './types'
+import type { BehaviorTemplate, Catalog, DomainDef, EffectNode, SkillDef, StatusDef, UnitDef, ZoneDef } from './types'
 
 export interface CatalogLookup {
   skillDef(id: string): SkillDef | undefined
@@ -7,6 +7,8 @@ export interface CatalogLookup {
   statusDef(id: string): StatusDef | undefined
   effectNode(id: string): EffectNode | undefined
   unitDef(id: string): UnitDef | undefined
+  domainDef(id: string): DomainDef | undefined
+  zoneDef(id: string): ZoneDef | undefined
 }
 
 export function createLookup(catalog: Catalog): CatalogLookup {
@@ -16,5 +18,7 @@ export function createLookup(catalog: Catalog): CatalogLookup {
     statusDef: (id) => catalog.statusDefs.get(id),
     effectNode: (id) => catalog.effectDefs.get(id)?.node,
     unitDef: (id) => catalog.unitDefs.get(id),
+    domainDef: (id) => catalog.domainDefs.get(id),
+    zoneDef: (id) => catalog.zoneDefs.get(id),
   }
 }

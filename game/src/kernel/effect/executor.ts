@@ -6,6 +6,7 @@ import { evaluateCondition, type ConditionContext } from '../shared/effect-condi
 import type { EffectContext } from './context'
 import * as H from './handlers'
 import * as H2 from './handlers2'
+import * as H3 from './handlers3'
 import type { CombatUnit } from '../roster/unit'
 
 type Handler = (node: EffectNode, target: CombatUnit | null, ctx: EffectContext) => void
@@ -29,6 +30,19 @@ const HANDLERS: Record<string, Handler> = {
   reveal: H2.handleReveal as unknown as Handler,
   take_control: H2.handleTakeControl as unknown as Handler,
   translocate: H2.handleTranslocate as unknown as Handler,
+  // P2b-2
+  set_luminance: H3.handleSetLuminance as unknown as Handler,
+  advance_clock: H3.handleAdvanceClock as unknown as Handler,
+  domain: H3.handleDomain as unknown as Handler,
+  snapshot: H3.handleSnapshot as unknown as Handler,
+  restore_snapshot: H3.handleRestoreSnapshot as unknown as Handler,
+  echo_last_skill: H3.handleEchoLastSkill as unknown as Handler,
+  gauge_shuffle: H3.handleGaugeShuffle as unknown as Handler,
+  status_shuffle: H3.handleStatusShuffle as unknown as Handler,
+  modify_skill: H3.handleModifySkill as unknown as Handler,
+  target_override: H3.handleTargetOverride as unknown as Handler,
+  write_rule_slot: H3.handleWriteRuleSlot as unknown as Handler,
+  modify_rule_slot: H3.handleModifyRuleSlot as unknown as Handler,
 }
 
 function conditionContext(ctx: EffectContext): ConditionContext {
