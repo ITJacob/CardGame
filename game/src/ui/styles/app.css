@@ -447,8 +447,11 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .slot {
   display: flex; flex-direction: column; align-items: center; gap: 5px;
   padding: 7px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  /* 槽宽由内容撑开，空槽没有 ◀▶✕ 会窄一截；给足最宽那一行（◀▶✕ 三格）的下限，
+     空槽与满槽、主动槽与被动槽就都一样宽了 */
+  min-width: 84px;
 }
-.slot.empty { justify-content: center; min-height: 108px; width: 62px; border-style: dashed; }
+.slot.empty { justify-content: center; min-height: 108px; border-style: dashed; }
 .slot-num { font-size: 10px; color: var(--text-dim); }
 .slot-blank { font-size: 18px; color: var(--text-dim); opacity: 0.6; }
 .slot-ops { display: flex; gap: 3px; }
@@ -457,6 +460,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
   border: 1px solid var(--border); border-radius: 5px;
   background: var(--bg-deep); color: var(--text-dim); cursor: pointer;
 }
+.slot-op.ghost { visibility: hidden; }
 .slot-op:hover { color: var(--text); border-color: var(--accent-dim); }
 .slot-op.danger:hover { color: #d98b8b; border-color: var(--warn); }
 

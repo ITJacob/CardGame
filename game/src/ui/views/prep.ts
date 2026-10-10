@@ -341,9 +341,15 @@ function slotRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): string
       slots.push(`<div class="slot empty" data-slot="${kind}:${i}"><span class="slot-num">${i + 1}</span><span class="slot-blank">空</span></div>`)
       continue
     }
+    // ◀▶✕ 三格定死。首尾槽少一个箭头，若直接省掉按钮，槽宽会跟着在 2 / 3 个按钮之间跳，
+    // ✕ 也会一行一个位置。用一个不可见占位顶住，槽宽与按钮位置就都稳了。
+    const arrow = (dir: -1 | 1, show: boolean): string =>
+      show
+        ? `<button type="button" class="slot-op" data-move="${kind}:${i}:${dir}" title="${dir < 0 ? '前移' : '后移'}">${dir < 0 ? '◀' : '▶'}</button>`
+        : `<button type="button" class="slot-op ghost" tabindex="-1" aria-hidden="true">${dir < 0 ? '◀' : '▶'}</button>`
     const ops = [
-      kind === 'active' && i > 0 ? `<button type="button" class="slot-op" data-move="${kind}:${i}:-1" title="前移">◀</button>` : '',
-      kind === 'active' && i < ids.length - 1 ? `<button type="button" class="slot-op" data-move="${kind}:${i}:1" title="后移">▶</button>` : '',
+      arrow(-1, kind === 'active' && i > 0),
+      arrow(1, kind === 'active' && i < ids.length - 1),
       `<button type="button" class="slot-op danger" data-unequip="${kind}:${i}" title="卸下">✕</button>`,
     ].join('')
     // 只有主动槽可拖：被动槽的次序在战斗里没有任何意义
