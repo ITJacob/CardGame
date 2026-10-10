@@ -1,0 +1,58 @@
+name: Deploy Pages
+
+# 组装并发布 GitHub Pages：
+#   产物根 = 游戏（Vite base /CardGame/）
+#   /CardGame/site/  = 现有 wiki（路径与原 URL 不变）
+#   /CardGame/docs/  = 数据权威源（wiki 用 ../docs/json，游戏用 ./docs/json）
+# 前置：仓库 Settings → Pages → Source 需切到 "GitHub Actions"。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: game/package-lock.json
+
+      - name: Install & build game
+        working-directory: game
+        run: npm ci && npm run build
+
+      - name: Assemble Pages artifact
+        run: |
+          mkdir -p _site
+          cp -r docs _site/docs
+          cp -r site _site/site
+          cp -r game/dist/. _site/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
