@@ -50,7 +50,7 @@ game/                          # 新增顶层；工程根 = Vite root
    │   ├─ router.ts            hash 路由（扩展自 site/js/main.js）
    │   ├─ views/               menu/roster/formation/battle/cards/leaderboard/settings/wiki*
    │   ├─ components/          tooltip·term·ast 渲染（移植自 site/js）
-   │   ├─ battleView/          CombatView 投影 → 战场 DOM
+   │   ├─ battleView/          CombatView 投影 → 战场 DOM（双朝向，见 §12）
    │   └─ styles/              复用 site/css/app.css 的 CSS 变量与 22 途径色板
    └─ main.ts
 ```
@@ -274,7 +274,32 @@ push main → npm ci && vite build (game/dist)
 
 ---
 
-## 十二、落地进度
+## 十二、移动端与朝向
+
+**结论：不锁死朝向。** 战场几何（2 阵营 × 2 路 × 4 格，`index0` 朝中线）对称可转置，**朝向是渲染投影问题，内核零改动**——`ui/battleView/` 的投影层按视口宽高比在两种朝向间切换。
+
+| 条件 | 布局 | 战场形状 |
+|---|---|---|
+| 视口横向（桌面 / 手机横屏） | 左我右敌，每方 2 路横排 × 4 格 | 8 宽 × 2 高 |
+| 视口纵向（手机竖屏） | 下我上敌，每方 2 路竖排 × 4 格 | 2 宽 × 8 高 |
+
+两者互为转置；`move` 的 `pull_forward`/`push_back`/`charge_forward` 沿 index 前进的语义，在投影里映射为「朝敌方中线」的屏幕方向即可。编队界面的拖拽复用同一投影。
+
+**投影契约**（`ui/battleView/`）：
+
+- 输入：`CombatView`（纯逻辑，含 `Coordinate`）+ 朝向枚举；
+- 输出：屏幕格位（CSS Grid 的 row/col）与「前进方向」向量；
+- 切换规则：`orientation = 视口高 > 宽 ? 'portrait' : 'landscape'`；监听 resize，纯 UI，不触内核。
+
+**移动端 HUD（竖屏基准）**：上＝敌方战场与队伍条 → 中线（tick / 回合 / 时钟）→ 下＝我方战场 + 技能手牌 + 主操作。详情/日志改「点开式」抽屉（无 hover），沿用 site `tooltip.js` 的触屏居中浮层。拖拽站位、点选目标一律用 **Pointer Events**（同时覆盖触摸与鼠标）。
+
+**PWA 与安全区**：game 端独立 `manifest.webmanifest`（standalone、可安装）；`viewport-fit=cover` + `env(safe-area-inset-*)` 适配刘海 / 小白条；不锁缩放（可访问性）。
+
+**为什么自适应而非锁一种**：锁横屏与手机竖持习惯相拗、与浏览器全屏策略冲突；锁竖屏在桌面宽屏浪费横向。自适应只多维护一套投影映射（CSS Grid 换 `grid-template-areas`），却同时覆盖桌面与手机横竖两种姿态。
+
+---
+
+## 十三、落地进度
 
 | 期 | 状态 |
 |---|---|
@@ -282,3 +307,5 @@ push main → npm ci && vite build (game/dist)
 | P1 内核 IDL + 数据接入层 + 数据版本锚点 | ✅ 完成（`check:catalog` 22 途径全绿；`data:pin` / `data:status` 就位） |
 | P2 内核实现（五上下文） | ⏳ 未开始 |
 | P3–P7 | ⏳ 未开始 |
+
+移动端为**跨期横切**要求：战场投影双朝向在 P5 交互战斗 UI 落地；编队拖拽在 P4 即需按投影层实现；PWA manifest 与安全区在 P0 骨架已预留（CSS 变量 + `viewport-fit`）。
