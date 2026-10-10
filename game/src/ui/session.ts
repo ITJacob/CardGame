@@ -19,6 +19,8 @@ export interface BattleSession {
   own: PlacedHero[]
   enemy: PlacedHero[]
   unitMeta: Map<string, UnitMeta>
+  /** 是否已把本局写入战绩（避免重渲染重复落库） */
+  recorded?: boolean
 }
 
 let current: BattleSession | null = null

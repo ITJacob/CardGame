@@ -3,6 +3,7 @@ import { renderPlaceholder } from './views/placeholder'
 import { renderSettings } from './views/settings'
 import { renderNewGame } from './views/newgame'
 import { renderBattle } from './views/battle'
+import { renderLeaderboard } from './views/leaderboard'
 
 type RenderFn = (host: HTMLElement, arg: string) => void | Promise<void>
 
@@ -15,7 +16,7 @@ const ROUTES: Record<string, RenderFn> = {
   battle: renderBattle,
   continue: placeholder('继续游戏', '本地存档恢复（P4 落地）'),
   cards: placeholder('现有卡池', '解锁职业与卡牌（P4 落地）'),
-  leaderboard: placeholder('排行榜', '本地榜单（P6 落地）'),
+  leaderboard: renderLeaderboard,
   settings: renderSettings,
 }
 
