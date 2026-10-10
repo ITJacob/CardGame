@@ -309,7 +309,10 @@ push main → npm ci && vite build (game/dist)
 | P2b-1 战力类原语 + spawn/translocate 分流 + 触发点/条件 | ✅ 完成（+11 原语共 17/29；14 触发点全接；条件补 7 类；vitest 30 用例） |
 | P2b-2 界域与规则类原语（+12，共 29/29）+ zone/domain 分流 | ✅ 完成（规则槽 write/modify 仅存储、求值缓决，与设计一致；vitest 35 用例） |
 | P3 真实卡池无头对战 + 覆盖扫描 | ✅ 完成（22/22 途径可跑且确定性；残余降级收敛为单一数据缺口） |
-| P4–P7 | ⏳ 未开始 |
+| P4 战外：英雄生成 / 卡池解锁 / 编队 | ✅ 完成（名册→CombatSetup→真卡对战闭环；vitest 42 用例） |
+| P5 交互战斗 UI + 决策点 + 日志 | ⏳ 未开始 |
+| P6 排行榜 + 设置 | ⏳ 未开始 |
+| P7 Firebase 在线匹配 | ⏳ 未开始 |
 
 ### P3 真实卡池覆盖扫描（`npm run check:realrun`）
 

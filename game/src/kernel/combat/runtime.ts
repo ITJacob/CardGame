@@ -148,6 +148,7 @@ class CombatRuntime implements CombatRuntimeHandle {
         this.units.add(unit)
         this.installBehaviors(unit, us.activeSlots ?? [])
         this.installPassives(unit, us.passiveSlots ?? [])
+        for (const m of us.initialModifiers ?? []) unit.provenance.apply(m.stat, m.value, 'constitution')
         for (const sg of us.initialStatuses ?? []) this.mountStatus(unit, sgDefId(sg) ?? '', sg as Omit<StatusGrant, 'sourceId'>)
         assigned.push({ faction: fs.id, lane: us.coordinate.lane, index: us.coordinate.index, id })
       }
