@@ -67,7 +67,8 @@ export function enableHoverCard(host: HTMLElement, opts: HoverCardOpts): void {
     if (!html) return
     if (!pop || !pop.isConnected) {
       pop = document.createElement('div')
-      pop.className = 'card-pop'
+      // card-detail 是与放大视图 .zoom-tip 共用的正文样式（.cp-* 都挂在它下面）
+      pop.className = 'card-pop card-detail'
       pop.setAttribute('role', 'tooltip')
       pop.style.display = 'none'
       document.body.append(pop)

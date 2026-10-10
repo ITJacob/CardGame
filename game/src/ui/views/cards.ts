@@ -1,7 +1,10 @@
-// 现有卡池：解锁职业 / 解锁卡牌。左职业列表，右该职业卡面网格。
+// 现有卡池：解锁职业 / 锁定卡牌。左职业列表，右该职业卡面网格。
+// 交互：点卡面 = 放大居中看大图（大图上 hover 出详情）；hover 时右上角浮出锁标，点锁标
+// 才是锁定/解锁。详情浮层（hover 卡面 450ms）保留。
 import { subBarHtml, escapeHtml } from '../components/chrome'
 import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
 import { enableHoverCard, hideCardPop } from '../hover'
+import { hideCardZoom, openCardZoom } from '../zoom'
 import { getCatalog } from '../catalog'
 import { loadProfile, saveProfile } from '../profile'
 import { availableCardSet, toggleCardUnlock, toggleClassUnlock } from '../../meta/progression'
@@ -18,6 +21,7 @@ export function renderCards(host: HTMLElement, arg: string): void {
 
 function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
   hideCardPop() // 重绘不产生鼠标事件，浮层要手动收
+  hideCardZoom() // 放大视图挂在 body 上，重绘不会带走它（路由变化也自会收，这里是兜底）
   const profile = loadProfile()
   const available = availableCardSet(profile, catalog)
   const classIds = [...catalog.classDefs.keys()].sort()
@@ -45,22 +49,27 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
       const rarity = skill?.rarity ?? tpl?.rarity ?? 'common'
       const cardKind = tpl && !skill ? ('passive' as const) : ('active' as const)
       const on = available.has(cardId)
-      // 卡面本身就是按钮：外面不再套一层带 padding/背景的面板框，也不在卡下重复名字与
-      // 「被动 · common / 已解锁」——名字在卡面信息条上，其余细节在 hover 浮层里。
-      // 状态只剩右上角一个锁标 + 整张卡置灰。不给 title：原生 tooltip 会跟浮层打架。
-      return cardFaceHtml({
-        cardId,
-        name,
-        rarity,
-        pathwayId: skill?.pathwayId ?? tpl?.pathwayId,
-        kind: cardKind,
-        cost: skill?.cost?.energy,
-        size: 'full',
-        as: 'button',
-        attrs: `aria-pressed="${on}"`,
-        corner: on ? '' : '🔒',
-        dim: !on,
-      })
+      // 卡面即按钮：点它是「放大看」，不是「解锁」。解锁改由 hover 时浮出的右上角锁标负责
+      // ——两个点击目标不能嵌套（button 里塞 button 是非法结构，解析器会拆），所以在外面
+      // 留一个零外观的定位壳 .card-cell 让锁标与卡面做兄弟。
+      // 不给 title：原生 tooltip 会跟详情浮层打架。
+      return `<div class="card-cell">
+        ${cardFaceHtml({
+          cardId,
+          name,
+          rarity,
+          pathwayId: skill?.pathwayId ?? tpl?.pathwayId,
+          kind: cardKind,
+          cost: skill?.cost?.energy,
+          size: 'full',
+          as: 'button',
+          attrs: `data-open="${escapeHtml(cardId)}"`,
+          dim: !on,
+        })}
+        <button type="button" class="card-lock" data-lock="${escapeHtml(cardId)}" aria-pressed="${!on}" aria-label="锁定">
+          <span aria-hidden="true">${on ? '🔓' : '🔒'}</span>
+        </button>
+      </div>`
     })
     .join('')
 
@@ -97,12 +106,38 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
     sync(host, catalog, current)
   })
 
-  // 卡面即按钮，整页只有它带 data-card（外层已无包裹元素），点一次翻一次。
-  host.querySelectorAll<HTMLElement>('.pool-grid [data-card]').forEach((el) => {
+  // 点卡面 = 放大居中看大图（解锁是锁标的事，见 openZoom 上方注释）
+  host.querySelectorAll<HTMLElement>('.pool-grid [data-open]').forEach((el) => {
+    el.addEventListener('click', () => openZoom(catalog, el.dataset.open ?? ''))
+  })
+
+  host.querySelectorAll<HTMLElement>('.pool-grid [data-lock]').forEach((el) => {
     el.addEventListener('click', () => {
-      saveProfile(toggleCardUnlock(loadProfile(), catalog, el.dataset.card ?? ''))
+      saveProfile(toggleCardUnlock(loadProfile(), catalog, el.dataset.lock ?? ''))
       sync(host, catalog, current)
     })
+  })
+}
+
+/** 放大居中看大图；详情在大图上 hover 才出（.zoom-stage:hover 控制） */
+function openZoom(catalog: Catalog, cardId: string): void {
+  const skill = catalog.skillDefs.get(cardId)
+  const tpl = catalog.behaviorTemplates.get(cardId)
+  if (!skill && !tpl) return
+  const detail = cardDetailHtml(catalog, cardId)
+  if (!detail) return
+  hideCardPop() // 卡片浮层跟放大视图不该同时在
+  openCardZoom({
+    cardHtml: cardFaceHtml({
+      cardId,
+      name: skill?.name ?? tpl?.name ?? cardId,
+      rarity: skill?.rarity ?? tpl?.rarity,
+      pathwayId: skill?.pathwayId ?? tpl?.pathwayId,
+      kind: tpl && !skill ? 'passive' : 'active',
+      cost: skill?.cost?.energy,
+      size: 'zoom',
+    }),
+    detailHtml: detail,
   })
 }
 
@@ -119,8 +154,14 @@ function sync(host: HTMLElement, catalog: Catalog, current: string): void {
   const available = availableCardSet(profile, catalog)
   const classIds = [...catalog.classDefs.keys()].sort()
 
-  host.querySelectorAll<HTMLElement>('.pool-grid [data-card]').forEach((el) => {
-    applyLockState(el, available.has(el.dataset.card ?? ''))
+  host.querySelectorAll<HTMLElement>('.pool-grid .card-cell').forEach((cell) => {
+    const unlocked = available.has(cell.querySelector<HTMLElement>('[data-open]')?.dataset.open ?? '')
+    cell.querySelector('.card-face')?.classList.toggle('dim', !unlocked)
+    const lock = cell.querySelector<HTMLButtonElement>('.card-lock')
+    if (lock) {
+      lock.setAttribute('aria-pressed', String(!unlocked))
+      lock.innerHTML = `<span aria-hidden="true">${unlocked ? '🔓' : '🔒'}</span>`
+    }
   })
 
   host.querySelectorAll<HTMLElement>('.cls-row[data-cls]').forEach((el) => {
@@ -139,15 +180,6 @@ function sync(host: HTMLElement, catalog: Catalog, current: string): void {
 
   const hint = host.querySelector<HTMLElement>('#pool-hint')
   if (hint) hint.innerHTML = hintHtml(profile, catalog.classDefs.get(current)?.knownSkills ?? [], classIds, available)
-}
-
-/** 未解锁 = 置灰 + 右上角 🔒；已解锁 = 原样。三处状态必须同进同退（测试按这条断言） */
-function applyLockState(btn: HTMLElement, unlocked: boolean): void {
-  btn.setAttribute('aria-pressed', String(unlocked))
-  btn.classList.toggle('dim', !unlocked)
-  const corner = btn.querySelector('.card-corner')
-  if (unlocked) corner?.remove()
-  else if (!corner) btn.insertAdjacentHTML('beforeend', '<span class="card-corner">🔒</span>')
 }
 
 function hintHtml(profile: ReturnType<typeof loadProfile>, known: string[], classIds: string[], available: Set<string>): string {

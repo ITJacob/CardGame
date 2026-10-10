@@ -351,7 +351,7 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 /* 置灰：未解锁 / 槽位已满。只降透明度，hover 详情浮层照常弹 */
 .card-face.dim { opacity: 0.5; }
 .card-face.dim:hover { opacity: 0.75; }
-/* 右上角角标：未解锁 🔒 / 已装备 ✓。排在边框层之后绘制，不会被 screen 混色吃掉 */
+/* 右上角角标：已装备 ✓。排在边框层之后绘制，不会被 screen 混色吃掉 */
 .card-corner {
   position: absolute; top: 3px; right: 3px; z-index: 3;
   min-width: 15px; height: 15px; padding: 0 3px; border-radius: 999px;
@@ -361,6 +361,25 @@ button.card-face[aria-disabled="true"] { cursor: default; }
   text-shadow: 0 1px 2px #000; pointer-events: none;
 }
 .card-face.full .card-corner { min-width: 18px; height: 18px; font-size: 12px; }
+
+/*
+ * 卡池格子：卡面是「放大看」的按钮，锁标是另一个按钮——两个点击目标不能嵌套（button 里
+ * 套 button 是非法结构，解析器会拆开），所以外面留一个零外观的定位壳让它们做兄弟。
+ */
+.card-cell { position: relative; }
+.card-lock {
+  position: absolute; top: 3px; right: 3px; z-index: 4;
+  display: flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 3px; border-radius: 999px;
+  font: inherit; font-size: 11px; line-height: 1;
+  background: rgba(8, 10, 14, 0.78); border: 1px solid var(--border); color: var(--text);
+  cursor: pointer;
+  /* 平时收起来：不然整个网格挂满锁标，也挡住卡面那一下的点击 */
+  opacity: 0; pointer-events: none; transition: opacity 0.12s linear;
+}
+.card-cell:hover .card-lock, .card-cell:focus-within .card-lock { opacity: 1; pointer-events: auto; }
+.card-lock:hover { border-color: var(--accent); }
+.card-lock[aria-pressed="true"] { color: var(--accent); border-color: var(--accent-dim); }
 
 .decision {
   position: sticky; bottom: 0; z-index: 5;
@@ -388,14 +407,56 @@ button.card-face[aria-disabled="true"] { cursor: default; }
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
   color: var(--text); font-size: 12.5px; line-height: 1.5;
 }
-.card-pop h4 { margin: 0 0 6px; font-size: 14px; color: var(--accent); }
-.card-pop .cp-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
-.card-pop .cp-badge { font-size: 10.5px; padding: 1px 6px; border: 1px solid var(--border); border-radius: 999px; color: var(--text-dim); }
-.card-pop .cp-desc { margin: 0 0 8px; }
-.card-pop .cp-kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 0 0 8px; font-size: 12px; }
-.card-pop .cp-kv dt { color: var(--text-dim); }
-.card-pop .cp-kv dd { margin: 0; }
-.card-pop .cp-flavor { margin: 0; font-style: italic; color: var(--text-dim); }
+/* .card-detail = 详情正文的共用样式，浮层与放大视图的 .zoom-tip 共用同一份排版 */
+.card-detail h4 { margin: 0 0 6px; font-size: 14px; color: var(--accent); }
+.card-detail .cp-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.card-detail .cp-badge { font-size: 10.5px; padding: 1px 6px; border: 1px solid var(--border); border-radius: 999px; color: var(--text-dim); }
+.card-detail .cp-desc { margin: 0 0 8px; }
+.card-detail .cp-kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 0 0 8px; font-size: 12px; }
+.card-detail .cp-kv dt { color: var(--text-dim); }
+.card-detail .cp-kv dd { margin: 0; }
+.card-detail .cp-flavor { margin: 0; font-style: italic; color: var(--text-dim); }
+
+/* ---------- 卡面放大视图 ---------- */
+/* 点卡面 → 居中放大；在大图上 hover 才浮出右侧详情。z-index 30：高过详情浮层(15)与结算(20) */
+body.zoom-open { overflow: hidden; }
+.card-zoom {
+  position: fixed; inset: 0; z-index: 30; overflow: auto;
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  background: rgba(6, 7, 10, 0.8); outline: none;
+}
+.zoom-stage { position: relative; display: flex; align-items: center; }
+/* 放大档卡面：高度撑满视口的六成上下，宽度按 3:4 走，与边框图同比例不裁 */
+.card-face.zoom { width: auto; height: min(62vh, 520px); aspect-ratio: 3 / 4; border-radius: 12px; }
+.card-face.zoom .card-info { padding: 8px 12px 10px; font-size: 22px; gap: 6px; }
+.card-face.zoom .noart-glyph { font-size: 84px; }
+.zoom-tip {
+  position: absolute; left: calc(100% + 18px); top: 0; width: 320px;
+  max-height: min(62vh, 520px); overflow: auto;
+  padding: 14px 16px; border-radius: 12px;
+  background: rgba(22, 24, 29, 0.97); border: 1px solid var(--accent-dim);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  color: var(--text); font-size: 13px; line-height: 1.55;
+  opacity: 0; pointer-events: none; transition: opacity 0.15s linear;
+}
+/* hover 卡面浮出；指针移到详情上也算（所以 pointer-events 跟着一起开，长文才读得完） */
+.zoom-stage:hover .zoom-tip { opacity: 1; pointer-events: auto; }
+.zoom-tip h4 { font-size: 17px; }
+.zoom-close {
+  position: absolute; top: 14px; right: 16px; z-index: 1;
+  width: 34px; height: 34px; border-radius: 999px;
+  font: inherit; font-size: 15px; line-height: 1;
+  background: var(--panel); border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
+}
+.zoom-close:hover { color: var(--text); border-color: var(--accent-dim); }
+/* 右边放不下详情就改放卡下（纵向居中会挤，所以靠上对齐） */
+@media (max-width: 1000px) {
+  .card-zoom { align-items: flex-start; }
+  .zoom-tip {
+    left: 50%; top: calc(100% + 14px); transform: translateX(-50%);
+    width: min(86vw, 420px); max-height: none;
+  }
+}
 
 /* ---------- 新游戏 ---------- */
 .newgame { max-width: 760px; margin: 0 auto; padding: 20px 18px 60px; }
