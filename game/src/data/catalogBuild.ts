@@ -184,6 +184,11 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
         name: card.name,
         rarity: card.rarity,
         axis: card.axis,
+        // 面向玩家的文案：卡面详情浮层用，不参与战斗计算（战斗只认 effects/triggers）
+        describe: card.describe,
+        sequence: card.sequence,
+        sequenceName: card.sequenceName,
+        flavor: card.flavor,
         tags: card.tags,
         reach: card.reach,
       }

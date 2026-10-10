@@ -1,6 +1,7 @@
 // 现有卡池：解锁职业 / 解锁卡牌。左职业列表，右该职业卡面网格。
 import { subBarHtml, escapeHtml } from '../components/chrome'
-import { cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { enableHoverCard, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
 import { loadProfile, saveProfile } from '../profile'
 import { availableCardSet, toggleCardUnlock, toggleClassUnlock } from '../../meta/progression'
@@ -16,6 +17,7 @@ export function renderCards(host: HTMLElement, arg: string): void {
 }
 
 function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
+  hideCardPop() // 重绘不产生鼠标事件，浮层要手动收
   const profile = loadProfile()
   const available = availableCardSet(profile, catalog)
   const classIds = [...catalog.classDefs.keys()].sort()
@@ -42,9 +44,10 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
       const name = skill?.name ?? tpl?.name ?? cardId
       const rarity = skill?.rarity ?? tpl?.rarity ?? 'common'
       const kind = skill ? '主动' : tpl ? '被动' : '?'
+      const cardKind = tpl && !skill ? ('passive' as const) : ('active' as const)
       const on = available.has(cardId)
-      return `<button type="button" class="pool-card${on ? ' on' : ' off'}" data-card="${escapeHtml(cardId)}" title="${escapeHtml(cardId)}">
-        ${cardFaceHtml({ cardId, name, rarity, compact: true })}
+      return `<button type="button" class="pool-card${on ? ' on' : ' off'}" data-card="${escapeHtml(cardId)}" title="${escapeHtml(name)}">
+        ${cardFaceHtml({ cardId, name, rarity, pathwayId: skill?.pathwayId ?? tpl?.pathwayId, kind: cardKind, cost: skill?.cost?.energy, size: 'full' })}
         <span class="pool-meta"><b>${escapeHtml(name)}</b><small>${kind} · ${rarity}</small></span>
         <span class="pool-flag">${on ? '已解锁' : '未解锁'}</span>
       </button>`
@@ -69,6 +72,10 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
     </main>`
 
   hydrateArt(host)
+  enableHoverCard(host, {
+    resolve: (el) => el.closest<HTMLElement>('.card-face'),
+    render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
+  })
 
   host.querySelectorAll<HTMLElement>('[data-cls]').forEach((el) => {
     el.addEventListener('click', () => {
@@ -81,7 +88,9 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
     draw(host, catalog, current)
   })
 
-  host.querySelectorAll<HTMLElement>('[data-card]').forEach((el) => {
+  // 只认外层的 .pool-card 按钮：卡面 figure 上也带着 data-card，若用裸 [data-card] 会同时命中
+  // 两层，一次点击触发两次 toggleCardUnlock（净效果 = 没解锁），等于按钮失灵。
+  host.querySelectorAll<HTMLElement>('.pool-card[data-card]').forEach((el) => {
     el.addEventListener('click', () => {
       saveProfile(toggleCardUnlock(loadProfile(), catalog, el.dataset.card ?? ''))
       draw(host, catalog, current)

@@ -270,34 +270,72 @@ a { color: inherit; text-decoration: none; }
 
 .roster { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px; }
 .roster summary { cursor: pointer; font-size: 13px; color: var(--accent); }
-.roster-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid var(--border); }
+.roster-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
 .roster-avatar { font-size: 18px; }
 .roster-name { font-size: 12px; min-width: 80px; }
-.roster-cards { display: flex; gap: 5px; flex-wrap: wrap; }
+/* 战斗侧栏固定 320px，4 张 compact 卡（4×60+15=255）放不进与头像同行的余量，故独占一行 */
+.roster-cards { display: flex; gap: 5px; flex-wrap: wrap; flex: 1 0 100%; }
 
-.card-face { position: relative; width: 62px; height: 82px; border-radius: 6px; overflow: hidden; background: #101216; display: block; margin: 0; }
-.card-face.compact { width: 46px; height: 62px; }
-.card-face.r-common { box-shadow: inset 0 0 0 1px #6b7280; }
-.card-face.r-uncommon { box-shadow: inset 0 0 0 1px #5aa06a; }
-.card-face.r-rare { box-shadow: inset 0 0 0 1px #4a7fc8; }
-.card-face.r-epic { box-shadow: inset 0 0 0 1px #8a5ac8; }
-.card-face.r-legendary { box-shadow: inset 0 0 0 1px var(--accent); }
-.card-art { width: 100%; height: 100%; object-fit: cover; display: block; }
-.card-fallback {
-  position: absolute; inset: 0; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 3px; text-align: center;
-  background: linear-gradient(160deg, #22262e, #14161b); padding: 3px;
-}
-.card-emoji { font-size: 18px; }
-.card-name { font-size: 9px; color: var(--text-dim); line-height: 1.15; }
 /*
- * hydrateArt 用 hidden 属性在「真图 ↔ 占位块」之间切。但 [hidden] 只是 UA 样式表里的
- * display:none，上面两条作者规则（.card-art 的 display:block、.card-fallback 的
- * display:flex）优先级更高，把它盖掉了 —— 于是占位块永远浮在已加载的卡图上，卡图
- * 一张也看不见。这里把 hidden 的语义还回去。
+ * 技能卡面：分层（自下而上）= 无图底 / 卡图 / 底部压暗 / 稀有度边框(叠层) / 信息条。
+ * 3:4 两档：compact 60×80（默认）、full 96×128 —— 与边框图 1152×1536 同比例，cover 不裁。
  */
-.card-art[hidden],
-.card-fallback[hidden] { display: none; }
+.card-face {
+  position: relative; isolation: isolate; /* screen 混色只在本卡内合成，不外溢到页面 */
+  width: 60px; height: 80px; border-radius: 6px; overflow: hidden;
+  background: #101216; display: block; margin: 0; user-select: none;
+}
+.card-face.full { width: 96px; height: 128px; }
+
+/* 无图底：832 张卡只有 34 张有图，这层是常态，得当一张设计过的卡 */
+.card-noart {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, #22262e, #14161b);
+  opacity: 0; transition: opacity .15s linear;
+}
+.card-face.no-art .card-noart { opacity: 1; }
+.noart-glyph { font-size: 22px; opacity: .5; }
+.card-face.full .noart-glyph { font-size: 34px; }
+
+.card-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-art[hidden] { display: none; }
+
+/* 只压底部：给信息条留底，顶部保留卡面 */
+.card-shade {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, rgba(6, 7, 10, .94) 0%, rgba(6, 7, 10, .5) 30%, rgba(6, 7, 10, 0) 55%);
+}
+
+/* 边框层：黑底线框 PNG，screen 吃掉黑底、只留亮线 */
+.card-frame {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; pointer-events: none;
+  mix-blend-mode: screen; opacity: .82;
+}
+
+/* 稀有度：有边框时靠框线区分；边框缺失或降级时退回内描边色环 */
+.card-face.r-common { --rf: #6b7280; }
+.card-face.r-uncommon { --rf: #5aa06a; }
+.card-face.r-rare { --rf: #4a7fc8; }
+.card-face.r-epic { --rf: #8a5ac8; }
+.card-face.r-legendary { --rf: var(--accent); }
+.card-face.no-frame, .card-face.frame-degraded { box-shadow: inset 0 0 0 1px var(--rf); }
+
+/* 信息条：名字 / ⚡费用 / 主·被 —— 常驻三项 */
+.card-info {
+  position: absolute; left: 0; right: 0; bottom: 0; pointer-events: none;
+  display: flex; align-items: baseline; gap: 3px;
+  padding: 2px 4px 3px; font-size: 8px; line-height: 1.2;
+}
+.card-face.full .card-info { padding: 3px 6px 4px; font-size: 10.5px; }
+.ci-name {
+  flex: 1; min-width: 0; color: var(--text); font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-shadow: 0 1px 2px #000;
+}
+.ci-cost { flex: none; color: var(--accent); text-shadow: 0 1px 2px #000; }
+.ci-kind { flex: none; color: var(--text-dim); }
+.card-face.k-active .ci-kind { color: var(--accent); }
 
 .decision {
   position: sticky; bottom: 0; z-index: 5;
@@ -314,6 +352,25 @@ a { color: inherit; text-decoration: none; }
 .ended { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(10, 11, 14, 0.75); z-index: 20; }
 .ended-card { background: var(--panel); border: 1px solid var(--accent-dim); border-radius: 12px; padding: 28px 36px; text-align: center; }
 .ended-card h2 { margin: 0 0 16px; color: var(--accent); }
+
+/* ---------- 卡面详情浮层 ---------- */
+/* z-index 15：高过吸顶栏(10)、低于结算模态(20)；pointer-events:none 保证它既不挡卡、
+   也不会因为浮层自己盖住指针而引发 mouseout/mouseover 抖动。 */
+.card-pop {
+  position: fixed; z-index: 15; max-width: 300px; pointer-events: none;
+  padding: 12px 14px; border-radius: 10px;
+  background: var(--panel); border: 1px solid var(--accent-dim);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  color: var(--text); font-size: 12.5px; line-height: 1.5;
+}
+.card-pop h4 { margin: 0 0 6px; font-size: 14px; color: var(--accent); }
+.card-pop .cp-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.card-pop .cp-badge { font-size: 10.5px; padding: 1px 6px; border: 1px solid var(--border); border-radius: 999px; color: var(--text-dim); }
+.card-pop .cp-desc { margin: 0 0 8px; }
+.card-pop .cp-kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 0 0 8px; font-size: 12px; }
+.card-pop .cp-kv dt { color: var(--text-dim); }
+.card-pop .cp-kv dd { margin: 0; }
+.card-pop .cp-flavor { margin: 0; font-style: italic; color: var(--text-dim); }
 
 /* ---------- 新游戏 ---------- */
 .newgame { max-width: 760px; margin: 0 auto; padding: 20px 18px 60px; }
@@ -399,7 +456,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .pool-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .pool-card {
   display: flex; flex-direction: column; align-items: center; gap: 5px;
-  font: inherit; padding: 8px; width: 108px;
+  font: inherit; padding: 8px; width: 116px; /* full 档卡面 96 + padding 16 + 边框 2 */
   background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
   color: var(--text); cursor: pointer;
 }
@@ -469,11 +526,11 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .slot {
   display: flex; flex-direction: column; align-items: center; gap: 5px;
   padding: 7px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
-  /* 槽宽由内容撑开：满槽最宽的是卡面（定宽 46 + 左右 padding 14 = 60），
+  /* 槽宽由内容撑开：满槽最宽的是卡面（compact 定宽 60 + 左右 padding 14 + 边框 2 = 76），
      空槽只剩序号与「空」，给个下限兜到同宽。 */
-  min-width: 62px;
+  min-width: 76px;
 }
-.slot.empty { justify-content: center; min-height: 108px; border-style: dashed; }
+.slot.empty { justify-content: center; min-height: 140px; border-style: dashed; }
 .slot-num { font-size: 10px; color: var(--text-dim); }
 .slot-blank { font-size: 18px; color: var(--text-dim); opacity: 0.6; }
 /* 槽底只剩一个 ✕：槽是 flex 列 + align-items:center，单独一个子元素就居中 */
@@ -488,7 +545,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 
 .prep .pool-card { cursor: pointer; }
 .prep .pool-card.on { cursor: default; }
-.prep .pool-card:disabled { cursor: default; }
+.prep .pool-card.off { cursor: default; }
 
 /* ---------- 拖拽（阵型摆位 + 主动槽调序） ---------- */
 /* touch-action:none 让触屏上的拖动不被页面滚动抢走；拖源才有，不影响别处滚动 */
@@ -514,5 +571,5 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 @media (max-width: 760px) {
   .prep { padding: 14px 12px 48px; }
   .slot-row { gap: 8px; }
-  .prep .pool-card { width: 92px; }
+  /* 卡池卡不再收窄：92px 装不下 full 档的 96px 卡面 */
 }

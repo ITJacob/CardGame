@@ -1,8 +1,9 @@
 // 在线对战大厅（P7）：生成名册 → 整备（可选）→ 建房/加入/快速匹配 → 等对手 → 进 #/battle。
 // 传输走 Firestore（firebaseChannel）；数据版本不符一律拒绝开局（§3.4 铁律 2）。
 import { subBarHtml, escapeHtml } from '../components/chrome'
-import { hydrateArt } from '../components/cardFace'
+import { cardDetailHtml, hydrateArt } from '../components/cardFace'
 import { heroRowHtml } from '../components/hero'
+import { enableHoverCard, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
 import { setSession, type UnitMeta } from '../session'
 import { loadProfile } from '../profile'
@@ -68,6 +69,12 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
     </main>`
 
   hydrateArt(host)
+  // 重绘不产生鼠标事件，先手动收；enableHoverCard 幂等（WeakMap 自动摘旧）
+  hideCardPop()
+  enableHoverCard(host, {
+    resolve: (el) => el.closest<HTMLElement>('.card-face'),
+    render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
+  })
 
   const status = (msg: string, cls = ''): void => {
     const el = document.getElementById('online-status')

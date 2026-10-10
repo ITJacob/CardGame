@@ -4,7 +4,8 @@
 //   联机 lockstep —— MatchRunner 自动推进，本侧决策走 MatchRunner.publish，
 //                    对侧决策只等待（绝不本地回退，P7_PLAN §3.4 铁律 1）。
 import { escapeHtml, subBarHtml } from '../components/chrome'
-import { avatarEmoji, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { avatarEmoji, cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { enableHoverCard, hideCardPop } from '../hover'
 import { getSession } from '../session'
 import { gridSpec, laneIndexer, orientationOf, type Orientation } from '../battle/projection'
 import type { DomainEvent } from '../../kernel/combat/types'
@@ -80,6 +81,7 @@ export function renderBattle(host: HTMLElement): void {
     // resize 转发与联机 MatchRunner 的 onUpdate 都会在本视图被顶掉后继续触发，
     // 若照画就会把棋盘重绘到当前视图上（整备页/大厅被战斗画面盖掉）。
     if (!onBattleRoute()) return
+    hideCardPop() // 同上：重绘不产生鼠标事件
     const runner = s.online?.runner
     const myTurn = pending != null && casterFaction(s, pending.caster) === myFactionOf(s)
     /** 本侧该决策且未提交 → 板面高亮 tile 可点选 */
@@ -135,6 +137,13 @@ export function renderBattle(host: HTMLElement): void {
   refresh()
   activeRefresh = refresh
   hookResize()
+
+  // 悬停浮层只挂一次：refresh 每 tick 都会重画，挂进去等于每帧重绑。
+  // 事件委托在 host 上，重画整块 DOM 也不影响它（同 wireDrag 的思路）。
+  enableHoverCard(host, {
+    resolve: (el) => el.closest<HTMLElement>('.card-face'),
+    render: (face) => (face.dataset.card ? cardDetailHtml(s.catalog, face.dataset.card) : null),
+  })
 }
 
 function myFactionOf(s: BattleSession): FactionId {
@@ -239,7 +248,15 @@ function rosterPanelHtml(s: BattleSession): string {
       const cards = h.activeSkillIds
         .map((id) => {
           const def = s.catalog.skillDefs.get(id)
-          return cardFaceHtml({ cardId: id, name: def?.name ?? id, rarity: def?.rarity, compact: true })
+          return cardFaceHtml({
+            cardId: id,
+            name: def?.name ?? id,
+            rarity: def?.rarity,
+            pathwayId: def?.pathwayId,
+            kind: 'active',
+            cost: def?.cost?.energy,
+            size: 'compact',
+          })
         })
         .join('')
       return `<div class="roster-row">

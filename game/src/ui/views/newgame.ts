@@ -1,7 +1,8 @@
 // 新游戏：生成名册 → 预览 → 整备（可选）→ 开战。
 import { subBarHtml, escapeHtml } from '../components/chrome'
-import { hydrateArt } from '../components/cardFace'
+import { cardDetailHtml, hydrateArt } from '../components/cardFace'
 import { heroRowHtml } from '../components/hero'
+import { enableHoverCard, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
 import { setSession, type UnitMeta } from '../session'
 import { ensureDraft, getDraft, rerollDraft } from '../draft'
@@ -57,6 +58,13 @@ function render(host: HTMLElement, catalog: Catalog, profile: Profile): void {
     </main>`
 
   hydrateArt(host)
+  // 重绘不产生鼠标事件，先手动收；enableHoverCard 幂等（WeakMap 自动摘旧），
+  // 所以跟随 render 反复调用不会越积越多。
+  hideCardPop()
+  enableHoverCard(host, {
+    resolve: (el) => el.closest<HTMLElement>('.card-face'),
+    render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
+  })
   host.querySelectorAll<HTMLElement>('[data-skill-view]').forEach((el) =>
     el.addEventListener('click', () => {
       skillView = el.dataset.skillView === 'passive' ? 'passive' : 'active'

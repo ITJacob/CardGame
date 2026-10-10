@@ -367,6 +367,13 @@ export interface SkillDef {
   name: string
   rarity: Rarity
   axis: string
+  /** 面向玩家的效果句（JSON `describe`）；卡面详情浮层用，不参与任何战斗计算 */
+  describe?: string
+  /** 序列号 / 序列名（卡面详情浮层用） */
+  sequence?: number
+  sequenceName?: string
+  /** 风味文本（卡面详情浮层用） */
+  flavor?: string
   cost?: { energy: number; cooldown: number; castTime: number | null }
   reach?: Reach
   targetSpec?: TargetSpec
@@ -389,6 +396,13 @@ export interface BehaviorTemplate {
   name: string
   rarity: Rarity
   axis: string
+  /** 面向玩家的效果句（JSON `describe`）；卡面详情浮层用，不参与任何战斗计算 */
+  describe?: string
+  /** 序列号 / 序列名（卡面详情浮层用） */
+  sequence?: number
+  sequenceName?: string
+  /** 风味文本（卡面详情浮层用） */
+  flavor?: string
   /** 触发点闭集（14 值） */
   hook?: string[]
   triggers?: TriggerDef[]

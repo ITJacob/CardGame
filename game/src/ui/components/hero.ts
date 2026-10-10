@@ -12,7 +12,19 @@ export type HeroLike = Hero & { coordinate?: Coordinate }
 export function heroRowHtml(hero: HeroLike, catalog: Catalog, kind: SlotKind = 'active'): string {
   const ids = kind === 'active' ? hero.activeSkillIds : hero.passiveSkillIds
   const cards = ids
-    .map((id) => cardFaceHtml({ cardId: id, name: catalog.skillDefs.get(id)?.name ?? id, rarity: catalog.skillDefs.get(id)?.rarity, compact: true }))
+    .map((id) => {
+      const def = catalog.skillDefs.get(id)
+      const tpl = catalog.behaviorTemplates.get(id)
+      return cardFaceHtml({
+        cardId: id,
+        name: def?.name ?? tpl?.name ?? id,
+        rarity: def?.rarity ?? tpl?.rarity,
+        pathwayId: def?.pathwayId ?? tpl?.pathwayId,
+        kind,
+        cost: def?.cost?.energy,
+        size: 'compact',
+      })
+    })
     .join('')
   const combo = `${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智`
   const coord = hero.coordinate ? ` · ${escapeHtml(hero.coordinate.lane)}#${hero.coordinate.index}` : ''

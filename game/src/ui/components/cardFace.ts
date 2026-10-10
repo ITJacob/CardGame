@@ -1,10 +1,34 @@
-// 技能卡面：优先用 web 端已有卡图（site/assets/cards/<cardId>.png），
-// 取不到则回退占位符（emoji + 名称 + 稀有度描边）。后期在网页端补图即可自动生效。
+// 技能卡面：竖版卡牌 = 卡图为主体 + site 的边框图层（标识稀有度）+ 常驻信息条。
+// 边框走 ./site/assets/frames/…（与卡图 ./site/assets/cards/<id>.png 同源，dev 由 Vite
+// 中间件把仓库 site/ 挂到根路径）。边框图是「纯黑底 + 边缘细亮线」，靠 mix-blend-mode:screen
+// 叠在卡图上——黑底被吃掉、亮线留下。832 张卡只有 34 张有卡图，所以「无图」是常态而非异常，
+// 必须是一张设计过的卡（渐变底 + 稀有度字形），而不是空框。
 import { escapeHtml } from './chrome'
+import type { Catalog } from '../../kernel/catalog/types'
 
 /** 卡图路径：游戏在 /CardGame/，wiki 在 /CardGame/site/，故相对路径 ./site/… */
 export function cardArtUrl(cardId: string): string {
   return `./site/assets/cards/${cardId}.png`
+}
+
+const FRAME_BASE = './site/assets/frames/'
+
+/**
+ * 稀有度 → 边框图。common/uncommon/rare 是全局三张（盘上已有）；
+ * epic/legendary 按途径出图（frame-<途径>-epic.png），44 张尚未产出 → 落到 rare 那张，
+ * 由 frameFallbackUrl 提供，避免「传奇」和「稀有」长得一模一样。
+ */
+export function frameUrl(rarity: string, pathwayId?: string): string {
+  if (rarity === 'epic' || rarity === 'legendary') {
+    return pathwayId ? `${FRAME_BASE}frame-${pathwayId}-${rarity}.png` : `${FRAME_BASE}frame-rare.png`
+  }
+  const tier = rarity === 'uncommon' || rarity === 'rare' ? rarity : 'common'
+  return `${FRAME_BASE}frame-${tier}.png`
+}
+
+/** 主图 404 时的第二跳；null 表示这张已是终态、没有下一跳 */
+export function frameFallbackUrl(rarity: string): string | null {
+  return rarity === 'epic' || rarity === 'legendary' ? `${FRAME_BASE}frame-rare.png` : null
 }
 
 const RARITY_EMOJI: Record<string, string> = {
@@ -15,31 +39,121 @@ const RARITY_EMOJI: Record<string, string> = {
   legendary: '🟡',
 }
 
-/** 生成卡面 HTML；真图加载失败时由 hydrateArt 换成占位 */
-export function cardFaceHtml(opts: { cardId: string; name: string; rarity?: string; compact?: boolean }): string {
-  const { cardId, name, rarity = 'common', compact = false } = opts
+const RARITY_LABEL: Record<string, string> = {
+  common: '普通',
+  uncommon: '精良',
+  rare: '稀有',
+  epic: '史诗',
+  legendary: '传说',
+}
+
+export interface CardFaceOpts {
+  cardId: string
+  name: string
+  rarity?: string
+  /** epic/legendary 的途径边框取档用 */
+  pathwayId?: string
+  kind?: 'active' | 'passive'
+  /** 能量消耗，仅主动卡有 */
+  cost?: number | null
+  size?: 'compact' | 'full'
+}
+
+/**
+ * 生成卡面 HTML；降级（无图 / 无边框）由 hydrateArt 在挂载后落到 class 上。
+ *
+ * 卡图 lazy、边框不 lazy：实测 Chrome 对 lazy 的边框图（缺文件 → dev server 回 200 HTML）
+ * 既不派发 load 也不派发 error，降级链就永远不触发，epic/legendary 卡面变成无边无环。
+ * 边框只有 3~5 张、按稀有度共享、每张 ~90KB，直出的代价可以忽略。卡图是 1152×1536 的大图，
+ * 必须 lazy。
+ */
+export function cardFaceHtml(opts: CardFaceOpts): string {
+  const { cardId, name, rarity = 'common', pathwayId, kind = 'active', cost, size = 'compact' } = opts
   const emoji = RARITY_EMOJI[rarity] ?? '▫️'
+  const fallback = frameFallbackUrl(rarity)
+  const costHtml = kind === 'active' && cost != null ? `<span class="ci-cost">⚡${cost}</span>` : ''
   return `
-  <figure class="card-face r-${escapeHtml(rarity)}${compact ? ' compact' : ''}" data-card="${escapeHtml(cardId)}">
+  <figure class="card-face r-${escapeHtml(rarity)} k-${kind}${size === 'full' ? ' full' : ''}" data-card="${escapeHtml(cardId)}">
+    <div class="card-noart" aria-hidden="true"><span class="noart-glyph">${emoji}</span></div>
     <img class="card-art" src="${cardArtUrl(cardId)}" alt="" loading="lazy" data-art>
-    <div class="card-fallback" hidden>
-      <span class="card-emoji">${emoji}</span>
-      <span class="card-name">${escapeHtml(name)}</span>
-    </div>
+    <div class="card-shade" aria-hidden="true"></div>
+    <img class="card-frame" src="${frameUrl(rarity, pathwayId)}" alt="" aria-hidden="true" data-frame data-frame-fallback="${fallback ?? ''}">
+    <figcaption class="card-info">
+      <span class="ci-name">${escapeHtml(name)}</span>${costHtml}<span class="ci-kind">${kind === 'passive' ? '被' : '主'}</span>
+    </figcaption>
   </figure>`
 }
 
-/** 挂上错误回退：<img> 失败则显示占位块 */
+/** 挂上降级：卡图失败 → .no-art；边框失败 → 第二跳 → 再失败就摘层走内描边色环 */
 export function hydrateArt(root: HTMLElement): void {
   root.querySelectorAll<HTMLImageElement>('img[data-art]').forEach((img) => {
-    const fallback = img.parentElement?.querySelector<HTMLElement>('.card-fallback')
-    const showFallback = (): void => {
+    const face = img.closest<HTMLElement>('.card-face')
+    const fail = (): void => {
       img.hidden = true
-      if (fallback) fallback.hidden = false
+      face?.classList.add('no-art')
     }
-    if (img.complete && img.naturalWidth === 0) showFallback()
-    img.addEventListener('error', showFallback, { once: true })
+    if (img.complete && img.naturalWidth === 0) fail()
+    img.addEventListener('error', fail, { once: true })
   })
+  root.querySelectorAll<HTMLImageElement>('img[data-frame]').forEach((img) => {
+    const fail = (): void => {
+      const alt = img.dataset.frameFallback
+      if (alt) {
+        // 第二跳：暂时借用 rare 那张，同时点亮本稀有度的内描边色环，免得与真·稀有混淆
+        img.dataset.frameFallback = ''
+        img.closest<HTMLElement>('.card-face')?.classList.add('frame-degraded')
+        img.src = alt
+        return
+      }
+      const face = img.closest<HTMLElement>('.card-face')
+      img.remove()
+      face?.classList.add('no-frame')
+    }
+    if (img.complete && img.naturalWidth === 0) fail()
+    // 不加 once：上面那条降级链可能还要再吃一次 error
+    img.addEventListener('error', fail)
+  })
+}
+
+/** 详情浮层内容；查不到定义返回 null（调用方据此不弹） */
+export function cardDetailHtml(catalog: Catalog, cardId: string): string | null {
+  const def = catalog.skillDefs.get(cardId) ?? catalog.behaviorTemplates.get(cardId)
+  if (!def) return null
+  const active = catalog.skillDefs.has(cardId)
+  const cost = catalog.skillDefs.get(cardId)?.cost
+  const hook = catalog.behaviorTemplates.get(cardId)?.hook
+  const trig = def.triggers?.map((t) => t.event).filter(Boolean) ?? []
+  const events = [...(hook ?? []), ...trig]
+  const className = catalog.classDefs.get(def.pathwayId)?.name ?? def.pathwayId
+
+  const meta = [
+    RARITY_LABEL[def.rarity] ?? def.rarity,
+    active ? '主动' : '被动',
+    def.sequence != null ? `序列${def.sequence}${def.sequenceName ? ` · ${def.sequenceName}` : ''}` : '',
+    className,
+  ].filter(Boolean)
+
+  const badges = meta.map((m) => `<span class="cp-badge">${escapeHtml(m)}</span>`).join('')
+  const tags = (def.tags ?? []).map((t) => `<span class="cp-badge">${escapeHtml(t)}</span>`).join('')
+
+  const costRows = cost
+    ? `<dl class="cp-kv">
+        <dt>能量</dt><dd>${cost.energy}</dd>
+        <dt>冷却</dt><dd>${cost.cooldown} tick</dd>
+        <dt>吟唱</dt><dd>${cost.castTime == null ? '—' : `${cost.castTime} tick`}</dd>
+      </dl>`
+    : ''
+  const trigRow = events.length
+    ? `<dl class="cp-kv"><dt>触发</dt><dd>${escapeHtml(events.join('、'))}</dd></dl>`
+    : ''
+
+  return `
+  <h4>${escapeHtml(def.name)}</h4>
+  <div class="cp-badges">${badges}${tags}</div>
+  ${def.describe ? `<p class="cp-desc">${escapeHtml(def.describe)}</p>` : ''}
+  ${costRows}
+  ${trigRow}
+  ${def.flavor ? `<p class="cp-flavor">${escapeHtml(def.flavor)}</p>` : ''}`
 }
 
 /** 体质 → 头像占位 emoji（后期替换为 20 张基础英雄立绘：10 体质 × 性别） */
