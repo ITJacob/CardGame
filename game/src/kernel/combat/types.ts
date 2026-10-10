@@ -21,7 +21,7 @@ export interface UnitSetup {
   defId?: string
   unitId?: UnitId
   coordinate: Coordinate
-  attributeSet: { strength: number; agility: number; intellect: number; rank?: number }
+  attributeSet: { strength: number; agility: number; intelligence: number; rank?: number }
   gender: Gender
   anchor: number
   activeSlots?: SkillGrantInit[]

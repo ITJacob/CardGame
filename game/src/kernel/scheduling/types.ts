@@ -8,8 +8,8 @@ export interface ActionOpportunity {
   unitId: UnitId
   /** 授予时刻 */
   tickIndex: number
-  /** 消耗它的 Action；未消耗记 'wasted' */
-  consumedBy: string | 'wasted'
+  /** 消耗它的 Action id；'wasted' = 未消耗作废；null = 尚未处理 */
+  consumedBy: string | null
 }
 
 export interface ChannelSlot {
@@ -32,8 +32,8 @@ export interface InitiativePolicy {
   resolveOrder(crossed: readonly GaugeCrossed[]): ActionOpportunity[]
 }
 
-/** 调度器：tick 原子推进（8 阶段）+ 授予机会 */
+/** 调度器：tick 原子推进（第 1–7 步）；第 8 步「授予」由 runtime 经 InitiativePolicy 完成 */
 export interface Scheduler {
-  /** 单 tick 原子推进：clock→Gauge→Pool→Channel→Cooldown→Status→Zone/Domain→授予 */
-  tick(): ActionOpportunity[]
+  /** 单 tick 原子推进：clock→Gauge→Pool→Channel→Cooldown→Status→Zone/Domain；返回本 tick 的 GaugeCrossed */
+  tick(): GaugeCrossed[]
 }
