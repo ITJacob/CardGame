@@ -50,10 +50,12 @@ export function renderBattle(host: HTMLElement): void {
     }
     const runner = s.online?.runner
     const myTurn = pending != null && casterFaction(s, pending.caster) === myFactionOf(s)
+    /** 本侧该决策且未提交 → 板面高亮 tile 可点选 */
+    const canPick = pending != null && (!s.online || myTurn) && !submitted
     host.innerHTML = `
       ${subBarHtml(s.online ? '联机对局' : '对局')}
       <div class="battle" data-orient="${currentOrientation()}">
-        <div class="board-wrap">${boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [])}</div>
+        <div class="board-wrap">${boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [], canPick)}</div>
         <div class="battle-side">
           ${statusBarHtml(s, view, pending != null, ended != null)}
           ${runner?.lastError ? `<p class="warn">联机中断：${escapeHtml(errMsg(runner.lastError))}</p>` : ''}
@@ -65,7 +67,7 @@ export function renderBattle(host: HTMLElement): void {
       ${pending && (!s.online || myTurn) ? decisionBarHtml(s, pending, submitted) : ''}
       ${ended ? endedHtml(s, ended.outcome) : ''}`
     hydrateArt(host)
-    wire(s, refresh, submit)
+    wire(s, refresh, submit, canPick)
   }
 
   const submit = (picks: DecisionInput): void => {
@@ -141,7 +143,7 @@ function currentOrientation(): Orientation {
   return orientationOf(window.innerWidth, window.innerHeight)
 }
 
-function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | null)[]): string {
+function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | null)[], canPick: boolean): string {
   const lanes = view.units.map((u) => u.coordinate?.lane).filter((l): l is string => !!l)
   const laneIdx = laneIndexer(lanes.length > 0 ? lanes : ['lane0', 'lane1'])
   const ownFaction = view.units.find((u) => s.unitMeta.get(u.id)?.side === 'own')?.faction ?? 'A'
@@ -152,14 +154,15 @@ function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | n
     .filter((u) => u.coordinate)
     .map((u) => {
       const { col, row } = spec.place(u.coordinate!)
-      return tileHtml(s, u, col, row, cand.has(u.id))
+      return tileHtml(s, u, col, row, cand.has(u.id), canPick)
     })
     .join('')
 
   return `<div class="board" style="grid-template-columns:repeat(${spec.columns},1fr);grid-template-rows:repeat(${spec.rows},1fr)">${tiles}</div>`
 }
 
-function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, targetable: boolean): string {
+/** targetable = 当前决策的合法目标（视觉高亮）；pickable = 本侧可点选（此时才给抓手光标，避免空承诺） */
+function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, targetable: boolean, canPick: boolean): string {
   const meta = s.unitMeta.get(u.id)
   const side = meta?.side ?? (u.id.length > 0 ? 'enemy' : 'own')
   const emoji = meta ? avatarEmoji(meta.constitutionId, meta.gender) : '❓'
@@ -171,7 +174,7 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
     .map((st) => `<span class="chip">${escapeHtml(st.defId)}${st.stacks > 1 ? `×${st.stacks}` : ''}</span>`)
     .join('')
   return `
-  <div class="tile ${side}${dead ? ' dead' : ''}${targetable ? ' targetable' : ''}" style="grid-column:${col};grid-row:${row}" data-unit="${escapeHtml(u.id)}">
+  <div class="tile ${side}${dead ? ' dead' : ''}${targetable ? ' targetable' : ''}${targetable && canPick ? ' pickable' : ''}" style="grid-column:${col};grid-row:${row}" data-unit="${escapeHtml(u.id)}">
     <div class="avatar">${emoji}</div>
     <div class="tname">${escapeHtml(meta?.name ?? u.id)}<span class="tclass">${escapeHtml(meta?.classId ?? '')}</span></div>
     <div class="bar hp"><i style="width:${hpPct}%"></i><span>${u.hp}/${u.hpMax}</span></div>
@@ -277,7 +280,7 @@ function recordOf(s: BattleSession, outcome: CombatOutcome, stats: CombatStats):
   }
 }
 
-function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInput) => void): void {
+function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInput) => void, canPick: boolean): void {
   const step = document.getElementById('btn-step')
   step?.addEventListener('click', () => {
     stepOnce(s)
@@ -308,15 +311,32 @@ function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInp
     else runner.pause()
     refresh()
   })
+  // 选一个 occupant 为目标：候选中取它（取不到则退回前 pickCount 个），与下方按钮面板同一条路径
+  const pickTarget = (id: string): void => {
+    const pending = s.facade.pendingDecision()
+    if (!pending) return
+    const pick = pending.candidates.filter((c) => c.occupant === id).slice(0, pending.pickCount)
+    submit(pick.length > 0 ? pick : pending.candidates.slice(0, pending.pickCount))
+  }
+
   document.querySelectorAll<HTMLElement>('[data-pick]').forEach((el) => {
-    el.addEventListener('click', () => {
-      const id = el.dataset.pick ?? ''
-      const pending = s.facade.pendingDecision()
-      if (!pending) return
-      const pick = pending.candidates.filter((c) => c.occupant === id).slice(0, pending.pickCount)
-      submit(pick.length > 0 ? pick : pending.candidates.slice(0, pending.pickCount))
-    })
+    el.addEventListener('click', () => pickTarget(el.dataset.pick ?? ''))
   })
+  // 板面上的高亮 tile 同样可点（光标已承诺可点，就别让它落空）
+  // canPick：仅在本侧该决策时挂上——联机时对侧决策只观战，绝不本地代选（§3.4 铁律 1）
+  if (canPick) {
+    document.querySelectorAll<HTMLElement>('.tile.pickable[data-unit]').forEach((el) => {
+      const id = el.dataset.unit ?? ''
+      el.setAttribute('role', 'button')
+      el.tabIndex = 0
+      el.addEventListener('click', () => pickTarget(id))
+      el.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return
+        e.preventDefault()
+        pickTarget(id)
+      })
+    })
+  }
   document.getElementById('btn-auto-pick')?.addEventListener('click', () => {
     const pending = s.facade.pendingDecision()
     if (!pending) return

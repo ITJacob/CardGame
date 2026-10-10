@@ -249,6 +249,8 @@ while (!stopped && !facade.ended()) {
 - 改造 `ui/views/battle.ts`（或抽公共层）：
   - 判定联机模式（`session.online` 存在时）；own/enemy 按 `myFaction` 映射（win/foe 也按 `myFaction` 换算）。
   - 决策：caster 本侧 → 现有选靶 UI（提交后禁用按钮，等 runner 同步）；他侧 → 「等待对手决策…」提示。
+    板面高亮 tile 也可点选（与下方按钮同一条路径），仅在**本侧该决策**时给抓手光标 + 挂监听
+    （`.tile.pickable`；对侧决策只高亮不可点，避免 cursor 空承诺与本地代选）；板面 `user-select: none`。
   - 驱动改走 `MatchRunner`（不再直接 `stepOnce`）；控制区把「推进/自动播放」换成**暂停/继续**（联机自动推进）。
   - 结束：`finishOnline` 先交换指纹 → 一致才 `matchStore.append` 正常战绩，否则记 `aborted`；
     结算框展示比对结果（一致哈希 / 未验证 / 不一致）。
