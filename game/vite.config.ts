@@ -1,10 +1,34 @@
 import { defineConfig, type Plugin, type Connect } from 'vite'
-import { createReadStream, existsSync, statSync } from 'node:fs'
+import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs'
 import { extname, join, normalize, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { gitHead, readDataIndex, readFromFs, type LockFile } from './scripts/lib/data-index'
+import type { DataVersion } from './src/data/version'
 
 // 仓库根：game/ 的上一级（docs/ 与 site/ 都在那里）
 const repoRoot = fileURLToPath(new URL('..', import.meta.url))
+
+/** 构建时确定数据版本：读 lock + 实测当前数据哈希，判定是否已漂移 */
+function computeDataVersion(): DataVersion {
+  const docsDir = join(repoRoot, 'docs', 'json')
+  const lockPath = join(repoRoot, 'game', 'data.lock.json')
+  const lock = existsSync(lockPath) ? (JSON.parse(readFileSync(lockPath, 'utf8')) as LockFile) : null
+  const idx = readDataIndex(readFromFs(docsDir))
+  const sha = gitHead(repoRoot)
+  return {
+    docsRef: lock?.docsRef ?? sha,
+    docsTag: lock?.docsTag ?? null,
+    dataHash: idx.dataHash,
+    lockHash: lock?.dataHash ?? '',
+    stale: !!lock && lock.dataHash !== idx.dataHash,
+    schemaVersion: idx.manifest.schemaVersion,
+    sourceVersion: idx.manifest.sourceVersion,
+    counts: lock?.counts ?? {},
+    verifiedAt: lock?.verifiedAt ?? '',
+    buildTime: new Date().toISOString(),
+    gameSha: sha,
+  }
+}
 
 const CONTENT_TYPES: Record<string, string> = {
   '.json': 'application/json; charset=utf-8',
@@ -47,6 +71,9 @@ export default defineConfig(({ command }) => ({
   // 运行时一律走相对路径（./docs/…、./site/），两种 base 下都解析正确。
   base: command === 'build' ? '/CardGame/' : '/',
   plugins: [serveRepoDir('/docs', 'docs'), serveRepoDir('/site', 'site')],
+  define: {
+    __DATA_VERSION__: JSON.stringify(computeDataVersion()),
+  },
   build: {
     target: 'es2022',
     outDir: 'dist',

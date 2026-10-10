@@ -236,3 +236,49 @@ push main → npm ci && vite build (game/dist)
 - **旧实现漂移**：若复活 `7e6d01f`（63 文件），需逐条审计触发点（旧 12 → 现 14）、原语（旧 27 → 现 29）、v0.3 维度（界域/位格/迷失/吟唱）等差距。
 - **体质是新增设计面**，其数值标定与「不新增内核原语」的约束需专门校订。
 - **中文路径 + Edit 工具匹配失败坑**（`CLAUDE.md` 已记），改 JSON / 文档时用整行重写绕过。
+
+---
+
+## 十一、数据版本锚点与增量对账
+
+**问题**：`docs/json` 长期高频微调（近 20 次提交每次都动），game 端每次迭代若全量回归 832 卡不可行。需要「知道本次构建基于哪版数据」+「数据变了只回归受影响部分」。
+
+**机制**：一个很小的锚点文件 + 一套对账脚本，不做全量同步，不改数据源。
+
+**锚点** `game/data.lock.json`（提交入库，`npm run data:pin` 生成）：
+
+```json
+{ "docsRef": "<提交 sha>", "docsTag": null, "dataHash": "sha256:…",
+  "schemaVersion": "1.3.0", "sourceVersion": "v0.3",
+  "counts": { "pathways": 22, "cards": 832, "statuses": 478, … },
+  "verifiedAt": "2026-10-10", "note": "…" }
+```
+
+- `docsRef` = 验收数据时所处的提交，兼作「重建旧版数据」的坐标（`git show <sha>:docs/json/…`）。
+- `dataHash` = 对 manifest + 各 `<途径>.skills.json/.statuses.json` + `common.statuses.json` 逐文件做**稳定序列化**（键排序）后 sha256 再合成——免疫键序与缩进噪声。
+- **只在「验收完数据」时更新**，不随每次数据改动更新；因此不是每次改卡都要碰它。
+
+**对账** `npm run data:status`（CI 中为告警作业，`continue-on-error`，结果写入 Step Summary）：
+
+1. 比对当前数据哈希与锁——一致即「未漂移，无需回归」，退出 0。
+2. 不一致时，用 `git show` 从 `docsRef` 重建旧版索引（与 schema 版本解耦的纯 JSON 遍历，故跨版本可比），逐项 diff：
+   - 变更的文件清单；
+   - 按 Def 粒度的 `cards / statuses / zoneDefs / domainDefs / unitDefs` 新增/改动/删除 id 清单。
+3. 默认退出 0（告警）；`--strict` 时漂移即退出 1。
+
+**构建注入**：`vite.config.ts` 读锁 + 实测当前哈希，`define: { __DATA_VERSION__ }` 注入产物；设置页展示 `docsRef / 当前哈希 / 基线哈希 / 是否漂移 / 计数 / 构建时间`，线上站点自证数据来源。
+
+**为什么不是别的**：不落 lock、仅构建嵌入 → 无「上次验收」基线，增量无从对照；git tag 快照 → 数据改动频繁会堆积大量 tag。lock 文件是唯一同时满足「可提交、可比对、不随改动更新」的形式。
+
+**边界**：对账依赖完整 git 历史（CI 需 `fetch-depth: 0`）；跨 schema 大版本时旧数据仍可索引（纯 JSON 遍历），但若旧数据在某版不可解析，则退化为纯哈希级漂移报告。
+
+---
+
+## 十二、落地进度
+
+| 期 | 状态 |
+|---|---|
+| P0 工程骨架 + Pages 发布 | ✅ 完成（`/CardGame/` 为主菜单，Actions 组装发布） |
+| P1 内核 IDL + 数据接入层 + 数据版本锚点 | ✅ 完成（`check:catalog` 22 途径全绿；`data:pin` / `data:status` 就位） |
+| P2 内核实现（五上下文） | ⏳ 未开始 |
+| P3–P7 | ⏳ 未开始 |

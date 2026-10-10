@@ -63,11 +63,13 @@ tools/               **与 docs 设计无关的周边工具**（产物落在 sit
 （收纳原则：docs/ 只与设计有关；凡产物落在 site/、或处理图片等非设计事务的脚本，一律放 tools/）
 docs/诡秘之主资料库/  原著设定源素材（世界体系/九大源质/界域机制/职业对照表）——工作流① 设定补全的落点
 site/               技能池 wiki（现网静态站，托管于 /CardGame/site/；游戏首页链入）
-game/               Web 游戏端（TypeScript + Vite + 原生 DOM；当前 P0 骨架）
-├─ DESIGN.md        游戏端框架设计方案（分层/内核契约/战外上下文/构建部署/分期）
+game/               Web 游戏端（TypeScript + Vite + 原生 DOM；P0/P1 已完成）
+├─ DESIGN.md        游戏端框架设计方案（分层/内核契约/战外上下文/构建部署/数据版本机制/分期）
+├─ data.lock.json   数据版本锚点：验收 docs/json 后由 npm run data:pin 更新（勿手改）
+├─ scripts/         数据脚本：check-catalog（22 途径构建校验）/ data-pin / data-status（增量对账）
 └─ src/
-   ├─ kernel/       战斗内核（零 DOM / 零 I/O / 确定性）——尚未实现，契约见 DESIGN.md §3
-   ├─ data/         数据接入层（唯一触碰 docs/json 之处）
+   ├─ kernel/       战斗内核类型 IDL（零 DOM / 零 I/O / 确定性）——实现待 P2，契约见 DESIGN.md §3
+   ├─ data/         数据接入层（唯一触碰 docs/json 之处）+ 构建注入的数据版本
    ├─ meta/         战外上下文（英雄生成/解锁/编队/匹配/存档）
    └─ ui/           原生 DOM（router + views + components + styles）
 ```
