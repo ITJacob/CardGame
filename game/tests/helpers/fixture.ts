@@ -235,6 +235,7 @@ export const FIXTURE: PathwayFile = {
     p2b2('fix_scramble', '扰乱', 'spell', [{ type: 'gauge_shuffle', resource: 'gauge.current' }]),
     p2b2('fix_rotate', '轮转', 'spell', [{ type: 'status_shuffle', mode: 'rotate', count: 1 }]),
     p2b2('fix_sap', '削弱', 'spell', [{ type: 'modify_skill', skillRef: { selector: 'target' }, costDelta: { energy: 1 } }]),
+    passive('fix_passive', '坚韧', [{ type: 'modify_stat', stat: 'resist:physical', mode: 'delta', value: 10, duration: null, target: 'self' }]),
     p2b2('fix_domain', '血月', 'spell', [], 'self', 'domain'),
     p2b2('fix_zone', '火场', 'spell', [], 'self', 'zone'),
   ],
@@ -250,6 +251,15 @@ export const FIXTURE: PathwayFile = {
     },
   ],
   domainDefs: [{ id: 'fix_domain', tier: 'overlay', dispelable: true, duration: 12, durationUnit: 'tick' }],
+}
+
+/** 被动卡简写：hook 事件触发卡面 effects */
+function passive(id: string, name: string, effects: unknown[], hook: string[] = ['on_battle_start']): RawCard {
+  return {
+    id, name, kind: 'passive', sequence: 1, sequenceName: 's1', rarity: 'common', axis: 'a',
+    flagship: false, lore: '', flavor: '', describe: '', tentative: false, hook,
+    effects: effects as EffectNode[],
+  }
 }
 
 /** P2b-2 卡面简写 */
@@ -310,6 +320,7 @@ export interface SetupOptions {
   seed?: number
   unitsPerSide?: number
   skills?: string[]
+  passives?: string[]
   strength?: number
   agility?: number
   intelligence?: number
@@ -329,6 +340,7 @@ export function buildAiVsAiSetup(opts: SetupOptions = {}): CombatSetup {
       gender: 'male' as const,
       anchor: 0,
       activeSlots: skills.map((s) => ({ skillDefId: s })),
+      passiveSlots: opts.passives ? opts.passives.map((d) => ({ defId: d })) : [{ defId: 'fix_passive' }],
       initialStatuses: [],
     }))
 

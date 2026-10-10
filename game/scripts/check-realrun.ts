@@ -26,6 +26,7 @@ function arg(name: string, fallback: string): string {
 const pathwayArg = arg('pathway', 'all')
 const unitsPerSide = Number(arg('units', '3'))
 const skillsPerUnit = Number(arg('skills', '4'))
+const passivePerUnit = Number(arg('passives', '3'))
 const seed = Number(arg('seed', '1'))
 
 const manifest = read<Manifest>('manifest.json')
@@ -42,7 +43,7 @@ function pick<T>(arr: T[], n: number): T[] {
   return Array.from({ length: n }, (_, i) => arr[Math.floor(i * step)] as T)
 }
 
-function buildSetup(_file: PathwayFile, skills: string[]): CombatSetup {
+function buildSetup(_file: PathwayFile, skills: string[], passives: string[]): CombatSetup {
   const makeUnits = (faction: string): CombatSetup['factions'][number]['units'] =>
     Array.from({ length: unitsPerSide }, (_, i) => ({
       unitId: `${faction}_u${i}`,
@@ -51,6 +52,7 @@ function buildSetup(_file: PathwayFile, skills: string[]): CombatSetup {
       gender: 'male' as const,
       anchor: 0,
       activeSlots: skills.map((s) => ({ skillDefId: s })),
+      passiveSlots: passives.map((d) => ({ defId: d })),
       initialStatuses: [],
     }))
   return {
@@ -111,8 +113,10 @@ console.log('途径'.padEnd(20) + '结果'.padEnd(10) + 'tick'.padEnd(6) + '事�
 for (const entry of targets) {
   const file = files.find((f) => f.pathwayId === entry.id) as PathwayFile
   const activeIds = file.cards.filter((c) => c.kind === 'active').map((c) => c.id)
+  const passiveIds = file.cards.filter((c) => c.kind === 'passive').map((c) => c.id)
   const skills = pick(activeIds, skillsPerUnit)
-  const setup = buildSetup(file, skills)
+  const passives = pick(passiveIds, passivePerUnit)
+  const setup = buildSetup(file, skills, passives)
   const a = runOnce(setup)
   const b = runOnce(setup)
   const deterministic = a.fingerprint === b.fingerprint

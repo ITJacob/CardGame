@@ -4,7 +4,7 @@
 import type { FactionId, Gender, Phase, UnitId } from '../ids'
 import type { CatalogSnapshot } from '../catalog/types'
 import type { Coordinate, DomainGrant, OccupancyChanged } from '../battle/types'
-import type { BehaviorSlot, StatusGrant, Unit } from '../roster/types'
+import type { StatusGrant, Unit } from '../roster/types'
 import type { ActionOpportunity } from '../scheduling/types'
 import type {
   DecisionInput, DecisionRequest, RedirectStep, ResolvedTarget,
@@ -25,7 +25,7 @@ export interface UnitSetup {
   gender: Gender
   anchor: number
   activeSlots?: SkillGrantInit[]
-  passiveSlots?: BehaviorSlot[]
+  passiveSlots?: { defId: string }[]
   initialStatuses?: StatusGrant[]
   pools?: Partial<Record<'hp' | 'energy' | 'shield' | 'armor' | 'lost' | 'lust', number>>
   gauge?: { current?: number }
