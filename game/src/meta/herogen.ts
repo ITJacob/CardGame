@@ -12,6 +12,7 @@ export interface Attributes3 {
 export interface Hero {
   id: string
   name: string
+  gender: 'male' | 'female'
   combo: Attributes3
   constitutionId: string
   classId: string
@@ -80,6 +81,7 @@ export function generateHeroes(ctx: RosterContext, count = 5, idPrefix = 'hero')
     heroes.push({
       id: `${idPrefix}_${i + 1}`,
       name: `${classId}_${i + 1}`,
+      gender: ctx.random.int(2) === 0 ? 'male' : 'female',
       combo,
       constitutionId,
       classId,
