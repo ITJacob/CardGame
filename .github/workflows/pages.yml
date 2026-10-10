@@ -24,7 +24,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # fetch-depth: 0 —— 数据漂移对账需完整历史（用 git show 重建验收基线版本的数据）
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -32,9 +35,19 @@ jobs:
           cache: npm
           cache-dependency-path: game/package-lock.json
 
-      - name: Install & build game
+      - name: Install deps
         working-directory: game
-        run: npm ci && npm run build
+        run: npm ci
+
+      # 告警不阻断：docs/json 偏离验收基线时列出精确变更项（写入 Step Summary）
+      - name: 数据漂移对账（告警）
+        working-directory: game
+        continue-on-error: true
+        run: npm run data:status
+
+      - name: Build game
+        working-directory: game
+        run: npm run build
 
       - name: Assemble Pages artifact
         run: |
