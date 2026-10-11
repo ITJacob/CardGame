@@ -80,9 +80,9 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
     ${subBarHtml('现有卡池')}
     <main class="pool-page">
       <aside class="cls-list cg-scroll">${classRows}</aside>
-      <section class="pool-main cg-card cg-card--static">
+      <section class="pool-main cg-panel">
         <div class="pool-head">
-          <h2 class="cg-card__title">${escapeHtml(def?.name ?? current)}</h2>
+          <h2 class="cg-panel__title">${escapeHtml(def?.name ?? current)}</h2>
           <button type="button" class="cg-btn cg-btn--sm ${profile.unlockedClasses.includes(current) ? 'cg-btn--danger' : 'cg-btn--primary'}" id="btn-toggle-cls">
             ${profile.unlockedClasses.includes(current) ? '锁定该职业' : '解锁该职业'}
           </button>

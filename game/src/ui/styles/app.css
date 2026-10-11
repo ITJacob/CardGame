@@ -87,11 +87,9 @@ a { color: inherit; text-decoration: none; }
   padding: 12vh 24px;
   text-align: center;
 }
-.placeholder h1 { color: var(--accent); letter-spacing: 0.08em; }
+.placeholder h1 { font-size: 24px; color: var(--accent); letter-spacing: 0.08em; }
 .placeholder p { color: var(--text-dim); }
 .placeholder .hint a { color: var(--accent); border-bottom: 1px solid var(--accent-dim); }
-/* 占位页里的卡是「一块内容」，本身不接收整体点击，不该有 hover 抬升（.cg-card--static 已挡，
-   这里再挡一次是给 .menu-card 那种 featured 卡用的——featured 的发光要留，抬升不要） */
 
 /* ---------- 设置 ---------- */
 .settings {
@@ -172,7 +170,7 @@ a { color: inherit; text-decoration: none; }
 .hud { display: flex; gap: 12px; font-size: 13px; color: var(--text-dim); }
 .controls { display: flex; align-items: center; gap: 8px; }
 
-/* 日志：卡片外观来自 .cg-card，滚动条来自 .cg-scroll，这里只定高度与字号 */
+/* 日志：面板外观来自 .cg-panel，滚动条来自 .cg-scroll，这里只定高度与字号 */
 .log { max-height: 42vh; font-size: 12px; line-height: 1.5; }
 .log-line { color: var(--text-dim); }
 .log-line.dim { opacity: 0.6; }
@@ -286,7 +284,7 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 .card-lock:hover { border-color: var(--accent); }
 .card-lock[aria-pressed="true"] { color: var(--accent); border-color: var(--accent-dim); }
 
-/* 决策条：粘在视口底部。卡片外观来自 .cg-card（position/overflow 的覆盖见 kit-bridge） */
+/* 决策条：粘在视口底部。面板外观来自 .cg-panel（position 的覆盖见 kit-bridge） */
 .decision-title { font-size: 13px; color: var(--accent); margin-bottom: 8px; }
 .picks { display: flex; gap: 8px; flex-wrap: wrap; }
 .pick-face { font-size: 22px; }
@@ -373,7 +371,7 @@ body.zoom-open { overflow: hidden; }
 .hero-list { display: flex; flex-direction: column; gap: 8px; }
 /* 名册行是展示卡，不是可编辑文本：禁选，免得悬停出现 I 形光标、点击弹出输入光标 */
 .hero-list, .roster { user-select: none; caret-color: transparent; }
-/* 行外壳是 .cg-card--row（见 kit-bridge），这里只管内部三段 */
+/* 行外壳是 .cg-panel--row（见 kit-bridge），这里只管内部三段 */
 .hero-info { flex: 1; min-width: 150px; display: flex; flex-direction: column; }
 .hero-info small { color: var(--text-dim); font-size: 11px; }
 .hero-cards { display: flex; justify-content: flex-end; gap: 5px; flex-wrap: wrap; }
@@ -437,7 +435,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .prep { max-width: 980px; margin: 0 auto; padding: 18px 18px 60px; }
 .prep .hint { font-size: 12.5px; color: var(--text-dim); }
 .prep .hint.warn { color: var(--warn); font-size: 13px; }
-/* 每段 = 一张 .cg-card；这里只留段间距与段内小标题 */
+/* 每段 = 一块 .cg-panel；这里只留段间距与段内小标题 */
 .prep-sec { margin: 16px 0; }
 .prep-sec h3 { font-size: 13px; color: var(--text); margin: 14px 0 8px; }
 .prep-sec h2 .hint, .prep-sec h3 .hint { font-size: 11.5px; font-weight: 400; margin-left: 6px; }

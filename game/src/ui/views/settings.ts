@@ -18,9 +18,9 @@ export function renderSettings(host: HTMLElement): void {
   host.innerHTML = `
     ${subBarHtml('设置')}
     <main class="settings">
-      <section class="cg-card cg-card--static">
-        <div class="cg-card__head">${icon('cg-sigil-moon', 'cg-card__sigil')}<h2 class="cg-card__title">账号</h2></div>
-        <div class="cg-card__body">
+      <section class="cg-panel">
+        <div class="cg-panel__head">${icon('cg-sigil-moon')}<h2 class="cg-panel__title">账号</h2></div>
+        <div class="cg-panel__body">
           <label class="cg-field">
             <span class="cg-field__label">用户名</span>
             <input class="cg-input" id="inp-name" type="text" maxlength="24" value="${escapeHtml(profile.username)}" />
@@ -36,9 +36,9 @@ export function renderSettings(host: HTMLElement): void {
         </div>
       </section>
 
-      <section class="cg-card cg-card--static">
-        <div class="cg-card__head">${icon('cg-sigil-hermit', 'cg-card__sigil')}<h2 class="cg-card__title">数据版本</h2></div>
-        <div class="cg-card__body">
+      <section class="cg-panel">
+        <div class="cg-panel__head">${icon('cg-sigil-hermit')}<h2 class="cg-panel__title">数据版本</h2></div>
+        <div class="cg-panel__body">
           ${v.stale
             ? '<p class="hint warn">⚠ 当前数据已偏离验收基线，尚未重新验收</p>'
             : '<p class="hint ok">与验收基线一致</p>'}

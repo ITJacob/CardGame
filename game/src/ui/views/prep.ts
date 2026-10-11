@@ -318,8 +318,8 @@ function formationHtml(own: readonly PlacedHero[], selectedId: string | null): s
     }
   }
 
-  return `<section class="cg-card cg-card--static prep-sec">
-    <h2 class="cg-card__title">阵型 <small class="hint">拖动英雄：落到别人身上交换、落到空格移入（也可以点选）；#1 靠近中线</small></h2>
+  return `<section class="cg-panel prep-sec">
+    <h2 class="cg-panel__title">阵型 <small class="hint">拖动英雄：落到别人身上交换、落到空格移入（也可以点选）；#1 靠近中线</small></h2>
     <div class="board-wrap"><div class="board prep-board" style="grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr)">${cells.join('')}</div></div>
   </section>`
 }
@@ -335,16 +335,16 @@ function loadoutHtml(catalog: Catalog, profile: Profile, own: readonly PlacedHer
     .join('')
 
   if (!selected) {
-    return `<section class="cg-card cg-card--static prep-sec">
-      <h2 class="cg-card__title">技能</h2>
+    return `<section class="cg-panel prep-sec">
+      <h2 class="cg-panel__title">技能</h2>
       <div class="hero-strip">${strip}</div>
       <p class="hint">先选一名英雄。</p>
     </section>`
   }
 
   const pool = skillPoolOf(catalog, selected, profile)
-  return `<section class="cg-card cg-card--static prep-sec">
-    <h2 class="cg-card__title">技能 <small class="hint">${escapeHtml(selected.name)} · ${escapeHtml(selected.classId)}</small></h2>
+  return `<section class="cg-panel prep-sec">
+    <h2 class="cg-panel__title">技能 <small class="hint">${escapeHtml(selected.name)} · ${escapeHtml(selected.classId)}</small></h2>
     <div class="hero-strip">${strip}</div>
     ${slotRowHtml(catalog, selected, 'active')}
     ${slotRowHtml(catalog, selected, 'passive')}

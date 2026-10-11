@@ -33,15 +33,15 @@ export function renderLeaderboard(host: HTMLElement): void {
   host.innerHTML = `
     ${subBarHtml('排行榜')}
     <main class="board-page">
-      <section class="cg-card cg-card--static">
-        <div class="cg-card__head">
-          ${icon('cg-sigil-wheel', 'cg-card__sigil')}
+      <section class="cg-panel">
+        <div class="cg-panel__head">
+          ${icon('cg-sigil-wheel')}
           <div>
-            <h2 class="cg-card__title">排行榜</h2>
-            <div class="cg-card__meta">${escapeHtml(profile.username)}（${escapeHtml(profile.uuid.slice(0, 8))}）· 本地战绩，存于浏览器</div>
+            <h2 class="cg-panel__title">排行榜</h2>
+            <div class="cg-panel__meta">${escapeHtml(profile.username)}（${escapeHtml(profile.uuid.slice(0, 8))}）· 本地战绩，存于浏览器</div>
           </div>
         </div>
-        <div class="cg-card__body">
+        <div class="cg-panel__body">
           <div class="summary">
             <span>对局 <b>${sum.matches}</b></span>
             <span>胜 <b>${sum.wins}</b></span>

@@ -67,6 +67,8 @@ ui-kit/             game 端的 UI 组件套件（唯一源）：ui-kit.css（.c
                     + ui-kit.svg（<symbol> 图标精灵）+ index.html（套件自带预览页）。
                     game 由 main.ts 直接 import 前两者、构建进产物，不拷贝；对接说明见
                     game/src/ui/styles/kit-bridge.css 文件头与 game/DESIGN.md
+                    框分两类：界面区块用 .cg-panel（区域容器），.cg-card 是角色/技能卡面
+                    ——游戏真正的卡面是 game 自己的 .card-face，故 game 端只用 .cg-panel
 game/               Web 游戏端（TypeScript + Vite + 原生 DOM；P0/P1 已完成）
 ├─ DESIGN.md        游戏端框架设计方案（分层/内核契约/战外上下文/构建部署/数据版本机制/分期）
 ├─ data.lock.json   数据版本锚点：验收 docs/json 后由 npm run data:pin 更新（勿手改）

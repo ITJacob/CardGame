@@ -6,13 +6,12 @@ export function renderMenu(host: HTMLElement): void {
   host.innerHTML = `
     ${topbarHtml()}
     <main class="menu">
-      <article class="cg-card cg-card--featured cg-card--legendary cg-card--static menu-card">
-        <span class="cg-card__rarity"></span>
-        <div class="cg-card__head">
-          ${icon('cg-sigil-star', 'cg-card__sigil')}
+      <article class="cg-panel cg-panel--featured menu-card">
+        <div class="cg-panel__head">
+          ${icon('cg-sigil-star')}
           <div>
-            <h1 class="cg-card__title menu-title">卡牌对战</h1>
-            <div class="cg-card__meta">Roguelike 爬塔 · 队伍对战</div>
+            <h1 class="cg-panel__title menu-title">卡牌对战</h1>
+            <div class="cg-panel__meta">Roguelike 爬塔 · 队伍对战</div>
           </div>
         </div>
         <nav class="menu-actions">

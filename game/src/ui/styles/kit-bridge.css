@@ -4,9 +4,15 @@
  * 三件事：
  *   ① token 接线：ui-kit.css 自带一份 :root 默认值（它的独立预览页要用），接进游戏后按它
  *      文件头的说明改指 app.css 的变量 —— 配色仍然只有 app.css 一处源。
- *   ② kit 修饰类：游戏需要、kit 里没有的那几档（子页栏 / 名册横排卡 / 只读卡）。
+ *   ② kit 修饰类：游戏需要、kit 里没有的那几档（子页栏 / 名册横排行 / 强调面板 /
+ *      面板的 meta·body·foot 三件套）。
  *   ③ 游戏侧的组件微调：kit 组件落到具体位置时尺寸要收一收（侧栏 22 行的列表、
  *      棋盘格子里的血条）—— 只调尺寸与密度，不另起一套外观。
+ *
+ * 「区域框」用哪一档：kit 把框分成了两类 —— .cg-panel 是界面上一小块的局部框（菜单、
+ * 按钮组、翻页主体），.cg-card 是角色/技能卡面（带稀有度色条的那种）。本游戏真正的技能
+ * 卡面是游戏自己的 .card-face（卡图 + 边框 PNG + 信息条），kit 的 .cg-card 在这里没有
+ * 对应物，所以 game 端只用 .cg-panel，不出现 .cg-card。
  */
 
 /* =============================================================================
@@ -41,20 +47,33 @@
   padding-right: max(18px, env(safe-area-inset-right));
 }
 
-/* 名册横排卡：kit 的 .cg-card 是「纵向块」，名册行是「头像 · 信息 · 技能卡列」一条横排 */
-.cg-card--row {
+/* 名册横排行：kit 的 .cg-panel 是「一块区域」（纵向堆内容和标题），名册行是
+   「头像 · 信息 · 技能卡列」一条横排，也没有标题栏。行会重复十几遍，整块的大投影
+   换成一层浅影——不然一列名册各自浮起，像十几张卡片叠在暗雾上。 */
+.cg-panel--row {
+  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 12px;
   padding: 8px 12px;
-  /* 一行行的名册不该整行跳动 */
-  transform: none !important;
+  box-shadow: var(--cg-shadow-sm), inset 0 0 0 1px rgba(200, 162, 74, .07);
 }
-.cg-card--row:hover { transform: none; box-shadow: none; }
-.cg-card--row .cg-card__foot { margin-top: 0; margin-left: auto; }
 
-/* 只读面板：设置/排行/主菜单这类不接收整体点击的卡不该有 hover 抬升 */
-.cg-card--static:hover { transform: none; box-shadow: none; }
+/* 强调面板：黄铜边 + 外发光。主菜单首屏、在线等待页的房间码用这一档 ——
+   kit 的 .cg-panel 只有 --menu / --group / --flush 三档，这一档是游戏侧补的。 */
+.cg-panel--featured {
+  border-color: var(--cg-accent);
+  box-shadow: 0 0 0 1px var(--cg-accent-dim), 0 0 24px var(--cg-accent-glow), var(--cg-shadow-lg);
+}
+
+/* 面板内容三件套：kit 的 .cg-panel 只带 __head 与 __title，没有 meta / body / foot。
+   游戏里几块面板（设置、排行榜、占位页、等待页）沿用卡面那套层次，这里按 .cg-card
+   的同名件补上（字号/颜色照抄，不认识的那个类名不会在别处生效）。
+   头里的徽记同理：kit 只给 .cg-panel__head .cg-ico 上了黄铜色，尺寸得游戏给。 */
+.cg-panel__head .cg-ico { flex: none; width: 26px; height: 26px; font-size: 26px; }
+.cg-panel__meta { color: var(--cg-text-dim); font-size: 12px; }
+.cg-panel__body { color: var(--cg-text-dim); font-size: 13px; }
+.cg-panel__foot { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
 
 /* =============================================================================
  * ③ 游戏侧组件微调
@@ -94,11 +113,12 @@
 /* —— 战斗：名册面板 / 日志 / 决策条 ——
    这三块都是「单类选择器压单类选择器」的场面：app.css 里没有更高优先级可借，
    而 kit 是在 app.css 之后引入的，同权重下 kit 胜。所以覆盖必须写在本文件（最后引入）。 */
-.roster.cg-card { padding: 10px 12px; }
-.roster.cg-card > summary { cursor: pointer; font-size: 13px; color: var(--cg-accent); }
-.log.cg-card { padding: 8px 10px; overflow: auto; } /* kit 的 .cg-card 是 overflow:hidden，会掐掉日志滚动 */
-.decision.cg-card {
-  position: sticky; bottom: 0; z-index: 5; /* kit 的 .cg-card 是 position:relative，会顶掉粘底 */
+.roster.cg-panel { padding: 10px 12px; }
+.roster.cg-panel > summary { cursor: pointer; font-size: 13px; color: var(--cg-accent); }
+/* 日志：面板的 16px 内边距太松，收成 8px；滚动本身由 .cg-scroll 给（.cg-panel 不设 overflow） */
+.log.cg-panel { padding: 8px 10px; }
+.decision.cg-panel {
+  position: sticky; bottom: 0; z-index: 5; /* kit 的 .cg-panel 是 position:relative，会顶掉粘底 */
   padding: 12px 14px;
 }
 
@@ -122,7 +142,7 @@
   font-size: 11px; border-radius: 6px;
 }
 
-/* —— 主菜单标题：kit 的 .cg-card__title 是 17px 正文标题，主菜单要的是整页大标 —— */
+/* —— 主菜单标题：kit 的 .cg-panel__title 是 13.5px 的小节标签，主菜单要的是整页大标 —— */
 .menu .menu-title { font-size: 40px; letter-spacing: 0.14em; color: var(--cg-accent); }
 
 /* —— 输入框：kit 用「边框变色 + 光晕」表示聚焦（它自己那种偏鼠标的做法），

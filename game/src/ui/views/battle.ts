@@ -95,7 +95,7 @@ export function renderBattle(host: HTMLElement): void {
           ${runner?.lastError ? `<p class="warn">联机中断：${escapeHtml(errMsg(runner.lastError))}</p>` : ''}
           ${runner?.waiting ? '<p class="wait-note">等待对手决策…</p>' : ''}
           ${rosterPanelHtml(s)}
-          <div class="cg-card cg-card--static cg-scroll log" id="battle-log">${logHtml(s.facade.drainEvents())}</div>
+          <div class="cg-panel cg-scroll log" id="battle-log">${logHtml(s.facade.drainEvents())}</div>
         </div>
       </div>
       ${pending && (!s.online || myTurn) ? decisionBarHtml(s, pending, submitted) : ''}
@@ -273,7 +273,7 @@ function rosterPanelHtml(s: BattleSession): string {
       </div>`
     })
     .join('')
-  return `<details class="cg-card cg-card--static roster"><summary>我方技能（主动 ${s.own.reduce((n, h) => n + h.activeSkillIds.length, 0)} 张）</summary>${rows}</details>`
+  return `<details class="cg-panel roster"><summary>我方技能（主动 ${s.own.reduce((n, h) => n + h.activeSkillIds.length, 0)} 张）</summary>${rows}</details>`
 }
 
 function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = false): string {
@@ -287,7 +287,7 @@ function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = 
     })
     .join('')
   return `
-  <div class="cg-card cg-card--static decision">
+  <div class="cg-panel decision">
     <div class="decision-title">选择目标（${escapeHtml(pending.caster)} 的技能）${disabled ? ' · 已提交，等待同步…' : ''}</div>
     <div class="picks">${cards}</div>
     <button type="button" class="cg-btn cg-btn--sm cg-btn--block pick-auto" id="btn-auto-pick" ${disabled ? 'disabled' : ''}>交给 AI（自动选择）</button>

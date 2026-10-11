@@ -159,19 +159,19 @@ function waitRoom(host: HTMLElement, token: number, catalog: Catalog, profile: P
   host.innerHTML = `
     ${subBarHtml('在线对战')}
     <main class="placeholder">
-      <article class="cg-card cg-card--featured cg-card--static wait-card">
-        <div class="cg-card__head">
-          ${icon('cg-sigil-moon', 'cg-card__sigil')}
+      <article class="cg-panel cg-panel--featured wait-card">
+        <div class="cg-panel__head">
+          ${icon('cg-sigil-moon')}
           <div>
             <h1 class="room-code">${escapeHtml(code)}</h1>
-            <div class="cg-card__meta">房间码 · 发给对手</div>
+            <div class="cg-panel__meta">房间码 · 发给对手</div>
           </div>
         </div>
-        <div class="cg-card__body">
+        <div class="cg-panel__body">
           <p>${escapeHtml(tip)}</p>
           <p class="hint">数据版本 ${shortHash(dataVersion.dataHash)} · ${escapeHtml(profile.username || '')}</p>
         </div>
-        <div class="cg-card__foot"><a class="cg-btn cg-btn--sm" href="#/">取消并返回</a></div>
+        <div class="cg-panel__foot"><a class="cg-btn cg-btn--sm" href="#/">取消并返回</a></div>
       </article>
     </main>`
 
