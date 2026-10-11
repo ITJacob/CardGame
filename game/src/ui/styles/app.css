@@ -904,21 +904,28 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 
 /* 右栏技能区：两行（主动 / 被动），名条直接是 .hs-head/.hs-meta 给的
    （金色 15px 名字 + 暗色 11.5px 小字，与「新游戏」页同一份样式） */
-.prep-skills { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.prep-skills { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 
 /* 技能摘要：主动 / 被动各一行 4 格。整格点开弹窗编这一侧，格子右上角的 ✕ 卸下这张。
    行里只有「小标签 + 4 格」两件：原先行末还挂一个「4/4」计数（.sk-count），那一列要
    从行的可用宽里扣（约 28px），横屏右栏本就吃紧，扣掉的正是一档卡宽 —— 撤掉后
-   4 格平分整行，卡跟着大一圈。整行 align-items:center，标签与那排卡竖直居中。 */
+   4 格平分整行，卡跟着大一圈。整行 align-items:center，标签与那排卡竖直居中。
+
+   这一排的每一条口径都跟「新游戏」页那一排（.hs-group__tag / .hs-group__row >
+   .card-face）**同名同值**：标签 2.2em、卡片之间 5px 缝、宽度公式
+   min((100% - 15px)/4, 88px)、从左往右排。两页并排看的是同一块技能区，任何一条岔开，
+   同一屏里疏密就不一样——早先整备页是「4 格平分整行 + 卡在列内居中」，横屏缝 14px
+   而展示台只有 5px，一眼就看得出不是一套（2026-10-11 修）。 */
 .sk-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
-.sk-tag { flex: none; width: 2em; font-size: 11px; color: var(--text-dim); }
-/* 卡宽被上限卡住时（超宽屏、竖屏大窗）在列内居中，免得 4 张一起贴左、右边空出一大块 */
-.sk-tiles { flex: 1; min-width: 0; display: grid; justify-items: center; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-/* 格子尺寸口径与展示台的 .hs-group__row > .card-face 同一档：宽度跟着列宽走、上限 88px
+.sk-tag { flex: none; width: 2.2em; font-size: 11px; line-height: 1.2; color: var(--text-dim); }
+/* flex 而不是 4 等分栅格：排法与 .hs-group__row 一致——按公式定宽、5px 缝、从左往右挨着放。
+   nowrap：这行恒是 4 格（缺的位次也有 .empty 占着），公式正好铺满，不必也不会换行。 */
+.sk-tiles { flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: nowrap; gap: 5px; }
+/* 格子尺寸口径与展示台的 .hs-group__row > .card-face 同一档：宽度跟着行宽走、上限 88px
    （右栏宽裕时卡就大），卡内字号走 cqw 跟着卡宽缩——只放大框不放大字，信息条会在卡上显得又小又空。
    横屏再按右栏高度收一档：两行卡 + 名条要塞进 ~220px 的行高里，光看宽度会顶出去。 */
 .sk-tile {
-  position: relative; min-width: 0; width: 100%; max-width: 88px; aspect-ratio: 3 / 4;
+  position: relative; min-width: 0; width: min(calc((100% - 15px) / 4), 88px); aspect-ratio: 3 / 4;
   border-radius: 8px; cursor: pointer;
 }
 .sk-tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -1024,8 +1031,8 @@ table.lb tr.draw td.res { color: var(--text-dim); }
    两页的脚同高之后右栏就同高，偏置再留 56 会让整备的卡比「新游戏」大 3px、
    切页时技能区仍会跳一下。行距也一并对到展示台的 8px，两排行与卡才逐 px 对齐。
    选择器写在这里（.prep-skills 上）是为了让 cqh 仍对着 .hs-side 那个尺寸容器量。 */
-.prep-page[data-orient='landscape'] .prep-skills { gap: 8px; --hs-row-h: max(48px, calc((100cqh - 60px) / 2)); }
-.prep-page[data-orient='landscape'] .sk-tile { max-width: min(88px, calc(var(--hs-row-h) * 3 / 4)); }
+.prep-page[data-orient='landscape'] .prep-skills { --hs-row-h: max(48px, calc((100cqh - 60px) / 2)); }
+.prep-page[data-orient='landscape'] .sk-tile { width: min(calc((100% - 15px) / 4), calc(var(--hs-row-h) * 3 / 4), 92px); }
 
 /* ---------- 拖拽（阵型摆位 + 技能槽调序） ---------- */
 /* touch-action:none 让触屏上的拖动不被页面滚动抢走；拖源才有，不影响别处滚动。
