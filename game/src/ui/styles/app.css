@@ -723,25 +723,23 @@ body.zoom-open { overflow: hidden; }
    :has 会跟着重算，不必重绘。 */
 .viewport-page:has(> .hero-showcase[data-orient='portrait']) .hs-notes--top { display: none; }
 
-/* 横屏动作区改横排、允许换行：竖屏那套「状态行 / 动作 / 主按钮」是竖着叠的三段，
-   要 96px；而横屏的 foot 行是 auto —— 它矮多少，右栏的技能卡就高多少
-   （844×390 上每 30px 约换 15px 卡高）。.row-actions 摊平（display:contents）后
-   按钮就是同一排的平级项，换行交给可用宽度；状态行整行独占（见下），
-   于是 #/new 收成「状态 / 按钮」两行 ≈ 56px，技能卡从 46×61 长到约 61×81。
+/* 横屏动作区：竖屏那套「状态行 / 动作 / 主按钮」竖着叠三段要 96px，而横屏的 foot 行是
+   auto —— 它矮多少，右栏的技能卡就高多少（844×390 上每 30px 约换 15px 卡高）。所以摊成
+   一排：.row-actions 用 display:contents 摊平后，按钮、输入框都是同一排的平级项，换行交给
+   可用宽度；状态行整行独占（见下）。于是 #/new 收成「状态 / 按钮」两行 ≈ 56px，
+   技能卡从 46×61 长到约 61×81。
 
-   例外是「内容多到横排反而更高」的那条（在线大厅：.hs-notes 状态行 + 五颗按钮 +
-   房间码输入，横排要三行 ≈ 102px，比竖排的 96px 还高），用 :has() 挑出来维持竖排。
-   :has() 不被支持时退回横排，只是那屏矮几个 px，不会坏。
+   三页同一条排法：**次级动作靠左，主按钮靠右收尾**（#/new 的「开始战斗」、整备的「完成」、
+   在线大厅的「创建房间」）。在线大厅原来靠 :has(> .hs-notes) 单独走竖排（那句话 + 五颗
+   按钮 + 房间码输入，横排要三行、反而比竖排高）；现在那两句话横屏挪进了页眉
+   （见上 .hs-notes--top），脚里只剩「按钮行 + 输入行」两排，于是改用下面那套「一行一排」。
 
    这一节的选择器一律只写 [data-orient]，不带页名：整备页的脚也用 .hs-foot
    （见下面整备段），两页的按钮尺寸与排法从同一条规则里取，改一处两页一起动。 */
 [data-orient='landscape'] .hs-foot {
   flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px;
 }
-[data-orient='landscape'] .hs-foot:has(> .hs-notes) {
-  flex-direction: column; gap: 8px; align-items: stretch;
-}
-[data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .row-actions { display: contents; }
+[data-orient='landscape'] .hs-foot .row-actions { display: contents; }
 /* 横屏按钮：矮一档（右栏只有 ~280 宽，四颗得挤进一行）＋一律不换行——
    12px 的一行字 + 30px 高就是这排的设计高度，文字一折行整排就窜到 48px。
    同时压掉 kit 的 .row-actions .cg-btn{flex:1}（basis 0）：basis 0 在挤不下的行里
@@ -751,14 +749,28 @@ body.zoom-open { overflow: hidden; }
   flex: 0 1 auto; white-space: nowrap;
   min-height: 30px; padding: 4px 6px; font-size: 12px;
 }
-/* 主按钮不再整宽（那是竖屏的排法），横屏它只是这排里的最后一颗、靠右收尾。 */
-[data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .cg-btn--block {
-  width: auto; margin-left: auto;
-}
+/* 主按钮不再整宽（那是竖屏的排法），横屏它只是这排里的最后一颗、靠右收尾。
+   ── 挑 --block 会漏掉在线大厅那颗（它只是 --primary，加 --block 会让竖屏那排
+   四个按钮里它一个占满整行），所以宽/靠右两条分开写。 */
+[data-orient='landscape'] .hs-foot .cg-btn--block { width: auto; }
+[data-orient='landscape'] .hs-foot .cg-btn--primary { margin-left: auto; }
 /* 状态行整行独占（basis 100% 必然换行）：编队合法是给整队看的一句话，
    跟按钮挤在同一排会让人以为它是颗按钮；拆开成「状态一行 / 按钮一行」。 */
-[data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .hs-status {
-  flex: 1 1 100%; min-width: 0;
+[data-orient='landscape'] .hs-foot .hs-status { flex: 1 1 100%; min-width: 0; }
+/* 在线大厅的脚是两排（按钮 / 房间码），一摊平就有麻烦：大屏上那只输入框会挤进按钮那排
+   （1024 宽起，四颗按钮 242px 之后还容得下 110px 的输入框），「加入房间」反倒落单到第二行。
+   所以这种脚不摊平，改「一行一排」：每排各自横排、次级靠左主按钮靠右，整块贴住页底。
+   再把这排提到按钮排上面，让**动作行**落到脚的最后一行——另两页的动作行本来就在最后一行
+   （它上面是状态行），三页的主按钮于是落在同一条底线上。挑「第二排 .row-actions」这个形状，
+   不挑页名。 */
+[data-orient='landscape'] .hs-foot:has(> .row-actions + .row-actions) {
+  flex-direction: column; align-items: stretch; justify-content: flex-end;
+}
+[data-orient='landscape'] .hs-foot:has(> .row-actions + .row-actions) > .row-actions {
+  display: flex; width: 100%; gap: 6px;
+}
+[data-orient='landscape'] .hs-foot:has(> .row-actions + .row-actions) > .row-actions + .row-actions {
+  order: -1;
 }
 /* 整备页的脚只剩一颗「完成」，横屏里状态行仍常驻——空着也占满自己那一行
    （1lh = 该行 12.5px × 继承的 1.6 = 20px，前面那条 20px 是给不认 lh 单位的旧浏览器兜底）。
