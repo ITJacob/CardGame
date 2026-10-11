@@ -460,19 +460,22 @@ body.zoom-open { overflow: hidden; }
 .zoom-close:hover { color: var(--text); border-color: var(--accent-dim); }
 /* 卡右侧放不下详情（竖版/窄屏）：详情改成盖在卡面上的半透层，点卡面开关 */
 @media (max-width: 1099.98px), (orientation: portrait) {
+  /* 卡名在卡底、提示条又在卡外下方，高度受限时得先给提示条留出 34px */
+  .card-zoom { --zh: min(calc(100vh - 58px), calc((100vw - 24px) * 4 / 3)); }
   .zoom-tip {
     position: absolute; inset: 0; width: auto; max-height: none;
     background: rgba(8, 10, 14, 0.82); backdrop-filter: blur(4px);
     opacity: 0; pointer-events: none; transition: opacity 0.15s linear;
   }
   .card-zoom.tip-on .zoom-tip { opacity: 1; pointer-events: auto; }
-  /* 盖住卡面之前，留个可点提示（点到的是它下面的卡面）；卡底是名字条，所以贴卡顶放 */
+  /* 盖住卡面之前，留个可点提示：挂在卡外下方，不压卡名也不压画面；点它就是展开详情 */
   .zoom-hint {
-    display: block; position: absolute; left: 50%; top: 12px; transform: translateX(-50%);
+    display: block; position: absolute; left: 50%; top: calc(100% + 8px); transform: translateX(-50%);
     padding: 3px 10px; border-radius: 999px; font-size: 12px; white-space: nowrap;
     background: rgba(8, 10, 14, 0.7); border: 1px solid var(--border); color: var(--text-dim);
-    pointer-events: none;
+    cursor: pointer;
   }
+  .zoom-hint:hover { color: var(--text); border-color: var(--accent-dim); }
   .card-zoom.tip-on .zoom-hint { display: none; }
 }
 

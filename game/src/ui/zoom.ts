@@ -60,8 +60,8 @@ export function openCardZoom(opts: ZoomOpts): void {
   el.addEventListener('click', (e) => {
     const t = e.target as HTMLElement
     if (t.closest('.zoom-close')) return close()
-    // 竖版/窄屏：卡面与详情叠在一起，点这一团就是开关详情
-    if (!window.matchMedia(WIDE).matches && t.closest('.zoom-stage')) {
+    // 竖版/窄屏：卡面、详情、卡外那条提示叠在一起，点哪都是开关详情
+    if (!window.matchMedia(WIDE).matches && t.closest('.zoom-stage, .zoom-hint')) {
       el.classList.toggle('tip-on')
       return
     }
