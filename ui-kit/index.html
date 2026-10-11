@@ -356,6 +356,21 @@
     </div>
   </section>
 
+  <!-- 标签 -->
+  <section class="sec">
+    <h2>标签 .cg-tag</h2>
+    <p>界面上的小标记：途径 / 属性 / 状态 / 分类。暗底黄铜描边，可选状态色（accent / ok / warn / danger / muted）；可带图标或关闭 X。</p>
+    <div class="cg-row" style="flex-wrap:wrap;gap:8px">
+      <span class="cg-tag"><svg class="cg-ico"><use href="#cg-sigil-star"/></svg>不眠者</span>
+      <span class="cg-tag cg-tag--accent">序列0</span>
+      <span class="cg-tag cg-tag--ok">已晋升</span>
+      <span class="cg-tag cg-tag--warn">理智侵蚀 72%</span>
+      <span class="cg-tag cg-tag--danger">封印中</span>
+      <span class="cg-tag cg-tag--muted">未解锁</span>
+      <span class="cg-tag">可移除<button class="cg-tag__close" aria-label="移除"><svg class="cg-ico"><use href="#cg-close"/></svg></button></span>
+    </div>
+  </section>
+
 </main>
 
 <!-- 悬浮返回箭头 -->
@@ -465,8 +480,13 @@
       }
       sync();
     }));
-    sync();
+      sync();
   }
+
+  // 标签：点关闭 X 移除自身
+  document.querySelectorAll('.cg-tag__close').forEach(b => b.addEventListener('click', () => {
+    const tag = b.closest('.cg-tag'); if (tag) tag.remove();
+  }));
 </script>
 </body>
 </html>
