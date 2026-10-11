@@ -442,10 +442,11 @@ function skillRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): strin
     </div>`)
   }
 
+  // 行末不再挂「已装/上限」的计数：那一列要从行的可用宽里扣，横屏本就吃紧，
+  // 扣掉的那一档正是技能卡被缩小的原因。要看装了几张，弹窗页签上写着。
   return `<div class="sk-row">
     <span class="sk-tag">${SLOT_LABEL[kind]}</span>
     <div class="sk-tiles">${tiles.join('')}</div>
-    <span class="sk-count">${ids.length}/${limit}</span>
   </div>`
 }
 
