@@ -1,6 +1,7 @@
 // 在线对战大厅（P7）：生成名册 → 整备（可选）→ 建房/加入/快速匹配 → 等对手 → 进 #/battle。
 // 传输走 Firestore（firebaseChannel）；数据版本不符一律拒绝开局（§3.4 铁律 2）。
 import { subBarHtml, escapeHtml } from '../components/chrome'
+import { icon } from '../components/icons'
 import { cardDetailHtml, hydrateArt } from '../components/cardFace'
 import { heroRowHtml } from '../components/hero'
 import { enableHoverCard, hideCardPop } from '../hover'
@@ -55,15 +56,18 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
       <div class="hero-list">${rows}</div>
       ${errors.length > 0 ? `<p class="warn">编队问题：${escapeHtml(errors.join(' / '))}</p>` : '<p class="ok">编队合法</p>'}
       <div class="row-actions">
-        <a class="btn" href="#/prep">整备 · 技能 / 阵型</a>
-        <button type="button" class="btn" id="btn-reroll">重新生成英雄</button>
+        <a class="cg-btn" href="#/prep">整备 · 技能 / 阵型</a>
+        <button type="button" class="cg-btn" id="btn-reroll">重新生成英雄</button>
       </div>
       <div class="row-actions">
-        <button type="button" class="btn" id="btn-quick">快速匹配</button>
-        <button type="button" class="btn primary" id="btn-create">创建房间</button>
+        <button type="button" class="cg-btn" id="btn-quick">快速匹配</button>
+        <button type="button" class="cg-btn cg-btn--primary" id="btn-create">创建房间</button>
       </div>
-      <div class="field"><span>房间码</span><input id="inp-code" maxlength="6" placeholder="输入对手的 6 位房间码" autocomplete="off" /></div>
-      <button type="button" class="btn" id="btn-join">加入房间</button>
+      <label class="cg-field">
+        <span class="cg-field__label">房间码</span>
+        <input class="cg-input" id="inp-code" maxlength="6" placeholder="输入对手的 6 位房间码" autocomplete="off" />
+      </label>
+      <button type="button" class="cg-btn" id="btn-join">加入房间</button>
       <p class="hint" id="online-status">联机对战自动推进，遇决策点暂停等双方选定；对手掉线会在超时后中止。</p>
       <p class="hint">双方卡池数据版本必须一致（${shortHash(dataVersion.dataHash)}）；不一致会拒绝开局。</p>
     </main>`
@@ -155,10 +159,20 @@ function waitRoom(host: HTMLElement, token: number, catalog: Catalog, profile: P
   host.innerHTML = `
     ${subBarHtml('在线对战')}
     <main class="placeholder">
-      <h1 class="room-code">${escapeHtml(code)}</h1>
-      <p>${escapeHtml(tip)}</p>
-      <p class="hint">数据版本 ${shortHash(dataVersion.dataHash)} · ${escapeHtml(profile.username || '')}</p>
-      <p><a href="#/">取消并返回</a></p>
+      <article class="cg-card cg-card--featured cg-card--static wait-card">
+        <div class="cg-card__head">
+          ${icon('cg-sigil-moon', 'cg-card__sigil')}
+          <div>
+            <h1 class="room-code">${escapeHtml(code)}</h1>
+            <div class="cg-card__meta">房间码 · 发给对手</div>
+          </div>
+        </div>
+        <div class="cg-card__body">
+          <p>${escapeHtml(tip)}</p>
+          <p class="hint">数据版本 ${shortHash(dataVersion.dataHash)} · ${escapeHtml(profile.username || '')}</p>
+        </div>
+        <div class="cg-card__foot"><a class="cg-btn cg-btn--sm" href="#/">取消并返回</a></div>
+      </article>
     </main>`
 
   // 等待期间离开本页（不是去开战）→ 房主撤房，别把废弃房间留给快速匹配

@@ -2,6 +2,7 @@
 // 交互：点卡面 = 放大居中看大图（大图上 hover 出详情）；hover 时右上角浮出锁标，点锁标
 // 才是锁定/解锁。详情浮层（hover 卡面 450ms）保留。
 import { subBarHtml, escapeHtml } from '../components/chrome'
+import { icon } from '../components/icons'
 import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
 import { enableHoverCard, hideCardPop } from '../hover'
 import { hideCardZoom, openCardZoom } from '../zoom'
@@ -27,13 +28,15 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
   const classIds = [...catalog.classDefs.keys()].sort()
   const current = classIds.includes(selected) ? selected : (profile.unlockedClasses[0] ?? classIds[0] ?? '')
 
+  // 职业列表项 = kit 的「选中提示按钮」.cg-select：is-on 是「正在看这个」，环上的绿勾是「已解锁」。
+  // 环里的 ✓ 用精灵的 cg-check，不再自己画一个 CSS 对勾。
   const classRows = classIds
     .map((id) => {
       const unlocked = profile.unlockedClasses.includes(id)
       const def = catalog.classDefs.get(id)
       const n = def?.knownSkills.length ?? 0
-      return `<button type="button" class="cls-row${id === current ? ' active' : ''}${unlocked ? ' unlocked' : ''}" data-cls="${escapeHtml(id)}">
-        <span class="cls-dot">${unlocked ? '●' : '○'}</span>
+      return `<button type="button" class="cg-select cls-row${id === current ? ' is-on' : ''}${unlocked ? ' is-unlocked' : ''}" data-cls="${escapeHtml(id)}" title="${escapeHtml(def?.name ?? id)}">
+        <span class="cg-select__ring">${icon('cg-check')}</span>
         <span class="cls-name">${escapeHtml(def?.name ?? id)}</span>
         <span class="cls-n">${n}</span>
       </button>`
@@ -76,11 +79,11 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
   host.innerHTML = `
     ${subBarHtml('现有卡池')}
     <main class="pool-page">
-      <aside class="cls-list">${classRows}</aside>
-      <section class="pool-main">
+      <aside class="cls-list cg-scroll">${classRows}</aside>
+      <section class="pool-main cg-card cg-card--static">
         <div class="pool-head">
-          <h2>${escapeHtml(def?.name ?? current)}</h2>
-          <button type="button" class="btn ${profile.unlockedClasses.includes(current) ? 'danger' : 'primary'}" id="btn-toggle-cls">
+          <h2 class="cg-card__title">${escapeHtml(def?.name ?? current)}</h2>
+          <button type="button" class="cg-btn cg-btn--sm ${profile.unlockedClasses.includes(current) ? 'cg-btn--danger' : 'cg-btn--primary'}" id="btn-toggle-cls">
             ${profile.unlockedClasses.includes(current) ? '锁定该职业' : '解锁该职业'}
           </button>
         </div>
@@ -165,17 +168,14 @@ function sync(host: HTMLElement, catalog: Catalog, current: string): void {
   })
 
   host.querySelectorAll<HTMLElement>('.cls-row[data-cls]').forEach((el) => {
-    const on = profile.unlockedClasses.includes(el.dataset.cls ?? '')
-    el.classList.toggle('unlocked', on)
-    const dot = el.querySelector('.cls-dot')
-    if (dot) dot.textContent = on ? '●' : '○'
+    el.classList.toggle('is-unlocked', profile.unlockedClasses.includes(el.dataset.cls ?? ''))
   })
 
   const btnCls = host.querySelector<HTMLButtonElement>('#btn-toggle-cls')
   if (btnCls) {
     const on = profile.unlockedClasses.includes(current)
     btnCls.textContent = on ? '锁定该职业' : '解锁该职业'
-    btnCls.className = `btn ${on ? 'danger' : 'primary'}`
+    btnCls.className = `cg-btn cg-btn--sm ${on ? 'cg-btn--danger' : 'cg-btn--primary'}`
   }
 
   const hint = host.querySelector<HTMLElement>('#pool-hint')

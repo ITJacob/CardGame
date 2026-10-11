@@ -63,6 +63,10 @@ tools/               **与 docs 设计无关的周边工具**（产物落在 sit
 （收纳原则：docs/ 只与设计有关；凡产物落在 site/、或处理图片等非设计事务的脚本，一律放 tools/）
 docs/诡秘之主资料库/  原著设定源素材（世界体系/九大源质/界域机制/职业对照表）——工作流① 设定补全的落点
 site/               技能池 wiki（现网静态站，托管于 /CardGame/site/；游戏首页链入）
+ui-kit/             game 端的 UI 组件套件（唯一源）：ui-kit.css（.cg-* 组件与 --cg-* token）
+                    + ui-kit.svg（<symbol> 图标精灵）+ index.html（套件自带预览页）。
+                    game 由 main.ts 直接 import 前两者、构建进产物，不拷贝；对接说明见
+                    game/src/ui/styles/kit-bridge.css 文件头与 game/DESIGN.md
 game/               Web 游戏端（TypeScript + Vite + 原生 DOM；P0/P1 已完成）
 ├─ DESIGN.md        游戏端框架设计方案（分层/内核契约/战外上下文/构建部署/数据版本机制/分期）
 ├─ data.lock.json   数据版本锚点：验收 docs/json 后由 npm run data:pin 更新（勿手改）

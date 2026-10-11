@@ -95,7 +95,7 @@ export function renderBattle(host: HTMLElement): void {
           ${runner?.lastError ? `<p class="warn">联机中断：${escapeHtml(errMsg(runner.lastError))}</p>` : ''}
           ${runner?.waiting ? '<p class="wait-note">等待对手决策…</p>' : ''}
           ${rosterPanelHtml(s)}
-          <div class="log" id="battle-log">${logHtml(s.facade.drainEvents())}</div>
+          <div class="cg-card cg-card--static cg-scroll log" id="battle-log">${logHtml(s.facade.drainEvents())}</div>
         </div>
       </div>
       ${pending && (!s.online || myTurn) ? decisionBarHtml(s, pending, submitted) : ''}
@@ -215,12 +215,19 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
     .slice(0, 3)
     .map((st) => `<span class="chip">${escapeHtml(st.defId)}${st.stacks > 1 ? `×${st.stacks}` : ''}</span>`)
     .join('')
+  // 血条/怒气条 = kit 的 .cg-progress（.bar hp / .bar gauge 只当钩子与配色选择器）。
+  // 格子小，尺寸由 kit-bridge 收；数值走 .bar-num 叠在轨道上。
   return `
   <div class="tile ${side}${dead ? ' dead' : ''}${targetable ? ' targetable' : ''}${targetable && canPick ? ' pickable' : ''}" style="grid-column:${col};grid-row:${row}" data-unit="${escapeHtml(u.id)}">
     <div class="avatar">${emoji}</div>
     <div class="tname">${escapeHtml(meta?.name ?? u.id)}<span class="tclass">${escapeHtml(meta?.classId ?? '')}</span></div>
-    <div class="bar hp"><i style="width:${hpPct}%"></i><span>${u.hp}/${u.hpMax}</span></div>
-    <div class="bar gauge"><i style="width:${gaugePct}%"></i></div>
+    <div class="cg-progress bar hp">
+      <div class="cg-progress__track"><div class="cg-progress__bar cg-progress__bar--warn" style="width:${hpPct}%"></div></div>
+      <span class="bar-num">${u.hp}/${u.hpMax}</span>
+    </div>
+    <div class="cg-progress bar gauge">
+      <div class="cg-progress__track"><div class="cg-progress__bar" style="width:${gaugePct}%"></div></div>
+    </div>
     <div class="statuses">${statuses}</div>
   </div>`
 }
@@ -228,10 +235,10 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
 function statusBarHtml(s: BattleSession, view: CombatView, pending: boolean, ended: boolean): string {
   const phaseName: Record<string, string> = { midnight: '午夜', dawn: '黎明', day: '白昼', dusk: '黄昏', night: '黑夜' }
   const controls = s.online
-    ? `<button type="button" id="btn-pause">${s.online.runner?.isPaused ? '继续' : '暂停'}</button>
+    ? `<button type="button" class="cg-btn cg-btn--sm" id="btn-pause">${s.online.runner?.isPaused ? '继续' : '暂停'}</button>
        <span class="hud-count">决策 #${s.online.runner?.decisionSeq ?? 0}</span>`
-    : `<button type="button" id="btn-step" ${pending || ended ? 'disabled' : ''}>推进一 tick</button>
-       <button type="button" id="btn-auto" ${ended ? 'disabled' : ''}>自动播放</button>`
+    : `<button type="button" class="cg-btn cg-btn--sm" id="btn-step" ${pending || ended ? 'disabled' : ''}>推进一 tick</button>
+       <button type="button" class="cg-btn cg-btn--sm" id="btn-auto" ${ended ? 'disabled' : ''}>自动播放</button>`
   return `
   <div class="hud">
     <span class="hud-tick">tick ${view.tick}</span>
@@ -260,13 +267,13 @@ function rosterPanelHtml(s: BattleSession): string {
         })
         .join('')
       return `<div class="roster-row">
-        <span class="roster-avatar">${avatarEmoji(h.constitutionId, h.gender)}</span>
+        <span class="cg-avatar cg-avatar--sm roster-avatar"><span class="cg-avatar__emoji">${avatarEmoji(h.constitutionId, h.gender)}</span></span>
         <span class="roster-name">${escapeHtml(h.name)}</span>
         <div class="roster-cards">${cards}</div>
       </div>`
     })
     .join('')
-  return `<details class="roster"><summary>我方技能（主动 ${s.own.reduce((n, h) => n + h.activeSkillIds.length, 0)} 张）</summary>${rows}</details>`
+  return `<details class="cg-card cg-card--static roster"><summary>我方技能（主动 ${s.own.reduce((n, h) => n + h.activeSkillIds.length, 0)} 张）</summary>${rows}</details>`
 }
 
 function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = false): string {
@@ -275,15 +282,15 @@ function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = 
       const meta = c.occupant ? s.unitMeta.get(c.occupant) : undefined
       const name = meta?.name ?? c.occupant ?? '空位'
       const emoji = meta ? avatarEmoji(meta.constitutionId, meta.gender) : '⬜'
-      return `<button type="button" class="pick" data-pick="${escapeHtml(c.occupant ?? '')}" ${disabled ? 'disabled' : ''}>
+      return `<button type="button" class="cg-btn cg-btn--sm pick" data-pick="${escapeHtml(c.occupant ?? '')}" ${disabled ? 'disabled' : ''}>
         <span class="pick-face">${emoji}</span><span class="pick-name">${escapeHtml(name)}</span></button>`
     })
     .join('')
   return `
-  <div class="decision">
+  <div class="cg-card cg-card--static decision">
     <div class="decision-title">选择目标（${escapeHtml(pending.caster)} 的技能）${disabled ? ' · 已提交，等待同步…' : ''}</div>
     <div class="picks">${cards}</div>
-    <button type="button" class="pick-auto" id="btn-auto-pick" ${disabled ? 'disabled' : ''}>交给 AI（自动选择）</button>
+    <button type="button" class="cg-btn cg-btn--sm cg-btn--block pick-auto" id="btn-auto-pick" ${disabled ? 'disabled' : ''}>交给 AI（自动选择）</button>
   </div>`
 }
 
@@ -301,15 +308,21 @@ function endedHtml(s: BattleSession, outcome: string): string {
           ? '<p class="hint warn">对手未回传指纹，本局未验证（记为中断）</p>'
           : `<p class="hint warn">指纹不一致，本局未验证（记为中断）：我方 ${escapeHtml(v.mine)} / 对手 ${escapeHtml(v.theirs)}</p>`
   const again = s.online
-    ? '<a class="btn primary" href="#/online">再来一局</a>'
-    : '<a class="btn primary" href="#/new">再来一局</a>'
-  return `<div class="ended"><div class="ended-card">
-    <h2>${label}</h2>
-    ${note}
-    ${again}
-    <a class="btn" href="#/leaderboard">看排行榜</a>
-    <a class="btn" href="#/">返回主菜单</a>
-  </div></div>`
+    ? '<a class="cg-btn cg-btn--primary" href="#/online">再来一局</a>'
+    : '<a class="cg-btn cg-btn--primary" href="#/new">再来一局</a>'
+  // 结算 = kit 的模态（`.cg-modal.is-open` 才显示）。`.ended/.ended-card` 只留作测试钩子。
+  return `<div class="cg-modal is-open ended" role="dialog" aria-modal="true">
+    <div class="cg-modal__backdrop"></div>
+    <div class="cg-modal__dialog ended-card">
+      <div class="cg-modal__head"><h2 class="cg-modal__title">${label}</h2></div>
+      <div class="cg-modal__body">${note || '<p>本局结束。</p>'}</div>
+      <div class="cg-modal__foot">
+        ${again}
+        <a class="cg-btn" href="#/leaderboard">看排行榜</a>
+        <a class="cg-btn cg-btn--ghost" href="#/">返回主菜单</a>
+      </div>
+    </div>
+  </div>`
 }
 
 function recordOf(s: BattleSession, outcome: CombatOutcome, stats: CombatStats): MatchRecord {

@@ -7,6 +7,7 @@
 // 摆法由视口决定，判据与 CSS 那条媒体查询是同一个字符串（横板够宽 → 详情常驻卡右侧；
 // 否则点卡面把详情半透盖在卡上）。点击时现判，不需要盯 resize。
 import { hydrateArt } from './components/cardFace'
+import { icon } from './components/icons'
 
 /** 与 app.css 里「横板」那条媒体查询保持一字不差 */
 const WIDE = '(min-width: 1100px) and (orientation: landscape)'
@@ -34,10 +35,10 @@ export function openCardZoom(opts: ZoomOpts): void {
   el.setAttribute('aria-modal', 'true')
   el.tabIndex = -1 // 只为可聚焦（Esc 与读屏进得去），不进 tab 序列
   el.innerHTML = `
-    <button type="button" class="zoom-close" aria-label="关闭">✕</button>
+    <button type="button" class="cg-close zoom-close" aria-label="关闭">${icon('cg-close')}</button>
     <div class="zoom-stage">
       <div class="zoom-face">${opts.cardHtml}</div>
-      <div class="zoom-tip card-detail" role="tooltip">${opts.detailHtml}</div>
+      <div class="zoom-tip cg-scroll card-detail" role="tooltip">${opts.detailHtml}</div>
       <span class="zoom-hint" aria-hidden="true">点卡面看详情</span>
     </div>`
   document.body.append(el)

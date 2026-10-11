@@ -71,6 +71,10 @@ export default defineConfig(({ command }) => ({
   // 运行时一律走相对路径（./docs/…、./site/），两种 base 下都解析正确。
   base: command === 'build' ? '/CardGame/' : '/',
   plugins: [serveRepoDir('/docs', 'docs'), serveRepoDir('/site', 'site')],
+  // ui-kit/ 是仓库根的设计件（与 docs/、site/ 同层）。它的 CSS 与图标精灵由 main.ts
+  // 直接 import，构建进产物（不拷贝进 game/，唯一源仍在 ui-kit/）——dev 下这类 import
+  // 会变成 /@fs/ 请求，必须先把它加进 Vite 的文件白名单，否则一律 403。
+  server: { fs: { allow: [repoRoot] } },
   define: {
     __DATA_VERSION__: JSON.stringify(computeDataVersion()),
   },

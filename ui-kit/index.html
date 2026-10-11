@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CardGame · 诡秘之主风格 UI Kit 预览</title>
+<link rel="stylesheet" href="ui-kit.css">
+<style>
+  /* 仅预览页排版用：把各组件分组陈列，不属 ui-kit 组件本身 */
+  body { margin: 0; min-height: 100vh; }
+  .showcase { max-width: 1080px; margin: 0 auto; padding: 24px 20px 80px; }
+  .sec { margin: 28px 0; }
+  .sec > h2 {
+    font-family: var(--cg-font-display); color: var(--cg-accent);
+    font-size: 15px; letter-spacing: .08em; margin: 0 0 4px;
+    border-left: 3px solid var(--cg-accent-dim); padding-left: 10px;
+  }
+  .sec > p { color: var(--cg-text-dim); font-size: 12.5px; margin: 0 0 14px; padding-left: 13px; }
+  .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 14px; }
+  .grid-ava { display: flex; gap: 22px; align-items: flex-end; flex-wrap: wrap; }
+  .ava-cap { text-align: center; color: var(--cg-text-dim); font-size: 11px; margin-top: 6px; }
+  .scroll-demo { height: 220px; border: 1px solid var(--cg-border); border-radius: var(--cg-radius); padding: 6px 4px; }
+  .path-row { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: var(--cg-radius-sm); }
+  .path-row:hover { background: var(--cg-panel); }
+  .path-row .t { flex: 1; }
+  .path-row .t b { color: var(--cg-text); font-size: 13px; }
+  .path-row .t small { color: var(--cg-text-dim); display: block; font-size: 11px; }
+  /* 弹窗静态预览：在流内展示，不受 fixed 影响 */
+  .modal-static { position: relative; border: 1px dashed var(--cg-border); border-radius: var(--cg-radius-lg); padding: 18px; background: rgba(0,0,0,.2); }
+  .modal-static .cg-modal__dialog { position: static; animation: none; width: 100%; }
+</style>
+</head>
+<body class="cg-kit cg-bg cg-bg--fog">
+
+<!-- ===== 矢量精灵（内联，保证预览离线可见；正式接入时改为 <link>/inline 一次即可） ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="cg-close" viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+  <symbol id="cg-back" viewBox="0 0 24 24"><path d="M15 5 L8 12 L15 19"/></symbol>
+  <symbol id="cg-check" viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19 6.5"/></symbol>
+  <symbol id="cg-chevron" viewBox="0 0 24 24"><path d="M6 9 L12 15 L18 9"/></symbol>
+  <symbol id="cg-cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9 19 19M19 5l-2.1 2.1M7.1 16.9 5 19"/></symbol>
+  <symbol id="cg-sigil-star" viewBox="0 0 24 24"><path d="M12 2 L13.6 10.4 L22 12 L13.6 13.6 L12 22 L10.4 13.6 L2 12 L10.4 10.4 Z"/><circle cx="12" cy="12" r="2.4" fill="none"/></symbol>
+  <symbol id="cg-sigil-moon" viewBox="0 0 24 24"><path d="M15.5 4.5 A9 9 0 1 0 19.5 17 A7 7 0 0 1 15.5 4.5 Z"/></symbol>
+  <symbol id="cg-sigil-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1"/></symbol>
+  <symbol id="cg-sigil-wheel" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2"/><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="cg-sigil-hermit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 5 L17 8.5 L17 15.5 L12 19 L7 15.5 L7 8.5 Z"/><path d="M12 19 L7 8.5 L17 8.5 Z"/></symbol>
+  <symbol id="cg-sigil-fool" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M5 19 L19 5"/><path d="M18 4.5 l1.2 1.2 -2.4 .2 Z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="cg-sigil-tower" viewBox="0 0 24 24"><path d="M9 21 V8 H15 V21"/><path d="M12 2 L9.5 7 L12.5 9 L10 14"/></symbol>
+  <symbol id="cg-warn" viewBox="0 0 24 24"><path d="M12 3 L22 20 H2 Z"/><line x1="12" y1="10" x2="12" y2="15"/><circle cx="12" cy="18" r=".9" fill="currentColor" stroke="none"/></symbol>
+</svg>
+
+<!-- ===== 导航栏 ===== -->
+<nav class="cg-nav">
+  <span class="cg-nav__brand"><svg class="cg-ico"><use href="#cg-sigil-star"/></svg>诡秘牌阵</span>
+  <div class="cg-nav__links">
+    <a class="cg-nav__link is-active">牌库</a>
+    <a class="cg-nav__link">对战</a>
+    <a class="cg-nav__link">整备</a>
+    <a class="cg-nav__link">排行</a>
+  </div>
+  <div class="cg-nav__utils">
+    <button class="cg-btn cg-btn--ghost cg-btn--icon" aria-label="设置"><svg class="cg-ico"><use href="#cg-cog"/></svg></button>
+    <span class="cg-avatar cg-avatar--sm cg-avatar--legendary"><span class="cg-avatar__emoji">🜂</span><span class="cg-avatar__frame"></span></span>
+  </div>
+</nav>
+
+<main class="showcase">
+
+  <!-- 背景底图说明 -->
+  <section class="sec">
+    <h2>背景底图 .cg-bg</h2>
+    <p>当前整页即套用：暗角 + 暗雾 + 极淡八芒环神秘几何（tile，改 --cg-accent 即整体变色）。可加 .cg-bg--fog 增强雾感。</p>
+  </section>
+
+  <!-- 区域卡片 -->
+  <section class="sec">
+    <h2>区域卡片 .cg-card</h2>
+    <p>顶部稀有度细线 + 四角卷草 + 途径徽记；featured 发光、locked 斜体置灰。每张含「选中提示按钮」。</p>
+    <div class="grid-cards">
+      <article class="cg-card cg-card--rare">
+        <span class="cg-card__rarity"></span>
+        <div class="cg-card__head"><svg class="cg-ico cg-card__sigil"><use href="#cg-sigil-fool"/></svg>
+          <div><h3 class="cg-card__title">占卜之家</h3><div class="cg-card__meta">序列0 · 占卜家</div></div></div>
+        <p class="cg-card__body">弥漫熏香的静室，占卜家于此推演命运之线的起点。</p>
+        <div class="cg-card__foot">
+          <button class="cg-select" data-select><span class="cg-select__ring"><svg class="cg-ico"><use href="#cg-check"/></svg></span><span class="cg-select__txt">选择区域</span></button>
+        </div>
+      </article>
+
+      <article class="cg-card cg-card--featured cg-card--legendary">
+        <span class="cg-card__rarity"></span>
+        <div class="cg-card__head"><svg class="cg-ico cg-card__sigil"><use href="#cg-sigil-star"/></svg>
+          <div><h3 class="cg-card__title">不眠之塔</h3><div class="cg-card__meta">序列0 · 不眠者</div></div></div>
+        <p class="cg-card__body">永夜笼罩的高塔，星辉是此处唯一的光。推荐首发区域。</p>
+        <div class="cg-card__foot">
+          <button class="cg-select is-on" data-select><span class="cg-select__ring"><svg class="cg-ico"><use href="#cg-check"/></svg></span><span class="cg-select__txt">已选区域</span></button>
+        </div>
+      </article>
+
+      <article class="cg-card cg-card--uncommon">
+        <span class="cg-card__rarity"></span>
+        <div class="cg-card__head"><svg class="cg-ico cg-card__sigil"><use href="#cg-sigil-moon"/></svg>
+          <div><h3 class="cg-card__title">药师回廊</h3><div class="cg-card__meta">序列0 · 药师</div></div></div>
+        <p class="cg-card__body">弯月悬于拱窗，草药与汞蒸气在廊间游走。</p>
+        <div class="cg-card__foot">
+          <button class="cg-select" data-select><span class="cg-select__ring"><svg class="cg-ico"><use href="#cg-check"/></svg></span><span class="cg-select__txt">选择区域</span></button>
+        </div>
+      </article>
+
+      <article class="cg-card cg-card--epic">
+        <span class="cg-card__rarity"></span>
+        <div class="cg-card__head"><svg class="cg-ico cg-card__sigil"><use href="#cg-sigil-wheel"/></svg>
+          <div><h3 class="cg-card__title">命运回廊</h3><div class="cg-card__meta">序列0 · 怪物</div></div></div>
+        <p class="cg-card__body">八辐轮在穹顶缓缓转动，每一次停驻都改写棋子落点。</p>
+        <div class="cg-card__foot">
+          <button class="cg-select" data-select><span class="cg-select__ring"><svg class="cg-ico"><use href="#cg-check"/></svg></span><span class="cg-select__txt">选择区域</span></button>
+        </div>
+      </article>
+
+      <article class="cg-card cg-card--locked">
+        <span class="cg-card__rarity"></span>
+        <div class="cg-card__head"><svg class="cg-ico cg-card__sigil"><use href="#cg-sigil-tower"/></svg>
+          <div><h3 class="cg-card__title">白塔禁地</h3><div class="cg-card__meta">未解锁</div></div></div>
+        <p class="cg-card__body">需先通关心智序列，方得踏入阅读者的领域。</p>
+        <div class="cg-card__foot">
+          <button class="cg-btn cg-btn--sm" disabled>未解锁</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 按钮 -->
+  <section class="sec">
+    <h2>按钮 .cg-btn</h2>
+    <p>主 / 次 / 幽灵 / 危险 四种层级；含 hover / active / focus / disabled 状态与 sm·lg 尺寸。</p>
+    <div class="cg-row">
+      <button class="cg-btn cg-btn--primary">开始对战</button>
+      <button class="cg-btn">整备队伍</button>
+      <button class="cg-btn cg-btn--ghost">跳过</button>
+      <button class="cg-btn cg-btn--danger">解散</button>
+      <button class="cg-btn" disabled>冷却中</button>
+    </div>
+    <div class="cg-row" style="margin-top:10px">
+      <button class="cg-btn cg-btn--primary cg-btn--sm">小号主按钮</button>
+      <button class="cg-btn cg-btn--primary cg-btn--lg">大号主按钮</button>
+      <button class="cg-btn cg-btn--icon" aria-label="齿轮"><svg class="cg-ico"><use href="#cg-cog"/></svg></button>
+    </div>
+  </section>
+
+  <!-- 侧边滚动条 + 途径列表 -->
+  <section class="sec">
+    <h2>侧边滚动条 .cg-scroll</h2>
+    <p>细黄铜滑轨（Firefox scrollbar-color / Webkit 自定义）；下列为 22 途径名册样例，每条带头像框。</p>
+    <div class="scroll-demo cg-scroll">
+      <div class="path-row"><span class="cg-avatar cg-avatar--sm cg-avatar--uncommon"><span class="cg-avatar__emoji">☉</span><span class="cg-avatar__frame"></span></span><div class="t"><b>歌颂者</b><small>太阳 · 序列0</small></div></div>
+      <div class="path-row"><span class="cg-avatar cg-avatar--sm cg-avatar--rare"><span class="cg-avatar__emoji">☽</span><span class="cg-avatar__frame"></span></span><div class="t"><b>药师</b><small>月亮 · 序列0</small></div></div>
+      <div class="path-row"><span class="cg-avatar cg-avatar--sm cg-avatar--legendary"><span class="cg-avatar__emoji">✶</span><span class="cg-avatar__frame"></span></span><div class="t"><b>不眠者</b><small>星星 · 序列0</small></div></div>
+      <div class="path-row"><span class="cg-avatar cg-avatar--sm cg-avatar--common"><span class="cg-avatar__emoji">☉</span><span class="cg-avatar__frame"></span></span><div class="t"><b>耕种者</b><small>世界 · 序列0</small></div></div>
+      <div class="path-row"><span class="cg-avatar cg-avatar--sm cg-avatar--epic"><span class="cg-avatar__emoji">✶</span><span class="cg-avatar__frame"></span></span><div class="t"><b>仲裁人</b><small>审判 · 序列0</small></div></div>
+      <div class="path-row"><span class="cg-avatar cg-avatar--sm cg-avatar--uncommon"><span class="cg-avatar__emoji">⚷</span><span class="cg-avatar__frame"></span></span><div class="t"><b>窥秘人</b><small>隐者 · 序列0</small></div></div>
+      <div class="path-row"><span class="cg-avatar cg-avatar--sm cg-avatar--rare"><span class="cg-avatar__emoji">⚸</span><span class="cg-avatar__frame"></span></span><div class="t"><b>收尸人</b><small>死神 · 序列0</small></div></div>
+      <div class="path-row"><span class="cg-avatar cg-avatar--sm cg-avatar--common"><span class="cg-avatar__emoji">⚴</span><span class="cg-avatar__frame"></span></span><div class="t"><b>阅读者</b><small>塔 · 序列0</small></div></div>
+    </div>
+  </section>
+
+  <!-- 头像框 -->
+  <section class="sec">
+    <h2>头像框 .cg-avatar</h2>
+    <p>矢量黄铜卷草框 + 顶部八芒徽记位；--ring 着色编码稀有度。支持 emoji / &lt;img&gt; 内容，sm·md·lg 三档。</p>
+    <div class="grid-ava">
+      <div><span class="cg-avatar cg-avatar--sm cg-avatar--common"><span class="cg-avatar__emoji">⚷</span><span class="cg-avatar__frame"></span></span><div class="ava-cap">common</div></div>
+      <div><span class="cg-avatar cg-avatar--sm cg-avatar--uncommon"><span class="cg-avatar__emoji">☽</span><span class="cg-avatar__frame"></span></span><div class="ava-cap">uncommon</div></div>
+      <div><span class="cg-avatar cg-avatar--md cg-avatar--rare"><span class="cg-avatar__emoji">☉</span><span class="cg-avatar__frame"></span></span><div class="ava-cap">rare（md）</div></div>
+      <div><span class="cg-avatar cg-avatar--md cg-avatar--epic"><span class="cg-avatar__emoji">✶</span><span class="cg-avatar__frame"></span></span><div class="ava-cap">epic（md）</div></div>
+      <div><span class="cg-avatar cg-avatar--lg cg-avatar--legendary"><span class="cg-avatar__emoji">🜂</span><span class="cg-avatar__frame"></span></span><div class="ava-cap">legendary（lg）</div></div>
+    </div>
+  </section>
+
+  <!-- 选中提示按钮（独立演示） -->
+  <section class="sec">
+    <h2>选中提示按钮 .cg-select</h2>
+    <p>默认空环；选中变黄铜实心环 + 对勾 + 发光（不靠颜色辨识，带图标与文案）。点下方可切换。</p>
+    <div class="cg-row">
+      <button class="cg-select" data-select><span class="cg-select__ring"><svg class="cg-ico"><use href="#cg-check"/></svg></span><span class="cg-select__txt">未选</span></button>
+      <button class="cg-select" data-select><span class="cg-select__ring"><svg class="cg-ico"><use href="#cg-check"/></svg></span><span class="cg-select__txt">未选</span></button>
+    </div>
+  </section>
+
+  <!-- 返回箭头 -->
+  <section class="sec">
+    <h2>返回箭头 .cg-back</h2>
+    <p>内联胶囊与悬浮圆形（.cg-back--fab）两种；左下角即一个悬浮实例。</p>
+    <div class="cg-row">
+      <button class="cg-back"><svg class="cg-ico"><use href="#cg-back"/></svg>返回</button>
+      <button class="cg-back">返回上一步</button>
+    </div>
+  </section>
+
+  <!-- 关闭按钮 -->
+  <section class="sec">
+    <h2>关闭按钮 .cg-close</h2>
+    <p>圆形黄铜描边 X，hover 提亮；弹窗标题栏右侧即其实例。</p>
+    <div class="cg-row">
+      <button class="cg-close" aria-label="关闭"><svg class="cg-ico"><use href="#cg-close"/></svg></button>
+      <button class="cg-btn cg-btn--primary" id="openModal">打开弹窗</button>
+    </div>
+  </section>
+
+  <!-- 弹窗：静态预览 + 可交互 -->
+  <section class="sec">
+    <h2>弹窗 .cg-modal</h2>
+    <p>遮罩模糊 + 入场淡入放大；顶部黄铜细线；含标题 / 正文 / 操作栏 / 关闭按钮。下方为流内静态预览，点「打开弹窗」看真实浮层。</p>
+    <div class="modal-static">
+      <div class="cg-modal__dialog">
+        <div class="cg-modal__head"><h3 class="cg-modal__title">确认献祭</h3>
+          <button class="cg-close" aria-label="关闭"><svg class="cg-ico"><use href="#cg-close"/></svg></button></div>
+        <div class="cg-modal__body">将消耗 1 枚「亵渎之牌」以解锁该序列。此操作不可逆转，星辉亦不会归还。</div>
+        <div class="cg-modal__foot">
+          <button class="cg-btn cg-btn--ghost">取消</button>
+          <button class="cg-btn cg-btn--danger">确认献祭</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 输入框 -->
+  <section class="sec">
+    <h2>输入框 .cg-input</h2>
+    <p>暗底黄铜描边，聚焦发光；含图标前缀、错误态、禁用、多行（textarea）。</p>
+    <div class="cg-stack" style="max-width:420px">
+      <div class="cg-field">
+        <label class="cg-field__label" for="ex-name">角色名</label>
+        <input class="cg-input" id="ex-name" placeholder="为你的途径命名……">
+      </div>
+      <div class="cg-field">
+        <label class="cg-field__label" for="ex-search">检索序列</label>
+        <div class="cg-input-wrap">
+          <svg class="cg-ico"><use href="#cg-sigil-fool"/></svg>
+          <input class="cg-input" id="ex-search" placeholder="占卜家 / 不眠者……">
+        </div>
+      </div>
+      <div class="cg-field">
+        <label class="cg-field__label" for="ex-err">亵渎之牌数量</label>
+        <input class="cg-input cg-input--error" id="ex-err" value="0">
+        <span class="cg-field__hint">数量不足，无法解锁该序列。</span>
+      </div>
+      <div class="cg-field">
+        <label class="cg-field__label" for="ex-ta">序列笔记</label>
+        <textarea class="cg-input" id="ex-ta" rows="3" placeholder="在此记下你的推演……"></textarea>
+      </div>
+      <div class="cg-field">
+        <label class="cg-field__label">锁定的字段</label>
+        <input class="cg-input" placeholder="已封印" disabled>
+      </div>
+    </div>
+  </section>
+
+  <!-- 开关 -->
+  <section class="sec">
+    <h2>开关 .cg-switch</h2>
+    <p>纯 CSS 切换（隐藏 checkbox），暗轨道 → 黄铜填充 + 圆点发光；含副说明与禁用态。</p>
+    <div class="cg-stack" style="max-width:420px">
+      <label class="cg-switch">
+        <input type="checkbox" checked>
+        <span class="cg-switch__track"></span>
+        <span class="cg-switch__label">自动献祭 <small>战斗胜利后自动消耗亵渎之牌</small></span>
+      </label>
+      <label class="cg-switch">
+        <input type="checkbox">
+        <span class="cg-switch__track"></span>
+        <span class="cg-switch__label">显示伤害数值</span>
+      </label>
+      <label class="cg-switch">
+        <input type="checkbox" disabled>
+        <span class="cg-switch__track"></span>
+        <span class="cg-switch__label">开发者模式 <small>（未解锁）</small></span>
+      </label>
+    </div>
+  </section>
+
+  <!-- 进度条 -->
+  <section class="sec">
+    <h2>进度条 .cg-progress</h2>
+    <p>暗轨道 + 黄铜渐变填充 + 发光；含 warn / ok 多色与 lg 尺寸。点「模拟充能」看动画。</p>
+    <div class="cg-stack" style="max-width:480px">
+      <div class="cg-progress" id="ex-prog">
+        <div class="cg-progress__track"><div class="cg-progress__bar" id="ex-prog-bar"></div></div>
+        <div class="cg-progress__meta"><span>星辉充能</span><span id="ex-prog-pct">0%</span></div>
+      </div>
+      <div class="cg-progress cg-progress--lg">
+        <div class="cg-progress__track"><div class="cg-progress__bar cg-progress__bar--warn" style="width:72%"></div></div>
+        <div class="cg-progress__meta"><span>理智侵蚀</span><span>72%</span></div>
+      </div>
+      <div class="cg-progress">
+        <div class="cg-progress__track"><div class="cg-progress__bar cg-progress__bar--ok" style="width:100%"></div></div>
+        <div class="cg-progress__meta"><span>序列已晋升</span><span>完成</span></div>
+      </div>
+      <button class="cg-btn cg-btn--primary cg-btn--sm" id="ex-prog-btn" style="align-self:flex-start">模拟充能</button>
+    </div>
+  </section>
+
+  <!-- Toast -->
+  <section class="sec">
+    <h2>Toast 轻提示 .cg-toast</h2>
+    <p>右下角浮层，3.2 秒自动消失（或手动关闭）；含 info / ok / warn 三型，神秘学左线描边。</p>
+    <div class="cg-row">
+      <button class="cg-btn cg-btn--sm" data-toast="info" data-toast-title="启示降临" data-toast-msg="你窥见了命运之线的一角。">info</button>
+      <button class="cg-btn cg-btn--sm cg-btn--ghost" data-toast="ok" data-toast-title="晋升成功" data-toast-msg="序列0 · 不眠者已点亮。">ok</button>
+      <button class="cg-btn cg-btn--sm cg-btn--danger" data-toast="warn" data-toast-title="理智警告" data-toast-msg="侵蚀已超阈值，请谨慎行事。">warn</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- 悬浮返回箭头 -->
+<button class="cg-back cg-back--fab" aria-label="返回"><svg class="cg-ico"><use href="#cg-back"/></svg></button>
+
+<!-- 可交互弹窗（默认隐藏，由 .is-open 控制显隐） -->
+<div class="cg-modal" id="modal">
+  <div class="cg-modal__backdrop" data-close></div>
+  <div class="cg-modal__dialog" role="dialog" aria-modal="true" aria-label="确认献祭">
+    <div class="cg-modal__head"><h3 class="cg-modal__title">确认献祭</h3>
+      <button class="cg-close" data-close aria-label="关闭"><svg class="cg-ico"><use href="#cg-close"/></svg></button></div>
+    <div class="cg-modal__body">将消耗 1 枚「亵渎之牌」以解锁该序列。此操作不可逆转，星辉亦不会归还。
+      <div class="cg-row" style="margin-top:14px">
+        <span class="cg-avatar cg-avatar--md cg-avatar--legendary"><span class="cg-avatar__emoji">🜂</span><span class="cg-avatar__frame"></span></span>
+        <span class="cg-muted">不眠者 · 序列0</span>
+      </div>
+    </div>
+    <div class="cg-modal__foot">
+      <button class="cg-btn cg-btn--ghost" data-close>取消</button>
+      <button class="cg-btn cg-btn--danger" data-close>确认献祭</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast 容器（浮层，不随页面滚动） -->
+<div class="cg-toast-wrap" id="toastWrap"></div>
+
+<script>
+  // 选中提示按钮：切换 is-on + 文案
+  document.querySelectorAll('[data-select]').forEach(b => {
+    b.addEventListener('click', () => {
+      const on = b.classList.toggle('is-on');
+      const t = b.querySelector('.cg-select__txt');
+      if (t) t.textContent = on ? '已选' : (b.closest('.cg-card') ? '选择区域' : '未选');
+    });
+  });
+  // 弹窗开关（用 class 控制，避免显式 display 覆盖 [hidden] 导致弹窗常驻遮罩）
+  const modal = document.getElementById('modal');
+  const open = () => modal.classList.add('is-open');
+  const close = () => modal.classList.remove('is-open');
+  document.getElementById('openModal').addEventListener('click', open);
+  modal.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', close));
+  // 点弹窗空白处（非对话框内部）关闭
+  modal.addEventListener('click', e => { if (e.target === modal) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+  // Toast 轻提示：动态创建，3.2s 自动消失，可手动关闭
+  function showToast(title, msg, type) {
+    const wrap = document.getElementById('toastWrap');
+    if (!wrap) return;
+    const el = document.createElement('div');
+    el.className = 'cg-toast' + (type ? ' cg-toast--' + type : '');
+    const ico = type === 'ok' ? 'cg-check' : type === 'warn' ? 'cg-warn' : 'cg-sigil-star';
+    el.innerHTML =
+      '<svg class="cg-ico cg-toast__ico"><use href="#' + ico + '"/></svg>' +
+      '<div class="cg-toast__body"><div class="cg-toast__title"></div>' +
+      (msg ? '<div class="cg-toast__msg"></div>' : '') + '</div>' +
+      '<button class="cg-toast__close" aria-label="关闭"><svg class="cg-ico"><use href="#cg-close"/></svg></button>';
+    el.querySelector('.cg-toast__title').textContent = title;
+    if (msg) el.querySelector('.cg-toast__msg').textContent = msg;
+    wrap.appendChild(el);
+    const dismiss = () => { el.classList.add('is-out'); setTimeout(() => el.remove(), 200); };
+    el.querySelector('.cg-toast__close').addEventListener('click', dismiss);
+    setTimeout(dismiss, 3200);
+  }
+  document.querySelectorAll('[data-toast]').forEach(b => b.addEventListener('click', () =>
+    showToast(b.dataset.toastTitle, b.dataset.toastMsg, b.dataset.toast)));
+
+  // 进度条演示：模拟充能 0 → 100%
+  const progBtn = document.getElementById('ex-prog-btn');
+  const progBar = document.getElementById('ex-prog-bar');
+  const progPct = document.getElementById('ex-prog-pct');
+  if (progBtn) progBtn.addEventListener('click', () => {
+    let v = 0; progBar.style.width = '0%'; progPct.textContent = '0%';
+    const timer = setInterval(() => {
+      v += Math.random() * 9 + 4;
+      if (v >= 100) { v = 100; clearInterval(timer); }
+      progBar.style.width = v.toFixed(0) + '%';
+      progPct.textContent = v.toFixed(0) + '%';
+    }, 120);
+  });
+</script>
+</body>
+</html>

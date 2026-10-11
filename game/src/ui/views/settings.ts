@@ -1,4 +1,5 @@
 import { subBarHtml, escapeHtml } from '../components/chrome'
+import { icon } from '../components/icons'
 import { dataVersion, shortHash } from '../../data/version'
 import { loadProfile, resetProfile, saveProfile } from '../profile'
 import { createLocalStorageMatchStore } from '../../meta/matchLog'
@@ -17,32 +18,39 @@ export function renderSettings(host: HTMLElement): void {
   host.innerHTML = `
     ${subBarHtml('设置')}
     <main class="settings">
-      <section class="panel">
-        <h2>账号</h2>
-        <label class="field"><span>用户名</span><input id="inp-name" type="text" maxlength="24" value="${escapeHtml(profile.username)}" /></label>
-        <div class="kv"><span class="k">UUID</span><span class="v">${escapeHtml(profile.uuid)}</span></div>
-        <div class="kv"><span class="k">解锁职业</span><span class="v">${escapeHtml(profile.unlockedClasses.join('、') || '—')}</span></div>
-        <div class="kv"><span class="k">已解锁卡牌</span><span class="v">${profile.unlockedCards.length === 0 ? '全部（未限定）' : String(profile.unlockedCards.length)}</span></div>
-        <div class="row-actions">
-          <button type="button" class="btn" id="btn-save-name">保存用户名</button>
-          <button type="button" class="btn danger" id="btn-reset">重置档案</button>
+      <section class="cg-card cg-card--static">
+        <div class="cg-card__head">${icon('cg-sigil-moon', 'cg-card__sigil')}<h2 class="cg-card__title">账号</h2></div>
+        <div class="cg-card__body">
+          <label class="cg-field">
+            <span class="cg-field__label">用户名</span>
+            <input class="cg-input" id="inp-name" type="text" maxlength="24" value="${escapeHtml(profile.username)}" />
+          </label>
+          ${row('UUID', profile.uuid)}
+          ${row('解锁职业', profile.unlockedClasses.join('、') || '—')}
+          ${row('已解锁卡牌', profile.unlockedCards.length === 0 ? '全部（未限定）' : String(profile.unlockedCards.length))}
+          <div class="row-actions">
+            <button type="button" class="cg-btn" id="btn-save-name">保存用户名</button>
+            <button type="button" class="cg-btn cg-btn--danger" id="btn-reset">重置档案</button>
+          </div>
+          <p class="hint" id="settings-msg"></p>
         </div>
-        <p class="hint" id="settings-msg"></p>
       </section>
 
-      <section class="panel">
-        <h2>数据版本</h2>
-        ${v.stale
-          ? '<p class="warn">⚠ 当前数据已偏离验收基线，尚未重新验收</p>'
-          : '<p class="ok">与验收基线一致</p>'}
-        ${row('数据提交 docsRef', shortHash(v.docsRef))}
-        ${row('当前数据哈希', v.dataHash.slice(0, 12))}
-        ${row('验收基线哈希', v.lockHash ? v.lockHash.slice(0, 12) : '—')}
-        ${row('验收日期', v.verifiedAt || '—')}
-        ${row('schema / source', `${v.schemaVersion} / ${v.sourceVersion}`)}
-        ${row('数据计数', counts)}
-        ${row('构建时间', v.buildTime)}
-        ${row('游戏提交', shortHash(v.gameSha))}
+      <section class="cg-card cg-card--static">
+        <div class="cg-card__head">${icon('cg-sigil-hermit', 'cg-card__sigil')}<h2 class="cg-card__title">数据版本</h2></div>
+        <div class="cg-card__body">
+          ${v.stale
+            ? '<p class="hint warn">⚠ 当前数据已偏离验收基线，尚未重新验收</p>'
+            : '<p class="hint ok">与验收基线一致</p>'}
+          ${row('数据提交 docsRef', shortHash(v.docsRef))}
+          ${row('当前数据哈希', v.dataHash.slice(0, 12))}
+          ${row('验收基线哈希', v.lockHash ? v.lockHash.slice(0, 12) : '—')}
+          ${row('验收日期', v.verifiedAt || '—')}
+          ${row('schema / source', `${v.schemaVersion} / ${v.sourceVersion}`)}
+          ${row('数据计数', counts)}
+          ${row('构建时间', v.buildTime)}
+          ${row('游戏提交', shortHash(v.gameSha))}
+        </div>
       </section>
     </main>`
 
@@ -50,7 +58,7 @@ export function renderSettings(host: HTMLElement): void {
   const say = (text: string, ok = true): void => {
     if (!msg) return
     msg.textContent = text
-    msg.className = ok ? 'ok' : 'warn'
+    msg.className = ok ? 'hint ok' : 'hint warn'
   }
 
   host.querySelector<HTMLButtonElement>('#btn-save-name')?.addEventListener('click', () => {

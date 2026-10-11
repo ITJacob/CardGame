@@ -79,9 +79,9 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
         ${loadoutHtml(catalog, profile, own, selected)}
         <p class="hint ${notice ? 'warn' : ''}" id="prep-notice">${escapeHtml(notice || ' ')}</p>
         <div class="row-actions">
-          <a class="btn primary" href="${back}">完成</a>
-          <button type="button" class="btn" id="btn-auto">自动排列</button>
-          <button type="button" class="btn" id="btn-reroll">重新生成英雄</button>
+          <a class="cg-btn cg-btn--primary" href="${back}">完成</a>
+          <button type="button" class="cg-btn" id="btn-auto">自动排列</button>
+          <button type="button" class="cg-btn" id="btn-reroll">重新生成英雄</button>
         </div>
       </main>`
     hydrateArt(host)
@@ -318,8 +318,8 @@ function formationHtml(own: readonly PlacedHero[], selectedId: string | null): s
     }
   }
 
-  return `<section class="prep-sec">
-    <h2>阵型 <small class="hint">拖动英雄：落到别人身上交换、落到空格移入（也可以点选）；#1 靠近中线</small></h2>
+  return `<section class="cg-card cg-card--static prep-sec">
+    <h2 class="cg-card__title">阵型 <small class="hint">拖动英雄：落到别人身上交换、落到空格移入（也可以点选）；#1 靠近中线</small></h2>
     <div class="board-wrap"><div class="board prep-board" style="grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr)">${cells.join('')}</div></div>
   </section>`
 }
@@ -327,7 +327,7 @@ function formationHtml(own: readonly PlacedHero[], selectedId: string | null): s
 function loadoutHtml(catalog: Catalog, profile: Profile, own: readonly PlacedHero[], selected: PlacedHero | null): string {
   const strip = own
     .map(
-      (h) => `<button type="button" class="hero-chip${h.id === selected?.id ? ' on' : ''}" data-select="${escapeHtml(h.id)}">
+      (h) => `<button type="button" class="cg-select hero-chip${h.id === selected?.id ? ' is-on' : ''}" data-select="${escapeHtml(h.id)}">
         <span class="chip-avatar">${avatarEmoji(h.constitutionId, h.gender)}</span>
         <span class="chip-name">${escapeHtml(h.name)}</span>
       </button>`,
@@ -335,12 +335,16 @@ function loadoutHtml(catalog: Catalog, profile: Profile, own: readonly PlacedHer
     .join('')
 
   if (!selected) {
-    return `<section class="prep-sec"><h2>技能</h2><div class="hero-strip">${strip}</div><p class="hint">先选一名英雄。</p></section>`
+    return `<section class="cg-card cg-card--static prep-sec">
+      <h2 class="cg-card__title">技能</h2>
+      <div class="hero-strip">${strip}</div>
+      <p class="hint">先选一名英雄。</p>
+    </section>`
   }
 
   const pool = skillPoolOf(catalog, selected, profile)
-  return `<section class="prep-sec">
-    <h2>技能 <small class="hint">${escapeHtml(selected.name)} · ${escapeHtml(selected.classId)}</small></h2>
+  return `<section class="cg-card cg-card--static prep-sec">
+    <h2 class="cg-card__title">技能 <small class="hint">${escapeHtml(selected.name)} · ${escapeHtml(selected.classId)}</small></h2>
     <div class="hero-strip">${strip}</div>
     ${slotRowHtml(catalog, selected, 'active')}
     ${slotRowHtml(catalog, selected, 'passive')}
@@ -367,7 +371,7 @@ function slotRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): string
     // 只有一张时没有可调的顺序，也就不给拖柄。
     const draggable = ids.length > 1
 
-    slots.push(`<div class="slot${draggable ? ' draggable' : ''}" data-slot="${kind}:${i}"><span class="slot-num">${i + 1}</span>${cardOf(catalog, id, kind, 'compact')}<div class="slot-ops"><button type="button" class="slot-op danger" data-unequip="${kind}:${i}" title="卸下">✕</button></div></div>`)
+    slots.push(`<div class="slot${draggable ? ' draggable' : ''}" data-slot="${kind}:${i}"><span class="slot-num">${i + 1}</span>${cardOf(catalog, id, kind, 'compact')}<div class="slot-ops"><button type="button" class="cg-btn cg-btn--danger slot-op" data-unequip="${kind}:${i}" title="卸下">✕</button></div></div>`)
   }
 
   return `<div class="slot-block">

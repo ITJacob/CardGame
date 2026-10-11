@@ -1,0 +1,161 @@
+/*
+ * kit 桥接层 —— 只在「游戏接入 ui-kit」时存在，ui-kit 自己不认识这个文件。
+ *
+ * 三件事：
+ *   ① token 接线：ui-kit.css 自带一份 :root 默认值（它的独立预览页要用），接进游戏后按它
+ *      文件头的说明改指 app.css 的变量 —— 配色仍然只有 app.css 一处源。
+ *   ② kit 修饰类：游戏需要、kit 里没有的那几档（子页栏 / 名册横排卡 / 只读卡）。
+ *   ③ 游戏侧的组件微调：kit 组件落到具体位置时尺寸要收一收（侧栏 22 行的列表、
+ *      棋盘格子里的血条）—— 只调尺寸与密度，不另起一套外观。
+ */
+
+/* =============================================================================
+ * ① token 接线
+ * ========================================================================== */
+:root {
+  --cg-bg: var(--bg);
+  --cg-bg-deep: var(--bg-deep);
+  --cg-panel: var(--panel);
+  --cg-panel-2: var(--panel-2);
+  --cg-border: var(--border);
+  --cg-border-strong: #4a525e;
+  --cg-text: var(--text);
+  --cg-text-dim: var(--text-dim);
+  --cg-accent: var(--accent);
+  --cg-accent-dim: var(--accent-dim);
+  --cg-warn: var(--warn);
+  --cg-ok: var(--ok);
+  --cg-radius: var(--radius);
+  --cg-font: inherit;
+}
+
+/* =============================================================================
+ * ② kit 修饰类
+ * ========================================================================== */
+/* 子页栏：返回胶囊 + 页名。沿用 .cg-nav 的吸顶/毛玻璃/黄铜细线，只是内容少一半 */
+.cg-nav--sub { gap: 14px; }
+.cg-nav--sub .sub-title { font-size: 16px; letter-spacing: 0.04em; }
+/* 安全区（刘海 / 小白条）：沿用原先加在 .topbar 上的那份 */
+.cg-nav {
+  padding-left: max(18px, env(safe-area-inset-left));
+  padding-right: max(18px, env(safe-area-inset-right));
+}
+
+/* 名册横排卡：kit 的 .cg-card 是「纵向块」，名册行是「头像 · 信息 · 技能卡列」一条横排 */
+.cg-card--row {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  /* 一行行的名册不该整行跳动 */
+  transform: none !important;
+}
+.cg-card--row:hover { transform: none; box-shadow: none; }
+.cg-card--row .cg-card__foot { margin-top: 0; margin-left: auto; }
+
+/* 只读面板：设置/排行/主菜单这类不接收整体点击的卡不该有 hover 抬升 */
+.cg-card--static:hover { transform: none; box-shadow: none; }
+
+/* =============================================================================
+ * ③ 游戏侧组件微调
+ * ========================================================================== */
+
+/* —— 卡池侧栏：22 个职业列表项 ——
+   kit 里对应「一串可选项，选中一个」的原语就是 .cg-select，直接用它：
+   is-on 是「正在看这个职业」（黄铜胶囊），环上的勾是「已解锁」。
+   列表密，所以把胶囊压成一条 30px 的行。 */
+.cls-list .cg-select {
+  justify-content: flex-start;
+  width: 100%;
+  gap: 8px;
+  padding: 4px 9px;
+  min-height: 30px;
+  font-size: 13px;
+  border-radius: 7px;
+}
+.cls-list .cg-select .cls-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.cls-list .cg-select .cls-n { font-size: 11px; color: var(--cg-text-dim); }
+/* 解锁态＝环填绿 + 白勾（勾是精灵里的 cg-check，kit 自带）。
+   kit 的 is-on 给「已选」描黄铜，两者叠在一行时绿环说明解锁、黄框说明在看哪个，互不冲突。 */
+.cls-list .cg-select.is-unlocked .cg-select__ring {
+  border-color: var(--cg-ok);
+  background: var(--cg-ok);
+  color: #17140c;
+}
+
+/* —— 整备页：英雄条（.hero-chip）与主动/被动切换（.switch-btn）——
+   两者都是「一个可选项，选中了要看得出来」：用 kit 的 .cg-select（空环 → 实心环 + 对勾）。
+   切换按钮那组不带环，只是两片并列的胶囊。 */
+.hero-chip .chip-avatar { font-size: 15px; }
+.skill-switch { display: inline-flex; gap: 8px; }
+.skill-switch .cg-select,
+.hero-chip.cg-select { padding: 5px 12px; min-height: 34px; font-size: 13px; }
+
+/* —— 战斗：名册面板 / 日志 / 决策条 ——
+   这三块都是「单类选择器压单类选择器」的场面：app.css 里没有更高优先级可借，
+   而 kit 是在 app.css 之后引入的，同权重下 kit 胜。所以覆盖必须写在本文件（最后引入）。 */
+.roster.cg-card { padding: 10px 12px; }
+.roster.cg-card > summary { cursor: pointer; font-size: 13px; color: var(--cg-accent); }
+.log.cg-card { padding: 8px 10px; overflow: auto; } /* kit 的 .cg-card 是 overflow:hidden，会掐掉日志滚动 */
+.decision.cg-card {
+  position: sticky; bottom: 0; z-index: 5; /* kit 的 .cg-card 是 position:relative，会顶掉粘底 */
+  padding: 12px 14px;
+}
+
+/* 目标点选：kit 的 .cg-btn 是横排胶囊，这里要「头像在上、名字在下」的方块 */
+.pick.cg-btn {
+  flex-direction: column;
+  gap: 4px;
+  min-width: 84px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+.pick-auto.cg-btn { margin-top: 8px; }
+
+/* —— 放大视图的关闭键：外观全交给 kit 的 .cg-close，本文件只负责摆到右上角 —— */
+.zoom-close { position: absolute; top: 14px; right: 16px; z-index: 1; }
+
+/* —— 整备页技能槽上的 ✕：是 .cg-btn，但槽只有 76px 宽，收成 22px 的小方块 —— */
+.slot .slot-op.cg-btn {
+  --_bg: var(--cg-bg-deep);
+  width: 22px; min-height: 22px; padding: 0;
+  font-size: 11px; border-radius: 6px;
+}
+
+/* —— 主菜单标题：kit 的 .cg-card__title 是 17px 正文标题，主菜单要的是整页大标 —— */
+.menu .menu-title { font-size: 40px; letter-spacing: 0.14em; color: var(--cg-accent); }
+
+/* —— 输入框：kit 用「边框变色 + 光晕」表示聚焦（它自己那种偏鼠标的做法），
+   但游戏里键盘走到哪要有明确的一圈（见 app.css 顶部那条焦点纪律）。
+   :focus 与 :focus-visible 同权重，本文件是最后引入的，故这条能补回键盘那一圈。 —— */
+.cg-input:focus-visible { outline: 2px solid var(--cg-accent); outline-offset: 2px; }
+
+/* —— 棋盘格子里的血条/怒气条 ——
+   用 kit 的 .cg-progress，但格子小：轨道压到 8px、去掉过渡（一 tick 一刷，过渡会拖成滞后感）、
+   并给数值留一层绝对定位的叠加。 */
+.tile .cg-progress { position: relative; }
+.tile .cg-progress__track { border: 0; height: 8px; }
+.tile .cg-progress__bar { transition: none; }
+.tile .cg-progress .bar-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
+  pointer-events: none;
+}
+
+/* —— 在线大厅的等待页：房间码是一块正中摆的卡 —— */
+.wait-card { max-width: 460px; margin: 0 auto; }
+
+/* —— 排行榜：胜率条 —— */
+.lb-rate { max-width: 320px; }
+
+/* —— 布局间距：.row-actions 里的一排按钮等分整行（原先由 .row-actions .btn 给，
+   现在按钮是 .cg-btn，得重新说一次，顺带压掉 kit 的 inline-flex 宽度定义）—— */
+.row-actions .cg-btn { flex: 1; }
+/* 在线大厅的房间码输入框：与上方那排按钮之间留一口气 */
+.newgame .cg-field { margin-top: 12px; }

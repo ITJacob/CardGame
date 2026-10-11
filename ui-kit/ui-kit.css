@@ -1,0 +1,599 @@
+/* =============================================================================
+ * ui-kit.css — CardGame（game 端）诡秘之主风格 UI 组件库
+ * -----------------------------------------------------------------------------
+ * 设计锚点：
+ *   · 配色 token 与 game/src/ui/styles/app.css 完全一致（黄铜 #c8a24a / 深石板 #1d2026），
+ *     接入 game 端时可直接删掉本文件 :root 的本地重定义，改用 app.css 的变量。
+ *   · 徽记画法权威源：site/assets/frames/TAROT_SYMBOLS.md（22 途径抽象符号系统）。
+ *   · 装饰语言：暗雾背景 + 黄铜描边 + 角卷草 + 内发光，呼应卡框 screen 混色描边。
+ * 组件清单：按钮 / 导航栏 / 侧边滚动条 / 背景底图 / 区域卡片 / 弹窗 /
+ *          关闭按钮 / 选中提示按钮 / 返回箭头 / 头像框。
+ * 用法：<link rel="stylesheet" href="ui-kit.css"> + 引入 ui-kit.svg（提供 <use> 符号）。
+ * ========================================================================== */
+
+:root {
+  /* —— 表面 / 文本（与 app.css 同值）—— */
+  --cg-bg:        #1d2026;
+  --cg-bg-deep:   #16181d;
+  --cg-panel:     #262a32;
+  --cg-panel-2:   #2f343d;
+  --cg-border:    #3a404b;
+  --cg-border-strong: #4a525e;
+  --cg-text:      #e6e8ec;
+  --cg-text-dim:  #9aa1ad;
+
+  /* —— 主题色：维多利亚黄铜 —— */
+  --cg-accent:       #c8a24a;
+  --cg-accent-soft:  #d8b96a;
+  --cg-accent-dim:   #8a7133;
+  --cg-accent-glow:  rgba(200, 162, 74, 0.30);
+  --cg-warn:      #c85a4a;
+  --cg-ok:        #5aa06a;
+
+  /* —— 半径 / 阴影 / 字体 —— */
+  --cg-radius:    10px;
+  --cg-radius-sm: 6px;
+  --cg-radius-lg: 14px;
+  --cg-radius-pill: 999px;
+  --cg-shadow-sm: 0 1px 2px rgba(0,0,0,.35);
+  --cg-shadow-md: 0 6px 16px rgba(0,0,0,.45);
+  --cg-shadow-lg: 0 16px 40px rgba(0,0,0,.55);
+  --cg-font: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+  --cg-font-display: "Georgia", "Songti SC", "STSong", "Times New Roman", serif;
+
+  /* —— 稀有度环色（与卡面 r-common…r-legendary 同值）—— */
+  --cg-r-common:    #6b7280;
+  --cg-r-uncommon:  #5aa06a;
+  --cg-r-rare:      #4a7fc8;
+  --cg-r-epic:      #8a5ac8;
+  --cg-r-legendary: #c8a24a;
+}
+
+/* ---------- 基础 ---------- */
+.cg-kit, .cg-kit * { box-sizing: border-box; }
+.cg-kit {
+  margin: 0;
+  background: var(--cg-bg);
+  color: var(--text, var(--cg-text));
+  font: 14px/1.6 var(--cg-font);
+  -webkit-font-smoothing: antialiased;
+  color-scheme: dark;
+}
+.cg-kit a { color: inherit; text-decoration: none; }
+/* 触摸优化：去掉移动端点击高亮闪烁，避免 300ms 延迟误触 */
+.cg-btn, .cg-close, .cg-select, .cg-back, .cg-nav__link, .cg-card, .cg-avatar {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* 图标：取 symbol 的 currentColor，尺寸随 font-size */
+.cg-ico {
+  width: 1em; height: 1em;
+  display: inline-block; vertical-align: -0.15em;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* =============================================================================
+ * 1. 背景底图（.cg-bg）
+ *    分层：径向暗角 → 暗雾纹理 → 极淡神秘几何（八芒环，tile）。
+ *    几何用 ui-kit.svg 的 #cg-arcane 内联 data-uri，自包含、可主题（改 --cg-accent 即变色）。
+ * ========================================================================== */
+.cg-bg {
+  position: relative;
+  background-color: var(--cg-bg-deep);
+  background-image:
+    radial-gradient(120% 90% at 50% 0%, rgba(200,162,74,0.05), transparent 60%),
+    radial-gradient(140% 120% at 50% 120%, rgba(0,0,0,0.55), transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23c8a24a'%3E%3Ccircle cx='80' cy='80' r='58' opacity='0.06'/%3E%3Ccircle cx='80' cy='80' r='46' opacity='0.04'/%3E%3Cg opacity='0.05'%3E%3Cpath d='M80 18v8M80 134v8M18 80h8M134 80h8M36 36l5.5 5.5M124 36l-5.5 5.5M36 124l5.5-5.5M124 124l-5.5-5.5'/%3E%3C/g%3E%3Cpath d='M80 40L84 76L120 80L84 84L80 120L76 84L40 80L76 76Z' opacity='0.035'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: auto, auto, 160px 160px;
+  background-blend-mode: normal, normal, soft-light;
+}
+/* 暗雾叠加：让底图更"活"，可单独加在某一层 */
+.cg-bg--fog::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(60% 40% at 20% 10%, rgba(120,140,180,0.06), transparent 70%),
+    radial-gradient(50% 35% at 85% 80%, rgba(150,120,180,0.05), transparent 70%);
+  mix-blend-mode: screen;
+}
+
+/* =============================================================================
+ * 2. 导航栏（.cg-nav）
+ * ========================================================================== */
+.cg-nav {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; gap: 18px;
+  height: 54px; padding: 0 18px;
+  background: rgba(22,24,29,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--cg-border);
+  box-shadow: 0 1px 0 var(--cg-accent-dim), var(--cg-shadow-sm);
+}
+.cg-nav__brand {
+  display: flex; align-items: center; gap: 9px;
+  font-family: var(--cg-font-display);
+  font-weight: 700; letter-spacing: 0.08em;
+  color: var(--cg-accent); font-size: 17px;
+}
+.cg-nav__brand .cg-ico { font-size: 20px; color: var(--cg-accent); }
+.cg-nav__links { display: flex; align-items: center; gap: 4px; }
+.cg-nav__link {
+  padding: 6px 13px; border-radius: var(--cg-radius-sm);
+  color: var(--cg-text-dim); font-size: 14px; cursor: pointer;
+  border: 1px solid transparent; transition: color .15s, background .15s, border-color .15s;
+}
+.cg-nav__link:hover { color: var(--cg-text); background: var(--cg-panel); }
+.cg-nav__link.is-active {
+  color: var(--cg-accent); background: var(--cg-panel-2);
+  border-color: var(--cg-accent-dim);
+}
+.cg-nav__link.is-active::after {
+  content: ""; display: block; height: 2px; margin-top: 4px;
+  background: var(--cg-accent); border-radius: 2px;
+}
+.cg-nav__utils { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+/* =============================================================================
+ * 3. 按钮（.cg-btn）
+ * ========================================================================== */
+.cg-btn {
+  --_bg: var(--cg-panel);
+  --_bd: var(--cg-border);
+  --_fg: var(--cg-text);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 16px; min-height: 40px;
+  font: inherit; font-size: 14px; font-weight: 500;
+  color: var(--_fg); background: var(--_bg);
+  border: 1px solid var(--_bd); border-radius: var(--cg-radius);
+  cursor: pointer; user-select: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  transition: background .15s, border-color .15s, transform .05s, box-shadow .15s;
+}
+.cg-btn .cg-ico { font-size: 1.05em; }
+.cg-btn:hover { background: var(--cg-panel-2); border-color: var(--cg-accent-dim); }
+.cg-btn:active { transform: translateY(1px); }
+.cg-btn:focus-visible { outline: 2px solid var(--cg-accent); outline-offset: 2px; }
+.cg-btn:disabled, .cg-btn[aria-disabled="true"] {
+  opacity: .45; cursor: default; pointer-events: none;
+}
+
+/* 主按钮：黄铜实底 + 深色字 */
+.cg-btn--primary {
+  --_bg: var(--cg-accent-dim);
+  --_bd: var(--cg-accent);
+  --_fg: #17140c;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 8px var(--cg-accent-glow);
+}
+.cg-btn--primary:hover { --_bg: var(--cg-accent); }
+
+/* 幽灵按钮：仅文字 + 图标 */
+.cg-btn--ghost { --_bg: transparent; --_bd: transparent; color: var(--cg-text-dim); }
+.cg-btn--ghost:hover { color: var(--cg-text); background: var(--cg-panel); }
+
+/* 危险按钮 */
+.cg-btn--danger { --_bd: #6b3a3a; color: #d98b8b; }
+.cg-btn--danger:hover { background: #3a2426; border-color: var(--cg-warn); color: #e7a8a8; }
+
+/* 尺寸 */
+.cg-btn--sm { padding: 6px 11px; min-height: 32px; font-size: 13px; border-radius: var(--cg-radius-sm); }
+.cg-btn--lg { padding: 13px 22px; min-height: 48px; font-size: 15px; }
+.cg-btn--block { display: flex; width: 100%; }
+.cg-btn--icon { padding: 0; width: 40px; }
+
+/* =============================================================================
+ * 4. 侧边滚动条（.cg-scroll）
+ * ========================================================================== */
+.cg-scroll {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cg-border-strong) var(--cg-bg-deep);
+}
+.cg-scroll::-webkit-scrollbar { width: 10px; height: 10px; }
+.cg-scroll::-webkit-scrollbar-track {
+  background: var(--cg-bg-deep);
+  border-left: 1px solid var(--cg-border);
+}
+.cg-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--cg-border-strong), var(--cg-panel-2));
+  border: 2px solid var(--cg-bg-deep);
+  border-radius: var(--cg-radius-pill);
+}
+.cg-scroll::-webkit-scrollbar-thumb:hover { background: var(--cg-accent-dim); }
+.cg-scroll::-webkit-scrollbar-corner { background: var(--cg-bg-deep); }
+
+/* =============================================================================
+ * 5. 区域卡片（.cg-card）
+ * ========================================================================== */
+.cg-card {
+  position: relative;
+  display: flex; flex-direction: column;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%),
+    var(--cg-panel);
+  border: 1px solid var(--cg-border);
+  border-radius: var(--cg-radius-lg);
+  padding: 16px 18px;
+  overflow: hidden;
+  transition: border-color .15s, transform .12s, box-shadow .15s;
+}
+.cg-card::before { /* 四角卷草，呼应卡框 ornament */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M3 37C3 20 14 6 37 3' fill='none' stroke='%23c8a24a' stroke-opacity='0.35'/%3E%3Ccircle cx='5' cy='35' r='1.6' fill='%23c8a24a' fill-opacity='0.5'/%3E%3C/svg%3E") top left no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M3 37C3 20 14 6 37 3' fill='none' stroke='%23c8a24a' stroke-opacity='0.35' transform='translate(40,0) scale(-1,1)'/%3E%3C/svg%3E") top right no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M3 37C3 20 14 6 37 3' fill='none' stroke='%23c8a24a' stroke-opacity='0.35' transform='translate(0,40) scale(1,-1)'/%3E%3C/svg%3E") bottom left no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M3 37C3 20 14 6 37 3' fill='none' stroke='%23c8a24a' stroke-opacity='0.35' transform='translate(40,40) scale(-1,-1)'/%3E%3C/svg%3E") bottom right no-repeat;
+}
+.cg-card:hover {
+  border-color: var(--cg-accent-dim);
+  transform: translateY(-2px);
+  box-shadow: var(--cg-shadow-md);
+}
+.cg-card__head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.cg-card__sigil {
+  flex: none; width: 30px; height: 30px; font-size: 30px; color: var(--cg-accent);
+}
+.cg-card__title {
+  margin: 0; font-family: var(--cg-font-display);
+  font-size: 17px; font-weight: 700; color: var(--cg-text); letter-spacing: .03em;
+}
+.cg-card__meta { color: var(--cg-text-dim); font-size: 12px; }
+.cg-card__body { color: var(--cg-text-dim); font-size: 13px; flex: 1; }
+.cg-card__foot { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+
+/* 选中 / 推荐态 */
+.cg-card--featured {
+  border-color: var(--cg-accent);
+  box-shadow: 0 0 0 1px var(--cg-accent-dim), 0 0 24px var(--cg-accent-glow);
+}
+.cg-card--locked { opacity: .6; }
+.cg-card--locked .cg-card__body { font-style: italic; }
+
+/* 稀有度色条（顶部细线，编码稀有度，语义不抢戏） */
+.cg-card__rarity {
+  position: absolute; top: 0; left: 14px; right: 14px; height: 2px; border-radius: 2px;
+  background: var(--cg-r-common);
+}
+.cg-card--uncommon .cg-card__rarity { background: var(--cg-r-uncommon); }
+.cg-card--rare     .cg-card__rarity { background: var(--cg-r-rare); }
+.cg-card--epic     .cg-card__rarity { background: var(--cg-r-epic); }
+.cg-card--legendary .cg-card__rarity,
+.cg-card--legendary { border-color: var(--cg-r-legendary); }
+
+/* =============================================================================
+ * 6. 弹窗（.cg-modal）
+ * ========================================================================== */
+/* 默认隐藏：用 .is-open 控制显隐，避免显式 display 覆盖 [hidden] 导致弹窗常驻遮罩 */
+.cg-modal { position: fixed; inset: 0; z-index: 60; display: none; padding: 16px; }
+.cg-modal.is-open { display: grid; place-items: center; }
+.cg-modal__backdrop {
+  position: absolute; inset: 0;
+  background: rgba(10,11,14,0.72); backdrop-filter: blur(3px);
+  animation: cg-fade .2s ease-out both;
+}
+.cg-modal__dialog {
+  position: relative; width: min(440px, 100%);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.03), transparent 30%),
+    var(--cg-panel);
+  border: 1px solid var(--cg-accent-dim);
+  border-radius: var(--cg-radius-lg);
+  box-shadow: var(--cg-shadow-lg);
+  animation: cg-pop .22s cubic-bezier(0.16,1,0.3,1) both;
+  overflow: hidden;
+}
+.cg-modal__dialog::before { /* 顶部黄铜细线，呼应卡框 */
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cg-accent), transparent);
+}
+.cg-modal__head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 18px; border-bottom: 1px solid var(--cg-border);
+}
+.cg-modal__title { margin: 0; font-family: var(--cg-font-display); font-size: 18px; color: var(--cg-accent); }
+.cg-modal__head .cg-close { margin-left: auto; }
+.cg-modal__body { padding: 18px; color: var(--cg-text-dim); font-size: 14px; line-height: 1.65; }
+.cg-modal__foot { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 18px; border-top: 1px solid var(--cg-border); }
+.cg-modal--sm .cg-modal__dialog { width: min(360px, 100%); }
+.cg-modal--lg .cg-modal__dialog { width: min(640px, 100%); }
+/* 移动端：内容超高时弹窗自身可滚动，不溢出视口 */
+@media (max-width: 760px) {
+  .cg-modal { padding: 12px; }
+  .cg-modal__dialog { max-height: calc(100vh - 24px); overflow: auto; }
+}
+
+@keyframes cg-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cg-pop { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .cg-modal__backdrop, .cg-modal__dialog { animation: none; }
+}
+
+/* =============================================================================
+ * 7. 关闭按钮（.cg-close）
+ * ========================================================================== */
+.cg-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; font-size: 18px;
+  color: var(--cg-text-dim); background: var(--cg-panel);
+  border: 1px solid var(--cg-border); border-radius: var(--cg-radius-pill);
+  cursor: pointer; transition: color .15s, border-color .15s, background .15s;
+}
+.cg-close .cg-ico { font-size: 18px; }
+.cg-close:hover { color: var(--cg-text); border-color: var(--cg-accent-dim); background: var(--cg-panel-2); }
+.cg-close:focus-visible { outline: 2px solid var(--cg-accent); outline-offset: 2px; }
+
+/* =============================================================================
+ * 8. 选中提示按钮（.cg-select）
+ *    默认：幽灵 chip + 空环；选中：黄铜环 + 对勾 + 发光 + 文字。
+ *    不依赖颜色：选中态带对勾图标 + "已选"文案。
+ * ========================================================================== */
+.cg-select {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px; min-height: 38px;
+  font: inherit; font-size: 13px; color: var(--cg-text-dim);
+  background: var(--cg-panel); border: 1px solid var(--cg-border);
+  border-radius: var(--cg-radius-pill); cursor: pointer;
+  transition: color .15s, border-color .15s, box-shadow .15s, background .15s;
+}
+.cg-select .cg-select__ring {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 1.5px solid var(--cg-border-strong);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: transparent; transition: all .15s;
+}
+.cg-select .cg-select__ring .cg-ico { font-size: 11px; stroke-width: 3; }
+.cg-select:hover { color: var(--cg-text); border-color: var(--cg-accent-dim); }
+.cg-select:focus-visible { outline: 2px solid var(--cg-accent); outline-offset: 2px; }
+.cg-select.is-on {
+  color: var(--cg-accent); border-color: var(--cg-accent);
+  background: var(--cg-panel-2); box-shadow: 0 0 0 1px var(--cg-accent-dim), 0 0 16px var(--cg-accent-glow);
+}
+.cg-select.is-on .cg-select__ring { border-color: var(--cg-accent); background: var(--cg-accent); color: #17140c; }
+
+/* 非按钮形式的"选中高亮态"通用类 */
+.cg-selected { outline: 2px solid var(--cg-accent); outline-offset: -2px; box-shadow: 0 0 16px var(--cg-accent-glow); }
+
+/* =============================================================================
+ * 9. 返回箭头（.cg-back）
+ * ========================================================================== */
+.cg-back {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 14px 8px 10px; min-height: 38px;
+  font: inherit; font-size: 14px; color: var(--cg-text-dim);
+  background: var(--cg-panel); border: 1px solid var(--cg-border);
+  border-radius: var(--cg-radius-pill); cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.cg-back .cg-ico { font-size: 18px; }
+.cg-back:hover { color: var(--cg-text); border-color: var(--cg-accent-dim); background: var(--cg-panel-2); }
+.cg-back:focus-visible { outline: 2px solid var(--cg-accent); outline-offset: 2px; }
+/* 纯图标圆形返回（悬浮在角落用） */
+.cg-back--fab {
+  position: fixed; left: 16px; bottom: 16px; z-index: 45;
+  width: 44px; height: 44px; padding: 0; border-radius: 50%;
+  box-shadow: var(--cg-shadow-md);
+}
+
+/* =============================================================================
+ * 10. 头像框（.cg-avatar）
+ *     矢量华丽框（黄铜卷草 + 四角徽记），稀有度由 --cg-ring 着色。
+ *     框层覆盖在内容之上，pointer-events:none，不影响内部点击。
+ * ========================================================================== */
+.cg-avatar {
+  --cg-ring: var(--cg-r-common);
+  position: relative; display: inline-grid; place-items: center;
+  width: 96px; height: 96px; border-radius: 14px;
+  background: radial-gradient(circle at 50% 35%, #2a2f38, #14161b 75%);
+  color: var(--cg-ring); /* 框描边取稀有度色 */
+  isolation: isolate; flex: none;
+}
+.cg-avatar__img {
+  position: absolute; inset: 7px; border-radius: 9px;
+  width: calc(100% - 14px); height: calc(100% - 14px);
+  object-fit: cover; display: block;
+  background: #101216;
+}
+.cg-avatar__emoji {
+  position: relative; z-index: 1; font-size: 40px; line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.6));
+}
+/* 框层：外环 + 内环 + 四角卷草 + 顶部徽记位 */
+.cg-avatar__frame {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  border-radius: 14px;
+  border: 2px solid var(--cg-ring);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.5), 0 0 14px color-mix(in srgb, var(--cg-ring) 35%, transparent);
+}
+.cg-avatar__frame::before { /* 四角卷草 */
+  content: ""; position: absolute; inset: 4px; border-radius: 10px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M3 37C3 20 14 6 37 3' fill='none' stroke='%23c8a24a' stroke-opacity='0.6'/%3E%3Ccircle cx='5' cy='35' r='1.6' fill='%23c8a24a'/%3E%3C/svg%3E") top left no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M3 37C3 20 14 6 37 3' fill='none' stroke='%23c8a24a' stroke-opacity='0.6' transform='translate(40,0) scale(-1,1)'/%3E%3C/svg%3E") top right no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M3 37C3 20 14 6 37 3' fill='none' stroke='%23c8a24a' stroke-opacity='0.6' transform='translate(0,40) scale(1,-1)'/%3E%3C/svg%3E") bottom left no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M3 37C3 20 14 6 37 3' fill='none' stroke='%23c8a24a' stroke-opacity='0.6' transform='translate(40,40) scale(-1,-1)'/%3E%3C/svg%3E") bottom right no-repeat;
+}
+.cg-avatar__frame::after { /* 顶部徽记（小八芒星，呼应途径封印） */
+  content: ""; position: absolute; top: -2px; left: 50%; transform: translateX(-50%);
+  width: 22px; height: 22px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L13.6 10.4L22 12L13.6 13.6L12 22L10.4 13.6L2 12L10.4 10.4Z' fill='none' stroke='%23c8a24a' stroke-opacity='0.8'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* 尺寸 */
+.cg-avatar--sm { width: 48px; height: 48px; border-radius: 10px; }
+.cg-avatar--sm .cg-avatar__emoji { font-size: 22px; }
+.cg-avatar--sm .cg-avatar__img { inset: 5px; border-radius: 6px; }
+.cg-avatar--lg { width: 128px; height: 128px; border-radius: 18px; }
+.cg-avatar--lg .cg-avatar__emoji { font-size: 56px; }
+.cg-avatar--lg .cg-avatar__img { inset: 9px; border-radius: 12px; }
+/* 稀有度 */
+.cg-avatar--uncommon { --cg-ring: var(--cg-r-uncommon); }
+.cg-avatar--rare     { --cg-ring: var(--cg-r-rare); }
+.cg-avatar--epic     { --cg-ring: var(--cg-r-epic); }
+.cg-avatar--legendary { --cg-ring: var(--cg-r-legendary); }
+
+/* 通用工具 */
+.cg-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.cg-stack { display: flex; flex-direction: column; gap: 12px; }
+.cg-muted { color: var(--cg-text-dim); }
+.cg-accent { color: var(--cg-accent); }
+
+/* =============================================================================
+ * 移动端适配（响应式）
+ *   · 导航栏：窄屏横向滚动，避免链接溢出挤压
+ *   · 区域卡片：随屏宽降列，极窄屏单列
+ *   · 弹窗 / 按钮：小屏收敛内边距，操作按钮全宽，关闭 / 返回放大触控热区
+ * ========================================================================== */
+@media (max-width: 760px) {
+  .cg-nav { gap: 10px; padding: 0 12px; }
+  .cg-nav__brand { font-size: 15px; }
+  .cg-nav__brand .cg-ico { font-size: 18px; }
+  .cg-nav__links {
+    flex: 1; gap: 2px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox 隐藏滚动条 */
+  }
+  .cg-nav__links::-webkit-scrollbar { display: none; } /* Webkit 隐藏滚动条 */
+  .cg-nav__link { padding: 6px 10px; font-size: 13px; white-space: nowrap; }
+  .cg-nav__link.is-active::after { margin-top: 3px; }
+
+  .showcase { padding: 18px 14px 64px; }
+  .sec { margin: 22px 0; }
+  .grid-cards { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .grid-ava { gap: 16px; }
+  .cg-row { gap: 8px; }
+}
+
+@media (max-width: 480px) {
+  .cg-nav { padding: 0 10px; }
+  .cg-nav__brand { font-size: 14px; letter-spacing: .04em; }
+  .cg-nav__utils { gap: 8px; }
+
+  .showcase { padding: 16px 12px 56px; }
+  .grid-cards { grid-template-columns: 1fr; } /* 极窄屏单列 */
+
+  /* 弹窗：操作按钮纵向全宽，关闭 / 返回放大触控热区 */
+  .cg-modal__head { padding: 14px; }
+  .cg-modal__body { padding: 14px; }
+  .cg-modal__foot { flex-direction: column-reverse; gap: 8px; padding: 12px 14px; }
+  .cg-modal__foot .cg-btn { width: 100%; }
+  .cg-close { width: 40px; height: 40px; }
+  .cg-close .cg-ico { font-size: 20px; }
+  .cg-back--fab { width: 48px; height: 48px; }
+  .cg-btn--icon { width: 44px; }
+}
+
+/* =============================================================================
+ * 11. 输入框（.cg-field / .cg-input）
+ *     暗面板底 + 黄铜描边；聚焦发光；含错误态 / 禁用 / 图标前缀变体。
+ * ========================================================================== */
+.cg-field { display: flex; flex-direction: column; gap: 6px; }
+.cg-field__label { font-size: 12px; color: var(--cg-text-dim); letter-spacing: .03em; }
+.cg-field__hint { font-size: 11px; color: var(--cg-text-dim); }
+.cg-input {
+  width: 100%; padding: 10px 12px; min-height: 40px;
+  font: inherit; font-size: 14px; color: var(--cg-text);
+  background: var(--cg-bg-deep); border: 1px solid var(--cg-border); border-radius: var(--cg-radius);
+  transition: border-color .15s, box-shadow .15s, background .15s;
+}
+.cg-input::placeholder { color: #6b7280; }
+.cg-input:hover { border-color: var(--cg-border-strong); }
+.cg-input:focus {
+  outline: none; border-color: var(--cg-accent);
+  box-shadow: 0 0 0 3px var(--cg-accent-glow); background: var(--cg-panel);
+}
+.cg-input:disabled { opacity: .5; cursor: default; }
+.cg-input--error { border-color: var(--cg-warn); }
+.cg-input--error:focus { box-shadow: 0 0 0 3px rgba(200,90,74,.25); }
+/* 图标前缀：搜索 / 锁 等 */
+.cg-input-wrap { position: relative; display: flex; align-items: center; }
+.cg-input-wrap > .cg-ico {
+  position: absolute; left: 11px; color: var(--cg-text-dim); font-size: 16px; pointer-events: none;
+}
+.cg-input-wrap .cg-input { padding-left: 36px; }
+.cg-input-wrap .cg-input--sm { padding-left: 32px; }
+
+/* =============================================================================
+ * 12. 开关（.cg-switch）
+ *     暗轨道 + 黄铜填充 + 圆点发光；纯 CSS 切换（checkbox 隐藏）。
+ * ========================================================================== */
+.cg-switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.cg-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.cg-switch__track {
+  position: relative; width: 46px; height: 26px; border-radius: var(--cg-radius-pill);
+  background: var(--cg-bg-deep); border: 1px solid var(--cg-border); flex: none;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+}
+.cg-switch__track::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--cg-text-dim); box-shadow: 0 1px 2px rgba(0,0,0,.4);
+  transition: transform .2s, background .2s;
+}
+.cg-switch input:checked + .cg-switch__track {
+  background: var(--cg-accent-dim); border-color: var(--cg-accent);
+  box-shadow: 0 0 0 1px var(--cg-accent), 0 0 12px var(--cg-accent-glow);
+}
+.cg-switch input:checked + .cg-switch__track::after { transform: translateX(20px); background: var(--cg-accent); }
+.cg-switch input:focus-visible + .cg-switch__track { outline: 2px solid var(--cg-accent); outline-offset: 2px; }
+.cg-switch input:disabled + .cg-switch__track { opacity: .5; cursor: default; }
+.cg-switch__label { font-size: 14px; color: var(--cg-text); }
+.cg-switch__label small { display: block; color: var(--cg-text-dim); font-size: 11px; }
+
+/* =============================================================================
+ * 13. 进度条（.cg-progress）
+ *     暗轨道 + 黄铜渐变填充 + 发光；含 warn / ok 多色与 lg 尺寸。
+ * ========================================================================== */
+.cg-progress { width: 100%; }
+.cg-progress__track {
+  height: 8px; border-radius: var(--cg-radius-pill);
+  background: var(--cg-bg-deep); border: 1px solid var(--cg-border); overflow: hidden;
+}
+.cg-progress__bar {
+  height: 100%; border-radius: var(--cg-radius-pill); width: 0;
+  background: linear-gradient(90deg, var(--cg-accent-dim), var(--cg-accent));
+  box-shadow: 0 0 8px var(--cg-accent-glow);
+  transition: width .4s cubic-bezier(.16,1,.3,1);
+}
+.cg-progress__bar--warn { background: linear-gradient(90deg, #8a4a3a, var(--cg-warn)); box-shadow: 0 0 8px rgba(200,90,74,.3); }
+.cg-progress__bar--ok { background: linear-gradient(90deg, #3a6a4a, var(--cg-ok)); box-shadow: 0 0 8px rgba(90,160,106,.3); }
+.cg-progress--lg .cg-progress__track { height: 12px; }
+.cg-progress__meta { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: var(--cg-text-dim); }
+
+/* =============================================================================
+ * 14. Toast 轻提示（.cg-toast）
+ *     右下角浮层，自动消失；含 info / ok / warn 三型，神秘学左线描边。
+ * ========================================================================== */
+.cg-toast-wrap {
+  position: fixed; right: 16px; bottom: 16px; z-index: 80;
+  display: flex; flex-direction: column; gap: 10px;
+  max-width: min(360px, calc(100vw - 32px));
+}
+.cg-toast {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 14px; min-width: 240px;
+  background: var(--cg-panel); border: 1px solid var(--cg-border-strong); border-left: 3px solid var(--cg-accent);
+  border-radius: var(--cg-radius); box-shadow: var(--cg-shadow-lg);
+  animation: cg-toast-in .25s cubic-bezier(.16,1,.3,1) both;
+  color: var(--cg-text); font-size: 13px;
+}
+.cg-toast__ico { flex: none; font-size: 18px; color: var(--cg-accent); margin-top: 1px; }
+.cg-toast__body { flex: 1; line-height: 1.5; }
+.cg-toast__title { font-weight: 600; color: var(--cg-text); }
+.cg-toast__msg { color: var(--cg-text-dim); margin-top: 2px; }
+.cg-toast__close {
+  flex: none; background: none; border: none; color: var(--cg-text-dim); cursor: pointer;
+  font-size: 16px; padding: 0; line-height: 1; transition: color .15s;
+}
+.cg-toast__close:hover { color: var(--cg-text); }
+.cg-toast--ok { border-left-color: var(--cg-ok); }
+.cg-toast--ok .cg-toast__ico { color: var(--cg-ok); }
+.cg-toast--warn { border-left-color: var(--cg-warn); }
+.cg-toast--warn .cg-toast__ico { color: var(--cg-warn); }
+.cg-toast.is-out { animation: cg-toast-out .2s ease-in both; }
+@keyframes cg-toast-in { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+@keyframes cg-toast-out { to { opacity: 0; transform: translateX(20px); } }
+
+/* 新组件移动端收敛 */
+@media (max-width: 480px) {
+  .cg-toast-wrap { right: 12px; bottom: 12px; }
+  .cg-toast { min-width: 0; }
+}

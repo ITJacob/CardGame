@@ -51,10 +51,10 @@ function render(host: HTMLElement, catalog: Catalog, profile: Profile): void {
       <div class="hero-list">${rows}</div>
       ${errors.length > 0 ? `<p class="warn">编队问题：${escapeHtml(errors.join(' / '))}</p>` : '<p class="ok">编队合法</p>'}
       <div class="row-actions">
-        <a class="btn" href="#/prep">整备 · 技能 / 阵型</a>
-        <button type="button" class="btn" id="btn-reroll">重新生成英雄</button>
+        <a class="cg-btn" href="#/prep">整备 · 技能 / 阵型</a>
+        <button type="button" class="cg-btn" id="btn-reroll">重新生成英雄</button>
       </div>
-      <button type="button" class="btn primary" id="btn-fight">开始战斗</button>
+      <button type="button" class="cg-btn cg-btn--primary cg-btn--block" id="btn-fight">开始战斗</button>
     </main>`
 
   hydrateArt(host)
@@ -88,9 +88,10 @@ function render(host: HTMLElement, catalog: Catalog, profile: Profile): void {
   })
 }
 
-/** 名册的技能切换按钮。主动/被动的次序语义不同，标题里各说一句，省得看串 */
+/** 名册的技能切换按钮。主动/被动的次序语义不同，标题里各说一句，省得看串。
+ *  用 kit 的 .cg-select（环在左、选中填黄铜），这样「当前看的是哪一类」和整页其它选中态是同一套语言。 */
 function switchBtn(kind: SlotKind): string {
   const tip =
     kind === 'active' ? '主动技能按槽位顺序在战斗里轮转释放' : '被动技能常驻；同一触发点上有多张时按槽位顺序发动'
-  return `<button type="button" class="switch-btn${skillView === kind ? ' on' : ''}" data-skill-view="${kind}" title="${tip}">${SLOT_LABEL[kind]}</button>`
+  return `<button type="button" class="cg-select switch-btn${skillView === kind ? ' is-on' : ''}" data-skill-view="${kind}" title="${tip}">${SLOT_LABEL[kind]}</button>`
 }

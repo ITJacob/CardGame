@@ -1,21 +1,30 @@
 import { topbarHtml } from '../components/chrome'
+import { icon } from '../components/icons'
 import { loadManifest } from '../../data/loader'
 
 export function renderMenu(host: HTMLElement): void {
   host.innerHTML = `
     ${topbarHtml()}
     <main class="menu">
-      <h1 class="menu-title">卡牌对战</h1>
-      <p class="menu-sub">Roguelike 爬塔 · 队伍对战</p>
-      <nav class="menu-actions">
-        <a class="btn primary" href="#/new">开始新游戏</a>
-        <a class="btn" href="#/online">在线对战</a>
-        <a class="btn" href="#/continue">继续游戏</a>
-        <a class="btn" href="#/cards">现有卡池</a>
-        <a class="btn" href="#/leaderboard">排行榜</a>
-        <a class="btn" href="#/settings">设置</a>
-      </nav>
-      <p class="menu-status" id="menu-status">正在加载数据索引…</p>
+      <article class="cg-card cg-card--featured cg-card--legendary cg-card--static menu-card">
+        <span class="cg-card__rarity"></span>
+        <div class="cg-card__head">
+          ${icon('cg-sigil-star', 'cg-card__sigil')}
+          <div>
+            <h1 class="cg-card__title menu-title">卡牌对战</h1>
+            <div class="cg-card__meta">Roguelike 爬塔 · 队伍对战</div>
+          </div>
+        </div>
+        <nav class="menu-actions">
+          <a class="cg-btn cg-btn--primary cg-btn--block" href="#/new">开始新游戏</a>
+          <a class="cg-btn cg-btn--block" href="#/online">在线对战</a>
+          <a class="cg-btn cg-btn--block" href="#/continue">继续游戏</a>
+          <a class="cg-btn cg-btn--block" href="#/cards">现有卡池</a>
+          <a class="cg-btn cg-btn--block" href="#/leaderboard">排行榜</a>
+          <a class="cg-btn cg-btn--block" href="#/settings">设置</a>
+        </nav>
+        <p class="menu-status" id="menu-status">正在加载数据索引…</p>
+      </article>
     </main>`
 
   const status = host.querySelector<HTMLParagraphElement>('#menu-status')

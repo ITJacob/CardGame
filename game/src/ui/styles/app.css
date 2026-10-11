@@ -1,3 +1,14 @@
+/*
+ * app.css —— 游戏自己的样式：布局 + 卡面 + 棋盘 + 这一局独有的零件。
+ *
+ * 通用外观（按钮 / 顶栏 / 面板 / 输入框 / 弹窗 / 头像 / 进度条 / 滚动条 / 选中态 / 底图）
+ * 一律交给 ui-kit（ui-kit/ui-kit.css）与桥接层（kit-bridge.css）。本文件只留：
+ *   ① 页面骨架（栅格、max-width、间距）
+ *   ② 卡面 .card-face 与棋盘 .tile —— 这两个是游戏独有的视觉，kit 里没有对应物
+ *   ③ 需要压过 kit 同名单类选择器的那几条 → 见 kit-bridge.css（引用顺序是
+ *      app.css → ui-kit.css → kit-bridge.css，单类规则里后引入者胜）
+ */
+
 :root {
   --bg: #1d2026;
   --bg-deep: #16181d;
@@ -11,7 +22,6 @@
   --warn: #c85a4a;
   --ok: #5aa06a;
   --radius: 10px;
-  --topbar-h: 52px;
   color-scheme: dark;
 }
 
@@ -19,7 +29,6 @@
 
 html, body {
   margin: 0;
-  min-height: 100%;
   background: var(--bg);
   color: var(--text);
   font: 15px/1.6 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
@@ -30,6 +39,11 @@ html, body {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
+/* 视口高度：body 是 .cg-bg 的载体（底图 + 暗雾画在 body 上），撑不满视口就会在
+   页面下方留一条「body 之外」的纯色带——html 的底色比 .cg-bg 亮，边界一眼可见。
+   （body 的 min-height:100% 对着 html 的 auto 高度算，等于没算，所以按视口单位给。） */
+body { min-height: 100vh; }
+
 input, textarea { user-select: text; }
 
 /* 焦点圈：键盘导航用主题色，鼠标点击不画圈，同时挡掉各家浏览器默认那个蓝圈 */
@@ -38,50 +52,11 @@ input, textarea { user-select: text; }
 
 a { color: inherit; text-decoration: none; }
 
-/* ---------- 顶栏 ---------- */
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  height: var(--topbar-h);
-  padding: 0 18px;
-  background: rgba(22, 24, 29, 0.92);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border);
+/* ---------- 安全区（刘海 / 小白条） ---------- */
+/* 顶栏那一段由 kit-bridge 加在 .cg-nav 上（含左右两侧） */
+.menu, .placeholder, .settings {
+  padding-bottom: max(48px, env(safe-area-inset-bottom));
 }
-
-.topbar .brand {
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--accent);
-}
-
-.topbar-nav {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  font-size: 14px;
-  color: var(--text-dim);
-}
-
-.topbar-nav a:hover { color: var(--text); }
-
-.topbar .wiki-link {
-  padding: 5px 11px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--text);
-}
-.topbar .wiki-link:hover { border-color: var(--accent-dim); color: var(--accent); }
-
-.topbar.sub { justify-content: flex-start; gap: 14px; }
-.topbar.sub .back { color: var(--text-dim); }
-.topbar.sub .back:hover { color: var(--text); }
-.topbar.sub .sub-title { font-weight: 600; }
 
 /* ---------- 主菜单 ---------- */
 .menu {
@@ -91,44 +66,10 @@ a { color: inherit; text-decoration: none; }
   text-align: center;
 }
 
-.menu-title {
-  margin: 0;
-  font-size: 40px;
-  letter-spacing: 0.14em;
-  color: var(--accent);
-}
-
-.menu-sub {
-  margin: 6px 0 40px;
-  color: var(--text-dim);
-  letter-spacing: 0.08em;
-}
-
 .menu-actions {
   display: grid;
   gap: 12px;
 }
-
-.btn {
-  display: block;
-  padding: 13px 18px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--panel);
-  color: var(--text);
-  font-size: 15px;
-  transition: background 0.15s, border-color 0.15s, transform 0.05s;
-}
-.btn:hover { background: var(--panel-2); border-color: var(--accent-dim); }
-.btn:active { transform: translateY(1px); }
-
-.btn.primary {
-  background: var(--accent-dim);
-  border-color: var(--accent);
-  color: #171512;
-  font-weight: 600;
-}
-.btn.primary:hover { background: var(--accent); }
 
 .menu-status {
   margin-top: 32px;
@@ -149,31 +90,20 @@ a { color: inherit; text-decoration: none; }
 .placeholder h1 { color: var(--accent); letter-spacing: 0.08em; }
 .placeholder p { color: var(--text-dim); }
 .placeholder .hint a { color: var(--accent); border-bottom: 1px solid var(--accent-dim); }
+/* 占位页里的卡是「一块内容」，本身不接收整体点击，不该有 hover 抬升（.cg-card--static 已挡，
+   这里再挡一次是给 .menu-card 那种 featured 卡用的——featured 的发光要留，抬升不要） */
 
 /* ---------- 设置 ---------- */
 .settings {
   max-width: 640px;
   margin: 0 auto;
   padding: 28px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.panel {
-  margin-bottom: 18px;
-  padding: 16px 18px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
-.panel h2 {
-  margin: 0 0 12px;
-  font-size: 15px;
-  letter-spacing: 0.06em;
-  color: var(--accent);
-}
-.panel .hint { color: var(--text-dim); font-size: 13px; margin: 0; }
-.panel .ok { color: var(--ok); font-size: 13px; margin: 0 0 10px; }
-.panel .warn { color: var(--warn); font-size: 13px; margin: 0 0 10px; }
-
+/* ---------- 设置 / 排行榜共用的键值行 ---------- */
 .kv {
   display: flex;
   justify-content: space-between;
@@ -184,15 +114,6 @@ a { color: inherit; text-decoration: none; }
 }
 .kv .k { color: var(--text-dim); }
 .kv .v { font-family: ui-monospace, Consolas, monospace; }
-
-/* ---------- 安全区（刘海 / 小白条） ---------- */
-.topbar {
-  padding-left: max(18px, env(safe-area-inset-left));
-  padding-right: max(18px, env(safe-area-inset-right));
-}
-.menu, .placeholder, .settings {
-  padding-bottom: max(48px, env(safe-area-inset-bottom));
-}
 
 /* ---------- 战斗界面 ---------- */
 .battle {
@@ -242,46 +163,22 @@ a { color: inherit; text-decoration: none; }
 .tile .avatar { font-size: 20px; line-height: 1; text-align: center; }
 .tile .tname { text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tile .tclass { color: var(--text-dim); font-size: 10px; margin-left: 4px; }
-.tile .bar { position: relative; height: 9px; background: #14161b; border-radius: 5px; overflow: hidden; }
-.tile .bar i { display: block; height: 100%; }
-.tile .bar.hp i { background: linear-gradient(90deg, #7a2b2b, #c85a4a); }
-.tile .bar.gauge i { background: linear-gradient(90deg, #6b5a1f, var(--accent)); }
-.tile .bar span { position: absolute; inset: 0; font-size: 9px; text-align: center; color: #fff; }
+/* 格子里的血条 / 怒气条用 kit 的 .cg-progress，但格子小：轨道压到 8px、去掉过渡、
+   数值叠在轨道上——三样都在 kit-bridge 里（那里才压得过 kit 的同名单类规则）。 */
 .tile .statuses { display: flex; gap: 3px; flex-wrap: wrap; }
 .chip { background: #3a404b; border-radius: 4px; padding: 0 4px; font-size: 9px; color: var(--text-dim); }
 
 .battle-side { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .hud { display: flex; gap: 12px; font-size: 13px; color: var(--text-dim); }
-.controls { display: flex; gap: 8px; }
-.controls button, .pick, .pick-auto {
-  font: inherit;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  color: var(--text);
-  cursor: pointer;
-}
-.controls button:disabled { opacity: 0.4; cursor: default; }
-.controls button:hover:not(:disabled) { border-color: var(--accent-dim); }
+.controls { display: flex; align-items: center; gap: 8px; }
 
-.log {
-  max-height: 42vh;
-  overflow: auto;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 8px;
-  font-size: 12px;
-  line-height: 1.5;
-}
+/* 日志：卡片外观来自 .cg-card，滚动条来自 .cg-scroll，这里只定高度与字号 */
+.log { max-height: 42vh; font-size: 12px; line-height: 1.5; }
 .log-line { color: var(--text-dim); }
 .log-line.dim { opacity: 0.6; }
 
-.roster { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px; }
-.roster summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+.roster summary { font-size: 13px; }
 .roster-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
-.roster-avatar { font-size: 18px; }
 .roster-name { font-size: 12px; min-width: 80px; }
 /* 战斗侧栏固定 320px，4 张 compact 卡（4×60+15=255）放不进与头像同行的余量，故独占一行 */
 .roster-cards { display: flex; gap: 5px; flex-wrap: wrap; flex: 1 0 100%; }
@@ -289,7 +186,7 @@ a { color: inherit; text-decoration: none; }
 /*
  * 技能卡面：分层（自下而上）= 无图底 / 卡图 / 稀有度边框(叠层) / 信息条。
  * 卡图上不盖任何压暗层（曾经压到 55% 高，放大后糊掉半张画）；信息条的可读性靠字自身的描边。
- * 3:4 两档：compact 60×80（默认）、full 96×128 —— 与边框图 1152×1536 同比例，cover 不裁。
+ * 3:4 两档：compact 60×80（默认）、full 120×160 —— 与边框图 1152×1536 同比例，cover 不裁。
  */
 .card-face {
   position: relative; isolation: isolate; /* screen 混色只在本卡内合成，不外溢到页面 */
@@ -318,12 +215,13 @@ a { color: inherit; text-decoration: none; }
   mix-blend-mode: screen; opacity: .82;
 }
 
-/* 稀有度：有边框时靠框线区分；边框缺失或降级时退回内描边色环 */
-.card-face.r-common { --rf: #6b7280; }
-.card-face.r-uncommon { --rf: #5aa06a; }
-.card-face.r-rare { --rf: #4a7fc8; }
-.card-face.r-epic { --rf: #8a5ac8; }
-.card-face.r-legendary { --rf: var(--accent); }
+/* 稀有度：有边框时靠框线区分；边框缺失或降级时退回内描边色环。
+   色值直接取 kit 的 --cg-r-*，稀有度配色仍然只有 ui-kit 一处源。 */
+.card-face.r-common { --rf: var(--cg-r-common); }
+.card-face.r-uncommon { --rf: var(--cg-r-uncommon); }
+.card-face.r-rare { --rf: var(--cg-r-rare); }
+.card-face.r-epic { --rf: var(--cg-r-epic); }
+.card-face.r-legendary { --rf: var(--cg-r-legendary); }
 .card-face.no-frame, .card-face.frame-degraded { box-shadow: inset 0 0 0 1px var(--rf); }
 
 /* 信息条：名字 + ⚡费用（被动卡没有费用，这本身就是主/被动的区分） */
@@ -388,27 +286,17 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 .card-lock:hover { border-color: var(--accent); }
 .card-lock[aria-pressed="true"] { color: var(--accent); border-color: var(--accent-dim); }
 
-.decision {
-  position: sticky; bottom: 0; z-index: 5;
-  padding: 12px; border-top: 1px solid var(--accent-dim);
-  background: rgba(22, 24, 29, 0.96); backdrop-filter: blur(6px);
-}
+/* 决策条：粘在视口底部。卡片外观来自 .cg-card（position/overflow 的覆盖见 kit-bridge） */
 .decision-title { font-size: 13px; color: var(--accent); margin-bottom: 8px; }
 .picks { display: flex; gap: 8px; flex-wrap: wrap; }
-.pick { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 76px; }
 .pick-face { font-size: 22px; }
 .pick-name { font-size: 11px; color: var(--text-dim); }
-.pick-auto { margin-top: 8px; }
-
-.ended { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(10, 11, 14, 0.75); z-index: 20; }
-.ended-card { background: var(--panel); border: 1px solid var(--accent-dim); border-radius: 12px; padding: 28px 36px; text-align: center; }
-.ended-card h2 { margin: 0 0 16px; color: var(--accent); }
 
 /* ---------- 卡面详情浮层 ---------- */
-/* z-index 15：高过吸顶栏(10)、低于结算模态(20)；pointer-events:none 保证它既不挡卡、
-   也不会因为浮层自己盖住指针而引发 mouseout/mouseover 抖动。 */
+/* z-index 45：高过吸顶栏(.cg-nav 40)、低于放大视图(50)与结算模态(.cg-modal 60)；
+   pointer-events:none 保证它既不挡卡、也不会因为浮层自己盖住指针而引发 mouseout/mouseover 抖动。 */
 .card-pop {
-  position: fixed; z-index: 15; max-width: 300px; pointer-events: none;
+  position: fixed; z-index: 45; max-width: 300px; pointer-events: none;
   padding: 12px 14px; border-radius: 10px;
   background: var(--panel); border: 1px solid var(--accent-dim);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
@@ -429,10 +317,10 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 /* ---------- 卡面放大视图 ---------- */
 /* 点卡面 → 放大到铺满视口（横纵都居中）。卡面自己占住屏幕，所以不加遮罩，背后透出页面。
    详情分两种摆法：横板常驻在卡右侧；竖版/窄屏放不下，改成「再点一下卡面，半透盖在卡上」。
-   z-index 30：高过详情浮层(15)与结算(20)。 */
+   z-index 50：高过详情浮层(45)，低于结算模态(.cg-modal 60)。 */
 body.zoom-open { overflow: hidden; }
 .card-zoom {
-  position: fixed; inset: 0; z-index: 30; overflow: hidden; outline: none;
+  position: fixed; inset: 0; z-index: 50; overflow: hidden; outline: none;
   display: flex; align-items: center; justify-content: center; padding: 12px;
 }
 /* --zh = 放大卡面的高度：先按视口高铺满，再按 3:4 退让；横板还要给右侧详情让出 384px */
@@ -447,7 +335,7 @@ body.zoom-open { overflow: hidden; }
 .card-face.zoom .ci-cost { font-size: 0.8em; }
 .card-face.zoom .noart-glyph { font-size: 84px; font-size: 12cqh; }
 .zoom-tip {
-  width: 320px; max-height: var(--zh); overflow: auto;
+  width: 320px; max-height: var(--zh);
   padding: 14px 16px; border-radius: 12px;
   background: rgba(22, 24, 29, 0.97); border: 1px solid var(--accent-dim);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
@@ -455,13 +343,7 @@ body.zoom-open { overflow: hidden; }
 }
 .zoom-tip h4 { font-size: 17px; }
 .zoom-hint { display: none; }
-.zoom-close {
-  position: absolute; top: 14px; right: 16px; z-index: 1;
-  width: 34px; height: 34px; border-radius: 999px;
-  font: inherit; font-size: 15px; line-height: 1;
-  background: var(--panel); border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
-}
-.zoom-close:hover { color: var(--text); border-color: var(--accent-dim); }
+/* 关闭键的外观来自 kit 的 .cg-close，这里只摆位（覆盖单类规则，故在 kit-bridge 里） */
 /* 卡右侧放不下详情（竖版/窄屏）：详情改成盖在卡面上的半透层，点卡面开关 */
 @media (max-width: 1099.98px), (orientation: portrait) {
   /* 卡名在卡底、提示条又在卡外下方，高度受限时得先给提示条留出 34px */
@@ -483,7 +365,7 @@ body.zoom-open { overflow: hidden; }
   .card-zoom.tip-on .zoom-hint { display: none; }
 }
 
-/* ---------- 新游戏 ---------- */
+/* ---------- 新游戏 / 在线大厅 ---------- */
 .newgame { max-width: 760px; margin: 0 auto; padding: 20px 18px 60px; }
 .newgame h2 { font-size: 15px; color: var(--accent); margin: 18px 0 10px; }
 .newgame .hint { font-size: 12px; color: var(--text-dim); }
@@ -491,9 +373,7 @@ body.zoom-open { overflow: hidden; }
 .hero-list { display: flex; flex-direction: column; gap: 8px; }
 /* 名册行是展示卡，不是可编辑文本：禁选，免得悬停出现 I 形光标、点击弹出输入光标 */
 .hero-list, .roster { user-select: none; caret-color: transparent; }
-.hero-row { display: flex; align-items: center; gap: 10px; padding: 8px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); }
-.hero-avatar { font-size: 24px; }
-/* 信息列吃掉中间的空白，技能卡就都贴到行尾——各行卡数一样时上下自然对齐成一列 */
+/* 行外壳是 .cg-card--row（见 kit-bridge），这里只管内部三段 */
 .hero-info { flex: 1; min-width: 150px; display: flex; flex-direction: column; }
 .hero-info small { color: var(--text-dim); font-size: 11px; }
 .hero-cards { display: flex; justify-content: flex-end; gap: 5px; flex-wrap: wrap; }
@@ -502,15 +382,6 @@ body.zoom-open { overflow: hidden; }
 /* 名册标题行：标题在左，主动/被动切换在右 */
 .list-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0 10px; }
 .list-head h2 { margin: 0; }
-.skill-switch { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.switch-btn {
-  font: inherit; font-size: 12px; padding: 4px 12px;
-  background: transparent; border: 0; color: var(--text-dim); cursor: pointer;
-}
-.switch-btn + .switch-btn { border-left: 1px solid var(--border); }
-.switch-btn:hover { color: var(--text); background: var(--panel); }
-.switch-btn.on { background: var(--panel-2); color: var(--accent); }
-#btn-fight { width: 100%; margin-top: 18px; }
 
 @media (max-width: 760px) {
   .battle { grid-template-columns: 1fr; }
@@ -530,40 +401,16 @@ table.lb td.res { font-weight: 700; }
 table.lb tr.win td.res { color: var(--ok); }
 table.lb tr.lose td.res { color: var(--warn); }
 table.lb tr.draw td.res { color: var(--text-dim); }
-#btn-clear-lb { margin-top: 16px; width: 100%; }
 
-.field { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.field span { color: var(--text-dim); font-size: 13px; min-width: 64px; }
-.field input {
-  flex: 1; font: inherit; padding: 7px 10px; color: var(--text);
-  background: var(--bg-deep); border: 1px solid var(--border); border-radius: 8px;
-}
-/* 输入框：鼠标点靠边框变色即可，键盘走到这里仍要有那圈主题色描边（全局 :focus-visible 给） */
-.field input:focus { border-color: var(--accent-dim); }
 .row-actions { display: flex; gap: 8px; margin-top: 12px; }
-.row-actions .btn { width: auto; flex: 1; text-align: center; }
-.btn.danger { border-color: #6b3a3a; color: #d98b8b; }
-.btn.danger:hover { background: #3a2426; border-color: var(--warn); }
 
 /* ---------- 现有卡池 ---------- */
 .pool-page { display: grid; grid-template-columns: 190px 1fr; gap: 16px; max-width: 1100px; margin: 0 auto; padding: 18px; }
-.cls-list { display: flex; flex-direction: column; gap: 3px; max-height: 76vh; overflow: auto; }
-.cls-row {
-  display: flex; align-items: center; gap: 7px; font: inherit; text-align: left;
-  padding: 6px 8px; border-radius: 7px; border: 1px solid transparent;
-  background: transparent; color: var(--text-dim); cursor: pointer; font-size: 13px;
-}
-.cls-row:hover { background: var(--panel); color: var(--text); }
-.cls-row.active { background: var(--panel-2); color: var(--text); border-color: var(--accent-dim); }
-.cls-row.unlocked .cls-dot { color: var(--ok); }
-.cls-dot { font-size: 10px; }
-.cls-name { flex: 1; }
-.cls-n { font-size: 11px; color: var(--text-dim); }
+.cls-list { display: flex; flex-direction: column; gap: 3px; max-height: 76vh; }
 
 .pool-main { min-width: 0; }
 .pool-head { display: flex; align-items: center; gap: 14px; }
 .pool-head h2 { margin: 0; color: var(--accent); font-size: 18px; }
-.pool-head .btn { width: auto; padding: 8px 14px; }
 .pool-main .hint { font-size: 12.5px; color: var(--text-dim); }
 /* 一行装不下的余量左右均分（每行各自居中），不留一坨空白在右边 */
 .pool-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
@@ -585,19 +432,15 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .hint.ok { color: var(--ok); }
 .hint.warn { color: var(--warn); }
 .newgame .hint.warn, .newgame .hint.ok { font-size: 13px; }
-.newgame .field { margin-top: 12px; }
-.newgame .row-actions .btn { text-align: center; }
-.pick:disabled, .pick-auto:disabled { opacity: 0.5; cursor: default; }
 
 /* ---------- 整备（技能槽 + 阵型） ---------- */
 .prep { max-width: 980px; margin: 0 auto; padding: 18px 18px 60px; }
 .prep .hint { font-size: 12.5px; color: var(--text-dim); }
 .prep .hint.warn { color: var(--warn); font-size: 13px; }
+/* 每段 = 一张 .cg-card；这里只留段间距与段内小标题 */
 .prep-sec { margin: 16px 0; }
-.prep-sec h2 { font-size: 15px; color: var(--accent); margin: 0 0 10px; }
 .prep-sec h3 { font-size: 13px; color: var(--text); margin: 14px 0 8px; }
 .prep-sec h2 .hint, .prep-sec h3 .hint { font-size: 11.5px; font-weight: 400; margin-left: 6px; }
-.prep .row-actions .btn { text-align: center; }
 
 .prep-board { min-height: 150px; user-select: none; caret-color: transparent; }
 .prep-board .tile { cursor: pointer; }
@@ -612,13 +455,6 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .tile.sel { outline: 2px solid var(--accent); outline-offset: -2px; }
 
 .hero-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-.hero-chip {
-  display: flex; align-items: center; gap: 6px; font: inherit; font-size: 13px;
-  padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px;
-  background: var(--panel); color: var(--text); cursor: pointer;
-}
-.hero-chip:hover { border-color: var(--accent-dim); }
-.hero-chip.on { border-color: var(--accent); background: var(--panel-2); }
 .chip-avatar { font-size: 16px; }
 
 .slot-block { margin-bottom: 6px; }
@@ -635,13 +471,6 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .slot-blank { font-size: 18px; color: var(--text-dim); opacity: 0.6; }
 /* 槽底只剩一个 ✕：槽是 flex 列 + align-items:center，单独一个子元素就居中 */
 .slot-ops { display: flex; justify-content: center; }
-.slot-op {
-  font: inherit; font-size: 10px; line-height: 1; padding: 3px 5px;
-  border: 1px solid var(--border); border-radius: 5px;
-  background: var(--bg-deep); color: var(--text-dim); cursor: pointer;
-}
-.slot-op:hover { color: var(--text); border-color: var(--accent-dim); }
-.slot-op.danger:hover { color: #d98b8b; border-color: var(--warn); }
 
 /* ---------- 拖拽（阵型摆位 + 主动槽调序） ---------- */
 /* touch-action:none 让触屏上的拖动不被页面滚动抢走；拖源才有，不影响别处滚动 */

@@ -28,8 +28,9 @@ export function heroRowHtml(hero: HeroLike, catalog: Catalog, kind: SlotKind = '
     .join('')
   const combo = `${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智`
   const coord = hero.coordinate ? ` · ${escapeHtml(hero.coordinate.lane)}#${hero.coordinate.index}` : ''
-  return `<div class="hero-row">
-    <span class="hero-avatar">${avatarEmoji(hero.constitutionId, hero.gender)}</span>
+  // 行外壳 = kit 的 .cg-card（横排变体 .cg-card--row 在 kit-bridge 里定义）；头像 = .cg-avatar--sm
+  return `<div class="cg-card cg-card--row hero-row">
+    <span class="cg-avatar cg-avatar--sm hero-avatar"><span class="cg-avatar__emoji">${avatarEmoji(hero.constitutionId, hero.gender)}</span></span>
     <span class="hero-info">
       <b>${escapeHtml(hero.name)}</b>
       <small>${escapeHtml(hero.classId)} · ${escapeHtml(hero.constitutionId)} · ${combo}${coord}</small>
