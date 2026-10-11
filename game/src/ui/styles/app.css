@@ -404,7 +404,9 @@ button.card-face[aria-disabled="true"] { cursor: default; }
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
   color: var(--text); font-size: 12.5px; line-height: 1.5;
 }
-/* .card-detail = 详情正文的共用样式，浮层与放大视图的 .zoom-tip 共用同一份排版 */
+/* .card-detail = 详情正文的共用样式，浮层与放大视图的 .zoom-tip 共用同一份排版。
+   详情是只读展示，不是可编辑文本：禁选，免得悬停冒 I 形光标、点击出输入光标。 */
+.card-detail { user-select: none; caret-color: transparent; }
 .card-detail h4 { margin: 0 0 6px; font-size: 14px; color: var(--accent); }
 .card-detail .cp-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
 .card-detail .cp-badge { font-size: 10.5px; padding: 1px 6px; border: 1px solid var(--border); border-radius: 999px; color: var(--text-dim); }
