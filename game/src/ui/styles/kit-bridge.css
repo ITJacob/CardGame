@@ -48,7 +48,7 @@
 }
 
 /* 名册横排行：kit 的 .cg-panel 是「一块区域」（纵向堆内容和标题），名册行是
-   「头像 · 信息 · 技能卡列」一条横排，也没有标题栏。行会重复十几遍，整块的大投影
+   「英雄卡 · 技能卡列」一条横排，也没有标题栏。行会重复十几遍，整块的大投影
    换成一层浅影——不然一列名册各自浮起，像十几张卡片叠在暗雾上。 */
 .cg-panel--row {
   display: flex;
@@ -58,6 +58,9 @@
   padding: 8px 12px;
   box-shadow: var(--cg-shadow-sm), inset 0 0 0 1px rgba(200, 162, 74, .07);
 }
+/* 英雄卡（150px 立绘 + 名条）比右侧技能条高得多，行内改顶对齐，技能条贴着卡顶排。
+   覆盖目标 .cg-panel--row 就在本文件、与 app.css 同权重但后引入，所以这条只能写在这里。 */
+.hero-row { align-items: flex-start; }
 
 /* 强调面板：黄铜边 + 外发光。主菜单首屏、在线等待页的房间码用这一档 ——
    kit 的 .cg-panel 只有 --menu / --group / --flush 三档，这一档是游戏侧补的。 */
@@ -105,7 +108,7 @@
 /* —— 整备页：英雄条（.hero-chip）与主动/被动切换（.switch-btn）——
    两者都是「一个可选项，选中了要看得出来」：用 kit 的 .cg-select（空环 → 实心环 + 对勾）。
    切换按钮那组不带环，只是两片并列的胶囊。 */
-.hero-chip .chip-avatar { font-size: 15px; }
+.hero-chip { gap: 8px; }
 .skill-switch { display: inline-flex; gap: 8px; }
 .skill-switch .cg-select,
 .hero-chip.cg-select { padding: 5px 12px; min-height: 34px; font-size: 13px; }

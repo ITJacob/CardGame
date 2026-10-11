@@ -176,7 +176,9 @@ a { color: inherit; text-decoration: none; }
 .tile.pickable:hover { filter: brightness(1.18); }
 .tile.pickable:focus-visible { outline-color: var(--text); }
 @keyframes pulse { 50% { outline-color: var(--warn); } }
-.tile .avatar { font-size: 20px; line-height: 1; text-align: center; }
+.tile .avatar { display: flex; justify-content: center; line-height: 1; }
+/* 阵型格子里的小立绘：格子高度有限（约 85px），给 46×58 的竖版缩略 */
+.tile .avatar .hero-portrait { width: 46px; height: 58px; }
 .tile .tname { text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tile .tclass { color: var(--text-dim); font-size: 10px; margin-left: 4px; }
 /* 格子里的血条 / 怒气条用 kit 的 .cg-progress，但格子小：轨道压到 8px、去掉过渡、
@@ -389,11 +391,37 @@ body.zoom-open { overflow: hidden; }
 .hero-list { display: flex; flex-direction: column; gap: 8px; }
 /* 名册行是展示卡，不是可编辑文本：禁选，免得悬停出现 I 形光标、点击弹出输入光标 */
 .hero-list, .roster { user-select: none; caret-color: transparent; }
-/* 行外壳是 .cg-panel--row（见 kit-bridge），这里只管内部三段 */
-.hero-info { flex: 1; min-width: 150px; display: flex; flex-direction: column; }
-.hero-info small { color: var(--text-dim); font-size: 11px; }
-.hero-cards { display: flex; justify-content: flex-end; gap: 5px; flex-wrap: wrap; }
+/* 行外壳是 .cg-panel--row（见 kit-bridge），这里只管内部两段：英雄卡 + 技能条 */
+.hero-cards { display: flex; justify-content: flex-start; gap: 5px; flex-wrap: wrap; flex: 1; }
 .hero-cards .cards-none { color: var(--text-dim); font-size: 12px; }
+
+/* ---------- 英雄立绘（名册卡 / 整备页小图共用同一层） ---------- */
+/* 两层结构：emoji 垫底、立绘盖上；缺图时 hydrateHeroArt 摘掉 img 露回 emoji，不留白框。
+   尺寸一律由外层容器给（.hero-card / .tile .avatar / .chip-avatar），这里只管裁切与外观。 */
+.hero-portrait {
+  position: relative; display: block; overflow: hidden;
+  border-radius: 6px; border: 1px solid var(--border);
+  background: linear-gradient(160deg, #22262e, #14161b);
+}
+.hero-portrait__img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  /* 全身立绘缩到小方框时取头部：object-fit 默认居中会切到腰腹 */
+  object-fit: cover; object-position: 50% 16%; display: block;
+}
+.hero-portrait__img[hidden] { display: none; }
+.hero-portrait__emoji {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: 22px; line-height: 1; opacity: .75;
+}
+
+/* 名册行里的英雄卡：竖版立绘（3:4，与原图同比例，cover 不裁）+ 名条。
+   120×160 = 3:4，与 .card-face.full 同尺寸同比例。 */
+.hero-card { flex: none; width: 120px; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.hero-card .hero-portrait { width: 120px; height: 160px; }
+.hero-card .hero-portrait__emoji { font-size: 40px; }
+.hero-card__plate { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hero-card__plate b { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hero-card__plate small { color: var(--text-dim); font-size: 11px; line-height: 1.35; }
 
 /* 名册标题行：标题在左，主动/被动切换在右 */
 .list-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0 10px; }
@@ -471,7 +499,10 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .tile.sel { outline: 2px solid var(--accent); outline-offset: -2px; }
 
 .hero-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-.chip-avatar { font-size: 16px; }
+/* 英雄条里的小立绘：胶囊高度 ~34px，给 22×28 的竖版缩略 */
+.chip-avatar { display: inline-flex; align-items: center; }
+.chip-avatar .hero-portrait { width: 22px; height: 28px; border-radius: 4px; }
+.chip-avatar .hero-portrait__emoji { font-size: 13px; }
 
 .slot-block { margin-bottom: 6px; }
 .slot-row { display: flex; flex-wrap: wrap; gap: 10px; }

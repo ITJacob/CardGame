@@ -1,7 +1,8 @@
 // 整备：出战前配置技能槽（4 主动 + 4 被动）与阵型（2 路 × 4 格）。人机/在线共用一套。
 // 编辑写回出战草稿（ui/draft），开战/建房时照常从草稿读名册——内核与在线 wire 零改动。
 import { escapeHtml, subBarHtml } from '../components/chrome'
-import { avatarEmoji, cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { heroPortraitHtml, hydrateHeroArt } from '../components/hero'
 import type { CardFaceOpts } from '../components/cardFace'
 import { enableDrag } from '../drag'
 import { enableHoverCard, hideCardPop } from '../hover'
@@ -85,6 +86,7 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
         </div>
       </main>`
     hydrateArt(host)
+    hydrateHeroArt(host)
     wire()
   }
 
@@ -308,7 +310,7 @@ function formationHtml(own: readonly PlacedHero[], selectedId: string | null): s
       const style = `grid-column:${p.col};grid-row:${p.row - rowShift}`
       if (hero) {
         cells.push(`<div class="tile own${hero.id === selectedId ? ' sel' : ''}" style="${style}" data-hero="${escapeHtml(hero.id)}" title="${escapeHtml(hero.name)}">
-          <div class="avatar">${avatarEmoji(hero.constitutionId, hero.gender)}</div>
+          <div class="avatar">${heroPortraitHtml(hero)}</div>
           <div class="tname">${escapeHtml(hero.name)}<span class="tclass">${escapeHtml(hero.classId)}</span></div>
           <div class="tpos">${escapeHtml(lane)} #${index + 1}</div>
         </div>`)
@@ -328,7 +330,7 @@ function loadoutHtml(catalog: Catalog, profile: Profile, own: readonly PlacedHer
   const strip = own
     .map(
       (h) => `<button type="button" class="cg-select hero-chip${h.id === selected?.id ? ' is-on' : ''}" data-select="${escapeHtml(h.id)}">
-        <span class="chip-avatar">${avatarEmoji(h.constitutionId, h.gender)}</span>
+        <span class="chip-avatar">${heroPortraitHtml(h)}</span>
         <span class="chip-name">${escapeHtml(h.name)}</span>
       </button>`,
     )

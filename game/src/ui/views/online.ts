@@ -3,7 +3,7 @@
 import { subBarHtml, escapeHtml } from '../components/chrome'
 import { icon } from '../components/icons'
 import { cardDetailHtml, hydrateArt } from '../components/cardFace'
-import { heroRowHtml } from '../components/hero'
+import { heroRowHtml, hydrateHeroArt } from '../components/hero'
 import { enableHoverCard, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
 import { setSession, type UnitMeta } from '../session'
@@ -73,6 +73,7 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
     </main>`
 
   hydrateArt(host)
+  hydrateHeroArt(host)
   // 重绘不产生鼠标事件，先手动收；enableHoverCard 幂等（WeakMap 自动摘旧）
   hideCardPop()
   enableHoverCard(host, {

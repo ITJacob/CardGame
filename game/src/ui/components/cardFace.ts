@@ -6,7 +6,7 @@
 import { escapeHtml } from './chrome'
 import type { Catalog } from '../../kernel/catalog/types'
 
-/** 卡图路径：游戏在 /CardGame/，wiki 在 /CardGame/site/，故相对路径 ./site/… */
+/** 卡图路径：游戏在 /CardGame/，wiki 在 /CardGame/site/，故相对路径 ./site/…（英雄立绘同此口径，见 hero.ts 的 heroArtUrl） */
 export function cardArtUrl(cardId: string): string {
   return `./site/assets/cards/${cardId}.png`
 }
