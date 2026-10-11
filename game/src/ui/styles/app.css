@@ -435,6 +435,11 @@ body.zoom-open { overflow: hidden; }
 .card-face.zoom { width: auto; height: var(--zh); aspect-ratio: 3 / 4; border-radius: 12px; container-type: size; }
 /* 字号跟着卡面高度走（cqh），小屏大屏都是同一套比例；不认容器单位的浏览器退回固定值 */
 .card-face.zoom .card-info { padding: 10px 14px 12px; font-size: 22px; font-size: 3.4cqh; gap: 6px; }
+/* 压暗淡到只剩信息条那一条：卡面放大后，原本按小卡比例画的「压到 55% 高」会糊掉半张图 */
+.card-face.zoom .card-shade {
+  inset: auto 0 0 0; height: 14%;
+  background: linear-gradient(to top, rgba(6, 7, 10, 0.9) 0%, rgba(6, 7, 10, 0.5) 45%, rgba(6, 7, 10, 0) 100%);
+}
 .card-face.zoom .ci-cost { font-size: 0.8em; }
 .card-face.zoom .noart-glyph { font-size: 84px; font-size: 12cqh; }
 .zoom-tip {
@@ -461,9 +466,9 @@ body.zoom-open { overflow: hidden; }
     opacity: 0; pointer-events: none; transition: opacity 0.15s linear;
   }
   .card-zoom.tip-on .zoom-tip { opacity: 1; pointer-events: auto; }
-  /* 盖住卡面之前，留个可点提示（点到的是它下面的卡面） */
+  /* 盖住卡面之前，留个可点提示（点到的是它下面的卡面）；卡底是名字条，所以贴卡顶放 */
   .zoom-hint {
-    display: block; position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
+    display: block; position: absolute; left: 50%; top: 12px; transform: translateX(-50%);
     padding: 3px 10px; border-radius: 999px; font-size: 12px; white-space: nowrap;
     background: rgba(8, 10, 14, 0.7); border: 1px solid var(--border); color: var(--text-dim);
     pointer-events: none;
