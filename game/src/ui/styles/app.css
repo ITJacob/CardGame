@@ -706,6 +706,22 @@ body.zoom-open { overflow: hidden; }
 .hs-notes {
   display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; min-width: 0;
 }
+/* 在线大厅横屏：这两句话挪进页眉那行（页眉横着空一大截），脚因此少一行——右栏高 =
+   舞台高 − 脚高，技能卡按右栏高倒推，脚一矮右栏就高、整块技能区跟着换一档，与整备页
+   来回切时会上下跳。竖屏页眉塞不下，仍旧留在脚里，故两处各画一份、按朝向显示其中一份。
+   页眉那行是 nowrap + 省略号的单行，所以这里 inline-flex 跟着文字流走、不占第二行。 */
+.hs-notes--top {
+  display: inline-flex; align-items: baseline; gap: 10px; min-width: 0; margin-left: 12px;
+}
+.hs-notes--top .hs-status,
+.hs-notes--top .hint { font-size: 11.5px; }
+.hs-notes--top .hint { color: var(--text-dim); }
+.hs-notes--top .hint.warn { color: var(--warn); }
+[data-orient='landscape'] .hs-foot > .hs-notes { display: none; }
+/* 页眉那句：data-orient 挂在 .hero-showcase 上，而页眉是它**前面**的兄弟节点——选不到祖先，
+   `~`/`+` 又只往后挑，所以只能用 :has 反向找。旋转时 hookOrientation 翻的是同一个属性，
+   :has 会跟着重算，不必重绘。 */
+.viewport-page:has(> .hero-showcase[data-orient='portrait']) .hs-notes--top { display: none; }
 
 /* 横屏动作区改横排、允许换行：竖屏那套「状态行 / 动作 / 主按钮」是竖着叠的三段，
    要 96px；而横屏的 foot 行是 auto —— 它矮多少，右栏的技能卡就高多少
@@ -744,16 +760,19 @@ body.zoom-open { overflow: hidden; }
 [data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .hs-status {
   flex: 1 1 100%; min-width: 0;
 }
-/* 整备页的脚只剩一颗「完成」，但横屏仍要占住与「新游戏」页同样的两行
-   （状态行 + 按钮行 = 56px）：右栏 .hs-side 的高度是「舞台高 - 脚高」，技能卡又按
-   右栏高度倒推，脚一矮右栏就高、整块技能区跟着长一圈，两页来回切时会跳。
-   所以状态行常驻，空着时由 min-height 撑一行（1lh = 该行 12.5px × 继承的 1.6 = 20px，
-   前面那条 20px 是给不认 lh 单位的旧浏览器兜底）。
-   竖屏不需要这块高度（右栏是 auto，卡宽驱动），空着就整行撤掉，那一行让给棋盘。 */
+/* 整备页的脚只剩一颗「完成」，横屏里状态行仍常驻——空着也占满自己那一行
+   （1lh = 该行 12.5px × 继承的 1.6 = 20px，前面那条 20px 是给不认 lh 单位的旧浏览器兜底）。
+   脚的总高不归这条管，归下面那条共用规则钉死；这条只管「状态行别缩掉」。
+   竖屏不需要这块高度（右栏是 auto、卡宽驱动），空着就整行撤掉，那一行让给棋盘。 */
 .prep-page[data-orient='landscape'] .hs-foot .hs-status { min-height: 20px; min-height: 1lh; }
 .prep-page[data-orient='portrait'] .hs-foot .hs-status:empty { display: none; }
 /* 横排里的输入框得有自己的基准宽：竖屏那条 flex:1 的 basis 是 0，横排下会被挤成 0 宽 */
 [data-orient='landscape'] .hs-foot .cg-input { flex: 1 1 110px; min-height: 30px; padding: 4px 8px; font-size: 12.5px; }
+/* 横屏三页（新游戏 / 在线对战 / 整备）的脚钉成同一高度：右栏高 = 舞台高 − 脚高，
+   技能卡又按右栏高倒推——脚一高一矮，来回切页时整块技能区就换一档大小、位置也跟着跳。
+   取三页里最高的那条（在线大厅：四个按钮一行 + 房间码输入一行 = 68px）。内容不足的页
+   把余量留在顶上（align-content: end），动作条照样贴住页底。 */
+[data-orient='landscape'] .hs-foot { min-height: 68px; align-content: end; }
 
 /* ---------- 英雄立绘（展示台 / 整备页小图共用同一层） ---------- */
 /* 两层结构：emoji 垫底、立绘盖上；缺图时 hydrateHeroArt 摘掉 img 露回 emoji，不留白框。

@@ -54,20 +54,23 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
   const errors = validateFormation(roster)
   // 重绘会重建输入框（切英雄 / 重新生成都会重绘），先把已敲的房间码捞出来再填回去
   const typedCode = (document.getElementById('inp-code') as HTMLInputElement | null)?.value ?? ''
+  // 编队状态与联机提示：横屏挪到页眉那行去（页眉横着空一大截），脚因此从三行收成两行
+  // ——右栏高 = 舞台高 − 脚高，技能卡又按右栏高倒推，脚一矮右栏就高、整块技能区跟着换一档，
+  // 与整备页来回切时会上下跳（见 app.css 横屏 .hs-foot 那条）。竖屏页眉塞不下这两句，
+  // 仍旧留在脚里，所以两处各画一份、按朝向显示其中一份；标记只能走 class 不能走 id（同句两份）。
+  const notes = `${errors.length > 0 ? `<span class="hs-status warn">编队问题：${escapeHtml(errors.join(' / '))}</span>` : '<span class="hs-status ok">编队合法</span>'}
+        <span class="hint js-online-status">联机自动推进 · 决策点等双方选定</span>`
 
   host.innerHTML = `
     ${subBarHtml('在线对战')}
     <main class="viewport-page">
-      <p class="hint profile-line">档案 ${escapeHtml(profile.username || profile.uuid.slice(0, 8))} · 数据 ${shortHash(dataVersion.dataHash)}${dataVersion.stale ? '（数据已漂移，双方须同版本）' : ''}</p>
+      <p class="hint profile-line">档案 ${escapeHtml(profile.username || profile.uuid.slice(0, 8))} · 数据 ${shortHash(dataVersion.dataHash)}${dataVersion.stale ? '（数据已漂移，双方须同版本）' : ''}<span class="hs-notes--top">${notes}</span></p>
       ${heroShowcaseHtml(roster, catalog, {
         index: heroIndex,
         kind: skillView,
         orient: orientationOf(window.innerWidth, window.innerHeight),
         foot: `
-      <div class="hs-notes">
-        ${errors.length > 0 ? `<p class="warn hs-status">编队问题：${escapeHtml(errors.join(' / '))}</p>` : '<p class="ok hs-status">编队合法</p>'}
-        <p class="hint" id="online-status">联机自动推进 · 决策点等双方选定</p>
-      </div>
+      <div class="hs-notes">${notes}</div>
       <div class="row-actions">
         <a class="cg-btn" href="#/prep">整备</a>
         <button type="button" class="cg-btn" id="btn-reroll">重新生成</button>
@@ -91,11 +94,13 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
     render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
   })
 
+  // 这句话横竖两处各有一份（见上面 notes 的说明），两处一起改；
+  // 只 toggle warn，不重写 className——那份标记本身也是靠 class 认的。
   const status = (msg: string, cls = ''): void => {
-    const el = document.getElementById('online-status')
-    if (!el) return
-    el.textContent = msg
-    el.className = `hint ${cls}`
+    document.querySelectorAll<HTMLElement>('.js-online-status').forEach((el) => {
+      el.textContent = msg
+      el.classList.toggle('warn', cls === 'warn')
+    })
   }
   const busy = (on: boolean): void => {
     for (const id of ['btn-quick', 'btn-create', 'btn-join']) {
