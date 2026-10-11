@@ -558,10 +558,10 @@ body.zoom-open { overflow: hidden; }
 [data-orient='portrait'] .hs-cell .hero-portrait__emoji { font-size: 15px; }
 
 /* 横屏名册是一条横向长条：格子宽度由条高反推（立绘吃满高度、比例 3:4），
-   5 格放不下就横向滚——滚动条藏起来，两端箭头当把手。
-   --cw 是格子宽（高度反推 vs 条宽 45% 取小），45cqw 那道闸是防大屏：
-   1280×900 上光看条高会算出 580px 一格、一屏只剩一个半，压到条宽 45% 后
-   各尺寸都稳定在「一屏两个多」。格高 = --cw 的 3:4 再加名字那 22px，
+   5 格放不下就横向滚——滚动条藏起来，两端箭头当把手，底下那排缩略图管定位。
+   既然有缩略图兜底，就不必再强留「一屏几个」：格子只管照着高度铺满。
+   --cw 只在「反推出来比整条还宽」时才收一收（100cqw），这样窄而高的横屏窗口
+   也至少有一整个英雄完整在视野里。格高 = --cw 的 3:4 再加名字那 22px，
    跟 --cw 一起被卡，两者始终一致；条上来不及长满的那点余量由 center 分摊。 */
 .hero-showcase[data-orient='landscape'] .hs-track {
   flex: 1 1 auto; min-height: 0;
@@ -570,7 +570,7 @@ body.zoom-open { overflow: hidden; }
 }
 .hero-showcase[data-orient='landscape'] .hs-cell {
   --cw: 45%; /* 老浏览器兜底：认不得 cqh 时退回「条宽的 45%」 */
-  --cw: min(calc((100cqh - 22px) * 3 / 4), 45cqw);
+  --cw: min(calc((100cqh - 22px) * 3 / 4), 100cqw);
   flex: 0 0 auto;
   width: var(--cw);
   height: min(100cqh, calc(var(--cw) * 4 / 3 + 22px));
