@@ -960,7 +960,9 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .pp-backdrop { position: absolute; inset: 0; background: rgba(10, 11, 14, 0.72); backdrop-filter: blur(3px); }
 .pp-dialog {
   position: relative; display: flex; flex-direction: column;
-  width: min(560px, 100%); height: min(92dvh, 100%, 700px);
+  /* 高度：竖屏尽量长——内容（两行槽 + 卡池）远高过 700，卡在 700 上白白矮一截。
+     横屏另有上限（见下面 [data-orient='landscape'] 那条），大横窗才需要拦一下。 */
+  width: min(560px, 100%); height: min(94dvh, 100%);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 30%), var(--panel);
   border: 1px solid var(--accent-dim); border-radius: 12px;
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6); overflow: hidden;
@@ -975,38 +977,21 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .pp-head .cg-close .cg-ico { font-size: 16px; }
 /* 竖屏上下排（槽在上、卡池在下），横屏左右排（左 240px 放两行槽，右放卡池） */
 .pp-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; padding: 12px; }
-.prep-page[data-orient='landscape'] .pp-dialog { width: min(1000px, 100%); }
+.prep-page[data-orient='landscape'] .pp-dialog { width: min(1000px, 100%); height: min(92dvh, 100%, 700px); }
 .prep-page[data-orient='landscape'] .pp-body { flex-direction: row; gap: 8px; padding: 10px; }
 .prep-page[data-orient='landscape'] .pp-slots { flex: 0 0 240px; min-height: 0; overflow-y: auto; }
-/* 横屏弹窗的每一像素都在抠：两排槽的小标题贴着卡面、卸卡键收小一档 */
-.prep-page[data-orient='landscape'] .slot-block h3 { margin-bottom: 2px; }
+/* 横屏弹窗的每一像素都在抠：卸卡键收小一档（槽那一列的卡本来就比摘要行窄） */
 .prep-page[data-orient='landscape'] .pp-slots .slot-op.cg-btn { width: 18px; min-height: 18px; font-size: 10px; }
 
-/* 弹窗上半：主动/被动两行槽，4 列等分，卡面按列宽铺满（拖拽调序用的是同一份 .slot） */
+/* 弹窗上半：主动/被动两行槽。**外观整个复用整备页的摘要行**——槽行直接写成
+   .sk-row / .sk-tag / .sk-tiles / .sk-tile / .sk-num / .sk-plus（见上面技能摘要那段），
+   所以这里不再有「槽」的皮：不带框、不做 4 等分栅格、槽号也不再单独占一行（改压在卡角，
+   与摘要格同一套）。本段只留槽自己的两件事：
+   ① 光标——摘要格的整格是入口（pointer），这里点它什么也不做，给默认箭头；
+      真能拖的那几张由 .slot.draggable 改回 grab（在下面拖拽段里）。
+   ② 落点契约 data-slot 挂在 .slot 上，拖拽调序认的是它——结构一个未动。 */
 .pp-slots { flex: none; display: flex; flex-direction: column; gap: 8px; }
-.slot-block h3 { margin: 0 0 4px; font-size: 12px; color: var(--text); font-weight: 600; }
-.slot-block h3 .hint { font-weight: 400; margin-left: 6px; }
-.slot-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-.slot {
-  position: relative;
-  display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0;
-  padding: 3px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
-}
-/* 空槽：没有卡面撑高，靠 grid 的 stretch 与满槽同高，内容居中 */
-.slot.empty { justify-content: center; border-style: dashed; color: var(--text-dim); }
-.slot-num { font-size: 10px; color: var(--text-dim); }
-.slot-blank { font-size: 16px; color: var(--text-dim); opacity: 0.6; }
-.slot-ops { display: flex; justify-content: center; }
-/* 横屏弹窗的可用高只有 ~268px，两排槽正好卡在边上：槽号从「卡上一行」改成压在卡面左上角的
-   小圆牌（与摘要格的 .sk-num 同一套摆法），省下的那一行让两排槽都完整在场 */
-.prep-page[data-orient='landscape'] .pp-slots .slot-num {
-  position: absolute; top: 4px; left: 4px; z-index: 3; pointer-events: none;
-  min-width: 14px; height: 14px; padding: 0 3px; border-radius: 999px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 9px; line-height: 1;
-  background: rgba(8, 10, 14, 0.72); border: 1px solid var(--border); color: var(--text-dim);
-}
-.pp-slots .slot .card-face { width: 100%; height: auto; aspect-ratio: 3 / 4; container-type: inline-size; }
+.slot { cursor: default; }
 
 /* 弹窗下半：页签 + 提示行 + 卡池（卡池自己滚，弹窗本身不滚） */
 .pp-pool-wrap { flex: 1; min-height: 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -1021,10 +1006,8 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .pp-pool .pool-grid { margin-top: 0; justify-content: flex-start; }
 
 /* 技能卡面的一屏版字号：与 .hs-group__row > .card-face 同一套容器查询口径 */
-.sk-tile .card-face .card-info,
-.pp-slots .slot .card-face .card-info { padding: 4cqw 6cqw 5cqw; font-size: 13cqw; gap: 4cqw; }
-.sk-tile .card-face .noart-glyph,
-.pp-slots .slot .card-face .noart-glyph { font-size: 36cqw; }
+.sk-tile .card-face .card-info { padding: 4cqw 6cqw 5cqw; font-size: 13cqw; gap: 4cqw; }
+.sk-tile .card-face .noart-glyph { font-size: 36cqw; }
 
 /* 横屏按右栏高度收技能格：两行卡 + 名条要塞进 row1 的行高里。
    --hs-row-h 与展示台那条（写在 .hs-group__row > .card-face 上）取同一个偏置 60：
@@ -1032,7 +1015,9 @@ table.lb tr.draw td.res { color: var(--text-dim); }
    切页时技能区仍会跳一下。行距也一并对到展示台的 8px，两排行与卡才逐 px 对齐。
    选择器写在这里（.prep-skills 上）是为了让 cqh 仍对着 .hs-side 那个尺寸容器量。 */
 .prep-page[data-orient='landscape'] .prep-skills { --hs-row-h: max(48px, calc((100cqh - 60px) / 2)); }
-.prep-page[data-orient='landscape'] .sk-tile { width: min(calc((100% - 15px) / 4), calc(var(--hs-row-h) * 3 / 4), 92px); }
+/* 选择器收到 .prep-skills 里：弹窗的槽行也挂着 .sk-tile（外观共用），但那里没有 --hs-row-h
+   ——那条 calc 一无效，整条 width 就作废成 auto，槽会当场塌成 0×0。槽按自己的列宽定尺寸即可。 */
+.prep-page[data-orient='landscape'] .prep-skills .sk-tile { width: min(calc((100% - 15px) / 4), calc(var(--hs-row-h) * 3 / 4), 92px); }
 
 /* ---------- 拖拽（阵型摆位 + 技能槽调序） ---------- */
 /* touch-action:none 让触屏上的拖动不被页面滚动抢走；拖源才有，不影响别处滚动。

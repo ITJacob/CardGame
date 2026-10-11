@@ -507,7 +507,12 @@ function pickerHtml(catalog: Catalog, profile: Profile, hero: PlacedHero, picker
   </div>`
 }
 
-/** 槽行：序号 + 卡面 + ✕（空槽只剩序号与「空」）。弹窗上下两侧各一行；只有一张时不可拖（没顺序可调） */
+/**
+ * 槽行：序号 + 卡面 + ✕（空槽只剩序号与「＋」）。弹窗里主动/被动各一行；只有一张时不可拖（没顺序可调）。
+ * 外观与整备页的摘要行（skillRowHtml）**逐条同值**：同一套 .sk-row / .sk-tag / .sk-tiles / .sk-tile /
+ * .sk-num / .sk-plus，连 ✕ 那颗叠在卡右上角的卸卡键都是同一个 .slot-op。两处只在「按下整格干什么」上分家：
+ * 摘要行整格是入口（data-pp-open 点开弹窗），这里整格用来拖（.draggable + data-slot）。改外观请改 .sk-* 那一份。
+ */
 function slotRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): string {
   const ids = kind === 'active' ? hero.activeSkillIds : hero.passiveSkillIds
   const limit = SLOT_LIMIT[kind]
@@ -517,16 +522,22 @@ function slotRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): string
   for (let i = 0; i < limit; i += 1) {
     const id = ids[i]
     if (!id) {
-      slots.push(`<div class="slot empty" data-slot="${kind}:${i}"><span class="slot-num">${i + 1}</span><span class="slot-blank">空</span></div>`)
+      slots.push(`<div class="sk-tile slot empty" data-slot="${kind}:${i}"><span class="sk-num">${i + 1}</span><span class="sk-plus">＋</span></div>`)
       continue
     }
     const draggable = ids.length > 1
-    slots.push(`<div class="slot${draggable ? ' draggable' : ''}" data-slot="${kind}:${i}"><span class="slot-num">${i + 1}</span>${cardOf(catalog, id, kind, 'compact')}<div class="slot-ops"><button type="button" class="cg-btn cg-btn--danger slot-op" data-unequip="${kind}:${i}" title="卸下">✕</button></div></div>`)
+    slots.push(`<div class="sk-tile slot${draggable ? ' draggable' : ''}" data-slot="${kind}:${i}" title="第 ${i + 1} 槽 · ${escapeHtml(cardName(catalog, id))}">
+      <span class="sk-num">${i + 1}</span>
+      ${cardOf(catalog, id, kind, 'compact')}
+      <button type="button" class="cg-btn cg-btn--danger slot-op" data-unequip="${kind}:${i}" title="卸下">✕</button>
+    </div>`)
   }
 
-  return `<div class="slot-block">
-    <h3>${SLOT_LABEL[kind]}技能 <small class="hint">${ids.length}/${limit} · ${tip}</small></h3>
-    <div class="slot-row">${slots.join('')}</div>
+  // 行里不再挂「已装/上限 · 说明」那行小字：标签归位成摘要行那种左侧小标签（说明进 title），
+  // 计数在下面的页签上（主动 3/4），省下的那一行在横屏弹窗里正好够两排槽都摊开。
+  return `<div class="sk-row slot-block">
+    <span class="sk-tag" title="${tip}">${SLOT_LABEL[kind]}</span>
+    <div class="sk-tiles slot-row">${slots.join('')}</div>
   </div>`
 }
 
