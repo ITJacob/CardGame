@@ -325,10 +325,11 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 .pick-name { font-size: 11px; color: var(--text-dim); }
 
 /* ---------- 卡面详情浮层 ---------- */
-/* z-index 45：高过吸顶栏(.cg-nav 40)、低于放大视图(50)与结算模态(.cg-modal 60)；
+/* z-index 62：高过吸顶栏(.cg-nav 40)、放大视图(50)与结算模态(.cg-modal 60)——整备页的技能弹窗
+   也是 60，弹窗里悬停卡面时详情得盖在弹窗上，所以浮层要站在最外层。
    pointer-events:none 保证它既不挡卡、也不会因为浮层自己盖住指针而引发 mouseout/mouseover 抖动。 */
 .card-pop {
-  position: fixed; z-index: 45; max-width: 300px; pointer-events: none;
+  position: fixed; z-index: 62; max-width: 300px; pointer-events: none;
   padding: 12px 14px; border-radius: 10px;
   background: var(--panel); border: 1px solid var(--accent-dim);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
@@ -805,50 +806,228 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .hint.warn { color: var(--warn); }
 .viewport-page .hint.warn, .viewport-page .hint.ok { font-size: 13px; }
 
-/* ---------- 整备（技能槽 + 阵型） ---------- */
-.prep { max-width: 980px; margin: 0 auto; padding: 18px 18px 60px; }
-.prep .hint { font-size: 12.5px; color: var(--text-dim); }
-.prep .hint.warn { color: var(--warn); font-size: 13px; }
-/* 每段 = 一块 .cg-panel；这里只留段间距与段内小标题 */
-.prep-sec { margin: 16px 0; }
-.prep-sec h3 { font-size: 13px; color: var(--text); margin: 14px 0 8px; }
-.prep-sec h2 .hint, .prep-sec h3 .hint { font-size: 11.5px; font-weight: 400; margin-left: 6px; }
+/* ---------- 整备（阵型 + 技能槽）：一屏 + 技能弹窗 ---------- */
+/* 这一页原先跟别的页一样整页流式滚动：竖屏 390×844 上文档高 4528px，其中 21 张主动 +
+   13 张被动卡池（120×160 的 full 卡面）就占了 1860px。现在本体复用 .viewport-page 钉成一屏
+   （这里只覆盖宽度），卡池收进 .prep-picker 弹窗、由弹窗自己滚。
+   两套朝向共用一份 DOM：旋转只翻 .prep-page 的 data-orient、不重绘（重绘会丢 hover/焦点，
+   还会把弹窗里卡池的滚动位置顶回去），落位与尺寸全交给 CSS。 */
+.prep-page.viewport-page { max-width: 980px; }
 
-.prep-board { min-height: 150px; user-select: none; caret-color: transparent; }
-.prep-board .tile { cursor: pointer; }
-.tile .tpos { color: var(--text-dim); font-size: 10px; text-align: center; }
-.tile.empty {
-  border-style: dashed;
-  background: rgba(38, 42, 50, 0.35);
-  cursor: pointer;
+/* 状态行：模式/seed 打底，有提示或编队问题就换文案并转警示色。一行截断，不占第二行高度 */
+.prep-status {
+  flex: none; margin: 0; font-size: 12.5px; line-height: 1.35; color: var(--text-dim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.tile.empty:hover { border-color: var(--accent-dim); background: rgba(38, 42, 50, 0.6); }
-.tile.empty:focus-visible { outline: 2px solid var(--text); }
-.tile.sel { outline: 2px solid var(--accent); outline-offset: -2px; }
+.prep-status.warn { color: var(--warn); }
+/* .hint 自己不带字号（继承 body 的 15px），一屏页里得收一档 */
+.prep-page .hint { font-size: 12px; color: var(--text-dim); }
 
-.hero-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-/* 英雄条里的小立绘：胶囊高度 ~34px，给 22×28 的竖版缩略 */
-.chip-avatar { display: inline-flex; align-items: center; }
-.chip-avatar .hero-portrait { width: 22px; height: 28px; border-radius: 4px; }
-.chip-avatar .hero-portrait__emoji { font-size: 13px; }
+/* 中段：竖屏「棋盘在上、名册与技能在下」，横屏「棋盘在左、名册与技能在右」 */
+.prep-stage { flex: 1; min-height: 0; display: flex; gap: 10px; }
+.prep-page[data-orient='portrait'] .prep-stage { flex-direction: column; }
+.prep-page[data-orient='landscape'] .prep-stage { flex-direction: row; }
 
-.slot-block { margin-bottom: 6px; }
-.slot-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.prep-field { flex: 1 1 auto; display: flex; flex-direction: column; gap: 6px; min-width: 0; min-height: 0; }
+.prep-field__title {
+  flex: none; margin: 0; font-size: 13px; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.prep-field__title small { font-size: 11.5px; font-weight: 400; color: var(--text-dim); margin-left: 6px; }
+/* 棋盘吃掉剩下的高度，但按格子的长宽比收窄并居中：横屏铺开时（1280×900 的 .prep-field 有 754px 高）
+   整块撑满会得到 160×350 的瘦长格子。--board-ar = 列数×格宽比 / 行数，见下。
+   .board-wrap 是尺寸容器，棋盘按 min(宽, 高×比例) 定宽、aspect-ratio 定高，两边都放得下。 */
+.prep-field .board-wrap {
+  flex: 1; min-height: 0; container-type: size;
+  display: flex; align-items: center; justify-content: center;
+}
+.prep-board { flex: none; width: min(100cqw, calc(100cqh * var(--board-ar))); aspect-ratio: var(--board-ar); }
+.prep-board .tile { cursor: pointer; user-select: none; }
+/* 选中格的金环画在格子内侧；空格用虚线框示意「这里可以放人」。
+   三条都是 .prep-board 作用域的——战斗盘的 .tile 只认战斗那段自己的类。 */
+.prep-board .tile.sel { outline: 2px solid var(--accent); outline-offset: -2px; }
+.prep-board .tile.empty { border-style: dashed; background: rgba(38, 42, 50, 0.35); }
+.prep-board .tile.empty:hover { border-color: var(--accent-dim); background: rgba(38, 42, 50, 0.6); }
+.prep-board .tile.empty:focus-visible { outline: 2px solid var(--text); }
+
+/* 落位全在 CSS：瓦片只带 --lane/--idx 两个自定义属性，两套模板按朝向切。与 projection.ts 的
+   gridSpec 逐字对应（竖屏 lane 管列、idx 管行且 idx0 在最上；横屏反过来、idx0 在最右＝靠中线），
+   所以旋转只翻 data-orient 就够了，不必重进页面。 */
+.prep-page[data-orient='portrait'] .prep-board {
+  /* 2 列 × 4 行，格子取 1.5 : 1（宽 > 高，名字/站位才写得下）：0.75 × 2 / 4 */
+  --board-ar: 0.75;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+}
+.prep-page[data-orient='portrait'] .prep-board .tile {
+  grid-column: calc(var(--lane) + 1);
+  grid-row: calc(var(--idx) + 1);
+}
+.prep-page[data-orient='landscape'] .prep-board {
+  /* 4 列 × 2 行，格子取 1.3 : 1：1.3 × 4 / 2 */
+  --board-ar: 2.6;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+.prep-page[data-orient='landscape'] .prep-board .tile {
+  grid-column: calc(4 - var(--idx));
+  grid-row: calc(var(--lane) + 1);
+}
+/* 格子按容器高度分级降级：矮屏（375×667 上 4 行只分到 ~55px/格）先撤站位行、再撤名字，
+   立绘始终不裁不滚——美术优先。container 就是格子自己（container-type: size）。
+   内边距/间距比全局的 .tile 再收一档，把省下的高度给立绘与那两行字。 */
+.prep-board .tile { container-type: size; padding: 2px; gap: 2px; }
+.prep-board .tile .avatar .hero-portrait { width: auto; height: min(44px, 52cqh); aspect-ratio: 38 / 48; }
+.prep-board .tile .tname { font-size: min(11px, 14cqh); }
+.prep-board .tile .tpos { color: var(--text-dim); text-align: center; font-size: min(10px, 12cqh); }
+@container (max-height: 78px) { .prep-board .tile .tpos { display: none; } }
+@container (max-height: 66px) { .prep-board .tile .tname { display: none; } }
+/* 矮竖屏（375×667 上棋盘只分到 ~215px 高）按 0.75 收会窄成一条、白扔大半宽度：
+   格子高度不会因此变小，索性放宽比例把宽度用起来（容器同样是 .board-wrap） */
+@container (max-height: 300px) {
+  .prep-page[data-orient='portrait'] .prep-board { --board-ar: 1.05; }
+}
+
+/* 右（下）栏：英雄条 + 技能摘要 */
+.prep-side { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.prep-page[data-orient='portrait'] .prep-side { flex: none; }
+.prep-page[data-orient='landscape'] .prep-side { flex: 0 0 272px; }
+
+/* 英雄条：5 个立绘小格一行放下。名字写在下面的技能摘要标题里，格子上不重复写——
+   横屏那一栏只有 272px 宽，多一行名字就得挤掉立绘 */
+.prep-heroes { flex: none; display: flex; gap: 6px; min-width: 0; }
+.prep-heroes .hero-chip.cg-select { padding: 2px; min-height: 0; gap: 0; border-radius: 8px; }
+.prep-heroes .chip-avatar { display: block; }
+.prep-heroes .chip-avatar .hero-portrait { width: 34px; height: 45px; }
+.prep-heroes .chip-avatar .hero-portrait__emoji { font-size: 16px; }
+
+.prep-skills { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.prep-skills__head { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+.prep-skills__head b { font-size: 13px; }
+.prep-skills__head small { font-size: 11.5px; color: var(--text-dim); }
+.prep-skills__head .hint { margin-left: auto; }
+
+/* 技能摘要：主动 / 被动各一行 4 格。整格点开弹窗编这一侧，格子右上角的 ✕ 卸下这张 */
+.sk-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.sk-tag { flex: none; width: 2em; font-size: 11px; color: var(--text-dim); }
+.sk-count { flex: none; font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.sk-tiles { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+/* 格子宽度跟着列宽走（上限 60 = compact 那一档），卡内字号走 cqw 跟着卡宽缩——
+   只放大框不放大字，信息条会在卡上显得又小又空 */
+.sk-tile {
+  position: relative; min-width: 0; max-width: 60px; aspect-ratio: 3 / 4;
+  border-radius: 8px; cursor: pointer;
+}
+.sk-tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sk-tile .card-face { width: 100%; height: 100%; container-type: inline-size; }
+.sk-tile.empty {
+  display: flex; align-items: center; justify-content: center;
+  border: 1px dashed var(--border); background: rgba(38, 42, 50, 0.35); color: var(--text-dim);
+}
+.sk-tile.empty:hover { border-color: var(--accent-dim); background: rgba(38, 42, 50, 0.6); }
+/* 槽号：压在卡面左上角的小圆牌，与卡池那排的角标同一套语言 */
+.sk-num {
+  position: absolute; top: 2px; left: 2px; z-index: 3; pointer-events: none;
+  min-width: 14px; height: 14px; padding: 0 3px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; line-height: 1;
+  background: rgba(8, 10, 14, 0.72); border: 1px solid var(--border); color: var(--text-dim);
+}
+.sk-plus { font-size: 20px; opacity: 0.6; }
+/* 卸卡键：叠在卡面右上角。选择器带三个类，压得过 kit 的 .cg-btn 单类规则，不必进 kit-bridge */
+.sk-tile .slot-op.cg-btn {
+  --_bg: var(--cg-bg-deep);
+  position: absolute; top: 2px; right: 2px; z-index: 4;
+  width: 20px; min-height: 20px; padding: 0;
+  font-size: 11px; border-radius: 6px;
+}
+
+/* ---------- 技能弹窗（挂在 .prep-page 里，不挂 body） ---------- */
+/* 层叠 60：压得住吸顶栏（.cg-nav 40）；卡面详情浮层 .card-pop 已提到 62，详情能盖在弹窗上。
+   必须挂在 host 内：drag.ts 的落点判定是 host.contains(raw)、hover.ts 的卡面详情也只在 host
+   内找 .card-face——挂到 body 上，「槽内拖动调序」与「卡面详情」会静默失效。 */
+.prep-picker { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 12px; }
+.pp-backdrop { position: absolute; inset: 0; background: rgba(10, 11, 14, 0.72); backdrop-filter: blur(3px); }
+.pp-dialog {
+  position: relative; display: flex; flex-direction: column;
+  width: min(560px, 100%); height: min(92dvh, 100%, 700px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 30%), var(--panel);
+  border: 1px solid var(--accent-dim); border-radius: 12px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6); overflow: hidden;
+}
+.pp-head {
+  flex: none; display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-bottom: 1px solid var(--border);
+}
+.pp-head h3 { margin: 0; font-size: 15px; color: var(--accent); }
+.pp-head h3 small { font-size: 11.5px; font-weight: 400; color: var(--text-dim); margin-left: 6px; }
+.pp-head .cg-close { margin-left: auto; width: 30px; height: 30px; }
+.pp-head .cg-close .cg-ico { font-size: 16px; }
+/* 竖屏上下排（槽在上、卡池在下），横屏左右排（左 240px 放两行槽，右放卡池） */
+.pp-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+.prep-page[data-orient='landscape'] .pp-dialog { width: min(1000px, 100%); }
+.prep-page[data-orient='landscape'] .pp-body { flex-direction: row; gap: 8px; padding: 10px; }
+.prep-page[data-orient='landscape'] .pp-slots { flex: 0 0 240px; min-height: 0; overflow-y: auto; }
+/* 横屏弹窗的每一像素都在抠：两排槽的小标题贴着卡面、卸卡键收小一档 */
+.prep-page[data-orient='landscape'] .slot-block h3 { margin-bottom: 2px; }
+.prep-page[data-orient='landscape'] .pp-slots .slot-op.cg-btn { width: 18px; min-height: 18px; font-size: 10px; }
+
+/* 弹窗上半：主动/被动两行槽，4 列等分，卡面按列宽铺满（拖拽调序用的是同一份 .slot） */
+.pp-slots { flex: none; display: flex; flex-direction: column; gap: 8px; }
+.slot-block h3 { margin: 0 0 4px; font-size: 12px; color: var(--text); font-weight: 600; }
+.slot-block h3 .hint { font-weight: 400; margin-left: 6px; }
+.slot-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
 .slot {
-  display: flex; flex-direction: column; align-items: center; gap: 5px;
-  padding: 7px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
-  /* 槽宽由内容撑开：满槽最宽的是卡面（compact 定宽 60 + 左右 padding 14 + 边框 2 = 76），
-     空槽只剩序号与「空」，给个下限兜到同宽。 */
-  min-width: 76px;
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0;
+  padding: 3px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
 }
-.slot.empty { justify-content: center; min-height: 140px; border-style: dashed; }
+/* 空槽：没有卡面撑高，靠 grid 的 stretch 与满槽同高，内容居中 */
+.slot.empty { justify-content: center; border-style: dashed; color: var(--text-dim); }
 .slot-num { font-size: 10px; color: var(--text-dim); }
-.slot-blank { font-size: 18px; color: var(--text-dim); opacity: 0.6; }
-/* 槽底只剩一个 ✕：槽是 flex 列 + align-items:center，单独一个子元素就居中 */
+.slot-blank { font-size: 16px; color: var(--text-dim); opacity: 0.6; }
 .slot-ops { display: flex; justify-content: center; }
+/* 横屏弹窗的可用高只有 ~268px，两排槽正好卡在边上：槽号从「卡上一行」改成压在卡面左上角的
+   小圆牌（与摘要格的 .sk-num 同一套摆法），省下的那一行让两排槽都完整在场 */
+.prep-page[data-orient='landscape'] .pp-slots .slot-num {
+  position: absolute; top: 4px; left: 4px; z-index: 3; pointer-events: none;
+  min-width: 14px; height: 14px; padding: 0 3px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; line-height: 1;
+  background: rgba(8, 10, 14, 0.72); border: 1px solid var(--border); color: var(--text-dim);
+}
+.pp-slots .slot .card-face { width: 100%; height: auto; aspect-ratio: 3 / 4; container-type: inline-size; }
 
-/* ---------- 拖拽（阵型摆位 + 主动槽调序） ---------- */
-/* touch-action:none 让触屏上的拖动不被页面滚动抢走；拖源才有，不影响别处滚动 */
+/* 弹窗下半：页签 + 提示行 + 卡池（卡池自己滚，弹窗本身不滚） */
+.pp-pool-wrap { flex: 1; min-height: 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.pp-tabs { flex: none; display: flex; gap: 8px; }
+.pp-tabs .cg-select { padding: 4px 12px; min-height: 30px; font-size: 12.5px; }
+.pp-tab-n { margin-left: 6px; font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.pp-tabs .cg-select.is-on .pp-tab-n { color: var(--accent); }
+/* 提示行常驻（空时也占一行高）：点满槽的卡时提示就地冒出来，不会把卡池推下去一截 */
+.pp-notice { flex: none; margin: 0; min-height: 17px; font-size: 12px; color: var(--text-dim); }
+.pp-notice.warn { color: var(--warn); }
+.pp-pool { flex: 1; min-height: 0; }
+.pp-pool .pool-grid { margin-top: 0; justify-content: flex-start; }
+
+/* 技能卡面的一屏版字号：与 .hs-group__row > .card-face 同一套容器查询口径 */
+.sk-tile .card-face .card-info,
+.pp-slots .slot .card-face .card-info { padding: 4cqw 6cqw 5cqw; font-size: 13cqw; gap: 4cqw; }
+.sk-tile .card-face .noart-glyph,
+.pp-slots .slot .card-face .noart-glyph { font-size: 36cqw; }
+
+/* 动作行：一屏页里是配角，按钮比 kit 的 40px 矮一档（.row-actions .cg-btn 的 flex:1 照旧等分） */
+.prep-page .row-actions { flex: none; margin-top: 0; }
+.prep-page .row-actions .cg-btn { min-height: 34px; padding: 6px 10px; font-size: 13px; }
+
+@media (max-width: 700px) {
+  /* 窄屏上阵型那句提示会顶到第二行，从棋盘高度里扣——直接撤掉，标题只留「阵型」 */
+  .prep-field__title small { display: none; }
+}
+
+/* ---------- 拖拽（阵型摆位 + 技能槽调序） ---------- */
+/* touch-action:none 让触屏上的拖动不被页面滚动抢走；拖源才有，不影响别处滚动。
+   这一节是全站共用的（drag.ts 只负责加类），改整备页时别顺手把它删了。 */
 .prep-board .tile[data-hero],
 .slot.draggable { cursor: grab; touch-action: none; }
 .prep-board .tile[data-hero]:active,
@@ -860,16 +1039,11 @@ table.lb tr.draw td.res { color: var(--text-dim); }
   outline-offset: -2px;
   background: rgba(200, 162, 74, 0.12);
 }
-/* 跟随指针的幽灵：挂在 body 上，故需自带全部尺寸与叠放；命中测试必须穿过去 */
+/* 跟随指针的幽灵：挂在 body 上，故需自带全部尺寸与叠放；命中测试必须穿过去。
+   z-index 80 高过技能弹窗的 60，拖槽时幽灵不会被弹窗盖住。 */
 .drag-ghost {
   position: fixed; z-index: 80; margin: 0; pointer-events: none;
   opacity: 0.92; border-color: var(--accent);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
 }
 .is-dragging, .is-dragging * { cursor: grabbing !important; user-select: none; }
-
-@media (max-width: 760px) {
-  .prep { padding: 14px 12px 48px; }
-  .slot-row { gap: 8px; }
-  /* 卡池卡不再收窄：92px 装不下 full 档的 96px 卡面 */
-}
