@@ -270,12 +270,19 @@ button.card-face {
   padding: 0; border: 0; background: none; font: inherit; color: inherit;
   cursor: pointer; appearance: none;
 }
-/* 高亮环一律吃负 offset（画在卡里侧）：外扩的环会被 .hs-cards / .hs-side 的 overflow
-   静默裁掉——outline 不产生可滚动溢出，裁了也不出滚动条，只是看着「没画全」。
-   内缩一圈就在哪儿都完整。 */
-button.card-face:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-/* 点击档：详情正弹着的那张卡（浮层是浮在别处的，得让卡面自己说「看我」） */
-.card-face.is-open { outline: 2px solid var(--accent); outline-offset: -2px; }
+/* 高亮环画成卡内的一层覆盖（::after + 内阴影），不用 outline：
+   ① outline 外扩会被 .hs-cards / .hs-side 的 overflow 静默裁掉（outline 不产生
+      可滚动溢出，裁了也不出滚动条，看着就是「没画全」）；
+   ② 缩进卡里侧虽然裁不到了，但 outline 画在元素自身那一层、被卡图与边框层
+      （都是 absolute 子元素）盖住，只剩压在暗卡图上的那点金线，等于看不见。
+   覆盖层 z-index 2 在卡图/边框之上、角标(3)之下，四边永远画全且压得住底。 */
+.card-face.is-open::after,
+button.card-face:focus-visible::after {
+  content: ''; position: absolute; inset: 0; z-index: 2;
+  border-radius: inherit; pointer-events: none;
+  box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 10px 1px rgba(232, 197, 106, .55);
+}
+button.card-face:focus-visible { outline: none; }
 /* 槽满（不可装备）的卡不响应点击；未解锁的卡仍可点开解锁，故只跟 aria-disabled 绑定 */
 button.card-face[aria-disabled="true"] { cursor: default; }
 /* 置灰：未解锁 / 槽位已满。只降透明度，hover 详情浮层照常弹 */
@@ -684,18 +691,17 @@ body.zoom-open { overflow: hidden; }
 .hs-status { margin: 0; font-size: 12.5px; }
 .hs-status.ok { color: var(--ok); }
 .hs-status.warn { color: var(--warn); }
-/* 编队状态与联机状态：竖屏各自占一行（display:contents 让它们直接当 .hs-foot 的子项，
-   照旧吃 .hs-foot 的 gap），横屏并成一行——横屏的高度得先紧着名册与技能卡。 */
-.hs-notes { display: contents; }
-.hero-showcase[data-orient='landscape'] .hs-notes {
+/* 编队状态与联机状态并成一行（两个朝向都并）：竖屏这一屏的动作区与「新游戏」那条
+   一样只占三行，省下的行高全给上面的名册与技能卡。放不下时自己换行。 */
+.hs-notes {
   display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; min-width: 0;
 }
 
 /* 横屏动作区改横排、允许换行：竖屏那套「状态行 / 动作 / 主按钮」是竖着叠的三段，
    要 96px；而横屏的 foot 行是 auto —— 它矮多少，右栏的技能卡就高多少
    （844×390 上每 30px 约换 15px 卡高）。.row-actions 摊平（display:contents）后
-   按钮就是同一排的平级项，换行交给可用宽度。实测 844×390：#/new 的整条动作区
-   从 96px 收成一行 30px，技能卡从 46×61 长到 69×92。
+   按钮就是同一排的平级项，换行交给可用宽度；状态行整行独占（见下），
+   于是 #/new 收成「状态 / 按钮」两行 ≈ 56px，技能卡从 46×61 长到约 61×81。
 
    例外是「内容多到横排反而更高」的那条（在线大厅：.hs-notes 状态行 + 五颗按钮 +
    房间码输入，横排要三行 ≈ 102px，比竖排的 96px 还高），用 :has() 挑出来维持竖排。
@@ -716,13 +722,14 @@ body.zoom-open { overflow: hidden; }
   flex: 0 1 auto; white-space: nowrap;
   min-height: 30px; padding: 4px 6px; font-size: 12px;
 }
-/* 主按钮不再整宽（那是竖屏的排法），横屏它只是这排里的最后一颗、靠右收尾；
-   状态行优先缩——文字可以换行，别为了它把按钮顶到下一排。 */
+/* 主按钮不再整宽（那是竖屏的排法），横屏它只是这排里的最后一颗、靠右收尾。 */
 .hero-showcase[data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .cg-btn--block {
   width: auto; margin-left: auto;
 }
+/* 状态行整行独占（basis 100% 必然换行）：编队合法是给整队看的一句话，
+   跟按钮挤在同一排会让人以为它是颗按钮；拆开成「状态一行 / 按钮一行」。 */
 .hero-showcase[data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .hs-status {
-  flex: 0 1 auto; min-width: 0;
+  flex: 1 1 100%; min-width: 0;
 }
 /* 横排里的输入框得有自己的基准宽：竖屏那条 flex:1 的 basis 是 0，横排下会被挤成 0 宽 */
 .hero-showcase[data-orient='landscape'] .hs-foot .cg-input { flex: 1 1 110px; min-height: 30px; padding: 4px 8px; font-size: 12.5px; }
