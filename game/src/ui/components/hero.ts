@@ -4,6 +4,7 @@ import { avatarEmoji, cardFaceHtml } from './cardFace'
 import { icon } from './icons'
 import { orientationOf, type Orientation } from '../battle/projection'
 import { SLOT_LABEL, type SlotKind } from '../../meta/loadout'
+import { constitutionById } from '../../meta/constitution'
 import { laneLabel } from '../../meta/formation'
 import type { Attributes3, Hero } from '../../meta/herogen'
 import type { Coordinate } from '../../kernel/battle/types'
@@ -131,6 +132,7 @@ function stepArrows(i: number, n: number): string {
 function sideHtml(hero: HeroLike, catalog: Catalog, kind: SlotKind): string {
   // 职业取 classDefs 里的中文途径名，站位走 laneLabel（lane0/1 → 1路/2路）、序号 1 起数
   const className = catalog.classDefs.get(hero.classId)?.name ?? hero.classId
+  const constitution = constitutionById(hero.constitutionId)?.name ?? hero.constitutionId
   const coord = hero.coordinate
     ? ` · ${escapeHtml(laneLabel(hero.coordinate.lane))}${hero.coordinate.index + 1}`
     : ''
@@ -138,7 +140,7 @@ function sideHtml(hero: HeroLike, catalog: Catalog, kind: SlotKind): string {
     <div class="hs-head">
       <div class="hs-meta">
         <b>${escapeHtml(hero.name)}</b>
-        <small>${escapeHtml(className)} · ${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智${coord}</small>
+        <small>${escapeHtml(className)} · ${escapeHtml(constitution)} · ${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智${coord}</small>
       </div>
       <div class="hs-switch" role="group" aria-label="名册里显示哪一类技能">
         ${switchBtn('active', kind)}

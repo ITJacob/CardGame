@@ -67,6 +67,33 @@ export function sample<T>(arr: readonly T[], n: number, random: RandomSource): T
   return out
 }
 
+/** 一张立绘的脸 = 属性三项 + 性别（hero.ts 的 heroArtUrl 就按这两样取图），共 10 × 2 = 20 张 */
+export interface HeroFace {
+  combo: Attributes3
+  gender: 'male' | 'female'
+}
+
+export const FACES: readonly HeroFace[] = COMBOS.flatMap((combo) => [
+  { combo, gender: 'male' as const },
+  { combo, gender: 'female' as const },
+])
+
+/**
+ * 取 count 张互不重复的脸 —— 同一批英雄里出现两张同脸就会有两张一模一样的立绘。
+ * 名册最多 5 人、池子 20 张，正常构造取不满；真取满时超出的部分退回独立随机，
+ * 宁可重复也不短出英雄（sample 在 arr.length <= n 时原样返回，这里得自己补齐）。
+ */
+export function sampleFaces(count: number, random: RandomSource): HeroFace[] {
+  const picked = sample(FACES, count, random)
+  while (picked.length < count) {
+    picked.push({
+      combo: COMBOS[random.int(COMBOS.length)] as Attributes3,
+      gender: random.int(2) === 0 ? 'male' : 'female',
+    })
+  }
+  return picked
+}
+
 export function generateHeroes(ctx: RosterContext, count = 5, idPrefix = 'hero'): Hero[] {
   const unlocked = ctx.unlockedCards ? new Set(ctx.unlockedCards) : undefined
   const activeSlots = ctx.activeSlots ?? 4
@@ -74,16 +101,18 @@ export function generateHeroes(ctx: RosterContext, count = 5, idPrefix = 'hero')
   const classes = ctx.unlockedClasses.length > 0 ? ctx.unlockedClasses : [...ctx.catalog.classDefs.keys()]
   const heroes: Hero[] = []
 
+  const faces = sampleFaces(count, ctx.random)
+
   for (let i = 0; i < count; i += 1) {
-    const combo = COMBOS[ctx.random.int(COMBOS.length)] as Attributes3
+    const face = faces[i] as HeroFace
     const constitutionId = ctx.constitutionIds[ctx.random.int(ctx.constitutionIds.length)] as string
     const classId = classes[ctx.random.int(classes.length)] as string
     const skills = classSkills(ctx.catalog, classId, unlocked)
     heroes.push({
       id: `${idPrefix}_${i + 1}`,
       name: `${classId}_${i + 1}`,
-      gender: ctx.random.int(2) === 0 ? 'male' : 'female',
-      combo,
+      gender: face.gender,
+      combo: face.combo,
       constitutionId,
       classId,
       activeSkillIds: sample(skills.active, activeSlots, ctx.random),

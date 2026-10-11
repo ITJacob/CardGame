@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createCombat, fingerprintOf } from '../src/kernel'
 import { Mulberry32RandomSource } from '../src/kernel/shared/random-source'
 import { CONSTITUTIONS } from '../src/meta/constitution'
-import { COMBOS, generateHeroes, type Hero, type RosterContext } from '../src/meta/herogen'
+import { COMBOS, FACES, generateHeroes, sampleFaces, type Hero, type RosterContext } from '../src/meta/herogen'
 import { autoFormation, fromLaneLists, moveHeroTo, swapHeroes, toLaneLists, validateFormation } from '../src/meta/formation'
 import { equipSkill, moveSlot, skillPoolOf, unequipSkill } from '../src/meta/loadout'
 import { buildCombatSetup } from '../src/meta/buildSetup'
@@ -10,6 +10,11 @@ import { availableCardSet, createMemoryStore, newProfile, toggleCardUnlock, togg
 import { buildFixtureCatalog, runToEnd } from './helpers/fixture'
 
 const constitutionIds = CONSTITUTIONS.map((c) => c.id)
+
+/** 立绘的取图键：属性三项 + 性别（hero.ts 的 heroArtUrl 口径） */
+function faceKey(h: { combo: { strength: number; agility: number; intelligence: number }; gender: string }): string {
+  return `${h.combo.strength}${h.combo.agility}${h.combo.intelligence}${h.gender}`
+}
 
 function ctx(seed: number, classes: string[]): RosterContext {
   return {
@@ -40,6 +45,21 @@ describe('P4 战外', () => {
       expect(constitutionIds).toContain(h.constitutionId)
       expect(h.classId).toBe('fixture')
     }
+  })
+
+  it('同批英雄不出现同属性同性别（同脸就会生成两张一样的立绘）', () => {
+    for (let seed = 0; seed < 20; seed += 1) {
+      const heroes = generateHeroes(ctx(seed, ['fixture']), 5, 'H')
+      const faces = heroes.map((h) => faceKey(h))
+      expect(new Set(faces).size).toBe(heroes.length)
+    }
+  })
+
+  it('取脸：池子 20 张，超过也能凑够人数（宁可重复也不短出英雄）', () => {
+    expect(FACES).toHaveLength(COMBOS.length * 2)
+    expect(new Set(FACES.map((f) => faceKey(f))).size).toBe(FACES.length)
+    expect(sampleFaces(5, new Mulberry32RandomSource(2))).toHaveLength(5)
+    expect(sampleFaces(23, new Mulberry32RandomSource(2))).toHaveLength(23)
   })
 
   it('编队：自动布局合法，空洞/重复被拒', () => {
