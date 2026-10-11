@@ -64,20 +64,20 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
         kind: skillView,
         orient: orientationOf(window.innerWidth, window.innerHeight),
         foot: `
-      ${errors.length > 0 ? `<p class="warn hs-status">编队问题：${escapeHtml(errors.join(' / '))}</p>` : '<p class="ok hs-status">编队合法</p>'}
-      <div class="row-actions">
-        <a class="cg-btn" href="#/prep">整备 · 技能 / 阵型</a>
-        <button type="button" class="cg-btn" id="btn-reroll">重新生成</button>
+      <div class="hs-notes">
+        ${errors.length > 0 ? `<p class="warn hs-status">编队问题：${escapeHtml(errors.join(' / '))}</p>` : '<p class="ok hs-status">编队合法</p>'}
+        <p class="hint" id="online-status">联机自动推进 · 决策点等双方选定</p>
       </div>
       <div class="row-actions">
+        <a class="cg-btn" href="#/prep">整备</a>
+        <button type="button" class="cg-btn" id="btn-reroll">重新生成</button>
         <button type="button" class="cg-btn" id="btn-quick">快速匹配</button>
         <button type="button" class="cg-btn cg-btn--primary" id="btn-create">创建房间</button>
       </div>
       <div class="row-actions">
         <input class="cg-input" id="inp-code" maxlength="6" placeholder="对手的 6 位房间码" aria-label="房间码" autocomplete="off" />
         <button type="button" class="cg-btn" id="btn-join">加入房间</button>
-      </div>
-      <p class="hint" id="online-status">联机自动推进，决策点等双方选定；数据版本不一致会拒绝开局。</p>`,
+      </div>`,
       })}
     </main>`
 

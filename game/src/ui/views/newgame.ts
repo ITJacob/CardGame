@@ -51,7 +51,7 @@ function render(host: HTMLElement, catalog: Catalog, profile: Profile): void {
         foot: `
       ${errors.length > 0 ? `<p class="warn hs-status">编队问题：${escapeHtml(errors.join(' / '))}</p>` : '<p class="ok hs-status">编队合法</p>'}
       <div class="row-actions">
-        <a class="cg-btn" href="#/prep">整备 · 技能 / 阵型</a>
+        <a class="cg-btn" href="#/prep">整备</a>
         <button type="button" class="cg-btn" id="btn-reroll">重新生成</button>
       </div>
       <button type="button" class="cg-btn cg-btn--primary cg-btn--block" id="btn-fight">开始战斗</button>`,

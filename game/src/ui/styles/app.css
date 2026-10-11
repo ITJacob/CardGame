@@ -406,41 +406,39 @@ body.zoom-open { overflow: hidden; }
 }
 
 /* 展示台：一个 grid 管两个朝向，DOM 不分叉（只翻 data-orient 换一套 areas）。
-   两个朝向都是「立绘在左、信息技能在右」，只是矮屏得再摊一列出来。 */
+   竖屏走上下结构（立绘整宽在上，信息技能 / 名册条 / 动作条依次往下）。
+   横屏把整本名册横向铺开当主展示，信息与操作收进右栏。 */
 .hero-showcase {
   flex: 1; min-height: 0;
   display: grid;
   gap: 10px;
 }
-/* 竖屏：立绘 | 信息技能 一行，缩略图与动作条依次垫底 */
 .hero-showcase[data-orient='portrait'] {
-  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-  grid-template-rows: minmax(0, 1fr) auto auto;
-  grid-template-areas: 'art side' 'thumbs thumbs' 'foot foot';
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto auto auto;
+  grid-template-areas: 'art' 'side' 'strip' 'foot';
 }
-/* 横屏只有 ~290px 高（844×390 减顶栏与内边距）。信息 + 动作条叠在一列里放不下
-   （单侧就要 190，动作条按 44px 一行要 210），所以摊成三列：立绘 | 信息技能 | 操作。
-   缩略图收到立绘下面，尺寸也降到 30px 一档，好塞进立绘那一列。 */
+/* 横屏只有 ~290px 高（844×390 减顶栏与内边距），所以立绘不再单独占一列：
+   名册条自己就是主展示（每格带名字），右栏上下分给「信息技能」与「操作」。 */
 .hero-showcase[data-orient='landscape'] {
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr) minmax(0, 1.3fr);
+  grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
-  grid-template-areas: 'art side foot' 'thumbs side foot';
+  grid-template-areas: 'strip side' 'strip foot';
 }
-[data-orient='landscape'] .hs-thumbs { justify-content: flex-start; gap: 5px; }
-[data-orient='landscape'] .hs-thumb .hero-portrait { width: 30px; height: 40px; }
+/* 横屏：顶上的大立绘整块撤掉（竖屏那套叠在它上面的箭头跟着一起走） */
+[data-orient='landscape'] .hs-art { display: none; }
 
-/* 立绘格：让立绘框正好贴住「格子里能放的最大 3:4」。
-   行 1 是 minmax(0,1fr)，格子常有富余高度；若让框撑满格子，图会被 contain 成一条
-   居中的小画、四周围一圈空框。所以框的尺寸按格子算：容器查询单位 100cqw/100cqh
-   就是格子本身的宽高。（不用 aspect-ratio + height:100%——两者同时硬约束时比例会破。） */
+/* 竖屏的主立绘格：让立绘框正好贴住「格子里能放的最大 3:4」。
+   行 1 是 minmax(0,1fr)，格子常有富余；若让框撑满格子，图会被 contain 成一条居中的
+   小画、四周围一圈空框。所以框的尺寸按格子算：容器查询单位 100cqw/100cqh 就是格子
+   本身的宽高。（不用 aspect-ratio + height:100%——两者同时硬约束时比例会破。） */
 .hs-art {
   grid-area: art;
   margin: 0;
   min-width: 0;
   min-height: 0;
-  /* 行 1 是 1fr，矮屏够高时立绘吃不满（竖屏宽 211 的立绘最高 282，而行高常有 500+）。
-     居中对齐：空出来的地方上下均分，立绘与右栏的名条成为一个居中的整体，
-     而不是顶在上沿、下面留一大条空。 */
+  /* 立绘竖向居中：富余的高度上下均分，读起来像一块居中展示的画框，
+     而不是顶在上沿、下面空一大条。 */
   display: grid;
   place-items: center;
   container-type: size;
@@ -448,15 +446,15 @@ body.zoom-open { overflow: hidden; }
 /* 老浏览器兜底：无 cq 单位时下面那条整条作废，退回「撑满格子 + 图自己 contain」 */
 .hs-art > .hero-portrait { width: 100%; height: 100%; }
 .hs-art > .hero-portrait {
-  /* 3:4 = 立绘原图 1152×1536。宽高各取「能放的最大」：格子富余的那一边留成透明 */
+  /* 3:4 = 立绘原图 1152×1536。宽高各取「能放的最大」：格子富余的那一边留成底色 */
   width: min(100cqw, calc(100cqh * 3 / 4));
   height: min(100cqh, calc(100cqw * 4 / 3));
 }
 .hs-art .hero-portrait__img { object-fit: contain; object-position: 50% 50%; }
 .hs-art .hero-portrait__emoji { font-size: 64px; }
 
-/* 左右箭头：浮在立绘左右边缘上，不占布局宽度（竖屏每一 px 宽都要留给美术）。
-   放在 .hero-portrait 里面（而不是格子里），所以「50%」是立绘的中点，不是格子的。 */
+/* 左右箭头：浮在立绘（或名册条）左右边缘上，不占布局宽度——每一 px 宽都要留给美术。
+   竖屏那对放在 .hero-portrait 里面，所以「50%」是立绘框的中点，不是格子的。 */
 .hs-arrow {
   position: absolute;
   top: 50%;
@@ -477,19 +475,105 @@ body.zoom-open { overflow: hidden; }
 .hs-arrow--next { right: 6px; }
 .hs-arrow--next .cg-ico { transform: rotate(180deg); }
 
-/* 右栏：名条 + 主动/被动切换 + 技能缩略图 */
+/* 名册条：竖屏是「小图标切换」的缩略图条，横屏是主展示本身。
+   自己 position:relative，好让横屏那对箭头贴它的两端（而不是跟着内容滚走）。 */
+.hs-strip {
+  grid-area: strip;
+  position: relative;
+  display: flex; align-items: center; gap: 8px;
+  min-width: 0; min-height: 0;
+  user-select: none; caret-color: transparent;
+}
+.hero-showcase[data-orient='portrait'] .hs-strip { justify-content: center; gap: 7px; }
+/* 竖屏：名册条在立绘下面，装得下就不滚；条上的箭头用不着（立绘那对更显眼） */
+.hero-showcase[data-orient='portrait'] .hs-strip .hs-arrow { display: none; }
+/* 横屏：名册条自己当容器查询的容器（格子尺寸由条高/条宽算出），两端留出箭头的位子。
+   条本身高度是 grid 给的定值，格子靠 cqh 反算，不靠 stretch —— 大屏上 45cqw 把格子
+   宽度卡住时，高度得跟着收（否则立绘在小框里上下留一大片空）。 */
+.hero-showcase[data-orient='landscape'] .hs-strip {
+  container-type: size;
+  padding: 0 34px;
+}
+
+.hs-count { font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+/* 横屏全体可见，不需要「第几个 / 共几个」 */
+.hero-showcase[data-orient='landscape'] .hs-count { display: none; }
+
+/* 滚动容器：装不下时用隐藏式横向滚动条（触摸可直接拖）。 */
+.hs-track {
+  display: flex; align-items: center; gap: 7px;
+  min-width: 0; min-height: 0;
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hs-track::-webkit-scrollbar { display: none; }
+
+/* 名册里的一格。竖屏只露立绘（缩略图），横屏补一行名字、等分整条。 */
+.hs-cell {
+  flex: none;
+  padding: 0; border: 0; background: none; cursor: pointer;
+  opacity: .5;
+  transition: opacity .15s, border-color .15s;
+}
+.hs-cell:hover { opacity: .85; }
+.hs-cell.is-on { opacity: 1; }
+.hs-cell__name { display: none; }
+
+.hero-showcase[data-orient='portrait'] .hs-cell {
+  width: 34px; height: 45px;
+  border: 1px solid var(--border); border-radius: 5px;
+}
+.hero-showcase[data-orient='portrait'] .hs-cell.is-on {
+  border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-dim);
+}
+[data-orient='portrait'] .hs-cell .hero-portrait { width: 100%; height: 100%; border: 0; border-radius: 4px; }
+[data-orient='portrait'] .hs-cell .hero-portrait__emoji { font-size: 15px; }
+
+/* 横屏名册是一条横向长条：格子宽度由条高反推（立绘吃满高度、比例 3:4），
+   5 格放不下就横向滚——滚动条藏起来，两端箭头当把手。
+   --cw 是格子宽（高度反推 vs 条宽 45% 取小），45cqw 那道闸是防大屏：
+   1280×900 上光看条高会算出 580px 一格、一屏只剩一个半，压到条宽 45% 后
+   各尺寸都稳定在「一屏两个多」。格高 = --cw 的 3:4 再加名字那 22px，
+   跟 --cw 一起被卡，两者始终一致；条上来不及长满的那点余量由 center 分摊。 */
+.hero-showcase[data-orient='landscape'] .hs-track { flex: 1; align-items: center; }
+.hero-showcase[data-orient='landscape'] .hs-cell {
+  --cw: 45%; /* 老浏览器兜底：认不得 cqh 时退回「条宽的 45%」 */
+  --cw: min(calc((100cqh - 22px) * 3 / 4), 45cqw);
+  flex: 0 0 auto;
+  width: var(--cw);
+  height: min(100cqh, calc(var(--cw) * 4 / 3 + 22px));
+  display: flex; flex-direction: column; gap: 4px;
+}
+/* 22px = 下面那行名字 18px + 间距 4px，立绘框正好剩 (条高 - 22) 的 3:4 */
+[data-orient='landscape'] .hs-cell .hero-portrait { flex: 1 1 0; min-height: 0; }
+/* 大图按 3:4 给框，图不再需要「裁到头」那一套；contain 保证一 px 都不裁 */
+[data-orient='landscape'] .hs-cell .hero-portrait__img { object-fit: contain; object-position: 50% 50%; }
+[data-orient='landscape'] .hs-cell .hero-portrait__emoji { font-size: 40px; }
+[data-orient='landscape'] .hs-cell.is-on .hero-portrait {
+  border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-dim);
+}
+[data-orient='landscape'] .hs-cell__name {
+  display: block; width: 100%; height: 18px; line-height: 18px;
+  font-size: 11px; color: var(--text-dim); text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+[data-orient='landscape'] .hs-cell.is-on .hs-cell__name { color: var(--accent); }
+
+/* 信息栏：名条（左）与主动/被动切换（右）同一行，下面整宽摆技能缩略图 */
 .hs-side {
   grid-area: side;
   display: flex; flex-direction: column; gap: 8px;
-  justify-content: center; /* 与居中的立绘对齐成一块，而不是顶在上沿 */
+  justify-content: center;
   min-width: 0; min-height: 0; overflow: hidden;
 }
-.hs-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hs-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; min-width: 0; }
+.hs-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
 .hs-meta b { font-size: 15px; color: var(--accent); letter-spacing: .02em; }
 .hs-meta small { font-size: 11.5px; color: var(--text-dim); }
-.hs-switch { display: inline-flex; gap: 8px; align-self: flex-start; }
-/* 技能条：flex:1 + 自身滚动是兜底 —— 极矮的屏（如 360×640）侧栏高度不够时，
-   让这一块自己收起来滚，而不是把内容裁掉或把整页顶出滚动条。放得下时不会出滚动条。 */
+.hs-switch { display: inline-flex; gap: 6px; flex: none; }
+/* 技能条：flex:0 1 auto + 自身滚动是兜底 —— 极矮的屏侧栏高度不够时，让这一块自己
+   收起来滚，而不是把内容裁掉或把整页顶出滚动条。放得下时不会出滚动条。 */
 .hs-cards {
   display: flex; flex-wrap: wrap; align-content: flex-start; gap: 5px;
   flex: 0 1 auto; min-height: 0; overflow-y: auto;
@@ -497,39 +581,39 @@ body.zoom-open { overflow: hidden; }
 .hs-cards .cards-none { color: var(--text-dim); font-size: 12px; }
 .hs-empty { margin: 0; }
 
-/* 缩略图条 =「小图标切换」；当前项点亮，禁选免得拖出一条选区 */
-.hs-thumbs {
-  grid-area: thumbs;
-  display: flex; align-items: center; justify-content: center; gap: 7px;
-  min-width: 0; overflow: hidden;
-  user-select: none; caret-color: transparent;
-}
-.hs-count { font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
-.hs-thumb {
-  padding: 0; cursor: pointer;
-  border: 1px solid var(--border); border-radius: 5px;
-  background: none;
-  opacity: .5;
-  transition: opacity .15s, border-color .15s;
-}
-.hs-thumb .hero-portrait { width: 34px; height: 45px; border: 0; border-radius: 4px; }
-.hs-thumb .hero-portrait__emoji { font-size: 15px; }
-.hs-thumb:hover { opacity: .85; }
-.hs-thumb.is-on { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-dim); }
-
 /* 动作区：各屏自己的按钮与状态行落在这里 */
 .hs-foot {
   grid-area: foot;
   display: flex; flex-direction: column; gap: 8px;
   min-width: 0;
 }
-.hs-foot .row-actions { margin-top: 0; }
+.hs-foot .row-actions { margin-top: 0; flex-wrap: wrap; }
 .hs-foot .cg-input { flex: 1; min-width: 0; }
+.hs-foot p { margin: 0; }
+/* .hint 自己不带字号（继承 body 的 15px），动作区里得收一档，否则联机状态那行
+   在横屏右栏里会宽到换行，把技能卡挤掉 */
+.hs-foot .hint { font-size: 12.5px; }
+/* 一屏页里动作条是配角：按钮与输入框都比 kit 的 44px 矮一档，好给立绘让出高度。
+   输入框的高度是 padding(10+10) + line-height(20) + border(2) 撑出来的，光改
+   min-height 没用，得连 padding 一起收。选择器带了 .hs-foot 前缀，权重高于 kit
+   的单类规则，不受引入次序影响。 */
+.hs-foot .cg-btn { min-height: 34px; padding: 6px 10px; font-size: 13px; }
+.hs-foot .cg-input { min-height: 34px; padding: 5px 10px; font-size: 13px; }
 .hs-status { margin: 0; font-size: 12.5px; }
 .hs-status.ok { color: var(--ok); }
 .hs-status.warn { color: var(--warn); }
-/* 展示台是展示卡，不是可编辑文本：禁选，免得悬停出现 I 形光标、点击弹出输入光标 */
-.roster { user-select: none; caret-color: transparent; }
+/* 编队状态与联机状态：竖屏各自占一行（display:contents 让它们直接当 .hs-foot 的子项，
+   照旧吃 .hs-foot 的 gap），横屏并成一行——横屏的高度得先紧着名册与技能卡。 */
+.hs-notes { display: contents; }
+.hero-showcase[data-orient='landscape'] .hs-notes {
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; min-width: 0;
+}
+
+/* 横屏按钮再矮一档：右栏只有 ~280 宽，四颗按钮得挤进一行 */
+.hero-showcase[data-orient='landscape'] .hs-foot .cg-btn {
+  min-height: 30px; padding: 4px 6px; font-size: 12px;
+}
+.hero-showcase[data-orient='landscape'] .hs-foot .cg-input { min-height: 30px; padding: 4px 8px; font-size: 12.5px; }
 
 /* ---------- 英雄立绘（展示台 / 整备页小图共用同一层） ---------- */
 /* 两层结构：emoji 垫底、立绘盖上；缺图时 hydrateHeroArt 摘掉 img 露回 emoji，不留白框。
