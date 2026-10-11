@@ -420,9 +420,11 @@ body.zoom-open { overflow: hidden; }
   flex-direction: column;
   gap: 10px;
 }
-/* 页眉那行档案/数据版本：一行截断，不换行（换行就得从展示台的高度里扣） */
+/* 页眉那行档案/数据版本：一行截断，不换行（换行就得从展示台的高度里扣）。行高定死 18px，
+   与整备页那行 .prep-status 同档——顶部这行多高，展示台就从哪儿起，两页对不齐的话
+   来回切页时整块技能区会上下错 1~2px（2026-10-11 修）。 */
 .viewport-page .profile-line {
-  flex: none; margin: 0; font-size: 11.5px; color: var(--text-dim);
+  flex: none; margin: 0; font-size: 11.5px; line-height: 18px; color: var(--text-dim);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
@@ -742,6 +744,14 @@ body.zoom-open { overflow: hidden; }
 [data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .hs-status {
   flex: 1 1 100%; min-width: 0;
 }
+/* 整备页的脚只剩一颗「完成」，但横屏仍要占住与「新游戏」页同样的两行
+   （状态行 + 按钮行 = 56px）：右栏 .hs-side 的高度是「舞台高 - 脚高」，技能卡又按
+   右栏高度倒推，脚一矮右栏就高、整块技能区跟着长一圈，两页来回切时会跳。
+   所以状态行常驻，空着时由 min-height 撑一行（1lh = 该行 12.5px × 继承的 1.6 = 20px，
+   前面那条 20px 是给不认 lh 单位的旧浏览器兜底）。
+   竖屏不需要这块高度（右栏是 auto，卡宽驱动），空着就整行撤掉，那一行让给棋盘。 */
+.prep-page[data-orient='landscape'] .hs-foot .hs-status { min-height: 20px; min-height: 1lh; }
+.prep-page[data-orient='portrait'] .hs-foot .hs-status:empty { display: none; }
 /* 横排里的输入框得有自己的基准宽：竖屏那条 flex:1 的 basis 是 0，横排下会被挤成 0 宽 */
 [data-orient='landscape'] .hs-foot .cg-input { flex: 1 1 110px; min-height: 30px; padding: 4px 8px; font-size: 12.5px; }
 
@@ -822,9 +832,10 @@ table.lb tr.draw td.res { color: var(--text-dim); }
    不重绘（重绘会丢 hover/焦点，还会把弹窗里卡池的滚动位置顶回去），落位与尺寸全交给 CSS。 */
 .prep-page.viewport-page { max-width: 1100px; }
 
-/* 顶部一行：模式 / seed / 操作说明。一行截断，不占第二行高度 */
+/* 顶部一行：模式 / seed / 操作说明。一行截断，不占第二行高度。行高 18px 与
+   「新游戏」页的 .profile-line 逐字一致（理由见上），两页的展示台由此从同一处起算。 */
 .prep-status {
-  flex: none; margin: 0; font-size: 12.5px; line-height: 1.35; color: var(--text-dim);
+  flex: none; margin: 0; font-size: 12.5px; line-height: 18px; color: var(--text-dim);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 /* .hint 自己不带字号（继承 body 的 15px），一屏页里得收一档 */
@@ -1009,10 +1020,11 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .pp-slots .slot .card-face .noart-glyph { font-size: 36cqw; }
 
 /* 横屏按右栏高度收技能格：两行卡 + 名条要塞进 row1 的行高里。
-   --hs-row-h 照展示台的算法（那边写在 .hs-group__row > .card-face 上），
-   只是偏置取 56 而不是 60——整备的技能行间距是 6、不是展示台的 8。
+   --hs-row-h 与展示台那条（写在 .hs-group__row > .card-face 上）取同一个偏置 60：
+   两页的脚同高之后右栏就同高，偏置再留 56 会让整备的卡比「新游戏」大 3px、
+   切页时技能区仍会跳一下。行距也一并对到展示台的 8px，两排行与卡才逐 px 对齐。
    选择器写在这里（.prep-skills 上）是为了让 cqh 仍对着 .hs-side 那个尺寸容器量。 */
-.prep-page[data-orient='landscape'] .prep-skills { --hs-row-h: max(48px, calc((100cqh - 56px) / 2)); }
+.prep-page[data-orient='landscape'] .prep-skills { gap: 8px; --hs-row-h: max(48px, calc((100cqh - 60px) / 2)); }
 .prep-page[data-orient='landscape'] .sk-tile { max-width: min(88px, calc(var(--hs-row-h) * 3 / 4)); }
 
 /* ---------- 拖拽（阵型摆位 + 技能槽调序） ---------- */

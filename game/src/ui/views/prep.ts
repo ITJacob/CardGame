@@ -411,14 +411,19 @@ function sideHtml(catalog: Catalog, hero: PlacedHero | null): string {
 }
 
 /**
- * 脚：只剩主按钮。常显的那句「编队合法」按主人要求撤了，脚里只在真有问题时冒一行 warn
+ * 脚：只剩主按钮。常显的那句「编队合法」按主人要求撤了，只在真有问题时冒一行 warn
  * （无效操作的回执、编队不合法）——上战场前发现编不了队，比常显一句废话有用。
  * 排法照「新游戏」页：主按钮带 cg-btn--block 独占一行，横屏由那套共用规则摊到那排右侧收尾。
+ *
+ * 状态行**常驻**（没问题时是空的）：横屏的脚占多高，右栏 .hs-side 就有多高，而技能卡是按
+ * 右栏高度倒推的——「新游戏」页的脚是「状态行 + 按钮行」两行共 56px，整备页少这一行就只有
+ * 30px，两页来回切时整块技能区会矮一截、卡也大一圈（2026-10-11 修）。空着时的高度由 CSS 给
+ * （竖屏则整行撤掉，那点高度让给棋盘），所以标签之间**不能留空白**，竖屏那条规则用的是 :empty。
  */
 function footHtml(back: string, errors: readonly string[], notice: string): string {
   const warn = notice || (errors.length > 0 ? `编队问题：${errors.join(' / ')}` : '')
   return `<div class="hs-foot">
-    ${warn ? `<p class="hs-status warn">${escapeHtml(warn)}</p>` : ''}
+    <p class="hs-status${warn ? ' warn' : ''}">${warn ? escapeHtml(warn) : ''}</p>
     <a class="cg-btn cg-btn--primary cg-btn--block" href="${back}">完成</a>
   </div>`
 }
