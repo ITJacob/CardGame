@@ -3,13 +3,15 @@
 import { subBarHtml, escapeHtml } from '../components/chrome'
 import { icon } from '../components/icons'
 import { cardDetailHtml, hydrateArt } from '../components/cardFace'
-import { heroRowHtml, hydrateHeroArt } from '../components/hero'
+import { heroShowcaseHtml, hydrateHeroArt, wireHeroShowcase } from '../components/hero'
+import { orientationOf } from '../battle/projection'
 import { enableHoverCard, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
 import { setSession, type UnitMeta } from '../session'
 import { loadProfile } from '../profile'
 import { ensureDraft, getDraft, rerollDraft } from '../draft'
 import { validateFormation, type PlacedHero } from '../../meta/formation'
+import type { SlotKind } from '../../meta/loadout'
 import { createCombat } from '../../kernel'
 import { createFirebaseMatch, type FirebaseMatch } from '../../meta/match/firebaseChannel'
 import { buildOnlineCombatSetup, factionOfSide } from '../../meta/match/buildOnlineSetup'
@@ -21,6 +23,10 @@ import { dataVersion, shortHash } from '../../data/version'
 let conn: FirebaseMatch | null = null
 /** 每次进入本页 +1：异步续跑前比对，避免「已离开还在跳转」 */
 let navToken = 0
+/** 展示台上正看第几个英雄；重新生成名册后归零 */
+let heroIndex = 0
+/** 右侧技能缩略图看主动还是被动 */
+let skillView: SlotKind = 'active'
 
 function connection(): FirebaseMatch {
   conn ??= createFirebaseMatch()
@@ -45,31 +51,34 @@ export function renderOnline(host: HTMLElement): void {
 
 function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile: Profile): void {
   const roster = getDraft()?.own ?? []
-  const rows = roster.map((h) => heroRowHtml(h, catalog)).join('')
   const errors = validateFormation(roster)
+  // 重绘会重建输入框（切英雄 / 重新生成都会重绘），先把已敲的房间码捞出来再填回去
+  const typedCode = (document.getElementById('inp-code') as HTMLInputElement | null)?.value ?? ''
 
   host.innerHTML = `
     ${subBarHtml('在线对战')}
-    <main class="newgame">
-      <p class="hint">档案 ${escapeHtml(profile.username || profile.uuid.slice(0, 8))} · 数据 ${shortHash(dataVersion.dataHash)}${dataVersion.stale ? '（数据已漂移，双方须同版本）' : ''}</p>
-      <h2>我方阵容（${roster.length}）</h2>
-      <div class="hero-list">${rows}</div>
-      ${errors.length > 0 ? `<p class="warn">编队问题：${escapeHtml(errors.join(' / '))}</p>` : '<p class="ok">编队合法</p>'}
+    <main class="viewport-page">
+      <p class="hint profile-line">档案 ${escapeHtml(profile.username || profile.uuid.slice(0, 8))} · 数据 ${shortHash(dataVersion.dataHash)}${dataVersion.stale ? '（数据已漂移，双方须同版本）' : ''}</p>
+      ${heroShowcaseHtml(roster, catalog, {
+        index: heroIndex,
+        kind: skillView,
+        orient: orientationOf(window.innerWidth, window.innerHeight),
+        foot: `
+      ${errors.length > 0 ? `<p class="warn hs-status">编队问题：${escapeHtml(errors.join(' / '))}</p>` : '<p class="ok hs-status">编队合法</p>'}
       <div class="row-actions">
         <a class="cg-btn" href="#/prep">整备 · 技能 / 阵型</a>
-        <button type="button" class="cg-btn" id="btn-reroll">重新生成英雄</button>
+        <button type="button" class="cg-btn" id="btn-reroll">重新生成</button>
       </div>
       <div class="row-actions">
         <button type="button" class="cg-btn" id="btn-quick">快速匹配</button>
         <button type="button" class="cg-btn cg-btn--primary" id="btn-create">创建房间</button>
       </div>
-      <label class="cg-field">
-        <span class="cg-field__label">房间码</span>
-        <input class="cg-input" id="inp-code" maxlength="6" placeholder="输入对手的 6 位房间码" autocomplete="off" />
-      </label>
-      <button type="button" class="cg-btn" id="btn-join">加入房间</button>
-      <p class="hint" id="online-status">联机对战自动推进，遇决策点暂停等双方选定；对手掉线会在超时后中止。</p>
-      <p class="hint">双方卡池数据版本必须一致（${shortHash(dataVersion.dataHash)}）；不一致会拒绝开局。</p>
+      <div class="row-actions">
+        <input class="cg-input" id="inp-code" maxlength="6" placeholder="对手的 6 位房间码" aria-label="房间码" autocomplete="off" />
+        <button type="button" class="cg-btn" id="btn-join">加入房间</button>
+      </div>
+      <p class="hint" id="online-status">联机自动推进，决策点等双方选定；数据版本不一致会拒绝开局。</p>`,
+      })}
     </main>`
 
   hydrateArt(host)
@@ -94,6 +103,7 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
     }
   }
   const codeInput = document.getElementById('inp-code') as HTMLInputElement | null
+  if (codeInput && typedCode) codeInput.value = typedCode
 
   const fail = (e: unknown): void => {
     status(`失败：${e instanceof Error ? e.message : String(e)}`, 'warn')
@@ -143,8 +153,21 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
       .catch(fail)
   }
 
+  // 展示台的三种点击（箭头 / 缩略图 / 主动被动）都走这里；改的是页面级状态，重绘整页
+  wireHeroShowcase(host, {
+    index: heroIndex,
+    onIndex: (i) => {
+      heroIndex = i
+      renderLobby(host, token, catalog, profile)
+    },
+    onKind: (k) => {
+      skillView = k
+      renderLobby(host, token, catalog, profile)
+    },
+  })
   document.getElementById('btn-reroll')?.addEventListener('click', () => {
     rerollDraft(catalog, profile)
+    heroIndex = 0
     renderLobby(host, token, catalog, profile)
   })
   document.getElementById('btn-create')?.addEventListener('click', create)

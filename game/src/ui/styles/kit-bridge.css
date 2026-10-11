@@ -4,7 +4,7 @@
  * 三件事：
  *   ① token 接线：ui-kit.css 自带一份 :root 默认值（它的独立预览页要用），接进游戏后按它
  *      文件头的说明改指 app.css 的变量 —— 配色仍然只有 app.css 一处源。
- *   ② kit 修饰类：游戏需要、kit 里没有的那几档（子页栏 / 名册横排行 / 强调面板 /
+ *   ② kit 修饰类：游戏需要、kit 里没有的那几档（子页栏 / 强调面板 /
  *      面板的 meta·body·foot 三件套）。
  *   ③ 游戏侧的组件微调：kit 组件落到具体位置时尺寸要收一收（侧栏 22 行的列表、
  *      棋盘格子里的血条）—— 只调尺寸与密度，不另起一套外观。
@@ -19,6 +19,9 @@
  * ① token 接线
  * ========================================================================== */
 :root {
+  /* 顶栏高度（.cg-nav 的 height）。一屏页按 calc(100dvh - var(--nav-h)) 扣掉它，
+     所以这个数得跟 kit 里那行 height 一起改。 */
+  --nav-h: 54px;
   --cg-bg: var(--bg);
   --cg-bg-deep: var(--bg-deep);
   --cg-panel: var(--panel);
@@ -46,21 +49,6 @@
   padding-left: max(18px, env(safe-area-inset-left));
   padding-right: max(18px, env(safe-area-inset-right));
 }
-
-/* 名册横排行：kit 的 .cg-panel 是「一块区域」（纵向堆内容和标题），名册行是
-   「英雄卡 · 技能卡列」一条横排，也没有标题栏。行会重复十几遍，整块的大投影
-   换成一层浅影——不然一列名册各自浮起，像十几张卡片叠在暗雾上。 */
-.cg-panel--row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
-  box-shadow: var(--cg-shadow-sm), inset 0 0 0 1px rgba(200, 162, 74, .07);
-}
-/* 英雄卡（150px 立绘 + 名条）比右侧技能条高得多，行内改顶对齐，技能条贴着卡顶排。
-   覆盖目标 .cg-panel--row 就在本文件、与 app.css 同权重但后引入，所以这条只能写在这里。 */
-.hero-row { align-items: flex-start; }
 
 /* 强调面板：黄铜边 + 外发光。主菜单首屏、在线等待页的房间码用这一档 ——
    kit 的 .cg-panel 只有 --menu / --group / --flush 三档，这一档是游戏侧补的。 */
@@ -105,13 +93,12 @@
   color: #17140c;
 }
 
-/* —— 整备页：英雄条（.hero-chip）与主动/被动切换（.switch-btn）——
+/* —— 英雄条（.hero-chip）与主动/被动切换（.hs-switch）——
    两者都是「一个可选项，选中了要看得出来」：用 kit 的 .cg-select（空环 → 实心环 + 对勾）。
-   切换按钮那组不带环，只是两片并列的胶囊。 */
+   切换按钮那组不带环，只是两片并列的胶囊：整备页那组 34px，展示台的右栏挤，收到 28px。 */
 .hero-chip { gap: 8px; }
-.skill-switch { display: inline-flex; gap: 8px; }
-.skill-switch .cg-select,
 .hero-chip.cg-select { padding: 5px 12px; min-height: 34px; font-size: 13px; }
+.hs-switch .cg-select { padding: 3px 10px; min-height: 28px; font-size: 12.5px; }
 
 /* —— 战斗：名册面板 / 日志 / 决策条 ——
    这三块都是「单类选择器压单类选择器」的场面：app.css 里没有更高优先级可借，
@@ -177,5 +164,3 @@
 /* —— 布局间距：.row-actions 里的一排按钮等分整行（原先由 .row-actions .btn 给，
    现在按钮是 .cg-btn，得重新说一次，顺带压掉 kit 的 inline-flex 宽度定义）—— */
 .row-actions .cg-btn { flex: 1; }
-/* 在线大厅的房间码输入框：与上方那排按钮之间留一口气 */
-.newgame .cg-field { margin-top: 12px; }
