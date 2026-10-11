@@ -418,30 +418,34 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 .card-detail .cp-flavor { margin: 0; font-style: italic; color: var(--text-dim); }
 
 /* ---------- 卡面放大视图 ---------- */
-/* 点卡面 → 居中放大；在大图上 hover 才浮出右侧详情。z-index 30：高过详情浮层(15)与结算(20) */
+/* 点卡面 → 放大到铺满视口（横纵都居中）。卡面自己占住屏幕，所以不加遮罩，背后透出页面。
+   详情分两种摆法：横板常驻在卡右侧；竖版/窄屏放不下，改成「再点一下卡面，半透盖在卡上」。
+   z-index 30：高过详情浮层(15)与结算(20)。 */
 body.zoom-open { overflow: hidden; }
 .card-zoom {
-  position: fixed; inset: 0; z-index: 30; overflow: auto;
-  display: flex; align-items: center; justify-content: center; padding: 24px;
-  background: rgba(6, 7, 10, 0.8); outline: none;
+  position: fixed; inset: 0; z-index: 30; overflow: hidden; outline: none;
+  display: flex; align-items: center; justify-content: center; padding: 12px;
 }
-.zoom-stage { position: relative; display: flex; align-items: center; }
-/* 放大档卡面：高度撑满视口的六成上下，宽度按 3:4 走，与边框图同比例不裁 */
-.card-face.zoom { width: auto; height: min(62vh, 520px); aspect-ratio: 3 / 4; border-radius: 12px; }
-.card-face.zoom .card-info { padding: 8px 12px 10px; font-size: 22px; gap: 6px; }
-.card-face.zoom .noart-glyph { font-size: 84px; }
+/* --zh = 放大卡面的高度：先按视口高铺满，再按 3:4 退让；横板还要给右侧详情让出 384px */
+.card-zoom { --zh: min(calc(100vh - 24px), calc((100vw - 24px) * 4 / 3)); }
+@media (min-width: 1100px) and (orientation: landscape) {
+  .card-zoom { --zh: min(calc(100vh - 24px), calc((100vw - 384px) * 4 / 3)); }
+}
+.zoom-stage { position: relative; display: flex; align-items: center; gap: 18px; }
+.card-face.zoom { width: auto; height: var(--zh); aspect-ratio: 3 / 4; border-radius: 12px; container-type: size; }
+/* 字号跟着卡面高度走（cqh），小屏大屏都是同一套比例；不认容器单位的浏览器退回固定值 */
+.card-face.zoom .card-info { padding: 10px 14px 12px; font-size: 22px; font-size: 3.4cqh; gap: 6px; }
+.card-face.zoom .ci-cost { font-size: 0.8em; }
+.card-face.zoom .noart-glyph { font-size: 84px; font-size: 12cqh; }
 .zoom-tip {
-  position: absolute; left: calc(100% + 18px); top: 0; width: 320px;
-  max-height: min(62vh, 520px); overflow: auto;
+  width: 320px; max-height: var(--zh); overflow: auto;
   padding: 14px 16px; border-radius: 12px;
   background: rgba(22, 24, 29, 0.97); border: 1px solid var(--accent-dim);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
   color: var(--text); font-size: 13px; line-height: 1.55;
-  opacity: 0; pointer-events: none; transition: opacity 0.15s linear;
 }
-/* hover 卡面浮出；指针移到详情上也算（所以 pointer-events 跟着一起开，长文才读得完） */
-.zoom-stage:hover .zoom-tip { opacity: 1; pointer-events: auto; }
 .zoom-tip h4 { font-size: 17px; }
+.zoom-hint { display: none; }
 .zoom-close {
   position: absolute; top: 14px; right: 16px; z-index: 1;
   width: 34px; height: 34px; border-radius: 999px;
@@ -449,13 +453,22 @@ body.zoom-open { overflow: hidden; }
   background: var(--panel); border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
 }
 .zoom-close:hover { color: var(--text); border-color: var(--accent-dim); }
-/* 右边放不下详情就改放卡下（纵向居中会挤，所以靠上对齐） */
-@media (max-width: 1000px) {
-  .card-zoom { align-items: flex-start; }
+/* 卡右侧放不下详情（竖版/窄屏）：详情改成盖在卡面上的半透层，点卡面开关 */
+@media (max-width: 1099.98px), (orientation: portrait) {
   .zoom-tip {
-    left: 50%; top: calc(100% + 14px); transform: translateX(-50%);
-    width: min(86vw, 420px); max-height: none;
+    position: absolute; inset: 0; width: auto; max-height: none;
+    background: rgba(8, 10, 14, 0.82); backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none; transition: opacity 0.15s linear;
   }
+  .card-zoom.tip-on .zoom-tip { opacity: 1; pointer-events: auto; }
+  /* 盖住卡面之前，留个可点提示（点到的是它下面的卡面） */
+  .zoom-hint {
+    display: block; position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
+    padding: 3px 10px; border-radius: 999px; font-size: 12px; white-space: nowrap;
+    background: rgba(8, 10, 14, 0.7); border: 1px solid var(--border); color: var(--text-dim);
+    pointer-events: none;
+  }
+  .card-zoom.tip-on .zoom-hint { display: none; }
 }
 
 /* ---------- 新游戏 ---------- */
