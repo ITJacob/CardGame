@@ -1,8 +1,11 @@
 // 整备：出战前配置技能槽（4 主动 + 4 被动）与阵型（2 路 × 4 格）。人机/在线共用一套。
 // 编辑写回出战草稿（ui/draft），开战/建房时照常从草稿读名册——内核与在线 wire 零改动。
 //
-// 版式照「新游戏」页（components/hero.ts 的 .hero-showcase）：左边＝布局场景 + 缩略图，
-// 右边＝角色信息 / 技能 / 操作按钮；竖屏同一套 DOM 折成一列四行（尺寸与网格见 app.css 整备段）。
+// 版式照「新游戏」页（components/hero.ts 的 .hero-showcase）：左边＝布局场景，右边＝角色信息 /
+// 技能 / 操作按钮；竖屏同一套 DOM 折成一列三行（尺寸与网格见 app.css 整备段）。
+// 右栏与脚直接借用展示台的 .hs-side / .hs-head / .hs-meta / .hs-foot / .hs-status——
+// 名条金色 15px、右栏 justify-content:center 的垂直居中、横屏那排 30px 按钮，都是那套类给的，
+// 自造一份 .prep-meta/.prep-foot 只会跟它慢慢走岔（app.css 里那几条横屏规则已按 [data-orient] 放宽）。
 // 一屏不出整页滚动，21 + 13 张卡池收进弹窗、由弹窗自己滚。
 //
 // 弹窗挂在 host 内、由 draw() 一起重画（不挂 document.body、不像 zoom.ts 那样另起一套）：
@@ -120,7 +123,6 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
         ${statusHtml(draft)}
         <div class="prep-stage">
           ${fieldHtml(own, selectedId)}
-          ${heroStripHtml(own, selectedId)}
           ${sideHtml(catalog, selected)}
           ${footHtml(back, validateFormation(own), notice)}
         </div>
@@ -168,7 +170,7 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
     draw()
   }
 
-  /** 点棋盘上的立绘 / 点缩略图：同一件事——换右栏展示谁。换位只走拖拽（见 wireDrag 的 drop） */
+  /** 点棋盘上的立绘：换右栏展示谁。换位只走拖拽（见 wireDrag 的 drop） */
   const showHero = (id: string): void => {
     if (!getDraft()?.own.some((h) => h.id === id)) return
     selectedId = id
@@ -280,11 +282,10 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
   }
 
   const wire = (): void => {
-    // 缩略图与棋盘立绘是同一件事：换右栏展示谁
-    host.querySelectorAll<HTMLElement>('[data-select], [data-hero]').forEach((el) => {
-      const id = el.dataset.select ?? el.dataset.hero ?? ''
-      onActivate(el, () => showHero(id))
-    })
+    // 棋盘上的立绘：点它就是把它请到右栏
+    host.querySelectorAll<HTMLElement>('[data-hero]').forEach((el) =>
+      onActivate(el, () => showHero(el.dataset.hero ?? '')),
+    )
     host.querySelectorAll<HTMLElement>('[data-cell]').forEach((el) =>
       onActivate(el, () => onCellClick(el.dataset.lane ?? '', Number(el.dataset.index ?? 0))),
     )
@@ -348,7 +349,7 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
 
 // ---------- 渲染片段 ----------
 
-/** 页眉一行：模式/seed + 一句操作说明。提示与编队问题归右栏脚部的 .prep-note（离动作近） */
+/** 页眉一行：模式/seed + 一句操作说明。提示与编队问题归右栏脚部的 .hs-status（离动作近） */
 function statusHtml(draft: RosterDraft): string {
   const mode = draft.mode === 'online' ? '在线对战' : '人机对战'
   const text = `${mode} · seed ${draft.seed} · 拖动立绘换位，点技能格编卡`
@@ -408,43 +409,41 @@ function fieldHtml(own: readonly PlacedHero[], selectedId: string | null): strin
   return `<section class="prep-field"><div class="board-wrap"><div class="board prep-board">${cells.join('')}</div></div></section>`
 }
 
-/** 缩略图条：5 个立绘小格，点它换右栏展示谁。名条在右栏，格子上不重复写名字 */
-function heroStripHtml(own: readonly PlacedHero[], selectedId: string | null): string {
-  const chips = own
-    .map(
-      (h) => `<button type="button" class="cg-select hero-chip${h.id === selectedId ? ' is-on' : ''}" data-select="${escapeHtml(h.id)}" title="${escapeHtml(h.name)}" aria-label="${escapeHtml(h.name)}">
-        <span class="chip-avatar">${heroPortraitHtml(h)}</span>
-      </button>`,
-    )
-    .join('')
-  return `<div class="prep-heroes" role="group" aria-label="名册">${chips}</div>`
-}
-
-/** 右栏上半：名条（照新游戏页的 .hs-meta 一行写全）+ 主动/被动两行技能槽 */
+/**
+ * 右栏：名条 + 主动/被动两行技能槽。类名一律用展示台那套（.hs-side/.hs-head/.hs-meta）：
+ * 名字金色 15px、小字 11.5px 暗色、整栏 justify-content:center 的垂直居中，全由它们给。
+ * 展示台名条右侧还有主动/被动切换，整备页两行都常驻、不需要它，所以没那个 .hs-switch。
+ */
 function sideHtml(catalog: Catalog, hero: PlacedHero | null): string {
-  if (!hero) return '<div class="prep-side"><p class="hint">名册为空，没有可编的英雄。</p></div>'
+  if (!hero) return '<div class="hs-side"><p class="hint">名册为空，没有可编的英雄。</p></div>'
   const con = constitutionById(hero.constitutionId)?.name ?? hero.constitutionId
   const coord = `${laneLabel(hero.coordinate.lane)}${hero.coordinate.index + 1}`
-  return `<div class="prep-side">
-    <div class="prep-meta">
-      <b>${escapeHtml(hero.name)}</b>
-      <small>${escapeHtml(className(catalog, hero))} · ${escapeHtml(con)} · ${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智 · ${escapeHtml(coord)}</small>
+  return `<div class="hs-side">
+    <div class="hs-head">
+      <div class="hs-meta">
+        <b>${escapeHtml(hero.name)}</b>
+        <small>${escapeHtml(className(catalog, hero))} · ${escapeHtml(con)} · ${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智 · ${escapeHtml(coord)}</small>
+      </div>
     </div>
     <div class="prep-skills">${KINDS.map((kind) => skillRowHtml(catalog, hero, kind)).join('')}</div>
   </div>`
 }
 
-/** 右栏下半：状态一行 + 动作行（竖屏三个并排，横屏完成占整行、另两个并排） */
+/**
+ * 脚：状态一行 + 动作行 + 主按钮，版式照「新游戏」页的 .hs-foot 原样搬：
+ * 次要在 .row-actions 里并排等分，主按钮带 cg-btn--block 独占一行（横屏由那套规则
+ * 把这排摊平成一行、主按钮靠右收尾）。
+ */
 function footHtml(back: string, errors: readonly string[], notice: string): string {
   const text = notice || (errors.length > 0 ? `编队问题：${errors.join(' / ')}` : '编队合法')
   const warn = notice !== '' || errors.length > 0
-  return `<div class="prep-foot">
-    <p class="prep-note${warn ? ' warn' : ' ok'}" id="prep-notice">${escapeHtml(text)}</p>
+  return `<div class="hs-foot">
+    <p class="hs-status${warn ? ' warn' : ' ok'}">${escapeHtml(text)}</p>
     <div class="row-actions">
-      <a class="cg-btn cg-btn--primary prep-done" href="${back}">完成</a>
       <button type="button" class="cg-btn" id="btn-auto">自动排列</button>
       <button type="button" class="cg-btn" id="btn-reroll">重新生成英雄</button>
     </div>
+    <a class="cg-btn cg-btn--primary cg-btn--block" href="${back}">完成</a>
   </div>`
 }
 

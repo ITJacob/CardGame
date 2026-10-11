@@ -661,8 +661,10 @@ body.zoom-open { overflow: hidden; }
 /* 横屏侧栏塞的是「名条 + 主动 + 被动」三段，矮屏上宽度根本不是瓶颈，高度才是
    ——844×390 的侧栏只有 ~180 高，按宽度算出来的一行 4 张必然把被动那排挤出侧栏。
    所以给 .hs-side 建尺寸容器，由高度倒推行高：扣掉名条与侧栏/技能区两道 8px 间距，
-   剩下的两排平分。矮屏上卡会变小，但不裁不滚，两类都完整在场。 */
-.hero-showcase[data-orient='landscape'] .hs-side { container-type: size; }
+   剩下的两排平分。矮屏上卡会变小，但不裁不滚，两类都完整在场。
+   选择器只写 [data-orient] 不带页名：整备页也复用 .hs-side（见下面整备段），
+   两页的右栏从同一条规则里取容器口径，不会各长一版。 */
+[data-orient='landscape'] .hs-side { container-type: size; }
 .hero-showcase[data-orient='landscape'] .hs-group__row > .card-face {
   --hs-row-h: max(48px, calc((100cqh - 60px) / 2));
   /* 上限 92：大横屏（≥1024 宽）侧栏又宽又高，不设上限会一路涨到 200+；
@@ -708,34 +710,37 @@ body.zoom-open { overflow: hidden; }
 
    例外是「内容多到横排反而更高」的那条（在线大厅：.hs-notes 状态行 + 五颗按钮 +
    房间码输入，横排要三行 ≈ 102px，比竖排的 96px 还高），用 :has() 挑出来维持竖排。
-   :has() 不被支持时退回横排，只是那屏矮几个 px，不会坏。 */
-.hero-showcase[data-orient='landscape'] .hs-foot {
+   :has() 不被支持时退回横排，只是那屏矮几个 px，不会坏。
+
+   这一节的选择器一律只写 [data-orient]，不带页名：整备页的脚也用 .hs-foot
+   （见下面整备段），两页的按钮尺寸与排法从同一条规则里取，改一处两页一起动。 */
+[data-orient='landscape'] .hs-foot {
   flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px;
 }
-.hero-showcase[data-orient='landscape'] .hs-foot:has(> .hs-notes) {
+[data-orient='landscape'] .hs-foot:has(> .hs-notes) {
   flex-direction: column; gap: 8px; align-items: stretch;
 }
-.hero-showcase[data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .row-actions { display: contents; }
+[data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .row-actions { display: contents; }
 /* 横屏按钮：矮一档（右栏只有 ~280 宽，四颗得挤进一行）＋一律不换行——
    12px 的一行字 + 30px 高就是这排的设计高度，文字一折行整排就窜到 48px。
    同时压掉 kit 的 .row-actions .cg-btn{flex:1}（basis 0）：basis 0 在挤不下的行里
    会把按钮压成十几 px 宽、文字竖排成一列。basis 回到内容宽度、不许缩，
    要换行就让整颗按钮换行。 */
-.hero-showcase[data-orient='landscape'] .hs-foot .cg-btn {
+[data-orient='landscape'] .hs-foot .cg-btn {
   flex: 0 1 auto; white-space: nowrap;
   min-height: 30px; padding: 4px 6px; font-size: 12px;
 }
 /* 主按钮不再整宽（那是竖屏的排法），横屏它只是这排里的最后一颗、靠右收尾。 */
-.hero-showcase[data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .cg-btn--block {
+[data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .cg-btn--block {
   width: auto; margin-left: auto;
 }
 /* 状态行整行独占（basis 100% 必然换行）：编队合法是给整队看的一句话，
    跟按钮挤在同一排会让人以为它是颗按钮；拆开成「状态一行 / 按钮一行」。 */
-.hero-showcase[data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .hs-status {
+[data-orient='landscape'] .hs-foot:not(:has(> .hs-notes)) .hs-status {
   flex: 1 1 100%; min-width: 0;
 }
 /* 横排里的输入框得有自己的基准宽：竖屏那条 flex:1 的 basis 是 0，横排下会被挤成 0 宽 */
-.hero-showcase[data-orient='landscape'] .hs-foot .cg-input { flex: 1 1 110px; min-height: 30px; padding: 4px 8px; font-size: 12.5px; }
+[data-orient='landscape'] .hs-foot .cg-input { flex: 1 1 110px; min-height: 30px; padding: 4px 8px; font-size: 12.5px; }
 
 /* ---------- 英雄立绘（展示台 / 整备页小图共用同一层） ---------- */
 /* 两层结构：emoji 垫底、立绘盖上；缺图时 hydrateHeroArt 摘掉 img 露回 emoji，不留白框。
@@ -807,8 +812,10 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .viewport-page .hint.warn, .viewport-page .hint.ok { font-size: 13px; }
 
 /* ---------- 整备（阵型 + 技能槽）：一屏 + 技能弹窗 ---------- */
-/* 版式照「新游戏」页的 .hero-showcase（见上两节的 .hs-*）：左边＝布局场景 + 缩略图，
-   右边＝角色信息 / 技能 / 操作按钮；竖屏同一套 DOM 折成一列四行。旋转只翻 data-orient、
+/* 版式照「新游戏」页的 .hero-showcase（见上两节的 .hs-*）：左边＝布局场景，
+   右边＝角色信息 / 技能 / 操作按钮；竖屏同一套 DOM 折成一列三行。右栏与脚直接用
+   .hs-side / .hs-head / .hs-meta / .hs-foot / .hs-status——那套类就是「新游戏」页的外观，
+   复用它两页天然一致（横屏那几条已按 [data-orient] 放宽）。旋转只翻 data-orient、
    不重绘（重绘会丢 hover/焦点，还会把弹窗里卡池的滚动位置顶回去），落位与尺寸全交给 CSS。 */
 .prep-page.viewport-page { max-width: 1100px; }
 
@@ -820,18 +827,18 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 /* .hint 自己不带字号（继承 body 的 15px），一屏页里得收一档 */
 .prep-page .hint { font-size: 12px; color: var(--text-dim); }
 
-/* 中段网格：四块按 grid-area 落位。竖屏一列四行（场景 / 缩略图 / 信息技能 / 状态动作），
-   横屏两列（左＝场景＋缩略图，右＝信息技能＋状态动作）——与 .hero-showcase 的
-   'strip side' 'strip foot' 同构，只是把「大图轮播」换成「阵型盘」。 */
+/* 中段网格：三块按 grid-area 落位。竖屏一列三行（场景 / 信息技能 / 状态动作），
+   横屏两列——场景整列贯通（.hero-showcase 的 'strip side' 'strip foot' 里 strip 就是这个位置），
+   右列上＝信息技能、下＝状态动作。 */
 .prep-stage { flex: 1; min-height: 0; display: grid; gap: 10px; }
 .prep-page[data-orient='portrait'] .prep-stage {
-  grid-template-areas: 'board' 'strip' 'side' 'foot';
-  grid-template-rows: minmax(0, 1fr) auto auto auto;
+  grid-template-areas: 'board' 'side' 'foot';
+  grid-template-rows: minmax(0, 1fr) auto auto;
 }
 .prep-page[data-orient='landscape'] .prep-stage {
   grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
-  grid-template-areas: 'board side' 'strip foot';
+  grid-template-areas: 'board side' 'board foot';
 }
 
 /* 布局场景：格子一律 3:4——立绘资源是 1152×1536 正好 3:4，.hero-portrait__img 的
@@ -879,24 +886,8 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .prep-board .tile.sel .hero-portrait { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-dim); }
 .prep-board .tile:focus-visible { outline: 2px solid var(--text); outline-offset: 1px; }
 
-/* 缩略图条：5 个立绘小格一行放下，点谁就把右栏换成谁 */
-.prep-heroes { grid-area: strip; display: flex; align-items: center; gap: 6px; min-width: 0; }
-.prep-heroes .hero-chip.cg-select { padding: 2px; min-height: 0; gap: 0; border-radius: 8px; }
-.prep-heroes .chip-avatar { display: block; }
-.prep-heroes .chip-avatar .hero-portrait { width: 34px; height: 45px; }
-.prep-heroes .chip-avatar .hero-portrait__emoji { font-size: 16px; }
-
-/* 右栏上半：名条 + 主动/被动两行技能槽 */
-.prep-side { grid-area: side; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 6px; }
-/* 横屏的右栏窄且矮，技能格按栏高收一档——得先让这里成为尺寸容器，cqh 才有参照 */
-.prep-page[data-orient='landscape'] .prep-side { container-type: size; overflow: hidden; }
-.prep-meta { flex: none; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.prep-meta b { font-size: 14px; }
-/* 名条照新游戏页的 .hs-meta 一行写全：职业 · 体质 · 力敏智 · 站位 */
-.prep-meta small {
-  font-size: 11.5px; color: var(--text-dim);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+/* 右栏技能区：两行（主动 / 被动），名条直接是 .hs-head/.hs-meta 给的
+   （金色 15px 名字 + 暗色 11.5px 小字，与「新游戏」页同一份样式） */
 .prep-skills { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 
 /* 技能摘要：主动 / 被动各一行 4 格。整格点开弹窗编这一侧，格子右上角的 ✕ 卸下这张 */
@@ -1009,23 +1000,12 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .sk-tile .card-face .noart-glyph,
 .pp-slots .slot .card-face .noart-glyph { font-size: 36cqw; }
 
-/* 脚：状态一行 + 动作行（两朝向都是三个并排等分）。横屏这里刻意不学新游戏页横屏把「完成」
-   整行压底：那会白占掉 40px 脚高，而脚的每一像素都是从 row1 的右栏、也就是技能卡身上匀来的
-   （实测 844×390 上 40px ≈ 每行卡矮 15px）。三个按钮在 310px 宽里放得下，就一行。 */
-.prep-foot { grid-area: foot; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-.prep-note {
-  margin: 0; font-size: 12.5px; line-height: 1.35;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.prep-note.ok { color: var(--ok); }
-.prep-note.warn { color: var(--warn); }
-/* 动作行：一屏页里是配角，按钮比 kit 的 40px 矮一档（.row-actions .cg-btn 的 flex:1 照旧等分）。
-   nowrap 是必须的：「重新生成英雄」6 字 13px = 78px，正好等于横屏 98px 按钮的内容宽，
-   不给 nowrap 就会在边界上折成两行，把动作行顶到 56px 高——那高度是从右栏技能卡身上匀的。 */
-.prep-page .row-actions { flex: none; margin-top: 0; flex-wrap: wrap; }
-.prep-page .row-actions .cg-btn { min-height: 34px; padding: 6px 10px; font-size: 13px; white-space: nowrap; }
-/* 横屏按右栏高度收技能格：两行卡 + 名条要塞进 row1 的行高里（56 = 名条 42 + 两处 6 的间距） */
-.prep-page[data-orient='landscape'] .sk-tile { max-width: min(88px, calc((100cqh - 56px) / 2 * 0.75)); }
+/* 横屏按右栏高度收技能格：两行卡 + 名条要塞进 row1 的行高里。
+   --hs-row-h 照展示台的算法（那边写在 .hs-group__row > .card-face 上），
+   只是偏置取 56 而不是 60——整备的技能行间距是 6、不是展示台的 8。
+   选择器写在这里（.prep-skills 上）是为了让 cqh 仍对着 .hs-side 那个尺寸容器量。 */
+.prep-page[data-orient='landscape'] .prep-skills { --hs-row-h: max(48px, calc((100cqh - 56px) / 2)); }
+.prep-page[data-orient='landscape'] .sk-tile { max-width: min(88px, calc(var(--hs-row-h) * 3 / 4)); }
 
 /* ---------- 拖拽（阵型摆位 + 技能槽调序） ---------- */
 /* touch-action:none 让触屏上的拖动不被页面滚动抢走；拖源才有，不影响别处滚动。
