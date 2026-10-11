@@ -857,8 +857,12 @@ table.lb tr.draw td.res { color: var(--text-dim); }
   grid-template-areas: 'board side' 'board foot';
 }
 
-/* 布局场景：格子一律 3:4——立绘资源是 1152×1536 正好 3:4，.hero-portrait__img 的
-   object-fit:cover + object-position:50% 16% 在这个比例下等于不裁。
+/* 布局场景：横屏格子 3:4——立绘资源是 1152×1536 正好 3:4，.hero-portrait__img 的
+   object-fit:cover + object-position:50% 16% 在这个比例下等于不裁，整张立绘都能看到。
+   竖屏不能用 3:4：棋盘按 min(宽, 高×比例) 定宽，3:4 的 2 列 × 4 行会被高度锁死（0.375），
+   棋盘只占面板三分之一、左右各空 107px，立绘实际只有 71px 宽——比弹窗里固定 120×160 的
+   技能卡还小一圈，看着就是糊的。竖屏改用宽格（见下），棋盘吃满面板宽度，立绘由 cover
+   裁到上半身，实际宽度翻一倍多。
    .board-wrap 是尺寸容器，棋盘按 min(宽, 高×比例) 定宽、aspect-ratio 定高，两边都放得下。 */
 .prep-field { grid-area: board; min-width: 0; min-height: 0; display: flex; }
 .prep-field .board-wrap {
@@ -869,9 +873,9 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 
 /* 落位全在 CSS：瓦片只带 --lane/--idx 两个自定义属性，两套模板按朝向切，与 projection.ts 的
    gridSpec 逐字对应（竖屏 lane 管列、idx 管行且 idx0 在最上；横屏反过来、idx0 在最右＝靠中线），
-   所以旋转只翻 data-orient 就够了，不必重进页面。--board-ar = 列数 × 格宽比 / 行数，格子 0.75。 */
+   所以旋转只翻 data-orient 就够了，不必重进页面。--board-ar = 列数 × 格宽比 / 行数：横屏格子 0.75（3:4），竖屏格子 1.8（宽格）。 */
 .prep-page[data-orient='portrait'] .prep-board {
-  --board-ar: 0.375; /* 2 列 × 4 行：0.75 × 2 / 4 */
+  --board-ar: 0.875; /* 2 列 × 4 行，格子 1.8（宽格）：棋盘吃满面板宽，立绘 cover 裁到上半身 */
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(4, minmax(0, 1fr));
 }
