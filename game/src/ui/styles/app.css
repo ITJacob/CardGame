@@ -807,55 +807,48 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .viewport-page .hint.warn, .viewport-page .hint.ok { font-size: 13px; }
 
 /* ---------- 整备（阵型 + 技能槽）：一屏 + 技能弹窗 ---------- */
-/* 这一页原先跟别的页一样整页流式滚动：竖屏 390×844 上文档高 4528px，其中 21 张主动 +
-   13 张被动卡池（120×160 的 full 卡面）就占了 1860px。现在本体复用 .viewport-page 钉成一屏
-   （这里只覆盖宽度），卡池收进 .prep-picker 弹窗、由弹窗自己滚。
-   两套朝向共用一份 DOM：旋转只翻 .prep-page 的 data-orient、不重绘（重绘会丢 hover/焦点，
-   还会把弹窗里卡池的滚动位置顶回去），落位与尺寸全交给 CSS。 */
-.prep-page.viewport-page { max-width: 980px; }
+/* 版式照「新游戏」页的 .hero-showcase（见上两节的 .hs-*）：左边＝布局场景 + 缩略图，
+   右边＝角色信息 / 技能 / 操作按钮；竖屏同一套 DOM 折成一列四行。旋转只翻 data-orient、
+   不重绘（重绘会丢 hover/焦点，还会把弹窗里卡池的滚动位置顶回去），落位与尺寸全交给 CSS。 */
+.prep-page.viewport-page { max-width: 1100px; }
 
-/* 状态行：模式/seed 打底，有提示或编队问题就换文案并转警示色。一行截断，不占第二行高度 */
+/* 顶部一行：模式 / seed / 操作说明。一行截断，不占第二行高度 */
 .prep-status {
   flex: none; margin: 0; font-size: 12.5px; line-height: 1.35; color: var(--text-dim);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.prep-status.warn { color: var(--warn); }
 /* .hint 自己不带字号（继承 body 的 15px），一屏页里得收一档 */
 .prep-page .hint { font-size: 12px; color: var(--text-dim); }
 
-/* 中段：竖屏「棋盘在上、名册与技能在下」，横屏「棋盘在左、名册与技能在右」 */
-.prep-stage { flex: 1; min-height: 0; display: flex; gap: 10px; }
-.prep-page[data-orient='portrait'] .prep-stage { flex-direction: column; }
-.prep-page[data-orient='landscape'] .prep-stage { flex-direction: row; }
-
-.prep-field { flex: 1 1 auto; display: flex; flex-direction: column; gap: 6px; min-width: 0; min-height: 0; }
-.prep-field__title {
-  flex: none; margin: 0; font-size: 13px; color: var(--text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+/* 中段网格：四块按 grid-area 落位。竖屏一列四行（场景 / 缩略图 / 信息技能 / 状态动作），
+   横屏两列（左＝场景＋缩略图，右＝信息技能＋状态动作）——与 .hero-showcase 的
+   'strip side' 'strip foot' 同构，只是把「大图轮播」换成「阵型盘」。 */
+.prep-stage { flex: 1; min-height: 0; display: grid; gap: 10px; }
+.prep-page[data-orient='portrait'] .prep-stage {
+  grid-template-areas: 'board' 'strip' 'side' 'foot';
+  grid-template-rows: minmax(0, 1fr) auto auto auto;
 }
-.prep-field__title small { font-size: 11.5px; font-weight: 400; color: var(--text-dim); margin-left: 6px; }
-/* 棋盘吃掉剩下的高度，但按格子的长宽比收窄并居中：横屏铺开时（1280×900 的 .prep-field 有 754px 高）
-   整块撑满会得到 160×350 的瘦长格子。--board-ar = 列数×格宽比 / 行数，见下。
+.prep-page[data-orient='landscape'] .prep-stage {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas: 'board side' 'strip foot';
+}
+
+/* 布局场景：格子一律 3:4——立绘资源是 1152×1536 正好 3:4，.hero-portrait__img 的
+   object-fit:cover + object-position:50% 16% 在这个比例下等于不裁。
    .board-wrap 是尺寸容器，棋盘按 min(宽, 高×比例) 定宽、aspect-ratio 定高，两边都放得下。 */
+.prep-field { grid-area: board; min-width: 0; min-height: 0; display: flex; }
 .prep-field .board-wrap {
   flex: 1; min-height: 0; container-type: size;
   display: flex; align-items: center; justify-content: center;
 }
 .prep-board { flex: none; width: min(100cqw, calc(100cqh * var(--board-ar))); aspect-ratio: var(--board-ar); }
-.prep-board .tile { cursor: pointer; user-select: none; }
-/* 选中格的金环画在格子内侧；空格用虚线框示意「这里可以放人」。
-   三条都是 .prep-board 作用域的——战斗盘的 .tile 只认战斗那段自己的类。 */
-.prep-board .tile.sel { outline: 2px solid var(--accent); outline-offset: -2px; }
-.prep-board .tile.empty { border-style: dashed; background: rgba(38, 42, 50, 0.35); }
-.prep-board .tile.empty:hover { border-color: var(--accent-dim); background: rgba(38, 42, 50, 0.6); }
-.prep-board .tile.empty:focus-visible { outline: 2px solid var(--text); }
 
-/* 落位全在 CSS：瓦片只带 --lane/--idx 两个自定义属性，两套模板按朝向切。与 projection.ts 的
+/* 落位全在 CSS：瓦片只带 --lane/--idx 两个自定义属性，两套模板按朝向切，与 projection.ts 的
    gridSpec 逐字对应（竖屏 lane 管列、idx 管行且 idx0 在最上；横屏反过来、idx0 在最右＝靠中线），
-   所以旋转只翻 data-orient 就够了，不必重进页面。 */
+   所以旋转只翻 data-orient 就够了，不必重进页面。--board-ar = 列数 × 格宽比 / 行数，格子 0.75。 */
 .prep-page[data-orient='portrait'] .prep-board {
-  /* 2 列 × 4 行，格子取 1.5 : 1（宽 > 高，名字/站位才写得下）：0.75 × 2 / 4 */
-  --board-ar: 0.75;
+  --board-ar: 0.375; /* 2 列 × 4 行：0.75 × 2 / 4 */
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(4, minmax(0, 1fr));
 }
@@ -864,8 +857,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
   grid-row: calc(var(--idx) + 1);
 }
 .prep-page[data-orient='landscape'] .prep-board {
-  /* 4 列 × 2 行，格子取 1.3 : 1：1.3 × 4 / 2 */
-  --board-ar: 2.6;
+  --board-ar: 1.5; /* 4 列 × 2 行：0.75 × 4 / 2 */
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
 }
@@ -873,49 +865,50 @@ table.lb tr.draw td.res { color: var(--text-dim); }
   grid-column: calc(4 - var(--idx));
   grid-row: calc(var(--lane) + 1);
 }
-/* 格子按容器高度分级降级：矮屏（375×667 上 4 行只分到 ~55px/格）先撤站位行、再撤名字，
-   立绘始终不裁不滚——美术优先。container 就是格子自己（container-type: size）。
-   内边距/间距比全局的 .tile 再收一档，把省下的高度给立绘与那两行字。 */
-.prep-board .tile { container-type: size; padding: 2px; gap: 2px; }
-.prep-board .tile .avatar .hero-portrait { width: auto; height: min(44px, 52cqh); aspect-ratio: 38 / 48; }
-.prep-board .tile .tname { font-size: min(11px, 14cqh); }
-.prep-board .tile .tpos { color: var(--text-dim); text-align: center; font-size: min(10px, 12cqh); }
-@container (max-height: 78px) { .prep-board .tile .tpos { display: none; } }
-@container (max-height: 66px) { .prep-board .tile .tname { display: none; } }
-/* 矮竖屏（375×667 上棋盘只分到 ~215px 高）按 0.75 收会窄成一条、白扔大半宽度：
-   格子高度不会因此变小，索性放宽比例把宽度用起来（容器同样是 .board-wrap） */
-@container (max-height: 300px) {
-  .prep-page[data-orient='portrait'] .prep-board { --board-ar: 1.05; }
+
+/* 格子＝光秃秃一张立绘：撤掉全局 .tile 的框、底色与内边距，没有名字/职业/站位文字
+   （信息归右栏名条）。空位留一个细虚线框示意「这里能放人」，仍可点选/拖放。 */
+.prep-board .tile {
+  padding: 0; border: 0; border-radius: 6px; background: none;
+  display: block; cursor: pointer;
 }
+.prep-board .tile .hero-portrait { width: 100%; height: 100%; }
+.prep-board .tile.empty { border: 1px dashed var(--border); background: rgba(38, 42, 50, 0.25); }
+.prep-board .tile.empty:hover { border-color: var(--accent-dim); background: rgba(38, 42, 50, 0.5); }
+/* 选中＝右栏正在展示的那名英雄：立绘描金边（与展示台的 .hs-cell.is-on 同一套语言） */
+.prep-board .tile.sel .hero-portrait { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-dim); }
+.prep-board .tile:focus-visible { outline: 2px solid var(--text); outline-offset: 1px; }
 
-/* 右（下）栏：英雄条 + 技能摘要 */
-.prep-side { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.prep-page[data-orient='portrait'] .prep-side { flex: none; }
-.prep-page[data-orient='landscape'] .prep-side { flex: 0 0 272px; }
-
-/* 英雄条：5 个立绘小格一行放下。名字写在下面的技能摘要标题里，格子上不重复写——
-   横屏那一栏只有 272px 宽，多一行名字就得挤掉立绘 */
-.prep-heroes { flex: none; display: flex; gap: 6px; min-width: 0; }
+/* 缩略图条：5 个立绘小格一行放下，点谁就把右栏换成谁 */
+.prep-heroes { grid-area: strip; display: flex; align-items: center; gap: 6px; min-width: 0; }
 .prep-heroes .hero-chip.cg-select { padding: 2px; min-height: 0; gap: 0; border-radius: 8px; }
 .prep-heroes .chip-avatar { display: block; }
 .prep-heroes .chip-avatar .hero-portrait { width: 34px; height: 45px; }
 .prep-heroes .chip-avatar .hero-portrait__emoji { font-size: 16px; }
 
+/* 右栏上半：名条 + 主动/被动两行技能槽 */
+.prep-side { grid-area: side; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 6px; }
+/* 横屏的右栏窄且矮，技能格按栏高收一档——得先让这里成为尺寸容器，cqh 才有参照 */
+.prep-page[data-orient='landscape'] .prep-side { container-type: size; overflow: hidden; }
+.prep-meta { flex: none; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.prep-meta b { font-size: 14px; }
+/* 名条照新游戏页的 .hs-meta 一行写全：职业 · 体质 · 力敏智 · 站位 */
+.prep-meta small {
+  font-size: 11.5px; color: var(--text-dim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .prep-skills { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.prep-skills__head { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
-.prep-skills__head b { font-size: 13px; }
-.prep-skills__head small { font-size: 11.5px; color: var(--text-dim); }
-.prep-skills__head .hint { margin-left: auto; }
 
 /* 技能摘要：主动 / 被动各一行 4 格。整格点开弹窗编这一侧，格子右上角的 ✕ 卸下这张 */
 .sk-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .sk-tag { flex: none; width: 2em; font-size: 11px; color: var(--text-dim); }
 .sk-count { flex: none; font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
 .sk-tiles { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-/* 格子宽度跟着列宽走（上限 60 = compact 那一档），卡内字号走 cqw 跟着卡宽缩——
-   只放大框不放大字，信息条会在卡上显得又小又空 */
+/* 格子尺寸口径与展示台的 .hs-group__row > .card-face 同一档：宽度跟着列宽走、上限 88px
+   （右栏宽裕时卡就大），卡内字号走 cqw 跟着卡宽缩——只放大框不放大字，信息条会在卡上显得又小又空。
+   横屏再按右栏高度收一档：两行卡 + 名条要塞进 ~220px 的行高里，光看宽度会顶出去。 */
 .sk-tile {
-  position: relative; min-width: 0; max-width: 60px; aspect-ratio: 3 / 4;
+  position: relative; min-width: 0; width: 100%; max-width: 88px; aspect-ratio: 3 / 4;
   border-radius: 8px; cursor: pointer;
 }
 .sk-tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -1016,14 +1009,23 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .sk-tile .card-face .noart-glyph,
 .pp-slots .slot .card-face .noart-glyph { font-size: 36cqw; }
 
-/* 动作行：一屏页里是配角，按钮比 kit 的 40px 矮一档（.row-actions .cg-btn 的 flex:1 照旧等分） */
-.prep-page .row-actions { flex: none; margin-top: 0; }
-.prep-page .row-actions .cg-btn { min-height: 34px; padding: 6px 10px; font-size: 13px; }
-
-@media (max-width: 700px) {
-  /* 窄屏上阵型那句提示会顶到第二行，从棋盘高度里扣——直接撤掉，标题只留「阵型」 */
-  .prep-field__title small { display: none; }
+/* 脚：状态一行 + 动作行（两朝向都是三个并排等分）。横屏这里刻意不学新游戏页横屏把「完成」
+   整行压底：那会白占掉 40px 脚高，而脚的每一像素都是从 row1 的右栏、也就是技能卡身上匀来的
+   （实测 844×390 上 40px ≈ 每行卡矮 15px）。三个按钮在 310px 宽里放得下，就一行。 */
+.prep-foot { grid-area: foot; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.prep-note {
+  margin: 0; font-size: 12.5px; line-height: 1.35;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.prep-note.ok { color: var(--ok); }
+.prep-note.warn { color: var(--warn); }
+/* 动作行：一屏页里是配角，按钮比 kit 的 40px 矮一档（.row-actions .cg-btn 的 flex:1 照旧等分）。
+   nowrap 是必须的：「重新生成英雄」6 字 13px = 78px，正好等于横屏 98px 按钮的内容宽，
+   不给 nowrap 就会在边界上折成两行，把动作行顶到 56px 高——那高度是从右栏技能卡身上匀的。 */
+.prep-page .row-actions { flex: none; margin-top: 0; flex-wrap: wrap; }
+.prep-page .row-actions .cg-btn { min-height: 34px; padding: 6px 10px; font-size: 13px; white-space: nowrap; }
+/* 横屏按右栏高度收技能格：两行卡 + 名条要塞进 row1 的行高里（56 = 名条 42 + 两处 6 的间距） */
+.prep-page[data-orient='landscape'] .sk-tile { max-width: min(88px, calc((100cqh - 56px) / 2 * 0.75)); }
 
 /* ---------- 拖拽（阵型摆位 + 技能槽调序） ---------- */
 /* touch-action:none 让触屏上的拖动不被页面滚动抢走；拖源才有，不影响别处滚动。

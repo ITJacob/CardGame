@@ -1,8 +1,9 @@
 // 整备：出战前配置技能槽（4 主动 + 4 被动）与阵型（2 路 × 4 格）。人机/在线共用一套。
 // 编辑写回出战草稿（ui/draft），开战/建房时照常从草稿读名册——内核与在线 wire 零改动。
 //
-// 版式 = 一屏 + 弹窗（尺寸与落位见 app.css 的整备段）：页面钉在视口里、不出整页滚动——
-// 阵型盘 / 英雄条 / 8 个技能槽摘要 / 动作行各占一格；21 + 13 张卡池收进弹窗，弹窗内部自己滚。
+// 版式照「新游戏」页（components/hero.ts 的 .hero-showcase）：左边＝布局场景 + 缩略图，
+// 右边＝角色信息 / 技能 / 操作按钮；竖屏同一套 DOM 折成一列四行（尺寸与网格见 app.css 整备段）。
+// 一屏不出整页滚动，21 + 13 张卡池收进弹窗、由弹窗自己滚。
 //
 // 弹窗挂在 host 内、由 draw() 一起重画（不挂 document.body、不像 zoom.ts 那样另起一套）：
 // ① drag.ts 的落点判定是 host.contains(raw)、hover.ts 的卡面详情也只在 host 内找 .card-face，
@@ -17,6 +18,7 @@ import { enableHoverCard, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
 import { loadProfile } from '../profile'
 import { getDraft, patchOwnHero, rerollDraft, setOwn, type RosterDraft } from '../draft'
+import { constitutionById } from '../../meta/constitution'
 import {
   DEFAULT_LANES,
   autoFormation,
@@ -111,23 +113,16 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
     const own = draft.own
     if (!own.some((h) => h.id === selectedId)) selectedId = own[0]?.id ?? null
     const selected = own.find((h) => h.id === selectedId) ?? null
-    const errors = validateFormation(own)
 
     host.innerHTML = `
       ${subBarHtml('整备', back)}
       <main class="prep-page viewport-page" data-orient="${orientationOf(window.innerWidth, window.innerHeight)}">
-        ${statusHtml(draft, errors, notice)}
+        ${statusHtml(draft)}
         <div class="prep-stage">
-          ${fieldHtml(catalog, own, selectedId)}
-          <div class="prep-side">
-            ${heroStripHtml(own, selectedId)}
-            ${skillSummaryHtml(catalog, selected)}
-          </div>
-        </div>
-        <div class="row-actions">
-          <a class="cg-btn cg-btn--primary" href="${back}">完成</a>
-          <button type="button" class="cg-btn" id="btn-auto">自动排列</button>
-          <button type="button" class="cg-btn" id="btn-reroll">重新生成英雄</button>
+          ${fieldHtml(own, selectedId)}
+          ${heroStripHtml(own, selectedId)}
+          ${sideHtml(catalog, selected)}
+          ${footHtml(back, validateFormation(own), notice)}
         </div>
         ${picker && selected ? pickerHtml(catalog, profile, selected, picker, notice) : ''}
       </main>`
@@ -156,7 +151,8 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
 
   /**
    * 整体置换名册：mutator 返回的是原数组即视为未生效（目标路已满 / id 不存在），只提示不落库。
-   * 摆位改动一律走这里，成功即清掉选中态——光标承诺的动作做完就收手。
+   * 摆位改动一律走这里。选中态**不清**——右栏总得展示一个人（点它＝换右栏展示谁），
+   * 而且摆位只改坐标、人还在，接着编他的技能是常态。
    */
   const edit = (mutator: (own: readonly PlacedHero[]) => PlacedHero[]): void => {
     const draft = getDraft()
@@ -168,36 +164,22 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
       return
     }
     setOwn(next)
-    selectedId = null
     notice = ''
     draw()
   }
 
-  const onHeroClick = (id: string): void => {
+  /** 点棋盘上的立绘 / 点缩略图：同一件事——换右栏展示谁。换位只走拖拽（见 wireDrag 的 drop） */
+  const showHero = (id: string): void => {
+    if (!getDraft()?.own.some((h) => h.id === id)) return
+    selectedId = id
     notice = ''
-    if (!selectedId) {
-      selectedId = id
-      draw()
-      return
-    }
-    if (selectedId === id) {
-      selectedId = null
-      draw()
-      return
-    }
-    const from = selectedId
-    edit((own) => swapHeroes(own, from, id))
+    draw()
   }
 
   /** 点空格：与拖拽落到同一格是同一条路径（meta/formation 的 moveHeroTo），语义不会两套 */
   const onCellClick = (lane: string, index: number): void => {
-    if (!selectedId) {
-      notice = '先拖一名英雄到格子上，或点一名英雄再点空格'
-      draw()
-      return
-    }
-    const id = selectedId
-    edit((own) => moveHeroTo(own, id, lane, index))
+    if (!selectedId) return
+    edit((own) => moveHeroTo(own, selectedId as string, lane, index))
   }
 
   const autoArrange = (): void => {
@@ -261,7 +243,7 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
         if (p.kind === 'hero') {
           const onto = el.dataset.hero
           if (onto) {
-            edit((own) => swapHeroes(own, p.id, onto)) // 落到别人身上 → 交换
+            edit((own) => swapHeroes(own, p.id, onto)) // 落到别人身上 → 交换（换位唯一的一条路）
           } else {
             edit((own) => moveHeroTo(own, p.id, el.dataset.lane ?? '', Number(el.dataset.index ?? 0)))
           }
@@ -286,38 +268,30 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
 
   // ---------- 事件 ----------
 
+  /** 键盘 Enter/Space 与点击同效（棋盘上的立绘与空位都是按钮，键盘得能编） */
+  const onActivate = (el: HTMLElement, act: () => void): void => {
+    el.addEventListener('click', act)
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        act()
+      }
+    })
+  }
+
   const wire = (): void => {
-    host.querySelectorAll<HTMLElement>('[data-select]').forEach((el) =>
-      el.addEventListener('click', () => {
-        selectedId = el.dataset.select ?? null
-        notice = ''
-        draw()
-      }),
-    )
-    host.querySelectorAll<HTMLElement>('[data-hero]').forEach((el) =>
-      el.addEventListener('click', () => onHeroClick(el.dataset.hero ?? '')),
-    )
-    host.querySelectorAll<HTMLElement>('[data-cell]').forEach((el) => {
-      const act = (): void => onCellClick(el.dataset.lane ?? '', Number(el.dataset.index ?? 0))
-      el.addEventListener('click', act)
-      el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          act()
-        }
-      })
+    // 缩略图与棋盘立绘是同一件事：换右栏展示谁
+    host.querySelectorAll<HTMLElement>('[data-select], [data-hero]').forEach((el) => {
+      const id = el.dataset.select ?? el.dataset.hero ?? ''
+      onActivate(el, () => showHero(id))
     })
-    // 技能格：整格都是入口（含空槽的 ＋），点键盘 Enter/Space 同效
-    host.querySelectorAll<HTMLElement>('[data-pp-open]').forEach((el) => {
-      const act = (): void => openPicker(el.dataset.ppOpen as SlotKind)
-      el.addEventListener('click', act)
-      el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          act()
-        }
-      })
-    })
+    host.querySelectorAll<HTMLElement>('[data-cell]').forEach((el) =>
+      onActivate(el, () => onCellClick(el.dataset.lane ?? '', Number(el.dataset.index ?? 0))),
+    )
+    // 技能格：整格都是入口（含空槽的 ＋）
+    host.querySelectorAll<HTMLElement>('[data-pp-open]').forEach((el) =>
+      onActivate(el, () => openPicker(el.dataset.ppOpen as SlotKind)),
+    )
     host.querySelectorAll<HTMLElement>('[data-pp-close]').forEach((el) =>
       el.addEventListener('click', (e) => {
         // 背景只在点到它自己时才关（弹窗里的点击冒泡上来不算）
@@ -374,12 +348,11 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
 
 // ---------- 渲染片段 ----------
 
-/** 页眉一行：模式/seed 打底，有提示（或编队问题）就换成提示并转警示色。一行截断，不占第二行高度 */
-function statusHtml(draft: RosterDraft, errors: readonly string[], notice: string): string {
-  const info = `${draft.mode === 'online' ? '在线对战' : '人机对战'} · seed ${draft.seed} · 点技能格编卡，完成后返回`
-  const text = notice || (errors.length > 0 ? `编队问题：${errors.join(' / ')}` : info)
-  const warn = notice !== '' || errors.length > 0
-  return `<p class="prep-status${warn ? ' warn' : ''}" id="prep-notice" title="${escapeHtml(text)}">${escapeHtml(text)}</p>`
+/** 页眉一行：模式/seed + 一句操作说明。提示与编队问题归右栏脚部的 .prep-note（离动作近） */
+function statusHtml(draft: RosterDraft): string {
+  const mode = draft.mode === 'online' ? '在线对战' : '人机对战'
+  const text = `${mode} · seed ${draft.seed} · 拖动立绘换位，点技能格编卡`
+  return `<p class="prep-status" title="${escapeHtml(text)}">${escapeHtml(text)}</p>`
 }
 
 function className(catalog: Catalog, hero: Hero): string {
@@ -412,11 +385,13 @@ function cardOf(
 }
 
 /**
- * 阵型盘。落位不在这里算：瓦片只带 `--lane / --idx`，两套 grid 模板写在 CSS 里按 data-orient 切，
- * 所以旋转只翻那个属性、不重绘（原来这里调 gridSpec 现算内联 grid-column/row，旋转后会错到重进页面为止）。
- * 映射与 projection.ts 逐字一致：竖屏 lane 管列、idx 管行（idx 0 在最上）；横屏反过来、且 idx 0 在最右（靠中线）。
+ * 阵型盘＝左边那块「布局场景」。格子里只有英雄立绘本身、没有外框也没有名字/职业/站位文字
+ * （信息归右栏名条），空位留一个细虚线框示意「这里能放人」。
+ * 落位不在这里算：瓦片只带 `--lane / --idx`，两套 grid 模板写在 CSS 里按 data-orient 切，
+ * 所以旋转只翻那个属性、不重绘（映射与 projection.ts 逐字一致：竖屏 lane 管列、idx 管行且
+ * idx 0 在最上；横屏反过来、且 idx 0 在最右＝靠中线）。
  */
-function fieldHtml(catalog: Catalog, own: readonly PlacedHero[], selectedId: string | null): string {
+function fieldHtml(own: readonly PlacedHero[], selectedId: string | null): string {
   const cells: string[] = []
   for (let li = 0; li < LANE_COUNT; li += 1) {
     const lane = LANES[li] as string
@@ -424,24 +399,16 @@ function fieldHtml(catalog: Catalog, own: readonly PlacedHero[], selectedId: str
       const hero = own.find((h) => h.coordinate.lane === lane && h.coordinate.index === index)
       const at = `--lane:${li};--idx:${index}`
       if (hero) {
-        cells.push(`<div class="tile own${hero.id === selectedId ? ' sel' : ''}" style="${at}" data-hero="${escapeHtml(hero.id)}" title="${escapeHtml(hero.name)}">
-          <div class="avatar">${heroPortraitHtml(hero)}</div>
-          <div class="tname">${escapeHtml(hero.name)}<span class="tclass">${escapeHtml(className(catalog, hero))}</span></div>
-          <div class="tpos">${escapeHtml(laneLabel(lane))} ${index + 1}</div>
-        </div>`)
+        cells.push(`<div class="tile own${hero.id === selectedId ? ' sel' : ''}" style="${at}" data-hero="${escapeHtml(hero.id)}" role="button" tabindex="0" title="${escapeHtml(hero.name)}">${heroPortraitHtml(hero)}</div>`)
       } else {
-        cells.push(`<div class="tile empty" style="${at}" data-cell="1" data-lane="${escapeHtml(lane)}" data-index="${index}" role="button" tabindex="0" title="把英雄拖到这里（或先点选英雄再点此格）"></div>`)
+        cells.push(`<div class="tile empty" style="${at}" data-cell="1" data-lane="${escapeHtml(lane)}" data-index="${index}" role="button" tabindex="0" title="把英雄拖到这里（或点此格，把右栏展示的英雄移过来）"></div>`)
       }
     }
   }
-
-  return `<section class="prep-field">
-    <h2 class="prep-field__title">阵型 <small>拖动英雄：落到别人身上交换、落到空格移入（也可点选）· 1 号位靠中线</small></h2>
-    <div class="board-wrap"><div class="board prep-board">${cells.join('')}</div></div>
-  </section>`
+  return `<section class="prep-field"><div class="board-wrap"><div class="board prep-board">${cells.join('')}</div></div></section>`
 }
 
-/** 英雄条：5 个立绘小格，点谁就把技能摘要切到谁（名字在摘要标题里，格子上不重复写） */
+/** 缩略图条：5 个立绘小格，点它换右栏展示谁。名条在右栏，格子上不重复写名字 */
 function heroStripHtml(own: readonly PlacedHero[], selectedId: string | null): string {
   const chips = own
     .map(
@@ -453,15 +420,31 @@ function heroStripHtml(own: readonly PlacedHero[], selectedId: string | null): s
   return `<div class="prep-heroes" role="group" aria-label="名册">${chips}</div>`
 }
 
-/** 技能摘要：主动 / 被动各一行 4 格。整格点开弹窗编这一侧，格子上的 ✕ 卸下这张 */
-function skillSummaryHtml(catalog: Catalog, selected: PlacedHero | null): string {
-  if (!selected) return '<div class="prep-skills"><p class="hint">名册为空，没有可编的英雄。</p></div>'
-  return `<div class="prep-skills">
-    <div class="prep-skills__head">
-      <b>${escapeHtml(selected.name)}</b><small>${escapeHtml(className(catalog, selected))}</small>
-      <span class="hint">点格子编卡</span>
+/** 右栏上半：名条（照新游戏页的 .hs-meta 一行写全）+ 主动/被动两行技能槽 */
+function sideHtml(catalog: Catalog, hero: PlacedHero | null): string {
+  if (!hero) return '<div class="prep-side"><p class="hint">名册为空，没有可编的英雄。</p></div>'
+  const con = constitutionById(hero.constitutionId)?.name ?? hero.constitutionId
+  const coord = `${laneLabel(hero.coordinate.lane)}${hero.coordinate.index + 1}`
+  return `<div class="prep-side">
+    <div class="prep-meta">
+      <b>${escapeHtml(hero.name)}</b>
+      <small>${escapeHtml(className(catalog, hero))} · ${escapeHtml(con)} · ${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智 · ${escapeHtml(coord)}</small>
     </div>
-    ${KINDS.map((kind) => skillRowHtml(catalog, selected, kind)).join('')}
+    <div class="prep-skills">${KINDS.map((kind) => skillRowHtml(catalog, hero, kind)).join('')}</div>
+  </div>`
+}
+
+/** 右栏下半：状态一行 + 动作行（竖屏三个并排，横屏完成占整行、另两个并排） */
+function footHtml(back: string, errors: readonly string[], notice: string): string {
+  const text = notice || (errors.length > 0 ? `编队问题：${errors.join(' / ')}` : '编队合法')
+  const warn = notice !== '' || errors.length > 0
+  return `<div class="prep-foot">
+    <p class="prep-note${warn ? ' warn' : ' ok'}" id="prep-notice">${escapeHtml(text)}</p>
+    <div class="row-actions">
+      <a class="cg-btn cg-btn--primary prep-done" href="${back}">完成</a>
+      <button type="button" class="cg-btn" id="btn-auto">自动排列</button>
+      <button type="button" class="cg-btn" id="btn-reroll">重新生成英雄</button>
+    </div>
   </div>`
 }
 
