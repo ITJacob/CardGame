@@ -20,11 +20,10 @@ import { enableDrag } from '../drag'
 import { enableHoverCard, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
 import { loadProfile } from '../profile'
-import { getDraft, patchOwnHero, rerollDraft, setOwn, type RosterDraft } from '../draft'
+import { getDraft, patchOwnHero, setOwn, type RosterDraft } from '../draft'
 import { constitutionById } from '../../meta/constitution'
 import {
   DEFAULT_LANES,
-  autoFormation,
   laneLabel,
   moveHeroTo,
   swapHeroes,
@@ -184,22 +183,6 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
     edit((own) => moveHeroTo(own, selectedId as string, lane, index))
   }
 
-  const autoArrange = (): void => {
-    const draft = getDraft()
-    if (!draft) return
-    setOwn(autoFormation(draft.own, 'A'))
-    selectedId = draft.own[0]?.id ?? null
-    notice = ''
-    draw()
-  }
-
-  const reroll = (): void => {
-    const d = rerollDraft(catalog, profile)
-    selectedId = d.own[0]?.id ?? null
-    notice = ''
-    draw()
-  }
-
   // ---------- 技能弹窗 ----------
 
   const openPicker = (kind: SlotKind): void => {
@@ -325,8 +308,6 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
         applyHero((h) => equipSkill(h, kind as SlotKind, cardId, pool))
       }),
     )
-    host.querySelector('#btn-auto')?.addEventListener('click', autoArrange)
-    host.querySelector('#btn-reroll')?.addEventListener('click', reroll)
   }
 
   if (escHandler) window.removeEventListener('keydown', escHandler)
@@ -430,19 +411,14 @@ function sideHtml(catalog: Catalog, hero: PlacedHero | null): string {
 }
 
 /**
- * 脚：状态一行 + 动作行 + 主按钮，版式照「新游戏」页的 .hs-foot 原样搬：
- * 次要在 .row-actions 里并排等分，主按钮带 cg-btn--block 独占一行（横屏由那套规则
- * 把这排摊平成一行、主按钮靠右收尾）。
+ * 脚：只剩主按钮。常显的那句「编队合法」按主人要求撤了，脚里只在真有问题时冒一行 warn
+ * （无效操作的回执、编队不合法）——上战场前发现编不了队，比常显一句废话有用。
+ * 排法照「新游戏」页：主按钮带 cg-btn--block 独占一行，横屏由那套共用规则摊到那排右侧收尾。
  */
 function footHtml(back: string, errors: readonly string[], notice: string): string {
-  const text = notice || (errors.length > 0 ? `编队问题：${errors.join(' / ')}` : '编队合法')
-  const warn = notice !== '' || errors.length > 0
+  const warn = notice || (errors.length > 0 ? `编队问题：${errors.join(' / ')}` : '')
   return `<div class="hs-foot">
-    <p class="hs-status${warn ? ' warn' : ' ok'}">${escapeHtml(text)}</p>
-    <div class="row-actions">
-      <button type="button" class="cg-btn" id="btn-auto">自动排列</button>
-      <button type="button" class="cg-btn" id="btn-reroll">重新生成英雄</button>
-    </div>
+    ${warn ? `<p class="hs-status warn">${escapeHtml(warn)}</p>` : ''}
     <a class="cg-btn cg-btn--primary cg-btn--block" href="${back}">完成</a>
   </div>`
 }

@@ -164,3 +164,11 @@
 /* —— 布局间距：.row-actions 里的一排按钮等分整行（原先由 .row-actions .btn 给，
    现在按钮是 .cg-btn，得重新说一次，顺带压掉 kit 的 inline-flex 宽度定义）—— */
 .row-actions .cg-btn { flex: 1; }
+
+/* —— 做成按钮的链接：把 kit 自己的颜色还回来 ——
+   页面上凡是「跳页的按钮」都写成 <a class="cg-btn cg-btn--primary">（开始新游戏、
+   再来一局、整备页的完成），而 kit 的 `body.cg-kit` 上挂着一条 `.cg-kit a { color: inherit }`
+   （0,1,1），比它自己那条 `.cg-btn { color: var(--_fg) }`（0,1,0）高一档 —— 于是同一个主按钮，
+   <button> 是黄铜底深字（#17140c）、<a> 却继承成浅色正文，两处并排一眼就看出来。
+   本文件最后引入，同权重靠次序取胜即可，不用抬权重。 */
+a.cg-btn { color: var(--_fg); }
