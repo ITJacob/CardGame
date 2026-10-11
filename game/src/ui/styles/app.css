@@ -24,7 +24,17 @@ html, body {
   color: var(--text);
   font: 15px/1.6 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* 全局禁选：这是游戏界面，没有需要复制的正文。浏览器原生的选区高亮与点击高亮都画在
+     内容之上（不受弹层 z-index 约束），一次误拖就会在卡面/详情上留一条蓝影，还比弹层
+     收得晚。真正要能选的地方（输入框）在下面单独放开。 */
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
+input, textarea { user-select: text; }
+
+/* 焦点圈：键盘导航用主题色，鼠标点击不画圈，同时挡掉各家浏览器默认那个蓝圈 */
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 a { color: inherit; text-decoration: none; }
 
@@ -528,7 +538,8 @@ table.lb tr.draw td.res { color: var(--text-dim); }
   flex: 1; font: inherit; padding: 7px 10px; color: var(--text);
   background: var(--bg-deep); border: 1px solid var(--border); border-radius: 8px;
 }
-.field input:focus { outline: none; border-color: var(--accent-dim); }
+/* 输入框：鼠标点靠边框变色即可，键盘走到这里仍要有那圈主题色描边（全局 :focus-visible 给） */
+.field input:focus { border-color: var(--accent-dim); }
 .row-actions { display: flex; gap: 8px; margin-top: 12px; }
 .row-actions .btn { width: auto; flex: 1; text-align: center; }
 .btn.danger { border-color: #6b3a3a; color: #d98b8b; }
