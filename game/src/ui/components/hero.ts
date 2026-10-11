@@ -4,6 +4,7 @@ import { avatarEmoji, cardFaceHtml } from './cardFace'
 import { icon } from './icons'
 import { orientationOf, type Orientation } from '../battle/projection'
 import { SLOT_LABEL, type SlotKind } from '../../meta/loadout'
+import { laneLabel } from '../../meta/formation'
 import type { Attributes3, Hero } from '../../meta/herogen'
 import type { Coordinate } from '../../kernel/battle/types'
 import type { Catalog } from '../../kernel/catalog/types'
@@ -139,17 +140,22 @@ function sideHtml(hero: HeroLike, catalog: Catalog, kind: SlotKind): string {
         pathwayId: def?.pathwayId ?? tpl?.pathwayId,
         kind,
         cost: def?.cost?.energy,
-        size: 'compact',
+        size: 'mid',
+        as: 'button',
       })
     })
     .join('')
-  // 名条分两行写死断点（职业·体质 / 力敏智·站位），交给浏览器自动折行会在「力敏智」中间断开
-  const coord = hero.coordinate ? ` · ${escapeHtml(hero.coordinate.lane)}#${hero.coordinate.index}` : ''
+  // 名条分两行写死断点（职业 / 力敏智·站位），交给浏览器自动折行会在「力敏智」中间断开。
+  // 职业取 classDefs 里的中文途径名，站位走 laneLabel（lane0/1 → 上路/下路）、序号 1 起数。
+  const className = catalog.classDefs.get(hero.classId)?.name ?? hero.classId
+  const coord = hero.coordinate
+    ? ` · ${escapeHtml(laneLabel(hero.coordinate.lane))}${hero.coordinate.index + 1}`
+    : ''
   return `<div class="hs-side">
     <div class="hs-head">
       <div class="hs-meta">
         <b>${escapeHtml(hero.name)}</b>
-        <small>${escapeHtml(hero.classId)} · ${escapeHtml(hero.constitutionId)}</small>
+        <small>${escapeHtml(className)}</small>
         <small>${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智${coord}</small>
       </div>
       <div class="hs-switch" role="group" aria-label="名册里显示哪一类技能">

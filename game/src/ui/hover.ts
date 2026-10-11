@@ -27,6 +27,43 @@ export interface HoverCardOpts {
   delay?: number
 }
 
+/** 点击档没有「等多久」——点下去就弹 */
+export type ClickCardOpts = Omit<HoverCardOpts, 'delay'>
+
+/** 浮层外壳。挂 body 不挂视图（视图重绘会连根拔掉）；card-detail 是与放大视图 .zoom-tip 共用的正文样式 */
+function createPop(): HTMLElement {
+  const el = document.createElement('div')
+  el.className = 'card-pop card-detail'
+  el.setAttribute('role', 'tooltip')
+  el.style.display = 'none'
+  document.body.append(el)
+  return el
+}
+
+/** 贴在卡面右侧；右边放不下就翻到左边，上下夹在视口内 */
+function placePop(pop: HTMLElement, face: HTMLElement): void {
+  const r = face.getBoundingClientRect()
+  const pw = pop.offsetWidth
+  const ph = pop.offsetHeight
+  let left = r.right + 8
+  if (left + pw > window.innerWidth - 8) left = r.left - pw - 8
+  if (left < 8) left = 8
+  let top = r.top
+  if (top + ph > window.innerHeight - 8) top = window.innerHeight - 8 - ph
+  if (top < 8) top = 8
+  pop.style.left = `${left}px`
+  pop.style.top = `${top}px`
+}
+
+/** 填内容 + 显示 + 定位。定位前先隐藏，避免量尺寸时闪一下 */
+function showPop(pop: HTMLElement, face: HTMLElement, html: string): void {
+  pop.innerHTML = html
+  pop.style.display = ''
+  pop.style.visibility = 'hidden'
+  placePop(pop, face)
+  pop.style.visibility = ''
+}
+
 export function enableHoverCard(host: HTMLElement, opts: HoverCardOpts): void {
   bound.get(host)?.abort()
   const ac = new AbortController()
@@ -45,39 +82,13 @@ export function enableHoverCard(host: HTMLElement, opts: HoverCardOpts): void {
     if (pop) pop.style.display = 'none'
   }
 
-  const place = (face: HTMLElement): void => {
-    if (!pop) return
-    const r = face.getBoundingClientRect()
-    const pw = pop.offsetWidth
-    const ph = pop.offsetHeight
-    let left = r.right + 8
-    if (left + pw > window.innerWidth - 8) left = r.left - pw - 8 // 右边放不下就翻到左边
-    if (left < 8) left = 8
-    let top = r.top
-    if (top + ph > window.innerHeight - 8) top = window.innerHeight - 8 - ph
-    if (top < 8) top = 8
-    pop.style.left = `${left}px`
-    pop.style.top = `${top}px`
-  }
-
   const show = (face: HTMLElement): void => {
     // 卡面可能已经被重绘替换、或整块被 <details> 折叠（子节点 display:none）——都别弹
     if (!face.isConnected) return
     const html = opts.render(face)
     if (!html) return
-    if (!pop || !pop.isConnected) {
-      pop = document.createElement('div')
-      // card-detail 是与放大视图 .zoom-tip 共用的正文样式（.cp-* 都挂在它下面）
-      pop.className = 'card-pop card-detail'
-      pop.setAttribute('role', 'tooltip')
-      pop.style.display = 'none'
-      document.body.append(pop)
-    }
-    pop.innerHTML = html
-    pop.style.display = ''
-    pop.style.visibility = 'hidden' // 先量尺寸再定位，避免闪一下
-    place(face)
-    pop.style.visibility = ''
+    if (!pop || !pop.isConnected) pop = createPop()
+    showPop(pop, face, html)
     current = face
   }
 
@@ -113,6 +124,75 @@ export function enableHoverCard(host: HTMLElement, opts: HoverCardOpts): void {
   window.addEventListener('pointerdown', onScroll, { signal, capture: true })
   window.addEventListener('scroll', onScroll, { signal, capture: true })
   window.addEventListener('resize', onScroll, { signal })
+  window.addEventListener(
+    'keydown',
+    (e) => {
+      if (e.key === 'Escape') hide()
+    },
+    { signal },
+  )
+
+  signal.addEventListener('abort', () => {
+    hide()
+    pop?.remove()
+    pop = null
+    liveHide = null
+  })
+
+  liveHide = hide
+}
+
+/**
+ * 点击档：移动端没有 hover，技能详情改成点一下弹。语义是开合——
+ * 点同一张再点收起，点另张换内容，点浮层内部不关（方便划选描述文字），点空白处关。
+ *
+ * 监听挂在 document 而不是 host：关浮层要靠「点到别处」，而别处往往不在 host 里。
+ * 浮层里被点亮的卡面加 .is-open，一眼看出当前弹的是哪张。
+ */
+export function enableClickCard(host: HTMLElement, opts: ClickCardOpts): void {
+  bound.get(host)?.abort()
+  const ac = new AbortController()
+  const { signal } = ac
+  bound.set(host, ac)
+
+  let pop: HTMLElement | null = null
+  let current: HTMLElement | null = null
+
+  const hide = (): void => {
+    current?.classList.remove('is-open')
+    current = null
+    if (pop) pop.style.display = 'none'
+  }
+
+  const show = (face: HTMLElement): void => {
+    if (!face.isConnected) return
+    const html = opts.render(face)
+    if (!html) return
+    if (!pop || !pop.isConnected) pop = createPop()
+    showPop(pop, face, html)
+    current = face
+    face.classList.add('is-open')
+  }
+
+  document.addEventListener(
+    'click',
+    (e) => {
+      const t = e.target as HTMLElement | null
+      if (!t || pop?.contains(t)) return
+      const face = opts.resolve(t)
+      if (face && face !== current) {
+        hide()
+        show(face)
+        return
+      }
+      hide() // 点空白处、或再点同一张：都收
+    },
+    { signal },
+  )
+
+  const onStale = (): void => hide()
+  window.addEventListener('scroll', onStale, { signal, capture: true })
+  window.addEventListener('resize', onStale, { signal })
   window.addEventListener(
     'keydown',
     (e) => {

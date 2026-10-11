@@ -9,6 +9,14 @@ export interface PlacedHero extends Hero {
 
 export const DEFAULT_LANES = ['lane0', 'lane1'] as const
 
+/** lane id → 中文。DDD 的战场拓扑是「上下两路」，lane0 在上（gridSpec 里 row/col 均为 1）。
+ *  未知 lane 原样返回——将来真扩到 3 路时，坏的是显示而不是抛错。 */
+const LANE_LABEL: Record<string, string> = { lane0: '上路', lane1: '下路' }
+
+export function laneLabel(lane: string): string {
+  return LANE_LABEL[lane] ?? lane
+}
+
 /** 合法格位：lane ∈ 2 路、index ∈ [0,4) */
 export function isValidCoordinate(c: Coordinate, lanes: readonly string[] = DEFAULT_LANES): boolean {
   return lanes.includes(c.lane) && c.index >= 0 && c.index < LANE_CAPACITY

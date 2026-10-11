@@ -57,8 +57,8 @@ export interface CardFaceOpts {
   kind?: 'active' | 'passive'
   /** 能量消耗，仅主动卡有 */
   cost?: number | null
-  /** compact 60×80（名册/技能槽）、full 96×128（卡池）、zoom 放到视口里看大图 */
-  size?: 'compact' | 'full' | 'zoom'
+  /** compact 60×80（名册/技能槽）、mid 72×96（英雄展示台）、full 120×160（卡池）、zoom 放到视口里看大图 */
+  size?: 'compact' | 'mid' | 'full' | 'zoom'
   /**
    * 'button' 时卡面本身就是交互元素（卡池档），'figure' 是只读展示（名册 / 技能槽）。
    * 卡池外层不再套面板框——卡面即按钮，状态走右上角角标 + 置灰。
@@ -93,7 +93,8 @@ export function cardFaceHtml(opts: CardFaceOpts): string {
   const tag = as === 'button' ? 'button' : 'figure'
   // figcaption 只在 figure 里合法；按钮档换成 div（样式挂类不挂标签，外观不变）
   const infoTag = as === 'button' ? 'div' : 'figcaption'
-  const cls = ['card-face', `r-${escapeHtml(rarity)}`, `k-${kind}`, size === 'full' ? 'full' : '', size === 'zoom' ? 'zoom' : '', dim ? 'dim' : '']
+  const sizeCls = size === 'compact' ? '' : size
+  const cls = ['card-face', `r-${escapeHtml(rarity)}`, `k-${kind}`, sizeCls, dim ? 'dim' : '']
     .filter(Boolean)
     .join(' ')
   const extra = [as === 'button' ? 'type="button"' : '', attrs ?? ''].filter(Boolean).join(' ')

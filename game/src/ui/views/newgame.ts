@@ -3,7 +3,7 @@ import { subBarHtml, escapeHtml } from '../components/chrome'
 import { cardDetailHtml, hydrateArt } from '../components/cardFace'
 import { heroShowcaseHtml, hydrateHeroArt, wireHeroShowcase } from '../components/hero'
 import { orientationOf } from '../battle/projection'
-import { enableHoverCard, hideCardPop } from '../hover'
+import { enableClickCard, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
 import { setSession, type UnitMeta } from '../session'
 import { ensureDraft, getDraft, rerollDraft } from '../draft'
@@ -38,12 +38,14 @@ function render(host: HTMLElement, catalog: Catalog, profile: Profile): void {
   if (!draft) return
   const { own } = draft
   const errors = validateFormation(own)
+  // 职业一律吐中文：classDefs 的 name 就是途径中文名（与展示台名条同口径）
+  const unlocked = profile.unlockedClasses.map((id) => catalog.classDefs.get(id)?.name ?? id).join('、')
 
   // 整屏骨架：.viewport-page 把这一页钉在视口里（不整页滚动），展示台 flex:1 吃掉剩余高度
   host.innerHTML = `
     ${subBarHtml('新游戏')}
     <main class="viewport-page">
-      <p class="hint profile-line">档案 ${escapeHtml(profile.uuid.slice(0, 8))} · 解锁职业 ${escapeHtml(profile.unlockedClasses.join('、'))} · seed ${draft.seed}</p>
+      <p class="hint profile-line">档案 ${escapeHtml(profile.uuid.slice(0, 8))} · 解锁职业 ${escapeHtml(unlocked)} · seed ${draft.seed}</p>
       ${heroShowcaseHtml(own, catalog, {
         index: heroIndex,
         kind: skillView,
@@ -60,10 +62,10 @@ function render(host: HTMLElement, catalog: Catalog, profile: Profile): void {
 
   hydrateArt(host)
   hydrateHeroArt(host)
-  // 重绘不产生鼠标事件，先手动收；enableHoverCard 幂等（WeakMap 自动摘旧），
-  // 所以跟随 render 反复调用不会越积越多。
+  // 重绘不产生鼠标事件，先手动收；enableClickCard 幂等（WeakMap 自动摘旧），
+  // 所以跟随 render 反复调用不会越积越多。技能详情走点击——移动端没有 hover。
   hideCardPop()
-  enableHoverCard(host, {
+  enableClickCard(host, {
     resolve: (el) => el.closest<HTMLElement>('.card-face'),
     render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
   })

@@ -5,7 +5,7 @@ import { icon } from '../components/icons'
 import { cardDetailHtml, hydrateArt } from '../components/cardFace'
 import { heroShowcaseHtml, hydrateHeroArt, wireHeroShowcase } from '../components/hero'
 import { orientationOf } from '../battle/projection'
-import { enableHoverCard, hideCardPop } from '../hover'
+import { enableClickCard, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
 import { setSession, type UnitMeta } from '../session'
 import { loadProfile } from '../profile'
@@ -83,9 +83,10 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
 
   hydrateArt(host)
   hydrateHeroArt(host)
-  // 重绘不产生鼠标事件，先手动收；enableHoverCard 幂等（WeakMap 自动摘旧）
+  // 重绘不产生鼠标事件，先手动收；enableClickCard 幂等（WeakMap 自动摘旧）。
+  // 技能详情走点击——移动端没有 hover。
   hideCardPop()
-  enableHoverCard(host, {
+  enableClickCard(host, {
     resolve: (el) => el.closest<HTMLElement>('.card-face'),
     render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
   })

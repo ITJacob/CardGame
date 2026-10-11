@@ -204,13 +204,16 @@ a { color: inherit; text-decoration: none; }
 /*
  * 技能卡面：分层（自下而上）= 无图底 / 卡图 / 稀有度边框(叠层) / 信息条。
  * 卡图上不盖任何压暗层（曾经压到 55% 高，放大后糊掉半张画）；信息条的可读性靠字自身的描边。
- * 3:4 两档：compact 60×80（默认）、full 120×160 —— 与边框图 1152×1536 同比例，cover 不裁。
+ * 3:4 三档：compact 60×80（默认）、mid 72×96（英雄展示台）、full 120×160
+ * —— 与边框图 1152×1536 同比例，cover 不裁。卡内字号也必须跟着档位走：
+ * 这些 px 值是按卡宽定的，只放大框不放大字，信息条会在卡上显得又小又空。
  */
 .card-face {
   position: relative; isolation: isolate; /* screen 混色只在本卡内合成，不外溢到页面 */
   width: 60px; height: 80px; border-radius: 6px; overflow: hidden;
   background: #101216; display: block; margin: 0; user-select: none;
 }
+.card-face.mid { width: 72px; height: 96px; }
 .card-face.full { width: 120px; height: 160px; }
 
 /* 无图底：832 张卡只有 34 张有图，这层是常态，得当一张设计过的卡 */
@@ -221,6 +224,7 @@ a { color: inherit; text-decoration: none; }
 }
 .card-face.no-art .card-noart { opacity: 1; }
 .noart-glyph { font-size: 22px; opacity: .5; }
+.card-face.mid .noart-glyph { font-size: 26px; }
 .card-face.full .noart-glyph { font-size: 42px; }
 
 .card-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -248,6 +252,7 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: baseline; justify-content: center; gap: 3px;
   padding: 2px 4px 3px; font-size: 8px; line-height: 1.2;
 }
+.card-face.mid .card-info { padding: 3px 5px 4px; font-size: 10px; }
 .card-face.full .card-info { padding: 4px 7px 5px; font-size: 12px; }
 /* 名字与费用成组居中；名字可收缩，长名走省略号，整组不会撑出卡面。
    卡图上没有压暗层了，可读性全靠字自带的两道黑影：贴边一道描外廓，外扩一道压住底噪。
@@ -269,6 +274,8 @@ button.card-face {
   cursor: pointer; appearance: none;
 }
 button.card-face:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* 点击档：详情正弹着的那张卡（浮层是浮在别处的，得让卡面自己说「看我」） */
+.card-face.is-open { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* 槽满（不可装备）的卡不响应点击；未解锁的卡仍可点开解锁，故只跟 aria-disabled 绑定 */
 button.card-face[aria-disabled="true"] { cursor: default; }
 /* 置灰：未解锁 / 槽位已满。只降透明度，hover 详情浮层照常弹 */
@@ -283,6 +290,7 @@ button.card-face[aria-disabled="true"] { cursor: default; }
   background: rgba(8, 10, 14, 0.72); border: 1px solid var(--border); color: var(--text);
   text-shadow: 0 1px 2px #000; pointer-events: none;
 }
+.card-face.mid .card-corner { min-width: 18px; height: 18px; font-size: 12px; }
 .card-face.full .card-corner { min-width: 20px; height: 20px; font-size: 13px; }
 
 /*
@@ -421,7 +429,8 @@ body.zoom-open { overflow: hidden; }
 /* 横屏只有 ~290px 高（844×390 减顶栏与内边距），所以立绘不再单独占一列：
    名册条自己就是主展示（每格带名字），右栏上下分给「信息技能」与「操作」。 */
 .hero-showcase[data-orient='landscape'] {
-  grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+  /* 右栏要容下 4 张 72px 技能卡同一行（4×72 + 3×5 = 303px），故左栏让出一档 */
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
   grid-template-areas: 'strip side' 'strip foot';
 }
@@ -603,6 +612,8 @@ body.zoom-open { overflow: hidden; }
 .hs-meta b { font-size: 15px; color: var(--accent); letter-spacing: .02em; }
 .hs-meta small { font-size: 11.5px; color: var(--text-dim); }
 .hs-switch { display: inline-flex; gap: 6px; flex: none; }
+/* 横屏整本名册都铺开了，主/被动切换这块地留给技能卡——横屏不放切换 */
+.hero-showcase[data-orient='landscape'] .hs-switch { display: none; }
 /* 技能条：flex:0 1 auto + 自身滚动是兜底 —— 极矮的屏侧栏高度不够时，让这一块自己
    收起来滚，而不是把内容裁掉或把整页顶出滚动条。放得下时不会出滚动条。 */
 .hs-cards {
