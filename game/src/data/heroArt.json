@@ -2,96 +2,107 @@
   "_note": "英雄立绘 art 数据源（游戏侧概念，非 DDD 战斗面）。prompt 组装口径与技能卡一致：[manifest.artFormat, heroArtStyle, subject, ...elements, mood].filter(Boolean).join(', ')。改风格只改 heroArtStyle 一处。",
   "_keyFormat": "hero_s{strength}a{agility}i{intelligence}_{gender}.png —— 与 herogen.ts COMBOS 顺序一致（s 0..3, a 0..3-s, i 3-s-a）。",
   "_designRule": "1) 英雄与职业随机搭配，故画面不出现任何职业特征：无制服、无徽章、无武器、无职业专属道具，只以体型/体态/气质区分力敏智倾向。2) 时代锚定诡秘之主背景：19 世纪维多利亚。3) 场景多样（城市/乡村/旷野/海岸/交通工具），以日光为主。4) 人物须与场景有简单互动（扶/靠/搬/踏/翻），不做呆板站姿。5) 人物一律 young，避免被渲染成中老年。",
-  "_classRule": "⛔ 阶级感：英雄是卡牌主角，不是底层劳工。着装一律体面（well-tailored / wool / linen / quality），禁用 worn、work shirt、canvas、worker's 等劳工词；气质 dignified genteel。互动动作可以保留（推石、推车），但人物是「体面人搭了把手」，不是劳工在干活。",
-  "_pairRule": "同一 combo 的男女为一组：elements[0] 背景逐字相同、elements[1] 着装同调、mood 共享、互动动作一致；subject 与 elements[2] 随性别变化。",
-  "_faceRule": "elements[3] 是面部/头部标识，20 条各不相同（发型/发色/脸型/肤色/胡须/眼镜/疤痕），用于拉开辨识度。⚠️ 女性卡必须带 clearly feminine face 等明确女性化词，否则力量型女角色会被画成男性脸/亚洲男性脸。",
+  "_classRule": "⛔ 阶级要**分散**，不要统一到某一档：10 组按 贵族2 / 中产2 / 小资3 / 底层3 分布，由 elements[1] 着装承载（fine+silk=贵族；well-tailored=中产；neat=小资；coarse linen=底层）。⚠️ 不是全部去底层化、也不是全部中产化——多样性本身就是要求。",
+  "_pairRule": "同一 combo 的男女为一组：elements[0] 背景逐字相同、elements[1] 着装同阶级同色系、mood 共享、互动动作一致；subject 与 elements[2] 随性别变化。",
+  "_faceRule": "elements[3] 是面部/头部标识，20 条各不相同（发型/发色/脸型/肤色/胡须/眼镜/疤痕）。⚠️ 女性卡必须带 clearly feminine face，且**力量型女角色要与男版用对称的力量词**（broad shoulders / strong arms），不要用 statuesque/toned/feminine bob 这类会把画风带偏的词。",
   "_framingRule": "构图由 heroArtStyle 的 consistent full-body framing 统一约束（全身入镜、比例稳定、居中匀光）。",
-  "_antiRealismRule": "力量型卡在 elements[2] 带反写实锚：stylised card-game rendering with clean heroic proportions, not photorealistic。压写实手段优先级：显式风格锚 > 加年龄词 > 调体型/着装词。",
-  "heroArtStyle": "Victorian-era full-body character illustration in a clean semi-realistic painted trading-card style, smooth digital painterly rendering with crisp detail, no heavy impasto, no visible canvas texture, no thick brushwork, a lived-in Victorian setting behind the figure, soft depth-of-field background, natural muted period colour palette, consistent full-body framing with the head-to-toe figure occupying a similar proportion of the frame, centred and evenly lit, well-tailored respectable middle-class civilian period clothing, dignified genteel bearing, European features, no uniform, no insignia, no weapon, no class-specific gear, the figure interacts naturally with the surrounding setting rather than standing stiffly posed, natural relaxed body language, no stiff waving or posed gesture, hands kept close to the body or resting on the environment, anatomically correct human figure with exactly two arms and two hands, no extra or deformed limbs",
+  "_antiRealismRule": "力量型卡在 elements[2] 带反写实锚：stylised card-game rendering with clean heroic proportions, not photorealistic。",
+  "heroArtStyle": "Victorian-era full-body character illustration in a clean semi-realistic painted trading-card style, smooth digital painterly rendering with crisp detail, no heavy impasto, no visible canvas texture, no thick brushwork, a lived-in Victorian setting behind the figure, soft depth-of-field background, natural muted period colour palette, consistent full-body framing with the head-to-toe figure occupying a similar proportion of the frame, centred and evenly lit, plain civilian period clothing of the appropriate social station, European features, no uniform, no insignia, no weapon, no class-specific gear, the figure interacts naturally with the surrounding setting rather than standing stiffly posed, natural relaxed body language, no stiff waving or posed gesture, hands kept close to the body or resting on the environment, anatomically correct human figure with exactly two arms and two hands, no extra or deformed limbs",
   "heroes": [
     {
       "key": "hero_s0a0i3_male",
       "combo": { "strength": 0, "agility": 0, "intelligence": 3 },
+      "class": "贵族",
       "gender": "male",
       "subject": "a young slight stooped man reaching up to slide a book back onto a tall shelf",
-      "elements": ["in a daylight study with tall windows and rows of books", "neat dark scholarly frock coat", "fingers marking the page, thin frame, downcast thoughtful gaze", "short neat ash-brown hair, clean-shaven, narrow studious face, round wire spectacles"],
+      "elements": ["in a daylight study with tall windows and rows of books", "fine dark wool frock coat with a silk cravat", "fingers marking the page, thin frame, downcast thoughtful gaze", "short neat ash-brown hair, clean-shaven, narrow studious face, round wire spectacles"],
       "mood": "cerebral, absent-minded"
     },
     {
       "key": "hero_s0a0i3_female",
       "combo": { "strength": 0, "agility": 0, "intelligence": 3 },
+      "class": "贵族",
       "gender": "female",
       "subject": "a young slight stooped woman reaching up to slide a book back onto a tall shelf",
-      "elements": ["in a daylight study with tall windows and rows of books", "neat dark scholarly long coat over a plain skirt", "fingers marking the page, thin frame, downcast thoughtful gaze", "ink-black hair pinned in a low bun, clearly feminine face, pale complexion, sharp narrow nose"],
+      "elements": ["in a daylight study with tall windows and rows of books", "fine dark wool coat with silk trim over a long skirt", "fingers marking the page, thin frame, downcast thoughtful gaze", "ink-black hair pinned in a low bun, clearly feminine face, pale complexion, sharp narrow nose"],
       "mood": "cerebral, absent-minded"
     },
     {
       "key": "hero_s0a1i2_male",
       "combo": { "strength": 0, "agility": 1, "intelligence": 2 },
+      "class": "小资",
       "gender": "male",
       "subject": "a young lean man turning back at a cottage gate with one hand on the latch",
-      "elements": ["on a sunlit village lane with stone cottages and a low hedge", "well-cut dark civilian jacket", "hand resting on the gate latch, alert sidelong glance", "wavy auburn hair swept back, light stubble, square jaw"],
+      "elements": ["on a sunlit village lane with stone cottages and a low hedge", "neat dark wool jacket", "hand resting on the gate latch, alert sidelong glance", "wavy auburn hair swept back, light stubble, square jaw"],
       "mood": "perceptive, restless"
     },
     {
       "key": "hero_s0a1i2_female",
       "combo": { "strength": 0, "agility": 1, "intelligence": 2 },
+      "class": "小资",
       "gender": "female",
       "subject": "a young lean woman turning back at a cottage gate with one hand on the latch",
-      "elements": ["on a sunlit village lane with stone cottages and a low hedge", "well-cut dark civilian bodice", "hand resting on the gate latch, alert sidelong glance", "chestnut hair loose to the shoulders, clearly feminine face, high cheekbones, olive skin"],
+      "elements": ["on a sunlit village lane with stone cottages and a low hedge", "neat dark wool jacket over a plain skirt", "hand resting on the gate latch, alert sidelong glance", "chestnut hair loose to the shoulders, clearly feminine face, high cheekbones, olive skin"],
       "mood": "perceptive, restless"
     },
     {
       "key": "hero_s0a2i1_male",
       "combo": { "strength": 0, "agility": 2, "intelligence": 1 },
+      "class": "底层",
       "gender": "male",
       "subject": "a young wiry man stepping up onto a low dry-stone wall to look across the heath",
-      "elements": ["on an open heath with dry-stone walls and wind-bent grass", "plain dark linen shirt with sleeves rolled", "one foot planted on the wall, taut coiled balance, sharp forward focus", "cropped black hair wind-tousled, lean angular face, faint scar across one cheek"],
+      "elements": ["on an open heath with dry-stone walls and wind-bent grass", "coarse dark linen shirt with sleeves rolled", "one foot planted on the wall, taut coiled balance, sharp forward focus", "cropped black hair wind-tousled, lean angular face, faint scar across one cheek"],
       "mood": "nimble, attentive"
     },
     {
       "key": "hero_s0a2i1_female",
       "combo": { "strength": 0, "agility": 2, "intelligence": 1 },
+      "class": "底层",
       "gender": "female",
       "subject": "a young wiry woman stepping up onto a low dry-stone wall to look across the heath",
-      "elements": ["on an open heath with dry-stone walls and wind-bent grass", "plain dark linen blouse with long skirt, sleeves rolled", "one foot planted on the wall, taut coiled balance, sharp forward focus", "short wind-blown sandy hair, clearly feminine face, sun-browned skin"],
+      "elements": ["on an open heath with dry-stone walls and wind-bent grass", "coarse dark linen blouse with long skirt, sleeves rolled", "one foot planted on the wall, taut coiled balance, sharp forward focus", "short wind-blown sandy hair, clearly feminine face, sun-browned skin"],
       "mood": "nimble, attentive"
     },
     {
       "key": "hero_s0a3i0_male",
       "combo": { "strength": 0, "agility": 3, "intelligence": 0 },
+      "class": "贵族",
       "gender": "male",
       "subject": "a young lithe man balanced on a rock at the cliff path edge, steadying against the wind",
-      "elements": ["on a windswept coastal cliff path with pale sea haze", "short dark civilian coat", "wind-caught coat, crouched readiness on the rock", "long dark hair tied at the nape, clean-shaven, narrow sharp-featured face"],
+      "elements": ["on a windswept coastal cliff path with pale sea haze", "fine dark wool travelling coat", "wind-caught coat, crouched readiness on the rock", "long dark hair tied at the nape, clean-shaven, narrow sharp-featured face"],
       "mood": "agile, untethered"
     },
     {
       "key": "hero_s0a3i0_female",
       "combo": { "strength": 0, "agility": 3, "intelligence": 0 },
+      "class": "贵族",
       "gender": "female",
       "subject": "a young lithe woman balanced on a rock at the cliff path edge, steadying against the wind",
-      "elements": ["on a windswept coastal cliff path with pale sea haze", "short dark civilian coat over a plain skirt", "wind-caught coat, crouched readiness on the rock", "pale flaxen hair blowing loose, clearly feminine face, round face, fair wind-flushed skin"],
+      "elements": ["on a windswept coastal cliff path with pale sea haze", "fine dark wool travelling coat over a long skirt", "wind-caught coat, crouched readiness on the rock", "pale flaxen hair blowing loose, clearly feminine face, round face, fair wind-flushed skin"],
       "mood": "agile, untethered"
     },
     {
       "key": "hero_s1a0i2_male",
       "combo": { "strength": 1, "agility": 0, "intelligence": 2 },
+      "class": "小资",
       "gender": "male",
       "subject": "a young solidly built man lifting an open book from a market stall to read",
-      "elements": ["in a market square with timber stalls under morning light", "sturdy dark wool coat", "book held open in both hands, calm steady gaze", "thick dark hair in a side part, full dark beard, broad open face"],
+      "elements": ["in a market square with timber stalls under morning light", "neat dark wool coat", "book held open in both hands, calm steady gaze", "thick dark hair in a side part, full dark beard, broad open face"],
       "mood": "grounded, thoughtful"
     },
     {
       "key": "hero_s1a0i2_female",
       "combo": { "strength": 1, "agility": 0, "intelligence": 2 },
+      "class": "小资",
       "gender": "female",
       "subject": "a young solidly built woman lifting an open book from a market stall to read",
-      "elements": ["in a market square with timber stalls under morning light", "sturdy dark wool coat over a plain skirt", "book held open in both hands, calm steady gaze", "auburn hair in a thick braid, clearly feminine face, warm complexion, soft round face"],
+      "elements": ["in a market square with timber stalls under morning light", "neat dark wool coat over a plain skirt", "book held open in both hands, calm steady gaze", "auburn hair in a thick braid, clearly feminine face, warm complexion, soft round face"],
       "mood": "grounded, thoughtful"
     },
     {
       "key": "hero_s1a1i1_male",
       "combo": { "strength": 1, "agility": 1, "intelligence": 1 },
+      "class": "中产",
       "gender": "male",
       "subject": "a young well-proportioned man at a street corner, shoulder against the brick wall, reading a folded newspaper",
       "elements": ["on a quiet daytime street corner with brick facades and a distant omnibus", "well-tailored dark period coat", "shoulder against the wall, folded newspaper held in one hand, balanced upright stance, composed neutral expression", "neat dark brown hair, clean-shaven, even regular features, pale grey eyes"],
@@ -100,6 +111,7 @@
     {
       "key": "hero_s1a1i1_female",
       "combo": { "strength": 1, "agility": 1, "intelligence": 1 },
+      "class": "中产",
       "gender": "female",
       "subject": "a young well-proportioned woman at a street corner, shoulder against the brick wall, reading a folded newspaper",
       "elements": ["on a quiet daytime street corner with brick facades and a distant omnibus", "well-tailored dark period coat over a long skirt", "shoulder against the wall, folded newspaper held in one hand, balanced upright stance, composed neutral expression", "dark hair in a simple chignon, clearly feminine face, even regular features, pale grey eyes"],
@@ -108,38 +120,43 @@
     {
       "key": "hero_s1a2i0_male",
       "combo": { "strength": 1, "agility": 2, "intelligence": 0 },
+      "class": "底层",
       "gender": "male",
       "subject": "a young man of wiry strength leaning against the steamer rail with one boot braced on a crate",
-      "elements": ["on the open deck of a river steamer with railings and stacked crates", "plain dark travelling jacket", "forearm along the rail, boot on a crate, keen level gaze", "sun-bleached short hair, stubbled jaw, weathered ruddy skin, narrow eyes"],
+      "elements": ["on the open deck of a river steamer with railings and stacked crates", "coarse dark linen jacket", "forearm along the rail, boot on a crate, keen level gaze", "sun-bleached short hair, stubbled jaw, weathered ruddy skin, narrow eyes"],
       "mood": "spry, capable"
     },
     {
       "key": "hero_s1a2i0_female",
       "combo": { "strength": 1, "agility": 2, "intelligence": 0 },
+      "class": "底层",
       "gender": "female",
       "subject": "a young woman of wiry strength leaning against the steamer rail with one boot braced on a crate",
-      "elements": ["on the open deck of a river steamer with railings and stacked crates", "plain dark travelling jacket over a plain skirt", "forearm along the rail, boot on a crate, keen level gaze", "dark hair swept back under a kerchief, clearly feminine face, tan skin, soft jaw"],
+      "elements": ["on the open deck of a river steamer with railings and stacked crates", "coarse dark linen jacket over a plain skirt", "forearm along the rail, boot on a crate, keen level gaze", "dark hair swept back under a kerchief, clearly feminine face, tan skin, soft jaw"],
       "mood": "spry, capable"
     },
     {
       "key": "hero_s2a0i1_male",
       "combo": { "strength": 2, "agility": 0, "intelligence": 1 },
+      "class": "小资",
       "gender": "male",
       "subject": "a young heavy-set man hefting a hay bale onto the wagon tailboard",
-      "elements": ["in a farmyard with a hay wagon and a split-rail fence", "heavy dark wool coat", "arms around a hay bale, broad frame, slow considering look, stylised card-game rendering with clean heroic proportions, not photorealistic", "thick curly brown hair, heavy brow, wide honest face, close-cropped beard"],
+      "elements": ["in a farmyard with a hay wagon and a split-rail fence", "neat dark wool coat", "arms around a hay bale, broad frame, slow considering look, stylised card-game rendering with clean heroic proportions, not photorealistic", "thick curly brown hair, heavy brow, wide honest face, close-cropped beard"],
       "mood": "sturdy, deliberate"
     },
     {
       "key": "hero_s2a0i1_female",
       "combo": { "strength": 2, "agility": 0, "intelligence": 1 },
+      "class": "小资",
       "gender": "female",
       "subject": "a young heavy-set woman hefting a hay bale onto the wagon tailboard",
-      "elements": ["in a farmyard with a hay wagon and a split-rail fence", "heavy dark wool coat over a plain skirt", "arms around a hay bale, broad frame, slow considering look, stylised card-game rendering with clean heroic proportions, not photorealistic", "braided dark hair, clearly feminine face, broad face, ruddy cheeks, soft features"],
+      "elements": ["in a farmyard with a hay wagon and a split-rail fence", "neat dark wool coat over a plain skirt", "arms around a hay bale, broad frame, slow considering look, stylised card-game rendering with clean heroic proportions, not photorealistic", "braided dark hair, clearly feminine face, broad face, ruddy cheeks, soft features"],
       "mood": "sturdy, deliberate"
     },
     {
       "key": "hero_s2a1i0_male",
       "combo": { "strength": 2, "agility": 1, "intelligence": 0 },
+      "class": "中产",
       "gender": "male",
       "subject": "a powerfully built young man wheeling a luggage cart along the platform",
       "elements": ["on a railway platform beside a waiting steam train with luggage carts", "thick dark wool travelling coat", "hands on the cart handles, broad muscular shoulders, thick arms, stylised card-game rendering with clean heroic proportions, not photorealistic, steady level gaze", "short cropped fair hair, clean-shaven, strong square jaw"],
@@ -148,25 +165,28 @@
     {
       "key": "hero_s2a1i0_female",
       "combo": { "strength": 2, "agility": 1, "intelligence": 0 },
+      "class": "中产",
       "gender": "female",
-      "subject": "a tall statuesque young woman with a toned athletic build, wheeling a luggage cart along the platform",
-      "elements": ["on a railway platform beside a waiting steam train with luggage carts", "thick dark wool travelling coat over a long skirt", "hands on the cart handles, toned shoulders and arms, stylised card-game rendering with clean heroic proportions, not photorealistic, steady level gaze", "dark hair in a short feminine bob, clearly feminine face with soft features, high colour"],
+      "subject": "a powerfully built young woman wheeling a luggage cart along the platform",
+      "elements": ["on a railway platform beside a waiting steam train with luggage carts", "thick dark wool travelling coat over a long skirt", "hands on the cart handles, broad shoulders, strong arms, stylised card-game rendering with clean heroic proportions, not photorealistic, steady level gaze", "dark hair in a neat short bob, clearly feminine face, steady grey eyes"],
       "mood": "powerful, mobile"
     },
     {
       "key": "hero_s3a0i0_male",
       "combo": { "strength": 3, "agility": 0, "intelligence": 0 },
+      "class": "底层",
       "gender": "male",
       "subject": "a powerfully built young man heaving a cut stone block into place in the quarry",
-      "elements": ["in a sunlit stone quarry with cut blocks and a hand winch", "dark period coat worn open over a plain linen shirt", "both hands on the stone block, broad muscular shoulders, thick arms, stylised card-game rendering with clean heroic proportions, not photorealistic, steady level gaze", "close-cropped dark hair, thick brows, heavy-set jaw"],
+      "elements": ["in a sunlit stone quarry with cut blocks and a hand winch", "dark period coat worn open over a coarse linen shirt", "both hands on the stone block, broad muscular shoulders, thick arms, stylised card-game rendering with clean heroic proportions, not photorealistic, steady level gaze", "close-cropped dark hair, thick brows, heavy-set jaw"],
       "mood": "immovable, blunt"
     },
     {
       "key": "hero_s3a0i0_female",
       "combo": { "strength": 3, "agility": 0, "intelligence": 0 },
+      "class": "底层",
       "gender": "female",
-      "subject": "a tall statuesque young woman with a toned athletic build, heaving a cut stone block into place in the quarry",
-      "elements": ["in a sunlit stone quarry with cut blocks and a hand winch", "dark period coat worn open over a plain linen blouse and long skirt", "both hands on the stone block, toned shoulders and arms, stylised card-game rendering with clean heroic proportions, not photorealistic, steady level gaze", "dark hair pulled back from a clearly feminine face, strong brow, soft jaw"],
+      "subject": "a powerfully built young woman heaving a cut stone block into place in the quarry",
+      "elements": ["in a sunlit stone quarry with cut blocks and a hand winch", "dark period coat worn open over a coarse linen blouse and long skirt", "both hands on the stone block, broad shoulders, strong arms, stylised card-game rendering with clean heroic proportions, not photorealistic, steady level gaze", "dark hair pulled back from a clearly feminine face, steady grey eyes"],
       "mood": "immovable, blunt"
     }
   ]
