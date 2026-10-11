@@ -538,8 +538,14 @@ body.zoom-open { overflow: hidden; }
 }
 
 .hs-count { font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
-/* 横屏全体可见，不需要「第几个 / 共几个」 */
-.hero-showcase[data-orient='landscape'] .hs-count { display: none; }
+/* 横屏大图那排装不下（844×390 上 5 格溢出 417px），得靠箭头滚着看，
+   「第几个 / 共几个」照样有用——摆在缩略图那排的左边（竖屏它是名册条的普通一项，
+   横屏这排是最后一段，所以贴条底对齐），不占布局高度。那里是箭头的留白带，
+   竖排的箭头在中间、跟这条不打架。 */
+.hero-showcase[data-orient='landscape'] .hs-count {
+  position: absolute; left: 0; bottom: 0; z-index: 2;
+  height: var(--hs-thumb-h); display: flex; align-items: center; padding: 0 6px;
+}
 
 /* 滚动容器：装不下时用隐藏式横向滚动条（触摸可直接拖）。 */
 .hs-track {
