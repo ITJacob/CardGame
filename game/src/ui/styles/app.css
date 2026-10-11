@@ -993,6 +993,10 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 /* 扣 20 而不是 18：缝的实际和是 3×5 + 8 = 23 里两头各占一半，留 2px 余量，
    免得四舍五入把内容顶出左栏那一像素、平白冒出一条滚动条 */
 .prep-page[data-orient='landscape'] .pp-slots .sk-tile { width: min(100%, calc((100cqh - 20px) * 3 / 16)); }
+/* 排成两排之后，「主动 / 被动」这两字再照摘要行那样竖直居中，就等于挂在整块的正中——
+   离上下两排卡都不挨着，看着像悬空。改成贴块顶，与第一排卡的顶边齐（左右栏的
+   竖屏仍是 1×4 一行，居中不变）。 */
+.prep-page[data-orient='landscape'] .pp-slots .sk-row { align-items: flex-start; }
 /* 横屏弹窗的每一像素都在抠：卸卡键收小一档（槽那一列的卡本来就比摘要行窄） */
 .prep-page[data-orient='landscape'] .pp-slots .slot-op.cg-btn { width: 18px; min-height: 18px; font-size: 10px; }
 
