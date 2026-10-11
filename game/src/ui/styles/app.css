@@ -204,16 +204,15 @@ a { color: inherit; text-decoration: none; }
 /*
  * 技能卡面：分层（自下而上）= 无图底 / 卡图 / 稀有度边框(叠层) / 信息条。
  * 卡图上不盖任何压暗层（曾经压到 55% 高，放大后糊掉半张画）；信息条的可读性靠字自身的描边。
- * 3:4 三档：compact 60×80（默认）、mid 72×96（英雄展示台）、full 120×160
- * —— 与边框图 1152×1536 同比例，cover 不裁。卡内字号也必须跟着档位走：
- * 这些 px 值是按卡宽定的，只放大框不放大字，信息条会在卡上显得又小又空。
+ * 3:4 两档：compact 60×80（默认）、full 120×160 —— 与边框图 1152×1536 同比例，cover 不裁。
+ * 卡内字号也必须跟着档位走：这些 px 值是按卡宽定的，只放大框不放大字，信息条会在卡上
+ * 显得又小又空。（英雄展示台的技能卡尺寸不写死，见下方 .hs-group__row，字号走容器查询单位。）
  */
 .card-face {
   position: relative; isolation: isolate; /* screen 混色只在本卡内合成，不外溢到页面 */
   width: 60px; height: 80px; border-radius: 6px; overflow: hidden;
   background: #101216; display: block; margin: 0; user-select: none;
 }
-.card-face.mid { width: 72px; height: 96px; }
 .card-face.full { width: 120px; height: 160px; }
 
 /* 无图底：832 张卡只有 34 张有图，这层是常态，得当一张设计过的卡 */
@@ -224,7 +223,6 @@ a { color: inherit; text-decoration: none; }
 }
 .card-face.no-art .card-noart { opacity: 1; }
 .noart-glyph { font-size: 22px; opacity: .5; }
-.card-face.mid .noart-glyph { font-size: 26px; }
 .card-face.full .noart-glyph { font-size: 42px; }
 
 .card-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -252,7 +250,6 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: baseline; justify-content: center; gap: 3px;
   padding: 2px 4px 3px; font-size: 8px; line-height: 1.2;
 }
-.card-face.mid .card-info { padding: 3px 5px 4px; font-size: 10px; }
 .card-face.full .card-info { padding: 4px 7px 5px; font-size: 12px; }
 /* 名字与费用成组居中；名字可收缩，长名走省略号，整组不会撑出卡面。
    卡图上没有压暗层了，可读性全靠字自带的两道黑影：贴边一道描外廓，外扩一道压住底噪。
@@ -290,7 +287,6 @@ button.card-face[aria-disabled="true"] { cursor: default; }
   background: rgba(8, 10, 14, 0.72); border: 1px solid var(--border); color: var(--text);
   text-shadow: 0 1px 2px #000; pointer-events: none;
 }
-.card-face.mid .card-corner { min-width: 18px; height: 18px; font-size: 12px; }
 .card-face.full .card-corner { min-width: 20px; height: 20px; font-size: 13px; }
 
 /*
@@ -327,6 +323,12 @@ button.card-face[aria-disabled="true"] { cursor: default; }
   background: var(--panel); border: 1px solid var(--accent-dim);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
   color: var(--text); font-size: 12.5px; line-height: 1.5;
+}
+/* 竖屏（＝移动端）：浮层摆到视口正中——手指点的卡在屏幕上往往就在边上，贴着卡摆会顶出屏外。
+   横屏仍是贴着卡面摆（JS 写 left/top），这条不生效。用媒体查询而不是 data-orient：
+   浮层挂在 body 上，不在 .hero-showcase 里，没有 data-orient 可继承。 */
+@media (orientation: portrait) {
+  .card-pop { left: 50%; top: 50%; transform: translate(-50%, -50%); }
 }
 /* .card-detail = 详情正文的共用样式，浮层与放大视图的 .zoom-tip 共用同一份排版。
    详情是只读展示，不是可编辑文本：禁选，免得悬停冒 I 形光标、点击出输入光标。 */
@@ -612,15 +614,48 @@ body.zoom-open { overflow: hidden; }
 .hs-meta b { font-size: 15px; color: var(--accent); letter-spacing: .02em; }
 .hs-meta small { font-size: 11.5px; color: var(--text-dim); }
 .hs-switch { display: inline-flex; gap: 6px; flex: none; }
-/* 横屏整本名册都铺开了，主/被动切换这块地留给技能卡——横屏不放切换 */
+/* 横屏整本名册都铺开了，切换按钮撤掉——但被动不能跟着一起消失，改成两类同时摊开
+   （见 .hs-group），所以横屏那块地其实是让给了「主动 + 被动」两排。 */
 .hero-showcase[data-orient='landscape'] .hs-switch { display: none; }
-/* 技能条：flex:0 1 auto + 自身滚动是兜底 —— 极矮的屏侧栏高度不够时，让这一块自己
-   收起来滚，而不是把内容裁掉或把整页顶出滚动条。放得下时不会出滚动条。 */
+
+/* 技能区：两类各一组，组内一行 4 张。DOM 里两组都在，显示哪组按朝向定：
+   竖屏只显示选中那组（切换按钮管），横屏两组都摊开、靠左侧的「主动/被动」小标签分辨。
+   flex:0 1 auto + 自身滚动是兜底 —— 侧栏高度不够时让这一块自己收起来滚，
+   而不是把内容裁掉或把整页顶出滚动条。放得下时不会出滚动条。 */
 .hs-cards {
-  display: flex; flex-wrap: wrap; align-content: flex-start; gap: 5px;
+  display: flex; flex-direction: column; gap: 8px;
   flex: 0 1 auto; min-height: 0; overflow-y: auto;
 }
-.hs-cards .cards-none { color: var(--text-dim); font-size: 12px; }
+.hs-group { display: none; align-items: flex-start; gap: 6px; }
+.hs-group.is-on { display: flex; }
+/* 标签只在横屏出现（竖屏靠切换按钮说，不必再来一个） */
+.hs-group__tag { display: none; }
+.hero-showcase[data-orient='landscape'] .hs-group { display: flex; }
+.hero-showcase[data-orient='landscape'] .hs-group__tag {
+  display: block; flex: none; width: 2.2em; padding-top: 2px;
+  font-size: 11px; line-height: 1.2; color: var(--text-dim);
+}
+.hs-group__row { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 5px; flex: 1 1 auto; min-width: 0; }
+.hs-group__row .cards-none { color: var(--text-dim); font-size: 12px; }
+
+/* 展示台的技能卡：尺寸不写死，按行平分宽度——4 张一行，竖屏那一行更宽，卡就更大。
+   卡内字号走容器查询单位跟着卡宽缩放；只放大框不放大字，信息条会显得又小又空。 */
+.hs-group__row > .card-face {
+  width: min(calc((100% - 15px) / 4), 88px); /* 4 张 + 3 道 5px 缝 */
+  height: auto; aspect-ratio: 3 / 4;
+  container-type: inline-size;
+}
+/* 横屏侧栏塞的是「名条 + 主动 + 被动」三段，矮屏上宽度根本不是瓶颈，高度才是
+   ——844×390 的侧栏只有 ~180 高，按宽度算出来的一行 4 张必然把被动那排挤出侧栏。
+   所以给 .hs-side 建尺寸容器，由高度倒推行高：扣掉名条与侧栏/技能区两道 8px 间距，
+   剩下的两排平分。矮屏上卡会变小，但不裁不滚，两类都完整在场。 */
+.hero-showcase[data-orient='landscape'] .hs-side { container-type: size; }
+.hero-showcase[data-orient='landscape'] .hs-group__row > .card-face {
+  --hs-row-h: max(48px, calc((100cqh - 60px) / 2));
+  width: min(calc((100% - 15px) / 4), calc(var(--hs-row-h) * 3 / 4), 80px);
+}
+.hs-group__row > .card-face .card-info { padding: 4cqw 6cqw 5cqw; font-size: 13cqw; gap: 4cqw; }
+.hs-group__row > .card-face .noart-glyph { font-size: 30cqw; }
 .hs-empty { margin: 0; }
 
 /* 动作区：各屏自己的按钮与状态行落在这里 */

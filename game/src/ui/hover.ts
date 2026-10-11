@@ -1,4 +1,7 @@
-// 卡面详情浮层：停在卡面上满 delay 毫秒才弹，移开即收。
+// 卡面详情浮层，两个档：
+//   enableHoverCard —— 悬停满 delay 毫秒才弹，移开即收（卡池 / 整备 / 战斗，桌面档）
+//   enableClickCard —— 点一下弹，再点收起（新游戏 / 在线展示台：移动端没有 hover）
+// 两档共用同一套浮层外壳与定位（createPop / showPop / placePop）。
 //
 // 两个约束决定了实现形状：
 // 1) 路由没有卸载钩子、视图每次都整体重写 innerHTML（见 views/battle.ts 的说明），
@@ -40,8 +43,19 @@ function createPop(): HTMLElement {
   return el
 }
 
-/** 贴在卡面右侧；右边放不下就翻到左边，上下夹在视口内 */
+/**
+ * 贴在卡面右侧；右边放不下就翻到左边，上下夹在视口内。
+ *
+ * 竖屏（＝移动端）不在这儿摆位：样式表里 `@media (orientation: portrait) .card-pop`
+ * 有一条 `left/top: 50% + translate(-50%,-50%)`，居中。这里必须把上一轮的 px 清掉，
+ * 否则内联样式会盖过样式表、居中失效。横屏照旧贴卡摆。
+ */
 function placePop(pop: HTMLElement, face: HTMLElement): void {
+  if (window.matchMedia('(orientation: portrait)').matches) {
+    pop.style.left = ''
+    pop.style.top = ''
+    return
+  }
   const r = face.getBoundingClientRect()
   const pw = pop.offsetWidth
   const ph = pop.offsetHeight
@@ -190,9 +204,20 @@ export function enableClickCard(host: HTMLElement, opts: ClickCardOpts): void {
     { signal },
   )
 
-  const onStale = (): void => hide()
-  window.addEventListener('scroll', onStale, { signal, capture: true })
-  window.addEventListener('resize', onStale, { signal })
+  // 滚动/缩放不收起、改成跟着重摆：点卡面会让浏览器把这张卡滚进视野，而那一滚会在 show()
+  // 之后派发 scroll——照 hover 档「滚动即收」处理的话，浮层刚弹出来就被自己收掉了
+  // （横屏两排卡时必然触发）。卡滚出视口才收。
+  const onScroll = (): void => {
+    if (!current || !pop) return
+    const r = current.getBoundingClientRect()
+    if (!current.isConnected || r.bottom < 0 || r.top > window.innerHeight || r.right < 0 || r.left > window.innerWidth) {
+      hide()
+      return
+    }
+    placePop(pop, current)
+  }
+  window.addEventListener('scroll', onScroll, { signal, capture: true })
+  window.addEventListener('resize', onScroll, { signal })
   window.addEventListener(
     'keydown',
     (e) => {

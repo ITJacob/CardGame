@@ -126,9 +126,40 @@ function stepArrows(i: number, n: number): string {
     <button type="button" class="hs-arrow hs-arrow--next" data-hs-step="1" aria-label="下一名英雄"${i >= n - 1 || off ? ' disabled' : ''}>${icon('cg-back')}</button>`
 }
 
-/** 信息栏：名条（左）与主动/被动切换（右）同一行，下面整宽摆该英雄的技能缩略图 */
+/** 信息栏：名条（左）与主动/被动切换（右）同一行，下面整宽摆技能缩略图。
+ *  名条「职业 · 力敏智 · 站位」挤一行写——竖屏的格子高度要尽量留给技能卡。 */
 function sideHtml(hero: HeroLike, catalog: Catalog, kind: SlotKind): string {
-  const ids = kind === 'active' ? hero.activeSkillIds : hero.passiveSkillIds
+  // 职业取 classDefs 里的中文途径名，站位走 laneLabel（lane0/1 → 1路/2路）、序号 1 起数
+  const className = catalog.classDefs.get(hero.classId)?.name ?? hero.classId
+  const coord = hero.coordinate
+    ? ` · ${escapeHtml(laneLabel(hero.coordinate.lane))}${hero.coordinate.index + 1}`
+    : ''
+  return `<div class="hs-side">
+    <div class="hs-head">
+      <div class="hs-meta">
+        <b>${escapeHtml(hero.name)}</b>
+        <small>${escapeHtml(className)} · ${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智${coord}</small>
+      </div>
+      <div class="hs-switch" role="group" aria-label="名册里显示哪一类技能">
+        ${switchBtn('active', kind)}
+        ${switchBtn('passive', kind)}
+      </div>
+    </div>
+    <div class="hs-cards">
+      ${cardGroupHtml(hero, catalog, 'active', kind)}
+      ${cardGroupHtml(hero, catalog, 'passive', kind)}
+    </div>
+  </div>`
+}
+
+/**
+ * 一类技能一组。**两类都渲染进 DOM**，显示哪一类交给 CSS 按朝向定：
+ * 竖屏只显示当前选中的那类（切换按钮管），横屏没有切换按钮、两类一起摊开。
+ * 之所以不按朝向在 JS 里少渲染一组：旋转只翻 data-orient、不重绘（见 hookOrientation），
+ * 少渲染的那组在转屏后不会自己长出来。
+ */
+function cardGroupHtml(hero: HeroLike, catalog: Catalog, k: SlotKind, cur: SlotKind): string {
+  const ids = k === 'active' ? hero.activeSkillIds : hero.passiveSkillIds
   const cards = ids
     .map((id) => {
       const def = catalog.skillDefs.get(id)
@@ -138,33 +169,16 @@ function sideHtml(hero: HeroLike, catalog: Catalog, kind: SlotKind): string {
         name: def?.name ?? tpl?.name ?? id,
         rarity: def?.rarity ?? tpl?.rarity,
         pathwayId: def?.pathwayId ?? tpl?.pathwayId,
-        kind,
+        kind: k,
         cost: def?.cost?.energy,
-        size: 'mid',
         as: 'button',
       })
     })
     .join('')
-  // 名条分两行写死断点（职业 / 力敏智·站位），交给浏览器自动折行会在「力敏智」中间断开。
-  // 职业取 classDefs 里的中文途径名，站位走 laneLabel（lane0/1 → 上路/下路）、序号 1 起数。
-  const className = catalog.classDefs.get(hero.classId)?.name ?? hero.classId
-  const coord = hero.coordinate
-    ? ` · ${escapeHtml(laneLabel(hero.coordinate.lane))}${hero.coordinate.index + 1}`
-    : ''
-  return `<div class="hs-side">
-    <div class="hs-head">
-      <div class="hs-meta">
-        <b>${escapeHtml(hero.name)}</b>
-        <small>${escapeHtml(className)}</small>
-        <small>${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智${coord}</small>
-      </div>
-      <div class="hs-switch" role="group" aria-label="名册里显示哪一类技能">
-        ${switchBtn('active', kind)}
-        ${switchBtn('passive', kind)}
-      </div>
-    </div>
-    <div class="hs-cards">${cards || '<span class="cards-none">—</span>'}</div>
-  </div>`
+  return `<div class="hs-group${k === cur ? ' is-on' : ''}" data-kind="${k}">
+      <span class="hs-group__tag">${SLOT_LABEL[k]}</span>
+      <div class="hs-group__row">${cards || '<span class="cards-none">—</span>'}</div>
+    </div>`
 }
 
 /** 技能切换按钮。主动/被动的次序语义不同，标题里各说一句，省得看串。

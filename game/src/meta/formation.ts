@@ -9,9 +9,10 @@ export interface PlacedHero extends Hero {
 
 export const DEFAULT_LANES = ['lane0', 'lane1'] as const
 
-/** lane id → 中文。DDD 的战场拓扑是「上下两路」，lane0 在上（gridSpec 里 row/col 均为 1）。
- *  未知 lane 原样返回——将来真扩到 3 路时，坏的是显示而不是抛错。 */
-const LANE_LABEL: Record<string, string> = { lane0: '上路', lane1: '下路' }
+/** lane id → 展示名。两路按次序叫「1路 / 2路」——竖屏的战场是竖着排的，
+ *  用「上/下」会与看到的排布对不上。未知 lane 原样返回：将来真扩到 3 路时，
+ *  坏的是显示而不是抛错。 */
+const LANE_LABEL: Record<string, string> = { lane0: '1路', lane1: '2路' }
 
 export function laneLabel(lane: string): string {
   return LANE_LABEL[lane] ?? lane

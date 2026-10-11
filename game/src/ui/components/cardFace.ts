@@ -57,8 +57,9 @@ export interface CardFaceOpts {
   kind?: 'active' | 'passive'
   /** 能量消耗，仅主动卡有 */
   cost?: number | null
-  /** compact 60×80（名册/技能槽）、mid 72×96（英雄展示台）、full 120×160（卡池）、zoom 放到视口里看大图 */
-  size?: 'compact' | 'mid' | 'full' | 'zoom'
+  /** compact 60×80（名册/技能槽）、full 120×160（卡池）、zoom 放到视口里看大图。
+   *  英雄展示台的技能卡不在此列：它按行平分宽度（见 app.css 的 .hs-group__row），尺寸是流的。 */
+  size?: 'compact' | 'full' | 'zoom'
   /**
    * 'button' 时卡面本身就是交互元素（卡池档），'figure' 是只读展示（名册 / 技能槽）。
    * 卡池外层不再套面板框——卡面即按钮，状态走右上角角标 + 置灰。
