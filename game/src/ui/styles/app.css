@@ -511,7 +511,8 @@ body.zoom-open { overflow: hidden; }
 /* 横屏：名册条是上下两段——上面大图（能横向滚），底下常驻一排缩略图。
    下面那排高度写死，大图吃掉剩下的。容器查询挂 .hs-track 而不是条上：
    挂在条上的话 100cqh 会把缩略图那排也算进去，大图格子会撑破。
-   两端留出箭头的位子。 */
+   两端留出的位子要正好装下箭头（34 宽 + 离边 6）：留窄了箭头那枚圆饼会压在
+   名册格上——最后一格滚到尽头时贴的正是右端，选中金环会被圆饼盖掉半条。 */
 .hero-showcase[data-orient='landscape'] .hs-strip {
   --hs-thumb-h: 45px; /* 底下那排缩略图的高度 */
   --hs-strip-gap: 6px;
@@ -519,7 +520,7 @@ body.zoom-open { overflow: hidden; }
   flex-direction: column;
   align-items: stretch;
   gap: var(--hs-strip-gap);
-  padding: 0 34px;
+  padding: 0 40px;
 }
 
 /* 缩略图条：横屏大图底下那排，一眼看全整本名册、点它直接跳。
@@ -567,7 +568,6 @@ body.zoom-open { overflow: hidden; }
 }
 .hs-cell:hover, .hs-thumb:hover { opacity: .85; }
 .hs-cell.is-on, .hs-thumb.is-on { opacity: 1; }
-.hs-cell__name { display: none; }
 
 /* 小方格缩略图：竖屏的名册条与横屏那排共用一副长相 */
 .hs-thumb,
@@ -588,22 +588,24 @@ body.zoom-open { overflow: hidden; }
    5 格放不下就横向滚——滚动条藏起来，两端箭头当把手，底下那排缩略图管定位。
    既然有缩略图兜底，就不必再强留「一屏几个」：格子只管照着高度铺满。
    --cw 只在「反推出来比整条还宽」时才收一收（100cqw），这样窄而高的横屏窗口
-   也至少有一整个英雄完整在视野里。格高 = --cw 的 3:4 再加名字那 22px，
-   跟 --cw 一起被卡，两者始终一致；条上来不及长满的那点余量由 center 分摊。 */
+   也至少有一整个英雄完整在视野里。格高就是 --cw 的 3:4，跟 --cw 一起被卡，
+   两者始终一致；条上来不及长满的那点余量由 center 分摊。
+   两端各留 2px 内边距：选中格贴到滚动口那一刻，它往外那 1px 金环落在内边距里，
+   不会被滚动口裁掉半条。 */
 .hero-showcase[data-orient='landscape'] .hs-track {
   flex: 1 1 auto; min-height: 0;
+  padding: 0 2px;
   container-type: size; /* 格子按「大图那一行」的高反推；条上还挂着底下那排缩略图 */
   align-items: center;
 }
 .hero-showcase[data-orient='landscape'] .hs-cell {
   --cw: 45%; /* 老浏览器兜底：认不得 cqh 时退回「条宽的 45%」 */
-  --cw: min(calc((100cqh - 22px) * 3 / 4), 100cqw);
+  --cw: min(calc(100cqh * 3 / 4), 100cqw);
   flex: 0 0 auto;
   width: var(--cw);
-  height: min(100cqh, calc(var(--cw) * 4 / 3 + 22px));
-  display: flex; flex-direction: column; gap: 4px;
+  height: calc(var(--cw) * 4 / 3);
+  display: flex; flex-direction: column;
 }
-/* 22px = 下面那行名字 18px + 间距 4px，立绘框正好剩 (条高 - 22) 的 3:4 */
 [data-orient='landscape'] .hs-cell .hero-portrait { flex: 1 1 0; min-height: 0; }
 /* 大图按 3:4 给框，图不再需要「裁到头」那一套；contain 保证一 px 都不裁 */
 [data-orient='landscape'] .hs-cell .hero-portrait__img { object-fit: contain; object-position: 50% 50%; }
@@ -611,12 +613,6 @@ body.zoom-open { overflow: hidden; }
 [data-orient='landscape'] .hs-cell.is-on .hero-portrait {
   border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-dim);
 }
-[data-orient='landscape'] .hs-cell__name {
-  display: block; width: 100%; height: 18px; line-height: 18px;
-  font-size: 11px; color: var(--text-dim); text-align: center;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-[data-orient='landscape'] .hs-cell.is-on .hs-cell__name { color: var(--accent); }
 
 /* 信息栏：名条（左）与主动/被动切换（右）同一行，下面整宽摆技能缩略图 */
 .hs-side {

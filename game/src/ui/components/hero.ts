@@ -112,11 +112,11 @@ function thumbCellHtml(hero: HeroLike, i: number, on: boolean): string {
   return `<button type="button" class="hs-thumb${on ? ' is-on' : ''}" data-hs-pick="${i}" aria-label="${escapeHtml(hero.name)}"${on ? ' aria-current="true"' : ''}>${heroPortraitHtml(hero)}</button>`
 }
 
-/** 名册里的一格。竖屏只露立绘，横屏在下面补一行名字（那时它就是主展示，得认得出谁是谁） */
+/** 名册里的一格：只露立绘。名字不往格子里写——右侧名条已经写着选中那位是谁，
+ *  横屏那一排还得把高度全让给美术（格子按 3:4 铺满条高，多一行名字就少 22px 图高） */
 function cellHtml(hero: HeroLike, i: number, on: boolean): string {
   return `<button type="button" class="hs-cell${on ? ' is-on' : ''}" data-hs-pick="${i}" aria-label="${escapeHtml(hero.name)}"${on ? ' aria-current="true"' : ''}>
     ${heroPortraitHtml(hero)}
-    <span class="hs-cell__name">${escapeHtml(hero.name)}</span>
   </button>`
 }
 
