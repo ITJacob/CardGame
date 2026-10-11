@@ -979,7 +979,20 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .pp-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; padding: 12px; }
 .prep-page[data-orient='landscape'] .pp-dialog { width: min(1000px, 100%); height: min(92dvh, 100%, 700px); }
 .prep-page[data-orient='landscape'] .pp-body { flex-direction: row; gap: 8px; padding: 10px; }
-.prep-page[data-orient='landscape'] .pp-slots { flex: 0 0 240px; min-height: 0; overflow-y: auto; }
+/* 横屏左栏：主动/被动各排成 2×2（4 个槽两列两行）。原先 1×4 只占左栏上半截——
+   左栏高度是定死的（弹窗高减头行与内边距），另一半全空着；摊成 2×2 正好把这份高度
+   用满，卡跟着大一圈（≥1024 宽的横窗上从 49×65 长到 ~102×137；矮横窗上高度才是瓶颈，
+   长不了多少，但也不亏）。卡按左栏高度倒推：4 行卡（两块各 2 行）+ 两道行缝 5 +
+   一块缝 8 ⇒ 行高 = (100cqh - 18px) / 4，3:4 的卡宽 = 行高 × 3/4 = (100cqh - 18px) × 3/16
+   （规则里扣 20——多出的 2px 见下一段注释）；列宽（左栏减标签那道，两列平分）再兜一道底，
+   窄横窗上就是它在限。 */
+.prep-page[data-orient='landscape'] .pp-slots { flex: 0 0 240px; min-height: 0; overflow-y: auto; container-type: size; }
+.prep-page[data-orient='landscape'] .pp-slots .slot-row {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); justify-items: center; gap: 5px;
+}
+/* 扣 20 而不是 18：缝的实际和是 3×5 + 8 = 23 里两头各占一半，留 2px 余量，
+   免得四舍五入把内容顶出左栏那一像素、平白冒出一条滚动条 */
+.prep-page[data-orient='landscape'] .pp-slots .sk-tile { width: min(100%, calc((100cqh - 20px) * 3 / 16)); }
 /* 横屏弹窗的每一像素都在抠：卸卡键收小一档（槽那一列的卡本来就比摘要行窄） */
 .prep-page[data-orient='landscape'] .pp-slots .slot-op.cg-btn { width: 18px; min-height: 18px; font-size: 10px; }
 
