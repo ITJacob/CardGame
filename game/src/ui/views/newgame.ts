@@ -41,17 +41,23 @@ function render(host: HTMLElement, catalog: Catalog, profile: Profile): void {
   // 职业一律吐中文：classDefs 的 name 就是途径中文名（与展示台名条同口径）
   const unlocked = profile.unlockedClasses.map((id) => catalog.classDefs.get(id)?.name ?? id).join('、')
 
+  // 编队状态：横屏挪进页眉那行（跟在线对战同一个位置）——脚矮一档右栏就高一档，来回切页
+  // 技能卡不再换档；脚里那份只在竖屏画（页眉是 nowrap + 省略号的单行，竖屏那句
+  // 「编队问题：…」挤不下就会被切掉）。两处各画一份、按朝向显示其中一份，同 #/online。
+  const statusText = errors.length > 0 ? `编队问题：${errors.join(' / ')}` : '编队合法'
+  const statusCls = errors.length > 0 ? 'warn' : 'ok'
+
   // 整屏骨架：.viewport-page 把这一页钉在视口里（不整页滚动），展示台 flex:1 吃掉剩余高度
   host.innerHTML = `
     ${subBarHtml('新游戏')}
     <main class="viewport-page">
-      <p class="hint profile-line">档案 ${escapeHtml(profile.uuid.slice(0, 8))} · 解锁职业 ${escapeHtml(unlocked)} · seed ${draft.seed}</p>
+      <p class="hint profile-line">档案 ${escapeHtml(profile.uuid.slice(0, 8))} · 解锁职业 ${escapeHtml(unlocked)} · seed ${draft.seed}<span class="hs-top"><span class="hs-status ${statusCls}">${escapeHtml(statusText)}</span></span></p>
       ${heroShowcaseHtml(own, catalog, {
         index: heroIndex,
         kind: skillView,
         orient: orientationOf(window.innerWidth, window.innerHeight),
         foot: `
-      ${errors.length > 0 ? `<p class="warn hs-status">编队问题：${escapeHtml(errors.join(' / '))}</p>` : '<p class="ok hs-status">编队合法</p>'}
+      <p class="${statusCls} hs-status">${escapeHtml(statusText)}</p>
       <div class="row-actions">
         <a class="cg-btn" href="#/prep">整备</a>
         <button type="button" class="cg-btn" id="btn-reroll">重新生成</button>

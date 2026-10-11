@@ -706,33 +706,42 @@ body.zoom-open { overflow: hidden; }
 .hs-notes {
   display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; min-width: 0;
 }
-/* 在线大厅横屏：这两句话挪进页眉那行（页眉横着空一大截），脚因此少一行——右栏高 =
-   舞台高 − 脚高，技能卡按右栏高倒推，脚一矮右栏就高、整块技能区跟着换一档，与整备页
-   来回切时会上下跳。竖屏页眉塞不下，仍旧留在脚里，故两处各画一份、按朝向显示其中一份。
+/* 横屏挪进页眉那行的状态句（页眉横着空一大截），脚因此少一行——右栏高 = 舞台高 − 脚高，
+   技能卡按右栏高倒推，脚一矮右栏就高、整块技能区跟着换一档，与整备页来回切时会上下跳。
+   竖屏页眉塞不下，仍旧留在脚里，故两处各画一份、按朝向显示其中一份：整页 #/online 那份是
+   .hs-notes（联机提示也在里头），#/new 那份就是脚下的同一个 .hs-status。
    页眉那行是 nowrap + 省略号的单行，所以这里 inline-flex 跟着文字流走、不占第二行。 */
-.hs-notes--top {
+.hs-top {
   display: inline-flex; align-items: baseline; gap: 10px; min-width: 0; margin-left: 12px;
 }
-.hs-notes--top .hs-status,
-.hs-notes--top .hint { font-size: 11.5px; }
-.hs-notes--top .hint { color: var(--text-dim); }
-.hs-notes--top .hint.warn { color: var(--warn); }
+.hs-top .hs-status,
+.hs-top .hint { font-size: 11.5px; }
+.hs-top .hint { color: var(--text-dim); }
+.hs-top .hint.warn { color: var(--warn); }
 [data-orient='landscape'] .hs-foot > .hs-notes { display: none; }
+/* #/new 脚里那份状态句（竖屏的唯一一份，所以不能从 DOM 里删）：横屏已在页眉，脚里便不画。
+   脚高是钉死的、内容贴底（见下 .hs-foot 的 min-height / align-content: end），少这一行，
+   按钮仍在同一条底线上，右栏与技能卡分毫不动——「留个空的」与「整行撤掉」是同一种版面。
+   只挑 .hero-showcase 的脚：整备页的脚也叫 .hs-foot，但它那句是操作回执（该操作无效…），
+   得留在手边。标记与 .hero-showcase 写成同一条复合选择器（跟上面 .card-face 那条一样）：
+   data-orient 就挂在 .hero-showcase 上，写成 `[data-orient] .hero-showcase` 是「祖先 + 后代」，
+   永远落不到同一个元素上。 */
+[data-orient='landscape'].hero-showcase .hs-foot > .hs-status { display: none; }
 /* 页眉那句：data-orient 挂在 .hero-showcase 上，而页眉是它**前面**的兄弟节点——选不到祖先，
    `~`/`+` 又只往后挑，所以只能用 :has 反向找。旋转时 hookOrientation 翻的是同一个属性，
    :has 会跟着重算，不必重绘。 */
-.viewport-page:has(> .hero-showcase[data-orient='portrait']) .hs-notes--top { display: none; }
+.viewport-page:has(> .hero-showcase[data-orient='portrait']) .hs-top { display: none; }
 
 /* 横屏动作区：竖屏那套「状态行 / 动作 / 主按钮」竖着叠三段要 96px，而横屏的 foot 行是
    auto —— 它矮多少，右栏的技能卡就高多少（844×390 上每 30px 约换 15px 卡高）。所以摊成
    一排：.row-actions 用 display:contents 摊平后，按钮、输入框都是同一排的平级项，换行交给
    可用宽度；状态行整行独占（见下）。于是 #/new 收成「状态 / 按钮」两行 ≈ 56px，
-   技能卡从 46×61 长到约 61×81。
+   技能卡从 46×61 长到约 61×81；后来状态句也挪去页眉（见上 .hs-top），脚里只剩按钮那一行。
 
    三页同一条排法：**次级动作靠左，主按钮靠右收尾**（#/new 的「开始战斗」、整备的「完成」、
    在线大厅的「创建房间」）。在线大厅原来靠 :has(> .hs-notes) 单独走竖排（那句话 + 五颗
    按钮 + 房间码输入，横排要三行、反而比竖排高）；现在那两句话横屏挪进了页眉
-   （见上 .hs-notes--top），脚里只剩「按钮行 + 输入行」两排，于是改用下面那套「一行一排」。
+   （见上 .hs-top），脚里只剩「按钮行 + 输入行」两排，于是改用下面那套「一行一排」。
 
    这一节的选择器一律只写 [data-orient]，不带页名：整备页的脚也用 .hs-foot
    （见下面整备段），两页的按钮尺寸与排法从同一条规则里取，改一处两页一起动。 */
@@ -754,15 +763,16 @@ body.zoom-open { overflow: hidden; }
    四个按钮里它一个占满整行），所以宽/靠右两条分开写。 */
 [data-orient='landscape'] .hs-foot .cg-btn--block { width: auto; }
 [data-orient='landscape'] .hs-foot .cg-btn--primary { margin-left: auto; }
-/* 状态行整行独占（basis 100% 必然换行）：编队合法是给整队看的一句话，
-   跟按钮挤在同一排会让人以为它是颗按钮；拆开成「状态一行 / 按钮一行」。 */
+/* 状态行若在脚里（竖屏三页、横屏的整备页；横屏 #/new 与 #/online 那份已挪去页眉，见上）
+   就整行独占（basis 100% 必然换行）：那是给整队看的一句话，跟按钮挤在同一排会让人以为
+   它是颗按钮；拆开成「状态一行 / 按钮一行」。 */
 [data-orient='landscape'] .hs-foot .hs-status { flex: 1 1 100%; min-width: 0; }
 /* 在线大厅的脚是两排（按钮 / 房间码），一摊平就有麻烦：大屏上那只输入框会挤进按钮那排
    （1024 宽起，四颗按钮 242px 之后还容得下 110px 的输入框），「加入房间」反倒落单到第二行。
    所以这种脚不摊平，改「一行一排」：每排各自横排、次级靠左主按钮靠右，整块贴住页底。
    再把这排提到按钮排上面，让**动作行**落到脚的最后一行——另两页的动作行本来就在最后一行
-   （它上面是状态行），三页的主按钮于是落在同一条底线上。挑「第二排 .row-actions」这个形状，
-   不挑页名。 */
+   （上面只挂着状态行，而那句在横屏已挪去页眉），三页的主按钮于是落在同一条底线上。
+   挑「第二排 .row-actions」这个形状，不挑页名。 */
 [data-orient='landscape'] .hs-foot:has(> .row-actions + .row-actions) {
   flex-direction: column; align-items: stretch; justify-content: flex-end;
 }

@@ -56,15 +56,16 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
   const typedCode = (document.getElementById('inp-code') as HTMLInputElement | null)?.value ?? ''
   // 编队状态与联机提示：横屏挪到页眉那行去（页眉横着空一大截），脚因此从三行收成两行
   // ——右栏高 = 舞台高 − 脚高，技能卡又按右栏高倒推，脚一矮右栏就高、整块技能区跟着换一档，
-  // 与整备页来回切时会上下跳（见 app.css 横屏 .hs-foot 那条）。竖屏页眉塞不下这两句，
-  // 仍旧留在脚里，所以两处各画一份、按朝向显示其中一份；标记只能走 class 不能走 id（同句两份）。
+  // 与整备页来回切时会上下跳（见 app.css 横屏 .hs-foot 那条；#/new 的「编队合法」同此处理）。
+  // 竖屏页眉塞不下这两句，仍旧留在脚里，所以两处各画一份、按朝向显示其中一份；
+  // 标记只能走 class 不能走 id（同句两份）。
   const notes = `${errors.length > 0 ? `<span class="hs-status warn">编队问题：${escapeHtml(errors.join(' / '))}</span>` : '<span class="hs-status ok">编队合法</span>'}
         <span class="hint js-online-status">联机自动推进 · 决策点等双方选定</span>`
 
   host.innerHTML = `
     ${subBarHtml('在线对战')}
     <main class="viewport-page">
-      <p class="hint profile-line">档案 ${escapeHtml(profile.username || profile.uuid.slice(0, 8))} · 数据 ${shortHash(dataVersion.dataHash)}${dataVersion.stale ? '（数据已漂移，双方须同版本）' : ''}<span class="hs-notes--top">${notes}</span></p>
+      <p class="hint profile-line">档案 ${escapeHtml(profile.username || profile.uuid.slice(0, 8))} · 数据 ${shortHash(dataVersion.dataHash)}${dataVersion.stale ? '（数据已漂移，双方须同版本）' : ''}<span class="hs-top">${notes}</span></p>
       ${heroShowcaseHtml(roster, catalog, {
         index: heroIndex,
         kind: skillView,
