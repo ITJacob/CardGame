@@ -277,7 +277,8 @@ a { color: inherit; text-decoration: none; }
 .roster-cards { display: flex; gap: 5px; flex-wrap: wrap; flex: 1 0 100%; }
 
 /*
- * 技能卡面：分层（自下而上）= 无图底 / 卡图 / 底部压暗 / 稀有度边框(叠层) / 信息条。
+ * 技能卡面：分层（自下而上）= 无图底 / 卡图 / 稀有度边框(叠层) / 信息条。
+ * 卡图上不盖任何压暗层（曾经压到 55% 高，放大后糊掉半张画）；信息条的可读性靠字自身的描边。
  * 3:4 两档：compact 60×80（默认）、full 96×128 —— 与边框图 1152×1536 同比例，cover 不裁。
  */
 .card-face {
@@ -285,7 +286,7 @@ a { color: inherit; text-decoration: none; }
   width: 60px; height: 80px; border-radius: 6px; overflow: hidden;
   background: #101216; display: block; margin: 0; user-select: none;
 }
-.card-face.full { width: 96px; height: 128px; }
+.card-face.full { width: 120px; height: 160px; }
 
 /* 无图底：832 张卡只有 34 张有图，这层是常态，得当一张设计过的卡 */
 .card-noart {
@@ -295,16 +296,10 @@ a { color: inherit; text-decoration: none; }
 }
 .card-face.no-art .card-noart { opacity: 1; }
 .noart-glyph { font-size: 22px; opacity: .5; }
-.card-face.full .noart-glyph { font-size: 34px; }
+.card-face.full .noart-glyph { font-size: 42px; }
 
 .card-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .card-art[hidden] { display: none; }
-
-/* 只压底部：给信息条留底，顶部保留卡面 */
-.card-shade {
-  position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(to top, rgba(6, 7, 10, .94) 0%, rgba(6, 7, 10, .5) 30%, rgba(6, 7, 10, 0) 55%);
-}
 
 /* 边框层：黑底线框 PNG，screen 吃掉黑底、只留亮线 */
 .card-frame {
@@ -327,14 +322,16 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: baseline; justify-content: center; gap: 3px;
   padding: 2px 4px 3px; font-size: 8px; line-height: 1.2;
 }
-.card-face.full .card-info { padding: 3px 6px 4px; font-size: 10.5px; }
-/* 名字与费用成组居中；名字可收缩，长名走省略号，整组不会撑出卡面 */
+.card-face.full .card-info { padding: 4px 7px 5px; font-size: 12px; }
+/* 名字与费用成组居中；名字可收缩，长名走省略号，整组不会撑出卡面。
+   卡图上没有压暗层了，可读性全靠字自带的两道黑影：贴边一道描外廓，外扩一道压住底噪。
+   用 em 定尺度，从 8px 的小卡到放大档都是同一套比例。 */
 .ci-name {
   min-width: 0; color: var(--text); font-weight: 600;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  text-shadow: 0 1px 2px #000;
+  text-shadow: 0 .08em .18em rgba(0, 0, 0, .95), 0 0 .42em rgba(0, 0, 0, .8);
 }
-.ci-cost { flex: none; color: var(--accent); text-shadow: 0 1px 2px #000; }
+.ci-cost { flex: none; color: var(--accent); text-shadow: 0 .08em .18em rgba(0, 0, 0, .95), 0 0 .42em rgba(0, 0, 0, .8); }
 
 /*
  * 卡池档：卡面本身就是 <button>，不再在外面套一层带 padding/背景的面板框
@@ -360,7 +357,7 @@ button.card-face[aria-disabled="true"] { cursor: default; }
   background: rgba(8, 10, 14, 0.72); border: 1px solid var(--border); color: var(--text);
   text-shadow: 0 1px 2px #000; pointer-events: none;
 }
-.card-face.full .card-corner { min-width: 18px; height: 18px; font-size: 12px; }
+.card-face.full .card-corner { min-width: 20px; height: 20px; font-size: 13px; }
 
 /*
  * 卡池格子：卡面是「放大看」的按钮，锁标是另一个按钮——两个点击目标不能嵌套（button 里
@@ -368,10 +365,10 @@ button.card-face[aria-disabled="true"] { cursor: default; }
  */
 .card-cell { position: relative; }
 .card-lock {
-  position: absolute; top: 3px; right: 3px; z-index: 4;
+  position: absolute; top: 4px; right: 4px; z-index: 4;
   display: flex; align-items: center; justify-content: center;
-  min-width: 18px; height: 18px; padding: 0 3px; border-radius: 999px;
-  font: inherit; font-size: 11px; line-height: 1;
+  min-width: 22px; height: 22px; padding: 0 4px; border-radius: 999px;
+  font: inherit; font-size: 13px; line-height: 1;
   background: rgba(8, 10, 14, 0.78); border: 1px solid var(--border); color: var(--text);
   cursor: pointer;
   /* 平时收起来：不然整个网格挂满锁标，也挡住卡面那一下的点击 */
@@ -435,11 +432,6 @@ body.zoom-open { overflow: hidden; }
 .card-face.zoom { width: auto; height: var(--zh); aspect-ratio: 3 / 4; border-radius: 12px; container-type: size; }
 /* 字号跟着卡面高度走（cqh），小屏大屏都是同一套比例；不认容器单位的浏览器退回固定值 */
 .card-face.zoom .card-info { padding: 10px 14px 12px; font-size: 22px; font-size: 3.4cqh; gap: 6px; }
-/* 压暗淡到只剩信息条那一条：卡面放大后，原本按小卡比例画的「压到 55% 高」会糊掉半张图 */
-.card-face.zoom .card-shade {
-  inset: auto 0 0 0; height: 14%;
-  background: linear-gradient(to top, rgba(6, 7, 10, 0.9) 0%, rgba(6, 7, 10, 0.5) 45%, rgba(6, 7, 10, 0) 100%);
-}
 .card-face.zoom .ci-cost { font-size: 0.8em; }
 .card-face.zoom .noart-glyph { font-size: 84px; font-size: 12cqh; }
 .zoom-tip {

@@ -103,7 +103,6 @@ export function cardFaceHtml(opts: CardFaceOpts): string {
   <${tag} ${extra} class="${cls}" data-card="${escapeHtml(cardId)}">
     <div class="card-noart" aria-hidden="true"><span class="noart-glyph">${emoji}</span></div>
     <img class="card-art" src="${cardArtUrl(cardId)}" alt="" loading="lazy" data-art>
-    <div class="card-shade" aria-hidden="true"></div>
     <img class="card-frame" src="${frameUrl(rarity, pathwayId)}" alt="" aria-hidden="true" data-frame data-frame-fallback="${fallback ?? ''}">
     <${infoTag} class="card-info">
       <span class="ci-name">${escapeHtml(name)}</span>${costHtml}
