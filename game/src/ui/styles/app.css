@@ -896,7 +896,14 @@ table.lb tr.draw td.res { color: var(--text-dim); }
   display: block; cursor: pointer;
 }
 .prep-board .tile .hero-portrait { width: 100%; height: 100%; }
-.prep-board .tile.empty { border: 1px dashed var(--border); background: rgba(38, 42, 50, 0.25); }
+/* 空位是虚线框 + 一个「＋」：那句「把右栏展示的英雄移到这里」原来只写在 title 上（原生黄框），
+   而状态行在竖屏塞不下它（实测 360/375/390 都会截断），就挪到格子自己身上——「＋」就地
+   说明「点这儿放人」，完整句子留给 aria-label */
+.prep-board .tile.empty {
+  display: flex; align-items: center; justify-content: center;
+  border: 1px dashed var(--border); background: rgba(38, 42, 50, 0.25);
+}
+.prep-board .tile.empty .tile-plus { font-size: 17px; line-height: 1; color: var(--text-dim); opacity: 0.65; }
 .prep-board .tile.empty:hover { border-color: var(--accent-dim); background: rgba(38, 42, 50, 0.5); }
 /* 选中＝右栏正在展示的那名英雄：立绘描金边（与展示台的 .hs-cell.is-on 同一套语言） */
 .prep-board .tile.sel .hero-portrait { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-dim); }

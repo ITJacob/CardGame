@@ -415,7 +415,7 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
 function statusHtml(draft: RosterDraft): string {
   const mode = draft.mode === 'online' ? '在线对战' : '人机对战'
   const text = `${mode} · seed ${draft.seed} · 拖动立绘换位，点技能格编卡`
-  return `<p class="prep-status" title="${escapeHtml(text)}">${escapeHtml(text)}</p>`
+  return `<p class="prep-status">${escapeHtml(text)}</p>`
 }
 
 function className(catalog: Catalog, hero: Hero): string {
@@ -459,10 +459,14 @@ function cellHtml(
   selectedId: string | null,
 ): string {
   const at = `--lane:${li};--idx:${index}`
+  // 名字/说明一律走 aria-label，不用 title：title 会弹浏览器自带的黄框（与游戏自己那套
+  // 卡面浮层撞在一起，观感很突兀）。aria-label 只喂读屏，屏幕上什么都不冒。
   if (hero) {
-    return `<div class="tile own${hero.id === selectedId ? ' sel' : ''}" style="${at}" data-hero="${escapeHtml(hero.id)}" role="button" tabindex="0" title="${escapeHtml(hero.name)}">${heroPortraitHtml(hero)}</div>`
+    return `<div class="tile own${hero.id === selectedId ? ' sel' : ''}" style="${at}" data-hero="${escapeHtml(hero.id)}" role="button" tabindex="0" aria-label="${escapeHtml(hero.name)}">${heroPortraitHtml(hero)}</div>`
   }
-  return `<div class="tile empty" style="${at}" data-cell="1" data-lane="${escapeHtml(lane)}" data-index="${index}" role="button" tabindex="0" title="把英雄拖到这里（或点此格，把右栏展示的英雄移过来）"></div>`
+  // 空位的说明原来只写在 title 里，而状态行在竖屏塞不下这句（实测 360/375/390 都截断），
+  // 于是落到格子自己身上：一个「＋」就地说明「点这儿放人」。
+  return `<div class="tile empty" style="${at}" data-cell="1" data-lane="${escapeHtml(lane)}" data-index="${index}" role="button" tabindex="0" aria-label="把右栏展示的英雄移到这里"><span class="tile-plus" aria-hidden="true">＋</span></div>`
 }
 
 /**
@@ -542,16 +546,17 @@ function patchFoot(host: HTMLElement, warn: string): void {
   el.classList.toggle('warn', !!warn)
 }
 
-/** 摘要行里的一格：整格是弹窗入口（含空槽的 ＋），右上角的 ✕ 卸下这张 */
+/** 摘要行里的一格：整格是弹窗入口（含空槽的 ＋），右上角的 ✕ 卸下这张。槽位/卡名的说明走
+ *  aria-label（原来那两颗 title 悬停会弹原生黄框，跟卡面浮层叠在一起很吵） */
 function summaryTileHtml(catalog: Catalog, kind: SlotKind, i: number, id: string | undefined): string {
   const open = `role="button" tabindex="0" data-pp-open="${kind}"`
   if (!id) {
-    return `<div class="sk-tile empty" ${open} title="第 ${i + 1} 槽 · 空，点它选卡"><span class="sk-num">${i + 1}</span><span class="sk-plus">＋</span></div>`
+    return `<div class="sk-tile empty" ${open} aria-label="第 ${i + 1} 槽 · 空，点它选卡"><span class="sk-num">${i + 1}</span><span class="sk-plus">＋</span></div>`
   }
-  return `<div class="sk-tile" ${open} title="第 ${i + 1} 槽 · ${escapeHtml(cardName(catalog, id))}">
+  return `<div class="sk-tile" ${open} aria-label="第 ${i + 1} 槽 · ${escapeHtml(cardName(catalog, id))}，点它编卡">
       <span class="sk-num">${i + 1}</span>
       ${cardOf(catalog, id, kind, 'compact')}
-      <button type="button" class="cg-btn cg-btn--danger slot-op" data-unequip="${kind}:${i}" title="卸下">✕</button>
+      <button type="button" class="cg-btn cg-btn--danger slot-op" data-unequip="${kind}:${i}" aria-label="卸下">✕</button>
     </div>`
 }
 
@@ -592,7 +597,7 @@ function pickerHtml(catalog: Catalog, profile: Profile, hero: PlacedHero, picker
         </div>
         <div class="pp-pool-wrap">
           <div class="pp-tabs">${tabs}</div>
-          <p class="pp-notice${notice ? ' warn' : ''}" id="pp-notice">${escapeHtml(notice || ' ')}</p>
+          <p class="pp-notice${notice ? ' warn' : ''}" id="pp-notice">${escapeHtml(notice || slotTip(picker.tab))}</p>
           <div class="pp-pool cg-scroll">${poolHtml(catalog, profile, hero, picker.tab)}</div>
         </div>
       </div>
@@ -640,26 +645,36 @@ function slotTileHtml(catalog: Catalog, kind: SlotKind, i: number, id: string | 
   if (!id) {
     return `<div class="sk-tile slot empty" data-slot="${kind}:${i}"><span class="sk-num">${i + 1}</span><span class="sk-plus">＋</span></div>`
   }
-  return `<div class="sk-tile slot${draggable ? ' draggable' : ''}" data-slot="${kind}:${i}" title="第 ${i + 1} 槽 · ${escapeHtml(cardName(catalog, id))}">
+  return `<div class="sk-tile slot${draggable ? ' draggable' : ''}" data-slot="${kind}:${i}">
       <span class="sk-num">${i + 1}</span>
       ${cardOf(catalog, id, kind, 'compact')}
-      <button type="button" class="cg-btn cg-btn--danger slot-op" data-unequip="${kind}:${i}" title="卸下">✕</button>
+      <button type="button" class="cg-btn cg-btn--danger slot-op" data-unequip="${kind}:${i}" aria-label="卸下">✕</button>
     </div>`
+}
+
+/**
+ * 槽位顺序的说明。原先挂在「主动 / 被动」那个小标签的 title 上（悬停弹原生黄框），
+ * 现在落到弹窗的提示行（.pp-notice）里——那一行平时就空着占位，正好当说明栏，
+ * 出警告时警告顶掉它（警告比说明要紧）。
+ */
+function slotTip(kind: SlotKind): string {
+  return kind === 'active'
+    ? '按槽位顺序轮转释放，拖动可调序'
+    : '同触发点多张时按槽位顺序发动，拖动可调序'
 }
 
 function slotRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): string {
   const ids = kind === 'active' ? hero.activeSkillIds : hero.passiveSkillIds
   const draggable = ids.length > 1
-  const tip = kind === 'active' ? '按槽位顺序轮转释放，拖动可调序' : '常驻；同一触发点上有多张时按槽位顺序发动，拖动可调序'
 
   const slots: string[] = []
   for (let i = 0; i < SLOT_LIMIT[kind]; i += 1) slots.push(slotTileHtml(catalog, kind, i, ids[i], draggable))
 
-  // 行里不再挂「已装/上限 · 说明」那行小字：标签归位成摘要行那种左侧小标签（说明进 title），
-  // 计数在下面的页签上（主动 3/4），省下的那一行在横屏弹窗里正好够两排槽都摊开。
+  // 行里不再挂「已装/上限 · 说明」那行小字：标签归位成摘要行那种左侧小标签（说明挪到下面的
+  // 提示行，见 slotTip），计数在下面的页签上（主动 3/4），省下的那一行在横屏弹窗里正好够两排槽都摊开。
   // data-kind：refresh() 据此找行（右栏的摘要行也挂着同一个属性）。
   return `<div class="sk-row slot-block" data-kind="${kind}">
-    <span class="sk-tag" title="${tip}">${SLOT_LABEL[kind]}</span>
+    <span class="sk-tag">${SLOT_LABEL[kind]}</span>
     <div class="sk-tiles slot-row">${slots.join('')}</div>
   </div>`
 }
@@ -796,10 +811,11 @@ function patchPicker(
     if (n && n.textContent !== text) n.textContent = text
   })
 
-  // 空着时占位的是一个空格（模板里就是 ' '），不是空串——那一行的高度由它撑着，卡池不跳
+  // 平时这一行放的是当前页签的槽位说明（slotTip），有警告时警告顶掉它——两种写法都占着这一行，
+  // 高度因此稳稳的，卡池不会被推得一跳一跳。
   const note = root.querySelector<HTMLElement>('.pp-notice')
   if (note) {
-    const want = notice || ' '
+    const want = notice || slotTip(picker.tab)
     if (note.textContent !== want) note.textContent = want
     note.classList.toggle('warn', !!notice)
   }
