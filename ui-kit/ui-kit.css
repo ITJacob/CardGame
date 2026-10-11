@@ -597,3 +597,96 @@
   .cg-toast-wrap { right: 12px; bottom: 12px; }
   .cg-toast { min-width: 0; }
 }
+
+/* =============================================================================
+ * 15. 区域容器 / 面板（.cg-panel）
+ *     界面上一小块区域的局部背景框：菜单、按钮组、翻页主体等。
+ *     区别于整页 .cg-bg（全屏暗雾）—— panel 是局部浮起、有实填充与描边的框。
+ * ========================================================================== */
+.cg-panel {
+  position: relative;
+  background: var(--cg-panel);
+  border: 1px solid var(--cg-border-strong);
+  border-radius: var(--cg-radius-lg);
+  box-shadow: var(--cg-shadow-lg), inset 0 0 0 1px rgba(200,162,74,.07);
+  padding: 16px;
+}
+/* 顶部标题栏 */
+.cg-panel__head {
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 10px; margin-bottom: 12px;
+  border-bottom: 1px solid var(--cg-border);
+}
+.cg-panel__title {
+  margin: 0; font-family: var(--cg-font-display); font-size: 13.5px;
+  letter-spacing: .06em; color: var(--cg-accent);
+}
+.cg-panel__head .cg-ico { color: var(--cg-accent); }
+/* 四角卷草（复用现有装饰语言） */
+.cg-panel::before, .cg-panel::after {
+  content: ""; position: absolute; width: 14px; height: 14px; pointer-events: none;
+  border: 1.5px solid var(--cg-accent-dim); opacity: .5;
+}
+.cg-panel::before { top: 6px; left: 6px; border-right: none; border-bottom: none; border-top-left-radius: 6px; }
+.cg-panel::after  { bottom: 6px; right: 6px; border-left: none; border-top: none; border-bottom-right-radius: 6px; }
+
+/* —— 变体：菜单框 —— */
+.cg-panel--menu { padding: 6px; }
+.cg-menu { list-style: none; margin: 0; padding: 0; }
+.cg-menu__item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--cg-radius-sm);
+  color: var(--cg-text); cursor: pointer;
+  border-bottom: 1px solid var(--cg-border);
+  transition: background .15s, color .15s;
+}
+.cg-menu__item:last-child { border-bottom: none; }
+.cg-menu__item:hover { background: rgba(255,255,255,.05); color: var(--cg-text); }
+.cg-menu__item.is-active { background: rgba(200,162,74,.12); color: var(--cg-accent); }
+.cg-menu__item .ico { color: var(--cg-accent); flex: none; }
+.cg-menu__item .t { flex: 1; font-size: 13px; }
+.cg-menu__item .t small { display: block; color: var(--cg-text-dim); font-size: 11px; margin-top: 1px; }
+.cg-menu__item .cg-ico--end { color: var(--cg-text-dim); flex: none; }
+
+/* —— 变体：按钮组框 —— */
+.cg-panel--group { padding: 8px; }
+.cg-btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.cg-btn-group--tight { gap: 0; }
+.cg-btn-group--tight .cg-btn { border-radius: 0; border-right-width: 0; }
+.cg-btn-group--tight .cg-btn:first-child { border-top-left-radius: var(--cg-radius-sm); border-bottom-left-radius: var(--cg-radius-sm); }
+.cg-btn-group--tight .cg-btn:last-child { border-radius: 0; border-top-right-radius: var(--cg-radius-sm); border-bottom-right-radius: var(--cg-radius-sm); border-right-width: 1px; }
+
+/* —— 变体：无内边距，用于把「翻页主体」等内容块框住，区别于整体背景 —— */
+.cg-panel--flush { padding: 0; overflow: hidden; }
+
+/* =============================================================================
+ * 16. 翻页组件（.cg-pager）
+ *     主体包在 .cg-panel--flush 中，与整页暗雾背景区分；
+ *     含 上一页 / 页码组 / 下一页，active 黄铜填充。
+ * ========================================================================== */
+.cg-pager { display: flex; align-items: center; gap: 6px; padding: 6px; }
+.cg-pager__btn {
+  min-width: 34px; height: 34px; padding: 0 10px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: transparent; color: var(--cg-text-dim);
+  border: 1px solid var(--cg-border); border-radius: var(--cg-radius-sm);
+  font-size: 13px; cursor: pointer; transition: all .15s;
+}
+.cg-pager__btn:hover:not(:disabled) { color: var(--cg-text); border-color: var(--cg-accent-dim); background: rgba(200,162,74,.08); }
+.cg-pager__btn:disabled { opacity: .4; cursor: not-allowed; }
+.cg-pager__btn--active {
+  color: #15171c; background: var(--cg-accent); border-color: var(--cg-accent);
+  font-weight: 600; box-shadow: inset 0 0 8px rgba(0,0,0,.25);
+}
+.cg-pager__gap { color: var(--cg-text-dim); padding: 0 2px; align-self: center; }
+
+/* 面板 / 翻页 移动端收敛 */
+@media (max-width: 760px) {
+  .cg-panel { padding: 14px; }
+  .cg-pager__btn { min-width: 32px; height: 32px; }
+}
+@media (max-width: 480px) {
+  .cg-pager { gap: 4px; padding: 4px; }
+  .cg-pager__btn { min-width: 30px; height: 30px; padding: 0 8px; font-size: 12px; }
+  .cg-btn-group--tight .cg-btn { flex: 1; text-align: center; }
+}

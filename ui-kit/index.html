@@ -310,6 +310,52 @@
     </div>
   </section>
 
+  <!-- 区域容器 / 面板（界面局部背景框） -->
+  <section class="sec">
+    <h2>区域容器 / 面板 .cg-panel</h2>
+    <p>界面上一小块区域的局部背景框，区别于整页 .cg-bg（全屏暗雾）。用于菜单、按钮组、翻页主体等。与「区域卡片 .cg-card」无关——卡片是角色/技能卡面，面板是界面区块的框。</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;align-items:start">
+
+      <!-- 菜单框 -->
+      <div class="cg-panel cg-panel--menu">
+        <ul class="cg-menu">
+          <li class="cg-menu__item is-active"><svg class="cg-ico ico"><use href="#cg-sigil-star"/></svg><div class="t"><b>牌库</b><small>查看全部序列</small></div><svg class="cg-ico cg-ico--end"><use href="#cg-check"/></svg></li>
+          <li class="cg-menu__item"><svg class="cg-ico ico"><use href="#cg-sigil-moon"/></svg><div class="t"><b>整备</b><small>编辑你的队伍</small></div><svg class="cg-ico cg-ico--end"><use href="#cg-chevron"/></svg></li>
+          <li class="cg-menu__item"><svg class="cg-ico ico"><use href="#cg-sigil-wheel"/></svg><div class="t"><b>命运回廊</b><small>挑战模式</small></div><svg class="cg-ico cg-ico--end"><use href="#cg-chevron"/></svg></li>
+          <li class="cg-menu__item"><svg class="cg-ico ico"><use href="#cg-cog"/></svg><div class="t"><b>设置</b><small>偏好与账号</small></div></li>
+        </ul>
+      </div>
+
+      <!-- 按钮组框（紧凑连排） -->
+      <div class="cg-panel cg-panel--group">
+        <div class="cg-btn-group cg-btn-group--tight">
+          <button class="cg-btn cg-btn--sm">攻击</button>
+          <button class="cg-btn cg-btn--sm">防御</button>
+          <button class="cg-btn cg-btn--sm">技能</button>
+          <button class="cg-btn cg-btn--sm cg-btn--danger">逃跑</button>
+        </div>
+      </div>
+
+      <!-- 翻页：主体（页码区）被 .cg-panel--flush 框住，区别于整体背景 -->
+      <div class="cg-panel cg-panel--group" style="grid-column:1/-1">
+        <div class="cg-panel__head"><svg class="cg-ico"><use href="#cg-sigil-fool"/></svg><div class="cg-panel__title">牌库翻页</div></div>
+        <div class="cg-panel cg-panel--flush" style="border-color:var(--cg-border)">
+          <div class="cg-pager" id="ex-pager">
+            <button class="cg-pager__btn" data-pg="prev" aria-label="上一页">&lsaquo;</button>
+            <button class="cg-pager__btn cg-pager__btn--active" data-pg="1">1</button>
+            <button class="cg-pager__btn" data-pg="2">2</button>
+            <button class="cg-pager__btn" data-pg="3">3</button>
+            <span class="cg-pager__gap">…</span>
+            <button class="cg-pager__btn" data-pg="8">8</button>
+            <button class="cg-pager__btn" data-pg="next" aria-label="下一页">&rsaquo;</button>
+          </div>
+        </div>
+        <p class="cg-muted" style="font-size:11.5px;color:var(--cg-text-dim);margin:8px 2px 0">翻页主体（页码区）被 .cg-panel--flush 框住，与整页暗雾背景区分。</p>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <!-- 悬浮返回箭头 -->
@@ -391,6 +437,36 @@
       progPct.textContent = v.toFixed(0) + '%';
     }, 120);
   });
+
+  // 翻页：点页码切换 active，上一页/下一页在边界自动禁用
+  const pager = document.getElementById('ex-pager');
+  if (pager) {
+    const pages = [...pager.querySelectorAll('[data-pg]')].filter(b => /^\d+$/.test(b.dataset.pg));
+    const prev = pager.querySelector('[data-pg="prev"]');
+    const next = pager.querySelector('[data-pg="next"]');
+    const sync = () => {
+      const cur = pages.find(p => p.classList.contains('cg-pager__btn--active'));
+      const i = pages.indexOf(cur);
+      prev.disabled = i <= 0;
+      next.disabled = i >= pages.length - 1;
+    };
+    pager.querySelectorAll('[data-pg]').forEach(b => b.addEventListener('click', () => {
+      const v = b.dataset.pg;
+      let pages2 = pages;
+      if (v === 'prev' || v === 'next') {
+        const cur = pages.find(p => p.classList.contains('cg-pager__btn--active'));
+        let i = pages.indexOf(cur) + (v === 'next' ? 1 : -1);
+        i = Math.max(0, Math.min(pages.length - 1, i));
+        pages.forEach(p => p.classList.remove('cg-pager__btn--active'));
+        pages[i].classList.add('cg-pager__btn--active');
+      } else {
+        pages.forEach(p => p.classList.remove('cg-pager__btn--active'));
+        b.classList.add('cg-pager__btn--active');
+      }
+      sync();
+    }));
+    sync();
+  }
 </script>
 </body>
 </html>
