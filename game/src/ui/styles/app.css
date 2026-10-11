@@ -475,7 +475,7 @@ body.zoom-open { overflow: hidden; }
 .hs-arrow--next { right: 6px; }
 .hs-arrow--next .cg-ico { transform: rotate(180deg); }
 
-/* 名册条：竖屏是「小图标切换」的缩略图条，横屏是主展示本身。
+/* 名册条：竖屏是「小图标切换」的缩略图条；横屏是「大图 + 底下缩略图」两段。
    自己 position:relative，好让横屏那对箭头贴它的两端（而不是跟着内容滚走）。 */
 .hs-strip {
   grid-area: strip;
@@ -487,12 +487,33 @@ body.zoom-open { overflow: hidden; }
 .hero-showcase[data-orient='portrait'] .hs-strip { justify-content: center; gap: 7px; }
 /* 竖屏：名册条在立绘下面，装得下就不滚；条上的箭头用不着（立绘那对更显眼） */
 .hero-showcase[data-orient='portrait'] .hs-strip .hs-arrow { display: none; }
-/* 横屏：名册条自己当容器查询的容器（格子尺寸由条高/条宽算出），两端留出箭头的位子。
-   条本身高度是 grid 给的定值，格子靠 cqh 反算，不靠 stretch —— 大屏上 45cqw 把格子
-   宽度卡住时，高度得跟着收（否则立绘在小框里上下留一大片空）。 */
+/* 横屏：名册条是上下两段——上面大图（能横向滚），底下常驻一排缩略图。
+   下面那排高度写死，大图吃掉剩下的。容器查询挂 .hs-track 而不是条上：
+   挂在条上的话 100cqh 会把缩略图那排也算进去，大图格子会撑破。
+   两端留出箭头的位子。 */
 .hero-showcase[data-orient='landscape'] .hs-strip {
-  container-type: size;
+  --hs-thumb-h: 45px; /* 底下那排缩略图的高度 */
+  --hs-strip-gap: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--hs-strip-gap);
   padding: 0 34px;
+}
+
+/* 缩略图条：横屏大图底下那排，一眼看全整本名册、点它直接跳。
+   竖屏不显示——竖屏的名册条本身就是缩略图（见 .hs-cell 的 portrait 规则）。 */
+.hs-thumbs { display: none; }
+.hero-showcase[data-orient='landscape'] .hs-thumbs {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  flex: none; height: var(--hs-thumb-h);
+  min-width: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.hero-showcase[data-orient='landscape'] .hs-thumbs::-webkit-scrollbar { display: none; }
+/* 箭头对的是大图那一行，不是整条（整条还含底下那排缩略图） */
+.hero-showcase[data-orient='landscape'] .hs-arrow {
+  top: calc((100% - var(--hs-thumb-h) - var(--hs-strip-gap)) / 2);
 }
 
 .hs-count { font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
@@ -509,25 +530,31 @@ body.zoom-open { overflow: hidden; }
 }
 .hs-track::-webkit-scrollbar { display: none; }
 
-/* 名册里的一格。竖屏只露立绘（缩略图），横屏补一行名字、等分整条。 */
-.hs-cell {
+/* 名册里的一格。竖屏只露立绘（缩略图），横屏补一行名字、等分整条。
+   .hs-thumb 是横屏大图底下那排缩略图，长相与竖屏这格一致，故规则合并。 */
+.hs-cell, .hs-thumb {
   flex: none;
   padding: 0; border: 0; background: none; cursor: pointer;
   opacity: .5;
   transition: opacity .15s, border-color .15s;
 }
-.hs-cell:hover { opacity: .85; }
-.hs-cell.is-on { opacity: 1; }
+.hs-cell:hover, .hs-thumb:hover { opacity: .85; }
+.hs-cell.is-on, .hs-thumb.is-on { opacity: 1; }
 .hs-cell__name { display: none; }
 
+/* 小方格缩略图：竖屏的名册条与横屏那排共用一副长相 */
+.hs-thumb,
 .hero-showcase[data-orient='portrait'] .hs-cell {
   width: 34px; height: 45px;
   border: 1px solid var(--border); border-radius: 5px;
 }
+.hs-thumb.is-on,
 .hero-showcase[data-orient='portrait'] .hs-cell.is-on {
   border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-dim);
 }
+.hs-thumb .hero-portrait,
 [data-orient='portrait'] .hs-cell .hero-portrait { width: 100%; height: 100%; border: 0; border-radius: 4px; }
+.hs-thumb .hero-portrait__emoji,
 [data-orient='portrait'] .hs-cell .hero-portrait__emoji { font-size: 15px; }
 
 /* 横屏名册是一条横向长条：格子宽度由条高反推（立绘吃满高度、比例 3:4），
@@ -536,7 +563,11 @@ body.zoom-open { overflow: hidden; }
    1280×900 上光看条高会算出 580px 一格、一屏只剩一个半，压到条宽 45% 后
    各尺寸都稳定在「一屏两个多」。格高 = --cw 的 3:4 再加名字那 22px，
    跟 --cw 一起被卡，两者始终一致；条上来不及长满的那点余量由 center 分摊。 */
-.hero-showcase[data-orient='landscape'] .hs-track { flex: 1; align-items: center; }
+.hero-showcase[data-orient='landscape'] .hs-track {
+  flex: 1 1 auto; min-height: 0;
+  container-type: size; /* 格子按「大图那一行」的高反推；条上还挂着底下那排缩略图 */
+  align-items: center;
+}
 .hero-showcase[data-orient='landscape'] .hs-cell {
   --cw: 45%; /* 老浏览器兜底：认不得 cqh 时退回「条宽的 45%」 */
   --cw: min(calc((100cqh - 22px) * 3 / 4), 45cqw);

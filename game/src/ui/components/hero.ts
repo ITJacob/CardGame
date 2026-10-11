@@ -81,20 +81,33 @@ function artHtml(hero: HeroLike | undefined, i: number, n: number): string {
 }
 
 /**
- * 名册条。竖屏是「小图标切换」的缩略图条（+ 当前第几 / 共几），
- * 横屏就是主展示本身：每格带名字、整条横向铺开，装不下时隐藏滚动条由箭头带头。
+ * 名册条。竖屏是「小图标切换」的缩略图条（+ 当前第几 / 共几）；
+ * 横屏是两段式：上面一排大图当主展示（每格带名字、整条横向铺开，装不下时隐藏
+ * 滚动条由箭头带头），底下再常驻一排缩略图——大图滚走了也一眼看得到整本名册。
  */
 function stripHtml(heroes: HeroLike[], i: number): string {
   const n = heroes.length
   if (n === 0) return '<div class="hs-strip"></div>'
   const cells = heroes.map((h, k) => cellHtml(h, k, k === i)).join('')
+  const thumbs = heroes.map((h, k) => thumbCellHtml(h, k, k === i)).join('')
   return `<div class="hs-strip">
     ${n > 1 ? `<span class="hs-count">${i + 1} / ${n}</span>` : ''}
     <div class="hs-track" role="group" aria-label="名册">
       ${cells}
     </div>
+    <div class="hs-thumbs" role="group" aria-label="名册缩略图">
+      ${thumbs}
+    </div>
     ${stepArrows(i, n)}
   </div>`
+}
+
+/**
+ * 缩略图条里的一格：只有立绘，一眼看全名册、点它直接跳到那个英雄。
+ * 点击走的是和名册格同一个 data-hs-pick，事件委托不用分叉。
+ */
+function thumbCellHtml(hero: HeroLike, i: number, on: boolean): string {
+  return `<button type="button" class="hs-thumb${on ? ' is-on' : ''}" data-hs-pick="${i}" aria-label="${escapeHtml(hero.name)}"${on ? ' aria-current="true"' : ''}>${heroPortraitHtml(hero)}</button>`
 }
 
 /** 名册里的一格。竖屏只露立绘，横屏在下面补一行名字（那时它就是主展示，得认得出谁是谁） */
@@ -182,7 +195,8 @@ export function wireHeroShowcase(host: HTMLElement, h: ShowcaseHandlers): void {
       track.addEventListener('scroll', () => syncStripArrows(sec), { passive: true })
       syncStripArrows(sec)
     }
-    const total = sec.querySelectorAll('[data-hs-pick]').length
+    // 只数大图那排：横屏底下还多一排缩略图，同一个人挂了两个 data-hs-pick，数重了会上限翻倍
+    const total = sec.querySelectorAll('.hs-track [data-hs-pick]').length
     sec.addEventListener('click', (e) => {
       const el = e.target as HTMLElement
       const step = el.closest<HTMLButtonElement>('[data-hs-step]')
