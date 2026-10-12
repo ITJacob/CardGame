@@ -27,13 +27,13 @@ function heroArtKey(combo: Attributes3, gender: 'male' | 'female'): string {
 
 /** 立绘默认源（最大档）：不支持 srcset 时的兜底 */
 export function heroArtUrl(combo: Attributes3, gender: 'male' | 'female'): string {
-  return `${HERO_ART_BASE}${heroArtKey(combo, gender)}@800w.webp`
+  return `${HERO_ART_BASE}${heroArtKey(combo, gender)}@1152w.webp`
 }
 
-/** 三档 srcset（200/400/800w），口径同 cardArtSrcset */
+/** 四档 srcset（200/400/800/1152w），口径同 cardArtSrcset；1152 是母版原尺寸档，供大屏高 DPR */
 export function heroArtSrcset(combo: Attributes3, gender: 'male' | 'female'): string {
   const k = heroArtKey(combo, gender)
-  return [200, 400, 800].map((w) => `${HERO_ART_BASE}${k}@${w}w.webp ${w}w`).join(', ')
+  return [200, 400, 800, 1152].map((w) => `${HERO_ART_BASE}${k}@${w}w.webp ${w}w`).join(', ')
 }
 
 /**
@@ -48,8 +48,11 @@ export function heroArtSrcset(combo: Attributes3, gender: 'male' | 'female'): st
  *
  * @param overlay 叠在图上的东西（竖屏展示台的左右箭头）。放在这一层里是为了让它们相对
  *                「立绘框」定位，而不是相对格子——立绘比格子小或被居中时箭头才不会飘开。
+ * @param sizes  立绘的 CSS 显示宽度（浏览器 × DPR 选 srcset 档）。默认按展示台主立绘估：
+ *               竖屏占满页宽（min(100vw,75vh) 与 .hs-art 的 3:4 收边同口径），横屏主立绘
+ *               不显示、只剩格子小图，320px 兜底。
  */
-export function heroPortraitHtml(hero: HeroLike, overlay = '', sizes = '320px'): string {
+export function heroPortraitHtml(hero: HeroLike, overlay = '', sizes = '(orientation: portrait) min(100vw, 75vh), 320px'): string {
   const emoji = avatarEmoji(hero.constitutionId, hero.gender)
   return `<span class="hero-portrait">
     <span class="hero-portrait__emoji" aria-hidden="true">${emoji}</span>

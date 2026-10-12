@@ -20,6 +20,8 @@ avatars 平级同理。`archive/` 下的废稿跳过（不产发布图）。
   200w  卡面 compact 60×80 / 立绘缩略图 34×45、战场格 46×58
   400w  卡面 full 120×160 / 立绘中型展示
   800w  卡面 zoom 大图、详情页 420px / 立绘竖屏主图
+  1152w 立绘大屏档：母版原尺寸 1152×1536 转 WebP（不放大，故不是 1200），竖屏展示台
+        高 DPR 屏用。只对 source/heroes 出：`--src source/heroes --out assets/heroes --widths 1152`
 
 不放大：母版窄于某档时跳过该档。
 
