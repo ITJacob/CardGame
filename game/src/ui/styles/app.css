@@ -654,7 +654,7 @@ body.zoom-open { overflow: hidden; }
 .hero-showcase[data-orient='landscape'] .hs-group { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .hero-showcase[data-orient='landscape'] .hs-group__tag {
   display: block; flex: none;
-  font-size: 11px; font-weight: 600; line-height: 1.2; letter-spacing: .04em; color: var(--accent);
+  font-size: 12px; line-height: 1.2; letter-spacing: .02em; color: var(--accent);
 }
 .hero-showcase[data-orient='landscape'] .hs-group__row { flex: none; align-self: stretch; }
 .hs-group__row { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 5px; flex: 1 1 auto; min-width: 0; }
@@ -682,7 +682,7 @@ body.zoom-open { overflow: hidden; }
      再大就喧宾夺主，压过左侧名册主展示了。 */
   width: min(calc((100% - 15px) / 4), calc(var(--hs-row-h) * 3 / 4), 128px);
 }
-.hs-group__row > .card-face .card-info { padding: 4cqw 6cqw 5cqw; font-size: 13cqw; gap: 4cqw; }
+.hs-group__row > .card-face .card-info { padding: 4cqw 6cqw 5cqw; font-size: 10.5cqw; gap: 4cqw; }
 .hs-group__row > .card-face .noart-glyph { font-size: 30cqw; }
 .hs-empty { margin: 0; }
 
@@ -887,8 +887,9 @@ table.lb tr.draw td.res { color: var(--text-dim); }
     background: rgba(0, 0, 0, 0.5);
   }
   /* 竖屏网格放大：3 列反正放不下，就把卡面做大——2 列撑满容器宽（clamp 上限 220px，
-     平板竖屏够宽时自然落成 3 列）。字号走容器查询（同 .sk-tile 那套口径），卡大字大。 */
-  .pool-grid .card-cell { width: clamp(150px, calc((100% - 10px) / 2), 220px); }
+     平板竖屏够宽时自然落成 3 列；下限 120 是 320~360 小屏也保得住两列的底线）。
+     字号走容器查询（同 .sk-tile 那套口径），卡大字大。 */
+  .pool-grid .card-cell { width: clamp(120px, calc((100% - 10px) / 2), 220px); }
   .pool-grid .card-cell > .card-face.full {
     width: 100%; height: auto; aspect-ratio: 3 / 4; container-type: inline-size;
   }
@@ -1085,7 +1086,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .prep-page[data-orient='landscape'] .pp-slots { flex: 0 0 240px; min-height: 0; overflow-y: auto; container-type: size; }
 .prep-page[data-orient='landscape'] .pp-slots .sk-row { flex-direction: column; align-items: stretch; gap: 4px; }
 .prep-page[data-orient='landscape'] .pp-slots .sk-tag {
-  width: auto; font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--accent);
+  width: auto; font-size: 12px; letter-spacing: .02em; color: var(--accent);
 }
 .prep-page[data-orient='landscape'] .pp-slots .slot-row {
   flex: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); justify-items: center; gap: 5px;
@@ -1131,7 +1132,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .pp-pool .card-face.full .noart-glyph { font-size: 35cqw; }
 
 /* 技能卡面的一屏版字号：与 .hs-group__row > .card-face 同一套容器查询口径 */
-.sk-tile .card-face .card-info { padding: 4cqw 6cqw 5cqw; font-size: 13cqw; gap: 4cqw; }
+.sk-tile .card-face .card-info { padding: 4cqw 6cqw 5cqw; font-size: 10.5cqw; gap: 4cqw; }
 .sk-tile .card-face .noart-glyph { font-size: 36cqw; }
 
 /* 横屏按右栏高度收技能格：两行卡 + 名条 + 两行「主动/被动」标题要塞进 row1 的行高里。
@@ -1144,7 +1145,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
    卡排撤掉横向 flex 生长，靠 align-self 撑满行宽。 */
 .prep-page[data-orient='landscape'] .prep-skills .sk-row { flex-direction: column; align-items: flex-start; gap: 4px; }
 .prep-page[data-orient='landscape'] .prep-skills .sk-tag {
-  width: auto; font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--accent);
+  width: auto; font-size: 12px; letter-spacing: .02em; color: var(--accent);
 }
 .prep-page[data-orient='landscape'] .prep-skills .sk-tiles { flex: none; align-self: stretch; }
 /* 选择器收到 .prep-skills 里：弹窗的槽行也挂着 .sk-tile（外观共用），但那里没有 --hs-row-h
