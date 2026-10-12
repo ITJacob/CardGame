@@ -21,7 +21,7 @@ import { heroPortraitHtml, hydrateHeroArt } from '../components/hero'
 import { icon } from '../components/icons'
 import type { CardFaceOpts } from '../components/cardFace'
 import { enableDrag } from '../drag'
-import { enableCardPop, hideCardPop } from '../hover'
+import { enableCardPop, hideCardPop, hoverCapable } from '../hover'
 import { getCatalog } from '../catalog'
 import { loadProfile } from '../profile'
 import { getDraft, patchOwnHero, setOwn, type RosterDraft } from '../draft'
@@ -402,9 +402,14 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
   host.addEventListener('click', onClick, { signal: ac.signal })
   host.addEventListener('keydown', onKey, { signal: ac.signal })
   // 委托挂在 host 上，一次即可，能跨 refresh() 的就地换节点存活（同 wireDrag）。
-  // 详情统一入口：桌面 hover；触摸点按（tap 编卡的同时弹出详情，等于确认刚编的是哪张）
+  // 详情统一入口：桌面 hover；触摸点按——但摘要格在触摸档下不弹详情：tap 摘要格是
+  // 「开弹窗编卡」，再叠一层浮层就吵了（想看的详情在弹窗里点卡照常弹）。
   enableCardPop(host, {
-    resolve: (el) => el.closest<HTMLElement>('.card-face'),
+    resolve: (el) => {
+      const face = el.closest<HTMLElement>('.card-face')
+      if (face && !hoverCapable() && face.closest('.prep-skills')) return null
+      return face
+    },
     render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
   })
   draw()
@@ -548,14 +553,15 @@ function patchFoot(host: HTMLElement, warn: string): void {
   el.classList.toggle('warn', !!warn)
 }
 
-/** 摘要行里的一格：整格是弹窗入口（含空槽的 ＋），右上角的 ✕ 卸下这张。槽位/卡名的说明走
+/** 摘要行里的一格：整格是弹窗入口（含空槽的 ＋），右上角的 ✕ 卸下这张；多张时可整格拖拽
+ * 调序（与弹窗槽行同一套 .slot[data-slot] 拖拽协议，拖到空槽＝挪到最后）。槽位/卡名的说明走
  *  aria-label（原来那两颗 title 悬停会弹原生黄框，跟卡面浮层叠在一起很吵） */
-function summaryTileHtml(catalog: Catalog, kind: SlotKind, i: number, id: string | undefined): string {
-  const open = `role="button" tabindex="0" data-pp-open="${kind}"`
+function summaryTileHtml(catalog: Catalog, kind: SlotKind, i: number, id: string | undefined, draggable: boolean): string {
+  const open = `role="button" tabindex="0" data-pp-open="${kind}" data-slot="${kind}:${i}"`
   if (!id) {
-    return `<div class="sk-tile empty" ${open} aria-label="第 ${i + 1} 槽 · 空，点它选卡"><span class="sk-num">${i + 1}</span><span class="sk-plus">＋</span></div>`
+    return `<div class="sk-tile slot empty" ${open} aria-label="第 ${i + 1} 槽 · 空，点它选卡"><span class="sk-num">${i + 1}</span><span class="sk-plus">＋</span></div>`
   }
-  return `<div class="sk-tile" ${open} aria-label="第 ${i + 1} 槽 · ${escapeHtml(cardName(catalog, id))}，点它编卡">
+  return `<div class="sk-tile slot${draggable ? ' draggable' : ''}" ${open} aria-label="第 ${i + 1} 槽 · ${escapeHtml(cardName(catalog, id))}，点它编卡、拖动调序">
       <span class="sk-num">${i + 1}</span>
       ${cardOf(catalog, id, kind, 'compact', { sizes: '128px' })}
       <button type="button" class="cg-btn cg-btn--danger slot-op" data-unequip="${kind}:${i}" aria-label="卸下">✕</button>
@@ -564,8 +570,9 @@ function summaryTileHtml(catalog: Catalog, kind: SlotKind, i: number, id: string
 
 function skillRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): string {
   const ids = kind === 'active' ? hero.activeSkillIds : hero.passiveSkillIds
+  const draggable = ids.length > 1
   const tiles: string[] = []
-  for (let i = 0; i < SLOT_LIMIT[kind]; i += 1) tiles.push(summaryTileHtml(catalog, kind, i, ids[i]))
+  for (let i = 0; i < SLOT_LIMIT[kind]; i += 1) tiles.push(summaryTileHtml(catalog, kind, i, ids[i], draggable))
 
   // 行末不再挂「已装/上限」的计数：那一列要从行的可用宽里扣，横屏本就吃紧，
   // 扣掉的那一档正是技能卡被缩小的原因。要看装了几张，弹窗页签上写着。
@@ -631,6 +638,8 @@ function poolHtml(catalog: Catalog, profile: Profile, hero: PlacedHero, tab: Slo
       attrs: `data-equip="${tab}:${escapeHtml(id)}"${off ? ' aria-disabled="true"' : ''}`,
       corner: on ? '✓' : '',
       dim: off,
+      // 弹窗卡池实渲：横屏 150px、竖屏 clamp(120, 50vw−32, 200) 两列（见 app.css 弹窗段）
+      sizes: '(orientation: landscape) 150px, clamp(120px, calc(50vw - 32px), 200px)',
     })
   }).join('')
   return `<div class="pool-grid">${cards}</div>`
@@ -777,7 +786,7 @@ function patchSide(host: HTMLElement, catalog: Catalog, hero: PlacedHero, drawnI
   for (const kind of KINDS) {
     const ids = kind === 'active' ? hero.activeSkillIds : hero.passiveSkillIds
     const row = side.querySelector(`.sk-row[data-kind="${kind}"] .sk-tiles`)
-    if (patchRow(row, ids, SLOT_LIMIT[kind], false, (i, id) => summaryTileHtml(catalog, kind, i, id))) swapped = true
+    if (patchRow(row, ids, SLOT_LIMIT[kind], false, (i, id) => summaryTileHtml(catalog, kind, i, id, ids.length > 1))) swapped = true
   }
   return swapped
 }

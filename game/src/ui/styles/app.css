@@ -654,7 +654,7 @@ body.zoom-open { overflow: hidden; }
 .hero-showcase[data-orient='landscape'] .hs-group { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .hero-showcase[data-orient='landscape'] .hs-group__tag {
   display: block; flex: none;
-  font-size: 12px; line-height: 1.2; letter-spacing: .02em; color: var(--accent);
+  font-size: 11px; font-weight: 600; line-height: 1.2; letter-spacing: .04em; color: var(--accent);
 }
 .hero-showcase[data-orient='landscape'] .hs-group__row { flex: none; align-self: stretch; }
 .hs-group__row { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 5px; flex: 1 1 auto; min-width: 0; }
@@ -755,14 +755,14 @@ body.zoom-open { overflow: hidden; }
   flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px;
 }
 [data-orient='landscape'] .hs-foot .row-actions { display: contents; }
-/* 横屏按钮：矮一档（右栏只有 ~280 宽，四颗得挤进一行）＋一律不换行——
-   12px 的一行字 + 30px 高就是这排的设计高度，文字一折行整排就窜到 48px。
+/* 横屏按钮：34px 高 + 13px 字是这排的设计高度，一律不换行——文字一折行整排就窜高。
+   （右栏放宽到 ~520 后不必再压高度；更早一版 30px 是右栏还窄时的抠法。）
    同时压掉 kit 的 .row-actions .cg-btn{flex:1}（basis 0）：basis 0 在挤不下的行里
    会把按钮压成十几 px 宽、文字竖排成一列。basis 回到内容宽度、不许缩，
    要换行就让整颗按钮换行。 */
 [data-orient='landscape'] .hs-foot .cg-btn {
   flex: 0 1 auto; white-space: nowrap;
-  min-height: 30px; padding: 4px 6px; font-size: 12px;
+  min-height: 34px; padding: 5px 10px; font-size: 13px;
 }
 /* 主按钮不再整宽（那是竖屏的排法），横屏它只是这排里的最后一颗、靠右收尾。
    ── 挑 --block 会漏掉在线大厅那颗（它只是 --primary，加 --block 会让竖屏那排
@@ -795,12 +795,12 @@ body.zoom-open { overflow: hidden; }
 .prep-page[data-orient='landscape'] .hs-foot .hs-status { min-height: 20px; min-height: 1lh; }
 .prep-page[data-orient='portrait'] .hs-foot .hs-status:empty { display: none; }
 /* 横排里的输入框得有自己的基准宽：竖屏那条 flex:1 的 basis 是 0，横排下会被挤成 0 宽 */
-[data-orient='landscape'] .hs-foot .cg-input { flex: 1 1 110px; min-height: 30px; padding: 4px 8px; font-size: 12.5px; }
+[data-orient='landscape'] .hs-foot .cg-input { flex: 1 1 110px; min-height: 34px; padding: 5px 8px; font-size: 13px; }
 /* 横屏三页（新游戏 / 在线对战 / 整备）的脚钉成同一高度：右栏高 = 舞台高 − 脚高，
    技能卡又按右栏高倒推——脚一高一矮，来回切页时整块技能区就换一档大小、位置也跟着跳。
-   取三页里最高的那条（在线大厅：四个按钮一行 + 房间码输入一行 = 68px）。内容不足的页
+   取三页里最高的那条（在线大厅：四个按钮一行 34 + 缝 6 + 房间码输入一行 34 = 74px）。内容不足的页
    把余量留在顶上（align-content: end），动作条照样贴住页底。 */
-[data-orient='landscape'] .hs-foot { min-height: 68px; align-content: end; }
+[data-orient='landscape'] .hs-foot { min-height: 74px; align-content: end; }
 
 /* ---------- 英雄立绘（展示台 / 整备页小图共用同一层） ---------- */
 /* 两层结构：emoji 垫底、立绘盖上；缺图时 hydrateHeroArt 摘掉 img 露回 emoji，不留白框。
@@ -1085,7 +1085,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .prep-page[data-orient='landscape'] .pp-slots { flex: 0 0 240px; min-height: 0; overflow-y: auto; container-type: size; }
 .prep-page[data-orient='landscape'] .pp-slots .sk-row { flex-direction: column; align-items: stretch; gap: 4px; }
 .prep-page[data-orient='landscape'] .pp-slots .sk-tag {
-  width: auto; font-size: 12px; letter-spacing: .02em; color: var(--accent);
+  width: auto; font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--accent);
 }
 .prep-page[data-orient='landscape'] .pp-slots .slot-row {
   flex: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); justify-items: center; gap: 5px;
@@ -1103,6 +1103,8 @@ table.lb tr.draw td.res { color: var(--text-dim); }
    ② 落点契约 data-slot 挂在 .slot 上，拖拽调序认的是它——结构一个未动。 */
 .pp-slots { flex: none; display: flex; flex-direction: column; gap: 8px; }
 .slot { cursor: default; }
+.prep-skills .sk-tile.slot { cursor: pointer; }
+.prep-skills .sk-tile.slot.draggable { cursor: grab; }
 
 /* 弹窗下半：页签 + 提示行 + 卡池（卡池自己滚，弹窗本身不滚） */
 .pp-pool-wrap { flex: 1; min-height: 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -1115,6 +1117,18 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .pp-notice.warn { color: var(--warn); }
 .pp-pool { flex: 1; min-height: 0; }
 .pp-pool .pool-grid { margin-top: 0; justify-content: flex-start; }
+
+/* 弹窗卡池的卡面放大：横屏 150px 一档（弹窗右区 ~730px 宽，四列 + 缝正好）；
+   竖屏两列撑满——375 小屏也保两列（与卡池页 .card-cell 那档同口径），上限 200 防平板过撑。
+   卡面宽高从 full 的 120×160 定值里解放出来（height:auto + aspect-ratio），字号走 cqw
+   跟着卡宽缩（同 .sk-tile 那套），只放大框不放大字会显得信息条又小又空。 */
+.prep-page[data-orient='landscape'] .pp-pool .card-face.full { width: 150px; height: auto; aspect-ratio: 3 / 4; }
+@media (max-width: 860px), (orientation: portrait) {
+  .pp-pool .pool-grid .card-face.full { width: clamp(120px, calc(50vw - 32px), 200px); height: auto; aspect-ratio: 3 / 4; }
+}
+.pp-pool .card-face.full { container-type: inline-size; }
+.pp-pool .card-face.full .card-info { padding: 3cqw 4.5cqw 3.5cqw; font-size: 8cqw; }
+.pp-pool .card-face.full .noart-glyph { font-size: 35cqw; }
 
 /* 技能卡面的一屏版字号：与 .hs-group__row > .card-face 同一套容器查询口径 */
 .sk-tile .card-face .card-info { padding: 4cqw 6cqw 5cqw; font-size: 13cqw; gap: 4cqw; }
@@ -1130,7 +1144,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
    卡排撤掉横向 flex 生长，靠 align-self 撑满行宽。 */
 .prep-page[data-orient='landscape'] .prep-skills .sk-row { flex-direction: column; align-items: flex-start; gap: 4px; }
 .prep-page[data-orient='landscape'] .prep-skills .sk-tag {
-  width: auto; font-size: 12px; letter-spacing: .02em; color: var(--accent);
+  width: auto; font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--accent);
 }
 .prep-page[data-orient='landscape'] .prep-skills .sk-tiles { flex: none; align-self: stretch; }
 /* 选择器收到 .prep-skills 里：弹窗的槽行也挂着 .sk-tile（外观共用），但那里没有 --hs-row-h
