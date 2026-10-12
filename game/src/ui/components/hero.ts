@@ -130,10 +130,12 @@ function thumbCellHtml(hero: HeroLike, i: number, on: boolean): string {
 }
 
 /** 名册里的一格：只露立绘。名字不往格子里写——右侧名条已经写着选中那位是谁，
- *  横屏那一排还得把高度全让给美术（格子按 3:4 铺满条高，多一行名字就少 22px 图高） */
+ *  横屏那一排还得把高度全让给美术（格子按 3:4 铺满条高，多一行名字就少 22px 图高）。
+ *  sizes 按格子实测定：宽 = min(条高×3/4, 条宽) ≈ min(75vh−120px, 38vw)（1366×768 实渲 459、
+ *  1920×1080 封顶 551）——写小了浏览器选低档会糊，宁可略估大。竖屏格子是 45px 缩略图。 */
 function cellHtml(hero: HeroLike, i: number, on: boolean): string {
   return `<button type="button" class="hs-cell${on ? ' is-on' : ''}" data-hs-pick="${i}" aria-label="${escapeHtml(hero.name)}"${on ? ' aria-current="true"' : ''}>
-    ${heroPortraitHtml(hero, '', '(orientation: landscape) 300px, 45px')}
+    ${heroPortraitHtml(hero, '', '(orientation: landscape) min(38vw, calc(75vh - 120px)), 45px')}
   </button>`
 }
 
