@@ -304,13 +304,66 @@ function hookOrientation(): void {
   })
 }
 
-/** 立绘失败 → 摘掉 img，露出垫底的 emoji（降级链同 cardFace 的 .no-art，只是不挂在 .card-face 上） */
+/** 立绘/头像失败 → 摘掉 img，露出垫底的 emoji（降级链同 cardFace 的 .no-art，只是不挂在 .card-face 上）。
+ *  加载成功则给外层挂 .is-loaded——头像图是透明底，不摘 emoji 会透过图的空隙露出来
+ *  （立绘不透明，挂上也无视觉变化）。 */
 export function hydrateHeroArt(root: HTMLElement): void {
   root.querySelectorAll<HTMLImageElement>('img[data-hero-art]').forEach((img) => {
     const fail = (): void => {
       img.hidden = true
     }
+    const ok = (): void => {
+      img.closest('.hero-portrait, .hero-avatar')?.classList.add('is-loaded')
+    }
     if (img.complete && img.naturalWidth === 0) fail()
+    else if (img.complete) ok()
     img.addEventListener('error', fail, { once: true })
+    img.addEventListener('load', ok, { once: true })
   })
+}
+
+/* ============================================================================
+ * 无背景头像（战斗棋盘格 / 侧栏名册 / 选靶按钮）
+ *
+ * 图是立绘派生的 1024×1024 透明底抠图（source/avatars/…__idle.png → assets/avatars/）。
+ * 只出 200/400/800 三档、不再加第四档：用它的格子都很小（≤56px，DPR3 也才 168px），
+ * 200w 一档就够；srcset 三档照写，浏览器按 sizes 自取。降级链与立绘同一套
+ * （emoji 垫底、img 盖上、失败由 hydrateHeroArt 摘掉 img——同一个 data-hero-art 钩子）。
+ * ========================================================================== */
+
+const HERO_AVATAR_BASE = './assets/avatars/'
+
+/** 头像文件名（不含档位后缀）：与立绘同 key，多一个 __idle（透明底那版；__idle_src 是带底原图） */
+function heroAvatarKey(combo: Attributes3, gender: 'male' | 'female'): string {
+  return `${heroArtKey(combo, gender)}__idle`
+}
+
+/** 头像默认源（最小档）：头像用点都是小图，不支持 srcset 时 200w 兜住 */
+export function heroAvatarUrl(combo: Attributes3, gender: 'male' | 'female'): string {
+  return `${HERO_AVATAR_BASE}${heroAvatarKey(combo, gender)}@200w.webp`
+}
+
+/** 三档 srcset（200/400/800w） */
+export function heroAvatarSrcset(combo: Attributes3, gender: 'male' | 'female'): string {
+  const k = heroAvatarKey(combo, gender)
+  return [200, 400, 800].map((w) => `${HERO_AVATAR_BASE}${k}@${w}w.webp ${w}w`).join(', ')
+}
+
+/** 头像需要的最小信息：UnitMeta 与 Hero/PlacedHero 都满足 */
+export type AvatarLike = Pick<Hero, 'combo' | 'gender' | 'constitutionId'>
+
+/**
+ * 头像块（两层）：emoji 垫底、<img data-hero-art> 盖上。尺寸一律由外层容器给
+ * （.tile .avatar / .roster-avatar / .pick-face），这里只管外观；图是透明底方图，
+ * contain 全显不裁（CSS 见 .hero-avatar）。
+ *
+ * @param sizes 头像的 CSS 显示宽度。默认 56px（棋盘格档）；56×DPR3=168 < 200，
+ *              所以实际永远选中 200w 档——这正是头像不出第四档的理由。
+ */
+export function heroAvatarHtml(hero: AvatarLike, sizes = '56px'): string {
+  const emoji = avatarEmoji(hero.constitutionId, hero.gender)
+  return `<span class="hero-avatar">
+    <span class="hero-avatar__emoji" aria-hidden="true">${emoji}</span>
+    <img class="hero-avatar__img" src="${heroAvatarUrl(hero.combo, hero.gender)}" srcset="${heroAvatarSrcset(hero.combo, hero.gender)}" sizes="${sizes}" alt="" data-hero-art>
+  </span>`
 }

@@ -4,6 +4,7 @@ import type { Catalog } from '../kernel/catalog/types'
 import type { CombatSetup } from '../kernel/combat/types'
 import type { CombatRuntimeHandle } from '../kernel/combat/runtime'
 import type { PlacedHero } from '../meta/formation'
+import type { Attributes3 } from '../meta/herogen'
 import type { MatchChannel, MatchRunner } from '../meta/match'
 
 export interface UnitMeta {
@@ -12,6 +13,8 @@ export interface UnitMeta {
   constitutionId: string
   classId: string
   gender: 'male' | 'female'
+  /** 力敏智组合：头像/立绘文件名 key 的另一半（hero_s{a}a{b}i{c}_{gender}） */
+  combo: Attributes3
 }
 
 /** 联机对局附加态（离线人机为 undefined） */

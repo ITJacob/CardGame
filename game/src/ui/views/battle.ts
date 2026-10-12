@@ -4,7 +4,8 @@
 //   联机 lockstep —— MatchRunner 自动推进，本侧决策走 MatchRunner.publish，
 //                    对侧决策只等待（绝不本地回退，P7_PLAN §3.4 铁律 1）。
 import { escapeHtml, subBarHtml } from '../components/chrome'
-import { avatarEmoji, cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { heroAvatarHtml, hydrateHeroArt } from '../components/hero'
 import { enableHoverCard, hideCardPop } from '../hover'
 import { getSession } from '../session'
 import { gridSpec, laneIndexer, orientationOf, type Orientation } from '../battle/projection'
@@ -101,6 +102,7 @@ export function renderBattle(host: HTMLElement): void {
       ${pending && (!s.online || myTurn) ? decisionBarHtml(s, pending, submitted) : ''}
       ${ended ? endedHtml(s, ended.outcome) : ''}`
     hydrateArt(host)
+    hydrateHeroArt(host)
     wire(s, refresh, submit, canPick)
   }
 
@@ -207,7 +209,9 @@ function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | n
 function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, targetable: boolean, canPick: boolean): string {
   const meta = s.unitMeta.get(u.id)
   const side = meta?.side ?? (u.id.length > 0 ? 'enemy' : 'own')
-  const emoji = meta ? avatarEmoji(meta.constitutionId, meta.gender) : '❓'
+  // 召唤物等没有名册元数据的单位：留在 emoji 档（heroAvatarHtml 的垫底层就是这个）。
+  // sizes 与 .tile .avatar 的两档口径一致（竖屏格子只有 ~60px 高，头像收到 30px）
+  const avatar = meta ? heroAvatarHtml(meta, '(orientation: portrait) 30px, 56px') : '❓'
   const hpPct = Math.max(0, Math.round((u.hp / Math.max(1, u.hpMax)) * 100))
   const gaugePct = Math.max(0, Math.min(100, Math.round((u.gauge / 75) * 100)))
   const dead = u.hp <= 0
@@ -219,7 +223,7 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
   // 格子小，尺寸由 kit-bridge 收；数值走 .bar-num 叠在轨道上。
   return `
   <div class="tile ${side}${dead ? ' dead' : ''}${targetable ? ' targetable' : ''}${targetable && canPick ? ' pickable' : ''}" style="grid-column:${col};grid-row:${row}" data-unit="${escapeHtml(u.id)}">
-    <div class="avatar">${emoji}</div>
+    <div class="avatar">${avatar}</div>
     <div class="tname">${escapeHtml(meta?.name ?? u.id)}<span class="tclass">${escapeHtml(meta?.classId ?? '')}</span></div>
     <div class="cg-progress bar hp">
       <div class="cg-progress__track"><div class="cg-progress__bar cg-progress__bar--warn" style="width:${hpPct}%"></div></div>
@@ -267,7 +271,7 @@ function rosterPanelHtml(s: BattleSession): string {
         })
         .join('')
       return `<div class="roster-row">
-        <span class="cg-avatar cg-avatar--sm roster-avatar"><span class="cg-avatar__emoji">${avatarEmoji(h.constitutionId, h.gender)}</span></span>
+        <span class="roster-avatar">${heroAvatarHtml(h, '30px')}</span>
         <span class="roster-name">${escapeHtml(h.name)}</span>
         <div class="roster-cards">${cards}</div>
       </div>`
@@ -281,9 +285,9 @@ function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = 
     .map((c) => {
       const meta = c.occupant ? s.unitMeta.get(c.occupant) : undefined
       const name = meta?.name ?? c.occupant ?? '空位'
-      const emoji = meta ? avatarEmoji(meta.constitutionId, meta.gender) : '⬜'
+      const face = meta ? heroAvatarHtml(meta, '26px') : '⬜'
       return `<button type="button" class="cg-btn cg-btn--sm pick" data-pick="${escapeHtml(c.occupant ?? '')}" ${disabled ? 'disabled' : ''}>
-        <span class="pick-face">${emoji}</span><span class="pick-name">${escapeHtml(name)}</span></button>`
+        <span class="pick-face">${face}</span><span class="pick-name">${escapeHtml(name)}</span></button>`
     })
     .join('')
   return `

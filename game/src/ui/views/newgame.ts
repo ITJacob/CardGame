@@ -98,8 +98,8 @@ function render(host: HTMLElement, catalog: Catalog, profile: Profile): void {
     const setup = buildCombatSetup({ seed: d.seed, catalog, own: d.own, enemy: d.enemy })
     const facade = createCombat(setup)
     const unitMeta = new Map<string, UnitMeta>()
-    for (const h of d.own) unitMeta.set(h.id, { name: h.name, side: 'own', constitutionId: h.constitutionId, classId: h.classId, gender: h.gender })
-    for (const h of d.enemy) unitMeta.set(h.id, { name: h.name, side: 'enemy', constitutionId: h.constitutionId, classId: h.classId, gender: h.gender })
+    for (const h of d.own) unitMeta.set(h.id, { name: h.name, side: 'own', constitutionId: h.constitutionId, classId: h.classId, gender: h.gender, combo: h.combo })
+    for (const h of d.enemy) unitMeta.set(h.id, { name: h.name, side: 'enemy', constitutionId: h.constitutionId, classId: h.classId, gender: h.gender, combo: h.combo })
     setSession({ catalog, facade, setup, own: d.own, enemy: d.enemy, unitMeta })
     location.hash = '#/battle'
   })

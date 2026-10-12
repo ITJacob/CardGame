@@ -229,8 +229,8 @@ function waitRoom(host: HTMLElement, token: number, catalog: Catalog, profile: P
       const own = side === 'host' ? info.hostRoster : info.guestRoster
       const enemy = side === 'host' ? info.guestRoster : info.hostRoster
       const unitMeta = new Map<string, UnitMeta>()
-      for (const h of own) unitMeta.set(h.id, { name: h.name, side: 'own', constitutionId: h.constitutionId, classId: h.classId, gender: h.gender })
-      for (const h of enemy) unitMeta.set(h.id, { name: h.name, side: 'enemy', constitutionId: h.constitutionId, classId: h.classId, gender: h.gender })
+      for (const h of own) unitMeta.set(h.id, { name: h.name, side: 'own', constitutionId: h.constitutionId, classId: h.classId, gender: h.gender, combo: h.combo })
+      for (const h of enemy) unitMeta.set(h.id, { name: h.name, side: 'enemy', constitutionId: h.constitutionId, classId: h.classId, gender: h.gender, combo: h.combo })
       setSession({
         catalog,
         facade,
