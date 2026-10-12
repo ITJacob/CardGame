@@ -557,7 +557,7 @@ function summaryTileHtml(catalog: Catalog, kind: SlotKind, i: number, id: string
   }
   return `<div class="sk-tile" ${open} aria-label="第 ${i + 1} 槽 · ${escapeHtml(cardName(catalog, id))}，点它编卡">
       <span class="sk-num">${i + 1}</span>
-      ${cardOf(catalog, id, kind, 'compact', { sizes: '92px' })}
+      ${cardOf(catalog, id, kind, 'compact', { sizes: '128px' })}
       <button type="button" class="cg-btn cg-btn--danger slot-op" data-unequip="${kind}:${i}" aria-label="卸下">✕</button>
     </div>`
 }

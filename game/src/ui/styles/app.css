@@ -418,6 +418,11 @@ body.zoom-open { overflow: hidden; }
   flex-direction: column;
   gap: 10px;
 }
+/* 横屏放宽到 1400：1100 的上限在 ≥1366 的横窗上两侧全是大块留白，右栏技能卡被压在
+   92px 档。放宽后右栏（1fr/2.5）从 425 长到 ~520，技能卡可上 128px 档。
+   竖屏与窄横屏（≤1100 的窗口）不受影响——max-width 本来就不生效。 */
+.viewport-page:has(> .hero-showcase[data-orient='landscape']),
+.prep-page.viewport-page[data-orient='landscape'] { max-width: 1400px; }
 /* 页眉那行档案/数据版本：一行截断，不换行（换行就得从展示台的高度里扣）。行高定死 18px，
    与整备页那行 .prep-status 同档——顶部这行多高，展示台就从哪儿起，两页对不齐的话
    来回切页时整块技能区会上下错 1~2px（2026-10-11 修）。 */
@@ -442,7 +447,7 @@ body.zoom-open { overflow: hidden; }
 /* 横屏只有 ~290px 高（844×390 减顶栏与内边距），所以立绘不再单独占一列：
    名册条自己就是主展示（每格带名字），右栏上下分给「信息技能」与「操作」。 */
 .hero-showcase[data-orient='landscape'] {
-  /* 右栏要容下 4 张 72px 技能卡同一行（4×72 + 3×5 = 303px），故左栏让出一档 */
+  /* 右栏要容下 4 张 ~126px 技能卡同一行（4×126 + 3×5 ≈ 520px），故左栏让出一档 */
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
   grid-template-areas: 'strip side' 'strip foot';
@@ -673,9 +678,9 @@ body.zoom-open { overflow: hidden; }
   /* 两排卡的行高由侧栏高度倒推：扣掉名条（~36）与间距之外，还要再扣两行「主动/被动」
      标题（2×~15px 字高 + 2×4px 组内缝 ≈ 38px），合起来按 98px 扣，剩下两排平分 */
   --hs-row-h: max(48px, calc((100cqh - 98px) / 2));
-  /* 上限 92：大横屏（≥1024 宽）侧栏又宽又高，不设上限会一路涨到 200+；
-     92×123 在 1.5fr/1fr 的右栏里已经能看清卡名与费用，再大就喧宾夺主了。 */
-  width: min(calc((100% - 15px) / 4), calc(var(--hs-row-h) * 3 / 4), 92px);
+  /* 上限 128：右栏在 1400 页宽下 ~520px，4 张卡 + 3 道缝正好 4×128+15=527≈铺满；
+     再大就喧宾夺主，压过左侧名册主展示了。 */
+  width: min(calc((100% - 15px) / 4), calc(var(--hs-row-h) * 3 / 4), 128px);
 }
 .hs-group__row > .card-face .card-info { padding: 4cqw 6cqw 5cqw; font-size: 13cqw; gap: 4cqw; }
 .hs-group__row > .card-face .noart-glyph { font-size: 30cqw; }
@@ -1130,7 +1135,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .prep-page[data-orient='landscape'] .prep-skills .sk-tiles { flex: none; align-self: stretch; }
 /* 选择器收到 .prep-skills 里：弹窗的槽行也挂着 .sk-tile（外观共用），但那里没有 --hs-row-h
    ——那条 calc 一无效，整条 width 就作废成 auto，槽会当场塌成 0×0。槽按自己的列宽定尺寸即可。 */
-.prep-page[data-orient='landscape'] .prep-skills .sk-tile { width: min(calc((100% - 15px) / 4), calc(var(--hs-row-h) * 3 / 4), 92px); }
+.prep-page[data-orient='landscape'] .prep-skills .sk-tile { width: min(calc((100% - 15px) / 4), calc(var(--hs-row-h) * 3 / 4), 128px); }
 
 /* ---------- 拖拽（阵型摆位 + 技能槽调序） ---------- */
 /* touch-action:none 让触屏上的拖动不被页面滚动抢走；拖源才有，不影响别处滚动。

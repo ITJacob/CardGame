@@ -84,7 +84,7 @@ export interface CardFaceOpts {
    * 卡图 srcset 的 sizes 声明（CSS 显示宽度，浏览器 × DPR 选档）。缺省按 size 档估
    * （compact 60 / full 120 / zoom 100vw）；**实渲尺寸偏离默认档的调用方必须显式给**
    * ——sizes 写小了浏览器会选低一档的图放大显示（发虚），宁可略估大。已有实例：
-   * 展示台/整备的技能卡实渲 ≤92px（不是 60），卡池页竖屏网格放大到 150–220px。
+   * 展示台/整备的技能卡实渲 ≤128px（不是 60），卡池页竖屏网格放大到 150–220px。
    */
   sizes?: string
 }
