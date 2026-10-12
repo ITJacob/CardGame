@@ -878,6 +878,14 @@ table.lb tr.draw td.res { color: var(--text-dim); }
     display: block; position: fixed; inset: 0; z-index: 54;
     background: rgba(0, 0, 0, 0.5);
   }
+  /* 竖屏网格放大：3 列反正放不下，就把卡面做大——2 列撑满容器宽（clamp 上限 220px，
+     平板竖屏够宽时自然落成 3 列）。字号走容器查询（同 .sk-tile 那套口径），卡大字大。 */
+  .pool-grid .card-cell { width: clamp(150px, calc((100% - 10px) / 2), 220px); }
+  .pool-grid .card-cell > .card-face.full {
+    width: 100%; height: auto; aspect-ratio: 3 / 4; container-type: inline-size;
+  }
+  .pool-grid .card-cell .card-info { padding: 3cqw 5cqw 4cqw; font-size: 10cqw; }
+  .pool-grid .card-cell .noart-glyph { font-size: 35cqw; }
 }
 
 /* ---------- 在线对战 ---------- */
