@@ -355,8 +355,8 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 
 /* ---------- 卡面放大视图 ---------- */
 /* 点卡面 → 放大到铺满视口（横纵都居中）。卡面自己占住屏幕，所以不加遮罩，背后透出页面。
-   详情分两种摆法：横板常驻在卡右侧；竖版/窄屏放不下，改成「再点一下卡面，半透盖在卡上」。
-   z-index 50：高过详情浮层(45)，低于结算模态(.cg-modal 60)。 */
+   详情分两种摆法：横板常驻在卡右侧；竖版/窄屏放不下，改成半透盖在卡上（默认盖上，点卡面
+   收起/再点开）。z-index 50：高过详情浮层(45)，低于结算模态(.cg-modal 60)。 */
 body.zoom-open { overflow: hidden; }
 .card-zoom {
   position: fixed; inset: 0; z-index: 50; overflow: hidden; outline: none;
@@ -837,19 +837,49 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .row-actions { display: flex; gap: 8px; margin-top: 12px; }
 
 /* ---------- 现有卡池 ---------- */
-.pool-page { display: grid; grid-template-columns: 190px 1fr; gap: 16px; max-width: 1100px; margin: 0 auto; padding: 18px; }
-.cls-list { display: flex; flex-direction: column; gap: 3px; max-height: 76vh; }
+/* 一屏页：钉法同 .viewport-page——子页栏在文档流里占 --nav-h，减掉它正好一屏。
+   头行（标题/解锁/提示）不滚，卡面网格在面板内自滚（.cg-scroll），侧栏也是。 */
+.pool-page {
+  display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 16px;
+  max-width: 1100px; margin: 0 auto; padding: 14px 18px max(14px, env(safe-area-inset-bottom));
+  height: calc(100vh - var(--nav-h, 54px));
+  height: calc(100dvh - var(--nav-h, 54px));
+  overflow: hidden;
+}
+.cls-list { display: flex; flex-direction: column; gap: 3px; min-height: 0; }
+/* 抽屉件（触发按钮 / 抽屉头 / 遮罩）桌面一律不见，只在下面那条小屏媒体查询里出场 */
+#btn-cls-drawer, .cls-drawer-head, .pool-scrim { display: none; }
 
-.pool-main { min-width: 0; }
+.pool-main { min-width: 0; min-height: 0; display: flex; flex-direction: column; }
 .pool-head { display: flex; align-items: center; gap: 14px; }
 .pool-head h2 { margin: 0; color: var(--accent); font-size: 18px; }
-.pool-main .hint { font-size: 12.5px; color: var(--text-dim); }
-/* 一行装不下的余量左右均分（每行各自居中），不留一坨空白在右边 */
-.pool-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
+.pool-main .hint { flex: none; font-size: 12.5px; color: var(--text-dim); }
+/* 一行装不下的余量左右均分（每行各自居中），不留一坨空白在右边；align-content 让
+   滚动容器里的行从顶部长起，而不是被 justify-content 的居中在纵向也摊一次 */
+.pool-grid { flex: 1; min-height: 0; display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 10px; margin-top: 12px; }
 
-@media (max-width: 700px) {
-  .pool-page { grid-template-columns: 1fr; }
-  .cls-list { flex-direction: row; flex-wrap: wrap; max-height: none; }
+/* 小屏/竖屏：职业列表收成左侧划出抽屉，点「☰ 职业」拉出，点遮罩/✕/职业项收起。
+   z-index 55/54：盖过吸顶栏（.cg-nav 40）与放大视图（50），低于详情浮层（62)。 */
+@media (max-width: 860px), (orientation: portrait) {
+  .pool-page { grid-template-columns: minmax(0, 1fr); }
+  #btn-cls-drawer { display: inline-flex; flex: none; }
+  .cls-list {
+    position: fixed; top: 0; bottom: 0; left: 0; z-index: 55;
+    width: min(260px, 78vw); padding: 10px 12px;
+    background: var(--panel); border-right: 1px solid var(--border);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    transform: translateX(-105%); transition: transform 0.2s ease;
+    overflow-y: auto;
+  }
+  .cls-list.is-open { transform: none; }
+  .cls-drawer-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px; font-size: 14px; color: var(--accent);
+  }
+  .pool-scrim.is-open {
+    display: block; position: fixed; inset: 0; z-index: 54;
+    background: rgba(0, 0, 0, 0.5);
+  }
 }
 
 /* ---------- 在线对战 ---------- */

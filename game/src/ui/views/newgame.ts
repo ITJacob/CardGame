@@ -3,7 +3,7 @@ import { subBarHtml, escapeHtml } from '../components/chrome'
 import { cardDetailHtml, hydrateArt } from '../components/cardFace'
 import { heroShowcaseHtml, hydrateHeroArt, wireHeroShowcase } from '../components/hero'
 import { orientationOf } from '../battle/projection'
-import { enableClickCard, hideCardPop } from '../hover'
+import { enableCardPop, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
 import { setSession, type UnitMeta } from '../session'
 import { ensureDraft, getDraft, rerollDraft } from '../draft'
@@ -68,10 +68,10 @@ function render(host: HTMLElement, catalog: Catalog, profile: Profile): void {
 
   hydrateArt(host)
   hydrateHeroArt(host)
-  // 重绘不产生鼠标事件，先手动收；enableClickCard 幂等（WeakMap 自动摘旧），
-  // 所以跟随 render 反复调用不会越积越多。技能详情走点击——移动端没有 hover。
+  // 重绘不产生鼠标事件，先手动收；enableCardPop 幂等（WeakMap 自动摘旧），
+  // 所以跟随 render 反复调用不会越积越多。详情 PC 走 hover、纯触摸走点按。
   hideCardPop()
-  enableClickCard(host, {
+  enableCardPop(host, {
     resolve: (el) => el.closest<HTMLElement>('.card-face'),
     render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
   })

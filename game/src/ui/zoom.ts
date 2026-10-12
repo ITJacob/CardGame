@@ -5,7 +5,7 @@
 // 视图都记得关它。
 //
 // 摆法由视口决定，判据与 CSS 那条媒体查询是同一个字符串（横板够宽 → 详情常驻卡右侧；
-// 否则点卡面把详情半透盖在卡上）。点击时现判，不需要盯 resize。
+// 否则详情半透盖在卡上、默认盖上，点卡面收起/再点开）。点击时现判，不需要盯 resize。
 import { hydrateArt } from './components/cardFace'
 import { icon } from './components/icons'
 
@@ -17,6 +17,8 @@ export interface ZoomOpts {
   cardHtml: string
   /** 卡面详情 HTML（cardDetailHtml 的产物） */
   detailHtml: string
+  /** 卡池页才有：放大视图里的锁定/解锁角标。toggle() 返回切换后的「已解锁」 */
+  lock?: { unlocked: boolean; toggle: () => boolean }
 }
 
 let onClose: (() => void) | null = null
@@ -34,8 +36,17 @@ export function openCardZoom(opts: ZoomOpts): void {
   el.setAttribute('role', 'dialog')
   el.setAttribute('aria-modal', 'true')
   el.tabIndex = -1 // 只为可聚焦（Esc 与读屏进得去），不进 tab 序列
+  // 窄屏（含移动端）详情默认盖在卡上：点进来就是「看这张卡」，不该再要第二下才出描述
+  if (!window.matchMedia(WIDE).matches) el.classList.add('tip-on')
+  // 锁标与 ✕ 并列、不放在 .zoom-stage 里——stage 内的点击全被认成「开关详情」
+  const lockHtml = opts.lock
+    ? `<button type="button" class="card-lock zoom-lock" aria-pressed="${!opts.lock.unlocked}" aria-label="锁定">
+         <span aria-hidden="true">${opts.lock.unlocked ? '🔓' : '🔒'}</span>
+       </button>`
+    : ''
   el.innerHTML = `
     <button type="button" class="cg-close zoom-close" aria-label="关闭">${icon('cg-close')}</button>
+    ${lockHtml}
     <div class="zoom-stage">
       <div class="zoom-face">${opts.cardHtml}</div>
       <div class="zoom-tip cg-scroll card-detail" role="tooltip">${opts.detailHtml}</div>
@@ -61,6 +72,15 @@ export function openCardZoom(opts: ZoomOpts): void {
   el.addEventListener('click', (e) => {
     const t = e.target as HTMLElement
     if (t.closest('.zoom-close')) return close()
+    if (t.closest('.zoom-lock')) {
+      const lockBtn = t.closest<HTMLButtonElement>('.zoom-lock')
+      if (lockBtn && opts.lock) {
+        const unlocked = opts.lock.toggle()
+        lockBtn.setAttribute('aria-pressed', String(!unlocked))
+        lockBtn.innerHTML = `<span aria-hidden="true">${unlocked ? '🔓' : '🔒'}</span>`
+      }
+      return
+    }
     // 竖版/窄屏：卡面、详情、卡外那条提示叠在一起，点哪都是开关详情
     if (!window.matchMedia(WIDE).matches && t.closest('.zoom-stage, .zoom-hint')) {
       el.classList.toggle('tip-on')

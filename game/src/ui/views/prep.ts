@@ -21,7 +21,7 @@ import { heroPortraitHtml, hydrateHeroArt } from '../components/hero'
 import { icon } from '../components/icons'
 import type { CardFaceOpts } from '../components/cardFace'
 import { enableDrag } from '../drag'
-import { enableHoverCard, hideCardPop } from '../hover'
+import { enableCardPop, hideCardPop } from '../hover'
 import { getCatalog } from '../catalog'
 import { loadProfile } from '../profile'
 import { getDraft, patchOwnHero, setOwn, type RosterDraft } from '../draft'
@@ -401,8 +401,9 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
   wireAbort = ac
   host.addEventListener('click', onClick, { signal: ac.signal })
   host.addEventListener('keydown', onKey, { signal: ac.signal })
-  // 委托挂在 host 上，一次即可，能跨 refresh() 的就地换节点存活（同 wireDrag）
-  enableHoverCard(host, {
+  // 委托挂在 host 上，一次即可，能跨 refresh() 的就地换节点存活（同 wireDrag）。
+  // 详情统一入口：桌面 hover；触摸点按（tap 编卡的同时弹出详情，等于确认刚编的是哪张）
+  enableCardPop(host, {
     resolve: (el) => el.closest<HTMLElement>('.card-face'),
     render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
   })

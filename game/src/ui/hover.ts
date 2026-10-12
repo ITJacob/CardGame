@@ -1,6 +1,7 @@
-// 卡面详情浮层，两个档：
+// 卡面详情浮层，两个档 + 一个统一入口：
 //   enableHoverCard —— 悬停满 delay 毫秒才弹，移开即收（卡池 / 整备 / 战斗，桌面档）
-//   enableClickCard —— 点一下弹，再点收起（新游戏 / 在线展示台：移动端没有 hover）
+//   enableClickCard —— 点一下弹，再点收起（纯触摸设备：没有 hover）
+//   enableCardPop   —— 按设备能力（hoverCapable）二选一，视图统一调它
 // 两档共用同一套浮层外壳与定位（createPop / showPop / placePop）。
 //
 // 两个约束决定了实现形状：
@@ -15,6 +16,21 @@ const bound = new WeakMap<HTMLElement, AbortController>()
 
 /** 当前活着的那个绑定（路由复用同一个 host 元素，所以同时最多一个） */
 let liveHide: (() => void) | null = null
+
+/**
+ * 这台设备有没有真 hover。触摸屏的 tap 会合成 mouseover——不加这道门，点卡面开了
+ * 放大视图之后 450ms 还会在底下弹出一个浮层。media query 是「能悬停且指针够准」，
+ * 触屏笔记本（hover 与触摸并存）判 true，走桌面档。
+ */
+export function hoverCapable(): boolean {
+  return window.matchMedia('(hover: hover) and (pointer: fine)').matches
+}
+
+/** 统一入口：能 hover 的设备走悬停档，纯触摸走点按档。视图不再自己选边 */
+export function enableCardPop(host: HTMLElement, opts: HoverCardOpts): void {
+  if (hoverCapable()) enableHoverCard(host, opts)
+  else enableClickCard(host, opts)
+}
 
 /** 重绘前手动收起：重绘不产生鼠标事件，浮层不会自己消失 */
 export function hideCardPop(): void {
@@ -80,6 +96,7 @@ function showPop(pop: HTMLElement, face: HTMLElement, html: string): void {
 
 export function enableHoverCard(host: HTMLElement, opts: HoverCardOpts): void {
   bound.get(host)?.abort()
+  if (!hoverCapable()) return // 触摸屏没有真 hover，合成 mouseover 会在放大视图底下弹浮层
   const ac = new AbortController()
   const { signal } = ac
   bound.set(host, ac)

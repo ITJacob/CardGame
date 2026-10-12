@@ -1,6 +1,7 @@
-// 现有卡池：解锁职业 / 锁定卡牌。左职业列表，右该职业卡面网格。
-// 交互：点卡面 = 放大居中看大图（大图上 hover 出详情）；hover 时右上角浮出锁标，点锁标
-// 才是锁定/解锁。详情浮层（hover 卡面 450ms）保留。
+// 现有卡池：解锁职业 / 锁定卡牌。桌面=左职业列表 + 右卡面网格；小屏/竖屏职业列表收成
+// 左侧划出抽屉（头行「职业」按钮拉出）。
+// 交互：点卡面 = 放大居中看大图（窄屏详情默认盖在卡上，可再点收起；放大视图里带锁标），
+// 桌面 hover 卡面 450ms 出详情浮层、hover 时右上角浮出锁标——点锁标才是锁定/解锁。
 import { subBarHtml, escapeHtml } from '../components/chrome'
 import { icon } from '../components/icons'
 import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
@@ -79,16 +80,24 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
   host.innerHTML = `
     ${subBarHtml('现有卡池')}
     <main class="pool-page">
-      <aside class="cls-list cg-scroll">${classRows}</aside>
+      <aside class="cls-list cg-scroll" id="cls-drawer">
+        <div class="cls-drawer-head">
+          <span>职业</span>
+          <button type="button" class="cg-close" id="btn-cls-close" aria-label="收起">${icon('cg-close')}</button>
+        </div>
+        ${classRows}
+      </aside>
+      <div class="pool-scrim" id="pool-scrim" aria-hidden="true"></div>
       <section class="pool-main cg-panel">
         <div class="pool-head">
+          <button type="button" class="cg-btn cg-btn--ghost cg-btn--sm" id="btn-cls-drawer" aria-controls="cls-drawer">☰ 职业</button>
           <h2 class="cg-panel__title">${escapeHtml(def?.name ?? current)}</h2>
           <button type="button" class="cg-btn cg-btn--sm ${profile.unlockedClasses.includes(current) ? 'cg-btn--danger' : 'cg-btn--primary'}" id="btn-toggle-cls">
             ${profile.unlockedClasses.includes(current) ? '锁定该职业' : '解锁该职业'}
           </button>
         </div>
         <p class="hint" id="pool-hint">${hintHtml(profile, def?.knownSkills ?? [], classIds, available)}</p>
-        <div class="pool-grid">${cards}</div>
+        <div class="pool-grid cg-scroll">${cards}</div>
       </section>
     </main>`
 
@@ -98,8 +107,21 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
     render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
   })
 
+  // 抽屉：桌面是侧栏、小屏收成左侧划出。点职业项走 hash 路由——若切了职业，路由重绘
+  // 天然带走抽屉；点的是当前职业则 hash 不变、不重绘，所以这里统一先收。
+  const drawer = host.querySelector<HTMLElement>('#cls-drawer')
+  const scrim = host.querySelector<HTMLElement>('#pool-scrim')
+  const setDrawer = (open: boolean): void => {
+    drawer?.classList.toggle('is-open', open)
+    scrim?.classList.toggle('is-open', open)
+  }
+  host.querySelector<HTMLElement>('#btn-cls-drawer')?.addEventListener('click', () => setDrawer(true))
+  host.querySelector<HTMLElement>('#btn-cls-close')?.addEventListener('click', () => setDrawer(false))
+  scrim?.addEventListener('click', () => setDrawer(false))
+
   host.querySelectorAll<HTMLElement>('[data-cls]').forEach((el) => {
     el.addEventListener('click', () => {
+      setDrawer(false)
       location.hash = `#/cards/${el.dataset.cls ?? ''}`
     })
   })
@@ -109,9 +131,9 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
     sync(host, catalog, current)
   })
 
-  // 点卡面 = 放大居中看大图（解锁是锁标的事，见 openZoom 上方注释）
+  // 点卡面 = 放大居中看大图（网格锁标与放大视图里的锁标都能锁定，见 openZoom）
   host.querySelectorAll<HTMLElement>('.pool-grid [data-open]').forEach((el) => {
-    el.addEventListener('click', () => openZoom(catalog, el.dataset.open ?? ''))
+    el.addEventListener('click', () => openZoom(host, catalog, current, el.dataset.open ?? ''))
   })
 
   host.querySelectorAll<HTMLElement>('.pool-grid [data-lock]').forEach((el) => {
@@ -122,8 +144,8 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
   })
 }
 
-/** 放大居中看大图；详情在大图上 hover 才出（.zoom-stage:hover 控制） */
-function openZoom(catalog: Catalog, cardId: string): void {
+/** 放大居中看大图；窄屏详情默认盖在卡上。锁标在放大视图里——toggle 后原地 sync 网格 */
+function openZoom(host: HTMLElement, catalog: Catalog, current: string, cardId: string): void {
   const skill = catalog.skillDefs.get(cardId)
   const tpl = catalog.behaviorTemplates.get(cardId)
   if (!skill && !tpl) return
@@ -141,6 +163,14 @@ function openZoom(catalog: Catalog, cardId: string): void {
       size: 'zoom',
     }),
     detailHtml: detail,
+    lock: {
+      unlocked: availableCardSet(loadProfile(), catalog).has(cardId),
+      toggle: () => {
+        saveProfile(toggleCardUnlock(loadProfile(), catalog, cardId))
+        sync(host, catalog, current)
+        return availableCardSet(loadProfile(), catalog).has(cardId)
+      },
+    },
   })
 }
 

@@ -124,6 +124,10 @@
 
 /* —— 放大视图的关闭键：外观全交给 kit 的 .cg-close，本文件只负责摆到右上角 —— */
 .zoom-close { position: absolute; top: 14px; right: 16px; z-index: 1; }
+/* 放大视图里的锁标：外观复用卡池格子的 .card-lock，但它平时靠 .card-cell:hover 才现身
+   （opacity:0 + pointer-events:none），放大视图里没有 .cell 可悬停，这里把它摁成常显。
+   摆在 ✕ 左边，与 .zoom-close 同一行。 */
+.zoom-lock { position: absolute; top: 14px; right: 60px; z-index: 1; opacity: 1; pointer-events: auto; }
 
 /* —— 整备页技能槽上的 ✕：是 .cg-btn，但槽只有 76px 宽，收成 22px 的小方块 —— */
 .slot .slot-op.cg-btn {
