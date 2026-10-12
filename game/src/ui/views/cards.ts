@@ -65,6 +65,9 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
           kind: cardKind,
           cost: skill?.cost?.energy,
           size: 'full',
+          // 竖屏/窄屏网格放大到 clamp(150, (100%−10)/2, 220)（见 app.css 卡池段，媒体查询同串），
+          // sizes 跟着走同一口径，不然 DPR≥2 的竖屏会停在 400w 档发虚
+          sizes: '(max-width: 860px) clamp(150px, calc(50vw - 20px), 220px), (orientation: portrait) clamp(150px, calc(50vw - 20px), 220px), 120px',
           as: 'button',
           attrs: `data-open="${escapeHtml(cardId)}"`,
           dim: !on,

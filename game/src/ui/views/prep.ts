@@ -557,7 +557,7 @@ function summaryTileHtml(catalog: Catalog, kind: SlotKind, i: number, id: string
   }
   return `<div class="sk-tile" ${open} aria-label="第 ${i + 1} 槽 · ${escapeHtml(cardName(catalog, id))}，点它编卡">
       <span class="sk-num">${i + 1}</span>
-      ${cardOf(catalog, id, kind, 'compact')}
+      ${cardOf(catalog, id, kind, 'compact', { sizes: '92px' })}
       <button type="button" class="cg-btn cg-btn--danger slot-op" data-unequip="${kind}:${i}" aria-label="卸下">✕</button>
     </div>`
 }
@@ -649,7 +649,7 @@ function slotTileHtml(catalog: Catalog, kind: SlotKind, i: number, id: string | 
   }
   return `<div class="sk-tile slot${draggable ? ' draggable' : ''}" data-slot="${kind}:${i}">
       <span class="sk-num">${i + 1}</span>
-      ${cardOf(catalog, id, kind, 'compact')}
+      ${cardOf(catalog, id, kind, 'compact', { sizes: '110px' })}
       <button type="button" class="cg-btn cg-btn--danger slot-op" data-unequip="${kind}:${i}" aria-label="卸下">✕</button>
     </div>`
 }
@@ -672,8 +672,9 @@ function slotRowHtml(catalog: Catalog, hero: PlacedHero, kind: SlotKind): string
   const slots: string[] = []
   for (let i = 0; i < SLOT_LIMIT[kind]; i += 1) slots.push(slotTileHtml(catalog, kind, i, ids[i], draggable))
 
-  // 行里不再挂「已装/上限 · 说明」那行小字：标签归位成摘要行那种左侧小标签（说明挪到下面的
-  // 提示行，见 slotTip），计数在下面的页签上（主动 3/4），省下的那一行在横屏弹窗里正好够两排槽都摊开。
+  // 行里不再挂「已装/上限 · 说明」那行小字：说明挪到下面的提示行（见 slotTip），计数在下面
+  // 的页签上（主动 3/4）。标签竖屏是摘要行那种左侧小标签，横屏由 CSS 提成标题行（弹窗左栏
+  // 是「标题 + 2×2」两块），省下的高度正好够两排槽都摊开。
   // data-kind：refresh() 据此找行（右栏的摘要行也挂着同一个属性）。
   return `<div class="sk-row slot-block" data-kind="${kind}">
     <span class="sk-tag">${SLOT_LABEL[kind]}</span>

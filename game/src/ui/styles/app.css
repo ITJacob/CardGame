@@ -632,7 +632,7 @@ body.zoom-open { overflow: hidden; }
 .hero-showcase[data-orient='landscape'] .hs-switch { display: none; }
 
 /* 技能区：两类各一组，组内一行 4 张。DOM 里两组都在，显示哪组按朝向定：
-   竖屏只显示选中那组（切换按钮管），横屏两组都摊开、靠左侧的「主动/被动」小标签分辨。
+   竖屏只显示选中那组（切换按钮管），横屏两组都摊开、各挂一行「主动/被动」标题。
    flex:0 1 auto + 自身滚动是兜底 —— 侧栏高度不够时让这一块自己收起来滚，
    而不是把内容裁掉或把整页顶出滚动条。放得下时不会出滚动条。 */
 .hs-cards {
@@ -643,14 +643,15 @@ body.zoom-open { overflow: hidden; }
 .hs-group.is-on { display: flex; }
 /* 标签只在横屏出现（竖屏靠切换按钮说，不必再来一个） */
 .hs-group__tag { display: none; }
-/* 横屏那一排里，小标签与它那排卡**竖直居中**（整备页的 .sk-tag 就是居中的，
-   两页来回切时这四字不会一上一下地跳）。原先 align-items:flex-start + 标签的
-   padding-top:2px 是把它顶在卡排上沿的写法，故这里改 center 并撤掉那 2px。 */
-.hero-showcase[data-orient='landscape'] .hs-group { display: flex; align-items: center; }
+/* 横屏：「主动 / 被动」提成标题行，独占一行压在卡排上方（不再与卡排同行竖直居中）。
+   整备页右栏的 .sk-tag、整备弹窗左栏的槽行标签同款处理，三处来回切位置一致。
+   卡排从横向 flex 项变成纵向堆叠：flex:1 撤掉（不然它会在列方向拉伸），宽度靠 align-self 撑满。 */
+.hero-showcase[data-orient='landscape'] .hs-group { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .hero-showcase[data-orient='landscape'] .hs-group__tag {
-  display: block; flex: none; width: 2.2em;
-  font-size: 11px; line-height: 1.2; color: var(--text-dim);
+  display: block; flex: none;
+  font-size: 12px; line-height: 1.2; letter-spacing: .02em; color: var(--accent);
 }
+.hero-showcase[data-orient='landscape'] .hs-group__row { flex: none; align-self: stretch; }
 .hs-group__row { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 5px; flex: 1 1 auto; min-width: 0; }
 .hs-group__row .cards-none { color: var(--text-dim); font-size: 12px; }
 
@@ -669,7 +670,9 @@ body.zoom-open { overflow: hidden; }
    两页的右栏从同一条规则里取容器口径，不会各长一版。 */
 [data-orient='landscape'] .hs-side { container-type: size; }
 .hero-showcase[data-orient='landscape'] .hs-group__row > .card-face {
-  --hs-row-h: max(48px, calc((100cqh - 60px) / 2));
+  /* 两排卡的行高由侧栏高度倒推：扣掉名条（~36）与间距之外，还要再扣两行「主动/被动」
+     标题（2×~15px 字高 + 2×4px 组内缝 ≈ 38px），合起来按 98px 扣，剩下两排平分 */
+  --hs-row-h: max(48px, calc((100cqh - 98px) / 2));
   /* 上限 92：大横屏（≥1024 宽）侧栏又宽又高，不设上限会一路涨到 200+；
      92×123 在 1.5fr/1fr 的右栏里已经能看清卡名与费用，再大就喧宾夺主了。 */
   width: min(calc((100% - 15px) / 4), calc(var(--hs-row-h) * 3 / 4), 92px);
@@ -994,14 +997,15 @@ table.lb tr.draw td.res { color: var(--text-dim); }
    （金色 15px 名字 + 暗色 11.5px 小字，与「新游戏」页同一份样式） */
 .prep-skills { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 
-/* 技能摘要：主动 / 被动各一行 4 格。整格点开弹窗编这一侧，格子右上角的 ✕ 卸下这张。
+/* 技能摘要：主动 / 被动各一块「标签 + 一行 4 格」。整格点开弹窗编这一侧，格子右上角的 ✕ 卸下这张。
    行里只有「小标签 + 4 格」两件：原先行末还挂一个「4/4」计数（.sk-count），那一列要
    从行的可用宽里扣（约 28px），横屏右栏本就吃紧，扣掉的正是一档卡宽 —— 撤掉后
-   4 格平分整行，卡跟着大一圈。整行 align-items:center，标签与那排卡竖直居中。
+   4 格平分整行，卡跟着大一圈。竖屏标签是左侧小标签（与卡排竖直居中）；
+   横屏提成标题行（规则在下方整备段，与展示台的 .hs-group__tag 同口径）。
 
    这一排的每一条口径都跟「新游戏」页那一排（.hs-group__tag / .hs-group__row >
-   .card-face）**同名同值**：标签 2.2em、卡片之间 5px 缝、宽度公式
-   min((100% - 15px)/4, 88px)、从左往右排。两页并排看的是同一块技能区，任何一条岔开，
+   .card-face）**同名同值**：卡片之间 5px 缝、宽度公式 min((100% - 15px)/4, 88px)、
+   从左往右排、横屏标签都是标题行。两页并排看的是同一块技能区，任何一条岔开，
    同一屏里疏密就不一样——早先整备页是「4 格平分整行 + 卡在列内居中」，横屏缝 14px
    而展示台只有 5px，一眼就看得出不是一套（2026-10-11 修）。 */
 .sk-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
@@ -1067,24 +1071,21 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .pp-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; padding: 12px; }
 .prep-page[data-orient='landscape'] .pp-dialog { width: min(1000px, 100%); height: min(92dvh, 100%, 700px); }
 .prep-page[data-orient='landscape'] .pp-body { flex-direction: row; gap: 8px; padding: 10px; }
-/* 横屏左栏：主动/被动各排成 2×2（4 个槽两列两行）。原先 1×4 只占左栏上半截——
-   左栏高度是定死的（弹窗高减头行与内边距），另一半全空着；摊成 2×2 正好把这份高度
-   用满，卡跟着大一圈（≥1024 宽的横窗上从 49×65 长到 ~102×137；矮横窗上高度才是瓶颈，
-   长不了多少，但也不亏）。卡按左栏高度倒推：4 行卡（两块各 2 行）+ 两道行缝 5 +
-   一块缝 8 ⇒ 行高 = (100cqh - 18px) / 4，3:4 的卡宽 = 行高 × 3/4 = (100cqh - 18px) × 3/16
-   （规则里扣 20——多出的 2px 见下一段注释）；列宽（左栏减标签那道，两列平分）再兜一道底，
-   窄横窗上就是它在限。 */
+/* 横屏左栏：「主动 / 被动」各是一块「标题行 + 2×2 槽」。标题独占一行（与整备页右栏、
+   展示台的横屏标签同款），不再挂在 2×2 块左侧——挂左侧时它落在整块正中，离上下两排卡
+   都不挨着，看着像悬空。卡按左栏高度倒推：4 行卡（两块各 2 行）+ 两行标题（~15px）
+   + 块内缝（2×4）+ 块缝 8 + 网格行缝（2×5）≈ 56 ⇒ 行高 = (100cqh − 56) / 4，3:4 的
+   卡宽 = 行高 × 3/4 = (100cqh − 56) × 3/16（规则里扣 60，留 4px 余量防舍入顶出滚动条）；
+   列宽（左栏两列平分）再兜一道底，窄横窗上就是它在限。 */
 .prep-page[data-orient='landscape'] .pp-slots { flex: 0 0 240px; min-height: 0; overflow-y: auto; container-type: size; }
-.prep-page[data-orient='landscape'] .pp-slots .slot-row {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); justify-items: center; gap: 5px;
+.prep-page[data-orient='landscape'] .pp-slots .sk-row { flex-direction: column; align-items: stretch; gap: 4px; }
+.prep-page[data-orient='landscape'] .pp-slots .sk-tag {
+  width: auto; font-size: 12px; letter-spacing: .02em; color: var(--accent);
 }
-/* 扣 20 而不是 18：缝的实际和是 3×5 + 8 = 23 里两头各占一半，留 2px 余量，
-   免得四舍五入把内容顶出左栏那一像素、平白冒出一条滚动条 */
-.prep-page[data-orient='landscape'] .pp-slots .sk-tile { width: min(100%, calc((100cqh - 20px) * 3 / 16)); }
-/* 排成两排之后，「主动 / 被动」这两字再照摘要行那样竖直居中，就等于挂在整块的正中——
-   离上下两排卡都不挨着，看着像悬空。改成贴块顶，与第一排卡的顶边齐（左右栏的
-   竖屏仍是 1×4 一行，居中不变）。 */
-.prep-page[data-orient='landscape'] .pp-slots .sk-row { align-items: flex-start; }
+.prep-page[data-orient='landscape'] .pp-slots .slot-row {
+  flex: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); justify-items: center; gap: 5px;
+}
+.prep-page[data-orient='landscape'] .pp-slots .sk-tile { width: min(100%, calc((100cqh - 60px) * 3 / 16)); }
 /* 横屏弹窗的每一像素都在抠：卸卡键收小一档（槽那一列的卡本来就比摘要行窄） */
 .prep-page[data-orient='landscape'] .pp-slots .slot-op.cg-btn { width: 18px; min-height: 18px; font-size: 10px; }
 
@@ -1114,12 +1115,19 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .sk-tile .card-face .card-info { padding: 4cqw 6cqw 5cqw; font-size: 13cqw; gap: 4cqw; }
 .sk-tile .card-face .noart-glyph { font-size: 36cqw; }
 
-/* 横屏按右栏高度收技能格：两行卡 + 名条要塞进 row1 的行高里。
-   --hs-row-h 与展示台那条（写在 .hs-group__row > .card-face 上）取同一个偏置 60：
-   两页的脚同高之后右栏就同高，偏置再留 56 会让整备的卡比「新游戏」大 3px、
-   切页时技能区仍会跳一下。行距也一并对到展示台的 8px，两排行与卡才逐 px 对齐。
+/* 横屏按右栏高度收技能格：两行卡 + 名条 + 两行「主动/被动」标题要塞进 row1 的行高里。
+   --hs-row-h 与展示台那条（写在 .hs-group__row > .card-face 上）取同一个偏置 98：
+   两页的脚同高之后右栏就同高，偏置岔开会让两页的卡不一致、切页时技能区跳一下。
+   行距也一并对到展示台的 8px，两排行与卡才逐 px 对齐。
    选择器写在这里（.prep-skills 上）是为了让 cqh 仍对着 .hs-side 那个尺寸容器量。 */
-.prep-page[data-orient='landscape'] .prep-skills { --hs-row-h: max(48px, calc((100cqh - 60px) / 2)); }
+.prep-page[data-orient='landscape'] .prep-skills { --hs-row-h: max(48px, calc((100cqh - 98px) / 2)); }
+/* 横屏：标签提成标题行（与展示台的 .hs-group__tag 同款——竖屏仍是左侧小标签，不动）。
+   卡排撤掉横向 flex 生长，靠 align-self 撑满行宽。 */
+.prep-page[data-orient='landscape'] .prep-skills .sk-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+.prep-page[data-orient='landscape'] .prep-skills .sk-tag {
+  width: auto; font-size: 12px; letter-spacing: .02em; color: var(--accent);
+}
+.prep-page[data-orient='landscape'] .prep-skills .sk-tiles { flex: none; align-self: stretch; }
 /* 选择器收到 .prep-skills 里：弹窗的槽行也挂着 .sk-tile（外观共用），但那里没有 --hs-row-h
    ——那条 calc 一无效，整条 width 就作废成 auto，槽会当场塌成 0×0。槽按自己的列宽定尺寸即可。 */
 .prep-page[data-orient='landscape'] .prep-skills .sk-tile { width: min(calc((100% - 15px) / 4), calc(var(--hs-row-h) * 3 / 4), 92px); }

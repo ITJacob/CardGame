@@ -80,6 +80,13 @@ export interface CardFaceOpts {
   corner?: string
   /** 置灰：未解锁 / 槽位已满。只降透明度，hover 详情照常弹 */
   dim?: boolean
+  /**
+   * 卡图 srcset 的 sizes 声明（CSS 显示宽度，浏览器 × DPR 选档）。缺省按 size 档估
+   * （compact 60 / full 120 / zoom 100vw）；**实渲尺寸偏离默认档的调用方必须显式给**
+   * ——sizes 写小了浏览器会选低一档的图放大显示（发虚），宁可略估大。已有实例：
+   * 展示台/整备的技能卡实渲 ≤92px（不是 60），卡池页竖屏网格放大到 150–220px。
+   */
+  sizes?: string
 }
 
 /**
@@ -93,7 +100,7 @@ export interface CardFaceOpts {
 export function cardFaceHtml(opts: CardFaceOpts): string {
   const {
     cardId, name, rarity = 'common', pathwayId, kind = 'active', cost, size = 'compact',
-    as = 'figure', attrs, corner, dim,
+    as = 'figure', attrs, corner, dim, sizes,
   } = opts
   const emoji = RARITY_EMOJI[rarity] ?? '▫️'
   const fallback = frameFallbackUrl(rarity)
@@ -104,8 +111,8 @@ export function cardFaceHtml(opts: CardFaceOpts): string {
   // figcaption 只在 figure 里合法；按钮档换成 div（样式挂类不挂标签，外观不变）
   const infoTag = as === 'button' ? 'div' : 'figcaption'
   const sizeCls = size === 'compact' ? '' : size
-  // sizes 声明卡面真实 CSS 显示宽度，浏览器据此 × DPR 选 srcset 档位
-  const artSizes = size === 'compact' ? '60px' : size === 'full' ? '120px' : '100vw'
+  // sizes 声明卡面真实 CSS 显示宽度，浏览器据此 × DPR 选 srcset 档位（调用方可覆盖，见 CardFaceOpts.sizes）
+  const artSizes = sizes ?? (size === 'compact' ? '60px' : size === 'full' ? '120px' : '100vw')
   const cls = ['card-face', `r-${escapeHtml(rarity)}`, `k-${kind}`, sizeCls, dim ? 'dim' : '']
     .filter(Boolean)
     .join(' ')

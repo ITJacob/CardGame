@@ -193,6 +193,8 @@ function cardGroupHtml(hero: HeroLike, catalog: Catalog, k: SlotKind, cur: SlotK
         kind: k,
         cost: def?.cost?.energy,
         as: 'button',
+        // 实渲宽 ≤92px（.hs-group__row 按行平分、横屏按右栏高倒推），不是 compact 默认的 60px
+        sizes: '92px',
       })
     })
     .join('')
