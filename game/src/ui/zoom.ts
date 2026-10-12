@@ -9,8 +9,10 @@
 import { hydrateArt } from './components/cardFace'
 import { icon } from './components/icons'
 
-/** 与 app.css 里「横板」那条媒体查询保持一字不差 */
-const WIDE = '(min-width: 1100px) and (orientation: landscape)'
+/** 与 app.css 里「横板」那条媒体查询保持一字不差。
+ *  横版 = 宽 ≥1100（任意朝向），或竖屏宽 ≥768（pad 竖屏：卡+详情并排放得下，同时显示）；
+ *  手机横屏（<1100 的 landscape）仍走叠加模式，卡面更大。 */
+const WIDE = '(min-width: 1100px), (min-width: 768px) and (orientation: portrait)'
 
 export interface ZoomOpts {
   /** 放大后的卡面 HTML（尺寸靠 .card-face.zoom 撑） */

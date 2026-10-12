@@ -362,7 +362,7 @@ body.zoom-open { overflow: hidden; }
 }
 /* --zh = 放大卡面的高度：先按视口高铺满，再按 3:4 退让；横板还要给右侧详情让出 384px */
 .card-zoom { --zh: min(calc(100vh - 24px), calc((100vw - 24px) * 4 / 3)); }
-@media (min-width: 1100px) and (orientation: landscape) {
+@media (min-width: 1100px), (min-width: 768px) and (orientation: portrait) {
   .card-zoom { --zh: min(calc(100vh - 24px), calc((100vw - 384px) * 4 / 3)); }
 }
 .zoom-stage { position: relative; display: flex; align-items: center; gap: 18px; }
@@ -382,7 +382,8 @@ body.zoom-open { overflow: hidden; }
 .zoom-hint { display: none; }
 /* 关闭键的外观来自 kit 的 .cg-close，这里只摆位（覆盖单类规则，故在 kit-bridge 里） */
 /* 卡右侧放不下详情（竖版/窄屏）：详情改成盖在卡面上的半透层，点卡面开关 */
-@media (max-width: 1099.98px), (orientation: portrait) {
+/* 叠加模式的判定 = 上面横版判定取反：<768 任意朝向，或 <1100 的横屏（手机横屏） */
+@media (max-width: 767.98px), (max-width: 1099.98px) and (orientation: landscape) {
   /* 卡名在卡底、提示条又在卡外下方，高度受限时得先给提示条留出 34px */
   .card-zoom { --zh: min(calc(100vh - 58px), calc((100vw - 24px) * 4 / 3)); }
   .zoom-tip {
