@@ -1,6 +1,6 @@
 {
   "_note": "英雄立绘 art 数据源（游戏侧概念，非 DDD 战斗面）。prompt 组装口径与技能卡一致：[manifest.artFormat, heroArtStyle, subject, ...elements, mood].filter(Boolean).join(', ')。改风格只改 heroArtStyle 一处。",
-  "_keyFormat": "hero_s{strength}a{agility}i{intelligence}_{gender}.png —— 与 herogen.ts COMBOS 顺序一致（s 0..3, a 0..3-s, i 3-s-a）。",
+  "_keyFormat": "hero_s{strength}a{agility}i{intelligence}_{gender}@{200,400,800}w.webp —— 与 herogen.ts COMBOS 顺序一致（s 0..3, a 0..3-s, i 3-s-a）；三档派生图由 tools/build_art_variants.py 从母版生成。",
   "_designRule": "1) 英雄与职业随机搭配，故画面不出现任何职业特征：无制服、无徽章、无武器、无职业专属道具，只以体型/体态/气质区分力敏智倾向。2) 时代锚定诡秘之主背景：19 世纪维多利亚。3) 场景多样（城市/乡村/旷野/海岸/交通工具），以日光为主。4) 人物须与场景有简单互动（扶/靠/搬/踏/翻），不做呆板站姿。5) 人物一律 young，避免被渲染成中老年。",
   "_classRule": "⛔ 阶级要**分散**，不要统一到某一档：10 组按 贵族2 / 中产2 / 小资3 / 底层3 分布，由 elements[1] 着装承载（fine+silk=贵族；well-tailored=中产；neat=小资；coarse linen=底层）。⚠️ 不是全部去底层化、也不是全部中产化——多样性本身就是要求。",
   "_pairRule": "同一 combo 的男女为一组：elements[0] 背景逐字相同、elements[1] 着装同阶级同色系、mood 共享、互动动作一致；subject 与 elements[2] 随性别变化。",
