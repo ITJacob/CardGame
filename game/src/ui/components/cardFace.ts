@@ -1,17 +1,26 @@
 // 技能卡面：竖版卡牌 = 卡图为主体 + site 的边框图层（标识稀有度）+ 常驻信息条。
-// 边框走 ./site/assets/frames/…（与卡图 ./site/assets/cards/<id>.png 同源，dev 由 Vite
-// 中间件把仓库 site/ 挂到根路径）。边框图是「纯黑底 + 边缘细亮线」，靠 mix-blend-mode:screen
+// 边框走 ./assets/frames/…（卡图派生 webp 在 ./assets/cards/，母版在仓库根 source/，dev 由 Vite
+// 中间件把仓库 assets/ 挂到根路径）。边框图是「纯黑底 + 边缘细亮线」，靠 mix-blend-mode:screen
 // 叠在卡图上——黑底被吃掉、亮线留下。832 张卡只有 34 张有卡图，所以「无图」是常态而非异常，
 // 必须是一张设计过的卡（渐变底 + 稀有度字形），而不是空框。
 import { escapeHtml } from './chrome'
 import type { Catalog } from '../../kernel/catalog/types'
 
-/** 卡图路径：游戏在 /CardGame/，wiki 在 /CardGame/site/，故相对路径 ./site/…（英雄立绘同此口径，见 hero.ts 的 heroArtUrl） */
+/** 卡图路径：派生 webp 在仓库根 assets/（部署到 /CardGame/assets/），故相对路径 ./assets/…（英雄立绘同此口径，见 hero.ts 的 heroArtUrl） */
+const CARD_ART_BASE = './assets/cards/'
+
+/** 卡图默认源（最大档）：不支持 srcset 时的兜底 */
 export function cardArtUrl(cardId: string): string {
-  return `./site/assets/cards/${cardId}.png`
+  return `${CARD_ART_BASE}${cardId}@800w.webp`
 }
 
-const FRAME_BASE = './site/assets/frames/'
+/** 三档 srcset（200/400/800w）。派生图由 tools/build_art_variants.py 从母版生成，
+ *  浏览器按 sizes 声明的显示宽度 × DPR 自选档，避免小卡面拖下 1152px 大图。 */
+export function cardArtSrcset(cardId: string): string {
+  return [200, 400, 800].map((w) => `${CARD_ART_BASE}${cardId}@${w}w.webp ${w}w`).join(', ')
+}
+
+const FRAME_BASE = './assets/frames/'
 
 /**
  * 稀有度 → 边框图。common/uncommon/rare 是全局三张（盘上已有）；
@@ -95,6 +104,8 @@ export function cardFaceHtml(opts: CardFaceOpts): string {
   // figcaption 只在 figure 里合法；按钮档换成 div（样式挂类不挂标签，外观不变）
   const infoTag = as === 'button' ? 'div' : 'figcaption'
   const sizeCls = size === 'compact' ? '' : size
+  // sizes 声明卡面真实 CSS 显示宽度，浏览器据此 × DPR 选 srcset 档位
+  const artSizes = size === 'compact' ? '60px' : size === 'full' ? '120px' : '100vw'
   const cls = ['card-face', `r-${escapeHtml(rarity)}`, `k-${kind}`, sizeCls, dim ? 'dim' : '']
     .filter(Boolean)
     .join(' ')
@@ -104,7 +115,7 @@ export function cardFaceHtml(opts: CardFaceOpts): string {
   return `
   <${tag} ${extra} class="${cls}" data-card="${escapeHtml(cardId)}">
     <div class="card-noart" aria-hidden="true"><span class="noart-glyph">${emoji}</span></div>
-    <img class="card-art" src="${cardArtUrl(cardId)}" alt="" loading="lazy" data-art>
+    <img class="card-art" src="${cardArtUrl(cardId)}" srcset="${cardArtSrcset(cardId)}" sizes="${artSizes}" alt="" loading="lazy" data-art>
     <img class="card-frame" src="${frameUrl(rarity, pathwayId)}" alt="" aria-hidden="true" data-frame data-frame-fallback="${fallback ?? ''}">
     <${infoTag} class="card-info">
       <span class="ci-name">${escapeHtml(name)}</span>${costHtml}

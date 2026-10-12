@@ -462,7 +462,7 @@ function cellHtml(
   // 名字/说明一律走 aria-label，不用 title：title 会弹浏览器自带的黄框（与游戏自己那套
   // 卡面浮层撞在一起，观感很突兀）。aria-label 只喂读屏，屏幕上什么都不冒。
   if (hero) {
-    return `<div class="tile own${hero.id === selectedId ? ' sel' : ''}" style="${at}" data-hero="${escapeHtml(hero.id)}" role="button" tabindex="0" aria-label="${escapeHtml(hero.name)}">${heroPortraitHtml(hero)}</div>`
+    return `<div class="tile own${hero.id === selectedId ? ' sel' : ''}" style="${at}" data-hero="${escapeHtml(hero.id)}" role="button" tabindex="0" aria-label="${escapeHtml(hero.name)}">${heroPortraitHtml(hero, '', '200px')}</div>`
   }
   // 空位的说明原来只写在 title 里，而状态行在竖屏塞不下这句（实测 360/375/390 都截断），
   // 于是落到格子自己身上：一个「＋」就地说明「点这儿放人」。

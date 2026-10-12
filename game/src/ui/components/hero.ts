@@ -14,12 +14,26 @@ export type HeroLike = Hero & { coordinate?: Coordinate }
 
 /**
  * 立绘路径。key 口径 = herogen.ts 的 COMBOS（s 0..3, a 0..3-s, i 3-s-a）× 性别，
- * 正好 10 组 × 2 = 20 张，与 site/assets/heroes/PROMPTS.md 的清单一一对应。
- * 与 cardArtUrl 同为 ./site/… 相对路径（dev 由 Vite 中间件把仓库 site/ 挂到根路径，
- * prod 由部署把 site/ 铺在与游戏同层）。
+ * 正好 10 组 × 2 = 20 张，与 source/heroes/PROMPTS.md 的清单一一对应。
+ * 与 cardArtUrl 同为 ./assets/… 相对路径（dev 由 Vite 中间件把仓库 assets/ 挂到根路径，
+ * prod 由部署把 assets/ 铺在 /CardGame/assets/）。
  */
+const HERO_ART_BASE = './assets/heroes/'
+
+/** 立绘文件名（不含档位后缀）：力敏智 × 性别，10 组 × 2 = 20 张 */
+function heroArtKey(combo: Attributes3, gender: 'male' | 'female'): string {
+  return `hero_s${combo.strength}a${combo.agility}i${combo.intelligence}_${gender}`
+}
+
+/** 立绘默认源（最大档）：不支持 srcset 时的兜底 */
 export function heroArtUrl(combo: Attributes3, gender: 'male' | 'female'): string {
-  return `./site/assets/heroes/hero_s${combo.strength}a${combo.agility}i${combo.intelligence}_${gender}.png`
+  return `${HERO_ART_BASE}${heroArtKey(combo, gender)}@800w.webp`
+}
+
+/** 三档 srcset（200/400/800w），口径同 cardArtSrcset */
+export function heroArtSrcset(combo: Attributes3, gender: 'male' | 'female'): string {
+  const k = heroArtKey(combo, gender)
+  return [200, 400, 800].map((w) => `${HERO_ART_BASE}${k}@${w}w.webp ${w}w`).join(', ')
 }
 
 /**
@@ -35,11 +49,11 @@ export function heroArtUrl(combo: Attributes3, gender: 'male' | 'female'): strin
  * @param overlay 叠在图上的东西（竖屏展示台的左右箭头）。放在这一层里是为了让它们相对
  *                「立绘框」定位，而不是相对格子——立绘比格子小或被居中时箭头才不会飘开。
  */
-export function heroPortraitHtml(hero: HeroLike, overlay = ''): string {
+export function heroPortraitHtml(hero: HeroLike, overlay = '', sizes = '320px'): string {
   const emoji = avatarEmoji(hero.constitutionId, hero.gender)
   return `<span class="hero-portrait">
     <span class="hero-portrait__emoji" aria-hidden="true">${emoji}</span>
-    <img class="hero-portrait__img" src="${heroArtUrl(hero.combo, hero.gender)}" alt="" data-hero-art>
+    <img class="hero-portrait__img" src="${heroArtUrl(hero.combo, hero.gender)}" srcset="${heroArtSrcset(hero.combo, hero.gender)}" sizes="${sizes}" alt="" data-hero-art>
     ${overlay}
   </span>`
 }
@@ -109,14 +123,14 @@ function stripHtml(heroes: HeroLike[], i: number): string {
  * 点击走的是和名册格同一个 data-hs-pick，事件委托不用分叉。
  */
 function thumbCellHtml(hero: HeroLike, i: number, on: boolean): string {
-  return `<button type="button" class="hs-thumb${on ? ' is-on' : ''}" data-hs-pick="${i}" aria-label="${escapeHtml(hero.name)}"${on ? ' aria-current="true"' : ''}>${heroPortraitHtml(hero)}</button>`
+  return `<button type="button" class="hs-thumb${on ? ' is-on' : ''}" data-hs-pick="${i}" aria-label="${escapeHtml(hero.name)}"${on ? ' aria-current="true"' : ''}>${heroPortraitHtml(hero, '', '45px')}</button>`
 }
 
 /** 名册里的一格：只露立绘。名字不往格子里写——右侧名条已经写着选中那位是谁，
  *  横屏那一排还得把高度全让给美术（格子按 3:4 铺满条高，多一行名字就少 22px 图高） */
 function cellHtml(hero: HeroLike, i: number, on: boolean): string {
   return `<button type="button" class="hs-cell${on ? ' is-on' : ''}" data-hs-pick="${i}" aria-label="${escapeHtml(hero.name)}"${on ? ' aria-current="true"' : ''}>
-    ${heroPortraitHtml(hero)}
+    ${heroPortraitHtml(hero, '', '(orientation: landscape) 300px, 45px')}
   </button>`
 }
 

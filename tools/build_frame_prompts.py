@@ -1,4 +1,4 @@
-"""导出全部边框图 prompt 清单到 site/assets/frames/PROMPTS.md，供批量出图。
+"""导出全部边框图 prompt 清单到 assets/frames/PROMPTS.md，供批量出图。
 
 数据源（权威）：manifest.json 的 artFrame（全局三档，自包含完整 prompt）+ artFrameFormat（44 张职业框共用约束）
 + 各途径 *.skills.json 顶层的 artFrameEpic / artFrameLegendary（途径主题层）。
@@ -14,7 +14,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent  # tools/ -> 仓库根
-OUT = ROOT / "site" / "assets" / "frames" / "PROMPTS.md"
+OUT = ROOT / "assets" / "frames" / "PROMPTS.md"
 
 HEADER = """# 边框图 prompt 清单
 

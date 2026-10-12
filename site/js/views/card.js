@@ -123,10 +123,17 @@ function frameFor(c) {
 }
 
 // 卡面路径：按 cardId 现拼，文件名由 id 定死（详情页 id 点一下就复制，本地照着重命名），
-// 站点不需要任何索引。png → webp 依次试，前一个 404/坏图就退到下一个——换格式不用改代码
+// 站点不需要任何索引。派生大档 webp 优先，失败退回母版 png——换格式不用改代码
 export function artCandidates(c) {
   const id = encodeURIComponent(c.id);
-  return [`assets/cards/${id}.png`, `assets/cards/${id}.webp`];
+  // 母版已移出 site/（见仓库根 source/），只取派生大档 webp
+  return [`../assets/cards/${id}@800w.webp`];
+}
+
+// 详情页大图的三档 srcset（200/400/800w），口径同 game 端 cardArtSrcset
+function artSrcset(c) {
+  const id = encodeURIComponent(c.id);
+  return [200, 400, 800].map((w) => `../assets/cards/${id}@${w}w.webp ${w}w`).join(', ');
 }
 
 function artHtml(c) {
@@ -137,10 +144,10 @@ function artHtml(c) {
   return `<section class="cs-sec">
     <h2>AI 出图 <button type="button" class="cs-copy" data-prompt="${escapeHtml(prompt)}">复制画面 prompt</button>${f ? ` <button type="button" class="cs-copy" data-prompt="${escapeHtml(fprompt)}">复制边框 prompt</button>` : ''}</h2>
     <div class="cs-artwrap">
-      <img class="cs-art" src="${escapeHtml(artCandidates(c)[0])}" alt="${escapeHtml(c.name)}" loading="lazy">
+      <img class="cs-art" src="${escapeHtml(artCandidates(c)[0])}" srcset="${artSrcset(c)}" sizes="(max-width: 640px) 92vw, 420px" alt="${escapeHtml(c.name)}" loading="lazy">
       <div class="cs-vignette"></div>
-      ${f ? `<img class="cs-orn" src="assets/frames/${f.file}.png" alt="" loading="lazy" onerror="this.remove()">` : ''}
-      <div class="cs-artmiss" hidden>卡面缺失：把图命名为 <span class="mono">${escapeHtml(c.id)}.png</span> 放进 <span class="mono">assets/cards/</span>（上面 id 点一下就复制）。格式必须是 png/jpg/webp，HEIC 浏览器渲染不了</div>
+      ${f ? `<img class="cs-orn" src="../assets/frames/${f.file}.png" alt="" loading="lazy" onerror="this.remove()">` : ''}
+      <div class="cs-artmiss" hidden>卡面缺失：把图命名为 <span class="mono">${escapeHtml(c.id)}.png</span> 放进 <span class="mono">source/cards/</span>，再跑 <span class="mono">tools/build_art_variants.py</span> 出派生图（上面 id 点一下就复制）。格式必须是 png/jpg/webp，HEIC 浏览器渲染不了</div>
     </div>
   </section>`;
 }
@@ -155,7 +162,7 @@ function wireCardArt(view, c) {
   let i = 0;
   img.addEventListener('error', () => {
     i += 1;
-    if (i < list.length) { img.src = list[i]; return; }
+    if (i < list.length) { img.removeAttribute('srcset'); img.src = list[i]; return; }
     img.style.display = 'none';        // 整条链都 404：不留破图占位
     if (miss) miss.hidden = false;
   });

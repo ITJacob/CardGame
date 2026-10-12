@@ -108,11 +108,11 @@ function zh(cat, key) {
   return t ? t.zh : key;
 }
 
-// 卡面背景图存在性探测。数据侧没有「有图」字段，图片只存在于 assets/cards/，
+// 卡面背景图存在性探测。数据侧没有「有图」字段，图片只存在于 ../assets/cards/（派生 webp），
 // 路径按 cardId 现拼（复用详情页那套 artCandidates，见 views/card.js）。
-// 走 HEAD 而非 GET：卡面是 2.7MB 级大图（全出血 PNG），只为问一句「在不在」就把正文
+// 走 HEAD 而非 GET：卡面是数百 KB 级大图（派生 webp），只为问一句「在不在」就把正文
 // 拖下来不值当，HEAD 只有响应头。sw.js 的 fetch 只拦 GET（sw.js:43），HEAD 直连网络、
-// 不进 SWR 缓存，所以往 assets/cards/ 丢一张新图能立刻探测到，不会被缓存里的旧 404 挡住。
+// 不进 SWR 缓存，所以跑脚本产出的新派生图能立刻探测到，不会被缓存里的旧 404 挡住。
 //
 // 三层缓存，各挡一类重复：
 //   1) artProbe —— 本轮页面内存 Map，值是 promise。搜索框每次按键都会重跑 renderList，

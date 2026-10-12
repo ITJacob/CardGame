@@ -70,7 +70,7 @@ export default defineConfig(({ command }) => ({
   // 生产部署在 Pages 根 /CardGame/；dev 用 / 以便与中间件路径一致。
   // 运行时一律走相对路径（./docs/…、./site/），两种 base 下都解析正确。
   base: command === 'build' ? '/CardGame/' : '/',
-  plugins: [serveRepoDir('/docs', 'docs'), serveRepoDir('/site', 'site')],
+  plugins: [serveRepoDir('/docs', 'docs'), serveRepoDir('/site', 'site'), serveRepoDir('/assets', 'assets')],
   // ui-kit/ 是仓库根的设计件（与 docs/、site/ 同层）。它的 CSS 与图标精灵由 main.ts
   // 直接 import，构建进产物（不拷贝进 game/，唯一源仍在 ui-kit/）——dev 下这类 import
   // 会变成 /@fs/ 请求，必须先把它加进 Vite 的文件白名单，否则一律 403。

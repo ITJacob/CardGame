@@ -57,12 +57,16 @@ docs/tools/          **只放设计侧脚本**（设计数据校验 + docs 文�
 │                     JSON 变更后四门禁全绿同轮跑（工作流见 meta/WORKFLOW.md「分析与评分工作流」）
 ├─ build_overview.py / build_profession_analysis.py / build_axis_analysis.py
 └─ status_loader.py  共享 loader（validate/score/validate_schema 在用；迁移脚本已归档 docs/archive/tools/）
-tools/               **与 docs 设计无关的周边工具**（产物落在 site/ 的美术资产生产）
-├─ build_frame_prompts.py  生成 site/assets/frames/PROMPTS.md（出图 prompt 清单）
-└─ normalize_frame.py      边框图后处理：--autocrop 裁边 / --crop 截残留 / --stretch 拉伸 / 压黑 / --check 体检
-（收纳原则：docs/ 只与设计有关；凡产物落在 site/、或处理图片等非设计事务的脚本，一律放 tools/）
+tools/               **与 docs 设计无关的周边工具**（美术资源生产与云同步）
+├─ build_frame_prompts.py  生成 assets/frames/PROMPTS.md（出图 prompt 清单）
+├─ normalize_frame.py      边框图后处理：--autocrop 裁边 / --crop 截残留 / --stretch 拉伸 / 压黑 / --check 体检
+├─ build_art_variants.py   原图母版（source/）→ 三档 WebP 派生（assets/）
+└─ sync_art.py             source/ 原图 ↔ Cloudflare R2 增量同步（上传留档）
+（收纳原则：docs/ 只与设计有关；凡产物落在 assets/ 或 source/、或处理图片等非设计事务的脚本，一律放 tools/）
 docs/诡秘之主资料库/  原著设定源素材（世界体系/九大源质/界域机制/职业对照表）——工作流① 设定补全的落点
-site/               技能池 wiki（现网静态站，托管于 /CardGame/site/；游戏首页链入）
+site/               技能池 wiki（现网静态站，托管于 /CardGame/site/；游戏首页链入；画面/边框取自 ../assets/）
+assets/             发布美术资源（派生 webp + frames png），site 与 game 双端共享取用
+source/             美术原图（母版 + 废稿）——不进 git，上传 R2 留档（见 source/README.md）
 ui-kit/             game 端的 UI 组件套件（唯一源）：ui-kit.css（.cg-* 组件与 --cg-* token）
                     + ui-kit.svg（<symbol> 图标精灵）+ index.html（套件自带预览页）。
                     game 由 main.ts 直接 import 前两者、构建进产物，不拷贝；对接说明见

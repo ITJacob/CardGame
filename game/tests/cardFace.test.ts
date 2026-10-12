@@ -14,27 +14,27 @@ function fakeCatalog(parts: { skills?: SkillDef[]; templates?: BehaviorTemplate[
 
 describe('frameUrl 稀有度取档', () => {
   it('common/uncommon/rare 走全局三张，与途径无关', () => {
-    expect(frameUrl('common')).toBe('./site/assets/frames/frame-common.png')
-    expect(frameUrl('uncommon', 'sleepless')).toBe('./site/assets/frames/frame-uncommon.png')
-    expect(frameUrl('rare')).toBe('./site/assets/frames/frame-rare.png')
+    expect(frameUrl('common')).toBe('./assets/frames/frame-common.png')
+    expect(frameUrl('uncommon', 'sleepless')).toBe('./assets/frames/frame-uncommon.png')
+    expect(frameUrl('rare')).toBe('./assets/frames/frame-rare.png')
   })
 
   it('epic/legendary 按途径出图', () => {
-    expect(frameUrl('epic', 'sleepless')).toBe('./site/assets/frames/frame-sleepless-epic.png')
-    expect(frameUrl('legendary', 'seer')).toBe('./site/assets/frames/frame-seer-legendary.png')
+    expect(frameUrl('epic', 'sleepless')).toBe('./assets/frames/frame-sleepless-epic.png')
+    expect(frameUrl('legendary', 'seer')).toBe('./assets/frames/frame-seer-legendary.png')
   })
 
   it('未知稀有度退回 common；epic 缺途径时退回 rare（不留空 src）', () => {
-    expect(frameUrl('mythic')).toBe('./site/assets/frames/frame-common.png')
-    expect(frameUrl('epic')).toBe('./site/assets/frames/frame-rare.png')
-    expect(frameUrl('legendary', '')).toBe('./site/assets/frames/frame-rare.png')
+    expect(frameUrl('mythic')).toBe('./assets/frames/frame-common.png')
+    expect(frameUrl('epic')).toBe('./assets/frames/frame-rare.png')
+    expect(frameUrl('legendary', '')).toBe('./assets/frames/frame-rare.png')
   })
 })
 
 describe('frameFallbackUrl 降级目标', () => {
   it('只有 epic/legendary 有第二步目标，其余为 null', () => {
-    expect(frameFallbackUrl('epic')).toBe('./site/assets/frames/frame-rare.png')
-    expect(frameFallbackUrl('legendary')).toBe('./site/assets/frames/frame-rare.png')
+    expect(frameFallbackUrl('epic')).toBe('./assets/frames/frame-rare.png')
+    expect(frameFallbackUrl('legendary')).toBe('./assets/frames/frame-rare.png')
     expect(frameFallbackUrl('common')).toBeNull()
     expect(frameFallbackUrl('uncommon')).toBeNull()
     expect(frameFallbackUrl('rare')).toBeNull()
@@ -52,7 +52,7 @@ describe('cardFaceHtml 骨架', () => {
     expect(html.match(/class="card-info"/g)).toHaveLength(1)
     expect(html).toContain('class="card-face r-epic k-passive"')
     expect(html).toContain(`src="${cardArtUrl('c1')}"`)
-    expect(html).toContain('./site/assets/frames/frame-rare.png') // epic 的降级目标
+    expect(html).toContain('./assets/frames/frame-rare.png') // epic 的降级目标
   })
 
   it('信息条只有名字与费用：不再单挂「主/被」角标', () => {
