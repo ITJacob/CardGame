@@ -7,7 +7,7 @@ full 120×160，详情页最大 420px；立绘最小 34×45。浏览器按原图
 两个数量级。本脚本按显示尺寸导出小档 WebP，前端用 <img srcset> 让浏览器按
 「显示尺寸 × 设备 DPR」自选档。
 
-目录约定（见仓库根 CLAUDE.md 与 source/README.md）
+目录约定（见仓库根 CLAUDE.md 与 assets/README.md）
 ------------------------------------------------
   source/   原图（母版 + 废稿）——不进 git，上传 R2 留档，本脚本的输入
   assets/   派生发布图 —— 进 git，site 与 game 双端取用，本脚本的输出

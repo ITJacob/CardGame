@@ -14,7 +14,7 @@ export type HeroLike = Hero & { coordinate?: Coordinate }
 
 /**
  * 立绘路径。key 口径 = herogen.ts 的 COMBOS（s 0..3, a 0..3-s, i 3-s-a）× 性别，
- * 正好 10 组 × 2 = 20 张，与 source/heroes/PROMPTS.md 的清单一一对应。
+ * 正好 10 组 × 2 = 20 张，与 assets/heroes/PROMPTS.md 的清单一一对应。
  * 与 cardArtUrl 同为 ./assets/… 相对路径（dev 由 Vite 中间件把仓库 assets/ 挂到根路径，
  * prod 由部署把 assets/ 铺在 /CardGame/assets/）。
  */

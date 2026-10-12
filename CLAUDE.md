@@ -66,7 +66,7 @@ tools/               **与 docs 设计无关的周边工具**（美术资源生�
 docs/诡秘之主资料库/  原著设定源素材（世界体系/九大源质/界域机制/职业对照表）——工作流① 设定补全的落点
 site/               技能池 wiki（现网静态站，托管于 /CardGame/site/；游戏首页链入；画面/边框取自 ../assets/）
 assets/             发布美术资源（派生 webp + frames png），site 与 game 双端共享取用
-source/             美术原图（母版 + 废稿）——不进 git，上传 R2 留档（见 source/README.md）
+source/             美术原图（母版 + 废稿）——不进 git，上传 R2 留档（见 assets/README.md）
 ui-kit/             game 端的 UI 组件套件（唯一源）：ui-kit.css（.cg-* 组件与 --cg-* token）
                     + ui-kit.svg（<symbol> 图标精灵）+ index.html（套件自带预览页）。
                     game 由 main.ts 直接 import 前两者、构建进产物，不拷贝；对接说明见
