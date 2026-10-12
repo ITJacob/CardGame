@@ -34,10 +34,17 @@ function currentRoute(): { path: string; arg: string } {
   return { path: segs[0] ?? '', arg: segs.slice(1).join('/') }
 }
 
+/** 首页标记：秘仪阵（arcane-bg）只在这一条路由启用，非首页 display:none 完全停用。
+ *  放在这里而不是特效模块里 —— 路由事实源只有一处，特效不再自己解析 URL。 */
+function markMenuRoute(isMenu: boolean): void {
+  document.body.classList.toggle('is-menu-route', isMenu)
+}
+
 export function initRouter(host: HTMLElement): void {
   const render = (): void => {
     const { path, arg } = currentRoute()
     const view = ROUTES[path] ?? notFound
+    markMenuRoute(path === '')
     window.scrollTo(0, 0)
     void view(host, arg)
   }

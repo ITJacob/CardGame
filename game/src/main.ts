@@ -4,11 +4,15 @@
 import './ui/styles/app.css'
 import '../../ui-kit/ui-kit.css'
 import './ui/styles/kit-bridge.css'
+// 秘仪阵是游戏侧装饰层，排在桥接层之后（它不改任何 --cg-*，只是最后引入以便压过 kit 的同名单类规则）
+import './ui/styles/arcane-bg.css'
 
 import { mountSprite } from './ui/components/icons'
+import { initArcaneField } from './ui/effects/arcane-bg'
 import { initRouter } from './ui/router'
 
 mountSprite() // ui-kit 的 <symbol> 精灵，全局只挂一次（<use href="#cg-…"> 靠它解析）
+initArcaneField() // 只写两个 body 状态：静态档(af-low) 与 隐藏暂停(is-af-paused)
 
 const host = document.getElementById('app')
 if (!host) throw new Error('缺少 #app 挂载点')
