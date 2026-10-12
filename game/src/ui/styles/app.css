@@ -300,8 +300,9 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 .card-face.full .card-corner { min-width: 20px; height: 20px; font-size: 13px; }
 
 /*
- * 卡池格子：卡面是「放大看」的按钮，锁标是另一个按钮——两个点击目标不能嵌套（button 里
- * 套 button 是非法结构，解析器会拆开），所以外面留一个零外观的定位壳让它们做兄弟。
+ * 卡池格子：卡面是「放大看详情」的按钮。锁标只是状态展示（span 不可点，加锁/解锁在详情
+ * 弹窗里做）：锁定的卡常驻一个 🔒 角标，未锁定不摆。详情弹窗里的 .zoom-lock 仍是按钮，
+ * 复用这里的 pill 外观，可点性在 kit-bridge 里补。
  */
 .card-cell { position: relative; }
 .card-lock {
@@ -310,13 +311,9 @@ button.card-face[aria-disabled="true"] { cursor: default; }
   min-width: 22px; height: 22px; padding: 0 4px; border-radius: 999px;
   font: inherit; font-size: 13px; line-height: 1;
   background: rgba(8, 10, 14, 0.78); border: 1px solid var(--border); color: var(--text);
-  cursor: pointer;
-  /* 平时收起来：不然整个网格挂满锁标，也挡住卡面那一下的点击 */
-  opacity: 0; pointer-events: none; transition: opacity 0.12s linear;
 }
-.card-cell:hover .card-lock, .card-cell:focus-within .card-lock { opacity: 1; pointer-events: auto; }
-.card-lock:hover { border-color: var(--accent); }
-.card-lock[aria-pressed="true"] { color: var(--accent); border-color: var(--accent-dim); }
+.card-cell .card-lock { color: var(--accent); border-color: var(--accent-dim); }
+.card-cell .card-lock.is-off { display: none; }
 
 /* 决策条：粘在视口底部。面板外观来自 .cg-panel（position 的覆盖见 kit-bridge） */
 .decision-title { font-size: 13px; color: var(--accent); margin-bottom: 8px; }
@@ -354,13 +351,14 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 .card-detail .cp-flavor { margin: 0; font-style: italic; color: var(--text-dim); }
 
 /* ---------- 卡面放大视图 ---------- */
-/* 点卡面 → 放大到铺满视口（横纵都居中）。卡面自己占住屏幕，所以不加遮罩，背后透出页面。
+/* 点卡面 → 放大到铺满视口（横纵都居中），背后压一层半透明遮罩把页面按下去（点遮罩 = 关闭）。
    详情分两种摆法：横板常驻在卡右侧；竖版/窄屏放不下，改成半透盖在卡上（默认盖上，点卡面
    收起/再点开）。z-index 50：高过详情浮层(45)，低于结算模态(.cg-modal 60)。 */
 body.zoom-open { overflow: hidden; }
 .card-zoom {
   position: fixed; inset: 0; z-index: 50; overflow: hidden; outline: none;
   display: flex; align-items: center; justify-content: center; padding: 12px;
+  background: rgba(8, 10, 14, 0.72); backdrop-filter: blur(3px);
 }
 /* --zh = 放大卡面的高度：先按视口高铺满，再按 3:4 退让；横板还要给右侧详情让出 384px */
 .card-zoom { --zh: min(calc(100vh - 24px), calc((100vw - 24px) * 4 / 3)); }

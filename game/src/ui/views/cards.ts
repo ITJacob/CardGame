@@ -1,7 +1,7 @@
 // 现有卡池：解锁职业 / 锁定卡牌。桌面=左职业列表 + 右卡面网格；小屏/竖屏职业列表收成
 // 左侧划出抽屉（头行「职业」按钮拉出）。
-// 交互：点卡面 = 放大居中看大图（窄屏详情默认盖在卡上，可再点收起；放大视图里带锁标），
-// 桌面 hover 卡面 450ms 出详情浮层、hover 时右上角浮出锁标——点锁标才是锁定/解锁。
+// 交互：点卡面 = 弹出详情弹窗（带遮罩，锁标与右上角 ✕ 并排——加锁/解锁都在弹窗里完成）；
+// 网格里的锁标只是状态展示（🔒 = 已锁定），不可点。桌面 hover 卡面 450ms 出详情浮层。
 import { subBarHtml, escapeHtml } from '../components/chrome'
 import { icon } from '../components/icons'
 import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
@@ -53,9 +53,8 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
       const rarity = skill?.rarity ?? tpl?.rarity ?? 'common'
       const cardKind = tpl && !skill ? ('passive' as const) : ('active' as const)
       const on = available.has(cardId)
-      // 卡面即按钮：点它是「放大看」，不是「解锁」。解锁改由 hover 时浮出的右上角锁标负责
-      // ——两个点击目标不能嵌套（button 里塞 button 是非法结构，解析器会拆），所以在外面
-      // 留一个零外观的定位壳 .card-cell 让锁标与卡面做兄弟。
+      // 卡面即按钮：点它是「放大看详情」。锁定/解锁只在详情弹窗里做，网格里的锁标
+      // 只是状态展示（span 不可点）：锁定的卡常驻一个 🔒 角标，未锁定不摆。
       // 不给 title：原生 tooltip 会跟详情浮层打架。
       return `<div class="card-cell">
         ${cardFaceHtml({
@@ -70,9 +69,7 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
           attrs: `data-open="${escapeHtml(cardId)}"`,
           dim: !on,
         })}
-        <button type="button" class="card-lock" data-lock="${escapeHtml(cardId)}" aria-pressed="${!on}" aria-label="锁定">
-          <span aria-hidden="true">${on ? '🔓' : '🔒'}</span>
-        </button>
+        <span class="card-lock${on ? ' is-off' : ''}" aria-hidden="true">🔒</span>
       </div>`
     })
     .join('')
@@ -131,20 +128,13 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
     sync(host, catalog, current)
   })
 
-  // 点卡面 = 放大居中看大图（网格锁标与放大视图里的锁标都能锁定，见 openZoom）
+  // 点卡面 = 弹出详情弹窗（锁标在弹窗里，toggle 后原地 sync 网格，见 openZoom）
   host.querySelectorAll<HTMLElement>('.pool-grid [data-open]').forEach((el) => {
     el.addEventListener('click', () => openZoom(host, catalog, current, el.dataset.open ?? ''))
   })
-
-  host.querySelectorAll<HTMLElement>('.pool-grid [data-lock]').forEach((el) => {
-    el.addEventListener('click', () => {
-      saveProfile(toggleCardUnlock(loadProfile(), catalog, el.dataset.lock ?? ''))
-      sync(host, catalog, current)
-    })
-  })
 }
 
-/** 放大居中看大图；窄屏详情默认盖在卡上。锁标在放大视图里——toggle 后原地 sync 网格 */
+/** 详情弹窗：放大居中看大图，背后压遮罩；窄屏详情默认盖在卡上。toggle 锁后原地 sync 网格 */
 function openZoom(host: HTMLElement, catalog: Catalog, current: string, cardId: string): void {
   const skill = catalog.skillDefs.get(cardId)
   const tpl = catalog.behaviorTemplates.get(cardId)
@@ -190,11 +180,8 @@ function sync(host: HTMLElement, catalog: Catalog, current: string): void {
   host.querySelectorAll<HTMLElement>('.pool-grid .card-cell').forEach((cell) => {
     const unlocked = available.has(cell.querySelector<HTMLElement>('[data-open]')?.dataset.open ?? '')
     cell.querySelector('.card-face')?.classList.toggle('dim', !unlocked)
-    const lock = cell.querySelector<HTMLButtonElement>('.card-lock')
-    if (lock) {
-      lock.setAttribute('aria-pressed', String(!unlocked))
-      lock.innerHTML = `<span aria-hidden="true">${unlocked ? '🔓' : '🔒'}</span>`
-    }
+    // 网格锁标只展示状态：解锁 = 不摆角标
+    cell.querySelector<HTMLElement>('.card-lock')?.classList.toggle('is-off', unlocked)
   })
 
   host.querySelectorAll<HTMLElement>('.cls-row[data-cls]').forEach((el) => {
@@ -214,6 +201,6 @@ function sync(host: HTMLElement, catalog: Catalog, current: string): void {
 
 function hintHtml(profile: ReturnType<typeof loadProfile>, known: string[], classIds: string[], available: Set<string>): string {
   const usable = known.filter((c) => available.has(c)).length
-  const mode = profile.unlockedCards.length === 0 ? '（卡牌解锁：全部，点选按张锁定）' : '（卡牌解锁：显式白名单）'
+  const mode = profile.unlockedCards.length === 0 ? '（卡牌解锁：全部，详情弹窗里按张锁定）' : '（卡牌解锁：显式白名单）'
   return `已解锁职业 ${profile.unlockedClasses.length}/${classIds.length} · 本职业可用卡 ${usable}/${known.length} ${mode}`
 }
