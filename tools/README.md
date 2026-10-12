@@ -22,15 +22,6 @@ python tools/build_frame_prompts.py
 
 数据源：`docs/json/manifest.json` 的 `artFrame`（前三档自包含 prompt）、`artFrameFormat`（44 张职业框共用约束）+ 各途径 `*.skills.json` 的 `artFrameEpic` / `artFrameLegendary`。改了 JSON 里的边框 prompt 后重跑本脚本，**勿手改产物**。
 
-### `build_card_prompts.py`
-导出全部技能卡画面 prompt 清单到 `assets/cards/PROMPTS.md`（832 条，按途径分章），供批量出图。
-
-```bash
-python tools/build_card_prompts.py
-```
-
-每条 = `manifest.artFormat`（全局画幅）+ 途径 `artStyle` + 卡级 `art.subject/elements/mood`，拼装口径与 site 卡详情页「复制画面 prompt」一致。改了 JSON 里的美术字段后重跑本脚本，**勿手改产物**。
-
 ### `normalize_frame.py`
 边框图后处理：把近黑背景压成绝对纯黑，并量化体检框带宽度。纯标准库实现（不依赖 Pillow），支持 8-bit RGB/RGBA 非隔行 PNG。
 

@@ -6,7 +6,7 @@
 
 ```
 assets/（进 git）
-├─ cards/    <cardId>@<w>w.webp + PROMPTS.md   卡面派生 + 生图 prompt（build_card_prompts.py 生成，勿手改）
+├─ cards/    <cardId>@<200|400|800>w.webp    由 source/cards/<cardId>.png 派生
 ├─ heroes/   hero_*@<w>w.webp + PROMPTS.md   立绘派生 + 生图 prompt
 ├─ avatars/  hero_*__idle{,_src}@<w>w.webp + PROMPTS.md
 └─ frames/   frame-*.png（直取，无派生）+ PROMPTS.md（build_frame_prompts.py 生成，勿手改）
@@ -19,6 +19,12 @@ source/（不进 git，R2 留档）
 
 - **定稿**：`<id>.png`（卡面用 cardId；立绘 10 组力敏智 × 2 性别 = 20；头像 `__idle` 为成品、`__idle_src` 为源）
 - **废稿**：改名 `<id>__<版本或日期>.png` 放进该类 `archive/`——脚本跳过废稿，不产派生图
+
+## 卡面 prompt（不落文件，动态拼装）
+
+卡面 832 张的 prompt **不落地成清单文件**（体量太大），用的时候现拼：
+`manifest.artFormat`（全局画幅）+ 途径 `artStyle`（各 `*.skills.json` 顶层）+ 卡级 `art.subject/elements/mood`，逗号拼接。
+site 卡详情页的「复制画面 prompt」按钮就是这个口径（`site/js/views/card.js` 的 `artPrompt`），出图直接从站点复制即可。
 
 ## 工作流
 
