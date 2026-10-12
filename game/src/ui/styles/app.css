@@ -95,6 +95,28 @@ a { color: inherit; text-decoration: none; }
   font-size: 12.5px;
   color: var(--text-dim);
 }
+/* 矮屏（<720px 高：375×667 手机、844×390 横屏）整页压一档：上留白、纹章/标题、按钮高与缝
+   都收，首屏不出滚动条。默认档（高屏）不动。 */
+@media (max-height: 719.98px) {
+  .menu { padding-top: 24px; }
+  .menu-head { margin-bottom: 18px; gap: 6px; }
+  .menu-sigil { width: 34px; height: 34px; font-size: 34px; }
+  .menu-title { font-size: 30px; }
+  .menu-actions { gap: 8px; }
+  .menu-actions .cg-btn { min-height: 38px; padding-top: 6px; padding-bottom: 6px; }
+  .menu-status { margin-top: 16px; }
+}
+/* 矮横屏（844×390 手机横过来）：按钮改两列、头部横排，不然 6 颗竖排必然出滚动条 */
+@media (max-height: 719.98px) and (orientation: landscape) {
+  .menu { padding-top: 16px; }
+  .menu-head { flex-direction: row; justify-content: center; margin-bottom: 12px; }
+  .menu-sigil { width: 30px; height: 30px; font-size: 30px; }
+  .menu-title { font-size: 26px; }
+  .menu-actions { grid-template-columns: 1fr 1fr; }
+  .menu-actions .cg-btn { min-height: 36px; }
+  .menu-status { margin-top: 10px; }
+}
+
 .menu-status.ok { color: var(--ok); }
 .menu-status.err { color: var(--warn); }
 
