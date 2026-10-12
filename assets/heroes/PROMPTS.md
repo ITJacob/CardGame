@@ -4,6 +4,8 @@
 
 同 combo 的男女为一组：背景 setting 与 mood 逐字相同，着装同调；`elements[3]` 为各卡独有的面部标识，用于拉开辨识度。
 
+**产物落点**：定稿 `source/heroes/hero_{key}.png`，废稿改名 `hero_{key}__v<n>.png` 进 `source/heroes/archive/`；派生三档 webp 进 `assets/heroes/`。
+
 **heroArtStyle**：`Victorian-era full-body character illustration in a clean semi-realistic painted trading-card style, smooth digital painterly rendering with crisp detail, no heavy impasto, no visible canvas texture, no thick brushwork, a lived-in Victorian setting behind the figure, soft depth-of-field background, natural muted period colour palette, consistent full-body framing with the head-to-toe figure occupying a similar proportion of the frame, centred and evenly lit, plain civilian period clothing of the appropriate social station, European features, no uniform, no insignia, no weapon, no class-specific gear, the figure interacts naturally with the surrounding setting rather than standing stiffly posed, natural relaxed body language, no stiff waving or posed gesture, hands kept close to the body or resting on the environment, gaze directed into the scene and not at the viewer, expression alive and suited to the action, hands rendered in natural proportion to the body, no oversized or heavy hands, anatomically correct human figure with exactly two arms and two hands, both legs clearly visible and separated in a natural stance, no overlapping or merged limbs, no extra or deformed limbs`
 
 | key | 力/敏/智 | 性别 | prompt |

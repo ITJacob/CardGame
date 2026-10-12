@@ -6,7 +6,7 @@
 
 ```
 assets/（进 git）
-├─ cards/    <cardId>@<200|400|800>w.webp    由 source/cards/<cardId>.png 派生
+├─ cards/    <cardId>@<w>w.webp + PROMPTS.md   卡面派生 + 生图 prompt（build_card_prompts.py 生成，勿手改）
 ├─ heroes/   hero_*@<w>w.webp + PROMPTS.md   立绘派生 + 生图 prompt
 ├─ avatars/  hero_*__idle{,_src}@<w>w.webp + PROMPTS.md
 └─ frames/   frame-*.png（直取，无派生）+ PROMPTS.md（build_frame_prompts.py 生成，勿手改）

@@ -5,7 +5,7 @@
 > ⛔ 出头像**绝不回写** `heroArt.json` 的 `heroArtStyle`——那是立绘的锚，美术风格保持不变。
 
 ## 出图方式
-- **图生图**：以对应英雄的**原立绘 PNG**（`../hero_s{strength}a{agility}i{intelligence}_{gender}.png`）作为 `image1`，`input_fidelity: high` 保同人。
+- **图生图**：以对应英雄的**原立绘 PNG**（`source/heroes/hero_s{strength}a{agility}i{intelligence}_{gender}.png`）作为 `image1`，`input_fidelity: high` 保同人。
 - 尺寸：1024（战场小图）。放大不虚化面部靠干净卡牌风锚，避免油画笔触被放大炸出。
 - 透明底：`ImageGen` 的 `background: "transparent"` 在本环境**不生效**（实测落 RGB），需 `buddy-image-processing` 的 `matting` 去底（只加 alpha、不改 RGB，不虚化面部）。
 
@@ -15,6 +15,8 @@
 > 图生图时 `same character as the reference` 承担人物一致性，风格锚只管渲染观感；**不得出现 painterly / painted / oil-paint 字样**（那是立绘油画锚的用词，头像要干净卡牌风）。
 
 ## 已出清单（2026-10-11 批量完成）
+
+**产物落点**：定稿放 `source/avatars/`，废稿改名进 `source/avatars/archive/`；派生三档 webp 进 `assets/avatars/`。
 
 **命名**：`hero_{key}__idle_src.png` = 带背景版（RGB）；`hero_{key}__idle.png` = matting 去底透明版（RGBA，战场卡牌用）。均 1024×1024。
 
