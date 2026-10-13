@@ -166,7 +166,14 @@
   font-weight: 700;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 8px var(--cg-accent-glow);
 }
-.cg-btn--primary:hover { --_bg: var(--cg-accent); }
+.cg-btn--primary:hover { --_bg: var(--cg-accent); background: var(--cg-accent); }
+/* 触摸设备（hover:none）没有真 hover：按钮的 hover 变色只会以「点按残留」的形式出现——
+   典型场景：点「完成」返回上一页，同位置渲染出的新按钮带着灰色 hover，像被按过。
+   这类设备上把按钮的 hover 恢复成各档自己的底色/边框（连 --_bg 翻转变一起还原）。 */
+@media (hover: none) {
+  .cg-btn:hover { background: var(--_bg, var(--cg-panel)); border-color: var(--_bd, var(--cg-border)); }
+  .cg-btn--primary:hover { --_bg: var(--cg-accent-dim); }
+}
 
 /* 幽灵按钮：仅文字 + 图标 */
 .cg-btn--ghost { --_bg: transparent; --_bd: transparent; color: var(--cg-text-dim); }
