@@ -111,7 +111,7 @@ export function renderBattle(host: HTMLElement): void {
     host.innerHTML = `
       ${subBarHtml(s.online ? '联机对局' : '对局')}
       <div class="battle" data-orient="${currentOrientation()}">
-        <div class="board-wrap">${boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [], canPick, canInspect)}</div>
+        <div class="board-wrap">${boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [], canPick, canInspect, pending?.caster ?? null)}</div>
         ${hudHtml(s, view, pending != null, ended != null, logOpen, rosterOpen)}
         ${drawerHtml('roster', '我方技能', rosterHtml(s), rosterOpen)}
         ${drawerHtml('log', '战斗日志', `<div class="cg-scroll log" id="battle-log">${logHtml(s, s.facade.drainEvents())}</div>`, logOpen)}
@@ -252,7 +252,7 @@ function coordKey(c: Coordinate): string {
   return `${c.faction}|${c.lane}|${c.index}`
 }
 
-function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | null)[], canPick: boolean, canInspect: boolean): string {
+function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | null)[], canPick: boolean, canInspect: boolean, actingId: string | null): string {
   // lane 清单取「内核默认两路 ∪ 场上实见」的并集：一路被打空（甚至全员放逐）时空格仍要渲染
   const seen = view.units.map((u) => u.coordinate?.lane).filter((l): l is string => !!l)
   const laneList = [...new Set<string>([...DEFAULT_LANES, ...seen])].sort()
@@ -273,7 +273,7 @@ function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | n
         const coord: Coordinate = { faction, lane, index }
         const u = occupied.get(coordKey(coord))
         const { col, row } = spec.place(coord)
-        cells.push(u ? tileHtml(s, u, col, row, cand.has(u.id), canPick) : slotHtml(coord, col, row, faction === ownFaction))
+        cells.push(u ? tileHtml(s, u, col, row, cand.has(u.id), canPick, u.id === actingId) : slotHtml(coord, col, row, faction === ownFaction))
       }
     }
   }
@@ -295,9 +295,11 @@ function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | n
   return `<div class="board${canInspect ? ' can-inspect' : ''}" style="${template}">${mid}${cells.join('')}</div>`
 }
 
-/** 空格：虚线框占位，非操作时机可点看格位信息（接线见 wire） */
+/** 空格：虚线框占位，非操作时机可点看格位信息（接线见 wire）。
+   .slot 只摆网格壳（与 .unit 同一模板），虚线框是内层 .slot-box——它落在 card 区，
+   大小与英雄卡面一致。 */
 function slotHtml(coord: Coordinate, col: number, row: number, own: boolean): string {
-  return `<div class="slot${own ? ' own' : ''}" style="grid-column:${col};grid-row:${row}" data-coord="${escapeHtml(coordKey(coord))}"></div>`
+  return `<div class="slot${own ? ' own' : ''}" style="grid-column:${col};grid-row:${row}" data-coord="${escapeHtml(coordKey(coord))}"><div class="slot-box"></div></div>`
 }
 
 /** 状态名走中文词典：catalog.statusDefs 的 name 可选，故回退裸 id（与 prepare/hero 的取名范式一致） */
@@ -310,17 +312,27 @@ function classNameOf(s: BattleSession, meta: UnitMeta | undefined): string {
   return meta ? s.catalog.classDefs.get(meta.classId)?.name ?? meta.classId : ''
 }
 
-function chipHtml(s: BattleSession, st: { defId: string; stacks: number }): string {
-  return `<span class="chip">${escapeHtml(statusName(s, st.defId))}${st.stacks > 1 ? `×${st.stacks}` : ''}</span>`
+/**
+ * 状态 chip。short=true（战场棋子上）：只显示状态名首字 + 层数，buff 淡绿底、debuff 淡红底，
+ * 全名与详情在点开的信息栏里看（信息栏走 short=false）。
+ */
+function chipHtml(s: BattleSession, st: { defId: string; stacks: number }, short = false): string {
+  const def = s.catalog.statusDefs.get(st.defId)
+  const name = def?.name ?? st.defId
+  const cat = def?.category ?? []
+  const pol = cat.includes('buff') ? ' buff' : cat.includes('debuff') ? ' debuff' : ''
+  const text = short ? ([...name][0] ?? name) : name
+  return `<span class="chip${pol}">${escapeHtml(text)}${st.stacks > 1 ? `×${st.stacks}` : ''}</span>`
 }
 
 /**
  * 战场单位卡。大头像铺满整张卡、血条压在卡底、行动条做成左上角圆形扇叶；
- * 状态标签渲染在**卡外**（分 a/b 两列，横屏并进卡上方一条、竖屏分列卡两侧，见 app.css 的 .unit 网格）；
+ * 状态标签渲染在**卡外**单边一条（横屏卡上方、竖屏卡左侧，首字缩写，放不下截断）；
  * 名字/职业默认隐去，hover / 选中(targetable) / 聚焦 时随卡一起完整呈现。
  * targetable = 当前决策的合法目标（视觉高亮）；pickable = 本侧可点选（此时才给抓手光标，避免空承诺）。
+ * acting = 当前轮到行动的单位：卡面放大突出。
  */
-function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, targetable: boolean, canPick: boolean): string {
+function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, targetable: boolean, canPick: boolean, acting: boolean): string {
   const meta = s.unitMeta.get(u.id)
   const side = meta?.side ?? (u.id.length > 0 ? 'enemy' : 'own')
   // 召唤物等没有名册元数据的单位：留在 emoji 档（heroAvatarHtml 的垫底层就是这个）。
@@ -329,16 +341,14 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
   const hpPct = Math.max(0, Math.round((u.hp / Math.max(1, u.hpMax)) * 100))
   const gaugePct = Math.max(0, Math.min(100, Math.round((u.gauge / 75) * 100)))
   const dead = u.hp <= 0
-  const chips = u.statuses.map((st) => chipHtml(s, st))
-  // 状态对半分进 a/b 两列（横屏两半在上条相接、竖屏分列两侧）；没有就两侧都空、自动塌陷
-  const half = Math.ceil(chips.length / 2)
-  const cls = ['unit', side, dead ? 'dead' : '', targetable ? 'targetable' : '', targetable && canPick ? 'pickable' : '']
+  const chips = u.statuses.map((st) => chipHtml(s, st, true))
+  const cls = ['unit', side, dead ? 'dead' : '', targetable ? 'targetable' : '', targetable && canPick ? 'pickable' : '', acting ? 'acting' : '']
     .filter(Boolean)
     .join(' ')
   const clsname = classNameOf(s, meta)
   return `
   <div class="${cls}" style="grid-column:${col};grid-row:${row}" data-unit="${escapeHtml(u.id)}">
-    <div class="unit-chips unit-chips--a">${chips.slice(0, half).join('')}</div>
+    <div class="unit-chips">${chips.join('')}</div>
     <div class="unit-card">
       <span class="unit-art">${avatar}</span>
       <div class="unit-gauge" style="--p:${gaugePct}"></div>
@@ -348,7 +358,6 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
         <span class="bar-num">${u.hp}/${u.hpMax}</span>
       </div>
     </div>
-    <div class="unit-chips unit-chips--b">${chips.slice(half).join('')}</div>
   </div>`
 }
 
@@ -433,7 +442,7 @@ function actorBlockHtml(s: BattleSession, name: string, meta: UnitMeta | undefin
   const sub = meta
     ? `${classNameOf(s, meta)} · ${constitutionById(meta.constitutionId)?.name ?? meta.constitutionId} · ${meta.combo.strength}力/${meta.combo.agility}敏/${meta.combo.intelligence}智`
     : ''
-  const avatar = meta ? `<span class="actor-avatar">${heroAvatarHtml(meta, '48px')}</span>` : ''
+  const avatar = meta ? `<span class="actor-avatar">${heroAvatarHtml(meta, '72px')}</span>` : ''
   return `<div class="actor">${avatar}<div class="actor-id">
     <div class="actor-name">${escapeHtml(name)}</div>
     ${sub ? `<div class="actor-sub">${escapeHtml(sub)}</div>` : ''}
