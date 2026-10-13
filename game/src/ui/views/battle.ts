@@ -6,7 +6,9 @@
 import { escapeHtml, subBarHtml } from '../components/chrome'
 import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
 import { heroAvatarHtml, hydrateHeroArt } from '../components/hero'
+import { icon } from '../components/icons'
 import { enableHoverCard, hideCardPop } from '../hover'
+import { enablePan } from '../pan'
 import { getSession } from '../session'
 import { gridSpec, laneIndexer, orientationOf, type Orientation } from '../battle/projection'
 import type { DomainEvent } from '../../kernel/combat/types'
@@ -18,7 +20,7 @@ import { fingerprintOf } from '../../kernel/combat/fingerprint'
 import { MatchRunner } from '../../meta/match/runner'
 
 type CombatOutcome = 'side_a' | 'side_b' | 'draw' | 'aborted'
-import type { BattleSession } from '../session'
+import type { BattleSession, UnitMeta } from '../session'
 import { createLocalStorageMatchStore } from '../../meta/matchLog'
 
 let autoTimer: number | null = null
@@ -68,6 +70,9 @@ export function renderBattle(host: HTMLElement): void {
   let pendingResolve: ((d: DecisionInput) => void) | null = null
   /** 已在本地选定、等 MatchRunner 把决策同步过去（此时禁用按钮，避免重复点） */
   let submitted = false
+  /** 浮层抽屉开合：refresh 每 tick 整页重画，靠这两个闭包把状态带回模板（否则每 tick 自动关） */
+  let logOpen = false
+  let rosterOpen = false
 
   const refresh = (): void => {
     const view = s.facade.state()
@@ -83,27 +88,33 @@ export function renderBattle(host: HTMLElement): void {
     // 若照画就会把棋盘重绘到当前视图上（整备页/大厅被战斗画面盖掉）。
     if (!onBattleRoute()) return
     hideCardPop() // 同上：重绘不产生鼠标事件
-    const runner = s.online?.runner
     const myTurn = pending != null && casterFaction(s, pending.caster) === myFactionOf(s)
     /** 本侧该决策且未提交 → 板面高亮 tile 可点选 */
     const canPick = pending != null && (!s.online || myTurn) && !submitted
+    // 整页重画会把棋盘滚回原点、抽屉一并关掉——先把这两样状态摘出来，画完再落回去
+    const wrap0 = host.querySelector<HTMLElement>('.board-wrap')
+    const scrollLeft = wrap0?.scrollLeft ?? 0
+    const scrollTop = wrap0?.scrollTop ?? 0
     host.innerHTML = `
       ${subBarHtml(s.online ? '联机对局' : '对局')}
       <div class="battle" data-orient="${currentOrientation()}">
         <div class="board-wrap">${boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [], canPick)}</div>
-        <div class="battle-side">
-          ${statusBarHtml(s, view, pending != null, ended != null)}
-          ${runner?.lastError ? `<p class="warn">联机中断：${escapeHtml(errMsg(runner.lastError))}</p>` : ''}
-          ${runner?.waiting ? '<p class="wait-note">等待对手决策…</p>' : ''}
-          ${rosterPanelHtml(s)}
-          <div class="cg-panel cg-scroll log" id="battle-log">${logHtml(s.facade.drainEvents())}</div>
-        </div>
+        ${hudHtml(s, view, pending != null, ended != null, logOpen, rosterOpen)}
+        ${drawerHtml('roster', '我方技能', rosterHtml(s), rosterOpen)}
+        ${drawerHtml('log', '战斗日志', `<div class="cg-scroll log" id="battle-log">${logHtml(s, s.facade.drainEvents())}</div>`, logOpen)}
       </div>
       ${pending && (!s.online || myTurn) ? decisionBarHtml(s, pending, submitted) : ''}
       ${ended ? endedHtml(s, ended.outcome) : ''}`
     hydrateArt(host)
     hydrateHeroArt(host)
+    const wrap = host.querySelector<HTMLElement>('.board-wrap')
+    if (wrap) {
+      wrap.scrollLeft = scrollLeft
+      wrap.scrollTop = scrollTop
+      enablePan(host, { viewport: wrap })
+    }
     wire(s, refresh, submit, canPick)
+    wireDrawers()
   }
 
   const submit = (picks: DecisionInput): void => {
@@ -116,6 +127,33 @@ export function renderBattle(host: HTMLElement): void {
       s.facade.submitDecision(picks)
     }
     refresh()
+  }
+
+  /**
+   * 抽屉开关：只翻那一个容器的 .is-open + 按钮的 aria-pressed，不整页重画
+   * （refresh 每 tick 会重画，但开关状态记在闭包里，重画时由模板带回来）。
+   */
+  const wireDrawers = (): void => {
+    const toggle = (id: 'log' | 'roster', open: boolean): void => {
+      host.querySelector(`.battle-drawer--${id}`)?.classList.toggle('is-open', open)
+      document.getElementById(`btn-${id}`)?.setAttribute('aria-pressed', String(open))
+    }
+    document.getElementById('btn-log')?.addEventListener('click', () => {
+      logOpen = !logOpen
+      toggle('log', logOpen)
+    })
+    document.getElementById('btn-roster')?.addEventListener('click', () => {
+      rosterOpen = !rosterOpen
+      toggle('roster', rosterOpen)
+    })
+    host.querySelectorAll<HTMLElement>('[data-drawer-close]').forEach((el) => {
+      el.addEventListener('click', () => {
+        const id = el.dataset.drawerClose === 'roster' ? 'roster' : 'log'
+        if (id === 'log') logOpen = false
+        else rosterOpen = false
+        toggle(id, false)
+      })
+    })
   }
 
   // 联机：驱动循环只建一次（同一会话内多视图重入不重复起跑）
@@ -202,58 +240,109 @@ function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | n
     })
     .join('')
 
-  return `<div class="board" style="grid-template-columns:repeat(${spec.columns},1fr);grid-template-rows:repeat(${spec.rows},1fr)">${tiles}</div>`
+  // minmax 的最小格宽：宽裕时 1fr 铺满，被压到 112px 仍放不下就整体溢出 → 触发拖拽平移
+  return `<div class="board" style="grid-template-columns:repeat(${spec.columns}, minmax(112px, 1fr)); grid-template-rows:repeat(${spec.rows}, minmax(112px, 1fr))">${tiles}</div>`
 }
 
-/** targetable = 当前决策的合法目标（视觉高亮）；pickable = 本侧可点选（此时才给抓手光标，避免空承诺） */
+/** 状态名走中文词典：catalog.statusDefs 的 name 可选，故回退裸 id（与 prepare/hero 的取名范式一致） */
+function statusName(s: BattleSession, defId: string): string {
+  return s.catalog.statusDefs.get(defId)?.name ?? defId
+}
+
+/** 职业名走中文词典：classDefs 的 name 必有；缺 meta（召唤物）就没职业可写 */
+function classNameOf(s: BattleSession, meta: UnitMeta | undefined): string {
+  return meta ? s.catalog.classDefs.get(meta.classId)?.name ?? meta.classId : ''
+}
+
+function chipHtml(s: BattleSession, st: { defId: string; stacks: number }): string {
+  return `<span class="chip">${escapeHtml(statusName(s, st.defId))}${st.stacks > 1 ? `×${st.stacks}` : ''}</span>`
+}
+
+/**
+ * 战场单位卡。大头像铺满整张卡、血条压在卡底、行动条做成左上角圆形扇叶；
+ * 状态标签渲染在**卡外**（分 a/b 两列，横屏并进卡上方一条、竖屏分列卡两侧，见 app.css 的 .unit 网格）；
+ * 名字/职业默认隐去，hover / 选中(targetable) / 聚焦 时随卡一起完整呈现。
+ * targetable = 当前决策的合法目标（视觉高亮）；pickable = 本侧可点选（此时才给抓手光标，避免空承诺）。
+ */
 function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, targetable: boolean, canPick: boolean): string {
   const meta = s.unitMeta.get(u.id)
   const side = meta?.side ?? (u.id.length > 0 ? 'enemy' : 'own')
   // 召唤物等没有名册元数据的单位：留在 emoji 档（heroAvatarHtml 的垫底层就是这个）。
-  // sizes 与 .tile .avatar 的两档口径一致（竖屏格子只有 ~60px 高，头像收到 30px）
-  const avatar = meta ? heroAvatarHtml(meta, '(orientation: portrait) 30px, 56px') : '❓'
+  // 满铺头像实渲尺寸比老 .tile 大得多（格子 ≥112px、cover 后按格宽算），sizes 给大档，别再按 56px 估
+  const avatar = meta ? heroAvatarHtml(meta, '(orientation: landscape) min(22vw, 48vh), 50vw') : '❓'
   const hpPct = Math.max(0, Math.round((u.hp / Math.max(1, u.hpMax)) * 100))
   const gaugePct = Math.max(0, Math.min(100, Math.round((u.gauge / 75) * 100)))
   const dead = u.hp <= 0
-  const statuses = u.statuses
-    .slice(0, 3)
-    .map((st) => `<span class="chip">${escapeHtml(st.defId)}${st.stacks > 1 ? `×${st.stacks}` : ''}</span>`)
-    .join('')
-  // 血条/怒气条 = kit 的 .cg-progress（.bar hp / .bar gauge 只当钩子与配色选择器）。
-  // 格子小，尺寸由 kit-bridge 收；数值走 .bar-num 叠在轨道上。
+  const chips = u.statuses.map((st) => chipHtml(s, st))
+  // 状态对半分进 a/b 两列（横屏两半在上条相接、竖屏分列两侧）；没有就两侧都空、自动塌陷
+  const half = Math.ceil(chips.length / 2)
+  const cls = ['unit', side, dead ? 'dead' : '', targetable ? 'targetable' : '', targetable && canPick ? 'pickable' : '']
+    .filter(Boolean)
+    .join(' ')
+  const clsname = classNameOf(s, meta)
   return `
-  <div class="tile ${side}${dead ? ' dead' : ''}${targetable ? ' targetable' : ''}${targetable && canPick ? ' pickable' : ''}" style="grid-column:${col};grid-row:${row}" data-unit="${escapeHtml(u.id)}">
-    <div class="avatar">${avatar}</div>
-    <div class="tname">${escapeHtml(meta?.name ?? u.id)}<span class="tclass">${escapeHtml(meta?.classId ?? '')}</span></div>
-    <div class="cg-progress bar hp">
-      <div class="cg-progress__track"><div class="cg-progress__bar cg-progress__bar--warn" style="width:${hpPct}%"></div></div>
-      <span class="bar-num">${u.hp}/${u.hpMax}</span>
+  <div class="${cls}" style="grid-column:${col};grid-row:${row}" data-unit="${escapeHtml(u.id)}">
+    <div class="unit-chips unit-chips--a">${chips.slice(0, half).join('')}</div>
+    <div class="unit-card">
+      <span class="unit-art">${avatar}</span>
+      <div class="unit-gauge" style="--p:${gaugePct}"></div>
+      <div class="unit-name">${escapeHtml(meta?.name ?? u.id)}${clsname ? `<span class="unit-class">${escapeHtml(clsname)}</span>` : ''}</div>
+      <div class="cg-progress bar hp">
+        <div class="cg-progress__track"><div class="cg-progress__bar cg-progress__bar--warn" style="width:${hpPct}%"></div></div>
+        <span class="bar-num">${u.hp}/${u.hpMax}</span>
+      </div>
     </div>
-    <div class="cg-progress bar gauge">
-      <div class="cg-progress__track"><div class="cg-progress__bar" style="width:${gaugePct}%"></div></div>
-    </div>
-    <div class="statuses">${statuses}</div>
+    <div class="unit-chips unit-chips--b">${chips.slice(half).join('')}</div>
   </div>`
 }
 
-function statusBarHtml(s: BattleSession, view: CombatView, pending: boolean, ended: boolean): string {
+/**
+ * 顶部悬浮 HUD：tick/阶段/场上数 + 控件 + 「日志」「名册」两个抽屉开关。
+ * 整块浮在棋盘之上（.battle-hud），不再占右栏。联机的中断/等待提示也并进这条。
+ */
+function hudHtml(s: BattleSession, view: CombatView, pending: boolean, ended: boolean, logOpen: boolean, rosterOpen: boolean): string {
   const phaseName: Record<string, string> = { midnight: '午夜', dawn: '黎明', day: '白昼', dusk: '黄昏', night: '黑夜' }
+  const runner = s.online?.runner
   const controls = s.online
-    ? `<button type="button" class="cg-btn cg-btn--sm" id="btn-pause">${s.online.runner?.isPaused ? '继续' : '暂停'}</button>
-       <span class="hud-count">决策 #${s.online.runner?.decisionSeq ?? 0}</span>`
+    ? `<button type="button" class="cg-btn cg-btn--sm" id="btn-pause">${runner?.isPaused ? '继续' : '暂停'}</button>
+       <span class="hud-count">决策 #${runner?.decisionSeq ?? 0}</span>`
     : `<button type="button" class="cg-btn cg-btn--sm" id="btn-step" ${pending || ended ? 'disabled' : ''}>推进一 tick</button>
        <button type="button" class="cg-btn cg-btn--sm" id="btn-auto" ${ended ? 'disabled' : ''}>自动播放</button>`
+  const warn = runner?.lastError
+    ? `<p class="warn hud-warn">联机中断：${escapeHtml(errMsg(runner.lastError))}</p>`
+    : runner?.waiting
+      ? '<p class="wait-note hud-warn">等待对手决策…</p>'
+      : ''
   return `
-  <div class="hud">
-    <span class="hud-tick">tick ${view.tick}</span>
-    <span class="hud-phase">${phaseName[view.phase] ?? view.phase}</span>
-    <span class="hud-count">场上 ${view.units.filter((u) => u.hp > 0).length}</span>
-  </div>
-  <div class="controls">${controls}</div>`
+  <div class="battle-hud">
+    <div class="hud">
+      <span class="hud-tick">tick ${view.tick}</span>
+      <span class="hud-phase">${phaseName[view.phase] ?? view.phase}</span>
+      <span class="hud-count">场上 ${view.units.filter((u) => u.hp > 0).length}</span>
+    </div>
+    <div class="controls">${controls}</div>
+    <div class="hud-tabs">
+      <button type="button" class="cg-btn cg-btn--sm" id="btn-log" aria-pressed="${logOpen}" aria-controls="battle-log">日志</button>
+      <button type="button" class="cg-btn cg-btn--sm" id="btn-roster" aria-pressed="${rosterOpen}">名册</button>
+    </div>
+  </div>${warn}`
 }
 
-/** 我方技能卡面（用 web 端卡图，缺失走占位） */
-function rosterPanelHtml(s: BattleSession): string {
+/** 右侧悬浮抽屉外壳：标题栏（含关闭键）+ 内容。开合只翻 .is-open（见 wireDrawers）。 */
+function drawerHtml(id: string, title: string, inner: string, open: boolean): string {
+  return `<aside class="battle-drawer battle-drawer--${id}${open ? ' is-open' : ''}">
+    <div class="cg-panel drawer-panel">
+      <div class="cg-panel__head">
+        <span class="cg-panel__title">${title}</span>
+        <button type="button" class="cg-close" data-drawer-close="${id}" aria-label="关闭">${icon('cg-close')}</button>
+      </div>
+      <div class="drawer-body">${inner}</div>
+    </div>
+  </aside>`
+}
+
+/** 名册抽屉内容：我方技能卡面（用 web 端卡图，缺失走占位）。外壳由 drawerHtml 给。 */
+function rosterHtml(s: BattleSession): string {
   const rows = s.own
     .map((h) => {
       const cards = h.activeSkillIds
@@ -277,7 +366,7 @@ function rosterPanelHtml(s: BattleSession): string {
       </div>`
     })
     .join('')
-  return `<details class="cg-panel roster"><summary>我方技能（主动 ${s.own.reduce((n, h) => n + h.activeSkillIds.length, 0)} 张）</summary>${rows}</details>`
+  return `<p class="drawer-meta">主动 ${s.own.reduce((n, h) => n + h.activeSkillIds.length, 0)} 张</p>${rows}`
 }
 
 function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = false): string {
@@ -292,7 +381,7 @@ function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = 
     .join('')
   return `
   <div class="cg-panel decision">
-    <div class="decision-title">选择目标（${escapeHtml(pending.caster)} 的技能）${disabled ? ' · 已提交，等待同步…' : ''}</div>
+    <div class="decision-title">选择目标（${escapeHtml(s.unitMeta.get(pending.caster)?.name ?? pending.caster)} 的技能）${disabled ? ' · 已提交，等待同步…' : ''}</div>
     <div class="picks">${cards}</div>
     <button type="button" class="cg-btn cg-btn--sm cg-btn--block pick-auto" id="btn-auto-pick" ${disabled ? 'disabled' : ''}>交给 AI（自动选择）</button>
   </div>`
@@ -397,7 +486,7 @@ function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInp
   // 板面上的高亮 tile 同样可点（光标已承诺可点，就别让它落空）
   // canPick：仅在本侧该决策时挂上——联机时对侧决策只观战，绝不本地代选（§3.4 铁律 1）
   if (canPick) {
-    document.querySelectorAll<HTMLElement>('.tile.pickable[data-unit]').forEach((el) => {
+    document.querySelectorAll<HTMLElement>('.unit.pickable[data-unit]').forEach((el) => {
       const id = el.dataset.unit ?? ''
       el.setAttribute('role', 'button')
       el.tabIndex = 0
@@ -428,24 +517,29 @@ function stopAuto(): void {
   }
 }
 
-function logHtml(events: readonly DomainEvent[]): string {
-  const lines = events.slice(-60).reverse().map((e) => `<div class="log-line">${describe(e)}</div>`)
+function logHtml(s: BattleSession, events: readonly DomainEvent[]): string {
+  const lines = events.slice(-60).reverse().map((e) => `<div class="log-line">${describe(s, e)}</div>`)
   return lines.length > 0 ? lines.join('') : '<div class="log-line dim">（尚无事件）</div>'
 }
 
-function describe(e: DomainEvent): string {
+/** 日志里的单位名走名册：召唤物没有 meta，回退裸 id（与卡面同一套降级） */
+function unitNameOf(s: BattleSession, id: string): string {
+  return s.unitMeta.get(id)?.name ?? id
+}
+
+function describe(s: BattleSession, e: DomainEvent): string {
   switch (e.type) {
     case 'TickAdvanced': return `— tick ${e.tickIndex} —`
-    case 'GaugeCrossed': return `${e.unitId} 行动条满`
-    case 'ActionOpportunityGranted': return `${e.opportunity.unitId} 获得行动机会`
+    case 'GaugeCrossed': return `${unitNameOf(s, e.unitId)} 行动条满`
+    case 'ActionOpportunityGranted': return `${unitNameOf(s, e.opportunity.unitId)} 获得行动机会`
     case 'TargetsResolved': return `结算目标 ×${e.targets.length}`
-    case 'EffectApplied': return `效应用于 ${e.target.occupant ?? '空位'}`
-    case 'StatusMounted': return `挂载状态 ${e.defId}`
-    case 'StatusExpired': return `状态到期 ${e.defId}`
-    case 'UnitSpawned': return `召唤 ${e.unitId}`
-    case 'UnitDied': return `${e.unitId} 阵亡`
-    case 'UnitTranslocated': return `${e.unitId} 被放逐`
-    case 'UnitReturned': return `${e.unitId} 回归`
+    case 'EffectApplied': return `效应用于 ${e.target.occupant ? unitNameOf(s, e.target.occupant) : '空位'}`
+    case 'StatusMounted': return `挂载状态 ${statusName(s, e.defId)}`
+    case 'StatusExpired': return `状态到期 ${statusName(s, e.defId)}`
+    case 'UnitSpawned': return `召唤 ${unitNameOf(s, e.unitId)}`
+    case 'UnitDied': return `${unitNameOf(s, e.unitId)} 阵亡`
+    case 'UnitTranslocated': return `${unitNameOf(s, e.unitId)} 被放逐`
+    case 'UnitReturned': return `${unitNameOf(s, e.unitId)} 回归`
     case 'DomainPlaced': return `界域展开 ${e.defId}`
     case 'ZonePlaced': return `区域布下`
     default: return e.type

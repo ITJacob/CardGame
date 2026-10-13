@@ -100,15 +100,15 @@
 .hero-chip.cg-select { padding: 5px 12px; min-height: 34px; font-size: 13px; }
 .hs-switch .cg-select { padding: 3px 10px; min-height: 28px; font-size: 12.5px; }
 
-/* —— 战斗：名册面板 / 日志 / 决策条 ——
-   这三块都是「单类选择器压单类选择器」的场面：app.css 里没有更高优先级可借，
+/* —— 战斗：抽屉面板 / 决策条 ——
+   这两块都是「单类选择器压单类选择器」的场面：app.css 里没有更高优先级可借，
    而 kit 是在 app.css 之后引入的，同权重下 kit 胜。所以覆盖必须写在本文件（最后引入）。 */
-.roster.cg-panel { padding: 10px 12px; }
-.roster.cg-panel > summary { cursor: pointer; font-size: 13px; color: var(--cg-accent); }
-/* 日志：面板的 16px 内边距太松，收成 8px；滚动本身由 .cg-scroll 给（.cg-panel 不设 overflow） */
-.log.cg-panel { padding: 8px 10px; }
+.drawer-panel.cg-panel { padding: 12px; }
+/* 决策条：整页一屏、棋盘铺满，它改悬浮在底部（kit 的 .cg-panel 是 position:relative，会顶掉定位） */
 .decision.cg-panel {
-  position: sticky; bottom: 0; z-index: 5; /* kit 的 .cg-panel 是 position:relative，会顶掉粘底 */
+  position: absolute; left: 50%; bottom: 12px; z-index: 25;
+  transform: translateX(-50%);
+  width: min(680px, 94%);
   padding: 12px 14px;
 }
 
@@ -142,13 +142,13 @@
    :focus 与 :focus-visible 同权重，本文件是最后引入的，故这条能补回键盘那一圈。 —— */
 .cg-input:focus-visible { outline: 2px solid var(--cg-accent); outline-offset: 2px; }
 
-/* —— 棋盘格子里的血条/怒气条 ——
-   用 kit 的 .cg-progress，但格子小：轨道压到 8px、去掉过渡（一 tick 一刷，过渡会拖成滞后感）、
-   并给数值留一层绝对定位的叠加。 */
-.tile .cg-progress { position: relative; }
-.tile .cg-progress__track { border: 0; height: 8px; }
-.tile .cg-progress__bar { transition: none; }
-.tile .cg-progress .bar-num {
+/* —— 单位卡里的血条 ——
+   用 kit 的 .cg-progress，但卡面小：轨道压到 8px、去掉过渡（一 tick 一刷，过渡会拖成滞后感）、
+   并给数值留一层绝对定位的叠加。（行动条已改成圆形扇叶，不再是 .cg-progress，见 app.css） */
+.unit-card .cg-progress { position: relative; }
+.unit-card .cg-progress__track { border: 0; height: 8px; }
+.unit-card .cg-progress__bar { transition: none; }
+.unit-card .cg-progress .bar-num {
   position: absolute;
   inset: 0;
   display: flex;

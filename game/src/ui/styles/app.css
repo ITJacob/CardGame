@@ -154,85 +154,165 @@ a { color: inherit; text-decoration: none; }
 .kv .v { font-family: ui-monospace, Consolas, monospace; }
 
 /* ---------- 战斗界面 ---------- */
+/* 满屏舞台：棋盘铺满整页（扣掉子页栏），其余 UI 全部浮在它上面。 */
 .battle {
-  display: grid;
-  gap: 14px;
-  padding: 14px;
-  grid-template-columns: 1fr 320px;
-  align-items: start;
-}
-.battle[data-orient='portrait'] { grid-template-columns: 1fr; }
-
-.board-wrap {
-  background: radial-gradient(circle at 50% 50%, #242833 0%, #191c23 70%);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px;
-}
-.board { display: grid; gap: 6px; user-select: none; caret-color: transparent; }
-.battle[data-orient='landscape'] .board { aspect-ratio: 4 / 1; }
-.battle[data-orient='portrait'] .board { aspect-ratio: 1 / 4; max-height: 62vh; margin: 0 auto; }
-
-.tile {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 3px;
-  min-width: 0;
-  padding: 4px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: rgba(38, 42, 50, 0.85);
-  font-size: 11px;
+  position: relative;
+  height: calc(100vh - var(--nav-h, 54px));
+  height: calc(100dvh - var(--nav-h, 54px));
   overflow: hidden;
-  /* 板面是棋盘不是文本：点选目标时不要选中文字（否则出现 I 形光标 + 蓝底） */
+}
+/* 平移视口：铺满舞台、不出滚动条（overflow:hidden 仍可程序化滚动），指针拖拽见 ui/pan.ts */
+.board-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  background: radial-gradient(circle at 50% 45%, #242833 0%, #191c23 70%);
+}
+.board-wrap.is-panning { cursor: grabbing; }
+/* 列/行数由 TS 内联给（projection 的 gridSpec 是唯一源）；这里定最小格宽与间距。
+   width/height:100% 让宽裕时铺满舞台（1fr 行才撑得开）；min-*: max-content 让内容被压到
+   最小值时整块网格反而撑大、溢出视口 → 触发拖拽平移。 */
+.board {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  width: 100%;
+  height: 100%;
+  min-width: max-content;
+  min-height: max-content;
   user-select: none;
   caret-color: transparent;
 }
-.tile.own { border-color: #3f6b52; }
-.tile.enemy { border-color: #7a3f3f; }
-.tile.dead { opacity: 0.3; filter: grayscale(1); }
-/* targetable = 本决策的合法目标（高亮描边，纯视觉）；pickable = 本侧可点选（才给抓手光标） */
-.tile.targetable { outline: 2px solid var(--accent); animation: pulse 1s infinite; }
-.tile.pickable { cursor: pointer; }
-.tile.pickable:hover { filter: brightness(1.18); }
-.tile.pickable:focus-visible { outline-color: var(--text); }
-@keyframes pulse { 50% { outline-color: var(--warn); } }
-.tile .avatar { display: flex; justify-content: center; line-height: 1; }
-/* 头像与名字不缩水：格子装不下时裁的是底部的状态 chips，名字必须始终在 */
-.tile .avatar, .tile .tname { flex: none; }
-/* 棋盘格里的透明底头像：方图 contain 不裁。56px 是格子在「名字 + 血条 + 行动条」之外
-   匀得出来的份额；×DPR3=168 < 200，200w 档恒够（头像不出第四档的原因） */
-.tile .avatar .hero-avatar { width: 56px; height: 56px; }
-/* 竖屏棋盘被压成窄条（aspect 1/4 + 62vh 上限），格子只有 ~60px 高，竖排根本放不下
-   「头像 30 + 名字 18 + 两条 bar 16」。收法：头像收小、顶对齐（居中会把顶上的头像也裁掉
-   一半），两条 bar 改成绝对定位叠进头像下 1/3（透明底，叠上去不挡脸），格子里只剩
-   头像 + 名字两件流式内容，状态 chips 照旧从底部裁。 */
-.battle[data-orient='portrait'] .tile { position: relative; justify-content: flex-start; gap: 2px; padding: 2px 3px; }
-.battle[data-orient='portrait'] .tile .avatar .hero-avatar { width: 30px; height: 30px; }
-.battle[data-orient='portrait'] .tile .bar { position: absolute; left: 3px; right: 3px; z-index: 1; }
-.battle[data-orient='portrait'] .tile .bar.hp { top: 18px; }
-.battle[data-orient='portrait'] .tile .bar.gauge { top: 26px; }
-.tile .tname { text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tile .tclass { color: var(--text-dim); font-size: 10px; margin-left: 4px; }
-/* 格子里的血条 / 怒气条用 kit 的 .cg-progress，但格子小：轨道压到 8px、去掉过渡、
-   数值叠在轨道上——三样都在 kit-bridge 里（那里才压得过 kit 的同名单类规则）。 */
-.tile .statuses { display: flex; gap: 3px; flex-wrap: wrap; }
-.chip { background: #3a404b; border-radius: 4px; padding: 0 4px; font-size: 9px; color: var(--text-dim); }
 
-.battle-side { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+/* 单位格：状态(chips) 在**卡外**——横屏并进卡上方一条、竖屏分列卡两侧 */
+.unit { display: grid; min-width: 0; min-height: 0; }
+.battle[data-orient='landscape'] .unit {
+  grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr;
+  grid-template-areas: 'a b' 'card card';
+  gap: 4px;
+}
+.battle[data-orient='portrait'] .unit {
+  grid-template-columns: auto 1fr auto; grid-template-rows: 1fr;
+  grid-template-areas: 'a card b';
+  gap: 4px;
+}
+.unit-chips { display: flex; gap: 3px; min-width: 0; overflow: hidden; }
+.battle[data-orient='landscape'] .unit-chips { flex-flow: row wrap; align-items: flex-end; }
+.battle[data-orient='landscape'] .unit-chips--a { grid-area: a; justify-content: flex-end; }
+.battle[data-orient='landscape'] .unit-chips--b { grid-area: b; justify-content: flex-start; }
+/* 竖屏：两侧 chip 列各自居中于卡高（不能给 .unit 整条 align-items:center——那会把
+   内容全绝对定位的 .unit-card 也一起收成 0 高） */
+.battle[data-orient='portrait'] .unit-chips { flex-flow: column wrap; align-content: center; align-self: center; }
+.battle[data-orient='portrait'] .unit-chips--a { grid-area: a; }
+.battle[data-orient='portrait'] .unit-chips--b { grid-area: b; }
+
+/* 卡面：头像满铺，血条压底、行动条做左上圆形扇叶；名字默认隐去 */
+.unit-card {
+  grid-area: card;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(30, 34, 42, 0.85);
+  overflow: hidden;
+  opacity: 0.5;
+  transition: opacity 0.15s, filter 0.15s;
+  user-select: none;
+  caret-color: transparent;
+}
+/* 未聚焦时压暗，hover / 选中(targetable) / 聚焦 时完整呈现 */
+.unit:hover .unit-card,
+.unit.targetable .unit-card,
+.unit:focus-within .unit-card { opacity: 1; }
+.unit.own .unit-card { border-color: #3f6b52; }
+.unit.enemy .unit-card { border-color: #7a3f3f; }
+.unit.dead { opacity: 0.4; }
+.unit.dead .unit-card { filter: grayscale(1); }
+/* targetable = 本决策的合法目标（描边脉冲，纯视觉）；pickable = 本侧可点选（才给抓手光标） */
+.unit.targetable .unit-card { outline: 2px solid var(--accent); outline-offset: 1px; animation: pulse 1s infinite; }
+.unit.pickable { cursor: pointer; }
+.unit.pickable:focus-visible { outline: none; }
+.unit.pickable:focus-visible .unit-card { outline: 2px solid var(--text); outline-offset: 1px; }
+@keyframes pulse { 50% { outline-color: var(--warn); } }
+
+/* 满铺头像：外层铺满整卡，图 cover（裁掉溢出），透明底露出的就是卡底色 */
+.unit-art { position: absolute; inset: 0; display: block; }
+.unit-art .hero-avatar { position: absolute; inset: 0; }
+.unit-art .hero-avatar__img { object-fit: cover; object-position: center; }
+.unit-art .hero-avatar__emoji { font-size: 34px; }
+
+/* 左上圆形扇叶进度（行动条）：conic-gradient 按 --p(0..100) 扫过角度 */
+.unit-gauge {
+  position: absolute; top: 5px; left: 5px; z-index: 1;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: conic-gradient(var(--accent) calc(var(--p, 0) * 1%), rgba(8, 10, 14, 0.72) 0);
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+/* 名字/职业：默认隐去，hover/选中/聚焦随卡完整呈现 */
+.unit-name {
+  position: absolute; left: 0; right: 0; bottom: 22px; z-index: 1;
+  padding: 2px 6px; text-align: center;
+  font-size: 11px; color: var(--text);
+  text-shadow: 0 1px 3px #000, 0 0 6px rgba(0, 0, 0, 0.9);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  opacity: 0; transition: opacity 0.15s; pointer-events: none;
+}
+.unit:hover .unit-name,
+.unit.targetable .unit-name,
+.unit:focus-within .unit-name { opacity: 1; }
+.unit-class { color: var(--text-dim); font-size: 10px; margin-left: 4px; }
+
+/* 血条压在卡底：血条沿用 kit 的 .cg-progress，尺寸与数值层在 kit-bridge */
+.unit-card .bar.hp { position: absolute; left: 4px; right: 4px; bottom: 3px; width: auto; z-index: 1; }
+
+/* 状态 chip（卡外）：小圆角标签 */
+.chip {
+  background: rgba(58, 64, 75, 0.92);
+  border: 1px solid var(--border);
+  border-radius: 4px; padding: 0 4px;
+  font-size: 9px; line-height: 15px; color: var(--text-dim);
+  white-space: nowrap;
+}
+
+/* ---------- 战斗悬浮层 ---------- */
+/* 顶栏 HUD：浮在棋盘上方。条本身让指针穿过去（好拖棋盘），只有里面的控件接指针 */
+.battle-hud {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+  display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap;
+  padding: 8px 12px;
+  background: linear-gradient(180deg, rgba(12, 14, 18, 0.86), rgba(12, 14, 18, 0.5) 70%, transparent);
+  pointer-events: none;
+}
+.battle-hud > * { pointer-events: auto; }
 .hud { display: flex; gap: 12px; font-size: 13px; color: var(--text-dim); }
 .controls { display: flex; align-items: center; gap: 8px; }
+/* 抽屉开关：宽屏靠 margin-left:auto 顶到最右；窄屏随控件一起换行 */
+.hud-tabs { display: flex; gap: 6px; margin-left: auto; }
+.hud-warn { position: absolute; top: 48px; left: 12px; right: 12px; z-index: 20; margin: 0; font-size: 12px; }
 
-/* 日志：面板外观来自 .cg-panel，滚动条来自 .cg-scroll，这里只定高度与字号 */
-.log { max-height: 42vh; font-size: 12px; line-height: 1.5; }
+/* 右侧抽屉：滑出式悬浮面板（日志 / 名册）。整页一屏，抽屉内超高自己滚 */
+.battle-drawer {
+  position: absolute; top: 0; right: 0; bottom: 0; z-index: 30;
+  width: min(340px, 88vw);
+  transform: translateX(100%); transition: transform 0.2s ease;
+  pointer-events: none;
+}
+.battle-drawer.is-open { transform: none; pointer-events: auto; }
+.drawer-panel { height: 100%; display: flex; flex-direction: column; border-radius: 0; border-right: 0; }
+.drawer-panel .cg-panel__head { margin-bottom: 8px; }
+.drawer-panel .cg-panel__title { flex: 1; }
+.drawer-body { flex: 1; min-height: 0; overflow: auto; }
+.drawer-meta { margin: 0 0 6px; font-size: 12px; color: var(--text-dim); }
+.log { height: 100%; font-size: 12px; line-height: 1.5; }
 .log-line { color: var(--text-dim); }
 .log-line.dim { opacity: 0.6; }
-
-.roster summary { font-size: 13px; }
 .roster-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
 .roster-name { font-size: 12px; min-width: 80px; }
-/* 战斗侧栏固定 320px，4 张 compact 卡（4×60+15=255）放不进与头像同行的余量，故独占一行 */
 .roster-cards { display: flex; gap: 5px; flex-wrap: wrap; flex: 1 0 100%; }
 
 /*
@@ -870,10 +950,6 @@ body.zoom-open { overflow: hidden; }
 /* 选靶按钮里的头像 */
 .pick-face .hero-avatar { width: 26px; height: 26px; }
 .pick-face .hero-avatar__emoji { font-size: 17px; }
-
-@media (max-width: 760px) {
-  .battle { grid-template-columns: 1fr; }
-}
 
 /* ---------- 排行榜 / 设置 ---------- */
 .board-page { max-width: 860px; margin: 0 auto; padding: 24px 18px 60px; }
