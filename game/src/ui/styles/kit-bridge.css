@@ -113,31 +113,32 @@
   padding: 16px 18px;
   display: flex; gap: 16px; align-items: flex-end;
 }
-/* 敌方信息浮层：右上（顶部 HUD 高约 48px，让开），与底部决策条同层 */
+/* 敌方信息浮层：右上（顶部 HUD 高约 48px，让开），与底部决策条同层；两列排版同决策条 */
 .inspect-foe.cg-panel {
   position: absolute; top: 56px; right: 12px; z-index: 25;
   width: min(340px, 92vw);
   padding: 16px 18px;
+  display: flex; gap: 14px; align-items: flex-end;
 }
-/* 竖屏（＝窄屏）：决策条/信息条改纵排——横排在 ~366px 宽里把右侧提示挤成单字竖柱
-   （2026-10-13 实测）。身份块一行、提示与按钮各自通栏；敌方信息浮层钉在上方、让开
-   两行高的竖屏 HUD（96px ≈ 实测 88px + 呼吸），与己方信息条（底部槽）上下对位。 */
+/* 竖屏（＝窄屏）：两列结构不变（头像 56px 小头像后横排放得下，见 app.css 身份块段），
+   只收尺寸：面板通栏、padding 收紧；敌方信息浮层钉在上方、让开两行高的竖屏 HUD
+   （96px ≈ 实测 88px + 呼吸），与己方信息条（底部槽）上下对位。 */
 @media (orientation: portrait) {
   .decision.cg-panel {
     width: calc(100% - 24px);
     padding: 12px 14px;
-    flex-direction: column;
-    align-items: stretch;
     gap: 10px;
+    align-items: center;
     bottom: max(12px, env(safe-area-inset-bottom));
   }
-  .decision.cg-panel .decision-title { margin-bottom: 0; }
   .inspect-foe.cg-panel {
     top: calc(96px + env(safe-area-inset-top)); right: auto; bottom: auto;
     left: 50%;
     transform: translateX(-50%);
     width: calc(100% - 24px);
     padding: 12px 14px;
+    gap: 10px;
+    align-items: center;
   }
 }
 

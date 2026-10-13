@@ -465,10 +465,6 @@ export function renderBattle(host: HTMLElement): void {
         autoPick()
         return
       }
-      if (el.closest('#btn-inspect-close')) {
-        toggleInspect(null)
-        return
-      }
       const pk = el.closest<HTMLElement>('[data-pick]')
       if (pk && !pk.hasAttribute('disabled')) {
         pickTarget(pk.dataset.pick ?? '')
@@ -493,7 +489,13 @@ export function renderBattle(host: HTMLElement): void {
         } else if (canInspectNow()) {
           toggleInspect({ kind: 'slot', coord: slot.dataset.coord ?? '' })
         }
+        return
       }
+      // 空白处点击：收起信息面板与抽屉（平移结束的尾随 click 已被 pan.ts 吃掉，到不了这里；
+      // 抽屉/HUD/面板/模态内部点击不算空白，由各自的控件消化）
+      if (el.closest('.battle-drawer, .battle-hud, .decision, .inspect-foe, .cg-modal')) return
+      if (inspect != null) toggleInspect(null)
+      closeDrawers()
     }
     const onKey = (e: KeyboardEvent): void => {
       if (e.key !== 'Enter' && e.key !== ' ') return
@@ -507,7 +509,7 @@ export function renderBattle(host: HTMLElement): void {
     overlayEl.addEventListener('click', onClick, { signal: ac.signal })
   }
 
-  /** 点同一个目标再点一次 = 收起；传 null 直接收起（面板 ✕） */
+  /** 点同一个目标再点一次 = 收起；传 null 直接收起（空白处点击兜底） */
   const toggleInspect = (next: Inspect | null): void => {
     const same =
       next != null &&
@@ -515,6 +517,17 @@ export function renderBattle(host: HTMLElement): void {
         (inspect?.kind === 'slot' && next.kind === 'slot' && inspect.coord === next.coord))
     inspect = same ? null : next
     refresh()
+  }
+
+  /** 空白点击收起两抽屉（与 wireDrawers 的 toggle 同一条类名/aria 通道） */
+  const closeDrawers = (): void => {
+    if (!logOpen && !rosterOpen) return
+    logOpen = false
+    rosterOpen = false
+    host.querySelector('.battle-drawer--log')?.classList.remove('is-open')
+    host.querySelector('.battle-drawer--roster')?.classList.remove('is-open')
+    document.getElementById('btn-log')?.setAttribute('aria-pressed', 'false')
+    document.getElementById('btn-roster')?.setAttribute('aria-pressed', 'false')
   }
 
   const submit = (picks: DecisionInput): void => {
@@ -891,29 +904,36 @@ function rosterHtml(s: BattleSession): string {
 }
 
 /**
- * 操作者身份块：大头像 + 名称 + 职业·体质·力敏智。
- * 决策条与信息面板共用——名称/体质这些非实时信息不常显在棋子上，要看就聚到这里。
+ * 身份块两件套：大头像（左列）+ 名称/职业·体质·力敏智行（右列顶部）。
+ * 决策条与信息面板共用——面板一律「头像在左，其余全在右」两列（右列是 .actor-side）。
+ * 名称/体质这些非实时信息不常显在棋子上，要看就聚到这里。
  */
-function actorBlockHtml(s: BattleSession, name: string, meta: UnitMeta | undefined): string {
+function actorAvatarHtml(meta: UnitMeta | undefined): string {
+  // 大头像不带 emoji 兜底（缺图就留白，不拿 emoji 凑数）；尺寸约旧档两倍，顶出面板、底边贴齐
+  return meta ? `<span class="actor-avatar">${heroAvatarHtml(meta, '136px', false)}</span>` : ''
+}
+
+function actorIdHtml(s: BattleSession, name: string, meta: UnitMeta | undefined): string {
   const sub = meta
     ? `${classNameOf(s, meta)} · ${constitutionById(meta.constitutionId)?.name ?? meta.constitutionId} · ${meta.combo.strength}力/${meta.combo.agility}敏/${meta.combo.intelligence}智`
     : ''
-  // 大头像不带 emoji 兜底（缺图就留白，不拿 emoji 凑数）；尺寸约旧档两倍，顶出面板、底边贴齐
-  const avatar = meta ? `<span class="actor-avatar">${heroAvatarHtml(meta, '136px', false)}</span>` : ''
-  return `<div class="actor">${avatar}<div class="actor-id">
+  return `<div class="actor-id">
     <div class="actor-name">${escapeHtml(name)}</div>
     ${sub ? `<div class="actor-sub">${meta ? emblemHtml(meta.classId) : ''}${escapeHtml(sub)}</div>` : ''}
-  </div></div>`
+  </div>`
 }
 
 function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = false): string {
   const meta = s.unitMeta.get(pending.caster)
   return `
   <div class="cg-panel decision">
-    ${actorBlockHtml(s, meta?.name ?? pending.caster, meta)}
-    <div class="decision-main">
-      <div class="decision-title">点选棋盘上的高亮目标${disabled ? ' · 已提交，等待同步…' : ''}</div>
-      <button type="button" class="cg-btn cg-btn--sm cg-btn--block pick-auto" id="btn-auto-pick" ${disabled ? 'disabled' : ''}>交给 AI（自动选择）</button>
+    ${actorAvatarHtml(meta)}
+    <div class="actor-side">
+      ${actorIdHtml(s, meta?.name ?? pending.caster, meta)}
+      <div class="decision-main">
+        <div class="decision-title">点选棋盘上的高亮目标${disabled ? ' · 已提交，等待同步…' : ''}</div>
+        <button type="button" class="cg-btn cg-btn--sm cg-btn--block pick-auto" id="btn-auto-pick" ${disabled ? 'disabled' : ''}>交给 AI（自动选择）</button>
+      </div>
     </div>
   </div>`
 }
@@ -925,17 +945,17 @@ function coordText(c: { lane: string; index: number }): string {
 
 /**
  * 非操作时机的信息面板：己方单位/空格 → 底部条（与操作栏同一槽位，decision--inspect）；
- * 敌方 → 右上浮层。内容为身份 + 实时状态（HP/能量/格位/状态列表），不含技能（在名册抽屉）。
+ * 敌方 → 竖屏顶部条 / 横屏右上浮层。内容为身份 + 实时状态（HP/能量/格位/状态列表），不含技能（在名册抽屉）。
+ * 无关闭键：点面板外任意空白处即收起（见 wireDelegated 的空白点击兜底）。
  */
 function inspectPanelHtml(s: BattleSession, view: CombatView, sel: Inspect): string {
-  const close = `<button type="button" class="cg-close inspect-close" id="btn-inspect-close" aria-label="关闭">${icon('cg-close')}</button>`
   if (sel.kind === 'slot') {
     const [faction, lane, indexStr] = sel.coord.split('|')
-    const inner = `${actorBlockHtml(s, '空位', undefined)}
+    const inner = `${actorIdHtml(s, '空位', undefined)}
       <div class="inspect-body"><span class="inspect-stat">${escapeHtml(coordText({ lane, index: Number(indexStr) }))}</span></div>`
     return faction === myFactionOf(s)
-      ? `<div class="cg-panel decision decision--inspect">${inner}${close}</div>`
-      : `<aside class="cg-panel inspect-foe">${inner}${close}</aside>`
+      ? `<div class="cg-panel decision decision--inspect"><div class="actor-side">${inner}</div></div>`
+      : `<aside class="cg-panel inspect-foe"><div class="actor-side">${inner}</div></aside>`
   }
   const u = view.units.find((x) => x.id === sel.id)
   if (!u) return ''
@@ -947,14 +967,17 @@ function inspectPanelHtml(s: BattleSession, view: CombatView, sel: Inspect): str
     `能量 ${u.energy}`,
     u.coordinate ? escapeHtml(coordText(u.coordinate)) : '离场',
   ]
-  const inner = `${actorBlockHtml(s, meta?.name ?? u.id, meta)}
-    <div class="inspect-body">
-      ${stats.map((t) => `<span class="inspect-stat">${t}</span>`).join('')}
-      ${chips ? `<span class="inspect-chips">${chips}</span>` : ''}
+  const inner = `${actorAvatarHtml(meta)}
+    <div class="actor-side">
+      ${actorIdHtml(s, meta?.name ?? u.id, meta)}
+      <div class="inspect-body">
+        ${stats.map((t) => `<span class="inspect-stat">${t}</span>`).join('')}
+        ${chips ? `<span class="inspect-chips">${chips}</span>` : ''}
+      </div>
     </div>`
   return own
-    ? `<div class="cg-panel decision decision--inspect">${inner}${close}</div>`
-    : `<aside class="cg-panel inspect-foe">${inner}${close}</aside>`
+    ? `<div class="cg-panel decision decision--inspect">${inner}</div>`
+    : `<aside class="cg-panel inspect-foe">${inner}</aside>`
 }
 
 function endedHtml(s: BattleSession, outcome: string): string {
