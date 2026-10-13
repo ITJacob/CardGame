@@ -162,6 +162,72 @@ export function hydrateArt(root: HTMLElement): void {
   })
 }
 
+/* ============================================================================
+ * 卡面节点池
+ *
+ * 同一个卡面在界面上反复拆建时（展示台翻英雄重建右栏、整备换人重建右栏、装卡/调序
+ * 换格、技能弹窗切页签重建卡池），复用节点而不是重建 <img>：节点不销毁，浏览器对它的
+ * 解码位/加载态原样保留，整批重绘不闪。同案记录见 cards.ts 的 sync() 与 hero.ts 的
+ * patchShowcase——新 <img> 没有已解码位图，重建即闪。
+ *
+ * 键 = 卡面 HTML 字符串（渲染身份，含尺寸/按钮档/稀有度等一切影响外观的入参）。
+ * 池中节点不在 DOM，取出即出池——一个节点同一时间只在一处。同一张卡可能同时在两处
+ * 出现（装了又在弹窗池里带 ✓）：第二处取不到池中节点时新建，互不抢。
+ * 注意：键必须只由**稳定**入参构成；调用方若有易变状态（✓ 角标/置灰/aria），在取出
+ * 池化节点后自己回刷（prep 的 applyPoolStates 就是这么干的）。
+ * ========================================================================== */
+
+const facePool = new Map<string, HTMLElement>()
+const FACE_POOL_CAP = 48
+
+/** 取卡面节点：池中有则复用（出池），没有则按 html 新建并打上身份键 */
+export function acquireFace(html: string): HTMLElement {
+  const hit = facePool.get(html)
+  if (hit) {
+    facePool.delete(html)
+    return hit
+  }
+  const box = document.createElement('div')
+  box.innerHTML = html
+  const node = box.firstElementChild as HTMLElement
+  node.dataset.fkey = html
+  return node
+}
+
+/** 回收卡面节点（拆换时入池）。池满丢最旧的（Map 迭代序 = 插入序）。 */
+export function releaseFace(html: string, el: HTMLElement): void {
+  if (facePool.has(html)) return
+  if (facePool.size >= FACE_POOL_CAP) {
+    const oldest = facePool.keys().next().value as string
+    facePool.delete(oldest)
+  }
+  facePool.set(html, el)
+}
+
+/**
+ * 重置容器内容，但把其中每张 .card-face 换成池化节点。
+ * @param faceKey 由卡面元素自身推导池键（data-card + 所在组/档等稳定上下文）；
+ *                返回 undefined 表示该卡面保持字符串新建。用推导而非位置下标，
+ *                空槽/缺卡不会让键错位。键必须与渲染方的 cardFaceHtml 调用一致
+ *                （易变状态——✓/置灰/aria/data-equip——不进键，取出后由调用方回刷）。
+ * 替换前把容器里的旧卡面（带身份键的）回池。换好后由调用方 hydrateArt——新建的卡面
+ * 要挂降级链，池化节点已挂过、幂等。
+ */
+export function setHtmlWithPooledFaces(container: HTMLElement, html: string, faceKey: (slot: HTMLElement) => string | undefined): void {
+  container.querySelectorAll<HTMLElement>('.card-face').forEach((el) => {
+    const key = el.dataset.fkey
+    if (key) releaseFace(key, el)
+  })
+  const box = document.createElement('div')
+  box.innerHTML = html
+  box.querySelectorAll<HTMLElement>('.card-face').forEach((slot) => {
+    const key = faceKey(slot)
+    if (key == null) return
+    slot.replaceWith(acquireFace(key))
+  })
+  container.replaceChildren(...Array.from(box.childNodes))
+}
+
 /** 详情浮层内容；查不到定义返回 null（调用方据此不弹） */
 export function cardDetailHtml(catalog: Catalog, cardId: string): string | null {
   const def = catalog.skillDefs.get(cardId) ?? catalog.behaviorTemplates.get(cardId)

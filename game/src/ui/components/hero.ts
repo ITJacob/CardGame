@@ -1,6 +1,6 @@
 // 英雄展示：名册预览（新游戏 / 在线大厅）与整备页小图共用的展示块。
 import { escapeHtml } from './chrome'
-import { avatarEmoji, cardFaceHtml, hydrateArt } from './cardFace'
+import { avatarEmoji, cardFaceHtml, hydrateArt, setHtmlWithPooledFaces } from './cardFace'
 import { icon } from './icons'
 import { emblemHtml } from './emblem'
 import { hideCardPop } from '../hover'
@@ -307,11 +307,38 @@ function patchShowcase(sec: HTMLElement, heroes: HeroLike[], catalog: Catalog, i
   if (count) count.textContent = n > 1 ? `${i + 1} / ${n}` : ''
   const art = sec.querySelector('.hs-art')
   if (art) art.innerHTML = hero ? heroPortraitHtml(hero, stepArrows(i, n)) : '<p class="hint hs-empty">名册为空</p>'
-  const side = sec.querySelector('.hs-side')
-  if (side && hero) side.outerHTML = sideHtml(hero, catalog, kind)
+  const side = sec.querySelector<HTMLElement>('.hs-side')
+  if (side && hero) {
+    const shell = document.createElement('div')
+    shell.innerHTML = sideHtml(hero, catalog, kind)
+    // 右栏整体重建，但卡面走节点池：翻英雄来回切时 <img> 不销毁重建，不闪
+    setHtmlWithPooledFaces(side, (shell.firstElementChild as HTMLElement).innerHTML, (slot) =>
+      sideFaceKey(slot, catalog),
+    )
+  }
   hydrateHeroArt(sec)
   hydrateArt(sec)
   hideCardPop()
+}
+
+/** 右栏卡面的池键：与 cardGroupHtml 里那张卡面的渲染参数逐字一致（data-card + 所在组），
+ *  键即身份，空槽无卡面、天然跳过。 */
+function sideFaceKey(slot: HTMLElement, catalog: Catalog): string | undefined {
+  const id = slot.dataset.card ?? ''
+  const k = slot.closest<HTMLElement>('[data-kind]')?.dataset.kind
+  if (!id || (k !== 'active' && k !== 'passive')) return undefined
+  const def = catalog.skillDefs.get(id)
+  const tpl = catalog.behaviorTemplates.get(id)
+  return cardFaceHtml({
+    cardId: id,
+    name: def?.name ?? tpl?.name ?? id,
+    rarity: def?.rarity ?? tpl?.rarity,
+    pathwayId: def?.pathwayId ?? tpl?.pathwayId,
+    kind: k,
+    cost: def?.cost?.energy,
+    as: 'button',
+    sizes: '128px',
+  })
 }
 
 /** 横屏名册条的箭头是「藏起来的滚动条」的把手：按一格宽（含间隙）滚一段 */

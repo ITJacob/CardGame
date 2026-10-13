@@ -16,7 +16,7 @@
 // 进页面之后**只有 draw() 会整页重画一次**，此后装卡/卸卡/调序/换人/换页签一律走 refresh()
 // 就地改那几格——整页重画会把几十张大图换成新 <img> 重新解码，点一下闪一下（见 refresh 的说明）。
 import { escapeHtml, subBarHtml } from '../components/chrome'
-import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { cardDetailHtml, cardFaceHtml, hydrateArt, acquireFace, releaseFace, setHtmlWithPooledFaces } from '../components/cardFace'
 import { heroPortraitHtml, hydrateHeroArt } from '../components/hero'
 import { icon } from '../components/icons'
 import { emblemHtml } from '../components/emblem'
@@ -718,6 +718,9 @@ function patchRow(
   limit: number,
   canDrag: boolean,
   html: (i: number, id: string | undefined) => string,
+  /** 卡面池键（与 html 里那张卡面的渲染参数一致）：给了就走得换——换出去的面回池、
+   *  换进来的面优先复用池里的（同一张卡挪位 = 节点原样搬过去，<img> 零重建）。 */
+  faceHtml?: (i: number, id: string | undefined) => string | undefined,
 ): boolean {
   if (!row || row.children.length !== limit) return false
   const tiles = [...row.children] as HTMLElement[]
@@ -730,6 +733,15 @@ function patchRow(
     const box = document.createElement('div')
     box.innerHTML = html(i, ids[i])
     const next = box.firstElementChild as HTMLElement
+    if (faceHtml) {
+      const key = faceHtml(i, ids[i])
+      const slot = next.querySelector<HTMLElement>('.card-face')
+      if (key && slot) {
+        const oldFace = el.querySelector<HTMLElement>('.card-face')
+        if (oldFace?.dataset.fkey) releaseFace(oldFace.dataset.fkey, oldFace)
+        slot.replaceWith(acquireFace(key))
+      }
+    }
     el.replaceWith(next)
     hydrateArt(next)
     swapped = true
@@ -777,7 +789,10 @@ function patchSide(host: HTMLElement, catalog: Catalog, hero: PlacedHero, drawnI
   const side = host.querySelector<HTMLElement>('.hs-side')
   if (!side) return false
   if (drawnId !== hero.id) {
-    side.innerHTML = sideInnerHtml(catalog, hero)
+    const shell = document.createElement('div')
+    shell.innerHTML = sideInnerHtml(catalog, hero) // 注意：sideInnerHtml 无外壳，整段就是内容
+    // 换人整块重建右栏，但卡面走节点池：<img> 不销毁重建，来回点选不闪
+    setHtmlWithPooledFaces(side, shell.innerHTML, (slot) => prepSideFaceKey(slot, catalog))
     hydrateArt(side)
     return true
   }
@@ -791,7 +806,17 @@ function patchSide(host: HTMLElement, catalog: Catalog, hero: PlacedHero, drawnI
     // canDrag 必须与 summaryTileHtml 渲染时的可拖条件一致（同一张卡多张时可整格拖调序）；
     // 传 false 会让 patchRow 每轮都判定「不一致」→ 重建摘要卡 → 恒返回 true，进而 refresh 每轮
     // 都调 hideCardPop()，把触摸档点开的卡面详情浮层反复顶回（表现为「选中态取消不掉」）。
-    if (patchRow(row, ids, SLOT_LIMIT[kind], ids.length > 1, (i, id) => summaryTileHtml(catalog, kind, i, id, ids.length > 1))) swapped = true
+    if (
+      patchRow(
+        row,
+        ids,
+        SLOT_LIMIT[kind],
+        ids.length > 1,
+        (i, id) => summaryTileHtml(catalog, kind, i, id, ids.length > 1),
+        // 卡面池键与 summaryTileHtml 里那张卡面逐字一致（卡面外观只随卡 id/侧别变，与槽位无关）
+        (_i, id) => (id ? cardOf(catalog, id, kind, 'compact', { sizes: '128px' }) : undefined),
+      )
+    ) swapped = true
   }
   return swapped
 }
@@ -817,7 +842,16 @@ function patchPicker(
     const ids = kind === 'active' ? hero.activeSkillIds : hero.passiveSkillIds
     const canDrag = ids.length > 1
     const row = root.querySelector(`.pp-slots .sk-row[data-kind="${kind}"] .slot-row`)
-    if (patchRow(row, ids, SLOT_LIMIT[kind], canDrag, (i, id) => slotTileHtml(catalog, kind, i, id, canDrag))) swapped = true
+    if (
+      patchRow(
+        row,
+        ids,
+        SLOT_LIMIT[kind],
+        canDrag,
+        (i, id) => slotTileHtml(catalog, kind, i, id, canDrag),
+        (_i, id) => (id ? cardOf(catalog, id, kind, 'compact', { sizes: '110px' }) : undefined),
+      )
+    ) swapped = true
   }
 
   root.querySelectorAll<HTMLElement>('.pp-tabs [data-pp-tab]').forEach((el) => {
@@ -840,7 +874,13 @@ function patchPicker(
   if (poolDrawn !== picker.tab) {
     const wrap = root.querySelector<HTMLElement>('.pp-pool')
     if (wrap) {
-      wrap.innerHTML = poolHtml(catalog, profile, hero, picker.tab)
+      const shell = document.createElement('div')
+      shell.innerHTML = poolHtml(catalog, profile, hero, picker.tab)
+      // 切页签整块换卡池，卡面走节点池；池化节点带着别处/别侧的旧 ✓/置灰/data-equip，
+      // 接好后由 applyPoolStates 统一回刷
+      setHtmlWithPooledFaces(wrap, shell.innerHTML, (slot) => poolFaceKey(slot, catalog, picker.tab))
+      const grid = wrap.querySelector<HTMLElement>('.pool-grid')
+      if (grid) applyPoolStates(grid, hero, picker.tab)
       hydrateArt(wrap)
       swapped = true
     }
@@ -856,19 +896,45 @@ function patchPicker(
  * 池子里 21 张都是 1152×1536 的大图）。
  */
 function patchPoolStates(host: HTMLElement, hero: PlacedHero, tab: SlotKind): void {
-  const grid = host.querySelector('.pp-pool .pool-grid')
-  if (!grid) return
+  const grid = host.querySelector<HTMLElement>('.pp-pool .pool-grid')
+  if (grid) applyPoolStates(grid, hero, tab)
+}
+
+/** 就地回刷网格里每张卡面的易变状态：✓ 角标 / 置灰 + aria-disabled / data-equip。
+ *  卡面可能来自节点池（带着别处/别侧的旧状态），接手后必须先刷一遍再谈显示。 */
+function applyPoolStates(grid: HTMLElement, hero: PlacedHero, tab: SlotKind): void {
   const equipped = new Set(tab === 'active' ? hero.activeSkillIds : hero.passiveSkillIds)
   const full = equipped.size >= SLOT_LIMIT[tab]
   grid.querySelectorAll<HTMLElement>('.card-face').forEach((face) => {
-    const on = equipped.has(face.dataset.card ?? '')
+    const id = face.dataset.card ?? ''
+    const on = equipped.has(id)
     const off = !on && full
     face.classList.toggle('dim', off)
     if (off) face.setAttribute('aria-disabled', 'true')
     else face.removeAttribute('aria-disabled')
+    face.dataset.equip = `${tab}:${id}`
     const corner = face.querySelector('.card-corner')
     if (on && !corner) face.insertAdjacentHTML('beforeend', '<span class="card-corner">✓</span>')
     else if (!on && corner) corner.remove()
+  })
+}
+
+/** 整备右栏卡面的池键：与 skillRowHtml → summaryTileHtml 里那张卡面逐字一致。 */
+function prepSideFaceKey(slot: HTMLElement, catalog: Catalog): string | undefined {
+  const id = slot.dataset.card ?? ''
+  const kind = slot.closest<HTMLElement>('[data-kind]')?.dataset.kind
+  if (!id || (kind !== 'active' && kind !== 'passive')) return undefined
+  return cardOf(catalog, id, kind, 'compact', { sizes: '128px' })
+}
+
+/** 弹窗卡池卡面的池键：与 poolHtml 里那张卡面一致，但剔除易变状态（✓/置灰/aria/
+ *  data-equip 不进键，否则装一次卡键就变、池永远不中）；接池后由 applyPoolStates 回刷。 */
+function poolFaceKey(slot: HTMLElement, catalog: Catalog, tab: SlotKind): string | undefined {
+  const id = slot.dataset.card ?? ''
+  if (!id) return undefined
+  return cardOf(catalog, id, tab, 'full', {
+    as: 'button',
+    sizes: '(orientation: landscape) 150px, clamp(120px, calc(50vw - 32px), 200px)',
   })
 }
 
