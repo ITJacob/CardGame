@@ -151,6 +151,16 @@ def cross_check(docs, manifest, errors, warns):
                 errors.append("%s %s: sequence %s 应为 %s，实为 %s"
                               % (name, c.get("id"), c.get("sequence"), exp, c.get("rarity")))
 
+    # 6) *.statuses.json ↔ manifest：孤儿状态文件（前缀不是已登记途径、也不是 common）即错误。
+    #    反向不强制——途径允许无私有状态（此时无文件），故 manifest 也不登记 statuses 文件名
+    #    （命名可推导，登记即同步面；消费方一律按 *.statuses.json glob 发现，见 status_loader）。
+    known = set(m_by_id) | {"common"}
+    for f in sorted(glob.glob(os.path.join(JSON_DIR, "*.statuses.json"))):
+        pid = os.path.basename(f)[: -len(".statuses.json")]
+        if pid not in known:
+            errors.append("manifest: 状态文件 %s 无对应途径（孤儿文件：途径未登记或已删未清理）"
+                          % os.path.basename(f))
+
 
 def main():
     max_errors = 15
