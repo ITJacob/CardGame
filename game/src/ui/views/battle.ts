@@ -909,7 +909,7 @@ function rosterHtml(s: BattleSession): string {
  * 名称/体质这些非实时信息不常显在棋子上，要看就聚到这里。
  */
 function actorAvatarHtml(meta: UnitMeta | undefined): string {
-  // 大头像不带 emoji 兜底（缺图就留白，不拿 emoji 凑数）；横屏 152px 顶出面板、竖屏 96px 随行
+  // 大头像不带 emoji 兜底（缺图就留白，不拿 emoji 凑数）；横屏 152px / 竖屏 128px，都略超栏高
   return meta ? `<span class="actor-avatar">${heroAvatarHtml(meta, '152px', false)}</span>` : ''
 }
 
