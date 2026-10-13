@@ -203,15 +203,17 @@ a { color: inherit; text-decoration: none; }
 /* 竖屏：卡面方正（--cell = 两列均分扣 padding/gap，封顶 200px），上下各留 25vh 空白
    （2026-10-13 起不再做「队尾可居中」的半屏留白）；进场由 battle.ts 把对阵中线拨到
    屏幕正中（内容上下对称，scrollTop 取中即可）。内容超高整体溢出 → 拖拽平移。
+   --row-cell = --cell − 28px：chips 竖条贴卡外侧（24px + 4px gap，见下方单位格段），
+   卡面 = --cell − 28 见方，同路行距随之收窄。
    align-content: safe center：内容比中间带矮时网格也要在带内居中（否则顶对齐、中线偏上），
    溢出时退回 start 保证上边缘拖得到。
    ⚠️ 必须 height:auto（盖掉通用条的 height:100%）：height:100% 是定值，9 条轨道基数和
-   （8×148+32+gaps+padding ≈ 1280px）超过视口后自由空间为负，minmax 轨道全被摁在下限
-   148px——卡面塌成 179×112。height:auto 走内在尺寸（按 growth limit 算），行才到 --row-cell。
+   超过视口后自由空间为负，minmax 轨道全被摁在下限——卡面塌扁。height:auto 走内在尺寸
+   （按 growth limit 算），行才到 --row-cell。
    min-height:100% 兜住内容比视口矮的情形：棋盘铺满一屏，align-content 居中仍有中线。 */
 .battle[data-orient='portrait'] .board {
   --cell: min(calc((100cqw - 32px) / 2), 200px);
-  --row-cell: calc(var(--cell) + 36px);
+  --row-cell: calc(var(--cell) - 28px);
   --gap-track: 32px;
   height: auto;
   min-height: 100%;
@@ -235,9 +237,9 @@ a { color: inherit; text-decoration: none; }
   align-content: safe center;
 }
 
-/* 单位格：状态(chips) 在**卡外**单边一条——横竖屏都在卡上方，放不下截断。
-   chips 区定高 32px≈两行，卡面占剩余：同排/同列的卡面因此同大，状态多少不再把
-   卡面挤得大小不一。竖屏 chips 同样顶置（居中），两路队列的水平中线不被 chips 列挤偏。
+/* 单位格：状态(chips) 在**卡外**单边——横屏在卡上方一行，竖屏贴卡外侧一条竖条
+   （左路 .lane-l 在卡左、右路 .lane-r 在卡右，见下方竖屏段），放不下截断。
+   chips 区尺寸固定，卡面占剩余：同排/同列的卡面因此同大，状态多少不再把卡面挤得大小不一。
    .slot（空地）与 .unit 共用同一套模板，虚线框落在 card 区 → 空格与卡面一样大。 */
 .unit { display: grid; min-width: 0; min-height: 0; }
 .battle .slot { display: grid; min-width: 0; min-height: 0; }
@@ -248,7 +250,22 @@ a { color: inherit; text-decoration: none; }
 }
 .unit-chips { grid-area: chips; display: flex; gap: 3px; min-width: 0; min-height: 0; overflow: hidden; }
 .battle[data-orient='landscape'] .unit-chips { flex-flow: row wrap; align-content: flex-end; }
-.battle[data-orient='portrait'] .unit-chips { flex-flow: row wrap; align-content: flex-end; justify-content: center; }
+/* 竖屏：chips 竖条贴卡外侧（laneCls 由 battle.ts 按列写），同路纵向相邻的卡之间不再
+   夹 chips 行，行距收窄（--row-cell = --cell − 28px：24px 竖条 + 4px gap，卡面仍方正）。
+   竖条定宽 24px≈一枚带 ×n 层数的 chip，列不下往内折第二列、再放不下截断。 */
+.battle[data-orient='portrait'] .unit,
+.battle[data-orient='portrait'] .slot {
+  grid-template-columns: 24px 1fr; grid-template-rows: 1fr;
+  grid-template-areas: 'chips card';
+}
+/* 右路翻转：轨道宽度也要跟着翻（areas 只换位置不换轨宽） */
+.battle[data-orient='portrait'] .lane-r {
+  grid-template-columns: 1fr 24px;
+  grid-template-areas: 'card chips';
+}
+.battle[data-orient='portrait'] .unit-chips { flex-flow: column wrap; justify-content: center; }
+.battle[data-orient='portrait'] .lane-l .unit-chips { align-items: flex-end; }
+.battle[data-orient='portrait'] .lane-r .unit-chips { align-items: flex-start; }
 
 /* 卡面：头像满铺，血条压底、行动条做左上圆形扇叶；名字默认隐去 */
 .unit-card {
@@ -375,6 +392,16 @@ a { color: inherit; text-decoration: none; }
 .actor-id { min-width: 0; }
 .actor-name { font-size: 17px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .actor-sub { font-size: 12px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* 竖屏（＝窄屏）：身份块收扁。136px 顶出面板的大头像是横屏排法——竖屏面板只有 ~366px 宽，
+   横排时身份块把右侧挤成单字竖柱（2026-10-13 实测决策提示逐字竖排）。改 56px 随行小头像。
+   用媒体查询不用 data-orient：决策/信息条挂在 .battle-overlay 上，没有 data-orient 可继承
+   （与 .card-pop 同前例）。 */
+@media (orientation: portrait) {
+  .actor { align-items: center; gap: 10px; }
+  .actor-avatar { margin: 0; }
+  .actor-avatar .hero-avatar { width: 56px; height: 56px; }
+  .decision .inspect-body { margin-top: 0; }
+}
 
 /* 信息面板（非操作时机点开）：己方 = 底部条（复用 .decision 槽位），敌方 = 右上浮层 */
 .inspect-foe { width: min(320px, 88vw); }
@@ -422,6 +449,9 @@ a { color: inherit; text-decoration: none; }
 /* 抽屉开关：宽屏靠 margin-left:auto 顶到最右；窄屏随控件一起换行 */
 .hud-tabs { display: flex; gap: 6px; margin-left: auto; }
 .hud-warn { position: absolute; top: 48px; left: 12px; right: 12px; z-index: 20; margin: 0; font-size: 12px; }
+/* 竖屏 HUD：收紧成两行——「返回 + 信息（tick/相位/场上）」一行，「控件 + 抽屉键」一行 */
+.battle[data-orient='portrait'] .battle-hud { padding: 6px 10px; gap: 6px 8px; }
+.battle[data-orient='portrait'] .hud { gap: 8px; font-size: 12.5px; flex: 1 1 auto; justify-content: center; }
 
 /* 右侧抽屉：滑出式悬浮面板（日志 / 名册）。整页一屏，抽屉内超高自己滚 */
 .battle-drawer {

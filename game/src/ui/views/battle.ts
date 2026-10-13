@@ -700,10 +700,12 @@ function boardHtml(s: BattleSession, view: CombatView, pending: DecisionRequest 
         const key = coordKey(coord)
         const u = occupied.get(key)
         const { col, row } = spec.place(coord)
+        // 竖屏 chips 条贴在卡面外侧：左路(lane-l)在卡左、右路(lane-r)在卡右（类由 CSS 消费）
+        const laneCls = orient === 'portrait' ? (col === 1 ? ' lane-l' : ' lane-r') : ''
         cells.push(
           u
-            ? tileHtml(s, u, col, row, cand.has(u.id), canPick, u.id === actingId)
-            : slotHtml(coord, col, row, faction === ownFaction, canPick && candCoords.has(key)),
+            ? tileHtml(s, u, col, row, cand.has(u.id), canPick, u.id === actingId, laneCls)
+            : slotHtml(coord, col, row, faction === ownFaction, canPick && candCoords.has(key), laneCls),
         )
       }
     }
@@ -714,15 +716,17 @@ function boardHtml(s: BattleSession, view: CombatView, pending: DecisionRequest 
       ? `<div class="board-mid" style="grid-column:${spec.midTrack};grid-row:1 / -1"></div>`
       : `<div class="board-mid" style="grid-row:${spec.midTrack};grid-column:1 / -1"></div>`
 
-  // 格宽走 CSS 变量：--cell 是 app.css 按视口算出的方卡边长（--row-cell 多出 36px 是 chips 行），
-  // 卡面保持方正、整块棋盘居中留白；被压到 minmax 下限（112px）仍放不下就整体溢出 → 触发拖拽平移。
+  // 格宽走 CSS 变量：--cell 是 app.css 按视口算出的方卡边长（横屏 --row-cell 多出 36px 是顶置
+  // chips 行；竖屏 chips 改卡外侧竖条，--row-cell 反而比 --cell 小 28px，同路行距随之收窄），
+  // 卡面保持方正、整块棋盘居中留白；被压到 minmax 下限仍放不下就整体溢出 → 触发拖拽平移。
   const sqCell = 'minmax(112px, var(--cell, 1fr))'
   const sqRow = 'minmax(148px, var(--row-cell, 1fr))'
+  const sqRowP = 'minmax(84px, var(--row-cell, 1fr))'
   const sqGap = 'var(--gap-track, 28px)'
   const template =
     orient === 'landscape'
       ? `grid-template-columns:repeat(${LANE_CAPACITY}, ${sqCell}) ${sqGap} repeat(${LANE_CAPACITY}, ${sqCell}); grid-template-rows:repeat(${spec.rows}, ${sqRow})`
-      : `grid-template-columns:repeat(${spec.columns}, ${sqCell}); grid-template-rows:repeat(${LANE_CAPACITY}, ${sqRow}) ${sqGap} repeat(${LANE_CAPACITY}, ${sqRow})`
+      : `grid-template-columns:repeat(${spec.columns}, ${sqCell}); grid-template-rows:repeat(${LANE_CAPACITY}, ${sqRowP}) ${sqGap} repeat(${LANE_CAPACITY}, ${sqRowP})`
   // can-inspect 只控光标与空格 hover，不改变渲染
   return `<div class="board${canInspect ? ' can-inspect' : ''}" style="${template}">${mid}${cells.join('')}</div>`
 }
@@ -730,8 +734,8 @@ function boardHtml(s: BattleSession, view: CombatView, pending: DecisionRequest 
 /** 空格：虚线框占位，非操作时机可点看格位信息（接线见 wire）；是合法落点时高亮可点。
    .slot 只摆网格壳（与 .unit 同一模板），虚线框是内层 .slot-box——它落在 card 区，
    大小与英雄卡面一致。 */
-function slotHtml(coord: Coordinate, col: number, row: number, own: boolean, pickable: boolean): string {
-  return `<div class="slot${own ? ' own' : ''}${pickable ? ' targetable pickable' : ''}" style="grid-column:${col};grid-row:${row}" data-coord="${escapeHtml(coordKey(coord))}"><div class="slot-box"></div></div>`
+function slotHtml(coord: Coordinate, col: number, row: number, own: boolean, pickable: boolean, laneCls = ''): string {
+  return `<div class="slot${own ? ' own' : ''}${laneCls}${pickable ? ' targetable pickable' : ''}" style="grid-column:${col};grid-row:${row}" data-coord="${escapeHtml(coordKey(coord))}"><div class="slot-box"></div></div>`
 }
 
 /** 状态名走中文词典：catalog.statusDefs 的 name 可选，故回退裸 id（与 prepare/hero 的取名范式一致） */
@@ -759,12 +763,13 @@ function chipHtml(s: BattleSession, st: { defId: string; stacks: number }, short
 
 /**
  * 战场单位卡。大头像铺满整张卡、血条压在卡底、行动条做成左上角圆形扇叶；
- * 状态标签渲染在**卡外**单边一条（横屏卡上方、竖屏卡左侧，首字缩写，放不下截断）；
+ * 状态标签渲染在**卡外**单边（横屏卡上方一行；竖屏贴卡外侧竖条——左路在卡左、
+ * 右路在卡右，laneCls 带 lane-l/lane-r，首字缩写，放不下截断）；
  * 名字/职业默认隐去，hover / 选中(targetable) / 聚焦 时随卡一起完整呈现。
  * targetable = 当前决策的合法目标（视觉高亮）；pickable = 本侧可点选（此时才给抓手光标，避免空承诺）。
  * acting = 当前轮到行动的单位：卡面放大突出。
  */
-function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, targetable: boolean, canPick: boolean, acting: boolean): string {
+function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, targetable: boolean, canPick: boolean, acting: boolean, laneCls = ''): string {
   const meta = s.unitMeta.get(u.id)
   const side = meta?.side ?? (u.id.length > 0 ? 'enemy' : 'own')
   // 召唤物等没有名册元数据的单位：留在 emoji 档（heroAvatarHtml 的垫底层就是这个）。
@@ -774,7 +779,7 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
   const gaugePct = Math.max(0, Math.min(100, Math.round((u.gauge / 75) * 100)))
   const dead = u.hp <= 0
   const chips = u.statuses.map((st) => chipHtml(s, st, true))
-  const cls = ['unit', side, dead ? 'dead' : '', targetable ? 'targetable' : '', targetable && canPick ? 'pickable' : '', acting ? 'acting' : '']
+  const cls = ['unit', side, laneCls.trim(), dead ? 'dead' : '', targetable ? 'targetable' : '', targetable && canPick ? 'pickable' : '', acting ? 'acting' : '']
     .filter(Boolean)
     .join(' ')
   const clsname = classNameOf(s, meta)
@@ -896,9 +901,9 @@ function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = 
   </div>`
 }
 
-/** 格位描述：「1路 · 第2排 · 我方」 */
-function coordText(s: BattleSession, c: { faction: string; lane: string; index: number }): string {
-  return `${laneLabel(c.lane)} · 第${c.index + 1}排 · ${c.faction === myFactionOf(s) ? '我方' : '敌方'}`
+/** 格位描述：「1路 · 第2排」——我方/敌方不再写（归属看半场与描边色即知，2026-10-13 裁决） */
+function coordText(c: { lane: string; index: number }): string {
+  return `${laneLabel(c.lane)} · 第${c.index + 1}排`
 }
 
 /**
@@ -910,7 +915,7 @@ function inspectPanelHtml(s: BattleSession, view: CombatView, sel: Inspect): str
   if (sel.kind === 'slot') {
     const [faction, lane, indexStr] = sel.coord.split('|')
     const inner = `${actorBlockHtml(s, '空位', undefined)}
-      <div class="inspect-body"><span class="inspect-stat">${escapeHtml(coordText(s, { faction, lane, index: Number(indexStr) }))}</span></div>`
+      <div class="inspect-body"><span class="inspect-stat">${escapeHtml(coordText({ lane, index: Number(indexStr) }))}</span></div>`
     return faction === myFactionOf(s)
       ? `<div class="cg-panel decision decision--inspect">${inner}${close}</div>`
       : `<aside class="cg-panel inspect-foe">${inner}${close}</aside>`
@@ -923,7 +928,7 @@ function inspectPanelHtml(s: BattleSession, view: CombatView, sel: Inspect): str
   const stats = [
     `HP ${u.hp}/${u.hpMax}`,
     `能量 ${u.energy}`,
-    u.coordinate ? escapeHtml(coordText(s, u.coordinate)) : '离场',
+    u.coordinate ? escapeHtml(coordText(u.coordinate)) : '离场',
   ]
   const inner = `${actorBlockHtml(s, meta?.name ?? u.id, meta)}
     <div class="inspect-body">

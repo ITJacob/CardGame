@@ -119,6 +119,27 @@
   width: min(340px, 92vw);
   padding: 16px 18px;
 }
+/* 竖屏（＝窄屏）：决策条/信息条改纵排——横排在 ~366px 宽里把右侧提示挤成单字竖柱
+   （2026-10-13 实测）。身份块一行、提示与按钮各自通栏；敌方信息浮层不再钉右上
+   （会盖住 HUD 页签），与己方信息条同沉底部槽位（两者互斥，不会同时出现）。 */
+@media (orientation: portrait) {
+  .decision.cg-panel {
+    width: calc(100% - 24px);
+    padding: 12px 14px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  .decision.cg-panel .decision-title { margin-bottom: 0; }
+  .inspect-foe.cg-panel {
+    top: auto; right: auto;
+    left: 50%; bottom: max(12px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    padding: 12px 14px;
+  }
+}
 
 /* 目标点选：候选不再陈列在操作栏（棋盘上已高亮提示），.pick 按钮组已随 decisionBar 一起移除 */
 
