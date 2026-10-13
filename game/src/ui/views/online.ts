@@ -52,7 +52,8 @@ export function renderOnline(host: HTMLElement): void {
 function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile: Profile): void {
   const roster = getDraft()?.own ?? []
   const errors = validateFormation(roster)
-  // 重绘会重建输入框（切英雄 / 重新生成都会重绘），先把已敲的房间码捞出来再填回去
+  // 「重新生成」的整页重绘会重建输入框，先把已敲的房间码捞出来再填回去
+  // （翻英雄 / 切页签已就地补丁、不再重绘，会触发重建的只剩重生成）
   const typedCode = (document.getElementById('inp-code') as HTMLInputElement | null)?.value ?? ''
   // 编队状态与联机提示：横屏挪到页眉那行去（页眉横着空一大截），脚因此从三行收成两行
   // ——右栏高 = 舞台高 − 脚高，技能卡又按右栏高倒推，脚一矮右栏就高、整块技能区跟着换一档，
@@ -160,16 +161,19 @@ function renderLobby(host: HTMLElement, token: number, catalog: Catalog, profile
       .catch(fail)
   }
 
-  // 展示台的三种点击（箭头 / 缩略图 / 主动被动）都走这里；改的是页面级状态，重绘整页
+  // 展示台的三种点击由 wireHeroShowcase 内部就地补丁消化：翻英雄 / 切页签不再整页重绘
+  // （名册条立绘不重建、不闪），连带地，已敲的房间码也不再因翻英雄被清掉——
+  // 只剩「重新生成」会整页重绘（那时靠上面的 typedCode 回填保住输入框）。
   wireHeroShowcase(host, {
     index: heroIndex,
+    heroes: roster,
+    catalog,
+    kind: skillView,
     onIndex: (i) => {
       heroIndex = i
-      renderLobby(host, token, catalog, profile)
     },
     onKind: (k) => {
       skillView = k
-      renderLobby(host, token, catalog, profile)
     },
   })
   document.getElementById('btn-reroll')?.addEventListener('click', () => {

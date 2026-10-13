@@ -1,7 +1,8 @@
 // 英雄展示：名册预览（新游戏 / 在线大厅）与整备页小图共用的展示块。
 import { escapeHtml } from './chrome'
-import { avatarEmoji, cardFaceHtml } from './cardFace'
+import { avatarEmoji, cardFaceHtml, hydrateArt } from './cardFace'
 import { icon } from './icons'
+import { hideCardPop } from '../hover'
 import { orientationOf, type Orientation } from '../battle/projection'
 import { SLOT_LABEL, type SlotKind } from '../../meta/loadout'
 import { constitutionById } from '../../meta/constitution'
@@ -211,8 +212,15 @@ function switchBtn(kind: SlotKind, cur: SlotKind): string {
 }
 
 export interface ShowcaseHandlers {
-  /** 当前展示的下标（+1 / -1 要有个起点；夹取也在这里做，按钮的 disabled 只是视觉） */
+  /** 当前展示的下标（+1 / -1 的起点；夹取也在这里做，按钮的 disabled 只是视觉） */
   index: number
+  /** 名册：翻页时要给它翻选中态、主立绘/右栏重建也要按它取人 */
+  heroes: HeroLike[]
+  /** 卡池：右栏技能卡重建要用 */
+  catalog: Catalog
+  /** 当前看主动还是被动（两类卡常驻 DOM，切页签只翻类名） */
+  kind: SlotKind
+  /** 只负责记录页面级状态（下次整页渲染取）；翻页/切页签的重绘已由本组件内部就地消化 */
   onIndex(index: number): void
   onKind(kind: SlotKind): void
 }
@@ -223,6 +231,9 @@ export interface ShowcaseHandlers {
  *
  * 箭头的两套语义按朝向分：竖屏名册条装得下（5 个小图标），箭头＝翻英雄；
  * 横屏名册是条横向长条、装不下（滚动条藏了），箭头＝滚条，选中交给点格子。
+ *
+ * 翻英雄 / 切页签都**就地补丁**（见 patchShowcase），不整页重绘：整页重绘会把名册条 5–10 张
+ * 1152×1536 立绘全换成新 <img>——字节走缓存，但每个新元素都要重新解码，点一下全员闪一遍。
  */
 export function wireHeroShowcase(host: HTMLElement, h: ShowcaseHandlers): void {
   hookOrientation()
@@ -238,6 +249,22 @@ export function wireHeroShowcase(host: HTMLElement, h: ShowcaseHandlers): void {
     }
     // 只数大图那排：横屏底下还多一排缩略图，同一个人挂了两个 data-hs-pick，数重了会上限翻倍
     const total = sec.querySelectorAll('.hs-track [data-hs-pick]').length
+    let cur = h.index
+    let kind = h.kind
+    /** 翻英雄：视图只存状态，重绘由本组件内部消化（patchShowcase） */
+    const setIndex = (next: number): void => {
+      if (next < 0 || next >= total) return
+      cur = next
+      h.onIndex(next)
+      patchShowcase(sec, h.heroes, h.catalog, cur, kind)
+    }
+    /** 切主动/被动：两类卡常驻 DOM（见 cardGroupHtml），只翻 is-on，一张卡都不动 */
+    const setKind = (k: SlotKind): void => {
+      kind = k
+      h.onKind(k)
+      sec.querySelectorAll<HTMLElement>('.hs-group').forEach((g) => g.classList.toggle('is-on', g.dataset.kind === k))
+      sec.querySelectorAll<HTMLElement>('[data-skill-view]').forEach((b) => b.classList.toggle('is-on', b.dataset.skillView === k))
+    }
     sec.addEventListener('click', (e) => {
       const el = e.target as HTMLElement
       const step = el.closest<HTMLButtonElement>('[data-hs-step]')
@@ -246,19 +273,44 @@ export function wireHeroShowcase(host: HTMLElement, h: ShowcaseHandlers): void {
           scrollTrackByOne(track, Number(step.dataset.hsStep))
           return
         }
-        const next = h.index + Number(step.dataset.hsStep)
-        if (next >= 0 && next < total) h.onIndex(next)
+        setIndex(cur + Number(step.dataset.hsStep))
         return
       }
       const pick = el.closest<HTMLButtonElement>('[data-hs-pick]')
       if (pick) {
-        h.onIndex(Number(pick.dataset.hsPick))
+        setIndex(Number(pick.dataset.hsPick))
         return
       }
-      const kind = el.closest<HTMLButtonElement>('[data-skill-view]')
-      if (kind) h.onKind(kind.dataset.skillView === 'passive' ? 'passive' : 'active')
+      const k = el.closest<HTMLButtonElement>('[data-skill-view]')
+      if (k) setKind(k.dataset.skillView === 'passive' ? 'passive' : 'active')
     })
   })
+}
+
+/**
+ * 翻英雄的就地补丁：名册条/缩略图只翻选中态（is-on + aria-current）——立绘 <img> 节点一个不换；
+ * 主立绘重建用的是同一份 URL，浏览器的解码位直接复用，不闪。主立绘与右栏内容换人必换，就地
+ * 重建（右栏 8 张技能卡的边框是共享小图，解码位同样在）。技能卡两组常驻 DOM，不在此动。
+ * 锚在被换掉的卡面/立绘上的详情浮层先收。
+ */
+function patchShowcase(sec: HTMLElement, heroes: HeroLike[], catalog: Catalog, i: number, kind: SlotKind): void {
+  const n = heroes.length
+  const hero = heroes[i]
+  sec.querySelectorAll<HTMLElement>('[data-hs-pick]').forEach((el) => {
+    const on = Number(el.dataset.hsPick) === i
+    el.classList.toggle('is-on', on)
+    if (on) el.setAttribute('aria-current', 'true')
+    else el.removeAttribute('aria-current')
+  })
+  const count = sec.querySelector('.hs-count')
+  if (count) count.textContent = n > 1 ? `${i + 1} / ${n}` : ''
+  const art = sec.querySelector('.hs-art')
+  if (art) art.innerHTML = hero ? heroPortraitHtml(hero, stepArrows(i, n)) : '<p class="hint hs-empty">名册为空</p>'
+  const side = sec.querySelector('.hs-side')
+  if (side && hero) side.outerHTML = sideHtml(hero, catalog, kind)
+  hydrateHeroArt(sec)
+  hydrateArt(sec)
+  hideCardPop()
 }
 
 /** 横屏名册条的箭头是「藏起来的滚动条」的把手：按一格宽（含间隙）滚一段 */

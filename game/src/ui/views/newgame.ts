@@ -75,16 +75,18 @@ function render(host: HTMLElement, catalog: Catalog, profile: Profile): void {
     resolve: (el) => el.closest<HTMLElement>('.card-face'),
     render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
   })
-  // 展示台的三种点击（箭头 / 缩略图 / 主动被动）都走这里；改的是页面级状态，重绘整页
+  // 展示台的三种点击（箭头 / 缩略图 / 主动被动）由 wireHeroShowcase 内部就地补丁消化——翻英雄
+  // 不再整页重绘（名册条立绘不重建、不闪）；这里只把页面级状态存住，供下次整页渲染取（重生成/开战返回）。
   wireHeroShowcase(host, {
     index: heroIndex,
+    heroes: own,
+    catalog,
+    kind: skillView,
     onIndex: (i) => {
       heroIndex = i
-      render(host, catalog, profile)
     },
     onKind: (k) => {
       skillView = k
-      render(host, catalog, profile)
     },
   })
   host.querySelector('#btn-reroll')?.addEventListener('click', () => {
