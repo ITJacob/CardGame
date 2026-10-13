@@ -172,14 +172,16 @@ export function cardDetailHtml(catalog: Catalog, cardId: string): string | null 
   const events = [...(hook ?? []), ...trig]
   const className = catalog.classDefs.get(def.pathwayId)?.name ?? def.pathwayId
 
-  const meta = [
-    RARITY_LABEL[def.rarity] ?? def.rarity,
-    active ? '主动' : '被动',
-    def.sequence != null ? `序列${def.sequence}${def.sequenceName ? ` · ${def.sequenceName}` : ''}` : '',
-    className,
-  ].filter(Boolean)
-
-  const badges = meta.map((m) => `<span class="cp-badge">${escapeHtml(m)}</span>`).join('')
+  const meta: Array<[text: string, cls: string]> = [
+    [RARITY_LABEL[def.rarity] ?? def.rarity, `cp-badge--rarity r-${def.rarity}`],
+    [active ? '主动' : '被动', active ? '' : 'cp-badge--passive'],
+    [def.sequence != null ? `序列${def.sequence}${def.sequenceName ? ` · ${def.sequenceName}` : ''}` : '', ''],
+    [className, ''],
+  ]
+  const badges = meta
+    .filter(([m]) => m)
+    .map(([m, cls]) => `<span class="cp-badge${cls ? ` ${cls}` : ''}">${escapeHtml(m)}</span>`)
+    .join('')
   const tags = (def.tags ?? []).map((t) => `<span class="cp-badge">${escapeHtml(t)}</span>`).join('')
 
   const costRows = cost

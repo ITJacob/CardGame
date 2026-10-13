@@ -538,6 +538,14 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 .card-detail h4 { margin: 0 0 6px; font-size: 14px; color: var(--accent); }
 .card-detail .cp-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
 .card-detail .cp-badge { font-size: 10.5px; padding: 1px 6px; border: 1px solid var(--border); border-radius: 999px; color: var(--text-dim); }
+/* 稀有度徽章：描边与字色吃稀有度色（token 与 .card-face 的 --rf 同源） */
+.card-detail .cp-badge--rarity { --_rc: var(--cg-r-common); border-color: var(--_rc); color: var(--_rc); }
+.card-detail .cp-badge--rarity.r-uncommon { --_rc: var(--cg-r-uncommon); }
+.card-detail .cp-badge--rarity.r-rare { --_rc: var(--cg-r-rare); }
+.card-detail .cp-badge--rarity.r-epic { --_rc: var(--cg-r-epic); }
+.card-detail .cp-badge--rarity.r-legendary { --_rc: var(--cg-r-legendary); }
+/* 被动徽章：白底黑字，与主动（暗底浅字）反相 */
+.card-detail .cp-badge--passive { background: #f2ede0; border-color: #f2ede0; color: #17140c; }
 .card-detail .cp-desc { margin: 0 0 8px; }
 .card-detail .cp-kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 0 0 8px; font-size: 12px; }
 .card-detail .cp-kv dt { color: var(--text-dim); }
