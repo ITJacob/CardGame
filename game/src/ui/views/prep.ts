@@ -117,6 +117,8 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
   let sideDrawn: string | null = null
   /** 弹窗卡池现在画的是哪一侧：切页签才重建卡池（本来就换一批卡），其余只翻状态 */
   let poolDrawn: SlotKind | null = null
+  /** 触摸档：这次点击若是「从池里卸下」，记下那张卡——详情浮层别跟着回弹（见 enableCardPop 的 resolve） */
+  let popSuppress: HTMLElement | null = null
 
   const currentHero = (): PlacedHero | null =>
     getDraft()?.own.find((h) => h.id === selectedId) ?? null
@@ -344,8 +346,13 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
       const hero = currentHero()
       if (!hero) return
       const [kind, cardId] = split2(eq.dataset.equip ?? '')
-      const pool = skillPoolOf(catalog, hero, profile)
-      applyHero((h) => equipSkill(h, kind as SlotKind, cardId, pool))
+      const k = kind as SlotKind
+      const idx = (k === 'active' ? hero.activeSkillIds : hero.passiveSkillIds).indexOf(cardId)
+      // 池里再点同一张＝卸下（取消选中）。卸下这一下同步清掉详情浮层，并让 resolve 别再把它弹回来：
+      // 卸卡会让槽行换节点、refresh 里的 hideCardPop 先把 current 清空，否则 enableClickCard 的
+      // document 监听看到 face !== current 会又 show 一次，看着就像「选中状态取消不掉」。
+      popSuppress = idx < 0 ? null : eq
+      applyHero((h) => (idx < 0 ? equipSkill(h, k, cardId, skillPoolOf(catalog, hero, profile)) : unequipSkill(h, k, idx)))
       return
     }
     const tab = hit('[data-pp-tab]')
@@ -407,7 +414,9 @@ function mount(host: HTMLElement, back: string, catalog: Catalog, profile: Profi
   enableCardPop(host, {
     resolve: (el) => {
       const face = el.closest<HTMLElement>('.card-face')
-      if (face && !hoverCapable() && face.closest('.prep-skills')) return null
+      if (!face || hoverCapable()) return face
+      if (face.closest('.prep-skills')) return null // 触摸档摘要格不弹
+      if (face === popSuppress) return null // 这一下是「取消选中（卸下）」，别把详情回弹
       return face
     },
     render: (face) => (face.dataset.card ? cardDetailHtml(catalog, face.dataset.card) : null),
