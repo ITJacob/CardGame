@@ -12,7 +12,7 @@ import { enableHoverCard, hideCardPop } from '../hover'
 import { enablePan } from '../pan'
 import { getSession } from '../session'
 import { gridSpec, laneIndexer, orientationOf, type Orientation } from '../battle/projection'
-import { LANE_CAPACITY } from '../../kernel/battle/types'
+import { LANE_CAPACITY, TICK_PER_DAY } from '../../kernel/battle/types'
 import type { Coordinate } from '../../kernel/battle/types'
 import { DEFAULT_LANES, laneLabel } from '../../meta/formation'
 import { constitutionById } from '../../meta/constitution'
@@ -36,6 +36,10 @@ let clockRaf: number | null = null
 let battleWireAbort: AbortController | null = null
 /** HUD 的阶段中文名（patchHud 也要用，提为模块级） */
 const PHASE_NAME: Record<string, string> = { midnight: '午夜', dawn: '黎明', day: '白昼', dusk: '黄昏', night: '黑夜' }
+/** 相位轨图标的横向位置：一天 TICK_PER_DAY tick → 0..100% */
+const phasePos = (tick: number): number => Math.round(((((tick % TICK_PER_DAY) + TICK_PER_DAY) % TICK_PER_DAY) / TICK_PER_DAY) * 10000) / 100
+/** 昼相（黎明/白昼/黄昏）挂太阳，夜相（午夜/黑夜）挂月亮 */
+const dayPhase = (phase: string): boolean => phase === 'dawn' || phase === 'day' || phase === 'dusk'
 /** 文本原地改：变了才写，避免无意义的 DOM 写 */
 function setText(el: Element | null, text: string): void {
   if (el && el.textContent !== text) el.textContent = text
@@ -155,7 +159,7 @@ export function renderBattle(host: HTMLElement): void {
     hideCardPop()
     host.innerHTML = `
       <div class="battle" data-orient="${currentOrientation()}">
-        <div class="board-wrap">${boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [], canPick, canInspect, pending?.caster ?? null)}</div>
+        <div class="board-wrap">${boardHtml(s, view, pending, canPick, canInspect, pending?.caster ?? null)}</div>
         ${hudHtml(s, view, pending != null, ended != null, logOpen, rosterOpen, autoOn)}
         ${drawerHtml('roster', '我方技能', rosterHtml(s), rosterOpen)}
         ${drawerHtml('log', '战斗日志', `<div class="cg-scroll log" id="battle-log">${logHtml(s, s.facade.drainEvents())}</div>`, logOpen)}
@@ -201,7 +205,7 @@ export function renderBattle(host: HTMLElement): void {
       hideCardPop()
       const wrap = battleEl.querySelector<HTMLElement>('.board-wrap')
       if (wrap) {
-        wrap.innerHTML = boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [], canPick, canInspect, pending?.caster ?? null)
+        wrap.innerHTML = boardHtml(s, view, pending, canPick, canInspect, pending?.caster ?? null)
         hydrateHeroArt(wrap)
       }
     } else {
@@ -274,6 +278,13 @@ export function renderBattle(host: HTMLElement): void {
         if (box) box.innerHTML = u.statuses.map((st) => chipHtml(s, st, true)).join('')
       }
     })
+    // 空格的落点高亮只随决策变、不进棋盘签名：与单位卡同一轮补丁
+    const candCoords = new Set((pending?.candidates ?? []).map((c) => coordKey(c.coord)))
+    battleEl.querySelectorAll<HTMLElement>('.slot[data-coord]').forEach((el) => {
+      const on = canPick && candCoords.has(el.dataset.coord ?? '')
+      el.classList.toggle('targetable', on)
+      el.classList.toggle('pickable', on)
+    })
   }
 
   /** HUD 原地改：tick/阶段/场上数文本、按钮 disabled/文案/aria。时钟元素不碰（rAF 每帧自刷）。 */
@@ -282,6 +293,16 @@ export function renderBattle(host: HTMLElement): void {
     if (!hud) return
     setText(hud.querySelector('.hud-tick'), `tick ${view.tick}`)
     setText(hud.querySelector('.hud-phase'), PHASE_NAME[view.phase] ?? view.phase)
+    // 相位图标：在轨道上向右滑动表示一天流逝（transition 与 tick 窗同速），昼换日、夜换月
+    const phaseTrack = hud.querySelector<HTMLElement>('.phase-track')
+    const phaseUse = hud.querySelector<SVGUseElement>('.phase-ico use')
+    if (phaseTrack && phaseUse) {
+      phaseTrack.classList.toggle('is-night', !dayPhase(view.phase))
+      const ico = phaseTrack.querySelector<HTMLElement>('.phase-ico')
+      if (ico) ico.style.left = `${phasePos(view.tick)}%`
+      const href = dayPhase(view.phase) ? '#cg-sigil-sun' : '#cg-sigil-moon'
+      if (phaseUse.getAttribute('href') !== href) phaseUse.setAttribute('href', href)
+    }
     setText(hud.querySelector('.hud > .hud-count'), `场上 ${view.units.filter((u) => u.hp > 0).length}`)
     const runner = s.online?.runner
     const pauseBtn = hud.querySelector<HTMLButtonElement>('#btn-pause')
@@ -388,11 +409,14 @@ export function renderBattle(host: HTMLElement): void {
     const overlayEl = host.querySelector<HTMLElement>('.battle-overlay')
     if (!root || !overlayEl) return
 
-    // 选一个 occupant 为目标：候选中取它（取不到则退回前 pickCount 个），与下方按钮面板同一条路径
-    const pickTarget = (id: string): void => {
+    // 选一个目标：key 可能是租客 id（点单位卡）也可能是坐标（点空格——spawn/move 的候选 occupant 是 null）。
+    // 候选中取它（取不到则退回前 pickCount 个），与「交给 AI」同一条 submit 路径
+    const pickTarget = (key: string): void => {
       const pending = s.facade.pendingDecision()
       if (!pending) return
-      const pick = pending.candidates.filter((c) => c.occupant === id).slice(0, pending.pickCount)
+      const byOccupant = pending.candidates.filter((c) => c.occupant === key)
+      const byCoord = pending.candidates.filter((c) => coordKey(c.coord) === key)
+      const pick = (byOccupant.length > 0 ? byOccupant : byCoord).slice(0, pending.pickCount)
       submit(pick.length > 0 ? pick : pending.candidates.slice(0, pending.pickCount))
     }
     const autoPick = (): void => {
@@ -434,8 +458,13 @@ export function renderBattle(host: HTMLElement): void {
         return
       }
       const slot = el.closest<HTMLElement>('.slot[data-coord]')
-      if (slot && root.contains(slot) && canInspectNow()) {
-        toggleInspect({ kind: 'slot', coord: slot.dataset.coord ?? '' })
+      if (slot && root.contains(slot)) {
+        // 是合法落点就当选靶（决策期）；否则非操作时机点开格位信息
+        if (slot.classList.contains('pickable')) {
+          pickTarget(slot.dataset.coord ?? '')
+        } else if (canInspectNow()) {
+          toggleInspect({ kind: 'slot', coord: slot.dataset.coord ?? '' })
+        }
       }
     }
     const onKey = (e: KeyboardEvent): void => {
@@ -618,7 +647,7 @@ function coordKey(c: Coordinate): string {
   return `${c.faction}|${c.lane}|${c.index}`
 }
 
-function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | null)[], canPick: boolean, canInspect: boolean, actingId: string | null): string {
+function boardHtml(s: BattleSession, view: CombatView, pending: DecisionRequest | null, canPick: boolean, canInspect: boolean, actingId: string | null): string {
   // lane 清单取「内核默认两路 ∪ 场上实见」的并集：一路被打空（甚至全员放逐）时空格仍要渲染
   const seen = view.units.map((u) => u.coordinate?.lane).filter((l): l is string => !!l)
   const laneList = [...new Set<string>([...DEFAULT_LANES, ...seen])].sort()
@@ -627,7 +656,9 @@ function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | n
   const foeFaction = s.setup.factions.find((f) => f.id !== ownFaction)?.id ?? 'B'
   const orient = currentOrientation()
   const spec = gridSpec(orient, ownFaction, laneIdx)
-  const cand = new Set(candidateIds.filter((x): x is string => !!x))
+  // 合法目标两套索引：按租客（高亮单位卡）与按坐标（空格也是合法落点——spawn/move 的 occupant 就是 null）
+  const cand = new Set((pending?.candidates ?? []).map((c) => c.occupant).filter((x): x is string => !!x))
+  const candCoords = new Set((pending?.candidates ?? []).map((c) => coordKey(c.coord)))
 
   const occupied = new Map<string, UnitViewLite>()
   for (const u of view.units) if (u.coordinate) occupied.set(coordKey(u.coordinate), u)
@@ -637,9 +668,14 @@ function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | n
     for (const lane of laneList) {
       for (let index = 0; index < LANE_CAPACITY; index += 1) {
         const coord: Coordinate = { faction, lane, index }
-        const u = occupied.get(coordKey(coord))
+        const key = coordKey(coord)
+        const u = occupied.get(key)
         const { col, row } = spec.place(coord)
-        cells.push(u ? tileHtml(s, u, col, row, cand.has(u.id), canPick, u.id === actingId) : slotHtml(coord, col, row, faction === ownFaction))
+        cells.push(
+          u
+            ? tileHtml(s, u, col, row, cand.has(u.id), canPick, u.id === actingId)
+            : slotHtml(coord, col, row, faction === ownFaction, canPick && candCoords.has(key)),
+        )
       }
     }
   }
@@ -661,11 +697,11 @@ function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | n
   return `<div class="board${canInspect ? ' can-inspect' : ''}" style="${template}">${mid}${cells.join('')}</div>`
 }
 
-/** 空格：虚线框占位，非操作时机可点看格位信息（接线见 wire）。
+/** 空格：虚线框占位，非操作时机可点看格位信息（接线见 wire）；是合法落点时高亮可点。
    .slot 只摆网格壳（与 .unit 同一模板），虚线框是内层 .slot-box——它落在 card 区，
    大小与英雄卡面一致。 */
-function slotHtml(coord: Coordinate, col: number, row: number, own: boolean): string {
-  return `<div class="slot${own ? ' own' : ''}" style="grid-column:${col};grid-row:${row}" data-coord="${escapeHtml(coordKey(coord))}"><div class="slot-box"></div></div>`
+function slotHtml(coord: Coordinate, col: number, row: number, own: boolean, pickable: boolean): string {
+  return `<div class="slot${own ? ' own' : ''}${pickable ? ' targetable pickable' : ''}" style="grid-column:${col};grid-row:${row}" data-coord="${escapeHtml(coordKey(coord))}"><div class="slot-box"></div></div>`
 }
 
 /** 状态名走中文词典：catalog.statusDefs 的 name 可选，故回退裸 id（与 prepare/hero 的取名范式一致） */
@@ -749,6 +785,7 @@ function hudHtml(s: BattleSession, view: CombatView, pending: boolean, ended: bo
     <div class="hud">
       <span class="battle-clock" aria-hidden="true"></span>
       <span class="hud-tick">tick ${view.tick}</span>
+      <span class="phase-track${dayPhase(view.phase) ? '' : ' is-night'}" aria-hidden="true"><svg class="cg-ico phase-ico" style="left:${phasePos(view.tick)}%"><use href="#${dayPhase(view.phase) ? 'cg-sigil-sun' : 'cg-sigil-moon'}"/></svg></span>
       <span class="hud-phase">${PHASE_NAME[view.phase] ?? view.phase}</span>
       <span class="hud-count">场上 ${view.units.filter((u) => u.hp > 0).length}</span>
     </div>
@@ -809,7 +846,8 @@ function actorBlockHtml(s: BattleSession, name: string, meta: UnitMeta | undefin
   const sub = meta
     ? `${classNameOf(s, meta)} · ${constitutionById(meta.constitutionId)?.name ?? meta.constitutionId} · ${meta.combo.strength}力/${meta.combo.agility}敏/${meta.combo.intelligence}智`
     : ''
-  const avatar = meta ? `<span class="actor-avatar">${heroAvatarHtml(meta, '72px')}</span>` : ''
+  // 大头像不带 emoji 兜底（缺图就留白，不拿 emoji 凑数）；尺寸约旧档两倍，顶出面板、底边贴齐
+  const avatar = meta ? `<span class="actor-avatar">${heroAvatarHtml(meta, '136px', false)}</span>` : ''
   return `<div class="actor">${avatar}<div class="actor-id">
     <div class="actor-name">${escapeHtml(name)}</div>
     ${sub ? `<div class="actor-sub">${meta ? emblemHtml(meta.classId) : ''}${escapeHtml(sub)}</div>` : ''}
@@ -817,22 +855,12 @@ function actorBlockHtml(s: BattleSession, name: string, meta: UnitMeta | undefin
 }
 
 function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = false): string {
-  const cards = pending.candidates
-    .map((c) => {
-      const meta = c.occupant ? s.unitMeta.get(c.occupant) : undefined
-      const name = meta?.name ?? c.occupant ?? '空位'
-      const face = meta ? heroAvatarHtml(meta, '26px') : '⬜'
-      return `<button type="button" class="cg-btn cg-btn--sm pick" data-pick="${escapeHtml(c.occupant ?? '')}" ${disabled ? 'disabled' : ''}>
-        <span class="pick-face">${face}</span><span class="pick-name">${escapeHtml(name)}</span></button>`
-    })
-    .join('')
   const meta = s.unitMeta.get(pending.caster)
   return `
   <div class="cg-panel decision">
     ${actorBlockHtml(s, meta?.name ?? pending.caster, meta)}
     <div class="decision-main">
-      <div class="decision-title">选择目标${disabled ? ' · 已提交，等待同步…' : ''}</div>
-      <div class="picks">${cards}</div>
+      <div class="decision-title">点选棋盘上的高亮目标${disabled ? ' · 已提交，等待同步…' : ''}</div>
       <button type="button" class="cg-btn cg-btn--sm cg-btn--block pick-auto" id="btn-auto-pick" ${disabled ? 'disabled' : ''}>交给 AI（自动选择）</button>
     </div>
   </div>`

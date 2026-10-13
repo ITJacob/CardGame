@@ -407,14 +407,14 @@ export type AvatarLike = Pick<Hero, 'combo' | 'gender' | 'constitutionId'>
  * 头像块（两层）：emoji 垫底、<img data-hero-art> 盖上。尺寸一律由外层容器给
  * （.tile .avatar / .roster-avatar / .pick-face），这里只管外观；图是透明底方图，
  * contain 全显不裁（CSS 见 .hero-avatar）。
+ * withEmoji=false：不画 emoji 垫底（信息栏/操作栏的大头像——位图缺失就留白，不用 emoji 凑数）。
  *
  * @param sizes 头像的 CSS 显示宽度。默认 56px（棋盘格档）；56×DPR3=168 < 200，
  *              所以实际永远选中 200w 档——这正是头像不出第四档的理由。
  */
-export function heroAvatarHtml(hero: AvatarLike, sizes = '56px'): string {
-  const emoji = avatarEmoji(hero.constitutionId, hero.gender)
-  return `<span class="hero-avatar">
-    <span class="hero-avatar__emoji" aria-hidden="true">${emoji}</span>
+export function heroAvatarHtml(hero: AvatarLike, sizes = '56px', withEmoji = true): string {
+  const emoji = withEmoji ? `<span class="hero-avatar__emoji" aria-hidden="true">${avatarEmoji(hero.constitutionId, hero.gender)}</span>` : ''
+  return `<span class="hero-avatar">${emoji}
     <img class="hero-avatar__img" src="${heroAvatarUrl(hero.combo, hero.gender)}" srcset="${heroAvatarSrcset(hero.combo, hero.gender)}" sizes="${sizes}" alt="" data-hero-art>
   </span>`
 }

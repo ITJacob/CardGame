@@ -40,6 +40,9 @@ html, body {
      内容之上（不受弹层 z-index 约束），一次误拖就会在卡面/详情上留一条蓝影，还比弹层
      收得晚。真正要能选的地方（输入框）在下面单独放开。 */
   user-select: none;
+  -webkit-user-select: none;
+  /* 长按不弹系统菜单（iOS 的「拷贝/分享」气泡、安卓的长按选词都从这里来） */
+  -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
 }
 /* 视口高度：body 是 .cg-bg 的载体（底图 + 暗雾画在 body 上），撑不满视口就会在
@@ -47,7 +50,7 @@ html, body {
    （body 的 min-height:100% 对着 html 的 auto 高度算，等于没算，所以按视口单位给。） */
 body { min-height: 100vh; min-height: 100dvh; }
 
-input, textarea { user-select: text; }
+input, textarea { user-select: text; -webkit-user-select: text; }
 
 /* 焦点圈：键盘导航用主题色，鼠标点击不画圈，同时挡掉各家浏览器默认那个蓝圈 */
 :focus { outline: none; }
@@ -163,6 +166,9 @@ a { color: inherit; text-decoration: none; }
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
+  /* 战场内长按不出系统选择/复制菜单（body 全局禁选之外，对这块全屏交互区再钉一次 webkit 前缀） */
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 /* .board-wrap / .board 是**战斗与整备共用**的类名（整备用它当尺寸容器与网格，见 .prep-field
    .board-wrap / .board.prep-board）。故战场专属的定位/铺满一律挂 .battle 前缀，绝不写通用选择器
@@ -191,29 +197,24 @@ a { color: inherit; text-decoration: none; }
   min-height: max-content;
 }
 
-/* 单位格：状态(chips) 在**卡外**单边一条——横屏在卡上方、竖屏在卡左侧，放不下截断。
-   chips 区定尺寸（横屏定高 32px≈两行、竖屏定宽 44px），卡面占剩余：同排/同列的
-   卡面因此同大，状态多少不再把卡面挤得大小不一。
+/* 竖屏：上下各留约半屏的空白轨道——两端队尾的单位可以被拖拽平移到舞台中部
+   （留白 ≈ 50vh − 半行高，两端恰好都能居中） */
+.battle[data-orient='portrait'] .board { padding-top: calc(50vh - 60px); padding-bottom: calc(50vh - 60px); }
+
+/* 单位格：状态(chips) 在**卡外**单边一条——横竖屏都在卡上方，放不下截断。
+   chips 区定高 32px≈两行，卡面占剩余：同排/同列的卡面因此同大，状态多少不再把
+   卡面挤得大小不一。竖屏 chips 同样顶置（居中），两路队列的水平中线不被 chips 列挤偏。
    .slot（空地）与 .unit 共用同一套模板，虚线框落在 card 区 → 空格与卡面一样大。 */
 .unit { display: grid; min-width: 0; min-height: 0; }
 .battle .slot { display: grid; min-width: 0; min-height: 0; }
-.battle[data-orient='landscape'] .unit,
-.battle[data-orient='landscape'] .slot {
+.battle .unit, .battle .slot {
   grid-template-columns: 1fr; grid-template-rows: 32px 1fr;
   grid-template-areas: 'chips' 'card';
   gap: 4px;
 }
-.battle[data-orient='portrait'] .unit,
-.battle[data-orient='portrait'] .slot {
-  grid-template-columns: 44px 1fr; grid-template-rows: 1fr;
-  grid-template-areas: 'chips card';
-  gap: 4px;
-}
 .unit-chips { grid-area: chips; display: flex; gap: 3px; min-width: 0; min-height: 0; overflow: hidden; }
 .battle[data-orient='landscape'] .unit-chips { flex-flow: row wrap; align-content: flex-end; }
-/* 竖屏：chips 在卡左侧单列竖排，居中于卡高（不能给 .unit 整条 align-items:center——
-   那会把内容全绝对定位的 .unit-card 也一起收成 0 高） */
-.battle[data-orient='portrait'] .unit-chips { flex-flow: column nowrap; align-items: center; justify-content: center; }
+.battle[data-orient='portrait'] .unit-chips { flex-flow: row wrap; align-content: flex-end; justify-content: center; }
 
 /* 卡面：头像满铺，血条压底、行动条做左上圆形扇叶；名字默认隐去 */
 .unit-card {
@@ -251,7 +252,11 @@ a { color: inherit; text-decoration: none; }
 .unit-art .hero-avatar__img { object-fit: cover; object-position: center; }
 .unit-art .hero-avatar__emoji { font-size: 34px; }
 
-/* 左上圆形扇叶进度（行动条）：conic-gradient 按 --p(0..100) 扫过角度 */
+/* 左上圆形扇叶进度（行动条）：conic-gradient 按 --p(0..100) 扫过角度。
+   --p 注册成 <number> 后可过渡：扇叶不再逐 tick 跳变，而是在 tick 动画窗内平滑扫过
+   （时长与 battle.ts 的 AUTO_TICK_MS 同步改）。.battle-clock 同用 --p，但它是 rAF 逐帧
+   自刷、没挂 transition，不受影响。 */
+@property --p { syntax: '<number>'; inherits: false; initial-value: 0; }
 .unit-gauge {
   position: absolute; top: 5px; left: 5px; z-index: 1;
   width: 28px; height: 28px; border-radius: 50%;
@@ -259,6 +264,7 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid rgba(0, 0, 0, 0.6);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
   pointer-events: none;
+  transition: --p 0.45s linear;
 }
 /* 名字/职业：默认隐去，hover/选中/聚焦随卡完整呈现 */
 .unit-name {
@@ -313,6 +319,9 @@ a { color: inherit; text-decoration: none; }
 .battle .board.can-inspect .unit,
 .battle .board.can-inspect .slot { cursor: pointer; }
 .battle .board.can-inspect .slot:hover .slot-box { opacity: 0.65; }
+/* 合法落点（spawn/move 的候选空格）：黄铜描边常亮，与单位卡的 targetable 同语义 */
+.battle .slot.targetable .slot-box { border-color: var(--accent); border-style: solid; opacity: 0.9; }
+.battle .slot.pickable { cursor: pointer; }
 
 /* 当前轮到行动的单位：卡面放大突出（连名字一起带出，不必 hover） */
 .unit.acting { position: relative; z-index: 5; }
@@ -324,10 +333,10 @@ a { color: inherit; text-decoration: none; }
 .unit.acting .unit-name { opacity: 1; }
 
 /* 操作者/查看对象身份块：大头像（超出面板上缘）+ 名称 + 职业·体质·力敏智（决策条与信息面板共用） */
-.actor { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.actor-avatar { flex: none; margin: -30px 0 -8px; filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.6)); }
-.actor-avatar .hero-avatar { width: 72px; height: 72px; }
-.actor-avatar .hero-avatar__emoji { font-size: 44px; }
+.actor { display: flex; align-items: flex-end; gap: 14px; min-width: 0; }
+/* 大头像：约旧档两倍，上沿顶出面板、底边贴齐面板底（-12px 抵掉面板 padding） */
+.actor-avatar { flex: none; margin: -64px 0 -12px; filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.6)); }
+.actor-avatar .hero-avatar { width: 136px; height: 136px; }
 .actor-id { min-width: 0; }
 .actor-name { font-size: 17px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .actor-sub { font-size: 12px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -351,6 +360,20 @@ a { color: inherit; text-decoration: none; }
 }
 .battle-hud > * { pointer-events: auto; }
 .hud { display: flex; gap: 12px; font-size: 13px; color: var(--text-dim); }
+/* 相位轨：太阳/月亮在一小段轨道上向右滑动，走完一圈 = 一天（TICK_PER_DAY tick）。
+   位置由 patchHud 逐 tick 拨，transition 与 tick 动画窗同速 → 匀速移动 */
+.phase-track {
+  position: relative; flex: none; align-self: center;
+  width: 64px; height: 18px; border-radius: 999px;
+  background: rgba(8, 10, 14, 0.55); border: 1px solid rgba(0, 0, 0, 0.5);
+}
+.phase-ico {
+  position: absolute; top: 50%; left: 0;
+  transform: translate(-50%, -50%);
+  font-size: 13px; color: var(--accent);
+  transition: left 0.45s linear, color 0.3s;
+}
+.phase-track.is-night .phase-ico { color: #a9bedd; }
 /* 战场时钟：一圈扫过 = 一个 tick 的动画窗，--p 由 rAF 逐帧写（0..100）。
    is-paused = 决策点/联机暂停：描边脉冲，示意「等你操作」 */
 .battle-clock {
@@ -395,11 +418,14 @@ a { color: inherit; text-decoration: none; }
   position: relative; isolation: isolate; /* screen 混色只在本卡内合成，不外溢到页面 */
   width: 60px; height: 80px; border-radius: 6px; overflow: hidden;
   background: #101216; display: block; margin: 0; user-select: none;
-  /* --rf = 稀有度色（下方 r-* 档覆盖）；底部落一道稀有度色的投影。
-     拖尾收敛到 ~6px（0 5px 12px -5px）：卡排缝隙普遍只有 5px、横屏行高还是按容器
+  /* --rf = 稀有度色（下方 r-* 档覆盖）。稀有度信号 = 内描边色环 + 底部同色投影：
+     白/绿/蓝三档的边框 PNG 是暗细线、缩到小卡尺寸后基本不可见（蓝档框图甚至画的是金），
+     而 kit 的稀有度五色全在 --cg-r-* 上——色环是唯一五色齐全且与 kit 严格一致的信号，
+     故全稀有度统一叠（2026-10-13 起，原先只有边框 404 的降级档才有）。
+     投影拖尾收敛到 ~6px（0 5px 12px -5px）：卡排缝隙普遍只有 5px、横屏行高还是按容器
      倒推的零余量口径，长投影会被下一排卡和容器底边裁掉。 */
   --rf: var(--cg-r-common);
-  box-shadow: 0 5px 12px -5px color-mix(in srgb, var(--rf) 60%, transparent);
+  box-shadow: inset 0 0 0 1px var(--rf), 0 5px 12px -5px color-mix(in srgb, var(--rf) 60%, transparent);
 }
 .card-face.full { width: 120px; height: 160px; }
 
@@ -426,17 +452,15 @@ a { color: inherit; text-decoration: none; }
   mix-blend-mode: screen; opacity: .82;
 }
 
-/* 稀有度：有边框时靠框线区分；边框缺失或降级时退回内描边色环。
-   色值直接取 kit 的 --cg-r-*，稀有度配色仍然只有 ui-kit 一处源。
-   内描边会整条顶掉基础规则的 box-shadow，底部投影在这里合并补回。 */
+/* 稀有度色值直接取 kit 的 --cg-r-*，稀有度配色仍然只有 ui-kit 一处源。
+   色环在 .card-face 基类上（见上），这里只管按档覆盖 --rf。
+   .no-frame / .frame-degraded 曾用来在边框缺失时补色环——色环全档都有后不再需要，
+   JS 仍挂这两个类当语义标记（降级链状态），CSS 已无对应规则。 */
 .card-face.r-common { --rf: var(--cg-r-common); }
 .card-face.r-uncommon { --rf: var(--cg-r-uncommon); }
 .card-face.r-rare { --rf: var(--cg-r-rare); }
 .card-face.r-epic { --rf: var(--cg-r-epic); }
 .card-face.r-legendary { --rf: var(--cg-r-legendary); }
-.card-face.no-frame, .card-face.frame-degraded {
-  box-shadow: inset 0 0 0 1px var(--rf), 0 5px 12px -5px color-mix(in srgb, var(--rf) 60%, transparent);
-}
 
 /* 信息条：名字 + ⚡费用（被动卡没有费用，这本身就是主/被动的区分） */
 .card-info {
@@ -513,8 +537,6 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 /* 决策条：粘在视口底部。面板外观来自 .cg-panel（position 的覆盖见 kit-bridge） */
 .decision-main { flex: 1; min-width: 0; }
 .decision-title { font-size: 13px; color: var(--accent); margin-bottom: 8px; }
-.picks { display: flex; gap: 8px; flex-wrap: wrap; }
-.pick-face { font-size: 22px; }
 .pick-name { font-size: 11px; color: var(--text-dim); }
 
 /* ---------- 卡面详情浮层 ---------- */
@@ -1040,9 +1062,6 @@ body.zoom-open { overflow: hidden; }
 .roster-avatar { flex: none; display: flex; }
 .roster-avatar .hero-avatar { width: 30px; height: 30px; }
 .roster-avatar .hero-avatar__emoji { font-size: 18px; }
-/* 选靶按钮里的头像 */
-.pick-face .hero-avatar { width: 26px; height: 26px; }
-.pick-face .hero-avatar__emoji { font-size: 17px; }
 
 /* ---------- 排行榜 / 设置 ---------- */
 /* 可滚子页：滚动容器扣掉吸顶导航高度，组件滚动条（.cg-scroll 给样式）只出现在导航之下，
