@@ -197,16 +197,35 @@ a { color: inherit; text-decoration: none; }
   min-height: max-content;
 }
 
-/* 竖屏：上下各留约半屏的空白轨道——两端队尾的单位可以被拖拽平移到舞台中部
-   （留白 ≈ 50vh − 半行高，两端恰好都能居中） */
-.battle[data-orient='portrait'] .board { padding-top: calc(50vh - 60px); padding-bottom: calc(50vh - 60px); }
+/* 横竖屏共用：--cell 按视口算方卡边长（容器查询单位 cqw/cqh 的载体是 .board-wrap） */
+.battle .board-wrap { container-type: size; }
+
+/* 竖屏：卡面方正（--cell = 两列均分扣 padding/gap，封顶 200px），上下各留 25vh 空白
+   （2026-10-13 起不再做「队尾可居中」的半屏留白）；进场由 battle.ts 把对阵中线拨到
+   屏幕正中（内容上下对称，scrollTop 取中即可）。内容超高整体溢出 → 拖拽平移。
+   align-content: safe center：内容比中间带矮时网格也要在带内居中（否则顶对齐、中线偏上），
+   溢出时退回 start 保证上边缘拖得到。
+   ⚠️ 必须 height:auto（盖掉通用条的 height:100%）：height:100% 是定值，9 条轨道基数和
+   （8×148+32+gaps+padding ≈ 1280px）超过视口后自由空间为负，minmax 轨道全被摁在下限
+   148px——卡面塌成 179×112。height:auto 走内在尺寸（按 growth limit 算），行才到 --row-cell。
+   min-height:100% 兜住内容比视口矮的情形：棋盘铺满一屏，align-content 居中仍有中线。 */
+.battle[data-orient='portrait'] .board {
+  --cell: min(calc((100cqw - 32px) / 2), 200px);
+  --row-cell: calc(var(--cell) + 36px);
+  --gap-track: 32px;
+  height: auto;
+  min-height: 100%;
+  justify-content: safe center;
+  align-content: safe center;
+  padding-top: 25vh;
+  padding-bottom: 25vh;
+}
 
 /* 横屏：卡面方正 + 四周留白。--cell 取「宽向 8 格均分」与「高向两行均分」的较小值
    （136px = 8 列间距 64 + 中线 48 + padding 24；104px = 行间距 8 + padding 24 + 两行 chips 72），
    再封顶 200px 免得过宽屏格子撑太大；宽向再减 2×--side 保证左右也有可见留白，
    轨道不再 1fr 铺满，棋盘内容居中，余量即成四周留白。
    safe center：内容溢出（小窗压到 minmax 下限）时退回 start，保证左/上边缘仍能拖得到。 */
-.battle[data-orient='landscape'] .board-wrap { container-type: size; }
 .battle[data-orient='landscape'] .board {
   --side: clamp(36px, 5cqw, 160px);
   --cell: min(calc((100cqw - 136px - 2 * var(--side)) / 8), calc((100cqh - 104px) / 2), 200px);

@@ -150,6 +150,11 @@ export function renderBattle(host: HTMLElement): void {
     if (!shellReady) {
       fullRender(view, pending, ended, canPick, canInspect, showDecision)
       shellReady = true
+      // 竖屏进场：把对阵中线拨到屏幕正中；只拨这一次，之后拖动/平移归用户
+      if (currentOrientation() === 'portrait') {
+        const wrap = host.querySelector<HTMLElement>('.board-wrap')
+        if (wrap) centerPortraitMidline(wrap)
+      }
     } else {
       patch(view, pending, ended, canPick, canInspect, showDecision)
     }
@@ -198,7 +203,8 @@ export function renderBattle(host: HTMLElement): void {
     const battleEl = host.querySelector<HTMLElement>('.battle')
     if (!battleEl) return
     const orient = currentOrientation()
-    if (battleEl.dataset.orient !== orient) battleEl.dataset.orient = orient
+    const orientChanged = battleEl.dataset.orient !== orient
+    if (orientChanged) battleEl.dataset.orient = orient
     battleEl.querySelector('.board')?.classList.toggle('can-inspect', canInspect)
 
     const sig = sigOfBoard(view)
@@ -210,6 +216,8 @@ export function renderBattle(host: HTMLElement): void {
       if (wrap) {
         wrap.innerHTML = boardHtml(s, view, pending, canPick, canInspect, pending?.caster ?? null)
         hydrateHeroArt(wrap)
+        // 旋转成竖屏：棋盘刚按新朝向重建，滚动位还停在旧朝向的位置，重新把中线拨正
+        if (orientChanged && orient === 'portrait') centerPortraitMidline(wrap)
       }
     } else {
       patchUnits(battleEl, view, pending, canPick)
@@ -659,6 +667,11 @@ function currentOrientation(): Orientation {
   return orientationOf(window.innerWidth, window.innerHeight)
 }
 
+/** 竖屏：把对阵中线拨到视口正中——棋盘内容上下对称（上下各 4 行 + 25vh 对称留白），滚动取中即可 */
+function centerPortraitMidline(wrap: HTMLElement): void {
+  wrap.scrollTop = (wrap.scrollHeight - wrap.clientHeight) / 2
+}
+
 function coordKey(c: Coordinate): string {
   return `${c.faction}|${c.lane}|${c.index}`
 }
@@ -701,19 +714,15 @@ function boardHtml(s: BattleSession, view: CombatView, pending: DecisionRequest 
       ? `<div class="board-mid" style="grid-column:${spec.midTrack};grid-row:1 / -1"></div>`
       : `<div class="board-mid" style="grid-row:${spec.midTrack};grid-column:1 / -1"></div>`
 
-  // minmax 的最小格宽：宽裕时 1fr 铺满，被压到 112px 仍放不下就整体溢出 → 触发拖拽平移；
-  // 中线轨道窄且 fr 小，挤压时优先让位。
-  const cell = 'minmax(112px, 1fr)'
-  const gapTrack = 'minmax(28px, 0.25fr)'
-  // 横屏改走 CSS 变量：--cell 是 app.css 按视口算出的方卡边长（--row-cell 多出 36px 是 chips 行），
-  // 卡面保持方正、整块棋盘居中留白；竖屏维持 1fr 铺满 + 上下留白轨道拖拽。
+  // 格宽走 CSS 变量：--cell 是 app.css 按视口算出的方卡边长（--row-cell 多出 36px 是 chips 行），
+  // 卡面保持方正、整块棋盘居中留白；被压到 minmax 下限（112px）仍放不下就整体溢出 → 触发拖拽平移。
   const sqCell = 'minmax(112px, var(--cell, 1fr))'
   const sqRow = 'minmax(148px, var(--row-cell, 1fr))'
   const sqGap = 'var(--gap-track, 28px)'
   const template =
     orient === 'landscape'
       ? `grid-template-columns:repeat(${LANE_CAPACITY}, ${sqCell}) ${sqGap} repeat(${LANE_CAPACITY}, ${sqCell}); grid-template-rows:repeat(${spec.rows}, ${sqRow})`
-      : `grid-template-columns:repeat(${spec.columns}, ${cell}); grid-template-rows:repeat(${LANE_CAPACITY}, ${cell}) ${gapTrack} repeat(${LANE_CAPACITY}, ${cell})`
+      : `grid-template-columns:repeat(${spec.columns}, ${sqCell}); grid-template-rows:repeat(${LANE_CAPACITY}, ${sqRow}) ${sqGap} repeat(${LANE_CAPACITY}, ${sqRow})`
   // can-inspect 只控光标与空格 hover，不改变渲染
   return `<div class="board${canInspect ? ' can-inspect' : ''}" style="${template}">${mid}${cells.join('')}</div>`
 }
