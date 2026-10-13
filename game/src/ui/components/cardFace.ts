@@ -4,6 +4,7 @@
 // 叠在卡图上——黑底被吃掉、亮线留下。832 张卡只有 34 张有卡图，所以「无图」是常态而非异常，
 // 必须是一张设计过的卡（渐变底 + 稀有度字形），而不是空框。
 import { escapeHtml } from './chrome'
+import { emblemHtml } from './emblem'
 import type { Catalog } from '../../kernel/catalog/types'
 
 /** 卡图路径：派生 webp 在仓库根 assets/（部署到 /CardGame/assets/），故相对路径 ./assets/…（英雄立绘同此口径，见 hero.ts 的 heroArtUrl） */
@@ -176,12 +177,13 @@ export function cardDetailHtml(catalog: Catalog, cardId: string): string | null 
     [RARITY_LABEL[def.rarity] ?? def.rarity, `cp-badge--rarity r-${def.rarity}`],
     [active ? '主动' : '被动', active ? '' : 'cp-badge--passive'],
     [def.sequence != null ? `序列${def.sequence}${def.sequenceName ? ` · ${def.sequenceName}` : ''}` : '', ''],
-    [className, ''],
   ]
   const badges = meta
     .filter(([m]) => m)
     .map(([m, cls]) => `<span class="cp-badge${cls ? ` ${cls}` : ''}">${escapeHtml(m)}</span>`)
     .join('')
+  // 职业徽章带源质色徽标（emblem 是 HTML，不能走 escapeHtml 那批）
+  const classBadge = `<span class="cp-badge cp-badge--class">${emblemHtml(def.pathwayId)}${escapeHtml(className)}</span>`
   const tags = (def.tags ?? []).map((t) => `<span class="cp-badge">${escapeHtml(t)}</span>`).join('')
 
   const costRows = cost
@@ -197,7 +199,7 @@ export function cardDetailHtml(catalog: Catalog, cardId: string): string | null 
 
   return `
   <h4>${escapeHtml(def.name)}</h4>
-  <div class="cp-badges">${badges}${tags}</div>
+  <div class="cp-badges">${badges}${classBadge}${tags}</div>
   ${def.describe ? `<p class="cp-desc">${escapeHtml(def.describe)}</p>` : ''}
   ${costRows}
   ${trigRow}

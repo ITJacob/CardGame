@@ -5,6 +5,7 @@
 //                    对侧决策只等待（绝不本地回退，P7_PLAN §3.4 铁律 1）。
 import { escapeHtml, subBarHtml } from '../components/chrome'
 import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { emblemHtml } from '../components/emblem'
 import { heroAvatarHtml, hydrateHeroArt } from '../components/hero'
 import { icon } from '../components/icons'
 import { enableHoverCard, hideCardPop } from '../hover'
@@ -718,10 +719,10 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
       <span class="unit-art">${avatar}</span>
       <div class="unit-gauge" style="--p:${gaugePct}"></div>
       <div class="unit-name">${escapeHtml(meta?.name ?? u.id)}${clsname ? `<span class="unit-class">${escapeHtml(clsname)}</span>` : ''}</div>
-      <div class="cg-progress bar hp">
+      <div class="unit-hp">${meta ? emblemHtml(meta.classId) : ''}<div class="cg-progress bar hp">
         <div class="cg-progress__track"><div class="cg-progress__bar cg-progress__bar--warn" style="width:${hpPct}%"></div></div>
         <span class="bar-num">${u.hp}/${u.hpMax}</span>
-      </div>
+      </div></div>
     </div>
   </div>`
 }
@@ -811,7 +812,7 @@ function actorBlockHtml(s: BattleSession, name: string, meta: UnitMeta | undefin
   const avatar = meta ? `<span class="actor-avatar">${heroAvatarHtml(meta, '72px')}</span>` : ''
   return `<div class="actor">${avatar}<div class="actor-id">
     <div class="actor-name">${escapeHtml(name)}</div>
-    ${sub ? `<div class="actor-sub">${escapeHtml(sub)}</div>` : ''}
+    ${sub ? `<div class="actor-sub">${meta ? emblemHtml(meta.classId) : ''}${escapeHtml(sub)}</div>` : ''}
   </div></div>`
 }
 

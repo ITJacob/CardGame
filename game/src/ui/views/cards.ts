@@ -5,6 +5,7 @@
 import { subBarHtml, escapeHtml } from '../components/chrome'
 import { icon } from '../components/icons'
 import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
+import { emblemHtml } from '../components/emblem'
 import { enableHoverCard, hideCardPop } from '../hover'
 import { hideCardZoom, openCardZoom } from '../zoom'
 import { getCatalog } from '../catalog'
@@ -38,6 +39,7 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
       const n = def?.knownSkills.length ?? 0
       return `<button type="button" class="cg-select cls-row${id === current ? ' is-on' : ''}${unlocked ? ' is-unlocked' : ''}" data-cls="${escapeHtml(id)}" title="${escapeHtml(def?.name ?? id)}">
         <span class="cg-select__ring">${icon('cg-check')}</span>
+        ${emblemHtml(id)}
         <span class="cls-name">${escapeHtml(def?.name ?? id)}</span>
         <span class="cls-n">${n}</span>
       </button>`

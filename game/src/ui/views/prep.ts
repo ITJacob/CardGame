@@ -19,6 +19,7 @@ import { escapeHtml, subBarHtml } from '../components/chrome'
 import { cardDetailHtml, cardFaceHtml, hydrateArt } from '../components/cardFace'
 import { heroPortraitHtml, hydrateHeroArt } from '../components/hero'
 import { icon } from '../components/icons'
+import { emblemHtml } from '../components/emblem'
 import type { CardFaceOpts } from '../components/cardFace'
 import { enableDrag } from '../drag'
 import { enableCardPop, hideCardPop, hoverCapable } from '../hover'
@@ -514,7 +515,7 @@ function metaText(catalog: Catalog, hero: PlacedHero): string {
 function sideInnerHtml(catalog: Catalog, hero: PlacedHero): string {
   return `<div class="hs-head">
       <div class="hs-meta">
-        <b>${escapeHtml(hero.name)}</b>
+        <b>${emblemHtml(hero.classId)}${escapeHtml(hero.name)}</b>
         <small>${escapeHtml(metaText(catalog, hero))}</small>
       </div>
     </div>
@@ -598,7 +599,7 @@ function pickerHtml(catalog: Catalog, profile: Profile, hero: PlacedHero, picker
     <div class="pp-backdrop" data-pp-close></div>
     <div class="pp-dialog">
       <div class="pp-head">
-        <h3>技能 <small>${escapeHtml(hero.name)} · ${escapeHtml(className(catalog, hero))}</small></h3>
+        <h3>技能 <small>${emblemHtml(hero.classId)}${escapeHtml(hero.name)} · ${escapeHtml(className(catalog, hero))}</small></h3>
         <button type="button" class="cg-close" data-pp-close aria-label="关闭">${icon('cg-close')}</button>
       </div>
       <div class="pp-body">

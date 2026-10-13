@@ -1,6 +1,7 @@
 // 排行榜：本地战绩（按 胜负 → 我方阵亡 → 用时 排序）
 import { subBarHtml, escapeHtml } from '../components/chrome'
 import { icon } from '../components/icons'
+import { emblemHtml } from '../components/emblem'
 import { createLocalStorageMatchStore, sortRecords, summarize } from '../../meta/matchLog'
 import { loadProfile } from '../profile'
 
@@ -17,7 +18,8 @@ export function renderLeaderboard(host: HTMLElement): void {
   const rows = records
     .map((r, i) => {
       const date = new Date(r.at).toLocaleString('zh-CN', { hour12: false }).slice(5, 16)
-      const heroes = r.heroes.map((h) => escapeHtml(h.classId)).join('、')
+      const heroIds = r.heroes.map((h) => h.classId).join('、')
+      const heroes = r.heroes.map((h) => `${emblemHtml(h.classId)}${escapeHtml(h.classId)}`).join('、')
       const cls = r.win ? 'win' : r.outcome === 'draw' || r.outcome === 'aborted' ? 'draw' : 'lose'
       return `<tr class="${cls}">
         <td class="rank">${i + 1}</td>
@@ -25,7 +27,7 @@ export function renderLeaderboard(host: HTMLElement): void {
         <td class="res">${OUTCOME_TEXT[r.outcome] ?? r.outcome}</td>
         <td>${r.ticks}</td>
         <td>${r.unitsLostOwn} : ${r.unitsLostEnemy}</td>
-        <td title="${escapeHtml(heroes)}">${escapeHtml(heroes)}</td>
+        <td title="${escapeHtml(heroIds)}">${heroes}</td>
       </tr>`
     })
     .join('')

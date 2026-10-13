@@ -2,6 +2,7 @@
 import { escapeHtml } from './chrome'
 import { avatarEmoji, cardFaceHtml, hydrateArt } from './cardFace'
 import { icon } from './icons'
+import { emblemHtml } from './emblem'
 import { hideCardPop } from '../hover'
 import { orientationOf, type Orientation } from '../battle/projection'
 import { SLOT_LABEL, type SlotKind } from '../../meta/loadout'
@@ -158,7 +159,7 @@ function sideHtml(hero: HeroLike, catalog: Catalog, kind: SlotKind): string {
     <div class="hs-head">
       <div class="hs-meta">
         <b>${escapeHtml(hero.name)}</b>
-        <small>${escapeHtml(className)} · ${escapeHtml(constitution)} · ${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智${coord}</small>
+        <small>${emblemHtml(hero.classId)}${escapeHtml(className)} · ${escapeHtml(constitution)} · ${hero.combo.strength}力 / ${hero.combo.agility}敏 / ${hero.combo.intelligence}智${coord}</small>
       </div>
       <div class="hs-switch" role="group" aria-label="名册里显示哪一类技能">
         ${switchBtn('active', kind)}
