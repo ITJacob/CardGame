@@ -157,11 +157,11 @@ a { color: inherit; text-decoration: none; }
 .kv .v { font-family: ui-monospace, Consolas, monospace; }
 
 /* ---------- 战斗界面 ---------- */
-/* 满屏舞台：棋盘铺满整页（扣掉子页栏），其余 UI 全部浮在它上面。 */
+/* 满屏舞台：棋盘铺满整页（战场页没有顶栏，返回键浮在 HUD 最左），其余 UI 全部浮在它上面。 */
 .battle {
   position: relative;
-  height: calc(100vh - var(--nav-h, 54px));
-  height: calc(100dvh - var(--nav-h, 54px));
+  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 /* .board-wrap / .board 是**战斗与整备共用**的类名（整备用它当尺寸容器与网格，见 .prep-field
@@ -342,6 +342,8 @@ a { color: inherit; text-decoration: none; }
   position: absolute; top: 0; left: 0; right: 0; z-index: 20;
   display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap;
   padding: 8px 12px;
+  padding-top: max(8px, env(safe-area-inset-top));
+  padding-left: max(12px, env(safe-area-inset-left));
   background: linear-gradient(180deg, rgba(12, 14, 18, 0.86), rgba(12, 14, 18, 0.5) 70%, transparent);
   pointer-events: none;
 }

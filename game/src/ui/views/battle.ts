@@ -153,14 +153,24 @@ export function renderBattle(host: HTMLElement): void {
   const fullRender = (view: CombatView, pending: DecisionRequest | null, ended: CombatEnded | null, canPick: boolean, canInspect: boolean, showDecision: boolean): void => {
     hideCardPop()
     host.innerHTML = `
-      ${subBarHtml(s.online ? '联机对局' : '对局')}
       <div class="battle" data-orient="${currentOrientation()}">
         <div class="board-wrap">${boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [], canPick, canInspect, pending?.caster ?? null)}</div>
         ${hudHtml(s, view, pending != null, ended != null, logOpen, rosterOpen, autoOn)}
         ${drawerHtml('roster', '我方技能', rosterHtml(s), rosterOpen)}
         ${drawerHtml('log', '战斗日志', `<div class="cg-scroll log" id="battle-log">${logHtml(s, s.facade.drainEvents())}</div>`, logOpen)}
       </div>
-      <div class="battle-overlay">${overlayHtml(view, pending, ended, showDecision)}</div>`
+      <div class="battle-overlay">${overlayHtml(view, pending, ended, showDecision)}</div>
+      <div class="cg-modal cg-modal--sm" id="leave-modal" role="dialog" aria-modal="true" aria-labelledby="leave-modal-title">
+        <div class="cg-modal__backdrop" data-leave-cancel></div>
+        <div class="cg-modal__dialog">
+          <div class="cg-modal__head"><h2 class="cg-modal__title" id="leave-modal-title">离开对局？</h2></div>
+          <div class="cg-modal__body">${s.online ? '联机对局仍在进行，离开即视为放弃本局。' : '对局进度保留在本机，离开后可从「新游戏」继续。'}</div>
+          <div class="cg-modal__foot">
+            <button type="button" class="cg-btn cg-btn--ghost" data-leave-cancel>取消</button>
+            <button type="button" class="cg-btn cg-btn--danger" id="btn-leave-confirm">离开</button>
+          </div>
+        </div>
+      </div>`
     hydrateArt(host)
     hydrateHeroArt(host)
     logRendered = s.facade.drainEvents().length
@@ -340,8 +350,17 @@ export function renderBattle(host: HTMLElement): void {
     return ''
   }
 
-  /** 骨架控件只挂一次（HUD 节点常驻，补丁不重建它们）：推进 / 自动 / 联机暂停 */
+  /** 骨架控件只挂一次（HUD 节点常驻，补丁不重建它们）：推进 / 自动 / 联机暂停 / 离开 */
   const wireShell = (): void => {
+    const leaveModal = document.getElementById('leave-modal')
+    document.getElementById('btn-leave')?.addEventListener('click', () => leaveModal?.classList.add('is-open'))
+    leaveModal?.querySelectorAll('[data-leave-cancel]').forEach((el) =>
+      el.addEventListener('click', () => leaveModal.classList.remove('is-open')),
+    )
+    // 从哪来回哪去：联机局回联机大厅、离线局回新游戏页（不回首页）
+    document.getElementById('btn-leave-confirm')?.addEventListener('click', () => {
+      location.hash = s.online ? '#/online' : '#/new'
+    })
     document.getElementById('btn-step')?.addEventListener('click', () => {
       stepOnce(s)
       refresh()
@@ -725,6 +744,7 @@ function hudHtml(s: BattleSession, view: CombatView, pending: boolean, ended: bo
       : ''
   return `
   <div class="battle-hud">
+    <button type="button" class="cg-btn cg-btn--ghost cg-btn--sm" id="btn-leave" title="离开对局">${icon('cg-back')}返回</button>
     <div class="hud">
       <span class="battle-clock" aria-hidden="true"></span>
       <span class="hud-tick">tick ${view.tick}</span>
