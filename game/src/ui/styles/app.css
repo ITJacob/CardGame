@@ -513,7 +513,6 @@ body.zoom-open { overflow: hidden; }
   height: min(100cqh, calc(100cqw * 4 / 3));
 }
 .hs-art .hero-portrait__img { object-fit: contain; object-position: 50% 50%; }
-.hs-art .hero-portrait__emoji { font-size: 64px; }
 
 /* 左右箭头：浮在立绘（或名册条）左右边缘上，不占布局宽度——每一 px 宽都要留给美术。
    竖屏那对放在 .hero-portrait 里面，所以「50%」是立绘框的中点，不是格子的。 */
@@ -622,8 +621,6 @@ body.zoom-open { overflow: hidden; }
 }
 .hs-thumb .hero-portrait,
 [data-orient='portrait'] .hs-cell .hero-portrait { width: 100%; height: 100%; border: 0; border-radius: 4px; }
-.hs-thumb .hero-portrait__emoji,
-[data-orient='portrait'] .hs-cell .hero-portrait__emoji { font-size: 15px; }
 
 /* 横屏名册是一条横向长条：格子宽度由条高反推（立绘吃满高度、比例 3:4），
    5 格放不下就横向滚——滚动条藏起来，两端箭头当把手，底下那排缩略图管定位。
@@ -650,7 +647,6 @@ body.zoom-open { overflow: hidden; }
 [data-orient='landscape'] .hs-cell .hero-portrait { flex: 1 1 0; min-height: 0; }
 /* 大图按 3:4 给框，图不再需要「裁到头」那一套；contain 保证一 px 都不裁 */
 [data-orient='landscape'] .hs-cell .hero-portrait__img { object-fit: contain; object-position: 50% 50%; }
-[data-orient='landscape'] .hs-cell .hero-portrait__emoji { font-size: 40px; }
 [data-orient='landscape'] .hs-cell.is-on .hero-portrait {
   border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-dim);
 }
@@ -838,7 +834,7 @@ body.zoom-open { overflow: hidden; }
 [data-orient='landscape'] .hs-foot { min-height: 74px; align-content: end; }
 
 /* ---------- 英雄立绘（展示台 / 整备页小图共用同一层） ---------- */
-/* 两层结构：emoji 垫底、立绘盖上；缺图时 hydrateHeroArt 摘掉 img 露回 emoji，不留白框。
+/* 单层：只 <img>，无 emoji 垫底；缺图时 hydrateHeroArt 摘掉 img，露出本层的渐变底 + 描边（空框）。
    尺寸一律由外层容器给（.hs-art / .hs-thumb / .chip-avatar），这里只管裁切与外观。 */
 .hero-portrait {
   position: relative; display: block; overflow: hidden;
@@ -851,13 +847,9 @@ body.zoom-open { overflow: hidden; }
   object-fit: cover; object-position: 50% 16%; display: block;
 }
 .hero-portrait__img[hidden] { display: none; }
-.hero-portrait__emoji {
-  position: absolute; inset: 0; display: grid; place-items: center;
-  font-size: 22px; line-height: 1; opacity: .75;
-}
 
 /* 无背景头像（战斗棋盘 / 名册行 / 选靶钮共用）：透明底方图，contain 全显不裁。
-   与 .hero-portrait 同一套两层降级结构（emoji 垫底、img 盖上、失败摘 img），
+   保留 emoji 垫底（img 盖上、失败摘 img 露回 emoji）——图是透明底，需要这层兜底；
    但没有边框与底色——图本身就是角色，不再装框。尺寸一律由外层容器给。 */
 .hero-avatar { position: relative; display: block; }
 .hero-avatar__img {

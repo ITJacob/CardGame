@@ -37,8 +37,8 @@ export function heroArtSrcset(combo: Attributes3, gender: 'male' | 'female'): st
 }
 
 /**
- * 立绘块（两层）：emoji 垫底、<img data-hero-art> 盖上。加载失败由 hydrateHeroArt 摘掉 img
- * 露回 emoji——20 张齐全时这层看不见，缺图时也不会留个白框。
+ * 立绘块：<img data-hero-art> 直接铺满，无 emoji 垫底（20 张立绘已齐全，不留降级占位）。
+ * 加载失败由 hydrateHeroArt 摘掉 img，落在 .hero-portrait 自带的渐变底 + 描边上（空框，不出 emoji）。
  * 尺寸一律由外层容器给（.hs-art 的立绘框 / .hs-cell / .tile .avatar / .chip-avatar），
  * 这里只管外观。
  *
@@ -53,9 +53,7 @@ export function heroArtSrcset(combo: Attributes3, gender: 'male' | 'female'): st
  *               不显示、只剩格子小图，320px 兜底。
  */
 export function heroPortraitHtml(hero: HeroLike, overlay = '', sizes = '(orientation: portrait) min(100vw, 75vh), 320px'): string {
-  const emoji = avatarEmoji(hero.constitutionId, hero.gender)
   return `<span class="hero-portrait">
-    <span class="hero-portrait__emoji" aria-hidden="true">${emoji}</span>
     <img class="hero-portrait__img" src="${heroArtUrl(hero.combo, hero.gender)}" srcset="${heroArtSrcset(hero.combo, hero.gender)}" sizes="${sizes}" alt="" data-hero-art>
     ${overlay}
   </span>`
@@ -304,16 +302,16 @@ function hookOrientation(): void {
   })
 }
 
-/** 立绘/头像失败 → 摘掉 img，露出垫底的 emoji（降级链同 cardFace 的 .no-art，只是不挂在 .card-face 上）。
- *  加载成功则给外层挂 .is-loaded——头像图是透明底，不摘 emoji 会透过图的空隙露出来
- *  （立绘不透明，挂上也无视觉变化）。 */
+/** 英雄图失败 → 摘掉 img：立绘落在渐变底空框上，头像露回垫底的 emoji。
+ *  加载成功则给头像外层挂 .is-loaded——头像图是透明底，不撤 emoji 会透过图的空隙露出来
+ *  （立绘已无 emoji 垫底，不需要这一步）。 */
 export function hydrateHeroArt(root: HTMLElement): void {
   root.querySelectorAll<HTMLImageElement>('img[data-hero-art]').forEach((img) => {
     const fail = (): void => {
       img.hidden = true
     }
     const ok = (): void => {
-      img.closest('.hero-portrait, .hero-avatar')?.classList.add('is-loaded')
+      img.closest('.hero-avatar')?.classList.add('is-loaded')
     }
     if (img.complete && img.naturalWidth === 0) fail()
     else if (img.complete) ok()
