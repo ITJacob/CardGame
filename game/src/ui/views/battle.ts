@@ -16,7 +16,7 @@ import type { Coordinate } from '../../kernel/battle/types'
 import { DEFAULT_LANES, laneLabel } from '../../meta/formation'
 import { constitutionById } from '../../meta/constitution'
 import type { DomainEvent } from '../../kernel/combat/types'
-import type { CombatStats, CombatView, UnitViewLite } from '../../kernel/combat/types'
+import type { CombatEnded, CombatStats, CombatView, UnitViewLite } from '../../kernel/combat/types'
 import type { DecisionInput, DecisionRequest } from '../../kernel/execution/types'
 import type { FactionId } from '../../kernel/ids'
 import type { MatchRecord } from '../../meta/matchLog'
@@ -31,6 +31,14 @@ import { createLocalStorageMatchStore } from '../../meta/matchLog'
 
 /** 战场时钟的 rAF 句柄（模块级：重进视图时取消旧闭包的循环，防止旧会话被继续推进） */
 let clockRaf: number | null = null
+/** 上一次 renderBattle 挂的棋盘/浮层事件委托：host 是跨视图复用的 #app，重进时先摘，免得泄漏到别的视图 */
+let battleWireAbort: AbortController | null = null
+/** HUD 的阶段中文名（patchHud 也要用，提为模块级） */
+const PHASE_NAME: Record<string, string> = { midnight: '午夜', dawn: '黎明', day: '白昼', dusk: '黄昏', night: '黑夜' }
+/** 文本原地改：变了才写，避免无意义的 DOM 写 */
+function setText(el: Element | null, text: string): void {
+  if (el && el.textContent !== text) el.textContent = text
+}
 /** 前台战斗视图的重画钩子（离开视图即置空），供模块级 resize 监听转发 */
 let activeRefresh: (() => void) | null = null
 let resizeHooked = false
@@ -68,6 +76,8 @@ function hookResize(): void {
 
 export function renderBattle(host: HTMLElement): void {
   stopClock()
+  // 摘掉上一次的事件委托（host 是跨视图复用的 #app，不摘会泄漏到别的视图）
+  battleWireAbort?.abort()
   // 先摘掉旧钩子：下面无会话的早退分支会让它指向上一局，之后 resize 会重画旧棋盘
   activeRefresh = null
   const session = getSession()
@@ -92,6 +102,15 @@ export function renderBattle(host: HTMLElement): void {
   let lastTick = -1
   /** 当前 tick 动画窗的起点（performance.now() 时间轴） */
   let tickStart = 0
+  /** —— 增量渲染状态：refresh 只补丁、不整页重建，这些签名决定哪些子树要动 ——
+      （为什么改：旧 refresh 每 tick 整页 innerHTML 重建，把全部单位头像 <img> 换成新节点——
+        字节走缓存，但每个新元素都要重新解码；自动播放 450ms 一刷就是持续闪。同案记录见
+        cards.ts 的 sync()。） */
+  let shellReady = false
+  let boardSig = ''
+  let overlaySig = ''
+  let hudWarnSig = ''
+  let logRendered = 0
 
   const refresh = (): void => {
     const view = s.facade.state()
@@ -108,7 +127,6 @@ export function renderBattle(host: HTMLElement): void {
     // resize 转发与联机 MatchRunner 的 onUpdate 都会在本视图被顶掉后继续触发，
     // 若照画就会把棋盘重绘到当前视图上（整备页/大厅被战斗画面盖掉）。
     if (!onBattleRoute()) return
-    hideCardPop() // 同上：重绘不产生鼠标事件
     // tick 变了 = 真推进了一格：时钟动画窗从这里重新起扫
     if (view.tick !== lastTick) {
       lastTick = view.tick
@@ -120,10 +138,20 @@ export function renderBattle(host: HTMLElement): void {
     const showDecision = pending != null && (!s.online || myTurn)
     /** 非操作时机（含联机观战）点开信息面板；决策条在显示时让位 */
     const canInspect = !showDecision && ended == null
-    // 整页重画会把棋盘滚回原点、抽屉一并关掉——先把这两样状态摘出来，画完再落回去
-    const wrap0 = host.querySelector<HTMLElement>('.board-wrap')
-    const scrollLeft = wrap0?.scrollLeft ?? 0
-    const scrollTop = wrap0?.scrollTop ?? 0
+
+    if (!shellReady) {
+      fullRender(view, pending, ended, canPick, canInspect, showDecision)
+      shellReady = true
+    } else {
+      patch(view, pending, ended, canPick, canInspect, showDecision)
+    }
+    // 时钟只在「自动开着（离线）/ 联机 runner 在跑」时走；手动模式它就是一枚静止的装饰
+    if (autoOn || s.online) clockStart()
+  }
+
+  /** 首次：整页骨架（棋盘 + HUD + 两抽屉 + 浮层槽）。此后一切变化走 patch，不再整页重建。 */
+  const fullRender = (view: CombatView, pending: DecisionRequest | null, ended: CombatEnded | null, canPick: boolean, canInspect: boolean, showDecision: boolean): void => {
+    hideCardPop()
     host.innerHTML = `
       ${subBarHtml(s.online ? '联机对局' : '对局')}
       <div class="battle" data-orient="${currentOrientation()}">
@@ -132,20 +160,274 @@ export function renderBattle(host: HTMLElement): void {
         ${drawerHtml('roster', '我方技能', rosterHtml(s), rosterOpen)}
         ${drawerHtml('log', '战斗日志', `<div class="cg-scroll log" id="battle-log">${logHtml(s, s.facade.drainEvents())}</div>`, logOpen)}
       </div>
-      ${showDecision ? decisionBarHtml(s, pending, submitted) : inspect ? inspectPanelHtml(s, view, inspect) : ''}
-      ${ended ? endedHtml(s, ended.outcome) : ''}`
+      <div class="battle-overlay">${overlayHtml(view, pending, ended, showDecision)}</div>`
     hydrateArt(host)
     hydrateHeroArt(host)
+    logRendered = s.facade.drainEvents().length
+    boardSig = sigOfBoard(view)
+    overlaySig = sigOfOverlay(view, pending, ended, showDecision)
+    hudWarnSig = sigOfHudWarn()
     const wrap = host.querySelector<HTMLElement>('.board-wrap')
-    if (wrap) {
-      wrap.scrollLeft = scrollLeft
-      wrap.scrollTop = scrollTop
-      enablePan(host, { viewport: wrap })
-    }
-    wire(s, refresh, submit, canPick, canInspect, toggleInspect, toggleAuto)
+    if (wrap) enablePan(host, { viewport: wrap })
+    wireShell()
+    wireDelegated()
     wireDrawers()
-    // 时钟只在「自动开着（离线）/ 联机 runner 在跑」时走；手动模式它就是一枚静止的装饰
-    if (autoOn || s.online) clockStart()
+  }
+
+  /** 增量补丁：棋盘签名没变就逐格补丁（头像 <img> 不动），变了才重建棋盘；HUD 文本原地改；
+      日志只 append 新行；决策/信息/结算浮层按签名插拔。整页 DOM 不随 tick 重建。 */
+  const patch = (view: CombatView, pending: DecisionRequest | null, ended: CombatEnded | null, canPick: boolean, canInspect: boolean, showDecision: boolean): void => {
+    const battleEl = host.querySelector<HTMLElement>('.battle')
+    if (!battleEl) return
+    const orient = currentOrientation()
+    if (battleEl.dataset.orient !== orient) battleEl.dataset.orient = orient
+    battleEl.querySelector('.board')?.classList.toggle('can-inspect', canInspect)
+
+    const sig = sigOfBoard(view)
+    if (sig !== boardSig) {
+      // 结构变了（单位增删/换位/换朝向）：重建棋盘。wrap 节点不动，滚动位天然保留
+      boardSig = sig
+      hideCardPop()
+      const wrap = battleEl.querySelector<HTMLElement>('.board-wrap')
+      if (wrap) {
+        wrap.innerHTML = boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [], canPick, canInspect, pending?.caster ?? null)
+        hydrateHeroArt(wrap)
+      }
+    } else {
+      patchUnits(battleEl, view, pending, canPick)
+    }
+
+    patchHud(view, pending, ended)
+    patchLog()
+
+    const osig = sigOfOverlay(view, pending, ended, showDecision)
+    if (osig !== overlaySig) {
+      overlaySig = osig
+      hideCardPop()
+      const slot = host.querySelector<HTMLElement>('.battle-overlay')
+      if (slot) {
+        slot.innerHTML = overlayHtml(view, pending, ended, showDecision)
+        hydrateHeroArt(slot)
+      }
+    }
+  }
+
+  /** 棋盘结构签名：朝向 + 我方阵营 + 路清单 + 单位(id@坐标)。候选/行动/可点只影响类名，
+      走逐格补丁、不进签名——否则每个行动 tick 都重建棋盘，补丁就失去意义。 */
+  const sigOfBoard = (view: CombatView): string => {
+    const seen = view.units.map((u) => u.coordinate?.lane).filter((l): l is string => !!l)
+    const laneList = [...new Set<string>([...DEFAULT_LANES, ...seen])].sort()
+    const ownFaction = view.units.find((u) => s.unitMeta.get(u.id)?.side === 'own')?.faction ?? 'A'
+    const cells = view.units
+      .filter((u) => u.coordinate)
+      .map((u) => `${u.id}@${coordKey(u.coordinate as Coordinate)}`)
+      .sort()
+    return `${currentOrientation()}|${ownFaction}|${laneList.join('.')}|${cells.join(',')}`
+  }
+
+  /** 逐格补丁：血条宽度/数字、行动扇叶 --p、状态 chips（签名变了才重写）、
+      dead/targetable/pickable/acting 类与可点属性。头像 <img> 节点一概不动。 */
+  const patchUnits = (battleEl: HTMLElement, view: CombatView, pending: DecisionRequest | null, canPick: boolean): void => {
+    const cand = new Set((pending?.candidates ?? []).map((c) => c.occupant).filter((x): x is string => !!x))
+    const acting = pending?.caster ?? null
+    const byId = new Map(view.units.map((u) => [u.id, u]))
+    battleEl.querySelectorAll<HTMLElement>('.unit[data-unit]').forEach((el) => {
+      const u = byId.get(el.dataset.unit ?? '')
+      if (!u) return
+      const targetable = cand.has(u.id)
+      const pickable = targetable && canPick
+      el.classList.toggle('dead', u.hp <= 0)
+      el.classList.toggle('targetable', targetable)
+      el.classList.toggle('pickable', pickable)
+      el.classList.toggle('acting', u.id === acting)
+      if (pickable) {
+        el.setAttribute('role', 'button')
+        el.tabIndex = 0
+      } else {
+        el.removeAttribute('role')
+        el.removeAttribute('tabindex')
+      }
+      const card = el.querySelector<HTMLElement>('.unit-card')
+      if (!card) return
+      const bar = card.querySelector<HTMLElement>('.cg-progress__bar')
+      if (bar) bar.style.width = `${Math.max(0, Math.round((u.hp / Math.max(1, u.hpMax)) * 100))}%`
+      const num = card.querySelector<HTMLElement>('.bar-num')
+      const hpText = `${u.hp}/${u.hpMax}`
+      if (num && num.textContent !== hpText) num.textContent = hpText
+      const gauge = card.querySelector<HTMLElement>('.unit-gauge')
+      if (gauge) gauge.style.setProperty('--p', String(Math.max(0, Math.min(100, Math.round((u.gauge / 75) * 100)))))
+      const chipsSig = u.statuses.map((st) => `${st.defId}:${st.stacks}`).join(',')
+      if (el.dataset.chips !== chipsSig) {
+        el.dataset.chips = chipsSig
+        const box = el.querySelector<HTMLElement>('.unit-chips')
+        if (box) box.innerHTML = u.statuses.map((st) => chipHtml(s, st, true)).join('')
+      }
+    })
+  }
+
+  /** HUD 原地改：tick/阶段/场上数文本、按钮 disabled/文案/aria。时钟元素不碰（rAF 每帧自刷）。 */
+  const patchHud = (view: CombatView, pending: DecisionRequest | null, ended: CombatEnded | null): void => {
+    const hud = host.querySelector<HTMLElement>('.battle-hud')
+    if (!hud) return
+    setText(hud.querySelector('.hud-tick'), `tick ${view.tick}`)
+    setText(hud.querySelector('.hud-phase'), PHASE_NAME[view.phase] ?? view.phase)
+    setText(hud.querySelector('.hud > .hud-count'), `场上 ${view.units.filter((u) => u.hp > 0).length}`)
+    const runner = s.online?.runner
+    const pauseBtn = hud.querySelector<HTMLButtonElement>('#btn-pause')
+    if (pauseBtn) setText(pauseBtn, runner?.isPaused ? '继续' : '暂停')
+    setText(hud.querySelector('.controls > .hud-count'), runner ? `决策 #${runner.decisionSeq}` : '')
+    const stepBtn = hud.querySelector<HTMLButtonElement>('#btn-step')
+    if (stepBtn) stepBtn.disabled = pending != null || ended != null
+    const autoBtn = hud.querySelector<HTMLButtonElement>('#btn-auto')
+    if (autoBtn) {
+      autoBtn.disabled = ended != null
+      autoBtn.setAttribute('aria-pressed', String(autoOn))
+      setText(autoBtn, autoOn ? '停止自动' : '自动播放')
+    }
+    // 联机中断/等待提示：签名变了才重写这一小行
+    const warnSig = sigOfHudWarn()
+    if (warnSig !== hudWarnSig) {
+      hudWarnSig = warnSig
+      const slot = host.querySelector<HTMLElement>('.hud-warn-slot')
+      if (slot) slot.innerHTML = hudWarnHtml()
+    }
+  }
+
+  /** 日志增量：drainEvents 是累计全量（runtime.ts），只把新事件插到顶部（最新在上），裁剪到 60 行 */
+  const patchLog = (): void => {
+    const box = host.querySelector<HTMLElement>('#battle-log')
+    if (!box) return
+    const events = s.facade.drainEvents()
+    const fresh = events.slice(logRendered)
+    logRendered = events.length
+    if (fresh.length === 0) return
+    box.querySelector('.log-line.dim')?.remove()
+    box.insertAdjacentHTML('afterbegin', fresh.map((e) => `<div class="log-line">${describe(s, e)}</div>`).reverse().join(''))
+    while (box.children.length > 60) box.lastElementChild?.remove()
+  }
+
+  /** 浮层内容：决策条 / 查看面板 / 结算，按当前状态取其一（都挂在 .battle-overlay 槽里） */
+  const overlayHtml = (view: CombatView, pending: DecisionRequest | null, ended: CombatEnded | null, showDecision: boolean): string => {
+    if (showDecision && pending) return decisionBarHtml(s, pending, submitted)
+    if (inspect) return inspectPanelHtml(s, view, inspect)
+    if (ended) return endedHtml(s, ended.outcome)
+    return ''
+  }
+
+  /** 浮层签名：类型 + 内容关键键。决策条随候选/提交态重建；查看面板带 tick（开着时跟实时）；
+      结算随指纹校验状态重建；常态稳在 'none'，tick 不碰浮层。 */
+  const sigOfOverlay = (view: CombatView, pending: DecisionRequest | null, ended: CombatEnded | null, showDecision: boolean): string => {
+    if (showDecision && pending) {
+      return `decision|${pending.caster}|${pending.candidates.map((c) => c.occupant ?? '').join(',')}|${pending.pickCount}|${submitted}`
+    }
+    if (inspect) return `inspect|${inspect.kind}|${inspect.kind === 'unit' ? inspect.id : inspect.coord}|${view.tick}`
+    if (ended) {
+      const v = s.online?.verify
+      return `ended|${ended.outcome}|${!v ? 'wait' : v.ok ? 'ok' : v.theirs === null ? 'miss' : 'bad'}`
+    }
+    return 'none'
+  }
+
+  const sigOfHudWarn = (): string => {
+    const runner = s.online?.runner
+    return `${runner?.lastError ? `e:${errMsg(runner.lastError)}` : ''}|${runner?.waiting ? 'w' : ''}`
+  }
+
+  const hudWarnHtml = (): string => {
+    const runner = s.online?.runner
+    if (runner?.lastError) return `<p class="warn hud-warn">联机中断：${escapeHtml(errMsg(runner.lastError))}</p>`
+    if (runner?.waiting) return '<p class="wait-note hud-warn">等待对手决策…</p>'
+    return ''
+  }
+
+  /** 骨架控件只挂一次（HUD 节点常驻，补丁不重建它们）：推进 / 自动 / 联机暂停 */
+  const wireShell = (): void => {
+    document.getElementById('btn-step')?.addEventListener('click', () => {
+      stepOnce(s)
+      refresh()
+    })
+    document.getElementById('btn-auto')?.addEventListener('click', toggleAuto)
+    document.getElementById('btn-pause')?.addEventListener('click', () => {
+      const runner = s.online?.runner
+      if (!runner) return
+      if (runner.isPaused) runner.resume()
+      else runner.pause()
+      refresh()
+    })
+  }
+
+  /**
+   * 棋盘/浮层交互走事件委托，一次挂好、补丁/重建都不再重绑（同 prep.ts 的委托范式）。
+   * 挂在 .battle 与 .battle-overlay 容器上而非 host：整页换掉时监听器随节点一起失效，
+   * 不会泄漏到别的视图；重进本视图另由 battleWireAbort 兜一层。
+   */
+  const wireDelegated = (): void => {
+    const ac = new AbortController()
+    battleWireAbort = ac
+    const root = host.querySelector<HTMLElement>('.battle')
+    const overlayEl = host.querySelector<HTMLElement>('.battle-overlay')
+    if (!root || !overlayEl) return
+
+    // 选一个 occupant 为目标：候选中取它（取不到则退回前 pickCount 个），与下方按钮面板同一条路径
+    const pickTarget = (id: string): void => {
+      const pending = s.facade.pendingDecision()
+      if (!pending) return
+      const pick = pending.candidates.filter((c) => c.occupant === id).slice(0, pending.pickCount)
+      submit(pick.length > 0 ? pick : pending.candidates.slice(0, pending.pickCount))
+    }
+    const autoPick = (): void => {
+      const pending = s.facade.pendingDecision()
+      if (!pending) return
+      submit(pending.candidates.slice(0, pending.pickCount))
+    }
+    /** 非操作时机（含联机观战、已提交待同步）才可查看信息 */
+    const canInspectNow = (): boolean => {
+      const pending = s.facade.pendingDecision()
+      if (pending && (!s.online || casterFaction(s, pending.caster) === myFactionOf(s))) return false
+      return s.facade.ended() == null
+    }
+
+    const onClick = (e: MouseEvent): void => {
+      const el = e.target as HTMLElement
+      if (el.closest('#btn-auto-pick')) {
+        autoPick()
+        return
+      }
+      if (el.closest('#btn-inspect-close')) {
+        toggleInspect(null)
+        return
+      }
+      const pk = el.closest<HTMLElement>('[data-pick]')
+      if (pk && !pk.hasAttribute('disabled')) {
+        pickTarget(pk.dataset.pick ?? '')
+        return
+      }
+      // 板面上的高亮 tile 可点（光标已承诺可点，就别让它落空）；否则非操作时机点开信息。
+      // pickable 类名每 tick 已补丁，最新状态就在 DOM 上，点击时不用再算 canPick。
+      const unit = el.closest<HTMLElement>('.unit[data-unit]')
+      if (unit && root.contains(unit)) {
+        if (unit.classList.contains('pickable')) {
+          pickTarget(unit.dataset.unit ?? '')
+        } else if (canInspectNow()) {
+          toggleInspect({ kind: 'unit', id: unit.dataset.unit ?? '' })
+        }
+        return
+      }
+      const slot = el.closest<HTMLElement>('.slot[data-coord]')
+      if (slot && root.contains(slot) && canInspectNow()) {
+        toggleInspect({ kind: 'slot', coord: slot.dataset.coord ?? '' })
+      }
+    }
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key !== 'Enter' && e.key !== ' ') return
+      const unit = (e.target as HTMLElement).closest<HTMLElement>('.unit.pickable[data-unit]')
+      if (!unit) return
+      e.preventDefault()
+      pickTarget(unit.dataset.unit ?? '')
+    }
+    root.addEventListener('click', onClick, { signal: ac.signal })
+    root.addEventListener('keydown', onKey, { signal: ac.signal })
+    overlayEl.addEventListener('click', onClick, { signal: ac.signal })
   }
 
   /** 点同一个目标再点一次 = 收起；传 null 直接收起（面板 ✕） */
@@ -430,7 +712,6 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
  * 整块浮在棋盘之上（.battle-hud），不再占右栏。联机的中断/等待提示也并进这条。
  */
 function hudHtml(s: BattleSession, view: CombatView, pending: boolean, ended: boolean, logOpen: boolean, rosterOpen: boolean, autoOn: boolean): string {
-  const phaseName: Record<string, string> = { midnight: '午夜', dawn: '黎明', day: '白昼', dusk: '黄昏', night: '黑夜' }
   const runner = s.online?.runner
   const controls = s.online
     ? `<button type="button" class="cg-btn cg-btn--sm" id="btn-pause">${runner?.isPaused ? '继续' : '暂停'}</button>
@@ -447,7 +728,7 @@ function hudHtml(s: BattleSession, view: CombatView, pending: boolean, ended: bo
     <div class="hud">
       <span class="battle-clock" aria-hidden="true"></span>
       <span class="hud-tick">tick ${view.tick}</span>
-      <span class="hud-phase">${phaseName[view.phase] ?? view.phase}</span>
+      <span class="hud-phase">${PHASE_NAME[view.phase] ?? view.phase}</span>
       <span class="hud-count">场上 ${view.units.filter((u) => u.hp > 0).length}</span>
     </div>
     <div class="controls">${controls}</div>
@@ -455,7 +736,7 @@ function hudHtml(s: BattleSession, view: CombatView, pending: boolean, ended: bo
       <button type="button" class="cg-btn cg-btn--sm" id="btn-log" aria-pressed="${logOpen}" aria-controls="battle-log">日志</button>
       <button type="button" class="cg-btn cg-btn--sm" id="btn-roster" aria-pressed="${rosterOpen}">名册</button>
     </div>
-  </div>${warn}`
+  </div><div class="hud-warn-slot">${warn}</div>`
 }
 
 /** 右侧悬浮抽屉外壳：标题栏（含关闭键）+ 内容。开合只翻 .is-open（见 wireDrawers）。 */
@@ -622,64 +903,6 @@ function recordOf(s: BattleSession, outcome: CombatOutcome, stats: CombatStats):
     damageDealtEnemy: stats.damageDealt[foe] ?? 0,
     heroes: s.own.map((h) => ({ name: h.name, classId: h.classId, constitutionId: h.constitutionId })),
   }
-}
-
-function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInput) => void, canPick: boolean, canInspect: boolean, toggleInspect: (next: Inspect | null) => void, toggleAuto: () => void): void {
-  const step = document.getElementById('btn-step')
-  step?.addEventListener('click', () => {
-    stepOnce(s)
-    refresh()
-  })
-  document.getElementById('btn-auto')?.addEventListener('click', toggleAuto)
-  document.getElementById('btn-pause')?.addEventListener('click', () => {
-    const runner = s.online?.runner
-    if (!runner) return
-    if (runner.isPaused) runner.resume()
-    else runner.pause()
-    refresh()
-  })
-  // 选一个 occupant 为目标：候选中取它（取不到则退回前 pickCount 个），与下方按钮面板同一条路径
-  const pickTarget = (id: string): void => {
-    const pending = s.facade.pendingDecision()
-    if (!pending) return
-    const pick = pending.candidates.filter((c) => c.occupant === id).slice(0, pending.pickCount)
-    submit(pick.length > 0 ? pick : pending.candidates.slice(0, pending.pickCount))
-  }
-
-  document.querySelectorAll<HTMLElement>('[data-pick]').forEach((el) => {
-    el.addEventListener('click', () => pickTarget(el.dataset.pick ?? ''))
-  })
-  // 板面上的高亮 tile 同样可点（光标已承诺可点，就别让它落空）
-  // canPick：仅在本侧该决策时挂上——联机时对侧决策只观战，绝不本地代选（§3.4 铁律 1）
-  if (canPick) {
-    document.querySelectorAll<HTMLElement>('.unit.pickable[data-unit]').forEach((el) => {
-      const id = el.dataset.unit ?? ''
-      el.setAttribute('role', 'button')
-      el.tabIndex = 0
-      el.addEventListener('click', () => pickTarget(id))
-      el.addEventListener('keydown', (e) => {
-        if (e.key !== 'Enter' && e.key !== ' ') return
-        e.preventDefault()
-        pickTarget(id)
-      })
-    })
-  }
-  // 非操作时机：点单位/空格查看信息（操作时机这些位置是选靶，见上方 pickable 接线；
-  // 「已提交待同步」也算操作时机——此时点开也显示不出来，决策条在占位）
-  if (canInspect) {
-    document.querySelectorAll<HTMLElement>('.unit[data-unit]').forEach((el) => {
-      el.addEventListener('click', () => toggleInspect({ kind: 'unit', id: el.dataset.unit ?? '' }))
-    })
-    document.querySelectorAll<HTMLElement>('.slot[data-coord]').forEach((el) => {
-      el.addEventListener('click', () => toggleInspect({ kind: 'slot', coord: el.dataset.coord ?? '' }))
-    })
-  }
-  document.getElementById('btn-inspect-close')?.addEventListener('click', () => toggleInspect(null))
-  document.getElementById('btn-auto-pick')?.addEventListener('click', () => {
-    const pending = s.facade.pendingDecision()
-    if (!pending) return
-    submit(pending.candidates.slice(0, pending.pickCount))
-  })
 }
 
 function stepOnce(s: BattleSession): void {
