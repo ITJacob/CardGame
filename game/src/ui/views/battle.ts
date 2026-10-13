@@ -29,12 +29,17 @@ type Inspect = { kind: 'unit'; id: string } | { kind: 'slot'; coord: string }
 import type { BattleSession, UnitMeta } from '../session'
 import { createLocalStorageMatchStore } from '../../meta/matchLog'
 
-let autoTimer: number | null = null
+/** 战场时钟的 rAF 句柄（模块级：重进视图时取消旧闭包的循环，防止旧会话被继续推进） */
+let clockRaf: number | null = null
 /** 前台战斗视图的重画钩子（离开视图即置空），供模块级 resize 监听转发 */
 let activeRefresh: (() => void) | null = null
 let resizeHooked = false
 /** 联机每 tick 的观战节拍（毫秒）；0 会让整局在一帧内跑完 */
 const ONLINE_STEP_MS = 450
+/** 离线自动的 tick 间隔（与旧 setInterval 同速）：一圈时钟扫过 = 一个 tick 的动画窗 */
+const AUTO_TICK_MS = 450
+/** 决策提交后留一拍让结果落地（HP 跳动/状态变化被看见），再续时钟 */
+const RESULT_HOLD_MS = 350
 const FINGERPRINT_WAIT_MS = 20000
 const matchStore = createLocalStorageMatchStore()
 
@@ -62,7 +67,7 @@ function hookResize(): void {
 }
 
 export function renderBattle(host: HTMLElement): void {
-  stopAuto()
+  stopClock()
   // 先摘掉旧钩子：下面无会话的早退分支会让它指向上一局，之后 resize 会重画旧棋盘
   activeRefresh = null
   const session = getSession()
@@ -81,6 +86,12 @@ export function renderBattle(host: HTMLElement): void {
   let rosterOpen = false
   /** 非操作时机的查看目标（同抽屉范式：refresh 每 tick 重画，状态记闭包、由模板带回） */
   let inspect: Inspect | null = null
+  /** 自动推进开关（离线）。时钟启动后不退出：决策点只是冻结，提交后续走 */
+  let autoOn = false
+  /** 上一个已见的 tick：refresh 也可能由非 tick 事件（查看面板开关等）触发，靠它识别真推进 */
+  let lastTick = -1
+  /** 当前 tick 动画窗的起点（performance.now() 时间轴） */
+  let tickStart = 0
 
   const refresh = (): void => {
     const view = s.facade.state()
@@ -98,6 +109,11 @@ export function renderBattle(host: HTMLElement): void {
     // 若照画就会把棋盘重绘到当前视图上（整备页/大厅被战斗画面盖掉）。
     if (!onBattleRoute()) return
     hideCardPop() // 同上：重绘不产生鼠标事件
+    // tick 变了 = 真推进了一格：时钟动画窗从这里重新起扫
+    if (view.tick !== lastTick) {
+      lastTick = view.tick
+      tickStart = performance.now()
+    }
     const myTurn = pending != null && casterFaction(s, pending.caster) === myFactionOf(s)
     /** 本侧该决策且未提交 → 板面高亮 tile 可点选 */
     const canPick = pending != null && (!s.online || myTurn) && !submitted
@@ -112,7 +128,7 @@ export function renderBattle(host: HTMLElement): void {
       ${subBarHtml(s.online ? '联机对局' : '对局')}
       <div class="battle" data-orient="${currentOrientation()}">
         <div class="board-wrap">${boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [], canPick, canInspect, pending?.caster ?? null)}</div>
-        ${hudHtml(s, view, pending != null, ended != null, logOpen, rosterOpen)}
+        ${hudHtml(s, view, pending != null, ended != null, logOpen, rosterOpen, autoOn)}
         ${drawerHtml('roster', '我方技能', rosterHtml(s), rosterOpen)}
         ${drawerHtml('log', '战斗日志', `<div class="cg-scroll log" id="battle-log">${logHtml(s, s.facade.drainEvents())}</div>`, logOpen)}
       </div>
@@ -126,8 +142,10 @@ export function renderBattle(host: HTMLElement): void {
       wrap.scrollTop = scrollTop
       enablePan(host, { viewport: wrap })
     }
-    wire(s, refresh, submit, canPick, canInspect, toggleInspect)
+    wire(s, refresh, submit, canPick, canInspect, toggleInspect, toggleAuto)
     wireDrawers()
+    // 时钟只在「自动开着（离线）/ 联机 runner 在跑」时走；手动模式它就是一枚静止的装饰
+    if (autoOn || s.online) clockStart()
   }
 
   /** 点同一个目标再点一次 = 收起；传 null 直接收起（面板 ✕） */
@@ -150,6 +168,52 @@ export function renderBattle(host: HTMLElement): void {
       s.facade.submitDecision(picks)
     }
     refresh()
+    // 决策落地留一拍再续时钟，让用户看见结果（联机节奏归 MatchRunner，不在这里留）
+    if (autoOn) tickStart = performance.now() + RESULT_HOLD_MS
+  }
+
+  /** 自动开关：启动时钟即「一直自动」，决策点冻结而非退出 */
+  const toggleAuto = (): void => {
+    autoOn = !autoOn
+    if (autoOn) {
+      tickStart = performance.now()
+      clockStart()
+    }
+    refresh()
+  }
+
+  /**
+   * 战场时钟循环：一圈扫过 = 一个 tick 的动画窗（状态生效/能量增减等系统表现在这扇窗里落地）。
+   * 到窗尾：离线 stepOnce 推进一格；联机由 MatchRunner 自己推进，这里只把圈绕回去。
+   * 决策点/联机暂停 → 冻结（is-paused），rAF 挂着空转，恢复后从原进度续走。
+   */
+  const clockLoop = (now: number): void => {
+    clockRaf = null
+    // 离开战斗页：停钟，别在后台把整局推完（会记下一场没人看过的胜负）
+    if (!onBattleRoute() || (!autoOn && !s.online)) return
+    if (s.facade.ended()) return
+    const clockEl = host.querySelector<HTMLElement>('.battle-clock')
+    if (s.facade.pendingDecision() || s.online?.runner?.isPaused) {
+      clockEl?.classList.add('is-paused')
+      clockRaf = requestAnimationFrame(clockLoop)
+      return
+    }
+    clockEl?.classList.remove('is-paused')
+    const span = s.online ? ONLINE_STEP_MS : AUTO_TICK_MS
+    const p = Math.max(0, Math.min(100, ((now - tickStart) / span) * 100))
+    clockEl?.style.setProperty('--p', String(p))
+    if (p >= 100) {
+      tickStart = now
+      if (!s.online) {
+        stepOnce(s)
+        refresh()
+        return // refresh 末尾已 clockStart，这里不再续帧，免得同一帧挂两条循环
+      }
+    }
+    clockRaf = requestAnimationFrame(clockLoop)
+  }
+  const clockStart = (): void => {
+    if (clockRaf == null) clockRaf = requestAnimationFrame(clockLoop)
   }
 
   /**
@@ -365,14 +429,14 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
  * 顶部悬浮 HUD：tick/阶段/场上数 + 控件 + 「日志」「名册」两个抽屉开关。
  * 整块浮在棋盘之上（.battle-hud），不再占右栏。联机的中断/等待提示也并进这条。
  */
-function hudHtml(s: BattleSession, view: CombatView, pending: boolean, ended: boolean, logOpen: boolean, rosterOpen: boolean): string {
+function hudHtml(s: BattleSession, view: CombatView, pending: boolean, ended: boolean, logOpen: boolean, rosterOpen: boolean, autoOn: boolean): string {
   const phaseName: Record<string, string> = { midnight: '午夜', dawn: '黎明', day: '白昼', dusk: '黄昏', night: '黑夜' }
   const runner = s.online?.runner
   const controls = s.online
     ? `<button type="button" class="cg-btn cg-btn--sm" id="btn-pause">${runner?.isPaused ? '继续' : '暂停'}</button>
        <span class="hud-count">决策 #${runner?.decisionSeq ?? 0}</span>`
     : `<button type="button" class="cg-btn cg-btn--sm" id="btn-step" ${pending || ended ? 'disabled' : ''}>推进一 tick</button>
-       <button type="button" class="cg-btn cg-btn--sm" id="btn-auto" ${ended ? 'disabled' : ''}>自动播放</button>`
+       <button type="button" class="cg-btn cg-btn--sm" id="btn-auto" aria-pressed="${autoOn}" ${ended ? 'disabled' : ''}>${autoOn ? '停止自动' : '自动播放'}</button>`
   const warn = runner?.lastError
     ? `<p class="warn hud-warn">联机中断：${escapeHtml(errMsg(runner.lastError))}</p>`
     : runner?.waiting
@@ -381,6 +445,7 @@ function hudHtml(s: BattleSession, view: CombatView, pending: boolean, ended: bo
   return `
   <div class="battle-hud">
     <div class="hud">
+      <span class="battle-clock" aria-hidden="true"></span>
       <span class="hud-tick">tick ${view.tick}</span>
       <span class="hud-phase">${phaseName[view.phase] ?? view.phase}</span>
       <span class="hud-count">场上 ${view.units.filter((u) => u.hp > 0).length}</span>
@@ -559,35 +624,13 @@ function recordOf(s: BattleSession, outcome: CombatOutcome, stats: CombatStats):
   }
 }
 
-function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInput) => void, canPick: boolean, canInspect: boolean, toggleInspect: (next: Inspect | null) => void): void {
+function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInput) => void, canPick: boolean, canInspect: boolean, toggleInspect: (next: Inspect | null) => void, toggleAuto: () => void): void {
   const step = document.getElementById('btn-step')
   step?.addEventListener('click', () => {
     stepOnce(s)
     refresh()
   })
-  const auto = document.getElementById('btn-auto')
-  auto?.addEventListener('click', () => {
-    if (autoTimer != null) {
-      stopAuto()
-      refresh()
-      return
-    }
-    autoTimer = window.setInterval(() => {
-      // 人已离开战斗页：停表，别在后台把整局推完（会记下一场没人看过的胜负）
-      if (!onBattleRoute()) {
-        stopAuto()
-        return
-      }
-      if (s.facade.ended() || s.facade.pendingDecision()) {
-        stopAuto()
-        refresh()
-        return
-      }
-      stepOnce(s)
-      refresh()
-    }, 450)
-    refresh()
-  })
+  document.getElementById('btn-auto')?.addEventListener('click', toggleAuto)
   document.getElementById('btn-pause')?.addEventListener('click', () => {
     const runner = s.online?.runner
     if (!runner) return
@@ -644,10 +687,10 @@ function stepOnce(s: BattleSession): void {
   s.facade.step()
 }
 
-function stopAuto(): void {
-  if (autoTimer != null) {
-    window.clearInterval(autoTimer)
-    autoTimer = null
+function stopClock(): void {
+  if (clockRaf != null) {
+    window.cancelAnimationFrame(clockRaf)
+    clockRaf = null
   }
 }
 

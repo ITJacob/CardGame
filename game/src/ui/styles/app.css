@@ -344,6 +344,14 @@ a { color: inherit; text-decoration: none; }
 }
 .battle-hud > * { pointer-events: auto; }
 .hud { display: flex; gap: 12px; font-size: 13px; color: var(--text-dim); }
+/* 战场时钟：一圈扫过 = 一个 tick 的动画窗，--p 由 rAF 逐帧写（0..100）。
+   is-paused = 决策点/联机暂停：描边脉冲，示意「等你操作」 */
+.battle-clock {
+  width: 18px; height: 18px; border-radius: 50%; flex: none; align-self: center;
+  background: conic-gradient(var(--accent) calc(var(--p, 0) * 1%), rgba(8, 10, 14, 0.72) 0);
+  border: 1px solid rgba(0, 0, 0, 0.6);
+}
+.battle-clock.is-paused { outline: 2px solid var(--accent); outline-offset: 1px; animation: pulse 1s infinite; }
 .controls { display: flex; align-items: center; gap: 8px; }
 /* 抽屉开关：宽屏靠 margin-left:auto 顶到最右；窄屏随控件一起换行 */
 .hud-tabs { display: flex; gap: 6px; margin-left: auto; }
