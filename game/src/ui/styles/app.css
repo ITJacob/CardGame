@@ -269,8 +269,9 @@ a { color: inherit; text-decoration: none; }
 
 /* 左上圆形扇叶进度（行动条）：conic-gradient 按 --p(0..100) 扫过角度。
    --p 注册成 <number> 后可过渡：扇叶不再逐 tick 跳变，而是在 tick 动画窗内平滑扫过
-   （时长与 battle.ts 的 AUTO_TICK_MS 同步改）。.battle-clock 同用 --p，但它是 rAF 逐帧
-   自刷、没挂 transition，不受影响。 */
+   （时长与 battle.ts 的 AUTO_TICK_MS 同步改）。打满清零那一下由 patchUnits 瞬时置黑
+   （先掐 transition 再跳值），不走反向过渡——否则看着像「倒流」。
+   .battle-clock 同用 --p，但它是 rAF 逐帧自刷、没挂 transition，不受影响。 */
 @property --p { syntax: '<number>'; inherits: false; initial-value: 0; }
 .unit-gauge {
   position: absolute; top: 5px; left: 5px; z-index: 1;
@@ -389,7 +390,8 @@ a { color: inherit; text-decoration: none; }
   transition: left 0.45s linear, color 0.3s;
 }
 .phase-track.is-night .phase-ico { color: #a9bedd; }
-/* 战场时钟：一圈扫过 = 一个 tick 的动画窗，--p 由 rAF 逐帧写（0..100）。
+/* 战场时钟：一圈 = 3 tick（1 tick = 20 分钟，3 tick = 一小时正好一圈，与相位刻度对齐），
+   --p 由 rAF 逐帧写（0..100，每 tick 窗扫 1/3 圈）。
    is-paused = 决策点/联机暂停：描边脉冲，示意「等你操作」 */
 .battle-clock {
   width: 18px; height: 18px; border-radius: 50%; flex: none; align-self: center;

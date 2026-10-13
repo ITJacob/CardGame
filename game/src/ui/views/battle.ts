@@ -12,7 +12,7 @@ import { enableHoverCard, hideCardPop } from '../hover'
 import { enablePan } from '../pan'
 import { getSession } from '../session'
 import { gridSpec, laneIndexer, orientationOf, type Orientation } from '../battle/projection'
-import { LANE_CAPACITY, TICK_PER_DAY } from '../../kernel/battle/types'
+import { LANE_CAPACITY, TICK_MINUTES, TICK_PER_DAY } from '../../kernel/battle/types'
 import type { Coordinate } from '../../kernel/battle/types'
 import { DEFAULT_LANES, laneLabel } from '../../meta/formation'
 import { constitutionById } from '../../meta/constitution'
@@ -49,8 +49,11 @@ let activeRefresh: (() => void) | null = null
 let resizeHooked = false
 /** 联机每 tick 的观战节拍（毫秒）；0 会让整局在一帧内跑完 */
 const ONLINE_STEP_MS = 450
-/** 离线自动的 tick 间隔（与旧 setInterval 同速）：一圈时钟扫过 = 一个 tick 的动画窗 */
+/** 离线自动的 tick 间隔（与旧 setInterval 同速）：一个 tick 的动画窗 */
 const AUTO_TICK_MS = 450
+/** 战场时钟一圈的 tick 数：1 tick = TICK_MINUTES(20) 分钟，3 tick = 60 分钟正好扫满一圈钟面，
+    与相位刻度（相位轨一天 TICK_PER_DAY tick）同源对齐 */
+const CLOCK_REV_TICKS = 60 / TICK_MINUTES
 /** 决策提交后留一拍让结果落地（HP 跳动/状态变化被看见），再续时钟 */
 const RESULT_HOLD_MS = 350
 const FINGERPRINT_WAIT_MS = 20000
@@ -270,7 +273,20 @@ export function renderBattle(host: HTMLElement): void {
       const hpText = `${u.hp}/${u.hpMax}`
       if (num && num.textContent !== hpText) num.textContent = hpText
       const gauge = card.querySelector<HTMLElement>('.unit-gauge')
-      if (gauge) gauge.style.setProperty('--p', String(Math.max(0, Math.min(100, Math.round((u.gauge / 75) * 100)))))
+      if (gauge) {
+        const next = Math.max(0, Math.min(100, Math.round((u.gauge / 75) * 100)))
+        const prev = Number(gauge.style.getPropertyValue('--p')) || 0
+        if (next < prev) {
+          // 打满清零（行动后 gauge 重置）：挂着 transition 从 100 退回 0 会逆着扫一圈，
+          // 像「倒流」。改成瞬时置黑、再恢复正常的前进扫动——与钟面过 12 点的回绕同理
+          gauge.style.transition = 'none'
+          gauge.style.setProperty('--p', String(next))
+          void gauge.offsetWidth // 强制 reflow：这一跳不吃 transition
+          gauge.style.transition = ''
+        } else {
+          gauge.style.setProperty('--p', String(next))
+        }
+      }
       const chipsSig = u.statuses.map((st) => `${st.defId}:${st.stacks}`).join(',')
       if (el.dataset.chips !== chipsSig) {
         el.dataset.chips = chipsSig
@@ -514,8 +530,9 @@ export function renderBattle(host: HTMLElement): void {
   }
 
   /**
-   * 战场时钟循环：一圈扫过 = 一个 tick 的动画窗（状态生效/能量增减等系统表现在这扇窗里落地）。
-   * 到窗尾：离线 stepOnce 推进一格；联机由 MatchRunner 自己推进，这里只把圈绕回去。
+   * 战场时钟循环：钟面一圈 = CLOCK_REV_TICKS 个 tick（3 tick = 60 分钟，与相位刻度对齐）。
+   * 每 tick 的动画窗扫 1/3 圈；到窗尾：离线 stepOnce 推进一格，联机等 MatchRunner 自己推进
+   * （refresh 在 tick 变化时已把 tickStart 拨回窗首，这里只管合成位置）。
    * 决策点/联机暂停 → 冻结（is-paused），rAF 挂着空转，恢复后从原进度续走。
    */
   const clockLoop = (now: number): void => {
@@ -531,15 +548,14 @@ export function renderBattle(host: HTMLElement): void {
     }
     clockEl?.classList.remove('is-paused')
     const span = s.online ? ONLINE_STEP_MS : AUTO_TICK_MS
-    const p = Math.max(0, Math.min(100, ((now - tickStart) / span) * 100))
+    // 已走过的整 tick（每 tick 1/REV 圈）+ 当前 tick 窗内进度，合成钟面位置
+    const frac = Math.max(0, Math.min(1, (now - tickStart) / span))
+    const p = (((lastTick % CLOCK_REV_TICKS) + frac) / CLOCK_REV_TICKS) * 100
     clockEl?.style.setProperty('--p', String(p))
-    if (p >= 100) {
-      tickStart = now
-      if (!s.online) {
-        stepOnce(s)
-        refresh()
-        return // refresh 末尾已 clockStart，这里不再续帧，免得同一帧挂两条循环
-      }
+    if (frac >= 1 && !s.online) {
+      stepOnce(s)
+      refresh()
+      return // refresh 末尾已 clockStart，这里不再续帧，免得同一帧挂两条循环
     }
     clockRaf = requestAnimationFrame(clockLoop)
   }
