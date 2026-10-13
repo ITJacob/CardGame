@@ -39,6 +39,7 @@
 - 根节点具备稳定 id/class、`aria-hidden="true"`、SVG `focusable="false"`、`pointer-events:none`。
 - BG-01 后续只需交付/替换根节点内部的矢量几何与分组，不改变挂载点、路由状态或性能控制协议。
 - 动画仅作用于 SVG 的 1–2 个 group，使用 `transform`/`opacity`；不采用逐符文 DOM 动画和每帧 JS 绘制。
+- **2026-10-13 结构**：根层内再包一层 `.af-stage`（3D 舞台，在 `perspective` 场景里 `rotateX/Y/Z` 前倾侧转）与每环一层 `.af-layer`（`translateZ` 拉纵深）。旋转仍挂在 `<svg>` 上，`.af-layer` 只承载纵深——两者互不打架。视觉参数见 BG-01 §0/§2。
 
 ## 2. 首页专属 vs 全站共用
 
@@ -91,8 +92,8 @@
 
 ### 3.3 避免合成层与重绘爆炸
 
-- 只动画 `transform` 和 `opacity`；不动画 `filter`、`box-shadow`、`background-position`、SVG path 数据或大量 `stroke-dashoffset`。
-- 全屏根层只使用一次 `mix-blend-mode: screen`；不要给每个符文、每个环单独设置 blend/filter。
+- 只动画 `transform` 和 `opacity`；不动画 `filter`、`box-shadow`、`background-position`、SVG path 数据或大量 `stroke-dashoffset`。**注**：本层**固定挂**了 `drop-shadow`（R1/R2 各一组 4 层，做线辉光，BG-01 §3.7），但**从不动画它**——滤镜结果被缓存，只有 `transform`/`opacity` 在动，故不违反本条。
+- 根层 `mix-blend-mode: normal`；**不**给每个符文、每个环单独设置 blend。曾试验的「高光点/耀斑」因引入边缘压暗与光球问题，已撤除。
 - 最多 2 个运动 group；`will-change` 只在首页 active 时给这 1–2 个 group，非首页/静态档移除。
 - 不在每个 rune 上创建独立 DOM/合成层；优先合并 SVG path，装饰点也应批量绘制。
 - 不新增 `backdrop-filter`；顶栏已有 blur，秘仪阵放在其后即可被自然采样。
@@ -108,9 +109,9 @@
 |---|---|
 | 首页动画帧 | 60 Hz 设备上超过 16.7 ms 的帧占比 `< 1%`；由本效果造成的 `> 50 ms` 帧为 0 |
 | 主线程成本 | 稳态无脚本帧循环；效果相关 JS 仅发生在初始化、路由切换、visibility/偏好变化时 |
-| CPU 占用 | 30 秒空闲首页中，效果增量目标：桌面平均 `< 2%`，4× CPU/低端模拟 `< 5%` |
-| Paint | 首次显示和 route/viewport 状态变化外，不应连续触发全视口 paint；若 paint flashing 持续闪烁，必须降为静态或去掉 blend |
-| 合成层 | 新增全屏根层 + 动画 group 合计不超过 2 个持续合成层；不得按符文拆层 |
+| CPU 占用 | 30 秒空闲首页中，效果增量目标：桌面平均 `< 3%`，4× CPU/低端模拟 `< 6%`（较旧版略高，因线辉光） |
+| Paint | 首次显示和 route/viewport 状态变化外，不应连续触发全视口 paint；`drop-shadow` 结果被缓存、只有 `transform`/`opacity` 在动；若 paint flashing 持续闪烁，优先把辉光从 4 层减到 2 层 |
+| 合成层 | 新增持续合成层不超过 **3 个**（R1 / R2 两个运动层 + 1 个 `drop-shadow` 滤镜层）；不得按符文拆层 |
 | 布局稳定 | CLS 增量为 0；背景不参与文档流、不改变 body 高度、不产生横向滚动 |
 | 非首页/隐藏页 | `display:none` 或 paused 后，Performance 记录中无特效定时任务/rAF，战斗页性能相对基线应为 0 增量 |
 
@@ -136,9 +137,10 @@
 - 新根层 `position:fixed; inset:0; z-index:-1; pointer-events:none`。在隔离 stacking context 内，负层位于 body 自身背景之上、普通内容之下，不会逃到页面画布背后。
 - 不给 `#app` 新建 stacking context，避免把 `.cg-nav`、模态框、卡面浮层的现有 `z-index:40/50/60/62/80` 关进新的层级盒子。
 - 不使用 `.cg-bg::before`，也不覆盖 `.cg-bg--fog::after`；两个系统的责任边界保持清楚。
-- 新层只画低透明度线稿，不铺不透明底色。默认总 opacity 建议从 `0.08–0.12` 区间起调，最终以 BG-01 规格为准。
-- 混合模式仅放在新根层一次，首选 `screen`；若性能记录显示持续 paint，low 档和移动端优先退为 `normal + 更低 opacity`。
-- 色彩从现有 `--accent`/`--accent-dim`（或桥接后的 `--cg-accent`）派生，不复制硬编码黄铜色；暗部不覆盖 `--bg-deep`。
+- 新层只画线稿，不铺不透明底色。层不透明度以 BG-01 §0 为准（2026-10-13 定稿：R1 0.40 / R2 0.35 / S0 0.10；旧版 0.045/0.040/0.028 因 1px 细线肉眼不可见而上调）。
+- 根层 `mix-blend-mode: normal`（BG-01 §3.7）。罗盘**锚在左上、部分出屏**（`--af-cx/--af-cy`；竖屏 `@media (orientation: portrait)` 另给一组），不再是居中背景板。
+- 根层加 `perspective` + `perspective-origin: var(--af-cx) var(--af-cy)`；`.af-stage` 做整体 3D 倾斜，`.af-layer` 用 `translateZ` 分层（BG-01 §2）。
+- 色彩从现有 `--accent`/`--accent-dim` 派生（S0 用 `--text-dim`）；**唯一新增色号 `--af-glow`** 用于线辉光——BG-01 文件头已登记的**有意破例**。暗部不覆盖 `--bg-deep`。
 
 该做法只增加新的装饰层和隔离边界，不修改已有暗角/暗雾规则；实现验收时必须用 DevTools Layers/paint flashing 再确认实际浏览器的绘制顺序。
 
@@ -148,7 +150,7 @@
 
 | 绝对路径 | 性质 | 计划改动 |
 |---|---|---|
-| `D:/Projects/self/CardGame/game/index.html` | 修改 | 在 `#app` 之前增加一个 `aria-hidden` 的固定背景根节点与 BG-01 内联 SVG；保留 body 的 `cg-kit cg-bg cg-bg--fog` 类不变 |
+| `D:/Projects/self/CardGame/game/index.html` | 修改 | 在 `#app` 之前增加一个 `aria-hidden` 的固定背景根节点：内层 `.af-stage`（3D 舞台）+ 每环一层 `.af-layer` 包裹 BG-01 内联 SVG；保留 body 的 `cg-kit cg-bg cg-bg--fog` 类不变 |
 | `D:/Projects/self/CardGame/game/src/main.ts` | 修改 | 在现有三层样式之后追加导入 `arcane-bg.css`，保证 `app.css → ui-kit.css → kit-bridge.css` 原顺序完全不动；初始化一次背景控制器 |
 | `D:/Projects/self/CardGame/game/src/ui/router.ts` | 修改 | 每次解析出 `path` 后、渲染 view 前同步切换 body 的首页状态；**不新增 ROUTES 路由项**，不增加第二个 hashchange 监听 |
 | `D:/Projects/self/CardGame/game/src/ui/styles/arcane-bg.css` | 新增 | 专属 token、fixed/stacking、SVG 尺寸与动画、首页显示、hidden pause、reduced-motion、low/static 档；所有选择器以背景根类为作用域 |
