@@ -15,6 +15,7 @@ import { gridSpec, laneIndexer, orientationOf, type Orientation } from '../battl
 import { LANE_CAPACITY, TICK_MINUTES, TICK_PER_DAY } from '../../kernel/battle/types'
 import type { Coordinate } from '../../kernel/battle/types'
 import { BASIC_ATTACK_ID } from '../../kernel/combat/basicAttack'
+import { phaseOf } from '../../kernel/scheduling/scheduler'
 import type { UnitId } from '../../kernel/ids'
 import { dataVersion, shortHash } from '../../data/version'
 import { DEFAULT_LANES, laneLabel } from '../../meta/formation'
@@ -1022,25 +1023,49 @@ function logHtml(s: BattleSession, events: readonly DomainEvent[]): string {
   return lines.length > 0 ? lines.join('') : '<div class="log-line dim">（尚无事件）</div>'
 }
 
-/** 日志里的单位名走名册：召唤物没有 meta，回退裸 id（与卡面同一套降级） */
-function unitNameOf(s: BattleSession, id: string): string {
-  return s.unitMeta.get(id)?.name ?? id
+/** 全场重名清单（按会话缓存：名册在 setup 后不再变）——两军同池生成，重名是常态 */
+const dupNameCache = new WeakMap<BattleSession, ReadonlySet<string>>()
+function dupNames(s: BattleSession): ReadonlySet<string> {
+  let d = dupNameCache.get(s)
+  if (!d) {
+    const count = new Map<string, number>()
+    for (const m of s.unitMeta.values()) count.set(m.name, (count.get(m.name) ?? 0) + 1)
+    d = new Set([...count].filter(([, n]) => n > 1).map(([name]) => name))
+    dupNameCache.set(s, d)
+  }
+  return d
+}
+
+/** 日志/报告专用名：走名册取名（召唤物没有 meta 回退裸 id）；有重名才补阵营后缀
+   （sleepless_1(我)/(敌)），不重名保持裸名 */
+function logNameOf(s: BattleSession, id: string): string {
+  const meta = s.unitMeta.get(id)
+  const name = meta?.name ?? id
+  if (!meta || !dupNames(s).has(name)) return name
+  return `${name}(${meta.side === 'own' ? '我' : '敌'})`
+}
+
+/** clock(tick 序号) → 一天内的钟点「HH:MM」（1 tick = TICK_MINUTES 分钟，一天 TICK_PER_DAY tick） */
+function clockTime(tick: number): string {
+  const mins = (((tick % TICK_PER_DAY) + TICK_PER_DAY) % TICK_PER_DAY) * TICK_MINUTES
+  return `${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`
 }
 
 function describe(s: BattleSession, e: DomainEvent): string {
   switch (e.type) {
-    case 'TickAdvanced': return `— tick ${e.tickIndex} —`
-    case 'GaugeCrossed': return `${unitNameOf(s, e.unitId)} 行动条满`
-    case 'ActionOpportunityGranted': return `${unitNameOf(s, e.opportunity.unitId)} 获得行动机会`
-    case 'BehaviorCommitted': return `${unitNameOf(s, e.caster)} 出手${e.sourceRef ? `「${sourceNameOf(s, e.sourceRef)}」` : ''}`
+    // tickIndex 就是战场时钟的绝对值：顺手带出相位与钟点，日志行不用回头数 tick
+    case 'TickAdvanced': return `— tick ${e.tickIndex} · ${PHASE_NAME[phaseOf(e.tickIndex)] ?? ''} ${clockTime(e.tickIndex)} —`
+    case 'GaugeCrossed': return `${logNameOf(s, e.unitId)} 行动条满`
+    case 'ActionOpportunityGranted': return `${logNameOf(s, e.opportunity.unitId)} 获得行动机会`
+    case 'BehaviorCommitted': return `${logNameOf(s, e.caster)} 出手${e.sourceRef ? `「${sourceNameOf(s, e.sourceRef)}」` : ''}`
     case 'TargetsResolved': return `目标锁定：${e.targets.map((t) => targetText(s, t)).join('、')}`
     case 'EffectApplied': return `「${sourceNameOf(s, e.effectRef.ref)}」作用于 ${targetText(s, e.target)}`
-    case 'StatusMounted': return `${e.unitId ? `${unitNameOf(s, e.unitId)} ` : ''}挂载状态 ${statusName(s, e.defId)}`
-    case 'StatusExpired': return `${e.unitId ? `${unitNameOf(s, e.unitId)} ` : ''}状态到期 ${statusName(s, e.defId)}`
-    case 'UnitSpawned': return `召唤 ${unitNameOf(s, e.unitId)}`
-    case 'UnitDied': return `${unitNameOf(s, e.unitId)} 阵亡`
-    case 'UnitTranslocated': return `${unitNameOf(s, e.unitId)} 被放逐`
-    case 'UnitReturned': return `${unitNameOf(s, e.unitId)} 回归`
+    case 'StatusMounted': return `${e.unitId ? `${logNameOf(s, e.unitId)} ` : ''}挂载状态 ${statusName(s, e.defId)}`
+    case 'StatusExpired': return `${e.unitId ? `${logNameOf(s, e.unitId)} ` : ''}状态到期 ${statusName(s, e.defId)}`
+    case 'UnitSpawned': return `召唤 ${logNameOf(s, e.unitId)}`
+    case 'UnitDied': return `${logNameOf(s, e.unitId)} 阵亡`
+    case 'UnitTranslocated': return `${logNameOf(s, e.unitId)} 被放逐`
+    case 'UnitReturned': return `${logNameOf(s, e.unitId)} 回归`
     case 'DomainPlaced': return `界域展开 ${e.defId}`
     case 'ZonePlaced': return `区域布下`
     default: return e.type
@@ -1050,7 +1075,7 @@ function describe(s: BattleSession, e: DomainEvent): string {
 /** 目标描述：有租客写名字 + 格位，空坐标写格位（放逐/区域结算会落在空格上） */
 function targetText(s: BattleSession, t: { coord: Coordinate; occupant: UnitId | null }): string {
   const where = coordText(t.coord)
-  return t.occupant ? `${unitNameOf(s, t.occupant)}(${where})` : `空位(${where})`
+  return t.occupant ? `${logNameOf(s, t.occupant)}(${where})` : `空位(${where})`
 }
 
 /** 行为源取名：技能 → 状态 → 行为模板（被动）→ 内置普攻 → 裸 id（与卡面降级同一套顺序） */
@@ -1073,6 +1098,9 @@ function buildLogReport(s: BattleSession): string {
   lines.push('# 战斗日志导出（排查用）')
   lines.push(`导出时间: ${new Date().toLocaleString()}`)
   lines.push(`种子: ${s.setup.seed}`)
+  // 初始相位由 setup.clockBase 决定（缺省 0 = 午夜 00:00），种子不参与——要复现只需种子 + 这份装配
+  const baseClock = ((s.setup.board.clock.base % TICK_PER_DAY) + TICK_PER_DAY) % TICK_PER_DAY
+  lines.push(`初始时刻: clock ${baseClock} · ${PHASE_NAME[phaseOf(baseClock)] ?? ''} ${clockTime(baseClock)}`)
   lines.push(`数据版本: data=${shortHash(dataVersion.dataHash)} lock=${shortHash(dataVersion.lockHash)}${dataVersion.stale ? '（数据已漂移，未验收）' : ''} schema=${dataVersion.schemaVersion} source=${dataVersion.sourceVersion} game=${dataVersion.gameSha}`)
   lines.push(`进度: tick ${view.tick} · ${PHASE_NAME[view.phase] ?? view.phase} · 场上存活 ${view.units.filter((u) => u.hp > 0).length}${ended ? ` · 已结束(${ended.outcome}${ended.winnerFactionId ? `，胜方 ${ended.winnerFactionId}` : ''})` : ''}`)
   lines.push('')
@@ -1111,7 +1139,7 @@ function buildLogReport(s: BattleSession): string {
   for (const e of s.facade.drainEvents()) {
     if (e.type === 'BehaviorCommitted') {
       const a = acts.get(e.actionId) ?? { caster: '', source: '', targets: '', effects: [] }
-      a.caster = unitNameOf(s, e.caster)
+      a.caster = logNameOf(s, e.caster)
       if (e.sourceRef) a.source = sourceNameOf(s, e.sourceRef)
       acts.set(e.actionId, a)
     } else if (e.type === 'TargetsResolved') {
@@ -1125,18 +1153,26 @@ function buildLogReport(s: BattleSession): string {
     }
   }
   const folded = new Set<string>()
+  // 逐行带 [tN]：事件本身不含 tick，靠 TickAdvanced  marker 推进当前 tick 计数
+  let curTick = baseClock
   for (const e of s.facade.drainEvents()) {
+    if (e.type === 'TickAdvanced') {
+      curTick = e.tickIndex
+      lines.push(describe(s, e))
+      continue
+    }
+    const prefix = `[t${curTick}] `
     const actionId = 'actionId' in e ? e.actionId : null
     if (actionId != null) {
       if (folded.has(actionId)) continue
       folded.add(actionId)
       const a = acts.get(actionId)
-      if (!a) { lines.push(describe(s, e)); continue }
-      lines.push(`${a.caster || '（未知主体）'} 出手${a.source ? `「${a.source}」` : ''}${a.targets ? ` → ${a.targets}` : ''}`)
+      if (!a) { lines.push(prefix + describe(s, e)); continue }
+      lines.push(`${prefix}${a.caster || '（未知主体）'} 出手${a.source ? `「${a.source}」` : ''}${a.targets ? ` → ${a.targets}` : ''}`)
       for (const ef of a.effects) lines.push(`    ${ef}`)
       continue
     }
-    lines.push(describe(s, e))
+    lines.push(prefix + describe(s, e))
   }
   return lines.join('\n')
 }

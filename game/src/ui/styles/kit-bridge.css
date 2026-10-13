@@ -120,8 +120,8 @@
   padding: 16px 18px;
 }
 /* 竖屏（＝窄屏）：决策条/信息条改纵排——横排在 ~366px 宽里把右侧提示挤成单字竖柱
-   （2026-10-13 实测）。身份块一行、提示与按钮各自通栏；敌方信息浮层不再钉右上
-   （会盖住 HUD 页签），与己方信息条同沉底部槽位（两者互斥，不会同时出现）。 */
+   （2026-10-13 实测）。身份块一行、提示与按钮各自通栏；敌方信息浮层钉在上方、让开
+   两行高的竖屏 HUD（96px ≈ 实测 88px + 呼吸），与己方信息条（底部槽）上下对位。 */
 @media (orientation: portrait) {
   .decision.cg-panel {
     width: calc(100% - 24px);
@@ -133,8 +133,8 @@
   }
   .decision.cg-panel .decision-title { margin-bottom: 0; }
   .inspect-foe.cg-panel {
-    top: auto; right: auto;
-    left: 50%; bottom: max(12px, env(safe-area-inset-bottom));
+    top: calc(96px + env(safe-area-inset-top)); right: auto; bottom: auto;
+    left: 50%;
     transform: translateX(-50%);
     width: calc(100% - 24px);
     padding: 12px 14px;
