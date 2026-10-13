@@ -696,6 +696,9 @@ body.zoom-open { overflow: hidden; }
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
   grid-template-areas: 'strip side' 'strip foot';
+  /* 列间距 24px：10px 时左侧立绘几乎贴上右栏技能卡（2026-10-13 与整备页同步加宽，
+     两页必须同值，否则来回切页右栏横向漂移——同下面 1.5fr/1fr 那条的约束） */
+  column-gap: 24px;
 }
 /* 横屏：顶上的大立绘整块撤掉（竖屏那套叠在它上面的箭头跟着一起走） */
 [data-orient='landscape'] .hs-art { display: none; }
@@ -1191,12 +1194,13 @@ table.lb tr.draw td.res { color: var(--text-dim); }
   grid-template-areas: 'board' 'side' 'foot';
   grid-template-rows: minmax(0, 1fr) auto auto;
 }
-/* 横屏两列的比例必须与 .hero-showcase 那条逐字一致（1.5fr / 1fr）：比例不同则右栏的
-   x 与宽跟着不同，两页来回切时右栏会横着漂一下、技能卡也换一档大小。 */
+/* 横屏两列的比例必须与 .hero-showcase 那条逐字一致（1.5fr / 1fr，column-gap 同值 24px）：
+   比例或间距不同则右栏的 x 与宽跟着不同，两页来回切时右栏会横着漂一下、技能卡也换一档大小。 */
 .prep-page[data-orient='landscape'] .prep-stage {
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
   grid-template-areas: 'board side' 'board foot';
+  column-gap: 24px;
 }
 
 /* 布局场景：横屏格子 3:4——立绘资源是 1152×1536 正好 3:4，.hero-portrait__img 的
