@@ -365,6 +365,9 @@ a { color: inherit; text-decoration: none; }
   position: relative; isolation: isolate; /* screen 混色只在本卡内合成，不外溢到页面 */
   width: 60px; height: 80px; border-radius: 6px; overflow: hidden;
   background: #101216; display: block; margin: 0; user-select: none;
+  /* --rf = 稀有度色（下方 r-* 档覆盖）；底部落一道稀有度色的投影 */
+  --rf: var(--cg-r-common);
+  box-shadow: 0 10px 16px -8px color-mix(in srgb, var(--rf) 60%, transparent);
 }
 .card-face.full { width: 120px; height: 160px; }
 
@@ -389,13 +392,16 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* 稀有度：有边框时靠框线区分；边框缺失或降级时退回内描边色环。
-   色值直接取 kit 的 --cg-r-*，稀有度配色仍然只有 ui-kit 一处源。 */
+   色值直接取 kit 的 --cg-r-*，稀有度配色仍然只有 ui-kit 一处源。
+   内描边会整条顶掉基础规则的 box-shadow，底部投影在这里合并补回。 */
 .card-face.r-common { --rf: var(--cg-r-common); }
 .card-face.r-uncommon { --rf: var(--cg-r-uncommon); }
 .card-face.r-rare { --rf: var(--cg-r-rare); }
 .card-face.r-epic { --rf: var(--cg-r-epic); }
 .card-face.r-legendary { --rf: var(--cg-r-legendary); }
-.card-face.no-frame, .card-face.frame-degraded { box-shadow: inset 0 0 0 1px var(--rf); }
+.card-face.no-frame, .card-face.frame-degraded {
+  box-shadow: inset 0 0 0 1px var(--rf), 0 10px 16px -8px color-mix(in srgb, var(--rf) 60%, transparent);
+}
 
 /* 信息条：名字 + ⚡费用（被动卡没有费用，这本身就是主/被动的区分） */
 .card-info {
@@ -427,13 +433,14 @@ button.card-face {
    ① outline 外扩会被 .hs-cards / .hs-side 的 overflow 静默裁掉（outline 不产生
       可滚动溢出，裁了也不出滚动条，看着就是「没画全」）；
    ② 缩进卡里侧虽然裁不到了，但 outline 画在元素自身那一层、被卡图与边框层
-      （都是 absolute 子元素）盖住，只剩压在暗卡图上的那点金线，等于看不见。
-   覆盖层 z-index 2 在卡图/边框之上、角标(3)之下，四边永远画全且压得住底。 */
+      （都是 absolute 子元素）盖住，只剩压在暗卡图上的那点线，等于看不见。
+   覆盖层 z-index 2 在卡图/边框之上、角标(3)之下，四边永远画全且压得住底。
+   颜色跟稀有度（--rf），与卡底投影同一套色。 */
 .card-face.is-open::after,
 button.card-face:focus-visible::after {
   content: ''; position: absolute; inset: 0; z-index: 2;
   border-radius: inherit; pointer-events: none;
-  box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 10px 1px rgba(232, 197, 106, .55);
+  box-shadow: inset 0 0 0 2px var(--rf), inset 0 0 10px 1px color-mix(in srgb, var(--rf) 55%, transparent);
 }
 button.card-face:focus-visible { outline: none; }
 /* 槽满（不可装备）的卡不响应点击；未解锁的卡仍可点开解锁，故只跟 aria-disabled 绑定 */
