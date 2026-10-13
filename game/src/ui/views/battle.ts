@@ -909,8 +909,8 @@ function rosterHtml(s: BattleSession): string {
  * 名称/体质这些非实时信息不常显在棋子上，要看就聚到这里。
  */
 function actorAvatarHtml(meta: UnitMeta | undefined): string {
-  // 大头像不带 emoji 兜底（缺图就留白，不拿 emoji 凑数）；尺寸约旧档两倍，顶出面板、底边贴齐
-  return meta ? `<span class="actor-avatar">${heroAvatarHtml(meta, '136px', false)}</span>` : ''
+  // 大头像不带 emoji 兜底（缺图就留白，不拿 emoji 凑数）；横屏 152px 顶出面板、竖屏 96px 随行
+  return meta ? `<span class="actor-avatar">${heroAvatarHtml(meta, '152px', false)}</span>` : ''
 }
 
 function actorIdHtml(s: BattleSession, name: string, meta: UnitMeta | undefined): string {
@@ -945,7 +945,7 @@ function coordText(c: { lane: string; index: number }): string {
 
 /**
  * 非操作时机的信息面板：己方单位/空格 → 底部条（与操作栏同一槽位，decision--inspect）；
- * 敌方 → 竖屏顶部条 / 横屏右上浮层。内容为身份 + 实时状态（HP/能量/格位/状态列表），不含技能（在名册抽屉）。
+ * 敌方 → 竖屏顶部条 / 横屏右上浮层。内容为身份 + 实时状态（HP/能量/状态列表），不含技能（在名册抽屉）。
  * 无关闭键：点面板外任意空白处即收起（见 wireDelegated 的空白点击兜底）。
  */
 function inspectPanelHtml(s: BattleSession, view: CombatView, sel: Inspect): string {
@@ -962,11 +962,8 @@ function inspectPanelHtml(s: BattleSession, view: CombatView, sel: Inspect): str
   const meta = s.unitMeta.get(u.id)
   const own = meta ? meta.side === 'own' : u.faction === myFactionOf(s)
   const chips = u.statuses.map((st) => chipHtml(s, st)).join('')
-  const stats = [
-    `HP ${u.hp}/${u.hpMax}`,
-    `能量 ${u.energy}`,
-    u.coordinate ? escapeHtml(coordText(u.coordinate)) : '离场',
-  ]
+  // 位置不写（看棋盘即知，2026-10-14 裁决）；空格面板只有格位可写，那里保留
+  const stats = [`HP ${u.hp}/${u.hpMax}`, `能量 ${u.energy}`]
   const inner = `${actorAvatarHtml(meta)}
     <div class="actor-side">
       ${actorIdHtml(s, meta?.name ?? u.id, meta)}

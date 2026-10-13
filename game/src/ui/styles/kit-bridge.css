@@ -105,27 +105,32 @@
    而 kit 是在 app.css 之后引入的，同权重下 kit 胜。所以覆盖必须写在本文件（最后引入）。 */
 .drawer-panel.cg-panel { padding: 12px; }
 /* 决策条：整页一屏、棋盘铺满，它改悬浮在底部（kit 的 .cg-panel 是 position:relative，会顶掉定位）。
-   左侧行动者块（大头像会顶出面板）+ 右侧提示/自动键，横排 flex。 */
+   左侧行动者大头像（顶出面板）+ 右侧信息/操作列；高度固定 148px——内容多少都不跳高，
+   状态多了由 chips 区滚动消化（见 app.css .inspect-chips）。 */
 .decision.cg-panel {
   position: absolute; left: 50%; bottom: 12px; z-index: 25;
   transform: translateX(-50%);
   width: min(720px, 94%);
+  height: 148px;
   padding: 16px 18px;
   display: flex; gap: 16px; align-items: flex-end;
 }
-/* 敌方信息浮层：右上（顶部 HUD 高约 48px，让开），与底部决策条同层；两列排版同决策条 */
+/* 敌方信息浮层：右上（顶部 HUD 高约 48px；头像顶出面板 64px，top 再给足 72 免得头像被视口上沿裁掉），
+   与底部决策条同层同高；两列排版同决策条 */
 .inspect-foe.cg-panel {
-  position: absolute; top: 56px; right: 12px; z-index: 25;
-  width: min(340px, 92vw);
+  position: absolute; top: 72px; right: 12px; z-index: 25;
+  width: min(440px, 92vw);
+  height: 148px;
   padding: 16px 18px;
   display: flex; gap: 14px; align-items: flex-end;
 }
-/* 竖屏（＝窄屏）：两列结构不变（头像 56px 小头像后横排放得下，见 app.css 身份块段），
-   只收尺寸：面板通栏、padding 收紧；敌方信息浮层钉在上方、让开两行高的竖屏 HUD
+/* 竖屏（＝窄屏）：两列结构不变，只收尺寸——面板通栏、固定 120px 高（96 头像 + 上下 padding）、
+   padding 收紧；敌方信息浮层钉在上方、让开两行高的竖屏 HUD
    （96px ≈ 实测 88px + 呼吸），与己方信息条（底部槽）上下对位。 */
 @media (orientation: portrait) {
   .decision.cg-panel {
     width: calc(100% - 24px);
+    height: 120px;
     padding: 12px 14px;
     gap: 10px;
     align-items: center;
@@ -136,6 +141,7 @@
     left: 50%;
     transform: translateX(-50%);
     width: calc(100% - 24px);
+    height: 120px;
     padding: 12px 14px;
     gap: 10px;
     align-items: center;
