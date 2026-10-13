@@ -686,12 +686,17 @@ function boardHtml(s: BattleSession, view: CombatView, pending: DecisionRequest 
       : `<div class="board-mid" style="grid-row:${spec.midTrack};grid-column:1 / -1"></div>`
 
   // minmax 的最小格宽：宽裕时 1fr 铺满，被压到 112px 仍放不下就整体溢出 → 触发拖拽平移；
-  // 中线轨道窄且 fr 小，挤压时优先让位
+  // 中线轨道窄且 fr 小，挤压时优先让位。
   const cell = 'minmax(112px, 1fr)'
   const gapTrack = 'minmax(28px, 0.25fr)'
+  // 横屏改走 CSS 变量：--cell 是 app.css 按视口算出的方卡边长（--row-cell 多出 36px 是 chips 行），
+  // 卡面保持方正、整块棋盘居中留白；竖屏维持 1fr 铺满 + 上下留白轨道拖拽。
+  const sqCell = 'minmax(112px, var(--cell, 1fr))'
+  const sqRow = 'minmax(148px, var(--row-cell, 1fr))'
+  const sqGap = 'var(--gap-track, 28px)'
   const template =
     orient === 'landscape'
-      ? `grid-template-columns:repeat(${LANE_CAPACITY}, ${cell}) ${gapTrack} repeat(${LANE_CAPACITY}, ${cell}); grid-template-rows:repeat(${spec.rows}, ${cell})`
+      ? `grid-template-columns:repeat(${LANE_CAPACITY}, ${sqCell}) ${sqGap} repeat(${LANE_CAPACITY}, ${sqCell}); grid-template-rows:repeat(${spec.rows}, ${sqRow})`
       : `grid-template-columns:repeat(${spec.columns}, ${cell}); grid-template-rows:repeat(${LANE_CAPACITY}, ${cell}) ${gapTrack} repeat(${LANE_CAPACITY}, ${cell})`
   // can-inspect 只控光标与空格 hover，不改变渲染
   return `<div class="board${canInspect ? ' can-inspect' : ''}" style="${template}">${mid}${cells.join('')}</div>`

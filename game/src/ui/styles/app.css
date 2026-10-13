@@ -201,6 +201,21 @@ a { color: inherit; text-decoration: none; }
    （留白 ≈ 50vh − 半行高，两端恰好都能居中） */
 .battle[data-orient='portrait'] .board { padding-top: calc(50vh - 60px); padding-bottom: calc(50vh - 60px); }
 
+/* 横屏：卡面方正 + 四周留白。--cell 取「宽向 8 格均分」与「高向两行均分」的较小值
+   （136px = 8 列间距 64 + 中线 48 + padding 24；104px = 行间距 8 + padding 24 + 两行 chips 72），
+   再封顶 200px 免得过宽屏格子撑太大；宽向再减 2×--side 保证左右也有可见留白，
+   轨道不再 1fr 铺满，棋盘内容居中，余量即成四周留白。
+   safe center：内容溢出（小窗压到 minmax 下限）时退回 start，保证左/上边缘仍能拖得到。 */
+.battle[data-orient='landscape'] .board-wrap { container-type: size; }
+.battle[data-orient='landscape'] .board {
+  --side: clamp(36px, 5cqw, 160px);
+  --cell: min(calc((100cqw - 136px - 2 * var(--side)) / 8), calc((100cqh - 104px) / 2), 200px);
+  --row-cell: calc(var(--cell) + 36px);
+  --gap-track: 48px;
+  justify-content: safe center;
+  align-content: safe center;
+}
+
 /* 单位格：状态(chips) 在**卡外**单边一条——横竖屏都在卡上方，放不下截断。
    chips 区定高 32px≈两行，卡面占剩余：同排/同列的卡面因此同大，状态多少不再把
    卡面挤得大小不一。竖屏 chips 同样顶置（居中），两路队列的水平中线不被 chips 列挤偏。
