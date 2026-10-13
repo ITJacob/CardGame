@@ -101,6 +101,8 @@ function settle(
   // R：P2a 无转向规则——finalTargets = committedTargets（去重由 resolve 保证）
   action.finalTargets = [...committed]
 
+  // 主体锚点：日志/排查靠它把后续 TargetsResolved/EffectApplied 串回「谁出手、用的什么」
+  deps.emit({ type: 'BehaviorCommitted', actionId, caster: caster.id, cost: source.consumption, sourceRef: source.sourceRef })
   deps.emit({ type: 'TargetsResolved', actionId, targets: action.finalTargets })
 
   // M：consumption 分流（zone/domain 由 runtime 经 onAction 登记，不走 O）

@@ -14,6 +14,9 @@ import { getSession } from '../session'
 import { gridSpec, laneIndexer, orientationOf, type Orientation } from '../battle/projection'
 import { LANE_CAPACITY, TICK_MINUTES, TICK_PER_DAY } from '../../kernel/battle/types'
 import type { Coordinate } from '../../kernel/battle/types'
+import { BASIC_ATTACK_ID } from '../../kernel/combat/basicAttack'
+import type { UnitId } from '../../kernel/ids'
+import { dataVersion, shortHash } from '../../data/version'
 import { DEFAULT_LANES, laneLabel } from '../../meta/formation'
 import { constitutionById } from '../../meta/constitution'
 import type { DomainEvent } from '../../kernel/combat/types'
@@ -170,7 +173,7 @@ export function renderBattle(host: HTMLElement): void {
         <div class="board-wrap">${boardHtml(s, view, pending, canPick, canInspect, pending?.caster ?? null)}</div>
         ${hudHtml(s, view, pending != null, ended != null, logOpen, rosterOpen, autoOn)}
         ${drawerHtml('roster', '我方技能', rosterHtml(s), rosterOpen)}
-        ${drawerHtml('log', '战斗日志', `<div class="cg-scroll log" id="battle-log">${logHtml(s, s.facade.drainEvents())}</div>`, logOpen)}
+        ${drawerHtml('log', '战斗日志', `<div class="cg-scroll log" id="battle-log">${logHtml(s, s.facade.drainEvents())}</div>`, logOpen, '<button type="button" class="cg-btn cg-btn--sm" id="btn-log-copy" title="复制全量日志（含两军装配与种子）">复制</button>')}
       </div>
       <div class="battle-overlay">${overlayHtml(view, pending, ended, showDecision)}</div>
       <div class="cg-modal cg-modal--sm" id="leave-modal" role="dialog" aria-modal="true" aria-labelledby="leave-modal-title">
@@ -588,6 +591,17 @@ export function renderBattle(host: HTMLElement): void {
       rosterOpen = !rosterOpen
       toggle('roster', rosterOpen)
     })
+    // 复制全量日志（含两军装配/种子/数据版本），给 AI 排查用；屏上 60 行与此不同源
+    document.getElementById('btn-log-copy')?.addEventListener('click', async (ev) => {
+      const btn = ev.currentTarget as HTMLButtonElement
+      const ok = await copyText(buildLogReport(s))
+      btn.textContent = ok ? '已复制 ✓' : '复制失败'
+      btn.disabled = true
+      window.setTimeout(() => {
+        btn.textContent = '复制'
+        btn.disabled = false
+      }, 1500)
+    })
     host.querySelectorAll<HTMLElement>('[data-drawer-close]').forEach((el) => {
       el.addEventListener('click', () => {
         const id = el.dataset.drawerClose === 'roster' ? 'roster' : 'log'
@@ -832,12 +846,14 @@ function hudHtml(s: BattleSession, view: CombatView, pending: boolean, ended: bo
   </div><div class="hud-warn-slot">${warn}</div>`
 }
 
-/** 右侧悬浮抽屉外壳：标题栏（含关闭键）+ 内容。开合只翻 .is-open（见 wireDrawers）。 */
-function drawerHtml(id: string, title: string, inner: string, open: boolean): string {
+/** 右侧悬浮抽屉外壳：标题栏（含关闭键）+ 内容。开合只翻 .is-open（见 wireDrawers）。
+   headExtra = 标题栏右侧追加的小按钮（如日志抽屉的「复制」）。 */
+function drawerHtml(id: string, title: string, inner: string, open: boolean, headExtra = ''): string {
   return `<aside class="battle-drawer battle-drawer--${id}${open ? ' is-open' : ''}">
     <div class="cg-panel drawer-panel">
       <div class="cg-panel__head">
         <span class="cg-panel__title">${title}</span>
+        ${headExtra}
         <button type="button" class="cg-close" data-drawer-close="${id}" aria-label="关闭">${icon('cg-close')}</button>
       </div>
       <div class="drawer-body">${inner}</div>
@@ -1016,10 +1032,11 @@ function describe(s: BattleSession, e: DomainEvent): string {
     case 'TickAdvanced': return `— tick ${e.tickIndex} —`
     case 'GaugeCrossed': return `${unitNameOf(s, e.unitId)} 行动条满`
     case 'ActionOpportunityGranted': return `${unitNameOf(s, e.opportunity.unitId)} 获得行动机会`
-    case 'TargetsResolved': return `结算目标 ×${e.targets.length}`
-    case 'EffectApplied': return `效应用于 ${e.target.occupant ? unitNameOf(s, e.target.occupant) : '空位'}`
-    case 'StatusMounted': return `挂载状态 ${statusName(s, e.defId)}`
-    case 'StatusExpired': return `状态到期 ${statusName(s, e.defId)}`
+    case 'BehaviorCommitted': return `${unitNameOf(s, e.caster)} 出手${e.sourceRef ? `「${sourceNameOf(s, e.sourceRef)}」` : ''}`
+    case 'TargetsResolved': return `目标锁定：${e.targets.map((t) => targetText(s, t)).join('、')}`
+    case 'EffectApplied': return `「${sourceNameOf(s, e.effectRef.ref)}」作用于 ${targetText(s, e.target)}`
+    case 'StatusMounted': return `${e.unitId ? `${unitNameOf(s, e.unitId)} ` : ''}挂载状态 ${statusName(s, e.defId)}`
+    case 'StatusExpired': return `${e.unitId ? `${unitNameOf(s, e.unitId)} ` : ''}状态到期 ${statusName(s, e.defId)}`
     case 'UnitSpawned': return `召唤 ${unitNameOf(s, e.unitId)}`
     case 'UnitDied': return `${unitNameOf(s, e.unitId)} 阵亡`
     case 'UnitTranslocated': return `${unitNameOf(s, e.unitId)} 被放逐`
@@ -1028,4 +1045,115 @@ function describe(s: BattleSession, e: DomainEvent): string {
     case 'ZonePlaced': return `区域布下`
     default: return e.type
   }
+}
+
+/** 目标描述：有租客写名字 + 格位，空坐标写格位（放逐/区域结算会落在空格上） */
+function targetText(s: BattleSession, t: { coord: Coordinate; occupant: UnitId | null }): string {
+  const where = coordText(t.coord)
+  return t.occupant ? `${unitNameOf(s, t.occupant)}(${where})` : `空位(${where})`
+}
+
+/** 行为源取名：技能 → 状态 → 行为模板（被动）→ 内置普攻 → 裸 id（与卡面降级同一套顺序） */
+function sourceNameOf(s: BattleSession, ref: string): string {
+  if (ref === BASIC_ATTACK_ID) return '普攻'
+  return s.catalog.skillDefs.get(ref)?.name ?? s.catalog.statusDefs.get(ref)?.name ?? s.catalog.behaviorTemplates.get(ref)?.name ?? ref
+}
+
+/**
+ * 复制给 AI 排查用的全量文本报告。与屏上日志（倒序、60 行封顶）不同源：
+ * 走 drainEvents() 累计全量、按时间正序；开头是两军初始装配 + 种子/数据版本，
+ * 事件流里把同一 actionId 的 BehaviorCommitted/TargetsResolved/EffectApplied
+ * 折成一段「谁出手 → 用的什么 → 打到谁」，复现问题所需的最小事实都在里面。
+ */
+function buildLogReport(s: BattleSession): string {
+  const view = s.facade.state()
+  const ended = s.facade.ended()
+  const my = myFactionOf(s)
+  const lines: string[] = []
+  lines.push('# 战斗日志导出（排查用）')
+  lines.push(`导出时间: ${new Date().toLocaleString()}`)
+  lines.push(`种子: ${s.setup.seed}`)
+  lines.push(`数据版本: data=${shortHash(dataVersion.dataHash)} lock=${shortHash(dataVersion.lockHash)}${dataVersion.stale ? '（数据已漂移，未验收）' : ''} schema=${dataVersion.schemaVersion} source=${dataVersion.sourceVersion} game=${dataVersion.gameSha}`)
+  lines.push(`进度: tick ${view.tick} · ${PHASE_NAME[view.phase] ?? view.phase} · 场上存活 ${view.units.filter((u) => u.hp > 0).length}${ended ? ` · 已结束(${ended.outcome}${ended.winnerFactionId ? `，胜方 ${ended.winnerFactionId}` : ''})` : ''}`)
+  lines.push('')
+  for (const f of s.setup.factions) {
+    lines.push(`## ${f.id === my ? '我方' : '敌方'}（阵营 ${f.id} · ${f.name}）`)
+    for (const u of f.units) {
+      const meta = u.unitId ? s.unitMeta.get(u.unitId) : undefined
+      const name = meta?.name ?? u.unitId ?? u.defId ?? '（未知单位）'
+      const cls = meta ? classNameOf(s, meta) : ''
+      const con = meta ? constitutionById(meta.constitutionId)?.name ?? meta.constitutionId : ''
+      const a = u.attributeSet
+      const attrs = `${a.strength}力/${a.agility}敏/${a.intelligence}智${a.rank != null ? `·位格${a.rank}` : ''}`
+      const pools = [u.pools?.hp != null ? `HP${u.pools.hp}` : '', u.pools?.energy != null ? `能量${u.pools.energy}` : ''].filter(Boolean).join(' ')
+      lines.push(`- ${name}${cls || con ? `（${[cls, con].filter(Boolean).join('·')}）` : ''} ${attrs}${pools ? ` ${pools}` : ''} @${coordText(u.coordinate)}`)
+      const act = (u.activeSlots ?? []).map((g) => s.catalog.skillDefs.get(g.skillDefId)?.name ?? g.skillDefId)
+      const pas = (u.passiveSlots ?? []).map((g) => s.catalog.behaviorTemplates.get(g.defId)?.name ?? s.catalog.skillDefs.get(g.defId)?.name ?? g.defId)
+      const sts = (u.initialStatuses ?? []).map((g) => {
+        const defId = (g as { defId?: string }).defId ?? '?'
+        const nm = s.catalog.statusDefs.get(defId)?.name ?? defId
+        return `${nm}${g.stacks && g.stacks > 1 ? `×${g.stacks}` : ''}${g.duration != null ? `(${g.duration}t)` : ''}`
+      })
+      const mods = (u.initialModifiers ?? []).map((m) => `${m.stat}${m.value > 0 ? '+' : ''}${m.value}`)
+      const sub = [
+        act.length > 0 ? `主动[${act.join(' / ')}]` : '',
+        pas.length > 0 ? `被动[${pas.join(' / ')}]` : '',
+        sts.length > 0 ? `初始状态[${sts.join(' / ')}]` : '',
+        mods.length > 0 ? `修正[${mods.join(' ')}]` : '',
+      ].filter(Boolean).join(' ')
+      if (sub) lines.push(`  ${sub}`)
+    }
+    lines.push('')
+  }
+  lines.push('## 事件流（正序，同一行为折成一段）')
+  // 预扫：actionId → 该行为的 caster / 技能 / 目标 / 逐目标效果（BehaviorCommitted 是主体锚点）
+  const acts = new Map<string, { caster: string; source: string; targets: string; effects: string[] }>()
+  for (const e of s.facade.drainEvents()) {
+    if (e.type === 'BehaviorCommitted') {
+      const a = acts.get(e.actionId) ?? { caster: '', source: '', targets: '', effects: [] }
+      a.caster = unitNameOf(s, e.caster)
+      if (e.sourceRef) a.source = sourceNameOf(s, e.sourceRef)
+      acts.set(e.actionId, a)
+    } else if (e.type === 'TargetsResolved') {
+      const a = acts.get(e.actionId) ?? { caster: '', source: '', targets: '', effects: [] }
+      a.targets = e.targets.map((t) => targetText(s, t)).join('、')
+      acts.set(e.actionId, a)
+    } else if (e.type === 'EffectApplied') {
+      const a = acts.get(e.actionId) ?? { caster: '', source: '', targets: '', effects: [] }
+      a.effects.push(`「${sourceNameOf(s, e.effectRef.ref)}」→ ${targetText(s, e.target)}`)
+      acts.set(e.actionId, a)
+    }
+  }
+  const folded = new Set<string>()
+  for (const e of s.facade.drainEvents()) {
+    const actionId = 'actionId' in e ? e.actionId : null
+    if (actionId != null) {
+      if (folded.has(actionId)) continue
+      folded.add(actionId)
+      const a = acts.get(actionId)
+      if (!a) { lines.push(describe(s, e)); continue }
+      lines.push(`${a.caster || '（未知主体）'} 出手${a.source ? `「${a.source}」` : ''}${a.targets ? ` → ${a.targets}` : ''}`)
+      for (const ef of a.effects) lines.push(`    ${ef}`)
+      continue
+    }
+    lines.push(describe(s, e))
+  }
+  return lines.join('\n')
+}
+
+/** 复制到剪贴板：clipboard API 优先，降级 textarea + execCommand（非安全上下文兜底） */
+async function copyText(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text)
+    return true
+  } catch { /* 走降级 */ }
+  const ta = document.createElement('textarea')
+  ta.value = text
+  ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none'
+  document.body.appendChild(ta)
+  ta.select()
+  let ok = false
+  try { ok = document.execCommand('copy') } catch { /* 没救了 */ }
+  ta.remove()
+  return ok
 }

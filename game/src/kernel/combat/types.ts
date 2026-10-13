@@ -143,7 +143,7 @@ export type DomainEvent =
   | { type: 'TickAdvanced'; tickIndex: number }
   | { type: 'GaugeCrossed'; unitId: UnitId; gaugeKey: string }
   | { type: 'ActionOpportunityGranted'; opportunity: ActionOpportunity }
-  | { type: 'BehaviorCommitted'; actionId: string; caster: UnitId; cost: unknown }
+  | { type: 'BehaviorCommitted'; actionId: string; caster: UnitId; cost: unknown; sourceRef?: string }
   | { type: 'ChannelStarted'; channel: unknown }
   | { type: 'ChannelInterrupted'; channel: unknown }
   | { type: 'ChannelCompleted'; channel: unknown }
@@ -151,9 +151,9 @@ export type DomainEvent =
   | { type: 'ActionRedirected'; actionId: string; step: RedirectStep }
   | { type: 'EffectApplied'; actionId: string; effectRef: EffectRef; target: ResolvedTarget }
   | { type: 'OccupancyChanged'; diff: OccupancyChanged }
-  | { type: 'StatusMounted'; instanceId: string; defId: string }
+  | { type: 'StatusMounted'; instanceId: string; defId: string; unitId?: UnitId }
   | { type: 'StatusRefreshed'; instanceId: string; defId: string }
-  | { type: 'StatusExpired'; instanceId: string; defId: string }
+  | { type: 'StatusExpired'; instanceId: string; defId: string; unitId?: UnitId }
   | { type: 'StatusDispelled'; instanceId: string; defId: string }
   | { type: 'ZonePlaced'; zoneId: string; coord: Coordinate }
   | { type: 'ZoneTriggered'; zoneId: string; coord: Coordinate }

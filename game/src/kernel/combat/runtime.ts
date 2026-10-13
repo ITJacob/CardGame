@@ -104,7 +104,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       hooks: {
         onStatusTickEffect: (u) => this.fireStatusTriggers(u, 'on_tick'),
         onStatusExpired: (u, inst) => {
-          this.emit({ type: 'StatusExpired', instanceId: inst.instanceId, defId: inst.defId })
+          this.emit({ type: 'StatusExpired', instanceId: inst.instanceId, defId: inst.defId, unitId: u.id })
           this.fireStatusTriggers(u, 'on_remove', inst.defId)
         },
       },
@@ -728,7 +728,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
     const inst = host.statuses.mount(statusId, { ...grant, sourceId: this.ids.next('status') })
     if (!inst) return
-    this.emit({ type: 'StatusMounted', instanceId: inst.instanceId, defId: statusId })
+    this.emit({ type: 'StatusMounted', instanceId: inst.instanceId, defId: statusId, unitId: host.id })
     this.fireTriggers(host, 'on_apply', def?.triggers, host)
     this.fireStatusTriggers(host, 'on_status_gain')
   }
