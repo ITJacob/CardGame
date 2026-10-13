@@ -33,6 +33,9 @@ html, body {
   color: var(--text);
   font: 15px/1.6 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* 禁掉移动端滚动尽头的橡皮筋/下拉刷新：这是全屏游戏页，overscroll 一晃就露馅。
+     页面内部的可滚容器（抽屉/卡池）不受影响，仍正常滚。 */
+  overscroll-behavior: none;
   /* 全局禁选：这是游戏界面，没有需要复制的正文。浏览器原生的选区高亮与点击高亮都画在
      内容之上（不受弹层 z-index 约束），一次误拖就会在卡面/详情上留一条蓝影，还比弹层
      收得晚。真正要能选的地方（输入框）在下面单独放开。 */
