@@ -161,8 +161,13 @@ a { color: inherit; text-decoration: none; }
   height: calc(100dvh - var(--nav-h, 54px));
   overflow: hidden;
 }
-/* 平移视口：铺满舞台、不出滚动条（overflow:hidden 仍可程序化滚动），指针拖拽见 ui/pan.ts */
-.board-wrap {
+/* .board-wrap / .board 是**战斗与整备共用**的类名（整备用它当尺寸容器与网格，见 .prep-field
+   .board-wrap / .board.prep-board）。故战场专属的定位/铺满一律挂 .battle 前缀，绝不写通用选择器
+   ——否则会漏进整备页（曾把整备的 board-wrap 变成 absolute;inset:0 撑满视口）。 */
+.board { display: grid; gap: 6px; user-select: none; caret-color: transparent; }
+
+/* 战斗视口：铺满舞台、不出滚动条（overflow:hidden 仍可程序化滚动），指针拖拽见 ui/pan.ts */
+.battle .board-wrap {
   position: absolute;
   inset: 0;
   overflow: hidden;
@@ -170,20 +175,17 @@ a { color: inherit; text-decoration: none; }
   cursor: grab;
   background: radial-gradient(circle at 50% 45%, #242833 0%, #191c23 70%);
 }
-.board-wrap.is-panning { cursor: grabbing; }
-/* 列/行数由 TS 内联给（projection 的 gridSpec 是唯一源）；这里定最小格宽与间距。
+.battle .board-wrap.is-panning { cursor: grabbing; }
+/* 战斗棋盘：列/行数由 TS 内联给（projection 的 gridSpec 是唯一源）；这里定格宽与间距。
    width/height:100% 让宽裕时铺满舞台（1fr 行才撑得开）；min-*: max-content 让内容被压到
    最小值时整块网格反而撑大、溢出视口 → 触发拖拽平移。 */
-.board {
-  display: grid;
+.battle .board {
   gap: 8px;
   padding: 12px;
   width: 100%;
   height: 100%;
   min-width: max-content;
   min-height: max-content;
-  user-select: none;
-  caret-color: transparent;
 }
 
 /* 单位格：状态(chips) 在**卡外**——横屏并进卡上方一条、竖屏分列卡两侧 */
