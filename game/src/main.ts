@@ -11,6 +11,11 @@ import { mountSprite } from './ui/components/icons'
 import { initArcaneField } from './ui/effects/arcane-bg'
 import { initRouter } from './ui/router'
 
+// 注册 SW：把 docs/json 数据与 assets 立绘/卡图缓存起来（stale-while-revalidate），见 public/sw.js。
+// localhost 不注册：本地改完数据/图刷新却还是上一版（SWR 先给缓存），调试时会以为改动没生效。
+const LOCAL = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)
+if ('serviceWorker' in navigator && !LOCAL) navigator.serviceWorker.register('./sw.js')
+
 mountSprite() // ui-kit 的 <symbol> 精灵，全局只挂一次（<use href="#cg-…"> 靠它解析）
 initArcaneField() // 只写两个 body 状态：静态档(af-low) 与 隐藏暂停(is-af-paused)
 

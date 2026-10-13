@@ -293,7 +293,7 @@ push main → npm ci && vite build (game/dist)
 
 **移动端 HUD（竖屏基准）**：上＝敌方战场与队伍条 → 中线（tick / 回合 / 时钟）→ 下＝我方战场 + 技能手牌 + 主操作。详情/日志改「点开式」抽屉（无 hover），沿用 site `tooltip.js` 的触屏居中浮层。拖拽站位、点选目标一律用 **Pointer Events**（同时覆盖触摸与鼠标）。
 
-**PWA 与安全区**：game 端独立 `manifest.webmanifest`（standalone、可安装）；`viewport-fit=cover` + `env(safe-area-inset-*)` 适配刘海 / 小白条；不锁缩放（可访问性）。
+**PWA 与安全区**：game 端独立 `manifest.webmanifest`（standalone、可安装）+ `public/sw.js`（一期：只缓存 `docs/json` 数据与 `assets` 立绘/卡图，stale-while-revalidate；**app shell 不缓存**，离线开打属二期）；`viewport-fit=cover` + `env(safe-area-inset-*)` 适配刘海 / 小白条；不锁缩放（可访问性）。
 
 **为什么自适应而非锁一种**：锁横屏与手机竖持习惯相拗、与浏览器全屏策略冲突；锁竖屏在桌面宽屏浪费横向。自适应只多维护一套投影映射（CSS Grid 换 `grid-template-areas`），却同时覆盖桌面与手机横竖两种姿态。
 
