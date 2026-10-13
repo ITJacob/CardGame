@@ -295,9 +295,11 @@ a { color: inherit; text-decoration: none; }
   background: linear-gradient(90deg, transparent, var(--text-dim) 18%, var(--text-dim) 82%, transparent);
 }
 
-/* 空格：虚线占位框，示意「这一格属于哪一阵营的哪一路」；非操作时机可点看格位信息 */
-.slot { border: 1px dashed var(--border); border-radius: 10px; opacity: 0.3; min-width: 0; min-height: 0; }
-.slot.own { border-color: #3f6b52; }
+/* 空格：虚线占位框，示意「这一格属于哪一阵营的哪一路」；非操作时机可点看格位信息。
+   必须挂 .battle 前缀：整备页的技能槽也用 .slot 类（.sk-tile.slot，见整备段），
+   不收窄会漏进去（上一个版本就把整备槽误加了虚线框+半透明）。 */
+.battle .slot { border: 1px dashed var(--border); border-radius: 10px; opacity: 0.3; min-width: 0; min-height: 0; }
+.battle .slot.own { border-color: #3f6b52; }
 /* can-inspect = 非操作时机（操作时机棋子上是选靶，光标归 .pickable 管） */
 .battle .board.can-inspect .unit,
 .battle .board.can-inspect .slot { cursor: pointer; }
@@ -345,14 +347,14 @@ a { color: inherit; text-decoration: none; }
 .drawer-panel { height: 100%; display: flex; flex-direction: column; border-radius: 0; border-right: 0; }
 .drawer-panel .cg-panel__head { margin-bottom: 8px; }
 .drawer-panel .cg-panel__title { flex: 1; }
-.drawer-body { flex: 1; min-height: 0; overflow: auto; }
+.drawer-body { flex: 1; min-height: 0; overflow: auto; padding-bottom: 10px; /* 给末排卡的底部投影留位 */ }
 .drawer-meta { margin: 0 0 6px; font-size: 12px; color: var(--text-dim); }
 .log { height: 100%; font-size: 12px; line-height: 1.5; }
 .log-line { color: var(--text-dim); }
 .log-line.dim { opacity: 0.6; }
 .roster-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
 .roster-name { font-size: 12px; min-width: 80px; }
-.roster-cards { display: flex; gap: 5px; flex-wrap: wrap; flex: 1 0 100%; }
+.roster-cards { display: flex; gap: 8px 5px; flex-wrap: wrap; flex: 1 0 100%; }
 
 /*
  * 技能卡面：分层（自下而上）= 无图底 / 卡图 / 稀有度边框(叠层) / 信息条。
@@ -365,9 +367,11 @@ a { color: inherit; text-decoration: none; }
   position: relative; isolation: isolate; /* screen 混色只在本卡内合成，不外溢到页面 */
   width: 60px; height: 80px; border-radius: 6px; overflow: hidden;
   background: #101216; display: block; margin: 0; user-select: none;
-  /* --rf = 稀有度色（下方 r-* 档覆盖）；底部落一道稀有度色的投影 */
+  /* --rf = 稀有度色（下方 r-* 档覆盖）；底部落一道稀有度色的投影。
+     拖尾收敛到 ~6px（0 5px 12px -5px）：卡排缝隙普遍只有 5px、横屏行高还是按容器
+     倒推的零余量口径，长投影会被下一排卡和容器底边裁掉。 */
   --rf: var(--cg-r-common);
-  box-shadow: 0 10px 16px -8px color-mix(in srgb, var(--rf) 60%, transparent);
+  box-shadow: 0 5px 12px -5px color-mix(in srgb, var(--rf) 60%, transparent);
 }
 .card-face.full { width: 120px; height: 160px; }
 
@@ -381,7 +385,10 @@ a { color: inherit; text-decoration: none; }
 .noart-glyph { font-size: 22px; opacity: .5; }
 .card-face.full .noart-glyph { font-size: 42px; }
 
-.card-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+/* 卡图内缩一圈（3.5% 卡宽，竖向按 3:4 折算 2.6%）：边框 PNG 的亮线带贴在最外 ~2%，
+   卡图若铺满，screen 混色会把亮线叠在亮卡图上洗没（看着像图盖住框）。缩出这道深色
+   衬边后，框线落在卡底 #101216 上，永远清晰。 */
+.card-art { position: absolute; inset: 2.6% 3.5%; width: 93%; height: 94.8%; object-fit: cover; display: block; }
 .card-art[hidden] { display: none; }
 
 /* 边框层：黑底线框 PNG，screen 吃掉黑底、只留亮线 */
@@ -400,7 +407,7 @@ a { color: inherit; text-decoration: none; }
 .card-face.r-epic { --rf: var(--cg-r-epic); }
 .card-face.r-legendary { --rf: var(--cg-r-legendary); }
 .card-face.no-frame, .card-face.frame-degraded {
-  box-shadow: inset 0 0 0 1px var(--rf), 0 10px 16px -8px color-mix(in srgb, var(--rf) 60%, transparent);
+  box-shadow: inset 0 0 0 1px var(--rf), 0 5px 12px -5px color-mix(in srgb, var(--rf) 60%, transparent);
 }
 
 /* 信息条：名字 + ⚡费用（被动卡没有费用，这本身就是主/被动的区分） */
@@ -815,7 +822,7 @@ body.zoom-open { overflow: hidden; }
   font-size: 12px; line-height: 1.2; letter-spacing: .02em; color: var(--accent);
 }
 .hero-showcase[data-orient='landscape'] .hs-group__row { flex: none; align-self: stretch; }
-.hs-group__row { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 5px; flex: 1 1 auto; min-width: 0; }
+.hs-group__row { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 8px 5px; flex: 1 1 auto; min-width: 0; }
 .hs-group__row .cards-none { color: var(--text-dim); font-size: 12px; }
 
 /* 展示台的技能卡：尺寸不写死，按行平分宽度——4 张一行，竖屏那一行更宽，卡就更大。
@@ -1035,7 +1042,7 @@ table.lb tr.draw td.res { color: var(--text-dim); }
 .pool-main .hint { flex: none; font-size: 12.5px; color: var(--text-dim); }
 /* 一行装不下的余量左右均分（每行各自居中），不留一坨空白在右边；align-content 让
    滚动容器里的行从顶部长起，而不是被 justify-content 的居中在纵向也摊一次 */
-.pool-grid { flex: 1; min-height: 0; display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 10px; margin-top: 12px; }
+.pool-grid { flex: 1; min-height: 0; display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 10px; margin-top: 12px; padding-bottom: 10px; /* 给末排卡的底部投影留位 */ }
 
 /* 小屏/竖屏：职业列表收成左侧划出抽屉，点「☰ 职业」拉出，点遮罩/✕/职业项收起。
    z-index 55/54：盖过吸顶栏（.cg-nav 40）与放大视图（50），低于详情浮层（62)。 */
