@@ -11,6 +11,10 @@ import { enableHoverCard, hideCardPop } from '../hover'
 import { enablePan } from '../pan'
 import { getSession } from '../session'
 import { gridSpec, laneIndexer, orientationOf, type Orientation } from '../battle/projection'
+import { LANE_CAPACITY } from '../../kernel/battle/types'
+import type { Coordinate } from '../../kernel/battle/types'
+import { DEFAULT_LANES, laneLabel } from '../../meta/formation'
+import { constitutionById } from '../../meta/constitution'
 import type { DomainEvent } from '../../kernel/combat/types'
 import type { CombatStats, CombatView, UnitViewLite } from '../../kernel/combat/types'
 import type { DecisionInput, DecisionRequest } from '../../kernel/execution/types'
@@ -20,6 +24,8 @@ import { fingerprintOf } from '../../kernel/combat/fingerprint'
 import { MatchRunner } from '../../meta/match/runner'
 
 type CombatOutcome = 'side_a' | 'side_b' | 'draw' | 'aborted'
+/** 非操作时机的查看目标：点单位看身份+状态，点空格看格位；己方落底部条、敌方落右上浮层 */
+type Inspect = { kind: 'unit'; id: string } | { kind: 'slot'; coord: string }
 import type { BattleSession, UnitMeta } from '../session'
 import { createLocalStorageMatchStore } from '../../meta/matchLog'
 
@@ -73,11 +79,15 @@ export function renderBattle(host: HTMLElement): void {
   /** 浮层抽屉开合：refresh 每 tick 整页重画，靠这两个闭包把状态带回模板（否则每 tick 自动关） */
   let logOpen = false
   let rosterOpen = false
+  /** 非操作时机的查看目标（同抽屉范式：refresh 每 tick 重画，状态记闭包、由模板带回） */
+  let inspect: Inspect | null = null
 
   const refresh = (): void => {
     const view = s.facade.state()
     const pending = s.facade.pendingDecision()
     const ended = s.facade.ended()
+    // 查看目标被移除（放逐/消散）就收起面板
+    if (inspect?.kind === 'unit' && !view.units.some((u) => u.id === (inspect as { id: string }).id)) inspect = null
     if (ended && !s.recorded) {
       s.recorded = true
       if (s.online) void finishOnline(s).then(refresh)
@@ -91,6 +101,9 @@ export function renderBattle(host: HTMLElement): void {
     const myTurn = pending != null && casterFaction(s, pending.caster) === myFactionOf(s)
     /** 本侧该决策且未提交 → 板面高亮 tile 可点选 */
     const canPick = pending != null && (!s.online || myTurn) && !submitted
+    const showDecision = pending != null && (!s.online || myTurn)
+    /** 非操作时机（含联机观战）点开信息面板；决策条在显示时让位 */
+    const canInspect = !showDecision && ended == null
     // 整页重画会把棋盘滚回原点、抽屉一并关掉——先把这两样状态摘出来，画完再落回去
     const wrap0 = host.querySelector<HTMLElement>('.board-wrap')
     const scrollLeft = wrap0?.scrollLeft ?? 0
@@ -98,12 +111,12 @@ export function renderBattle(host: HTMLElement): void {
     host.innerHTML = `
       ${subBarHtml(s.online ? '联机对局' : '对局')}
       <div class="battle" data-orient="${currentOrientation()}">
-        <div class="board-wrap">${boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [], canPick)}</div>
+        <div class="board-wrap">${boardHtml(s, view, pending?.candidates.map((c) => c.occupant) ?? [], canPick, canInspect)}</div>
         ${hudHtml(s, view, pending != null, ended != null, logOpen, rosterOpen)}
         ${drawerHtml('roster', '我方技能', rosterHtml(s), rosterOpen)}
         ${drawerHtml('log', '战斗日志', `<div class="cg-scroll log" id="battle-log">${logHtml(s, s.facade.drainEvents())}</div>`, logOpen)}
       </div>
-      ${pending && (!s.online || myTurn) ? decisionBarHtml(s, pending, submitted) : ''}
+      ${showDecision ? decisionBarHtml(s, pending, submitted) : inspect ? inspectPanelHtml(s, view, inspect) : ''}
       ${ended ? endedHtml(s, ended.outcome) : ''}`
     hydrateArt(host)
     hydrateHeroArt(host)
@@ -113,8 +126,18 @@ export function renderBattle(host: HTMLElement): void {
       wrap.scrollTop = scrollTop
       enablePan(host, { viewport: wrap })
     }
-    wire(s, refresh, submit, canPick)
+    wire(s, refresh, submit, canPick, canInspect, toggleInspect)
     wireDrawers()
+  }
+
+  /** 点同一个目标再点一次 = 收起；传 null 直接收起（面板 ✕） */
+  const toggleInspect = (next: Inspect | null): void => {
+    const same =
+      next != null &&
+      ((inspect?.kind === 'unit' && next.kind === 'unit' && inspect.id === next.id) ||
+        (inspect?.kind === 'slot' && next.kind === 'slot' && inspect.coord === next.coord))
+    inspect = same ? null : next
+    refresh()
   }
 
   const submit = (picks: DecisionInput): void => {
@@ -225,23 +248,56 @@ function currentOrientation(): Orientation {
   return orientationOf(window.innerWidth, window.innerHeight)
 }
 
-function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | null)[], canPick: boolean): string {
-  const lanes = view.units.map((u) => u.coordinate?.lane).filter((l): l is string => !!l)
-  const laneIdx = laneIndexer(lanes.length > 0 ? lanes : ['lane0', 'lane1'])
+function coordKey(c: Coordinate): string {
+  return `${c.faction}|${c.lane}|${c.index}`
+}
+
+function boardHtml(s: BattleSession, view: CombatView, candidateIds: (string | null)[], canPick: boolean, canInspect: boolean): string {
+  // lane 清单取「内核默认两路 ∪ 场上实见」的并集：一路被打空（甚至全员放逐）时空格仍要渲染
+  const seen = view.units.map((u) => u.coordinate?.lane).filter((l): l is string => !!l)
+  const laneList = [...new Set<string>([...DEFAULT_LANES, ...seen])].sort()
+  const laneIdx = laneIndexer(laneList)
   const ownFaction = view.units.find((u) => s.unitMeta.get(u.id)?.side === 'own')?.faction ?? 'A'
-  const spec = gridSpec(currentOrientation(), ownFaction, laneIdx)
+  const foeFaction = s.setup.factions.find((f) => f.id !== ownFaction)?.id ?? 'B'
+  const orient = currentOrientation()
+  const spec = gridSpec(orient, ownFaction, laneIdx)
   const cand = new Set(candidateIds.filter((x): x is string => !!x))
 
-  const tiles = view.units
-    .filter((u) => u.coordinate)
-    .map((u) => {
-      const { col, row } = spec.place(u.coordinate!)
-      return tileHtml(s, u, col, row, cand.has(u.id), canPick)
-    })
-    .join('')
+  const occupied = new Map<string, UnitViewLite>()
+  for (const u of view.units) if (u.coordinate) occupied.set(coordKey(u.coordinate), u)
 
-  // minmax 的最小格宽：宽裕时 1fr 铺满，被压到 112px 仍放不下就整体溢出 → 触发拖拽平移
-  return `<div class="board" style="grid-template-columns:repeat(${spec.columns}, minmax(112px, 1fr)); grid-template-rows:repeat(${spec.rows}, minmax(112px, 1fr))">${tiles}</div>`
+  const cells: string[] = []
+  for (const faction of [ownFaction, foeFaction]) {
+    for (const lane of laneList) {
+      for (let index = 0; index < LANE_CAPACITY; index += 1) {
+        const coord: Coordinate = { faction, lane, index }
+        const u = occupied.get(coordKey(coord))
+        const { col, row } = spec.place(coord)
+        cells.push(u ? tileHtml(s, u, col, row, cand.has(u.id), canPick) : slotHtml(coord, col, row, faction === ownFaction))
+      }
+    }
+  }
+  // 中线分割线：占中线轨道、纵贯/横穿另一轴
+  const mid =
+    orient === 'landscape'
+      ? `<div class="board-mid" style="grid-column:${spec.midTrack};grid-row:1 / -1"></div>`
+      : `<div class="board-mid" style="grid-row:${spec.midTrack};grid-column:1 / -1"></div>`
+
+  // minmax 的最小格宽：宽裕时 1fr 铺满，被压到 112px 仍放不下就整体溢出 → 触发拖拽平移；
+  // 中线轨道窄且 fr 小，挤压时优先让位
+  const cell = 'minmax(112px, 1fr)'
+  const gapTrack = 'minmax(28px, 0.25fr)'
+  const template =
+    orient === 'landscape'
+      ? `grid-template-columns:repeat(${LANE_CAPACITY}, ${cell}) ${gapTrack} repeat(${LANE_CAPACITY}, ${cell}); grid-template-rows:repeat(${spec.rows}, ${cell})`
+      : `grid-template-columns:repeat(${spec.columns}, ${cell}); grid-template-rows:repeat(${LANE_CAPACITY}, ${cell}) ${gapTrack} repeat(${LANE_CAPACITY}, ${cell})`
+  // can-inspect 只控光标与空格 hover，不改变渲染
+  return `<div class="board${canInspect ? ' can-inspect' : ''}" style="${template}">${mid}${cells.join('')}</div>`
+}
+
+/** 空格：虚线框占位，非操作时机可点看格位信息（接线见 wire） */
+function slotHtml(coord: Coordinate, col: number, row: number, own: boolean): string {
+  return `<div class="slot${own ? ' own' : ''}" style="grid-column:${col};grid-row:${row}" data-coord="${escapeHtml(coordKey(coord))}"></div>`
 }
 
 /** 状态名走中文词典：catalog.statusDefs 的 name 可选，故回退裸 id（与 prepare/hero 的取名范式一致） */
@@ -369,6 +425,21 @@ function rosterHtml(s: BattleSession): string {
   return `<p class="drawer-meta">主动 ${s.own.reduce((n, h) => n + h.activeSkillIds.length, 0)} 张</p>${rows}`
 }
 
+/**
+ * 操作者身份块：大头像 + 名称 + 职业·体质·力敏智。
+ * 决策条与信息面板共用——名称/体质这些非实时信息不常显在棋子上，要看就聚到这里。
+ */
+function actorBlockHtml(s: BattleSession, name: string, meta: UnitMeta | undefined): string {
+  const sub = meta
+    ? `${classNameOf(s, meta)} · ${constitutionById(meta.constitutionId)?.name ?? meta.constitutionId} · ${meta.combo.strength}力/${meta.combo.agility}敏/${meta.combo.intelligence}智`
+    : ''
+  const avatar = meta ? `<span class="actor-avatar">${heroAvatarHtml(meta, '48px')}</span>` : ''
+  return `<div class="actor">${avatar}<div class="actor-id">
+    <div class="actor-name">${escapeHtml(name)}</div>
+    ${sub ? `<div class="actor-sub">${escapeHtml(sub)}</div>` : ''}
+  </div></div>`
+}
+
 function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = false): string {
   const cards = pending.candidates
     .map((c) => {
@@ -379,12 +450,55 @@ function decisionBarHtml(s: BattleSession, pending: DecisionRequest, disabled = 
         <span class="pick-face">${face}</span><span class="pick-name">${escapeHtml(name)}</span></button>`
     })
     .join('')
+  const meta = s.unitMeta.get(pending.caster)
   return `
   <div class="cg-panel decision">
-    <div class="decision-title">选择目标（${escapeHtml(s.unitMeta.get(pending.caster)?.name ?? pending.caster)} 的技能）${disabled ? ' · 已提交，等待同步…' : ''}</div>
-    <div class="picks">${cards}</div>
-    <button type="button" class="cg-btn cg-btn--sm cg-btn--block pick-auto" id="btn-auto-pick" ${disabled ? 'disabled' : ''}>交给 AI（自动选择）</button>
+    ${actorBlockHtml(s, meta?.name ?? pending.caster, meta)}
+    <div class="decision-main">
+      <div class="decision-title">选择目标${disabled ? ' · 已提交，等待同步…' : ''}</div>
+      <div class="picks">${cards}</div>
+      <button type="button" class="cg-btn cg-btn--sm cg-btn--block pick-auto" id="btn-auto-pick" ${disabled ? 'disabled' : ''}>交给 AI（自动选择）</button>
+    </div>
   </div>`
+}
+
+/** 格位描述：「1路 · 第2排 · 我方」 */
+function coordText(s: BattleSession, c: { faction: string; lane: string; index: number }): string {
+  return `${laneLabel(c.lane)} · 第${c.index + 1}排 · ${c.faction === myFactionOf(s) ? '我方' : '敌方'}`
+}
+
+/**
+ * 非操作时机的信息面板：己方单位/空格 → 底部条（与操作栏同一槽位，decision--inspect）；
+ * 敌方 → 右上浮层。内容为身份 + 实时状态（HP/能量/格位/状态列表），不含技能（在名册抽屉）。
+ */
+function inspectPanelHtml(s: BattleSession, view: CombatView, sel: Inspect): string {
+  const close = `<button type="button" class="cg-close inspect-close" id="btn-inspect-close" aria-label="关闭">${icon('cg-close')}</button>`
+  if (sel.kind === 'slot') {
+    const [faction, lane, indexStr] = sel.coord.split('|')
+    const inner = `${actorBlockHtml(s, '空位', undefined)}
+      <div class="inspect-body"><span class="inspect-stat">${escapeHtml(coordText(s, { faction, lane, index: Number(indexStr) }))}</span></div>`
+    return faction === myFactionOf(s)
+      ? `<div class="cg-panel decision decision--inspect">${inner}${close}</div>`
+      : `<aside class="cg-panel inspect-foe">${inner}${close}</aside>`
+  }
+  const u = view.units.find((x) => x.id === sel.id)
+  if (!u) return ''
+  const meta = s.unitMeta.get(u.id)
+  const own = meta ? meta.side === 'own' : u.faction === myFactionOf(s)
+  const chips = u.statuses.map((st) => chipHtml(s, st)).join('')
+  const stats = [
+    `HP ${u.hp}/${u.hpMax}`,
+    `能量 ${u.energy}`,
+    u.coordinate ? escapeHtml(coordText(s, u.coordinate)) : '离场',
+  ]
+  const inner = `${actorBlockHtml(s, meta?.name ?? u.id, meta)}
+    <div class="inspect-body">
+      ${stats.map((t) => `<span class="inspect-stat">${t}</span>`).join('')}
+      ${chips ? `<span class="inspect-chips">${chips}</span>` : ''}
+    </div>`
+  return own
+    ? `<div class="cg-panel decision decision--inspect">${inner}${close}</div>`
+    : `<aside class="cg-panel inspect-foe">${inner}${close}</aside>`
 }
 
 function endedHtml(s: BattleSession, outcome: string): string {
@@ -436,7 +550,7 @@ function recordOf(s: BattleSession, outcome: CombatOutcome, stats: CombatStats):
   }
 }
 
-function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInput) => void, canPick: boolean): void {
+function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInput) => void, canPick: boolean, canInspect: boolean, toggleInspect: (next: Inspect | null) => void): void {
   const step = document.getElementById('btn-step')
   step?.addEventListener('click', () => {
     stepOnce(s)
@@ -498,6 +612,17 @@ function wire(s: BattleSession, refresh: () => void, submit: (picks: DecisionInp
       })
     })
   }
+  // 非操作时机：点单位/空格查看信息（操作时机这些位置是选靶，见上方 pickable 接线；
+  // 「已提交待同步」也算操作时机——此时点开也显示不出来，决策条在占位）
+  if (canInspect) {
+    document.querySelectorAll<HTMLElement>('.unit[data-unit]').forEach((el) => {
+      el.addEventListener('click', () => toggleInspect({ kind: 'unit', id: el.dataset.unit ?? '' }))
+    })
+    document.querySelectorAll<HTMLElement>('.slot[data-coord]').forEach((el) => {
+      el.addEventListener('click', () => toggleInspect({ kind: 'slot', coord: el.dataset.coord ?? '' }))
+    })
+  }
+  document.getElementById('btn-inspect-close')?.addEventListener('click', () => toggleInspect(null))
   document.getElementById('btn-auto-pick')?.addEventListener('click', () => {
     const pending = s.facade.pendingDecision()
     if (!pending) return

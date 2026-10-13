@@ -1,5 +1,6 @@
 // 战场投影（DESIGN §12）：同一份 Coordinate 按朝向映射到 CSS Grid 的位置。
-// 横屏：左我右敌（8 列 × 2 行）；竖屏：下我上敌（2 列 × 8 行）。两者互为转置。
+// 横屏：左我右敌（9 列 × 2 行）；竖屏：下我上敌（2 列 × 9 行）。两者互为转置。
+// 两阵之间有一条中线轨道（midTrack，第 5 条）：加宽间距 + 分割线，划清阵营归属。
 import { LANE_CAPACITY, LANE_COUNT } from '../../kernel/battle/types'
 import type { Coordinate } from '../../kernel/battle/types'
 
@@ -12,9 +13,14 @@ export function orientationOf(width: number, height: number): Orientation {
 export interface GridSpec {
   columns: number
   rows: number
+  /** 中线轨道的轨道号（1 基）：渲染层把分割线元素放这里 */
+  midTrack: number
   /** 每格的 grid-column / grid-row（1 基） */
   place(coord: Coordinate): { col: number; row: number }
 }
+
+/** 中线轨道号：排在己方 4 列/行之后 */
+const MID_TRACK = LANE_CAPACITY + 1
 
 /**
  * @param ownFaction 我方阵营 id（竖屏在下、横屏在左）
@@ -23,24 +29,26 @@ export interface GridSpec {
 export function gridSpec(orientation: Orientation, ownFaction: string, laneIndexOf: (lane: string) => number): GridSpec {
   const isOwn = (c: Coordinate): boolean => c.faction === ownFaction
   if (orientation === 'landscape') {
-    // 列：我方 1..4（index 0 靠中线=最右）；中线；敌方 5..8（index 0 靠中线=最左）
+    // 列：我方 1..4（index 0 靠中线=最右）；第 5 列中线；敌方 6..9（index 0 靠中线=最左）
     return {
-      columns: LANE_CAPACITY * LANE_COUNT,
+      columns: LANE_CAPACITY * LANE_COUNT + 1,
       rows: LANE_COUNT,
+      midTrack: MID_TRACK,
       place(c) {
         const row = laneIndexOf(c.lane) + 1
-        const col = isOwn(c) ? LANE_CAPACITY - c.index : LANE_CAPACITY + 1 + c.index
+        const col = isOwn(c) ? LANE_CAPACITY - c.index : LANE_CAPACITY + 2 + c.index
         return { col, row }
       },
     }
   }
-  // 竖屏：行 1..4 敌方（index 0 靠中线=最下，即第 4 行），行 5..8 我方（index 0 靠中线=第 5 行）
+  // 竖屏：行 1..4 敌方（index 0 靠中线=最下，即第 4 行）；第 5 行中线；行 6..9 我方（index 0 靠中线=第 6 行）
   return {
     columns: LANE_COUNT,
-    rows: LANE_CAPACITY * LANE_COUNT,
+    rows: LANE_CAPACITY * LANE_COUNT + 1,
+    midTrack: MID_TRACK,
     place(c) {
       const col = laneIndexOf(c.lane) + 1
-      const row = isOwn(c) ? LANE_CAPACITY + 1 + c.index : LANE_CAPACITY - c.index
+      const row = isOwn(c) ? LANE_CAPACITY + 2 + c.index : LANE_CAPACITY - c.index
       return { col, row }
     },
   }

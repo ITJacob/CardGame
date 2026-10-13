@@ -104,11 +104,18 @@
    这两块都是「单类选择器压单类选择器」的场面：app.css 里没有更高优先级可借，
    而 kit 是在 app.css 之后引入的，同权重下 kit 胜。所以覆盖必须写在本文件（最后引入）。 */
 .drawer-panel.cg-panel { padding: 12px; }
-/* 决策条：整页一屏、棋盘铺满，它改悬浮在底部（kit 的 .cg-panel 是 position:relative，会顶掉定位） */
+/* 决策条：整页一屏、棋盘铺满，它改悬浮在底部（kit 的 .cg-panel 是 position:relative，会顶掉定位）。
+   左侧行动者块 + 右侧候选区，横排 flex。 */
 .decision.cg-panel {
   position: absolute; left: 50%; bottom: 12px; z-index: 25;
   transform: translateX(-50%);
   width: min(680px, 94%);
+  padding: 12px 14px;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+/* 敌方信息浮层：右上（顶部 HUD 高约 48px，让开），与底部决策条同层 */
+.inspect-foe.cg-panel {
+  position: absolute; top: 56px; right: 12px; z-index: 25;
   padding: 12px 14px;
 }
 
