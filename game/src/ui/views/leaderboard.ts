@@ -32,6 +32,7 @@ export function renderLeaderboard(host: HTMLElement): void {
 
   host.innerHTML = `
     ${subBarHtml('排行榜')}
+    <div class="page-scroll cg-scroll">
     <main class="board-page">
       <section class="cg-panel">
         <div class="cg-panel__head">
@@ -63,7 +64,8 @@ export function renderLeaderboard(host: HTMLElement): void {
           ${records.length > 0 ? '<button type="button" class="cg-btn cg-btn--danger cg-btn--block" id="btn-clear-lb">清空战绩</button>' : ''}
         </div>
       </section>
-    </main>`
+    </main>
+    </div>`
 
   document.getElementById('btn-clear-lb')?.addEventListener('click', () => {
     store.clear()

@@ -17,6 +17,7 @@ export function renderSettings(host: HTMLElement): void {
 
   host.innerHTML = `
     ${subBarHtml('设置')}
+    <div class="page-scroll cg-scroll">
     <main class="settings">
       <section class="cg-panel">
         <div class="cg-panel__head">${icon('cg-sigil-moon')}<h2 class="cg-panel__title">账号</h2></div>
@@ -52,7 +53,8 @@ export function renderSettings(host: HTMLElement): void {
           ${row('游戏提交', shortHash(v.gameSha))}
         </div>
       </section>
-    </main>`
+    </main>
+    </div>`
 
   const msg = host.querySelector<HTMLParagraphElement>('#settings-msg')
   const say = (text: string, ok = true): void => {
