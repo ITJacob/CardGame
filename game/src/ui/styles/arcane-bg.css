@@ -1,14 +1,18 @@
 /*
- * arcane-bg.css —— 「塔罗符文·秘仪阵」（首页专属装饰层）
+ * arcane-bg.css —— 「塔罗符文·秘仪阵」（首页专属装饰层，CSS 3D 版）
  *
  * 视觉参数权威源：docs/arcane-bg-spec.md（BG-01）
  * 层级 / 生命周期 / 性能权威源：docs/arcane-bg-impl-plan.md（BG-02）
  * 本文件排在 main.ts 四个 import 的最后（app.css → ui-kit.css → kit-bridge.css → 本文件）。
  *
+ * 仍不用 canvas / rAF：3D 全靠 CSS transform（场景靠 perspective + preserve-3d，
+ * 每环一层 translateZ 拉纵深，转速靠 animation 替 transform 的 rotateZ）。「光晕」用
+ * 一团静态 radial-gradient，不挂 filter —— 动画对象只动 transform，保持合成器路径。
+ *
  * 三条硬约束：
  *   ① 不改 ui-kit/ui-kit.css 的 .cg-bg / .cg-bg--fog::after 任何一行；
  *   ② 只用现有 token（--accent / --accent-dim / --text-dim），不造新色号；
- *   ③ 不使用 canvas / rAF / 逐符文动画；只有两个运动 group（R1、R2）。
+ *   ③ 不使用 canvas / rAF。
  */
 
 /* =============================================================================
@@ -20,49 +24,54 @@
  * 被 .cg-bg 背景图整个盖住，表现为「写了没效果」。
  * isolation:isolate 让 body 自成上下文：背景降为该上下文的第 1 步，负层成为
  * 第 2 步 → 正确落在「底图之上、内容之下」。
- * 副作用已核：#app 内部 z-index 2…80 的相对次序不变（它们同属 body 上下文），
- * body::after 暗雾与它们的相对次序也不变，nav / 模态不会被关进新盒子。
  * ========================================================================== */
 body.cg-bg { isolation: isolate; }
 
 /* =============================================================================
- * ② 根层：常驻、fixed、不吃事件、默认隐藏
+ * ② 根层：常驻、fixed、不吃事件、默认隐藏；透视挂在它上面，给 .af-stage 用
  * ========================================================================== */
 .cg-arcane-field {
-  /* 尺寸：1000px 上限防止 4K 屏把纹理拉爆（见 spec §6.2 换算表） */
-  --af-size: min(104vmin, 92vw, 1000px);
-  --af-op-r1: 0.12; /* 七光符文环 */
-  --af-op-r2: 0.11; /* 廿二刻度环 */
-  --af-op-s0: 0.06; /* 九芒内阵   */
+  /* 尺寸：放大到部分出屏。上限防 4K 屏把纹理拉爆 */
+  --af-size: min(150vmin, 140vw, 1600px);
+  /* 罗盘圆心在视口里的落点（左上、相对菜单）—— .af-stage / .af-glow 都由它定位 */
+  --af-cx: 34vw;
+  --af-cy: 26vh;
+  /* 3D 姿态：X 前倾 / Y 侧转 / Z 面内滚 */
+  --af-tilt: 30deg;
+  --af-yaw: -16deg;
+  --af-roll: -6deg;
+  /* 每层的纵深（translateZ），拉开「分层」感 */
+  --af-depth: 90px;
+
+  --af-op-r1: 0.40; /* 七光符文环 */
+  --af-op-r2: 0.35; /* 廿二刻度环 */
+  --af-op-s0: 0.10; /* 九芒内阵   */
+  /* 辉光色：偏橙的暖琥珀（比 --accent #c8a24a 更暖）。此处破例新增一个色号 —— BG-01 约束②
+     原为「只用现有 token」，但「光晕要更暖」无现有 token 可表达，故局部引入，集中在这一处。 */
+  --af-glow: #e6a23c;
   --af-k-r1: 1;      /* 不透明度系数（窄屏/低端档下调） */
   --af-k-r2: 1;
   --af-k-s0: 1;
-  /* 线宽系数：所有线宽 = --af-sw × (--af-size/1000)。--af-size 在手机上只有 ~359px，
-     不补偿的话整层会掉到 0.36px —— 不足 0.8px 时抗锯齿会把有效 alpha 再砍一半（等于隐形）。
-     ≥1200px 用默认 1（1440 下实测 0.936px），往下逐级加粗。 */
-  --af-sw: 1;
+  --af-sw: 1;        /* 线宽系数：线宽 = --af-sw × (--af-size/1000) */
   --af-breath: cubic-bezier(0.37, 0, 0.63, 1); /* sine-ease-in-out 近似 */
 
   position: fixed;
   inset: 0;
   z-index: -1;
-  /* 三层同心：全部塞进同一个 grid 单元格（仅 place-items:center 不够 —— grid 会自动
-     把它们排成三行）。同心是本设计的全部意义，三层错开一个身位就不是「阵」了。 */
-  display: grid;
-  grid-template-areas: 'stack';
-  place-items: center;
   pointer-events: none;
   overflow: hidden;
   contain: paint;
-  /* 裁决 B：normal。与 screen 的渲染差值 <1/255（spec §3.7），但免掉 blend 的 paint 风险 */
   mix-blend-mode: normal;
   isolation: auto;
+  /* 视点在罗盘圆心：3D 倾斜的收敛方向朝它，画面其它处不畸变 */
+  perspective: 1500px;
+  perspective-origin: var(--af-cx) var(--af-cy);
 }
 
 /* 路由开关：默认停用，只有首页 route 命中才显示（router.ts 切 body.is-menu-route）。
    用 display:none 而不是 opacity:0 —— 后者仍会保留动画与合成层。 */
 .cg-arcane-field { display: none; }
-body.is-menu-route .cg-arcane-field { display: grid; }
+body.is-menu-route .cg-arcane-field { display: block; }
 /* 页面隐藏：暂停（spec §5.2 注：reduce 走 animation:none，两者场景不同，不合并） */
 body.is-af-paused .af-array { animation-play-state: paused; }
 
@@ -71,26 +80,45 @@ body.af-low .af-array--enneagram { display: none; }
 body.af-low .af-array--runes { animation: none; opacity: calc(var(--af-op-r1) * 0.86 * var(--af-k-r1)); }
 body.af-low .af-array--ticks { animation: none; opacity: calc(var(--af-op-r2) * 0.90 * var(--af-k-r2)); }
 
+/* 光晕不铺底色——靠下面各层 .af-array 的 drop-shadow，让辉光贴着铜线走（见 ⑤）。 */
+
 /* =============================================================================
- * ③ 三层几何
+ * ④ 3D 舞台：整盘前倾/侧转，preserve-3d 让子层的 translateZ 生效
  * ========================================================================== */
-.cg-arcane-field .af-array {
-  grid-area: stack; /* 三层同心：同一格、同一中心 */
+.af-stage {
+  position: absolute;
+  left: calc(var(--af-cx) - var(--af-size) / 2);
+  top: calc(var(--af-cy) - var(--af-size) / 2);
   width: var(--af-size);
   height: var(--af-size);
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  transform: rotateX(var(--af-tilt)) rotateY(var(--af-yaw)) rotateZ(var(--af-roll));
+}
+
+/* 每环一层：只负责纵深（translateZ）。旋转在层内的 <svg> 上，两者互不打架。 */
+.af-layer { position: absolute; inset: 0; transform-style: preserve-3d; }
+.af-layer--ticks { transform: translateZ(calc(var(--af-depth) * -1)); }
+.af-layer--enneagram { transform: translateZ(0); }
+.af-layer--runes { transform: translateZ(var(--af-depth)); }
+
+/* =============================================================================
+ * ⑤ 三层几何
+ * ========================================================================== */
+.cg-arcane-field .af-array {
+  width: 100%;
+  height: 100%;
   overflow: visible;
-  /* view-box（= 初始值）：transform-origin 取 viewBox 中心 (500,500)，三层永远同心。
-     用 fill-box 时取的是内容包围盒中心 —— 现在靠「每层都有一个同心圆主导包围盒」才刚好
-     等于 (500,500)，删掉任何一条轨道圆就会绕偏心点转（R1 实测偏约 26px）。别靠巧合。 */
+  /* view-box：transform-origin 取 viewBox 中心 (500,500)，各环永远同心。用 fill-box 时
+     取的是内容包围盒中心 —— 删掉任何一条轨道圆就会绕偏心点转（R1 实测偏约 26px）。 */
   transform-box: view-box;
   transform-origin: 50% 50%;
   shape-rendering: geometricPrecision;
 }
 /* 线稿：线宽 = --af-sw × (--af-size/1000)，跨断点观感一致。
-   non-scaling-stroke 消掉的是「--af-size 缩放」之外的第二重缩放：
-   符文嵌在外层 1000 单位系里的 64 单位 <svg>（内含 24 单位 viewBox 的 symbol，×2.667）——
-   它已实测生效（手机 0.359 / 桌面 0.936 = 0.383，与 --af-size 比值一致 ⇒ 符文与轨道圆同粗），
-   所以 .af-rune use 这条不能摘；缺了它桌面符文会是 2.5px 而轨道圆 0.94px，差 2.6 倍。 */
+   non-scaling-stroke 消掉「--af-size 缩放」之外的第二重缩放：符文嵌在外层 1000 单位系里
+   的 64 单位 <svg>（内含 24 单位 viewBox 的 symbol，×2.667）—— .af-rune use 这条不能摘，
+   缺了它桌面符文会是 2.5px 而轨道圆 0.94px。 */
 .cg-arcane-field .af-line,
 .cg-arcane-field .af-track circle,
 .cg-arcane-field .af-rune use {
@@ -98,8 +126,7 @@ body.af-low .af-array--ticks { animation: none; opacity: calc(var(--af-op-r2) * 
   stroke-width: var(--af-sw, 1);
   vector-effect: non-scaling-stroke;
 }
-/* 标记刻度（k=0，正上方那道加长的）：1.5 倍线宽。
-   必须排在上面那条之后 —— 两者特异度同为 (0,2,0)，靠次序取胜（表现属性 stroke-width 会被它压掉）。 */
+/* 标记刻度（k=0，正上方那道加长的）：1.5 倍线宽，须排在上面那条之后（同特异度靠次序取胜） */
 .cg-arcane-field .af-line--marker { stroke-width: calc(var(--af-sw, 1) * 1.5); }
 
 /* —— S0 九芒内阵：最内、最暗、不动 —— 裁决 A：--text-dim 冷灰蓝 —— */
@@ -109,26 +136,37 @@ body.af-low .af-array--ticks { animation: none; opacity: calc(var(--af-op-r2) * 
 }
 .af-array--enneagram .af-line { stroke: var(--text-dim); }
 
-/* —— R1 七光符文环：正转 300s linear + 明灭 49s ——
-   静态 opacity 是「不动时的兜底值」：手机档只保留旋转、关掉明灭动画，那时没有
-   keyframes 顶着 opacity，不写就会退回 1（整层突然变 22 倍亮）。取动效区间中值。 */
+/* —— R1 七光符文环：正转 + 明灭 —— 静态 opacity 是「不动时的兜底值」（手机档只留旋转，
+   关掉明灭时没有 keyframes 顶着 opacity，不写会退回 1）。取动效区间中值。 */
 .af-array--runes {
   color: var(--accent);
   opacity: calc(var(--af-op-r1) * 0.86 * var(--af-k-r1));
   animation:
-    af-spin-cw 300s linear infinite,
+    af-spin-cw 120s linear infinite,
     af-breathe-r1 49s var(--af-breath) infinite;
+  /* 辉光贴着笔画：四层 drop-shadow 由紧到散叠能量（细线 alpha 低，单层太散看不清），
+     半径 3/9/22/44 拉开 → 线芯亮、外围散；全部再乘本层 opacity。 */
+  filter:
+    drop-shadow(0 0 3px var(--af-glow))
+    drop-shadow(0 0 11px var(--af-glow))
+    drop-shadow(0 0 26px var(--af-glow))
+    drop-shadow(0 0 52px var(--af-glow));
 }
 .af-array--runes .af-track circle { stroke: var(--accent-dim); }
 .af-runes use { stroke: var(--accent); }
 
-/* —— R2 廿二刻度环：反转 420s linear + 明灭 67s（同上，静态 opacity 取中值）—— */
+/* —— R2 廿二刻度环：反转 + 明灭（同上，静态 opacity 取中值）—— */
 .af-array--ticks {
   color: var(--accent-dim);
   opacity: calc(var(--af-op-r2) * 0.90 * var(--af-k-r2));
   animation:
-    af-spin-ccw 420s linear infinite,
+    af-spin-ccw 170s linear infinite,
     af-breathe-r2 67s var(--af-breath) infinite;
+  filter:
+    drop-shadow(0 0 3px var(--af-glow))
+    drop-shadow(0 0 11px var(--af-glow))
+    drop-shadow(0 0 26px var(--af-glow))
+    drop-shadow(0 0 52px var(--af-glow));
 }
 .af-array--ticks .af-track circle { stroke: var(--accent-dim); }
 .af-array--ticks .af-line { stroke: var(--accent-dim); }
@@ -145,33 +183,34 @@ body.af-low .af-array--ticks { animation: none; opacity: calc(var(--af-op-r2) * 
   50%      { opacity: calc(var(--af-op-r2) * var(--af-k-r2)); }
 }
 
-/* 「一道光绕行」不是逐符文动画，而是把亮度梯度烘进静态几何后靠整组旋转带出来
-   （spec §3.5）：0 额外 DOM、0 额外合成层、0 repaint。 */
+/* 「一道光绕行」不是逐符文动画，而是把亮度梯度烘进静态几何后靠整组旋转带出来（spec §3.5） */
 
 /* =============================================================================
- * ④ 视口档位（spec §6.1；与 JS 的 low 档取更严的一档）
+ * ⑥ 视口档位（spec §6.1；与 JS 的 low 档取更严的一档）
  * ========================================================================== */
-/* B 窄桌面 900–1199：砍 S0，×0.85；线宽 1.15（1024 档实测 0.92px） */
+/* B 窄桌面 900–1199：砍 S0，×0.92；线宽 1.15 */
 @media (max-width: 1199px) {
-  .cg-arcane-field { --af-k-r1: 0.85; --af-k-r2: 0.85; --af-k-s0: 0.85; --af-sw: 1.15; }
+  .cg-arcane-field { --af-k-r1: 0.92; --af-k-r2: 0.92; --af-k-s0: 0.92; --af-sw: 1.15; }
   .af-array--enneagram { display: none; }
 }
-/* C 平板 640–899：×0.70；线宽 1.40 */
+/* C 平板 640–899：×0.85；线宽 1.40 */
 @media (max-width: 899px) {
-  .cg-arcane-field { --af-k-r1: 0.70; --af-k-r2: 0.70; --af-k-s0: 0.70; --af-sw: 1.40; }
+  .cg-arcane-field { --af-k-r1: 0.85; --af-k-r2: 0.85; --af-k-s0: 0.85; --af-sw: 1.40; }
 }
-/* D 手机 <640：R1 只转不呼吸（把 opacity 动画对象从 2 个减到 1 个），×0.65；线宽 2.20（390 档 0.79px） */
+/* D 手机 <640：R1 只转不呼吸（opacity 动画对象 2→1），×0.85；线宽 2.20 */
 @media (max-width: 639px) {
-  .cg-arcane-field { --af-k-r1: 0.65; --af-k-r2: 0.65; --af-k-s0: 0.65; --af-sw: 2.20; }
-  .af-array--runes { animation: af-spin-cw 300s linear infinite; }
+  .cg-arcane-field { --af-k-r1: 0.85; --af-k-r2: 0.85; --af-k-s0: 0.85; --af-sw: 2.20; }
+  .af-array--runes { animation: af-spin-cw 120s linear infinite; }
+}
+/* 竖屏：圆心单独贴左上、部分出屏 —— 34vw/26vh 那套是视口比例锚点，窄屏会落到偏中上 */
+@media (orientation: portrait) {
+  .cg-arcane-field { --af-cx: 15vw; --af-cy: 13vh; }
 }
 
 /* =============================================================================
- * ⑤ 减动效：prefers-reduced-motion: reduce → 全静态
- *    用 animation:none 而非 paused —— paused 会冻在任意中间相位（可能是歪的），
- *    none 才确保回到 θ₀=−90° 的正位。不透明度取动效区间中值（spec §5.1）。
- *    ⚠ 必须排在 ④ 视口档位之后：D 档那条 animation 简写与它同特异度、同 origin，
- *      靠的是「后声明者胜」——放在前面会被 D 档覆盖，reduce 下 R1 就还在转。
+ * ⑦ 减动效：prefers-reduced-motion: reduce → 全静态
+ *    用 animation:none 而非 paused —— paused 会冻在任意中间相位（可能是歪的）。
+ *    ⚠ 必须排在 ⑥ 之后：D 档那条 animation 简写与它同特异度，靠「后声明者胜」。
  * ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   .af-array--runes,
@@ -181,7 +220,7 @@ body.af-low .af-array--ticks { animation: none; opacity: calc(var(--af-op-r2) * 
 }
 
 /* =============================================================================
- * ⑥ 首次亮相：只淡入一次，不参与常态动画（避免与明灭的 opacity 打架）
+ * ⑧ 首次亮相：只淡入一次，不参与常态动画（避免与明灭的 opacity 打架）
  * ========================================================================== */
 @keyframes af-veil { from { opacity: 0; } }
 @media (prefers-reduced-motion: no-preference) {
