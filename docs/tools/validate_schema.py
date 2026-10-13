@@ -2,7 +2,7 @@
 """按 JSON Schema 校验技能池全库 + 跨字段一致性检查。
 
 用法:
-    python docs/tools/validate_schema.py            # 校验 manifest + 22 份技能池
+    python docs/tools/validate_schema.py            # 校验 manifest + 22 份技能池 + 23 份状态表
     python docs/tools/validate_schema.py --max 20   # 每文件最多打印 20 条错误
 
 依赖: jsonschema（可选）
@@ -24,6 +24,8 @@ SCHEMA_DIR = os.path.join(JSON_DIR, "schema")               # docs/json/schema/
 
 try:
     from jsonschema import Draft202012Validator
+    from referencing import Registry, Resource
+    from referencing.jsonschema import DRAFT202012
     HAS_JSONSCHEMA = True
 except ImportError:
     HAS_JSONSCHEMA = False
@@ -39,12 +41,23 @@ def load(name):
     return json.load(io.open(os.path.join(SCHEMA_DIR, name), encoding="utf-8"))
 
 
-def schema_check(schema, instance, label, errors, max_errors):
+def build_registry(*schemas):
+    """把各 schema 按 $id 注册进同一 Registry，支撑跨文件 $ref
+    （statuses.schema.json 的 statusDefs 条目引用 skills.schema.json#/$defs/statusDef，
+    statusDef 的结构唯一源仍在 skills.schema.json，不存副本）。"""
+    reg = Registry()
+    for s in schemas:
+        res = Resource.from_contents(s, default_specification=DRAFT202012)
+        reg = reg.with_resource(s["$id"], res)
+    return reg
+
+
+def schema_check(schema, instance, label, errors, max_errors, registry=None):
     """结构校验；按 JSON 指针排序输出，便于定位。"""
     if not HAS_JSONSCHEMA:
         errors.append("%s: 跳过（未安装 jsonschema，pip install jsonschema）" % label)
         return
-    v = Draft202012Validator(schema)
+    v = Draft202012Validator(schema, registry=registry) if registry else Draft202012Validator(schema)
     n = 0
     for err in sorted(v.iter_errors(instance), key=lambda e: list(e.absolute_path)):
         n += 1
@@ -148,6 +161,8 @@ def main():
     warns = []
     skills_schema = load("skills.schema.json")
     manifest_schema = load("manifest.schema.json")
+    statuses_schema = load("statuses.schema.json")
+    registry = build_registry(skills_schema, manifest_schema, statuses_schema) if HAS_JSONSCHEMA else None
 
     files = sorted(glob.glob(os.path.join(JSON_DIR, "*.skills.json")))
     docs = {}
@@ -164,22 +179,15 @@ def main():
     for name in sorted(docs):
         schema_check(skills_schema, docs[name], name, errors, max_errors)
 
-    # 校验 *.statuses.json 中每个 statusDef 项（复用 skills_schema 的 $defs/statusDef）
-    sdef = skills_schema.get("$defs", {}).get("statusDef")
-    if sdef:
-        # 用带 $defs 的 wrapper 包住 $ref，确保 statusDef 内部 #/$defs/* 指针可解析
-        statusdef_validator = {
-            "$ref": "#/$defs/statusDef",
-            "$defs": skills_schema.get("$defs", {}),
-        }
-        for f in sorted(glob.glob(os.path.join(JSON_DIR, "*.statuses.json"))):
-            try:
-                d = json.load(io.open(f, encoding="utf-8"))
-            except Exception as e:
-                errors.append("%s: 解析失败 %s" % (os.path.basename(f), e))
-                continue
-            for i, sd in enumerate(d.get("statusDefs") or []):
-                schema_check(statusdef_validator, sd, "%s#/statusDefs/%d" % (os.path.basename(f), i), errors, max_errors)
+    # 校验 *.statuses.json 整文件（22 途径 + common）：文件级结构走 statuses.schema.json，
+    # statusDefs 条目经跨文件 $ref 落到 skills.schema.json 的 $defs/statusDef（唯一源）
+    for f in sorted(glob.glob(os.path.join(JSON_DIR, "*.statuses.json"))):
+        try:
+            d = json.load(io.open(f, encoding="utf-8"))
+        except Exception as e:
+            errors.append("%s: 解析失败 %s" % (os.path.basename(f), e))
+            continue
+        schema_check(statuses_schema, d, os.path.basename(f), errors, max_errors, registry)
 
     cross_check(docs, manifest, errors, warns)
 

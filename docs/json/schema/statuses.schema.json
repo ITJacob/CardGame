@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cardgame.local/schema/statuses.schema.json",
+  "title": "状态注册表文档（<pathway>.statuses.json / common.statuses.json）",
+  "description": "状态定义表：途径私有状态（<pathway>.statuses.json）或公共中立状态注册表（common.statuses.json）。statusDefs 条目结构与字段口径的唯一源是 skills.schema.json 的 $defs/statusDef（本文件按 $id 跨文件引用，不另存副本）；字段语义见 docs/meta/SCHEMA.md §6。",
+  "type": "object",
+  "required": [
+    "statusDefs"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "文件级说明块，目前仅 common.statuses.json 使用（归属/命名规则与降格迁移留档）。途径私有文件不带此块。",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "type": "string",
+          "description": "本文件定位一句话。"
+        },
+        "ownershipRules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "归属规则：哪些状态进本文件、哪些留在途径私有文件。"
+        },
+        "namingRules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "命名规则：关键词型/机制桩型、同义机制唯一 id、换皮护栏（INV-C2）。"
+        },
+        "note": {
+          "type": "string",
+          "description": "杂注（建立时间、数值占位标记说明等）。"
+        },
+        "mergedFrom": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "归并/降格迁移留档：本条状态由哪些旧定义合并而来。"
+        }
+      }
+    },
+    "statusDefs": {
+      "type": "array",
+      "minItems": 1,
+      "description": "状态定义数组；条目结构唯一源 = skills.schema.json#/$defs/statusDef。",
+      "items": {
+        "$ref": "skills.schema.json#/$defs/statusDef"
+      }
+    }
+  }
+}

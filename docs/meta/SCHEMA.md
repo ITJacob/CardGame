@@ -35,7 +35,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 | 校验器 | 管什么 |
 |---|---|
-| `tools/validate_schema.py` | 结构：字段是否存在、类型对不对、有无未知字段；跨字段：axis∈axes、id 前缀、rarity↔sequence、manifest 对齐 |
+| `tools/validate_schema.py` | 结构：字段是否存在、类型对不对、有无未知字段；跨字段：axis∈axes、id 前缀、rarity↔sequence、manifest 对齐。覆盖 manifest + 22 份 `.skills.json` + 23 份 `.statuses.json`（状态条目结构复用 skills schema 的 `$defs/statusDef`，经跨文件 `$ref` 解析，不存副本） |
 | `tools/validate.py` | 语义：原语与参数取值域、状态 id 是否登记、稀有度映射、界域租金、frameworkFlag 例外 |
 | `tools/check_enum_sync.py` | 枚举漂移：ddd 参数篇 / 本文档（文本侧）与 schema $defs / validate.py（机器侧）不一致即报错；有意分歧须登记进脚本 KNOWN 并注明理由 |
 
@@ -44,6 +44,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 ```json
 "json.schemas": [
   { "fileMatch": ["*.skills.json"], "url": "./docs/json/schema/skills.schema.json" },
+  { "fileMatch": ["*.statuses.json"], "url": "./docs/json/schema/statuses.schema.json" },
   { "fileMatch": ["manifest.json"],  "url": "./docs/json/schema/manifest.schema.json" }
 ]
 ```
@@ -222,7 +223,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `lineageStack` | object | **异类谱系栈**（编队参数 §2.4）：`lineage_push`（推入的形态 statusId）× `lineage_depth`（当前栈深）× `maxDepth` × `replay.enabled`（演出回放，重演栈内形态序列）。与 `formGroup/nextPhase/cycleTicks`（月相轮转=轮换）是不同机制，不得混用 |
 | `summonMapping` | object[] | **召唤映射表**：`stacks`(N) × `count` × `atkRatio` × `hpRatio` × `unitId?`，表达「刻印层数 N → 召唤物强度/数量 f(N)」（罪犯 仪式刻印→深渊召唤；编队参数 §2.4 H1 召唤物基线 + `spawn.companionBuff`） |
 | `countMode` | `cumulative`\|`on_field` | **计数口径**（通识者造物轴）：`cumulative`=累计产出（只增不减）/ `on_field`=当前在场（离场即减）。⚠️ 口径为待拍板项，两者对造物轴阈值 payoff 的激励方向相反 |
-| 其余 | | `lethalProtect` `immune` `suppress` `redirectRule` `thresholdTrigger` `slots` `fields` `ramp` `behaviorModifiers` 等，见 schema |
+| 其余 | | `lethalProtect` `immune` `suppress` `redirectRule` `thresholdTrigger` `slots` `fields` `ramp` `behaviorModifiers` 等，见 `schema/statuses.schema.json`（文件级）→ `skills.schema.json` `$defs/statusDef`（条目结构唯一源） |
 
 跨途径**同名状态视为共享状态**：同名但定义不同时会告警。2026-09-18 已将全部 28 条清零（同机制统一签名 / 异机制改名拆分，见 §10）。
 
