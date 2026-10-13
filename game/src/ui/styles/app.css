@@ -567,9 +567,13 @@ button.card-face[aria-disabled="true"] { cursor: default; }
 }
 /* 竖屏（＝移动端）：浮层摆到视口正中——手指点的卡在屏幕上往往就在边上，贴着卡摆会顶出屏外。
    横屏仍是贴着卡面摆（JS 写 left/top），这条不生效。用媒体查询而不是 data-orient：
-   浮层挂在 body 上，不在 .hero-showcase 里，没有 data-orient 可继承。 */
+   浮层挂在 body 上，不在 .hero-showcase 里，没有 data-orient 可继承。
+   宽度给到近满屏：基值的 max-width:300px 在手机上只裹出 ~195px，描述被挤成窄条（2026-10-13 加宽） */
 @media (orientation: portrait) {
-  .card-pop { left: 50%; top: 50%; transform: translate(-50%, -50%); }
+  .card-pop {
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 360px; max-width: calc(100vw - 32px);
+  }
 }
 /* .card-detail = 详情正文的共用样式，浮层与放大视图的 .zoom-tip 共用同一份排版。
    详情是只读展示，不是可编辑文本：禁选，免得悬停冒 I 形光标、点击出输入光标。 */
