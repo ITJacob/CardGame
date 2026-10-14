@@ -192,7 +192,7 @@ export function renderBattle(host: HTMLElement): void {
     hydrateHeroArt(host)
     logRendered = s.facade.drainEvents().length
     boardSig = sigOfBoard(view)
-    overlaySig = sigOfOverlay(view, pending, ended, showDecision)
+    overlaySig = sigOfOverlay(pending, ended, showDecision)
     hudWarnSig = sigOfHudWarn()
     const wrap = host.querySelector<HTMLElement>('.board-wrap')
     if (wrap) enablePan(host, { viewport: wrap })
@@ -230,7 +230,7 @@ export function renderBattle(host: HTMLElement): void {
     patchHud(view, pending, ended)
     patchLog()
 
-    const osig = sigOfOverlay(view, pending, ended, showDecision)
+    const osig = sigOfOverlay(pending, ended, showDecision)
     if (osig !== overlaySig) {
       overlaySig = osig
       hideCardPop()
@@ -239,6 +239,34 @@ export function renderBattle(host: HTMLElement): void {
         slot.innerHTML = overlayHtml(view, pending, ended, showDecision)
         hydrateHeroArt(slot)
       }
+    } else if (inspect) {
+      // 查看面板开着、无需重建：就地刷实时段（HP/能量/格位/状态），身份块（头像/名）不动——
+      // 否则开着面板自动播时，面板随 tick 整块重建、头像 <img> 每 450ms 闪一下
+      patchInspect(view)
+    }
+  }
+
+  /** 查看面板（单位）开着时的逐 tick 就地刷新：只重写 .inspect-stat 文本与状态 chips，
+      头像/名条/体质那一整块身份块保持原节点（<img> 零重建）。单位被移出/消散由 refresh
+      顶部的 inspect 失效逻辑收起面板，这里查不到单位就什么都不做。 */
+  const patchInspect = (view: CombatView): void => {
+    if (!inspect || inspect.kind !== 'unit') return
+    const body = host.querySelector<HTMLElement>('.battle-overlay .inspect-body')
+    if (!body) return
+    const u = view.units.find((x) => x.id === (inspect as { id: string }).id)
+    if (!u) return
+    const stats = [`HP ${u.hp}/${u.hpMax}`, `能量 ${u.energy}`, u.coordinate ? coordText(u.coordinate) : '离场']
+    const statEls = [...body.querySelectorAll<HTMLElement>('.inspect-stat')]
+    statEls.forEach((el, i) => {
+      if (stats[i] != null) setText(el, stats[i])
+    })
+    const chipsSig = u.statuses.map((st) => `${st.defId}:${st.stacks}`).join(',')
+    if (body.dataset.chips !== chipsSig) {
+      body.dataset.chips = chipsSig
+      const chipsHtml = u.statuses.map((st) => chipHtml(s, st)).join('')
+      const box = body.querySelector<HTMLElement>('.inspect-chips')
+      if (box) box.innerHTML = chipsHtml
+      else if (chipsHtml) body.insertAdjacentHTML('beforeend', `<span class="inspect-chips">${chipsHtml}</span>`)
     }
   }
 
@@ -374,13 +402,14 @@ export function renderBattle(host: HTMLElement): void {
     return ''
   }
 
-  /** 浮层签名：类型 + 内容关键键。决策条随候选/提交态重建；查看面板带 tick（开着时跟实时）；
+  /** 浮层签名：类型 + 内容关键键。决策条随候选/提交态重建；查看面板按目标身份建一次，
+      开着时的实时刷新走 patchInspect（不带 tick——否则每 tick 整块重建、头像重绘闪）；
       结算随指纹校验状态重建；常态稳在 'none'，tick 不碰浮层。 */
-  const sigOfOverlay = (view: CombatView, pending: DecisionRequest | null, ended: CombatEnded | null, showDecision: boolean): string => {
+  const sigOfOverlay = (pending: DecisionRequest | null, ended: CombatEnded | null, showDecision: boolean): string => {
     if (showDecision && pending) {
       return `decision|${pending.caster}|${pending.candidates.map((c) => c.occupant ?? '').join(',')}|${pending.pickCount}|${submitted}`
     }
-    if (inspect) return `inspect|${inspect.kind}|${inspect.kind === 'unit' ? inspect.id : inspect.coord}|${view.tick}`
+    if (inspect) return `inspect|${inspect.kind}|${inspect.kind === 'unit' ? inspect.id : inspect.coord}`
     if (ended) {
       const v = s.online?.verify
       return `ended|${ended.outcome}|${!v ? 'wait' : v.ok ? 'ok' : v.theirs === null ? 'miss' : 'bad'}`
