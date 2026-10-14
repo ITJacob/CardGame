@@ -128,6 +128,7 @@ export function renderBattle(host: HTMLElement): void {
   let shellReady = false
   let boardSig = ''
   let overlaySig = ''
+  let queueSig = ''
   let hudWarnSig = ''
   let logRendered = 0
 
@@ -220,6 +221,7 @@ export function renderBattle(host: HTMLElement): void {
     host.innerHTML = `
       <div class="battle" data-orient="${currentOrientation()}">
         <div class="board-wrap">${boardHtml(s, view, pending, canPick, canInspect, pending?.caster ?? null)}</div>
+        ${actionQueueHtml(s, actionQueue(s, view, pending?.caster ?? null), pending?.caster ?? null)}
         ${hudHtml(s, view, pending != null, ended != null, logOpen, rosterOpen, autoOn)}
         ${drawerHtml('roster', '我方技能', rosterHtml(s), rosterOpen)}
         ${drawerHtml('log', '战斗日志', `<div class="cg-scroll log" id="battle-log">${logHtml(s, s.facade.drainEvents())}</div>`, logOpen, '<button type="button" class="cg-btn cg-btn--sm" id="btn-log-copy" title="复制全量日志（含两军装配与种子）">复制</button>')}
@@ -241,6 +243,7 @@ export function renderBattle(host: HTMLElement): void {
     logRendered = s.facade.drainEvents().length
     boardSig = sigOfBoard(view)
     overlaySig = sigOfOverlay(pending, ended, showDecision)
+    queueSig = sigOfQueue(actionQueue(s, view, pending?.caster ?? null), pending?.caster ?? null)
     hudWarnSig = sigOfHudWarn()
     const wrap = host.querySelector<HTMLElement>('.board-wrap')
     if (wrap) enablePan(host, { viewport: wrap })
@@ -282,6 +285,7 @@ export function renderBattle(host: HTMLElement): void {
     }
 
     patchHud(view, pending, ended)
+    patchQueue(view, pending)
     patchLog()
 
     const osig = sigOfOverlay(pending, ended, showDecision)
@@ -322,6 +326,25 @@ export function renderBattle(host: HTMLElement): void {
       if (box) box.innerHTML = chipsHtml
       else if (chipsHtml) body.insertAdjacentHTML('beforeend', `<span class="inspect-chips">${chipsHtml}</span>`)
     }
+  }
+
+  /** 行动队列签名：行顺序（id:side）+ 正在行动者。顺序/成员没变就不重写 DOM——
+      否则每 tick 重建头像 <img> 会闪（同 patchUnits 的克制）。 */
+  const sigOfQueue = (queue: readonly UnitViewLite[], actingId: string | null): string =>
+    `${actingId ?? ''}|${queue.map((u) => `${u.id}:${s.unitMeta.get(u.id)?.side ?? '?'}`).join(',')}`
+
+  /** 行动队列增量：签名变了才重写 #action-queue 内容并补水合头像。正在行动者（决策冻结中的
+      caster）由 actionQueue 钉在队首；它出手后 gauge 清零，下一 tick 自然掉出队列。 */
+  const patchQueue = (view: CombatView, pending: DecisionRequest | null): void => {
+    const actingId = pending?.caster ?? null
+    const queue = actionQueue(s, view, actingId)
+    const sig = sigOfQueue(queue, actingId)
+    if (sig === queueSig) return
+    queueSig = sig
+    const el = host.querySelector<HTMLElement>('#action-queue')
+    if (!el) return
+    el.innerHTML = actionQueueRows(s, queue, actingId)
+    hydrateHeroArt(el)
   }
 
   /** 棋盘结构签名：朝向 + 我方阵营 + 路清单 + 单位(id@坐标)。候选/行动/可点只影响类名，
@@ -977,6 +1000,93 @@ function rosterHtml(s: BattleSession): string {
     })
     .join('')
   return `<p class="drawer-meta">主动 ${s.own.reduce((n, h) => n + h.activeSkillIds.length, 0)} 张</p>${rows}`
+}
+
+/* ---------- 行动队列（左上）：接下来出手的顺序预测 ---------- */
+
+/** 还需几 tick 出手。Gauge 严格越阈（>）触发：所需最小 t≥1 满足 gauge + t·rate > threshold。
+    已越阈（>阈值，同 tick 尚未结算的后续行动者）记 0，排在下一 tick 之前；速率为 0 者排最后。 */
+function ticksToAct(u: UnitViewLite): number {
+  if (u.gaugeRate <= 0) return Number.POSITIVE_INFINITY
+  if (u.gauge > u.gaugeThreshold) return 0
+  return Math.floor((u.gaugeThreshold - u.gauge) / u.gaugeRate) + 1
+}
+
+/** 同 tick 内的出手先后：复刻 scheduling/initiative.ts —— 两侧各自按 (lane,index,id) 升序，
+    再按 [0,1,1,0] 交替合并（0 = setup.factions[0]，与 runtime 的 this.factions 同序）。 */
+function initiativeOrder(units: readonly UnitViewLite[], f0: FactionId, f1: FactionId): UnitViewLite[] {
+  const key = (u: UnitViewLite): [string, number, string] =>
+    u.coordinate ? [u.coordinate.lane, u.coordinate.index, u.id] : ['~', Number.MAX_SAFE_INTEGER, u.id]
+  const byPos = (a: UnitViewLite, b: UnitViewLite): number => {
+    const ka = key(a)
+    const kb = key(b)
+    if (ka[0] !== kb[0]) return ka[0] < kb[0] ? -1 : 1
+    if (ka[1] !== kb[1]) return ka[1] - kb[1]
+    return ka[2] < kb[2] ? -1 : ka[2] > kb[2] ? 1 : 0
+  }
+  const q0 = units.filter((u) => u.faction === f0).sort(byPos)
+  const q1 = units.filter((u) => u.faction === f1).sort(byPos)
+  const PATTERN = [0, 1, 1, 0] as const
+  const out: UnitViewLite[] = []
+  let i0 = 0
+  let i1 = 0
+  let slot = 0
+  while (i0 < q0.length || i1 < q1.length) {
+    const side = PATTERN[slot % PATTERN.length]
+    let pick: UnitViewLite | undefined
+    if (side === 0 && i0 < q0.length) pick = q0[i0++]
+    else if (side === 1 && i1 < q1.length) pick = q1[i1++]
+    else pick = i0 < q0.length ? q0[i0++] : q1[i1++]
+    if (pick) out.push(pick)
+    slot += 1
+  }
+  return out
+}
+
+/** 行动队列（最多 3 格）：正在行动者（actingId）钉队首，其余为接下来出手的预测。
+    队列是 UI 侧前瞻投影，非内核实体——出手即 gauge 清零（execution/commit.ts），故单位
+    出手后自动掉出，无需显式「移出」。 */
+function actionQueue(s: BattleSession, view: CombatView, actingId: string | null): UnitViewLite[] {
+  const alive = view.units.filter((u) => u.hp > 0)
+  const buckets = new Map<number, UnitViewLite[]>()
+  for (const u of alive) {
+    const t = ticksToAct(u)
+    const arr = buckets.get(t)
+    if (arr) arr.push(u)
+    else buckets.set(t, [u])
+  }
+  const [f0, f1] = [s.setup.factions[0].id, s.setup.factions[1].id]
+  const ordered = [...buckets.keys()]
+    .sort((a, b) => a - b)
+    .flatMap((t) => initiativeOrder(buckets.get(t) as UnitViewLite[], f0, f1))
+  const rest = ordered.filter((u) => u.id !== actingId)
+  if (actingId) {
+    const actor = alive.find((u) => u.id === actingId)
+    if (actor) rest.unshift(actor)
+  }
+  return rest.slice(0, 3)
+}
+
+/** 队列行（不含外壳）：头像 + 名，己方绿框/敌方红框；正在行动者加 .is-acting 脉冲。 */
+function actionQueueRows(s: BattleSession, queue: readonly UnitViewLite[], actingId: string | null): string {
+  const mine = myFactionOf(s)
+  return queue
+    .map((u) => {
+      const meta = s.unitMeta.get(u.id)
+      const side = u.faction === mine ? 'own' : 'enemy'
+      const avatar = meta ? heroAvatarHtml(meta, '40px') : '❓'
+      const acting = u.id === actingId ? ' is-acting' : ''
+      return `<div class="action-queue__row ${side}${acting}" data-unit="${escapeHtml(u.id)}">
+        <span class="action-queue__avatar">${avatar}</span>
+        <span class="action-queue__name">${escapeHtml(meta?.name ?? u.id)}</span>
+      </div>`
+    })
+    .join('')
+}
+
+/** 行动队列外壳（首帧骨架用；后续增量更新走 patchQueue 只换内部行）。 */
+function actionQueueHtml(s: BattleSession, queue: readonly UnitViewLite[], actingId: string | null): string {
+  return `<aside class="action-queue" id="action-queue" aria-label="行动队列">${actionQueueRows(s, queue, actingId)}</aside>`
 }
 
 /**

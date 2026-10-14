@@ -121,6 +121,10 @@ export interface UnitViewLite {
   hpMax: number
   energy: number
   gauge: number
+  /** 行动条每 tick 增速（含状态修正）——UI 预测出手顺序用 */
+  gaugeRate: number
+  /** 行动条越阈阈值——UI 预测出手顺序用 */
+  gaugeThreshold: number
   statuses: { defId: string; stacks: number }[]
 }
 

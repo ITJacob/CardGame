@@ -454,6 +454,36 @@ a { color: inherit; text-decoration: none; }
 .battle[data-orient='portrait'] .battle-hud { padding: 6px 10px; gap: 6px 8px; }
 .battle[data-orient='portrait'] .hud { gap: 8px; font-size: 12.5px; flex: 1 1 auto; justify-content: center; }
 
+/* 行动队列：左上纵向 3 格，列出接下来出手的顺序（最临近在上）。整块不吃指针（不挡拖棋盘）。
+   位置让开顶部 HUD（横屏约 48px 一行；竖屏两行约 88px + 上下 padding）。 */
+.action-queue {
+  position: absolute;
+  top: calc(56px + env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  z-index: 15;
+  display: flex; flex-direction: column; gap: 6px;
+  pointer-events: none;
+}
+.battle[data-orient='portrait'] .action-queue { top: calc(96px + env(safe-area-inset-top)); }
+.action-queue__row { display: flex; align-items: center; gap: 8px; }
+/* 头像圆框：己方绿、敌方红（沿用棋盘边线的绿/红语义，提亮一档便于小头像辨识） */
+.action-queue__avatar {
+  flex: none; width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 2px solid var(--border);
+  background: rgba(20, 24, 30, 0.85);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+}
+.action-queue__row.own .action-queue__avatar { border-color: #4f9a72; box-shadow: 0 0 6px rgba(79, 154, 114, 0.55); }
+.action-queue__row.enemy .action-queue__avatar { border-color: #c05a5a; box-shadow: 0 0 6px rgba(192, 90, 90, 0.55); }
+.action-queue__avatar .hero-avatar { width: 100%; height: 100%; }
+.action-queue__avatar .hero-avatar__emoji { font-size: 20px; }
+/* 正在行动者：头像描边脉冲，呼应棋盘 .unit.targetable 的 pulse keyframes（动的是 outline-color） */
+.action-queue__row.is-acting .action-queue__avatar { outline: 2px solid var(--accent); outline-offset: 1px; animation: pulse 1s infinite; }
+.action-queue__row.is-acting .action-queue__name { color: var(--text); font-weight: 600; }
+.action-queue__name { font-size: 12px; color: var(--text-dim); text-shadow: 0 1px 3px #000, 0 0 5px rgba(0, 0, 0, 0.85); white-space: nowrap; }
+
 /* 右侧抽屉：滑出式悬浮面板（日志 / 名册）。整页一屏，抽屉内超高自己滚 */
 .battle-drawer {
   position: absolute; top: 0; right: 0; bottom: 0; z-index: 30;

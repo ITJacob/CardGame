@@ -820,6 +820,8 @@ class CombatRuntime implements CombatRuntimeHandle {
       hpMax: u.hpMax,
       energy: u.pool('energy').current,
       gauge: u.gauge.current,
+      gaugeRate: u.gauge.rate,
+      gaugeThreshold: u.gauge.threshold,
       statuses: u.statuses.all().map((s) => ({ defId: s.defId, stacks: s.currentStacks })),
     }))
     return { tick: this.battle.clock, phase: this.battle.phase, units, pending: this.pending?.request ?? null, finished: this.outcome !== null }
