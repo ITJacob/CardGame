@@ -856,7 +856,7 @@ body.zoom-open { overflow: hidden; }
    下面那排高度写死，大图吃掉剩下的。容器查询挂 .hs-track 而不是条上：
    挂在条上的话 100cqh 会把缩略图那排也算进去，大图格子会撑破。
    两端留出的位子要正好装下箭头（34 宽 + 离边 6）：留窄了箭头那枚圆饼会压在
-   名册格上——最后一格滚到尽头时贴的正是右端，选中金环会被圆饼盖掉半条。 */
+   名册格上。选中格居中之后，格子再不会贴到条的两端，这块留白如今只归箭头。 */
 .hero-showcase[data-orient='landscape'] .hs-strip {
   --hs-thumb-h: 45px; /* 底下那排缩略图的高度 */
   --hs-strip-gap: 6px;
@@ -893,15 +893,14 @@ body.zoom-open { overflow: hidden; }
 }
 
 /* 滚动容器：装不下时用隐藏式横向滚动条（触摸可直接拖）。
-   scroll-padding-inline：程序化 scrollIntoView 认这条，把选中格停在离滚动口 6px 处，
-   而不是贴死边——选中那格有 1px 金环（box-shadow，往外描），贴死会被滚动口裁掉半条。 */
+   滚到哪由 JS 摆（选中那格居正中，见 hero.ts 的 revealPicked），不用 scroll-snap：
+   snap 在滚动停下时会反过来改写滚动位，跟「选中决定位置」两套逻辑打架。 */
 .hs-track {
   display: flex; align-items: center; gap: 7px;
   min-width: 0; min-height: 0;
   overflow-x: auto; overflow-y: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  scroll-padding-inline: 6px;
 }
 .hs-track::-webkit-scrollbar { display: none; }
 
@@ -930,22 +929,32 @@ body.zoom-open { overflow: hidden; }
 [data-orient='portrait'] .hs-cell .hero-portrait { width: 100%; height: 100%; border: 0; border-radius: 4px; }
 
 /* 横屏名册是一条横向长条：格子宽度由条高反推（立绘吃满高度、比例 3:4），
-   5 格放不下就横向滚——滚动条藏起来，两端箭头当把手，底下那排缩略图管定位。
+   5 格放不下就横向滚——滚动条藏起来，两端箭头＝上一位/下一位（翻英雄，不滚条），
+   底下那排缩略图管一屏看全 + 直接跳。
    既然有缩略图兜底，就不必再强留「一屏几个」：格子只管照着高度铺满。
    --cw 只在「反推出来比整条还宽」时才收一收（100cqw），这样窄而高的横屏窗口
    也至少有一整个英雄完整在视野里。格高就是 --cw 的 3:4，跟 --cw 一起被卡，
    两者始终一致；条上来不及长满的那点余量由 center 分摊。
-   两端各留 2px 内边距：选中格贴到滚动口那一刻，它往外那 1px 金环落在内边距里，
-   不会被滚动口裁掉半条。 */
+   --cw 定义在**条**上而不是格子上：选中那格要居中，两侧留白（下面那对占位）也得用
+   同一份格子宽度。留白不能写成条自己的 padding-inline——cq 单位解析不到元素自身
+   （只认祖先容器），写着会落到视口尺寸上；占位元素是条的后代，解析得到条。 */
 .hero-showcase[data-orient='landscape'] .hs-track {
+  --cw: 45%; /* 老浏览器兜底：认不得 cqh 时退回「条宽的 45%」 */
+  --cw: min(calc(100cqh * 3 / 4), 100cqw);
   flex: 1 1 auto; min-height: 0;
-  padding: 0 2px;
   container-type: size; /* 格子按「大图那一行」的高反推；条上还挂着底下那排缩略图 */
   align-items: center;
 }
+/* 两端各垫半个「条宽减一格宽」：选中那格要摆到正中，首位 / 末位也得有地方让出来，
+   否则只能贴边、跟「正中」对不上。垫的是两个不收缩的占位（flex: none），多出来的那截
+   正好变成可滚区域，于是首尾两位也能精确居中（滚不到负位、也够得着）。 */
+.hero-showcase[data-orient='landscape'] .hs-track::before,
+.hero-showcase[data-orient='landscape'] .hs-track::after {
+  content: '';
+  flex: none;
+  width: max(0px, calc((100% - var(--cw)) / 2));
+}
 .hero-showcase[data-orient='landscape'] .hs-cell {
-  --cw: 45%; /* 老浏览器兜底：认不得 cqh 时退回「条宽的 45%」 */
-  --cw: min(calc(100cqh * 3 / 4), 100cqw);
   flex: 0 0 auto;
   width: var(--cw);
   height: calc(var(--cw) * 4 / 3);

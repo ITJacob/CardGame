@@ -101,8 +101,8 @@ function artHtml(hero: HeroLike | undefined, i: number, n: number): string {
 
 /**
  * 名册条。竖屏是「小图标切换」的缩略图条（+ 当前第几 / 共几）；
- * 横屏是两段式：上面一排大图当主展示（每格带名字、整条横向铺开，装不下时隐藏
- * 滚动条由箭头带头），底下再常驻一排缩略图——大图滚走了也一眼看得到整本名册。
+ * 横屏是两段式：上面一排大图当主展示（每格带名字、选中那位停在条的正中，装不下就
+ * 横向滚、滚动条藏起来），底下再常驻一排缩略图——一次看全整本名册、点谁跳谁。
  */
 function stripHtml(heroes: HeroLike[], i: number): string {
   const n = heroes.length
@@ -139,7 +139,8 @@ function cellHtml(hero: HeroLike, i: number, on: boolean): string {
   </button>`
 }
 
-/** 左右箭头。竖屏浮在主立绘两侧、横屏浮在名册条两端，两处都用同一份标记（事件委托按 data-hs-step 认） */
+/** 左右箭头：两处（竖屏浮在主立绘两侧、横屏浮在名册条两端）都是「上一位 / 下一位英雄」，
+ *  用同一份标记（事件委托按 data-hs-step 认）。横屏那对只是位置挂在条上，语义与竖屏一致。 */
 function stepArrows(i: number, n: number): string {
   const off = n <= 1
   return `<button type="button" class="hs-arrow hs-arrow--prev" data-hs-step="-1" aria-label="上一名英雄"${i === 0 || off ? ' disabled' : ''}>${icon('cg-back')}</button>
@@ -230,8 +231,8 @@ export interface ShowcaseHandlers {
  * 事件委托绑三类点击：箭头（data-hs-step）、名册格（data-hs-pick）、主动/被动（data-skill-view）。
  * 挂在 section 上而不是每个按钮上，重绘一次只挂一次。
  *
- * 箭头的两套语义按朝向分：竖屏名册条装得下（5 个小图标），箭头＝翻英雄；
- * 横屏名册是条横向长条、装不下（滚动条藏了），箭头＝滚条，选中交给点格子。
+ * 箭头两个朝向一律是「翻英雄」（上一位 / 下一位），不滚条：条滚到哪儿由选中谁决定
+ * （见 revealPicked，选中那格摆到正中），拿滚动位置当第二套语义只会跟选中打架。
  *
  * 翻英雄 / 切页签都**就地补丁**（见 patchShowcase），不整页重绘：整页重绘会把名册条 5–10 张
  * 1152×1536 立绘全换成新 <img>——字节走缓存，但每个新元素都要重新解码，点一下全员闪一遍。
@@ -239,15 +240,8 @@ export interface ShowcaseHandlers {
 export function wireHeroShowcase(host: HTMLElement, h: ShowcaseHandlers): void {
   hookOrientation()
   host.querySelectorAll<HTMLElement>('.hero-showcase').forEach((sec) => {
-    const track = sec.querySelector<HTMLElement>('.hs-track')
-    if (track) {
-      // 重绘后滚动位置归零，把选中的那格滚回视野（横屏名册铺不下时靠这一步）
-      if (track.scrollWidth > track.clientWidth) {
-        sec.querySelector('.hs-cell.is-on')?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-      }
-      track.addEventListener('scroll', () => syncStripArrows(sec), { passive: true })
-      syncStripArrows(sec)
-    }
+    // 重绘后滚动位置归零，把选中那格摆回正中——'auto'：初次定位不该有一段滚动动画
+    revealPicked(sec, 'auto')
     // 只数大图那排：横屏底下还多一排缩略图，同一个人挂了两个 data-hs-pick，数重了会上限翻倍
     const total = sec.querySelectorAll('.hs-track [data-hs-pick]').length
     let cur = h.index
@@ -270,10 +264,6 @@ export function wireHeroShowcase(host: HTMLElement, h: ShowcaseHandlers): void {
       const el = e.target as HTMLElement
       const step = el.closest<HTMLButtonElement>('[data-hs-step]')
       if (step) {
-        if (sec.dataset.orient === 'landscape' && track) {
-          scrollTrackByOne(track, Number(step.dataset.hsStep))
-          return
-        }
         setIndex(cur + Number(step.dataset.hsStep))
         return
       }
@@ -304,6 +294,7 @@ function patchShowcase(sec: HTMLElement, heroes: HeroLike[], catalog: Catalog, i
     else el.removeAttribute('aria-current')
   })
   revealPicked(sec)
+  syncStripArrows(sec, i, n)
   const count = sec.querySelector('.hs-count')
   if (count) count.textContent = n > 1 ? `${i + 1} / ${n}` : ''
   const art = sec.querySelector('.hs-art')
@@ -323,18 +314,25 @@ function patchShowcase(sec: HTMLElement, heroes: HeroLike[], catalog: Catalog, i
 }
 
 /**
- * 把刚选中的那格滚进名册条视野。整页重绘那条路（见 wireHeroShowcase）靠渲染后的一次
- * scrollIntoView 定位，翻英雄的就地补丁不重绘，得自己补上——否则横屏点了底下缩略图，
- * 上面那条大图还停在原地，人「选中了却看不见」，只能去点两端箭头把条滚过去。
+ * 把选中的那格摆到名册条视野的**水平正中**。横屏那条装不下（滚动条藏着），选中谁就得
+ * 滚到谁——首尾两位也照样居中，靠 .hs-track 两端各垫的半屏占位让出地方（见 app.css），
+ * 不是贴边。竖屏名册条装得下（scrollWidth === clientWidth），算出来的偏移是 0，白跑一趟而已。
  *
- * behavior: 'smooth' 与箭头滚条（scrollTrackByOne）同一手感，选择与滚动才有因果关系。
- * 先判溢出：竖屏名册条装得下（scrollWidth === clientWidth）时一次都不碰。
+ * 相对**当前**滚动位算偏移，交给 scrollTo：越界的部分浏览器自己夹回 [0, 滚满]，
+ * 两端那两格即使夹过一点也仍在中点附近，不会跳。
+ *
+ * @param behavior 'smooth' 给翻英雄用，滚过去这件事看得见；整页重绘后的初次定位传 'auto'，
+ *                 否则一进页面就有段莫名其妙的横滚。
  */
-function revealPicked(sec: HTMLElement): void {
+function revealPicked(sec: HTMLElement, behavior: ScrollBehavior = 'smooth'): void {
   const track = sec.querySelector<HTMLElement>('.hs-track')
-  if (track && track.scrollWidth > track.clientWidth) {
-    track.querySelector<HTMLElement>('.hs-cell.is-on')?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' })
-  }
+  const cell = track?.querySelector<HTMLElement>('.hs-cell.is-on')
+  if (!track || !cell) return
+  const t = track.getBoundingClientRect()
+  const c = cell.getBoundingClientRect()
+  const delta = c.left + c.width / 2 - (t.left + t.width / 2)
+  if (Math.abs(delta) < 1) return
+  track.scrollTo({ left: track.scrollLeft + delta, behavior })
 }
 
 /** 右栏卡面的池键：与 cardGroupHtml 里那张卡面的渲染参数逐字一致（data-card + 所在组），
@@ -357,27 +355,18 @@ function sideFaceKey(slot: HTMLElement, catalog: Catalog): string | undefined {
   })
 }
 
-/** 横屏名册条的箭头是「藏起来的滚动条」的把手：按一格宽（含间隙）滚一段 */
-function scrollTrackByOne(track: HTMLElement, dir: number): void {
-  const cell = track.querySelector<HTMLElement>('.hs-cell')
-  const gap = parseFloat(getComputedStyle(track).columnGap) || 0
-  const step = cell ? cell.getBoundingClientRect().width + gap : track.clientWidth
-  track.scrollBy({ left: dir * step, behavior: 'smooth' })
-}
-
 /**
- * 名册条两端箭头按「还能不能往那边滚」置灰 —— 竖屏那条根本不滚（scrollWidth === clientWidth），
- * 两个箭头恒为禁用；竖屏真正在用的是浮在立绘上的那对，它们的 disabled 由渲染时的下标决定。
- * 横屏滚到头时那条正好把箭头置灰，所以滚动条藏起来也不会让人以为还能翻。
+ * 名册条两端那对箭头按**当前选中下标**置灰。横屏这两枚是「上一位 / 下一位英雄」，
+ * 与竖屏浮在立绘上那对同语义，所以判的是下标而不是滚动位置——滚动位置跟着选中走
+ * （revealPicked 把选中格摆到正中），拿它判会在条滚到头时误置灰。
+ * 竖屏这对在 CSS 里不显示（.hs-strip .hs-arrow），置灰与否无所谓，一并按同一套算。
  */
-function syncStripArrows(sec: HTMLElement): void {
-  const track = sec.querySelector<HTMLElement>('.hs-track')
+function syncStripArrows(sec: HTMLElement, i: number, n: number): void {
+  const off = n <= 1
   const prev = sec.querySelector<HTMLButtonElement>('.hs-strip .hs-arrow--prev')
   const next = sec.querySelector<HTMLButtonElement>('.hs-strip .hs-arrow--next')
-  if (!track || !prev || !next) return
-  const max = track.scrollWidth - track.clientWidth
-  prev.disabled = track.scrollLeft <= 1
-  next.disabled = track.scrollLeft >= max - 1
+  if (prev) prev.disabled = off || i <= 0
+  if (next) next.disabled = off || i >= n - 1
 }
 
 let orientHooked = false
@@ -386,6 +375,10 @@ let orientHooked = false
  * 朝向变化只翻 `data-orient`，不整页重绘——两个朝向共用一份 DOM，只是换一套
  * grid-template-areas，重绘会白丢 hover 与焦点。监听只挂一次（照 battle.ts 的
  * hookResize）：每次进入本页挂一个 `{once: true}` 的话，来回进出会越积越多。
+ *
+ * 换朝向顺带把选中那格重新摆到正中（'auto'，不带动画）：两个朝向的名册条完全不是一回事
+ * ——竖屏那条装得下、根本不滚，横屏那条铺不下、滚动位才是「谁被选中」的体现；
+ * 竖屏转过来时滚动位停在 0，不重摆就是「选中了第 4 位、画面却停在第一位」。
  */
 function hookOrientation(): void {
   if (orientHooked) return
@@ -393,7 +386,9 @@ function hookOrientation(): void {
   window.addEventListener('resize', () => {
     const o = orientationOf(window.innerWidth, window.innerHeight)
     document.querySelectorAll<HTMLElement>('.hero-showcase').forEach((el) => {
-      if (el.dataset.orient !== o) el.dataset.orient = o
+      if (el.dataset.orient === o) return
+      el.dataset.orient = o
+      revealPicked(el, 'auto')
     })
   })
 }
