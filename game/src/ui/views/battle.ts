@@ -114,9 +114,11 @@ export function renderBattle(host: HTMLElement): void {
   let lastTick = -1
   /** 当前 tick 动画窗的起点（performance.now() 时间轴） */
   let tickStart = 0
-  /** 行动扇叶插值窗：from = 上个窗的终值（tick 变更时捕获）、to = 本窗终值。
-      统一 rAF 在窗内 from→to 逐帧插值——所有扇叶与总进度盘同起同停；from>to
-      （打满清零）由 rAF 直接落 to，不走倒扫。 */
+  /** 行动扇叶插值窗（前瞻式）：gaugeFrom 恒存本窗起点的**真实** gauge 值，gaugeTo 存
+      按上窗实际增率外推的窗终值。行动条常规匀速积累，外推即实时值——扇形满格那一刻
+      就是出手时刻（回顾式会落后真实值一整扇窗，看着像「没满就执行」）；from>to
+      （打满清零/衰减）由 rAF 直接落 to 不走倒扫；增率突变（增益/减益）在 tick 边界
+      自然校正一次小跳变。 */
   const gaugeFrom = new Map<string, number>()
   const gaugeTo = new Map<string, number>()
   /** —— 增量渲染状态：refresh 只补丁、不整页重建，这些签名决定哪些子树要动 ——
@@ -144,13 +146,16 @@ export function renderBattle(host: HTMLElement): void {
     // resize 转发与联机 MatchRunner 的 onUpdate 都会在本视图被顶掉后继续触发，
     // 若照画就会把棋盘重绘到当前视图上（整备页/大厅被战斗画面盖掉）。
     if (!onBattleRoute()) return
-    // tick 变了 = 真推进了一格：时钟动画窗从这里重新起扫，同时捕获各扇叶的插值窗
+    // tick 变了 = 真推进了一格：时钟动画窗从这里重新起扫，同时捕获各扇叶的前瞻插值窗
     if (view.tick !== lastTick) {
       const alive = new Set<string>()
       for (const u of view.units) {
         const pct = Math.max(0, Math.min(100, Math.round((u.gauge / 75) * 100)))
-        gaugeFrom.set(u.id, gaugeTo.get(u.id) ?? pct)
-        gaugeTo.set(u.id, pct)
+        // 增率从「上一窗真实值」推（gaugeFrom 恒存实际值；若误用 gaugeTo 的外推值，
+        // 上一窗被钳过的话会把钳值当真实增量、下一窗外推全错）
+        const prevActual = gaugeFrom.get(u.id)
+        gaugeFrom.set(u.id, pct)
+        gaugeTo.set(u.id, prevActual == null ? pct : Math.max(0, Math.min(100, pct + (pct - prevActual))))
         alive.add(u.id)
       }
       // 消散/放逐的单位从两张表删掉，防 Map 随战局膨胀
@@ -608,7 +613,8 @@ export function renderBattle(host: HTMLElement): void {
     // 1) 战场总进度盘：一圈 = CLOCK_REV_TICKS 个 tick，每窗扫 1/REV 圈
     const p = (((lastTick % CLOCK_REV_TICKS) + frac) / CLOCK_REV_TICKS) * 100
     clockEl?.style.setProperty('--p', String(p))
-    // 2) 各单位行动扇叶：同一 frac 在各自 from→to 间插值；from>to（打满清零）直接落 to，不倒扫
+    // 2) 各单位行动扇叶：同一 frac 在各自前瞻窗 from→to 间插值（from=当前值、to=外推下一值）；
+    //    from>to（打满清零/衰减）直接落 to，不倒扫
     host.querySelectorAll<HTMLElement>('.unit-gauge[data-unit]').forEach((el) => {
       const from = gaugeFrom.get(el.dataset.unit ?? '') ?? 0
       const to = gaugeTo.get(el.dataset.unit ?? '') ?? from
