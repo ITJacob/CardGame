@@ -232,12 +232,18 @@ export function renderBattle(host: HTMLElement): void {
 
     const sig = sigOfBoard(view)
     if (sig !== boardSig) {
-      // 结构变了（单位增删/换位/换朝向）：重建棋盘。wrap 节点不动，滚动位天然保留
+      // 结构变了（单位增删/换位/换朝向）：重建棋盘。wrap 节点不动，但 innerHTML 换内容的
+      // 瞬间 scrollHeight 先塌成 0，浏览器会把 scrollTop/Left 钳回 0（死亡/消散时棋盘重绘
+      // 就把玩家拖好的视野刷到顶）——所以滚动位要先存后还
       boardSig = sig
       hideCardPop()
       const wrap = battleEl.querySelector<HTMLElement>('.board-wrap')
       if (wrap) {
+        const sl = wrap.scrollLeft
+        const st = wrap.scrollTop
         wrap.innerHTML = boardHtml(s, view, pending, canPick, canInspect, pending?.caster ?? null)
+        wrap.scrollLeft = sl
+        wrap.scrollTop = st
         hydrateHeroArt(wrap)
         // 旋转成竖屏：棋盘刚按新朝向重建，滚动位还停在旧朝向的位置，重新把中线拨正
         if (orientChanged && orient === 'portrait') centerPortraitMidline(wrap)
