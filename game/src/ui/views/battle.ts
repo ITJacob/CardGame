@@ -129,6 +129,11 @@ export function renderBattle(host: HTMLElement): void {
   let boardSig = ''
   let overlaySig = ''
   let queueSig = ''
+  /** 行动队列的行池：id → 行元素，跨 tick 常驻。队列是前瞻投影，成员每 tick 都在换手
+      （同一个人可能这 tick 排第 3、下 tick 掉出去、再下 tick 又回来）——行随手建随手删，
+      就等于把头像 <img> 反复重新解码，看上去就是闪。离队的行只摘不销毁，留在这儿备用。
+      池子按场次存活（fullRender 时重置），上限就是场上单位数。 */
+  const queueRows = new Map<string, HTMLElement>()
   let hudWarnSig = ''
   let logRendered = 0
 
@@ -244,6 +249,11 @@ export function renderBattle(host: HTMLElement): void {
     boardSig = sigOfBoard(view)
     overlaySig = sigOfOverlay(pending, ended, showDecision)
     queueSig = sigOfQueue(actionQueue(s, view, pending?.caster ?? null), pending?.caster ?? null)
+    // 行池跟着这一屏的骨架走：首帧的行认下来接着用，上一局的残留一概丢掉
+    queueRows.clear()
+    for (const row of host.querySelectorAll<HTMLElement>('#action-queue .action-queue__row')) {
+      if (row.dataset.unit) queueRows.set(row.dataset.unit, row)
+    }
     hudWarnSig = sigOfHudWarn()
     const wrap = host.querySelector<HTMLElement>('.board-wrap')
     if (wrap) enablePan(host, { viewport: wrap })
@@ -333,18 +343,43 @@ export function renderBattle(host: HTMLElement): void {
   const sigOfQueue = (queue: readonly UnitViewLite[], actingId: string | null): string =>
     `${actingId ?? ''}|${queue.map((u) => `${u.id}:${s.unitMeta.get(u.id)?.side ?? '?'}`).join(',')}`
 
-  /** 行动队列增量：签名变了才重写 #action-queue 内容并补水合头像。正在行动者（决策冻结中的
-      caster）由 actionQueue 钉在队首；它出手后 gauge 清零，下一 tick 自然掉出队列。 */
+  /** 行动队列增量：**复用行节点**，只翻类名与顺序，绝不整块重写。队列顺序每隔一两 tick 就会
+      变（gauge 一涨，ticksToAct 的桶就挪），整块 innerHTML 重写等于每 tick 把 3 个头像
+      <img> 全换新——字节走缓存，但每个新元素都要重新解码，看上去就是闪（同 patchUnits 对
+      头像的克制）。重排用 append 移动既有节点：移动不销毁元素，解码位留着。
+      正在行动者（决策冻结中的 caster）由 actionQueue 钉在队首；它出手后 gauge 清零，
+      下一 tick 自然掉出队列。 */
   const patchQueue = (view: CombatView, pending: DecisionRequest | null): void => {
+    const el = host.querySelector<HTMLElement>('#action-queue')
+    if (!el) return
     const actingId = pending?.caster ?? null
     const queue = actionQueue(s, view, actingId)
     const sig = sigOfQueue(queue, actingId)
     if (sig === queueSig) return
     queueSig = sig
-    const el = host.querySelector<HTMLElement>('#action-queue')
-    if (!el) return
-    el.innerHTML = actionQueueRows(s, queue, actingId)
-    hydrateHeroArt(el)
+    const mine = myFactionOf(s)
+    const keep: HTMLElement[] = []
+    for (const u of queue) {
+      let row = queueRows.get(u.id)
+      if (!row) {
+        row = document.createElement('div')
+        row.className = 'action-queue__row'
+        row.dataset.unit = u.id
+        row.innerHTML = queueAvatarHtml(s.unitMeta.get(u.id))
+        hydrateHeroArt(row)
+        queueRows.set(u.id, row)
+      }
+      // 逐类 toggle 而不是整体赋 className：is-acting 那条脉冲靠类名触发，重写一遍
+      // 属性会让动画从头再来（明明还是同一个人在行动，环却重新亮一次）。
+      row.classList.toggle('own', u.faction === mine)
+      row.classList.toggle('enemy', u.faction !== mine)
+      row.classList.toggle('is-acting', u.id === actingId)
+      keep.push(row)
+    }
+    // append 的是节点本身（移动，不销毁）：顺序一次摆对；掉出队列的行只摘不销毁，
+    // 留在池子里——同一个人下次再入队时还是那张 <img>，不重新解码。
+    el.append(...keep)
+    for (const row of queueRows.values()) if (!keep.includes(row)) row.remove()
   }
 
   /** 棋盘结构签名：朝向 + 我方阵营 + 路清单 + 单位(id@坐标)。候选/行动/可点只影响类名，
@@ -1067,20 +1102,23 @@ function actionQueue(s: BattleSession, view: CombatView, actingId: string | null
   return rest.slice(0, 3)
 }
 
-/** 队列行（不含外壳）：头像 + 名，己方绿框/敌方红框；正在行动者加 .is-acting 脉冲。 */
+/** 队列行的类名：己方绿框 / 敌方红框（沿用棋盘边线的绿/红语义），正在行动者加 .is-acting 脉冲。 */
+function queueRowClass(side: 'own' | 'enemy', acting: boolean): string {
+  return `action-queue__row ${side}${acting ? ' is-acting' : ''}`
+}
+
+/** 队列行的头像格（无名册元数据的召唤物退 emoji 问号）。行里**只有头像**：
+    格子就地 40px，名字顶出去一长条既压棋盘，又是这堆 DOM 里唯一的文本——
+    谁是谁看棋盘和信息条即可，这里只回答「接下来轮到谁」。 */
+function queueAvatarHtml(meta: UnitMeta | undefined): string {
+  return `<span class="action-queue__avatar">${meta ? heroAvatarHtml(meta, '40px') : '❓'}</span>`
+}
+
+/** 队列行（不含外壳）：首帧骨架用，之后每 tick 由 patchQueue 增量维护。 */
 function actionQueueRows(s: BattleSession, queue: readonly UnitViewLite[], actingId: string | null): string {
   const mine = myFactionOf(s)
   return queue
-    .map((u) => {
-      const meta = s.unitMeta.get(u.id)
-      const side = u.faction === mine ? 'own' : 'enemy'
-      const avatar = meta ? heroAvatarHtml(meta, '40px') : '❓'
-      const acting = u.id === actingId ? ' is-acting' : ''
-      return `<div class="action-queue__row ${side}${acting}" data-unit="${escapeHtml(u.id)}">
-        <span class="action-queue__avatar">${avatar}</span>
-        <span class="action-queue__name">${escapeHtml(meta?.name ?? u.id)}</span>
-      </div>`
-    })
+    .map((u) => `<div class="${queueRowClass(u.faction === mine ? 'own' : 'enemy', u.id === actingId)}" data-unit="${escapeHtml(u.id)}">${queueAvatarHtml(s.unitMeta.get(u.id))}</div>`)
     .join('')
 }
 
