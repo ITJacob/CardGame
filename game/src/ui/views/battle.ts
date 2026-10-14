@@ -131,7 +131,31 @@ export function renderBattle(host: HTMLElement): void {
   let hudWarnSig = ''
   let logRendered = 0
 
+  /** AI 选靶启发：优先「非本方」候选（打得到敌人），凑不齐 pickCount 再按序补。 */
+  const pickForAi = (pending: DecisionRequest): DecisionInput => {
+    const mine = casterFaction(s, pending.caster)
+    const foesFirst = [...pending.candidates].sort((a, b) => {
+      const fa = a.occupant ? casterFaction(s, a.occupant) : undefined
+      const fb = b.occupant ? casterFaction(s, b.occupant) : undefined
+      return Number(fa === mine) - Number(fb === mine)
+    })
+    return foesFirst.slice(0, pending.pickCount)
+  }
+
+  /** 离线人机：对方阵营的 Manual 选靶由 AI 自动结算，不弹给玩家替对面操作
+      （AI 与人只是两种 InputSequence 产生器，DESIGN.md §5.4）。一次连消对面连续触发的
+      多个决策（同 tick 多单位行动），守卫防异常死循环；drain 完剩 pending 一定是玩家的。 */
+  const drainFoeDecisions = (): void => {
+    if (s.online) return
+    for (let guard = 0; guard < 50; guard += 1) {
+      const pending = s.facade.pendingDecision()
+      if (!pending || casterFaction(s, pending.caster) === myFactionOf(s)) return
+      s.facade.submitDecision(pickForAi(pending))
+    }
+  }
+
   const refresh = (): void => {
+    drainFoeDecisions()
     const view = s.facade.state()
     const pending = s.facade.pendingDecision()
     const ended = s.facade.ended()
