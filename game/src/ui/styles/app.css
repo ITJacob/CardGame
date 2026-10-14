@@ -512,9 +512,12 @@ a { color: inherit; text-decoration: none; }
 .card-art { position: absolute; inset: 2.6% 3.5%; width: 93%; height: 94.8%; object-fit: cover; display: block; }
 .card-art[hidden] { display: none; }
 
-/* 边框层：黑底线框 PNG，screen 吃掉黑底、只留亮线 */
+/* 边框层：黑底线框 PNG，screen 吃掉黑底、只留亮线。
+   inset 2px 让框线避开卡面的稀有度色环（inset 1px 描边）与圆角裁切——屏上像素级的间距
+   只能在 CSS 层做（源图 1152px 对 60~120px 卡面约 10:1，屏上 1px = 源图 ~10px）；
+   auto 宽高 + 四边 inset = 拉伸到内缩后的盒子，cover 填充。 */
 .card-frame {
-  position: absolute; inset: 0; width: 100%; height: 100%;
+  position: absolute; inset: 2px; width: auto; height: auto;
   object-fit: cover; pointer-events: none;
   mix-blend-mode: screen; opacity: .82;
 }
