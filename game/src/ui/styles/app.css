@@ -305,10 +305,10 @@ a { color: inherit; text-decoration: none; }
 .unit-art .hero-avatar__emoji { font-size: 34px; }
 
 /* 左上圆形扇叶进度（行动条）：conic-gradient 按 --p(0..100) 扫过角度。
-   --p 注册成 <number> 后可过渡：扇叶不再逐 tick 跳变，而是在 tick 动画窗内平滑扫过
-   （时长与 battle.ts 的 AUTO_TICK_MS 同步改）。打满清零那一下由 patchUnits 瞬时置黑
-   （先掐 transition 再跳值），不走反向过渡——否则看着像「倒流」。
-   .battle-clock 同用 --p，但它是 rAF 逐帧自刷、没挂 transition，不受影响。 */
+   --p 由 battle.ts 的统一 rAF 时间轴逐帧直写（与战场总进度盘同一 tickStart 时间轴：
+   所有扇叶同起同停、互相同步；打满清零那一下由 rAF 判断 from>to 瞬时跳，不走倒扫）。
+   这里**不挂 transition**——rAF 每帧写值，挂了 transition 反而每帧都在追、永远落后一拍。
+   .battle-clock 同用 --p（同一 rAF 写）。 */
 @property --p { syntax: '<number>'; inherits: false; initial-value: 0; }
 .unit-gauge {
   position: absolute; top: 5px; left: 5px; z-index: 1;
@@ -317,7 +317,6 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid rgba(0, 0, 0, 0.6);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
   pointer-events: none;
-  transition: --p 0.45s linear;
 }
 /* 名字/职业：默认隐去，hover/选中/聚焦随卡完整呈现 */
 .unit-name {
@@ -424,7 +423,8 @@ a { color: inherit; text-decoration: none; }
 .battle-hud > * { pointer-events: auto; }
 .hud { display: flex; gap: 12px; font-size: 13px; color: var(--text-dim); }
 /* 相位轨：太阳/月亮在一小段轨道上向右滑动，走完一圈 = 一天（TICK_PER_DAY tick）。
-   位置由 patchHud 逐 tick 拨，transition 与 tick 动画窗同速 → 匀速移动 */
+   位置由 battle.ts 的统一 rAF 逐帧直写（连续战场时间 lastTick+frac），与扇叶/总盘
+   同一时间轴——left 不挂过渡（挂了会追着 rAF 跑、永远滞后）；颜色过渡保留。 */
 .phase-track {
   position: relative; flex: none; align-self: center;
   width: 64px; height: 18px; border-radius: 999px;
@@ -434,7 +434,7 @@ a { color: inherit; text-decoration: none; }
   position: absolute; top: 50%; left: 0;
   transform: translate(-50%, -50%);
   font-size: 13px; color: var(--accent);
-  transition: left 0.45s linear, color 0.3s;
+  transition: color 0.3s;
 }
 .phase-track.is-night .phase-ico { color: #a9bedd; }
 /* 战场时钟：一圈 = 3 tick（1 tick = 20 分钟，3 tick = 一小时正好一圈，与相位刻度对齐），

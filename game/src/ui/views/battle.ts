@@ -114,6 +114,11 @@ export function renderBattle(host: HTMLElement): void {
   let lastTick = -1
   /** 当前 tick 动画窗的起点（performance.now() 时间轴） */
   let tickStart = 0
+  /** 行动扇叶插值窗：from = 上个窗的终值（tick 变更时捕获）、to = 本窗终值。
+      统一 rAF 在窗内 from→to 逐帧插值——所有扇叶与总进度盘同起同停；from>to
+      （打满清零）由 rAF 直接落 to，不走倒扫。 */
+  const gaugeFrom = new Map<string, number>()
+  const gaugeTo = new Map<string, number>()
   /** —— 增量渲染状态：refresh 只补丁、不整页重建，这些签名决定哪些子树要动 ——
       （为什么改：旧 refresh 每 tick 整页 innerHTML 重建，把全部单位头像 <img> 换成新节点——
         字节走缓存，但每个新元素都要重新解码；自动播放 450ms 一刷就是持续闪。同案记录见
@@ -139,8 +144,22 @@ export function renderBattle(host: HTMLElement): void {
     // resize 转发与联机 MatchRunner 的 onUpdate 都会在本视图被顶掉后继续触发，
     // 若照画就会把棋盘重绘到当前视图上（整备页/大厅被战斗画面盖掉）。
     if (!onBattleRoute()) return
-    // tick 变了 = 真推进了一格：时钟动画窗从这里重新起扫
+    // tick 变了 = 真推进了一格：时钟动画窗从这里重新起扫，同时捕获各扇叶的插值窗
     if (view.tick !== lastTick) {
+      const alive = new Set<string>()
+      for (const u of view.units) {
+        const pct = Math.max(0, Math.min(100, Math.round((u.gauge / 75) * 100)))
+        gaugeFrom.set(u.id, gaugeTo.get(u.id) ?? pct)
+        gaugeTo.set(u.id, pct)
+        alive.add(u.id)
+      }
+      // 消散/放逐的单位从两张表删掉，防 Map 随战局膨胀
+      for (const id of [...gaugeFrom.keys()]) {
+        if (!alive.has(id)) {
+          gaugeFrom.delete(id)
+          gaugeTo.delete(id)
+        }
+      }
       lastTick = view.tick
       tickStart = performance.now()
     }
@@ -162,8 +181,8 @@ export function renderBattle(host: HTMLElement): void {
     } else {
       patch(view, pending, ended, canPick, canInspect, showDecision)
     }
-    // 时钟只在「自动开着（离线）/ 联机 runner 在跑」时走；手动模式它就是一枚静止的装饰
-    if (autoOn || s.online) clockStart()
+    // 统一动画轴常开：手动模式也走（每点一下「推进」，扇叶/日月在下一扇窗内扫过）
+    animStart()
   }
 
   /** 首次：整页骨架（棋盘 + HUD + 两抽屉 + 浮层槽）。此后一切变化走 patch，不再整页重建。 */
@@ -312,21 +331,7 @@ export function renderBattle(host: HTMLElement): void {
       const num = card.querySelector<HTMLElement>('.bar-num')
       const hpText = `${u.hp}/${u.hpMax}`
       if (num && num.textContent !== hpText) num.textContent = hpText
-      const gauge = card.querySelector<HTMLElement>('.unit-gauge')
-      if (gauge) {
-        const next = Math.max(0, Math.min(100, Math.round((u.gauge / 75) * 100)))
-        const prev = Number(gauge.style.getPropertyValue('--p')) || 0
-        if (next < prev) {
-          // 打满清零（行动后 gauge 重置）：挂着 transition 从 100 退回 0 会逆着扫一圈，
-          // 像「倒流」。改成瞬时置黑、再恢复正常的前进扫动——与钟面过 12 点的回绕同理
-          gauge.style.transition = 'none'
-          gauge.style.setProperty('--p', String(next))
-          void gauge.offsetWidth // 强制 reflow：这一跳不吃 transition
-          gauge.style.transition = ''
-        } else {
-          gauge.style.setProperty('--p', String(next))
-        }
-      }
+      // 行动扇叶 --p 归统一 rAF 时间轴逐帧插值（同 tickStart 时间轴，与总盘同步），此处不碰
       const chipsSig = u.statuses.map((st) => `${st.defId}:${st.stacks}`).join(',')
       if (el.dataset.chips !== chipsSig) {
         el.dataset.chips = chipsSig
@@ -349,16 +354,7 @@ export function renderBattle(host: HTMLElement): void {
     if (!hud) return
     setText(hud.querySelector('.hud-tick'), `tick ${view.tick}`)
     setText(hud.querySelector('.hud-phase'), PHASE_NAME[view.phase] ?? view.phase)
-    // 相位图标：在轨道上向右滑动表示一天流逝（transition 与 tick 窗同速），昼换日、夜换月
-    const phaseTrack = hud.querySelector<HTMLElement>('.phase-track')
-    const phaseUse = hud.querySelector<SVGUseElement>('.phase-ico use')
-    if (phaseTrack && phaseUse) {
-      phaseTrack.classList.toggle('is-night', !dayPhase(view.phase))
-      const ico = phaseTrack.querySelector<HTMLElement>('.phase-ico')
-      if (ico) ico.style.left = `${phasePos(view.tick)}%`
-      const href = dayPhase(view.phase) ? '#cg-sigil-sun' : '#cg-sigil-moon'
-      if (phaseUse.getAttribute('href') !== href) phaseUse.setAttribute('href', href)
-    }
+    // 相位图标的平移/换图归统一 rAF 时间轴（连续战场时间逐帧驱动），此处只改阶段名
     setText(hud.querySelector('.hud > .hud-count'), `场上 ${view.units.filter((u) => u.hp > 0).length}`)
     const runner = s.online?.runner
     const pauseBtn = hud.querySelector<HTMLButtonElement>('#btn-pause')
@@ -576,45 +572,60 @@ export function renderBattle(host: HTMLElement): void {
   /** 自动开关：启动时钟即「一直自动」，决策点冻结而非退出 */
   const toggleAuto = (): void => {
     autoOn = !autoOn
-    if (autoOn) {
-      tickStart = performance.now()
-      clockStart()
-    }
+    if (autoOn) tickStart = performance.now()
     refresh()
   }
 
   /**
-   * 战场时钟循环：钟面一圈 = CLOCK_REV_TICKS 个 tick（3 tick = 60 分钟，与相位刻度对齐）。
-   * 每 tick 的动画窗扫 1/3 圈；到窗尾：离线 stepOnce 推进一格，联机等 MatchRunner 自己推进
-   * （refresh 在 tick 变化时已把 tickStart 拨回窗首，这里只管合成位置）。
-   * 决策点/联机暂停 → 冻结（is-paused），rAF 挂着空转，恢复后从原进度续走。
+   * 战场统一动画时间轴：一条 rAF 维护所有「始终在动且要互相同步」的动画——
+   * 总进度盘 --p、各单位行动扇叶 --p（窗内 from→to 插值）、相位轨日/月平移与换图标。
+   * 全部吃同一个 tickStart/span 时间轴：同起同停、严格同步（旧写法扇叶靠 CSS
+   * transition：值在 tick 边界才变、过渡每窗被打断重起，永远落后总盘一拍，肉眼即「不同步」）。
+   * 到窗尾：离线自动 stepOnce 推进一格，联机由 MatchRunner 自己推进。
+   * 决策点/联机暂停 → 整轴冻结（is-paused），rAF 空转，恢复后从原进度续走。
+   * 手动模式也走轴：每点一下「推进」，扇叶/日月在下一扇窗内扫过。结算后停轴。
    */
-  const clockLoop = (now: number): void => {
+  const animLoop = (now: number): void => {
     clockRaf = null
-    // 离开战斗页：停钟，别在后台把整局推完（会记下一场没人看过的胜负）
-    if (!onBattleRoute() || (!autoOn && !s.online)) return
+    // 离开战斗页：停轴，别在后台把整局推完（会记下一场没人看过的胜负）
+    if (!onBattleRoute()) return
     if (s.facade.ended()) return
     const clockEl = host.querySelector<HTMLElement>('.battle-clock')
     if (s.facade.pendingDecision() || s.online?.runner?.isPaused) {
       clockEl?.classList.add('is-paused')
-      clockRaf = requestAnimationFrame(clockLoop)
+      clockRaf = requestAnimationFrame(animLoop)
       return
     }
     clockEl?.classList.remove('is-paused')
     const span = s.online ? ONLINE_STEP_MS : AUTO_TICK_MS
-    // 已走过的整 tick（每 tick 1/REV 圈）+ 当前 tick 窗内进度，合成钟面位置
     const frac = Math.max(0, Math.min(1, (now - tickStart) / span))
+    // 1) 战场总进度盘：一圈 = CLOCK_REV_TICKS 个 tick，每窗扫 1/REV 圈
     const p = (((lastTick % CLOCK_REV_TICKS) + frac) / CLOCK_REV_TICKS) * 100
     clockEl?.style.setProperty('--p', String(p))
-    if (frac >= 1 && !s.online) {
+    // 2) 各单位行动扇叶：同一 frac 在各自 from→to 间插值；from>to（打满清零）直接落 to，不倒扫
+    host.querySelectorAll<HTMLElement>('.unit-gauge[data-unit]').forEach((el) => {
+      const from = gaugeFrom.get(el.dataset.unit ?? '') ?? 0
+      const to = gaugeTo.get(el.dataset.unit ?? '') ?? from
+      el.style.setProperty('--p', String(to < from ? to : from + (to - from) * frac))
+    })
+    // 3) 相位轨：连续战场时间 lastTick+frac 逐帧平移；昼夜边界正好落在整数 tick 上
+    const ct = lastTick + frac
+    const ico = host.querySelector<HTMLElement>('.phase-ico')
+    if (ico) ico.style.left = `${phasePos(ct)}%`
+    const nightNow = !dayPhase(phaseOf(Math.floor(ct)))
+    host.querySelector('.phase-track')?.classList.toggle('is-night', nightNow)
+    const use = host.querySelector<SVGUseElement>('.phase-track use')
+    const href = nightNow ? '#cg-sigil-moon' : '#cg-sigil-sun'
+    if (use && use.getAttribute('href') !== href) use.setAttribute('href', href)
+    if (frac >= 1 && !s.online && autoOn) {
       stepOnce(s)
       refresh()
-      return // refresh 末尾已 clockStart，这里不再续帧，免得同一帧挂两条循环
+      return // refresh 末尾已 animStart，这里不再续帧，免得同一帧挂两条循环
     }
-    clockRaf = requestAnimationFrame(clockLoop)
+    clockRaf = requestAnimationFrame(animLoop)
   }
-  const clockStart = (): void => {
-    if (clockRaf == null) clockRaf = requestAnimationFrame(clockLoop)
+  const animStart = (): void => {
+    if (clockRaf == null) clockRaf = requestAnimationFrame(animLoop)
   }
 
   /**
@@ -845,7 +856,7 @@ function tileHtml(s: BattleSession, u: UnitViewLite, col: number, row: number, t
     <div class="unit-chips">${chips.join('')}</div>
     <div class="unit-card">
       <span class="unit-art">${avatar}</span>
-      <div class="unit-gauge" style="--p:${gaugePct}"></div>
+      <div class="unit-gauge" style="--p:${gaugePct}" data-unit="${escapeHtml(u.id)}"></div>
       <div class="unit-name">${escapeHtml(meta?.name ?? u.id)}${clsname ? `<span class="unit-class">${escapeHtml(clsname)}</span>` : ''}</div>
       <div class="unit-hp">${meta ? emblemHtml(meta.classId) : ''}<div class="cg-progress bar hp">
         <div class="cg-progress__track"><div class="cg-progress__bar cg-progress__bar--warn" style="width:${hpPct}%"></div></div>
