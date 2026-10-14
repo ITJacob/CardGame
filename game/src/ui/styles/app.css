@@ -892,13 +892,16 @@ body.zoom-open { overflow: hidden; }
   height: var(--hs-thumb-h); display: flex; align-items: center; padding: 0 6px;
 }
 
-/* 滚动容器：装不下时用隐藏式横向滚动条（触摸可直接拖）。 */
+/* 滚动容器：装不下时用隐藏式横向滚动条（触摸可直接拖）。
+   scroll-padding-inline：程序化 scrollIntoView 认这条，把选中格停在离滚动口 6px 处，
+   而不是贴死边——选中那格有 1px 金环（box-shadow，往外描），贴死会被滚动口裁掉半条。 */
 .hs-track {
   display: flex; align-items: center; gap: 7px;
   min-width: 0; min-height: 0;
   overflow-x: auto; overflow-y: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  scroll-padding-inline: 6px;
 }
 .hs-track::-webkit-scrollbar { display: none; }
 

@@ -303,6 +303,7 @@ function patchShowcase(sec: HTMLElement, heroes: HeroLike[], catalog: Catalog, i
     if (on) el.setAttribute('aria-current', 'true')
     else el.removeAttribute('aria-current')
   })
+  revealPicked(sec)
   const count = sec.querySelector('.hs-count')
   if (count) count.textContent = n > 1 ? `${i + 1} / ${n}` : ''
   const art = sec.querySelector('.hs-art')
@@ -319,6 +320,21 @@ function patchShowcase(sec: HTMLElement, heroes: HeroLike[], catalog: Catalog, i
   hydrateHeroArt(sec)
   hydrateArt(sec)
   hideCardPop()
+}
+
+/**
+ * 把刚选中的那格滚进名册条视野。整页重绘那条路（见 wireHeroShowcase）靠渲染后的一次
+ * scrollIntoView 定位，翻英雄的就地补丁不重绘，得自己补上——否则横屏点了底下缩略图，
+ * 上面那条大图还停在原地，人「选中了却看不见」，只能去点两端箭头把条滚过去。
+ *
+ * behavior: 'smooth' 与箭头滚条（scrollTrackByOne）同一手感，选择与滚动才有因果关系。
+ * 先判溢出：竖屏名册条装得下（scrollWidth === clientWidth）时一次都不碰。
+ */
+function revealPicked(sec: HTMLElement): void {
+  const track = sec.querySelector<HTMLElement>('.hs-track')
+  if (track && track.scrollWidth > track.clientWidth) {
+    track.querySelector<HTMLElement>('.hs-cell.is-on')?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' })
+  }
 }
 
 /** 右栏卡面的池键：与 cardGroupHtml 里那张卡面的渲染参数逐字一致（data-card + 所在组），
