@@ -14,6 +14,23 @@ function clamp(v: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, v))
 }
 
+/**
+ * 时长口径（编队参数 §1.1b duration）：正整数 = 自然到期；null = 常驻（不自然到期）。
+ * 载荷层（Grant）的 duration 省略或 null 一律是「未指定」→ 回退 StatusDef.duration；
+ * 只有 Def 层也写 null 才是常驻——载荷层不表达常驻。
+ */
+function resolveDuration(grant: number | null | undefined, def: number | null | undefined): number | null {
+  const raw = grant ?? def
+  if (raw === null || raw === undefined) return null
+  return Math.max(0, Math.floor(raw))
+}
+
+/** refresh 取长者；常驻恒胜（编队上下文 §2.4） */
+function longer(a: number | null, b: number | null): number | null {
+  if (a === null || b === null) return null
+  return Math.max(a, b)
+}
+
 export class CombatStatusSet implements StatusSet {
   private instances: StatusInstance[] = []
 
@@ -25,14 +42,14 @@ export class CombatStatusSet implements StatusSet {
   mount(defId: string, grant: StatusGrant): StatusInstance | null {
     const def = this.defs.statusDef(defId)
     const maxStacks = Math.max(1, def?.maxStacks ?? 1)
-    const duration = Math.max(0, Math.floor(grant.duration ?? def?.duration ?? 1))
+    const duration = resolveDuration(grant.duration, def?.duration)
     const addStacks = Math.max(1, Math.floor(grant.stacks ?? 1))
 
     const existing = this.instances.find((i) => i.defId === defId)
     if (existing) {
       // schema 的 stackPolicy 只有 stack/refresh；层数累加与 policy 无关（编队参数 §2.4）
       existing.currentStacks = clamp(existing.currentStacks + addStacks, 1, maxStacks)
-      existing.remaining = Math.max(existing.remaining, duration)
+      existing.remaining = longer(existing.remaining, duration)
       return existing
     }
 
@@ -68,6 +85,7 @@ export class CombatStatusSet implements StatusSet {
     const expired: StatusInstance[] = []
     for (const i of this.instances) {
       if (!owned(i)) continue
+      if (i.remaining === null) continue // 常驻不递减（编队参数 §1.1b duration）
       if (i.remaining <= 0) continue
       i.remaining -= 1
       if (i.remaining <= 0) expired.push(i)

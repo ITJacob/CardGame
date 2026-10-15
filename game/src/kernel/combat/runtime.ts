@@ -530,11 +530,11 @@ class CombatRuntime implements CombatRuntimeHandle {
 
   private opShuffleStatuses(units: readonly CombatUnit[], count: number): void {
     if (units.length < 2) return
-    const taken: (readonly { instanceId: string; defId: string; remaining: number; currentStacks: number }[] | null)[] =
+    const taken: (readonly { instanceId: string; defId: string; remaining: number | null; currentStacks: number }[] | null)[] =
       units.map((u) => u.statuses.all().slice(0, count) as never)
     // 顺时针轮转：A 的状态给 B，B 给 C…（保序、确定性）
     units.forEach((u, i) => {
-      const src = taken[i] as readonly { instanceId: string; defId: string; remaining: number; currentStacks: number }[] | null
+      const src = taken[i] as readonly { instanceId: string; defId: string; remaining: number | null; currentStacks: number }[] | null
       if (!src) return
       for (const inst of src) {
         u.statuses.mount(inst.defId, { duration: inst.remaining, stacks: inst.currentStacks, sourceId: this.ids.next('shuffle') })

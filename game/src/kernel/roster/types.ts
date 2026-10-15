@@ -119,7 +119,8 @@ export interface ShieldLayer {
 }
 
 export interface StatusGrant {
-  duration?: number
+  /** 正整数 = 覆盖 StatusDef.duration；省略 / null = 未指定 → 回退 StatusDef.duration（编队参数 §1.1b duration） */
+  duration?: number | null
   /** 时长口径：缺省承接 StatusDef.durationUnit，再缺省 tick */
   durationUnit?: DurationUnit
   stacks?: number
@@ -133,7 +134,8 @@ export interface StatusInstance {
   instanceId: InstanceId
   defId: string
   grant: StatusGrant
-  remaining: number
+  /** 剩余时长；null = 常驻（StatusDef.duration 为 null，不自然到期） */
+  remaining: number | null
   currentStacks: number
 }
 

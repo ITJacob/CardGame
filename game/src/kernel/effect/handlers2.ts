@@ -68,7 +68,8 @@ export function handleDrain(node: EffDrain, target: CombatUnit | null, ctx: Effe
 export function handleModifyStatus(node: EffModifyStatus, target: CombatUnit | null, _ctx: EffectContext): void {
   if (!target) return
   for (const inst of target.statuses.byDef(node.statusId)) {
-    if (node.addDuration) inst.remaining = Math.max(0, inst.remaining + node.addDuration)
+    // 常驻（remaining = null）不从「延长/缩短」里取值：加时长不改变常驻语义
+    if (node.addDuration && inst.remaining !== null) inst.remaining = Math.max(0, inst.remaining + node.addDuration)
     if (node.setDuration !== undefined && node.setDuration !== null) inst.remaining = node.setDuration
     if (node.stacksDelta) inst.currentStacks = Math.max(0, inst.currentStacks + node.stacksDelta)
   }
@@ -85,7 +86,13 @@ export function handleTransferStatus(node: EffTransferStatus, target: CombatUnit
   for (const instanceId of matchStatuses(target, undefined, catList, ctx)) {
     const inst = target.statuses.all().find((i) => i.instanceId === instanceId)
     if (!inst) continue
-    const duration = node.keepDuration === false ? (node.durationMul ?? 1) * inst.remaining : inst.remaining
+    // 常驻（null）原样传递；其余按 keepDuration/durationMul 折算
+    const duration =
+      inst.remaining === null
+        ? null
+        : node.keepDuration === false
+          ? (node.durationMul ?? 1) * inst.remaining
+          : inst.remaining
     const stacks = Math.max(1, Math.round((node.stacksMul ?? 1) * inst.currentStacks))
     ctx.mountStatus(dest, inst.defId, { duration, stacks })
     if (!copy) {
