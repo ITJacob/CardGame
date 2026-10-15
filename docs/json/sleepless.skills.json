@@ -1994,7 +1994,6 @@
       "flavor": "你的行迹从不在世上留下痕迹——每次被击中，你就像从未站在那里一样，重新隐入无人的暗处。",
       "describe": "战斗开始时获得「无迹之影」：自身与己方单位的隐匿状态不可被驱散；自身开局即自持潜匿，且每次受击后重新获得 2 个自身回合的潜匿。",
       "hook": [
-        "on_tick",
         "on_battle_start"
       ],
       "effects": [
@@ -2013,7 +2012,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴受击即隐循环。｜2026-10-10 对账：补记开局自持潜匿（mount covert_veil duration null，原描述只写了受击重隐）。｜2026-10-15 受击重挂改 self_turn 2（原 10tick），与 covert_veil 时长口径统一。",
+      "conversionNotes": "翻译/语义：隐秘轴受击即隐循环。｜2026-10-10 对账：补记开局自持潜匿（mount covert_veil duration null，原描述只写了受击重隐）。｜2026-10-15 受击重挂改 self_turn 2（原 10tick），与 covert_veil 时长口径统一。｜2026-10-15 摘 on_tick 钩子（原 on_tick + on_battle_start）：每 tick 重挂自身 covert_veil 会把剩余时长刷回满，使「出手即破」下一 tick 就复原——与 2026-10-10 隐秘权柄「自身潜匿不再每 tick 补回」的裁定直接冲突（该裁定被本钩子反制）。改回只在 on_battle_start 挂一次；受击重隐由 traceless 的 on_take_damage 触发器承载，与卡面描述一致。",
       "art": {
         "subject": "a struck figure dissolving back into the dark without a trace",
         "elements": [
