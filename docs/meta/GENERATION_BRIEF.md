@@ -62,17 +62,18 @@ v0.2 只锁效果不锁数值，但**框架的语义维度封得太死**——�
 | 伤害转移 | 伤害转嫁 |
 | **burn** | debuff，每 tick 2 伤，duration 15（3 回合） |
 
-### 1.3 触发点（**取值域封闭，共 14 个**；2026-09-29 增第 14）
+### 1.3 触发点（**取值域封闭，共 15 个**；2026-09-29 增第 14 `on_status_gain`，2026-10-15 增第 15 `on_turn_end`）
 
 定义见 `../ddd/params/执行参数.md` §2.1：
 
-`on_apply` / `on_remove` / `on_tick` / `on_turn_start` / `on_battle_start` / `on_spawn` / `on_death` / `on_kill` / `on_attack` / `on_take_damage` / `on_deal_damage` / `on_active_skill` / `on_status_gain`
+`on_apply` / `on_remove` / `on_tick` / `on_turn_start` / `on_turn_end` / `on_battle_start` / `on_spawn` / `on_death` / `on_kill` / `on_attack` / `on_active_skill` / `on_take_damage` / `on_deal_damage` / `on_phase_change` / `on_status_gain`
 
 三条易错纪律：
 
 - ⚠️ `on_spawn` 会在召唤物 / 增援登场时**重复 fire**，绝不能当"开局"用。凡"战斗开始时生效"一律用 `on_battle_start`。
 - ⚠️ `on_kill` 与 `on_death` **接收方不同**：`on_kill` fire 给**击杀者**，`on_death` fire 给**持有该被动的单位**（并支持全局监听）。击杀触发用 `on_kill`，不要用 `on_deal_damage` 凑（见 §7 G2）。
 - ⚠️ `on_attack` 与 `on_active_skill` 的分工：普攻只 fire `on_attack`；非攻击主动技能只 fire `on_active_skill`；**攻击类主动技能两者都 fire**。需要「任何主动行为」语义的订阅方要同时挂两者（见 §7 裁决变更）。
+- ⚠️ `on_turn_start` / `on_turn_end` 是**机会括号**（INV-S6）：只 fire 给「本次获得行动机会」的单位，且**敏捷越高越密**（不再是每 5 tick 给全体广播）；左端 fire 于机会授予时、右端 fire 于机会闭合时（被硬控/无可选行为记为 wasted 也闭合）。要写「持续 N 个自身回合」用 `durationUnit: "self_turn"`，**不要折成 N×5 tick**（见 §14）。
 
 ### 1.4 三个术语算子（编目期展开成扁平 EffectRef）
 `Sequence` / `Repeat` / `If`

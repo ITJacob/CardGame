@@ -295,7 +295,7 @@ Gate（validate.py）：`phases` 非空且取值合法、`mul>0`；`mul` 越出 
 ```
 
 `landed: false` = 仍欠账。当前 104 张卡带 flag（共 109 条），其中 **46 条为 `landed: false`**。
-✅ 触发点 `on_status_gain` 已落地为第 14 触发点（2026-09-29 内核裁定，执行参数 §2.1）；frameworkFlag 登记随裁定批全量销账。
+✅ 触发点 `on_status_gain` 已落地为第 14 触发点（2026-09-29 内核裁定，执行参数 §2.1）；`on_turn_end` 已落地为第 15 触发点（2026-10-15，机会括号右端）；frameworkFlag 登记随裁定批全量销账。
 
 **与 `conversionNotes` 的边界（2026-09-19 明确，避免重复排查）**
 

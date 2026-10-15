@@ -36,10 +36,11 @@ TGT = {"self": "自身", "caster": "施法者", "target": "目标", "primary_tar
        "splash_behind": "溅射身后", "one_own_snare_trap": "自身一个陷阱"}
 RARITY = {"common": "普通", "uncommon": "精良", "rare": "稀有", "epic": "史诗", "legendary": "传说"}
 SIDE = {"self": "自身", "target": "目标", "ally": "友军", "enemy": "敌人", "both": "双方", "all": "全场"}
-EVENT = {"on_apply": "施加时", "on_remove": "移除时", "on_tick": "每 tick", "on_turn_start": "回合开始",
+EVENT = {"on_apply": "施加时", "on_remove": "移除时", "on_tick": "每 tick", "on_turn_start": "获得机会时",
+         "on_turn_end": "机会闭合时",
          "on_battle_start": "战斗开始", "on_spawn": "登场时", "on_death": "死亡时", "on_kill": "击杀时",
          "on_attack": "攻击时", "on_take_damage": "受伤时", "on_deal_damage": "造成伤害时",
-         "on_active_skill": "施放技能时", "on_status_gain": "获得状态时"}
+         "on_active_skill": "施放技能时", "on_status_gain": "获得状态时", "on_phase_change": "相位变更时"}
 # 状态修正键 → 中文（未命中的用原键名）
 MODCN = {
     "damage_taken_mul": "受到伤害", "damageTakenMul": "受到伤害", "damageTakenBonus": "受到伤害",
