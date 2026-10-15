@@ -115,10 +115,12 @@ function artPrompt(c) {
 // （与画面 prompt 三段拼装对称）。screen 混合要求框图层与卡面同处一层叠上下文，故
 // .cs-artwrap 设 isolation:isolate，且 .cs-orn 落在 .cs-art / .cs-vignette 之后绘制。
 function frameFor(c) {
-  if (c.rarity === 'epic' && c._frameEpic) return { file: `frame-${c._pathway}-epic`, prompt: c._frameEpic };
-  if (c.rarity === 'legendary' && c._frameLegendary) return { file: `frame-${c._pathway}-legendary`, prompt: c._frameLegendary };
+  // 途径专属框（frame-<途径>-epic/legendary，主题层在 skills.json）缺图时回落通用档，
+  // 回落目标写进 fallback 字段，由 wireCardFrame 挂链（2026-10-15 通用档入库后启用）
+  if (c.rarity === 'epic' && c._frameEpic) return { file: `frame-${c._pathway}-epic`, prompt: c._frameEpic, fallback: `frame-epic` };
+  if (c.rarity === 'legendary' && c._frameLegendary) return { file: `frame-${c._pathway}-legendary`, prompt: c._frameLegendary, fallback: `frame-legendary` };
   const p = DB.artFrame?.[c.rarity];
-  // 前三档为自包含完整 prompt（见 PROMPTS_REFERENCE.md），不套 artFrameFormat
+  // 前五档为自包含完整 prompt（见 PROMPTS_REFERENCE.md），不套 artFrameFormat
   return p ? { file: `frame-${c.rarity}`, prompt: p, selfContained: true } : null;
 }
 
@@ -146,7 +148,7 @@ function artHtml(c) {
     <div class="cs-artwrap">
       <img class="cs-art" src="${escapeHtml(artCandidates(c)[0])}" srcset="${artSrcset(c)}" sizes="(max-width: 640px) 92vw, 420px" alt="${escapeHtml(c.name)}" loading="lazy">
       <div class="cs-vignette"></div>
-      ${f ? `<img class="cs-orn" src="../assets/frames/${f.file}.png" alt="" loading="lazy" onerror="this.remove()">` : ''}
+      ${f ? `<img class="cs-orn" src="../assets/frames/${f.file}.png" alt="" loading="lazy" data-frame-fallback="${f.fallback ?? ''}">` : ''}
       <div class="cs-artmiss" hidden>卡面缺失：把图命名为 <span class="mono">${escapeHtml(c.id)}.png</span> 放进 <span class="mono">source/cards/</span>，再跑 <span class="mono">tools/build_art_variants.py</span> 出派生图（上面 id 点一下就复制）。格式必须是 png/jpg/webp，HEIC 浏览器渲染不了</div>
     </div>
   </section>`;
@@ -166,6 +168,25 @@ function wireCardArt(view, c) {
     img.style.display = 'none';        // 整条链都 404：不留破图占位
     if (miss) miss.hidden = false;
   });
+}
+
+// 框体回落链：途径专属框（data-frame-fallback 有值）404 → 换同稀有度通用档；
+// 无回落目标的（前三档）404 直接移除，不留破图占位
+function wireCardFrame(view) {
+  const img = view.querySelector('.cs-orn');
+  if (!img) return;
+  const fail = () => {
+    const alt = img.dataset.frameFallback;
+    if (alt) {
+      img.dataset.frameFallback = '';
+      img.src = `../assets/frames/${alt}.png`;
+      return;
+    }
+    img.remove();
+  };
+  // loading=lazy 的图可能在挂监听前就已失败（缓存 404）：同步补走一次链
+  if (img.complete && img.naturalWidth === 0) fail();
+  img.addEventListener('error', fail);
 }
 
 export function renderCardDetail(view, id) {
@@ -239,6 +260,7 @@ export function renderCardDetail(view, id) {
   `;
 
   wireCardArt(view, c);
+  wireCardFrame(view);
 
   wireCopy(view);
 }

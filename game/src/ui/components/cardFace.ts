@@ -25,20 +25,22 @@ const FRAME_BASE = './assets/frames/'
 
 /**
  * 稀有度 → 边框图。common/uncommon/rare 是全局三张（盘上已有）；
- * epic/legendary 按途径出图（frame-<途径>-epic.png），44 张尚未产出 → 落到 rare 那张，
- * 由 frameFallbackUrl 提供，避免「传奇」和「稀有」长得一模一样。
+ * epic/legendary 优先按途径出图（frame-<途径>-epic.png），44 张尚未产出 →
+ * 无途径时落通用档 frame-epic/frame-legendary.png（2026-10-15 起已入库），
+ * 途径图 404 再由 frameFallbackUrl 提供第二跳，避免「史诗/传说」和「稀有」
+ * 长得一模一样。
  */
 export function frameUrl(rarity: string, pathwayId?: string): string {
   if (rarity === 'epic' || rarity === 'legendary') {
-    return pathwayId ? `${FRAME_BASE}frame-${pathwayId}-${rarity}.png` : `${FRAME_BASE}frame-rare.png`
+    return pathwayId ? `${FRAME_BASE}frame-${pathwayId}-${rarity}.png` : `${FRAME_BASE}frame-${rarity}.png`
   }
   const tier = rarity === 'uncommon' || rarity === 'rare' ? rarity : 'common'
   return `${FRAME_BASE}frame-${tier}.png`
 }
 
-/** 主图 404 时的第二跳；null 表示这张已是终态、没有下一跳 */
+/** 主图 404 时的第二跳（途径图缺 → 同稀有度通用档）；null 表示这张已是终态、没有下一跳 */
 export function frameFallbackUrl(rarity: string): string | null {
-  return rarity === 'epic' || rarity === 'legendary' ? `${FRAME_BASE}frame-rare.png` : null
+  return rarity === 'epic' || rarity === 'legendary' ? `${FRAME_BASE}frame-${rarity}.png` : null
 }
 
 const RARITY_EMOJI: Record<string, string> = {
@@ -146,7 +148,8 @@ export function hydrateArt(root: HTMLElement): void {
     const fail = (): void => {
       const alt = img.dataset.frameFallback
       if (alt) {
-        // 第二跳：暂时借用 rare 那张，同时点亮本稀有度的内描边色环，免得与真·稀有混淆
+        // 第二跳：途径专属图缺失 → 换同稀有度通用档（frame-epic/frame-legendary），
+        // 同时点亮 frame-degraded 提示「这不是本途径专属框」
         img.dataset.frameFallback = ''
         img.closest<HTMLElement>('.card-face')?.classList.add('frame-degraded')
         img.src = alt
