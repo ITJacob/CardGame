@@ -598,14 +598,15 @@
             {
               "type": "mount_status",
               "statusId": "covert_veil",
-              "duration": 10,
+              "duration": 2,
+              "durationUnit": "self_turn",
               "target": "self",
               "note": "受击后痕迹被抹去，重新隐去"
             }
           ]
         }
       ],
-      "note": "『无迹之影』隐秘轴身份增益：覆写 conceal 类状态不可驱散；受击后重挂 covert_veil 10tick（痕迹自抹）。"
+      "note": "『无迹之影』隐秘轴身份增益：覆写 conceal 类状态不可驱散；受击后重挂 covert_veil 2 个自身回合（敏捷 0 时≈10tick，痕迹自抹）。"
     },
     {
       "id": "dark_vassal",
@@ -702,7 +703,7 @@
           "note": "将任何事物变隐秘：己方 conceal 类状态不可驱散"
         }
       },
-      "note": "授予一次性：自身潜匿不再每 tick 补回——出手自破（covert_veil 自身 on_deal_damage 触发器）或被隐秘之地消耗后不复原，再隐靠无迹之影受击重挂或隐秘化重挂。友军/召唤物走 on_tick 维护通道（只为后登场者补挂，不含自身）。原记『出手破除的潜匿 10 tick 后自动重新挂载』无实现载体（无延迟原语），作废。",
+      "note": "授予一次性：自身潜匿不再每 tick 补回——出手自破（covert_veil 自身的 on_attack + on_active_skill 双挂触发器，效果结算后破除）或被隐秘之地消耗后不复原，再隐靠无迹之影受击重挂或隐秘化重挂。友军/召唤物走 on_tick 维护通道（只为后登场者补挂，不含自身）。原记『出手破除的潜匿 10 tick 后自动重新挂载』无实现载体（无延迟原语），作废。",
       "crossPathway": true,
       "participants": [
         "apprentice",
@@ -826,7 +827,8 @@
         "conceal"
       ],
       "dispelable": true,
-      "duration": 10,
+      "duration": 3,
+      "durationUnit": "self_turn",
       "modifiers": {
         "untargetableByTargeted": {
           "direction": "inbound",
@@ -835,24 +837,35 @@
       },
       "triggers": [
         {
-          "event": "on_deal_damage",
+          "event": "on_attack",
           "effects": [
             {
               "type": "dispel",
               "target": "self",
               "dispelTarget": "unit",
-              "filter": {
-                "statusId": "covert_veil",
-                "count": 1
-              },
-              "note": "出手自动破除潜行"
+              "statusId": "covert_veil",
+              "count": 1,
+              "note": "出手自动破除潜行（普攻）"
+            }
+          ]
+        },
+        {
+          "event": "on_active_skill",
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "self",
+              "dispelTarget": "unit",
+              "statusId": "covert_veil",
+              "count": 1,
+              "note": "出手自动破除潜行（主动技能）"
             }
           ]
         }
       ],
       "id": "covert_veil",
       "name": "潜匿",
-      "note": "不眠者私有隐匿状态（自 common conceal 分叉，语义同源，夜视/分类驱散/不可驱散覆写照常生效）；全途径 statusId 级引用统一指此 id。单层状态：不叠层，重复施加只刷新时长（stackPolicy refresh）。",
+      "note": "不眠者私有隐匿状态（自 common conceal 分叉，语义同源，夜视/分类驱散/不可驱散覆写照常生效）；全途径 statusId 级引用统一指此 id。单层状态：不叠层，重复施加只刷新时长（stackPolicy refresh）。时长口径 self_turn（3 个自身回合，敏捷 0 时≈15tick）：破隐走 on_attack + on_active_skill 双挂（任何主动行为，效果结算后 fire，本轮仍吃潜匿收益），故隐身期间的硬控/无可选行为不会破隐。⚠️ 破隐的 dispel 用**平铺** statusId/count（非 filter.statusId）：引擎 dispel 只认平铺选择器，写在 filter 里会被当「无选择器」→ 清光目标全部状态；库内另有 102 处该写法，待单独轮次统一（见 待办）。",
       "maxStacks": 1,
       "stackPolicy": "refresh"
     },

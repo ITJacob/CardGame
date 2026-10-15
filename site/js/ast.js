@@ -52,6 +52,11 @@ function tgt(e) {
   return e.target ? termSpan('effectTarget', e.target) : '目标';
 }
 
+// 时长单位（durationUnit）：缺省 tick 不写；self_turn 写「3 自身回合」（调度参数 §〇点五）
+function durTxt(e) {
+  return e.durationUnit ? `${fmtVal(e.duration)} ${termSpan('durationUnit', e.durationUnit, { showKey: false })}` : fmtVal(e.duration);
+}
+
 // statusId 的统一入口：$ 前缀是状态定义内的运行时变量引用，不是状态 id，不能查词典
 const STATUS_VAR_ZH = { $self: '本状态' };
 function statusRef(id) {
@@ -137,21 +142,21 @@ const PRIMITIVE_TEMPLATES = {
     return s;
   },
   mount_status: (e, used) => {
-    used.push('statusId', 'status', 'duration', 'stacks', 'stackMode', 'charges');
+    used.push('statusId', 'status', 'duration', 'durationUnit', 'stacks', 'stackMode', 'charges');
     const id = e.statusId || e.status;
     const parts = [];
-    if (e.duration != null) parts.push(`持续 ${fmtVal(e.duration)}`);
+    if (e.duration != null) parts.push(`持续 ${durTxt(e)}`);
     if (e.stacks != null) parts.push(`${fmtVal(e.stacks)} 层`);
     if (e.stackMode) parts.push(termSpan('stackMode', e.stackMode));
     if (e.charges != null) parts.push(`${fmtVal(e.charges)} 次`);
     return `给${tgt(e)}挂载${statusRef(id)}${parts.length ? `（${parts.join('，')}）` : ''}`;
   },
   modify_stat: (e, used) => {
-    used.push('stat', 'value', 'mode', 'duration', 'sourceRef', 'spread');
+    used.push('stat', 'value', 'mode', 'duration', 'durationUnit', 'sourceRef', 'spread');
     const modeTxt = { delta: '增减', set: '设为', mul: '乘以', to_at_least: '至少提到', to_at_most: '至多压到' }[e.mode] || e.mode || '增减';
     let s = `${tgt(e)}的${termSpan('stat', e.stat)} ${modeTxt} ${fmtVal(e.value)}`;
     const parts = [];
-    if (e.duration != null) parts.push(`持续 ${fmtVal(e.duration)}`);
+    if (e.duration != null) parts.push(`持续 ${durTxt(e)}`);
     if (e.sourceRef) parts.push(`参照${termSpan('sourceRef', e.sourceRef)}`);
     if (parts.length) s += `（${parts.join('，')}）`;
     return s;
