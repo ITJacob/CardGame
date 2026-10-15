@@ -1208,7 +1208,7 @@
               "type": "null"
             }
           ],
-          "description": "持续数（单位由 durationUnit 决定，缺省 tick；1 回合 = 5 tick）；null = 跟随状态定义/常驻。"
+          "description": "持续时间（单位由 durationUnit 决定，缺省 tick；1 回合 = 5 tick）。省略或 null = 未指定 → 回退目标 StatusDef.duration；正整数 = 覆盖其时长。载荷层不表达「常驻」——常驻只在 StatusDef.duration 写 null。"
         },
         "durationUnit": {
           "enum": [
@@ -1353,7 +1353,8 @@
             {
               "type": "null"
             }
-          ]
+          ],
+          "description": "正整数 = 限时修正（账本条目自带 remaining）；省略或 null = 永久（无 Def 层可回退，不可被驱散 INV-P7）。"
         },
         "durationUnit": {
           "enum": [
@@ -2761,7 +2762,8 @@
             {
               "type": "null"
             }
-          ]
+          ],
+          "description": "状态时长。正整数 = 自然到期（按 durationUnit 计）；null 或缺省 = 常驻（不自然到期，时长递减跳过）。挂载载荷（effMountStatus/Grant）的省略或 null 回退到本字段。"
         },
         "durationUnit": {
           "enum": [
