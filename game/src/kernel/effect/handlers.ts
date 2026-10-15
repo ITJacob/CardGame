@@ -82,6 +82,7 @@ export function handleMountStatus(node: EffMountStatus, target: CombatUnit | nul
   if (!target || target.isDead) return
   ctx.mountStatus(target, node.statusId, {
     duration: node.duration ?? undefined,
+    durationUnit: node.durationUnit,
     stacks: typeof node.stacks === 'number' ? node.stacks : undefined,
     params: node.params as Record<string, number> | undefined,
   })
@@ -102,7 +103,7 @@ export function handleModifyStat(node: EffModifyStat, target: CombatUnit | null,
   }
   const sourceId = ctx.ids.next('mod')
   if (node.duration == null) target.provenance.apply(stat, round2(delta), sourceId)
-  else target.provenance.applyTimed(stat, round2(delta), sourceId, node.duration)
+  else target.provenance.applyTimed(stat, round2(delta), sourceId, node.duration, node.durationUnit)
 }
 
 export function handleModifyResource(node: EffModifyResource, target: CombatUnit | null, ctx: EffectContext): void {

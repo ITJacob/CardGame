@@ -131,6 +131,9 @@ ENUM_TO_CAT = {
     "zoneGrant.affects": "zoneAffects",
     "zoneDef.durationUnit": "durationUnit",
     "zoneGrant.durationUnit": "durationUnit",
+    "effMountStatus.durationUnit": "durationUnit",
+    "effModifyStat.durationUnit": "durationUnit",
+    "statusDef.durationUnit": "durationUnit",
     # $defs 顶层的独立枚举（与 validate.py 已覆盖的部分重叠，合并不冲突）
     "actionLock": "actionLock",
     "effectTarget": "effectTarget",

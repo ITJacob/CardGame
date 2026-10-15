@@ -53,6 +53,8 @@ export interface EffMountStatus extends EffBase {
   type: 'mount_status'
   statusId: string
   duration?: number | null
+  /** 时长口径（调度参数 §〇点五）；缺省 tick */
+  durationUnit?: 'tick' | 'self_turn'
   stacks?: number | string
   stackMode?: 'add' | 'consume' | 'override'
   maxStacks?: number
@@ -72,6 +74,8 @@ export interface EffModifyStat extends EffBase {
   value?: Scalar
   mode: 'delta' | 'set' | 'mul' | 'to_at_least' | 'to_at_most'
   duration?: number | null
+  /** 时长口径（调度参数 §〇点五）；缺省 tick */
+  durationUnit?: 'tick' | 'self_turn'
   sourceRef?: 'caster' | 'secondary_target' | 'field_average'
   valueFrom?: ValueFrom | Record<string, Scalar>
   filter?: UnitFilter
@@ -336,6 +340,8 @@ export interface StatusDef {
   category: string[]
   dispelable: boolean
   duration?: number | null
+  /** 默认时长口径（调度参数 §〇点五）；缺省 tick */
+  durationUnit?: 'tick' | 'self_turn'
   modifiers?: ModifierSet
   triggers?: TriggerDef[]
   effects?: EffectNode[]

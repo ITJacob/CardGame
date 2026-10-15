@@ -1212,7 +1212,14 @@
               "type": "null"
             }
           ],
-          "description": "持续 tick 数（1 回合 = 5 tick）；null = 跟随状态定义/常驻。"
+          "description": "持续数（单位由 durationUnit 决定，缺省 tick；1 回合 = 5 tick）；null = 跟随状态定义/常驻。"
+        },
+        "durationUnit": {
+          "enum": [
+            "tick",
+            "self_turn"
+          ],
+          "description": "时长口径：tick = 墙钟 tick；self_turn = 持有者自身的行动机会数（「持续 N 个自身回合」用这个，随敏捷变密）。见 ddd/params/调度参数.md §〇点五。"
         },
         "stacks": {
           "oneOf": [
@@ -1351,6 +1358,13 @@
               "type": "null"
             }
           ]
+        },
+        "durationUnit": {
+          "enum": [
+            "tick",
+            "self_turn"
+          ],
+          "description": "时长口径：tick = 墙钟 tick（缺省）；self_turn = 目标自身的行动机会数。见 ddd/params/调度参数.md §〇点五。"
         },
         "sourceRef": {
           "enum": [
@@ -2752,6 +2766,13 @@
               "type": "null"
             }
           ]
+        },
+        "durationUnit": {
+          "enum": [
+            "tick",
+            "self_turn"
+          ],
+          "description": "时长口径：tick = 墙钟 tick（缺省）；self_turn = 持有者自身的行动机会数（「持续 N 个自身回合」的次数型 buff 用这个）。见 ddd/params/调度参数.md §〇点五。"
         },
         "modifiers": {
           "$ref": "#/$defs/modifierSet",

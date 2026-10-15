@@ -1874,16 +1874,20 @@
     },
     "durationUnit": {
       "label": "时长单位",
-      "desc": "持续时间的计时单位：tick（最小时间刻度）或回合（单位一次行动周期）。两者不可混用——换错会把「每回合」变成「每 tick」。",
-      "source": "skills.schema.json",
+      "desc": "持续时间的计时单位：tick（最小时间刻度）、回合（固定 1 回合 = 5 tick，仅界域/区域系）、自身回合（按持有者自己的行动机会数递减，挂单位的状态与 modify_stat 用）。三者不可混用——换错会把「每回合」变成「每 tick」。",
+      "source": "skills.schema.json / 调度参数.md §〇点五",
       "terms": {
         "turn": {
           "zh": "回合",
-          "brief": "以单位行动周期计"
+          "brief": "固定 5 tick 口径，仅界域/区域/放逐系"
         },
         "tick": {
           "zh": "tick",
           "brief": "最小时间刻度；tick ≠ 回合"
+        },
+        "self_turn": {
+          "zh": "自身回合",
+          "brief": "持有者每获得一次行动机会扣 1（随敏捷变密），用于「持续 N 个自身回合」"
         }
       }
     },

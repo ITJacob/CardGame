@@ -54,10 +54,20 @@ export class CombatStatusSet implements StatusSet {
     return removed ?? null
   }
 
-  /** tick 第 6 步：递减 remaining，返回到期卸载者。 */
+  /** tick 第 6 步：递减 remaining，返回到期卸载者（只动 tick 口径）。 */
   tick(): StatusInstance[] {
+    return this.drain((i) => this.unitOf(i) === 'tick')
+  }
+
+  /** 机会括号左端：递减 self_turn 口径的 remaining，返回到期卸载者。 */
+  tickSelfTurn(): StatusInstance[] {
+    return this.drain((i) => this.unitOf(i) === 'self_turn')
+  }
+
+  private drain(owned: (i: StatusInstance) => boolean): StatusInstance[] {
     const expired: StatusInstance[] = []
     for (const i of this.instances) {
+      if (!owned(i)) continue
       if (i.remaining <= 0) continue
       i.remaining -= 1
       if (i.remaining <= 0) expired.push(i)
@@ -67,6 +77,11 @@ export class CombatStatusSet implements StatusSet {
       this.instances = this.instances.filter((i) => !gone.has(i.instanceId))
     }
     return expired
+  }
+
+  /** 时长口径：Grant 覆盖 Def，再缺省 tick（调度参数 §〇点五） */
+  private unitOf(i: StatusInstance): 'tick' | 'self_turn' {
+    return i.grant.durationUnit ?? this.defs.statusDef(i.defId)?.durationUnit ?? 'tick'
   }
 
   all(): readonly StatusInstance[] {

@@ -7,6 +7,7 @@ import { createCombat } from '../src/kernel'
 import { buildCatalog } from '../src/data/catalogBuild'
 import type { PathwayFile } from '../src/data/schema.types'
 import type { CombatFacade, CombatSetup, DomainEvent } from '../src/kernel/combat/types'
+import type { StatusGrant } from '../src/kernel/roster/types'
 
 // 探针：passive 卡把 hook 直接编译成触发器，效果 = 挂一个永久标记状态
 const PROBE: PathwayFile = {
@@ -53,6 +54,25 @@ const PROBE: PathwayFile = {
         { id: 'probe_b', name: '终', category: ['buff'], dispelable: false, duration: 9999, maxStacks: 1, stackPolicy: 'refresh' },
       ],
     },
+    // self_turn 时长验证用：自身回合/墙钟两种口径的同形状态，各在 on_turn_start 挂一个标记
+    {
+      id: 'probe_keep', name: '探针·时长', kind: 'passive', sequence: 1, sequenceName: 's1', rarity: 'common',
+      axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
+      effects: [],
+      statusDefs: [
+        {
+          id: 'probe_self_st', name: '自身回合计时', category: ['buff'], dispelable: false,
+          duration: 2, durationUnit: 'self_turn', maxStacks: 1, stackPolicy: 'refresh',
+          triggers: [{ event: 'on_turn_start', effects: [{ type: 'mount_status', statusId: 'probe_c', duration: 9999 }] }],
+        },
+        {
+          id: 'probe_tick_st', name: '墙钟计时', category: ['buff'], dispelable: false,
+          duration: 2, maxStacks: 1, stackPolicy: 'refresh',
+          triggers: [{ event: 'on_turn_start', effects: [{ type: 'mount_status', statusId: 'probe_c', duration: 9999 }] }],
+        },
+        { id: 'probe_c', name: '记', category: ['buff'], dispelable: false, duration: 9999, maxStacks: 1, stackPolicy: 'refresh' },
+      ],
+    },
   ],
 }
 
@@ -61,6 +81,8 @@ interface ProbeOptions {
   perSide?: number
   agility?: { A: number; B: number }
   skills?: string[]
+  /** 只给 A 方单位挂的初始状态（self_turn 时长验证用） */
+  initialStatuses?: (StatusGrant & { defId: string })[]
 }
 
 function buildSetup(opts: ProbeOptions = {}): CombatSetup {
@@ -76,7 +98,7 @@ function buildSetup(opts: ProbeOptions = {}): CombatSetup {
       anchor: 0,
       activeSlots: skills.map((s) => ({ skillDefId: s })),
       passiveSlots: [{ defId: 'probe_start' }, { defId: 'probe_end' }],
-      initialStatuses: [],
+      initialStatuses: faction === 'A' ? (opts.initialStatuses ?? []) : [],
     }))
   return {
     seed: opts.seed ?? 12345,
@@ -170,5 +192,47 @@ describe('机会括号（INV-S6）', () => {
     const survivor = deadId === 'A_u0' ? 'B_u0' : 'A_u0'
     expect(startsOf(hits).filter((h) => h.unitId === survivor)).toHaveLength(1)
     expect(endsOf(hits).filter((h) => h.unitId === survivor)).toHaveLength(1)
+  })
+})
+
+describe('self_turn 时长（调度参数 §〇点五）', () => {
+  /** 按 TickAdvanced 归位的事件序列，取某单位某类事件发生的 tick */
+  const ticksOfEvent = (events: readonly DomainEvent[], type: string, defId: string, unitId?: string): number[] => {
+    const out: number[] = []
+    let tick = 0
+    for (const e of events) {
+      if (e.type === 'TickAdvanced') tick = e.tickIndex
+      else if (e.type === type && (e as { defId?: string }).defId === defId) {
+        const uid = (e as { unitId?: string }).unitId
+        if (!unitId || uid === unitId) out.push(tick)
+      }
+    }
+    return out
+  }
+
+  // A 方敏捷 0 → 机会在 tick 6、11、16…（gaugeRate 15，阈值 75 严格越阈）
+  const run = (defId: string) => {
+    const c = createCombat(
+      buildSetup({
+        seed: 5, perSide: 1, skills: ['probe_hit'],
+        initialStatuses: [{ defId, duration: 2, durationUnit: defId === 'probe_self_st' ? 'self_turn' : 'tick', sourceId: '' }],
+      }),
+    )
+    for (let i = 0; i < 12; i += 1) c.step()
+    return (c.ended()?.events ?? c.drainEvents())
+  }
+
+  it('self_turn 时长只在持有者获得机会时递减（tick 不消耗）', () => {
+    const events = run('probe_self_st')
+    // 2 个自身回合：第 1 次机会（tick 6）扣到 1 仍在，第 2 次机会（tick 11）扣到 0 卸载
+    expect(ticksOfEvent(events, 'StatusExpired', 'probe_self_st')).toEqual([11])
+    // 它的 on_turn_start 触发器只在 tick 6 那次机会挂上标记（卸载后不再触发）
+    expect(ticksOfEvent(events, 'StatusMounted', 'probe_c')).toEqual([6])
+  })
+
+  it('同形状态用 tick 口径则按墙钟递减，机会到来前就已到期', () => {
+    const events = run('probe_tick_st')
+    expect(ticksOfEvent(events, 'StatusExpired', 'probe_tick_st')).toEqual([2])
+    expect(ticksOfEvent(events, 'StatusMounted', 'probe_c')).toEqual([])
   })
 })

@@ -258,7 +258,9 @@ class CombatRuntime implements CombatRuntimeHandle {
         opp.consumedBy = 'wasted'
         continue
       }
-      // 括号左端：该单位获得机会、尚未选行为（INV-S6）
+      // 括号左端：先递减 self_turn 时长（与 tick 口径的「先推进、后授予」同序），
+      // 再 fire on_turn_start——订阅方看到的是本回合已结算后的状态
+      this.tickSelfTurn(unit)
       this.fireStatusTriggers(unit, 'on_turn_start', undefined, this.oppPayload(opp))
       const behaviors = availableBehaviors(unit)
       const slot = this.chooseBehavior(behaviors)
@@ -354,6 +356,19 @@ class CombatRuntime implements CombatRuntimeHandle {
   /** 机会括号载荷（INV-S6）：opportunityId 由 unitId+tickIndex 唯一确定 */
   private oppPayload(opp: ActionOpportunity): OpportunityPayload {
     return { opportunityId: `${opp.unitId}@${opp.tickIndex}`, consumedBy: opp.consumedBy }
+  }
+
+  /**
+   * 机会括号左端：递减该单位的 self_turn 时长（状态与溯源条目，调度参数 §〇点五）。
+   * 到期处理与 tick 第 6 步一致——状态走 revertBySource + on_remove，账本条目走 revertBySource。
+   */
+  private tickSelfTurn(unit: CombatUnit): void {
+    for (const inst of unit.statuses.tickSelfTurn()) {
+      unit.provenance.revertBySource(inst.instanceId)
+      this.emit({ type: 'StatusExpired', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id })
+      this.fireStatusTriggers(unit, 'on_remove', inst.defId)
+    }
+    unit.provenance.tickSelfTurn()
   }
 
   private makeContext(actionId: string, caster: CombatUnit | null, opportunity?: OpportunityPayload): EffectContext {

@@ -56,25 +56,32 @@ export interface ModifierLayer {
   entriesOf(stat: StatKey): ModifierEntry[]
 }
 
+/** 时长口径（调度参数 §〇点五）：tick = 墙钟；self_turn = 持有者自身的行动机会数 */
+export type DurationUnit = 'tick' | 'self_turn'
+
 /** 溯源账本条目：某来源对某属性的一次写入 */
 export interface ProvenanceEntry {
   readonly stat: StatKey
   readonly sourceId: string
   readonly appliedDelta: number
   readonly previousDelta: number | null
-  /** null = 永久；数字 = 剩余 tick */
+  /** null = 永久；数字 = 剩余数（单位见 durationUnit） */
   remaining: number | null
+  /** 缺省 tick */
+  readonly durationUnit?: DurationUnit
 }
 
 /** 溯源账本（INV-P1..P4）：写入/撤销按 sourceId 一一对应 */
 export interface StatProvenance {
   apply(stat: StatKey, value: number, sourceId: string): ProvenanceEntry
-  applyTimed(stat: StatKey, value: number, sourceId: string, duration: number): ProvenanceEntry
+  applyTimed(stat: StatKey, value: number, sourceId: string, duration: number, durationUnit?: DurationUnit): ProvenanceEntry
   /** 恢复到写入前的值，而非「减去写入量」（INV-P2） */
   revertBySource(sourceId: string): readonly ProvenanceEntry[]
   revertAll(): void
   /** tick 第 6 步：递减带时限条目，到期者回滚 */
   tick(): readonly ProvenanceEntry[]
+  /** 机会括号左端：递减 self_turn 条目，到期者回滚 */
+  tickSelfTurn(): readonly ProvenanceEntry[]
   entriesOf(stat: StatKey): readonly ProvenanceEntry[]
 }
 
@@ -113,6 +120,8 @@ export interface ShieldLayer {
 
 export interface StatusGrant {
   duration?: number
+  /** 时长口径：缺省承接 StatusDef.durationUnit，再缺省 tick */
+  durationUnit?: DurationUnit
   stacks?: number
   params?: Record<string, number>
   sourceId: string
@@ -133,8 +142,10 @@ export interface StatusSet {
   /** 挂载；reject 策略且已存在时返回 null（本次被拒） */
   mount(defId: string, grant: StatusGrant): StatusInstance | null
   unmount(instanceId: string, reason: string): StatusInstance | null
-  /** tick 第 6 步；返回本 tick 到期卸载的实例 */
+  /** tick 第 6 步；返回本 tick 到期卸载的实例（只动 tick 口径） */
   tick(): StatusInstance[]
+  /** 机会括号左端；返回本次机会到期卸载的实例（只动 self_turn 口径） */
+  tickSelfTurn(): StatusInstance[]
   all(): readonly StatusInstance[]
   byDef(defId: string): readonly StatusInstance[]
   stacksOf(defId: string): number

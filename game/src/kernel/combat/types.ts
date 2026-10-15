@@ -26,7 +26,8 @@ export interface UnitSetup {
   anchor: number
   activeSlots?: SkillGrantInit[]
   passiveSlots?: { defId: string }[]
-  initialStatuses?: StatusGrant[]
+  /** 开场挂载：条目的 defId 指明挂哪个状态，其余字段即 StatusGrant */
+  initialStatuses?: (StatusGrant & { defId: string })[]
   /** 初始属性修正（体质/遗物落点；永久，源 id 为 constitution） */
   initialModifiers?: { stat: string; value: number }[]
   pools?: Partial<Record<'hp' | 'energy' | 'shield' | 'armor' | 'lost' | 'lust', number>>
