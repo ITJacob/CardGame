@@ -7,7 +7,7 @@ import type { RandomSource, RandomUsageRegistry } from '../shared/random-source'
 import type { StatusGrant } from '../roster/types'
 import type { Registry } from '../roster/registry'
 import type { CombatUnit, TargetabilityRecord } from '../roster/unit'
-import type { TriggerPayload } from './payload'
+import type { TargetScope } from './target-scope'
 
 /** 行动机会的括号载荷（调度上下文 §三 INV-S6）：on_turn_start / on_turn_end 触发时挂进上下文 */
 export interface OpportunityPayload {
@@ -28,8 +28,9 @@ export interface EffectContext {
   readonly actionId: string
   /** 机会括号载荷：仅 on_turn_start / on_turn_end 触发链上存在（其余触发点与主动行为均为 undefined） */
   readonly opportunity?: OpportunityPayload
-  /** 触发器载荷语境：仅触发链上存在（执行参数 §2.3）。存在时，效果节点上的 target 简写按它求值 */
-  readonly payload?: TriggerPayload
+  /** 效果级 target 的求值语境（执行参数 §2.1b / §2.1c）：触发链 = 载荷，卡片行为 = 施法者 + 选靶。
+   *  存在时，效果节点上的 target 简写按它求值；不存在（zone / echo / translocate）则沿用外层落点 */
+  readonly targetScope?: TargetScope
   readonly warn: (msg: string) => void
   readonly emit: (e: DomainEvent) => void
   /** 挂载状态并触发 on_apply 等副作用（由 runtime 实现，避免循环依赖） */

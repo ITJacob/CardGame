@@ -6,9 +6,11 @@ import type { DomainEvent } from '../combat/types'
 import type { EffectNode } from '../catalog/types'
 import type { Consumption, TargetSpec } from '../shared/types'
 import type { EffectContext } from '../effect/context'
+import type { TargetScope } from '../effect/target-scope'
 import { executeNodes } from '../effect/executor'
 import type { Registry } from '../roster/registry'
 import type { CombatUnit } from '../roster/unit'
+import { cardScope } from '../effect/target-scope'
 import { resolveCandidates, toResolved } from './target'
 import { createAction } from './action'
 import type { Action, DecisionRequest, ResolvedTarget } from './types'
@@ -16,8 +18,8 @@ import type { Action, DecisionRequest, ResolvedTarget } from './types'
 export interface PipelineDeps {
   units: Registry
   enemyOf(faction: FactionId): FactionId
-  /** 每个 Action 一个 EffectContext（携带 actionId） */
-  makeContext(actionId: string, caster: CombatUnit): EffectContext
+  /** 每个 Action 一个 EffectContext（携带 actionId；卡片语境的 target 求值见 targetScope） */
+  makeContext(actionId: string, caster: CombatUnit, targetScope?: TargetScope): EffectContext
   /** 按 EffectDef id 解析效果节点 */
   effectNode(defId: string): EffectNode | undefined
   emit(e: DomainEvent): void
@@ -124,7 +126,10 @@ function settle(
 
   // O：逐目标 condition→handler→事件
   const targetUnits = action.finalTargets.map((t) => (t.occupant ? deps.units.get(t.occupant) ?? null : null))
-  const ctx = deps.makeContext(actionId, caster)
+  // 卡片语境（执行参数 §2.1c）：效果节点自带的 target 简写以「施法者 + 本次选靶命中集合」求值；
+  // 不带 target 的节点仍落在下面传入的 targetUnits（选靶）上。
+  const hit = targetUnits.filter((u): u is CombatUnit => u != null)
+  const ctx = deps.makeContext(actionId, caster, cardScope(caster, hit, deps.enemyOf(caster.faction)))
   for (const node of source.effects) {
     executeNodes([node], targetUnits, ctx)
   }

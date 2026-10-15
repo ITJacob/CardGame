@@ -22,7 +22,7 @@ import type { BehaviorSource, PipelineDeps } from '../execution/pipeline'
 import type { Consumption } from '../shared/types'
 import type { DecisionInput, DecisionRequest } from '../execution/types'
 import { withParams, type EffectContext, type OpportunityPayload } from '../effect/context'
-import type { PayloadSubjects, TriggerPayload } from '../effect/payload'
+import type { TargetScope, TriggerSubjects } from '../effect/target-scope'
 import { executeNodes } from '../effect/executor'
 import { BASIC_ATTACK_ID, basicAttackSource } from './basicAttack'
 import type {
@@ -338,7 +338,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     return {
       units: this.units,
       enemyOf: (f) => (f === this.factions[0] ? this.factions[1] : this.factions[0]),
-      makeContext: (actionId, caster) => this.makeContext(actionId, caster),
+      makeContext: (actionId, caster, targetScope) => this.makeContext(actionId, caster, undefined, targetScope),
       effectNode: (id) => this.lookup.effectNode(id),
       emit: (e) => this.emit(e),
       nextActionId: () => this.ids.next('action'),
@@ -383,7 +383,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     actionId: string,
     caster: CombatUnit | null,
     opportunity?: OpportunityPayload,
-    payload?: TriggerPayload,
+    targetScope?: TargetScope,
   ): EffectContext {
     return {
       units: this.units,
@@ -394,7 +394,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       caster,
       actionId,
       opportunity,
-      payload,
+      targetScope,
       warn: (m) => this.warn(m),
       emit: (e) => this.emit(e),
       mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant, caster),
@@ -777,8 +777,8 @@ class CombatRuntime implements CombatRuntimeHandle {
     if (!inst) return
     this.emit({ type: 'StatusMounted', instanceId: inst.instanceId, defId: statusId, unitId: host.id })
     // 载荷主体：on_apply / on_status_gain 的 caster = 施加者，target = 宿主（执行参数 §2.3）
-    const subjects: PayloadSubjects = { caster, target: host }
-    this.fireTriggers(host, 'on_apply', def?.triggers, host, undefined, this.payloadFor(host, inst.grant.casterId, subjects))
+    const subjects: TriggerSubjects = { caster, target: host }
+    this.fireTriggers(host, 'on_apply', def?.triggers, host, undefined, this.scopeFor(host, inst.grant.casterId, subjects))
     this.fireStatusTriggers(host, 'on_status_gain', undefined, undefined, subjects)
   }
 
@@ -813,20 +813,22 @@ class CombatRuntime implements CombatRuntimeHandle {
   }
 
   /**
-   * 组装触发器载荷（执行参数 §2.3）：宿主已知，其余主体来自事件。
+   * 组装触发器载荷语境（执行参数 §2.1b）：宿主已知，其余主体来自事件。
    * 状态触发器的 `caster` 优先取该状态实例的施加者（grant.casterId），被动卡没有施加者故退回宿主。
+   * `targets` 按 §2.1b 缺省回退填成 [host]——无受害主体的触发点上 `target` 等于宿主。
    */
-  private payloadFor(
+  private scopeFor(
     host: CombatUnit,
     applierId: string | undefined,
-    subjects: PayloadSubjects | undefined,
+    subjects: TriggerSubjects | undefined,
     opportunity?: OpportunityPayload,
-  ): TriggerPayload {
+  ): TargetScope {
     const applier = applierId ? (this.units.get(applierId) ?? null) : null
+    const target = subjects?.target ?? null
     return {
       host,
       caster: applier ?? subjects?.caster ?? host,
-      target: subjects?.target ?? null,
+      targets: [target ?? host],
       attacker: subjects?.attacker ?? null,
       killed: subjects?.killed ?? null,
       enemyFaction: this.factions.find((f) => f !== host.faction) ?? null,
@@ -839,27 +841,27 @@ class CombatRuntime implements CombatRuntimeHandle {
     event: string,
     onlyDefId?: string,
     opportunity?: OpportunityPayload,
-    subjects?: PayloadSubjects,
+    subjects?: TriggerSubjects,
   ): void {
     for (const inst of unit.statuses.all()) {
       if (onlyDefId && inst.defId !== onlyDefId) continue
       const def = this.lookup.statusDef(inst.defId)
-      const payload = this.payloadFor(unit, inst.grant.casterId, subjects, opportunity)
-      this.fireTriggers(unit, event, def?.triggers, unit, opportunity, payload)
+      const scope = this.scopeFor(unit, inst.grant.casterId, subjects, opportunity)
+      this.fireTriggers(unit, event, def?.triggers, unit, opportunity, scope)
     }
     // 被动卡（无 onlyDefId 时全部参与）
     if (!onlyDefId) {
       for (const p of unit.passives) {
-        const payload = this.payloadFor(unit, undefined, subjects, opportunity)
-        this.fireTriggers(unit, event, p.triggers, unit, opportunity, payload)
+        const scope = this.scopeFor(unit, undefined, subjects, opportunity)
+        this.fireTriggers(unit, event, p.triggers, unit, opportunity, scope)
       }
     }
   }
 
-  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, payload?: TriggerPayload): void {
+  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, targetScope?: TargetScope): void {
     for (const t of triggers ?? []) {
       if (t.event !== event) continue
-      const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity, payload)
+      const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity, targetScope)
       executeNodes(t.effects ?? [], [unit], ctx)
     }
   }

@@ -4,7 +4,7 @@ import type { EffectNode, OpIf, OpRepeat, OpSequence } from '../catalog/types'
 import type { Condition, EffectTarget } from '../shared/types'
 import { evaluateCondition, type ConditionContext } from '../shared/effect-condition'
 import type { EffectContext } from './context'
-import { resolvePayloadTargets } from './payload'
+import { resolveEffectTargets } from './target-scope'
 import * as H from './handlers'
 import * as H2 from './handlers2'
 import * as H3 from './handlers3'
@@ -104,11 +104,13 @@ function executeNode(node: EffectNode, targets: readonly (CombatUnit | null)[], 
   }
   const cond = (node as { condition?: Condition }).condition
   const cc = conditionContext(ctx)
-  // 载荷语境下，节点自带的 target 简写自行求值（执行参数 §2.3）；无载荷时沿用外层落点。
-  // 主动行为的效果不带载荷，故此处只影响触发器效果——卡片效果的 target 展开另案（待办 §五）。
+  // 有语境时，节点自带的 target 简写自行求值（执行参数 §2.1b 载荷 / §2.1c 卡片）；
+  // 无语境（zone / echo / translocate）则沿用外层落点，节点上的 target 不参与。
   const selector = (node as { target?: EffectTarget }).target
   const resolved =
-    selector && ctx.payload ? resolvePayloadTargets(selector, ctx.payload, ctx.units, ctx.unsupported) : targets
+    selector && ctx.targetScope
+      ? resolveEffectTargets(selector, ctx.targetScope, ctx.units, ctx.unsupported)
+      : targets
   for (const target of resolved) {
     if (cond && !evaluateCondition(cond, target, cc)) continue
     handler(node, target, ctx)
