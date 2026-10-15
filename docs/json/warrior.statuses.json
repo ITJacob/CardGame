@@ -49,7 +49,21 @@
       },
       "maxStacks": 3,
       "stackPolicy": "refresh",
-      "note": "层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。"
+      "note": "层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。 ｜ 2026-10-16：武器耐久闭环落地——on_kill 缴械重置具现武器 charges：武艺轴从「整场静态 +3」变成「具现 → 打空 → 击杀续命」的节奏引擎，三个钩子（on_attack / on_kill / death_tally）全落在战士正主维度上。",
+      "triggers": [
+        {
+          "event": "on_kill",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "war_forged_weapon",
+              "target": "self",
+              "charges": 4,
+              "note": "击杀缴械：任何武器到手即大师——夺过死者的兵刃，耐久重置（on_kill 载荷主体：host=击杀者 / killed_unit=被击杀者，执行参数 §2.1b）"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "weapon_tamer",
@@ -119,7 +133,21 @@
             }
           ]
         }
-      ]
+      ],
+      "modifiers": {
+        "damageBonus": {
+          "value": 2,
+          "filter": {
+            "unitType": [
+              "DEMON",
+              "UNDEAD",
+              "SPIRIT"
+            ]
+          },
+          "note": "晨光灼邪：晨曦之剑对邪祟的额外灼烧（filter.unitType 签名键的卡面载体）"
+        }
+      },
+      "note": " ｜ 2026-10-16：承载 filter.unitType 克邪签名键（damageBonus 对亡灵/恶魔/灵体 +2），与 war_forged_weapon 同族——战士途径「猎魔」面从自称变为卡面可验。"
     },
     {
       "id": "abandon_attack",
@@ -132,7 +160,7 @@
       "modifiers": {
         "damage_mul": 0.5
       },
-      "note": "守护状态的代价段：释放期间自身伤害 ×0.5 乘区审批：0.4–0.5=深度减免档（重控/代价/位格压制态），单列登记"
+      "note": "守护状态的代价段：释放期间自身伤害 ×0.5 乘区审批：0.4–0.5=深度减免档（重控/代价/位格压制态），单列登记 ｜ 2026-10-16：代价段与收益段成对——同卡挂 war_bulwark（无形墙壁）承载「放弃攻击后极少能打破防御」，弃攻 = 用行动经济买墙。"
     },
     {
       "id": "unmoved",
@@ -155,15 +183,12 @@
       "id": "ambush_shroud",
       "name": "伏击伪装",
       "category": [
-        "conceal"
+        "buff"
       ],
       "dispelable": true,
-      "duration": 15,
+      "duration": 3,
       "modifiers": {
-        "untargetableByTargeted": {
-          "direction": "inbound",
-          "scope": "single"
-        },
+        "targetOverrideImmune": true,
         "damage_mul": [
           {
             "value": 1.3,
@@ -185,7 +210,16 @@
       },
       "maxStacks": 3,
       "stackPolicy": "refresh",
-      "note": "层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。"
+      "note": "猎魔者「隐蔽：掩盖行动意图，干扰占卜预言，恶魔的克星」。2026-10-16 语义分叉：本状态不再是 conceal 类、不提供不可被选中（守护轴红线：战士正面承伤，不走隐身/闪避）；只做两件事——掩盖意图（targetOverrideImmune：敌方无法把你从同伴身上改向/覆写选靶）+ 伏击首击（damage_mul 1.5，出手即破）。签名键 targetOverrideImmune 即战士修饰键签名（机制所有权矩阵 §三·十五）。占卜失效档（untrackable）依赖占卜家 conceal/secrecy 枢纽跨系落地，本轮不启，见 docs/meta/待办.md。",
+      "durationUnit": "self_turn",
+      "charges": 1,
+      "triggers": [
+        {
+          "event": "on_attack",
+          "consumeCharge": true,
+          "note": "出手即破：伪装是掩盖意图不是隐形，一旦出手就暴露（C6 归零卸载）"
+        }
+      ]
     },
     {
       "id": "anointed",
@@ -319,7 +353,7 @@
           ]
         }
       ],
-      "note": "稿面条件含「armor 增益」，无对应谓词，暂缺；持有 shield/dawn_blade/silver_armor 任一即刷新潜行"
+      "note": "稿面条件含「armor 增益」，无对应谓词，暂缺；持有 shield/dawn_blade/silver_armor 任一即刷新伏击伪装 ｜ 2026-10-16：刷新目标 ambush_shroud 已由 conceal 类改为伪装分叉（去不可被选中）。"
     },
     {
       "id": "aging",
@@ -536,6 +570,81 @@
         "prisoner"
       ],
       "note": "战旗所指：己方士气上扬（2026-09-29 跨系枢纽批建）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 枢纽标准档（跨系共享，层数读档上限）。。"
+    },
+    {
+      "id": "war_forged_weapon",
+      "name": "具现武器",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": null,
+      "charges": 4,
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "target": "self",
+          "note": "握在手里的家伙：兵刃的攻击加成随状态存在，耐久耗尽即 C6 归零卸载"
+        }
+      ],
+      "modifiers": {
+        "damageBonus": {
+          "value": 2,
+          "filter": {
+            "unitType": [
+              "DEMON",
+              "UNDEAD",
+              "SPIRIT"
+            ]
+          },
+          "note": "恶魔的克星（原著：武器大师无视防御，能伤害到元素生物）"
+        }
+      },
+      "triggers": [
+        {
+          "event": "on_attack",
+          "consumeCharge": true,
+          "effects": [
+            {
+              "type": "modify_damage",
+              "scope": "dealt",
+              "mul": 1.25,
+              "note": "兵刃之利：具现武器出手时的锋锐（每次出手耗 1 点耐久）"
+            }
+          ],
+          "note": "耐久按出手次数递减：打满 charges 次即卸下，回到徒手"
+        }
+      ],
+      "note": "武艺轴·武器耐久（2026-10-16 环节⑤）。原著序列 7「任何武器到手即大师（含非凡武器）」——具现的兵刃**按出手次数计耐久**：charges = 可打出的次数，duration null 常驻不自然到期，打空即 C6 归零卸载（强化不是雪球，是节奏资源）。武器大师在场时击杀缴械重置（on_kill 拾取，见 weapon_grandmaster 的触发器）。同时承载 filter.unitType 克邪签名键（damageBonus 对亡灵/恶魔/灵体 +2）。数值 ⚠️D 待平衡。"
+    },
+    {
+      "id": "war_bulwark",
+      "name": "无形墙壁",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": null,
+      "charges": 3,
+      "priority": 8,
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "consumeCharge": true,
+          "effects": [
+            {
+              "type": "modify_damage",
+              "scope": "taken",
+              "mul": 0.4,
+              "note": "巨剑插地：无形墙壁替你挡下一次（H3 参数化减伤母版，格数即 charges）"
+            }
+          ]
+        }
+      ],
+      "note": "守护者「放弃攻击后高序列以下极少能打破防御」的兑现（2026-10-16 环节⑤）：弃攻期间竖起的墙**按格数计**（charges = 可挡次数），砸穿即碎。墙与代价（abandon_attack 伤害 ×0.5）成对出现——守护不是白挨打，是用行动经济买墙。乘区审批：0.4 = 深度减免档（重控/代价/位格压制态，单列登记）。数值 ⚠️D 待平衡。"
     }
   ]
 }

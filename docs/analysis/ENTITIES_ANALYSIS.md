@@ -2,7 +2,7 @@
 
 > 数据来源：`docs/json/*.skills.json` 顶层三池（unitDefs / zoneDefs / domainDefs） + 全库卡面递归遍历，由 `docs/tools/build_entity_analysis.py` 生成。
 > 口径与网页端统计分析页的「召唤物 / 区域 / 界域」三个子页一致；状态定义（*.statuses.json）不在本报告口径。
-> 生成日期：2026-10-15
+> 生成日期：2026-10-16
 
 ## 一、召唤物（unitDefs 池 + 卡面 spawn 引用）
 
@@ -73,13 +73,13 @@
 
 ### 1.4 按 unitType 分道的承载（卡面）
 
-三路承载合并：效果节点 filter.unitType 乘区 **2** 处（登记口径，当前数据零使用——晨曦领域的类型约束写在域 envRulesText 文本里，结构不可统计）、target.request 选靶约束 **20** 张卡、target_unit_type 条件谓词 **11** 处；另有 target_is_summoned 笼统召唤物谓词 **3** 处（此表按类型拆，不含它）。filter 不区分敌我（克制 / 加益只由效果方向决定）。
+三路承载合并：效果节点 filter.unitType 乘区 **2** 处（登记口径，当前数据零使用——晨曦领域的类型约束写在域 envRulesText 文本里，结构不可统计）、target.request 选靶约束 **20** 张卡、target_unit_type 条件谓词 **12** 处；另有 target_is_summoned 笼统召唤物谓词 **3** 处（此表按类型拆，不含它）。filter 不区分敌我（克制 / 加益只由效果方向决定）。
 
 | unitType | 次数 |
 |---|---:|
-| `SPIRIT` | 20 |
-| `UNDEAD` | 16 |
-| `DEMON` | 5 |
+| `SPIRIT` | 21 |
+| `UNDEAD` | 17 |
+| `DEMON` | 6 |
 | `CONSTRUCT` | 4 |
 | `ITEM` | 1 |
 
