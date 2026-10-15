@@ -403,7 +403,7 @@ export interface BehaviorTemplate {
   sequenceName?: string
   /** 风味文本（卡面详情浮层用） */
   flavor?: string
-  /** 触发点闭集（14 值） */
+  /** 触发点闭集（15 值） */
   hook?: string[]
   triggers?: TriggerDef[]
   effects: EffectRef[]

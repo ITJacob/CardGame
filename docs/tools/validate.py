@@ -78,10 +78,10 @@ DIM_RANGES = {
     "death_tally": (0, 10),
 }
 
-# 触发点：语义封闭集 13 个（ddd 执行参数 §2.1）。schema triggerEvent 结构层额外放行
-# on_status_gain，语义层强制 frameworkFlag 登记（SCHEMA.md §8）——两处不一致是有意为之。
+# 触发点：语义封闭集 15 个（ddd 执行参数 §2.1）。本集合与 ddd 表格、schema triggerEvent
+# 枚举三方一致，由 check_enum_sync.py 对账。
 PHASES = {"midnight","dawn","day","dusk","night"}
-EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill","on_phase_change","on_status_gain"}
+EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_turn_end","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill","on_phase_change","on_status_gain"}
 
 # 命名治理：modifiers 为开放结构，同义异写严重。别名 -> 规范拼写（非阻断，仅告警引导收敛）
 MODIFIER_ALIASES = {

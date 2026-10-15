@@ -1668,8 +1668,8 @@
     },
     "triggerEvent": {
       "label": "触发点",
-      "desc": "状态与被动挂载的触发时机，封闭 12 个。它决定效果能在结算的哪个时刻插入；注意 tick 与「单位行动开始」是两个不同时间尺度。",
-      "source": "执行参数.md §2.1（12+1 封闭集）",
+      "desc": "状态与被动挂载的触发时机，封闭 15 个。它决定效果能在结算的哪个时刻插入；注意 tick、行动机会（on_turn_start / on_turn_end 这一对括弧）与主动出手（on_attack / on_active_skill）是三个不同尺度。",
+      "source": "执行参数.md §2.1（15 个封闭集）",
       "terms": {
         "on_apply": {
           "zh": "状态施加时",
@@ -1684,8 +1684,12 @@
           "brief": "每个 tick 对全体持状态单位 fire；持续伤害/回复的承载点"
         },
         "on_turn_start": {
-          "zh": "行动开始时",
-          "brief": "该单位行动开始时 fire（自身回合开始语义）"
+          "zh": "行动机会授予时",
+          "brief": "该单位获得行动机会时 fire（自身回合开始语义，机会括弧左端；随后判 wasted 也 fire）"
+        },
+        "on_turn_end": {
+          "zh": "行动机会闭合时",
+          "brief": "机会闭合时 fire（行动走完结算、或判为 wasted），与 on_turn_start 一一配对；载荷带 consumedBy 区分出手与空过"
         },
         "on_battle_start": {
           "zh": "战斗开始时",

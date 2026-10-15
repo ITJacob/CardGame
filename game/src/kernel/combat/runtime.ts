@@ -21,7 +21,7 @@ import { commitBehavior } from '../execution/commit'
 import type { BehaviorSource, PipelineDeps } from '../execution/pipeline'
 import type { Consumption } from '../shared/types'
 import type { DecisionInput, DecisionRequest } from '../execution/types'
-import { withParams, type EffectContext } from '../effect/context'
+import { withParams, type EffectContext, type OpportunityPayload } from '../effect/context'
 import { executeNodes } from '../effect/executor'
 import { BASIC_ATTACK_ID, basicAttackSource } from './basicAttack'
 import type {
@@ -62,7 +62,7 @@ class CombatRuntime implements CombatRuntimeHandle {
   private battle: Battle
   private placement: BattlePlacement
   private scheduler: CombatScheduler
-  private pending: { request: DecisionRequest; continueWith: (p: DecisionInput) => void } | null = null
+  private pending: { request: DecisionRequest; continueWith: (p: DecisionInput) => void; opportunity: ActionOpportunity | null } | null = null
   private outcome: CombatEnded['outcome'] | null = null
   private tickCount = 0
   private unsupportedCount = 0
@@ -241,9 +241,6 @@ class CombatRuntime implements CombatRuntimeHandle {
       this.prevPhase = this.battle.phase
       for (const u of this.units.all()) this.fireStatusTriggers(u, 'on_phase_change')
     }
-    if (this.tickCount % 5 === 0) {
-      for (const u of this.units.all()) this.fireStatusTriggers(u, 'on_turn_start')
-    }
     const opportunities: ActionOpportunity[] = resolveInitiative(
       crossed,
       this.factions,
@@ -256,22 +253,27 @@ class CombatRuntime implements CombatRuntimeHandle {
     for (const opp of opportunities) {
       this.emit({ type: 'ActionOpportunityGranted', opportunity: opp })
       const unit = this.units.get(opp.unitId)
+      // 括号只对存活单位产出：已亡/不存在的机会直接记 wasted（无主体可挂事件）
       if (!unit || unit.isDead) {
         opp.consumedBy = 'wasted'
         continue
       }
+      // 括号左端：该单位获得机会、尚未选行为（INV-S6）
+      this.fireStatusTriggers(unit, 'on_turn_start', undefined, this.oppPayload(opp))
       const behaviors = availableBehaviors(unit)
       const slot = this.chooseBehavior(behaviors)
       const source = slot ? this.resolveSource(slot) : undefined
       if (!slot || !source) {
         opp.consumedBy = 'wasted'
         unit.gauge.settleOverflow()
+        this.fireStatusTriggers(unit, 'on_turn_end', undefined, this.oppPayload(opp))
         continue
       }
       const r = commitBehavior(unit, slot, opp, source, this.pipelineDeps())
       if (!r.ok) {
         opp.consumedBy = 'wasted'
         unit.gauge.settleOverflow()
+        this.fireStatusTriggers(unit, 'on_turn_end', undefined, this.oppPayload(opp))
       } else {
         if (slot.kind === 'basic_attack') {
           this.fireStatusTriggers(unit, 'on_attack')
@@ -280,8 +282,11 @@ class CombatRuntime implements CombatRuntimeHandle {
           this.fireStatusTriggers(unit, 'on_active_skill')
         }
         if (r.value) {
+          // 需玩家选靶：机会挂起，等 submitDecision 跑完 O 节点后再闭合（括号右端）
           const awaiting = r.value
-          this.pending = { request: awaiting.request, continueWith: (p) => awaiting.continueWith(p) }
+          this.pending = { request: awaiting.request, continueWith: (p) => awaiting.continueWith(p), opportunity: opp }
+        } else {
+          this.fireStatusTriggers(unit, 'on_turn_end', undefined, this.oppPayload(opp))
         }
       }
       this.checkDeaths()
@@ -346,7 +351,12 @@ class CombatRuntime implements CombatRuntimeHandle {
 
   // ---------- 效果上下文与触发器 ----------
 
-  private makeContext(actionId: string, caster: CombatUnit | null): EffectContext {
+  /** 机会括号载荷（INV-S6）：opportunityId 由 unitId+tickIndex 唯一确定 */
+  private oppPayload(opp: ActionOpportunity): OpportunityPayload {
+    return { opportunityId: `${opp.unitId}@${opp.tickIndex}`, consumedBy: opp.consumedBy }
+  }
+
+  private makeContext(actionId: string, caster: CombatUnit | null, opportunity?: OpportunityPayload): EffectContext {
     return {
       units: this.units,
       random: this.random,
@@ -355,6 +365,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       phase: this.battle.phase,
       caster,
       actionId,
+      opportunity,
       warn: (m) => this.warn(m),
       emit: (e) => this.emit(e),
       mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant),
@@ -763,21 +774,21 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
   }
 
-  private fireStatusTriggers(unit: CombatUnit, event: string, onlyDefId?: string): void {
+  private fireStatusTriggers(unit: CombatUnit, event: string, onlyDefId?: string, opportunity?: OpportunityPayload): void {
     for (const inst of unit.statuses.all()) {
       if (onlyDefId && inst.defId !== onlyDefId) continue
-      this.fireTriggers(unit, event, this.lookup.statusDef(inst.defId)?.triggers, unit)
+      this.fireTriggers(unit, event, this.lookup.statusDef(inst.defId)?.triggers, unit, opportunity)
     }
     // 被动卡（无 onlyDefId 时全部参与）
     if (!onlyDefId) {
-      for (const p of unit.passives) this.fireTriggers(unit, event, p.triggers, unit)
+      for (const p of unit.passives) this.fireTriggers(unit, event, p.triggers, unit, opportunity)
     }
   }
 
-  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null): void {
+  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload): void {
     for (const t of triggers ?? []) {
       if (t.event !== event) continue
-      const ctx = this.makeContext(this.ids.next('trig'), caster)
+      const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity)
       executeNodes(t.effects ?? [], [unit], ctx)
     }
   }
@@ -840,6 +851,12 @@ class CombatRuntime implements CombatRuntimeHandle {
     if (!p) return
     this.pending = null
     p.continueWith(d)
+    // 机会闭合：manual 选靶挂起的 Action 在此走完 O 节点，括号右端随之产出（INV-S6；
+    // 出手者可能在此过程中自尽，故只判存在不判存活——与循环内成功分支口径一致）
+    if (p.opportunity) {
+      const u = this.units.get(p.opportunity.unitId)
+      if (u) this.fireStatusTriggers(u, 'on_turn_end', undefined, this.oppPayload(p.opportunity))
+    }
     this.checkDeaths()
     this.checkTermination()
   }

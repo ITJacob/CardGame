@@ -92,7 +92,7 @@ export interface RawCard {
   cost?: RawCost
   reach?: Reach
   target?: RawCardTarget
-  /** 被动触发点（14 值闭集） */
+  /** 被动触发点（15 值闭集） */
   hook?: string[]
   statusDefs?: StatusDef[]
   triggers?: TriggerDef[]

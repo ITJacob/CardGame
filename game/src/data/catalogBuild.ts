@@ -30,9 +30,9 @@ const EFFECT_TYPE_SET = new Set(EFFECT_TYPES)
 /** 3 个结构算子 */
 const OPERATORS = new Set(['sequence', 'repeat', 'if'])
 
-/** 14 个触发点封闭集（执行参数 §2.1） */
+/** 15 个触发点封闭集（执行参数 §2.1） */
 export const TRIGGER_EVENTS: readonly string[] = [
-  'on_apply', 'on_remove', 'on_tick', 'on_turn_start', 'on_battle_start', 'on_spawn',
+  'on_apply', 'on_remove', 'on_tick', 'on_turn_start', 'on_turn_end', 'on_battle_start', 'on_spawn',
   'on_death', 'on_kill', 'on_attack', 'on_active_skill', 'on_deal_damage',
   'on_take_damage', 'on_status_gain', 'on_phase_change',
 ]

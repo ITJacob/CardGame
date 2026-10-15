@@ -8,6 +8,14 @@ import type { StatusGrant } from '../roster/types'
 import type { Registry } from '../roster/registry'
 import type { CombatUnit } from '../roster/unit'
 
+/** 行动机会的括号载荷（调度上下文 §三 INV-S6）：on_turn_start / on_turn_end 触发时挂进上下文 */
+export interface OpportunityPayload {
+  /** 机会标识 = `${unitId}@${tickIndex}`——INV-S3 保证同 tick 每单位至多一次机会，故唯一 */
+  readonly opportunityId: string
+  /** on_turn_start 恒为 null；on_turn_end 为消耗它的 Action id，或 'wasted' */
+  readonly consumedBy: string | null
+}
+
 export interface EffectContext {
   readonly units: Registry
   readonly random: RandomSource
@@ -17,6 +25,8 @@ export interface EffectContext {
   readonly caster: CombatUnit | null
   /** 当前 Action 的 id（写入 EffectApplied） */
   readonly actionId: string
+  /** 机会括号载荷：仅 on_turn_start / on_turn_end 触发链上存在（其余触发点与主动行为均为 undefined） */
+  readonly opportunity?: OpportunityPayload
   readonly warn: (msg: string) => void
   readonly emit: (e: DomainEvent) => void
   /** 挂载状态并触发 on_apply 等副作用（由 runtime 实现，避免循环依赖） */
