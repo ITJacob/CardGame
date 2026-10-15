@@ -6,7 +6,7 @@ import type { IdGenerator } from '../shared/id-generator'
 import type { RandomSource, RandomUsageRegistry } from '../shared/random-source'
 import type { StatusGrant } from '../roster/types'
 import type { Registry } from '../roster/registry'
-import type { CombatUnit } from '../roster/unit'
+import type { CombatUnit, TargetabilityRecord } from '../roster/unit'
 
 /** 行动机会的括号载荷（调度上下文 §三 INV-S6）：on_turn_start / on_turn_end 触发时挂进上下文 */
 export interface OpportunityPayload {
@@ -53,7 +53,7 @@ export interface EffectOps {
   takeControl(unit: CombatUnit, duration: number, caster: CombatUnit): void
   grantImmunity(unit: CombatUnit, node: EffGrantImmunity): void
   damageMod(unit: CombatUnit, scope: 'dealt' | 'taken', delta: number, remaining: number | null): void
-  targetability(unit: CombatUnit, untargetable: boolean, remaining: number | null): void
+  targetability(unit: CombatUnit, rec: TargetabilityRecord): void
   // ---- P2b-2 ----
   setLuminance(value: number | null, delta: number | null, duration: number | null, dispelable: boolean): void
   advanceClock(ticks: number): void

@@ -19,8 +19,6 @@ export interface RawCardTarget {
   selectionMode: 'manual' | 'auto'
   fallbackSort?: SortKey | Record<string, unknown>
   consumption?: 'summon' | 'domain' | 'zone' | 'instant' | 'translocate'
-  mode?: 'unit' | 'area'
-  pickCount?: number
   note?: string
 }
 

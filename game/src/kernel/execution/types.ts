@@ -90,6 +90,8 @@ export interface CandidatePool {
   targets: ResolvedTarget[]
   /** 提交时校验（INV-E9） */
   stateVersion: number
+  /** 选靶基点：unit=单位实体（pickCount 定命中数）/ area=坐标区块（全取，pickCount 不参与） */
+  mode: 'unit' | 'area'
   pickCount: number | 'all'
   selectionMode: 'auto' | 'manual'
   fallbackSort?: SortKey

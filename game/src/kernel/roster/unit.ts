@@ -22,6 +22,21 @@ export interface ImmunityRecord {
   remaining: number | null
 }
 
+/** 选靶口径：指定型（mode=unit）/ 区块型（mode=area）；both = 两者都挡 */
+export type TargetKind = 'targeted' | 'area' | 'both'
+
+/** 不可被选中的施加方：any=任何人；enemy/ally 按施法方阵营（modify_targetability.direction） */
+export type TargetSide = 'any' | 'enemy' | 'ally'
+
+/** 临时可选中性覆写记录（modify_targetability） */
+export interface TargetabilityRecord {
+  untargetable: boolean
+  remaining: number | null
+  /** 缺省 targeted（旧数据无 direction 时的保守口径） */
+  kind?: TargetKind
+  side?: TargetSide
+}
+
 export class CombatUnit implements Unit {
   readonly baseProfile: BaseProfile
   readonly modifiers = new StatModifiers()
@@ -39,7 +54,7 @@ export class CombatUnit implements Unit {
   /** 临时增减伤修正（modify_damage）：scope → 桶增量 */
   readonly damageMods: { scope: 'dealt' | 'taken'; delta: number; remaining: number | null }[] = []
   /** 临时可选中性覆写（modify_targetability） */
-  readonly manualUntargetable: { untargetable: boolean; remaining: number | null }[] = []
+  readonly manualUntargetable: TargetabilityRecord[] = []
 
   position: Coordinate | null = null
   channel: Channel | null = null
@@ -161,16 +176,34 @@ export class CombatUnit implements Unit {
     return this.statuses.all().some((i) => (this.statusDefs.statusDef(i.defId)?.category ?? []).includes(category))
   }
 
-  /** 被「指定型」选靶排除（untargetableByTargeted: inbound/both；含 modify_targetability 临时标记） */
-  isUntargetable(): boolean {
-    if (this.manualUntargetable.some((m) => m.untargetable)) return true
+  /**
+   * 不可被选中（共享内核参数 §四）。
+   * kind='targeted'（mode=unit，指定型）/ 'area'（mode=area，区块型）——**scope:all 的绝对封印两者都挡**，
+   * 其余（single / same_faction / 无 scope）只挡指定型（「不可被选中」是候选池层面的排除，不对 AoE 生效）。
+   * ⚠️ 未接通：direction:outbound（管「能否选中别人」）与 scope:same_faction 的 effectCategories 白名单。
+   */
+  isUntargetable(kind: 'targeted' | 'area' = 'targeted', casterFaction?: FactionId): boolean {
+    // modify_targetability：后写覆盖先写（untargetable:false 即恢复）
+    for (let i = this.manualUntargetable.length - 1; i >= 0; i -= 1) {
+      const m = this.manualUntargetable[i]!
+      const mk = m.kind ?? 'targeted'
+      if (mk !== 'both' && mk !== kind) continue
+      const side = m.side ?? 'any'
+      if (side !== 'any' && casterFaction !== undefined) {
+        const casterIsEnemy = casterFaction !== this.faction
+        if ((side === 'enemy') !== casterIsEnemy) continue
+      }
+      return m.untargetable
+    }
     for (const inst of this.statuses.all()) {
       const v = rawModifier(this.statusDefs.statusDef(inst.defId)?.modifiers, 'untargetableByTargeted')
       if (v === undefined) continue
       if (v === true) return true
       if (v && typeof v === 'object') {
-        const dir = (v as { direction?: string }).direction ?? 'both'
-        if (dir === 'inbound' || dir === 'both') return true
+        const o = v as { direction?: string; scope?: string }
+        const dir = o.direction ?? 'both'
+        if (dir === 'outbound') continue
+        if (kind === 'targeted' || o.scope === 'all') return true
       }
     }
     return false

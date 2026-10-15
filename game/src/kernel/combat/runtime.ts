@@ -1,6 +1,6 @@
 // 战斗运行时：聚合根 Combat 的实现。持事件总线 / 随机源 / id 生成器 / 注册表 /
 // 战场 / Placement / Scheduler，并把一次 step 停在 Manual 决策点。
-import type { FactionId, Phase, PoolKey, UnitId } from '../ids'
+import type { FactionId, LaneId, Phase, PoolKey, UnitId } from '../ids'
 import type { Battle, Coordinate, Faction, Lane, OccupancyChanged } from '../battle/types'
 import { LANE_CAPACITY } from '../battle/types'
 import { BattlePlacement } from '../battle/placement'
@@ -60,6 +60,8 @@ class CombatRuntime implements CombatRuntimeHandle {
   private readonly factions: [FactionId, FactionId]
   private readonly warnings: string[] = []
   private battle: Battle
+  /** 有序路 id（buildBattle 依 setup 定；几何解析用） */
+  private laneIds: LaneId[] = []
   private placement: BattlePlacement
   private scheduler: CombatScheduler
   private pending: { request: DecisionRequest; continueWith: (p: DecisionInput) => void; opportunity: ActionOpportunity | null } | null = null
@@ -118,6 +120,7 @@ class CombatRuntime implements CombatRuntimeHandle {
 
   private buildBattle(): Battle {
     const laneIds = [...new Set([...DEFAULT_LANES, ...this.setupData.factions.flatMap((f) => f.units.map((u) => u.coordinate.lane))])].sort()
+    this.laneIds = laneIds
     const factions: Faction[] = this.setupData.factions.map((fs) => ({
       id: fs.id,
       lanes: new Map<string, Lane>(laneIds.map((l) => [l, { id: l, slots: Array.from({ length: LANE_CAPACITY }, () => ({ occupant: null })) }])),
@@ -322,7 +325,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     return {
       sourceRef: skill.id,
       effects,
-      targetSpec: skill.targetSpec ?? { request: { faction: 'enemy', anchor: 'enemy_front', sort: 'index_asc', pickCount: 1 }, selectionMode: 'auto' },
+      targetSpec: skill.targetSpec ?? { request: { mode: 'unit', faction: 'enemy', anchor: 'enemy_front', scope: 'whole_lane', sort: 'index_asc', pickCount: 1 }, selectionMode: 'auto' },
       consumption: (skill.targetSpec?.consumption as Consumption) ?? 'instant',
       zoneGrant: skill.zoneGrant ? { def: skill.zoneGrant.def, duration: skill.zoneGrant.duration } : undefined,
       domainGrant: skill.domainGrant ? { def: skill.domainGrant.def, duration: skill.domainGrant.duration } : undefined,
@@ -338,6 +341,8 @@ class CombatRuntime implements CombatRuntimeHandle {
       emit: (e) => this.emit(e),
       nextActionId: () => this.ids.next('action'),
       unsupported: (k, d) => this.unsupported(k, d),
+      lanes: this.laneIds,
+      laneCapacity: LANE_CAPACITY,
       onAction: (info) => {
         const targets = info.targets
           .map((t) => (t.occupant ? this.units.get(t.occupant) : undefined))
@@ -405,7 +410,7 @@ class CombatRuntime implements CombatRuntimeHandle {
           u.immunities.push({ categories: node.against ?? [], charges: node.charges ?? null, remaining: node.duration ?? null })
         },
         damageMod: (u, scope, delta, rem) => { u.damageMods.push({ scope, delta, remaining: rem }) },
-        targetability: (u, untargetable, rem) => { u.manualUntargetable.push({ untargetable, remaining: rem }) },
+        targetability: (u, rec) => { u.manualUntargetable.push(rec) },
         setLuminance: (v, d, dur, dispelable) => this.opSetLuminance(v, d, dur, dispelable),
         advanceClock: (ticks) => this.opAdvanceClock(ticks),
         applyDomain: (op, defId, dur, caster) => this.opDomain(op, defId, dur, caster),

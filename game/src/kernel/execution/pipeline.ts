@@ -1,7 +1,7 @@
 // 执行流水线 I→R→M→O（执行上下文 §四）。
 // P2a：consumption 仅 instant 实做；R 无转向规则（finalTargets=committedTargets）；
 // Manual 且候选>pickCount 时挂起，返回 continueWith 供 UI/AI 喂回选择。
-import type { FactionId } from '../ids'
+import type { FactionId, LaneId } from '../ids'
 import type { DomainEvent } from '../combat/types'
 import type { EffectNode } from '../catalog/types'
 import type { Consumption, TargetSpec } from '../shared/types'
@@ -23,6 +23,9 @@ export interface PipelineDeps {
   emit(e: DomainEvent): void
   nextActionId(): string
   unsupported(kind: string, detail?: string): void
+  /** 有序路 id（几何用；战场参数 §二） */
+  lanes: readonly LaneId[]
+  laneCapacity: number
   /** 结算完成后回调（runtime 用它在 zone/domain 分流时登记实例） */
   onAction?(info: { caster: CombatUnit; consumption: Consumption; targets: readonly ResolvedTarget[]; zoneGrant?: { def: string; duration?: number }; domainGrant?: { def: string; duration?: number } }): void
 }
@@ -50,15 +53,23 @@ export function runBehavior(
   deps: PipelineDeps,
 ): AwaitingDecision | null {
   const request = source.targetSpec.request
+  const mode = request.mode ?? 'unit'
   const pickRaw = request.pickCount
-  const pickCount = typeof pickRaw === 'number' && pickRaw > 0 ? pickRaw : 1
   const manual = source.targetSpec.selectionMode === 'manual'
 
   const candidates = resolveCandidates(request, {
     units: deps.units,
     self: caster,
     enemyFaction: deps.enemyOf(caster.faction),
+    lanes: deps.lanes,
+    laneCapacity: deps.laneCapacity,
+    unsupported: deps.unsupported,
   })
+
+  // 命中数：area 恒为区域内全取；unit 取 pickCount（整数=N，'all'=池内全部），缺省 1
+  const pickCount = mode === 'area' || pickRaw === 'all'
+    ? candidates.length
+    : (typeof pickRaw === 'number' && Number.isFinite(pickRaw) && pickRaw > 0 ? Math.trunc(pickRaw) : 1)
 
   const proceed = (picks: readonly ResolvedTarget[]): void => {
     settle(caster, source, opportunityId, picks, deps)

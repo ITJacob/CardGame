@@ -7,7 +7,7 @@ export const BASIC_ATTACK_ID = '__basic_attack__'
 
 export function basicAttackSource(): BehaviorSource {
   const targetSpec: TargetSpec = {
-    request: { faction: 'enemy', anchor: 'enemy_front', scope: 'whole_lane', sort: 'index_asc', pickCount: 1 },
+    request: { mode: 'unit', faction: 'enemy', anchor: 'enemy_front', scope: 'whole_lane', sort: 'index_asc', pickCount: 1 },
     selectionMode: 'auto',
   }
   return {

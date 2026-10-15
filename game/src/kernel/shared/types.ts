@@ -95,6 +95,12 @@ export type FactionSelector = 'self' | 'ally' | 'enemy' | 'any' | 'none' | 'self
 
 /** 目标请求（共享内核参数 §一）。laneRef 已于 2026-10-03 删除——勿实现 */
 export interface TargetRequest {
+  /**
+   * 选靶第一级分流（缺省 unit）。
+   * unit=池为单位实体（faction 圈定）：scope 只作池边界，pickCount 定命中数（指定型，不可选中类排除在此生效）；
+   * area=池为坐标区块（anchor 原点 + scope 圈定）：命中区域内全部在位单位（AoE），pickCount 不参与。
+   */
+  mode?: 'unit' | 'area'
   faction: FactionSelector
   scope?: string
   filter?: UnitFilter
@@ -122,8 +128,6 @@ export interface TargetSpec {
   selectionMode: 'manual' | 'auto'
   fallbackSort?: SortKey | Record<string, Scalar>
   consumption?: Consumption
-  mode?: 'unit' | 'area'
-  pickCount?: number
   note?: string
 }
 

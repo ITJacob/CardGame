@@ -7,7 +7,7 @@ import type {
 } from '../catalog/types'
 import type { EffectContext } from './context'
 import { numeric } from './context'
-import type { CombatUnit } from '../roster/unit'
+import type { CombatUnit, TargetKind, TargetSide } from '../roster/unit'
 
 type StatusIdSel = string | string[] | undefined
 
@@ -105,9 +105,22 @@ export function handleGrantImmunity(node: EffGrantImmunity, target: CombatUnit |
   ctx.ops.grantImmunity(target, node)
 }
 
+/**
+ * modify_targetability → 可选中性覆写记录。
+ * direction → (选靶口径 kind, 施加方 side)：all=两口径/任何人；enemy_targeted=指定型/敌方；
+ * enemy_aoe=区块型/敌方；ally=两口径/友军；缺省 = 两口径/任何人（「不可被选中」的朴素读法）。
+ */
 export function handleModifyTargetability(node: EffModifyTargetability, target: CombatUnit | null, ctx: EffectContext): void {
   if (!target) return
-  ctx.ops.targetability(target, node.untargetable ?? true, node.duration ?? null)
+  const dir = node.direction
+  const kind: TargetKind = dir === 'enemy_targeted' ? 'targeted' : dir === 'enemy_aoe' ? 'area' : 'both'
+  const side: TargetSide = dir === 'enemy_targeted' || dir === 'enemy_aoe' ? 'enemy' : dir === 'ally' ? 'ally' : 'any'
+  ctx.ops.targetability(target, {
+    untargetable: node.untargetable ?? true,
+    remaining: node.duration ?? null,
+    kind,
+    side,
+  })
 }
 
 export function handleReveal(_node: EffReveal, target: CombatUnit | null, ctx: EffectContext): void {
