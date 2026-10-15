@@ -2,8 +2,8 @@
 
 产物，由 `python tools/build_frame_prompts.py` 生成，**勿手改**；改了 JSON 里的边框 prompt 后重跑。
 
-共 47 张：全局三档 + 22 途径 × epic/legendary。
-- **前三档（common / uncommon / rare）**：每条是**自包含完整 prompt**，直接照搬 `PROMPTS_REFERENCE.md` 的认可风格，出图时**不套用下方共用约束**（共用约束含通用描边/filigree，会污染细线贴边效果）。
+共 49 张：全局五档 + 22 途径 × epic/legendary。
+- **前五档（common / uncommon / rare / epic / legendary）**：每条是**自包含完整 prompt**，直接照搬 `PROMPTS_REFERENCE.md` 的认可风格，出图时**不套用下方共用约束**（共用约束含通用描边/filigree，会污染细线贴边效果）。其中 epic / legendary 是**通用档**——途径未产出专属框（`frame-<途径>-epic/legendary.png`）时，前端回落到这两张。
 - **44 张职业框（epic / legendary）**：每条 = 共用约束 + 途径主题层，逗号拼接。
 
 **直接出框（非纹样）**：每条 prompt 让 AI 出「一张完整的黑底卡牌边框图」，在豆包 / 即梦 / Midjourney / Stable Diffusion 等平台直接批量出图即可。
@@ -11,7 +11,7 @@
 - 框线应**贴近卡边**（margin 小）；若平台默认留白多，出图后裁掉外圈留白再叠。
 - ⚠️ **黑底必须是绝对纯黑**：screen 叠加时任何 #0a0a0a 一类的近黑都会把整张卡面轻微提灰。若出图黑底带灰雾/布纹颗粒，用 `python tools/normalize_frame.py <图>` 压成纯黑再入库。
 - 出图后以 `mix-blend-mode: screen` 叠到全出血卡面复用——黑底被 screen 吃透透出卡面、框线提亮叠加，一张框可复用于同档所有卡。
-材质分层（数据源已定，平台无需另调）：前三档为非金递进——普通=冷钢银单线 / 精良=青铜绿锈双线+连续角托 / 稀有=暖金三线+小符文；职业 epic/legendary 由各主题层自带金线（传说档金线最适配）。
+材质分层（数据源已定，平台无需另调）：全局五档为非金递进 + 金阶——普通=冷钢银单线 / 精良=青铜绿锈双线+连续角托 / 稀有=暖金三线+小符文 / 史诗=暖金四线+菱形角饰+顶底菱形徽记 / 传说=双色金四线（深金主线+淡金描线）+鸢尾角饰+顶底宝石徽记；途径专属 epic/legendary 由各主题层自带母题与金线（传说档金线最适配）。
 每条 prompt 内含的**四条硬约束**（勿删，删了就会回退成粗带/灰底）：纯黑背景前置并逐项否定纹理 / 笔触与光泽只在线上 / 辉光零外溢 / 边框带宽度量化为卡宽 3-4% 以内。详见 `PROMPTS_REFERENCE.md`。
 
 职业框共用约束（44 条 epic/legendary 的开头完全相同，由 `manifest.artFrameFormat` 单点维护）：
@@ -36,6 +36,18 @@ A large empty canvas with one small vertical trading card centered in it: the ca
 
 ```
 A large empty canvas with one small vertical trading card centered in it: the card occupies about 70 percent of the canvas width, leaving a wide empty pure black margin on all four sides of the canvas. The card is a vertical rectangle with an exact 3:4 aspect ratio, width to height. The card itself has a flat, completely uniform, absolute pure black (#000000) background: no gradient, no vignette, no glow, no fog, no smoke, no ambient light, no canvas texture, no brushstroke texture and no grain anywhere on the card or in the surrounding margin. The only decoration is three extremely thin parallel lines in warm antique gold (absolutely not bronze, not green patina), two main lines with a third even finer inner keyline, all three packed closely together, drawn just inside the card edge with a very small margin, looking like fine lines drawn directly on the black surface with a sharp fine pen, small neat rune-like corner accents only. The lines are flat and delicate, each well under 1 percent of the image width: no 3D bevel, no glossy highlight, no metallic gradient, no reflection, not a solid band, not a filled strip, not a physical frame, and the space between and around the lines stays pure black. Slightly uneven hand-drawn line quality. The lines run continuously and unbroken around all four edges and turn each corner cleanly with no gaps. The whole central area is completely empty flat pure black. No characters, no scenery, no text, no watermark, no signature, no logo, no halo, no light bleed onto the black
+```
+
+## frame-epic.png
+
+```
+A large empty canvas with one small vertical trading card centered in it: the card occupies about 70 percent of the canvas width, leaving a wide empty pure black margin on all four sides of the canvas. The card is a vertical rectangle with an exact 3:4 aspect ratio, width to height. The card itself has a flat, completely uniform, absolute pure black (#000000) background: no gradient, no vignette, no glow, no fog, no smoke, no ambient light, no canvas texture, no brushstroke texture and no grain anywhere on the card or in the surrounding margin. The only decoration is four extremely thin parallel lines in warm antique gold (absolutely not bronze, not green patina), two main lines with two finer inner keylines, all four packed closely together, drawn just inside the card edge with a very small margin, looking like fine lines drawn directly on the black surface with a sharp fine pen, with one small neat outlined lozenge ornament with a tiny central dot at each of the four corners, and one small neat double-outlined diamond emblem with a tiny central dot at the top centre and one at the bottom centre of the border strip only. The lines are flat and delicate, each well under 1 percent of the image width: no 3D bevel, no glossy highlight, no metallic gradient, no reflection, not a solid band, not a filled strip, not a physical frame, and the space between and around the lines stays pure black. Slightly uneven hand-drawn line quality. The lines run continuously and unbroken around all four edges and turn each corner cleanly with no gaps, all corner lozenge ornaments and the top and bottom diamond emblems drawn in the same fine line style and strictly confined to a narrow strip along the edges, no ornament spreading inward, no detached fragments. The whole central area is completely empty flat pure black. No characters, no scenery, no text, no watermark, no signature, no logo, no halo, no light bleed onto the black
+```
+
+## frame-legendary.png
+
+```
+A large empty canvas with one small vertical trading card centered in it: the card occupies about 70 percent of the canvas width, leaving a wide empty pure black margin on all four sides of the canvas. The card is a vertical rectangle with an exact 3:4 aspect ratio, width to height. The card itself has a flat, completely uniform, absolute pure black (#000000) background: no gradient, no vignette, no glow, no fog, no smoke, no ambient light, no canvas texture, no brushstroke texture and no grain anywhere on the card or in the surrounding margin. The only decoration is four extremely thin parallel lines, the two main lines in rich deep gold (absolutely not bronze, not silver) and the two finer inner keylines in pale gold, all four packed closely together, drawn just inside the card edge with a very small margin, looking like fine lines drawn directly on the black surface with a sharp fine pen, with one small neat heraldic fleur-de-lis ornament at each of the four corners, and one small neat round gem emblem outlined in fine lines with two short inner facet strokes at the top centre and one at the bottom centre of the border strip only. The lines are flat and delicate, each well under 1 percent of the image width: no 3D bevel, no glossy highlight, no metallic gradient, no reflection, not a solid band, not a filled strip, not a physical frame, and the space between and around the lines stays pure black. Slightly uneven hand-drawn line quality. The lines run continuously and unbroken around all four edges and turn each corner cleanly with no gaps, all corner fleur-de-lis ornaments and the top and bottom gem emblems drawn in the same fine line style and strictly confined to a narrow strip along the edges, no ornament spreading inward, no detached fragments. The whole central area is completely empty flat pure black. No characters, no scenery, no text, no watermark, no signature, no logo, no halo, no light bleed onto the black
 ```
 
 ## frame-sleepless-epic.png

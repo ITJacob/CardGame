@@ -29,7 +29,7 @@ export const DB = {
   rarityOrder: [],            // 稀有度档位顺序：低 → 高（普通 → 传说），读自 manifest.rarityMap
   artFormat: '',              // 全局画幅约束（manifest.artFormat），画面 prompt 前缀
   artFrameFormat: '',         // 全局边框约束（manifest.artFrameFormat），边框 prompt 前缀
-  artFrame: null,             // 全局三档边框**材质层**（manifest.artFrame：common/uncommon/rare）
+  artFrame: null,             // 全局五档边框**材质层**（manifest.artFrame：common/uncommon/rare/epic/legendary）
 };
 
 // 稀有度顺序读自 manifest.rarityMap（CLAUDE.md 里写的「稀有度↔序列唯一机器可读源」），
@@ -125,7 +125,7 @@ export async function loadAll(onProgress) {
       card._pathwayName = p.name;
       card._artStyle = skills.artStyle || '';   // 途径级出图风格，详情页与 card.art 现拼
       card._frameEpic = skills.artFrameEpic || '';        // 途径级边框 prompt（epic/legendary 两档；
-      card._frameLegendary = skills.artFrameLegendary || ''; // 其余三档走 DB.artFrame 全局模板）
+      card._frameLegendary = skills.artFrameLegendary || ''; // 缺途径主题层时走 DB.artFrame 全局模板，通用档含 epic/legendary）
       DB.cards.push(card);
       DB.cardById.set(card.id, card);
     }

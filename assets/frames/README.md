@@ -5,7 +5,7 @@
 
 ## 怎么批量出图（别的平台也能用）
 
-`PROMPTS.md` 是全部 47 条**完整** prompt，由 `python tools/build_frame_prompts.py` 从 JSON 生成（**勿手改**；改 JSON 后重跑）。其中**前三档 common/uncommon/rare 为自包含完整 prompt**（风格基准见 `PROMPTS_REFERENCE.md`，不套用共用约束）；**44 张职业框 epic/legendary = 共用约束 + 途径主题层**。
+`PROMPTS.md` 是全部 49 条**完整** prompt，由 `python tools/build_frame_prompts.py` 从 JSON 生成（**勿手改**；改 JSON 后重跑）。其中**前五档 common/uncommon/rare/epic/legendary 为自包含完整 prompt**（风格基准见 `PROMPTS_REFERENCE.md`，不套用共用约束；epic/legendary 为通用档，途径未产出专属框时前端回落这两张）；**44 张职业框 = 共用约束 + 途径主题层**。
 把任意一条 prompt 复制到 豆包 / 即梦 / Midjourney / Stable Diffusion 等平台即可出图：
 
 - **比例**：竖图，建议 `1024×1536`（与卡面 3:4 对齐）。
@@ -15,10 +15,12 @@
 
 材质分层（数据源 `manifest.artFrame` / 各途径 `artFrameEpic`/`artFrameLegendary` 已定，平台无需另调）：
 
-- 全局三档 `frame-common/uncommon/rare.png`：**非金递进、纯通用、无上下徽记、四角饰纹极简**——所有途径共用。
+- 全局五档 `frame-common/uncommon/rare/epic/legendary.png`：**非金递进 + 金阶、纯通用、无途径母题**——所有途径共用；epic/legendary 另带顶/底居中徽记。
   - 普通 common = 冷钢银单细线，四角极小几何切角；
   - 精良 uncommon = 青铜绿锈双线 + 四角连续小角托（与线相连、不碎裂）；
   - 稀有 rare = 暖金**三线**（双主线 + 一条更细内描线，三线挤在同一窄带内）+ 四角小符文（暖金区别于精良的绿铜，线数 1/2/3 递进与精良拉开结构区分）。
+  - 史诗 epic = 暖金**四线**（双主线 + 两条更细内描线，四线挤在同一窄带内）+ 四角菱形饰（中带小点）+ 顶/底居中菱形徽记。
+  - 传说 legendary = **双色金四线**（深金主线 + 淡金描线）+ 四角鸢尾饰 + 顶/底居中宝石徽记（描线内带两道短刻面线）。
 - 途径特色两档 `frame-<pathwayId>-epic/legendary.png`：自带**金线**（传说 legendary 金线最适配）+ 四角母题 + 顶/底徽记 + 途径配色（如 thief=渡鸦+黄铜齿轮+煤气灯、assassin=碎镜+黑巫火+血红荆棘、sleepless=守夜灯笼+新月+星图）。
 
 ## 站点接入（实现侧）

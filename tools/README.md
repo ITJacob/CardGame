@@ -20,7 +20,7 @@
 python tools/build_frame_prompts.py
 ```
 
-数据源：`docs/json/manifest.json` 的 `artFrame`（前三档自包含 prompt）、`artFrameFormat`（44 张职业框共用约束）+ 各途径 `*.skills.json` 的 `artFrameEpic` / `artFrameLegendary`。改了 JSON 里的边框 prompt 后重跑本脚本，**勿手改产物**。
+数据源：`docs/json/manifest.json` 的 `artFrame`（前五档自包含 prompt）、`artFrameFormat`（44 张职业框共用约束）+ 各途径 `*.skills.json` 的 `artFrameEpic` / `artFrameLegendary`。改了 JSON 里的边框 prompt 后重跑本脚本，**勿手改产物**。
 
 ### `normalize_frame.py`
 边框图后处理：把近黑背景压成绝对纯黑，并量化体检框带宽度。纯标准库实现（不依赖 Pillow），支持 8-bit RGB/RGBA 非隔行 PNG。
@@ -70,7 +70,7 @@ python tools/sync_art.py push --dry-run
 
 配置走环境变量 `R2_ACCOUNT_ID` / `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` / `R2_BUCKET`（R2 控制台申请；依赖 `pip install boto3`）。
 
-## 47 张框的标准出图流程
+## 49 张框的标准出图流程
 
 1. 出图：用 `assets/frames/PROMPTS.md` 里对应那条 prompt（大画布小内容版）
 2. 线带诊断：判有无边缘残留（**间距异常即残留**——真多线之间间距一致，残留线间距明显不同）
