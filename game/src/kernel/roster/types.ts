@@ -126,6 +126,8 @@ export interface StatusGrant {
   stacks?: number
   params?: Record<string, number>
   sourceId: string
+  /** 施加者（释放挂载该状态的技能的单位）；载荷简写 `caster` 读它，区别于宿主 self（执行参数 §2.3） */
+  casterId?: string
   binding?: { guardTarget?: string; redirectTarget?: string }
   sourcePathway?: string
 }

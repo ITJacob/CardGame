@@ -22,6 +22,7 @@ import type { BehaviorSource, PipelineDeps } from '../execution/pipeline'
 import type { Consumption } from '../shared/types'
 import type { DecisionInput, DecisionRequest } from '../execution/types'
 import { withParams, type EffectContext, type OpportunityPayload } from '../effect/context'
+import type { PayloadSubjects, TriggerPayload } from '../effect/payload'
 import { executeNodes } from '../effect/executor'
 import { BASIC_ATTACK_ID, basicAttackSource } from './basicAttack'
 import type {
@@ -107,7 +108,8 @@ class CombatRuntime implements CombatRuntimeHandle {
         onStatusTickEffect: (u) => this.fireStatusTriggers(u, 'on_tick'),
         onStatusExpired: (u, inst) => {
           this.emit({ type: 'StatusExpired', instanceId: inst.instanceId, defId: inst.defId, unitId: u.id })
-          this.fireStatusTriggers(u, 'on_remove', inst.defId)
+          // 载荷主体：on_remove 的 target = 到期状态的持有者（执行参数 §2.3）
+          this.fireStatusTriggers(u, 'on_remove', inst.defId, undefined, { target: u })
         },
       },
     })
@@ -371,12 +373,18 @@ class CombatRuntime implements CombatRuntimeHandle {
     for (const inst of unit.statuses.tickSelfTurn()) {
       unit.provenance.revertBySource(inst.instanceId)
       this.emit({ type: 'StatusExpired', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id })
-      this.fireStatusTriggers(unit, 'on_remove', inst.defId)
+      // 载荷主体：on_remove 的 target = 到期状态的持有者（执行参数 §2.3）
+      this.fireStatusTriggers(unit, 'on_remove', inst.defId, undefined, { target: unit })
     }
     unit.provenance.tickSelfTurn()
   }
 
-  private makeContext(actionId: string, caster: CombatUnit | null, opportunity?: OpportunityPayload): EffectContext {
+  private makeContext(
+    actionId: string,
+    caster: CombatUnit | null,
+    opportunity?: OpportunityPayload,
+    payload?: TriggerPayload,
+  ): EffectContext {
     return {
       units: this.units,
       random: this.random,
@@ -386,9 +394,10 @@ class CombatRuntime implements CombatRuntimeHandle {
       caster,
       actionId,
       opportunity,
+      payload,
       warn: (m) => this.warn(m),
       emit: (e) => this.emit(e),
-      mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant),
+      mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant, caster),
       effectNode: (id) => this.lookup.effectNode(id),
       defCategory: (id) => this.lookup.statusDef(id)?.category,
       unsupported: (k, d) => this.unsupported(k, d),
@@ -397,8 +406,14 @@ class CombatRuntime implements CombatRuntimeHandle {
       },
       onDamage: (attacker, defender, amount) => {
         if (attacker) this.lastAttacker.set(defender.id, attacker.id)
-        if (attacker) this.fireStatusTriggers(attacker, 'on_deal_damage')
-        this.fireStatusTriggers(defender, 'on_take_damage')
+        // 载荷主体（执行参数 §2.3）：on_deal_damage 的 target = 承伤方；on_take_damage 的 attacker = 造成方
+        if (attacker) {
+          this.fireStatusTriggers(attacker, 'on_deal_damage', undefined, undefined, {
+            target: defender,
+            attacker,
+          })
+        }
+        this.fireStatusTriggers(defender, 'on_take_damage', undefined, undefined, { attacker, target: defender })
         void amount
       },
       ops: {
@@ -691,7 +706,8 @@ class CombatRuntime implements CombatRuntimeHandle {
       return
     }
     this.emit({ type: 'UnitSpawned', unitId: unit.id })
-    this.fireStatusTriggers(owner, 'on_spawn')
+    // 载荷主体：on_spawn 的 target = 新生单位（执行参数 §2.3），需求本身落在召唤物身上
+    this.fireStatusTriggers(owner, 'on_spawn', undefined, undefined, { target: unit })
     void atk
   }
 
@@ -743,7 +759,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.timers.push({ kind: 'control', unitId: unit.id, remaining: Math.max(1, duration), payload: [] })
   }
 
-  private mountStatus(host: CombatUnit, statusId: string, grant: Omit<StatusGrant, 'sourceId'>): void {
+  private mountStatus(host: CombatUnit, statusId: string, grant: Omit<StatusGrant, 'sourceId'>, caster: CombatUnit | null = null): void {
     if (!statusId) return
     const def = this.lookup.statusDef(statusId)
     // 免疫拦截（grant_immunity）
@@ -757,11 +773,13 @@ class CombatRuntime implements CombatRuntimeHandle {
       }
       return
     }
-    const inst = host.statuses.mount(statusId, { ...grant, sourceId: this.ids.next('status') })
+    const inst = host.statuses.mount(statusId, { ...grant, sourceId: this.ids.next('status'), casterId: grant.casterId ?? caster?.id })
     if (!inst) return
     this.emit({ type: 'StatusMounted', instanceId: inst.instanceId, defId: statusId, unitId: host.id })
-    this.fireTriggers(host, 'on_apply', def?.triggers, host)
-    this.fireStatusTriggers(host, 'on_status_gain')
+    // 载荷主体：on_apply / on_status_gain 的 caster = 施加者，target = 宿主（执行参数 §2.3）
+    const subjects: PayloadSubjects = { caster, target: host }
+    this.fireTriggers(host, 'on_apply', def?.triggers, host, undefined, this.payloadFor(host, inst.grant.casterId, subjects))
+    this.fireStatusTriggers(host, 'on_status_gain', undefined, undefined, subjects)
   }
 
   /** 每 tick 处理限时记录（translocate 回归 / take_control 归还 / 临时增减伤与可选中性） */
@@ -794,21 +812,54 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
   }
 
-  private fireStatusTriggers(unit: CombatUnit, event: string, onlyDefId?: string, opportunity?: OpportunityPayload): void {
-    for (const inst of unit.statuses.all()) {
-      if (onlyDefId && inst.defId !== onlyDefId) continue
-      this.fireTriggers(unit, event, this.lookup.statusDef(inst.defId)?.triggers, unit, opportunity)
-    }
-    // 被动卡（无 onlyDefId 时全部参与）
-    if (!onlyDefId) {
-      for (const p of unit.passives) this.fireTriggers(unit, event, p.triggers, unit, opportunity)
+  /**
+   * 组装触发器载荷（执行参数 §2.3）：宿主已知，其余主体来自事件。
+   * 状态触发器的 `caster` 优先取该状态实例的施加者（grant.casterId），被动卡没有施加者故退回宿主。
+   */
+  private payloadFor(
+    host: CombatUnit,
+    applierId: string | undefined,
+    subjects: PayloadSubjects | undefined,
+    opportunity?: OpportunityPayload,
+  ): TriggerPayload {
+    const applier = applierId ? (this.units.get(applierId) ?? null) : null
+    return {
+      host,
+      caster: applier ?? subjects?.caster ?? host,
+      target: subjects?.target ?? null,
+      attacker: subjects?.attacker ?? null,
+      killed: subjects?.killed ?? null,
+      enemyFaction: this.factions.find((f) => f !== host.faction) ?? null,
+      opportunity,
     }
   }
 
-  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload): void {
+  private fireStatusTriggers(
+    unit: CombatUnit,
+    event: string,
+    onlyDefId?: string,
+    opportunity?: OpportunityPayload,
+    subjects?: PayloadSubjects,
+  ): void {
+    for (const inst of unit.statuses.all()) {
+      if (onlyDefId && inst.defId !== onlyDefId) continue
+      const def = this.lookup.statusDef(inst.defId)
+      const payload = this.payloadFor(unit, inst.grant.casterId, subjects, opportunity)
+      this.fireTriggers(unit, event, def?.triggers, unit, opportunity, payload)
+    }
+    // 被动卡（无 onlyDefId 时全部参与）
+    if (!onlyDefId) {
+      for (const p of unit.passives) {
+        const payload = this.payloadFor(unit, undefined, subjects, opportunity)
+        this.fireTriggers(unit, event, p.triggers, unit, opportunity, payload)
+      }
+    }
+  }
+
+  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, payload?: TriggerPayload): void {
     for (const t of triggers ?? []) {
       if (t.event !== event) continue
-      const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity)
+      const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity, payload)
       executeNodes(t.effects ?? [], [unit], ctx)
     }
   }
@@ -821,10 +872,14 @@ class CombatRuntime implements CombatRuntimeHandle {
       this.dead.add(u.id)
       this.emit({ type: 'UnitDied', unitId: u.id })
       this.stats.unitsLost[u.faction] = (this.stats.unitsLost[u.faction] ?? 0) + 1
-      this.fireStatusTriggers(u, 'on_death')
       const killerId = this.lastAttacker.get(u.id)
       const killer = killerId ? this.units.get(killerId) : undefined
-      if (killer && !killer.isDead) this.fireStatusTriggers(killer, 'on_kill')
+      // 载荷主体（执行参数 §2.3）：on_death 的 attacker / target = 击杀者，killed_unit = 自身；
+      // on_kill 的 killed_unit / target = 受害者。故先解出击杀者再 fire。
+      this.fireStatusTriggers(u, 'on_death', undefined, undefined, { attacker: killer ?? null, target: killer ?? null, killed: u })
+      if (killer && !killer.isDead) {
+        this.fireStatusTriggers(killer, 'on_kill', undefined, undefined, { attacker: killer, target: u, killed: u })
+      }
       u.provenance.revertAll()
       this.placement.remove(u.id)
     }

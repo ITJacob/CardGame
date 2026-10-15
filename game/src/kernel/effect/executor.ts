@@ -1,9 +1,10 @@
 // 效果执行器（O 节点）：遍历效果树，处理 3 个结构算子并分发原语处理函数。
 // 未实现的原语走 unsupported（跳过 + 计数），不抛异常。
 import type { EffectNode, OpIf, OpRepeat, OpSequence } from '../catalog/types'
-import type { Condition } from '../shared/types'
+import type { Condition, EffectTarget } from '../shared/types'
 import { evaluateCondition, type ConditionContext } from '../shared/effect-condition'
 import type { EffectContext } from './context'
+import { resolvePayloadTargets } from './payload'
 import * as H from './handlers'
 import * as H2 from './handlers2'
 import * as H3 from './handlers3'
@@ -103,7 +104,12 @@ function executeNode(node: EffectNode, targets: readonly (CombatUnit | null)[], 
   }
   const cond = (node as { condition?: Condition }).condition
   const cc = conditionContext(ctx)
-  for (const target of targets) {
+  // 载荷语境下，节点自带的 target 简写自行求值（执行参数 §2.3）；无载荷时沿用外层落点。
+  // 主动行为的效果不带载荷，故此处只影响触发器效果——卡片效果的 target 展开另案（待办 §五）。
+  const selector = (node as { target?: EffectTarget }).target
+  const resolved =
+    selector && ctx.payload ? resolvePayloadTargets(selector, ctx.payload, ctx.units, ctx.unsupported) : targets
+  for (const target of resolved) {
     if (cond && !evaluateCondition(cond, target, cc)) continue
     handler(node, target, ctx)
   }
