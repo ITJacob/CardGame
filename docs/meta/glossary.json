@@ -274,17 +274,17 @@
     },
     "mode": {
       "label": "目标形态",
-      "desc": "目标是「一个单位」还是「一片区域/坐标」。DDD 原 TargetSpec.mode，2026-09-20 回补（schema 曾丢失）。",
-      "source": "共享内核参数 §一 / skills.schema.json cardTarget.mode",
-      "note": "⚠️ 与 selectionMode（manual/auto，**谁拍板最终目标**）是两个独立维度，不可混用——selectionMode 管「手动还是自动」，mode 管「点还是区域」。mode=unit 时 consumption 强制 instant 或 translocate。",
+      "desc": "选靶的第一级分流：候选池的元素是「单位实体」还是「坐标区块」。原 DDD TargetSpec.mode——此前只在 ddd 占一行、schema 摆错层、数据与引擎均未接通，现已归位到 request 层并接通。",
+      "source": "共享内核参数 §一 / skills.schema.json unitRequest.mode",
+      "note": "⚠️ 与 selectionMode（manual/auto，**谁拍板最终目标**）是两个独立维度，不可混用——selectionMode 管「手动还是自动」，mode 管「池子里装什么」。**AoE 的判据是 mode=area，不是 pickCount**：unit 模式下 pickCount 定命中数（1/all/N），area 模式下 pickCount 不参与。mode=unit 时 consumption 强制 instant 或 translocate。",
       "terms": {
         "unit": {
           "zh": "点目标",
-          "brief": "指定具体单位"
+          "brief": "以单位实体为池：指定具体单位，命中数由 pickCount 定；「不可被选中」类排除在此生效"
         },
         "area": {
           "zh": "区域目标",
-          "brief": "指定场上区域/坐标"
+          "brief": "以坐标区块为池：区域内全部在位单位命中（AoE），pickCount 不参与"
         }
       }
     },

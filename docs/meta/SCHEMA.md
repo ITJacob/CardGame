@@ -116,13 +116,12 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `request` | object | ✓ | 选靶请求 |
 | `fallbackSort` | sortKey\|null | | 自动排序键 |
 | `consumption` | `summon`\|`domain`\|`zone`\|`instant`\|`translocate` | | 目标消耗的额外资源（对齐 DDD 共享内核 consumption）|
-| `mode` | `unit`\|`area` | | 目标形态：点目标 / 区域目标（DDD TargetSpec.mode，2026-09-20 回补）。与 `selectionMode` 是两个独立维度；`mode=unit` 时 `consumption` 强制 `instant` 或 `translocate` |
-| `pickCount` | integer / `"all"` | | 提交的目标数量（DDD I 节点 CandidatePool.pickCount）。`1`=取 1（单体），`"all"`=取框内全部（群体），缺省 `1`；`manual` 且候选数 > pickCount 才等待玩家选择，候选数 ≤ pickCount 直接全取不打断 |
 
-`request`（对应 DDD 的 faction × scope（几何）× anchor（原点）× sort × filter × spread × pickCount × selectionMode；2026-10-03 几何化重构，推翻 Path A / 2026-09-20 裁定）：
+`request`（对应 DDD 的 mode（基点）× faction × scope（几何）× anchor（原点）× sort × filter × spread × pickCount × selectionMode）：
 
 | 字段 | 取值 |
 |---|---|
+| `mode` | `unit`（缺省）/ `area`。**选靶第一级分流**——决定候选池的元素是什么，其余维度以它为基点。`unit`=池为**单位实体**：`filter`/`sort` 作用于单位属性，`scope` 只作池边界、不决定命中数，`pickCount` 定命中数（1/all/N）；指定型——「不可被选中」类排除（潜匿/隐匿/封印）在此生效。`area`=池为**坐标区块**（`anchor` 原点 + `scope` 圈定）：`filter`/`sort` 作用于格（可读格上 occupant 属性），命中=区域内**全部在位单位**（AoE），`pickCount` 不参与。**AoE 的判据是本字段，不是 `pickCount`** |
 | `faction` | `self` / `ally` / `enemy` / `any` / `none` / `self_or_ally` |
 | `scope` | `point` / `front_n`(n∈1,2,3) / `behind_n`(n∈1,2,3) / `cross_lane` / `cross_lane_row` / `diamond_n`(n∈1,2) / `chain_n`(n∈1,2,3) / `whole_lane` / `board` / `none`。**几何范围（基于 anchor 原点量起）**。缺省=`whole_lane`（被施法侧整条半场 4 格）。`point`=仅锚点；`front_n`/`behind_n`=锚点含前/后 n 格（`front`=朝中线，`behind`=朝己方后排；**敌锚点 `behind_n`=前 n 敌**）；`cross_lane`=跨路并排（同 index 的另一路 1 格）；`cross_lane_row`=另一路整条半场 4 格（2026-10-03 轴签名提案 F）；`diamond_n`=曼哈顿距离≤n；`chain_n`=沿相邻/链接**跳跃** n 次（传染 / 连锁闪电 / 诅咒链接，非静态半径，提案 E）；`whole_lane`=被施法侧半场；`board`=全场 16 格；`none`=无目标 |
 | `anchor` | `self` / `caster` / `enemy_front` / `ally_front` / `enemy_back` / `specific_unit` / `spawned_unit` / `last_dead_ally` / `fixed_cell`，或任意字符串（`<指定单位>`/`fixed_cell(<index>)` 动态寻址）。**净化后只回答「从哪量几何」**，不承载阵营/排序/位置（§10.1）。缺省按 `faction` 推导：`enemy`→`enemy_front`（敌方同路排首 i=0），`ally`/`self`→`self`（我方施法者）。`ally_front`=我方同路排首（守护/替承/前排增益，提案 A）；`enemy_back`=敌方同路最后排（暗杀/狙击后排，提案 B） |
@@ -130,11 +129,11 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `sort` | 同 sortKey（见下） |
 | `filter` | 候选池过滤器（开放结构）。**DDD 标准 9 维**：`unitType` / `tags` / `hasStatus` / `hasCategory` / `hpPercent` / `casterHasSummon` / `isSummon` / `casterOwned` / `adjacency`；**项目扩展（数据已用）**：`unitId` / `isAllyOrMirror` / `isPuppet` / `isOwnSummon` / `element` / `tier` / `count` / `dispelable` / `anyOf` / `emptySlot`；**位格与性别（2026-10-03 轴签名提案 C/D）**：`rankBelowCaster` / `rankAboveCaster`（bool，位格压制，§1.4 判定）/ `rankMax` / `rankMin`（int）/ `gender`（`any`/`male`/`female`，与 `card.gender` 同源） |
 | `spread` | `none` / `lane_line` / `splash_adjacent` / `splash_behind` / `cross_same_index`（I-2 收缩后从 committedTargets 扩散，不回池） |
-| `excludeSelf` / `sortKey` / `pickCount` / `selectionMode` | 见 schema（pickCount: `1`=取 1、`"all"`=取框内全部，缺省 `1`；selectionMode: `manual`=框内由玩家选 / `auto`=按 sort 取前） |
+| `excludeSelf` / `sortKey` / `pickCount` / `selectionMode` | 见 schema（pickCount: `1`=取 1、`"all"`=取池内全部，缺省 `1`，**仅 `mode=unit` 有义**；selectionMode: `manual`=框内由玩家选 / `auto`=按 sort 取前） |
 
 > **战场拓扑（§10.0 订正）**：上下两路、每路敌我各 4 格头对头向中线塌陷，index 越小越近中线（=排首）。几何锚点必须落在**被施法一侧**——敌 spell 锚 `enemy_front`、己 spell 锚 `self`，恢复并固化 §1.3 原缺省「敌方同路最前排」。
 
-> **几何范围与选数的正交（§10）**：`scope` 只框几何大小（从 anchor 量起），`pickCount` 管取几个（`1` / `"all"` / N），二者正交。原 2026-09-20 裁定把几何从 scope 剥离（改由 `laneRef`+`spread` 承载）是临时妥协，本重构正名回 scope，并**删除 `laneRef` 字段**（几何全部由 scope 承载）。
+> **mode 是基点，scope 与 pickCount 分属两种模式（§10）**：`mode:unit` 下 `scope` 只框池边界、`pickCount` 管取几个（`1` / `"all"` / N）；`mode:area` 下 `scope` 框出命中区域、区域内全取（AoE），`pickCount` 不参与。`laneRef` 字段已于几何化重构删除（几何全部由 scope 承载）。
 
 **sortKey 封闭枚举**（新增须先登记到共享内核参数）：
 

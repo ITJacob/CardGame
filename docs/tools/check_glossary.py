@@ -52,7 +52,7 @@ ENUM_TO_CAT = {
     "card.gender": "gender",
     "cardTarget.selectionMode": "selectionMode",
     "cardTarget.consumption": "consumption",
-    "cardTarget.mode": "mode",
+    "unitRequest.mode": "mode",
     "secondaryTarget.selectionMode": "selectionMode",
     "unitRequest.faction": "faction",
     "unitRequest.scope": "scope",
