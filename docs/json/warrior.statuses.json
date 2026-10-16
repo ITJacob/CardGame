@@ -547,7 +547,23 @@
         "priority": 10,
         "note": "编队参数 §2.2「守护」行已裁定：grant 带 binding.guardTarget=被保护单位，指向该友军的单体攻击重定向到守护者自身（执行上下文 R 节点）；priority 10"
       },
-      "note": "守护轴身份状态（2026-09-29 自 common guard 分叉私有化）：守护=替指定友军承伤的重定向+自身受伤×0.7；charges=3 为守护次数（每次重定向承伤消耗 1 层，耗尽即散 ⚠️D 待平衡）。common guard（名「坚守」）保留为全库通用减伤 buff。"
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "guard_pressure",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": 15,
+              "target": "self",
+              "note": "替友军承伤——挨的每一下都记在威压上（承伤-转化循环，A1）"
+            }
+          ]
+        }
+      ],
+      "note": "守护轴身份状态（2026-09-29 自 common guard 分叉私有化）：守护=替指定友军承伤的重定向+自身受伤×0.7；charges=3 为守护次数（每次重定向承伤消耗 1 层，耗尽即散 ⚠️D 待平衡）。common guard（名「坚守」）保留为全库通用减伤 buff。 2026-10-16 深化：补 on_take_damage 触发——每次替友军承伤叠 1 层「守护威压」，把替承从静态减伤变成承伤-转化循环（⚠️D 触发时机按重定向 R 节点，待内核确认）。"
     },
     {
       "id": "battle_banner",
@@ -646,6 +662,24 @@
         }
       ],
       "note": "守护者「放弃攻击后高序列以下极少能打破防御」的兑现（2026-10-16 环节⑤）：弃攻期间竖起的墙**按格数计**（charges = 可挡次数），砸穿即碎。墙与代价（abandon_attack 伤害 ×0.5）成对出现——守护不是白挨打，是用行动经济买墙。乘区审批：0.4 = 深度减免档（重控/代价/位格压制态，单列登记）。数值 ⚠️D 待平衡。"
+    },
+    {
+      "id": "guard_pressure",
+      "name": "守护威压",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "duration": 15,
+      "modifiers": {
+        "damage_mul": {
+          "dynamic": "1 + 0.12 * stacks",
+          "note": "替承积累的威压：挨得越多，还手越重（每层 +12% ⚠️D 待平衡）"
+        }
+      },
+      "note": "守护轴深化（2026-10-16）：守护每次替友军承伤叠 1 层（由 guardianship 的 on_take_damage 触发挂载），上限 3 层。守护者不是白挨打——受的伤转化成威压，这是「替承」的回报面。"
     }
   ]
 }
