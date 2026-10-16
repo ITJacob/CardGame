@@ -18,7 +18,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```
 docs/meta/           流程·规范·提案（工作流与生成约束，先读 WORKFLOW.md）
 ├─ WORKFLOW.md       当前 AI 工作流定义：设定→机制→JSON→分析→重设计迭代 五环节流水线与完成门槛
-├─ SCORING.md        职业设计评分体系（2026-09-26 建）：轴级/途径级六维指标与计分公式，
+├─ SCORING.md        职业设计评分体系（**2.0，2026-10-16 重写**）：轴级六维 + 途径级七维（含差异化 25）；
+│                    核心是「作用面」模型——状态面 ∪ 全局通道面，直接引用与通道介导的间接作用等价计分。
 │                    配套 score.py；逐职业重设计的取榜依据
 ├─ REDESIGN_LOG.md   环节⑤逐职业重设计日志：一途径一迭代，改前改后分 + 改动摘要
 ├─ DESIGN_CHECKLIST.md 新卡/新状态设计清单：技能卡 8 步、状态 7 步，及技能↔状态接口契约（与轴评分三维对应）

@@ -8,10 +8,10 @@ import { walkCardEffects } from '../ast.js';
 import { barChart, countBy, sortedRows } from '../charts.js';
 import { modifierKeys } from './status.js';
 
-const DIMS = ['轴健康度', '跨轴耦合', '跨系联动', '结构健康', '机制落地', '文本完备', '风格签名'];
-const DIM_MAX = { 轴健康度: 30, 跨轴耦合: 15, 跨系联动: 15, 结构健康: 10, 机制落地: 10, 文本完备: 10, 风格签名: 10 };
-const AXIS_DIMS = ['身份锚定', '产层闭环', '读层闭环', '轴内多样性', '规模均衡', '承接连通'];
-const AXIS_DIM_MAX = { 身份锚定: 15, 产层闭环: 20, 读层闭环: 25, 轴内多样性: 15, 规模均衡: 10, 承接连通: 15 };
+const DIMS = ['轴健康度', '跨轴耦合', '跨系联动', '结构健康', '机制落地', '文本完备', '差异化'];
+const DIM_MAX = { 轴健康度: 30, 跨轴耦合: 15, 跨系联动: 15, 结构健康: 5, 机制落地: 5, 文本完备: 5, 差异化: 25 };
+const AXIS_DIMS = ['身份锚定', '产层闭环', '收束闭环', '轴内多样性', '规模均衡', '承接连通'];
+const AXIS_DIM_MAX = { 身份锚定: 15, 产层闭环: 20, 收束闭环: 25, 轴内多样性: 15, 规模均衡: 10, 承接连通: 15 };
 
 // 七维迷你条：一个单元格里并排 7 条，hover 显示维度名与分值
 function dimBars(dims, maxOf) {
@@ -30,7 +30,7 @@ function axisDimBars(dims) {
   }).join('')}</span>`;
 }
 
-const gradeClass = (total) => (total < 40 ? 'g-bad' : total < 55 ? 'g-mid' : 'g-good');
+const gradeClass = (total) => (total < 60 ? 'g-bad' : total < 72 ? 'g-mid' : 'g-good');
 
 // ---------- 用料统计（前端现算；口径见文件头注释） ----------
 
@@ -155,8 +155,8 @@ function checklistHtml(p) {
               <div class="fix-line">→ ${escapeHtml(d.fix)}</div></li>`).join('')}</ul></details>`
       : (v >= max - 0.05 ? '<div class="chk-okline muted">达标，无失分项。</div>'
                          : '<div class="chk-okline muted">部分得分（归一维），无具体失分条目。</div>');
-    // 风格签名维：附签名键用量明细（键表口径见 docs/meta/途径设计身份.md §一）
-    const sigDetail = (k === '风格签名' && p.sigHits)
+    // 差异化维：附签名键用量明细（键表口径见 docs/meta/途径设计身份.md §一）
+    const sigDetail = (k === '差异化' && p.sigHits)
       ? `<div class="chk-okline muted">签名键用量（≥2 卡=落地）：
           ${Object.entries(p.sigHits).map(([kk, vv]) => `${escapeHtml(kk)} ×${vv}`).join('；')}
           ｜对他途径指纹均距 ${p.styleDist != null ? p.styleDist.toFixed(3) : '—'}</div>`
