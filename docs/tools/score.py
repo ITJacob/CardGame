@@ -380,34 +380,79 @@ def _cond_kinds(node):
     return out
 
 
-def fingerprint(cards):
-    """原语分布 + 元素分布 + modify_stat 键分布 + 效果树谓词分布（2026-10-08 增：
-    判定语言是轴身份的一阶载体——夜轨/位格体系不进指纹会让相位途径的风格距离失真）"""
-    vec = {}
+# ---------- 全链路指纹（SCORING 2.1，2026-10-16）----------
+# 差异化②不再只看原语：施法作用的整条链路都入向量（原语/元素/谓词 + 状态身份/选靶/触发点），
+# 分族独立 L2 归一后等权求距离——链路每一环各占一票，避免"用常规原语做主题化机制"被结构性低估。
+FAMILIES = ("prim", "elem", "cond", "stat", "sref", "tgt", "tgtf", "hook")
+
+
+def _card_families(card, status_by_id=None):
+    """单卡在各链路族上的**键集**：prim 原语 / elem 元素 / cond 谓词 / stat modify_stat 键
+    （原有四族）+ sref 状态身份 / tgt 选靶(faction·scope·anchor·mode·sel) / tgtf 选靶 filter 键 /
+    hook 触发点（卡级 hook·triggers + 挂载状态 def 的 triggers）。"""
+    fam = {f: set() for f in FAMILIES}
+    fam["prim"] |= card_effect_types(card)
+    for n in walk(card.get("effects")):
+        if isinstance(n.get("element"), str):
+            fam["elem"].add(n["element"])
+        if n.get("type") == "modify_stat" and isinstance(n.get("stat"), str):
+            fam["stat"].add(n["stat"])
+    fam["cond"] |= set(_cond_kinds(card.get("effects")))
+    fam["sref"] |= card_status_refs(card)
+    spec = card.get("target") or {}
+    req = spec.get("request") or {}
+    if req.get("faction"):
+        fam["tgt"].add("faction=" + req["faction"])
+    if req.get("scope"):
+        fam["tgt"].add("scope=" + req["scope"])
+    if req.get("anchor"):
+        fam["tgt"].add("anchor=" + req["anchor"])
+    if req.get("mode"):
+        fam["tgt"].add("mode=" + req["mode"])
+    if spec.get("selectionMode"):
+        fam["tgt"].add("sel=" + spec["selectionMode"])
+    for k in (req.get("filter") or {}):
+        fam["tgtf"].add(k)
+    for h in (card.get("hook") or []):
+        if isinstance(h, str):
+            fam["hook"].add(h)
+    for tr in (card.get("triggers") or []):
+        if isinstance(tr, dict) and tr.get("event"):
+            fam["hook"].add(tr["event"])
+    for m in card_mounts(card):     # 挂状态 = 接入该状态 def 的触发点
+        for tr in ((status_by_id or {}).get(m) or {}).get("triggers") or []:
+            if tr.get("event"):
+                fam["hook"].add(tr["event"])
+    return fam
+
+
+def fingerprint(cards, status_by_id=None):
+    """全链路指纹（分族）：族 -> {键: 计数}。族表见 SCORING.md §三·一。"""
+    fam = {f: {} for f in FAMILIES}
     for c in cards:
-        # sorted：card_effect_types 返回集合，迭代序随 PYTHONHASHSEED 变，
-        # 会让并列指纹在 STYLE_DISTANCE 里随机换序（产物每次重跑都抖动）
-        for t in sorted(card_effect_types(c)):
-            vec["prim:" + t] = vec.get("prim:" + t, 0) + 1
-        for n in walk(c.get("effects")):
-            if isinstance(n.get("element"), str):
-                vec["elem:" + n["element"]] = vec.get("elem:" + n["element"], 0) + 1
-            if n.get("type") == "modify_stat" and isinstance(n.get("stat"), str):
-                vec["stat:" + n["stat"]] = vec.get("stat:" + n["stat"], 0) + 1
-        for k in _cond_kinds(c.get("effects")):
-            if isinstance(k, str):
-                vec["cond:" + k] = vec.get("cond:" + k, 0) + 1
-    return vec
+        for f, keys in _card_families(c, status_by_id).items():
+            for k in keys:
+                fam[f][k] = fam[f].get(k, 0) + 1
+    return fam
+
+
+def _l2(vec):
+    n = math.sqrt(sum(v * v for v in vec.values()))
+    return {k: v / n for k, v in vec.items()} if n else {}
 
 
 def cos_dist(a, b):
-    keys = set(a) | set(b)
-    dot = sum(a.get(k, 0) * b.get(k, 0) for k in keys)
-    na = math.sqrt(sum(v * v for v in a.values()))
-    nb = math.sqrt(sum(v * v for v in b.values()))
-    if not na or not nb:
-        return 1.0
-    return 1.0 - dot / (na * nb)
+    """全链路距离 = 各链路族余弦距离的均值（族等权，L2 归一后每族各占一票）。"""
+    total, cnt = 0.0, 0
+    for f in FAMILIES:
+        fa, fb = _l2(a.get(f) or {}), _l2(b.get(f) or {})
+        keys = set(fa) | set(fb)
+        if not keys:
+            continue
+        dot = sum(fa.get(k, 0) * fb.get(k, 0) for k in keys)
+        total += 1.0 - dot
+        cnt += 1
+    return total / cnt if cnt else 1.0
 
 
 def load_unit_types(pathways):
@@ -622,12 +667,17 @@ def main():
                 elif notes_level:
                     deductions.append(("收束闭环", "注：notes 级 %d 张（减半计）" % len(notes_level), ",".join(notes_level), FIX["payoff_notes"]))
 
-            # —— 轴内多样性（归一后置） ——
-            prim_kinds, cond_kinds = set(), set()
+            # —— 轴内多样性（归一后置）：SCORING 2.1 起 = 全链路词表 ——
+            # 原语 + 谓词 + 选靶(scope/anchor) + 触发点 + 状态身份（去重种类和）
+            prim_kinds, cond_kinds, chain_kinds = set(), set(), set()
             for c in axis_cards:
                 prim_kinds |= card_effect_types(c)
                 cond_kinds |= card_condition_kinds(c)
-            div_raw = len(prim_kinds) + len(cond_kinds)
+                cf = _card_families(c, status_by_id)
+                chain_kinds |= {"tgt:" + k for k in cf["tgt"] if k.startswith(("scope=", "anchor="))}
+                chain_kinds |= {"hook:" + k for k in cf["hook"]}
+                chain_kinds |= {"sref:" + k for k in cf["sref"]}
+            div_raw = len(prim_kinds) + len(cond_kinds) + len(chain_kinds)
             axis_diversity_raw[(pid, aid)] = div_raw
 
             # —— 规模均衡 ——
@@ -699,7 +749,7 @@ def main():
                 "cards": len(axis_cards), "enablers_v": en_verified, "landed": landed, "notes": notes_level,
                 "patterns": sorted(patterns), "ext_consumers": ext_consumers,
                 "ax_channels": sorted(ax_channels),
-                "shape": sorted(ax_channels | prim_kinds),
+                "shape": sorted(ax_channels | prim_kinds | chain_kinds),
                 "vacuum_accepted": bool(ax.get("payoffVacuumAccepted")),
                 "deductions": deductions,
             })
@@ -749,7 +799,7 @@ def main():
     grow_status_ids = {sid for sid, sd in status_by_id.items() if sd.get("statPerStack")}
     # flag 读侧通用索引（批次十/十一对齐）：机制键的权威承载在状态 def
     flag_status_index = {"cast_time_set": casttime_status_ids, "statPerStack": grow_status_ids}
-    fps = {pid: fingerprint(d.get("cards") or []) for pid, d in pathways.items()}
+    fps = {pid: fingerprint(d.get("cards") or [], status_by_id) for pid, d in pathways.items()}
     mean_dists = {}
     for pid in pathways:
         others = [p2 for p2 in pathways if p2 != pid]
