@@ -34,6 +34,8 @@ const TRIAGE: PathwayFile = {
         { type: 'mount_status', statusId: 'probe_on_allies', duration: null, target: 'all_allies' },
         { type: 'mount_status', statusId: 'probe_on_ally_excl', duration: null, target: 'allies_except_self' },
         { type: 'mount_status', statusId: 'probe_on_splash', duration: null, target: 'splash_adjacent' },
+        { type: 'mount_status', statusId: 'probe_on_behind', duration: null, target: 'splash_behind' },
+        { type: 'mount_status', statusId: 'probe_on_trap', duration: null, target: 'one_own_snare_trap' },
         { type: 'mount_status', statusId: 'probe_on_selection', duration: null },
         { type: 'modify_resource', resource: 'order', value: -1, mode: 'delta', target: 'board' },
       ],
@@ -43,6 +45,8 @@ const TRIAGE: PathwayFile = {
         MARK('probe_on_allies', '友军标记'),
         MARK('probe_on_ally_excl', '友军除自身标记'),
         MARK('probe_on_splash', '溅射标记'),
+        MARK('probe_on_behind', '身后标记'),
+        MARK('probe_on_trap', '己方陷阱标记'),
         MARK('probe_on_selection', '选靶标记'),
       ],
     },
@@ -128,6 +132,20 @@ describe('卡片语境的 target 展开', () => {
     expect(has(c, 'A_u0', 'probe_on_splash')).toBe(false) // 原点不含自身
     expect(has(c, 'A_u2', 'probe_on_splash')).toBe(false) // 同路但相离 2 格
     expect(has(c, 'B_u1', 'probe_on_splash')).toBe(false) // 异路
+  })
+
+  it('splash_behind 取选靶身后相邻格（同阵营同路 index+1），原点与相离 2 格不含', () => {
+    expect(has(c, 'A_u1', 'probe_on_behind')).toBe(true) // 选靶 A_u0 的身后邻格
+    expect(has(c, 'A_u0', 'probe_on_behind')).toBe(false) // 原点不含自身
+    expect(has(c, 'A_u2', 'probe_on_behind')).toBe(false) // 身后相离 2 格
+    expect(has(c, 'B_u0', 'probe_on_behind')).toBe(false) // 施法者（旧行为会退化成宿主）
+  })
+
+  it('one_own_snare_trap 无己方陷阱时为空集，不退回宿主（旧行为会把致死伤害打在自己身上）', () => {
+    const u = c.state().units.find((x) => x.id === 'B_u0')
+    expect(!!u && u.statuses.some((s) => s.defId === 'probe_on_trap')).toBe(false)
+    const diag = c.diagnostic()
+    expect(diag.unsupportedKinds['target:one_own_snare_trap']).toBeUndefined()
   })
 
   it('不带 target 的节点仍落在选靶上（继承语义不变）', () => {

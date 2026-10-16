@@ -718,7 +718,7 @@
       "label": "效果目标锚点",
       "desc": "效果段内部承接者的锚点，与技能级选靶是两层：技能级选靶决定这一次打向谁，效果锚点决定这一段落在谁身上（自己 / 施法者 / 主目标 / 状态持有者 / 被击杀者…）。同一张卡的不同段可以指向不同锚点。",
       "source": "SCHEMA.md §4",
-      "note": "效果级二次寻址（区别于 cardTarget.request 的选靶）。三组：①运行期角色 self/caster/target/primary_target/secondary_target/same_target/attacker/holder/status_holder/killed_unit（不可替代）；②全体集合 all_allies/allies_except_self/all_enemies/all_other_enemies/all_units/all（all=所有相关对象、all_units=场上所有单位）；③相对坐标 adjacent_enemy/occupant_ally/occupant_enemy/splash_adjacent/splash_behind（与 request 的 anchor/spread 是两套体系，前者相对主目标、后者相对锚点）。self≠caster（被动/链接场景作用者≠触发者）；target≠primary_target（多目标/二次寻址时不同）。",
+      "note": "效果级二次寻址（区别于 cardTarget.request 的选靶）。三组：①运行期角色 self/caster/target/primary_target/secondary_target/same_target/attacker/holder/status_holder/killed_unit/rule_breaker（不可替代）；②全体集合 all_allies/allies_except_self/all_enemies/all_other_enemies/all_units/all（all=所有相关对象、all_units=场上所有单位）；③相对坐标 adjacent_enemy/occupant_ally/occupant_enemy/splash_adjacent/splash_behind（与 request 的 anchor/spread 是两套体系，前者相对主目标、后者相对锚点）。self≠caster（被动/链接场景作用者≠触发者）；target≠primary_target（多目标/二次寻址时不同）。",
       "terms": {
         "self": {
           "zh": "自身",
@@ -811,6 +811,10 @@
         "one_own_snare_trap": {
           "zh": "己方一个陷阱",
           "brief": "自己布置的一个陷阱单位"
+        },
+        "rule_breaker": {
+          "zh": "违约者",
+          "brief": "规则槽 punish 载荷语境下的违约单位（2026-10-16 登记，见 write_rule_slot.value.punish[].target）"
         },
         "board": {
           "zh": "战场",

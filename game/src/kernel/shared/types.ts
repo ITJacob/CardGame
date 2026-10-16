@@ -120,7 +120,7 @@ export type EffectTarget =
   | 'attacker' | 'holder' | 'status_holder' | 'killed_unit'
   | 'all_allies' | 'allies_except_self' | 'all_enemies' | 'all_other_enemies' | 'all_units' | 'all'
   | 'adjacent_enemy' | 'enemy' | 'occupant_ally' | 'occupant_enemy'
-  | 'splash_adjacent' | 'splash_behind' | 'one_own_snare_trap' | 'board'
+  | 'splash_adjacent' | 'splash_behind' | 'one_own_snare_trap' | 'rule_breaker' | 'board'
 
 /** 目标规格（共享内核.md §二；INV-E6：Manual 必填 fallbackSort） */
 export interface TargetSpec {

@@ -78,6 +78,26 @@ function splashFrom(refs: readonly CombatUnit[], units: Registry): CombatUnit[] 
   return out
 }
 
+/** 目标身后相邻域：同阵营同路 index+1（front=index 0 恒为对峙前线，index 增大即身后）；
+ *  原点本身不含在内。去重，保持 registry 序。 */
+function behindFrom(refs: readonly CombatUnit[], units: Registry): CombatUnit[] {
+  const seen = new Set<string>()
+  const out: CombatUnit[] = []
+  for (const ref of refs) {
+    const pos = ref.position
+    if (!pos) continue
+    for (const u of alive(units.all())) {
+      const p = u.position
+      if (!p || u.id === ref.id) continue
+      if (p.faction !== pos.faction || p.lane !== pos.lane || p.index !== pos.index + 1) continue
+      if (seen.has(u.id)) continue
+      seen.add(u.id)
+      out.push(u)
+    }
+  }
+  return out
+}
+
 /**
  * 语境下的 target 简写展开（共享内核参数 §一：均由 faction + scope 组合展开）。
  * 语境缺失的主体（如无攻击方的 on_tick 遇 attacker）退回宿主——与「效果默认作用在宿主身上」同义。
@@ -131,11 +151,19 @@ export function resolveEffectTargets(
       return enemies().filter((u) => host.position != null && u.position != null && adjacent(host.position, u.position))
     case 'splash_adjacent':
       return splashFrom(scope.targets, units)
+    case 'splash_behind':
+      return behindFrom(scope.targets, units)
+    case 'one_own_snare_trap': {
+      // 施法者自己的陷阱类召唤物（陷阱 = 召唤物 tags 含 snare_trap）；恒取序首一个（确定性）。
+      const caster = scope.caster ?? host
+      const traps = alive(units.all()).filter((u) => u.summonerId === caster.id && u.tags.includes('snare_trap'))
+      return traps.length > 0 ? [traps[0]!] : []
+    }
     // —— 战场级锚点：不寻址任何单位（共享内核参数 §一 EffectRef.target 末条）——
     // host 仅作 handler 落点，使 modify_resource(secrecy/order/fate_value) 走到 board 量表分支。
     case 'board':
       return one(host)
-    // —— 未接通（splash_behind / occupant_* / one_own_snare_trap / rule_breaker）：登记后按宿主兜底 ——
+    // —— 未接通（occupant_* / rule_breaker）：登记后按宿主兜底 ——
     default:
       unsupported?.(`target:${selector}`)
       return one(host)
