@@ -29,9 +29,12 @@
         "守护状态",
         "黎明铠甲"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：guardianship 仅守护状态自挂（2026-09-29 自 common guard 分叉为守护轴私有身份「守护」，承伤重定向+自身减伤），全途径无卡读其层数/存在 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：guardianship 收益=承伤重定向运行时语义（执行上下文 R 节点），消费者是被保护友军而非层数读档（2026-09-29 私有化后 rationale 改写，原「借 common 机制桩」已不成立）；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：守护姿态无此卡移除，黎明铠甲补 guardianship 产层段（产层 12→20）；无 binding 的 guardianship 语义待内核确认 ｜ 2026-10-02 批次五：晨曦阵地 zone 落地（黎明铠甲 spawn blessing 阵地） ｜ 2026-10-02：守护状态挂反击姿态（挑衅反击共享列落地） ｜ 2026-10-03 骨架手术：武技链换形 29 张（详见 designNote）",
-      "payoffVacuumAccepted": true
+      "payoffs": [
+        "铁躯",
+        "卸力",
+        "银色全身盔甲"
+      ],
+      "note": "守护轴身份 guardianship 带 charges 层数引擎（守护可替友军承伤 3 次）；读层 payoff 三张，读层方式覆盖存在性 / 条件分支 / 耗层——铁躯（守护中抗性升档）/ 卸力（拆 1 层守护卸开一击）/ 银色全身盔甲（守护中减伤加深）。守护=替指定友军承伤的重定向+自身受伤×0.7（2026-09-29 自 common guard 分叉私有化）。"
     },
     "hunt": {
       "symbol": "🎯",
@@ -423,6 +426,29 @@
           "charges": 2,
           "duration": 10,
           "note": "铁躯（物理）：按元素分档硬吃两次，不再是泛免疫一次"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "guardianship",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:*",
+              "value": 12,
+              "mode": "delta",
+              "duration": 10,
+              "target": "self",
+              "note": "铁躯·守护共鸣：守护在身，铁躯再硬一档"
+            }
+          ],
+          "else": [],
+          "note": "守护在身时铁躯升档：全元素抗性再叠一档"
         }
       ],
       "sharedAcross": [
@@ -438,7 +464,7 @@
         ],
         "mood": "unyielding, stoic"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M10 铠甲。 ｜ 签名补批（2026-10-16 第二批）：硬抗/铁躯分档。"
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M10 铠甲。 ｜ 签名补批（2026-10-16 第二批）：硬抗/铁躯分档。 ｜ 2026-10-16 环节⑤guard 轴收束：补 guardianship 读层（存在性——守护中抗性升档）。"
     },
     {
       "id": "skill_warrior_s8_close_grapple",
@@ -593,6 +619,35 @@
           "mul": 0.4,
           "target": "self",
           "note": "卸力：把力道卸开，这一下不算数"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "guardianship",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_status",
+              "statusId": "guardianship",
+              "stacksDelta": -1,
+              "target": "self",
+              "note": "卸力：拆一段守护之力"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 6,
+              "duration": 10,
+              "target": "self",
+              "note": "拆借来的守护之力化作护盾，把这一击整个卸开"
+            }
+          ],
+          "else": [],
+          "note": "有守护可拆时消耗 1 层守护，把守护之力化作一层护盾卸开这一击"
         }
       ],
       "tentative": false,
@@ -605,7 +660,7 @@
         ],
         "mood": "fluid, guarded"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M9 弃攻铁壁。 ｜ 签名补批（2026-10-16 第二批）：硬抗。"
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M9 弃攻铁壁。 ｜ 签名补批（2026-10-16 第二批）：硬抗。 ｜ 2026-10-16 环节⑤guard 轴收束：补 guardianship 读层（耗层——拆 1 层守护化盾卸力）。"
     },
     {
       "id": "skill_warrior_s7_weapon_grandmaster",
@@ -967,7 +1022,8 @@
               "statusId": "guardianship",
               "duration": 10,
               "target": "self",
-              "note": "独身守护：无被守护者，仅取自身减伤语义（环节⑤ 2026-09-29 补产层段）⚠️D 无 binding 的 guardianship 语义待内核确认"
+              "note": "独身守护：无被守护者，仅取自身减伤语义（环节⑤ 2026-09-29 补产层段）＋守护次数 2（⚠️D）",
+              "charges": 2
             },
             {
               "type": "spawn",
@@ -987,7 +1043,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "稿面写 modify_resource(armor,+6,duration:4)；ddd 口径带 duration 的护甲修正为容量语义（modify_stat），已归一 ｜ 翻译/语义：守护轴友军护甲（与 猎魔·晨曦同源）。 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 签名补批（2026-10-16 第二批）：硬抗。",
+      "conversionNotes": "稿面写 modify_resource(armor,+6,duration:4)；ddd 口径带 duration 的护甲修正为容量语义（modify_stat），已归一 ｜ 翻译/语义：守护轴友军护甲（与 猎魔·晨曦同源）。 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 签名补批（2026-10-16 第二批）：硬抗。 ｜ 2026-10-16 环节⑤guard 轴收束：独身守护带 charges=2。",
       "phaseHooks": [
         {
           "phases": [
@@ -1366,7 +1422,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "稿面双目标（指定 1 友军 + SELF）：主目标取被保护友军，自身段走 target:self；友军选择的 fallbackSort 稿面未给，置 null 待补 ｜ 翻译/语义：守护轴身份状态 `守护` 主挂载源 + 承伤壁垒。 ｜ 2026-10-02 反击姿态首发承载①：守护+反击双姿态——矩阵 stance 行战士共享列落地 ｜ 2026-10-03 骨架手术：武技链换形（角色=debuff） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：guard轴 ally+behind_1 anchor:ally_front（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M9 弃攻铁壁。 ｜ 签名补批（2026-10-16 第二批）：硬抗。",
+      "conversionNotes": "稿面双目标（指定 1 友军 + SELF）：主目标取被保护友军，自身段走 target:self；友军选择的 fallbackSort 稿面未给，置 null 待补 ｜ 翻译/语义：守护轴身份状态 `守护` 主挂载源 + 承伤壁垒。 ｜ 2026-10-02 反击姿态首发承载①：守护+反击双姿态——矩阵 stance 行战士共享列落地 ｜ 2026-10-03 骨架手术：武技链换形（角色=debuff） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：guard轴 ally+behind_1 anchor:ally_front（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M9 弃攻铁壁。 ｜ 签名补批（2026-10-16 第二批）：硬抗。 ｜ 2026-10-16 环节⑤guard 轴收束：guardianship 补 charges 层数引擎（守护次数=3）。",
       "art": {
         "subject": "a guardian plunging a greatsword into the earth behind an invisible wall",
         "elements": [
@@ -2040,10 +2096,31 @@
           "charges": 2,
           "duration": 10,
           "note": "铁躯（暗）：按元素分档硬吃两次，不再是泛免疫一次"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "guardianship",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_damage",
+              "scope": "taken",
+              "mul": 0.7,
+              "target": "self",
+              "note": "银甲·守护共鸣：守护在身，银甲减伤加深"
+            }
+          ],
+          "else": [],
+          "note": "处于守护状态时银甲与守护共鸣，受伤再压一档"
         }
       ],
       "tentative": false,
-      "conversionNotes": "稿面写 modify_resource(armor,+10,duration:5)；同黎明铠甲归一为 modify_stat 容量语义 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M10 铠甲。 ｜ 签名补批（2026-10-16 第二批）：硬抗/铁躯分档。",
+      "conversionNotes": "稿面写 modify_resource(armor,+10,duration:5)；同黎明铠甲归一为 modify_stat 容量语义 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M10 铠甲。 ｜ 签名补批（2026-10-16 第二批）：硬抗/铁躯分档。 ｜ 2026-10-16 环节⑤guard 轴收束：补 guardianship 读层（存在性——守护中减伤加深）。",
       "art": {
         "subject": "a silver knight in gleaming full plate shrugging off dragon claws",
         "elements": [
