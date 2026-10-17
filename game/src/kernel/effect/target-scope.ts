@@ -68,8 +68,21 @@ function adjacentUnits(ref: CombatUnit, units: Registry): CombatUnit[] {
   return alive(units.all()).filter((u) => u.id !== ref.id && u.position != null && adjacent(pos, u.position))
 }
 
+/** `spread` 的相邻域：**同阵营**（同路 index±1 或另一路同格），不跨阵营——
+ *  「相邻敌人」只波及敌人，不误伤正对面的己方（2026-10-17 裁定）。
+ *  与 `target: 'splash_adjacent'` 的相邻域有意分叉（后者跨阵营镜像对位也算相邻）。 */
+function adjacentSameFaction(ref: CombatUnit, units: Registry): CombatUnit[] {
+  const pos = ref.position
+  if (!pos) return []
+  return alive(units.all()).filter((u) => {
+    const p = u.position
+    if (!p || u.id === ref.id || p.faction !== pos.faction) return false
+    return p.lane === pos.lane ? Math.abs(p.index - pos.index) === 1 : p.index === pos.index
+  })
+}
+
 /** 效果级 `spread: 'splash_adjacent'` / 选靶规格 `spread`：**含原点**一同扩散（「目标及其相邻」）。
- *  与 `target: 'splash_adjacent'` 是同一相邻域的两个机制——后者只取相邻（原点不含），本函数含原点。
+ *  相邻域取**同阵营**（见 `adjacentSameFaction`）——与 `target: 'splash_adjacent'`（不含原点、跨阵营）是两个机制。
  *  顺序：原集合在前（保持传入序），新增相邻单位按 registry 序追加，整体去重。 */
 export function spreadFrom(refs: readonly CombatUnit[], units: Registry): CombatUnit[] {
   const seen = new Set<string>()
@@ -79,10 +92,12 @@ export function spreadFrom(refs: readonly CombatUnit[], units: Registry): Combat
     seen.add(u.id)
     out.push(u)
   }
-  for (const u of splashFrom(refs, units)) {
-    if (seen.has(u.id)) continue
-    seen.add(u.id)
-    out.push(u)
+  for (const ref of refs) {
+    for (const u of adjacentSameFaction(ref, units)) {
+      if (seen.has(u.id)) continue
+      seen.add(u.id)
+      out.push(u)
+    }
   }
   return out
 }

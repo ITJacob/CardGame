@@ -220,10 +220,10 @@ describe('卡片语境的 target 展开', () => {
     expect(has(c, 'B_u0', 'probe_on_secondary_fb')).toBe(false)
   })
 
-  it('效果级 spread：落「目标及其相邻」——原点含在内（对比 splash_adjacent 不含原点）', () => {
+  it('效果级 spread：落「目标及其同阵营相邻」——原点含在内、不跨阵营', () => {
     expect(has(c, 'A_u0', 'probe_on_spread')).toBe(true) // 原点含在内
     expect(has(c, 'A_u1', 'probe_on_spread')).toBe(true) // 同阵营同路相邻
-    expect(has(c, 'B_u0', 'probe_on_spread')).toBe(true) // 跨阵营镜像对位
+    expect(has(c, 'B_u0', 'probe_on_spread')).toBe(false) // 不跨阵营（对比 splash_adjacent 的跨阵营镜像）
     expect(has(c, 'A_u0', 'probe_on_splash')).toBe(false) // 对照：splash_adjacent 原点不含
   })
 })
@@ -269,9 +269,9 @@ describe('选靶规格 spread（request.spread）', () => {
   const c = newSpecCombat()
   run(c, 12)
 
-  it('整个 Action 的选靶含原点扩散（默认落点跟着扩散）', () => {
+  it('整个 Action 的选靶含原点、同阵营扩散（默认落点跟着扩散）', () => {
     expect(has(c, 'A_u0', 'spec_on_default')).toBe(true) // 原点（主选靶）
     expect(has(c, 'A_u1', 'spec_on_default')).toBe(true) // 同阵营同路相邻
-    expect(has(c, 'B_u0', 'spec_on_default')).toBe(true) // 跨阵营镜像对位
+    expect(has(c, 'B_u0', 'spec_on_default')).toBe(false) // 不跨阵营
   })
 })
