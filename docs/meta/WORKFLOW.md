@@ -22,16 +22,16 @@
 |---|---|---|---|---|
 | ① | 设定补全 | `docs/诡秘之主资料库/` | 补充世界体系 / 源质 / 界域 / 职业对照等原著设定素材 | 设定自洽，可被 ② 引用 |
 | ② | 机制落地 | `docs/ddd/` | 把设定里的新维度（如界域/位格/性别/吟唱）落成原语、上下文、参数取值域 | 保持"纯内容"（无拍板过程/版本变迁）；拍板结论索引进 `GENERATION_BRIEF.md` §14 |
-| ③ | 技能结构化 | `docs/json/` | 按 `GENERATION_BRIEF.md` 约束直接维护技能池 JSON（**改结构先改 schema 再改数据**，规范见 `docs/meta/SCHEMA.md`）；顺带补全 ddd 机制缺口 | 四脚本全绿：`validate_schema.py` + `validate.py` 双 0 错误（`validate.py` 含 describe↔元素一致性检查——描述里的元素措辞须与结构 `element` 一致，2026-10-07 建）；`check_enum_sync.py`（ddd/SCHEMA.md ↔ schema 枚举对账）0 漂移；`check_glossary.py`（值域 ↔ `glossary.json` 词条）0 缺词条 |
+| ③ | 技能结构化 | `docs/json/` | 按 `GENERATION_BRIEF.md` 约束直接维护技能池 JSON（**改结构先改 schema 再改数据**，规范见 `docs/meta/SCHEMA.md`）；顺带补全 ddd 机制缺口 | 四脚本 + lint 全绿：`validate_schema.py` + `validate.py` 双 0 错误（`validate.py` 含 describe↔元素一致性检查——描述里的元素措辞须与结构 `element` 一致，2026-10-07 建）；`check_enum_sync.py`（ddd/SCHEMA.md ↔ schema 枚举对账）0 漂移；`check_glossary.py`（值域 ↔ `glossary.json` 词条）0 缺词条；`lint_deprecated.py` 0 旧拼写/重复编码 |
 | ④ | 质量分析 | `docs/analysis/` | `build_analysis.py` **统一入口**一键重生成评分+统计全部产物（scorecard / scores.json / 总览 / 职业统计 / 轴报告），评估技能池质量 | 产物勿手改，统一入口重跑生成 |
-| ⑤ | 重设计迭代 | `docs/json/` + `docs/archive/meta/REDESIGN_LOG.md` | 按 `SCORING.md` 评分取**榜尾途径**逐个重设计：诊断失分项 → 改 axes/cards/statuses → 重跑 `score.py` 确认涨分 | 四脚本全绿 + 该途径总分较改前上涨；一途径一 commit，改前改后分记入 REDESIGN_LOG（现归档于 `docs/archive/meta/`） |
+| ⑤ | 重设计迭代 | `docs/json/` + `docs/archive/meta/REDESIGN_LOG.md` | 按 `SCORING.md` 评分取**榜尾途径**逐个重设计：诊断失分项 → 改 axes/cards/statuses → 重跑 `score.py` 确认涨分 | 四脚本 + lint 全绿 + 该途径总分较改前上涨；一途径一 commit，改前改后分记入 REDESIGN_LOG（现归档于 `docs/archive/meta/`） |
 
 ## 环节⑤：逐职业重设计推进（2026-09-26 建立）
 
 ```
 score.py 评分 → 取总览榜尾途径 → 读计分卡失分项（scorecard.md / 网页评分页）
   → 设计修改（SCORING 2.0 优先序：补「收束」——payoff 读 / 通道下游 / def 内闭环 → 补身份机制 → 提多样性/连通/差异化）
-  → 四脚本门禁 → 重跑 score.py 确认涨分 → commit → REDESIGN_LOG（现归档于 `docs/archive/meta/`）记一行
+  → 四脚本 + lint 门禁 → 重跑 score.py 确认涨分 → commit → REDESIGN_LOG（现归档于 `docs/archive/meta/`）记一行
 ```
 
 - **节奏**：一途径一迭代，一次会话 1–2 个途径；不跨途径批量改（失分归因会糊）。
@@ -45,7 +45,7 @@ score.py 评分 → 取总览榜尾途径 → 读计分卡失分项（scorecard.
 评分（score.py）与统计（build_* ×4）同源同面：全部只读 JSON、产物全部落 `docs/analysis/`、全部勿手改。
 **统一入口**：`python docs/tools/build_analysis.py`——依次跑 score + 四个 build 脚本，任一失败非零退出。
 
-**何时跑**：`docs/json/` 任何变更（改卡 / 改轴元数据 / 改状态），四门禁全绿后**同轮**跑本入口，
+**何时跑**：`docs/json/` 任何变更（改卡 / 改轴元数据 / 改状态），四门禁 + lint 全绿后**同轮**跑本入口，
 产物与 JSON 变更进同一 commit——网页评分页与计分卡永远与 JSON 同代。数值标定期（下一批）改 JSON 后同样走本流程，时效性由「同轮 commit」保证。
 
 **产物清单与消费**：
