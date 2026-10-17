@@ -172,12 +172,17 @@ function checklistHtml(p) {
           ${Object.entries(p.sigHits).map(([kk, vv]) => `${escapeHtml(kk)} ×${vv}`).join('；')}
           ｜对他途径指纹均距 ${p.styleDist != null ? p.styleDist.toFixed(3) : '—'}</div>`
       : '';
+    // 指纹明细：最近邻 + 强项族（scores.json 预计算，前端不重算）
+    const styleDetail = (k === '差异化' && p.styleStrengths)
+      ? `<div class="chk-okline muted">最近邻 ${escapeHtml(p.nearest || '—')}（距离 ${(p.nearestDist || 0).toFixed(3)}）
+          ｜强项族：${p.styleStrengths.map((s) => `${escapeHtml(s.family)}(${s.keys.map(escapeHtml).join('/')})`).join('；')}</div>`
+      : '';
     return `<div class="chk-item"><div class="chk-row">
       <span class="chk-badge ${cls}">${badge}</span>
       <span class="chk-name">${k}</span>
       <span class="chk-bar"><span class="dim-bars single"><i class="dim-bar" style="width:${Math.max(pct, v ? 6 : 0)}%"></i></span></span>
       <span class="chk-score num">${v.toFixed(1)} <span class="muted">/ ${max}</span></span>
-    </div>${fix}${sigDetail}</div>`;
+    </div>${fix}${sigDetail}${styleDetail}</div>`;
   }).join('');
   const gateRows = GATE_DIMS.map((k) => {
     const v = p.dims[k] || 0;

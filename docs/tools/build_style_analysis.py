@@ -46,9 +46,9 @@ def main():
     L = []
     L.append("# 途径风格距离（STYLE DISTANCE）\n")
     L.append("> 由 `docs/tools/build_style_analysis.py` 自动生成——**勿手改**；指纹口径与 score.py 差异化②同源"
-             "（**全链路指纹**，SCORING 2.2：prim 原语 / elem 元素 / cond 谓词 / condarg 谓词参数 /"
-             " param 效果参数 / reach 射程 / tgt 选靶 / tgtf 选靶 filter / hook 触发点 /"
-             " sshape 状态形态 / cost 消耗形态 / temporal 时序形态，十二族各自 L2 归一后等权取余弦距离均值）。"
+             "（**全链路指纹**，SCORING 2.3：prim 原语 / elem 元素 / cond 谓词 / condarg 谓词参数 /"
+             " param 效果参数 / reach 射程 / tgt 选靶（坐标+filter+效果级目标）/ hook 触发点 /"
+             " sshape 状态形态 / cost 消耗形态 / temporal 时序形态，十一族各自 L2 归一后等权取余弦距离均值）。"
              "差异化迭代后重跑本报告看距离拉开。生成时间：%s。\n" % datetime.date.today())
 
     L.append("## 一、最近邻榜（距离越小越雷同，差异化迭代优先拆这些对）\n")

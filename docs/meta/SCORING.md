@@ -25,7 +25,7 @@
 （全库 571 卡有 `target`、88 轴已逐一设计签名）与私有状态身份对差异化零贡献**——用常规原语做
 主题化机制的途径（如战士）被结构性低估。
 
-**2.2（2026-10-17）**：全链路指纹从八族扩到**十二族**，并修三处口径缺口：
+**2.2（2026-10-17）**：全链路指纹从八族扩到**十二族**（2.3 合并选靶两族后为十一族），并修三处口径缺口：
 ① `sref`（私有 statusId）→ `sshape`（状态形态）——statusId 是途径私有命名，跨途径几乎零重合，
    距离恒满，等于把"有没有私有状态"当设计差异；改为展开状态 def 的结构 flags / 修正名 /
    自带效果原语 / 时长形态，跨途径可比。
@@ -39,6 +39,8 @@
 对排名零贡献——三项改为**门禁**（不计入 100 分，未达标各扣 3）。腾出的 15 分给轴健康度
 （30→35）与差异化（25→35）；差异化内部签名键 10→15、指纹距离 10→15，并把分位计分从四档改
 六档（原四档把十二族的距离压扁）。合计 35+15+15+35 = 100。
+同日把 `tgt` / `tgtf` 合并为一族（选靶坐标 + filter 键 + 效果级作用对象统一入 `tgt`，前缀区分），
+族数回到**十一族**——选靶环节恢复"链路一环一票"。
 
 ## 一、原则
 
@@ -99,7 +101,7 @@
 
 合计 35+15+15+35 = 100；三项门禁不计分，未达标各 −3（`scores.json` 的 `gates` / `gatePenalty`）。
 
-### 三·一 全链路指纹（2.1 新增，2.2 扩至十二族；差异化②的向量口径）
+### 三·一 全链路指纹（2.1 新增；2.3 十一族，差异化②的向量口径）
 
 > 动机：**机制的复杂性不单单是原语**——施法作用的整条链路（选靶 → 条件 → 效果 → 状态 → 时序）
 > 都是设计语言。2.2 起状态不再用私有 statusId 当键（跨途径不可比），改为状态 def 的形态指纹。
@@ -114,8 +116,7 @@
 | `condarg` | 条件谓词的枚举参数 | `kind:field=value`（cmp/side/key/stat/unitIdx/…；**私有 statusId 不取**） |
 | `param` | 效果原语的枚举参数 | `field=value`（`modify_stat.stat` / `modify_resource.resource` / spawn 单位与位置 / `move`·`domain`·`translocate` 的 op / 规则槽 field 等；**数值不取**） |
 | `reach` | 射程 | active 卡 `reach`（none/melee/spell/thrown） |
-| `tgt` | 选靶坐标 | `target.request`：`faction`/`scope`/`anchor`/`mode`/`selectionMode` |
-| `tgtf` | 选靶 filter 键 | `request.filter` 的键名 |
+| `tgt` | 选靶（卡级坐标 + filter + 效果级作用对象） | `target.request`：`faction`/`scope`/`anchor`/`mode`/`selectionMode`；`request.filter` 键（前缀 `filter:`）；effects 的 `target`（前缀 `eff:`） |
 | `hook` | 触发点 | 卡级 `hook`/`triggers[].event` ＋挂载状态 def 的 `triggers[].event` |
 | `sshape` | **状态形态** | 引用状态 def 的结构 flags（triggers/charges/stack/threshold/form/phases/cycle/ramp/behavior/action_lock/immune/redirect…）+ 修正名 + 自带效果原语 + 时长形态；**不含私有 statusId** |
 | `cost` | 消耗形态 | `energy` 档（zero/low/mid/high）+ `cooldown` 档（none/short/long）+ 血费（自伤 hp 支付） |

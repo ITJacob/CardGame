@@ -504,12 +504,12 @@ def _status_shape(sd):
 # 差异化②不再只看原语：施法链路（选靶 → 条件 → 效果 → 状态 → 时序）每一环入向量，
 # 分族独立 L2 归一后等权求距离。
 FAMILIES = ("prim", "elem", "cond", "condarg", "param", "reach",
-            "tgt", "tgtf", "hook", "sshape", "cost", "temporal")
+            "tgt", "hook", "sshape", "cost", "temporal")
 
 
 def _card_families(card, status_by_id=None):
     """单卡在各链路族上的**键集**：原语 / 元素 / 谓词 / 谓词参数 / 效果参数 / 射程 /
-    选靶 / 选靶 filter / 触发点 / 状态形态 / 消耗形态 / 时序形态。"""
+    选靶（卡级坐标 + filter + 效果级作用对象）/ 触发点 / 状态形态 / 消耗形态 / 时序形态。"""
     fam = {f: set() for f in FAMILIES}
     fam["prim"] |= card_effect_types(card)
 
@@ -532,6 +532,13 @@ def _card_families(card, status_by_id=None):
             for op in MODIFY_SKILL_OPS:
                 if n.get(op) is not None:
                     fam["param"].add("modop=" + op)
+        tv = n.get("target")
+        if isinstance(tv, str):
+            fam["tgt"].add("eff:" + tv)
+        elif isinstance(tv, list):
+            for x in tv:
+                if isinstance(x, str):
+                    fam["tgt"].add("eff:" + x)
         if n.get("durationUnit") == "self_turn":
             fam["temporal"].add("dur:self_turn")
         elif n.get("durationUnit") == "tick":
@@ -557,7 +564,7 @@ def _card_families(card, status_by_id=None):
     if spec.get("selectionMode"):
         fam["tgt"].add("sel=" + spec["selectionMode"])
     for k in (req.get("filter") or {}):
-        fam["tgtf"].add(k)
+        fam["tgt"].add("filter:" + k)
 
     if isinstance(card.get("reach"), str):
         fam["reach"].add("reach=" + card["reach"])
@@ -971,9 +978,17 @@ def main():
     flag_status_index = {"cast_time_set": casttime_status_ids, "statPerStack": grow_status_ids}
     fps = {pid: fingerprint(d.get("cards") or [], status_by_id) for pid, d in pathways.items()}
     mean_dists = {}
+    nearest = {}
     for pid in pathways:
         others = [p2 for p2 in pathways if p2 != pid]
-        mean_dists[pid] = round(sum(cos_dist(fps[pid], fps[p2]) for p2 in others) / len(others), 4) if others else 0.0
+        if not others:
+            mean_dists[pid] = 0.0
+            nearest[pid] = (None, 0.0)
+            continue
+        ds = {p2: cos_dist(fps[pid], fps[p2]) for p2 in others}
+        mean_dists[pid] = round(sum(ds.values()) / len(ds), 4)
+        nb = min(ds, key=ds.get)
+        nearest[pid] = (nb, round(ds[nb], 4))
     _sorted_d = sorted(mean_dists.values())
     _n_pw = len(_sorted_d)
 
@@ -1053,6 +1068,17 @@ def main():
         txt = sum(1 for c in cards if c.get("lore") and c.get("flavor") and c.get("describe"))
         text_score = round(5 * txt / len(cards), 1) if cards else 0
 
+        # 强项族（展示用）：族内键种数降序，每族 Top2 键——让十二族口径在页面上可见
+        style_strengths = []
+        for f in FAMILIES:
+            vec = fps[pid].get(f) or {}
+            if not vec:
+                continue
+            top = sorted(vec.items(), key=lambda kv: (-kv[1], kv[0]))[:2]
+            style_strengths.append({"family": f, "keys": [k for k, _ in top], "distinct": len(vec)})
+        style_strengths.sort(key=lambda x: (-x["distinct"], x["family"]))
+        style_strengths = style_strengths[:4]
+
         # 差异化（SCORING 2.3，权重 35）= 签名键落地 15 + 指纹距离 15 + 构型多样 5
         sig_keys = PATHWAY_SIGNATURES.get(pid, [])
         sig_hits = signature_counts(cards, sig_keys, unit_type_of=all_unit_types,
@@ -1085,6 +1111,8 @@ def main():
                      "差异化": style_score},
             "sigHits": sig_hits, "styleDist": mean_dists[pid],
             "gates": gates, "gatePenalty": gate_penalty,
+            "styleStrengths": style_strengths,
+            "nearest": nearest[pid][0], "nearestDist": nearest[pid][1],
             "axes": arows, "deductions": deductions,
             "min_axis": min_axis, "mean_axis": round(mean_axis, 1),
         })
@@ -1159,6 +1187,8 @@ def write_scores_json(pw_rows):
             "minAxis": r["min_axis"], "cards": r["cards"],
             "sigHits": r.get("sigHits", {}), "styleDist": r.get("styleDist", 0),
             "gates": r.get("gates", {}), "gatePenalty": r.get("gatePenalty", 0),
+            "styleStrengths": r.get("styleStrengths", []),
+            "nearest": r.get("nearest"), "nearestDist": r.get("nearestDist", 0),
             "deductions": [{"dim": d, "why": w, "ref": x, "fix": f} for d, w, x, f in r["deductions"]],
             "axes": [{
                 "id": a["axis"], "name": a["name"], "symbol": a["symbol"], "total": a["total"],
