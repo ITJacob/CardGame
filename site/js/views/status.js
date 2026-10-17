@@ -165,9 +165,24 @@ export function renderStatusStats(container) {
     if (!r) { r = new Map(); m.set(owner, r); }
     r.set(key, (r.get(key) || 0) + 1);
   };
+  // 形态引擎字段（与「时长模型」的 charges/maxStacks 互补，不重复收）
+  const SHAPE_FIELDS = [
+    ['stackThreshold', '层数阈值'], ['thresholdTrigger', '阈值触发'],
+    ['statPerStack', '每层属性'], ['formGroup', '形态组'],
+    ['phases', '相位'], ['cycleTicks', '周期'], ['ramp', '递增'],
+    ['behaviorModifiers', '行为改写'], ['damageTransfer', '伤害转嫁'],
+    ['lethalProtect', '致命保护'], ['contagious', '传染'],
+    ['redirectRule', '重定向'], ['suppress', '压制'],
+    ['immune', '免疫'], ['crossPathway', '跨系枢纽'],
+    ['disallowActions', '行动封锁'], ['slots', '规则槽'],
+    ['fields', '字段载荷'], ['nextPhase', '相位迁移'],
+  ];
+  const shapeLabel = new Map(SHAPE_FIELDS);
+  const shapeTotal = new Map(SHAPE_FIELDS.map(([k]) => [k, 0]));
   const catByOwner = new Map(), trigByOwner = new Map(), durByOwner = new Map(),
         stackByOwner = new Map(), chargeByOwner = new Map(), dispelByOwner = new Map(),
-        primByOwner = new Map(), mkeyByOwner = new Map(), fieldByOwner = new Map();
+        primByOwner = new Map(), mkeyByOwner = new Map(), fieldByOwner = new Map(),
+        shapeByOwner = new Map();
   for (const s of defs) {
     const o = s._owner;
     for (const c of [].concat(s.category || [])) bump2(catByOwner, o, c);
@@ -177,6 +192,14 @@ export function renderStatusStats(container) {
     if (s.charges != null) bump2(chargeByOwner, o, s.charges);
     bump2(dispelByOwner, o, s.dispelable === false ? '不可驱散' : '可驱散');
     for (const k of modifierKeys(s)) bump2(mkeyByOwner, o, k);
+    for (const [k] of SHAPE_FIELDS) {
+      const v = s[k];
+      if (v == null) continue;
+      if (Array.isArray(v) && !v.length) continue;
+      if (typeof v === 'object' && !Array.isArray(v) && !Object.keys(v).length) continue;
+      bump2(shapeByOwner, o, k);
+      shapeTotal.set(k, shapeTotal.get(k) + 1);
+    }
     walkCardEffects(s, (n, kindOf) => { if (kindOf === 'primitive') bump2(primByOwner, o, n.type); });
     for (const [k, v] of Object.entries(s)) {
       if (k === '_owner' || v == null) continue;
@@ -205,6 +228,17 @@ export function renderStatusStats(container) {
     title, cornerLabel: '途径', scopeLabel: '状态面', cols, rows: ownerRows(m), ...extra,
   });
 
+  const shapeRows = new Map([...shapeTotal.entries()].filter(([, v]) => v > 0)
+    .map(([k, v]) => [shapeLabel.get(k) || k, v]));
+  const shapeCols = SHAPE_FIELDS.filter(([k]) => shapeTotal.get(k) > 0)
+    .map(([k, label]) => ({ key: k, label, title: k }));
+  const shapePanel = `<div class="panel wide-labels"><h2>形态引擎字段</h2>
+    <p class="panel-note muted">与「字段填充」互补：这里只聚合状态形态相关字段，看各类状态引擎
+    用了哪些机制（阈值/形态/相位/周期/行为改写/转嫁/免疫/规则槽）。计数 = 填了该字段的状态定义数；
+    字段语义见词典。</p>
+    ${barChart(sortedRows(shapeRows))}</div>`;
+  const shapeHeat = heatOf('途径 × 形态字段', shapeByOwner, shapeCols, { unit: ' 个' });
+
   container.innerHTML = `<div class="stat-group-title">状态定义面</div>
     <p class="panel-note muted">口径：docs/json/*.statuses.json 的 ${defs.length} 个状态定义；
     卡面效果见上方各组。本节按维度分组，每组内途径热图紧跟同维度 bar，行 = ${DB.pathways.length} 途径
@@ -215,6 +249,7 @@ export function renderStatusStats(container) {
       heatOf('途径 × 持续（duration）', durByOwner, scaleCols(durByOwner, 'tick'), { unit: ' 个', orderNote: '数值最小的 ' }),
       heatOf('途径 × 层数上限（maxStacks）', stackByOwner, scaleCols(stackByOwner, '层'), { unit: ' 个', orderNote: '数值最小的 ' }),
       heatOf('途径 × 次数（charges）', chargeByOwner, scaleCols(chargeByOwner, '次'), { unit: ' 个', orderNote: '数值最小的 ' }))}
+    ${group('形态引擎', shapePanel, shapeHeat)}
     ${group('可驱散性', dispelPanel, heatOf('途径 × 可驱散', dispelByOwner, dispelCols, { unit: ' 个' }))}
     ${group('状态面原语', primPanel, heat,
       heatOf('途径 × 原语（状态面）', primByOwner, usageCols(primTotal, 'primitive')))}

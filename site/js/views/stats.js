@@ -90,10 +90,14 @@ function renderSkillStats(view) {
         resByPath = new Map(), elemByPath = new Map(), opByPath = new Map(),
         kindByPath = new Map(), energyByPath = new Map(), cooldownByPath = new Map(),
         castByPath = new Map(), rankByPath = new Map(),
+        effTargetByPath = new Map(), condArgByPath = new Map(),
+        hpCostByPath = new Map(), durUnitByPath = new Map(),
         depthByPath = new Map(), factionByPath = new Map(), scopeByPath = new Map(),
         sortByPath = new Map(), reqFilterByPath = new Map(),
         cxByPath = new Map(), budgetByPath = new Map();
   const byEnergy = new Map(), byCooldown = new Map(), byCast = new Map(),
+        byEffTarget = new Map(), condArgTotal = new Map(),
+        hpCostTotal = new Map(), byDurUnit = new Map(),
         byDepth = new Map(), tagsTotal = new Map(),
         byFaction = new Map(), byScope = new Map(), bySort = new Map(),
         reqFilterTotal = new Map(), byCx = new Map(), byBudget = new Map();
@@ -141,7 +145,7 @@ function renderSkillStats(view) {
     }
     for (const h of hookEvents(c)) bump(hookByPath, p, h);
     // 每卡累计：复杂度（原语节点数）与数值预算（数值伤害加总）在 walk 里攒，走完再分桶
-    let cardNodes = 0, cardDmg = 0;
+    let cardNodes = 0, cardDmg = 0, cardHpCost = false;
     walkCardEffects(c, (n, kindOf) => {
       if (kindOf === 'op') {
         opTotal.set(n.op, (opTotal.get(n.op) || 0) + 1);
@@ -173,6 +177,30 @@ function renderSkillStats(view) {
         condTotal.set(n.condition.kind, (condTotal.get(n.condition.kind) || 0) + 1);
         bump(condByPath, p, n.condition.kind);
       }
+      // 效果级作用对象（与卡级 request 分开）
+      if (kindOf !== 'op' && typeof n.target === 'string') {
+        byEffTarget.set(n.target, (byEffTarget.get(n.target) || 0) + 1);
+        bump(effTargetByPath, p, n.target);
+      }
+      // 条件参数（condarg）：cmp / side / key / stat → kind:field=value
+      if (n.condition?.kind) {
+        for (const f of ['cmp', 'side', 'key', 'stat']) {
+          const v = n.condition[f];
+          if (typeof v === 'string' || typeof v === 'number') {
+            const k = `${n.condition.kind}:${f}=${v}`;
+            condArgTotal.set(k, (condArgTotal.get(k) || 0) + 1);
+            bump(condArgByPath, p, k);
+          }
+        }
+      }
+      // 显式时长口径
+      if (typeof n.durationUnit === 'string') {
+        byDurUnit.set(n.durationUnit, (byDurUnit.get(n.durationUnit) || 0) + 1);
+        bump(durUnitByPath, p, n.durationUnit);
+      }
+      // 血费：以自身生命为施法代价
+      if (n.type === 'modify_resource' && n.resource === 'hp' && n.target === 'self'
+          && n.mode === 'delta' && typeof n.value === 'number' && n.value < 0) cardHpCost = true;
       // 位格承载（稀疏先行维度）：stat_compare(key=rank) 谓词 + modify_stat(rank)。
       // 位格没有独立卡面字段，承载全埋在效果节点里——零新谓词裁定（rank 走 stat_compare）
       if (n.condition?.kind === 'stat_compare' && n.condition.key === 'rank') {
@@ -182,6 +210,7 @@ function renderSkillStats(view) {
         bump(rankByPath, p, 'modify_stat');
       }
     });
+    if (cardHpCost) { bump(hpCostTotal, 0, '血费'); bump(hpCostByPath, p, '血费'); }
     // 复杂度分桶：每卡原语节点数（含状态载荷，同一原语多次计数）
     const cxKey = cardNodes <= 1 ? '1' : cardNodes <= 3 ? '2–3' : cardNodes <= 6 ? '4–6' : '7+';
     bump(byCx, 0, cxKey); bump(cxByPath, p, cxKey);
@@ -317,6 +346,13 @@ function renderSkillStats(view) {
       是最常用的条件形态；chance 概率受随机性治理 R1–R6 约束（只用于非伤害维度、单次抽样）。</p>`),
     heatOf('途径 × 条件谓词', condByPath, colsOf(condTotal, 'conditionKind'), { unit: ' 处' }));
 
+  const condArgGrand = [...condArgTotal.values()].reduce((a, b) => a + b, 0);
+  const condArgGroup = group('构件面 · 条件参数',
+    barPanel('条件谓词参数 Top 20', sortedRows(new Map([...condArgTotal.entries()]
+      .sort((a, b) => b[1] - a[1]).slice(0, 20))),
+      `<p class="panel-note muted">条件谓词的枚举参数（cmp / side / key / stat），键形如
+      kind:field=value；全库 ${condArgGrand} 处 / ${condArgTotal.size} 种。长尾稀疏，不画热图。</p>`));
+
   const cxCols = ['1', '2–3', '4–6', '7+'].map((k) => ({ key: k, label: `${k} 个`, title: k }));
   const primGrand = [...primTotal.values()].reduce((a, b) => a + b, 0);
   const cxGrand = flat(byCx);
@@ -375,12 +411,25 @@ function renderSkillStats(view) {
     heatOf('途径 × 冷却（只算主动卡）', cooldownByPath, scaleCols(cooldownByPath, ' tick'),
       { unit: ' 张', orderNote: '数值最小的 ' }));
 
+  const hpCostGroup = group('费用面 · 生命代价',
+    barPanel('血费卡分布', sortedRows(flat(hpCostTotal)),
+      `<p class="panel-note muted">识别口径：卡面 modify_resource(resource=hp, target=self,
+      mode=delta, value&lt;0)——以自身生命为施法代价的卡。当前全库
+      ${[...flat(hpCostTotal).values()].reduce((a, b) => a + b, 0)} 张。</p>`),
+    heatOf('途径 × 血费卡', hpCostByPath, [{ key: '血费', label: '血费', title: '血费' }], { unit: ' 张' }));
+
   const castGroup = group('费用面 · 吟唱（cost.castTime）',
     barPanel('吟唱分布（主动卡，有序刻度）', sortedRows(flat(byCast), (k) => (k ? `${k} tick` : '瞬发（0）'), { byKey: true }),
       `<p class="panel-note muted">brief §13：序列 7–5 即时技能默认 0（瞬发）不标；序列 4 以上
       或仪式类必标。可被「免吟唱」免除、被控制打断。</p>`),
     heatOf('途径 × 吟唱（只算主动卡）', castByPath, scaleCols(castByPath, ' tick'),
       { unit: ' 张', orderNote: '数值最小的 ' }));
+
+  const durUnitGroup = group('时序面 · 时长口径',
+    barPanel('durationUnit 分布', sortedRows(byDurUnit, (k) => zh('durationUnit', k)),
+      `<p class="panel-note muted">只统计显式写了 durationUnit 的效果节点；缺省 tick 不落字段。
+      self_turn = 按持有者自身行动机会计时。</p>`),
+    heatOf('途径 × 时长口径', durUnitByPath, colsOf(byDurUnit, 'durationUnit'), { unit: ' 处' }));
 
   // rank 的行数据直接按途径 bump（与其他热图一致），bar 需先摊平成全库计数
   const rankFlat = new Map();
@@ -404,6 +453,12 @@ function renderSkillStats(view) {
       `<p class="panel-note muted">口径与「选靶方式」组一致：有 target 即算（含 1 张被动卡）。
       self 占比如此之高，是大量自保/变身类主动卡的选靶写 self。</p>`),
     heatOf('途径 × 目标阵营', factionByPath, colsOf(flat(byFaction), 'faction'), { unit: ' 张' }));
+
+  const effTargetGroup = group('目标面 · 效果级作用对象',
+    barPanel('效果节点 target 分布', sortedRows(byEffTarget, (k) => zh('effectTarget', k)),
+      `<p class="panel-note muted">与「目标阵营」区分：那里是卡级 target.request，这里是每个效果节点
+      自己的 target（damage/heal/mount_status 等的作用对象）。一张卡可有多个不同作用对象。</p>`),
+    heatOf('途径 × 效果级作用对象', effTargetByPath, colsOf(byEffTarget, 'effectTarget'), { unit: ' 处' }));
 
   const scopeGroup = group('目标面 · 几何范围（scope）',
     barPanel('几何范围分布（request.scope）', sortedRows(flat(byScope), (k) => zh('scope', k)),
@@ -437,12 +492,12 @@ function renderSkillStats(view) {
   view.innerHTML = `<p class="panel-note muted">本页<b>一个维度一组</b>：组内先全库 bar、再该维度的「途径 × 维度」热图。
     热图共用一套读法——行 = ${pathways.length} 个途径，列 = 该维度的取值，格 = 计数
     （只有「原语 构成」那张是行内归一化后的 %）。同组的 bar 与热图<b>口径相同</b>：bar 各段之和
-    = 该组热图各行的合计；跨组不是一回事——属性 / 资源 / 元素 / 算子 / 原语 / 位格 / 条件谓词按<b>效果节点</b>计，
-    稀有度 / 序列 / 卡型 / 费用 / 冷却 / 吟唱 / 构筑深度 / 卡面复杂度 / 数值预算按<b>卡</b>计。每张图的色阶各自独立
+    = 该组热图各行的合计；跨组不是一回事——属性 / 资源 / 元素 / 算子 / 原语 / 位格 / 条件谓词 / 条件参数 / 效果级作用对象 / 时长口径按<b>效果节点</b>计，
+    稀有度 / 序列 / 卡型 / 费用 / 冷却 / 吟唱 / 血费 / 构筑深度 / 卡面复杂度 / 数值预算按<b>卡</b>计。每张图的色阶各自独立
     （上限取本图最大值），跨图比颜色没有意义——要比就比格内数字。行序一律是 manifest 途径顺序；
     列序是各自的用量或刻度顺序，悬停表头看原始 key。状态定义口径见「状态」子页，编目三池
     （召唤物 / 区域 / 界域）见各自子页——本页各组均不含它们。</p>
-    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${axisGroup}${primGroup}${opGroup}${condGroup}${cxGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${budgetGroup}${energyGroup}${cooldownGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}`;
+    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${axisGroup}${primGroup}${opGroup}${condGroup}${condArgGroup}${cxGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${budgetGroup}${energyGroup}${cooldownGroup}${hpCostGroup}${castGroup}${durUnitGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${effTargetGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}`;
 
   // 窄屏展开全部列；桌面端该开关不显示（CSS 隐藏），勾选状态无副作用
   wireHeatToggle(view);

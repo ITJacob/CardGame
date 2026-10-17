@@ -1112,6 +1112,8 @@ def main():
             "sigHits": sig_hits, "styleDist": mean_dists[pid],
             "gates": gates, "gatePenalty": gate_penalty,
             "styleStrengths": style_strengths,
+            "styleParts": {"signature": signature_score, "fingerprint": dist_pts,
+                           "config": config_div},
             "nearest": nearest[pid][0], "nearestDist": nearest[pid][1],
             "axes": arows, "deductions": deductions,
             "min_axis": min_axis, "mean_axis": round(mean_axis, 1),
@@ -1188,6 +1190,7 @@ def write_scores_json(pw_rows):
             "sigHits": r.get("sigHits", {}), "styleDist": r.get("styleDist", 0),
             "gates": r.get("gates", {}), "gatePenalty": r.get("gatePenalty", 0),
             "styleStrengths": r.get("styleStrengths", []),
+            "styleParts": r.get("styleParts", {}),
             "nearest": r.get("nearest"), "nearestDist": r.get("nearestDist", 0),
             "deductions": [{"dim": d, "why": w, "ref": x, "fix": f} for d, w, x, f in r["deductions"]],
             "axes": [{
