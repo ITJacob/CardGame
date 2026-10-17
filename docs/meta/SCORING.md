@@ -1,4 +1,4 @@
-# 职业设计评分体系（SCORING）· **2.1（2026-10-16 口径重写 + 全链路指纹）**
+# 职业设计评分体系（SCORING）· **2.2（2026-10-17 全链路指纹扩至十二族）**
 
 > 配套脚本 `docs/tools/score.py`（唯一计分实现，本文件锁口径）；
 > 产物：`docs/analysis/scorecard.md`（勿手改）+ `docs/analysis/scores.json`（网页端消费，site 经
@@ -25,6 +25,16 @@
 （全库 571 卡有 `target`、88 轴已逐一设计签名）与私有状态身份对差异化零贡献**——用常规原语做
 主题化机制的途径（如战士）被结构性低估。
 
+**2.2（2026-10-17）**：全链路指纹从八族扩到**十二族**，并修三处口径缺口：
+① `sref`（私有 statusId）→ `sshape`（状态形态）——statusId 是途径私有命名，跨途径几乎零重合，
+   距离恒满，等于把"有没有私有状态"当设计差异；改为展开状态 def 的结构 flags / 修正名 /
+   自带效果原语 / 时长形态，跨途径可比。
+② `stat`（只取 `modify_stat` 的 `stat` 键）→ `param`（所有原语的枚举型参数键值），补
+   `modify_resource.resource` / `spawn` 单位与位置 / `move`·`domain`·`translocate` 的 op /
+   规则槽 field 等；仍不取数值（原则 4）。
+③ 新增 `condarg`（条件谓词的枚举参数）、`reach`（射程）、`cost`（支付形态档）、
+   `temporal`（吟唱 / 时长口径）。轴内多样性的"状态身份"同步改为"状态形态"。
+
 ## 一、原则
 
 1. **全部指标机器可验**：从 JSON AST 实算，不靠人工打分。
@@ -42,7 +52,7 @@
 | 身份锚定 | 15 | 身份锚点可解析——`statusId` 命中 statusDef / Pool 轴的 `modify_resource` 资源 / **本轴写入的全局通道**——得 8；身份状态带**机制**（`stackThreshold`/`thresholdTrigger`/`maxStacks>1`/`charges`/`triggers`/`statPerStack`/`formGroup`/`phases`/`cycleTicks`/`behaviorModifiers` 任一）再 +7；`statusId` 悬空 0。（**2.0 起取消「层数引擎」硬要求**：covert_veil 这类以 `triggers` 破隐的机制同样满分） |
 | 产层闭环 | 20 | enablers 逐张 **AST 实证产出身份**——挂载身份状态 / Pool 轴的 `modify_resource` 产能段 / **写入身份通道**：实证 ≥2 张得 20，1 张 12；enablers 非空但全未实证 5；空 0 |
 | 收束闭环 | 25 | 轴产出物**被消费**的实证，三条路径**取较优**（封顶 25）：① **有 payoff 卡**——读**本轴产出面**（身份状态 **或本轴写入的通道**）每张 9、不读每张 4（notes 级）；② **无 payoff 卡**——**间接收束**：本轴写入的通道，其**下游读者数**分档（≥6→9 / ≥3→6 / ≥1→3，逐通道求和）；③ **def 内闭环**：身份 def 自带动态引擎（`triggers`/`stackThreshold`/`thresholdTrigger`/`statPerStack`/`phases`/`cycleTicks`/`formGroup`）15 分，仅带静态载荷（`effects`/`modifiers`）10 分。真空轴不再需要 `payoffVacuumAccepted` |
-| 轴内多样性 | 15 | **（2.1：判据扩到全链路）** 轴内卡的**去重种类和**——原语 + `condition` 谓词 + **选靶 `scope`/`anchor`** + **触发点**（`hook`/`triggers`，含挂载状态 def 的）+ **状态身份**（引用的 statusId），对全库轴最大值归一：15 × 本轴种类和 / 全库最大 |
+| 轴内多样性 | 15 | **（2.1：判据扩到全链路）** 轴内卡的**去重种类和**——原语 + `condition` 谓词 + **选靶 `scope`/`anchor`** + **触发点**（`hook`/`triggers`，含挂载状态 def 的）+ **状态形态**（引用状态的 def 结构指纹），对全库轴最大值归一：15 × 本轴种类和 / 全库最大 |
 | 规模均衡 | 10 | 轴卡数 / 途径卡均在 [0.6, 1.4] 区间得 10；区间外线性衰减（每偏 0.1 扣 1） |
 | 承接连通 | 15 | 收束方式去重计数（**乘区 / 条件分支 / 耗层 / 存在性 / 通道读**，各 3）；本轴产出面（身份 **或耦合通道**）被他轴/他途径卡消费的来源数 +3/来源；封顶 15 |
 
@@ -84,10 +94,10 @@
 
 合计 30+15+15+5+5+5+25 = 100。
 
-### 三·一 全链路指纹（2.1 新增，差异化②的向量口径）
+### 三·一 全链路指纹（2.1 新增，2.2 扩至十二族；差异化②的向量口径）
 
-> 动机：**机制的复杂性不单单是原语**——施法作用的整条链路（选靶 → 触发 → 效果 → 状态）都是设计语言，
-> 且**状态身份**（私有 statusId）不进向量会让"用常规原语做主题化机制"的途径被结构性低估。
+> 动机：**机制的复杂性不单单是原语**——施法作用的整条链路（选靶 → 条件 → 效果 → 状态 → 时序）
+> 都是设计语言。2.2 起状态不再用私有 statusId 当键（跨途径不可比），改为状态 def 的形态指纹。
 
 指纹 = 若干**族**，每族独立 **L2 归一**后参与距离；`cos_dist` = **各族余弦距离的均值**（族等权，可调）。
 
@@ -96,13 +106,19 @@
 | `prim` | 原语种类 | `card_effect_types`（每卡去重） |
 | `elem` | 元素 | effects 的 `element` |
 | `cond` | 条件谓词 | `_cond_kinds` |
-| `stat` | `modify_stat` 键 | effects 的 `stat` |
-| `sref` | **状态身份** | 卡面引用的 statusId（mount/modify/condition/filter） |
-| `tgt` | **选靶** | `card.target.request`：`faction` / `scope` / `anchor` / `mode` / `selectionMode`（缺省不写） |
-| `tgtf` | **选靶 filter 键** | `request.filter` 的键名 |
-| `hook` | **触发点** | 卡级 `hook` / `triggers[].event` **＋挂载状态 def 的 `triggers[].event`**（口径：挂状态 = 接入其触发点） |
+| `condarg` | 条件谓词的枚举参数 | `kind:field=value`（cmp/side/key/stat/unitIdx/…；**私有 statusId 不取**） |
+| `param` | 效果原语的枚举参数 | `field=value`（`modify_stat.stat` / `modify_resource.resource` / spawn 单位与位置 / `move`·`domain`·`translocate` 的 op / 规则槽 field 等；**数值不取**） |
+| `reach` | 射程 | active 卡 `reach`（none/melee/spell/thrown） |
+| `tgt` | 选靶坐标 | `target.request`：`faction`/`scope`/`anchor`/`mode`/`selectionMode` |
+| `tgtf` | 选靶 filter 键 | `request.filter` 的键名 |
+| `hook` | 触发点 | 卡级 `hook`/`triggers[].event` ＋挂载状态 def 的 `triggers[].event` |
+| `sshape` | **状态形态** | 引用状态 def 的结构 flags（triggers/charges/stack/threshold/form/phases/cycle/ramp/behavior/action_lock/immune/redirect…）+ 修正名 + 自带效果原语 + 时长形态；**不含私有 statusId** |
+| `cost` | 消耗形态 | `energy` 档（zero/low/mid/high）+ `cooldown` 档（none/short/long）+ 血费（自伤 hp 支付） |
+| `temporal` | 时序形态 | 吟唱有无（`castTime>0`）/ `durationUnit`（tick、self_turn）/ 吟唱转瞬发 |
 
-> 消费通道 `consumption`、`cost`/`reach` 等暂未入族；需扩展时加进 `score.py` 的 `FAMILIES` 并同步本表。
+> 不取数值：上述键只记录**形态/档位**，不含 amount、value、duration 等数值（SCORING 原则 4）。
+> 消费通道 `consumption`、选靶几何形状（schema 无字段）等暂未入族；需扩展时加进 `score.py`
+> 的 `FAMILIES` 并同步本表。
 
 ## 四、产物与消费
 

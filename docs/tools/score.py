@@ -380,25 +380,167 @@ def _cond_kinds(node):
     return out
 
 
-# ---------- 全链路指纹（SCORING 2.1，2026-10-16）----------
-# 差异化②不再只看原语：施法作用的整条链路都入向量（原语/元素/谓词 + 状态身份/选靶/触发点），
-# 分族独立 L2 归一后等权求距离——链路每一环各占一票，避免"用常规原语做主题化机制"被结构性低估。
-FAMILIES = ("prim", "elem", "cond", "stat", "sref", "tgt", "tgtf", "hook")
+# param：效果原语的**枚举型**参数键值（数值不入——SCORING 原则 4）。
+PARAM_FIELDS = {
+    "modify_stat": ("stat", "mode", "sourceRef"),
+    "modify_resource": ("resource", "mode"),
+    "drain": ("resource",),
+    "mount_status": ("stackMode",),
+    "spawn": ("position", "consumption", "template", "kind"),
+    "move": ("op",),
+    "domain": ("op",),
+    "dispel": ("dispelTarget",),
+    "transfer_status": ("mode", "to", "from", "statusesFrom"),
+    "take_control": ("actionPolicy", "onExpire"),
+    "target_override": ("anchor", "faction", "sort"),
+    "translocate": ("op",),
+    "modify_rule_slot": ("field", "mode"),
+    "write_rule_slot": ("field",),
+    "modify_damage": ("scope",),
+    "modify_targetability": ("direction",),
+    "reveal": ("scope",),
+    "echo_last_skill": ("snapshot",),
+    "status_shuffle": ("mode", "sort"),
+}
+MODIFY_SKILL_OPS = ("castTimeDelta", "setInstant", "costDelta", "clearCooldown", "cooldownDelta")
+
+# condarg：条件谓词的枚举参数。私有 statusId 不取（途径私有命名跨途径不可比）。
+CONDARG_FIELDS = ("cmp", "side", "key", "stat", "unitType", "type", "phase",
+                  "aUnit", "bUnit", "of", "select", "tag", "value",
+                  "unitIdx", "template", "position")
+
+# sshape：状态**形态**（替代私有 statusId 身份）。键为共享词表的结构特征。
+SSHAPE_FLAGS = (
+    ("triggers", "has_triggers"), ("charges", "charges"),
+    ("stackThreshold", "stack_threshold"), ("thresholdTrigger", "threshold_trigger"),
+    ("statPerStack", "stat_per_stack"), ("formGroup", "form_group"),
+    ("phases", "phases"), ("cycleTicks", "cycle"), ("ramp", "ramp"),
+    ("lethalProtect", "lethal_protect"), ("contagious", "contagious"),
+    ("transferOnDeath", "transfer_on_death"), ("reviveBlocked", "revive_blocked"),
+    ("immune", "immune"), ("silent_immune", "silent_immune"),
+    ("suppress", "suppress"), ("redirectRule", "redirect"),
+    ("damageTransfer", "damage_transfer"), ("slots", "slots"),
+    ("fields", "fields"), ("nextPhase", "next_phase"),
+)
+
+
+def _cond_args(node):
+    """条件树内的枚举参数键值（kind:field=value）；私有 statusId 类字段不入（跨途径不可比）。"""
+    out = set()
+
+    def visit(n):
+        if isinstance(n, dict):
+            if isinstance(n.get("kind"), str):
+                k = n["kind"]
+                for f in CONDARG_FIELDS:
+                    v = n.get(f)
+                    if isinstance(v, (str, int, float)) and not isinstance(v, bool):
+                        out.add("%s:%s=%s" % (k, f, v))
+                pv = n.get("phases")
+                if isinstance(pv, list):
+                    for x in pv:
+                        if isinstance(x, str):
+                            out.add("%s:phases=%s" % (k, x))
+            c = n.get("condition")
+            if isinstance(c, dict):
+                visit(c)
+            for x in n.get("conditions") or []:
+                if isinstance(x, dict):
+                    visit(x)
+            for kk, vv in n.items():
+                if kk not in ("condition", "conditions"):
+                    visit(vv)
+        elif isinstance(n, list):
+            for v in n:
+                visit(v)
+
+    visit(node)
+    return out
+
+
+def _status_shape(sd):
+    """状态 def 的形态键集：结构 flags + 修正名 + 自带效果原语 + 时长形态。私有 id 不入。"""
+    out = set()
+    for k, label in SSHAPE_FLAGS:
+        if sd.get(k):
+            out.add(label)
+    ms = sd.get("maxStacks")
+    if isinstance(ms, int) and ms > 1:
+        out.add("stacks")
+    for c in (sd.get("category") or []):
+        if isinstance(c, str):
+            out.add("cat:" + c)
+    dur = sd.get("duration")
+    unit = sd.get("durationUnit")
+    if dur is None:
+        out.add("dur:persistent")
+    elif unit == "self_turn":
+        out.add("dur:self_turn")
+    else:
+        out.add("dur:tick")
+    for bm in (sd.get("behaviorModifiers") or []):
+        if isinstance(bm, dict) and isinstance(bm.get("op"), str):
+            out.add("behavior:" + bm["op"])
+    for lock in (sd.get("disallowActions") or []):
+        if isinstance(lock, str):
+            out.add("lock:" + lock)
+    for key in ("modifiers", "statMods"):
+        mods = sd.get(key)
+        if isinstance(mods, dict):
+            for k in mods:
+                out.add("mods:" + k)
+    for n in walk(sd.get("effects")):
+        t = n.get("type")
+        if isinstance(t, str):
+            out.add("via:" + t)
+        if t == "modify_stat" and isinstance(n.get("stat"), str):
+            out.add("via_stat:" + n["stat"])
+    if sd.get("crossPathway"):
+        out.add("crosspathway")
+    return out
+
+
+# ---------- 全链路指纹（SCORING 2.2，2026-10-17）----------
+# 差异化②不再只看原语：施法链路（选靶 → 条件 → 效果 → 状态 → 时序）每一环入向量，
+# 分族独立 L2 归一后等权求距离。
+FAMILIES = ("prim", "elem", "cond", "condarg", "param", "reach",
+            "tgt", "tgtf", "hook", "sshape", "cost", "temporal")
 
 
 def _card_families(card, status_by_id=None):
-    """单卡在各链路族上的**键集**：prim 原语 / elem 元素 / cond 谓词 / stat modify_stat 键
-    （原有四族）+ sref 状态身份 / tgt 选靶(faction·scope·anchor·mode·sel) / tgtf 选靶 filter 键 /
-    hook 触发点（卡级 hook·triggers + 挂载状态 def 的 triggers）。"""
+    """单卡在各链路族上的**键集**：原语 / 元素 / 谓词 / 谓词参数 / 效果参数 / 射程 /
+    选靶 / 选靶 filter / 触发点 / 状态形态 / 消耗形态 / 时序形态。"""
     fam = {f: set() for f in FAMILIES}
     fam["prim"] |= card_effect_types(card)
+
     for n in walk(card.get("effects")):
         if isinstance(n.get("element"), str):
             fam["elem"].add(n["element"])
-        if n.get("type") == "modify_stat" and isinstance(n.get("stat"), str):
-            fam["stat"].add(n["stat"])
+        t = n.get("type")
+        for f in (PARAM_FIELDS.get(t, ()) if isinstance(t, str) else ()):
+            v = n.get(f)
+            if isinstance(v, (str, int, float)) and not isinstance(v, bool):
+                fam["param"].add("%s=%s" % (f, v))
+        if t == "spawn" and isinstance(n.get("unitIdx"), str):
+            fam["param"].add("unit=" + n["unitIdx"])
+        if t == "modify_skill":
+            for op in MODIFY_SKILL_OPS:
+                if n.get(op) is not None:
+                    fam["param"].add("modop=" + op)
+        if n.get("durationUnit") == "self_turn":
+            fam["temporal"].add("dur:self_turn")
+        elif n.get("durationUnit") == "tick":
+            fam["temporal"].add("dur:tick")
+        if n.get("setInstant"):
+            fam["temporal"].add("instant")
+        if (t == "modify_resource" and n.get("resource") == "hp"
+                and n.get("target") == "self" and n.get("mode") == "delta"
+                and isinstance(n.get("value"), (int, float)) and n.get("value") < 0):
+            fam["cost"].add("hp_cost")
+
     fam["cond"] |= set(_cond_kinds(card.get("effects")))
-    fam["sref"] |= card_status_refs(card)
+    fam["condarg"] |= _cond_args(card.get("effects"))
+
     spec = card.get("target") or {}
     req = spec.get("request") or {}
     if req.get("faction"):
@@ -413,6 +555,25 @@ def _card_families(card, status_by_id=None):
         fam["tgt"].add("sel=" + spec["selectionMode"])
     for k in (req.get("filter") or {}):
         fam["tgtf"].add(k)
+
+    if isinstance(card.get("reach"), str):
+        fam["reach"].add("reach=" + card["reach"])
+
+    cost = card.get("cost") or {}
+    if card.get("kind") == "active":
+        energy = cost.get("energy")
+        if isinstance(energy, int):
+            fam["cost"].add("energy:" + ("zero" if energy == 0 else
+                                         "low" if energy <= 1 else
+                                         "mid" if energy <= 2 else "high"))
+        cd = cost.get("cooldown")
+        if isinstance(cd, int):
+            fam["cost"].add("cooldown:" + ("none" if cd == 0 else
+                                           "short" if cd <= 3 else "long"))
+        ct = cost.get("castTime")
+        if isinstance(ct, int) and ct > 0:
+            fam["temporal"].add("cast")
+
     for h in (card.get("hook") or []):
         if isinstance(h, str):
             fam["hook"].add(h)
@@ -423,6 +584,12 @@ def _card_families(card, status_by_id=None):
         for tr in ((status_by_id or {}).get(m) or {}).get("triggers") or []:
             if tr.get("event"):
                 fam["hook"].add(tr["event"])
+
+    # sshape：引用的状态 → 状态形态（替代私有 statusId 身份）
+    for sid in card_status_refs(card):
+        sd = (status_by_id or {}).get(sid)
+        if sd:
+            fam["sshape"] |= _status_shape(sd)
     return fam
 
 
@@ -667,8 +834,8 @@ def main():
                 elif notes_level:
                     deductions.append(("收束闭环", "注：notes 级 %d 张（减半计）" % len(notes_level), ",".join(notes_level), FIX["payoff_notes"]))
 
-            # —— 轴内多样性（归一后置）：SCORING 2.1 起 = 全链路词表 ——
-            # 原语 + 谓词 + 选靶(scope/anchor) + 触发点 + 状态身份（去重种类和）
+            # —— 轴内多样性（归一后置）：SCORING 2.2 起 = 全链路词表 ——
+            # 原语 + 谓词 + 选靶(scope/anchor) + 触发点 + 状态形态（去重种类和）
             prim_kinds, cond_kinds, chain_kinds = set(), set(), set()
             for c in axis_cards:
                 prim_kinds |= card_effect_types(c)
@@ -676,7 +843,7 @@ def main():
                 cf = _card_families(c, status_by_id)
                 chain_kinds |= {"tgt:" + k for k in cf["tgt"] if k.startswith(("scope=", "anchor="))}
                 chain_kinds |= {"hook:" + k for k in cf["hook"]}
-                chain_kinds |= {"sref:" + k for k in cf["sref"]}
+                chain_kinds |= {"sshape:" + k for k in cf["sshape"]}
             div_raw = len(prim_kinds) + len(cond_kinds) + len(chain_kinds)
             axis_diversity_raw[(pid, aid)] = div_raw
 
