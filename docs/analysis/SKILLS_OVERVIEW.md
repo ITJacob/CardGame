@@ -682,7 +682,7 @@
 - **机制**：`重复3次（伤害 2（物理）） → 若[自身有 仪式·门>=1]则（伤害 2（物理）） → 若[自身有 闪光>=1]则（伤害 2（物理）） → translocate → 迷失值 +1 →自身`
 - **跨途径共享**：thief
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：闪现=多段围攻；门扉坐标存在时减费。G8 合规（近战攻击进程，不越中线）。 ｜ 2026-10-03 骨架手术：时空税换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：gate轴 enemy+cross_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：闪现=多段围攻；门扉坐标存在时减费。G8 合规（近战攻击进程，不越中线）。 ｜ 2026-10-03 骨架手术：时空税换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：gate轴 enemy+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 旅行家 —— "「闪现」：短距离不断闪现，制造围攻效果"
 - **风味**：你在它身周不断闪现——左、右、背后，三记短促的攻击几乎同时落下。
 
@@ -718,7 +718,7 @@
 - **机制**：`位移·insert_tail_cross_lane → 挂载 护盾（15t） → 若[自身有 隐秘权柄>=1]则（挂载 护盾（15t））`
 - **跨途径共享**：thief
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：门扉轴旗舰：读取 `门扉` 坐标实现传送零耗；无坐标时退化为纯护盾。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：gate轴 ally+cross_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：门扉轴旗舰：读取 `门扉` 坐标实现传送零耗；无坐标时退化为纯护盾。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：gate轴 ally+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 旅行家 —— "「旅行家之门」：灵界穿梭传送"
 - **风味**：一道门在它脚边打开——再出现时，它已经站在了队伍的另一头。
 
@@ -743,7 +743,7 @@
 - **机制**：`若[自身有 星界锚>=1]则（挂载 潜行（15t））否则（挂载 潜行（10t）） → translocate → 迷失值 +1 →自身`
 - **跨途径共享**：seer / thief
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：隐藏=单体不可选中；隐秘值≥7 时 conceal 类收益（减伤）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：时空税换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：gate轴 ally+cross_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：隐藏=单体不可选中；隐秘值≥7 时 conceal 类收益（减伤）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：时空税换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：gate轴 ally+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列4 秘法师 —— "「空间隐藏」：扭曲割裂空间并隐藏"
 - **风味**：你身边的空间被扭曲割裂——它还在那里，却再没有谁能准确地指向它。
 
@@ -801,7 +801,7 @@
 - **效果**：对一名敌人造成 5 点物理伤害（相邻敌人受到 2 点溅射），并撕开空间裂隙 15tick：其受伤 ×1.15。；若目标带提线木偶，斩断提线，追加 2 点物理伤害。；裂隙张开：目标被放逐一瞬（空间操作须付迷失租金）。
 - **机制**：`伤害 5（物理）（溅射相邻） → 伤害 2（物理） →次要目标 → 挂载 易伤（15t） → 若[目标有 提线木偶>=1]则（伤害 2（物理）） → translocate → 迷失值 +1 →自身`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：撕裂=伤口不愈合；门扉零耗加成。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度核对（2026-10-01）：主目标 5+溅射 2 符合 splash 主满邻半档（位格7 基准5），数值不动；注：溅射段以 target:secondary_target 承载（同愚者飞牌写法），未走 spread 枚举，结构口径见 PENDING。 ｜ 2026-10-03 骨架手术：时空税换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line spread=splash_adjacent(写damage) ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：gate轴 enemy+cross_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：撕裂=伤口不愈合；门扉零耗加成。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度核对（2026-10-01）：主目标 5+溅射 2 符合 splash 主满邻半档（位格7 基准5），数值不动；注：溅射段以 target:secondary_target 承载（同愚者飞牌写法），未走 spread 枚举，结构口径见 PENDING。 ｜ 2026-10-03 骨架手术：时空税换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line spread=splash_adjacent(写damage) ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：gate轴 enemy+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 漫游者 —— "「漫游」：可进入星空，遨游星界，前往不同星球 /「开门」：能突破几乎所有屏障 /「融入空间」、「撕裂空间」"
 - **风味**：你伸手撕开一道裂隙——它和它身侧的同伴都被裂口咬住，而裂隙并不会合拢。
 
@@ -930,7 +930,7 @@
 - **效果**：关闭一名敌人所有的门 20tick：无法被位移、无法被治疗、无法获得增益。；门在脚下开裂一瞬，再把人放回原位。
 - **机制**：`挂载 门关（20t） → translocate → 迷失值 +1 →自身`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：关上门=断位移/治疗/增益；再标门扉坐标+写+2隐秘值。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：时空税换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：gate轴 enemy+cross_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：关上门=断位移/治疗/增益；再标门扉坐标+写+2隐秘值。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：时空税换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：gate轴 enemy+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列0 门 —— "「门」之概念：打开或关上所有与「门」相关的事物"
 - **风味**：你说了一声"关"——所有朝向它的门都合上了：补给进不来，伤口合不上，退路也不存在。
 
@@ -1293,7 +1293,7 @@
 - **效果**：自动选取敌方攻击最高者与己方攻击最高者：前者被分割 25tick（无法与同阵营互给增益/治疗/守护），二者的攻击与防御被拉平（30tick）；若自身权威质变在场，分割延长 10tick。；判决如此：它不再享有豁免。
 - **机制**：`挂载 分割（25t） → 攻击 =None（30t） → 防御 =None（30t） → 若[自身有 权威质变>=1]则（挂载 分割（10t）） → take_control`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：律令轴：分割为了平衡（与序列3 分割为了猎杀互补）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）；删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：律令轴：分割为了平衡（与序列3 分割为了猎杀互补）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）；删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列2 平衡者 —— "部分'平衡'权柄：分割战场保证实力平衡"
 - **风味**：你把战场一分为二，然后拨了拨天平——你们两边最强的那个，从此一样强。
 
@@ -1540,7 +1540,7 @@
 - **效果**：对一名敌人造成 4 点暗黑伤害，并有 40% 几率使其燃烧。；黑焰燎疾：目标疾病 15tick。；出手即把目标拽进镜面一瞬，再原样放回。
 - **机制**：`伤害 4（dark） → 挂载 灼烧（15t）（当40%概率） → 挂载 疾病（15t） → translocate → 迷失值 +1 →自身`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：招牌黑焰（引擎落 fire，辨识度靠外观/名）。 ｜ 2026-10-03 骨架手术：镜形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：plague轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：招牌黑焰（引擎落 fire，辨识度靠外观/名）。 ｜ 2026-10-03 骨架手术：镜形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：plague轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列7 女巫 —— "操控黑焰"；序列6 欢愉 —— "黑焰可如子弹射出 / 驱除诅咒"
 - **风味**：一簇漆黑的火苗在你掌心燃起，它没有温度，却把碰到的东西连同诅咒一起烧成灰烬。
 
@@ -1552,7 +1552,7 @@
 - **机制**：`伤害 3（冰） → 行动条速率 +-6（15t） → translocate → 迷失值 +1 →自身`
 - **跨途径共享**：hunter
 - **✅ 支持进度**：1 项历史缺口已落入 DDD 内核 —— `GAUGE_RATE_AS_STAT` gauge.rate 按 modify_stat 表达，待内核裁定归一
-- **拍板项**：**存疑**：翻译/语义：冰霜=减速（INV-S5 合规）。 ｜ 2026-10-03 骨架手术：镜形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：plague轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：冰霜=减速（INV-S5 合规）。 ｜ 2026-10-03 骨架手术：镜形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：plague轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列7 女巫 —— "操控冰霜"
 - **风味**：寒气顺着你的指尖爬上它的四肢，动作一点点凝滞下来。
 
@@ -1657,7 +1657,7 @@
 - **效果**：使一名敌人感染 20tick：每 tick 受到递增的毒素伤害（1/1/2/2），到期爆发 4 点毒素伤害。可驱散。；得手后留下替身承接指向。
 - **机制**：`挂载 疾病（20t） → modify_targetability →自身`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：加速感染（debuff 递增）+ 到期爆发。（dot_ramp 折算 D4）。 ｜ 2026-10-03 骨架手术：镜形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：plague轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：加速感染（debuff 递增）+ 到期爆发。（dot_ramp 折算 D4）。 ｜ 2026-10-03 骨架手术：镜形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：plague轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 痛苦 —— "疾病：制造多种病原体，加速感染爆发，2-3 分钟可致猝死"
 - **风味**：你送进它体内的东西会繁殖。起初只是发热，然后是溃烂，最后——在你数到一百之前，它已经倒下了。
 
@@ -1791,7 +1791,7 @@
 - **机制**：`驱散 buff → 若[dispelled_count]则（伤害 4）否则（伤害 1） → 若[目标有 疾病>=1]则（伤害 2（冰）） → translocate → 迷失值 +1 →自身`
 - **性别限制**：female
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次七：补 disease→ice 并发症段（冰霜权柄侧补强） ｜ 2026-10-03 骨架手术：镜形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：plague轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次七：补 disease→ice 并发症段（冰霜权柄侧补强） ｜ 2026-10-03 骨架手术：镜形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：plague轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列2 灾难 —— "可延伸至权柄和概念：诱导问题爆发让系统崩解"
 - **风味**：你什么都没破坏，你只是让它本来就有的问题，一次性全部爆发了出来。
 
@@ -1818,7 +1818,7 @@
 - **性别限制**：female
 - **跨途径共享**：hunter
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：受击追加伤害（命运补刀），非概率。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；2026-10-01 乘区收敛：dimHook fate_value mul 2.0→1.5（放大侧封顶 1.5）。 ｜ 2026-10-02 差异化风格迭代·批次七（刺客：镜中拉入 translocate 原语化）：补 fate_value 跨系读层（命运同调），随卡付迷失租金 ｜ 2026-10-03 骨架手术：镜形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：plague轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：受击追加伤害（命运补刀），非概率。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；2026-10-01 乘区收敛：dimHook fate_value mul 2.0→1.5（放大侧封顶 1.5）。 ｜ 2026-10-02 差异化风格迭代·批次七（刺客：镜中拉入 translocate 原语化）：补 fate_value 跨系读层（命运同调），随卡付迷失租金 ｜ 2026-10-03 骨架手术：镜形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：plague轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列2 灾难 —— "命运诅咒：在命运上诅咒，让目标接连遭遇灾难"
 - **风味**：你在它的命运上划了一道口子。从这一刻起，每一件倒霉事都会追着它跑——你打它一下，命运会替你再补一下。
 
@@ -2064,7 +2064,7 @@
 - **效果**：对敌方最前排造成 4 点圣光伤害，并驱散其 1 个增益状态。；祈光：把这块战场抬到白昼档。
 - **机制**：`伤害 4（圣） → 驱散 buff → 光照度覆写 8（10 tick）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：G8 合规（近战攻击进程不调 move）。"净化"首次以伤害+驱散复合出现。 ｜ 2026-10-03 骨架手术：仪式换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：light轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：G8 合规（近战攻击进程不调 move）。"净化"首次以伤害+驱散复合出现。 ｜ 2026-10-03 骨架手术：仪式换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：light轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列7 太阳神官 —— "『净化之斩』"
 - **风味**：你挥出凝着圣光的一斩——光刃落处，敌人身上的加持也跟着剥落了一层。
 
@@ -2122,7 +2122,7 @@
 - **机制**：`驱散 control/debuff ×1 → 能量 +2 → grant_immunity →全体友军`
 - **标签**：圣咏
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff ｜ 2026-10-03 骨架手术：仪式换形（角色=dispel） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：hymn轴 ally+board pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff ｜ 2026-10-03 骨架手术：仪式换形（角色=dispel） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：hymn轴 ally+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：战歌令人无畏。
 - **风味**：听，这是冲锋的号角。
 
@@ -2194,7 +2194,7 @@
 - **机制**：`驱散 control/debuff ×1 → 治疗 4 → grant_immunity →全体友军`
 - **标签**：圣咏
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff ｜ 2026-10-03 骨架手术：仪式换形（角色=heal） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：hymn轴 ally+board pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff ｜ 2026-10-03 骨架手术：仪式换形（角色=heal） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：hymn轴 ally+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：以圣咏涤荡污秽。
 - **风味**：不洁之物，退散。
 
@@ -2216,7 +2216,7 @@
 - **效果**：驱散敌方最前排的全部增益状态，然后对其造成 6 点圣光伤害。；祈光：把这块战场抬到白昼档。
 - **机制**：`驱散 buff → 伤害 6（圣） → 光照度覆写 8（10 tick）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：先驱散后伤害（破增益堆叠）。G8 合规。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：仪式换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：judgment轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：先驱散后伤害（破增益堆叠）。G8 合规。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：仪式换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：judgment轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列4 无暗者 —— "『无暗之枪』"；"从辅助型进化为全面的太阳战士"
 - **风味**：一杆由纯粹的光凝成的长枪被你掷出——它先剥下敌人的加持，再贯穿它。
 
@@ -2522,7 +2522,7 @@
 - **效果**：造成 3 点精神伤害；若目标处于隐匿类状态，本次伤害 ×1.5；若自身带有尸体特质，尸体之眼洞察，伤害 +1。；若这一击取了性命，亡者当场被扶起为役。
 - **机制**：`若[带 conceal 类状态]则（伤害 3（精神）×1.5）否则（伤害 3（精神）） → 若[自身有 尸体特质>=1]则（伤害 1（精神）） → 若[目标已死亡]则（召唤 unit_skeleton）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line filter.unitType=['UNDEAD', 'SPIRIT'] ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line filter.unitType=['UNDEAD', 'SPIRIT'] ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：幽冥之视洞穿伪装。
 - **风味**：藏于暗处的，也逃不过你。
 
@@ -2626,7 +2626,7 @@
 - **效果**：使目标获得灵预警（1 次，3 回合）。；衰败的躯体被抽走一分生机。
 - **机制**：`挂载 游灵示警（15t） 次数1 → 吸取生命 1`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：弱化不死大军，合撑"亡者之王"量级。2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：弱化不死大军，合撑"亡者之王"量级。2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：逝者向你吐露杀机。
 - **风味**：听，它在警告你。
 
@@ -2648,7 +2648,7 @@
 - **效果**：指定一只己方亡灵：行动条 +30，攻击 +2（10tick）。；衰败的躯体被抽走一分生机。
 - **机制**：`行动条 +30 → 挂载 亡者疾行（10t） → 吸取生命 1`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-03 骨架手术：死亡过程换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：undead轴 ally+board filter:unitType pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：2026-10-03 骨架手术：死亡过程换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：undead轴 ally+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 看门人 —— "感应冥界入口，驱使亡灵"；序列6 —— "可提前控制、驱使亡者和自然灵战斗"
 - **风味**：你抬了抬手，那具还在后面踉跄的骷髅猛地窜了出去——它比所有人都先动。
 
@@ -2709,7 +2709,7 @@
 - **效果**：造成 7 点精神伤害；若目标处于隐匿类状态，本次伤害 ×1.5。；若这一击取了性命，亡者当场被扶起为役。
 - **机制**：`若[带 conceal 类状态]则（伤害 7（精神）×1.5）否则（伤害 7（精神）） → 若[目标已死亡]则（召唤 unit_skeleton）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→7（位格6 基准5×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→7（位格6 基准5×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：于灵界俯瞰战场。
 - **风味**：我看见你了，无论你藏在哪里。
 
@@ -2745,7 +2745,7 @@
 - **效果**：若目标生命不高于 25%：直接处决；否则造成 6 点无属性伤害并易伤 15tick。；若这一击取了性命，亡者当场被扶起为役。
 - **机制**：`若[目标生命<=0%]则（伤害 0（可致死））否则（伤害 6 → 挂载 易伤（15t）） → 若[目标已死亡]则（召唤 unit_skeleton）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：终末轴即死（概率落 R3 登记 G1）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：end轴 enemy+board sort:hp_asc（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：终末轴即死（概率落 R3 登记 G1）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：end轴 enemy+board sort:hp_asc（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 摆渡人 —— "死亡权柄：与其对视的生灵直接死亡，神性者遭受重创"
 - **风味**：你抬起眼，与它对上了目光——它僵在那里，然后倒了下去。而那些更强一些的，只是踉跄着退开，身上多了一道深可见骨的口子。
 
@@ -2792,7 +2792,7 @@
 - **效果**：造成 7 点精神伤害，并驱散目标 1 个隐匿类状态。；若这一击取了性命，亡者当场被扶起为役。
 - **机制**：`伤害 7（精神） → 驱散 conceal ×1 → 若[目标已死亡]则（召唤 unit_skeleton）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：终末之眼，照见一切伪装。
 - **风味**：无处可藏。
 
@@ -2979,7 +2979,7 @@
 - **效果**：三选一：毒火造成 3 点火焰伤害并硫磺剧毒 10tick；诅咒使其易伤 15tick 并造成 2 点精神伤害；黑烟使其幻觉（下一次攻击挥空）并造成 2 点毒素伤害。；伤口浇灌欲望，深渊顺势把人往下拽。
 - **机制**：`伤害 3（火） → 挂载 硫磺剧毒（10t） → lust +1 → 位移·pull_forward`
 - **✅ 支持进度**：1 项历史缺口已落入 DDD 内核 —— `SKILL_DEF_MODES` 释放时三选一变体依赖 SkillDef.modes（新增项 21，ddd 无落点，🟡 待拍）；退化方案：拆三张独立卡 ｜ 2026-09-29 内核裁定：拍板：战内分支正典=卡面顶层分支结构，不立 SkillDef.modes；战外变体由 upgradeLadder/variants 承载（编目参数 §二点五）
-- **拍板项**：**存疑**：翻译/语义：三领域(火/毒)与污秽(诅咒)低序列第一次分野。"因人而异"=一张卡三选一。 ｜ 2026-10-03 骨架手术：欲望池换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：elements轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：三领域(火/毒)与污秽(诅咒)低序列第一次分野。"因人而异"=一张卡三选一。 ｜ 2026-10-03 骨架手术：欲望池换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：elements轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列8 折翼天使 —— "获得恶魔类法术能力（因人而异）：毒火 / 诅咒 / 黑烟"
 - **风味**：深渊给你的那份礼物，和给别人的都不一样。你张开手——是灼人的毒火、是一句短促的诅咒、还是一团呛人的黑烟，全看你自己是谁。
 
@@ -3002,7 +3002,7 @@
 - **机制**：`伤害 2（物理） → 挂载 减速（15t） → lust +1 → 位移·pull_forward`
 - **跨途径共享**：prisoner
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：污秽轴节奏工具。 ｜ 2026-10-03 骨架手术：欲望池换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：污秽轴节奏工具。 ｜ 2026-10-03 骨架手术：欲望池换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列8 折翼天使 —— "共通能力『迟缓』"
 - **风味**：你伸手按住了它的影子。它慢了下来——接下来的 3 个 tick，它连抬手都比别人慢半拍，行动条速率只剩七成五。
 
@@ -3077,7 +3077,7 @@
 - **机制**：`行动条速率 ×0.6（15t） → 伤害 1（毒） → 挂载 污秽（20t） → lust +1 → 位移·pull_forward`
 - **标签**：污秽
 - **✅ 支持进度**：2 项历史缺口已落入 DDD 内核 —— `SKILL_DEF_MODES` 三选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍） ｜ 2026-09-29 内核裁定：拍板：战内分支正典=卡面顶层分支结构，不立 SkillDef.modes；战外变体由 upgradeLadder/variants 承载（编目参数 §二点五）；`GAUGE_RATE_MUL_STAT_MODE` modify_stat.mode 枚举为 delta/set/to_at_least/to_at_most，无 mul；卡面 ×0.6 速率按 mode:mul 表达，待内核裁定 ｜ 2026-09-29 内核裁定：modify_stat.mode:mul 已入枚举与效果参数表（gauge.rate ×N 正典），转正
-- **拍板项**：**存疑**：翻译/语义：污秽轴起手；"堕落"分支首次推高 `恶欲值`（产能）。 ｜ 2026-10-03 骨架手术：欲望池换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：污秽轴起手；"堕落"分支首次推高 `恶欲值`（产能）。 ｜ 2026-10-03 骨架手术：欲望池换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列6 恶魔 —— "火焰 / 毒素 / 污秽三领域法术：『岩浆之剑』『硫磺火球』『污秽之语』（缓慢 / 死 / 堕落）"
 - **风味**：你说的不是人能发出的音节。你念出那个词——是让它慢下来，是判它死，还是让它堕落，全看你想说什么。
 
@@ -3249,7 +3249,7 @@
 - **效果**：无视距离对一名敌人造成 6 点精神伤害；若其生命 ≤25%，再追加 8 点精神伤害。；伤口浇灌欲望，深渊顺势把人往下拽。
 - **机制**：`伤害 6（精神） → 若[目标生命<=25%]则（伤害 8（精神）） → lust +1 → 位移·pull_forward`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：远程点杀（处决残血）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：欲望池换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：远程点杀（处决残血）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：欲望池换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 呓语者 —— "可远距离传声让目标暴毙"
 - **风味**：你隔着整个战场，把那个词直接送进了它耳朵里。造成 6 点精神伤害——而如果它已经只剩一口气，这句话就足以让它当场倒下（追加 8 点精神伤害）。
 
@@ -3272,7 +3272,7 @@
 - **机制**：`挂载 魅惑（10t） → lust +1 →自身 → 位移·charge_forward →自身`
 - **标签**：污秽
 - **✅ 支持进度**：2 项历史缺口已落入 DDD 内核 —— `SKILL_DEF_MODES` 四选一变体依赖 SkillDef.modes（新增项 21，🟡 待拍）；退化方案：拆四张独立史诗卡 ｜ 2026-09-29 内核裁定：拍板：战内分支正典=卡面顶层分支结构，不立 SkillDef.modes；战外变体由 upgradeLadder/variants 承载（编目参数 §二点五）；`GAUGE_RATE_MUL_STAT_MODE` 混乱分支 gauge.rate ×0.7 同污秽之语缓慢分支 ｜ 2026-09-29 内核裁定：modify_stat.mode:mul 已入枚举与效果参数表（gauge.rate ×N 正典），转正
-- **拍板项**：**存疑**：翻译/语义：污秽轴万能工具卡；恶欲值≥7 触发追加（产能→结算闭环）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：欲望池换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：污秽轴万能工具卡；恶欲值≥7 触发追加（产能→结算闭环）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：欲望池换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 呓语者 —— "声音和单词能让非凡者失控 / 重创 / 精神混乱 / 诅咒"
 - **风味**：你开始说话了。没有人听懂那些音节，但每个听见的人都会出事——是失控、是重创、是彻底乱掉、还是被诅咒，全看你念出了哪一个词。
 
@@ -3334,7 +3334,7 @@
 - **机制**：`挂载 侵蚀（25t） → 挂载 污秽（25t） → 若[tag_chain]则（挂载 污秽（25t） 叠加1层） → lust +1 → 位移·pull_forward`
 - **标签**：污秽
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：污秽轴招牌攻坚（穿甲持续钻，可被驱散）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次八（罪犯：污秽连锁+刻印链第二承载） ｜ 2026-10-03 骨架手术：欲望池换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：污秽轴招牌攻坚（穿甲持续钻，可被驱散）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次八（罪犯：污秽连锁+刻印链第二承载） ｜ 2026-10-03 骨架手术：欲望池换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列1 污秽君王 —— "『侵蚀者』：再坚固的壁垒持续腐蚀也会穿透"
 - **风味**：你把手贴在那面墙上。5 个 tick 内，它每时每刻都被腐蚀掉 3 点生命——这腐蚀无视它的一切护甲、护盾与抗性；而那面墙本身，也在一点点变薄（护甲 -2）。
 
@@ -3391,7 +3391,7 @@
 - **效果**：使一名敌人被诅咒 25tick：每 tick 受到 0.4 点暗黑伤害，攻击 -2、防御 -2，期间无法获得任何增益状态。；欲望随伤害上涨，对方被拖近一步。
 - **机制**：`挂载 深渊之咒（25t） → 挂载 污秽（25t） → lust +1 → 位移·pull_forward`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：污秽轴全能衰减诅咒（序列8→0 连贯主线）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 6→15tick（对齐拍板表） ｜ 2026-10-03 骨架手术：欲望池换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：污秽轴全能衰减诅咒（序列8→0 连贯主线）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 6→15tick（对齐拍板表） ｜ 2026-10-03 骨架手术：欲望池换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：filth轴 enemy+diamond_1 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列0 深渊 —— "部分『诅咒』权柄"
 - **风味**：你说出那个从深渊底下捞起来的词。5 个 tick 内，它每时每刻被啃掉 2 点生命；它的攻击与防御各被削去 2 点；而在这段时间里，它得不到任何祝福。
 
@@ -3426,7 +3426,7 @@
 - **效果**：对单体敌人造成 2 点物理伤害（近战，无附加）。；团队计价：集众记账，友军分润（不再误伤友军）。
 - **机制**：`伤害 2（物理） → modify_rule_slot`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：低序列唯一输出手段，纯伤害撑骨架（同愚者【飞牌】口径）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：harvest轴 enemy+board sort:hp_asc（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：低序列唯一输出手段，纯伤害撑骨架（同愚者【飞牌】口径）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：harvest轴 enemy+board sort:hp_asc（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列9 猎人 —— "身体素质全面超越常人（熊的强壮 + 猫的轻灵）"
 - **风味**：你像熊一样压上去，又像猫一样快——它还没看清你的动作，已经被撞翻在地。
 
@@ -3510,7 +3510,7 @@
 - **效果**：单体敌人：3 点火焰伤害 + 燃焚 15tick。；团队计价：集众记账，友军分润（不再误伤友军）。
 - **机制**：`伤害 3（火） → 挂载 燃焚（15t） → modify_rule_slot`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：burn 折算依赖 D4（🔴 未标）：若按 tick 快速结算，能量需上调至 4 或直伤砍到 2 ｜ 翻译/语义：燃焚轴起手式：直伤 + 引燃（挂 `火焰`）。（burn 折算 D4）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：flame轴 enemy+behind_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：burn 折算依赖 D4（🔴 未标）：若按 tick 快速结算，能量需上调至 4 或直伤砍到 2 ｜ 翻译/语义：燃焚轴起手式：直伤 + 引燃（挂 `火焰`）。（burn 折算 D4）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：flame轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列7 纵火家 —— "『火鸦术』"
 - **风味**：你手心的火团扑腾着长出翅膀，化作一只火鸦撞进它的胸口，羽毛落处，火就烧了起来。
 
@@ -3565,7 +3565,7 @@
 - **效果**：单体敌人：4 点火焰伤害，完全无视护甲（破甲比例 1.0），自动优选护甲最高的敌人。；团队计价：集众记账，友军分润（不再误伤友军）。
 - **机制**：`伤害 4（火） → modify_rule_slot`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：燃焚轴旗舰：压缩到极限的火焰=全额破甲，专打重甲。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→4（位格3 基准4）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：flame轴 enemy+behind_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：燃焚轴旗舰：压缩到极限的火焰=全额破甲，专打重甲。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→4（位格3 基准4）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：flame轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列7 纵火家 —— "『炽白之枪』"
 - **风味**：火焰被压缩到极致，褪去橙红，只剩一缕炽得发白的光——它贯穿护甲，也贯穿了它。
 
@@ -3590,7 +3590,7 @@
 - **效果**：单体敌人：4 点火焰伤害（近战），并将其在其自己队列内前拉 1 格。
 - **机制**：`伤害 4（火） → 位移·pull_forward 1`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：精细化塑形附带战术位移（马刀勾拽）。 ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：flame轴 enemy+behind_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：精细化塑形附带战术位移（马刀勾拽）。 ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：flame轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列6 阴谋家 —— "火焰精细化操纵：塑形成鞭子、马刀等"
 - **风味**：火焰在你手中凝成一柄马刀的形状——你劈下去，又顺势把它的步伐勾乱了半分。
 
@@ -3627,7 +3627,7 @@
 - **机制**：`吸取生命 4 → 若[目标有 弱点≥]则（伤害 3）`
 - **跨途径共享**：assassin
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：drain 无既有定价锚点（数值盲区） ｜ 翻译/语义：收割=吸血+弱点追加。与【毁灭之矛】构成阶梯。 ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：harvest轴 enemy+board sort:hp_asc（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：drain 无既有定价锚点（数值盲区） ｜ 翻译/语义：收割=吸血+弱点追加。与【毁灭之矛】构成阶梯。 ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：harvest轴 enemy+board sort:hp_asc（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 收割者 —— "『收割』：附加攻击收割生命，命中弱点一击致命"
 - **风味**：镰刃划过它的伤口，你把它正在流走的生命收进了自己体内；若这一刀正落在弱点上，那就不只是伤了。
 
@@ -3650,7 +3650,7 @@
 - **机制**：`挂载 弱点（20t） → 驱散 buff → 若[目标有 命运诅咒>=1]则（伤害 2） → modify_rule_slot`
 - **跨途径共享**：assassin
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义："从神秘学角度"=看穿超凡防护，剥增益+挂易伤。收割轴旗舰 enabler。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：harvest轴 enemy+board sort:hp_asc（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义："从神秘学角度"=看穿超凡防护，剥增益+挂易伤。收割轴旗舰 enabler。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：harvest轴 enemy+board sort:hp_asc（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 收割者 —— "『弱点侦察』：从神秘学角度发现目标弱点"
 - **风味**：你的目光从神秘学的角度扫过它——护甲的接缝、灵性的淤滞、那道还没长好的旧伤。你一清二楚。
 
@@ -3884,7 +3884,7 @@
 - **效果**：单体敌人：7 点无元素伤害；若目标已标记弱点，直接致死——不管它还有多少血。；团队计价：集众记账，友军分润（不再误伤友军）。
 - **机制**：`伤害 7 → 若[目标有 弱点≥]则（伤害 9999（可致死）） → modify_rule_slot`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：遗留 3：execute 建议对 Boss/精英类单位设免疫白名单 ｜ 翻译/语义：收割轴终焉：弱点已标记→带走。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→7（位格9 基准7）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：harvest轴 enemy+board sort:hp_asc（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：遗留 3：execute 建议对 Boss/精英类单位设免疫白名单 ｜ 翻译/语义：收割轴终焉：弱点已标记→带走。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→7（位格9 基准7）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：harvest轴 enemy+board sort:hp_asc（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列1 征服者 —— "『毁灭之矛』：『收割』质变版，命中弱点相当于必然死亡"
 - **风味**：你投出的不是矛，是一个已经写好的结局——如果它身上有你点明的那处弱点，那支矛落下的地方，就是终点。
 
@@ -3991,7 +3991,7 @@
 - **效果**：对一名近战敌人造成 2 点物理伤害——蛮力重新定义这一击（伤害 ×1.2）；一击即巅峰（自身放大 10tick）；自身寻隙在场则寻隙后蛮力，伤害 +2。
 - **机制**：`造成伤害 ×1.2 →自身 → 伤害 2（物理） → 挂载 放大（10t） 次数1 →自身 → 若[自身有 寻隙>=1]则（伤害 2（物理））`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：蛮力轴旗舰 enabler：本途径「火球术」。G8 合规（melee 不调 move）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→2（位格2 基准2）。条件/读层追加段不动。 ｜ 2026-10-02 骨架手术：骨架手术：扭曲伤害定义 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：brute轴 enemy+behind_1（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：蛮力轴旗舰 enabler：本途径「火球术」。G8 合规（melee 不调 move）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→2（位格2 基准2）。条件/读层追加段不动。 ｜ 2026-10-02 骨架手术：骨架手术：扭曲伤害定义 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：brute轴 enemy+behind_1（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列8 野蛮人 —— "不能依靠法律的，就用力量解决"
 - **风味**：条文讲不通的地方，就用拳头讲。
 
@@ -4013,7 +4013,7 @@
 - **效果**：对一名近战敌人造成 4 点物理伤害，并将其在其自身队列内后移 1 格；撞散了它的下一招——该技能消耗 +1 能量。
 - **机制**：`伤害 4（物理） → 位移·push_back → modify_skill`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：与【力量解决】构成「输出 vs 输出+阵型」。G8 合规（push_back 锁己方半场）。 ｜ 2026-10-02 骨架手术：骨架手术：改技能实例（costDelta）= 定义权柄的另一种写法 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：brute轴 enemy+behind_1（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：与【力量解决】构成「输出 vs 输出+阵型」。G8 合规（push_back 锁己方半场）。 ｜ 2026-10-02 骨架手术：骨架手术：改技能实例（costDelta）= 定义权柄的另一种写法 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：brute轴 enemy+behind_1（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列8 野蛮人 —— "不能依靠法律的，就用力量解决"（力量维度的第二表达）
 - **风味**：你一头撞进它的队列里，把它和它的位置一起顶了回去。
 
@@ -4129,7 +4129,7 @@
 - **效果**：对一名近战敌人造成 5 点物理伤害，并使自身攻击 +3（15tick）；抢来的东西烫手——对方当前技能消耗 +1 能量。
 - **机制**：`伤害 5（物理） → 攻击 +3（15t） →自身 → modify_skill`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-02 骨架手术：骨架手术：改技能实例 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：brute轴 enemy+behind_1（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-02 骨架手术：骨架手术：改技能实例 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：brute轴 enemy+behind_1（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列6 腐化男爵 —— 法律给不了的东西，就用拳头拿
 - **风味**：条文拿不走的，手可以。
 
@@ -4198,7 +4198,7 @@
 - **效果**：对一名敌人造成 6 点物理伤害；若其生命低于 50%，再追加 6 点物理伤害；裁决即执行——把处决追加登记为规则槽（槽 0）的违例惩罚。
 - **机制**：`伤害 6（物理） → 若[目标生命<0%]则（伤害 6（物理）） → modify_rule_slot`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-02 骨架手术：骨架手术：规则槽迁移 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：brute轴 enemy+behind_1（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-02 骨架手术：骨架手术：规则槽迁移 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：brute轴 enemy+behind_1（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 混乱导师 —— 判决宣告无效时，执行者自己动手
 - **风味**：宣判太慢。
 
@@ -4407,7 +4407,7 @@
 - **效果**：弑序——先抹掉战场规则槽（槽 0）里的一条规则触发条件，再对一名敌人造成 9 点物理伤害（无视护甲）。
 - **机制**：`modify_rule_slot → 伤害 9（物理）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-01 吟唱重标：仪式类（existing）castTime 5→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 14→9（位格9 基准7×1.3）。条件/读层追加段不动。 ｜ 2026-10-02 骨架手术：骨架手术：规则槽 remove 模式首例 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：brute轴 enemy+behind_1（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：2026-10-01 吟唱重标：仪式类（existing）castTime 5→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 14→9（位格9 基准7×1.3）。条件/读层追加段不动。 ｜ 2026-10-02 骨架手术：骨架手术：规则槽 remove 模式首例 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：brute轴 enemy+behind_1（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列1 弑序亲王 —— 当规则不容置疑时，就把制定规则的东西打碎
 - **风味**：这一拳不讲条文。
 
@@ -4741,7 +4741,7 @@
 - **效果**：双分支（任一单位）：对友军——驱散其全部减益与持续伤害并治疗 4 点；对敌人——驱散其全部增益并造成 2 点精神伤害。；命运重掷：半数概率让这次伤害的分毫归位。
 - **机制**：`若[target_faction_is]则（驱散 debuff → 治疗 4）否则（驱散 buff → 伤害 2（精神）） → 若[0%概率]则（恢复快照）`
 - **✅ 支持进度**：1 项历史缺口已落入 DDD 内核 —— `FACTION_PREDICATE` 共享内核 §三谓词族无「目标阵营」判定（仅 gender_is 等），If 分支的 target_faction_is 为伪谓词，待内核裁定 ｜ 2026-09-29 内核裁定：faction_is 谓词转正（共享内核 §三 2026-09-29），unit_faction/target_faction_is 为其稿面别名
-- **拍板项**：**存疑**：manual 目标稿面未给 fallbackSort，置 null 待补 ｜ 翻译/语义：混乱轴"重置"表达（非逆转时间，是洗回干净状态）。对友军洗负面、对敌洗增益。本途径唯一净化手段。⚠️ 依赖 `If` 算子。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：cycle轴 any+board pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：manual 目标稿面未给 fallbackSort，置 null 待补 ｜ 翻译/语义：混乱轴"重置"表达（非逆转时间，是洗回干净状态）。对友军洗负面、对敌洗增益。本途径唯一净化手段。⚠️ 依赖 `If` 算子。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：判定形状换形（角色=dmg） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：cycle轴 any+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 混乱行者 —— "『精神洗礼』：让目标精神重新洁净平稳"
 - **风味**：你把手按在它的额前，把那些乱七八糟的东西一并冲洗干净——连同它借以逞凶的那份疯狂。
 
@@ -5164,7 +5164,7 @@
 - **效果**：若目标是死灵/灵体/亡构类：造成 10 点无元素伤害、驱散其全部增益并禁止复活；否则只造成 5 点无元素伤害。；虫子从土里翻出来啃它一口。
 - **机制**：`若[目标类型 UNDEAD/SPIRIT/CONSTRUCT]则（伤害 10 → 驱散 buff → 挂载 禁复活）否则（伤害 5） → 召唤 unit_vermin ×1`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：sd:death_trial 的卸载已由归一脚本写为 dispel filter.statusId: death_trial，与源稿「考验失败并卸载自身，每场对同一目标只结算一次」语义一致 ｜ revive_blocked 引用显式落为 modifiers.revive_blocked 的死亡结算字段表达（非独立机制状态），源稿「禁止复活」语义不变 ｜ 翻译/语义：荒芜轴对死灵特化克制。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 3→5（位格7 基准5）。条件/读层追加段不动。 ｜ 键名归一（2026-10-01 召唤物批）：target_unit_type 键名 unitTypes→type（对齐 schema 与其余 5 处）。 ｜ 2026-10-03 骨架手术：孕育换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：blight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：sd:death_trial 的卸载已由归一脚本写为 dispel filter.statusId: death_trial，与源稿「考验失败并卸载自身，每场对同一目标只结算一次」语义一致 ｜ revive_blocked 引用显式落为 modifiers.revive_blocked 的死亡结算字段表达（非独立机制状态），源稿「禁止复活」语义不变 ｜ 翻译/语义：荒芜轴对死灵特化克制。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 3→5（位格7 基准5）。条件/读层追加段不动。 ｜ 键名归一（2026-10-01 召唤物批）：target_unit_type 键名 unitTypes→type（对齐 schema 与其余 5 处）。 ｜ 2026-10-03 骨架手术：孕育换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：blight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 抬棺人 —— "『回归大地』：死灵类生物迅速消散"
 - **风味**：你敲了敲地面。那些本该躺在土里的东西，忽然记起了自己该在哪儿。
 
@@ -5506,7 +5506,7 @@
 - **效果**：使一名敌人易伤 3 回合（受伤 ×1.3），并立刻受到 2 点精神伤害。；落在身上的诅咒会继续长大一层。
 - **机制**：`挂载 易伤（15t） → 伤害 2（精神） → modify_status`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义："缠"=持续受伤加深。读诅咒轴（配合链接网放大）。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义："缠"=持续受伤加深。读诅咒轴（配合链接网放大）。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 怨魂 —— "『怨灵之缠』"
 - **风味**：一道散不掉的怨影贴上它的背，越缠越紧。
 
@@ -5543,7 +5543,7 @@
 - **机制**：`挂载 诅咒链接（15t） →自身 → 迷失值 +1 →自身 → 转移状态 copy`
 - **跨途径共享**：criminal
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：稿面双目标（指定 1 敌人 + 木偶载体）：主目标取被诅咒敌人，载体段走 target:self 并以 binding.linkedTo 指回主目标；召唤物载体稿面未给选择规格，暂记 self 待裁定 ｜ 翻译/语义：诅咒轴核心 enabler + 网络引擎（暗影世界系 §2.3 改革）。序列4 反噬未解（selfKeep:true）；到序列3【无反噬之咒】翻 false，序列0【万咒加身】沿网传染。⚠️ 依赖 `诅咒链接` 网络母版（本稿新增项 2）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：稿面双目标（指定 1 敌人 + 木偶载体）：主目标取被诅咒敌人，载体段走 target:self 并以 binding.linkedTo 指回主目标；召唤物载体稿面未给选择规格，暂记 self 待裁定 ｜ 翻译/语义：诅咒轴核心 enabler + 网络引擎（暗影世界系 §2.3 改革）。序列4 反噬未解（selfKeep:true）；到序列3【无反噬之咒】翻 false，序列0【万咒加身】沿网传染。⚠️ 依赖 `诅咒链接` 网络母版（本稿新增项 2）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列4 木偶 —— "『诅咒之源』：变成秘术木偶诅咒目标，伤害反映在另一方"
 - **风味**：你削出一个与它一模一样的秘术木偶。从现在起，你打在木偶身上的每一分力道，都会原样出现在它身上——而木偶连着你，你自己也讨不了好。
 
@@ -5578,7 +5578,7 @@
 - **效果**：使一名敌人变形诅咒 3 回合：攻击减半、防御 -2、行动条速率减半，且无法使用技能（仍可普通攻击）。；咒出必自承——同一道诅咒会以半份强度反照回施术者身上。
 - **机制**：`挂载 变形诅咒（15t） → 转移状态 copy`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：诅咒轴 payoff：读链接网络放大。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：诅咒轴 payoff：读链接网络放大。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 沉默门徒 —— "『变形诅咒』：使目标变成其他生物，失去绝大部分特质"
 - **风味**：它忽然四足着地，喉咙里只能发出低吼——它现在只是一头野兽了。
 
@@ -5590,7 +5590,7 @@
 - **机制**：`挂载 诅咒链接（25t） →自身 → 迷失值 +1 →自身 → 转移状态 copy`
 - **跨途径共享**：criminal
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：与诅咒之源同一状态母版（H28），仅 ratio/selfKeep/duration 参数档不同；curse_link 定义见诅咒之源（序列4 首登记），本条为参数覆写引用 ｜ 载体默认自身可指定己方召唤物，同诅咒之源 conversionNotes ｜ 翻译/语义：诅咒轴网络递进第二级（selfKeep 翻 false）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：与诅咒之源同一状态母版（H28），仅 ratio/selfKeep/duration 参数档不同；curse_link 定义见诅咒之源（序列4 首登记），本条为参数覆写引用 ｜ 载体默认自身可指定己方召唤物，同诅咒之源 conversionNotes ｜ 翻译/语义：诅咒轴网络递进第二级（selfKeep 翻 false）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 沉默门徒 —— "『诅咒之源』强化：伤敌不再伤己"
 - **风味**：这一次，木偶上不再连着你的血肉。
 
@@ -5637,7 +5637,7 @@
 - **效果**：对一名敌人造成 8 点精神伤害，无视其护甲与护盾；若目标处于灵体状态，伤害 ×1.5。；落在身上的诅咒会继续长大一层。
 - **机制**：`若[目标有 灵体化>=1]则（伤害 8（精神）×1.5）否则（伤害 8（精神）） → modify_status`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：读灵体状态放大（与【灵体化】联动）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→8（位格8 基准6×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：读灵体状态放大（与【灵体化】联动）。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→8（位格8 基准6×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列2 古代邪物 —— "部分『诅咒』权柄：直接攻击影响灵体"
 - **风味**：你的诅咒不认得血肉之墙。
 
@@ -5672,7 +5672,7 @@
 - **效果**：使一名敌人灵性囚笼 4 回合：完全无法行动，且无法被任何治疗唤醒（不可驱散）。；若自身被缚者在场，缚中诅咒，追加 2 点精神伤害。；落在身上的诅咒会继续长大一层。
 - **机制**：`挂载 灵性囚笼（20t） → 若[自身有 被缚者>=1]则（伤害 2（精神）） → modify_status`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：束缚轴旗舰 payoff：读恶欲值放大封印 + 消纳转链接网。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 5→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：束缚轴旗舰 payoff：读恶欲值放大封印 + 消纳转链接网。 ｜ 2026-10-01 吟唱重标：仪式类（existing）castTime 5→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：curse轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列1 神孽 —— "『侵蚀诅咒』：让敌人灵性凝固，身体成灵的囚笼"
 - **风味**：它体内的灵性一点一点凝住了——它的身体成了自己灵魂的牢房。
 
@@ -5754,7 +5754,7 @@
 - **机制**：`行动条 +20 → 若[目标有 知识淤积>=1]则（modify_status → 行动条 +10）`
 - **跨途径共享**：reader
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：G5 铁律：不自推 gauge.current（自回合释放时行动条已清零），故推友军 ｜ 翻译/语义：预知=提前量；推友军（G5 合规）。起手 `星象`。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：astral轴 ally+cross_lane_row pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：G5 铁律：不自推 gauge.current（自回合释放时行动条已清零），故推友军 ｜ 翻译/语义：预知=提前量；推友军（G5 合规）。起手 `星象`。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：astral轴 ally+cross_lane_row pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列9 窥秘人 —— "魔法、巫术、占星术等神秘知识全面掌握"
 - **风味**：你从星象里读出下一步。被你点到的同伴，脚步会比对手先落下。
 
@@ -5790,7 +5790,7 @@
 - **效果**：对一名近战敌人按状态选招：目标带护盾或坚守时造成 7 点物理伤害（刚）；目标行动条最高时造成 3 点物理伤害并使其行动条 -20（柔）；其余造成 4 点物理伤害并将其前拉 1 格（擒）。
 - **机制**：`若[满足任一]则（伤害 7（物理））否则（若[gauge_rank]则（伤害 3（物理） → 行动条 +-20）否则（伤害 4（物理） → 位移·pull_forward 1））`
 - **✅ 支持进度**：2 项历史缺口已落入 DDD 内核 —— `ANY_OF_PREDICATE` 共享内核 §三无 any_of 组合子，暂内联两段 has_status 表达「护盾或坚守」，待内核裁定 ｜ 2026-09-29 内核裁定：组合子 any_of/all_of/not 已落共享内核 §三（2026-09-14），转正；`GAUGE_RANK_PREDICATE` 「目标行动条最高」无对应谓词（§三仅 gauge_above 阈值比较），暂记 gauge_rank 伪谓词，待裁定 ｜ 2026-09-29 内核裁定：归并表已定：选目标用 sort:gauge_desc，不立谓词
-- **拍板项**：**存疑**：翻译/语义："许多流派"= 条件化选招。起手 `法术`。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：combat轴 enemy+behind_1（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义："许多流派"= 条件化选招。起手 `法术`。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：combat轴 enemy+behind_1（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列8 格斗学者 —— "掌握许多流派格斗术"
 - **风味**：你学过的流派太多，多到身体会自己挑：对方立了架势，你就用刚劲砸开；对方抢了先手，你就卸力推回；对方躲在后面，你就把它拽出来。
 
@@ -5931,7 +5931,7 @@
 - **机制**：`伤害 5 → 行动条 +-20 → 若[目标有 命运诅咒>=1]则（伤害 2） → 挂载 本我星象 叠加1层 →自身 → modify_skill`
 - **跨途径共享**：savant
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：高伤+压制。起手 `星象`。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 7→5（位格5 基准5）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：astral轴 enemy+cross_lane_row pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：高伤+压制。起手 `星象`。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 7→5（位格5 基准5）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：astral轴 enemy+cross_lane_row pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 星象师 —— "星之巨柱、星海穿梭、星桥、本我星象、星光囚笼 / 初步掌握星象、星座、星辰、星光概念"
 - **风味**：你指向它脚下的阴影。星光自虚空垂落，凝成一柱，把它连同步伐一起砸进地里。
 
@@ -5943,7 +5943,7 @@
 - **机制**：`位移·insert_tail_cross_lane → 行动条 +15 → 挂载 本我星象 叠加1层 →自身`
 - **跨途径共享**：savant
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：G5 合规：推的是友军的 gauge.current，不是自己 ｜ 翻译/语义：调度友军。星象轴 payoff：已挂星象目标调度更赚。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：astral轴 ally+cross_lane_row pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：G5 合规：推的是友军的 gauge.current，不是自己 ｜ 翻译/语义：调度友军。星象轴 payoff：已挂星象目标调度更赚。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：astral轴 ally+cross_lane_row pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 星象师 —— "星之巨柱、星海穿梭、星桥、本我星象、星光囚笼"
 - **风味**：一道星光在两条战线之间架起桥来，被你点到的同伴踏桥而过，赶在需要他的地方落位。
 
@@ -5955,7 +5955,7 @@
 - **机制**：`伤害 2 → 挂载 枷锁（15t） → 挂载 沉默（5t） → 若[目标有 星界锚>=1]则（挂载 枷锁（10t）） → 若[目标有 隐秘封印>=1]则（挂载 枷锁（5t）） → modify_skill`
 - **跨途径共享**：savant
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：星象轴旗舰：禁锢（禁位移+禁施法）。起手 `星象`；层数够则囚禁更久。 ｜ 2026-10-02 批次十：occult_seal 跨系读段（星封共鸣——窥秘人封印正主落地） ｜ 2026-10-03 骨架手术：参照缩放换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：astral轴 enemy+cross_lane_row pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：星象轴旗舰：禁锢（禁位移+禁施法）。起手 `星象`；层数够则囚禁更久。 ｜ 2026-10-02 批次十：occult_seal 跨系读段（星封共鸣——窥秘人封印正主落地） ｜ 2026-10-03 骨架手术：参照缩放换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：astral轴 enemy+cross_lane_row pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 星象师 —— "星之巨柱、星海穿梭、星桥、本我星象、星光囚笼"
 - **风味**：星光在它四周织成笼子。它挪不动，也叫不出来。
 
@@ -5979,7 +5979,7 @@
 - **效果**：对一名近战敌人造成 5 点物理伤害，驱散其 1 个增益状态，并使其护甲上限 -5（15tick）；若目标带有知识淤积，耗 1 层并额外造成 3 点物理伤害。
 - **机制**：`伤害 5（物理） → 驱散 buff → 护甲 +-5（15t） → 若[目标有 知识淤积>=1]则（modify_status → 伤害 3（物理））`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：castTime null ｜ 护甲带 duration 为容量语义，按归一纪律写 modify_stat（稿面即此写法） ｜ G8 合规：近战攻击进程不调 move，突刺为 flavor ｜ 翻译/语义：强攻=破甲处决。法术轴 payoff：层数够则追加直伤。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→5（位格6 基准5）。条件/读层追加段不动。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：combat轴 enemy+behind_1（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：castTime null ｜ 护甲带 duration 为容量语义，按归一纪律写 modify_stat（稿面即此写法） ｜ G8 合规：近战攻击进程不调 move，突刺为 flavor ｜ 翻译/语义：强攻=破甲处决。法术轴 payoff：层数够则追加直伤。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→5（位格6 基准5）。条件/读层追加段不动。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：combat轴 enemy+behind_1（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列4 神秘学家 —— "童话魔法：卖火柴的小女孩（幻觉）、灰姑娘（变形）、朗基努斯之枪（强攻）等"
 - **风味**：那柄刺穿神子肋旁的枪出现在你手中。它不认得什么护甲、什么庇佑——它只认得要刺穿的东西。
 
@@ -5990,7 +5990,7 @@
 - **效果**：若自身有法术学识层数：消耗全部层数 N，对目标造成 N 段各 3 点无元素伤害；若 N≥3 额外在己方队尾召唤卷轴造物并使自己隐秘知识 +1。无层数时退化为 3 点无元素伤害并使法术学识 +1。
 - **机制**：`若[自身有 法术学识>=1]则（挂载 法术学识 消耗all层 → 重复$consumed.spell_lore次（伤害 3） → 若[consumed_count]则（召唤 unit_scroll_construct → 挂载 隐秘知识 叠加1层 →自身））否则（伤害 3 → 挂载 法术学识 叠加1层 →自身）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：castTime null ｜ Repeat 段数取自 status.consume 消耗值（跨效果传值 valueFrom 族） ｜ 翻译/语义：法术轴核心：解析攒 `法术` → 此卡连炸。层数够则追加直伤。依赖 spell_lore/f50。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 5tick（序列 4 档，基准 §三之二） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：scroll轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：castTime null ｜ Repeat 段数取自 status.consume 消耗值（跨效果传值 valueFrom 族） ｜ 翻译/语义：法术轴核心：解析攒 `法术` → 此卡连炸。层数够则追加直伤。依赖 spell_lore/f50。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 5tick（序列 4 档，基准 §三之二） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：scroll轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列4 神秘学家 —— "『神秘再现』（核心）：从神秘学知识汲取力量创造魔法"
 - **风味**：你把那些解析来的、记下来的、谁都不曾见过的知识倒进咒文里——它们燃烧起来，变成从未存在过的法术。
 
@@ -6048,7 +6048,7 @@
 - **机制**：`行动条 +20 → 行动条 +-20 →次要目标 → modify_skill`
 - **跨途径共享**：reader
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：castTime null ｜ G5/G6 修正：弃 v0.1「自身 +30 / 目标 −25」自推无效写法，改推友军 + 拖敌人（与愚者命运干扰同构） ｜ 与阅读者【预言】命名重叠，汇总阶段待裁定（建议改称「星占」/「大预言」） ｜ 翻译/语义：预知=节奏。星象轴 payoff：星象标记下推拉更强（G5/G6 合规）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=res） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）；删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：astral轴 ally+cross_lane_row pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：castTime null ｜ G5/G6 修正：弃 v0.1「自身 +30 / 目标 −25」自推无效写法，改推友军 + 拖敌人（与愚者命运干扰同构） ｜ 与阅读者【预言】命名重叠，汇总阶段待裁定（建议改称「星占」/「大预言」） ｜ 翻译/语义：预知=节奏。星象轴 payoff：星象标记下推拉更强（G5/G6 合规）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=res） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）；删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：astral轴 ally+cross_lane_row pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 预言大师 —— "『预言』：预见选择后果、最佳选择、末日来临"
 - **风味**：你已经看见了该走的那一步。同伴踏了上去，而对手被留在了它自己的犹豫里。
 
@@ -6073,7 +6073,7 @@
 - **机制**：`驱散 buff → 若[dispelled_count]则（伤害 4） → modify_skill`
 - **跨途径共享**：savant
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：castTime null ｜ 「无 buff 可删」判定用共享内核 dispelled_count 谓词（valueFrom dispelledAmount 族）承载 ｜ 翻译/语义："删除"=对状态删除。信息轴 payoff：信息化时删除更多。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：astral轴 enemy+cross_lane_row pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：castTime null ｜ 「无 buff 可删」判定用共享内核 dispelled_count 谓词（valueFrom dispelledAmount 族）承载 ｜ 翻译/语义："删除"=对状态删除。信息轴 payoff：信息化时删除更多。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：astral轴 enemy+cross_lane_row pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列2 贤者 —— "粗浅的『删除』和『修改』权柄" / 序列0 隐者下位"删除"
 - **风味**：你从现实里划掉了它身上的两行——护佑、祝福，都没了。如果它身上什么都没有，那就划掉它自己。
 
@@ -6106,7 +6106,7 @@
 - **效果**：对一名敌人造成 5 点精神伤害并施加「知识淤积」15tick；若自身隐秘知识 ≥2 层，额外造成 3 点精神伤害；若自身窥秘之眼 ≥2 层，再额外造成 3 点精神伤害（窥见弱点）。；卷轴预读：下一式读得更快。
 - **机制**：`伤害 5（精神） → 挂载 知识淤积（15t） → 若[自身有 隐秘知识>=2]则（伤害 3（精神）） → 若[自身有 窥秘之眼>=2]则（伤害 3（精神）） → modify_skill`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：castTime null ｜ 知识类技能：命中后应回充隐秘知识 +1（写在回充方技能效果里，本卡不在自身效果内重复声明） ｜ 翻译/语义：知识攻击=精神直伤+施法负担；信息轴 payoff：信息化时攻击更致命。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：combat轴 enemy+behind_1（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：castTime null ｜ 知识类技能：命中后应回充隐秘知识 +1（写在回充方技能效果里，本卡不在自身效果内重复声明） ｜ 翻译/语义：知识攻击=精神直伤+施法负担；信息轴 payoff：信息化时攻击更致命。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：combat轴 enemy+behind_1（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列2 贤者 —— "灌输知识、知识攻击、同化、虚假信息"
 - **风味**：你把一整段悖论直接砸进它的意识。它的脑子先是疼，然后开始怀疑自己知道的一切。
 
@@ -6118,7 +6118,7 @@
 - **机制**：`转移状态 rewrite`
 - **跨途径共享**：savant
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：castTime null ｜ 映射表为示例（gauge_rate+ → shackle 一条为推演），待拍板；分阶段建议：先上保守版（dispel 1 buff + mount vulnerable），映射表列为后续增强 ｜ 翻译/语义："修改"=状态改写。信息轴 payoff：信息化时改写更多。依赖 transfer_status。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：astral轴 enemy+cross_lane_row pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：castTime null ｜ 映射表为示例（gauge_rate+ → shackle 一条为推演），待拍板；分阶段建议：先上保守版（dispel 1 buff + mount vulnerable），映射表列为后续增强 ｜ 翻译/语义："修改"=状态改写。信息轴 payoff：信息化时改写更多。依赖 transfer_status。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：astral轴 enemy+cross_lane_row pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列2 贤者 —— "粗浅的『删除』和『修改』权柄" / 序列0 隐者下位"修改"
 - **风味**：你把它身上那道"祝福"的定义改了一个词。于是祝福成了诅咒。
 
@@ -6785,7 +6785,7 @@
 - **效果**：对一名敌人造成 3 点物理伤害，并束缚 10tick：无法位移、行动条速率 ×0.7。；浪头把它推开一档——风、雷、雨轮着来。
 - **机制**：`伤害 3（物理） → 挂载 枷锁（10t） → 位移·push_back 1`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：复用 F7。 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：复用 F7。 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列6 风眷者 —— "'风之掌控'：飓风盘绕"
 - **风味**：一道飓风盘绕住敌人的身躯，把它卷在半空——它既挪不动，也慢了下来。
 
@@ -6796,7 +6796,7 @@
 - **效果**：对一名敌人造成 5 点物理伤害。；浪头把它推开一档——风、雷、雨轮着来。
 - **机制**：`伤害 5（物理） → 位移·push_back 1`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：纯直伤锚点（3 能/5 伤）。可被卓越力量线性放大。 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：纯直伤锚点（3 能/5 伤）。可被卓越力量线性放大。 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列6 风眷者 —— "'风之掌控'：风刃"
 - **风味**：一道薄薄的风刃切过空气，精准地划开敌人的身体。
 
@@ -6809,7 +6809,7 @@
 - **效果**：对一名敌人造成 5 点雷电伤害。；浪头把它推开一档——风、雷、雨轮着来。
 - **机制**：`伤害 5（电击） → 位移·push_back 1`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：雷系直伤锚点（lightning；2026-09-13 由 shock 改名）。 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：雷系直伤锚点（lightning；2026-09-13 由 shock 改名）。 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 海洋歌者 —— "'闪电掌控'：雷电之矢"
 - **风味**：一柄雷电凝成的长矢脱手而出，笔直地钉穿敌人。
 
@@ -6832,7 +6832,7 @@
 - **效果**：对一名敌人造成 5 点雷电伤害并眩晕 5tick；若其为亡灵或灵体，追加 4 点雷电伤害。；雷击带电：目标电磁紊乱 10tick。；浪头把它推开一档——风、雷、雨轮着来。；浪头不退——它又被推开一档。
 - **机制**：`伤害 5（电击） → 挂载 电磁紊乱（10t） → 挂载 眩晕（5t） → 若[目标带「undead/spirit」标签]则（伤害 4（电击）） → 位移·push_back 1 → 位移·push_back 1`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：稿面声明默认按退化方案落地：数据层给亡灵/灵体单位预置负 resist:lightning（如 -25）；此处仍登记条件分支（target_has_tag，新增项 11）供母版实现后切换 ｜ 翻译/语义：麻痹=`眩晕`；克亡灵=条件追加。依赖新增项 11/12。退化：亡灵预置负 `resist:lightning`（雷抗）；暗系单位另见编队参数 §1.3 负 `resist:holy`。 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 3→5（位格5 基准5）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-05 去重：删除与首段完全相同的重复段（骨架手术补强轮产物，会导致同一效果实际结算两次），保留 1 条。
+- **拍板项**：**存疑**：稿面声明默认按退化方案落地：数据层给亡灵/灵体单位预置负 resist:lightning（如 -25）；此处仍登记条件分支（target_has_tag，新增项 11）供母版实现后切换 ｜ 翻译/语义：麻痹=`眩晕`；克亡灵=条件追加。依赖新增项 11/12。退化：亡灵预置负 `resist:lightning`（雷抗）；暗系单位另见编队参数 §1.3 负 `resist:holy`。 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 3→5（位格5 基准5）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-05 去重：删除与首段完全相同的重复段（骨架手术补强轮产物，会导致同一效果实际结算两次），保留 1 条。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 海洋歌者 —— "'闪电掌控'：雷击（麻痹敌人，克制亡灵）"
 - **风味**：一道落雷劈中敌人，电流窜过它的躯体使其浑身麻痹；若是亡灵，这一击会格外致命。
 
@@ -6902,7 +6902,7 @@
 - **效果**：对一名敌人造成 5 点物理伤害，并将其吹到自己队伍的最后位。龙卷冰砾追加 2 点冰霜伤害；己方风暴海在场时再引雷追加 2 点雷电。
 - **机制**：`伤害 5（物理） → 位移·push_back 99 → 伤害 2（冰） → 若[区域生效中]则（伤害 2（电击））`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：单体最强阵型破坏。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次五（水手：元素轮转 ice 补白+风暴海产读链） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：单体最强阵型破坏。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次五（水手：元素轮转 ice 补白+风暴海产读链） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列4 灾难主祭 —— "'龙卷风'"
 - **风味**：一道龙卷拔地而起，把敌人整个卷起，甩到它自己队伍的最后头。
 
@@ -7055,7 +7055,7 @@
 - **效果**：驱散一名敌人全部增益、护甲清零，造成 8 点雷电伤害，并施加易伤 15tick。；浪头把它推开一档——风、雷、雨轮着来。
 - **机制**：`驱散 buff → 护甲 +-99 → 伤害 8（电击） → 挂载 易伤（15t） → 位移·push_back 1`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：瓦解+净化+摧毁三时序。传说档越线额度正当用法。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：瓦解+净化+摧毁三时序。传说档越线额度正当用法。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：storm轴 enemy+chain_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列1 雷神 —— "'天罚'：巨大闪电附带瓦解、净化、摧毁力量"
 - **风味**：一道天罚自云端垂落——它先劈碎你的护持、瓦解你的加持，然后才轮到你的身体。
 
@@ -7840,7 +7840,7 @@
 - **效果**：以指定单位（可敌方）为模板召唤一具历史影像为己方作战（35% 生命 / 60% 攻击，己方队尾）。
 - **机制**：`召唤 unit_historical_echo（生命35%）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：miracle轴 any+board pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：miracle轴 any+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 古代学者 —— "从历史孔隙召唤影像（人或物），了解越详细成功率越高"
 - **风味**：你从历史的孔隙里拽出一个"他"的影像——它有着那个人的模样与手段，却只听你的号令。
 
@@ -7955,7 +7955,7 @@
 - **效果**：把目标 1 个增益重组为对应减益（搬运而非驱散+新挂）；无对应映射时退化为驱散 1 个增益。
 - **机制**：`转移状态 `
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：分阶段建议：先上保守版（dispel buff×1 + 挂 1 vulnerable，不建映射表）验证收益，映射表列为后续增强。与【秽物转移】区分：重组是改造，搬运是位移。buff_count_desc 排序已落 ddd（共享内核参数 §一 sorts）。 ｜ 翻译/语义："篡改定义"=把状态反过来。与【秽物转移】区分：重组=改造，搬运=位移。依赖 `transfer_status`+映射表+`buff_count_desc` 排序（本稿新增项13）。分阶段：先保守版（驱散1 buff+挂1 vulnerable）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：marionette轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-07 描述对齐：兜底分支的「造成 3 点精神伤害」在结构内无对应节点（transfer_status 不带伤害兜底），描述删去该数字、仅留驱散兜底；兜底伤害与映射表列为后续增强
+- **拍板项**：**存疑**：分阶段建议：先上保守版（dispel buff×1 + 挂 1 vulnerable，不建映射表）验证收益，映射表列为后续增强。与【秽物转移】区分：重组是改造，搬运是位移。buff_count_desc 排序已落 ddd（共享内核参数 §一 sorts）。 ｜ 翻译/语义："篡改定义"=把状态反过来。与【秽物转移】区分：重组=改造，搬运=位移。依赖 `transfer_status`+映射表+`buff_count_desc` 排序（本稿新增项13）。分阶段：先保守版（驱散1 buff+挂1 vulnerable）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：marionette轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-07 描述对齐：兜底分支的「造成 3 点精神伤害」在结构内无对应节点（transfer_status 不带伤害兜底），描述删去该数字、仅留驱散兜底；兜底伤害与映射表列为后续增强 ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列1 诡秘侍者 —— "『重组』（『篡改』/『嫁接』）：将实体事物或抽象概念重新组合，篡改定义、逻辑、规则"
 - **风味**：你把它身上那道"祝福"的定义改写了一下——于是祝福成了诅咒。
 
@@ -8549,7 +8549,7 @@
 - **效果**：使一名敌人眩晕 15tick。；看穿之后才谈动摇。
 - **机制**：`挂载 眩晕（15t） → modify_status`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：纯硬控无附加，比震慑贵1长5t无拖条。控场骨架。 ｜ 2026-10-03 骨架手术：位格前提换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：dream轴 enemy+cross_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：纯硬控无附加，比震慑贵1长5t无拖条。控场骨架。 ｜ 2026-10-03 骨架手术：位格前提换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：dream轴 enemy+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列6 催眠师 —— "『战斗催眠』"
 - **风味**：战阵之上，你的声音低了下去。它也跟着低了下去，然后就不动了。
 
@@ -8595,7 +8595,7 @@
 - **效果**：使一名敌人进入「梦境修改」：最多叠 3 层、持续 20tick，每层每 tick 受 0.2 点精神伤害；重复施放叠层并刷新持续。；修改即在梦中（自身梦境相位 10tick）。；看穿之后才谈动摇。；看穿得再深一层——它从此可以被驱散。
 - **机制**：`挂载 梦境修改（20t） 叠加1层 → 挂载 梦境虚化（10t） →自身 → modify_status → modify_status`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义："日积月累"=叠层 debuff。与【狂乱】天作之合。依赖新项叠层 + F51。 ｜ 2026-10-03 骨架手术：位格前提换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：dream轴 enemy+cross_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义："日积月累"=叠层 debuff。与【狂乱】天作之合。依赖新项叠层 + F51。 ｜ 2026-10-03 骨架手术：位格前提换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：dream轴 enemy+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 梦境行者 —— "『修改』：通过修改梦境日积月累影响目标"
 - **风味**：你每晚在它的梦里改掉一小块。改到第三夜，它已经不记得自己原本是什么样了。
 
@@ -8617,7 +8617,7 @@
 - **效果**：对一名敌人造成 1 点精神伤害、防御 -2（20tick），自身「心象」+1。；先看穿再出手——目标的依凭自此薄如一层纸。
 - **机制**：`伤害 1（精神） → 防御 +-2（20t） → 挂载 心象 叠加1层 →自身 → modify_status`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义："秘密"=破绽→降防+攒洞察。洞察层最稳进账口，接梦境与观察两轴。 ｜ 2026-10-03 骨架手术：位格前提换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：dream轴 enemy+cross_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义："秘密"=破绽→降防+攒洞察。洞察层最稳进账口，接梦境与观察两轴。 ｜ 2026-10-03 骨架手术：位格前提换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：dream轴 enemy+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 梦境行者 —— "『引导』：以梦境引导目标说出秘密"
 - **风味**：你顺着它的梦话往下问。它把自己最软的地方，一句一句说了出来。
 
@@ -8663,7 +8663,7 @@
 - **效果**：使一名敌人感染「精神瘟疫」20tick：每 tick 受 0.4 点精神伤害；持有者死亡时传染给相邻同阵营单位（只传一代）。；看穿之后才谈动摇。
 - **机制**：`挂载 精神瘟疫（20t） → modify_status`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义："瘟疫"=传染。只传一代避免指数爆。依赖新项传染。数值 （优先标定）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：位格前提换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：dream轴 enemy+cross_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义："瘟疫"=传染。只传一代避免指数爆。依赖新项传染。数值 （优先标定）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：位格前提换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：dream轴 enemy+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列4 操纵师 —— "『精神瘟疫』"
 - **风味**：你种下的东西会自己长。它倒下的时候，旁边那个人已经开始说胡话了。
 
@@ -8698,7 +8698,7 @@
 - **效果**：将一名敌人拉入梦境封印 15tick（不能行动、双方都无法选中它）；若自身「心象」≥3 层，消耗 3 层延长为 25tick。目标位格不低于你时，只有 40% 概率成功。；自身带镜子替身则镜中织梦，自疗 2 点。；先看穿再出手——目标的依凭自此薄如一层纸。；看穿得再深一层——它从此可以被驱散。
 - **机制**：`若[caster_status_exists]则（挂载 心象 消耗3层 → 挂载 拉入梦境（25t））否则（若[属性比较 rank]则（挂载 拉入梦境（15t））否则（挂载 拉入梦境（15t）（当40%概率））） → 若[自身有 镜子替身>=1]则（治疗 2 →自身） → 若[目标有 星界锚>=1]则（伤害 2（精神）） → modify_status → modify_status`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：心象消耗补 statusId:insight，stacks 依源稿订正为 -3（原脚本归一误为 -1） ｜ 翻译/语义："拉入"=人还在场但不在战斗里=封印。梦境轴旗舰。依赖双向过滤 + 新项。 ｜ 2026-10-01 吟唱重标：仪式类（kw:封印）读条 5tick（序列 3 档，基准 §三之二） ｜ 2026-10-02 批次六：补 astral_anchor 跨系读段（星界锚引梦，学徒枢纽 participants 补录观众） ｜ 2026-10-03 骨架手术：位格前提换形（角色=dmg） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：dream轴 enemy+cross_lane pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：心象消耗补 statusId:insight，stacks 依源稿订正为 -3（原脚本归一误为 -1） ｜ 翻译/语义："拉入"=人还在场但不在战斗里=封印。梦境轴旗舰。依赖双向过滤 + 新项。 ｜ 2026-10-01 吟唱重标：仪式类（kw:封印）读条 5tick（序列 3 档，基准 §三之二） ｜ 2026-10-02 批次六：补 astral_anchor 跨系读段（星界锚引梦，学徒枢纽 participants 补录观众） ｜ 2026-10-03 骨架手术：位格前提换形（角色=dmg） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：dream轴 enemy+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 织梦人 —— "编织梦境并将目标拉入"
 - **风味**：你为它织了一场梦，然后请它进去坐一会儿——至于外面的仗，等它醒再说。
 
@@ -8793,7 +8793,7 @@
 - **效果**：书写一段命运，15tick 后强制生效（写下即不可驱散，唯一出口是时间到）：使目标沉睡 15tick、或受到 12 点精神伤害、或治疗 12 点生命，获得时三选一。；看穿之后才谈动摇。
 - **机制**：`挂载 书写成真（15t） → modify_status`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：到期载荷以三个 variant_is 条件效果镜像 variants 三档表达（payload 是载荷参数非原语，原 {type:payload} 非法已拆）；变体选择由获得时写入状态数据槽供给 ｜ 翻译/语义："言出法随"=记录文字延迟强制生效。✅ 2026-10-01 拍板（批⑨/A 案）：energy 5→6、cd 7→8 回归位格9 中位；数值 12 进锚——(6+1.5 延迟当量)×1.2=9 ×1.3 强制生效溢价=11.7≈12（容忍 +0.3）；沉睡 15tick 走控制位格判定。原注：延迟贴现率无锚点。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：位格前提换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：fantasy轴 enemy+board pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：到期载荷以三个 variant_is 条件效果镜像 variants 三档表达（payload 是载荷参数非原语，原 {type:payload} 非法已拆）；变体选择由获得时写入状态数据槽供给 ｜ 翻译/语义："言出法随"=记录文字延迟强制生效。✅ 2026-10-01 拍板（批⑨/A 案）：energy 5→6、cd 7→8 回归位格9 中位；数值 12 进锚——(6+1.5 延迟当量)×1.2=9 ×1.3 强制生效溢价=11.7≈12（容忍 +0.3）；沉睡 15tick 走控制位格判定。原注：延迟贴现率无锚点。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：位格前提换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：fantasy轴 enemy+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列1 作家 —— "『书写成真』：书写的故事变成现实"
 - **风味**：你写下："三息之后，它会睡着。"然后合上本子——这件事就已经发生完了，只是还没走到那一步。
 
@@ -9429,7 +9429,7 @@
 - **效果**：自动锁定能量最高的敌人，偷取其 5 点能量归自己，不造成任何伤害。
 - **机制**：`吸取能量 5`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：隐蔽隔空偷=更高搬运量+赃物累积。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：隐蔽隔空偷=更高搬运量+赃物累积。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列6 盗火人 —— "「窃取」物品版：隐蔽隔空偷取 / 塞入物品"
 - **风味**：隔着半个战场，它怀里最沉的那袋东西就没了——而它到现在还没发现。
 
@@ -9500,7 +9500,7 @@
 - **效果**：寄生一名敌人 30tick（目标带提线木偶则 40tick）：前 15tick 每 tick 偷取它 0.4 点生命归自己，且你受到的伤害 ×0.85、敌方单体技能无法选中你（宿主遮蔽）；后 15tick 接管它的身体，它的攻击转向它自己的同伴（到期归还）；期间其攻击 -1。宿主死亡则寄生移除。
 - **机制**：`若[目标有 提线木偶>=1]则（挂载 深度寄生（40t） → 挂载 坚守（30t） →自身 → take_control → modify_targetability →自身）否则（挂载 深度寄生（30t） → 挂载 坚守（30t） →自身 → take_control → modify_targetability →自身）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：寄生轴旗舰 enabler+payload：两阶段进程挂 `寄生`+写隐秘值。依赖 F2/F56 + 阶段切换(H50)。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 take_control(attack_only, revert)『接管身体』+ modify_targetability『宿主遮蔽』——夺取与顶替的机制正主承载 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：parasite轴 enemy+behind_1（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：寄生轴旗舰 enabler+payload：两阶段进程挂 `寄生`+写隐秘值。依赖 F2/F56 + 阶段切换(H50)。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 take_control(attack_only, revert)『接管身体』+ modify_targetability『宿主遮蔽』——夺取与顶替的机制正主承载 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：parasite轴 enemy+behind_1（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列4 寄生者 —— "「寄生」：初步寄生（借助宿主隐藏 / 恢复）→ 全面控制（接管身体）"
 - **风味**：你钻进了它的身体——先是借它喘口气，接着，它的手就不再听它的了。
 
@@ -9511,7 +9511,7 @@
 - **效果**：从三种精准窃取中选一：偷力（目标攻击 -3、你攻击 +3，25tick）／偷守（双方防御 ±3，25tick）／偷源（偷取目标 6 点能量）。；这份力量也是借来的。
 - **机制**：`攻击 +-3（25t） → 攻击 +3（25t） →自身 → 转移状态 copy`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：三选一=本途径原著节奏；赃物≥3 放大。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=stat） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：三选一=本途径原著节奏；赃物≥3 放大。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=stat） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列4 寄生者 —— "精准窃取目标能力（三选一），维持 2 小时"
 - **风味**：你看了一会儿，然后从它身上挑走了最值钱的那一样。
 
@@ -9583,7 +9583,7 @@
 - **机制**：`交换行动条 →次要目标 → 若[自身有 偷来的时间>=1]则（行动条 +-20） → 改写目标 any_lowest_hp`
 - **跨途径共享**：seer
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：退化方案：两条 modify_resource 各推差值一半，仍是双向但丢掉精确互换语义 ｜ 翻译/语义：时间轴旗舰 enabler+payload：互换未来+写 `时差`。依赖 swap_resource(新算子)。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=res） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）；删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：chrono轴 enemy+behind_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：退化方案：两条 modify_resource 各推差值一半，仍是双向但丢掉精确互换语义 ｜ 翻译/语义：时间轴旗舰 enabler+payload：互换未来+写 `时差`。依赖 swap_resource(新算子)。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=res） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）；删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：chrono轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列2 命运木马 —— "嫁接命运：互换短期未来"
 - **风味**：你把它和它的猎物之间的未来剪开、对调——本该先出手的那个，忽然落到了后面。
 
@@ -9594,7 +9594,7 @@
 - **效果**：使一名敌人成为「无运者」25tick：每 tick 流失 0.2 点生命、受伤 ×1.15、无法再获得增益；先以灵丝寄居 10tick（深度寄生·仅吸血段）；后 10tick 顶替其身（仅接管移动，到期归还）；你获得「顶替」20tick：受伤 ×0.9，且你对该目标伤害 ×1.2；若目标已被深度寄生，寄生者取而代之，追加 2 点精神伤害。
 - **机制**：`挂载 无运者（25t） → 挂载 深度寄生（10t） → 挂载 顶替（20t） →自身 → take_control → 若[目标有 深度寄生>=1]则（伤害 2（精神））`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：寄生轴顶点 payoff：读 `寄生` 顶替命运。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 take_control(move_only, revert)『顶替其身』——占巢顶替正主第二卡（与寄生 attack_only 分工：接刀 vs 接腿） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：parasite轴 enemy+behind_1（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：寄生轴顶点 payoff：读 `寄生` 顶替命运。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 take_control(move_only, revert)『顶替其身』——占巢顶替正主第二卡（与寄生 attack_only 分工：接刀 vs 接腿） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：parasite轴 enemy+behind_1（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列2 命运木马 —— "窃取身份：顶替身份使目标成为「无运者」渐死"
 - **风味**：你顶替了它在命运里的名字——从这一刻起，没有人再认得它，连好运也绕着它走；它开始一点点地凋谢。
 
@@ -9619,7 +9619,7 @@
 - **效果**：抽走一名敌人 50 点行动条进度、行动条速率 -6（20tick）；你获得「偷来的时间」20tick：能量恢复速率 +0.2。；增益是借来的：从目标身上抄一份，用完归还。
 - **机制**：`行动条 +-50 → 行动条速率 +-6（20t） → 挂载 偷来的时间（20t） →自身 → 转移状态 copy`
 - **✅ 支持进度**：1 项历史缺口已落入 DDD 内核 —— `GAUGE_RATE_AS_STAT` 目标侧 gauge.rate 修正，同敏捷之手待裁定
-- **拍板项**：**存疑**：翻译/语义：抽时间=推条+减速+自回能；不给自己自推条（G5/G6）；写时差。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：chrono轴 enemy+behind_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：抽时间=推条+减速+自回能；不给自己自推条（G5/G6）；写时差。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=buff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：chrono轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列1 时之虫 —— "「窃取」：可短暂窃取时间、锚、权柄"
 - **风味**：你把它生命里的一段时间剪下来揣进了自己怀里——它的动作开始发黏，而你忽然多出了一整个喘息的空档。
 
@@ -9630,7 +9630,7 @@
 - **效果**：使一名敌人衰老 25tick：每 tick 流失 0.2 点生命，攻击 -2、行动条速率 -4，受到的治疗 ×0.7；抽其时间归己（偷来的时间 +1 层，20tick）；若目标带厄运标记，厄运加速衰老，攻击额外 -1。；短暂借身操控，片刻即归还。
 - **机制**：`挂载 衰老（25t） → 挂载 偷来的时间（20t） →自身 → 若[目标有 命运诅咒>=1]则（攻击 +-1（25t）） → take_control`
 - **✅ 支持进度**：1 项历史缺口已落入 DDD 内核 —— `GAUGE_RATE_AS_STAT` 状态内 gauge.rate 修正，同敏捷之手待裁定
-- **拍板项**：**存疑**：翻译/语义：流失+衰老；时差≥2 延长（时间轴 payoff）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：chrono轴 enemy+behind_2 pick:all（轴选靶签名设计 §4）
+- **拍板项**：**存疑**：翻译/语义：流失+衰老；时差≥2 延长（时间轴 payoff）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：chrono轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列1 时之虫 —— "「衰老」：让目标流失生命进入衰老"
 - **风味**：你把它生命里尚未到来的那部分提前支取了——它开始咳嗽、迟钝、伤口不再愈合，像是一下子老了二十岁。
 
@@ -9735,7 +9735,7 @@
 - **效果**：对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；连击的收势把自身行动条往前推 8；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。
 - **机制**：`重复2次（伤害 1（物理）） → 行动条 +8 →自身 → 若[dead_count]则（行动条 +8 →自身）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。
+- **拍板项**：**存疑**：直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列9 战士 —— "各种武器防具精通、各种格斗术掌握"
 - **风味**：你熟稔每一种徒手与持械的打法，两记连贯的拳脚砸在同一个破绽上。
 
@@ -9761,7 +9761,7 @@
 - **机制**：`伤害 2（物理） → 行动条 +-20 → 位移·push_back → 若[dead_count]则（行动条 +8 →自身）`
 - **跨途径共享**：sleepless
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格2 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M3 摔投。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-16 战士独特性深化：补 armorPierceRatio 穿透（C——与守护减伤对位的进攻签名）。
+- **拍板项**：**存疑**：直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格2 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M3 摔投。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-16 战士独特性深化：补 armorPierceRatio 穿透（C——与守护减伤对位的进攻签名）。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列8 格斗家 —— "擅长近距离战斗"
 - **风味**：你贴上去，用身体和兵刃缠住它——它想挥下一击，却发现节奏已经被你踩住了。
 
@@ -9797,7 +9797,7 @@
 - **效果**：对一名近战敌人造成 4 点物理伤害，并直接穿透护甲（无视 90% 护甲）；并使其攻击 -2（15tick，破械）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。
 - **机制**：`伤害 4（物理） → 攻击 +-2（15t） → reveal → 若[dead_count]则（行动条 +8 →自身）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M2 破械。 ｜ 签名补批（2026-10-16 第二批）：识破/死亡簿·战意。 ｜ 2026-10-16 战士独特性深化：碎甲（modify_resource armor）→ armorPierceRatio 真穿透（C）。
+- **拍板项**：**存疑**：2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M2 破械。 ｜ 签名补批（2026-10-16 第二批）：识破/死亡簿·战意。 ｜ 2026-10-16 战士独特性深化：碎甲（modify_resource armor）→ armorPierceRatio 真穿透（C）。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列7 武器大师 —— "超强力量、体质和敏捷"
 - **风味**：你抡圆了砸下去，力量不止落在它身上，也砸碎了它身上的甲。
 
@@ -9879,7 +9879,7 @@
 - **效果**：选择一名友军：自身进入守护姿态 20tick，替其承担伤害；自身受伤 ×0.7，该友军获得 5 点护盾；弃攻 4 个自身回合，期间自身伤害 ×0.5；同挂「反击姿态」15tick（2 次）：守护期间受远程攻击时顺序反击攻击者；并竖起无形墙壁（可挡 3 次）；并硬抗：受击时按分档减伤，站得住。；并承伤磨刀：处于守护状态且手持具现武器（武器大师）时，自身伤害 ×1.15。
 - **机制**：`挂载 守护（20t） →自身 → 挂载 守护（20t） →自身 → 挂载 护盾（20t） → 挂载 放弃攻击（4t） →自身 → 挂载 反击姿态（15t） →自身 → 挂载 无形墙壁 次数3 →自身 → 受到伤害 ×0.4 →自身 → 若[自身有 武器大师>=1]则（造成伤害 ×1.15 →自身）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：稿面双目标（指定 1 友军 + SELF）：主目标取被保护友军，自身段走 target:self；友军选择的 fallbackSort 稿面未给，置 null 待补 ｜ 翻译/语义：守护轴身份状态 `守护` 主挂载源 + 承伤壁垒。 ｜ 2026-10-02 反击姿态首发承载①：守护+反击双姿态——矩阵 stance 行战士共享列落地 ｜ 2026-10-03 骨架手术：武技链换形（角色=debuff） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：guard轴 ally+behind_1 anchor:ally_front（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M9 弃攻铁壁。 ｜ 签名补批（2026-10-16 第二批）：硬抗。 ｜ 2026-10-16 环节⑤guard 轴收束：guardianship 补 charges 层数引擎（守护次数=3）。 ｜ 2026-10-16 战士独特性深化：补 guard→martial 跨轴读段（守护中武艺加成）。
+- **拍板项**：**存疑**：稿面双目标（指定 1 友军 + SELF）：主目标取被保护友军，自身段走 target:self；友军选择的 fallbackSort 稿面未给，置 null 待补 ｜ 翻译/语义：守护轴身份状态 `守护` 主挂载源 + 承伤壁垒。 ｜ 2026-10-02 反击姿态首发承载①：守护+反击双姿态——矩阵 stance 行战士共享列落地 ｜ 2026-10-03 骨架手术：武技链换形（角色=debuff） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：guard轴 ally+behind_1 anchor:ally_front（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M9 弃攻铁壁。 ｜ 签名补批（2026-10-16 第二批）：硬抗。 ｜ 2026-10-16 环节⑤guard 轴收束：guardianship 补 charges 层数引擎（守护次数=3）。 ｜ 2026-10-16 战士独特性深化：补 guard→martial 跨轴读段（守护中武艺加成）。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 守护者 —— "『守护状态』：巨剑插地，竖立无形墙壁，帮同伴承担伤害"；"放弃攻击后高序列以下极少能打破防御"
 - **风味**：你把巨剑插进地面，一道看不见的墙随之立起——打向同伴的那一击，落在了你的身上。
 
@@ -9901,7 +9901,7 @@
 - **效果**：对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；若自身武器大师在场，大师之威，伤害 +2；并使自己行动条前推 8；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。
 - **机制**：`伤害 5 → 若[自身有 武器大师>=1]则（伤害 2） → 行动条 +8 →自身 → 若[dead_count]则（行动条 +8 →自身）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。
+- **拍板项**：**存疑**：2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列5 守护者 —— "能对任何怪物造成伤害"
 - **风味**：没有你砍不动的东西——甲也好，护体的异力也好，在这一斩之下都不算数。
 
@@ -9937,7 +9937,7 @@
 - **效果**：对一名近战敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15；自己突进至敌方最前排（冲阵）；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。
 - **机制**：`伤害 4（物理） → 行动条速率 +6（20t） →自身 → 行动条 +15 →次要目标 → 位移·charge_forward →自身 → 若[dead_count]则（行动条 +8 →自身）`
 - **✅ 支持进度**：1 项历史缺口已落入 DDD 内核 —— `GAUGE_RATE_AS_STAT` 同强健体魄；G5/G6 禁自推 gauge.current，自身侧只能写 gauge.rate
-- **拍板项**：**存疑**：2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）；删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M3 冲阵。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。
+- **拍板项**：**存疑**：2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）；删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M3 冲阵。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列4 猎魔者 —— "夸张力量和飓风级高速奔跑"
 - **风味**：你跑起来像一阵飓风——撞进敌阵的那一瞬，身后队友的脚步也被带快了。
 
@@ -9995,7 +9995,7 @@
 - **效果**：闪现至一名敌人身后造成 2 点物理伤害，并植入「体内爆发」：10tick 后从其体内绽开，造成 6 点物理伤害。若目标为亡灵/恶魔/灵体，银剑额外灼烧 2 点圣光伤害；并具现银白细剑（耐久 3 次）；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。
 - **机制**：`伤害 2（物理） → 挂载 体内爆发（10t） → 若[目标类型 UNDEAD/DEMON/SPIRIT]则（伤害 2（圣）） → 挂载 具现武器 次数3 →自身 → 若[dead_count]则（行动条 +8 →自身）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：守护轴闪现爆发（与黄昏轴联动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line filter.unitType=['DEMON'] ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-16 战士独特性深化：补 armorPierceRatio 穿透（C——与守护减伤对位的进攻签名）。
+- **拍板项**：**存疑**：翻译/语义：守护轴闪现爆发（与黄昏轴联动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line filter.unitType=['DEMON'] ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-16 战士独特性深化：补 armorPierceRatio 穿透（C——与守护减伤对位的进攻签名）。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列3 银骑士 —— "『银白细剑』：拥有传送（闪现）能力，可从目标体内爆发"
 - **风味**：剑光一闪，你已经站在它背后——那一剑刺进去时并不重；重的是两息之后，从它体内绽开的那一朵银。
 
@@ -10008,7 +10008,7 @@
 - **效果**：使一名敌人眩晕 5tick，并施加枷锁 15tick：无法被位移，行动条速率 ×0.7；并击碎其 3 点护甲；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。
 - **机制**：`挂载 眩晕（5t） → 挂载 枷锁（15t） → 护甲 +-3 → reveal → 若[dead_count]则（行动条 +8 →自身）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：黄昏轴控制支路（读 `黄昏` 锁行动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：武技链换形（角色=debuff） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M2 破械。 ｜ 签名补批（2026-10-16 第二批）：识破/死亡簿·战意。
+- **拍板项**：**存疑**：翻译/语义：黄昏轴控制支路（读 `黄昏` 锁行动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：武技链换形（角色=debuff） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M2 破械。 ｜ 签名补批（2026-10-16 第二批）：识破/死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列2 荣耀者 —— "『战斗』权柄（简化）：『牢笼』、『黄昏巨剑』、『光之风暴』"
 - **风味**：战斗的权柄落下，四面光壁合拢——它还在呼吸，但它哪儿也去不了。
 
@@ -10019,7 +10019,7 @@
 - **效果**：对一名近战敌人造成 6 点无元素伤害，并附加 2 层老化（25tick）。本卡击杀敌人时，全体友军回复 3 点生命。死亡簿≥4 时，击杀回血 ×1.5；（死亡簿 ≥4 时收割回血追加 2 点。）；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。
 - **机制**：`伤害 6 → 挂载 衰败/老化（25t） 层数2 → 治疗 3（当目标已死亡） →全体友军 → 若[dead_count]则（治疗 2（当目标已死亡） →全体友军） → 若[dead_count]则（行动条 +8 →自身）`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：读 `黄昏` 放大的黄昏轴 payoff（老化叠伤）。 ｜ 2026-09-29 D 类批：轴标签保持 martial（D 类批复核：黄昏巨剑挂 aging 是 twilight 身份的跨轴消费段，迁入即断承接）（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12） ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→6（位格8 基准6）。条件/读层追加段不动。 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M5 收割。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。
+- **拍板项**：**存疑**：翻译/语义：读 `黄昏` 放大的黄昏轴 payoff（老化叠伤）。 ｜ 2026-09-29 D 类批：轴标签保持 martial（D 类批复核：黄昏巨剑挂 aging 是 twilight 身份的跨轴消费段，迁入即断承接）（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12） ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→6（位格8 基准6）。条件/读层追加段不动。 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M5 收割。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
 - **设定**：序列2 荣耀者 —— "『战斗』权柄（简化）：『牢笼』、『黄昏巨剑』、『光之风暴』；『神圣』权柄（简化）：荣耀即晨曦即黄昏，摧毁即净化"
 - **风味**：巨剑带着黄昏的颜色劈下——被它摧毁的，同时也被净化了；而活下来的，从此开始变老。
 

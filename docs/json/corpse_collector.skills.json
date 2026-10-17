@@ -1420,13 +1420,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "ally",
           "filter": {
             "unitType": "UNDEAD"
           },
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "gauge_desc"
       },
@@ -1468,7 +1468,7 @@
         ],
         "mood": "urgent, macabre"
       },
-      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：undead轴 ally+board filter:unitType pick:all（轴选靶签名设计 §4）"
+      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：undead轴 ally+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。"
     },
     {
       "id": "skill_corpse_collector_s3_ferry_gaze",
@@ -1491,9 +1491,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "hp_asc"
       },
@@ -1551,7 +1552,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：终末轴即死（概率落 R3 登记 G1）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：end轴 enemy+board sort:hp_asc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：终末轴即死（概率落 R3 登记 G1）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：end轴 enemy+board sort:hp_asc（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。",
       "art": {
         "subject": "a ferryman's eyes meeting a victim's gaze across the dark",
         "elements": [
@@ -2605,13 +2606,13 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "filter": {
             "unitType": "SPIRIT"
           },
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": null
       },
@@ -2633,7 +2634,7 @@
         ],
         "mood": "penetrating, cold"
       },
-      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line filter.unitType=['UNDEAD', 'SPIRIT'] ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4）"
+      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line filter.unitType=['UNDEAD', 'SPIRIT'] ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。"
     },
     {
       "id": "skill_corpse_collector_s6_spirit_touch",
@@ -2714,17 +2715,17 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "unitType": "SPIRIT"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": null
       },
-      "conversionNotes": "翻译/语义：弱化不死大军，合撑\"亡者之王\"量级。2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：弱化不死大军，合撑\"亡者之王\"量级。2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。",
       "art": {
         "subject": "a skull leaning close to an ear whispering a warning",
         "elements": [
@@ -2801,13 +2802,13 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "unitType": "SPIRIT"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": null
       },
@@ -2830,7 +2831,7 @@
         ],
         "mood": "omniscient, detached"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→7（位格6 基准5×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→7（位格6 基准5×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。"
     },
     {
       "id": "skill_corpse_collector_s3_death_omen",
@@ -2929,13 +2930,13 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "unitType": "SPIRIT"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": null
       },
@@ -2947,7 +2948,7 @@
         ],
         "mood": "merciless, revealing"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。"
     }
   ],
   "unitDefs": [

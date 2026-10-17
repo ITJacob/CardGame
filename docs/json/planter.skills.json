@@ -1701,10 +1701,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_desc"
       },
@@ -1766,7 +1766,7 @@
           "note": "驱策虫豸：从土里翻出来咬一口（PLANT/VERMIN 操纵）"
         }
       ],
-      "conversionNotes": "sd:death_trial 的卸载已由归一脚本写为 dispel filter.statusId: death_trial，与源稿「考验失败并卸载自身，每场对同一目标只结算一次」语义一致 ｜ revive_blocked 引用显式落为 modifiers.revive_blocked 的死亡结算字段表达（非独立机制状态），源稿「禁止复活」语义不变 ｜ 翻译/语义：荒芜轴对死灵特化克制。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 3→5（位格7 基准5）。条件/读层追加段不动。 ｜ 键名归一（2026-10-01 召唤物批）：target_unit_type 键名 unitTypes→type（对齐 schema 与其余 5 处）。 ｜ 2026-10-03 骨架手术：孕育换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：blight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "sd:death_trial 的卸载已由归一脚本写为 dispel filter.statusId: death_trial，与源稿「考验失败并卸载自身，每场对同一目标只结算一次」语义一致 ｜ revive_blocked 引用显式落为 modifiers.revive_blocked 的死亡结算字段表达（非独立机制状态），源稿「禁止复活」语义不变 ｜ 翻译/语义：荒芜轴对死灵特化克制。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 3→5（位格7 基准5）。条件/读层追加段不动。 ｜ 键名归一（2026-10-01 召唤物批）：target_unit_type 键名 unitTypes→type（对齐 schema 与其余 5 处）。 ｜ 2026-10-03 骨架手术：孕育换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：blight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。",
       "tentative": false,
       "art": {
         "subject": "skeletal undead crumbling and sinking back into waiting earth",

@@ -1505,10 +1505,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "any",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -1524,7 +1524,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：miracle轴 any+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：miracle轴 any+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。",
       "art": {
         "subject": "a translucent historical figure stepping out of a foggy time gap",
         "elements": [
@@ -1992,13 +1992,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "hasStatus": "puppet_string"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "buff_count_desc"
       },
@@ -2017,7 +2017,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "分阶段建议：先上保守版（dispel buff×1 + 挂 1 vulnerable，不建映射表）验证收益，映射表列为后续增强。与【秽物转移】区分：重组是改造，搬运是位移。buff_count_desc 排序已落 ddd（共享内核参数 §一 sorts）。 ｜ 翻译/语义：\"篡改定义\"=把状态反过来。与【秽物转移】区分：重组=改造，搬运=位移。依赖 `transfer_status`+映射表+`buff_count_desc` 排序（本稿新增项13）。分阶段：先保守版（驱散1 buff+挂1 vulnerable）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：marionette轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-07 描述对齐：兜底分支的「造成 3 点精神伤害」在结构内无对应节点（transfer_status 不带伤害兜底），描述删去该数字、仅留驱散兜底；兜底伤害与映射表列为后续增强",
+      "conversionNotes": "分阶段建议：先上保守版（dispel buff×1 + 挂 1 vulnerable，不建映射表）验证收益，映射表列为后续增强。与【秽物转移】区分：重组是改造，搬运是位移。buff_count_desc 排序已落 ddd（共享内核参数 §一 sorts）。 ｜ 翻译/语义：\"篡改定义\"=把状态反过来。与【秽物转移】区分：重组=改造，搬运=位移。依赖 `transfer_status`+映射表+`buff_count_desc` 排序（本稿新增项13）。分阶段：先保守版（驱散1 buff+挂1 vulnerable）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：marionette轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-07 描述对齐：兜底分支的「造成 3 点精神伤害」在结构内无对应节点（transfer_status 不带伤害兜底），描述删去该数字、仅留驱散兜底；兜底伤害与映射表列为后续增强 ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。",
       "art": {
         "subject": "a hand rewriting a glowing rune of blessing into a cursed sigil",
         "elements": [
