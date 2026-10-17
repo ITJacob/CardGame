@@ -218,7 +218,7 @@ FIX = {
     "vacuum": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）",
     "payoff_notes": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed",
     "scale": "把轴卡数向途径轴均卡数收敛（补卡或并轴）",
-    "connect": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性），或加跨轴身份消费段",
+    "connect": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）",
     "min_axis": "优先重设计该最低分轴（轴表按分升序，第一行即它）",
     "crossaxis": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段",
     "crosspath": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段",
@@ -411,7 +411,7 @@ CONDARG_FIELDS = ("cmp", "side", "key", "stat", "unitType", "type", "phase",
 
 # sshape：状态**形态**（替代私有 statusId 身份）。键为共享词表的结构特征。
 SSHAPE_FLAGS = (
-    ("triggers", "has_triggers"), ("charges", "charges"),
+    ("charges", "charges"),
     ("stackThreshold", "stack_threshold"), ("thresholdTrigger", "threshold_trigger"),
     ("statPerStack", "stat_per_stack"), ("formGroup", "form_group"),
     ("phases", "phases"), ("cycleTicks", "cycle"), ("ramp", "ramp"),
@@ -517,7 +517,12 @@ def _card_families(card, status_by_id=None):
         if isinstance(n.get("element"), str):
             fam["elem"].add(n["element"])
         t = n.get("type")
+        is_hp_cost = (t == "modify_resource" and n.get("resource") == "hp"
+                      and n.get("target") == "self" and n.get("mode") == "delta"
+                      and isinstance(n.get("value"), (int, float)) and n.get("value") < 0)
         for f in (PARAM_FIELDS.get(t, ()) if isinstance(t, str) else ()):
+            if is_hp_cost and f == "resource":
+                continue
             v = n.get(f)
             if isinstance(v, (str, int, float)) and not isinstance(v, bool):
                 fam["param"].add("%s=%s" % (f, v))
@@ -533,9 +538,7 @@ def _card_families(card, status_by_id=None):
             fam["temporal"].add("dur:tick")
         if n.get("setInstant"):
             fam["temporal"].add("instant")
-        if (t == "modify_resource" and n.get("resource") == "hp"
-                and n.get("target") == "self" and n.get("mode") == "delta"
-                and isinstance(n.get("value"), (int, float)) and n.get("value") < 0):
+        if is_hp_cost:
             fam["cost"].add("hp_cost")
 
     fam["cond"] |= set(_cond_kinds(card.get("effects")))
@@ -857,7 +860,7 @@ def main():
                 scale = max(0, round(10 - dev * 10))
                 deductions.append(("规模均衡", "-%d：轴卡数 %d vs 理想 %d（比值 %.2f）" % (10 - scale, len(axis_cards), round(ideal), ratio), aid, FIX["scale"]))
 
-            # —— 承接连通（SCORING 2.0：收束方式去重 + 产出面被他轴/他途径消费，含通道） ——
+            # —— 承接连通（SCORING 2.2：只算收束方式去重；跨轴/跨系消费由途径级维度承担，避免双计） ——
             patterns = set()
             for n in payoffs:
                 c = card_by_name.get(n)
@@ -905,9 +908,9 @@ def main():
                     else:
                         pw_crossaxis_refs[pid] = pw_crossaxis_refs.get(pid, 0) + 1
                     ext_consumers += 1
-            connect = min(15, len(patterns) * 3 + ext_consumers * 3)
-            if not patterns and not ext_consumers and payoffs:
-                deductions.append(("承接连通", "-15：payoff 无收束方式多样性且无跨轴/通道消费", ",".join(payoffs), FIX["connect"]))
+            connect = min(15, len(patterns) * 3)
+            if not patterns and payoffs:
+                deductions.append(("承接连通", "-15：payoff 无收束方式多样性", ",".join(payoffs), FIX["connect"]))
 
             axis_rows.append({
                 "pathway": pid, "axis": aid, "name": ax.get("name"), "symbol": ax.get("symbol"),
