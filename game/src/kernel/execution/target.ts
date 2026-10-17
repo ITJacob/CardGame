@@ -281,12 +281,14 @@ function pickInRegion(
   scope: string,
   ctx: TargetContext,
 ): ResolvedTarget[] {
-  const cells = cellsOfScope(originOf(request, ctx), scope, ctx)
+  const origin = originOf(request, ctx)
+  const cells = cellsOfScope(origin, scope, ctx)
   const keys = new Set(cells.map((c) => `${c.lane}/${c.index}`))
   const candidates = pool.filter((u) => {
     const p = u.position
     if (!p || !keys.has(`${p.lane}/${p.index}`)) return false
     if (request.excludeSelf && u.id === ctx.self.id) return false
+    if (request.excludeAnchor && p.faction === origin.faction && p.lane === origin.lane && p.index === origin.index) return false
     return !u.isUntargetable('targeted', ctx.self.faction)
   })
   return sortCandidates(candidates, request.sort ?? 'index_asc', ctx.lanes).map(toResolved)
@@ -304,6 +306,7 @@ function resolveArea(request: TargetRequest, ctx: TargetContext): ResolvedTarget
   const seen = new Set<string>()
   const picked: CombatUnit[] = []
   for (const cell of cells) {
+    if (request.excludeAnchor && cell.faction === origin.faction && cell.lane === origin.lane && cell.index === origin.index) continue
     const u = byCell.get(`${cell.faction}/${cell.lane}/${cell.index}`)
     if (!u || seen.has(u.id)) continue
     if (!matchesFaction(request.faction, u, ctx)) continue

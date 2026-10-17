@@ -85,6 +85,14 @@ describe('mode=unit（指定型）：scope 只作池边界，pickCount 定命中
       .toEqual(['B0', 'B1', 'B2'])
   })
 
+  it('excludeAnchor：behind_2 去掉锚点后只剩后 1 格', () => {
+    const ctx = scenario()
+    expect(occ(resolveCandidates(req({
+      mode: 'unit', faction: 'enemy', anchor: 'enemy_front', scope: 'behind_2',
+      pickCount: 'all', excludeAnchor: true,
+    }), ctx))).toEqual(['B1'])
+  })
+
   it('board：池边界扩大到全场（跨路）', () => {
     const ctx = scenario()
     expect(occ(resolveCandidates(req({ mode: 'unit', faction: 'enemy', anchor: 'enemy_front', scope: 'board', pickCount: 'all' }), ctx)))
@@ -151,6 +159,13 @@ describe('mode=area（区块型）：命中区域内全部在位单位，pickCou
     const ctx = scenario()
     expect(occ(resolveCandidates(req({ mode: 'area', faction: 'enemy', anchor: 'enemy_front', scope: 'behind_2' }), ctx)))
       .toEqual(['B0', 'B1'])
+  })
+
+  it('excludeAnchor：area 的 behind_2 排除锚点格', () => {
+    const ctx = scenario()
+    expect(occ(resolveCandidates(req({
+      mode: 'area', faction: 'enemy', anchor: 'enemy_front', scope: 'behind_2', excludeAnchor: true,
+    }), ctx))).toEqual(['B1'])
   })
 
   it('cross_lane / cross_lane_row = 另一路的并排格 / 整条半场', () => {

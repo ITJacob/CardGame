@@ -112,6 +112,8 @@ export interface TargetRequest {
   sortKey?: string
   spread?: 'none' | 'lane_line' | 'splash_adjacent' | 'splash_behind' | 'cross_same_index'
   excludeSelf?: boolean
+  /** 从 anchor+scope 圈出的范围中排除锚点所在格（unit / area 均生效） */
+  excludeAnchor?: boolean
   pickCount?: CountValue
   selectionMode?: 'manual' | 'auto'
 }

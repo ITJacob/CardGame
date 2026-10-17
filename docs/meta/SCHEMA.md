@@ -129,7 +129,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `sort` | 同 sortKey（见下） |
 | `filter` | 候选池过滤器（开放结构）。**DDD 标准 9 维**：`unitType` / `tags` / `hasStatus` / `hasCategory` / `hpPercent` / `casterHasSummon` / `isSummon` / `casterOwned` / `adjacency`；**项目扩展（数据已用）**：`unitId` / `isAllyOrMirror` / `isPuppet` / `isOwnSummon` / `element` / `tier` / `count` / `dispelable` / `anyOf` / `emptySlot`；**位格与性别（2026-10-03 轴签名提案 C/D）**：`rankBelowCaster` / `rankAboveCaster`（bool，位格压制，§1.4 判定）/ `rankMax` / `rankMin`（int）/ `gender`（`any`/`male`/`female`，与 `card.gender` 同源） |
 | `spread` | `none` / `lane_line` / `splash_adjacent` / `splash_behind` / `cross_same_index`（I-2 收缩后从 committedTargets 扩散，不回池） |
-| `excludeSelf` / `sortKey` / `pickCount` / `selectionMode` | 见 schema（pickCount: `1`=取 1、`"all"`=取池内全部，缺省 `1`，**仅 `mode=unit` 有义**；selectionMode: `manual`=框内由玩家选 / `auto`=按 sort 取前） |
+| `excludeSelf` / `excludeAnchor` / `sortKey` / `pickCount` / `selectionMode` | 见 schema（excludeAnchor: 从 anchor+scope 范围中排除锚点格；pickCount: `1`=取 1、`"all"`=取池内全部，缺省 `1`，**仅 `mode=unit` 有义**；selectionMode: `manual`=框内由玩家选 / `auto`=按 sort 取前） |
 
 > **战场拓扑（§10.0 订正）**：上下两路、每路敌我各 4 格头对头向中线塌陷，index 越小越近中线（=排首）。几何锚点必须落在**被施法一侧**——敌 spell 锚 `enemy_front`、己 spell 锚 `self`，恢复并固化 §1.3 原缺省「敌方同路最前排」。
 
