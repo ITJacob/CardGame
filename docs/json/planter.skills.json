@@ -242,10 +242,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "ally",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_asc"
       },
@@ -265,7 +265,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：大地轴 enabler：延时兑现+产 `大地`。 ｜ 2026-10-03 骨架手术：孕育换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：harvest轴 ally+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：大地轴 enabler：延时兑现+产 `大地`。 ｜ 2026-10-03 骨架手术：孕育换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：harvest轴 ally+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a plump seed pressed gently into a comrade's bandaged wound",
         "elements": [
@@ -296,9 +296,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "ally",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "hp_asc"
       },
@@ -337,7 +338,7 @@
         "apothecary"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：生命轴 enabler：产 `生命`+清 1 负面。A22 走 `heal`。 ｜ 2026-10-03 骨架手术：孕育换形（角色=heal） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：healing轴 ally+board sort:hp_asc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：生命轴 enabler：产 `生命`+清 1 负面。A22 走 `heal`。 ｜ 2026-10-03 骨架手术：孕育换形（角色=heal） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：healing轴 ally+board sort:hp_asc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a healer whose glowing eyes trace illness inside a patient",
         "elements": [
@@ -472,9 +473,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "ally",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "hp_asc"
       },
@@ -514,7 +516,7 @@
         ],
         "mood": "gentle, vital"
       },
-      "conversionNotes": "2026-10-03 骨架手术：孕育换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：healing轴 ally+board sort:hp_asc（轴选靶签名设计 §4）"
+      "conversionNotes": "2026-10-03 骨架手术：孕育换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：healing轴 ally+board sort:hp_asc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。"
     },
     {
       "id": "skill_planter_s7_catalyze_seed",
@@ -545,7 +547,7 @@
       "secondaryTargets": [
         {
           "request": {
-            "mode": "area",
+            "mode": "unit",
             "faction": "ally",
             "anchor": "self",
             "scope": "board",
@@ -577,7 +579,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：大地轴 enabler：造物+控制+产 `大地`。`vine_snare`：禁位移+减速+减攻。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）；删 scope:single（回落默认 whole_lane+pick1）；anchor:empty_ally_slot → faction:ally+filter.emptySlot:true+anchor:self+scope:board（己方空格落点）",
+      "conversionNotes": "翻译/语义：大地轴 enabler：造物+控制+产 `大地`。`vine_snare`：禁位移+减速+减攻。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）；删 scope:single（回落默认 whole_lane+pick1）；anchor:empty_ally_slot → faction:ally+filter.emptySlot:true+anchor:self+scope:board（己方空格落点） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "dimHooks": [
         {
           "dim": "luminance",
@@ -1236,10 +1238,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_desc"
       },
@@ -1260,7 +1262,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：荒芜轴 payoff：挂 `荒芜`+引仇恨。 ｜ 2026-10-03 骨架手术：孕育换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：blight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：荒芜轴 payoff：挂 `荒芜`+引仇恨。 ｜ 2026-10-03 骨架手术：孕育换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：blight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "vines, insects and wind all converging hungrily on one lone figure",
         "elements": [
@@ -1436,9 +1438,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "ally",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "hp_asc"
       },
@@ -1484,7 +1487,7 @@
         "apothecary"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：生命轴 payoff：大额瞬疗+全清三类（唯一解控卡）。A22。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：孕育换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：healing轴 ally+board sort:hp_asc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：生命轴 payoff：大额瞬疗+全清三类（唯一解控卡）。A22。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：孕育换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：healing轴 ally+board sort:hp_asc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a glowing hand laid on a wound that closes under warm light",
         "elements": [
@@ -1607,10 +1610,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_asc"
       },
@@ -1667,7 +1670,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：荒芜轴 enabler：持续流逝+阈值爆发（考验）。元素 none。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：孕育换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：blight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：荒芜轴 enabler：持续流逝+阈值爆发（考验）。元素 none。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：孕育换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：blight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a hand on a shoulder as green life-light drains into the soil",
         "elements": [
@@ -2275,10 +2278,10 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         }
       },
       "effects": [
@@ -2354,7 +2357,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：荒芜轴 payoff：双面体顶点（敌命回归+己魂归来）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 15tick（序列 0 档，基准 §三之二） ｜ 2026-10-02 批次十一：corrupted 跨系读段（堕落归土——荒芜×堕落双腐归土） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排）",
+      "conversionNotes": "翻译/语义：荒芜轴 payoff：双面体顶点（敌命回归+己魂归来）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 15tick（序列 0 档，基准 §三之二） ｜ 2026-10-02 批次十一：corrupted 跨系读段（堕落归土——荒芜×堕落双腐归土） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "fallen warriors rising from tilled soil while enemies sink into it",
         "elements": [

@@ -2737,10 +2737,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "armor_desc"
       },
@@ -2788,7 +2788,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "退化方案：固定 damage(physical, 6) + 清除防护（退化为毁灭水滴的 physical 版） ｜ fallbackSort armor_desc（新增项 14）实现「专打重甲」语义；不做则按 hp_desc 兜底 ｜ 翻译/语义：防御物质转攻击伤害。依赖 `valueFrom: dispelledAmount`（新增项 8）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：authority轴 enemy+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "退化方案：固定 damage(physical, 6) + 清除防护（退化为毁灭水滴的 physical 版） ｜ fallbackSort armor_desc（新增项 14）实现「专打重甲」语义；不做则按 hp_desc 兜底 ｜ 翻译/语义：防御物质转攻击伤害。依赖 `valueFrom: dispelledAmount`（新增项 8）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：authority轴 enemy+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "enemy armor warping into blades that twist back toward its own wearer",
         "elements": [

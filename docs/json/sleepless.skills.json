@@ -452,9 +452,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "ally",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "hp_asc"
       },
@@ -506,7 +507,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴友军向预演（增益向），与序列6【安魂】削弱向区分。｜2026-10-09 安魂轴重设计：摘 set_luminance（光照语义归暗夜轴）；治疗目标即己方灵体，直接挂凝实（轴身份转向对友灵正向增益）。｜2026-10-13 目标放宽：由全体己方灵体改为任一友方单体，凝实改为条件挂载（target_unit_type SPIRIT）——治疗/驱散对所有友方可用，灵体额外得凝实。｜2026-10-13 冷却改 15→30 长 CD，目标是灵体则 cooldownDelta -15（modify_skill self+skillId，首个 cooldownDelta 数据用例）——泛用面放宽的代价压在 CD 上，灵体目标维持原节奏。",
+      "conversionNotes": "翻译/语义：安魂轴友军向预演（增益向），与序列6【安魂】削弱向区分。｜2026-10-09 安魂轴重设计：摘 set_luminance（光照语义归暗夜轴）；治疗目标即己方灵体，直接挂凝实（轴身份转向对友灵正向增益）。｜2026-10-13 目标放宽：由全体己方灵体改为任一友方单体，凝实改为条件挂载（target_unit_type SPIRIT）——治疗/驱散对所有友方可用，灵体额外得凝实。｜2026-10-13 冷却改 15→30 长 CD，目标是灵体则 cooldownDelta -15（modify_skill self+skillId，首个 cooldownDelta 数据用例）——泛用面放宽的代价压在 CD 上，灵体目标维持原节奏。 ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a hummed lullaby settling over a resting companion",
         "elements": [
@@ -1420,10 +1421,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "gauge_desc"
       },
@@ -1469,7 +1470,7 @@
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴节奏压制。｜2026-10-08 夜轨改造：压暗 -1/10t → advance_clock 3t。｜赶夜步长⚠️D 待平衡。｜2026-10-08 相位分叉：夜相位提效果（束缚 15→20 tick）、非夜相位赶夜 3 tick——夜相位拨时会缩短己方强段，故分叉。",
+      "conversionNotes": "翻译/语义：暗夜轴节奏压制。｜2026-10-08 夜轨改造：压暗 -1/10t → advance_clock 3t。｜赶夜步长⚠️D 待平衡。｜2026-10-08 相位分叉：夜相位提效果（束缚 15→20 tick）、非夜相位赶夜 3 tick——夜相位拨时会缩短己方强段，故分叉。 ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "long hair silently coiling around a struggling enemy's limbs",
         "elements": [
@@ -1501,10 +1502,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "gauge_desc"
       },
@@ -1541,7 +1542,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴确定性厄运（慢/退/加重）。｜2026-10-08 夜轨改造：压暗 -1/15t → advance_clock 3t。｜赶夜步长⚠️D 待平衡。｜2026-10-08 相位分叉：夜相位厄运 20→25 tick、非夜相位赶夜 3 tick——夜相位拨时会缩短己方强段，故分叉。",
+      "conversionNotes": "翻译/语义：暗夜轴确定性厄运（慢/退/加重）。｜2026-10-08 夜轨改造：压暗 -1/15t → advance_clock 3t。｜赶夜步长⚠️D 待平衡。｜2026-10-08 相位分叉：夜相位厄运 20→25 tick、非夜相位赶夜 3 tick——夜相位拨时会缩短己方强段，故分叉。 ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a small patch of night clinging to a staggering enemy",
         "elements": [
@@ -1573,10 +1574,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_desc"
       },
@@ -1618,7 +1619,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴处决。｜2026-10-08 夜轨改造：压暗 -2/10t → advance_clock 5t；dimHook(luminance≤2) → phaseHook(night/midnight)。｜赶夜步长⚠️D 待平衡。｜phaseHook ×1.2 ⚠️D 平衡占位。｜2026-10-08 相位分叉：夜相位侵蚀 15→20 tick、非夜相位赶夜 5 tick。｜2026-10-08 tick 口径清算：侵蚀伤害节奏改每 5 tick（原 on_tick 每 tick ×2，20 tick 内 40 点超预算锚）。｜2026-10-08 费率式表述：伤害改按每 tick 0.4 点（原 2 点/5 tick，总量不变），同时摆脱 minIntervalTicks 权宜写法",
+      "conversionNotes": "翻译/语义：暗夜轴处决。｜2026-10-08 夜轨改造：压暗 -2/10t → advance_clock 5t；dimHook(luminance≤2) → phaseHook(night/midnight)。｜赶夜步长⚠️D 待平衡。｜phaseHook ×1.2 ⚠️D 平衡占位。｜2026-10-08 相位分叉：夜相位侵蚀 15→20 tick、非夜相位赶夜 5 tick。｜2026-10-08 tick 口径清算：侵蚀伤害节奏改每 5 tick（原 on_tick 每 tick ×2，20 tick 内 40 点超预算锚）。｜2026-10-08 费率式表述：伤害改按每 tick 0.4 点（原 2 点/5 tick，总量不变），同时摆脱 minIntervalTicks 权宜写法 ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "phaseHooks": [
         {
           "phases": [

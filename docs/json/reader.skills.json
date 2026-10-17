@@ -195,10 +195,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "index_asc"
       },
@@ -246,7 +246,7 @@
         "pryer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：本途径输出地基（火球术锚点：3 能/4 伤 ≈1.33 汇率）。升级阶梯 4→6→8（序列8 仪式魔法专家为第二档）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：arcana轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：本途径输出地基（火球术锚点：3 能/4 伤 ≈1.33 汇率）。升级阶梯 4→6→8（序列8 仪式魔法专家为第二档）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：arcana轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a robed reader finishing a candle circle as a spectral fang bites downward",
         "elements": [
@@ -576,10 +576,10 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         }
       },
       "effects": [
@@ -609,7 +609,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：本途径唯一物理直伤，G8 合规（近战攻击进程不调 move）。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：arcana轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：本途径唯一物理直伤，G8 合规（近战攻击进程不调 move）。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：arcana轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a scholar redirecting a lunging foe with a flawless deflecting palm",
         "elements": [
@@ -795,12 +795,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "filter": {
             "hasStatus": "observed"
           },
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -870,7 +871,7 @@
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：模仿线第一档，概率仅决定\"是否触发\"（R5 合规）。模仿轴 enabler+payload。⚠️ 依赖新增项 1/4/16。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：模仿线第一档，概率仅决定\"是否触发\"（R5 合规）。模仿轴 enabler+payload。⚠️ 依赖新增项 1/4/16。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a scholar mirroring an enemy's strike with a clumsy but true imitation",
         "elements": [
@@ -954,10 +955,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_desc"
       },
@@ -990,7 +991,7 @@
         "pryer"
       ],
       "tentative": false,
-      "conversionNotes": "与序列9「仪式魔法」是不同技能（非升级档），可同时占槽 ｜ 翻译/语义：仪式魔法大师版：伤害 4→6 并附护盾（仪式兼具守护）。 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→4（位格3 基准4）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：arcana轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "与序列9「仪式魔法」是不同技能（非升级档），可同时占槽 ｜ 翻译/语义：仪式魔法大师版：伤害 4→6 并附护盾（仪式兼具守护）。 ｜ 直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 6→4（位格3 基准4）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：arcana轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a reader standing at the heart of a seven-layered array as disaster falls outward",
         "elements": [
@@ -1191,10 +1192,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "ally",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "gauge_asc"
       },
@@ -1285,7 +1286,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：预知=节奏改写。G5/G6 合规（推友军不自推）。依赖新增项 7/3。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）；删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：foresight轴 ally+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：预知=节奏改写。G5/G6 合规（推友军不自推）。依赖新增项 7/3。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）；删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：foresight轴 ally+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a prophet watching branching future paths unfold above an hourglass",
         "elements": [
@@ -1386,12 +1387,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "filter": {
             "hasStatus": "observed"
           },
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -1418,7 +1420,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "与模仿·初解是同一条技能线（B6 duplicatePolicy:upgrade，0.2→0.5→0.6→0.8→0.9→1.0，不额外占槽） ｜ 翻译/语义：模仿线第二档，必定成功。与初解同线 B6 升级。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "与模仿·初解是同一条技能线（B6 duplicatePolicy:upgrade，0.2→0.5→0.6→0.8→0.9→1.0，不额外占槽） ｜ 翻译/语义：模仿线第二档，必定成功。与初解同线 B6 升级。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a scholar replicating an enemy's spell with a near-perfect ghost hand",
         "elements": [
@@ -1450,12 +1452,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "filter": {
             "hasStatus": "observed"
           },
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -1482,7 +1485,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：0.8 为效果保留门槛（附加效果完整保留）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：0.8 为效果保留门槛（附加效果完整保留）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a reader replaying a foe's technique while sharing its very thoughts",
         "elements": [
@@ -1786,12 +1789,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "filter": {
             "hasStatus": "observed"
           },
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -1818,7 +1822,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：90%=第二道门槛（状态 duration 不再打折）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：90%=第二道门槛（状态 duration 不再打折）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a cherub-faced scholar copying a foe down to its shadow",
         "elements": [
@@ -1923,11 +1927,11 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "ally",
           "excludeSelf": true,
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "gauge_asc"
       },
@@ -1961,7 +1965,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：智慧权柄对外版。G5/G6 合规。依赖新增项 4/14。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：foresight轴 ally+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：智慧权柄对外版。G5/G6 合规。依赖新增项 4/14。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：foresight轴 ally+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a whispered word from a sage guiding an ally's strike onto the perfect line",
         "elements": [
@@ -2084,9 +2088,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -2119,7 +2124,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：改写\"行为\"概念=target_override→first_empty。依赖新增项 15。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：改写\"行为\"概念=target_override→first_empty。依赖新增项 15。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a tutor editing a foe's intent in the star-realm, its blade swinging at empty air",
         "elements": [
@@ -2151,12 +2156,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "filter": {
             "hasStatus": "observed"
           },
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -2203,7 +2209,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：模仿顶点，100%。依赖新增项 1/4/16。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：模仿顶点，100%。依赖新增项 1/4/16。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a scholar producing a flawless double of a foe's ultimate technique",
         "elements": [
@@ -2284,11 +2290,11 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "ally",
           "excludeSelf": true,
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_asc"
       },
@@ -2312,7 +2318,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "本稿全篇零 heal：原著阅读者途径无治疗能力，阶梯只负责离开、不负责治好（刻意设计） ｜ 翻译/语义：脱离当前位置=己方半场后撤+护盾。零 heal（原著无治疗）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：foresight轴 ally+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "本稿全篇零 heal：原著阅读者途径无治疗能力，阶梯只负责离开、不负责治好（刻意设计） ｜ 翻译/语义：脱离当前位置=己方半场后撤+护盾。零 heal（原著无治疗）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：foresight轴 ally+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a stairway of starlight carrying a wounded ally beyond the blades",
         "elements": [

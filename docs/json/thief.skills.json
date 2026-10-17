@@ -83,9 +83,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -163,7 +164,7 @@
         "apprentice"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：窃物轴 enabler：偷能量+累积 `赃物`。用 `drain`（搬运语义=偷）。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：窃物轴 enabler：偷能量+累积 `赃物`。用 `drain`（搬运语义=偷）。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a gloved hand lifting a fat coin purse from an unaware merchant's coat",
         "elements": [
@@ -304,10 +305,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -328,7 +329,7 @@
         "seer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：误导=打空+挂 `误判`（欺诈轴 enabler）+写隐秘值。 ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 target_override(anchor:first_empty)——目标改写正主第一卡（欺诈轴『骗』的机制化） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：deceit轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：误导=打空+挂 `误判`（欺诈轴 enabler）+写隐秘值。 ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 target_override(anchor:first_empty)——目标改写正主第一卡（欺诈轴『骗』的机制化） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：deceit轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a flickering afterimage of a thief left where the enemy strikes empty air",
         "elements": [
@@ -359,10 +360,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "gauge_desc"
       },
@@ -394,7 +395,7 @@
         "seer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：干扰=推条+挂误判+写隐秘值。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：deceit轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：干扰=推条+挂误判+写隐秘值。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：deceit轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a befuddled warrior clutching his head as jangling silver threads ring his skull",
         "elements": [
@@ -523,10 +524,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "buff_count_desc"
       },
@@ -570,7 +571,7 @@
         "seer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：拆幻象+识破隐匿+挂误判。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：deceit轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：拆幻象+识破隐匿+挂误判。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：deceit轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "an illusionary veil unraveling into threads, exposing what hides behind",
         "elements": [
@@ -702,9 +703,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -734,7 +736,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：窃物轴旗舰：读 `赃物≥3` 做成\"禁用+自身获得\"双向结构（非复制伤害）。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：窃物轴旗舰：读 `赃物≥3` 做成\"禁用+自身获得\"双向结构（非复制伤害）。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "an open palm stealing a living flame from another's clenched fist",
         "elements": [
@@ -811,10 +813,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_desc"
       },
@@ -834,7 +836,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：塞假货=以假代真预演；误判存在时增强（欺诈轴 payoff）。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：deceit轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：塞假货=以假代真预演；误判存在时增强（欺诈轴 payoff）。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：deceit轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a smirking thief slipping a glowing trinket into a stranger's pocket",
         "elements": [
@@ -916,9 +918,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -952,7 +955,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：记忆=禁技能+削攻；赃物加成。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：记忆=禁技能+削攻；赃物加成。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a hollow-eyed man losing his own reflection from a mirror",
         "elements": [
@@ -983,9 +986,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -1020,7 +1024,7 @@
         ],
         "mood": "vacant, eerie"
       },
-      "conversionNotes": "2026-10-03 骨架手术：持有形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）"
+      "conversionNotes": "2026-10-03 骨架手术：持有形状换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。"
     },
     {
       "id": "skill_thief_s5_divine_disguise",
@@ -1267,9 +1271,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -1301,7 +1306,7 @@
         "apprentice"
       ],
       "tentative": false,
-      "conversionNotes": "原著同条的「窃取位置」因 G8 铁律禁止跨阵营 relocate 不做，列入稿面遗留 ｜ 翻译/语义：概念性窃取=推远+拉节奏+寄生+隐秘值。G8 合规（push_back 锁 from.faction）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "原著同条的「窃取位置」因 G8 铁律禁止跨阵营 relocate 不做，列入稿面遗留 ｜ 翻译/语义：概念性窃取=推远+拉节奏+寄生+隐秘值。G8 合规（push_back 锁 from.faction）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a bewildered soldier striding yet never closing the gap across a stretched road",
         "elements": [
@@ -1509,10 +1514,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "buff_count_desc"
       },
@@ -1577,7 +1582,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：欺诈轴旗舰 payoff：读 `误判` 欺诈规则（骗过状态生效层）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：deceit轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：欺诈轴旗舰 payoff：读 `误判` 欺诈规则（骗过状态生效层）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：deceit轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a blade passing straight through armor that believes it is elsewhere",
         "elements": [
@@ -1608,9 +1613,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -1647,7 +1653,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：多项全偷；赃物门槛放大。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：多项全偷；赃物门槛放大。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a thief yanking three glowing strands from a foe in one motion",
         "elements": [
@@ -2162,9 +2168,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -2221,7 +2228,7 @@
         ],
         "mood": "triumphant, unmoored"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=stat） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）"
+      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：持有形状换形（角色=stat） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。"
     },
     {
       "id": "skill_thief_s1_stone_clock",
@@ -2619,9 +2626,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "board"
+          "scope": "board",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -2675,7 +2683,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：窃物轴终点：读 `赃物≥5` 全搬+禁增益。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：窃物轴终点：读 `赃物≥5` 全搬+禁增益。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：steal轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a thief signing his name over a glowing ledger of another's stolen domain",
         "elements": [

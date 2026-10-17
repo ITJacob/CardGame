@@ -193,13 +193,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "hasStatus": "marked"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_desc"
       },
@@ -252,7 +252,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：本途径「火球术」锚点：3 能 5 伤。G8 合规（`reach: melee` 不调 move）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：本途径「火球术」锚点：3 能 5 伤。G8 合规（`reach: melee` 不调 move）。直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "an arbiter landing a precise straight punch that staggers a towering brute",
         "elements": [
@@ -612,13 +612,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "hasStatus": "marked"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "index_asc"
       },
@@ -645,7 +645,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：惩戒轴 AOE 地基。 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：惩戒轴 AOE 地基。 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a satchel charge tumbling into a crowd and bursting into a blinding fireball",
         "elements": [
@@ -722,10 +722,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -806,7 +806,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：**本途径灵魂 enabler**：把 v0.2 的单体 `decree` 升级为**写入规则槽**（战场级共享棋盘）。立规同时挂 `律令（规则）` 身份状态、推秩序度 +1。律师可改此槽（见《律师 v0.3》）。⚠️ `规则槽 Rules[3]` 为新增战场物件（本稿框架改动 #1）。退化方案：单 `decree` 状态，代价失\"共享棋盘\"辨识度。；秩序度写入（2026-10-01 量表写入批）：立规落地秩序 +1（仲裁人推高，dimHook order≥7 律令 ×1.5 的供源）。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：**本途径灵魂 enabler**：把 v0.2 的单体 `decree` 升级为**写入规则槽**（战场级共享棋盘）。立规同时挂 `律令（规则）` 身份状态、推秩序度 +1。律师可改此槽（见《律师 v0.3》）。⚠️ `规则槽 Rules[3]` 为新增战场物件（本稿框架改动 #1）。退化方案：单 `decree` 状态，代价失\"共享棋盘\"辨识度。；秩序度写入（2026-10-01 量表写入批）：立规落地秩序 +1（仲裁人推高，dimHook order≥7 律令 ×1.5 的供源）。 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a judge declaring a rule aloud while golden letters of law hang in the air",
         "elements": [
@@ -838,10 +838,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "energy_desc"
       },
@@ -874,7 +874,7 @@
         "lawyer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：硬禁令（封口）；与【立规】分工=无条件的封 vs 有条件的立法。 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：硬禁令（封口）；与【立规】分工=无条件的封 vs 有条件的立法。 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "two spoken words sealing an enemy's throat as invisible fingers close around it",
         "elements": [
@@ -906,10 +906,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -939,7 +939,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：双层锁定（不能动+不能被位移）。 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：双层锁定（不能动+不能被位移）。 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "invisible bars closing around a trapped figure mid-leap in empty space",
         "elements": [
@@ -971,13 +971,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "hasStatus": "marked"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_desc"
       },
@@ -1007,7 +1007,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：廉价连击件：4 伤+易伤为【处决】【审判之剑】铺路。 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：廉价连击件：4 伤+易伤为【处决】【审判之剑】铺路。 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a judge's whip drawing red lines across a kneeling offender's back",
         "elements": [
@@ -1091,13 +1091,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "hasStatus": "marked"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_desc"
       },
@@ -1124,7 +1124,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：惩戒轴核心 enabler：聚焦火力引擎。审讯轴闸门生效（被标记目标额外加成），把废轴变必过节点。 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：惩戒轴核心 enabler：聚焦火力引擎。审讯轴闸门生效（被标记目标额外加成），把废轴变必过节点。 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "an arbiter pressing an invisible glowing brand onto a foe's forehead",
         "elements": [
@@ -1156,10 +1156,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -1219,7 +1219,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：律令轴 payoff：规则槽写入\"必中追击\"。与【惩戒】耦合=同敌叠\"7 点必中\"。 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：律令轴 payoff：规则槽写入\"必中追击\"。与【惩戒】耦合=同敌叠\"7 点必中\"。 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a second sealing mark layered on a foe while a hovering sword waits to strike",
         "elements": [
@@ -1459,10 +1459,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "buff_count_desc"
       },
@@ -1497,7 +1497,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：彻底收缴增益。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：彻底收缴增益。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a judge's open hand stripping away glowing borrowed blessings from a shrinking figure",
         "elements": [
@@ -1529,10 +1529,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -1555,7 +1555,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：G8 合规（push_back 锁己方半场）。`exiled`=不可被同阵营增益/治疗/守护选中。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：G8 合规（push_back 锁己方半场）。`exiled`=不可被同阵营增益/治疗/守护选中。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a lone figure erased from the ranks, standing apart behind a glassy veil",
         "elements": [
@@ -1587,13 +1587,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "hasStatus": "marked"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_asc"
       },
@@ -1638,7 +1638,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：阈值斩杀。低血线 9 伤带审讯/惩戒标记更痛。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：阈值斩杀。低血线 9 伤带审讯/惩戒标记更痛。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a headsman's blade already falling as a crimson life-thread snaps",
         "elements": [
@@ -1762,13 +1762,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "hasStatus": "marked"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "debuff_count_desc"
       },
@@ -1852,7 +1852,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：惩戒轴 payoff：对混乱/失控者直接审判。`never_miss` 无视规避。铁序加成接通秩序度维度。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：惩戒轴 payoff：对混乱/失控者直接审判。`never_miss` 无视规避。铁序加成接通秩序度维度。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "dimHooks": [
         {
           "dim": "order",
@@ -1942,10 +1942,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "whole_lane",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "index_asc"
       },
@@ -1983,7 +1983,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：辖区轴切断支援。G8 合规。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：jurisdiction轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "翻译/语义：辖区轴切断支援。G8 合规。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：jurisdiction轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "an invisible dividing line bisecting the battlefield into two unreachable halves",
         "elements": [
@@ -2075,10 +2075,10 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -2153,7 +2153,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "稿面 equalize_stat 已落 ddd（modify_stat.mode: set + sourceRef，✅ 新增项 4）；排除 hp/hp_max/energy 系（稿面设计取值） ｜ 翻译/语义：律令轴平衡件：拉平四项（排除 hp/energy）。INV-S5 合规。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "稿面 equalize_stat 已落 ddd（modify_stat.mode: set + sourceRef，✅ 新增项 4）；排除 hp/hp_max/energy 系（稿面设计取值） ｜ 翻译/语义：律令轴平衡件：拉平四项（排除 hp/energy）。INV-S5 合规。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：decree轴 enemy+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a huge warrior sinking and a small one rising until both stand on one line",
         "elements": [
@@ -2613,13 +2613,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "hasStatus": "marked"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "debuff_count_desc"
       },
@@ -2703,7 +2703,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "Repeat 按状态数量展开依赖 G3 valueFrom（✅ 已落：编目参数 §一 Repeat.count 支持 valueFrom）；退化方案：若 ≥3 个负面状态则追加 damage(mental,6)，失去逐条清算仪式感 ｜ 翻译/语义：惩戒轴终焉 payoff：按罪状累加+全场波及。规则槽非空时额外强化（与律师共享棋盘联动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": "Repeat 按状态数量展开依赖 G3 valueFrom（✅ 已落：编目参数 §一 Repeat.count 支持 valueFrom）；退化方案：若 ≥3 个负面状态则追加 damage(mental,6)，失去逐条清算仪式感 ｜ 翻译/语义：惩戒轴终焉 payoff：按罪状累加+全场波及。规则槽非空时额外强化（与律师共享棋盘联动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
       "art": {
         "subject": "a supreme judge delivering the final sentence as the world's will gathers behind",
         "elements": [
@@ -3058,13 +3058,13 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
           "scope": "board",
           "filter": {
             "hasStatus": "marked"
           },
-          "pickCount": "all"
+          "pickCount": 1
         },
         "fallbackSort": "hp_desc"
       },
@@ -3077,7 +3077,7 @@
         ],
         "mood": "measured, unequal, implacable"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：立规换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：sanction轴 enemy+board filter:hasStatus pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。"
     },
     {
       "id": "skill_arbiter_s1_demean",
