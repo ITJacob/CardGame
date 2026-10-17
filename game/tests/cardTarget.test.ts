@@ -38,6 +38,7 @@ const TRIAGE: PathwayFile = {
         { type: 'mount_status', statusId: 'probe_on_trap', duration: null, target: 'one_own_snare_trap' },
         { type: 'mount_status', statusId: 'probe_on_selection', duration: null },
         { type: 'mount_status', statusId: 'probe_on_secondary_fb', duration: null, target: 'secondary_target' },
+        { type: 'mount_status', statusId: 'probe_on_spread', duration: null, spread: 'splash_adjacent' },
         { type: 'modify_resource', resource: 'order', value: -1, mode: 'delta', target: 'board' },
       ],
       statusDefs: [
@@ -50,6 +51,7 @@ const TRIAGE: PathwayFile = {
         MARK('probe_on_trap', '己方陷阱标记'),
         MARK('probe_on_selection', '选靶标记'),
         MARK('probe_on_secondary_fb', '次目标回退标记'),
+        MARK('probe_on_spread', '效果级 spread 标记'),
       ],
     },
   ],
@@ -113,6 +115,20 @@ function newCombat(): Handle {
     factions: [
       { id: 'A' as const, name: '甲', units: roster.A },
       { id: 'B' as const, name: '乙', units: roster.B },
+    ],
+    inputs: { decisions: new Map() },
+  } as never) as unknown as Handle
+}
+
+/** 选靶扩散场：乙 u0 持「扩散」（request.spread） */
+function newSpecCombat(): Handle {
+  return createCombat({
+    seed: 17,
+    catalog: buildCatalog([SPEC]).catalog,
+    board: { clock: { base: 0 }, domainGrants: [] },
+    factions: [
+      { id: 'A' as const, name: '甲', units: [unit('A_u0', 'A', 'lane0', 0), unit('A_u1', 'A', 'lane0', 1)] },
+      { id: 'B' as const, name: '乙', units: [unit('B_u0', 'B', 'lane0', 0, { skills: ['probe_spec'] })] },
     ],
     inputs: { decisions: new Map() },
   } as never) as unknown as Handle
@@ -203,7 +219,35 @@ describe('卡片语境的 target 展开', () => {
     expect(has(c, 'A_u0', 'probe_on_secondary_fb')).toBe(true)
     expect(has(c, 'B_u0', 'probe_on_secondary_fb')).toBe(false)
   })
+
+  it('效果级 spread：落「目标及其相邻」——原点含在内（对比 splash_adjacent 不含原点）', () => {
+    expect(has(c, 'A_u0', 'probe_on_spread')).toBe(true) // 原点含在内
+    expect(has(c, 'A_u1', 'probe_on_spread')).toBe(true) // 同阵营同路相邻
+    expect(has(c, 'B_u0', 'probe_on_spread')).toBe(true) // 跨阵营镜像对位
+    expect(has(c, 'A_u0', 'probe_on_splash')).toBe(false) // 对照：splash_adjacent 原点不含
+  })
 })
+
+/** 选靶规格 spread 探针：主选靶敌方前排 + request.spread → 整个 Action 的选靶含原点扩散 */
+const SPEC: PathwayFile = {
+  pathwayId: 'probe_spec_spread',
+  pathwayName: '探针·选靶 spread',
+  sourceFile: 'probe',
+  sourceVersion: 'test',
+  cards: [
+    {
+      id: 'probe_spec', name: '扩散', kind: 'active', sequence: 1, sequenceName: 's1', rarity: 'common',
+      axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
+      cost: { energy: 0, cooldown: 0, castTime: 0 }, reach: 'spell',
+      target: {
+        request: { faction: 'enemy', anchor: 'enemy_front', sort: 'index_asc', pickCount: 1, spread: 'splash_adjacent' },
+        selectionMode: 'auto',
+      },
+      effects: [{ type: 'mount_status', statusId: 'spec_on_default', duration: null }],
+      statusDefs: [MARK('spec_on_default', '选靶扩散标记')],
+    },
+  ],
+}
 
 describe('第二组选靶（secondaryTargets）', () => {
   const c = newDualCombat()
@@ -218,5 +262,16 @@ describe('第二组选靶（secondaryTargets）', () => {
   it('不带 target 的节点仍落主选靶', () => {
     expect(has(c, 'A_u0', 'dual_on_primary')).toBe(true)
     expect(has(c, 'B_u1', 'dual_on_primary')).toBe(false)
+  })
+})
+
+describe('选靶规格 spread（request.spread）', () => {
+  const c = newSpecCombat()
+  run(c, 12)
+
+  it('整个 Action 的选靶含原点扩散（默认落点跟着扩散）', () => {
+    expect(has(c, 'A_u0', 'spec_on_default')).toBe(true) // 原点（主选靶）
+    expect(has(c, 'A_u1', 'spec_on_default')).toBe(true) // 同阵营同路相邻
+    expect(has(c, 'B_u0', 'spec_on_default')).toBe(true) // 跨阵营镜像对位
   })
 })

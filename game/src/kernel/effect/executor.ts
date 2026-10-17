@@ -4,7 +4,7 @@ import type { EffectNode, OpIf, OpRepeat, OpSequence } from '../catalog/types'
 import type { Condition, EffectTarget } from '../shared/types'
 import { evaluateCondition, type ConditionContext } from '../shared/effect-condition'
 import type { EffectContext } from './context'
-import { resolveEffectTargets } from './target-scope'
+import { resolveEffectTargets, spreadFrom } from './target-scope'
 import * as H from './handlers'
 import * as H2 from './handlers2'
 import * as H3 from './handlers3'
@@ -107,10 +107,19 @@ function executeNode(node: EffectNode, targets: readonly (CombatUnit | null)[], 
   // 有语境时，节点自带的 target 简写自行求值（执行参数 §2.1b 载荷 / §2.1c 卡片）；
   // 无语境（zone / echo / translocate）则沿用外层落点，节点上的 target 不参与。
   const selector = (node as { target?: EffectTarget }).target
-  const resolved =
+  const base =
     selector && ctx.targetScope
       ? resolveEffectTargets(selector, ctx.targetScope, ctx.units, ctx.unsupported)
       : targets
+  // 效果级 `spread`：含原点一同扩散（「目标及其相邻」）；与 `target: 'splash_adjacent'`（只取相邻）
+  // 是同一相邻域的两个机制（共享内核参数 §一 spread 行 / 待办 §五）。
+  const spread = (node as { spread?: string }).spread
+  let resolved = base
+  if (spread === 'splash_adjacent') {
+    resolved = spreadFrom(base.filter((u): u is CombatUnit => u != null), ctx.units)
+  } else if (spread) {
+    ctx.unsupported(`spread:${spread}`)
+  }
   for (const target of resolved) {
     if (cond && !evaluateCondition(cond, target, cc)) continue
     handler(node, target, ctx)

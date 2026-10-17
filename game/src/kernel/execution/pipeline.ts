@@ -10,7 +10,7 @@ import type { TargetScope } from '../effect/target-scope'
 import { executeNodes } from '../effect/executor'
 import type { Registry } from '../roster/registry'
 import type { CombatUnit } from '../roster/unit'
-import { cardScope } from '../effect/target-scope'
+import { cardScope, spreadFrom } from '../effect/target-scope'
 import { resolveCandidates, toResolved } from './target'
 import { createAction } from './action'
 import type { Action, DecisionRequest, ResolvedTarget } from './types'
@@ -114,7 +114,16 @@ function settle(
   }) as Action & { finalTargets: ResolvedTarget[]; outcomes: unknown[] }
 
   // R：P2a 无转向规则——finalTargets = committedTargets（去重由 resolve 保证）
-  action.finalTargets = [...committed]
+  // 选靶规格 `spread`（共享内核参数 §一 spread 行）：主目标已定（I-2 收缩之后），自 committedTargets
+  // **含原点**向外扩散相邻域；溅射目标不再进候选池、不触发二次排序或玩家选择。
+  if (source.targetSpec.request.spread === 'splash_adjacent') {
+    const hitUnits = committed
+      .map((t) => (t.occupant ? deps.units.get(t.occupant) : undefined))
+      .filter((u): u is CombatUnit => u !== undefined)
+    action.finalTargets = spreadFrom(hitUnits, deps.units).map(toResolved)
+  } else {
+    action.finalTargets = [...committed]
+  }
 
   // 主体锚点：日志/排查靠它把后续 TargetsResolved/EffectApplied 串回「谁出手、用的什么」
   deps.emit({ type: 'BehaviorCommitted', actionId, caster: caster.id, cost: source.consumption, sourceRef: source.sourceRef })

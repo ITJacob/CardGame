@@ -68,6 +68,25 @@ function adjacentUnits(ref: CombatUnit, units: Registry): CombatUnit[] {
   return alive(units.all()).filter((u) => u.id !== ref.id && u.position != null && adjacent(pos, u.position))
 }
 
+/** 效果级 `spread: 'splash_adjacent'` / 选靶规格 `spread`：**含原点**一同扩散（「目标及其相邻」）。
+ *  与 `target: 'splash_adjacent'` 是同一相邻域的两个机制——后者只取相邻（原点不含），本函数含原点。
+ *  顺序：原集合在前（保持传入序），新增相邻单位按 registry 序追加，整体去重。 */
+export function spreadFrom(refs: readonly CombatUnit[], units: Registry): CombatUnit[] {
+  const seen = new Set<string>()
+  const out: CombatUnit[] = []
+  for (const u of refs) {
+    if (seen.has(u.id)) continue
+    seen.add(u.id)
+    out.push(u)
+  }
+  for (const u of splashFrom(refs, units)) {
+    if (seen.has(u.id)) continue
+    seen.add(u.id)
+    out.push(u)
+  }
+  return out
+}
+
 /** 以若干原点扩散相邻域（去重，保持 registry 序）；原点本身不含在内。 */
 function splashFrom(refs: readonly CombatUnit[], units: Registry): CombatUnit[] {
   const seen = new Set<string>()
