@@ -37,6 +37,7 @@ const TRIAGE: PathwayFile = {
         { type: 'mount_status', statusId: 'probe_on_behind', duration: null, target: 'splash_behind' },
         { type: 'mount_status', statusId: 'probe_on_trap', duration: null, target: 'one_own_snare_trap' },
         { type: 'mount_status', statusId: 'probe_on_selection', duration: null },
+        { type: 'mount_status', statusId: 'probe_on_secondary_fb', duration: null, target: 'secondary_target' },
         { type: 'modify_resource', resource: 'order', value: -1, mode: 'delta', target: 'board' },
       ],
       statusDefs: [
@@ -48,7 +49,32 @@ const TRIAGE: PathwayFile = {
         MARK('probe_on_behind', '身后标记'),
         MARK('probe_on_trap', '己方陷阱标记'),
         MARK('probe_on_selection', '选靶标记'),
+        MARK('probe_on_secondary_fb', '次目标回退标记'),
       ],
+    },
+  ],
+}
+
+/** 双目标探针：主选靶敌方前排 + 第二组选靶（友军、除自身）→ 效果节点 `secondary_target` 应落友军 */
+const DUAL: PathwayFile = {
+  pathwayId: 'probe_dual',
+  pathwayName: '探针·双目标',
+  sourceFile: 'probe',
+  sourceVersion: 'test',
+  cards: [
+    {
+      id: 'probe_dual', name: '双诊', kind: 'active', sequence: 1, sequenceName: 's1', rarity: 'common',
+      axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
+      cost: { energy: 0, cooldown: 0, castTime: 0 }, reach: 'spell',
+      target: { request: { faction: 'enemy', anchor: 'enemy_front', sort: 'index_asc', pickCount: 1 }, selectionMode: 'auto' },
+      secondaryTargets: [
+        { request: { mode: 'unit', faction: 'ally', excludeSelf: true }, fallbackSort: 'index_asc', selectionMode: 'auto' },
+      ],
+      effects: [
+        { type: 'mount_status', statusId: 'dual_on_primary', duration: null },                      // 默认落主选靶
+        { type: 'mount_status', statusId: 'dual_on_secondary', duration: null, target: 'secondary_target' },
+      ],
+      statusDefs: [MARK('dual_on_primary', '主目标标记'), MARK('dual_on_secondary', '次目标标记')],
     },
   ],
 }
@@ -87,6 +113,20 @@ function newCombat(): Handle {
     factions: [
       { id: 'A' as const, name: '甲', units: roster.A },
       { id: 'B' as const, name: '乙', units: roster.B },
+    ],
+    inputs: { decisions: new Map() },
+  } as never) as unknown as Handle
+}
+
+/** 双目标场：乙 u0 持「双诊」。甲 u0/u1（敌方前排）、乙 u1（第二组选靶命中） */
+function newDualCombat(): Handle {
+  return createCombat({
+    seed: 13,
+    catalog: buildCatalog([DUAL]).catalog,
+    board: { clock: { base: 0 }, domainGrants: [] },
+    factions: [
+      { id: 'A' as const, name: '甲', units: [unit('A_u0', 'A', 'lane0', 0), unit('A_u1', 'A', 'lane0', 1)] },
+      { id: 'B' as const, name: '乙', units: [unit('B_u0', 'B', 'lane0', 0, { skills: ['probe_dual'] }), unit('B_u1', 'B', 'lane1', 0)] },
     ],
     inputs: { decisions: new Map() },
   } as never) as unknown as Handle
@@ -157,5 +197,26 @@ describe('卡片语境的 target 展开', () => {
     const diag = c.diagnostic()
     expect(diag.unsupportedKinds['target:board']).toBeUndefined()
     expect(diag.warnings.filter((w) => w.includes('board'))).toEqual([])
+  })
+
+  it('未填 secondaryTargets 的卡：secondary_target 回退主选靶（向后兼容）', () => {
+    expect(has(c, 'A_u0', 'probe_on_secondary_fb')).toBe(true)
+    expect(has(c, 'B_u0', 'probe_on_secondary_fb')).toBe(false)
+  })
+})
+
+describe('第二组选靶（secondaryTargets）', () => {
+  const c = newDualCombat()
+  run(c, 12)
+
+  it('secondary_target 落第二组选靶（友军、除自身），不再落主选靶', () => {
+    expect(has(c, 'B_u1', 'dual_on_secondary')).toBe(true)   // 第二组 = 非施法者的友军
+    expect(has(c, 'B_u0', 'dual_on_secondary')).toBe(false)  // excludeSelf 排除施法者
+    expect(has(c, 'A_u0', 'dual_on_secondary')).toBe(false)  // 不是主选靶（敌方）
+  })
+
+  it('不带 target 的节点仍落主选靶', () => {
+    expect(has(c, 'A_u0', 'dual_on_primary')).toBe(true)
+    expect(has(c, 'B_u1', 'dual_on_primary')).toBe(false)
   })
 })

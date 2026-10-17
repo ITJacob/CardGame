@@ -383,6 +383,9 @@ export interface SkillDef {
   cost?: { energy: number; cooldown: number; castTime: number | null }
   reach?: Reach
   targetSpec?: TargetSpec
+  /** 卡的第二组选靶（JSON `secondaryTargets`）：效果节点 `target: 'secondary_target'` 的落点来源。
+   *  空/缺省时该简写回退主选靶（向后兼容）。执行参数 §2.1c。 */
+  secondaryTargets?: TargetSpec[]
   effects: EffectRef[]
   triggers?: TriggerDef[]
   tags?: string[]

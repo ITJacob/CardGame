@@ -200,6 +200,9 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
           targetSpec: card.target
             ? (card.target as unknown as TargetSpec)
             : undefined,
+          secondaryTargets: card.secondaryTargets
+            ? (card.secondaryTargets as unknown as TargetSpec[])
+            : undefined,
           effects,
           triggers: card.triggers,
           authority: card.flagship,

@@ -799,9 +799,9 @@
 - **类型**：史诗 / 主动 / 🚪开门
 - **消耗**：能量 4 · 冷却 25 · 瞬发 · 距离 spell
 - **效果**：对一名敌人造成 5 点物理伤害（相邻敌人受到 2 点溅射），并撕开空间裂隙 15tick：其受伤 ×1.15。；若目标带提线木偶，斩断提线，追加 2 点物理伤害。；裂隙张开：目标被放逐一瞬（空间操作须付迷失租金）。
-- **机制**：`伤害 5（物理）（溅射相邻） → 伤害 2（物理） →次要目标 → 挂载 易伤（15t） → 若[目标有 提线木偶>=1]则（伤害 2（物理）） → translocate → 迷失值 +1 →自身`
+- **机制**：`伤害 5（物理）（溅射相邻） → 伤害 2（物理） →溅射相邻 → 挂载 易伤（15t） → 若[目标有 提线木偶>=1]则（伤害 2（物理）） → translocate → 迷失值 +1 →自身`
 - **✅ 支持进度**：机制均在内核封闭集内，无登记缺口
-- **拍板项**：**存疑**：翻译/语义：撕裂=伤口不愈合；门扉零耗加成。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度核对（2026-10-01）：主目标 5+溅射 2 符合 splash 主满邻半档（位格7 基准5），数值不动；注：溅射段以 target:secondary_target 承载（同愚者飞牌写法），未走 spread 枚举，结构口径见 PENDING。 ｜ 2026-10-03 骨架手术：时空税换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line spread=splash_adjacent(写damage) ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：gate轴 enemy+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。
+- **拍板项**：**存疑**：翻译/语义：撕裂=伤口不愈合；门扉零耗加成。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度核对（2026-10-01）：主目标 5+溅射 2 符合 splash 主满邻半档（位格7 基准5），数值不动；注：溅射段以 target:secondary_target 承载（同愚者飞牌写法），未走 spread 枚举，结构口径见 PENDING。 ｜ 2026-10-03 骨架手术：时空税换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line spread=splash_adjacent(写damage) ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：gate轴 enemy+cross_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。 ｜ 2026-10-17 secondary_target 接通：本卡溅射节点原误用 secondary_target（本卡无第二组选靶），改为 target:splash_adjacent（已实现）。
 - **设定**：序列3 漫游者 —— "「漫游」：可进入星空，遨游星界，前往不同星球 /「开门」：能突破几乎所有屏障 /「融入空间」、「撕裂空间」"
 - **风味**：你伸手撕开一道裂隙——它和它身侧的同伴都被裂口咬住，而裂隙并不会合拢。
 

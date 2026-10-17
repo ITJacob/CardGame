@@ -18,6 +18,9 @@ export interface TargetScope {
    *  触发链恒为单元素（该触发点无受害主体时 = [host]）；卡片 = 该次选靶命中的单位，
    *  **可为空**——空集即无落点，效果空转（不退回施法者） */
   readonly targets: readonly CombatUnit[]
+  /** 卡的**第二组选靶**（JSON `secondaryTargets`）命中集合——卡片语境专用，供
+   *  `secondary_target` 取值；空 = 该卡未填第二组（此时 `secondary_target` 回退 `targets`）。执行参数 §2.1c */
+  readonly secondary: readonly CombatUnit[]
   /** `attacker` 的落点（on_take_damage / on_deal_damage 语境） */
   readonly attacker: CombatUnit | null
   /** `killed_unit` 的落点（on_kill / on_death 语境） */
@@ -41,8 +44,9 @@ export function cardScope(
   caster: CombatUnit,
   selected: readonly CombatUnit[],
   enemyFaction: FactionId | null,
+  secondary: readonly CombatUnit[] = [],
 ): TargetScope {
-  return { host: caster, caster, targets: selected, attacker: null, killed: null, enemyFaction }
+  return { host: caster, caster, targets: selected, secondary, attacker: null, killed: null, enemyFaction }
 }
 
 function alive(list: readonly CombatUnit[]): CombatUnit[] {
@@ -125,8 +129,12 @@ export function resolveEffectTargets(
     case 'target':
     case 'primary_target':
     case 'same_target':
-    case 'secondary_target':
       return selected()
+    case 'secondary_target':
+      // 卡的第二组选靶命中集；未填（空）时回退主选靶——未填数据的卡行为不变（执行参数 §2.1c）
+      return scope.secondary.length > 0
+        ? scope.secondary.filter((u) => !u.isDead && !u.detached)
+        : selected()
     case 'attacker':
       return one(scope.attacker ?? host)
     case 'killed_unit':

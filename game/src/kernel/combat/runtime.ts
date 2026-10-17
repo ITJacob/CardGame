@@ -328,6 +328,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       sourceRef: skill.id,
       effects,
       targetSpec: skill.targetSpec ?? { request: { mode: 'unit', faction: 'enemy', anchor: 'enemy_front', scope: 'whole_lane', sort: 'index_asc', pickCount: 1 }, selectionMode: 'auto' },
+      secondaryTargets: skill.secondaryTargets,
       consumption: (skill.targetSpec?.consumption as Consumption) ?? 'instant',
       zoneGrant: skill.zoneGrant ? { def: skill.zoneGrant.def, duration: skill.zoneGrant.duration } : undefined,
       domainGrant: skill.domainGrant ? { def: skill.domainGrant.def, duration: skill.domainGrant.duration } : undefined,
@@ -829,6 +830,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       host,
       caster: applier ?? subjects?.caster ?? host,
       targets: [target ?? host],
+      secondary: [],     // 触发链无第二组选靶（仅卡片语境有）；secondary_target 回退 targets
       attacker: subjects?.attacker ?? null,
       killed: subjects?.killed ?? null,
       enemyFaction: this.factions.find((f) => f !== host.faction) ?? null,

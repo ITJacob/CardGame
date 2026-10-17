@@ -36,6 +36,8 @@ export interface BehaviorSource {
   sourceRef: string
   effects: readonly EffectNode[]
   targetSpec: TargetSpec
+  /** 卡的第二组选靶（SkillDef.secondaryTargets）：供 `target: 'secondary_target'` 取值 */
+  secondaryTargets?: readonly TargetSpec[]
   consumption: Consumption
   /** consumption=zone / domain 时的卡面授予（由 runtime 消费） */
   zoneGrant?: { def: string; duration?: number }
@@ -129,7 +131,34 @@ function settle(
   // 卡片语境（执行参数 §2.1c）：效果节点自带的 target 简写以「施法者 + 本次选靶命中集合」求值；
   // 不带 target 的节点仍落在下面传入的 targetUnits（选靶）上。
   const hit = targetUnits.filter((u): u is CombatUnit => u != null)
-  const ctx = deps.makeContext(actionId, caster, cardScope(caster, hit, deps.enemyOf(caster.faction)))
+  // 第二组选靶（JSON `secondaryTargets`）→ 卡片语境 `secondary`（执行参数 §2.1c）：
+  // 逐组按各自 request 解析（与主选靶同口径：area 全取、unit 取 pickCount），取命中**并集**；
+  // 未填该字段的卡为空 → `secondary_target` 回退主选靶（向后兼容）。
+  const secondary: CombatUnit[] = []
+  const seenSecondary = new Set<string>()
+  for (const spec of source.secondaryTargets ?? []) {
+    const reqS = spec.request
+    const cands = resolveCandidates(reqS, {
+      units: deps.units,
+      self: caster,
+      enemyFaction: deps.enemyOf(caster.faction),
+      lanes: deps.lanes,
+      laneCapacity: deps.laneCapacity,
+      unsupported: deps.unsupported,
+    })
+    const pickRawS = reqS.pickCount
+    const n = (reqS.mode ?? 'unit') === 'area' || pickRawS === 'all'
+      ? cands.length
+      : (typeof pickRawS === 'number' && Number.isFinite(pickRawS) && pickRawS > 0 ? Math.trunc(pickRawS) : 1)
+    for (const t of cands.slice(0, n)) {
+      const u = t.occupant ? deps.units.get(t.occupant) : undefined
+      if (u && !seenSecondary.has(u.id)) {
+        seenSecondary.add(u.id)
+        secondary.push(u)
+      }
+    }
+  }
+  const ctx = deps.makeContext(actionId, caster, cardScope(caster, hit, deps.enemyOf(caster.faction), secondary))
   for (const node of source.effects) {
     executeNodes([node], targetUnits, ctx)
   }
