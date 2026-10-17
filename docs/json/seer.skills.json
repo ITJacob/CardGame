@@ -1336,7 +1336,8 @@
               "target": "primary_target",
               "statusesFrom": "transferred_statuses",
               "keepDuration": true,
-              "note": "H32 transferStatus（mode 含 move，编队参数 §1.1b）；贴到敌人身上"
+              "note": "H32 transferStatus（mode 含 move，编队参数 §1.1b）；贴到敌人身上",
+              "mode": "move"
             }
           ]
         }
@@ -2013,7 +2014,8 @@
           "to": "mapped_debuff",
           "count": 1,
           "keepDuration": true,
-          "note": "H32 transferStatus；映射表示例 shield→vulnerable / regen→burn / fortify→vulnerable / gauge_rate+→shackle（数据配置，需人工定义完整）"
+          "note": "H32 transferStatus；映射表示例 shield→vulnerable / regen→burn / fortify→vulnerable / gauge_rate+→shackle（数据配置，需人工定义完整）",
+          "mode": "rewrite"
         }
       ],
       "tentative": false,
@@ -2616,43 +2618,34 @@
       "duration": null,
       "effects": [
         {
-          "op": "if",
-          "condition": {
-            "kind": "unit_faction",
-            "faction": "ally_of_owner"
-          },
-          "then": [
-            {
-              "type": "mount_status",
-              "statusId": "concealed",
-              "duration": 10
-            },
-            {
-              "type": "modify_damage",
-              "scope": "taken",
-              "mul": 0.85,
-              "note": "区域内己方受伤害 ×0.85（zone 为 on_occupy_tick 逐 tick 重挂，语义=停留期间生效）"
-            }
-          ],
-          "else": []
+          "side": "ally_of_owner",
+          "payload": {
+            "op": "sequence",
+            "steps": [
+              {
+                "type": "mount_status",
+                "statusId": "concealed",
+                "duration": 10
+              },
+              {
+                "type": "modify_damage",
+                "scope": "taken",
+                "mul": 0.85,
+                "note": "区域内己方受伤害 ×0.85（zone 为 on_occupy_tick 逐 tick 重挂，语义=停留期间生效）"
+              }
+            ]
+          }
         },
         {
-          "op": "if",
-          "condition": {
-            "kind": "unit_faction",
-            "faction": "enemy_of_owner"
-          },
-          "then": [
-            {
-              "type": "modify_stat",
-              "stat": "gauge.rate",
-              "value": 0.85,
-              "mode": "mul",
-              "duration": 10,
-              "note": "区域内敌方 gauge_rate ×0.85（隐秘拖慢）"
-            }
-          ],
-          "else": []
+          "side": "enemy_of_owner",
+          "payload": {
+            "type": "modify_stat",
+            "stat": "gauge.rate",
+            "value": 0.85,
+            "mode": "mul",
+            "duration": 10,
+            "note": "区域内敌方 gauge_rate ×0.85（隐秘拖慢）"
+          }
         }
       ]
     }

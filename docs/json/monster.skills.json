@@ -1129,10 +1129,10 @@
       "effects": [
         {
           "type": "spawn",
-          "kind": "zone",
-          "def": "zone_doom_field",
           "duration": 40,
-          "note": "界域回迁批次 8 拍板：厄运领域保持 Zone（ZoneDef 登记），不走 domain 界域牌"
+          "note": "界域回迁批次 8 拍板：厄运领域保持 Zone（ZoneDef 登记），不走 domain 界域牌",
+          "consumption": "zone",
+          "zone": "zone_doom_field"
         }
       ],
       "zone": {
@@ -1687,9 +1687,10 @@
         {
           "op": "if",
           "condition": {
-            "kind": "target_faction_is",
+            "kind": "faction_is",
+            "side": "target",
             "value": "ally",
-            "note": "伪谓词：谓词集无「目标阵营」判定，见 frameworkFlags"
+            "note": "伪谓词归并：target_faction_is → faction_is"
           },
           "then": [
             {
@@ -2429,12 +2430,12 @@
             {
               "type": "modify_resource",
               "resource": "gauge.current",
-              "op": "swap",
               "between": [
                 "target",
                 "secondary_target"
               ],
-              "note": "swap_resource（新增项 14，已落 ddd：效果上下文 §2.1；gauge.current 在可交换资源列）"
+              "note": "swap_resource（新增项 14，已落 ddd：效果上下文 §2.1；gauge.current 在可交换资源列）",
+              "mode": "swap"
             },
             {
               "type": "mount_status",

@@ -6,7 +6,7 @@
 
 ## 一、召唤物（unitDefs 池 + 卡面 spawn 引用）
 
-池内蓝本 **11** 条（覆盖 4 途径）；卡面具名单位引用 **30** 种，其中池外引用（卡面内联、无 unitDef）**24** 种 / 74 次——池只收编「同途径多卡共享」的蓝本，单卡单位属性内联在 spawn 段（hpRatio / atkRatio × H1 基线），**池外引用是常态而非缺漏**。具名单位全集（36）与基线档见 ddd《召唤物参数》。
+池内蓝本 **11** 条（覆盖 4 途径）；卡面具名单位引用 **35** 种，其中池外引用（卡面内联、无 unitDef）**24** 种 / 74 次——池只收编「同途径多卡共享」的蓝本，单卡单位属性内联在 spawn 段（hpRatio / atkRatio × H1 基线），**池外引用是常态而非缺漏**。具名单位全集（36）与基线档见 ddd《召唤物参数》。
 
 ### 1.1 池内蓝本清单
 
@@ -30,11 +30,11 @@
 
 | 形态 | 次数 |
 |---|---:|
-| 具名单位引用 | 90 |
+| 具名单位引用 | 95 |
 | 区域蓝本引用 | 10 |
 | 复活（不产生新单位） | 6 |
-| 固定蓝本模板 | 6 |
 | 动态模板 | 2 |
+| 固定蓝本模板 | 1 |
 
 ### 1.3 具名单位引用清单（spawn unitId 去重）
 
@@ -68,6 +68,11 @@
 | `unit_marionette` | 1 | 占卜家 | ✓ |
 | `unit_split_identity` | 1 | 观众 | 池外（卡面内联） |
 | `unit_imagined` | 1 | 观众 | 池外（卡面内联） |
+| `unit_shadow_spawn` | 1 | 秘祈人 | ✓ |
+| `unit_flesh_servant` | 1 | 秘祈人 | ✓ |
+| `unit_grazed_wraith` | 1 | 秘祈人 | ✓ |
+| `unit_fallen_kin` | 1 | 秘祈人 | ✓ |
+| `unit_abomination` | 1 | 秘祈人 | ✓ |
 | `unit_stone_clock` | 1 | 偷盗者 | 池外（卡面内联） |
 | `unit_doppelganger` | 1 | 偷盗者 | 池外（卡面内联） |
 
@@ -127,7 +132,7 @@
 
 ## 三、界域（domainDefs 池 + 卡面 domain 用法）
 
-池内蓝本 **28** 条（覆盖 21 途径）；卡面 domain 原语 **32** 次；卡级 domain 字段 **28** 张（引用池 def **28** 张——卡级字段是「引用 + 展示副本」，权威定义在池）。界域 = 战场级规则改写包（声明式补丁 + 战场级触发器），三件套压制栈（base / hero / overlay）见 ddd 共享内核。
+池内蓝本 **28** 条（覆盖 21 途径）；卡面 domain 原语 **31** 次；卡级 domain 字段 **28** 张（引用池 def **28** 张——卡级字段是「引用 + 展示副本」，权威定义在池）。界域 = 战场级规则改写包（声明式补丁 + 战场级触发器），三件套压制栈（base / hero / overlay）见 ddd 共享内核。
 
 ### 3.1 池内蓝本清单
 
@@ -152,7 +157,7 @@
 | `domain_spirit_shroud` | `overlay` | 15 | tick | 是 | 2 | 2 | 囚犯 |
 | `domain_astral_field` | `overlay` | 15 | tick | 是 | 2 | 2 | 窥秘人 |
 | `domain_astral_sanctum` | `overlay` | 15 | tick | 是 | 1 | 2 | 阅读者 |
-| `domain_sea_kingdom` | `hero` | -1 | turn | 否 | 2 | 3 | 水手 |
+| `domain_sea_kingdom` | `hero` | -1 | tick | 否 | 2 | 3 | 水手 |
 | `domain_dominion` | `overlay` | 15 | tick | 是 | 1 | 2 | 通识者 |
 | `domain_civilization` | `overlay` | 15 | tick | 是 | 1 | 2 | 通识者 |
 | `domain_illusion` | `overlay` | 15 | tick | 是 | 2 | 1 | 占卜家 |
@@ -170,8 +175,7 @@
 | tier | `hero` | 1 |
 | dispelable | 可驱散 | 27 |
 | dispelable | 不可驱散 | 1 |
-| durationUnit | `tick` | 27 |
-| durationUnit | `turn` | 1 |
+| durationUnit | `tick` | 28 |
 
 ### 3.3 rulePatches 规则补丁 kind 分布
 
@@ -205,7 +209,6 @@
 | op | 次数 |
 |---|---:|
 | `overlay` | 31 |
-| `hero` | 1 |
 
 ### 附：统计口径
 

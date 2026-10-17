@@ -46,10 +46,6 @@
       "triggers": [
         {
           "event": "on_remove",
-          "condition": {
-            "kind": "remove_reason",
-            "value": "expired"
-          },
           "effects": [
             {
               "type": "damage",
@@ -59,7 +55,8 @@
               "spread": "splash_adjacent",
               "note": "对目标及其相邻单位爆炸"
             }
-          ]
+          ],
+          "reason": "expired"
         }
       ]
     },
@@ -451,9 +448,11 @@
         {
           "event": "on_apply",
           "condition": {
-            "kind": "status_category",
-            "category": "buff",
-            "side": "self"
+            "kind": "has_category",
+            "side": "self",
+            "categories": [
+              "buff"
+            ]
           },
           "effects": [
             {

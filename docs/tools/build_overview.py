@@ -16,6 +16,19 @@ DOCS = os.path.dirname(HERE)                            # docs/
 JSON_DIR = os.path.join(DOCS, "json")                   # docs/json/
 OUT = os.path.join(DOCS, "analysis", "SKILLS_OVERVIEW.md")  # docs/analysis/SKILLS_OVERVIEW.md
 
+
+def has_effect_type(effects, etype):
+    """递归判断效果树是否含指定原语（用于卡级 grant 与效果去重展示）。"""
+    for e in effects or []:
+        if not isinstance(e, dict):
+            continue
+        if e.get("type") == etype:
+            return True
+        for k in ("steps", "then", "else"):
+            if has_effect_type(e.get(k), etype):
+                return True
+    return False
+
 # ---------- 名称映射 ----------
 ELEM = {"fire": "火", "ice": "冰", "poison": "毒", "lightning": "电击", "mental": "精神",
         "physical": "物理", "holy": "圣", "none": "无属性"}
@@ -283,8 +296,11 @@ class Renderer:
             if e.get("distance") is not None:
                 s += " %s" % e["distance"]
         elif t == "spawn":
-            u = e.get("unitId") or e.get("unit") or e.get("template") or e.get("def") or "单位"
-            s = "召唤 %s" % u
+            if e.get("consumption") == "zone" or e.get("zone"):
+                s = "展开区域 %s" % (e.get("zone") or e.get("def") or "区域")
+            else:
+                u = e.get("unitId") or e.get("unit") or e.get("template") or "单位"
+                s = "召唤 %s" % u
             if e.get("reviveOf"):
                 s = "复活 %s" % {"self": "自身", "status_holder": "状态持有者",
                                  "last_dead_ally": "最后阵亡友军"}.get(e["reviveOf"], e["reviveOf"])
@@ -481,10 +497,14 @@ def main():
                             te = R.render(t.get("effects"))
                             parts.append("%s：%s" % (EVENT.get(t.get("event"), t.get("event")), te or "—"))
                         w("  - %s%s" % (head, ("：%s" % "；".join(parts)) if parts else ""))
-                if c.get("domainDef"):
-                    dd = c["domainDef"]
-                    w("- **界域**：%s（%s，%s%s）" % (dd.get("id"), dd.get("tier"),
-                                                dd.get("duration"), "回合" if dd.get("durationUnit") == "turn" else "tick"))
+                dom = c.get("domainDef")
+                if not dom:
+                    grant = c.get("domain")
+                    if isinstance(grant, dict) and not has_effect_type(c.get("effects"), "domain"):
+                        dom = grant
+                if dom:
+                    w("- **界域**：%s（%s，%s%s）" % (dom.get("id") or dom.get("def"), dom.get("tier"),
+                                                dom.get("duration"), "回合" if dom.get("durationUnit") == "turn" else "tick"))
                 if c.get("unitDefs"):
                     w("- **引入单位**：%s" % "；".join("%s（%s）" % (u.get("name"), u.get("id")) for u in c["unitDefs"]))
                 if c.get("zoneDef") and isinstance(c["zoneDef"], dict):
