@@ -86,7 +86,7 @@ export interface EffModifyResource extends EffBase {
   resource: string
   value?: Scalar
   mode?: 'delta' | 'set' | 'swap'
-  op?: 'swap'
+  /** mode=swap 时的两个交换对象 */
   between?: EffectTarget[]
   duration?: number
 }
@@ -165,7 +165,7 @@ export interface EffTransferStatus extends EffBase {
   statusesFrom?: string
   from?: Record<string, Scalar>
   to?: string | Record<string, Scalar>
-  mode?: 'copy' | 'rewrite'
+  mode?: 'move' | 'copy' | 'rewrite'
   keepDuration?: boolean
   durationMul?: number
   stacksMul?: number

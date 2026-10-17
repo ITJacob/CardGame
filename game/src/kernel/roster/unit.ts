@@ -172,6 +172,20 @@ export class CombatUnit implements Unit {
     return this.statuses.all().some((i) => rawModifier(this.statusDefs.statusDef(i.defId)?.modifiers, key) !== undefined)
   }
 
+  /** 持态型选靶覆写（BehaviorModifier op:target_override）；后挂载者胜出。 */
+  activeTargetOverride(): { anchor?: string; faction?: string; sort?: string } | null {
+    let out: { anchor?: string; faction?: string; sort?: string } | null = null
+    for (const inst of this.statuses.all()) {
+      const def = this.statusDefs.statusDef(inst.defId)
+      for (const raw of def?.behaviorModifiers ?? []) {
+        if (!raw || typeof raw !== 'object') continue
+        const bm = raw as { op?: string; anchor?: string; faction?: string; sort?: string }
+        if (bm.op === 'target_override') out = { anchor: bm.anchor, faction: bm.faction, sort: bm.sort }
+      }
+    }
+    return out
+  }
+
   hasStatusCategory(category: string): boolean {
     return this.statuses.all().some((i) => (this.statusDefs.statusDef(i.defId)?.category ?? []).includes(category))
   }

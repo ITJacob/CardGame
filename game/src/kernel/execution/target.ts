@@ -250,11 +250,12 @@ export function resolveCandidates(rawRequest: TargetRequest, ctx: TargetContext)
   return (request.mode ?? 'unit') === 'area' ? resolveArea(request, ctx) : resolveUnit(request, ctx)
 }
 
-/** 消费被作用单位的下一次选靶覆写（层级最高；target_override） */
+/** 选靶覆写：一次性 pendingTargetOverride 优先；否则读持态 BehaviorModifier（不消费）。 */
 function applyTargetOverride(request: TargetRequest, self: CombatUnit): TargetRequest {
-  const ov = self.pendingTargetOverride
+  const oneShot = self.pendingTargetOverride
+  const ov = oneShot ?? self.activeTargetOverride()
   if (!ov) return request
-  self.pendingTargetOverride = null
+  if (oneShot) self.pendingTargetOverride = null
   return {
     ...request,
     faction: (ov.faction as TargetRequest['faction']) ?? request.faction,

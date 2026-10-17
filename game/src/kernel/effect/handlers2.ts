@@ -80,6 +80,10 @@ export function handleTransferStatus(node: EffTransferStatus, target: CombatUnit
   const toId = typeof node.to === 'string' ? node.to : undefined
   const dest = toId ? (ctx.units.get(toId) ?? null) : ctx.caster
   if (!dest) return
+  if (node.mode === 'rewrite') {
+    ctx.unsupported('transfer_status', 'rewrite 映射表未配置')
+    return
+  }
   const copy = node.mode === 'copy'
   const cats = node.filter?.hasCategory
   const catList = cats ? (Array.isArray(cats) ? cats : [cats]) : undefined

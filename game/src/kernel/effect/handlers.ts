@@ -7,6 +7,7 @@ import type { EffectContext } from './context'
 import { numeric } from './context'
 import { applyDamageResult, resolveDamage } from './damage-chain'
 import type { CombatUnit } from '../roster/unit'
+import { resolveEffectTargets } from './target-scope'
 
 const POOL_KEYS: readonly PoolKey[] = ['hp', 'energy', 'shield', 'armor', 'lost', 'lust']
 
@@ -107,9 +108,44 @@ export function handleModifyStat(node: EffModifyStat, target: CombatUnit | null,
 }
 
 export function handleModifyResource(node: EffModifyResource, target: CombatUnit | null, ctx: EffectContext): void {
-  if (!target || target.isDead) return
   const res = String(node.resource)
   const value = numeric(node.value, 0)
+
+  if (node.mode === 'swap') {
+    const scope = ctx.targetScope
+    const pair = node.between
+    if (!scope || !pair || pair.length < 2) {
+      ctx.unsupported('modify_resource', 'swap 缺 between[2] 或 targetScope')
+      return
+    }
+    const a = resolveEffectTargets(pair[0]!, scope, ctx.units)[0]
+    const b = resolveEffectTargets(pair[1]!, scope, ctx.units)[0]
+    if (!a || !b || a.isDead || b.isDead || a === b) return
+    if (res === 'gauge.current') {
+      const av = a.gauge.current
+      const bv = b.gauge.current
+      a.gauge.setValue('current', bv)
+      b.gauge.setValue('current', av)
+      return
+    }
+    if (res === 'secrecy' || res === 'order' || res === 'fate_value') {
+      ctx.unsupported('modify_resource', `swap 不支持战场量表 ${res}`)
+      return
+    }
+    if (!POOL_KEYS.includes(res as PoolKey)) {
+      ctx.unsupported('modify_resource', `未知资源 ${res}`)
+      return
+    }
+    const pa = a.pool(res as PoolKey)
+    const pb = b.pool(res as PoolKey)
+    const av = pa.current
+    const bv = pb.current
+    pa.setValue(bv)
+    pb.setValue(av)
+    return
+  }
+
+  if (!target || target.isDead) return
 
   if (res === 'gauge.current' || res === 'gauge.rate' || res === 'gauge.threshold') {
     const dim = res.slice('gauge.'.length) as 'current' | 'rate' | 'threshold'
