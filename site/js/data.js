@@ -11,6 +11,7 @@ export const DB = {
   cards: [],           // 全部卡，附带 _pathway
   cardById: new Map(),
   axesByPathway: new Map(),   // pathwayId -> {axisId: {name, symbol, ...}}
+  classMechanicsByPathway: new Map(), // pathwayId -> classMechanics[]（职业自带机制）
   statusMap: new Map(),       // statusId -> {id, name, category, note, ...}
   designNotes: new Map(),     // pathwayId -> designNote
   statuses: [],               // 状态定义数组（带 _owner），供统计分析页「状态定义面」用
@@ -114,6 +115,7 @@ export async function loadAll(onProgress) {
     const p = DB.pathways[i];
     const skills = results[i];
     DB.axesByPathway.set(p.id, skills.axes || {});
+    DB.classMechanicsByPathway.set(p.id, skills.classMechanics || []);
     if (skills.designNote) DB.designNotes.set(p.id, skills.designNote);
     // 编目三池：unitDef / zoneDef / domainDef（Def 编目独立化批后集中于各文件顶层）。
     // 与卡不同文件不存在——随卡面一起到达，这里只做事后收集，不加请求

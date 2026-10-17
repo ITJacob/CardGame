@@ -47,6 +47,17 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
     .join('')
 
   const def = catalog.classDefs.get(current)
+  const mechanics = def?.mechanics ?? []
+  const mechanicsHtml = mechanics.length > 0
+    ? `<section class="class-mechanics cg-panel" aria-label="职业机制">
+        <h3 class="cg-panel__title">职业机制</h3>
+        ${mechanics.map((m) => `<div class="class-mechanic">
+          <b>${escapeHtml(m.name)}</b>
+          <span>${escapeHtml(m.summary)}</span>
+          ${m.details ? `<p>${escapeHtml(m.details)}</p>` : ''}
+        </div>`).join('')}
+      </section>`
+    : ''
   const cards = (def?.knownSkills ?? [])
     .map((cardId) => {
       const skill = catalog.skillDefs.get(cardId)
@@ -99,6 +110,7 @@ function draw(host: HTMLElement, catalog: Catalog, selected: string): void {
           </button>
         </div>
         <p class="hint" id="pool-hint">${hintHtml(profile, def?.knownSkills ?? [], classIds, available)}</p>
+        ${mechanicsHtml}
         <div class="pool-grid cg-scroll">${cards}</div>
       </section>
     </main>`

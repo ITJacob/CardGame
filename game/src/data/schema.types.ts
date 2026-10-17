@@ -38,6 +38,14 @@ export interface RawAxis {
   note?: string
 }
 
+export interface ClassMechanic {
+  id: string
+  name: string
+  summary: string
+  details?: string
+  statusId?: string
+}
+
 export interface RawDomainGrant {
   tier?: 'overlay' | 'hero'
   def: string
@@ -116,6 +124,7 @@ export interface PathwayFile {
   sourceFile: string
   sourceVersion: string
   axes?: RawAxis[]
+  classMechanics?: ClassMechanic[]
   sampleBuilds?: unknown[]
   designNote?: string
   artStyle?: string

@@ -206,6 +206,7 @@ function cardItemHtml(c) {
 
 export function renderCards(view) {
   view.innerHTML = `<h1 class="page-title">卡片浏览</h1>${filterBarHtml()}
+    <div id="class-mechanics"></div>
     <div id="card-list"></div><div class="pager" id="pager"></div>`;
 
   view.querySelectorAll('[data-f]').forEach((el) => {
@@ -231,7 +232,19 @@ export function renderCards(view) {
   renderList(view);
 }
 
+function mechanicsHtml(pathwayId) {
+  const list = DB.classMechanicsByPathway.get(pathwayId) || [];
+  if (list.length === 0) return '';
+  const rows = list.map((m) => `<div class="class-mechanic">
+      <b>${escapeHtml(m.name)}</b><span>${escapeHtml(m.summary || '')}</span>
+      ${m.details ? `<p>${escapeHtml(m.details)}</p>` : ''}
+    </div>`).join('');
+  return `<div class="panel class-mechanics"><h2>职业机制</h2>${rows}</div>`;
+}
+
 function renderList(view) {
+  const mech = view.querySelector('#class-mechanics');
+  if (mech) mech.innerHTML = state.pathway ? mechanicsHtml(state.pathway) : '';
   const filtered = sortCards(applyFilters());
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   state.page = Math.min(state.page, pages);

@@ -162,6 +162,7 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
       id: pid,
       name: file.pathwayName,
       knownSkills: file.cards.map((c) => c.id),
+      mechanics: file.classMechanics,
     })
 
     for (const z of file.zoneDefs ?? []) register(zoneDefs, z.id, { ...z, pathwayId: pid }, warnings, 'zoneDef')

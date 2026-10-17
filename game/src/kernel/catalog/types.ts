@@ -474,11 +474,21 @@ export interface UnitDef {
 }
 
 /** 职业（途径）：kitOps 增/删/改 + 已知技能（编目参数 §二） */
+export interface ClassMechanic {
+  id: string
+  name: string
+  summary: string
+  details?: string
+  statusId?: string
+}
+
 export interface ClassDef {
   id: PathwayId
   name: string
   kitOps?: unknown[]
   knownSkills: CardId[]
+  /** 职业自带机制（不依赖具体卡；卡池页展示） */
+  mechanics?: ClassMechanic[]
 }
 
 /** 术语定义（当前 schema 无 term 原语，保留结构以备） */

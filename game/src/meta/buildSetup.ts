@@ -19,6 +19,7 @@ export function heroToUnitSetup(hero: PlacedHero): UnitSetup {
   const con = constitutionById(hero.constitutionId)
   return {
     unitId: hero.id,
+    pathwayId: hero.classId,
     coordinate: hero.coordinate,
     attributeSet: {
       strength: hero.combo.strength,

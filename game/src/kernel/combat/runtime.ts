@@ -150,6 +150,7 @@ class CombatRuntime implements CombatRuntimeHandle {
           this.tagsOfUnit(us.defId),
         )
         unit.unitType = us.defId ? (this.lookup.unitDef(us.defId)?.unitType ?? null) : null
+        unit.pathwayId = us.pathwayId ?? null
         this.units.add(unit)
         this.installBehaviors(unit, us.activeSlots ?? [])
         this.installPassives(unit, us.passiveSlots ?? [])
@@ -266,6 +267,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       // 括号左端：先递减 self_turn 时长（与 tick 口径的「先推进、后授予」同序），
       // 再 fire on_turn_start——订阅方看到的是本回合已结算后的状态
       this.tickSelfTurn(unit)
+      unit.warSpiritGain = 0
       this.fireStatusTriggers(unit, 'on_turn_start', undefined, this.oppPayload(opp))
       const behaviors = availableBehaviors(unit)
       const slot = this.chooseBehavior(behaviors)
@@ -408,6 +410,8 @@ class CombatRuntime implements CombatRuntimeHandle {
       },
       onDamage: (attacker, defender, amount) => {
         if (attacker) this.lastAttacker.set(defender.id, attacker.id)
+        // 战意：实际承伤者（含嘲讽/替伤/转向后的落点）每受击 +1，受每回合与总量上限约束
+        this.gainWarSpirit(defender, 1)
         // 载荷主体（执行参数 §2.3）：on_deal_damage 的 target = 承伤方；on_take_damage 的 attacker = 造成方
         if (attacker) {
           this.fireStatusTriggers(attacker, 'on_deal_damage', undefined, undefined, {
@@ -761,8 +765,23 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.timers.push({ kind: 'control', unitId: unit.id, remaining: Math.max(1, duration), payload: [] })
   }
 
+  /** 战意产出统一入口：每自身回合最多 +3，总量上限 10（状态 maxStacks）。 */
+  private gainWarSpirit(unit: CombatUnit | null, amount: number): void {
+    if (!unit || unit.isDead || unit.pathwayId !== 'warrior' || amount <= 0) return
+    this.mountStatus(unit, 'war_spirit', { stacks: amount }, unit)
+  }
+
   private mountStatus(host: CombatUnit, statusId: string, grant: Omit<StatusGrant, 'sourceId'>, caster: CombatUnit | null = null): void {
     if (!statusId) return
+    let effectiveGrant = grant
+    // 战意正向产出走职业上限：每自身回合 3 层、总量 10 层；主动消费的负层数不受此限
+    if (statusId === 'war_spirit' && (grant.stacks ?? 1) > 0) {
+      const cur = host.statuses.all().find((i) => i.defId === 'war_spirit')?.currentStacks ?? 0
+      const allowed = Math.max(0, Math.min(grant.stacks ?? 1, 3 - host.warSpiritGain, 10 - cur))
+      if (allowed <= 0) return
+      effectiveGrant = { ...grant, stacks: allowed }
+      host.warSpiritGain += allowed
+    }
     const def = this.lookup.statusDef(statusId)
     // 免疫拦截（grant_immunity）
     const cats = def?.category ?? []
@@ -775,8 +794,10 @@ class CombatRuntime implements CombatRuntimeHandle {
       }
       return
     }
-    const inst = host.statuses.mount(statusId, { ...grant, sourceId: this.ids.next('status'), casterId: grant.casterId ?? caster?.id })
+    const inst = host.statuses.mount(statusId, { ...effectiveGrant, sourceId: this.ids.next('status'), casterId: effectiveGrant.casterId ?? caster?.id })
     if (!inst) return
+    // 消耗层数不是「新获得状态」，不触发 on_apply / on_status_gain
+    if (effectiveGrant.stackMode === 'consume') return
     this.emit({ type: 'StatusMounted', instanceId: inst.instanceId, defId: statusId, unitId: host.id })
     // 载荷主体：on_apply / on_status_gain 的 caster = 施加者，target = 宿主（执行参数 §2.3）
     const subjects: TriggerSubjects = { caster, target: host }
@@ -896,6 +917,10 @@ class CombatRuntime implements CombatRuntimeHandle {
       this.dead.add(u.id)
       this.emit({ type: 'UnitDied', unitId: u.id })
       this.stats.unitsLost[u.faction] = (this.stats.unitsLost[u.faction] ?? 0) + 1
+      // 战意：每个敌方单位死亡都给 warrior 产 1 层（复活再死照常计；不去重）
+      for (const w of this.units.all()) {
+        if (!w.isDead && w.pathwayId === 'warrior' && w.faction !== u.faction) this.gainWarSpirit(w, 1)
+      }
       const killerId = this.lastAttacker.get(u.id)
       const killer = killerId ? this.units.get(killerId) : undefined
       // 载荷主体（执行参数 §2.3）：on_death 的 attacker / target = 击杀者，killed_unit = 自身；

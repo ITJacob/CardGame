@@ -65,6 +65,10 @@ export class CombatUnit implements Unit {
   unitType: string | null = null
   /** 召唤者（spawn 时记录，供 caster_has_summon 谓词） */
   summonerId: UnitId | null = null
+  /** 入场途径（ClassDef.id）；职业自带资源/规则按它分发 */
+  pathwayId: string | null = null
+  /** 本回合已获得的战意层数（每自身回合重置；上限 3） */
+  warSpiritGain = 0
   /** target_override：下一次选靶的覆盖（消费后清空） */
   pendingTargetOverride: { anchor?: string; faction?: string; sort?: string } | null = null
 

@@ -124,6 +124,8 @@ export interface StatusGrant {
   /** 时长口径：缺省承接 StatusDef.durationUnit，再缺省 tick */
   durationUnit?: DurationUnit
   stacks?: number
+  /** 层数语义：add（默认）/ consume（扣减并在归零时卸载）/ override（直接设值） */
+  stackMode?: 'add' | 'consume' | 'override'
   params?: Record<string, number>
   sourceId: string
   /** 施加者（释放挂载该状态的技能的单位）；载荷简写 `caster` 读它，区别于宿主 self（执行参数 §2.3） */

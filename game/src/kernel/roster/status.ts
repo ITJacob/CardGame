@@ -43,12 +43,42 @@ export class CombatStatusSet implements StatusSet {
     const def = this.defs.statusDef(defId)
     const maxStacks = Math.max(1, def?.maxStacks ?? 1)
     const duration = resolveDuration(grant.duration, def?.duration)
-    const addStacks = Math.max(1, Math.floor(grant.stacks ?? 1))
-
+    const mode = grant.stackMode ?? ((grant.stacks ?? 0) < 0 ? 'consume' : 'add')
+    const rawStacks = Math.max(1, Math.floor(Math.abs(grant.stacks ?? 1)))
     const existing = this.instances.find((i) => i.defId === defId)
+
+    if (mode === 'consume') {
+      if (!existing) return null
+      const next = existing.currentStacks - rawStacks
+      if (next <= 0) {
+        this.unmount(existing.instanceId)
+        return null
+      }
+      existing.currentStacks = next
+      return existing
+    }
+
+    if (mode === 'override') {
+      const next = clamp(rawStacks, 1, maxStacks)
+      if (existing) {
+        existing.currentStacks = next
+        existing.remaining = longer(existing.remaining, duration)
+        return existing
+      }
+      const instance: StatusInstance = {
+        instanceId: this.nextId(),
+        defId,
+        grant: { ...grant, stackMode: undefined },
+        remaining: duration,
+        currentStacks: next,
+      }
+      this.instances.push(instance)
+      return instance
+    }
+
     if (existing) {
       // schema 的 stackPolicy 只有 stack/refresh；层数累加与 policy 无关（编队参数 §2.4）
-      existing.currentStacks = clamp(existing.currentStacks + addStacks, 1, maxStacks)
+      existing.currentStacks = clamp(existing.currentStacks + rawStacks, 1, maxStacks)
       existing.remaining = longer(existing.remaining, duration)
       return existing
     }
@@ -56,9 +86,9 @@ export class CombatStatusSet implements StatusSet {
     const instance: StatusInstance = {
       instanceId: this.nextId(),
       defId,
-      grant,
+      grant: { ...grant, stackMode: undefined },
       remaining: duration,
-      currentStacks: clamp(addStacks, 1, maxStacks),
+      currentStacks: clamp(rawStacks, 1, maxStacks),
     }
     this.instances.push(instance)
     return instance

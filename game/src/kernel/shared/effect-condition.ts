@@ -67,7 +67,10 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
       if (cond.kind === 'target_has_tag') {
         return target != null && target.tags.includes(String(cond.tag ?? ''))
       }
-      return target != null && target.statusStacks(prefixOf(cond)) >= (cond.n ?? 1)
+      {
+        const subject = cond.side === 'self' ? ctx.caster : target
+        return subject != null && subject.statusStacks(prefixOf(cond)) >= (cond.n ?? 1)
+      }
     case 'target_dead':
       return target != null && target.isDead
     case 'target_unit_type': {

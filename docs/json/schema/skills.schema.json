@@ -40,6 +40,38 @@
         "$ref": "#/$defs/axis"
       }
     },
+    "classMechanics": {
+      "type": "array",
+      "description": "职业自带机制（不依赖具体技能卡，如战士战意）。供站点与游戏卡池页展示。",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "summary"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "description": "一句话说明：怎么获得、怎么使用、上限。"
+          },
+          "details": {
+            "type": "string"
+          },
+          "statusId": {
+            "type": "string",
+            "description": "承载该机制的状态 id（如 war_spirit）。"
+          }
+        }
+      }
+    },
     "sampleBuilds": {
       "type": "array",
       "description": "示例 Build（4 主动 + 4 被动），源自技能稿 §二。卡名为设计示例，可能与现行卡名有出入，仅供构筑参考。",

@@ -20,6 +20,8 @@ export interface SkillGrantInit {
 export interface UnitSetup {
   defId?: string
   unitId?: UnitId
+  /** 入场途径（hero.classId）；职业自带机制按它分发 */
+  pathwayId?: string
   coordinate: Coordinate
   attributeSet: { strength: number; agility: number; intelligence: number; rank?: number }
   gender: Gender

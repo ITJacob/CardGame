@@ -19,7 +19,7 @@
         "无坚不摧",
         "神罚"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 martial_skill，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-29 环节⑤：兵械通晓补 weapon_grandmaster 产层段（产层 12→20）；payoffs 核正（巨力挥击无此卡移除，换无坚不摧补读层段升 landed）；weapon_grandmaster 补层数引擎（身份 8→15） ｜ 2026-10-03 骨架手术：武技链换形 29 张（详见 designNote） ｜ 2026-10-16 环节⑤：武艺轴换形——身份状态仍为 weapon_grandmaster，新增「具现武器 war_forged_weapon」耐久产读链（charges 型 = 出手次数，on_attack 耗、on_kill 重置）；武技链从「替承+铁躯」双样板改为 13 个分轴调色板。 ｜ 签名补批（2026-10-16 第二批）：武艺轴 13 张全挂「死亡簿读层·战意」（dead_count≥2 → 续劲 +8），使 death_tally 从自称变成卡面可验。"
+      "note": "身份状态 weapon_grandmaster（武器大师，带层数引擎）；另设「具现武器 war_forged_weapon」耐久链（charges = 出手次数，出手扣层、击杀重置）。战意 war_spirit 为战士职业自带怒气资源：受击或敌方单位死亡时产层，每自身回合至多 +3、上限 10；主动技能消耗，被动只读或生产。"
     },
     "guard": {
       "symbol": "🛡️",
@@ -75,7 +75,7 @@
       "flagship": false,
       "lore": "序列9 战士 —— \"各种武器防具精通、各种格斗术掌握\"",
       "flavor": "你熟稔每一种徒手与持械的打法，两记连贯的拳脚砸在同一个破绽上。",
-      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；连击的收势把自身行动条往前推 8；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；连击的收势把自身行动条往前推 8；战意·续劲：消耗 2 层，行动条 +8。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -116,23 +116,31 @@
         {
           "op": "if",
           "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
+            "kind": "has_status",
+            "side": "self",
+            "id": "war_spirit",
             "cmp": ">=",
             "n": 2
           },
           "then": [
             {
+              "type": "mount_status",
+              "statusId": "war_spirit",
+              "stacks": -2,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "战意消耗：2 层"
+            },
+            {
               "type": "modify_resource",
               "resource": "gauge.current",
               "value": 8,
               "mode": "delta",
-              "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
+              "target": "self"
             }
           ],
           "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
+          "note": "战意消费分支：2 层换 战意·续劲：消耗 2 层，行动条 +8。"
         }
       ],
       "upgradeLadder": {
@@ -205,7 +213,7 @@
       "flagship": false,
       "lore": "序列9 战士 —— \"超越常人的力量与敏捷\"",
       "flavor": "你的力量与敏捷早已越过常人的极限，出手更重，步子也更快。",
-      "describe": "战斗开始时，自身攻击 +2、行动条速率 +3，持续整场；战斗开始时自身行动条再 +10（先手）；铁躯：按元素分档硬吃两次；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "战意：自身回合开始时若战意≥2，行动条速率 +2（战意由受击/敌方死亡积累）。",
       "hook": [
         "on_battle_start"
       ],
@@ -241,27 +249,6 @@
           "charges": 2,
           "duration": 10,
           "note": "铁躯（毒素）：按元素分档硬吃两次，不再是泛免疫一次"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
-            "cmp": ">=",
-            "n": 2
-          },
-          "then": [
-            {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
-              "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
-            }
-          ],
-          "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
         }
       ],
       "sharedAcross": [
@@ -284,7 +271,36 @@
         ],
         "mood": "vigorous, grounded"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=stat） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：铁躯分档/死亡簿·战意。"
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=stat） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：铁躯分档/死亡簿·战意。",
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "war_spirit",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "war_spirit_fortitude",
+                  "duration": 1,
+                  "durationUnit": "self_turn",
+                  "refresh": true,
+                  "target": "self",
+                  "note": "读档：战意≥2，刷新行动条速率 +2 光环"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_warrior_s9_arms_mastery",
@@ -297,7 +313,7 @@
       "flagship": false,
       "lore": "序列9 战士 —— \"各种武器防具精通\"",
       "flavor": "你懂每一种兵器的重心，也懂每一副护甲的接缝——手上更有力，身上更耐打。",
-      "describe": "战斗开始时，自身攻击 +1、护甲 +3，并获得「武器大师」整场：攻击 +3、物理伤害无视目标一半护甲；并具现一把兵刃（耐久 4 次：攻击 +2，每次出手额外 ×1.25，对邪物 +2，打空即卸）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "战意：每次击杀额外积 1 层战意（主动技能可消耗）。",
       "hook": [
         "on_battle_start"
       ],
@@ -337,27 +353,6 @@
           "scope": "to_source",
           "pierceTargetability": true,
           "note": "识破：看破伪装/镜像，本次攻击无视目标的隐匿与不可锁定（reveal.pierceTargetability，H5 潜行的反制面，与 warrior「不藏，只破藏」一致）"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
-            "cmp": ">=",
-            "n": 2
-          },
-          "then": [
-            {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
-              "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
-            }
-          ],
-          "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
         }
       ],
       "sharedAcross": [
@@ -373,7 +368,22 @@
           "patched gambeson"
         ],
         "mood": "practiced, calm"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_kill",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "war_spirit",
+              "stacks": 1,
+              "stackMode": "add",
+              "target": "self",
+              "note": "兵械通晓：击杀额外积 1 层战意"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_warrior_s8_iron_body",
@@ -477,7 +487,7 @@
       "flagship": false,
       "lore": "序列8 格斗家 —— \"擅长近距离战斗\"",
       "flavor": "你贴上去，用身体和兵刃缠住它——它想挥下一击，却发现节奏已经被你踩住了。",
-      "describe": "对一名近战敌人造成 2 点物理伤害，并使其行动条进度 -20；并把目标撞退一格（摔投）；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "对一名近战敌人造成 2 点物理伤害，并使其行动条进度 -20；并把目标撞退一格（摔投）；战意·摔投：消耗 2 层，目标行动条额外 -20。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -517,23 +527,31 @@
         {
           "op": "if",
           "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
+            "kind": "has_status",
+            "side": "self",
+            "id": "war_spirit",
             "cmp": ">=",
             "n": 2
           },
           "then": [
             {
+              "type": "mount_status",
+              "statusId": "war_spirit",
+              "stacks": -2,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "战意消耗：2 层"
+            },
+            {
               "type": "modify_resource",
               "resource": "gauge.current",
-              "value": 8,
+              "value": -20,
               "mode": "delta",
-              "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
+              "target": "target"
             }
           ],
           "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
+          "note": "战意消费分支：2 层换 战意·摔投：消耗 2 层，目标行动条额外 -20。"
         }
       ],
       "sharedAcross": [
@@ -682,7 +700,7 @@
       "flagship": false,
       "lore": "序列7 武器大师 —— \"任何武器到手即大师级水准（含非凡武器）\"",
       "flavor": "凡是能被握在手里的东西，到你手上就是杀器——连甲缝在哪里，你一摸就知道。",
-      "describe": "战斗开始时获得「武器大师」：攻击 +3，自身造成的物理伤害无视目标一半护甲，持续整场；击杀敌人时缴械拾取：重置具现武器的耐久（任何武器到手即大师）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "战意：自身回合开始时若战意≥3，攻击 +1。",
       "hook": [
         "on_battle_start"
       ],
@@ -699,27 +717,6 @@
           "scope": "to_source",
           "pierceTargetability": true,
           "note": "识破：看破伪装/镜像，本次攻击无视目标的隐匿与不可锁定（reveal.pierceTargetability，H5 潜行的反制面，与 warrior「不藏，只破藏」一致）"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
-            "cmp": ">=",
-            "n": 2
-          },
-          "then": [
-            {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
-              "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
-            }
-          ],
-          "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
         }
       ],
       "tentative": false,
@@ -732,7 +729,36 @@
           "precise footwork"
         ],
         "mood": "effortless, lethal"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "war_spirit",
+                "cmp": ">=",
+                "n": 3
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "war_spirit_weapon",
+                  "duration": 1,
+                  "durationUnit": "self_turn",
+                  "refresh": true,
+                  "target": "self",
+                  "note": "读档：战意≥3，刷新攻击 +1 光环"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_warrior_s7_weapon_tamer",
@@ -745,7 +771,7 @@
       "flagship": false,
       "lore": "序列7 武器大师 —— \"有效降低武器负面影响\"",
       "flavor": "非凡武器反噬的那一半代价，到你手里总要打个对折。",
-      "describe": "战斗开始时获得「驭器」：施加到你身上的减益与持续伤害状态，持续时间减半，持续整场；并具现一把兵刃（耐久 3 次）；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "战意：自身回合开始时若战意≥2，防御 +1。",
       "hook": [
         "on_battle_start"
       ],
@@ -762,27 +788,6 @@
           "target": "self",
           "charges": 3,
           "note": "具现武器（耐久 3 次）驭器：能驾驭的兵器才谈得上「负面减半」"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
-            "cmp": ">=",
-            "n": 2
-          },
-          "then": [
-            {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
-              "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
-            }
-          ],
-          "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
         }
       ],
       "tentative": false,
@@ -795,7 +800,36 @@
         ],
         "mood": "dominant, quiet"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。"
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。",
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "war_spirit",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "war_spirit_tamer",
+                  "duration": 1,
+                  "durationUnit": "self_turn",
+                  "refresh": true,
+                  "target": "self",
+                  "note": "读档：战意≥2，刷新防御 +1 光环"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_warrior_s7_armor_crusher",
@@ -808,7 +842,7 @@
       "flagship": false,
       "lore": "序列7 武器大师 —— \"超强力量、体质和敏捷\"",
       "flavor": "你抡圆了砸下去，力量不止落在它身上，也砸碎了它身上的甲。",
-      "describe": "对一名近战敌人造成 4 点物理伤害，并直接穿透护甲（无视 90% 护甲）；并使其攻击 -2（15tick，破械）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "对一名近战敌人造成 4 点物理伤害，并直接穿透护甲（无视 90% 护甲）；并使其攻击 -2（15tick，破械）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意·碎甲：消耗 3 层，追加 2 点物理伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -852,23 +886,30 @@
         {
           "op": "if",
           "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
+            "kind": "has_status",
+            "side": "self",
+            "id": "war_spirit",
             "cmp": ">=",
-            "n": 2
+            "n": 3
           },
           "then": [
             {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
+              "type": "mount_status",
+              "statusId": "war_spirit",
+              "stacks": -3,
+              "stackMode": "consume",
               "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
+              "note": "战意消耗：3 层"
+            },
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "note": "战意·碎甲：消耗 3 层追加 2 点物理伤害。"
             }
           ],
           "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
+          "note": "战意消费分支：3 层换 战意·碎甲：消耗 3 层，追加 2 点物理伤害。"
         }
       ],
       "tentative": false,
@@ -1508,7 +1549,7 @@
       "flagship": false,
       "lore": "序列5 守护者 —— \"能对任何怪物造成伤害\"",
       "flavor": "没有你砍不动的东西——甲也好，护体的异力也好，在这一斩之下都不算数。",
-      "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；若自身武器大师在场，大师之威，伤害 +2；并使自己行动条前推 8；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；若自身武器大师在场，大师之威，伤害 +2；并使自己行动条前推 8；战意·不摧：消耗 3 层，追加 2 点无元素伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1565,23 +1606,30 @@
         {
           "op": "if",
           "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
+            "kind": "has_status",
+            "side": "self",
+            "id": "war_spirit",
             "cmp": ">=",
-            "n": 2
+            "n": 3
           },
           "then": [
             {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
+              "type": "mount_status",
+              "statusId": "war_spirit",
+              "stacks": -3,
+              "stackMode": "consume",
               "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
+              "note": "战意消耗：3 层"
+            },
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "note": "战意·不摧：消耗 3 层追加 2 点无元素伤害。"
             }
           ],
           "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
+          "note": "战意消费分支：3 层换 战意·不摧：消耗 3 层，追加 2 点无元素伤害。"
         }
       ],
       "tentative": false,
@@ -1980,7 +2028,7 @@
       "flagship": false,
       "lore": "序列4 猎魔者 —— \"夸张力量和飓风级高速奔跑\"",
       "flavor": "你跑起来像一阵飓风——撞进敌阵的那一瞬，身后队友的脚步也被带快了。",
-      "describe": "对一名近战敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15；自己突进至敌方最前排（冲阵）；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "对一名近战敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15；自己突进至敌方最前排（冲阵）；战意·奔袭：消耗 2 层，行动条 +8。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -2042,23 +2090,31 @@
         {
           "op": "if",
           "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
+            "kind": "has_status",
+            "side": "self",
+            "id": "war_spirit",
             "cmp": ">=",
             "n": 2
           },
           "then": [
             {
+              "type": "mount_status",
+              "statusId": "war_spirit",
+              "stacks": -2,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "战意消耗：2 层"
+            },
+            {
               "type": "modify_resource",
               "resource": "gauge.current",
               "value": 8,
               "mode": "delta",
-              "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
+              "target": "self"
             }
           ],
           "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
+          "note": "战意消费分支：2 层换 战意·奔袭：消耗 2 层，行动条 +8。"
         }
       ],
       "tentative": false,
@@ -2246,7 +2302,7 @@
       "flagship": false,
       "lore": "序列3 银骑士 —— \"『银白细剑』：拥有传送（闪现）能力，可从目标体内爆发\"",
       "flavor": "剑光一闪，你已经站在它背后——那一剑刺进去时并不重；重的是两息之后，从它体内绽开的那一朵银。",
-      "describe": "闪现至一名敌人身后造成 2 点物理伤害，并植入「体内爆发」：10tick 后从其体内绽开，造成 6 点物理伤害。若目标为亡灵/恶魔/灵体，银剑额外灼烧 2 点圣光伤害；并具现银白细剑（耐久 3 次）；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "闪现至一名敌人身后造成 2 点物理伤害，并植入「体内爆发」：10tick 后从其体内绽开，造成 6 点物理伤害。若目标为亡灵/恶魔/灵体，银剑额外灼烧 2 点圣光伤害；并具现银白细剑（耐久 3 次）；战意·银灼：消耗 2 层，追加 2 点圣光伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -2314,23 +2370,30 @@
         {
           "op": "if",
           "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
+            "kind": "has_status",
+            "side": "self",
+            "id": "war_spirit",
             "cmp": ">=",
             "n": 2
           },
           "then": [
             {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
+              "type": "mount_status",
+              "statusId": "war_spirit",
+              "stacks": -2,
+              "stackMode": "consume",
               "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
+              "note": "战意消耗：2 层"
+            },
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "note": "战意·银灼：消耗 2 层追加 2 点圣光伤害。"
             }
           ],
           "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
+          "note": "战意消费分支：2 层换 战意·银灼：消耗 2 层，追加 2 点圣光伤害。"
         }
       ],
       "tentative": false,
@@ -2405,7 +2468,7 @@
       "flagship": false,
       "lore": "序列2 荣耀者 —— \"『战斗』权柄（简化）：『牢笼』、『黄昏巨剑』、『光之风暴』\"",
       "flavor": "战斗的权柄落下，四面光壁合拢——它还在呼吸，但它哪儿也去不了。",
-      "describe": "使一名敌人眩晕 5tick，并施加枷锁 15tick：无法被位移，行动条速率 ×0.7；并击碎其 3 点护甲；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "使一名敌人眩晕 5tick，并施加枷锁 15tick：无法被位移，行动条速率 ×0.7；并击碎其 3 点护甲；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意·锁死：消耗 3 层，眩晕延长 5tick。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -2456,23 +2519,31 @@
         {
           "op": "if",
           "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
+            "kind": "has_status",
+            "side": "self",
+            "id": "war_spirit",
             "cmp": ">=",
-            "n": 2
+            "n": 3
           },
           "then": [
             {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
+              "type": "mount_status",
+              "statusId": "war_spirit",
+              "stacks": -3,
+              "stackMode": "consume",
               "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
+              "note": "战意消耗：3 层"
+            },
+            {
+              "type": "modify_status",
+              "statusId": "stun",
+              "target": "target",
+              "addDuration": 5,
+              "note": "战意·锁死：消耗 3 层，眩晕延长 5tick。"
             }
           ],
           "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
+          "note": "战意消费分支：3 层换 战意·锁死：消耗 3 层，眩晕延长 5tick。"
         }
       ],
       "tentative": false,
@@ -2498,7 +2569,7 @@
       "flagship": false,
       "lore": "序列2 荣耀者 —— \"『战斗』权柄（简化）：『牢笼』、『黄昏巨剑』、『光之风暴』；『神圣』权柄（简化）：荣耀即晨曦即黄昏，摧毁即净化\"",
       "flavor": "巨剑带着黄昏的颜色劈下——被它摧毁的，同时也被净化了；而活下来的，从此开始变老。",
-      "describe": "对一名近战敌人造成 6 点无元素伤害，并附加 2 层老化（25tick）。本卡击杀敌人时，全体友军回复 3 点生命。死亡簿≥4 时，击杀回血 ×1.5；（死亡簿 ≥4 时收割回血追加 2 点。）；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "对一名近战敌人造成 6 点无元素伤害，并附加 2 层老化（25tick）。本卡击杀敌人时，全体友军回复 3 点生命。死亡簿≥4 时，击杀回血 ×1.5；（死亡簿 ≥4 时收割回血追加 2 点。）；战意·暮收：消耗 4 层，全体友军回复 2 点。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -2565,23 +2636,30 @@
         {
           "op": "if",
           "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
+            "kind": "has_status",
+            "side": "self",
+            "id": "war_spirit",
             "cmp": ">=",
-            "n": 2
+            "n": 4
           },
           "then": [
             {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
+              "type": "mount_status",
+              "statusId": "war_spirit",
+              "stacks": -4,
+              "stackMode": "consume",
               "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
+              "note": "战意消耗：4 层"
+            },
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "all_allies",
+              "note": "战意·暮收：消耗 4 层，全体友军回复 2 点。"
             }
           ],
           "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
+          "note": "战意消费分支：4 层换 战意·暮收：消耗 4 层，全体友军回复 2 点。"
         }
       ],
       "triggers": [
@@ -3139,7 +3217,7 @@
       "flagship": true,
       "lore": "序列0 黄昏巨人 —— \"『战斗』权柄：最恐怖力量 + 最巨大身形 + 最强力摧毁 + 最坚固守护 + 技巧\"",
       "flavor": "战斗的权柄在你身上展开：更重的拳、更高的身量、更硬的壳，以及一个老兵才有的、恰到好处的分寸。",
-      "describe": "战斗开始时获得「战斗权柄」：攻击 +5、护甲 +8、行动条速率 +4、全元素抗性 +10%，持续整场，不可驱散；并具现一把兵刃（耐久 5 次）；临阵威压：这一击的伤害 ×1.3；战意：本场已阵亡敌人 ≥2 时，自身行动条 +8。",
+      "describe": "战意：自身回合开始时若战意≥4，攻击 +2。",
       "hook": [
         "on_battle_start"
       ],
@@ -3163,27 +3241,6 @@
           "mul": 1.3,
           "target": "self",
           "note": "临阵威压：死亡簿在手上，这一击更沉"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
-            "cmp": ">=",
-            "n": 2
-          },
-          "then": [
-            {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
-              "target": "self",
-              "note": "战意：战场上每倒下一个敌人，武艺链的节奏就更盛（死亡簿 = 战士正主维度，机制所有权矩阵 §三）"
-            }
-          ],
-          "else": [],
-          "note": "武艺轴的死亡簿读层：本场已阵亡敌人 ≥2 时，续劲 +8"
         }
       ],
       "tentative": false,
@@ -3203,7 +3260,36 @@
         ],
         "mood": "dominant, seasoned"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：威压/死亡簿·战意。"
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：威压/死亡簿·战意。",
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "war_spirit",
+                "cmp": ">=",
+                "n": 4
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "war_spirit_authority",
+                  "duration": 1,
+                  "durationUnit": "self_turn",
+                  "refresh": true,
+                  "target": "self",
+                  "note": "读档：战意≥4，刷新攻击 +2 光环"
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_warrior_s0_holy_glory",
@@ -3469,6 +3555,15 @@
         }
       ],
       "note": "晨曦阵地（2026-10-02 矩阵批次五）：战士区域共享层——黎明铠甲铸就；与 domain_dawn 全场界域互补（zone=坐标阵地小 blessing / domain=全场 overlay）"
+    }
+  ],
+  "classMechanics": [
+    {
+      "id": "war_spirit",
+      "name": "战意",
+      "statusId": "war_spirit",
+      "summary": "战士自带资源：受击或敌方单位死亡时获得，主动技能消耗；每自身回合最多 +3，上限 10。",
+      "details": "即使没有装备任何产战意卡，战士也默认拥有战意。战斗开始为 0 层；受到伤害、敌方单位死亡都会积层。被动卡只负责额外生产或按层数读档，不消耗战意；主动技能在战意足够时消耗层数换取额外效果。"
     }
   ]
 }
