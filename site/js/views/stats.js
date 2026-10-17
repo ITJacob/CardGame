@@ -89,12 +89,12 @@ function renderSkillStats(view) {
         selByPath = new Map(), hookByPath = new Map(), statByPath = new Map(),
         resByPath = new Map(), elemByPath = new Map(), opByPath = new Map(),
         kindByPath = new Map(), energyByPath = new Map(), cooldownByPath = new Map(),
-        castByPath = new Map(), rankByPath = new Map(), genderByPath = new Map(),
+        castByPath = new Map(), rankByPath = new Map(),
         depthByPath = new Map(), factionByPath = new Map(), scopeByPath = new Map(),
         sortByPath = new Map(), reqFilterByPath = new Map(),
         cxByPath = new Map(), budgetByPath = new Map();
   const byEnergy = new Map(), byCooldown = new Map(), byCast = new Map(),
-        byGender = new Map(), byDepth = new Map(), tagsTotal = new Map(),
+        byDepth = new Map(), tagsTotal = new Map(),
         byFaction = new Map(), byScope = new Map(), bySort = new Map(),
         reqFilterTotal = new Map(), byCx = new Map(), byBudget = new Map();
   for (const c of cards) {
@@ -110,7 +110,6 @@ function renderSkillStats(view) {
       if (c.cost.cooldown != null) { bump(byCooldown, 0, c.cost.cooldown); bump(cooldownByPath, p, c.cost.cooldown); }
       if (c.cost.castTime != null) { bump(byCast, 0, c.cost.castTime); bump(castByPath, p, c.cost.castTime); }
     }
-    if (c.gender) { bump(byGender, 0, c.gender); bump(genderByPath, p, c.gender); }
     // 构筑深度特征（复选维度，一张卡可占多项）：升级阶梯 / 变体 / 跨序列共享 / 次要目标
     const depthFeats = [];
     if (c.upgradeLadder) depthFeats.push('带升级阶梯');
@@ -329,12 +328,14 @@ function renderSkillStats(view) {
       ${cxGrand.get('7+') || 0} 张。</p>`),
     heatOf('途径 × 卡面复杂度', cxByPath, cxCols, { unit: ' 张' }));
 
+  const tagsFrequent = new Map([...tagsTotal.entries()].filter(([, v]) => v >= 3)
+    .sort((a, b) => b[1] - a[1]).slice(0, 20));
   const tagsGroup = group('构件面 · 卡面标签',
-    barPanel('卡面标签 Top 20', sortedRows(new Map([...tagsTotal.entries()]
-      .sort((a, b) => b[1] - a[1]).slice(0, 20))),
+    barPanel('卡面标签 Top 20（≥3 次）', sortedRows(tagsFrequent),
       `<p class="panel-note muted">tags 是自由词表而非封闭枚举：全库共 ${tagsTotal.size} 种
       / ${[...tagsTotal.values()].reduce((a, b) => a + b, 0)} 处（域 rulePatches 的 tag 匹配、
-      条件谓词 target_has_tag 都消费它）。此处只列前 20 种，不画热图——长尾词表的热图全是空格。</p>`));
+      条件谓词 target_has_tag 都消费它）。长尾过大（多数标签只用 1–2 次），此处只列出现
+      ≥3 次的标签，不画热图。</p>`));
 
   const statGroup = group('数值面 · 属性（modify_stat）',
     barPanel('modify_stat 属性分布', sortedRows(statCount, (k) => zh('stat', k))),
@@ -388,9 +389,7 @@ function renderSkillStats(view) {
     barPanel('位格承载分布', sortedRows(rankFlat),
       `<p class="panel-note muted">位格没有独立卡面字段（零新谓词裁定：rank 走 stat_compare），
       承载全埋在效果节点里——当前全库仅 ${[...rankFlat.values()].reduce((a, b) => a + b, 0)} 处，
-      是「能力先行」的稀疏维度，等位格体系铺卡后会涨。</p>`),
-    heatOf('途径 × 位格承载', rankByPath,
-      sortedRows(rankFlat).map((r) => ({ key: r.title, label: r.label, title: r.title }))));
+      是「能力先行」的稀疏维度，等位格体系铺卡后会涨；稀疏到不值得按途径拆热图。</p>`));
 
   const reachGroup = group('目标面 · 攻击距离',
     barPanel('攻击距离（主动卡）', sortedRows(byReach, (k) => zh('reach', k))),
@@ -434,23 +433,16 @@ function renderSkillStats(view) {
     barPanel('被动触发点分布', sortedRows(byHook, (k) => zh('triggerEvent', k))),
     heatOf('途径 × 被动触发点（只算被动卡）', hookByPath, colsOf(byHook, 'triggerEvent'), { unit: ' 张' }));
 
-  const genderGroup = group('身份面 · 性别',
-    barPanel('卡级 gender 字段分布', sortedRows(flat(byGender), (k) => zh('gender', k)),
-      `<p class="panel-note muted">gender_shift / gender_is 谓词当前零使用；卡级字段也仅
-      ${[...flat(byGender).values()].reduce((a, b) => a + b, 0)} 张标注——性别机制已登记（v0.3），
-      等第一批承载卡。</p>`),
-    heatOf('途径 × 性别', genderByPath, colsOf(flat(byGender), 'gender'), { unit: ' 张' }));
-
   // 导语放在页面顶部而不是某一组里：口径两族、色阶独立这两条对 bar 与热图都成立
   view.innerHTML = `<p class="panel-note muted">本页<b>一个维度一组</b>：组内先全库 bar、再该维度的「途径 × 维度」热图。
     热图共用一套读法——行 = ${pathways.length} 个途径，列 = 该维度的取值，格 = 计数
     （只有「原语 构成」那张是行内归一化后的 %）。同组的 bar 与热图<b>口径相同</b>：bar 各段之和
     = 该组热图各行的合计；跨组不是一回事——属性 / 资源 / 元素 / 算子 / 原语 / 位格 / 条件谓词按<b>效果节点</b>计，
-    稀有度 / 序列 / 卡型 / 费用 / 冷却 / 吟唱 / 性别 / 构筑深度 / 卡面复杂度 / 数值预算按<b>卡</b>计。每张图的色阶各自独立
+    稀有度 / 序列 / 卡型 / 费用 / 冷却 / 吟唱 / 构筑深度 / 卡面复杂度 / 数值预算按<b>卡</b>计。每张图的色阶各自独立
     （上限取本图最大值），跨图比颜色没有意义——要比就比格内数字。行序一律是 manifest 途径顺序；
     列序是各自的用量或刻度顺序，悬停表头看原始 key。状态定义口径见「状态」子页，编目三池
     （召唤物 / 区域 / 界域）见各自子页——本页各组均不含它们。</p>
-    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${axisGroup}${primGroup}${opGroup}${condGroup}${cxGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${budgetGroup}${energyGroup}${cooldownGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}${genderGroup}`;
+    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${axisGroup}${primGroup}${opGroup}${condGroup}${cxGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${budgetGroup}${energyGroup}${cooldownGroup}${castGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}`;
 
   // 窄屏展开全部列；桌面端该开关不显示（CSS 隐藏），勾选状态无副作用
   wireHeatToggle(view);
