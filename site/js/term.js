@@ -17,10 +17,12 @@ export function lookup(cat, key) {
   if (g) {
     const hit = g.terms[key];
     if (hit) return { ...hit, key, cat, catLabel: g.label, source: g.source, missing: false };
-    // 模式匹配（如 resist:*）
+    // 模式匹配：`resist:*` 这类星号前缀，或 `behind_` / `front_` 这类下划线前缀
     for (const p of g.patterns || []) {
-      if (p.match.endsWith('*') && key.startsWith(p.match.slice(0, -1))) {
-        const rest = key.slice(p.match.length - 1);
+      const m = String(p.match || '');
+      const prefix = m.endsWith('*') ? m.slice(0, -1) : (m.endsWith('_') ? m : '');
+      if (prefix && key.startsWith(prefix) && key.length > prefix.length) {
+        const rest = key.slice(prefix.length);
         const sub = cat === 'stat' ? DB.glossary?.categories?.element?.terms?.[rest] : null;
         const zh = p.zh.replace('{1}', sub ? sub.zh : rest);
         return { zh, brief: p.brief || '', key, cat, catLabel: g.label, source: g.source, missing: false };

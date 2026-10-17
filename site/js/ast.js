@@ -79,9 +79,12 @@ function condToText(c) {
       const cmpN = c.cmp && c.n != null ? ` ${c.cmp} ${c.n} 层` : '';
       return `${who}持有${ids.map(statusRef).join(' 或 ')}${cmpN}`;
     }
-    case 'has_category': return `${c.side ? termSpan('side', c.side) : '目标'}持有${termSpan('statusCategory', c.category)}类状态`;
+    case 'has_category': {
+      const cats = [].concat(c.categories ?? c.category ?? '?');
+      return `${c.side ? termSpan('side', c.side) : '目标'}持有${cats.map((x) => termSpan('statusCategory', x)).join(' / ')}类状态`;
+    }
     case 'chance': return `${Math.round((c.p ?? 0) * 100)}% 概率`;
-    case 'hp_percent': return `${c.side ? termSpan('side', c.side) : '目标'}生命 ${c.cmp || ''} ${c.value ?? c.percent ?? '?'}%`;
+    case 'hp_percent': return `${c.side ? termSpan('side', c.side) : '目标'}生命 ${c.cmp || ''} ${c.n ?? c.value ?? c.percent ?? '?'}%`;
     case 'stat_compare': {
       if (c.key) {
         const a = c.aUnit ? termSpan('effectTarget', c.aUnit) : '施法者';
@@ -97,20 +100,26 @@ function condToText(c) {
     case 'target_is_summoned': return '目标是召唤物';
     case 'caster_has_summon': return '施法者有召唤物在场';
     case 'target_has_tag': return `目标带「${escapeHtml(c.tag || '?')}」标签`;
-    case 'target_faction_is': return `目标阵营为${termSpan('faction', c.faction || c.value || '?')}`;
+    case 'faction_is': return `${c.side ? termSpan('side', c.side) : '目标'}阵营为${escapeHtml(c.value || c.faction || '?')}`;
+    case 'target_faction_is': return `目标阵营为${escapeHtml(c.faction || c.value || '?')}`;
     case 'target_dead': return '目标已死亡';
     case 'zone_active': return `区域激活`;
-    case 'gauge_rank': return `行动条位次 ${c.cmp || ''} ${fmtVal(c.value)}`;
+    case 'gauge_rank': return `行动条位次 ${c.cmp || ''} ${c.n ?? c.value ?? '?'}`;
     case 'resource_compare': return c.aggregate === 'sum'
       ? `${c.side ? termSpan('side', c.side) : '双方'}全场的${termSpan('resource', c.key || '?')}总和 ${c.cmp || ''} ${c.n ?? fmtVal(c.value)}`
       : `${c.side ? termSpan('side', c.side) : '目标'}的${termSpan('resource', c.key || '?')} ${c.cmp || ''} ${c.n ?? fmtVal(c.value)}`;
-    case 'dead_count': return `死亡数 ${c.cmp || ''} ${fmtVal(c.value)}`;
-    case 'dispelled_count': return `被驱散数 ${c.cmp || ''} ${fmtVal(c.value)}`;
-    case 'consumed_count': return `已消耗数 ${c.cmp || ''} ${fmtVal(c.value)}`;
+    case 'dead_count': return `死亡数 ${c.cmp || ''} ${c.n ?? c.value ?? '?'}`;
+    case 'dispelled_count': return `被驱散数 ${c.cmp || ''} ${c.n ?? c.value ?? '?'}`;
+    case 'consumed_count': return `已消耗数 ${c.cmp || ''} ${c.n ?? c.value ?? '?'}`;
     case 'any_of': {
       const subs = (c.conds || c.conditions || c.items || []).map(condToText).filter(Boolean);
       return subs.length ? `（${subs.join(' 或 ')}）` : KT(k);
     }
+    case 'all_of': {
+      const subs = (c.conditions || []).map(condToText).filter(Boolean);
+      return subs.length ? `（${subs.join(' 且 ')}）` : KT(k);
+    }
+    case 'not': return c.condition ? `非（${condToText(c.condition)}）` : KT(k);
     default: {
       const extras = Object.entries(c).filter(([kk]) => kk !== 'kind')
         .map(([kk, vv]) => `${FIELD_ZH[kk] || kk}=${fmtVal(vv)}`).join(' ');

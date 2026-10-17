@@ -168,9 +168,13 @@ def schema_enums(defs):
 
 
 def covered_by_pattern(key, patterns):
-    """与 site/js/term.js 的 lookup() 同规则：match 以 * 结尾时按前缀匹配。"""
-    return any(p.get("match", "").endswith("*") and key.startswith(p["match"][:-1])
-               for p in patterns)
+    """与 site/js/term.js 的 lookup() 同规则：`*` 结尾或 `_` 结尾的 match 均按前缀匹配。"""
+    for p in patterns:
+        m = p.get("match", "")
+        prefix = m[:-1] if m.endswith("*") else (m if m.endswith("_") else "")
+        if prefix and key.startswith(prefix) and len(key) > len(prefix):
+            return True
+    return False
 
 
 def scan_data(json_dir):
