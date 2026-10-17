@@ -2804,7 +2804,8 @@
           ]
         },
         "stackThreshold": {
-          "type": "object"
+          "type": "object",
+          "description": "叠层阈值触发：{stacks, effects?, note?}。叠满即结算 effects；叠层阈值不使用 thresholdTrigger。"
         },
         "stackCapOverride": {
           "type": "object"
@@ -2871,10 +2872,8 @@
           "type": "object"
         },
         "thresholdTrigger": {
-          "type": "object"
-        },
-        "healReceivedMul": {
-          "type": "number"
+          "type": "object",
+          "description": "维度阈值触发：{metric, cmp, value, effects}，用于 lost / lust 等非叠层档位；叠层阈值用 stackThreshold。"
         },
         "formGroup": {
           "type": "string"
@@ -3172,6 +3171,14 @@
         },
         "metric": {
           "type": "string"
+        },
+        "scope": {
+          "type": "string",
+          "description": "修饰作用范围（durationModifier / debuffSpread 等使用：self / outgoing / incoming / enemy_outgoing / all_allies 等）。"
+        },
+        "mode": {
+          "type": "string",
+          "description": "修饰运算模式（如 durationModifier 的 add / mul）。"
         },
         "direction": {
           "type": "string"

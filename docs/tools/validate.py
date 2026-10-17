@@ -492,7 +492,8 @@ def main():
                 check_mod_keys(sd.get("modifiers"), "%s sd %s" % (cid, sd.get("id")), warns)
                 walk(sd.get("effects"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
                 trigs(sd.get("triggers"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
-                walk((sd.get("thresholdTrigger") or {}).get("effects"), cid, "sd:"+sd.get("id","?")+".tt", flags, errors, warns)
+                for tf in ("thresholdTrigger", "stackThreshold"):
+                    walk((sd.get(tf) or {}).get("effects"), cid, "sd:"+sd.get("id","?")+"."+tf, flags, errors, warns)
             flat = json.dumps(c.get("effects",[]), ensure_ascii=False)
             if ('"domain"' in flat or '"translocate"' in flat) and '"lost"' not in flat:
                 errors.append("%s: domain/translocate without lost rent"%cid)

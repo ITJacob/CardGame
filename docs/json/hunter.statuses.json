@@ -85,9 +85,6 @@
       "maxStacks": 3,
       "stackPolicy": "stack",
       "stackThreshold": {
-        "stacks": 2
-      },
-      "thresholdTrigger": {
         "stacks": 2,
         "effects": [
           {
@@ -137,9 +134,6 @@
       "maxStacks": 3,
       "stackPolicy": "stack",
       "stackThreshold": {
-        "stacks": 2
-      },
-      "thresholdTrigger": {
         "stacks": 2,
         "effects": [
           {
@@ -266,7 +260,9 @@
         "hunter",
         "planter"
       ],
-      "thresholdTrigger": {
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "stackThreshold": {
         "stacks": 3,
         "effects": [
           {
@@ -279,12 +275,7 @@
             "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
           }
         ],
-        "note": "集众：存活友军累积达阈值（已有 thresholdTrigger，此处补叠层口径）。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
-      },
-      "maxStacks": 3,
-      "stackPolicy": "stack",
-      "stackThreshold": {
-        "stacks": 3
+        "note": "集众：存活友军累积达阈值（已有 stackThreshold，此处补叠层口径）。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
       },
       "note": "数值拍板（2026-10-01 待拍板数值批⑥/A 案）：maxStacks 4→3——满编封顶 attack+3、threshold 再+1=+4，期望按平均存活 3 人计，落 D5 团队槽预算（同档单体 buff ×2）；动态随友军死亡衰减的原著语义保留。"
     },
@@ -429,9 +420,15 @@
           "note": "按伤害元素过滤的伤害乘区（H4 filter.element，与愚者 14 同族同母版）"
         },
         {
-          "kind": "status_duration_bonus",
-          "statusId": "combustion",
-          "bonus": 1,
+          "kind": "durationModifier",
+          "scope": "outgoing",
+          "mode": "add",
+          "value": 1,
+          "filter": {
+            "statusId": [
+              "combustion"
+            ]
+          },
           "note": "施加的 burn duration +1"
         }
       ]
@@ -543,7 +540,7 @@
             "cmp": ">=",
             "value": 3
           },
-          "note": "阈值质变：存活友军 ≥3 时全队伤害 ×1.2（原 thresholdTrigger.effects 内 modify_stat stat:damage_mul 违规——damage_mul 非属性键，按 SCHEMA §5.2 归位 statusDef.modifiers）"
+          "note": "阈值质变：存活友军 ≥3 时全队伤害 ×1.2（原 stackThreshold.effects 内 modify_stat stat:damage_mul 违规——damage_mul 非属性键，按 SCHEMA §5.2 归位 statusDef.modifiers）"
         },
         {
           "kind": "damage_taken_mul",
@@ -557,7 +554,7 @@
           "note": "阈值质变：存活友军 ≥3 时自身受伤 ×0.8（同上归位）"
         }
       ],
-      "note": "阈值门控（存活友军 ≥3）内联于 modifiers[].condition；阈值  待标（原 thresholdTrigger 结构 2026-09-18 并入）"
+      "note": "阈值门控（存活友军 ≥3）内联于 modifiers[].condition；阈值  待标（原 stackThreshold 结构 2026-09-18 并入）"
     },
     {
       "id": "warmonger",

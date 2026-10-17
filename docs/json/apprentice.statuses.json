@@ -36,12 +36,13 @@
       "dispelable": true,
       "duration": 15,
       "charges": 1,
-      "modifiers": {
-        "targetOverride": {
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
           "anchor": "first_empty",
           "note": "C7：下一次单体攻击改写至最近空坐标，只瞎一次（C6 charges）"
         }
-      }
+      ]
     },
     {
       "id": "escape_act",
@@ -96,13 +97,14 @@
           ]
         }
       ],
-      "modifiers": {
-        "targetOverride": {
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
           "anchor": "first_empty",
           "charges": 1,
           "note": "C7：方位错乱，下一次单体攻击打空"
         }
-      }
+      ]
     },
     {
       "id": "star_mark",
@@ -123,7 +125,7 @@
         }
       ],
       "modifiers": {
-        "pierceConceal": true
+        "see_through": true
       },
       "note": "C8 识破分支：持有者身上的隐匿 / 不可选中类状态对己方无效"
     },
@@ -355,13 +357,16 @@
       "duration": 20,
       "charges": 1,
       "modifiers": {
-        "damage_taken_mul": 1.15,
-        "targetOverride": {
+        "damage_taken_mul": 1.15
+      },
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
           "anchor": "first_empty",
           "charges": 1,
           "note": "C7：无法定位，下一次单体攻击打空"
         }
-      }
+      ]
     },
     {
       "id": "time_maze",

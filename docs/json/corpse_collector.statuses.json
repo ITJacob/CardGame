@@ -177,13 +177,14 @@
       "dispelable": true,
       "duration": 20,
       "charges": 1,
-      "modifiers": {
-        "targetOverride": {
+      "note": "F19 已登记；权威定义见状态表，此处为引用副本",
+      "behaviorModifiers": [
+        {
+          "op": "target_override",
           "anchor": "first_empty",
           "note": "F19 → H12；下一次攻击强制打其阵营首位"
         }
-      },
-      "note": "F19 已登记；权威定义见状态表，此处为引用副本"
+      ]
     },
     {
       "id": "blood_chill",
@@ -519,16 +520,6 @@
             ],
             "casterOwned": true
           }
-        },
-        "onDealDamageBonus": {
-          "effects": [
-            {
-              "type": "damage",
-              "element": "none",
-              "value": 1
-            }
-          ],
-          "note": "死亡气息：走 F54 companionBuff 携带 on_deal_damage 附加段"
         }
       },
       "triggers": [
@@ -558,6 +549,17 @@
               "else": []
             }
           ]
+        },
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 1
+            }
+          ],
+          "note": "死亡气息：走 F54 companionBuff 携带 on_deal_damage 附加段"
         }
       ]
     }

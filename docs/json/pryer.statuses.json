@@ -9,25 +9,22 @@
       "dispelable": false,
       "duration": null,
       "modifiers": {
-        "detect": {
-          "ignoreUntargetable": true,
-          "direction": "inbound",
-          "note": "C8 候选池过滤：敌方 stealth / shadow_veil / 不可选中类状态对持有者无效"
-        },
         "damage_mul": {
           "value": 1.15,
           "filter": {
             "hasAnyStatus": true
           },
           "note": "对携带任意状态的目标 ×1.15；F52 的 any 语义用 has_category 全枚举承载"
+        },
+        "see_through": {
+          "value": true,
+          "direction": "inbound",
+          "note": "C8 候选池过滤：敌方 stealth / shadow_veil / 不可选中类状态对持有者无效"
         }
       },
       "maxStacks": 3,
       "stackPolicy": "stack",
       "stackThreshold": {
-        "stacks": 2
-      },
-      "thresholdTrigger": {
         "stacks": 2,
         "effects": [
           {
@@ -55,9 +52,6 @@
       "stackPolicy": "stack",
       "note": "SS2 计数型状态（H11 母版，与 F1 inscription 同源）；由技能显式 +1，消耗走 F48 status.consume ｜ 2026-10-02 批次十：behaviorModifiers cast_time_set 卷轴技法（省时 不归零）",
       "stackThreshold": {
-        "stacks": 2
-      },
-      "thresholdTrigger": {
         "stacks": 2,
         "effects": [
           {
@@ -211,9 +205,6 @@
       "maxStacks": 3,
       "stackPolicy": "stack",
       "stackThreshold": {
-        "stacks": 2
-      },
-      "thresholdTrigger": {
         "stacks": 2,
         "effects": [
           {
@@ -336,14 +327,14 @@
       "dispelable": false,
       "duration": null,
       "modifiers": {
-        "detect": {
-          "ignoreUntargetable": true,
-          "direction": "inbound",
-          "note": "C8 候选池过滤：隐匿 / 不可选中类状态对持有者无效"
-        },
         "dispelParams": {
           "ignoreDispelable": true,
           "note": "SS4：驱散命中 dispelable:false 的状态也照常移除（窥见被隐藏的知识，强行揭示）"
+        },
+        "see_through": {
+          "value": true,
+          "direction": "inbound",
+          "note": "C8 候选池过滤：隐匿 / 不可选中类状态对持有者无效"
         }
       },
       "note": "序列 3 权柄，与序列 9 窥秘之眼（感官级）分层不重叠"
@@ -452,9 +443,6 @@
       "maxStacks": 3,
       "stackPolicy": "stack",
       "stackThreshold": {
-        "stacks": 2
-      },
-      "thresholdTrigger": {
         "stacks": 2,
         "effects": [
           {
@@ -582,10 +570,13 @@
       "dispelable": true,
       "duration": 50,
       "maxStacks": 1,
-      "modifiers": {
-        "energyCostMul": 1.5
-      },
-      "note": "格斗轴身份状态（2026-09-29 自 common energy_strain 分叉私有化，语义蓝本同源：能量消耗 ×1.5，被灌输错乱知识而施法吃力）；common energy_strain 保留为全库通用耗能工具（仲裁人律令等通用挂载不改指）。"
+      "note": "格斗轴身份状态（2026-09-29 自 common energy_strain 分叉私有化，语义蓝本同源：能量消耗 ×1.5，被灌输错乱知识而施法吃力）；common energy_strain 保留为全库通用耗能工具（仲裁人律令等通用挂载不改指）。",
+      "behaviorModifiers": [
+        {
+          "op": "energy_cost_mul",
+          "value": 1.5
+        }
+      ]
     }
   ]
 }
