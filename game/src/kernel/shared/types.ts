@@ -26,12 +26,12 @@ export type ConditionSide = 'self' | 'target' | 'ally' | 'enemy' | 'both' | 'all
 
 /** 条件 kind 闭集（schema $defs/condition.kind） */
 export type ConditionKind =
-  | 'any_of' | 'caster_has_summon' | 'caster_status_exists' | 'chance' | 'consumed_count'
-  | 'damage_source_is' | 'dead_count' | 'dispelled_count' | 'element_is' | 'field_status_count'
-  | 'gauge_rank' | 'has_category' | 'has_status' | 'hp_percent' | 'hp_percent_compare'
-  | 'luminance_compare' | 'phase_is' | 'rank_gap' | 'remove_reason' | 'resource_compare'
-  | 'stat_compare' | 'status_category' | 'tag_chain' | 'target_dead' | 'target_faction_is'
-  | 'target_has_tag' | 'target_is_summoned' | 'target_unit_type' | 'unit_faction'
+  | 'all_of' | 'any_of' | 'caster_has_summon' | 'caster_status_exists' | 'chance' | 'consumed_count'
+  | 'damage_source_is' | 'dead_count' | 'dispelled_count' | 'element_is' | 'faction_is'
+  | 'field_status_count' | 'gauge_above' | 'gauge_rank' | 'gender_is' | 'has_category'
+  | 'has_status' | 'hp_percent' | 'hp_percent_compare' | 'luminance_compare' | 'not'
+  | 'phase_is' | 'rank_gap' | 'resource_compare' | 'stat_compare' | 'tag_chain'
+  | 'target_dead' | 'target_has_tag' | 'target_is_summoned' | 'target_unit_type'
   | 'variant_is' | 'zone_active'
 
 /**
@@ -51,6 +51,8 @@ export interface Condition {
   categories?: string[]
   category?: string
   conditions?: Condition[]
+  /** not 组合子的单子条件 */
+  condition?: Condition
   statusId?: string | string[]
   stacksAtLeast?: number
   unitId?: string | string[]

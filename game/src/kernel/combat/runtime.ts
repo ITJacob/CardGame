@@ -23,7 +23,7 @@ import type { Consumption } from '../shared/types'
 import type { DecisionInput, DecisionRequest } from '../execution/types'
 import { withParams, type EffectContext, type OpportunityPayload } from '../effect/context'
 import type { TargetScope, TriggerSubjects } from '../effect/target-scope'
-import { executeNodes } from '../effect/executor'
+import { checkCondition, executeNodes } from '../effect/executor'
 import { BASIC_ATTACK_ID, basicAttackSource } from './basicAttack'
 import type {
   CombatEnded, CombatFacade, CombatSetup, CombatStats, CombatView,
@@ -287,6 +287,7 @@ class CombatRuntime implements CombatRuntimeHandle {
         } else {
           this.lastSkill.set(unit.id, { sourceRef: source.sourceRef, effects: source.effects })
           this.fireStatusTriggers(unit, 'on_active_skill')
+          this.fireGlobalStatusTriggers('on_active_skill', unit)
         }
         if (r.value) {
           // 需玩家选靶：机会挂起，等 submitDecision 跑完 O 节点后再闭合（括号右端）
@@ -860,10 +861,29 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
   }
 
-  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, targetScope?: TargetScope): void {
+  /** 全局监听：遍历所有存活单位的状态/被动，只执行 global:true 的触发器；事件源作为条件 target。 */
+  private fireGlobalStatusTriggers(event: string, subject: CombatUnit, subjects?: TriggerSubjects): void {
+    for (const host of this.units.all()) {
+      if (host.isDead) continue
+      for (const inst of host.statuses.all()) {
+        const def = this.lookup.statusDef(inst.defId)
+        const scope = this.scopeFor(host, inst.grant.casterId, { ...subjects, target: subject })
+        this.fireTriggers(host, event, def?.triggers, host, undefined, scope, true, subject)
+      }
+      for (const p of host.passives) {
+        const scope = this.scopeFor(host, undefined, { ...subjects, target: subject })
+        this.fireTriggers(host, event, p.triggers, host, undefined, scope, true, subject)
+      }
+    }
+  }
+
+  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, targetScope?: TargetScope, globalPass = false, conditionTarget?: CombatUnit | null): void {
     for (const t of triggers ?? []) {
       if (t.event !== event) continue
+      if ((t.global === true) !== globalPass) continue
       const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity, targetScope)
+      // P2a：触发器级 condition 先在全局监听上接线；非全局触发器的条件评估待 side 口径统一
+      if (globalPass && t.condition && !checkCondition(t.condition, conditionTarget ?? targetScope?.targets[0] ?? unit, ctx, targetScope?.caster ?? null)) continue
       executeNodes(t.effects ?? [], [unit], ctx)
     }
   }
@@ -881,6 +901,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       // 载荷主体（执行参数 §2.3）：on_death 的 attacker / target = 击杀者，killed_unit = 自身；
       // on_kill 的 killed_unit / target = 受害者。故先解出击杀者再 fire。
       this.fireStatusTriggers(u, 'on_death', undefined, undefined, { attacker: killer ?? null, target: killer ?? null, killed: u })
+      this.fireGlobalStatusTriggers('on_death', u, { attacker: killer ?? null, target: u, killed: u })
       if (killer && !killer.isDead) {
         this.fireStatusTriggers(killer, 'on_kill', undefined, undefined, { attacker: killer, target: u, killed: u })
       }

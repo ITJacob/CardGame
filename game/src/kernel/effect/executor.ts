@@ -46,6 +46,18 @@ const HANDLERS: Record<string, Handler> = {
   modify_rule_slot: H3.handleModifyRuleSlot as unknown as Handler,
 }
 
+/** 触发器级条件：与效果节点条件共用谓词求值；caster 可由调用方覆写为状态施加者。 */
+export function checkCondition(
+  cond: Condition | undefined,
+  target: CombatUnit | null,
+  ctx: EffectContext,
+  casterOverride?: CombatUnit | null,
+): boolean {
+  if (cond == null) return true
+  const cc = conditionContext(ctx)
+  return evaluateCondition(cond, target, casterOverride === undefined ? cc : { ...cc, caster: casterOverride })
+}
+
 function conditionContext(ctx: EffectContext): ConditionContext {
   return {
     random: ctx.random,

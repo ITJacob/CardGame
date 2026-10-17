@@ -26,7 +26,7 @@ export interface ConditionContext {
   readonly phase: Phase
   readonly caster: ConditionUnit | null
   resolveUnit?: (id: string) => ConditionUnit | null
-  /** 状态定义的类别（has_category / status_category 用） */
+  /** 状态定义的类别（has_category 用） */
   defCategory?: (defId: string) => readonly string[] | undefined
   /** 全场单位（field_status_count / dead_count 用） */
   allUnits?: () => readonly ConditionUnit[]
@@ -53,6 +53,10 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
   switch (cond.kind) {
     case 'any_of':
       return (cond.conditions ?? []).some((c) => evaluateCondition(c, target, ctx))
+    case 'all_of':
+      return (cond.conditions ?? []).every((c) => evaluateCondition(c, target, ctx))
+    case 'not':
+      return cond.condition ? !evaluateCondition(cond.condition, target, ctx) : true
     case 'chance': {
       const p = cond.p ?? 0
       ctx.registry.record('chance', { p })
@@ -82,8 +86,7 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
       return (cond.phases ?? []).includes(ctx.phase)
     case 'caster_status_exists':
       return ctx.caster != null && ctx.caster.statusStacks(prefixOf(cond)) > 0
-    case 'has_category':
-    case 'status_category': {
+    case 'has_category': {
       const cats = cond.categories ?? (cond.category ? [cond.category] : [])
       const subject = cond.side === 'self' ? ctx.caster : target
       if (!subject) return false
@@ -106,9 +109,14 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
       if (!subject) return false
       return compare(ctx.resourceOf?.(subject, String(cond.key ?? 'hp')) ?? 0, cond.cmp ?? '>=', cond.n ?? 0)
     }
-    case 'target_faction_is':
-    case 'unit_faction':
-      return target != null && target.faction === String(cond.faction ?? cond.value ?? '')
+    case 'faction_is': {
+      const subject = cond.side === 'self' ? ctx.caster : target
+      if (!subject || !ctx.caster) return false
+      const want = String(cond.value ?? cond.faction ?? '')
+      if (want === 'enemy') return subject.faction !== ctx.caster.faction
+      if (want === 'ally') return subject.faction === ctx.caster.faction
+      return subject.faction === want
+    }
     case 'stat_compare':
     case 'rank_gap': {
       const a = ctx.resolveUnit?.(String(cond.aUnit ?? ''))
