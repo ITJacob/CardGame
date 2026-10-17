@@ -8,8 +8,10 @@ import { walkCardEffects } from '../ast.js';
 import { barChart, countBy, sortedRows } from '../charts.js';
 import { modifierKeys } from './status.js';
 
-const DIMS = ['轴健康度', '跨轴耦合', '跨系联动', '结构健康', '机制落地', '文本完备', '差异化'];
-const DIM_MAX = { 轴健康度: 30, 跨轴耦合: 15, 跨系联动: 15, 结构健康: 5, 机制落地: 5, 文本完备: 5, 差异化: 25 };
+const DIMS = ['轴健康度', '跨轴耦合', '跨系联动', '差异化'];
+const DIM_MAX = { 轴健康度: 35, 跨轴耦合: 15, 跨系联动: 15, 差异化: 35 };
+const GATE_DIMS = ['结构健康', '机制落地', '文本完备'];
+const GATE_MAX = 5;
 const AXIS_DIMS = ['身份锚定', '产层闭环', '收束闭环', '轴内多样性', '规模均衡', '承接连通'];
 const AXIS_DIM_MAX = { 身份锚定: 15, 产层闭环: 20, 收束闭环: 25, 轴内多样性: 15, 规模均衡: 10, 承接连通: 15 };
 
@@ -19,6 +21,15 @@ function dimBars(dims, maxOf) {
     const v = dims[k] || 0;
     const pct = Math.round((v / maxOf(k)) * 100);
     return `<i class="dim-bar" title="${k} ${v}" style="width:${Math.max(pct, v ? 6 : 0)}%"></i>`;
+  }).join('')}</span>`;
+}
+
+// 门禁标记：三项合规维不计分，未达标各 −3
+function gateMarks(p) {
+  const gates = p.gates || {};
+  return `<span class="gate-marks">${GATE_DIMS.map((k) => {
+    const ok = gates[k] != null ? gates[k] : (p.dims[k] || 0) >= GATE_MAX - 0.05;
+    return `<span class="${ok ? 'muted' : 'warn-text'}" title="${escapeHtml(k)} 门禁${ok ? '达标' : '未达标（-3）'}">${ok ? '✓' : '✗'}</span>`;
   }).join('')}</span>`;
 }
 
@@ -119,7 +130,7 @@ function overviewHtml(scores) {
       <td class="num">${i + 1}</td>
       <td><b>${escapeHtml(p.name)}</b> <span class="muted">${escapeHtml(p.id)}</span></td>
       <td class="num total ${gradeClass(p.total)}">${p.total.toFixed(1)}</td>
-      <td class="col-dimbars">${dimBars(p.dims, (k) => DIM_MAX[k])}</td>
+      <td class="col-dimbars">${dimBars(p.dims, (k) => DIM_MAX[k])}${gateMarks(p)}</td>
       <td class="num ${p.minAxis < 40 ? 'warn-text' : ''}">${p.minAxis.toFixed(0)}</td>
       <td class="num muted">${p.cards}</td>
       <td class="num muted" title="卡面用过的效果原语种类 / schema 声明的 ${total} 种">${primCover.get(p.id)?.size || 0}<span class="muted">/${total}</span></td>
@@ -130,7 +141,7 @@ function overviewHtml(scores) {
     <p class="muted">口径：<code>docs/meta/SCORING.md</code>（闭环优先）· 数据 <code>score.py</code> 预计算 ${escapeHtml(scores.generated)} · 前端不重算。
     升序 = 重设计优先级。点击行进途径计分卡（评价打分清单 + 用料明细）。</p>
     <div class="panel"><table class="score-table">
-      <thead><tr><th>#</th><th>途径</th><th>总分</th><th class="col-dimbars">七维（轴健康/跨轴/跨系/结构/落地/文本/风格）</th><th>最低轴</th><th>卡数</th><th>原语覆盖</th><th>自有状态</th></tr></thead>
+      <thead><tr><th>#</th><th>途径</th><th>总分</th><th class="col-dimbars">四维（轴健康/跨轴/跨系/差异化）+ 门禁</th><th>最低轴</th><th>卡数</th><th>原语覆盖</th><th>自有状态</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>`;
 }
@@ -168,9 +179,29 @@ function checklistHtml(p) {
       <span class="chk-score num">${v.toFixed(1)} <span class="muted">/ ${max}</span></span>
     </div>${fix}${sigDetail}</div>`;
   }).join('');
+  const gateRows = GATE_DIMS.map((k) => {
+    const v = p.dims[k] || 0;
+    const ok = (p.gates && p.gates[k] != null) ? p.gates[k] : v >= GATE_MAX - 0.05;
+    const deds = p.deductions.filter((d) => d.dim === k);
+    const fix = deds.length
+      ? `<details class="chk-fix"><summary>${deds.length} 条失分 · 点开看问题与修改意见</summary>
+          <ul class="deduction-list">${deds.map((d) => `
+            <li><span class="badge warn">${escapeHtml(d.dim)}</span> ${escapeHtml(d.why)}
+              <span class="muted">${escapeHtml(d.ref)}</span>
+              <div class="fix-line">→ ${escapeHtml(d.fix)}</div></li>`).join('')}</ul></details>`
+      : (ok ? '<div class="chk-okline muted">门禁达标。</div>'
+            : '<div class="chk-okline muted">门禁未达标：总分 −3。</div>');
+    const pct = Math.round((v / GATE_MAX) * 100);
+    return `<div class="chk-item"><div class="chk-row">
+      <span class="chk-badge ${ok ? 'ok' : 'bad'}">${ok ? '✓' : '✗'}</span>
+      <span class="chk-name">${k} <span class="muted small">门禁</span></span>
+      <span class="chk-bar"><span class="dim-bars single"><i class="dim-bar" style="width:${Math.max(pct, v ? 6 : 0)}%"></i></span></span>
+      <span class="chk-score num">${v.toFixed(1)} <span class="muted">/ ${GATE_MAX}</span></span>
+    </div>${fix}</div>`;
+  }).join('');
   return `<div class="panel"><h2>评价打分清单</h2>
-    <p class="panel-note muted">✓ 满分 ｜ △ 部分得分 ｜ ✗ 有失分（点开看修改意见）。修改意见均为本途径内可执行动作。</p>
-    ${rows}</div>`;
+    <p class="panel-note muted">计分四维合计 100；三项门禁达标不扣分，未达标各 −3。✓ 达标 ｜ △ 部分得分 ｜ ✗ 有失分（点开看修改意见）。</p>
+    ${rows}${gateRows}</div>`;
 }
 
 // 用料明细：卡面原语 / 参数分散度 / 状态九维度，三 panel 一组

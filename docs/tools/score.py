@@ -979,7 +979,9 @@ def main():
 
     def _dist_pts(m):
         pct = (sum(1 for v in _sorted_d if v <= m)) / _n_pw if _n_pw else 0
-        return 10 if pct >= 0.75 else 6 if pct >= 0.5 else 2 if pct >= 0.25 else 0
+        # SCORING 2.3：六档（原四档把 12 族的距离压得太扁）
+        return (15 if pct >= 5 / 6 else 12 if pct >= 4 / 6 else 9 if pct >= 3 / 6
+                else 6 if pct >= 2 / 6 else 3 if pct >= 1 / 6 else 0)
 
     pw_rows = []
     for pid, d in pathways.items():
@@ -1000,7 +1002,7 @@ def main():
             health -= 5
             deductions.append(("轴健康度", "-5：最低轴 %.0f 分（<40）" % min_axis,
                                min((r for r in arows), key=lambda r: r["total"])["axis"], FIX["min_axis"]))
-        health = max(0, round(health * 30 / 100, 1))
+        health = max(0, round(health * 35 / 100, 1))
 
         # 封顶归一（SCORING 2.0）：通道耦合为重尾分布，用 ÷CAP 而非 ÷max，避免单点离群压平全库
         CAP_CROSSAXIS, CAP_CROSSPATH = 12, 16
@@ -1051,26 +1053,30 @@ def main():
         txt = sum(1 for c in cards if c.get("lore") and c.get("flavor") and c.get("describe"))
         text_score = round(5 * txt / len(cards), 1) if cards else 0
 
-        # 差异化（SCORING 2.0，权重 10→25）= 签名键落地 10 + 指纹距离 10 + 构型多样 5
+        # 差异化（SCORING 2.3，权重 35）= 签名键落地 15 + 指纹距离 15 + 构型多样 5
         sig_keys = PATHWAY_SIGNATURES.get(pid, [])
         sig_hits = signature_counts(cards, sig_keys, unit_type_of=all_unit_types,
                                     lineage_ids=lineage_status_ids, flag_status_index=flag_status_index)
-        signature_score = min(10, sum(4 if h >= 2 else 2 * h for h in sig_hits.values()))
+        signature_score = min(15, sum(6 if h >= 2 else 3 * h for h in sig_hits.values()))
         dist_pts = _dist_pts(mean_dists[pid])
         shapes = [set(r["shape"]) for r in arows]
         pairs = [(shapes[i], shapes[j]) for i in range(len(shapes)) for j in range(i + 1, len(shapes))]
         jac = (sum((len(a & b) / len(a | b)) if (a | b) else 1.0 for a, b in pairs) / len(pairs)) if pairs else 1.0
         config_div = round(5 * (1 - jac), 1)
         style_score = round(signature_score + dist_pts + config_div, 1)
-        if signature_score < 10:
+        if signature_score < 15:
             blanks = [k for k, h in sig_hits.items() if h == 0]
-            deductions.append(("差异化", "-%s：签名键零使用 %s" % (10 - signature_score, ",".join(blanks) or "（有键仅 1 卡，未落地）"), pid, FIX["signature"]))
-        if dist_pts <= 2:
+            deductions.append(("差异化", "-%s：签名键零使用 %s" % (15 - signature_score, ",".join(blanks) or "（有键仅 1 卡，未落地）"), pid, FIX["signature"]))
+        if dist_pts <= 3:
             deductions.append(("差异化", "-：途径指纹距离垫底（对他 21 途径均距 %.3f）" % mean_dists[pid], pid, FIX["uniqueness"]))
         if config_div < 2.5:
             deductions.append(("差异化", "-：四轴构型雷同（构型多样 %.1f/5，四轴产出面/原语高度重叠）" % config_div, pid, FIX["config"]))
 
-        total = round(health + crossaxis + crosspath + struct + landed_score + text_score + style_score, 1)
+        # SCORING 2.3：三项合规维改为门禁——不计入 100 分，未达标各扣 3
+        gates = {"结构健康": struct >= 4.95, "机制落地": landed_score >= 4.95,
+                 "文本完备": text_score >= 4.95}
+        gate_penalty = 3 * sum(1 for ok in gates.values() if not ok)
+        total = round(health + crossaxis + crosspath + style_score - gate_penalty, 1)
         pw_rows.append({
             "id": pid, "name": d.get("pathwayName"), "cards": len(cards),
             "total": total,
@@ -1078,6 +1084,7 @@ def main():
                      "结构健康": round(struct, 1), "机制落地": landed_score, "文本完备": text_score,
                      "差异化": style_score},
             "sigHits": sig_hits, "styleDist": mean_dists[pid],
+            "gates": gates, "gatePenalty": gate_penalty,
             "axes": arows, "deductions": deductions,
             "min_axis": min_axis, "mean_axis": round(mean_axis, 1),
         })
@@ -1151,6 +1158,7 @@ def write_scores_json(pw_rows):
             "id": r["id"], "name": r["name"], "total": r["total"], "dims": r["dims"],
             "minAxis": r["min_axis"], "cards": r["cards"],
             "sigHits": r.get("sigHits", {}), "styleDist": r.get("styleDist", 0),
+            "gates": r.get("gates", {}), "gatePenalty": r.get("gatePenalty", 0),
             "deductions": [{"dim": d, "why": w, "ref": x, "fix": f} for d, w, x, f in r["deductions"]],
             "axes": [{
                 "id": a["axis"], "name": a["name"], "symbol": a["symbol"], "total": a["total"],
