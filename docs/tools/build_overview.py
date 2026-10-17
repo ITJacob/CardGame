@@ -432,6 +432,7 @@ def main():
     # ---- 分章 ----
     for i, d in enumerate(docs, 1):
         cs = d["cards"]
+        ddefs = {x["id"]: x for x in d.get("domainDefs", [])}
         axes = " / ".join("%s %s" % (a["symbol"], a["name"]) for a in d["axes"].values())
         nf = sum(1 for c in cs if any(not f.get("landed") for f in (c.get("frameworkFlags") or [])))
         nn = sum(1 for c in cs if c.get("conversionNotes"))
@@ -501,7 +502,10 @@ def main():
                 if not dom:
                     grant = c.get("domain")
                     if isinstance(grant, dict) and not has_effect_type(c.get("effects"), "domain"):
-                        dom = grant
+                        base = ddefs.get(grant.get("def"), {})
+                        dom = dict(base)
+                        dom.update({k: v for k, v in grant.items() if k != "def"})
+                        dom["id"] = grant.get("def")
                 if dom:
                     w("- **界域**：%s（%s，%s%s）" % (dom.get("id") or dom.get("def"), dom.get("tier"),
                                                 dom.get("duration"), "回合" if dom.get("durationUnit") == "turn" else "tick"))

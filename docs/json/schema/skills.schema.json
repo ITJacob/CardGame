@@ -3334,13 +3334,9 @@
     },
     "domainGrant": {
       "type": "object",
+      "description": "界域授予：只写实例覆写。tier / durationUnit / dispelable / rulePatches 未写时一律继承 domainDef；duration 未写继承 domainDef.duration。",
       "required": [
-        "tier",
-        "def",
-        "duration",
-        "durationUnit",
-        "dispelable",
-        "rulePatches"
+        "def"
       ],
       "additionalProperties": false,
       "properties": {
@@ -3354,7 +3350,8 @@
           "type": "string"
         },
         "duration": {
-          "type": "integer"
+          "type": "integer",
+          "description": "实例时长覆写；省略 = 继承 domainDef.duration（-1 = 常驻）。"
         },
         "durationUnit": {
           "enum": [

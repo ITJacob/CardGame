@@ -69,16 +69,16 @@
 
 **规模**：10 张技能（主动 7 / 被动 3）；稀有度分布：普通×3、精良×3、稀有×2、史诗×2。
 
-**效果原语构成**（type，全量递归，共 30 处）：
+**效果原语构成**（type，全量递归，共 27 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 14 | 46.7% |
-| `damage` | 1 | 3.3% |
-| `modify_stat` | 2 | 6.7% |
-| `modify_resource` | 5 | 16.7% |
-| `move` | 2 | 6.7% |
-| `target_override` | 6 | 20.0% |
+| `mount_status` | 14 | 51.9% |
+| `damage` | 1 | 3.7% |
+| `modify_stat` | 2 | 7.4% |
+| `modify_resource` | 5 | 18.5% |
+| `move` | 2 | 7.4% |
+| `target_override` | 3 | 11.1% |
 
 **算子构成**（op，共 3 处）：
 
@@ -101,7 +101,7 @@
 | `energy` | 5 |
 
 **设计风格总结**：本轴偏【控制·运营】——以 debuff、换位、封印、重定向与驱散干扰敌方决策与站位；以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `mount_status`(14)、`target_override`(6)、`modify_resource`(5)；属性杠杆集中在 `attack`、`defense`，资源杠杆集中在 `energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(14)、`modify_resource`(5)、`target_override`(3)；属性杠杆集中在 `attack`、`defense`，资源杠杆集中在 `energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **误导**：单体敌人被误导（15tick，1 次）：它的下一次攻击打向空位（目标改写 → first_empty）。（目标改写由 target_override 原语结构化承载）
 

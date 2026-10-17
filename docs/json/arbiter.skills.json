@@ -1281,30 +1281,8 @@
         }
       ],
       "domain": {
-        "tier": "overlay",
         "def": "domain_full_moon",
-        "duration": 15,
-        "durationUnit": "tick",
-        "dispelable": true,
-        "envRulesText": "全场：敌方隐匿/不可选中单位每 tick 受 damage(true, 0.2) 并显形（满月之下无暗可藏，双向：照敌之隐 / 增己之律）",
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "ally",
-            "tag": [
-              "律令"
-            ],
-            "mul": 1.3
-          },
-          {
-            "kind": "empower",
-            "side": "ally",
-            "tag": [
-              "秩序"
-            ],
-            "mul": 1.2
-          }
-        ]
+        "envRulesText": "全场：敌方隐匿/不可选中单位每 tick 受 damage(true, 0.2) 并显形（满月之下无暗可藏，双向：照敌之隐 / 增己之律）"
       },
       "tags": [
         "秩序",
@@ -1424,18 +1402,9 @@
         "mood": "grounding, austere, final"
       },
       "domain": {
-        "tier": "overlay",
         "def": "reality_press",
         "duration": 40,
-        "durationUnit": "tick",
-        "dispelable": true,
-        "envRulesText": "全场（双向）：技能费用 +1（现实沉重，敌我同价）",
-        "rulePatches": [
-          {
-            "kind": "cost_mod",
-            "delta": 1
-          }
-        ]
+        "envRulesText": "全场（双向）：技能费用 +1（现实沉重，敌我同价）"
       }
     },
     {
@@ -2470,18 +2439,8 @@
         }
       ],
       "domain": {
-        "tier": "overlay",
         "def": "edict_seal",
-        "duration": 20,
-        "durationUnit": "tick",
-        "dispelable": true,
-        "envRulesText": "全场（敌我同禁）：本域存续期间一切 consumption: domain 行为失效——无人能再切换界域",
-        "rulePatches": [
-          {
-            "kind": "seal_effect",
-            "effectType": "domain"
-          }
-        ]
+        "envRulesText": "全场（敌我同禁）：本域存续期间一切 consumption: domain 行为失效——无人能再切换界域"
       },
       "tentative": false,
       "conversionNotes": "翻译/语义：律令轴清场重写（非底层）。规则改写由界域承载（brief §9.1）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）castTime 5→10tick（对齐拍板表） ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 2026-10-02 差异化风格迭代（仲裁人=立规正主）：废止域升格 seal_effect（禁用效果类型正主，天然敌我同禁）——立规『禁』的承载键落地 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：decree轴 self+point pick:all（轴选靶签名设计 §4）",
@@ -2578,18 +2537,8 @@
         "mood": "purifying, stern, cleansing"
       },
       "domain": {
-        "tier": "overlay",
         "def": "reality_press",
-        "duration": 30,
-        "durationUnit": "tick",
-        "dispelable": true,
-        "envRulesText": "全场（双向）：技能费用 +1（现实沉重，敌我同价）",
-        "rulePatches": [
-          {
-            "kind": "cost_mod",
-            "delta": 1
-          }
-        ]
+        "envRulesText": "全场（双向）：技能费用 +1（现实沉重，敌我同价）"
       }
     },
     {
@@ -2755,11 +2704,13 @@
               "note": "修改而非去除一条底层规则"
             },
             {
-              "type": "mount_status",
-              "statusId": "debuff_immune",
+              "type": "grant_immunity",
               "duration": 40,
               "target": "all_allies",
-              "note": "赋予豁免权"
+              "note": "赋予豁免权",
+              "against": [
+                "debuff"
+              ]
             },
             {
               "type": "modify_resource",
@@ -2781,32 +2732,8 @@
         }
       ],
       "domain": {
-        "tier": "overlay",
         "def": "order_bedrock",
-        "duration": 40,
-        "durationUnit": "tick",
-        "dispelable": true,
-        "envRulesText": "全场（双向）：治疗量 ×2；护盾不再吸收伤害；放逐与传送类效果封印——生命可被抚慰，外物不再庇佑，空间不再漏隙",
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "both",
-            "stat": "heal",
-            "mul": 2
-          },
-          {
-            "kind": "disable_effect",
-            "side": "both",
-            "tag": [
-              "护盾"
-            ],
-            "note": "全场护盾不再吸收伤害"
-          },
-          {
-            "kind": "seal_effect",
-            "effectType": "translocate"
-          }
-        ]
+        "envRulesText": "全场（双向）：治疗量 ×2；护盾不再吸收伤害；放逐与传送类效果封印——生命可被抚慰，外物不再庇佑，空间不再漏隙"
       },
       "tags": [
         "规则",
@@ -2911,11 +2838,13 @@
               "note": "疯狂的平衡：一切失控状态被平息"
             },
             {
-              "type": "mount_status",
-              "statusId": "control_immune",
+              "type": "grant_immunity",
               "duration": 40,
               "target": "self",
-              "note": "理智：施法者自己保持清醒"
+              "note": "理智：施法者自己保持清醒",
+              "against": [
+                "control"
+              ]
             }
           ]
         },

@@ -394,11 +394,6 @@
           "note": "挑衅者预备回击：同挂反击姿态 15tick（2 次）——敢应挑衅的远程攻击者吃顺序反击（执行上下文 §六；⚠️D 待平衡）"
         },
         {
-          "type": "target_override",
-          "anchor": "taunt_source",
-          "note": "羞辱调防：被迫改指挑衅者"
-        },
-        {
           "type": "modify_rule_slot",
           "slot": 1,
           "field": "punish",
@@ -951,11 +946,6 @@
           "charges": 1,
           "duration": 15,
           "target": "target"
-        },
-        {
-          "type": "target_override",
-          "anchor": "first_empty",
-          "note": "误导调防（原语化实证①）：下一次攻击目标改写为空位——target_override 只做指挥/调防语义（身份红线）；存续窗口由 deceived 状态承载，原语承载改写语义"
         }
       ],
       "sharedAcross": [
@@ -1846,39 +1836,8 @@
         }
       ],
       "domain": {
-        "tier": "overlay",
         "def": "domain_war_mist",
-        "duration": 15,
-        "durationUnit": "tick",
-        "dispelable": true,
-        "envRulesText": "全场：敌方单位 attack -2 且每 tick gauge.current -4（雾中指挥失灵）；己方单位 damage_taken_mul ×0.9（雾中隐蔽）——双向：压敌攻势 / 护己阵型",
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "战争",
-              "迷雾"
-            ],
-            "mul": 1.3
-          },
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "光",
-              "净化"
-            ],
-            "mul": 0.8
-          },
-          {
-            "kind": "empower",
-            "side": "ally",
-            "stat": "damage_taken_mul",
-            "mul": 0.9,
-            "note": "雾中隐蔽：己方受伤 ×0.9（O 节点乘区 empower，战场参数 §一；整域持续生效，替代原 5t 刷新的触发器写法）"
-          }
-        ]
+        "envRulesText": "全场：敌方单位 attack -2 且每 tick gauge.current -4（雾中指挥失灵）；己方单位 damage_taken_mul ×0.9（雾中隐蔽）——双向：压敌攻势 / 护己阵型"
       },
       "tags": [
         "战争",
@@ -2129,24 +2088,8 @@
         }
       ],
       "domain": {
-        "tier": "overlay",
         "def": "domain_extreme_weather",
-        "duration": 20,
-        "durationUnit": "tick",
-        "dispelable": true,
-        "envRulesText": "全场：所有单位每 tick 受 damage(shock, 0.2)（无差别天灾，己方同样挨砸）；敌方单位 gauge.rate -6（风压迟滞）——双向性 = 天灾不认人，但风只压敌人",
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "both",
-            "tag": [
-              "天气",
-              "风暴",
-              "海洋"
-            ],
-            "mul": 1.3
-          }
-        ]
+        "envRulesText": "全场：所有单位每 tick 受 damage(shock, 0.2)（无差别天灾，己方同样挨砸）；敌方单位 gauge.rate -6（风压迟滞）——双向性 = 天灾不认人，但风只压敌人"
       },
       "tags": [
         "天气",
@@ -2912,11 +2855,6 @@
           "duration": 15,
           "target": "target",
           "note": "（2026-10-09 时长校正：稿期 3 回合 → 15tick，1 回合=5tick）"
-        },
-        {
-          "type": "target_override",
-          "anchor": "taunt_source",
-          "note": "羞辱调防：被迫改指挑衅者"
         },
         {
           "type": "modify_rule_slot",

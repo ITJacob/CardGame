@@ -317,12 +317,6 @@
           "type": "mount_status",
           "statusId": "misdirect",
           "duration": 15
-        },
-        {
-          "type": "target_override",
-          "faction": "enemy",
-          "anchor": "first_empty",
-          "note": "目标改写正主承载：被误导者的下一次攻击锚定重定向到空坐标（砍向空位；计时与次数由 misdirect 状态承载）"
         }
       ],
       "sharedAcross": [
@@ -2433,23 +2427,8 @@
         }
       ],
       "domain": {
-        "tier": "overlay",
         "def": "domain_clock_tower",
-        "duration": 15,
-        "durationUnit": "tick",
-        "dispelable": true,
-        "envRulesText": "全场：敌方单位每 tick gauge.current -2（时间被一格一格偷走）；己方单位每 tick gauge.current +2（偷来的时间塞进你们的口袋）——双向：偷敌之秒 / 补己之拍",
-        "rulePatches": [
-          {
-            "kind": "empower",
-            "side": "ally",
-            "tag": [
-              "窃取",
-              "欺诈"
-            ],
-            "mul": 1.3
-          }
-        ]
+        "envRulesText": "全场：敌方单位每 tick gauge.current -2（时间被一格一格偷走）；己方单位每 tick gauge.current +2（偷来的时间塞进你们的口袋）——双向：偷敌之秒 / 补己之拍"
       },
       "tags": [
         "窃取",

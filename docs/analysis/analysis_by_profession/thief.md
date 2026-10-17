@@ -74,16 +74,16 @@
 
 **规模**：11 张技能（主动 6 / 被动 5）；稀有度分布：普通×4、精良×4、史诗×2、稀有×1。
 
-**效果原语构成**（type，全量递归，共 27 处）：
+**效果原语构成**（type，全量递归，共 26 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 11 | 40.7% |
-| `damage` | 5 | 18.5% |
-| `modify_resource` | 1 | 3.7% |
-| `dispel` | 1 | 3.7% |
-| `transfer_status` | 5 | 18.5% |
-| `target_override` | 4 | 14.8% |
+| `mount_status` | 11 | 42.3% |
+| `damage` | 5 | 19.2% |
+| `modify_resource` | 1 | 3.8% |
+| `dispel` | 1 | 3.8% |
+| `transfer_status` | 5 | 19.2% |
+| `target_override` | 3 | 11.5% |
 
 **算子构成**（op，共 4 处）：
 

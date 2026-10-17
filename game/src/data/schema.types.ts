@@ -39,11 +39,11 @@ export interface RawAxis {
 }
 
 export interface RawDomainGrant {
-  tier: 'overlay' | 'hero'
+  tier?: 'overlay' | 'hero'
   def: string
-  duration: number
+  duration?: number
   durationUnit?: 'turn' | 'tick'
-  dispelable: boolean
+  dispelable?: boolean
   rulePatches?: unknown[]
   envRulesText?: string
 }
