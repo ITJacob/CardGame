@@ -26,17 +26,17 @@
 
 **规模**：13 张技能（主动 8 / 被动 5）；稀有度分布：普通×4、精良×3、史诗×3、稀有×2、传说×1。
 
-**效果原语构成**（type，全量递归，共 61 处）：
+**效果原语构成**（type，全量递归，共 60 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 25 | 41.0% |
-| `damage` | 14 | 23.0% |
-| `modify_stat` | 5 | 8.2% |
-| `modify_resource` | 10 | 16.4% |
-| `heal` | 4 | 6.6% |
+| `mount_status` | 25 | 41.7% |
+| `damage` | 14 | 23.3% |
+| `modify_stat` | 4 | 6.7% |
+| `modify_resource` | 10 | 16.7% |
+| `heal` | 4 | 6.7% |
 | `move` | 2 | 3.3% |
-| `modify_damage` | 1 | 1.6% |
+| `modify_damage` | 1 | 1.7% |
 
 **算子构成**（op，共 23 处）：
 
@@ -47,11 +47,11 @@
 | `repeat` | 3 |
 | `push_back` | 1 |
 
-**改动的属性（modify_stat，共 5 处）**：
+**改动的属性（modify_stat，共 4 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
-| `attack` | 3 |
+| `attack` | 2 |
 | `gauge.rate` | 2 |
 
 **改动的资源（modify_resource，共 10 处）**：
