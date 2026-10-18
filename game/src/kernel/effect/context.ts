@@ -1,7 +1,7 @@
 // 效果结算的运行时上下文与工具。
 import type { Phase } from '../ids'
 import type { DomainEvent } from '../combat/types'
-import type { EffGrantImmunity, EffSpawn, EffectNode } from '../catalog/types'
+import type { EffGrantImmunity, EffSpawn, EffectNode, StatusDef } from '../catalog/types'
 import type { IdGenerator } from '../shared/id-generator'
 import type { RandomSource, RandomUsageRegistry } from '../shared/random-source'
 import type { StatusGrant } from '../roster/types'
@@ -39,6 +39,8 @@ export interface EffectContext {
   readonly effectNode: (defId: string) => EffectNode | undefined
   /** 状态定义的类别（供 dispel/reveal 过滤） */
   readonly defCategory: (defId: string) => readonly string[] | undefined
+  /** 状态定义查询（modify_status 按装备槽选靶等） */
+  readonly statusDef: (defId: string) => StatusDef | undefined
   /** 记录未实现原语（计入 unsupported 计数） */
   readonly unsupported: (kind: string, detail?: string) => void
   /** 遥测：造成伤害（用于 CombatStats） */

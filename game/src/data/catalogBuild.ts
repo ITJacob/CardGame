@@ -136,6 +136,15 @@ function collectStatusRefs(card: RawCard, into: { owner: string; statusId: strin
   }
 }
 
+function collectMountRefs(nodes: readonly EffectNode[] | undefined, owner: string, into: { owner: string; statusId: string }[]): void {
+  for (const node of nodes ?? []) {
+    walkEffectNodes(node, (n) => {
+      const rec = n as unknown as Record<string, unknown>
+      if (rec.type === 'mount_status' && typeof rec.statusId === 'string') into.push({ owner, statusId: rec.statusId })
+    })
+  }
+}
+
 export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions = {}): BuildResult {
   const effectDefs = new Map<string, EffectDef>()
   const skillDefs = new Map<string, SkillDef>()
@@ -150,6 +159,8 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
 
   // 待校验的状态引用（第一遍收集，全部文件处理完后再判定）
   const statusRefs: { owner: string; statusId: string }[] = []
+  // 被动卡不得直接装备（挂载 equipSlot 状态）；同样延后到全部文件注册完再判定
+  const passiveMountRefs: { owner: string; statusId: string }[] = []
   let cardCount = 0
 
   // 先注册全局状态（*.statuses.json + common.statuses.json）
@@ -177,6 +188,14 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
       const effects = internEffects(card.id, card.effects, effectDefs, warnings)
       checkTriggers(card.id, card.triggers, warnings)
       collectStatusRefs(card, statusRefs)
+      if (card.kind === 'passive') {
+        collectMountRefs(card.effects, card.id, passiveMountRefs)
+        for (const trg of card.triggers ?? []) collectMountRefs(trg.effects, card.id, passiveMountRefs)
+        for (const sd of card.statusDefs ?? []) {
+          collectMountRefs(sd.effects, card.id, passiveMountRefs)
+          for (const trg of sd.triggers ?? []) collectMountRefs(trg.effects, card.id, passiveMountRefs)
+        }
+      }
 
       const base = {
         id: card.id,
@@ -224,6 +243,9 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
   // 引用校验：statusId 必须可解析
   for (const { owner, statusId } of statusRefs) {
     if (!statusDefs.has(statusId)) warnings.push(`${owner}：引用了未知状态 ${statusId}`)
+  }
+  for (const { owner, statusId } of passiveMountRefs) {
+    if (statusDefs.get(statusId)?.equipSlot) warnings.push(`${owner}：被动卡不得直接装备 ${statusId}（equipSlot 只能由主动卡挂载）`)
   }
 
   const catalog: Catalog = {

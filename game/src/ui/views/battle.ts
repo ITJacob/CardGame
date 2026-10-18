@@ -914,13 +914,14 @@ function classNameOf(s: BattleSession, meta: UnitMeta | undefined): string {
  * 状态 chip。short=true（战场棋子上）：只显示状态名首字 + 层数，buff 淡绿底、debuff 淡红底，
  * 全名与详情在点开的信息栏里看（信息栏走 short=false）。
  */
-function chipHtml(s: BattleSession, st: { defId: string; stacks: number }, short = false): string {
+function chipHtml(s: BattleSession, st: { defId: string; stacks: number; charges: number | null; maxCharges: number | null }, short = false): string {
   const def = s.catalog.statusDefs.get(st.defId)
   const name = def?.name ?? st.defId
   const cat = def?.category ?? []
   const pol = cat.includes('buff') ? ' buff' : cat.includes('debuff') ? ' debuff' : ''
   const text = short ? ([...name][0] ?? name) : name
-  return `<span class="chip${pol}">${escapeHtml(text)}${st.stacks > 1 ? `×${st.stacks}` : ''}</span>`
+  const chargeText = st.charges !== null ? `${st.charges}${st.maxCharges !== null ? '/' + st.maxCharges : ''}` : ''
+  return `<span class="chip${pol}">${escapeHtml(text)}${st.stacks > 1 ? `×${st.stacks}` : ''}${chargeText ? ` ${chargeText}` : ''}</span>`
 }
 
 /**

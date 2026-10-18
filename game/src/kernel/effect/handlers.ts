@@ -86,6 +86,7 @@ export function handleMountStatus(node: EffMountStatus, target: CombatUnit | nul
     durationUnit: node.durationUnit,
     stacks: typeof node.stacks === 'number' ? node.stacks : undefined,
     stackMode: node.stackMode,
+    charges: typeof node.charges === 'number' ? node.charges : undefined,
     params: node.params as Record<string, number> | undefined,
   })
 }

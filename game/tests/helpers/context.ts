@@ -38,6 +38,7 @@ export function stubContext(
     },
     effectNode: () => undefined,
     defCategory: (id) => defMap.get(id)?.category,
+    statusDef: (id) => defMap.get(id),
     unsupported: () => {},
     ops: { ...NOOP_OPS, ...overrides },
   }

@@ -128,7 +128,7 @@ export interface UnitViewLite {
   gaugeRate: number
   /** 行动条越阈阈值——UI 预测出手顺序用 */
   gaugeThreshold: number
-  statuses: { defId: string; stacks: number }[]
+  statuses: { defId: string; stacks: number; charges: number | null; maxCharges: number | null }[]
 }
 
 /** 运行门面：UI 只认这个（见 DESIGN.md §三） */

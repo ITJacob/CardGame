@@ -126,6 +126,8 @@ export interface StatusGrant {
   stacks?: number
   /** 层数语义：add（默认）/ consume（扣减并在归零时卸载）/ override（直接设值） */
   stackMode?: 'add' | 'consume' | 'override'
+  /** 次数型状态的初始次数；省略则回退 StatusDef.charges */
+  charges?: number
   params?: Record<string, number>
   sourceId: string
   /** 施加者（释放挂载该状态的技能的单位）；载荷简写 `caster` 读它，区别于宿主 self（执行参数 §2.3） */
@@ -141,6 +143,10 @@ export interface StatusInstance {
   /** 剩余时长；null = 常驻（StatusDef.duration 为 null，不自然到期） */
   remaining: number | null
   currentStacks: number
+  /** 剩余次数；null = 无次数限制 */
+  charges: number | null
+  /** 次数上限（restoreCharges 补满用）；null = 无次数模型 */
+  maxCharges: number | null
 }
 
 /** 状态容器：只管挂载/叠加/到期/卸载的数据面，不触发副作用（副作用由效果层编排） */

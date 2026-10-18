@@ -12,7 +12,7 @@ import { Mulberry32RandomSource, RandomUsageRegistry, type RandomSource } from '
 import { round2 } from '../shared/result'
 import { Registry } from '../roster/registry'
 import { CombatUnit } from '../roster/unit'
-import type { BehaviorSlot, StatusGrant } from '../roster/types'
+import type { BehaviorSlot, StatusGrant, StatusInstance } from '../roster/types'
 import { CombatScheduler, phaseOf, PHASE_LUMINANCE as LUM } from '../scheduling/scheduler'
 import { resolveInitiative } from '../scheduling/initiative'
 import { availableBehaviors } from '../scheduling/filter'
@@ -304,8 +304,21 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
 
     this.checkDeaths()
+    this.breakSpentEquipments()
     this.checkTermination()
     return { tick: this.battle.clock, opportunities, pending: this.pending?.request ?? null, ended: this.outcome !== null }
+  }
+
+  /** 本步末尾清掉耐久归零的装备（期间若被 on_kill 补满则保留）。 */
+  private breakSpentEquipments(): void {
+    for (const unit of this.units.all()) {
+      for (const inst of [...unit.statuses.all()]) {
+        if (!this.lookup.statusDef(inst.defId)?.equipSlot) continue
+        if (inst.charges === null || inst.charges > 0) continue
+        unit.statuses.unmount(inst.instanceId, 'charges')
+        this.emit({ type: 'StatusExpired', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id })
+      }
+    }
   }
 
   // ---------- 行为源 ----------
@@ -404,6 +417,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant, caster),
       effectNode: (id) => this.lookup.effectNode(id),
       defCategory: (id) => this.lookup.statusDef(id)?.category,
+      statusDef: (id) => this.lookup.statusDef(id),
       unsupported: (k, d) => this.unsupported(k, d),
       reportDamage: (faction, amount) => {
         if (faction) this.stats.damageDealt[faction] = round2((this.stats.damageDealt[faction] ?? 0) + amount)
@@ -551,14 +565,17 @@ class CombatRuntime implements CombatRuntimeHandle {
 
   private opShuffleStatuses(units: readonly CombatUnit[], count: number): void {
     if (units.length < 2) return
-    const taken: (readonly { instanceId: string; defId: string; remaining: number | null; currentStacks: number }[] | null)[] =
-      units.map((u) => u.statuses.all().slice(0, count) as never)
+    const taken: (readonly StatusInstance[] | null)[] = units.map((u) => u.statuses.all().slice(0, count))
     // 顺时针轮转：A 的状态给 B，B 给 C…（保序、确定性）
     units.forEach((u, i) => {
-      const src = taken[i] as readonly { instanceId: string; defId: string; remaining: number | null; currentStacks: number }[] | null
+      const src = taken[i]
       if (!src) return
       for (const inst of src) {
-        u.statuses.mount(inst.defId, { duration: inst.remaining, stacks: inst.currentStacks, sourceId: this.ids.next('shuffle') })
+        this.mountStatus(u, inst.defId, {
+          duration: inst.remaining,
+          stacks: inst.currentStacks,
+          charges: inst.charges ?? undefined,
+        })
       }
     })
   }
@@ -794,6 +811,14 @@ class CombatRuntime implements CombatRuntimeHandle {
       }
       return
     }
+    // 装备槽：同槽互斥，后装备者替换前者（含同 defId 重挂 → 耐久刷新）
+    if (def?.equipSlot && effectiveGrant.stackMode !== 'consume') {
+      for (const old of host.statuses.all().filter((i) => this.lookup.statusDef(i.defId)?.equipSlot === def.equipSlot)) {
+        host.statuses.unmount(old.instanceId, 'replaced')
+        host.provenance.revertBySource(old.instanceId)
+        this.emit({ type: 'StatusDispelled', instanceId: old.instanceId, defId: old.defId })
+      }
+    }
     const inst = host.statuses.mount(statusId, { ...effectiveGrant, sourceId: this.ids.next('status'), casterId: effectiveGrant.casterId ?? caster?.id })
     if (!inst) return
     // 消耗层数不是「新获得状态」，不触发 on_apply / on_status_gain
@@ -867,11 +892,12 @@ class CombatRuntime implements CombatRuntimeHandle {
     opportunity?: OpportunityPayload,
     subjects?: TriggerSubjects,
   ): void {
-    for (const inst of unit.statuses.all()) {
+    // 快照：触发器效果可能卸载自身或其它状态
+    for (const inst of [...unit.statuses.all()]) {
       if (onlyDefId && inst.defId !== onlyDefId) continue
       const def = this.lookup.statusDef(inst.defId)
       const scope = this.scopeFor(unit, inst.grant.casterId, subjects, opportunity)
-      this.fireTriggers(unit, event, def?.triggers, unit, opportunity, scope)
+      this.fireTriggers(unit, event, def?.triggers, unit, opportunity, scope, false, null, inst)
     }
     // 被动卡（无 onlyDefId 时全部参与）
     if (!onlyDefId) {
@@ -886,10 +912,10 @@ class CombatRuntime implements CombatRuntimeHandle {
   private fireGlobalStatusTriggers(event: string, subject: CombatUnit, subjects?: TriggerSubjects): void {
     for (const host of this.units.all()) {
       if (host.isDead) continue
-      for (const inst of host.statuses.all()) {
+      for (const inst of [...host.statuses.all()]) {
         const def = this.lookup.statusDef(inst.defId)
         const scope = this.scopeFor(host, inst.grant.casterId, { ...subjects, target: subject })
-        this.fireTriggers(host, event, def?.triggers, host, undefined, scope, true, subject)
+        this.fireTriggers(host, event, def?.triggers, host, undefined, scope, true, subject, inst)
       }
       for (const p of host.passives) {
         const scope = this.scopeFor(host, undefined, { ...subjects, target: subject })
@@ -898,7 +924,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
   }
 
-  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, targetScope?: TargetScope, globalPass = false, conditionTarget?: CombatUnit | null): void {
+  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, targetScope?: TargetScope, globalPass = false, conditionTarget?: CombatUnit | null, ownerInstance?: StatusInstance): void {
     for (const t of triggers ?? []) {
       if (t.event !== event) continue
       if ((t.global === true) !== globalPass) continue
@@ -906,6 +932,18 @@ class CombatRuntime implements CombatRuntimeHandle {
       // P2a：触发器级 condition 先在全局监听上接线；非全局触发器的条件评估待 side 口径统一
       if (globalPass && t.condition && !checkCondition(t.condition, conditionTarget ?? targetScope?.targets[0] ?? unit, ctx, targetScope?.caster ?? null)) continue
       executeNodes(t.effects ?? [], [unit], ctx)
+      if (!ownerInstance || !t.consumeCharge) continue
+      // 效果可能已自行卸载该状态：按 instanceId 重新取，避免重复卸载
+      const live = unit.statuses.all().find((i) => i.instanceId === ownerInstance.instanceId)
+      if (!live || live.charges === null) continue
+      const amount = t.consumeCharge === true ? 1 : Math.max(0, Math.floor(t.consumeCharge))
+      if (amount <= 0) continue
+      live.charges = Math.max(0, live.charges - amount)
+      // 装备槽耐久归零先留在槽内到本步结算末尾：同一次击杀的 on_kill 补耐久可救回
+      if (live.charges <= 0 && !this.lookup.statusDef(live.defId)?.equipSlot) {
+        unit.statuses.unmount(live.instanceId, 'charges')
+        this.emit({ type: 'StatusExpired', instanceId: live.instanceId, defId: live.defId, unitId: unit.id })
+      }
     }
   }
 
@@ -958,7 +996,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       gauge: u.gauge.current,
       gaugeRate: u.gauge.rate,
       gaugeThreshold: u.gauge.threshold,
-      statuses: u.statuses.all().map((s) => ({ defId: s.defId, stacks: s.currentStacks })),
+      statuses: u.statuses.all().map((s) => ({ defId: s.defId, stacks: s.currentStacks, charges: s.charges, maxCharges: s.maxCharges })),
     }))
     return { tick: this.battle.clock, phase: this.battle.phase, units, pending: this.pending?.request ?? null, finished: this.outcome !== null }
   }

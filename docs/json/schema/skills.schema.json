@@ -2215,11 +2215,22 @@
     },
     "effModifyStatus": {
       "type": "object",
-      "description": "行为层修改（二）：改写一个已存在的状态实例——延长/重设持续时间、调整最大可叠加层数。区别于 mount_status（施加新状态），本原语作用于运行中的实例。",
+      "description": "行为层修改（二）：改写一个已存在的状态实例——延长/重设持续时间、调整最大可叠加层数、补满耐久。区别于 mount_status（施加新状态），本原语作用于运行中的实例。",
       "required": [
         "type",
-        "statusId",
         "target"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "statusId"
+          ]
+        },
+        {
+          "required": [
+            "slot"
+          ]
+        }
       ],
       "additionalProperties": false,
       "properties": {
@@ -2228,7 +2239,11 @@
         },
         "statusId": {
           "type": "string",
-          "description": "要修改的已存在状态实例 id；$self 表示引用宿主自身状态。"
+          "description": "要修改的已存在状态实例 id；与 slot 二选一。"
+        },
+        "slot": {
+          "type": "string",
+          "description": "按装备槽选择状态（如 weapon）；与 statusId 二选一。"
         },
         "target": {
           "$ref": "#/$defs/effectTarget",
@@ -2260,6 +2275,14 @@
         "stacksDelta": {
           "type": "integer",
           "description": "当前层数 +/- 修正（可选，配合层数玩法）。"
+        },
+        "restoreCharges": {
+          "type": "boolean",
+          "description": "把剩余次数补到 maxCharges（耐久补满）；无次数模型时无操作。"
+        },
+        "chargesDelta": {
+          "type": "integer",
+          "description": "剩余次数 +/- 修正；下限 0。"
         },
         "dispelableOverride": {
           "type": "boolean",
@@ -2829,6 +2852,10 @@
         },
         "charges": {
           "type": "integer"
+        },
+        "equipSlot": {
+          "type": "string",
+          "description": "装备槽（当前支持 weapon）：同槽状态互斥，后装备者替换前者；只有主动卡可以挂载装备槽状态。"
         },
         "maxStacks": {
           "type": "integer"

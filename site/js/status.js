@@ -11,6 +11,7 @@ function overviewHtml(def) {
   if (def.duration != null) chips.push(`持续 ${def.duration}`);
   if (def.maxStacks != null) chips.push(`上限 ${def.maxStacks} 层`);
   if (def.charges != null) chips.push(`${def.charges} 次`);
+  if (def.equipSlot) chips.push(`装备槽：${def.equipSlot === 'weapon' ? '武器' : def.equipSlot}`);
   if (def.dispelable === false) chips.push('不可驱散');
   else if (def.dispelable === true) chips.push('可驱散');
   if (def.stackPolicy) chips.push(`叠层·${termSpan('stackPolicy', def.stackPolicy, { showKey: false })}`);
@@ -44,6 +45,7 @@ function kvRowHtml(labelHtml, inner) {
 function triggersHtml(triggers) {
   return triggers.map((tr) => `<div class="ast-node">
     <div class="ast-line"><span class="muted">触发：</span>${termSpan('triggerEvent', tr.event)}</div>
+    ${tr.consumeCharge ? `<div class="ast-note">消耗 ${tr.consumeCharge === true ? 1 : escapeHtml(String(tr.consumeCharge))} 次耐久，归零移除</div>` : ''}
     ${renderEffects(tr.effects)}
   </div>`).join('');
 }
@@ -154,7 +156,7 @@ function mechanismHtml(def) {
 // 兜底：已结构化展示之外、仍有值的字段（hpRatio / countMode / priority 等长尾）压缩列出，
 // 保证 38 字段任何一个有值都看得见。已消费字段清单 = 上面各节显式处理的并集
 const HANDLED = new Set([
-  'id', 'name', 'category', 'note', 'duration', 'maxStacks', 'charges', 'dispelable',
+  'id', 'name', 'category', 'note', 'duration', 'maxStacks', 'charges', 'equipSlot', 'dispelable',
   'stackPolicy', 'stackCapOverride', 'effects', 'triggers',
   'statPerStack', 'stackThreshold', 'thresholdTrigger', 'ramp', 'phases', 'nextPhase',
   'modifiers', 'behaviorModifiers', 'disallowActions', 'lethalProtect', 'reviveBlocked',

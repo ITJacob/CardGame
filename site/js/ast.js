@@ -14,6 +14,7 @@ const FIELD_ZH = {
   potency: '强度', rounding: '取整', skillRef: '技能', clearCooldown: '清冷却', costDelta: '消耗增减',
   setInstant: '转瞬发', targetSpecOverride: '选靶改写', addDuration: '延长持续',
   setDuration: '设定持续', maxStacksDelta: '层数上限增减', dispelableOverride: '可驱散改写',
+  restoreCharges: '补满次数', chargesDelta: '次数增减',
   untargetable: '不可选中', direction: '方向', against: '针对', onExpire: '到期处理',
   actionPolicy: '行为策略', steps: '步骤', then: '则', else: '否则', times: '次数',
   sort: '排序', mapping: '映射', fallback: '兜底', statusesFrom: '状态来源', to: '去向',
@@ -271,13 +272,15 @@ const PRIMITIVE_TEMPLATES = {
     return `修改技能：${parts.join('，') || '（运行时属性）'}`;
   },
   modify_status: (e, used) => {
-    used.push('statusId', 'addDuration', 'setDuration', 'maxStacksDelta', 'dispelableOverride');
-    const id = e.statusId;
+    used.push('statusId', 'slot', 'addDuration', 'setDuration', 'maxStacksDelta', 'dispelableOverride', 'restoreCharges', 'chargesDelta');
+    const ref = e.statusId ? statusRef(e.statusId) : e.slot ? `装备槽「${escapeHtml(e.slot)}」` : '状态';
     const parts = [];
     if (e.addDuration != null) parts.push(`持续 +${fmtVal(e.addDuration)}`);
     if (e.setDuration != null) parts.push(`持续设为 ${fmtVal(e.setDuration)}`);
     if (e.maxStacksDelta != null) parts.push(`层数上限 ${e.maxStacksDelta > 0 ? '+' : ''}${fmtVal(e.maxStacksDelta)}`);
-    return `修改${statusRef(id)}：${parts.join('，') || '（实例属性）'}`;
+    if (e.restoreCharges) parts.push('次数补满');
+    if (e.chargesDelta != null) parts.push(`次数 ${e.chargesDelta > 0 ? '+' : ''}${fmtVal(e.chargesDelta)}`);
+    return `修改${ref}：${parts.join('，') || '（实例属性）'}`;
   },
   modify_targetability: (e, used) => {
     used.push('untargetable', 'direction', 'duration', 'pierce');

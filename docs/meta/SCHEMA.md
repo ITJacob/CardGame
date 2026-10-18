@@ -178,7 +178,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `echo_last_skill` | `potency` `rounding` | 权柄技能不可被重放 |
 | `gauge_shuffle` / `status_shuffle` | `resource` / `mode` `sort` | |
 | `modify_skill` | `skillRef`(selector/by_id) `clearCooldown` `costDelta` `setInstant` `targetSpecOverride` | **行为层修改（一）**：改写技能实例运行时属性——清冷却 / 改施法消耗 / 吟唱转瞬发 / **完整改写 TargetSpec**（对齐 DDD：可改技能全部选靶属性，而非仅范围；`targetSpecOverride` 为对象，给出 selectionMode+request 全字段，未给出的沿用原值，2026-09-17 拍板补原缺口，2026-09-20 升级为完整 TargetSpec 补丁） |
-| `modify_status` | `statusId` `target` `addDuration` `setDuration` `maxStacksDelta` `dispelableOverride` | **行为层修改（二）**：改写已存在状态实例的持续 / 最大可叠加层数 / 可驱散性（区别于 mount_status 施加新状态；2026-09-17 拍板） |
+| `modify_status` | `statusId` / `slot`（二选一） `target` `addDuration` `setDuration` `maxStacksDelta` `dispelableOverride` `restoreCharges` `chargesDelta` | **行为层修改（二）**：改写已存在状态实例的持续 / 最大可叠加层数 / 可驱散性 / 剩余次数（区别于 mount_status 施加新状态）。`slot` 按装备槽选靶（如 weapon），`restoreCharges` 补满耐久；2026-09-17 拍板，2026-10-18 扩装备槽与次数 |
 | `modify_targetability` | `target` `untargetable` `direction` `duration` `pierce` | 目标可选性：改单位「可被选为目标」的属性，带方向与穿透。对应手写 `untargetableByTargeted`(29)/`untargetable`(2)/`untargetableByAll`(1) |
 | `reveal` | `target` `scope`(to_source/to_all) `dispel` `pierceTargetability` | 揭示 / 穿透隐匿。对应手写 14 种拼写（约 26 处）。⚠️ **纯驱散隐匿仍用 `dispel(filter.category=[conceal])`**，本原语用于「显形但不驱散」「仅对施法者显形」 |
 | `grant_immunity` | `target` `against`(statusCategory[]) `element` `damageType` `charges` `duration` | 授予免疫（临时/条件性）。此前仅 `statusDef.immune`（2 处）可用，需为每种免疫单写状态 |
@@ -215,7 +215,8 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `duration` | int\|null | |
 | `modifiers` | array\|object | **两种形态都合法**：数组（字符串/对象混合）或 `{修正名: 参数}` 映射表；开放结构。数组形态的对象元素为封闭 `statusModifier`（2026-09-18 增补 `target`/`condition` 两字段，承载「对全体友军、阈值门控」类修饰） |
 | `triggers` / `effects` | | 状态自带触发器与载荷 |
-| `charges` `maxStacks` `stackPolicy`(stack/refresh) | | 层数与次数 |
+| `charges` `maxStacks` `stackPolicy`(stack/refresh) | | 层数与次数。`charges` = 次数型状态初始次数；触发器标 `consumeCharge` 时每次触发扣 1，归零卸载 |
+| `equipSlot` | string | **装备槽**（当前仅 `weapon`）：同槽状态互斥，后装备者替换前者（含同 defId 重挂 → 耐久刷新）；仅主动卡可挂载，被动只能读/补耐久 |
 | `disallowActions` | `actionLock[]` | **行为封锁**：单位持有该状态时禁止相应行动，`actionLock` 封闭枚举 = `move`(禁止移动) / `basic_attack`(禁止普攻) / `skill`(禁止主动技能) / `skip`(禁止跳过行动周期) / `react`(禁止反应·反击) / `channel`(禁止吟唱)。经既有 `mount_status` 挂载，可驱散、可带 duration/stacks（行为层修改三，2026-09-17 拍板） |
 | `crossPathway` | bool | 枢纽状态跨系可读标志：true 时该状态可被非本途径友方技能读取（跨系 combo 依赖此标志 + `participants` 白名单）。定义见 源质维度与跨系枢纽.md §一 |
 | `participants` | PathwayId[] | 跨系读取白名单：列出可读取本 `crossPathway` 状态的途径 id。未列入的途径即便 `crossPathway:true` 也不可读。见 §一.2 运行时读取规则 |

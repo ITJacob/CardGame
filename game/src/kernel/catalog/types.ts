@@ -210,12 +210,17 @@ export interface EffModifySkill extends EffBase {
 }
 export interface EffModifyStatus extends EffBase {
   type: 'modify_status'
-  statusId: string
+  statusId?: string
+  /** 按装备槽选择状态（与 statusId 二选一） */
+  slot?: string
   addDuration?: number
   setDuration?: number | null
   maxStacksDelta?: number
   maxStacksSet?: number
   stacksDelta?: number
+  /** 把剩余次数补到上限 */
+  restoreCharges?: boolean
+  chargesDelta?: number
   dispelableOverride?: boolean
 }
 export interface EffModifyTargetability extends EffBase {
@@ -346,6 +351,8 @@ export interface StatusDef {
   triggers?: TriggerDef[]
   effects?: EffectNode[]
   charges?: number
+  /** 装备槽（如 weapon）：同槽状态互斥，后装备者替换前者 */
+  equipSlot?: string
   maxStacks?: number
   stackPolicy?: 'stack' | 'refresh'
   statPerStack?: Record<string, Scalar>

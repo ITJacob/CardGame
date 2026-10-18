@@ -56,6 +56,7 @@ TARGET_PIERCE = _enum("effModifyTargetability", "properties", "pierce")
 REVEAL_SCOPES = _enum("effReveal", "properties", "scope")
 CONTROL_EXPIRE = _enum("effTakeControl", "properties", "onExpire")
 CONTROL_POLICY = _enum("effTakeControl", "properties", "actionPolicy")
+EQUIP_SLOTS = {"weapon"}
 PRIMS, OPS = set(), set()
 for _r in DEFS["effect"]["oneOf"]:
     _props = DEFS[_r["$ref"].split("/")[-1]].get("properties", {})
@@ -274,6 +275,15 @@ def main():
     for _pid, _lbl, _sd in iter_status_defs():
         if isinstance(_sd, dict) and _sd.get("id"):
             _refs["status"][_sd["id"]] = _sd
+    EQUIP_STATUS_IDS = {sid for sid, sd in _refs["status"].items() if sd.get("equipSlot")}
+    # 卡内联 statusDefs 不在 *.statuses.json，单独补扫
+    for _f in files:
+        try: _dd = json.load(io.open(_f, encoding="utf-8"))
+        except Exception: continue
+        for _c in _dd.get("cards") or []:
+            for _sd in _c.get("statusDefs") or []:
+                if isinstance(_sd, dict) and _sd.get("id") and _sd.get("equipSlot"):
+                    EQUIP_STATUS_IDS.add(_sd["id"])
     for _f in files:
         try: _dd = json.load(io.open(_f, encoding="utf-8"))
         except Exception: continue
@@ -295,6 +305,8 @@ def main():
             cid = "%s:%s" % (pid, sd.get("id"))
             for cat in sd.get("category",[]) or []:
                 if cat not in CATS: pre_errors.append("%s sd %s: bad category %s"%(cid,sd.get("id"),cat))
+            if sd.get("equipSlot") is not None and sd.get("equipSlot") not in EQUIP_SLOTS:
+                pre_errors.append("%s sd %s: bad equipSlot %s"%(cid, sd.get("id"), sd.get("equipSlot")))
             if sd.get("crossPathway") is True:
                 parts = sd.get("participants")
                 if not isinstance(parts,list) or not parts:
@@ -330,25 +342,30 @@ def main():
     flagged_gaps = []  # frameworkFlags 已登记的缺口（非标准 event/fallbackSort），不再逐条 warn
     total_cards = 0
 
-    def walk(effs, cid, path, flags, errors, warns):
+    def walk(effs, cid, path, flags, errors, warns, passive=False):
         for i, e in enumerate(effs or []):
             p = "%s.%d" % (path, i)
             t = e.get("type")
             if t is None:
                 op = e.get("op")
                 if op not in OPS: errors.append("%s %s: bad operator %s" % (cid,p,op)); continue
-                if op in ("sequence","repeat"): walk(e.get("steps"), cid, p, flags, errors, warns)
+                if op in ("sequence","repeat"): walk(e.get("steps"), cid, p, flags, errors, warns, passive)
                 else:
-                    walk(e.get("then"), cid, p+".then", flags, errors, warns)
-                    walk(e.get("else"), cid, p+".else", flags, errors, warns)
+                    walk(e.get("then"), cid, p+".then", flags, errors, warns, passive)
+                    walk(e.get("else"), cid, p+".else", flags, errors, warns, passive)
                 continue
             if t not in PRIMS: errors.append("%s %s: bad primitive %s" % (cid,p,t)); continue
+            if t=="mount_status" and passive and e.get("statusId") in EQUIP_STATUS_IDS:
+                errors.append("%s %s: 被动卡不得直接装备 equipSlot 状态 %s" % (cid,p,e.get("statusId")))
             if t=="modify_skill":
                 sr = e.get("skillRef") or {}
                 if sr.get("selector") not in SKILL_SELECTORS:
                     errors.append("%s %s: bad modify_skill.skillRef.selector %s" % (cid,p,sr.get("selector")))
             if t=="modify_status":
-                if not e.get("statusId"): errors.append("%s %s: modify_status missing statusId" % (cid,p))
+                if not e.get("statusId") and not e.get("slot"):
+                    errors.append("%s %s: modify_status missing statusId/slot" % (cid,p))
+                if e.get("slot") is not None and e.get("slot") not in EQUIP_SLOTS:
+                    errors.append("%s %s: bad modify_status.slot %s" % (cid,p,e.get("slot")))
                 if e.get("target") not in EFFECT_TARGETS: errors.append("%s %s: bad modify_status.target %s" % (cid,p,e.get("target")))
             if t=="modify_targetability":
                 if e.get("target") not in EFFECT_TARGETS: errors.append("%s %s: bad modify_targetability.target %s" % (cid,p,e.get("target")))
@@ -394,13 +411,13 @@ def main():
                 for cat in e.get("filter",{}).get("category",[]) or []:
                     if cat not in CATS: errors.append("%s %s: bad dispel category %s"%(cid,p,cat))
 
-    def trigs(trs, cid, path, flags, errors, warns):
+    def trigs(trs, cid, path, flags, errors, warns, passive=False):
         for i,tr in enumerate(trs or []):
             ev = tr.get("event")
             if ev not in EVENTS:
                 if flags: flagged_gaps.append("%s %s.%d: nonstandard event %s"%(cid,path,i,ev))
                 else: errors.append("%s %s.%d: bad event %s"%(cid,path,i,ev))
-            walk(tr.get("effects"), cid, "%s.t%d"%(path,i), flags, errors, warns)
+            walk(tr.get("effects"), cid, "%s.t%d"%(path,i), flags, errors, warns, passive)
 
     # Def 编目池（2026-10-01 独立化批）：顶层 unitDefs/zoneDefs/domainDefs 的触发器与 id 唯一性
     for f in files:
@@ -468,13 +485,16 @@ def main():
                 for _h in hk_list:
                     if _h not in EVENTS: errors.append("%s: bad hook %s"%(cid,_h))
             else: errors.append("%s: bad kind"%cid)
-            walk(c.get("effects"), cid, "eff", flags, errors, warns)
-            for t in (c.get("upgradeLadder") or {}).get("tiers",[]): walk(t.get("effects"), cid, "lad", flags, errors, warns)
-            for v in c.get("variants") or []: walk(v.get("effects"), cid, "var", flags, errors, warns)
-            trigs(c.get("triggers"), cid, "card", flags, errors, warns)
+            _passive = c.get("kind") == "passive"
+            walk(c.get("effects"), cid, "eff", flags, errors, warns, _passive)
+            for t in (c.get("upgradeLadder") or {}).get("tiers",[]): walk(t.get("effects"), cid, "lad", flags, errors, warns, _passive)
+            for v in c.get("variants") or []: walk(v.get("effects"), cid, "var", flags, errors, warns, _passive)
+            trigs(c.get("triggers"), cid, "card", flags, errors, warns, _passive)
             for sd in c.get("statusDefs") or []:
                 for cat in sd.get("category",[]) or []:
                     if cat not in CATS: errors.append("%s sd %s: bad category %s"%(cid,sd.get("id"),cat))
+                if sd.get("equipSlot") is not None and sd.get("equipSlot") not in EQUIP_SLOTS:
+                    errors.append("%s sd %s: bad equipSlot %s"%(cid, sd.get("id"), sd.get("equipSlot")))
                 # crossPathway 枢纽白名单：crossPathway=true 必须带非空且合法的 participants
                 if sd.get("crossPathway") is True:
                     parts = sd.get("participants")
@@ -490,10 +510,10 @@ def main():
                     if a not in ACTION_LOCKS: errors.append("%s sd %s: bad disallowActions %s"%(cid,sd.get("id"),a))
                 # 命名治理：modifiers 开放结构内的同义异写，告警引导收敛到规范拼写
                 check_mod_keys(sd.get("modifiers"), "%s sd %s" % (cid, sd.get("id")), warns)
-                walk(sd.get("effects"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
-                trigs(sd.get("triggers"), cid, "sd:"+sd.get("id","?"), flags, errors, warns)
+                walk(sd.get("effects"), cid, "sd:"+sd.get("id","?"), flags, errors, warns, _passive)
+                trigs(sd.get("triggers"), cid, "sd:"+sd.get("id","?"), flags, errors, warns, _passive)
                 for tf in ("thresholdTrigger", "stackThreshold"):
-                    walk((sd.get(tf) or {}).get("effects"), cid, "sd:"+sd.get("id","?")+"."+tf, flags, errors, warns)
+                    walk((sd.get(tf) or {}).get("effects"), cid, "sd:"+sd.get("id","?")+"."+tf, flags, errors, warns, _passive)
             flat = json.dumps(c.get("effects",[]), ensure_ascii=False)
             if ('"domain"' in flat or '"translocate"' in flat) and '"lost"' not in flat:
                 errors.append("%s: domain/translocate without lost rent"%cid)
