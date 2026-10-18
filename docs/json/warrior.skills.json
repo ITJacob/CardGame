@@ -350,7 +350,7 @@
       "flagship": false,
       "lore": "序列8 格斗家 —— \"格斗专家，能凭借身体减弱超自然力量影响\"",
       "flavor": "非凡力量落在你身上，就像雨水落在铁板上——滑开，只留下一点湿痕。",
-      "describe": "战斗开始时获得「铁躯」：全元素抗性 +12%，持续整场，不可驱散；并获得「战旗」20tick（己方伤害 ×1.1，跨系枢纽）；并获得 4 点护甲；并硬抗：受击时按分档减伤，站得住；铁躯：按元素分档硬吃两次。",
+      "describe": "战斗开始时获得「铁躯」：全元素抗性 +12%，持续整场，不可驱散；并获得 4 点护甲；获得 2 次物理免疫（10tick）。",
       "hook": [
         "on_battle_start"
       ],
@@ -362,13 +362,6 @@
           "target": "self"
         },
         {
-          "type": "mount_status",
-          "statusId": "battle_banner",
-          "duration": 20,
-          "target": "self",
-          "note": "跨系枢纽挂载（2026-09-29 跨系批，产层兼枢纽计数）"
-        },
-        {
           "type": "modify_resource",
           "resource": "armor",
           "value": 4,
@@ -377,42 +370,12 @@
           "note": "铁躯：抗性之外再厚一层甲"
         },
         {
-          "type": "modify_damage",
-          "scope": "taken",
-          "mul": 0.5,
-          "target": "self",
-          "note": "铁躯护体：天生抗揍"
-        },
-        {
           "type": "grant_immunity",
           "target": "self",
           "element": "physical",
           "charges": 2,
           "duration": 10,
           "note": "铁躯（物理）：按元素分档硬吃两次，不再是泛免疫一次"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "guardianship",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "modify_stat",
-              "stat": "resist:*",
-              "value": 12,
-              "mode": "delta",
-              "duration": 10,
-              "target": "self",
-              "note": "铁躯·守护共鸣：守护在身，铁躯再硬一档"
-            }
-          ],
-          "else": [],
-          "note": "守护在身时铁躯升档：全元素抗性再叠一档"
         }
       ],
       "sharedAcross": [
@@ -428,7 +391,7 @@
         ],
         "mood": "unyielding, stoic"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M10 铠甲。 ｜ 签名补批（2026-10-16 第二批）：硬抗/铁躯分档。 ｜ 2026-10-16 环节⑤guard 轴收束：补 guardianship 读层（存在性——守护中抗性升档）。"
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M10 铠甲。 ｜ 签名补批（2026-10-16 第二批）：硬抗/铁躯分档。 ｜ 2026-10-16 环节⑤guard 轴收束：补 guardianship 读层（存在性——守护中抗性升档）。 ｜ 2026-10-18 曲线修正：s8 普通卡移除跨系战旗/守护共鸣/永久减伤，收敛为抗性+护甲+免疫。"
     },
     {
       "id": "skill_warrior_s8_close_grapple",
@@ -534,7 +497,7 @@
       "flagship": false,
       "lore": "序列8 格斗家 —— \"能凭借身体减弱超自然力量影响\"",
       "flavor": "你卸掉那一道缠上来的异力，顺势在身前凝出一面薄薄的银光。",
-      "describe": "驱散自身 1 个减益或持续伤害状态，并获得 4 点护盾，持续 10tick；并弃攻 1 个自身回合，竖起无形墙壁（可挡 2 次）；并硬抗：受击时按分档减伤，站得住。；并同挂反击姿态 15tick（2 次）：弃攻期间受攻击时顺序反击。",
+      "describe": "驱散自身 1 个减益或持续伤害状态，并获得 4 点护盾，持续 10tick；并弃攻 1 个自身回合，竖起无形墙壁（可挡 2 次）。",
       "cost": {
         "energy": 1,
         "cooldown": 15,
@@ -586,49 +549,6 @@
           "target": "self",
           "charges": 2,
           "note": "无形墙壁（可挡 2 次）（卸力的正解：弃攻竖起无形墙壁，格数即可挡次数）"
-        },
-        {
-          "type": "modify_damage",
-          "scope": "taken",
-          "mul": 0.4,
-          "target": "self",
-          "note": "卸力：把力道卸开，这一下不算数"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "guardianship",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "modify_status",
-              "statusId": "guardianship",
-              "stacksDelta": -1,
-              "target": "self",
-              "note": "卸力：拆一段守护之力"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "shield",
-              "value": 6,
-              "duration": 10,
-              "target": "self",
-              "note": "拆借来的守护之力化作护盾，把这一击整个卸开"
-            }
-          ],
-          "else": [],
-          "note": "有守护可拆时消耗 1 层守护，把守护之力化作一层护盾卸开这一击"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "counter_stance",
-          "duration": 15,
-          "target": "self",
-          "note": "弃攻不是白挨：这段不还手的回合里以守代攻，受攻击时顺序反击（D1——让「何时不出手」成为选择）"
         }
       ],
       "tentative": false,
@@ -641,7 +561,7 @@
         ],
         "mood": "fluid, guarded"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M9 弃攻铁壁。 ｜ 签名补批（2026-10-16 第二批）：硬抗。 ｜ 2026-10-16 环节⑤guard 轴收束：补 guardianship 读层（耗层——拆 1 层守护化盾卸力）。 ｜ 2026-10-16 战士独特性深化：弃攻补反击（D1，弃攻从纯代价转为战术选择）。"
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M9 弃攻铁壁。 ｜ 签名补批（2026-10-16 第二批）：硬抗。 ｜ 2026-10-16 环节⑤guard 轴收束：补 guardianship 读层（耗层——拆 1 层守护化盾卸力）。 ｜ 2026-10-16 战士独特性深化：弃攻补反击（D1，弃攻从纯代价转为战术选择）。 ｜ 2026-10-18 曲线修正：s8 普通卡移除反击姿态/守护拆层/永久减伤，收敛为 4 段防御套件。"
     },
     {
       "id": "skill_warrior_s7_weapon_grandmaster",
@@ -1664,7 +1584,7 @@
       "flagship": false,
       "lore": "序列4 猎魔者 —— \"『猎魔之眼』：辨识目标性质、弱点、是否被污染\"",
       "flavor": "你看清了它是什么、哪里最软——以及，它是否已经脏了。若已被污染，光会自己找上门。",
-      "describe": "标记一名敌人 20tick：其受伤 ×1.2；若其已带有减益或持续伤害状态，立即受到 3 点无元素伤害；猎手先匿于晨雾（自身伏击伪装 10tick）；自身武器大师在场则兵械克魔追加 1 点；目标带提线木偶则提线尽断，追加 2 点。目标带被放牧的灵魂则追加 2 点圣光伤害；并驱散目标 1 个潜匿类状态（识破）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定。；并使目标衰败（老化 +1 层）；本场已阵亡敌人 ≥3 时，追加 2 点圣光。",
+      "describe": "标记一名敌人 20tick：其受伤 ×1.2；若其已带有减益或持续伤害状态，立即受到 3 点无元素伤害；猎手先匿于晨雾（自身伏击伪装 10tick）；并驱散目标 1 个潜匿类状态（识破）：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -1717,72 +1637,7 @@
               "statusId": "ambush_shroud",
               "duration": 10,
               "target": "self",
-              "note": "猎手先匿于晨雾（环节⑤ 2026-09-29 补产层段）"
-            },
-            {
-              "op": "if",
-              "condition": {
-                "kind": "has_status",
-                "side": "self",
-                "id": "weapon_grandmaster",
-                "cmp": ">=",
-                "n": 1
-              },
-              "then": [
-                {
-                  "type": "damage",
-                  "element": "none",
-                  "value": 1,
-                  "note": "兵械克魔：自身武器大师在场则标记追加 1 点（环节⑤ 2026-09-29 跨轴读层段：hunt→martial）"
-                }
-              ],
-              "else": []
-            },
-            {
-              "op": "if",
-              "condition": {
-                "kind": "has_status",
-                "side": "target",
-                "id": "puppet_string",
-                "cmp": ">=",
-                "n": 1
-              },
-              "then": [
-                {
-                  "type": "damage",
-                  "element": "none",
-                  "value": 2,
-                  "note": "提线尽断：目标带提线木偶则追加 2 点（环节⑤ 2026-09-29 跨系读层段：hunt→seer puppet_string）"
-                }
-              ],
-              "else": []
-            },
-            {
-              "op": "if",
-              "condition": {
-                "kind": "has_status",
-                "side": "target",
-                "id": "grazed_soul",
-                "cmp": ">=",
-                "n": 1
-              },
-              "then": [
-                {
-                  "type": "damage",
-                  "element": "holy",
-                  "value": 2,
-                  "note": "牧魂显邪：被放牧的灵魂是邪秽，猎魔之眼令其显形追加 2 点圣光——跨系读层段（hunt→supplicant grazed_soul）"
-                }
-              ],
-              "else": []
-            },
-            {
-              "type": "mount_status",
-              "statusId": "aging",
-              "stacks": 1,
-              "duration": 25,
-              "target": "target",
-              "note": "抹除即计入黄昏：被猎魔之眼识破的邪祟开始衰败（hunt→twilight 跨轴，B2）"
+              "note": "猎手先匿于晨雾：猎魔身份的自匿段"
             }
           ]
         },
@@ -1804,30 +1659,10 @@
           "scope": "to_source",
           "pierceTargetability": true,
           "note": "识破：看破伪装/镜像，本次攻击无视目标的隐匿与不可锁定（reveal.pierceTargetability，H5 潜行的反制面，与 warrior「不藏，只破藏」一致）"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
-            "cmp": ">=",
-            "n": 3
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "holy",
-              "value": 2,
-              "target": "target",
-              "note": "衰败累积：死亡簿越厚，黄昏权柄越沉（圣光落于残兵）"
-            }
-          ],
-          "else": [],
-          "note": "黄昏轴的死亡簿读层：本场已阵亡敌人 ≥3 时追加 2 点圣光（hunt→twilight 跨轴读段，B2）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：猎魔轴辨识/污染揭示（读 `黎明` 放大）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：hunt轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M13 识破。 ｜ 签名补批（2026-10-16 第二批）：识破。 ｜ 2026-10-16 战士独特性深化：补 hunt→twilight 跨轴读段（抹除即计入黄昏）。 ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
+      "conversionNotes": "翻译/语义：猎魔轴辨识/污染揭示（读 `黎明` 放大）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：hunt轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M13 识破。 ｜ 签名补批（2026-10-16 第二批）：识破。 ｜ 2026-10-16 战士独特性深化：补 hunt→twilight 跨轴读段（抹除即计入黄昏）。 ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。 ｜ 2026-10-18 曲线修正：s4 稀有卡移除伏击伪装/武器大师读/提线/牧魂/老化/死亡簿六段评分补层，收敛为标记+条件伤害+识破。 ｜ 2026-10-18 曲线修正补正：保留猎魔身份段（伏击伪装），仅移除武器大师读/提线/牧魂/老化/死亡簿五段跨系补层。",
       "art": {
         "subject": "a hunter's silver-lit eye revealing a monster's weak points",
         "elements": [
