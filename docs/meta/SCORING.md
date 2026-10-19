@@ -62,6 +62,42 @@
 7. **玩法轨隔离（2.4 新增）**：玩家侧指标（`playable_scan.py` 10 项）只作诊断与验收，**永不进 100 分**——
    进分即会在两轮内被优化成新的刷分面。
 
+## 二·零 轴身份锚点体系（2026-10-19 立）
+
+> 原则：**一个轴以「代表玩法 / 机制」为身份，状态只是可选载体**。不得为了评分给每个轴强造一个状态、
+> 再让其他卡围绕它做产层/读层——那是 AI 设计模式的核心病灶。
+
+轴可用 `axes.<axis>.anchor = { kind, id }` 声明锚点；`statusId` 是 `kind=status` 的兼容简写。
+锚点必须满足两条：**可机器验证**（结构化操作存在）＋ **有闭环**（≥2 张卡操作、≥1 张卡读取或自身机制闭环）。
+
+### 全四类锚点清单（登记版）
+
+| 类 | kind | 例子 | 判定 |
+|---|---|---|---|
+| 实体/载体 | `status` | 守护、伪装、衰老 | 挂载 + 读层 + 层数/触发机制 |
+| 实体/载体 | `status_family` | 月相组、姿态族 | 一组相关状态 ≥2 个共同闭环 |
+| 实体/载体 | `resource` | 战意、迷失、恶欲、隐秘 | Pool 读写 + 阈值/档位 |
+| 实体/载体 | `equipment` | **武艺=武器槽** | equipSlot 操作 ≥2 卡 + 耐久/换装/补耐久 |
+| 实体/载体 | `zone` | 晨曦阵地、陷阱区 | 区域/界域放置 + 进入/停留读取 |
+| 行为/原语 | `primitive` | translocate / snapshot / write_rule_slot | 原语使用 ≥2 卡 + 读层联动（限白名单，排除 damage/mount_status 等通用骨架） |
+| 行为/原语 | `trigger` | on_kill 收割、on_phase_change | 触发点挂载 ≥2 卡 + 条件/载荷闭环 |
+| 行为/原语 | `geometry` | chain_n 连锁、enemy_back 后排 | 选靶几何签名 ≥2 卡 + 读层 |
+| 行为/原语 | `action_economy` | 行动机会/行动条 | opportunity/gauge 机制 + 收益闭环 |
+| 全局通道 | `channel` | phase / luminance / death_tally / order / secrecy / fate_value / clock | 本轴写入 + 读取/下游读者 |
+| 全局通道 | `rule_slot` | 规则改写槽 | write/modify rule slot + 读取 |
+| 维度/签名 | `dimension` | 位格、性别、单位类型 | 维度谓词/过滤 ≥2 卡 + 联动 |
+| 维度/签名 | `element` | 圣光、冰、暗 | 元素伤害/状态 ≥2 卡 + 克制/反应闭环 |
+| 维度/签名 | `form_cycle` | 月相轮转、昼夜形态 | formGroup/phases/cycleTicks + 读取 |
+
+### 评分口径
+
+- **最小实现集**：`status` / `resource` / `channel` / `equipment` / `primitive`（本轮落在 score.py）。
+- 身份锚定 15 = 锚点可解析 8 + 机制闭环 7（按 kind 判定；`status` 沿用现有状态机制判据）。
+- 产层闭环 / 收束闭环按锚点的「产出面」计算：
+  - status → `status:<id>`；equipment → 该槽全部状态；channel → 通道键；resource → 资源读写；primitive → 原语使用。
+- 未声明 anchor 且无 statusId 的轴：回退旧逻辑（Pool 资源 / 本轴通道）。
+- 不适合作锚点：单一元素/单张卡签名、纯数值维度、通用骨架原语（damage / mount_status）。
+
 ## 二、轴级指标（0–100，六维）
 
 | 维度 | 权重 | 判据与计分 |

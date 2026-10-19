@@ -32,6 +32,21 @@ v0.2 只锁效果不锁数值，但**框架的语义维度封得太死**——�
 
 ---
 
+### 0.5 轴身份锚点（2026-10-19 立，生成前先定）
+
+设计一条途径的四个构筑轴时，**先定每个轴的代表玩法/机制（anchor），再写卡**。状态只是可选载体，不得为了评分强造状态并围绕它做产层/读层。
+
+四类锚点（完整清单与判定见 `SCORING.md §二·零`）：
+
+1. **实体/载体**：status / status_family / resource / equipment / zone
+2. **行为/原语**：primitive / trigger / geometry / action_economy
+3. **全局通道**：channel / rule_slot
+4. **维度/签名**：dimension / element / form_cycle
+
+最小实现集：status / resource / channel / equipment / primitive。例：武艺轴 = `equipment: weapon`（武器槽是核心玩法，`weapon_grandmaster` 只是组件）。
+
+---
+
 ## 1. 引擎能力上限（硬约束，不可超越）
 
 ### 1.1 十四个效果原语

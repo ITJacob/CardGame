@@ -756,8 +756,52 @@ def main():
 
             # —— 身份锚定（SCORING 2.0：锚点可解析 8 + 身份有机制 7；不再硬要求「层数引擎」）——
             identity_pool = None
-            outputs = ({"status:" + sid} if sid else set()) | ax_channels
-            if sid and sid in status_by_id:
+            # 轴身份锚点（SCORING §二·零）：anchor 优先；statusId 为 kind=status 的兼容简写
+            anchor_spec = ax.get("anchor") or ({"kind": "status", "id": ax["statusId"]} if ax.get("statusId") else None)
+            a_kind = anchor_spec.get("kind") if isinstance(anchor_spec, dict) else None
+            a_id = anchor_spec.get("id") if isinstance(anchor_spec, dict) else None
+            identity_items = set()
+            identity_channel = None
+            if a_kind == "status" and a_id:
+                sid = a_id
+            elif a_kind and a_kind != "status":
+                sid = None
+            slot_ids = set()
+            if a_kind == "equipment" and a_id:
+                slot_ids = {i for i, s in status_by_id.items() if s.get("equipSlot") == a_id}
+                identity_items = {"status:" + i for i in slot_ids}
+            elif a_kind == "channel" and a_id:
+                identity_channel = a_id
+                identity_items = {a_id}
+            elif a_kind == "primitive" and a_id:
+                identity_items = {"prim:" + a_id}
+            elif a_kind == "resource" and a_id:
+                identity_pool = a_id
+            outputs = ({"status:" + sid} if sid else set()) | identity_items | ax_channels
+            if a_kind in ("resource", "channel", "equipment", "primitive") and a_id:
+                anchor = 8
+                ok = False
+                if a_kind == "channel":
+                    ok = a_id in ax_writes
+                elif a_kind == "equipment":
+                    def _mounts_slot(c):
+                        for n in walk(c.get("effects")):
+                            if n.get("type") == "mount_status" and ("status:" + str(n.get("statusId"))) in slot_ids:
+                                return True
+                        return False
+                    ops = [c for c in axis_cards if _mounts_slot(c)]
+                    ok = len(ops) >= 2 and any((status_by_id[i] or {}).get("charges") for i in slot_ids)
+                elif a_kind == "primitive":
+                    ok = sum(1 for c in axis_cards if a_id in card_effect_types(c)) >= 2
+                elif a_kind == "resource":
+                    ok = any((s.get("thresholdTrigger") or {}).get("metric") == a_id
+                             for s in status_by_id.values())
+                if ok:
+                    anchor += 7
+                else:
+                    deductions.append(("身份锚定", "-7：锚点 %s:%s 机制闭环不足（操作/读取卡 <2 或无机制面）"
+                                       % (a_kind, a_id), aid, FIX["no_layer_engine"]))
+            elif sid and sid in status_by_id:
                 anchor = 8
                 sdef = status_by_id[sid]
                 _ms = sdef.get("maxStacks")
@@ -802,6 +846,10 @@ def main():
             def _is_enabler(c):
                 if not c:
                     return False
+                if a_kind == "primitive" and a_id:
+                    return a_id in card_effect_types(c)
+                if identity_items:
+                    return bool(surf[c["name"]][0] & identity_items)
                 if sid:
                     return ("status:" + sid) in surf[c["name"]][0]
                 if identity_pool:
@@ -831,6 +879,10 @@ def main():
                 if not c:
                     return None
                 nm = c["name"]
+                if a_kind == "primitive" and a_id:
+                    return "landed" if a_id in card_effect_types(c) else "notes"
+                if identity_items:
+                    return "landed" if (surf[nm][1] & identity_items) else "notes"
                 if sid:
                     if (surf[nm][1] & outputs) or card_refs_status(c, sid):
                         return "landed"

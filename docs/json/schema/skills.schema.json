@@ -195,6 +195,40 @@
         "payoffVacuumAccepted": {
           "type": "boolean",
           "description": "真空轴甄别标记（2026-09-26 评分体系引入）：payoffs 为空（无读层消费者）时，true = 评审认定「纯产层轴」属合法设计、读层闭环维度不扣分；缺省/false = 真空计低分、列入补卡候选。甄别结论须在 note 记录理由。见 docs/meta/SCORING.md。"
+        },
+        "anchor": {
+          "type": "object",
+          "required": [
+            "kind",
+            "id"
+          ],
+          "additionalProperties": false,
+          "description": "轴身份锚点（2026-10-19）：轴的代表玩法/机制。status 为兼容简写；缺省时按 statusId 视为 kind=status。",
+          "properties": {
+            "kind": {
+              "enum": [
+                "status",
+                "status_family",
+                "resource",
+                "channel",
+                "equipment",
+                "primitive",
+                "trigger",
+                "geometry",
+                "zone",
+                "rule_slot",
+                "action_economy",
+                "dimension",
+                "element",
+                "form_cycle"
+              ],
+              "description": "锚点类型。最小实现集：status/resource/channel/equipment/primitive；其余为登记后可用的扩展锚点。"
+            },
+            "id": {
+              "type": "string",
+              "description": "锚点标识：状态 id / 资源键 / 通道名 / 装备槽 / 原语名 / 触发点 / 几何 scope / 维度键等。"
+            }
+          }
         }
       }
     },

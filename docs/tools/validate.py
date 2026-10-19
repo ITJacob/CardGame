@@ -83,6 +83,10 @@ DIM_RANGES = {
 # 枚举三方一致，由 check_enum_sync.py 对账。
 PHASES = {"midnight","dawn","day","dusk","night"}
 EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_turn_end","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill","on_phase_change","on_status_gain"}
+# 轴身份锚点（SCORING §二·零）：四类清单；最小实现集 status/resource/channel/equipment/primitive
+ANCHOR_KINDS = {"status","status_family","resource","channel","equipment","primitive",
+                "trigger","geometry","zone","rule_slot","action_economy","dimension","element","form_cycle"}
+CHANNEL_IDS = {"phase","luminance","fate_value","secrecy","order","death_tally","clock"}
 
 # 命名治理：modifiers 为开放结构，同义异写严重。别名 -> 规范拼写（非阻断，仅告警引导收敛）
 MODIFIER_ALIASES = {
@@ -421,6 +425,24 @@ def main():
         except Exception:
             continue
         for aid, ax in (_d.get("axes") or {}).items():
+            an = ax.get("anchor")
+            if an is not None:
+                if not isinstance(an, dict):
+                    pre_errors.append("%s axis %s: anchor 必须是 {kind,id} 对象" % (pid, aid))
+                else:
+                    kind, ident = an.get("kind"), an.get("id")
+                    if kind not in ANCHOR_KINDS:
+                        pre_errors.append("%s axis %s: anchor.kind '%s' 非法" % (pid, aid, kind))
+                    elif not isinstance(ident, str) or not ident:
+                        pre_errors.append("%s axis %s: anchor.id 缺失" % (pid, aid))
+                    elif kind == "status" and ident not in ALLSTATUS:
+                        pre_errors.append("%s axis %s: anchor.status '%s' 悬空" % (pid, aid, ident))
+                    elif kind == "channel" and ident not in CHANNEL_IDS:
+                        pre_errors.append("%s axis %s: anchor.channel '%s' 非法" % (pid, aid, ident))
+                    elif kind == "equipment" and ident not in EQUIP_SLOTS:
+                        pre_errors.append("%s axis %s: anchor.equipment '%s' 非法" % (pid, aid, ident))
+                    elif kind == "primitive" and ident not in PRIMS:
+                        pre_errors.append("%s axis %s: anchor.primitive '%s' 非法" % (pid, aid, ident))
             sid = ax.get("statusId")
             if sid is None:
                 continue

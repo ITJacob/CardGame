@@ -57,7 +57,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `pathwayName` | string | ✓ | 途径中文名 |
 | `sourceFile` | string | ✓ | 溯源指针：`../archive/skill-design_v0.3/<途径>途径_技能池_v0.3.md`（2026-09-18 起技能稿归档为只读快照，JSON 为唯一维护正源） |
 | `sourceVersion` | string | ✓ | 源池版本，当前 `v0.3` |
-| `axes` | object | ✓ | 构筑轴，`{ "<axisId>": { symbol, name, statusId?, enablers?, payoffs?, note? } }`；卡片 `axis` 必须取自这里的键。statusId = 轴身份状态；enablers/payoffs = 挂载/读取该状态的卡名（自技能稿轴表回收，仅保留可匹配卡名） |
+| `axes` | object | ✓ | 构筑轴，`{ "<axisId>": { symbol, name, anchor?, statusId?, enablers?, payoffs?, note? } }`；卡片 `axis` 必须取自这里的键。`anchor = { kind, id }` 是轴身份锚点（代表玩法/机制，kind 见 SCORING.md §二·零），优先于 statusId；`statusId` 是 `kind=status` 的兼容简写。enablers/payoffs = 操作/读取锚点的卡名（自技能稿轴表回收，仅保留可匹配卡名） |
 | `classMechanics` | array | – | 职业自带机制（不依赖具体卡）：`[{ id, name, summary, details?, statusId? }]`；game 卡池页与 site 卡片浏览页展示。首批为战士 `war_spirit` |
 | `sampleBuilds` | array | – | 示例 Build `[{ name, actives[], passives[], playstyle }]`（自技能稿 §二回收；卡名为设计示例，可能与现行卡名有出入） |
 | `designNote` | string | – | 途径级机制说明（隐秘值/咬合器等维度，自技能稿轴表后说明段回收） |
