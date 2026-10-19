@@ -19,7 +19,7 @@
         "无坚不摧",
         "神罚"
       ],
-      "note": "身份状态 weapon_grandmaster（武器大师，带层数引擎）；武器采用单槽制：主动卡装备 equipSlot=weapon 的武器变体，新装备替换旧武器，耐久按普攻次数消耗；当前唯一变体为银白细剑（耐久 3），武器大师击杀时补满已装备武器耐久。战意 war_spirit 为战士职业自带怒气资源：受击或敌方单位死亡时产层，每自身回合至多 +3、上限 10；主动技能消耗，被动只读或生产。 ｜ 2026-10-19 轴身份改为锚点 equipment:weapon（武器槽即武艺核心玩法；weapon_grandmaster 仅为组件）。 ｜ 2026-10-19 锚点 equipment:weapon：轴内武器卡=银白细剑/黄昏巨剑；payoff 读已装备武器。",
+      "note": "身份状态 weapon_grandmaster（武器大师，带层数引擎）；武器采用单槽制：主动卡装备 equipSlot=weapon 的武器变体，新装备替换旧武器，耐久按普攻次数消耗；当前唯一变体为银白细剑（耐久 3），武器大师击杀时补满已装备武器耐久。战意 war_spirit 为战士职业自带怒气资源：受击或敌方单位死亡时产层，每自身回合至多 +3、上限 10；主动技能消耗，被动只读或生产。 ｜ 2026-10-19 轴身份改为锚点 equipment:weapon（武器槽即武艺核心玩法；weapon_grandmaster 仅为组件）。 ｜ 2026-10-19 锚点 equipment:weapon：轴内武器卡=银白细剑/黄昏巨剑；payoff 读已装备武器。 ｜ 2026-10-19 持械/徒手分流：武器卡=银白细剑/黄昏巨剑/制式长剑；持械招式=连击/无坚不摧；战意线=兵械通晓/破甲/疾风/银白细剑/黄昏巨剑/战斗权柄；徒手分支=近身缠斗/牢笼。",
       "anchor": {
         "kind": "equipment",
         "id": "weapon"
@@ -69,6 +69,60 @@
   },
   "cards": [
     {
+      "id": "skill_warrior_s9_standard_blade",
+      "name": "制式长剑",
+      "kind": "active",
+      "sequence": 9,
+      "sequenceName": "战士",
+      "rarity": "common",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列9 战士 —— \"各种武器防具精通。\"",
+      "flavor": "不是名剑，也不是宝刀——但你握上它的那一刻，它就够用了。",
+      "describe": "对一名近战敌人造成 3 点物理伤害，并装备制式长剑（耐久 5 次，替换当前武器）：装备期间攻击 +2。",
+      "cost": {
+        "energy": 1,
+        "cooldown": 8,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "behind_2",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "physical",
+          "value": 3
+        },
+        {
+          "type": "mount_status",
+          "statusId": "weapon_standard_blade",
+          "target": "self",
+          "charges": 5,
+          "note": "装备制式长剑（耐久 5 次，替换当前武器）"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "机制期 W7 补卡（2026-10-19）：低序列入门武器，承担「装备/换装」教学；与银白细剑（位移爆发）、黄昏巨剑（老化重剑）拉开。",
+      "art": {
+        "subject": "a plain soldier drawing a simple service sword",
+        "elements": [
+          "plain steel blade",
+          "worn hilt",
+          "first stance"
+        ],
+        "mood": "plain, dependable"
+      }
+    },
+    {
       "id": "skill_warrior_s9_martial_combo",
       "name": "格斗术·连击",
       "kind": "active",
@@ -79,7 +133,7 @@
       "flagship": false,
       "lore": "序列9 战士 —— \"各种武器防具精通、各种格斗术掌握\"",
       "flavor": "你熟稔每一种徒手与持械的打法，两记连贯的拳脚砸在同一个破绽上。",
-      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；连击的收势把自身行动条往前推 8；战意·续劲：消耗 2 层，行动条 +8。每一次连击都牵动旧伤，自身受到 1 点反噬。",
+      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；连击的收势把自身行动条往前推 8；战意·续劲：消耗 2 层，行动条 +8。若已装备武器，收势追加 1 点物理伤害。每一次连击都牵动旧伤，自身受到 1 点反噬。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -153,6 +207,52 @@
           "mode": "delta",
           "target": "self",
           "note": "连击的收势撕开自己的旧伤"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "any_of",
+            "conditions": [
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "weapon_silver_rapier",
+                "cmp": ">=",
+                "n": 1
+              },
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "weapon_dusk_greatsword",
+                "cmp": ">=",
+                "n": 1
+              },
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "dawn_blade",
+                "cmp": ">=",
+                "n": 1
+              },
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "weapon_standard_blade",
+                "cmp": ">=",
+                "n": 1
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 1,
+              "note": "持械收势：兵刃带着连击余劲再划一下"
+            }
+          ],
+          "else": [],
+          "note": "连击收势"
         }
       ],
       "upgradeLadder": {
@@ -1965,7 +2065,7 @@
       "flagship": false,
       "lore": "序列4 猎魔者 —— \"夸张力量和飓风级高速奔跑\"",
       "flavor": "你跑起来像一阵飓风——撞进敌阵的那一瞬，身后队友的脚步也被带快了。",
-      "describe": "冲入另一路，对一名敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15；自己突进至敌方最前排（冲阵）。冲锋反震使自身受到 2 点反噬。",
+      "describe": "冲入另一路，对一名敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15；自己突进至敌方最前排（冲阵）。战意·奔袭：消耗 2 层，行动条 +8。冲锋反震使自身受到 2 点反噬。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -2023,6 +2123,36 @@
           "op": "charge_forward",
           "target": "self",
           "note": "冲阵：飓风级高速奔跑，一路突到敌阵最前排"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "war_spirit",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "war_spirit",
+              "stacks": -2,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "疾风：耗 2 层战意"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 8,
+              "mode": "delta",
+              "target": "self",
+              "note": "战意·奔袭：消耗 2 层，行动条 +8"
+            }
+          ],
+          "else": [],
+          "note": "战意·奔袭"
         },
         {
           "type": "modify_resource",
