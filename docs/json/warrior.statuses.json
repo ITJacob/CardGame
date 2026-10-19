@@ -753,6 +753,52 @@
       "statPerStack": {
         "attack": 1
       }
+    },
+    {
+      "id": "weapon_dusk_greatsword",
+      "name": "黄昏巨剑",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": null,
+      "charges": 3,
+      "equipSlot": "weapon",
+      "triggers": [
+        {
+          "event": "on_attack",
+          "consumeCharge": true,
+          "note": "每次普攻消耗 1 点耐久，打空即卸下"
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 4,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "装备期间攻击 +4"
+            }
+          ]
+        },
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "aging",
+              "stacks": 1,
+              "duration": 25,
+              "target": "target",
+              "note": "暮色侵染：巨剑每次伤人都在催老"
+            }
+          ]
+        }
+      ],
+      "note": "武艺轴第二把武器（耐久 3）：攻击 +4、每次造成伤害叠 1 层老化；武器大师击杀补耐久。"
     }
   ]
 }

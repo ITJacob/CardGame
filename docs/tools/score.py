@@ -786,7 +786,7 @@ def main():
                 elif a_kind == "equipment":
                     def _mounts_slot(c):
                         for n in walk(c.get("effects")):
-                            if n.get("type") == "mount_status" and ("status:" + str(n.get("statusId"))) in slot_ids:
+                            if n.get("type") == "mount_status" and n.get("statusId") in slot_ids:
                                 return True
                         return False
                     ops = [c for c in axis_cards if _mounts_slot(c)]

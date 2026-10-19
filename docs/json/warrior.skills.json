@@ -13,13 +13,13 @@
       "statusId": "weapon_grandmaster",
       "enablers": [
         "银白细剑",
-        "晨曦之剑"
+        "黄昏巨剑"
       ],
       "payoffs": [
         "无坚不摧",
         "神罚"
       ],
-      "note": "身份状态 weapon_grandmaster（武器大师，带层数引擎）；武器采用单槽制：主动卡装备 equipSlot=weapon 的武器变体，新装备替换旧武器，耐久按普攻次数消耗；当前唯一变体为银白细剑（耐久 3），武器大师击杀时补满已装备武器耐久。战意 war_spirit 为战士职业自带怒气资源：受击或敌方单位死亡时产层，每自身回合至多 +3、上限 10；主动技能消耗，被动只读或生产。 ｜ 2026-10-19 轴身份改为锚点 equipment:weapon（武器槽即武艺核心玩法；weapon_grandmaster 仅为组件）。",
+      "note": "身份状态 weapon_grandmaster（武器大师，带层数引擎）；武器采用单槽制：主动卡装备 equipSlot=weapon 的武器变体，新装备替换旧武器，耐久按普攻次数消耗；当前唯一变体为银白细剑（耐久 3），武器大师击杀时补满已装备武器耐久。战意 war_spirit 为战士职业自带怒气资源：受击或敌方单位死亡时产层，每自身回合至多 +3、上限 10；主动技能消耗，被动只读或生产。 ｜ 2026-10-19 轴身份改为锚点 equipment:weapon（武器槽即武艺核心玩法；weapon_grandmaster 仅为组件）。 ｜ 2026-10-19 锚点 equipment:weapon：轴内武器卡=银白细剑/黄昏巨剑；payoff 读已装备武器。",
       "anchor": {
         "kind": "equipment",
         "id": "weapon"
@@ -1448,7 +1448,7 @@
       "flagship": false,
       "lore": "序列5 守护者 —— \"能对任何怪物造成伤害\"",
       "flavor": "没有你砍不动的东西——甲也好，护体的异力也好，在这一斩之下都不算数。",
-      "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；并使自己行动条前推 8；战意·不摧：消耗 3 层，追加 2 点无元素伤害。",
+      "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；若已装备武器，伤害 +2；并使自己行动条前推 8；战意·不摧：消耗 3 层，追加 2 点无元素伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1474,6 +1474,45 @@
           "pierce": [
             "resist"
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "any_of",
+            "conditions": [
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "weapon_silver_rapier",
+                "cmp": ">=",
+                "n": 1
+              },
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "weapon_dusk_greatsword",
+                "cmp": ">=",
+                "n": 1
+              },
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "dawn_blade",
+                "cmp": ">=",
+                "n": 1
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "note": "无坚不摧：手里有兵刃，这一击才真正容不下甲"
+            }
+          ],
+          "else": [],
+          "note": "读本轴武器产出面（已装备武器）"
         },
         {
           "type": "modify_resource",
@@ -2391,7 +2430,7 @@
       "flagship": false,
       "lore": "序列2 荣耀者 —— \"『战斗』权柄（简化）：『牢笼』、『黄昏巨剑』、『光之风暴』；『神圣』权柄（简化）：荣耀即晨曦即黄昏，摧毁即净化\"",
       "flavor": "巨剑带着黄昏的颜色劈下——被它摧毁的，同时也被净化了；而活下来的，从此开始变老。",
-      "describe": "对一名近战敌人造成 6 点无元素伤害，并附加 2 层老化（25tick）。本卡击杀敌人时，全体友军回复 3 点生命；死亡簿≥4 时收割回血追加 2 点；对已登记将死的目标追加 2 点圣光伤害；战意·暮收：消耗 4 层，全体友军回复 2 点。",
+      "describe": "对一名近战敌人造成 6 点无元素伤害并附加 2 层老化（25tick），随后装备黄昏巨剑（耐久 3 次，替换当前武器）：装备期间攻击 +4、每次造成伤害叠 1 层老化。本卡击杀敌人时，全体友军回复 3 点生命；死亡簿≥4 时收割回血追加 2 点；对已登记将死的目标追加 2 点圣光伤害；战意·暮收：消耗 4 层，全体友军回复 2 点。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -2503,6 +2542,13 @@
           ],
           "else": [],
           "note": "额外段：对将死目标追加圣光"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "weapon_dusk_greatsword",
+          "target": "self",
+          "charges": 3,
+          "note": "装备黄昏巨剑（耐久 3 次，替换当前武器）"
         }
       ],
       "triggers": [
@@ -2901,7 +2947,7 @@
       "flagship": false,
       "lore": "序列1 神明之手 —— \"代行权柄：代表效忠神明 / 旧日展现威能、降下神罚\"",
       "flavor": "你抬起手，替那位存在落下判决——光不是照下来的，是压下来的；凡已被黄昏侵蚀的，压得更狠。",
-      "describe": "对全体敌方造成 5 点无元素伤害；对已老化的目标伤害 ×1.5，并使每个敌人叠 1 层老化（20tick）。对亡灵/恶魔/灵体额外造成 3 点圣光伤害；本场已阵亡敌人 ≥3 时追加 1 点圣光；对已登记将死的目标追加 2 点圣光。",
+      "describe": "对全体敌方造成 5 点无元素伤害；若已装备武器，全体敌方再受 2 点伤害；对已老化的目标伤害 ×1.5，并使每个敌人叠 1 层老化（20tick）。对亡灵/恶魔/灵体额外造成 3 点圣光伤害；本场已阵亡敌人 ≥3 时追加 1 点圣光；对已登记将死的目标追加 2 点圣光。",
       "cost": {
         "energy": 6,
         "cooldown": 35,
@@ -2965,6 +3011,46 @@
               "target": "all_enemies"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "any_of",
+            "conditions": [
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "weapon_silver_rapier",
+                "cmp": ">=",
+                "n": 1
+              },
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "weapon_dusk_greatsword",
+                "cmp": ">=",
+                "n": 1
+              },
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "dawn_blade",
+                "cmp": ">=",
+                "n": 1
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "target": "all_enemies",
+              "note": "武艺登峰：手里有兵刃，神罚追加 2 点——读本轴武器产出面"
+            }
+          ],
+          "else": [],
+          "note": "读本轴武器产出面（已装备武器）"
         },
         {
           "op": "if",
