@@ -736,16 +736,71 @@
       "flagship": false,
       "lore": "序列7 武器大师 —— \"任何武器到手即大师级水准（含非凡武器）\"",
       "flavor": "凡是能被握在手里的东西，到你手上就是杀器——连甲缝在哪里，你一摸就知道。",
-      "describe": "战斗开始时获得「武器大师」：攻击 +3，自身造成的物理伤害无视目标一半护甲，持续整场；击杀敌人时若已装备武器，补满其耐久（任何武器到手即大师）。",
+      "describe": "装备武器时获得「武器大师」：攻击 +3，自身造成的物理伤害无视目标一半护甲，持续整场；击杀敌人时若已装备武器，补满其耐久（任何武器到手即大师）。",
       "hook": [
-        "on_battle_start"
+        "on_status_gain"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "weapon_grandmaster",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "all_of",
+            "conditions": [
+              {
+                "kind": "any_of",
+                "conditions": [
+                  {
+                    "kind": "has_status",
+                    "side": "self",
+                    "id": "weapon_silver_rapier",
+                    "cmp": ">=",
+                    "n": 1
+                  },
+                  {
+                    "kind": "has_status",
+                    "side": "self",
+                    "id": "weapon_dusk_greatsword",
+                    "cmp": ">=",
+                    "n": 1
+                  },
+                  {
+                    "kind": "has_status",
+                    "side": "self",
+                    "id": "dawn_blade",
+                    "cmp": ">=",
+                    "n": 1
+                  },
+                  {
+                    "kind": "has_status",
+                    "side": "self",
+                    "id": "weapon_standard_blade",
+                    "cmp": ">=",
+                    "n": 1
+                  }
+                ]
+              },
+              {
+                "kind": "not",
+                "condition": {
+                  "kind": "has_status",
+                  "side": "self",
+                  "id": "weapon_grandmaster",
+                  "cmp": ">=",
+                  "n": 1
+                }
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "weapon_grandmaster",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": [],
+          "note": "武器到手：武器大师随兵刃而来（只挂一次）"
         }
       ],
       "tentative": false,
@@ -2950,33 +3005,16 @@
       "flagship": false,
       "lore": "序列1 神明之手 —— \"『代行』权柄（简化）：代表效忠神明 / 旧日展现威能、降下神罚\"；\"因\"代行\"存在，无法获得其他权柄，只有之前序列能力提升\"",
       "flavor": "你不是在自己战斗——你代那位存在行事。于是你先前走过的每一级序列，都被推到了更远的地方；而你再也接不住任何一份来自别处的力量。",
-      "describe": "首次击杀敌人后获得「代行」：攻击 +2（本途径技能增强）；无法获得任何非本途径来源的增益状态，持续整场，不可驱散；自身回合开始时，本场已阵亡敌人 ≥3 则回复 2 点生命，场上有将死目标则回复 3 点生命。",
+      "describe": "战斗开始时获得「代行」：攻击 +2（本途径技能增强）；无法获得任何非本途径来源的增益状态，持续整场，不可驱散；自身回合开始时，本场已阵亡敌人 ≥3 则回复 2 点生命，场上有将死目标则回复 3 点生命。",
       "hook": [
-        "on_kill"
+        "on_battle_start"
       ],
       "effects": [
         {
-          "op": "if",
-          "condition": {
-            "kind": "not",
-            "condition": {
-              "kind": "has_status",
-              "side": "self",
-              "id": "mandate",
-              "cmp": ">=",
-              "n": 1
-            }
-          },
-          "then": [
-            {
-              "type": "mount_status",
-              "statusId": "mandate",
-              "duration": null,
-              "target": "self"
-            }
-          ],
-          "else": [],
-          "note": "首个击杀：代行权柄降临"
+          "type": "mount_status",
+          "statusId": "mandate",
+          "duration": null,
+          "target": "self"
         }
       ],
       "tentative": false,
