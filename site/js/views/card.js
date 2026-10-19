@@ -191,11 +191,13 @@ function wireCardFrame(view) {
   img.addEventListener('error', fail);
 }
 
-export function renderCardDetail(view, id) {
+export function renderCardDetail(view, id, qs = '') {
+  // 列表页把筛选写进了详情链接：返回时原样带回，刷新/浏览器后退也能还原同一屏
+  const back = `#/cards${qs ? `?${escapeHtml(qs)}` : ''}`;
   const c = DB.cardById.get(id);
   if (!c) {
     view.innerHTML = `<div class="panel"><h2>未找到卡片</h2><p class="mono">${escapeHtml(id)}</p>
-      <p><a href="#/cards">← 返回列表</a></p></div>`;
+      <p><a href="${back}">← 返回列表</a></p></div>`;
     return;
   }
   const g = (cat, key) => termSpan(cat, key);
@@ -204,7 +206,7 @@ export function renderCardDetail(view, id) {
 
   view.innerHTML = `
   <div class="card-stage" style="--pc:var(--p-${c._pathway})">
-    <a class="cs-back" href="#/cards">← 返回列表</a>
+    <a class="cs-back" href="${back}">← 返回列表</a>
     <div class="card-sheet r-${c.rarity} k-${c.kind}" data-ax="${escapeHtml(axSym)}">
       <header class="cs-head">
         <div class="cs-title-row">

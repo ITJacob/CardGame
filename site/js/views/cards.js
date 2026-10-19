@@ -11,6 +11,30 @@ const state = {
   sort: '', q: '', page: 1,     // sort 为空＝默认：不排，保持 DB.cards 原序（途径 → 序列）
 };
 
+const FILTER_KEYS = ['pathway', 'axis', 'rarity', 'kind', 'sequence', 'primitive', 'reach', 'sort', 'q'];
+
+// 从 URL 还原筛选：刷新页面、从卡片详情返回列表都走这条路径
+function readState(params) {
+  for (const key of FILTER_KEYS) state[key] = params.get(key) || '';
+  const page = parseInt(params.get('page') || '', 10);
+  state.page = Number.isFinite(page) && page > 0 ? page : 1;
+}
+
+// 当前筛选 → 查询串。空值不进 URL，默认状态下地址栏保持 #/cards 干净
+function queryString() {
+  const params = new URLSearchParams();
+  for (const key of FILTER_KEYS) if (state[key]) params.set(key, state[key]);
+  if (state.page > 1) params.set('page', String(state.page));
+  return params.toString();
+}
+
+// 写回当前历史项：用 replaceState 而不是改 hash——不触发 hashchange，避免重进 route() 整页重渲染
+function syncUrl() {
+  const qs = queryString();
+  const hash = `#/cards${qs ? `?${qs}` : ''}`;
+  if (location.hash !== hash) history.replaceState(null, '', hash);
+}
+
 let primitivesInUse = null;
 
 function collectPrimitives() {
@@ -204,7 +228,10 @@ function cardItemHtml(c) {
   </div>`;
 }
 
-export function renderCards(view) {
+export function renderCards(view, params) {
+  // route() 每次都带上 URL 查询串（可为空）：以 URL 为准重建筛选状态。
+  // 内部因筛选联动而重渲染时只传 view、不传 params，避免把刚改的状态冲掉
+  if (params) readState(params);
   view.innerHTML = `<h1 class="page-title">卡片浏览</h1>${filterBarHtml()}
     <div id="class-mechanics"></div>
     <div id="card-list"></div><div class="pager" id="pager"></div>`;
@@ -248,13 +275,18 @@ function renderList(view) {
   const filtered = sortCards(applyFilters());
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   state.page = Math.min(state.page, pages);
+  syncUrl();   // 筛选/翻页/页码被夹紧后，地址栏始终是「当前这一屏」的可复现链接
   const start = (state.page - 1) * PAGE_SIZE;
   const slice = filtered.slice(start, start + PAGE_SIZE);
 
   view.querySelector('#filter-count').textContent = `共 ${filtered.length} 张`;
   view.querySelector('#card-list').innerHTML = `<div class="card-list">${slice.map(cardItemHtml).join('')}</div>`;
   view.querySelectorAll('.card-item').forEach((el) => {
-    el.addEventListener('click', () => { location.hash = `#/card/${encodeURIComponent(el.dataset.id)}`; });
+    el.addEventListener('click', () => {
+      // 把当前筛选带进详情页，详情页的「返回列表」才能拼回同一个列表
+      const qs = queryString();
+      location.hash = `#/card/${encodeURIComponent(el.dataset.id)}${qs ? `?${qs}` : ''}`;
+    });
     // 只在当前页 slice 上探测，不预探全库。renderList 整块重写 #card-list 的 innerHTML，
     // 翻页/搜索会把这里的元素摘掉，用 isConnected 挡掉对已废弃节点的回填
     const c = DB.cardById.get(el.dataset.id);

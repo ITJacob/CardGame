@@ -50,12 +50,12 @@ function route() {
     location.replace('#/stats/status');
     return;
   }
-  if (page === 'card' && arg) { setNav('cards'); renderCardDetail(view, decodeURIComponent(arg)); }
+  if (page === 'card' && arg) { setNav('cards'); renderCardDetail(view, decodeURIComponent(arg), qs || ''); }
   else if (page === 'glossary') { setNav('glossary'); renderGlossary(view, new URLSearchParams(qs || '')); }
   else if (page === 'stats') { setNav('stats'); renderStats(view, arg ? decodeURIComponent(arg) : 'skills'); }
   else if (page === 'score') { setNav('score'); renderScore(view, arg ? decodeURIComponent(arg) : ''); }
   else if (page === 'ddd') { setNav('ddd'); renderDdd(view, arg ? decodeURIComponent(arg) : ''); }
-  else { setNav('cards'); renderCards(view); }
+  else { setNav('cards'); renderCards(view, new URLSearchParams(qs || '')); }
 
   prevPage = isList ? 'cards' : page;
   window.scrollTo(0, restoreScroll ? listScrollY : 0);
