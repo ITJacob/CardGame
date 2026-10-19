@@ -80,7 +80,7 @@
       "flagship": false,
       "lore": "序列9 战士 —— \"各种武器防具精通、各种格斗术掌握\"",
       "flavor": "你熟稔每一种徒手与持械的打法，两记连贯的拳脚砸在同一个破绽上。",
-      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；战意·续劲：消耗 2 层，追加 1 点物理伤害。若已装备武器，收势追加 1 点物理伤害。每一次连击都牵动旧伤，自身受到 1 点反噬。",
+      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；战意·续劲：消耗 2 层，追加 1 点物理伤害。每一次连击都牵动旧伤，自身受到 1 点反噬。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -146,52 +146,6 @@
           "mode": "delta",
           "target": "self",
           "note": "连击的收势撕开自己的旧伤"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "any_of",
-            "conditions": [
-              {
-                "kind": "has_status",
-                "side": "self",
-                "id": "weapon_silver_rapier",
-                "cmp": ">=",
-                "n": 1
-              },
-              {
-                "kind": "has_status",
-                "side": "self",
-                "id": "weapon_dusk_greatsword",
-                "cmp": ">=",
-                "n": 1
-              },
-              {
-                "kind": "has_status",
-                "side": "self",
-                "id": "dawn_blade",
-                "cmp": ">=",
-                "n": 1
-              },
-              {
-                "kind": "has_status",
-                "side": "self",
-                "id": "weapon_standard_blade",
-                "cmp": ">=",
-                "n": 1
-              }
-            ]
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "physical",
-              "value": 1,
-              "note": "持械收势：兵刃带着连击余劲再划一下"
-            }
-          ],
-          "else": [],
-          "note": "连击收势"
         }
       ],
       "upgradeLadder": {
@@ -251,7 +205,7 @@
         ],
         "mood": "kinetic, relentless"
       },
-      "conversionNotes": "直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。"
+      "conversionNotes": "直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 4→2（位格1 基准2）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。 ｜ 2026-10-19 简化：砍持械收势段（4 武器 any_of 是维护债，且武器状态本身已给攻击加成），保留 2 连击 + 战意续劲 + 自伤反噬。"
     },
     {
       "id": "skill_warrior_s9_strong_physique",
