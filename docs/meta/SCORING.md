@@ -161,6 +161,9 @@
 示例（战士）：武艺锚 `equipment:weapon`，facets = equip / durability_consume / durability_replenish / read_equipped。
 猎魔「晨曦之剑」同占 equip + durability → 耦合；黄昏「神罚」读已装备武器 → 耦合；若另有轴只抢夺武器（steal）则不算。
 
+示例（不眠者）：暗夜锚 `channel:phase`，facets = write / read；夜色 `nightfall` 是相位资源，不再冒充轴身份。
+只受相位门控、不推进时钟的梦魇 / 安魂轴仍按状态锚点，读相位只作为对暗夜的耦合。
+
 ## 三、途径级指标（0–100，四维 + 三项门禁）
 
 | 维度 | 权重 | 判据与计分 |
