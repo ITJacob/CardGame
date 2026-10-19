@@ -28,25 +28,27 @@ function costHtml(c) {
   return `⚡能量 ${co.energy} · 冷却 ${co.cooldown} tick · 吟唱 ${co.castTime ?? 0}`;
 }
 
-function triggersHtml(card) {
-  const blocks = [];
+// 被动钩子：hook 自 2026-10-04 起为数组，任一事件触发即执行主体 effects，
+// 具体效果在下方「效果结构」呈现，这里只列出监听的事件
+function hookHtml(card) {
   const hookEvs = hookEvents(card);
-  if (hookEvs.length) {
-    // hook 自 2026-10-04 起为数组：任一事件触发即执行主体 effects，
-    // 具体效果在下方「效果结构」呈现，这里只列出监听的事件
-    blocks.push(`<div class="trigger-block">
+  if (!hookEvs.length) return '';
+  return `<div class="trigger-block">
       <div class="trigger-title">被动钩子 · ${hookEvs.map((e) => termSpan('triggerEvent', e)).join(' · ')}</div>
       <div class="trigger-body"><span class="muted">任一事件触发即执行；具体效果见下方「效果结构」</span></div>
-    </div>`);
-  }
-  for (const tr of card.triggers || []) {
+    </div>`;
+}
+
+// 卡片级触发器（自带 event + effects），与 hook 是两套东西：
+// hook 触发的是主体 effects，triggers 每项触发的是自己的 effects，故分开展示
+function triggersHtml(card) {
+  return (card.triggers || []).map((tr) => {
     const evLabel = tr.event === 'on_battle_start' ? '开局触发' : '触发';
-    blocks.push(`<div class="trigger-block">
+    return `<div class="trigger-block">
       <div class="trigger-title">${evLabel} · ${termSpan('triggerEvent', tr.event)}</div>
       <div class="trigger-body">${tr.effects ? renderEffects(tr.effects) : '<span class="muted">（无附加效果）</span>'}</div>
-    </div>`);
-  }
-  return blocks.join('<hr class="trigger-sep">');
+    </div>`;
+  }).join('<hr class="trigger-sep">');
 }
 
 function unitDefsHtml(card) {
@@ -234,11 +236,15 @@ export function renderCardDetail(view, id) {
         <dl class="kv">
           ${c.kind === 'active' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
           <dt>距离</dt><dd>${g('reach', c.reach)}</dd>
-          <dt>目标</dt><dd>${targetHtml(c.target)}</dd>` : `<dt>触发</dt><dd>${triggersHtml(c)}</dd>`}
+          <dt>目标</dt><dd>${targetHtml(c.target)}</dd>` : `<dt>触发</dt><dd>${hookHtml(c) || '<span class="muted">（无）</span>'}</dd>`}
           ${(c.secondaryTargets || []).map((t, i) => `<dt>附属选靶${i + 1}</dt><dd>${targetHtml(t)}</dd>`).join('')}
         </dl>
-        ${c.kind === 'active' && (c.triggers?.length) ? triggersHtml(c) : ''}
       </section>
+
+      ${c.triggers?.length ? `<section class="cs-sec">
+        <h2>附加触发</h2>
+        ${triggersHtml(c)}
+      </section>` : ''}
 
       <section class="cs-sec">
         <h2>效果结构</h2>
