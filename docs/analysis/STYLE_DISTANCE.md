@@ -26,7 +26,7 @@
 | chanter | reader | 0.243 | 0.289 |
 | hunter | lawyer | 0.219 | 0.293 |
 | pryer | reader | 0.248 | 0.299 |
-| warrior | apprentice | 0.270 | 0.315 |
+| warrior | apprentice | 0.269 | 0.315 |
 | sleepless | spectator | 0.290 | 0.351 |
 
 ## 二、22×22 距离矩阵
