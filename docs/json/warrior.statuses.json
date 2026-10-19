@@ -459,7 +459,7 @@
                 "skillId": "skill_warrior_s6_dawn_blade"
               },
               "setOpportunity": 0,
-              "note": "权柄特权：装备晨曦之剑不消耗行动机会"
+              "note": "权柄特权：立即拔刀不消耗行动机会（可紧接着再执行一次普攻）"
             },
             {
               "type": "modify_skill",
@@ -468,12 +468,21 @@
                 "skillId": "skill_warrior_s3_silver_rapier"
               },
               "setOpportunity": 0,
-              "note": "权柄特权：装备银白细剑不消耗行动机会"
+              "note": "权柄特权：立即拔刀不消耗行动机会（可紧接着再执行一次普攻）"
+            },
+            {
+              "type": "modify_skill",
+              "skillRef": {
+                "selector": "by_id",
+                "skillId": "skill_warrior_s2_twilight_greatsword"
+              },
+              "setOpportunity": 0,
+              "note": "权柄特权：立即拔刀不消耗行动机会（可紧接着再执行一次普攻）"
             }
           ]
         }
       ],
-      "note": " ｜ 2026-10-02 补漏批②：on_kill 收割结算状态面（战斗权柄持有者即收割者）"
+      "note": "｜ 2026-10-02 补漏批②：on_kill 收割结算状态面（战斗权柄持有者即收割者） ｜ 2026-10-19 相位形态改为逐自身回合重判（黎明/黄昏独立状态）；拔刀特权补覆盖黄昏巨剑。"
     },
     {
       "id": "guardianship",
@@ -872,6 +881,64 @@
         }
       ],
       "note": "违约清算：预支失败后每自身回合结束自伤 4、将死目标回血 3、失 2 层战意，直到目标死亡或被拆。解除路径至少两条（目标死亡 / 被拆）。数值 ⚠️D。"
+    },
+    {
+      "id": "battle_authority_dawn",
+      "name": "战斗权柄·黎明",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": 1,
+      "durationUnit": "self_turn",
+      "maxStacks": 1,
+      "stackPolicy": "refresh",
+      "triggers": [
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "黎明形态：攻击 +2"
+            }
+          ]
+        }
+      ],
+      "note": "战斗权柄的相位形态：自身回合开始时按当前相位挂载；黎明攻击 +2，离相后最迟 1 个自身回合自然到期。"
+    },
+    {
+      "id": "battle_authority_dusk",
+      "name": "战斗权柄·黄昏",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": 1,
+      "durationUnit": "self_turn",
+      "maxStacks": 1,
+      "stackPolicy": "refresh",
+      "triggers": [
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "黄昏形态：防御 +2"
+            }
+          ]
+        }
+      ],
+      "note": "战斗权柄的相位形态：自身回合开始时按当前相位挂载；黄昏防御 +2，离相后最迟 1 个自身回合自然到期。"
     }
   ]
 }
