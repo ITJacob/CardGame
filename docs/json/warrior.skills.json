@@ -13,13 +13,14 @@
       "statusId": "weapon_grandmaster",
       "enablers": [
         "银白细剑",
-        "黄昏巨剑"
+        "黄昏巨剑",
+        "兵械通晓"
       ],
       "payoffs": [
         "无坚不摧",
         "神罚"
       ],
-      "note": "身份状态 weapon_grandmaster（武器大师，带层数引擎）；武器采用单槽制：主动卡装备 equipSlot=weapon 的武器变体，新装备替换旧武器，耐久按普攻次数消耗；当前唯一变体为银白细剑（耐久 3），武器大师击杀时补满已装备武器耐久。战意 war_spirit 为战士职业自带怒气资源：受击或敌方单位死亡时产层，每自身回合至多 +3、上限 10；主动技能消耗，被动只读或生产。 ｜ 2026-10-19 轴身份改为锚点 equipment:weapon（武器槽即武艺核心玩法；weapon_grandmaster 仅为组件）。 ｜ 2026-10-19 锚点 equipment:weapon：轴内武器卡=银白细剑/黄昏巨剑；payoff 读已装备武器。 ｜ 2026-10-19 持械/徒手分流：武器卡=银白细剑/黄昏巨剑/制式长剑；持械招式=连击/无坚不摧；战意线=兵械通晓/破甲/疾风/银白细剑/黄昏巨剑/战斗权柄；徒手分支=近身缠斗/牢笼。",
+      "note": "身份状态 weapon_grandmaster（武器大师，带层数引擎）；武器采用单槽制：主动卡装备 equipSlot=weapon 的武器变体，新装备替换旧武器，耐久按普攻次数消耗；当前唯一变体为银白细剑（耐久 3），武器大师击杀时补满已装备武器耐久。战意 war_spirit 为战士职业自带怒气资源：受击或敌方单位死亡时产层，每自身回合至多 +3、上限 10；主动技能消耗，被动只读或生产。 ｜ 2026-10-19 轴身份改为锚点 equipment:weapon（武器槽即武艺核心玩法；weapon_grandmaster 仅为组件）。 ｜ 2026-10-19 锚点 equipment:weapon：轴内武器卡=银白细剑/黄昏巨剑；payoff 读已装备武器。 ｜ 2026-10-19 持械/徒手分流：武器卡=银白细剑/黄昏巨剑/制式长剑；持械招式=连击/无坚不摧（入门武器由兵械通晓开场装备）；战意线=兵械通晓/破甲/疾风/银白细剑/黄昏巨剑/战斗权柄；徒手分支=近身缠斗/牢笼。",
       "anchor": {
         "kind": "equipment",
         "id": "weapon"
@@ -68,60 +69,6 @@
     }
   },
   "cards": [
-    {
-      "id": "skill_warrior_s9_standard_blade",
-      "name": "制式长剑",
-      "kind": "active",
-      "sequence": 9,
-      "sequenceName": "战士",
-      "rarity": "common",
-      "axis": "martial",
-      "flagship": false,
-      "lore": "序列9 战士 —— \"各种武器防具精通。\"",
-      "flavor": "不是名剑，也不是宝刀——但你握上它的那一刻，它就够用了。",
-      "describe": "对一名近战敌人造成 3 点物理伤害，并装备制式长剑（耐久 5 次，替换当前武器）：装备期间攻击 +2。",
-      "cost": {
-        "energy": 1,
-        "cooldown": 8,
-        "castTime": 0
-      },
-      "reach": "melee",
-      "target": {
-        "selectionMode": "manual",
-        "request": {
-          "mode": "unit",
-          "faction": "enemy",
-          "scope": "behind_2",
-          "pickCount": 1
-        },
-        "fallbackSort": "hp_desc"
-      },
-      "effects": [
-        {
-          "type": "damage",
-          "element": "physical",
-          "value": 3
-        },
-        {
-          "type": "mount_status",
-          "statusId": "weapon_standard_blade",
-          "target": "self",
-          "charges": 5,
-          "note": "装备制式长剑（耐久 5 次，替换当前武器）"
-        }
-      ],
-      "tentative": true,
-      "conversionNotes": "机制期 W7 补卡（2026-10-19）：低序列入门武器，承担「装备/换装」教学；与银白细剑（位移爆发）、黄昏巨剑（老化重剑）拉开。",
-      "art": {
-        "subject": "a plain soldier drawing a simple service sword",
-        "elements": [
-          "plain steel blade",
-          "worn hilt",
-          "first stance"
-        ],
-        "mood": "plain, dependable"
-      }
-    },
     {
       "id": "skill_warrior_s9_martial_combo",
       "name": "格斗术·连击",
@@ -406,7 +353,7 @@
       "flagship": false,
       "lore": "序列9 战士 —— \"各种武器防具精通\"",
       "flavor": "你懂每一种兵器的重心，也懂每一副护甲的接缝——手上更有力，身上更耐打。",
-      "describe": "战斗开始时，自身护甲 +3；战意：每次击杀积 1 层（主动技能可消耗）；若击杀的是已登记将死的目标，改为积 2 层。",
+      "describe": "战斗开始时装备制式长剑（耐久 4 次）：攻击 +1；自身护甲 +3；战意：每次击杀积 1 层（主动技能可消耗）；若击杀的是已登记将死的目标，改为积 2 层。",
       "hook": [
         "on_battle_start"
       ],
@@ -417,6 +364,13 @@
           "value": 3,
           "mode": "delta",
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "weapon_standard_blade",
+          "target": "self",
+          "charges": 4,
+          "note": "兵械通晓：开局装备制式长剑"
         }
       ],
       "sharedAcross": [

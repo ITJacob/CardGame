@@ -470,7 +470,10 @@ def main():
                 continue
             if t not in PRIMS: errors.append("%s %s: bad primitive %s" % (cid,p,t)); continue
             if t=="mount_status" and passive and e.get("statusId") in EQUIP_STATUS_IDS:
-                errors.append("%s %s: 被动卡不得直接装备 equipSlot 状态 %s" % (cid,p,e.get("statusId")))
+                _sd = (_refs.get("status") or {}).get(e.get("statusId")) or {}
+                if not _sd.get("initialEquip"):
+                    errors.append("%s %s: 被动卡不得直接装备 equipSlot 状态 %s（仅 initialEquip 武器可在开局自动装备）"
+                                  % (cid, p, e.get("statusId")))
             if t=="modify_skill":
                 sr = e.get("skillRef") or {}
                 if sr.get("selector") not in SKILL_SELECTORS:
