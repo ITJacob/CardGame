@@ -80,7 +80,7 @@
       "flagship": false,
       "lore": "序列9 战士 —— \"各种武器防具精通、各种格斗术掌握\"",
       "flavor": "你熟稔每一种徒手与持械的打法，两记连贯的拳脚砸在同一个破绽上。",
-      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；连击的收势把自身行动条往前推 8；战意·续劲：消耗 2 层，行动条 +8。若已装备武器，收势追加 1 点物理伤害。每一次连击都牵动旧伤，自身受到 1 点反噬。",
+      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；战意·续劲：消耗 2 层，追加 1 点物理伤害。若已装备武器，收势追加 1 点物理伤害。每一次连击都牵动旧伤，自身受到 1 点反噬。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -111,14 +111,6 @@
           ]
         },
         {
-          "type": "modify_resource",
-          "resource": "gauge.current",
-          "value": 8,
-          "mode": "delta",
-          "target": "self",
-          "note": "武技·续劲：连击把破绽砸开，收势未停，自身的节奏往前顶"
-        },
-        {
           "op": "if",
           "condition": {
             "kind": "has_status",
@@ -134,18 +126,18 @@
               "stacks": -2,
               "stackMode": "consume",
               "target": "self",
-              "note": "战意消耗：2 层"
+              "note": "续劲：耗 2 层"
             },
             {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
-              "target": "self"
+              "type": "damage",
+              "element": "physical",
+              "value": 1,
+              "target": "target",
+              "note": "战意·续劲：再补一记"
             }
           ],
           "else": [],
-          "note": "战意消费分支：2 层换 战意·续劲：消耗 2 层，行动条 +8。"
+          "note": "战意·续劲：2 层换一段追击"
         },
         {
           "type": "modify_resource",
@@ -826,7 +818,7 @@
       "flagship": false,
       "lore": "序列7 武器大师 —— \"超强力量、体质和敏捷\"",
       "flavor": "你抡圆了砸下去，力量不止落在它身上，也砸碎了它身上的甲。",
-      "describe": "从整条战线中挑选护甲最高的一名敌人，造成 4 点物理伤害，并直接穿透护甲（无视 90% 护甲）；并使其攻击 -2（15tick，破械）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意·碎甲：消耗 3 层，追加 2 点物理伤害。全力一击后自身受到 1 点反噬。对已登记将死的目标追加 2 点圣光伤害；否则使其防御 -2（15tick）。",
+      "describe": "从整条战线中挑选护甲最高的一名敌人，造成 4 点物理伤害，并直接穿透护甲（无视 90% 护甲）；并使其攻击 -2（15tick，破械）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意·碎甲：消耗 3 层，使目标防御 -2（15tick）。全力一击后自身受到 1 点反噬。对已登记将死的目标追加 2 点圣光伤害；否则使其防御 -2（15tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -886,14 +878,17 @@
               "note": "碎甲：耗 3 层战意"
             },
             {
-              "type": "damage",
-              "element": "physical",
-              "value": 2,
-              "note": "战意·碎甲：消耗 3 层追加 2 点物理伤害。"
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 15,
+              "target": "target",
+              "note": "战意·碎甲：防御再被压一档"
             }
           ],
           "else": [],
-          "note": "战意消费分支：3 层换 战意·碎甲：消耗 3 层，追加 2 点物理伤害。"
+          "note": "战意·碎甲：3 层换破防"
         },
         {
           "type": "modify_resource",
@@ -1557,7 +1552,7 @@
       "flagship": false,
       "lore": "序列5 守护者 —— \"能对任何怪物造成伤害\"",
       "flavor": "没有你砍不动的东西——甲也好，护体的异力也好，在这一斩之下都不算数。",
-      "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；若已装备武器，伤害 +2；并使自己行动条前推 8；战意·不摧：消耗 3 层，追加 2 点无元素伤害。",
+      "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；若已装备武器，伤害 +2；并使自己行动条前推 8；战意·不摧：消耗 3 层，自身攻击 +3（10tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1650,14 +1645,17 @@
               "note": "不摧：耗 3 层战意"
             },
             {
-              "type": "damage",
-              "element": "none",
-              "value": 2,
-              "note": "战意·不摧：消耗 3 层追加 2 点无元素伤害。"
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 10,
+              "target": "self",
+              "note": "战意·不摧：斫开的缺口让下一击更重"
             }
           ],
           "else": [],
-          "note": "战意消费分支：3 层换 战意·不摧：消耗 3 层，追加 2 点无元素伤害。"
+          "note": "战意·不摧：3 层换一段攻击增益"
         }
       ],
       "tentative": false,
@@ -2432,7 +2430,7 @@
               "stacks": -2,
               "stackMode": "consume",
               "target": "self",
-              "note": "战意消耗：2 层"
+              "note": "银灼：耗 2 层"
             },
             {
               "type": "damage",
@@ -2649,7 +2647,7 @@
               "stacks": -4,
               "stackMode": "consume",
               "target": "self",
-              "note": "战意消耗：4 层"
+              "note": "暮收：耗 4 层"
             },
             {
               "type": "heal",

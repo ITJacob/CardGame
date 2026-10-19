@@ -26,16 +26,16 @@
 
 **规模**：12 张技能（主动 8 / 被动 4）；稀有度分布：普通×4、史诗×3、精良×2、稀有×2、传说×1。
 
-**效果原语构成**（type，全量递归，共 64 处）：
+**效果原语构成**（type，全量递归，共 63 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 19 | 29.7% |
-| `damage` | 17 | 26.6% |
-| `modify_stat` | 8 | 12.5% |
-| `modify_resource` | 13 | 20.3% |
-| `heal` | 5 | 7.8% |
-| `move` | 2 | 3.1% |
+| `mount_status` | 19 | 30.2% |
+| `damage` | 16 | 25.4% |
+| `modify_stat` | 10 | 15.9% |
+| `modify_resource` | 11 | 17.5% |
+| `heal` | 5 | 7.9% |
+| `move` | 2 | 3.2% |
 
 **算子构成**（op，共 27 处）：
 
@@ -46,24 +46,24 @@
 | `repeat` | 3 |
 | `push_back` | 1 |
 
-**改动的属性（modify_stat，共 8 处）**：
+**改动的属性（modify_stat，共 10 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
-| `attack` | 3 |
-| `defense` | 3 |
+| `attack` | 4 |
+| `defense` | 4 |
 | `gauge.rate` | 2 |
 
-**改动的资源（modify_resource，共 13 处）**：
+**改动的资源（modify_resource，共 11 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
-| `gauge.current` | 8 |
+| `gauge.current` | 6 |
 | `hp` | 3 |
 | `armor` | 2 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `mount_status`(19)、`damage`(17)、`modify_resource`(13)；属性杠杆集中在 `attack`、`defense`、`gauge.rate`，资源杠杆集中在 `gauge.current`、`hp`、`armor`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(19)、`damage`(16)、`modify_resource`(11)；属性杠杆集中在 `attack`、`defense`、`gauge.rate`，资源杠杆集中在 `gauge.current`、`hp`、`armor`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **战斗权柄**：战斗开始时获得「战斗权柄」：攻击 +5、护甲 +8、行动条速率 +4、全元素抗性 +10%，持续整场，不可驱散；黎明时攻击 +2，黄昏时防御 +2；装备武器的技能不消耗行动机会（可紧接着再行动一次）；击杀时自身行动条 +15；临阵威压：造成的伤害 ×1.3；战意：自身回合开始时若战意≥4，攻击 +2。
 
