@@ -14,7 +14,7 @@ JSON_DIR = os.path.join(os.path.dirname(HERE), "json")      # docs/json/
 ANALYSIS_DIR = os.path.join(os.path.dirname(HERE), "analysis")
 
 sys.path.insert(0, HERE)
-from status_loader import iter_status_defs
+from status_loader import iter_status_defs, load_common_ids
 
 
 # ---------- 加载 ----------
@@ -177,11 +177,11 @@ def channel_reads(objs):
     return ch
 
 
-def card_status_refs(card):
-    """卡面 effects 读入的状态 id（条件谓词 / modify_status / dispel / transfer_status 的 statusId 与 hasStatus）。
+def obj_status_refs(obj):
+    """任一 AST 容器读入的状态 id（条件谓词 / modify_status / dispel / transfer_status 的 statusId 与 hasStatus）。
     mount_status 只写不读——挂个状态不等于读取本轴产出面（防「产层冒充读层」）。"""
     out = set()
-    for n in walk(card.get("effects")):
+    for n in walk(obj):
         if n.get("type") != "mount_status":
             for k in ("statusId",):
                 v = n.get(k)
@@ -200,6 +200,10 @@ def card_status_refs(card):
     return out
 
 
+def card_status_refs(card):
+    return obj_status_refs(card.get("effects"))
+
+
 def surface_of(card, status_by_id, def_index):
     """卡的作用面 (writes, reads)：状态面 ∪ 通道面。objs = 卡 + 挂载状态 def + spawn/domain def。"""
     mounted = [status_by_id.get(m) for m in card_mounts(card)]
@@ -208,11 +212,120 @@ def surface_of(card, status_by_id, def_index):
     reads = {"status:" + s for s in card_status_refs(card)} | channel_reads(objs)
     # 挂载/区域 def 自身对状态的引用也算读（payoff 经专属状态读层）
     for o in ([m for m in mounted if m] + card_def_refs(card, def_index)):
-        for n in walk(o):
-            v = n.get("statusId")
-            if isinstance(v, str):
-                reads.add("status:" + v)
+        reads |= {"status:" + s for s in obj_status_refs(o)}
     return writes, reads
+
+
+# ---------- 机制条目 facet：全局概念按「怎么对待」拆分（SCORING 2.5） ----------
+# 全局概念（武器槽 / 相位 / 资源 / 原语）不属于任何轴；轴只占有自己在概念上实现的
+# 机制条目。跨轴耦合按「同条目命中」计，不按概念本身计。
+
+GLOBAL_ANCHOR_KINDS = ("equipment", "channel", "resource", "primitive")
+
+
+def _slot_statuses(anchor_id, status_by_id):
+    return {i for i, s in status_by_id.items() if s.get("equipSlot") == anchor_id}
+
+
+def _card_objs(card, status_by_id, def_index):
+    mounted = [status_by_id.get(m) for m in card_mounts(card)]
+    return [card] + [m for m in mounted if m] + card_def_refs(card, def_index)
+
+
+def card_facets(card, anchor, status_by_id, def_index):
+    """卡面在某个全局概念锚点上实际使用的机制条目集合。
+
+    词表（SCORING.md §二·三）：
+      equipment : equip / durability_consume / durability_replenish /
+                  read_equipped / dump / steal
+      channel   : write / read / cycle
+      resource  : produce / consume / threshold
+      primitive : use
+    """
+    if not isinstance(anchor, dict):
+        return set()
+    kind, aid = anchor.get("kind"), anchor.get("id")
+    if kind not in GLOBAL_ANCHOR_KINDS or not aid:
+        return set()
+    facets = set()
+    objs = _card_objs(card, status_by_id, def_index)
+    if kind == "equipment":
+        slot_ids = _slot_statuses(aid, status_by_id)
+        mounted = card_mounts(card) & slot_ids
+        if mounted:
+            facets.add("equip")
+        if card_status_refs(card) & slot_ids:
+            facets.add("read_equipped")
+        for sid in mounted:
+            sd = status_by_id.get(sid) or {}
+            if (isinstance(sd.get("charges"), int) and sd["charges"] > 0) or any(
+                    isinstance(t, dict) and t.get("consumeCharge")
+                    for t in (sd.get("triggers") or [])):
+                facets.add("durability_consume")
+        for o in objs:
+            for n in walk(o):
+                if n.get("restoreCharges"):
+                    facets.add("durability_replenish")
+                if n.get("type") == "modify_status" and n.get("slot") == aid:
+                    if n.get("charges") == 0 or n.get("consumeCharges") == "all":
+                        facets.add("dump")
+                    if isinstance(n.get("chargesDelta"), (int, float)) and n["chargesDelta"] < 0:
+                        facets.add("durability_consume")
+                if n.get("type") in ("transfer_status", "take_control", "dispel"):
+                    sids = n.get("statusId") or n.get("statusIds") or []
+                    if isinstance(sids, str):
+                        sids = [sids]
+                    if (isinstance(sids, list) and set(sids) & slot_ids) or n.get("slot") == aid:
+                        facets.add("steal")
+    elif kind == "channel":
+        if aid in channel_writes(objs):
+            facets.add("write")
+        if aid in channel_reads(objs):
+            facets.add("read")
+        if any(isinstance(s, dict) and any(s.get(k) for k in ("formGroup", "phases", "cycleTicks"))
+               for s in (status_by_id.get(m) for m in card_mounts(card)) if s):
+            facets.add("cycle")
+    elif kind == "resource":
+        for n in walk(card.get("effects")):
+            if n.get("type") == "modify_resource" and n.get("resource") == aid:
+                v = n.get("value")
+                if n.get("mode") == "consume" or (isinstance(v, (int, float)) and v < 0):
+                    facets.add("consume")
+                else:
+                    facets.add("produce")
+            if n.get("kind") == "resource_compare" and n.get("key") == aid:
+                facets.add("threshold")
+    elif kind == "primitive":
+        if aid in card_effect_types(card):
+            facets.add("use")
+    return facets
+
+
+def axis_mechanism_facets(axis_cards, anchor, status_by_id, def_index):
+    """轴锚定的全局概念上实际占用的机制条目 (kind, id, facet)。
+
+    只算锚点概念：轴没有把某个概念声明为身份，就不占有它的机制条目
+    （避免「用过相位 = 独霸相位」）。resource / primitive 同理。
+    """
+    if not isinstance(anchor, dict) or anchor.get("kind") not in GLOBAL_ANCHOR_KINDS \
+            or not anchor.get("id"):
+        return set()
+    kind, aid = anchor["kind"], anchor["id"]
+    out = set()
+    for c in axis_cards:
+        for f in card_facets(c, anchor, status_by_id, def_index):
+            out.add((kind, aid, f))
+    return out
+
+
+def card_mechanism_facets(card, axis_facets, status_by_id, def_index):
+    """卡面命中轴 facet 集合的条目（同概念同条目才算）。"""
+    concepts = {(k, i) for (k, i, _f) in axis_facets}
+    got = set()
+    for k, i in concepts:
+        for f in card_facets(card, {"kind": k, "id": i}, status_by_id, def_index):
+            got.add((k, i, f))
+    return got & axis_facets
 
 
 # 修改意见按扣分类别生成，路径内可执行、不做职业间横向对比（呈现层的硬要求）
@@ -229,7 +342,7 @@ FIX = {
     "scale": "把轴卡数向途径轴均卡数收敛（补卡或并轴）",
     "connect": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）",
     "min_axis": "优先重设计该最低分轴（轴表按分升序，第一行即它）",
-    "crossaxis": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段",
+    "crossaxis": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段",
     "crosspath": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段",
     "aratio": "补主动或被动卡，把主被动比调进 [1.5, 3.0]",
     "flagship": "补/撤旗舰卡至 4 张",
@@ -732,6 +845,33 @@ def main():
             for _ch in _w & set(CHANNELS):
                 chan_pathway_writers.setdefault(_ch, set()).add(_pid)
 
+    # 私有机制产出归属：状态 -> 途径内占多数的轴（排除 common 与装备槽状态）。
+    # 全局概念（武器槽等）不归任何轴，只按 facet 计耦合。
+    common_ids = load_common_ids()
+    status_axis_owner = {}
+    for _pid, _d in pathways.items():
+        _axes = _d.get("axes") or {}
+        _ident = {a.get("statusId"): aid for aid, a in _axes.items()
+                  if isinstance(a, dict) and a.get("statusId")}
+        _class_ids = {m.get("statusId") for m in (_d.get("classMechanics") or [])
+                      if isinstance(m, dict) and m.get("statusId")}
+        _mount_cnt = {}
+        for _c in _d.get("cards") or []:
+            for _s in card_mounts(_c):
+                _mount_cnt.setdefault(_s, {}).setdefault(_c.get("axis"), 0)
+                _mount_cnt[_s][_c.get("axis")] += 1
+        for _s, _cnt in _mount_cnt.items():
+            if _s in common_ids or _s in _class_ids:
+                continue
+            _sd = status_by_id.get(_s) or {}
+            if _sd.get("equipSlot"):
+                continue
+            if _s in _ident:
+                _owner = _ident[_s]
+            else:
+                _owner = max(_cnt, key=lambda a: (_cnt[a], a == _ident.get(_s)))
+            status_axis_owner[(_pid, _s)] = _owner
+
     for pid, d in pathways.items():
         axes = d.get("axes") or {}
         cards = d.get("cards") or []
@@ -1001,22 +1141,37 @@ def main():
                     patterns.add("存在性")
                 if surf[nm][1] & set(CHANNELS):
                     patterns.add("通道读")
-            # 产出面（状态 ∪ 耦合通道）被他轴 / 他途径消费
-            outputs_c = ({"status:" + sid} if sid else set()) | (ax_channels & set(COUPLING_CHANNELS))
+            # 产出面：本轴私有机制（占多数的私有状态）+ 全局概念 facet（SCORING 2.5）
+            private_items = {("status:" + s) for (p2, s), o in status_axis_owner.items()
+                             if p2 == pid and o == aid}
+            if a_kind == "status" and sid:
+                private_items.add("status:" + sid)
+            axis_facets = axis_mechanism_facets(axis_cards, anchor_spec, status_by_id, def_index)
+            channel_outputs = ax_channels & set(COUPLING_CHANNELS)
             ext_consumers = 0
             for pid2, d2 in pathways.items():
                 for c2 in d2.get("cards") or []:
                     if pid2 == pid and c2.get("axis") == aid:
                         continue
-                    r2 = ALL_SURF[(pid2, c2["name"])][1] & outputs_c
-                    if not r2:
+                    reads2 = ALL_SURF[(pid2, c2["name"])][1]
+                    hit_status = reads2 & private_items
+                    hit_facet = bool(axis_facets and card_mechanism_facets(
+                        c2, axis_facets, status_by_id, def_index))
+                    hit_channel = bool(reads2 & channel_outputs)
+                    if not (hit_status or hit_facet or hit_channel):
                         continue
                     if pid2 != pid:
-                        # 状态面跨途径须 crossPathway 白名单；通道面天然共享，直认
-                        if r2 <= ({"status:" + sid} if sid else set()):
-                            sdef = status_by_id.get(sid) or {}
-                            part = sdef.get("participants") or []
-                            if not (sid and sdef.get("crossPathway") and (not part or pid2 in part)):
+                        # 私有状态跨途径须 crossPathway 白名单；facet / 通道天然共享
+                        if hit_status and not (hit_facet or hit_channel):
+                            ok = False
+                            for item in hit_status:
+                                s = item.split(":", 1)[1]
+                                sdef = status_by_id.get(s) or {}
+                                part = sdef.get("participants") or []
+                                if sdef.get("crossPathway") and (not part or pid2 in part):
+                                    ok = True
+                                    break
+                            if not ok:
                                 continue
                     else:
                         pw_crossaxis_refs[pid] = pw_crossaxis_refs.get(pid, 0) + 1
@@ -1031,6 +1186,7 @@ def main():
                 "div_raw": div_raw, "scale": scale, "connect": connect,
                 "cards": len(axis_cards), "enablers_v": en_verified, "landed": landed, "notes": notes_level,
                 "patterns": sorted(patterns), "ext_consumers": ext_consumers,
+                "facets": ["%s:%s:%s" % f for f in sorted(axis_facets)],
                 "ax_channels": sorted(ax_channels),
                 "shape": sorted(ax_channels | prim_kinds | chain_kinds),
                 "vacuum_accepted": bool(ax.get("payoffVacuumAccepted")),
@@ -1126,10 +1282,10 @@ def main():
         health = max(0, round(health * 35 / 100, 1))
 
         # 封顶归一（SCORING 2.0）：通道耦合为重尾分布，用 ÷CAP 而非 ÷max，避免单点离群压平全库
-        CAP_CROSSAXIS, CAP_CROSSPATH = 12, 16
+        CAP_CROSSAXIS, CAP_CROSSPATH = 8, 16
         crossaxis = round(15 * min(pw_crossaxis_refs.get(pid, 0), CAP_CROSSAXIS) / CAP_CROSSAXIS, 1)
         if crossaxis < 7.5:
-            deductions.append(("跨轴耦合", "-%s：本途径他轴身份读取 %d 次" % (15 - crossaxis, pw_crossaxis_refs.get(pid, 0)), pid, FIX["crossaxis"]))
+            deductions.append(("跨轴耦合", "-%s：本途径他轴机制命中 %d 次" % (15 - crossaxis, pw_crossaxis_refs.get(pid, 0)), pid, FIX["crossaxis"]))
         crosspath_raw = pw_crosspath_reads.get(pid, 0) + pw_hub_statuses.get(pid, 0) * 4  # 枢纽状态折算 4 次读段
         crosspath = round(15 * min(crosspath_raw, CAP_CROSSPATH) / CAP_CROSSPATH, 1)
         if crosspath < 7.5:
