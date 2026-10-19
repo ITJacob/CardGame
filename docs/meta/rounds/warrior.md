@@ -134,3 +134,11 @@
 - **通用机制 `cost.opportunity`**（后续途径可复用）：缺省 1；0 = 本次 Action 不闭合机会、不扣行动条，仍扣 energy/cooldown；同一机会内免费 Action 至多 2 次，防无消耗循环。`modify_skill.setOpportunity` + `skillRef.by_id` 用于状态授予。
 - **落点**：`调度参数.md`、`SCHEMA.md`、`glossary.json`（opportunityCost 类别）、`skills.schema.json`、内核 `commit.ts`/`runtime.ts`、测试 168 全绿。
 - 战士总分 58.7。
+
+## 2026-10-19 martial 四卡去相似
+
+- **选靶分化**：连击=behind_2 / 近身缠斗=enemy_front+point（最前排擒拿）/ 破甲重击=whole_lane（战线中挑护甲最高）/ 疾风奔袭=cross_lane（跨路袭掠）。martial 轴选靶签名去重比 0.25 → 0.50。
+- **战意尾减半**：近身缠斗、疾风奔袭删除战意消费段；连击、破甲重击保留。
+- **代价分化**：近身缠斗自伤 1 → 防御 -1（5tick，贴身破绽）。
+- 结果：途径内最近对 0.0612 → 0.1667；四张 martial 主动两两距离均 ≥0.22。新最近对为「武器大师 ↔ 代行」0.1667（被动模板同构，下一轮处理）。
+- 战士总分 59.9。

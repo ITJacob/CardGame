@@ -431,7 +431,7 @@
       "flagship": false,
       "lore": "序列8 格斗家 —— \"擅长近距离战斗\"",
       "flavor": "你贴上去，用身体和兵刃缠住它——它想挥下一击，却发现节奏已经被你踩住了。",
-      "describe": "对一名近战敌人造成 2 点物理伤害，并使其行动条进度 -20；并把目标撞退一格（摔投）；战意·摔投：消耗 2 层，目标行动条额外 -20。贴身摔投时自身受到 1 点反噬。对已登记将死的目标，额外推条 10。",
+      "describe": "对敌方最前排的一名敌人造成 2 点物理伤害，并使其行动条进度 -20；并把目标撞退一格（摔投）。贴身时露出破绽，自身防御 -1（5tick）。对已登记将死的目标，额外推条 10。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -443,10 +443,11 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "behind_2",
-          "pickCount": 1
+          "scope": "point",
+          "pickCount": 1,
+          "anchor": "enemy_front"
         },
-        "fallbackSort": "gauge_desc"
+        "fallbackSort": "index_asc"
       },
       "effects": [
         {
@@ -469,41 +470,13 @@
           "note": "摔投：贴身缠住的下一步就是把对方撞退一格"
         },
         {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "war_spirit",
-            "cmp": ">=",
-            "n": 2
-          },
-          "then": [
-            {
-              "type": "mount_status",
-              "statusId": "war_spirit",
-              "stacks": -2,
-              "stackMode": "consume",
-              "target": "self",
-              "note": "战意消耗：2 层"
-            },
-            {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": -20,
-              "mode": "delta",
-              "target": "target"
-            }
-          ],
-          "else": [],
-          "note": "战意消费分支：2 层换 战意·摔投：消耗 2 层，目标行动条额外 -20。"
-        },
-        {
-          "type": "modify_resource",
-          "resource": "hp",
+          "type": "modify_stat",
+          "stat": "defense",
           "value": -1,
           "mode": "delta",
+          "duration": 5,
           "target": "self",
-          "note": "贴身缠斗免不了挂彩"
+          "note": "贴身时露出破绽"
         },
         {
           "op": "if",
@@ -666,7 +639,7 @@
       "flagship": false,
       "lore": "序列7 武器大师 —— \"超强力量、体质和敏捷\"",
       "flavor": "你抡圆了砸下去，力量不止落在它身上，也砸碎了它身上的甲。",
-      "describe": "对一名近战敌人造成 4 点物理伤害，并直接穿透护甲（无视 90% 护甲）；并使其攻击 -2（15tick，破械）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意·碎甲：消耗 3 层，追加 2 点物理伤害。全力一击后自身受到 1 点反噬。对已登记将死的目标追加 2 点圣光伤害；否则使其防御 -2（15tick）。",
+      "describe": "从整条战线中挑选护甲最高的一名敌人，造成 4 点物理伤害，并直接穿透护甲（无视 90% 护甲）；并使其攻击 -2（15tick，破械）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意·碎甲：消耗 3 层，追加 2 点物理伤害。全力一击后自身受到 1 点反噬。对已登记将死的目标追加 2 点圣光伤害；否则使其防御 -2（15tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -678,7 +651,7 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "behind_2",
+          "scope": "whole_lane",
           "pickCount": 1
         },
         "fallbackSort": "armor_desc"
@@ -1818,7 +1791,7 @@
       "flagship": false,
       "lore": "序列4 猎魔者 —— \"夸张力量和飓风级高速奔跑\"",
       "flavor": "你跑起来像一阵飓风——撞进敌阵的那一瞬，身后队友的脚步也被带快了。",
-      "describe": "对一名近战敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15；自己突进至敌方最前排（冲阵）；战意·奔袭：消耗 2 层，行动条 +8。冲锋反震使自身受到 2 点反噬。",
+      "describe": "冲入另一路，对一名敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15；自己突进至敌方最前排（冲阵）。冲锋反震使自身受到 2 点反噬。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1830,7 +1803,7 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "behind_2",
+          "scope": "cross_lane",
           "pickCount": 1
         },
         "fallbackSort": "hp_desc"
@@ -1876,35 +1849,6 @@
           "op": "charge_forward",
           "target": "self",
           "note": "冲阵：飓风级高速奔跑，一路突到敌阵最前排"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "war_spirit",
-            "cmp": ">=",
-            "n": 2
-          },
-          "then": [
-            {
-              "type": "mount_status",
-              "statusId": "war_spirit",
-              "stacks": -2,
-              "stackMode": "consume",
-              "target": "self",
-              "note": "战意消耗：2 层"
-            },
-            {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 8,
-              "mode": "delta",
-              "target": "self"
-            }
-          ],
-          "else": [],
-          "note": "战意消费分支：2 层换 战意·奔袭：消耗 2 层，行动条 +8。"
         },
         {
           "type": "modify_resource",
