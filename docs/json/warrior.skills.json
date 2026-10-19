@@ -56,7 +56,7 @@
         "迟暮",
         "黄昏重生"
       ],
-      "note": "2026-09-21：黄昏轴，相位挂钩 dusk；与 hunt 轴互斥。 ｜ 2026-09-29 环节⑤：enablers 核正（暮色侵蚀无此卡移除，迟暮/黄昏重生实证挂 aging，产层 5→20）；黄昏巨剑（martial 轴）挂 aging 自动成跨轴消费 ｜ 2026-10-02 批次五：收割体系落地——黄昏巨剑/神圣荣耀挂 death_tally 读层（死亡簿正主），on_kill 产读链闭合 ｜ 2026-10-03 骨架手术：武技链换形 29 张（详见 designNote） ｜ 签名补批（2026-10-16 第二批）：黄昏轴 6 张全挂「死亡簿读层·衰败」（dead_count≥3 → 追加圣光）。",
+      "note": "2026-09-21：黄昏轴，相位挂钩 dusk；与 hunt 轴互斥。 ｜ 2026-09-29 环节⑤：enablers 核正（暮色侵蚀无此卡移除，迟暮/黄昏重生实证挂 aging，产层 5→20）；黄昏巨剑（martial 轴）挂 aging 自动成跨轴消费 ｜ 2026-10-02 批次五：收割体系落地——黄昏巨剑/神圣荣耀挂 death_tally 读层（死亡簿正主），on_kill 产读链闭合 ｜ 2026-10-03 骨架手术：武技链换形 29 张（详见 designNote） ｜ 签名补批（2026-10-16 第二批）：黄昏轴 6 张全挂「死亡簿读层·衰败」（dead_count≥3 → 追加圣光）。 ｜ 2026-10-19 机制期 A 方案：新增私有「将死」标记（doom_mark，全场至多 1 个）与己方「预支账」（doom_debt，self_turn 2）；处决登记/迟暮两个写入点，黄昏六卡分层读层（基础段死亡簿≥3 + 额外段对将死目标），兑现不罚、违约罚、被拆只清。",
       "payoffs": [
         "神罚"
       ]
@@ -74,7 +74,7 @@
       "flagship": false,
       "lore": "序列9 战士 —— \"各种武器防具精通、各种格斗术掌握\"",
       "flavor": "你熟稔每一种徒手与持械的打法，两记连贯的拳脚砸在同一个破绽上。",
-      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；连击的收势把自身行动条往前推 8；战意·续劲：消耗 2 层，行动条 +8。",
+      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；连击的收势把自身行动条往前推 8；战意·续劲：消耗 2 层，行动条 +8。每一次连击都牵动旧伤，自身受到 1 点反噬。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -140,6 +140,14 @@
           ],
           "else": [],
           "note": "战意消费分支：2 层换 战意·续劲：消耗 2 层，行动条 +8。"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "hp",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "note": "连击的收势撕开自己的旧伤"
         }
       ],
       "upgradeLadder": {
@@ -296,7 +304,7 @@
       "flagship": false,
       "lore": "序列9 战士 —— \"各种武器防具精通\"",
       "flavor": "你懂每一种兵器的重心，也懂每一副护甲的接缝——手上更有力，身上更耐打。",
-      "describe": "战斗开始时，自身护甲 +3；战意：每次击杀额外积 1 层战意（主动技能可消耗）。",
+      "describe": "战斗开始时，自身护甲 +3；战意：每次击杀积 1 层（主动技能可消耗）；若击杀的是已登记将死的目标，改为积 2 层，并补满已装备武器的耐久。",
       "hook": [
         "on_battle_start"
       ],
@@ -328,12 +336,41 @@
           "event": "on_kill",
           "effects": [
             {
-              "type": "mount_status",
-              "statusId": "war_spirit",
-              "stacks": 1,
-              "stackMode": "add",
-              "target": "self",
-              "note": "兵械通晓：击杀额外积 1 层战意"
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "doom_mark",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "war_spirit",
+                  "stacks": 2,
+                  "stackMode": "add",
+                  "target": "self",
+                  "note": "宣判兑现：击杀将死目标双倍战意"
+                },
+                {
+                  "type": "modify_status",
+                  "slot": "weapon",
+                  "restoreCharges": true,
+                  "target": "self",
+                  "note": "武器耐久补满"
+                }
+              ],
+              "else": [
+                {
+                  "type": "mount_status",
+                  "statusId": "war_spirit",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "target": "self"
+                }
+              ],
+              "note": "兵械通晓：击杀产战意；已登记目标额外奖励"
             }
           ]
         }
@@ -404,7 +441,7 @@
       "flagship": false,
       "lore": "序列8 格斗家 —— \"擅长近距离战斗\"",
       "flavor": "你贴上去，用身体和兵刃缠住它——它想挥下一击，却发现节奏已经被你踩住了。",
-      "describe": "对一名近战敌人造成 2 点物理伤害，并使其行动条进度 -20；并把目标撞退一格（摔投）；战意·摔投：消耗 2 层，目标行动条额外 -20。",
+      "describe": "对一名近战敌人造成 2 点物理伤害，并使其行动条进度 -20；并把目标撞退一格（摔投）；战意·摔投：消耗 2 层，目标行动条额外 -20。贴身摔投时自身受到 1 点反噬。对已登记将死的目标，额外推条 10。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -469,6 +506,36 @@
           ],
           "else": [],
           "note": "战意消费分支：2 层换 战意·摔投：消耗 2 层，目标行动条额外 -20。"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "hp",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "note": "贴身缠斗免不了挂彩"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -10,
+              "mode": "delta",
+              "target": "target",
+              "note": "宣判目标被摔得更狠：额外推条"
+            }
+          ],
+          "else": [],
+          "note": "对将死目标的额外压制"
         }
       ],
       "sharedAcross": [
@@ -628,70 +695,6 @@
       ]
     },
     {
-      "id": "skill_warrior_s7_weapon_tamer",
-      "name": "驭器",
-      "kind": "passive",
-      "sequence": 7,
-      "sequenceName": "武器大师",
-      "rarity": "uncommon",
-      "axis": "martial",
-      "flagship": false,
-      "lore": "序列7 武器大师 —— \"有效降低武器负面影响\"",
-      "flavor": "非凡武器反噬的那一半代价，到你手里总要打个对折。",
-      "describe": "战斗开始时获得「驭器」：自身受到的减益状态持续时间减半；战意：自身回合开始时若战意≥2，防御 +1（战意由受击/敌方死亡积累）。",
-      "hook": [
-        "on_battle_start"
-      ],
-      "effects": [
-        {
-          "type": "mount_status",
-          "statusId": "weapon_tamer",
-          "duration": null,
-          "target": "self"
-        }
-      ],
-      "tentative": false,
-      "art": {
-        "subject": "a warrior calmly gripping a cursed blade that stops struggling",
-        "elements": [
-          "black resentment curling off steel",
-          "steadied trembling edge",
-          "firm gauntleted hand"
-        ],
-        "mood": "dominant, quiet"
-      },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-18 清理：移除武器负面减半之外的 on_attack 攻击叠加（补漏批注入，与驭器主题无关）。 ｜ 2026-10-18 武器槽：被动不再直接装备武器。",
-      "triggers": [
-        {
-          "event": "on_turn_start",
-          "effects": [
-            {
-              "op": "if",
-              "condition": {
-                "kind": "has_status",
-                "side": "self",
-                "id": "war_spirit",
-                "cmp": ">=",
-                "n": 2
-              },
-              "then": [
-                {
-                  "type": "mount_status",
-                  "statusId": "war_spirit_tamer",
-                  "duration": 1,
-                  "durationUnit": "self_turn",
-                  "refresh": true,
-                  "target": "self",
-                  "note": "读档：战意≥2，刷新防御 +1 光环"
-                }
-              ],
-              "else": []
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "skill_warrior_s7_armor_crusher",
       "name": "破甲重击",
       "kind": "active",
@@ -702,7 +705,7 @@
       "flagship": false,
       "lore": "序列7 武器大师 —— \"超强力量、体质和敏捷\"",
       "flavor": "你抡圆了砸下去，力量不止落在它身上，也砸碎了它身上的甲。",
-      "describe": "对一名近战敌人造成 4 点物理伤害，并直接穿透护甲（无视 90% 护甲）；并使其攻击 -2（15tick，破械）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意·碎甲：消耗 3 层，追加 2 点物理伤害。",
+      "describe": "对一名近战敌人造成 4 点物理伤害，并直接穿透护甲（无视 90% 护甲）；并使其攻击 -2（15tick，破械）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意·碎甲：消耗 3 层，追加 2 点物理伤害。全力一击后自身受到 1 点反噬。对已登记将死的目标追加 2 点圣光伤害；否则使其防御 -2（15tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -770,6 +773,45 @@
           ],
           "else": [],
           "note": "战意消费分支：3 层换 战意·碎甲：消耗 3 层，追加 2 点物理伤害。"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "hp",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "note": "全力破甲留下破绽"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "target": "target",
+              "note": "宣判兑现：甲缝里的圣光"
+            }
+          ],
+          "else": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 15,
+              "target": "target",
+              "note": "未宣判者只留下破械"
+            }
+          ],
+          "note": "同一记破甲，对将死目标与普通目标作用不同"
         }
       ],
       "tentative": false,
@@ -1345,60 +1387,6 @@
       }
     },
     {
-      "id": "skill_warrior_s5_unmoved_heart",
-      "name": "无幻之心",
-      "kind": "passive",
-      "sequence": 5,
-      "sequenceName": "守护者",
-      "rarity": "rare",
-      "axis": "guard",
-      "flagship": false,
-      "lore": "序列5 守护者 —— \"不被幻觉迷惑\"",
-      "flavor": "幻象在你面前只是幻象——它骗不了你，也没法替你挑中该打的人。",
-      "describe": "战斗开始时获得「无幻之心」：免疫控制类状态，敌方对你的攻击目标改写无效，持续整场；并获得无形墙壁（可挡 2 次）。",
-      "hook": [
-        "on_battle_start"
-      ],
-      "effects": [
-        {
-          "type": "mount_status",
-          "statusId": "unmoved",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "war_bulwark",
-          "target": "self",
-          "charges": 2,
-          "note": "无形墙壁（可挡 2 次）无幻之心：心不动，身自稳"
-        }
-      ],
-      "upgradeLadder": {
-        "ref": "balance",
-        "tiers": [
-          {
-            "name": "平衡档（建议）",
-            "note": "整场免疫 control 偏强，建议降为每场前 2 次",
-            "statusDefOverride": {
-              "charges": 2
-            }
-          }
-        ]
-      },
-      "tentative": false,
-      "art": {
-        "subject": "a steadfast knight gazing through swirling illusions unfooled",
-        "elements": [
-          "mirror-like phantom fragments",
-          "steady unblinking eyes",
-          "undisturbed silhouette"
-        ],
-        "mood": "lucid, unshaken"
-      },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M9 弃攻铁壁。"
-    },
-    {
       "id": "skill_warrior_s5_unstoppable",
       "name": "无坚不摧",
       "kind": "active",
@@ -1505,6 +1493,100 @@
       "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。"
     },
     {
+      "id": "skill_warrior_s4_execution_registration",
+      "name": "处决登记",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "猎魔者",
+      "rarity": "rare",
+      "axis": "twilight",
+      "flagship": false,
+      "lore": "序列4 猎魔者 —— \"宣判即执行。\"",
+      "flavor": "你念出他的名字时，他已经死了——剩下的只是把这件事变成真的。",
+      "describe": "向一名敌人宣告「将死」（全场至多 1 个，持续到兑现或被拆），并预支自己的下一次行动：付出 1 点生命，获得「预支账」。若你在下一次行动前未能让它死亡，它会挣脱将死——获得护盾、你受到反噬，且本场不可再被宣判。对已不可宣判的目标无效。",
+      "cost": {
+        "energy": 1,
+        "cooldown": 10,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "whole_lane",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "all_of",
+            "conditions": [
+              {
+                "kind": "not",
+                "condition": {
+                  "kind": "has_status",
+                  "side": "target",
+                  "id": "doom_sealed",
+                  "cmp": ">=",
+                  "n": 1
+                }
+              },
+              {
+                "kind": "not",
+                "condition": {
+                  "kind": "has_status",
+                  "side": "self",
+                  "id": "doom_debt",
+                  "cmp": ">=",
+                  "n": 1
+                }
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "hp",
+              "value": -1,
+              "mode": "delta",
+              "target": "self",
+              "note": "预支的代价先付（数值占位）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "doom_mark",
+              "duration": null,
+              "target": "target"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "doom_debt",
+              "target": "self",
+              "note": "下一次自身行动结束前必须兑现"
+            }
+          ],
+          "else": [],
+          "note": "已有预支账未结清 / 目标不可宣判时无效"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "机制期 A 方案落地（2026-10-19）：私有将死标记 + 双侧预支账，不写 death_tally。",
+      "art": {
+        "subject": "a warrior marking one doomed enemy with a single pointed blade",
+        "elements": [
+          "pointed silver blade",
+          "cold verdict",
+          "one target in a crowd"
+        ],
+        "mood": "judgemental, final"
+      }
+    },
+    {
       "id": "skill_warrior_s4_conceal",
       "name": "伪装",
       "kind": "active",
@@ -1515,7 +1597,7 @@
       "flagship": false,
       "lore": "序列4 猎魔者 —— \"『隐蔽』：掩盖行动意图，干扰占卜预言，恶魔的克星\"",
       "flavor": "你把自己藏进光与尘的缝隙——没有人能\"算出\"你在哪里；而当你从暗处走出来，第一刀总是留给恶魔。",
-      "describe": "进入潜行 15tick（自身带隐秘权柄则 20tick）：不可被敌方单体技能选中；对恶魔、不死、灵体单位伤害 ×1.3；潜行后首次造成伤害 ×1.5；伪装期间不为指向覆写所动（出手即破）。",
+      "describe": "进入潜行 15tick（自身带隐秘权柄则 20tick）：不可被敌方单体技能选中；对恶魔、不死、灵体单位伤害 ×1.3；潜行后首次造成伤害 ×1.5；伪装期间不为指向覆写所动（出手即破）；无隐秘权柄时额外获得 1 点防御（15tick）。",
       "cost": {
         "energy": 2,
         "cooldown": 20,
@@ -1554,6 +1636,15 @@
               "statusId": "ambush_shroud",
               "duration": 15,
               "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 1,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self",
+              "note": "无隐秘权柄时更依赖甲胄"
             }
           ]
         }
@@ -1803,7 +1894,7 @@
       "flagship": false,
       "lore": "序列4 猎魔者 —— \"夸张力量和飓风级高速奔跑\"",
       "flavor": "你跑起来像一阵飓风——撞进敌阵的那一瞬，身后队友的脚步也被带快了。",
-      "describe": "对一名近战敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15；自己突进至敌方最前排（冲阵）；战意·奔袭：消耗 2 层，行动条 +8。",
+      "describe": "对一名近战敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15；自己突进至敌方最前排（冲阵）；战意·奔袭：消耗 2 层，行动条 +8。冲锋反震使自身受到 2 点反噬。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1890,6 +1981,14 @@
           ],
           "else": [],
           "note": "战意消费分支：2 层换 战意·奔袭：消耗 2 层，行动条 +8。"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "hp",
+          "value": -2,
+          "mode": "delta",
+          "target": "self",
+          "note": "冲锋的反震由自己承受"
         }
       ],
       "tentative": false,
@@ -2184,48 +2283,6 @@
       }
     },
     {
-      "id": "skill_warrior_s3_hide_in_light",
-      "name": "借光隐藏",
-      "kind": "passive",
-      "sequence": 3,
-      "sequenceName": "银骑士",
-      "rarity": "epic",
-      "axis": "hunt",
-      "flagship": false,
-      "lore": "序列3 银骑士 —— \"借光隐藏\"",
-      "flavor": "有光的地方就有你的藏身处——晨曦未散、银甲未褪，你就始终在敌人的视野之外。",
-      "describe": "战斗开始时获得「借光隐藏」：每 tick 检测，只要持有护盾、晨曦之剑或银色全身盔甲之一，自动刷新 10tick 潜行（刷新目标为「伏击伪装」：护盾/晨曦之剑/银色全身盔甲任一在场即续）。",
-      "hook": [
-        "on_battle_start"
-      ],
-      "effects": [
-        {
-          "type": "mount_status",
-          "statusId": "light_hiding",
-          "duration": null,
-          "target": "self"
-        }
-      ],
-      "tentative": false,
-      "frameworkFlags": [
-        {
-          "code": "ANY_OF_PREDICATE",
-          "note": "共享内核 §三谓词族无 any_of 组合子，且「armor 增益」无谓词，待内核裁定 ｜ 2026-09-29 内核裁定：组合子 any_of/all_of/not 已落共享内核 §三（2026-09-14），转正",
-          "landed": true
-        }
-      ],
-      "conversionNotes": "翻译/语义：把\"复刻卡\"改为\"combo 卡\"：读取友方占卜家的招牌状态 `隐秘(conceal)` / 共享 `secrecy` 再升级（枢纽状态 `conceal/secrecy` 跨途径可读，见 §三）。 ｜ 2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M8 伪装。 ｜ 签名补批（2026-10-16 第二批）：识破。 ｜ 2026-10-18 收敛：被动无法在开局释放识破，移除 reveal。",
-      "art": {
-        "subject": "an empty gleam of light where a silver knight stands unseen",
-        "elements": [
-          "silhouette-shaped absence",
-          "unfaded dawn light",
-          "unnoticed blade half-drawn"
-        ],
-        "mood": "ghostly, serene"
-      }
-    },
-    {
       "id": "skill_warrior_s2_cage",
       "name": "牢笼",
       "kind": "active",
@@ -2337,7 +2394,7 @@
       "flagship": false,
       "lore": "序列2 荣耀者 —— \"『战斗』权柄（简化）：『牢笼』、『黄昏巨剑』、『光之风暴』；『神圣』权柄（简化）：荣耀即晨曦即黄昏，摧毁即净化\"",
       "flavor": "巨剑带着黄昏的颜色劈下——被它摧毁的，同时也被净化了；而活下来的，从此开始变老。",
-      "describe": "对一名近战敌人造成 6 点无元素伤害，并附加 2 层老化（25tick）。本卡击杀敌人时，全体友军回复 3 点生命。死亡簿≥4 时，击杀回血 ×1.5；（死亡簿 ≥4 时收割回血追加 2 点。）；战意·暮收：消耗 4 层，全体友军回复 2 点。",
+      "describe": "对一名近战敌人造成 6 点无元素伤害，并附加 2 层老化（25tick）。本卡击杀敌人时，全体友军回复 3 点生命；死亡簿≥4 时收割回血追加 2 点；对已登记将死的目标追加 2 点圣光伤害；战意·暮收：消耗 4 层，全体友军回复 2 点。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -2428,6 +2485,27 @@
           ],
           "else": [],
           "note": "战意消费分支：4 层换 战意·暮收：消耗 4 层，全体友军回复 2 点。"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "target": "target",
+              "note": "宣判兑现：落于将死之人的黄昏巨剑更沉"
+            }
+          ],
+          "else": [],
+          "note": "额外段：对将死目标追加圣光"
         }
       ],
       "triggers": [
@@ -2486,7 +2564,7 @@
       "flagship": false,
       "lore": "序列2 荣耀者 —— \"『黄昏』权柄（简化）：让目标逐渐老化至死\"",
       "flavor": "你把一截黄昏塞进了它的身体——从这一刻起，它每喘一口气，都更老一分，也更慢一分。",
-      "describe": "使一名敌人开始老化：每 tick 受 0.4 点无元素伤害并叠 1 层；每层使其攻击 -1、行动条速率 -2，受伤 ×1.15，最多 5 层，持续 25tick；并使其行动条速率 -3（25tick）；衰败累积：本场已阵亡敌人 ≥3 时，追加 2 点圣光伤害。",
+      "describe": "使一名敌人开始老化：每 tick 受 0.4 点无元素伤害并叠 1 层；每层使其攻击 -1、行动条速率 -2、受伤 ×1.15，最多 5 层，持续 25tick；并使其行动条速率 -3（25tick）。本场已阵亡敌人 ≥3 时，追加 1 点圣光伤害；对已登记将死的目标再叠 1 层老化。对老化 ≥2、未不可宣判的敌人，可将其登记为将死（预支账记在自己身上）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -2531,13 +2609,86 @@
             {
               "type": "damage",
               "element": "holy",
-              "value": 2,
+              "value": 1,
               "target": "target",
-              "note": "衰败累积：死亡簿越厚，黄昏权柄越沉（圣光落于残兵）"
+              "note": "死亡簿越低，迟暮的余响越沉"
             }
           ],
           "else": [],
-          "note": "黄昏轴的死亡簿读层：本场已阵亡敌人 ≥3 时，追加 2 点圣光"
+          "note": "迟暮照见死亡簿"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "aging",
+              "stacks": 1,
+              "duration": 25,
+              "target": "target",
+              "note": "宣判追蚀：将死目标再叠 1 层老化"
+            }
+          ],
+          "else": [],
+          "note": "宣判之人加速衰败"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "all_of",
+            "conditions": [
+              {
+                "kind": "has_status",
+                "side": "target",
+                "id": "aging",
+                "cmp": ">=",
+                "n": 2
+              },
+              {
+                "kind": "not",
+                "condition": {
+                  "kind": "has_status",
+                  "side": "target",
+                  "id": "doom_sealed",
+                  "cmp": ">=",
+                  "n": 1
+                }
+              },
+              {
+                "kind": "not",
+                "condition": {
+                  "kind": "has_status",
+                  "side": "self",
+                  "id": "doom_debt",
+                  "cmp": ">=",
+                  "n": 1
+                }
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "doom_mark",
+              "duration": null,
+              "target": "target",
+              "note": "第二写入点：老化≥2 的敌人可被登记"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "doom_debt",
+              "target": "self"
+            }
+          ],
+          "else": [],
+          "note": "第 2 写入点：预支条件不同于处决登记（目标须已老化≥2）"
         }
       ],
       "tentative": false,
@@ -2580,7 +2731,7 @@
       "flagship": false,
       "lore": "序列2 荣耀者 —— \"『黄昏』权柄（简化）：让自身老去蒸发后灵界重生\"",
       "flavor": "你在暮色里老去、蒸发——然后从灵界的那一侧走回来。回来的人还是你，只是更老了。",
-      "describe": "自身死亡时触发一次：以 40% 生命在己方队尾重生，代价是携带 2 层老化（25tick）；衰败累积：本场已阵亡敌人 ≥3 时，追加 2 点圣光伤害。；若自身处于守护状态，重生时继承无形墙壁（可挡 2 次）。",
+      "describe": "自身死亡时触发一次：以 40% 生命在己方队尾重生，代价是携带 2 层老化（25tick）；本场已阵亡敌人 ≥3 时，全体友军获得 2 点护盾；若场上有被宣判将死的敌人，全体友军回复 2 点生命；若自身处于守护状态，重生时继承无形墙壁（可挡 2 次）。",
       "hook": [
         "on_death"
       ],
@@ -2608,26 +2759,6 @@
         {
           "op": "if",
           "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
-            "cmp": ">=",
-            "n": 3
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "holy",
-              "value": 2,
-              "target": "target",
-              "note": "衰败累积：死亡簿越厚，黄昏权柄越沉（圣光落于残兵）"
-            }
-          ],
-          "else": [],
-          "note": "黄昏轴的死亡簿读层：本场已阵亡敌人 ≥3 时，追加 2 点圣光"
-        },
-        {
-          "op": "if",
-          "condition": {
             "kind": "has_status",
             "side": "self",
             "id": "guardianship",
@@ -2645,6 +2776,47 @@
           ],
           "else": [],
           "note": "黄昏轴读守护轴身份（guardianship）——重生者以守护为凭（twilight→guard 跨轴读段，B3）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "dead_count",
+            "side": "enemy",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "shield",
+              "value": 2,
+              "mode": "delta",
+              "target": "all_allies",
+              "note": "死亡簿的回响护住还站着的人"
+            }
+          ],
+          "else": [],
+          "note": "重生时死亡簿护住同伴"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "enemy",
+            "id": "doom_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "all_allies",
+              "note": "宣判仍在场：重生者替队伍续一口气"
+            }
+          ],
+          "else": [],
+          "note": "宣判仍在场"
         }
       ],
       "tentative": false,
@@ -2674,7 +2846,7 @@
       "flagship": false,
       "lore": "序列1 神明之手 —— \"『代行』权柄（简化）：代表效忠神明 / 旧日展现威能、降下神罚\"；\"因\"代行\"存在，无法获得其他权柄，只有之前序列能力提升\"",
       "flavor": "你不是在自己战斗——你代那位存在行事。于是你先前走过的每一级序列，都被推到了更远的地方；而你再也接不住任何一份来自别处的力量。",
-      "describe": "战斗开始时获得「代行」：本途径技能伤害 ×1.25；无法获得任何非本途径来源的增益状态，持续整场，不可驱散；临阵威压：这一击的伤害 ×1.3；衰败累积：本场已阵亡敌人 ≥3 时，追加 2 点圣光伤害。",
+      "describe": "战斗开始时获得「代行」：本途径技能伤害 ×1.25；无法获得任何非本途径来源的增益状态，持续整场，不可驱散；临阵威压：这一击的伤害 ×1.3；自身回合开始时，本场已阵亡敌人 ≥3 则回复 2 点生命，场上有将死目标则回复 3 点生命。",
       "hook": [
         "on_battle_start"
       ],
@@ -2691,26 +2863,6 @@
           "mul": 1.3,
           "target": "self",
           "note": "临阵威压：死亡簿在手上，这一击更沉"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "dead_count",
-            "side": "enemy",
-            "cmp": ">=",
-            "n": 3
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "holy",
-              "value": 2,
-              "target": "target",
-              "note": "衰败累积：死亡簿越厚，黄昏权柄越沉（圣光落于残兵）"
-            }
-          ],
-          "else": [],
-          "note": "黄昏轴的死亡簿读层：本场已阵亡敌人 ≥3 时，追加 2 点圣光"
         }
       ],
       "tentative": false,
@@ -2723,7 +2875,53 @@
         ],
         "mood": "suffused, awe-struck"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：威压/死亡簿·衰败。 ｜ 2026-10-18 武器槽：被动不再直接装备武器。"
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：威压/死亡簿·衰败。 ｜ 2026-10-18 武器槽：被动不再直接装备武器。",
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "dead_count",
+                "side": "enemy",
+                "cmp": ">=",
+                "n": 3
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "self",
+                  "note": "衰败累积：死亡簿给代行者回一口气"
+                }
+              ],
+              "else": [],
+              "note": "代行者借死亡簿续命"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "enemy",
+                "id": "doom_mark",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 3,
+                  "target": "self",
+                  "note": "宣判在身：代行者从将死中汲取余烬"
+                }
+              ],
+              "else": [],
+              "note": "代行者汲取将死余烬"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_warrior_s1_divine_punishment",
@@ -2736,7 +2934,7 @@
       "flagship": false,
       "lore": "序列1 神明之手 —— \"代行权柄：代表效忠神明 / 旧日展现威能、降下神罚\"",
       "flavor": "你抬起手，替那位存在落下判决——光不是照下来的，是压下来的；凡已被黄昏侵蚀的，压得更狠。",
-      "describe": "对全体敌方造成 5 点无元素伤害；对已老化的目标伤害 ×1.5，并使每个敌人叠 1 层老化（20tick）。自身武器大师在场时，全体敌方再受 2 点伤害；对亡灵/恶魔/灵体额外造成 3 点圣光伤害；衰败累积：本场已阵亡敌人 ≥3 时，追加 2 点圣光伤害。",
+      "describe": "对全体敌方造成 5 点无元素伤害；对已老化的目标伤害 ×1.5，并使每个敌人叠 1 层老化（20tick）。自身武器大师在场时，全体敌方再受 2 点伤害；对亡灵/恶魔/灵体额外造成 3 点圣光伤害；本场已阵亡敌人 ≥3 时追加 1 点圣光；对已登记将死的目标追加 2 点圣光。",
       "cost": {
         "energy": 6,
         "cooldown": 35,
@@ -2771,7 +2969,16 @@
                   "element": "none",
                   "value": 5,
                   "mul": 1.5,
-                  "target": "all_enemies"
+                  "target": "all_enemies",
+                  "note": "神罚对已衰败者更沉"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "aging",
+                  "stacks": 1,
+                  "duration": 20,
+                  "target": "all_enemies",
+                  "note": "神罚加速衰败"
                 }
               ],
               "else": [
@@ -2845,13 +3052,34 @@
             {
               "type": "damage",
               "element": "holy",
-              "value": 2,
+              "value": 1,
               "target": "target",
-              "note": "衰败累积：死亡簿越厚，黄昏权柄越沉（圣光落于残兵）"
+              "note": "神罚的余震"
             }
           ],
           "else": [],
-          "note": "黄昏轴的死亡簿读层：本场已阵亡敌人 ≥3 时，追加 2 点圣光"
+          "note": "神罚低鸣于死亡簿之上"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "target": "target",
+              "note": "宣判落地：对将死目标追加圣光"
+            }
+          ],
+          "else": [],
+          "note": "宣判落地"
         }
       ],
       "tentative": false,
@@ -2877,7 +3105,7 @@
       "flagship": true,
       "lore": "序列0 黄昏巨人 —— \"『黄昏』权柄：物质、意志乃至虚空衰败崩溃消亡；让目标飞快衰老 / 衰败 / 失控\"",
       "flavor": "黄昏落在它身上——先是甲，然后是骨，然后是它还想站着的那点念头。最后连它脚下的那片空处，也开始往下掉。",
-      "describe": "对一名敌人造成 4 点无元素伤害并施加「崩解」25tick：每 tick 受 0.6 点无元素伤害并叠 1 层老化（最多 6 层），受伤 ×1.2，不可驱散；「崩解」同时蔓延至其相邻的敌人；临阵威压：这一击的伤害 ×1.3；衰败累积：本场已阵亡敌人 ≥3 时，追加 2 点圣光伤害。",
+      "describe": "对一名敌人造成 4 点无元素伤害并施加「崩解」25tick：每 tick 受 0.6 点无元素伤害并叠 1 层老化（最多 6 层），受伤 ×1.2，不可驱散；「崩解」同时蔓延至其相邻的敌人；临阵威压：这一击的伤害 ×1.3；本场已阵亡敌人 ≥3 时追加 1 点圣光；对已登记将死的目标再叠 1 层老化。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2936,13 +3164,35 @@
             {
               "type": "damage",
               "element": "holy",
-              "value": 2,
+              "value": 1,
               "target": "target",
-              "note": "衰败累积：死亡簿越厚，黄昏权柄越沉（圣光落于残兵）"
+              "note": "崩解前的低语"
             }
           ],
           "else": [],
-          "note": "黄昏轴的死亡簿读层：本场已阵亡敌人 ≥3 时，追加 2 点圣光"
+          "note": "万物终局的前兆"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "aging",
+              "stacks": 1,
+              "duration": 25,
+              "target": "target",
+              "note": "崩解加深：将死目标再叠 1 层"
+            }
+          ],
+          "else": [],
+          "note": "崩解加深"
         }
       ],
       "tentative": false,
@@ -2978,7 +3228,7 @@
       "flagship": true,
       "lore": "序列0 黄昏巨人 —— \"『战斗』权柄：最恐怖力量 + 最巨大身形 + 最强力摧毁 + 最坚固守护 + 技巧\"",
       "flavor": "战斗的权柄在你身上展开：更重的拳、更高的身量、更硬的壳，以及一个老兵才有的、恰到好处的分寸。",
-      "describe": "战斗开始时获得「战斗权柄」：攻击 +5、护甲 +8、行动条速率 +4、全元素抗性 +10%，持续整场，不可驱散；击杀时自身行动条 +15；临阵威压：造成的伤害 ×1.3；战意：自身回合开始时若战意≥4，攻击 +2（战意由受击/敌方死亡积累）。",
+      "describe": "战斗开始时获得「战斗权柄」：攻击 +5、护甲 +8、行动条速率 +4、全元素抗性 +10%，持续整场，不可驱散；黎明时伤害 ×1.1，黄昏时防御 +2；击杀时自身行动条 +15；临阵威压：造成的伤害 ×1.3；战意：自身回合开始时若战意≥4，攻击 +2。",
       "hook": [
         "on_battle_start"
       ],
@@ -2995,6 +3245,36 @@
           "mul": 1.3,
           "target": "self",
           "note": "临阵威压：死亡簿在手上，这一击更沉"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "phase_is",
+            "phases": [
+              "dawn"
+            ]
+          },
+          "then": [
+            {
+              "type": "modify_damage",
+              "scope": "dealt",
+              "mul": 1.1,
+              "target": "self",
+              "note": "黎明形态：攻势更盛"
+            }
+          ],
+          "else": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 2,
+              "mode": "delta",
+              "duration": 5,
+              "target": "self",
+              "note": "黄昏形态：守势更稳"
+            }
+          ],
+          "note": "同一权柄，黎明与黄昏走不同形态"
         }
       ],
       "tentative": false,
@@ -3056,7 +3336,7 @@
       "flagship": false,
       "lore": "序列0 黄昏巨人 / 序列2 荣耀者 —— \"『神圣』权柄 + 部分『代行』权柄\"；\"荣耀即晨曦即黄昏，摧毁即净化\"",
       "flavor": "你摧毁的每一具躯壳，都变成洒在同伴身上的光——在你这里，杀戮与净化从来是同一件事。",
-      "describe": "每当你击杀敌人：全体友军回复 3 点生命，并驱散自身 1 个减益状态。死亡簿≥6 时，全体回血 ×1.3；全体友军行动条各前推 5；衰败累积：本场已阵亡敌人 ≥3 时，追加 2 点圣光伤害。",
+      "describe": "每当你击杀敌人：全体友军回复 3 点生命，并驱散自身 1 个减益状态；全体友军行动条各前推 5。本场已阵亡敌人 ≥3 时，全体友军获得 2 点护盾；场上有将死目标时，全体友军回复 2 点生命。",
       "hook": [
         "on_kill"
       ],
@@ -3095,15 +3375,36 @@
           },
           "then": [
             {
-              "type": "damage",
-              "element": "holy",
+              "type": "modify_resource",
+              "resource": "shield",
               "value": 2,
-              "target": "target",
-              "note": "衰败累积：死亡簿越厚，黄昏权柄越沉（圣光落于残兵）"
+              "mode": "delta",
+              "target": "all_allies",
+              "note": "死亡簿的回响护住还站着的人"
             }
           ],
           "else": [],
-          "note": "黄昏轴的死亡簿读层：本场已阵亡敌人 ≥3 时，追加 2 点圣光"
+          "note": "荣耀之后的死亡簿回响"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "enemy",
+            "id": "doom_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "all_allies",
+              "note": "宣判仍在场：荣耀也让将死之人看见光"
+            }
+          ],
+          "else": [],
+          "note": "将死之人也看见光"
         }
       ],
       "sharedAcross": [
@@ -3216,7 +3517,7 @@
       ]
     }
   ],
-  "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方之一）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。战士经\"隐蔽 / 借光隐藏\"等 +1/次（见【隐蔽】、【隐秘之影·承接】）。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（收尸人·奴役目标最稳）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，战士是主消费方之一（隐蔽↔占卜家 隐秘值联动）。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「武技链」句式换形 29 张通用骨架卡——零吟唱，链不停：走位、替承、硬吃各成一环。防御从不靠隐身闪避——只把落到同伴身上的东西揽过来。**协作面**：替承是本途径给全队最实在的东西。",
+  "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方之一）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。战士经\"伪装\"等 +1/次。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（收尸人·奴役目标最稳）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，战士是主消费方之一（隐蔽↔占卜家 隐秘值联动）。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「武技链」句式换形 29 张通用骨架卡——零吟唱，链不停：走位、替承、硬吃各成一环。防御从不靠隐身闪避——只把落到同伴身上的东西揽过来。**协作面**：替承是本途径给全队最实在的东西。",
   "sampleBuilds": [
     {
       "name": "A 黎明壁垒 🛡",
@@ -3238,7 +3539,7 @@
       "name": "B 武艺神罚 ⚔",
       "actives": [
         "格斗术·连击",
-        "近身缠斗",
+        "处决登记",
         "卸力",
         "神罚"
       ],
@@ -3246,7 +3547,7 @@
         "强健体魄",
         "兵械通晓",
         "铁躯",
-        "驭器"
+        "武器大师"
       ],
       "playstyle": "武技叠满武器大师级，神罚收尾"
     },
@@ -3271,7 +3572,7 @@
       "actives": [
         "格斗术·连击",
         "黄昏巨剑",
-        "近身缠斗",
+        "处决登记",
         "卸力"
       ],
       "passives": [

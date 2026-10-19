@@ -814,7 +814,7 @@ def scan_keys(cards, data):
     return sorted(k for k in keys if k)
 
 
-def playability_2x2(cards, st, cost_cards):
+def playability_2x2(cards, st, cost_cards, identity_sids=()):
     """2×2 诊断（2026-10-19）：可操作变量（≥2 张主动写入 + ≥1 读 + 有代价）
     × 集火（某标记被 ≥3 张卡以 ≥2 种方式读取，且施加方 ≤2 张 ⇒ 稀缺）。"""
     cost_names = {c.get("name") for c in cost_cards}
@@ -832,15 +832,23 @@ def playability_2x2(cards, st, cost_cards):
                 "readers": v["read"]["cards"],
                 "paid": bool(cost_names & set(w.get("producer_names") or [])),
             })
-    has_var = bool(var_keys)
-
     reads, writes, rtypes = defaultdict(set), defaultdict(set), defaultdict(set)
+    active_writes = defaultdict(set)
+    kind_of = {c.get("id"): c.get("kind") for c in cards}
     for c in cards:
         cid = c.get("id")
         for _origin, n in iter_card_effects(c):
             sid = n.get("statusId")
             if n.get("type") == "mount_status" and isinstance(sid, str):
-                writes[sid].add(cid)
+                st = n.get("stacks")
+                consuming = n.get("stackMode") == "consume" or (isinstance(st, (int, float)) and st < 0)
+                if consuming:
+                    reads[sid].add(cid)
+                    rtypes[sid].add("consume")
+                else:
+                    writes[sid].add(cid)
+                    if kind_of.get(cid) == "active":
+                        active_writes[sid].add(cid)
             elif n.get("type") in ("modify_status", "dispel", "transfer_status") and isinstance(sid, str):
                 reads[sid].add(cid)
                 rtypes[sid].add(n["type"])
@@ -854,15 +862,23 @@ def playability_2x2(cards, st, cost_cards):
                     if isinstance(x, str):
                         reads[x].add(cid)
                         rtypes[x].add(f)
+    # 私有标记状态也是可操作变量：≥2 张主动卡写入 + ≥1 张读取
+    for sid in active_writes:
+        if len(active_writes[sid]) >= 2 and len(reads.get(sid, ())) >= 1:
+            var_keys.append({"key": "status:" + sid,
+                             "active_producers": len(active_writes[sid]),
+                             "readers": len(reads[sid]), "paid": True})
+    has_var = bool(var_keys)
     focus = sorted(sid for sid in reads
-                   if len(reads[sid]) >= 3 and 1 <= len(writes.get(sid, ())) <= 2
-                   and len(rtypes[sid]) >= 2)
+                   if sid not in identity_sids
+                   and len(reads[sid]) >= 3 and 1 <= len(writes.get(sid, ())) <= 2)
     has_focus = bool(focus)
     quad = ("理想态" if has_var and has_focus else
             "有变量无集火" if has_var else
             "有集火无变量" if has_focus else "双挂")
     return {"has_variable": has_var, "var_keys": var_keys,
             "has_focus": has_focus, "focus_status": focus[:5],
+            "focus_reactions": {s: sorted(rtypes[s]) for s in focus[:5]},
             "quadrant": quad}
 
 
@@ -918,7 +934,10 @@ def scan_pathway(pid, data):
             "note_node": nn,                              # 辅 1：效果节点层
             "note_card_level": note_dedup(cards),         # 辅 2：卡级事项戳记 / 角色戳记
         },
-        "7_2x2": playability_2x2(cards, st, cost),
+        "7_2x2": playability_2x2(
+            cards, st, cost,
+            identity_sids={v.get("statusId") for v in axes.values() if isinstance(v, dict) and v.get("statusId")},
+        ),
     }
 
 
