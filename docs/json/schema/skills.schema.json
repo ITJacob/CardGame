@@ -570,6 +570,15 @@
         },
         "note": {
           "type": "string"
+        },
+        "opportunity": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ],
+          "default": 1,
+          "description": "行动机会成本：1=正常消耗机会（缺省）；0=本次 Action 不闭合机会，同一机会可继续执行下一个 Action（每次机会至多 2 次免费动作）。"
         }
       }
     },
@@ -2210,6 +2219,14 @@
         },
         "note": {
           "type": "string"
+        },
+        "setOpportunity": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ],
+          "description": "改写技能实例的行动机会成本（0=不消耗机会）。skillRef 用 by_id 精确指定技能。"
         }
       }
     },

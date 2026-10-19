@@ -172,7 +172,7 @@ export interface BehaviorSlot {
   readonly defId: string
   readonly kind: 'skill' | 'basic_attack'
   readonly reach: Reach
-  readonly cost: { energy: number; gauge: number; cooldown: number }
+  readonly cost: { energy: number; gauge: number; cooldown: number; opportunity: number }
   cooldownRemaining: number
 }
 

@@ -82,7 +82,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `lore` / `flavor` / `describe` | string | ✓ | 设定 / 风味 / **玩家可读效果描述**（`describe` 是唯一面向玩家的字段） |
 | `effects` | effect[] | ✓ | 卡面效果，至少 1 条 |
 | `tentative` | bool | ✓ | 数值待拍板；当前全库 832 张均为 `true` |
-| `cost` | object | active | `{ energy, cooldown, castTime }`，`castTime` 可为 `null` |
+| `cost` | object | active | `{ energy, cooldown, castTime, opportunity? }`，`castTime` 可为 `null`；`opportunity` 取 `0/1`（缺省 1）：0 = 执行后不消耗行动机会，同一机会可继续行动 |
 | `reach` | `none`\|`melee`\|`thrown`\|`spell` | active | 攻击作用形态（与双方站位正交；决定对撞/反击触发与可拦截性，非攻击类写 none）：melee=近身对抗、thrown=有形投射（可拦截、触发反击）、spell=无形作用（不可拦截、仍触发反击）；原 ranged 已按形态拆为 thrown/spell |
 | `target` | object | active | 见 §4 |
 | `hook` | enum | passive | 被动挂载的触发点 |
@@ -177,7 +177,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `snapshot` / `restore_snapshot` | `fields` | 成对使用 |
 | `echo_last_skill` | `potency` `rounding` | 权柄技能不可被重放 |
 | `gauge_shuffle` / `status_shuffle` | `resource` / `mode` `sort` | |
-| `modify_skill` | `skillRef`(selector/by_id) `clearCooldown` `costDelta` `setInstant` `targetSpecOverride` | **行为层修改（一）**：改写技能实例运行时属性——清冷却 / 改施法消耗 / 吟唱转瞬发 / **完整改写 TargetSpec**（对齐 DDD：可改技能全部选靶属性，而非仅范围；`targetSpecOverride` 为对象，给出 selectionMode+request 全字段，未给出的沿用原值，2026-09-17 拍板补原缺口，2026-09-20 升级为完整 TargetSpec 补丁） |
+| `modify_skill` | `skillRef`(selector/by_id) `clearCooldown` `costDelta` `setInstant` `targetSpecOverride` `setOpportunity` | **行为层修改（一）**：改写技能实例运行时属性——清冷却 / 改施法消耗 / 吟唱转瞬发 / **完整改写 TargetSpec**（对齐 DDD：可改技能全部选靶属性，而非仅范围；`targetSpecOverride` 为对象，给出 selectionMode+request 全字段，未给出的沿用原值，2026-09-17 拍板补原缺口，2026-09-20 升级为完整 TargetSpec 补丁）；`setOpportunity: 0` 改写行动机会成本（不消耗机会，需 `skillRef.by_id` 精确指定） |
 | `modify_status` | `statusId` / `slot`（二选一） `target` `addDuration` `setDuration` `maxStacksDelta` `dispelableOverride` `restoreCharges` `chargesDelta` | **行为层修改（二）**：改写已存在状态实例的持续 / 最大可叠加层数 / 可驱散性 / 剩余次数（区别于 mount_status 施加新状态）。`slot` 按装备槽选靶（如 weapon），`restoreCharges` 补满耐久；2026-09-17 拍板，2026-10-18 扩装备槽与次数 |
 | `modify_targetability` | `target` `untargetable` `direction` `duration` `pierce` | 目标可选性：改单位「可被选为目标」的属性，带方向与穿透。对应手写 `untargetableByTargeted`(29)/`untargetable`(2)/`untargetableByAll`(1) |
 | `reveal` | `target` `scope`(to_source/to_all) `dispel` `pierceTargetability` | 揭示 / 穿透隐匿。对应手写 14 种拼写（约 26 处）。⚠️ **纯驱散隐匿仍用 `dispel(filter.category=[conceal])`**，本原语用于「显形但不驱散」「仅对施法者显形」 |

@@ -125,3 +125,12 @@
 
 - **全库武器强制 charges 制**：`equipSlot: weapon` 状态必须 `charges ≥ 1`、`duration: null`，按普攻次数消耗、打空卸载。落点：`编队参数.md §1.1b`、`SCHEMA.md §6`、`DESIGN_CHECKLIST` 第 10 条、`validate.py` 强制 error。
 - **晨曦之剑**：`duration 20` → `charges 4`，加 `on_attack consumeCharge`；攻击 +4 改为随武器存在（duration null）。两把武器现在同制式：晨剑=持续攻击/灼邪（耐久 4），细剑=位移爆发/克邪（耐久 3），武器大师击杀补耐久对二者均生效。
+
+## 2026-10-19 战意光环拆开 + 行动机会成本（主人拍板）
+
+- **强健体魄**：删除「战意≥2 → 行动条速率 +2」光环，改为受击时若生命 <50% 回复 2 点（每 5 tick 至多一次）。
+- **武器大师**：删除「战意≥3 → 攻击 +1」光环，专注武器身份机制。
+- **战斗权柄**：保留唯一的战意光环（≥4 → 攻击 +2），并获权柄特权：装备武器的技能不消耗行动机会。
+- **通用机制 `cost.opportunity`**（后续途径可复用）：缺省 1；0 = 本次 Action 不闭合机会、不扣行动条，仍扣 energy/cooldown；同一机会内免费 Action 至多 2 次，防无消耗循环。`modify_skill.setOpportunity` + `skillRef.by_id` 用于状态授予。
+- **落点**：`调度参数.md`、`SCHEMA.md`、`glossary.json`（opportunityCost 类别）、`skills.schema.json`、内核 `commit.ts`/`runtime.ts`、测试 168 全绿。
+- 战士总分 58.7。

@@ -386,7 +386,7 @@ export interface SkillDef {
   sequenceName?: string
   /** 风味文本（卡面详情浮层用） */
   flavor?: string
-  cost?: { energy: number; cooldown: number; castTime: number | null }
+  cost?: { energy: number; cooldown: number; castTime: number | null; opportunity?: number }
   reach?: Reach
   targetSpec?: TargetSpec
   /** 卡的第二组选靶（JSON `secondaryTargets`）：效果节点 `target: 'secondary_target'` 的落点来源。

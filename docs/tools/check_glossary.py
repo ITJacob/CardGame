@@ -73,6 +73,8 @@ ENUM_TO_CAT = {
     "phaseHook.phases.items": "phase",
     "condition.phases.items": "phase",
     "phaseHook.target": "dimTarget",
+    "cost.opportunity": "opportunityCost",
+    "effModifySkill.setOpportunity": "opportunityCost",
     "condition.kind": "conditionKind",
     "condition.side": "side",
     "condition.cmp": "cmp",

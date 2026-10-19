@@ -65,7 +65,13 @@ class CombatRuntime implements CombatRuntimeHandle {
   private laneIds: LaneId[] = []
   private placement: BattlePlacement
   private scheduler: CombatScheduler
-  private pending: { request: DecisionRequest; continueWith: (p: DecisionInput) => void; opportunity: ActionOpportunity | null } | null = null
+  private pending: {
+    request: DecisionRequest
+    continueWith: (p: DecisionInput) => void
+    opportunity: ActionOpportunity | null
+    freeAction?: boolean
+    freeCount?: number
+  } | null = null
   private outcome: CombatEnded['outcome'] | null = null
   private tickCount = 0
   private unsupportedCount = 0
@@ -186,7 +192,8 @@ class CombatRuntime implements CombatRuntimeHandle {
         defId: skill.id,
         kind: 'skill',
         reach: skill.reach ?? 'melee',
-        cost: { energy: skill.cost?.energy ?? 0, gauge: unit.gauge.threshold, cooldown: skill.cost?.cooldown ?? 0 },
+        cost: { energy: skill.cost?.energy ?? 0, gauge: unit.gauge.threshold, cooldown: skill.cost?.cooldown ?? 0,
+                opportunity: skill.cost?.opportunity ?? 1 },
         cooldownRemaining: 0,
       })
     }
@@ -223,7 +230,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       defId: BASIC_ATTACK_ID,
       kind: 'basic_attack',
       reach: 'melee',
-      cost: { energy: 0, gauge: unit.gauge.threshold, cooldown: 0 },
+      cost: { energy: 0, gauge: unit.gauge.threshold, cooldown: 0, opportunity: 1 },
       cooldownRemaining: 0,
     }
   }
@@ -269,36 +276,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       this.tickSelfTurn(unit)
       unit.warSpiritGain = 0
       this.fireStatusTriggers(unit, 'on_turn_start', undefined, this.oppPayload(opp))
-      const behaviors = availableBehaviors(unit)
-      const slot = this.chooseBehavior(behaviors)
-      const source = slot ? this.resolveSource(slot) : undefined
-      if (!slot || !source) {
-        opp.consumedBy = 'wasted'
-        unit.gauge.settleOverflow()
-        this.fireStatusTriggers(unit, 'on_turn_end', undefined, this.oppPayload(opp))
-        continue
-      }
-      const r = commitBehavior(unit, slot, opp, source, this.pipelineDeps())
-      if (!r.ok) {
-        opp.consumedBy = 'wasted'
-        unit.gauge.settleOverflow()
-        this.fireStatusTriggers(unit, 'on_turn_end', undefined, this.oppPayload(opp))
-      } else {
-        if (slot.kind === 'basic_attack') {
-          this.fireStatusTriggers(unit, 'on_attack')
-        } else {
-          this.lastSkill.set(unit.id, { sourceRef: source.sourceRef, effects: source.effects })
-          this.fireStatusTriggers(unit, 'on_active_skill')
-          this.fireGlobalStatusTriggers('on_active_skill', unit)
-        }
-        if (r.value) {
-          // 需玩家选靶：机会挂起，等 submitDecision 跑完 O 节点后再闭合（括号右端）
-          const awaiting = r.value
-          this.pending = { request: awaiting.request, continueWith: (p) => awaiting.continueWith(p), opportunity: opp }
-        } else {
-          this.fireStatusTriggers(unit, 'on_turn_end', undefined, this.oppPayload(opp))
-        }
-      }
+      this.runOpportunity(opp, unit, 0)
       this.checkDeaths()
       if (this.pending) break
     }
@@ -306,7 +284,59 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.checkDeaths()
     this.breakSpentEquipments()
     this.checkTermination()
-    return { tick: this.battle.clock, opportunities, pending: this.pending?.request ?? null, ended: this.outcome !== null }
+    // runOpportunity 可能在方法内改写 this.pending，控制流收窄不可用，这里显式放宽
+    const pendingReq = (this.pending as { request: DecisionRequest } | null)?.request ?? null
+    return { tick: this.battle.clock, opportunities, pending: pendingReq, ended: this.outcome !== null }
+  }
+
+  /**
+   * 机会内执行行为。`cost.opportunity = 0` 的免费行为执行后不闭合机会，可继续选择下一个行为；
+   * 每次机会内免费行为至多 2 次（防无消耗循环）。
+   */
+  private runOpportunity(opp: ActionOpportunity, unit: CombatUnit, freeCount: number): void {
+    while (true) {
+      const behaviors = availableBehaviors(unit)
+      const slot = this.chooseBehavior(behaviors)
+      const source = slot ? this.resolveSource(slot) : undefined
+      if (!slot || !source) {
+        opp.consumedBy = 'wasted'
+        unit.gauge.settleOverflow()
+        this.fireStatusTriggers(unit, 'on_turn_end', undefined, this.oppPayload(opp))
+        return
+      }
+      const r = commitBehavior(unit, slot, opp, source, this.pipelineDeps())
+      if (!r.ok) {
+        opp.consumedBy = 'wasted'
+        unit.gauge.settleOverflow()
+        this.fireStatusTriggers(unit, 'on_turn_end', undefined, this.oppPayload(opp))
+        return
+      }
+      if (slot.kind === 'basic_attack') {
+        this.fireStatusTriggers(unit, 'on_attack')
+      } else {
+        this.lastSkill.set(unit.id, { sourceRef: source.sourceRef, effects: source.effects })
+        this.fireStatusTriggers(unit, 'on_active_skill')
+        this.fireGlobalStatusTriggers('on_active_skill', unit)
+      }
+      const freeAction = (slot.cost.opportunity ?? 1) === 0
+      if (r.value) {
+        // 需玩家选靶：机会挂起，等 submitDecision 跑完 O 节点后再决定闭合或继续
+        const awaiting = r.value
+        this.pending = {
+          request: awaiting.request,
+          continueWith: (p) => awaiting.continueWith(p),
+          opportunity: opp,
+          freeAction,
+          freeCount,
+        }
+        return
+      }
+      if (!freeAction || freeCount >= 1) {
+        this.fireStatusTriggers(unit, 'on_turn_end', undefined, this.oppPayload(opp))
+        return
+      }
+      freeCount += 1
+    }
   }
 
   /** 本步末尾清掉耐久归零的装备（期间若被 on_kill 补满则保留）。 */
@@ -581,13 +611,23 @@ class CombatRuntime implements CombatRuntimeHandle {
   }
 
   private opModifySkill(unit: CombatUnit, node: EffectNode): void {
-    const n = node as { costDelta?: { energy?: number; cooldown?: number }; cooldownDelta?: number; clearCooldown?: boolean }
+    const n = node as {
+      skillRef?: { selector?: string; skillId?: string }
+      costDelta?: { energy?: number; cooldown?: number }
+      cooldownDelta?: number
+      clearCooldown?: boolean
+      setOpportunity?: number
+    }
+    // by_id 精确匹配技能实例；其余 selector 保持既有「作用于全部技能」口径
+    const byId = n.skillRef?.selector === 'by_id' ? n.skillRef.skillId : undefined
     for (const slot of unit.behaviorSlots) {
       if (slot.kind !== 'skill') continue
+      if (byId && slot.defId !== byId) continue
       if (n.costDelta?.energy) slot.cost.energy = Math.max(0, slot.cost.energy + n.costDelta.energy)
       if (n.costDelta?.cooldown) slot.cost.cooldown = Math.max(0, slot.cost.cooldown + n.costDelta.cooldown)
       if (n.cooldownDelta) slot.cooldownRemaining = Math.max(0, slot.cooldownRemaining + n.cooldownDelta)
       if (n.clearCooldown) slot.cooldownRemaining = 0
+      if (typeof n.setOpportunity === 'number') slot.cost.opportunity = n.setOpportunity ? 1 : 0
     }
   }
 
@@ -1018,7 +1058,14 @@ class CombatRuntime implements CombatRuntimeHandle {
     // 出手者可能在此过程中自尽，故只判存在不判存活——与循环内成功分支口径一致）
     if (p.opportunity) {
       const u = this.units.get(p.opportunity.unitId)
-      if (u) this.fireStatusTriggers(u, 'on_turn_end', undefined, this.oppPayload(p.opportunity))
+      if (!u) {
+        // 单位不存在：无事可做
+      } else if (p.freeAction && !u.isDead) {
+        // 免费行为：机会不闭合，继续同一机会选择下一个行为
+        this.runOpportunity(p.opportunity, u, (p.freeCount ?? 0) + 1)
+      } else {
+        this.fireStatusTriggers(u, 'on_turn_end', undefined, this.oppPayload(p.opportunity))
+      }
     }
     this.checkDeaths()
     this.checkTermination()

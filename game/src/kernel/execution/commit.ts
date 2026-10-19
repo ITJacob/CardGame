@@ -20,10 +20,14 @@ export function commitBehavior(
   if (opportunity.consumedBy !== null) return err('NO_OPPORTUNITY', '机会已被消费')
   if (!costPayable(unit, slot)) return err('COST_UNPAYABLE', '资源不足以支付成本')
 
-  unit.gauge.consume(slot.cost.gauge)
+  // opportunity=0：不消耗行动机会、不扣行动条成本——本次机会仍可继续行动
+  const free = (slot.cost.opportunity ?? 1) === 0
+  if (!free) {
+    unit.gauge.consume(slot.cost.gauge)
+    opportunity.consumedBy = 'committed'
+  }
   unit.pool('energy').applyDelta(-slot.cost.energy)
   if (slot.cost.cooldown > 0) slot.cooldownRemaining = slot.cost.cooldown
-  opportunity.consumedBy = 'committed'
 
-  return ok(runBehavior(unit, source, opportunity.consumedBy, deps))
+  return ok(runBehavior(unit, source, free ? null : opportunity.consumedBy, deps))
 }

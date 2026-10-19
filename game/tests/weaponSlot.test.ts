@@ -20,6 +20,10 @@ const WEAPON_B: StatusDef = {
   duration: null, charges: 1, equipSlot: 'weapon',
 }
 
+const PROBE_BUFF: StatusDef = {
+  id: 'probe_buff', name: '探针增益', category: ['buff'], dispelable: true, duration: null,
+}
+
 const CARD_BASE = {
   axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
   rarity: 'common' as const, sequence: 9, sequenceName: 's9', kind: 'active' as const,
@@ -52,6 +56,12 @@ const COMBAT_TEST: PathwayFile = {
         { type: 'modify_status', slot: 'weapon', target: 'self', chargesDelta: -1 },
         { type: 'mount_status', statusId: 'probe_weapon_a', target: 'self' },
       ],
+    },
+    {
+      ...CARD_BASE, id: 'probe_free_buff', name: '免费增益',
+      cost: { energy: 0, cooldown: 100, castTime: null, opportunity: 0 },
+      effects: [{ type: 'mount_status', statusId: 'probe_buff', target: 'self' }],
+      statusDefs: [PROBE_BUFF],
     },
   ],
 }
@@ -115,6 +125,23 @@ describe('武器槽：同槽互斥与耐久', () => {
     const c = createCombat(setup(['probe_refresh']))
     run(c, 1)
     expect(weapon(c, 'A_u0', 'probe_weapon_a')?.charges).toBe(2)
+  })
+
+  it('opportunity=0：不闭合机会，同一机会继续执行下一个技能', () => {
+    // tickCount=1 → 先选 activeSlots[1]（免费增益），随后同一机会继续执行 activeSlots[0]（装备）
+    const c = createCombat(setup(['probe_equip_a', 'probe_free_buff']))
+    run(c, 1)
+    const u = c.state().units.find((x) => x.id === 'A_u0')!
+    expect(u.statuses.some((s) => s.defId === 'probe_buff')).toBe(true)
+    expect(weapon(c, 'A_u0', 'probe_weapon_a')).toBeDefined()
+  })
+
+  it('opportunity 缺省为 1：装备后机会闭合，同 tick 不再行动', () => {
+    const c = createCombat(setup(['probe_equip_a']))
+    const b0 = c.state().units.find((x) => x.id === 'B_u0')!.hp
+    run(c, 1)
+    expect(weapon(c, 'A_u0', 'probe_weapon_a')).toBeDefined()
+    expect(c.state().units.find((x) => x.id === 'B_u0')!.hp).toBe(b0)
   })
 
   it('普攻消耗耐久，归零卸载；主动施放本身不扣耐久', () => {

@@ -11,6 +11,8 @@ export interface RawCost {
   energy: number
   cooldown: number
   castTime: number | null
+  /** 行动机会成本：1=正常（缺省），0=本次 Action 不闭合机会 */
+  opportunity?: number
   note?: string
 }
 
