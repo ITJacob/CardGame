@@ -736,7 +736,7 @@
       "flagship": false,
       "lore": "序列7 武器大师 —— \"超强力量、体质和敏捷\"",
       "flavor": "你抡圆了砸下去，力量不止落在它身上，也砸碎了它身上的甲。",
-      "describe": "从整条战线中挑选护甲最高的一名敌人，造成 4 点物理伤害，并直接穿透护甲（无视 90% 护甲）；并使其攻击 -2（15tick，破械）；识破：看破伪装与镜像，本次攻击无视目标的隐匿/不可锁定；战意·碎甲：消耗 3 层，使目标防御 -2（15tick）。全力一击后自身受到 1 点反噬。对已登记将死的目标追加 2 点圣光伤害；否则使其防御 -2（15tick）。",
+      "describe": "从整条战线中挑选护甲最高的一名敌人，在造成伤害前先击碎其 3 点护盾与 3 点护甲（真破甲，不穿透），再造成 4 点物理伤害；全力一击后自身受到 1 点反噬。对已登记将死的目标追加 2 点圣光伤害；否则使其防御 -2（15tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -755,58 +755,26 @@
       },
       "effects": [
         {
+          "type": "modify_resource",
+          "resource": "shield",
+          "value": -3,
+          "mode": "delta",
+          "target": "target",
+          "note": "破甲重击：落锤之前先砸碎护盾——造成伤害前额外扣除"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "armor",
+          "value": -3,
+          "mode": "delta",
+          "target": "target",
+          "note": "破甲重击：再把护甲削去——真破甲，不是穿甲"
+        },
+        {
           "type": "damage",
           "element": "physical",
           "value": 4,
-          "armorPierceRatio": 0.9,
-          "note": "破甲重击：不是削去护甲，是直接穿透——0.9 无视护甲（C，与守护的承受线对位）"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": -2,
-          "mode": "delta",
-          "duration": 15,
-          "target": "target",
-          "note": "破械：甲被斫开，对方连兵器都握不稳"
-        },
-        {
-          "type": "reveal",
-          "target": "target",
-          "scope": "to_source",
-          "pierceTargetability": true,
-          "note": "破甲见隙：看穿伪装与镜像"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "war_spirit",
-            "cmp": ">=",
-            "n": 3
-          },
-          "then": [
-            {
-              "type": "mount_status",
-              "statusId": "war_spirit",
-              "stacks": -3,
-              "stackMode": "consume",
-              "target": "self",
-              "note": "碎甲：耗 3 层战意"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": -2,
-              "mode": "delta",
-              "duration": 15,
-              "target": "target",
-              "note": "战意·碎甲：防御再被压一档"
-            }
-          ],
-          "else": [],
-          "note": "战意·碎甲：3 层换破防"
+          "note": "重击：护盾与护甲被削薄之后，这一记才落到实处"
         },
         {
           "type": "modify_resource",
@@ -842,7 +810,7 @@
               "mode": "delta",
               "duration": 15,
               "target": "target",
-              "note": "未宣判者只留下破械"
+              "note": "未宣判者：甲碎之后防御再被压一档"
             }
           ],
           "note": "同一记破甲，对将死目标与普通目标作用不同"
@@ -858,7 +826,7 @@
         ],
         "mood": "crushing, explosive"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M2 破械。 ｜ 签名补批（2026-10-16 第二批）：识破/死亡簿·战意。 ｜ 2026-10-16 战士独特性深化：碎甲（modify_resource armor）→ armorPierceRatio 真穿透（C）。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。"
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M2 破械。 ｜ 签名补批（2026-10-16 第二批）：识破/死亡簿·战意。 ｜ 2026-10-16 战士独特性深化：碎甲（modify_resource armor）→ armorPierceRatio 真穿透（C）。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界） ｜ 2026-10-19 破甲语义重做：删 armorPierceRatio 0.9（穿甲）→ 伤害前 modify_resource(shield -3 / armor -3) 真破甲；删破械（攻击 -2）、识破（reveal）、战意消费尾，保留 1 点反噬与将死双分支，收敛为「削壳 → 重击 → 反噬 → 将死分支」。"
     },
     {
       "id": "skill_warrior_s6_dawn_blade",

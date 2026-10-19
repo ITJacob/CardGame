@@ -26,7 +26,7 @@
 | chanter | reader | 0.243 | 0.289 |
 | hunter | lawyer | 0.219 | 0.293 |
 | pryer | reader | 0.248 | 0.299 |
-| warrior | apprentice | 0.271 | 0.317 |
+| warrior | apprentice | 0.273 | 0.318 |
 | sleepless | spectator | 0.290 | 0.351 |
 
 ## 二、22×22 距离矩阵
@@ -81,7 +81,7 @@
 | spectator | cost:cooldown:long ×27；prim:mount_status ×24；tgt:mode=unit ×23；tgt:eff:self ×20；cost:energy:high ×19 |
 | supplicant | tgt:eff:self ×31；param:mode=delta ×30；prim:modify_resource ×28；cost:hp_cost ×27；prim:mount_status ×26 |
 | thief | cost:cooldown:long ×25；tgt:eff:self ×25；tgt:mode=unit ×25；prim:mount_status ×24；cost:energy:high ×23 |
-| warrior | prim:mount_status ×28；tgt:eff:self ×28；cost:cooldown:long ×24；param:mode=delta ×22；tgt:mode=unit ×22 |
+| warrior | tgt:eff:self ×28；prim:mount_status ×27；cost:cooldown:long ×24；param:mode=delta ×22；tgt:mode=unit ×22 |
 
 ## 四、签名键用量（≥2 卡 = 落地；空白键 = 差异化迭代立项依据）
 

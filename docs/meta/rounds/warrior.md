@@ -245,3 +245,9 @@
 - 新条件 kind `has_equipped`：`side` + 可选 `slot`；落点 schema / 共享内核参数 §三 / SCHEMA §5.3 / glossary / 站点渲染 / 游戏内核 `ConditionUnit.hasEquipped` / build_overview。
 - 评分器 `score.py` 把 `has_equipped` 计为读取该槽全部装备（`read_equipped` facet + 读层实证），避免泛化被误判为掉分。分数：战士 71.1 → 70.9（武艺 78.1 → 77.6、黄昏 71.5 → 69.5；差额来自条件 kind 种类减少，非机制削弱）。
 - 测试：`weaponSlot.test.ts` 补两条（按槽命中 / 非装备状态不算）。
+
+## 2026-10-19 破甲重击改为真破甲
+
+- **穿甲 → 破甲**：删除 `armorPierceRatio: 0.9`，改为伤害结算前 `modify_resource(shield -3 / armor -3)`——先把护盾与护甲实际削掉，再造成 4 点物理伤害。穿甲是本次伤害绕过护甲；破甲是把甲削薄，留给后续所有伤害。
+- **拆掉与卡名无关的骑乘段**：删破械（攻击 -2）、识破（reveal）、战意消费尾（防御 -2）。保留 1 点自伤反噬与将死双分支（本轮宣判命题的读层），卡面收敛为「削壳 → 重击 → 反噬 → 将死分支」。
+- 卡面 describe / effect note / conversionNotes 同步；四门禁 + analysis 全绿，跨 hash seed 产物一致。总分 70.9 不变（指纹均距 0.317 → 0.318）。
