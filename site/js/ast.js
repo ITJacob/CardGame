@@ -80,6 +80,10 @@ function condToText(c) {
       const cmpN = c.cmp && c.n != null ? ` ${c.cmp} ${c.n} 层` : '';
       return `${who}持有${ids.map(statusRef).join(' 或 ')}${cmpN}`;
     }
+    case 'has_equipped': {
+      const who = c.side ? termSpan('side', c.side) : '目标';
+      return `${who}已装备${c.slot ? termSpan('equipSlot', c.slot) : '任意'}槽装备`;
+    }
     case 'has_category': {
       const cats = [].concat(c.categories ?? c.category ?? '?');
       return `${c.side ? termSpan('side', c.side) : '目标'}持有${cats.map((x) => termSpan('statusCategory', x)).join(' / ')}类状态`;

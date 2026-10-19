@@ -200,6 +200,19 @@ def obj_status_refs(obj):
     return out
 
 
+def equipped_status_refs(card, status_by_id):
+    """has_equipped 条件读取的装备状态：按 slot 命中（缺省 = 任意 equipSlot）。
+    条件不点名具体武器，读到的是该槽位全部装备定义——新增武器自动纳入。"""
+    out = set()
+    for n in walk(card.get("effects")):
+        if n.get("kind") != "has_equipped":
+            continue
+        slot = n.get("slot")
+        out |= {i for i, s in status_by_id.items()
+                if s.get("equipSlot") and (not slot or s.get("equipSlot") == slot)}
+    return out
+
+
 def card_status_refs(card):
     return obj_status_refs(card.get("effects"))
 
@@ -210,6 +223,7 @@ def surface_of(card, status_by_id, def_index):
     objs = [card] + [m for m in mounted if m] + card_def_refs(card, def_index)
     writes = {"status:" + m for m in card_mounts(card)} | channel_writes(objs)
     reads = {"status:" + s for s in card_status_refs(card)} | channel_reads(objs)
+    reads |= {"status:" + s for s in equipped_status_refs(card, status_by_id)}
     # 挂载/区域 def 自身对状态的引用也算读（payoff 经专属状态读层）
     for o in ([m for m in mounted if m] + card_def_refs(card, def_index)):
         reads |= {"status:" + s for s in obj_status_refs(o)}
@@ -254,7 +268,7 @@ def card_facets(card, anchor, status_by_id, def_index):
         mounted = card_mounts(card) & slot_ids
         if mounted:
             facets.add("equip")
-        if card_status_refs(card) & slot_ids:
+        if (card_status_refs(card) | equipped_status_refs(card, status_by_id)) & slot_ids:
             facets.add("read_equipped")
         for sid in mounted:
             sd = status_by_id.get(sid) or {}

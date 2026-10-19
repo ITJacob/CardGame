@@ -138,6 +138,12 @@ export class CombatUnit implements Unit {
   statusStacks(defId: string): number {
     return this.statuses.stacksOf(defId)
   }
+  hasEquipped(slot?: string): boolean {
+    return this.statuses.all().some((inst) => {
+      const es = this.statusDefs.statusDef(inst.defId)?.equipSlot
+      return Boolean(es) && (!slot || es === slot)
+    })
+  }
   stat(key: StatKey): number {
     const p = this.effectiveProfile
     switch (key) {

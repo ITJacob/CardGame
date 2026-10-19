@@ -237,3 +237,11 @@
 - **装备本身不是原语**：仍由 `mount_status` 挂载带 `equipSlot` 的 StatusDef 表达；`disarm` 只是独立的卸下动词。
 - 同步落点：schema `effDisarm` / SCHEMA §5.2+§6 / 效果上下文 + 效果参数 / 编队参数 / 设计清单 / 状态分类 / glossary（新增 equipSlot 栏目）/ 游戏内核 IDL `EffectType` + `EffDisarm` / CLAUDE.md / DESIGN.md。
 - 当前无卡使用 `disarm`（先立原语，缴械卡后续按需设计）；五门禁 + analysis 全绿，跨 seed 确定性通过。
+
+## 2026-10-19 持械判定泛化为 has_equipped
+
+- 武器大师 / 无坚不摧 / 神罚的「任意武器」条件由 3–4 个 `has_status` 的 `any_of` 清单改为 `has_equipped(slot:"weapon")`：按 `statusDef.equipSlot` 判定，新武器、他途径具现或转移来的武器自动纳入，不再逐武器补清单。
+- 顺带修正既有漏项：无坚不摧、神罚的清单原本漏了制式长剑。
+- 新条件 kind `has_equipped`：`side` + 可选 `slot`；落点 schema / 共享内核参数 §三 / SCHEMA §5.3 / glossary / 站点渲染 / 游戏内核 `ConditionUnit.hasEquipped` / build_overview。
+- 评分器 `score.py` 把 `has_equipped` 计为读取该槽全部装备（`read_equipped` facet + 读层实证），避免泛化被误判为掉分。分数：战士 71.1 → 70.9（武艺 78.1 → 77.6、黄昏 71.5 → 69.5；差额来自条件 kind 种类减少，非机制削弱）。
+- 测试：`weaponSlot.test.ts` 补两条（按槽命中 / 非装备状态不算）。

@@ -49,6 +49,7 @@ TGT = {"self": "自身", "caster": "施法者", "target": "目标", "primary_tar
        "splash_behind": "溅射身后", "one_own_snare_trap": "自身一个陷阱"}
 RARITY = {"common": "普通", "uncommon": "精良", "rare": "稀有", "epic": "史诗", "legendary": "传说"}
 SIDE = {"self": "自身", "target": "目标", "ally": "友军", "enemy": "敌人", "both": "双方", "all": "全场"}
+SLOT = {"weapon": "武器"}
 EVENT = {"on_apply": "施加时", "on_remove": "移除时", "on_tick": "每 tick", "on_turn_start": "获得机会时",
          "on_turn_end": "机会闭合时",
          "on_battle_start": "战斗开始", "on_spawn": "登场时", "on_death": "死亡时", "on_kill": "击杀时",
@@ -199,6 +200,9 @@ class Renderer:
             return "目标类型 %s" % ("/".join(t) if isinstance(t, list) else t)
         if k == "has_category":
             return "带 %s 类状态" % "/".join(c.get("categories") or [])
+        if k == "has_equipped":
+            slot = c.get("slot")
+            return "%s已装备%s槽" % (side or "目标", SLOT.get(slot, slot) if slot else "任意")
         if k == "stat_compare":
             return "属性比较 %s" % c.get("key", "")
         if k == "resource_compare":

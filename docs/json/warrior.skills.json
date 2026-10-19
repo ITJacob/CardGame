@@ -685,37 +685,9 @@
             "kind": "all_of",
             "conditions": [
               {
-                "kind": "any_of",
-                "conditions": [
-                  {
-                    "kind": "has_status",
-                    "side": "self",
-                    "id": "weapon_silver_rapier",
-                    "cmp": ">=",
-                    "n": 1
-                  },
-                  {
-                    "kind": "has_status",
-                    "side": "self",
-                    "id": "weapon_dusk_greatsword",
-                    "cmp": ">=",
-                    "n": 1
-                  },
-                  {
-                    "kind": "has_status",
-                    "side": "self",
-                    "id": "dawn_blade",
-                    "cmp": ">=",
-                    "n": 1
-                  },
-                  {
-                    "kind": "has_status",
-                    "side": "self",
-                    "id": "weapon_standard_blade",
-                    "cmp": ">=",
-                    "n": 1
-                  }
-                ]
+                "kind": "has_equipped",
+                "side": "self",
+                "slot": "weapon"
               },
               {
                 "kind": "not",
@@ -742,7 +714,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：武艺轴旗舰：挂 `武技` + 任意武器大师级（payoff 一体）。 ｜ 2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M5 收割。 ｜ 签名补批（2026-10-16 第二批）：识破/死亡簿·战意。 ｜ 2026-10-18 收敛：被动无法在开局释放识破，移除 reveal；接收具现武器，与兵械通晓拉开序列差。 ｜ 2026-10-18 武器槽：被动不再直接装备武器；具现武器移交主动卡，击杀改为补满已装备武器耐久。",
+      "conversionNotes": "翻译/语义：武艺轴旗舰：挂 `武技` + 任意武器大师级（payoff 一体）。 ｜ 2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M5 收割。 ｜ 签名补批（2026-10-16 第二批）：识破/死亡簿·战意。 ｜ 2026-10-18 收敛：被动无法在开局释放识破，移除 reveal；接收具现武器，与兵械通晓拉开序列差。 ｜ 2026-10-18 武器槽：被动不再直接装备武器；具现武器移交主动卡，击杀改为补满已装备武器耐久。 ｜ 2026-10-19 条件泛化：持械判定改走 has_equipped(slot:weapon)，新增武器/他途径具现或转移来的武器自动纳入。",
       "art": {
         "subject": "a master sweeping through a dozen weapons in one seamless arc",
         "elements": [
@@ -1528,30 +1500,9 @@
         {
           "op": "if",
           "condition": {
-            "kind": "any_of",
-            "conditions": [
-              {
-                "kind": "has_status",
-                "side": "self",
-                "id": "weapon_silver_rapier",
-                "cmp": ">=",
-                "n": 1
-              },
-              {
-                "kind": "has_status",
-                "side": "self",
-                "id": "weapon_dusk_greatsword",
-                "cmp": ">=",
-                "n": 1
-              },
-              {
-                "kind": "has_status",
-                "side": "self",
-                "id": "dawn_blade",
-                "cmp": ">=",
-                "n": 1
-              }
-            ]
+            "kind": "has_equipped",
+            "side": "self",
+            "slot": "weapon"
           },
           "then": [
             {
@@ -1614,7 +1565,7 @@
         ],
         "mood": "decisive, overwhelming"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。"
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。 ｜ 2026-10-19 条件泛化：持械判定改走 has_equipped(slot:weapon)，新增武器/他途径具现或转移来的武器自动纳入。"
     },
     {
       "id": "skill_warrior_s4_execution_registration",
@@ -3100,30 +3051,9 @@
         {
           "op": "if",
           "condition": {
-            "kind": "any_of",
-            "conditions": [
-              {
-                "kind": "has_status",
-                "side": "self",
-                "id": "weapon_silver_rapier",
-                "cmp": ">=",
-                "n": 1
-              },
-              {
-                "kind": "has_status",
-                "side": "self",
-                "id": "weapon_dusk_greatsword",
-                "cmp": ">=",
-                "n": 1
-              },
-              {
-                "kind": "has_status",
-                "side": "self",
-                "id": "dawn_blade",
-                "cmp": ">=",
-                "n": 1
-              }
-            ]
+            "kind": "has_equipped",
+            "side": "self",
+            "slot": "weapon"
           },
           "then": [
             {
@@ -3202,7 +3132,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：武艺轴代行神罚 payoff（读 `武技`）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M6 克邪。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·衰败。",
+      "conversionNotes": "翻译/语义：武艺轴代行神罚 payoff（读 `武技`）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M6 克邪。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·衰败。 ｜ 2026-10-19 条件泛化：持械判定改走 has_equipped(slot:weapon)，新增武器/他途径具现或转移来的武器自动纳入。",
       "art": {
         "subject": "a raised hand pressing down a verdict of crushing vertical light",
         "elements": [

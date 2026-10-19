@@ -29,6 +29,7 @@ export type ConditionKind =
   | 'all_of' | 'any_of' | 'caster_has_summon' | 'caster_status_exists' | 'chance' | 'consumed_count'
   | 'damage_source_is' | 'dead_count' | 'dispelled_count' | 'element_is' | 'faction_is'
   | 'field_status_count' | 'gauge_above' | 'gauge_rank' | 'gender_is' | 'has_category'
+  | 'has_equipped'
   | 'has_status' | 'hp_percent' | 'hp_percent_compare' | 'luminance_compare' | 'not'
   | 'phase_is' | 'rank_gap' | 'resource_compare' | 'stat_compare' | 'tag_chain'
   | 'target_dead' | 'target_has_tag' | 'target_is_summoned' | 'target_unit_type'
@@ -36,7 +37,7 @@ export type ConditionKind =
 
 /**
  * 效果生效条件（共享内核.md §四）。
- * 注意：schema 把 30 种 kind 建模为「单一对象 + 可选字段」，此处如实投影，
+ * 注意：schema 把 33 种 kind 建模为「单一对象 + 可选字段」，此处如实投影，
  * 未逐 kind 拆判别式联合（那是 P2 编译期的收紧工作）。
  */
 export interface Condition {
@@ -47,6 +48,8 @@ export interface Condition {
   /** chance（唯一允许随机的条件，R3 登记 / R4 单次抽样） */
   p?: number
   id?: string | string[]
+  /** 装备槽过滤（has_equipped 用，当前仅 weapon；缺省 = 任意装备槽） */
+  slot?: string
   value?: Scalar
   categories?: string[]
   category?: string

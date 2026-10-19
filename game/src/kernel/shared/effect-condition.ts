@@ -16,6 +16,8 @@ export interface ConditionUnit {
   readonly unitType?: string | null
   readonly summonerId?: string | null
   statusStacks(defId: string): number
+  /** 是否持有装备槽实例（has_equipped）；slot 缺省 = 任意装备槽 */
+  hasEquipped(slot?: string): boolean
   stat(key: string): number
 }
 
@@ -61,6 +63,10 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
       const p = cond.p ?? 0
       ctx.registry.record('chance', { p })
       return ctx.random.chance(p)
+    }
+    case 'has_equipped': {
+      const subject = cond.side === 'self' ? ctx.caster : target
+      return subject != null && subject.hasEquipped(typeof cond.slot === 'string' ? cond.slot : undefined)
     }
     case 'has_status':
     case 'target_has_tag':

@@ -6,6 +6,8 @@ import type { PathwayFile } from '../src/data/schema.types'
 import type { CombatFacade } from '../src/kernel/combat/types'
 import type { StatusDef } from '../src/kernel/catalog/types'
 import { handleModifyStatus } from '../src/kernel/effect/handlers2'
+import { evaluateCondition, type ConditionContext } from '../src/kernel/shared/effect-condition'
+import { Mulberry32RandomSource, RandomUsageRegistry } from '../src/kernel/shared/random-source'
 import { stubContext, registryOf } from './helpers/context'
 import { makeUnit } from './helpers/fixture'
 
@@ -169,6 +171,33 @@ describe('耐久补充', () => {
     const empty = makeUnit('empty', 'A', {}, [WEAPON_A])
     handleModifyStatus({ type: 'modify_status', slot: 'weapon', target: 'self', restoreCharges: true }, empty, ctx)
     expect(empty.statuses.all()).toHaveLength(0)
+  })
+})
+
+describe('has_equipped 条件', () => {
+  const condCtx = (caster: ReturnType<typeof makeUnit>): ConditionContext => ({
+    random: new Mulberry32RandomSource(1),
+    registry: new RandomUsageRegistry(),
+    warn: () => {},
+    phase: 'day',
+    caster,
+  })
+
+  it('按 equipSlot 判定，不点名具体武器', () => {
+    const u = makeUnit('u', 'A', {}, [WEAPON_A, PROBE_BUFF])
+    const ctx = condCtx(u)
+    expect(evaluateCondition({ kind: 'has_equipped', side: 'self', slot: 'weapon' }, null, ctx)).toBe(false)
+    u.statuses.mount('probe_weapon_a', { sourceId: 's1' })
+    expect(evaluateCondition({ kind: 'has_equipped', side: 'self', slot: 'weapon' }, null, ctx)).toBe(true)
+    // slot 缺省 = 任意装备槽
+    expect(evaluateCondition({ kind: 'has_equipped', side: 'self' }, null, ctx)).toBe(true)
+  })
+
+  it('非装备状态不算已装备', () => {
+    const u = makeUnit('u', 'A', {}, [PROBE_BUFF])
+    const ctx = condCtx(u)
+    u.statuses.mount('probe_buff', { sourceId: 's1' })
+    expect(evaluateCondition({ kind: 'has_equipped', side: 'self', slot: 'weapon' }, null, ctx)).toBe(false)
   })
 })
 
