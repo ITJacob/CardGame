@@ -216,7 +216,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `category` | enum[] | `buff` `debuff` `control` `reactive` `aura` `stance` `fear` `retarget` `link` `contract` `conceal` `seal` |
 | `dispelable` | bool | |
 | `duration` | int\|null | |
-| `modifiers` | array\|object | **两种形态都合法**：数组（字符串/对象混合）或 `{修正名: 参数}` 映射表；开放结构。数组形态的对象元素为封闭 `statusModifier`（2026-09-18 增补 `target`/`condition` 两字段，承载「对全体友军、阈值门控」类修饰） |
+| `modifiers` | array\|object | **两种形态都合法**：数组（字符串/对象混合）或 `{修正名: 参数}` 映射表；开放结构。数组形态的对象元素为封闭 `statusModifier`（2026-09-18 增补 `target`/`condition` 两字段，承载「对全体友军、阈值门控」类修饰）。`outgoingDamageParams` 的 `filter` 是**出伤事件过滤**（区别于 §3 选靶的候选池 filter）：项目扩展 `weaponDamage: true` = 仅当本次伤害属于「会消耗装备武器耐久的攻击」（`on_attack` 语境 + 攻击者 `weapon` 槽有装备）时生效，缴械后即使状态仍在也不生效（2026-10-19 增，武器大师穿甲用） |
 | `triggers` | trigger[] | 状态自带触发器；状态载荷一律写在 `triggers[].effects`——挂载即生效用 `event: on_apply`（def 级 `effects` 已退役） |
 | `charges` `maxStacks` `stackPolicy`(stack/refresh) | | 层数与次数。`charges` = 次数型状态初始次数；触发器标 `consumeCharge` 时每次触发扣 1，归零卸载 |
 | `equipSlot` | string | **装备槽**（当前仅 `weapon`）：同槽状态互斥，后装备者替换前者（含同 defId 重挂 → 耐久刷新）；主动卡可挂载，被动默认只能读/补耐久。**例外**：带 `initialEquip: true` 的入门武器可由被动卡在 `on_battle_start` 自动装备（同槽互斥、不得中途换装）。**武器强制 charges 制**：`charges` 必须 ≥1、`duration` 必须为 null（validate 强制），按普攻次数消耗、打空卸载。**武器不可驱散**（`dispelable: false`，`dispel` 不作用于装备），卸下走 `disarm` 原语 |
