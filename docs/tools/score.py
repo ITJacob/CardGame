@@ -489,7 +489,9 @@ def _status_shape(sd):
         if isinstance(mods, dict):
             for k in mods:
                 out.add("mods:" + k)
-    for n in walk(sd.get("effects")):
+    # on_apply 载荷 = 状态挂载时施加的效果（原 def 级 effects 的迁移落点）
+    for n in walk([t.get("effects") for t in (sd.get("triggers") or [])
+                   if isinstance(t, dict) and t.get("event") == "on_apply"]):
         t = n.get("type")
         if isinstance(t, str):
             out.add("via:" + t)
@@ -584,15 +586,17 @@ def _card_families(card, status_by_id=None):
         if isinstance(ct, int) and ct > 0:
             fam["temporal"].add("cast")
 
+    # on_apply = 状态挂载载荷的固有生命周期事件（原 def 级 effects 的迁移落点），
+    # 不体现卡的触发点设计，不计入 hook 族。
     for h in (card.get("hook") or []):
-        if isinstance(h, str):
+        if isinstance(h, str) and h != "on_apply":
             fam["hook"].add(h)
     for tr in (card.get("triggers") or []):
-        if isinstance(tr, dict) and tr.get("event"):
+        if isinstance(tr, dict) and tr.get("event") and tr["event"] != "on_apply":
             fam["hook"].add(tr["event"])
     for m in card_mounts(card):     # 挂状态 = 接入该状态 def 的触发点
         for tr in ((status_by_id or {}).get(m) or {}).get("triggers") or []:
-            if tr.get("event"):
+            if isinstance(tr, dict) and tr.get("event") and tr["event"] != "on_apply":
                 fam["hook"].add(tr["event"])
 
     # sshape：引用的状态 → 状态形态（替代私有 statusId 身份）
@@ -726,10 +730,13 @@ def main():
                 anchor = 8
                 sdef = status_by_id[sid]
                 _ms = sdef.get("maxStacks")
+                # on_apply 载荷不是机制，只有承载别的事件触发点才算「身份状态带机制」
+                _trg_evt = any(isinstance(t, dict) and t.get("event") not in (None, "on_apply")
+                               for t in (sdef.get("triggers") or []))
                 has_engine = bool(
                     sdef.get("stackThreshold") or sdef.get("thresholdTrigger")
                     or (isinstance(_ms, int) and _ms > 1) or sdef.get("charges")
-                    or sdef.get("triggers") or sdef.get("statPerStack")
+                    or _trg_evt or sdef.get("statPerStack")
                     or sdef.get("formGroup") or sdef.get("phases") or sdef.get("cycleTicks")
                     or sdef.get("behaviorModifiers")
                 )
@@ -828,10 +835,15 @@ def main():
                 def_internal = 0
                 if sid:
                     sd = status_by_id.get(sid) or {}
-                    if any(sd.get(k) for k in ("triggers", "stackThreshold", "thresholdTrigger",
-                                               "statPerStack", "ramp", "phases", "cycleTicks", "formGroup")):
+                    _trgs = sd.get("triggers") or []
+                    _has_evt = any(isinstance(t, dict) and t.get("event") not in (None, "on_apply")
+                                   for t in _trgs)
+                    _has_load = any(isinstance(t, dict) and t.get("event") == "on_apply" and t.get("effects")
+                                    for t in _trgs)
+                    if _has_evt or any(sd.get(k) for k in ("stackThreshold", "thresholdTrigger",
+                                                           "statPerStack", "ramp", "phases", "cycleTicks", "formGroup")):
                         def_internal = 15      # 身份 def 自带动态引擎（自闭环型）
-                    elif sd.get("effects") or sd.get("modifiers"):
+                    elif _has_load or sd.get("modifiers"):
                         def_internal = 10      # 身份 def 自带静态载荷（自足乘区 / 自带 buff 型）
                 closure_p = min(25, max(indirect, def_internal))
                 if closure_p == 0:

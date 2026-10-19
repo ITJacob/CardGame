@@ -491,9 +491,6 @@ def main():
                         mods = render_modifiers(sd.get("modifiers"))
                         if mods:
                             parts.append(mods)
-                        eff = R.render(sd.get("effects"))
-                        if eff:
-                            parts.append("效果：%s" % eff)
                         for t in sd.get("triggers") or []:
                             te = R.render(t.get("effects"))
                             parts.append("%s：%s" % (EVENT.get(t.get("event"), t.get("event")), te or "—"))

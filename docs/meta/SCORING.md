@@ -58,7 +58,7 @@
 |---|---:|---|
 | 身份锚定 | 15 | 身份锚点可解析——`statusId` 命中 statusDef / Pool 轴的 `modify_resource` 资源 / **本轴写入的全局通道**——得 8；身份状态带**机制**（`stackThreshold`/`thresholdTrigger`/`maxStacks>1`/`charges`/`triggers`/`statPerStack`/`formGroup`/`phases`/`cycleTicks`/`behaviorModifiers` 任一）再 +7；`statusId` 悬空 0。（**2.0 起取消「层数引擎」硬要求**：covert_veil 这类以 `triggers` 破隐的机制同样满分） |
 | 产层闭环 | 20 | enablers 逐张 **AST 实证产出身份**——挂载身份状态 / Pool 轴的 `modify_resource` 产能段 / **写入身份通道**：实证 ≥2 张得 20，1 张 12；enablers 非空但全未实证 5；空 0 |
-| 收束闭环 | 25 | 轴产出物**被消费**的实证，三条路径**取较优**（封顶 25）：① **有 payoff 卡**——读**本轴产出面**（身份状态 **或本轴写入的通道**）每张 9、不读每张 4（notes 级）；② **无 payoff 卡**——**间接收束**：本轴写入的通道，其**下游读者数**分档（≥6→9 / ≥3→6 / ≥1→3，逐通道求和）；③ **def 内闭环**：身份 def 自带动态引擎（`triggers`/`stackThreshold`/`thresholdTrigger`/`statPerStack`/`phases`/`cycleTicks`/`formGroup`）15 分，仅带静态载荷（`effects`/`modifiers`）10 分。真空轴不再需要 `payoffVacuumAccepted` |
+| 收束闭环 | 25 | 轴产出物**被消费**的实证，三条路径**取较优**（封顶 25）：① **有 payoff 卡**——读**本轴产出面**（身份状态 **或本轴写入的通道**）每张 9、不读每张 4（notes 级）；② **无 payoff 卡**——**间接收束**：本轴写入的通道，其**下游读者数**分档（≥6→9 / ≥3→6 / ≥1→3，逐通道求和）；③ **def 内闭环**：身份 def 自带动态引擎（非 `on_apply` 的 `triggers`/`stackThreshold`/`thresholdTrigger`/`statPerStack`/`phases`/`cycleTicks`/`formGroup`）15 分，仅带静态载荷（`on_apply` 载荷/`modifiers`）10 分。真空轴不再需要 `payoffVacuumAccepted` |
 | 轴内多样性 | 15 | **（2.1：判据扩到全链路）** 轴内卡的**去重种类和**——原语 + `condition` 谓词 + **选靶 `scope`/`anchor`** + **触发点**（`hook`/`triggers`，含挂载状态 def 的）+ **状态形态**（引用状态的 def 结构指纹），对全库轴最大值归一：15 × 本轴种类和 / 全库最大 |
 | 规模均衡 | 10 | 轴卡数 / 途径卡均在 [0.6, 1.4] 区间得 10；区间外线性衰减（每偏 0.1 扣 1） |
 | 承接连通 | 15 | 收束方式去重计数（**乘区 / 条件分支 / 耗层 / 存在性 / 通道读**，各 3），封顶 15。跨轴/跨系消费不在此计——由途径级「跨轴耦合」「跨系联动」承担，避免同一批读取双计 |
@@ -117,8 +117,8 @@
 | `param` | 效果原语的枚举参数 | `field=value`（`modify_stat.stat` / `modify_resource.resource` / spawn 单位与位置 / `move`·`domain`·`translocate` 的 op / 规则槽 field 等；**数值不取**） |
 | `reach` | 射程 | active 卡 `reach`（none/melee/spell/thrown） |
 | `tgt` | 选靶（卡级坐标 + filter + 效果级作用对象） | `target.request`：`faction`/`scope`/`anchor`/`mode`/`selectionMode`；`request.filter` 键（前缀 `filter:`）；effects 的 `target`（前缀 `eff:`） |
-| `hook` | 触发点 | 卡级 `hook`/`triggers[].event` ＋挂载状态 def 的 `triggers[].event` |
-| `sshape` | **状态形态** | 引用状态 def 的结构 flags（triggers/charges/stack/threshold/form/phases/cycle/ramp/behavior/action_lock/immune/redirect…）+ 修正名 + 自带效果原语 + 时长形态；**不含私有 statusId** |
+| `hook` | 触发点 | 卡级 `hook`/`triggers[].event` ＋挂载状态 def 的 `triggers[].event`；**排除 `on_apply`**（状态挂载载荷的固有生命周期事件，不体现触发点设计） |
+| `sshape` | **状态形态** | 引用状态 def 的结构 flags（triggers/charges/stack/threshold/form/phases/cycle/ramp/behavior/action_lock/immune/redirect…）+ 修正名 + 自带效果原语（`on_apply` 载荷）+ 时长形态；**不含私有 statusId** |
 | `cost` | 消耗形态 | `energy` 档（zero/low/mid/high）+ `cooldown` 档（none/short/long）+ 血费（自伤 hp 支付） |
 | `temporal` | 时序形态 | 吟唱有无（`castTime>0`）/ `durationUnit`（tick、self_turn）/ 吟唱转瞬发 |
 
