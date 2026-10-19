@@ -607,13 +607,13 @@ def main():
                 def _is_initial_equip(n):
                     return (n.get("type") == "mount_status"
                             and ((_refs.get("status") or {}).get(n.get("statusId")) or {}).get("initialEquip"))
-                if any(_is_initial_equip(n) for n in walk(c.get("effects"))):
+                if any(_is_initial_equip(n) for n in _iter_effect_nodes(c.get("effects"))):
                     hk2 = c.get("hook")
                     hk2 = hk2 if isinstance(hk2, list) else ([hk2] if hk2 else [])
                     if hk2 != ["on_battle_start"]:
                         errors.append("%s: initialEquip 武器只能由被动卡在 on_battle_start 装备（不得中途换装）" % cid)
                 for _t in (c.get("triggers") or []):
-                    if any(_is_initial_equip(n) for n in walk(_t.get("effects"))):
+                    if any(_is_initial_equip(n) for n in _iter_effect_nodes(_t.get("effects"))):
                         errors.append("%s: 被动卡 triggers 不得装备 initialEquip 武器（只能走 on_battle_start hook）" % cid)
             walk(c.get("effects"), cid, "eff", flags, errors, warns, _passive)
             for t in (c.get("upgradeLadder") or {}).get("tiers",[]): walk(t.get("effects"), cid, "lad", flags, errors, warns, _passive)
