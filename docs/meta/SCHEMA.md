@@ -156,7 +156,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `repeat` | `steps` | 重复；`count` 可用对象形式 `{valueFrom, filter, cap}` 做运行期计算 |
 | `if` | `condition`, `then` | 条件分支，`else` 可选 |
 
-### 5.2 原语（29 个，封闭集）
+### 5.2 原语（30 个，封闭集）
 
 | type | 关键字段 | 备注 |
 |---|---|---|
@@ -167,7 +167,8 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `modify_resource` | `resource` `value` `mode` | `hp/energy/shield/armor/lost/gauge.current` |
 | `move` | `op` `distance` | 7 种 op |
 | `spawn` | `unitId`/`template` `position` `hpRatio` `reviveOf` | 复活走 `reviveOf`，不新增原语（G4）；键名裁定 2026-10-01：unitId=静态引用唯一正键、template=动态模板，原 `unit` 键已撤（单位定义见 ddd 召唤物参数.md） |
-| `dispel` | `dispelTarget`(unit/domain) `filter` `category` `count` | 只作用于 StatusInstance（INV-P7） |
+| `dispel` | `dispelTarget`(unit/domain) `filter` `category` `count` | 只作用于 StatusInstance（INV-P7）；尊重 `dispelable`，**不拆装备槽武器**（武器不可驱散，卸下走 `disarm`） |
+| `disarm` | `target` `slot`(weapon) `statusId` `count` | **缴械**：卸下目标装备槽上的状态实例，无视 `dispelable`，只作用于带 `equipSlot` 的 StatusInstance。装备由 `mount_status` 表达，缴械是独立的卸下动词；武器定义保留，本场可再用装备卡挂回 |
 | `drain` | `resource` `value` `healRatio` | |
 | `domain` | `op`(overlay/swap/hero) `def` `duration` | 界域三件套 |
 | `translocate` | `op`(pull_into/banish) `duration` `returnPayload` | **跨层位移**：目标 detached N tick（离场不持坐标、计时冻结），到期于己方队尾回归；`banish` 可带回归载荷。ddd 效果参数 11 号，2026-09-06 拍板；schema 于 2026-09-16 补登记（此前缺失导致零使用） |
@@ -216,7 +217,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `modifiers` | array\|object | **两种形态都合法**：数组（字符串/对象混合）或 `{修正名: 参数}` 映射表；开放结构。数组形态的对象元素为封闭 `statusModifier`（2026-09-18 增补 `target`/`condition` 两字段，承载「对全体友军、阈值门控」类修饰） |
 | `triggers` | trigger[] | 状态自带触发器；状态载荷一律写在 `triggers[].effects`——挂载即生效用 `event: on_apply`（def 级 `effects` 已退役） |
 | `charges` `maxStacks` `stackPolicy`(stack/refresh) | | 层数与次数。`charges` = 次数型状态初始次数；触发器标 `consumeCharge` 时每次触发扣 1，归零卸载 |
-| `equipSlot` | string | **装备槽**（当前仅 `weapon`）：同槽状态互斥，后装备者替换前者（含同 defId 重挂 → 耐久刷新）；主动卡可挂载，被动默认只能读/补耐久。**例外**：带 `initialEquip: true` 的入门武器可由被动卡在 `on_battle_start` 自动装备（同槽互斥、不得中途换装）。**武器强制 charges 制**：`charges` 必须 ≥1、`duration` 必须为 null（validate 强制），按普攻次数消耗、打空卸载 |
+| `equipSlot` | string | **装备槽**（当前仅 `weapon`）：同槽状态互斥，后装备者替换前者（含同 defId 重挂 → 耐久刷新）；主动卡可挂载，被动默认只能读/补耐久。**例外**：带 `initialEquip: true` 的入门武器可由被动卡在 `on_battle_start` 自动装备（同槽互斥、不得中途换装）。**武器强制 charges 制**：`charges` 必须 ≥1、`duration` 必须为 null（validate 强制），按普攻次数消耗、打空卸载。**武器不可驱散**（`dispelable: false`，`dispel` 不作用于装备），卸下走 `disarm` 原语 |
 | `initialEquip` | bool | 初始装备标记：允许被动卡在 `on_battle_start` 自动装备该 `equipSlot` 状态（入门武器教学用）。被动卡仅限开局装备，不得在其他触发点换装；玩家/主动卡的正常换装不受影响 |
 | `disallowActions` | `actionLock[]` | **行为封锁**：单位持有该状态时禁止相应行动，`actionLock` 封闭枚举 = `move`(禁止移动) / `basic_attack`(禁止普攻) / `skill`(禁止主动技能) / `skip`(禁止跳过行动周期) / `react`(禁止反应·反击) / `channel`(禁止吟唱)。经既有 `mount_status` 挂载，可驱散、可带 duration/stacks（行为层修改三，2026-09-17 拍板） |
 | `crossPathway` | bool | 枢纽状态跨系可读标志：true 时该状态可被非本途径友方技能读取（跨系 combo 依赖此标志 + `participants` 白名单）。定义见 源质维度与跨系枢纽.md §一 |

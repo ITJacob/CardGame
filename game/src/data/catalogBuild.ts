@@ -6,7 +6,7 @@
 //   2. 卡内顶层效果节点 → 驻留为 EffectDef，并生成 EffectRef（含 condition/target 透传）
 //   3. card.statusDefs → StatusDef；途径级 unitDefs/zoneDefs/domainDefs → 各自池
 //   4. 途径 → ClassDef（knownSkills = 该途径全部卡 id）
-//   5. 引用校验：触发器事件必须 ∈ 14 闭集；效果类型必须 ∈ 29 原语 ∪ 3 算子；
+//   5. 引用校验：触发器事件必须 ∈ 15 闭集；效果类型必须 ∈ 30 原语 ∪ 3 算子；
 //      mount_status/modify_status.statusId 必须可解析（外部 common 状态由 opts 注入）
 
 import type {
@@ -16,10 +16,10 @@ import type {
 import type { EffectRef, TargetSpec } from '../kernel/shared/types'
 import type { PathwayFile, RawCard } from './schema.types'
 
-/** 29 个效果原语（权威源 = schema effect.oneOf） */
+/** 30 个效果原语（权威源 = schema effect.oneOf） */
 export const EFFECT_TYPES: readonly string[] = [
   'damage', 'heal', 'mount_status', 'modify_stat', 'modify_resource', 'move', 'spawn',
-  'dispel', 'drain', 'domain', 'translocate', 'snapshot', 'restore_snapshot',
+  'dispel', 'disarm', 'drain', 'domain', 'translocate', 'snapshot', 'restore_snapshot',
   'modify_damage', 'target_override', 'transfer_status', 'echo_last_skill',
   'gauge_shuffle', 'status_shuffle', 'modify_skill', 'modify_status',
   'modify_targetability', 'reveal', 'grant_immunity', 'take_control',

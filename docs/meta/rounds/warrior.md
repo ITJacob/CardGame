@@ -229,3 +229,11 @@
 
 - **战意·续劲追加伤害 1→2**：砍掉持械尾后，连击在 E2 只剩 2 伤 + 条件 +1 + 自伤 1，低于同序列「2 伤 + 一个骑乘」的基准；现有总伤 2 → 4（消耗 2 层战意的门槛与自伤反噬均保留）。
 - 卡面 `describe`、effect note 与 `conversionNotes` 同步。
+
+## 2026-10-19 武器不可驱散 · 新增缴械原语
+
+- **武器槽改为不可驱散**：4 把武器（晨曦之剑 / 银白细剑 / 黄昏巨剑 / 制式长剑）置 `dispelable: false`。装备态不再被通用驱散拆掉，避免「一张 dispel 抹掉整套武器构筑」。
+- **新增第 30 原语 `disarm`（缴械）**：`target` + `slot: weapon`（缺省）+ 可选 `statusId` / `count`；只作用于带 `equipSlot` 的 StatusInstance，**无视 `dispelable`**。语义＝卸下：移除装备实例，武器定义保留，本场可再由装备卡挂回（重挂耐久重置）。
+- **装备本身不是原语**：仍由 `mount_status` 挂载带 `equipSlot` 的 StatusDef 表达；`disarm` 只是独立的卸下动词。
+- 同步落点：schema `effDisarm` / SCHEMA §5.2+§6 / 效果上下文 + 效果参数 / 编队参数 / 设计清单 / 状态分类 / glossary（新增 equipSlot 栏目）/ 游戏内核 IDL `EffectType` + `EffDisarm` / CLAUDE.md / DESIGN.md。
+- 当前无卡使用 `disarm`（先立原语，缴械卡后续按需设计）；五门禁 + analysis 全绿，跨 seed 确定性通过。

@@ -22,7 +22,7 @@ export const DB = {
   zoneDefMap: new Map(),       // id -> zoneDef
   domainDefMap: new Map(),     // id -> domainDef
   defName: new Map(),          // zoneDef/domainDef id -> 显示名（池里没 name，从引用卡名推）
-  declaredPrimitives: [],     // schema effect.oneOf 声明的原语 type（29=27 经典 + 光照度对 set_luminance/advance_clock）
+  declaredPrimitives: [],     // schema effect.oneOf 声明的原语 type（30=27 经典 + 光照度对 set_luminance/advance_clock + 缴械 disarm）
   declaredStatusFields: [],   // schema statusDef 声明的字段名（48）
   declaredUnitFields: [],     // schema unitDef 声明的字段名（编目三页「字段填充」面板的声明面）
   declaredZoneFields: [],     // schema zoneDef 声明的字段名

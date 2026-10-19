@@ -11,13 +11,13 @@ import type {
 } from '../shared/types'
 
 // ============================================================
-// 效果原语（29 个，权威源 = schema effect.oneOf）+ 3 个结构算子
+// 效果原语（30 个，权威源 = schema effect.oneOf）+ 3 个结构算子
 // ============================================================
 
-/** 29 个效果原语的类型闭集 */
+/** 30 个效果原语的类型闭集 */
 export type EffectType =
   | 'damage' | 'heal' | 'mount_status' | 'modify_stat' | 'modify_resource'
-  | 'move' | 'spawn' | 'dispel' | 'drain' | 'domain' | 'translocate'
+  | 'move' | 'spawn' | 'dispel' | 'disarm' | 'drain' | 'domain' | 'translocate'
   | 'snapshot' | 'restore_snapshot' | 'modify_damage' | 'target_override'
   | 'transfer_status' | 'echo_last_skill' | 'gauge_shuffle' | 'status_shuffle'
   | 'modify_skill' | 'modify_status' | 'modify_targetability' | 'reveal'
@@ -126,6 +126,13 @@ export interface EffDispel extends EffBase {
   count?: CountValue
   mode?: 'area'
   collect?: string
+}
+/** 缴械：卸下目标装备槽上的 StatusInstance；无视 dispelable，只作用于带 equipSlot 的实例 */
+export interface EffDisarm extends EffBase {
+  type: 'disarm'
+  slot?: 'weapon'
+  statusId?: string | string[]
+  count?: CountValue
 }
 export interface EffDrain extends EffBase {
   type: 'drain'
@@ -305,7 +312,7 @@ export interface OpIf {
 
 export type EffectNode =
   | EffDamage | EffHeal | EffMountStatus | EffModifyStat | EffModifyResource
-  | EffMove | EffSpawn | EffDispel | EffDrain | EffDomain | EffTranslocate
+  | EffMove | EffSpawn | EffDispel | EffDisarm | EffDrain | EffDomain | EffTranslocate
   | EffModifyDamage | EffTargetOverride | EffTransferStatus | EffEchoLastSkill
   | EffGaugeShuffle | EffStatusShuffle | EffModifySkill | EffModifyStatus
   | EffModifyTargetability | EffReveal | EffGrantImmunity | EffTakeControl

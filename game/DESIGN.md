@@ -32,7 +32,7 @@ game/                          # 新增顶层；工程根 = Vite root
    │   ├─ roster/              Unit·AttributeSet·Gauge·Pool·StatusInstance·BehaviorSlot·SkillSlot
    │   ├─ scheduling/          BattleClock·Scheduler（tick 原子推进）
    │   ├─ execution/           Pipeline I→R→M→O·Action·ResolvedTarget
-   │   ├─ effect/              EffectExecutor·DamageChain·29 原语
+   │   ├─ effect/              EffectExecutor·DamageChain·30 原语
    │   ├─ combat/              Combat 聚合根·事件流·CombatSetup/CombatEnded
    │   └─ index.ts             ★ 对外唯一出口：createCombat(setup) => CombatFacade
    ├─ data/                    # 数据接入层（唯一触碰 docs/json 之处）
@@ -220,7 +220,7 @@ push main → npm ci && vite build (game/dist)
 |---|---|---|
 | P0 | 工程骨架：Vite+TS+路由+数据加载+主菜单+wiki 链接+部署流程 | Pages 上线，`/CardGame/` 是主菜单 |
 | P1 | 内核 IDL 定稿（第三节落成正式文件）+ 数据接入层 | `catalogBuild` 能把 22 途径 JSON 转成 Def |
-| P2 | 内核实现（五上下文）——旧码复活 or 全新，**本轮不决** | 单测覆盖 29 原语 / 14 触发点 |
+| P2 | 内核实现（五上下文）——旧码复活 or 全新，**本轮不决** | 单测覆盖 30 原语 / 15 触发点 |
 | P3 | 无头对战 AI vs AI | 同 seed 两次跑**逐位相同** |
 | P4 | 战外：英雄生成 / 卡池解锁 / 编队 | 能拼出一支合规队伍 |
 | P5 | 交互战斗 UI + 决策点选择 + 日志 | 人机对战可玩 |
@@ -233,7 +233,7 @@ push main → npm ci && vite build (game/dist)
 
 - **确定性**：禁裸 `Math.random`，唯一入口 `RandomSource.next()`；UI 层不得旁路改战斗态。
 - **可暂停内核**：决策点要求内核写成生成器/状态机，是 P2 的最大设计约束，须在 IDL 阶段先定。
-- **旧实现漂移**：若复活 `7e6d01f`（63 文件），需逐条审计触发点（旧 12 → 现 14）、原语（旧 27 → 现 29）、v0.3 维度（界域/位格/迷失/吟唱）等差距。
+- **旧实现漂移**：若复活 `7e6d01f`（63 文件），需逐条审计触发点（旧 12 → 现 15）、原语（旧 27 → 现 30）、v0.3 维度（界域/位格/迷失/吟唱）等差距。
 - **体质是新增设计面**，其数值标定与「不新增内核原语」的约束需专门校订。
 - **中文路径 + Edit 工具匹配失败坑**（`CLAUDE.md` 已记），改 JSON / 文档时用整行重写绕过。
 

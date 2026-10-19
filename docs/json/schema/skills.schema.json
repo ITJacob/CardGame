@@ -996,6 +996,9 @@
           "$ref": "#/$defs/effDispel"
         },
         {
+          "$ref": "#/$defs/effDisarm"
+        },
+        {
           "$ref": "#/$defs/effDrain"
         },
         {
@@ -1758,6 +1761,51 @@
           "enum": [
             "area"
           ]
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effDisarm": {
+      "type": "object",
+      "description": "缴械：卸下目标装备槽上的状态实例。与 dispel 的区别——dispel 只清可驱散状态（尊重 dispelable），disarm 无视 dispelable、仅作用于带 equipSlot 的 StatusInstance。装备本身仍由 mount_status 表达。",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "disarm"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "slot": {
+          "enum": [
+            "weapon"
+          ],
+          "description": "装备槽；缺省 weapon。当前仅武器槽。"
+        },
+        "statusId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "description": "可选：只卸下指定武器；缺省 = 该槽位上的装备。"
+        },
+        "count": {
+          "$ref": "#/$defs/countValue"
         },
         "condition": {
           "$ref": "#/$defs/condition"

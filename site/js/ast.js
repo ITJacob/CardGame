@@ -207,6 +207,15 @@ const PRIMITIVE_TEMPLATES = {
     if (parts.length) s += `（${parts.join('，')}）`;
     return s;
   },
+  disarm: (e, used) => {
+    used.push('slot', 'statusId', 'count');
+    let s = `缴械${tgt(e)}的${termSpan('equipSlot', e.slot || 'weapon')}槽装备`;
+    const parts = [];
+    if (e.statusId) parts.push(`指定：${[].concat(e.statusId).map(defSpanAuto).join('、')}`);
+    if (e.count != null) parts.push(`数量：${fmtVal(e.count)}`);
+    if (parts.length) s += `（${parts.join('，')}）`;
+    return s;
+  },
   drain: (e, used) => {
     used.push('resource', 'value', 'healRatio', 'category', 'count');
     let s = `从${tgt(e)}汲取 ${fmtVal(e.value)} 点${termSpan('resource', e.resource)}`;
@@ -401,11 +410,12 @@ export function renderEffects(effects) {
 // 遍历一张卡的全部效果节点（递归整卡任意嵌套，口径对齐 docs/tools/build_profession_analysis.py）
 const PRIMITIVE_TYPES = new Set([
   'damage', 'heal', 'mount_status', 'modify_stat', 'modify_resource', 'move', 'spawn',
-  'dispel', 'drain', 'domain', 'translocate', 'modify_damage', 'target_override',
+  'dispel', 'disarm', 'drain', 'domain', 'translocate', 'modify_damage', 'target_override',
   'transfer_status', 'write_rule_slot', 'modify_rule_slot', 'snapshot', 'restore_snapshot',
   'echo_last_skill', 'gauge_shuffle', 'status_shuffle', 'modify_skill', 'modify_status',
   'modify_targetability', 'reveal', 'grant_immunity', 'take_control',
-  'set_luminance', 'advance_clock',   // 光照度对（2026-09-21 落地，schema 声明 29）
+  'set_luminance', 'advance_clock',   // 光照度对（2026-09-21 落地）
+  'disarm',                           // 缴械（2026-10-19 落地，schema 声明 30）
 ]);
 export function walkCardEffects(card, cb) {
   const walk = (n) => {

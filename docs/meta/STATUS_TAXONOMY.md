@@ -90,7 +90,7 @@
 
 ### 维度 9 · 运行态 vs 定义态
 - **statusDef（定义态）**：静态模板，全库只定义一次（INV-C2 单点定义），跨途径按 `id` 引用。
-- **StatusInstance（运行态）**：定义经 `mount_status` 落场后的实例，可叠加层数 `maxStacks`（stack/refresh）、消耗次数 `charges`、到期 `duration`，可被 `dispel` / `modify_status` 改写。
+- **StatusInstance（运行态）**：定义经 `mount_status` 落场后的实例，可叠加层数 `maxStacks`（stack/refresh）、消耗次数 `charges`、到期 `duration`，可被 `dispel` / `modify_status` 改写；带 `equipSlot` 的装备实例不可驱散，卸下走 `disarm`。
 - 红线：同名状态必须同定义，异义只能拆 id（豁免机制已移除）；`dispel` 只作用于 StatusInstance（INV-P7）。
 
 ---
@@ -101,7 +101,7 @@
    - (a) **源质维度**：9 系各贡献的标量槽（战场级 secrecy/order/fate_value/luminance，或单位级 Pool lust/lost）。是数值总线，**不是 statusDef**。
    - (b) **枢纽状态（crossPathway 状态）**：puppet_string / fate / filth / conceal / grazing_slot / massing 等，是普通 statusDef 标 `crossPathway:true`+`participants`。
    - 两者机制层级不同（a 是数值、b 是可读标志），混用「源质状态」一词会误导。⚠️ 本表 (b) 曾列 `lust`——2026-09-24 起 lust 已 Pool 化归 (a)，不再是枢纽状态（跨系读 Pool 走 `resource_compare`，无需 crossPathway 标志）。
-2. **「状态修饰 vs 原语」**：`damage_taken_mul` / `heal_received_mul` 等是状态**修饰键**，写在 `statusDefs[].modifiers`，不是 29 个效果原语之一。
+2. **「状态修饰 vs 原语」**：`damage_taken_mul` / `heal_received_mul` 等是状态**修饰键**，写在 `statusDefs[].modifiers`，不是 30 个效果原语之一。
 
 ---
 

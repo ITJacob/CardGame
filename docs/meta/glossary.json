@@ -46,7 +46,12 @@
         "dispel": {
           "zh": "驱散",
           "brief": "移除目标身上的状态实例",
-          "detail": "只作用于 StatusInstance（INV-P7）。dispelTarget: unit/domain。"
+          "detail": "只作用于 StatusInstance（INV-P7）。dispelTarget: unit/domain；尊重 dispelable，不拆装备槽武器。"
+        },
+        "disarm": {
+          "zh": "缴械",
+          "brief": "卸下目标装备槽上的状态实例",
+          "detail": "无视 dispelable，只作用于带 equipSlot 的 StatusInstance（当前仅 weapon）。装备由 mount_status 施加；缴械后武器定义保留，本场可再用装备卡挂回。"
         },
         "drain": {
           "zh": "汲取",
@@ -1180,6 +1185,17 @@
         "domain": {
           "zh": "界域",
           "brief": "驱散场上界域"
+        }
+      }
+    },
+    "equipSlot": {
+      "label": "装备槽",
+      "desc": "装备类状态挂载的槽位；同槽互斥，后装备者替换前者。当前仅武器槽，武器不可驱散，卸下走缴械。",
+      "source": "skills.schema.json disarm / statusDef.equipSlot",
+      "terms": {
+        "weapon": {
+          "zh": "武器",
+          "brief": "武器槽：同槽只能装备一把，耐久按普攻次数消耗"
         }
       }
     },

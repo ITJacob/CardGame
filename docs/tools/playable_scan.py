@@ -252,7 +252,7 @@ def _geo_group(scope):
 
 # ---------- 指标 1 新口径（production-manager 2026-10-18 裁定）：形状三元组 ----------
 # 形状键 = (主导原语族, 是否有非空 else 分支, 作用对象类别)
-#   主导原语族：29 个原语归 7 个语义族（造成伤害 / 挂状态 / 改属性 / 改资源 / 位移 / 召唤 / 控制）
+#   主导原语族：30 个原语归 7 个语义族（造成伤害 / 挂状态 / 改属性 / 改资源 / 位移 / 召唤 / 控制）
 #   是否有非空 else：布尔（与⑤同口径：空 else 不算）
 #   作用对象类别：self / single_enemy / single_ally / area / global 五档
 # 验收线改**相对值**：模板数 ≥ 卡数 / 6（33 卡 → ≥5.5）。
@@ -268,7 +268,7 @@ PRIM_FAMILY = {
     "set_luminance": "改资源", "advance_clock": "改资源",
     "move": "位移", "translocate": "位移",
     "spawn": "召唤", "domain": "召唤",
-    "dispel": "控制", "target_override": "控制", "take_control": "控制",
+    "dispel": "控制", "disarm": "控制", "target_override": "控制", "take_control": "控制",
     "modify_targetability": "控制", "modify_skill": "控制",
     "write_rule_slot": "控制", "modify_rule_slot": "控制",
 }
