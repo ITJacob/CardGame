@@ -183,7 +183,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 32.3 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×8；flag:filter.unitType ×3；sref:guardianship ×4；对他途径指纹均距 0.320
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×8；flag:filter.unitType ×3；sref:guardianship ×4；对他途径指纹均距 0.321
 
 **途径失分项（含修改意见）**：
 
@@ -653,7 +653,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 24.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:status_shuffle ×5；prim:modify_rule_slot ×18；对他途径指纹均距 0.213
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:status_shuffle ×5；prim:modify_rule_slot ×18；对他途径指纹均距 0.214
 
 **途径失分项（含修改意见）**：
 

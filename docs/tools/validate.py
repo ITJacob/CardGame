@@ -246,6 +246,17 @@ def _check_desc_elems(node, cid, refs, errors, warns):
         else:
             errors.append(msg)
 
+def check_equip_status(sd, label, errors):
+    """装备槽强制 charges 制：charges≥1、duration=null（按次数消耗，不自然到期）。"""
+    if not sd.get("equipSlot"):
+        return
+    ch = sd.get("charges")
+    if not isinstance(ch, int) or ch <= 0:
+        errors.append("%s sd %s: equipSlot 武器必须 charges≥1（强制 charges 制）" % (label, sd.get("id")))
+    if sd.get("duration") is not None:
+        errors.append("%s sd %s: equipSlot 武器 duration 必须为 null（不得自然到期）" % (label, sd.get("id")))
+
+
 def _iter_effect_nodes(node):
     """递归产出效果/载荷 dict（含算子容器与嵌套条件）。"""
     if isinstance(node, dict):
@@ -387,6 +398,7 @@ def main():
                 if cat not in CATS: pre_errors.append("%s sd %s: bad category %s"%(cid,sd.get("id"),cat))
             if sd.get("equipSlot") is not None and sd.get("equipSlot") not in EQUIP_SLOTS:
                 pre_errors.append("%s sd %s: bad equipSlot %s"%(cid, sd.get("id"), sd.get("equipSlot")))
+            check_equip_status(sd, cid, pre_errors)
             if sd.get("crossPathway") is True:
                 parts = sd.get("participants")
                 if not isinstance(parts,list) or not parts:
@@ -575,6 +587,7 @@ def main():
                     if cat not in CATS: errors.append("%s sd %s: bad category %s"%(cid,sd.get("id"),cat))
                 if sd.get("equipSlot") is not None and sd.get("equipSlot") not in EQUIP_SLOTS:
                     errors.append("%s sd %s: bad equipSlot %s"%(cid, sd.get("id"), sd.get("equipSlot")))
+                check_equip_status(sd, cid, errors)
                 # crossPathway 枢纽白名单：crossPathway=true 必须带非空且合法的 participants
                 if sd.get("crossPathway") is True:
                     parts = sd.get("participants")

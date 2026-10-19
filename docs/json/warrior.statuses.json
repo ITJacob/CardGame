@@ -80,7 +80,7 @@
         "buff"
       ],
       "dispelable": true,
-      "duration": 20,
+      "duration": null,
       "triggers": [
         {
           "event": "on_deal_damage",
@@ -121,10 +121,15 @@
               "stat": "attack",
               "value": 4,
               "mode": "delta",
-              "duration": 20,
+              "duration": null,
               "target": "self"
             }
           ]
+        },
+        {
+          "event": "on_attack",
+          "consumeCharge": true,
+          "note": "每次普攻消耗 1 点耐久，打空即卸下"
         }
       ],
       "modifiers": {
@@ -140,8 +145,9 @@
           "note": "晨光灼邪：晨曦之剑对邪祟的额外灼烧（filter.unitType 签名键的卡面载体）"
         }
       },
-      "note": "武艺轴·单武器槽的第二把武器：凝聚晨曦之剑后装备（替换当前武器，持续 20tick）；攻击 +4、每次造成伤害附加 2 点、对亡灵/恶魔/灵体 +2。",
-      "equipSlot": "weapon"
+      "note": "武艺轴·单武器槽的第二把武器（耐久 4 次，替换当前武器）：攻击 +4、每次造成伤害附加 2 点、对亡灵/恶魔/灵体 +2。武器强制 charges 制——按普攻次数消耗，打空卸载；武器大师击杀时补满耐久。",
+      "equipSlot": "weapon",
+      "charges": 4
     },
     {
       "id": "abandon_attack",

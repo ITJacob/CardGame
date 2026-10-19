@@ -120,3 +120,8 @@
 - 保留乘区仅剩：弃攻代价 ×0.5（减益）与敌方易伤（hunter_mark/aging/collapse，单一来源）。
 - 修复：恢复 `guard_pressure`（被 guardianship 触发器引用，前一提交的孤儿清理漏扫状态间引用）。
 - 战士总分 58.8；四门禁 + 166 测试 + check:catalog 全绿。
+
+## 2026-10-19 武器制式统一（主人拍板）
+
+- **全库武器强制 charges 制**：`equipSlot: weapon` 状态必须 `charges ≥ 1`、`duration: null`，按普攻次数消耗、打空卸载。落点：`编队参数.md §1.1b`、`SCHEMA.md §6`、`DESIGN_CHECKLIST` 第 10 条、`validate.py` 强制 error。
+- **晨曦之剑**：`duration 20` → `charges 4`，加 `on_attack consumeCharge`；攻击 +4 改为随武器存在（duration null）。两把武器现在同制式：晨剑=持续攻击/灼邪（耐久 4），细剑=位移爆发/克邪（耐久 3），武器大师击杀补耐久对二者均生效。
