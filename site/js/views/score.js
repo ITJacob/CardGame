@@ -174,9 +174,10 @@ function checklistHtml(p) {
       : '';
     // 指纹明细：最近邻 + 强项族（scores.json 预计算，前端不重算）
     const styleDetail = (k === '差异化' && p.styleStrengths)
-      ? `<div class="chk-okline muted">分项：签名 ${(p.styleParts?.signature ?? 0).toFixed(0)}/15
-          ｜指纹 ${(p.styleParts?.fingerprint ?? 0).toFixed(0)}/15
+      ? `<div class="chk-okline muted">分项：签名 ${(p.styleParts?.signature ?? 0).toFixed(1)}/7
+          ｜途径间指纹 ${(p.styleParts?.fingerprint ?? 0).toFixed(0)}/12
           ｜构型 ${(p.styleParts?.config ?? 0).toFixed(1)}/5
+          ｜途径内去重 ${(p.styleParts?.dedup ?? 0).toFixed(1)}/11（低相似对 ${((p.styleParts?.dedupRatio ?? 0) * 100).toFixed(1)}%）
           ｜最近邻 ${escapeHtml(p.nearest || '—')}（距离 ${(p.nearestDist || 0).toFixed(3)}）
           ｜强项族：${p.styleStrengths.map((s) => `${escapeHtml(s.family)}(${s.keys.map(escapeHtml).join('/')})`).join('；')}</div>`
       : '';

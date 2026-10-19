@@ -246,6 +246,86 @@ def _check_desc_elems(node, cid, refs, errors, warns):
         else:
             errors.append(msg)
 
+def _iter_effect_nodes(node):
+    """递归产出效果/载荷 dict（含算子容器与嵌套条件）。"""
+    if isinstance(node, dict):
+        yield node
+        for v in node.values():
+            yield from _iter_effect_nodes(v)
+    elif isinstance(node, list):
+        for v in node:
+            yield from _iter_effect_nodes(v)
+
+
+def lint_playability(pid, cards, warns):
+    """玩法/文本卫生门禁（2026-10-19 立，先告警观察误报）：
+    10 同形状增益叠加 / 11 触发语境错配 / 12 模板句复制 / 13 被动触发点集中度。"""
+    # 10 单卡同 stat/resource/status + mode 的增益 ≥3 次
+    for c in cards:
+        cnt = {}
+        for n in _iter_effect_nodes(c.get("effects")):
+            t = n.get("type")
+            if t == "modify_stat":
+                key = ("stat:%s/%s" % (n.get("stat"), n.get("mode")))
+            elif t == "modify_resource":
+                key = ("res:%s/%s" % (n.get("resource"), n.get("mode")))
+            elif t == "mount_status":
+                key = ("status:%s" % n.get("statusId"))
+            else:
+                continue
+            cnt[key] = cnt.get(key, 0) + 1
+        for key, n in cnt.items():
+            if n >= 3:
+                warns.append("%s: 同形状叠加 %s ×%d（单卡同键应 ≤2）" % (c.get("id"), key, n))
+
+    # 11 触发语境错配（严格口径）：无受害方的事件里用白名单原语打 target
+    victim_prims = {"damage", "reveal", "drain", "take_control", "modify_targetability",
+                    "target_override", "translocate", "move", "dispel", "modify_skill"}
+    no_victim = {"on_battle_start", "on_kill", "on_death"}
+    for c in cards:
+        payloads = [(tr.get("event"), tr.get("effects")) for tr in (c.get("triggers") or [])]
+        hk = c.get("hook")
+        if c.get("kind") == "passive" and hk:      # 被动卡：hook 事件 + 卡面 effects 载荷
+            evs = hk if isinstance(hk, list) else [hk]
+            payloads += [(ev, c.get("effects")) for ev in evs]
+        for ev, effects in payloads:
+            if ev not in no_victim:
+                continue
+            for n in _iter_effect_nodes(effects):
+                t = n.get("type")
+                if t not in victim_prims or n.get("target") == "self":
+                    continue
+                if n.get("target") in (None, "target", "killed_unit"):
+                    warns.append("%s: 触发语境错配——%s @ %s 无受害方（target=%s）"
+                                 % (c.get("id"), t, ev, n.get("target")))
+
+    # 12 模板句复制：同途径效果节点 note 完全相同 ≥3 次（≥5 视为疑似批量注入）
+    notes = {}
+    for c in cards:
+        for n in _iter_effect_nodes(c):
+            nt = n.get("note")
+            if isinstance(nt, str) and len(nt.strip()) >= 4:
+                notes.setdefault(nt.strip(), []).append(c.get("id"))
+    for nt, owners in notes.items():
+        if len(owners) >= 3:
+            tag = "（≥5：疑似批量注入）" if len(owners) >= 5 else ""
+            warns.append("%s: 样板 note ×%d%s：%s" % (pid, len(owners), tag, nt[:40]))
+
+    # 13 被动触发点集中度：同事件被动卡 ≥8 张
+    ev_cards = {}
+    for c in cards:
+        if c.get("kind") != "passive":
+            continue
+        hk = c.get("hook")
+        evs = set(hk) if isinstance(hk, list) else ({hk} if hk else set())
+        evs |= {t.get("event") for t in (c.get("triggers") or []) if isinstance(t, dict)}
+        for ev in evs:
+            ev_cards.setdefault(ev, set()).add(c.get("id"))
+    for ev, ids in ev_cards.items():
+        if len(ids) >= 8:
+            warns.append("%s: 被动触发点 %s 集中 %d 张（应 <8）" % (pid, ev, len(ids)))
+
+
 def main():
     m = json.load(io.open(os.path.join(JSON_DIR,'manifest.json'), encoding='utf-8'))
     expect = {p["id"]: p["cardCount"] for p in m["pathways"]}
@@ -567,6 +647,7 @@ def main():
                             errors.append("sampleBuilds[%d] '%s': %s 卡名 '%s' 不在本文件 cards[]"%(bi,bn,slot,nm))
                         elif cd != exp_kind:
                             errors.append("sampleBuilds[%d] '%s': %s 卡名 '%s' 是 kind=%s，非预期 %s"%(bi,bn,slot,nm,cd,exp_kind))
+        lint_playability(pid, cards, warns)
         for e in errors: print("  E:", pid, e)
         for w in warns: print("  W:", pid, w)
         errors_all += [pid+": "+e for e in errors]

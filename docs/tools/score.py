@@ -162,6 +162,13 @@ def channel_reads(objs):
                 ch.add("rank")
             elif k == "resource_compare" and n.get("key") in ("secrecy", "order", "fate_value"):
                 ch.add(n["key"])
+            # 消费型写入也是读：资源必须先存在才能被减去
+            if n.get("type") == "modify_resource":
+                r = n.get("resource")
+                v = n.get("value")
+                if r in ("secrecy", "order", "fate_value", "death_tally") and (
+                        n.get("mode") == "consume" or (isinstance(v, (int, float)) and v < 0)):
+                    ch.add(r)
             if isinstance(n.get("phases"), list):        # phaseHooks / phase_is
                 ch.add("phase")
             d = n.get("dim")                              # dimHooks
@@ -171,15 +178,17 @@ def channel_reads(objs):
 
 
 def card_status_refs(card):
-    """卡面 effects 引用的状态 id 集（读侧，含 mount/modify/dispel 的 statusId 与 condition 的 id/hasStatus）。"""
+    """卡面 effects 读入的状态 id（条件谓词 / modify_status / dispel / transfer_status 的 statusId 与 hasStatus）。
+    mount_status 只写不读——挂个状态不等于读取本轴产出面（防「产层冒充读层」）。"""
     out = set()
     for n in walk(card.get("effects")):
-        for k in ("statusId",):
-            v = n.get(k)
-            if isinstance(v, str):
-                out.add(v)
-            elif isinstance(v, list):
-                out.update(x for x in v if isinstance(x, str))
+        if n.get("type") != "mount_status":
+            for k in ("statusId",):
+                v = n.get(k)
+                if isinstance(v, str):
+                    out.add(v)
+                elif isinstance(v, list):
+                    out.update(x for x in v if isinstance(x, str))
         if n.get("kind") in ("has_status", "caster_status_exists", "status_category") and isinstance(n.get("id"), str):
             out.add(n["id"])
         for k in ("hasStatus", "targetHasStatus"):
@@ -228,6 +237,7 @@ FIX = {
     "signature": "按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证",
     "uniqueness": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）",
     "config": "让四轴各走不同形状（产出面/通道或原语分化），避免四轴同一套骨架",
+    "dedup": "把同形状卡改成分化写法（读层/选靶/触发点/状态形态至少一项不同）；整组复制会被本项直接抓住",
 }
 FIX_NOTE = "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
 
@@ -636,6 +646,27 @@ def cos_dist(a, b):
     return total / cnt if cnt else 1.0
 
 
+def card_vectors(cards, status_by_id=None):
+    """卡级指纹向量（与途径指纹同族同口径）。"""
+    return [{f: {k: 1 for k in keys} for f, keys in _card_families(c, status_by_id).items()}
+            for c in cards]
+
+
+def intra_dedup(cards, status_by_id=None, low=0.20, cap=0.15):
+    """途径内去重复用（差异化第 4 项）：卡级指纹两两距离 < 0.20 的对数占比。
+    返回 (low_ratio, points 0–11)，占比越低分越高；cap=15% 判零分。
+    对整组复制敏感（×N 后 low_ratio 暴涨），补上「途径间距离」测不出的自我复制。"""
+    vecs = card_vectors(cards, status_by_id)
+    n = len(vecs)
+    pairs = n * (n - 1) // 2
+    if pairs == 0:
+        return 0.0, 11.0
+    low_n = sum(1 for i in range(n) for j in range(i + 1, n)
+                if cos_dist(vecs[i], vecs[j]) < low)
+    ratio = low_n / pairs
+    return ratio, round(11 * max(0.0, 1 - ratio / cap), 1)
+
+
 def load_unit_types(pathways):
     """unitId -> unitType。权威 = ddd 召唤物参数.md §一 36 具名单位归属表（多数单位 JSON 无 Def，仅被 spawn 引用）；
     skills.json 顶层 unitDefs 池中的显式定义叠加覆盖。"""
@@ -856,17 +887,28 @@ def main():
                 elif notes_level:
                     deductions.append(("收束闭环", "注：notes 级 %d 张（减半计）" % len(notes_level), ",".join(notes_level), FIX["payoff_notes"]))
 
-            # —— 轴内多样性（归一后置）：SCORING 2.2 起 = 全链路词表 ——
-            # 原语 + 谓词 + 选靶(scope/anchor) + 触发点 + 状态形态（去重种类和）
+            # —— 轴内多样性（2026-10-19 密度口径）：全链路词表去重形态 ÷ 卡数 ——
+            # 原语 + 谓词（仅 then/else 均非空的双分支条件，上限 6）+ 选靶 + 触发点 + 状态形态。
+            # 密度化消除「堆卡/空 if 刷种类」的规模代理；空 else 不计分支。
             prim_kinds, cond_kinds, chain_kinds = set(), set(), set()
             for c in axis_cards:
                 prim_kinds |= card_effect_types(c)
-                cond_kinds |= card_condition_kinds(c)
+                for n in walk(c.get("effects")):
+                    if n.get("op") != "if":
+                        continue
+                    then = [x for x in (n.get("then") or []) if isinstance(x, dict)]
+                    els = [x for x in (n.get("else") or []) if isinstance(x, dict)]
+                    if then and els:
+                        for cn in walk(n.get("condition")):
+                            if isinstance(cn.get("kind"), str):
+                                cond_kinds.add(cn["kind"])
                 cf = _card_families(c, status_by_id)
                 chain_kinds |= {"tgt:" + k for k in cf["tgt"] if k.startswith(("scope=", "anchor="))}
                 chain_kinds |= {"hook:" + k for k in cf["hook"]}
                 chain_kinds |= {"sshape:" + k for k in cf["sshape"]}
-            div_raw = len(prim_kinds) + len(cond_kinds) + len(chain_kinds)
+            n_axis_cards = len(axis_cards)
+            div_raw = ((len(prim_kinds) + min(len(cond_kinds), 6) + len(chain_kinds)) / n_axis_cards) \
+                if n_axis_cards else 0
             axis_diversity_raw[(pid, aid)] = div_raw
 
             # —— 规模均衡 ——
@@ -1005,10 +1047,10 @@ def main():
     _n_pw = len(_sorted_d)
 
     def _dist_pts(m):
-        pct = (sum(1 for v in _sorted_d if v <= m)) / _n_pw if _n_pw else 0
-        # SCORING 2.3：六档（原四档把 12 族的距离压得太扁）
-        return (15 if pct >= 5 / 6 else 12 if pct >= 4 / 6 else 9 if pct >= 3 / 6
-                else 6 if pct >= 2 / 6 else 3 if pct >= 1 / 6 else 0)
+        # 绝对阈值（2026-10-19）：全库分位制会让「全库一起优化」排名不动、单卡微改跨档套利；
+        # 绝对线随全库整体提升可涨分，阶段线记录于 SCORING.md。
+        return (12 if m >= 0.30 else 10 if m >= 0.26 else 8 if m >= 0.22
+                else 5 if m >= 0.18 else 3 if m >= 0.14 else 0)
 
     pw_rows = []
     for pid, d in pathways.items():
@@ -1048,26 +1090,28 @@ def main():
             want = [r for r, seqs in rarity_map.items() if c.get("sequence") in seqs]
             if want and c.get("rarity") not in want:
                 bad_rarity += 1
-        struct += 4 if bad_rarity == 0 else max(0, 4 - bad_rarity)
+        struct += 4 if bad_rarity == 0 else max(0, 4 - 2 * bad_rarity)
         actives = sum(1 for c in cards if c.get("kind") == "active")
         passives = len(cards) - actives
         aratio = actives / passives if passives else 99
         if 1.5 <= aratio <= 3.0:
             struct += 3
         else:
-            s5 = max(0, round(3 - abs(aratio - (1.5 if aratio < 1.5 else 3.0))))
+            adist = abs(aratio - (1.5 if aratio < 1.5 else 3.0))
+            s5 = round(3 * max(0.0, 1 - adist / 1.5), 1)   # 线性衰减，去 round 死区
             struct += s5
-            deductions.append(("结构健康", "-%s：主被动比 %.2f 不在 [1.5, 3.0]" % (3 - s5, aratio), pid, FIX["aratio"]))
+            deductions.append(("结构健康", "-%s：主被动比 %.2f 不在 [1.5, 3.0]" % (round(3 - s5, 1), aratio), pid, FIX["aratio"]))
         n_flag = sum(1 for c in cards if c.get("flagship"))
-        struct += max(0, 3 - abs(4 - n_flag))
+        struct += 3 if n_flag == 4 else 0              # 布尔判据，不再渐减白送
         if n_flag != 4:
-            deductions.append(("结构健康", "-%d：旗舰卡 %d 张（理想 4）" % (abs(4 - n_flag), n_flag), pid, FIX["flagship"]))
+            deductions.append(("结构健康", "-3：旗舰卡 %d 张（须恰好 4）" % n_flag, pid, FIX["flagship"]))
         struct = round(struct * 0.5, 1)          # 10 → 5
 
         # 机制落地（2026-10-16 权重 10→5：全库已满分无区分度）
         flags = [f for c in cards for f in (c.get("frameworkFlags") or [])]
         if not flags:
-            landed_score = 5
+            landed_score = 4.0       # 无缺口的底账不可验证，不再白送满分
+            deductions.append(("机制落地", "注：无 frameworkFlags 登记（无缺口可核，按 4.0 计）", pid, FIX["landed"]))
         else:
             landed_n = sum(1 for f in flags if f.get("landed"))
             landed_score = round(5 * landed_n / len(flags), 1)
@@ -1076,8 +1120,14 @@ def main():
                     deductions.append(("机制落地", "-：frameworkFlags 未落地 %s" % f.get("code", "?"),
                                        f.get("note", "")[:60], FIX["landed"]))
 
-        # 文本完备（权重 10→5）
-        txt = sum(1 for c in cards if c.get("lore") and c.get("flavor") and c.get("describe"))
+        # 文本完备（2026-10-19：非空 → 内容判据）——最短长度 + 途径内 describe 去重
+        txt = 0
+        seen_desc = set()
+        for c in cards:
+            desc = (c.get("describe") or "").strip()
+            if c.get("lore") and c.get("flavor") and len(desc) >= 20 and desc not in seen_desc:
+                txt += 1
+            seen_desc.add(desc)
         text_score = round(5 * txt / len(cards), 1) if cards else 0
 
         # 强项族（展示用）：族内键种数降序，每族 Top2 键——让十二族口径在页面上可见
@@ -1091,27 +1141,32 @@ def main():
         style_strengths.sort(key=lambda x: (-x["distinct"], x["family"]))
         style_strengths = style_strengths[:4]
 
-        # 差异化（SCORING 2.3，权重 35）= 签名键落地 15 + 指纹距离 15 + 构型多样 5
+        # 差异化（2026-10-19 重切，权重 35）= 签名键落地 7 + 途径间指纹 12 + 构型多样 5 + 途径内去重 11
         sig_keys = PATHWAY_SIGNATURES.get(pid, [])
         sig_hits = signature_counts(cards, sig_keys, unit_type_of=all_unit_types,
                                     lineage_ids=lineage_status_ids, flag_status_index=flag_status_index)
-        signature_score = min(15, sum(6 if h >= 2 else 3 * h for h in sig_hits.values()))
+        signature_score = min(7, sum(3 if h >= 2 else 1.5 * h for h in sig_hits.values()))
         dist_pts = _dist_pts(mean_dists[pid])
+        dedup_ratio, dedup_pts = intra_dedup(cards, status_by_id)
         shapes = [set(r["shape"]) for r in arows]
         pairs = [(shapes[i], shapes[j]) for i in range(len(shapes)) for j in range(i + 1, len(shapes))]
         jac = (sum((len(a & b) / len(a | b)) if (a | b) else 1.0 for a, b in pairs) / len(pairs)) if pairs else 1.0
         config_div = round(5 * (1 - jac), 1)
-        style_score = round(signature_score + dist_pts + config_div, 1)
-        if signature_score < 15:
+        style_score = round(signature_score + dist_pts + config_div + dedup_pts, 1)
+        if signature_score < 7:
             blanks = [k for k, h in sig_hits.items() if h == 0]
-            deductions.append(("差异化", "-%s：签名键零使用 %s" % (15 - signature_score, ",".join(blanks) or "（有键仅 1 卡，未落地）"), pid, FIX["signature"]))
+            deductions.append(("差异化", "-%s：签名键零使用 %s" % (round(7 - signature_score, 1), ",".join(blanks) or "（有键仅 1 卡，未落地）"), pid, FIX["signature"]))
         if dist_pts <= 3:
-            deductions.append(("差异化", "-：途径指纹距离垫底（对他 21 途径均距 %.3f）" % mean_dists[pid], pid, FIX["uniqueness"]))
+            deductions.append(("差异化", "-：途径间指纹距离垫底（对他 21 途径均距 %.3f）" % mean_dists[pid], pid, FIX["uniqueness"]))
         if config_div < 2.5:
             deductions.append(("差异化", "-：四轴构型雷同（构型多样 %.1f/5，四轴产出面/原语高度重叠）" % config_div, pid, FIX["config"]))
+        if dedup_pts < 8:
+            deductions.append(("差异化", "-%s：途径内低相似对 %.1f%%（卡级指纹 <0.20 的对数占比，整组复制或模板复用）"
+                               % (round(11 - dedup_pts, 1), dedup_ratio * 100), pid, FIX["dedup"]))
 
         # SCORING 2.3：三项合规维改为门禁——不计入 100 分，未达标各扣 3
-        gates = {"结构健康": struct >= 4.95, "机制落地": landed_score >= 4.95,
+        gates = {"结构健康": struct >= 4.95,
+                 "机制落地": (not flags) or landed_score >= 4.95,
                  "文本完备": text_score >= 4.95}
         gate_penalty = 3 * sum(1 for ok in gates.values() if not ok)
         total = round(health + crossaxis + crosspath + style_score - gate_penalty, 1)
@@ -1125,7 +1180,8 @@ def main():
             "gates": gates, "gatePenalty": gate_penalty,
             "styleStrengths": style_strengths,
             "styleParts": {"signature": signature_score, "fingerprint": dist_pts,
-                           "config": config_div},
+                           "config": config_div, "dedup": dedup_pts,
+                           "dedupRatio": round(dedup_ratio, 4)},
             "nearest": nearest[pid][0], "nearestDist": nearest[pid][1],
             "axes": arows, "deductions": deductions,
             "min_axis": min_axis, "mean_axis": round(mean_axis, 1),

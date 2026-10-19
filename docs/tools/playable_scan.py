@@ -814,6 +814,58 @@ def scan_keys(cards, data):
     return sorted(k for k in keys if k)
 
 
+def playability_2x2(cards, st, cost_cards):
+    """2×2 诊断（2026-10-19）：可操作变量（≥2 张主动写入 + ≥1 读 + 有代价）
+    × 集火（某标记被 ≥3 张卡以 ≥2 种方式读取，且施加方 ≤2 张 ⇒ 稀缺）。"""
+    cost_names = {c.get("name") for c in cost_cards}
+    # 基础量（行动条/血/能量等）不算「可操作变量」——引擎按规则供给，人人都有
+    base = {"energy", "armor", "shield", "hp", "hp_max", "gauge.current", "gauge.max",
+            "action", "charge"}
+    var_keys = []
+    for k, v in st.items():
+        if k in base:
+            continue
+        w = v["write"]
+        if w["produce_active"] >= 2 and v["read"]["cards"] >= 1:
+            var_keys.append({
+                "key": k, "active_producers": w["produce_active"],
+                "readers": v["read"]["cards"],
+                "paid": bool(cost_names & set(w.get("producer_names") or [])),
+            })
+    has_var = bool(var_keys)
+
+    reads, writes, rtypes = defaultdict(set), defaultdict(set), defaultdict(set)
+    for c in cards:
+        cid = c.get("id")
+        for _origin, n in iter_card_effects(c):
+            sid = n.get("statusId")
+            if n.get("type") == "mount_status" and isinstance(sid, str):
+                writes[sid].add(cid)
+            elif n.get("type") in ("modify_status", "dispel", "transfer_status") and isinstance(sid, str):
+                reads[sid].add(cid)
+                rtypes[sid].add(n["type"])
+            if n.get("kind") in ("has_status", "caster_status_exists", "status_category") \
+                    and isinstance(n.get("id"), str):
+                reads[n["id"]].add(cid)
+                rtypes[n["id"]].add(n["kind"])
+            for f in ("hasStatus", "targetHasStatus"):
+                v = n.get(f)
+                for x in ([v] if isinstance(v, str) else (v or [])):
+                    if isinstance(x, str):
+                        reads[x].add(cid)
+                        rtypes[x].add(f)
+    focus = sorted(sid for sid in reads
+                   if len(reads[sid]) >= 3 and 1 <= len(writes.get(sid, ())) <= 2
+                   and len(rtypes[sid]) >= 2)
+    has_focus = bool(focus)
+    quad = ("理想态" if has_var and has_focus else
+            "有变量无集火" if has_var else
+            "有集火无变量" if has_focus else "双挂")
+    return {"has_variable": has_var, "var_keys": var_keys,
+            "has_focus": has_focus, "focus_status": focus[:5],
+            "quadrant": quad}
+
+
 def scan_pathway(pid, data):
     cards = data.get("cards") or []
     axes = data.get("axes") or {}
@@ -866,6 +918,7 @@ def scan_pathway(pid, data):
             "note_node": nn,                              # 辅 1：效果节点层
             "note_card_level": note_dedup(cards),         # 辅 2：卡级事项戳记 / 角色戳记
         },
+        "7_2x2": playability_2x2(cards, st, cost),
     }
 
 
@@ -1183,15 +1236,15 @@ def main():
         return print_thresholds(rows)
 
     print("| 途径 | 卡数 | ①三元组模板/需≥ | ②最近对min | ②均距 | ②<0.20对 | ③最低轴选靶去重 | "
-          "④键数/报警/卡面产层 | ⑤双分支% | ⑥代价% | ⑥机器戳记 |")
-    print("|---|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|")
+          "④键数/报警/卡面产层 | ⑤双分支% | ⑥代价% | ⑥机器戳记 | 2×2 |")
+    print("|---|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|---|")
     for r in rows:
         ip = r["2_intra_pairs"]
         td = min((v["dedup_ratio"] for v in r["3_tgt_dedup"].values() if v["dedup_ratio"] is not None), default=None)
         s = r["4_summary"]
         tp = r["1_triplet"]
         ms = r["6_cost"]["note_machine"]
-        print("| %s | %d | %d/%.1f%s | %.4f | %.4f | %d | %s | %d/%d/%s | %.0f%% | %.0f%% | %s |" % (
+        print("| %s | %d | %d/%.1f%s | %.4f | %.4f | %d | %s | %d/%d/%s | %.0f%% | %.0f%% | %s | %s |" % (
             r["pathway"], r["cards"], tp["templates"], tp["need"] or 0,
             "" if tp["pass"] else "✗",
             ip["min"] or 0, ip["mean"] or 0, ip["n_lt_020"],
@@ -1199,7 +1252,17 @@ def main():
             s["cardface_producers"],
             (r["5_dual_branch"]["cards_dual"] / r["cards"] * 100) if r["cards"] else 0,
             (r["6_cost"]["ratio"] or 0) * 100,
-            ("%.3f" % ms["ratio"]) if ms.get("ratio") is not None else "-"))
+            ("%.3f" % ms["ratio"]) if ms.get("ratio") is not None else "-",
+            r["7_2x2"]["quadrant"]))
+    print()
+    print("=== 2×2 诊断（可操作变量 × 集火）——按改造方向分组 ===")
+    order = {"有集火无变量": "最便宜：补 1 张写入卡", "有变量无集火": "中：给变量加稀缺标记",
+             "双挂": "最贵：引入新变量", "理想态": "只做精细化"}
+    for quad in ("有集火无变量", "有变量无集火", "双挂", "理想态"):
+        ids = [r for r in rows if r["7_2x2"]["quadrant"] == quad]
+        if ids:
+            print("  %s（%d）：%s" % (quad, len(ids), "、".join(r["pathway"] for r in ids)))
+            print("     → %s" % order[quad])
     print()
     print_thresholds(rows)
     return 0
