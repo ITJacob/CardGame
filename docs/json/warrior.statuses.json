@@ -44,22 +44,18 @@
               "note": "击杀缴械：补满当前装备武器的耐久"
             }
           ]
-        },
-        {
-          "event": "on_apply",
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 3,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
-            }
-          ]
         }
       ],
       "modifiers": {
+        "attackMod": {
+          "value": 3,
+          "condition": {
+            "kind": "has_equipped",
+            "side": "self",
+            "slot": "weapon"
+          },
+          "note": "持械时攻击 +3：加成随武器在手而生，缴械即失效"
+        },
         "outgoingDamageParams": {
           "filter": {
             "weaponDamage": true
@@ -67,7 +63,7 @@
           "armorPierceRatio": 0.5
         }
       },
-      "note": "武器大师：攻击 +3，自身武器造成的伤害无视目标一半护甲（以「会消耗装备武器耐久的攻击」判定，缴械后不再生效）；击杀时若已装备武器，补满其耐久。"
+      "note": "武器大师：持械时攻击 +3（加成随武器在手而生，缴械即失效）；自身武器造成的伤害无视目标一半护甲（以「会消耗装备武器耐久的攻击」判定）；击杀时若已装备武器，补满其耐久。"
     },
     {
       "id": "dawn_blade",
