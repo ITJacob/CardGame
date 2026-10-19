@@ -1438,7 +1438,7 @@
       "flagship": false,
       "lore": "序列5 守护者 —— \"能对任何怪物造成伤害\"",
       "flavor": "没有你砍不动的东西——甲也好，护体的异力也好，在这一斩之下都不算数。",
-      "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；若已装备武器，伤害 +2；并使自己行动条前推 8；战意·不摧：消耗 3 层，自身攻击 +3（10tick）。",
+      "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；并使自己行动条前推 8；战意·不摧：消耗 3 层，自身攻击 +3（10tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1464,24 +1464,6 @@
           "pierce": [
             "resist"
           ]
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_equipped",
-            "side": "self",
-            "slot": "weapon"
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "none",
-              "value": 2,
-              "note": "无坚不摧：手里有兵刃，这一击才真正容不下甲"
-            }
-          ],
-          "else": [],
-          "note": "读本轴武器产出面（已装备武器）"
         },
         {
           "type": "modify_resource",
@@ -1533,7 +1515,7 @@
         ],
         "mood": "decisive, overwhelming"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。 ｜ 2026-10-19 条件泛化：持械判定改走 has_equipped(slot:weapon)，新增武器/他途径具现或转移来的武器自动纳入。"
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。 ｜ 2026-10-19 条件泛化：持械判定改走 has_equipped(slot:weapon)，新增武器/他途径具现或转移来的武器自动纳入。 ｜ 2026-10-19 移除持械 +2 段：武器槽判断与主效果无关，无坚不摧回归纯破甲斩。"
     },
     {
       "id": "skill_warrior_s4_execution_registration",
