@@ -641,6 +641,8 @@ def is_cost_card(card, broad=False):
         selfside = tgt in (None, "self", "caster", "holder")
         if t == "damage" and tgt in ("self", "caster", "holder"):
             return True
+        if t == "modify_stat" and (n.get("value") or 0) < 0 and selfside:
+            return True   # 弃攻/弃防等负面自挂也是代价
         if t == "modify_resource" and n.get("resource") in ("hp", "hp_max") \
            and (n.get("value") or 0) < 0 and selfside:
             return True

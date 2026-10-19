@@ -594,6 +594,79 @@
       "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M9 弃攻铁壁。 ｜ 签名补批（2026-10-16 第二批）：硬抗。 ｜ 2026-10-16 环节⑤guard 轴收束：补 guardianship 读层（耗层——拆 1 层守护化盾卸力）。 ｜ 2026-10-16 战士独特性深化：弃攻补反击（D1，弃攻从纯代价转为战术选择）。 ｜ 2026-10-18 曲线修正：s8 普通卡移除反击姿态/守护拆层/永久减伤，收敛为 4 段防御套件。"
     },
     {
+      "id": "skill_warrior_s7_death_duel",
+      "name": "死斗",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "武器大师",
+      "rarity": "uncommon",
+      "axis": "guard",
+      "flagship": false,
+      "lore": "序列7 武器大师 —— \"任何武器到手即大师级水准。\"",
+      "flavor": "你把刀往地上一插，冲对面勾了勾手——现在只剩你和我。",
+      "describe": "向一名敌人发起死斗：它被迫只能普攻你（嘲讽 6tick）；你同挂反击姿态（15tick，2 次）并获得 3 点护甲；代价是弃防——自身防御 -2（6tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "whole_lane",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "taunt",
+          "duration": 6,
+          "target": "target",
+          "note": "死斗：它只能冲你来"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "counter_stance",
+          "duration": 15,
+          "target": "self",
+          "note": "反击姿态：谁打你就还手"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "armor",
+          "value": 3,
+          "mode": "delta",
+          "target": "self",
+          "note": "死斗姿态的护甲"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -2,
+          "mode": "delta",
+          "duration": 6,
+          "target": "self",
+          "note": "弃防：把注意力全吸过来，自己露出破绽"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "机制期 W7 补卡（2026-10-19）：guard 非减伤承伤卡，复用 common.taunt 与 war_bulwark，不新增状态。",
+      "art": {
+        "subject": "a warrior planting a blade and beckoning a single enemy forward",
+        "elements": [
+          "blade in the ground",
+          "one challenger",
+          "walled stance"
+        ],
+        "mood": "defiant, inviting"
+      }
+    },
+    {
       "id": "skill_warrior_s7_weapon_grandmaster",
       "name": "武器大师",
       "kind": "passive",
@@ -1195,6 +1268,67 @@
           "rising luminous gale"
         ],
         "mood": "scouring, blinding"
+      }
+    },
+    {
+      "id": "skill_warrior_s5_prey_mark",
+      "name": "追猎印记",
+      "kind": "passive",
+      "sequence": 5,
+      "sequenceName": "守护者",
+      "rarity": "rare",
+      "axis": "hunt",
+      "flagship": false,
+      "lore": "序列5 守护者 —— \"猎手的眼睛不会跟丢猎物。\"",
+      "flavor": "你只是在它肩上留了一道很浅的印——从这一箭开始，它跑到哪都在你的射程里。",
+      "describe": "你对敌人造成伤害时，为其挂上「印记」（20tick，受伤 ×1.25）；若目标已带印记，改为追加 1 点物理伤害。",
+      "hook": [
+        "on_deal_damage"
+      ],
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "target",
+              "id": "hunter_mark",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "hunter_mark",
+              "duration": 20,
+              "target": "target",
+              "note": "追猎印记：跑不掉了"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 1,
+              "target": "target",
+              "note": "追猎：对已标记目标补一刀"
+            }
+          ],
+          "note": "同一猎物只标一次；已标则转为追击"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "机制期 W7 补卡（2026-10-19）：hunt 被动标记，复用 common hunter_mark，不新增状态。",
+      "art": {
+        "subject": "a hunter nocking a second arrow at a marked target",
+        "elements": [
+          "shallow shoulder mark",
+          "drawn bow",
+          "one tracked enemy"
+        ],
+        "mood": "patient, relentless"
       }
     },
     {
