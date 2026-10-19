@@ -2,7 +2,7 @@
 // 由 views/stats.js 调 renderStatusStats(container) 注入；数据未就绪时的
 // 加载占位与重画时机也归 stats.js 管（见该文件末尾）
 // 口径：docs/json/*.statuses.json 的 statusDefs——含 modifiers 表、triggers[].effects、
-// def 级 effects、thresholdTrigger / phases 等任意嵌套（递归用 ast.js 的 walkCardEffects，
+// thresholdTrigger / phases 等任意嵌套（递归用 ast.js 的 walkCardEffects，
 // 它与卡面同一套遍历规则，所以卡面/状态两族的「原语用量」可以直接对照）
 import { DB } from '../data.js';
 import { zh } from '../term.js';

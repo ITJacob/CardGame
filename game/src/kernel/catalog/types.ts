@@ -349,7 +349,6 @@ export interface StatusDef {
   durationUnit?: 'tick' | 'self_turn'
   modifiers?: ModifierSet
   triggers?: TriggerDef[]
-  effects?: EffectNode[]
   charges?: number
   /** 装备槽（如 weapon）：同槽状态互斥，后装备者替换前者 */
   equipSlot?: string

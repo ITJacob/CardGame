@@ -192,7 +192,6 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
         collectMountRefs(card.effects, card.id, passiveMountRefs)
         for (const trg of card.triggers ?? []) collectMountRefs(trg.effects, card.id, passiveMountRefs)
         for (const sd of card.statusDefs ?? []) {
-          collectMountRefs(sd.effects, card.id, passiveMountRefs)
           for (const trg of sd.triggers ?? []) collectMountRefs(trg.effects, card.id, passiveMountRefs)
         }
       }

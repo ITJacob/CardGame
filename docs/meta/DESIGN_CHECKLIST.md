@@ -27,7 +27,7 @@ statusDef 38 个字段，设计决策收敛为七组：
 | 1 | **身份** | `id` / `name` / `note` + `category` 分类（buff / debuff / 控制…词典值域）——网页统计分析页「状态定义面」分类 × 原语热图的第一个轴 |
 | 2 | **时长模型** | 四件套怎么取：`duration`（配 `durationUnit`：缺省 `tick` 自然到期 / `self_turn` 按持有者行动机会数）/ `maxStacks`（叠层）/ `charges`（次数）/ `dispelable`——决定「层数语义」，也是评分「身份锚定」查的层数引擎。**次数消耗型 / 出手自破型一律 `self_turn`**，别折成 N×5 tick |
 | 3 | **读档能力** | `stackThreshold` + `thresholdTrigger`（到档触发什么）、`statPerStack`（每层载荷）、`ramp`、`phases`（形态轮转，如月相）——状态的 payoff 接口；「身份锚定」+7 分看这组是否非空 |
-| 4 | **行为载荷** | `triggers`（15 封闭触发点 → effects，状态的主动面）/ def 级 `effects` / `modifiers`（自由词表修饰符）/ `behaviorModifiers` / `disallowActions` / 防御语义件（`lethalProtect` / `reviveBlocked` / `immune` / `suppress` / `redirectRule`…） |
+| 4 | **行为载荷** | `triggers`（15 封闭触发点 → effects，状态的主动面；挂载载荷用 `on_apply`）/ `modifiers`（自由词表修饰符）/ `behaviorModifiers` / `disallowActions` / 防御语义件（`lethalProtect` / `reviveBlocked` / `immune` / `suppress` / `redirectRule`…） |
 | 5 | **跨系开关** | `crossPathway` + `participants` 白名单——不写默认途径私有；跨系联动评分维查这里 |
 | 6 | **特殊机制件**（按需） | `formGroup` / `cycleTicks`（月相轮转）、`slots`（放牧槽 / 规则槽）、`lineageStack`（异类谱系）、`summonMapping`（刻印链）、`contagious`、`transferOnDeath` 等——用到才取 |
 | 7 | **登记 + 数值** | 新 id 过词典对账、枚举过 check_enum_sync；数值 ⚠️D 同技能 |

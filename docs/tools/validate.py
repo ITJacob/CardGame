@@ -510,7 +510,6 @@ def main():
                     if a not in ACTION_LOCKS: errors.append("%s sd %s: bad disallowActions %s"%(cid,sd.get("id"),a))
                 # 命名治理：modifiers 开放结构内的同义异写，告警引导收敛到规范拼写
                 check_mod_keys(sd.get("modifiers"), "%s sd %s" % (cid, sd.get("id")), warns)
-                walk(sd.get("effects"), cid, "sd:"+sd.get("id","?"), flags, errors, warns, _passive)
                 trigs(sd.get("triggers"), cid, "sd:"+sd.get("id","?"), flags, errors, warns, _passive)
                 for tf in ("thresholdTrigger", "stackThreshold"):
                     walk((sd.get(tf) or {}).get("effects"), cid, "sd:"+sd.get("id","?")+"."+tf, flags, errors, warns, _passive)

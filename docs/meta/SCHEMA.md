@@ -214,7 +214,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `dispelable` | bool | |
 | `duration` | int\|null | |
 | `modifiers` | array\|object | **两种形态都合法**：数组（字符串/对象混合）或 `{修正名: 参数}` 映射表；开放结构。数组形态的对象元素为封闭 `statusModifier`（2026-09-18 增补 `target`/`condition` 两字段，承载「对全体友军、阈值门控」类修饰） |
-| `triggers` / `effects` | | 状态自带触发器与载荷 |
+| `triggers` | trigger[] | 状态自带触发器；状态载荷一律写在 `triggers[].effects`——挂载即生效用 `event: on_apply`（def 级 `effects` 已退役） |
 | `charges` `maxStacks` `stackPolicy`(stack/refresh) | | 层数与次数。`charges` = 次数型状态初始次数；触发器标 `consumeCharge` 时每次触发扣 1，归零卸载 |
 | `equipSlot` | string | **装备槽**（当前仅 `weapon`）：同槽状态互斥，后装备者替换前者（含同 defId 重挂 → 耐久刷新）；仅主动卡可挂载，被动只能读/补耐久 |
 | `disallowActions` | `actionLock[]` | **行为封锁**：单位持有该状态时禁止相应行动，`actionLock` 封闭枚举 = `move`(禁止移动) / `basic_attack`(禁止普攻) / `skill`(禁止主动技能) / `skip`(禁止跳过行动周期) / `react`(禁止反应·反击) / `channel`(禁止吟唱)。经既有 `mount_status` 挂载，可驱散、可带 duration/stacks（行为层修改三，2026-09-17 拍板） |

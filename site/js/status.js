@@ -157,7 +157,7 @@ function mechanismHtml(def) {
 // 保证 38 字段任何一个有值都看得见。已消费字段清单 = 上面各节显式处理的并集
 const HANDLED = new Set([
   'id', 'name', 'category', 'note', 'duration', 'maxStacks', 'charges', 'equipSlot', 'dispelable',
-  'stackPolicy', 'stackCapOverride', 'effects', 'triggers',
+  'stackPolicy', 'stackCapOverride', 'triggers',
   'statPerStack', 'stackThreshold', 'thresholdTrigger', 'ramp', 'phases', 'nextPhase',
   'modifiers', 'behaviorModifiers', 'disallowActions', 'lethalProtect', 'reviveBlocked',
   'silent_immune', 'immune', 'suppress', 'redirectRule', 'healReceivedMul', 'damageTransfer', 'statMods',
@@ -188,7 +188,6 @@ export function renderStatusDetail(id) {
   blocks.push(sec('跨系开关', crossHtml(def)));
   blocks.push(sec('特殊机制件', mechanismHtml(def)));
   blocks.push(sec('其余字段', restHtml(def)));
-  if (def.effects?.length) blocks.push(`<div class="tt-sec">效果</div>${renderEffects(def.effects)}`);
   if (def.triggers?.length) blocks.push(`<div class="tt-sec">触发</div>${triggersHtml(def.triggers)}`);
   return blocks.filter(Boolean).join('');
 }
