@@ -862,13 +862,15 @@ def playability_2x2(cards, st, cost_cards, identity_sids=()):
                     if isinstance(x, str):
                         reads[x].add(cid)
                         rtypes[x].add(f)
-    # 私有标记状态也是可操作变量：≥2 张主动卡写入 + ≥1 张读取
+    # 私有标记状态也是可操作变量：≥2 张主动卡写入 + ≥1 张读取 + 写入方带代价
+    cost_ids = {c.get("id") for c in cost_cards}
     for sid in active_writes:
         if len(active_writes[sid]) >= 2 and len(reads.get(sid, ())) >= 1:
             var_keys.append({"key": "status:" + sid,
                              "active_producers": len(active_writes[sid]),
-                             "readers": len(reads[sid]), "paid": True})
-    has_var = bool(var_keys)
+                             "readers": len(reads[sid]),
+                             "paid": bool(active_writes[sid] & cost_ids)})
+    has_var = any(x["paid"] for x in var_keys)
     focus = sorted(sid for sid in reads
                    if sid not in identity_sids
                    and len(reads[sid]) >= 3 and 1 <= len(writes.get(sid, ())) <= 2)
