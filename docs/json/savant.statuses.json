@@ -33,22 +33,27 @@
       ],
       "dispelable": true,
       "duration": 30,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 4,
-          "mode": "delta",
-          "duration": 30,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "armor",
-          "value": 5,
-          "mode": "delta",
-          "duration": 30,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 4,
+              "mode": "delta",
+              "duration": 30,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 5,
+              "mode": "delta",
+              "duration": 30,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "退化方案：不建状态，直接用 modify_stat + modify_resource 两条表达（代价：不可被驱散、无状态图标）"
@@ -129,15 +134,20 @@
       ],
       "dispelable": true,
       "duration": 20,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": -3,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self",
-          "note": "衰弱"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -3,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self",
+              "note": "衰弱"
+            }
+          ]
         }
       ],
       "modifiers": {
@@ -153,21 +163,26 @@
       ],
       "dispelable": true,
       "duration": 25,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "defense",
-          "value": 2,
-          "mode": "delta",
-          "duration": 25,
-          "target": "self"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "shield",
-          "value": 5,
-          "duration": 20,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 2,
+              "mode": "delta",
+              "duration": 25,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 5,
+              "duration": 20,
+              "target": "self"
+            }
+          ]
         }
       ]
     },
@@ -179,24 +194,6 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 3,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "hp_max",
-          "value": 5,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        }
-      ],
       "triggers": [
         {
           "event": "on_death",
@@ -207,6 +204,27 @@
               "value": 5,
               "target": "target",
               "note": "亡语：散架时仍在撕咬；目标域 = ADJACENT_ENEMY（共享内核 §一 filter.adjacency）"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 5,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
             }
           ]
         }
@@ -397,22 +415,27 @@
           "note": "文明量尺：己方每有一具造物（CONSTRUCT/MACHINE）在场，启迪的能量恢复 +0.1/tick（封顶 +0.2，⚠️D 待平衡）——通识者修饰键签名（2026-10-02 批次十登记制落地）"
         }
       },
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "energy_regen",
-          "value": 0.3,
-          "mode": "delta",
-          "duration": 30,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "resist:mental",
-          "value": 20,
-          "mode": "delta",
-          "duration": 30,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": 0.3,
+              "mode": "delta",
+              "duration": 30,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": 20,
+              "mode": "delta",
+              "duration": 30,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "H3 参数化母版（energy_regen / resist:mental 标准载荷）；与 F14 tutelage 同源 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。 ｜ 2026-10-02 批次十：modifiers.civilization_scale 文明量尺（矩阵修饰键义务兑现）",

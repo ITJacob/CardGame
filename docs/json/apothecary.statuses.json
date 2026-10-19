@@ -52,49 +52,6 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 1,
-          "mode": "delta",
-          "duration": null,
-          "target": "all_allies",
-          "filter": {
-            "anyOf": [
-              {
-                "tags": [
-                  "beast"
-                ]
-              },
-              {
-                "isSummon": true
-              }
-            ]
-          },
-          "note": "驱使"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 5,
-          "mode": "delta",
-          "duration": null,
-          "target": "all_allies",
-          "filter": {
-            "anyOf": [
-              {
-                "tags": [
-                  "beast"
-                ]
-              },
-              {
-                "isSummon": true
-              }
-            ]
-          }
-        }
-      ],
       "triggers": [
         {
           "event": "on_take_damage",
@@ -109,6 +66,52 @@
                 "isSummon": true
               },
               "note": "分享感官：推友军不推自己（G5/G6 合规）"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies",
+              "filter": {
+                "anyOf": [
+                  {
+                    "tags": [
+                      "beast"
+                    ]
+                  },
+                  {
+                    "isSummon": true
+                  }
+                ]
+              },
+              "note": "驱使"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 5,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies",
+              "filter": {
+                "anyOf": [
+                  {
+                    "tags": [
+                      "beast"
+                    ]
+                  },
+                  {
+                    "isSummon": true
+                  }
+                ]
+              }
             }
           ]
         }
@@ -143,14 +146,19 @@
       ],
       "dispelable": true,
       "duration": 15,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 6,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 6,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            }
+          ]
         }
       ],
       "modifiers": {
@@ -210,30 +218,35 @@
       ],
       "dispelable": true,
       "duration": 50,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 2,
-          "mode": "delta",
-          "duration": 50,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "defense",
-          "value": 2,
-          "mode": "delta",
-          "duration": 50,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 8,
-          "mode": "delta",
-          "duration": 50,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": 50,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 2,
+              "mode": "delta",
+              "duration": 50,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": 50,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "带 duration 的回滚走账本条目 remaining / revertBySource 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh，药剂可叠 3 层（多重药效））层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。 ｜ 2026-10-02 批次十一：modifiers.dose_stack 药剂叠量（矩阵义务兑现——原排期标「批次九」勘误，此批落地）",
@@ -297,22 +310,27 @@
       "formGroup": "moon_phase",
       "nextPhase": "moon_full",
       "cycleTicks": 6,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "energy_regen",
-          "value": 0.2,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "resist:mental",
-          "value": 20,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": 0.2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": 20,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "🌗 银月，灵性澄澈（对应「灵性权柄」）"

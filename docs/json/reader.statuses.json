@@ -132,23 +132,28 @@
       ],
       "dispelable": true,
       "duration": 20,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "armor",
-          "value": -5,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "resist:*",
-          "value": -20,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self",
-          "note": "resist:all 通配 = 8 元素全降（共享内核 §一 ResistanceSet 行）"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": -5,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:*",
+              "value": -20,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self",
+              "note": "resist:all 通配 = 8 元素全降（共享内核 §一 ResistanceSet 行）"
+            }
+          ]
         }
       ],
       "modifiers": {

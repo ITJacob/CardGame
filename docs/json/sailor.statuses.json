@@ -124,14 +124,19 @@
       ],
       "dispelable": true,
       "duration": 15,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "energy_regen",
-          "value": -0.2,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": -0.2,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "序列2「电磁紊乱」并入本卡附加条款，不单独立项 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
@@ -146,40 +151,45 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "resist:physical",
-          "value": 0.3,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "resist:lightning",
-          "value": 0.3,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "resist:mental",
-          "value": -0.1,
-          "mode": "delta",
-          "duration": null,
-          "target": "self",
-          "note": "平衡代价：能量体更易被精神与灵性伤害"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 8,
-          "mode": "delta",
-          "duration": null,
-          "target": "self",
-          "note": "接近光速飞行"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:physical",
+              "value": 0.3,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:lightning",
+              "value": 0.3,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": -0.1,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "平衡代价：能量体更易被精神与灵性伤害"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "接近光速飞行"
+            }
+          ]
         }
       ]
     },

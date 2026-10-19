@@ -8,46 +8,51 @@
       ],
       "dispelable": false,
       "duration": 15,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 3,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 8,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "armor",
-          "value": 2,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "defense",
-          "value": -2,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "resist:mental",
-          "value": -20,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 2,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:mental",
+              "value": -20,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "默认时长同源于稿期 3 回合 → 15tick（2026-10-09 时长校正）；H10 参数化形态增益母版（增益段 × 代价段 × dispelable:false），与 F10 beast_form 同母版，差异在代价段与可否驱散；正负两段同挂一个可计时状态，到期自动回滚"
@@ -88,24 +93,6 @@
       ],
       "dispelable": true,
       "duration": 20,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 3,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 8,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
-        }
-      ],
       "triggers": [
         {
           "event": "on_deal_damage",
@@ -126,6 +113,27 @@
               "value": 0.2,
               "target": "self",
               "note": "恐怖自愈；A22 必须用 heal 原语，G70tick ≠ 回合"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
             }
           ]
         }
@@ -171,14 +179,19 @@
       ],
       "dispelable": true,
       "duration": 15,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "resist:physical",
-          "value": 50,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:physical",
+              "value": 50,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            }
+          ]
         }
       ],
       "modifiers": {
@@ -315,23 +328,6 @@
       ],
       "dispelable": true,
       "duration": 15,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "resist:physical",
-          "value": 40,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
-        }
-      ],
-      "modifiers": {
-        "untargetableByTargeted": {
-          "direction": "inbound",
-          "scope": "single",
-          "note": "C8 候选池过滤出口（H5 母版）"
-        }
-      },
       "triggers": [
         {
           "event": "on_deal_damage",
@@ -343,8 +339,28 @@
               "note": "从物件里伸出的怨毒之手"
             }
           ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:physical",
+              "value": 40,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            }
+          ]
         }
       ],
+      "modifiers": {
+        "untargetableByTargeted": {
+          "direction": "inbound",
+          "scope": "single",
+          "note": "C8 候选池过滤出口（H5 母版）"
+        }
+      },
       "note": "默认时长同源于稿期 3 回合 → 15tick（2026-10-09 时长校正）；与灵体化互补的防守向形态（灵体化进攻向：攻击转精神、仍能施法），两者不可合并 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。；disable 作用域=技能（执行参数 §一，与「沉默」同字段）；物体不会施法，自废施法换生存 ｜ 2026-10-02 批次九转枢纽：通识者给物赋律（文明造物）、囚犯附身于物（物品权柄）——同一「活化之物」两面，白名单 prisoner/savant",
       "maxStacks": 3,
       "stackPolicy": "refresh",
@@ -366,14 +382,19 @@
       ],
       "dispelable": true,
       "duration": 15,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "defense",
-          "value": -2,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            }
+          ]
         }
       ],
       "modifiers": {
@@ -447,20 +468,25 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 2,
-          "mode": "delta",
-          "duration": null,
-          "target": "all_allies",
-          "filter": {
-            "unitType": [
-              "ABERRATION"
-            ]
-          },
-          "note": "掌控：unit_ghoul / unit_relic / 被 convert 的单位（新增项 7 类型定向已落：编队参数 §1.2b + 共享内核 §一 filter.unitType）"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies",
+              "filter": {
+                "unitType": [
+                  "ABERRATION"
+                ]
+              },
+              "note": "掌控：unit_ghoul / unit_relic / 被 convert 的单位（新增项 7 类型定向已落：编队参数 §1.2b + 共享内核 §一 filter.unitType）"
+            }
+          ]
         }
       ],
       "modifiers": {

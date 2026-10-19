@@ -8,26 +8,6 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "energy_regen",
-          "value": 0.4,
-          "mode": "delta",
-          "duration": null,
-          "target": "self",
-          "note": "强大"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "hp_max",
-          "value": -8,
-          "mode": "delta",
-          "duration": null,
-          "target": "self",
-          "note": "扭曲（理智被侵蚀）；hp_max 削减即时截断且不回补"
-        }
-      ],
       "triggers": [
         {
           "event": "on_tick",
@@ -45,6 +25,29 @@
                 "p": 0.25
               },
               "note": "隐藏的疯子：概率只用于非伤害维度（R5），单次抽样（R4）"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": 0.4,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "强大"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": -8,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "扭曲（理智被侵蚀）；hp_max 削减即时截断且不回补"
             }
           ]
         }
@@ -203,16 +206,19 @@
               "note": "宿主每 tick 被吸取 0.4 点生命给施法者（F56 施法者引用）"
             }
           ]
-        }
-      ],
-      "effects": [
+        },
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": -1,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -1,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "直接复用 F2 parasitized 的最小副本；权威定义见 F2 登记（偷盗者序列4「寄生者」同源机制），此处参数照稿面；退化方案：施法者 on_tick heal(2) + 宿主 atk -1，丢掉吸取方向性 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
@@ -233,17 +239,6 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "hp_max",
-          "value": -5,
-          "mode": "delta",
-          "duration": null,
-          "target": "self",
-          "note": "持续消耗的代价"
-        }
-      ],
       "triggers": [
         {
           "event": "on_kill",
@@ -283,6 +278,20 @@
                 "p": 0.3
               },
               "note": "深层掌控细胞：自行排出毒素（R5：驱散属非伤害维度）"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": -5,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "持续消耗的代价"
             }
           ]
         }
@@ -361,16 +370,21 @@
           "maxStacks": 7
         }
       },
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "hp_max",
-          "value": 1,
-          "mode": "delta",
-          "duration": null,
-          "target": "self",
-          "valueFrom": "statusStacks:grazed_soul",
-          "note": "每层 grazed_soul → 自身 hp_max +1"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 1,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "valueFrom": "statusStacks:grazed_soul",
+              "note": "每层 grazed_soul → 自身 hp_max +1"
+            }
+          ]
         }
       ]
     },
@@ -386,17 +400,6 @@
       "modifiers": {
         "moveImmune": true
       },
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 0.8,
-          "mode": "mul",
-          "duration": 15,
-          "target": "self",
-          "note": "压扁：改 gauge.rate 源属性，不碰派生行动周期（INV-S5 合规）"
-        }
-      ],
       "triggers": [
         {
           "event": "on_tick",
@@ -407,6 +410,20 @@
               "value": 0.2,
               "target": "self",
               "note": "腐蚀"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 0.8,
+              "mode": "mul",
+              "duration": 15,
+              "target": "self",
+              "note": "压扁：改 gauge.rate 源属性，不碰派生行动周期（INV-S5 合规）"
             }
           ]
         }
@@ -426,14 +443,19 @@
         "damage_taken_mul": 0.85,
         "moveImmune": true
       },
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "hp_max",
-          "value": 8,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 8,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "常驻形态而非一次性变身；moveImmune 与 F7 shackle 禁位移同字段正反两面（H27，已落）"

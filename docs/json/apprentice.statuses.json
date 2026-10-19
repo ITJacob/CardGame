@@ -114,14 +114,19 @@
       ],
       "dispelable": true,
       "duration": 20,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": -5,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -5,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
+            }
+          ]
         }
       ],
       "modifiers": {
@@ -296,22 +301,27 @@
       ],
       "dispelable": true,
       "duration": 20,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": -4,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": -5,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -4,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -5,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "原著「覆盖一座城市」是位格描述，按 brief §3 不搬"
@@ -376,17 +386,6 @@
       ],
       "dispelable": true,
       "duration": 15,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": -5,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self",
-          "note": "时间混乱：速率源属性修正，INV-S5 合规"
-        }
-      ],
       "triggers": [
         {
           "event": "on_tick",
@@ -400,6 +399,20 @@
               "mode": "delta",
               "target": "self",
               "note": "空间循环：越走越回不去"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -5,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self",
+              "note": "时间混乱：速率源属性修正，INV-S5 合规"
             }
           ]
         }
@@ -488,21 +501,26 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 6,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_thoughtform",
-          "hpRatio": 0.3,
-          "position": "tail",
-          "note": "F23（H1 召唤物基线）不新立单位；C5 ✅"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 6,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "spawn",
+              "unitId": "unit_thoughtform",
+              "hpRatio": 0.3,
+              "position": "tail",
+              "note": "F23（H1 召唤物基线）不新立单位；C5 ✅"
+            }
+          ]
         }
       ],
       "modifiers": {

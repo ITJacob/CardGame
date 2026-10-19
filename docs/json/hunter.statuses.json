@@ -177,22 +177,27 @@
       ],
       "dispelable": true,
       "duration": 20,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "armor",
-          "value": 10,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "resist:physical",
-          "value": 20,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 10,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:physical",
+              "value": 20,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
+            }
+          ]
         }
       ]
     },
@@ -204,24 +209,6 @@
       ],
       "dispelable": true,
       "duration": 20,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "resist:fire",
-          "value": 60,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "armor",
-          "value": 5,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
-        }
-      ],
       "triggers": [
         {
           "event": "on_take_damage",
@@ -232,6 +219,27 @@
               "duration": 10,
               "target": "attacker",
               "note": "碰到火焰身躯者被点燃（F61 attacker targetSpec）"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:fire",
+              "value": 60,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 5,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
             }
           ]
         }
@@ -488,16 +496,6 @@
       "modifiers": {
         "damage_taken_mul": 1.2
       },
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": -2,
-          "mode": "delta",
-          "duration": 30,
-          "target": "holder"
-        }
-      ],
       "triggers": [
         {
           "event": "on_death",
@@ -509,6 +507,19 @@
               "hpRatio": 0.5,
               "position": "tail",
               "note": "彻底征服后永远效忠：跨阵营 spawn 落己方队尾（G8 合规）+ spawn.template 继承死者属性（新增项 18/19）"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 30,
+              "target": "holder"
             }
           ]
         }
@@ -579,22 +590,27 @@
           "note": "男性权柄：男性单位受伤 ×1.15（H4 过滤乘区，编队参数 §1.1b；filter.gender 待内核裁定，替代原 gender_is If + modify_stat 写法）"
         }
       },
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 3,
-          "mode": "delta",
-          "duration": 30,
-          "target": "holder"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "armor",
-          "value": -5,
-          "mode": "delta",
-          "duration": 30,
-          "target": "holder"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 30,
+              "target": "holder"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": -5,
+              "mode": "delta",
+              "duration": 30,
+              "target": "holder"
+            }
+          ]
         }
       ]
     },

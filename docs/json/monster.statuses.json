@@ -66,15 +66,20 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 8,
-          "mode": "delta",
-          "duration": null,
-          "target": "self",
-          "note": "INV-S5 合规：改速率不改派生行动周期"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 8,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "INV-S5 合规：改速率不改派生行动周期"
+            }
+          ]
         }
       ],
       "immune": {
@@ -376,14 +381,19 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 5,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 5,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ]
         }
       ],
       "modifiers": {
@@ -407,31 +417,6 @@
       ],
       "dispelable": false,
       "duration": 25,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "energy_regen",
-          "value": 0.3,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        }
-      ],
-      "modifiers": {
-        "fortuneMaxStacksBonus": {
-          "value": 1,
-          "note": "fortune.maxStacks 3 → 4"
-        },
-        "damage_mul": {
-          "value": 1.2,
-          "filter": {
-            "targetHasStatus": [
-              "misfortune"
-            ]
-          },
-          "note": "H4 按状态过滤的伤害乘区（新增项 17 口径），💡⚡ 咬合"
-        }
-      },
       "triggers": [
         {
           "event": "on_remove",
@@ -450,8 +435,36 @@
               "target": "self"
             }
           ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": 0.3,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ]
         }
-      ]
+      ],
+      "modifiers": {
+        "fortuneMaxStacksBonus": {
+          "value": 1,
+          "note": "fortune.maxStacks 3 → 4"
+        },
+        "damage_mul": {
+          "value": 1.2,
+          "filter": {
+            "targetHasStatus": [
+              "misfortune"
+            ]
+          },
+          "note": "H4 按状态过滤的伤害乘区（新增项 17 口径），💡⚡ 咬合"
+        }
+      }
     },
     {
       "id": "blessing_gift",
@@ -556,15 +569,20 @@
       ],
       "dispelable": true,
       "duration": 25,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "gauge.threshold",
-          "value": 60,
-          "mode": "delta",
-          "duration": 25,
-          "target": "self",
-          "note": "退化方案（新增项 7 拍板采用）：抬高行动条阈值延后填满时机，等效「循环往复」；INV-S5 合规（改源属性 threshold，原稿 modify_stat 写法不可用）"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.threshold",
+              "value": 60,
+              "mode": "delta",
+              "duration": 25,
+              "target": "self",
+              "note": "退化方案（新增项 7 拍板采用）：抬高行动条阈值延后填满时机，等效「循环往复」；INV-S5 合规（改源属性 threshold，原稿 modify_stat 写法不可用）"
+            }
+          ]
         }
       ],
       "note": "主方案「行动条填满即清零」需 on_gauge_full 事件，已不立项（不开第 13 触发点）"

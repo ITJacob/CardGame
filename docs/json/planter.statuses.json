@@ -8,14 +8,19 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 4,
-          "mode": "delta",
-          "duration": null,
-          "target": "all_allies"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 4,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies"
+            }
+          ]
         }
       ],
       "note": "H42 常驻模板",
@@ -157,46 +162,51 @@
       ],
       "dispelable": true,
       "duration": 25,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 5,
-          "mode": "delta",
-          "duration": 25,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "defense",
-          "value": 3,
-          "mode": "delta",
-          "duration": 25,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "armor",
-          "value": 5,
-          "mode": "delta",
-          "duration": 25,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "hp_max",
-          "value": 8,
-          "mode": "delta",
-          "duration": 25,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "resist:physical",
-          "value": 10,
-          "mode": "delta",
-          "duration": 25,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 5,
+              "mode": "delta",
+              "duration": 25,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 3,
+              "mode": "delta",
+              "duration": 25,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 5,
+              "mode": "delta",
+              "duration": 25,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "hp_max",
+              "value": 8,
+              "mode": "delta",
+              "duration": 25,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:physical",
+              "value": 10,
+              "mode": "delta",
+              "duration": 25,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "H10 参数化形态母版（与 F10 beast_form 同母版两档）；F46 结论：化身不产生第二个单位，仅表现层；带 duration 修正到期回滚走账本条目 remaining"
@@ -268,50 +278,55 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 1,
-          "mode": "delta",
-          "duration": null,
-          "target": "all_allies",
-          "filter": {
-            "anyOf": [
-              {
-                "unitType": [
-                  "PLANT",
-                  "VERMIN",
-                  "CONSTRUCT"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies",
+              "filter": {
+                "anyOf": [
+                  {
+                    "unitType": [
+                      "PLANT",
+                      "VERMIN",
+                      "CONSTRUCT"
+                    ]
+                  },
+                  {
+                    "isSummon": true
+                  }
+                ]
+              }
+            },
+            {
+              "type": "mount_status",
+              "statusId": "regen",
+              "value": 1,
+              "duration": null,
+              "target": "all_allies",
+              "filter": {
+                "anyOf": [
+                  {
+                    "unitType": [
+                      "PLANT",
+                      "VERMIN",
+                      "CONSTRUCT"
+                    ]
+                  },
+                  {
+                    "isSummon": true
+                  }
                 ]
               },
-              {
-                "isSummon": true
-              }
-            ]
-          }
-        },
-        {
-          "type": "mount_status",
-          "statusId": "regen",
-          "value": 1,
-          "duration": null,
-          "target": "all_allies",
-          "filter": {
-            "anyOf": [
-              {
-                "unitType": [
-                  "PLANT",
-                  "VERMIN",
-                  "CONSTRUCT"
-                ]
-              },
-              {
-                "isSummon": true
-              }
-            ]
-          },
-          "note": "低量 1/tick 常驻（H42）"
+              "note": "低量 1/tick 常驻（H42）"
+            }
+          ]
         }
       ],
       "note": "H42 + §1.2b 单位类型过滤（新增项 10）",

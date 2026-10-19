@@ -228,30 +228,35 @@
       ],
       "dispelable": true,
       "duration": 15,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": -4,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "defense",
-          "value": -2,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 0.85,
-          "mode": "mul",
-          "duration": 15,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -4,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 0.85,
+              "mode": "mul",
+              "duration": 15,
+              "target": "self"
+            }
+          ]
         }
       ],
       "modifiers": {
@@ -396,14 +401,19 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "energy_regen",
-          "value": 0.2,
-          "mode": "delta",
-          "duration": null,
-          "target": "all_allies"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "energy_regen",
+              "value": 0.2,
+              "mode": "delta",
+              "duration": null,
+              "target": "all_allies"
+            }
+          ]
         }
       ],
       "modifiers": {

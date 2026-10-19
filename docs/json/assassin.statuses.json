@@ -9,16 +9,6 @@
       "dispelable": false,
       "duration": null,
       "charges": 3,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 6,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        }
-      ],
       "triggers": [
         {
           "event": "on_take_damage",
@@ -35,6 +25,19 @@
               "statusId": "$self",
               "stacks": -1,
               "stackMode": "consume",
+              "target": "self"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 6,
+              "mode": "delta",
+              "duration": null,
               "target": "self"
             }
           ]
@@ -392,14 +395,19 @@
       "modifiers": {
         "damage_mul": 0.75
       },
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": -2,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "与 F17 desire（受伤加重+禁护盾）不重叠；与 F14 tutelage 的 damage_mul 是正反两面 乘区审批：0.7=标准减伤母版档（H3 已裁定）/0.75=轻减档"
@@ -412,24 +420,29 @@
       ],
       "dispelable": true,
       "duration": 15,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": -8,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self",
-          "note": "缠绕减缓（INV-S5 合规）"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "armor",
-          "value": -5,
-          "mode": "delta",
-          "duration": 15,
-          "target": "self",
-          "note": "丝线勒进护甲的缝隙"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": -8,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self",
+              "note": "缠绕减缓（INV-S5 合规）"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": -5,
+              "mode": "delta",
+              "duration": 15,
+              "target": "self",
+              "note": "丝线勒进护甲的缝隙"
+            }
+          ]
         }
       ],
       "note": "与 F7 shackle 同源，建议并入"
@@ -456,17 +469,6 @@
       ],
       "dispelable": true,
       "duration": 20,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "armor",
-          "value": 5,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self",
-          "note": "护甲 5 一档；带 duration 的护甲修正常量化（modify_stat 容量语义）"
-        }
-      ],
       "triggers": [
         {
           "event": "on_take_damage",
@@ -479,6 +481,20 @@
               "duration": 10,
               "target": "attacker",
               "note": "寒气反噬（F61 attacker 寻址，🟡 已登记）；退化方案：全体敌人 gauge.rate -4"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 5,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self",
+              "note": "护甲 5 一档；带 duration 的护甲修正常量化（modify_stat 容量语义）"
             }
           ]
         }
@@ -663,13 +679,18 @@
       ],
       "dispelable": true,
       "duration": 10,
-      "effects": [
+      "triggers": [
         {
-          "type": "mount_status",
-          "statusId": "shield",
-          "value": 3,
-          "duration": 10,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 3,
+              "duration": 10,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "引用副本；权威定义见卡面效果（shield 封闭状态承载）"

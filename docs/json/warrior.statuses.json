@@ -8,14 +8,19 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "resist:*",
-          "value": 12,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "resist:*",
+              "value": 12,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ]
         }
       ]
     },
@@ -27,14 +32,31 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 3,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
+          "event": "on_kill",
+          "effects": [
+            {
+              "type": "modify_status",
+              "slot": "weapon",
+              "target": "self",
+              "restoreCharges": true,
+              "note": "击杀缴械：补满当前装备武器的耐久"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ]
         }
       ],
       "modifiers": {
@@ -49,21 +71,7 @@
       },
       "maxStacks": 3,
       "stackPolicy": "refresh",
-      "note": "武器大师：攻击 +3，物理伤害无视目标一半护甲；击杀时若已装备武器，补满其耐久。",
-      "triggers": [
-        {
-          "event": "on_kill",
-          "effects": [
-            {
-              "type": "modify_status",
-              "slot": "weapon",
-              "target": "self",
-              "restoreCharges": true,
-              "note": "击杀缴械：补满当前装备武器的耐久"
-            }
-          ]
-        }
-      ]
+      "note": "武器大师：攻击 +3，物理伤害无视目标一半护甲；击杀时若已装备武器，补满其耐久。"
     },
     {
       "id": "weapon_tamer",
@@ -95,16 +103,6 @@
       ],
       "dispelable": true,
       "duration": 20,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 4,
-          "mode": "delta",
-          "duration": 20,
-          "target": "self"
-        }
-      ],
       "triggers": [
         {
           "event": "on_deal_damage",
@@ -114,6 +112,19 @@
               "element": "none",
               "value": 2,
               "note": "晨曦灼烧"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 4,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self"
             }
           ]
         }
@@ -246,22 +257,27 @@
       ],
       "dispelable": true,
       "duration": 25,
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "armor",
-          "value": 10,
-          "mode": "delta",
-          "duration": 25,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "resist:*",
-          "value": 10,
-          "mode": "delta",
-          "duration": 25,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 10,
+              "mode": "delta",
+              "duration": 25,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:*",
+              "value": 10,
+              "mode": "delta",
+              "duration": 25,
+              "target": "self"
+            }
+          ]
         }
       ],
       "modifiers": {
@@ -461,39 +477,6 @@
       ],
       "dispelable": false,
       "duration": null,
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 5,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "modify_resource",
-          "resource": "armor",
-          "value": 8,
-          "mode": "delta",
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 4,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "resist:*",
-          "value": 10,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
-        }
-      ],
       "triggers": [
         {
           "event": "on_kill",
@@ -505,6 +488,42 @@
               "mode": "delta",
               "target": "self",
               "note": "收割结算：击杀时行动条 +15——on_kill 状态面正主落地（矩阵触发点：战士收割结算，⚠️D 待平衡）"
+            }
+          ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 5,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": 8,
+              "mode": "delta",
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 4,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "resist:*",
+              "value": 10,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
             }
           ]
         }
@@ -582,14 +601,24 @@
       "duration": null,
       "charges": 3,
       "equipSlot": "weapon",
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 2,
-          "mode": "delta",
-          "target": "self",
-          "note": "装备期间攻击 +2；耐久耗尽即卸载"
+          "event": "on_attack",
+          "consumeCharge": true,
+          "note": "每次普攻消耗 1 点耐久，打空即卸下"
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "target": "self",
+              "note": "装备期间攻击 +2；耐久耗尽即卸载"
+            }
+          ]
         }
       ],
       "modifiers": {
@@ -606,13 +635,6 @@
           "note": "克邪：对亡灵/恶魔/灵体伤害 +2"
         }
       },
-      "triggers": [
-        {
-          "event": "on_attack",
-          "consumeCharge": true,
-          "note": "每次普攻消耗 1 点耐久，打空即卸下"
-        }
-      ],
       "note": "武艺轴·单武器槽：银白细剑按普攻次数计耐久（3 次），打空卸载；同一时间只能装备一把武器，新装备替换旧武器。"
     },
     {
@@ -682,14 +704,19 @@
       "durationUnit": "self_turn",
       "maxStacks": 1,
       "stackPolicy": "refresh",
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 2,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "强健体魄读档：战意≥2 时刷新，行动条速率 +2。"
@@ -705,14 +732,19 @@
       "durationUnit": "self_turn",
       "maxStacks": 1,
       "stackPolicy": "refresh",
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 1,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "武器大师读档：战意≥3 时刷新，攻击 +1。"
@@ -728,14 +760,19 @@
       "durationUnit": "self_turn",
       "maxStacks": 1,
       "stackPolicy": "refresh",
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "defense",
-          "value": 1,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 1,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "驭器读档：战意≥2 时刷新，防御 +1。"
@@ -751,14 +788,19 @@
       "durationUnit": "self_turn",
       "maxStacks": 1,
       "stackPolicy": "refresh",
-      "effects": [
+      "triggers": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 2,
-          "mode": "delta",
-          "duration": null,
-          "target": "self"
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self"
+            }
+          ]
         }
       ],
       "note": "战斗权柄读档：战意≥4 时刷新，攻击 +2。"
