@@ -261,7 +261,7 @@
     "flag:gender_is": 1,
     "sref:massing": 1
    },
-   "styleDist": 0.2934,
+   "styleDist": 0.2932,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -782,6 +782,239 @@
    ]
   },
   {
+   "id": "warrior",
+   "name": "战士",
+   "total": 58.6,
+   "dims": {
+    "轴健康度": 23.0,
+    "跨轴耦合": 2.5,
+    "跨系联动": 0.9,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 32.2
+   },
+   "minAxis": 54.5,
+   "cards": 31,
+   "sigHits": {
+    "elem:holy": 8,
+    "flag:filter.unitType": 3,
+    "sref:guardianship": 4
+   },
+   "styleDist": 0.3205,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "dur:persistent",
+      "cat:buff"
+     ],
+     "distinct": 23
+    },
+    {
+     "family": "param",
+     "keys": [
+      "mode=delta",
+      "stackMode=consume"
+     ],
+     "distinct": 21
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "eff:self",
+      "mode=unit"
+     ],
+     "distinct": 19
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "damage"
+     ],
+     "distinct": 13
+    }
+   ],
+   "styleParts": {
+    "signature": 7,
+    "fingerprint": 12,
+    "config": 3.5,
+    "dedup": 9.7,
+    "dedupRatio": 0.0172
+   },
+   "nearest": "apprentice",
+   "nearestDist": 0.2724,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-12.5：本途径他轴身份读取 2 次",
+     "ref": "warrior",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "跨系联动",
+     "why": "-14.1：枢纽状态 0 个 + combo 读取 1 次",
+     "ref": "warrior",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    }
+   ],
+   "axes": [
+    {
+     "id": "martial",
+     "name": "武艺",
+     "symbol": "🗡️",
+     "total": 54.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 12,
+      "收束闭环": 8,
+      "轴内多样性": 7.5,
+      "规模均衡": 9,
+      "承接连通": 3
+     },
+     "cards": 12,
+     "enablersVerified": [
+      "武器大师"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [
+      "无坚不摧",
+      "神罚"
+     ],
+     "patterns": [
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "武器大师",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      },
+      {
+       "dim": "收束闭环",
+       "why": "-17：payoff 2 张全部 notes 级（卡面不读本轴产出面）",
+       "ref": "无坚不摧,神罚",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      },
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 12 vs 理想 8（比值 1.55）",
+       "ref": "martial",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    },
+    {
+     "id": "hunt",
+     "name": "猎魔",
+     "symbol": "🎯",
+     "total": 73.1,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 10.1,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 6,
+     "enablersVerified": [
+      "伪装",
+      "猎魔之眼"
+     ],
+     "payoffsLanded": [
+      "晨曦领域"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "twilight",
+     "name": "黄昏",
+     "symbol": "🌇",
+     "total": 74.1,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 11.1,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "迟暮",
+      "黄昏重生"
+     ],
+     "payoffsLanded": [
+      "神罚"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "guard",
+     "name": "守护",
+     "symbol": "🛡️",
+     "total": 76.7,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 17,
+      "轴内多样性": 8.7,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 6,
+     "enablersVerified": [
+      "守护状态",
+      "黎明铠甲"
+     ],
+     "payoffsLanded": [
+      "银色全身盔甲"
+     ],
+     "payoffsNotes": [
+      "铁躯",
+      "卸力"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：notes 级 2 张（减半计）",
+       "ref": "铁躯,卸力",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    }
+   ]
+  },
+  {
    "id": "sailor",
    "name": "水手",
    "total": 59.2,
@@ -801,7 +1034,7 @@
     "elem:lightning": 8,
     "sref:rage": 10
    },
-   "styleDist": 0.2653,
+   "styleDist": 0.2652,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1025,7 +1258,7 @@
     "unitType:BEAST": 8,
     "sref:prepared_draught": 5
    },
-   "styleDist": 0.2617,
+   "styleDist": 0.262,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1266,7 +1499,7 @@
     "elem:dark": 4,
     "flag:companionBuff": 2
    },
-   "styleDist": 0.2565,
+   "styleDist": 0.2564,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1507,7 +1740,7 @@
     "prim:modify_targetability": 2,
     "prim:target_override": 7
    },
-   "styleDist": 0.2273,
+   "styleDist": 0.2274,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1727,7 +1960,7 @@
     "elem:ice": 3,
     "elem:dark": 1
    },
-   "styleDist": 0.2388,
+   "styleDist": 0.2387,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -2412,7 +2645,7 @@
     "flag:cast_time_set": 29,
     "sref:info_form": 2
    },
-   "styleDist": 0.2995,
+   "styleDist": 0.2994,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -2630,7 +2863,7 @@
     "sref:mimic": 5,
     "prim:snapshot": 7
    },
-   "styleDist": 0.2226,
+   "styleDist": 0.2225,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3290,7 +3523,7 @@
     "prim:status_shuffle": 5,
     "prim:modify_rule_slot": 18
    },
-   "styleDist": 0.2136,
+   "styleDist": 0.2135,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3474,235 +3707,6 @@
    ]
   },
   {
-   "id": "warrior",
-   "name": "战士",
-   "total": 68.1,
-   "dims": {
-    "轴健康度": 25.9,
-    "跨轴耦合": 5.0,
-    "跨系联动": 4.7,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 32.5
-   },
-   "minAxis": 71.2,
-   "cards": 31,
-   "sigHits": {
-    "elem:holy": 8,
-    "flag:filter.unitType": 3,
-    "sref:guardianship": 4
-   },
-   "styleDist": 0.3206,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "dur:persistent",
-      "cat:buff"
-     ],
-     "distinct": 26
-    },
-    {
-     "family": "param",
-     "keys": [
-      "mode=delta",
-      "stackMode=consume"
-     ],
-     "distinct": 21
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "eff:self",
-      "mode=unit"
-     ],
-     "distinct": 19
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "damage"
-     ],
-     "distinct": 13
-    }
-   ],
-   "styleParts": {
-    "signature": 7,
-    "fingerprint": 12,
-    "config": 3.3,
-    "dedup": 10.2,
-    "dedupRatio": 0.0108
-   },
-   "nearest": "apprentice",
-   "nearestDist": 0.2715,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-10.0：本途径他轴身份读取 4 次",
-     "ref": "warrior",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-10.3：枢纽状态 1 个 + combo 读取 1 次",
-     "ref": "warrior",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    }
-   ],
-   "axes": [
-    {
-     "id": "martial",
-     "name": "武艺",
-     "symbol": "🗡️",
-     "total": 71.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "收束闭环": 18,
-      "轴内多样性": 8.2,
-      "规模均衡": 9,
-      "承接连通": 9
-     },
-     "cards": 12,
-     "enablersVerified": [
-      "武器大师"
-     ],
-     "payoffsLanded": [
-      "无坚不摧",
-      "神罚"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "武器大师",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 12 vs 理想 8（比值 1.55）",
-       "ref": "martial",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    },
-    {
-     "id": "hunt",
-     "name": "猎魔",
-     "symbol": "🎯",
-     "total": 73.1,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 10.1,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 6,
-     "enablersVerified": [
-      "伪装",
-      "猎魔之眼"
-     ],
-     "payoffsLanded": [
-      "晨曦领域"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "twilight",
-     "name": "黄昏",
-     "symbol": "🌇",
-     "total": 75.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 12.8,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "迟暮",
-      "黄昏重生"
-     ],
-     "payoffsLanded": [
-      "神罚"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "guard",
-     "name": "守护",
-     "symbol": "🛡️",
-     "total": 79.1,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 17,
-      "轴内多样性": 11.1,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 6,
-     "enablersVerified": [
-      "守护状态",
-      "黎明铠甲"
-     ],
-     "payoffsLanded": [
-      "银色全身盔甲"
-     ],
-     "payoffsNotes": [
-      "铁躯",
-      "卸力"
-     ],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：notes 级 2 张（减半计）",
-       "ref": "铁躯,卸力",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "arbiter",
    "name": "仲裁人",
    "total": 68.5,
@@ -3722,7 +3726,7 @@
     "flag:cost_mod": 2,
     "res:order": 6
    },
-   "styleDist": 0.2536,
+   "styleDist": 0.2535,
    "gates": {
     "结构健康": false,
     "机制落地": true,
@@ -3961,7 +3965,7 @@
     "prim:advance_clock": 2,
     "res:fate_value": 5
    },
-   "styleDist": 0.2674,
+   "styleDist": 0.2673,
    "gates": {
     "结构健康": false,
     "机制落地": true,
@@ -4239,7 +4243,7 @@
     "stat:hp_max": 5,
     "sref:flesh_undying": 2
    },
-   "styleDist": 0.228,
+   "styleDist": 0.2281,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -4694,7 +4698,7 @@
     "prim:write_rule_slot": 2,
     "trig:on_phase_change": 2
    },
-   "styleDist": 0.2891,
+   "styleDist": 0.2892,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -4917,7 +4921,7 @@
     "prim:advance_clock": 4,
     "res:secrecy": 3
    },
-   "styleDist": 0.3504,
+   "styleDist": 0.3505,
    "gates": {
     "结构健康": true,
     "机制落地": true,

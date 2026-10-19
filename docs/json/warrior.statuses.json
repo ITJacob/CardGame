@@ -140,7 +140,8 @@
           "note": "晨光灼邪：晨曦之剑对邪祟的额外灼烧（filter.unitType 签名键的卡面载体）"
         }
       },
-      "note": "承载 filter.unitType 克邪签名键：对亡灵/恶魔/灵体伤害 +2，与银白细剑同族。"
+      "note": "武艺轴·单武器槽的第二把武器：凝聚晨曦之剑后装备（替换当前武器，持续 20tick）；攻击 +4、每次造成伤害附加 2 点、对亡灵/恶魔/灵体 +2。",
+      "equipSlot": "weapon"
     },
     {
       "id": "abandon_attack",
@@ -501,29 +502,6 @@
       "note": "守护轴身份状态（2026-09-29 自 common guard 分叉私有化）：守护=替指定友军承伤的重定向+自身受伤×0.7；charges=3 为守护次数（每次重定向承伤消耗 1 层，耗尽即散 ⚠️D 待平衡）。common guard（名「坚守」）保留为全库通用减伤 buff。 2026-10-16 深化：补 on_take_damage 触发——每次替友军承伤叠 1 层「守护威压」，把替承从静态减伤变成承伤-转化循环（⚠️D 触发时机按重定向 R 节点，待内核确认）。"
     },
     {
-      "id": "battle_banner",
-      "name": "战旗",
-      "category": [
-        "buff"
-      ],
-      "dispelable": true,
-      "duration": null,
-      "maxStacks": 3,
-      "stackPolicy": "refresh",
-      "modifiers": {
-        "damage_mul": {
-          "value": 1.1
-        }
-      },
-      "crossPathway": true,
-      "participants": [
-        "warrior",
-        "sailor",
-        "prisoner"
-      ],
-      "note": "战旗所指：己方士气上扬（2026-09-29 跨系枢纽批建）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 枢纽标准档（跨系共享，层数读档上限）。。"
-    },
-    {
       "id": "weapon_silver_rapier",
       "name": "银白细剑",
       "category": [
@@ -596,24 +574,6 @@
       "note": "守护者「放弃攻击后高序列以下极少能打破防御」的兑现（2026-10-16 环节⑤）：弃攻期间竖起的墙**按格数计**（charges = 可挡次数），砸穿即碎。墙与代价（abandon_attack 伤害 ×0.5）成对出现——守护不是白挨打，是用行动经济买墙。乘区审批：0.4 = 深度减免档（重控/代价/位格压制态，单列登记）。数值 ⚠️D 待平衡。"
     },
     {
-      "id": "guard_pressure",
-      "name": "守护威压",
-      "category": [
-        "buff"
-      ],
-      "dispelable": true,
-      "maxStacks": 3,
-      "stackPolicy": "stack",
-      "duration": 15,
-      "modifiers": {
-        "damage_mul": {
-          "dynamic": "1 + 0.12 * stacks",
-          "note": "替承积累的威压：挨得越多，还手越重（每层 +12% ⚠️D 待平衡）"
-        }
-      },
-      "note": "守护轴深化（2026-10-16）：守护每次替友军承伤叠 1 层（由 guardianship 的 on_take_damage 触发挂载），上限 3 层。守护者不是白挨打——受的伤转化成威压，这是「替承」的回报面。"
-    },
-    {
       "id": "war_spirit",
       "name": "战意",
       "category": [
@@ -680,34 +640,6 @@
         }
       ],
       "note": "武器大师读档：战意≥3 时刷新，攻击 +1。"
-    },
-    {
-      "id": "war_spirit_tamer",
-      "name": "战意·驭器",
-      "category": [
-        "buff"
-      ],
-      "dispelable": false,
-      "duration": 1,
-      "durationUnit": "self_turn",
-      "maxStacks": 1,
-      "stackPolicy": "refresh",
-      "triggers": [
-        {
-          "event": "on_apply",
-          "effects": [
-            {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": 1,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
-            }
-          ]
-        }
-      ],
-      "note": "驭器读档：战意≥2 时刷新，防御 +1。"
     },
     {
       "id": "war_spirit_authority",
