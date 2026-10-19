@@ -166,28 +166,21 @@
       "duration": 3,
       "modifiers": {
         "targetOverrideImmune": true,
-        "damage_mul": [
-          {
-            "value": 1.3,
-            "filter": {
-              "unitType": [
-                "DEMON",
-                "UNDEAD",
-                "SPIRIT"
-              ]
-            },
-            "note": "恶魔的克星"
+        "damageBonus": {
+          "value": 2,
+          "filter": {
+            "unitType": [
+              "DEMON",
+              "UNDEAD",
+              "SPIRIT"
+            ]
           },
-          {
-            "value": 1.5,
-            "charges": 1,
-            "note": "掩盖行动意图：挂载后首次造成伤害 ×1.5"
-          }
-        ]
+          "note": "恶魔的克星（平加）"
+        }
       },
       "maxStacks": 3,
       "stackPolicy": "refresh",
-      "note": "猎魔者「隐蔽：掩盖行动意图，干扰占卜预言，恶魔的克星」。2026-10-16 语义分叉：本状态不再是 conceal 类、不提供不可被选中（守护轴红线：战士正面承伤，不走隐身/闪避）；只做两件事——掩盖意图（targetOverrideImmune：敌方无法把你从同伴身上改向/覆写选靶）+ 伏击首击（damage_mul 1.5，出手即破）。签名键 targetOverrideImmune 即战士修饰键签名（机制所有权矩阵 §三·十五）。占卜失效档（untrackable）依赖占卜家 conceal/secrecy 枢纽跨系落地，本轮不启，见 docs/meta/待办.md。",
+      "note": "猎魔者「隐蔽：掩盖行动意图，干扰占卜预言，恶魔的克星」。2026-10-16 语义分叉：本状态不再是 conceal 类、不提供不可被选中（守护轴红线：战士正面承伤，不走隐身/闪避）；只做两件事——掩盖意图（targetOverrideImmune：敌方无法把你从同伴身上改向/覆写选靶）+ 对邪祟伤害 +2（平加，出手即破）。签名键 targetOverrideImmune 即战士修饰键签名（机制所有权矩阵 §三·十五）。占卜失效档（untrackable）依赖占卜家 conceal/secrecy 枢纽跨系落地，本轮不启，见 docs/meta/待办.md。",
       "durationUnit": "self_turn",
       "charges": 1,
       "triggers": [
@@ -261,10 +254,7 @@
             }
           ]
         }
-      ],
-      "modifiers": {
-        "damage_taken_mul": 0.8
-      }
+      ]
     },
     {
       "id": "inner_burst",
@@ -343,23 +333,29 @@
       ],
       "dispelable": false,
       "duration": null,
-      "modifiers": {
-        "damage_mul": {
-          "value": 1.25,
-          "filter": {
-            "pathway": [
-              "warrior"
-            ]
-          }
-        }
-      },
       "note": "收益：只有之前序列能力提升（本途径技能增强）；代价：无法获得其他权柄（一切非本途径来源的增益状态无法挂载）。治疗（heal 原语，非状态）不受影响",
       "immune": {
         "sourcePathways": [
           "*",
           "!warrior"
         ]
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "代行者：本途径技能增强改为攻击加值"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "collapse",
@@ -473,9 +469,6 @@
       "duration": 30,
       "maxStacks": 1,
       "charges": 3,
-      "modifiers": {
-        "damage_taken_mul": 0.7
-      },
       "redirectRule": {
         "to": "self",
         "scope": "single",
@@ -497,9 +490,23 @@
               "note": "替友军承伤——挨的每一下都记在威压上（承伤-转化循环，A1）"
             }
           ]
+        },
+        {
+          "event": "on_apply",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "守护：以防御加值替代受伤乘区"
+            }
+          ]
         }
       ],
-      "note": "守护轴身份状态（2026-09-29 自 common guard 分叉私有化）：守护=替指定友军承伤的重定向+自身受伤×0.7；charges=3 为守护次数（每次重定向承伤消耗 1 层，耗尽即散 ⚠️D 待平衡）。common guard（名「坚守」）保留为全库通用减伤 buff。 2026-10-16 深化：补 on_take_damage 触发——每次替友军承伤叠 1 层「守护威压」，把替承从静态减伤变成承伤-转化循环（⚠️D 触发时机按重定向 R 节点，待内核确认）。"
+      "note": "守护轴身份状态（2026-09-29 自 common guard 分叉私有化）：守护=替指定友军承伤的重定向+自身防御 +2；charges=3 为守护次数（每次重定向承伤消耗 1 层，耗尽即散 ⚠️D 待平衡）。common guard（名「坚守」）保留为全库通用减伤 buff。 2026-10-16 深化：补 on_take_damage 触发——每次替友军承伤叠 1 层「守护威压」，把替承从静态减伤变成承伤-转化循环（⚠️D 触发时机按重定向 R 节点，待内核确认）。"
     },
     {
       "id": "weapon_silver_rapier",
@@ -523,7 +530,7 @@
             {
               "type": "modify_stat",
               "stat": "attack",
-              "value": 2,
+              "value": 3,
               "mode": "delta",
               "target": "self",
               "note": "装备期间攻击 +2；耐久耗尽即卸载"
@@ -532,7 +539,6 @@
         }
       ],
       "modifiers": {
-        "damage_mul": 1.25,
         "damageBonus": {
           "value": 2,
           "filter": {
@@ -764,6 +770,21 @@
       "dispelable": false,
       "duration": null,
       "note": "本场不可再被处决登记。由预支失败结算施加。"
+    },
+    {
+      "id": "guard_pressure",
+      "name": "守护威压",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "duration": 15,
+      "note": "守护轴深化（2026-10-16）：守护每次替友军承伤叠 1 层（由 guardianship 的 on_take_damage 触发挂载），上限 3 层。守护者不是白挨打——受的伤转化成威压，这是「替承」的回报面。 2026-10-19：输出乘区改为每层攻击 +1（平加）。",
+      "statPerStack": {
+        "attack": 1
+      }
     }
   ]
 }

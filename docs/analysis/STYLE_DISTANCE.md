@@ -15,7 +15,7 @@
 | supplicant | prisoner | 0.148 | 0.228 |
 | seer | savant | 0.152 | 0.232 |
 | assassin | apprentice | 0.144 | 0.239 |
-| arbiter | reader | 0.173 | 0.253 |
+| arbiter | reader | 0.173 | 0.254 |
 | criminal | lawyer | 0.184 | 0.256 |
 | corpse_collector | reader | 0.172 | 0.259 |
 | apothecary | prisoner | 0.153 | 0.262 |
@@ -81,7 +81,7 @@
 | spectator | cost:cooldown:long ×27；prim:mount_status ×24；tgt:mode=unit ×23；tgt:eff:self ×20；cost:energy:high ×19 |
 | supplicant | tgt:eff:self ×31；param:mode=delta ×30；prim:modify_resource ×28；cost:hp_cost ×27；prim:mount_status ×26 |
 | thief | cost:cooldown:long ×25；tgt:eff:self ×25；tgt:mode=unit ×25；prim:mount_status ×24；cost:energy:high ×23 |
-| warrior | tgt:eff:self ×27；prim:mount_status ×26；cost:cooldown:long ×23；tgt:mode=unit ×21；param:mode=delta ×20 |
+| warrior | tgt:eff:self ×27；prim:mount_status ×26；cost:cooldown:long ×23；param:mode=delta ×21；tgt:mode=unit ×21 |
 
 ## 四、签名键用量（≥2 卡 = 落地；空白键 = 差异化迭代立项依据）
 

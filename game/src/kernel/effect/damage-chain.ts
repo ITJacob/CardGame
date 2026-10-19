@@ -93,11 +93,13 @@ export function resolveDamage(input: DamageInput): DamageResult {
     push('defense', before, cur)
   }
 
-  // ⑤ 乘区（状态增减伤；同类先加后乘一次）
+  // ⑤ 乘区：常驻同类取最优（承伤取最小、输出取最大）后再乘；一次性修正单独先加后乘
   if (!input.dot) {
     const before = cur
-    const bucket = defender.damageTakenBucket + (attacker?.damageDealtBucket ?? 0)
-    cur *= Math.max(0, 1 + bucket)
+    cur *= defender.damageTakenMul
+    cur *= attacker?.damageDealtMul ?? 1
+    const delta = defender.damageTakenBucket + (attacker?.damageDealtBucket ?? 0)
+    cur *= Math.max(0, 1 + delta)
     push('multiplier', before, cur)
   }
 

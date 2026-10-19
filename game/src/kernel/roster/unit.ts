@@ -227,16 +227,34 @@ export class CombatUnit implements Unit {
     return false
   }
 
-  /** 状态驱动的受伤增减伤桶（⑤段；同类先加后乘，统一乘一次） */
+  /** 状态常驻乘区：同类取最优——增益取最大、减益取最小，两者再相乘一次。 */
+  private bestStatusMul(key: string): number {
+    let gain = 1
+    let loss = 1
+    for (const inst of this.statuses.all()) {
+      const v = numericModifierOf(this.statusDefs.statusDef(inst.defId), key)
+      if (v === null) continue
+      const eff = 1 + (v - 1) * inst.currentStacks
+      if (eff >= 1) gain = Math.max(gain, eff)
+      else loss = Math.min(loss, eff)
+    }
+    return gain * loss
+  }
+
+  get damageTakenMul(): number { return this.bestStatusMul('damage_taken_mul') }
+
+  get damageDealtMul(): number { return this.bestStatusMul('damage_mul') }
+
+  /** 一次性增减伤修正桶（modify_damage）：同事件内先加后乘。 */
   get damageTakenBucket(): number {
-    let delta = this.modifierDelta('damage_taken_mul')
+    let delta = 0
     for (const m of this.damageMods) if (m.scope === 'taken') delta += m.delta
     return delta
   }
 
-  /** 状态驱动的输出增减伤桶 */
+  /** 一次性输出增减伤修正桶。 */
   get damageDealtBucket(): number {
-    let delta = this.modifierDelta('damage_mul')
+    let delta = 0
     for (const m of this.damageMods) if (m.scope === 'dealt') delta += m.delta
     return delta
   }

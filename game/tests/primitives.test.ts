@@ -62,7 +62,8 @@ describe('P2b-1 原语', () => {
     }
     const u = makeUnit('t', 'B', { strength: 3 }, [frail])
     u.statuses.mount('frail', { duration: 5, sourceId: 's1' })
-    expect(u.damageTakenBucket).toBeCloseTo(0.2, 6)
+    expect(u.damageTakenBucket).toBeCloseTo(0, 6)   // 常驻乘区不再进一次性桶
+    expect(u.damageTakenMul).toBeCloseTo(1.2, 6)    // 同类取最优：易伤取最大
     const r = resolveDamage({ raw: 10, element: 'physical', attacker: null, defender: u })
     expect(r.final).toBe(12)
   })
