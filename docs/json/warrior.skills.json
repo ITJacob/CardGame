@@ -860,6 +860,28 @@
           "target": "self",
           "charges": 4,
           "note": "装备晨曦之剑（耐久 4 次，替换当前武器）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "battle_authority",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "battle_authority_draw",
+              "duration": 1,
+              "durationUnit": "self_turn",
+              "refresh": true,
+              "target": "self",
+              "note": "拔刀特权：装备晨曦之剑后本次行动机会仅限普攻"
+            }
+          ],
+          "else": []
         }
       ],
       "upgradeLadder": {
@@ -899,7 +921,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：猎魔轴破幻/驱怨招牌（读 `黎明` 前置）。 ｜ 2026-09-29 D 类批：轴标签 martial→hunt（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12） ｜ 2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M6 克邪。",
+      "conversionNotes": "翻译/语义：猎魔轴破幻/驱怨招牌（读 `黎明` 前置）。 ｜ 2026-09-29 D 类批：轴标签 martial→hunt（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12） ｜ 2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M6 克邪。 ｜ 2026-10-19 拔刀特权加限制：装备武器后挂 battle_authority_draw（force=basic_attack），本机会只能接普攻。",
       "phaseHooks": [
         {
           "phases": [
@@ -2288,10 +2310,32 @@
           ],
           "else": [],
           "note": "战意消费分支：2 层换 战意·银灼：消耗 2 层，追加 2 点圣光伤害。"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "battle_authority",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "battle_authority_draw",
+              "duration": 1,
+              "durationUnit": "self_turn",
+              "refresh": true,
+              "target": "self",
+              "note": "拔刀特权：装备银白细剑后本次行动机会仅限普攻"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：守护轴闪现爆发（与黄昏轴联动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line filter.unitType=['DEMON'] ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-16 战士独特性深化：补 armorPierceRatio 穿透（C——与守护减伤对位的进攻签名）。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。 ｜ 2026-10-18 武器槽：改为唯一武器变体 weapon_silver_rapier，重复施放刷新耐久。",
+      "conversionNotes": "翻译/语义：守护轴闪现爆发（与黄昏轴联动）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line filter.unitType=['DEMON'] ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-16 战士独特性深化：补 armorPierceRatio 穿透（C——与守护减伤对位的进攻签名）。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。 ｜ 2026-10-18 武器槽：改为唯一武器变体 weapon_silver_rapier，重复施放刷新耐久。 ｜ 2026-10-19 拔刀特权加限制：装备武器后挂 battle_authority_draw（force=basic_attack），本机会只能接普攻。",
       "art": {
         "subject": "a fencer flashing behind the foe as a silver bloom bursts within",
         "elements": [
@@ -2533,6 +2577,28 @@
           "target": "self",
           "charges": 3,
           "note": "装备黄昏巨剑（耐久 3 次，替换当前武器）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "battle_authority",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "battle_authority_draw",
+              "duration": 1,
+              "durationUnit": "self_turn",
+              "refresh": true,
+              "target": "self",
+              "note": "拔刀特权：装备黄昏巨剑后本次行动机会仅限普攻"
+            }
+          ],
+          "else": []
         }
       ],
       "triggers": [
@@ -2549,7 +2615,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：读 `黄昏` 放大的黄昏轴 payoff（老化叠伤）。 ｜ 2026-09-29 D 类批：轴标签保持 martial（D 类批复核：黄昏巨剑挂 aging 是 twilight 身份的跨轴消费段，迁入即断承接）（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12） ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→6（位格8 基准6）。条件/读层追加段不动。 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M5 收割。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。",
+      "conversionNotes": "翻译/语义：读 `黄昏` 放大的黄昏轴 payoff（老化叠伤）。 ｜ 2026-09-29 D 类批：轴标签保持 martial（D 类批复核：黄昏巨剑挂 aging 是 twilight 身份的跨轴消费段，迁入即断承接）（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12） ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→6（位格8 基准6）。条件/读层追加段不动。 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M5 收割。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。 ｜ 2026-10-19 拔刀特权加限制：装备武器后挂 battle_authority_draw（force=basic_attack），本机会只能接普攻。",
       "phaseHooks": [
         {
           "phases": [
@@ -3222,7 +3288,7 @@
       "flagship": true,
       "lore": "序列0 黄昏巨人 —— \"『战斗』权柄：最恐怖力量 + 最巨大身形 + 最强力摧毁 + 最坚固守护 + 技巧\"",
       "flavor": "战斗的权柄在你身上展开：更重的拳、更高的身量、更硬的壳，以及一个老兵才有的、恰到好处的分寸。",
-      "describe": "战斗开始时获得「战斗权柄」：攻击 +5、护甲 +8、行动条速率 +4、全元素抗性 +10%，持续整场，不可驱散；装备武器时立即拔刀，不消耗行动机会（可紧接着再执行一次普攻）；击杀时自身行动条 +15；临阵威压：造成的伤害 ×1.3；战意：自身回合开始时若战意≥4，攻击 +2；相位形态：自身回合开始时重判战场相位，黎明时攻击 +2、黄昏时防御 +2。",
+      "describe": "战斗开始时获得「战斗权柄」：攻击 +5、护甲 +8、行动条速率 +4、全元素抗性 +10%，持续整场，不可驱散；装备武器时立即拔刀：本次行动机会不消耗，且只能紧接着再执行一次普攻；击杀时自身行动条 +15；临阵威压：造成的伤害 ×1.3；战意：自身回合开始时若战意≥4，攻击 +2；相位形态：自身回合开始时重判战场相位，黎明时攻击 +2、黄昏时防御 +2。",
       "hook": [
         "on_battle_start"
       ],
@@ -3251,7 +3317,7 @@
         ],
         "mood": "dominant, seasoned"
       },
-      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：威压/死亡簿·战意。 ｜ 2026-10-18 武器槽：被动不再直接装备武器。 ｜ 2026-10-19 权柄调整：相位判断由 on_battle_start 移入 on_turn_start 逐自身回合重判（黎明/黄昏各自独立状态，离相自然到期）；拔刀特权表述改为「可立即拔刀（可再执行一次普攻）」，并补齐黄昏巨剑。",
+      "conversionNotes": "2026-10-03 骨架手术：武技链换形（角色=buff） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M4 具现武器。 ｜ 签名补批（2026-10-16 第二批）：威压/死亡簿·战意。 ｜ 2026-10-18 武器槽：被动不再直接装备武器。 ｜ 2026-10-19 权柄调整：相位判断由 on_battle_start 移入 on_turn_start 逐自身回合重判（黎明/黄昏各自独立状态，离相自然到期）；拔刀特权表述改为「可立即拔刀（可再执行一次普攻）」，并补齐黄昏巨剑。 ｜ 2026-10-19 拔刀特权限死为普攻（force=basic_attack），避免同机会再施放武器装备技能。",
       "triggers": [
         {
           "event": "on_turn_start",

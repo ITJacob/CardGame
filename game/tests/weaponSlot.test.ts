@@ -6,6 +6,7 @@ import type { PathwayFile } from '../src/data/schema.types'
 import type { CombatFacade } from '../src/kernel/combat/types'
 import type { StatusDef } from '../src/kernel/catalog/types'
 import { handleModifyStatus } from '../src/kernel/effect/handlers2'
+import { availableBehaviors } from '../src/kernel/scheduling/filter'
 import { evaluateCondition, type ConditionContext } from '../src/kernel/shared/effect-condition'
 import { Mulberry32RandomSource, RandomUsageRegistry } from '../src/kernel/shared/random-source'
 import { stubContext, registryOf } from './helpers/context'
@@ -24,6 +25,12 @@ const WEAPON_B: StatusDef = {
 
 const PROBE_BUFF: StatusDef = {
   id: 'probe_buff', name: '探针增益', category: ['buff'], dispelable: true, duration: null,
+}
+
+const PROBE_FORCE_BASIC: StatusDef = {
+  id: 'probe_force_basic', name: '拔刀', category: ['buff'], dispelable: false,
+  duration: 1, durationUnit: 'self_turn',
+  behaviorModifiers: [{ op: 'force', behaviors: ['basic_attack'] }],
 }
 
 const CARD_BASE = {
@@ -198,6 +205,28 @@ describe('has_equipped 条件', () => {
     const ctx = condCtx(u)
     u.statuses.mount('probe_buff', { sourceId: 's1' })
     expect(evaluateCondition({ kind: 'has_equipped', side: 'self', slot: 'weapon' }, null, ctx)).toBe(false)
+  })
+})
+
+describe('behaviorModifiers.force', () => {
+  it('force=basic_attack 时本机会只放行普攻', () => {
+    const u = makeUnit('u', 'A', {}, [PROBE_FORCE_BASIC])
+    u.behaviorSlots.push(
+      {
+        instanceId: 'bs_basic', defId: '__basic_attack__', kind: 'basic_attack', reach: 'melee',
+        cost: { energy: 0, gauge: 0, cooldown: 0, opportunity: 1 }, cooldownRemaining: 0,
+      },
+      {
+        instanceId: 'bs_skill', defId: 'probe_equip_a', kind: 'skill', reach: 'melee',
+        cost: { energy: 0, gauge: 0, cooldown: 0, opportunity: 0 }, cooldownRemaining: 0,
+      },
+    )
+    expect(availableBehaviors(u).map((b) => b.kind)).toEqual(['basic_attack', 'skill'])
+    expect(u.activeForcedBehaviors()).toEqual([])
+
+    u.statuses.mount('probe_force_basic', { sourceId: 's1' })
+    expect(u.activeForcedBehaviors()).toEqual(['basic_attack'])
+    expect(availableBehaviors(u, u.activeForcedBehaviors()).map((b) => b.kind)).toEqual(['basic_attack'])
   })
 })
 

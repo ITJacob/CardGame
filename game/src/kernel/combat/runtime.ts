@@ -295,7 +295,7 @@ class CombatRuntime implements CombatRuntimeHandle {
    */
   private runOpportunity(opp: ActionOpportunity, unit: CombatUnit, freeCount: number): void {
     while (true) {
-      const behaviors = availableBehaviors(unit)
+      const behaviors = availableBehaviors(unit, unit.activeForcedBehaviors())
       const slot = this.chooseBehavior(behaviors)
       const source = slot ? this.resolveSource(slot) : undefined
       if (!slot || !source) {

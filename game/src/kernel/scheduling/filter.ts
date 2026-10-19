@@ -7,7 +7,8 @@ import type { BehaviorSlot } from '../roster/types'
 export function availableBehaviors(unit: CombatUnit, force: readonly string[] = []): BehaviorSlot[] {
   return unit.behaviorSlots.filter((b) => {
     if (b.cooldownRemaining !== 0) return false
-    if (force.length > 0 && !force.includes(b.defId)) return false
+    // force 白名单既接受技能 defId，也接受行为 kind（basic_attack / skill）
+    if (force.length > 0 && !force.includes(b.defId) && !force.includes(b.kind)) return false
     if (unit.channel !== null) return false
     if (unit.pool('energy').current < b.cost.energy) return false
     if (unit.gauge.current < b.cost.gauge) return false

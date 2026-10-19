@@ -459,7 +459,7 @@
                 "skillId": "skill_warrior_s6_dawn_blade"
               },
               "setOpportunity": 0,
-              "note": "权柄特权：立即拔刀不消耗行动机会（可紧接着再执行一次普攻）"
+              "note": "权柄特权：立即拔刀，本次行动机会不消耗且只能再执行一次普攻"
             },
             {
               "type": "modify_skill",
@@ -468,7 +468,7 @@
                 "skillId": "skill_warrior_s3_silver_rapier"
               },
               "setOpportunity": 0,
-              "note": "权柄特权：立即拔刀不消耗行动机会（可紧接着再执行一次普攻）"
+              "note": "权柄特权：立即拔刀，本次行动机会不消耗且只能再执行一次普攻"
             },
             {
               "type": "modify_skill",
@@ -477,12 +477,12 @@
                 "skillId": "skill_warrior_s2_twilight_greatsword"
               },
               "setOpportunity": 0,
-              "note": "权柄特权：立即拔刀不消耗行动机会（可紧接着再执行一次普攻）"
+              "note": "权柄特权：立即拔刀，本次行动机会不消耗且只能再执行一次普攻"
             }
           ]
         }
       ],
-      "note": "｜ 2026-10-02 补漏批②：on_kill 收割结算状态面（战斗权柄持有者即收割者） ｜ 2026-10-19 相位形态改为逐自身回合重判（黎明/黄昏独立状态）；拔刀特权补覆盖黄昏巨剑。"
+      "note": "｜ 2026-10-02 补漏批②：on_kill 收割结算状态面（战斗权柄持有者即收割者） ｜ 2026-10-19 相位形态改为逐自身回合重判（黎明/黄昏独立状态）；拔刀特权补覆盖黄昏巨剑，并以 battle_authority_draw 的 force 白名单限死为普攻。"
     },
     {
       "id": "guardianship",
@@ -939,6 +939,28 @@
         }
       ],
       "note": "战斗权柄的相位形态：自身回合开始时按当前相位挂载；黄昏防御 +2，离相后最迟 1 个自身回合自然到期。"
+    },
+    {
+      "id": "battle_authority_draw",
+      "name": "战斗权柄·拔刀",
+      "category": [
+        "buff"
+      ],
+      "dispelable": false,
+      "duration": 1,
+      "durationUnit": "self_turn",
+      "maxStacks": 1,
+      "stackPolicy": "refresh",
+      "behaviorModifiers": [
+        {
+          "op": "force",
+          "behaviors": [
+            "basic_attack"
+          ],
+          "note": "拔刀后本次行动机会仅可使用普攻"
+        }
+      ],
+      "note": "战斗权柄的拔刀特权：装备武器后挂载，本次行动机会只能再执行一次普攻（防止同机会再施放武器装备技能）；下个自身回合开始时自然到期。"
     }
   ]
 }

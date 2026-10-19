@@ -274,3 +274,11 @@
 - **相位判断移出 on_battle_start**：`phase_is` 分支从战斗开始一次性判定移入 `on_turn_start`，每个自身回合按当前战场相位重判。黎明挂载 `battle_authority_dawn`（攻击 +2），黄昏挂载 `battle_authority_dusk`（防御 +2）；两者 `duration: 1 / durationUnit: self_turn`，离相后最迟 1 个自身回合自然到期，不再出现「开战相位决定整场」。
 - **拔刀特权改写**：「装备武器的技能不消耗行动机会」→「装备武器时立即拔刀，不消耗行动机会（可紧接着再执行一次普攻）」。机制沿用 `modify_skill setOpportunity: 0`（既有「同一机会可继续行动」口径），并补齐黄昏巨剑（原清单漏项），三把武器装备技能统一覆盖。
 - 卡面 describe / status note / conversionNotes 同步；五门禁 + analysis 全绿，跨 hash seed 产物一致。
+
+## 2026-10-19 拔刀特权加限制：本机会只能普攻
+
+- 新增状态 `battle_authority_draw`：`behaviorModifiers: [{op:"force", behaviors:["basic_attack"]}]`。三把武器装备技能（晨曦之剑 / 银白细剑 / 黄昏巨剑）装备后，若自身持有 `battle_authority`，则挂载该状态（duration 1 self_turn），把同一次行动机会的后续选择限死为普攻——避免用免费机会再施放另一张武器装备技能（武器都是攻击技能的附加产物）。
+- `setOpportunity: 0` 保留（不消耗机会）；`force` 白名单负责「只能普攻」。状态在下个自身回合开始时随 `self_turn` 递减自然到期，不污染下一次机会。
+- 内核补 `BehaviorModifier.op: force` 落地：`CombatUnit.activeForcedBehaviors()` 汇总状态 force 并集，`availableBehaviors` 按 defId / 行为 kind 放行；测试 `weaponSlot.test.ts` 覆盖。
+- SCHEMA §6 补 `behaviorModifiers` 行（op 值域与 force 形状）。
+- 分数：战士 70.5 → 70.7（force 状态面入账）。

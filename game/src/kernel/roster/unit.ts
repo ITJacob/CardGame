@@ -196,6 +196,27 @@ export class CombatUnit implements Unit {
     return out
   }
 
+  /**
+   * 持态型行为白名单（BehaviorModifier op:force，执行参数 §一）：force 并集。
+   * 返回空数组 = 不限制；非空时只有 defId 或行为 kind 命中白名单的 active 行为可选。
+   * 拔刀特权用它把「同一次机会的后续行动」限死为 basic_attack。
+   */
+  activeForcedBehaviors(): readonly string[] {
+    const out: string[] = []
+    for (const inst of this.statuses.all()) {
+      const def = this.statusDefs.statusDef(inst.defId)
+      for (const raw of def?.behaviorModifiers ?? []) {
+        if (!raw || typeof raw !== 'object') continue
+        const bm = raw as { op?: string; behaviors?: unknown }
+        if (bm.op !== 'force' || !Array.isArray(bm.behaviors)) continue
+        for (const b of bm.behaviors) {
+          if (typeof b === 'string' && !out.includes(b)) out.push(b)
+        }
+      }
+    }
+    return out
+  }
+
   hasStatusCategory(category: string): boolean {
     return this.statuses.all().some((i) => (this.statusDefs.statusDef(i.defId)?.category ?? []).includes(category))
   }
