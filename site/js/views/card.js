@@ -241,15 +241,15 @@ export function renderCardDetail(view, id) {
         </dl>
       </section>
 
-      ${c.triggers?.length ? `<section class="cs-sec">
-        <h2>附加触发</h2>
-        ${triggersHtml(c)}
-      </section>` : ''}
-
       <section class="cs-sec">
         <h2>效果结构</h2>
         ${renderEffects(c.effects)}
       </section>
+
+      ${c.triggers?.length ? `<section class="cs-sec">
+        <h2>附加触发</h2>
+        ${triggersHtml(c)}
+      </section>` : ''}
 
       ${artHtml(c)}
 
