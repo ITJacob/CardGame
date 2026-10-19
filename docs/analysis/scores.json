@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-18",
+ "generated": "2026-10-19",
  "standard": "docs/meta/SCORING.md",
  "pathways": [
   {
@@ -22,7 +22,7 @@
     "prim:echo_last_skill": 11,
     "prim:restore_snapshot": 2
    },
-   "styleDist": 0.2128,
+   "styleDist": 0.21,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -36,7 +36,7 @@
       "dur:tick",
       "cat:buff"
      ],
-     "distinct": 30
+     "distinct": 26
     },
     {
      "family": "param",
@@ -69,7 +69,7 @@
     "config": 3.5
    },
    "nearest": "assassin",
-   "nearestDist": 0.1337,
+   "nearestDist": 0.132,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -85,7 +85,7 @@
     },
     {
      "dim": "差异化",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.213）",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.210）",
      "ref": "apprentice",
      "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
     }
@@ -136,12 +136,12 @@
      "id": "astral",
      "name": "星界",
      "symbol": "🌌",
-     "total": 61.6,
+     "total": 61.2,
      "dims": {
       "身份锚定": 8,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 8.6,
+      "轴内多样性": 8.2,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -178,12 +178,12 @@
      "id": "record",
      "name": "记录",
      "symbol": "📖",
-     "total": 65.0,
+     "total": 65.1,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 5.0,
+      "轴内多样性": 5.1,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -214,12 +214,12 @@
      "id": "gate",
      "name": "开门",
      "symbol": "🚪",
-     "total": 81.6,
+     "total": 81.2,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 21,
-      "轴内多样性": 10.6,
+      "轴内多样性": 10.2,
       "规模均衡": 9,
       "承接连通": 6
      },
@@ -259,26 +259,26 @@
    ]
   },
   {
-   "id": "savant",
-   "name": "通识者",
-   "total": 56.2,
+   "id": "reader",
+   "name": "阅读者",
+   "total": 54.7,
    "dims": {
-    "轴健康度": 26.3,
+    "轴健康度": 23.5,
     "跨轴耦合": 3.8,
-    "跨系联动": 8.4,
+    "跨系联动": 9.4,
     "结构健康": 5.0,
     "机制落地": 5.0,
     "文本完备": 5.0,
-    "差异化": 17.7
+    "差异化": 18.0
    },
-   "minAxis": 71.1,
-   "cards": 36,
+   "minAxis": 60.1,
+   "cards": 34,
    "sigHits": {
-    "prim:modify_rule_slot": 13,
-    "sref:law_edit": 3,
-    "unitType:CONSTRUCT": 3
+    "prim:reveal": 13,
+    "sref:mimic": 5,
+    "prim:snapshot": 7
    },
-   "styleDist": 0.2092,
+   "styleDist": 0.2058,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -289,11 +289,225 @@
     {
      "family": "sshape",
      "keys": [
-      "cat:buff",
-      "stacks"
+      "dur:tick",
+      "cat:buff"
      ],
-     "distinct": 26
+     "distinct": 23
     },
+    {
+     "family": "param",
+     "keys": [
+      "mode=delta",
+      "scope=to_source"
+     ],
+     "distinct": 17
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "mode=unit",
+      "eff:target"
+     ],
+     "distinct": 15
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "reveal"
+     ],
+     "distinct": 13
+    }
+   ],
+   "styleParts": {
+    "signature": 15,
+    "fingerprint": 0,
+    "config": 3.0
+   },
+   "nearest": "thief",
+   "nearestDist": 0.135,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-11.2：本途径他轴身份读取 3 次",
+     "ref": "reader",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "差异化",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.206）",
+     "ref": "reader",
+     "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
+    }
+   ],
+   "axes": [
+    {
+     "id": "arcana",
+     "name": "秘术",
+     "symbol": "📚",
+     "total": 60.1,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 10,
+      "轴内多样性": 5.1,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "仪式魔法专家",
+      "省略步骤"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：间接收束 10 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
+       "ref": "arcana",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    },
+    {
+     "id": "mimic",
+     "name": "模仿",
+     "symbol": "🦜",
+     "total": 67.1,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 15,
+      "轴内多样性": 7.1,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "模仿·全知之眼",
+      "模仿·初解",
+      "模仿·智天使",
+      "模仿·秘术导师",
+      "模仿·预言家"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
+       "ref": "mimic",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    },
+    {
+     "id": "foresight",
+     "name": "预知",
+     "symbol": "⏳",
+     "total": 67.9,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 15,
+      "轴内多样性": 7.9,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "预言",
+      "智慧权柄"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
+       "ref": "foresight",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    },
+    {
+     "id": "analysis",
+     "name": "解析",
+     "symbol": "🧠",
+     "total": 83.1,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 25,
+      "轴内多样性": 7.1,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "解析",
+      "逻辑推演"
+     ],
+     "payoffsLanded": [
+      "模仿·全知之眼"
+     ],
+     "payoffsNotes": [
+      "模仿·初解",
+      "模仿·秘术导师",
+      "模仿·预言家",
+      "模仿·智天使"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：notes 级 4 张（减半计）",
+       "ref": "模仿·初解,模仿·秘术导师,模仿·预言家,模仿·智天使",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "savant",
+   "name": "通识者",
+   "total": 55.8,
+   "dims": {
+    "轴健康度": 26.1,
+    "跨轴耦合": 3.8,
+    "跨系联动": 8.4,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 17.5
+   },
+   "minAxis": 70.4,
+   "cards": 36,
+   "sigHits": {
+    "prim:modify_rule_slot": 13,
+    "sref:law_edit": 3,
+    "unitType:CONSTRUCT": 3
+   },
+   "styleDist": 0.2063,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
     {
      "family": "param",
      "keys": [
@@ -301,6 +515,14 @@
       "position=tail"
      ],
      "distinct": 23
+    },
+    {
+     "family": "sshape",
+     "keys": [
+      "cat:buff",
+      "stacks"
+     ],
+     "distinct": 21
     },
     {
      "family": "tgt",
@@ -322,10 +544,10 @@
    "styleParts": {
     "signature": 15,
     "fingerprint": 0,
-    "config": 2.7
+    "config": 2.5
    },
    "nearest": "planter",
-   "nearestDist": 0.1333,
+   "nearestDist": 0.1283,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -335,7 +557,7 @@
     },
     {
      "dim": "差异化",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.209）",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.206）",
      "ref": "savant",
      "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
     }
@@ -345,12 +567,12 @@
      "id": "civilization",
      "name": "文明",
      "symbol": "🏙️",
-     "total": 71.1,
+     "total": 70.4,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 8.1,
+      "轴内多样性": 7.4,
       "规模均衡": 10,
       "承接连通": 9
      },
@@ -375,12 +597,12 @@
      "id": "lore",
      "name": "通识",
      "symbol": "📘",
-     "total": 73.8,
+     "total": 73.9,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 17,
-      "轴内多样性": 5.8,
+      "轴内多样性": 5.9,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -414,12 +636,12 @@
      "id": "astral",
      "name": "星律",
      "symbol": "☄️",
-     "total": 79.1,
+     "total": 78.4,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 17,
-      "轴内多样性": 8.1,
+      "轴内多样性": 7.4,
       "规模均衡": 10,
       "承接连通": 9
      },
@@ -454,12 +676,12 @@
      "id": "craft",
      "name": "造物",
      "symbol": "⚙️",
-     "total": 81.5,
+     "total": 81.1,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 25,
-      "轴内多样性": 7.5,
+      "轴内多样性": 7.1,
       "规模均衡": 8,
       "承接连通": 6
      },
@@ -509,9 +731,9 @@
   {
    "id": "thief",
    "name": "偷盗者",
-   "total": 57.5,
+   "total": 57.3,
    "dims": {
-    "轴健康度": 24.8,
+    "轴健康度": 24.6,
     "跨轴耦合": 2.5,
     "跨系联动": 9.4,
     "结构健康": 5.0,
@@ -519,14 +741,14 @@
     "文本完备": 5.0,
     "差异化": 20.8
    },
-   "minAxis": 66.9,
+   "minAxis": 66.2,
    "cards": 37,
    "sigHits": {
     "prim:take_control": 5,
     "prim:modify_targetability": 2,
     "prim:target_override": 7
    },
-   "styleDist": 0.2163,
+   "styleDist": 0.2146,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -540,7 +762,7 @@
       "cat:buff",
       "dur:tick"
      ],
-     "distinct": 32
+     "distinct": 27
     },
     {
      "family": "param",
@@ -572,8 +794,8 @@
     "fingerprint": 3,
     "config": 2.8
    },
-   "nearest": "lawyer",
-   "nearestDist": 0.1397,
+   "nearest": "reader",
+   "nearestDist": 0.135,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -583,7 +805,7 @@
     },
     {
      "dim": "差异化",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.216）",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.215）",
      "ref": "thief",
      "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
     }
@@ -593,12 +815,12 @@
      "id": "steal",
      "name": "窃取",
      "symbol": "🧤",
-     "total": 66.9,
+     "total": 66.2,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 8.9,
+      "轴内多样性": 8.2,
       "规模均衡": 8,
       "承接连通": 6
      },
@@ -629,12 +851,12 @@
      "id": "chrono",
      "name": "时命",
      "symbol": "🕰️",
-     "total": 70.5,
+     "total": 69.8,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 7.5,
+      "轴内多样性": 6.8,
       "规模均衡": 10,
       "承接连通": 9
      },
@@ -659,12 +881,12 @@
      "id": "deceit",
      "name": "欺诈",
      "symbol": "🤥",
-     "total": 70.8,
+     "total": 70.5,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 10.8,
+      "轴内多样性": 10.5,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -688,12 +910,12 @@
      "id": "parasite",
      "name": "寄生",
      "symbol": "🪱",
-     "total": 79.9,
+     "total": 79.8,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 18,
-      "轴内多样性": 8.9,
+      "轴内多样性": 8.8,
       "规模均衡": 9,
       "承接连通": 9
      },
@@ -725,248 +947,26 @@
    ]
   },
   {
-   "id": "reader",
-   "name": "阅读者",
-   "total": 57.8,
-   "dims": {
-    "轴健康度": 23.5,
-    "跨轴耦合": 3.8,
-    "跨系联动": 9.4,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 21.1
-   },
-   "minAxis": 60.0,
-   "cards": 34,
-   "sigHits": {
-    "prim:reveal": 13,
-    "sref:mimic": 5,
-    "prim:snapshot": 7
-   },
-   "styleDist": 0.2134,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "dur:tick",
-      "cat:buff"
-     ],
-     "distinct": 27
-    },
-    {
-     "family": "param",
-     "keys": [
-      "mode=delta",
-      "scope=to_source"
-     ],
-     "distinct": 17
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "mode=unit",
-      "eff:target"
-     ],
-     "distinct": 15
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "reveal"
-     ],
-     "distinct": 13
-    }
-   ],
-   "styleParts": {
-    "signature": 15,
-    "fingerprint": 3,
-    "config": 3.1
-   },
-   "nearest": "thief",
-   "nearestDist": 0.146,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-11.2：本途径他轴身份读取 3 次",
-     "ref": "reader",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "差异化",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.213）",
-     "ref": "reader",
-     "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
-    }
-   ],
-   "axes": [
-    {
-     "id": "arcana",
-     "name": "秘术",
-     "symbol": "📚",
-     "total": 60.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 10,
-      "轴内多样性": 5.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "仪式魔法专家",
-      "省略步骤"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：间接收束 10 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
-       "ref": "arcana",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "mimic",
-     "name": "模仿",
-     "symbol": "🦜",
-     "total": 66.9,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 15,
-      "轴内多样性": 6.9,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "模仿·全知之眼",
-      "模仿·初解",
-      "模仿·智天使",
-      "模仿·秘术导师",
-      "模仿·预言家"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
-       "ref": "mimic",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "foresight",
-     "name": "预知",
-     "symbol": "⏳",
-     "total": 68.6,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 15,
-      "轴内多样性": 8.6,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "预言",
-      "智慧权柄"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
-       "ref": "foresight",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "analysis",
-     "name": "解析",
-     "symbol": "🧠",
-     "total": 82.9,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 25,
-      "轴内多样性": 6.9,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "解析",
-      "逻辑推演"
-     ],
-     "payoffsLanded": [
-      "模仿·全知之眼"
-     ],
-     "payoffsNotes": [
-      "模仿·初解",
-      "模仿·秘术导师",
-      "模仿·预言家",
-      "模仿·智天使"
-     ],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：notes 级 4 张（减半计）",
-       "ref": "模仿·初解,模仿·秘术导师,模仿·预言家,模仿·智天使",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "prisoner",
    "name": "囚犯",
-   "total": 58.3,
+   "total": 57.9,
    "dims": {
-    "轴健康度": 25.5,
+    "轴健康度": 25.2,
     "跨轴耦合": 3.8,
     "跨系联动": 11.2,
     "结构健康": 5.0,
     "机制落地": 5.0,
     "文本完备": 5.0,
-    "差异化": 17.8
+    "差异化": 17.7
    },
-   "minAxis": 69.2,
+   "minAxis": 68.5,
    "cards": 36,
    "sigHits": {
     "sref:curse_link": 3,
     "unitType:ITEM": 2,
     "sref:lineage_stack": 6
    },
-   "styleDist": 0.2042,
+   "styleDist": 0.205,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -980,7 +980,7 @@
       "dur:tick",
       "stacks"
      ],
-     "distinct": 44
+     "distinct": 37
     },
     {
      "family": "param",
@@ -1010,10 +1010,10 @@
    "styleParts": {
     "signature": 15,
     "fingerprint": 0,
-    "config": 2.8
+    "config": 2.7
    },
    "nearest": "apothecary",
-   "nearestDist": 0.1389,
+   "nearestDist": 0.1398,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1023,7 +1023,7 @@
     },
     {
      "dim": "差异化",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.204）",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.205）",
      "ref": "prisoner",
      "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
     }
@@ -1033,12 +1033,12 @@
      "id": "item",
      "name": "物品",
      "symbol": "🧿",
-     "total": 69.2,
+     "total": 68.5,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 9.2,
+      "轴内多样性": 8.5,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -1062,12 +1062,12 @@
      "id": "curse",
      "name": "诅咒",
      "symbol": "👻",
-     "total": 70.8,
+     "total": 70.5,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 10.8,
+      "轴内多样性": 10.5,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -1091,12 +1091,12 @@
      "id": "bondage",
      "name": "束缚",
      "symbol": "⛓️",
-     "total": 72.5,
+     "total": 71.3,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 12.5,
+      "轴内多样性": 11.3,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -1120,12 +1120,12 @@
      "id": "aberration",
      "name": "异类",
      "symbol": "🐺",
-     "total": 83.6,
+     "total": 82.9,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 22,
-      "轴内多样性": 10.6,
+      "轴内多样性": 9.9,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -1164,236 +1164,9 @@
    ]
   },
   {
-   "id": "seer",
-   "name": "占卜家",
-   "total": 58.3,
-   "dims": {
-    "轴健康度": 25.2,
-    "跨轴耦合": 3.8,
-    "跨系联动": 8.4,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 20.9
-   },
-   "minAxis": 66.1,
-   "cards": 39,
-   "sigHits": {
-    "sref:puppet_string": 4,
-    "prim:write_rule_slot": 2,
-    "prim:translocate": 4
-   },
-   "styleDist": 0.2227,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "param",
-     "keys": [
-      "mode=delta",
-      "onExpire=revert"
-     ],
-     "distinct": 27
-    },
-    {
-     "family": "sshape",
-     "keys": [
-      "cat:buff",
-      "dur:tick"
-     ],
-     "distinct": 24
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "mode=unit",
-      "eff:self"
-     ],
-     "distinct": 16
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "modify_resource"
-     ],
-     "distinct": 14
-    }
-   ],
-   "styleParts": {
-    "signature": 15,
-    "fingerprint": 3,
-    "config": 2.9
-   },
-   "nearest": "savant",
-   "nearestDist": 0.1489,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-11.2：本途径他轴身份读取 3 次",
-     "ref": "seer",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "差异化",
-     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.223）",
-     "ref": "seer",
-     "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
-    }
-   ],
-   "axes": [
-    {
-     "id": "trick",
-     "name": "戏法",
-     "symbol": "🃏",
-     "total": 66.1,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 15,
-      "轴内多样性": 6.1,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "纸人替身",
-      "直觉预感"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
-       "ref": "trick",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "miracle",
-     "name": "奇迹",
-     "symbol": "🌟",
-     "total": 66.9,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 15,
-      "轴内多样性": 6.9,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "奇迹",
-      "愿望"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
-       "ref": "miracle",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "foresight",
-     "name": "预知",
-     "symbol": "🔮",
-     "total": 79.3,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 17,
-      "轴内多样性": 8.3,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "灵视",
-      "占星术"
-     ],
-     "payoffsLanded": [
-      "命运干扰"
-     ],
-     "payoffsNotes": [
-      "命运锚点",
-      "历史影像"
-     ],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：notes 级 2 张（减半计）",
-       "ref": "命运锚点,历史影像",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    },
-    {
-     "id": "marionette",
-     "name": "秘偶",
-     "symbol": "🪆",
-     "total": 84.3,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 22,
-      "轴内多样性": 8.3,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 11,
-     "enablersVerified": [
-      "秘偶",
-      "伤害转移"
-     ],
-     "payoffsLanded": [
-      "秘偶不死",
-      "灵界掌控者"
-     ],
-     "payoffsNotes": [
-      "秘偶换位"
-     ],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：notes 级 1 张（减半计）",
-       "ref": "秘偶换位",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "sailor",
    "name": "水手",
-   "total": 58.4,
+   "total": 58.3,
    "dims": {
     "轴健康度": 22.0,
     "跨轴耦合": 3.8,
@@ -1401,16 +1174,16 @@
     "结构健康": 5.0,
     "机制落地": 5.0,
     "文本完备": 5.0,
-    "差异化": 27.0
+    "差异化": 26.9
    },
-   "minAxis": 56.4,
+   "minAxis": 56.5,
    "cards": 42,
    "sigHits": {
     "elem:ice": 2,
     "elem:lightning": 8,
     "sref:rage": 10
    },
-   "styleDist": 0.2585,
+   "styleDist": 0.2573,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1424,7 +1197,7 @@
       "dur:tick",
       "stacks"
      ],
-     "distinct": 36
+     "distinct": 29
     },
     {
      "family": "param",
@@ -1454,10 +1227,10 @@
    "styleParts": {
     "signature": 15,
     "fingerprint": 9,
-    "config": 3.0
+    "config": 2.9
    },
    "nearest": "apprentice",
-   "nearestDist": 0.1837,
+   "nearestDist": 0.1818,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1477,12 +1250,12 @@
      "id": "rage",
      "name": "愤怒",
      "symbol": "😡",
-     "total": 56.4,
+     "total": 56.5,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 12,
       "收束闭环": 9,
-      "轴内多样性": 4.4,
+      "轴内多样性": 4.5,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -1512,12 +1285,12 @@
      "id": "ocean",
      "name": "海洋",
      "symbol": "🌊",
-     "total": 61.2,
+     "total": 61.4,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 7.2,
+      "轴内多样性": 7.4,
       "规模均衡": 10,
       "承接连通": 0
      },
@@ -1545,12 +1318,12 @@
      "id": "authority",
      "name": "权柄",
      "symbol": "👑",
-     "total": 67.8,
+     "total": 66.5,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 15,
-      "轴内多样性": 7.8,
+      "轴内多样性": 6.5,
       "规模均衡": 10,
       "承接连通": 0
      },
@@ -1613,26 +1386,247 @@
    ]
   },
   {
-   "id": "lawyer",
-   "name": "律师",
-   "total": 61.5,
+   "id": "seer",
+   "name": "占卜家",
+   "total": 61.4,
    "dims": {
-    "轴健康度": 22.1,
-    "跨轴耦合": 6.2,
-    "跨系联动": 15.0,
+    "轴健康度": 25.3,
+    "跨轴耦合": 3.8,
+    "跨系联动": 8.4,
     "结构健康": 5.0,
     "机制落地": 5.0,
     "文本完备": 5.0,
-    "差异化": 18.2
+    "差异化": 23.9
    },
-   "minAxis": 52.2,
-   "cards": 46,
+   "minAxis": 66.2,
+   "cards": 39,
    "sigHits": {
-    "prim:gauge_shuffle": 7,
-    "prim:status_shuffle": 5,
-    "prim:modify_rule_slot": 18
+    "sref:puppet_string": 4,
+    "prim:write_rule_slot": 2,
+    "prim:translocate": 4
    },
-   "styleDist": 0.207,
+   "styleDist": 0.2252,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "param",
+     "keys": [
+      "mode=delta",
+      "onExpire=revert"
+     ],
+     "distinct": 27
+    },
+    {
+     "family": "sshape",
+     "keys": [
+      "cat:buff",
+      "dur:tick"
+     ],
+     "distinct": 24
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "mode=unit",
+      "eff:self"
+     ],
+     "distinct": 16
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "modify_resource"
+     ],
+     "distinct": 14
+    }
+   ],
+   "styleParts": {
+    "signature": 15,
+    "fingerprint": 6,
+    "config": 2.9
+   },
+   "nearest": "savant",
+   "nearestDist": 0.1521,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-11.2：本途径他轴身份读取 3 次",
+     "ref": "seer",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    }
+   ],
+   "axes": [
+    {
+     "id": "trick",
+     "name": "戏法",
+     "symbol": "🃏",
+     "total": 66.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 15,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "纸人替身",
+      "直觉预感"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
+       "ref": "trick",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    },
+    {
+     "id": "miracle",
+     "name": "奇迹",
+     "symbol": "🌟",
+     "total": 67.1,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 15,
+      "轴内多样性": 7.1,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "奇迹",
+      "愿望"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
+       "ref": "miracle",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    },
+    {
+     "id": "foresight",
+     "name": "预知",
+     "symbol": "🔮",
+     "total": 79.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 17,
+      "轴内多样性": 8.5,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "灵视",
+      "占星术"
+     ],
+     "payoffsLanded": [
+      "命运干扰"
+     ],
+     "payoffsNotes": [
+      "命运锚点",
+      "历史影像"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：notes 级 2 张（减半计）",
+       "ref": "命运锚点,历史影像",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "marionette",
+     "name": "秘偶",
+     "symbol": "🪆",
+     "total": 84.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 22,
+      "轴内多样性": 8.5,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 11,
+     "enablersVerified": [
+      "秘偶",
+      "伤害转移"
+     ],
+     "payoffsLanded": [
+      "秘偶不死",
+      "灵界掌控者"
+     ],
+     "payoffsNotes": [
+      "秘偶换位"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：notes 级 1 张（减半计）",
+       "ref": "秘偶换位",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "assassin",
+   "name": "刺客",
+   "total": 61.8,
+   "dims": {
+    "轴健康度": 23.2,
+    "跨轴耦合": 2.5,
+    "跨系联动": 12.2,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 23.9
+   },
+   "minAxis": 60.5,
+   "cards": 39,
+   "sigHits": {
+    "prim:translocate": 11,
+    "elem:ice": 3,
+    "elem:dark": 1
+   },
+   "styleDist": 0.2285,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1646,7 +1640,1180 @@
       "dur:tick",
       "cat:buff"
      ],
-     "distinct": 44
+     "distinct": 37
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "eff:self",
+      "mode=unit"
+     ],
+     "distinct": 15
+    },
+    {
+     "family": "param",
+     "keys": [
+      "direction=enemy_targeted",
+      "mode=delta"
+     ],
+     "distinct": 14
+    },
+    {
+     "family": "condarg",
+     "keys": [
+      "has_status:cmp=>=",
+      "has_status:side=self"
+     ],
+     "distinct": 11
+    }
+   ],
+   "styleParts": {
+    "signature": 15,
+    "fingerprint": 6,
+    "config": 2.9
+   },
+   "nearest": "apprentice",
+   "nearestDist": 0.132,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-12.5：本途径他轴身份读取 2 次",
+     "ref": "assassin",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    }
+   ],
+   "axes": [
+    {
+     "id": "charm",
+     "name": "魅",
+     "symbol": "💋",
+     "total": 60.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 6.5,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "魅惑",
+      "激化矛盾"
+     ],
+     "payoffsLanded": [
+      "反复魅惑"
+     ],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "承接连通",
+       "why": "-15：payoff 无收束方式多样性",
+       "ref": "反复魅惑",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
+      }
+     ]
+    },
+    {
+     "id": "plague",
+     "name": "疫",
+     "symbol": "🦠",
+     "total": 70.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 10.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "疾病",
+      "黑焰"
+     ],
+     "payoffsLanded": [
+      "末日"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "mirror",
+     "name": "镜",
+     "symbol": "🪞",
+     "total": 70.9,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 7.9,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 8,
+     "enablersVerified": [
+      "镜子替身",
+      "魔镜占卜"
+     ],
+     "payoffsLanded": [
+      "镜中世界"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "form",
+     "name": "形",
+     "symbol": "🎭",
+     "total": 71.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 12.5,
+      "规模均衡": 9,
+      "承接连通": 6
+     },
+     "cards": 15,
+     "enablersVerified": [
+      "影形态",
+      "雾形态",
+      "血形态"
+     ],
+     "payoffsLanded": [
+      "原初·静止"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 15 vs 理想 10（比值 1.54）",
+       "ref": "form",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "apothecary",
+   "name": "药师",
+   "total": 62.4,
+   "dims": {
+    "轴健康度": 24.8,
+    "跨轴耦合": 3.8,
+    "跨系联动": 6.6,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 27.2
+   },
+   "minAxis": 64.5,
+   "cards": 40,
+   "sigHits": {
+    "sref:moon_cycle": 4,
+    "unitType:BEAST": 8,
+    "sref:prepared_draught": 5
+   },
+   "styleDist": 0.2458,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "cat:buff",
+      "dur:persistent"
+     ],
+     "distinct": 30
+    },
+    {
+     "family": "param",
+     "keys": [
+      "mode=copy",
+      "to=all_allies"
+     ],
+     "distinct": 20
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "eff:self",
+      "mode=unit"
+     ],
+     "distinct": 16
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "transfer_status"
+     ],
+     "distinct": 11
+    }
+   ],
+   "styleParts": {
+    "signature": 15,
+    "fingerprint": 9,
+    "config": 3.2
+   },
+   "nearest": "prisoner",
+   "nearestDist": 0.1398,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-11.2：本途径他轴身份读取 3 次",
+     "ref": "apothecary",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "跨系联动",
+     "why": "-8.4：枢纽状态 1 个 + combo 读取 3 次",
+     "ref": "apothecary",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    }
+   ],
+   "axes": [
+    {
+     "id": "beasts",
+     "name": "兽群",
+     "symbol": "🐾",
+     "total": 64.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 4.5,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "动物感官",
+      "野性直觉"
+     ],
+     "payoffsLanded": [
+      "狂兽突袭"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "crimson",
+     "name": "血月",
+     "symbol": "🩸",
+     "total": 67.6,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 7.6,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "深红体质",
+      "黑暗之翼"
+     ],
+     "payoffsLanded": [
+      "腐蚀之爪"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
+       "ref": "血族魅力,血仆转化",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    },
+    {
+     "id": "brew",
+     "name": "药剂",
+     "symbol": "⚗️",
+     "total": 69.1,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 9.1,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 11,
+     "enablersVerified": [
+      "药剂调配",
+      "草药敷贴"
+     ],
+     "payoffsLanded": [
+      "草药敷贴"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "moon",
+     "name": "月相",
+     "symbol": "🌙",
+     "total": 90.3,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 25,
+      "轴内多样性": 11.3,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 12,
+     "enablersVerified": [
+      "满月",
+      "月相·轮转"
+     ],
+     "payoffsLanded": [
+      "腐蚀之爪",
+      "黑暗凝视",
+      "蝙蝠分解"
+     ],
+     "payoffsNotes": [
+      "预服药水",
+      "闪现",
+      "月光化",
+      "召唤之门",
+      "创生",
+      "美之震撼",
+      "生命之权",
+      "血月当空"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
+       "ref": "银月切相",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      },
+      {
+       "dim": "收束闭环",
+       "why": "注：notes 级 8 张（减半计）",
+       "ref": "预服药水,闪现,月光化,召唤之门,创生,美之震撼,生命之权,血月当空",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "criminal",
+   "name": "罪犯",
+   "total": 63.0,
+   "dims": {
+    "轴健康度": 23.6,
+    "跨轴耦合": 5.0,
+    "跨系联动": 7.5,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 26.9
+   },
+   "minAxis": 61.2,
+   "cards": 40,
+   "sigHits": {
+    "res:lust": 36,
+    "elem:dark": 4,
+    "flag:companionBuff": 2
+   },
+   "styleDist": 0.2493,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "dur:tick",
+      "dur:persistent"
+     ],
+     "distinct": 32
+    },
+    {
+     "family": "param",
+     "keys": [
+      "mode=delta",
+      "resource=lust"
+     ],
+     "distinct": 18
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "faction=enemy",
+      "mode=unit"
+     ],
+     "distinct": 14
+    },
+    {
+     "family": "condarg",
+     "keys": [
+      "has_status:side=target",
+      "has_status:cmp=>="
+     ],
+     "distinct": 12
+    }
+   ],
+   "styleParts": {
+    "signature": 15,
+    "fingerprint": 9,
+    "config": 2.9
+   },
+   "nearest": "prisoner",
+   "nearestDist": 0.1862,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-10.0：本途径他轴身份读取 4 次",
+     "ref": "criminal",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    }
+   ],
+   "axes": [
+    {
+     "id": "filth",
+     "name": "污秽",
+     "symbol": "🕳️",
+     "total": 61.2,
+     "dims": {
+      "身份锚定": 8,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 8.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "污秽之语",
+      "侵蚀者"
+     ],
+     "payoffsLanded": [
+      "荒芜侵蚀·改"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "身份锚定",
+       "why": "-7：身份状态纯静态载荷（层数引擎 / triggers / statPerStack / 形态 皆无）",
+       "ref": "filth",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
+      }
+     ]
+    },
+    {
+     "id": "demon",
+     "name": "恶魔",
+     "symbol": "👹",
+     "total": 63.9,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 9.9,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 11,
+     "enablersVerified": [
+      "恶魔仪式",
+      "恶魔化"
+     ],
+     "payoffsLanded": [
+      "深渊召唤"
+     ],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "承接连通",
+       "why": "-15：payoff 无收束方式多样性",
+       "ref": "深渊召唤",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
+      }
+     ]
+    },
+    {
+     "id": "vice",
+     "name": "恶欲",
+     "symbol": "😈",
+     "total": 73.6,
+     "dims": {
+      "身份锚定": 8,
+      "产层闭环": 20,
+      "收束闭环": 17,
+      "轴内多样性": 9.6,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "掌控欲望",
+      "恶欲共鸣"
+     ],
+     "payoffsLanded": [
+      "欲望爆炸"
+     ],
+     "payoffsNotes": [
+      "深渊即我",
+      "恶欲共鸣"
+     ],
+     "patterns": [
+      "乘区",
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "身份锚定",
+       "why": "-7：Pool 轴无层数引擎档位（thresholdTrigger(metric) 未挂）",
+       "ref": "lust",
+       "fix": "给该 Pool 配 thresholdTrigger(metric) 档位状态（照恶欲值躁动/失控/爆炸四档先例）"
+      },
+      {
+       "dim": "收束闭环",
+       "why": "注：notes 级 2 张（减半计）",
+       "ref": "深渊即我,恶欲共鸣",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "elements",
+     "name": "领域",
+     "symbol": "🌋",
+     "total": 78.7,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 22,
+      "轴内多样性": 5.7,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "强酸沼泽",
+      "腐蚀毒雾"
+     ],
+     "payoffsLanded": [
+      "地狱之火",
+      "深渊之火"
+     ],
+     "payoffsNotes": [
+      "双焰交汇"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：notes 级 1 张（减半计）",
+       "ref": "双焰交汇",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "corpse_collector",
+   "name": "收尸人",
+   "total": 63.1,
+   "dims": {
+    "轴健康度": 24.3,
+    "跨轴耦合": 3.8,
+    "跨系联动": 8.4,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 26.6
+   },
+   "minAxis": 58.8,
+   "cards": 42,
+   "sigHits": {
+    "flag:filter.unitType": 3,
+    "trig:on_kill": 2,
+    "prim:drain": 9
+   },
+   "styleDist": 0.2461,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "cat:buff",
+      "dur:persistent"
+     ],
+     "distinct": 24
+    },
+    {
+     "family": "param",
+     "keys": [
+      "scope=to_source",
+      "position=tail"
+     ],
+     "distinct": 19
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "mode=unit",
+      "eff:self"
+     ],
+     "distinct": 13
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "reveal"
+     ],
+     "distinct": 10
+    }
+   ],
+   "styleParts": {
+    "signature": 15,
+    "fingerprint": 9,
+    "config": 2.6
+   },
+   "nearest": "reader",
+   "nearestDist": 0.1519,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-11.2：本途径他轴身份读取 3 次",
+     "ref": "corpse_collector",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "结构健康",
+     "why": "-0：主被动比 1.33 不在 [1.5, 3.0]",
+     "ref": "corpse_collector",
+     "fix": "补主动或被动卡，把主被动比调进 [1.5, 3.0]"
+    }
+   ],
+   "axes": [
+    {
+     "id": "corpse",
+     "name": "尸骸",
+     "symbol": "💀",
+     "total": 58.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 12,
+      "收束闭环": 15,
+      "轴内多样性": 6.8,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "尸体特质"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "尸体特质",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      },
+      {
+       "dim": "收束闭环",
+       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
+       "ref": "corpse",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    },
+    {
+     "id": "end",
+     "name": "终末",
+     "symbol": "⚰️",
+     "total": 75.3,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 9.3,
+      "规模均衡": 10,
+      "承接连通": 12
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "一切的归宿",
+      "死亡权柄"
+     ],
+     "payoffsLanded": [
+      "苍白世界"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "乘区",
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "spirit_sight",
+     "name": "灵视",
+     "symbol": "👁️",
+     "total": 77.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 17,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "天然灵视",
+      "灵视觉醒",
+      "死兆预感"
+     ],
+     "payoffsLanded": [
+      "死亡之眼"
+     ],
+     "payoffsNotes": [
+      "幽冥窥视",
+      "灵界瞭望"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：notes 级 2 张（减半计）",
+       "ref": "幽冥窥视,灵界瞭望",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "undead",
+     "name": "亡者",
+     "symbol": "🧟",
+     "total": 80.1,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 18,
+      "轴内多样性": 9.1,
+      "规模均衡": 9,
+      "承接连通": 9
+     },
+     "cards": 16,
+     "enablersVerified": [
+      "驱使亡者",
+      "通灵"
+     ],
+     "payoffsLanded": [
+      "灵魂掌控",
+      "冥界之门"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 16 vs 理想 10（比值 1.52）",
+       "ref": "undead",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hunter",
+   "name": "猎人",
+   "total": 64.1,
+   "dims": {
+    "轴健康度": 18.9,
+    "跨轴耦合": 8.8,
+    "跨系联动": 9.4,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 27.0
+   },
+   "minAxis": 43.7,
+   "cards": 43,
+   "sigHits": {
+    "prim:target_override": 7,
+    "flag:gender_is": 1,
+    "sref:massing": 1
+   },
+   "styleDist": 0.2704,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "dur:tick",
+      "cat:debuff"
+     ],
+     "distinct": 23
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "eff:self",
+      "mode=unit"
+     ],
+     "distinct": 22
+    },
+    {
+     "family": "param",
+     "keys": [
+      "mode=delta",
+      "field=punish"
+     ],
+     "distinct": 19
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "modify_resource"
+     ],
+     "distinct": 11
+    }
+   ],
+   "styleParts": {
+    "signature": 12,
+    "fingerprint": 12,
+    "config": 3.0
+   },
+   "nearest": "criminal",
+   "nearestDist": 0.2016,
+   "deductions": [
+    {
+     "dim": "差异化",
+     "why": "-3：签名键零使用 （有键仅 1 卡，未落地）",
+     "ref": "hunter",
+     "fix": "按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证"
+    }
+   ],
+   "axes": [
+    {
+     "id": "intrigue",
+     "name": "阴谋",
+     "symbol": "🕸️",
+     "total": 43.7,
+     "dims": {
+      "身份锚定": 8,
+      "产层闭环": 12,
+      "收束闭环": 8,
+      "轴内多样性": 5.7,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "挑衅"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [
+      "误导",
+      "煽动"
+     ],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "身份锚定",
+       "why": "-7：身份状态纯静态载荷（层数引擎 / triggers / statPerStack / 形态 皆无）",
+       "ref": "intrigue_taunt",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
+      },
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "挑衅",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      },
+      {
+       "dim": "收束闭环",
+       "why": "-17：payoff 2 张全部 notes 级（卡面不读本轴产出面）",
+       "ref": "误导,煽动",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      },
+      {
+       "dim": "承接连通",
+       "why": "-15：payoff 无收束方式多样性",
+       "ref": "误导,煽动",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
+      }
+     ]
+    },
+    {
+     "id": "massing",
+     "name": "集众",
+     "symbol": "🚩",
+     "total": 58.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 12,
+      "收束闭环": 12,
+      "轴内多样性": 10.2,
+      "规模均衡": 9,
+      "承接连通": 0
+     },
+     "cards": 16,
+     "enablersVerified": [
+      "集众·铁血"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [
+      "借用能力",
+      "无限制分享",
+      "战争权柄"
+     ],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "集众·铁血",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      },
+      {
+       "dim": "收束闭环",
+       "why": "-13：payoff 3 张全部 notes 级（卡面不读本轴产出面）",
+       "ref": "借用能力,无限制分享,战争权柄",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      },
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 16 vs 理想 11（比值 1.49）",
+       "ref": "massing",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      },
+      {
+       "dim": "承接连通",
+       "why": "-15：payoff 无收束方式多样性",
+       "ref": "借用能力,无限制分享,战争权柄",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
+      }
+     ]
+    },
+    {
+     "id": "harvest",
+     "name": "收割",
+     "symbol": "🏹",
+     "total": 60.5,
+     "dims": {
+      "身份锚定": 8,
+      "产层闭环": 12,
+      "收束闭环": 18,
+      "轴内多样性": 6.5,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "弱点侦察"
+     ],
+     "payoffsLanded": [
+      "收割",
+      "毁灭之矛"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "身份锚定",
+       "why": "-7：身份状态纯静态载荷（层数引擎 / triggers / statPerStack / 形态 皆无）",
+       "ref": "weak_point",
+       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
+      },
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "弱点侦察",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      },
+      {
+       "dim": "产层闭环",
+       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
+       "ref": "猎人的感官,结构要点",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    },
+    {
+     "id": "flame",
+     "name": "燃焚",
+     "symbol": "🔥",
+     "total": 66.9,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 13,
+      "轴内多样性": 5.9,
+      "规模均衡": 10,
+      "承接连通": 3
+     },
+     "cards": 8,
+     "enablersVerified": [
+      "火鸦术",
+      "注火",
+      "燃烧之墙"
+     ],
+     "payoffsLanded": [
+      "紫色火焰"
+     ],
+     "payoffsNotes": [
+      "炽白之枪"
+     ],
+     "patterns": [
+      "乘区"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：notes 级 1 张（减半计）",
+       "ref": "炽白之枪",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lawyer",
+   "name": "律师",
+   "total": 64.4,
+   "dims": {
+    "轴健康度": 22.1,
+    "跨轴耦合": 6.2,
+    "跨系联动": 15.0,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 21.1
+   },
+   "minAxis": 52.4,
+   "cards": 46,
+   "sigHits": {
+    "prim:gauge_shuffle": 7,
+    "prim:status_shuffle": 5,
+    "prim:modify_rule_slot": 18
+   },
+   "styleDist": 0.2066,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "dur:tick",
+      "cat:buff"
+     ],
+     "distinct": 39
     },
     {
      "family": "param",
@@ -1675,11 +2842,11 @@
    ],
    "styleParts": {
     "signature": 15,
-    "fingerprint": 0,
-    "config": 3.2
+    "fingerprint": 3,
+    "config": 3.1
    },
    "nearest": "thief",
-   "nearestDist": 0.1397,
+   "nearestDist": 0.1383,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -1699,12 +2866,12 @@
      "id": "brute",
      "name": "蛮力",
      "symbol": "👊",
-     "total": 52.2,
+     "total": 52.4,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 0,
-      "轴内多样性": 7.2,
+      "轴内多样性": 7.4,
       "规模均衡": 10,
       "承接连通": 0
      },
@@ -1730,12 +2897,12 @@
      "id": "advocacy",
      "name": "讼辩",
      "symbol": "🗣️",
-     "total": 63.1,
+     "total": 63.2,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 10,
-      "轴内多样性": 8.1,
+      "轴内多样性": 8.2,
       "规模均衡": 10,
       "承接连通": 0
      },
@@ -1791,12 +2958,12 @@
      "id": "bribery",
      "name": "贿腐",
      "symbol": "🪙",
-     "total": 77.3,
+     "total": 76.6,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 18,
-      "轴内多样性": 8.3,
+      "轴内多样性": 7.6,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -1820,1179 +2987,6 @@
    ]
   },
   {
-   "id": "assassin",
-   "name": "刺客",
-   "total": 61.9,
-   "dims": {
-    "轴健康度": 23.2,
-    "跨轴耦合": 2.5,
-    "跨系联动": 12.2,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 24.0
-   },
-   "minAxis": 60.7,
-   "cards": 39,
-   "sigHits": {
-    "prim:translocate": 11,
-    "elem:ice": 3,
-    "elem:dark": 1
-   },
-   "styleDist": 0.2302,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "dur:tick",
-      "cat:buff"
-     ],
-     "distinct": 41
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "eff:self",
-      "mode=unit"
-     ],
-     "distinct": 15
-    },
-    {
-     "family": "param",
-     "keys": [
-      "direction=enemy_targeted",
-      "mode=delta"
-     ],
-     "distinct": 14
-    },
-    {
-     "family": "condarg",
-     "keys": [
-      "has_status:cmp=>=",
-      "has_status:side=self"
-     ],
-     "distinct": 11
-    }
-   ],
-   "styleParts": {
-    "signature": 15,
-    "fingerprint": 6,
-    "config": 3.0
-   },
-   "nearest": "apprentice",
-   "nearestDist": 0.1337,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-12.5：本途径他轴身份读取 2 次",
-     "ref": "assassin",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    }
-   ],
-   "axes": [
-    {
-     "id": "charm",
-     "name": "魅",
-     "symbol": "💋",
-     "total": 60.7,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 6.7,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "魅惑",
-      "激化矛盾"
-     ],
-     "payoffsLanded": [
-      "反复魅惑"
-     ],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无收束方式多样性",
-       "ref": "反复魅惑",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
-      }
-     ]
-    },
-    {
-     "id": "plague",
-     "name": "疫",
-     "symbol": "🦠",
-     "total": 70.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 10.0,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "疾病",
-      "黑焰"
-     ],
-     "payoffsLanded": [
-      "末日"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "mirror",
-     "name": "镜",
-     "symbol": "🪞",
-     "total": 70.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 7.8,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 8,
-     "enablersVerified": [
-      "镜子替身",
-      "魔镜占卜"
-     ],
-     "payoffsLanded": [
-      "镜中世界"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "form",
-     "name": "形",
-     "symbol": "🎭",
-     "total": 71.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 12.8,
-      "规模均衡": 9,
-      "承接连通": 6
-     },
-     "cards": 15,
-     "enablersVerified": [
-      "影形态",
-      "雾形态",
-      "血形态"
-     ],
-     "payoffsLanded": [
-      "原初·静止"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 15 vs 理想 10（比值 1.54）",
-       "ref": "form",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "corpse_collector",
-   "name": "收尸人",
-   "total": 62.4,
-   "dims": {
-    "轴健康度": 23.6,
-    "跨轴耦合": 3.8,
-    "跨系联动": 8.4,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 26.6
-   },
-   "minAxis": 54.2,
-   "cards": 42,
-   "sigHits": {
-    "flag:filter.unitType": 3,
-    "trig:on_kill": 2,
-    "prim:drain": 9
-   },
-   "styleDist": 0.246,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "cat:buff",
-      "dur:persistent"
-     ],
-     "distinct": 29
-    },
-    {
-     "family": "param",
-     "keys": [
-      "scope=to_source",
-      "position=tail"
-     ],
-     "distinct": 19
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "mode=unit",
-      "eff:self"
-     ],
-     "distinct": 13
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "reveal"
-     ],
-     "distinct": 10
-    }
-   ],
-   "styleParts": {
-    "signature": 15,
-    "fingerprint": 9,
-    "config": 2.6
-   },
-   "nearest": "reader",
-   "nearestDist": 0.1562,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-11.2：本途径他轴身份读取 3 次",
-     "ref": "corpse_collector",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "结构健康",
-     "why": "-0：主被动比 1.33 不在 [1.5, 3.0]",
-     "ref": "corpse_collector",
-     "fix": "补主动或被动卡，把主被动比调进 [1.5, 3.0]"
-    }
-   ],
-   "axes": [
-    {
-     "id": "corpse",
-     "name": "尸骸",
-     "symbol": "💀",
-     "total": 54.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "收束闭环": 10,
-      "轴内多样性": 7.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "尸体特质"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "尸体特质",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "收束闭环",
-       "why": "注：间接收束 10 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
-       "ref": "corpse",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "end",
-     "name": "终末",
-     "symbol": "⚰️",
-     "total": 75.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 9.2,
-      "规模均衡": 10,
-      "承接连通": 12
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "一切的归宿",
-      "死亡权柄"
-     ],
-     "payoffsLanded": [
-      "苍白世界"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "乘区",
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "spirit_sight",
-     "name": "灵视",
-     "symbol": "👁️",
-     "total": 77.9,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 17,
-      "轴内多样性": 6.9,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "天然灵视",
-      "灵视觉醒",
-      "死兆预感"
-     ],
-     "payoffsLanded": [
-      "死亡之眼"
-     ],
-     "payoffsNotes": [
-      "幽冥窥视",
-      "灵界瞭望"
-     ],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：notes 级 2 张（减半计）",
-       "ref": "幽冥窥视,灵界瞭望",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    },
-    {
-     "id": "undead",
-     "name": "亡者",
-     "symbol": "🧟",
-     "total": 80.4,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 18,
-      "轴内多样性": 9.4,
-      "规模均衡": 9,
-      "承接连通": 9
-     },
-     "cards": 16,
-     "enablersVerified": [
-      "驱使亡者",
-      "通灵"
-     ],
-     "payoffsLanded": [
-      "灵魂掌控",
-      "冥界之门"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 16 vs 理想 10（比值 1.52）",
-       "ref": "undead",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "apothecary",
-   "name": "药师",
-   "total": 62.5,
-   "dims": {
-    "轴健康度": 24.9,
-    "跨轴耦合": 3.8,
-    "跨系联动": 6.6,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 27.2
-   },
-   "minAxis": 65.3,
-   "cards": 40,
-   "sigHits": {
-    "sref:moon_cycle": 4,
-    "unitType:BEAST": 8,
-    "sref:prepared_draught": 5
-   },
-   "styleDist": 0.2484,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "cat:buff",
-      "dur:persistent"
-     ],
-     "distinct": 34
-    },
-    {
-     "family": "param",
-     "keys": [
-      "mode=copy",
-      "to=all_allies"
-     ],
-     "distinct": 20
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "eff:self",
-      "mode=unit"
-     ],
-     "distinct": 16
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "transfer_status"
-     ],
-     "distinct": 11
-    }
-   ],
-   "styleParts": {
-    "signature": 15,
-    "fingerprint": 9,
-    "config": 3.2
-   },
-   "nearest": "prisoner",
-   "nearestDist": 0.1389,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-11.2：本途径他轴身份读取 3 次",
-     "ref": "apothecary",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-8.4：枢纽状态 1 个 + combo 读取 3 次",
-     "ref": "apothecary",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    }
-   ],
-   "axes": [
-    {
-     "id": "beasts",
-     "name": "兽群",
-     "symbol": "🐾",
-     "total": 65.3,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 5.3,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "动物感官",
-      "野性直觉"
-     ],
-     "payoffsLanded": [
-      "狂兽突袭"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "crimson",
-     "name": "血月",
-     "symbol": "🩸",
-     "total": 67.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 7.8,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "深红体质",
-      "黑暗之翼"
-     ],
-     "payoffsLanded": [
-      "腐蚀之爪"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "血族魅力,血仆转化",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "brew",
-     "name": "药剂",
-     "symbol": "⚗️",
-     "total": 69.7,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 9.7,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 11,
-     "enablersVerified": [
-      "药剂调配",
-      "草药敷贴"
-     ],
-     "payoffsLanded": [
-      "草药敷贴"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "moon",
-     "name": "月相",
-     "symbol": "🌙",
-     "total": 90.1,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 25,
-      "轴内多样性": 11.1,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 12,
-     "enablersVerified": [
-      "满月",
-      "月相·轮转"
-     ],
-     "payoffsLanded": [
-      "腐蚀之爪",
-      "黑暗凝视",
-      "蝙蝠分解"
-     ],
-     "payoffsNotes": [
-      "预服药水",
-      "闪现",
-      "月光化",
-      "召唤之门",
-      "创生",
-      "美之震撼",
-      "生命之权",
-      "血月当空"
-     ],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 1 张（name 在列但卡面不挂身份）",
-       "ref": "银月切相",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      },
-      {
-       "dim": "收束闭环",
-       "why": "注：notes 级 8 张（减半计）",
-       "ref": "预服药水,闪现,月光化,召唤之门,创生,美之震撼,生命之权,血月当空",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "criminal",
-   "name": "罪犯",
-   "total": 63.4,
-   "dims": {
-    "轴健康度": 23.9,
-    "跨轴耦合": 5.0,
-    "跨系联动": 7.5,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 27.0
-   },
-   "minAxis": 61.9,
-   "cards": 40,
-   "sigHits": {
-    "res:lust": 36,
-    "elem:dark": 4,
-    "flag:companionBuff": 2
-   },
-   "styleDist": 0.2505,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "dur:tick",
-      "dur:persistent"
-     ],
-     "distinct": 41
-    },
-    {
-     "family": "param",
-     "keys": [
-      "mode=delta",
-      "resource=lust"
-     ],
-     "distinct": 18
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "faction=enemy",
-      "mode=unit"
-     ],
-     "distinct": 14
-    },
-    {
-     "family": "condarg",
-     "keys": [
-      "has_status:side=target",
-      "has_status:cmp=>="
-     ],
-     "distinct": 12
-    }
-   ],
-   "styleParts": {
-    "signature": 15,
-    "fingerprint": 9,
-    "config": 3.0
-   },
-   "nearest": "lawyer",
-   "nearestDist": 0.186,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-10.0：本途径他轴身份读取 4 次",
-     "ref": "criminal",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    }
-   ],
-   "axes": [
-    {
-     "id": "filth",
-     "name": "污秽",
-     "symbol": "🕳️",
-     "total": 61.9,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 8.9,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "污秽之语",
-      "侵蚀者"
-     ],
-     "payoffsLanded": [
-      "荒芜侵蚀·改"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态纯静态载荷（层数引擎 / triggers / statPerStack / 形态 皆无）",
-       "ref": "filth",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      }
-     ]
-    },
-    {
-     "id": "demon",
-     "name": "恶魔",
-     "symbol": "👹",
-     "total": 65.7,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 11.7,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 11,
-     "enablersVerified": [
-      "恶魔仪式",
-      "恶魔化"
-     ],
-     "payoffsLanded": [
-      "深渊召唤"
-     ],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无收束方式多样性",
-       "ref": "深渊召唤",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
-      }
-     ]
-    },
-    {
-     "id": "vice",
-     "name": "恶欲",
-     "symbol": "😈",
-     "total": 74.8,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 20,
-      "收束闭环": 17,
-      "轴内多样性": 10.8,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "掌控欲望",
-      "恶欲共鸣"
-     ],
-     "payoffsLanded": [
-      "欲望爆炸"
-     ],
-     "payoffsNotes": [
-      "深渊即我",
-      "恶欲共鸣"
-     ],
-     "patterns": [
-      "乘区",
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：Pool 轴无层数引擎档位（thresholdTrigger(metric) 未挂）",
-       "ref": "lust",
-       "fix": "给该 Pool 配 thresholdTrigger(metric) 档位状态（照恶欲值躁动/失控/爆炸四档先例）"
-      },
-      {
-       "dim": "收束闭环",
-       "why": "注：notes 级 2 张（减半计）",
-       "ref": "深渊即我,恶欲共鸣",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    },
-    {
-     "id": "elements",
-     "name": "领域",
-     "symbol": "🌋",
-     "total": 78.6,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 22,
-      "轴内多样性": 5.6,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "强酸沼泽",
-      "腐蚀毒雾"
-     ],
-     "payoffsLanded": [
-      "地狱之火",
-      "深渊之火"
-     ],
-     "payoffsNotes": [
-      "双焰交汇"
-     ],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：notes 级 1 张（减半计）",
-       "ref": "双焰交汇",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "hunter",
-   "name": "猎人",
-   "total": 64.3,
-   "dims": {
-    "轴健康度": 18.9,
-    "跨轴耦合": 8.8,
-    "跨系联动": 9.4,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 27.2
-   },
-   "minAxis": 43.6,
-   "cards": 43,
-   "sigHits": {
-    "prim:target_override": 7,
-    "flag:gender_is": 1,
-    "sref:massing": 1
-   },
-   "styleDist": 0.2724,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "dur:tick",
-      "cat:debuff"
-     ],
-     "distinct": 28
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "eff:self",
-      "mode=unit"
-     ],
-     "distinct": 22
-    },
-    {
-     "family": "param",
-     "keys": [
-      "mode=delta",
-      "field=punish"
-     ],
-     "distinct": 19
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "modify_resource"
-     ],
-     "distinct": 11
-    }
-   ],
-   "styleParts": {
-    "signature": 12,
-    "fingerprint": 12,
-    "config": 3.2
-   },
-   "nearest": "criminal",
-   "nearestDist": 0.2063,
-   "deductions": [
-    {
-     "dim": "差异化",
-     "why": "-3：签名键零使用 （有键仅 1 卡，未落地）",
-     "ref": "hunter",
-     "fix": "按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证"
-    }
-   ],
-   "axes": [
-    {
-     "id": "intrigue",
-     "name": "阴谋",
-     "symbol": "🕸️",
-     "total": 43.6,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "收束闭环": 8,
-      "轴内多样性": 5.6,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "挑衅"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "误导",
-      "煽动"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态纯静态载荷（层数引擎 / triggers / statPerStack / 形态 皆无）",
-       "ref": "intrigue_taunt",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "挑衅",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "收束闭环",
-       "why": "-17：payoff 2 张全部 notes 级（卡面不读本轴产出面）",
-       "ref": "误导,煽动",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无收束方式多样性",
-       "ref": "误导,煽动",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
-      }
-     ]
-    },
-    {
-     "id": "massing",
-     "name": "集众",
-     "symbol": "🚩",
-     "total": 59.4,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "收束闭环": 12,
-      "轴内多样性": 11.4,
-      "规模均衡": 9,
-      "承接连通": 0
-     },
-     "cards": 16,
-     "enablersVerified": [
-      "集众·铁血"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [
-      "借用能力",
-      "无限制分享",
-      "战争权柄"
-     ],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "集众·铁血",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "收束闭环",
-       "why": "-13：payoff 3 张全部 notes 级（卡面不读本轴产出面）",
-       "ref": "借用能力,无限制分享,战争权柄",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 16 vs 理想 11（比值 1.49）",
-       "ref": "massing",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无收束方式多样性",
-       "ref": "借用能力,无限制分享,战争权柄",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
-      }
-     ]
-    },
-    {
-     "id": "harvest",
-     "name": "收割",
-     "symbol": "🏹",
-     "total": 60.4,
-     "dims": {
-      "身份锚定": 8,
-      "产层闭环": 12,
-      "收束闭环": 18,
-      "轴内多样性": 6.4,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "弱点侦察"
-     ],
-     "payoffsLanded": [
-      "收割",
-      "毁灭之矛"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态纯静态载荷（层数引擎 / triggers / statPerStack / 形态 皆无）",
-       "ref": "weak_point",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "弱点侦察",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "猎人的感官,结构要点",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "flame",
-     "name": "燃焚",
-     "symbol": "🔥",
-     "total": 66.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 13,
-      "轴内多样性": 5.8,
-      "规模均衡": 10,
-      "承接连通": 3
-     },
-     "cards": 8,
-     "enablersVerified": [
-      "火鸦术",
-      "注火",
-      "燃烧之墙"
-     ],
-     "payoffsLanded": [
-      "紫色火焰"
-     ],
-     "payoffsNotes": [
-      "炽白之枪"
-     ],
-     "patterns": [
-      "乘区"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：notes 级 1 张（减半计）",
-       "ref": "炽白之枪",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "spectator",
    "name": "观众",
    "total": 66.2,
@@ -3005,14 +2999,14 @@
     "文本完备": 5.0,
     "差异化": 30.4
    },
-   "minAxis": 65.3,
+   "minAxis": 65.5,
    "cards": 36,
    "sigHits": {
     "stat:rank": 3,
     "flag:template": 1,
     "sref:insight": 5
    },
-   "styleDist": 0.2721,
+   "styleDist": 0.2715,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3026,7 +3020,7 @@
       "dur:tick",
       "cat:buff"
      ],
-     "distinct": 34
+     "distinct": 30
     },
     {
      "family": "param",
@@ -3059,7 +3053,7 @@
     "config": 3.4
    },
    "nearest": "reader",
-   "nearestDist": 0.2038,
+   "nearestDist": 0.1995,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -3079,12 +3073,12 @@
      "id": "dream",
      "name": "梦境",
      "symbol": "💤",
-     "total": 65.3,
+     "total": 65.5,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 10,
-      "轴内多样性": 10.3,
+      "轴内多样性": 10.5,
       "规模均衡": 10,
       "承接连通": 0
      },
@@ -3110,12 +3104,12 @@
      "id": "fantasy",
      "name": "空想",
      "symbol": "🌈",
-     "total": 67.5,
+     "total": 66.8,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 15,
-      "轴内多样性": 7.5,
+      "轴内多样性": 6.8,
       "规模均衡": 10,
       "承接连通": 0
      },
@@ -3141,12 +3135,12 @@
      "id": "suggestion",
      "name": "暗示",
      "symbol": "💭",
-     "total": 68.9,
+     "total": 69.1,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 15,
-      "轴内多样性": 8.9,
+      "轴内多样性": 9.1,
       "规模均衡": 10,
       "承接连通": 0
      },
@@ -3172,12 +3166,12 @@
      "id": "insight",
      "name": "洞察",
      "symbol": "👀",
-     "total": 79.7,
+     "total": 79.8,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 22,
-      "轴内多样性": 6.7,
+      "轴内多样性": 6.8,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -3210,6 +3204,221 @@
    ]
   },
   {
+   "id": "supplicant",
+   "name": "秘祈人",
+   "total": 66.2,
+   "dims": {
+    "轴健康度": 24.4,
+    "跨轴耦合": 6.2,
+    "跨系联动": 15.0,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 20.6
+   },
+   "minAxis": 67.9,
+   "cards": 33,
+   "sigHits": {
+    "sref:grazed_soul": 7,
+    "stat:hp_max": 5,
+    "sref:flesh_undying": 2
+   },
+   "styleDist": 0.2207,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "cat:buff",
+      "dur:tick"
+     ],
+     "distinct": 31
+    },
+    {
+     "family": "param",
+     "keys": [
+      "mode=delta",
+      "resource=hp"
+     ],
+     "distinct": 19
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "eff:self",
+      "mode=unit"
+     ],
+     "distinct": 15
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "modify_resource",
+      "mount_status"
+     ],
+     "distinct": 12
+    }
+   ],
+   "styleParts": {
+    "signature": 15,
+    "fingerprint": 3,
+    "config": 2.6
+   },
+   "nearest": "prisoner",
+   "nearestDist": 0.1408,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-8.8：本途径他轴身份读取 5 次",
+     "ref": "supplicant",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
+    },
+    {
+     "dim": "差异化",
+     "why": "-：途径指纹距离垫底（对他 21 途径均距 0.221）",
+     "ref": "supplicant",
+     "fix": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）"
+    }
+   ],
+   "axes": [
+    {
+     "id": "corruption",
+     "name": "秽堕",
+     "symbol": "☣️",
+     "total": 67.9,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 15,
+      "轴内多样性": 7.9,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "堕落之影",
+      "秽语·诅咒"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
+       "ref": "corruption",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    },
+    {
+     "id": "soul",
+     "name": "牧魂",
+     "symbol": "🐑",
+     "total": 69.9,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 12,
+      "收束闭环": 25,
+      "轴内多样性": 7.9,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 5,
+     "enablersVerified": [
+      "放牧灵魂"
+     ],
+     "payoffsLanded": [
+      "驱使灵魂",
+      "堕落眷属",
+      "灵魂牧场"
+     ],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "-8：实证 enabler 仅 1 张",
+       "ref": "放牧灵魂",
+       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
+      },
+      {
+       "dim": "承接连通",
+       "why": "-15：payoff 无收束方式多样性",
+       "ref": "驱使灵魂,堕落眷属,灵魂牧场",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
+      }
+     ]
+    },
+    {
+     "id": "flesh",
+     "name": "血肉",
+     "symbol": "🥩",
+     "total": 70.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 10.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 11,
+     "enablersVerified": [
+      "液化寄生",
+      "血肉炸弹"
+     ],
+     "payoffsLanded": [
+      "血肉不灭"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "shadow",
+     "name": "阴影",
+     "symbol": "🌗",
+     "total": 73.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 10.5,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "藏入阴影",
+      "操纵阴影"
+     ],
+     "payoffsLanded": [
+      "阴影统治者"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "乘区",
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    }
+   ]
+  },
+  {
    "id": "arbiter",
    "name": "仲裁人",
    "total": 66.5,
@@ -3229,7 +3438,7 @@
     "flag:cost_mod": 2,
     "res:order": 6
    },
-   "styleDist": 0.2437,
+   "styleDist": 0.2444,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3243,7 +3452,7 @@
       "dur:tick",
       "cat:debuff"
      ],
-     "distinct": 37
+     "distinct": 35
     },
     {
      "family": "param",
@@ -3276,7 +3485,7 @@
     "config": 2.8
    },
    "nearest": "seer",
-   "nearestDist": 0.1644,
+   "nearestDist": 0.1646,
    "deductions": [
     {
      "dim": "结构健康",
@@ -3331,12 +3540,12 @@
      "id": "inquest",
      "name": "审讯",
      "symbol": "🔍",
-     "total": 71.8,
+     "total": 71.9,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 13,
-      "轴内多样性": 7.8,
+      "轴内多样性": 7.9,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -3369,12 +3578,12 @@
      "id": "sanction",
      "name": "惩戒",
      "symbol": "🔨",
-     "total": 76.2,
+     "total": 76.4,
      "dims": {
       "身份锚定": 8,
       "产层闭环": 20,
       "收束闭环": 22,
-      "轴内多样性": 7.2,
+      "轴内多样性": 7.4,
       "规模均衡": 10,
       "承接连通": 9
      },
@@ -3415,12 +3624,12 @@
      "id": "jurisdiction",
      "name": "辖区",
      "symbol": "🏛️",
-     "total": 87.3,
+     "total": 87.5,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 25,
-      "轴内多样性": 8.3,
+      "轴内多样性": 8.5,
       "规模均衡": 10,
       "承接连通": 9
      },
@@ -3449,24 +3658,24 @@
   {
    "id": "pryer",
    "name": "窥秘人",
-   "total": 68.0,
+   "total": 67.8,
    "dims": {
-    "轴健康度": 23.9,
+    "轴健康度": 23.8,
     "跨轴耦合": 2.5,
     "跨系联动": 8.4,
     "结构健康": 5.0,
     "机制落地": 5.0,
     "文本完备": 5.0,
-    "差异化": 33.2
+    "差异化": 33.1
    },
-   "minAxis": 65.3,
+   "minAxis": 65.4,
    "cards": 38,
    "sigHits": {
     "flag:valueFrom": 2,
     "flag:cast_time_set": 29,
     "sref:info_form": 2
    },
-   "styleDist": 0.2893,
+   "styleDist": 0.288,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3480,7 +3689,7 @@
       "dur:tick",
       "cat:buff"
      ],
-     "distinct": 41
+     "distinct": 36
     },
     {
      "family": "param",
@@ -3510,10 +3719,10 @@
    "styleParts": {
     "signature": 15,
     "fingerprint": 15,
-    "config": 3.2
+    "config": 3.1
    },
    "nearest": "reader",
-   "nearestDist": 0.2348,
+   "nearestDist": 0.2319,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -3527,12 +3736,12 @@
      "id": "scrying",
      "name": "窥秘",
      "symbol": "🔭",
-     "total": 65.3,
+     "total": 65.4,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 5.3,
+      "轴内多样性": 5.4,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -3556,12 +3765,12 @@
      "id": "combat",
      "name": "格斗",
      "symbol": "🥊",
-     "total": 69.2,
+     "total": 69.4,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 7.2,
+      "轴内多样性": 7.4,
       "规模均衡": 9,
       "承接连通": 9
      },
@@ -3593,12 +3802,12 @@
      "id": "scroll",
      "name": "卷轴法术",
      "symbol": "📃",
-     "total": 70.3,
+     "total": 69.6,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 15,
-      "轴内多样性": 10.3,
+      "轴内多样性": 9.6,
       "规模均衡": 10,
       "承接连通": 0
      },
@@ -3626,12 +3835,12 @@
      "id": "astral",
      "name": "星象信息",
      "symbol": "✨",
-     "total": 71.9,
+     "total": 71.6,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 15,
-      "轴内多样性": 13.9,
+      "轴内多样性": 13.6,
       "规模均衡": 8,
       "承接连通": 0
      },
@@ -3665,9 +3874,9 @@
   {
    "id": "warrior",
    "name": "战士",
-   "total": 68.3,
+   "total": 68.1,
    "dims": {
-    "轴健康度": 25.7,
+    "轴健康度": 25.5,
     "跨轴耦合": 5.0,
     "跨系联动": 4.7,
     "结构健康": 5.0,
@@ -3675,14 +3884,14 @@
     "文本完备": 5.0,
     "差异化": 32.9
    },
-   "minAxis": 71.6,
+   "minAxis": 71.2,
    "cards": 33,
    "sigHits": {
     "elem:holy": 9,
     "flag:filter.unitType": 3,
     "sref:guardianship": 4
    },
-   "styleDist": 0.315,
+   "styleDist": 0.3121,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3696,7 +3905,7 @@
       "cat:buff",
       "dur:persistent"
      ],
-     "distinct": 36
+     "distinct": 30
     },
     {
      "family": "param",
@@ -3729,7 +3938,7 @@
     "config": 2.9
    },
    "nearest": "chanter",
-   "nearestDist": 0.2606,
+   "nearestDist": 0.2572,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -3746,45 +3955,15 @@
    ],
    "axes": [
     {
-     "id": "hunt",
-     "name": "猎魔",
-     "symbol": "🎯",
-     "total": 71.6,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 8.6,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "伪装",
-      "猎魔之眼"
-     ],
-     "payoffsLanded": [
-      "晨曦领域"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
      "id": "twilight",
      "name": "黄昏",
      "symbol": "🌇",
-     "total": 71.6,
+     "total": 71.2,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 8.6,
+      "轴内多样性": 8.2,
       "规模均衡": 10,
       "承接连通": 9
      },
@@ -3806,15 +3985,45 @@
      "deductions": []
     },
     {
+     "id": "hunt",
+     "name": "猎魔",
+     "symbol": "🎯",
+     "total": 71.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 8.5,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "伪装",
+      "猎魔之眼"
+     ],
+     "payoffsLanded": [
+      "晨曦领域"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
      "id": "martial",
      "name": "武艺",
      "symbol": "🗡️",
-     "total": 74.8,
+     "total": 73.9,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 12,
       "收束闭环": 18,
-      "轴内多样性": 12.8,
+      "轴内多样性": 11.9,
       "规模均衡": 8,
       "承接连通": 9
      },
@@ -3852,12 +4061,12 @@
      "id": "guard",
      "name": "守护",
      "symbol": "🛡️",
-     "total": 77.4,
+     "total": 76.8,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 17,
-      "轴内多样性": 9.4,
+      "轴内多样性": 8.8,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -3890,235 +4099,26 @@
    ]
   },
   {
-   "id": "supplicant",
-   "name": "秘祈人",
-   "total": 69.3,
-   "dims": {
-    "轴健康度": 24.5,
-    "跨轴耦合": 6.2,
-    "跨系联动": 15.0,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 23.6
-   },
-   "minAxis": 68.3,
-   "cards": 33,
-   "sigHits": {
-    "sref:grazed_soul": 7,
-    "stat:hp_max": 5,
-    "sref:flesh_undying": 2
-   },
-   "styleDist": 0.2234,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "cat:buff",
-      "dur:tick"
-     ],
-     "distinct": 36
-    },
-    {
-     "family": "param",
-     "keys": [
-      "mode=delta",
-      "resource=hp"
-     ],
-     "distinct": 19
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "eff:self",
-      "mode=unit"
-     ],
-     "distinct": 15
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "modify_resource",
-      "mount_status"
-     ],
-     "distinct": 12
-    }
-   ],
-   "styleParts": {
-    "signature": 15,
-    "fingerprint": 6,
-    "config": 2.6
-   },
-   "nearest": "prisoner",
-   "nearestDist": 0.1433,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-8.8：本途径他轴身份读取 5 次",
-     "ref": "supplicant",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴身份层数的条件/放大段"
-    }
-   ],
-   "axes": [
-    {
-     "id": "corruption",
-     "name": "秽堕",
-     "symbol": "☣️",
-     "total": 68.3,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 15,
-      "轴内多样性": 8.3,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "堕落之影",
-      "秽语·诅咒"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
-       "ref": "corruption",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "soul",
-     "name": "牧魂",
-     "symbol": "🐑",
-     "total": 70.1,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 12,
-      "收束闭环": 25,
-      "轴内多样性": 8.1,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 5,
-     "enablersVerified": [
-      "放牧灵魂"
-     ],
-     "payoffsLanded": [
-      "驱使灵魂",
-      "堕落眷属",
-      "灵魂牧场"
-     ],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "-8：实证 enabler 仅 1 张",
-       "ref": "放牧灵魂",
-       "fix": "再补 1 张产层卡，或给在列 enabler 卡面补挂身份段"
-      },
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无收束方式多样性",
-       "ref": "驱使灵魂,堕落眷属,灵魂牧场",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
-      }
-     ]
-    },
-    {
-     "id": "flesh",
-     "name": "血肉",
-     "symbol": "🥩",
-     "total": 70.6,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 10.6,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 11,
-     "enablersVerified": [
-      "液化寄生",
-      "血肉炸弹"
-     ],
-     "payoffsLanded": [
-      "血肉不灭"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "shadow",
-     "name": "阴影",
-     "symbol": "🌗",
-     "total": 73.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 10.8,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "藏入阴影",
-      "操纵阴影"
-     ],
-     "payoffsLanded": [
-      "阴影统治者"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "乘区",
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    }
-   ]
-  },
-  {
    "id": "planter",
    "name": "耕种者",
-   "total": 75.1,
+   "total": 74.9,
    "dims": {
-    "轴健康度": 26.5,
+    "轴健康度": 26.2,
     "跨轴耦合": 3.8,
     "跨系联动": 15.0,
     "结构健康": 5.0,
     "机制落地": 5.0,
     "文本完备": 5.0,
-    "差异化": 29.8
+    "差异化": 29.9
    },
-   "minAxis": 67.5,
+   "minAxis": 66.8,
    "cards": 34,
    "sigHits": {
     "flag:statPerStack": 3,
     "unitType:PLANT": 8,
     "sref:blight": 3
    },
-   "styleDist": 0.26,
+   "styleDist": 0.2577,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -4132,7 +4132,7 @@
       "dur:tick",
       "cat:buff"
      ],
-     "distinct": 38
+     "distinct": 30
     },
     {
      "family": "param",
@@ -4162,10 +4162,10 @@
    "styleParts": {
     "signature": 15,
     "fingerprint": 12,
-    "config": 2.8
+    "config": 2.9
    },
    "nearest": "savant",
-   "nearestDist": 0.1333,
+   "nearestDist": 0.1283,
    "deductions": [
     {
      "dim": "跨轴耦合",
@@ -4179,12 +4179,12 @@
      "id": "alchemy",
      "name": "炼成",
      "symbol": "🧪",
-     "total": 67.5,
+     "total": 66.8,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 15,
-      "轴内多样性": 7.5,
+      "轴内多样性": 6.8,
       "规模均衡": 10,
       "承接连通": 0
      },
@@ -4216,12 +4216,12 @@
      "id": "blight",
      "name": "荒芜",
      "symbol": "🥀",
-     "total": 80.4,
+     "total": 79.8,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 17,
-      "轴内多样性": 9.4,
+      "轴内多样性": 8.8,
       "规模均衡": 10,
       "承接连通": 9
      },
@@ -4253,56 +4253,15 @@
      ]
     },
     {
-     "id": "healing",
-     "name": "治疗",
-     "symbol": "🌿",
-     "total": 82.9,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 25,
-      "轴内多样性": 6.9,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "生命充盈",
-      "触碰痊愈"
-     ],
-     "payoffsLanded": [
-      "触碰痊愈",
-      "生命炼成"
-     ],
-     "payoffsNotes": [
-      "缝合灵魂",
-      "万物母巢",
-      "人偶制造"
-     ],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：notes 级 3 张（减半计）",
-       "ref": "缝合灵魂,万物母巢,人偶制造",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    },
-    {
      "id": "harvest",
      "name": "丰饶",
      "symbol": "🌾",
-     "total": 83.1,
+     "total": 81.6,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 22,
-      "轴内多样性": 11.1,
+      "轴内多样性": 9.6,
       "规模均衡": 9,
       "承接连通": 6
      },
@@ -4337,15 +4296,56 @@
        "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
+    },
+    {
+     "id": "healing",
+     "name": "治疗",
+     "symbol": "🌿",
+     "total": 82.5,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 25,
+      "轴内多样性": 6.5,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "生命充盈",
+      "触碰痊愈"
+     ],
+     "payoffsLanded": [
+      "触碰痊愈",
+      "生命炼成"
+     ],
+     "payoffsNotes": [
+      "缝合灵魂",
+      "万物母巢",
+      "人偶制造"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：notes 级 3 张（减半计）",
+       "ref": "缝合灵魂,万物母巢,人偶制造",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
     }
    ]
   },
   {
    "id": "monster",
    "name": "怪物",
-   "total": 83.7,
+   "total": 84.1,
    "dims": {
-    "轴健康度": 23.7,
+    "轴健康度": 24.1,
     "跨轴耦合": 15.0,
     "跨系联动": 15.0,
     "结构健康": 5.0,
@@ -4353,14 +4353,14 @@
     "文本完备": 5.0,
     "差异化": 30.0
    },
-   "minAxis": 56.2,
+   "minAxis": 55.8,
    "cards": 35,
    "sigHits": {
     "prim:restore_snapshot": 30,
     "prim:advance_clock": 2,
     "res:fate_value": 5
    },
-   "styleDist": 0.2609,
+   "styleDist": 0.26,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -4374,7 +4374,7 @@
       "cat:buff",
       "dur:persistent"
      ],
-     "distinct": 27
+     "distinct": 23
     },
     {
      "family": "tgt",
@@ -4407,7 +4407,7 @@
     "config": 3.0
    },
    "nearest": "reader",
-   "nearestDist": 0.1908,
+   "nearestDist": 0.185,
    "deductions": [
     {
      "dim": "结构健康",
@@ -4421,12 +4421,12 @@
      "id": "inspiration",
      "name": "灵感",
      "symbol": "💡",
-     "total": 56.2,
+     "total": 55.8,
      "dims": {
       "身份锚定": 8,
       "产层闭环": 12,
       "收束闭环": 18,
-      "轴内多样性": 9.2,
+      "轴内多样性": 8.8,
       "规模均衡": 9,
       "承接连通": 0
      },
@@ -4475,12 +4475,12 @@
      "id": "cycle",
      "name": "循环",
      "symbol": "🔄",
-     "total": 62.5,
+     "total": 69.4,
      "dims": {
-      "身份锚定": 8,
+      "身份锚定": 15,
       "产层闭环": 12,
       "收束闭环": 25,
-      "轴内多样性": 7.5,
+      "轴内多样性": 7.4,
       "规模均衡": 10,
       "承接连通": 0
      },
@@ -4493,12 +4493,6 @@
      "patterns": [],
      "vacuumAccepted": true,
      "deductions": [
-      {
-       "dim": "身份锚定",
-       "why": "-7：身份状态纯静态载荷（层数引擎 / triggers / statPerStack / 形态 皆无）",
-       "ref": "fate_loop",
-       "fix": "给身份状态补层数引擎（stackThreshold / maxStacks / thresholdTrigger 至少其一）"
-      },
       {
        "dim": "产层闭环",
        "why": "-8：实证 enabler 仅 1 张",
@@ -4523,12 +4517,12 @@
      "id": "calamity",
      "name": "灾厄",
      "symbol": "⚡",
-     "total": 81.4,
+     "total": 81.5,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 18,
-      "轴内多样性": 6.4,
+      "轴内多样性": 6.5,
       "规模均衡": 10,
       "承接连通": 12
      },
@@ -4562,12 +4556,12 @@
      "id": "fortune",
      "name": "幸运",
      "symbol": "🎲",
-     "total": 85.7,
+     "total": 85.8,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 25,
-      "轴内多样性": 6.7,
+      "轴内多样性": 6.8,
       "规模均衡": 10,
       "承接连通": 9
      },
@@ -4613,24 +4607,24 @@
   {
    "id": "chanter",
    "name": "歌颂者",
-   "total": 87.4,
+   "total": 87.8,
    "dims": {
-    "轴健康度": 24.2,
+    "轴健康度": 24.7,
     "跨轴耦合": 15.0,
     "跨系联动": 15.0,
     "结构健康": 5.0,
     "机制落地": 5.0,
     "文本完备": 5.0,
-    "差异化": 33.2
+    "差异化": 33.1
    },
-   "minAxis": 61.9,
+   "minAxis": 65.9,
    "cards": 41,
    "sigHits": {
     "prim:grant_immunity": 16,
     "prim:write_rule_slot": 2,
     "trig:on_phase_change": 2
    },
-   "styleDist": 0.2793,
+   "styleDist": 0.2779,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -4644,7 +4638,7 @@
       "cat:buff",
       "dur:tick"
      ],
-     "distinct": 29
+     "distinct": 21
     },
     {
      "family": "tgt",
@@ -4666,30 +4660,30 @@
      "family": "hook",
      "keys": [
       "on_battle_start",
-      "on_deal_damage"
+      "on_apply"
      ],
-     "distinct": 10
+     "distinct": 11
     }
    ],
    "styleParts": {
     "signature": 15,
     "fingerprint": 15,
-    "config": 3.2
+    "config": 3.1
    },
    "nearest": "reader",
-   "nearestDist": 0.2349,
+   "nearestDist": 0.2215,
    "deductions": [],
    "axes": [
     {
      "id": "hymn",
      "name": "颂歌",
      "symbol": "🎵",
-     "total": 61.9,
+     "total": 65.9,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
-      "收束闭环": 10,
-      "轴内多样性": 6.9,
+      "收束闭环": 15,
+      "轴内多样性": 5.9,
       "规模均衡": 10,
       "承接连通": 0
      },
@@ -4707,7 +4701,7 @@
      "deductions": [
       {
        "dim": "收束闭环",
-       "why": "注：间接收束 10 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
+       "why": "注：间接收束 15 分（无 payoff 卡，按通道下游读者 / def 内闭环计）",
        "ref": "hymn",
        "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
       }
@@ -4717,12 +4711,12 @@
      "id": "notary",
      "name": "公证",
      "symbol": "🖋️",
-     "total": 67.5,
+     "total": 66.8,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 7.5,
+      "轴内多样性": 6.8,
       "规模均衡": 10,
       "承接连通": 6
      },
@@ -4747,12 +4741,12 @@
      "id": "judgment",
      "name": "审判",
      "symbol": "⚖️",
-     "total": 71.1,
+     "total": 70.4,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 8.1,
+      "轴内多样性": 7.4,
       "规模均衡": 10,
       "承接连通": 9
      },
@@ -4777,12 +4771,12 @@
      "id": "light",
      "name": "圣光",
      "symbol": "☀️",
-     "total": 85.9,
+     "total": 86.1,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 25,
-      "轴内多样性": 8.9,
+      "轴内多样性": 9.1,
       "规模均衡": 8,
       "承接连通": 9
      },
@@ -4827,24 +4821,24 @@
   {
    "id": "sleepless",
    "name": "不眠者",
-   "total": 88.2,
+   "total": 88.0,
    "dims": {
-    "轴健康度": 27.4,
+    "轴健康度": 27.3,
     "跨轴耦合": 12.5,
     "跨系联动": 15.0,
     "结构健康": 5.0,
     "机制落地": 5.0,
     "文本完备": 5.0,
-    "差异化": 33.3
+    "差异化": 33.2
    },
-   "minAxis": 73.5,
+   "minAxis": 73.6,
    "cards": 34,
    "sigHits": {
     "trig:on_phase_change": 2,
     "prim:advance_clock": 4,
     "res:secrecy": 3
    },
-   "styleDist": 0.3266,
+   "styleDist": 0.3242,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -4858,7 +4852,7 @@
       "dur:persistent",
       "dur:tick"
      ],
-     "distinct": 43
+     "distinct": 39
     },
     {
      "family": "tgt",
@@ -4888,22 +4882,22 @@
    "styleParts": {
     "signature": 15,
     "fingerprint": 15,
-    "config": 3.3
+    "config": 3.2
    },
    "nearest": "spectator",
-   "nearestDist": 0.2698,
+   "nearestDist": 0.2679,
    "deductions": [],
    "axes": [
     {
      "id": "requiem",
      "name": "安魂",
      "symbol": "🕯️",
-     "total": 73.5,
+     "total": 73.6,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 9,
-      "轴内多样性": 7.5,
+      "轴内多样性": 7.6,
       "规模均衡": 10,
       "承接连通": 12
      },
@@ -4936,12 +4930,12 @@
      "id": "nightmare",
      "name": "梦魇",
      "symbol": "🌚",
-     "total": 79.2,
+     "total": 78.9,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 13,
-      "轴内多样性": 12.2,
+      "轴内多样性": 11.9,
       "规模均衡": 10,
       "承接连通": 9
      },
@@ -4976,12 +4970,12 @@
      "id": "darkness",
      "name": "暗夜",
      "symbol": "🌃",
-     "total": 82.4,
+     "total": 81.8,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 25,
-      "轴内多样性": 9.4,
+      "轴内多样性": 8.8,
       "规模均衡": 10,
       "承接连通": 3
      },
@@ -5006,12 +5000,12 @@
      "id": "secrecy",
      "name": "隐秘",
      "symbol": "🗝️",
-     "total": 84.2,
+     "total": 84.3,
      "dims": {
       "身份锚定": 15,
       "产层闭环": 20,
       "收束闭环": 18,
-      "轴内多样性": 9.2,
+      "轴内多样性": 9.3,
       "规模均衡": 10,
       "承接连通": 12
      },
