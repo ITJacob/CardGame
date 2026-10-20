@@ -43,7 +43,7 @@
 | 文本完备 | 4.9 |
 | 差异化 | 28.7 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:target_override ×7；flag:gender_is ×1；sref:massing ×1；对他途径指纹均距 0.289
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:target_override ×7；flag:gender_is ×1；sref:massing ×1；对他途径指纹均距 0.288
 
 **途径失分项（含修改意见）**：
 
@@ -216,7 +216,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 30.1 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:ice ×2；elem:lightning ×8；sref:rage ×10；对他途径指纹均距 0.274
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:ice ×2；elem:lightning ×8；sref:rage ×10；对他途径指纹均距 0.273
 
 **途径失分项（含修改意见）**：
 
@@ -294,7 +294,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 27.5 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:reveal ×13；sref:mimic ×5；prim:snapshot ×7；对他途径指纹均距 0.232
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:reveal ×13；sref:mimic ×5；prim:snapshot ×7；对他途径指纹均距 0.231
 
 **途径失分项（含修改意见）**：
 
@@ -336,7 +336,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 30.7 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：stat:rank ×3；flag:template ×1；sref:insight ×5；对他途径指纹均距 0.292
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：stat:rank ×3；flag:template ×1；sref:insight ×5；对他途径指纹均距 0.291
 
 **途径失分项（含修改意见）**：
 
@@ -379,7 +379,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 27.2 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:modify_rule_slot ×13；sref:law_edit ×3；unitType:CONSTRUCT ×3；对他途径指纹均距 0.233
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:modify_rule_slot ×13；sref:law_edit ×3；unitType:CONSTRUCT ×3；对他途径指纹均距 0.232
 
 **途径失分项（含修改意见）**：
 
@@ -531,7 +531,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 33.3 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×8；flag:filter.unitType ×3；sref:guardianship ×3；对他途径指纹均距 0.326
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×8；flag:filter.unitType ×3；sref:guardianship ×3；对他途径指纹均距 0.325
 
 **途径失分项（含修改意见）**：
 
@@ -638,7 +638,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 29.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:seal_effect ×2；flag:cost_mod ×2；res:order ×6；对他途径指纹均距 0.267
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:seal_effect ×2；flag:cost_mod ×2；res:order ×6；对他途径指纹均距 0.266
 
 **途径失分项（含修改意见）**：
 
@@ -860,7 +860,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 33.3 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×4；prim:advance_clock ×4；res:secrecy ×3；对他途径指纹均距 0.385
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×4；prim:advance_clock ×4；res:secrecy ×3；对他途径指纹均距 0.379
 
 | 轴 | 总分 | 身份 | 产层 | 收束 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
