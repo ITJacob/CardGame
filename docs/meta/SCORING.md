@@ -1,4 +1,4 @@
-# 职业设计评分体系（SCORING）· **2.5（2026-10-19 跨轴耦合改为机制 facet 口径）**
+# 职业设计评分体系（SCORING）· **2.6（2026-10-20 效果空间纳入触发载荷）**
 
 > 配套脚本 `docs/tools/score.py`（唯一计分实现，本文件锁口径）；
 > 产物：`docs/analysis/scorecard.md`（勿手改）+ `docs/analysis/scores.json`（网页端消费，site 经
@@ -53,6 +53,11 @@
 **2.5（2026-10-19）**：跨轴耦合从「读他轴产出面」改为「命中他轴机制条目（facet）」。全局概念
 （武器槽 / 相位 / 资源 / 原语）不属于任何轴——轴只占有自己在概念上实现的机制条目；跨轴读同一个
 私有状态仍算耦合。CAP 12→8。口径见 §二·三。
+
+**2.6（2026-10-20）**：卡的效果空间统一为 `effects + triggers[].effects`（被动/触发载荷与主动效果
+同口径）。之前指纹/作用面只读 `effects`，导致带触发器的被动卡在指纹里退化成一个 `mount_status` 节点
+（如战士「代行 ↔ 战斗权柄」被误判 0.0612，触发载荷纳入后 0.48），跨轴读层也看不见被动触发器的读取。
+影响范围：指纹、途径内去重、签名键取证、作用面/收束/跨轴。口径见 §三·一。
 
 ## 一、原则
 
@@ -187,18 +192,21 @@
 距离计分用**绝对阈值**（0.14–0.30 五档，见 §三），不再用全库分位——分位制会让「全库一起优化」排名不动、
 单卡微改跨档套利。
 
+> **效果空间**（2.6 起）= `cards[].effects` + `cards[].triggers[].effects`。被动/触发载荷与主动效果同口径；
+> 只读 `effects` 会让带触发器的被动卡在指纹里退化成一个挂载节点。`hook` 仍是触发点本身，其余族取效果空间。
+
 | 族 | 键 | 来源 |
 |---|---|---|
-| `prim` | 原语种类 | `card_effect_types`（每卡去重） |
-| `elem` | 元素 | effects 的 `element` |
-| `cond` | 条件谓词 | `_cond_kinds` |
-| `condarg` | 条件谓词的枚举参数 | `kind:field=value`（cmp/side/key/stat/unitIdx/…；**私有 statusId 不取**） |
-| `param` | 效果原语的枚举参数 | `field=value`（`modify_stat.stat` / `modify_resource.resource` / spawn 单位与位置 / `move`·`domain`·`translocate` 的 op / 规则槽 field 等；**数值不取**） |
+| `prim` | 原语种类 | `card_effect_types`（每卡去重，含触发载荷） |
+| `elem` | 元素 | 效果空间的 `element` |
+| `cond` | 条件谓词 | 效果空间的 `_cond_kinds` |
+| `condarg` | 条件谓词的枚举参数 | 效果空间 `kind:field=value`（cmp/side/key/stat/unitIdx/…；**私有 statusId 不取**） |
+| `param` | 效果原语的枚举参数 | 效果空间 `field=value`（`modify_stat.stat` / `modify_resource.resource` / spawn 单位与位置 / `move`·`domain`·`translocate` 的 op / 规则槽 field 等；**数值不取**） |
 | `reach` | 射程 | active 卡 `reach`（none/melee/spell/thrown） |
-| `tgt` | 选靶（卡级坐标 + filter + 效果级作用对象） | `target.request`：`faction`/`scope`/`anchor`/`mode`/`selectionMode`；`request.filter` 键（前缀 `filter:`）；effects 的 `target`（前缀 `eff:`） |
+| `tgt` | 选靶（卡级坐标 + filter + 效果级作用对象） | `target.request`：`faction`/`scope`/`anchor`/`mode`/`selectionMode`；`request.filter` 键（前缀 `filter:`）；效果空间的 `target`（前缀 `eff:`） |
 | `hook` | 触发点 | 卡级 `hook`/`triggers[].event` ＋挂载状态 def 的 `triggers[].event`；**排除 `on_apply`**（状态挂载载荷的固有生命周期事件，不体现触发点设计） |
 | `sshape` | **状态形态** | 引用状态 def 的结构 flags（triggers/charges/stack/threshold/form/phases/cycle/ramp/behavior/action_lock/immune/redirect…）+ 修正名 + 自带效果原语（`on_apply` 载荷）+ 时长形态；**不含私有 statusId** |
-| `cost` | 消耗形态 | `energy` 档（zero/low/mid/high）+ `cooldown` 档（none/short/long）+ 血费（自伤 hp 支付） |
+| `cost` | 消耗形态 | `energy` 档（zero/low/mid/high）+ `cooldown` 档（none/short/long）+ 血费（效果空间中的自伤 hp 支付） |
 | `temporal` | 时序形态 | 吟唱有无（`castTime>0`）/ `durationUnit`（tick、self_turn）/ 吟唱转瞬发 |
 
 > 不取数值：上述键只记录**形态/档位**，不含 amount、value、duration 等数值（SCORING 原则 4）。

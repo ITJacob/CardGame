@@ -41,17 +41,27 @@ def walk(node):
                 yield x
 
 
+def card_effects(card):
+    """卡的全部效果节点：effects 链 + triggers[].effects（被动/触发载荷）。
+    2026-10-20 起与主动效果同口径——只读 effects 会让被动卡的指纹/作用面退化成一个挂载节点。"""
+    effs = list(card.get("effects") or [])
+    for tr in card.get("triggers") or []:
+        if isinstance(tr, dict):
+            effs.extend(tr.get("effects") or [])
+    return effs
+
+
 def card_effect_types(card):
-    return {n["type"] for n in walk(card.get("effects")) if "type" in n and isinstance(n.get("type"), str)}
+    return {n["type"] for n in walk(card_effects(card)) if "type" in n and isinstance(n.get("type"), str)}
 
 
 def card_condition_kinds(card):
-    return {n["kind"] for n in walk(card.get("effects")) if n.get("kind") == n.get("kind") and "kind" in n and isinstance(n.get("kind"), str)}
+    return {n["kind"] for n in walk(card_effects(card)) if n.get("kind") == n.get("kind") and "kind" in n and isinstance(n.get("kind"), str)}
 
 
 def card_refs_status(card, sid):
     """卡面 AST 是否引用状态 sid（mount/modify/transfer/dispel 的 statusId、condition/filter 的 id/hasStatus）。"""
-    for n in walk(card.get("effects")):
+    for n in walk(card_effects(card)):
         for k in ("statusId",):
             v = n.get(k)
             if v == sid or (isinstance(v, list) and sid in v):
@@ -82,7 +92,7 @@ def refs_in_obj(obj, sid):
 
 
 def card_refs_resource(card, res):
-    for n in walk(card.get("effects")):
+    for n in walk(card_effects(card)):
         if n.get("type") == "modify_resource" and n.get("resource") == res:
             return True
         if n.get("kind") == "resource_compare" and n.get("key") == res:
@@ -91,7 +101,7 @@ def card_refs_resource(card, res):
 
 
 def card_mounts(card):
-    return {n.get("statusId") for n in walk(card.get("effects"))
+    return {n.get("statusId") for n in walk(card_effects(card))
             if n.get("type") == "mount_status" and isinstance(n.get("statusId"), str)}
 
 
@@ -99,7 +109,7 @@ def card_def_refs(card, def_index):
     """卡片 spawn/domain 出的区域(zoneDef)/界域(domainDef) def 对象；读层判定跟随其载荷
     （与 card_mounts 跟挂载状态 def 同理，SCORING.md 口径「condition/filter/触发器引用身份状态」）。"""
     out, seen = [], set()
-    for n in walk(card.get("effects")):
+    for n in walk(card_effects(card)):
         if n.get("type") == "spawn" and isinstance(n.get("zone"), str):
             i = n["zone"]
         elif n.get("type") == "domain" and isinstance(n.get("def"), str):
@@ -204,7 +214,7 @@ def equipped_status_refs(card, status_by_id):
     """has_equipped 条件读取的装备状态：按 slot 命中（缺省 = 任意 equipSlot）。
     条件不点名具体武器，读到的是该槽位全部装备定义——新增武器自动纳入。"""
     out = set()
-    for n in walk(card.get("effects")):
+    for n in walk(card_effects(card)):
         if n.get("kind") != "has_equipped":
             continue
         slot = n.get("slot")
@@ -214,7 +224,7 @@ def equipped_status_refs(card, status_by_id):
 
 
 def card_status_refs(card):
-    return obj_status_refs(card.get("effects"))
+    return obj_status_refs(card_effects(card))
 
 
 def surface_of(card, status_by_id, def_index):
@@ -300,7 +310,7 @@ def card_facets(card, anchor, status_by_id, def_index):
                for s in (status_by_id.get(m) for m in card_mounts(card)) if s):
             facets.add("cycle")
     elif kind == "resource":
-        for n in walk(card.get("effects")):
+        for n in walk(card_effects(card)):
             if n.get("type") == "modify_resource" and n.get("resource") == aid:
                 v = n.get("value")
                 if n.get("mode") == "consume" or (isinstance(v, (int, float)) and v < 0):
@@ -416,7 +426,7 @@ def signature_card_hit(card, key, unit_type_of=None, lineage_ids=None, flag_stat
     if kind == "prim":
         return arg in card_effect_types(card)
     if kind == "elem":
-        return any(n.get("element") == arg for n in walk(card.get("effects")))
+        return any(n.get("element") == arg for n in walk(card_effects(card)))
     if kind == "res":
         if card_refs_resource(card, arg):
             return True
@@ -427,14 +437,14 @@ def signature_card_hit(card, key, unit_type_of=None, lineage_ids=None, flag_stat
         return arg == "phase" and bool(card.get("phaseHooks"))
     if kind == "stat":
         if any(n.get("type") == "modify_stat" and n.get("stat") == arg
-               for n in walk(card.get("effects"))):
+               for n in walk(card_effects(card))):
             return True
         # 位格洞察读侧口径（2026-10-02 批次六对齐）：stat_compare(key=rank) 与 rank_gap 谓词
         # 同为位格使用——洞察途径读位格而非改位格，原口径只认 modify_stat 致签名键永零。
         if arg == "rank":
             return any((n.get("kind") == "stat_compare" and n.get("key") == "rank")
                        or n.get("kind") == "rank_gap"
-                       for n in walk(card.get("effects")))
+                       for n in walk(card_effects(card)))
         return False
     if kind == "trig":
         evs = {t.get("event") for t in (card.get("triggers") or []) if isinstance(t, dict)}
@@ -445,7 +455,7 @@ def signature_card_hit(card, key, unit_type_of=None, lineage_ids=None, flag_stat
             evs.add(_hk)
         else:
             evs.update(_hk or [])
-        return arg in evs or any(n.get("event") == arg for n in walk(card.get("effects")))
+        return arg in evs or any(n.get("event") == arg for n in walk(card_effects(card)))
     if kind == "sref":
         # 谱系栈读侧口径（2026-10-02 批次九对齐）：卡引用任何带 lineageStack 字段的状态（狼人化/灵体化/
         # 异类之王/演出回放）即计使用——原口径按 statusId=="lineage_stack" 取证，该 id 非状态，键永零。
@@ -455,18 +465,18 @@ def signature_card_hit(card, key, unit_type_of=None, lineage_ids=None, flag_stat
     if kind == "unitType":
         # 归一键口径（2026-10-02 批次十对齐）：旧键 unitType 标量与 target_unit_type 谓词的
         # type 数组双认——原只认标量，归一后的谓词写法永不计数（与批次五 filter.unitType 修复同源）。
-        for n in _filter_unit_type_nodes(card.get("effects")):
+        for n in _filter_unit_type_nodes(card_effects(card)):
             if n.get("unitType") == arg or (isinstance(n.get("type"), list) and arg in n["type"]):
                 return True
         # 经 spawn unitId 解析（召唤物类型归属）
         if unit_type_of:
-            for n in walk(card.get("effects")):
+            for n in walk(card_effects(card)):
                 if n.get("type") == "spawn" and unit_type_of.get(n.get("unitId")) == arg:
                     return True
         return False
     if kind == "flag":
         if arg == "filter.unitType":
-            return bool(_filter_unit_type_nodes(card.get("effects")))
+            return bool(_filter_unit_type_nodes(card_effects(card)))
         if flag_status_index and arg in flag_status_index:
             ids = flag_status_index[arg]
             # 状态面读侧口径：机制键（cast_time_set 行为算子 / statPerStack 成长引擎）的权威承载
@@ -475,7 +485,7 @@ def signature_card_hit(card, key, unit_type_of=None, lineage_ids=None, flag_stat
                 return True
             if arg == "cast_time_set":
                 # 亦认 modify_skill 的 castTimeDelta/setInstant（技能实例级省时）。
-                for n in walk(card.get("effects")):
+                for n in walk(card_effects(card)):
                     if n.get("type") == "modify_skill" and (
                             n.get("castTimeDelta") is not None or n.get("setInstant") is True):
                         return True
@@ -652,7 +662,7 @@ def _card_families(card, status_by_id=None):
     fam = {f: set() for f in FAMILIES}
     fam["prim"] |= card_effect_types(card)
 
-    for n in walk(card.get("effects")):
+    for n in walk(card_effects(card)):
         if isinstance(n.get("element"), str):
             fam["elem"].add(n["element"])
         t = n.get("type")
@@ -687,8 +697,8 @@ def _card_families(card, status_by_id=None):
         if is_hp_cost:
             fam["cost"].add("hp_cost")
 
-    fam["cond"] |= set(_cond_kinds(card.get("effects")))
-    fam["condarg"] |= _cond_args(card.get("effects"))
+    fam["cond"] |= set(_cond_kinds(card_effects(card)))
+    fam["condarg"] |= _cond_args(card_effects(card))
 
     spec = card.get("target") or {}
     req = spec.get("request") or {}
@@ -939,7 +949,7 @@ def main():
                     ok = a_id in ax_writes
                 elif a_kind == "equipment":
                     def _mounts_slot(c):
-                        for n in walk(c.get("effects")):
+                        for n in walk(card_effects(c)):
                             if n.get("type") == "mount_status" and n.get("statusId") in slot_ids:
                                 return True
                         return False
@@ -980,7 +990,7 @@ def main():
                     c = card_by_name.get(n)
                     if not c:
                         continue
-                    for node in walk(c.get("effects")):
+                    for node in walk(card_effects(c)):
                         if node.get("type") == "modify_resource" and isinstance(node.get("resource"), str):
                             res_votes[node["resource"]] = res_votes.get(node["resource"], 0) + 1
                 identity_pool = max(res_votes, key=res_votes.get) if res_votes else None
@@ -1049,7 +1059,7 @@ def main():
                             return "landed"
                     return "notes"
                 if identity_pool:
-                    for ob in [c.get("effects")] + card_def_refs(c, def_index):
+                    for ob in [card_effects(c)] + card_def_refs(c, def_index):
                         for n in walk(ob):
                             if n.get("kind") == "resource_compare" and n.get("key") == identity_pool:
                                 return "landed"
@@ -1099,7 +1109,7 @@ def main():
             prim_kinds, cond_kinds, chain_kinds = set(), set(), set()
             for c in axis_cards:
                 prim_kinds |= card_effect_types(c)
-                for n in walk(c.get("effects")):
+                for n in walk(card_effects(c)):
                     if n.get("op") != "if":
                         continue
                     then = [x for x in (n.get("then") or []) if isinstance(x, dict)]
@@ -1138,7 +1148,7 @@ def main():
                 mounted = [status_by_id.get(m) for m in card_mounts(c)]
                 blob = [c] + [m for m in mounted if m] + defrefs
                 # 收束检索空间：卡面 effects + 挂载状态 def + spawn/domain 出的区域/界域 def
-                space = list(walk(c.get("effects"))) + [n2 for dref in defrefs for n2 in walk(dref)]
+                space = list(walk(card_effects(c))) + [n2 for dref in defrefs for n2 in walk(dref)]
                 has_mul = any(refs_in_obj(o, sid) and True for o in blob) and any(
                     "damage_mul" in json.dumps(o, ensure_ascii=False) and refs_in_obj(o, sid) for o in blob)
                 if has_mul:

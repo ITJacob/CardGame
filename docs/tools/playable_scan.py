@@ -8,7 +8,7 @@
     python docs/tools/playable_scan.py --json             # 机器可读输出
 
 六项指标（全部从 JSON AST 实算）：
-    1 ast_shapes      卡级 effect 树形状去重数（两档并列，见下）
+    1 ast_shapes      卡级效果空间（effects + triggers[].effects）形状去重数（两档并列，见下）
     2 intra_pairs     途径内卡级指纹最近对（主口径 = 同 kind 两两余弦距离）
     3 tgt_dedup       同轴主动卡 target 签名去重比（几何归一 + filter 键归一）
     4 supply          资源/通道供给三列：引擎供给 / 卡面写入 / 卡面读取（产层 = 0 报警）
@@ -62,15 +62,15 @@ def walk(n):
 # 不是按原语组合数；两个口径都留，人读时才知道差在哪，不为凑锚改口径）：
 #   A. skeleton_dedup 骨架签名去重 = target.mode + 首段原语 + 条件谓词种类集 + 尾段原语
 #      （+ 选靶 fallbackSort；filter 键按几何语义归一，见 GEO_GROUP）
-#   B. prim_combo     原语组合种类 = 卡内 effect 原语类型的多重集去重
+#   B. prim_combo     原语组合种类 = 卡内效果空间（effects + triggers[].effects）原语类型的多重集去重
 
 
 def _prim_seq(card):
-    return [n["type"] for n in walk(card.get("effects") or []) if isinstance(n.get("type"), str)]
+    return [n["type"] for n in walk(score.card_effects(card)) if isinstance(n.get("type"), str)]
 
 
 def _cond_kinds(card):
-    return tuple(sorted({n["kind"] for n in walk(card.get("effects") or [])
+    return tuple(sorted({n["kind"] for n in walk(score.card_effects(card))
                          if isinstance(n.get("kind"), str)}))
 
 
@@ -89,7 +89,7 @@ def skeleton_dedup(cards):
 
 def _prim_family(card):
     c = Counter()
-    for n in walk(card.get("effects") or []):
+    for n in walk(score.card_effects(card)):
         t = n.get("type")
         if isinstance(t, str):
             fam = PRIM_FAMILY.get(t, "其他")
@@ -100,7 +100,7 @@ def _prim_family(card):
 
 
 def _has_nonempty_else(card):
-    for n in walk(card.get("effects") or []):
+    for n in walk(score.card_effects(card)):
         if n.get("op") == "if" and _nonempty(n.get("else")):
             return True
     return False
@@ -147,7 +147,7 @@ def triplet_dedup(cards):
 
 def _effect_type_multiset(card):
     c = Counter()
-    for n in walk(card.get("effects") or []):
+    for n in walk(score.card_effects(card)):
         t = n.get("type")
         if isinstance(t, str):
             c["E:" + t] += 1
@@ -159,7 +159,7 @@ def card_ast_shape(card):
     if c:
         return tuple(sorted(("%s×%d" % (k, v)) for k, v in c.items()))
     ops = []
-    for n in (card.get("effects") or []):
+    for n in score.card_effects(card):
         if isinstance(n, dict) and isinstance(n.get("op"), str):
             ops.append("O:" + n["op"])
     return tuple(ops) if ops else None
@@ -396,7 +396,7 @@ SUPPLY_WORDS = ("获得", "积", "每回合", "自动", "默认携带", "默认�
 
 
 def iter_card_effects(card):
-    """卡的全部效果节点：**主 effects 链 + triggers[].effects**（被动/钩子写入层）。
+    """卡的全部效果节点：**主 effects 链 + triggers[].effects**（被动/钩子写入层；与 score.card_effects 同口径）。
     ⚠ 只扫 card['effects'] 会漏掉被动卡的触发器写入（如战士「兵械通晓」on_kill 产战意），
     这正是上一版把"战意产层 = 0"误判为"无人生产"的原因。"""
     for n in walk(card.get("effects") or []):
@@ -589,7 +589,7 @@ def _prim_set(v):
 def dual_branch_cards(cards, prim_diff=False):
     hit = []
     for c in cards:
-        for n in walk(c.get("effects") or []):
+        for n in walk(score.card_effects(c)):
             if n.get("op") != "if":
                 continue
             if not (_nonempty(n.get("then")) and _nonempty(n.get("else"))):
@@ -606,7 +606,7 @@ def if_card_stats(cards):
     for c in cards:
         has = False
         hit_both = False
-        for n in walk(c.get("effects") or []):
+        for n in walk(score.card_effects(c)):
             if n.get("op") != "if":
                 continue
             has = True
@@ -635,7 +635,7 @@ def is_cost_card(card, broad=False):
     narrow（主口径）：自伤 / 血费 / 耗层 / 消耗次数 / 弃牌 / 负面自挂 / 卡级自伤型费用。
     broad（对照口径）：narrow + 主动消耗自有资源（能量 / 行动条 / 护甲 / 护盾）——这类在多数
     途径里是常规费用而非设计代价，故只作对照，不进主口径。"""
-    for n in walk(card.get("effects") or []):
+    for n in walk(score.card_effects(card)):
         t = n.get("type")
         tgt = n.get("target")
         selfside = tgt in (None, "self", "caster", "holder")
