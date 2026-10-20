@@ -50,8 +50,8 @@
 
 | stat 属性键 | 次数 |
 |---|---:|
-| `defense` | 5 |
-| `gauge.rate` | 2 |
+| `defense` | 4 |
+| `gauge.rate` | 3 |
 | `attack` | 1 |
 
 **改动的资源（modify_resource，共 12 处）**：
