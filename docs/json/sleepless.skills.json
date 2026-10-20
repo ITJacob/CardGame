@@ -1057,7 +1057,7 @@
       "flagship": false,
       "lore": "序列5 灵巫 —— \"擅长驱使自然灵，封印于牙齿释放\"",
       "flavor": "你叩了叩自己的牙——一枚被封在那里的自然灵挣脱出来，带着细碎的冷光扑向敌阵。",
-      "describe": "从齿间释放一只自然灵为己方作战（落位己方队尾，满生命）；灵牙迸裂，自身回复 2 点生命。",
+      "describe": "从齿间释放一只灵牙自然灵为己方作战（落位己方队尾，满生命）；灵牙撕咬会使目标防御 -1（10tick）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1078,12 +1078,6 @@
           "hpRatio": 1.0,
           "position": "tail",
           "unitId": "unit_nature_spirit"
-        },
-        {
-          "type": "heal",
-          "value": 2,
-          "target": "self",
-          "note": "灵牙迸裂：释放灵体后自身回复 2 点生命"
         }
       ],
       "sharedAcross": [
@@ -1162,7 +1156,7 @@
       "flagship": false,
       "lore": "序列5 灵巫 —— \"可驱使 4-5 个灵\"",
       "flavor": "一次叩齿，两三只灵同时钻了出来——它们单薄，却足够缠住任何人。",
-      "describe": "连续释放 2 只自然灵（各 60% 生命，落位己方队尾）；群灵扑出时对全体敌人造成 1 点精神伤害。",
+      "describe": "连续释放 2 只群灵（各 60% 生命，落位己方队尾）；群灵撕咬会使目标行动迟缓 5tick。",
       "cost": {
         "energy": 5,
         "cooldown": 35,
@@ -1186,16 +1180,9 @@
               "type": "spawn",
               "hpRatio": 0.6,
               "position": "tail",
-              "unitId": "unit_nature_spirit"
+              "unitId": "unit_nature_spirit_swarm"
             }
           ]
-        },
-        {
-          "type": "damage",
-          "element": "mental",
-          "value": 1,
-          "target": "all_enemies",
-          "note": "群灵扑出：对全体敌人造成 1 点精神冲击"
         }
       ],
       "sharedAcross": [
@@ -2554,15 +2541,61 @@
   "unitDefs": [
     {
       "id": "unit_nature_spirit",
-      "name": "自然灵",
+      "name": "灵牙自然灵",
       "unitType": "SPIRIT",
       "base": {
         "hpRatio": 1.0,
         "atkRatio": null,
         "reach": "melee"
       },
-      "note": "H1 召唤物基线模板四参（hpRatio/atkRatio/reach/亡语载荷）；与 F25 unit_wraith 的 ID 冲突已裁决——wraith 归收尸人亡灵线（UNDEAD），本 ID 另立（SPIRIT）；数值 ⚠️D｜2026-10-09 补 element:mental（灵体普攻带精神元素，对齐被放牧灵体先例）",
-      "element": "mental"
+      "note": "灵之牙的单体召唤物：满生命档。攻击撕甲——命中后使目标防御 -1（10tick）。与群灵共用工位；数值 ⚠️D。",
+      "element": "mental",
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -1,
+              "mode": "delta",
+              "duration": 10,
+              "target": "target",
+              "note": "灵牙撕咬：咬穿护甲，目标防御 -1（10tick）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unit_nature_spirit_swarm",
+      "name": "群灵",
+      "unitType": "SPIRIT",
+      "base": {
+        "hpRatio": 0.6,
+        "atkRatio": 0.6,
+        "reach": "melee"
+      },
+      "element": "mental",
+      "tags": [
+        "spirit",
+        "swarm"
+      ],
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "slow",
+              "duration": 5,
+              "target": "target",
+              "note": "群灵缠咬：目标行动迟缓 5tick"
+            }
+          ]
+        }
+      ],
+      "note": "灵群的群体召唤物：60% 生命档，两只一组。攻击缠咬——命中后给目标挂迟缓 5tick。与灵牙共用工位；数值 ⚠️D。"
     }
   ],
   "zoneDefs": [

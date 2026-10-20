@@ -6,7 +6,7 @@
 
 ## 一、召唤物（unitDefs 池 + 卡面 spawn 引用）
 
-池内蓝本 **11** 条（覆盖 4 途径）；卡面具名单位引用 **35** 种，其中池外引用（卡面内联、无 unitDef）**24** 种 / 74 次——池只收编「同途径多卡共享」的蓝本，单卡单位属性内联在 spawn 段（hpRatio / atkRatio × H1 基线），**池外引用是常态而非缺漏**。具名单位全集（36）与基线档见 ddd《召唤物参数》。
+池内蓝本 **12** 条（覆盖 4 途径）；卡面具名单位引用 **36** 种，其中池外引用（卡面内联、无 unitDef）**24** 种 / 74 次——池只收编「同途径多卡共享」的蓝本，单卡单位属性内联在 spawn 段（hpRatio / atkRatio × H1 基线），**池外引用是常态而非缺漏**。具名单位全集（36）与基线档见 ddd《召唤物参数》。
 
 ### 1.1 池内蓝本清单
 
@@ -17,14 +17,15 @@
 | `unit_zombie` | 活尸 | UNDEAD | 收尸人 | reach melee、hpRatio 1.0 |
 | `unit_historical_echo` | 历史影像 | ILLUSION | 占卜家 | hpRatio 0.35 |
 | `unit_marionette` | 秘偶 | CONSTRUCT | 占卜家 | hpRatio 0.25 |
-| `unit_nature_spirit` | 自然灵 | SPIRIT | 不眠者 | 元素、reach melee、hpRatio 1.0 |
+| `unit_nature_spirit` | 灵牙自然灵 | SPIRIT | 不眠者 | 触发载荷、元素、reach melee、hpRatio 1.0 |
+| `unit_nature_spirit_swarm` | 群灵 | SPIRIT | 不眠者 | 触发载荷、tags、元素、reach melee、hpRatio 0.6 |
 | `unit_shadow_spawn` | 阴影生物 | ILLUSION | 秘祈人 | 触发载荷、tags、元素、hpRatio 0.35 |
 | `unit_flesh_servant` | 血肉仆役 | FLESH | 秘祈人 | 触发载荷、tags、元素、hpRatio 0.5 |
 | `unit_grazed_wraith` | 被放牧的灵体 | SPIRIT | 秘祈人 | tags、元素、hpRatio 0.4 |
 | `unit_fallen_kin` | 堕落眷属 | SPIRIT | 秘祈人 | tags、元素、hpRatio 0.25 |
 | `unit_abomination` | 异变怪物 | ABERRATION | 秘祈人 | 触发载荷、tags、元素、hpRatio 动态（见卡面效果） |
 
-> unitType 登记率：**11/11**——未登记单位的种类归属见《召唤物参数》§一归属表。
+> unitType 登记率：**12/12**——未登记单位的种类归属见《召唤物参数》§一归属表。
 
 ### 1.2 spawn 引用形态（卡面，按节点计）
 
@@ -52,7 +53,6 @@
 | `unit_relic` | 3 | 囚犯 | 池外（卡面内联） |
 | `unit_war_soldier` | 2 | 猎人 | 池外（卡面内联） |
 | `unit_ghoul` | 2 | 囚犯 | 池外（卡面内联） |
-| `unit_nature_spirit` | 2 | 不眠者 | ✓ |
 | `unit_bat` | 1 | 药师 | 池外（卡面内联） |
 | `unit_elder_thing` | 1 | 药师 | 池外（卡面内联） |
 | `unit_thoughtform` | 1 | 学徒 | 池外（卡面内联） |
@@ -66,6 +66,8 @@
 | `unit_leviathan` | 1 | 水手 | 池外（卡面内联） |
 | `unit_historical_echo` | 1 | 占卜家 | ✓ |
 | `unit_marionette` | 1 | 占卜家 | ✓ |
+| `unit_nature_spirit` | 1 | 不眠者 | ✓ |
+| `unit_nature_spirit_swarm` | 1 | 不眠者 | ✓ |
 | `unit_split_identity` | 1 | 观众 | 池外（卡面内联） |
 | `unit_imagined` | 1 | 观众 | 池外（卡面内联） |
 | `unit_shadow_spawn` | 1 | 秘祈人 | ✓ |

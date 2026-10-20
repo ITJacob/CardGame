@@ -16,6 +16,20 @@ ANALYSIS_DIR = os.path.join(os.path.dirname(HERE), "analysis")
 sys.path.insert(0, HERE)
 from status_loader import iter_status_defs, load_common_ids
 
+UNIT_INDEX = None
+
+
+def unit_index():
+    """unitId -> unitDef（懒加载；召唤卡的指纹要跟随召唤物蓝本的攻击载荷）。"""
+    global UNIT_INDEX
+    if UNIT_INDEX is None:
+        UNIT_INDEX = {}
+        for f in sorted(glob.glob(os.path.join(JSON_DIR, "*.skills.json"))):
+            d = json.load(io.open(f, encoding="utf-8"))
+            for u in d.get("unitDefs") or []:
+                UNIT_INDEX[u["id"]] = u
+    return UNIT_INDEX
+
 
 # ---------- 加载 ----------
 
@@ -656,13 +670,33 @@ FAMILIES = ("prim", "elem", "cond", "condarg", "param", "reach",
             "tgt", "hook", "sshape", "cost", "temporal")
 
 
+def spawned_unit_defs(card):
+    """卡面 spawn 引用的 unitDef（含 repeat 内的 spawn）。"""
+    out, seen = [], set()
+    idx = unit_index()
+    for n in walk(card_effects(card)):
+        if n.get("type") != "spawn":
+            continue
+        uid = n.get("unitId") or n.get("template") or n.get("unitIdx")
+        if isinstance(uid, str) and uid in idx and uid not in seen:
+            seen.add(uid)
+            out.append(idx[uid])
+    return out
+
+
 def _card_families(card, status_by_id=None):
     """单卡在各链路族上的**键集**：原语 / 元素 / 谓词 / 谓词参数 / 效果参数 / 射程 /
-    选靶（卡级坐标 + filter + 效果级作用对象）/ 触发点 / 状态形态 / 消耗形态 / 时序形态。"""
+    选靶（卡级坐标 + filter + 效果级作用对象）/ 触发点 / 状态形态 / 消耗形态 / 时序形态。
+    召唤卡的效果空间额外包含所召唤 unitDef 的触发载荷（攻击效果属于卡面机制）。"""
     fam = {f: set() for f in FAMILIES}
+    spawned = spawned_unit_defs(card)
+    unit_effects = [e for u in spawned for tr in (u.get("triggers") or [])
+                    if isinstance(tr, dict) for e in (tr.get("effects") or [])]
+    space = card_effects(card) + unit_effects
     fam["prim"] |= card_effect_types(card)
+    fam["prim"] |= {n.get("type") for n in walk(unit_effects) if isinstance(n.get("type"), str)}
 
-    for n in walk(card_effects(card)):
+    for n in walk(space):
         if isinstance(n.get("element"), str):
             fam["elem"].add(n["element"])
         t = n.get("type")
@@ -675,8 +709,10 @@ def _card_families(card, status_by_id=None):
             v = n.get(f)
             if isinstance(v, (str, int, float)) and not isinstance(v, bool):
                 fam["param"].add("%s=%s" % (f, v))
-        if t == "spawn" and isinstance(n.get("unitIdx"), str):
-            fam["param"].add("unit=" + n["unitIdx"])
+        if t == "spawn":
+            uid = n.get("unitId") or n.get("template") or n.get("unitIdx")
+            if isinstance(uid, str):
+                fam["param"].add("unit=" + uid)
         if t == "modify_skill":
             for op in MODIFY_SKILL_OPS:
                 if n.get(op) is not None:
@@ -697,8 +733,8 @@ def _card_families(card, status_by_id=None):
         if is_hp_cost:
             fam["cost"].add("hp_cost")
 
-    fam["cond"] |= set(_cond_kinds(card_effects(card)))
-    fam["condarg"] |= _cond_args(card_effects(card))
+    fam["cond"] |= set(_cond_kinds(space))
+    fam["condarg"] |= _cond_args(space)
 
     spec = card.get("target") or {}
     req = spec.get("request") or {}
@@ -746,8 +782,19 @@ def _card_families(card, status_by_id=None):
             if isinstance(tr, dict) and tr.get("event") and tr["event"] != "on_apply":
                 fam["hook"].add(tr["event"])
 
-    # sshape：引用的状态 → 状态形态（替代私有 statusId 身份）
-    for sid in card_status_refs(card):
+    # 召唤物蓝本：元素 / tag / 单位键（卡面产出的一部分）
+    for u in spawned:
+        if isinstance(u.get("element"), str):
+            fam["elem"].add(u["element"])
+        for tg in u.get("tags") or []:
+            fam["param"].add("unitTag=" + tg)
+        fam["param"].add("unit=" + u["id"])
+
+    # sshape：引用的状态 → 状态形态（替代私有 statusId 身份；含召唤物蓝本的载荷）
+    status_refs = set(card_status_refs(card))
+    for u in spawned:
+        status_refs |= obj_status_refs(u)
+    for sid in status_refs:
         sd = (status_by_id or {}).get(sid)
         if sd:
             fam["sshape"] |= _status_shape(sd)
@@ -805,11 +852,12 @@ def intra_dedup(cards, status_by_id=None, low=0.20, cap=0.15):
 
 
 def load_unit_types(pathways):
-    """unitId -> unitType。权威 = ddd 召唤物参数.md §一 36 具名单位归属表（多数单位 JSON 无 Def，仅被 spawn 引用）；
+    """unitId -> unitType。权威 = ddd 召唤物参数.md §一 37 具名单位归属表（多数单位 JSON 无 Def，仅被 spawn 引用）；
     skills.json 顶层 unitDefs 池中的显式定义叠加覆盖。"""
     out = {("unit_" + k): v for k, v in {
         "skeleton": "UNDEAD", "zombie": "UNDEAD", "ghoul": "UNDEAD", "wraith": "UNDEAD",
-        "nature_spirit": "SPIRIT", "grazed_wraith": "SPIRIT", "fallen_kin": "SPIRIT",
+        "nature_spirit": "SPIRIT", "nature_spirit_swarm": "SPIRIT",
+        "grazed_wraith": "SPIRIT", "fallen_kin": "SPIRIT",
         "beast": "BEAST", "bat": "BEAST", "sea_beast": "BEAST", "leviathan": "BEAST", "beastling": "BEAST",
         "vermin": "VERMIN", "vine": "PLANT", "oak_child": "PLANT",
         "golem": "CONSTRUCT", "homunculus": "CONSTRUCT", "doll": "CONSTRUCT", "marionette": "CONSTRUCT",
