@@ -2746,7 +2746,7 @@
       "flagship": false,
       "lore": "序列2 荣耀者 —— \"『黄昏』权柄（简化）：让目标逐渐老化至死\"",
       "flavor": "你把一截黄昏塞进了它的身体——从这一刻起，它每喘一口气，都更老一分，也更慢一分。",
-      "describe": "使一名敌人开始老化：每 tick 受 0.4 点无元素伤害，每 5tick 叠 1 层老化；每层使其攻击 -1、行动条速率 -2、受伤 ×1.15，最多 5 层，持续 25tick；并使其行动条速率 -3（25tick）。目标老化 ≥2 层时，追加 1 点圣光伤害；对已登记将死的目标再叠 1 层老化。对老化 ≥2、未不可宣判的敌人，可将其登记为将死（预支账记在自己身上；违约清算期间不可再登记）。",
+      "describe": "使一名敌人开始老化：每 tick 受 0.4 点无元素伤害，每 5tick 叠 1 层老化；每层使其攻击 -1、行动条速率 -2、受伤 ×1.15，最多 5 层，持续 25tick；并使其行动条速率 -3（25tick）。目标老化 ≥2 层时，攻击再 -1（10tick）；对已登记将死的目标再叠 1 层老化。对老化 ≥2、未不可宣判的敌人，可将其登记为将死（预支账记在自己身上；违约清算期间不可再登记）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -2790,15 +2790,17 @@
           },
           "then": [
             {
-              "type": "damage",
-              "element": "holy",
-              "value": 1,
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -1,
+              "mode": "delta",
+              "duration": 10,
               "target": "target",
-              "note": "死亡簿越低，迟暮的余响越沉"
+              "note": "衰败读层：老化≥2 时，攻击再 -1（10tick）"
             }
           ],
           "else": [],
-          "note": "衰败读层：目标老化 ≥2 层"
+          "note": "衰败读层：目标老化≥2 层，攻击再降一档"
         },
         {
           "op": "if",
@@ -2900,7 +2902,7 @@
         ],
         "mood": "inexorable, eerie"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：武技链换形（角色=debuff） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：twilight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M7 衰败。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·衰败。 ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。"
+      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：武技链换形（角色=debuff） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：twilight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M7 衰败。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·衰败。 ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。 ｜ 2026-10-20 与万物崩解分化：老化≥2 读层由圣光 1 改为攻击 -1（10t），迟暮专注衰败/宣判。"
     },
     {
       "id": "skill_warrior_s2_twilight_rebirth",
@@ -3260,7 +3262,7 @@
       "flagship": true,
       "lore": "序列0 黄昏巨人 —— \"『黄昏』权柄：物质、意志乃至虚空衰败崩溃消亡；让目标飞快衰老 / 衰败 / 失控\"",
       "flavor": "黄昏落在它身上——先是甲，然后是骨，然后是它还想站着的那点念头。最后连它脚下的那片空处，也开始往下掉。",
-      "describe": "对一名敌人造成 4 点无元素伤害并施加「崩解」25tick：每 tick 受 0.6 点无元素伤害并叠 1 层老化（最多 6 层），受伤 ×1.2，不可驱散；「崩解」同时蔓延至其相邻的敌人；临阵威压：这一击的伤害 ×1.3；目标老化 ≥2 层时追加 1 点圣光；对已登记将死的目标再叠 1 层老化。",
+      "describe": "对一名敌人造成 4 点无元素伤害并施加「崩解」25tick：每 tick 受 0.6 点无元素伤害并叠 1 层老化（最多 6 层），受伤 ×1.2，不可驱散；「崩解」同时蔓延至其相邻的敌人；临阵威压：这一击的伤害 ×1.3；目标老化 ≥2 层时追加 1 点圣光；对已登记将死的目标，剥夺其 2 点护盾与 2 点护甲。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -3334,16 +3336,24 @@
           },
           "then": [
             {
-              "type": "mount_status",
-              "statusId": "aging",
-              "stacks": 1,
-              "duration": 25,
+              "type": "modify_resource",
+              "resource": "shield",
+              "value": -2,
+              "mode": "delta",
               "target": "target",
-              "note": "崩解加深：将死目标再叠 1 层"
+              "note": "崩解从内部剥落：护盾 -2"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": -2,
+              "mode": "delta",
+              "target": "target",
+              "note": "崩解从内部剥落：护甲 -2"
             }
           ],
           "else": [],
-          "note": "崩解加深"
+          "note": "将死目标：崩解剥夺护盾与护甲"
         }
       ],
       "tentative": false,
@@ -3365,7 +3375,7 @@
         ],
         "mood": "entropic, desolate"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：twilight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M7 衰败。 ｜ 签名补批（2026-10-16 第二批）：威压/死亡簿·衰败。 ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。"
+      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：twilight轴 enemy+whole_lane pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M7 衰败。 ｜ 签名补批（2026-10-16 第二批）：威压/死亡簿·衰败。 ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。 ｜ 2026-10-20 与迟暮分化：将死段由再叠老化改为剥夺护盾/护甲（崩解从内部剥落），与迟暮的衰老加速分工。"
     },
     {
       "id": "skill_warrior_s0_battle_authority",

@@ -1072,8 +1072,8 @@ THRESHOLD_NOTES = {
 ANCHOR = {
     "1_ast_shapes": 32,         # 2.8 基线（旧人工锚 5 已废止）
     "1_family_count": 8,        # 2.8 基线
-    "2_min": 0.1822,
-    "2_top1": ("迟暮", "黄昏·万物崩解"),
+    "2_min": 0.2263,
+    "2_top1": ("破甲重击", "疾风奔袭"),
     "3_martial_distinct": 4,
     "5_dual_branch": 7,   # 2.8 基线：then/else 均非空
     "6_cost_cards": 11,
