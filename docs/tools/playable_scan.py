@@ -14,6 +14,7 @@
     4 supply          资源/通道供给三列：引擎供给 / 卡面写入 / 卡面读取（产层 = 0 报警）
     5 dual_branch     if 节点 then/else 均非空**且两边原语类型集不同**的卡占比
     6 cost_ratio      代价卡占比 + **效果节点层** note 去重比
+    8 summon_share    召唤卡 unitDef 载荷占比（诊断；设计目标 ≥50%，不进 100 分）
 
 ① 两档并列（team-lead 拍板，不为凑锚改口径）：
     A 骨架签名去重 = 选靶 mode + 首段原语 + 条件谓词种类集 + 尾段原语 + fallbackSort
@@ -393,6 +394,56 @@ BASELINE_KEYS = {"energy", "armor", "shield", "hp", "hp_max", "gauge.current", "
                  "lost", "rank", "action", "charge"}
 # 状态 def 自述供给的关键词（软证据，人读时可核）
 SUPPLY_WORDS = ("获得", "积", "每回合", "自动", "默认携带", "默认拥有", "自带")
+
+
+def summon_unit_share(cards, data):
+    """召唤卡的 unitDef 载荷占比 = unitDef 触发载荷节点 ÷（卡面非 spawn 载荷 + unitDef 载荷）。
+    只作设计诊断，不进 score.py 的 100 分。"""
+    idx = score.unit_index()
+    rows = []
+    all_missing = set()
+    for c in cards:
+        uids = []
+        for _o, n in iter_card_effects(c):
+            if n.get("type") != "spawn":
+                continue
+            u = n.get("unitId") or n.get("template")
+            if isinstance(u, str):
+                uids.append(u)
+            elif isinstance(u, list):
+                uids.extend(x for x in u if isinstance(x, str))
+        if not uids:
+            continue
+        missing = sorted({u for u in uids if u not in idx})
+        all_missing |= set(missing)
+        unit_nodes = 0
+        for uid in set(uids):
+            u = idx.get(uid) or {}
+            for tr in u.get("triggers") or []:
+                unit_nodes += sum(1 for e in walk(tr.get("effects") or [])
+                                  if isinstance(e.get("type"), str))
+        card_nodes = sum(1 for _o, e in iter_card_effects(c)
+                         if isinstance(e.get("type"), str) and e.get("type") != "spawn")
+        total = unit_nodes + card_nodes
+        rows.append({
+            "name": c.get("name"),
+            "units": sorted(set(uids)),
+            "missing_units": missing,
+            "unit_nodes": unit_nodes,
+            "card_nodes": card_nodes,
+            "share": round(unit_nodes / total, 4) if total else 0.0,
+        })
+    below = [r for r in rows if r["share"] < 0.5]
+    return {
+        "cards": len(rows),
+        "resolved_cards": sum(1 for r in rows if not r["missing_units"]),
+        "unit_payload_cards": sum(1 for r in rows if r["unit_nodes"] > 0),
+        "mean_share": round(sum(r["share"] for r in rows) / len(rows), 4) if rows else None,
+        "below_50": len(below),
+        "below_names": [r["name"] for r in below],
+        "missing_units": sorted(all_missing),
+        "details": rows,
+    }
 
 
 def iter_card_effects(card):
@@ -942,6 +993,7 @@ def scan_pathway(pid, data):
             cards, st, cost,
             identity_sids={v.get("statusId") for v in axes.values() if isinstance(v, dict) and v.get("statusId")},
         ),
+        "8_summon_share": summon_unit_share(cards, data),
     }
 
 

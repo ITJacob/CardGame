@@ -667,7 +667,15 @@ def _status_shape(sd):
 # 差异化②不再只看原语：施法链路（选靶 → 条件 → 效果 → 状态 → 时序）每一环入向量，
 # 分族独立 L2 归一后等权求距离。
 FAMILIES = ("prim", "elem", "cond", "condarg", "param", "reach",
-            "tgt", "hook", "sshape", "cost", "temporal")
+            "tgt", "hook", "sshape", "cost", "temporal", "unit")
+# 召唤物自身的设定在召唤类技能里应是主载荷：unit 族 2× 权重（SCORING 2.8）。
+FAMILY_WEIGHTS = {"unit": 2.0}
+
+
+def _ratio_tier(v):
+    if not isinstance(v, (int, float)):
+        return None
+    return "low" if v < 0.5 else "mid" if v <= 0.8 else "high"
 
 
 def spawned_unit_defs(card):
@@ -786,9 +794,34 @@ def _card_families(card, status_by_id=None):
     for u in spawned:
         if isinstance(u.get("element"), str):
             fam["elem"].add(u["element"])
+            fam["unit"].add("elem:" + u["element"])
         for tg in u.get("tags") or []:
             fam["param"].add("unitTag=" + tg)
+            fam["unit"].add("tag:" + tg)
         fam["param"].add("unit=" + u["id"])
+        if isinstance(u.get("unitType"), str):
+            fam["unit"].add("type:" + u["unitType"])
+        base = u.get("base") if isinstance(u.get("base"), dict) else {}
+        reach = base.get("reach") or u.get("reach")
+        if isinstance(reach, str):
+            fam["unit"].add("reach:" + reach)
+        hp = u.get("hpRatio") if u.get("hpRatio") is not None else base.get("hpRatio")
+        atk = u.get("atkRatio") if u.get("atkRatio") is not None else base.get("atkRatio")
+        ht, at = _ratio_tier(hp), _ratio_tier(atk)
+        if ht:
+            fam["unit"].add("hp:" + ht)
+        if at:
+            fam["unit"].add("atk:" + at)
+        for tr in u.get("triggers") or []:
+            if not isinstance(tr, dict):
+                continue
+            ev = tr.get("event")
+            prims = sorted({e.get("type") for e in walk(tr.get("effects") or [])
+                            if isinstance(e.get("type"), str)})
+            for p in prims:
+                fam["unit"].add("trig:%s:%s" % (ev, p))
+            if not prims and isinstance(ev, str):
+                fam["unit"].add("trig:" + ev)
 
     # sshape：引用的状态 → 状态形态（替代私有 statusId 身份；含召唤物蓝本的载荷）
     status_refs = set(card_status_refs(card))
@@ -817,17 +850,18 @@ def _l2(vec):
 
 
 def cos_dist(a, b):
-    """全链路距离 = 各链路族余弦距离的均值（族等权，L2 归一后每族各占一票）。"""
-    total, cnt = 0.0, 0
+    """全链路距离 = 各链路族余弦距离的加权均值（L2 归一后每族一票；unit 族 2×）。"""
+    total, wsum = 0.0, 0.0
     for f in FAMILIES:
         fa, fb = _l2(a.get(f) or {}), _l2(b.get(f) or {})
         keys = set(fa) | set(fb)
         if not keys:
             continue
         dot = sum(fa.get(k, 0) * fb.get(k, 0) for k in keys)
-        total += 1.0 - dot
-        cnt += 1
-    return total / cnt if cnt else 1.0
+        w = FAMILY_WEIGHTS.get(f, 1.0)
+        total += w * (1.0 - dot)
+        wsum += w
+    return total / wsum if wsum else 1.0
 
 
 def card_vectors(cards, status_by_id=None):

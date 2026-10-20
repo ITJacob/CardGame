@@ -52,6 +52,15 @@ statusDef 38 个字段，设计决策收敛为七组：
 10. **武器强制 charges 制**：所有 `equipSlot: weapon` 状态必须 `charges ≥ 1` 且 `duration: null`，按普攻次数消耗、打空卸载；不得用 duration 表达武器寿命（validate 强制）。
 11. **初始装备例外**：仅带 `initialEquip: true` 的入门武器可由被动卡在 `on_battle_start` 自动装备（同槽互斥）。**被动卡仅限开局装备，不得在其他触发点换装**；玩家与主动卡的正常换装不受影响。其余被动不得装备武器。
 
+## 召唤类技能审核（2026-10-20 立）
+
+召唤卡的差异必须主要落在召唤物自身，而不是卡面通用效果：
+
+1. **召唤卡引用的单位必须有显式 `unitDef`**，并由它承担主载荷：unitType / element / tags / reach / hp·atk 档位 / 攻击或亡语触发器。只存在于 DDD 归属表、JSON 无 Def 的单位视为未落地。
+2. **卡面只负责**「召几只、落哪、何时、付什么代价」；通用施法者效果（modify_stat / mount_status / damage / heal / dispel）至多一段。
+3. **`playable_scan.py` 的 `summon_unit_share` ≥ 50%** 为设计目标；低于 50% 的召唤卡在下一轮重设计时优先把效果迁入 unitDef。`missing_units` 非空 = 该卡引用的单位还没有 unitDef，先补定义再看占比。
+4. `unitDef.triggers` 尚未接入引擎（`待办.md` §五）时，describe 必须把攻击效果写清；引擎接通后复核。
+
 ## 机制期玩法轨审核（2026-10-19 立）
 
 > 与上面的「设计步骤」互补：这里问**玩家侧是否成立**，不是数据结构是否成立。
