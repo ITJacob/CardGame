@@ -80,7 +80,7 @@
       "flagship": false,
       "lore": "序列9 战士 —— \"各种武器防具精通、各种格斗术掌握\"",
       "flavor": "你熟稔每一种徒手与持械的打法，两记连贯的拳脚砸在同一个破绽上。",
-      "describe": "对一名近战敌人连续攻击 2 次，每次造成 1 点物理伤害；战意·续劲：消耗 2 层，追加 2 点物理伤害。每一次连击都牵动旧伤，自身防御 -1（10tick）。",
+      "describe": "对一名近战敌人连续攻击 2 次，每次造成 2 点物理伤害；每一次连击都牵动旧伤，自身防御 -1（10tick）。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -106,38 +106,9 @@
             {
               "type": "damage",
               "element": "physical",
-              "value": 1
+              "value": 2
             }
           ]
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "war_spirit",
-            "cmp": ">=",
-            "n": 2
-          },
-          "then": [
-            {
-              "type": "mount_status",
-              "statusId": "war_spirit",
-              "stacks": -2,
-              "stackMode": "consume",
-              "target": "self",
-              "note": "续劲：耗 2 层"
-            },
-            {
-              "type": "damage",
-              "element": "physical",
-              "value": 2,
-              "target": "target",
-              "note": "战意·续劲：再补一记重拳"
-            }
-          ],
-          "else": [],
-          "note": "战意·续劲：2 层换一段追击"
         },
         {
           "type": "modify_stat",
@@ -292,7 +263,7 @@
       "flagship": false,
       "lore": "序列9 战士 —— \"各种武器防具精通\"",
       "flavor": "你懂每一种兵器的重心，也懂每一副护甲的接缝——手上更有力，身上更耐打。",
-      "describe": "战斗开始时装备制式长剑（耐久 4 次）：攻击 +1；自身护甲 +3；战意：每次击杀积 1 层（主动技能可消耗）；若击杀的是已登记将死的目标，改为积 2 层。",
+      "describe": "战斗开始时装备制式长剑（耐久 4 次）：攻击 +1；自身护甲 +3；战意：每次击杀积 1 层（不受回合上限限制，主动技能可消耗）；若击杀的是已登记将死的目标，改为积 2 层；若击杀时已有战意 ≥3，额外积 1 层。",
       "hook": [
         "on_battle_start"
       ],
@@ -330,6 +301,29 @@
         {
           "event": "on_kill",
           "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "war_spirit",
+                "cmp": ">=",
+                "n": 3
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "war_spirit",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "target": "self",
+                  "ignoreWarSpiritCap": true,
+                  "note": "熟械：战意已足，击杀再积 1 层"
+                }
+              ],
+              "else": [],
+              "note": "战意读档：击杀时 ≥3 层，额外积 1 层"
+            },
             {
               "op": "if",
               "condition": {
@@ -431,7 +425,7 @@
       "flagship": false,
       "lore": "序列8 格斗家 —— \"擅长近距离战斗\"",
       "flavor": "你贴上去，用身体和兵刃缠住它——它想挥下一击，却发现节奏已经被你踩住了。",
-      "describe": "徒手擒拿：对敌方最前排的一名敌人造成 2 点物理伤害，并使其行动条进度 -20；并把目标撞退一格（摔投）。贴身时露出破绽，自身防御 -1（5tick）。对已登记将死的目标，额外推条 10。",
+      "describe": "徒手擒拿：对敌方最前排的一名敌人造成 2 点物理伤害，并使其行动条进度 -20；并把目标撞退一格（摔投）。贴身时露出破绽，自身防御 -1（5tick）。目标生命低于 50% 时，摔投追加 1 点物理伤害；否则若自身战意 ≥2，摔投额外推条 10。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -481,24 +475,45 @@
         {
           "op": "if",
           "condition": {
-            "kind": "has_status",
+            "kind": "hp_percent",
             "side": "target",
-            "id": "doom_mark",
-            "cmp": ">=",
-            "n": 1
+            "cmp": "<",
+            "n": 0.5
           },
           "then": [
             {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": -10,
-              "mode": "delta",
+              "type": "damage",
+              "element": "physical",
+              "value": 1,
               "target": "target",
-              "note": "宣判目标被摔得更狠：额外推条"
+              "note": "摔投追击：虚弱者被掼得更狠"
             }
           ],
-          "else": [],
-          "note": "对将死目标的额外压制"
+          "else": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "war_spirit",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": -10,
+                  "mode": "delta",
+                  "target": "target",
+                  "note": "战意·缠劲：摔投再推一档"
+                }
+              ],
+              "else": [],
+              "note": "战意读档：≥2 层时额外推条 10"
+            }
+          ],
+          "note": "低血追加伤害；否则战意≥2 时额外推条"
         }
       ],
       "sharedAcross": [
@@ -739,7 +754,7 @@
       "flagship": false,
       "lore": "序列7 武器大师 —— \"超强力量、体质和敏捷\"",
       "flavor": "你抡圆了砸下去，力量不止落在它身上，也砸碎了它身上的甲。",
-      "describe": "从整条战线中挑选护甲最高的一名敌人，在造成伤害前先击碎其 3 点护盾与 3 点护甲（真破甲，不穿透），再造成 4 点物理伤害；全力一击后自身防御 -2（10tick）。对已登记将死的目标追加 2 点圣光伤害；否则使其防御 -2（15tick）。",
+      "describe": "从整条战线中挑选护甲最高的一名敌人，在造成伤害前先击碎其 3 点护盾与 3 点护甲（真破甲，不穿透；若自身战意 ≥3，额外削 1 点护盾与护甲），再造成 4 点物理伤害；全力一击后自身防御 -2（10tick）。对已登记将死的目标追加 2 点圣光伤害；否则使其防御 -2（15tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -772,6 +787,36 @@
           "mode": "delta",
           "target": "target",
           "note": "破甲重击：再把护甲削去——真破甲，不是穿甲"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "war_spirit",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "shield",
+              "value": -1,
+              "mode": "delta",
+              "target": "target",
+              "note": "战意·破阵：护盾再削一档"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": -1,
+              "mode": "delta",
+              "target": "target",
+              "note": "战意·破阵：护甲再削一档"
+            }
+          ],
+          "else": [],
+          "note": "战意读档：≥3 层时破甲额外削 1 点护盾与护甲"
         },
         {
           "type": "damage",
@@ -1464,7 +1509,7 @@
       "flagship": false,
       "lore": "序列5 守护者 —— \"能对任何怪物造成伤害\"",
       "flavor": "没有你砍不动的东西——甲也好，护体的异力也好，在这一斩之下都不算数。",
-      "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲与元素抗性；并使自己行动条前推 8；战意·不摧：消耗 3 层，自身攻击 +3（10tick）。",
+      "describe": "对一名近战敌人造成 5 点无元素伤害，无视其护甲、元素抗性与护盾；战意·不摧：消耗 3 层，自身攻击 +4（10tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1488,16 +1533,9 @@
           "value": 5,
           "armorPierceRatio": 1.0,
           "pierce": [
-            "resist"
+            "resist",
+            "shield"
           ]
-        },
-        {
-          "type": "modify_resource",
-          "resource": "gauge.current",
-          "value": 8,
-          "mode": "delta",
-          "target": "self",
-          "note": "无坚不摧：一击斫开就顺势压上，节奏不给对方"
         },
         {
           "op": "if",
@@ -1520,7 +1558,7 @@
             {
               "type": "modify_stat",
               "stat": "attack",
-              "value": 3,
+              "value": 4,
               "mode": "delta",
               "duration": 10,
               "target": "self",
@@ -1946,7 +1984,7 @@
       "flagship": false,
       "lore": "序列4 猎魔者 —— \"夸张力量和飓风级高速奔跑\"",
       "flavor": "你跑起来像一阵飓风——撞进敌阵的那一瞬，身后队友的脚步也被带快了。",
-      "describe": "冲入另一路，对一名敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15；自己突进至敌方最前排（冲阵）。战意·奔袭：消耗 2 层，行动条 +8。冲锋反震使自身防御 -2（10tick）。",
+      "describe": "冲入另一路，对一名敌人造成 4 点物理伤害；自身行动条速率 +6（20tick），当前行动最慢的一名友军行动条 +15；自己突进至敌方最前排（冲阵）。战意·奔袭：消耗 2 层，行动条 +15。冲锋反震使自身防御 -2（10tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -2026,10 +2064,10 @@
             {
               "type": "modify_resource",
               "resource": "gauge.current",
-              "value": 8,
+              "value": 15,
               "mode": "delta",
               "target": "self",
-              "note": "战意·奔袭：消耗 2 层，行动条 +8"
+              "note": "战意·奔袭：消耗 2 层，行动条 +15"
             }
           ],
           "else": [],
@@ -2224,7 +2262,7 @@
       "flagship": false,
       "lore": "序列3 银骑士 —— \"『银白细剑』：拥有传送（闪现）能力，可从目标体内爆发\"",
       "flavor": "剑光一闪，你已经站在它背后——那一剑刺进去时并不重；重的是两息之后，从它体内绽开的那一朵银。",
-      "describe": "闪现至一名敌人身后造成 2 点物理伤害，并植入「体内爆发」：10tick 后从其体内绽开，造成 6 点物理伤害。若目标为亡灵/恶魔/灵体，银剑额外灼烧 2 点圣光伤害；并装备银白细剑（耐久 3 次，替换当前武器）；战意·银灼：消耗 2 层，追加 2 点圣光伤害。",
+      "describe": "闪现至一名敌人身后造成 2 点物理伤害，并植入「体内爆发」：10tick 后从其体内绽开，造成 6 点物理伤害。若目标为亡灵/恶魔/灵体，银剑额外灼烧 2 点圣光伤害；并装备银白细剑（耐久 3 次，替换当前武器）；战意·银灼：消耗 2 层，追加 3 点圣光伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -2310,8 +2348,8 @@
             {
               "type": "damage",
               "element": "holy",
-              "value": 2,
-              "note": "战意·银灼：消耗 2 层追加 2 点圣光伤害。"
+              "value": 3,
+              "note": "战意·银灼：消耗 2 层追加 3 点圣光伤害。"
             }
           ],
           "else": [],
@@ -2464,7 +2502,7 @@
       "flagship": false,
       "lore": "序列2 荣耀者 —— \"『战斗』权柄（简化）：『牢笼』、『黄昏巨剑』、『光之风暴』；『神圣』权柄（简化）：荣耀即晨曦即黄昏，摧毁即净化\"",
       "flavor": "巨剑带着黄昏的颜色劈下——被它摧毁的，同时也被净化了；而活下来的，从此开始变老。",
-      "describe": "对一名近战敌人造成 6 点无元素伤害并附加 2 层老化（25tick），随后装备黄昏巨剑（耐久 3 次，替换当前武器）：装备期间攻击 +4、每次造成伤害叠 1 层老化。本卡击杀敌人时，全体友军回复 3 点生命；死亡簿≥4 时收割回血追加 2 点；对已登记将死的目标追加 2 点圣光伤害；战意·暮收：消耗 4 层，全体友军回复 2 点。",
+      "describe": "对一名近战敌人造成 6 点无元素伤害并附加 2 层老化（25tick），随后装备黄昏巨剑（耐久 3 次，替换当前武器）：装备期间攻击 +4、每次造成伤害叠 1 层老化。本卡击杀敌人时，全体友军回复 3 点生命；死亡簿≥4 时收割回血追加 2 点；对已登记将死的目标追加 2 点圣光伤害；战意·暮收：消耗 6 层，全体友军回复 4 点并获得 2 点护盾；战意不足 6 但 ≥4 时，改为消耗 4 层回复 2 点。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -2535,26 +2573,63 @@
             "side": "self",
             "id": "war_spirit",
             "cmp": ">=",
-            "n": 4
+            "n": 6
           },
           "then": [
             {
               "type": "mount_status",
               "statusId": "war_spirit",
-              "stacks": -4,
+              "stacks": -6,
               "stackMode": "consume",
               "target": "self",
-              "note": "暮收：耗 4 层"
+              "note": "暮收：耗 6 层"
             },
             {
               "type": "heal",
-              "value": 2,
+              "value": 4,
               "target": "all_allies",
-              "note": "战意·暮收：消耗 4 层，全体友军回复 2 点。"
+              "note": "战意·暮收：全体友军回复 4 点"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "shield",
+              "value": 2,
+              "mode": "delta",
+              "target": "all_allies",
+              "note": "战意·暮收：全体友军获得 2 点护盾"
             }
           ],
-          "else": [],
-          "note": "战意消费分支：4 层换 战意·暮收：消耗 4 层，全体友军回复 2 点。"
+          "else": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "war_spirit",
+                "cmp": ">=",
+                "n": 4
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "war_spirit",
+                  "stacks": -4,
+                  "stackMode": "consume",
+                  "target": "self",
+                  "note": "暮收：耗 4 层"
+                },
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "all_allies",
+                  "note": "战意·暮收：全体友军回复 2 点"
+                }
+              ],
+              "else": [],
+              "note": "4 层基础收束"
+            }
+          ],
+          "note": "战意·暮收：6 层大额收束 / 4 层基础收束"
         },
         {
           "op": "if",
