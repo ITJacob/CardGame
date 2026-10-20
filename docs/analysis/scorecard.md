@@ -259,7 +259,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 25.3 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:take_control ×5；prim:modify_targetability ×2；prim:target_override ×7；对他途径指纹均距 0.233
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:take_control ×5；prim:modify_targetability ×2；prim:target_override ×7；对他途径指纹均距 0.232
 
 **途径失分项（含修改意见）**：
 
@@ -608,7 +608,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 27.9 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:status_shuffle ×5；prim:modify_rule_slot ×18；对他途径指纹均距 0.226
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:status_shuffle ×5；prim:modify_rule_slot ×18；对他途径指纹均距 0.225
 
 | 轴 | 总分 | 身份 | 产层 | 收束 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -722,7 +722,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 28.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:curse_link ×3；unitType:ITEM ×2；sref:lineage_stack ×6；对他途径指纹均距 0.222
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:curse_link ×3；unitType:ITEM ×2；sref:lineage_stack ×6；对他途径指纹均距 0.221
 
 | 轴 | 总分 | 身份 | 产层 | 收束 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
@@ -860,7 +860,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 33.3 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×4；prim:advance_clock ×4；res:secrecy ×3；对他途径指纹均距 0.379
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×4；prim:advance_clock ×4；res:secrecy ×3；对他途径指纹均距 0.378
 
 | 轴 | 总分 | 身份 | 产层 | 收束 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|

@@ -1129,7 +1129,6 @@
       "flavor": "那些游荡在世间的灵体，在你眼里从来不是虚无的影子——它们轮廓分明，也无处躲藏。",
       "describe": "战斗开始时获得「通灵之眼」：敌方隐匿类状态对你无效；你对灵体单位造成的伤害 ×1.3。",
       "hook": [
-        "on_tick",
         "on_battle_start"
       ],
       "effects": [
@@ -1144,7 +1143,7 @@
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴灵体特化入口，与收尸人共享同源。｜2026-10-10 对账：描述原写「灵体与亡灵 ×1.25」，与共享 def（spirit_sight，定义在 corpse_collector：damage_mul 1.3 且 filter 仅 SPIRIT + see_through）不符，按 def 收正。若要让亡灵同吃 ×1.3，须改共享 def（影响收尸人），属设计拍板项。",
+      "conversionNotes": "翻译/语义：安魂轴灵体特化入口，与收尸人共享同源。｜2026-10-10 对账：描述原写「灵体与亡灵 ×1.25」，与共享 def（spirit_sight，定义在 corpse_collector：damage_mul 1.3 且 filter 仅 SPIRIT + see_through）不符，按 def 收正。若要让亡灵同吃 ×1.3，须改共享 def（影响收尸人），属设计拍板项。 ｜ 2026-10-20 与一心多用分化：移除冗余 on_tick（灵视状态常驻、不可驱散，无需逐 tick 重挂）。",
       "art": {
         "subject": "a seer's eyes revealing spirits hidden in plain air",
         "elements": [
