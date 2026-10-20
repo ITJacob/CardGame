@@ -1226,7 +1226,7 @@
       "flagship": false,
       "lore": "序列4 守夜人 —— \"越黑暗越强，正午阳光下被削弱\"",
       "flavor": "你是为夜而生的——天光未散时你倦怠迟钝，而一旦夜色彻底落下，没有谁比你更清醒、更锋利。",
-      "describe": "夜晚/午夜相位时获得暗夜加持（攻 +3/防 +2/精抗 +10%），出离夜相位即消退；白昼相位时陷入天光未散（攻 -2/防 -1），出离白昼即解除；黎明/黄昏为过渡带，两者皆无。自身不拨时钟，只承接战场昼夜。",
+      "describe": "夜晚/午夜相位时获得暗夜加持（攻 +3/防 +2/精抗 +10%），出离夜相位即消退；白昼相位时陷入天光未散（攻 -2/防 -1），出离白昼即解除；黎明/黄昏为过渡带，两者皆无。自身不拨时钟，只承接战场昼夜；入夜/入午夜瞬间迎夜：行动条 +10、回复 2 点生命。",
       "hook": [
         "on_tick"
       ],
@@ -1304,7 +1304,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴『越黑暗越强』身份卡——纯相位读取，自身不拨时钟，只承接战场昼夜醒眠。｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight 加持、day 惩罚；黎明/黄昏为天然过渡带，替代旧光照 3–7 过渡带）。",
+      "conversionNotes": "翻译/语义：暗夜轴『越黑暗越强』身份卡——纯相位读取，自身不拨时钟，只承接战场昼夜醒眠。｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight 加持、day 惩罚；黎明/黄昏为天然过渡带，替代旧光照 3–7 过渡带）。 ｜ 2026-10-20 与午夜武艺分化：加 on_phase_change 迎夜（行动条 +10 / 回血 2），对齐「承接昼夜」而不逐 tick 轮询。",
       "art": {
         "subject": "a night watchman growing sharper as full darkness falls",
         "elements": [
@@ -1313,7 +1313,43 @@
           "brightened eyes"
         ],
         "mood": "awakened, honed"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_phase_change",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "phase_is",
+                "phases": [
+                  "night",
+                  "midnight"
+                ]
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 10,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "迎夜：守夜人的行动条 +10"
+                },
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "self",
+                  "note": "迎夜：守夜人回复 2 点生命"
+                }
+              ],
+              "else": [],
+              "note": "入夜/入午夜瞬间触发迎夜"
+            }
+          ],
+          "note": "迎夜：只在进入夜晚/午夜时触发，不逐 tick 轮询"
+        }
+      ]
     },
     {
       "id": "skill_sleepless_s4_night_realm",
