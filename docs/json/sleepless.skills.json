@@ -386,7 +386,7 @@
       "flagship": false,
       "lore": "序列8 午夜诗人 —— \"用不同风格的诗篇影响生灵：使敌人精神恍惚\"",
       "flavor": "你念起一支节拍错乱的诗——它的思绪散了，挥出的拳也失了准头。",
-      "describe": "对一名敌人造成 2 点精神伤害并使其恍惚 15tick（伤害 ×0.8、行动条速率 ×0.9）。",
+      "describe": "对一名敌人造成 2 点精神伤害并使其恍惚 15tick（伤害 ×0.8、行动条速率 ×0.9）；恍惚的节拍错乱使目标行动条 -10。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -412,6 +412,14 @@
           "type": "mount_status",
           "statusId": "daze",
           "duration": 15
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -10,
+          "mode": "delta",
+          "target": "target",
+          "note": "节拍错乱：目标的行动条被打乱"
         }
       ],
       "tentative": false,
@@ -1049,7 +1057,7 @@
       "flagship": false,
       "lore": "序列5 灵巫 —— \"擅长驱使自然灵，封印于牙齿释放\"",
       "flavor": "你叩了叩自己的牙——一枚被封在那里的自然灵挣脱出来，带着细碎的冷光扑向敌阵。",
-      "describe": "从齿间释放一只自然灵为己方作战（落位己方队尾，满生命）。",
+      "describe": "从齿间释放一只自然灵为己方作战（落位己方队尾，满生命）；灵牙迸裂，自身回复 2 点生命。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1070,6 +1078,12 @@
           "hpRatio": 1.0,
           "position": "tail",
           "unitId": "unit_nature_spirit"
+        },
+        {
+          "type": "heal",
+          "value": 2,
+          "target": "self",
+          "note": "灵牙迸裂：释放灵体后自身回复 2 点生命"
         }
       ],
       "sharedAcross": [
@@ -1148,7 +1162,7 @@
       "flagship": false,
       "lore": "序列5 灵巫 —— \"可驱使 4-5 个灵\"",
       "flavor": "一次叩齿，两三只灵同时钻了出来——它们单薄，却足够缠住任何人。",
-      "describe": "连续释放 2 只自然灵（各 60% 生命，落位己方队尾）。",
+      "describe": "连续释放 2 只自然灵（各 60% 生命，落位己方队尾）；群灵扑出时对全体敌人造成 1 点精神伤害。",
       "cost": {
         "energy": 5,
         "cooldown": 35,
@@ -1175,6 +1189,13 @@
               "unitId": "unit_nature_spirit"
             }
           ]
+        },
+        {
+          "type": "damage",
+          "element": "mental",
+          "value": 1,
+          "target": "all_enemies",
+          "note": "群灵扑出：对全体敌人造成 1 点精神冲击"
         }
       ],
       "sharedAcross": [
