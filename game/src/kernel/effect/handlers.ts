@@ -88,6 +88,7 @@ export function handleMountStatus(node: EffMountStatus, target: CombatUnit | nul
     stackMode: node.stackMode,
     charges: typeof node.charges === 'number' ? node.charges : undefined,
     params: node.params as Record<string, number> | undefined,
+    ignoreWarSpiritCap: node.ignoreWarSpiritCap,
   })
 }
 

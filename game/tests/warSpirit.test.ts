@@ -24,7 +24,7 @@ const WAR_TEST: PathwayFile = {
   sourceVersion: 'test',
   classMechanics: [{
     id: 'war_spirit', name: '战意', statusId: 'war_spirit',
-    summary: '受击或敌方死亡获得；主动技能消耗。',
+    summary: '受击获得（每自身回合上限）；击杀产层由被动卡附加且绕过回合上限。',
   }],
   cards: [
     {
@@ -45,6 +45,13 @@ const WAR_TEST: PathwayFile = {
       id: 'probe_mind', name: '战意载体', kind: 'passive', sequence: 7, sequenceName: 's7', rarity: 'common',
       axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
       hook: ['on_battle_start'], effects: [], statusDefs: [WAR_SPIRIT],
+      triggers: [{
+        event: 'on_kill',
+        effects: [{
+          type: 'mount_status', statusId: 'war_spirit', stacks: 5, stackMode: 'add',
+          target: 'self', ignoreWarSpiritCap: true,
+        }],
+      }],
     },
     {
       id: 'probe_barrage', name: '五连击', kind: 'active', sequence: 6, sequenceName: 's6', rarity: 'common',
@@ -123,13 +130,22 @@ describe('战意：职业资源与产层', () => {
     expect(catalog.classDefs.get('warrior')?.mechanics?.[0]?.id).toBe('war_spirit')
   })
 
-  it('敌方死亡给 warrior 产战意', () => {
+  it('敌方死亡默认不产战意（击杀产层由被动卡附加）', () => {
     const c = createCombat(setup({
       A: [unit('A_u0', 'A', 0, { skills: ['probe_smash'] })],
       B: [unit('B_u0', 'B', 0)],
     }))
     run(c, 12)
-    expect(stacks(c, 'A_u0')).toBeGreaterThan(0)
+    expect(stacks(c, 'A_u0')).toBe(0)
+  })
+
+  it('被动击杀产层不受每回合 +3 上限限制', () => {
+    const c = createCombat(setup({
+      A: [unit('A_u0', 'A', 0, { skills: ['probe_smash'], passives: ['probe_mind'] })],
+      B: [unit('B_u0', 'B', 0)],
+    }))
+    run(c, 12)
+    expect(stacks(c, 'A_u0')).toBe(5)
   })
 
   it('受击给实际承伤的 warrior 产战意', () => {

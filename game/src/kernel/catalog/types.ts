@@ -67,6 +67,8 @@ export interface EffMountStatus extends EffBase {
   dispelable?: boolean
   contagious?: boolean
   spread?: 'splash_adjacent'
+  /** 战意正向产出绕过「每自身回合 +3」上限（被动击杀产层用） */
+  ignoreWarSpiritCap?: boolean
 }
 export interface EffModifyStat extends EffBase {
   type: 'modify_stat'

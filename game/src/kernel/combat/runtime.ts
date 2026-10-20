@@ -831,13 +831,17 @@ class CombatRuntime implements CombatRuntimeHandle {
   private mountStatus(host: CombatUnit, statusId: string, grant: Omit<StatusGrant, 'sourceId'>, caster: CombatUnit | null = null): void {
     if (!statusId) return
     let effectiveGrant = grant
-    // 战意正向产出走职业上限：每自身回合 3 层、总量 10 层；主动消费的负层数不受此限
+    // 战意正向产出：默认走「受击每自身回合 3 层」上限；被动击杀产层可标记绕过回合上限，
+    // 但仍受总量 10 层限制。主动消费的负层数不受此限。
     if (statusId === 'war_spirit' && (grant.stacks ?? 1) > 0) {
       const cur = host.statuses.all().find((i) => i.defId === 'war_spirit')?.currentStacks ?? 0
-      const allowed = Math.max(0, Math.min(grant.stacks ?? 1, 3 - host.warSpiritGain, 10 - cur))
+      const bypassTurnCap = grant.ignoreWarSpiritCap === true
+      const allowed = bypassTurnCap
+        ? Math.max(0, Math.min(grant.stacks ?? 1, 10 - cur))
+        : Math.max(0, Math.min(grant.stacks ?? 1, 3 - host.warSpiritGain, 10 - cur))
       if (allowed <= 0) return
       effectiveGrant = { ...grant, stacks: allowed }
-      host.warSpiritGain += allowed
+      if (!bypassTurnCap) host.warSpiritGain += allowed
     }
     const def = this.lookup.statusDef(statusId)
     // 免疫拦截（grant_immunity）
@@ -995,10 +999,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       this.dead.add(u.id)
       this.emit({ type: 'UnitDied', unitId: u.id })
       this.stats.unitsLost[u.faction] = (this.stats.unitsLost[u.faction] ?? 0) + 1
-      // 战意：每个敌方单位死亡都给 warrior 产 1 层（复活再死照常计；不去重）
-      for (const w of this.units.all()) {
-        if (!w.isDead && w.pathwayId === 'warrior' && w.faction !== u.faction) this.gainWarSpirit(w, 1)
-      }
+      // 战意：击杀不再默认产层——击杀产层由被动卡 on_kill 载荷附加（带 ignoreWarSpiritCap）
       const killerId = this.lastAttacker.get(u.id)
       const killer = killerId ? this.units.get(killerId) : undefined
       // 载荷主体（执行参数 §2.3）：on_death 的 attacker / target = 击杀者，killed_unit = 自身；

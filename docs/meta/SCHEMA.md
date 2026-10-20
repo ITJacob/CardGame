@@ -162,7 +162,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 |---|---|---|
 | `damage` | `value` `element` `mul` `spread` `pierce` `lethal` `neverMiss` | 元素见 §5.4 |
 | `heal` | `value` `mode`(setHp/hpMaxRatio/to_ratio) | 治疗走 heal，不混 modify_resource（A22） |
-| `mount_status` | `statusId` `duration` `stacks` `stackMode` `charges` | 落空/阻挡语义一律用 `charges`（确定性） |
+| `mount_status` | `statusId` `duration` `stacks` `stackMode` `charges` `ignoreWarSpiritCap` | 落空/阻挡语义一律用 `charges`（确定性）；`ignoreWarSpiritCap` = 该次战意正向产出绕过每自身回合 +3 上限 |
 | `modify_stat` | `stat` `value` `mode`(delta/set/mul/to_at_least) `duration` | 无宿主、不可驱散；要可见/可驱散用 mount_status |
 | `modify_resource` | `resource` `value` `mode` | `hp/energy/shield/armor/lost/gauge.current` |
 | `move` | `op` `distance` | 7 种 op |

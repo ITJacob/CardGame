@@ -134,6 +134,8 @@ export interface StatusGrant {
   casterId?: string
   binding?: { guardTarget?: string; redirectTarget?: string }
   sourcePathway?: string
+  /** 战意正向产出绕过「每自身回合 +3」上限（被动击杀产层用） */
+  ignoreWarSpiritCap?: boolean
 }
 
 export interface StatusInstance {
