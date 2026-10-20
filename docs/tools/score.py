@@ -700,9 +700,14 @@ def _card_families(card, status_by_id=None):
     spawned = spawned_unit_defs(card)
     unit_effects = [e for u in spawned for tr in (u.get("triggers") or [])
                     if isinstance(tr, dict) for e in (tr.get("effects") or [])]
-    space = card_effects(card) + unit_effects
+    mounted = [status_by_id.get(m) for m in card_mounts(card)
+               if status_by_id and status_by_id.get(m)]
+    mounted_effects = [e for sd in mounted for tr in (sd.get("triggers") or [])
+                       if isinstance(tr, dict) for e in (tr.get("effects") or [])]
+    space = card_effects(card) + unit_effects + mounted_effects
     fam["prim"] |= card_effect_types(card)
-    fam["prim"] |= {n.get("type") for n in walk(unit_effects) if isinstance(n.get("type"), str)}
+    fam["prim"] |= {n.get("type") for n in walk(unit_effects + mounted_effects)
+                    if isinstance(n.get("type"), str)}
 
     for n in walk(space):
         if isinstance(n.get("element"), str):
@@ -831,6 +836,8 @@ def _card_families(card, status_by_id=None):
         sd = (status_by_id or {}).get(sid)
         if sd:
             fam["sshape"] |= _status_shape(sd)
+    for sd in mounted:
+        fam["sshape"] |= _status_shape(sd)
     return fam
 
 

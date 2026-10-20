@@ -1,4 +1,4 @@
-# 职业设计评分体系（SCORING）· **2.8（2026-10-20 召唤物设定权重 2×）**
+# 职业设计评分体系（SCORING）· **2.9（2026-10-20 挂载状态载荷入指纹）**
 
 > 配套脚本 `docs/tools/score.py`（唯一计分实现，本文件锁口径）；
 > 产物：`docs/analysis/scorecard.md`（勿手改）+ `docs/analysis/scores.json`（网页端消费，site 经
@@ -67,6 +67,10 @@
 reach / hp·atk 档位 / 攻击或亡语触发类型）应是召唤卡的主载荷，而不是卡面通用效果。同时在
 `playable_scan.py` 新增 `summon_unit_share` 诊断（unitDef 载荷 ÷ 卡面非 spawn 载荷 + unitDef 载荷，
 目标 ≥50%），只进玩法轨、不进 100 分。
+
+**2.9（2026-10-20）**：挂载状态 def 的形态与触发器载荷并入卡级效果空间/`sshape`。被动卡往往只
+`mount_status` 一个状态，之前指纹只剩一个挂载节点，状态本身的 modifiers/immune/触发器全看不见
+（如「通灵之眼 ↔ 灵体灵性权柄」被误判 0.0612；纳入后 0.2322）。
 
 ## 一、原则
 
@@ -202,10 +206,10 @@ reach / hp·atk 档位 / 攻击或亡语触发类型）应是召唤卡的主载�
 距离计分用**绝对阈值**（0.14–0.30 五档，见 §三），不再用全库分位——分位制会让「全库一起优化」排名不动、
 单卡微改跨档套利。
 
-> **效果空间**（2.6 起）= `cards[].effects` + `cards[].triggers[].effects`；2.7 起再并入 `spawn`
-> 引用 `unitDef` 的元素 / tags / `triggers[].effects`（召唤物的攻击效果属于卡面机制）。被动/触发载荷
-> 与主动效果同口径；只读 `effects` 会让带触发器的被动卡在指纹里退化成一个挂载节点。`hook` 仍是触发点
-> 本身，其余族取效果空间。
+> **效果空间** = `cards[].effects` + `cards[].triggers[].effects`（2.6）；`spawn` 引用 `unitDef` 的
+> 元素 / tags / `triggers[].effects`（2.7）；**卡面挂载状态 def 的 `triggers[].effects`**（2.9）。
+> 被动/触发载荷与主动效果同口径；只读 `effects` 会让带触发器的被动卡在指纹里退化成一个挂载节点。
+> `hook` 仍是触发点本身，其余族取效果空间。
 
 | 族 | 键 | 来源 |
 |---|---|---|
@@ -217,7 +221,7 @@ reach / hp·atk 档位 / 攻击或亡语触发类型）应是召唤卡的主载�
 | `reach` | 射程 | active 卡 `reach`（none/melee/spell/thrown） |
 | `tgt` | 选靶（卡级坐标 + filter + 效果级作用对象） | `target.request`：`faction`/`scope`/`anchor`/`mode`/`selectionMode`；`request.filter` 键（前缀 `filter:`）；效果空间的 `target`（前缀 `eff:`） |
 | `hook` | 触发点 | 卡级 `hook`/`triggers[].event` ＋挂载状态 def 的 `triggers[].event`；**排除 `on_apply`**（状态挂载载荷的固有生命周期事件，不体现触发点设计） |
-| `sshape` | **状态形态** | 引用状态 def 的结构 flags（triggers/charges/stack/threshold/form/phases/cycle/ramp/behavior/action_lock/immune/redirect…）+ 修正名 + 自带效果原语（`on_apply` 载荷）+ 时长形态；**不含私有 statusId** |
+| `sshape` | **状态形态** | 引用状态 def **及卡面挂载状态 def** 的结构 flags（triggers/charges/stack/threshold/form/phases/cycle/ramp/behavior/action_lock/immune/redirect…）+ 修正名 + 自带效果原语（`on_apply` 载荷）+ 时长形态；**不含私有 statusId** |
 | `cost` | 消耗形态 | `energy` 档（zero/low/mid/high）+ `cooldown` 档（none/short/long）+ 血费（效果空间中的自伤 hp 支付） |
 | `temporal` | 时序形态 | 吟唱有无（`castTime>0`）/ `durationUnit`（tick、self_turn）/ 吟唱转瞬发 |
 | `unit` | **召唤物设定**（2× 权重） | 卡面 `spawn` 引用的 `unitDef`：`type:<unitType>` / `elem:<element>` / `tag:<tag>` / `reach:<reach>` / `hp:low·mid·high` / `atk:low·mid·high` / `trig:<event>:<原语>`（攻击/亡语载荷） |
