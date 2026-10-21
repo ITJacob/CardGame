@@ -43,12 +43,14 @@ ROLES = ("core", "starter", "bridge", "generic", "trap", "tech")
 ANCHOR_KINDS = ("status", "status_family", "resource", "equipment", "zone",
                 "primitive", "trigger", "geometry", "action_economy", "channel",
                 "rule_slot", "dimension", "element", "form_cycle")
-# facet 词表（SCORING §二·三 同表）
+# facet 词表（SCORING §二·三 同表 + 蓝图专用 status 行：status 锚点轴之间的读层钩子
+# 走跨轴耦合口径①「读他轴私有状态」，不属四概念 facet，蓝图表允许声明以便兑现率对账）
 FACET_VOCAB = {
     "equipment": ("equip", "durability_consume", "durability_replenish", "read_equipped", "dump", "steal"),
     "channel": ("write", "read", "cycle"),
     "resource": ("produce", "consume", "threshold"),
     "primitive": ("use",),
+    "status": ("mount", "read", "consume"),
 }
 # 全局通用机制词表（风格边界表声明用；表外项只警告不扣分——词表随设计演进扩充）
 GLOBAL_MECHANISMS = ("武器", "装备", "相位", "资源", "过牌", "基础增益", "位移", "召唤",
@@ -316,7 +318,9 @@ def score_blueprint(pid, bp, pathways, status_ids, identity_dims, pw_name):
     mix_total = None
     mix_rows = sec.get("角色配比", {}).get("rows") or []
     if mix_rows:
-        mix_total = sum(int(r.get("张数") or 0) for r in mix_rows if (r.get("张数") or "").isdigit())
+        # flagship 行是 core/trap 卡位的子集标记，不计入总卡数
+        mix_total = sum(int(r.get("张数") or 0) for r in mix_rows
+                        if (r.get("张数") or "").isdigit() and r.get("角色") != "flagship")
     count_ok = (None not in plan_counts and mix_total is not None
                 and sum(plan_counts) == mix_total)
     parts["轴循环"] = loop_score + anchor_score + (5 if count_ok else 0)
@@ -482,13 +486,14 @@ def reconcile(pid, bp, parsed, pathways, status_by_id, def_index):
     hit = sum(1 for k in commit if counts.get(k, 0) >= 2)
     out["签名键"] = (hit, len(commit), ["%s(实证%d)" % (k, counts.get(k, 0)) for k in commit if counts.get(k, 0) < 2])
 
-    # 角色配比兑现：实际 role 计数 vs 声明
+    # 角色配比兑现：实际 role 计数 vs 声明；flagship 行对卡面 flagship 字段（不是 role）
     declared = parsed.get("role_counts") or {}
     if declared:
         actual = {}
         for c in cards:
             if c.get("role"):
                 actual[c["role"]] = actual.get(c["role"], 0) + 1
+        actual["flagship"] = sum(1 for c in cards if c.get("flagship"))
         hit = sum(1 for r, n in declared.items() if actual.get(r, 0) >= n)
         out["角色配比"] = (hit, len(declared),
                          ["%s(声明%d/实际%d)" % (r, n, actual.get(r, 0))
@@ -507,13 +512,21 @@ def reconcile(pid, bp, parsed, pathways, status_by_id, def_index):
             axis_facets[aid] = score.axis_mechanism_facets(axis_cards, anchor, status_by_id, def_index)
         hit, miss = 0, []
         for r in xa:
-            tgt = axis_facets.get(r.get("读轴")) or set()
-            ok = False
-            for slot in _cells(r.get("卡位")):
-                c = card_by_name.get(slot)
-                if c and tgt and score.card_mechanism_facets(c, tgt, status_by_id, def_index):
-                    ok = True
-                    break
+            if r.get("概念") == "status":
+                # status 行：兑现 = 声明卡位引用读轴锚点状态（跨轴耦合口径①）
+                tgt_ax = axes_def.get(r.get("读轴")) or {}
+                tgt_sid = tgt_ax.get("statusId") or (tgt_ax.get("anchor") or {}).get("id")
+                ok = bool(tgt_sid) and any(
+                    score.card_refs_status(card_by_name[s0], tgt_sid)
+                    for s0 in _cells(r.get("卡位")) if s0 in card_by_name)
+            else:
+                tgt = axis_facets.get(r.get("读轴")) or set()
+                ok = False
+                for slot in _cells(r.get("卡位")):
+                    c = card_by_name.get(slot)
+                    if c and tgt and score.card_mechanism_facets(c, tgt, status_by_id, def_index):
+                        ok = True
+                        break
             if ok:
                 hit += 1
             else:

@@ -4,8 +4,15 @@
 
 | # | 途径 | 蓝图分 | 状态 | 命题 | 风格边界 | 轴循环 | 决策点 | 签名键 | 角色配比 | 钩子 |
 |---:|---|---:|---|---:|---:|---:|---:|---:|---:|---:|
+| 1 | **猎人** `hunter` | **96** | 回溯补登 | 10 | 15 | 25 | 10 | 11 | 15 | 10 |
 
 
-## 未建蓝图（22 条，回溯计划见 WORKFLOW.md「全库回溯计划」）
+## 猎人（hunter）· 96 分
 
-`apothecary`、`apprentice`、`arbiter`、`assassin`、`chanter`、`corpse_collector`、`criminal`、`hunter`、`lawyer`、`monster`、`planter`、`prisoner`、`pryer`、`reader`、`sailor`、`savant`、`seer`、`sleepless`、`spectator`、`supplicant`、`thief`、`warrior`
+- `签名键` 键 flag:gender_is 承诺卡位含非真实卡名：（待补强1卡）
+- `签名键` 键 sref:massing 承诺卡位含非真实卡名：（待补强1卡）
+
+
+## 未建蓝图（21 条，回溯计划见 WORKFLOW.md「全库回溯计划」）
+
+`apothecary`、`apprentice`、`arbiter`、`assassin`、`chanter`、`corpse_collector`、`criminal`、`lawyer`、`monster`、`planter`、`prisoner`、`pryer`、`reader`、`sailor`、`savant`、`seer`、`sleepless`、`spectator`、`supplicant`、`thief`、`warrior`
