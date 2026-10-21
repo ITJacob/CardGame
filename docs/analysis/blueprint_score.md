@@ -5,9 +5,10 @@
 | # | 途径 | 蓝图分 | 状态 | 命题 | 风格边界 | 轴循环 | 决策点 | 签名键 | 角色配比 | 钩子 |
 |---:|---|---:|---|---:|---:|---:|---:|---:|---:|---:|
 | 1 | **猎人** `hunter` | **96** | 回溯补登 | 10 | 15 | 25 | 10 | 11 | 15 | 10 |
-| 2 | **药师** `apothecary` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
-| 3 | **阅读者** `reader` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
-| 4 | **水手** `sailor` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
+| 2 | **观众** `spectator` | **98** | 回溯补登 | 10 | 15 | 25 | 10 | 13 | 15 | 10 |
+| 3 | **药师** `apothecary` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
+| 4 | **阅读者** `reader` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
+| 5 | **水手** `sailor` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
 
 
 ## 猎人（hunter）· 96 分
@@ -16,6 +17,11 @@
 - `签名键` 键 sref:massing 承诺卡位含非真实卡名：（待补强1卡）
 
 
-## 未建蓝图（18 条，回溯计划见 WORKFLOW.md「全库回溯计划」）
+## 观众（spectator）· 98 分
 
-`apprentice`、`arbiter`、`assassin`、`chanter`、`corpse_collector`、`criminal`、`lawyer`、`monster`、`planter`、`prisoner`、`pryer`、`savant`、`seer`、`sleepless`、`spectator`、`supplicant`、`thief`、`warrior`
+- `签名键` 键 flag:template 承诺卡位含非真实卡名：（待补强1卡）
+
+
+## 未建蓝图（17 条，回溯计划见 WORKFLOW.md「全库回溯计划」）
+
+`apprentice`、`arbiter`、`assassin`、`chanter`、`corpse_collector`、`criminal`、`lawyer`、`monster`、`planter`、`prisoner`、`pryer`、`savant`、`seer`、`sleepless`、`supplicant`、`thief`、`warrior`
