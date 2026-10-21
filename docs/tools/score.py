@@ -15,6 +15,7 @@ ANALYSIS_DIR = os.path.join(os.path.dirname(HERE), "analysis")
 
 sys.path.insert(0, HERE)
 from status_loader import iter_status_defs, load_common_ids
+import blueprint_parse   # 2.14：轴级兑现三维 + 签名键兑现的声明面（蓝图解析器，零依赖）
 
 UNIT_INDEX = None
 
@@ -987,6 +988,25 @@ def main():
     manifest = json.load(io.open(os.path.join(JSON_DIR, "manifest.json"), encoding="utf-8"))
     rarity_map = manifest.get("rarityMap", {})
 
+    # 蓝图声明面（2.14 重切：蓝图=声明正源，score.py=实证正源，兑现率=声明∩实证进分）
+    ROUNDS_DIR = os.path.join(os.path.dirname(HERE), "meta", "rounds")
+    bp_axis_decl = {}    # pid -> {axisId: {"anchor": "kind:id", "E": {产层卡位}, "P": {消费卡位}}}
+    bp_sig_keys = {}     # pid -> {承诺签名键}
+    for _pid, _d in pathways.items():
+        _bp_path = os.path.join(ROUNDS_DIR, _pid + ".md")
+        _bp = blueprint_parse.parse_blueprint(_bp_path) if os.path.exists(_bp_path) else None
+        if not _bp:
+            continue
+        _names = {c["name"] for c in _d.get("cards") or []}
+        _ax_decl, _sig = {}, set()
+        for _row in _bp["sections"].get("轴玩法", {}).get("rows") or []:
+            _e, _p = blueprint_parse.parse_pc_chain(_row.get("产出→消费→清除"), _names)
+            _ax_decl[_row.get("轴")] = {"anchor": (_row.get("锚点(kind:id)") or "").strip(),
+                                        "E": _e, "P": _p}
+            _sig |= set(blueprint_parse._parse_sig_commit(_row.get("签名键承诺(键:卡位)")))
+        bp_axis_decl[_pid] = _ax_decl
+        bp_sig_keys[_pid] = _sig
+
     # 依赖全库归一的原始量，先全量收集
     axis_rows = []           # 计分中间态
     pw_crossaxis_refs = {}   # pathwayId -> 本途径他轴身份被读本途径卡引用的次数
@@ -1259,6 +1279,79 @@ def main():
                 elif notes_level:
                     deductions.append(("收束闭环", "注：notes 级 %d 张（减半计）" % len(notes_level), ",".join(notes_level), FIX["payoff_notes"]))
 
+            # —— 2.14 重切：旧三维（身份锚定/产层闭环/收束闭环）退役为 legacyDims 诊断留档 ——
+            # 旧值继续算、只读不进分（≥3 轮确认无信息损失后复核删除）；其失分项随维退役，
+            # 仅「角色冲突」注级转入兑现维（generic/tech 承重 = 实证体系被泛用卡刷满，仍相关）。
+            legacy_dims = {"身份锚定": anchor, "产层闭环": closure_e, "收束闭环": closure_p}
+            _legacy_deds, deductions = deductions, []
+            for _dim, _why, _ref, _fix in _legacy_deds:
+                if "角色冲突" in _why:
+                    deductions.append(("产层兑现" if "enablers" in _why else "收束兑现",
+                                       _why, _ref, _fix))
+
+            # —— 兑现三维（2.14：蓝图声明 ∩ 卡面实证；声明面来自玩法蓝图章，实证判据复用旧三维函数）——
+            decl = bp_axis_decl.get(pid, {}).get(aid)
+            if decl is None:
+                fu_anchor = fu_e = fu_p = 0
+                deductions.append(("锚点兑现", "-15：轴 %s 无蓝图声明（玩法蓝图章缺轴玩法表行）" % aid, aid, FIX["no_identity"]))
+                deductions.append(("产层兑现", "-20：无蓝图产层声明", aid, FIX["enabler_empty"]))
+                deductions.append(("收束兑现", "-25：无蓝图消费声明", aid, FIX["vacuum"]))
+            else:
+                # 锚点兑现 15：蓝图锚点 kind:id 与 axes 元数据对账（蓝图简写 prim/res 归一）
+                _ALIAS = {"prim": "primitive", "res": "resource"}
+                _dk, _, _did = (decl["anchor"] or "").partition(":")
+                _dk = _ALIAS.get(_dk, _dk)
+                _akind = a_kind or ("status" if sid else None)
+                _aid2 = a_id if a_kind else sid
+                if _dk and _did and _dk == _akind and _did == _aid2:
+                    fu_anchor = 15
+                else:
+                    fu_anchor = 0
+                    deductions.append(("锚点兑现", "-15：蓝图锚点 %s ≠ axes 实录 %s:%s" % (
+                        decl["anchor"] or "（空）", _akind, _aid2), aid, FIX["dangling_sid"]))
+                # 产层兑现 20：E*（产层段声明卡位，剔 generic/tech）中实证 enabler 占比
+                e_pool = [n for n in sorted(decl["E"])
+                          if (card_by_name.get(n) or {}).get("role") not in ("generic", "tech")]
+                if not decl["E"]:
+                    fu_e = 0
+                    deductions.append(("产层兑现", "-20：蓝图产层段未声明卡位（段1 无卡名）", aid, FIX["enabler_empty"]))
+                elif not e_pool:
+                    fu_e = 0
+                    deductions.append(("产层兑现", "-20：蓝图产层段声明卡位均为 generic/tech（非承重件）",
+                                       ",".join(sorted(decl["E"])), FIX["enabler_empty"]))
+                else:
+                    e_hit = [n for n in e_pool if _is_enabler(card_by_name.get(n))]
+                    fu_e = round(20 * len(e_hit) / len(e_pool), 1)
+                    e_miss = [n for n in e_pool if n not in e_hit]
+                    if e_miss:
+                        deductions.append(("产层兑现", "-%s：声明产层卡 %d/%d 未实证（卡面不挂身份/不产层）" % (
+                            round(20 - fu_e, 1), len(e_miss), len(e_pool)), ",".join(e_miss), FIX["enabler_unverified"]))
+                # 收束兑现 25：P*（消费段声明卡位，剔 generic/tech）中 landed 全分 / notes 半分
+                p_pool = [n for n in sorted(decl["P"])
+                          if (card_by_name.get(n) or {}).get("role") not in ("generic", "tech")]
+                if not decl["P"]:
+                    fu_p = 0
+                    deductions.append(("收束兑现", "-25：蓝图消费段未声明卡位（段2 无卡名）", aid, FIX["vacuum"]))
+                elif not p_pool:
+                    fu_p = 0
+                    deductions.append(("收束兑现", "-25：蓝图消费段声明卡位均为 generic/tech（非承重件）",
+                                       ",".join(sorted(decl["P"])), FIX["vacuum"]))
+                else:
+                    p_w, p_notfull = 0.0, []
+                    for n in p_pool:
+                        ev = _payoff_evidence(card_by_name.get(n))
+                        if ev == "landed":
+                            p_w += 1
+                        elif ev == "notes":
+                            p_w += 0.5
+                            p_notfull.append(n + "(notes)")
+                        else:
+                            p_notfull.append(n)
+                    fu_p = round(25 * p_w / len(p_pool), 1)
+                    if p_notfull:
+                        deductions.append(("收束兑现", "-%s：声明消费卡 %d/%d 未全落地（landed 全分 / notes 半分）" % (
+                            round(25 - fu_p, 1), len(p_notfull), len(p_pool)), ",".join(p_notfull), FIX["payoff_notes"]))
+
             # —— 轴内多样性（2026-10-19 密度口径）：全链路词表去重形态 ÷ 卡数 ——
             # 原语 + 谓词（仅 then/else 均非空的双分支条件，上限 6）+ 选靶 + 触发点 + 状态形态。
             # 密度化消除「堆卡/空 if 刷种类」的规模代理；空 else 不计分支。
@@ -1374,7 +1467,8 @@ def main():
             apply_role_fix_overlay(deductions, card_by_name)
             axis_rows.append({
                 "pathway": pid, "axis": aid, "name": ax.get("name"), "symbol": ax.get("symbol"),
-                "anchor": anchor, "closure_e": closure_e, "closure_p": closure_p,
+                "anchor": fu_anchor, "closure_e": fu_e, "closure_p": fu_p,
+                "legacy_dims": legacy_dims,
                 "div_raw": div_raw, "scale": scale, "connect": connect,
                 "cards": len(axis_cards), "enablers_v": en_verified, "landed": landed, "notes": notes_level,
                 "patterns": sorted(patterns), "ext_consumers": ext_consumers,
@@ -1395,8 +1489,9 @@ def main():
     for r in axis_rows:
         r["diversity"] = round(15 * r["div_raw"] / max_div, 1)
         r["total"] = round(r["anchor"] + r["closure_e"] + r["closure_p"] + r["diversity"] + r["scale"] + r["connect"], 1)
-        r["dims"] = {"身份锚定": r["anchor"], "产层闭环": r["closure_e"], "收束闭环": r["closure_p"],
+        r["dims"] = {"锚点兑现": r["anchor"], "产层兑现": r["closure_e"], "收束兑现": r["closure_p"],
                      "轴内多样性": r["diversity"], "规模均衡": r["scale"], "承接连通": r["connect"]}
+        r["legacyDims"] = r.pop("legacy_dims")   # 旧三维诊断留档（不进分，满 3 轮后复核删除）
 
     # ---------- 途径级 ----------
     # 跨系读段专项：本途径卡读取他途径枢纽状态（crossPathway:true 即枢纽，不限是否轴身份），
@@ -1519,7 +1614,8 @@ def main():
             deductions.append(("跨系联动", "-%s：枢纽状态 %d 个×2 / 消费方 %d 途径×4 / 读取 %d 次(CAP4)" % (
                 15 - crosspath, hubs_n, consumers_n, reads_n), pid, FIX["crosspath"]))
 
-        # 结构健康（SCORING §一·附 角色口径落地后重切：稀有 3 + 主被动比 3 + 旗舰 2 + 角色合规 2 = 10，×0.5 = 5）
+        # 结构健康（2.14 重切：稀有 3 + 主被动比 3 + 旗舰 2 = 8，×5/8 = 5；
+        # 角色合规 2 分退役——配比/旗舰已由蓝图 rubric 管，角色冲突注级转入轴级兑现维）
         struct = 0
         bad_rarity = 0
         for c in cards:
@@ -1541,43 +1637,18 @@ def main():
         struct += 2 if n_flag == 4 else 0              # 布尔判据，不再渐减白送
         if n_flag != 4:
             deductions.append(("结构健康", "-2：旗舰卡 %d 张（须恰好 4）" % n_flag, pid, FIX["flagship"]))
-        # 角色合规（2 分，每张/每轴扣 1 封顶 2；途径已有 role 声明后才启用——opt-in 原则）
+        # 角色分布 / 轴登记面 / 签名键表（不计分，供下方角色语义注级块使用）
         role_dist = {}
         for c in cards:
             if c.get("role"):
                 role_dist[c["role"]] = role_dist.get(c["role"], 0) + 1
-        if role_dist:
-            axes_reg = set()
-            for ax2 in axes.values():
-                if isinstance(ax2, dict):
-                    axes_reg.update(ax2.get("enablers") or [])
-                    axes_reg.update(ax2.get("payoffs") or [])
-            own_sig_keys = PATHWAY_SIGNATURES.get(pid, [])
-            role_bad = []
-            for c in cards:
-                r = c.get("role")
-                if not r:
-                    continue
-                if r == "starter" and c.get("rarity") != "common":
-                    role_bad.append("%s(starter≠common)" % c["name"])
-                if r == "generic" and (c.get("flagship") or c["name"] in axes_reg
-                                       or any(signature_card_hit(c, k, all_unit_types,
-                                                                 lineage_status_ids, flag_status_index)
-                                              for k in own_sig_keys)):
-                    role_bad.append("%s(generic被登记/带签名键/旗舰)" % c["name"])
-                if c.get("flagship") and r not in ("core", "trap"):
-                    role_bad.append("%s(旗舰声明%s)" % (c["name"], r))
-            for aid in axes:
-                if not any(c.get("axis") == aid and c.get("role") == "core" for c in cards):
-                    role_bad.append("轴%s缺core" % aid)
-            struct += max(0, 2 - min(2, len(role_bad)))
-            if role_bad:
-                deductions.append(("结构健康", "-%d：角色合规 %d 处（%s）"
-                                   % (min(2, len(role_bad)), len(role_bad), "；".join(role_bad[:6])),
-                                  pid, FIX["role_semantic"]))
-        else:
-            struct += 2
-        struct = round(struct * 0.5, 1)          # 10 → 5
+        axes_reg = set()
+        for ax2 in axes.values():
+            if isinstance(ax2, dict):
+                axes_reg.update(ax2.get("enablers") or [])
+                axes_reg.update(ax2.get("payoffs") or [])
+        own_sig_keys = PATHWAY_SIGNATURES.get(pid, [])
+        struct = round(struct * 5 / 8, 1)          # 8 → 5
 
         # —— 角色语义注级（SCORING §一·附；注级 = 不扣分，进失分清单供人工复核）——
         if role_dist:
@@ -1707,11 +1778,15 @@ def main():
         style_strengths.sort(key=lambda x: (-x["distinct"], x["family"]))
         style_strengths = style_strengths[:4]
 
-        # 差异化（2026-10-19 重切，权重 35）= 签名键落地 7 + 途径间指纹 12 + 构型多样 5 + 途径内去重 11
-        sig_keys = PATHWAY_SIGNATURES.get(pid, [])
+        # 差异化（2026-10-19 重切，权重 35）= 签名键兑现 7 + 途径间指纹 12 + 构型多样 5 + 途径内去重 11
+        # 签名键兑现（2.14）：只评蓝图承诺键（签名键承诺列键集 K*），每键 ≥2 卡实证得 7/|K*|；
+        # 未承诺键不再计分（承诺即正源）；无蓝图途径回退身份卡键表。
+        sig_keys = sorted(bp_sig_keys.get(pid) or PATHWAY_SIGNATURES.get(pid, []))
         sig_hits = signature_counts(cards, sig_keys, unit_type_of=all_unit_types,
                                     lineage_ids=lineage_status_ids, flag_status_index=flag_status_index)
-        signature_score = min(7, sum(3 if h >= 2 else 1.5 * h for h in sig_hits.values()))
+        per_key = 7 / len(sig_keys) if sig_keys else 0
+        signature_score = min(7, round(sum(per_key if h >= 2 else per_key * 0.5 * h
+                                           for h in sig_hits.values()), 1))
         dist_pts = _dist_pts(mean_dists[pid])
         # 核心族下限（2.11）：prim/hook/sshape 三族至少两族均距 ≥0.15，否则降一档——
         # 外围族（cost/reach/temporal 等）只能加分不能保底，防「玩法雷同靠外围族凑距离」
@@ -1830,14 +1905,20 @@ def write_scorecard(pw_rows):
             for dim, why, ref, fix in r["deductions"]:
                 L.append("- `%s` %s（%s）→ %s" % (dim, why, ref, fix))
             L.append("")
-        L.append("| 轴 | 总分 | 身份 | 产层 | 收束 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |")
+        L.append("| 轴 | 总分 | 锚兑 | 产兑 | 收兑 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |")
         L.append("|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|")
         for a in sorted(r["axes"], key=lambda x: x["total"]):
             ad = a["dims"]
-            L.append("| %s %s `%s` | **%.1f** | %.0f | %.0f | %.0f | %.1f | %.0f | %.0f | %s | %s | %s |" % (
-                a["symbol"] or "", a["name"], a["axis"], a["total"], ad["身份锚定"], ad["产层闭环"],
-                ad["收束闭环"], ad["轴内多样性"], ad["规模均衡"], ad["承接连通"],
+            L.append("| %s %s `%s` | **%.1f** | %.0f | %.1f | %.1f | %.1f | %.0f | %.0f | %s | %s | %s |" % (
+                a["symbol"] or "", a["name"], a["axis"], a["total"], ad["锚点兑现"], ad["产层兑现"],
+                ad["收束兑现"], ad["轴内多样性"], ad["规模均衡"], ad["承接连通"],
                 ",".join(a["enablers_v"]) or "—", ",".join(a["landed"]) or "—", ",".join(a["notes"]) or "—"))
+        L.append("")
+        L.append("> 旧三维诊断留档（legacyDims，不进分；满 3 轮确认无信息损失后复核删除）：" +
+                 "；".join("%s 身份锚定 %.0f / 产层闭环 %.0f / 收束闭环 %.0f" % (
+                     a["name"], a["legacyDims"]["身份锚定"],
+                     a["legacyDims"]["产层闭环"], a["legacyDims"]["收束闭环"])
+                     for a in sorted(r["axes"], key=lambda x: x["total"])))
         L.append("")
         for a in sorted(r["axes"], key=lambda x: x["total"]):
             if a["deductions"]:
@@ -1867,7 +1948,7 @@ def write_scores_json(pw_rows, variance=None):
             "deductions": [{"dim": d, "why": w, "ref": x, "fix": f} for d, w, x, f in r["deductions"]],
             "axes": [{
                 "id": a["axis"], "name": a["name"], "symbol": a["symbol"], "total": a["total"],
-                "dims": a["dims"], "cards": a["cards"],
+                "dims": a["dims"], "legacyDims": a["legacyDims"], "cards": a["cards"],
                 "enablersVerified": a["enablers_v"], "payoffsLanded": a["landed"],
                 "payoffsNotes": a["notes"], "patterns": a["patterns"],
                 "vacuumAccepted": a["vacuum_accepted"],
@@ -1893,12 +1974,15 @@ def write_variance(pw_rows, axis_rows):
     """各维度全库方差表（2.11 原则 8 指标生命周期）：方差过低的维已无区分度，
     标记「候选降门禁/降权」，把 2.3 的人工判断变成机器提醒。产物落 analysis/variance.md。"""
     PW_DIMS = ("轴健康度", "跨轴耦合", "跨系联动", "差异化")
-    AX_DIMS = ("身份锚定", "产层闭环", "收束闭环", "轴内多样性", "规模均衡", "承接连通")
+    AX_DIMS = ("锚点兑现", "产层兑现", "收束兑现", "轴内多样性", "规模均衡", "承接连通")
+    AX_LEGACY = ("身份锚定", "产层闭环", "收束闭环")   # 2.14 诊断留档，满 3 轮后复核删除
     LOW_VAR = 1.0
     groups = [("途径级（22 途径）", PW_DIMS,
                {k: [r["dims"][k] for r in pw_rows] for k in PW_DIMS}),
               ("轴级（88 轴）", AX_DIMS,
-               {k: [a["dims"][k] for a in axis_rows] for k in AX_DIMS})]
+               {k: [a["dims"][k] for a in axis_rows] for k in AX_DIMS}),
+              ("轴级旧三维·诊断留档（88 轴，不进分，满 3 轮后复核删除）", AX_LEGACY,
+               {k: [a["legacyDims"][k] for a in axis_rows] for k in AX_LEGACY})]
     L = ["# 维度方差表（variance）\n",
          "> 由 `docs/tools/score.py` 自动生成——原则 8（指标生命周期）：方差 <%.1f 的维度已无区分度，"
          "标「候选降门禁/降权」，人工复核后走口径变更流程（先改 SCORING.md）。生成时间：%s。\n"
