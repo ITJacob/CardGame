@@ -10,9 +10,10 @@
 | 4 | **观众** `spectator` | **98** | 回溯补登 | 10 | 15 | 25 | 10 | 13 | 15 | 10 |
 | 5 | **药师** `apothecary` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
 | 6 | **学徒** `apprentice` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
-| 7 | **罪犯** `criminal` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
-| 8 | **阅读者** `reader` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
-| 9 | **水手** `sailor` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
+| 7 | **收尸人** `corpse_collector` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
+| 8 | **罪犯** `criminal` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
+| 9 | **阅读者** `reader` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
+| 10 | **水手** `sailor` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
 
 
 ## 猎人（hunter）· 96 分
@@ -36,6 +37,6 @@
 - `签名键` 键 flag:template 承诺卡位含非真实卡名：（待补强1卡）
 
 
-## 未建蓝图（13 条，回溯计划见 WORKFLOW.md「全库回溯计划」）
+## 未建蓝图（12 条，回溯计划见 WORKFLOW.md「全库回溯计划」）
 
-`arbiter`、`assassin`、`chanter`、`corpse_collector`、`lawyer`、`monster`、`planter`、`prisoner`、`savant`、`seer`、`sleepless`、`supplicant`、`warrior`
+`arbiter`、`assassin`、`chanter`、`lawyer`、`monster`、`planter`、`prisoner`、`savant`、`seer`、`sleepless`、`supplicant`、`warrior`
