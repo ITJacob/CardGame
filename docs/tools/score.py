@@ -939,6 +939,7 @@ def main():
     axis_rows = []           # 计分中间态
     pw_crossaxis_refs = {}   # pathwayId -> 本途径他轴身份被读本途径卡引用的次数
     pw_crosspath_reads = {}  # pathwayId -> 读他途径枢纽状态的实证次数
+    pw_crosspath_consumers = {}  # pathwayId -> set(消费本途径的他途径 id)（2.10 消费方多样性）
     axis_diversity_raw = {}  # axisKey -> 种类和
     pw_hub_statuses = {}     # pathwayId -> crossPathway 状态数
     for pid, label, sd in iter_status_defs():
@@ -1216,15 +1217,25 @@ def main():
                 if n_axis_cards else 0
             axis_diversity_raw[(pid, aid)] = div_raw
 
-            # —— 规模均衡 ——
-            ideal = len(cards) / n_axes
-            ratio = (len(axis_cards) / ideal) if ideal else 0
-            if 0.6 <= ratio <= 1.4:
-                scale = 10
+            # —— 规模均衡（2.10：轴可声明 sizeIntent [min,max] 按声明区间判，未声明沿用均值区间） ——
+            size_intent = ax.get("sizeIntent")
+            if isinstance(size_intent, list) and len(size_intent) == 2:
+                lo, hi = size_intent
+                if lo <= len(axis_cards) <= hi:
+                    scale = 10
+                else:
+                    over = (lo - len(axis_cards)) if len(axis_cards) < lo else (len(axis_cards) - hi)
+                    scale = max(0, 10 - over)
+                    deductions.append(("规模均衡", "-%d：轴卡数 %d 越出声明区间 [%d,%d]" % (10 - scale, len(axis_cards), lo, hi), aid, FIX["scale"]))
             else:
-                dev = abs(ratio - 1.0) - 0.4
-                scale = max(0, round(10 - dev * 10))
-                deductions.append(("规模均衡", "-%d：轴卡数 %d vs 理想 %d（比值 %.2f）" % (10 - scale, len(axis_cards), round(ideal), ratio), aid, FIX["scale"]))
+                ideal = len(cards) / n_axes
+                ratio = (len(axis_cards) / ideal) if ideal else 0
+                if 0.6 <= ratio <= 1.4:
+                    scale = 10
+                else:
+                    dev = abs(ratio - 1.0) - 0.4
+                    scale = max(0, round(10 - dev * 10))
+                    deductions.append(("规模均衡", "-%d：轴卡数 %d vs 理想 %d（比值 %.2f）" % (10 - scale, len(axis_cards), round(ideal), ratio), aid, FIX["scale"]))
 
             # —— 承接连通（SCORING 2.2：只算收束方式去重；跨轴/跨系消费由途径级维度承担，避免双计） ——
             patterns = set()
@@ -1286,6 +1297,7 @@ def main():
                                     break
                             if not ok:
                                 continue
+                        pw_crosspath_consumers.setdefault(pid, set()).add(pid2)
                     else:
                         pw_crossaxis_refs[pid] = pw_crossaxis_refs.get(pid, 0) + 1
                     ext_consumers += 1
@@ -1329,6 +1341,9 @@ def main():
                 if part and pid not in part:
                     continue
                 pw_crosspath_reads[pid] = pw_crosspath_reads.get(pid, 0) + 1
+                owner = status_owner.get(hid)
+                if owner:
+                    pw_crosspath_consumers.setdefault(owner, set()).add(pid)
 
     # 跨系通道耦合（SCORING 2.0）：本途径写入的耦合通道被他途径读取（每 他途径卡×通道 计 1）
     for pid, d in pathways.items():
@@ -1339,7 +1354,10 @@ def main():
             for pid2, d2 in pathways.items():
                 if pid2 == pid:
                     continue
-                n += sum(1 for c in d2.get("cards") or [] if ch in ALL_SURF[(pid2, c["name"])][1])
+                hits = sum(1 for c in d2.get("cards") or [] if ch in ALL_SURF[(pid2, c["name"])][1])
+                if hits:
+                    pw_crosspath_consumers.setdefault(pid, set()).add(pid2)
+                n += hits
             pw_crosspath_reads[pid] = pw_crosspath_reads.get(pid, 0) + n
 
     # 途径指纹与平均风格距离（2026-10-01 差异化专项）：对他 21 途径的 1-cos 均值，分位计分
@@ -1399,10 +1417,16 @@ def main():
         crossaxis = round(15 * min(pw_crossaxis_refs.get(pid, 0), CAP_CROSSAXIS) / CAP_CROSSAXIS, 1)
         if crossaxis < 7.5:
             deductions.append(("跨轴耦合", "-%s：本途径他轴机制命中 %d 次" % (15 - crossaxis, pw_crossaxis_refs.get(pid, 0)), pid, FIX["crossaxis"]))
-        crosspath_raw = pw_crosspath_reads.get(pid, 0) + pw_hub_statuses.get(pid, 0) * 4  # 枢纽状态折算 4 次读段
+        # 跨系联动（2.10 消费方多样性）：枢纽×2 + 消费本途径的他途径去重×4 + 读取实证(CAP4)，
+        # 治悬崖（0 枢纽≈0 分）与单途径刷次数（同一途径读 N 次只算 1 个消费方）
+        hubs_n = pw_hub_statuses.get(pid, 0)
+        consumers_n = len(pw_crosspath_consumers.get(pid, ()))
+        reads_n = pw_crosspath_reads.get(pid, 0)
+        crosspath_raw = hubs_n * 2 + consumers_n * 4 + min(reads_n, 4)
         crosspath = round(15 * min(crosspath_raw, CAP_CROSSPATH) / CAP_CROSSPATH, 1)
         if crosspath < 7.5:
-            deductions.append(("跨系联动", "-%s：枢纽状态 %d 个 + combo 读取 %d 次" % (15 - crosspath, pw_hub_statuses.get(pid, 0), pw_crosspath_reads.get(pid, 0)), pid, FIX["crosspath"]))
+            deductions.append(("跨系联动", "-%s：枢纽状态 %d 个×2 / 消费方 %d 途径×4 / 读取 %d 次(CAP4)" % (
+                15 - crosspath, hubs_n, consumers_n, reads_n), pid, FIX["crosspath"]))
 
         # 结构健康（2026-10-16 权重 10→5：全库已满分无区分度，压到 5 保合规底线）
         struct = 0
