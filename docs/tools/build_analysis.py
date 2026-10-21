@@ -3,7 +3,7 @@
 分析与评分统一入口：一键重生成 docs/analysis/ 全部产物。
 
 依次跑六个只读脚本（固定顺序便于输出阅读）：
-  1. score.py                     评分   -> scorecard.md + scores.json
+  1. score.py                     评分   -> scorecard.md + scores.json + variance.md（2.11 方差表）
   2. build_overview.py            总览   -> SKILLS_OVERVIEW.md
   3. build_profession_analysis.py 职业统计 -> SKILLS_ANALYSIS_BY_PROFESSION.md
   4. build_axis_analysis.py       轴报告 -> analysis_by_profession/*.md
@@ -42,7 +42,7 @@ def main():
     if failed:
         print("FAILED: %s" % ", ".join(failed))
         sys.exit(1)
-    print("分析与评分产物全部刷新：scorecard.md | scores.json | SKILLS_OVERVIEW.md | "
+    print("分析与评分产物全部刷新：scorecard.md | scores.json | variance.md | SKILLS_OVERVIEW.md | "
           "SKILLS_ANALYSIS_BY_PROFESSION.md | analysis_by_profession/*.md | ENTITIES_ANALYSIS.md | STYLE_DISTANCE.md")
 
 

@@ -94,8 +94,9 @@ score.py 评分 → 取总览榜尾途径 → 读计分卡失分项（scorecard.
 
 | 产物 | 生成者 | 消费 |
 |---|---|---|
-| `scorecard.md` | score.py | 人读计分卡（环节⑤取榜与失分归因的唯一依据） |
+| `scorecard.md` | score.py | 人读计分卡（环节⑤取榜与失分归因的唯一依据；⚠单维 标记进人工裁定队列） |
 | `scores.json` | score.py | 网页评分页**唯一**数据源（前端不重算；口径单一来源 = SCORING.md） |
+| `variance.md` | score.py | 各维全库方差 + 低方差「候选降门禁/降权」标记（SCORING 原则 8 指标生命周期） |
 | `SKILLS_OVERVIEW.md` | build_overview.py | 全库总览（22 途径分章 / 832 卡） |
 | `SKILLS_ANALYSIS_BY_PROFESSION.md` | build_profession_analysis.py | 职业 × 原语用量矩阵 + modify_stat/resource 参数统计 |
 | `analysis_by_profession/*.md` ×22 | build_axis_analysis.py | 职业 × 构筑轴设计风格报告 |

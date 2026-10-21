@@ -856,17 +856,26 @@ def _l2(vec):
     return {k: v / n for k, v in vec.items()} if n else {}
 
 
-def cos_dist(a, b):
-    """全链路距离 = 各链路族余弦距离的加权均值（L2 归一后每族一票；unit 族 2×）。"""
-    total, wsum = 0.0, 0.0
+def cos_dist_by_family(a, b):
+    """分族余弦距离：族 -> 距离（双侧皆空的族不出现于结果）。L2 归一后每族一票。"""
+    out = {}
     for f in FAMILIES:
         fa, fb = _l2(a.get(f) or {}), _l2(b.get(f) or {})
         keys = set(fa) | set(fb)
         if not keys:
             continue
         dot = sum(fa.get(k, 0) * fb.get(k, 0) for k in keys)
+        out[f] = 1.0 - dot
+    return out
+
+
+def cos_dist(a, b):
+    """全链路距离 = 各链路族余弦距离的加权均值（L2 归一后每族一票；unit 族 2×）。"""
+    by_fam = cos_dist_by_family(a, b)
+    total, wsum = 0.0, 0.0
+    for f, d in by_fam.items():
         w = FAMILY_WEIGHTS.get(f, 1.0)
-        total += w * (1.0 - dot)
+        total += w * d
         wsum += w
     return total / wsum if wsum else 1.0
 
@@ -1371,25 +1380,41 @@ def main():
     flag_status_index = {"cast_time_set": casttime_status_ids, "statPerStack": grow_status_ids}
     fps = {pid: fingerprint(d.get("cards") or [], status_by_id) for pid, d in pathways.items()}
     mean_dists = {}
+    mean_fam_dists = {}   # pid -> {族: 对他 21 途径该族均距}（2.11 核心族下限用）
     nearest = {}
     for pid in pathways:
         others = [p2 for p2 in pathways if p2 != pid]
         if not others:
             mean_dists[pid] = 0.0
+            mean_fam_dists[pid] = {}
             nearest[pid] = (None, 0.0)
             continue
         ds = {p2: cos_dist(fps[pid], fps[p2]) for p2 in others}
         mean_dists[pid] = round(sum(ds.values()) / len(ds), 4)
+        fam_acc = {}
+        for p2 in others:
+            for f, d2 in cos_dist_by_family(fps[pid], fps[p2]).items():
+                fam_acc.setdefault(f, []).append(d2)
+        mean_fam_dists[pid] = {f: sum(v) / len(v) for f, v in fam_acc.items()}
         nb = min(ds, key=ds.get)
         nearest[pid] = (nb, round(ds[nb], 4))
     _sorted_d = sorted(mean_dists.values())
     _n_pw = len(_sorted_d)
 
+    _DIST_TIERS = [(0.30, 12), (0.26, 10), (0.22, 8), (0.18, 5), (0.14, 3)]
+
     def _dist_pts(m):
         # 绝对阈值（2026-10-19）：全库分位制会让「全库一起优化」排名不动、单卡微改跨档套利；
         # 绝对线随全库整体提升可涨分，阶段线记录于 SCORING.md。
-        return (12 if m >= 0.30 else 10 if m >= 0.26 else 8 if m >= 0.22
-                else 5 if m >= 0.18 else 3 if m >= 0.14 else 0)
+        for th, pts in _DIST_TIERS:
+            if m >= th:
+                return pts
+        return 0
+
+    def _dist_pts_lower(pts):
+        # 降一档（2.11 核心族下限触发时用）：12→10→8→5→3→0
+        ladder = [12, 10, 8, 5, 3, 0]
+        return ladder[min(ladder.index(pts) + 1, len(ladder) - 1)] if pts in ladder else 0
 
     pw_rows = []
     for pid, d in pathways.items():
@@ -1492,6 +1517,16 @@ def main():
                                     lineage_ids=lineage_status_ids, flag_status_index=flag_status_index)
         signature_score = min(7, sum(3 if h >= 2 else 1.5 * h for h in sig_hits.values()))
         dist_pts = _dist_pts(mean_dists[pid])
+        # 核心族下限（2.11）：prim/hook/sshape 三族至少两族均距 ≥0.15，否则降一档——
+        # 外围族（cost/reach/temporal 等）只能加分不能保底，防「玩法雷同靠外围族凑距离」
+        CORE_FAM_FLOOR = ("prim", "hook", "sshape")
+        fam_ok = sum(1 for f in CORE_FAM_FLOOR if mean_fam_dists[pid].get(f, 0) >= 0.15)
+        family_floor_pass = fam_ok >= 2
+        if not family_floor_pass and dist_pts > 0:
+            lowered = _dist_pts_lower(dist_pts)
+            deductions.append(("差异化", "-%s：核心族距离不足（prim/hook/sshape 仅 %d 族均距 ≥0.15，%.1f→%.1f 降一档）"
+                               % (dist_pts - lowered, fam_ok, dist_pts, lowered), pid, FIX["uniqueness"]))
+            dist_pts = lowered
         dedup_ratio, dedup_pts = intra_dedup(cards, status_by_id)
         shapes = [set(r["shape"]) for r in arows]
         pairs = [(shapes[i], shapes[j]) for i in range(len(shapes)) for j in range(i + 1, len(shapes))]
@@ -1514,6 +1549,17 @@ def main():
                  "机制落地": (not flags) or landed_score >= 4.95,
                  "文本完备": text_score >= 4.95}
         gate_penalty = 3 * sum(1 for ok in gates.values() if not ok)
+        # 单维失分标记（2.11）：单维失分 ≥10 且 ≥ 总失分 45% → ⚠单维，进人工裁定队列而非直接重设计。
+        # （绝对量门槛滤掉高分的「剩余失分自然集中」噪声；45% 覆盖战士跨系 14.1/29.2≈48% 这类单维洞）
+        DIM_MAX = {"轴健康度": 35, "跨轴耦合": 15, "跨系联动": 15, "差异化": 35}
+        dim_losses = {k: round(m - {"轴健康度": health, "跨轴耦合": crossaxis,
+                                    "跨系联动": crosspath, "差异化": style_score}[k], 1)
+                      for k, m in DIM_MAX.items()}
+        total_loss = sum(dim_losses.values())
+        worst_dim = max(dim_losses, key=dim_losses.get)
+        single_dim_warn = worst_dim if (dim_losses[worst_dim] >= 10
+                                        and dim_losses[worst_dim] >= 0.45 * total_loss) else None
+
         total = round(health + crossaxis + crosspath + style_score - gate_penalty, 1)
         pw_rows.append({
             "id": pid, "name": d.get("pathwayName"), "cards": len(cards),
@@ -1526,15 +1572,19 @@ def main():
             "styleStrengths": style_strengths,
             "styleParts": {"signature": signature_score, "fingerprint": dist_pts,
                            "config": config_div, "dedup": dedup_pts,
-                           "dedupRatio": round(dedup_ratio, 4)},
+                           "dedupRatio": round(dedup_ratio, 4),
+                           "familyFloor": family_floor_pass,
+                           "familyDists": {f: round(v, 4) for f, v in mean_fam_dists[pid].items()}},
+            "singleDimWarn": single_dim_warn,
             "nearest": nearest[pid][0], "nearestDist": nearest[pid][1],
             "axes": arows, "deductions": deductions,
             "min_axis": min_axis, "mean_axis": round(mean_axis, 1),
         })
 
     pw_rows.sort(key=lambda r: r["total"])
+    variance = write_variance(pw_rows, axis_rows)
     write_scorecard(pw_rows)
-    write_scores_json(pw_rows)
+    write_scores_json(pw_rows, variance)
     print("scored %d pathways / %d axes -> scorecard.md + scores.json" % (len(pw_rows), len(axis_rows)))
     for r in pw_rows:
         print("  %-18s %5.1f  (min axis %.0f)" % (r["id"], r["total"], r["min_axis"]))
@@ -1547,13 +1597,16 @@ def write_scorecard(pw_rows):
     L.append("> 生成时间：%s。评分标准见 `../meta/SCORING.md`；数值 ⚠️D 不参与计分（基线状态）。\n" % datetime.date.today())
 
     L.append("## 一、途径排行（升序 = 优先重设计）\n")
-    L.append("| # | 途径 | 总分 | 轴健康 | 跨轴 | 跨系 | 结构 | 落地 | 文本 | 差异 | 最低轴 | 卡数 |")
-    L.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
+    L.append("| # | 途径 | 总分 | 轴健康 | 跨轴 | 跨系 | 结构 | 落地 | 文本 | 差异 | 最低轴 | 卡数 | 标记 |")
+    L.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|")
     for i, r in enumerate(pw_rows, 1):
         d = r["dims"]
-        L.append("| %d | **%s** `%s` | **%.1f** | %.1f | %.1f | %.1f | %.1f | %.1f | %.1f | %.1f | %.0f | %d |" % (
+        L.append("| %d | **%s** `%s` | **%.1f** | %.1f | %.1f | %.1f | %.1f | %.1f | %.1f | %.1f | %.0f | %d | %s |" % (
             i, r["name"], r["id"], r["total"], d["轴健康度"], d["跨轴耦合"], d["跨系联动"],
-            d["结构健康"], d["机制落地"], d["文本完备"], d["差异化"], r["min_axis"], r["cards"]))
+            d["结构健康"], d["机制落地"], d["文本完备"], d["差异化"], r["min_axis"], r["cards"],
+            ("⚠单维·" + r["singleDimWarn"]) if r.get("singleDimWarn") else ""))
+    L.append("")
+    L.append("> ⚠单维 = 单维失分 ≥10 且 ≥ 总失分 45%：先进人工裁定队列（确认是缺陷还是途径定位），不直接触发重设计（2.11）。")
     L.append("")
 
     for r in pw_rows:
@@ -1593,10 +1646,11 @@ def write_scorecard(pw_rows):
     io.open(os.path.join(ANALYSIS_DIR, "scorecard.md"), "w", encoding="utf-8").write("\n".join(L))
 
 
-def write_scores_json(pw_rows):
+def write_scores_json(pw_rows, variance=None):
     out = {
         "generated": str(datetime.date.today()),
         "standard": "docs/meta/SCORING.md",
+        "dimVariance": variance or {},
         "pathways": [{
             "id": r["id"], "name": r["name"], "total": r["total"], "dims": r["dims"],
             "minAxis": r["min_axis"], "cards": r["cards"],
@@ -1604,6 +1658,7 @@ def write_scores_json(pw_rows):
             "gates": r.get("gates", {}), "gatePenalty": r.get("gatePenalty", 0),
             "styleStrengths": r.get("styleStrengths", []),
             "styleParts": r.get("styleParts", {}),
+            "singleDimWarn": r.get("singleDimWarn"),
             "nearest": r.get("nearest"), "nearestDist": r.get("nearestDist", 0),
             "deductions": [{"dim": d, "why": w, "ref": x, "fix": f} for d, w, x, f in r["deductions"]],
             "axes": [{
@@ -1618,6 +1673,46 @@ def write_scores_json(pw_rows):
     }
     io.open(os.path.join(ANALYSIS_DIR, "scores.json"), "w", encoding="utf-8").write(
         json.dumps(out, ensure_ascii=False, indent=1))
+
+
+def _variance_stats(values):
+    n = len(values)
+    if not n:
+        return {"count": 0, "mean": 0, "variance": 0, "min": 0, "max": 0}
+    mean = sum(values) / n
+    var = sum((v - mean) ** 2 for v in values) / n
+    return {"count": n, "mean": round(mean, 2), "variance": round(var, 2),
+            "min": round(min(values), 1), "max": round(max(values), 1)}
+
+
+def write_variance(pw_rows, axis_rows):
+    """各维度全库方差表（2.11 原则 8 指标生命周期）：方差过低的维已无区分度，
+    标记「候选降门禁/降权」，把 2.3 的人工判断变成机器提醒。产物落 analysis/variance.md。"""
+    PW_DIMS = ("轴健康度", "跨轴耦合", "跨系联动", "差异化")
+    AX_DIMS = ("身份锚定", "产层闭环", "收束闭环", "轴内多样性", "规模均衡", "承接连通")
+    LOW_VAR = 1.0
+    groups = [("途径级（22 途径）", PW_DIMS,
+               {k: [r["dims"][k] for r in pw_rows] for k in PW_DIMS}),
+              ("轴级（88 轴）", AX_DIMS,
+               {k: [a["dims"][k] for a in axis_rows] for k in AX_DIMS})]
+    L = ["# 维度方差表（variance）\n",
+         "> 由 `docs/tools/score.py` 自动生成——原则 8（指标生命周期）：方差 <%.1f 的维度已无区分度，"
+         "标「候选降门禁/降权」，人工复核后走口径变更流程（先改 SCORING.md）。生成时间：%s。\n"
+         % (LOW_VAR, datetime.date.today())]
+    data = {}
+    for title, dims, cols in groups:
+        L.append("## %s\n" % title)
+        L.append("| 维度 | n | 均值 | 方差 | 最小 | 最大 | 标记 |")
+        L.append("|---|---:|---:|---:|---:|---:|---|")
+        for k in dims:
+            st = _variance_stats(cols[k])
+            flag = "候选降门禁/降权" if st["variance"] < LOW_VAR else ""
+            L.append("| %s | %d | %.2f | %.2f | %.1f | %.1f | %s |" % (
+                k, st["count"], st["mean"], st["variance"], st["min"], st["max"], flag))
+            data[k] = dict(st, lowVariance=bool(flag))
+        L.append("")
+    io.open(os.path.join(ANALYSIS_DIR, "variance.md"), "w", encoding="utf-8").write("\n".join(L))
+    return data
 
 
 if __name__ == "__main__":
