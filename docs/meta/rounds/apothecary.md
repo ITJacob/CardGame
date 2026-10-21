@@ -15,10 +15,10 @@
 ### 轴玩法
 | 轴 | 名称 | 锚点(kind:id) | 产出→消费→清除 | 玩家决策点 | 签名键承诺(键:卡位) | 计划卡数 | 角色配比 |
 |---|---|---|---|---|---|---|---|
-| brew | 药剂 | status:prepared_draught | 药剂调配/草药敷贴预服产层→饮用消费层数兑现全效（当场喝半数）→层数被饮用消费 | 预服窗口取舍：提前铺药占行动，还是当场喝半数救急；剂量叠给同一目标还是分开覆盖 | sref:prepared_draught:药剂调配,草药敷贴,隐身药剂 | 11 | core×5,generic×3,starter×1,tech×2 |
+| brew | 药剂 | status:prepared_draught | 药剂调配/草药敷贴/隐身药剂/预服药水预服产层→药剂调配/草药敷贴/隐身药剂/预服药水饮用消费层数兑现全效（当场喝半数）→层数被饮用消费 | 预服窗口取舍：提前铺药占行动，还是当场喝半数救急；剂量叠给同一目标还是分开覆盖 | sref:prepared_draught:药剂调配,草药敷贴,隐身药剂 | 11 | core×5,generic×3,starter×1,tech×2 |
 | beasts | 兽群 | status:beast_sense | 动物感官/野性直觉产层→狂兽突袭读层爆发→层数被爆发消耗 | 兽群感官攒到几层再放狂兽突袭（早收稳伤 vs 等满层爆发） | unitType:BEAST:驯兽哨,蝙蝠分解,召唤之门 | 10 | core×8,bridge×1,generic×1 |
 | crimson | 血月 | status:crimson_vitality | 深红体质/血族魅力/黑暗之翼/血仆转化产层→腐蚀之爪读层消费→层数被消费 | 血仆转化选谁；深红活力层数消费时机（腐蚀之爪等斩杀线） |  | 7 | core×4,bridge×1,generic×1,tech×1 |
-| moon | 月相 | status:moon_cycle | 满月/月相·轮转产层与切相→众 payoff 读相消费→切相即更替（不锁相） | 主动切相抢月相窗口（月相·轮转）还是等自然轮转 | sref:moon_cycle:腐蚀之爪,满月,黑暗凝视 | 12 | core×8,generic×3,trap×1 |
+| moon | 月相 | status:moon_cycle | 满月/月相·轮转产层与切相→满月/月相·轮转/黑暗凝视读相消费→切相即更替（不锁相） | 主动切相抢月相窗口（月相·轮转）还是等自然轮转 | sref:moon_cycle:腐蚀之爪,满月,黑暗凝视 | 12 | core×8,generic×3,trap×1 |
 
 ### 跨轴钩子
 | 卡位 | 读轴 | 概念 | facet | 用途 |

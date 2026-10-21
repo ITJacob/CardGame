@@ -139,6 +139,12 @@ def parse_pc_chain(text, card_names):
         return set(), set()
 
     def _hit(seg):
-        return {n for n in card_names if n and n in seg}
+        # 先长后短消耗式匹配：命中后占位替换，防「仪式魔法专家」把子串卡「仪式魔法」误吸进集
+        out = set()
+        for n in sorted(card_names, key=len, reverse=True):
+            if n and n in seg:
+                out.add(n)
+                seg = seg.replace(n, "\0")
+        return out
 
     return _hit(parts[0]), _hit(parts[1])

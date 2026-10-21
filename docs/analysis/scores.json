@@ -1,13 +1,13 @@
 {
- "generated": "2026-10-21",
+ "generated": "2026-10-22",
  "standard": "docs/meta/SCORING.md",
  "dimVariance": {
   "轴健康度": {
    "count": 22,
-   "mean": 25.45,
-   "variance": 7.66,
-   "min": 20.1,
-   "max": 29.3,
+   "mean": 26.68,
+   "variance": 3.85,
+   "min": 21.3,
+   "max": 29.6,
    "lowVariance": false
   },
   "跨轴耦合": {
@@ -44,17 +44,17 @@
   },
   "产层兑现": {
    "count": 88,
-   "mean": 18.48,
-   "variance": 15.84,
-   "min": 0,
+   "mean": 19.04,
+   "variance": 9.75,
+   "min": 6.7,
    "max": 20.0,
    "lowVariance": false
   },
   "收束兑现": {
    "count": 88,
-   "mean": 18.94,
-   "variance": 55.78,
-   "min": 0,
+   "mean": 21.42,
+   "variance": 20.92,
+   "min": 12.5,
    "max": 25.0,
    "lowVariance": false
   },
@@ -406,9 +406,9 @@
   {
    "id": "apothecary",
    "name": "药师",
-   "total": 58.5,
+   "total": 63.2,
    "dims": {
-    "轴健康度": 23.2,
+    "轴健康度": 27.9,
     "跨轴耦合": 5.6,
     "跨系联动": 4.7,
     "结构健康": 5.0,
@@ -416,7 +416,7 @@
     "文本完备": 4.5,
     "差异化": 28.0
    },
-   "minAxis": 58.2,
+   "minAxis": 75.0,
    "cards": 40,
    "roleDist": {
     "core": 25,
@@ -519,100 +519,6 @@
    ],
    "axes": [
     {
-     "id": "brew",
-     "name": "药剂",
-     "symbol": "⚗️",
-     "total": 58.2,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 0,
-      "轴内多样性": 7.2,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9
-     },
-     "cards": 11,
-     "enablersVerified": [
-      "药剂调配",
-      "草药敷贴"
-     ],
-     "payoffsLanded": [
-      "草药敷贴"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束兑现",
-       "why": "-25：蓝图消费段未声明卡位（段2 无卡名）",
-       "ref": "brew",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "moon",
-     "name": "月相",
-     "symbol": "🌙",
-     "total": 61.8,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 0,
-      "轴内多样性": 7.8,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 25
-     },
-     "cards": 12,
-     "enablersVerified": [
-      "满月",
-      "月相·轮转"
-     ],
-     "payoffsLanded": [
-      "腐蚀之爪",
-      "黑暗凝视",
-      "蝙蝠分解"
-     ],
-     "payoffsNotes": [
-      "预服药水",
-      "闪现",
-      "月光化",
-      "召唤之门",
-      "创生",
-      "美之震撼",
-      "生命之权",
-      "血月当空"
-     ],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束兑现",
-       "why": "-25：蓝图消费段未声明卡位（段2 无卡名）",
-       "ref": "moon",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
      "id": "crimson",
      "name": "血月",
      "symbol": "🩸",
@@ -686,565 +592,86 @@
      ],
      "vacuumAccepted": false,
      "deductions": []
-    }
-   ]
-  },
-  {
-   "id": "reader",
-   "name": "阅读者",
-   "total": 61.0,
-   "dims": {
-    "轴健康度": 20.1,
-    "跨轴耦合": 3.8,
-    "跨系联动": 5.6,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 31.5
-   },
-   "minAxis": 43.0,
-   "cards": 34,
-   "roleDist": {
-    "core": 21,
-    "starter": 2,
-    "bridge": 2,
-    "generic": 7,
-    "tech": 1,
-    "trap": 1
-   },
-   "sigHits": {
-    "prim:reveal": 13,
-    "prim:snapshot": 7,
-    "sref:mimic": 5
-   },
-   "styleDist": 0.3174,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "dur:tick",
-      "cat:buff"
-     ],
-     "distinct": 27
     },
     {
-     "family": "param",
-     "keys": [
-      "scope=to_source",
-      "mode=delta"
-     ],
-     "distinct": 15
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "eff:target",
-      "faction=enemy"
-     ],
-     "distinct": 15
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "reveal"
-     ],
-     "distinct": 10
-    }
-   ],
-   "styleParts": {
-    "signature": 7,
-    "fingerprint": 12,
-    "config": 3.1,
-    "dedup": 9.4,
-    "dedupRatio": 0.0214,
-    "familyFloor": true,
-    "familyDists": {
-     "prim": 0.3534,
-     "elem": 0.4566,
-     "cond": 0.1283,
-     "condarg": 0.1039,
-     "param": 0.5788,
-     "reach": 0.0772,
-     "tgt": 0.1183,
-     "hook": 0.241,
-     "sshape": 0.1927,
-     "cost": 0.0157,
-     "temporal": 1.0,
-     "unit": 1.0
-    }
-   },
-   "singleDimWarn": null,
-   "nearest": "thief",
-   "nearestDist": 0.2357,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-11.2：本途径他轴机制命中 2 次",
-     "ref": "reader",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-9.4：枢纽状态 2 个×2 / 消费方 0 途径×4 / 读取 2 次(CAP4)",
-     "ref": "reader",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：bridge 卡无跨界读取（他轴私有面/facet/他途径枢纽通道 皆未命中）",
-     "ref": "观察",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "风格越界",
-     "why": "注：3 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
-     "ref": "解析还原(prim:echo_last_skill)；规律·撬动(sref:law_edit)；白塔·创造(unitType:CONSTRUCT)",
-     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
-    }
-   ],
-   "axes": [
-    {
-     "id": "arcana",
-     "name": "秘术",
-     "symbol": "📚",
-     "total": 43.0,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 13.3,
-      "收束兑现": 0,
-      "轴内多样性": 4.7,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 10
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "仪式魔法专家",
-      "省略步骤"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "产层兑现",
-       "why": "-6.7：声明产层卡 1/3 未实证（卡面不挂身份/不产层）",
-       "ref": "仪式魔法",
-       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
-      },
-      {
-       "dim": "收束兑现",
-       "why": "-25：蓝图消费段未声明卡位（段2 无卡名）",
-       "ref": "arcana",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "mimic",
-     "name": "模仿",
-     "symbol": "🦜",
-     "total": 43.5,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 0,
-      "收束兑现": 12.5,
-      "轴内多样性": 6.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 10
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "模仿·全知之眼",
-      "模仿·初解",
-      "模仿·智天使",
-      "模仿·秘术导师",
-      "模仿·预言家"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "产层兑现",
-       "why": "-20：蓝图产层段未声明卡位（段1 无卡名）",
-       "ref": "mimic",
-       "fix": "给轴补 2 张以上产层卡并在 axes.enablers 登记"
-      },
-      {
-       "dim": "收束兑现",
-       "why": "-12.5：声明消费卡 1/1 未全落地（landed 全分 / notes 半分）",
-       "ref": "解析(notes)",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    },
-    {
-     "id": "foresight",
-     "name": "预知",
-     "symbol": "⏳",
-     "total": 80.4,
+     "id": "brew",
+     "name": "药剂",
+     "symbol": "⚗️",
+     "total": 83.2,
      "dims": {
       "锚点兑现": 15,
       "产层兑现": 20.0,
       "收束兑现": 25.0,
-      "轴内多样性": 10.4,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 15
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "预言",
-      "智慧权柄"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": []
-    },
-    {
-     "id": "analysis",
-     "name": "解析",
-     "symbol": "🧠",
-     "total": 82.2,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 25.0,
-      "轴内多样性": 6.2,
+      "轴内多样性": 7.2,
       "规模均衡": 10,
       "承接连通": 6
      },
      "legacyDims": {
       "身份锚定": 15,
       "产层闭环": 20,
-      "收束闭环": 25
+      "收束闭环": 9
      },
-     "cards": 9,
+     "cards": 11,
      "enablersVerified": [
-      "解析",
-      "逻辑推演"
+      "药剂调配",
+      "草药敷贴"
      ],
      "payoffsLanded": [
-      "模仿·全知之眼"
+      "草药敷贴"
      ],
-     "payoffsNotes": [
-      "模仿·初解",
-      "模仿·秘术导师",
-      "模仿·预言家",
-      "模仿·智天使"
-     ],
+     "payoffsNotes": [],
      "patterns": [
       "存在性",
       "条件分支"
      ],
      "vacuumAccepted": false,
      "deductions": []
-    }
-   ]
-  },
-  {
-   "id": "spectator",
-   "name": "观众",
-   "total": 61.9,
-   "dims": {
-    "轴健康度": 20.1,
-    "跨轴耦合": 5.6,
-    "跨系联动": 4.7,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 31.5
-   },
-   "minAxis": 51.6,
-   "cards": 36,
-   "roleDist": {
-    "core": 13,
-    "starter": 3,
-    "tech": 9,
-    "generic": 9,
-    "trap": 1,
-    "bridge": 1
-   },
-   "sigHits": {
-    "flag:template": 1,
-    "sref:insight": 5,
-    "stat:rank": 3
-   },
-   "styleDist": 0.3133,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "dur:tick",
-      "stacks"
-     ],
-     "distinct": 32
     },
     {
-     "family": "param",
-     "keys": [
-      "field=scope",
-      "mode=delta"
-     ],
-     "distinct": 16
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "mode=unit",
-      "eff:self"
-     ],
-     "distinct": 14
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "modify_status"
-     ],
-     "distinct": 12
-    }
-   ],
-   "styleParts": {
-    "signature": 5.8,
-    "fingerprint": 12,
-    "config": 3.4,
-    "dedup": 10.3,
-    "dedupRatio": 0.0095,
-    "familyFloor": true,
-    "familyDists": {
-     "prim": 0.3691,
-     "elem": 0.4864,
-     "cond": 0.4035,
-     "condarg": 0.3738,
-     "param": 0.4945,
-     "reach": 0.0953,
-     "tgt": 0.099,
-     "hook": 0.4517,
-     "sshape": 0.2171,
-     "cost": 0.0326,
-     "temporal": 0.1955,
-     "unit": 1.0
-    }
-   },
-   "singleDimWarn": null,
-   "nearest": "prisoner",
-   "nearestDist": 0.2238,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-9.4：本途径他轴机制命中 3 次",
-     "ref": "spectator",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-10.3：枢纽状态 1 个×2 / 消费方 0 途径×4 / 读取 3 次(CAP4)",
-     "ref": "spectator",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
-     "ref": "心理暗示·权柄",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "风格越界",
-     "why": "注：17 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
-     "ref": "观众·细微观察(prim:write_rule_slot)；出众精神(prim:write_rule_slot)；间接影响(prim:write_rule_slot)；读心(sref:grazed_soul)；气场感知(prim:write_rule_slot)；狂乱(prim:write_rule_slot)",
-     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
-    },
-    {
-     "dim": "差异化",
-     "why": "-1.2：签名键零使用 （有键仅 1 卡，未落地）",
-     "ref": "spectator",
-     "fix": "按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证"
-    }
-   ],
-   "axes": [
-    {
-     "id": "suggestion",
-     "name": "暗示",
-     "symbol": "💭",
-     "total": 51.6,
+     "id": "moon",
+     "name": "月相",
+     "symbol": "🌙",
+     "total": 86.8,
      "dims": {
       "锚点兑现": 15,
       "产层兑现": 20.0,
-      "收束兑现": 0,
-      "轴内多样性": 6.6,
+      "收束兑现": 25.0,
+      "轴内多样性": 7.8,
       "规模均衡": 10,
-      "承接连通": 0
+      "承接连通": 9
      },
      "legacyDims": {
       "身份锚定": 15,
       "产层闭环": 20,
-      "收束闭环": 15
+      "收束闭环": 25
      },
-     "cards": 11,
+     "cards": 12,
      "enablersVerified": [
-      "心理暗示·质变",
-      "操纵"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束兑现",
-       "why": "-25：蓝图消费段未声明卡位（段2 无卡名）",
-       "ref": "suggestion",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "fantasy",
-     "name": "空想",
-     "symbol": "🌈",
-     "total": 52.0,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 0,
-      "轴内多样性": 7.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 15
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "书写成真",
-      "龙化"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束兑现",
-       "why": "-25：蓝图消费段未声明卡位（段2 无卡名）",
-       "ref": "fantasy",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "dream",
-     "name": "梦境",
-     "symbol": "💤",
-     "total": 53.2,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 0,
-      "轴内多样性": 8.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 10
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "梦境穿梭",
-      "修改"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束兑现",
-       "why": "-25：蓝图消费段未声明卡位（段2 无卡名）",
-       "ref": "dream",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "insight",
-     "name": "洞察",
-     "symbol": "👀",
-     "total": 80.0,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 20.8,
-      "轴内多样性": 8.2,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 22
-     },
-     "cards": 6,
-     "enablersVerified": [
-      "观众·细微观察",
-      "引导"
+      "满月",
+      "月相·轮转"
      ],
      "payoffsLanded": [
-      "读心",
-      "编织梦境"
+      "腐蚀之爪",
+      "黑暗凝视",
+      "蝙蝠分解"
      ],
      "payoffsNotes": [
-      "洞察权柄"
+      "预服药水",
+      "闪现",
+      "月光化",
+      "召唤之门",
+      "创生",
+      "美之震撼",
+      "生命之权",
+      "血月当空"
      ],
      "patterns": [
+      "存在性",
       "条件分支",
       "通道读"
      ],
      "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束兑现",
-       "why": "-4.2：声明消费卡 1/3 未全落地（landed 全分 / notes 半分）",
-       "ref": "洞察权柄(notes)",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
+     "deductions": []
     }
    ]
   },
@@ -1509,11 +936,523 @@
    ]
   },
   {
+   "id": "reader",
+   "name": "阅读者",
+   "total": 68.0,
+   "dims": {
+    "轴健康度": 27.1,
+    "跨轴耦合": 3.8,
+    "跨系联动": 5.6,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 31.5
+   },
+   "minAxis": 74.7,
+   "cards": 34,
+   "roleDist": {
+    "core": 21,
+    "starter": 2,
+    "bridge": 2,
+    "generic": 7,
+    "tech": 1,
+    "trap": 1
+   },
+   "sigHits": {
+    "prim:reveal": 13,
+    "prim:snapshot": 7,
+    "sref:mimic": 5
+   },
+   "styleDist": 0.3174,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "dur:tick",
+      "cat:buff"
+     ],
+     "distinct": 27
+    },
+    {
+     "family": "param",
+     "keys": [
+      "scope=to_source",
+      "mode=delta"
+     ],
+     "distinct": 15
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "eff:target",
+      "faction=enemy"
+     ],
+     "distinct": 15
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "reveal"
+     ],
+     "distinct": 10
+    }
+   ],
+   "styleParts": {
+    "signature": 7,
+    "fingerprint": 12,
+    "config": 3.1,
+    "dedup": 9.4,
+    "dedupRatio": 0.0214,
+    "familyFloor": true,
+    "familyDists": {
+     "prim": 0.3534,
+     "elem": 0.4566,
+     "cond": 0.1283,
+     "condarg": 0.1039,
+     "param": 0.5788,
+     "reach": 0.0772,
+     "tgt": 0.1183,
+     "hook": 0.241,
+     "sshape": 0.1927,
+     "cost": 0.0157,
+     "temporal": 1.0,
+     "unit": 1.0
+    }
+   },
+   "singleDimWarn": null,
+   "nearest": "thief",
+   "nearestDist": 0.2357,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-11.2：本途径他轴机制命中 2 次",
+     "ref": "reader",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段"
+    },
+    {
+     "dim": "跨系联动",
+     "why": "-9.4：枢纽状态 2 个×2 / 消费方 0 途径×4 / 读取 2 次(CAP4)",
+     "ref": "reader",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：bridge 卡无跨界读取（他轴私有面/facet/他途径枢纽通道 皆未命中）",
+     "ref": "观察",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "风格越界",
+     "why": "注：3 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
+     "ref": "解析还原(prim:echo_last_skill)；规律·撬动(sref:law_edit)；白塔·创造(unitType:CONSTRUCT)",
+     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
+    }
+   ],
+   "axes": [
+    {
+     "id": "arcana",
+     "name": "秘术",
+     "symbol": "📚",
+     "total": 74.7,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 4.7,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 10
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "仪式魔法专家",
+      "省略步骤"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "mimic",
+     "name": "模仿",
+     "symbol": "🦜",
+     "total": 76.0,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 6.0,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 10
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "模仿·全知之眼",
+      "模仿·初解",
+      "模仿·智天使",
+      "模仿·秘术导师",
+      "模仿·预言家"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "foresight",
+     "name": "预知",
+     "symbol": "⏳",
+     "total": 80.4,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 10.4,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 15
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "预言",
+      "智慧权柄"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "analysis",
+     "name": "解析",
+     "symbol": "🧠",
+     "total": 82.2,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 6.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 25
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "解析",
+      "逻辑推演"
+     ],
+     "payoffsLanded": [
+      "模仿·全知之眼"
+     ],
+     "payoffsNotes": [
+      "模仿·初解",
+      "模仿·秘术导师",
+      "模仿·预言家",
+      "模仿·智天使"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    }
+   ]
+  },
+  {
+   "id": "spectator",
+   "name": "观众",
+   "total": 69.0,
+   "dims": {
+    "轴健康度": 27.2,
+    "跨轴耦合": 5.6,
+    "跨系联动": 4.7,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 31.5
+   },
+   "minAxis": 76.6,
+   "cards": 36,
+   "roleDist": {
+    "core": 13,
+    "starter": 3,
+    "tech": 9,
+    "generic": 9,
+    "trap": 1,
+    "bridge": 1
+   },
+   "sigHits": {
+    "flag:template": 1,
+    "sref:insight": 5,
+    "stat:rank": 3
+   },
+   "styleDist": 0.3133,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "dur:tick",
+      "stacks"
+     ],
+     "distinct": 32
+    },
+    {
+     "family": "param",
+     "keys": [
+      "field=scope",
+      "mode=delta"
+     ],
+     "distinct": 16
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "mode=unit",
+      "eff:self"
+     ],
+     "distinct": 14
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "modify_status"
+     ],
+     "distinct": 12
+    }
+   ],
+   "styleParts": {
+    "signature": 5.8,
+    "fingerprint": 12,
+    "config": 3.4,
+    "dedup": 10.3,
+    "dedupRatio": 0.0095,
+    "familyFloor": true,
+    "familyDists": {
+     "prim": 0.3691,
+     "elem": 0.4864,
+     "cond": 0.4035,
+     "condarg": 0.3738,
+     "param": 0.4945,
+     "reach": 0.0953,
+     "tgt": 0.099,
+     "hook": 0.4517,
+     "sshape": 0.2171,
+     "cost": 0.0326,
+     "temporal": 0.1955,
+     "unit": 1.0
+    }
+   },
+   "singleDimWarn": null,
+   "nearest": "prisoner",
+   "nearestDist": 0.2238,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-9.4：本途径他轴机制命中 3 次",
+     "ref": "spectator",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段"
+    },
+    {
+     "dim": "跨系联动",
+     "why": "-10.3：枢纽状态 1 个×2 / 消费方 0 途径×4 / 读取 3 次(CAP4)",
+     "ref": "spectator",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
+     "ref": "心理暗示·权柄",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "风格越界",
+     "why": "注：17 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
+     "ref": "观众·细微观察(prim:write_rule_slot)；出众精神(prim:write_rule_slot)；间接影响(prim:write_rule_slot)；读心(sref:grazed_soul)；气场感知(prim:write_rule_slot)；狂乱(prim:write_rule_slot)",
+     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
+    },
+    {
+     "dim": "差异化",
+     "why": "-1.2：签名键零使用 （有键仅 1 卡，未落地）",
+     "ref": "spectator",
+     "fix": "按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证"
+    }
+   ],
+   "axes": [
+    {
+     "id": "suggestion",
+     "name": "暗示",
+     "symbol": "💭",
+     "total": 76.6,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 6.6,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 15
+     },
+     "cards": 11,
+     "enablersVerified": [
+      "心理暗示·质变",
+      "操纵"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "fantasy",
+     "name": "空想",
+     "symbol": "🌈",
+     "total": 77.0,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 7.0,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 15
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "书写成真",
+      "龙化"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "dream",
+     "name": "梦境",
+     "symbol": "💤",
+     "total": 78.2,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 8.2,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 10
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "梦境穿梭",
+      "修改"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "insight",
+     "name": "洞察",
+     "symbol": "👀",
+     "total": 80.0,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 20.8,
+      "轴内多样性": 8.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 22
+     },
+     "cards": 6,
+     "enablersVerified": [
+      "观众·细微观察",
+      "引导"
+     ],
+     "payoffsLanded": [
+      "读心",
+      "编织梦境"
+     ],
+     "payoffsNotes": [
+      "洞察权柄"
+     ],
+     "patterns": [
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "收束兑现",
+       "why": "-4.2：声明消费卡 1/3 未全落地（landed 全分 / notes 半分）",
+       "ref": "洞察权柄(notes)",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    }
+   ]
+  },
+  {
    "id": "pryer",
    "name": "窥秘人",
-   "total": 67.4,
+   "total": 70.0,
    "dims": {
-    "轴健康度": 23.5,
+    "轴健康度": 26.1,
     "跨轴耦合": 5.6,
     "跨系联动": 5.6,
     "结构健康": 5.0,
@@ -1521,7 +1460,7 @@
     "文本完备": 5.0,
     "差异化": 32.7
    },
-   "minAxis": 51.8,
+   "minAxis": 63.0,
    "cards": 38,
    "roleDist": {
     "core": 27,
@@ -1630,44 +1569,6 @@
    ],
    "axes": [
     {
-     "id": "scroll",
-     "name": "卷轴法术",
-     "symbol": "📃",
-     "total": 51.8,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 0,
-      "轴内多样性": 6.8,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 15
-     },
-     "cards": 12,
-     "enablersVerified": [
-      "法术解析",
-      "神秘再现",
-      "卷轴·冰冻",
-      "卷轴·麻痹"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束兑现",
-       "why": "-25：蓝图消费段未声明卡位（段2 无卡名）",
-       "ref": "scroll",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
      "id": "astral",
      "name": "星象信息",
      "symbol": "✨",
@@ -1709,6 +1610,37 @@
        "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
+    },
+    {
+     "id": "scroll",
+     "name": "卷轴法术",
+     "symbol": "📃",
+     "total": 76.8,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 6.8,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 15
+     },
+     "cards": 12,
+     "enablersVerified": [
+      "法术解析",
+      "神秘再现",
+      "卷轴·冰冻",
+      "卷轴·麻痹"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
     },
     {
      "id": "scrying",
@@ -1785,331 +1717,6 @@
        "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
       }
      ]
-    }
-   ]
-  },
-  {
-   "id": "thief",
-   "name": "偷盗者",
-   "total": 72.7,
-   "dims": {
-    "轴健康度": 27.4,
-    "跨轴耦合": 3.8,
-    "跨系联动": 15.0,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 26.5
-   },
-   "minAxis": 72.3,
-   "cards": 37,
-   "roleDist": {
-    "core": 22,
-    "starter": 4,
-    "tech": 1,
-    "generic": 8,
-    "trap": 1,
-    "bridge": 1
-   },
-   "sigHits": {
-    "prim:modify_targetability": 2,
-    "prim:take_control": 5,
-    "prim:target_override": 7
-   },
-   "styleDist": 0.2307,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "dur:tick",
-      "cat:buff"
-     ],
-     "distinct": 30
-    },
-    {
-     "family": "param",
-     "keys": [
-      "mode=delta",
-      "mode=copy"
-     ],
-     "distinct": 26
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "damage"
-     ],
-     "distinct": 13
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "mode=unit",
-      "eff:self"
-     ],
-     "distinct": 13
-    }
-   ],
-   "styleParts": {
-    "signature": 7,
-    "fingerprint": 8,
-    "config": 2.8,
-    "dedup": 8.7,
-    "dedupRatio": 0.0315,
-    "familyFloor": true,
-    "familyDists": {
-     "prim": 0.2585,
-     "elem": 0.3845,
-     "cond": 0.1326,
-     "condarg": 0.1116,
-     "param": 0.491,
-     "reach": 0.2304,
-     "tgt": 0.1135,
-     "hook": 0.1898,
-     "sshape": 0.1825,
-     "cost": 0.0172,
-     "temporal": 0.165,
-     "unit": 1.0
-    }
-   },
-   "singleDimWarn": null,
-   "nearest": "lawyer",
-   "nearestDist": 0.1356,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-11.2：本途径他轴机制命中 2 次",
-     "ref": "thief",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
-     "ref": "隔空取物",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
-     "ref": "窃取距离",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
-     "ref": "石制壁钟",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
-     "ref": "分身替换",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
-     "ref": "壁钟之域",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
-     "ref": "错误",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "风格越界",
-     "why": "注：11 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
-     "ref": "窃取(prim:drain)；盗火(prim:drain)；隔空取物(prim:drain)；食梦者(trig:on_kill)；寄生(sref:puppet_string)；三连窃取(prim:drain)",
-     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
-    }
-   ],
-   "axes": [
-    {
-     "id": "steal",
-     "name": "窃取",
-     "symbol": "🧤",
-     "total": 72.3,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 13.3,
-      "收束兑现": 25.0,
-      "轴内多样性": 5.0,
-      "规模均衡": 8,
-      "承接连通": 6
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9
-     },
-     "cards": 15,
-     "enablersVerified": [
-      "盗火",
-      "窃取权柄"
-     ],
-     "payoffsLanded": [
-      "窃取"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层兑现",
-       "why": "-6.7：声明产层卡 1/3 未实证（卡面不挂身份/不产层）",
-       "ref": "窃取",
-       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-2：轴卡数 15 vs 理想 9（比值 1.62）",
-       "ref": "steal",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    },
-    {
-     "id": "parasite",
-     "name": "寄生",
-     "symbol": "🪱",
-     "total": 81.6,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 13.3,
-      "收束兑现": 20.8,
-      "轴内多样性": 14.5,
-      "规模均衡": 9,
-      "承接连通": 9
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 18
-     },
-     "cards": 5,
-     "enablersVerified": [
-      "寄生",
-      "窃取身份"
-     ],
-     "payoffsLanded": [
-      "窃取身份",
-      "混淆分身"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层兑现",
-       "why": "-6.7：声明产层卡 1/3 未实证（卡面不挂身份/不产层）",
-       "ref": "窃取",
-       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
-      },
-      {
-       "dim": "收束兑现",
-       "why": "-4.2：声明消费卡 1/3 未全落地（landed 全分 / notes 半分）",
-       "ref": "窃取(notes)",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      },
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 5 vs 理想 9（比值 0.54）",
-       "ref": "parasite",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    },
-    {
-     "id": "chrono",
-     "name": "时命",
-     "symbol": "🕰️",
-     "total": 82.8,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 13.3,
-      "收束兑现": 25.0,
-      "轴内多样性": 10.5,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9
-     },
-     "cards": 6,
-     "enablersVerified": [
-      "窃取时间",
-      "衰老"
-     ],
-     "payoffsLanded": [
-      "嫁接命运"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层兑现",
-       "why": "-6.7：声明产层卡 1/3 未实证（卡面不挂身份/不产层）",
-       "ref": "窃取",
-       "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
-      }
-     ]
-    },
-    {
-     "id": "deceit",
-     "name": "欺诈",
-     "symbol": "🤥",
-     "total": 84.1,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 25.0,
-      "轴内多样性": 8.1,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9
-     },
-     "cards": 11,
-     "enablersVerified": [
-      "思维误导",
-      "精神干扰"
-     ],
-     "payoffsLanded": [
-      "欺诈规则"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
     }
    ]
   },
@@ -3340,6 +2947,306 @@
    ]
   },
   {
+   "id": "thief",
+   "name": "偷盗者",
+   "total": 74.9,
+   "dims": {
+    "轴健康度": 29.6,
+    "跨轴耦合": 3.8,
+    "跨系联动": 15.0,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 26.5
+   },
+   "minAxis": 79.0,
+   "cards": 37,
+   "roleDist": {
+    "core": 22,
+    "starter": 4,
+    "tech": 1,
+    "generic": 8,
+    "trap": 1,
+    "bridge": 1
+   },
+   "sigHits": {
+    "prim:modify_targetability": 2,
+    "prim:take_control": 5,
+    "prim:target_override": 7
+   },
+   "styleDist": 0.2307,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "dur:tick",
+      "cat:buff"
+     ],
+     "distinct": 30
+    },
+    {
+     "family": "param",
+     "keys": [
+      "mode=delta",
+      "mode=copy"
+     ],
+     "distinct": 26
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "damage"
+     ],
+     "distinct": 13
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "mode=unit",
+      "eff:self"
+     ],
+     "distinct": 13
+    }
+   ],
+   "styleParts": {
+    "signature": 7,
+    "fingerprint": 8,
+    "config": 2.8,
+    "dedup": 8.7,
+    "dedupRatio": 0.0315,
+    "familyFloor": true,
+    "familyDists": {
+     "prim": 0.2585,
+     "elem": 0.3845,
+     "cond": 0.1326,
+     "condarg": 0.1116,
+     "param": 0.491,
+     "reach": 0.2304,
+     "tgt": 0.1135,
+     "hook": 0.1898,
+     "sshape": 0.1825,
+     "cost": 0.0172,
+     "temporal": 0.165,
+     "unit": 1.0
+    }
+   },
+   "singleDimWarn": null,
+   "nearest": "lawyer",
+   "nearestDist": 0.1356,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-11.2：本途径他轴机制命中 2 次",
+     "ref": "thief",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
+     "ref": "隔空取物",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
+     "ref": "窃取距离",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
+     "ref": "石制壁钟",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
+     "ref": "分身替换",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
+     "ref": "壁钟之域",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
+     "ref": "错误",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "风格越界",
+     "why": "注：11 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
+     "ref": "窃取(prim:drain)；盗火(prim:drain)；隔空取物(prim:drain)；食梦者(trig:on_kill)；寄生(sref:puppet_string)；三连窃取(prim:drain)",
+     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
+    }
+   ],
+   "axes": [
+    {
+     "id": "steal",
+     "name": "窃取",
+     "symbol": "🧤",
+     "total": 79.0,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 5.0,
+      "规模均衡": 8,
+      "承接连通": 6
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9
+     },
+     "cards": 15,
+     "enablersVerified": [
+      "盗火",
+      "窃取权柄"
+     ],
+     "payoffsLanded": [
+      "窃取"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-2：轴卡数 15 vs 理想 9（比值 1.62）",
+       "ref": "steal",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    },
+    {
+     "id": "deceit",
+     "name": "欺诈",
+     "symbol": "🤥",
+     "total": 84.1,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 8.1,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9
+     },
+     "cards": 11,
+     "enablersVerified": [
+      "思维误导",
+      "精神干扰"
+     ],
+     "payoffsLanded": [
+      "欺诈规则"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "chrono",
+     "name": "时命",
+     "symbol": "🕰️",
+     "total": 89.5,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 10.5,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9
+     },
+     "cards": 6,
+     "enablersVerified": [
+      "窃取时间",
+      "衰老"
+     ],
+     "payoffsLanded": [
+      "嫁接命运"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "parasite",
+     "name": "寄生",
+     "symbol": "🪱",
+     "total": 92.5,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 14.5,
+      "规模均衡": 9,
+      "承接连通": 9
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 18
+     },
+     "cards": 5,
+     "enablersVerified": [
+      "寄生",
+      "窃取身份"
+     ],
+     "payoffsLanded": [
+      "窃取身份",
+      "混淆分身"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 5 vs 理想 9（比值 0.54）",
+       "ref": "parasite",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    }
+   ]
+  },
+  {
    "id": "assassin",
    "name": "刺客",
    "total": 76.5,
@@ -3896,276 +3803,11 @@
    ]
   },
   {
-   "id": "lawyer",
-   "name": "律师",
-   "total": 77.1,
-   "dims": {
-    "轴健康度": 22.8,
-    "跨轴耦合": 11.2,
-    "跨系联动": 15.0,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 28.1
-   },
-   "minAxis": 50.6,
-   "cards": 46,
-   "roleDist": {
-    "core": 33,
-    "starter": 2,
-    "generic": 8,
-    "trap": 1,
-    "bridge": 1,
-    "tech": 1
-   },
-   "sigHits": {
-    "prim:gauge_shuffle": 7,
-    "prim:modify_rule_slot": 18,
-    "prim:status_shuffle": 5
-   },
-   "styleDist": 0.2344,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "dur:tick",
-      "cat:buff"
-     ],
-     "distinct": 40
-    },
-    {
-     "family": "param",
-     "keys": [
-      "mode=append",
-      "mode=delta"
-     ],
-     "distinct": 30
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "eff:self",
-      "faction=enemy"
-     ],
-     "distinct": 19
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "modify_rule_slot"
-     ],
-     "distinct": 15
-    }
-   ],
-   "styleParts": {
-    "signature": 7,
-    "fingerprint": 8,
-    "config": 3.2,
-    "dedup": 9.9,
-    "dedupRatio": 0.0155,
-    "familyFloor": true,
-    "familyDists": {
-     "prim": 0.3148,
-     "elem": 0.3125,
-     "cond": 0.1233,
-     "condarg": 0.1087,
-     "param": 0.5889,
-     "reach": 0.1853,
-     "tgt": 0.1018,
-     "hook": 0.1856,
-     "sshape": 0.1999,
-     "cost": 0.0194,
-     "temporal": 0.1805,
-     "unit": 1.0
-    }
-   },
-   "singleDimWarn": "轴健康度",
-   "nearest": "thief",
-   "nearestDist": 0.1356,
-   "deductions": [
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
-     "ref": "诡辩",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
-     "ref": "扭曲秩序",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
-     "ref": "熵",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "风格越界",
-     "why": "注：12 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
-     "ref": "野蛮体魄(stat:hp_max)；扭曲(res:order,sref:puppet_string)；腐化回扣(trig:on_kill)；混乱(res:order)；利用(res:order)；扭曲秩序(res:order)",
-     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
-    }
-   ],
-   "axes": [
-    {
-     "id": "brute",
-     "name": "蛮力",
-     "symbol": "👊",
-     "total": 50.6,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 0,
-      "轴内多样性": 5.6,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 0
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "力量解决",
-      "放大"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束兑现",
-       "why": "-25：蓝图消费段未声明卡位（段2 无卡名）",
-       "ref": "brute",
-       "fix": "补读层 payoff 卡（卡面须有读层引用）；若为合法纯产层轴，走真空甄别（payoffVacuumAccepted + note 理由）"
-      }
-     ]
-    },
-    {
-     "id": "advocacy",
-     "name": "讼辩",
-     "symbol": "🗣️",
-     "total": 63.8,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 12.5,
-      "轴内多样性": 6.3,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 10
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "寻隙",
-      "讼师之眼",
-      "律令加身"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": [
-      {
-       "dim": "收束兑现",
-       "why": "-12.5：声明消费卡 1/1 未全落地（landed 全分 / notes 半分）",
-       "ref": "放大(notes)",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    },
-    {
-     "id": "bribery",
-     "name": "贿腐",
-     "symbol": "🪙",
-     "total": 82.6,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 25.0,
-      "轴内多样性": 6.6,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 18
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "腐蚀",
-      "重贿"
-     ],
-     "payoffsLanded": [
-      "腐化回扣",
-      "收买"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "warp_rule",
-     "name": "扭曲规则",
-     "symbol": "🌀",
-     "total": 83.5,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 25.0,
-      "轴内多样性": 7.5,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9
-     },
-     "cards": 16,
-     "enablersVerified": [
-      "扭曲",
-      "利用"
-     ],
-     "payoffsLanded": [
-      "秩序崩坏"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    }
-   ]
-  },
-  {
    "id": "seer",
    "name": "占卜家",
-   "total": 77.3,
+   "total": 77.2,
    "dims": {
-    "轴健康度": 24.3,
+    "轴健康度": 24.2,
     "跨轴耦合": 5.6,
     "跨系联动": 15.0,
     "结构健康": 5.0,
@@ -4383,8 +4025,8 @@
      "deductions": [
       {
        "dim": "收束兑现",
-       "why": "-12.5：声明消费卡 3/3 未全落地（landed 全分 / notes 半分）",
-       "ref": "秘偶(notes),秘偶换位(notes),秘偶置换(notes)",
+       "why": "-12.5：声明消费卡 2/2 未全落地（landed 全分 / notes 半分）",
+       "ref": "秘偶换位(notes),秘偶置换(notes)",
        "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
      ]
@@ -4438,11 +4080,11 @@
      "id": "marionette",
      "name": "秘偶",
      "symbol": "🪆",
-     "total": 82.1,
+     "total": 81.0,
      "dims": {
       "锚点兑现": 15,
       "产层兑现": 20.0,
-      "收束兑现": 21.9,
+      "收束兑现": 20.8,
       "轴内多样性": 6.2,
       "规模均衡": 10,
       "承接连通": 9
@@ -4473,7 +4115,7 @@
      "deductions": [
       {
        "dim": "收束兑现",
-       "why": "-3.1：声明消费卡 1/4 未全落地（landed 全分 / notes 半分）",
+       "why": "-4.2：声明消费卡 1/3 未全落地（landed 全分 / notes 半分）",
        "ref": "秘偶换位(notes)",
        "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
       }
@@ -4484,9 +4126,9 @@
   {
    "id": "monster",
    "name": "怪物",
-   "total": 77.7,
+   "total": 78.1,
    "dims": {
-    "轴健康度": 20.9,
+    "轴健康度": 21.3,
     "跨轴耦合": 15.0,
     "跨系联动": 15.0,
     "结构健康": 4.6,
@@ -4494,7 +4136,7 @@
     "文本完备": 5.0,
     "差异化": 29.8
    },
-   "minAxis": 47.6,
+   "minAxis": 50.3,
    "cards": 35,
    "roleDist": {
     "core": 31,
@@ -4611,10 +4253,10 @@
      "id": "cycle",
      "name": "循环",
      "symbol": "🔄",
-     "total": 47.6,
+     "total": 50.3,
      "dims": {
       "锚点兑现": 15,
-      "产层兑现": 4.0,
+      "产层兑现": 6.7,
       "收束兑现": 12.5,
       "轴内多样性": 6.1,
       "规模均衡": 10,
@@ -4636,8 +4278,8 @@
      "deductions": [
       {
        "dim": "产层兑现",
-       "why": "-16.0：声明产层卡 4/5 未实证（卡面不挂身份/不产层）",
-       "ref": "水银之躯,水银之躯·完整,重启,重启循环",
+       "why": "-13.3：声明产层卡 2/3 未实证（卡面不挂身份/不产层）",
+       "ref": "水银之躯·完整,重启循环",
        "fix": "逐张补挂身份状态/产能段，或从 axes.enablers 移除不产层的卡"
       },
       {
@@ -5103,11 +4745,269 @@
    ]
   },
   {
+   "id": "lawyer",
+   "name": "律师",
+   "total": 79.9,
+   "dims": {
+    "轴健康度": 25.6,
+    "跨轴耦合": 11.2,
+    "跨系联动": 15.0,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 28.1
+   },
+   "minAxis": 63.8,
+   "cards": 46,
+   "roleDist": {
+    "core": 33,
+    "starter": 2,
+    "generic": 8,
+    "trap": 1,
+    "bridge": 1,
+    "tech": 1
+   },
+   "sigHits": {
+    "prim:gauge_shuffle": 7,
+    "prim:modify_rule_slot": 18,
+    "prim:status_shuffle": 5
+   },
+   "styleDist": 0.2344,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "dur:tick",
+      "cat:buff"
+     ],
+     "distinct": 40
+    },
+    {
+     "family": "param",
+     "keys": [
+      "mode=append",
+      "mode=delta"
+     ],
+     "distinct": 30
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "eff:self",
+      "faction=enemy"
+     ],
+     "distinct": 19
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "modify_rule_slot"
+     ],
+     "distinct": 15
+    }
+   ],
+   "styleParts": {
+    "signature": 7,
+    "fingerprint": 8,
+    "config": 3.2,
+    "dedup": 9.9,
+    "dedupRatio": 0.0155,
+    "familyFloor": true,
+    "familyDists": {
+     "prim": 0.3148,
+     "elem": 0.3125,
+     "cond": 0.1233,
+     "condarg": 0.1087,
+     "param": 0.5889,
+     "reach": 0.1853,
+     "tgt": 0.1018,
+     "hook": 0.1856,
+     "sshape": 0.1999,
+     "cost": 0.0194,
+     "temporal": 0.1805,
+     "unit": 1.0
+    }
+   },
+   "singleDimWarn": null,
+   "nearest": "thief",
+   "nearestDist": 0.1356,
+   "deductions": [
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
+     "ref": "诡辩",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
+     "ref": "扭曲秩序",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
+     "ref": "熵",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "风格越界",
+     "why": "注：12 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
+     "ref": "野蛮体魄(stat:hp_max)；扭曲(res:order,sref:puppet_string)；腐化回扣(trig:on_kill)；混乱(res:order)；利用(res:order)；扭曲秩序(res:order)",
+     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
+    }
+   ],
+   "axes": [
+    {
+     "id": "advocacy",
+     "name": "讼辩",
+     "symbol": "🗣️",
+     "total": 63.8,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 12.5,
+      "轴内多样性": 6.3,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 10
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "寻隙",
+      "讼师之眼",
+      "律令加身"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": [
+      {
+       "dim": "收束兑现",
+       "why": "-12.5：声明消费卡 1/1 未全落地（landed 全分 / notes 半分）",
+       "ref": "放大(notes)",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    },
+    {
+     "id": "brute",
+     "name": "蛮力",
+     "symbol": "👊",
+     "total": 75.6,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 5.6,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 0
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "力量解决",
+      "放大"
+     ],
+     "payoffsLanded": [],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "bribery",
+     "name": "贿腐",
+     "symbol": "🪙",
+     "total": 82.6,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 6.6,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 18
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "腐蚀",
+      "重贿"
+     ],
+     "payoffsLanded": [
+      "腐化回扣",
+      "收买"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "warp_rule",
+     "name": "扭曲规则",
+     "symbol": "🌀",
+     "total": 83.5,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 7.5,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9
+     },
+     "cards": 16,
+     "enablersVerified": [
+      "扭曲",
+      "利用"
+     ],
+     "payoffsLanded": [
+      "秩序崩坏"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    }
+   ]
+  },
+  {
    "id": "arbiter",
    "name": "仲裁人",
-   "total": 80.0,
+   "total": 80.2,
    "dims": {
-    "轴健康度": 25.7,
+    "轴健康度": 25.9,
     "跨轴耦合": 15.0,
     "跨系联动": 13.1,
     "结构健康": 4.4,
@@ -5385,11 +5285,11 @@
      "id": "jurisdiction",
      "name": "辖区",
      "symbol": "🏛️",
-     "total": 84.4,
+     "total": 87.5,
      "dims": {
       "锚点兑现": 15,
       "产层兑现": 20.0,
-      "收束兑现": 21.9,
+      "收束兑现": 25.0,
       "轴内多样性": 8.5,
       "规模均衡": 10,
       "承接连通": 9
@@ -5417,14 +5317,7 @@
       "通道读"
      ],
      "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束兑现",
-       "why": "-3.1：声明消费卡 1/4 未全落地（landed 全分 / notes 半分）",
-       "ref": "审判(notes)",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
+     "deductions": []
     }
    ]
   },

@@ -16,9 +16,9 @@
 | 轴 | 名称 | 锚点(kind:id) | 产出→消费→清除 | 玩家决策点 | 签名键承诺(键:卡位) | 计划卡数 | 角色配比 |
 |---|---|---|---|---|---|---|---|
 | insight | 洞察 | status:insight | 观众·细微观察/引导产层→读心/编织梦境/洞察权柄读层消费→层数被消费 | 洞察对象选择：位格差投给谁，层数攒到几层再读 | stat:rank:读心,操纵,编织梦境;sref:insight:观众·细微观察,读心,引导 | 6 | core×3,generic×1,starter×2 |
-| suggestion | 暗示 | status:subconscious_edit | 心理暗示·质变/操纵产层→暗示改写行为消费→编辑被察觉（rank 前提不满足）则失效 | 暗示对象与编辑深度：位格差够才敢编多深 |  | 11 | core×2,generic×2,starter×1,tech×5,trap×1 |
-| dream | 梦境 | status:dream_phase | 梦境穿梭/修改产层→梦境系消费→梦醒（相位更替）清除 | 入梦时机：梦境窗口内打完combo还是拖长战线 |  | 10 | core×4,tech×3,generic×3 |
-| fantasy | 空想 | status:written_truth | 书写成真/龙化产层→空想产物（带非真存缺陷）消费→产物短寿消散清除 | 具现什么、何时让产物消散：短寿窗口的节奏对表 | flag:template:身份分离,（待补强1卡） | 9 | core×4,bridge×1,generic×3,tech×1 |
+| suggestion | 暗示 | status:subconscious_edit | 心理暗示·质变/操纵产层→心理暗示·质变/操纵读层消费（暗示改写行为）→编辑被察觉（rank 前提不满足）则失效 | 暗示对象与编辑深度：位格差够才敢编多深 |  | 11 | core×2,generic×2,starter×1,tech×5,trap×1 |
+| dream | 梦境 | status:dream_phase | 梦境穿梭/修改产层→梦境穿梭/修改读层消费→梦醒（相位更替）清除 | 入梦时机：梦境窗口内打完combo还是拖长战线 |  | 10 | core×4,tech×3,generic×3 |
+| fantasy | 空想 | status:written_truth | 书写成真/龙化产层→书写成真/龙化读层消费（空想产物带非真存缺陷）→产物短寿消散清除 | 具现什么、何时让产物消散：短寿窗口的节奏对表 | flag:template:身份分离,（待补强1卡） | 9 | core×4,bridge×1,generic×3,tech×1 |
 
 ### 跨轴钩子
 | 卡位 | 读轴 | 概念 | facet | 用途 |

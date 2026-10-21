@@ -16,7 +16,7 @@
 | 轴 | 名称 | 锚点(kind:id) | 产出→消费→清除 | 玩家决策点 | 签名键承诺(键:卡位) | 计划卡数 | 角色配比 |
 |---|---|---|---|---|---|---|---|
 | advocacy | 讼辩 | status:chink_finding | 寻隙/讼师之眼/律令加身产层→chink_finding 层数引擎自放大消费（真空轴已拍板接受）→层数被消费或目标清醒清除 | 寻隙对象选择：寻谁的隙、层数堆到几层再爆讼 | prim:modify_rule_slot:寻隙,滔滔不绝,讼师之眼 | 10 | core×6,starter×2,tech×1,bridge×1 |
-| brute | 蛮力 | status:amplified | 力量解决/放大产层→amplified 自足件 nextAttack×2+处决消费（真空轴已拍板接受）→层数被消费清除 | 放大时机：何时开倍击、处决线怎么压 |  | 10 | core×6,generic×4 |
+| brute | 蛮力 | status:amplified | 力量解决/放大产层→力量解决/放大读层消费（amplified 自足件 nextAttack×2+处决，真空轴已拍板接受）→层数被消费清除 | 放大时机：何时开倍击、处决线怎么压 |  | 10 | core×6,generic×4 |
 | bribery | 贿腐 | status:corrupted | 腐蚀/重贿产层→腐化回扣/收买读层消费→层数被消费或贿约到期清除 | 贿赂对象与回收时机：贿谁、何时收买/回扣兑现 | prim:status_shuffle:腐蚀,收买,万贿归一 | 10 | core×7,generic×3 |
 | warp_rule | 扭曲规则 | status:distortion | 扭曲/利用产层→秩序崩坏读层爆发→层数被爆发消耗或秩序复原清除 | 扭曲对象选择：改哪条规则槽、何时秩序崩坏收场 | prim:modify_rule_slot:扭曲,重定义,秩序崩坏;prim:gauge_shuffle:混乱,狂乱,秩序崩坏 | 16 | core×14,trap×1,generic×1 |
 

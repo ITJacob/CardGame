@@ -17,7 +17,7 @@
 |---|---|---|---|---|---|---|---|
 | astral | 星象信息 | status:ego_constellation | 星之巨柱/星桥/本我星象产层→信息化/删除读在场星象缩放消费→星象消散或形态切换清除 | 参照基数经营：星象铺几件、何时用信息化/删除兑现缩放 | sref:info_form:星海穿梭,信息化 | 15 | core×11,starter×1,tech×2,generic×1 |
 | combat | 格斗 | status:knowledge_strain | 灌输知识/知识攻击产层→朗基努斯之枪读层爆发→层数被爆发消耗 | 学识层数消费时机：朗基努斯之枪早放稳伤还是攒满层一击 |  | 5 | core×3,starter×1,generic×1 |
-| scroll | 卷轴法术 | status:spell_lore | 法术解析/神秘再现/卷轴·冰冻/卷轴·麻痹产层→卷轴系读层省时强效→层数被施放消费 | 省时对象选择：cast_time_set 用在哪张吟唱卡；spell_lore 层数攒到几层再施放 | flag:valueFrom:神秘再现,删除;flag:cast_time_set:照明术,闪电术,洒材料 | 12 | core×8,starter×1,generic×1,tech×1,trap×1 |
+| scroll | 卷轴法术 | status:spell_lore | 法术解析/神秘再现/卷轴·冰冻/卷轴·麻痹产层→法术解析/神秘再现/卷轴·冰冻/卷轴·麻痹读层消费（卷轴系省时强效）→层数被施放消费 | 省时对象选择：cast_time_set 用在哪张吟唱卡；spell_lore 层数攒到几层再施放 | flag:valueFrom:神秘再现,删除;flag:cast_time_set:照明术,闪电术,洒材料 | 12 | core×8,starter×1,generic×1,tech×1,trap×1 |
 | scrying | 窥秘 | status:scrying_eye | 窥秘之眼/窥秘权柄产层→知识攻击读层消费→层数被消费或目标死亡清除 | 窥秘对象选择：先看谁；虚假信息伪造哪条、何时放 |  | 6 | core×5,bridge×1 |
 
 ### 跨轴钩子
