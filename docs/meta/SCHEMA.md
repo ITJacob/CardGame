@@ -57,7 +57,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `pathwayName` | string | ✓ | 途径中文名 |
 | `sourceFile` | string | ✓ | 溯源指针：`../archive/skill-design_v0.3/<途径>途径_技能池_v0.3.md`（2026-09-18 起技能稿归档为只读快照，JSON 为唯一维护正源） |
 | `sourceVersion` | string | ✓ | 源池版本，当前 `v0.3` |
-| `axes` | object | ✓ | 构筑轴，`{ "<axisId>": { symbol, name, anchor?, statusId?, enablers?, payoffs?, note? } }`；卡片 `axis` 必须取自这里的键。`anchor = { kind, id }` 是轴身份锚点（代表玩法/机制，kind 见 SCORING.md §二·零），优先于 statusId；`statusId` 是 `kind=status` 的兼容简写。enablers/payoffs = 操作/读取锚点的卡名（自技能稿轴表回收，仅保留可匹配卡名） |
+| `axes` | object | ✓ | 构筑轴，`{ "<axisId>": { symbol, name, anchor?, statusId?, enablers?, payoffs?, note?, sizeIntent? } }`；卡片 `axis` 必须取自这里的键。`anchor = { kind, id }` 是轴身份锚点（代表玩法/机制，kind 见 SCORING.md §二·零），优先于 statusId；`statusId` 是 `kind=status` 的兼容简写。enablers/payoffs = 操作/读取锚点的卡名（自技能稿轴表回收，仅保留可匹配卡名）。`sizeIntent = [min,max]` 轴计划卡数区间（2026-10-21）：声明后规模均衡按声明区间判 |
 | `classMechanics` | array | – | 职业自带机制（不依赖具体卡）：`[{ id, name, summary, details?, statusId? }]`；game 卡池页与 site 卡片浏览页展示。首批为战士 `war_spirit` |
 | `sampleBuilds` | array | – | 示例 Build `[{ name, actives[], passives[], playstyle }]`（自技能稿 §二回收；卡名为设计示例，可能与现行卡名有出入） |
 | `designNote` | string | – | 途径级机制说明（隐秘值/咬合器等维度，自技能稿轴表后说明段回收） |
@@ -79,6 +79,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `rarity` | enum | ✓ | `common`(9-8) / `uncommon`(7-6) / `rare`(5-4) / `epic`(3-2) / `legendary`(1-0) |
 | `axis` | string | ✓ | 必须存在于顶层 `axes` |
 | `flagship` | bool | ✓ | 是否旗舰卡 |
+| `role` | enum | – | 设计角色六值（2026-10-21 玩法蓝图工序）：`core` 轴循环承重件 / `starter` 低序列入门（须 common）/ `bridge` 跨轴跨系连接 / `generic` 泛用骨架·刻意补位（不得 flagship、不得被 axes 登记）/ `trap` core 同族赌博变体（须带风险段）/ `tech` 对策卡。口径与配比约束见 SCORING.md §一·附 |
 | `lore` / `flavor` / `describe` | string | ✓ | 设定 / 风味 / **玩家可读效果描述**（`describe` 是唯一面向玩家的字段） |
 | `effects` | effect[] | ✓ | 卡面效果，至少 1 条 |
 | `tentative` | bool | ✓ | 数值待拍板；当前全库 832 张均为 `true` |

@@ -570,6 +570,11 @@ def main():
         total_cards += len(cards)
         if pid in expect and len(cards) != expect[pid]:
             errors.append("card count %d != manifest %d" % (len(cards), expect[pid]))
+        # 角色硬校验用：轴登记卡名集合（SCORING §一·附：generic 不得被登记）
+        axes_reg = set()
+        for _ax in (d.get("axes") or {}).values():
+            axes_reg.update(_ax.get("enablers") or [])
+            axes_reg.update(_ax.get("payoffs") or [])
         ids = set()
         names = {}  # 卡名 -> kind，供 sampleBuilds 交叉校验
         for c in cards:
@@ -583,6 +588,15 @@ def main():
                 if fld not in c: errors.append("%s: missing %s"%(cid,fld))
             if "rarity" in c and "sequence" in c and c["rarity"] != RARITY_BY_SEQ(c["sequence"]):
                 errors.append("%s: rarity mismatch (seq %s, %s)"%(cid,c["sequence"],c["rarity"]))
+            # 角色硬约束（2026-10-21 玩法蓝图工序；口径 SCORING.md §一·附）
+            _role = c.get("role")
+            if _role == "starter" and c.get("rarity") != "common":
+                errors.append("%s: role=starter 必须 rarity=common（当前 %s）"%(cid, c.get("rarity")))
+            if _role == "generic":
+                if c.get("flagship"):
+                    errors.append("%s: role=generic 不得为旗舰卡"%cid)
+                if nm in axes_reg:
+                    errors.append("%s: role=generic 不得被 axes.enablers/payoffs 登记"%cid)
             if c.get("kind")=="active":
                 if "cost" not in c or "reach" not in c or "target" not in c:
                     errors.append("%s: active incomplete"%cid)

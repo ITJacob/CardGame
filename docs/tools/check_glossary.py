@@ -50,6 +50,8 @@ ENUM_TO_CAT = {
     "card.rarity": "rarity",
     "card.reach": "reach",
     "card.gender": "gender",
+    # card.role 是设计侧元数据（2026-10-21 玩法蓝图工序），卡面不渲染，无需词典词条
+    "card.role": None,
     "cardTarget.selectionMode": "selectionMode",
     "cardTarget.consumption": "consumption",
     "unitRequest.mode": "mode",

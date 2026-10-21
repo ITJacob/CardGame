@@ -15,6 +15,7 @@ ANALYSIS_DIR = os.path.join(os.path.dirname(HERE), "analysis")
 
 sys.path.insert(0, HERE)
 from status_loader import iter_status_defs, load_common_ids
+import blueprint_parse   # 2.14：轴级兑现三维 + 签名键兑现的声明面（蓝图解析器，零依赖）
 
 UNIT_INDEX = None
 
@@ -389,8 +390,12 @@ FIX = {
     "uniqueness": "降低 mount_status+damage 通用骨架占比，把轴 payoff 换成签名键机制（最近邻见 STYLE_DISTANCE.md）",
     "config": "让四轴各走不同形状（产出面/通道或原语分化），避免四轴同一套骨架",
     "dedup": "把同形状卡改成分化写法（读层/选靶/触发点/状态形态至少一项不同）；整组复制会被本项直接抓住",
+    "role_conflict": "改 role（卡实为承重件）或移出 axes.enablers/payoffs 登记（口径 SCORING §一·附）",
+    "role_semantic": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）",
+    "style_oob": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内",
 }
 FIX_NOTE = "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+FIX_ROLE_MISJUDGE = "如属误判请改 role 而非改卡（SCORING §一·附）"
 
 
 # ---------- 风格签名（2026-10-01 差异化专项；口径 SCORING.md §三，键表与 docs/meta/途径设计身份.md §一 同表） ----------
@@ -856,17 +861,26 @@ def _l2(vec):
     return {k: v / n for k, v in vec.items()} if n else {}
 
 
-def cos_dist(a, b):
-    """全链路距离 = 各链路族余弦距离的加权均值（L2 归一后每族一票；unit 族 2×）。"""
-    total, wsum = 0.0, 0.0
+def cos_dist_by_family(a, b):
+    """分族余弦距离：族 -> 距离（双侧皆空的族不出现于结果）。L2 归一后每族一票。"""
+    out = {}
     for f in FAMILIES:
         fa, fb = _l2(a.get(f) or {}), _l2(b.get(f) or {})
         keys = set(fa) | set(fb)
         if not keys:
             continue
         dot = sum(fa.get(k, 0) * fb.get(k, 0) for k in keys)
+        out[f] = 1.0 - dot
+    return out
+
+
+def cos_dist(a, b):
+    """全链路距离 = 各链路族余弦距离的加权均值（L2 归一后每族一票；unit 族 2×）。"""
+    by_fam = cos_dist_by_family(a, b)
+    total, wsum = 0.0, 0.0
+    for f, d in by_fam.items():
         w = FAMILY_WEIGHTS.get(f, 1.0)
-        total += w * (1.0 - dot)
+        total += w * d
         wsum += w
     return total / wsum if wsum else 1.0
 
@@ -880,16 +894,55 @@ def card_vectors(cards, status_by_id=None):
 def intra_dedup(cards, status_by_id=None, low=0.20, cap=0.15):
     """途径内去重复用（差异化第 4 项）：卡级指纹两两距离 < 0.20 的对数占比。
     返回 (low_ratio, points 0–11)，占比越低分越高；cap=15% 判零分。
-    对整组复制敏感（×N 后 low_ratio 暴涨），补上「途径间距离」测不出的自我复制。"""
+    对整组复制敏感（×N 后 low_ratio 暴涨），补上「途径间距离」测不出的自我复制。
+    角色豁免（SCORING §一·附）：双方均 generic / 双方均 starter 的对不计入——
+    入门对与刻意补位对的相似是设计意图；防整组隐身靠 generic ≤25% 配比上限。"""
     vecs = card_vectors(cards, status_by_id)
+    roles = [c.get("role") for c in cards]
     n = len(vecs)
     pairs = n * (n - 1) // 2
     if pairs == 0:
         return 0.0, 11.0
-    low_n = sum(1 for i in range(n) for j in range(i + 1, n)
-                if cos_dist(vecs[i], vecs[j]) < low)
+    low_n = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            if roles[i] and roles[i] == roles[j] and roles[i] in ("generic", "starter"):
+                continue
+            if cos_dist(vecs[i], vecs[j]) < low:
+                low_n += 1
     ratio = low_n / pairs
     return ratio, round(11 * max(0.0, 1 - ratio / cap), 1)
+
+
+def card_has_risk_segment(card):
+    """trap 风险段（SCORING §一·附）：chance 条件 / 含失败分支的双分支条件 /
+    自伤（damage 或负向 modify_stat 落 self）。满足其一即「有输面」。"""
+    for n in walk(card_effects(card)):
+        if not isinstance(n, dict):
+            continue
+        if n.get("kind") == "chance":
+            return True
+        if n.get("op") == "if":
+            els = [x for x in (n.get("else") or []) if isinstance(x, dict)]
+            if els:
+                return True
+        if n.get("type") == "damage" and n.get("target") == "self":
+            return True
+        if n.get("type") == "modify_stat" and n.get("target") == "self" and (n.get("value") or 0) < 0:
+            return True
+    return False
+
+
+def apply_role_fix_overlay(deds, card_by_name):
+    """失分清单 fix 覆写（SCORING §一·附）：ref 指向已声明豁免角色（generic/starter/tech）
+    的卡时，「改卡面」类建议可能误伤设计意图，fix 前冠改 role 提示。原地改写四元组列表。"""
+    for i, (dim, why, ref, fix) in enumerate(deds):
+        if fix.startswith(FIX_ROLE_MISJUDGE) or fix in (FIX["role_conflict"], FIX["role_semantic"]):
+            continue
+        names = [x.strip() for x in str(ref).split(",")]
+        if any((card_by_name.get(nm) or {}).get("role") in ("generic", "starter", "tech")
+               for nm in names):
+            deds[i] = (dim, why, ref, FIX_ROLE_MISJUDGE + "；原建议：" + fix)
 
 
 def load_unit_types(pathways):
@@ -935,10 +988,30 @@ def main():
     manifest = json.load(io.open(os.path.join(JSON_DIR, "manifest.json"), encoding="utf-8"))
     rarity_map = manifest.get("rarityMap", {})
 
+    # 蓝图声明面（2.14 重切：蓝图=声明正源，score.py=实证正源，兑现率=声明∩实证进分）
+    ROUNDS_DIR = os.path.join(os.path.dirname(HERE), "meta", "rounds")
+    bp_axis_decl = {}    # pid -> {axisId: {"anchor": "kind:id", "E": {产层卡位}, "P": {消费卡位}}}
+    bp_sig_keys = {}     # pid -> {承诺签名键}
+    for _pid, _d in pathways.items():
+        _bp_path = os.path.join(ROUNDS_DIR, _pid + ".md")
+        _bp = blueprint_parse.parse_blueprint(_bp_path) if os.path.exists(_bp_path) else None
+        if not _bp:
+            continue
+        _names = {c["name"] for c in _d.get("cards") or []}
+        _ax_decl, _sig = {}, set()
+        for _row in _bp["sections"].get("轴玩法", {}).get("rows") or []:
+            _e, _p = blueprint_parse.parse_pc_chain(_row.get("产出→消费→清除"), _names)
+            _ax_decl[_row.get("轴")] = {"anchor": (_row.get("锚点(kind:id)") or "").strip(),
+                                        "E": _e, "P": _p}
+            _sig |= set(blueprint_parse._parse_sig_commit(_row.get("签名键承诺(键:卡位)")))
+        bp_axis_decl[_pid] = _ax_decl
+        bp_sig_keys[_pid] = _sig
+
     # 依赖全库归一的原始量，先全量收集
     axis_rows = []           # 计分中间态
     pw_crossaxis_refs = {}   # pathwayId -> 本途径他轴身份被读本途径卡引用的次数
     pw_crosspath_reads = {}  # pathwayId -> 读他途径枢纽状态的实证次数
+    pw_crosspath_consumers = {}  # pathwayId -> set(消费本途径的他途径 id)（2.10 消费方多样性）
     axis_diversity_raw = {}  # axisKey -> 种类和
     pw_hub_statuses = {}     # pathwayId -> crossPathway 状态数
     for pid, label, sd in iter_status_defs():
@@ -1109,16 +1182,24 @@ def main():
                     return card_refs_resource(c, identity_pool)
                 return bool(surf[c["name"]][0] & set(CHANNELS))   # 产层 = 写入本轴身份通道
 
-            en_verified = [n for n in enablers if _is_enabler(card_by_name.get(n))]
-            en_missed = [n for n in enablers if n not in en_verified]
+            # 角色冲突（SCORING §一·附）：generic/tech 被登记进 enablers 不算实证——
+            # 承重件必须声明 core/trap，否则实证体系可被泛用卡刷满
+            en_conflict = [n for n in enablers
+                           if (card_by_name.get(n) or {}).get("role") in ("generic", "tech")]
+            if en_conflict:
+                deductions.append(("产层闭环", "注：角色冲突 %d 张（generic/tech 不得登记 enablers，不计实证）"
+                                   % len(en_conflict), ",".join(en_conflict), FIX["role_conflict"]))
+            en_pool = [n for n in enablers if n not in en_conflict]
+            en_verified = [n for n in en_pool if _is_enabler(card_by_name.get(n))]
+            en_missed = [n for n in en_pool if n not in en_verified]
             if len(en_verified) >= 2:
                 closure_e = 20
             elif len(en_verified) == 1:
                 closure_e = 12
                 deductions.append(("产层闭环", "-8：实证 enabler 仅 1 张", ",".join(en_verified), FIX["enabler_only1"]))
-            elif enablers:
+            elif en_pool:
                 closure_e = 5
-                deductions.append(("产层闭环", "-15：enablers %d 张均未实证挂载身份" % len(enablers), ",".join(en_missed), FIX["enabler_unverified"]))
+                deductions.append(("产层闭环", "-15：enablers %d 张均未实证挂载身份" % len(en_pool), ",".join(en_missed), FIX["enabler_unverified"]))
             else:
                 closure_e = 0
                 deductions.append(("产层闭环", "-20：enablers 为空", aid, FIX["enabler_empty"]))
@@ -1157,12 +1238,18 @@ def main():
                     return "notes"
                 return "landed" if (surf[nm][1] & outputs) else "notes"
 
+            po_conflict = [n for n in payoffs
+                           if (card_by_name.get(n) or {}).get("role") in ("generic", "tech")]
+            if po_conflict:
+                deductions.append(("收束闭环", "注：角色冲突 %d 张（generic/tech 不得登记 payoffs，不计实证）"
+                                   % len(po_conflict), ",".join(po_conflict), FIX["role_conflict"]))
+            po_pool = [n for n in payoffs if n not in po_conflict]
             landed, notes_level = [], []
-            for n in payoffs:
+            for n in po_pool:
                 ev = _payoff_evidence(card_by_name.get(n))
                 (landed if ev == "landed" else notes_level if ev == "notes" else []).append(n)
             closure_p = min(25, len(landed) * 9 + len(notes_level) * 4)
-            if not payoffs:
+            if not po_pool:
                 # 无 payoff 卡：间接收束（本轴写入通道的下游读者分档）+ def 内闭环兜底
                 indirect = 0
                 for ch in sorted(ax_channels):
@@ -1188,9 +1275,82 @@ def main():
                     deductions.append(("收束闭环", "注：间接收束 %d 分（无 payoff 卡，按通道下游读者 / def 内闭环计）" % closure_p, aid, FIX_NOTE))
             else:
                 if notes_level and not landed:
-                    deductions.append(("收束闭环", "-%d：payoff %d 张全部 notes 级（卡面不读本轴产出面）" % (25 - closure_p, len(payoffs)), ",".join(notes_level), FIX["payoff_notes"]))
+                    deductions.append(("收束闭环", "-%d：payoff %d 张全部 notes 级（卡面不读本轴产出面）" % (25 - closure_p, len(po_pool)), ",".join(notes_level), FIX["payoff_notes"]))
                 elif notes_level:
                     deductions.append(("收束闭环", "注：notes 级 %d 张（减半计）" % len(notes_level), ",".join(notes_level), FIX["payoff_notes"]))
+
+            # —— 2.14 重切：旧三维（身份锚定/产层闭环/收束闭环）退役为 legacyDims 诊断留档 ——
+            # 旧值继续算、只读不进分（≥3 轮确认无信息损失后复核删除）；其失分项随维退役，
+            # 仅「角色冲突」注级转入兑现维（generic/tech 承重 = 实证体系被泛用卡刷满，仍相关）。
+            legacy_dims = {"身份锚定": anchor, "产层闭环": closure_e, "收束闭环": closure_p}
+            _legacy_deds, deductions = deductions, []
+            for _dim, _why, _ref, _fix in _legacy_deds:
+                if "角色冲突" in _why:
+                    deductions.append(("产层兑现" if "enablers" in _why else "收束兑现",
+                                       _why, _ref, _fix))
+
+            # —— 兑现三维（2.14：蓝图声明 ∩ 卡面实证；声明面来自玩法蓝图章，实证判据复用旧三维函数）——
+            decl = bp_axis_decl.get(pid, {}).get(aid)
+            if decl is None:
+                fu_anchor = fu_e = fu_p = 0
+                deductions.append(("锚点兑现", "-15：轴 %s 无蓝图声明（玩法蓝图章缺轴玩法表行）" % aid, aid, FIX["no_identity"]))
+                deductions.append(("产层兑现", "-20：无蓝图产层声明", aid, FIX["enabler_empty"]))
+                deductions.append(("收束兑现", "-25：无蓝图消费声明", aid, FIX["vacuum"]))
+            else:
+                # 锚点兑现 15：蓝图锚点 kind:id 与 axes 元数据对账（蓝图简写 prim/res 归一）
+                _ALIAS = {"prim": "primitive", "res": "resource"}
+                _dk, _, _did = (decl["anchor"] or "").partition(":")
+                _dk = _ALIAS.get(_dk, _dk)
+                _akind = a_kind or ("status" if sid else None)
+                _aid2 = a_id if a_kind else sid
+                if _dk and _did and _dk == _akind and _did == _aid2:
+                    fu_anchor = 15
+                else:
+                    fu_anchor = 0
+                    deductions.append(("锚点兑现", "-15：蓝图锚点 %s ≠ axes 实录 %s:%s" % (
+                        decl["anchor"] or "（空）", _akind, _aid2), aid, FIX["dangling_sid"]))
+                # 产层兑现 20：E*（产层段声明卡位，剔 generic/tech）中实证 enabler 占比
+                e_pool = [n for n in sorted(decl["E"])
+                          if (card_by_name.get(n) or {}).get("role") not in ("generic", "tech")]
+                if not decl["E"]:
+                    fu_e = 0
+                    deductions.append(("产层兑现", "-20：蓝图产层段未声明卡位（段1 无卡名）", aid, FIX["enabler_empty"]))
+                elif not e_pool:
+                    fu_e = 0
+                    deductions.append(("产层兑现", "-20：蓝图产层段声明卡位均为 generic/tech（非承重件）",
+                                       ",".join(sorted(decl["E"])), FIX["enabler_empty"]))
+                else:
+                    e_hit = [n for n in e_pool if _is_enabler(card_by_name.get(n))]
+                    fu_e = round(20 * len(e_hit) / len(e_pool), 1)
+                    e_miss = [n for n in e_pool if n not in e_hit]
+                    if e_miss:
+                        deductions.append(("产层兑现", "-%s：声明产层卡 %d/%d 未实证（卡面不挂身份/不产层）" % (
+                            round(20 - fu_e, 1), len(e_miss), len(e_pool)), ",".join(e_miss), FIX["enabler_unverified"]))
+                # 收束兑现 25：P*（消费段声明卡位，剔 generic/tech）中 landed 全分 / notes 半分
+                p_pool = [n for n in sorted(decl["P"])
+                          if (card_by_name.get(n) or {}).get("role") not in ("generic", "tech")]
+                if not decl["P"]:
+                    fu_p = 0
+                    deductions.append(("收束兑现", "-25：蓝图消费段未声明卡位（段2 无卡名）", aid, FIX["vacuum"]))
+                elif not p_pool:
+                    fu_p = 0
+                    deductions.append(("收束兑现", "-25：蓝图消费段声明卡位均为 generic/tech（非承重件）",
+                                       ",".join(sorted(decl["P"])), FIX["vacuum"]))
+                else:
+                    p_w, p_notfull = 0.0, []
+                    for n in p_pool:
+                        ev = _payoff_evidence(card_by_name.get(n))
+                        if ev == "landed":
+                            p_w += 1
+                        elif ev == "notes":
+                            p_w += 0.5
+                            p_notfull.append(n + "(notes)")
+                        else:
+                            p_notfull.append(n)
+                    fu_p = round(25 * p_w / len(p_pool), 1)
+                    if p_notfull:
+                        deductions.append(("收束兑现", "-%s：声明消费卡 %d/%d 未全落地（landed 全分 / notes 半分）" % (
+                            round(25 - fu_p, 1), len(p_notfull), len(p_pool)), ",".join(p_notfull), FIX["payoff_notes"]))
 
             # —— 轴内多样性（2026-10-19 密度口径）：全链路词表去重形态 ÷ 卡数 ——
             # 原语 + 谓词（仅 then/else 均非空的双分支条件，上限 6）+ 选靶 + 触发点 + 状态形态。
@@ -1216,15 +1376,25 @@ def main():
                 if n_axis_cards else 0
             axis_diversity_raw[(pid, aid)] = div_raw
 
-            # —— 规模均衡 ——
-            ideal = len(cards) / n_axes
-            ratio = (len(axis_cards) / ideal) if ideal else 0
-            if 0.6 <= ratio <= 1.4:
-                scale = 10
+            # —— 规模均衡（2.10：轴可声明 sizeIntent [min,max] 按声明区间判，未声明沿用均值区间） ——
+            size_intent = ax.get("sizeIntent")
+            if isinstance(size_intent, list) and len(size_intent) == 2:
+                lo, hi = size_intent
+                if lo <= len(axis_cards) <= hi:
+                    scale = 10
+                else:
+                    over = (lo - len(axis_cards)) if len(axis_cards) < lo else (len(axis_cards) - hi)
+                    scale = max(0, 10 - over)
+                    deductions.append(("规模均衡", "-%d：轴卡数 %d 越出声明区间 [%d,%d]" % (10 - scale, len(axis_cards), lo, hi), aid, FIX["scale"]))
             else:
-                dev = abs(ratio - 1.0) - 0.4
-                scale = max(0, round(10 - dev * 10))
-                deductions.append(("规模均衡", "-%d：轴卡数 %d vs 理想 %d（比值 %.2f）" % (10 - scale, len(axis_cards), round(ideal), ratio), aid, FIX["scale"]))
+                ideal = len(cards) / n_axes
+                ratio = (len(axis_cards) / ideal) if ideal else 0
+                if 0.6 <= ratio <= 1.4:
+                    scale = 10
+                else:
+                    dev = abs(ratio - 1.0) - 0.4
+                    scale = max(0, round(10 - dev * 10))
+                    deductions.append(("规模均衡", "-%d：轴卡数 %d vs 理想 %d（比值 %.2f）" % (10 - scale, len(axis_cards), round(ideal), ratio), aid, FIX["scale"]))
 
             # —— 承接连通（SCORING 2.2：只算收束方式去重；跨轴/跨系消费由途径级维度承担，避免双计） ——
             patterns = set()
@@ -1286,6 +1456,7 @@ def main():
                                     break
                             if not ok:
                                 continue
+                        pw_crosspath_consumers.setdefault(pid, set()).add(pid2)
                     else:
                         pw_crossaxis_refs[pid] = pw_crossaxis_refs.get(pid, 0) + 1
                     ext_consumers += 1
@@ -1293,9 +1464,11 @@ def main():
             if not patterns and payoffs:
                 deductions.append(("承接连通", "-15：payoff 无收束方式多样性", ",".join(payoffs), FIX["connect"]))
 
+            apply_role_fix_overlay(deductions, card_by_name)
             axis_rows.append({
                 "pathway": pid, "axis": aid, "name": ax.get("name"), "symbol": ax.get("symbol"),
-                "anchor": anchor, "closure_e": closure_e, "closure_p": closure_p,
+                "anchor": fu_anchor, "closure_e": fu_e, "closure_p": fu_p,
+                "legacy_dims": legacy_dims,
                 "div_raw": div_raw, "scale": scale, "connect": connect,
                 "cards": len(axis_cards), "enablers_v": en_verified, "landed": landed, "notes": notes_level,
                 "patterns": sorted(patterns), "ext_consumers": ext_consumers,
@@ -1304,6 +1477,11 @@ def main():
                 "shape": sorted(ax_channels | prim_kinds | chain_kinds),
                 "vacuum_accepted": bool(ax.get("payoffVacuumAccepted")),
                 "deductions": deductions,
+                # 内部字段（不进 scores.json）：角色语义检查用——锚点 / 私有产出面 / facet 原值
+                "anchor_kind": a_kind or ("status" if sid else None),
+                "anchor_id": (a_id if a_kind else sid),
+                "private_items": private_items,
+                "facets_raw": axis_facets,
             })
 
     # 归一：多样性
@@ -1311,8 +1489,9 @@ def main():
     for r in axis_rows:
         r["diversity"] = round(15 * r["div_raw"] / max_div, 1)
         r["total"] = round(r["anchor"] + r["closure_e"] + r["closure_p"] + r["diversity"] + r["scale"] + r["connect"], 1)
-        r["dims"] = {"身份锚定": r["anchor"], "产层闭环": r["closure_e"], "收束闭环": r["closure_p"],
+        r["dims"] = {"锚点兑现": r["anchor"], "产层兑现": r["closure_e"], "收束兑现": r["closure_p"],
                      "轴内多样性": r["diversity"], "规模均衡": r["scale"], "承接连通": r["connect"]}
+        r["legacyDims"] = r.pop("legacy_dims")   # 旧三维诊断留档（不进分，满 3 轮后复核删除）
 
     # ---------- 途径级 ----------
     # 跨系读段专项：本途径卡读取他途径枢纽状态（crossPathway:true 即枢纽，不限是否轴身份），
@@ -1329,6 +1508,9 @@ def main():
                 if part and pid not in part:
                     continue
                 pw_crosspath_reads[pid] = pw_crosspath_reads.get(pid, 0) + 1
+                owner = status_owner.get(hid)
+                if owner:
+                    pw_crosspath_consumers.setdefault(owner, set()).add(pid)
 
     # 跨系通道耦合（SCORING 2.0）：本途径写入的耦合通道被他途径读取（每 他途径卡×通道 计 1）
     for pid, d in pathways.items():
@@ -1339,7 +1521,10 @@ def main():
             for pid2, d2 in pathways.items():
                 if pid2 == pid:
                     continue
-                n += sum(1 for c in d2.get("cards") or [] if ch in ALL_SURF[(pid2, c["name"])][1])
+                hits = sum(1 for c in d2.get("cards") or [] if ch in ALL_SURF[(pid2, c["name"])][1])
+                if hits:
+                    pw_crosspath_consumers.setdefault(pid, set()).add(pid2)
+                n += hits
             pw_crosspath_reads[pid] = pw_crosspath_reads.get(pid, 0) + n
 
     # 途径指纹与平均风格距离（2026-10-01 差异化专项）：对他 21 途径的 1-cos 均值，分位计分
@@ -1351,27 +1536,46 @@ def main():
     grow_status_ids = {sid for sid, sd in status_by_id.items() if sd.get("statPerStack")}
     # flag 读侧通用索引（批次十/十一对齐）：机制键的权威承载在状态 def
     flag_status_index = {"cast_time_set": casttime_status_ids, "statPerStack": grow_status_ids}
-    fps = {pid: fingerprint(d.get("cards") or [], status_by_id) for pid, d in pathways.items()}
+    # generic 卡不入途径间指纹向量（SCORING §一·附）：声明后其刻意平庸不再稀释差异化；
+    # 防刷靠 generic ≤25% 配比上限（蓝图 rubric 判）；trap 属 core 同族，照常计入
+    fps = {pid: fingerprint([c for c in (d.get("cards") or []) if c.get("role") != "generic"], status_by_id)
+           for pid, d in pathways.items()}
     mean_dists = {}
+    mean_fam_dists = {}   # pid -> {族: 对他 21 途径该族均距}（2.11 核心族下限用）
     nearest = {}
     for pid in pathways:
         others = [p2 for p2 in pathways if p2 != pid]
         if not others:
             mean_dists[pid] = 0.0
+            mean_fam_dists[pid] = {}
             nearest[pid] = (None, 0.0)
             continue
         ds = {p2: cos_dist(fps[pid], fps[p2]) for p2 in others}
         mean_dists[pid] = round(sum(ds.values()) / len(ds), 4)
+        fam_acc = {}
+        for p2 in others:
+            for f, d2 in cos_dist_by_family(fps[pid], fps[p2]).items():
+                fam_acc.setdefault(f, []).append(d2)
+        mean_fam_dists[pid] = {f: sum(v) / len(v) for f, v in fam_acc.items()}
         nb = min(ds, key=ds.get)
         nearest[pid] = (nb, round(ds[nb], 4))
     _sorted_d = sorted(mean_dists.values())
     _n_pw = len(_sorted_d)
 
+    _DIST_TIERS = [(0.30, 12), (0.26, 10), (0.22, 8), (0.18, 5), (0.14, 3)]
+
     def _dist_pts(m):
         # 绝对阈值（2026-10-19）：全库分位制会让「全库一起优化」排名不动、单卡微改跨档套利；
         # 绝对线随全库整体提升可涨分，阶段线记录于 SCORING.md。
-        return (12 if m >= 0.30 else 10 if m >= 0.26 else 8 if m >= 0.22
-                else 5 if m >= 0.18 else 3 if m >= 0.14 else 0)
+        for th, pts in _DIST_TIERS:
+            if m >= th:
+                return pts
+        return 0
+
+    def _dist_pts_lower(pts):
+        # 降一档（2.11 核心族下限触发时用）：12→10→8→5→3→0
+        ladder = [12, 10, 8, 5, 3, 0]
+        return ladder[min(ladder.index(pts) + 1, len(ladder) - 1)] if pts in ladder else 0
 
     pw_rows = []
     for pid, d in pathways.items():
@@ -1399,19 +1603,26 @@ def main():
         crossaxis = round(15 * min(pw_crossaxis_refs.get(pid, 0), CAP_CROSSAXIS) / CAP_CROSSAXIS, 1)
         if crossaxis < 7.5:
             deductions.append(("跨轴耦合", "-%s：本途径他轴机制命中 %d 次" % (15 - crossaxis, pw_crossaxis_refs.get(pid, 0)), pid, FIX["crossaxis"]))
-        crosspath_raw = pw_crosspath_reads.get(pid, 0) + pw_hub_statuses.get(pid, 0) * 4  # 枢纽状态折算 4 次读段
+        # 跨系联动（2.10 消费方多样性）：枢纽×2 + 消费本途径的他途径去重×4 + 读取实证(CAP4)，
+        # 治悬崖（0 枢纽≈0 分）与单途径刷次数（同一途径读 N 次只算 1 个消费方）
+        hubs_n = pw_hub_statuses.get(pid, 0)
+        consumers_n = len(pw_crosspath_consumers.get(pid, ()))
+        reads_n = pw_crosspath_reads.get(pid, 0)
+        crosspath_raw = hubs_n * 2 + consumers_n * 4 + min(reads_n, 4)
         crosspath = round(15 * min(crosspath_raw, CAP_CROSSPATH) / CAP_CROSSPATH, 1)
         if crosspath < 7.5:
-            deductions.append(("跨系联动", "-%s：枢纽状态 %d 个 + combo 读取 %d 次" % (15 - crosspath, pw_hub_statuses.get(pid, 0), pw_crosspath_reads.get(pid, 0)), pid, FIX["crosspath"]))
+            deductions.append(("跨系联动", "-%s：枢纽状态 %d 个×2 / 消费方 %d 途径×4 / 读取 %d 次(CAP4)" % (
+                15 - crosspath, hubs_n, consumers_n, reads_n), pid, FIX["crosspath"]))
 
-        # 结构健康（2026-10-16 权重 10→5：全库已满分无区分度，压到 5 保合规底线）
+        # 结构健康（2.14 重切：稀有 3 + 主被动比 3 + 旗舰 2 = 8，×5/8 = 5；
+        # 角色合规 2 分退役——配比/旗舰已由蓝图 rubric 管，角色冲突注级转入轴级兑现维）
         struct = 0
         bad_rarity = 0
         for c in cards:
             want = [r for r, seqs in rarity_map.items() if c.get("sequence") in seqs]
             if want and c.get("rarity") not in want:
                 bad_rarity += 1
-        struct += 4 if bad_rarity == 0 else max(0, 4 - 2 * bad_rarity)
+        struct += 3 if bad_rarity == 0 else max(0, 3 - 2 * bad_rarity)
         actives = sum(1 for c in cards if c.get("kind") == "active")
         passives = len(cards) - actives
         aratio = actives / passives if passives else 99
@@ -1423,10 +1634,115 @@ def main():
             struct += s5
             deductions.append(("结构健康", "-%s：主被动比 %.2f 不在 [1.5, 3.0]" % (round(3 - s5, 1), aratio), pid, FIX["aratio"]))
         n_flag = sum(1 for c in cards if c.get("flagship"))
-        struct += 3 if n_flag == 4 else 0              # 布尔判据，不再渐减白送
+        struct += 2 if n_flag == 4 else 0              # 布尔判据，不再渐减白送
         if n_flag != 4:
-            deductions.append(("结构健康", "-3：旗舰卡 %d 张（须恰好 4）" % n_flag, pid, FIX["flagship"]))
-        struct = round(struct * 0.5, 1)          # 10 → 5
+            deductions.append(("结构健康", "-2：旗舰卡 %d 张（须恰好 4）" % n_flag, pid, FIX["flagship"]))
+        # 角色分布 / 轴登记面 / 签名键表（不计分，供下方角色语义注级块使用）
+        role_dist = {}
+        for c in cards:
+            if c.get("role"):
+                role_dist[c["role"]] = role_dist.get(c["role"], 0) + 1
+        axes_reg = set()
+        for ax2 in axes.values():
+            if isinstance(ax2, dict):
+                axes_reg.update(ax2.get("enablers") or [])
+                axes_reg.update(ax2.get("payoffs") or [])
+        own_sig_keys = PATHWAY_SIGNATURES.get(pid, [])
+        struct = round(struct * 5 / 8, 1)          # 8 → 5
+
+        # —— 角色语义注级（SCORING §一·附；注级 = 不扣分，进失分清单供人工复核）——
+        if role_dist:
+            anchor_of = {r2["axis"]: (r2.get("anchor_kind"), r2.get("anchor_id")) for r2 in arows}
+            for c in cards:
+                r = c.get("role")
+                if r not in ("core", "bridge", "trap"):
+                    continue
+                nm = c["name"]
+                w, rd = ALL_SURF[(pid, nm)]
+
+                def _card_mounts(card):
+                    ids = []
+
+                    def _wk(x):
+                        if isinstance(x, dict):
+                            if (x.get("type") or x.get("kind")) == "mount_status" and x.get("statusId"):
+                                ids.append(x["statusId"])
+                            for v in x.values():
+                                _wk(v)
+                        elif isinstance(x, list):
+                            for v in x:
+                                _wk(v)
+                    _wk(card.get("effects"))
+                    return ids
+
+                def _identity_action(c=c, nm=nm, w=w, rd=rd):
+                    if nm in axes_reg:
+                        return True
+                    if any(signature_card_hit(c, k, all_unit_types, lineage_status_ids, flag_status_index)
+                           for k in own_sig_keys):
+                        return True
+                    akind, anchid = anchor_of.get(c.get("axis"), (None, None))
+                    if akind == "status" and anchid and ("status:" + anchid) in w:
+                        return True
+                    if akind == "channel" and anchid and anchid in (w | rd):
+                        return True
+                    # 2.13：写入本途径跨系枢纽（卡面直接 mount_status；间接写入不算）
+                    for sid in _card_mounts(c):
+                        if sid in hub_ids and status_owner.get(sid) == pid:
+                            return True
+                    return False
+
+                if r in ("core", "trap") and not _identity_action():
+                    deductions.append(("角色语义", "注：%s 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）" % r,
+                                       nm, FIX["role_semantic"]))
+                if r == "trap" and not card_has_risk_segment(c):
+                    deductions.append(("角色语义", "注：trap 卡无风险段（chance / 失败分支 / 自伤 皆无）",
+                                       nm, FIX["role_semantic"]))
+                if r == "bridge":
+                    cross = False
+                    for r2 in arows:
+                        if r2["axis"] == c.get("axis"):
+                            continue
+                        if rd & r2.get("private_items", set()):
+                            cross = True
+                            break
+                        fraw = r2.get("facets_raw")
+                        if fraw and card_mechanism_facets(c, fraw, status_by_id, def_index):
+                            cross = True
+                            break
+                    if not cross:
+                        for hid in hub_ids:
+                            if status_owner.get(hid) == pid or not card_refs_status(c, hid):
+                                continue
+                            part = status_by_id[hid].get("participants") or []
+                            if not part or pid in part:
+                                cross = True
+                                break
+                    if not cross:
+                        for ch in rd & set(CHANNELS):
+                            if any(w2 != pid for w2 in (chan_pathway_writers.get(ch) or ())):
+                                cross = True
+                                break
+                    if not cross:
+                        deductions.append(("角色语义", "注：bridge 卡无跨界读取（他轴私有面/facet/他途径枢纽通道 皆未命中）",
+                                           nm, FIX["role_semantic"]))
+
+        # —— 风格越界（只读诊断，不进 100 分——原则 8 指标生命周期首个实例）——
+        # 卡命中他途径主签名键即列出；键被 ≥3 途径共享的视为事实通用分叉，不计。
+        _key_owners = {}
+        for _p2, _ks in PATHWAY_SIGNATURES.items():
+            for _k in _ks:
+                _key_owners.setdefault(_k, set()).add(_p2)
+        oob_hits = []
+        for c in cards:
+            hits = sorted({k for k, owners in _key_owners.items()
+                           if pid not in owners and len(owners) <= 2
+                           and signature_card_hit(c, k, all_unit_types, lineage_status_ids, flag_status_index)})
+            if hits:
+                oob_hits.append("%s(%s)" % (c["name"], ",".join(hits)))
+        if oob_hits:
+            deductions.append(("风格越界", "注：%d 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）"
+                               % len(oob_hits), "；".join(oob_hits[:6]), FIX["style_oob"]))
 
         # 机制落地（2026-10-16 权重 10→5：全库已满分无区分度）
         flags = [f for c in cards for f in (c.get("frameworkFlags") or [])]
@@ -1462,12 +1778,26 @@ def main():
         style_strengths.sort(key=lambda x: (-x["distinct"], x["family"]))
         style_strengths = style_strengths[:4]
 
-        # 差异化（2026-10-19 重切，权重 35）= 签名键落地 7 + 途径间指纹 12 + 构型多样 5 + 途径内去重 11
-        sig_keys = PATHWAY_SIGNATURES.get(pid, [])
+        # 差异化（2026-10-19 重切，权重 35）= 签名键兑现 7 + 途径间指纹 12 + 构型多样 5 + 途径内去重 11
+        # 签名键兑现（2.14）：只评蓝图承诺键（签名键承诺列键集 K*），每键 ≥2 卡实证得 7/|K*|；
+        # 未承诺键不再计分（承诺即正源）；无蓝图途径回退身份卡键表。
+        sig_keys = sorted(bp_sig_keys.get(pid) or PATHWAY_SIGNATURES.get(pid, []))
         sig_hits = signature_counts(cards, sig_keys, unit_type_of=all_unit_types,
                                     lineage_ids=lineage_status_ids, flag_status_index=flag_status_index)
-        signature_score = min(7, sum(3 if h >= 2 else 1.5 * h for h in sig_hits.values()))
+        per_key = 7 / len(sig_keys) if sig_keys else 0
+        signature_score = min(7, round(sum(per_key if h >= 2 else per_key * 0.5 * h
+                                           for h in sig_hits.values()), 1))
         dist_pts = _dist_pts(mean_dists[pid])
+        # 核心族下限（2.11）：prim/hook/sshape 三族至少两族均距 ≥0.15，否则降一档——
+        # 外围族（cost/reach/temporal 等）只能加分不能保底，防「玩法雷同靠外围族凑距离」
+        CORE_FAM_FLOOR = ("prim", "hook", "sshape")
+        fam_ok = sum(1 for f in CORE_FAM_FLOOR if mean_fam_dists[pid].get(f, 0) >= 0.15)
+        family_floor_pass = fam_ok >= 2
+        if not family_floor_pass and dist_pts > 0:
+            lowered = _dist_pts_lower(dist_pts)
+            deductions.append(("差异化", "-%s：核心族距离不足（prim/hook/sshape 仅 %d 族均距 ≥0.15，%.1f→%.1f 降一档）"
+                               % (dist_pts - lowered, fam_ok, dist_pts, lowered), pid, FIX["uniqueness"]))
+            dist_pts = lowered
         dedup_ratio, dedup_pts = intra_dedup(cards, status_by_id)
         shapes = [set(r["shape"]) for r in arows]
         pairs = [(shapes[i], shapes[j]) for i in range(len(shapes)) for j in range(i + 1, len(shapes))]
@@ -1490,27 +1820,44 @@ def main():
                  "机制落地": (not flags) or landed_score >= 4.95,
                  "文本完备": text_score >= 4.95}
         gate_penalty = 3 * sum(1 for ok in gates.values() if not ok)
+        # 单维失分标记（2.11）：单维失分 ≥10 且 ≥ 总失分 45% → ⚠单维，进人工裁定队列而非直接重设计。
+        # （绝对量门槛滤掉高分的「剩余失分自然集中」噪声；45% 覆盖战士跨系 14.1/29.2≈48% 这类单维洞）
+        DIM_MAX = {"轴健康度": 35, "跨轴耦合": 15, "跨系联动": 15, "差异化": 35}
+        dim_losses = {k: round(m - {"轴健康度": health, "跨轴耦合": crossaxis,
+                                    "跨系联动": crosspath, "差异化": style_score}[k], 1)
+                      for k, m in DIM_MAX.items()}
+        total_loss = sum(dim_losses.values())
+        worst_dim = max(dim_losses, key=dim_losses.get)
+        single_dim_warn = worst_dim if (dim_losses[worst_dim] >= 10
+                                        and dim_losses[worst_dim] >= 0.45 * total_loss) else None
+
         total = round(health + crossaxis + crosspath + style_score - gate_penalty, 1)
+        apply_role_fix_overlay(deductions, card_by_name)
         pw_rows.append({
             "id": pid, "name": d.get("pathwayName"), "cards": len(cards),
             "total": total,
             "dims": {"轴健康度": health, "跨轴耦合": crossaxis, "跨系联动": crosspath,
                      "结构健康": round(struct, 1), "机制落地": landed_score, "文本完备": text_score,
                      "差异化": style_score},
+            "roleDist": role_dist,
             "sigHits": sig_hits, "styleDist": mean_dists[pid],
             "gates": gates, "gatePenalty": gate_penalty,
             "styleStrengths": style_strengths,
             "styleParts": {"signature": signature_score, "fingerprint": dist_pts,
                            "config": config_div, "dedup": dedup_pts,
-                           "dedupRatio": round(dedup_ratio, 4)},
+                           "dedupRatio": round(dedup_ratio, 4),
+                           "familyFloor": family_floor_pass,
+                           "familyDists": {f: round(v, 4) for f, v in mean_fam_dists[pid].items()}},
+            "singleDimWarn": single_dim_warn,
             "nearest": nearest[pid][0], "nearestDist": nearest[pid][1],
             "axes": arows, "deductions": deductions,
             "min_axis": min_axis, "mean_axis": round(mean_axis, 1),
         })
 
     pw_rows.sort(key=lambda r: r["total"])
+    variance = write_variance(pw_rows, axis_rows)
     write_scorecard(pw_rows)
-    write_scores_json(pw_rows)
+    write_scores_json(pw_rows, variance)
     print("scored %d pathways / %d axes -> scorecard.md + scores.json" % (len(pw_rows), len(axis_rows)))
     for r in pw_rows:
         print("  %-18s %5.1f  (min axis %.0f)" % (r["id"], r["total"], r["min_axis"]))
@@ -1523,13 +1870,16 @@ def write_scorecard(pw_rows):
     L.append("> 生成时间：%s。评分标准见 `../meta/SCORING.md`；数值 ⚠️D 不参与计分（基线状态）。\n" % datetime.date.today())
 
     L.append("## 一、途径排行（升序 = 优先重设计）\n")
-    L.append("| # | 途径 | 总分 | 轴健康 | 跨轴 | 跨系 | 结构 | 落地 | 文本 | 差异 | 最低轴 | 卡数 |")
-    L.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
+    L.append("| # | 途径 | 总分 | 轴健康 | 跨轴 | 跨系 | 结构 | 落地 | 文本 | 差异 | 最低轴 | 卡数 | 标记 |")
+    L.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|")
     for i, r in enumerate(pw_rows, 1):
         d = r["dims"]
-        L.append("| %d | **%s** `%s` | **%.1f** | %.1f | %.1f | %.1f | %.1f | %.1f | %.1f | %.1f | %.0f | %d |" % (
+        L.append("| %d | **%s** `%s` | **%.1f** | %.1f | %.1f | %.1f | %.1f | %.1f | %.1f | %.1f | %.0f | %d | %s |" % (
             i, r["name"], r["id"], r["total"], d["轴健康度"], d["跨轴耦合"], d["跨系联动"],
-            d["结构健康"], d["机制落地"], d["文本完备"], d["差异化"], r["min_axis"], r["cards"]))
+            d["结构健康"], d["机制落地"], d["文本完备"], d["差异化"], r["min_axis"], r["cards"],
+            ("⚠单维·" + r["singleDimWarn"]) if r.get("singleDimWarn") else ""))
+    L.append("")
+    L.append("> ⚠单维 = 单维失分 ≥10 且 ≥ 总失分 45%：先进人工裁定队列（确认是缺陷还是途径定位），不直接触发重设计（2.11）。")
     L.append("")
 
     for r in pw_rows:
@@ -1544,20 +1894,31 @@ def write_scorecard(pw_rows):
                      "；".join("%s ×%d" % (k, v) for k, v in r["sigHits"].items()) +
                      "；对他途径指纹均距 %.3f" % r.get("styleDist", 0))
             L.append("")
+        if r.get("roleDist"):
+            ROLE_ORDER = ("core", "starter", "bridge", "generic", "trap", "tech")
+            L.append("角色分布（SCORING §一·附）：" +
+                     " · ".join("%s ×%d" % (k, r["roleDist"][k]) for k in ROLE_ORDER if r["roleDist"].get(k)))
+            L.append("")
         if r["deductions"]:
             L.append("**途径失分项（含修改意见）**：")
             L.append("")
             for dim, why, ref, fix in r["deductions"]:
                 L.append("- `%s` %s（%s）→ %s" % (dim, why, ref, fix))
             L.append("")
-        L.append("| 轴 | 总分 | 身份 | 产层 | 收束 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |")
+        L.append("| 轴 | 总分 | 锚兑 | 产兑 | 收兑 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |")
         L.append("|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|")
         for a in sorted(r["axes"], key=lambda x: x["total"]):
             ad = a["dims"]
-            L.append("| %s %s `%s` | **%.1f** | %.0f | %.0f | %.0f | %.1f | %.0f | %.0f | %s | %s | %s |" % (
-                a["symbol"] or "", a["name"], a["axis"], a["total"], ad["身份锚定"], ad["产层闭环"],
-                ad["收束闭环"], ad["轴内多样性"], ad["规模均衡"], ad["承接连通"],
+            L.append("| %s %s `%s` | **%.1f** | %.0f | %.1f | %.1f | %.1f | %.0f | %.0f | %s | %s | %s |" % (
+                a["symbol"] or "", a["name"], a["axis"], a["total"], ad["锚点兑现"], ad["产层兑现"],
+                ad["收束兑现"], ad["轴内多样性"], ad["规模均衡"], ad["承接连通"],
                 ",".join(a["enablers_v"]) or "—", ",".join(a["landed"]) or "—", ",".join(a["notes"]) or "—"))
+        L.append("")
+        L.append("> 旧三维诊断留档（legacyDims，不进分；满 3 轮确认无信息损失后复核删除）：" +
+                 "；".join("%s 身份锚定 %.0f / 产层闭环 %.0f / 收束闭环 %.0f" % (
+                     a["name"], a["legacyDims"]["身份锚定"],
+                     a["legacyDims"]["产层闭环"], a["legacyDims"]["收束闭环"])
+                     for a in sorted(r["axes"], key=lambda x: x["total"])))
         L.append("")
         for a in sorted(r["axes"], key=lambda x: x["total"]):
             if a["deductions"]:
@@ -1569,22 +1930,25 @@ def write_scorecard(pw_rows):
     io.open(os.path.join(ANALYSIS_DIR, "scorecard.md"), "w", encoding="utf-8").write("\n".join(L))
 
 
-def write_scores_json(pw_rows):
+def write_scores_json(pw_rows, variance=None):
     out = {
         "generated": str(datetime.date.today()),
         "standard": "docs/meta/SCORING.md",
+        "dimVariance": variance or {},
         "pathways": [{
             "id": r["id"], "name": r["name"], "total": r["total"], "dims": r["dims"],
             "minAxis": r["min_axis"], "cards": r["cards"],
+            "roleDist": r.get("roleDist") or {},
             "sigHits": r.get("sigHits", {}), "styleDist": r.get("styleDist", 0),
             "gates": r.get("gates", {}), "gatePenalty": r.get("gatePenalty", 0),
             "styleStrengths": r.get("styleStrengths", []),
             "styleParts": r.get("styleParts", {}),
+            "singleDimWarn": r.get("singleDimWarn"),
             "nearest": r.get("nearest"), "nearestDist": r.get("nearestDist", 0),
             "deductions": [{"dim": d, "why": w, "ref": x, "fix": f} for d, w, x, f in r["deductions"]],
             "axes": [{
                 "id": a["axis"], "name": a["name"], "symbol": a["symbol"], "total": a["total"],
-                "dims": a["dims"], "cards": a["cards"],
+                "dims": a["dims"], "legacyDims": a["legacyDims"], "cards": a["cards"],
                 "enablersVerified": a["enablers_v"], "payoffsLanded": a["landed"],
                 "payoffsNotes": a["notes"], "patterns": a["patterns"],
                 "vacuumAccepted": a["vacuum_accepted"],
@@ -1594,6 +1958,49 @@ def write_scores_json(pw_rows):
     }
     io.open(os.path.join(ANALYSIS_DIR, "scores.json"), "w", encoding="utf-8").write(
         json.dumps(out, ensure_ascii=False, indent=1))
+
+
+def _variance_stats(values):
+    n = len(values)
+    if not n:
+        return {"count": 0, "mean": 0, "variance": 0, "min": 0, "max": 0}
+    mean = sum(values) / n
+    var = sum((v - mean) ** 2 for v in values) / n
+    return {"count": n, "mean": round(mean, 2), "variance": round(var, 2),
+            "min": round(min(values), 1), "max": round(max(values), 1)}
+
+
+def write_variance(pw_rows, axis_rows):
+    """各维度全库方差表（2.11 原则 8 指标生命周期）：方差过低的维已无区分度，
+    标记「候选降门禁/降权」，把 2.3 的人工判断变成机器提醒。产物落 analysis/variance.md。"""
+    PW_DIMS = ("轴健康度", "跨轴耦合", "跨系联动", "差异化")
+    AX_DIMS = ("锚点兑现", "产层兑现", "收束兑现", "轴内多样性", "规模均衡", "承接连通")
+    AX_LEGACY = ("身份锚定", "产层闭环", "收束闭环")   # 2.14 诊断留档，满 3 轮后复核删除
+    LOW_VAR = 1.0
+    groups = [("途径级（22 途径）", PW_DIMS,
+               {k: [r["dims"][k] for r in pw_rows] for k in PW_DIMS}),
+              ("轴级（88 轴）", AX_DIMS,
+               {k: [a["dims"][k] for a in axis_rows] for k in AX_DIMS}),
+              ("轴级旧三维·诊断留档（88 轴，不进分，满 3 轮后复核删除）", AX_LEGACY,
+               {k: [a["legacyDims"][k] for a in axis_rows] for k in AX_LEGACY})]
+    L = ["# 维度方差表（variance）\n",
+         "> 由 `docs/tools/score.py` 自动生成——原则 8（指标生命周期）：方差 <%.1f 的维度已无区分度，"
+         "标「候选降门禁/降权」，人工复核后走口径变更流程（先改 SCORING.md）。生成时间：%s。\n"
+         % (LOW_VAR, datetime.date.today())]
+    data = {}
+    for title, dims, cols in groups:
+        L.append("## %s\n" % title)
+        L.append("| 维度 | n | 均值 | 方差 | 最小 | 最大 | 标记 |")
+        L.append("|---|---:|---:|---:|---:|---:|---|")
+        for k in dims:
+            st = _variance_stats(cols[k])
+            flag = "候选降门禁/降权" if st["variance"] < LOW_VAR else ""
+            L.append("| %s | %d | %.2f | %.2f | %.1f | %.1f | %s |" % (
+                k, st["count"], st["mean"], st["variance"], st["min"], st["max"], flag))
+            data[k] = dict(st, lowVariance=bool(flag))
+        L.append("")
+    io.open(os.path.join(ANALYSIS_DIR, "variance.md"), "w", encoding="utf-8").write("\n".join(L))
+    return data
 
 
 if __name__ == "__main__":

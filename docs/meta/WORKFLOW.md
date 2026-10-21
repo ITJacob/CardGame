@@ -72,13 +72,73 @@ score.py 评分 → 取总览榜尾途径 → 读计分卡失分项（scorecard.
 
 ### 七格推进（一途径一轮）
 
-① **命题（主人拍）**：一句话玩法命题 + 可操作变量 ≥1，写入 `rounds/<途径>.md §命题`。AI 只出 3 候选，不得代拍。
+① **命题 + 玩法蓝图（主人拍）**：一句话玩法命题 + 可操作变量 ≥1，写入 `rounds/<途径>.md`；
+途径首轮须先立**玩法蓝图**（途径级一次性产物，见下节），七格推进是蓝图之下的迭代轮。AI 只出 3 候选，不得代拍。
 ② **体检（AI）**：`python docs/tools/playable_scan.py` 出 6 项指标 + 2×2 分类。
-③ **设计稿（AI 出 / 主人审）**：逐卡四列表（id / 保留·改写·新建·删除 / 新动作 / 玩家在这里决定什么）。被动卡第 4 列须写「它让哪张主动卡多了一个决策维度」；只写「打谁 / 有能量就打」不算。
+②→③ **蓝图 Gate**：`python docs/tools/blueprint_score.py` 蓝图评分 **≥60** 方可进格③
+（不足则由主人显式豁免并记入 rounds 文件）；蓝图的计划卡数/角色配比/签名键承诺是格③逐卡设计稿的输入。
+③ **设计稿（AI 出 / 主人审）**：逐卡四列表（id / 保留·改写·新建·删除 / 新动作 / 玩家在这里决定什么），
+逐卡标 `role`（六值口径见 SCORING §一·附），与蓝图角色配比/计划卡数对账。
+被动卡第 4 列须写「它让哪张主动卡多了一个决策维度」；只写「打谁 / 有能量就打」不算。
 ④ **拍板（主人独拍）**：不可逆项（命题落法、新机制、所有权分叉、卡数、代价形式）。
 ⑤ **落地（AI）**：先 statuses → 手写核心卡 → 批量引擎处理纯形状卡 → 三道人工工序（describe 重写 / note 分栏 / 抽样人读 10 张）→ 四门禁。
-⑥ **验收（双轨）**：形状轨（四门禁全绿 + 总分不退化）+ 玩法轨（`playable_scan.py` 10 项，**永不进 score.py 的 100 分**）。
+⑥ **验收（双轨）**：形状轨（四门禁全绿 + 总分不退化 + 蓝图兑现率对账 `blueprint_fulfillment.md`）
++ 玩法轨（`playable_scan.py` 10 项，**永不进 score.py 的 100 分**；蓝图评分同样永不进 100 分）。
 ⑦ **复盘（主人）**：必答「这轮玩家多了一个什么决定？」答不出 ⇒ 机械轮 +1；连续 2 个机械轮 ⇒ 停工改流程。
+
+### 玩法蓝图（途径级一次性产物，2026-10-21 立）
+
+蓝图回答「途径基础风格 + 轴作为细化玩法承接了哪几种机制」，在设计阶段定玩法、再补卡的细节设计
+（入门卡/过渡卡/通用卡按角色配比补齐），不再等卡全部设计完再补救分数。
+载体 = `docs/meta/rounds/<途径>.md` 前置章，评分器 = `docs/tools/blueprint_score.py`（rubric 0–100：
+命题 10 / 风格边界 15 / 轴循环 25 / 决策点 10 / 签名键 15 / 角色配比 15 / 钩子 10）。
+
+**章格式（固定表头，机读逐字匹配）**：
+
+```markdown
+## 玩法蓝图（<草案|已拍板|回溯补登> · <日期> · 蓝图评分 <xx>/100）
+
+### 命题
+| 一句话命题 | 可操作变量 | 变量代价/输面 |
+
+### 风格边界
+| 主签名维度 | 使用的全局通用机制 | 红线来源 |
+
+### 轴玩法
+| 轴 | 名称 | 锚点(kind:id) | 产出→消费→清除 | 玩家决策点 | 签名键承诺(键:卡位) | 计划卡数 | 角色配比 |
+
+### 跨轴钩子
+| 卡位 | 读轴 | 概念 | facet | 用途 |
+
+### 跨系钩子
+| 枢纽状态 | 写入卡位 | 读取卡位 | participants |
+
+### 角色配比
+| 角色 | 张数 | 卡位 |
+```
+
+**机读约定**：只认 `## 玩法蓝图` 之下各 `###` 节的管道表格（表头可写在节标题同行或次行）；
+单元格内列表用半角逗号、禁 `|` 与换行；签名键承诺写 `键:卡位,卡位;键:卡位`（分号隔键）；
+轴角色配比列写 `core×2,generic×1`；角色配比表逐角色一行，可加 `flagship` 行（卡位须 ⊆ core∪trap，恰 4 张）；
+跨轴/跨系钩子允许「显式声明无」（只一行且首格为「无」）；下一个 `##` 即蓝图章结束。
+
+**对账来源**：主签名维度 ↔ `途径设计身份.md` §一；签名键 ↔ score.py `PATHWAY_SIGNATURES`；
+锚点 kind ↔ SCORING §二·零 14 枚举；facet ↔ SCORING §二·三 词表；角色 ↔ SCORING §一·附 六值；
+全局通用机制 ↔ blueprint_score.py `GLOBAL_MECHANISMS` 词表（声明「占用 vs 通用」，使途径不把全游戏通用玩法写死包揽）。
+
+### 全库回溯计划（2026-10-21 立）
+
+存量 22 途径全部回溯补蓝图 + 回填 role。机器预填用 `docs/tools/prefill_blueprint.py`，
+命题与决策点必须人写。顺序按 scorecard 总分升序（榜尾正是环节⑤下一批重设计对象），
+已审的 sleepless/warrior 放最后（刚走完机制期迭代，回溯成本最低）。一批会话 3–4 条，
+一途径一 commit（`docs(rounds): XX玩法蓝图回溯 + role 回填`）：
+
+1. hunter → apothecary → reader → sailor
+2. spectator → pryer → criminal → apprentice
+3. thief → corpse_collector → assassin → savant
+4. lawyer → seer → arbiter → planter
+5. monster → chanter → supplicant → prisoner
+6. sleepless → warrior（已审末批，命题可从既有 rounds 首段回收）
 
 **三条铁律**：格④裁定数 = 0 ⇒ 整轮作废；格③ 0 行被打回 ⇒ 判「没真审」；玩法轨指标永不进 100 分（进则两轮内被爬山）。
 
@@ -94,13 +154,16 @@ score.py 评分 → 取总览榜尾途径 → 读计分卡失分项（scorecard.
 
 | 产物 | 生成者 | 消费 |
 |---|---|---|
-| `scorecard.md` | score.py | 人读计分卡（环节⑤取榜与失分归因的唯一依据） |
+| `scorecard.md` | score.py | 人读计分卡（环节⑤取榜与失分归因的唯一依据；⚠单维 标记进人工裁定队列） |
 | `scores.json` | score.py | 网页评分页**唯一**数据源（前端不重算；口径单一来源 = SCORING.md） |
+| `variance.md` | score.py | 各维全库方差 + 低方差「候选降门禁/降权」标记（SCORING 原则 8 指标生命周期） |
 | `SKILLS_OVERVIEW.md` | build_overview.py | 全库总览（22 途径分章 / 832 卡） |
 | `SKILLS_ANALYSIS_BY_PROFESSION.md` | build_profession_analysis.py | 职业 × 原语用量矩阵 + modify_stat/resource 参数统计 |
 | `analysis_by_profession/*.md` ×22 | build_axis_analysis.py | 职业 × 构筑轴设计风格报告 |
 | `ENTITIES_ANALYSIS.md` | build_entity_analysis.py | 编目三件套统计（召唤物 / 区域 / 界域：池清单 + 分布 + 卡面用法；口径与网页端统计分析页三子页一致） |
 | `STYLE_DISTANCE.md` | build_style_analysis.py | 途径风格距离基线（2026-10-01 差异化专项：指纹 + 22×22 距离矩阵 + 最近邻榜 + 签名键用量；口径与 score.py 第七维同源） |
+| `blueprint_score.md` | blueprint_score.py | 玩法蓝图评分榜 + 逐途径 rubric 明细（玩法蓝图工序，2026-10-21；格②→③ Gate ≥60） |
+| `blueprint_fulfillment.md` / `.json` | blueprint_score.py | 蓝图兑现率对账（声明 vs 实际卡池；格⑥验收的形状轨输入） |
 
 **纪律**：
 1. 产物不手改；脚本内禁写死快照数字（2026-09-14 基线底稿 SKILLS_ANALYSIS.md 已归档 docs/archive/proposals/，旧「口径核对」对差表已撤）。
