@@ -79,6 +79,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `rarity` | enum | ✓ | `common`(9-8) / `uncommon`(7-6) / `rare`(5-4) / `epic`(3-2) / `legendary`(1-0) |
 | `axis` | string | ✓ | 必须存在于顶层 `axes` |
 | `flagship` | bool | ✓ | 是否旗舰卡 |
+| `role` | enum | – | 设计角色六值（2026-10-21 玩法蓝图工序）：`core` 轴循环承重件 / `starter` 低序列入门（须 common）/ `bridge` 跨轴跨系连接 / `generic` 泛用骨架·刻意补位（不得 flagship、不得被 axes 登记）/ `trap` core 同族赌博变体（须带风险段）/ `tech` 对策卡。口径与配比约束见 SCORING.md §一·附 |
 | `lore` / `flavor` / `describe` | string | ✓ | 设定 / 风味 / **玩家可读效果描述**（`describe` 是唯一面向玩家的字段） |
 | `effects` | effect[] | ✓ | 卡面效果，至少 1 条 |
 | `tentative` | bool | ✓ | 数值待拍板；当前全库 832 张均为 `true` |
