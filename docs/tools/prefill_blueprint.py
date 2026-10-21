@@ -237,8 +237,6 @@ def infer_blueprint(pid, d, roles, pathways, status_by_id, status_owner, def_ind
 
     # 跨轴钩子：读本途径他轴锚点状态 / 命中他轴 facet 的实证（cap 6）
     xa_rows = []
-    common_ids = score.load_common_ids()
-    private = axis_private_statuses(pid, d, common_ids, status_by_id)
     facets = {}
     for aid, ax in axes.items():
         if not isinstance(ax, dict):
@@ -253,7 +251,10 @@ def infer_blueprint(pid, d, roles, pathways, status_by_id, status_owner, def_ind
         for aid in sorted(axes):
             if aid == c.get("axis") or len(xa_rows) >= 6:
                 continue
-            if any(score.card_refs_status(c, s) for s in private.get(aid, ())):
+            # status 行只认锚点状态（与 blueprint_score.reconcile 口径对齐；
+            # 读他轴非锚点私有状态属实证耦合但兑现口径不覆盖，不预填）
+            akind, aanch = axis_anchor(axes[aid]) if isinstance(axes[aid], dict) else (None, None)
+            if akind == "status" and aanch and score.card_refs_status(c, aanch):
                 xa_rows.append([c["name"], aid, "status", "read", USE_TODO])
                 continue
             hits = score.card_mechanism_facets(c, facets.get(aid) or set(), status_by_id, def_index)

@@ -7,6 +7,7 @@
 | 1 | **猎人** `hunter` | **96** | 回溯补登 | 10 | 15 | 25 | 10 | 11 | 15 | 10 |
 | 2 | **药师** `apothecary` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
 | 3 | **阅读者** `reader` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
+| 4 | **水手** `sailor` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
 
 
 ## 猎人（hunter）· 96 分
@@ -15,6 +16,6 @@
 - `签名键` 键 sref:massing 承诺卡位含非真实卡名：（待补强1卡）
 
 
-## 未建蓝图（19 条，回溯计划见 WORKFLOW.md「全库回溯计划」）
+## 未建蓝图（18 条，回溯计划见 WORKFLOW.md「全库回溯计划」）
 
-`apprentice`、`arbiter`、`assassin`、`chanter`、`corpse_collector`、`criminal`、`lawyer`、`monster`、`planter`、`prisoner`、`pryer`、`sailor`、`savant`、`seer`、`sleepless`、`spectator`、`supplicant`、`thief`、`warrior`
+`apprentice`、`arbiter`、`assassin`、`chanter`、`corpse_collector`、`criminal`、`lawyer`、`monster`、`planter`、`prisoner`、`pryer`、`savant`、`seer`、`sleepless`、`spectator`、`supplicant`、`thief`、`warrior`
