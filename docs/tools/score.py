@@ -1589,6 +1589,21 @@ def main():
                 nm = c["name"]
                 w, rd = ALL_SURF[(pid, nm)]
 
+                def _card_mounts(card):
+                    ids = []
+
+                    def _wk(x):
+                        if isinstance(x, dict):
+                            if (x.get("type") or x.get("kind")) == "mount_status" and x.get("statusId"):
+                                ids.append(x["statusId"])
+                            for v in x.values():
+                                _wk(v)
+                        elif isinstance(x, list):
+                            for v in x:
+                                _wk(v)
+                    _wk(card.get("effects"))
+                    return ids
+
                 def _identity_action(c=c, nm=nm, w=w, rd=rd):
                     if nm in axes_reg:
                         return True
@@ -1600,10 +1615,14 @@ def main():
                         return True
                     if akind == "channel" and anchid and anchid in (w | rd):
                         return True
+                    # 2.13：写入本途径跨系枢纽（卡面直接 mount_status；间接写入不算）
+                    for sid in _card_mounts(c):
+                        if sid in hub_ids and status_owner.get(sid) == pid:
+                            return True
                     return False
 
                 if r in ("core", "trap") and not _identity_action():
-                    deductions.append(("角色语义", "注：%s 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）" % r,
+                    deductions.append(("角色语义", "注：%s 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）" % r,
                                        nm, FIX["role_semantic"]))
                 if r == "trap" and not card_has_risk_segment(c):
                     deductions.append(("角色语义", "注：trap 卡无风险段（chance / 失败分支 / 自伤 皆无）",

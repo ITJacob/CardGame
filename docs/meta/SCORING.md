@@ -95,6 +95,15 @@ opt-in，未声明 = 现状不变）：generic 卡不入途径间指纹向量、
 角色语义（core 无身份动作 / bridge 无跨界读 / trap 无风险段）进注级失分清单；scorecard 加
 「角色分布」段与「风格越界」只读诊断（命中他途径主签名键，原则 8 首个实例，不进 100 分）。
 
+**2.13（2026-10-21）**：**hub 写入纳入身份动作判据**（§一·附 core/trap 量化判据第五项）。
+起因：66 条「core 无身份动作」注级中 7 条是本途径跨系枢纽（crossPathway hub）的卡面直接写入卡
+（assassin·命运诅咒→doom / lawyer·定义·替身→defined_substitute / planter·预测天气→weather_omen /
+sailor·海王领域→tide_call / spectator·宣告未来→fortify / supplicant·阴影替身术→shadow_double /
+thief·命运缝隙→fate_gap）——hub 写入是途径对全局的供给侧，跨系联动维已把「被消费」计分给途径，
+回溯时 7 例全部被人工判为 core 承重，属判据盲区而非角色误判。口径从窄：只认卡面直接
+`mount_status`（statusId ∈ 本途径 hub），间接写入（状态 trigger 再挂 hub）仍注级留人工复核。
+影响面：7 例注级消除，总分不变（注级本不扣分）。
+
 > **预案：回溯完成后 100 分重切（登记于 2026-10-21，未生效）**
 > 玩法蓝图工序（WORKFLOW.md 机制期玩法轨）确立三层分工后，新老范式存在重复计分面——
 > 蓝图 = 声明正源，score.py = 实证正源，blueprint_fulfillment = 对账正源。
@@ -130,7 +139,7 @@ opt-in，未声明 = 现状不变）：generic 卡不入途径间指纹向量、
 
 | 角色 | 作用 | 量化判据（机器可验） | 对计分的影响 |
 |---|---|---|---|
-| `core` | 轴循环承重件 | 命中 ≥1 项身份动作：挂锚点状态 / 读写锚点通道 / 签名键载体 / 被 axes.enablers\|payoffs 登记；否则注级「core 无身份动作」 | 全计分（指纹/密度/去重/实证全权重） |
+| `core` | 轴循环承重件 | 命中 ≥1 项身份动作：挂锚点状态 / 读写锚点通道 / 签名键载体 / 被 axes.enablers\|payoffs 登记 / **写入本途径跨系枢纽**（2.13：卡面直接 `mount_status` 挂 `crossPathway:true` 且 owner=本途径的状态；间接写入不算）；否则注级「core 无身份动作」 | 全计分（指纹/密度/去重/实证全权重） |
 | `starter` | 低序列教学卡 | 硬校验 `rarity=="common"`（validate.py）；原语种类 >2 属设计过 Complex，人工复核 | starter↔starter 近重复对豁免去重惩罚 |
 | `bridge` | 跨轴/跨系连接 | 须读本途径他轴私有状态/facet，或读他途径枢纽/耦合通道，否则注级「bridge 无跨界读取」 | 无豁免；语义注级进失分清单 |
 | `generic` | 泛用骨架 + 刻意补位 | 反向约束（硬校验/门禁）：不得被 axes 登记、不得携带签名键、不得 `flagship` | **不入途径间指纹向量**；generic↔generic 对豁免去重；被登记 →「角色冲突」注级且不计实证 |
