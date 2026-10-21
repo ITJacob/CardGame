@@ -62,7 +62,16 @@ def load_context():
     manifest = json.load(io.open(os.path.join(score.JSON_DIR, "manifest.json"), encoding="utf-8"))
     pw_names = {p["id"]: p.get("name", p["id"]) for p in manifest.get("pathways", [])}
     identity_dims = bps.load_identity_dims()
-    return pathways, status_by_id, status_owner, def_index, pw_names, identity_dims
+    # 签名键判读上下文与 score.py L1436-1443 全参数口径对齐（含 flag 读侧状态索引，
+    # 否则 flag:cast_time_set / flag:statPerStack 经状态 def 的载体会漏判）
+    all_unit_types = score.load_unit_types(pathways)
+    lineage_ids = {sid for sid, sd in status_by_id.items() if "lineageStack" in sd}
+    casttime_ids = {sid for sid, sd in status_by_id.items()
+                    if any(bm.get("op") == "cast_time_set" for bm in (sd.get("behaviorModifiers") or [])
+                           if isinstance(bm, dict))}
+    grow_ids = {sid for sid, sd in status_by_id.items() if sd.get("statPerStack")}
+    sig_ctx = (all_unit_types, lineage_ids, {"cast_time_set": casttime_ids, "statPerStack": grow_ids})
+    return pathways, status_by_id, status_owner, def_index, pw_names, identity_dims, sig_ctx
 
 
 def axis_anchor(ax):
@@ -99,12 +108,11 @@ def axis_private_statuses(pid, d, common_ids, status_by_id):
     return out
 
 
-def infer_roles(pid, d, status_by_id, def_index):
+def infer_roles(pid, d, status_by_id, def_index, sig_ctx):
     """逐卡 role 推断：ROLE_RULES 有序首命中。返回 {卡名: (role, reason)}，无命中 role=None。"""
     cards = d.get("cards") or []
     axes = d.get("axes") or {}
     sig_keys = score.PATHWAY_SIGNATURES.get(pid, [])
-    unit_type_of = score.load_unit_types({pid: d})
     axes_reg = set()
     for ax in axes.values():
         if isinstance(ax, dict):
@@ -139,7 +147,7 @@ def infer_roles(pid, d, status_by_id, def_index):
         elif nm in axes_reg:
             role, reason = "core", "轴登记"
         else:
-            hit_keys = [k for k in sig_keys if score.signature_card_hit(c, k, unit_type_of)]
+            hit_keys = [k for k in sig_keys if score.signature_card_hit(c, k, *sig_ctx)]
             if hit_keys:
                 role, reason = "core", "签名键:%s" % hit_keys[0]
         if role is None and (c.get("sequence") or 0) >= 8 and c.get("rarity") == "common" and len(types) <= 2:
@@ -185,17 +193,16 @@ def infer_mechs(cards):
     return found[:4]
 
 
-def infer_blueprint(pid, d, roles, pathways, status_by_id, status_owner, def_index, pw_name, identity_dims):
+def infer_blueprint(pid, d, roles, pathways, status_by_id, status_owner, def_index, pw_name, identity_dims, sig_ctx):
     cards = d.get("cards") or []
     axes = d.get("axes") or {}
     sig_keys = score.PATHWAY_SIGNATURES.get(pid, [])
-    unit_type_of = score.load_unit_types({pid: d})
     card_names = {c["name"] for c in cards}
 
     # 签名键承诺：实证卡名（按载体所在轴归位）；缺口占位提醒
     sig_carriers = {}
     for k in sig_keys:
-        carriers = [c["name"] for c in cards if score.signature_card_hit(c, k, unit_type_of)]
+        carriers = [c["name"] for c in cards if score.signature_card_hit(c, k, *sig_ctx)]
         sig_carriers[k] = carriers
     sig_cell_by_axis = {aid: [] for aid in axes}
     for k, carriers in sig_carriers.items():
@@ -383,14 +390,14 @@ def main():
         raise SystemExit(__doc__)
     pid = args[0]
     write = "--write" in sys.argv
-    pathways, status_by_id, status_owner, def_index, pw_names, identity_dims = load_context()
+    pathways, status_by_id, status_owner, def_index, pw_names, identity_dims, sig_ctx = load_context()
     d = pathways.get(pid)
     if not d:
         raise SystemExit("未知途径：%s" % pid)
     pw_name = pw_names.get(pid, pid)
 
-    roles = infer_roles(pid, d, status_by_id, def_index)
-    bp = infer_blueprint(pid, d, roles, pathways, status_by_id, status_owner, def_index, pw_name, identity_dims)
+    roles = infer_roles(pid, d, status_by_id, def_index, sig_ctx)
+    bp = infer_blueprint(pid, d, roles, pathways, status_by_id, status_owner, def_index, pw_name, identity_dims, sig_ctx)
 
     print("== role 推断（%s，%d 卡）==" % (pid, len(roles)))
     stat = {}
