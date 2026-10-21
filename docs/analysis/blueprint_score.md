@@ -15,6 +15,7 @@
 | 9 | **罪犯** `criminal` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
 | 10 | **阅读者** `reader` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
 | 11 | **水手** `sailor` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
+| 12 | **通识者** `savant` | **100** | 回溯补登 | 10 | 15 | 25 | 10 | 15 | 15 | 10 |
 
 
 ## 刺客（assassin）· 95 分
@@ -44,6 +45,6 @@
 - `签名键` 键 flag:template 承诺卡位含非真实卡名：（待补强1卡）
 
 
-## 未建蓝图（11 条，回溯计划见 WORKFLOW.md「全库回溯计划」）
+## 未建蓝图（10 条，回溯计划见 WORKFLOW.md「全库回溯计划」）
 
-`arbiter`、`chanter`、`lawyer`、`monster`、`planter`、`prisoner`、`savant`、`seer`、`sleepless`、`supplicant`、`warrior`
+`arbiter`、`chanter`、`lawyer`、`monster`、`planter`、`prisoner`、`seer`、`sleepless`、`supplicant`、`warrior`
