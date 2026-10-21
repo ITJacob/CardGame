@@ -18,6 +18,7 @@
   - docs/analysis/blueprint_score.md       蓝图评分榜 + 逐途径 rubric 明细
   - docs/analysis/blueprint_fulfillment.md 兑现率对账（人读）
   - docs/analysis/blueprint_fulfillment.json 兑现率对账（机读）
+  - docs/analysis/blueprints.json         站点机读面（声明 + 实证 join + 逐行兑现）
 无蓝图的途径记入「未建蓝图」清单并跳过（不报错，支撑分批回溯）。
 """
 import datetime
@@ -33,7 +34,7 @@ sys.path.insert(0, HERE)
 import score  # noqa: E402  复用 load_skills / PATHWAY_SIGNATURES / signature_counts / facet 工具
 import validate  # noqa: E402  复用 RESOURCES 等枚举正源
 from blueprint_parse import (  # noqa: E402  解析层已抽离（score.py 反向复用同一解析器）
-    SECTIONS, STATES, parse_blueprint,
+    SECTIONS, STATES, parse_blueprint, parse_pc_chain,
     _cells, _is_declared_none, _parse_axis_roles, _parse_sig_commit, _split_row,
 )
 
@@ -341,47 +342,138 @@ def _char_tokens(text):
 # ---------- 兑现率对账 ----------
 
 
-def reconcile(pid, bp, parsed, pathways, status_by_id, def_index):
-    """蓝图声明 vs 实际卡池（仅途径已有卡时有意义）。返回 {项: (兑现, 总数, 明细)}。"""
+def _is_placeholder_name(name):
+    """设计阶段占位串（「（待补强1卡）」「（无写入卡，待接线）」）：保留原文、不链空。"""
+    return name.startswith(("（", "("))
+
+
+def _card_ref(name, card_by_name):
+    """卡位名 -> 站点可消费的引用：真实卡给 id；占位给 placeholder；错名给 missing。"""
+    ref = {"name": name}
+    card = card_by_name.get(name)
+    if card:
+        ref["id"] = card["id"]
+    elif _is_placeholder_name(name):
+        ref["id"] = None
+        ref["placeholder"] = True
+    else:
+        ref["id"] = None
+        ref["missing"] = True
+    return ref
+
+
+def _card_refs(text, card_by_name):
+    """逗号分隔卡位串 -> 引用列表（跳过「无 / —」）。"""
+    return [_card_ref(n, card_by_name) for n in _cells(text) if n not in ("无", "—", "-")]
+
+
+def _names_in_order(names, text):
+    """parse_pc_chain 返回集合；展示按其在原文中的出现位置定序（产物确定性）。"""
+    return sorted(names, key=lambda n: (text.find(n), -len(n), n))
+
+
+def build_card_index(pathways):
+    """全库卡名索引：跨系钩子的写入/读取卡位常来自其他途径，不能只在本途径查。"""
+    idx = {}
+    for pid in sorted(pathways):
+        for c in pathways[pid].get("cards") or []:
+            idx.setdefault(c["name"], []).append(
+                {"name": c["name"], "id": c["id"], "pathway": pid})
+    return idx
+
+
+def _cross_ref(name, current_pid, card_index, prefer_pids=()):
+    """跨系卡位 -> 引用；优先本途径，再按 participants 顺序，最后按 pid 字典序。"""
+    ref = {"name": name}
+    cands = card_index.get(name) or []
+    if cands:
+        pick = None
+        for pid in (current_pid,) + tuple(prefer_pids):
+            pick = next((c for c in cands if c["pathway"] == pid), None)
+            if pick:
+                break
+        pick = pick or cands[0]
+        ref.update(pick)
+    elif _is_placeholder_name(name):
+        ref["id"] = None
+        ref["placeholder"] = True
+    else:
+        ref["id"] = None
+        ref["missing"] = True
+    return ref
+
+
+def _cross_refs(text, current_pid, card_index, prefer_pids=()):
+    return [_cross_ref(n, current_pid, card_index, prefer_pids)
+            for n in _cells(text) if n not in ("无", "—", "-")]
+
+
+def signature_context(pathways, status_by_id):
+    """signature_counts 的全参口径（与 score.py 主流程一致）。"""
+    lineage_ids = {sid for sid, sd in status_by_id.items() if "lineageStack" in sd}
+    casttime_ids = {sid for sid, sd in status_by_id.items()
+                    if any(bm.get("op") == "cast_time_set" for bm in (sd.get("behaviorModifiers") or [])
+                           if isinstance(bm, dict))}
+    grow_ids = {sid for sid, sd in status_by_id.items() if sd.get("statPerStack")}
+    return {"unit_type_of": score.load_unit_types(pathways),
+            "lineage_ids": lineage_ids,
+            "flag_status_index": {"cast_time_set": casttime_ids, "statPerStack": grow_ids}}
+
+
+def reconcile(pid, bp, parsed, pathways, status_by_id, def_index, sig_ctx=None,
+               card_index=None, card_by_id=None):
+    """蓝图声明 vs 实际卡池（仅途径已有卡时有意义）。
+
+    返回 {项: {hit, total, miss, rows}}；rows 逐行带 ok，供 blueprints.json 直接落盘
+    （站点不重新判定）。旧产物消费方只取 hit/total/miss。"""
     d = pathways.get(pid) or {}
     cards = d.get("cards") or []
     if not cards:
         return None
     card_by_name = {c["name"]: c for c in cards}
     axes_def = d.get("axes") or {}
+    sec = bp["sections"]
+    if sig_ctx is None:
+        sig_ctx = signature_context(pathways, status_by_id)
     out = {}
 
     # 锚点兑现：蓝图锚点 == skills axes 声明（anchor 或 statusId 简写）
-    hit, tot, miss = 0, 0, []
+    hit, tot, miss, rows = 0, 0, [], []
     for ar in parsed["axes_rows"]:
         spec = ar.get("锚点(kind:id)") or ""
-        if ":" not in spec:
-            continue
-        tot += 1
-        kind, _, aid = spec.partition(":")
         aid_ax = ar.get("轴")
-        ax = axes_def.get(aid_ax) or {}
-        actual = ax.get("anchor") or ({"kind": "status", "id": ax.get("statusId")} if ax.get("statusId") else {})
-        if actual.get("kind") == kind and actual.get("id") == aid:
+        ax = axes_def.get(aid_ax)
+        ax = ax if isinstance(ax, dict) else {}
+        actual = ax.get("anchor") or ({"kind": "status", "id": ax.get("statusId")} if ax.get("statusId") else None)
+        declared = None
+        if ":" in spec:
+            kind, _, aid = spec.partition(":")
+            declared = {"kind": kind, "id": aid, "raw": spec}
+            tot += 1
+            if actual and actual.get("kind") == kind and actual.get("id") == aid:
+                hit += 1
+            else:
+                miss.append("%s(蓝图%s ≠ 实际%s:%s)" % (
+                    aid_ax, spec, (actual or {}).get("kind"), (actual or {}).get("id")))
+        ok = bool(declared and actual and declared["kind"] == actual.get("kind")
+                  and declared["id"] == actual.get("id"))
+        rows.append({"axis": aid_ax, "declared": declared, "actual": actual, "ok": ok})
+    out["锚点"] = {"hit": hit, "total": tot, "miss": miss, "rows": rows}
+
+    # 签名键兑现：承诺键 signature_counts ≥2
+    commit = parsed.get("sig_commit") or {}
+    counts = score.signature_counts(cards, list(commit), **sig_ctx)
+    hit, miss, rows = 0, [], []
+    for key, slots in commit.items():
+        empirical = counts.get(key, 0)
+        ok = empirical >= 2
+        if ok:
             hit += 1
         else:
-            miss.append("%s(蓝图%s ≠ 实际%s:%s)" % (aid_ax, spec, actual.get("kind"), actual.get("id")))
-    out["锚点"] = (hit, tot, miss)
-
-    # 签名键兑现：承诺键 signature_counts ≥2（全参口径对齐 score.py 主流程：
-    # lineage/flag 状态索引缺失会把经状态 def 承载的键误判为实证 0）
-    sig_keys = score.PATHWAY_SIGNATURES.get(pid, [])
-    lineage_ids = {sid for sid, sd in status_by_id.items() if "lineageStack" in sd}
-    casttime_ids = {sid for sid, sd in status_by_id.items()
-                    if any(bm.get("op") == "cast_time_set" for bm in (sd.get("behaviorModifiers") or [])
-                           if isinstance(bm, dict))}
-    grow_ids = {sid for sid, sd in status_by_id.items() if sd.get("statPerStack")}
-    flag_idx = {"cast_time_set": casttime_ids, "statPerStack": grow_ids}
-    counts = score.signature_counts(cards, sig_keys, unit_type_of=score.load_unit_types(pathways),
-                                    lineage_ids=lineage_ids, flag_status_index=flag_idx)
-    commit = parsed.get("sig_commit") or {}
-    hit = sum(1 for k in commit if counts.get(k, 0) >= 2)
-    out["签名键"] = (hit, len(commit), ["%s(实证%d)" % (k, counts.get(k, 0)) for k in commit if counts.get(k, 0) < 2])
+            miss.append("%s(实证%d)" % (key, empirical))
+        rows.append({"key": key, "slots": _card_refs(",".join(slots), card_by_name),
+                     "empirical": empirical, "ok": ok})
+    out["签名键"] = {"hit": hit, "total": len(commit), "miss": miss, "rows": rows}
 
     # 角色配比兑现：实际 role 计数 vs 声明；flagship 行对卡面 flagship 字段（不是 role）
     declared = parsed.get("role_counts") or {}
@@ -391,14 +483,23 @@ def reconcile(pid, bp, parsed, pathways, status_by_id, def_index):
             if c.get("role"):
                 actual[c["role"]] = actual.get(c["role"], 0) + 1
         actual["flagship"] = sum(1 for c in cards if c.get("flagship"))
-        hit = sum(1 for r, n in declared.items() if actual.get(r, 0) >= n)
-        out["角色配比"] = (hit, len(declared),
-                         ["%s(声明%d/实际%d)" % (r, n, actual.get(r, 0))
-                          for r, n in declared.items() if actual.get(r, 0) < n])
+        hit, miss, rows = 0, [], []
+        for r, n in declared.items():
+            got = actual.get(r, 0)
+            ok = got >= n
+            if ok:
+                hit += 1
+            else:
+                miss.append("%s(声明%d/实际%d)" % (r, n, got))
+            rows.append({"role": r, "declared": n, "actual": got, "ok": ok})
+        out["角色配比"] = {"hit": hit, "total": len(declared), "miss": miss, "rows": rows}
 
     # 跨轴钩子兑现：声明卡位卡面命中读轴 facet
-    sec = bp["sections"]
-    xa = [r for r in (sec.get("跨轴钩子", {}).get("rows") or []) if r.get("卡位") not in (None, "无", "—")]
+    all_xa = sec.get("跨轴钩子", {}).get("rows") or []
+    xa = [r for r in all_xa if r.get("卡位") not in (None, "无", "—")]
+    if not xa and all_xa and _is_declared_none(all_xa, "卡位"):
+        # 显式声明无：0/0 中性口径（不是缺失）
+        out["跨轴钩子"] = {"hit": 0, "total": 0, "miss": [], "rows": []}
     if xa:
         axis_facets = {}
         for aid, ax in axes_def.items():
@@ -407,47 +508,229 @@ def reconcile(pid, bp, parsed, pathways, status_by_id, def_index):
             anchor = ax.get("anchor") or ({"kind": "status", "id": ax.get("statusId")} if ax.get("statusId") else None)
             axis_cards = [c for c in cards if c.get("axis") == aid]
             axis_facets[aid] = score.axis_mechanism_facets(axis_cards, anchor, status_by_id, def_index)
-        hit, miss = 0, []
+        hit, miss, rows = 0, [], []
         for r in xa:
+            slot_text = r.get("卡位") or ""
+            refs = _card_refs(slot_text, card_by_name)
+            reason = ""
             if r.get("概念") == "status":
                 # status 行：兑现 = 声明卡位引用读轴锚点状态（跨轴耦合口径①）
-                tgt_ax = axes_def.get(r.get("读轴")) or {}
+                tgt_ax = axes_def.get(r.get("读轴"))
+                tgt_ax = tgt_ax if isinstance(tgt_ax, dict) else {}
                 tgt_sid = tgt_ax.get("statusId") or (tgt_ax.get("anchor") or {}).get("id")
                 ok = bool(tgt_sid) and any(
-                    score.card_refs_status(card_by_name[s0], tgt_sid)
-                    for s0 in _cells(r.get("卡位")) if s0 in card_by_name)
+                    ref.get("id") and score.card_refs_status(card_by_name[ref["name"]], tgt_sid)
+                    for ref in refs)
+                if not ok:
+                    reason = "读轴锚点状态缺失" if not tgt_sid else "卡位未引用读轴锚点状态"
             else:
                 tgt = axis_facets.get(r.get("读轴")) or set()
                 ok = False
-                for slot in _cells(r.get("卡位")):
-                    c = card_by_name.get(slot)
-                    if c and tgt and score.card_mechanism_facets(c, tgt, status_by_id, def_index):
+                for ref in refs:
+                    card = card_by_name.get(ref["name"])
+                    if card and tgt and score.card_mechanism_facets(card, tgt, status_by_id, def_index):
                         ok = True
                         break
+                if not ok:
+                    reason = "读轴无 facet 实证" if not tgt else "卡位未实证读层"
+            if not any(ref.get("id") for ref in refs):
+                reason = "卡位为占位" if any(ref.get("placeholder") for ref in refs) else "卡位无真实卡"
             if ok:
                 hit += 1
             else:
-                miss.append("%s→%s" % (r.get("卡位"), r.get("读轴")))
-        out["跨轴钩子"] = (hit, len(xa), miss)
+                miss.append("%s→%s" % (slot_text, r.get("读轴")))
+            rows.append({"slot": slot_text, "slots": refs,
+                         "slotId": next((ref["id"] for ref in refs if ref.get("id")), None),
+                         "axis": r.get("读轴"), "concept": r.get("概念"), "facet": r.get("facet"),
+                         "purpose": r.get("用途"), "ok": ok, "reason": reason})
+        out["跨轴钩子"] = {"hit": hit, "total": len(xa), "miss": miss, "rows": rows}
 
-    # 跨系枢纽兑现：hub crossPathway + 写入/读取卡位真实且实证
-    xp = [r for r in (sec.get("跨系钩子", {}).get("rows") or []) if r.get("枢纽状态") not in (None, "无", "—")]
+    # 跨系枢纽兑现：hub crossPathway + 写入卡位真实且实证
+    all_xp = sec.get("跨系钩子", {}).get("rows") or []
+    xp = [r for r in all_xp if r.get("枢纽状态") not in (None, "无", "—")]
+    if not xp and all_xp and _is_declared_none(all_xp, "枢纽状态"):
+        out["跨系钩子"] = {"hit": 0, "total": 0, "miss": [], "rows": []}
     if xp:
-        hit, miss = 0, []
+        hit, miss, rows = 0, [], []
         for r in xp:
             hub = r.get("枢纽状态")
             sd = status_by_id.get(hub) or {}
-            writers = [s0 for s0 in _cells(r.get("写入卡位")) if s0 in card_by_name]
-            w_ok = any(score.card_refs_status(card_by_name[s0], hub) for s0 in writers)
-            if sd.get("crossPathway") and w_ok:
+            participants = _cells(r.get("participants"))
+            if card_index is not None:
+                writers = _cross_refs(r.get("写入卡位"), pid, card_index, participants)
+                readers = _cross_refs(r.get("读取卡位"), pid, card_index, participants)
+            else:
+                writers = _card_refs(r.get("写入卡位"), card_by_name)
+                readers = _card_refs(r.get("读取卡位"), card_by_name)
+
+            def _refs_hub(refs):
+                for ref in refs:
+                    card = card_by_name.get(ref["name"]) or (card_by_id or {}).get(ref.get("id"))
+                    if card and score.card_refs_status(card, hub):
+                        return True
+                return False
+
+            w_ok = _refs_hub(writers)
+            ok = bool(sd.get("crossPathway")) and w_ok
+            reason = ""
+            if not sd.get("crossPathway"):
+                reason = "枢纽未标 crossPathway"
+            elif not w_ok:
+                reason = "写入卡位无实证"
+            if ok:
                 hit += 1
             else:
                 miss.append("%s(crossPathway=%s,写入实证=%s)" % (hub, bool(sd.get("crossPathway")), w_ok))
-        out["跨系钩子"] = (hit, len(xp), miss)
+            rows.append({"hub": hub, "hubName": sd.get("name") or hub,
+                         "writers": writers, "readers": readers,
+                         "participants": _cells(r.get("participants")),
+                         "crossPathway": bool(sd.get("crossPathway")), "writeOk": w_ok,
+                         "ok": ok, "reason": reason})
+        out["跨系钩子"] = {"hit": hit, "total": len(xp), "miss": miss, "rows": rows}
     return out
 
 
+# ---------- 站点机读产物 ----------
+
+
+RUBRIC = {"命题": 10, "风格边界": 15, "轴循环": 25, "决策点": 10,
+          "签名键": 15, "角色配比": 15, "钩子": 10}
+
+
+def build_pathway_payload(pid, name, bp, total, parts, deds, parsed, pathways,
+                          status_by_id, def_index, axis_scores, sig_ctx,
+                          card_index=None, card_by_id=None):
+    """单途径蓝图 -> blueprints.json 的一节（声明 + 实证 join + 逐行兑现）。"""
+    d = pathways.get(pid) or {}
+    cards = d.get("cards") or []
+    card_by_name = {c["name"]: c for c in cards}
+    axes_def = d.get("axes") or {}
+    sec = bp["sections"]
+    rec = reconcile(pid, bp, parsed, pathways, status_by_id, def_index, sig_ctx,
+                    card_index, card_by_id)
+    rec = rec or {}
+    anchor_by_axis = {r["axis"]: r for r in (rec.get("锚点") or {}).get("rows") or []}
+    sig_empirical = {r["key"]: r["empirical"] for r in (rec.get("签名键") or {}).get("rows") or []}
+
+    prop = (sec.get("命题", {}).get("rows") or [{}])[0]
+    style = (sec.get("风格边界", {}).get("rows") or [{}])[0]
+
+    axes = []
+    for ar in parsed["axes_rows"]:
+        aid = ar.get("轴")
+        ax = axes_def.get(aid)
+        ax = ax if isinstance(ax, dict) else {}
+        spec = ar.get("锚点(kind:id)") or ""
+        anchor = None
+        if ":" in spec:
+            kind, _, anchor_id = spec.partition(":")
+            anchor = {"kind": kind, "id": anchor_id, "raw": spec}
+        flow = ar.get("产出→消费→清除") or ""
+        segs = flow.split("→")
+        produce = segs[0].strip() if len(segs) > 0 else ""
+        consume = segs[1].strip() if len(segs) > 1 else ""
+        clear = segs[2].strip() if len(segs) > 2 else ""
+        prod_names, cons_names = parse_pc_chain(flow, set(card_by_name))
+        axis_cards = [c for c in cards if c.get("axis") == aid]
+        axis_roles = {}
+        for c in axis_cards:
+            if c.get("role"):
+                axis_roles[c["role"]] = axis_roles.get(c["role"], 0) + 1
+        plan_raw = (ar.get("计划卡数") or "").strip()
+        signatures = []
+        for key, slots in _parse_sig_commit(ar.get("签名键承诺(键:卡位)")).items():
+            empirical = sig_empirical.get(key, 0)
+            signatures.append({"key": key, "slots": _card_refs(",".join(slots), card_by_name),
+                               "empirical": empirical, "ok": empirical >= 2})
+        sc = (axis_scores.get(pid) or {}).get(aid) or {}
+        anchor_row = anchor_by_axis.get(aid) or {}
+        axes.append({
+            "id": aid, "name": ax.get("name") or ar.get("名称") or aid,
+            "symbol": ax.get("symbol") or "",
+            "anchor": anchor,
+            "loop": {"produce": produce, "consume": consume, "clear": clear,
+                     "produceCards": [_card_ref(n, card_by_name) for n in _names_in_order(prod_names, produce)],
+                     "consumeCards": [_card_ref(n, card_by_name) for n in _names_in_order(cons_names, consume)]},
+            "decision": (ar.get("玩家决策点") or "").strip(),
+            "signatures": signatures,
+            "planCards": int(plan_raw) if plan_raw.isdigit() else None,
+            "roleMixDeclared": _parse_axis_roles(ar.get("角色配比")),
+            "actual": {"cards": len(axis_cards), "roleMix": axis_roles,
+                       "anchorMatch": bool(anchor_row.get("ok")),
+                       "enablers": sc.get("enablersVerified") or [],
+                       "payoffs": sc.get("payoffsLanded") or [],
+                       "payoffsNotes": sc.get("payoffsNotes") or [],
+                       "axisScore": sc.get("total")},
+        })
+
+    role_counts = parsed.get("role_counts") or {}
+    mix = {r.get("角色"): r for r in (sec.get("角色配比", {}).get("rows") or [])}
+    actual_roles = {}
+    for c in cards:
+        if c.get("role"):
+            actual_roles[c["role"]] = actual_roles.get(c["role"], 0) + 1
+    actual_flag = [c for c in cards if c.get("flagship")]
+    roles = []
+    for role in ROLES:
+        decl = role_counts.get(role, 0)
+        got = actual_roles.get(role, 0)
+        if not decl and not got and role not in mix:
+            continue
+        roles.append({
+            "role": role, "declared": decl,
+            "declaredSlots": _card_refs((mix.get(role) or {}).get("卡位"), card_by_name),
+            "actual": got,
+            "actualSlots": [{"name": c["name"], "id": c["id"]} for c in cards if c.get("role") == role],
+        })
+    flag_decl_raw = ((mix.get("flagship") or {}).get("张数") or "").strip()
+    flag_slots = _card_refs((mix.get("flagship") or {}).get("卡位"), card_by_name)
+    flagship = {"declared": int(flag_decl_raw) if flag_decl_raw.isdigit() else len(flag_slots),
+                "actual": len(actual_flag), "slots": flag_slots,
+                "actualSlots": [{"name": c["name"], "id": c["id"]} for c in actual_flag]}
+
+    fulfillment = {item: {"hit": v["hit"], "total": v["total"], "miss": v["miss"]}
+                   for item, v in rec.items()}
+    xa_rows = sec.get("跨轴钩子", {}).get("rows") or []
+    xp_rows = sec.get("跨系钩子", {}).get("rows") or []
+    hooks = {
+        "crossAxis": {"declaredNone": _is_declared_none(xa_rows, "卡位"),
+                      "missing": "跨轴钩子" not in sec},
+        "crossSystem": {"declaredNone": _is_declared_none(xp_rows, "枢纽状态"),
+                        "missing": "跨系钩子" not in sec},
+    }
+
+    payload = {
+        "id": pid, "name": name,
+        "state": bp["meta"].get("state"), "date": bp["meta"].get("date"),
+        "score": total, "scoreParts": dict(parts),
+        "deductions": [{"dim": dim, "why": why} for dim, why, _got, _full in deds],
+        "proposition": {"statement": prop.get("一句话命题") or "",
+                        "variable": prop.get("可操作变量") or "",
+                        "cost": prop.get("变量代价/输面") or ""},
+        "style": {"signature": style.get("主签名维度") or "",
+                  "mechanisms": _cells(style.get("使用的全局通用机制")),
+                  "redline": style.get("红线来源") or ""},
+        "axes": axes,
+        "crossAxis": (rec.get("跨轴钩子") or {}).get("rows") or [],
+        "crossSystem": (rec.get("跨系钩子") or {}).get("rows") or [],
+        "roles": roles, "flagship": flagship,
+        "hooks": hooks,
+        "fulfillment": fulfillment,
+    }
+    return payload, rec
+
+
 # ---------- 产物 ----------
+
+
+def load_axis_scores():
+    """scores.json 的 (pid, axis) -> 轴级实证（可能尚未生成；站点侧只读展示）。"""
+    path = os.path.join(ANALYSIS_DIR, "scores.json")
+    if not os.path.exists(path):
+        return {}
+    data = json.load(io.open(path, encoding="utf-8"))
+    return {p["id"]: {a["id"]: a for a in p.get("axes") or []}
+            for p in data.get("pathways") or []}
 
 
 def main():
@@ -465,26 +748,42 @@ def main():
     identity_dims = load_identity_dims()
     manifest = json.load(io.open(os.path.join(score.JSON_DIR, "manifest.json"), encoding="utf-8"))
     pw_names = {p["id"]: p.get("name", p["id"]) for p in manifest.get("pathways", [])}
+    sig_ctx = signature_context(pathways, status_by_id)
+    axis_scores = load_axis_scores()
+    card_index = build_card_index(pathways)
+    card_by_id = {c["id"]: c for d in pathways.values() for c in d.get("cards") or []}
 
-    rows, fulfill, no_bp = [], {}, []
-    for path in sorted(glob.glob(os.path.join(score.JSON_DIR, "*.skills.json"))):
+    paths_by_pid = {}
+    for path in glob.glob(os.path.join(score.JSON_DIR, "*.skills.json")):
         pid = json.load(io.open(path, encoding="utf-8"))["pathwayId"]
+        paths_by_pid[pid] = path
+    # 产物行序固定为 manifest 途径序（站点总览/热图行序一致），未登记项按 id 追加
+    order = [p["id"] for p in manifest.get("pathways", []) if p["id"] in paths_by_pid]
+    order += sorted(set(paths_by_pid) - set(order))
+
+    rows, fulfill, no_bp, payloads = [], {}, [], []
+    for pid in order:
         bp_path = os.path.join(ROUNDS_DIR, pid + ".md")
         bp = parse_blueprint(bp_path) if os.path.exists(bp_path) else None
         if not bp:
             no_bp.append(pid)
             continue
+        name = pw_names.get(pid, pid)
         total, parts, deds, parsed = score_blueprint(
-            pid, bp, pathways, status_ids, identity_dims, pw_names.get(pid, pid))
-        rows.append({"id": pid, "name": pw_names.get(pid, pid), "total": total,
+            pid, bp, pathways, status_ids, identity_dims, name)
+        rows.append({"id": pid, "name": name, "total": total,
                      "state": bp["meta"].get("state"), "parts": parts, "deds": deds})
-        rec = reconcile(pid, bp, parsed, pathways, status_by_id, def_index)
+        payload, rec = build_pathway_payload(
+            pid, name, bp, total, parts, deds, parsed, pathways,
+            status_by_id, def_index, axis_scores, sig_ctx, card_index, card_by_id)
+        payloads.append(payload)
         if rec:
-            fulfill[pid] = {"name": pw_names.get(pid, pid), "items": rec}
+            fulfill[pid] = {"name": name, "items": rec}
 
     rows.sort(key=lambda r: r["total"])
     write_score_md(rows, no_bp)
     write_fulfillment(fulfill)
+    write_blueprints_json(payloads)
     print("blueprint scored: %d 途径有蓝图 / %d 未建" % (len(rows), len(no_bp)))
     for r in rows:
         print("  %-18s %3d/100  %s" % (r["id"], r["total"], r.get("state") or ""))
@@ -527,14 +826,25 @@ def write_fulfillment(fulfill):
         L.append("| 对账项 | 兑现 | 未兑现明细 |")
         L.append("|---|---|---|")
         data[pid] = {}
-        for item, (hit, tot, miss) in rec["items"].items():
-            pct = round(100 * hit / tot) if tot else 0
-            L.append("| %s | %d/%d（%d%%） | %s |" % (item, hit, tot, pct, "；".join(miss) or "—"))
+        for item, it in rec["items"].items():
+            hit, tot, miss = it["hit"], it["total"], it["miss"]
+            pct = ("%d%%" % round(100 * hit / tot)) if tot else "—"
+            L.append("| %s | %d/%d（%s） | %s |" % (item, hit, tot, pct, "；".join(miss) or "—"))
             data[pid][item] = {"hit": hit, "total": tot, "miss": miss}
         L.append("")
     io.open(os.path.join(ANALYSIS_DIR, "blueprint_fulfillment.md"), "w", encoding="utf-8").write("\n".join(L))
     io.open(os.path.join(ANALYSIS_DIR, "blueprint_fulfillment.json"), "w", encoding="utf-8").write(
         json.dumps({"generated": str(datetime.date.today()), "pathways": data}, ensure_ascii=False, indent=1))
+
+
+def write_blueprints_json(payloads):
+    """站点机读面：声明 + 实证 join + 逐行兑现（rounds/*.md 仍是声明正源，本文件是派生产物）。"""
+    data = {"generated": str(datetime.date.today()),
+            "standard": "docs/meta/WORKFLOW.md#玩法蓝图",
+            "rubric": RUBRIC,
+            "pathways": payloads}
+    io.open(os.path.join(ANALYSIS_DIR, "blueprints.json"), "w", encoding="utf-8").write(
+        json.dumps(data, ensure_ascii=False, indent=1))
 
 
 if __name__ == "__main__":

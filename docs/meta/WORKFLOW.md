@@ -164,6 +164,7 @@ score.py 评分 → 取总览榜尾途径 → 读计分卡失分项（scorecard.
 | `STYLE_DISTANCE.md` | build_style_analysis.py | 途径风格距离基线（2026-10-01 差异化专项：指纹 + 22×22 距离矩阵 + 最近邻榜 + 签名键用量；口径与 score.py 第七维同源） |
 | `blueprint_score.md` | blueprint_score.py | 玩法蓝图评分榜 + 逐途径 rubric 明细（玩法蓝图工序，2026-10-21；格②→③ Gate ≥60） |
 | `blueprint_fulfillment.md` / `.json` | blueprint_score.py | 蓝图兑现率对账（声明 vs 实际卡池；格⑥验收的形状轨输入） |
+| `blueprints.json` | blueprint_score.py | 站点机读面：蓝图声明 + 卡池实证 join + 逐行兑现 ok（2026-10-22；`site/` 只读消费，勿手改） |
 
 **纪律**：
 1. 产物不手改；脚本内禁写死快照数字（2026-09-14 基线底稿 SKILLS_ANALYSIS.md 已归档 docs/archive/proposals/，旧「口径核对」对差表已撤）。

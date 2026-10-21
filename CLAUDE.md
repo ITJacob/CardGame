@@ -45,7 +45,8 @@ docs/archive/        只读历史快照（索引见 archive/README.md）
 docs/analysis/       纯分析产物（勿手改，重跑 docs/tools/ 脚本生成）
 ├─ SKILLS_OVERVIEW.md              全库总览（22 途径分章 / 832 卡，重生成产物）
 ├─ SKILLS_ANALYSIS_BY_PROFESSION.md  原语用量 + modify_stat/modify_resource 属性与参数统计
-└─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告
+├─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告
+└─ blueprints.json                   玩法蓝图站点机读面（声明 + 实证 join + 逐行兑现；site 只读）
 docs/tools/          **只放设计侧脚本**（设计数据校验 + docs 文档生成），保持 docs 纯粹
 ├─ validate.py      语义校验器（无依赖）：python docs/tools/validate.py
 ├─ score.py         职业设计评分器（2026-09-26 建，只读）：python docs/tools/score.py；
