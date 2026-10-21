@@ -1,6 +1,7 @@
 // 卡片详情页
-import { DB, hookEvents } from '../data.js';
+import { DB, hookEvents, statusesReady, onStatusesReady } from '../data.js';
 import { termSpan, statusSpan, axisSpan, defSpan, escapeHtml } from '../term.js';
+import { ROLE_INFO, ROLE_LABEL } from '../roles.js';
 import { renderEffects } from '../ast.js';
 import { renderDefDetail } from '../defs.js';
 import { showTipSticky } from '../tooltip.js';
@@ -191,6 +192,33 @@ function wireCardFrame(view) {
   img.addEventListener('error', fail);
 }
 
+// 蓝图定位：只读现有 DB（role / axes.enablers·payoffs / axis.anchor），**不 fetch
+// blueprints.json**——每张卡详情多一次请求不值当；签名键载体与产出/消费段卡位只
+// 在蓝图页展示。role 缺失时整行不渲染，不写「未声明」。
+function blueprintPosHtml(c) {
+  const axis = (DB.axesByPathway.get(c._pathway) || {})[c.axis];
+  if (!c.role && !axis) return '';
+  const rows = [];
+  if (c.role) {
+    const info = ROLE_INFO[c.role];
+    rows.push(`<dt>角色</dt><dd><span class="badge role-${c.role}" title="${escapeHtml(info?.full || c.role)}">${escapeHtml(ROLE_LABEL[c.role] || c.role)}</span>
+      <span class="muted small">${escapeHtml(info?.desc || '')}</span></dd>`);
+  }
+  if (axis) {
+    const a = axis.anchor;
+    const anchor = a ? `${termSpan('anchorKind', a.kind)} <span class="mono">${escapeHtml(a.id)}</span>` : '<span class="muted">未声明</span>';
+    rows.push(`<dt>轴</dt><dd>${axisSpan(c._pathway, c.axis)} · 锚点 ${anchor}</dd>`);
+    const parts = [];
+    if ((axis.enablers || []).includes(c.name)) parts.push('产层 enabler（产出段）');
+    if ((axis.payoffs || []).includes(c.name)) parts.push('读层 payoff（消费 / 收束段）');
+    if (parts.length) rows.push(`<dt>承诺</dt><dd>${parts.join(' · ')}</dd>`);
+  }
+  return `<section class="cs-sec bp-pos"><h2>蓝图定位</h2>
+    <dl class="kv">${rows.join('')}</dl>
+    <p class="small"><a href="#/blueprint/${encodeURIComponent(c._pathway)}">查看${escapeHtml(c._pathwayName)}玩法蓝图 →</a></p>
+  </section>`;
+}
+
 export function renderCardDetail(view, id, qs = '') {
   // 列表页把筛选写进了详情链接：返回时原样带回，刷新/浏览器后退也能还原同一屏
   const back = `#/cards${qs ? `?${escapeHtml(qs)}` : ''}`;
@@ -211,6 +239,7 @@ export function renderCardDetail(view, id, qs = '') {
       <header class="cs-head">
         <div class="cs-title-row">
           <h1 class="cs-name">${escapeHtml(c.name)}</h1>
+          ${c.role ? `<span class="badge role-${c.role}" title="${escapeHtml(ROLE_INFO[c.role]?.full || '')}">${escapeHtml(ROLE_LABEL[c.role] || c.role)}</span>` : ''}
           ${c.flagship ? '<span class="badge flagship">旗舰</span>' : ''}
         </div>
         <div class="cs-sub">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')} · <span class="mono cs-copyable" data-copy="${escapeHtml(c.id)}" title="点击复制 cardId（卡面图就命名为它）" tabindex="0" role="button">${escapeHtml(c.id)}</span></div>
@@ -232,6 +261,8 @@ export function renderCardDetail(view, id, qs = '') {
         ${c.flavor ? `<div class="flavor">${escapeHtml(c.flavor)}</div>` : ''}
         ${c.lore ? `<div class="muted cs-lore">${escapeHtml(c.lore)}</div>` : ''}
       </section>
+
+      ${blueprintPosHtml(c)}
 
       <section class="cs-sec">
         ${c.kind === 'active' ? '<h2>施放与选靶</h2>' : '<h2>触发条件</h2>'}
@@ -271,6 +302,16 @@ export function renderCardDetail(view, id, qs = '') {
   wireCardFrame(view);
 
   wireCopy(view);
+
+  // 状态定义是延迟加载的：深链首次渲染时 statusSpan 会先落 .term.missing，
+  // 状态到位后整页重画一次（与 score/blueprint 同口径）。不在别的路由上抢画。
+  if (!statusesReady()) {
+    onStatusesReady(() => {
+      if (view.querySelector('.card-stage') && location.hash.split('?')[0] === `#/card/${encodeURIComponent(id)}`) {
+        renderCardDetail(view, id, qs);
+      }
+    });
+  }
 }
 
 // 剪贴板：clipboard API 要安全上下文（localhost/https 均满足），失败时退回选中

@@ -4,23 +4,32 @@
 
 ## 页面
 
-- **卡片浏览** `#/cards`：按途径/构筑轴/稀有度/类型/序列/原语/距离筛选 + 关键词搜索 + 按稀有度排序，卡片详情含效果 AST 的中文精读
+- **卡片浏览** `#/cards`：按途径/构筑轴/稀有度/类型/角色/序列/原语/距离筛选 + 关键词搜索 + 按稀有度排序，卡片详情含效果 AST 的中文精读与「蓝图定位」（角色 / 轴锚点 / enabler·payoff 承诺 / 反链）
+  - **角色筛选**：六值（core/starter/bridge/generic/trap/tech）+「旗舰」（`flagship` 是独立 bool，不是第七种 role）。选项只列当前范围内实际出现的值，切途径时联动清空；URL 参数 `role=core` 可深链
+  - **选中途径时列表上方出现蓝图摘要带**（蓝图分 + 五项兑现 + 完整蓝图反链）；`blueprints.json` 懒加载，缺产物只降级这一条，不影响列表
   - **排序**：默认不排（原序 = 途径 → 途径内 `cards[]` 的序列 9→0）。选「稀有度」后按 **途径 → 稀有度 → 序列降序** 排——选中某途径时第一项恒相等，自然退化成该职业内部的纯稀有度排序；不选途径也不会把 22 个职业的传说卡糊成一堆。档位顺序读自 `manifest.rarityMap`（`data.js` 的 `readRarityOrder`），不在前端硬写五档枚举
   - **卡片视觉编码**（纯 CSS，无动画，移动端零额外重绘）：稀有度五档递进——common 朴素 / uncommon 左色条 / rare 着色边框 / epic 边框+顶部高光线 / legendary 金框+斜纹 SVG 底纹；途径特色 = 22 色手选调色板（`--p-*`，原著气质），落在卡片背景的 8% 晕染、途径 badge 着色与右下角轴符号水印（`data-ax` 伪元素，`attr()` 取字符无额外 DOM）。装饰规则挂在共享类 `.card-face` 上，只有列表卡片（`.card-item`）用；`color-mix` 不支持的旧浏览器整条背景声明失效、退回纯色底，属渐进增强
   - **轴符号统一原样渲染，不做提亮**：曾给「本体近黑」的符号单独分档提亮（canvas 现算亮度/色度 + invert 滤镜，`js/axis-ink.js`），后来确认「看不见」的真凶是**层叠**——`z-index:-1` 的水印伪元素会穿到根层叠上下文、沉到卡面底色背后（`.card-face`/`.card-sheet` 的 `isolation:isolate` 才是真修复），提亮治的是错病，还把 🌑 这类近中性灰符号翻成一团白雾（invert 后零色度浅灰，hue-rotate 无可保色相）。88 个符号回到同一套渲染：emoji 原样 + 低透明度水印
     - **水印的透明度也是量出来的**：0.08 时水印与卡面底色 `#1d2026` 的 WCAG 对比度只有 1.14~1.21（1.5 都不到，等于没画），低透明度下混合结果由底色主导、压得越狠越是一层灰，`saturate()` 之类的补救在 8% 上几乎没有杠杆——唯一有效的杠杆就是透明度，抬到 0.16 才回到 1.5 上下、颜色的差别才回得来。抬高之前必须先解决**层叠**：`position:relative` 且 `z-index:auto` 的元素**不**自成层叠上下文，`z-index:-1` 的伪元素会一路穿到根层叠上下文、沉到卡面底色背后（看不见），所以 `.card-face` / `.card-sheet` 各加了 `isolation:isolate`——水印这才落在「卡面底色之上、卡面文字之下」。这一步不补，0.16 的水印就不是背景水印而是糊在徽章与正文上的一层雾
   - **详情页 = 整页一张卡**（`body.page-card` + `.card-stage/.card-sheet`）：顶栏隐藏，页面本身作画布——`::before` 铺一层 `position:fixed` 的途径色氛围背景（不用 `background-attachment:fixed`，iOS 上失效），内容收进居中的大卡。稀有度在这张卡上决定框体规格：`--rc` 顶部色线 + 边框着色递进（uncommon 起有色边框，epic 加内描边，legendary 金框 + 斜纹底纹 + 外发光）；途径色做卡面顶部晕染，轴符号放大为右上角水印。小节用发丝分隔线 + 小字标题，不再嵌套面板
   - **AI 出图小节**（有 `art` 的卡才显示）：画面与边框是**两张独立的图**。画面 prompt = 全局画幅（`manifest.artFormat`，3:4 竖版无边框无文字）+ 途径顶层 `artStyle` + 卡级 `art` 三件套（subject / elements / mood）；框体**由 CSS 画**，AI 只出叠在上面的一层**无缝纹样**。纹样 prompt = 全局画法约束（`manifest.artFrameFormat`，正方形无缝纹样 + 卡游 UI 素材画法 + 显式否定 picture frame / bezel / border + 纯黑底——模型一见「框」就画成装裱画框）+ 各档主题层——common/uncommon/rare 走 `manifest.artFrame` 全局三档（中性配色，不抢途径色），epic/legendary 走途径顶层 `artFrameEpic`/`artFrameLegendary`（结合途径意象特殊化，且禁写 apex/edge 这类构图定位词）。全部展示时现拼（`card.js` 的 `artPrompt`/`frameFor`），不落盘。**几何与成框全在 CSS**：`.cs-bezel` 画不透明厚带（金属渐变 + 外沿高光 + 内嵌槽，按稀有度着色），`.cs-orn` 用 `border-image` 把纹样**切分**到卡上——源图四角对到卡的四角（真角饰）、中段在四边重复，`--frame-band` 定框宽、`--orn-slice` 定切分比例。AI 画不准精确几何，47 张独立出图靠 prompt 约束必然漂移，只能由 CSS 兜。注意 `border-image-source` 必须内联（自定义属性里的相对 url 会按样式表基址解析而 404）。两个复制按钮分开复制。成品图：画面母版存 `source/cards/<cardId>.png`（**扁平、按 id 命名**，不进 git、上传 R2 留档），派生 webp 由 `tools/build_art_variants.py` 出到 `assets/cards/`（站点按 id 现拼路径，无索引），边框存 `assets/frames/`（三档 `frame-<rarity>.png`，两档 `frame-<途径>-<档>.png`）。详情页标题行的 cardId **点一下就复制**（`wireCopy`），就是为了「复制 id → 本地重命名 → 丢进目录」这条链路不用手打 id。取图按 id 现拼派生大档 webp（`card.js` 的 `artCandidates`/`wireCardArt`），404 才隐藏并提示缺图。边框图黑底 + CSS `mix-blend-mode: screen` 叠在画面上（`object-fit: cover` 保比例，出图比例有偏差时裁切而非拉伸）。重出图同名覆盖
+- **玩法蓝图** `#/blueprint` / `#/blueprint/<pid>`：把 `docs/meta/rounds/<pid>.md` 的蓝图章从「只有脚本读」变成途径级一等页面，按**声明 → 实证 → 兑现**三层组织
+  - **数据源只有一份**：`docs/analysis/blueprints.json`（`blueprint_score.py` 预计算）。解析规则（中文表头、`→` 分段、占位串、卡名长优先匹配）只在 `blueprint_parse.py` 一处；前端不解析 md、不重算 rubric 或兑现率。声明正源仍是 rounds md，JSON 是派生产物
+  - **总览**：22 途径按 manifest 序（与统计热图行序一致）；兑现五项各给 `hit/total` 小条，**不合成百分比**——「role 未回填」和「缺一个读者」性质不同，合成会抹平。筛选「有兑现缺口 / 角色未回填」，排序只在途径序之外提供「设计分↑ / 兑现缺口↓」，蓝图分不给排序入口（≥60 是格②→③ 工序门槛，不是排行榜）
+  - **途径页**：命题 hero → 风格边界（机制 chip + 红线引用）→ 四张轴卡（锚点、计划/实际卡数、产出→消费→清除、签名键承诺、声明/实际角色配比）→ 跨轴/跨系钩子逐行 ✓/✗（带 miss 原因，读轴可 `?axis=` 定位）→ 角色配比 → 兑现五项 + 折叠的 rubric 明细 → 设计日志
+  - **证据可点**：卡位 → `#/card/<id>`；锚点 status → 状态浮层，resource/primitive/element/trigger → 词典；participants → 各途径蓝图页。占位串（「（待补强1卡）」）渲染虚线「待补」chip、不链空；查不到的锚点退回裸 mono，不标红
+  - **边界**：JSON 缺失 → 页面级提示 + 生成命令；途径未建蓝图 → 总览灰行 + 空页说明；role 未回填（hunter）→ 只显示声明配比，不画 0 计数条；钩子显式声明无 → `0/0` 中性态。设计日志 `<details>` 首次展开才 `fetch` rounds md，只渲染「## 迭代记录」之后的部分（跳过上方已展示的蓝图章）
 - **领域模型** `#/ddd`：把 `../docs/ddd/` 的全部设计文档渲染成一页，每篇一节，左侧目录按 README 的「文档导航」分组。正文里的英文枚举 token 自动挂上词典释义，点击跳到对应的词典栏目
 - **术语词典** `#/glossary`：英文枚举 key → 中文名 + 解释（原语、算子、条件谓词、触发点、目标锚点等），每类带一句「这一维是什么」的栏目导语，可搜索。类别数与词条数在页头现算，不在这里写死——词典在持续增补，写死必然过期
+- **设计评分** `#/score` / `#/score/<pid>`：消费 `docs/analysis/scores.json`（`score.py` 预计算，前端不重算）。总览按总分升序（= 重设计优先级），途径计分卡含四维清单、门禁、用料明细与轴级下钻。2.14 起轴级三维是「蓝图声明 ∩ 卡池实证」的兑现口径；`roleDist` 渲染为角色配比行，标题旁有 `[玩法蓝图 →]` 反链——蓝图 rubric 分永不进这 100 分
 - **统计分析** `#/stats`：页首二级菜单五个子页，口径各异——
-  - **技能** `#/stats/skills`：卡面族（只算 `*.skills.json` 的 effects）**一个维度一组**，组内先该维度的全库 bar、再该维度的「途径 × X」热图，共 **24 张热图**；顺序是卡池结构（总览 / 稀有度 / 序列 / 卡型 / 构筑深度：升级阶梯·变体·跨序列共享·次要目标 / 构筑轴（88 轴封闭集，只 bar））→ 构件面（原语用量 / 原语构成 / 算子 / 条件谓词 condition.kind / 卡面复杂度（每卡原语节点数分桶） / 卡面标签 Top 20）→ 数值面（modify_stat 属性 / 改写方式 mode / modify_resource 资源 / 伤害元素 / 数值预算（伤害费用比分桶，锚点 2.0 伤/能） / 位格承载）→ 费用面（能量 / 冷却 / 吟唱，卡级 cost 对象三件套、只算主动卡）→ 目标面（攻击距离 / 选靶方式 / 目标阵营 request.faction / 目标范围 request.scope / 选靶排序 fallbackSort / 选靶过滤 request.filter 键 / 被动触发点）→ 身份面（性别；gender_shift/gender_is 谓词零使用，仅 13 张卡级标注）（口径对齐 `docs/tools/build_profession_analysis.py`）
+  - **技能** `#/stats/skills`：卡面族（只算 `*.skills.json` 的 effects）**一个维度一组**，组内先该维度的全库 bar、再该维度的「途径 × X」热图，共 **25 张热图**；顺序是卡池结构（总览 / 稀有度 / 序列 / 卡型 / 卡角色 / 构筑深度：升级阶梯·变体·跨序列共享·次要目标 / 构筑轴（88 轴封闭集，只 bar））→ 构件面（原语用量 / 原语构成 / 算子 / 条件谓词 condition.kind / 卡面复杂度（每卡原语节点数分桶） / 卡面标签 Top 20）→ 数值面（modify_stat 属性 / 改写方式 mode / modify_resource 资源 / 伤害元素 / 数值预算（伤害费用比分桶，锚点 2.0 伤/能） / 位格承载）→ 费用面（能量 / 冷却 / 吟唱，卡级 cost 对象三件套、只算主动卡）→ 目标面（攻击距离 / 选靶方式 / 目标阵营 request.faction / 目标范围 request.scope / 选靶排序 fallbackSort / 选靶过滤 request.filter 键 / 被动触发点）→ 身份面（性别；gender_shift/gender_is 谓词零使用，仅 13 张卡级标注）（口径对齐 `docs/tools/build_profession_analysis.py`）
   - **为什么配对摆**：bar 给全库尺度、热图给途径尺度，问的是同一个问题的两个切面。早先是「前面一堆 bar、末尾一叠热图」，看一个维度要在页面两头来回跳
   - **组标题是板外路标**（`.stat-group-title`：小字、暗色、加字距），沿用卡片详情页小节的取向，不套容器面板——套了就成「框里框」。组内一律上下相邻、不并排：热图列数从 2（选靶）到 27（原语）不等，半幅宽里宽表只能横滚。组尾面板的 14px 底边距由 `.stat-group > .panel:last-child` 清掉，否则叠在下一组标题上边距上会顶成 34px
   - **组里的 bar 面板收窄到 900px，热图不收**（`.stat-group > .panel:not(.heat-panel)`）：热图的宽度就是「22 行 × N 列」的可用空间，越宽越好；bar 不是——轨道拉满（`#view` 1400px 减内边距）时标签在左、数值在右，读完标签得横穿一千多像素才找到数值，而长短比例在 660px 与 1300px 下完全一样，收窄不丢信息，只是把两端收进同一视野。顺带把组内主次摆正：宽表是主角，bar 是它的全库切面。窄屏本就放不满 900px，这条只在宽屏生效，没配媒体查询
   - **同组的 bar 与热图列序同源**（都用 `sortedRows` / `DB.rarityOrder`）：bar 从上到下的名次就是热图从左到右的列序。别单独给某一侧换排序，两侧列序一旦不同，读者会以为「bar 第一项」和「热图第一列」是同一个东西
-  - 24 张热图**行序一律是 manifest 途径顺序**、22 行齐全（该维度没有数据的途径留空行）。每张图色阶上限在**本图**内取，跨图比颜色无意义，要比就比格内数字
-  - 计数口径分两族：属性 / 资源 / 元素 / 算子 / 原语 / 条件谓词 / 改写方式按**效果节点**计（走 `ast.js` 的 `walkCardEffects`），稀有度 / 序列 / 距离 / 选靶 / 触发点 / 构筑轴 / 卡面复杂度 / 数值预算按**卡**计。**同组的 bar 与热图口径相同**（判据逐字一致，实测 10 组 bar 各段之和 = 该组热图各行合计），两族之别只在跨组时出现
+  - 25 张热图**行序一律是 manifest 途径顺序**、22 行齐全（该维度没有数据的途径留空行）。每张图色阶上限在**本图**内取，跨图比颜色无意义，要比就比格内数字
+  - 计数口径分两族：属性 / 资源 / 元素 / 算子 / 原语 / 条件谓词 / 改写方式按**效果节点**计（走 `ast.js` 的 `walkCardEffects`），稀有度 / 序列 / 卡型 / 卡角色 / 距离 / 选靶 / 触发点 / 构筑轴 / 卡面复杂度 / 数值预算按**卡**计。卡角色列序钉死六值 + flagship（不按用量重排），只统计 `cards[].role` 实际值；声明配比见玩法蓝图页。**同组的 bar 与热图口径相同**（判据逐字一致，实测 10 组 bar 各段之和 = 该组热图各行合计），两族之别只在跨组时出现
   - 「原语构成」按**行**归一化（每行 = 该途径自己 100%），比的是构成而不是用量；格内是 %，悬停补原值。它跟着「原语用量」留在同一组：维度就是原语，另立一组反而要读者自己把两张对起来
   - **状态** `#/stats/status`：**状态定义口径**（只算 `*.statuses.json` 的 statusDefs）——分类/途径/触发点分布、持续与叠层刻度、状态面原语用量、分类×原语热图、`statusDef` 字段填充率，另附「途径 × 维度」热图 9 张。渲染逻辑在 `views/status.js`（`renderStatusStats`），`stats.js` 负责加载占位与就绪后注入（状态定义是 deferred 数据）；旧 `#/statuses` 链接 301 到 `#/stats/status`
   - **召唤物 / 区域 / 界域** `#/stats/units|zones|domains`：**编目三件套口径**——各途径 `*.skills.json` 顶层三池（unitDefs / zoneDefs / domainDefs，Def 编目独立化批 2026-10-01 落地）+ 卡面用法遍历（spawn / domain 原语、target.request 选靶约束、filter.unitType 乘区、target_unit_type / target_is_summoned 谓词、卡级 zone / domain 字段）。渲染逻辑在 `views/entities.js`，三池由 `data.js` 随 22 份卡面同文件收集（零额外请求，不走 deferred）。md 形态同源产物：`docs/analysis/ENTITIES_ANALYSIS.md`（`build_entity_analysis.py`）
@@ -58,6 +67,7 @@
     是**正在被写的东西**：索引吃到旧的会让新加的途径整条不出现（连请求都不会发），文档吃到
     旧的会让人以为改动没生效。两者都很小、也不在卡片列表的关键路径上（ddd 文档只在领域
     模型页拉），值得用一次往返换「刷新即所见」。
+- **`docs/analysis/*.json` 不进 SW 白名单**：`scores.json` / `blueprints.json` 是脚本产物，改完 md / JSON 重跑脚本后要「刷新即所见」。两者只做内存缓存（`loadScores` / `loadBlueprints`，跨页复用），进页时 `cache: 'no-cache'` 重取。
 - **SW 的 scope 只决定它控制哪些页面，不限制它拦截哪些请求**。SW 装在 `site/` 下，照样
   拦得到 `../docs/` 的数据文件（这一点曾在 README 里写反过）。
 - **localhost 不注册 SW**（`main.js` 里判断）：本地改完 `docs/json` 刷新却还是上一版，

@@ -3,7 +3,8 @@
 // ——前端不重算分；用料明细（原语/参数/状态九维度）前端从 DB 现算，遍历规则与统计分析页
 // 卡面各组、页末「状态定义面」逐字一致（walkCardEffects 同一套），保证各处数字互相能对上。
 import { DB, loadScores, statusesReady, onStatusesReady } from '../data.js';
-import { escapeHtml, zh, axisSpan } from '../term.js';
+import { escapeHtml, zh, axisSpan, termSpan } from '../term.js';
+import { ROLE_ORDER, ROLE_LABEL } from '../roles.js';
 import { walkCardEffects } from '../ast.js';
 import { barChart, countBy, sortedRows } from '../charts.js';
 import { modifierKeys } from './status.js';
@@ -140,6 +141,8 @@ function overviewHtml(scores) {
     <h1 class="page-title">设计评分</h1>
     <p class="muted">口径：<code>docs/meta/SCORING.md</code>（闭环优先）· 数据 <code>score.py</code> 预计算 ${escapeHtml(scores.generated)} · 前端不重算。
     升序 = 重设计优先级。点击行进途径计分卡（评价打分清单 + 用料明细）。</p>
+    <p class="muted small">轴级三维（锚点 / 产层 / 收束）是「蓝图声明 ∩ 卡池实证」的兑现口径；
+    蓝图本身的 rubric 分见 <a href="#/blueprint">玩法蓝图</a> 页（永不进 100 分）。</p>
     <div class="panel"><table class="score-table">
       <thead><tr><th>#</th><th>途径</th><th>总分</th><th class="col-dimbars">四维（轴健康/跨轴/跨系/差异化）+ 门禁</th><th>最低轴</th><th>卡数</th><th>原语覆盖</th><th>自有状态</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -271,21 +274,47 @@ function materialHtml(pid) {
       <div class="nine-grid">${nine}</div></div>`;
 }
 
+// 实际角色分布（scores.json 的 roleDist；与蓝图页「实际」同源，两处数字应相等）。
+// 未回填时明确说明，不画 0 计数条——0 会被读成「这张角色设计为 0 张」
+function roleDistHtml(p) {
+  const rows = ROLE_ORDER.map((r) => [r, p.roleDist?.[r] || 0]).filter(([, n]) => n > 0);
+  const total = rows.reduce((s, [, n]) => s + n, 0);
+  if (!rows.length) {
+    return `<div class="panel"><h2>角色配比</h2>
+      <p class="panel-note muted">该途径 <code>role</code> 尚未回填（蓝图回溯批 C2 试点）。
+      声明配比与实际卡位见 <a href="#/blueprint/${encodeURIComponent(p.id)}">玩法蓝图</a>。</p></div>`;
+  }
+  return `<div class="panel"><h2>角色配比 <span class="muted small">实际 ${total} 张</span></h2>
+    <p class="panel-note muted">口径 SCORING §一·附；与蓝图页「实际」同源。声明配比见
+      <a href="#/blueprint/${encodeURIComponent(p.id)}">玩法蓝图</a>。</p>
+    <div class="bp-rolechips">${rows.map(([r, n]) => {
+      const c = { core: 'var(--accent)', starter: 'var(--uncommon)', bridge: 'var(--rare)', generic: 'var(--dim)', trap: 'var(--warn)', tech: 'var(--epic)' }[r];
+      return `<span class="bp-rolechip" style="--rc:${c}"><i class="bp-roledot"></i>${escapeHtml(ROLE_LABEL[r] || r)}<span class="mono">${r}</span><b class="num">${n}</b></span>`;
+    }).join('')}</div></div>`;
+}
+
 function pathwayHtml(scores, pid) {
   const p = scores.pathways.find((x) => x.id === pid);
   if (!p) return `<h1 class="page-title">未找到途径 ${escapeHtml(pid)}</h1>`;
-  const axisRows = p.axes.map((a) => `
+  const axesMeta = DB.axesByPathway.get(pid) || {};
+  const axisRows = p.axes.map((a) => {
+    const anchor = axesMeta[a.id]?.anchor;
+    return `
     <tr data-axis="${escapeHtml(a.id)}" class="axis-row">
-      <td>${axisSpan(pid, a.id)}</td>
+      <td>${axisSpan(pid, a.id)}${anchor ? `<div class="muted small">蓝图锚点 ${termSpan('anchorKind', anchor.kind)} <span class="mono">${escapeHtml(anchor.id)}</span></div>` : ''}</td>
       <td class="num total ${gradeClass(a.total)}">${a.total.toFixed(1)}</td>
       <td class="col-dimbars">${axisDimBars(a.dims)}</td>
       <td class="muted small">${a.enablersVerified.length ? '产 ' + a.enablersVerified.length : '<span class="warn-text">产 0</span>'} ·
           ${a.payoffsLanded.length ? '读 ' + a.payoffsLanded.length : (a.vacuumAccepted ? '<span class="muted">真空✓</span>' : '<span class="warn-text">读 0</span>')}</td>
     </tr>
-    <tr class="axis-detail" data-axis="${escapeHtml(a.id)}" hidden><td colspan="4">${axisDetailHtml(pid, a)}</td></tr>`).join('');
+    <tr class="axis-detail" data-axis="${escapeHtml(a.id)}" hidden><td colspan="4">${axisDetailHtml(pid, a)}</td></tr>`;
+  }).join('');
   return `
     <h1 class="page-title">${escapeHtml(p.name)} 计分卡 · <span class="total ${gradeClass(p.total)}">${p.total.toFixed(1)}</span></h1>
-    <p class="muted"><a href="#/score">← 返回总览</a> <span class="muted small">｜ 重设计优先级序 ${scores.pathways.indexOf(p) + 1} / ${scores.pathways.length}</span></p>
+    <p class="muted"><a href="#/score">← 返回总览</a> ｜
+      <a href="#/blueprint/${encodeURIComponent(p.id)}">玩法蓝图 →</a>
+      <span class="muted small">｜ 重设计优先级序 ${scores.pathways.indexOf(p) + 1} / ${scores.pathways.length}</span></p>
+    ${roleDistHtml(p)}
     ${checklistHtml(p)}
     ${materialHtml(pid)}
     <div class="panel"><h2>构筑轴（点击行展开下钻）</h2>

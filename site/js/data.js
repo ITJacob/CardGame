@@ -7,6 +7,7 @@ export const DB = {
   manifest: null,
   glossary: null,
   scores: null,              // 设计评分（score.py 预计算，懒加载：只有评分页消费）
+  blueprints: null,          // 玩法蓝图（blueprint_score.py 预计算，懒加载：蓝图页/反链消费）
   pathways: [],        // [{id, name, file, cardCount, ...}]
   cards: [],           // 全部卡，附带 _pathway
   cardById: new Map(),
@@ -217,4 +218,25 @@ export async function loadScores() {
   if (!r.ok) throw new Error(`${SCORES_URL} HTTP ${r.status}`);
   DB.scores = await r.json();
   return DB.scores;
+}
+
+// 玩法蓝图：blueprint_score.py 写出的站点机读面（声明 + 实证 join + 逐行兑现）。
+// 与 scores.json 同款：前端不解析 rounds/*.md、不重算 rubric/兑现率；进页重取一次保证
+// 重跑 build_analysis 后刷新即见新数据。SW 不缓存 docs/analysis/*（见 sw.js 的 DATA_RE）
+const BLUEPRINTS_URL = '../docs/analysis/blueprints.json';
+export async function loadBlueprints() {
+  if (DB.blueprints) return DB.blueprints;
+  const r = await fetch(BLUEPRINTS_URL, { cache: 'no-cache' });
+  if (!r.ok) throw new Error(`${BLUEPRINTS_URL} HTTP ${r.status}`);
+  DB.blueprints = await r.json();
+  return DB.blueprints;
+}
+
+// 设计日志：rounds/<pid>.md 的原文（蓝图章之后的「迭代记录」）。只在蓝图页展开时读，
+// 走网络不进 SW 数据缓存；md 是声明正源，站点只渲染不写回
+export async function loadRoundDoc(pid) {
+  const url = `../docs/meta/rounds/${encodeURIComponent(pid)}.md`;
+  const r = await fetch(url, { cache: 'no-cache' });
+  if (!r.ok) throw new Error(`${url} HTTP ${r.status}`);
+  return r.text();
 }

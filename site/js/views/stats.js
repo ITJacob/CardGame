@@ -12,6 +12,7 @@
 // 分隔、不套容器面板（同卡片详情页的取向：小字标题 + 留白，不层层套框）
 import { DB, statusesReady, onStatusesReady, hookEvents } from '../data.js';
 import { zh, escapeHtml } from '../term.js';
+import { ROLE_ORDER, ROLE_LABEL } from '../roles.js';
 import { walkCardEffects } from '../ast.js';
 import { barChart, countBy, sortedRows, heatPanel, wireHeatToggle } from '../charts.js';
 import { renderStatusStats } from './status.js';
@@ -94,7 +95,12 @@ function renderSkillStats(view) {
         hpCostByPath = new Map(), durUnitByPath = new Map(),
         depthByPath = new Map(), factionByPath = new Map(), scopeByPath = new Map(),
         sortByPath = new Map(), reqFilterByPath = new Map(),
-        cxByPath = new Map(), budgetByPath = new Map();
+        cxByPath = new Map(), budgetByPath = new Map(), roleByPath = new Map();
+  // 卡角色：六值固定顺序（顺序即配比语义，不按用量重排），flagship 是独立 bool 单列。
+  // 全库 bar 与热图列序同源，见 roleCols
+  const byRole = new Map();
+  for (const r of ROLE_ORDER) byRole.set(r, 0);
+  byRole.set('flagship', 0);
   const byEnergy = new Map(), byCooldown = new Map(), byCast = new Map(),
         byEffTarget = new Map(), condArgTotal = new Map(),
         hpCostTotal = new Map(), byDurUnit = new Map(),
@@ -106,6 +112,14 @@ function renderSkillStats(view) {
     bump(rarityByPath, p, c.rarity);
     bump(seqByPath, p, c.sequence);        // key 是 number，列定义同类型，见 seqCols
     bump(kindByPath, p, c.kind);
+    if (c.role) {
+      byRole.set(c.role, (byRole.get(c.role) || 0) + 1);
+      bump(roleByPath, p, c.role);
+    }
+    if (c.flagship) {
+      byRole.set('flagship', (byRole.get('flagship') || 0) + 1);
+      bump(roleByPath, p, 'flagship');
+    }
     // 费用三件套（energy / cooldown / castTime）同住在卡级 cost 对象上，只算主动卡——
     // 全库主动卡 100% 带 cost（被动卡不带也不该带），缺 cost 的主动卡会被这里静默漏掉，
     // 那是数据事故，页面不兜底
@@ -297,6 +311,15 @@ function renderSkillStats(view) {
   const kindGroup = group('卡池结构 · 卡型',
     barPanel('主动 / 被动', sortedRows(byKind, (k) => zh('cardKind', k))),
     heatOf('途径 × 卡型', kindByPath, colsOf(byKind, 'cardKind'), { unit: ' 张' }));
+
+  // 卡角色：列序钉死六值 + flagship，不跟用量走——同一张热图在 22 个途径下读法必须一致
+  const roleCols = [...ROLE_ORDER, 'flagship'].map((r) => ({ key: r, label: ROLE_LABEL[r], title: r }));
+  const roleGroup = group('卡池结构 · 卡角色',
+    barPanel('卡角色分布', [...ROLE_ORDER, 'flagship'].map((r) => ({ label: ROLE_LABEL[r], title: r, value: byRole.get(r) || 0 })),
+      `<p class="panel-note muted">口径 SCORING §一·附，只统计 <code>cards[].role</code> 的<b>实际值</b>；
+      蓝图里写的「声明配比」不在这里——见 <a href="#/blueprint">玩法蓝图</a>页。flagship 是独立 bool，
+      不是第七种 role，单列只为看出「旗舰卡落在哪」。role 未回填的途径整行留空，不是设计为 0 张。</p>`),
+    heatOf('途径 × 卡角色', roleByPath, roleCols, { unit: ' 张' }));
 
   const depthGroup = group('卡池结构 · 构筑深度',
     barPanel('构筑深度特征分布', sortedRows(flat(byDepth)),
@@ -493,11 +516,11 @@ function renderSkillStats(view) {
     热图共用一套读法——行 = ${pathways.length} 个途径，列 = 该维度的取值，格 = 计数
     （只有「原语 构成」那张是行内归一化后的 %）。同组的 bar 与热图<b>口径相同</b>：bar 各段之和
     = 该组热图各行的合计；跨组不是一回事——属性 / 资源 / 元素 / 算子 / 原语 / 位格 / 条件谓词 / 条件参数 / 效果级作用对象 / 时长口径按<b>效果节点</b>计，
-    稀有度 / 序列 / 卡型 / 费用 / 冷却 / 吟唱 / 血费 / 构筑深度 / 卡面复杂度 / 数值预算按<b>卡</b>计。每张图的色阶各自独立
+    稀有度 / 序列 / 卡型 / 卡角色 / 费用 / 冷却 / 吟唱 / 血费 / 构筑深度 / 卡面复杂度 / 数值预算按<b>卡</b>计。每张图的色阶各自独立
     （上限取本图最大值），跨图比颜色没有意义——要比就比格内数字。行序一律是 manifest 途径顺序；
     列序是各自的用量或刻度顺序，悬停表头看原始 key。状态定义口径见「状态」子页，编目三池
     （召唤物 / 区域 / 界域）见各自子页——本页各组均不含它们。</p>
-    ${overview}${rarityGroup}${seqGroup}${kindGroup}${depthGroup}${axisGroup}${primGroup}${opGroup}${condGroup}${condArgGroup}${cxGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${budgetGroup}${energyGroup}${cooldownGroup}${hpCostGroup}${castGroup}${durUnitGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${effTargetGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}`;
+    ${overview}${rarityGroup}${seqGroup}${kindGroup}${roleGroup}${depthGroup}${axisGroup}${primGroup}${opGroup}${condGroup}${condArgGroup}${cxGroup}${tagsGroup}${statGroup}${resGroup}${elemGroup}${budgetGroup}${energyGroup}${cooldownGroup}${hpCostGroup}${castGroup}${durUnitGroup}${rankGroup}${reachGroup}${selGroup}${factionGroup}${effTargetGroup}${scopeGroup}${sortGroup}${reqFilterGroup}${hookGroup}`;
 
   // 窄屏展开全部列；桌面端该开关不显示（CSS 隐藏），勾选状态无副作用
   wireHeatToggle(view);

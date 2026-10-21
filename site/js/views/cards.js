@@ -1,17 +1,18 @@
 // 卡片浏览页：筛选 + 分页列表
-import { DB, hookEvents } from '../data.js';
+import { DB, hookEvents, loadBlueprints } from '../data.js';
 import { termSpan, axisSpan, escapeHtml } from '../term.js';
+import { ROLE_ORDER, ROLE_INFO, ROLE_LABEL } from '../roles.js';
 import { walkCardEffects } from '../ast.js';
 import { artCandidates } from './card.js';
 
 const PAGE_SIZE = 100;
 
 const state = {
-  pathway: '', rarity: '', kind: '', sequence: '', axis: '', primitive: '', reach: '',
+  pathway: '', rarity: '', kind: '', sequence: '', axis: '', primitive: '', reach: '', role: '',
   sort: '', q: '', page: 1,     // sort 为空＝默认：不排，保持 DB.cards 原序（途径 → 序列）
 };
 
-const FILTER_KEYS = ['pathway', 'axis', 'rarity', 'kind', 'sequence', 'primitive', 'reach', 'sort', 'q'];
+const FILTER_KEYS = ['pathway', 'axis', 'rarity', 'kind', 'sequence', 'primitive', 'reach', 'role', 'sort', 'q'];
 
 // 从 URL 还原筛选：刷新页面、从卡片详情返回列表都走这条路径
 function readState(params) {
@@ -59,6 +60,7 @@ function applyFilters() {
     if (state.kind && c.kind !== state.kind) return false;
     if (state.sequence !== '' && String(c.sequence) !== state.sequence) return false;
     if (state.axis && c.axis !== state.axis) return false;
+    if (state.role && (state.role === 'flagship' ? !c.flagship : c.role !== state.role)) return false;
     if (state.reach && c.reach !== state.reach) return false;
     if (state.primitive && !cardPrimitives(c).has(state.primitive)) return false;
     if (q) {
@@ -103,6 +105,12 @@ function filterBarHtml() {
   const seqOpts = [...Array(10)].map((_, i) => [String(9 - i), `序列 ${9 - i}`]);
   const reachOpts = [['none', '无距离'], ['melee', '近战'], ['ranged', '远程']];
   const primOpts = collectPrimitives().map((p) => [p, zh('primitive', p)]);
+  // 角色选项只列当前范围内实际出现的值（切途径联动），避免 90% 选项恒为 0；
+  // 旗舰不是 role，按 bool 单独成一个筛选项
+  const pool = state.pathway ? DB.cards.filter((c) => c._pathway === state.pathway) : DB.cards;
+  const presentRoles = new Set(pool.map((c) => c.role).filter(Boolean));
+  const roleOpts = ROLE_ORDER.filter((r) => presentRoles.has(r)).map((r) => [r, ROLE_LABEL[r]]);
+  if (pool.some((c) => c.flagship)) roleOpts.push(['flagship', '旗舰']);
 
   let axisSel = '';
   if (state.pathway) {
@@ -116,6 +124,7 @@ function filterBarHtml() {
     ${axisSel}
     ${sel('rarity', '稀有度', rarityOpts)}
     ${sel('kind', '类型', kindOpts)}
+    ${sel('role', '角色', roleOpts)}
     ${sel('sequence', '序列', seqOpts)}
     ${sel('primitive', '原语', primOpts)}
     ${sel('reach', '距离', reachOpts)}
@@ -220,6 +229,7 @@ function cardItemHtml(c) {
       <span class="badge kind-${c.kind}">${c.kind === 'active' ? '主动' : '被动'}</span>
       <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
       <span class="badge">${axisSpan(c._pathway, c.axis)}</span>
+      ${c.role ? `<span class="badge role-${c.role}" title="${escapeHtml(ROLE_INFO[c.role]?.desc || '')}">${escapeHtml(ROLE_LABEL[c.role] || c.role)}</span>` : ''}
       <span class="badge art" hidden>有图</span>
       ${c.flagship ? '<span class="badge flagship">旗舰</span>' : ''}
       ${cost}${hook}
@@ -233,6 +243,7 @@ export function renderCards(view, params) {
   // 内部因筛选联动而重渲染时只传 view、不传 params，避免把刚改的状态冲掉
   if (params) readState(params);
   view.innerHTML = `<h1 class="page-title">卡片浏览</h1>${filterBarHtml()}
+    <div id="bp-strip"></div>
     <div id="class-mechanics"></div>
     <div id="card-list"></div><div class="pager" id="pager"></div>`;
 
@@ -241,7 +252,7 @@ export function renderCards(view, params) {
       const key = el.dataset.f;
       state[key] = el.value;
       state.page = 1;
-      if (key === 'pathway') state.axis = '';
+      if (key === 'pathway') { state.axis = ''; state.role = ''; }
       renderCards(view); // 重渲染以联动轴下拉
     });
     if (el.type === 'search') {
@@ -257,6 +268,7 @@ export function renderCards(view, params) {
     renderList(view);
   });
   renderList(view);
+  renderBlueprintStrip(view);
 }
 
 function mechanicsHtml(pathwayId) {
@@ -267,6 +279,38 @@ function mechanicsHtml(pathwayId) {
       ${m.details ? `<p>${escapeHtml(m.details)}</p>` : ''}
     </div>`).join('');
   return `<div class="panel class-mechanics"><h2>职业机制</h2>${rows}</div>`;
+}
+
+// 蓝图摘要带：只在选中某途径时出现。数据懒加载（失败的降级不能阻断列表），
+// 兑现五项保持五个独立分数——不合成百分比，否则「role 未回填」会和「缺一个读者」同形
+const FULFIL_ORDER = ['锚点', '签名键', '角色配比', '跨轴钩子', '跨系钩子'];
+async function renderBlueprintStrip(view) {
+  const host = view.querySelector('#bp-strip');
+  if (!host) return;
+  const pid = state.pathway;
+  if (!pid) { host.innerHTML = ''; return; }
+  try {
+    const bp = await loadBlueprints();
+    if (!host.isConnected || state.pathway !== pid) return;   // 期间已切途径/离页
+    const p = (bp.pathways || []).find((x) => x.id === pid);
+    if (!p) {
+      host.innerHTML = `<div class="panel bp-strip muted small">${escapeHtml(DB.pathways.find((x) => x.id === pid)?.name || pid)} · 尚未建立玩法蓝图。</div>`;
+      return;
+    }
+    const ful = FULFIL_ORDER.map((k) => {
+      const v = p.fulfillment?.[k] || { hit: 0, total: 0 };
+      return v.total ? `${v.hit}/${v.total}` : '—';
+    }).join(' ');
+    host.innerHTML = `<div class="panel bp-strip">
+      <span>${escapeHtml(p.name)} · 蓝图 <b class="num">${p.score}</b><span class="muted">/100</span>
+        <span class="muted">· 兑现 ${ful}</span></span>
+      <a href="#/blueprint/${encodeURIComponent(p.id)}">查看完整蓝图 →</a>
+    </div>`;
+  } catch {
+    if (host.isConnected && state.pathway === pid) {
+      host.innerHTML = '<div class="panel bp-strip muted small">blueprints.json 未生成，蓝图摘要暂不可用（先跑 build_analysis.py）。</div>';
+    }
+  }
 }
 
 function renderList(view) {

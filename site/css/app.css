@@ -541,6 +541,9 @@ h1.page-title { font-size: 18px; margin: 4px 0 14px; }
 
 @media (max-width: 640px) {
   #topbar { padding: 8px 12px; gap: 8px; flex-wrap: wrap; row-gap: 6px; }
+  /* nav 自己是 flex 项：不加 flex-wrap 时六个入口会撑出视口，而不是跟着顶栏换行 */
+  /* 整行占满：不给 100% 时 nav 按 max-content 排、六个入口一起顶出视口，flex-wrap 无处可换 */
+  #topbar nav { flex: 1 1 100%; flex-wrap: wrap; row-gap: 2px; }
   #topbar nav a { padding: 4px 8px; font-size: 13px; }
   #view { padding: 12px; }
   .filters label { white-space: nowrap; }
@@ -703,3 +706,205 @@ code.qr-name { font-family: Consolas, monospace; color: var(--accent2); }
   .chk-name { flex-basis: auto; }
 }
 .small { font-size: 12px; }
+
+/* ---------- 玩法蓝图页（views/blueprint.js） ----------
+   三层同屏：声明（rounds md）→ 实证（卡池 / score.py）→ 兑现（对账）。
+   颜色只承担两种语义：途径色（--pc，标题左边线）与 ok/bad（兑现标记）；
+   角色色是分类色，由 roles.js 的六个固定值决定，顺序本身有配比含义 */
+.bp-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; }
+.bp-filters { display: flex; gap: 4px; flex-wrap: wrap; }
+.bp-filters button {
+  padding: 3px 12px; border-radius: 6px; border: 1px solid transparent; background: none;
+  color: var(--dim); font: inherit; font-size: 13px; cursor: pointer;
+}
+.bp-filters button:hover { background: var(--panel2); color: var(--text); }
+.bp-filters button.active { color: var(--text); background: var(--panel2); border-color: var(--border); }
+.bp-toolbar select {
+  background: var(--panel2); color: var(--text); border: 1px solid var(--border);
+  border-radius: 6px; padding: 3px 6px; font: inherit; font-size: 13px;
+}
+.bp-overview { padding: 0; overflow-x: auto; }
+.bp-table { width: 100%; border-collapse: collapse; min-width: 820px; }
+.bp-table th, .bp-table td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+.bp-table th { color: var(--dim); font-weight: 400; font-size: 12px; white-space: nowrap; }
+.bp-table tr.bp-row { cursor: pointer; }
+.bp-table tr.bp-row:hover { background: var(--panel2); }
+.bp-table tr.bp-row-empty { color: var(--dim); }
+.bp-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.bp-row-miss td { background: color-mix(in srgb, var(--bad) 6%, transparent); }
+.bp-score-link { font-variant-numeric: tabular-nums; }
+/* 窄屏：总览表只留「途径 / 设计分 / 兑现」三列，蓝图分·状态·卡数·备注折进途径格内的
+   第二行（不需要展开交互，也不写死 nth-child 之外的列语义；桌面端不显示这行） */
+.bp-subline { display: none; font-size: 11.5px; margin-top: 2px; }
+@media (max-width: 640px) {
+  .bp-table { min-width: 0; }
+  .bp-table th { white-space: normal; }
+  .bp-table th:nth-child(2), .bp-table td:nth-child(2),
+  .bp-table th:nth-child(3), .bp-table td:nth-child(3),
+  .bp-table th:nth-child(6), .bp-table td:nth-child(6),
+  .bp-table th:nth-child(7), .bp-table td:nth-child(7) { display: none; }
+  .bp-subline { display: block; }
+}
+/* 五项兑现迷你段：标签 + 轨道 + 分数。0/0 保持空轨道，不画成「全兑现」 */
+.bp-fulfil-segs { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+.bp-fseg { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--dim); }
+.bp-fseg-bar { display: block; width: 34px; height: 6px; border-radius: 3px; background: var(--panel2); overflow: hidden; }
+.bp-fseg-bar i { display: block; height: 100%; background: var(--uncommon); border-radius: 3px; }
+.bp-fseg.bad .bp-fseg-bar i { background: var(--bad); }
+.bp-fseg.none .bp-fseg-bar { opacity: .45; }
+.bp-fseg-num { font-size: 10.5px; }
+.bp-fseg.bad .bp-fseg-num { color: var(--bad); }
+
+/* 兑现标记：ok / bad / none / mid 四态，文字同时给出（不只靠颜色） */
+.bp-mark { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; border-radius: 50%; font-size: 12px; line-height: 1; }
+.bp-mark.ok { color: var(--uncommon); background: color-mix(in srgb, var(--uncommon) 16%, transparent); }
+.bp-mark.bad { color: var(--bad); background: color-mix(in srgb, var(--bad) 16%, transparent); }
+.bp-mark.mid { color: var(--warn); background: color-mix(in srgb, var(--warn) 16%, transparent); }
+.bp-mark.none { color: var(--dim); background: var(--panel2); }
+
+/* 途径页头：左侧途径色竖线是唯一的大面积彩色，其余靠留白分层 */
+.bp-head { border-left: 3px solid var(--pc, var(--border)); }
+.bp-head-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.bp-title { font-size: 22px; margin: 0 0 4px; }
+.bp-hero-score { font-size: 14px; color: var(--dim); white-space: nowrap; }
+.bp-hero-score b { font-size: 24px; color: var(--pc, var(--text)); }
+.bp-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.bp-btn { font-size: 12px; padding: 3px 10px; border: 1px solid var(--border); border-radius: 6px; color: var(--dim); }
+.bp-btn:hover { color: var(--text); background: var(--panel2); border-color: var(--pc, var(--accent)); }
+.bp-sec-nav { display: flex; gap: 2px; flex-wrap: wrap; margin: 12px 0 -4px; padding-top: 10px; border-top: 1px solid var(--border); }
+.bp-sec-nav button {
+  background: none; border: none; padding: 2px 8px; border-radius: 4px;
+  color: var(--dim); font: inherit; font-size: 12px; cursor: pointer;
+}
+.bp-sec-nav button:hover { color: var(--text); background: var(--panel2); }
+
+/* 命题 + 风格边界 */
+.bp-statement { font-size: 15px; line-height: 1.75; margin: 2px 0 14px; }
+.bp-prop-grid, .bp-style-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; }
+.bp-sub-title { font-size: 12px; color: var(--dim); margin-bottom: 4px; letter-spacing: .03em; }
+.bp-redline {
+  margin: 14px 0 0; padding: 8px 12px; border-left: 3px solid var(--bad);
+  background: color-mix(in srgb, var(--bad) 7%, transparent); border-radius: 0 6px 6px 0;
+  font-size: 13px; color: var(--text);
+}
+
+/* 轴卡：每轴一张，产出 → 消费 → 清除三列 */
+.bp-axis-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.bp-axis { margin-bottom: 0; border-left: 2px solid var(--pc, var(--border)); }
+.bp-axis-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.bp-axis-title { font-size: 15px; font-weight: 700; }
+.bp-axis-title .mono { font-size: 12px; font-weight: 400; margin-left: 4px; }
+.bp-axis-meta { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.bp-dot { color: var(--border); }
+.bp-anchor { white-space: nowrap; }
+.bp-loop { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 8px; align-items: stretch; }
+.bp-loop-seg { min-width: 0; background: var(--panel2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; }
+.bp-loop-label { font-size: 11px; color: var(--dim); letter-spacing: .05em; margin-bottom: 3px; }
+.bp-loop-text { font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; }
+.bp-loop-arrow { align-self: center; color: var(--dim); font-size: 16px; }
+.bp-decision { margin-top: 10px; font-size: 13px; line-height: 1.65; }
+.bp-decision b { color: var(--accent); margin-right: 6px; }
+.bp-axis-foot { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+.bp-sub { min-width: 0; }
+.bp-sig-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 12px; margin: 3px 0; }
+.bp-sig-key { font-weight: 700; }
+.bp-sig-stat { white-space: nowrap; }
+.bp-mixrow { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 5px 0; }
+.bp-mixlabel { color: var(--dim); width: 30px; flex: 0 0 auto; }
+.bp-mixnums { color: var(--dim); font-size: 11.5px; overflow-wrap: anywhere; }
+
+/* 卡位 chip：真实卡可点；占位虚线；错名红色 */
+.bp-chips { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+.bp-chip {
+  display: inline-block; padding: 0 7px; border-radius: 9px; font-size: 12px;
+  border: 1px solid var(--border); background: var(--panel2); color: var(--text);
+  line-height: 1.7; white-space: nowrap;
+}
+a.bp-chip:hover { border-color: var(--accent); color: var(--accent2); }
+.bp-chip.decl { color: var(--dim); }
+.bp-chip.todo { border-style: dashed; color: var(--dim); }
+.bp-chip.missing { color: var(--bad); border-color: var(--bad); }
+
+/* 角色条：固定六色；顺序即配比语义，不按用量重排 */
+.bp-rolebar { display: inline-flex; flex: 1 1 auto; min-width: 60px; max-width: 260px; height: 8px; border-radius: 4px; background: var(--panel2); overflow: hidden; }
+.bp-rolebar.empty { opacity: .5; }
+.bp-rolebar-seg { display: block; height: 100%; }
+.bp-rolechip { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; white-space: nowrap; }
+.bp-roledot { width: 8px; height: 8px; border-radius: 50%; background: var(--rc, var(--dim)); display: inline-block; }
+.bp-rolechip .mono { font-size: 11px; }
+.bp-rolechips { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.bp-role-row { display: grid; grid-template-columns: 150px 130px minmax(0, 1fr); gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); align-items: start; }
+.bp-role-row:last-child { border-bottom: none; }
+.bp-flagship-row { border-top: 1px dashed var(--border); }
+.bp-role-count { font-size: 12px; white-space: nowrap; }
+.bp-role-slots { min-width: 0; }
+.bp-slotline { display: flex; gap: 8px; align-items: baseline; margin: 2px 0; flex-wrap: wrap; }
+.bp-slotlabel { font-size: 11px; color: var(--dim); flex: 0 0 52px; }
+details.bp-slotfold { margin: 2px 0; }
+details.bp-slotfold summary { font-size: 11px; }
+
+/* 兑现面板 */
+.bp-fulfil-row { display: grid; grid-template-columns: 92px minmax(80px, 1fr) 48px 22px minmax(0, 1.6fr); gap: 8px; align-items: center; padding: 5px 0; font-size: 12px; }
+.bp-fulfil-name { color: var(--text); }
+.bp-fulfil-bar { display: block; height: 8px; background: var(--panel2); border-radius: 4px; overflow: hidden; }
+.bp-fulfil-bar i { display: block; height: 100%; border-radius: 4px; background: var(--uncommon); }
+.bp-fulfil-bar i.bad { background: var(--bad); }
+.bp-fulfil-bar i.none { background: transparent; }
+.bp-fulfil-miss { overflow-wrap: anywhere; }
+.bp-rubric { margin-top: 12px; padding-top: 8px; border-top: 1px dashed var(--border); }
+.bp-rubric-grid { display: flex; gap: 6px 16px; flex-wrap: wrap; margin: 8px 0; }
+.bp-rubric-item { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; }
+.bp-rubric .deduction-list { margin-top: 8px; }
+
+/* 设计日志：懒加载 md；只渲染「迭代记录」之后的原文 */
+.bp-log-body { margin-top: 8px; padding: 10px 12px; background: var(--panel2); border: 1px solid var(--border); border-radius: 6px; }
+.bp-log-body > .md:first-child > h2:first-child { margin-top: 0; }
+
+/* 深链 ?axis= 定位时短暂高亮 */
+.bp-flash { animation: bp-flash 2.2s ease-out; }
+@keyframes bp-flash {
+  0%, 30% { box-shadow: 0 0 0 2px var(--accent), 0 0 22px color-mix(in srgb, var(--accent) 35%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.bp-table-wrap { overflow-x: auto; }
+.bp-hook-table { min-width: 640px; }
+.bp-hook-table td { font-size: 12px; }
+
+@media (max-width: 1100px) {
+  .bp-axis-grid { grid-template-columns: 1fr; }
+  .bp-role-row { grid-template-columns: 130px minmax(0, 1fr); }
+  .bp-role-slots { grid-column: 1 / -1; }
+}
+
+@media (max-width: 760px) {
+  .bp-loop { grid-template-columns: 1fr; }
+  .bp-loop-arrow { display: none; }
+  .bp-axis-foot { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .bp-prop-grid, .bp-style-grid { grid-template-columns: 1fr; }
+  .bp-fulfil-row { grid-template-columns: 76px minmax(48px, 1fr) 40px 20px; }
+  .bp-fulfil-miss { grid-column: 1 / -1; padding-left: 84px; }
+  .bp-title { font-size: 18px; }
+  .bp-hero-score b { font-size: 20px; }
+  .bp-role-row { grid-template-columns: 1fr; gap: 4px; }
+}
+
+/* 角色徽章（卡片列表 / 卡详情 / 评分页共用）：颜色只是辅助，中文角色名必现 */
+.badge[class*="role-"] { background: var(--panel2); }
+.badge.role-core { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 60%, transparent); }
+.badge.role-starter { color: var(--uncommon); border-color: color-mix(in srgb, var(--uncommon) 60%, transparent); }
+.badge.role-bridge { color: var(--rare); border-color: color-mix(in srgb, var(--rare) 60%, transparent); }
+.badge.role-generic { color: var(--dim); }
+.badge.role-trap { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 60%, transparent); }
+.badge.role-tech { color: var(--epic); border-color: color-mix(in srgb, var(--epic) 60%, transparent); }
+
+/* 卡片列表：选中途径时的蓝图摘要带 */
+.bp-strip { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; padding: 9px 16px; }
+.bp-strip b { font-size: 15px; color: var(--accent); }
+
+/* 卡详情：蓝图定位小节 */
+.bp-pos .kv { margin-top: 2px; }
+.bp-pos .badge { margin-right: 6px; }
+
