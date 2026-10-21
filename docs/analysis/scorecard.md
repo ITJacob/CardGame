@@ -98,7 +98,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 30.2 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:ice ×2；elem:lightning ×8；sref:rage ×10；对他途径指纹均距 0.293
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:ice ×2；elem:lightning ×8；sref:rage ×10；对他途径指纹均距 0.294
 
 角色分布（SCORING §一·附）：core ×21 · starter ×3 · bridge ×2 · generic ×10 · trap ×1 · tech ×5
 
@@ -322,7 +322,9 @@
 | 文本完备 | 5.0 |
 | 差异化 | 28.8 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×14；prim:echo_last_skill ×11；prim:restore_snapshot ×2；对他途径指纹均距 0.234
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×14；prim:echo_last_skill ×11；prim:restore_snapshot ×2；对他途径指纹均距 0.239
+
+角色分布（SCORING §一·附）：core ×26 · starter ×2 · bridge ×1 · generic ×3 · trap ×1 · tech ×1
 
 **途径失分项（含修改意见）**：
 
@@ -603,7 +605,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 27.9 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:status_shuffle ×5；prim:modify_rule_slot ×18；对他途径指纹均距 0.233
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:status_shuffle ×5；prim:modify_rule_slot ×18；对他途径指纹均距 0.234
 
 **途径失分项（含修改意见）**：
 
@@ -680,7 +682,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 29.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:seal_effect ×2；flag:cost_mod ×2；res:order ×6；对他途径指纹均距 0.274
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:seal_effect ×2；flag:cost_mod ×2；res:order ×6；对他途径指纹均距 0.275
 
 **途径失分项（含修改意见）**：
 
