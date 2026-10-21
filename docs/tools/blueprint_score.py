@@ -56,7 +56,9 @@ FACET_VOCAB = {
 GLOBAL_MECHANISMS = ("武器", "装备", "相位", "资源", "过牌", "基础增益", "位移", "召唤",
                      "治疗", "护盾", "驱散", "吟唱", "量表", "场地", "界域", "能量")
 # 决策点黑名单（WORKFLOW 格③打回标准同表）：写这些等于没写
-DECISION_BLACKLIST = {"", "打谁", "有能量就打", "无", "—", "-"}
+# 含 prefill_blueprint.py 占位串——占位 = 未人写，不得白拿命题/决策点分
+DECISION_BLACKLIST = {"", "打谁", "有能量就打", "无", "—", "-",
+                      "（待主人拍）", "（待人写）", "（待定）"}
 
 SECTIONS = {
     "命题": ["一句话命题", "可操作变量", "变量代价/输面"],
@@ -237,11 +239,11 @@ def score_blueprint(pid, bp, pathways, status_ids, identity_dims, pw_name):
     rows = sec.get("命题", {}).get("rows") or []
     r0 = rows[0] if rows else {}
     p = 0
-    if (r0.get("一句话命题") or "").strip():
+    if _real(r0.get("一句话命题")):
         p += 4
-    if (r0.get("可操作变量") or "").strip():
+    if _real(r0.get("可操作变量")):
         p += 3
-    if (r0.get("变量代价/输面") or "").strip():
+    if _real(r0.get("变量代价/输面")):
         p += 3
     if p < 10:
         deds.append(("命题", "命题三格不齐（命题/可操作变量/代价输面）", p, 10))
@@ -441,6 +443,12 @@ def score_blueprint(pid, bp, pathways, status_ids, identity_dims, pw_name):
 
 def spec_nonempty(ar):
     return bool((ar.get("锚点(kind:id)") or "").strip())
+
+
+def _real(text):
+    """占位视为空（prefill 占位串不得白拿命题分）。"""
+    t = (text or "").strip()
+    return "" if t in DECISION_BLACKLIST else t
 
 
 def _char_tokens(text):
