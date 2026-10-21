@@ -487,9 +487,17 @@ def reconcile(pid, bp, parsed, pathways, status_by_id, def_index):
             miss.append("%s(蓝图%s ≠ 实际%s:%s)" % (aid_ax, spec, actual.get("kind"), actual.get("id")))
     out["锚点"] = (hit, tot, miss)
 
-    # 签名键兑现：承诺键 signature_counts ≥2
+    # 签名键兑现：承诺键 signature_counts ≥2（全参口径对齐 score.py 主流程：
+    # lineage/flag 状态索引缺失会把经状态 def 承载的键误判为实证 0）
     sig_keys = score.PATHWAY_SIGNATURES.get(pid, [])
-    counts = score.signature_counts(cards, sig_keys, unit_type_of=score.load_unit_types(pathways))
+    lineage_ids = {sid for sid, sd in status_by_id.items() if "lineageStack" in sd}
+    casttime_ids = {sid for sid, sd in status_by_id.items()
+                    if any(bm.get("op") == "cast_time_set" for bm in (sd.get("behaviorModifiers") or [])
+                           if isinstance(bm, dict))}
+    grow_ids = {sid for sid, sd in status_by_id.items() if sd.get("statPerStack")}
+    flag_idx = {"cast_time_set": casttime_ids, "statPerStack": grow_ids}
+    counts = score.signature_counts(cards, sig_keys, unit_type_of=score.load_unit_types(pathways),
+                                    lineage_ids=lineage_ids, flag_status_index=flag_idx)
     commit = parsed.get("sig_commit") or {}
     hit = sum(1 for k in commit if counts.get(k, 0) >= 2)
     out["签名键"] = (hit, len(commit), ["%s(实证%d)" % (k, counts.get(k, 0)) for k in commit if counts.get(k, 0) < 2])
