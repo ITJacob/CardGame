@@ -28,8 +28,8 @@
   },
   "差异化": {
    "count": 22,
-   "mean": 30.41,
-   "variance": 3.75,
+   "mean": 30.14,
+   "variance": 4.23,
    "min": 26.5,
    "max": 33.4,
    "lowVariance": false
@@ -87,7 +87,7 @@
   {
    "id": "hunter",
    "name": "猎人",
-   "total": 53.6,
+   "total": 51.6,
    "dims": {
     "轴健康度": 18.4,
     "跨轴耦合": 1.9,
@@ -95,7 +95,7 @@
     "结构健康": 5.0,
     "机制落地": 5.0,
     "文本完备": 4.9,
-    "差异化": 30.7
+    "差异化": 28.7
    },
    "minAxis": 42.7,
    "cards": 43,
@@ -105,7 +105,7 @@
     "flag:gender_is": 1,
     "sref:massing": 1
    },
-   "styleDist": 0.3011,
+   "styleDist": 0.2966,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -148,22 +148,22 @@
    ],
    "styleParts": {
     "signature": 6.0,
-    "fingerprint": 12,
+    "fingerprint": 10,
     "config": 3.2,
     "dedup": 9.5,
     "dedupRatio": 0.0199,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2842,
+     "prim": 0.2843,
      "elem": 0.7267,
      "cond": 0.1929,
      "condarg": 0.4314,
-     "param": 0.5415,
-     "reach": 0.1168,
-     "tgt": 0.1392,
+     "param": 0.542,
+     "reach": 0.1182,
+     "tgt": 0.1401,
      "hook": 0.204,
      "sshape": 0.2062,
-     "cost": 0.0156,
+     "cost": 0.0155,
      "temporal": 0.165,
      "unit": 1.0
     }
@@ -390,6 +390,265 @@
    ]
   },
   {
+   "id": "apothecary",
+   "name": "药师",
+   "total": 59.8,
+   "dims": {
+    "轴健康度": 24.5,
+    "跨轴耦合": 5.6,
+    "跨系联动": 4.7,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 4.5,
+    "差异化": 28.0
+   },
+   "minAxis": 64.2,
+   "cards": 40,
+   "roleDist": {
+    "core": 25,
+    "generic": 8,
+    "starter": 1,
+    "bridge": 2,
+    "tech": 3,
+    "trap": 1
+   },
+   "sigHits": {
+    "sref:moon_cycle": 4,
+    "unitType:BEAST": 8,
+    "sref:prepared_draught": 5
+   },
+   "styleDist": 0.2588,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": false
+   },
+   "gatePenalty": 3,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "cat:buff",
+      "dur:tick"
+     ],
+     "distinct": 32
+    },
+    {
+     "family": "param",
+     "keys": [
+      "mode=delta",
+      "mode=copy"
+     ],
+     "distinct": 20
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "eff:self",
+      "mode=unit"
+     ],
+     "distinct": 16
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "modify_stat"
+     ],
+     "distinct": 11
+    }
+   ],
+   "styleParts": {
+    "signature": 7,
+    "fingerprint": 8,
+    "config": 3.2,
+    "dedup": 9.8,
+    "dedupRatio": 0.0167,
+    "familyFloor": true,
+    "familyDists": {
+     "prim": 0.3359,
+     "elem": 0.5721,
+     "cond": 0.1312,
+     "condarg": 0.1364,
+     "param": 0.5275,
+     "reach": 0.1873,
+     "tgt": 0.1191,
+     "hook": 0.1925,
+     "sshape": 0.2044,
+     "cost": 0.0155,
+     "temporal": 0.166,
+     "unit": 1.0
+    }
+   },
+   "singleDimWarn": null,
+   "nearest": "prisoner",
+   "nearestDist": 0.1376,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-9.4：本途径他轴机制命中 3 次",
+     "ref": "apothecary",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段"
+    },
+    {
+     "dim": "跨系联动",
+     "why": "-10.3：枢纽状态 1 个×2 / 消费方 0 途径×4 / 读取 3 次(CAP4)",
+     "ref": "apothecary",
+     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
+    },
+    {
+     "dim": "风格越界",
+     "why": "注：17 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
+     "ref": "药剂调配(prim:grant_immunity)；草药敷贴(prim:grant_immunity)；血族体质(stat:hp_max)；血族魅力(prim:grant_immunity)；腐蚀之爪(prim:grant_immunity)；深渊枷锁(prim:grant_immunity)",
+     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
+    }
+   ],
+   "axes": [
+    {
+     "id": "beasts",
+     "name": "兽群",
+     "symbol": "🐾",
+     "total": 64.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 4.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "动物感官",
+      "野性直觉"
+     ],
+     "payoffsLanded": [
+      "狂兽突袭"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "brew",
+     "name": "药剂",
+     "symbol": "⚗️",
+     "total": 67.2,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 7.2,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 11,
+     "enablersVerified": [
+      "药剂调配",
+      "草药敷贴"
+     ],
+     "payoffsLanded": [
+      "草药敷贴"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "crimson",
+     "name": "血月",
+     "symbol": "🩸",
+     "total": 69.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 9.0,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "深红体质",
+      "黑暗之翼"
+     ],
+     "payoffsLanded": [
+      "腐蚀之爪"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "产层闭环",
+       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
+       "ref": "血族魅力,血仆转化",
+       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
+      }
+     ]
+    },
+    {
+     "id": "moon",
+     "name": "月相",
+     "symbol": "🌙",
+     "total": 86.8,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 25,
+      "轴内多样性": 7.8,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 12,
+     "enablersVerified": [
+      "满月",
+      "月相·轮转"
+     ],
+     "payoffsLanded": [
+      "腐蚀之爪",
+      "黑暗凝视",
+      "蝙蝠分解"
+     ],
+     "payoffsNotes": [
+      "预服药水",
+      "闪现",
+      "月光化",
+      "召唤之门",
+      "创生",
+      "美之震撼",
+      "生命之权",
+      "血月当空"
+     ],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "收束闭环",
+       "why": "注：notes 级 8 张（减半计）",
+       "ref": "预服药水,闪现,月光化,召唤之门,创生,美之震撼,生命之权,血月当空",
+       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
+      }
+     ]
+    }
+   ]
+  },
+  {
    "id": "sailor",
    "name": "水手",
    "total": 61.2,
@@ -417,7 +676,7 @@
     "elem:lightning": 8,
     "sref:rage": 10
    },
-   "styleDist": 0.297,
+   "styleDist": 0.2922,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -467,12 +726,12 @@
     "familyFloor": true,
     "familyDists": {
      "prim": 0.4012,
-     "elem": 0.6627,
+     "elem": 0.6626,
      "cond": 0.1727,
      "condarg": 0.1044,
-     "param": 0.6696,
-     "reach": 0.0995,
-     "tgt": 0.1727,
+     "param": 0.6695,
+     "reach": 0.0994,
+     "tgt": 0.1734,
      "hook": 0.3021,
      "sshape": 0.2124,
      "cost": 0.019,
@@ -650,265 +909,6 @@
    ]
   },
   {
-   "id": "apothecary",
-   "name": "药师",
-   "total": 61.8,
-   "dims": {
-    "轴健康度": 24.5,
-    "跨轴耦合": 5.6,
-    "跨系联动": 4.7,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 4.5,
-    "差异化": 30.0
-   },
-   "minAxis": 64.2,
-   "cards": 40,
-   "roleDist": {
-    "core": 25,
-    "generic": 8,
-    "starter": 1,
-    "bridge": 2,
-    "tech": 3,
-    "trap": 1
-   },
-   "sigHits": {
-    "sref:moon_cycle": 4,
-    "unitType:BEAST": 8,
-    "sref:prepared_draught": 5
-   },
-   "styleDist": 0.2634,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": false
-   },
-   "gatePenalty": 3,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "cat:buff",
-      "dur:tick"
-     ],
-     "distinct": 32
-    },
-    {
-     "family": "param",
-     "keys": [
-      "mode=delta",
-      "mode=copy"
-     ],
-     "distinct": 20
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "eff:self",
-      "mode=unit"
-     ],
-     "distinct": 16
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "modify_stat"
-     ],
-     "distinct": 11
-    }
-   ],
-   "styleParts": {
-    "signature": 7,
-    "fingerprint": 10,
-    "config": 3.2,
-    "dedup": 9.8,
-    "dedupRatio": 0.0167,
-    "familyFloor": true,
-    "familyDists": {
-     "prim": 0.335,
-     "elem": 0.5721,
-     "cond": 0.1312,
-     "condarg": 0.1364,
-     "param": 0.5259,
-     "reach": 0.1849,
-     "tgt": 0.1181,
-     "hook": 0.1925,
-     "sshape": 0.2044,
-     "cost": 0.0155,
-     "temporal": 0.166,
-     "unit": 1.0
-    }
-   },
-   "singleDimWarn": null,
-   "nearest": "prisoner",
-   "nearestDist": 0.1376,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-9.4：本途径他轴机制命中 3 次",
-     "ref": "apothecary",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段"
-    },
-    {
-     "dim": "跨系联动",
-     "why": "-10.3：枢纽状态 1 个×2 / 消费方 0 途径×4 / 读取 3 次(CAP4)",
-     "ref": "apothecary",
-     "fix": "挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段"
-    },
-    {
-     "dim": "风格越界",
-     "why": "注：17 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
-     "ref": "药剂调配(prim:grant_immunity)；草药敷贴(prim:grant_immunity)；血族体质(stat:hp_max)；血族魅力(prim:grant_immunity)；腐蚀之爪(prim:grant_immunity)；深渊枷锁(prim:grant_immunity)",
-     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
-    }
-   ],
-   "axes": [
-    {
-     "id": "beasts",
-     "name": "兽群",
-     "symbol": "🐾",
-     "total": 64.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 4.2,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "动物感官",
-      "野性直觉"
-     ],
-     "payoffsLanded": [
-      "狂兽突袭"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "brew",
-     "name": "药剂",
-     "symbol": "⚗️",
-     "total": 67.2,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 7.2,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 11,
-     "enablersVerified": [
-      "药剂调配",
-      "草药敷贴"
-     ],
-     "payoffsLanded": [
-      "草药敷贴"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "crimson",
-     "name": "血月",
-     "symbol": "🩸",
-     "total": 69.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 9.0,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "深红体质",
-      "黑暗之翼"
-     ],
-     "payoffsLanded": [
-      "腐蚀之爪"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "产层闭环",
-       "why": "注：未实证 2 张（name 在列但卡面不挂身份）",
-       "ref": "血族魅力,血仆转化",
-       "fix": "（注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除"
-      }
-     ]
-    },
-    {
-     "id": "moon",
-     "name": "月相",
-     "symbol": "🌙",
-     "total": 86.8,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 25,
-      "轴内多样性": 7.8,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 12,
-     "enablersVerified": [
-      "满月",
-      "月相·轮转"
-     ],
-     "payoffsLanded": [
-      "腐蚀之爪",
-      "黑暗凝视",
-      "蝙蝠分解"
-     ],
-     "payoffsNotes": [
-      "预服药水",
-      "闪现",
-      "月光化",
-      "召唤之门",
-      "创生",
-      "美之震撼",
-      "生命之权",
-      "血月当空"
-     ],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束闭环",
-       "why": "注：notes 级 8 张（减半计）",
-       "ref": "预服药水,闪现,月光化,召唤之门,创生,美之震撼,生命之权,血月当空",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    }
-   ]
-  },
-  {
    "id": "reader",
    "name": "阅读者",
    "total": 64.1,
@@ -936,7 +936,7 @@
     "sref:mimic": 5,
     "prim:snapshot": 7
    },
-   "styleDist": 0.3223,
+   "styleDist": 0.3173,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -986,12 +986,12 @@
     "familyFloor": true,
     "familyDists": {
      "prim": 0.3537,
-     "elem": 0.4556,
+     "elem": 0.4558,
      "cond": 0.128,
      "condarg": 0.1036,
-     "param": 0.5784,
-     "reach": 0.0793,
-     "tgt": 0.1164,
+     "param": 0.5788,
+     "reach": 0.0792,
+     "tgt": 0.1171,
      "hook": 0.2407,
      "sshape": 0.1919,
      "cost": 0.0161,
@@ -1196,7 +1196,7 @@
     "flag:template": 1,
     "sref:insight": 5
    },
-   "styleDist": 0.3186,
+   "styleDist": 0.3132,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1246,15 +1246,15 @@
     "familyFloor": true,
     "familyDists": {
      "prim": 0.3695,
-     "elem": 0.4861,
+     "elem": 0.4864,
      "cond": 0.4033,
      "condarg": 0.3736,
-     "param": 0.494,
-     "reach": 0.0981,
-     "tgt": 0.0971,
+     "param": 0.4942,
+     "reach": 0.0978,
+     "tgt": 0.0981,
      "hook": 0.4505,
      "sshape": 0.2161,
-     "cost": 0.0326,
+     "cost": 0.0325,
      "temporal": 0.1955,
      "unit": 1.0
     }
@@ -1457,7 +1457,7 @@
     "flag:cast_time_set": 29,
     "sref:info_form": 2
    },
-   "styleDist": 0.3135,
+   "styleDist": 0.3087,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1506,16 +1506,16 @@
     "dedupRatio": 0.0071,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.3818,
-     "elem": 0.417,
+     "prim": 0.3817,
+     "elem": 0.4171,
      "cond": 0.1305,
      "condarg": 0.1254,
-     "param": 0.5722,
-     "reach": 0.0753,
-     "tgt": 0.1063,
+     "param": 0.5723,
+     "reach": 0.0755,
+     "tgt": 0.1071,
      "hook": 0.2371,
      "sshape": 0.1652,
-     "cost": 0.0197,
+     "cost": 0.0196,
      "temporal": 0.9349,
      "unit": 1.0
     }
@@ -1717,7 +1717,7 @@
     "prim:echo_last_skill": 11,
     "prim:restore_snapshot": 2
    },
-   "styleDist": 0.2409,
+   "styleDist": 0.2356,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1766,16 +1766,16 @@
     "dedupRatio": 0.0107,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.3078,
-     "elem": 0.3663,
+     "prim": 0.3079,
+     "elem": 0.3664,
      "cond": 0.1312,
      "condarg": 0.1701,
-     "param": 0.52,
-     "reach": 0.1092,
-     "tgt": 0.0781,
+     "param": 0.5207,
+     "reach": 0.1084,
+     "tgt": 0.0784,
      "hook": 0.2862,
      "sshape": 0.1548,
-     "cost": 0.0155,
+     "cost": 0.0156,
      "temporal": 0.1955,
      "unit": 1.0
     }
@@ -1993,7 +1993,7 @@
     "prim:modify_targetability": 2,
     "prim:target_override": 7
    },
-   "styleDist": 0.2365,
+   "styleDist": 0.2307,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -2042,13 +2042,13 @@
     "dedupRatio": 0.0315,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2582,
-     "elem": 0.3847,
+     "prim": 0.2585,
+     "elem": 0.3849,
      "cond": 0.1324,
      "condarg": 0.1113,
-     "param": 0.4896,
-     "reach": 0.2348,
-     "tgt": 0.1128,
+     "param": 0.4901,
+     "reach": 0.2326,
+     "tgt": 0.1131,
      "hook": 0.189,
      "sshape": 0.1819,
      "cost": 0.0177,
@@ -2279,7 +2279,7 @@
     "trig:on_kill": 2,
     "prim:drain": 9
    },
-   "styleDist": 0.3611,
+   "styleDist": 0.3643,
    "gates": {
     "结构健康": false,
     "机制落地": true,
@@ -2328,18 +2328,18 @@
     "dedupRatio": 0.0302,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.3029,
-     "elem": 0.4315,
+     "prim": 0.3037,
+     "elem": 0.4317,
      "cond": 0.3991,
      "condarg": 0.2223,
-     "param": 0.6004,
-     "reach": 0.1641,
-     "tgt": 0.1461,
+     "param": 0.602,
+     "reach": 0.1626,
+     "tgt": 0.1466,
      "hook": 0.2095,
      "sshape": 0.1487,
      "cost": 0.0161,
      "temporal": 0.1693,
-     "unit": 0.9424
+     "unit": 0.9625
     }
    },
    "singleDimWarn": "轴健康度",
@@ -2571,7 +2571,7 @@
     "flag:filter.unitType": 3,
     "sref:guardianship": 3
    },
-   "styleDist": 0.3287,
+   "styleDist": 0.3237,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -2620,16 +2620,16 @@
     "dedupRatio": 0.0,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2326,
-     "elem": 0.5951,
+     "prim": 0.2329,
+     "elem": 0.595,
      "cond": 0.1568,
      "condarg": 0.1347,
-     "param": 0.411,
-     "reach": 0.139,
-     "tgt": 0.088,
+     "param": 0.4118,
+     "reach": 0.1398,
+     "tgt": 0.0885,
      "hook": 0.3887,
      "sshape": 0.2173,
-     "cost": 0.0324,
+     "cost": 0.0323,
      "temporal": 0.9376,
      "unit": 1.0
     }
@@ -2798,6 +2798,270 @@
    ]
   },
   {
+   "id": "assassin",
+   "name": "刺客",
+   "total": 72.1,
+   "dims": {
+    "轴健康度": 23.0,
+    "跨轴耦合": 5.6,
+    "跨系联动": 15.0,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 28.5
+   },
+   "minAxis": 62.0,
+   "cards": 39,
+   "roleDist": {
+    "starter": 5,
+    "core": 22,
+    "generic": 9,
+    "tech": 1,
+    "bridge": 1,
+    "trap": 1
+   },
+   "sigHits": {
+    "prim:translocate": 11,
+    "elem:ice": 3,
+    "elem:dark": 1
+   },
+   "styleDist": 0.2579,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "dur:tick",
+      "stacks"
+     ],
+     "distinct": 40
+    },
+    {
+     "family": "param",
+     "keys": [
+      "direction=enemy_targeted",
+      "mode=delta"
+     ],
+     "distinct": 16
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "eff:self",
+      "mode=unit"
+     ],
+     "distinct": 15
+    },
+    {
+     "family": "condarg",
+     "keys": [
+      "has_status:cmp=>=",
+      "has_status:side=self"
+     ],
+     "distinct": 11
+    }
+   ],
+   "styleParts": {
+    "signature": 7,
+    "fingerprint": 8,
+    "config": 3.0,
+    "dedup": 10.5,
+    "dedupRatio": 0.0067,
+    "familyFloor": true,
+    "familyDists": {
+     "prim": 0.3373,
+     "elem": 0.454,
+     "cond": 0.2068,
+     "condarg": 0.1445,
+     "param": 0.5557,
+     "reach": 0.1487,
+     "tgt": 0.1086,
+     "hook": 0.2667,
+     "sshape": 0.1764,
+     "cost": 0.0183,
+     "temporal": 0.1685,
+     "unit": 1.0
+    }
+   },
+   "singleDimWarn": null,
+   "nearest": "apprentice",
+   "nearestDist": 0.14,
+   "deductions": [
+    {
+     "dim": "跨轴耦合",
+     "why": "-9.4：本途径他轴机制命中 3 次",
+     "ref": "assassin",
+     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：bridge 卡无跨界读取（他轴私有面/facet/他途径枢纽通道 皆未命中）",
+     "ref": "投影传送",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）",
+     "ref": "命运诅咒",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）",
+     "ref": "魅力权柄",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）",
+     "ref": "混沌漩涡",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "风格越界",
+     "why": "注：28 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
+     "ref": "羽毛般轻盈(prim:modify_targetability)；鹰的视力(prim:modify_targetability)；阴影躲藏(prim:modify_targetability)；误导(prim:modify_targetability)；激化矛盾(prim:modify_targetability)；说服(prim:modify_targetability)",
+     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
+    }
+   ],
+   "axes": [
+    {
+     "id": "charm",
+     "name": "魅",
+     "symbol": "💋",
+     "total": 62.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 8.0,
+      "规模均衡": 10,
+      "承接连通": 0
+     },
+     "cards": 7,
+     "enablersVerified": [
+      "魅惑",
+      "激化矛盾"
+     ],
+     "payoffsLanded": [
+      "反复魅惑"
+     ],
+     "payoffsNotes": [],
+     "patterns": [],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "承接连通",
+       "why": "-15：payoff 无收束方式多样性",
+       "ref": "反复魅惑",
+       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
+      }
+     ]
+    },
+    {
+     "id": "form",
+     "name": "形",
+     "symbol": "🎭",
+     "total": 66.0,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 7.0,
+      "规模均衡": 9,
+      "承接连通": 6
+     },
+     "cards": 15,
+     "enablersVerified": [
+      "影形态",
+      "雾形态",
+      "血形态"
+     ],
+     "payoffsLanded": [
+      "原初·静止"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": [
+      {
+       "dim": "规模均衡",
+       "why": "-1：轴卡数 15 vs 理想 10（比值 1.54）",
+       "ref": "form",
+       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
+      }
+     ]
+    },
+    {
+     "id": "plague",
+     "name": "疫",
+     "symbol": "🦠",
+     "total": 68.9,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 8.9,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "疾病",
+      "黑焰"
+     ],
+     "payoffsLanded": [
+      "末日"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    },
+    {
+     "id": "mirror",
+     "name": "镜",
+     "symbol": "🪞",
+     "total": 70.3,
+     "dims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 9,
+      "轴内多样性": 7.3,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "cards": 8,
+     "enablersVerified": [
+      "镜子替身",
+      "魔镜占卜"
+     ],
+     "payoffsLanded": [
+      "镜中世界"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    }
+   ]
+  },
+  {
    "id": "criminal",
    "name": "罪犯",
    "total": 72.7,
@@ -2825,7 +3089,7 @@
     "elem:dark": 4,
     "flag:companionBuff": 2
    },
-   "styleDist": 0.2885,
+   "styleDist": 0.2833,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -2874,13 +3138,13 @@
     "dedupRatio": 0.0282,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.331,
-     "elem": 0.5912,
+     "prim": 0.3311,
+     "elem": 0.5907,
      "cond": 0.1436,
      "condarg": 0.256,
-     "param": 0.6079,
-     "reach": 0.2305,
-     "tgt": 0.1044,
+     "param": 0.6086,
+     "reach": 0.2282,
+     "tgt": 0.1049,
      "hook": 0.2209,
      "sshape": 0.1819,
      "cost": 0.0176,
@@ -3063,270 +3327,6 @@
    ]
   },
   {
-   "id": "assassin",
-   "name": "刺客",
-   "total": 74.1,
-   "dims": {
-    "轴健康度": 23.0,
-    "跨轴耦合": 5.6,
-    "跨系联动": 15.0,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 30.5
-   },
-   "minAxis": 62.0,
-   "cards": 39,
-   "roleDist": {
-    "starter": 5,
-    "core": 22,
-    "generic": 9,
-    "tech": 1,
-    "bridge": 1,
-    "trap": 1
-   },
-   "sigHits": {
-    "prim:translocate": 11,
-    "elem:ice": 3,
-    "elem:dark": 1
-   },
-   "styleDist": 0.2634,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "dur:tick",
-      "stacks"
-     ],
-     "distinct": 40
-    },
-    {
-     "family": "param",
-     "keys": [
-      "direction=enemy_targeted",
-      "mode=delta"
-     ],
-     "distinct": 16
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "eff:self",
-      "mode=unit"
-     ],
-     "distinct": 15
-    },
-    {
-     "family": "condarg",
-     "keys": [
-      "has_status:cmp=>=",
-      "has_status:side=self"
-     ],
-     "distinct": 11
-    }
-   ],
-   "styleParts": {
-    "signature": 7,
-    "fingerprint": 10,
-    "config": 3.0,
-    "dedup": 10.5,
-    "dedupRatio": 0.0067,
-    "familyFloor": true,
-    "familyDists": {
-     "prim": 0.3374,
-     "elem": 0.4542,
-     "cond": 0.2068,
-     "condarg": 0.1445,
-     "param": 0.5557,
-     "reach": 0.1502,
-     "tgt": 0.1083,
-     "hook": 0.2667,
-     "sshape": 0.1764,
-     "cost": 0.0182,
-     "temporal": 0.1685,
-     "unit": 1.0
-    }
-   },
-   "singleDimWarn": "轴健康度",
-   "nearest": "apprentice",
-   "nearestDist": 0.14,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-9.4：本途径他轴机制命中 3 次",
-     "ref": "assassin",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：bridge 卡无跨界读取（他轴私有面/facet/他途径枢纽通道 皆未命中）",
-     "ref": "投影传送",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）",
-     "ref": "命运诅咒",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）",
-     "ref": "魅力权柄",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）",
-     "ref": "混沌漩涡",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "风格越界",
-     "why": "注：28 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
-     "ref": "羽毛般轻盈(prim:modify_targetability)；鹰的视力(prim:modify_targetability)；阴影躲藏(prim:modify_targetability)；误导(prim:modify_targetability)；激化矛盾(prim:modify_targetability)；说服(prim:modify_targetability)",
-     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
-    }
-   ],
-   "axes": [
-    {
-     "id": "charm",
-     "name": "魅",
-     "symbol": "💋",
-     "total": 62.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 8.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "cards": 7,
-     "enablersVerified": [
-      "魅惑",
-      "激化矛盾"
-     ],
-     "payoffsLanded": [
-      "反复魅惑"
-     ],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "承接连通",
-       "why": "-15：payoff 无收束方式多样性",
-       "ref": "反复魅惑",
-       "fix": "给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）"
-      }
-     ]
-    },
-    {
-     "id": "form",
-     "name": "形",
-     "symbol": "🎭",
-     "total": 66.0,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 7.0,
-      "规模均衡": 9,
-      "承接连通": 6
-     },
-     "cards": 15,
-     "enablersVerified": [
-      "影形态",
-      "雾形态",
-      "血形态"
-     ],
-     "payoffsLanded": [
-      "原初·静止"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "规模均衡",
-       "why": "-1：轴卡数 15 vs 理想 10（比值 1.54）",
-       "ref": "form",
-       "fix": "把轴卡数向途径轴均卡数收敛（补卡或并轴）"
-      }
-     ]
-    },
-    {
-     "id": "plague",
-     "name": "疫",
-     "symbol": "🦠",
-     "total": 68.9,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 8.9,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "疾病",
-      "黑焰"
-     ],
-     "payoffsLanded": [
-      "末日"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    },
-    {
-     "id": "mirror",
-     "name": "镜",
-     "symbol": "🪞",
-     "total": 70.3,
-     "dims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 9,
-      "轴内多样性": 7.3,
-      "规模均衡": 10,
-      "承接连通": 9
-     },
-     "cards": 8,
-     "enablersVerified": [
-      "镜子替身",
-      "魔镜占卜"
-     ],
-     "payoffsLanded": [
-      "镜中世界"
-     ],
-     "payoffsNotes": [],
-     "patterns": [
-      "存在性",
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": []
-    }
-   ]
-  },
-  {
    "id": "savant",
    "name": "通识者",
    "total": 74.2,
@@ -3354,7 +3354,7 @@
     "sref:law_edit": 3,
     "unitType:CONSTRUCT": 3
    },
-   "styleDist": 0.2441,
+   "styleDist": 0.2394,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3403,13 +3403,13 @@
     "dedupRatio": 0.019,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.366,
-     "elem": 0.3765,
+     "prim": 0.3675,
+     "elem": 0.3766,
      "cond": 0.1267,
      "condarg": 0.1176,
-     "param": 0.5571,
-     "reach": 0.0919,
-     "tgt": 0.1022,
+     "param": 0.5592,
+     "reach": 0.093,
+     "tgt": 0.1024,
      "hook": 0.2477,
      "sshape": 0.1952,
      "cost": 0.0152,
@@ -3640,7 +3640,7 @@
     "prim:status_shuffle": 5,
     "prim:modify_rule_slot": 18
    },
-   "styleDist": 0.2396,
+   "styleDist": 0.234,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3690,12 +3690,12 @@
     "familyFloor": true,
     "familyDists": {
      "prim": 0.3148,
-     "elem": 0.309,
+     "elem": 0.3092,
      "cond": 0.123,
      "condarg": 0.1082,
-     "param": 0.5883,
-     "reach": 0.187,
-     "tgt": 0.1011,
+     "param": 0.5887,
+     "reach": 0.1854,
+     "tgt": 0.1012,
      "hook": 0.1859,
      "sshape": 0.1992,
      "cost": 0.0199,
@@ -3891,7 +3891,7 @@
     "prim:write_rule_slot": 2,
     "prim:translocate": 4
    },
-   "styleDist": 0.3541,
+   "styleDist": 0.355,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3940,18 +3940,18 @@
     "dedupRatio": 0.0067,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.3471,
-     "elem": 0.4001,
+     "prim": 0.3475,
+     "elem": 0.4003,
      "cond": 0.1351,
      "condarg": 0.1365,
-     "param": 0.5292,
-     "reach": 0.1205,
-     "tgt": 0.1254,
+     "param": 0.5299,
+     "reach": 0.1222,
+     "tgt": 0.1262,
      "hook": 0.4501,
      "sshape": 0.2269,
      "cost": 0.0152,
      "temporal": 0.166,
-     "unit": 0.9759
+     "unit": 0.9798
     }
    },
    "singleDimWarn": "轴健康度",
@@ -4192,7 +4192,7 @@
     "flag:cost_mod": 2,
     "res:order": 6
    },
-   "styleDist": 0.2813,
+   "styleDist": 0.2764,
    "gates": {
     "结构健康": false,
     "机制落地": true,
@@ -4242,12 +4242,12 @@
     "familyFloor": true,
     "familyDists": {
      "prim": 0.3667,
-     "elem": 0.3462,
+     "elem": 0.3464,
      "cond": 0.1474,
      "condarg": 0.1213,
-     "param": 0.6639,
-     "reach": 0.1351,
-     "tgt": 0.1183,
+     "param": 0.6641,
+     "reach": 0.137,
+     "tgt": 0.1194,
      "hook": 0.378,
      "sshape": 0.2181,
      "cost": 0.016,
@@ -4497,7 +4497,7 @@
     "unitType:PLANT": 8,
     "sref:blight": 3
    },
-   "styleDist": 0.3647,
+   "styleDist": 0.3682,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -4546,18 +4546,18 @@
     "dedupRatio": 0.0089,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.3912,
+     "prim": 0.3929,
      "elem": 0.5964,
      "cond": 0.1269,
      "condarg": 0.15,
-     "param": 0.6794,
-     "reach": 0.2411,
-     "tgt": 0.0874,
+     "param": 0.6815,
+     "reach": 0.244,
+     "tgt": 0.0888,
      "hook": 0.2277,
      "sshape": 0.1748,
      "cost": 0.015,
      "temporal": 0.164,
-     "unit": 0.9436
+     "unit": 0.9625
     }
    },
    "singleDimWarn": null,
@@ -4794,7 +4794,7 @@
     "prim:advance_clock": 2,
     "res:fate_value": 5
    },
-   "styleDist": 0.2839,
+   "styleDist": 0.2787,
    "gates": {
     "结构健康": false,
     "机制落地": true,
@@ -4843,16 +4843,16 @@
     "dedupRatio": 0.0168,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.4657,
-     "elem": 0.3829,
+     "prim": 0.4658,
+     "elem": 0.3831,
      "cond": 0.5908,
      "condarg": 0.1278,
-     "param": 0.4354,
-     "reach": 0.0945,
-     "tgt": 0.1125,
+     "param": 0.4359,
+     "reach": 0.0954,
+     "tgt": 0.1124,
      "hook": 0.2171,
      "sshape": 0.1794,
-     "cost": 0.0167,
+     "cost": 0.0168,
      "temporal": 0.1955,
      "unit": 1.0
     }
@@ -5114,7 +5114,7 @@
     "prim:write_rule_slot": 2,
     "trig:on_phase_change": 2
    },
-   "styleDist": 0.2982,
+   "styleDist": 0.2931,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -5168,11 +5168,11 @@
      "cond": 0.204,
      "condarg": 0.1699,
      "param": 0.4378,
-     "reach": 0.0744,
-     "tgt": 0.1424,
+     "reach": 0.0752,
+     "tgt": 0.1436,
      "hook": 0.1877,
      "sshape": 0.1914,
-     "cost": 0.031,
+     "cost": 0.0308,
      "temporal": 0.2251,
      "unit": 1.0
     }
@@ -5367,7 +5367,7 @@
     "stat:hp_max": 5,
     "sref:flesh_undying": 2
    },
-   "styleDist": 0.3244,
+   "styleDist": 0.3284,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -5416,18 +5416,18 @@
     "dedupRatio": 0.0038,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2977,
-     "elem": 0.341,
+     "prim": 0.2979,
+     "elem": 0.3408,
      "cond": 0.1255,
      "condarg": 0.116,
-     "param": 0.4147,
-     "reach": 0.091,
-     "tgt": 0.1233,
+     "param": 0.4157,
+     "reach": 0.0922,
+     "tgt": 0.1242,
      "hook": 0.2251,
      "sshape": 0.1791,
      "cost": 0.2275,
      "temporal": 0.166,
-     "unit": 0.9554
+     "unit": 0.9798
     }
    },
    "singleDimWarn": "轴健康度",
@@ -5626,7 +5626,7 @@
     "unitType:ITEM": 2,
     "sref:lineage_stack": 6
    },
-   "styleDist": 0.235,
+   "styleDist": 0.2297,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -5675,13 +5675,13 @@
     "dedupRatio": 0.0095,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2995,
+     "prim": 0.2998,
      "elem": 0.3847,
      "cond": 0.1229,
      "condarg": 0.1104,
-     "param": 0.5166,
-     "reach": 0.1133,
-     "tgt": 0.1044,
+     "param": 0.5175,
+     "reach": 0.115,
+     "tgt": 0.105,
      "hook": 0.2092,
      "sshape": 0.2098,
      "cost": 0.0171,
@@ -5886,13 +5886,20 @@
    },
    "minAxis": 73.6,
    "cards": 34,
-   "roleDist": {},
+   "roleDist": {
+    "core": 24,
+    "starter": 4,
+    "bridge": 1,
+    "tech": 2,
+    "generic": 2,
+    "trap": 1
+   },
    "sigHits": {
     "trig:on_phase_change": 4,
     "prim:advance_clock": 4,
     "res:secrecy": 3
    },
-   "styleDist": 0.3809,
+   "styleDist": 0.3056,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -5914,7 +5921,7 @@
       "mode=delta",
       "dispelTarget=unit"
      ],
-     "distinct": 21
+     "distinct": 16
     },
     {
      "family": "tgt",
@@ -5941,24 +5948,42 @@
     "dedupRatio": 0.0,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2456,
-     "elem": 0.483,
+     "prim": 0.2522,
+     "elem": 0.4838,
      "cond": 0.4933,
      "condarg": 0.4941,
-     "param": 0.4206,
-     "reach": 0.0692,
-     "tgt": 0.0805,
+     "param": 0.4356,
+     "reach": 0.0755,
+     "tgt": 0.0945,
      "hook": 0.3302,
      "sshape": 0.1911,
-     "cost": 0.0152,
+     "cost": 0.0149,
      "temporal": 0.2629,
-     "unit": 0.9327
+     "unit": 1.0
     }
    },
    "singleDimWarn": null,
-   "nearest": "supplicant",
-   "nearestDist": 0.2539,
+   "nearest": "thief",
+   "nearestDist": 0.2144,
    "deductions": [
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）",
+     "ref": "梦境行者",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）",
+     "ref": "一心多用",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）",
+     "ref": "永眠·消融",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
     {
      "dim": "风格越界",
      "why": "注：8 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",

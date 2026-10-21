@@ -7,9 +7,9 @@
 
 | # | 途径 | 总分 | 轴健康 | 跨轴 | 跨系 | 结构 | 落地 | 文本 | 差异 | 最低轴 | 卡数 | 标记 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| 1 | **猎人** `hunter` | **53.6** | 18.4 | 1.9 | 5.6 | 5.0 | 5.0 | 4.9 | 30.7 | 43 | 43 |  |
-| 2 | **水手** `sailor` | **61.2** | 21.6 | 5.6 | 3.8 | 5.0 | 5.0 | 5.0 | 30.2 | 56 | 42 |  |
-| 3 | **药师** `apothecary` | **61.8** | 24.5 | 5.6 | 4.7 | 5.0 | 5.0 | 4.5 | 30.0 | 64 | 40 |  |
+| 1 | **猎人** `hunter` | **51.6** | 18.4 | 1.9 | 5.6 | 5.0 | 5.0 | 4.9 | 28.7 | 43 | 43 |  |
+| 2 | **药师** `apothecary` | **59.8** | 24.5 | 5.6 | 4.7 | 5.0 | 5.0 | 4.5 | 28.0 | 64 | 40 |  |
+| 3 | **水手** `sailor` | **61.2** | 21.6 | 5.6 | 3.8 | 5.0 | 5.0 | 5.0 | 30.2 | 56 | 42 |  |
 | 4 | **阅读者** `reader` | **64.1** | 23.2 | 3.8 | 5.6 | 5.0 | 5.0 | 5.0 | 31.5 | 60 | 34 |  |
 | 5 | **观众** `spectator` | **66.8** | 23.8 | 5.6 | 4.7 | 5.0 | 5.0 | 5.0 | 32.7 | 63 | 36 |  |
 | 6 | **窥秘人** `pryer` | **67.6** | 23.7 | 5.6 | 5.6 | 5.0 | 5.0 | 5.0 | 32.7 | 66 | 38 |  |
@@ -17,8 +17,8 @@
 | 8 | **偷盗者** `thief` | **69.9** | 24.6 | 3.8 | 15.0 | 5.0 | 5.0 | 5.0 | 26.5 | 63 | 37 |  |
 | 9 | **收尸人** `corpse_collector` | **70.2** | 23.3 | 7.5 | 15.0 | 4.8 | 5.0 | 4.9 | 30.4 | 55 | 42 | ⚠单维·轴健康度 |
 | 10 | **战士** `warrior` | **70.8** | 25.3 | 11.2 | 0.9 | 5.0 | 5.0 | 5.0 | 33.4 | 69 | 33 | ⚠单维·跨系联动 |
-| 11 | **罪犯** `criminal` | **72.7** | 23.2 | 15.0 | 5.6 | 5.0 | 5.0 | 5.0 | 28.9 | 60 | 40 |  |
-| 12 | **刺客** `assassin` | **74.1** | 23.0 | 5.6 | 15.0 | 5.0 | 5.0 | 5.0 | 30.5 | 62 | 39 | ⚠单维·轴健康度 |
+| 11 | **刺客** `assassin` | **72.1** | 23.0 | 5.6 | 15.0 | 5.0 | 5.0 | 5.0 | 28.5 | 62 | 39 |  |
+| 12 | **罪犯** `criminal` | **72.7** | 23.2 | 15.0 | 5.6 | 5.0 | 5.0 | 5.0 | 28.9 | 60 | 40 |  |
 | 13 | **通识者** `savant` | **74.2** | 26.3 | 5.6 | 15.0 | 5.0 | 5.0 | 5.0 | 27.3 | 72 | 36 |  |
 | 14 | **律师** `lawyer` | **75.5** | 21.2 | 11.2 | 15.0 | 5.0 | 5.0 | 5.0 | 28.1 | 51 | 46 | ⚠单维·轴健康度 |
 | 15 | **占卜家** `seer` | **77.9** | 24.9 | 5.6 | 15.0 | 5.0 | 5.0 | 5.0 | 32.4 | 65 | 39 | ⚠单维·轴健康度 |
@@ -33,7 +33,7 @@
 > ⚠单维 = 单维失分 ≥10 且 ≥ 总失分 45%：先进人工裁定队列（确认是缺陷还是途径定位），不直接触发重设计（2.11）。
 
 
-## 猎人（hunter）· 53.6 分
+## 猎人（hunter）· 51.6 分
 
 | 维度 | 得分 |
 |---|---:|
@@ -43,9 +43,9 @@
 | 结构健康 | 5.0 |
 | 机制落地 | 5.0 |
 | 文本完备 | 4.9 |
-| 差异化 | 30.7 |
+| 差异化 | 28.7 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:target_override ×7；flag:gender_is ×1；sref:massing ×1；对他途径指纹均距 0.301
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:target_override ×7；flag:gender_is ×1；sref:massing ×1；对他途径指纹均距 0.297
 
 **途径失分项（含修改意见）**：
 
@@ -86,6 +86,44 @@
 - `收束闭环` 注：notes 级 1 张（减半计）（炽白之枪）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
+## 药师（apothecary）· 59.8 分
+
+| 维度 | 得分 |
+|---|---:|
+| 轴健康度 | 24.5 |
+| 跨轴耦合 | 5.6 |
+| 跨系联动 | 4.7 |
+| 结构健康 | 5.0 |
+| 机制落地 | 5.0 |
+| 文本完备 | 4.5 |
+| 差异化 | 28.0 |
+
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:moon_cycle ×4；unitType:BEAST ×8；sref:prepared_draught ×5；对他途径指纹均距 0.259
+
+角色分布（SCORING §一·附）：core ×25 · starter ×1 · bridge ×2 · generic ×8 · trap ×1 · tech ×3
+
+**途径失分项（含修改意见）**：
+
+- `跨轴耦合` -9.4：本途径他轴机制命中 3 次（apothecary）→ 挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段
+- `跨系联动` -10.3：枢纽状态 1 个×2 / 消费方 0 途径×4 / 读取 3 次(CAP4)（apothecary）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
+- `风格越界` 注：17 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）（药剂调配(prim:grant_immunity)；草药敷贴(prim:grant_immunity)；血族体质(stat:hp_max)；血族魅力(prim:grant_immunity)；腐蚀之爪(prim:grant_immunity)；深渊枷锁(prim:grant_immunity)）→ 人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内
+
+| 轴 | 总分 | 身份 | 产层 | 收束 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
+|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
+| 🐾 兽群 `beasts` | **64.2** | 15 | 20 | 9 | 4.2 | 10 | 6 | 动物感官,野性直觉 | 狂兽突袭 | — |
+| ⚗️ 药剂 `brew` | **67.2** | 15 | 20 | 9 | 7.2 | 10 | 6 | 药剂调配,草药敷贴 | 草药敷贴 | — |
+| 🩸 血月 `crimson` | **69.0** | 15 | 20 | 9 | 9.0 | 10 | 6 | 深红体质,黑暗之翼 | 腐蚀之爪 | — |
+| 🌙 月相 `moon` | **86.8** | 15 | 20 | 25 | 7.8 | 10 | 9 | 满月,月相·轮转 | 腐蚀之爪,黑暗凝视,蝙蝠分解 | 预服药水,闪现,月光化,召唤之门,创生,美之震撼,生命之权,血月当空 |
+
+**🩸 血月 失分项（含修改意见）**：
+
+- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（血族魅力,血仆转化）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
+
+**🌙 月相 失分项（含修改意见）**：
+
+- `收束闭环` 注：notes 级 8 张（减半计）（预服药水,闪现,月光化,召唤之门,创生,美之震撼,生命之权,血月当空）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
+
+
 ## 水手（sailor）· 61.2 分
 
 | 维度 | 得分 |
@@ -98,7 +136,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 30.2 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:ice ×2；elem:lightning ×8；sref:rage ×10；对他途径指纹均距 0.297
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:ice ×2；elem:lightning ×8；sref:rage ×10；对他途径指纹均距 0.292
 
 角色分布（SCORING §一·附）：core ×21 · starter ×3 · bridge ×2 · generic ×10 · trap ×1 · tech ×5
 
@@ -133,44 +171,6 @@
 - `收束闭环` 注：notes 级 1 张（减半计）（风暴地狱）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
-## 药师（apothecary）· 61.8 分
-
-| 维度 | 得分 |
-|---|---:|
-| 轴健康度 | 24.5 |
-| 跨轴耦合 | 5.6 |
-| 跨系联动 | 4.7 |
-| 结构健康 | 5.0 |
-| 机制落地 | 5.0 |
-| 文本完备 | 4.5 |
-| 差异化 | 30.0 |
-
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:moon_cycle ×4；unitType:BEAST ×8；sref:prepared_draught ×5；对他途径指纹均距 0.263
-
-角色分布（SCORING §一·附）：core ×25 · starter ×1 · bridge ×2 · generic ×8 · trap ×1 · tech ×3
-
-**途径失分项（含修改意见）**：
-
-- `跨轴耦合` -9.4：本途径他轴机制命中 3 次（apothecary）→ 挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段
-- `跨系联动` -10.3：枢纽状态 1 个×2 / 消费方 0 途径×4 / 读取 3 次(CAP4)（apothecary）→ 挂 1 个枢纽状态（查 crossPathway 白名单缺什么）或给已有卡加跨系读取段
-- `风格越界` 注：17 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）（药剂调配(prim:grant_immunity)；草药敷贴(prim:grant_immunity)；血族体质(stat:hp_max)；血族魅力(prim:grant_immunity)；腐蚀之爪(prim:grant_immunity)；深渊枷锁(prim:grant_immunity)）→ 人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内
-
-| 轴 | 总分 | 身份 | 产层 | 收束 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
-|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
-| 🐾 兽群 `beasts` | **64.2** | 15 | 20 | 9 | 4.2 | 10 | 6 | 动物感官,野性直觉 | 狂兽突袭 | — |
-| ⚗️ 药剂 `brew` | **67.2** | 15 | 20 | 9 | 7.2 | 10 | 6 | 药剂调配,草药敷贴 | 草药敷贴 | — |
-| 🩸 血月 `crimson` | **69.0** | 15 | 20 | 9 | 9.0 | 10 | 6 | 深红体质,黑暗之翼 | 腐蚀之爪 | — |
-| 🌙 月相 `moon` | **86.8** | 15 | 20 | 25 | 7.8 | 10 | 9 | 满月,月相·轮转 | 腐蚀之爪,黑暗凝视,蝙蝠分解 | 预服药水,闪现,月光化,召唤之门,创生,美之震撼,生命之权,血月当空 |
-
-**🩸 血月 失分项（含修改意见）**：
-
-- `产层闭环` 注：未实证 2 张（name 在列但卡面不挂身份）（血族魅力,血仆转化）→ （注）核对这几张卡的卡面：补挂身份段，或从 axes 元数据移除
-
-**🌙 月相 失分项（含修改意见）**：
-
-- `收束闭环` 注：notes 级 8 张（减半计）（预服药水,闪现,月光化,召唤之门,创生,美之震撼,生命之权,血月当空）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
-
-
 ## 阅读者（reader）· 64.1 分
 
 | 维度 | 得分 |
@@ -183,7 +183,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 31.5 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:reveal ×13；sref:mimic ×5；prim:snapshot ×7；对他途径指纹均距 0.322
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:reveal ×13；sref:mimic ×5；prim:snapshot ×7；对他途径指纹均距 0.317
 
 角色分布（SCORING §一·附）：core ×21 · starter ×2 · bridge ×2 · generic ×7 · trap ×1 · tech ×1
 
@@ -230,7 +230,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 32.7 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：stat:rank ×3；flag:template ×1；sref:insight ×5；对他途径指纹均距 0.319
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：stat:rank ×3；flag:template ×1；sref:insight ×5；对他途径指纹均距 0.313
 
 角色分布（SCORING §一·附）：core ×13 · starter ×3 · bridge ×1 · generic ×9 · trap ×1 · tech ×9
 
@@ -278,7 +278,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 32.7 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:valueFrom ×2；flag:cast_time_set ×29；sref:info_form ×2；对他途径指纹均距 0.314
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:valueFrom ×2；flag:cast_time_set ×29；sref:info_form ×2；对他途径指纹均距 0.309
 
 角色分布（SCORING §一·附）：core ×27 · starter ×3 · bridge ×1 · generic ×3 · trap ×1 · tech ×3
 
@@ -322,7 +322,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 28.8 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×14；prim:echo_last_skill ×11；prim:restore_snapshot ×2；对他途径指纹均距 0.241
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×14；prim:echo_last_skill ×11；prim:restore_snapshot ×2；对他途径指纹均距 0.236
 
 角色分布（SCORING §一·附）：core ×26 · starter ×2 · bridge ×1 · generic ×3 · trap ×1 · tech ×1
 
@@ -370,7 +370,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 26.5 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:take_control ×5；prim:modify_targetability ×2；prim:target_override ×7；对他途径指纹均距 0.236
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:take_control ×5；prim:modify_targetability ×2；prim:target_override ×7；对他途径指纹均距 0.231
 
 角色分布（SCORING §一·附）：core ×22 · starter ×4 · bridge ×1 · generic ×8 · trap ×1 · tech ×1
 
@@ -414,7 +414,7 @@
 | 文本完备 | 4.9 |
 | 差异化 | 30.4 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:filter.unitType ×3；trig:on_kill ×2；prim:drain ×9；对他途径指纹均距 0.361
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:filter.unitType ×3；trig:on_kill ×2；prim:drain ×9；对他途径指纹均距 0.364
 
 角色分布（SCORING §一·附）：core ×27 · starter ×3 · bridge ×1 · generic ×9 · trap ×1 · tech ×1
 
@@ -463,7 +463,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 33.4 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×7；flag:filter.unitType ×3；sref:guardianship ×3；对他途径指纹均距 0.329
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×7；flag:filter.unitType ×3；sref:guardianship ×3；对他途径指纹均距 0.324
 
 **途径失分项（含修改意见）**：
 
@@ -487,6 +487,47 @@
 - `收束闭环` 注：notes 级 2 张（减半计）（铁躯,卸力）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
+## 刺客（assassin）· 72.1 分
+
+| 维度 | 得分 |
+|---|---:|
+| 轴健康度 | 23.0 |
+| 跨轴耦合 | 5.6 |
+| 跨系联动 | 15.0 |
+| 结构健康 | 5.0 |
+| 机制落地 | 5.0 |
+| 文本完备 | 5.0 |
+| 差异化 | 28.5 |
+
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×11；elem:ice ×3；elem:dark ×1；对他途径指纹均距 0.258
+
+角色分布（SCORING §一·附）：core ×22 · starter ×5 · bridge ×1 · generic ×9 · trap ×1 · tech ×1
+
+**途径失分项（含修改意见）**：
+
+- `跨轴耦合` -9.4：本途径他轴机制命中 3 次（assassin）→ 挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段
+- `角色语义` 注：bridge 卡无跨界读取（他轴私有面/facet/他途径枢纽通道 皆未命中）（投影传送）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
+- `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）（命运诅咒）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
+- `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）（魅力权柄）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
+- `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）（混沌漩涡）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
+- `风格越界` 注：28 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）（羽毛般轻盈(prim:modify_targetability)；鹰的视力(prim:modify_targetability)；阴影躲藏(prim:modify_targetability)；误导(prim:modify_targetability)；激化矛盾(prim:modify_targetability)；说服(prim:modify_targetability)）→ 人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内
+
+| 轴 | 总分 | 身份 | 产层 | 收束 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
+|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
+| 💋 魅 `charm` | **62.0** | 15 | 20 | 9 | 8.0 | 10 | 0 | 魅惑,激化矛盾 | 反复魅惑 | — |
+| 🎭 形 `form` | **66.0** | 15 | 20 | 9 | 7.0 | 9 | 6 | 影形态,雾形态,血形态 | 原初·静止 | — |
+| 🦠 疫 `plague` | **68.9** | 15 | 20 | 9 | 8.9 | 10 | 6 | 疾病,黑焰 | 末日 | — |
+| 🪞 镜 `mirror` | **70.3** | 15 | 20 | 9 | 7.3 | 10 | 9 | 镜子替身,魔镜占卜 | 镜中世界 | — |
+
+**💋 魅 失分项（含修改意见）**：
+
+- `承接连通` -15：payoff 无收束方式多样性（反复魅惑）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）
+
+**🎭 形 失分项（含修改意见）**：
+
+- `规模均衡` -1：轴卡数 15 vs 理想 10（比值 1.54）（form）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
+
+
 ## 罪犯（criminal）· 72.7 分
 
 | 维度 | 得分 |
@@ -499,7 +540,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 28.9 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：res:lust ×36；elem:dark ×4；flag:companionBuff ×2；对他途径指纹均距 0.288
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：res:lust ×36；elem:dark ×4；flag:companionBuff ×2；对他途径指纹均距 0.283
 
 角色分布（SCORING §一·附）：core ×32 · starter ×3 · bridge ×1 · generic ×2 · trap ×1 · tech ×1
 
@@ -533,47 +574,6 @@
 - `收束闭环` 注：notes 级 1 张（减半计）（双焰交汇）→ 给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed
 
 
-## 刺客（assassin）· 74.1 分
-
-| 维度 | 得分 |
-|---|---:|
-| 轴健康度 | 23.0 |
-| 跨轴耦合 | 5.6 |
-| 跨系联动 | 15.0 |
-| 结构健康 | 5.0 |
-| 机制落地 | 5.0 |
-| 文本完备 | 5.0 |
-| 差异化 | 30.5 |
-
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×11；elem:ice ×3；elem:dark ×1；对他途径指纹均距 0.263
-
-角色分布（SCORING §一·附）：core ×22 · starter ×5 · bridge ×1 · generic ×9 · trap ×1 · tech ×1
-
-**途径失分项（含修改意见）**：
-
-- `跨轴耦合` -9.4：本途径他轴机制命中 3 次（assassin）→ 挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段
-- `角色语义` 注：bridge 卡无跨界读取（他轴私有面/facet/他途径枢纽通道 皆未命中）（投影传送）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
-- `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）（命运诅咒）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
-- `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）（魅力权柄）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
-- `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）（混沌漩涡）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
-- `风格越界` 注：28 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）（羽毛般轻盈(prim:modify_targetability)；鹰的视力(prim:modify_targetability)；阴影躲藏(prim:modify_targetability)；误导(prim:modify_targetability)；激化矛盾(prim:modify_targetability)；说服(prim:modify_targetability)）→ 人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内
-
-| 轴 | 总分 | 身份 | 产层 | 收束 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
-|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
-| 💋 魅 `charm` | **62.0** | 15 | 20 | 9 | 8.0 | 10 | 0 | 魅惑,激化矛盾 | 反复魅惑 | — |
-| 🎭 形 `form` | **66.0** | 15 | 20 | 9 | 7.0 | 9 | 6 | 影形态,雾形态,血形态 | 原初·静止 | — |
-| 🦠 疫 `plague` | **68.9** | 15 | 20 | 9 | 8.9 | 10 | 6 | 疾病,黑焰 | 末日 | — |
-| 🪞 镜 `mirror` | **70.3** | 15 | 20 | 9 | 7.3 | 10 | 9 | 镜子替身,魔镜占卜 | 镜中世界 | — |
-
-**💋 魅 失分项（含修改意见）**：
-
-- `承接连通` -15：payoff 无收束方式多样性（反复魅惑）→ 给 payoff 补第二种读层方式（乘区/条件分支/耗层/存在性/通道读）
-
-**🎭 形 失分项（含修改意见）**：
-
-- `规模均衡` -1：轴卡数 15 vs 理想 10（比值 1.54）（form）→ 把轴卡数向途径轴均卡数收敛（补卡或并轴）
-
-
 ## 通识者（savant）· 74.2 分
 
 | 维度 | 得分 |
@@ -586,7 +586,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 27.3 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:modify_rule_slot ×13；sref:law_edit ×3；unitType:CONSTRUCT ×3；对他途径指纹均距 0.244
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:modify_rule_slot ×13；sref:law_edit ×3；unitType:CONSTRUCT ×3；对他途径指纹均距 0.239
 
 角色分布（SCORING §一·附）：core ×25 · starter ×4 · bridge ×1 · generic ×4 · trap ×1 · tech ×1
 
@@ -631,7 +631,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 28.1 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:status_shuffle ×5；prim:modify_rule_slot ×18；对他途径指纹均距 0.240
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:status_shuffle ×5；prim:modify_rule_slot ×18；对他途径指纹均距 0.234
 
 角色分布（SCORING §一·附）：core ×33 · starter ×2 · bridge ×1 · generic ×8 · trap ×1 · tech ×1
 
@@ -671,7 +671,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 32.4 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:puppet_string ×4；prim:write_rule_slot ×2；prim:translocate ×4；对他途径指纹均距 0.354
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:puppet_string ×4；prim:write_rule_slot ×2；prim:translocate ×4；对他途径指纹均距 0.355
 
 角色分布（SCORING §一·附）：core ×23 · starter ×3 · bridge ×1 · generic ×9 · trap ×1 · tech ×2
 
@@ -724,7 +724,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 29.2 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:seal_effect ×2；flag:cost_mod ×2；res:order ×6；对他途径指纹均距 0.281
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:seal_effect ×2；flag:cost_mod ×2；res:order ×6；对他途径指纹均距 0.276
 
 角色分布（SCORING §一·附）：core ×25 · starter ×3 · bridge ×1 · generic ×9 · trap ×1 · tech ×1
 
@@ -773,7 +773,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 32.1 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:statPerStack ×3；unitType:PLANT ×8；sref:blight ×3；对他途径指纹均距 0.365
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:statPerStack ×3；unitType:PLANT ×8；sref:blight ×3；对他途径指纹均距 0.368
 
 角色分布（SCORING §一·附）：core ×25 · starter ×3 · bridge ×1 · generic ×3 · trap ×1 · tech ×1
 
@@ -824,7 +824,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 29.8 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:restore_snapshot ×30；prim:advance_clock ×2；res:fate_value ×5；对他途径指纹均距 0.284
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:restore_snapshot ×30；prim:advance_clock ×2；res:fate_value ×5；对他途径指纹均距 0.279
 
 角色分布（SCORING §一·附）：core ×31 · starter ×1 · bridge ×1 · trap ×1 · tech ×1
 
@@ -880,7 +880,7 @@
 | 文本完备 | 4.9 |
 | 差异化 | 30.1 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:grant_immunity ×16；prim:write_rule_slot ×2；trig:on_phase_change ×2；对他途径指纹均距 0.298
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:grant_immunity ×16；prim:write_rule_slot ×2；trig:on_phase_change ×2；对他途径指纹均距 0.293
 
 角色分布（SCORING §一·附）：core ×36 · starter ×1 · bridge ×1 · generic ×1 · trap ×1 · tech ×1
 
@@ -917,7 +917,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 32.4 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:grazed_soul ×7；stat:hp_max ×5；sref:flesh_undying ×2；对他途径指纹均距 0.324
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:grazed_soul ×7；stat:hp_max ×5；sref:flesh_undying ×2；对他途径指纹均距 0.328
 
 角色分布（SCORING §一·附）：core ×21 · starter ×3 · bridge ×1 · generic ×6 · trap ×1 · tech ×1
 
@@ -958,7 +958,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 28.1 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:curse_link ×3；unitType:ITEM ×2；sref:lineage_stack ×6；对他途径指纹均距 0.235
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:curse_link ×3；unitType:ITEM ×2；sref:lineage_stack ×6；对他途径指纹均距 0.230
 
 角色分布（SCORING §一·附）：core ×19 · starter ×5 · bridge ×1 · generic ×9 · trap ×1 · tech ×1
 
@@ -997,10 +997,15 @@
 | 文本完备 | 5.0 |
 | 差异化 | 33.3 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×4；prim:advance_clock ×4；res:secrecy ×3；对他途径指纹均距 0.381
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：trig:on_phase_change ×4；prim:advance_clock ×4；res:secrecy ×3；对他途径指纹均距 0.306
+
+角色分布（SCORING §一·附）：core ×24 · starter ×4 · bridge ×1 · generic ×2 · trap ×1 · tech ×2
 
 **途径失分项（含修改意见）**：
 
+- `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）（梦境行者）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
+- `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）（一心多用）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
+- `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体）（永眠·消融）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
 - `风格越界` 注：8 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）（夜色渐浓(flag:statPerStack)；安眠谣(flag:filter.unitType)；安魂(flag:filter.unitType)；一心多用(flag:companionBuff)；黑夜领域(flag:statPerStack)；黑暗之剑(elem:dark)）→ 人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内
 
 | 轴 | 总分 | 身份 | 产层 | 收束 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
