@@ -80,6 +80,8 @@ export interface EffectOps {
   modifyRuleSlot(node: EffectNode, caster: CombatUnit | null): void
   /** 战场级量表（secrecy / order / fate_value） */
   boardMeter(key: string, value: number, set: boolean): void
+  /** 战场级量表读数（meter_compare 谓词） */
+  meterOf(key: string): number
 }
 
 /** 用 EffectRef.params 覆写节点上的同名参数 */

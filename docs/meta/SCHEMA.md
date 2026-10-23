@@ -200,9 +200,11 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 ### 5.3 条件（condition）
 
-开放结构（`additionalProperties: true`），字段随 `kind` 变化。`kind` 为封闭枚举（34 个）：
+开放结构（`additionalProperties: true`），字段随 `kind` 变化。`kind` 为封闭枚举（35 个）：
 
-`all_of` `any_of` `caster_has_summon` `caster_status_exists` `chance` `consumed_count` `damage_source_is` `dead_count` `dispelled_count` `element_is` `faction_is` `field_status_count` `gauge_above` `gauge_rank` `gender_is` `has_category` `has_equipped` `has_status` `hp_percent` `hp_percent_compare` `luminance_compare` `not` `phase_is` `rank_gap` `recorded_has` `resource_compare` `stat_compare` `tag_chain` `target_dead` `target_has_tag` `target_is_summoned` `target_unit_type` `variant_is` `zone_active`
+`all_of` `any_of` `caster_has_summon` `caster_status_exists` `chance` `consumed_count` `damage_source_is` `dead_count` `dispelled_count` `element_is` `faction_is` `field_status_count` `gauge_above` `gauge_rank` `gender_is` `has_category` `has_equipped` `has_status` `hp_percent` `hp_percent_compare` `luminance_compare` `meter_compare` `not` `phase_is` `rank_gap` `recorded_has` `resource_compare` `stat_compare` `tag_chain` `target_dead` `target_has_tag` `target_is_summoned` `target_unit_type` `variant_is` `zone_active`
+
+`meter_compare`（2026-10-23 增）：`key`（`secrecy` / `order` / `fate_value` / `luminance`）+ `cmp` + `n`——战场量表与阈值比较，用于「共享门槛」类玩法（窥秘人 A3 星象共谋：先越过隐秘值门槛者改写规则槽）。语义权威见 `ddd/params/共享内核参数.md` §三。
 
 `has_equipped`（2026-10-19 增，2026-10-23 改）：`side` + 可选 `slot`（当前仅 `weapon`）；按单位的 `WeaponInstance` 判定是否持有武器，**不点名具体武器**——任何来源的武器自动纳入，避免逐武器 any_of 清单。
 

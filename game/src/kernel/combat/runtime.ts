@@ -539,6 +539,7 @@ class CombatRuntime implements CombatRuntimeHandle {
           const next = set ? value : cur + value
           this.battle.meters[key] = Math.max(-10, Math.min(10, round2(next)))
         },
+        meterOf: (key) => this.battle.meters[key] ?? 0,
       },
     }
   }

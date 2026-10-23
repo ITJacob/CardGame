@@ -78,6 +78,7 @@ function conditionContext(ctx: EffectContext): ConditionContext {
         return 0
       }
     },
+    meterOf: (key) => ctx.ops.meterOf(key),
   }
 }
 

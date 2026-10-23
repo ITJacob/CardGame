@@ -18,7 +18,7 @@
       "payoffs": [
         "知识攻击"
       ],
-      "note": "payoffs 2026-09-26 评审：知识攻击卡面读 hidden_knowledge≥2 追加伤害（落地；axis 挂 combat 且为 combat enabler，但相对本轴是读者）；scrying_eye 层数 payoff 由状态自带 stackThreshold 承载 ｜ 2026-10-03 骨架手术：参照缩放换形 28 张（详见 designNote）"
+      "note": "2026-10-23 A3：窥秘读对手离共享门槛的距离与伪造情报；选靶分化（快速仪式自身 / 虚假信息整路）。"
     },
     "combat": {
       "symbol": "🥊",
@@ -31,7 +31,7 @@
       "payoffs": [
         "朗基努斯之枪"
       ],
-      "note": "payoffs 2026-09-26 评审：knowledge_strain 全库无卡面读取（2026-09-29 自 common energy_strain 分叉为格斗轴私有身份）；格斗分支条件读 shield/bulwark/gauge_rank 非轴身份 ｜ 2026-09-29 环节⑤：朗基努斯之枪补耗层读层段（knowledge_strain 耗 1 层+3 伤害），combat 从补卡候选清单落地 ｜ 2026-10-03 骨架手术：参照缩放换形 28 张（详见 designNote）"
+      "note": "2026-10-23 A3：门槛未达标时的生存与反噬轴（知识淤积），选靶分化（后排擒拿/前排贯穿/后排点杀）。"
     },
     "scroll": {
       "symbol": "📃",
@@ -39,12 +39,13 @@
       "statusId": "spell_lore",
       "enablers": [
         "法术解析",
-        "神秘再现",
         "卷轴·冰冻",
         "卷轴·麻痹"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：唯一耗层卡神秘再现已列 enabler；层数 payoff 由 spell_lore 自带 stackThreshold 承载；其余「层数够则」均为模板话术未实现 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：层数 payoff 由 spell_lore 自带 stackThreshold 承载（def 内闭环）；读层闭环维度记 12 分保底。 ｜ 2026-10-02 批次十：spell_lore 挂 behaviorModifiers cast_time_set 卷轴技法（学识省时——cast_time_set 签名 0→2 实证） ｜ 2026-10-03 骨架手术：参照缩放换形 28 张（详见 designNote）",
+      "payoffs": [
+        "神秘再现"
+      ],
+      "note": "2026-10-23 A3：卷轴省时收敛为卷轴轴专属（cast_time_set 仅 6 卡），spell_lore 成为付费变量（产层带知识淤积代价）。",
       "payoffVacuumAccepted": true
     },
     "astral": {
@@ -56,8 +57,12 @@
         "星桥",
         "本我星象"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：ego_constellation 全库无卡面读取；星象系「层数够则」均模板话术；层数 payoff 由状态自带 stackThreshold 承载 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：ego_constellation 自带 stackThreshold 承载，同 scroll；读层闭环维度记 12 分保底。 ｜ 2026-10-02 批次十：星海穿梭补 info_form 挂段（签名 1→2）；星光囚笼 occult_seal 跨系读段（封印正主） ｜ 2026-10-03 骨架手术：参照缩放换形 28 张（详见 designNote）",
+      "payoffs": [
+        "删除",
+        "数字象征·零与一",
+        "信息化"
+      ],
+      "note": "2026-10-23 A3 共享门槛重构：星象卡推高 board.secrecy（共享星空），secrecy≥7 且 ego≥3 时改写规则槽刻星象法则；ego_constellation 保留为个人仪式层数。",
       "payoffVacuumAccepted": true
     }
   },
@@ -282,7 +287,7 @@
       "flagship": false,
       "lore": "序列9 窥秘人 —— \"魔法、巫术、占星术等神秘知识全面掌握\"",
       "flavor": "那些别人要翻遍典籍才找得到的条目，你早就烂熟于心——你的灵感来得更密，也更早。",
-      "describe": "战斗开始时，自身能量上限 +5、能量恢复 +0.2/tick，持续整场。；学识化作本能：下一式转瞬发。",
+      "describe": "战斗开始时，自身能量上限 +5、能量恢复 +0.2/tick，持续整场。；学识化作本能：下一式转瞬发。；带法术学识层数施法时回复 1 能量。",
       "hook": [
         "on_battle_start"
       ],
@@ -324,7 +329,36 @@
           "glowing script ribbons"
         ],
         "mood": "studious, reverent"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_active_skill",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "spell_lore",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "学识回流：带法术学识施法回 1 能量"
+                }
+              ],
+              "else": [],
+              "note": "读层：spell_lore"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_pryer_s8_adaptive_martial_arts",
@@ -350,10 +384,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "behind_1",
+          "scope": "behind_2",
           "pickCount": 1
         },
-        "fallbackSort": "index_asc"
+        "fallbackSort": "atk_desc"
       },
       "effects": [
         {
@@ -525,10 +559,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "index_asc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -592,10 +626,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "cross_lane",
           "pickCount": 1
         },
-        "fallbackSort": "hp_desc"
+        "fallbackSort": "armor_desc"
       },
       "effects": [
         {
@@ -647,10 +681,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "behind_2",
           "pickCount": 1
         },
-        "fallbackSort": "gauge_desc"
+        "fallbackSort": "index_desc"
       },
       "effects": [
         {
@@ -706,10 +740,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "index_desc",
+        "fallbackSort": "atk_desc",
         "note": "index_desc 咬后排"
       },
       "effects": [
@@ -765,10 +799,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "index_asc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -875,7 +909,7 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "point",
           "pickCount": 1
         },
         "fallbackSort": "buff_count_desc",
@@ -946,7 +980,7 @@
       "flagship": false,
       "lore": "序列6 卷轴教授 —— \"卷轴制作：念咒后卷轴燃烧释放能力\" / \"冰冻、麻痹等卷轴极大节约施法时间\"",
       "flavor": "你抽出一张卷轴，咒文在上头燃成灰烬。下一记打向你的拳头，会先撞上一堵看不见的冰墙。",
-      "describe": "自身获得冰冻卷轴 20tick（1 次）：下次受击时对攻击者施加枷锁 10tick 并造成 2 点冰霜伤害；卷轴不受沉默影响；法术学识 +1 层。；学识化作本能：下一式转瞬发。",
+      "describe": "自身获得冰冻卷轴 20tick（1 次）：下次受击时对攻击者施加枷锁 10tick 并造成 2 点冰霜伤害；卷轴不受沉默影响；法术学识 +1 层。；学识化作本能：下一式转瞬发。；代价：自身知识淤积 1 层。；同时获得 4 点护盾。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -984,6 +1018,21 @@
           },
           "setInstant": true,
           "note": "学识化作本能：下一式转瞬发"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "knowledge_strain",
+          "target": "self",
+          "duration": 15,
+          "note": "卷轴反噬：知识淤积 1 层"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shield",
+          "value": 4,
+          "duration": 20,
+          "target": "self",
+          "note": "冰甲：施加时获得 4 点护盾"
         }
       ],
       "tentative": false,
@@ -1009,7 +1058,7 @@
       "flagship": false,
       "lore": "序列6 卷轴教授 —— \"冰冻、麻痹等卷轴极大节约施法时间\"",
       "flavor": "你预先在卷轴上写下一道麻痹咒。等你出手时，它替你把那一击钉死。",
-      "describe": "自身获得麻痹卷轴 20tick（1 次）：下次造成伤害时对目标施加眩晕 5tick 并附加 2 点雷电伤害；卷轴不受沉默影响；法术学识 +1 层。；学识化作本能：下一式转瞬发。",
+      "describe": "自身获得麻痹卷轴 20tick（1 次）：下次造成伤害时对目标施加眩晕 5tick 并附加 2 点雷电伤害；卷轴不受沉默影响；法术学识 +1 层。；学识化作本能：下一式转瞬发。；代价：自身知识淤积 1 层。；同时攻击 +2（20tick）。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -1047,6 +1096,22 @@
           },
           "setInstant": true,
           "note": "学识化作本能：下一式转瞬发"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "knowledge_strain",
+          "target": "self",
+          "duration": 15,
+          "note": "卷轴反噬：知识淤积 1 层"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "duration": 20,
+          "target": "self",
+          "note": "反制蓄力：施加时攻击 +2"
         }
       ],
       "tentative": false,
@@ -1132,12 +1197,20 @@
           "note": "施放星象法术观测本我星象 +1 层（astral 产层闭环第二实证）"
         },
         {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "castTimeDelta": -1,
-          "note": "卷轴预读：下一式读得更快（cast_time_set 语义）"
+          "type": "modify_resource",
+          "resource": "secrecy",
+          "value": 1,
+          "mode": "delta",
+          "target": "board",
+          "note": "推高共享星空：board.secrecy +1（双方都可读/推）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -8,
+          "mode": "delta",
+          "target": "self",
+          "note": "星象压制的代价：自身行动条 -8"
         }
       ],
       "sharedAcross": [
@@ -1288,6 +1361,22 @@
               "note": "架设星桥观测本我星象 +1 层（astral 产层闭环实证）"
             }
           ]
+        },
+        {
+          "type": "modify_resource",
+          "resource": "secrecy",
+          "value": 1,
+          "mode": "delta",
+          "target": "board",
+          "note": "推高共享星空：board.secrecy +1（双方都可读/推）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -6,
+          "mode": "delta",
+          "target": "self",
+          "note": "架桥的代价：自身行动条 -6"
         }
       ],
       "sharedAcross": [
@@ -1328,10 +1417,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "cross_lane_row",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "gauge_desc",
+        "fallbackSort": "hp_asc",
         "note": "锁即将出手者"
       },
       "effects": [
@@ -1390,14 +1479,6 @@
             }
           ],
           "else": []
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "castTimeDelta": -1,
-          "note": "卷轴预读：下一式读得更快（cast_time_set 语义）"
         }
       ],
       "sharedAcross": [
@@ -1488,12 +1569,12 @@
           "note": "跨系读层段：pryer→thief fate_gap（2026-09-29 跨系批二）"
         },
         {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "castTimeDelta": -1,
-          "note": "卷轴预读：下一式读得更快（cast_time_set 语义）"
+          "type": "modify_resource",
+          "resource": "secrecy",
+          "value": 1,
+          "mode": "delta",
+          "target": "board",
+          "note": "推高共享星空：board.secrecy +1（双方都可读/推）"
         }
       ],
       "tentative": false,
@@ -1538,7 +1619,7 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "point",
           "pickCount": 1
         },
         "fallbackSort": "hp_desc"
@@ -1657,10 +1738,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "diamond_1",
           "pickCount": 1
         },
-        "fallbackSort": "atk_desc",
+        "fallbackSort": "hp_asc",
         "note": "锁最高攻者"
       },
       "effects": [
@@ -1674,14 +1755,6 @@
           "statusId": "hallucination",
           "charges": 2,
           "duration": 20
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "castTimeDelta": -1,
-          "note": "卷轴预读：下一式读得更快（cast_time_set 语义）"
         }
       ],
       "tentative": false,
@@ -1749,14 +1822,6 @@
           ],
           "else": [],
           "note": "跨系读层段：pryer→assassin doom（2026-09-29 跨系批）"
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "castTimeDelta": -1,
-          "note": "卷轴预读：下一式读得更快（cast_time_set 语义）"
         }
       ],
       "variants": [
@@ -1852,10 +1917,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "behind_1",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_desc"
+        "fallbackSort": "armor_desc"
       },
       "effects": [
         {
@@ -2032,6 +2097,14 @@
               "note": "界域操作租金"
             }
           ]
+        },
+        {
+          "type": "modify_resource",
+          "resource": "secrecy",
+          "value": 1,
+          "mode": "delta",
+          "target": "board",
+          "note": "推高共享星空：board.secrecy +1（双方都可读/推）"
         }
       ],
       "domain": {
@@ -2095,10 +2168,10 @@
         "request": {
           "mode": "unit",
           "faction": "ally",
-          "scope": "cross_lane_row",
+          "scope": "whole_lane",
           "pickCount": 1
         },
-        "fallbackSort": "gauge_asc"
+        "fallbackSort": "gauge_desc"
       },
       "secondaryTargets": [
         {
@@ -2177,7 +2250,7 @@
         "request": {
           "mode": "area",
           "faction": "enemy",
-          "scope": "cross_lane_row",
+          "scope": "board",
           "pickCount": "all"
         }
       },
@@ -2197,6 +2270,22 @@
           },
           "castTimeDelta": 1,
           "note": "隐秘知识反噬：对方的读条被拉长一截"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "secrecy",
+          "value": 1,
+          "mode": "delta",
+          "target": "board",
+          "note": "推高共享星空：board.secrecy +1（双方都可读/推）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -10,
+          "mode": "delta",
+          "target": "self",
+          "note": "预言的代价：自身行动条 -10"
         }
       ],
       "tentative": false,
@@ -2301,7 +2390,7 @@
       "flagship": false,
       "lore": "序列2 贤者 —— \"信息掌控（核心）：自身信息化成信息流生物\"",
       "flavor": "你的躯体散作一串流动的信息。拳头穿你而过，只搅乱了几个字符——直到你重新凝聚成\"人\"的那一下。",
-      "describe": "自身信息化 20tick（2 次）：不可被单体技能选中、受伤 ×0.6，造成伤害时立即破除。；学识化作本能：下一式转瞬发。",
+      "describe": "自身获得信息化（20tick，2 次）：不可被单体技能选中、受伤 ×0.6，下一式转瞬发；本我星象 ≥1 层时行动条 +10。",
       "cost": {
         "energy": 3,
         "cooldown": 30,
@@ -2332,6 +2421,28 @@
           },
           "setInstant": true,
           "note": "学识化作本能：下一式转瞬发"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "ego_constellation",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 10,
+              "mode": "delta",
+              "target": "self",
+              "note": "本我星象加速：行动条 +10"
+            }
+          ],
+          "else": [],
+          "note": "读层：ego_constellation"
         }
       ],
       "tentative": false,
@@ -2422,10 +2533,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "behind_1",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "energy_desc",
+        "fallbackSort": "hp_desc",
         "note": "优先砸施法者（F57 同源）"
       },
       "effects": [
@@ -2481,14 +2592,6 @@
               "else": []
             }
           ]
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "castTimeDelta": -1,
-          "note": "卷轴预读：下一式读得更快（cast_time_set 语义）"
         }
       ],
       "variants": [
@@ -2534,7 +2637,7 @@
       "flagship": false,
       "lore": "序列2 贤者 —— \"粗浅的『删除』和『修改』权柄\" / 序列0 隐者下位\"删除\"",
       "flavor": "你从现实里划掉了它身上的两行——护佑、祝福，都没了。如果它身上什么都没有，那就划掉它自己。",
-      "describe": "驱散一名敌人的 2 个增益状态；若其没有可删的增益，改为造成 4 点无元素伤害。；卷轴预读：下一式读得更快。",
+      "describe": "隐秘值 ≥7 且本我星象 ≥3 时：在规则槽刻下「禁技」星象法则（双方本回合不可施法），并驱散目标 2 个增益；否则驱散目标 2 个增益，无可驱散时造成 4 点无元素伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -2546,15 +2649,43 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "cross_lane_row",
+          "scope": "point",
           "pickCount": 1
         },
         "fallbackSort": "buff_count_desc"
       },
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
+          "op": "if",
+          "condition": {
+            "kind": "all_of",
+            "conditions": [
+              {
+                "kind": "meter_compare",
+                "key": "secrecy",
+                "cmp": ">=",
+                "n": 7
+              },
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "ego_constellation",
+                "cmp": ">=",
+                "n": 3
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "write_rule_slot",
+              "slot": 2,
+              "field": "trigger",
+              "value": {
+                "rule": "no_skill"
+              },
+              "overwrite": true,
+              "note": "星象法则·删除：双方本回合不可施法"
+            },
             {
               "type": "dispel",
               "target": "target",
@@ -2567,32 +2698,51 @@
               }
             },
             {
-              "op": "if",
-              "condition": {
-                "kind": "dispelled_count",
-                "cmp": "<",
-                "n": 1,
-                "note": "目标无 buff 可删（本次驱散 0 个）"
-              },
-              "then": [
-                {
-                  "type": "damage",
-                  "element": "none",
-                  "value": 4,
-                  "note": "没有可删的东西，就删掉它的一部分存在"
-                }
-              ],
-              "else": []
+              "type": "mount_status",
+              "statusId": "ego_constellation",
+              "target": "self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "note": "书写法则的代价：消耗 1 层本我星象"
             }
-          ]
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "castTimeDelta": -1,
-          "note": "卷轴预读：下一式读得更快（cast_time_set 语义）"
+          ],
+          "else": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "dispel",
+                  "target": "target",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "buff"
+                    ],
+                    "count": 2
+                  }
+                },
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "dispelled_count",
+                    "cmp": "<",
+                    "n": 1
+                  },
+                  "then": [
+                    {
+                      "type": "damage",
+                      "element": "none",
+                      "value": 4,
+                      "target": "target",
+                      "note": "没有可删的东西，就删掉它的一部分存在"
+                    }
+                  ],
+                  "else": []
+                }
+              ]
+            }
+          ],
+          "note": "共享门槛：隐秘星空 ≥7 且本我星象 ≥3 时改为书写星象法则"
         }
       ],
       "sharedAcross": [
@@ -2633,7 +2783,7 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "cross_lane_row",
+          "scope": "point",
           "pickCount": 1
         },
         "fallbackSort": "buff_count_desc"
@@ -2756,9 +2906,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "point"
+          "scope": "whole_lane",
+          "pickCount": 1
         },
-        "fallbackSort": "index_asc"
+        "fallbackSort": "gauge_asc"
       },
       "effects": [
         {
@@ -2859,7 +3010,7 @@
       "flagship": true,
       "lore": "序列0 隐者 —— \"『神秘知识』权柄：赋予数字象征力量（0 = 混沌，1 = 造物主）\"",
       "flavor": "「一」是造物主，从混沌里立起秩序；「零」是混沌，把秩序推回原初。你摊开手掌，看自己更需要哪一个。",
-      "describe": "若自身生命低于 50%：全体友军获得 6 点护盾（20tick）且攻击 +2（20tick）（「一」·造物主）；否则：驱散全体敌人全部增益并造成 5 点无元素伤害（「零」·混沌）。；卷轴预读：下一式读得更快。",
+      "describe": "隐秘值 ≥7 且本我星象 ≥3 时：按自身生命在规则槽刻下星象法则（≥50% 写「禁攻」、<50% 写「禁技」，双方受约束）；否则按生命分支：低血时全队护盾 6 + 攻击 +2，高血时驱散敌方全部增益并造成 5 点无元素伤害。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2879,56 +3030,114 @@
         {
           "op": "if",
           "condition": {
-            "kind": "hp_percent",
-            "side": "self",
-            "cmp": "<",
-            "n": 0.5
+            "kind": "all_of",
+            "conditions": [
+              {
+                "kind": "meter_compare",
+                "key": "secrecy",
+                "cmp": ">=",
+                "n": 7
+              },
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "ego_constellation",
+                "cmp": ">=",
+                "n": 3
+              }
+            ]
           },
           "then": [
             {
-              "type": "mount_status",
-              "statusId": "shield",
-              "value": 6,
-              "duration": 20,
-              "target": "all_allies",
-              "note": "「一」·造物主：从混沌中创造"
+              "op": "if",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "self",
+                "cmp": ">=",
+                "n": 0.5
+              },
+              "then": [
+                {
+                  "type": "write_rule_slot",
+                  "slot": 0,
+                  "field": "trigger",
+                  "value": {
+                    "rule": "no_attack"
+                  },
+                  "overwrite": true,
+                  "note": "「一」·生之法则：双方本回合不可普攻"
+                }
+              ],
+              "else": [
+                {
+                  "type": "write_rule_slot",
+                  "slot": 1,
+                  "field": "trigger",
+                  "value": {
+                    "rule": "no_skill"
+                  },
+                  "overwrite": true,
+                  "note": "「零」·灭之法则：双方本回合不可施法"
+                }
+              ]
             },
             {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 2,
-              "mode": "delta",
-              "duration": 20,
-              "target": "all_allies"
+              "type": "mount_status",
+              "statusId": "ego_constellation",
+              "target": "self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "note": "书写法则的代价：消耗 1 层本我星象"
             }
           ],
           "else": [
             {
-              "type": "dispel",
-              "target": "all_enemies",
-              "dispelTarget": "unit",
-              "filter": {
-                "category": [
-                  "buff"
-                ]
+              "op": "if",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "self",
+                "cmp": "<",
+                "n": 0.5
               },
-              "note": "「零」·混沌：count 省略 = 全部清除；把秩序打回混沌"
-            },
-            {
-              "type": "damage",
-              "element": "none",
-              "value": 5,
-              "target": "all_enemies"
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "shield",
+                  "value": 6,
+                  "duration": 20,
+                  "target": "all_allies",
+                  "note": "「一」·造物主：从混沌中创造"
+                },
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": 2,
+                  "mode": "delta",
+                  "target": "all_allies",
+                  "duration": 20
+                }
+              ],
+              "else": [
+                {
+                  "type": "dispel",
+                  "target": "all_enemies",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "buff"
+                    ]
+                  }
+                },
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 5,
+                  "target": "all_enemies"
+                }
+              ]
             }
-          ]
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "castTimeDelta": -1,
-          "note": "卷轴预读：下一式读得更快（cast_time_set 语义）"
+          ],
+          "note": "共享门槛：隐秘星空 ≥7 且本我星象 ≥3 时改为书写星象法则"
         }
       ],
       "sharedAcross": [
@@ -3057,7 +3266,7 @@
       ]
     }
   ],
-  "designNote": "> **知识荒野系签名维度（依据《九大源质总览》§5）**：本系**无独立量表**，靠两类跨系桥获得全网价值：\n> - **信息删除改写命运**（↔光之钥）：窥秘人「删除/修改信息」直接作用于怪物预知的未来命运——命运总线上唯一能反向编辑命运的节点（§6.5）。见【命运删除】combo 卡。\n> - **信息修改同源重组**（↔源堡占卜家）：「删除/修改信息」与「重组/篡改/嫁接定义」是同一类概念层操作（§6.3）。见【篡改·信息】combo 卡。\n> 本稿另将 `窥秘`/`法术`/`星象`/`信息` 四状态做成 enabler→payoff 自循环，使本途径在无独立量表时仍有完整构筑引擎。\n\n> **昼夜时钟（2026-09-21）**：星象类卡挂**夜间相位**（`night`/`midnight`）——星辰只在夜空可见，白昼无星可占。原著依据：星象师序列（占星术/星之巨柱/星光囚笼/星象领域）。卷轴、预言、驱散等非星象卡不挂钩。系数 ⚠️D 平衡占位。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「参照缩放」句式换形 28 张通用骨架卡——从不拍脑袋给数：改的是下一次的读条与消耗——卷轴预读让下一式更快，学识化作本能让下一式转瞬发，对手的读条被学识拖慢。**协作面**：拖慢对手施法即为全队争取窗口。",
+  "designNote": "> **知识荒野系签名维度（依据《九大源质总览》§5）**：本系**无独立量表**，靠两类跨系桥获得全网价值：\n> - **信息删除改写命运**（↔光之钥）：窥秘人「删除/修改信息」直接作用于怪物预知的未来命运——命运总线上唯一能反向编辑命运的节点（§6.5）。见【命运删除】combo 卡。\n> - **信息修改同源重组**（↔源堡占卜家）：「删除/修改信息」与「重组/篡改/嫁接定义」是同一类概念层操作（§6.3）。见【篡改·信息】combo 卡。\n> 本稿另将 `窥秘`/`法术`/`星象`/`信息` 四状态做成 enabler→payoff 自循环，使本途径在无独立量表时仍有完整构筑引擎。\n\n> **昼夜时钟（2026-09-21）**：星象类卡挂**夜间相位**（`night`/`midnight`）——星辰只在夜空可见，白昼无星可占。原著依据：星象师序列（占星术/星之巨柱/星光囚笼/星象领域）。卷轴、预言、驱散等非星象卡不挂钩。系数 ⚠️D 平衡占位。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「参照缩放」句式换形 28 张通用骨架卡——从不拍脑袋给数：改的是下一次的读条与消耗——卷轴预读让下一式更快，学识化作本能让下一式转瞬发，对手的读条被学识拖慢。**协作面**：拖慢对手施法即为全队争取窗口。 ｜ 2026-10-23 A3 共享门槛重构：secrecy 共享星空、法则书写双门槛、卷轴省时收敛、选靶分化、代价补足。",
   "sampleBuilds": [
     {
       "name": "A 卷轴法术 📃",

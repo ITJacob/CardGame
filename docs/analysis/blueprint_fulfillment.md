@@ -129,8 +129,8 @@
 | 锚点 | 4/4（100%） | — |
 | 签名键 | 3/3（100%） | — |
 | 角色配比 | 7/7（100%） | — |
-| 跨轴钩子 | 2/2（100%） | — |
-| 跨系钩子 | 0/1（0%） | reforge(crossPathway=True,写入实证=False) |
+| 跨轴钩子 | 3/5（60%） | 删除→astral；数字象征·零与一→astral |
+| 跨系钩子 | 0/2（0%） | reforge(crossPathway=True,写入实证=False)；fate(crossPathway=False,写入实证=False) |
 
 ## 阅读者（reader）
 

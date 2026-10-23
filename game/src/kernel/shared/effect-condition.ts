@@ -36,6 +36,8 @@ export interface ConditionContext {
   allUnits?: () => readonly ConditionUnit[]
   /** 池资源读数（resource_compare 用） */
   resourceOf?: (unit: ConditionUnit, key: string) => number
+  /** 战场量表读数（meter_compare 用：secrecy / order / fate_value / luminance） */
+  meterOf?: (key: string) => number
 }
 
 function compare(actual: number, cmp: Cmp, bound: number): boolean {
@@ -124,6 +126,9 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
       const subject = cond.side === 'self' ? ctx.caster : target
       if (!subject) return false
       return compare(ctx.resourceOf?.(subject, String(cond.key ?? 'hp')) ?? 0, cond.cmp ?? '>=', cond.n ?? 0)
+    }
+    case 'meter_compare': {
+      return compare(ctx.meterOf?.(String(cond.key ?? '')) ?? 0, cond.cmp ?? '>=', cond.n ?? 0)
     }
     case 'faction_is': {
       const subject = cond.side === 'self' ? ctx.caster : target
