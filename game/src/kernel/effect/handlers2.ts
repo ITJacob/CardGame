@@ -2,8 +2,9 @@
 // transfer_status / modify_damage / grant_immunity / modify_targetability /
 // reveal / take_control。需要触碰战场或注册表的走 ctx.ops。
 import type {
-  EffDispel, EffDrain, EffGrantImmunity, EffModifyDamage, EffModifyStatus,
-  EffModifyTargetability, EffMove, EffReveal, EffSpawn, EffTakeControl, EffTransferStatus, EffTranslocate,
+  EffDisarm, EffDispel, EffDrain, EffGrantImmunity, EffModifyDamage, EffModifyStatus,
+  EffModifyTargetability, EffModifyWeapon, EffMove, EffReveal, EffSpawn, EffTakeControl,
+  EffTransferStatus, EffTranslocate,
 } from '../catalog/types'
 import type { EffectContext } from './context'
 import { numeric } from './context'
@@ -65,13 +66,21 @@ export function handleDrain(node: EffDrain, target: CombatUnit | null, ctx: Effe
   if (resource === 'hp') ctx.reportDamage?.(caster?.faction ?? '', drawn)
 }
 
-export function handleModifyStatus(node: EffModifyStatus, target: CombatUnit | null, ctx: EffectContext): void {
+export function handleDisarm(node: EffDisarm, target: CombatUnit | null, ctx: EffectContext): void {
+  if (!target || target.isDead) return
+  if (node.slot && node.slot !== 'weapon') return
+  ctx.ops.destroyWeapon(target, 'disarm')
+}
+
+export function handleModifyWeapon(node: EffModifyWeapon, target: CombatUnit | null, ctx: EffectContext): void {
+  if (!target || target.isDead) return
+  if (node.slot && node.slot !== 'weapon') return
+  ctx.ops.modifyWeapon(target, node)
+}
+
+export function handleModifyStatus(node: EffModifyStatus, target: CombatUnit | null, _ctx: EffectContext): void {
   if (!target) return
-  const insts = node.slot
-    ? target.statuses.all().filter((i) => ctx.statusDef(i.defId)?.equipSlot === node.slot)
-    : node.statusId
-      ? target.statuses.byDef(node.statusId)
-      : []
+  const insts = node.statusId ? target.statuses.byDef(node.statusId) : []
   for (const inst of insts) {
     // 常驻（remaining = null）不从「延长/缩短」里取值：加时长不改变常驻语义
     if (node.addDuration && inst.remaining !== null) inst.remaining = Math.max(0, inst.remaining + node.addDuration)

@@ -5,7 +5,7 @@ import type { Battle, Coordinate, Faction, Lane, OccupancyChanged } from '../bat
 import { LANE_CAPACITY } from '../battle/types'
 import { BattlePlacement } from '../battle/placement'
 import { createLookup, type CatalogLookup } from '../catalog/lookup'
-import type { Catalog, EffectNode, TriggerDef } from '../catalog/types'
+import type { Catalog, EffectNode, EffModifyWeapon, TriggerDef, WeaponDef } from '../catalog/types'
 import { EventBus } from '../shared/events'
 import { SequentialIdGenerator } from '../shared/id-generator'
 import { Mulberry32RandomSource, RandomUsageRegistry, type RandomSource } from '../shared/random-source'
@@ -201,6 +201,7 @@ class CombatRuntime implements CombatRuntimeHandle {
 
   /** 装配被动卡：hook 事件 → 卡面 effects（含模板自带 triggers） */
   private installPassives(unit: CombatUnit, slots: readonly { defId: string }[]): void {
+    const initialEquips: string[] = []
     for (const s of slots) {
       const tpl = this.lookup.behaviorTemplate(s.defId)
       if (!tpl) {
@@ -212,6 +213,13 @@ class CombatRuntime implements CombatRuntimeHandle {
       for (const ev of tpl.hook ?? []) if (nodes.length > 0) triggers.push({ event: ev, effects: nodes })
       for (const t of tpl.triggers ?? []) triggers.push(t)
       if (triggers.length > 0) unit.passives.push({ defId: tpl.id, triggers })
+      if (tpl.initialEquip) initialEquips.push(tpl.initialEquip)
+    }
+    // 被动全部登记完再开局装备：on_weapon_equip / 战吼能看到完整被动集
+    for (const id of initialEquips) {
+      const def = this.lookup.skillDef(id)?.weapon
+      if (def) this.equipWeapon(unit, def)
+      else this.warn(`initialEquip 未知武器 ${id}`)
     }
   }
 
@@ -282,7 +290,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
 
     this.checkDeaths()
-    this.breakSpentEquipments()
+    this.breakSpentWeapons()
     this.checkTermination()
     // runOpportunity 可能在方法内改写 this.pending，控制流收窄不可用，这里显式放宽
     const pendingReq = (this.pending as { request: DecisionRequest } | null)?.request ?? null
@@ -313,6 +321,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       }
       if (slot.kind === 'basic_attack') {
         this.fireStatusTriggers(unit, 'on_attack')
+        this.consumeWeaponDurability(unit)
       } else {
         this.lastSkill.set(unit.id, { sourceRef: source.sourceRef, effects: source.effects })
         this.fireStatusTriggers(unit, 'on_active_skill')
@@ -339,15 +348,47 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
   }
 
-  /** 本步末尾清掉耐久归零的装备（期间若被 on_kill 补满则保留）。 */
-  private breakSpentEquipments(): void {
+  /** 本步末尾清掉耐久归零的武器（期间若被 on_kill 补满则保留）。 */
+  private breakSpentWeapons(): void {
     for (const unit of this.units.all()) {
-      for (const inst of [...unit.statuses.all()]) {
-        if (!this.lookup.statusDef(inst.defId)?.equipSlot) continue
-        if (inst.charges === null || inst.charges > 0) continue
-        unit.statuses.unmount(inst.instanceId, 'charges')
-        this.emit({ type: 'StatusExpired', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id })
-      }
+      if (unit.weapon && unit.weapon.durability <= 0) this.destroyWeapon(unit, 'durability')
+    }
+  }
+
+  /** 装备武器：销毁旧武器 → 建实例 → fire on_weapon_equip（战吼由流水线随后执行）。 */
+  private equipWeapon(unit: CombatUnit, def: WeaponDef): void {
+    if (unit.weapon) this.destroyWeapon(unit, 'replaced')
+    const inst = unit.equipWeapon(def, this.ids.next('weapon'))
+    this.emit({ type: 'WeaponEquipped', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id })
+    this.fireStatusTriggers(unit, 'on_weapon_equip')
+  }
+
+  private destroyWeapon(unit: CombatUnit, reason: string): void {
+    const inst = unit.destroyWeapon()
+    if (!inst) return
+    this.emit({ type: 'WeaponDestroyed', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id, reason })
+  }
+
+  /** 普攻后扣 1 耐久（步末统一判定销毁，on_kill 补耐久可救回）。 */
+  private consumeWeaponDurability(unit: CombatUnit): void {
+    if (!unit.weapon) return
+    unit.weapon.durability = Math.max(0, unit.weapon.durability - 1)
+  }
+
+  private opModifyWeapon(unit: CombatUnit, node: EffModifyWeapon): void {
+    const w = unit.weapon
+    if (!w) return
+    if (node.restoreDurability) {
+      const def = this.lookup.skillDef(w.defId)?.weapon
+      if (def) w.durability = def.durability
+    }
+    if (typeof node.durabilityDelta === 'number') {
+      w.durability = Math.max(0, w.durability + node.durabilityDelta)
+    }
+    if (typeof node.attackDelta === 'number' && node.attackDelta !== 0) {
+      unit.provenance.revertBySource(w.instanceId)
+      w.attack += node.attackDelta
+      unit.provenance.apply('attack', w.attack, w.instanceId)
     }
   }
 
@@ -378,6 +419,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       consumption: (skill.targetSpec?.consumption as Consumption) ?? 'instant',
       zoneGrant: skill.zoneGrant ? { def: skill.zoneGrant.def, duration: skill.zoneGrant.duration } : undefined,
       domainGrant: skill.domainGrant ? { def: skill.domainGrant.def, duration: skill.domainGrant.duration } : undefined,
+      weapon: skill.weapon,
     }
   }
 
@@ -386,6 +428,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       units: this.units,
       enemyOf: (f) => (f === this.factions[0] ? this.factions[1] : this.factions[0]),
       makeContext: (actionId, caster, targetScope) => this.makeContext(actionId, caster, undefined, targetScope),
+      equipWeapon: (caster, weapon) => this.equipWeapon(caster, weapon),
       effectNode: (id) => this.lookup.effectNode(id),
       emit: (e) => this.emit(e),
       nextActionId: () => this.ids.next('action'),
@@ -467,6 +510,8 @@ class CombatRuntime implements CombatRuntimeHandle {
         void amount
       },
       ops: {
+        destroyWeapon: (u, reason) => this.destroyWeapon(u, reason),
+        modifyWeapon: (u, node) => this.opModifyWeapon(u, node),
         move: (u, op, dist, c) => this.opMove(u, op, dist, c),
         spawn: (c, node, near) => this.opSpawn(c, node, near),
         translocate: (u, dur, payload) => this.opTranslocate(u, dur, payload),
@@ -855,14 +900,6 @@ class CombatRuntime implements CombatRuntimeHandle {
       }
       return
     }
-    // 装备槽：同槽互斥，后装备者替换前者（含同 defId 重挂 → 耐久刷新）
-    if (def?.equipSlot && effectiveGrant.stackMode !== 'consume') {
-      for (const old of host.statuses.all().filter((i) => this.lookup.statusDef(i.defId)?.equipSlot === def.equipSlot)) {
-        host.statuses.unmount(old.instanceId, 'replaced')
-        host.provenance.revertBySource(old.instanceId)
-        this.emit({ type: 'StatusDispelled', instanceId: old.instanceId, defId: old.defId })
-      }
-    }
     const inst = host.statuses.mount(statusId, { ...effectiveGrant, sourceId: this.ids.next('status'), casterId: effectiveGrant.casterId ?? caster?.id })
     if (!inst) return
     // 消耗层数不是「新获得状态」，不触发 on_apply / on_status_gain
@@ -943,6 +980,12 @@ class CombatRuntime implements CombatRuntimeHandle {
       const scope = this.scopeFor(unit, inst.grant.casterId, subjects, opportunity)
       this.fireTriggers(unit, event, def?.triggers, unit, opportunity, scope, false, null, inst)
     }
+    // 武器（无 onlyDefId 时参与；装备期触发器，不支持 consumeCharge）
+    if (!onlyDefId && unit.weapon) {
+      const wdef = this.lookup.skillDef(unit.weapon.defId)?.weapon
+      const scope = this.scopeFor(unit, undefined, subjects, opportunity)
+      this.fireTriggers(unit, event, wdef?.triggers, unit, opportunity, scope)
+    }
     // 被动卡（无 onlyDefId 时全部参与）
     if (!onlyDefId) {
       for (const p of unit.passives) {
@@ -960,6 +1003,11 @@ class CombatRuntime implements CombatRuntimeHandle {
         const def = this.lookup.statusDef(inst.defId)
         const scope = this.scopeFor(host, inst.grant.casterId, { ...subjects, target: subject })
         this.fireTriggers(host, event, def?.triggers, host, undefined, scope, true, subject, inst)
+      }
+      if (host.weapon) {
+        const wdef = this.lookup.skillDef(host.weapon.defId)?.weapon
+        const scope = this.scopeFor(host, undefined, { ...subjects, target: subject })
+        this.fireTriggers(host, event, wdef?.triggers, host, undefined, scope, true, subject)
       }
       for (const p of host.passives) {
         const scope = this.scopeFor(host, undefined, { ...subjects, target: subject })
@@ -983,8 +1031,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       const amount = t.consumeCharge === true ? 1 : Math.max(0, Math.floor(t.consumeCharge))
       if (amount <= 0) continue
       live.charges = Math.max(0, live.charges - amount)
-      // 装备槽耐久归零先留在槽内到本步结算末尾：同一次击杀的 on_kill 补耐久可救回
-      if (live.charges <= 0 && !this.lookup.statusDef(live.defId)?.equipSlot) {
+      if (live.charges <= 0) {
         unit.statuses.unmount(live.instanceId, 'charges')
         this.emit({ type: 'StatusExpired', instanceId: live.instanceId, defId: live.defId, unitId: unit.id })
       }
@@ -1038,6 +1085,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       gaugeRate: u.gauge.rate,
       gaugeThreshold: u.gauge.threshold,
       statuses: u.statuses.all().map((s) => ({ defId: s.defId, stacks: s.currentStacks, charges: s.charges, maxCharges: s.maxCharges })),
+      weapon: u.weapon ? { defId: u.weapon.defId, attack: u.weapon.attack, durability: u.weapon.durability } : null,
     }))
     return { tick: this.battle.clock, phase: this.battle.phase, units, pending: this.pending?.request ?? null, finished: this.outcome !== null }
   }

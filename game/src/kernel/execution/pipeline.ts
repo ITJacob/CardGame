@@ -3,7 +3,7 @@
 // Manual 且候选>pickCount 时挂起，返回 continueWith 供 UI/AI 喂回选择。
 import type { FactionId, LaneId } from '../ids'
 import type { DomainEvent } from '../combat/types'
-import type { EffectNode } from '../catalog/types'
+import type { EffectNode, WeaponDef } from '../catalog/types'
 import type { Consumption, TargetSpec } from '../shared/types'
 import type { EffectContext } from '../effect/context'
 import type { TargetScope } from '../effect/target-scope'
@@ -30,6 +30,8 @@ export interface PipelineDeps {
   laneCapacity: number
   /** 结算完成后回调（runtime 用它在 zone/domain 分流时登记实例） */
   onAction?(info: { caster: CombatUnit; consumption: Consumption; targets: readonly ResolvedTarget[]; zoneGrant?: { def: string; duration?: number }; domainGrant?: { def: string; duration?: number } }): void
+  /** kind=weapon 的卡：扣费成功后、战吼/选靶之前装备 */
+  equipWeapon?(caster: CombatUnit, weapon: WeaponDef): void
 }
 
 export interface BehaviorSource {
@@ -42,6 +44,8 @@ export interface BehaviorSource {
   /** consumption=zone / domain 时的卡面授予（由 runtime 消费） */
   zoneGrant?: { def: string; duration?: number }
   domainGrant?: { def: string; duration?: number }
+  /** kind=weapon：装备载荷（战吼走 effects） */
+  weapon?: WeaponDef
 }
 
 export interface AwaitingDecision {

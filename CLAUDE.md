@@ -31,7 +31,7 @@ docs/meta/           流程·规范·提案（工作流与生成约束，先读 
 ├─ 骨架重议.md       环节⑥骨架层议事：命题撞车簇、候选新骨架、机制扩容请求与拍板记录
 └─ proposals/        机制扩容提案（在办：weapon-first-class.md；完成提案归 docs/archive/proposals/）
 docs/ddd/            战斗内核 DDD 设计（权威正源，纯内容）
-├─ README.md         入口：上下文总览、依赖方向、一致性边界、54 条不变量总表
+├─ README.md         入口：上下文总览、依赖方向、一致性边界、58 条不变量总表
 ├─ contexts/         7 限界上下文 + 共享内核（结构/概念）
 └─ params/           各上下文参数与取值域（数值/枚举）
 docs/json/           技能池 JSON（唯一维护面，2026-09-18 起技能稿 md 已归档）
@@ -95,7 +95,7 @@ game/               Web 游戏端（TypeScript + Vite + 原生 DOM；P0/P1 已�
 - **整场战斗一个聚合，根是 `Combat`**；对外契约 `CombatSetup → CombatEnded`。Unit 不是聚合根。
 - **纯函数契约：结果 = f(初始状态, 输入序列, seed)**。为此 Catalog（全部定义态 Def）是独立不可变聚合，战斗启动时快照进战斗内；随机源可播种、可快照。可复现 ≠ 禁随机。
 - **Definition + Grant 三件套**（EffectDef→EffectRef→Effect、StatusDef→StatusGrant→StatusInstance 等）：默认值只写 Def、实例值只写 Grant，Grant 不可变。
-- **效果原语 30 个**（27 经典 + 光照度对 `set_luminance` / `advance_clock`，2026-09-21 落地 + 缴械 `disarm`，2026-10-19 落地；以 `docs/json/schema/skills.schema.json` 的 `effect.oneOf` 为权威源，`check_enum_sync.py` 对账）：damage / heal / mount_status / modify_stat / modify_resource / move / spawn / dispel / disarm / drain / domain / translocate / snapshot / restore_snapshot / modify_damage / target_override / transfer_status / echo_last_skill / gauge_shuffle / status_shuffle / modify_skill / modify_status / modify_targetability / reveal / grant_immunity / take_control / write_rule_slot / modify_rule_slot / set_luminance / advance_clock。**15 个触发点封闭集**（`docs/ddd/params/执行参数.md` §2.1；2026-09-29 内核裁定增 `on_status_gain` 第 14 成员；2026-10-15 增 `on_turn_end` 第 15 成员，`on_turn_start`/`on_turn_end` 为**机会括号** INV-S6——按「谁获得行动机会」fire，wasted 也闭合。时长口径新增 `durationUnit: 'self_turn'`，按持有者机会数计时）。新增原语须先在 `docs/meta/SCHEMA.md` §5.2 登记再改 schema，否则 `check_enum_sync.py` 报漂移。
+- **效果原语 31 个**（27 经典 + 光照度对 `set_luminance` / `advance_clock`，2026-09-21 落地 + 缴械 `disarm`，2026-10-19 落地 + 武器改写 `modify_weapon`，2026-10-23 落地；以 `docs/json/schema/skills.schema.json` 的 `effect.oneOf` 为权威源，`check_enum_sync.py` 对账）：damage / heal / mount_status / modify_stat / modify_resource / move / spawn / dispel / disarm / drain / domain / translocate / snapshot / restore_snapshot / modify_damage / target_override / transfer_status / echo_last_skill / gauge_shuffle / status_shuffle / modify_skill / modify_status / modify_targetability / reveal / grant_immunity / take_control / write_rule_slot / modify_rule_slot / set_luminance / advance_clock / modify_weapon。**16 个触发点封闭集**（`docs/ddd/params/执行参数.md` §2.1；2026-09-29 内核裁定增 `on_status_gain` 第 14 成员；2026-10-15 增 `on_turn_end` 第 15 成员，`on_turn_start`/`on_turn_end` 为**机会括号** INV-S6——按「谁获得行动机会」fire，wasted 也闭合；2026-10-23 增 `on_weapon_equip` 第 16 成员。时长口径新增 `durationUnit: 'self_turn'`，按持有者机会数计时）。新增原语须先在 `docs/meta/SCHEMA.md` §5.2 登记再改 schema，否则 `check_enum_sync.py` 报漂移。
 - **随机性治理 R1–R6**：伤害/目标选择零随机；概率写成 `EffectRef.condition: {kind:'chance',p}`（没有 Chance 算子），须登记、单次抽样、只用于非伤害维度；落空/阻挡语义一律用 charges 次数型状态的确定性写法（2026-09-04 裁决，R5 不开例外）。
 
 ## 编辑纪律（违反会踩坑）

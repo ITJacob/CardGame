@@ -207,7 +207,7 @@ generic 豁免去重又不入指纹，无上限即可把同质化整组隐身。
 | 实体/载体 | `status` | 守护、伪装、衰老 | 挂载 + 读层 + 层数/触发机制 |
 | 实体/载体 | `status_family` | 月相组、姿态族 | 一组相关状态 ≥2 个共同闭环 |
 | 实体/载体 | `resource` | 战意、迷失、恶欲、隐秘 | Pool 读写 + 阈值/档位 |
-| 实体/载体 | `equipment` | **武艺=武器槽** | equipSlot 操作 ≥2 卡 + 耐久/换装/补耐久 |
+| 实体/载体 | `equipment` | **武艺=武器槽** | 武器牌操作 ≥2 卡 + 耐久/换装/补耐久（武器是卡，不是状态，2026-10-23） |
 | 实体/载体 | `zone` | 晨曦阵地、陷阱区 | 区域/界域放置 + 进入/停留读取 |
 | 行为/原语 | `primitive` | translocate / snapshot / write_rule_slot | 原语使用 ≥2 卡 + 读层联动（限白名单，排除 damage/mount_status 等通用骨架） |
 | 行为/原语 | `trigger` | on_kill 收割、on_phase_change | 触发点挂载 ≥2 卡 + 条件/载荷闭环 |
@@ -281,7 +281,7 @@ generic 豁免去重又不入指纹，无上限即可把同质化整组隐身。
 
 - **只有轴锚点上的 facet 参与跨轴耦合**；轴没声明某概念为身份，就不占有它的机制条目（避免「用过相位即独霸相位」）。
 - 跨轴卡与轴 facet **同概念同条目**才算耦合；不同条目（如武艺=装备/耐久，另一轴=抢夺武器）不算。
-- 私有状态按「途径内占多数的轴」归属（排除 common、`classMechanics` 与 `equipSlot` 状态）；跨轴读该状态仍算耦合。
+- 私有状态按「途径内占多数的轴」归属（排除 common 与 `classMechanics`）；武器不是状态，不参与私有状态归属。跨轴读该状态仍算耦合。
 - 通道保留「写入→下游读取」的产出消费耦合（§二·一），与 facet 取并集、同卡同轴只计一次。
 
 示例（战士）：武艺锚 `equipment:weapon`，facets = equip / durability_consume / durability_replenish / read_equipped。

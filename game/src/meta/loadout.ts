@@ -3,8 +3,14 @@
 import { classSkills, type Hero } from './herogen'
 import { availableCardSet, type Profile } from './progression'
 import type { Catalog } from '../kernel/catalog/types'
+import type { CardKind } from '../kernel/ids'
 
 export type SlotKind = 'active' | 'passive'
+
+/** 卡类型 → 编队槽：武器牌占主动槽（2026-10-23） */
+export function bucketOf(kind: CardKind): SlotKind {
+  return kind === 'passive' ? 'passive' : 'active'
+}
 
 export interface SkillPool {
   active: string[]

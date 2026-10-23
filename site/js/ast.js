@@ -212,13 +212,16 @@ const PRIMITIVE_TEMPLATES = {
     return s;
   },
   disarm: (e, used) => {
-    used.push('slot', 'statusId', 'count');
-    let s = `缴械${tgt(e)}的${termSpan('equipSlot', e.slot || 'weapon')}槽装备`;
+    used.push('slot');
+    return `卸下并摧毁${tgt(e)}的${termSpan('equipSlot', e.slot || 'weapon')}武器`;
+  },
+  modify_weapon: (e, used) => {
+    used.push('slot', 'restoreDurability', 'durabilityDelta', 'attackDelta');
     const parts = [];
-    if (e.statusId) parts.push(`指定：${[].concat(e.statusId).map(defSpanAuto).join('、')}`);
-    if (e.count != null) parts.push(`数量：${fmtVal(e.count)}`);
-    if (parts.length) s += `（${parts.join('，')}）`;
-    return s;
+    if (e.restoreDurability) parts.push('耐久补满');
+    if (e.durabilityDelta != null) parts.push(`耐久 ${e.durabilityDelta > 0 ? '+' : ''}${fmtVal(e.durabilityDelta)}`);
+    if (e.attackDelta != null) parts.push(`攻击加值 ${e.attackDelta > 0 ? '+' : ''}${fmtVal(e.attackDelta)}`);
+    return `改写${tgt(e)}的${termSpan('equipSlot', e.slot || 'weapon')}武器：${parts.join('，') || '（无参数）'}`;
   },
   drain: (e, used) => {
     used.push('resource', 'value', 'healRatio', 'category', 'count');

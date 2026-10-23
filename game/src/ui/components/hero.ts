@@ -191,7 +191,7 @@ function cardGroupHtml(hero: HeroLike, catalog: Catalog, k: SlotKind, cur: SlotK
         name: def?.name ?? tpl?.name ?? id,
         rarity: def?.rarity ?? tpl?.rarity,
         pathwayId: def?.pathwayId ?? tpl?.pathwayId,
-        kind: k,
+        kind: def?.kind ?? (tpl ? 'passive' : k),
         cost: def?.cost?.energy,
         as: 'button',
         // 实渲宽 ≤128px（.hs-group__row 按行平分、横屏按右栏高倒推、上限 128），不是 compact 默认的 60px
@@ -348,7 +348,7 @@ function sideFaceKey(slot: HTMLElement, catalog: Catalog): string | undefined {
     name: def?.name ?? tpl?.name ?? id,
     rarity: def?.rarity ?? tpl?.rarity,
     pathwayId: def?.pathwayId ?? tpl?.pathwayId,
-    kind: k,
+    kind: def?.kind ?? (tpl ? 'passive' : k),
     cost: def?.cost?.energy,
     as: 'button',
     sizes: '128px',

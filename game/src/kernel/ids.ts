@@ -37,5 +37,5 @@ export type Reach = 'none' | 'melee' | 'thrown' | 'spell'
 
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
 
-/** 卡的种类：active → SkillDef；passive → BehaviorTemplate */
-export type CardKind = 'active' | 'passive'
+/** 卡的种类：active/weapon → SkillDef；passive → BehaviorTemplate */
+export type CardKind = 'active' | 'passive' | 'weapon'

@@ -11,10 +11,10 @@ import type {
 } from '../shared/types'
 
 // ============================================================
-// 效果原语（30 个，权威源 = schema effect.oneOf）+ 3 个结构算子
+// 效果原语（31 个，权威源 = schema effect.oneOf）+ 3 个结构算子
 // ============================================================
 
-/** 30 个效果原语的类型闭集 */
+/** 31 个效果原语的类型闭集 */
 export type EffectType =
   | 'damage' | 'heal' | 'mount_status' | 'modify_stat' | 'modify_resource'
   | 'move' | 'spawn' | 'dispel' | 'disarm' | 'drain' | 'domain' | 'translocate'
@@ -22,7 +22,7 @@ export type EffectType =
   | 'transfer_status' | 'echo_last_skill' | 'gauge_shuffle' | 'status_shuffle'
   | 'modify_skill' | 'modify_status' | 'modify_targetability' | 'reveal'
   | 'grant_immunity' | 'take_control' | 'write_rule_slot' | 'modify_rule_slot'
-  | 'set_luminance' | 'advance_clock'
+  | 'set_luminance' | 'advance_clock' | 'modify_weapon'
 
 interface EffBase {
   condition?: Condition
@@ -129,12 +129,20 @@ export interface EffDispel extends EffBase {
   mode?: 'area'
   collect?: string
 }
-/** 缴械：卸下目标装备槽上的 StatusInstance；无视 dispelable，只作用于带 equipSlot 的实例 */
+/** 缴械：卸下并摧毁目标当前武器（WeaponInstance） */
 export interface EffDisarm extends EffBase {
   type: 'disarm'
   slot?: 'weapon'
   statusId?: string | string[]
   count?: CountValue
+}
+/** 武器改写：补/增减耐久、增减攻击加值 */
+export interface EffModifyWeapon extends EffBase {
+  type: 'modify_weapon'
+  slot?: 'weapon'
+  restoreDurability?: boolean
+  durabilityDelta?: number
+  attackDelta?: number
 }
 export interface EffDrain extends EffBase {
   type: 'drain'
@@ -319,7 +327,7 @@ export type EffectNode =
   | EffGaugeShuffle | EffStatusShuffle | EffModifySkill | EffModifyStatus
   | EffModifyTargetability | EffReveal | EffGrantImmunity | EffTakeControl
   | EffWriteRuleSlot | EffModifyRuleSlot | EffSetLuminance | EffAdvanceClock
-  | EffSnapshot | EffRestoreSnapshot
+  | EffSnapshot | EffRestoreSnapshot | EffModifyWeapon
   | OpSequence | OpRepeat | OpIf
 
 // ============================================================
@@ -359,8 +367,6 @@ export interface StatusDef {
   modifiers?: ModifierSet
   triggers?: TriggerDef[]
   charges?: number
-  /** 装备槽（如 weapon）：同槽状态互斥，后装备者替换前者 */
-  equipSlot?: string
   maxStacks?: number
   stackPolicy?: 'stack' | 'refresh'
   statPerStack?: Record<string, Scalar>
@@ -380,11 +386,25 @@ export interface StatusDef {
 export type StatusModifier = Record<string, Scalar>
 export type ModifierSet = StatusModifier[] | Record<string, Scalar>
 
-/** 主动技能定义（kind=active 的卡） */
+/** 武器定义（kind=weapon 的卡；不是状态） */
+export interface WeaponDef {
+  id: DefId
+  slot: 'weapon'
+  attack: number
+  durability: number
+  tags?: string[]
+  modifiers?: ModifierSet
+  triggers?: TriggerDef[]
+  note?: string
+}
+
+/** 主动技能定义（kind=active / kind=weapon 的卡） */
 export interface SkillDef {
   id: DefId
   sourceCardId: CardId
   pathwayId: PathwayId
+  /** 原始卡类型（active / weapon）；UI 与编队分槽用 */
+  kind?: 'active' | 'weapon'
   name: string
   rarity: Rarity
   axis: string
@@ -410,6 +430,8 @@ export interface SkillDef {
   zoneGrant?: { def: string; duration?: number; durationUnit?: 'turn' | 'tick'; affects?: string }
   /** consumption=domain 时由卡面携带的界域授予 */
   domainGrant?: { def: string; tier?: string; duration?: number; durationUnit?: 'turn' | 'tick' }
+  /** kind=weapon 的卡：打出即装备 */
+  weapon?: WeaponDef
 }
 
 /** 被动行为模板（kind=passive 的卡） */
@@ -417,6 +439,7 @@ export interface BehaviorTemplate {
   id: DefId
   sourceCardId: CardId
   pathwayId: PathwayId
+  kind?: 'passive'
   name: string
   rarity: Rarity
   axis: string
@@ -433,6 +456,8 @@ export interface BehaviorTemplate {
   effects: EffectRef[]
   reach?: Reach
   tags?: string[]
+  /** 开局自动装备的武器卡 id（kind=weapon） */
+  initialEquip?: string
 }
 
 export interface RulePatch {

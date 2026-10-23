@@ -7,6 +7,7 @@ import { SequentialIdGenerator } from '../../src/kernel/shared/id-generator'
 import { Mulberry32RandomSource, RandomUsageRegistry } from '../../src/kernel/shared/random-source'
 
 const NOOP_OPS: EffectOps = {
+  destroyWeapon: () => {}, modifyWeapon: () => {},
   move: () => {}, spawn: () => {}, translocate: () => {}, takeControl: () => {},
   grantImmunity: () => {}, damageMod: () => {}, targetability: () => {},
   setLuminance: () => {}, advanceClock: () => {}, applyDomain: () => {}, placeZone: () => {},

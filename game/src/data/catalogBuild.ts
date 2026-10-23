@@ -6,34 +6,34 @@
 //   2. 卡内顶层效果节点 → 驻留为 EffectDef，并生成 EffectRef（含 condition/target 透传）
 //   3. card.statusDefs → StatusDef；途径级 unitDefs/zoneDefs/domainDefs → 各自池
 //   4. 途径 → ClassDef（knownSkills = 该途径全部卡 id）
-//   5. 引用校验：触发器事件必须 ∈ 15 闭集；效果类型必须 ∈ 30 原语 ∪ 3 算子；
+//   5. 引用校验：触发器事件必须 ∈ 16 闭集；效果类型必须 ∈ 31 原语 ∪ 3 算子；
 //      mount_status/modify_status.statusId 必须可解析（外部 common 状态由 opts 注入）
 
 import type {
   BehaviorTemplate, Catalog, ClassDef, DomainDef, EffectDef, EffectNode, PhaseHook,
-  SkillDef, StatusDef, TriggerDef, UnitDef, ZoneDef,
+  SkillDef, StatusDef, TriggerDef, UnitDef, WeaponDef, ZoneDef,
 } from '../kernel/catalog/types'
 import type { EffectRef, TargetSpec } from '../kernel/shared/types'
 import type { PathwayFile, RawCard } from './schema.types'
 
-/** 30 个效果原语（权威源 = schema effect.oneOf） */
+/** 31 个效果原语（权威源 = schema effect.oneOf） */
 export const EFFECT_TYPES: readonly string[] = [
   'damage', 'heal', 'mount_status', 'modify_stat', 'modify_resource', 'move', 'spawn',
   'dispel', 'disarm', 'drain', 'domain', 'translocate', 'snapshot', 'restore_snapshot',
   'modify_damage', 'target_override', 'transfer_status', 'echo_last_skill',
   'gauge_shuffle', 'status_shuffle', 'modify_skill', 'modify_status',
   'modify_targetability', 'reveal', 'grant_immunity', 'take_control',
-  'write_rule_slot', 'modify_rule_slot', 'set_luminance', 'advance_clock',
+  'write_rule_slot', 'modify_rule_slot', 'set_luminance', 'advance_clock', 'modify_weapon',
 ]
 const EFFECT_TYPE_SET = new Set(EFFECT_TYPES)
 
 /** 3 个结构算子 */
 const OPERATORS = new Set(['sequence', 'repeat', 'if'])
 
-/** 15 个触发点封闭集（执行参数 §2.1） */
+/** 16 个触发点封闭集（执行参数 §2.1） */
 export const TRIGGER_EVENTS: readonly string[] = [
   'on_apply', 'on_remove', 'on_tick', 'on_turn_start', 'on_turn_end', 'on_battle_start', 'on_spawn',
-  'on_death', 'on_kill', 'on_attack', 'on_active_skill', 'on_deal_damage',
+  'on_death', 'on_kill', 'on_attack', 'on_weapon_equip', 'on_active_skill', 'on_deal_damage',
   'on_take_damage', 'on_status_gain', 'on_phase_change',
 ]
 const TRIGGER_EVENT_SET = new Set(TRIGGER_EVENTS)
@@ -136,14 +136,6 @@ function collectStatusRefs(card: RawCard, into: { owner: string; statusId: strin
   }
 }
 
-function collectMountRefs(nodes: readonly EffectNode[] | undefined, owner: string, into: { owner: string; statusId: string }[]): void {
-  for (const node of nodes ?? []) {
-    walkEffectNodes(node, (n) => {
-      const rec = n as unknown as Record<string, unknown>
-      if (rec.type === 'mount_status' && typeof rec.statusId === 'string') into.push({ owner, statusId: rec.statusId })
-    })
-  }
-}
 
 export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions = {}): BuildResult {
   const effectDefs = new Map<string, EffectDef>()
@@ -159,8 +151,6 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
 
   // 待校验的状态引用（第一遍收集，全部文件处理完后再判定）
   const statusRefs: { owner: string; statusId: string }[] = []
-  // 被动卡不得直接装备（挂载 equipSlot 状态）；同样延后到全部文件注册完再判定
-  const passiveMountRefs: { owner: string; statusId: string }[] = []
   let cardCount = 0
 
   // 先注册全局状态（*.statuses.json + common.statuses.json）
@@ -188,18 +178,11 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
       const effects = internEffects(card.id, card.effects, effectDefs, warnings)
       checkTriggers(card.id, card.triggers, warnings)
       collectStatusRefs(card, statusRefs)
-      if (card.kind === 'passive') {
-        collectMountRefs(card.effects, card.id, passiveMountRefs)
-        for (const trg of card.triggers ?? []) collectMountRefs(trg.effects, card.id, passiveMountRefs)
-        for (const sd of card.statusDefs ?? []) {
-          for (const trg of sd.triggers ?? []) collectMountRefs(trg.effects, card.id, passiveMountRefs)
-        }
-      }
-
       const base = {
         id: card.id,
         sourceCardId: card.id,
         pathwayId: pid,
+        kind: card.kind,
         name: card.name,
         rarity: card.rarity,
         axis: card.axis,
@@ -212,9 +195,10 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
         reach: card.reach,
       }
 
-      if (card.kind === 'active') {
+      if (card.kind === 'active' || card.kind === 'weapon') {
         register(skillDefs, card.id, {
           ...base,
+          kind: card.kind as 'active' | 'weapon',
           cost: card.cost,
           targetSpec: card.target
             ? (card.target as unknown as TargetSpec)
@@ -227,13 +211,18 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
           authority: card.flagship,
           zoneGrant: card.zone as SkillDef['zoneGrant'],
           domainGrant: card.domain as SkillDef['domainGrant'],
+          weapon: card.kind === 'weapon'
+            ? ({ ...(card.weapon as WeaponDef), id: card.id, slot: 'weapon' } as WeaponDef)
+            : undefined,
         }, warnings, 'skillDef')
       } else {
         register(behaviorTemplates, card.id, {
           ...base,
+          kind: 'passive',
           hook: card.hook,
           triggers: card.triggers,
           effects,
+          initialEquip: card.initialEquip,
         }, warnings, 'behaviorTemplate')
       }
     }
@@ -243,10 +232,6 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
   for (const { owner, statusId } of statusRefs) {
     if (!statusDefs.has(statusId)) warnings.push(`${owner}：引用了未知状态 ${statusId}`)
   }
-  for (const { owner, statusId } of passiveMountRefs) {
-    if (statusDefs.get(statusId)?.equipSlot) warnings.push(`${owner}：被动卡不得直接装备 ${statusId}（equipSlot 只能由主动卡挂载）`)
-  }
-
   const catalog: Catalog = {
     effectDefs, skillDefs, behaviorTemplates, statusDefs, zoneDefs,
     domainDefs, unitDefs, classDefs,

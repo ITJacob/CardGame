@@ -448,7 +448,7 @@ function cardOf(
     name: cardName(catalog, id),
     rarity: def?.rarity ?? tpl?.rarity,
     pathwayId: def?.pathwayId ?? tpl?.pathwayId,
-    kind,
+    kind: def?.kind ?? (tpl ? 'passive' : kind),
     cost: def?.cost?.energy,
     size,
     ...extra,

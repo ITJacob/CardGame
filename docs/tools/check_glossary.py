@@ -102,6 +102,7 @@ ENUM_TO_CAT = {
     "effDispel.mode": "dispelMode",
     "effDispel.category": "statusCategory",
     "effDisarm.slot": "equipSlot",
+    "effModifyWeapon.slot": "equipSlot",
     "effDrain.resource": "resource",
     "effDrain.category": "statusCategory",
     "effDomain.op": "domainOp",

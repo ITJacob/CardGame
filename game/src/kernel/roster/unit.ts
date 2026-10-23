@@ -1,13 +1,13 @@
 // 单位：聚合内的实体（不是聚合根）。装配属性/资源/状态/修正层。
 import type { Element, FactionId, Gender, InstanceId, PoolKey, StatKey, UnitId } from '../ids'
 import type { Coordinate } from '../battle/types'
-import type { StatusDef, TriggerDef } from '../catalog/types'
+import type { StatusDef, TriggerDef, WeaponDef } from '../catalog/types'
 import { StatModifiers } from './attributes'
 import { computeEffective, deriveBaseProfile } from './profile'
 import { StatProvenance } from './provenance'
 import { Gauge, Pool } from './resources'
 import { CombatStatusSet, type StatusDefLookup } from './status'
-import type { AttributeSet, BaseProfile, BehaviorSlot, Channel, EffectiveProfile, SkillSlot, StatusSet, Unit } from './types'
+import type { AttributeSet, BaseProfile, BehaviorSlot, Channel, EffectiveProfile, SkillSlot, StatusSet, Unit, WeaponInstance } from './types'
 import { rawModifier } from './statusModifiers'
 
 export interface UnitDeps {
@@ -67,6 +67,8 @@ export class CombatUnit implements Unit {
   summonerId: UnitId | null = null
   /** 入场途径（ClassDef.id）；职业自带资源/规则按它分发 */
   pathwayId: string | null = null
+  /** 当前装备武器（单槽；null = 徒手） */
+  weapon: WeaponInstance | null = null
   /** 本回合已获得的战意层数（每自身回合重置；上限 3） */
   warSpiritGain = 0
   /** target_override：下一次选靶的覆盖（消费后清空） */
@@ -139,10 +141,29 @@ export class CombatUnit implements Unit {
     return this.statuses.stacksOf(defId)
   }
   hasEquipped(slot?: string): boolean {
-    return this.statuses.all().some((inst) => {
-      const es = this.statusDefs.statusDef(inst.defId)?.equipSlot
-      return Boolean(es) && (!slot || es === slot)
-    })
+    return Boolean(this.weapon) && (!slot || this.weapon!.slot === slot)
+  }
+  /** 装备武器：先销毁旧的，再写攻击加值 provenance（sourceId = WeaponInstance） */
+  equipWeapon(def: WeaponDef, instanceId: string): WeaponInstance {
+    if (this.weapon) this.provenance.revertBySource(this.weapon.instanceId)
+    const inst: WeaponInstance = {
+      instanceId,
+      defId: def.id,
+      slot: 'weapon',
+      attack: def.attack,
+      durability: def.durability,
+    }
+    this.weapon = inst
+    this.provenance.apply('attack', def.attack, instanceId)
+    return inst
+  }
+  /** 销毁当前武器并撤销其修正 */
+  destroyWeapon(): WeaponInstance | null {
+    const w = this.weapon
+    if (!w) return null
+    this.provenance.revertBySource(w.instanceId)
+    this.weapon = null
+    return w
   }
   stat(key: StatKey): number {
     const p = this.effectiveProfile

@@ -258,6 +258,7 @@
       "id": "skill_warrior_s9_arms_mastery",
       "name": "兵械通晓",
       "kind": "passive",
+      "initialEquip": "skill_warrior_s9_standard_blade",
       "sequence": 9,
       "sequenceName": "战士",
       "rarity": "common",
@@ -277,13 +278,6 @@
           "value": 3,
           "mode": "delta",
           "target": "self"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "weapon_standard_blade",
-          "target": "self",
-          "charges": 4,
-          "note": "兵械通晓：开局装备制式长剑"
         }
       ],
       "sharedAcross": [
@@ -362,6 +356,45 @@
           ]
         }
       ]
+    },
+    {
+      "id": "skill_warrior_s9_standard_blade",
+      "name": "制式长剑",
+      "kind": "weapon",
+      "sequence": 9,
+      "sequenceName": "战士",
+      "rarity": "common",
+      "role": "starter",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列9 战士 —— \"各种武器防具精通\"",
+      "flavor": "一柄没有花纹的长剑；握柄缠着旧布，重心却正得挑不出毛病。",
+      "describe": "装备制式长剑（耐久 4 次，替换当前武器）：攻击 +1。",
+      "effects": [],
+      "cost": {
+        "energy": 2,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "weapon": {
+        "slot": "weapon",
+        "attack": 1,
+        "durability": 4,
+        "tags": [
+          "sword"
+        ]
+      },
+      "tentative": true,
+      "art": {
+        "subject": "a plain standard-issue longsword planted in trampled earth",
+        "elements": [
+          "worn leather grip",
+          "dull steel blade",
+          "churned battlefield soil"
+        ],
+        "mood": "plain, dependable"
+      },
+      "conversionNotes": "2026-10-23 武器牌化：由 weapon_standard_blade 状态迁入；兵械通晓 initialEquip 引用。"
     },
     {
       "id": "skill_warrior_s8_iron_body",
@@ -889,7 +922,7 @@
     {
       "id": "skill_warrior_s6_dawn_blade",
       "name": "晨曦之剑",
-      "kind": "active",
+      "kind": "weapon",
       "sequence": 6,
       "sequenceName": "黎明骑士",
       "rarity": "uncommon",
@@ -898,7 +931,7 @@
       "flagship": false,
       "lore": "序列6 黎明骑士 —— \"『晨曦之剑』：凝聚武器（最强为双手巨剑）\"",
       "flavor": "晨曦在你掌心凝成一柄剑；你若愿把它铸成双手巨剑，它便沉重到能劈开城墙——只是挥起来，慢了些。",
-      "describe": "凝聚并装备晨曦之剑（替换当前武器，耐久 4 次）：攻击 +4，每次造成伤害时附加 2 点无元素伤害；对亡灵/恶魔/灵体额外附加 2 点伤害（晨曦灼邪）。",
+      "describe": "装备晨曦之剑（耐久 4 次，替换当前武器）：攻击 +4，每次造成伤害时附加 2 点无元素伤害；对亡灵/恶魔/灵体额外附加 2 点伤害（晨曦灼邪）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -913,13 +946,6 @@
         }
       },
       "effects": [
-        {
-          "type": "mount_status",
-          "statusId": "dawn_blade",
-          "target": "self",
-          "charges": 4,
-          "note": "装备晨曦之剑（耐久 4 次，替换当前武器）"
-        },
         {
           "op": "if",
           "condition": {
@@ -998,6 +1024,61 @@
           "first rays over battlefield"
         ],
         "mood": "radiant, resolute"
+      },
+      "weapon": {
+        "slot": "weapon",
+        "attack": 4,
+        "durability": 4,
+        "tags": [
+          "sword",
+          "blade"
+        ],
+        "modifiers": {
+          "damageBonus": {
+            "value": 2,
+            "filter": {
+              "unitType": [
+                "DEMON",
+                "UNDEAD",
+                "SPIRIT"
+              ]
+            },
+            "note": "晨光灼邪：晨曦之剑对邪祟的额外灼烧（filter.unitType 签名键的卡面载体）"
+          }
+        },
+        "triggers": [
+          {
+            "event": "on_deal_damage",
+            "effects": [
+              {
+                "type": "damage",
+                "element": "none",
+                "value": 2,
+                "note": "晨曦灼烧"
+              },
+              {
+                "op": "if",
+                "condition": {
+                  "kind": "has_status",
+                  "side": "target",
+                  "id": "doom_mark",
+                  "cmp": ">=",
+                  "n": 1
+                },
+                "then": [
+                  {
+                    "type": "damage",
+                    "element": "none",
+                    "value": 1,
+                    "note": "晨光追索：对已宣判的目标多烧一分"
+                  }
+                ],
+                "else": [],
+                "note": "将死兑现加成"
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -2286,7 +2367,7 @@
     {
       "id": "skill_warrior_s3_silver_rapier",
       "name": "银白细剑",
-      "kind": "active",
+      "kind": "weapon",
       "sequence": 3,
       "sequenceName": "银骑士",
       "rarity": "epic",
@@ -2354,13 +2435,6 @@
           ]
         },
         {
-          "type": "mount_status",
-          "statusId": "weapon_silver_rapier",
-          "target": "self",
-          "charges": 3,
-          "note": "装备银白细剑（耐久 3 次，替换当前武器）"
-        },
-        {
           "op": "if",
           "condition": {
             "kind": "has_status",
@@ -2421,6 +2495,28 @@
           "empty ground where he stood a moment before"
         ],
         "mood": "precise, lethal"
+      },
+      "weapon": {
+        "slot": "weapon",
+        "attack": 3,
+        "durability": 3,
+        "tags": [
+          "sword",
+          "rapier"
+        ],
+        "modifiers": {
+          "damageBonus": {
+            "value": 2,
+            "filter": {
+              "unitType": [
+                "DEMON",
+                "UNDEAD",
+                "SPIRIT"
+              ]
+            },
+            "note": "克邪：对亡灵/恶魔/灵体伤害 +2"
+          }
+        }
       }
     },
     {
@@ -2528,7 +2624,7 @@
     {
       "id": "skill_warrior_s2_twilight_greatsword",
       "name": "黄昏巨剑",
-      "kind": "active",
+      "kind": "weapon",
       "sequence": 2,
       "sequenceName": "荣耀者",
       "rarity": "epic",
@@ -2688,13 +2784,6 @@
           "note": "额外段：对将死目标追加圣光"
         },
         {
-          "type": "mount_status",
-          "statusId": "weapon_dusk_greatsword",
-          "target": "self",
-          "charges": 3,
-          "note": "装备黄昏巨剑（耐久 3 次，替换当前武器）"
-        },
-        {
           "op": "if",
           "condition": {
             "kind": "has_status",
@@ -2759,7 +2848,31 @@
           "target": "heal",
           "note": "收割读层（矩阵批次五）：board.death_tally≥4 时，击杀净化回血 ×1.5——战场死者越多，黄昏净化越彻底（⚠️D 待平衡）"
         }
-      ]
+      ],
+      "weapon": {
+        "slot": "weapon",
+        "attack": 4,
+        "durability": 3,
+        "tags": [
+          "sword",
+          "greatsword"
+        ],
+        "triggers": [
+          {
+            "event": "on_deal_damage",
+            "effects": [
+              {
+                "type": "mount_status",
+                "statusId": "aging",
+                "stacks": 1,
+                "duration": 25,
+                "target": "target",
+                "note": "暮色侵染：巨剑每次伤人都在催老"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "skill_warrior_s2_waning_dusk",

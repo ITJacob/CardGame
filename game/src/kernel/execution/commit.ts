@@ -29,5 +29,8 @@ export function commitBehavior(
   unit.pool('energy').applyDelta(-slot.cost.energy)
   if (slot.cost.cooldown > 0) slot.cooldownRemaining = slot.cost.cooldown
 
+  // 武器牌：扣费后立即装备——即使随后选靶失败/挂起，武器也已打出
+  if (source.weapon) deps.equipWeapon?.(unit, source.weapon)
+
   return ok(runBehavior(unit, source, free ? null : opportunity.consumedBy, deps))
 }

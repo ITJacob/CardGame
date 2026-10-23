@@ -735,6 +735,7 @@ def load_axis_scores():
 
 def main():
     pathways = score.load_skills()
+    score.load_weapon_index(pathways)
     status_by_id = {}
     for _pid, _label, sd in score.iter_status_defs():
         status_by_id[sd["id"]] = sd

@@ -245,7 +245,7 @@ export function renderCardDetail(view, id, qs = '') {
         <div class="cs-sub">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')} · <span class="mono cs-copyable" data-copy="${escapeHtml(c.id)}" title="点击复制 cardId（卡面图就命名为它）" tabindex="0" role="button">${escapeHtml(c.id)}</span></div>
         <div class="badges">
           <span class="badge rarity-${c.rarity}">${cn}</span>
-          <span class="badge kind-${c.kind}">${c.kind === 'active' ? '主动' : '被动'}</span>
+          <span class="badge kind-${c.kind}">${c.kind === 'weapon' ? '武器' : c.kind === 'active' ? '主动' : '被动'}</span>
           ${c.tentative ? '<span class="badge warn" title="数值待定（⚠️D 占位，平衡期逐条审批）">数值待定</span>' : ''}
           <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
           <span class="badge">轴：${axisSpan(c._pathway, c.axis)}</span>
@@ -253,7 +253,7 @@ export function renderCardDetail(view, id, qs = '') {
           ${c.gender && c.gender !== 'any' ? `<span class="badge">${g('gender', c.gender)}限定</span>` : ''}
           ${(c.sharedAcross || []).map((p) => `<span class="badge">共享→${escapeHtml(DB.pathways.find((x) => x.id === p)?.name || p)}</span>`).join('')}
         </div>
-        ${c.kind === 'active' && c.cost ? `<div class="cs-cost">${costHtml(c)}</div>` : ''}
+        ${(c.kind === 'active' || c.kind === 'weapon') && c.cost ? `<div class="cs-cost">${costHtml(c)}</div>` : ''}
       </header>
 
       <section class="cs-sec cs-desc">
@@ -265,14 +265,21 @@ export function renderCardDetail(view, id, qs = '') {
       ${blueprintPosHtml(c)}
 
       <section class="cs-sec">
-        ${c.kind === 'active' ? '<h2>施放与选靶</h2>' : '<h2>触发条件</h2>'}
+        ${c.kind === 'weapon' ? '<h2>装备</h2>' : c.kind === 'active' ? '<h2>施放与选靶</h2>' : '<h2>触发条件</h2>'}
         <dl class="kv">
-          ${c.kind === 'active' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
+          ${c.kind === 'weapon' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
+          <dt>攻击</dt><dd>+${c.weapon?.attack ?? 0}</dd>
+          <dt>耐久</dt><dd>${c.weapon?.durability ?? 0} 次普攻</dd>
+          <dt>标签</dt><dd>${(c.weapon?.tags || []).join(' / ') || '—'}</dd>` : c.kind === 'active' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
           <dt>距离</dt><dd>${g('reach', c.reach)}</dd>
           <dt>目标</dt><dd>${targetHtml(c.target)}</dd>` : `<dt>触发</dt><dd>${hookHtml(c) || '<span class="muted">（无）</span>'}</dd>`}
           ${(c.secondaryTargets || []).map((t, i) => `<dt>附属选靶${i + 1}</dt><dd>${targetHtml(t)}</dd>`).join('')}
         </dl>
       </section>
+      ${c.weapon?.triggers?.length ? `<section class="cs-sec">
+        <h2>装备期触发</h2>
+        ${triggersHtml({ triggers: c.weapon.triggers })}
+      </section>` : ''}
 
       <section class="cs-sec">
         <h2>效果结构</h2>

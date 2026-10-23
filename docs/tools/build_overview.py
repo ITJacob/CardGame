@@ -415,14 +415,14 @@ def main():
     # ---- 汇总表 ----
     w("## 途径汇总")
     w("")
-    w("| 途径 | ID | 卡数 | 主动/被动 | ⚠️缺口卡 | 存疑卡 | 旗舰 | 构筑轴 |")
+    w("| 途径 | ID | 卡数 | 主动(含武器)/被动 | ⚠️缺口卡 | 存疑卡 | 旗舰 | 构筑轴 |")
     w("|---|---|---:|---:|---:|---:|---:|---|")
     tot = dict(cards=0, act=0, pas=0, flag=0, note=0, fs=0)
     for d in docs:
         cs = d["cards"]
         nf = sum(1 for c in cs if any(not f.get("landed") for f in (c.get("frameworkFlags") or [])))
         nn = sum(1 for c in cs if c.get("conversionNotes"))
-        nact = sum(1 for c in cs if c["kind"] == "active")
+        nact = sum(1 for c in cs if c["kind"] in ("active", "weapon"))
         nfs = sum(1 for c in cs if c.get("flagship"))
         tot["cards"] += len(cs); tot["act"] += nact; tot["pas"] += len(cs) - nact
         tot["flag"] += nf; tot["note"] += nn; tot["fs"] += nfs
@@ -444,8 +444,8 @@ def main():
         w("")
         w("## %d. %s（%s）" % (i, d["pathwayName"], d["pathwayId"]))
         w("")
-        w("**%d 张卡** · 主动 %d / 被动 %d · ⚠️待落地缺口 %d 张 · 口径存疑 %d 张" %
-          (len(cs), sum(1 for c in cs if c["kind"] == "active"),
+        w("**%d 张卡** · 主动/武器 %d / 被动 %d · ⚠️待落地缺口 %d 张 · 口径存疑 %d 张" %
+          (len(cs), sum(1 for c in cs if c["kind"] in ("active", "weapon")),
            sum(1 for c in cs if c["kind"] == "passive"), nf, nn))
         w("")
         w("构筑轴：%s" % axes)
@@ -465,7 +465,7 @@ def main():
             for c in sorted(group, key=lambda x: (not x.get("flagship"), x["id"])):
                 tags = []
                 tags.append(RARITY.get(c["rarity"], c["rarity"]))
-                tags.append(c["kind"] == "active" and "主动" or "被动")
+                tags.append({"active": "主动", "weapon": "武器", "passive": "被动"}.get(c["kind"], c["kind"]))
                 if c.get("flagship"):
                     tags.append("旗舰")
                 a = d["axes"].get(c.get("axis"), {})
@@ -474,12 +474,16 @@ def main():
                 w("#### %s　`%s`" % (c["name"], c["id"]))
                 w("")
                 w("- **类型**：%s" % " / ".join(tags))
-                if c["kind"] == "active" and c.get("cost"):
+                if c["kind"] in ("active", "weapon") and c.get("cost"):
                     ct = c["cost"]
                     cast = "无吟唱" if ct.get("castTime") is None else ("瞬发" if ct.get("castTime") == 0 else "吟唱 %s" % ct["castTime"])
+                    _reach = {"none": "无", "melee": "近战", "thrown": "投射", "spell": "法术"}.get(c.get("reach"), c.get("reach") or "—")
                     w("- **消耗**：能量 %s · 冷却 %s · %s · 距离 %s" %
-                      (ct.get("energy"), ct.get("cooldown"), cast,
-                       {"none": "无", "melee": "近战", "ranged": "远程"}.get(c.get("reach"), c.get("reach"))))
+                      (ct.get("energy"), ct.get("cooldown"), cast, _reach))
+                    if c["kind"] == "weapon":
+                        wp = c.get("weapon") or {}
+                        w("- **武器**：攻击 +%s · 耐久 %s · 标签 %s" %
+                          (wp.get("attack"), wp.get("durability"), ",".join(wp.get("tags") or []) or "—"))
                 else:
                     _hk = c.get("hook")
                     _hk_s = " / ".join(_hk) if isinstance(_hk, list) else (_hk or "—")

@@ -82,7 +82,7 @@ DIM_RANGES = {
 # 触发点：语义封闭集 15 个（ddd 执行参数 §2.1）。本集合与 ddd 表格、schema triggerEvent
 # 枚举三方一致，由 check_enum_sync.py 对账。
 PHASES = {"midnight","dawn","day","dusk","night"}
-EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_turn_end","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_take_damage","on_deal_damage","on_active_skill","on_phase_change","on_status_gain"}
+EVENTS = {"on_apply","on_remove","on_tick","on_turn_start","on_turn_end","on_battle_start","on_spawn","on_death","on_kill","on_attack","on_weapon_equip","on_take_damage","on_deal_damage","on_active_skill","on_phase_change","on_status_gain"}
 # 轴身份锚点（SCORING §二·零）：四类清单；最小实现集 status/resource/channel/equipment/primitive
 ANCHOR_KINDS = {"status","status_family","resource","channel","equipment","primitive",
                 "trigger","geometry","zone","rule_slot","action_economy","dimension","element","form_cycle"}
@@ -250,15 +250,24 @@ def _check_desc_elems(node, cid, refs, errors, warns):
         else:
             errors.append(msg)
 
-def check_equip_status(sd, label, errors):
-    """装备槽强制 charges 制：charges≥1、duration=null（按次数消耗，不自然到期）。"""
-    if not sd.get("equipSlot"):
+def check_weapon_card(c, cid, errors):
+    """武器牌硬约束（2026-10-23）：kind=weapon 必须有 cost + weapon 载荷。"""
+    if "cost" not in c:
+        errors.append("%s: weapon 缺 cost" % cid)
+    wp = c.get("weapon")
+    if not isinstance(wp, dict):
+        errors.append("%s: weapon 缺 weapon 载荷" % cid)
         return
-    ch = sd.get("charges")
-    if not isinstance(ch, int) or ch <= 0:
-        errors.append("%s sd %s: equipSlot 武器必须 charges≥1（强制 charges 制）" % (label, sd.get("id")))
-    if sd.get("duration") is not None:
-        errors.append("%s sd %s: equipSlot 武器 duration 必须为 null（不得自然到期）" % (label, sd.get("id")))
+    if wp.get("slot") != "weapon":
+        errors.append("%s: weapon.slot 必须为 weapon（当前 %s）" % (cid, wp.get("slot")))
+    if not isinstance(wp.get("attack"), (int, float)) or isinstance(wp.get("attack"), bool):
+        errors.append("%s: weapon.attack 必须为数值" % cid)
+    dur = wp.get("durability")
+    if not isinstance(dur, int) or isinstance(dur, bool) or dur < 1:
+        errors.append("%s: weapon.durability 必须为 >=1 的整数" % cid)
+    tags = wp.get("tags")
+    if tags is not None and (not isinstance(tags, list) or any(not isinstance(t, str) for t in tags)):
+        errors.append("%s: weapon.tags 必须为字符串数组" % cid)
 
 
 def _iter_effect_nodes(node):
@@ -370,15 +379,6 @@ def main():
     for _pid, _lbl, _sd in iter_status_defs():
         if isinstance(_sd, dict) and _sd.get("id"):
             _refs["status"][_sd["id"]] = _sd
-    EQUIP_STATUS_IDS = {sid for sid, sd in _refs["status"].items() if sd.get("equipSlot")}
-    # 卡内联 statusDefs 不在 *.statuses.json，单独补扫
-    for _f in files:
-        try: _dd = json.load(io.open(_f, encoding="utf-8"))
-        except Exception: continue
-        for _c in _dd.get("cards") or []:
-            for _sd in _c.get("statusDefs") or []:
-                if isinstance(_sd, dict) and _sd.get("id") and _sd.get("equipSlot"):
-                    EQUIP_STATUS_IDS.add(_sd["id"])
     for _f in files:
         try: _dd = json.load(io.open(_f, encoding="utf-8"))
         except Exception: continue
@@ -400,9 +400,8 @@ def main():
             cid = "%s:%s" % (pid, sd.get("id"))
             for cat in sd.get("category",[]) or []:
                 if cat not in CATS: pre_errors.append("%s sd %s: bad category %s"%(cid,sd.get("id"),cat))
-            if sd.get("equipSlot") is not None and sd.get("equipSlot") not in EQUIP_SLOTS:
-                pre_errors.append("%s sd %s: bad equipSlot %s"%(cid, sd.get("id"), sd.get("equipSlot")))
-            check_equip_status(sd, cid, pre_errors)
+            if sd.get("equipSlot") is not None or sd.get("initialEquip") is not None:
+                pre_errors.append("%s sd %s: equipSlot/initialEquip 已退役，武器请改用 kind=weapon 卡" % (cid, sd.get("id")))
             if sd.get("crossPathway") is True:
                 parts = sd.get("participants")
                 if not isinstance(parts,list) or not parts:
@@ -469,21 +468,22 @@ def main():
                     walk(e.get("else"), cid, p+".else", flags, errors, warns, passive)
                 continue
             if t not in PRIMS: errors.append("%s %s: bad primitive %s" % (cid,p,t)); continue
-            if t=="mount_status" and passive and e.get("statusId") in EQUIP_STATUS_IDS:
-                _sd = (_refs.get("status") or {}).get(e.get("statusId")) or {}
-                if not _sd.get("initialEquip"):
-                    errors.append("%s %s: 被动卡不得直接装备 equipSlot 状态 %s（仅 initialEquip 武器可在开局自动装备）"
-                                  % (cid, p, e.get("statusId")))
             if t=="modify_skill":
                 sr = e.get("skillRef") or {}
                 if sr.get("selector") not in SKILL_SELECTORS:
                     errors.append("%s %s: bad modify_skill.skillRef.selector %s" % (cid,p,sr.get("selector")))
             if t=="modify_status":
-                if not e.get("statusId") and not e.get("slot"):
-                    errors.append("%s %s: modify_status missing statusId/slot" % (cid,p))
-                if e.get("slot") is not None and e.get("slot") not in EQUIP_SLOTS:
-                    errors.append("%s %s: bad modify_status.slot %s" % (cid,p,e.get("slot")))
+                if not e.get("statusId"):
+                    errors.append("%s %s: modify_status missing statusId" % (cid,p))
+                if e.get("slot") is not None:
+                    errors.append("%s %s: modify_status.slot 已退役，武器请用 modify_weapon" % (cid,p))
                 if e.get("target") not in EFFECT_TARGETS: errors.append("%s %s: bad modify_status.target %s" % (cid,p,e.get("target")))
+            if t=="modify_weapon":
+                if e.get("slot") is not None and e.get("slot") not in EQUIP_SLOTS:
+                    errors.append("%s %s: bad modify_weapon.slot %s" % (cid,p,e.get("slot")))
+                if e.get("target") not in EFFECT_TARGETS: errors.append("%s %s: bad modify_weapon.target %s" % (cid,p,e.get("target")))
+                if not any(k in e for k in ("restoreDurability","durabilityDelta","attackDelta")):
+                    errors.append("%s %s: modify_weapon 缺 restoreDurability/durabilityDelta/attackDelta" % (cid,p))
             if t=="modify_targetability":
                 if e.get("target") not in EFFECT_TARGETS: errors.append("%s %s: bad modify_targetability.target %s" % (cid,p,e.get("target")))
                 if e.get("direction") is not None and e["direction"] not in TARGET_DIRECTIONS:
@@ -577,6 +577,7 @@ def main():
             axes_reg.update(_ax.get("payoffs") or [])
         ids = set()
         names = {}  # 卡名 -> kind，供 sampleBuilds 交叉校验
+        by_id = {c.get("id"): c for c in cards}
         for c in cards:
             cid = c.get("id","?")
             if cid in ids: errors.append("dup id %s"%cid)
@@ -597,7 +598,8 @@ def main():
                     errors.append("%s: role=generic 不得为旗舰卡"%cid)
                 if nm in axes_reg:
                     errors.append("%s: role=generic 不得被 axes.enablers/payoffs 登记"%cid)
-            if c.get("kind")=="active":
+            _kind = c.get("kind")
+            if _kind=="active":
                 if "cost" not in c or "reach" not in c or "target" not in c:
                     errors.append("%s: active incomplete"%cid)
                 elif c["reach"] not in REACH: errors.append("%s: bad reach"%cid)
@@ -607,7 +609,13 @@ def main():
                     else: errors.append("%s: bad fallbackSort %s"%(cid,fs))
                 if (c.get("target") or {}).get("selectionMode")=="manual" and not fs:
                     errors.append("%s: 违反 INV-E6：selectionMode=manual 必须定义 fallbackSort（当前为 null/缺失）"%cid)
-            elif c.get("kind")=="passive":
+            elif _kind=="weapon":
+                check_weapon_card(c, cid, errors)
+                if c.get("reach") is not None and c["reach"] not in REACH:
+                    errors.append("%s: bad reach"%cid)
+                if (c.get("target") or {}).get("selectionMode")=="manual" and not (c.get("target") or {}).get("fallbackSort"):
+                    errors.append("%s: 违反 INV-E6：selectionMode=manual 必须定义 fallbackSort（当前为 null/缺失）"%cid)
+            elif _kind=="passive":
                 # hook 自 2026-10-04 起为数组（与 triggers[].event 同源 triggerEvent）；
                 # 仍兼容标量以便历史数据排查
                 hk = c.get("hook")
@@ -616,29 +624,25 @@ def main():
                 for _h in hk_list:
                     if _h not in EVENTS: errors.append("%s: bad hook %s"%(cid,_h))
             else: errors.append("%s: bad kind"%cid)
-            _passive = c.get("kind") == "passive"
-            if _passive:
-                def _is_initial_equip(n):
-                    return (n.get("type") == "mount_status"
-                            and ((_refs.get("status") or {}).get(n.get("statusId")) or {}).get("initialEquip"))
-                if any(_is_initial_equip(n) for n in _iter_effect_nodes(c.get("effects"))):
-                    hk2 = c.get("hook")
-                    hk2 = hk2 if isinstance(hk2, list) else ([hk2] if hk2 else [])
-                    if hk2 != ["on_battle_start"]:
-                        errors.append("%s: initialEquip 武器只能由被动卡在 on_battle_start 装备（不得中途换装）" % cid)
-                for _t in (c.get("triggers") or []):
-                    if any(_is_initial_equip(n) for n in _iter_effect_nodes(_t.get("effects"))):
-                        errors.append("%s: 被动卡 triggers 不得装备 initialEquip 武器（只能走 on_battle_start hook）" % cid)
+            _passive = _kind == "passive"
+            _init_eq = c.get("initialEquip")
+            if _init_eq is not None:
+                if _kind != "passive":
+                    errors.append("%s: initialEquip 只能写在 passive 卡上" % cid)
+                _tgt = by_id.get(_init_eq)
+                if not _tgt or _tgt.get("kind") != "weapon":
+                    errors.append("%s: initialEquip 必须引用同文件 kind=weapon 的卡（%s）" % (cid, _init_eq))
             walk(c.get("effects"), cid, "eff", flags, errors, warns, _passive)
             for t in (c.get("upgradeLadder") or {}).get("tiers",[]): walk(t.get("effects"), cid, "lad", flags, errors, warns, _passive)
             for v in c.get("variants") or []: walk(v.get("effects"), cid, "var", flags, errors, warns, _passive)
             trigs(c.get("triggers"), cid, "card", flags, errors, warns, _passive)
+            if _kind == "weapon":
+                trigs((c.get("weapon") or {}).get("triggers"), cid, "weapon", flags, errors, warns, False)
             for sd in c.get("statusDefs") or []:
                 for cat in sd.get("category",[]) or []:
                     if cat not in CATS: errors.append("%s sd %s: bad category %s"%(cid,sd.get("id"),cat))
-                if sd.get("equipSlot") is not None and sd.get("equipSlot") not in EQUIP_SLOTS:
-                    errors.append("%s sd %s: bad equipSlot %s"%(cid, sd.get("id"), sd.get("equipSlot")))
-                check_equip_status(sd, cid, errors)
+                if sd.get("equipSlot") is not None or sd.get("initialEquip") is not None:
+                    errors.append("%s sd %s: equipSlot/initialEquip 已退役，武器请改用 kind=weapon 卡" % (cid, sd.get("id")))
                 # crossPathway 枢纽白名单：crossPathway=true 必须带非空且合法的 participants
                 if sd.get("crossPathway") is True:
                     parts = sd.get("participants")
@@ -709,7 +713,7 @@ def main():
                         cd = names.get(nm)
                         if cd is None:
                             errors.append("sampleBuilds[%d] '%s': %s 卡名 '%s' 不在本文件 cards[]"%(bi,bn,slot,nm))
-                        elif cd != exp_kind:
+                        elif cd != exp_kind and not (slot == "actives" and cd == "weapon"):
                             errors.append("sampleBuilds[%d] '%s': %s 卡名 '%s' 是 kind=%s，非预期 %s"%(bi,bn,slot,nm,cd,exp_kind))
         lint_playability(pid, cards, warns)
         for e in errors: print("  E:", pid, e)

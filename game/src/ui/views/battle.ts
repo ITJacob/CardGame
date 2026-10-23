@@ -1022,7 +1022,7 @@ function rosterHtml(s: BattleSession): string {
             name: def?.name ?? id,
             rarity: def?.rarity,
             pathwayId: def?.pathwayId,
-            kind: 'active',
+            kind: def?.kind ?? 'active',
             cost: def?.cost?.energy,
             size: 'compact',
           })

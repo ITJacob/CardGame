@@ -151,6 +151,15 @@ export interface StatusInstance {
   maxCharges: number | null
 }
 
+/** 武器实例（武器牌打出后的装备态）：单槽、无游离实例 */
+export interface WeaponInstance {
+  instanceId: InstanceId
+  defId: string
+  slot: 'weapon'
+  attack: number
+  durability: number
+}
+
 /** 状态容器：只管挂载/叠加/到期/卸载的数据面，不触发副作用（副作用由效果层编排） */
 export interface StatusSet {
   /** 挂载；reject 策略且已存在时返回 null（本次被拒） */
@@ -203,6 +212,7 @@ export interface Unit {
   gauges: Map<string, Gauge>
   pools: Map<PoolKey, Pool>
   statuses: StatusSet
+  weapon: WeaponInstance | null
   behaviorSlots: BehaviorSlot[]
   skillSlots: SkillSlot[]
   channel: Channel | null

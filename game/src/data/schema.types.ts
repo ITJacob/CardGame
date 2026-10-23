@@ -24,6 +24,16 @@ export interface RawCardTarget {
   note?: string
 }
 
+export interface RawWeapon {
+  slot: 'weapon'
+  attack: number
+  durability: number
+  tags?: string[]
+  modifiers?: Record<string, unknown> | unknown[]
+  triggers?: TriggerDef[]
+  note?: string
+}
+
 export interface RawSecondaryTarget {
   request: TargetRequest
   selectionMode?: 'manual' | 'auto'
@@ -97,6 +107,10 @@ export interface RawCard {
   describe: string
   effects: EffectNode[]
   tentative: boolean
+  /** kind=weapon：打出即装备 */
+  weapon?: RawWeapon
+  /** passive：开局自动装备的武器卡 id */
+  initialEquip?: string
   cost?: RawCost
   reach?: Reach
   target?: RawCardTarget

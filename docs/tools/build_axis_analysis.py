@@ -135,7 +135,7 @@ def main():
             b["cards"] += 1
             prof["cards"] += 1
             kind = card.get("kind", "?")
-            if kind == "active":
+            if kind in ("active", "weapon"):
                 b["active"] += 1; prof["active"] += 1
             elif kind == "passive":
                 b["passive"] += 1; prof["passive"] += 1

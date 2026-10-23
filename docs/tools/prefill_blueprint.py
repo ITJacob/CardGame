@@ -37,7 +37,7 @@ MECH_HINTS = [
     ("位移", lambda types, c: types & {"move", "translocate"}),
     ("基础增益", lambda types, c: "modify_stat" in types),
     ("资源", lambda types, c: "modify_resource" in types),
-    ("装备", lambda types, c: "mount_status" in types and "equip" in json.dumps(c, ensure_ascii=False)),
+    ("装备", lambda types, c: c.get("kind") == "weapon" or "modify_weapon" in types),
     ("界域", lambda types, c: "domain" in types),
     ("相位", lambda types, c: types & {"advance_clock", "set_luminance"} or c.get("phaseHooks")),
     ("吟唱", lambda types, c: c.get("castTime")),
@@ -49,6 +49,7 @@ GENERIC_PRIMS = {"damage", "mount_status", "modify_stat"}
 
 def load_context():
     pathways = score.load_skills()
+    score.load_weapon_index(pathways)
     status_by_id, status_owner = {}, {}
     for pid, _label, sd in score.iter_status_defs():
         status_by_id[sd["id"]] = sd
@@ -98,9 +99,6 @@ def axis_private_statuses(pid, d, common_ids, status_by_id):
     out = {aid: set() for aid in axes}
     for s, cnt in mount_cnt.items():
         if s in common_ids or s in class_ids:
-            continue
-        sd = status_by_id.get(s) or {}
-        if sd.get("equipSlot"):
             continue
         owner = ident.get(s) or max(cnt, key=lambda a: cnt[a])
         if owner in out:

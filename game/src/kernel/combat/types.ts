@@ -129,6 +129,8 @@ export interface UnitViewLite {
   /** 行动条越阈阈值——UI 预测出手顺序用 */
   gaugeThreshold: number
   statuses: { defId: string; stacks: number; charges: number | null; maxCharges: number | null }[]
+  /** 当前武器（单槽） */
+  weapon: { defId: string; attack: number; durability: number } | null
 }
 
 /** 运行门面：UI 只认这个（见 DESIGN.md §三） */
@@ -162,6 +164,8 @@ export type DomainEvent =
   | { type: 'StatusRefreshed'; instanceId: string; defId: string }
   | { type: 'StatusExpired'; instanceId: string; defId: string; unitId?: UnitId }
   | { type: 'StatusDispelled'; instanceId: string; defId: string }
+  | { type: 'WeaponEquipped'; instanceId: string; defId: string; unitId: UnitId }
+  | { type: 'WeaponDestroyed'; instanceId: string; defId: string; unitId: UnitId; reason: string }
   | { type: 'ZonePlaced'; zoneId: string; coord: Coordinate }
   | { type: 'ZoneTriggered'; zoneId: string; coord: Coordinate }
   | { type: 'ZoneExpired'; zoneId: string; coord: Coordinate }
