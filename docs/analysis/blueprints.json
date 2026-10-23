@@ -151,7 +151,7 @@
        "黑暗之剑"
       ],
       "payoffsNotes": [],
-      "axisScore": 87.1
+      "axisScore": 81.1
      }
     },
     {
@@ -221,7 +221,7 @@
       "payoffsNotes": [
        "恐惧灵光"
       ],
-      "axisScore": 80.8
+      "axisScore": 84.9
      }
     },
     {
@@ -8365,7 +8365,7 @@
       "payoffsNotes": [
        "无坚不摧"
       ],
-      "axisScore": 79.8
+      "axisScore": 73.8
      }
     },
     {
@@ -14550,7 +14550,7 @@
        "深渊即我",
        "恶欲共鸣"
       ],
-      "axisScore": 81.0
+      "axisScore": 75.0
      }
     }
    ],
@@ -18652,8 +18652,8 @@
   {
    "id": "reader",
    "name": "阅读者",
-   "state": "回溯补登",
-   "date": "2026-10-21",
+   "state": null,
+   "date": "环节⑥拍板",
    "score": 100,
    "scoreParts": {
     "命题": 10,
@@ -18666,19 +18666,19 @@
    },
    "deductions": [],
    "proposition": {
-    "statement": "先解析后打击——信息即火力：reveal/snapshot 先解析目标，模仿与输出才放大",
-    "variable": "解析对象选择与解析深度（observed 层数）、模仿谁的能力",
-    "cost": "解析占行动节奏，未解析的目标打折扣；解析对象被清场则解析成果作废"
+    "statement": "读后而打——读招定策：先读对手能量、技能配置与行动节奏，信息本身是前置；读对的维度让模仿与仪式放大，读错方向投入反噬（降档+自噬能量）",
+    "variable": "读哪一维（能量 d_energy / 技能 d_skill / 节奏 d_tempo）、何时兑现（已读维度在时限内何时消费）",
+    "cost": "读错方向：payoff 降档并自噬能量；已读标记 25tick 时限——敌方能量/行动条在流动，拖太久旧情报作废"
    },
    "style": {
-    "signature": "全知模仿（reveal + mimic 深化）",
+    "signature": "全知模仿（reveal + 读维 + mimic 定档）",
     "mechanisms": [
      "召唤",
      "驱散",
      "位移",
      "基础增益"
     ],
-    "redline": "途径设计身份.md 阅读者身份卡：模仿排除权柄技能；全知是「看」不是「改」——reveal 只显形不附加"
+    "redline": "途径设计身份.md 阅读者身份卡：模仿排除权柄技能；全知是「看」不是「改」——read 只记录已读维度，不附加任何修正；reveal 只显形不附加"
    },
    "axes": [
     {
@@ -18687,14 +18687,18 @@
      "symbol": "🧠",
      "anchor": {
       "kind": "status",
-      "id": "observed",
-      "raw": "status:observed"
+      "id": "observed + status:read",
+      "raw": "status:observed + status:read"
      },
      "loop": {
-      "produce": "解析/逻辑推演产层",
-      "consume": "模仿系消费解析度",
-      "clear": "层数被消费或目标死亡清除",
+      "produce": "测算/解析产 d_energy、逻辑推演/拆招/洞悉产 d_skill、白塔·全知产三维",
+      "consume": "推理大师读 d_energy 乘区、模仿系读 d_skill 定档",
+      "clear": "read 25tick 到期或目标死亡作废",
       "produceCards": [
+       {
+        "name": "测算",
+        "id": "skill_reader_s7_energy_reading"
+       },
        {
         "name": "解析",
         "id": "skill_reader_s6_analyze"
@@ -18702,16 +18706,28 @@
        {
         "name": "逻辑推演",
         "id": "skill_reader_s8_logic_deduction"
+       },
+       {
+        "name": "拆招",
+        "id": "skill_reader_s6_dissect_moves"
+       },
+       {
+        "name": "洞悉",
+        "id": "skill_reader_s3_discern"
+       },
+       {
+        "name": "白塔·全知",
+        "id": "skill_reader_s0_omniscience"
        }
       ],
       "consumeCards": [
        {
-        "name": "解析",
-        "id": "skill_reader_s6_analyze"
+        "name": "推理大师",
+        "id": "skill_reader_s7_master_reasoner"
        }
       ]
      },
-     "decision": "解析资源投给谁（先解谁）、解析深度堆到几层再消费",
+     "decision": "先读谁、读哪一维（能量还是技能）、情报在时限内兑现还是作废",
      "signatures": [
       {
        "key": "prim:snapshot",
@@ -18729,40 +18745,191 @@
          "id": "skill_reader_s6_analyze"
         }
        ],
-       "empirical": 7,
+       "empirical": 8,
        "ok": true
       }
      ],
-     "planCards": 9,
+     "planCards": 11,
      "roleMixDeclared": {
-      "core": 6,
+      "core": 9,
       "starter": 1,
-      "tech": 1,
+      "tech": 1
+     },
+     "actual": {
+      "cards": 11,
+      "roleMix": {
+       "core": 9,
+       "starter": 1,
+       "tech": 1
+      },
+      "anchorMatch": true,
+      "enablers": [
+       "逻辑推演",
+       "解析",
+       "测算",
+       "拆招",
+       "洞悉"
+      ],
+      "payoffs": [
+       "推理大师",
+       "模仿·解构",
+       "秘术·洞烛"
+      ],
+      "payoffsNotes": [],
+      "axisScore": 80.9
+     }
+    },
+    {
+     "id": "foresight",
+     "name": "预知",
+     "symbol": "⏳",
+     "anchor": {
+      "kind": "status",
+      "id": "foresight + status:read",
+      "raw": "status:foresight + status:read"
+     },
+     "loop": {
+      "produce": "预言/读势/星界秘域产 d_tempo",
+      "consume": "gauge 操作兑现（局势推演推条加码、格斗大师读 d_tempo 击退、星界秘域域内压条）",
+      "clear": "read 到期清除",
+      "produceCards": [
+       {
+        "name": "预言",
+        "id": "skill_reader_s4_prophecy"
+       },
+       {
+        "name": "读势",
+        "id": "skill_reader_s5_read_tempo"
+       },
+       {
+        "name": "星界秘域",
+        "id": "skill_reader_s4_astral_sanctum"
+       }
+      ],
+      "consumeCards": [
+       {
+        "name": "局势推演",
+        "id": "skill_reader_s2_optimal_choice"
+       },
+       {
+        "name": "格斗大师",
+        "id": "skill_reader_s7_combat_master"
+       },
+       {
+        "name": "星界秘域",
+        "id": "skill_reader_s4_astral_sanctum"
+       }
+      ]
+     },
+     "decision": "读节奏的兑现窗口：敌将动时推条/打断/减伤，时机比数值值钱",
+     "signatures": [],
+     "planCards": 7,
+     "roleMixDeclared": {
+      "core": 5,
+      "bridge": 1,
       "generic": 1
      },
      "actual": {
-      "cards": 9,
+      "cards": 7,
       "roleMix": {
-       "core": 6,
-       "starter": 1,
-       "tech": 1,
+       "core": 5,
+       "bridge": 1,
        "generic": 1
       },
       "anchorMatch": true,
       "enablers": [
-       "解析",
-       "逻辑推演"
+       "预言",
+       "读势",
+       "智慧权柄",
+       "星界秘域"
       ],
       "payoffs": [
+       "格斗大师",
+       "局势推演"
+      ],
+      "payoffsNotes": [],
+      "axisScore": 86.0
+     }
+    },
+    {
+     "id": "mimic",
+     "name": "模仿",
+     "symbol": "🦜",
+     "anchor": {
+      "kind": "status",
+      "id": "mimic + status:read",
+      "raw": "status:mimic + status:read"
+     },
+     "loop": {
+      "produce": "观察/拆招产 d_skill",
+      "consume": "模仿·初解/解构/全知之眼 recorded_has(d_skill) 定复刻完成度（未读降档+自噬能量）",
+      "clear": "复刻对象死亡则快照作废",
+      "produceCards": [
+       {
+        "name": "观察",
+        "id": "skill_reader_s8_observe"
+       },
+       {
+        "name": "拆招",
+        "id": "skill_reader_s6_dissect_moves"
+       }
+      ],
+      "consumeCards": [
+       {
+        "name": "模仿·初解",
+        "id": "skill_reader_s6_mimic_novice"
+       }
+      ]
+     },
+     "decision": "复刻谁、读透再复刻还是硬模仿赌降档",
+     "signatures": [
+      {
+       "key": "sref:mimic",
+       "slots": [
+        {
+         "name": "模仿·初解",
+         "id": "skill_reader_s6_mimic_novice"
+        },
+        {
+         "name": "模仿·解构",
+         "id": "skill_reader_s2_mimic_deconstruct"
+        },
+        {
+         "name": "模仿·全知之眼",
+         "id": "skill_reader_s1_mimic_omniscience"
+        }
+       ],
+       "empirical": 3,
+       "ok": true
+      }
+     ],
+     "planCards": 7,
+     "roleMixDeclared": {
+      "core": 4,
+      "starter": 1,
+      "bridge": 1,
+      "trap": 1
+     },
+     "actual": {
+      "cards": 7,
+      "roleMix": {
+       "bridge": 1,
+       "starter": 1,
+       "trap": 1,
+       "core": 4
+      },
+      "anchorMatch": true,
+      "enablers": [
+       "观察",
+       "拆招"
+      ],
+      "payoffs": [
+       "模仿·初解",
+       "模仿·解构",
        "模仿·全知之眼"
       ],
-      "payoffsNotes": [
-       "模仿·初解",
-       "模仿·秘术导师",
-       "模仿·预言家",
-       "模仿·智天使"
-      ],
-      "axisScore": 82.2
+      "payoffsNotes": [],
+      "axisScore": 83.7
      }
     },
     {
@@ -18771,12 +18938,12 @@
      "symbol": "📚",
      "anchor": {
       "kind": "status",
-      "id": "ritual_expertise",
-      "raw": "status:ritual_expertise"
+      "id": "ritual_expertise + status:read",
+      "raw": "status:ritual_expertise + status:read"
      },
      "loop": {
-      "produce": "仪式魔法专家/省略步骤产层",
-      "consume": "仪式魔法专家/省略步骤读层消费（仪式消费层数换全效）",
+      "produce": "仪式魔法专家/省略步骤产层、星界秘术兼产 d_energy",
+      "consume": "仪式魔法/仪式魔法大师/秘术·洞烛读 d_energy 放大（洞烛读对全效+回能，未读降档+自噬）",
       "clear": "层数被仪式消费",
       "produceCards": [
        {
@@ -18786,20 +18953,28 @@
        {
         "name": "省略步骤",
         "id": "skill_reader_s5_streamlined_cast"
+       },
+       {
+        "name": "星界秘术",
+        "id": "skill_reader_s4_astral_arcana"
        }
       ],
       "consumeCards": [
        {
-        "name": "仪式魔法专家",
-        "id": "skill_reader_s8_ritual_expertise"
+        "name": "仪式魔法",
+        "id": "skill_reader_s9_ritual_magic"
        },
        {
-        "name": "省略步骤",
-        "id": "skill_reader_s5_streamlined_cast"
+        "name": "仪式魔法大师",
+        "id": "skill_reader_s7_ritual_master"
+       },
+       {
+        "name": "秘术·洞烛",
+        "id": "skill_reader_s3_arcana_disclosure"
        }
       ]
      },
-     "decision": "省略步骤的时机：省节奏还是完整仪式全效",
+     "decision": "省略步骤的时机：省节奏还是读对维度完整仪式全效",
      "signatures": [
       {
        "key": "prim:reveal",
@@ -18817,192 +18992,34 @@
          "id": "skill_reader_s7_combat_master"
         }
        ],
-       "empirical": 13,
+       "empirical": 14,
        "ok": true
       }
      ],
      "planCards": 9,
      "roleMixDeclared": {
-      "core": 7,
-      "generic": 2
+      "core": 8,
+      "generic": 1
      },
      "actual": {
       "cards": 9,
       "roleMix": {
-       "core": 7,
-       "generic": 2
+       "core": 8,
+       "generic": 1
       },
       "anchorMatch": true,
       "enablers": [
        "仪式魔法专家",
-       "省略步骤"
+       "省略步骤",
+       "星界秘术"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "秘术·洞烛",
+       "仪式魔法",
+       "仪式魔法大师"
+      ],
       "payoffsNotes": [],
-      "axisScore": 74.7
-     }
-    },
-    {
-     "id": "foresight",
-     "name": "预知",
-     "symbol": "⏳",
-     "anchor": {
-      "kind": "status",
-      "id": "foresight",
-      "raw": "status:foresight"
-     },
-     "loop": {
-      "produce": "预言/智慧权柄产层",
-      "consume": "预言消费看最可能未来",
-      "clear": "层数被预言消费",
-      "produceCards": [
-       {
-        "name": "预言",
-        "id": "skill_reader_s4_prophecy"
-       },
-       {
-        "name": "智慧权柄",
-        "id": "skill_reader_s2_wisdom_authority"
-       }
-      ],
-      "consumeCards": [
-       {
-        "name": "预言",
-        "id": "skill_reader_s4_prophecy"
-       }
-      ]
-     },
-     "decision": "预言信息何时兑现：看完立刻改打法还是等关键回合",
-     "signatures": [],
-     "planCards": 7,
-     "roleMixDeclared": {
-      "core": 2,
-      "generic": 4,
-      "bridge": 1
-     },
-     "actual": {
-      "cards": 7,
-      "roleMix": {
-       "core": 2,
-       "generic": 4,
-       "bridge": 1
-      },
-      "anchorMatch": true,
-      "enablers": [
-       "预言",
-       "智慧权柄"
-      ],
-      "payoffs": [],
-      "payoffsNotes": [],
-      "axisScore": 80.4
-     }
-    },
-    {
-     "id": "mimic",
-     "name": "模仿",
-     "symbol": "🦜",
-     "anchor": {
-      "kind": "status",
-      "id": "mimic",
-      "raw": "status:mimic"
-     },
-     "loop": {
-      "produce": "模仿·初解/模仿·秘术导师/模仿·预言家/模仿·智天使/模仿·全知之眼产层",
-      "consume": "模仿·初解/模仿·秘术导师/模仿·预言家/模仿·智天使/模仿·全知之眼读层消费（复刻版按模仿深度定完成度）",
-      "clear": "复刻对象死亡则复刻作废",
-      "produceCards": [
-       {
-        "name": "模仿·初解",
-        "id": "skill_reader_s6_mimic_novice"
-       },
-       {
-        "name": "模仿·秘术导师",
-        "id": "skill_reader_s5_mimic_arcana"
-       },
-       {
-        "name": "模仿·预言家",
-        "id": "skill_reader_s4_mimic_prophet"
-       },
-       {
-        "name": "模仿·智天使",
-        "id": "skill_reader_s2_mimic_cherub"
-       },
-       {
-        "name": "模仿·全知之眼",
-        "id": "skill_reader_s1_mimic_omniscience"
-       }
-      ],
-      "consumeCards": [
-       {
-        "name": "模仿·初解",
-        "id": "skill_reader_s6_mimic_novice"
-       },
-       {
-        "name": "模仿·秘术导师",
-        "id": "skill_reader_s5_mimic_arcana"
-       },
-       {
-        "name": "模仿·预言家",
-        "id": "skill_reader_s4_mimic_prophet"
-       },
-       {
-        "name": "模仿·智天使",
-        "id": "skill_reader_s2_mimic_cherub"
-       },
-       {
-        "name": "模仿·全知之眼",
-        "id": "skill_reader_s1_mimic_omniscience"
-       }
-      ]
-     },
-     "decision": "模仿对象选择（复刻谁）与复刻版使用时机",
-     "signatures": [
-      {
-       "key": "sref:mimic",
-       "slots": [
-        {
-         "name": "模仿·初解",
-         "id": "skill_reader_s6_mimic_novice"
-        },
-        {
-         "name": "模仿·秘术导师",
-         "id": "skill_reader_s5_mimic_arcana"
-        },
-        {
-         "name": "模仿·预言家",
-         "id": "skill_reader_s4_mimic_prophet"
-        }
-       ],
-       "empirical": 5,
-       "ok": true
-      }
-     ],
-     "planCards": 9,
-     "roleMixDeclared": {
-      "core": 6,
-      "bridge": 1,
-      "starter": 1,
-      "trap": 1
-     },
-     "actual": {
-      "cards": 9,
-      "roleMix": {
-       "bridge": 1,
-       "starter": 1,
-       "trap": 1,
-       "core": 6
-      },
-      "anchorMatch": true,
-      "enablers": [
-       "模仿·全知之眼",
-       "模仿·初解",
-       "模仿·智天使",
-       "模仿·秘术导师",
-       "模仿·预言家"
-      ],
-      "payoffs": [],
-      "payoffsNotes": [],
-      "axisScore": 76.0
+      "axisScore": 80.7
      }
     }
    ],
@@ -19019,7 +19036,7 @@
      "axis": "analysis",
      "concept": "status",
      "facet": "read",
-     "purpose": "读已解析层数加深观察（解析链起手）",
+     "purpose": "读已解析层数加深观察，兼产 d_skill（解析链起手）",
      "ok": true,
      "reason": ""
     },
@@ -19035,7 +19052,55 @@
      "axis": "analysis",
      "concept": "status",
      "facet": "read",
-     "purpose": "读已解析度选最可能未来",
+     "purpose": "读已解析度压条，兼产 d_tempo",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "格斗大师",
+     "slots": [
+      {
+       "name": "格斗大师",
+       "id": "skill_reader_s7_combat_master"
+      }
+     ],
+     "slotId": "skill_reader_s7_combat_master",
+     "axis": "foresight",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读 d_tempo 追加击退（arcana 卡消费 foresight 维度）",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "推理大师",
+     "slots": [
+      {
+       "name": "推理大师",
+       "id": "skill_reader_s7_master_reasoner"
+      }
+     ],
+     "slotId": "skill_reader_s7_master_reasoner",
+     "axis": "analysis",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读 d_energy 伤害乘区（analysis 自轴消费）",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "局势推演",
+     "slots": [
+      {
+       "name": "局势推演",
+       "id": "skill_reader_s2_optimal_choice"
+      }
+     ],
+     "slotId": "skill_reader_s2_optimal_choice",
+     "axis": "analysis",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "场上存在已读敌人则推条 30→45（read 在场兑现）",
      "ok": true,
      "reason": ""
     },
@@ -19051,7 +19116,7 @@
      "axis": "analysis",
      "concept": "status",
      "facet": "read",
-     "purpose": "全知模仿读解析度定复刻完成度",
+     "purpose": "全知模仿读 d_skill 定复刻完成度",
      "ok": true,
      "reason": ""
     }
@@ -19113,7 +19178,7 @@
    "roles": [
     {
      "role": "core",
-     "declared": 21,
+     "declared": 26,
      "declaredSlots": [
       {
        "name": "过目不忘",
@@ -19160,24 +19225,12 @@
        "id": "skill_reader_s4_astral_arcana"
       },
       {
-       "name": "模仿·秘术导师",
-       "id": "skill_reader_s5_mimic_arcana"
-      },
-      {
-       "name": "模仿·预言家",
-       "id": "skill_reader_s4_mimic_prophet"
-      },
-      {
        "name": "秘术传授",
        "id": "skill_reader_s5_arcana_tutelage"
       },
       {
        "name": "洞悉",
        "id": "skill_reader_s3_discern"
-      },
-      {
-       "name": "模仿·智天使",
-       "id": "skill_reader_s2_mimic_cherub"
       },
       {
        "name": "智慧权柄",
@@ -19198,9 +19251,41 @@
       {
        "name": "白塔·全知",
        "id": "skill_reader_s0_omniscience"
+      },
+      {
+       "name": "测算",
+       "id": "skill_reader_s7_energy_reading"
+      },
+      {
+       "name": "拆招",
+       "id": "skill_reader_s6_dissect_moves"
+      },
+      {
+       "name": "读势",
+       "id": "skill_reader_s5_read_tempo"
+      },
+      {
+       "name": "秘术·洞烛",
+       "id": "skill_reader_s3_arcana_disclosure"
+      },
+      {
+       "name": "模仿·解构",
+       "id": "skill_reader_s2_mimic_deconstruct"
+      },
+      {
+       "name": "推理大师",
+       "id": "skill_reader_s7_master_reasoner"
+      },
+      {
+       "name": "星界秘域",
+       "id": "skill_reader_s4_astral_sanctum"
+      },
+      {
+       "name": "局势推演",
+       "id": "skill_reader_s2_optimal_choice"
       }
      ],
-     "actual": 21,
+     "actual": 26,
      "actualSlots": [
       {
        "name": "过目不忘",
@@ -19227,6 +19312,10 @@
        "id": "skill_reader_s6_analyze"
       },
       {
+       "name": "推理大师",
+       "id": "skill_reader_s7_master_reasoner"
+      },
+      {
        "name": "仪式魔法大师",
        "id": "skill_reader_s7_ritual_master"
       },
@@ -19247,28 +19336,24 @@
        "id": "skill_reader_s4_astral_arcana"
       },
       {
-       "name": "模仿·秘术导师",
-       "id": "skill_reader_s5_mimic_arcana"
-      },
-      {
-       "name": "模仿·预言家",
-       "id": "skill_reader_s4_mimic_prophet"
-      },
-      {
        "name": "秘术传授",
        "id": "skill_reader_s5_arcana_tutelage"
+      },
+      {
+       "name": "星界秘域",
+       "id": "skill_reader_s4_astral_sanctum"
       },
       {
        "name": "洞悉",
        "id": "skill_reader_s3_discern"
       },
       {
-       "name": "模仿·智天使",
-       "id": "skill_reader_s2_mimic_cherub"
-      },
-      {
        "name": "智慧权柄",
        "id": "skill_reader_s2_wisdom_authority"
+      },
+      {
+       "name": "局势推演",
+       "id": "skill_reader_s2_optimal_choice"
       },
       {
        "name": "全知·现在与过去",
@@ -19285,6 +19370,26 @@
       {
        "name": "白塔·全知",
        "id": "skill_reader_s0_omniscience"
+      },
+      {
+       "name": "测算",
+       "id": "skill_reader_s7_energy_reading"
+      },
+      {
+       "name": "拆招",
+       "id": "skill_reader_s6_dissect_moves"
+      },
+      {
+       "name": "读势",
+       "id": "skill_reader_s5_read_tempo"
+      },
+      {
+       "name": "秘术·洞烛",
+       "id": "skill_reader_s3_arcana_disclosure"
+      },
+      {
+       "name": "模仿·解构",
+       "id": "skill_reader_s2_mimic_deconstruct"
       }
      ]
     },
@@ -19340,55 +19445,19 @@
     },
     {
      "role": "generic",
-     "declared": 7,
+     "declared": 2,
      "declaredSlots": [
       {
-       "name": "武器精通",
-       "id": "skill_reader_s7_weapon_mastery"
-      },
-      {
        "name": "规律权柄",
        "id": "skill_reader_s3_law_authority"
       },
       {
-       "name": "推理大师",
-       "id": "skill_reader_s7_master_reasoner"
-      },
-      {
-       "name": "星界秘域",
-       "id": "skill_reader_s4_astral_sanctum"
-      },
-      {
-       "name": "局势推演",
-       "id": "skill_reader_s2_optimal_choice"
-      },
-      {
        "name": "白塔·创造",
        "id": "skill_reader_s0_tower_creation"
-      },
-      {
-       "name": "星界阶梯",
-       "id": "skill_reader_s0_astral_stairs"
       }
      ],
-     "actual": 7,
+     "actual": 2,
      "actualSlots": [
-      {
-       "name": "武器精通",
-       "id": "skill_reader_s7_weapon_mastery"
-      },
-      {
-       "name": "推理大师",
-       "id": "skill_reader_s7_master_reasoner"
-      },
-      {
-       "name": "星界秘域",
-       "id": "skill_reader_s4_astral_sanctum"
-      },
-      {
-       "name": "局势推演",
-       "id": "skill_reader_s2_optimal_choice"
-      },
       {
        "name": "规律权柄",
        "id": "skill_reader_s3_law_authority"
@@ -19396,10 +19465,6 @@
       {
        "name": "白塔·创造",
        "id": "skill_reader_s0_tower_creation"
-      },
-      {
-       "name": "星界阶梯",
-       "id": "skill_reader_s0_astral_stairs"
       }
      ]
     },
@@ -19505,8 +19570,8 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 3,
-     "total": 3,
+     "hit": 6,
+     "total": 6,
      "miss": []
     },
     "跨系钩子": {

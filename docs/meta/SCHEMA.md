@@ -200,11 +200,13 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 ### 5.3 条件（condition）
 
-开放结构（`additionalProperties: true`），字段随 `kind` 变化。`kind` 为封闭枚举（33 个）：
+开放结构（`additionalProperties: true`），字段随 `kind` 变化。`kind` 为封闭枚举（34 个）：
 
-`all_of` `any_of` `caster_has_summon` `caster_status_exists` `chance` `consumed_count` `damage_source_is` `dead_count` `dispelled_count` `element_is` `faction_is` `field_status_count` `gauge_above` `gauge_rank` `gender_is` `has_category` `has_equipped` `has_status` `hp_percent` `hp_percent_compare` `luminance_compare` `not` `phase_is` `rank_gap` `resource_compare` `stat_compare` `tag_chain` `target_dead` `target_has_tag` `target_is_summoned` `target_unit_type` `variant_is` `zone_active`
+`all_of` `any_of` `caster_has_summon` `caster_status_exists` `chance` `consumed_count` `damage_source_is` `dead_count` `dispelled_count` `element_is` `faction_is` `field_status_count` `gauge_above` `gauge_rank` `gender_is` `has_category` `has_equipped` `has_status` `hp_percent` `hp_percent_compare` `luminance_compare` `not` `phase_is` `rank_gap` `recorded_has` `resource_compare` `stat_compare` `tag_chain` `target_dead` `target_has_tag` `target_is_summoned` `target_unit_type` `variant_is` `zone_active`
 
 `has_equipped`（2026-10-19 增，2026-10-23 改）：`side` + 可选 `slot`（当前仅 `weapon`）；按单位的 `WeaponInstance` 判定是否持有武器，**不点名具体武器**——任何来源的武器自动纳入，避免逐武器 any_of 清单。
+
+`recorded_has`（2026-10-23 增）：`side` + `statusId` + `id`——指定方持有的 `statusId` 状态实例的 slots/params 中含键 `id` 即成立（H33 slots 的存在性读法；阅读者「已读」三维 d_energy/d_skill/d_tempo 的兑现门）。语义权威见 `ddd/params/共享内核参数.md` §三。
 
 ⚠️ `chance` 必须遵守随机性治理 R1–R6：只用于**非伤害维度**、单次抽样、须可登记筛出。
 当前全库 2 处 `chance`（登记册见 ddd 随机性治理 §四）：monster 行动条 −8（p=0.5）；lawyer【狂乱】（8 段 p=0.25，2026-09-26 拍板保留真随机）。

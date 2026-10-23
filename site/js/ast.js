@@ -84,6 +84,10 @@ function condToText(c) {
       const who = c.side ? termSpan('side', c.side) : '目标';
       return `${who}已装备${c.slot ? termSpan('equipSlot', c.slot) : '任意'}槽装备`;
     }
+    case 'recorded_has': {
+      const who = c.side ? termSpan('side', c.side) : '目标';
+      return `${who}的${statusRef(c.statusId || '?')}含「${escapeHtml(c.id || '?')}」记录`;
+    }
     case 'has_category': {
       const cats = [].concat(c.categories ?? c.category ?? '?');
       return `${c.side ? termSpan('side', c.side) : '目标'}持有${cats.map((x) => termSpan('statusCategory', x)).join(' / ')}类状态`;

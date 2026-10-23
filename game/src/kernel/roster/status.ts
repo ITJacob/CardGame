@@ -86,6 +86,10 @@ export class CombatStatusSet implements StatusSet {
       // schema 的 stackPolicy 只有 stack/refresh；层数累加与 policy 无关（编队参数 §2.4）
       existing.currentStacks = clamp(existing.currentStacks + rawStacks, 1, maxStacks)
       existing.remaining = longer(existing.remaining, duration)
+      if (grant.params) {
+        // 数据槽键并集合并（编队参数 §1.1b slots）：同名键取新值——「已读」多维先后挂载的落地语义
+        existing.grant = { ...existing.grant, params: { ...existing.grant.params, ...grant.params } }
+      }
       return existing
     }
 

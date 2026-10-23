@@ -89,7 +89,7 @@ def card_refs_status(card, sid):
             if v == sid or (isinstance(v, list) and sid in v):
                 return True
         if n.get("id") == sid and n.get("kind") in (
-            "has_status", "caster_status_exists", "status_category"):
+            "has_status", "caster_status_exists", "status_category", "field_status_count"):
             return True
         if n.get("hasStatus") == sid or (isinstance(n.get("hasStatus"), list) and sid in n.get("hasStatus", [])):
             return True
@@ -221,7 +221,8 @@ def obj_status_refs(obj):
                     out.add(v)
                 elif isinstance(v, list):
                     out.update(x for x in v if isinstance(x, str))
-        if n.get("kind") in ("has_status", "caster_status_exists", "status_category") and isinstance(n.get("id"), str):
+        if n.get("kind") in ("has_status", "caster_status_exists", "status_category",
+                             "field_status_count") and isinstance(n.get("id"), str):
             out.add(n["id"])
         for k in ("hasStatus", "targetHasStatus"):
             v = n.get(k)
@@ -1100,6 +1101,14 @@ def main():
             a_id = anchor_spec.get("id") if isinstance(anchor_spec, dict) else None
             identity_items = set()
             identity_channel = None
+            # 蓝图副锚点面（2026-10-23：蓝图锚点格允许「主锚点 + status:x + …」——
+            # 主锚点与 axes 实录对账，副锚点 status 并入本轴作用面；
+            # 例：reader A1 的共享读维状态 read 跨四轴产读，不属任何单一轴身份）
+            _decl0 = bp_axis_decl.get(pid, {}).get(aid) or {}
+            _anchor_parts = [p.strip() for p in (_decl0.get("anchor") or "").split("+") if p.strip()]
+            extra_sids = {p.split(":", 1)[1].strip() for p in _anchor_parts[1:]
+                          if p.startswith("status:") and ":" in p}
+            extra_items = {"status:" + x for x in extra_sids}
             if a_kind == "status" and a_id:
                 sid = a_id
             elif a_kind and a_kind != "status":
@@ -1115,7 +1124,7 @@ def main():
                 identity_items = {"prim:" + a_id}
             elif a_kind == "resource" and a_id:
                 identity_pool = a_id
-            outputs = ({"status:" + sid} if sid else set()) | identity_items | ax_channels
+            outputs = ({"status:" + sid} if sid else set()) | extra_items | identity_items | ax_channels
             if a_kind in ("resource", "channel", "equipment", "primitive") and a_id:
                 anchor = 8
                 ok = False
@@ -1185,7 +1194,7 @@ def main():
                 if identity_items:
                     return bool(surf[c["name"]][0] & identity_items)
                 if sid:
-                    return ("status:" + sid) in surf[c["name"]][0]
+                    return bool(({"status:" + sid} | extra_items) & surf[c["name"]][0])
                 if identity_pool:
                     return card_refs_resource(c, identity_pool)
                 return bool(surf[c["name"]][0] & set(CHANNELS))   # 产层 = 写入本轴身份通道
@@ -1226,14 +1235,15 @@ def main():
                 if identity_items:
                     return "landed" if (surf[nm][1] & identity_items) else "notes"
                 if sid:
-                    if (surf[nm][1] & outputs) or card_refs_status(c, sid):
+                    if (surf[nm][1] & outputs) or card_refs_status(c, sid) \
+                            or any(card_refs_status(c, x) for x in extra_sids):
                         return "landed"
                     for m in card_mounts(c):
                         mdef = status_by_id.get(m)
-                        if mdef and refs_in_obj(mdef, sid):
+                        if mdef and (refs_in_obj(mdef, sid) or any(refs_in_obj(mdef, x) for x in extra_sids)):
                             return "landed"
                     for dref in card_def_refs(c, def_index):
-                        if refs_in_obj(dref, sid):
+                        if refs_in_obj(dref, sid) or any(refs_in_obj(dref, x) for x in extra_sids):
                             return "landed"
                     return "notes"
                 if identity_pool:
@@ -1307,7 +1317,7 @@ def main():
             else:
                 # 锚点兑现 15：蓝图锚点 kind:id 与 axes 元数据对账（蓝图简写 prim/res 归一）
                 _ALIAS = {"prim": "primitive", "res": "resource"}
-                _dk, _, _did = (decl["anchor"] or "").partition(":")
+                _dk, _, _did = (_anchor_parts[0] if _anchor_parts else "").partition(":")
                 _dk = _ALIAS.get(_dk, _dk)
                 _akind = a_kind or ("status" if sid else None)
                 _aid2 = a_id if a_kind else sid
@@ -1416,19 +1426,22 @@ def main():
                 blob = [c] + [m for m in mounted if m] + defrefs
                 # 收束检索空间：卡面 effects + 挂载状态 def + spawn/domain 出的区域/界域 def
                 space = list(walk(card_effects(c))) + [n2 for dref in defrefs for n2 in walk(dref)]
-                has_mul = any(refs_in_obj(o, sid) and True for o in blob) and any(
-                    "damage_mul" in json.dumps(o, ensure_ascii=False) and refs_in_obj(o, sid) for o in blob)
+                axis_sids = ({sid} if sid else set()) | extra_sids
+                refs_axis = lambda o: any(refs_in_obj(o, s) for s in axis_sids)
+                has_mul = any(refs_axis(o) for o in blob) and any(
+                    "damage_mul" in json.dumps(o, ensure_ascii=False) and refs_axis(o) for o in blob)
                 if has_mul:
                     patterns.add("乘区")
-                if any(n2.get("op") == "if" and refs_in_obj(n2, sid) for n2 in space) or \
+                if any(n2.get("op") == "if" and refs_axis(n2) for n2 in space) or \
                    any(n2.get("kind") in ("resource_compare", "stat_compare") for n2 in space):
                     patterns.add("条件分支")
                 for n2 in space:
-                    if n2.get("type") == "modify_status" and n2.get("statusId") == sid and \
+                    if n2.get("type") == "modify_status" and n2.get("statusId") in axis_sids and \
                        ((n2.get("stacksDelta") or 0) < 0 or n2.get("stackMode") == "consume"):
                         patterns.add("耗层")
-                if any(n2.get("hasStatus") == sid for n2 in space) or \
-                   any(n2.get("kind") == "has_status" and n2.get("id") == sid for n2 in space):
+                if any(n2.get("hasStatus") in axis_sids for n2 in space) or \
+                   any(n2.get("kind") in ("has_status", "recorded_has") and
+                       (n2.get("id") in axis_sids or n2.get("statusId") in axis_sids) for n2 in space):
                     patterns.add("存在性")
                 if surf[nm][1] & set(CHANNELS):
                     patterns.add("通道读")

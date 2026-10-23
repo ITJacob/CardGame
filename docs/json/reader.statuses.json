@@ -1,6 +1,16 @@
 {
   "statusDefs": [
     {
+      "id": "read",
+      "name": "已读",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 25,
+      "note": "A1「读招定策」核心状态（2026-10-23 落地）：维度以 mount_status params 键落地——d_energy=读过能量 / d_skill=读过技能配置 / d_tempo=读过行动节奏；重复挂载键并集合并、同名取新值（编队参数 §1.1b slots 合并语义），兑现门走 recorded_has 谓词。情报有时限：duration 内未兑现即作废——敌方能量/冷却在流动，旧情报贬值。身份红线：全知是「看」不是「改」，本状态只记录已读维度，不附加任何修正。"
+    },
+    {
       "id": "observed",
       "name": "已解析",
       "category": [
@@ -11,7 +21,7 @@
       "slots": {
         "lastSkillRef": "挂载瞬间快照目标最近一次施放过的技能（H33 slots）"
       },
-      "note": "G15-b 合规：duration 6 ≥ 敏捷 0 单位约 25tick 行动周期，且挂载走即时节点（on_deal_damage / on_take_damage），不受 on_turn_start 时间尺度影响 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。 ｜ 2026-10-02 补漏批③：on_active_skill 施法解析状态面（矩阵触发点阅读者正主落地——被解析者越施法越被看穿）",
+      "note": "G15-b 合规：duration 6 ≥ 敏捷 0 单位约 25tick 行动周期，且挂载走即时节点（on_deal_damage / on_take_damage），不受 on_turn_start 时间尺度影响 层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。 ｜ 2026-10-02 补漏批③：on_active_skill 施法解析状态面（矩阵触发点阅读者正主落地——被解析者越施法越被看穿） ｜ 2026-10-23 A1 重构：从唯一前置降为可读维度之一（本状态=读状态面）；能量/技能/节奏三维由 read 状态承载。",
       "maxStacks": 3,
       "stackPolicy": "refresh",
       "triggers": [
@@ -285,6 +295,18 @@
               "duration": 30,
               "target": "target",
               "note": "全知 = 不需要额外动作去观察：打谁，谁就被即时解析刷新快照"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "read",
+              "duration": 25,
+              "params": {
+                "d_energy": 1,
+                "d_skill": 1,
+                "d_tempo": 1
+              },
+              "target": "target",
+              "note": "全知 = 不用读：每次造成伤害即三维情报同步刷新（read 25tick 键并集合并）——A1 重构补（2026-10-23）"
             }
           ],
           "note": "即时节点 ✅ 已 fire，规避 G15/G15-b；on_battle_start 时全体敌方先挂 observed（快照为空，靠本触发持续刷新）"

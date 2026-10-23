@@ -909,6 +909,9 @@ def playability_2x2(cards, st, cost_cards, identity_sids=()):
                     and isinstance(n.get("id"), str):
                 reads[n["id"]].add(cid)
                 rtypes[n["id"]].add(n["kind"])
+            if n.get("kind") == "recorded_has" and isinstance(n.get("statusId"), str):
+                reads[n["statusId"]].add(cid)
+                rtypes[n["statusId"]].add("recorded_has")
             for f in ("hasStatus", "targetHasStatus"):
                 v = n.get(f)
                 for x in ([v] if isinstance(v, str) else (v or [])):

@@ -140,6 +140,9 @@ export class CombatUnit implements Unit {
   statusStacks(defId: string): number {
     return this.statuses.stacksOf(defId)
   }
+  hasStatusParam(defId: string, key: string): boolean {
+    return this.statuses.byDef(defId).some((i) => i.grant.params != null && key in i.grant.params)
+  }
   hasEquipped(slot?: string): boolean {
     return Boolean(this.weapon) && (!slot || this.weapon!.slot === slot)
   }

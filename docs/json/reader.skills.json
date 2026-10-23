@@ -12,17 +12,18 @@
       "name": "解析",
       "statusId": "observed",
       "enablers": [
+        "逻辑推演",
         "解析",
-        "逻辑推演"
+        "测算",
+        "拆招",
+        "洞悉"
       ],
       "payoffs": [
-        "模仿·初解",
-        "模仿·秘术导师",
-        "模仿·预言家",
-        "模仿·智天使",
-        "模仿·全知之眼"
+        "推理大师",
+        "模仿·解构",
+        "秘术·洞烛"
       ],
-      "note": "payoffs 2026-09-26 评审：五模仿卡 filter.hasStatus:observed 限定目标兑换重放大效（一卡双职：兼 mimic 轴 enabler） ｜ 2026-09-29 环节⑤：observed 补层数引擎（身份 8→15）；enablers 核正（洞悉/全知·现在与过去不挂 observed 移出）；模仿·全知之眼补 observed 读层段（payoff 升 landed，读层 20→25，兼跨轴 mimic→analysis） ｜ 2026-10-03 骨架手术：先解析后放大换形 26 张（详见 designNote）"
+      "note": "2026-10-23 A1 重构：解析轴=产读轴——observed 从唯一前置降为可读维度之一（读状态面），新增 read{d_energy（测算/解析）/d_skill（逻辑推演/拆招/洞悉）} 产出；消费方跨轴（mimic 读 d_skill、arcana 读 d_energy）。"
     },
     "arcana": {
       "symbol": "📚",
@@ -30,10 +31,15 @@
       "statusId": "ritual_expertise",
       "enablers": [
         "仪式魔法专家",
-        "省略步骤"
+        "省略步骤",
+        "星界秘术"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：ritual_expertise 单向自 buff 无下游；纯 enabler 轴 ｜ 2026-09-29 环节⑤：ritual_expertise 补层数引擎（身份 8→15）；省略步骤补产层段（产层 12→20）；纯产层轴真空甄别拍板接受（自 buff 直载无下游，payoffVacuumAccepted） ｜ 2026-10-03 骨架手术：先解析后放大换形 26 张（详见 designNote）",
+      "payoffs": [
+        "秘术·洞烛",
+        "仪式魔法",
+        "仪式魔法大师"
+      ],
+      "note": "2026-10-23 A1 重构：仪式系读 read{d_energy} 放大——秘术·洞烛读对全效+回能，未读降档+自噬；星界秘术兼作 d_energy 产读（全体）。",
       "payoffVacuumAccepted": true
     },
     "mimic": {
@@ -41,14 +47,15 @@
       "name": "模仿",
       "statusId": "mimic",
       "enablers": [
-        "模仿·全知之眼",
-        "模仿·初解",
-        "模仿·智天使",
-        "模仿·秘术导师",
-        "模仿·预言家"
+        "观察",
+        "拆招"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：mimic 状态 on_apply 自耗 echo 即全部 payoff 语义，无独立读层卡 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：on_apply 自耗 echo 即 payoff 语义（自产自耗闭环）；读层闭环维度记 12 分保底。 ｜ 2026-10-03 骨架手术：先解析后放大换形 26 张（详见 designNote）",
+      "payoffs": [
+        "模仿·初解",
+        "模仿·解构",
+        "模仿·全知之眼"
+      ],
+      "note": "2026-10-23 A1 重构：固定 potency 梯度（秘术导师/预言家/智天使 20%→90%）退役；复刻完成度改由 recorded_has(read, d_skill) 定档，未读降档+自噬能量（读错方向，投入反噬）。",
       "payoffVacuumAccepted": true
     },
     "foresight": {
@@ -57,10 +64,15 @@
       "statusId": "foresight",
       "enablers": [
         "预言",
-        "智慧权柄"
+        "读势",
+        "智慧权柄",
+        "星界秘域"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：foresight 为 charges 型自耗减伤载荷；optimal_choice/wisdom 各属其轴 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：charges 自耗减伤载荷，存在即收益；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：enablers 核正（规律·撬动/局势推演/规律权柄不挂 foresight 移出；智慧权柄补产层段，产层 12→20）；预言读 observed 跨轴（foresight→analysis）、读 weather_omen 跨系（→planter）；规律·撬动读 law_edit 跨系（→savant） ｜ 2026-10-03 骨架手术：先解析后放大换形 26 张（详见 designNote）",
+      "payoffs": [
+        "格斗大师",
+        "局势推演"
+      ],
+      "note": "2026-10-23 A1 重构：预知=读节奏——read{d_tempo}（预言/读势/星界秘域产）+ gauge 谓词兑现；冷却谓词（cooldown_compare）留候选延期。",
       "payoffVacuumAccepted": true
     }
   },
@@ -135,7 +147,7 @@
       "flagship": false,
       "lore": "序列9 阅读者 —— \"记忆力、理解力提升\"",
       "flavor": "你理解事物的速度比别人快上一截——别人的灵性还在积蓄，你的已经溢出来了。",
-      "describe": "战斗开始时，自身能量恢复 +0.2/tick，持续整场。；模仿习得：下一式少读一段。",
+      "describe": "战斗开始时，自身能量恢复 +0.2/tick，持续整场。",
       "hook": [
         "on_battle_start"
       ],
@@ -148,16 +160,6 @@
           "duration": null,
           "target": "self",
           "note": "G14：单位 per tick"
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "costDelta": {
-            "energy": -1
-          },
-          "note": "模仿习得：下一式少读一段"
         }
       ],
       "sharedAcross": [
@@ -187,7 +189,7 @@
       "flagship": false,
       "lore": "序列9 阅读者 —— \"能使用仪式魔法，大量阅读获得知识储备\"",
       "flavor": "你按着书上的步骤摆完最后一枚蜡烛——仪式完成，某种看不见的东西咬住了它。",
-      "describe": "对一名敌人造成 2 点精神伤害。；先读透再落笔。",
+      "describe": "对一名敌人造成 2 点精神伤害；若其已被读能量（已读·能量），追加 1 点精神伤害。；先读透再落笔。",
       "cost": {
         "energy": 3,
         "cooldown": 10,
@@ -215,6 +217,24 @@
           "type": "damage",
           "element": "mental",
           "value": 2
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "target",
+            "statusId": "read",
+            "id": "d_energy"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "note": "读能放大：目标能量虚实已被测算，仪式追加 1 点精神伤害（A1 2026-10-23）"
+            }
+          ],
+          "else": []
         }
       ],
       "upgradeLadder": {
@@ -271,7 +291,7 @@
       "flagship": false,
       "lore": "序列8 推理学员 —— \"观察力、逻辑思维能力提升\"",
       "flavor": "你顺着它挥刀的轨迹倒推回去，找到了那条最不合理的弧线——那里就是破绽。",
-      "describe": "使一名敌人易伤 20tick，造成 2 点精神伤害，并解析它（刷新技能快照 30tick）。；先读透再落笔。",
+      "describe": "使一名敌人易伤 20tick，造成 2 点精神伤害，并解析它（刷新技能快照 30tick），读懂它的招式配置（已读·技能 25tick）。；先读透再落笔。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -312,6 +332,15 @@
               "statusId": "observed",
               "duration": 30,
               "note": "解析类技能命中即刷新快照（通用设计）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "read",
+              "duration": 25,
+              "params": {
+                "d_skill": 1
+              },
+              "note": "A1 读维（2026-10-23）：维度键并入 read 实例 slots（编队参数 §1.1b 合并语义）"
             }
           ]
         }
@@ -343,7 +372,7 @@
       "flagship": false,
       "lore": "序列8 推理学员 —— \"观察力、逻辑思维能力提升\"（并作为序列6「模仿解析过的能力」的前置）",
       "flavor": "你盯着它的手——每一次挥击、每一个起手式，都被你记了下来。",
-      "describe": "你造成伤害、或受到伤害时，解析本次交互的对方单位（快照其最近一次施放的技能，30tick）。；先把它的状态抄录下来，再谈动摇。",
+      "describe": "你造成伤害、或受到伤害时，解析本次交互的对方单位（快照其最近一次施放的技能，30tick），并抄录其招式配置（已读·技能 25tick）。；先把它的状态抄录下来，再谈动摇。",
       "hook": [
         "on_deal_damage"
       ],
@@ -372,6 +401,15 @@
               "statusId": "observed",
               "duration": 30,
               "note": "你打中的目标被解析"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "read",
+              "duration": 25,
+              "params": {
+                "d_skill": 1
+              },
+              "note": "挨打/命中即抄录招式配置（A1 2026-10-23）"
             }
           ]
         },
@@ -383,6 +421,15 @@
               "statusId": "observed",
               "duration": 30,
               "note": "打你的单位被解析（挨打也是一种观察）"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "read",
+              "duration": 25,
+              "params": {
+                "d_skill": 1
+              },
+              "note": "挨打/命中即抄录招式配置（A1 2026-10-23）"
             }
           ]
         }
@@ -414,7 +461,7 @@
       "flagship": false,
       "lore": "序列8 推理学员 —— \"成为仪式魔法专家\"",
       "flavor": "同样的步骤，你念出来的咒文比书上多出了三个音节——而效果，强了不止一点。",
-      "describe": "战斗开始时获得「仪式专精」：你造成的精神伤害 ×1.2，持续整场。；模仿习得：抄来的招式使起来更省力。",
+      "describe": "战斗开始时获得「仪式专精」：你造成的精神伤害 ×1.2，持续整场。",
       "hook": [
         "on_battle_start"
       ],
@@ -424,16 +471,6 @@
           "statusId": "ritual_expertise",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "costDelta": {
-            "energy": -1
-          },
-          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "sharedAcross": [
@@ -463,7 +500,7 @@
       "flagship": false,
       "lore": "序列9 阅读者 —— \"大量阅读获得知识储备\"",
       "flavor": "你翻遍脑中那座图书馆，终于抽出了此刻恰好有用的那一册。",
-      "describe": "自身能量 +4。；模仿习得：下一式更省力。",
+      "describe": "自身能量 +4。",
       "cost": {
         "energy": 1,
         "cooldown": 15,
@@ -486,16 +523,6 @@
           "value": 4,
           "mode": "delta",
           "target": "self"
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "costDelta": {
-            "energy": -1
-          },
-          "note": "模仿习得：下一式更省力"
         }
       ],
       "sharedAcross": [
@@ -515,55 +542,6 @@
       "role": "starter"
     },
     {
-      "id": "skill_reader_s7_weapon_mastery",
-      "name": "武器精通",
-      "kind": "passive",
-      "sequence": 7,
-      "sequenceName": "守知者",
-      "rarity": "uncommon",
-      "axis": "arcana",
-      "flagship": false,
-      "lore": "序列7 守知者 —— \"武器精通、格斗大师、推理大师、仪式魔法大师\"",
-      "flavor": "任何东西到了你手里都能杀人——而你现在手里，恰好握着一把剑。",
-      "describe": "战斗开始时，自身攻击 +2，持续整场（不可驱散）。；模仿习得：下一式少读一段。",
-      "hook": [
-        "on_battle_start"
-      ],
-      "effects": [
-        {
-          "type": "modify_stat",
-          "stat": "attack",
-          "value": 2,
-          "mode": "delta",
-          "duration": null,
-          "target": "self",
-          "note": "modify_stat 账本条目，非 StatusInstance，天然不可驱散"
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "costDelta": {
-            "energy": -1
-          },
-          "note": "模仿习得：下一式少读一段"
-        }
-      ],
-      "tentative": false,
-      "conversionNotes": "翻译/语义：原著招牌\"拿着武器站前排的学者\"，拆四条技能分别承载。整场常驻不可驱散。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=stat）",
-      "art": {
-        "subject": "a scholar in reading robes gripping a sword with textbook-perfect form",
-        "elements": [
-          "unsheathed longsword",
-          "annotated fencing manual",
-          "ink-stained gloves"
-        ],
-        "mood": "composed, lethal, scholarly"
-      },
-      "role": "generic"
-    },
-    {
       "id": "skill_reader_s7_combat_master",
       "name": "格斗大师",
       "kind": "active",
@@ -574,7 +552,7 @@
       "flagship": false,
       "lore": "序列7 守知者 —— \"武器精通、格斗大师……附带格斗和器械能力\"",
       "flavor": "你贴近它、卸力、反手一送——它踉跄着退开，而你已经在等它的下一招。",
-      "describe": "对最前排一名敌人造成 4 点物理伤害，击退其行动条 50。；先读透再落笔。",
+      "describe": "对最前排一名敌人造成 4 点物理伤害，击退其行动条 50；若其节奏已被读懂（已读·节奏），追加击退 30。；先读透再落笔。",
       "cost": {
         "energy": 3,
         "cooldown": 10,
@@ -612,6 +590,25 @@
               "value": -50,
               "mode": "delta",
               "note": "击退 = 推行动条（KNOCKBACK_DISTANCE=50，D1 已拍板）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "recorded_has",
+                "side": "target",
+                "statusId": "read",
+                "id": "d_tempo"
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": -30,
+                  "mode": "delta",
+                  "note": "打在节骨眼上：目标节奏已被读懂，追加击退 30（A1 2026-10-23）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -713,7 +710,7 @@
       "flagship": false,
       "lore": "序列6 博学者 —— \"『解析』：解析对手非凡能力，辨识具体情况和缺陷\"",
       "flavor": "你把它身上那层\"非凡\"剥开来看——里面是什么、缺了什么，一目了然。",
-      "describe": "驱散一名敌人 1 个增益状态，防御 -2（20tick），并解析它（刷新技能快照 30tick）。；先把它的状态抄录下来，再谈动摇。",
+      "describe": "驱散一名敌人 1 个增益状态，防御 -2（20tick），并解析它（刷新技能快照 30tick），摸清它的能量回路（已读·能量 25tick）。；先把它的状态抄录下来，再谈动摇。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -765,6 +762,15 @@
               "type": "mount_status",
               "statusId": "observed",
               "duration": 30
+            },
+            {
+              "type": "mount_status",
+              "statusId": "read",
+              "duration": 25,
+              "params": {
+                "d_energy": 1
+              },
+              "note": "A1 读维（2026-10-23）：维度键并入 read 实例 slots（编队参数 §1.1b 合并语义）"
             }
           ]
         }
@@ -796,7 +802,7 @@
       "flagship": false,
       "lore": "序列6 博学者 —— \"『模仿』：有几率模仿解析过的能力（20%–50% 效果） / 无使用次数限制\"",
       "flavor": "你照着它刚刚那一招比划了一下——形似而神不足，但确实打中了。",
-      "describe": "模仿一名已解析敌人最近一次施放的技能（20% 效力）；50% 概率成功，失败或快照为空时改为造成 2 点精神伤害。；先读透再落笔。",
+      "describe": "模仿一名已解析敌人最近一次施放的技能：若其已被读技能（已读·技能），50% 效力；未读硬模仿仅 20% 效力且自身能量 -1（读错方向，投入反噬）。快照为空时改为 2 点精神伤害。；先读透再落笔。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -824,22 +830,53 @@
           "note": "先解析：读透目标的底牌，再谈数值"
         },
         {
-          "type": "mount_status",
-          "statusId": "mimic",
-          "duration": 15,
-          "params": {
-            "potency": 0.2
-          },
+          "op": "if",
           "condition": {
-            "kind": "chance",
-            "p": 0.5
+            "kind": "recorded_has",
+            "side": "target",
+            "statusId": "read",
+            "id": "d_skill"
           },
-          "fallback": {
-            "type": "damage",
-            "element": "mental",
-            "value": 2
-          },
-          "note": "R3 登记 / R4 单次抽样 / R5 添头维度（非伤害数值）"
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "mimic",
+              "duration": 15,
+              "params": {
+                "potency": 0.5
+              },
+              "fallback": {
+                "type": "damage",
+                "element": "mental",
+                "value": 2
+              },
+              "note": "读懂招式后模仿：50% 效力"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "mimic",
+              "duration": 15,
+              "params": {
+                "potency": 0.2
+              },
+              "fallback": {
+                "type": "damage",
+                "element": "mental",
+                "value": 2
+              },
+              "note": "未读硬模仿：仅 20% 效力"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": -1,
+              "mode": "delta",
+              "target": "self",
+              "note": "投入反噬：读错方向自噬能量 1（A1 2026-10-23，确定性替代原 50% chance）"
+            }
+          ]
         }
       ],
       "upgradeLadder": {
@@ -882,7 +919,7 @@
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：模仿线第一档，概率仅决定\"是否触发\"（R5 合规）。模仿轴 enabler+payload。⚠️ 依赖新增项 1/4/16。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
+      "conversionNotes": "翻译/语义：模仿线第一档，概率仅决定\"是否触发\"（R5 合规）。模仿轴 enabler+payload。⚠️ 依赖新增项 1/4/16。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。 ｜ 2026-10-23 A1 重构：chance 50% 退役（随机性治理登记册销账），改 recorded_has(d_skill) 确定性定档 + 未读自噬 1 能。",
       "art": {
         "subject": "a scholar mirroring an enemy's strike with a clumsy but true imitation",
         "elements": [
@@ -905,7 +942,7 @@
       "flagship": false,
       "lore": "序列7 守知者 —— \"武器精通、格斗大师、推理大师、仪式魔法大师\"",
       "flavor": "一旦被你算出破绽，它接下来的每一次呼吸都在往你的刀口上撞。",
-      "describe": "你造成伤害时，若目标带有易伤，该次伤害 ×1.2。",
+      "describe": "你造成伤害时，若目标已被读能量（已读·能量），该次伤害 ×1.2——你算出的破绽，每一刀都落在预算内。",
       "hook": [
         "on_deal_damage"
       ],
@@ -913,11 +950,10 @@
         {
           "op": "if",
           "condition": {
-            "kind": "has_status",
+            "kind": "recorded_has",
             "side": "target",
-            "id": "vulnerable",
-            "cmp": ">=",
-            "n": 1
+            "statusId": "read",
+            "id": "d_energy"
           },
           "then": [
             {
@@ -925,7 +961,7 @@
               "scope": "dealt",
               "mul": 1.2,
               "target": "self",
-              "note": "作用于本次 on_deal_damage 触发的那次伤害（F52 has_status 谓词；modify_damage scope:dealt 扩展原语）"
+              "note": "作用于本次 on_deal_damage 触发的那次伤害（2026-10-23 A1 重接：易伤乘区 → recorded_has(read, d_energy) 读维乘区）"
             }
           ],
           "else": []
@@ -935,7 +971,7 @@
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：先挂破绽再吃乘区，知识轴输出开关。",
+      "conversionNotes": "翻译/语义：先挂破绽再吃乘区，知识轴输出开关。 ｜ 2026-10-23 A1 重构：generic 重接读维——乘区门从 vulnerable 换成 read{d_energy}（测算/解析产），role generic→core。",
       "art": {
         "subject": "a scholar marking a foe's flaw while its every move lands on his predicted line",
         "elements": [
@@ -945,7 +981,7 @@
         ],
         "mood": "inevitable, cold, triumphant"
       },
-      "role": "generic"
+      "role": "core"
     },
     {
       "id": "skill_reader_s7_ritual_master",
@@ -958,7 +994,7 @@
       "flagship": false,
       "lore": "序列7 守知者 —— \"武器精通、格斗大师、推理大师、仪式魔法大师\"",
       "flavor": "这次的仪式足足画了七重阵纹——阵成之时，你在阵心，而灾祸落在它头上。",
-      "describe": "对一名敌人造成 4 点精神伤害，自身获得 4 点护盾（15tick）。；先读透再落笔。",
+      "describe": "对一名敌人造成 4 点精神伤害，自身获得 4 点护盾（15tick）；若目标已被读能量，自身能量 +1。；先读透再落笔。",
       "cost": {
         "energy": 4,
         "cooldown": 20,
@@ -996,6 +1032,26 @@
               "value": 4,
               "duration": 15,
               "target": "self"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "recorded_has",
+                "side": "target",
+                "statusId": "read",
+                "id": "d_energy"
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "仪式回馈：读懂能量空窗，仪式余裕回能 1（A1 2026-10-23）"
+                }
+              ],
+              "else": []
             }
           ]
         }
@@ -1138,7 +1194,7 @@
       "flagship": false,
       "lore": "序列5 秘术导师 —— \"可省略施法材料和步骤\"",
       "flavor": "那些繁琐的材料、冗长的咒文，你早就不需要了——你想，于是它发生。",
-      "describe": "战斗开始时获得「省略步骤」：你的本途径技能能量消耗 -1（最低 1），持续整场。；并获得「仪式专精」整场：精神伤害 ×1.2。；模仿习得：抄来的招式使起来更省力。",
+      "describe": "战斗开始时获得「省略步骤」：你的本途径技能能量消耗 -1（最低 1），持续整场。；并获得「仪式专精」整场：精神伤害 ×1.2。",
       "hook": [
         "on_battle_start"
       ],
@@ -1155,16 +1211,6 @@
           "duration": null,
           "target": "self",
           "note": "省略的是步骤，专精在其中（环节⑤ 2026-09-29 补产层段）"
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "costDelta": {
-            "energy": -1
-          },
-          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
@@ -1198,7 +1244,7 @@
       "flagship": false,
       "lore": "序列4 预言家 —— \"『预言』能力：看到未来最可能的几种可能性\"",
       "flavor": "你在无数条岔路里看见了最可能的那一条——同伴会先出手，而它会慢上半拍。",
-      "describe": "指定一名友军：其行动条 +25、获得「预知」（下次受击伤害 ×0.5，25tick）；敌方主目标行动条 -20。；若目标已解析，预知的压制，其行动条再 -10；若自身带天时预兆，天时共鸣，友军行动条额外 +10。；模仿习得：抄来的招式使起来更省力。",
+      "describe": "指定一名友军：其行动条 +25、获得「预知」（下次受击伤害 ×0.5，25tick）；敌方主目标行动条 -20，并读懂它的行动节奏（已读·节奏 25tick）。；若目标已解析，预知的压制，其行动条再 -10；若自身带天时预兆，天时共鸣，友军行动条额外 +10。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1249,6 +1295,16 @@
               "target": "secondary_target"
             },
             {
+              "type": "mount_status",
+              "statusId": "read",
+              "duration": 25,
+              "params": {
+                "d_tempo": 1
+              },
+              "note": "预言=读节奏：读懂敌方主目标的行动时机（A1 2026-10-23）",
+              "target": "secondary_target"
+            },
+            {
               "op": "if",
               "condition": {
                 "kind": "has_status",
@@ -1289,16 +1345,6 @@
               "else": []
             }
           ]
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "costDelta": {
-            "energy": -1
-          },
-          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
@@ -1325,7 +1371,7 @@
       "flagship": false,
       "lore": "序列4 预言家 —— \"『星界秘术』：利用星界力量创造秘术\"",
       "flavor": "你从星界那侧借来一点东西——它不属于这个世界，所以这个世界挡不住它。",
-      "describe": "全体敌人受到 3 点精神伤害，并失去 2 点能量（下限 0）。；先读透再落笔。",
+      "describe": "全体敌人受到 3 点精神伤害、失去 2 点能量（下限 0），能量回路全体被摸清（已读·能量 25tick）。；先读透再落笔。",
       "cost": {
         "energy": 4,
         "cooldown": 20,
@@ -1364,6 +1410,16 @@
               "mode": "delta",
               "target": "all_enemies",
               "note": "星界侵蚀施法燃料；下限截断为 0"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "read",
+              "duration": 25,
+              "params": {
+                "d_energy": 1
+              },
+              "note": "A1 读维（2026-10-23）：维度键并入 read 实例 slots（编队参数 §1.1b 合并语义）",
+              "target": "all_enemies"
             }
           ]
         }
@@ -1381,138 +1437,6 @@
           "drained glowing wisps"
         ],
         "mood": "cosmic, eerie, hungry"
-      },
-      "role": "core"
-    },
-    {
-      "id": "skill_reader_s5_mimic_arcana",
-      "name": "模仿·秘术导师",
-      "kind": "active",
-      "sequence": 5,
-      "sequenceName": "秘术导师",
-      "rarity": "rare",
-      "axis": "mimic",
-      "flagship": false,
-      "lore": "序列5 秘术导师 —— \"模仿效果达 60%\"",
-      "flavor": "你把它那一招学了个六成——力道差了些，但路数分毫不差。",
-      "describe": "必定成功：模仿一名已解析敌人最近一次施放的技能（60% 效力）；快照为空时改为造成 3 点精神伤害。；先读透再落笔。",
-      "cost": {
-        "energy": 3,
-        "cooldown": 15,
-        "castTime": 0
-      },
-      "reach": "none",
-      "target": {
-        "selectionMode": "manual",
-        "request": {
-          "mode": "unit",
-          "faction": "enemy",
-          "filter": {
-            "hasStatus": "observed"
-          },
-          "scope": "board",
-          "pickCount": 1
-        },
-        "fallbackSort": "atk_desc"
-      },
-      "effects": [
-        {
-          "type": "reveal",
-          "target": "target",
-          "scope": "to_source",
-          "note": "先解析：读透目标的底牌，再谈数值"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "mimic",
-          "duration": 15,
-          "params": {
-            "potency": 0.6
-          },
-          "fallback": {
-            "type": "damage",
-            "element": "mental",
-            "value": 3
-          },
-          "note": "序列5 起原著不再提\"有几率\"，本档起必定成功；mimic 定义见模仿·初解"
-        }
-      ],
-      "tentative": false,
-      "conversionNotes": "与模仿·初解是同一条技能线（B6 duplicatePolicy:upgrade，0.2→0.5→0.6→0.8→0.9→1.0，不额外占槽） ｜ 翻译/语义：模仿线第二档，必定成功。与初解同线 B6 升级。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
-      "art": {
-        "subject": "a scholar replicating an enemy's spell with a near-perfect ghost hand",
-        "elements": [
-          "ghostly copied casting",
-          "six-tenths sigil gauge",
-          "matched stances"
-        ],
-        "mood": "assured, mirroring, potent"
-      },
-      "role": "core"
-    },
-    {
-      "id": "skill_reader_s4_mimic_prophet",
-      "name": "模仿·预言家",
-      "kind": "active",
-      "sequence": 4,
-      "sequenceName": "预言家",
-      "rarity": "rare",
-      "axis": "mimic",
-      "flagship": false,
-      "lore": "序列4 预言家 —— \"模仿效果达 80%\"",
-      "flavor": "你不但学会了它的招式，还学会了它使出那一招时的想法——八成，已经足以乱真。",
-      "describe": "模仿一名已解析敌人最近一次施放的技能（80% 效力，附加效果自此档起完整保留）；快照为空时改为造成 4 点精神伤害。；先读透再落笔。",
-      "cost": {
-        "energy": 3,
-        "cooldown": 15,
-        "castTime": 0
-      },
-      "reach": "none",
-      "target": {
-        "selectionMode": "manual",
-        "request": {
-          "mode": "unit",
-          "faction": "enemy",
-          "filter": {
-            "hasStatus": "observed"
-          },
-          "scope": "board",
-          "pickCount": 1
-        },
-        "fallbackSort": "atk_desc"
-      },
-      "effects": [
-        {
-          "type": "reveal",
-          "target": "target",
-          "scope": "to_source",
-          "note": "先解析：读透目标的底牌，再谈数值"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "mimic",
-          "duration": 15,
-          "params": {
-            "potency": 0.8
-          },
-          "fallback": {
-            "type": "damage",
-            "element": "mental",
-            "value": 4
-          },
-          "note": "0.8 为效果保留门槛：附加效果（状态/驱散/资源修改）完整保留；mimic 定义见模仿·初解"
-        }
-      ],
-      "tentative": false,
-      "conversionNotes": "翻译/语义：0.8 为效果保留门槛（附加效果完整保留）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
-      "art": {
-        "subject": "a reader replaying a foe's technique while sharing its very thoughts",
-        "elements": [
-          "twin mirrored figures",
-          "shared thought glyphs",
-          "glowing echo weapon"
-        ],
-        "mood": "uncanny, fluent, dominant"
       },
       "role": "core"
     },
@@ -1574,7 +1498,7 @@
       "flagship": false,
       "lore": "序列4 预言家 —— 「预言：看到未来最可能的几种可能性」+ 星界语义",
       "flavor": "你展开了星界的秘域——未来在你眼里摊成一本读过的书：他们的下一步还没迈出去，你已经站在落点上等好了。",
-      "describe": "降临「星界秘域」3 回合：敌方每 tick 行动条 -2，己方伤害 ×1.1；「秘术 / 预知」标签卡效果 ×1.3。自身迷失值 +1。",
+      "describe": "降临「星界秘域」3 回合：敌方每 tick 行动条 -2，己方伤害 ×1.1；「秘术 / 预知」标签卡效果 ×1.3；展开时全体敌人节奏被读懂（已读·节奏 15tick）。自身迷失值 +1。",
       "cost": {
         "energy": 5,
         "cooldown": 35,
@@ -1607,6 +1531,16 @@
               "mode": "delta",
               "target": "self",
               "note": "界域操作租金"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "read",
+              "duration": 15,
+              "params": {
+                "d_tempo": 1
+              },
+              "note": "A1 读维（2026-10-23）：维度键并入 read 实例 slots（编队参数 §1.1b 合并语义）",
+              "target": "all_enemies"
             }
           ]
         }
@@ -1620,7 +1554,7 @@
         "预知"
       ],
       "tentative": false,
-      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-23 A1 重构：展开即全体敌人 d_tempo 15tick（读节奏产读件），role generic→core，axes 登记自 payoffs 挪 enablers。",
       "art": {
         "subject": "a reader opening a star-field domain where the future lies flat like an open book",
         "elements": [
@@ -1630,7 +1564,7 @@
         ],
         "mood": "cosmic, overwhelming, serene"
       },
-      "role": "generic"
+      "role": "core"
     },
     {
       "id": "skill_reader_s3_discern",
@@ -1643,7 +1577,7 @@
       "flagship": false,
       "lore": "序列3 洞悉者 —— \"『洞悉』：洞悉世界规则，敌人弱点暴露无遗\"",
       "flavor": "你看见的不再是一个敌人，而是一整套正在运转的规则——而这套规则，此刻到处都是裂缝。",
-      "describe": "全体敌人易伤 25tick、防御 -3（25tick）。；先把它的状态抄录下来，再谈动摇。",
+      "describe": "全体敌人易伤 25tick、防御 -3（25tick），招式配置全体被读懂（已读·技能 25tick）。；先把它的状态抄录下来，再谈动摇。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1684,6 +1618,16 @@
               "mode": "delta",
               "duration": 25,
               "target": "all_enemies"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "read",
+              "duration": 25,
+              "params": {
+                "d_skill": 1
+              },
+              "note": "A1 读维（2026-10-23）：维度键并入 read 实例 slots（编队参数 §1.1b 合并语义）",
+              "target": "all_enemies"
             }
           ]
         }
@@ -1712,7 +1656,7 @@
       "flagship": false,
       "lore": "序列3 洞悉者 —— \"掌握『规律』权柄 / 通过撬动规律解决问题\"",
       "flavor": "你没有去打破它的甲——你只是轻轻拨动了一下\"甲能挡住什么\"这条规则。",
-      "describe": "使一名敌人护甲 -5、全元素抗性 -20（20tick），期间你对其造成的伤害不结算护盾吸收。（自身带法则修订则延长至 25tick，规律改写加持）。；模仿习得：抄来的招式使起来更省力。",
+      "describe": "使一名敌人护甲 -5、全元素抗性 -20（20tick），期间你对其造成的伤害不结算护盾吸收。（自身带法则修订则延长至 25tick，规律改写加持）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1752,16 +1696,6 @@
               "duration": 20
             }
           ]
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "costDelta": {
-            "energy": -1
-          },
-          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
@@ -1778,72 +1712,6 @@
       "role": "bridge"
     },
     {
-      "id": "skill_reader_s2_mimic_cherub",
-      "name": "模仿·智天使",
-      "kind": "active",
-      "sequence": 2,
-      "sequenceName": "智天使",
-      "rarity": "epic",
-      "axis": "mimic",
-      "flagship": false,
-      "lore": "序列2 智天使 —— \"模仿效果达 90%\"",
-      "flavor": "九成。除了那一点点只属于它自己的东西，你把它整个搬了过来。",
-      "describe": "模仿一名已解析敌人最近一次施放的技能（90% 效力，状态持续不再打折）；快照为空时改为造成 5 点精神伤害。；先读透再落笔。",
-      "cost": {
-        "energy": 3,
-        "cooldown": 15,
-        "castTime": 0
-      },
-      "reach": "none",
-      "target": {
-        "selectionMode": "manual",
-        "request": {
-          "mode": "unit",
-          "faction": "enemy",
-          "filter": {
-            "hasStatus": "observed"
-          },
-          "scope": "board",
-          "pickCount": 1
-        },
-        "fallbackSort": "atk_desc"
-      },
-      "effects": [
-        {
-          "type": "reveal",
-          "target": "target",
-          "scope": "to_source",
-          "note": "先解析：读透目标的底牌，再谈数值"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "mimic",
-          "duration": 15,
-          "params": {
-            "potency": 0.9
-          },
-          "fallback": {
-            "type": "damage",
-            "element": "mental",
-            "value": 5
-          },
-          "note": "0.9 第二道门槛：状态 duration 不再打折；mimic 定义见模仿·初解"
-        }
-      ],
-      "tentative": false,
-      "conversionNotes": "翻译/语义：90%=第二道门槛（状态 duration 不再打折）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
-      "art": {
-        "subject": "a cherub-faced scholar copying a foe down to its shadow",
-        "elements": [
-          "near-perfect mirrored double",
-          "single missing spark",
-          "halo of scripts"
-        ],
-        "mood": "sacred, uncanny, complete"
-      },
-      "role": "core"
-    },
-    {
       "id": "skill_reader_s2_wisdom_authority",
       "name": "智慧权柄",
       "kind": "passive",
@@ -1854,7 +1722,7 @@
       "flagship": true,
       "lore": "序列2 智天使 —— \"『智慧』权柄：总能提前看清局势，做出最正确选择\"",
       "flavor": "你永远比战场快半步——因为你站在的那一步，本来就是最正确的那一步。",
-      "describe": "战斗开始时获得「智慧」：你的攻击与技能必定命中、伤害 ×1.15，持续整场；自身行动条速率 +8，持续整场。；并获得「预知」25tick（受击伤害 ×0.5，一次）。；模仿习得：抄来的招式使起来更省力。",
+      "describe": "战斗开始时获得「智慧」：你的攻击与技能必定命中、伤害 ×1.15，持续整场；自身行动条速率 +8，持续整场。；并获得「预知」25tick（受击伤害 ×0.5，一次）。",
       "hook": [
         "on_battle_start"
       ],
@@ -1885,16 +1753,6 @@
               "note": "「总能提前看清局势」；INV-S5 合规：改 gauge.rate 源属性；G5/G6 合规：on_battle_start 被动"
             }
           ]
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "costDelta": {
-            "energy": -1
-          },
-          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
@@ -1928,7 +1786,7 @@
       "flagship": false,
       "lore": "序列2 智天使 —— \"总能提前看清局势，做出最正确选择\"（把\"最正确选择\"施加于同伴）",
       "flavor": "你在他耳边说了一句话——于是他做出了这一整场里最正确的那次出手。",
-      "describe": "指定一名其他友军：行动条 +30，其下一次造成的伤害 ×1.4（25tick 内）。；模仿习得：抄来的招式使起来更省力。",
+      "describe": "指定一名其他友军：行动条 +30，其下一次造成的伤害 ×1.4（25tick 内）；若场上有敌人已被读（任一维度），行动条改为 +45——看懂了局势，推得才够狠。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1951,11 +1809,31 @@
           "op": "sequence",
           "steps": [
             {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 30,
-              "mode": "delta",
-              "note": "G5/G6 合规：推友军不自推"
+              "op": "if",
+              "condition": {
+                "kind": "field_status_count",
+                "id": "read",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 45,
+                  "mode": "delta",
+                  "note": "G5/G6 合规：推友军不自推 ｜ 2026-10-23 A1 重接：场上存在已读敌人（任一维度）→ 推条 30→45（读节奏兑现）"
+                }
+              ],
+              "else": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 30,
+                  "mode": "delta",
+                  "note": "G5/G6 合规：推友军不自推"
+                }
+              ]
             },
             {
               "type": "mount_status",
@@ -1963,20 +1841,10 @@
               "duration": 25
             }
           ]
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "costDelta": {
-            "energy": -1
-          },
-          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：智慧权柄对外版。G5/G6 合规。依赖新增项 4/14。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：foresight轴 ally+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
+      "conversionNotes": "翻译/语义：智慧权柄对外版。G5/G6 合规。依赖新增项 4/14。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：foresight轴 ally+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。 ｜ 2026-10-23 A1 重构：generic 重接读维——field_status_count(read)≥1 时推条 30→45（读节奏兑现档），role generic→core。",
       "art": {
         "subject": "a whispered word from a sage guiding an ally's strike onto the perfect line",
         "elements": [
@@ -1986,7 +1854,7 @@
         ],
         "mood": "decisive, trusted, bright"
       },
-      "role": "generic"
+      "role": "core"
     },
     {
       "id": "skill_reader_s3_law_authority",
@@ -1999,7 +1867,7 @@
       "flagship": false,
       "lore": "序列3 洞悉者 —— \"掌握『规律』权柄\"",
       "flavor": "你写在敌人身上的东西，就是规律——而规律，不会被轻易抹去。",
-      "describe": "战斗开始时获得「规律权柄」：你施加的减益类状态不可被驱散，持续整场。；模仿习得：抄来的招式使起来更省力。",
+      "describe": "战斗开始时获得「规律权柄」：你施加的减益类状态不可被驱散，持续整场。",
       "hook": [
         "on_battle_start"
       ],
@@ -2009,16 +1877,6 @@
           "statusId": "law_authority",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
-          },
-          "costDelta": {
-            "energy": -1
-          },
-          "note": "模仿习得：抄来的招式使起来更省力"
         }
       ],
       "tentative": false,
@@ -2161,7 +2019,7 @@
       "flagship": false,
       "lore": "序列1 全知之眼 —— \"模仿效果达 100%（不涉及权柄）\"",
       "flavor": "一模一样。除了那一丝只属于权柄的东西——而那东西，你本来也不打算要。",
-      "describe": "完美模仿一名已解析敌人最近一次施放的技能（100% 效力，权柄类效果不被复制）；快照为空时改为造成 6 点精神伤害。；若目标已解析，解析透彻，追加 2 点精神伤害。；先读透再落笔。",
+      "describe": "完美模仿一名已解析敌人最近一次施放的技能：若其已被读技能（已读·技能），100% 效力（权柄类不被复制）；未读硬模仿仅 60% 效力且自身能量 -2（读错方向，投入反噬）。快照为空时改为 6 点精神伤害。；若目标已解析，解析透彻，追加 2 点精神伤害。；先读透再落笔。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -2189,19 +2047,55 @@
           "note": "先解析：读透目标的底牌，再谈数值"
         },
         {
-          "type": "mount_status",
-          "statusId": "mimic",
-          "duration": 15,
-          "params": {
-            "potency": 1.0,
-            "skipAuthority": true
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "target",
+            "statusId": "read",
+            "id": "d_skill"
           },
-          "fallback": {
-            "type": "damage",
-            "element": "mental",
-            "value": 6
-          },
-          "note": "原著「不涉及权柄」落地：重放跳过 authority:true 标记条目（编目参数 §二，数据层标注）；mimic 定义见模仿·初解"
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "mimic",
+              "duration": 15,
+              "params": {
+                "potency": 1.0,
+                "skipAuthority": true
+              },
+              "fallback": {
+                "type": "damage",
+                "element": "mental",
+                "value": 6
+              },
+              "note": "读懂招式后完美模仿：100% 效力，权柄除外（重放跳过 authority:true 条目）"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "mimic",
+              "duration": 15,
+              "params": {
+                "potency": 0.6,
+                "skipAuthority": true
+              },
+              "fallback": {
+                "type": "damage",
+                "element": "mental",
+                "value": 6
+              },
+              "note": "未读硬模仿：仅 60% 效力"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": -2,
+              "mode": "delta",
+              "target": "self",
+              "note": "投入反噬：读错方向自噬能量 2（A1 2026-10-23）"
+            }
+          ]
         },
         {
           "op": "if",
@@ -2224,7 +2118,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：模仿顶点，100%。依赖新增项 1/4/16。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
+      "conversionNotes": "翻译/语义：模仿顶点，100%。依赖新增项 1/4/16。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：mimic轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。 ｜ 2026-10-23 A1 重构：100% 不再无条件，recorded_has(d_skill) 定档，未读降 60% + 自噬 2 能。",
       "art": {
         "subject": "a scholar producing a flawless double of a foe's ultimate technique",
         "elements": [
@@ -2278,67 +2172,6 @@
       }
     },
     {
-      "id": "skill_reader_s0_astral_stairs",
-      "name": "星界阶梯",
-      "kind": "active",
-      "sequence": 0,
-      "sequenceName": "白塔",
-      "rarity": "legendary",
-      "axis": "foresight",
-      "flagship": false,
-      "lore": "序列0 白塔 —— \"『星界阶梯』权柄\"",
-      "flavor": "你为同伴在星界开了一道阶梯——他踩上去，从刀口消失了；再落下时，已在安全的后方。",
-      "describe": "指定一名其他友军：其退至己方半场最后位，并获得 8 点护盾（20tick）。",
-      "cost": {
-        "energy": 4,
-        "cooldown": 30,
-        "castTime": 0
-      },
-      "reach": "none",
-      "target": {
-        "selectionMode": "manual",
-        "request": {
-          "mode": "unit",
-          "faction": "ally",
-          "excludeSelf": true,
-          "scope": "board",
-          "pickCount": 1
-        },
-        "fallbackSort": "hp_asc"
-      },
-      "effects": [
-        {
-          "op": "sequence",
-          "steps": [
-            {
-              "type": "move",
-              "op": "push_back",
-              "distance": 99,
-              "note": "G8 合规：push_back 锁定 from.faction，不越中线（C1 ✅）"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "shield",
-              "value": 8,
-              "duration": 20
-            }
-          ]
-        }
-      ],
-      "tentative": false,
-      "conversionNotes": "本稿全篇零 heal：原著阅读者途径无治疗能力，阶梯只负责离开、不负责治好（刻意设计） ｜ 翻译/语义：脱离当前位置=己方半场后撤+护盾。零 heal（原著无治疗）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：foresight轴 ally+board pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
-      "art": {
-        "subject": "a stairway of starlight carrying a wounded ally beyond the blades",
-        "elements": [
-          "spiraling star stairway",
-          "fading ally silhouette",
-          "shielding star veil"
-        ],
-        "mood": "rescuing, cosmic, tender"
-      },
-      "role": "generic"
-    },
-    {
       "id": "skill_reader_s0_omniscience",
       "name": "白塔·全知",
       "kind": "passive",
@@ -2349,7 +2182,7 @@
       "flagship": true,
       "lore": "序列0 白塔 —— \"『全知』权柄：对万事万物全知，可模仿任何能力（不含权柄象征）/ 部分『规律』『学习』『解析』权柄\"",
       "flavor": "在这座塔上，没有什么是你不知道的——所以也没有什么是你学不会的。",
-      "describe": "战斗开始时获得「白塔全知」：全体敌人视同已被解析，你每次造成伤害刷新被命中目标的解析快照，你对敌方伤害 ×1.15，持续整场。",
+      "describe": "战斗开始时获得「白塔全知」：全体敌人视同已被解析、三维（能量/技能/节奏）开战即已读，你每次造成伤害刷新被命中目标的解析快照，你对敌方伤害 ×1.15，持续整场。",
       "hook": [
         "on_battle_start"
       ],
@@ -2376,6 +2209,18 @@
           "statusId": "omniscience",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "read",
+          "duration": 25,
+          "params": {
+            "d_energy": 1,
+            "d_skill": 1,
+            "d_tempo": 1
+          },
+          "note": "全知 = 不用读：开战即全维已读（三维 25tick；持续刷新靠白塔全知状态的 on_deal_damage 触发器）",
+          "target": "all_enemies"
         }
       ],
       "tentative": false,
@@ -2388,6 +2233,416 @@
           "open book of the world"
         ],
         "mood": "omniscient, vast, tranquil"
+      },
+      "role": "core"
+    },
+    {
+      "id": "skill_reader_s7_energy_reading",
+      "name": "测算",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "守知者",
+      "rarity": "uncommon",
+      "axis": "analysis",
+      "flagship": false,
+      "lore": "序列7 守知者 —— \"守知：对能量流动与灵性虚实的精确把握\"",
+      "flavor": "它的呼吸乱了半拍——那不是疲惫，是能量见底的征兆。你记下了这个数。",
+      "describe": "测算一名敌人的能量虚实：挂载「已读·能量」25tick；若其当前能量 ≤3，追加 2 点精神伤害。；先读透再落笔。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 10,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "point"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "read",
+          "duration": 25,
+          "params": {
+            "d_energy": 1
+          },
+          "note": "A1 读维（2026-10-23）：维度键并入 read 实例 slots（编队参数 §1.1b 合并语义）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "resource_compare",
+            "side": "target",
+            "key": "energy",
+            "cmp": "<=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "能量空虚被坐实：追加 2 点精神伤害"
+            }
+          ],
+          "else": []
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "2026-10-23 A1 重构新增：d_energy 主动产读卡（读维三维之能量维）。",
+      "art": {
+        "subject": "a scholar gauging the ebb of an enemy's spiritual energy like reading a gauge",
+        "elements": [
+          "flickering energy dial",
+          "annotated ledger",
+          "waning aura"
+        ],
+        "mood": "measured, clinical, quietly triumphant"
+      },
+      "role": "core"
+    },
+    {
+      "id": "skill_reader_s6_dissect_moves",
+      "name": "拆招",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "博学者",
+      "rarity": "uncommon",
+      "axis": "analysis",
+      "flagship": false,
+      "lore": "序列6 博学者 —— \"『模仿』的前置：先把对方的招式拆开看懂\"",
+      "flavor": "起手、运力、收势——同一招看三遍，它就再也骗不到你了。",
+      "describe": "拆解一名敌人的招式配置：挂载「已读·技能」25tick、解析 1 层（30tick），并快照其最近施放。；先读透再落笔。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 10,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "point"
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
+        {
+          "type": "snapshot",
+          "fields": [
+            "hp",
+            "pools"
+          ],
+          "target": "target",
+          "note": "抄录目标当前状态"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "read",
+          "duration": 25,
+          "params": {
+            "d_skill": 1
+          },
+          "note": "A1 读维（2026-10-23）：维度键并入 read 实例 slots（编队参数 §1.1b 合并语义）"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "observed",
+          "stacks": 1,
+          "stackMode": "add",
+          "duration": 30,
+          "note": "拆招兼解析：observed 1 层"
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "2026-10-23 A1 重构新增：d_skill 主动产读卡（读维三维之技能维，mimic 轴前置）。",
+      "art": {
+        "subject": "a scholar dissecting an enemy's technique into annotated motion diagrams",
+        "elements": [
+          "exploded motion diagram",
+          "marginal notes",
+          "pinned blade trajectory"
+        ],
+        "mood": "analytical, deconstructive, absorbed"
+      },
+      "role": "core"
+    },
+    {
+      "id": "skill_reader_s5_read_tempo",
+      "name": "读势",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "秘术导师",
+      "rarity": "rare",
+      "axis": "foresight",
+      "flagship": false,
+      "lore": "序列5 秘术导师 —— \"星界视角下，行动的节奏如钟摆般可读\"",
+      "flavor": "它快要动了——你数着它灵性鼓点的间隙，像数着一座将响的钟。",
+      "describe": "读一名敌人的行动节奏：挂载「已读·节奏」25tick；若其行动条 ≥70，击退 20。；读懂节奏的人，先动。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 15,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "point"
+        },
+        "fallbackSort": "gauge_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "read",
+          "duration": 25,
+          "params": {
+            "d_tempo": 1
+          },
+          "note": "A1 读维（2026-10-23）：维度键并入 read 实例 slots（编队参数 §1.1b 合并语义）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "gauge_above",
+            "side": "target",
+            "n": 70
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -20,
+              "mode": "delta",
+              "note": "读懂它将动：先发击退 20"
+            }
+          ],
+          "else": []
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "2026-10-23 A1 重构新增：d_tempo 主动产读卡（读维三维之节奏维；冷却谓词候选延期，用 gauge_above 落地）。",
+      "art": {
+        "subject": "a mystic reading an enemy's action tempo as a swinging pendulum of light",
+        "elements": [
+          "luminous pendulum",
+          "slowed motion blur",
+          "hourglass shards"
+        ],
+        "mood": "patient, anticipatory, precise"
+      },
+      "role": "core"
+    },
+    {
+      "id": "skill_reader_s3_arcana_disclosure",
+      "name": "秘术·洞烛",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "洞悉者",
+      "rarity": "epic",
+      "axis": "arcana",
+      "flagship": false,
+      "lore": "序列3 洞悉者 —— \"仪式不再盲放：看懂能量空窗，一击即溃\"",
+      "flavor": "仪式最古老的一条训诫：不要对满溢的杯子灌注。等它空——或者，先确认它空。",
+      "describe": "仪式放量：若目标已被读能量（已读·能量），造成 6 点精神伤害并自身能量 +2；未读硬灌仅 3 点精神伤害且自身能量 -1（读错方向，投入反噬）。；先读透再落笔。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "whole_lane",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "target",
+            "statusId": "read",
+            "id": "d_energy"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 6,
+              "note": "仪式全效：读懂能量空窗放量"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "self",
+              "note": "仪式余裕回能 2"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 3,
+              "note": "未读硬灌：降档"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": -1,
+              "mode": "delta",
+              "target": "self",
+              "note": "投入反噬：读错方向自噬能量 1（A1 2026-10-23）"
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "2026-10-23 A1 重构新增：arcana 轴读 d_energy 兑现 payoff（读对全效 / 未读降档+自噬）。",
+      "art": {
+        "subject": "a ritualist pouring a precise surge of mental fire into an enemy's energy void",
+        "elements": [
+          "focused ritual bolt",
+          "empty vessel imagery",
+          "ignited sigil circle"
+        ],
+        "mood": "decisive, ritualistic, severe"
+      },
+      "role": "core"
+    },
+    {
+      "id": "skill_reader_s2_mimic_deconstruct",
+      "name": "模仿·解构",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "智天使",
+      "rarity": "epic",
+      "axis": "mimic",
+      "flagship": false,
+      "lore": "序列2 智天使 —— \"解构先于复刻：看懂的招式才是自己的\"",
+      "flavor": "你把它最得意的那一招拆成了三段笔记。合上笔记时，那招已经是你的了。",
+      "describe": "解构复刻一名已解析敌人：若其已被读技能（已读·技能），以 90% 效力模仿其最近施放；未读硬模仿效力仅 30% 且自身能量 -2（读错方向，投入反噬）。快照为空时改为 5 点精神伤害。；先读透再落笔。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 15,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "filter": {
+            "hasStatus": "observed"
+          },
+          "scope": "board",
+          "pickCount": 1
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "reveal",
+          "target": "target",
+          "scope": "to_source",
+          "note": "先解析：读透目标的底牌，再谈数值"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "target",
+            "statusId": "read",
+            "id": "d_skill"
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "mimic",
+              "duration": 15,
+              "params": {
+                "potency": 0.9
+              },
+              "fallback": {
+                "type": "damage",
+                "element": "mental",
+                "value": 5
+              },
+              "note": "读懂招式后解构复刻：90% 效力"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "mimic",
+              "duration": 15,
+              "params": {
+                "potency": 0.3
+              },
+              "fallback": {
+                "type": "damage",
+                "element": "mental",
+                "value": 5
+              },
+              "note": "未读硬模仿：仅 30% 效力"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": -2,
+              "mode": "delta",
+              "target": "self",
+              "note": "投入反噬：读错方向自噬能量 2（A1 2026-10-23）"
+            }
+          ]
+        }
+      ],
+      "tentative": false,
+      "conversionNotes": "2026-10-23 A1 重构新增：mimic 轴高档兑现——固定 potency 梯度（导师/预言家/智天使）退役后，复刻完成度由 recorded_has(d_skill) 定档。",
+      "art": {
+        "subject": "a scholar unfolding an enemy's signature technique as three pages of notes, then closing them into his own hand",
+        "elements": [
+          "three floating annotated pages",
+          "reassembled spectral technique",
+          "ink and light"
+        ],
+        "mood": "masterful, deconstructive, assured"
       },
       "role": "core"
     }
@@ -2451,7 +2706,7 @@
       ]
     }
   ],
-  "designNote": "> **全知/规律/解析 主题贯穿**：知识轴承载\"解析/全知\"的信息面，规律轴承载\"规律权柄\"的改写面，预言轴承载\"预知/最优解\"的节奏面——三者共同构成阅读者的**全知**内核；模仿轴是其招牌的\"以彼之道\"。\n> **混沌海系签名维度 = 放牧(Grazing)**（见下方维度说明）：阅读者本身无 `放牧` 轴，但经 combo 卡（【解析·跨系共鸣】）读取友方秘祈人的 `放牧` 槽，实现\"解析被放牧灵魂 → 模仿其能力\"的跨系联动。\n> 阅读者作为混沌海途径，在 §三 通过 `crossPathway:true` 读取 `放牧`/`寄生`/`提线木偶` 等枢纽状态，形成跨系 combo（非复刻）。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「先解析后放大」句式换形 26 张通用骨架卡——先解析后放大——输出之前必先读透目标（揭示底牌 / 抄录当前状态），增益则写成「模仿习得」的折扣：抄来的招式使起来更省力。**协作面**：折扣与解析结论可被队友沿用。",
+  "designNote": "> **全知/规律/解析 主题贯穿**：知识轴承载\"解析/全知\"的信息面，规律轴承载\"规律权柄\"的改写面，预言轴承载\"预知/最优解\"的节奏面——三者共同构成阅读者的**全知**内核；模仿轴是其招牌的\"以彼之道\"。\n> **混沌海系签名维度 = 放牧(Grazing)**（见下方维度说明）：阅读者本身无 `放牧` 轴，但经 combo 卡（【解析·跨系共鸣】）读取友方秘祈人的 `放牧` 槽，实现\"解析被放牧灵魂 → 模仿其能力\"的跨系联动。\n> 阅读者作为混沌海途径，在 §三 通过 `crossPathway:true` 读取 `放牧`/`寄生`/`提线木偶` 等枢纽状态，形成跨系 combo（非复刻）。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「先解析后放大」句式换形 26 张通用骨架卡——先解析后放大——输出之前必先读透目标（揭示底牌 / 抄录当前状态），增益则写成「模仿习得」的折扣：抄来的招式使起来更省力。**协作面**：折扣与解析结论可被队友沿用。\n\n> **A1 骨架重构（2026-10-23，环节⑥拍板）**：命题由「先解析后放大」整条迁入 A1「读招定策」——读对手能量/技能配置/行动节奏三维（read 状态 params 键 d_energy/d_skill/d_tempo），信息本身是前置；读对的维度让模仿与仪式放大，读错方向投入反噬（降档+自噬能量）。「模仿习得」折扣段（下一式-1费）全撤，集中由省略步骤/streamlined_cast 承载；echo 固定梯度（模仿·秘术导师/预言家/智天使）退役，potency 改由 recorded_has(d_skill) 确定性定档。本模型为进度条回合制，「底牌」=敌方技能配置与最近施放（snapshot/lastSkillRef），节奏=行动条（gauge 谓词）。",
   "sampleBuilds": [
     {
       "name": "A 守知学者 🧠",
@@ -2462,12 +2717,12 @@
         "秘术·自创"
       ],
       "passives": [
-        "武器精通",
+        "过目不忘",
         "仪式魔法专家",
         "省略步骤",
         "理解力"
       ],
-      "playstyle": "前排学者：武器精通抬攻、仪式专家×1.2、省略步骤连发"
+      "playstyle": "前排学者：仪式专家×1.2、省略步骤连发；仪式系读能（测算/星界秘术）后放大"
     },
     {
       "name": "B 解析破绽 🧠",
@@ -2489,9 +2744,9 @@
       "name": "C 模仿 🦜",
       "actives": [
         "模仿·初解",
-        "星界秘术",
+        "模仿·解构",
         "知识储备",
-        "白塔·创造"
+        "星界秘术"
       ],
       "passives": [
         "观察",
@@ -2499,7 +2754,7 @@
         "智慧权柄",
         "规律权柄"
       ],
-      "playstyle": "观察积累快照，模仿还对手大招；白塔·创造补站场；重复模仿升级 20%→100%"
+      "playstyle": "观察/拆招读招，读懂后复刻高档（未读自噬）；星界秘术压能配洞烛放量"
     },
     {
       "name": "D 全知预言 ⏳",

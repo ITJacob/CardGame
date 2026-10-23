@@ -16,6 +16,8 @@ export interface ConditionUnit {
   readonly unitType?: string | null
   readonly summonerId?: string | null
   statusStacks(defId: string): number
+  /** 状态实例 grant.params 是否含指定键（recorded_has；H33 slots 存在性读法） */
+  hasStatusParam(defId: string, key: string): boolean
   /** 是否持有装备槽实例（has_equipped）；slot 缺省 = 任意装备槽 */
   hasEquipped(slot?: string): boolean
   stat(key: string): number
@@ -95,6 +97,11 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
       return (cond.phases ?? []).includes(ctx.phase)
     case 'caster_status_exists':
       return ctx.caster != null && ctx.caster.statusStacks(prefixOf(cond)) > 0
+    case 'recorded_has': {
+      const subject = cond.side === 'self' ? ctx.caster : target
+      // 本谓词 id 是数据槽键、statusId 才是状态——不能用 prefixOf（它优先取 id）
+      return subject != null && subject.hasStatusParam(String(cond.statusId ?? ''), String(cond.id ?? ''))
+    }
     case 'has_category': {
       const cats = cond.categories ?? (cond.category ? [cond.category] : [])
       const subject = cond.side === 'self' ? ctx.caster : target

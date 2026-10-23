@@ -87,22 +87,27 @@ def load_identity_dims():
 
 
 def _anchor_ok(spec, status_ids):
-    """锚点可解析：kind ∈ 14 枚举 + id 存在性（能查的查）。"""
+    """锚点可解析：kind ∈ 14 枚举 + id 存在性（能查的查）。
+    锚点格允许「主锚点 + status:x + …」（2026-10-23：副锚点=共享作用面，逐段校验）。"""
     if ":" not in (spec or ""):
         return False, "锚点缺 kind:id"
-    kind, _, aid = spec.partition(":")
-    if kind not in ANCHOR_KINDS:
-        return False, "锚点 kind '%s' 不在 14 枚举" % kind
-    if kind == "status" and aid not in status_ids:
-        return False, "锚点状态 '%s' 无 statusDef" % aid
-    if kind == "channel" and aid not in score.CHANNELS:
-        return False, "锚点通道 '%s' 不在全局通道表" % aid
-    if kind == "resource" and aid not in validate.RESOURCES:
-        return False, "锚点资源 '%s' 不在资源枚举" % aid
-    if kind == "element" and aid not in validate.ELEMENTS:
-        return False, "锚点元素 '%s' 不在元素枚举" % aid
-    if kind == "primitive" and aid not in validate.PRIMS:
-        return False, "锚点原语 '%s' 不在原语枚举" % aid
+    parts = [p.strip() for p in spec.split("+") if p.strip()]
+    for part in parts:
+        if ":" not in part:
+            return False, "锚点段缺 kind:id"
+        kind, _, aid = part.partition(":")
+        if kind not in ANCHOR_KINDS:
+            return False, "锚点 kind '%s' 不在 14 枚举" % kind
+        if kind == "status" and aid not in status_ids:
+            return False, "锚点状态 '%s' 无 statusDef" % aid
+        if kind == "channel" and aid not in score.CHANNELS:
+            return False, "锚点通道 '%s' 不在全局通道表" % aid
+        if kind == "resource" and aid not in validate.RESOURCES:
+            return False, "锚点资源 '%s' 不在资源枚举" % aid
+        if kind == "element" and aid not in validate.ELEMENTS:
+            return False, "锚点元素 '%s' 不在元素枚举" % aid
+        if kind == "primitive" and aid not in validate.PRIMS:
+            return False, "锚点原语 '%s' 不在原语枚举" % aid
     return True, ""
 
 
@@ -446,8 +451,9 @@ def reconcile(pid, bp, parsed, pathways, status_by_id, def_index, sig_ctx=None,
         ax = ax if isinstance(ax, dict) else {}
         actual = ax.get("anchor") or ({"kind": "status", "id": ax.get("statusId")} if ax.get("statusId") else None)
         declared = None
-        if ":" in spec:
-            kind, _, aid = spec.partition(":")
+        primary = spec.split("+")[0].strip()
+        if ":" in primary:
+            kind, _, aid = primary.partition(":")
             declared = {"kind": kind, "id": aid, "raw": spec}
             tot += 1
             if actual and actual.get("kind") == kind and actual.get("id") == aid:
@@ -509,6 +515,13 @@ def reconcile(pid, bp, parsed, pathways, status_by_id, def_index, sig_ctx=None,
             axis_cards = [c for c in cards if c.get("axis") == aid]
             axis_facets[aid] = score.axis_mechanism_facets(axis_cards, anchor, status_by_id, def_index)
         hit, miss, rows = 0, [], []
+        # 读轴副锚点面（蓝图锚点格「主 + status:x…」）：status 行钩子读副锚点也算兑现
+        xa_extra = {}
+        for ar in parsed["axes_rows"]:
+            spec = ar.get("锚点(kind:id)") or ""
+            xa_extra[ar.get("轴")] = {p.split(":", 1)[1].strip()
+                                      for p in (s.strip() for s in spec.split("+"))
+                                      if p.startswith("status:") and ":" in p}
         for r in xa:
             slot_text = r.get("卡位") or ""
             refs = _card_refs(slot_text, card_by_name)
@@ -518,8 +531,9 @@ def reconcile(pid, bp, parsed, pathways, status_by_id, def_index, sig_ctx=None,
                 tgt_ax = axes_def.get(r.get("读轴"))
                 tgt_ax = tgt_ax if isinstance(tgt_ax, dict) else {}
                 tgt_sid = tgt_ax.get("statusId") or (tgt_ax.get("anchor") or {}).get("id")
-                ok = bool(tgt_sid) and any(
-                    ref.get("id") and score.card_refs_status(card_by_name[ref["name"]], tgt_sid)
+                tgt_sids = ({tgt_sid} if tgt_sid else set()) | xa_extra.get(r.get("读轴"), set())
+                ok = bool(tgt_sids) and any(
+                    ref.get("id") and any(score.card_refs_status(card_by_name[ref["name"]], s) for s in tgt_sids)
                     for ref in refs)
                 if not ok:
                     reason = "读轴锚点状态缺失" if not tgt_sid else "卡位未引用读轴锚点状态"
