@@ -206,7 +206,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 `meter_compare`（2026-10-23 增）：`key`（`secrecy` / `order` / `fate_value` / `luminance`）+ `cmp` + `n`——战场量表与阈值比较，用于「共享门槛」类玩法（窥秘人 A3 星象共谋：先越过隐秘值门槛者改写规则槽）。语义权威见 `ddd/params/共享内核参数.md` §三。
 
-`has_equipped`（2026-10-19 增，2026-10-23 改）：`side` + 可选 `slot`（当前仅 `weapon`）；按单位的 `WeaponInstance` 判定是否持有武器，**不点名具体武器**——任何来源的武器自动纳入，避免逐武器 any_of 清单。
+`has_equipped`（2026-10-19 增，2026-10-23 改）：`side` + 可选 `slot`（当前仅 `weapon`）/ `id` / `tag`；按单位的 `WeaponInstance` 判定是否持有武器。缺省**不点名具体武器**——任何来源的武器自动纳入；需要精确排除时用 `id`（武器 defId，即 weapon_is 语义）或 `tag`（WeaponDef.tags，即 weapon_tag 语义，2026-10-23 P2 扩参）。
 
 `recorded_has`（2026-10-23 增）：`side` + `statusId` + `id`——指定方持有的 `statusId` 状态实例的 slots/params 中含键 `id` 即成立（H33 slots 的存在性读法；阅读者「已读」三维 d_energy/d_skill/d_tempo 的兑现门）。语义权威见 `ddd/params/共享内核参数.md` §三。
 

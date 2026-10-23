@@ -394,7 +394,11 @@
         ],
         "mood": "plain, dependable"
       },
-      "conversionNotes": "2026-10-23 武器牌化：由 weapon_standard_blade 状态迁入；兵械通晓 initialEquip 引用。"
+      "conversionNotes": "2026-10-23 武器牌化：由 weapon_standard_blade 状态迁入；兵械通晓 initialEquip 引用。",
+      "tags": [
+        "sword",
+        "blade"
+      ]
     },
     {
       "id": "skill_warrior_s8_iron_body",
@@ -1079,7 +1083,11 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "sword",
+        "holy"
+      ]
     },
     {
       "id": "skill_warrior_s6_dawn_armor",
@@ -2543,7 +2551,11 @@
             "note": "克邪：对亡灵/恶魔/灵体伤害 +2"
           }
         }
-      }
+      },
+      "tags": [
+        "sword",
+        "rapier"
+      ]
     },
     {
       "id": "skill_warrior_s2_cage",
@@ -2898,7 +2910,11 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "sword",
+        "greatsword"
+      ]
     },
     {
       "id": "skill_warrior_s2_waning_dusk",
@@ -3780,6 +3796,84 @@
         }
       ],
       "conversionNotes": "｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=heal） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M1 续劲。 ｜ 签名补批（2026-10-16 第二批）：识破/死亡簿·衰败。 ｜ 2026-10-18 收敛：击杀事件的识破目标已死亡、无攻击语境，移除 reveal。"
+    },
+    {
+      "id": "skill_warrior_s6_whetstone",
+      "name": "磨刃",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "黎明骑士",
+      "rarity": "uncommon",
+      "role": "tech",
+      "axis": "martial",
+      "flagship": false,
+      "lore": "序列6 —— \"『磨刃』：剑要磨，人才快。\"",
+      "flavor": "你在开战前磨了磨剑刃。刃口上那层薄薄的光，就是这一场的底气。",
+      "describe": "若装备剑类武器（tag: sword）：武器攻击 +2；否则徒手磨砺，自身攻击 +1（10tick）。代价：自身行动条 -5。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 15,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "mode": "unit",
+          "faction": "self",
+          "scope": "point",
+          "pickCount": 1
+        }
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_equipped",
+            "slot": "weapon",
+            "tag": "sword"
+          },
+          "then": [
+            {
+              "type": "modify_weapon",
+              "target": "self",
+              "attackDelta": 2,
+              "note": "磨刃：剑类武器攻击 +2"
+            }
+          ],
+          "else": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": 10,
+              "target": "self",
+              "note": "徒手磨砺：攻击 +1（10tick）"
+            }
+          ],
+          "note": "weapon_tag 谓词：tag=sword"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -5,
+          "mode": "delta",
+          "target": "self",
+          "note": "磨刃的代价：自身行动条 -5"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 武器 P2：首张 weapon_tag 谓词卡——has_equipped 扩 tag 参数后可按武器类别强化。",
+      "art": {
+        "subject": "a blade being honed on a whetstone before battle",
+        "elements": [
+          "whetstone",
+          "thin edge light",
+          "steady hand"
+        ],
+        "mood": "prepared"
+      }
     }
   ],
   "domainDefs": [

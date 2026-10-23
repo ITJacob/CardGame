@@ -143,8 +143,13 @@ export class CombatUnit implements Unit {
   hasStatusParam(defId: string, key: string): boolean {
     return this.statuses.byDef(defId).some((i) => i.grant.params != null && key in i.grant.params)
   }
-  hasEquipped(slot?: string): boolean {
-    return Boolean(this.weapon) && (!slot || this.weapon!.slot === slot)
+  hasEquipped(slot?: string, defId?: string, tag?: string): boolean {
+    const w = this.weapon
+    if (!w) return false
+    if (slot && w.slot !== slot) return false
+    if (defId && w.defId !== defId) return false
+    if (tag && !(w.tags ?? []).includes(tag)) return false
+    return true
   }
   /** 装备武器：先销毁旧的，再写攻击加值 provenance（sourceId = WeaponInstance） */
   equipWeapon(def: WeaponDef, instanceId: string): WeaponInstance {
@@ -155,6 +160,7 @@ export class CombatUnit implements Unit {
       slot: 'weapon',
       attack: def.attack,
       durability: def.durability,
+      tags: def.tags,
     }
     this.weapon = inst
     this.provenance.apply('attack', def.attack, instanceId)

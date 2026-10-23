@@ -223,6 +223,18 @@ describe('has_equipped 条件', () => {
     expect(evaluateCondition({ kind: 'has_equipped', side: 'self' }, null, ctx)).toBe(true)
   })
 
+  it('id / tag 精确过滤（weapon_is / weapon_tag）', () => {
+    const u = makeUnit('u', 'A', {}, [PROBE_BUFF])
+    const ctx = condCtx(u)
+    u.equipWeapon({ id: 'probe_blade', slot: 'weapon', attack: 1, durability: 2, tags: ['sword', 'blade'] }, 'w1')
+    expect(evaluateCondition({ kind: 'has_equipped', side: 'self', id: 'probe_blade' }, null, ctx)).toBe(true)
+    expect(evaluateCondition({ kind: 'has_equipped', side: 'self', id: 'probe_axe' }, null, ctx)).toBe(false)
+    expect(evaluateCondition({ kind: 'has_equipped', side: 'self', tag: 'sword' }, null, ctx)).toBe(true)
+    expect(evaluateCondition({ kind: 'has_equipped', side: 'self', tag: 'holy' }, null, ctx)).toBe(false)
+    expect(evaluateCondition({ kind: 'has_equipped', side: 'self', slot: 'weapon', tag: 'blade' }, null, ctx)).toBe(true)
+    expect(evaluateCondition({ kind: 'has_equipped', side: 'self', slot: 'armor' }, null, ctx)).toBe(false)
+  })
+
   it('普通状态不算已装备', () => {
     const u = makeUnit('u', 'A', {}, [PROBE_BUFF])
     u.statuses.mount('probe_buff', { sourceId: 's1' })

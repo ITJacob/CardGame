@@ -158,6 +158,8 @@ export interface WeaponInstance {
   slot: 'weapon'
   attack: number
   durability: number
+  /** 武器标签（WeaponDef.tags 复制；weapon_tag 谓词用） */
+  tags?: readonly string[]
 }
 
 /** 状态容器：只管挂载/叠加/到期/卸载的数据面，不触发副作用（副作用由效果层编排） */

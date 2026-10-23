@@ -18,8 +18,8 @@ export interface ConditionUnit {
   statusStacks(defId: string): number
   /** 状态实例 grant.params 是否含指定键（recorded_has；H33 slots 存在性读法） */
   hasStatusParam(defId: string, key: string): boolean
-  /** 是否持有装备槽实例（has_equipped）；slot 缺省 = 任意装备槽 */
-  hasEquipped(slot?: string): boolean
+  /** 是否持有装备槽实例（has_equipped）；slot 缺省 = 任意装备槽；id/tag 可选精确/标签过滤（weapon_is / weapon_tag） */
+  hasEquipped(slot?: string, id?: string, tag?: string): boolean
   stat(key: string): number
 }
 
@@ -70,7 +70,10 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
     }
     case 'has_equipped': {
       const subject = cond.side === 'self' ? ctx.caster : target
-      return subject != null && subject.hasEquipped(typeof cond.slot === 'string' ? cond.slot : undefined)
+      return subject != null && subject.hasEquipped(
+        typeof cond.slot === 'string' ? cond.slot : undefined,
+        typeof cond.id === 'string' ? cond.id : undefined,
+        typeof cond.tag === 'string' ? cond.tag : undefined)
     }
     case 'has_status':
     case 'target_has_tag':
