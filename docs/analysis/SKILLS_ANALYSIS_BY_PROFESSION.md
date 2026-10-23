@@ -1,6 +1,6 @@
 # 技能池设计分析报告（职业维度 · 效果原语专项）
 
-> 数据来源：`docs/json/*.skills.json`（22 份途径技能池，共 **833 张卡**），由 `docs/tools/build_profession_analysis.py` 递归遍历全部效果节点生成。
+> 数据来源：`docs/json/*.skills.json`（22 份途径技能池，共 **835 张卡**），由 `docs/tools/build_profession_analysis.py` 递归遍历全部效果节点生成。
 > 对照基准：`docs/meta/GENERATION_BRIEF.md` v0.3、`docs/ddd/params/*`。
 > 生成日期：2026-10-23
 
@@ -25,12 +25,12 @@
 | 秘祈人 supplicant | 33 | 137 | 137 | 52 |
 | 窥秘人 pryer | 38 | 116 | 116 | 39 |
 | 罪犯 criminal | 40 | 189 | 189 | 55 |
-| 耕种者 planter | 34 | 100 | 100 | 27 |
+| 耕种者 planter | 36 | 137 | 137 | 37 |
 | 药师 apothecary | 40 | 102 | 102 | 30 |
 | 观众 spectator | 36 | 72 | 72 | 26 |
 | 通识者 savant | 36 | 100 | 100 | 28 |
 | 阅读者 reader | 34 | 105 | 105 | 28 |
-| **全库** | **833** | **2518** | **2518** | **833** |
+| **全库** | **835** | **2555** | **2555** | **843** |
 
 > 口径：一张卡含多层嵌套效果（卡面 `effects`、状态触发器、区域/界域定义等），故「效果节点总数」≥ 卡数。原语=以 `type` 表达的 19 类 leaf 效果；算子=以 `op` 表达的 9 类控制流/改写节点（`sequence/if/repeat/target_override/push_back/overlay/pull_forward/swap_ally/insert_tail_cross_lane`）。算子节点内部包裹的原语已计入原语统计，二者存在少量重叠（如 `move`+`push_back`）。
 
@@ -57,28 +57,28 @@
 | 秘祈人 | 34 | 13 | 14 | 34 | 2 | 5 | 5 | 5 | 1 | 23 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 137 |
 | 窥秘人 | 42 | 26 | 11 | 20 | 8 | 1 | 0 | 5 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 116 |
 | 罪犯 | 55 | 34 | 12 | 46 | 0 | 1 | 2 | 37 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 189 |
-| 耕种者 | 31 | 13 | 6 | 3 | 5 | 29 | 8 | 2 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 100 |
+| 耕种者 | 37 | 15 | 21 | 12 | 6 | 29 | 12 | 2 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 137 |
 | 药师 | 36 | 10 | 15 | 6 | 2 | 5 | 5 | 2 | 3 | 0 | 0 | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 102 |
 | 观众 | 39 | 14 | 6 | 4 | 2 | 2 | 3 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 72 |
 | 通识者 | 25 | 9 | 21 | 14 | 3 | 20 | 5 | 0 | 2 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 100 |
 | 阅读者 | 44 | 23 | 6 | 19 | 2 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 105 |
-| **全库** | 845 | 448 | 242 | 340 | 84 | 102 | 64 | 113 | 32 | 46 | 3 | 56 | 12 | 12 | 37 | 7 | 5 | 31 | 10 | 23 | 6 | **2518** |
+| **全库** | 851 | 450 | 257 | 349 | 85 | 102 | 68 | 113 | 32 | 46 | 3 | 56 | 12 | 12 | 37 | 7 | 5 | 31 | 10 | 23 | 6 | **2555** |
 
 ### 2.1 全库原语用量排行（含占比）
 
 | 原语 | 用量 | 占比 |
 |---|---:|---:|
-| `mount_status` | 845 | 33.6% |
-| `damage` | 448 | 17.8% |
-| `modify_resource` | 340 | 13.5% |
-| `modify_stat` | 242 | 9.6% |
-| `move` | 113 | 4.5% |
-| `spawn` | 102 | 4.1% |
-| `dispel` | 84 | 3.3% |
-| `heal` | 64 | 2.5% |
+| `mount_status` | 851 | 33.3% |
+| `damage` | 450 | 17.6% |
+| `modify_resource` | 349 | 13.7% |
+| `modify_stat` | 257 | 10.1% |
+| `move` | 113 | 4.4% |
+| `spawn` | 102 | 4.0% |
+| `dispel` | 85 | 3.3% |
+| `heal` | 68 | 2.7% |
 | `transfer_status` | 56 | 2.2% |
 | `drain` | 46 | 1.8% |
-| `restore_snapshot` | 37 | 1.5% |
+| `restore_snapshot` | 37 | 1.4% |
 | `domain` | 32 | 1.3% |
 | `translocate` | 31 | 1.2% |
 | `set_luminance` | 23 | 0.9% |
@@ -113,12 +113,12 @@
 | 秘祈人 | 24 | 21 | 1 | 0 | 3 | 1 | 1 | 1 | 0 | 52 |
 | 窥秘人 | 9 | 23 | 1 | 0 | 2 | 1 | 2 | 0 | 1 | 39 |
 | 罪犯 | 12 | 20 | 0 | 0 | 1 | 1 | 21 | 0 | 0 | 55 |
-| 耕种者 | 11 | 13 | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 27 |
+| 耕种者 | 11 | 23 | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 37 |
 | 药师 | 13 | 12 | 0 | 0 | 1 | 3 | 0 | 1 | 0 | 30 |
 | 观众 | 14 | 10 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 26 |
 | 通识者 | 14 | 11 | 1 | 0 | 0 | 2 | 0 | 0 | 0 | 28 |
 | 阅读者 | 12 | 15 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 28 |
-| **全库** | 313 | 378 | 17 | 0 | 45 | 31 | 29 | 4 | 16 | **833** |
+| **全库** | 313 | 388 | 17 | 0 | 45 | 31 | 29 | 4 | 16 | **843** |
 
 > `target_override` 在全库另有 **10** 处作为 `type` 原语（`effTargetOverride`）出现，与算子的 0 处合计 **10** 处「改写目标」表达。
 
@@ -143,7 +143,7 @@
 | 秘祈人 | `modify_resource`(34) | `mount_status`(34) | `drain`(23) |
 | 窥秘人 | `mount_status`(42) | `damage`(26) | `modify_resource`(20) |
 | 罪犯 | `mount_status`(55) | `modify_resource`(46) | `move`(37) |
-| 耕种者 | `mount_status`(31) | `spawn`(29) | `damage`(13) |
+| 耕种者 | `mount_status`(37) | `spawn`(29) | `modify_stat`(21) |
 | 药师 | `mount_status`(36) | `transfer_status`(18) | `modify_stat`(15) |
 | 观众 | `mount_status`(39) | `damage`(14) | `modify_stat`(6) |
 | 通识者 | `mount_status`(25) | `modify_stat`(21) | `spawn`(20) |
@@ -151,21 +151,21 @@
 
 ## 三、modify_stat 专项：具体改了哪些属性
 
-全库 `modify_stat` 共 **242** 处。下方按「属性键 / 模式 / 参数」逐层拆解。
+全库 `modify_stat` 共 **257** 处。下方按「属性键 / 模式 / 参数」逐层拆解。
 
 ### 3.1 改了哪些 stat 属性键（全局分布）
 
 | stat 属性键 | 次数 | 占 modify_stat% |
 |---|---:|---:|
-| `attack` | 83 | 34.3% |
-| `defense` | 44 | 18.2% |
-| `gauge.rate` | 39 | 16.1% |
-| `hp_max` | 23 | 9.5% |
-| `armor` | 18 | 7.4% |
-| `resist:mental` | 8 | 3.3% |
-| `energy_max` | 7 | 2.9% |
-| `energy_regen` | 4 | 1.7% |
-| `resist:physical` | 4 | 1.7% |
+| `attack` | 87 | 33.9% |
+| `defense` | 53 | 20.6% |
+| `gauge.rate` | 40 | 15.6% |
+| `hp_max` | 23 | 8.9% |
+| `armor` | 19 | 7.4% |
+| `resist:mental` | 8 | 3.1% |
+| `energy_max` | 7 | 2.7% |
+| `energy_regen` | 4 | 1.6% |
+| `resist:physical` | 4 | 1.6% |
 | `resist:poison` | 3 | 1.2% |
 | `gauge.threshold` | 3 | 1.2% |
 | `resist:*` | 2 | 0.8% |
@@ -178,18 +178,18 @@
 
 | stat 属性键 | 模式 | 次数 | 占该属性% |
 |---|---|---:|---:|
-| `attack` | `delta` | 79 | 95% |
-| `attack` | `set` | 3 | 4% |
+| `attack` | `delta` | 83 | 95% |
+| `attack` | `set` | 3 | 3% |
 | `attack` | `to_at_least` | 1 | 1% |
-| `defense` | `delta` | 39 | 89% |
-| `defense` | `set` | 3 | 7% |
+| `defense` | `delta` | 48 | 91% |
+| `defense` | `set` | 3 | 6% |
 | `defense` | `None` | 1 | 2% |
 | `defense` | `to_at_least` | 1 | 2% |
-| `gauge.rate` | `delta` | 30 | 77% |
+| `gauge.rate` | `delta` | 31 | 78% |
 | `gauge.rate` | `mul` | 7 | 18% |
 | `gauge.rate` | `set` | 2 | 5% |
 | `hp_max` | `delta` | 23 | 100% |
-| `armor` | `delta` | 16 | 89% |
+| `armor` | `delta` | 17 | 89% |
 | `armor` | `set` | 2 | 11% |
 | `resist:mental` | `delta` | 8 | 100% |
 | `energy_max` | `delta` | 7 | 100% |
@@ -209,14 +209,14 @@
 
 | 参数 | 出现次数 | 占 modify_stat% | 说明 |
 |---|---:|---:|---|
-| `value` | 242 | 100.0% | 数值（delta/mul 的增量；set 的设定值） |
-| `duration` | 143 | 59.1% | 持续 tick（null/缺失=常驻） |
+| `value` | 257 | 100.0% | 数值（delta/mul 的增量；set 的设定值） |
+| `duration` | 158 | 61.5% | 持续 tick（null/缺失=常驻） |
 | `condition` | 3 | 1.2% | 条件触发（Chance 走 RandomSource，仅非伤害维度） |
-| `target` | 198 | 81.8% | 效果级目标锚点（二次寻址） |
+| `target` | 213 | 82.9% | 效果级目标锚点（二次寻址） |
 | `spread` | 1 | 0.4% | 溅射（splash_adjacent） |
-| `sourceRef` | 10 | 4.1% | 取值参照源（caster/secondary_target/field_average） |
-| `valueFrom` | 4 | 1.7% | 动态取值（对象/表达式，非静态数值） |
-| `note` | 88 | 36.4% | 注释 |
+| `sourceRef` | 10 | 3.9% | 取值参照源（caster/secondary_target/field_average） |
+| `valueFrom` | 4 | 1.6% | 动态取值（对象/表达式，非静态数值） |
+| `note` | 103 | 40.1% | 注释 |
 
 ### 3.4 分职业 stat 键矩阵
 
@@ -241,12 +241,12 @@
 | 秘祈人 | 5 | 2 | 1 | 5 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 窥秘人 | 3 | 2 | 2 | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 罪犯 | 0 | 0 | 5 | 2 | 3 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 耕种者 | 2 | 0 | 1 | 2 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 耕种者 | 6 | 9 | 2 | 2 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 药师 | 4 | 0 | 2 | 4 | 2 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 观众 | 3 | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 通识者 | 5 | 0 | 5 | 3 | 1 | 2 | 2 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 |
 | 阅读者 | 1 | 2 | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **全库** | 83 | 44 | 39 | 23 | 18 | 8 | 7 | 4 | 4 | 3 | 3 | 2 | 1 | 1 | 1 | 1 |
+| **全库** | 87 | 53 | 40 | 23 | 19 | 8 | 7 | 4 | 4 | 3 | 3 | 2 | 1 | 1 | 1 | 1 |
 
 ### 3.5 各职业 modify_stat 参数偏好（condition / duration / target / filter 占比）
 
@@ -269,7 +269,7 @@
 | 秘祈人 | 14 | 0 (0%) | 6 (43%) | 14 (100%) | 0 (0%) |
 | 窥秘人 | 11 | 0 (0%) | 6 (55%) | 10 (91%) | 0 (0%) |
 | 罪犯 | 12 | 0 (0%) | 5 (42%) | 8 (67%) | 0 (0%) |
-| 耕种者 | 6 | 0 (0%) | 2 (33%) | 6 (100%) | 0 (0%) |
+| 耕种者 | 21 | 0 (0%) | 17 (81%) | 21 (100%) | 0 (0%) |
 | 药师 | 15 | 0 (0%) | 6 (40%) | 11 (73%) | 0 (0%) |
 | 观众 | 6 | 0 (0%) | 4 (67%) | 2 (33%) | 0 (0%) |
 | 通识者 | 21 | 0 (0%) | 10 (48%) | 18 (86%) | 0 (0%) |
@@ -281,11 +281,11 @@
 
 | stat 属性键 | 样本数 | 模式分布 | 数值范围(典型) |
 |---|---:|---|---|
-| `attack` | 83 | `delta`×79, `set`×3, `to_at_least`×1 | 负 -5~-1；正 +1~+6 |
-| `defense` | 44 | `delta`×39, `set`×3, `None`×1, `to_at_least`×1 | 负 -3~-1；正 +1~+3 |
-| `gauge.rate` | 39 | `delta`×30, `mul`×7, `set`×2 | 负 -15~-3；正 +1~+10 |
+| `attack` | 87 | `delta`×83, `set`×3, `to_at_least`×1 | 负 -5~-1；正 +1~+6 |
+| `defense` | 53 | `delta`×48, `set`×3, `None`×1, `to_at_least`×1 | 负 -3~-1；正 +1~+3 |
+| `gauge.rate` | 40 | `delta`×31, `mul`×7, `set`×2 | 负 -15~-2；正 +1~+10 |
 | `hp_max` | 23 | `delta`×23 | 负 -12~-1；正 +2~+20 |
-| `armor` | 18 | `delta`×16, `set`×2 | 负 -5~-2；正 +1~+12 |
+| `armor` | 19 | `delta`×17, `set`×2 | 负 -5~-2；正 +1~+12 |
 | `resist:mental` | 8 | `delta`×8 | 负 -15~-15；正 +10~+30 |
 | `energy_max` | 7 | `delta`×7 | 正 +1~+20 |
 | `energy_regen` | 4 | `delta`×4 | 正 +0~+0 |
@@ -300,28 +300,28 @@
 
 ## 四、modify_resource 专项：具体改了哪些资源
 
-全库 `modify_resource` 共 **340** 处。
+全库 `modify_resource` 共 **349** 处。
 
 ### 4.1 改了哪些 resource 资源键（全局分布）
 
 | resource 资源键 | 次数 | 占 modify_resource% |
 |---|---:|---:|
-| `gauge.current` | 89 | 26.2% |
-| `lost` | 78 | 22.9% |
-| `energy` | 50 | 14.7% |
-| `lust` | 42 | 12.4% |
-| `hp` | 32 | 9.4% |
-| `armor` | 24 | 7.1% |
+| `gauge.current` | 98 | 28.1% |
+| `lost` | 78 | 22.3% |
+| `energy` | 50 | 14.3% |
+| `lust` | 42 | 12.0% |
+| `hp` | 32 | 9.2% |
+| `armor` | 24 | 6.9% |
 | `order` | 10 | 2.9% |
-| `shield` | 7 | 2.1% |
-| `secrecy` | 5 | 1.5% |
+| `shield` | 7 | 2.0% |
+| `secrecy` | 5 | 1.4% |
 | `fate_value` | 3 | 0.9% |
 
 ### 4.2 (资源键 × 模式) 组合明细
 
 | resource 资源键 | 模式 | 次数 | 占该资源% |
 |---|---|---:|---:|
-| `gauge.current` | `delta` | 87 | 98% |
+| `gauge.current` | `delta` | 96 | 98% |
 | `gauge.current` | `swap` | 2 | 2% |
 | `lost` | `delta` | 78 | 100% |
 | `energy` | `delta` | 49 | 98% |
@@ -342,13 +342,13 @@
 
 | 参数 | 出现次数 | 占 modify_resource% | 说明 |
 |---|---:|---:|---|
-| `value` | 340 | 100.0% | 数值（delta 增量 / set 设定值） |
-| `mode` | 340 | 100.0% | delta / set / swap |
+| `value` | 349 | 100.0% | 数值（delta 增量 / set 设定值） |
+| `mode` | 349 | 100.0% | delta / set / swap |
 | `between` | 2 | 0.6% | swap 双方（effectTarget 数组） |
 | `maxTriggersPerBattle` | 2 | 0.6% | 每场战斗最大触发次数 |
 | `condition` | 3 | 0.9% | 条件触发 |
-| `target` | 295 | 86.8% | 效果级目标锚点 |
-| `note` | 274 | 80.6% | 注释 |
+| `target` | 304 | 87.1% | 效果级目标锚点 |
+| `note` | 283 | 81.1% | 注释 |
 
 ### 4.4 分职业 resource 键矩阵
 
@@ -373,18 +373,18 @@
 | 秘祈人 | 0 | 1 | 2 | 0 | 31 | 0 | 0 | 0 | 0 | 0 |
 | 窥秘人 | 12 | 1 | 2 | 0 | 0 | 0 | 0 | 0 | 5 | 0 |
 | 罪犯 | 0 | 1 | 2 | 42 | 1 | 0 | 0 | 0 | 0 | 0 |
-| 耕种者 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| 耕种者 | 10 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 | 药师 | 1 | 3 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 观众 | 3 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 通识者 | 3 | 2 | 5 | 0 | 0 | 4 | 0 | 0 | 0 | 0 |
 | 阅读者 | 9 | 1 | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **全库** | 89 | 78 | 50 | 42 | 32 | 24 | 10 | 7 | 5 | 3 |
+| **全库** | 98 | 78 | 50 | 42 | 32 | 24 | 10 | 7 | 5 | 3 |
 
 ### 4.5 资源操控的语义标签（按 resource 归类用途）
 
 | resource | 主要语义 | 高频模式 |
 |---|---|---|
-| `gauge.current` | 推条（抢先/延后出手） | `delta`×87, `swap`×2 |
+| `gauge.current` | 推条（抢先/延后出手） | `delta`×96, `swap`×2 |
 | `lost` | 迷失租金（界域/跨层代价，独立资源槽） | `delta`×78 |
 | `energy` | 能量操控（资源杠杆，最常见） | `delta`×49, `None`×1 |
 | `lust` |  | `delta`×36, `None`×6 |
@@ -410,21 +410,21 @@
 
 ## 六、总量快照
 
-> 算子口径：sequence=313 / if=378 / target_override=0 / push_back=45 / overlay=31 / repeat=17 / pull_forward=29 / swap_ally=4 / insert_tail_cross_lane=16；本库当前 833 张卡，数字随补卡浮动属正常。
+> 算子口径：sequence=313 / if=388 / target_override=0 / push_back=45 / overlay=31 / repeat=17 / pull_forward=29 / swap_ally=4 / insert_tail_cross_lane=16；本库当前 835 张卡，数字随补卡浮动属正常。
 
 
 ## 七、结论与观察
 
-1. **原语总量**：全库共 2518 个原语节点 + 833 个算子节点；`mount_status`(34%) 与 `damage`(18%) 仍是绝对主力，状态驱动风格延续。
-2. **modify_stat 最常被改的属性**：`attack`(83)、`defense`(44)、`gauge.rate`(39) —— 敏捷原生的 `gauge.rate`、攻防 `attack/defense`、资源速率与独立资源槽是首选。
-3. **modify_resource 最常被改的资源**：`gauge.current`(89)、`lost`(78)、`energy`(50) —— `energy` 是第一杠杆，`lost`（迷失租金）已随界域/跨层普及成为常态成本，`gauge.current`（推条）用量高于直接 hp/shield。
-4. **参数使用**：modify_stat 中带 `duration` 的占 59%（持续型修正为主），带 `condition` 的仅 1%（绝大多数无条件是确定性修正，符合 B1 铁律）；`sourceRef`/`valueFrom` 动态取值共 14 处，属「按参照源缩放」的高级表达。
+1. **原语总量**：全库共 2555 个原语节点 + 843 个算子节点；`mount_status`(33%) 与 `damage`(18%) 仍是绝对主力，状态驱动风格延续。
+2. **modify_stat 最常被改的属性**：`attack`(87)、`defense`(53)、`gauge.rate`(40) —— 敏捷原生的 `gauge.rate`、攻防 `attack/defense`、资源速率与独立资源槽是首选。
+3. **modify_resource 最常被改的资源**：`gauge.current`(98)、`lost`(78)、`energy`(50) —— `energy` 是第一杠杆，`lost`（迷失租金）已随界域/跨层普及成为常态成本，`gauge.current`（推条）用量高于直接 hp/shield。
+4. **参数使用**：modify_stat 中带 `duration` 的占 61%（持续型修正为主），带 `condition` 的仅 1%（绝大多数无条件是确定性修正，符合 B1 铁律）；`sourceRef`/`valueFrom` 动态取值共 14 处，属「按参照源缩放」的高级表达。
 5. **职业差异**：详见 §二/§2.2 矩阵与 §3.4/§4.4。各职业 Top 原语（§2.3）显示签名表达——召唤系（不眠者/收尸人/秘祈人）`spawn` 偏高，控制系（刺客/囚犯）`move`+`dispel` 偏高，能量系（愚者/阅读者）`modify_resource(energy)` 偏高。
 6. **数据质量**：见 §五。未发现问题。
 
 ### 附：统计口径
 
-- 数据源：`docs/json/*.skills.json` 的 `cards[]`，共 833 张卡。
+- 数据源：`docs/json/*.skills.json` 的 `cards[]`，共 835 张卡。
 - 原语/算子用量：**递归遍历**每张卡的全部效果节点（含卡面 `effects`、`statusDefs[].triggers[].effects`、`zoneDef`/`domainDef`/单位定义等任意嵌套），同一张卡的同名原语多次计数。
 - 原语以效果节点 `type` 字段归类（19 类）；算子以效果节点 `op` 字段归类（9 类）。
 - `modify_stat`/`modify_resource` 统计：同样递归全量；`stat`/`resource` 取节点字段值，`mode`/`value`/`duration`/`condition`/`target`/`filter`/`spread`/`sourceRef`/`valueFrom`（资源侧另含 `op`/`between`/`maxTriggersPerBattle`）逐一记录。

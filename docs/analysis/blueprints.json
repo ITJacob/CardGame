@@ -15600,8 +15600,8 @@
   {
    "id": "planter",
    "name": "耕种者",
-   "state": "回溯补登",
-   "date": "2026-10-21",
+   "state": null,
+   "date": "环节⑥拍板",
    "score": 100,
    "scoreParts": {
     "命题": 10,
@@ -15614,9 +15614,9 @@
    },
    "deductions": [],
    "proposition": {
-    "statement": "孕育时间账——一切收益先埋种子随时间生长（statPerStack/回合递增），拒绝瞬发全额：收割时机是强度与等待的权衡",
-    "variable": "培育对象选择（催化哪颗种子/哪具造物）、收割时机（等满成长还是提前收割）",
-    "cost": "成长期场面空窗被滚雪球；培育对象被拆则时间投资沉没"
+    "statement": "催熟博弈——成长仍然需要时间，但对手可以把你的作物提前催熟；早收打折、拒收浪费，你要决定哪颗接受催熟、哪颗掐尖重长",
+    "variable": "接受催熟（半价兑现）还是拒绝（掐尖清层、浪费一次行动）；催熟与收割的对象、次序",
+    "cost": "接受则每层催熟只按半价计；拒绝则浪费行动、成长窗延后；对手反复催熟拖慢节奏"
    },
    "style": {
     "signature": "催化成长（flag:statPerStack 成长引擎 + unitType:PLANT 生命炼成 + sref:blight 荒芜）",
@@ -15626,7 +15626,7 @@
      "驱散",
      "基础增益"
     ],
-    "redline": "途径设计身份.md 耕种者身份卡：成长必须「时间换强度」拒绝瞬发全额——母亲途径的一切都是孕育；荒芜与丰饶同卡必为双刃剑"
+    "redline": "途径设计身份.md 耕种者身份卡：成长必须「时间换强度」拒绝瞬发全额——母亲途径的一切都是孕育；荒芜与丰饶同卡必为双刃剑；催熟层必须可拆（可驱散），不做不可逆的早熟"
    },
    "axes": [
     {
@@ -15635,17 +15635,25 @@
      "symbol": "🌾",
      "anchor": {
       "kind": "status",
-      "id": "cultivated",
-      "raw": "status:cultivated"
+      "id": "cultivated + status:forced_growth",
+      "raw": "status:cultivated + status:forced_growth"
      },
      "loop": {
-      "produce": "分辨种子/祈雨祈晴产层",
-      "consume": "化身巨熊/自然之子/自然权柄读层消费",
-      "clear": "作物被铲或层数被消费清除",
+      "produce": "分辨种子/催化种子产大地层，催熟/祈雨祈晴推催熟层",
+      "consume": "化身巨熊/自然之子/自然权柄读层兑现（自然之子半价接受、掐尖清层重长）",
+      "clear": "层数被消费/清层或作物被铲",
       "produceCards": [
        {
         "name": "分辨种子",
         "id": "skill_planter_s9_cultivated_seed"
+       },
+       {
+        "name": "催化种子",
+        "id": "skill_planter_s7_catalyze_seed"
+       },
+       {
+        "name": "催熟",
+        "id": "skill_planter_s6_force_growth"
        },
        {
         "name": "祈雨祈晴",
@@ -15664,10 +15672,14 @@
        {
         "name": "自然权柄",
         "id": "skill_planter_s0_nature_authority"
+       },
+       {
+        "name": "掐尖",
+        "id": "skill_planter_s5_pinch"
        }
       ]
      },
-     "decision": "培育对象与收割时机：催化哪颗种子、何时满收",
+     "decision": "哪颗作物接受催熟、哪颗掐尖；何时收割",
      "signatures": [
       {
        "key": "unitType:PLANT",
@@ -15689,34 +15701,35 @@
        "ok": true
       }
      ],
-     "planCards": 13,
+     "planCards": 15,
      "roleMixDeclared": {
-      "core": 9,
+      "core": 11,
       "starter": 1,
       "generic": 2,
       "trap": 1
      },
      "actual": {
-      "cards": 13,
+      "cards": 15,
       "roleMix": {
        "starter": 1,
-       "core": 9,
+       "core": 11,
        "generic": 2,
        "trap": 1
       },
       "anchorMatch": true,
       "enablers": [
        "分辨种子",
-       "祈雨祈晴"
+       "催化种子",
+       "催熟"
       ],
       "payoffs": [
+       "化身巨熊",
        "自然之子",
-       "自然权柄"
+       "自然权柄",
+       "掐尖"
       ],
-      "payoffsNotes": [
-       "化身巨熊"
-      ],
-      "axisScore": 77.8
+      "payoffsNotes": [],
+      "axisScore": 79.4
      }
     },
     {
@@ -15772,15 +15785,15 @@
        "触碰痊愈"
       ],
       "payoffs": [
+       "缝合灵魂",
        "触碰痊愈",
+       "万物母巢",
        "生命炼成"
       ],
       "payoffsNotes": [
-       "缝合灵魂",
-       "万物母巢",
        "人偶制造"
       ],
-      "axisScore": 71.9
+      "axisScore": 84.7
      }
     },
     {
@@ -15813,7 +15826,7 @@
        }
       ]
      },
-     "decision": "造物材质投资：炼成堆到哪档、何时出厂",
+     "decision": "造物材质投资：炼成堆到哪档、何时出厂；催熟层是否影响造物",
      "signatures": [
       {
        "key": "flag:statPerStack",
@@ -15851,9 +15864,11 @@
        "生命炼成",
        "人偶制造"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "杂交造物"
+      ],
       "payoffsNotes": [],
-      "axisScore": 81.7
+      "axisScore": 87.7
      }
     },
     {
@@ -15894,7 +15909,7 @@
        }
       ]
      },
-     "decision": "荒芜铺场次序：先荒芜谁、何时枯荣循环翻面",
+     "decision": "荒芜铺场次序：先荒芜谁、何时枯荣循环翻面；催熟引荒芜的时机",
      "signatures": [
       {
        "key": "sref:blight",
@@ -15912,7 +15927,7 @@
          "id": "skill_planter_s0_last_return"
         }
        ],
-       "empirical": 3,
+       "empirical": 5,
        "ok": true
       }
      ],
@@ -15935,13 +15950,12 @@
        "剥夺生命"
       ],
       "payoffs": [
+       "自然憎恶",
+       "枯荣循环",
        "最后回归之地"
       ],
-      "payoffsNotes": [
-       "自然憎恶",
-       "枯荣循环"
-      ],
-      "axisScore": 78.8
+      "payoffsNotes": [],
+      "axisScore": 87.9
      }
     }
    ],
@@ -15990,7 +16004,55 @@
      "axis": "harvest",
      "concept": "status",
      "facet": "read",
-     "purpose": "读丰饶层数行自然权柄",
+     "purpose": "读催熟层追加伤害（接受催熟）",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "自然之子",
+     "slots": [
+      {
+       "name": "自然之子",
+       "id": "skill_planter_s1_nature_child"
+      }
+     ],
+     "slotId": "skill_planter_s1_nature_child",
+     "axis": "harvest",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读催熟层半价兑现自疗",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "掐尖",
+     "slots": [
+      {
+       "name": "掐尖",
+       "id": "skill_planter_s5_pinch"
+      }
+     ],
+     "slotId": "skill_planter_s5_pinch",
+     "axis": "harvest",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "清掉催熟层（拒绝催熟）",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "万物母巢",
+     "slots": [
+      {
+       "name": "万物母巢",
+       "id": "skill_planter_s0_mother_nest"
+      }
+     ],
+     "slotId": "skill_planter_s0_mother_nest",
+     "axis": "healing",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读治疗场层数追加群体治疗",
      "ok": true,
      "reason": ""
     }
@@ -16053,7 +16115,7 @@
    "roles": [
     {
      "role": "core",
-     "declared": 25,
+     "declared": 27,
      "declaredSlots": [
       {
        "name": "预测天气",
@@ -16064,34 +16126,6 @@
        "id": "skill_planter_s9_cultivated_seed"
       },
       {
-       "name": "催化种子",
-       "id": "skill_planter_s7_catalyze_seed"
-      },
-      {
-       "name": "繁衍生长",
-       "id": "skill_planter_s7_growth_spread"
-      },
-      {
-       "name": "化身巨熊",
-       "id": "skill_planter_s5_bear_form"
-      },
-      {
-       "name": "沼泽",
-       "id": "skill_planter_s5_mire"
-      },
-      {
-       "name": "橡树之子",
-       "id": "skill_planter_s5_oak_child"
-      },
-      {
-       "name": "自然之子",
-       "id": "skill_planter_s1_nature_child"
-      },
-      {
-       "name": "创造世界",
-       "id": "skill_planter_s1_create_world"
-      },
-      {
        "name": "治疗",
        "id": "skill_planter_s8_heal"
       },
@@ -16100,16 +16134,12 @@
        "id": "skill_planter_s8_soul_stitch"
       },
       {
-       "name": "触碰痊愈",
-       "id": "skill_planter_s4_healing_touch"
+       "name": "催化种子",
+       "id": "skill_planter_s7_catalyze_seed"
       },
       {
-       "name": "生命充盈",
-       "id": "skill_planter_s4_vitality_field"
-      },
-      {
-       "name": "万物母巢",
-       "id": "skill_planter_s0_mother_nest"
+       "name": "繁衍生长",
+       "id": "skill_planter_s7_growth_spread"
       },
       {
        "name": "生物洞悉",
@@ -16120,16 +16150,32 @@
        "id": "skill_planter_s6_hybrid_spawn"
       },
       {
-       "name": "生命炼成",
-       "id": "skill_planter_s4_life_alchemy"
+       "name": "化身巨熊",
+       "id": "skill_planter_s5_bear_form"
       },
       {
-       "name": "人偶制造",
-       "id": "skill_planter_s2_doll_making"
+       "name": "沼泽",
+       "id": "skill_planter_s5_mire"
       },
       {
        "name": "自然憎恶",
        "id": "skill_planter_s5_nature_abhorrence"
+      },
+      {
+       "name": "橡树之子",
+       "id": "skill_planter_s5_oak_child"
+      },
+      {
+       "name": "生命炼成",
+       "id": "skill_planter_s4_life_alchemy"
+      },
+      {
+       "name": "触碰痊愈",
+       "id": "skill_planter_s4_healing_touch"
+      },
+      {
+       "name": "生命充盈",
+       "id": "skill_planter_s4_vitality_field"
       },
       {
        "name": "恶灵化",
@@ -16148,15 +16194,39 @@
        "id": "skill_planter_s2_earth_authority"
       },
       {
+       "name": "人偶制造",
+       "id": "skill_planter_s2_doll_making"
+      },
+      {
+       "name": "自然之子",
+       "id": "skill_planter_s1_nature_child"
+      },
+      {
+       "name": "创造世界",
+       "id": "skill_planter_s1_create_world"
+      },
+      {
+       "name": "万物母巢",
+       "id": "skill_planter_s0_mother_nest"
+      },
+      {
        "name": "最后回归之地",
        "id": "skill_planter_s0_last_return"
       },
       {
        "name": "自然权柄",
        "id": "skill_planter_s0_nature_authority"
+      },
+      {
+       "name": "催熟",
+       "id": "skill_planter_s6_force_growth"
+      },
+      {
+       "name": "掐尖",
+       "id": "skill_planter_s5_pinch"
       }
      ],
-     "actual": 25,
+     "actual": 27,
      "actualSlots": [
       {
        "name": "预测天气",
@@ -16257,6 +16327,14 @@
       {
        "name": "自然权柄",
        "id": "skill_planter_s0_nature_authority"
+      },
+      {
+       "name": "催熟",
+       "id": "skill_planter_s6_force_growth"
+      },
+      {
+       "name": "掐尖",
+       "id": "skill_planter_s5_pinch"
       }
      ]
     },
@@ -16319,12 +16397,12 @@
        "id": "skill_planter_s7_vermin_swarm"
       },
       {
-       "name": "地底潜行",
-       "id": "skill_planter_s5_subterranean"
-      },
-      {
        "name": "剧毒体质",
        "id": "skill_planter_s6_venomous"
+      },
+      {
+       "name": "地底潜行",
+       "id": "skill_planter_s5_subterranean"
       }
      ],
      "actual": 3,
@@ -16445,8 +16523,8 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 3,
-     "total": 3,
+     "hit": 6,
+     "total": 6,
      "miss": []
     },
     "跨系钩子": {
