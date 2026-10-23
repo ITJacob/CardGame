@@ -2003,6 +2003,27 @@
           "target": "self",
           "duration": 10,
           "note": "号令的代价：自身防御 -1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "ally",
+            "id": "tide_call"
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": 20,
+              "target": "all_allies",
+              "note": "跨源读取：潮汐号令在场，号令更盛（攻击 +1）"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 tide_call"
         }
       ],
       "tentative": false,

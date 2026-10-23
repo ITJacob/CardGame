@@ -804,6 +804,27 @@
           "duration": null,
           "target": "self",
           "note": "ddd 源质维度 §1.4：造物为跨系枢纽状态，律师『造物豁免』读取（持久、maxStacks 3、on_field 在场计数口径）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "law_breach"
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": 20,
+              "target": "target",
+              "note": "跨源读取：规律撬动在场，机械攻击 +1"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 law_breach"
         }
       ],
       "upgradeLadder": {

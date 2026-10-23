@@ -902,6 +902,27 @@
           "mode": "delta",
           "target": "self",
           "note": "驱使的代价：自身行动条 -5"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "puppet_string"
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": 20,
+              "target": "target",
+              "note": "跨源读取：提线木偶在场，驱使亡者更顺（攻击 +1）"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 puppet_string"
         }
       ],
       "tentative": false,

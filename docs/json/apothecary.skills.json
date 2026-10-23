@@ -634,6 +634,24 @@
           "charges": 1,
           "duration": 5,
           "note": "药剂残渣护体：当场只喝半剂，余量留给下一次"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "corrupted"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 1,
+              "note": "跨源读取：腐蚀在场，爪牙追加 1 毒"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 corrupted"
         }
       ],
       "tentative": false,
@@ -1660,6 +1678,24 @@
           "charges": 1,
           "duration": 5,
           "note": "预服在前：抗性已经铺好"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "ally",
+            "id": "nightfall"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 1,
+              "note": "跨源读取：夜色在场，凝视追加 1 暗伤"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 nightfall"
         }
       ],
       "tentative": false,

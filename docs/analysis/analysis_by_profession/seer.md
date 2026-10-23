@@ -26,21 +26,21 @@
 
 **规模**：9 张技能（主动 3 / 被动 6）；稀有度分布：普通×3、史诗×2、传说×2、精良×1、稀有×1。
 
-**效果原语构成**（type，全量递归，共 23 处）：
+**效果原语构成**（type，全量递归，共 24 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 7 | 30.4% |
-| `modify_stat` | 1 | 4.3% |
-| `modify_resource` | 14 | 60.9% |
-| `translocate` | 1 | 4.3% |
+| `mount_status` | 7 | 29.2% |
+| `modify_stat` | 1 | 4.2% |
+| `modify_resource` | 15 | 62.5% |
+| `translocate` | 1 | 4.2% |
 
-**算子构成**（op，共 7 处）：
+**算子构成**（op，共 8 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 3 |
-| `if` | 4 |
+| `if` | 5 |
 
 **改动的属性（modify_stat，共 1 处）**：
 
@@ -48,16 +48,16 @@
 |---|---:|
 | `energy_max` | 1 |
 
-**改动的资源（modify_resource，共 14 处）**：
+**改动的资源（modify_resource，共 15 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
 | `energy` | 7 |
-| `gauge.current` | 6 |
+| `gauge.current` | 7 |
 | `lost` | 1 |
 
 **设计风格总结**：本轴偏【运营】——以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `modify_resource`(14)、`mount_status`(7)、`modify_stat`(1)；属性杠杆集中在 `energy_max`，资源杠杆集中在 `energy`、`gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `modify_resource`(15)、`mount_status`(7)、`modify_stat`(1)；属性杠杆集中在 `energy_max`，资源杠杆集中在 `energy`、`gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **灵界掌控者**：整场：你施加的控制类状态（puppet_string/hallucination/fooled/taunt）不可被驱散；对生命低于 50% 的目标伤害 ×1.3。；若目标带提线木偶，灵界支配反馈，自身获得 4 点护盾（15tick）。；提线木偶：动作由执线者说了算。
 
@@ -66,23 +66,23 @@
 
 **规模**：9 张技能（主动 7 / 被动 2）；稀有度分布：普通×3、精良×3、稀有×2、传说×1。
 
-**效果原语构成**（type，全量递归，共 20 处）：
+**效果原语构成**（type，全量递归，共 21 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 5 | 25.0% |
-| `damage` | 8 | 40.0% |
-| `modify_stat` | 1 | 5.0% |
-| `modify_resource` | 3 | 15.0% |
-| `move` | 2 | 10.0% |
-| `translocate` | 1 | 5.0% |
+| `mount_status` | 6 | 28.6% |
+| `damage` | 8 | 38.1% |
+| `modify_stat` | 1 | 4.8% |
+| `modify_resource` | 3 | 14.3% |
+| `move` | 2 | 9.5% |
+| `translocate` | 1 | 4.8% |
 
-**算子构成**（op，共 6 处）：
+**算子构成**（op，共 7 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 2 |
-| `if` | 2 |
+| `if` | 3 |
 | `push_back` | 1 |
 | `swap_ally` | 1 |
 
@@ -101,7 +101,7 @@
 | `lost` | 1 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `damage`(8)、`mount_status`(5)、`modify_resource`(3)；属性杠杆集中在 `defense`，资源杠杆集中在 `gauge.current`、`energy`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `damage`(8)、`mount_status`(6)、`modify_resource`(3)；属性杠杆集中在 `defense`，资源杠杆集中在 `gauge.current`、`energy`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **纸人替身**：自身获得「纸人替身」（1 层充能，20tick）：受到致命一击时阻止死亡（保留 1 血）并驱散自身全部 debuff/dot，随后替身碎裂。；嫁接：把自己的好处接到既有的条款后面，不改原文。
 

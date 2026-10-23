@@ -71,32 +71,32 @@
 
 **规模**：14 张技能（主动 10 / 被动 4）；稀有度分布：普通×6、精良×3、稀有×3、史诗×2。
 
-**效果原语构成**（type，全量递归，共 44 处）：
+**效果原语构成**（type，全量递归，共 45 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 9 | 20.5% |
-| `damage` | 6 | 13.6% |
-| `modify_stat` | 7 | 15.9% |
-| `modify_resource` | 8 | 18.2% |
-| `dispel` | 1 | 2.3% |
-| `spawn` | 9 | 20.5% |
-| `heal` | 4 | 9.1% |
+| `mount_status` | 9 | 20.0% |
+| `damage` | 6 | 13.3% |
+| `modify_stat` | 8 | 17.8% |
+| `modify_resource` | 8 | 17.8% |
+| `dispel` | 1 | 2.2% |
+| `spawn` | 9 | 20.0% |
+| `heal` | 4 | 8.9% |
 
-**算子构成**（op，共 10 处）：
+**算子构成**（op，共 11 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 5 |
-| `if` | 4 |
+| `if` | 5 |
 | `repeat` | 1 |
 
-**改动的属性（modify_stat，共 7 处）**：
+**改动的属性（modify_stat，共 8 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
+| `attack` | 3 |
 | `hp_max` | 2 |
-| `attack` | 2 |
 | `armor` | 2 |
 | `resist:mental` | 1 |
 
@@ -109,7 +109,7 @@
 | `energy` | 2 |
 
 **设计风格总结**：本轴偏【进攻·续航】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以回血、护盾与再生类状态维持血线，拉长战斗生命周期。
-签名原语为 `mount_status`(9)、`spawn`(9)、`modify_resource`(8)；属性杠杆集中在 `hp_max`、`attack`、`armor`，资源杠杆集中在 `gauge.current`、`armor`、`energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(9)、`spawn`(9)、`modify_resource`(8)；属性杠杆集中在 `attack`、`hp_max`、`armor`，资源杠杆集中在 `gauge.current`、`armor`、`energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **炼成**：在己方队尾炼成一具临时人偶（50% 生命），30tick 后自行崩解；自身造物计数 +1。
 

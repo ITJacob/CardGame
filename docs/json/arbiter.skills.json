@@ -2516,6 +2516,24 @@
           "target": "self",
           "duration": 10,
           "note": "中止的代价：自身攻击 -1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "law_edit"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "note": "跨源读取：规律改写在场，中止追加 1"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 law_edit"
         }
       ],
       "tentative": false,

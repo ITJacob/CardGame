@@ -688,6 +688,26 @@
           ],
           "else": [],
           "note": "跨系接线（2026-10-23）：读取枢纽 fate_gap"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "ally",
+            "id": "shadow_double"
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 1,
+              "duration": 20,
+              "target": "self",
+              "note": "跨源读取：阴影替身在场，替身更稳（护盾 +1）"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 shadow_double"
         }
       ],
       "tentative": false,
@@ -2478,6 +2498,26 @@
           "mode": "delta",
           "target": "self",
           "note": "跨层租金（与界域同口径，validate 规则：domain/translocate 须付迷失租金）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "ally",
+            "id": "mirror_substitute"
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 5,
+              "mode": "delta",
+              "target": "self",
+              "note": "跨源读取：镜子替身在场，灵界退路更顺（行动条 +5）"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 mirror_substitute"
         }
       ],
       "tentative": false,

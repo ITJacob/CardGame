@@ -2601,6 +2601,25 @@
           "target": "self",
           "duration": 10,
           "note": "天灾的代价：自身攻击 -1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "misfortune"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "lightning",
+              "value": 1,
+              "target": "all_enemies",
+              "note": "跨源读取：厄运在场，天灾追加 1（补既有 note 未落地段）"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 misfortune"
         }
       ],
       "variants": [

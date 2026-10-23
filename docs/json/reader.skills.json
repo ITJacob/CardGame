@@ -432,6 +432,31 @@
               "note": "挨打/命中即抄录招式配置（A1 2026-10-23）"
             }
           ]
+        },
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "ally",
+                "id": "fortify"
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 10,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "同源共振：预兆守护在场，观察更敏锐（行动条 +10）"
+                }
+              ],
+              "else": [],
+              "note": "跨系接线（2026-10-23）：读取枢纽 fortify"
+            }
+          ]
         }
       ],
       "sharedAcross": [
