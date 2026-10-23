@@ -29,7 +29,7 @@ docs/meta/           流程·规范·提案（工作流与生成约束，先读 
 ├─ PENDING.md        途径级遗留与待办汇总（自技能稿迁移）
 ├─ STATUS_TAXONOMY.md 状态概念九维分类索引（权威源指针表）
 ├─ 骨架重议.md       环节⑥骨架层议事：命题撞车簇、候选新骨架、机制扩容请求与拍板记录
-└─ proposals/        机制扩容提案（在办：weapon-first-class.md；完成提案归 docs/archive/proposals/）
+└─ proposals/        机制扩容提案（在办：weapon-first-class.md（P2 待做）、summon-first-class.md（已拍板待实施）；完成提案归 docs/archive/proposals/）
 docs/ddd/            战斗内核 DDD 设计（权威正源，纯内容）
 ├─ README.md         入口：上下文总览、依赖方向、一致性边界、58 条不变量总表
 ├─ contexts/         7 限界上下文 + 共享内核（结构/概念）
