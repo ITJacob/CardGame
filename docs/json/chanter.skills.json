@@ -17,7 +17,10 @@
         "不息赞歌",
         "光之赞礼"
       ],
-      "payoffs": [],
+      "payoffs": [
+        "英勇颂歌",
+        "终焉颂歌"
+      ],
       "note": "payoffs 2026-09-26 评审：blessing 纯挂载无读取，该轴为纯 enabler 轴 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：blessing 纯 enabler 轴（增益产层本身即收益，无读层放大器需求）；读层闭环维度记 12 分保底。 ｜ 2026-10-03 骨架手术：仪式换形 33 张（详见 designNote）",
       "payoffVacuumAccepted": true
     },
@@ -53,12 +56,15 @@
       "enablers": [
         "公证",
         "神圣誓约",
-        "太阳誓约"
+        "太阳誓约",
+        "续庭"
       ],
       "payoffs": [
-        "太阳誓约"
+        "正义准则",
+        "神圣盔甲",
+        "秩序权柄"
       ],
-      "note": "payoffs 2026-09-26 评审：notarize/oath/sun_oath/justice_code 纯挂载无读取，payoff 真空 ｜ 2026-09-29 环节⑤：神圣誓约/太阳誓约补 notarize 产层段（立约经公证），太阳誓约补 notarize 读层段（违约惩罚），payoff 从真空落地 ｜ 2026-10-03 骨架手术：仪式换形 33 张（详见 designNote）"
+      "note": "2026-10-23 C2 临时法庭重构：誓约改为开庭窗口—— tribunal 20tick 内有效，传票标记目标；续庭延长、结庭清算，窗口过期作废。"
     },
     "judgment": {
       "symbol": "⚖️",
@@ -69,9 +75,11 @@
         "太阳使者"
       ],
       "payoffs": [
-        "正义审判"
+        "正义审判",
+        "纯白射线",
+        "结庭"
       ],
-      "note": "payoffs 2026-09-26 评审：obedience 无卡读；正义审判读 guilty（notary 轴正义准则挂载）——跨轴 payoff 已计入 ｜ 2026-09-29 环节⑤：正义审判补 obedience 耗层读段（payoff 升 landed）+ notarize 跨轴读段；太阳使者补 obedience 产层段 ｜ 2026-10-03 骨架手术：仪式换形 33 张（详见 designNote）"
+      "note": "2026-10-23 C2：审判轴读传票与罪责，新增结庭作为窗口收束。"
     }
   },
   "cards": [
@@ -117,6 +125,15 @@
           "duration": 10,
           "dispelable": true,
           "note": "白昼之下，阴影无处藏身"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "起唱的代价：自身防御 -1"
         }
       ],
       "sharedAcross": [
@@ -343,6 +360,14 @@
           "duration": 20,
           "dispelable": true,
           "note": "祈光人「白昼」：写战场覆写层为满光，与 daylight 状态同寿命"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -6,
+          "mode": "delta",
+          "target": "self",
+          "note": "召光的代价：自身行动条 -6"
         }
       ],
       "sharedAcross": [
@@ -574,7 +599,7 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
         "fallbackSort": "atk_desc"
@@ -686,6 +711,15 @@
           "duration": 10,
           "dispelable": true,
           "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "召光的代价：自身防御 -1"
         }
       ],
       "upgradeLadder": {
@@ -855,6 +889,14 @@
           "duration": 10,
           "dispelable": true,
           "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -5,
+          "mode": "delta",
+          "target": "self",
+          "note": "斩击的代价：自身行动条 -5"
         }
       ],
       "tentative": false,
@@ -920,6 +962,15 @@
           "duration": 10,
           "dispelable": true,
           "note": "白昼之下，阴影无处藏身"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "引火的代价：自身攻击 -1"
         }
       ],
       "upgradeLadder": {
@@ -1075,7 +1126,8 @@
         "request": {
           "mode": "unit",
           "faction": "ally",
-          "scope": "point"
+          "scope": "point",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -1096,6 +1148,14 @@
           "duration": 10,
           "dispelable": true,
           "note": "白昼之下，阴影无处藏身"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -5,
+          "mode": "delta",
+          "target": "self",
+          "note": "公证的代价：自身行动条 -5"
         }
       ],
       "variants": [
@@ -1143,7 +1203,7 @@
       "flagship": false,
       "lore": "序列7 太阳神官 —— \"『神圣誓约』\"；序列6 公证人 —— \"擅制契约，序列5也无法违背，序列4违约付出代价\"",
       "flavor": "你与它立下誓约——它仍可以出手，但每挥一次刀，都要付一次血的代价。",
-      "describe": "使一名敌人立约 25tick：它每次造成伤害时，自身受到 2 点圣光伤害；立约经公证，其下一次造成伤害 ×0.5。",
+      "describe": "开庭立约（窗口 20tick）：给一名敌人发传票（20tick），它每次造成伤害时自身受 2 点圣光伤害；经公证其下一次造成伤害 ×0.5。窗口过期则誓约作废。",
       "cost": {
         "energy": 2,
         "cooldown": 20,
@@ -1154,11 +1214,27 @@
         "selectionMode": "manual",
         "request": {
           "mode": "unit",
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
       "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "tribunal",
+          "target": "self",
+          "duration": 20,
+          "note": "开庭：临时法庭窗口 20tick"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "subpoena",
+          "target": "target",
+          "duration": 20,
+          "note": "传票：目标被传唤到庭"
+        },
         {
           "type": "mount_status",
           "statusId": "oath",
@@ -1228,7 +1304,7 @@
       "flagship": false,
       "lore": "序列5 光之祭司 —— \"『神圣之光』：炽烈光柱从天而降，令敌人蒸发\"",
       "flavor": "一道炽烈的光柱自天而降——光柱散去的时候，那里什么都不剩了。",
-      "describe": "对一名敌人造成 5 点圣光伤害；若其带不死 / 污秽 / 黑暗标签，伤害 ×1.5；若自身处于祝福（层数 ≥1），伤害 +2。；祈光：把这块战场抬到白昼档。",
+      "describe": "对一名敌人造成 5 点圣光伤害；若其带不死 / 污秽 / 黑暗标签，伤害 ×1.5；若自身处于祝福（层数 ≥1），伤害 +2。；祈光：把这块战场抬到白昼档。；目标带传票时追加圣光伤害。",
       "cost": {
         "energy": 5,
         "cooldown": 25,
@@ -1240,10 +1316,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "atk_desc"
+        "fallbackSort": "hp_desc"
       },
       "effects": [
         {
@@ -1297,6 +1373,34 @@
           "duration": 10,
           "dispelable": true,
           "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "subpoena"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 1,
+              "target": "target",
+              "note": "传票既在：圣光追加 1"
+            }
+          ],
+          "else": [],
+          "note": "读层：subpoena"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "圣光的代价：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -1594,7 +1698,7 @@
       "flagship": false,
       "lore": "序列4 无暗者 —— \"『纯白射线』\"",
       "flavor": "一线纯白的光自你指尖射出，笔直地穿过队列，灼穿它经过的一切。",
-      "describe": "对一名敌人造成 4 点圣光伤害，并对其同路相邻单位造成 2 点圣光伤害。；祈光：把这块战场抬到白昼档。",
+      "describe": "对一名敌人造成 4 点圣光伤害，并对其同路相邻单位造成 2 点圣光伤害。；祈光：把这块战场抬到白昼档。；目标带传票时追加圣光伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1606,10 +1710,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "atk_desc"
+        "fallbackSort": "armor_desc"
       },
       "effects": [
         {
@@ -1635,6 +1739,25 @@
           "duration": 10,
           "dispelable": true,
           "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "subpoena"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 1,
+              "target": "target",
+              "note": "传票既在：射线追加 1"
+            }
+          ],
+          "else": [],
+          "note": "读层：subpoena"
         }
       ],
       "tentative": false,
@@ -1712,7 +1835,7 @@
       "flagship": false,
       "lore": "序列6 公证人 —— \"擅制契约……序列4 违约付出代价\"；序列4 无暗者 —— \"『太阳誓约』\"",
       "flavor": "你以太阳之名与它们全体立约——谁敢挥刀，谁就先被烧一次。",
-      "describe": "使敌方全体立约 25tick：每次造成伤害时，自身受到 3 点圣光伤害；立约经公证，其下一次造成伤害 ×0.5；已被公证者攻击 -1（10tick，违约惩罚加重）。；白昼之下，阴影无处藏身。",
+      "describe": "开庭立约（窗口 20tick）：敌方全体收到传票（20tick），每次造成伤害时自身受 3 点圣光伤害；经公证其下一次造成伤害 ×0.5。窗口过期则誓约作废。",
       "cost": {
         "energy": 4,
         "cooldown": 30,
@@ -1722,11 +1845,27 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "mode": "unit",
-          "faction": "self"
+          "mode": "area",
+          "faction": "enemy",
+          "scope": "board",
+          "pickCount": "all"
         }
       },
       "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "tribunal",
+          "target": "self",
+          "duration": 20,
+          "note": "开庭：临时法庭窗口 20tick"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "subpoena",
+          "target": "all_enemies",
+          "duration": 20,
+          "note": "传票（全体）：敌方全体被传唤到庭"
+        },
         {
           "type": "mount_status",
           "statusId": "sun_oath",
@@ -1798,7 +1937,7 @@
       "flagship": true,
       "lore": "序列3 正义导师 —— \"形成『正义』准则（自身『秩序』），获得『契约』和『秩序』权柄\"",
       "flavor": "你为这片战场立下一条准则——从这一刻起，违背它的人，就是有罪的人。",
-      "describe": "为全场立法 40tick（默认准则「不得加害弱者」）：任何单位发动攻击时，若目标生命百分比低于自身，则被定罪 30tick。",
+      "describe": "开庭立法（窗口 25tick）：全场准则「不得加害弱者」——任何单位攻击生命百分比低于自身的目标即被定罪 30tick。窗口过期则准则作废。",
       "cost": {
         "energy": 4,
         "cooldown": 30,
@@ -1808,14 +1947,23 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "mode": "unit",
-          "faction": "self"
+          "mode": "area",
+          "faction": "enemy",
+          "scope": "board",
+          "pickCount": "all"
         }
       },
       "effects": [
         {
           "op": "sequence",
           "steps": [
+            {
+              "type": "mount_status",
+              "statusId": "tribunal",
+              "target": "self",
+              "duration": 25,
+              "note": "开庭：临时法庭窗口 25tick"
+            },
             {
               "type": "mount_status",
               "statusId": "justice_code",
@@ -1856,6 +2004,27 @@
               "note": "立法写槽（slot 2 punish）：定罪成文"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "tribunal"
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -1,
+              "mode": "delta",
+              "duration": 15,
+              "target": "all_enemies",
+              "note": "开庭威压：窗口内全体敌人攻击 -1（15tick）"
+            }
+          ],
+          "else": [],
+          "note": "读层：tribunal"
         }
       ],
       "variants": [
@@ -1893,7 +2062,7 @@
       "flagship": false,
       "lore": "序列3 正义导师 —— \"『正义审判』：指定目标不符合准则的力量被极大削弱，连天使都受影响\"",
       "flavor": "你宣判它有罪——于是它引以为傲的那份力量，在判决落下的瞬间就被削去了大半。",
-      "describe": "审判一名敌人：若其带「罪责」，造成 8 点圣光伤害、驱散其全部增益并使其攻击 -5（25tick），且若其带有服从，耗 1 层并追加 3 点圣光伤害；被公证者罪责难逃，再追加 2 点；否则只造成 5 点圣光伤害。",
+      "describe": "审判一名敌人：若其带「罪责」，造成 8 点圣光伤害、驱散其全部增益并使其攻击 -5（25tick），且若其带有服从，耗 1 层并追加 3 点圣光伤害；被公证者罪责难逃，再追加 2 点；否则只造成 5 点圣光伤害。；目标带传票时追加圣光伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 30,
@@ -1905,10 +2074,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "atk_desc"
+        "fallbackSort": "debuff_count_desc"
       },
       "effects": [
         {
@@ -2004,6 +2173,33 @@
               "note": "判决仍执行，但力度大减"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "subpoena"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "target": "target",
+              "note": "传票既在：审判追加 2"
+            }
+          ],
+          "else": [],
+          "note": "读层：subpoena"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -6,
+          "mode": "delta",
+          "target": "self",
+          "note": "审判的代价：自身行动条 -6"
         }
       ],
       "tentative": false,
@@ -2143,11 +2339,14 @@
       },
       "reach": "none",
       "target": {
-        "selectionMode": "auto",
+        "selectionMode": "manual",
         "request": {
           "mode": "unit",
-          "faction": "self"
-        }
+          "faction": "enemy",
+          "scope": "whole_lane",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_desc"
       },
       "effects": [
         {
@@ -2701,6 +2900,28 @@
           "charges": 1,
           "duration": 5,
           "note": "净化不是抹掉，是让脏东西挨不到你"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "blessing",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "颂歌共鸣：颂歌 ≥2 层回收 1 能量"
+            }
+          ],
+          "else": [],
+          "note": "读层：blessing"
         }
       ],
       "tentative": false,
@@ -3007,6 +3228,192 @@
       "tags": [
         "圣咏"
       ]
+    },
+    {
+      "id": "skill_chanter_s4_extend_session",
+      "name": "续庭",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "无暗者",
+      "rarity": "rare",
+      "role": "core",
+      "axis": "notary",
+      "flagship": false,
+      "lore": "序列4 —— \"『续庭』：时间不够，那就再开一次庭。\"",
+      "flavor": "你把沙漏翻过来。证词还没说完，谁都不许走。",
+      "describe": "延长开庭窗口至 30tick，并在惩罚载荷后追加 2 点圣光伤害；对带传票的目标追加 2 点圣光伤害。代价：自身防御 -1（10tick）。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "tribunal",
+          "target": "self",
+          "duration": 30,
+          "note": "续庭：窗口刷新至 30tick"
+        },
+        {
+          "type": "modify_rule_slot",
+          "slot": 2,
+          "field": "punish",
+          "mode": "append",
+          "value": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2
+            }
+          ],
+          "note": "续庭：惩罚载荷追加 2 点圣光伤害（对违约者）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "subpoena"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 2,
+              "target": "target",
+              "note": "传票既在：续庭追加 2"
+            }
+          ],
+          "else": [],
+          "note": "读层：subpoena"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "续庭的代价：自身防御 -1"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 C2 临时法庭重构新增：窗口延长与惩罚加码，让「续庭还是结庭」成为核心决策。",
+      "art": {
+        "subject": "an hourglass turned over in a pale courtroom",
+        "elements": [
+          "flipped hourglass",
+          "pale courtroom light",
+          "unfinished testimony"
+        ],
+        "mood": "insistent"
+      }
+    },
+    {
+      "id": "skill_chanter_s3_close_session",
+      "name": "结庭",
+      "kind": "active",
+      "sequence": 3,
+      "sequenceName": "正义导师",
+      "rarity": "epic",
+      "role": "core",
+      "axis": "judgment",
+      "flagship": false,
+      "lore": "序列3 —— \"『结庭』：开庭时说的话，现在一起算。\"",
+      "flavor": "法槌落下。所有传票同时燃烧，所有证词同时生效。",
+      "describe": "若全场传票 ≥2 张：消耗每个带传票目标 1 层，对全体敌人造成 5 点圣光伤害，并撤回规则槽中的誓约；否则对单体造成 4 点圣光伤害。代价：自身行动条 -8。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 25,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "mode": "area",
+          "faction": "enemy",
+          "scope": "board",
+          "pickCount": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "field_status_count",
+            "id": "subpoena",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "subpoena",
+              "target": "all_enemies",
+              "stacks": -1,
+              "stackMode": "consume",
+              "note": "结庭：结清全场传票"
+            },
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 5,
+              "target": "all_enemies",
+              "note": "结庭清算：每个带传票目标承受 5 点"
+            },
+            {
+              "type": "modify_rule_slot",
+              "slot": 2,
+              "field": "trigger",
+              "mode": "remove",
+              "value": {},
+              "note": "结庭：撤回誓约规则"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "holy",
+              "value": 4,
+              "target": "target",
+              "note": "传票不足：单体判决"
+            }
+          ],
+          "note": "窗口收束：≥2 张传票则结庭"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -8,
+          "mode": "delta",
+          "target": "self",
+          "note": "结庭的代价：自身行动条 -8"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 C2 临时法庭重构新增：提前闭庭兑现（窗口内收集的传票一次性清算），与续庭形成双向决策。",
+      "art": {
+        "subject": "a gavel falling as all subpoenas ignite at once",
+        "elements": [
+          "falling gavel",
+          "burning subpoenas",
+          "pale verdict light"
+        ],
+        "mood": "final"
+      }
     }
   ],
   "zoneDefs": [
@@ -3136,7 +3543,7 @@
       ]
     }
   ],
-  "designNote": "> **放牧维度（混沌海系 §2.2 / 总览 §1 万能接口②）**：本系签名机制「放牧(Grazing)」= 战场级**动态能力槽** `grazing_slot`，存储被纳管的灵魂及其途径，可释放该途径能力（全局唯一跨系借技能）。歌颂者经「纳管残魂」参与此机制。\n> - **enabler**：友方击杀/控制一个单位 → `grazing_slot +1`（记录其途径与一项招牌能力）。\n> - **payoff**：释放被放牧单位的一项能力（一次）；若被放牧者为 `undead`/`spirit` → 该能力附 `净化` 联动（圣光克死灵的跨系延伸）。\n> - **阈级（⚠️D，自行设计）**：槽 ≥1 释放 1 项；≥3 ×1.3；≥5 `cd -1` 且 2 目标；=MAX(⚠️D 暂定 7) 本回合视为本途径技能（吃 `净化` 增益）。\n>\n> **阵营克制（原著招牌）**：序列8「克制死尸鬼魂」、序列5「污秽和死灵的克星」、序列4「净化堕落/污秽/黑暗/疾病」。主方案=单位标签 `undead`/`foul`/`dark` + 按标签乘区（已落 §1.2b）；退化=数据层预置负 `resist:holy`。\n\n> **昼夜时钟（2026-09-21）**：歌颂者只吃**白昼档增益**（光照度 ≥8 时圣光类 ×1.2，⚠️D）。**原著没有任何「歌颂者夜里变弱」的记载**——时间惩罚只见于不眠者守夜人「正午阳光下被削弱」，故本途径不设夜间减益，避免无据设计。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「仪式」句式换形 33 张通用骨架卡——仪式感与公证：不靠驱散取胜——靠祈光把战场抬到白昼档，或给全队一次免疫背书。黑夜途径的正面对极。**协作面**：免疫与光照是全队共享的。",
+  "designNote": "> **放牧维度（混沌海系 §2.2 / 总览 §1 万能接口②）**：本系签名机制「放牧(Grazing)」= 战场级**动态能力槽** `grazing_slot`，存储被纳管的灵魂及其途径，可释放该途径能力（全局唯一跨系借技能）。歌颂者经「纳管残魂」参与此机制。\n> - **enabler**：友方击杀/控制一个单位 → `grazing_slot +1`（记录其途径与一项招牌能力）。\n> - **payoff**：释放被放牧单位的一项能力（一次）；若被放牧者为 `undead`/`spirit` → 该能力附 `净化` 联动（圣光克死灵的跨系延伸）。\n> - **阈级（⚠️D，自行设计）**：槽 ≥1 释放 1 项；≥3 ×1.3；≥5 `cd -1` 且 2 目标；=MAX(⚠️D 暂定 7) 本回合视为本途径技能（吃 `净化` 增益）。\n>\n> **阵营克制（原著招牌）**：序列8「克制死尸鬼魂」、序列5「污秽和死灵的克星」、序列4「净化堕落/污秽/黑暗/疾病」。主方案=单位标签 `undead`/`foul`/`dark` + 按标签乘区（已落 §1.2b）；退化=数据层预置负 `resist:holy`。\n\n> **昼夜时钟（2026-09-21）**：歌颂者只吃**白昼档增益**（光照度 ≥8 时圣光类 ×1.2，⚠️D）。**原著没有任何「歌颂者夜里变弱」的记载**——时间惩罚只见于不眠者守夜人「正午阳光下被削弱」，故本途径不设夜间减益，避免无据设计。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「仪式」句式换形 33 张通用骨架卡——仪式感与公证：不靠驱散取胜——靠祈光把战场抬到白昼档，或给全队一次免疫背书。黑夜途径的正面对极。**协作面**：免疫与光照是全队共享的。 ｜ 2026-10-23 C2 临时法庭重构：tribunal/subpoena 入池、誓约开庭化、续庭/结庭新增、代价与选靶补足。",
   "sampleBuilds": [
     {
       "name": "A 颂歌鼓舞 🎵",

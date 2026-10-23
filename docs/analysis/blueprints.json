@@ -10200,9 +10200,9 @@
   {
    "id": "chanter",
    "name": "歌颂者",
-   "state": "回溯补登",
-   "date": "2026-10-21",
-   "score": 97,
+   "state": null,
+   "date": "环节⑥拍板",
+   "score": 100,
    "scoreParts": {
     "命题": 10,
     "风格边界": 15,
@@ -10210,18 +10210,13 @@
     "决策点": 10,
     "签名键": 15,
     "角色配比": 15,
-    "钩子": 7
+    "钩子": 10
    },
-   "deductions": [
-    {
-     "dim": "钩子",
-     "why": "跨轴钩子 2 条（须 ≥3，或显式声明无）"
-    }
-   ],
+   "deductions": [],
    "proposition": {
-    "statement": "誓约成文收租——一切增益走契约：write_rule_slot 双边成文 + 违例 punish，增益被拆时对方付违约代价，站场即收租",
-    "variable": "誓约对象选择（与谁立约、豁免条款写给谁）、收租节奏（何时公证增真、何时引爆违例代价）",
-    "cost": "约被绕过（对手不违例）则收租空转；誓约期场面增益平推被爆发打断则约价白付"
+    "statement": "临时法庭——誓约只在开庭窗口内有效：你定开庭时点，窗口内对手违例就付代价，窗口过了约就作废；续庭还是结庭，是这一轮的核心决定",
+    "variable": "何时开庭、窗口内如何逼对手违例、续庭（延长加码）还是结庭（提前清算）",
+    "cost": "窗口过期未定罪则收租空转；续庭耗行动机会；结庭过早收益低；誓约被驱散则窗口白开"
    },
    "style": {
     "signature": "公证契约（prim:grant_immunity 免疫授予 + prim:write_rule_slot 誓约成文 + trig:on_phase_change 白昼相位）",
@@ -10231,7 +10226,7 @@
      "驱散",
      "基础增益"
     ],
-    "redline": "途径设计身份.md 歌颂者身份卡：契约必须双边成文（write_rule_slot 写规则 + 违例 punish 字段）；不拿诅咒/腐蚀（净化是本职不是兼职）"
+    "redline": "途径设计身份.md 歌颂者身份卡：契约必须双边成文（write_rule_slot 写规则 + 违例 punish）；不拿诅咒/腐蚀（净化是本职不是兼职）；誓约必须有窗口，不做永久收租"
    },
    "axes": [
     {
@@ -10298,9 +10293,12 @@
        "不息赞歌",
        "光之赞礼"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "英勇颂歌",
+       "终焉颂歌"
+      ],
       "payoffsNotes": [],
-      "axisScore": 69.2
+      "axisScore": 84.6
      }
     },
     {
@@ -10428,7 +10426,7 @@
        "终焉颂歌"
       ],
       "payoffsNotes": [],
-      "axisScore": 81.5
+      "axisScore": 82.7
      }
     },
     {
@@ -10442,7 +10440,7 @@
      },
      "loop": {
       "produce": "服从之音/太阳使者产层",
-      "consume": "正义审判读层消费",
+      "consume": "正义审判/纯白射线/结庭读层消费",
       "clear": "服从被洗或审判执行完毕清除",
       "produceCards": [
        {
@@ -10458,20 +10456,29 @@
        {
         "name": "正义审判",
         "id": "skill_chanter_s3_judgment"
+       },
+       {
+        "name": "纯白射线",
+        "id": "skill_chanter_s4_pure_white_ray"
+       },
+       {
+        "name": "结庭",
+        "id": "skill_chanter_s3_close_session"
        }
       ]
      },
-     "decision": "审判对象选择：令谁服从、何时正义审判落锤",
+     "decision": "审判对象选择与结庭时点：令谁服从、窗口何时收束",
      "signatures": [],
-     "planCards": 7,
+     "planCards": 8,
      "roleMixDeclared": {
       "core": 6,
-      "bridge": 1
+      "bridge": 1,
+      "generic": 1
      },
      "actual": {
-      "cards": 7,
+      "cards": 8,
       "roleMix": {
-       "core": 6,
+       "core": 7,
        "bridge": 1
       },
       "anchorMatch": true,
@@ -10480,10 +10487,13 @@
        "太阳使者"
       ],
       "payoffs": [
-       "正义审判"
+       "正义审判",
+       "纯白射线"
       ],
-      "payoffsNotes": [],
-      "axisScore": 89.0
+      "payoffsNotes": [
+       "结庭"
+      ],
+      "axisScore": 88.1
      }
     },
     {
@@ -10492,13 +10502,13 @@
      "symbol": "🖋️",
      "anchor": {
       "kind": "status",
-      "id": "notarize",
-      "raw": "status:notarize"
+      "id": "notarize + status:tribunal",
+      "raw": "status:notarize + status:tribunal"
      },
      "loop": {
-      "produce": "公证/神圣誓约/太阳誓约产层",
-      "consume": "太阳誓约/正义准则读层消费",
-      "clear": "约被撕（付违例代价）或层数被消费清除",
+      "produce": "公证/神圣誓约/太阳誓约/续庭产层并开窗",
+      "consume": "正义准则/神圣盔甲/秩序权柄/结庭读层消费",
+      "clear": "窗口过期作废、约被撕或传票被消耗",
       "produceCards": [
        {
         "name": "公证",
@@ -10511,20 +10521,32 @@
        {
         "name": "太阳誓约",
         "id": "skill_chanter_s4_sun_oath"
+       },
+       {
+        "name": "续庭",
+        "id": "skill_chanter_s4_extend_session"
        }
       ],
       "consumeCards": [
        {
-        "name": "太阳誓约",
-        "id": "skill_chanter_s4_sun_oath"
-       },
-       {
         "name": "正义准则",
         "id": "skill_chanter_s3_justice_code"
+       },
+       {
+        "name": "神圣盔甲",
+        "id": "skill_chanter_s4_sacred_armor"
+       },
+       {
+        "name": "秩序权柄",
+        "id": "skill_chanter_s0_order_authority"
+       },
+       {
+        "name": "结庭",
+        "id": "skill_chanter_s3_close_session"
        }
       ]
      },
-     "decision": "立约对象与条款：与谁立约、违例代价定多高",
+     "decision": "开庭时点与庭期：与谁立约、续庭还是结庭",
      "signatures": [
       {
        "key": "prim:write_rule_slot",
@@ -10542,26 +10564,30 @@
        "ok": true
       }
      ],
-     "planCards": 8,
+     "planCards": 9,
      "roleMixDeclared": {
-      "core": 8
+      "core": 9
      },
      "actual": {
-      "cards": 8,
+      "cards": 9,
       "roleMix": {
-       "core": 8
+       "core": 9
       },
       "anchorMatch": true,
       "enablers": [
        "公证",
        "神圣誓约",
-       "太阳誓约"
+       "太阳誓约",
+       "续庭"
       ],
       "payoffs": [
-       "太阳誓约"
+       "正义准则"
       ],
-      "payoffsNotes": [],
-      "axisScore": 77.4
+      "payoffsNotes": [
+       "神圣盔甲",
+       "秩序权柄"
+      ],
+      "axisScore": 77.2
      }
     }
    ],
@@ -10594,7 +10620,55 @@
      "axis": "notary",
      "concept": "status",
      "facet": "read",
-     "purpose": "读公证层数定审判力度",
+     "purpose": "读公证/传票定审判力度",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "结庭",
+     "slots": [
+      {
+       "name": "结庭",
+       "id": "skill_chanter_s3_close_session"
+      }
+     ],
+     "slotId": "skill_chanter_s3_close_session",
+     "axis": "notary",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读全场传票数合并清算并撤回规则",
+     "ok": false,
+     "reason": "卡位未引用读轴锚点状态"
+    },
+    {
+     "slot": "续庭",
+     "slots": [
+      {
+       "name": "续庭",
+       "id": "skill_chanter_s4_extend_session"
+      }
+     ],
+     "slotId": "skill_chanter_s4_extend_session",
+     "axis": "notary",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读传票追加伤害并延长窗口",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "正义准则",
+     "slots": [
+      {
+       "name": "正义准则",
+       "id": "skill_chanter_s3_justice_code"
+      }
+     ],
+     "slotId": "skill_chanter_s3_justice_code",
+     "axis": "notary",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读开庭窗口施加全场攻击压制",
      "ok": true,
      "reason": ""
     }
@@ -10630,7 +10704,7 @@
    "roles": [
     {
      "role": "core",
-     "declared": 36,
+     "declared": 38,
      "declaredSlots": [
       {
        "name": "歌颂",
@@ -10641,32 +10715,12 @@
        "id": "skill_chanter_s9_battle_hymn"
       },
       {
-       "name": "免疫恐惧",
-       "id": "skill_chanter_s7_fearless"
-      },
-      {
-       "name": "圣咏赐福",
-       "id": "skill_chanter_s8_holy_blessing"
-      },
-      {
-       "name": "英勇颂歌",
-       "id": "skill_chanter_s6_valiant_hymn"
-      },
-      {
-       "name": "不息赞歌",
-       "id": "skill_chanter_s5_endless_hymn"
-      },
-      {
-       "name": "光之赞礼",
-       "id": "skill_chanter_s3_light_blessing"
-      },
-      {
-       "name": "终焉颂歌",
-       "id": "skill_chanter_s2_finale_hymn"
-      },
-      {
        "name": "白昼",
        "id": "skill_chanter_s8_daylight"
+      },
+      {
+       "name": "服从之音",
+       "id": "skill_chanter_s9_tone_of_obedience"
       },
       {
        "name": "召唤圣光",
@@ -10689,6 +10743,18 @@
        "id": "skill_chanter_s7_sun_aura"
       },
       {
+       "name": "免疫恐惧",
+       "id": "skill_chanter_s7_fearless"
+      },
+      {
+       "name": "公证",
+       "id": "skill_chanter_s6_notarize"
+      },
+      {
+       "name": "神圣誓约",
+       "id": "skill_chanter_s7_holy_oath"
+      },
+      {
        "name": "净化光环",
        "id": "skill_chanter_s5_purifying_nimbus"
       },
@@ -10701,56 +10767,12 @@
        "id": "skill_chanter_s4_zone_no_darkness"
       },
       {
-       "name": "化光",
-       "id": "skill_chanter_s2_photonic_form"
-      },
-      {
-       "name": "光之权柄",
-       "id": "skill_chanter_s2_light_authority"
-      },
-      {
-       "name": "神圣之国",
-       "id": "skill_chanter_s1_holy_nation"
-      },
-      {
-       "name": "神圣权柄",
-       "id": "skill_chanter_s0_divine_authority"
-      },
-      {
-       "name": "光之不朽",
-       "id": "skill_chanter_s0_light_immortal"
-      },
-      {
-       "name": "服从之音",
-       "id": "skill_chanter_s9_tone_of_obedience"
-      },
-      {
        "name": "无暗之枪",
        "id": "skill_chanter_s4_spear_of_light"
       },
       {
        "name": "纯白射线",
        "id": "skill_chanter_s4_pure_white_ray"
-      },
-      {
-       "name": "正义审判",
-       "id": "skill_chanter_s3_judgment"
-      },
-      {
-       "name": "太阳使者",
-       "id": "skill_chanter_s2_sun_herald"
-      },
-      {
-       "name": "纯白之光",
-       "id": "skill_chanter_s1_pure_white_light"
-      },
-      {
-       "name": "公证",
-       "id": "skill_chanter_s6_notarize"
-      },
-      {
-       "name": "神圣誓约",
-       "id": "skill_chanter_s7_holy_oath"
       },
       {
        "name": "神圣盔甲",
@@ -10765,19 +10787,79 @@
        "id": "skill_chanter_s3_justice_code"
       },
       {
+       "name": "正义审判",
+       "id": "skill_chanter_s3_judgment"
+      },
+      {
        "name": "正义光环",
        "id": "skill_chanter_s3_justice_aura"
+      },
+      {
+       "name": "化光",
+       "id": "skill_chanter_s2_photonic_form"
+      },
+      {
+       "name": "太阳使者",
+       "id": "skill_chanter_s2_sun_herald"
+      },
+      {
+       "name": "光之权柄",
+       "id": "skill_chanter_s2_light_authority"
+      },
+      {
+       "name": "神圣之国",
+       "id": "skill_chanter_s1_holy_nation"
+      },
+      {
+       "name": "纯白之光",
+       "id": "skill_chanter_s1_pure_white_light"
       },
       {
        "name": "信仰之仆",
        "id": "skill_chanter_s1_zeal"
       },
       {
+       "name": "神圣权柄",
+       "id": "skill_chanter_s0_divine_authority"
+      },
+      {
+       "name": "光之不朽",
+       "id": "skill_chanter_s0_light_immortal"
+      },
+      {
        "name": "秩序权柄",
        "id": "skill_chanter_s0_order_authority"
+      },
+      {
+       "name": "圣咏赐福",
+       "id": "skill_chanter_s8_holy_blessing"
+      },
+      {
+       "name": "英勇颂歌",
+       "id": "skill_chanter_s6_valiant_hymn"
+      },
+      {
+       "name": "不息赞歌",
+       "id": "skill_chanter_s5_endless_hymn"
+      },
+      {
+       "name": "光之赞礼",
+       "id": "skill_chanter_s3_light_blessing"
+      },
+      {
+       "name": "终焉颂歌",
+       "id": "skill_chanter_s2_finale_hymn"
+      },
+      {
+       "name": "续庭",
+       "id": "skill_chanter_s4_extend_session"
+      },
+      {
+       "name": "结庭",
+       "id": "skill_chanter_s3_close_session"
       }
      ],
-     "actual": 36,
+     "actual": 38,
      "actualSlots": [
       {
        "name": "歌颂",
@@ -10922,6 +11004,14 @@
       {
        "name": "终焉颂歌",
        "id": "skill_chanter_s2_finale_hymn"
+      },
+      {
+       "name": "续庭",
+       "id": "skill_chanter_s4_extend_session"
+      },
+      {
+       "name": "结庭",
+       "id": "skill_chanter_s3_close_session"
       }
      ]
     },
@@ -11078,9 +11168,11 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 2,
-     "total": 2,
-     "miss": []
+     "hit": 4,
+     "total": 5,
+     "miss": [
+      "结庭→notary"
+     ]
     },
     "跨系钩子": {
      "hit": 0,
