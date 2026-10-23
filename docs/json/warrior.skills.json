@@ -2005,6 +2005,24 @@
           "duration": 20,
           "target": "target",
           "note": "圣膏：药剂/圣膏/精油/印记四配方的共同底——涂过药的同伴皮更硬"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "ally",
+            "id": "remedy_mark"
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "self",
+              "note": "跨源读取：药记在场，额外回复 2"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 remedy_mark"
         }
       ],
       "variants": [

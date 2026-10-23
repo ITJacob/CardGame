@@ -417,6 +417,24 @@
           "actionPolicy": "full",
           "onExpire": "revert",
           "note": "提线木偶：动作由执线者说了算"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "deep_parasitized"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "同源共振：深度寄生显现，追加 2"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 deep_parasitized"
         }
       ],
       "frameworkFlags": [
@@ -650,6 +668,26 @@
             "target": "self"
           },
           "note": "嫁接：往既有惩罚条款后追加一段，不改原文"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "ally",
+            "id": "fate_gap"
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 3,
+              "duration": 20,
+              "target": "self",
+              "note": "同源共振：命运缝隙在，替身更实（护盾 3）"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 fate_gap"
         }
       ],
       "tentative": false,
