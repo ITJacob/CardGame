@@ -8,7 +8,7 @@
 |---|---|---:|---:|
 | lawyer | arbiter | 0.133 | 0.268 |
 | apprentice | assassin | 0.104 | 0.276 |
-| arbiter | lawyer | 0.133 | 0.286 |
+| arbiter | lawyer | 0.133 | 0.285 |
 | assassin | apprentice | 0.104 | 0.295 |
 | thief | apprentice | 0.164 | 0.295 |
 | corpse_collector | prisoner | 0.235 | 0.298 |

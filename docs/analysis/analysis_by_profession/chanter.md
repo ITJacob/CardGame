@@ -67,19 +67,19 @@
 
 **规模**：16 张技能（主动 11 / 被动 5）；稀有度分布：精良×5、普通×3、稀有×3、传说×3、史诗×2。
 
-**效果原语构成**（type，全量递归，共 39 处）：
+**效果原语构成**（type，全量递归，共 40 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 13 | 33.3% |
-| `damage` | 7 | 17.9% |
-| `modify_stat` | 2 | 5.1% |
-| `modify_resource` | 3 | 7.7% |
-| `dispel` | 3 | 7.7% |
-| `spawn` | 1 | 2.6% |
-| `heal` | 4 | 10.3% |
-| `domain` | 1 | 2.6% |
-| `set_luminance` | 5 | 12.8% |
+| `mount_status` | 13 | 32.5% |
+| `damage` | 7 | 17.5% |
+| `modify_stat` | 2 | 5.0% |
+| `modify_resource` | 4 | 10.0% |
+| `dispel` | 3 | 7.5% |
+| `spawn` | 1 | 2.5% |
+| `heal` | 4 | 10.0% |
+| `domain` | 1 | 2.5% |
+| `set_luminance` | 5 | 12.5% |
 
 **算子构成**（op，共 9 处）：
 
@@ -96,15 +96,16 @@
 | `defense` | 1 |
 | `attack` | 1 |
 
-**改动的资源（modify_resource，共 3 处）**：
+**改动的资源（modify_resource，共 4 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
 | `gauge.current` | 2 |
+| `secrecy` | 1 |
 | `lost` | 1 |
 
 **设计风格总结**：本轴偏【进攻·运营】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `mount_status`(13)、`damage`(7)、`set_luminance`(5)；属性杠杆集中在 `defense`、`attack`，资源杠杆集中在 `gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(13)、`damage`(7)、`set_luminance`(5)；属性杠杆集中在 `defense`、`attack`，资源杠杆集中在 `gauge.current`、`secrecy`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **神圣之国**：降临「神圣之国」4 回合：己方每 tick 回复 0.2 点生命、受伤 ×0.75；敌方每 tick 受到 0.4 点圣光伤害并被驱散 1 个增益；「光/净化」标签卡效果 ×1.3，「暗影/污秽」标签卡 ×0.7。自身迷失值 +1。
 
