@@ -55,7 +55,7 @@
 
 | 形态 | 次数 |
 |---|---:|
-| 具名单位引用 | 79 |
+| 具名单位引用 | 65 |
 | 区域蓝本引用 | 10 |
 | 复活（不产生新单位） | 7 |
 | 动态模板 | 2 |
@@ -65,7 +65,6 @@
 
 | 单位 | 引用次数 | 首引途径 | 池内 |
 |---|---:|---|---|
-| `unit_automaton` | 15 | 通识者 | ✓ |
 | `unit_beastling` | 11 | 耕种者 | ✓ |
 | `unit_skeleton` | 7 | 收尸人 | ✓ |
 | `unit_vermin` | 6 | 耕种者 | ✓ |
@@ -85,6 +84,7 @@
 | `unit_doll` | 1 | 耕种者 | ✓ |
 | `unit_ghoul` | 1 | 囚犯 | ✓ |
 | `unit_leviathan` | 1 | 水手 | ✓ |
+| `unit_automaton` | 1 | 通识者 | ✓ |
 | `unit_historical_echo` | 1 | 占卜家 | ✓ |
 | `unit_marionette` | 1 | 占卜家 | ✓ |
 | `unit_split_identity` | 1 | 观众 | ✓ |
@@ -97,14 +97,14 @@
 
 ### 1.4 按 unitType 分道的承载（卡面）
 
-三路承载合并：效果节点 filter.unitType 乘区 **2** 处（登记口径，当前数据零使用——晨曦领域的类型约束写在域 envRulesText 文本里，结构不可统计）、target.request 选靶约束 **9** 张卡、target_unit_type 条件谓词 **12** 处；另有 target_is_summoned 笼统召唤物谓词 **3** 处（此表按类型拆，不含它）。filter 不区分敌我（克制 / 加益只由效果方向决定）。
+三路承载合并：效果节点 filter.unitType 乘区 **2** 处（登记口径，当前数据零使用——晨曦领域的类型约束写在域 envRulesText 文本里，结构不可统计）、target.request 选靶约束 **9** 张卡、target_unit_type 条件谓词 **11** 处；另有 target_is_summoned 笼统召唤物谓词 **3** 处（此表按类型拆，不含它）。filter 不区分敌我（克制 / 加益只由效果方向决定）。
 
 | unitType | 次数 |
 |---|---:|
 | `UNDEAD` | 12 |
 | `SPIRIT` | 12 |
 | `DEMON` | 6 |
-| `CONSTRUCT` | 4 |
+| `CONSTRUCT` | 3 |
 | `ITEM` | 1 |
 
 ## 二、区域（zoneDefs 池 + 卡面 zone 用法）

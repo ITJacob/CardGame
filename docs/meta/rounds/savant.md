@@ -17,15 +17,18 @@
 |---|---|---|---|---|---|---|---|
 | astral | 星律 | status:law_edit | 规律权柄/虚假星象产层→星之祝福/完美之境/现实规律读层消费→规律复原或层数被消费清除 | 规律改写窗口：改哪条物理规律、改写持续多久 | sref:law_edit:虚假星象,星之祝福,规律权柄 | 7 | core×5,generic×1,trap×1 |
 | civilization | 文明 | status:enlightened | 教化权柄/导师产层→毁灭新生读层消费→层数被消费清除 | 文明沉淀节奏：教化铺给谁、何时毁灭新生兑现 |  | 7 | core×4,generic×2,bridge×1 |
-| craft | 造物 | status:construct | 硝酸甘油/王水/机械奇物/考古发掘/炼成产层→机械维修/注入灵魂/制造大师/灵魂熔炉/解离读层消费→造物被拆或层数被消费清除 | 造物投资档位与出厂时机：材质堆到哪档、何时出厂站场 | prim:modify_rule_slot:硝酸甘油,王水,齿轮装置;unitType:CONSTRUCT:机械维修,制造大师,炼成 | 14 | core×11,starter×2,generic×1 |
-| lore | 通识 | status:analysis_authority | 解析权柄/鉴定产层→学习权柄/现实知识/鉴定读层消费→层数被消费清除 | 解析对象选择：先鉴定谁、知识复用投给哪件造物 |  | 8 | core×5,starter×2,tech×1 |
+| craft | 造物 | status:construct | 考古发掘/机械奇物/炼成/制造权柄产层→机械维修/注入灵魂/解离/制造大师读层消费→造物被拆或层数被消费清除 | 造物投资档位与出厂时机：材质堆到哪档、何时出厂站场 | prim:modify_rule_slot:硝酸甘油,王水,齿轮装置;unitType:CONSTRUCT:机械维修,制造大师,炼成 | 14 | core×12,starter×2 |
+| lore | 通识 | status:analysis_authority | 解析权柄/鉴定产层→鉴定/学习权柄读层消费→层数被消费清除 | 解析对象选择：先鉴定谁、知识复用投给哪件造物 |  | 8 | core×5,starter×2,tech×1 |
 
 ### 跨轴钩子
 | 卡位 | 读轴 | 概念 | facet | 用途 |
 |---|---|---|---|---|
-| 星之祝福 | civilization | status | read | 读文明开化层数加成星祝 |
-| 导师 | craft | status | read | 读造物阶梯定导师增益 |
+| 星之祝福 | civilization | status | read | 读启迪层数加成星祝 |
+| 导师 | craft | status | read | 读造物层数定导师增益 |
 | 完美之境 | craft | status | read | 读造物层数展开完美之境 |
+| 鉴定 | craft | status | read | 鉴定造物样本回能 +1 |
+| 文明图卷 | astral | status | read | 规律改写在场时全队受启迪 |
+| 星轨推演 | craft | status | read | 造物层 ≥2 时推演回能 +1 |
 
 ### 跨系钩子
 | 枢纽状态 | 写入卡位 | 读取卡位 | participants |
@@ -52,3 +55,6 @@ role 推断分歧处置：导师降 bridge（civilization 卡读 craft 锚 const
 （防御规避对策语义——解离初定 tech 但为 craft 登记 payoff，角色冲突，回 core）;待定 3 卡——星轨推演/汲取/制造权柄→generic（泛用补位）。
 兑现率缺口（下一迭代轮输入）：construct/law_edit 两枢纽均已接线（lawyer/reader/arbiter 实证）；
 trap/tech/bridge 各仅 1 张。）
+
+
+（2026-10-24 **造物阶梯接线**（环节⑥ P2 候选落地，⑤）：维持「造物阶梯」命题，把造物层做成真经济——制造权柄产层并升 core；注入灵魂/解离读 construct 兑现，机械维修保持；制造大师改为 `craft_mastery` 状态 + on_spawn 触发（真正强化登场造物，阶梯门槛读 construct）；灵魂熔炉转主动「回炉」（耗 2 层造物换治疗/能量）；学习权柄、现实规律转主动并读解析权柄/规律改写。出厂模板从 19 张收敛到 6 张（配合 summon_cap 防自相挤占）。集火标记 ensouled（1 写 3 读），炼成补自伤原料。验收：score 77.5→86.2（轴健康 25.3→27.7，四轴 71.7/78.0/88.0/89.4；跨轴 5.6→13.1，跨系 15.0，结构 5.0）；playable_scan 双挂→理想态；差异化 31.6→30.4。）

@@ -16,9 +16,8 @@
         "鉴定"
       ],
       "payoffs": [
-        "学习权柄",
-        "现实知识",
-        "鉴定"
+        "鉴定",
+        "学习权柄"
       ],
       "note": "payoffs 2026-09-26 评审：学习权柄/现实知识 notes 级读层（卡面未实现 condition）⚠️ 证据级=notes；鉴定/危险规避已列 enabler 但 notes 自称 payoff，分类冲突待平衡期裁定 ｜ 2026-09-29 环节⑤：enablers 核正（危险规避不挂 analysis_authority 移出）；鉴定补产层段+读层段（payoff 升 landed，产层 20） ｜ 2026-10-03 骨架手术：文明换形 26 张（详见 designNote）"
     },
@@ -27,20 +26,18 @@
       "name": "造物",
       "statusId": "construct",
       "enablers": [
-        "硝酸甘油",
-        "王水",
-        "机械奇物",
         "考古发掘",
-        "炼成"
+        "机械奇物",
+        "炼成",
+        "制造权柄"
       ],
       "payoffs": [
         "机械维修",
         "注入灵魂",
-        "制造大师",
-        "灵魂熔炉",
-        "解离"
+        "解离",
+        "制造大师"
       ],
-      "note": "payoffs 2026-09-26 评审：机械维修/注入灵魂卡面以造物身份定向（落地）；制造大师/灵魂熔炉/解离 notes 级读层；construct 自带 stackThreshold 达 2 层占位 ｜ 2026-09-29 环节⑤：炼成/考古发掘补 construct 产层段（召唤者计数，产层 20）；机械维修补 construct 读层段（payoff 升 landed） ｜ 2026-10-02 批次十：制造大师补 CONSTRUCT 出厂协议段（签名 1→2）；机械维修 reforge 跨系读段 ｜ 2026-10-03 骨架手术：文明换形 26 张（详见 designNote）"
+      "note": "2026-10-24 ⑤：造物阶梯接线——制造权柄产层、注入灵魂/解离/制造大师读层；出厂模板从 19 张收敛到 6 张，制造大师改为 on_spawn 状态触发。"
     },
     "astral": {
       "symbol": "☄️",
@@ -84,7 +81,7 @@
       "flagship": true,
       "lore": "序列9 通识者 —— \"'唤醒记忆'：记起看过的所有知识\"",
       "flavor": "你合上眼，把读过的每一页在脑中重新翻开一遍——那些知识一直都在，只是需要被叫醒。",
-      "describe": "战斗开始时，自身能量 +8、能量上限 +5，持续整场。；出厂一台造物。",
+      "describe": "战斗开始时，自身能量 +8、能量上限 +5，持续整场。",
       "hook": [
         "on_battle_start"
       ],
@@ -103,14 +100,6 @@
           "mode": "delta",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
         }
       ],
       "tentative": false,
@@ -136,7 +125,7 @@
       "flagship": false,
       "lore": "序列9 通识者 —— \"精通王水、硝酸甘油、齿轮装置等\"",
       "flavor": "你扔出一小管摇晃过的硝酸甘油——它炸开的火光，比任何咒语都直白。",
-      "describe": "对一名敌人造成 2 点火焰伤害，并点燃 15tick。；规律改写：这一段的作用域被换成受重力约束的物理场。",
+      "describe": "对一名敌人造成 2 点火焰伤害，并点燃 15tick。规律改写：这一段的作用域被换成受重力约束的物理场。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -244,7 +233,7 @@
       "flagship": false,
       "lore": "序列9 通识者 —— \"精通王水、硝酸甘油、齿轮装置等\"",
       "flavor": "你泼出那瓶能溶解黄金的液体——护甲、机关、外壳，在它面前都只是待溶的金属。",
-      "describe": "对一名敌人造成 3 点毒素伤害，并摧毁其 5 点护甲。；规律改写：这一段的作用域被换成受重力约束的物理场。",
+      "describe": "对一名敌人造成 3 点毒素伤害，并摧毁其 5 点护甲。规律改写：这一段的作用域被换成受重力约束的物理场。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -311,7 +300,7 @@
       "flagship": false,
       "lore": "序列9 通识者 —— \"精通王水、硝酸甘油、齿轮装置等\"",
       "flavor": "你甩出一串咬合的齿轮，它们缠住敌人的手脚，让它慢了整整半拍。",
-      "describe": "对一名敌人造成 2 点物理伤害，行动条 -30。；规律改写：这一段的作用域被换成受重力约束的物理场。",
+      "describe": "对一名敌人造成 2 点物理伤害，行动条 -30。规律改写：这一段的作用域被换成受重力约束的物理场。",
       "cost": {
         "energy": 2,
         "cooldown": 20,
@@ -378,7 +367,7 @@
       "flagship": false,
       "lore": "序列8 考古学家 —— \"拥有历史知识、野外生存知识、遗迹禁忌知识\"",
       "flavor": "你知道的那些东西，本不该被人知道——但也正因如此，没有什么精神上的把戏能真正吓到你。",
-      "describe": "战斗开始时，自身精神抗性 +20%、毒素抗性 +10%，持续整场。；出厂一台造物。",
+      "describe": "战斗开始时，自身精神抗性 +20%、毒素抗性 +10%，持续整场。",
       "hook": [
         "on_battle_start"
       ],
@@ -398,14 +387,6 @@
           "mode": "delta",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
         }
       ],
       "sharedAcross": [
@@ -434,7 +415,7 @@
       "flagship": false,
       "lore": "序列8 考古学家 —— \"足够强壮的体魄\" + \"野外生存知识\"",
       "flavor": "长年在废墟与荒野里刨土的人，身体早就不是书房里的那具了。",
-      "describe": "战斗开始时，自身生命上限 +10，持续整场。；出厂一台造物。",
+      "describe": "战斗开始时，自身生命上限 +10，持续整场。",
       "hook": [
         "on_battle_start"
       ],
@@ -446,14 +427,6 @@
           "mode": "delta",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
         }
       ],
       "tentative": false,
@@ -537,7 +510,7 @@
       "flagship": false,
       "lore": "序列8 考古学家 —— \"能勉强应用仪式魔法\"",
       "flavor": "你用炭笔在脚下画了半圈残缺的仪式——它不完美，但足够让同伴的手更稳一点、刀更快一点。",
-      "describe": "使一名友军攻击 +2，持续 20tick。；出厂一台造物。",
+      "describe": "使一名友军攻击 +2，持续 20tick。",
       "cost": {
         "energy": 2,
         "cooldown": 20,
@@ -560,14 +533,6 @@
           "value": 2,
           "mode": "delta",
           "duration": 20
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
         }
       ],
       "tentative": false,
@@ -593,7 +558,7 @@
       "flagship": false,
       "lore": "序列7 鉴定师 —— \"快速鉴定神奇物品，不用占卜推理\" / \"直觉把握超凡物品的能力和问题，规避危险使用\"",
       "flavor": "你扫了一眼就报出它的来路、能力与致命缺陷——那件被它当作依凭的东西，顿时失去了光泽。",
-      "describe": "驱散一名敌人 1 个增益状态，并使其易伤 20tick；鉴定中解析权柄升华 +1 层；若解析权柄在场，解析透彻，额外再剥 1 个增益。；材质被重新定义过， Mohs 硬度不再站在它那边。",
+      "describe": "驱散一名敌人 1 个增益状态，并使其易伤 20tick；鉴定中解析权柄升华 +1 层；若解析权柄在场，解析透彻，额外再剥 1 个增益。材质被重新定义过， Mohs 硬度不再站在它那边；自身持造物层时鉴定回能 +1。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -673,6 +638,28 @@
             "physical": "material_redefined"
           },
           "note": "规律改写（物理语义）：材质被重新定义"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "construct",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "鉴定造物样本：解析所得回能 +1"
+            }
+          ],
+          "else": [],
+          "note": "lore 读 craft（跨轴）"
         }
       ],
       "sharedAcross": [
@@ -701,7 +688,7 @@
       "flagship": false,
       "lore": "序列7 鉴定师 —— \"规避危险使用\"（直觉把握超凡物品的问题，从而规避危险）",
       "flavor": "你早就看出哪里会出事——前两次落在你身上的重击，都被你提前挪开了半寸。",
-      "describe": "战斗开始时获得「危险规避」：可抵挡 2 次伤害（每次受到的伤害 ×0.5，消耗 1 层，归零卸载），持续整场。；目标带厄运标记则推演厄运，追加 2 点。；规律改写：这一段的作用域被换成受重力约束的物理场。",
+      "describe": "战斗开始时获得「危险规避」：可抵挡 2 次伤害（每次受到的伤害 ×0.5，消耗 1 层，归零卸载），持续整场。目标带厄运标记则推演厄运，追加 2 点。规律改写：这一段的作用域被换成受重力约束的物理场。",
       "hook": [
         "on_battle_start"
       ],
@@ -900,7 +887,7 @@
       "flagship": false,
       "lore": "序列6 机械专家 —— \"能制造机械奇物\"（本稿明确引申：能造即能养）",
       "flavor": "你掀开它的外壳，用扳手和焊枪在火花里把它重新拼回能站的样子。",
-      "describe": "治疗一名造物单位 5 点生命；若自身造物计数 ≥1，熟能生巧，额外治疗 2 点。；若目标带有再现重铸（窥秘人枢纽），再现修理共鸣，额外治疗 2 点。；返厂维修：把自己拆解重装一遍。",
+      "describe": "治疗一名造物单位 5 点生命；若自身造物计数 ≥1，熟能生巧，额外治疗 2 点。若目标带有再现重铸（窥秘人枢纽），再现修理共鸣，额外治疗 2 点。返厂维修：把自己拆解重装一遍；目标为活化造物时治疗 +2。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -995,6 +982,25 @@
           ],
           "else": [],
           "note": "跨系接线（2026-10-23）：读取枢纽 reforge"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "ensouled",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "note": "活化造物更好修：治疗 +2"
+            }
+          ],
+          "else": [],
+          "note": "活化造物集火读取（ensouled）"
         }
       ],
       "tentative": false,
@@ -1020,67 +1026,17 @@
       "flagship": false,
       "lore": "序列6 机械专家 —— \"'制造大师'：成形的超凡物品负面影响低、效果好\"",
       "flavor": "出自你手的东西，总是比图纸上更好一点——更硬、更利，也更不容易出岔子。",
-      "describe": "你召唤的造物登场时攻击 +2、生命上限 +6、护甲 +2（随 spawn 载荷结算，不占触发点）。；若登场造物为构装体（CONSTRUCT），出厂协议预充能：其行动条 +10。；出厂一台造物。",
+      "describe": "你召唤的造物登场时攻击 +2、生命上限 +6、护甲 +2；构装体额外行动条 +10。仅在自身持有造物层（图纸）时生效。",
       "hook": [
         "on_spawn"
       ],
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 2,
-              "mode": "delta",
-              "duration": null,
-              "target": "target",
-              "note": "target = 本次登场造物（anchor: spawned_unit）"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "hp_max",
-              "value": 6,
-              "mode": "delta",
-              "duration": null,
-              "target": "target"
-            },
-            {
-              "type": "modify_resource",
-              "resource": "armor",
-              "value": 2,
-              "mode": "delta",
-              "target": "target"
-            },
-            {
-              "op": "if",
-              "condition": {
-                "kind": "target_unit_type",
-                "type": [
-                  "CONSTRUCT"
-                ]
-              },
-              "then": [
-                {
-                  "type": "modify_resource",
-                  "resource": "gauge.current",
-                  "value": 10,
-                  "mode": "delta",
-                  "target": "target",
-                  "note": "构装出厂协议：登场造物为构装体（人偶/魔像系）即预充能行动条 +10——CONSTRUCT 签名第二实证（批次十 2026-10-02）"
-                }
-              ],
-              "else": []
-            }
-          ]
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
+          "type": "mount_status",
+          "statusId": "craft_mastery",
+          "duration": null,
+          "target": "self",
+          "note": "制造大师：持图施工，你出厂的造物登场即按图纸强化"
         }
       ],
       "tentative": false,
@@ -1106,7 +1062,7 @@
       "flagship": false,
       "lore": "序列9 通识者 —— \"记忆、学习和实践能力非凡化\"（实践 → 越做越熟）",
       "flavor": "每做成一件东西，你的手就更稳一分——下一次，你会更快。",
-      "describe": "你召唤的造物每次登场，你回复 2 点能量（每场最多 3 次）。；出厂一台造物。",
+      "describe": "你召唤的造物每次登场，你回复 2 点能量（每场最多 3 次）。",
       "hook": [
         "on_spawn"
       ],
@@ -1119,14 +1075,6 @@
           "target": "self",
           "maxTriggersPerBattle": 3,
           "note": "寻址施法者用 F56 casterId"
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
         }
       ],
       "tentative": false,
@@ -1152,7 +1100,7 @@
       "flagship": false,
       "lore": "序列5 天文学家 —— （观星与推演；\"虚假星象\"的能力前提）",
       "flavor": "你夜夜推演星轨，偶尔能从繁杂的轨迹里读出一点有用的东西——不一定每次都有。",
-      "describe": "你每次行动开始时有 40% 概率回复 2 点能量。；出厂一台造物。",
+      "describe": "你每次行动开始时有 40% 概率回复 2 点能量；自身造物层 ≥2 时每次推演回能 +1。",
       "hook": [
         "on_turn_start"
       ],
@@ -1170,12 +1118,26 @@
           "note": "R3 登记 / R4 单次抽样 / R5 非伤害维度（回能，合规）；期望 0.8 能量/回合"
         },
         {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "construct",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "按图纸推演：回能再 +1"
+            }
+          ],
+          "else": [],
+          "note": "astral 读 craft（跨轴）"
         }
       ],
       "sharedAcross": [
@@ -1211,7 +1173,7 @@
       "flagship": false,
       "lore": "序列5 天文学家 —— \"'虚假星象'：伪造星空迷惑/干扰占星，百米内引起现象\"",
       "flavor": "你为它伪造了一整片星空——它抬头，看见的星座指向错误的方向，于是一拳砸向了空处。",
-      "describe": "对一名敌人造成 2 点精神伤害，并使其陷入「虚假星象」20tick：接下来 2 次攻击打向空处；扰乱中改写局部规律，自身规律改写 +1 层（25tick）。；规律改写：这一段的作用域被换成受重力约束的物理场。",
+      "describe": "对一名敌人造成 2 点精神伤害，并使其陷入「虚假星象」20tick：接下来 2 次攻击打向空处；扰乱中改写局部规律，自身规律改写 +1 层（25tick）。规律改写：这一段的作用域被换成受重力约束的物理场。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1301,7 +1263,7 @@
       "flagship": false,
       "lore": "序列5 天文学家 —— \"'星之祝福'：引来星光改变重力\"",
       "flavor": "星光落在同伴肩上，重力轻了几分——它抬起脚，比以往任何时候都更快。",
-      "describe": "使一名友军行动条速率 +8，持续 25tick；若自身规律改写在场，规律加持额外 +4；若自身持有启迪，额外再 +4。；出厂一台造物。",
+      "describe": "使一名友军行动条速率 +8，持续 25tick；若自身规律改写在场，规律加持额外 +4；若自身持有启迪，额外再 +4；目标为活化造物时速率再 +5。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1371,12 +1333,27 @@
           "else": []
         },
         {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "ensouled",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 5,
+              "mode": "delta",
+              "duration": 25,
+              "target": "target",
+              "note": "星光灌入活化造物：速率再 +5"
+            }
+          ],
+          "else": [],
+          "note": "活化造物集火读取（ensouled）"
         }
       ],
       "tentative": false,
@@ -1420,7 +1397,7 @@
       "flagship": false,
       "lore": "序列5 天文学家 —— \"'星之诅咒'：星光射线带来衰弱/变异/创伤\"",
       "flavor": "一道看不见的星光射线穿透了它——伤口不深，却在持续溃烂、扭曲，而它连挥刀的力气都在流失。",
-      "describe": "对一名敌人造成 4 点精神伤害，并使其衰弱 / 创伤 20tick（攻击 -3、受伤 ×1.15）；35% 概率额外使其易伤。；规律改写：这一段的作用域被换成受重力约束的物理场。",
+      "describe": "对一名敌人造成 4 点精神伤害，并使其衰弱 / 创伤 20tick（攻击 -3、受伤 ×1.15）；35% 概率额外使其易伤。规律改写：这一段的作用域被换成受重力约束的物理场。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1508,7 +1485,7 @@
       "flagship": true,
       "lore": "序列4 炼金术士 —— \"'炼成'（核心）：就地取材制造临时人偶和器物\"",
       "flavor": "你抓起脚下的碎石与铁屑，在掌心里捏成一具人形——它睁开眼，认你为主人，但它不会活太久。",
-      "describe": "在己方队尾炼成一具临时人偶（50% 生命），30tick 后自行崩解；自身造物计数 +1。",
+      "describe": "在己方队尾炼成一具临时人偶（50% 生命），30tick 后自行崩解；自身造物计数 +1；自身生命 -2（炼成原料）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1542,6 +1519,14 @@
           "duration": null,
           "target": "self",
           "note": "ddd 源质维度 §1.4：造物为跨系枢纽状态，召唤者计数（环节⑤ 2026-09-29 补产层段）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "hp",
+          "value": -2,
+          "mode": "delta",
+          "target": "self",
+          "note": "炼成原料：以自身血肉为引"
         }
       ],
       "upgradeLadder": {
@@ -1604,7 +1589,7 @@
       "flagship": false,
       "lore": "序列4 炼金术士 —— \"能为自己制造的物品注入灵魂，给予生命\"",
       "flavor": "你把自己的一缕灵性按进它胸口的凹槽——它不再是零件了：它会疼，也会在散架前替你咬下一块肉。",
-      "describe": "点活一名造物：攻击 +3、生命上限 +5（永久）；它死亡时对相邻敌方造成 5 点物理伤害（亡语）。只能对造物使用。；材质被重新定义过， Mohs 硬度不再站在它那边；若目标已被附身物体，额外攻击 +2。",
+      "describe": "点活一名造物：攻击 +3、生命上限 +5（永久）；它死亡时对相邻敌方造成 5 点物理伤害（亡语）。只能对造物使用。材质被重新定义过， Mohs 硬度不再站在它那边；若目标已被附身物体，额外攻击 +2；自身造物层 ≥2 时额外攻击 +1。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1662,6 +1647,29 @@
           ],
           "else": [],
           "note": "跨系接线（2026-10-23）：读取枢纽 object_possession（囚犯附身于物 ↔ 通识者给物赋律，同一「活化之物」两面）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "construct",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": null,
+              "target": "target",
+              "note": "图纸在手：灵魂点得更稳，攻击再 +1"
+            }
+          ],
+          "else": [],
+          "note": "craft 收束：读 construct ≥2"
         }
       ],
       "tentative": false,
@@ -1678,7 +1686,7 @@
     {
       "id": "skill_savant_s4_soul_forge",
       "name": "灵魂熔炉",
-      "kind": "passive",
+      "kind": "active",
       "sequence": 4,
       "sequenceName": "炼金术士",
       "rarity": "rare",
@@ -1687,27 +1695,29 @@
       "flagship": false,
       "lore": "序列4 炼金术士 —— （\"炼成 / 就地取材\"的本稿引申：回收材料）",
       "flavor": "它散架的那一刻，你伸手接住了还在发烫的残骸——材料不该被浪费。",
-      "describe": "你召唤的造物每次死亡，你回复 4 点能量（每场最多 3 次）。；出厂一台造物。",
-      "hook": [
-        "on_death"
-      ],
+      "describe": "消耗 2 层造物：全体友军回复 3 点生命，自身能量 +4。",
       "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "construct",
+          "stacks": -2,
+          "stackMode": "consume",
+          "target": "self",
+          "note": "回炉：拆掉两层造物图纸"
+        },
+        {
+          "type": "heal",
+          "value": 3,
+          "target": "all_allies",
+          "note": "熔炉余温修补全军"
+        },
         {
           "type": "modify_resource",
           "resource": "energy",
           "value": 4,
           "mode": "delta",
           "target": "self",
-          "maxTriggersPerBattle": 3,
-          "note": "F56 寻址施法者；限定\"由你召唤的造物\"（casterOwned 过滤）"
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
+          "note": "回炉产出能量"
         }
       ],
       "tentative": false,
@@ -1719,6 +1729,21 @@
           "outstretched catching hands"
         ],
         "mood": "reclaiming, unsentimental"
+      },
+      "cost": {
+        "energy": 3,
+        "cooldown": 25,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "mode": "unit",
+          "faction": "self",
+          "anchor": "caster",
+          "pickCount": 1
+        }
       }
     },
     {
@@ -1792,7 +1817,7 @@
       "flagship": false,
       "lore": "序列3 奥秘学者 —— \"'解离'：发射光芒破坏物品结构，分解为屑末\"",
       "flavor": "一道白光打在它的护甲上——那层金属没有碎裂，而是像被抹去了定义一样，化作一地粉末。",
-      "describe": "对一名敌人造成 3 点物理伤害，直接摧毁其护盾，并击碎 8 点护甲。；规律改写：这一段的作用域被换成受重力约束的物理场。",
+      "describe": "对一名敌人造成 3 点物理伤害，直接摧毁其护盾，并击碎 8 点护甲。规律改写：这一段的作用域被换成受重力约束的物理场；自身造物层 ≥1 时额外击碎 2 点护甲。",
       "cost": {
         "energy": 4,
         "cooldown": 20,
@@ -1841,6 +1866,27 @@
             "physical": "gravity_weighted"
           },
           "note": "规律改写（物理语义）：作用域换成受重力约束的场"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "construct",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "armor",
+              "value": -2,
+              "mode": "delta",
+              "note": "造物结构学：多拆 2 点护甲"
+            }
+          ],
+          "else": [],
+          "note": "craft 收束：读 construct"
         }
       ],
       "tentative": false,
@@ -1866,7 +1912,7 @@
       "flagship": false,
       "lore": "序列3 奥秘学者 —— \"'知识妖精'：转化为知识进入目标心智体\"",
       "flavor": "你把自己拆解成一段纯粹的知识，钻进它的脑海——它看不见你，而它每挨一下，你都读得更清楚一点。",
-      "describe": "自身化为知识 15tick（敌方单体技能无法选中你、你造成的伤害视为精神），并与一名敌人建立链接 20tick：它每次受击你回复 2 点能量。；材质被重新定义过， Mohs 硬度不再站在它那边。",
+      "describe": "自身化为知识 15tick（敌方单体技能无法选中你、你造成的伤害视为精神），并与一名敌人建立链接 20tick：它每次受击你回复 2 点能量。材质被重新定义过， Mohs 硬度不再站在它那边。",
       "cost": {
         "energy": 4,
         "cooldown": 30,
@@ -2086,7 +2132,7 @@
       "flagship": false,
       "lore": "序列2 知识导师 —— \"'解析'权柄增强：看到天使本质\"",
       "flavor": "没有什么能在你面前藏住它的本质——伪装的本质是信息，而你恰好最擅长读信息。",
-      "describe": "战斗开始时获得「解析权柄」：敌方隐匿 / 不可选中类状态对你无效，你对持有增益的目标造成的伤害 ×1.25，持续整场。；出厂一台造物：这份收益挂在新下线的机械身上。",
+      "describe": "战斗开始时获得「解析权柄」：敌方隐匿 / 不可选中类状态对你无效，你对持有增益的目标造成的伤害 ×1.25，持续整场。：这份收益挂在新下线的机械身上。",
       "hook": [
         "on_battle_start"
       ],
@@ -2096,14 +2142,6 @@
           "statusId": "analysis_authority",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物：收益随文明规模缩放"
         }
       ],
       "sharedAcross": [
@@ -2123,7 +2161,7 @@
     {
       "id": "skill_savant_s2_learning_authority",
       "name": "学习权柄",
-      "kind": "passive",
+      "kind": "active",
       "sequence": 2,
       "sequenceName": "知识导师",
       "rarity": "epic",
@@ -2132,27 +2170,24 @@
       "flagship": false,
       "lore": "序列2 知识导师 —— \"'学习'权柄（弱化）\"",
       "flavor": "你学得比谁都快——战斗拖得越久，你越清楚该怎么打。",
-      "describe": "战斗开始时，自身能量恢复 +0.3/tick，持续整场。；出厂一台造物。",
-      "hook": [
-        "on_battle_start"
-      ],
+      "describe": "消耗 1 层解析权柄：自身能量恢复 +0.3/tick，持续 20tick。",
       "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "analysis_authority",
+          "stacks": -1,
+          "stackMode": "consume",
+          "target": "self",
+          "note": "把解析所得转成学识"
+        },
         {
           "type": "modify_stat",
           "stat": "energy_regen",
           "value": 0.3,
           "mode": "delta",
-          "duration": null,
+          "duration": 20,
           "target": "self",
-          "note": "G14：单位 per tick，不写\"每回合\""
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
+          "note": "学以致用：能量恢复 +0.3/tick（20tick）"
         }
       ],
       "tentative": false,
@@ -2164,6 +2199,21 @@
           "rapidly annotated foe"
         ],
         "mood": "absorbing, accelerating"
+      },
+      "cost": {
+        "energy": 2,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "mode": "unit",
+          "faction": "self",
+          "anchor": "caster",
+          "pickCount": 1
+        }
       }
     },
     {
@@ -2173,7 +2223,7 @@
       "sequence": 2,
       "sequenceName": "知识导师",
       "rarity": "epic",
-      "role": "generic",
+      "role": "core",
       "axis": "craft",
       "flagship": false,
       "lore": "序列2 知识导师 —— \"'制造'权柄（弱化）\"",
@@ -2184,7 +2234,15 @@
         "cooldown": 30,
         "castTime": 2
       },
-      "effects": [],
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "construct",
+          "stacks": 1,
+          "target": "self",
+          "note": "批量制造的图纸计数"
+        }
+      ],
       "tentative": false,
       "conversionNotes": [
         "联动：一次召唤两台 → 熟能生巧结算 2 次（受每场 3 次上限约束） ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 10tick（序列 2 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：craft轴 self+point（轴选靶签名设计 §4）",
@@ -2218,7 +2276,7 @@
       "flagship": false,
       "lore": "序列2 知识导师 —— \"'导师'\"",
       "flavor": "你没有替它出手，你只是指了指——它便明白了一直没想通的那一招。",
-      "describe": "使一名友军伤害 ×1.2 并回复 3 点能量，持续 25tick，同时启迪之（enlightened）；若目标带有造物计数，导师也懂造物学，额外回复 2 点能量。；材质被重新定义过， Mohs 硬度不再站在它那边。",
+      "describe": "使一名友军伤害 ×1.2 并回复 3 点能量，持续 25tick，同时启迪之（enlightened）；若目标带有造物计数，导师也懂造物学，额外回复 2 点能量。材质被重新定义过， Mohs 硬度不再站在它那边；目标为活化造物时额外回能 +1。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -2278,6 +2336,28 @@
             "physical": "material_redefined"
           },
           "note": "规律改写（物理语义）：材质被重新定义"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "ensouled",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "target",
+              "note": "点化活化造物：额外回能 +1"
+            }
+          ],
+          "else": [],
+          "note": "活化造物集火读取（ensouled）"
         }
       ],
       "tentative": false,
@@ -2303,7 +2383,7 @@
       "flagship": true,
       "lore": "序列1 启蒙者 —— \"可展现完整的文明图卷\"",
       "flavor": "你在战场中央展开一幅完整的文明图卷：城市、田野、熔炉与学堂。同伴站在图上，忽然知道自己为何而战；而敌人脚下那些野蛮的、混乱的东西，开始自行崩解。",
-      "describe": "降临「文明图卷」界域 3 回合（可驱散）：己方每回合开始攻击 +3、防御 +3；敌方每 tick 被驱散 1 个增益状态；「文明 / 造物」标签卡效果 ×1.2。自身迷失值 +1。",
+      "describe": "降临「文明图卷」界域 3 回合（可驱散）：己方每回合开始攻击 +3、防御 +3；敌方每 tick 被驱散 1 个增益状态；「文明 / 造物」标签卡效果 ×1.2。自身迷失值 +1；自身规律改写在场时，全体友军获得 1 层启迪（20tick）。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2338,6 +2418,28 @@
               "note": "界域操作租金"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "law_edit",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "enlightened",
+              "stacks": 1,
+              "duration": 20,
+              "target": "all_allies",
+              "note": "规律在卷：图卷展开时全队受启迪"
+            }
+          ],
+          "else": [],
+          "note": "civilization 读 astral（跨轴）"
         }
       ],
       "tentative": false,
@@ -2452,7 +2554,7 @@
       "flagship": false,
       "lore": "序列1 启蒙者 —— \"'教化'权柄：提升目标智慧，给予启迪灵感\"",
       "flavor": "你点亮了它的脑子——它还是它，但它忽然看懂了眼前这场战斗，甚至想到了你没教过的打法。",
-      "describe": "使一名友军伤害 ×1.25、能量恢复 +0.3/tick、精神抗性 +20，持续 30tick。；出厂一台造物：这份收益挂在新下线的机械身上。",
+      "describe": "使一名友军伤害 ×1.25、能量恢复 +0.3/tick、精神抗性 +20，持续 30tick。：这份收益挂在新下线的机械身上。",
       "cost": {
         "energy": 5,
         "cooldown": 35,
@@ -2474,14 +2576,6 @@
           "type": "mount_status",
           "statusId": "enlightened",
           "duration": 30
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物：收益随文明规模缩放"
         }
       ],
       "tentative": false,
@@ -2507,7 +2601,7 @@
       "flagship": false,
       "lore": "序列0 完美者 —— （\"完美\"：己方趋近完美，敌方显出残缺）",
       "flavor": "你在战场上写下\"完美\"二字——你的同伴忽然没有短板，而敌人身上每一处将就，都被照了出来。",
-      "describe": "全体友军获得 6 点护盾（25tick）、行动条速率 +6（25tick）；全体敌方护甲 -8、行动条速率 -6（25tick）。；并向战场规则追加「完美引力」（物理规律改写，不覆盖既有规则）；若自身造物计数 ≥1，文明底蕴，全体友军额外护盾 +2（25tick）。",
+      "describe": "全体友军获得 6 点护盾（25tick）、行动条速率 +6（25tick）；全体敌方护甲 -8、行动条速率 -6（25tick）。并向战场规则追加「完美引力」（物理规律改写，不覆盖既有规则）；若自身造物计数 ≥1，文明底蕴，全体友军额外护盾 +2（25tick）；自身规律改写在场时全体友军再 +2 护盾。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2590,6 +2684,28 @@
               "else": []
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "law_edit",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 2,
+              "duration": 25,
+              "target": "all_allies",
+              "note": "规律共鸣：完美引力下再叠 2 护盾"
+            }
+          ],
+          "else": [],
+          "note": "astral 收束：读 law_edit"
         }
       ],
       "tentative": false,
@@ -2622,7 +2738,7 @@
       "flagship": false,
       "lore": "序列0 完美者 —— \"'现实知识'权柄：掌握现实世界全部知识并可修改\"",
       "flavor": "你知道这个世界全部的图纸——包括你自己那一张。于是你提笔，把上面几个数字改了一下。",
-      "describe": "战斗开始时，自身生命上限 +20、能量上限 +20、攻击 +3，持续整场（改的是基础值，不可驱散）。；出厂一台造物。",
+      "describe": "战斗开始时，自身生命上限 +20、能量上限 +20、攻击 +3，持续整场（改的是基础值，不可驱散）。",
       "hook": [
         "on_battle_start"
       ],
@@ -2650,14 +2766,6 @@
           "mode": "delta",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
         }
       ],
       "tentative": false,
@@ -2674,7 +2782,7 @@
     {
       "id": "skill_savant_s0_reality_law",
       "name": "现实规律",
-      "kind": "passive",
+      "kind": "active",
       "sequence": 0,
       "sequenceName": "完美者",
       "rarity": "legendary",
@@ -2683,45 +2791,39 @@
       "flagship": false,
       "lore": "序列0 完美者 —— \"'规律'权柄（偏现实）\"",
       "flavor": "开战之前，你就已经改写了现实世界里那条与你为敌的规律——从此，这种东西伤不到你的同伴。",
-      "describe": "战斗开始时，全体友军对构筑时选定元素的抗性 +40，持续整场。；出厂一台造物。",
-      "hook": [
-        "on_battle_start"
-      ],
+      "describe": "全体友军获得构筑元素抗性 +40（20tick）；自身规律改写在场时再 +10。",
       "effects": [
         {
           "type": "modify_stat",
           "stat": "resist:$buildElement",
           "value": 40,
           "mode": "delta",
-          "duration": null,
+          "duration": 20,
           "target": "all_allies",
-          "note": "元素在构筑（派发）时选定，非战斗中选；resist:<元素> 为既有 StatKey"
-        },
-        {
-          "type": "spawn",
-          "unitId": "unit_automaton",
-          "count": 1,
-          "position": "tail",
-          "consumption": "summon",
-          "note": "出厂一台造物"
+          "note": "构筑元素抗性 +40（20tick）"
         },
         {
           "op": "if",
           "condition": {
             "kind": "has_status",
-            "side": "ally",
-            "id": "law_authority"
+            "side": "self",
+            "id": "law_edit",
+            "cmp": ">=",
+            "n": 1
           },
           "then": [
             {
-              "type": "damage",
-              "element": "none",
-              "value": 1,
-              "note": "跨源读取：规律权柄在场，追加 1"
+              "type": "modify_stat",
+              "stat": "resist:$buildElement",
+              "value": 10,
+              "mode": "delta",
+              "duration": 20,
+              "target": "all_allies",
+              "note": "规律改写在场：抗性再 +10"
             }
           ],
           "else": [],
-          "note": "跨系接线（2026-10-23）：读取枢纽 law_authority"
+          "note": "astral 收束：读 law_edit"
         }
       ],
       "variants": [
@@ -2784,6 +2886,21 @@
           "ink rewriting itself"
         ],
         "mood": "final, preemptive"
+      },
+      "cost": {
+        "energy": 4,
+        "cooldown": 30,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "mode": "unit",
+          "faction": "self",
+          "anchor": "caster",
+          "pickCount": 1
+        }
       }
     }
   ],
@@ -2933,8 +3050,8 @@
       "passives": [
         "制造大师",
         "熟能生巧",
-        "灵魂熔炉",
-        "荒野体魄"
+        "荒野体魄",
+        "遗迹禁忌知识"
       ],
       "playstyle": "造物体：机械奇物铺场、炼成产临时件，造物计数≥3 触发炼成即注入灵魂、维修强化；造物死回能滚雪球"
     },
@@ -2948,9 +3065,9 @@
       ],
       "passives": [
         "星轨推演",
-        "现实规律",
         "解析权柄",
-        "遗迹禁忌知识"
+        "遗迹禁忌知识",
+        "唤醒记忆"
       ],
       "playstyle": "星象标记干扰占星+打空，星之祝福/诅咒压血线；规律权柄针对元素减半，现实规律构筑期锁抗性"
     },
@@ -2963,10 +3080,10 @@
         "文明图卷"
       ],
       "passives": [
-        "学习权柄",
-        "灵魂熔炉",
         "危险规避",
-        "现实知识"
+        "现实知识",
+        "解析权柄",
+        "星轨推演"
       ],
       "playstyle": "磨与续航：汲取回血、知识妖精潜入回能，教化喂主C，文明图卷一次性抬全队（界域）"
     },
