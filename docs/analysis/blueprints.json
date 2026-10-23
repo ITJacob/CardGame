@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-23",
+ "generated": "2026-10-24",
  "standard": "docs/meta/WORKFLOW.md#玩法蓝图",
  "rubric": {
   "命题": 10,
@@ -5056,7 +5056,7 @@
        "空间隐藏"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.4
+      "axisScore": 82.6
      }
     },
     {
@@ -6778,20 +6778,24 @@
    "name": "怪物",
    "state": "回溯补登",
    "date": "2026-10-21",
-   "score": 99,
+   "score": 97,
    "scoreParts": {
     "命题": 10,
     "风格边界": 15,
     "轴循环": 25,
     "决策点": 10,
     "签名键": 15,
-    "角色配比": 14,
+    "角色配比": 12,
     "钩子": 10
    },
    "deductions": [
     {
      "dim": "角色配比",
      "why": "途径级缺角色：generic（五角色途径各 ≥1）"
+    },
+    {
+     "dim": "角色配比",
+     "why": "旗舰须恰 4 张且 ∈ core∪trap 卡位（当前 0 张）"
     }
    ],
    "proposition": {
@@ -6821,24 +6825,28 @@
       "raw": "status:inspiration_sense"
      },
      "loop": {
-      "produce": "灵感超高/绝对灵感/超强预感产层",
-      "consume": "危险预感/反占卜/命运看守者读层消费",
-      "clear": "层数被消费或预感兑现清除",
+      "produce": "灵感超高/超强预感/绝对灵感产层",
+      "consume": "未来画面/危险预感/反占卜读层消费",
+      "clear": "灵感层被兑现或预感期满清除",
       "produceCards": [
        {
         "name": "灵感超高",
         "id": "skill_monster_s9_inspiration_sense"
        },
        {
-        "name": "绝对灵感",
-        "id": "skill_monster_s4_absolute_inspiration"
-       },
-       {
         "name": "超强预感",
         "id": "skill_monster_s5_fate_sight"
+       },
+       {
+        "name": "绝对灵感",
+        "id": "skill_monster_s4_absolute_inspiration"
        }
       ],
       "consumeCards": [
+       {
+        "name": "未来画面",
+        "id": "skill_monster_s9_future_sight"
+       },
        {
         "name": "危险预感",
         "id": "skill_monster_s9_danger_sense"
@@ -6846,14 +6854,10 @@
        {
         "name": "反占卜",
         "id": "skill_monster_s8_anti_divination"
-       },
-       {
-        "name": "命运看守者",
-        "id": "skill_monster_s3_fate_warden"
        }
       ]
      },
-     "decision": "预感铺向与兑现时机：先看谁、灵感层数何时转成防守/反制",
+     "decision": "预感铺向与兑现时机：先看谁、灵感何时换成提前量/减伤/运气",
      "signatures": [
       {
        "key": "prim:restore_snapshot",
@@ -6863,57 +6867,55 @@
          "id": "skill_monster_s9_inspiration_sense"
         },
         {
-         "name": "危险预感",
-         "id": "skill_monster_s9_danger_sense"
-        },
-        {
-         "name": "未来画面",
-         "id": "skill_monster_s9_future_sight"
+         "name": "重启",
+         "id": "skill_monster_s1_reboot"
         }
        ],
-       "empirical": 30,
+       "empirical": 2,
        "ok": true
       },
       {
        "key": "res:fate_value",
        "slots": [
         {
-         "name": "命运潮汐",
-         "id": "skill_monster_s7_fate_tide"
-        },
-        {
-         "name": "命运看守者",
-         "id": "skill_monster_s3_fate_warden"
-        },
-        {
          "name": "命运启示",
          "id": "skill_monster_s2_fate_revelation"
+        },
+        {
+         "name": "福祸之言",
+         "id": "skill_monster_s2_fortune_words"
         }
        ],
-       "empirical": 5,
+       "empirical": 6,
        "ok": true
       }
      ],
-     "planCards": 13,
+     "planCards": 10,
      "roleMixDeclared": {
-      "core": 11,
+      "core": 8,
       "starter": 1,
-      "bridge": 1
+      "tech": 1
      },
      "actual": {
-      "cards": 13,
+      "cards": 10,
       "roleMix": {
-       "core": 11,
+       "core": 8,
        "starter": 1,
        "bridge": 1
       },
       "anchorMatch": true,
       "enablers": [
-       "灵感超高"
+       "灵感超高",
+       "超强预感",
+       "绝对灵感"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "未来画面",
+       "危险预感",
+       "反占卜"
+      ],
       "payoffsNotes": [],
-      "axisScore": 53.2
+      "axisScore": 81.6
      }
     },
     {
@@ -6926,8 +6928,8 @@
       "raw": "status:fortune"
      },
      "loop": {
-      "produce": "幸运者/命运潮汐/福祸之言产层",
-      "consume": "赢家/赐福/命运启示读层消费",
+      "produce": "幸运者/引发灾祸/福祸之言产层",
+      "consume": "赢家/赐福/重启循环/命运潮汐/命运看守者读层消费",
       "clear": "层数被消费或摆向逆转清除",
       "produceCards": [
        {
@@ -6935,8 +6937,8 @@
         "id": "skill_monster_s7_lucky_streak"
        },
        {
-        "name": "命运潮汐",
-        "id": "skill_monster_s7_fate_tide"
+        "name": "引发灾祸",
+        "id": "skill_monster_s6_cause_calamity"
        },
        {
         "name": "福祸之言",
@@ -6953,26 +6955,55 @@
         "id": "skill_monster_s4_blessing_gift"
        },
        {
-        "name": "命运启示",
-        "id": "skill_monster_s2_fate_revelation"
+        "name": "重启循环",
+        "id": "skill_monster_s1_reboot_cycle"
+       },
+       {
+        "name": "命运潮汐",
+        "id": "skill_monster_s7_fate_tide"
+       },
+       {
+        "name": "命运看守者",
+        "id": "skill_monster_s3_fate_warden"
        }
       ]
      },
      "decision": "幸运堆叠对象：幸运铺给谁、何时赢家通收",
-     "signatures": [],
-     "planCards": 6,
+     "signatures": [
+      {
+       "key": "res:fate_value",
+       "slots": [
+        {
+         "name": "命运启示",
+         "id": "skill_monster_s2_fate_revelation"
+        },
+        {
+         "name": "福祸之言",
+         "id": "skill_monster_s2_fortune_words"
+        },
+        {
+         "name": "命运循环",
+         "id": "skill_monster_s1_fate_loop"
+        }
+       ],
+       "empirical": 6,
+       "ok": true
+      }
+     ],
+     "planCards": 7,
      "roleMixDeclared": {
-      "core": 5,
+      "core": 6,
       "trap": 1
      },
      "actual": {
-      "cards": 6,
+      "cards": 7,
       "roleMix": {
-       "core": 5,
+       "core": 6,
        "trap": 1
       },
       "anchorMatch": true,
       "enablers": [
+       "幸运者",
        "引发灾祸",
        "福祸之言"
       ],
@@ -6983,11 +7014,8 @@
        "命运潮汐",
        "命运看守者"
       ],
-      "payoffsNotes": [
-       "命运启示",
-       "命运循环"
-      ],
-      "axisScore": 70.1
+      "payoffsNotes": [],
+      "axisScore": 86.7
      }
     },
     {
@@ -7000,7 +7028,7 @@
       "raw": "status:misfortune"
      },
      "loop": {
-      "produce": "给予厄运/厄运诅咒/预见灾祸产层",
+      "produce": "给予厄运/厄运诅咒产层",
       "consume": "绝对灵感/命运看守者读层消费",
       "clear": "厄运被净化或层数被消费清除",
       "produceCards": [
@@ -7011,10 +7039,6 @@
        {
         "name": "厄运诅咒",
         "id": "skill_monster_s4_misfortune_curse"
-       },
-       {
-        "name": "预见灾祸",
-        "id": "skill_monster_s6_calamity_foresight"
        }
       ],
       "consumeCards": [
@@ -7030,14 +7054,14 @@
      },
      "decision": "厄运泼洒次序：先厄谁、灾祸何时引爆",
      "signatures": [],
-     "planCards": 6,
+     "planCards": 7,
      "roleMixDeclared": {
-      "core": 6
+      "core": 7
      },
      "actual": {
-      "cards": 6,
+      "cards": 7,
       "roleMix": {
-       "core": 6
+       "core": 7
       },
       "anchorMatch": true,
       "enablers": [
@@ -7049,7 +7073,7 @@
        "命运看守者"
       ],
       "payoffsNotes": [],
-      "axisScore": 83.5
+      "axisScore": 90.0
      }
     },
     {
@@ -7062,35 +7086,35 @@
       "raw": "status:fate_loop"
      },
      "loop": {
-      "produce": "命运循环/重启循环/水银之躯·完整产层",
-      "consume": "重启/选择读层回放消费",
-      "clear": "快照耗尽或层数被消费清除",
+      "produce": "命运循环/命运之轮产层",
+      "consume": "选择/重启/概率权柄读层消费",
+      "clear": "循环到期或层数被消费清除",
       "produceCards": [
        {
         "name": "命运循环",
         "id": "skill_monster_s1_fate_loop"
        },
        {
-        "name": "重启循环",
-        "id": "skill_monster_s1_reboot_cycle"
-       },
-       {
-        "name": "水银之躯·完整",
-        "id": "skill_monster_s2_mercury_form"
+        "name": "命运之轮",
+        "id": "skill_monster_s0_wheel_of_fate"
        }
       ],
       "consumeCards": [
+       {
+        "name": "选择",
+        "id": "skill_monster_s1_choice_branch"
+       },
        {
         "name": "重启",
         "id": "skill_monster_s1_reboot"
        },
        {
-        "name": "选择",
-        "id": "skill_monster_s1_choice_branch"
+        "name": "概率权柄",
+        "id": "skill_monster_s0_probability_authority"
        }
       ]
      },
-     "decision": "保存建档时机：何时存档、何时重启回滚",
+     "decision": "存档与重启时机、把谁留在循环里",
      "signatures": [
       {
        "key": "prim:advance_clock",
@@ -7106,45 +7130,145 @@
        ],
        "empirical": 2,
        "ok": true
+      },
+      {
+       "key": "prim:restore_snapshot",
+       "slots": [
+        {
+         "name": "重启",
+         "id": "skill_monster_s1_reboot"
+        },
+        {
+         "name": "灵感超高",
+         "id": "skill_monster_s9_inspiration_sense"
+        }
+       ],
+       "empirical": 2,
+       "ok": true
       }
      ],
-     "planCards": 10,
+     "planCards": 11,
      "roleMixDeclared": {
-      "core": 9,
+      "core": 10,
       "tech": 1
      },
      "actual": {
-      "cards": 10,
+      "cards": 11,
       "roleMix": {
-       "core": 9,
+       "core": 10,
        "tech": 1
       },
       "anchorMatch": true,
       "enablers": [
-       "命运循环"
+       "命运循环",
+       "命运之轮"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "选择",
+       "重启",
+       "概率权柄"
+      ],
       "payoffsNotes": [],
-      "axisScore": 50.3
+      "axisScore": 82.4
      }
     }
    ],
    "crossAxis": [
     {
-     "slot": "引发灾祸",
+     "slot": "未来画面",
      "slots": [
       {
-       "name": "引发灾祸",
-       "id": "skill_monster_s6_cause_calamity"
+       "name": "未来画面",
+       "id": "skill_monster_s9_future_sight"
       }
      ],
-     "slotId": "skill_monster_s6_cause_calamity",
-     "axis": "fortune",
+     "slotId": "skill_monster_s9_future_sight",
+     "axis": "inspiration",
      "concept": "status",
      "facet": "read",
-     "purpose": "读幸运层数定灾祸落点",
+     "purpose": "读灵感层数追加行动条",
      "ok": true,
      "reason": ""
+    },
+    {
+     "slot": "危险预感",
+     "slots": [
+      {
+       "name": "危险预感",
+       "id": "skill_monster_s9_danger_sense"
+      }
+     ],
+     "slotId": "skill_monster_s9_danger_sense",
+     "axis": "inspiration",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读灵感层数挨打回血",
+     "ok": false,
+     "reason": "卡位未引用读轴锚点状态"
+    },
+    {
+     "slot": "反占卜",
+     "slots": [
+      {
+       "name": "反占卜",
+       "id": "skill_monster_s8_anti_divination"
+      }
+     ],
+     "slotId": "skill_monster_s8_anti_divination",
+     "axis": "inspiration",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读灵感层数翻页得运",
+     "ok": false,
+     "reason": "卡位未引用读轴锚点状态"
+    },
+    {
+     "slot": "选择",
+     "slots": [
+      {
+       "name": "选择",
+       "id": "skill_monster_s1_choice_branch"
+      }
+     ],
+     "slotId": "skill_monster_s1_choice_branch",
+     "axis": "cycle",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读命运循环/混乱追加压制",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "重启",
+     "slots": [
+      {
+       "name": "重启",
+       "id": "skill_monster_s1_reboot"
+      }
+     ],
+     "slotId": "skill_monster_s1_reboot",
+     "axis": "cycle",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读命运循环/混乱返还能量",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "概率权柄",
+     "slots": [
+      {
+       "name": "概率权柄",
+       "id": "skill_monster_s0_probability_authority"
+      }
+     ],
+     "slotId": "skill_monster_s0_probability_authority",
+     "axis": "cycle",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读命运值/循环/混乱加码",
+     "ok": false,
+     "reason": "卡位未引用读轴锚点状态"
     },
     {
      "slot": "命运看守者",
@@ -7158,57 +7282,25 @@
      "axis": "calamity",
      "concept": "status",
      "facet": "read",
-     "purpose": "读厄运层数看守命运",
+     "purpose": "读厄运/混乱换幸运",
      "ok": true,
      "reason": ""
     },
     {
-     "slot": "福祸之言",
+     "slot": "引发灾祸",
      "slots": [
       {
-       "name": "福祸之言",
-       "id": "skill_monster_s2_fortune_words"
+       "name": "引发灾祸",
+       "id": "skill_monster_s6_cause_calamity"
       }
      ],
-     "slotId": "skill_monster_s2_fortune_words",
+     "slotId": "skill_monster_s6_cause_calamity",
      "axis": "calamity",
      "concept": "status",
      "facet": "read",
-     "purpose": "读厄运层数转福祸之言",
-     "ok": true,
-     "reason": ""
-    },
-    {
-     "slot": "预言术",
-     "slots": [
-      {
-       "name": "预言术",
-       "id": "skill_monster_s2_prophecy"
-      }
-     ],
-     "slotId": "skill_monster_s2_prophecy",
-     "axis": "fortune",
-     "concept": "status",
-     "facet": "read",
-     "purpose": "读幸运层数成预言",
-     "ok": true,
-     "reason": ""
-    },
-    {
-     "slot": "命运之轮",
-     "slots": [
-      {
-       "name": "命运之轮",
-       "id": "skill_monster_s0_wheel_of_fate"
-      }
-     ],
-     "slotId": "skill_monster_s0_wheel_of_fate",
-     "axis": "fortune",
-     "concept": "status",
-     "facet": "read",
-     "purpose": "读幸运层数拨动命运之轮",
-     "ok": true,
-     "reason": ""
+     "purpose": "读宿敌标记（doom）追加精神伤害",
+     "ok": false,
+     "reason": "卡位未引用读轴锚点状态"
     }
    ],
    "crossSystem": [
@@ -7307,26 +7399,6 @@
        "id": "skill_monster_s8_anti_divination"
       },
       {
-       "name": "超强预感",
-       "id": "skill_monster_s5_fate_sight"
-      },
-      {
-       "name": "绝对灵感",
-       "id": "skill_monster_s4_absolute_inspiration"
-      },
-      {
-       "name": "命运看守者",
-       "id": "skill_monster_s3_fate_warden"
-      },
-      {
-       "name": "命运启示",
-       "id": "skill_monster_s2_fate_revelation"
-      },
-      {
-       "name": "命运之轮",
-       "id": "skill_monster_s0_wheel_of_fate"
-      },
-      {
        "name": "幸运者",
        "id": "skill_monster_s7_lucky_streak"
       },
@@ -7337,14 +7409,6 @@
       {
        "name": "意外之财",
        "id": "skill_monster_s7_windfall"
-      },
-      {
-       "name": "赐福",
-       "id": "skill_monster_s4_blessing_gift"
-      },
-      {
-       "name": "福祸之言",
-       "id": "skill_monster_s2_fortune_words"
       },
       {
        "name": "引发灾祸",
@@ -7359,8 +7423,16 @@
        "id": "skill_monster_s6_mind_storm"
       },
       {
+       "name": "超强预感",
+       "id": "skill_monster_s5_fate_sight"
+      },
+      {
        "name": "给予厄运",
        "id": "skill_monster_s5_give_misfortune"
+      },
+      {
+       "name": "绝对灵感",
+       "id": "skill_monster_s4_absolute_inspiration"
       },
       {
        "name": "厄运领域",
@@ -7371,12 +7443,28 @@
        "id": "skill_monster_s4_misfortune_curse"
       },
       {
+       "name": "赐福",
+       "id": "skill_monster_s4_blessing_gift"
+      },
+      {
        "name": "水银之躯",
        "id": "skill_monster_s4_mercury_body"
       },
       {
        "name": "混乱",
        "id": "skill_monster_s3_fate_chaos"
+      },
+      {
+       "name": "命运看守者",
+       "id": "skill_monster_s3_fate_warden"
+      },
+      {
+       "name": "福祸之言",
+       "id": "skill_monster_s2_fortune_words"
+      },
+      {
+       "name": "命运启示",
+       "id": "skill_monster_s2_fate_revelation"
       },
       {
        "name": "水银之躯·完整",
@@ -7401,6 +7489,10 @@
       {
        "name": "选择",
        "id": "skill_monster_s1_choice_branch"
+      },
+      {
+       "name": "命运之轮",
+       "id": "skill_monster_s0_wheel_of_fate"
       },
       {
        "name": "概率权柄",
@@ -7605,26 +7697,9 @@
     }
    ],
    "flagship": {
-    "declared": 4,
+    "declared": 0,
     "actual": 4,
-    "slots": [
-     {
-      "name": "厄运领域",
-      "id": "skill_monster_s4_doom_field"
-     },
-     {
-      "name": "福祸之言",
-      "id": "skill_monster_s2_fortune_words"
-     },
-     {
-      "name": "命运之轮",
-      "id": "skill_monster_s0_wheel_of_fate"
-     },
-     {
-      "name": "概率权柄",
-      "id": "skill_monster_s0_probability_authority"
-     }
-    ],
+    "slots": [],
     "actualSlots": [
      {
       "name": "厄运领域",
@@ -7666,14 +7741,19 @@
      "miss": []
     },
     "角色配比": {
-     "hit": 6,
-     "total": 6,
-     "miss": []
-    },
-    "跨轴钩子": {
      "hit": 5,
      "total": 5,
      "miss": []
+    },
+    "跨轴钩子": {
+     "hit": 4,
+     "total": 8,
+     "miss": [
+      "危险预感→inspiration",
+      "反占卜→inspiration",
+      "概率权柄→cycle",
+      "引发灾祸→calamity"
+     ]
     },
     "跨系钩子": {
      "hit": 2,
@@ -9787,11 +9867,11 @@
      "actual": {
       "cards": 16,
       "roleMix": {
-       "core": 10,
+       "core": 9,
        "generic": 3,
        "bridge": 1,
        "trap": 1,
-       "tech": 1
+       "tech": 2
       },
       "anchorMatch": true,
       "enablers": [
@@ -10147,7 +10227,7 @@
        "id": "skill_corpse_collector_s5_collect_debt"
       }
      ],
-     "actual": 29,
+     "actual": 28,
      "actualSlots": [
       {
        "name": "尸体特质",
@@ -10260,10 +10340,6 @@
       {
        "name": "催账",
        "id": "skill_corpse_collector_s5_collect_debt"
-      },
-      {
-       "name": "尸山号令",
-       "id": "skill_corpse_collector_s5_corpse_legion"
       }
      ]
     },
@@ -10412,7 +10488,7 @@
        "id": "skill_corpse_collector_s6_settle_single"
       }
      ],
-     "actual": 2,
+     "actual": 3,
      "actualSlots": [
       {
        "name": "终末之眼",
@@ -10421,6 +10497,10 @@
       {
        "name": "收账",
        "id": "skill_corpse_collector_s6_settle_single"
+      },
+      {
+       "name": "尸山号令",
+       "id": "skill_corpse_collector_s5_corpse_legion"
       }
      ]
     }
@@ -17289,9 +17369,10 @@
      "actual": {
       "cards": 11,
       "roleMix": {
-       "core": 9,
+       "core": 8,
        "generic": 1,
-       "bridge": 1
+       "bridge": 1,
+       "tech": 1
       },
       "anchorMatch": true,
       "enablers": [
@@ -17654,7 +17735,7 @@
        "id": "skill_apothecary_s2_beast_tide"
       }
      ],
-     "actual": 26,
+     "actual": 25,
      "actualSlots": [
       {
        "name": "药剂调配",
@@ -17755,10 +17836,6 @@
       {
        "name": "万兽奔腾",
        "id": "skill_apothecary_s2_beast_tide"
-      },
-      {
-       "name": "兽群号令",
-       "id": "skill_apothecary_s5_beast_legion"
       }
      ]
     },
@@ -17911,7 +17988,7 @@
        "id": "skill_apothecary_s7_abyss_shackle"
       }
      ],
-     "actual": 3,
+     "actual": 4,
      "actualSlots": [
       {
        "name": "深渊枷锁",
@@ -17924,6 +18001,10 @@
       {
        "name": "净土净化",
        "id": "skill_apothecary_s2_pure_land"
+      },
+      {
+       "name": "兽群号令",
+       "id": "skill_apothecary_s5_beast_legion"
       }
      ]
     }

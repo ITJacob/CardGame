@@ -24,7 +24,10 @@
           "value": true,
           "note": "识破分支（共享内核 §四）：敌方隐匿/不可锁定/潜行类状态对持有者无效"
         }
-      }
+      },
+      "maxStacks": 3,
+      "stackPolicy": "stack",
+      "note": "灵感层（2026-10-24 ⑤：maxStacks 3 / stack）——预感越强层数越厚；消耗出口=未来画面/危险预感/反占卜的兑现段。"
     },
     {
       "id": "danger_sense",
@@ -52,6 +55,31 @@
               "duration": 50,
               "target": "self",
               "note": "自续链：预感一次次重新浮现（新增项 5，on_remove 合法化）"
+            }
+          ]
+        },
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "inspiration_sense",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 1,
+                  "target": "self",
+                  "note": "预感兑现：灵感在，痛感先一步"
+                }
+              ],
+              "else": [],
+              "note": "灵感轴收束（读 inspiration_sense）"
             }
           ]
         }
@@ -108,7 +136,35 @@
           "scope": "self",
           "note": "敌方识破/隐匿忽略/必定命中类状态对持有者无效（C8 反向，共享内核 §四 识破分支）"
         }
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_phase_change",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "inspiration_sense",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "fortune",
+                  "stacks": 1,
+                  "target": "self",
+                  "note": "星象翻页，先觉者得运"
+                }
+              ],
+              "else": [],
+              "note": "灵感轴收束（读 inspiration_sense ≥2）"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "lucky_streak",
@@ -716,6 +772,68 @@
                 "p": 0.5
               },
               "note": "全稿唯一概率（G1 口径：condition 挂在 EffectRef 上，无 Chance 算子）；只作用行动条这一非伤害维度（R5），单次抽样（R4），R3 登记可筛出"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "meter_compare",
+                "key": "fate_value",
+                "cmp": ">=",
+                "n": 3
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": -4,
+                  "mode": "delta",
+                  "note": "命运值≥+3：权柄判定加码 -4"
+                }
+              ],
+              "else": [],
+              "note": "fate_value 读取方（可操作变量）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "fate_loop",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": -4,
+                  "mode": "delta",
+                  "note": "循环者被权柄额外压制 -4"
+                }
+              ],
+              "else": [],
+              "note": "循环轴收束（读 fate_loop）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "fate_chaos",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": -4,
+                  "mode": "delta",
+                  "note": "混乱者被权柄额外压制 -4"
+                }
+              ],
+              "else": [],
+              "note": "混乱集火读取"
             }
           ]
         }
