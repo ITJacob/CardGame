@@ -1956,7 +1956,7 @@
       "flagship": false,
       "lore": "序列3 不老 —— \"石化：真正石化能力，蛇发女妖形态\"",
       "flavor": "你撩开头发看了它一眼。它的血肉从指尖开始变成灰白的石头——而石头，是会碎的。",
-      "describe": "使一名敌人石化 15tick：不能行动、受伤 ×0.6（石头比血肉硬）、不可驱散；解除时碎裂，易伤 10tick。（目标带提线木偶则延长至 20tick，傀儡易石化）。；得手后留下替身承接指向。",
+      "describe": "使一名敌人石化 15tick：不能行动、受伤 ×0.6（石头比血肉硬）、不可驱散；解除时碎裂，易伤 10tick。（目标带提线木偶则延长至 20tick，傀儡易石化）。；得手后留下替身承接指向。；反噬：目标带提线木偶时自身行动条 -5。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1987,6 +1987,14 @@
               "statusId": "petrification",
               "duration": 20,
               "note": "傀儡易石化：目标带提线木偶则石化延长至 20tick（环节⑤ 2026-09-29 跨系读层段：form→seer puppet_string）"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -5,
+              "mode": "delta",
+              "target": "self",
+              "note": "反噬：石化反作用，自身行动条 -5"
             }
           ],
           "else": [

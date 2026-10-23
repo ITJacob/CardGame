@@ -136,18 +136,18 @@
 
 **规模**：6 张技能（主动 5 / 被动 1）；稀有度分布：传说×4、史诗×2。
 
-**效果原语构成**（type，全量递归，共 18 处）：
+**效果原语构成**（type，全量递归，共 19 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 4 | 22.2% |
-| `damage` | 1 | 5.6% |
-| `modify_stat` | 2 | 11.1% |
-| `modify_resource` | 6 | 33.3% |
-| `spawn` | 1 | 5.6% |
-| `domain` | 1 | 5.6% |
-| `transfer_status` | 2 | 11.1% |
-| `target_override` | 1 | 5.6% |
+| `mount_status` | 5 | 26.3% |
+| `damage` | 1 | 5.3% |
+| `modify_stat` | 2 | 10.5% |
+| `modify_resource` | 6 | 31.6% |
+| `spawn` | 1 | 5.3% |
+| `domain` | 1 | 5.3% |
+| `transfer_status` | 2 | 10.5% |
+| `target_override` | 1 | 5.3% |
 
 **算子构成**（op，共 5 处）：
 
@@ -172,7 +172,7 @@
 | `lost` | 1 |
 
 **设计风格总结**：本轴偏【运营·控制】——以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度；以 debuff、换位、封印、重定向与驱散干扰敌方决策与站位。
-签名原语为 `modify_resource`(6)、`mount_status`(4)、`transfer_status`(2)；属性杠杆集中在 `gauge.rate`、`attack`，资源杠杆集中在 `gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `modify_resource`(6)、`mount_status`(5)、`transfer_status`(2)；属性杠杆集中在 `gauge.rate`、`attack`，资源杠杆集中在 `gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **窃取时间**：抽走一名敌人 50 点行动条进度、行动条速率 -6（20tick）；你获得「偷来的时间」20tick：能量恢复速率 +0.2。；增益是借来的：从目标身上抄一份，用完归还。
 
