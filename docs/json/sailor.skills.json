@@ -1594,7 +1594,7 @@
       "flagship": false,
       "lore": "序列4 灾难主祭 —— \"'海啸'\"（序列3 海王\"掀起四五十米海啸\"）",
       "flavor": "一道数十米高的水墙横推过来，把整条敌阵卷进水里。",
-      "describe": "全体敌人受到 4 点伤害、被溺沉 15tick，并各自在自己队列内后移 1 格。",
+      "describe": "全体敌人受到 4 点伤害、被溺沉 15tick，并各自在自己队列内后移 1 格。；撕裂既有上层界域（敌我同拆），自身迷失 +1。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1634,6 +1634,22 @@
               "note": "C1 ✅"
             }
           ]
+        },
+        {
+          "type": "dispel",
+          "dispelTarget": "domain",
+          "filter": {
+            "tier": "overlay"
+          },
+          "note": "海啸：巨浪冲垮战场上正在生效的上层界域（overlay，敌我同拆）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "lost",
+          "value": 1,
+          "mode": "delta",
+          "target": "self",
+          "note": "界域操作租金：拆域也要付迷失"
         }
       ],
       "upgradeLadder": {

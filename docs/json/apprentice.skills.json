@@ -2256,7 +2256,7 @@
       "flagship": false,
       "lore": "序列1 星之匙 —— \"「空间破碎」（重力操纵）\"",
       "flavor": "你翻转了这一片空间的重力——敌阵在塌陷中失衡、后仰，甲胄被挤压得吱呀作响。",
-      "describe": "全体敌人受到 4 点物理伤害、各自在自己队列内后移 1 格，且护甲上限 -3（15tick）。",
+      "describe": "全体敌人受到 4 点物理伤害、各自在自己队列内后移 1 格，且护甲上限 -3（15tick）。；撕裂既有上层界域（敌我同拆），自身迷失 +1。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2338,6 +2338,22 @@
           ],
           "else": [],
           "note": "跨轴读层：astral"
+        },
+        {
+          "type": "dispel",
+          "dispelTarget": "domain",
+          "filter": {
+            "tier": "overlay"
+          },
+          "note": "空间破碎：撕裂战场上正在生效的上层界域（overlay，敌我同拆）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "lost",
+          "value": 1,
+          "mode": "delta",
+          "target": "self",
+          "note": "界域操作租金：拆域也要付迷失"
         }
       ],
       "tentative": false,

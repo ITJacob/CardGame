@@ -26,17 +26,18 @@
 
 **规模**：13 张技能（主动 9 / 被动 4）；稀有度分布：稀有×4、普通×3、史诗×3、传说×3。
 
-**效果原语构成**（type，全量递归，共 47 处）：
+**效果原语构成**（type，全量递归，共 49 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 12 | 25.5% |
-| `damage` | 11 | 23.4% |
-| `modify_stat` | 3 | 6.4% |
-| `modify_resource` | 8 | 17.0% |
-| `move` | 3 | 6.4% |
-| `echo_last_skill` | 5 | 10.6% |
-| `translocate` | 5 | 10.6% |
+| `mount_status` | 12 | 24.5% |
+| `damage` | 11 | 22.4% |
+| `modify_stat` | 3 | 6.1% |
+| `modify_resource` | 9 | 18.4% |
+| `dispel` | 1 | 2.0% |
+| `move` | 3 | 6.1% |
+| `echo_last_skill` | 5 | 10.2% |
+| `translocate` | 5 | 10.2% |
 
 **算子构成**（op，共 17 处）：
 
@@ -55,16 +56,16 @@
 | `defense` | 2 |
 | `armor` | 1 |
 
-**改动的资源（modify_resource，共 8 处）**：
+**改动的资源（modify_resource，共 9 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
-| `lost` | 5 |
+| `lost` | 6 |
 | `gauge.current` | 2 |
 | `energy` | 1 |
 
 **设计风格总结**：本轴偏【进攻·运营】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `mount_status`(12)、`damage`(11)、`modify_resource`(8)；属性杠杆集中在 `defense`、`armor`，资源杠杆集中在 `lost`、`gauge.current`、`energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(12)、`damage`(11)、`modify_resource`(9)；属性杠杆集中在 `defense`、`armor`，资源杠杆集中在 `lost`、`gauge.current`、`energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **无处不在**：战斗开始时获得无处不在：行动条速率 +6、无法被位移，并召唤一个留在星界的残影（30% 生命）助战。；无处不在皆穿门（仪式之门 15tick）。；时空税：这份收益以「回放上一式半份」的方式付出（禁裸站桩）。
 
