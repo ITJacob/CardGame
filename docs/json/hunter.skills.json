@@ -13,56 +13,59 @@
       "statusId": "combustion",
       "enablers": [
         "火鸦术",
-        "注火",
-        "燃烧之墙"
+        "燃烧之墙",
+        "注火"
       ],
       "payoffs": [
         "炽白之枪",
         "紫色火焰"
       ],
-      "note": "2026-09-29 私有化：轴身份自 common burn 分叉为 combustion（燃焚）；enablers/payoffs 评审照旧 ｜ 2026-10-03 骨架手术：团队计价换形 36 张（详见 designNote）"
+      "note": "2026-10-23 A 骨架重构：战场压制——火焰只做压血/驱赶，不做第二套标记；炽白之枪读燃焚层数。"
     },
     "intrigue": {
       "symbol": "🕸️",
       "name": "阴谋",
       "statusId": "intrigue_taunt",
       "enablers": [
-        "挑衅"
+        "挑衅",
+        "离间之计"
       ],
       "payoffs": [
         "误导",
         "煽动"
       ],
-      "note": " ｜ 2026-10-02：挑衅挂反击姿态（猎手反击共享列落地） ｜ 2026-10-03 骨架手术：团队计价换形 36 张（详见 designNote）"
+      "note": "2026-10-23 A 骨架重构：对敌指挥——挑衅/离间产嘲讽，误导/煽动改写目标；弱点副挂已撤。"
     },
     "massing": {
       "symbol": "🚩",
       "name": "集众",
       "statusId": "massing",
       "enablers": [
-        "集众·铁血"
+        "集众·铁血",
+        "战吼"
       ],
       "payoffs": [
         "借用能力",
         "无限制分享",
         "战争权柄"
       ],
-      "note": " ｜ 2026-10-02 批次七：target_override 指挥调防原语化（误导/煽动实证×2，签名 0→2）；战阵号令连击体系（战吼/战争权柄/集众·铁血挂战阵 tag，战吼 tag_chain 读层 payoff）；征服补 doom 跨系读层 ｜ 2026-10-03 骨架手术：团队计价换形 36 张（详见 designNote）"
+      "note": "2026-10-23 A 骨架重构：集众=指挥容量资源（人数分档产层降级为每回合 +1、cap 3；借用/分享/权柄/终局阴谋结构化读层）。"
     },
     "harvest": {
       "symbol": "🏹",
       "name": "收割",
       "statusId": "weak_point",
       "enablers": [
-        "猎人的感官",
-        "结构要点",
-        "弱点侦察"
+        "弱点侦察",
+        "羞辱",
+        "标定猎物"
       ],
       "payoffs": [
         "收割",
-        "毁灭之矛"
+        "毁灭之矛",
+        "毁灭权柄"
       ],
-      "note": "2026-09-29 私有化：轴身份自 common vulnerable 分叉为 weak_point（弱点，数值以 §2.2 裁定为权威）；弱点侦察产层、收割/毁灭之矛读层照旧 ｜ 2026-10-03 骨架手术：团队计价换形 36 张（详见 designNote）"
+      "note": "2026-10-23 A 骨架重构：弱点施加方收窄为弱点侦察+羞辱；新增 prey_mark 集火信号；收割兑现读集众层数。"
     }
   },
   "cards": [
@@ -77,7 +80,7 @@
       "flagship": false,
       "lore": "序列9 猎人 —— \"感官直线提升：分辨气味、看到浅脚印、听见心跳微风\"",
       "flavor": "你能听见它的心跳，闻得到它三天前留下的气味——再会藏的猎物，在你眼里也像踩在雪地上一样清楚。",
-      "describe": "战斗开始时获得猎人感官（整场，不可驱散）：敌方隐匿/不可选中类状态对你无效，你的单体技能自动优选当前生命值最低的敌人。；战阵调度：把自己插回阵列尾部。",
+      "describe": "战斗开始时获得猎人感官（整场，不可驱散）：敌方隐匿/不可选中类状态对你无效，你的单体技能自动优选当前生命值最低的敌人。",
       "hook": [
         "on_battle_start"
       ],
@@ -87,12 +90,6 @@
           "statusId": "hunter_sense",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
         }
       ],
       "sharedAcross": [
@@ -108,7 +105,35 @@
           "heartbeat ripples in air"
         ],
         "mood": "alert, predatory"
-      }
+      },
+      "role": "core",
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "prey_mark"
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 5,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "感官锁定猎物：命中后行动条 +5"
+                }
+              ],
+              "else": [],
+              "note": "读层：猎物标记"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_hunter_s9_structural_eye",
@@ -121,7 +146,7 @@
       "flagship": false,
       "lore": "序列9 猎人 —— \"能直观找到结构要点\"",
       "flavor": "你一眼就看出它护甲衔接处的那条缝——你的每一次攻击，都落在最不该被砸的地方。",
-      "describe": "战斗开始时获得结构之眼（整场）：你的攻击无视目标 50% 的护甲。；战阵调度：把自己插回阵列尾部。",
+      "describe": "战斗开始时获得结构之眼（整场）：你的攻击无视目标 50% 的护甲。",
       "hook": [
         "on_battle_start"
       ],
@@ -131,12 +156,6 @@
           "statusId": "structural_eye",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
         }
       ],
       "sharedAcross": [
@@ -152,7 +171,8 @@
           "drawn bow silhouette"
         ],
         "mood": "analytical, cold"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s9_wild_survival",
@@ -199,12 +219,6 @@
               "note": "猫的轻灵 = 敏捷 → gauge.rate（INV-S5 合规，不改派生行动周期）"
             }
           ]
-        },
-        {
-          "type": "move",
-          "op": "swap_ally",
-          "target": "self",
-          "note": "换位换防"
         }
       ],
       "tentative": false,
@@ -224,7 +238,8 @@
           "pelt cloak and weathered gear"
         ],
         "mood": "rugged, enduring"
-      }
+      },
+      "role": "starter"
     },
     {
       "id": "skill_hunter_s9_pounce",
@@ -237,7 +252,7 @@
       "flagship": false,
       "lore": "序列9 猎人 —— \"身体素质全面超越常人（熊的强壮 + 猫的轻灵）\"",
       "flavor": "你像熊一样压上去，又像猫一样快——它还没看清你的动作，已经被撞翻在地。",
-      "describe": "对单体敌人造成 2 点物理伤害（近战，无附加）。；团队计价：集众记账，友军分润（不再误伤友军）。",
+      "describe": "对单体敌人造成 2 点物理伤害；目标带弱点时追加 1 点。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -262,18 +277,22 @@
           "target": "target"
         },
         {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "weak_point"
           },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 1,
+              "target": "target",
+              "note": "补在弱点上：追加 1 点"
+            }
+          ],
+          "else": []
         }
       ],
       "upgradeLadder": {
@@ -322,7 +341,8 @@
           "kicked-up leaves"
         ],
         "mood": "explosive, savage"
-      }
+      },
+      "role": "starter"
     },
     {
       "id": "skill_hunter_s8_provoke",
@@ -335,7 +355,7 @@
       "flagship": false,
       "lore": "序列8 挑衅者 —— \"『挑衅』（核心）：洞察目标敏感点，激怒对方失去理智 / 被动效果 + 主动激发（辱骂语言 + 羞辱行为）\"",
       "flavor": "你一句话精准戳在它最不敢被人提起的地方——它红了眼，脑子里只剩下\"弄死你\"，破绽和队形都忘了。",
-      "describe": "单体敌人：嘲讽 15tick（强制攻击你）+ 弱点 15tick + 攻击 -2、防御 -2（15tick）。；自身同挂「反击姿态」15tick（2 次）：应挑衅的远程攻击者受顺序反击。；羞辱调防：目标被迫改指挑衅者。；又一次调度：目标由阵型决定。",
+      "describe": "单体敌人：嘲讽 15tick + 攻击、防御各 -2（15tick）；自身同挂反击姿态 15tick（2 次）。代价：自身防御 -1（10tick）。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -360,13 +380,6 @@
               "statusId": "intrigue_taunt",
               "duration": 15,
               "target": "target"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "weak_point",
-              "duration": 15,
-              "target": "target",
-              "note": ""
             },
             {
               "type": "modify_stat",
@@ -394,18 +407,13 @@
           "note": "挑衅者预备回击：同挂反击姿态 15tick（2 次）——敢应挑衅的远程攻击者吃顺序反击（执行上下文 §六；⚠️D 待平衡）"
         },
         {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self",
+          "note": "挑衅的代价：自身防御 -1"
         }
       ],
       "sharedAcross": [
@@ -421,7 +429,8 @@
           "abandoned battle formation"
         ],
         "mood": "mocking, reckless"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s8_humiliation",
@@ -434,7 +443,7 @@
       "flagship": false,
       "lore": "序列8 挑衅者 —— \"被动效果 + 主动激发（辱骂语言 + 羞辱行为）\"",
       "flavor": "它每打中你一次，你就笑着再补一句——它越怒，露出的破绽越大。",
-      "describe": "被动：每次你受到伤害时，对攻击者施加弱点 10tick。；羞辱调防：目标被迫改指挑衅者。",
+      "describe": "被动：每次你受到伤害时，对攻击者施加弱点 10tick。",
       "hook": [
         "on_take_damage"
       ],
@@ -445,11 +454,6 @@
           "duration": 10,
           "target": "attacker",
           "note": ""
-        },
-        {
-          "type": "target_override",
-          "anchor": "taunt_source",
-          "note": "羞辱调防：被迫改指挑衅者"
         }
       ],
       "sharedAcross": [
@@ -465,7 +469,8 @@
           "sneering grin"
         ],
         "mood": "contemptuous, provoking"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s7_fire_crow",
@@ -478,7 +483,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— \"『火鸦术』\"",
       "flavor": "你手心的火团扑腾着长出翅膀，化作一只火鸦撞进它的胸口，羽毛落处，火就烧了起来。",
-      "describe": "单体敌人：3 点火焰伤害 + 燃焚 15tick。；团队计价：集众记账，友军分润（不再误伤友军）。",
+      "describe": "单体敌人：3 点火焰伤害 + 燃焚 15tick；对猎物目标追加 1 点火焰伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -508,24 +513,38 @@
             {
               "type": "mount_status",
               "statusId": "combustion",
-              "duration": 15,
-              "target": "target"
+              "target": "target",
+              "duration": 15
             }
           ]
         },
         {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "prey_mark"
           },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "then": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 1,
+              "target": "target",
+              "note": "对猎物补火：追加 1 点"
+            }
+          ],
+          "else": [],
+          "note": "跨轴读层：猎物标记"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self",
+          "note": "引火的代价：自身防御 -1"
         }
       ],
       "upgradeLadder": {
@@ -574,7 +593,8 @@
           "scorched feather trails"
         ],
         "mood": "fierce, incendiary"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s7_white_lance",
@@ -587,7 +607,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— \"『炽白之枪』\"",
       "flavor": "火焰被压缩到极致，褪去橙红，只剩一缕炽得发白的光——它贯穿护甲，也贯穿了它。",
-      "describe": "单体敌人：4 点火焰伤害，完全无视护甲（破甲比例 1.0），自动优选护甲最高的敌人。；团队计价：集众记账，友军分润（不再误伤友军）。",
+      "describe": "单体敌人：4 点火焰伤害，无视护甲；目标燃焚 ≥2 层时追加 2 点火焰伤害。",
       "cost": {
         "energy": 5,
         "cooldown": 20,
@@ -613,18 +633,25 @@
           "armorPierceRatio": 1.0
         },
         {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "combustion",
+            "cmp": ">=",
+            "n": 2
           },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "then": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 2,
+              "target": "target",
+              "note": "燃焚 ≥2 层：压缩火焰追加 2 点"
+            }
+          ],
+          "else": [],
+          "note": "读层：燃焚"
         }
       ],
       "tentative": false,
@@ -637,7 +664,8 @@
           "light streak"
         ],
         "mood": "piercing, overwhelming"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s7_wall_of_fire",
@@ -650,7 +678,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— \"『燃烧之墙』\"",
       "flavor": "一道火墙自地面窜起横亘战场，把战线切成两半——谁要过去，就得先穿过它。",
-      "describe": "全体敌人：2 点火焰伤害 + 燃焚 15tick + 行动条 -15（被火墙挡住，慢一步）。；团队计价：集众记账，友军分润（不再误伤友军）。",
+      "describe": "全体敌人：2 点火焰伤害 + 燃焚 15tick + 行动条 -15（被火墙挡住，慢一步）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -693,18 +721,12 @@
           ]
         },
         {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -8,
+          "mode": "delta",
+          "target": "self",
+          "note": "筑墙的代价：自身行动条 -8"
         }
       ],
       "tentative": false,
@@ -717,7 +739,8 @@
           "scorched dividing line"
         ],
         "mood": "dominating, searing"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s7_delayed_blast",
@@ -730,7 +753,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— 火焰操控七技之「延时爆炸」",
       "flavor": "你在它脚下留了一颗火种，然后走开。两息之后，它脚下的地面炸开了花。",
-      "describe": "单体敌人被种下延时火种：10tick 后爆炸，对目标及其相邻单位造成 5 点火焰伤害（被驱散则哑弹）。；羞辱调防：目标被迫改指挑衅者。",
+      "describe": "单体敌人被种下延时火种：10tick 后爆炸，对目标及其相邻单位造成 5 点火焰伤害（被驱散则哑弹）；目标为猎物时爆炸追加 2 点。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -755,9 +778,23 @@
           "target": "target"
         },
         {
-          "type": "target_override",
-          "anchor": "taunt_source",
-          "note": "羞辱调防：被迫改指挑衅者"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "prey_mark"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "fire",
+              "value": 2,
+              "target": "target",
+              "note": "猎物走位被预判：爆炸追加 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨轴读层：猎物标记"
         }
       ],
       "tentative": false,
@@ -770,7 +807,8 @@
           "unknowing target"
         ],
         "mood": "patient, ominous"
-      }
+      },
+      "role": "trap"
     },
     {
       "id": "skill_hunter_s7_flame_armament",
@@ -783,7 +821,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— 火焰操控七技之「武器附火」「临时武器」「体表防御」",
       "flavor": "火焰顺着你的手臂爬上刀刃，也在你皮肤下铺开一层流动的赤色——砍中的会烧起来，砍你的也会。",
-      "describe": "自身 20tick：攻击附带 2 点火焰伤害（武器附火）+ 火抗 +30% + 反伤 2（体表防御）。；战阵调度：把自己插回阵列尾部。；又一次调度：目标由阵型决定。",
+      "describe": "自身 20tick：攻击附带 2 点火焰伤害（武器附火）+ 火抗 +30% + 反伤 2（体表防御）。",
       "cost": {
         "energy": 2,
         "cooldown": 20,
@@ -824,26 +862,6 @@
               "note": "体表防御：反伤 value 2"
             }
           ]
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
@@ -856,7 +874,8 @@
           "heat shimmer"
         ],
         "mood": "blazing, defiant"
-      }
+      },
+      "role": "generic"
     },
     {
       "id": "skill_hunter_s7_fuel_fire",
@@ -869,7 +888,7 @@
       "flagship": false,
       "lore": "序列7 纵火家 —— 火焰操控七技之「注火」",
       "flavor": "火一旦烧起来，你就往里再添一把——你打的每一处伤口，都在给那团火加柴。",
-      "describe": "被动：你造成伤害时，若目标带有燃焚，则刷新其燃焚时长并 +5tick（单次上限 +10tick）。；羞辱调防：目标被迫改指挑衅者。",
+      "describe": "被动：你造成伤害时，若目标带有燃焚，则刷新其燃焚时长并 +5tick（单次上限 +10tick）。",
       "hook": [
         "on_deal_damage"
       ],
@@ -893,11 +912,6 @@
             }
           ],
           "else": []
-        },
-        {
-          "type": "target_override",
-          "anchor": "taunt_source",
-          "note": "羞辱调防：被迫改指挑衅者"
         }
       ],
       "tentative": false,
@@ -910,7 +924,8 @@
           "growing inferno"
         ],
         "mood": "relentless, feeding"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s6_deceived",
@@ -923,7 +938,7 @@
       "flagship": true,
       "lore": "序列6 阴谋家 —— \"误导、迷惑和欺骗的超凡能力（『阴谋』核心）\"",
       "flavor": "你让它以为你还在原地——它挥出的那一击又狠又准，只是砍在了空气上。",
-      "describe": "单体敌人被误导（15tick，1 次）：它的下一次攻击打向空位（目标改写 → first_empty）。（目标改写由 target_override 原语结构化承载）",
+      "describe": "单体敌人被误导（15tick，1 次）：它的下一次攻击打向空位；目标已在嘲讽下时剥除 1 个增益。代价：自身防御 -1（10tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -943,9 +958,41 @@
         {
           "type": "mount_status",
           "statusId": "deceived",
-          "charges": 1,
           "duration": 15,
           "target": "target"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "intrigue_taunt"
+          },
+          "then": [
+            {
+              "type": "dispel",
+              "dispelTarget": "unit",
+              "target": "target",
+              "filter": {
+                "category": [
+                  "buff"
+                ],
+                "count": 1
+              },
+              "note": "读层：嘲讽下的目标被骗走防护，剥 1 个增益"
+            }
+          ],
+          "else": [],
+          "note": "读层：intrigue_taunt"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self",
+          "note": "误导的代价：自身防御 -1"
         }
       ],
       "sharedAcross": [
@@ -961,7 +1008,8 @@
           "sly grin at the edge"
         ],
         "mood": "deceptive, elusive"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s6_incited",
@@ -974,7 +1022,7 @@
       "flagship": false,
       "lore": "序列6 阴谋家 —— \"『煽动 / 鼓动』能力\"",
       "flavor": "你在它耳边说了句什么——它回过头，看向了刚才还站在自己身边的那个人。",
-      "describe": "单体敌人被煽动（15tick）：其攻击目标改写为己方队友（同阵营生命值最高者）。（目标改写由 target_override 原语结构化承载）",
+      "describe": "单体敌人被煽动（15tick）：其攻击目标改写为己方队友（同阵营生命值最高者）；目标已在嘲讽下时额外攻击 -2。代价：自身防御 -1（10tick）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -998,18 +1046,40 @@
           "target": "target"
         },
         {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "intrigue_taunt"
           },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 10,
+              "target": "target",
+              "note": "读层：已在嘲讽下的目标被煽动得更彻底，攻击 -2"
+            }
+          ],
+          "else": [],
+          "note": "读层：intrigue_taunt"
+        },
+        {
+          "type": "target_override",
+          "faction": "enemy",
+          "sort": "hp_desc",
+          "note": "攻击目标改写为己方队友（同阵营生命最高者）"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self",
+          "note": "煽动的代价：自身防御 -1"
         }
       ],
       "sharedAcross": [
@@ -1025,7 +1095,8 @@
           "weapon leveled at ally"
         ],
         "mood": "insidious, divisive"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s6_flame_saber",
@@ -1064,13 +1135,6 @@
               "element": "fire",
               "value": 4,
               "target": "target"
-            },
-            {
-              "type": "move",
-              "op": "pull_forward",
-              "distance": 1,
-              "target": "target",
-              "note": "C1：锁定 from.faction，敌方只在自己队列内前移，永不跨中线（G8 合规，本稿唯一 move）"
             }
           ]
         }
@@ -1085,7 +1149,8 @@
           "glowing arc trail"
         ],
         "mood": "brutal, flashy"
-      }
+      },
+      "role": "generic"
     },
     {
       "id": "skill_hunter_s5_weak_point",
@@ -1098,7 +1163,7 @@
       "flagship": false,
       "lore": "序列5 收割者 —— \"『弱点侦察』：从神秘学角度发现目标弱点\"",
       "flavor": "你的目光从神秘学的角度扫过它——护甲的接缝、灵性的淤滞、那道还没长好的旧伤。你一清二楚。",
-      "describe": "单体敌人：弱点 20tick（受伤 ×1.3）+ 剥除其 1 个增益状态（撕开神秘学防护）。；目标带厄运标记则猎运锁定，追加 2 点。；团队计价：集众记账，友军分润（不再误伤友军）。",
+      "describe": "单体敌人：弱点 20tick（受伤 ×1.3）+ 剥除其 1 个增益状态；目标带厄运标记时追加 2 点。代价：自身行动条 -10。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -1122,9 +1187,8 @@
             {
               "type": "mount_status",
               "statusId": "weak_point",
-              "duration": 20,
               "target": "target",
-              "note": ""
+              "duration": 20
             },
             {
               "type": "dispel",
@@ -1153,25 +1217,20 @@
               "type": "damage",
               "element": "none",
               "value": 2,
+              "target": "target",
               "note": "猎运锁定：目标带厄运标记则弱点尽显，追加 2 点"
             }
           ],
           "else": [],
-          "note": "跨系读层段：hunter→assassin doom（2026-09-29 跨系批二）"
+          "note": "跨系读层：assassin 厄运"
         },
         {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -10,
+          "mode": "delta",
+          "target": "self",
+          "note": "侦察耗时：自身行动条 -10"
         }
       ],
       "sharedAcross": [
@@ -1187,7 +1246,8 @@
           "focused third-eye gaze"
         ],
         "mood": "piercing, clinical"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s5_harvest",
@@ -1200,7 +1260,7 @@
       "flagship": false,
       "lore": "序列5 收割者 —— \"『收割』：附加攻击收割生命，命中弱点一击致命\"",
       "flavor": "镰刃划过它的伤口，你把它正在流走的生命收进了自己体内；若这一刀正落在弱点上，那就不只是伤了。",
-      "describe": "单体敌人：吸取 4 点生命；若目标已标记弱点，追加 3 点无元素伤害（命中弱点）。",
+      "describe": "单体敌人：吸取 4 点生命；若目标已标记弱点，追加 3 点无元素伤害（集众 ≥2 层时改为 5 点）；目标为猎物时额外追加 2 点。",
       "cost": {
         "energy": 4,
         "cooldown": 20,
@@ -1236,11 +1296,51 @@
               },
               "then": [
                 {
-                  "type": "damage",
-                  "element": "none",
-                  "value": 3,
-                  "target": "target",
-                  "note": "命中弱点一击：一击致命的完整形态见序列1 毁灭之矛"
+                  "op": "if",
+                  "condition": {
+                    "kind": "has_status",
+                    "side": "self",
+                    "id": "massing",
+                    "cmp": ">=",
+                    "n": 2
+                  },
+                  "then": [
+                    {
+                      "type": "damage",
+                      "element": "none",
+                      "value": 5,
+                      "target": "target",
+                      "note": "集众围猎：弱点追加 5 点"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "damage",
+                      "element": "none",
+                      "value": 3,
+                      "target": "target",
+                      "note": "弱点追加 3 点"
+                    }
+                  ]
+                },
+                {
+                  "op": "if",
+                  "condition": {
+                    "kind": "has_status",
+                    "side": "target",
+                    "id": "prey_mark"
+                  },
+                  "then": [
+                    {
+                      "type": "damage",
+                      "element": "none",
+                      "value": 2,
+                      "target": "target",
+                      "note": "猎物的弱点：追加 2 点"
+                    }
+                  ],
+                  "else": [],
+                  "note": "跨轴读层：猎物标记"
                 }
               ],
               "else": []
@@ -1261,6 +1361,72 @@
           "curved harvesting blade"
         ],
         "mood": "predatory, hungry"
+      },
+      "role": "core"
+    },
+    {
+      "id": "skill_hunter_s6_prey_mark",
+      "name": "标定猎物",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "阴谋家",
+      "rarity": "uncommon",
+      "role": "core",
+      "axis": "harvest",
+      "flagship": false,
+      "lore": "序列6 猎魔者 —— \"『标定猎物』：你的目光落定，它就成了全队的目标。\"",
+      "flavor": "你只是抬手指了指它。下一秒，所有人的刀锋都转了方向。",
+      "describe": "标定一名敌人为猎物（20tick，全场唯一）。代价：自身防御 -1（10tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 15,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "board",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "prey_mark",
+          "target": "target",
+          "duration": 20,
+          "note": "猎物锁定：全队集火信号"
+        },
+        {
+          "type": "damage",
+          "element": "none",
+          "value": 2,
+          "target": "target"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "标定的代价：自身露出破绽"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 A 骨架重构新增：非轴身份集火标记（prey_mark）的唯一主动施加方；与 weak_point 分工——猎物决定打谁，弱点放大伤害。",
+      "art": {
+        "subject": "a hunter pointing at one foe while the whole warband turns toward it",
+        "elements": [
+          "one singled-out target",
+          "converging gazes",
+          "raised pointing hand"
+        ],
+        "mood": "decisive, predatory"
       }
     },
     {
@@ -1274,7 +1440,7 @@
       "flagship": false,
       "lore": "序列5 收割者 —— \"『精准』：让攻击精准命中预定位置\"",
       "flavor": "你决定打哪儿，就打哪儿——没有谁能替它挡下来，也没有哪种把戏能让它从你眼前消失。",
-      "describe": "战斗开始时获得精准（整场）：你的攻击不被守护转移、不受目标隐匿影响，你的目标改写类效果优先级高于嘲讽/守护。；战阵调度：把自己插回阵列尾部。",
+      "describe": "战斗开始时获得精准（整场）：你的攻击不被守护转移、不受目标隐匿影响，你的目标改写类效果优先级高于嘲讽/守护。",
       "hook": [
         "on_battle_start"
       ],
@@ -1284,12 +1450,6 @@
           "statusId": "precision",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
         }
       ],
       "tentative": false,
@@ -1302,7 +1462,8 @@
           "fixed glowing target point"
         ],
         "mood": "inevitable, focused"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s4_steel_body",
@@ -1315,7 +1476,7 @@
       "flagship": false,
       "lore": "序列4 铁血骑士 —— \"『钢铁化』\"",
       "flavor": "你的皮肤泛起一层冷硬的铁灰色，敲击其上的声音像是打在铁砧上。",
-      "describe": "自身 20tick：护甲 +10（两档）+ 物理抗性 +20%。纯防御向身体改造。；战阵调度：把自己插回阵列尾部。",
+      "describe": "自身 20tick：护甲 +10（两档）+ 物理抗性 +20%。纯防御向身体改造。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1335,12 +1496,6 @@
           "statusId": "steel_body",
           "duration": 20,
           "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
         }
       ],
       "tentative": false,
@@ -1353,7 +1508,8 @@
           "clenched iron fist"
         ],
         "mood": "unyielding, stolid"
-      }
+      },
+      "role": "generic"
     },
     {
       "id": "skill_hunter_s4_flame_form",
@@ -1362,11 +1518,11 @@
       "sequence": 4,
       "sequenceName": "铁血骑士",
       "rarity": "rare",
-      "axis": "massing",
+      "axis": "flame",
       "flagship": false,
       "lore": "序列4 铁血骑士 —— \"『火焰化』\"",
       "flavor": "你的身体散开又重聚，化作一团人形的火焰——拳头穿过去了，而穿过去的那个东西正烧起来。",
-      "describe": "自身 20tick：火抗 +60% + 护甲 +5，近战者攻击你时被点燃（燃烧 10tick）。；战阵调度：把自己插回阵列尾部。",
+      "describe": "自身 20tick：火抗 +60% + 护甲 +5，近战者攻击你时被点燃（燃烧 10tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1386,12 +1542,6 @@
           "statusId": "flame_form",
           "duration": 20,
           "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
         }
       ],
       "tentative": false,
@@ -1404,7 +1554,8 @@
         ],
         "mood": "ethereal, burning"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）"
+      "conversionNotes": "2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "role": "generic"
     },
     {
       "id": "skill_hunter_s4_remote_bombard",
@@ -1413,11 +1564,11 @@
       "sequence": 4,
       "sequenceName": "铁血骑士",
       "rarity": "rare",
-      "axis": "massing",
+      "axis": "flame",
       "flagship": false,
       "lore": "序列4 铁血骑士 —— \"『远程轰炸』（5–10 公里）\"",
       "flavor": "火球自天而降，一颗接一颗砸在敌阵里——你甚至没有看向那边。",
-      "describe": "全体敌人：4 点火焰伤害 + 燃焚 10tick（不可反击的远程全体轰炸）。；团队计价：集众记账，友军分润（不再误伤友军）。",
+      "describe": "全体敌人：4 点火焰伤害 + 燃焚 10tick（不可反击的远程全体轰炸）。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1450,20 +1601,6 @@
               "target": "all_enemies"
             }
           ]
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
@@ -1476,7 +1613,8 @@
           "scattering tiny soldiers"
         ],
         "mood": "overwhelming, distant"
-      }
+      },
+      "role": "generic"
     },
     {
       "id": "skill_hunter_s4_massing",
@@ -1489,47 +1627,20 @@
       "flagship": false,
       "lore": "序列4 铁血骑士 —— \"团队集众：集中全队力量灵性于自身，共享视野，分摊伤害\"",
       "flavor": "你把全队的力量与灵性都聚到自己身上——他们看得见的你都看得见，而他们该受的伤，你来扛。",
-      "describe": "战斗开始时：自身攻击力随存活友军数动态 +1（整场）；全体友军链接——受伤害的 30% 转由你承受，且全体获得识破隐匿（共享视野）。；战阵调度：把自己插回阵列尾部。；又一次调度：目标由阵型决定。",
+      "describe": "战斗开始时获得集众（整场）：每回合结束集结 +1 层（上限 3）；全体友军受伤害的 30% 转由你承受，并共享视野。",
       "hook": [
         "on_battle_start"
       ],
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
-            {
-              "type": "mount_status",
-              "statusId": "massing",
-              "duration": null,
-              "target": "self"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "massing_link",
-              "duration": null,
-              "target": "all_allies"
-            }
-          ]
+          "type": "mount_status",
+          "statusId": "massing",
+          "target": "self"
         },
         {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "type": "mount_status",
+          "statusId": "massing_link",
+          "target": "self"
         }
       ],
       "tentative": false,
@@ -1545,7 +1656,23 @@
       },
       "tags": [
         "战阵"
-      ]
+      ],
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "massing",
+              "target": "self",
+              "stacks": 1,
+              "stackMode": "add",
+              "note": "每回合按战阵集结 +1 层（上限 3）"
+            }
+          ]
+        }
+      ],
+      "role": "core"
     },
     {
       "id": "skill_hunter_s4_iron_courage",
@@ -1558,7 +1685,7 @@
       "flagship": false,
       "lore": "序列4 铁血骑士 —— \"钢铁般勇气，不再被恐惧击倒\"",
       "flavor": "你不是不知道怕，你只是不再因为怕而后退半步——任何试图让你恐惧、让你动摇、让你爱上别的东西的把戏，都碰不到你。",
-      "describe": "战斗开始时获得钢铁勇气（整场）：免疫恐惧类状态，并立刻驱散自身 1 个控制类状态（一次性挣脱）。；战阵调度：把自己插回阵列尾部。",
+      "describe": "战斗开始时获得钢铁勇气（整场）：免疫恐惧类状态，并立刻驱散自身 1 个控制类状态（一次性挣脱）。",
       "hook": [
         "on_battle_start"
       ],
@@ -1568,12 +1695,6 @@
           "statusId": "iron_courage",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
         }
       ],
       "sharedAcross": [
@@ -1589,7 +1710,8 @@
         ],
         "mood": "fearless, resolute"
       },
-      "conversionNotes": "2026-10-03 骨架手术：团队计价换形（角色=buff）"
+      "conversionNotes": "2026-10-03 骨架手术：团队计价换形（角色=buff）",
+      "role": "generic"
     },
     {
       "id": "skill_hunter_s3_borrow_ability",
@@ -1602,7 +1724,7 @@
       "flagship": false,
       "lore": "序列3 战争主教 —— \"3 公里内使用团队成员非凡能力\"",
       "flavor": "你伸出手，从身边的同伴身上借走了他最擅长的那一样东西——现在是你的了。",
-      "describe": "选择一名友军：读取其最高的一项属性（攻击/防御/护甲/行动速率四取一），自身该属性 +50%（20tick，到期归还）。；战阵调度：换到更合适的位置。",
+      "describe": "消耗 1 层集众：读取一名友军最高的一项属性（攻击/防御/护甲/行动速率）并借取 30%（20tick）；2 层 50%、3 层 70%。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1621,30 +1743,105 @@
       },
       "effects": [
         {
-          "type": "modify_stat",
-          "stat": "attack",
-          "mode": "delta",
-          "valueFrom": {
-            "kind": "targetStat",
-            "of": "target",
-            "select": "highestOf",
-            "statCandidates": [
-              "attack",
-              "defense",
-              "armor",
-              "gauge.rate"
-            ],
-            "ratio": 0.5
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "massing",
+            "cmp": ">=",
+            "n": 3
           },
-          "duration": 20,
-          "target": "self",
-          "note": "读取目标 attack/defense/armor/gauge.rate 四者中最高的一项，自身同属性 +50%（H26 valueFrom: targetStat 跨效果传值，效果参数 §1.1）；stat 键为形式占位（合法枚举），实际修正属性由 valueFrom.select 运行时解析，待内核裁定动态 stat 表达"
-        },
-        {
-          "type": "move",
-          "op": "swap_ally",
-          "target": "self",
-          "note": "换位换防"
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "mode": "delta",
+              "valueFrom": {
+                "kind": "targetStat",
+                "of": "target",
+                "select": "highestOf",
+                "statCandidates": [
+                  "attack",
+                  "defense",
+                  "armor",
+                  "gauge.rate"
+                ],
+                "ratio": 0.7
+              },
+              "duration": 20,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "massing",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "借用：集众 -1"
+            }
+          ],
+          "else": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "massing",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "mode": "delta",
+                  "valueFrom": {
+                    "kind": "targetStat",
+                    "of": "target",
+                    "select": "highestOf",
+                    "statCandidates": [
+                      "attack",
+                      "defense",
+                      "armor",
+                      "gauge.rate"
+                    ],
+                    "ratio": 0.5
+                  },
+                  "duration": 20,
+                  "target": "self"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "massing",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self",
+                  "note": "借用：集众 -1"
+                }
+              ],
+              "else": [
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "mode": "delta",
+                  "valueFrom": {
+                    "kind": "targetStat",
+                    "of": "target",
+                    "select": "highestOf",
+                    "statCandidates": [
+                      "attack",
+                      "defense",
+                      "armor",
+                      "gauge.rate"
+                    ],
+                    "ratio": 0.3
+                  },
+                  "duration": 20,
+                  "target": "self"
+                }
+              ]
+            }
+          ]
         }
       ],
       "frameworkFlags": [
@@ -1664,7 +1861,8 @@
           "brightening core in chest"
         ],
         "mood": "covetous, commanding"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s3_war_cry",
@@ -1677,7 +1875,7 @@
       "flagship": false,
       "lore": "序列3 战争主教 —— \"『战吼 / 战歌』\"",
       "flavor": "你吼出的不是声音，是一整支军队的士气——每个人的血都热了一分，压在心头的那点恐惧也散了。",
-      "describe": "全体友军攻击 +2、驱散 1 个控制/减益，除施法者外行动条 +10；若上一张施放的技能同为战阵号令（连号令≥2），改为攻击 +3、行动条 +15。；换位换防：挪一步再清理。",
+      "describe": "集众 +1 层（上限 3）；全体友军攻击 +2、驱散 1 个控制/减益、行动条 +10。连号令≥2 时攻击 +3、行动条 +15 并再集结 1 层。代价：自身防御 -1（10tick）。",
       "cost": {
         "energy": 4,
         "cooldown": 30,
@@ -1695,6 +1893,14 @@
       },
       "effects": [
         {
+          "type": "mount_status",
+          "statusId": "massing",
+          "target": "self",
+          "stacks": 1,
+          "stackMode": "add",
+          "note": "号令集结：集众 +1 层"
+        },
+        {
           "op": "if",
           "condition": {
             "kind": "tag_chain",
@@ -1708,9 +1914,9 @@
               "stat": "attack",
               "value": 3,
               "mode": "delta",
-              "duration": 20,
               "target": "all_allies",
-              "note": "战阵连号令≥2：号令层层传下去，攻击 +3（⚠️D 待平衡）"
+              "duration": 20,
+              "note": "战阵连号令≥2：攻击 +3"
             },
             {
               "type": "dispel",
@@ -1729,8 +1935,15 @@
               "resource": "gauge.current",
               "value": 15,
               "mode": "delta",
-              "target": "allies_except_self",
-              "note": "G5/G6 规避：推条受益方为除施法者外全体友军；连号令档 +15"
+              "target": "allies_except_self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "massing",
+              "target": "self",
+              "stacks": 1,
+              "stackMode": "add",
+              "note": "连号令再集结 1 层"
             }
           ],
           "else": [
@@ -1739,8 +1952,8 @@
               "stat": "attack",
               "value": 2,
               "mode": "delta",
-              "duration": 20,
-              "target": "all_allies"
+              "target": "all_allies",
+              "duration": 20
             },
             {
               "type": "dispel",
@@ -1759,17 +1972,19 @@
               "resource": "gauge.current",
               "value": 10,
               "mode": "delta",
-              "target": "allies_except_self",
-              "note": "G5/G6 规避"
+              "target": "allies_except_self"
             }
           ],
-          "note": "连击正主读层：tag_chain(战阵)——战阵号令连施（矩阵 §三 连击行猎人正主落地）"
+          "note": "读层：战阵号令连施"
         },
         {
-          "type": "move",
-          "op": "swap_ally",
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
           "target": "self",
-          "note": "换位换防：挪一步再清理"
+          "duration": 10,
+          "note": "号令的代价：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -1785,7 +2000,8 @@
       },
       "tags": [
         "战阵"
-      ]
+      ],
+      "role": "core"
     },
     {
       "id": "skill_hunter_s3_war_mist",
@@ -1853,7 +2069,8 @@
           "concealed friendly line"
         ],
         "mood": "oppressive, secretive"
-      }
+      },
+      "role": "tech"
     },
     {
       "id": "skill_hunter_s3_sacrifice_prayer",
@@ -1866,7 +2083,7 @@
       "flagship": false,
       "lore": "序列3 战争主教 —— \"献祭祈求：献出祭品向战争本源祈求一次帮助\"",
       "flavor": "你把一个士兵推到刀口上——不，是把它献了出去。作为交换，战争本源回应了你一次。",
-      "describe": "献祭一个己方召唤物（无召唤物则以自己 8 血为祭）：获得战争回应（25tick，1 次）——你下一次造成的伤害 ×2 并附加眩晕 5tick。；团队计价：集众记账，友军分润（不再误伤友军）。",
+      "describe": "献祭一个己方召唤物（无召唤物则以自己 8 血为祭）：获得战争回应（25tick，1 次）——下一次造成的伤害 ×2 并附加眩晕 5tick；集众 +2 层。",
       "cost": {
         "energy": 2,
         "cooldown": 30,
@@ -1901,9 +2118,9 @@
                   "type": "damage",
                   "element": "none",
                   "value": 9999,
-                  "lethal": true,
                   "target": "target",
-                  "note": "消灭其中一个祭品（对己方召唤物造成伤害，新增项 16）"
+                  "lethal": true,
+                  "note": "消灭其中一个祭品"
                 }
               ],
               "else": [
@@ -1919,25 +2136,19 @@
             {
               "type": "mount_status",
               "statusId": "war_god_answer",
-              "charges": 1,
+              "target": "self",
               "duration": 25,
-              "target": "self"
+              "charges": 1
+            },
+            {
+              "type": "mount_status",
+              "statusId": "massing",
+              "target": "self",
+              "stacks": 2,
+              "stackMode": "add",
+              "note": "献祭换来集结：集众 +2 层"
             }
           ]
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "variants": [
@@ -1996,7 +2207,8 @@
           "outflung pleading arms"
         ],
         "mood": "grim, reverent"
-      }
+      },
+      "role": "trap"
     },
     {
       "id": "skill_hunter_s3_mind_link",
@@ -2009,7 +2221,7 @@
       "flagship": false,
       "lore": "序列3 战争主教 —— \"『心灵沟通』\"",
       "flavor": "你不需要开口——你看见的弱点，全队都看见了。",
-      "describe": "战斗开始时获得心灵链接（整场）：全体友军对被你标记弱点的目标造成的伤害 ×1.15（情报同步）。；战阵调度：把自己插回阵列尾部。",
+      "describe": "战斗开始时获得心灵链接（整场）：友军对弱点目标伤害 ×1.15、对猎物目标 ×1.2。",
       "hook": [
         "on_battle_start"
       ],
@@ -2019,12 +2231,6 @@
           "statusId": "mind_link",
           "duration": null,
           "target": "all_allies"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
         }
       ],
       "tentative": false,
@@ -2037,7 +2243,8 @@
           "nodding allies in sync"
         ],
         "mood": "silent, synchronized"
-      }
+      },
+      "role": "bridge"
     },
     {
       "id": "skill_hunter_s2_extreme_weather",
@@ -2050,7 +2257,7 @@
       "flagship": false,
       "lore": "序列2 天气术士 —— \"『操纵天气』（核心权柄）：创造极端天气\"",
       "flavor": "云层在你头顶翻涌着压下来——雷声、雪幕、沙暴，随便哪一种，都够它们受的。",
-      "describe": "降临极端天气域（4 回合，可驱散）：全场每 tick 受 0.2 点雷电伤害（无差别天灾，己方同样挨砸）；敌方行动速率 -6。",
+      "describe": "降临极端天气域（4 回合，可驱散）：入场时全场雷击 2 点；每 tick 全场受 0.2 点雷电伤害（无差别天灾）；敌方行动速率 -6。",
       "cost": {
         "energy": 5,
         "cooldown": 40,
@@ -2066,6 +2273,13 @@
         }
       },
       "effects": [
+        {
+          "type": "damage",
+          "element": "lightning",
+          "value": 2,
+          "target": "all_enemies",
+          "note": "极端天气：全场雷击"
+        },
         {
           "op": "sequence",
           "steps": [
@@ -2189,7 +2403,8 @@
           "wind-bowed trees"
         ],
         "mood": "cataclysmic, majestic"
-      }
+      },
+      "role": "tech"
     },
     {
       "id": "skill_hunter_s2_purple_flame",
@@ -2202,7 +2417,7 @@
       "flagship": true,
       "lore": "序列2 天气术士 —— \"火焰提升为紫色\"",
       "flavor": "你掌心的火焰褪去最后一丝橙红，变成了一种近乎妖异的紫——同样的火，现在能烧穿的东西完全不同了。",
-      "describe": "自身获得紫火（整场，不可驱散）：你造成的所有火焰伤害 ×1.3，你施加的燃烧时长 +1——全途径 11 个火系技能同时升档。；战阵调度：把自己插回阵列尾部。",
+      "describe": "自身获得紫火（整场，不可驱散）：你造成的所有火焰伤害 ×1.3，你施加的燃烧时长 +1——全途径 11 个火系技能同时升档。",
       "cost": {
         "energy": 4,
         "cooldown": 30,
@@ -2222,12 +2437,6 @@
           "statusId": "purple_flame",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
         }
       ],
       "tentative": false,
@@ -2240,7 +2449,8 @@
           "ember halo"
         ],
         "mood": "eerie, transcendent"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s2_sharing_unlimited",
@@ -2253,7 +2463,7 @@
       "flagship": false,
       "lore": "序列2 天气术士 —— \"10 公里内使用团队成员能力，分享无限制\"",
       "flavor": "借来的东西，你没有独吞——你拿到的每一点力量，都同时出现在了每一个同伴身上。",
-      "describe": "战斗开始时获得无限制分享（整场）：你每获得一个增益状态就复制一份给全体友军（时长与层数减半，不扣除你那份）；全体友军互相分摊伤害的 20%。；战阵调度：把自己插回阵列尾部。",
+      "describe": "战斗开始时获得无限制分享（整场）：你每获得一个增益状态就复制一份给全体友军（时长与层数减半）；全体友军互相分摊伤害 20%。",
       "hook": [
         "on_battle_start"
       ],
@@ -2263,12 +2473,6 @@
           "statusId": "sharing_unlimited",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
         }
       ],
       "tentative": false,
@@ -2281,7 +2485,8 @@
           "shared radiance"
         ],
         "mood": "generous, amplifying"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s1_conquer",
@@ -2294,7 +2499,7 @@
       "flagship": false,
       "lore": "序列1 征服者 —— \"『征服』权柄：让目标身心臣服，彻底征服后永远效忠\"",
       "flavor": "你看着它的眼睛，说了一个字。它的膝盖先软下去，然后是它的意志——从这一刻起，它不再是它自己的人了。",
-      "describe": "单体敌人被征服：掉头攻向自己人（同阵营生命最高者）、攻击 -2、受伤 ×1.2（30tick；目标带命运诅咒则 40tick）；它在此期间死亡则以士兵身份永远效忠（以 50% 生命在己方队尾复活为 war_soldier）。；羞辱调防：目标被迫改指挑衅者。；又一次调度：目标由阵型决定。",
+      "describe": "单体敌人被征服：掉头攻向自己人（同阵营生命最高者）、攻击 -2、受伤 ×1.2（30tick；男性目标 40tick）；它在此期间死亡则以士兵身份永远效忠。集众 +1 层。代价：自身防御 -2（10tick）。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2311,50 +2516,52 @@
       },
       "effects": [
         {
+          "type": "mount_status",
+          "statusId": "massing",
+          "target": "self",
+          "stacks": 1,
+          "stackMode": "add",
+          "note": "征服成功：集众 +1 层"
+        },
+        {
           "op": "if",
           "condition": {
-            "kind": "has_status",
+            "kind": "gender_is",
             "side": "target",
-            "id": "doom",
-            "cmp": ">=",
-            "n": 1
+            "gender": "male"
           },
           "then": [
             {
               "type": "mount_status",
               "statusId": "conquered",
-              "duration": 40,
               "target": "target",
-              "note": "厄运助征服：被征服者已携命运诅咒，臣服更深——持续 40tick（跨系读层段：hunter→assassin doom）"
+              "duration": 40,
+              "note": "男性权柄：征服更深，40tick"
             }
           ],
           "else": [
             {
               "type": "mount_status",
               "statusId": "conquered",
-              "duration": 30,
-              "target": "target"
+              "target": "target",
+              "duration": 30
             }
           ]
         },
         {
-          "type": "target_override",
-          "anchor": "taunt_source",
-          "note": "羞辱调防：被迫改指挑衅者"
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -2,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "征服的代价：自身防御 -2"
         },
         {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "type": "target_override",
+          "faction": "enemy",
+          "sort": "hp_desc",
+          "note": "掉头攻向自己人（同阵营生命最高者）"
         }
       ],
       "tentative": false,
@@ -2367,7 +2574,8 @@
           "commanding outstretched hand"
         ],
         "mood": "absolute, dominating"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s1_dolls_to_soldiers",
@@ -2380,7 +2588,7 @@
       "flagship": false,
       "lore": "序列1 征服者 —— \"『以偶为兵』（撒豆成兵）：征服无生命物体转化为士兵\"",
       "flavor": "你埋下的那些铁夹子、这片战场上的碎石与断木——你征服了它们。于是它们站了起来，握紧了不存在的刀。",
-      "describe": "把自己每个捕兽夹献祭（引爆其亡语：相邻 4 物理伤 + 眩晕 5tick）并转化为一名士兵（己方队尾）；无陷阱则直接召唤 1 名士兵（撒豆成兵）。",
+      "describe": "把己方捕兽夹逐一引爆（相邻 4 物理伤 + 眩晕 5tick）并转化为士兵；无陷阱则直接召唤 1 名士兵。召唤成功集众 +1 层。",
       "cost": {
         "energy": 4,
         "cooldown": 35,
@@ -2444,6 +2652,14 @@
               "note": "撒豆成兵：无陷阱时就地取材直接召 1 兵"
             }
           ]
+        },
+        {
+          "type": "mount_status",
+          "statusId": "massing",
+          "target": "self",
+          "stacks": 1,
+          "stackMode": "add",
+          "note": "士兵入列：集众 +1 层"
         }
       ],
       "tentative": false,
@@ -2456,7 +2672,8 @@
           "clenched wooden fists"
         ],
         "mood": "uncanny, mobilizing"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s1_spear_of_ruin",
@@ -2469,7 +2686,7 @@
       "flagship": false,
       "lore": "序列1 征服者 —— \"『毁灭之矛』：『收割』质变版，命中弱点相当于必然死亡\"",
       "flavor": "你投出的不是矛，是一个已经写好的结局——如果它身上有你点明的那处弱点，那支矛落下的地方，就是终点。",
-      "describe": "单体敌人：7 点无元素伤害；若目标已标记弱点，直接致死——不管它还有多少血。；团队计价：集众记账，友军分润（不再误伤友军）。",
+      "describe": "单体敌人：7 点无元素伤害（猎物目标追加 2 点）；若目标已标记弱点，消耗 1 层集众直接致死。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2501,6 +2718,25 @@
               "condition": {
                 "kind": "has_status",
                 "side": "target",
+                "id": "prey_mark"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "target": "target",
+                  "note": "猎物标定：投矛更准，追加 2 点"
+                }
+              ],
+              "else": [],
+              "note": "跨轴读层：猎物标记"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
                 "id": "weak_point"
               },
               "then": [
@@ -2508,28 +2744,23 @@
                   "type": "damage",
                   "element": "none",
                   "value": 9999,
-                  "lethal": true,
                   "target": "target",
-                  "note": "命中弱点相当于必然死亡（execute / damage.lethal，H36）；退化口径 damage 9999 为平衡备选"
+                  "lethal": true,
+                  "note": "命中弱点：直接致死"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "massing",
+                  "stacks": -1,
+                  "stackMode": "consume",
+                  "target": "self",
+                  "note": "弱点处决：集众 -1"
                 }
               ],
-              "else": []
+              "else": [],
+              "note": "弱点致死，消耗 1 层集众"
             }
           ]
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
@@ -2542,7 +2773,8 @@
           "terminal point of light"
         ],
         "mood": "terminal, inexorable"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s1_massing_ascend",
@@ -2555,7 +2787,7 @@
       "flagship": false,
       "lore": "序列1 征服者 —— \"『集众』质变：力量达一定数量产生质变\"",
       "flavor": "当足够多的人站在你身后时，发生的不只是\"更多\"——是\"不一样\"。你们的呼吸开始同步，刀锋开始指向同一个方向。",
-      "describe": "战斗开始时获得集众质变（整场）：自身攻击随存活友军数动态 +1；当存活友军 ≥ 3 时全队伤害 ×1.2、你受伤 ×0.8（阈值质变）。；战阵调度：把自己插回阵列尾部。",
+      "describe": "战斗开始时获得集众质变（整场）：自身攻击随存活友军数动态 +1；当存活友军 ≥ 3 时全队伤害 ×1.2、你受伤 ×0.8（阈值质变）。",
       "hook": [
         "on_battle_start"
       ],
@@ -2565,12 +2797,6 @@
           "statusId": "massing_ascend",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
         }
       ],
       "tentative": false,
@@ -2583,7 +2809,35 @@
           "rising red aura"
         ],
         "mood": "transcendent, united"
-      }
+      },
+      "role": "core",
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "massing"
+              },
+              "then": [
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "集众层数加深质变：每回合攻击 +1"
+                }
+              ],
+              "else": [],
+              "note": "读层：集众"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_hunter_s0_war_mandate",
@@ -2596,7 +2850,7 @@
       "flagship": true,
       "lore": "序列0 红祭司 —— \"『战争』权柄：存在即可让目标区域发生战争\"",
       "flavor": "你站在那里，战争就开始了——它们不再分敌我，不再听号令，只剩下\"杀\"这一件事。",
-      "describe": "全体敌人陷入战争狂热（30tick）：攻击最近的任何单位（不分阵营，敌我不分）、攻击 +3、护甲 -5；男性目标受伤 ×1.15（男性权柄）。；羞辱调防：目标被迫改指挑衅者。",
+      "describe": "全体敌人陷入战争狂热（30tick；集众 ≥3 层时 40tick 并消耗 1 层）：攻击最近的任何单位（敌我不分）、攻击 +3、护甲 -5；男性目标受伤 ×1.15。",
       "cost": {
         "energy": 7,
         "cooldown": 50,
@@ -2614,15 +2868,45 @@
       },
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "warmonger",
-          "duration": 30,
-          "target": "all_enemies"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "massing",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "warmonger",
+              "target": "all_enemies",
+              "duration": 40
+            },
+            {
+              "type": "mount_status",
+              "statusId": "massing",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "战争狂热：集众 -1"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "warmonger",
+              "target": "all_enemies",
+              "duration": 30
+            }
+          ],
+          "note": "集众 ≥3 层：战争狂热延长至 40tick"
         },
         {
           "type": "target_override",
-          "anchor": "taunt_source",
-          "note": "羞辱调防：被迫改指挑衅者"
+          "faction": "enemy",
+          "sort": "index_asc",
+          "note": "战争狂热：攻向最近的单位"
         }
       ],
       "tentative": false,
@@ -2645,7 +2929,8 @@
       },
       "tags": [
         "战阵"
-      ]
+      ],
+      "role": "core"
     },
     {
       "id": "skill_hunter_s0_ruin_mandate",
@@ -2658,7 +2943,7 @@
       "flagship": true,
       "lore": "序列0 红祭司 —— \"『毁灭』权柄：上可毁灭星球，下可杀死真神\"",
       "flavor": "那不是火焰，是\"消失\"本身。凡是还没死透的，都会被一并抹掉。",
-      "describe": "全体敌人：4 点火焰伤害；生命值 ≤ 30% 的目标直接抹除（毁灭的彻底性：不是打伤，是不存在了）。；团队计价：集众记账，友军分润（不再误伤友军）。",
+      "describe": "全体敌人：4 点火焰伤害；被标记弱点的目标直接抹除。",
       "cost": {
         "energy": 7,
         "cooldown": 50,
@@ -2688,38 +2973,24 @@
             {
               "op": "if",
               "condition": {
-                "kind": "hp_percent",
+                "kind": "has_status",
                 "side": "target",
-                "cmp": "<=",
-                "n": 0.3
+                "id": "weak_point"
               },
               "then": [
                 {
                   "type": "damage",
                   "element": "none",
                   "value": 9999,
-                  "lethal": true,
                   "target": "target",
-                  "note": "对残血者直接抹除（execute / damage.lethal，H36；§三 hp_percent 谓词）"
+                  "lethal": true,
+                  "note": "对弱点目标直接抹除"
                 }
               ],
-              "else": []
+              "else": [],
+              "note": "毁灭的彻底性"
             }
           ]
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
         }
       ],
       "tentative": false,
@@ -2732,7 +3003,8 @@
           "drifting ash motes"
         ],
         "mood": "annihilating, absolute"
-      }
+      },
+      "role": "core"
     },
     {
       "id": "skill_hunter_s9_seed_doubt",
@@ -2745,7 +3017,7 @@
       "flagship": false,
       "lore": "疑云生于人心。",
       "flavor": "一句话，便够了。",
-      "describe": "使目标陷入困惑（1 次，3 回合）。；羞辱调防：目标被迫改指挑衅者。",
+      "describe": "使目标陷入困惑（1 次，3 回合）。",
       "effects": [
         {
           "type": "mount_status",
@@ -2754,11 +3026,6 @@
           "duration": 15,
           "target": "target",
           "note": "（2026-10-09 时长校正：稿期 3 回合 → 15tick，1 回合=5tick）"
-        },
-        {
-          "type": "target_override",
-          "anchor": "taunt_source",
-          "note": "羞辱调防：被迫改指挑衅者"
         }
       ],
       "tentative": false,
@@ -2786,7 +3053,8 @@
         ],
         "mood": "subtle, unsettling"
       },
-      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：intrigue轴 enemy+point（轴选靶签名设计 §4）"
+      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：intrigue轴 enemy+point（轴选靶签名设计 §4）",
+      "role": "generic"
     },
     {
       "id": "skill_hunter_s7_schemer",
@@ -2799,19 +3067,13 @@
       "flagship": false,
       "lore": "布局者从不露面。",
       "flavor": "真正的猎手，藏在暗处。",
-      "describe": "战斗开始时永久获得煽动。；战阵调度：把自己插回阵列尾部。",
+      "describe": "战斗开始时永久获得煽动。",
       "effects": [
         {
           "type": "mount_status",
           "statusId": "incited",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
         }
       ],
       "tentative": false,
@@ -2827,7 +3089,8 @@
         ],
         "mood": "scheming, hidden"
       },
-      "conversionNotes": "2026-10-03 骨架手术：团队计价换形（角色=buff）"
+      "conversionNotes": "2026-10-03 骨架手术：团队计价换形（角色=buff）",
+      "role": "generic"
     },
     {
       "id": "skill_hunter_s5_divide",
@@ -2840,35 +3103,20 @@
       "flagship": false,
       "lore": "令其众叛亲离。",
       "flavor": "你的敌人，将自相残杀。",
-      "describe": "使目标陷入嘲讽（3 回合）与弱点（3 回合）。；羞辱调防：目标被迫改指挑衅者。；又一次调度：目标由阵型决定。",
+      "describe": "使目标陷入嘲讽（15tick）与困惑（1 次）。",
       "effects": [
         {
           "type": "mount_status",
           "statusId": "intrigue_taunt",
-          "duration": 15,
           "target": "target",
-          "note": "（2026-10-09 时长校正：稿期 3 回合 → 15tick，1 回合=5tick）"
+          "duration": 15
         },
         {
           "type": "mount_status",
-          "statusId": "weak_point",
-          "duration": 15,
+          "statusId": "deceived",
           "target": "target",
-          "note": "（2026-10-09 时长校正：稿期 3 回合 → 15tick，1 回合=5tick）"
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "duration": 15,
+          "charges": 1
         }
       ],
       "tentative": false,
@@ -2896,7 +3144,8 @@
         ],
         "mood": "treacherous, divisive"
       },
-      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：intrigue轴 enemy+point（轴选靶签名设计 §4）"
+      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：intrigue轴 enemy+point（轴选靶签名设计 §4）",
+      "role": "core"
     },
     {
       "id": "skill_hunter_s4_lay_trap",
@@ -2909,41 +3158,14 @@
       "flagship": false,
       "lore": "陷阱静候猎物。",
       "flavor": "踩上去吧，我知道你会来。",
-      "describe": "使目标陷入困惑（1 次）与弱点（3 回合）。；羞辱调防：目标被迫改指挑衅者。；又一次调度：目标由阵型决定。",
+      "describe": "使目标陷入困惑（1 次）：它的下一次攻击打向空位。",
       "effects": [
         {
           "type": "mount_status",
           "statusId": "deceived",
-          "charges": 1,
-          "duration": 15,
           "target": "target",
-          "note": "（2026-10-09 时长校正：稿期 3 回合 → 15tick，1 回合=5tick）"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "weak_point",
           "duration": 15,
-          "target": "target",
-          "note": "（2026-10-09 时长校正：稿期 3 回合 → 15tick，1 回合=5tick）"
-        },
-        {
-          "type": "target_override",
-          "anchor": "taunt_source",
-          "note": "羞辱调防：被迫改指挑衅者"
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
-          },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "charges": 1
         }
       ],
       "tentative": false,
@@ -2971,48 +3193,8 @@
         ],
         "mood": "patient, deadly"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：intrigue轴 enemy+point（轴选靶签名设计 §4）"
-    },
-    {
-      "id": "skill_hunter_s3_shadow_planner",
-      "name": "暗影策划",
-      "kind": "passive",
-      "sequence": 3,
-      "sequenceName": "战争主教",
-      "rarity": "epic",
-      "axis": "intrigue",
-      "flagship": false,
-      "lore": "于暗影中编织阴谋。",
-      "flavor": "每一步，都在计划之中。",
-      "describe": "战斗开始时永久获得煽动。；战阵调度：把自己插回阵列尾部。",
-      "effects": [
-        {
-          "type": "mount_status",
-          "statusId": "incited",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "战阵调度：把自己插回阵列尾部"
-        }
-      ],
-      "tentative": false,
-      "hook": [
-        "on_battle_start"
-      ],
-      "art": {
-        "subject": "a war plan unfolding across a shadow-draped map table",
-        "elements": [
-          "darkened campaign map",
-          "silhouetted moving tokens",
-          "disembodied planner's hand"
-        ],
-        "mood": "calculating, concealed"
-      },
-      "conversionNotes": "2026-10-03 骨架手术：团队计价换形（角色=buff）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 2→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：团队计价换形（角色=debuff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：intrigue轴 enemy+point（轴选靶签名设计 §4）",
+      "role": "trap"
     },
     {
       "id": "skill_hunter_s2_final_intrigue",
@@ -3025,7 +3207,7 @@
       "flagship": false,
       "lore": "收网的时刻到了。",
       "flavor": "游戏结束。",
-      "describe": "造成 8 点物理伤害，并使目标陷入弱点（4 回合）。；团队计价：集众记账，友军分润（不再误伤友军）。",
+      "describe": "造成 8 点物理伤害；集众 ≥2 层时追加 3 点物理伤害。",
       "effects": [
         {
           "type": "damage",
@@ -3034,25 +3216,25 @@
           "target": "target"
         },
         {
-          "type": "mount_status",
-          "statusId": "weak_point",
-          "duration": 20,
-          "target": "target",
-          "note": "（2026-10-09 时长校正：稿期 4 回合 → 20tick，1 回合=5tick）"
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "modify_resource",
-            "resource": "energy",
-            "value": 1,
-            "mode": "delta",
-            "target": "all_allies"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "massing",
+            "cmp": ">=",
+            "n": 2
           },
-          "note": "团队计价：把这道击杀记进团队账本，友军分润 1 能量（修复误伤友军的改指）"
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3,
+              "target": "target",
+              "note": "集众围猎收束：集众 ≥2 层时追加 3 点"
+            }
+          ],
+          "else": [],
+          "note": "跨轴读层：集众"
         }
       ],
       "tentative": false,
@@ -3080,7 +3262,8 @@
         ],
         "mood": "decisive, terminal"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→8（位格8 基准6×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：intrigue轴 enemy+point（轴选靶签名设计 §4）"
+      "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表）；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 5→8（位格8 基准6×1.3）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(友军/同阵营)→modify_rule_slot 团队计价（去误伤） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：intrigue轴 enemy+point（轴选靶签名设计 §4）",
+      "role": "core"
     }
   ],
   "unitDefs": [
@@ -3211,7 +3394,7 @@
       ]
     }
   ],
-  "designNote": "> **集众维度（灾祸之城系 §2.2 / 总览 §1）**：团队资源池机制（全局唯一），由本途径技能写入 `集众` 状态（enabler），随**存活友军数**累积；到阈值触发团队效果（payoff）。层级（照搬总览，以「存活友军数=集中到的队伍力量」建模）：\n> - **集众槽 ≥2**（队伍含 ≥2 存活友军集中）：解锁【借用能力】——读取队友一项长板\n> - **集众槽 ≥3**：解锁【无限制分享】——自身增益自动分发全队、全队互摊伤害\n> - **集众槽 ≥4（集众质变）**：全体友军伤害 ×1.2 + 自身受伤 ×0.8（整体乘区）\n>\n> **跨源质写入方**：母巢药师「兽群」可纳入集众池（见 §三 集众·兽群 crossPathway），使猎人成为全 22 途径最通用的组队核心。另 地狱之火 ↔ 永暗之河 收尸人「亡灵」（见 §三 地狱之火·亡者）。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「团队计价」句式换形 36 张通用骨架卡——每一击的目标由阵型说了算：指挥调防让攻击改指友军中血最厚者，羞辱调防逼对方改指挑衅者；每一次挪位都是一次调度。**协作面**：把火力从脆皮身上引开是本途径的本职。",
+  "designNote": "> **集众维度（灾祸之城系 §2.2 / 总览 §1）**：团队资源池机制（全局唯一），由本途径技能写入 `集众` 状态（enabler），随**存活友军数**累积；到阈值触发团队效果（payoff）。层级（照搬总览，以「存活友军数=集中到的队伍力量」建模）：\n> - **集众槽 ≥2**（队伍含 ≥2 存活友军集中）：解锁【借用能力】——读取队友一项长板\n> - **集众槽 ≥3**：解锁【无限制分享】——自身增益自动分发全队、全队互摊伤害\n> - **集众槽 ≥4（集众质变）**：全体友军伤害 ×1.2 + 自身受伤 ×0.8（整体乘区）\n>\n> **跨源质写入方**：母巢药师「兽群」可纳入集众池（见 §三 集众·兽群 crossPathway），使猎人成为全 22 途径最通用的组队核心。另 地狱之火 ↔ 永暗之河 收尸人「亡灵」（见 §三 地狱之火·亡者）。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「团队计价」句式换形 36 张通用骨架卡——每一击的目标由阵型说了算：指挥调防让攻击改指友军中血最厚者，羞辱调防逼对方改指挑衅者；每一次挪位都是一次调度。**协作面**：把火力从脆皮身上引开是本途径的本职。 ｜ 2026-10-23 A 骨架重构（P1 集众围猎）：massing 转指挥容量、prey_mark 入池、weak_point 收窄、团队计价/战阵调度/羞辱调防模板全撤、role 回填。",
   "sampleBuilds": [
     {
       "name": "A 燃焚纵火 🔥",

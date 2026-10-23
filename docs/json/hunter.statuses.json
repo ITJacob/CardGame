@@ -253,39 +253,14 @@
       ],
       "dispelable": false,
       "duration": null,
-      "modifiers": [
-        {
-          "kind": "modify_stat_dynamic",
-          "stat": "attack",
-          "valueFrom": "battleStats",
-          "metric": "alive_allies_count",
-          "value": 1,
-          "note": "集中全队力量：attack +1 × 存活友军数（valueFrom battleStats，新增项 4）；友军死亡时动态重算"
-        }
-      ],
       "crossPathway": true,
       "participants": [
         "hunter",
         "planter"
       ],
       "maxStacks": 3,
-      "stackPolicy": "stack",
-      "stackThreshold": {
-        "stacks": 3,
-        "effects": [
-          {
-            "type": "modify_stat",
-            "stat": "attack",
-            "value": 1,
-            "mode": "delta",
-            "duration": null,
-            "target": "self",
-            "note": "⚠️D 占位：payoff 强度待平衡期逐条审批（enabler→payoff 接线）"
-          }
-        ],
-        "note": "集众：存活友军累积达阈值（已有 stackThreshold，此处补叠层口径）。⚠️D 待审批；遵守「乘区层禁止批量生成」，只用属性修正不用伤害乘区。"
-      },
-      "note": "数值拍板（2026-10-01 待拍板数值批⑥/A 案）：maxStacks 4→3——满编封顶 attack+3、threshold 再+1=+4，期望按平均存活 3 人计，落 D5 团队槽预算（同档单体 buff ×2）；动态随友军死亡衰减的原著语义保留。"
+      "stackPolicy": "refresh",
+      "note": "集众层数=指挥容量（2026-10-23 A 骨架重构）：maxStacks 3；人数通过产层速度约束——集众·铁血 on_turn_start 按存活友军分档 +1/+2；消费端由借用能力/无限制分享/战争权柄/终局阴谋读层。原自动 attack+1×人数光环与满层阈值效果已退役：集众强度不再白给，改由卡面读层兑现。"
     },
     {
       "id": "massing_link",
@@ -406,7 +381,17 @@
             ]
           },
           "mul": 1.15,
-          "note": "按目标状态条件化的友军伤害乘区（H4 filter.hasStatus + H42 群体常驻模板）"
+          "note": "情报同步：友军对弱点目标伤害 ×1.15（H4 filter.hasStatus + H42 群体常驻模板）"
+        },
+        {
+          "kind": "ally_damage_mul",
+          "filter": {
+            "targetHasStatus": [
+              "prey_mark"
+            ]
+          },
+          "mul": 1.2,
+          "note": "猎物情报：友军对猎物目标伤害 ×1.2（2026-10-23 A 骨架重构，集火信号兑现）"
         }
       ]
     },
@@ -656,7 +641,19 @@
       "modifiers": {
         "damage_taken_mul": 1.3
       },
-      "note": "默认时长同源于稿期 4 回合 → 20tick（2026-10-09 时长校正）；收割轴身份状态（2026-09-29 自 common vulnerable 分叉私有化，数值以编队参数 §2.2 裁定为权威：duration 4 / mul 1.3；卡面内联副本已不复存在，common def 旧注的数值分歧就此闭环）；弱点侦察产、收割/毁灭之矛读；猎人全途径 8 卡（含阴谋轴 5 张副挂）统一改指此 id，保证途径内产出与读层闭环。common vulnerable（易伤）保留为全库通用（13 途径 22 处挂载不改指）。⚠️ 副作用：读者推理大师不再对猎人的弱点生效（跨系涌现断开），平衡期裁定。"
+      "note": "弱点=公开易伤（2026-10-23 A 骨架重构：施加方收窄为弱点侦察+羞辱两张，其余副挂已撤）。收割/毁灭之矛/毁灭权柄/结构要点/扑杀读层。与 prey_mark 分工：弱点放大伤害，猎物决定集火对象。common vulnerable（易伤）保留为全库通用。"
+    },
+    {
+      "id": "prey_mark",
+      "name": "猎物",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": true,
+      "duration": 20,
+      "maxStacks": 1,
+      "stackPolicy": "refresh",
+      "note": "猎物锁定（2026-10-23 A 骨架重构新建）：非轴身份的集火信号，由标定猎物单卡主授予；全队对猎物的额外段由读层卡承载（猎人的感官/心灵沟通/火鸦术/延时爆炸）。与 weak_point 分工：weak_point=公开易伤放大伤害，prey_mark=决定打谁。"
     }
   ]
 }

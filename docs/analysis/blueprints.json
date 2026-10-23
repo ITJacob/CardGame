@@ -11689,41 +11689,34 @@
   {
    "id": "hunter",
    "name": "猎人",
-   "state": "回溯补登",
-   "date": "2026-10-21",
-   "score": 96,
+   "state": null,
+   "date": "环节⑥拍板 P1 集众围猎",
+   "score": 100,
    "scoreParts": {
     "命题": 10,
     "风格边界": 15,
     "轴循环": 25,
     "决策点": 10,
-    "签名键": 11,
+    "签名键": 15,
     "角色配比": 15,
     "钩子": 10
    },
-   "deductions": [
-    {
-     "dim": "签名键",
-     "why": "键 flag:gender_is 承诺卡位含非真实卡名：（待补强1卡）"
-    },
-    {
-     "dim": "签名键",
-     "why": "键 sref:massing 承诺卡位含非真实卡名：（待补强1卡）"
-    }
-   ],
+   "deductions": [],
    "proposition": {
-    "statement": "集众围猎——指挥改写战场目标（target_override），弱点标记 + 集火收益随在场人数缩放",
-    "variable": "弱点标记的归属、在场人数（massing 层数）",
-    "cost": "减员或标记被清除 → 集火体系崩解，层数经济断档"
+    "statement": "集众围猎——先标定猎物，再用集众层数指挥全队把火力收拢到它身上；层数来自全队的协同行动，花在改指、集火与分担上",
+    "variable": "标谁（weak_point 弱点对象 / prey_mark 猎物对象）、集众层数怎么花（集结 / 改指 / 集火 / 分担）",
+    "cost": "标记被驱散或猎物被换走则层数空转；减员压低产层速度，指挥断档；把层花错对象则输出断档"
    },
    "style": {
-    "signature": "集众指挥（target_override 战阵改写 + gender 男性权柄）",
+    "signature": "集众指挥（target_override 战阵改写 + massing 层数资源 + gender 男性权柄）",
     "mechanisms": [
      "武器",
      "召唤",
+     "驱散",
+     "位移",
      "基础增益"
     ],
-    "redline": "途径设计身份.md 猎人身份卡：集众收益随人数缩放；target_override 只做指挥/调防，不做顶替混淆"
+    "redline": "途径设计身份.md 猎人身份卡：集众收益必须随存活/在场人数缩放（人数是硬约束，不做纯数值光环）；target_override 只做指挥/调防，不做顶替混淆"
    },
    "axes": [
     {
@@ -11736,13 +11729,25 @@
       "raw": "status:massing"
      },
      "loop": {
-      "produce": "集众·铁血等按在场友军攒层",
-      "consume": "借用能力/无限制分享/战争权柄消费层数",
-      "clear": "减员掉层、消费清零",
+      "produce": "集众·铁血按存活人数分档产层（≥2 人 +1 / ≥4 人 +2）、战吼/征服/献祭祈求主动集结产层",
+      "consume": "借用能力/无限制分享/战争权柄/终局阴谋读层消费",
+      "clear": "层数花光或人数下跌导致产能断档",
       "produceCards": [
        {
         "name": "集众·铁血",
         "id": "skill_hunter_s4_massing"
+       },
+       {
+        "name": "战吼",
+        "id": "skill_hunter_s3_war_cry"
+       },
+       {
+        "name": "征服",
+        "id": "skill_hunter_s1_conquer"
+       },
+       {
+        "name": "献祭祈求",
+        "id": "skill_hunter_s3_sacrifice_prayer"
        }
       ],
       "consumeCards": [
@@ -11757,10 +11762,14 @@
        {
         "name": "战争权柄",
         "id": "skill_hunter_s0_war_mandate"
+       },
+       {
+        "name": "终局阴谋",
+        "id": "skill_hunter_s2_final_intrigue"
        }
       ]
      },
-     "decision": "massing 层攒到几层再消费（借用能力/战争权柄的消费时机）",
+     "decision": "这一回合花机会集结，还是输出；层数留给改指、集火还是伤害分摊",
      "signatures": [
       {
        "key": "prim:target_override",
@@ -11774,11 +11783,15 @@
          "id": "skill_hunter_s0_war_mandate"
         },
         {
-         "name": "羞辱",
-         "id": "skill_hunter_s8_humiliation"
+         "name": "误导",
+         "id": "skill_hunter_s6_deceived"
+        },
+        {
+         "name": "煽动",
+         "id": "skill_hunter_s6_incited"
         }
        ],
-       "empirical": 7,
+       "empirical": 3,
        "ok": true
       },
       {
@@ -11789,37 +11802,145 @@
          "id": "skill_hunter_s4_massing"
         },
         {
-         "name": "（待补强1卡）",
-         "id": null,
-         "placeholder": true
+         "name": "战吼",
+         "id": "skill_hunter_s3_war_cry"
+        },
+        {
+         "name": "集众质变",
+         "id": "skill_hunter_s1_massing_ascend"
+        },
+        {
+         "name": "借用能力",
+         "id": "skill_hunter_s3_borrow_ability"
         }
        ],
-       "empirical": 1,
-       "ok": false
+       "empirical": 11,
+       "ok": true
+      },
+      {
+       "key": "flag:gender_is",
+       "slots": [
+        {
+         "name": "征服",
+         "id": "skill_hunter_s1_conquer"
+        },
+        {
+         "name": "战争权柄",
+         "id": "skill_hunter_s0_war_mandate"
+        }
+       ],
+       "empirical": 2,
+       "ok": true
       }
      ],
-     "planCards": 16,
+     "planCards": 14,
      "roleMixDeclared": {
-      "core": 6,
-      "bridge": 2,
-      "generic": 3,
-      "trap": 3,
+      "core": 8,
+      "bridge": 1,
+      "generic": 2,
+      "trap": 1,
       "tech": 2
      },
      "actual": {
-      "cards": 16,
-      "roleMix": {},
+      "cards": 14,
+      "roleMix": {
+       "generic": 2,
+       "core": 8,
+       "tech": 2,
+       "trap": 1,
+       "bridge": 1
+      },
       "anchorMatch": true,
       "enablers": [
-       "集众·铁血"
+       "集众·铁血",
+       "战吼"
       ],
-      "payoffs": [],
-      "payoffsNotes": [
+      "payoffs": [
        "借用能力",
-       "无限制分享",
        "战争权柄"
       ],
-      "axisScore": 62.5
+      "payoffsNotes": [
+       "无限制分享"
+      ],
+      "axisScore": 81.9
+     }
+    },
+    {
+     "id": "harvest",
+     "name": "收割",
+     "symbol": "🏹",
+     "anchor": {
+      "kind": "status",
+      "id": "weak_point + status:prey_mark",
+      "raw": "status:weak_point + status:prey_mark"
+     },
+     "loop": {
+      "produce": "弱点侦察/羞辱产弱点、标定猎物产猎物",
+      "consume": "收割/毁灭之矛/毁灭权柄/结构要点/扑杀读层兑现（追加伤害、致死、破甲）",
+      "clear": "弱点与猎物被消费、驱散或到期",
+      "produceCards": [
+       {
+        "name": "弱点侦察",
+        "id": "skill_hunter_s5_weak_point"
+       },
+       {
+        "name": "羞辱",
+        "id": "skill_hunter_s8_humiliation"
+       },
+       {
+        "name": "标定猎物",
+        "id": "skill_hunter_s6_prey_mark"
+       }
+      ],
+      "consumeCards": [
+       {
+        "name": "收割",
+        "id": "skill_hunter_s5_harvest"
+       },
+       {
+        "name": "毁灭之矛",
+        "id": "skill_hunter_s1_spear_of_ruin"
+       },
+       {
+        "name": "毁灭权柄",
+        "id": "skill_hunter_s0_ruin_mandate"
+       },
+       {
+        "name": "结构要点",
+        "id": "skill_hunter_s9_structural_eye"
+       },
+       {
+        "name": "扑杀",
+        "id": "skill_hunter_s9_pounce"
+       }
+      ]
+     },
+     "decision": "弱点贴给谁、猎物标谁、何时收网（早收稳定还是攒到集众层数高再一剑）",
+     "signatures": [],
+     "planCards": 10,
+     "roleMixDeclared": {
+      "core": 8,
+      "starter": 2
+     },
+     "actual": {
+      "cards": 10,
+      "roleMix": {
+       "core": 8,
+       "starter": 2
+      },
+      "anchorMatch": true,
+      "enablers": [
+       "弱点侦察",
+       "羞辱",
+       "标定猎物"
+      ],
+      "payoffs": [
+       "收割",
+       "毁灭之矛",
+       "毁灭权柄"
+      ],
+      "payoffsNotes": [],
+      "axisScore": 78.7
      }
     },
     {
@@ -11832,9 +11953,9 @@
       "raw": "status:intrigue_taunt"
      },
      "loop": {
-      "produce": "挑衅挂激怒",
-      "consume": "误导/煽动借激怒改写目标与收益",
-      "clear": "激怒到期消失",
+      "produce": "挑衅/离间产嘲讽",
+      "consume": "误导/煽动读层改写敌方目标",
+      "clear": "嘲讽与困惑窗口结束",
       "produceCards": [
        {
         "name": "挑衅",
@@ -11852,103 +11973,32 @@
        }
       ]
      },
-     "decision": "挑衅贴给谁（吸火对象）与激怒窗口的使用次序",
-     "signatures": [
-      {
-       "key": "flag:gender_is",
-       "slots": [
-        {
-         "name": "战争权柄",
-         "id": "skill_hunter_s0_war_mandate"
-        },
-        {
-         "name": "（待补强1卡）",
-         "id": null,
-         "placeholder": true
-        }
-       ],
-       "empirical": 1,
-       "ok": false
-      }
-     ],
-     "planCards": 10,
+     "decision": "吸火对象与改指对象；挑衅给谁、误导谁打空位",
+     "signatures": [],
+     "planCards": 9,
      "roleMixDeclared": {
-      "core": 3,
-      "starter": 2,
-      "bridge": 2,
+      "core": 6,
       "generic": 2,
       "trap": 1
      },
      "actual": {
-      "cards": 10,
-      "roleMix": {},
+      "cards": 9,
+      "roleMix": {
+       "core": 6,
+       "generic": 2,
+       "trap": 1
+      },
       "anchorMatch": true,
       "enablers": [
-       "挑衅"
+       "挑衅",
+       "离间之计"
       ],
-      "payoffs": [],
-      "payoffsNotes": [
+      "payoffs": [
        "误导",
        "煽动"
       ],
-      "axisScore": 62.2
-     }
-    },
-    {
-     "id": "harvest",
-     "name": "收割",
-     "symbol": "🏹",
-     "anchor": {
-      "kind": "status",
-      "id": "weak_point",
-      "raw": "status:weak_point"
-     },
-     "loop": {
-      "produce": "猎人的感官/弱点侦察贴弱点",
-      "consume": "收割/毁灭之矛消费弱点斩杀",
-      "clear": "弱点被消费或目标死亡清除",
-      "produceCards": [
-       {
-        "name": "猎人的感官",
-        "id": "skill_hunter_s9_hunter_sense"
-       },
-       {
-        "name": "弱点侦察",
-        "id": "skill_hunter_s5_weak_point"
-       }
-      ],
-      "consumeCards": [
-       {
-        "name": "收割",
-        "id": "skill_hunter_s5_harvest"
-       },
-       {
-        "name": "毁灭之矛",
-        "id": "skill_hunter_s1_spear_of_ruin"
-       }
-      ]
-     },
-     "decision": "弱点贴给谁、收割时机（等斩杀线还是早收）",
-     "signatures": [],
-     "planCards": 9,
-     "roleMixDeclared": {
-      "core": 5,
-      "starter": 2,
-      "generic": 2
-     },
-     "actual": {
-      "cards": 9,
-      "roleMix": {},
-      "anchorMatch": true,
-      "enablers": [
-       "弱点侦察"
-      ],
-      "payoffs": [
-       "收割",
-       "毁灭之矛"
-      ],
       "payoffsNotes": [],
-      "axisScore": 71.5
+      "axisScore": 81.5
      }
     },
     {
@@ -11961,21 +12011,29 @@
       "raw": "status:combustion"
      },
      "loop": {
-      "produce": "火鸦术/注火/燃烧之墙挂燃烧层",
-      "consume": "炽白之枪/紫色火焰读层爆发",
-      "clear": "层数消退或被爆发消耗",
+      "produce": "火鸦术/燃烧之墙/注火/远程轰炸/火焰化产火",
+      "consume": "炽白之枪/紫色火焰读层兑现",
+      "clear": "燃焚消退或被驱散",
       "produceCards": [
        {
         "name": "火鸦术",
         "id": "skill_hunter_s7_fire_crow"
        },
        {
+        "name": "燃烧之墙",
+        "id": "skill_hunter_s7_wall_of_fire"
+       },
+       {
         "name": "注火",
         "id": "skill_hunter_s7_fuel_fire"
        },
        {
-        "name": "燃烧之墙",
-        "id": "skill_hunter_s7_wall_of_fire"
+        "name": "远程轰炸",
+        "id": "skill_hunter_s4_remote_bombard"
+       },
+       {
+        "name": "火焰化",
+        "id": "skill_hunter_s4_flame_form"
        }
       ],
       "consumeCards": [
@@ -11989,30 +12047,33 @@
        }
       ]
      },
-     "decision": "燃烧继续铺层还是引爆（炽白之枪爆发窗口）",
+     "decision": "铺火还是引爆；对猎物目标补火还是群体压制",
      "signatures": [],
-     "planCards": 8,
+     "planCards": 10,
      "roleMixDeclared": {
-      "core": 4,
-      "generic": 3,
+      "core": 5,
+      "generic": 4,
       "trap": 1
      },
      "actual": {
-      "cards": 8,
-      "roleMix": {},
+      "cards": 10,
+      "roleMix": {
+       "core": 5,
+       "trap": 1,
+       "generic": 4
+      },
       "anchorMatch": true,
       "enablers": [
        "火鸦术",
-       "注火",
-       "燃烧之墙"
+       "燃烧之墙",
+       "注火"
       ],
       "payoffs": [
+       "炽白之枪",
        "紫色火焰"
       ],
-      "payoffsNotes": [
-       "炽白之枪"
-      ],
-      "axisScore": 72.7
+      "payoffsNotes": [],
+      "axisScore": 84.2
      }
     }
    ],
@@ -12029,41 +12090,73 @@
      "axis": "massing",
      "concept": "status",
      "facet": "read",
-     "purpose": "斩杀线随集众层数放大（规划）",
-     "ok": false,
-     "reason": "卡位未引用读轴锚点状态"
+     "purpose": "集众 ≥2 层时弱点追加段 3→5",
+     "ok": true,
+     "reason": ""
     },
     {
-     "slot": "战争权柄",
+     "slot": "毁灭之矛",
      "slots": [
       {
-       "name": "战争权柄",
-       "id": "skill_hunter_s0_war_mandate"
+       "name": "毁灭之矛",
+       "id": "skill_hunter_s1_spear_of_ruin"
       }
      ],
-     "slotId": "skill_hunter_s0_war_mandate",
+     "slotId": "skill_hunter_s1_spear_of_ruin",
+     "axis": "massing",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "消耗 1 层集众换致死（猎物的处决成本）",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "终局阴谋",
+     "slots": [
+      {
+       "name": "终局阴谋",
+       "id": "skill_hunter_s2_final_intrigue"
+      }
+     ],
+     "slotId": "skill_hunter_s2_final_intrigue",
+     "axis": "massing",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "集众 ≥2 层时追加 3 伤",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "心灵沟通",
+     "slots": [
+      {
+       "name": "心灵沟通",
+       "id": "skill_hunter_s3_mind_link"
+      }
+     ],
+     "slotId": "skill_hunter_s3_mind_link",
      "axis": "harvest",
      "concept": "status",
      "facet": "read",
-     "purpose": "权柄收益读弱点标记（规划）",
+     "purpose": "友军对弱点 +15%、对猎物 +20%",
      "ok": false,
      "reason": "卡位未引用读轴锚点状态"
     },
     {
-     "slot": "紫色火焰",
+     "slot": "火鸦术",
      "slots": [
       {
-       "name": "紫色火焰",
-       "id": "skill_hunter_s2_purple_flame"
+       "name": "火鸦术",
+       "id": "skill_hunter_s7_fire_crow"
       }
      ],
-     "slotId": "skill_hunter_s2_purple_flame",
-     "axis": "intrigue",
+     "slotId": "skill_hunter_s7_fire_crow",
+     "axis": "harvest",
      "concept": "status",
      "facet": "read",
-     "purpose": "怒火与激怒互文（规划）",
-     "ok": false,
-     "reason": "卡位未引用读轴锚点状态"
+     "purpose": "对猎物目标追加 1 伤",
+     "ok": true,
+     "reason": ""
     }
    ],
    "crossSystem": [
@@ -12124,63 +12217,15 @@
    "roles": [
     {
      "role": "core",
-     "declared": 18,
+     "declared": 27,
      "declaredSlots": [
-      {
-       "name": "火鸦术",
-       "id": "skill_hunter_s7_fire_crow"
-      },
-      {
-       "name": "注火",
-       "id": "skill_hunter_s7_fuel_fire"
-      },
-      {
-       "name": "炽白之枪",
-       "id": "skill_hunter_s7_white_lance"
-      },
-      {
-       "name": "紫色火焰",
-       "id": "skill_hunter_s2_purple_flame"
-      },
-      {
-       "name": "挑衅",
-       "id": "skill_hunter_s8_provoke"
-      },
-      {
-       "name": "误导",
-       "id": "skill_hunter_s6_deceived"
-      },
-      {
-       "name": "煽动",
-       "id": "skill_hunter_s6_incited"
-      },
-      {
-       "name": "集众·铁血",
-       "id": "skill_hunter_s4_massing"
-      },
-      {
-       "name": "借用能力",
-       "id": "skill_hunter_s3_borrow_ability"
-      },
-      {
-       "name": "无限制分享",
-       "id": "skill_hunter_s2_sharing_unlimited"
-      },
-      {
-       "name": "战争权柄",
-       "id": "skill_hunter_s0_war_mandate"
-      },
-      {
-       "name": "征服",
-       "id": "skill_hunter_s1_conquer"
-      },
-      {
-       "name": "集众质变",
-       "id": "skill_hunter_s1_massing_ascend"
-      },
       {
        "name": "猎人的感官",
        "id": "skill_hunter_s9_hunter_sense"
+      },
+      {
+       "name": "结构要点",
+       "id": "skill_hunter_s9_structural_eye"
       },
       {
        "name": "弱点侦察",
@@ -12191,88 +12236,271 @@
        "id": "skill_hunter_s5_harvest"
       },
       {
+       "name": "精准",
+       "id": "skill_hunter_s5_precision"
+      },
+      {
        "name": "毁灭之矛",
        "id": "skill_hunter_s1_spear_of_ruin"
       },
       {
        "name": "毁灭权柄",
        "id": "skill_hunter_s0_ruin_mandate"
-      }
-     ],
-     "actual": 0,
-     "actualSlots": []
-    },
-    {
-     "role": "starter",
-     "declared": 4,
-     "declaredSlots": [
+      },
       {
-       "name": "扑杀",
-       "id": "skill_hunter_s9_pounce"
+       "name": "标定猎物",
+       "id": "skill_hunter_s6_prey_mark"
+      },
+      {
+       "name": "集众·铁血",
+       "id": "skill_hunter_s4_massing"
+      },
+      {
+       "name": "战吼",
+       "id": "skill_hunter_s3_war_cry"
+      },
+      {
+       "name": "借用能力",
+       "id": "skill_hunter_s3_borrow_ability"
+      },
+      {
+       "name": "无限制分享",
+       "id": "skill_hunter_s2_sharing_unlimited"
+      },
+      {
+       "name": "集众质变",
+       "id": "skill_hunter_s1_massing_ascend"
+      },
+      {
+       "name": "征服",
+       "id": "skill_hunter_s1_conquer"
+      },
+      {
+       "name": "以偶为兵",
+       "id": "skill_hunter_s1_dolls_to_soldiers"
+      },
+      {
+       "name": "战争权柄",
+       "id": "skill_hunter_s0_war_mandate"
+      },
+      {
+       "name": "挑衅",
+       "id": "skill_hunter_s8_provoke"
       },
       {
        "name": "羞辱",
        "id": "skill_hunter_s8_humiliation"
       },
       {
-       "name": "暗布疑云",
-       "id": "skill_hunter_s9_seed_doubt"
+       "name": "误导",
+       "id": "skill_hunter_s6_deceived"
       },
       {
-       "name": "结构要点",
-       "id": "skill_hunter_s9_structural_eye"
-      }
-     ],
-     "actual": 0,
-     "actualSlots": []
-    },
-    {
-     "role": "bridge",
-     "declared": 4,
-     "declaredSlots": [
-      {
-       "name": "陷阱布置",
-       "id": "skill_hunter_s4_lay_trap"
-      },
-      {
-       "name": "火焰化",
-       "id": "skill_hunter_s4_flame_form"
-      },
-      {
-       "name": "钢铁化",
-       "id": "skill_hunter_s4_steel_body"
+       "name": "煽动",
+       "id": "skill_hunter_s6_incited"
       },
       {
        "name": "离间之计",
        "id": "skill_hunter_s5_divide"
+      },
+      {
+       "name": "终局阴谋",
+       "id": "skill_hunter_s2_final_intrigue"
+      },
+      {
+       "name": "火鸦术",
+       "id": "skill_hunter_s7_fire_crow"
+      },
+      {
+       "name": "炽白之枪",
+       "id": "skill_hunter_s7_white_lance"
+      },
+      {
+       "name": "燃烧之墙",
+       "id": "skill_hunter_s7_wall_of_fire"
+      },
+      {
+       "name": "注火",
+       "id": "skill_hunter_s7_fuel_fire"
+      },
+      {
+       "name": "紫色火焰",
+       "id": "skill_hunter_s2_purple_flame"
       }
      ],
-     "actual": 0,
-     "actualSlots": []
-    },
-    {
-     "role": "generic",
-     "declared": 10,
-     "declaredSlots": [
+     "actual": 27,
+     "actualSlots": [
       {
-       "name": "野外生存",
-       "id": "skill_hunter_s9_wild_survival"
+       "name": "猎人的感官",
+       "id": "skill_hunter_s9_hunter_sense"
+      },
+      {
+       "name": "结构要点",
+       "id": "skill_hunter_s9_structural_eye"
+      },
+      {
+       "name": "挑衅",
+       "id": "skill_hunter_s8_provoke"
+      },
+      {
+       "name": "羞辱",
+       "id": "skill_hunter_s8_humiliation"
+      },
+      {
+       "name": "火鸦术",
+       "id": "skill_hunter_s7_fire_crow"
+      },
+      {
+       "name": "炽白之枪",
+       "id": "skill_hunter_s7_white_lance"
+      },
+      {
+       "name": "燃烧之墙",
+       "id": "skill_hunter_s7_wall_of_fire"
+      },
+      {
+       "name": "注火",
+       "id": "skill_hunter_s7_fuel_fire"
+      },
+      {
+       "name": "误导",
+       "id": "skill_hunter_s6_deceived"
+      },
+      {
+       "name": "煽动",
+       "id": "skill_hunter_s6_incited"
+      },
+      {
+       "name": "弱点侦察",
+       "id": "skill_hunter_s5_weak_point"
+      },
+      {
+       "name": "收割",
+       "id": "skill_hunter_s5_harvest"
+      },
+      {
+       "name": "标定猎物",
+       "id": "skill_hunter_s6_prey_mark"
       },
       {
        "name": "精准",
        "id": "skill_hunter_s5_precision"
       },
       {
+       "name": "集众·铁血",
+       "id": "skill_hunter_s4_massing"
+      },
+      {
+       "name": "借用能力",
+       "id": "skill_hunter_s3_borrow_ability"
+      },
+      {
+       "name": "战吼",
+       "id": "skill_hunter_s3_war_cry"
+      },
+      {
+       "name": "紫色火焰",
+       "id": "skill_hunter_s2_purple_flame"
+      },
+      {
+       "name": "无限制分享",
+       "id": "skill_hunter_s2_sharing_unlimited"
+      },
+      {
+       "name": "征服",
+       "id": "skill_hunter_s1_conquer"
+      },
+      {
+       "name": "以偶为兵",
+       "id": "skill_hunter_s1_dolls_to_soldiers"
+      },
+      {
+       "name": "毁灭之矛",
+       "id": "skill_hunter_s1_spear_of_ruin"
+      },
+      {
+       "name": "集众质变",
+       "id": "skill_hunter_s1_massing_ascend"
+      },
+      {
+       "name": "战争权柄",
+       "id": "skill_hunter_s0_war_mandate"
+      },
+      {
+       "name": "毁灭权柄",
+       "id": "skill_hunter_s0_ruin_mandate"
+      },
+      {
+       "name": "离间之计",
+       "id": "skill_hunter_s5_divide"
+      },
+      {
+       "name": "终局阴谋",
+       "id": "skill_hunter_s2_final_intrigue"
+      }
+     ]
+    },
+    {
+     "role": "starter",
+     "declared": 2,
+     "declaredSlots": [
+      {
+       "name": "野外生存",
+       "id": "skill_hunter_s9_wild_survival"
+      },
+      {
+       "name": "扑杀",
+       "id": "skill_hunter_s9_pounce"
+      }
+     ],
+     "actual": 2,
+     "actualSlots": [
+      {
+       "name": "野外生存",
+       "id": "skill_hunter_s9_wild_survival"
+      },
+      {
+       "name": "扑杀",
+       "id": "skill_hunter_s9_pounce"
+      }
+     ]
+    },
+    {
+     "role": "bridge",
+     "declared": 1,
+     "declaredSlots": [
+      {
+       "name": "心灵沟通",
+       "id": "skill_hunter_s3_mind_link"
+      }
+     ],
+     "actual": 1,
+     "actualSlots": [
+      {
+       "name": "心灵沟通",
+       "id": "skill_hunter_s3_mind_link"
+      }
+     ]
+    },
+    {
+     "role": "generic",
+     "declared": 8,
+     "declaredSlots": [
+      {
+       "name": "钢铁化",
+       "id": "skill_hunter_s4_steel_body"
+      },
+      {
        "name": "钢铁勇气",
        "id": "skill_hunter_s4_iron_courage"
       },
       {
-       "name": "心灵沟通",
-       "id": "skill_hunter_s3_mind_link"
+       "name": "暗布疑云",
+       "id": "skill_hunter_s9_seed_doubt"
       },
       {
-       "name": "燃烧之墙",
-       "id": "skill_hunter_s7_wall_of_fire"
+       "name": "阴谋家",
+       "id": "skill_hunter_s7_schemer"
       },
       {
        "name": "火焰附魔",
@@ -12283,64 +12511,107 @@
        "id": "skill_hunter_s6_flame_saber"
       },
       {
-       "name": "阴谋家",
-       "id": "skill_hunter_s7_schemer"
+       "name": "远程轰炸",
+       "id": "skill_hunter_s4_remote_bombard"
       },
       {
-       "name": "暗影策划",
-       "id": "skill_hunter_s3_shadow_planner"
+       "name": "火焰化",
+       "id": "skill_hunter_s4_flame_form"
+      }
+     ],
+     "actual": 8,
+     "actualSlots": [
+      {
+       "name": "火焰附魔",
+       "id": "skill_hunter_s7_flame_armament"
+      },
+      {
+       "name": "火焰马刀",
+       "id": "skill_hunter_s6_flame_saber"
+      },
+      {
+       "name": "钢铁化",
+       "id": "skill_hunter_s4_steel_body"
+      },
+      {
+       "name": "火焰化",
+       "id": "skill_hunter_s4_flame_form"
       },
       {
        "name": "远程轰炸",
        "id": "skill_hunter_s4_remote_bombard"
+      },
+      {
+       "name": "钢铁勇气",
+       "id": "skill_hunter_s4_iron_courage"
+      },
+      {
+       "name": "暗布疑云",
+       "id": "skill_hunter_s9_seed_doubt"
+      },
+      {
+       "name": "阴谋家",
+       "id": "skill_hunter_s7_schemer"
       }
-     ],
-     "actual": 0,
-     "actualSlots": []
+     ]
     },
     {
      "role": "trap",
-     "declared": 5,
+     "declared": 3,
      "declaredSlots": [
       {
        "name": "献祭祈求",
        "id": "skill_hunter_s3_sacrifice_prayer"
       },
       {
+       "name": "陷阱布置",
+       "id": "skill_hunter_s4_lay_trap"
+      },
+      {
+       "name": "延时爆炸",
+       "id": "skill_hunter_s7_delayed_blast"
+      }
+     ],
+     "actual": 3,
+     "actualSlots": [
+      {
        "name": "延时爆炸",
        "id": "skill_hunter_s7_delayed_blast"
       },
       {
-       "name": "终局阴谋",
-       "id": "skill_hunter_s2_final_intrigue"
+       "name": "献祭祈求",
+       "id": "skill_hunter_s3_sacrifice_prayer"
       },
       {
-       "name": "战吼",
-       "id": "skill_hunter_s3_war_cry"
-      },
-      {
-       "name": "以偶为兵",
-       "id": "skill_hunter_s1_dolls_to_soldiers"
+       "name": "陷阱布置",
+       "id": "skill_hunter_s4_lay_trap"
       }
-     ],
-     "actual": 0,
-     "actualSlots": []
+     ]
     },
     {
      "role": "tech",
      "declared": 2,
      "declaredSlots": [
       {
+       "name": "战争迷雾",
+       "id": "skill_hunter_s3_war_mist"
+      },
+      {
        "name": "操纵天气",
        "id": "skill_hunter_s2_extreme_weather"
-      },
+      }
+     ],
+     "actual": 2,
+     "actualSlots": [
       {
        "name": "战争迷雾",
        "id": "skill_hunter_s3_war_mist"
+      },
+      {
+       "name": "操纵天气",
+       "id": "skill_hunter_s2_extreme_weather"
       }
-     ],
-     "actual": 0,
-     "actualSlots": []
+     ]
     }
    ],
    "flagship": {
@@ -12400,32 +12671,20 @@
      "miss": []
     },
     "签名键": {
-     "hit": 1,
+     "hit": 3,
      "total": 3,
-     "miss": [
-      "sref:massing(实证1)",
-      "flag:gender_is(实证1)"
-     ]
+     "miss": []
     },
     "角色配比": {
-     "hit": 1,
+     "hit": 7,
      "total": 7,
-     "miss": [
-      "core(声明18/实际0)",
-      "starter(声明4/实际0)",
-      "bridge(声明4/实际0)",
-      "generic(声明10/实际0)",
-      "trap(声明5/实际0)",
-      "tech(声明2/实际0)"
-     ]
+     "miss": []
     },
     "跨轴钩子": {
-     "hit": 0,
-     "total": 3,
+     "hit": 4,
+     "total": 5,
      "miss": [
-      "收割→massing",
-      "战争权柄→harvest",
-      "紫色火焰→intrigue"
+      "心灵沟通→harvest"
      ]
     },
     "跨系钩子": {
