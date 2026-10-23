@@ -17,10 +17,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 docs/meta/           流程·规范·提案（工作流与生成约束，先读 WORKFLOW.md）
-├─ WORKFLOW.md       当前 AI 工作流定义：设定→机制→JSON→分析→重设计迭代 五环节流水线与完成门槛
-├─ SCORING.md        职业设计评分体系（**2.0，2026-10-16 重写**）：轴级六维 + 途径级七维（含差异化 25）；
-│                    核心是「作用面」模型——状态面 ∪ 全局通道面，直接引用与通道介导的间接作用等价计分。
-│                    配套 score.py；逐职业重设计的取榜依据
+├─ WORKFLOW.md       当前 AI 工作流定义：设定→机制→JSON→分析→重设计迭代 五环节 + 周期性骨架重议（环节⑥）与完成门槛
+├─ SCORING.md        职业设计评分体系（**2.15，2026-10-23**；2.0 重写于 2026-10-16）：轴级六维 +
+│                    途径级四维（差异化 35）+ 三项门禁；核心是「作用面」模型——状态面 ∪ 全局通道面，
+│                    直接引用与通道介导的间接作用等价计分。配套 score.py；逐职业重设计的取榜依据
 ├─ REDESIGN_LOG.md   环节⑤逐职业重设计日志：一途径一迭代，改前改后分 + 改动摘要
 ├─ DESIGN_CHECKLIST.md 新卡/新状态设计清单：技能卡 8 步、状态 7 步，及技能↔状态接口契约（与轴评分三维对应）
 ├─ GENERATION_BRIEF.md  技能池生成规范，当前 v0.3；§7–§9 是旧框架编号 → DDD 落点速查
@@ -28,7 +28,8 @@ docs/meta/           流程·规范·提案（工作流与生成约束，先读 
 ├─ SCHEMA.md         JSON 结构规范（改结构前必读；含已知待修数据清单）
 ├─ PENDING.md        途径级遗留与待办汇总（自技能稿迁移）
 ├─ STATUS_TAXONOMY.md 状态概念九维分类索引（权威源指针表）
-└─ proposals/        （已清空归档——完成提案见 docs/archive/proposals/）
+├─ 骨架重议.md       环节⑥骨架层议事：命题撞车簇、候选新骨架、机制扩容请求与拍板记录
+└─ proposals/        机制扩容提案（在办：weapon-first-class.md；完成提案归 docs/archive/proposals/）
 docs/ddd/            战斗内核 DDD 设计（权威正源，纯内容）
 ├─ README.md         入口：上下文总览、依赖方向、一致性边界、54 条不变量总表
 ├─ contexts/         7 限界上下文 + 共享内核（结构/概念）
