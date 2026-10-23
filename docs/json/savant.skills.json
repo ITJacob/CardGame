@@ -1604,7 +1604,7 @@
       "flagship": false,
       "lore": "序列4 炼金术士 —— \"能为自己制造的物品注入灵魂，给予生命\"",
       "flavor": "你把自己的一缕灵性按进它胸口的凹槽——它不再是零件了：它会疼，也会在散架前替你咬下一块肉。",
-      "describe": "点活一名造物：攻击 +3、生命上限 +5（永久）；它死亡时对相邻敌方造成 5 点物理伤害（亡语）。只能对造物使用。；材质被重新定义过， Mohs 硬度不再站在它那边。",
+      "describe": "点活一名造物：攻击 +3、生命上限 +5（永久）；它死亡时对相邻敌方造成 5 点物理伤害（亡语）。只能对造物使用。；材质被重新定义过， Mohs 硬度不再站在它那边；若目标已被附身物体，额外攻击 +2。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -1639,6 +1639,29 @@
             "physical": "material_redefined"
           },
           "note": "规律改写（物理语义）：材质被重新定义"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "object_possession",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "target",
+              "note": "活化之物（附身物体）与注入灵魂共振：攻击 +2"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 object_possession（囚犯附身于物 ↔ 通识者给物赋律，同一「活化之物」两面）"
         }
       ],
       "tentative": false,
