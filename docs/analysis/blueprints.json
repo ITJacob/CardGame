@@ -17182,17 +17182,22 @@
    "name": "药师",
    "state": "回溯补登",
    "date": "2026-10-21",
-   "score": 100,
+   "score": 92,
    "scoreParts": {
     "命题": 10,
     "风格边界": 15,
-    "轴循环": 25,
+    "轴循环": 20,
     "决策点": 10,
     "签名键": 15,
-    "角色配比": 15,
+    "角色配比": 12,
     "钩子": 10
    },
-   "deductions": [],
+   "deductions": [
+    {
+     "dim": "轴循环",
+     "why": "计划卡数合计(41) ≠ 角色配比合计(40)"
+    }
+   ],
    "proposition": {
     "statement": "预服调度——药剂是时间换强度的资源：预服兑现全效、当场喝半数，剂量叠加服药联动",
     "variable": "服药时机（预服窗口 vs 当场半数救急）、剂量层数分配（叠给谁、叠几层）",
@@ -17219,8 +17224,8 @@
       "raw": "status:prepared_draught"
      },
      "loop": {
-      "produce": "药剂调配/草药敷贴/隐身药剂/预服药水预服产层",
-      "consume": "药剂调配/草药敷贴/隐身药剂/预服药水饮用消费层数兑现全效（当场喝半数）",
+      "produce": "药剂调配/草药敷贴/预服药水预服产层",
+      "consume": "草药敷贴/隐身药剂/预服药水饮用消费层数兑现全效（当场喝半数）",
       "clear": "层数被饮用消费",
       "produceCards": [
        {
@@ -17232,19 +17237,11 @@
         "id": "skill_apothecary_s9_herbal_dressing"
        },
        {
-        "name": "隐身药剂",
-        "id": "skill_apothecary_s6_invisibility_potion"
-       },
-       {
         "name": "预服药水",
         "id": "skill_apothecary_s6_prepared_draught"
        }
       ],
       "consumeCards": [
-       {
-        "name": "药剂调配",
-        "id": "skill_apothecary_s9_brew"
-       },
        {
         "name": "草药敷贴",
         "id": "skill_apothecary_s9_herbal_dressing"
@@ -17277,7 +17274,7 @@
          "id": "skill_apothecary_s6_invisibility_potion"
         }
        ],
-       "empirical": 5,
+       "empirical": 6,
        "ok": true
       }
      ],
@@ -17305,7 +17302,7 @@
        "草药敷贴"
       ],
       "payoffsNotes": [],
-      "axisScore": 83.2
+      "axisScore": 83.9
      }
     },
     {
@@ -17360,11 +17357,12 @@
        "ok": true
       }
      ],
-     "planCards": 10,
+     "planCards": 11,
      "roleMixDeclared": {
       "core": 8,
       "bridge": 1,
-      "generic": 1
+      "generic": 1,
+      "tech": 1
      },
      "actual": {
       "cards": 11,
@@ -17444,13 +17442,15 @@
       "anchorMatch": true,
       "enablers": [
        "深红体质",
-       "黑暗之翼"
+       "黑暗之翼",
+       "血族魅力",
+       "血仆转化"
       ],
       "payoffs": [
        "腐蚀之爪"
       ],
       "payoffsNotes": [],
-      "axisScore": 75.4
+      "axisScore": 85.0
      }
     },
     {
@@ -17464,7 +17464,7 @@
      },
      "loop": {
       "produce": "满月/月相·轮转产层与切相",
-      "consume": "满月/月相·轮转/黑暗凝视读相消费",
+      "consume": "腐蚀之爪/黑暗凝视/蝙蝠分解读相消费",
       "clear": "切相即更替（不锁相）",
       "produceCards": [
        {
@@ -17478,16 +17478,16 @@
       ],
       "consumeCards": [
        {
-        "name": "满月",
-        "id": "skill_apothecary_s5_full_moon"
-       },
-       {
-        "name": "月相·轮转",
-        "id": "skill_apothecary_s0_moon_cycle"
+        "name": "腐蚀之爪",
+        "id": "skill_apothecary_s7_corrosive_claw"
        },
        {
         "name": "黑暗凝视",
         "id": "skill_apothecary_s4_dark_gaze"
+       },
+       {
+        "name": "蝙蝠分解",
+        "id": "skill_apothecary_s4_bat_swarm"
        }
       ]
      },
@@ -17509,7 +17509,7 @@
          "id": "skill_apothecary_s4_dark_gaze"
         }
        ],
-       "empirical": 4,
+       "empirical": 6,
        "ok": true
       }
      ],
@@ -17536,21 +17536,93 @@
        "黑暗凝视",
        "蝙蝠分解"
       ],
-      "payoffsNotes": [
-       "预服药水",
-       "闪现",
-       "月光化",
-       "召唤之门",
-       "创生",
-       "美之震撼",
-       "生命之权",
-       "血月当空"
-      ],
-      "axisScore": 86.8
+      "payoffsNotes": [],
+      "axisScore": 86.4
      }
     }
    ],
    "crossAxis": [
+    {
+     "slot": "兽群奔袭",
+     "slots": [
+      {
+       "name": "兽群奔袭",
+       "id": "skill_apothecary_s5_beast_rush"
+      }
+     ],
+     "slotId": "skill_apothecary_s5_beast_rush",
+     "axis": "brew",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读预服药水追加伤害；另读 caster_has_summon(unit_beast) 推条",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "药剂调配",
+     "slots": [
+      {
+       "name": "药剂调配",
+       "id": "skill_apothecary_s9_brew"
+      }
+     ],
+     "slotId": "skill_apothecary_s9_brew",
+     "axis": "moon",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读月相催药（治疗 +1）",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "血族魅力",
+     "slots": [
+      {
+       "name": "血族魅力",
+       "id": "skill_apothecary_s7_vampire_charm"
+      }
+     ],
+     "slotId": "skill_apothecary_s7_vampire_charm",
+     "axis": "moon",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读月相叠深红活力",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "月相·轮转",
+     "slots": [
+      {
+       "name": "月相·轮转",
+       "id": "skill_apothecary_s0_moon_cycle"
+      }
+     ],
+     "slotId": "skill_apothecary_s0_moon_cycle",
+     "axis": "crimson",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读深红活力叠月相（血月共鸣）",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "草药敷贴 / 隐身药剂",
+     "slots": [
+      {
+       "name": "草药敷贴 / 隐身药剂",
+       "id": null,
+       "missing": true
+      }
+     ],
+     "slotId": null,
+     "axis": "remedy_mark",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读药记提高剂量（集火标记）",
+     "ok": false,
+     "reason": "卡位无真实卡"
+    },
     {
      "slot": "腐蚀之爪",
      "slots": [
@@ -17560,44 +17632,12 @@
       }
      ],
      "slotId": "skill_apothecary_s7_corrosive_claw",
-     "axis": "moon",
+     "axis": "corrupted（跨系）",
      "concept": "status",
      "facet": "read",
-     "purpose": "读月相放大收割（血族之月共鸣）",
-     "ok": true,
-     "reason": ""
-    },
-    {
-     "slot": "血月当空",
-     "slots": [
-      {
-       "name": "血月当空",
-       "id": "skill_apothecary_s0_blood_moon_rising"
-      }
-     ],
-     "slotId": "skill_apothecary_s0_blood_moon_rising",
-     "axis": "crimson",
-     "concept": "status",
-     "facet": "read",
-     "purpose": "深红活力共鸣：血月期间攻击加成",
-     "ok": true,
-     "reason": ""
-    },
-    {
-     "slot": "狂兽突袭",
-     "slots": [
-      {
-       "name": "狂兽突袭",
-       "id": "skill_apothecary_s4_frenzy_rush"
-      }
-     ],
-     "slotId": "skill_apothecary_s4_frenzy_rush",
-     "axis": "brew",
-     "concept": "status",
-     "facet": "read",
-     "purpose": "读预服药剂层数增效爆发",
-     "ok": true,
-     "reason": ""
+     "purpose": "读腐化追加毒素伤害",
+     "ok": false,
+     "reason": "读轴锚点状态缺失"
     }
    ],
    "crossSystem": [
@@ -18076,9 +18116,12 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 3,
-     "total": 3,
-     "miss": []
+     "hit": 4,
+     "total": 6,
+     "miss": [
+      "草药敷贴 / 隐身药剂→remedy_mark",
+      "腐蚀之爪→corrupted（跨系）"
+     ]
     },
     "跨系钩子": {
      "hit": 1,

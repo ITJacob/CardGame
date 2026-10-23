@@ -15,17 +15,20 @@
 ### 轴玩法
 | 轴 | 名称 | 锚点(kind:id) | 产出→消费→清除 | 玩家决策点 | 签名键承诺(键:卡位) | 计划卡数 | 角色配比 |
 |---|---|---|---|---|---|---|---|
-| brew | 药剂 | status:prepared_draught | 药剂调配/草药敷贴/隐身药剂/预服药水预服产层→药剂调配/草药敷贴/隐身药剂/预服药水饮用消费层数兑现全效（当场喝半数）→层数被饮用消费 | 预服窗口取舍：提前铺药占行动，还是当场喝半数救急；剂量叠给同一目标还是分开覆盖 | sref:prepared_draught:药剂调配,草药敷贴,隐身药剂 | 11 | core×5,generic×3,starter×1,tech×2 |
-| beasts | 兽群 | status:beast_sense | 动物感官/野性直觉产层→狂兽突袭读层爆发→层数被爆发消耗 | 兽群感官攒到几层再放狂兽突袭（早收稳伤 vs 等满层爆发） | unitType:BEAST:驯兽哨,蝙蝠分解,召唤之门 | 10 | core×8,bridge×1,generic×1 |
+| brew | 药剂 | status:prepared_draught | 药剂调配/草药敷贴/预服药水预服产层→草药敷贴/隐身药剂/预服药水饮用消费层数兑现全效（当场喝半数）→层数被饮用消费 | 预服窗口取舍：提前铺药占行动，还是当场喝半数救急；剂量叠给同一目标还是分开覆盖 | sref:prepared_draught:药剂调配,草药敷贴,隐身药剂 | 11 | core×5,generic×3,starter×1,tech×2 |
+| beasts | 兽群 | status:beast_sense | 动物感官/野性直觉产层→狂兽突袭读层爆发→层数被爆发消耗 | 兽群感官攒到几层再放狂兽突袭（早收稳伤 vs 等满层爆发） | unitType:BEAST:驯兽哨,蝙蝠分解,召唤之门 | 11 | core×8,bridge×1,generic×1,tech×1 |
 | crimson | 血月 | status:crimson_vitality | 深红体质/血族魅力/黑暗之翼/血仆转化产层→腐蚀之爪读层消费→层数被消费 | 血仆转化选谁；深红活力层数消费时机（腐蚀之爪等斩杀线） |  | 7 | core×4,bridge×1,generic×1,tech×1 |
-| moon | 月相 | status:moon_cycle | 满月/月相·轮转产层与切相→满月/月相·轮转/黑暗凝视读相消费→切相即更替（不锁相） | 主动切相抢月相窗口（月相·轮转）还是等自然轮转 | sref:moon_cycle:腐蚀之爪,满月,黑暗凝视 | 12 | core×8,generic×3,trap×1 |
+| moon | 月相 | status:moon_cycle | 满月/月相·轮转产层与切相→腐蚀之爪/黑暗凝视/蝙蝠分解读相消费→切相即更替（不锁相） | 主动切相抢月相窗口（月相·轮转）还是等自然轮转 | sref:moon_cycle:腐蚀之爪,满月,黑暗凝视 | 12 | core×8,generic×3,trap×1 |
 
 ### 跨轴钩子
 | 卡位 | 读轴 | 概念 | facet | 用途 |
 |---|---|---|---|---|
-| 腐蚀之爪 | moon | status | read | 读月相放大收割（血族之月共鸣） |
-| 血月当空 | crimson | status | read | 深红活力共鸣：血月期间攻击加成 |
-| 狂兽突袭 | brew | status | read | 读预服药剂层数增效爆发 |
+| 兽群奔袭 | brew | status | read | 读预服药水追加伤害；另读 caster_has_summon(unit_beast) 推条 |
+| 药剂调配 | moon | status | read | 读月相催药（治疗 +1） |
+| 血族魅力 | moon | status | read | 读月相叠深红活力 |
+| 月相·轮转 | crimson | status | read | 读深红活力叠月相（血月共鸣） |
+| 草药敷贴 / 隐身药剂 | remedy_mark | status | read | 读药记提高剂量（集火标记） |
+| 腐蚀之爪 | corrupted（跨系） | status | read | 读腐化追加毒素伤害 |
 
 ### 跨系钩子
 | 枢纽状态 | 写入卡位 | 读取卡位 | participants |
@@ -50,3 +53,6 @@ role 推断分歧处置：core 28→25——腐蚀之爪/狂兽突袭降 bridge�
 血月当空降 trap（else 失败分支 + 界域租金自伤）；待定 3 卡——灵性材料辨识/血族体质→generic，
 深渊枷锁→tech（grant_immunity 对策）。顺带修复：axes.moon.enablers 幽灵登记「银月切相」（无此卡）已移除。
 兑现率缺口（下一迭代轮输入）：remedy_mark 0 他途径读者（participants 已列 warrior,prisoner 待接线）；trap 仅 1 张。）
+
+
+（2026-10-24 **差异化整理**（环节⑥ P1 候选落地，⑤）：维持「预服调度」命题，做三件事——① 药剂主线与召唤体系咬合：药剂调配读月相、兽群奔袭读预服 + caster_has_summon(unit_beast)、群兽撕咬读在场野兽；② 模板收敛：18 处分药 transfer_status 收敛到 2 张、12 处「预服在前」免疫收敛到 2 张；③ 血月轴产层实证（血族魅力/血仆转化补 1 层深红活力）、月相轴收束清单收敛到 3 张 landed；药记（remedy_mark）成为集火标记（1 写 3 读）；月相·轮转读深红活力、腐蚀之爪读 corrupted 跨系。修复 4 张召唤卡与野性直觉的文本完备缺口。验收：score 71.9→85.9（轴健康 28.0→29.1，四轴 80.5/83.9/85.0/86.4；跨轴 5.6→15.0，跨系 9.4，结构 5.0，文本 5.0）；playable_scan 双挂→理想态；差异化 31.9→32.4。）

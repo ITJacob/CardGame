@@ -18,7 +18,7 @@
       "payoffs": [
         "草药敷贴"
       ],
-      "note": "2026-09-29 环节⑤：药剂调配/草药敷贴补 prepared_draught 产层段（产层 5→20），草药敷贴补读层段（payoff 从真空落地，比照 moon 轴层数经济） ｜ 2026-10-02 批次十一：隐身药剂预服兑现结构化（当场半数 vs 预服全效——红线卡面化） ｜ 2026-10-03 骨架手术：预服换形 29 张（详见 designNote）"
+      "note": "2026-10-24 ⑤：药剂主线与兽群/月相咬合——药剂调配读月相、兽群奔袭读预服；分药/预服免疫模板各收敛到 2 张，药记（remedy_mark）成为集火标记。"
     },
     "beasts": {
       "symbol": "🐾",
@@ -28,7 +28,7 @@
         "动物感官",
         "野性直觉"
       ],
-      "note": "2026-09-29 环节⑤：enablers 核正（驯兽哨为召唤卡移出，动物感官/野性直觉双实证产层 20）；狂兽突袭补 beast_sense 读层段 + prepared_draught 跨轴读段（payoff 从真空落地） ｜ 2026-10-03 骨架手术：预服换形 29 张（详见 designNote）",
+      "note": "2026-10-24 ⑤：兽群读预服药水 + caster_has_summon(unit_beast) 咬合召唤体系。",
       "payoffs": [
         "狂兽突袭"
       ]
@@ -39,8 +39,8 @@
       "statusId": "crimson_vitality",
       "enablers": [
         "深红体质",
-        "血族魅力",
         "黑暗之翼",
+        "血族魅力",
         "血仆转化"
       ],
       "payoffs": [
@@ -58,16 +58,8 @@
       ],
       "payoffs": [
         "腐蚀之爪",
-        "预服药水",
-        "闪现",
-        "月光化",
         "黑暗凝视",
-        "蝙蝠分解",
-        "召唤之门",
-        "创生",
-        "美之震撼",
-        "生命之权",
-        "血月当空"
+        "蝙蝠分解"
       ],
       "note": " ｜ 2026-09-29 环节⑤：满月补 moon_cycle 产层实证（经形式组顶相）；黑暗凝视补 moon_cycle 读层段（payoff 升 landed）；血月当空加 nightfall 跨系读段（界域延长）+ crimson_vitality 跨轴读段（血族之月） ｜ 2026-10-03 骨架手术：预服换形 29 张（详见 designNote）"
     }
@@ -84,7 +76,7 @@
       "flagship": false,
       "lore": "序列9 药师 —— \"擅长调配药剂\"",
       "flavor": "你随手把几味药材捣碎调匀灌了下去，苦涩的暖流立刻淌遍全身。",
-      "describe": "治疗一名友军 4 点生命，并交给其一瓶预服药水（攻击/防御提升，50tick，可叠 3 层）。；预服在前：抗性已经铺好。",
+      "describe": "治疗一名友军 4 点生命，并交给其一瓶预服药水（攻击/防御提升，50tick，可叠 3 层）；月相 ≥2 层时治疗 +1；自身生命 -1（以身试药）。",
       "cost": {
         "energy": 2,
         "cooldown": 10,
@@ -120,6 +112,34 @@
           "charges": 1,
           "duration": 5,
           "note": "预服在前：抗性已经铺好"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "moon_cycle",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 1,
+              "target": "target",
+              "note": "月相催药：月力足时药效更盛"
+            }
+          ],
+          "else": [],
+          "note": "brew 读 moon（跨轴）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "hp",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "note": "以身试药：调配前先自尝一口"
         }
       ],
       "sharedAcross": [
@@ -149,7 +169,7 @@
       "flagship": false,
       "lore": "序列9 药师 —— \"驯化使用植物治病\"",
       "flavor": "你嚼碎一把活着的苔草敷上伤口，叶片仍在微微抽动，把生机一点点渡进血肉里。",
-      "describe": "治疗一名友军 3 点生命，并使其再生 15tick（每 tick 0.4 点），备好一剂预服药水；若其已带预服药水，药效激发，额外治疗 2 点。；预服在前：抗性已经铺好。",
+      "describe": "治疗一名友军 3 点生命，并使其再生 15tick（每 tick 0.4 点），备好一剂预服药水；若其已带预服药水，药效激发，额外治疗 2 点；自身带药记时治疗 +2。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -208,11 +228,23 @@
           "else": []
         },
         {
-          "type": "grant_immunity",
-          "target": "self",
-          "charges": 1,
-          "duration": 5,
-          "note": "预服在前：抗性已经铺好"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "remedy_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "note": "药记在册：剂量拿捏更准，治疗 +2"
+            }
+          ],
+          "else": [],
+          "note": "药记集火读取（remedy_mark）"
         }
       ],
       "sharedAcross": [
@@ -242,7 +274,7 @@
       "flagship": false,
       "lore": "序列9 药师 —— \"毒素抗性强\"",
       "flavor": "你常年与毒草为伴，寻常的毒已经毒不倒你；而每次中毒，身体都会自己把它解掉。",
-      "describe": "战斗开始时，自身毒素抗性 +20（整场）；受到毒素伤害时自行化解 1 点（回复 1 点生命）。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "战斗开始时，自身毒素抗性 +20（整场）；受到毒素伤害时自行化解 1 点（回复 1 点生命）。",
       "hook": [
         "on_battle_start"
       ],
@@ -260,17 +292,6 @@
           "statusId": "antivenom",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "tentative": false,
@@ -297,7 +318,7 @@
       "flagship": false,
       "lore": "序列9 药师 —— \"健康领域『灵视』\"",
       "flavor": "你能看见别人身上的病气与裂口在哪里 —— 伤得越重的人，你越知道该怎么救。",
-      "describe": "战斗开始时获得「健康灵视」：你施放的治疗对当前生命低于 50% 的目标治疗量 ×1.5。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "战斗开始时获得「健康灵视」：你施放的治疗对当前生命低于 50% 的目标治疗量 ×1.5。",
       "hook": [
         "on_battle_start"
       ],
@@ -307,17 +328,6 @@
           "statusId": "health_sight",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "tentative": false,
@@ -344,7 +354,7 @@
       "flagship": false,
       "lore": "序列8 驯兽师 —— \"驯化使用活着的动物（含超凡生物）\"",
       "flavor": "你吹响骨哨，林子里那头被你驯过的狼循声而来，龇着牙站到了你身前。",
-      "describe": "在己方队尾召唤一只被驯化的野兽。",
+      "describe": "在己方队尾召唤一只野性野兽为你作战，兽群的开端。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -386,7 +396,7 @@
       "flagship": false,
       "lore": "序列8 驯兽师 —— \"『动物感官』：读懂野兽想法，沟通 / 驱使 / 分享感官\"",
       "flavor": "你与它们共享着同一副感官 —— 谁咬住了你，你的兽群就先一步知道。",
-      "describe": "战斗开始时：己方动物类/召唤物攻击 +1、行动条速率 +5（整场）；你受到伤害时，己方全体召唤物行动条 +10。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "战斗开始时：己方动物类/召唤物攻击 +1、行动条速率 +5（整场）；你受到伤害时，己方全体召唤物行动条 +10。",
       "hook": [
         "on_battle_start"
       ],
@@ -396,17 +406,6 @@
           "statusId": "beast_sense",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "sharedAcross": [
@@ -443,7 +442,7 @@
       "flagship": false,
       "lore": "序列7 吸血鬼 —— \"生命提升（活 300 岁）／出色体质、速度、敏捷\"",
       "flavor": "三百年的岁月在你血管里沉淀 —— 你的身躯比看上去结实得多，出手也比任何人预想的快。",
-      "describe": "战斗开始时，自身生命上限 +10、护甲 +2、行动条速率 +4，持续整场。；分药：剂量减半。",
+      "describe": "战斗开始时，自身生命上限 +10、护甲 +2、行动条速率 +4，持续整场。",
       "hook": [
         "on_battle_start"
       ],
@@ -471,17 +470,6 @@
           "mode": "delta",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：剂量减半"
         }
       ],
       "tentative": false,
@@ -515,7 +503,7 @@
       "flagship": false,
       "lore": "序列7 吸血鬼 —— \"颜值魅力提升\"",
       "flavor": "你抬起眼的那一瞬，最先冲上来的那个敌人愣住了 —— 它对着空气狠狠挥出一击。",
-      "describe": "战斗开始时，使敌方攻击最高的单位失神：其下一次攻击落空（25tick 内）。；预服在前：抗性已经铺好。",
+      "describe": "战斗开始时，使敌方攻击最高的单位失神：其下一次攻击落空（25tick 内）；获得 1 层深红活力；月相 ≥3 层时额外 +1 层。",
       "hook": [
         "on_battle_start"
       ],
@@ -529,11 +517,32 @@
           "note": "目标 = 敌方 atk_desc 最高者"
         },
         {
-          "type": "grant_immunity",
+          "type": "mount_status",
+          "statusId": "crimson_vitality",
+          "stacks": 1,
           "target": "self",
-          "charges": 1,
-          "duration": 5,
-          "note": "预服在前：抗性已经铺好"
+          "note": "血族魅力本身即深红活力来源"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "moon_cycle",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "crimson_vitality",
+              "stacks": 1,
+              "target": "self",
+              "note": "月相越深，血越沸：额外 +1 层深红活力"
+            }
+          ],
+          "else": [],
+          "note": "crimson 读 moon（跨轴）"
         }
       ],
       "tentative": false,
@@ -560,7 +569,7 @@
       "flagship": false,
       "lore": "序列7 吸血鬼 —— \"『腐蚀之爪』\"",
       "flavor": "你的指甲暴长成漆黑的利爪，撕开的不只是皮肉 —— 连同它身上的护甲一并锈成了渣。",
-      "describe": "对一名近战敌人造成 4 点毒素伤害，并使其护甲 -2（15tick）；若自身深红活力 ≥1 层，血族之爪追加 2 点毒素伤害。；若自身月相在场（moon_cycle），月相毒爪，毒素伤害 +1。；药剂残渣犹在：短时免疫一次侵扰（当场只喝半剂）。",
+      "describe": "对一名近战敌人造成 4 点毒素伤害，并使其护甲 -2（15tick）；若自身深红活力 ≥1 层，血族之爪追加 2 点毒素伤害。若自身月相在场（moon_cycle），月相毒爪，毒素伤害 +1；目标已腐化时追加 1 点毒素伤害；自身带药记时再 +1。",
       "cost": {
         "energy": 3,
         "cooldown": 10,
@@ -629,13 +638,6 @@
           "else": []
         },
         {
-          "type": "grant_immunity",
-          "target": "self",
-          "charges": 1,
-          "duration": 5,
-          "note": "药剂残渣护体：当场只喝半剂，余量留给下一次"
-        },
-        {
           "op": "if",
           "condition": {
             "kind": "has_status",
@@ -652,6 +654,46 @@
           ],
           "else": [],
           "note": "跨系接线（2026-10-23）：读取枢纽 corrupted"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "corrupted",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 1,
+              "note": "腐蚀叠加：已腐化目标再受 1 点毒素伤害"
+            }
+          ],
+          "else": [],
+          "note": "跨系读取（2026-10-24）：corrupted 枢纽（药师 participant）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "remedy_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 1,
+              "note": "药记在册：毒性配比更狠 +1"
+            }
+          ],
+          "else": [],
+          "note": "药记集火读取（remedy_mark）"
         }
       ],
       "tentative": false,
@@ -678,7 +720,7 @@
       "flagship": false,
       "lore": "序列7 吸血鬼 —— \"『深渊枷锁』\"",
       "flavor": "深渊里伸出漆黑的锁链，缠住它的四肢拖向黑暗 —— 它每动一下都比刚才更沉。",
-      "describe": "对一名远程敌人造成 2 点无元素伤害，并施加枷锁 10tick：无法被位移、行动条速率 ×0.7。；药剂残渣犹在：短时免疫一次侵扰（当场只喝半剂）。",
+      "describe": "对一名远程敌人造成 2 点无元素伤害，并施加枷锁 10tick：无法被位移、行动条速率 ×0.7。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -704,13 +746,6 @@
           "type": "mount_status",
           "statusId": "shackle",
           "duration": 10
-        },
-        {
-          "type": "grant_immunity",
-          "target": "self",
-          "charges": 1,
-          "duration": 5,
-          "note": "药剂残渣护体：当场只喝半剂，余量留给下一次"
         }
       ],
       "tentative": false,
@@ -737,7 +772,7 @@
       "flagship": false,
       "lore": "序列7 吸血鬼 —— \"『黑暗之翼』\"",
       "flavor": "你背后张开一双由黑暗凝成的巨翼，托着你掠回阵地深处 —— 而留在原地的只有几片融进夜色的羽毛。",
-      "describe": "退回己方半场最后位，并获得黑暗之翼 15tick：受伤 ×0.85、行动条速率 +6；深红活力 +1 层。；若自身带有夜幕（nightfall），夜幕同盟，行动条 +10。",
+      "describe": "退回己方半场最后位，并获得黑暗之翼 15tick：受伤 ×0.85、行动条速率 +6；深红活力 +1 层。若自身带有夜幕（nightfall），夜幕同盟，行动条 +10。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -843,7 +878,7 @@
       "flagship": true,
       "lore": "序列7 吸血鬼 —— \"『血仆转化』\"",
       "flavor": "你咬破它的颈侧，把自己的血渡了进去 —— 当它再站起来时，第一个扑向的是它昔日的同伴。",
-      "describe": "使一名近战敌人变成血仆 25tick：攻击其己方队友，且攻击 -2。；预服在前：抗性已经铺好。",
+      "describe": "使一名近战敌人变成血仆 25tick：攻击其己方队友，且攻击 -2；自身获得 1 层深红活力。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -874,11 +909,11 @@
           "note": "成为血仆后自身衰弱"
         },
         {
-          "type": "grant_immunity",
+          "type": "mount_status",
+          "statusId": "crimson_vitality",
+          "stacks": 1,
           "target": "self",
-          "charges": 1,
-          "duration": 5,
-          "note": "预服在前：抗性已经铺好"
+          "note": "转化血仆的同时自身血气翻涌"
         }
       ],
       "upgradeLadder": {
@@ -915,7 +950,7 @@
       "flagship": false,
       "lore": "序列6 魔药教授 —— \"调配超凡药剂和香水（隐身药剂、无味香水等）\"",
       "flavor": "你摔碎那瓶银灰色的药剂，雾气散开时，你已经不在原地了。",
-      "describe": "自身隐身 10tick：不可被单体技能选中（攻击或受击后现身）——当场服用只发挥半数；若自身带有预服药水，耗 1 层兑现全效：隐身 20tick。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "自身隐身 10tick：不可被单体技能选中（攻击或受击后现身）——当场服用只发挥半数；若自身带有预服药水，耗 1 层兑现全效：隐身 20tick；自身带药记时隐身延长 5tick。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -975,6 +1010,27 @@
           "count": 1,
           "durationMul": 0.5,
           "note": "分药：药剂也能给别人来一口，只是剂量减半"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "remedy_mark",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "stealth",
+              "duration": 5,
+              "target": "self",
+              "note": "药记在册：隐身延长 5tick"
+            }
+          ],
+          "else": [],
+          "note": "药记集火读取（remedy_mark）"
         }
       ],
       "tentative": false,
@@ -1001,7 +1057,7 @@
       "flagship": false,
       "lore": "序列6 魔药教授 —— \"调配超凡药剂和香水（隐身药剂、无味香水等）\"",
       "flavor": "你在颈侧抹了一点无味的香膏 —— 从这一刻起，没有什么脏东西再能沾到你身上。",
-      "describe": "驱散自身全部减益与持续伤害状态，并获得无味 10tick：免疫减益与持续伤害状态。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "驱散自身全部减益与持续伤害状态，并获得无味 10tick：免疫减益与持续伤害状态。",
       "cost": {
         "energy": 2,
         "cooldown": 20,
@@ -1036,17 +1092,6 @@
               "target": "self"
             }
           ]
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "tentative": false,
@@ -1073,7 +1118,7 @@
       "flagship": false,
       "lore": "序列6 魔药教授 —— \"预服药水后非常难以应付\"",
       "flavor": "你在战前就把三瓶药水灌了下去 —— 开战那一刻，你的血是沸腾的。",
-      "describe": "战斗开始时获得「预服药水」50tick：攻击 +2、防御 +2、行动条速率 +8。；并获得「药记」20tick（己方伤害 ×1.1，跨系枢纽）。；目标已被腐蚀则以毒攻蚀，追加 2 点毒素伤害。；药剂残渣犹在：短时免疫一次侵扰（当场只喝半剂）。",
+      "describe": "战斗开始时获得「预服药水」50tick：攻击 +2、防御 +2、行动条速率 +8。并获得「药记」20tick（己方伤害 ×1.1，跨系枢纽）。目标已被腐蚀则以毒攻蚀，追加 2 点毒素伤害。",
       "hook": [
         "on_battle_start"
       ],
@@ -1151,7 +1196,7 @@
       "flagship": false,
       "lore": "序列6 魔药教授 —— \"具备分辨灵性材料的非凡能力\"",
       "flavor": "你一眼就能看出哪具躯壳里还藏着可用的灵性 —— 越纯粹的素材，你榨取得越干净。",
-      "describe": "你击杀单位时回复能量：击杀召唤物/灵界生物回复 4 点，否则回复 2 点。；分药：剂量减半。",
+      "describe": "你击杀单位时回复能量：击杀召唤物/灵界生物回复 4 点，否则回复 2 点。",
       "hook": [
         "on_kill"
       ],
@@ -1179,17 +1224,6 @@
               "target": "self"
             }
           ]
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：剂量减半"
         }
       ],
       "tentative": false,
@@ -1216,7 +1250,7 @@
       "flagship": false,
       "lore": "序列5 深红学者 —— \"『满月』：让范围处于满月状态\"",
       "flavor": "一轮满月在你头顶升起，银白色的光洒满整个战场 —— 所有伤口都在月光下急速愈合。",
-      "describe": "自身月相强制切换至满月（经月相轮转形式组顶相并重置计数）；全体友军沐浴月光 15tick：受到的治疗 ×1.3。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "自身月相强制切换至满月（经月相轮转形式组顶相并重置计数）；全体友军沐浴月光 15tick：受到的治疗 ×1.3。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1257,17 +1291,6 @@
               "note": "强制切相经月相轮转形式组承载（同组新相顶旧相，环节⑤ 2026-09-29 补产层实证）"
             }
           ]
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "upgradeLadder": {
@@ -1418,7 +1441,7 @@
       "flagship": false,
       "lore": "序列5 深红学者 —— \"『月光化』：虚化为红鳞消散重组\"",
       "flavor": "你的身躯在月光里散成漫天细碎的红鳞；而当它们重新聚拢时，你还站着。",
-      "describe": "月光化 25tick：受伤 ×0.85；期间死亡时以 25% 生命重组（每场一次）。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "月光化 25tick：受伤 ×0.85；期间死亡时以 25% 生命重组（每场一次）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1440,17 +1463,6 @@
           "statusId": "moonlight_form",
           "duration": 25,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "tentative": false,
@@ -1488,7 +1500,7 @@
       "flagship": false,
       "lore": "序列5 深红学者 —— \"可怕速度和难以想象的恢复能力\"",
       "flavor": "你的心跳快得像擂鼓，血流快得能听见 —— 而那些还没来得及疼的伤口，已经在自己合拢。",
-      "describe": "战斗开始时，自身行动条速率 +10、生命上限 +10（整场），并常驻自愈（每 tick 回复 0.2 点）。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "战斗开始时，自身行动条速率 +10、生命上限 +10（整场），并常驻自愈（每 tick 回复 0.2 点）。",
       "hook": [
         "on_battle_start"
       ],
@@ -1514,17 +1526,6 @@
           "statusId": "crimson_vitality",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "tentative": false,
@@ -1558,7 +1559,7 @@
       "flagship": false,
       "lore": "序列4 巫王 —— \"『月亮纸人』（替身）\"",
       "flavor": "你剪好的那张月亮纸人替你碎在了刀下 —— 而碎裂的纸屑反手扎进了凶手的眼里。",
-      "describe": "月亮纸人替身 30tick：期间死亡时以 20% 生命免死（每场一次），并对致死来源造成 3 点无元素伤害。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "月亮纸人替身 30tick：期间死亡时以 20% 生命免死（每场一次），并对致死来源造成 3 点无元素伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 30,
@@ -1580,17 +1581,6 @@
           "statusId": "moon_paper_substitute",
           "duration": 30,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "tentative": false,
@@ -1628,7 +1618,7 @@
       "flagship": false,
       "lore": "序列4 巫王 —— \"『黑暗凝视』（眼球操作映射目标）\"",
       "flavor": "你把自己的眼珠映射到了它的眼里 —— 从这一刻起，它看见的一切都是你让它看见的。",
-      "describe": "使一名敌人被黑暗凝视 25tick：接下来 2 次攻击落空，且受伤 ×1.15；若自身月相轮转在场，夜幕凝视延长 10tick。；预服在前：抗性已经铺好。",
+      "describe": "使一名敌人被黑暗凝视 25tick：接下来 2 次攻击落空，且受伤 ×1.15；若自身月相轮转在场，夜幕凝视延长 10tick。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -1671,13 +1661,6 @@
             }
           ],
           "else": []
-        },
-        {
-          "type": "grant_immunity",
-          "target": "self",
-          "charges": 1,
-          "duration": 5,
-          "note": "预服在前：抗性已经铺好"
         },
         {
           "op": "if",
@@ -1873,7 +1856,7 @@
       "flagship": false,
       "lore": "序列3 召唤大师 —— \"『人缘』好可与天使签订契约直接召唤\"",
       "flavor": "那些被你唤来的存在身上都带着同一道契印 —— 它们受你的庇护而来，散去时把残余的灵性还给你。",
-      "describe": "战斗开始时获得「灵界契印」：你召唤的单位登场时自带 3 点护盾；由你召唤的单位死亡时你回复 2 点能量。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "战斗开始时获得「灵界契印」：你召唤的单位登场时自带 3 点护盾；由你召唤的单位死亡时你回复 2 点能量。",
       "hook": [
         "on_battle_start"
       ],
@@ -1883,17 +1866,6 @@
           "statusId": "spirit_pact",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "tentative": false,
@@ -1920,7 +1892,7 @@
       "flagship": true,
       "lore": "序列2 创生者 —— \"『创造之力』（部分『生命』权柄）：让生命延长 / 缩短 / 爆发\"",
       "flavor": "你把手按在同伴的伤口上，命令那具身体活下去；同一瞬间，你朝敌人摊开手掌，把它血脉里的年岁一段段抽走。",
-      "describe": "双目标：治疗生命最低的一名友军 8 点并使其再生 15tick；同时使主目标敌人生命上限 -8（30tick，到期不回补截断）。；预服在前：抗性已经铺好。",
+      "describe": "双目标：治疗生命最低的一名友军 8 点并使其再生 15tick；同时使主目标敌人生命上限 -8（30tick，到期不回补截断）。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1970,13 +1942,6 @@
               "note": "生命缩短：生效即截断当前生命，到期回滚不回补（效果参数 §1.1 hp_max 削减截断行，2026-09-04 确认）"
             }
           ]
-        },
-        {
-          "type": "grant_immunity",
-          "target": "self",
-          "charges": 1,
-          "duration": 5,
-          "note": "预服在前：抗性已经铺好"
         }
       ],
       "sharedAcross": [
@@ -2006,7 +1971,7 @@
       "flagship": false,
       "lore": "序列2 创生者 —— \"直接治疗无需药剂，自我治愈达最高程度\"",
       "flavor": "你不再需要任何瓶子与草药 —— 你的身体自己记得该怎么把自己修好，伤得越重，修得越急。",
-      "describe": "战斗开始时获得「自我治愈」：每 tick 回复 0.2 点生命；生命低于 50% 时受到伤害会急速愈合 2 点。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "战斗开始时获得「自我治愈」：每 tick 回复 0.2 点生命；生命低于 50% 时受到伤害会急速愈合 2 点。",
       "hook": [
         "on_battle_start"
       ],
@@ -2016,17 +1981,6 @@
           "statusId": "self_mend",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "tentative": false,
@@ -2053,7 +2007,7 @@
       "flagship": false,
       "lore": "序列2 创生者 —— \"能给予土地新生命，清理污秽\"",
       "flavor": "你脚下这片焦土重新长出了嫩芽 —— 而缠在同伴身上的污秽，也随之一寸寸褪去。",
-      "describe": "全体友军驱散全部减益与持续伤害状态，并各回复 3 点生命。；先服一半，剩下的留给同伴。",
+      "describe": "全体友军驱散全部减益与持续伤害状态，并各回复 3 点生命。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -2089,24 +2043,6 @@
               "target": "all_allies"
             }
           ]
-        },
-        {
-          "type": "grant_immunity",
-          "target": "self",
-          "charges": 1,
-          "duration": 5,
-          "note": "先服一半"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "剩下的留给同伴"
         }
       ],
       "sharedAcross": [
@@ -2136,7 +2072,7 @@
       "flagship": false,
       "lore": "序列1 美神 —— \"『美』之权柄（较低层次）：所有看到者遭受极致之美震撼\"",
       "flavor": "你抬起脸。那一瞬间，整个战场上所有看向你的眼睛都停住了 —— 没有人在震撼停息之前，还记得自己手里握着武器。",
-      "describe": "全体敌人被震撼 10tick：行动条速率 ×0.75、攻击 -3。可被驱散。；预服在前：抗性已经铺好。",
+      "describe": "全体敌人被震撼 10tick：行动条速率 ×0.75、攻击 -3。可被驱散。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2158,13 +2094,6 @@
           "statusId": "awestruck",
           "duration": 10,
           "target": "all_enemies"
-        },
-        {
-          "type": "grant_immunity",
-          "target": "self",
-          "charges": 1,
-          "duration": 5,
-          "note": "预服在前：抗性已经铺好"
         }
       ],
       "tentative": false,
@@ -2191,7 +2120,7 @@
       "flagship": false,
       "lore": "序列1 美神 —— \"『召唤』权柄：没谁能拒绝美神的召唤\"",
       "flavor": "没有什么存在能拒绝你的呼唤 —— 听见你声音的，永远比门那头该来的更多一个。",
-      "describe": "战斗开始时获得「美神召唤」：你的召唤类技能额外召唤一只野兽；你施加的魅惑/黑暗凝视/着迷不可被驱散。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "战斗开始时获得「美神召唤」：你的召唤类技能额外召唤一只野兽；你施加的魅惑/黑暗凝视/着迷不可被驱散。",
       "hook": [
         "on_battle_start"
       ],
@@ -2201,17 +2130,6 @@
           "statusId": "beauty_summon",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "tentative": false,
@@ -2238,7 +2156,7 @@
       "flagship": false,
       "lore": "序列0 月亮 —— \"部分『生命』权柄：永恒生命，赐予 / 收回生命\"",
       "flavor": "你赐予同伴一段不属于它的生命；然后转过身，从敌人身上把属于它的那一段，一寸不剩地收了回来。",
-      "describe": "双目标：一名友军获得永恒生命 30tick（期间死亡时以 40% 生命免死）；主目标敌人生命上限永久 -12（当前生命同步截断，不回补）。；预服在前：抗性已经铺好。",
+      "describe": "双目标：一名友军获得永恒生命 30tick（期间死亡时以 40% 生命免死）；主目标敌人生命上限永久 -12（当前生命同步截断，不回补）。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2284,13 +2202,6 @@
               "note": "收回生命：全稿唯一 duration:null 的负面 modify_stat；永久削减 + 截断不回补（与创生的 30t 临时削减区分）"
             }
           ]
-        },
-        {
-          "type": "grant_immunity",
-          "target": "self",
-          "charges": 1,
-          "duration": 5,
-          "note": "预服在前：抗性已经铺好"
         }
       ],
       "tentative": false,
@@ -2317,7 +2228,7 @@
       "flagship": true,
       "lore": "序列0 月亮 —— \"『血月 / 红月 / 银月 / 满月 / 缺月』五种月相状态\"",
       "flavor": "你头顶的月亮从不会停在同一副模样 —— 它盈了又缺，缺了又盈；而你随着它的每一次圆缺，变成另一个人。",
-      "describe": "战斗开始时获得「月相轮转」：月相按 血月→红月→银月→满月→缺月 每 6 tick 自发轮转（开场血月）；生命首次低于 30% 时立即切至满月；【满月】卡可强制切相。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "战斗开始时获得「月相轮转」：月相按 血月→红月→银月→满月→缺月 每 6 tick 自发轮转（开场血月）；生命首次低于 30% 时立即切至满月；【满月】卡可强制切相；自身深红活力 ≥2 层时月相 +1 层。",
       "hook": [
         "on_battle_start"
       ],
@@ -2329,15 +2240,25 @@
           "target": "self"
         },
         {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "crimson_vitality",
+            "cmp": ">=",
+            "n": 2
           },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "moon_cycle",
+              "stacks": 1,
+              "target": "self",
+              "note": "血月共鸣：深红活力 ≥2 时月相 +1 层"
+            }
+          ],
+          "else": [],
+          "note": "moon 读 crimson（跨轴）"
         }
       ],
       "tentative": false,
@@ -2371,7 +2292,7 @@
       "flagship": false,
       "lore": "序列0 月亮 —— \"『灵性』权柄：灵性根源，所有灵性力量的母亲\"",
       "flavor": "你是所有灵性力量的源头 —— 你的灵性深不见底，而凡是由你唤来的存在，都自带一层灵性的护壳。",
-      "describe": "战斗开始时，自身能量上限 +10、能量回复 +0.2/tick（整场）；你召唤的单位登场时自带 3 点护盾。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "战斗开始时，自身能量上限 +10、能量回复 +0.2/tick（整场）；你召唤的单位登场时自带 3 点护盾。",
       "hook": [
         "on_battle_start"
       ],
@@ -2397,17 +2318,6 @@
           "statusId": "spirit_root",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "tentative": false,
@@ -2603,7 +2513,7 @@
       "flagship": false,
       "lore": "以号角召兽同行。",
       "flavor": "来吧，孩子们。",
-      "describe": "召唤 1 只野兽至队尾。",
+      "describe": "吹响号角，召来一只野兽与现有兽群汇合到队尾。",
       "effects": [],
       "tentative": false,
       "cost": {
@@ -2642,24 +2552,13 @@
       "flagship": false,
       "lore": "兽性直觉永不失灵。",
       "flavor": "你能嗅到危险的味道。",
-      "describe": "战斗开始时永久获得兽觉。；分药：这份收益也能给别人来一口，只是剂量减半。",
+      "describe": "战斗开始时永久获得兽觉：识破与兽群感应先行一步，潜伏者无处藏身。",
       "effects": [
         {
           "type": "mount_status",
           "statusId": "beast_sense",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "self"
-          },
-          "to": "all_allies",
-          "count": 1,
-          "durationMul": 0.5,
-          "note": "分药：药剂也能给别人来一口，只是剂量减半"
         }
       ],
       "tentative": false,
@@ -2689,8 +2588,28 @@
       "flagship": false,
       "lore": "兽群一拥而上。",
       "flavor": "撕碎它。",
-      "describe": "召唤 2 只野兽至队尾。",
-      "effects": [],
+      "describe": "在己方队尾召唤两只野兽群起撕咬；场上有野兽时自身行动条 +5。",
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "caster_has_summon",
+            "unitId": "unit_beast"
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 5,
+              "mode": "delta",
+              "target": "self",
+              "note": "群兽已成，趁势压上：自身行动条 +5"
+            }
+          ],
+          "else": [],
+          "note": "兽群咬合（caster_has_summon，2026-10-24 ⑤）"
+        }
+      ],
       "tentative": false,
       "cost": {
         "energy": 3,
@@ -2728,7 +2647,7 @@
       "flagship": false,
       "lore": "兽潮裹挟着你冲锋。",
       "flavor": "踏平挡路的一切。",
-      "describe": "召唤 2 只野兽，并造成 3 点物理伤害。",
+      "describe": "召唤 2 只野兽，并造成 3 点物理伤害；自身带预服药水时追加 1 点伤害；场上有野兽召唤物时自身行动条 +10。",
       "effects": [
         {
           "type": "spawn",
@@ -2760,6 +2679,46 @@
           ],
           "else": [],
           "note": "跨系接线（2026-10-23）：读取枢纽 beast_swarm"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "prepared_draught",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 1,
+              "target": "target",
+              "note": "兽群灌了药，奔袭更狠 +1"
+            }
+          ],
+          "else": [],
+          "note": "beasts 读 brew（跨轴）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "caster_has_summon",
+            "unitId": "unit_beast"
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 10,
+              "mode": "delta",
+              "target": "self",
+              "note": "兽群在场，奔袭后顺势再走一格"
+            }
+          ],
+          "else": [],
+          "note": "兽群用药：召唤体系咬合（caster_has_summon）"
         }
       ],
       "tentative": false,
@@ -2891,7 +2850,7 @@
       "flagship": false,
       "lore": "万兽奔涌，势不可挡。",
       "flavor": "大地在蹄下震颤。",
-      "describe": "召唤 3 只野兽至队尾。",
+      "describe": "在己方队尾召来三只野兽同时冲阵，瞬间铺满前场。",
       "effects": [],
       "tentative": false,
       "cost": {
