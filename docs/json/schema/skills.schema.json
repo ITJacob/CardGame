@@ -275,7 +275,8 @@
           "enum": [
             "active",
             "passive",
-            "weapon"
+            "weapon",
+            "summon"
           ]
         },
         "sequence": {
@@ -366,6 +367,10 @@
         "weapon": {
           "$ref": "#/$defs/weaponSpec",
           "description": "武器载荷（仅 kind=weapon）：打出即装备；攻击加值/耐久/装备期触发器。"
+        },
+        "summon": {
+          "$ref": "#/$defs/summonSpec",
+          "description": "召唤载荷（仅 kind=summon）：打出即落场；卡面只写实例参数，unitType/基线/技能组由途径顶层 unitDefs 蓝本兜底。"
         },
         "initialEquip": {
           "type": "string",
@@ -528,6 +533,24 @@
               "weapon"
             ]
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "summon"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "cost",
+              "summon"
+            ]
+          }
         }
       ]
     },
@@ -571,6 +594,56 @@
             "$ref": "#/$defs/trigger"
           },
           "description": "装备期间的触发器；不支持 consumeCharge（耐久由引擎按普攻次数扣）。"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "summonSpec": {
+      "type": "object",
+      "description": "召唤载荷（仅 kind=summon，2026-10-23 召唤牌化）：打出即落场。卡面只写实例参数；unitType/基线属性/技能组由途径顶层 unitDefs 蓝本兜底，不两写。template/reviveOf/zone 语义留在 spawn 原语，不进入本载荷。",
+      "required": [
+        "unitId"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "unitId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "具名单位引用（唯一正键），须存在于某途径顶层 unitDefs 池（validate.py 校验）。"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "召唤数量（缺省 1）；超 summon_cap 按落位顺序逐个挤掉最早在场者。"
+        },
+        "hpRatio": {
+          "type": "number",
+          "description": "per-卡生命比率，乘 unitDef base；缺省 = 1.0（按 base 原值出场）。"
+        },
+        "atkRatio": {
+          "type": "number",
+          "description": "per-卡攻击比率，乘 unitDef base；缺省 = 1.0。"
+        },
+        "position": {
+          "enum": [
+            "tail",
+            "at_unit",
+            "original"
+          ],
+          "description": "落位（缺省 tail = 队尾）。"
+        },
+        "lifetime": {
+          "description": "在场寿命（缺省永久）；写法同 effSpawn.lifetime。",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
         },
         "note": {
           "type": "string"

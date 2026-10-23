@@ -73,7 +73,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 |---|---|:--:|---|
 | `id` | string | ✓ | `skill_<pathwayId>_s<序列>_<短名>`，全局唯一 |
 | `name` | string | ✓ | 中文名 |
-| `kind` | `active`\|`passive`\|`weapon` | ✓ | 决定下面的必填分支；`weapon` = 打出即装备的武器牌 |
+| `kind` | `active`\|`passive`\|`weapon`\|`summon` | ✓ | 决定下面的必填分支；`weapon` = 打出即装备的武器牌；`summon` = 打出即落场的召唤牌（2026-10-23 召唤牌化） |
 | `sequence` | int 0–9 | ✓ | 序列位阶；稀有度由它派生 |
 | `sequenceName` | string | ✓ | 该位阶名称 |
 | `rarity` | enum | ✓ | `common`(9-8) / `uncommon`(7-6) / `rare`(5-4) / `epic`(3-2) / `legendary`(1-0) |
@@ -81,13 +81,14 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `flagship` | bool | ✓ | 是否旗舰卡 |
 | `role` | enum | – | 设计角色六值（2026-10-21 玩法蓝图工序）：`core` 轴循环承重件 / `starter` 低序列入门（须 common）/ `bridge` 跨轴跨系连接 / `generic` 泛用骨架·刻意补位（不得 flagship、不得被 axes 登记）/ `trap` core 同族赌博变体（须带风险段）/ `tech` 对策卡。口径与配比约束见 SCORING.md §一·附 |
 | `lore` / `flavor` / `describe` | string | ✓ | 设定 / 风味 / **玩家可读效果描述**（`describe` 是唯一面向玩家的字段） |
-| `effects` | effect[] | ✓ | 卡面效果；active/passive 须至少 1 条，weapon 可为空（无战吼） |
+| `effects` | effect[] | ✓ | 卡面效果；active/passive 须至少 1 条，weapon 可为空（无战吼）；summon 可为空且**禁含 spawn 段**（一卡一单位） |
 | `tentative` | bool | ✓ | 数值待拍板；当前全库 832 张均为 `true` |
-| `cost` | object | active / weapon | `{ energy, cooldown, castTime, opportunity? }`，`castTime` 可为 `null`；`opportunity` 取 `0/1`（缺省 1）：0 = 执行后不消耗行动机会，同一机会可继续行动 |
+| `cost` | object | active / weapon / summon | `{ energy, cooldown, castTime, opportunity? }`，`castTime` 可为 `null`；`opportunity` 取 `0/1`（缺省 1）：0 = 执行后不消耗行动机会，同一机会可继续行动 |
 | `reach` | `none`\|`melee`\|`thrown`\|`spell` | active | 攻击作用形态（与双方站位正交；决定对撞/反击触发与可拦截性，非攻击类写 none）：melee=近身对抗、thrown=有形投射（可拦截、触发反击）、spell=无形作用（不可拦截、仍触发反击）；原 ranged 已按形态拆为 thrown/spell |
 | `target` | object | active | 见 §4（weapon 的战吼可选用） |
 | `hook` | enum | passive | 被动挂载的触发点 |
 | `weapon` | object | weapon | 武器载荷 `{ slot, attack, durability, tags?, modifiers?, triggers?, note? }`：打出即装备；攻击加值走 delta 层，耐久按普攻次数消耗、归零摧毁；装备期触发器不支持 `consumeCharge` |
+| `summon` | object | summon | 召唤载荷 `{ unitId, count?, hpRatio?, atkRatio?, position?, lifetime?, note? }`（2026-10-23）：打出即落场；卡面只写实例参数，unitType/基线/技能组由途径顶层 `unitDefs` 蓝本兜底；`template`/`reviveOf`/`zone` 语义留在 spawn 原语 |
 | `initialEquip` | card id | passive | 开局自动装备该武器卡（须为同途径 `kind:"weapon"`）；仅 `on_battle_start` 生效 |
 | `statusDefs` | statusDef[] | | 卡引入的私有状态 |
 | `triggers` | trigger[] | | 卡片级触发器 |
@@ -110,6 +111,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 - `kind: active` → 必须同时有 `cost`、`reach`、`target`
 - `kind: passive` → 必须有 `hook`
 - `kind: weapon` → 必须有 `cost`、`weapon`（`reach` / `target` 可选，仅供战吼；`effects` 可为空）
+- `kind: summon` → 必须有 `cost`、`summon`（无 `reach` / `target`——默认落己方战场；`effects` 战吼可选但禁含 spawn 段）
 
 ## 4. 目标系统
 
