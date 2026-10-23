@@ -1,6 +1,6 @@
 # 召唤牌系统（机制扩容提案）
 
-> 状态：**已拍板（2026-10-23）**；P0/P1 已落地（13 张纯 spawn 卡转 kind=summon、24 个 unitDef 补登），P2 进行中
+> 状态：**已拍板（2026-10-23）**；P0/P1/P2 已落地（13 张纯 spawn 卡转 kind=summon、24 个 unitDef 补登、召唤谓词与复合卡二评），P3 部分落地（corpse 2 张已转，军团 cap 特权卡待设计）
 > 入口：环节⑥骨架重议 → 机制扩容（`WORKFLOW.md`）；对标 `weapon-first-class.md`（同套迁移模式）
 > 结论：召唤单位 = 新增的技能卡类型 `kind: "summon"`，**打出即落场**；引用 unitDef 蓝本；无背包、单位不回手。
 > 纪律：本提案**不改**任何 `docs/ddd` / `docs/json` / schema / 脚本；实施须先过环节⑥ Gate 并按 ② 机制落地顺序推进。
@@ -121,7 +121,7 @@ play(summon card)
 | 面 | 数量 | 位置 | 迁移 |
 |---|---:|---|---|
 | 首批迁移卡 | 14 | 9 途径（apothecary 5 / planter 3 / sleepless 2 / spectator 2 / savant·seer·prisoner·reader·sailor 各 1） | 转 `kind:"summon"`，effects 内 spawn 段提升为 `summon` 载荷 |
-| corpse 批次（P3） | 3 | corpse_collector | 与⑤重构第 3 轮合并评审 |
+| corpse 批次（P3） | 2 | corpse_collector | 与⑤重构第 3 轮合并评审：唤起骷髅 / 唤起活尸转 summon；完全的死亡 / 死亡之国为 zone 形态不转 |
 | 被动纯 spawn 卡 | 3 | 待实施时点名 | 不动（非打出语义） |
 | unitDefs 补全 | 24 单位（12 途径） | 按主要引用途径落入对应文件顶层 `unitDefs` | 补 unitType / note；unit_automaton→savant、unit_beastling 等→planter、unit_sea_beast→sailor 等 |
 | schema | 2 处 + 新增 | `card.kind` 枚举 + `summonSpec` 载荷 + 条件约束（summon 必填 cost+summon） | 先改 schema 再改数据 |
@@ -141,7 +141,7 @@ play(summon card)
 | P0 | schema（kind + summonSpec + 条件约束）；SCHEMA.md 登记；unitDefs 补全 24 单位 | schema 校验 + `validate_schema.py` + 文档评审 |
 | P1 | 13 张首批迁移（避开 corpse）；validate 新规则；内核打出分支；site/game 渲染 | 四门禁全绿 + `npm test` + `score.py` 不退化 |
 | P2 | 召唤谓词（`caster_has_summon.tag/unitId` + `target_is_summoned`，不另立别名）；卡面单位属性面板；复合卡二批评审 | `playable_scan` 可测 |
-| P3 | corpse 3 张（与⑤第 3 轮合并）；军团 cap 特权卡设计 | 环节⑥ Gate 通过 |
+| P3 | corpse 2 张转 summon（唤起骷髅 / 唤起活尸；zone 形态两张不转）；军团 cap 特权卡设计待做 | 环节⑥ Gate 通过 |
 
 迁移选项：整批一次，**不留兼容壳**（同武器拍板 8）；被动纯 spawn 卡与复合卡本就不在迁移范围，无需壳。
 

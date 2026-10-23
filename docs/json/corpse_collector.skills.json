@@ -722,7 +722,7 @@
     {
       "id": "skill_corpse_collector_s6_raise_skeleton",
       "name": "唤起骷髅",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 6,
       "sequenceName": "死灵导师",
       "rarity": "uncommon",
@@ -738,21 +738,7 @@
         "castTime": 0
       },
       "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self"
-        },
-        "consumption": "summon"
-      },
       "effects": [
-        {
-          "type": "spawn",
-          "position": "tail",
-          "note": "F34 + C5",
-          "unitId": "unit_skeleton"
-        },
         {
           "op": "if",
           "condition": {
@@ -786,12 +772,20 @@
         ],
         "mood": "macabre, obedient"
       },
-      "conversionNotes": "spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）"
+      "conversionNotes": [
+        "spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+        "2026-10-23 召唤牌 P3 评审（与⑤第 3 轮合并）：主身份为召唤，转 kind=summon；尸体特质读层留作战吼。"
+      ],
+      "summon": {
+        "unitId": "unit_skeleton",
+        "count": 1,
+        "position": "tail"
+      }
     },
     {
       "id": "skill_corpse_collector_s6_raise_zombie",
       "name": "唤起活尸",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 6,
       "sequenceName": "死灵导师",
       "rarity": "uncommon",
@@ -807,21 +801,7 @@
         "castTime": 0
       },
       "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self"
-        },
-        "consumption": "summon"
-      },
       "effects": [
-        {
-          "type": "spawn",
-          "position": "tail",
-          "note": "F35",
-          "unitId": "unit_zombie"
-        },
         {
           "type": "modify_stat",
           "stat": "defense",
@@ -833,7 +813,10 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：亡者轴唤起亡灵的地基。 ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": [
+        "翻译/语义：亡者轴唤起亡灵的地基。 ｜ spawn 键名归一（2026-10-01 召唤物批）：unit→unitId（静态引用唯一正键，template 保留给动态模板）。 ｜ Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+        "2026-10-23 召唤牌 P3 评审（与⑤第 3 轮合并）：主身份为召唤，转 kind=summon；腐气自伤代价留作战吼。"
+      ],
       "art": {
         "subject": "a rotting corpse clawing out of cracked earth",
         "elements": [
@@ -842,6 +825,11 @@
           "shambling silhouette"
         ],
         "mood": "gruesome, relentless"
+      },
+      "summon": {
+        "unitId": "unit_zombie",
+        "count": 1,
+        "position": "tail"
       }
     },
     {
