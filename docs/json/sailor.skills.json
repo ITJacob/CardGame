@@ -17,21 +17,23 @@
       "payoffs": [
         "暴怒一击"
       ],
-      "note": "2026-09-29 环节⑤：暴君裁决读 tyrant_dread 跨轴（rage→authority）；产层仍 12（愤怒之源/怒涛咆哮等挂载形式待核） ｜ 2026-10-03 骨架手术：轮转换形 33 张（详见 designNote）"
+      "note": "2026-10-23 E1：愤怒轴保留攒怒爆发；代价补足。"
     },
     "storm": {
       "symbol": "🌩️",
       "name": "风暴",
       "statusId": "emc_disorder",
       "enablers": [
-        "闪电风暴",
-        "雷击"
+        "狂风",
+        "雷击",
+        "风暴汇聚"
       ],
       "payoffs": [
         "风刃军团",
-        "风暴地狱"
+        "天灾降临",
+        "风暴汇聚"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 storm，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审+主人裁定：原列海啸（ocean 轴卡）换成本轴风暴地狱；全轴唯一卡面读 emc_disorder 的是闪电风暴（已列 enabler），无实证读层 payoff，风刃军团/风暴地狱为主题收束卡 ｜ 2026-09-29 环节⑤：emc_disorder 补层数引擎（身份 8→15）；雷击补产层段（飓风盘绕/加速与滑翔不挂 emc_disorder 移出，产层 12→20）；风刃军团读 emc_disorder 升 landed（payoff notes→landed）；风暴地狱读 submerge 跨轴（storm→ocean） ｜ 2026-10-02 批次五：元素轮转补白——狂风/龙卷风挂 ice 段（ice 签名 0→2 实证）；龙卷风/天灾降临补 zone_active(风暴海) 读层，zone 正主产读链闭合；天灾降临补 misfortune 跨系读层 ｜ 2026-10-03 骨架手术：轮转换形 33 张（详见 designNote）"
+      "note": "2026-10-23 E1 连锁时序重构：风/雷/雨必须按序入链（chain 键），链断则大额作废；风暴汇聚为链成结算。"
     },
     "authority": {
       "symbol": "👑",
@@ -42,7 +44,7 @@
         "光之化身"
       ],
       "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：tyrant_dread 为施法者侧载体，全轴无卡读 tyrant_dread/dread/scale_veil/light_form，纯堆常驻强度（待扩展读层卡） ｜ 2026-09-29 环节⑤：tyrant_dread 补层数引擎（身份 8→15）；光之化身补产层段（恐惧之音/幻鳞挂 dread/scale_veil 移出，产层 12→20）；纯堆常驻强度轴真空甄别拍板接受（payoffVacuumAccepted，待扩展读层卡）；暴君裁决读 tyrant_dread 跨轴（rage→authority） ｜ 2026-10-03 骨架手术：轮转换形 33 张（详见 designNote）",
+      "note": "2026-10-23 E1：权柄轴保留威压；选靶分化。",
       "payoffVacuumAccepted": true
     },
     "ocean": {
@@ -56,7 +58,7 @@
       "payoffs": [
         "深潜"
       ],
-      "note": "2026-09-29 私有化：轴身份自 common conceal 分叉为 submerge（深潜）；2026-09-20 原注（原为 ocean 悬空）已由此闭环 ｜ 2026-09-29 环节⑤：submerge 补层数引擎（身份 8→15）；海洋眷顾补产层段（水幕挂 shield 移出，产层 12→20）；风暴地狱（storm 轴）读 submerge 自动成跨轴消费 ｜ 2026-10-03 骨架手术：轮转换形 33 张（详见 designNote）"
+      "note": "2026-10-23 E1：海洋轴保留深潜与控场，作为连锁的时间缓冲。"
     }
   },
   "cards": [
@@ -89,6 +91,14 @@
           "op": "insert_tail_cross_lane",
           "target": "self",
           "note": "踏浪：换到阵列尾梢"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "target": "self",
+          "note": "卓越力量：攻击 +2"
         }
       ],
       "upgradeLadder": {
@@ -124,7 +134,23 @@
         ],
         "mood": "tireless, iron-willed"
       },
-      "role": "starter"
+      "role": "starter",
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": 10,
+              "target": "self",
+              "note": "卓越力量：造成伤害后攻击 +1（10tick）"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_sailor_s9_scale_veil",
@@ -256,6 +282,37 @@
           "op": "insert_tail_cross_lane",
           "target": "self",
           "note": "踏浪：在风暴里换到更远的位置"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "愤怒的代价：自身防御 -1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "rage",
+            "cmp": ">=",
+            "n": 5
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "怒极回能：怒层 ≥5 回 1 能量"
+            }
+          ],
+          "else": [],
+          "note": "读层：rage"
         }
       ],
       "tentative": false,
@@ -322,13 +379,6 @@
               "target": "self"
             }
           ]
-        },
-        {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
         }
       ],
       "tentative": false,
@@ -408,11 +458,24 @@
           ]
         },
         {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "rage",
+            "cmp": ">=",
+            "n": 5
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "note": "盛怒爆发：怒层 ≥5 追加 2"
+            }
+          ],
+          "else": [],
+          "note": "读层：rage"
         }
       ],
       "tentative": false,
@@ -537,6 +600,39 @@
           "op": "insert_tail_cross_lane",
           "target": "self",
           "note": "踏浪：在风暴里换到更远的位置"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "海洋的代价：自身防御 -1"
+        },
+        {
+          "type": "heal",
+          "value": 4,
+          "target": "self",
+          "note": "海洋眷顾：回复 4 点"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "chain"
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "self",
+              "note": "风暴之后的海：连锁在场回复 2"
+            }
+          ],
+          "else": [],
+          "note": "跨轴读层：storm"
         }
       ],
       "sharedAcross": [
@@ -568,7 +664,7 @@
       "flagship": false,
       "lore": "序列6 风眷者 —— \"'风之掌控'：刮出狂风\"",
       "flavor": "你卷起一阵狂风，把整条敌阵吹得踉跄后退。",
-      "describe": "全体敌人受到 2 点物理伤害，并各自在自己队列内后移 1 格。风卷冰砾：追加 1 点冰霜伤害。",
+      "describe": "全体敌人受到 2 点物理伤害，并各自在自己队列内后移 1 格。风卷冰砾：追加 1 点冰霜伤害。；起手把「风」记入连锁。",
       "cost": {
         "energy": 3,
         "cooldown": 20,
@@ -580,7 +676,7 @@
         "request": {
           "mode": "area",
           "faction": "enemy",
-          "scope": "chain_2",
+          "scope": "board",
           "pickCount": "all"
         }
       },
@@ -609,6 +705,37 @@
               "note": "风卷冰砾：狂风卷起高空气流中的冰晶——元素轮转（风→冰）补白段（⚠️D 待平衡）"
             }
           ]
+        },
+        {
+          "type": "mount_status",
+          "statusId": "chain",
+          "target": "self",
+          "duration": 30,
+          "stacks": 1,
+          "stackMode": "add",
+          "params": {
+            "wind": true
+          },
+          "note": "起手：风元素入链（连锁键 wind）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "submerge"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "ice",
+              "value": 1,
+              "target": "all_enemies",
+              "note": "深海狂风：深潜在场追加 1 冰霜"
+            }
+          ],
+          "else": [],
+          "note": "跨轴读层：ocean"
         }
       ],
       "upgradeLadder": {
@@ -682,13 +809,6 @@
           "type": "damage",
           "element": "physical",
           "value": 5
-        },
-        {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
         }
       ],
       "upgradeLadder": {
@@ -780,13 +900,6 @@
               "duration": 10
             }
           ]
-        },
-        {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
         }
       ],
       "upgradeLadder": {
@@ -925,6 +1038,23 @@
           "op": "insert_tail_cross_lane",
           "target": "self",
           "note": "踏浪：在风暴里换到更远的位置"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "深潜的代价：自身攻击 -1"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shield",
+          "value": 4,
+          "duration": 15,
+          "target": "self",
+          "note": "深潜：护盾 4（15tick）"
         }
       ],
       "tentative": false,
@@ -963,10 +1093,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "chain_2",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_desc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -980,6 +1110,15 @@
           "target": "target",
           "distance": 1,
           "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "引雷的代价：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -1005,7 +1144,7 @@
       "flagship": false,
       "lore": "序列5 海洋歌者 —— \"'闪电掌控'：雷击（麻痹敌人，克制亡灵）\"",
       "flavor": "一道落雷劈中敌人，电流窜过它的躯体使其浑身麻痹；若是亡灵，这一击会格外致命。",
-      "describe": "对一名敌人造成 5 点雷电伤害并眩晕 5tick；若其为亡灵或灵体，追加 4 点雷电伤害。；雷击带电：目标电磁紊乱 10tick。；浪头把它推开一档——风、雷、雨轮着来。；浪头不退——它又被推开一档。",
+      "describe": "对一名敌人造成 5 点雷电伤害并眩晕 5tick；若其为亡灵或灵体，追加 4 点雷电伤害。；雷击带电：目标电磁紊乱 10tick。；浪头把它推开一档——风、雷、雨轮着来。；浪头不退——它又被推开一档。；若连锁中已有风，接续记下雷与雨；否则断链。",
       "cost": {
         "energy": 4,
         "cooldown": 20,
@@ -1017,10 +1156,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "chain_2",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "atk_desc"
+        "fallbackSort": "debuff_count_desc"
       },
       "effects": [
         {
@@ -1064,18 +1203,57 @@
           ]
         },
         {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "self",
+            "statusId": "chain",
+            "id": "wind"
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "chain",
+              "target": "self",
+              "duration": 30,
+              "stacks": 1,
+              "stackMode": "add",
+              "params": {
+                "thunder": true,
+                "water": true
+              },
+              "note": "接续：风在链上，雷与雨才能落下（连锁键 thunder/water）"
+            }
+          ],
+          "else": [],
+          "note": "严格顺序：无风则断链，不记录"
         },
         {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：又被浪头推开一档"
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "引雷的代价：自身防御 -1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "doom"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "lightning",
+              "value": 2,
+              "note": "厄运引雷：目标带厄运追加 2"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层：assassin doom"
         }
       ],
       "tentative": false,
@@ -1146,13 +1324,6 @@
               "else": []
             }
           ]
-        },
-        {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
         }
       ],
       "variants": [
@@ -1287,7 +1458,7 @@
       "flagship": true,
       "lore": "序列4 灾难主祭 —— \"'风刃军团'：数百上千道风刃\"",
       "flavor": "数百道风刃在你身后结成阵列，然后一齐倾泻而下——没有人能在这片刀雨里全身而退。",
-      "describe": "全体敌人各承受 3 段攻击，每段 1 点物理伤害（逐段独立结算，破盾与加攻件逐段放大）。；对电磁紊乱的目标，乱流风刃，全体敌方额外受 1 点物理伤害。；浪头把它推开一档——风、雷、雨轮着来。",
+      "describe": "全体敌人各承受 3 段攻击，每段 1 点物理伤害（逐段独立结算，破盾与加攻件逐段放大）。；对电磁紊乱的目标，乱流风刃，全体敌方额外受 1 点物理伤害。；浪头把它推开一档——风、雷、雨轮着来。；连锁在场时追加伤害。",
       "cost": {
         "energy": 6,
         "cooldown": 30,
@@ -1299,7 +1470,7 @@
         "request": {
           "mode": "area",
           "faction": "enemy",
-          "scope": "chain_2",
+          "scope": "board",
           "pickCount": "all"
         }
       },
@@ -1339,11 +1510,34 @@
           "else": []
         },
         {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "chain",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 1,
+              "target": "all_enemies",
+              "note": "连锁 ≥2：风刃更密，全体追加 1"
+            }
+          ],
+          "else": [],
+          "note": "读层：chain"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "起风的代价：自身攻击 -1"
         }
       ],
       "tentative": false,
@@ -1458,13 +1652,14 @@
       },
       "reach": "spell",
       "target": {
-        "selectionMode": "auto",
+        "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "chain_2",
-          "pickCount": "all"
-        }
+          "scope": "cross_lane",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_desc"
       },
       "effects": [
         {
@@ -1514,11 +1709,13 @@
           "note": "地震震慑，约为击退 -50 的五分之一"
         },
         {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "连锁的代价：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -1544,7 +1741,7 @@
       "flagship": false,
       "lore": "序列4 灾难主祭 —— \"'龙卷风'\"",
       "flavor": "一道龙卷拔地而起，把敌人整个卷起，甩到它自己队伍的最后头。",
-      "describe": "对一名敌人造成 5 点物理伤害，并将其吹到自己队伍的最后位。龙卷冰砾追加 2 点冰霜伤害；己方风暴海在场时再引雷追加 2 点雷电。",
+      "describe": "对一名敌人造成 5 点物理伤害，并将其吹到自己队伍的最后位。龙卷冰砾追加 2 点冰霜伤害；己方风暴海在场时再引雷追加 2 点雷电。；连锁在场时追加伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1556,10 +1753,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "chain_2",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_desc"
+        "fallbackSort": "atk_desc"
       },
       "effects": [
         {
@@ -1597,6 +1794,45 @@
                 }
               ],
               "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "chain",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "ice",
+                  "value": 2,
+                  "target": "target",
+                  "note": "连锁 ≥2：龙卷裹挟更多冰砾，追加 2 冰霜"
+                }
+              ],
+              "else": [],
+              "note": "读层：chain"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "rage"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "physical",
+                  "value": 1,
+                  "note": "怒风：怒层在场追加 1"
+                }
+              ],
+              "else": [],
+              "note": "跨轴读层：rage"
             }
           ]
         }
@@ -1719,6 +1955,22 @@
           "op": "insert_tail_cross_lane",
           "target": "self",
           "note": "踏浪：换到阵列尾梢"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "armor",
+          "value": 3,
+          "mode": "delta",
+          "target": "self",
+          "note": "披甲：护甲 +3"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shield",
+          "value": 3,
+          "duration": 20,
+          "target": "self",
+          "note": "披甲：护盾 3（20tick）"
         }
       ],
       "upgradeLadder": {
@@ -1904,7 +2156,7 @@
         "request": {
           "mode": "area",
           "faction": "enemy",
-          "scope": "chain_2",
+          "scope": "board",
           "pickCount": "all"
         }
       },
@@ -1929,11 +2181,13 @@
           "target": "all_enemies"
         },
         {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "召雷的代价：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -2006,13 +2260,6 @@
               "value": 5
             }
           ]
-        },
-        {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
         }
       ],
       "tentative": false,
@@ -2071,13 +2318,6 @@
               "target": "all_enemies"
             }
           ]
-        },
-        {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
         }
       ],
       "tentative": false,
@@ -2133,7 +2373,35 @@
         ],
         "mood": "incandescent, wrathful"
       },
-      "role": "core"
+      "role": "core",
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "self",
+                "cmp": "<",
+                "n": 50
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "rage",
+                  "target": "self",
+                  "stacks": 1,
+                  "stackMode": "add",
+                  "note": "低血受击：愤怒之源攒怒 +1"
+                }
+              ],
+              "else": [],
+              "note": "愤怒之源：濒死时怒意更盛"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_sailor_s2_dread_voice",
@@ -2204,7 +2472,7 @@
       "flagship": false,
       "lore": "序列2 天灾 —— \"'天灾降临'：雷灾 / 雪难 / 海啸，毁灭港口或岛屿\"",
       "flavor": "你以天灾之名降下裁决——雷灾、雪难，或是海啸，由你选择用哪一种来毁灭这里。",
-      "describe": "三种天灾择一（派发时随机）：雷灾——全体敌人 4 点雷电伤害并各后退 1 格；雪难——全体敌人 3 点伤害且行动条速率 ×0.85（15tick）；海啸——全体敌人 4 点伤害并溺沉 15tick。己方风暴海在场追加 2 点雷电；带厄运的敌人额外受 2 点雷电。",
+      "describe": "三种天灾择一（派发时随机）：雷灾——全体敌人 4 点雷电伤害并各后退 1 格；雪难——全体敌人 3 点伤害且行动条速率 ×0.85（15tick）；海啸——全体敌人 4 点伤害并溺沉 15tick。己方风暴海在场追加 2 点雷电；带厄运的敌人额外受 2 点雷电。；连锁在场时追加伤害。",
       "cost": {
         "energy": 7,
         "cooldown": 40,
@@ -2216,7 +2484,7 @@
         "request": {
           "mode": "area",
           "faction": "enemy",
-          "scope": "chain_2",
+          "scope": "board",
           "pickCount": "all"
         }
       },
@@ -2273,8 +2541,38 @@
                 }
               ],
               "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "chain",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "lightning",
+                  "value": 2,
+                  "target": "all_enemies",
+                  "note": "连锁在场：天灾呼应，全体追加 2"
+                }
+              ],
+              "else": [],
+              "note": "读层：chain"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "天灾的代价：自身攻击 -1"
         }
       ],
       "variants": [
@@ -2356,10 +2654,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "chain_2",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_desc"
+        "fallbackSort": "armor_desc"
       },
       "effects": [
         {
@@ -2403,6 +2701,33 @@
           "target": "target",
           "distance": 1,
           "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "天罚的代价：自身防御 -1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "occult_seal"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "lightning",
+              "value": 1,
+              "note": "封印共鸣：诡秘封印在场追加 1"
+            }
+          ],
+          "else": [],
+          "note": "跨系读层：sleepless occult_seal"
         }
       ],
       "tentative": false,
@@ -2451,13 +2776,6 @@
           "op": "insert_tail_cross_lane",
           "target": "self",
           "note": "踏浪：在风暴里换到更远的位置"
-        },
-        {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：又被浪头推开一档"
         }
       ],
       "tentative": false,
@@ -2490,7 +2808,7 @@
       "flagship": false,
       "lore": "序列1 雷神 —— \"'风暴地狱'\"（变体：'闪电海洋'、'雷霆之舞'）",
       "flavor": "你把一整片风暴地狱搬到了战场上——电蛇与狂风在其中永不停歇地撕咬。",
-      "describe": "降下风暴地狱区域（20tick）：区域内敌方每 tick 受到 0.4 点雷电伤害且行动条速率 ×0.9（10tick 刷新，不叠层）。（自身带深潜则延长至 25tick，深海风暴）。；自身带诡秘封印则封禁风暴，全体敌方额外受 2 点雷伤。",
+      "describe": "降下风暴地狱区域（20tick）：区域内敌方每 tick 受到 0.4 点雷电伤害且行动条速率 ×0.9（10tick 刷新，不叠层）。（自身带深潜则延长至 25tick，深海风暴）。；自身带诡秘封印则封禁风暴，全体敌方额外受 2 点雷伤。；连锁在场时追加伤害。",
       "cost": {
         "energy": 7,
         "cooldown": 40,
@@ -2502,7 +2820,7 @@
         "request": {
           "mode": "area",
           "faction": "enemy",
-          "scope": "chain_2",
+          "scope": "whole_lane",
           "pickCount": "all"
         },
         "consumption": "zone"
@@ -2556,6 +2874,27 @@
           ],
           "else": [],
           "note": "跨系读层段：sailor→sleepless occult_seal（2026-09-29 跨系批二）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "chain",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "lightning",
+              "value": 2,
+              "target": "all_enemies",
+              "note": "连锁在场：地狱雷霆更盛，全体追加 2"
+            }
+          ],
+          "else": [],
+          "note": "读层：chain"
         }
       ],
       "zone": {
@@ -2700,11 +3039,12 @@
           "note": "踏浪：在风暴里换到更远的位置"
         },
         {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：又被浪头推开一档"
+          "type": "mount_status",
+          "statusId": "tyrant_dread",
+          "target": "self",
+          "stacks": 1,
+          "stackMode": "add",
+          "note": "暴君权柄：威压 +1 层"
         }
       ],
       "tentative": false,
@@ -2781,13 +3121,6 @@
               "note": "跨效果传值（效果参数 §1.1 valueFrom dispelledAmount，H26，ddd 明示水手判例，本稿新增项 8）"
             }
           ]
-        },
-        {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
         }
       ],
       "tentative": false,
@@ -2828,13 +3161,6 @@
           "stackMode": "add",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
         }
       ],
       "tentative": false,
@@ -2904,13 +3230,6 @@
           ],
           "else": [],
           "note": "跨系读层段：sailor→assassin doom（2026-09-29 跨系批）"
-        },
-        {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
         }
       ],
       "tentative": false,
@@ -2960,11 +3279,12 @@
           "target": "self"
         },
         {
-          "type": "move",
-          "op": "push_back",
+          "type": "drain",
+          "resource": "hp",
+          "value": 3,
+          "healRatio": 0.5,
           "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
+          "note": "血潮怒涌：汲取 3 点"
         }
       ],
       "tentative": false,
@@ -3017,6 +3337,36 @@
           "op": "insert_tail_cross_lane",
           "target": "self",
           "note": "踏浪：在风暴里换到更远的位置"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "hp_max",
+          "value": 5,
+          "mode": "delta",
+          "target": "self",
+          "note": "盛怒之躯：生命上限 +5"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "hp_percent",
+            "side": "self",
+            "cmp": "<",
+            "n": 50
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 3,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self",
+              "note": "盛怒：低血时攻击 +3"
+            }
+          ],
+          "else": [],
+          "note": "盛怒之躯"
         }
       ],
       "tentative": false,
@@ -3059,13 +3409,6 @@
           "duration": 15,
           "target": "target",
           "note": "（2026-10-09 时长校正：稿期 3 回合 → 15tick，1 回合=5tick）"
-        },
-        {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
         }
       ],
       "tentative": false,
@@ -3141,11 +3484,22 @@
           "else": []
         },
         {
-          "type": "move",
-          "op": "push_back",
-          "target": "target",
-          "distance": 1,
-          "note": "风暴推挤：浪头把它推开一档（天灾的位移代价）"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "tyrant_dread"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "note": "威压既在：裁决追加 2"
+            }
+          ],
+          "else": [],
+          "note": "读层：tyrant_dread"
         }
       ],
       "tentative": false,
@@ -3174,6 +3528,116 @@
       },
       "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 3→5tick（对齐拍板表） ｜ 2026-10-03 骨架手术：轮转换形（角色=dmg） ｜ 选靶重构：laneRef=cross_lane anchor=front_line ｜ 选靶V2：删 laneRef=cross_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排）",
       "role": "bridge"
+    },
+    {
+      "id": "skill_sailor_s2_storm_converge",
+      "name": "风暴汇聚",
+      "kind": "active",
+      "sequence": 2,
+      "sequenceName": "天灾",
+      "rarity": "epic",
+      "role": "core",
+      "axis": "storm",
+      "flagship": false,
+      "lore": "序列2 —— \"『风暴汇聚』：风起、雷落、雨至——链成。\";",
+      "flavor": "风先到，雷跟着，雨最后落下。三步走完，天灾才真正成形；少一步，就只是天气不好。",
+      "describe": "若连锁中已集齐风、雷、雨：消耗全部连锁，对全体敌人造成 6 点雷电伤害并眩晕 5tick；否则只对单体造成 3 点雷电伤害（链断则大额作废）。代价：自身防御 -1（10tick）。",
+      "cost": {
+        "energy": 4,
+        "cooldown": 25,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "mode": "area",
+          "faction": "enemy",
+          "scope": "board",
+          "pickCount": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "all_of",
+            "conditions": [
+              {
+                "kind": "recorded_has",
+                "side": "self",
+                "statusId": "chain",
+                "id": "wind"
+              },
+              {
+                "kind": "recorded_has",
+                "side": "self",
+                "statusId": "chain",
+                "id": "thunder"
+              },
+              {
+                "kind": "recorded_has",
+                "side": "self",
+                "statusId": "chain",
+                "id": "water"
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "lightning",
+              "value": 6,
+              "target": "all_enemies",
+              "note": "链成：风雷雨汇聚成一场天灾"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "stun",
+              "target": "all_enemies",
+              "duration": 5
+            },
+            {
+              "type": "mount_status",
+              "statusId": "chain",
+              "target": "self",
+              "stacks": "all",
+              "stackMode": "consume",
+              "note": "链成结算：清空连锁"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "lightning",
+              "value": 3,
+              "target": "target",
+              "note": "链断：大额作废，只剩零星雷击"
+            }
+          ],
+          "note": "严格序列：三键齐全才成链"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "汇聚的代价：自身防御 -1"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 E1 连锁时序重构新增：链成结算卡——三键齐全则大额天灾，缺键则作废；与狂风起手/雷击接续构成严格序列。",
+      "art": {
+        "subject": "wind thunder and rain converging into one storm over the enemy line",
+        "elements": [
+          "spiral wind",
+          "falling bolts",
+          "slanted rain"
+        ],
+        "mood": "cataclysmic"
+      }
     }
   ],
   "unitDefs": [
@@ -3303,7 +3767,7 @@
       ]
     }
   ],
-  "designNote": "> **三元素分工 + 水→雷导电联动**：风=`physical`、雷=`lightning`、水=已退役（原 `water` 元素，现作 tag）。处于 `drowning` 目标受 `lightning` 伤害时追加（见【连环闪电】），让海洋/雷霆两轴互相喂。\n> **混沌海系签名维度 = 放牧(Grazing)**：见下方维度说明；水手经 combo 卡（【雷霆·亡灵克星】读取友方歌颂者/永暗之河亡灵标记、【放牧·借雷】读取友方秘祈人 `放牧` 槽）接入。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「轮转」句式换形 33 张通用骨架卡——天灾必有位移：风、雷、雨轮着来，每一手都在把对方推开一档，或踏浪把自己换到阵列尾梢。**协作面**：把威胁推出攻击范围等于无形的控场。",
+  "designNote": "> **三元素分工 + 水→雷导电联动**：风=`physical`、雷=`lightning`、水=已退役（原 `water` 元素，现作 tag）。处于 `drowning` 目标受 `lightning` 伤害时追加（见【连环闪电】），让海洋/雷霆两轴互相喂。\n> **混沌海系签名维度 = 放牧(Grazing)**：见下方维度说明；水手经 combo 卡（【雷霆·亡灵克星】读取友方歌颂者/永暗之河亡灵标记、【放牧·借雷】读取友方秘祈人 `放牧` 槽）接入。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「轮转」句式换形 33 张通用骨架卡——天灾必有位移：风、雷、雨轮着来，每一手都在把对方推开一档，或踏浪把自己换到阵列尾梢。**协作面**：把威胁推出攻击范围等于无形的控场。 ｜ 2026-10-23 E1 连锁时序重构：chain 入池、狂风起手/雷击接续、风暴汇聚新增、push_back 模板收敛、代价与选靶补足。",
   "sampleBuilds": [
     {
       "name": "A 愤怒清算 🌊",

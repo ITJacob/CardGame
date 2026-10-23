@@ -11446,8 +11446,8 @@
   {
    "id": "sailor",
    "name": "水手",
-   "state": "回溯补登",
-   "date": "2026-10-21",
+   "state": null,
+   "date": "环节⑥拍板",
    "score": 100,
    "scoreParts": {
     "命题": 10,
@@ -11460,9 +11460,9 @@
    },
    "deductions": [],
    "proposition": {
-    "statement": "元素轮转——天灾三系元素分工互增：风推位、雷暴伤、水控场，同卡与连携的多元素互相增幅",
-    "variable": "元素搭配与轮转次序（先风聚怪再雷暴，还是先水控场再收割）",
-    "cost": "单元素打法吃不满增幅；轮转卡手则节奏断档"
+    "statement": "风暴汇聚——风、雷、雨必须按序连成一条链；链断则前面的蓄力全部作废，链成则一次天灾",
+    "variable": "起手与接续次序（先风、风后接雷雨）、何时汇聚结算、断链后重来还是换打法",
+    "cost": "断链则大额作废；被逼打别的卡导致断链；连锁被驱散；链成但目标已被清场"
    },
    "style": {
     "signature": "元素天灾（ice / lightning 风暴三系）",
@@ -11472,7 +11472,7 @@
      "位移",
      "基础增益"
     ],
-    "redline": "途径设计身份.md 水手身份卡：天灾必须带元素轮转，不做无元素物理伤害；rage 13 层 clamp"
+    "redline": "途径设计身份.md 水手身份卡：天灾必须带元素轮转，不做无元素物理伤害；rage 13 层 clamp；连锁必须严格按序，断链即作废"
    },
    "axes": [
     {
@@ -11481,17 +11481,17 @@
      "symbol": "🌩️",
      "anchor": {
       "kind": "status",
-      "id": "emc_disorder",
-      "raw": "status:emc_disorder"
+      "id": "emc_disorder + status:chain",
+      "raw": "status:emc_disorder + status:chain"
      },
      "loop": {
-      "produce": "闪电风暴/雷雷击产层",
-      "consume": "风刃军团/风暴地狱读层爆发",
-      "clear": "层数被爆发消耗",
+      "produce": "狂风起手写风键、雷击接续写雷雨键",
+      "consume": "风刃军团/天灾降临/风暴汇聚读链",
+      "clear": "链被汇聚清空或断链",
       "produceCards": [
        {
-        "name": "闪电风暴",
-        "id": "skill_sailor_s3_lightning_storm"
+        "name": "狂风",
+        "id": "skill_sailor_s6_gale"
        },
        {
         "name": "雷击",
@@ -11504,12 +11504,16 @@
         "id": "skill_sailor_s4_blade_legion"
        },
        {
-        "name": "风暴地狱",
-        "id": "skill_sailor_s1_storm_hell"
+        "name": "天灾降临",
+        "id": "skill_sailor_s2_calamity_descent"
+       },
+       {
+        "name": "风暴汇聚",
+        "id": "skill_sailor_s2_storm_converge"
        }
       ]
      },
-     "decision": "风雷雨的轮转次序：先风推位聚怪再雷暴伤，还是雷暴开路再风收",
+     "decision": "起手与接续顺序、何时汇聚、断链后是否重来",
      "signatures": [
       {
        "key": "elem:ice",
@@ -11542,37 +11546,38 @@
          "id": "skill_sailor_s4_chain_lightning"
         }
        ],
-       "empirical": 8,
+       "empirical": 9,
        "ok": true
       }
      ],
-     "planCards": 14,
+     "planCards": 15,
      "roleMixDeclared": {
-      "core": 9,
+      "core": 10,
       "generic": 3,
       "bridge": 1,
       "tech": 1
      },
      "actual": {
-      "cards": 14,
+      "cards": 15,
       "roleMix": {
        "generic": 3,
-       "core": 9,
+       "core": 10,
        "tech": 1,
        "bridge": 1
       },
       "anchorMatch": true,
       "enablers": [
-       "闪电风暴",
-       "雷击"
+       "狂风",
+       "雷击",
+       "风暴汇聚"
       ],
       "payoffs": [
-       "风刃军团"
+       "风刃军团",
+       "天灾降临",
+       "风暴汇聚"
       ],
-      "payoffsNotes": [
-       "风暴地狱"
-      ],
-      "axisScore": 76.0
+      "payoffsNotes": [],
+      "axisScore": 86.0
      }
     },
     {
@@ -11631,7 +11636,7 @@
        "深潜"
       ],
       "payoffsNotes": [],
-      "axisScore": 75.9
+      "axisScore": 76.1
      }
     },
     {
@@ -11660,7 +11665,7 @@
        }
       ]
      },
-     "decision": "攒怒节奏与爆发窗口：怒层攒到几层再放暴怒一击",
+     "decision": "攒怒节奏与爆发窗口",
      "signatures": [
       {
        "key": "sref:rage",
@@ -11678,7 +11683,7 @@
          "id": "skill_sailor_s8_rage_strike"
         }
        ],
-       "empirical": 10,
+       "empirical": 11,
        "ok": true
       }
      ],
@@ -11705,7 +11710,7 @@
        "暴怒一击"
       ],
       "payoffsNotes": [],
-      "axisScore": 79.8
+      "axisScore": 80.5
      }
     },
     {
@@ -11762,7 +11767,7 @@
       ],
       "payoffs": [],
       "payoffsNotes": [],
-      "axisScore": 78.2
+      "axisScore": 78.5
      }
     }
    ],
@@ -11814,6 +11819,54 @@
      "purpose": "读暴君威慑层数行裁决",
      "ok": true,
      "reason": ""
+    },
+    {
+     "slot": "天灾降临",
+     "slots": [
+      {
+       "name": "天灾降临",
+       "id": "skill_sailor_s2_calamity_descent"
+      }
+     ],
+     "slotId": "skill_sailor_s2_calamity_descent",
+     "axis": "storm",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读连锁层数追加天灾",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "龙卷风",
+     "slots": [
+      {
+       "name": "龙卷风",
+       "id": "skill_sailor_s4_tornado"
+      }
+     ],
+     "slotId": "skill_sailor_s4_tornado",
+     "axis": "storm",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读连锁 ≥2 追加冰砾",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "风暴汇聚",
+     "slots": [
+      {
+       "name": "风暴汇聚",
+       "id": "skill_sailor_s2_storm_converge"
+      }
+     ],
+     "slotId": "skill_sailor_s2_storm_converge",
+     "axis": "storm",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读三键齐全成链结算",
+     "ok": true,
+     "reason": ""
     }
    ],
    "crossSystem": [
@@ -11848,7 +11901,7 @@
    "roles": [
     {
      "role": "core",
-     "declared": 21,
+     "declared": 22,
      "declaredSlots": [
       {
        "name": "愤怒爆发",
@@ -11933,9 +11986,13 @@
       {
        "name": "盛怒之躯",
        "id": "skill_sailor_s5_wrath_body"
+      },
+      {
+       "name": "风暴汇聚",
+       "id": "skill_sailor_s2_storm_converge"
       }
      ],
-     "actual": 21,
+     "actual": 22,
      "actualSlots": [
       {
        "name": "愤怒爆发",
@@ -12020,6 +12077,10 @@
       {
        "name": "盛怒之躯",
        "id": "skill_sailor_s5_wrath_body"
+      },
+      {
+       "name": "风暴汇聚",
+       "id": "skill_sailor_s2_storm_converge"
       }
      ]
     },
@@ -12304,8 +12365,8 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 3,
-     "total": 3,
+     "hit": 6,
+     "total": 6,
      "miss": []
     },
     "跨系钩子": {
