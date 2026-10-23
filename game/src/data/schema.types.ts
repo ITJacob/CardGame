@@ -34,6 +34,17 @@ export interface RawWeapon {
   note?: string
 }
 
+/** kind=summon 载荷（2026-10-23 召唤牌化）：卡面只写实例参数，蓝本在途径顶层 unitDefs */
+export interface RawSummon {
+  unitId: string
+  count?: number
+  hpRatio?: number
+  atkRatio?: number
+  position?: 'tail' | 'at_unit' | 'original'
+  lifetime?: number | string
+  note?: string
+}
+
 export interface RawSecondaryTarget {
   request: TargetRequest
   selectionMode?: 'manual' | 'auto'
@@ -92,7 +103,7 @@ export interface RawVariant {
   costOverride?: RawCost
 }
 
-/** 一张技能卡（kind=active → SkillDef；kind=passive → BehaviorTemplate） */
+/** 一张技能卡（kind=active/weapon/summon → SkillDef；kind=passive → BehaviorTemplate） */
 export interface RawCard {
   id: string
   name: string
@@ -109,6 +120,8 @@ export interface RawCard {
   tentative: boolean
   /** kind=weapon：打出即装备 */
   weapon?: RawWeapon
+  /** kind=summon：打出即落场（2026-10-23 召唤牌化） */
+  summon?: RawSummon
   /** passive：开局自动装备的武器卡 id */
   initialEquip?: string
   cost?: RawCost

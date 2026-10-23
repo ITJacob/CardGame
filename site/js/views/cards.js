@@ -101,7 +101,7 @@ function filterBarHtml() {
 
   const pathwayOpts = DB.pathways.map((p) => [p.id, p.name]);
   const rarityOpts = DB.rarityOrder.map((r) => [r, zh('rarity', r)]);
-  const kindOpts = [['active', '主动'], ['weapon', '武器'], ['passive', '被动']];
+  const kindOpts = [['active', '主动'], ['weapon', '武器'], ['summon', '召唤'], ['passive', '被动']];
   const seqOpts = [...Array(10)].map((_, i) => [String(9 - i), `序列 ${9 - i}`]);
   const reachOpts = [['none', '无距离'], ['melee', '近战'], ['ranged', '远程']];
   const primOpts = collectPrimitives().map((p) => [p, zh('primitive', p)]);
@@ -212,7 +212,7 @@ function probeArt(card) {
 }
 
 function cardItemHtml(c) {
-  const cost = (c.kind === 'active' || c.kind === 'weapon') && c.cost
+  const cost = (c.kind === 'active' || c.kind === 'weapon' || c.kind === 'summon') && c.cost
     ? `<span class="badge">⚡${c.cost.energy}${c.cost.cooldown ? ` 冷却 ${c.cost.cooldown} tick` : ''}${c.cost.castTime ? ` 吟唱${c.cost.castTime}` : ''}</span>` : '';
   const hookEvs = c.kind === 'passive' ? hookEvents(c) : [];
   const hook = hookEvs.length
@@ -226,7 +226,7 @@ function cardItemHtml(c) {
     <div class="ci-desc">${escapeHtml(c.describe || '')}</div>
     <div class="badges">
       <span class="badge rarity-${c.rarity}">${zh('rarity', c.rarity)}</span>
-      <span class="badge kind-${c.kind}">${c.kind === 'weapon' ? '武器' : c.kind === 'active' ? '主动' : '被动'}</span>
+      <span class="badge kind-${c.kind}">${c.kind === 'weapon' ? '武器' : c.kind === 'summon' ? '召唤' : c.kind === 'active' ? '主动' : '被动'}</span>
       <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
       <span class="badge">${axisSpan(c._pathway, c.axis)}</span>
       ${c.role ? `<span class="badge role-${c.role}" title="${escapeHtml(ROLE_INFO[c.role]?.desc || '')}">${escapeHtml(ROLE_LABEL[c.role] || c.role)}</span>` : ''}

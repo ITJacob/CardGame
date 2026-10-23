@@ -398,13 +398,25 @@ export interface WeaponDef {
   note?: string
 }
 
-/** 主动技能定义（kind=active / kind=weapon 的卡） */
+/** 召唤载荷（kind=summon 的卡，2026-10-23 召唤牌化）：打出即落场；
+ *  战斗结算由数据层合成为 spawn 效果节点（见 catalogBuild），本字段供 UI 展示 */
+export interface SummonDef {
+  unitId: string
+  count?: number
+  hpRatio?: number
+  atkRatio?: number
+  position?: 'tail' | 'at_unit' | 'original'
+  lifetime?: number | string
+  note?: string
+}
+
+/** 主动技能定义（kind=active / kind=weapon / kind=summon 的卡） */
 export interface SkillDef {
   id: DefId
   sourceCardId: CardId
   pathwayId: PathwayId
-  /** 原始卡类型（active / weapon）；UI 与编队分槽用 */
-  kind?: 'active' | 'weapon'
+  /** 原始卡类型（active / weapon / summon）；UI 与编队分槽用 */
+  kind?: 'active' | 'weapon' | 'summon'
   name: string
   rarity: Rarity
   axis: string
@@ -432,6 +444,8 @@ export interface SkillDef {
   domainGrant?: { def: string; tier?: string; duration?: number; durationUnit?: 'turn' | 'tick' }
   /** kind=weapon 的卡：打出即装备 */
   weapon?: WeaponDef
+  /** kind=summon 的卡：打出即落场（结算已合成为 effects 内 spawn 节点；本字段供 UI） */
+  summon?: SummonDef
 }
 
 /** 被动行为模板（kind=passive 的卡） */

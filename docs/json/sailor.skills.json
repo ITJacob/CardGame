@@ -1825,7 +1825,7 @@
     {
       "id": "skill_sailor_s3_sea_beast_call",
       "name": "海兽呼唤",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 3,
       "sequenceName": "海王",
       "rarity": "epic",
@@ -1839,26 +1839,7 @@
         "cooldown": 30,
         "castTime": 1
       },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self",
-          "scope": "point"
-        },
-        "consumption": "summon"
-      },
-      "effects": [
-        {
-          "type": "spawn",
-          "unitId": "unit_sea_beast",
-          "hpRatio": 0.4,
-          "atkRatio": 0.5,
-          "position": "tail",
-          "note": "F32 已登记（H1 召唤物基线），不重立；A2：召唤物登场 fire on_spawn，禁止在其身上挂开局语义"
-        }
-      ],
+      "effects": [],
       "upgradeLadder": {
         "ref": "B6",
         "tiers": [
@@ -1878,7 +1859,11 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：召唤海兽（F32/F33）。A2 合规。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 5tick（序列 3 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：ocean轴 self+point（轴选靶签名设计 §4）",
+      "conversionNotes": [
+        "翻译/语义：召唤海兽（F32/F33）。A2 合规。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 5tick（序列 3 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：ocean轴 self+point（轴选靶签名设计 §4）",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）",
+        "原 spawn 段：F32 已登记（H1 召唤物基线），不重立；A2：召唤物登场 fire on_spawn，禁止在其身上挂开局语义"
+      ],
       "art": {
         "subject": "a colossal sea beast breaching the waves to answer its caller's command",
         "elements": [
@@ -1888,7 +1873,13 @@
         ],
         "mood": "primordial, answered"
       },
-      "role": "generic"
+      "role": "generic",
+      "summon": {
+        "unitId": "unit_sea_beast",
+        "hpRatio": 0.4,
+        "atkRatio": 0.5,
+        "position": "tail"
+      }
     },
     {
       "id": "skill_sailor_s3_lightning_storm",

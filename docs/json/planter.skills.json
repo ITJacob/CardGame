@@ -610,7 +610,7 @@
     {
       "id": "skill_planter_s7_vermin_swarm",
       "name": "驱使虫豸",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 7,
       "sequenceName": "丰收祭司",
       "rarity": "uncommon",
@@ -625,25 +625,13 @@
         "cooldown": 20,
         "castTime": 0
       },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self"
-        },
-        "consumption": "summon"
-      },
-      "effects": [
-        {
-          "type": "spawn",
-          "unitId": "unit_vermin",
-          "position": "tail",
-          "note": "H1 基线：≈8 血 / attack 2 (poison) / gauge_rate 偏高；亡语 on_death → 相邻敌人 mount_status(poison,10t)（用亡语不用 on_spawn，A2 合规）"
-        }
-      ],
+      "effects": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：大地轴 enabler：快攻带毒虫群（亡语炸毒）。A2：用亡语非 on_spawn。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": [
+        "翻译/语义：大地轴 enabler：快攻带毒虫群（亡语炸毒）。A2：用亡语非 on_spawn。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）",
+        "原 spawn 段：H1 基线：≈8 血 / attack 2 (poison) / gauge_rate 偏高；亡语 on_death → 相邻敌人 mount_status(poison,10t)（用亡语不用 on_spawn，A2 合规）"
+      ],
       "art": {
         "subject": "a black swarm of beetles and worms flooding out of soil cracks",
         "elements": [
@@ -651,6 +639,10 @@
           "split cracked earth"
         ],
         "mood": "creeping, hungry"
+      },
+      "summon": {
+        "unitId": "unit_vermin",
+        "position": "tail"
       }
     },
     {
@@ -1293,7 +1285,7 @@
     {
       "id": "skill_planter_s5_oak_child",
       "name": "橡树之子",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 5,
       "sequenceName": "德鲁伊",
       "rarity": "rare",
@@ -1308,25 +1300,13 @@
         "cooldown": 25,
         "castTime": 0
       },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self"
-        },
-        "consumption": "summon"
-      },
-      "effects": [
-        {
-          "type": "spawn",
-          "unitId": "unit_oak_child",
-          "position": "tail",
-          "note": "H1 基线；自带 mount_status(bulwark,null)（树皮）+ 亡语 on_death → 相邻敌人 damage(physical,3)（倒下的树）"
-        }
-      ],
+      "effects": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：大地轴 enabler：植物坦克召唤物。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": [
+        "翻译/语义：大地轴 enabler：植物坦克召唤物。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）",
+        "原 spawn 段：H1 基线；自带 mount_status(bulwark,null)（树皮）+ 亡语 on_death → 相邻敌人 damage(physical,3)（倒下的树）"
+      ],
       "dimHooks": [
         {
           "dim": "luminance",
@@ -1344,6 +1324,10 @@
           "huge fallen acorn"
         ],
         "mood": "wondrous, eerie"
+      },
+      "summon": {
+        "unitId": "unit_oak_child",
+        "position": "tail"
       }
     },
     {

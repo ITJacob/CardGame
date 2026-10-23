@@ -245,7 +245,7 @@ export function renderCardDetail(view, id, qs = '') {
         <div class="cs-sub">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')} · <span class="mono cs-copyable" data-copy="${escapeHtml(c.id)}" title="点击复制 cardId（卡面图就命名为它）" tabindex="0" role="button">${escapeHtml(c.id)}</span></div>
         <div class="badges">
           <span class="badge rarity-${c.rarity}">${cn}</span>
-          <span class="badge kind-${c.kind}">${c.kind === 'weapon' ? '武器' : c.kind === 'active' ? '主动' : '被动'}</span>
+          <span class="badge kind-${c.kind}">${c.kind === 'weapon' ? '武器' : c.kind === 'summon' ? '召唤' : c.kind === 'active' ? '主动' : '被动'}</span>
           ${c.tentative ? '<span class="badge warn" title="数值待定（⚠️D 占位，平衡期逐条审批）">数值待定</span>' : ''}
           <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
           <span class="badge">轴：${axisSpan(c._pathway, c.axis)}</span>
@@ -253,7 +253,7 @@ export function renderCardDetail(view, id, qs = '') {
           ${c.gender && c.gender !== 'any' ? `<span class="badge">${g('gender', c.gender)}限定</span>` : ''}
           ${(c.sharedAcross || []).map((p) => `<span class="badge">共享→${escapeHtml(DB.pathways.find((x) => x.id === p)?.name || p)}</span>`).join('')}
         </div>
-        ${(c.kind === 'active' || c.kind === 'weapon') && c.cost ? `<div class="cs-cost">${costHtml(c)}</div>` : ''}
+        ${(c.kind === 'active' || c.kind === 'weapon' || c.kind === 'summon') && c.cost ? `<div class="cs-cost">${costHtml(c)}</div>` : ''}
       </header>
 
       <section class="cs-sec cs-desc">
@@ -265,12 +265,15 @@ export function renderCardDetail(view, id, qs = '') {
       ${blueprintPosHtml(c)}
 
       <section class="cs-sec">
-        ${c.kind === 'weapon' ? '<h2>装备</h2>' : c.kind === 'active' ? '<h2>施放与选靶</h2>' : '<h2>触发条件</h2>'}
+        ${c.kind === 'weapon' ? '<h2>装备</h2>' : c.kind === 'summon' ? '<h2>召唤</h2>' : c.kind === 'active' ? '<h2>施放与选靶</h2>' : '<h2>触发条件</h2>'}
         <dl class="kv">
           ${c.kind === 'weapon' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
           <dt>攻击</dt><dd>+${c.weapon?.attack ?? 0}</dd>
           <dt>耐久</dt><dd>${c.weapon?.durability ?? 0} 次普攻</dd>
-          <dt>标签</dt><dd>${(c.weapon?.tags || []).join(' / ') || '—'}</dd>` : c.kind === 'active' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
+          <dt>标签</dt><dd>${(c.weapon?.tags || []).join(' / ') || '—'}</dd>` : c.kind === 'summon' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
+          <dt>单位</dt><dd>${escapeHtml(DB.unitDefs.find((u) => u.id === c.summon?.unitId)?.name || c.summon?.unitId || '—')}${c.summon?.count > 1 ? ` ×${c.summon.count}` : ''}</dd>
+          <dt>比率</dt><dd>${[c.summon?.hpRatio != null ? `生命 ${c.summon.hpRatio}` : '', c.summon?.atkRatio != null ? `攻击 ${c.summon.atkRatio}` : ''].filter(Boolean).join(' / ') || '按蓝本'}</dd>
+          <dt>落位</dt><dd>${({ tail: '队尾', at_unit: '目标旁', original: '原位' })[c.summon?.position] || '队尾'}</dd>` : c.kind === 'active' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
           <dt>距离</dt><dd>${g('reach', c.reach)}</dd>
           <dt>目标</dt><dd>${targetHtml(c.target)}</dd>` : `<dt>触发</dt><dd>${hookHtml(c) || '<span class="muted">（无）</span>'}</dd>`}
           ${(c.secondaryTargets || []).map((t, i) => `<dt>附属选靶${i + 1}</dt><dd>${targetHtml(t)}</dd>`).join('')}
@@ -283,7 +286,7 @@ export function renderCardDetail(view, id, qs = '') {
 
       <section class="cs-sec">
         <h2>效果结构</h2>
-        ${renderEffects(c.effects)}
+        ${renderEffects(c.kind === 'summon' && c.summon ? [{ type: 'spawn', ...c.summon }, ...(c.effects || [])] : c.effects)}
       </section>
 
       ${c.triggers?.length ? `<section class="cs-sec">

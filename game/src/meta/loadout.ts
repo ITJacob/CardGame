@@ -7,7 +7,7 @@ import type { CardKind } from '../kernel/ids'
 
 export type SlotKind = 'active' | 'passive'
 
-/** 卡类型 → 编队槽：武器牌占主动槽（2026-10-23） */
+/** 卡类型 → 编队槽：武器牌 / 召唤牌占主动槽（2026-10-23） */
 export function bucketOf(kind: CardKind): SlotKind {
   return kind === 'passive' ? 'passive' : 'active'
 }

@@ -59,7 +59,8 @@ def walk(node):
 def card_effects(card):
     """卡的全部效果节点：effects 链 + triggers[].effects + weapon.triggers[].effects。
     2026-10-20 起与主动效果同口径——只读 effects 会让被动卡的指纹/作用面退化成一个挂载节点；
-    2026-10-23 起武器载荷的装备期触发器同口径纳入。"""
+    2026-10-23 起武器载荷的装备期触发器同口径纳入。
+    2026-10-23 召唤牌化：summon 载荷合成一个 spawn 节点纳入（指纹/作用面与复合卡同口径）。"""
     effs = list(card.get("effects") or [])
     for tr in card.get("triggers") or []:
         if isinstance(tr, dict):
@@ -67,6 +68,8 @@ def card_effects(card):
     for tr in (card.get("weapon") or {}).get("triggers") or []:
         if isinstance(tr, dict):
             effs.extend(tr.get("effects") or [])
+    if isinstance(card.get("summon"), dict):
+        effs.append({"type": "spawn", **card["summon"]})
     return effs
 
 
@@ -784,7 +787,7 @@ def _card_families(card, status_by_id=None):
         fam["reach"].add("reach=" + card["reach"])
 
     cost = card.get("cost") or {}
-    if card.get("kind") in ("active", "weapon"):
+    if card.get("kind") in ("active", "weapon", "summon"):
         energy = cost.get("energy")
         if isinstance(energy, int):
             fam["cost"].add("energy:" + ("zero" if energy == 0 else
@@ -1628,7 +1631,7 @@ def main():
             if want and c.get("rarity") not in want:
                 bad_rarity += 1
         struct += 3 if bad_rarity == 0 else max(0, 3 - 2 * bad_rarity)
-        actives = sum(1 for c in cards if c.get("kind") in ("active", "weapon"))
+        actives = sum(1 for c in cards if c.get("kind") in ("active", "weapon", "summon"))
         passives = len(cards) - actives
         aratio = actives / passives if passives else 99
         if 1.5 <= aratio <= 3.0:

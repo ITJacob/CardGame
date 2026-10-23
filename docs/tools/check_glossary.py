@@ -96,6 +96,7 @@ ENUM_TO_CAT = {
     "effModifyResource.op": "resourceMode",
     "effMove.op": "moveOp",
     "effSpawn.position": "spawnPosition",
+    "summonSpec.position": "spawnPosition",
     "effSpawn.consumption": "consumption",
     "effSpawn.reviveOf": "reviveOf",
     "effDispel.dispelTarget": "dispelTarget",

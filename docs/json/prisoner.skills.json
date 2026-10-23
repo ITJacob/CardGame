@@ -997,7 +997,7 @@
     {
       "id": "skill_prisoner_s6_raise_corpse",
       "name": "唤醒死尸",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 6,
       "sequenceName": "活尸",
       "rarity": "uncommon",
@@ -1012,25 +1012,7 @@
         "cooldown": 30,
         "castTime": 0
       },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self",
-          "scope": "point"
-        },
-        "consumption": "summon"
-      },
-      "effects": [
-        {
-          "type": "spawn",
-          "unitId": "unit_ghoul",
-          "position": "tail",
-          "hpRatio": 1.0,
-          "note": "F26 unit_ghoul（本体数值刻意压低，预算大半买身位）；C5 hpRatio/position 已实现；A2 禁挂开场语义，召唤登场 fire on_spawn 供操纵活尸订阅"
-        }
-      ],
+      "effects": [],
       "upgradeLadder": {
         "ref": "B6",
         "tiers": [
@@ -1048,7 +1030,11 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：召唤物登场 fire `on_spawn`（A2 合规，非开局）。异类轴召唤 enabler。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：aberration轴 self+point（轴选靶签名设计 §4）",
+      "conversionNotes": [
+        "翻译/语义：召唤物登场 fire `on_spawn`（A2 合规，非开局）。异类轴召唤 enabler。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：aberration轴 self+point（轴选靶签名设计 §4）",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）",
+        "原 spawn 段：F26 unit_ghoul（本体数值刻意压低，预算大半买身位）；C5 hpRatio/position 已实现；A2 禁挂开场语义，召唤登场 fire on_spawn 供操纵活尸订阅"
+      ],
       "art": {
         "subject": "a twitching corpse clawing its way out of cracked earth",
         "elements": [
@@ -1057,6 +1043,11 @@
           "pale grave-candle glow"
         ],
         "mood": "macabre, restless"
+      },
+      "summon": {
+        "unitId": "unit_ghoul",
+        "hpRatio": 1.0,
+        "position": "tail"
       }
     },
     {

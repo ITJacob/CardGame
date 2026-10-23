@@ -11,7 +11,7 @@
 - **编队槽位**：召唤牌**归主动槽**（`bucketOf(kind) → active`），与主动技能、武器牌竞争牌位；不新增槽位。
 - **生命周期**：打出 → 支付 cost → summon_cap 检查（满则最早者走 on_remove 消散）→ spawn 落位（on_spawn fire）→ 执行 on-play（战吼）→ 卡进弃牌。单位离场走既有规则（死亡 / 寿命 / cap 挤掉），**不回手、不返费**。
 - **与武器的本质差异**：不需要新运行时实体——UnitInstance 本是一等单位；本提案只修「卡 → spawn」的直通管道与数据面（kind + 载荷 + unitDefs 补全）。
-- **首批迁移**：14 张主动纯 spawn 卡（9 途径，避开 corpse_collector）；3 张被动纯 spawn 卡不动（开局/触发自动召唤非「打出」语义）。
+- **首批迁移**：13 张主动纯 spawn 卡（9 途径，避开 corpse_collector）；3 张被动纯 spawn 卡不动（开局/触发自动召唤非「打出」语义）。实测纯 spawn 主动卡 17 张，剔除 2 张违反「一卡一单位」不变量者：thief s6_summon_gate（一卡双单位）、spectator s0_identity_split（inheritSkills 模板语义）——转二批评审。
 - **它解锁的骨架**：召唤牌构筑、召唤节奏（cap 管理）、破召对策扩面、军团规模、单位养成（见 §9）。
 
 ## 1. 设定核查
@@ -29,14 +29,14 @@
 | 含单位 spawn 的卡 | 83 | 20 纯 spawn + 63 复合（spawn+伤害/条件/触发） |
 | 纯 spawn 主动卡 | 17 | apothecary 5 / corpse 3 / planter 3 / sleepless 2 / spectator 2 / prisoner·reader·sailor·savant·seer 各 1 |
 | 纯 spawn 被动卡 | 3 | 开局/触发自动召唤，非打出语义 |
-| 具名 unitId | 24 | 其中 **15 个无数据层定义**（unit_automaton、unit_beastling、unit_vermin 等大用量单位均在列） |
+| 具名 unitId | 24 | 全部无数据层定义（unit_automaton、unit_beastling、unit_vermin 等大用量单位均在列） |
 | unitDefs 池 | 4 文件 12 单位 | corpse / seer / sleepless / supplicant；大户 planter / savant 反而无池 |
 | zone/revive 类 spawn | 9 | 8 zone + 1 reviveOf:self；非单位语义，不动 |
 
 问题：
 
 1. **召唤强度藏在 AST**：召唤卡的战力藏在 effects 树里，卡池统计 / 稀有度曲线 / 蓝图兑现 / 构筑选择都读不到「这是一张召唤牌」。
-2. **unitDef 数据面残缺**：15 个被引用单位无定义，unitType / 基线属性只在文档层（`召唤物参数.md`），校验器无法机器对账。
+2. **unitDef 数据面残缺**：24 个被引用单位无定义，unitType / 基线属性只在文档层（`召唤物参数.md`），校验器无法机器对账。
 3. **卡面表达缺失**：召唤物是一等单位（占格 / 血量 / 技能组），但卡面无法直接呈现单位属性，site/game 只能渲染一段效果文本。
 4. **预留键空转**：schema 已有 summonCap / inheritSkills / template / variant 预留，数据侧基本未启用，语义没有一等落点。
 
@@ -123,7 +123,7 @@ play(summon card)
 | 首批迁移卡 | 14 | 9 途径（apothecary 5 / planter 3 / sleepless 2 / spectator 2 / savant·seer·prisoner·reader·sailor 各 1） | 转 `kind:"summon"`，effects 内 spawn 段提升为 `summon` 载荷 |
 | corpse 批次（P3） | 3 | corpse_collector | 与⑤重构第 3 轮合并评审 |
 | 被动纯 spawn 卡 | 3 | 待实施时点名 | 不动（非打出语义） |
-| unitDefs 补全 | 15 单位 | 按主要引用途径落入对应文件顶层 `unitDefs` | 补 unitType / base / note；unit_automaton→savant、unit_beastling 等→planter、unit_sea_beast→sailor 等 |
+| unitDefs 补全 | 24 单位（12 途径） | 按主要引用途径落入对应文件顶层 `unitDefs` | 补 unitType / note；unit_automaton→savant、unit_beastling 等→planter、unit_sea_beast→sailor 等 |
 | schema | 2 处 + 新增 | `card.kind` 枚举 + `summonSpec` 载荷 + 条件约束（summon 必填 cost+summon） | 先改 schema 再改数据 |
 | `kind` 判定面 | 对标武器约 68 行 | tools / site / game | 新增 summon 分支；按 active 统计 |
 | validate.py | 预估 4-6 处 | 新规则：summon 卡 unitId 必须存在于某途径 unitDefs 池；summon 卡 effects 禁含 spawn 段；载荷键白名单 | 新增 |
@@ -138,8 +138,8 @@ play(summon card)
 
 | 阶段 | 内容 | 验收 |
 |---|---|---|
-| P0 | schema（kind + summonSpec + 条件约束）；SCHEMA.md 登记；unitDefs 补全 15 单位 | schema 校验 + `validate_schema.py` + 文档评审 |
-| P1 | 14 张首批迁移（避开 corpse）；validate 新规则；内核打出分支；site/game 渲染 | 四门禁全绿 + `npm test` + `score.py` 不退化 |
+| P0 | schema（kind + summonSpec + 条件约束）；SCHEMA.md 登记；unitDefs 补全 24 单位 | schema 校验 + `validate_schema.py` + 文档评审 |
+| P1 | 13 张首批迁移（避开 corpse）；validate 新规则；内核打出分支；site/game 渲染 | 四门禁全绿 + `npm test` + `score.py` 不退化 |
 | P2 | `summon_tag` / `summon_is`；卡面单位属性面板；复合卡二批评审 | `playable_scan` 可测 |
 | P3 | corpse 3 张（与⑤第 3 轮合并）；军团 cap 特权卡设计 | 环节⑥ Gate 通过 |
 
@@ -161,8 +161,8 @@ play(summon card)
 |---|---|---|
 | 1 | 卡类型 | 新增 `kind: "summon"`；归主动槽（`bucketOf → active`），不新增第四类槽位 |
 | 2 | 载荷形态 | 引用 unitDef 蓝本：卡面只写实例参数，unitType / 基线由蓝本兜底；跨途径复用种类恒定 |
-| 3 | 蓝本落点 | 途径文件顶层 `unitDefs`（维持现状结构），扩到全部持有途径并补齐 15 个无定义单位；无全局池 |
-| 4 | 首批迁移范围 | 只迁纯 spawn 主动卡（14 张）；复合卡 / 被动纯 spawn / zone / revive / template 一律不动 |
+| 3 | 蓝本落点 | 途径文件顶层 `unitDefs`（维持现状结构），扩到全部持有途径并补齐 24 个无定义单位；无全局池 |
+| 4 | 首批迁移范围 | 只迁纯 spawn 主动卡（实测 17 张→剔 2 张违反一卡一单位→13 张）；复合卡 / 被动纯 spawn / zone / revive / template 一律不动 |
 | 5 | 推进节奏 | 整批但避开 corpse_collector（其 3 张与⑤重构第 3 轮合并评审） |
 | 6 | on-play 战吼 | 允许 `effects`（对标武器拍板 2），但禁含 spawn 段（一卡一单位） |
 | 7 | 新原语 | 不新增；`summon_tag` / `summon_is` 谓词留 P2 |

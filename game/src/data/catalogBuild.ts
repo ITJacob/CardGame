@@ -175,7 +175,11 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
       phaseHooks.push(...(card.phaseHooks ?? []))
       for (const sd of card.statusDefs ?? []) register(statusDefs, sd.id, sd, warnings, 'statusDef')
 
-      const effects = internEffects(card.id, card.effects, effectDefs, warnings)
+      // kind=summon：载荷合成为 spawn 效果节点置于战吼之前（打出即落场），内核零新增分支
+      const rawEffects = card.kind === 'summon' && card.summon
+        ? [{ type: 'spawn', ...card.summon } as unknown as EffectNode, ...(card.effects ?? [])]
+        : card.effects
+      const effects = internEffects(card.id, rawEffects, effectDefs, warnings)
       checkTriggers(card.id, card.triggers, warnings)
       collectStatusRefs(card, statusRefs)
       const base = {
@@ -195,10 +199,10 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
         reach: card.reach,
       }
 
-      if (card.kind === 'active' || card.kind === 'weapon') {
+      if (card.kind === 'active' || card.kind === 'weapon' || card.kind === 'summon') {
         register(skillDefs, card.id, {
           ...base,
-          kind: card.kind as 'active' | 'weapon',
+          kind: card.kind as 'active' | 'weapon' | 'summon',
           cost: card.cost,
           targetSpec: card.target
             ? (card.target as unknown as TargetSpec)
@@ -214,6 +218,7 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
           weapon: card.kind === 'weapon'
             ? ({ ...(card.weapon as WeaponDef), id: card.id, slot: 'weapon' } as WeaponDef)
             : undefined,
+          summon: card.kind === 'summon' ? card.summon : undefined,
         }, warnings, 'skillDef')
       } else {
         register(behaviorTemplates, card.id, {

@@ -220,11 +220,17 @@ body.tip-lock #to-top { display: none; }
 .badge.rarity-legendary { color: var(--legendary); border-color: var(--legendary); }
 .badge.kind-active { color: var(--accent); }
 .badge.kind-weapon { color: var(--accent2); }
+.badge.kind-summon { color: var(--rare); }
 .badge.kind-passive { color: var(--uncommon); }
 /* 武器牌：顶部实心 accent2 线（与被动虚线区分） */
 .card-face.k-weapon::before {
   content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; pointer-events: none;
   background: linear-gradient(90deg, var(--accent2), transparent 70%);
+}
+/* 召唤牌：顶部实心 rare 线（与武器/被动区分） */
+.card-face.k-summon::before {
+  content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; pointer-events: none;
+  background: linear-gradient(90deg, var(--rare), transparent 70%);
 }
 /* 途径 badge 着途径色：--pc 由卡片根元素的内联变量继承下来 */
 .badge.pw { color: var(--pc); border-color: color-mix(in srgb, var(--pc, var(--border)) 65%, transparent); }

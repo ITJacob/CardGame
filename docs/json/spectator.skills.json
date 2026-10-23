@@ -2290,7 +2290,7 @@
     {
       "id": "skill_spectator_s1_imagined_creation",
       "name": "空想具现",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 1,
       "sequenceName": "作家",
       "rarity": "legendary",
@@ -2304,29 +2304,13 @@
         "cooldown": 40,
         "castTime": 2
       },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self",
-          "scope": "point",
-          "pickCount": "all"
-        },
-        "consumption": "summon"
-      },
-      "effects": [
-        {
-          "type": "spawn",
-          "unitId": "unit_imagined",
-          "hpRatio": 0.6,
-          "atkRatio": 0.8,
-          "position": "tail",
-          "target": "self"
-        }
-      ],
+      "effects": [],
       "tentative": false,
-      "conversionNotes": "与身份分离体的区别：空想造物只有高属性、不继承技能组；A2 合规，不挂 on_spawn 语义 ｜ 翻译/语义：概念拉入现实=高属性召唤物。依赖新项。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 10tick（序列 1 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：fantasy轴 self+point pick:all（轴选靶签名设计 §4）",
+      "conversionNotes": [
+        "与身份分离体的区别：空想造物只有高属性、不继承技能组；A2 合规，不挂 on_spawn 语义 ｜ 翻译/语义：概念拉入现实=高属性召唤物。依赖新项。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 10tick（序列 1 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：fantasy轴 self+point pick:all（轴选靶签名设计 §4）",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）",
+        "原 spawn 段：target=self"
+      ],
       "art": {
         "subject": "a vague thought condensing into a towering guardian before its creator",
         "elements": [
@@ -2335,7 +2319,13 @@
         ],
         "mood": "wondrous, sudden"
       },
-      "role": "generic"
+      "role": "generic",
+      "summon": {
+        "unitId": "unit_imagined",
+        "hpRatio": 0.6,
+        "atkRatio": 0.8,
+        "position": "tail"
+      }
     },
     {
       "id": "skill_spectator_s1_all_spoken_known",

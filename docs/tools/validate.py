@@ -281,6 +281,36 @@ def _iter_effect_nodes(node):
             yield from _iter_effect_nodes(v)
 
 
+def check_summon_card(c, cid, def_ids, errors):
+    """召唤牌硬约束（2026-10-23 召唤牌化，提案 summon-first-class.md）：
+    kind=summon 必须有 cost + summon 载荷；unitId 必须解析到某途径顶层 unitDefs 池；
+    effects 战吼禁含 spawn 段（一卡一单位；template/reviveOf/zone 留在 spawn 原语）。"""
+    if "cost" not in c:
+        errors.append("%s: summon 缺 cost" % cid)
+    sp = c.get("summon")
+    if not isinstance(sp, dict):
+        errors.append("%s: summon 缺 summon 载荷" % cid)
+        return
+    for k in sp:
+        if k not in ("unitId", "count", "hpRatio", "atkRatio", "position", "lifetime", "note"):
+            errors.append("%s: summon 载荷含白名单外键 %s（template/reviveOf/zone 留在 spawn 原语）" % (cid, k))
+    uid = sp.get("unitId")
+    if not isinstance(uid, str) or not uid:
+        errors.append("%s: summon.unitId 必填" % cid)
+    elif uid not in def_ids:
+        errors.append("%s: summon.unitId %s 未在任何途径顶层 unitDefs 池定义" % (cid, uid))
+    cnt = sp.get("count")
+    if cnt is not None and (not isinstance(cnt, int) or isinstance(cnt, bool) or cnt < 1):
+        errors.append("%s: summon.count 必须为 >=1 的整数" % cid)
+    pos = sp.get("position")
+    if pos is not None and pos not in ("tail", "at_unit", "original"):
+        errors.append("%s: bad summon.position %s" % (cid, pos))
+    for n in _iter_effect_nodes(c.get("effects")):
+        if n.get("type") == "spawn":
+            errors.append("%s: summon 卡 effects 禁含 spawn 段（一卡一单位；多体用 count）" % cid)
+            break
+
+
 def lint_playability(pid, cards, warns):
     """玩法/文本卫生门禁（2026-10-19 立，先告警观察误报）：
     10 同形状增益叠加 / 11 触发语境错配 / 12 模板句复制 / 13 被动触发点集中度。"""
@@ -623,6 +653,8 @@ def main():
                 if not hk_list: errors.append("%s: passive 缺 hook"%cid)
                 for _h in hk_list:
                     if _h not in EVENTS: errors.append("%s: bad hook %s"%(cid,_h))
+            elif _kind=="summon":
+                check_summon_card(c, cid, _refs["defs"], errors)
             else: errors.append("%s: bad kind"%cid)
             _passive = _kind == "passive"
             _init_eq = c.get("initialEquip")
@@ -713,7 +745,7 @@ def main():
                         cd = names.get(nm)
                         if cd is None:
                             errors.append("sampleBuilds[%d] '%s': %s 卡名 '%s' 不在本文件 cards[]"%(bi,bn,slot,nm))
-                        elif cd != exp_kind and not (slot == "actives" and cd == "weapon"):
+                        elif cd != exp_kind and not (slot == "actives" and cd in ("weapon", "summon")):
                             errors.append("sampleBuilds[%d] '%s': %s 卡名 '%s' 是 kind=%s，非预期 %s"%(bi,bn,slot,nm,cd,exp_kind))
         lint_playability(pid, cards, warns)
         for e in errors: print("  E:", pid, e)

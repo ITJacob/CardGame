@@ -1170,7 +1170,7 @@
     {
       "id": "skill_sleepless_s5_spirit_fang",
       "name": "灵之牙",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 5,
       "sequenceName": "灵巫",
       "rarity": "rare",
@@ -1185,28 +1185,15 @@
         "cooldown": 25,
         "castTime": 0
       },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self"
-        },
-        "consumption": "summon"
-      },
-      "effects": [
-        {
-          "type": "spawn",
-          "hpRatio": 1.0,
-          "position": "tail",
-          "unitId": "unit_nature_spirit"
-        }
-      ],
+      "effects": [],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴召唤地基（自然灵，与收尸人亡灵区分 ID）。",
+      "conversionNotes": [
+        "翻译/语义：安魂轴召唤地基（自然灵，与收尸人亡灵区分 ID）。",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）"
+      ],
       "art": {
         "subject": "a small spectral beast-spirit trailing pale cold light as it streaks across a dark battlefield toward a recoiling enemy",
         "elements": [
@@ -1215,6 +1202,11 @@
           "scattered glowing motes"
         ],
         "mood": "fierce, sudden"
+      },
+      "summon": {
+        "unitId": "unit_nature_spirit",
+        "hpRatio": 1.0,
+        "position": "tail"
       }
     },
     {
@@ -1271,7 +1263,7 @@
     {
       "id": "skill_sleepless_s5_spirit_swarm",
       "name": "灵群",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 5,
       "sequenceName": "灵巫",
       "rarity": "rare",
@@ -1286,34 +1278,15 @@
         "cooldown": 35,
         "castTime": 0
       },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self"
-        },
-        "consumption": "summon"
-      },
-      "effects": [
-        {
-          "op": "repeat",
-          "count": 2,
-          "steps": [
-            {
-              "type": "spawn",
-              "hpRatio": 0.6,
-              "position": "tail",
-              "unitId": "unit_nature_spirit_swarm"
-            }
-          ]
-        }
-      ],
+      "effects": [],
       "sharedAcross": [
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：弱化双灵，合撑\"4-5 个灵\"量级。",
+      "conversionNotes": [
+        "翻译/语义：弱化双灵，合撑\"4-5 个灵\"量级。",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）"
+      ],
       "art": {
         "subject": "a swarm of thin glowing spirit-forms sweeping over a dark battlefield like a wave of pale embers",
         "elements": [
@@ -1322,6 +1295,12 @@
           "drifting pale motes"
         ],
         "mood": "swarming, restless"
+      },
+      "summon": {
+        "unitId": "unit_nature_spirit_swarm",
+        "count": 2,
+        "hpRatio": 0.6,
+        "position": "tail"
       }
     },
     {

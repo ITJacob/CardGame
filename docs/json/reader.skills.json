@@ -2239,7 +2239,7 @@
     {
       "id": "skill_reader_s0_tower_creation",
       "name": "白塔·创造",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 0,
       "sequenceName": "白塔",
       "rarity": "legendary",
@@ -2253,28 +2253,13 @@
         "cooldown": 35,
         "castTime": 3
       },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self"
-        },
-        "consumption": "summon"
-      },
-      "effects": [
-        {
-          "type": "spawn",
-          "unitId": "unit_tower_construct",
-          "hpRatio": 0.4,
-          "atkRatio": 0.5,
-          "position": "tail",
-          "target": "self",
-          "note": "H1 召唤物基线模板 + C5 spawn 参数；与 F 组合并候选 7 同源，只填参数不新建模板"
-        }
-      ],
+      "effects": [],
       "tentative": false,
-      "conversionNotes": "A2 合规：不挂任何 on_spawn 语义 ｜ 翻译/语义：创造=spawn 继承施法者属性造物。依赖新增项 12。A2 合规。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 15tick（序列 0 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": [
+        "A2 合规：不挂任何 on_spawn 语义 ｜ 翻译/语义：创造=spawn 继承施法者属性造物。依赖新增项 12。A2 合规。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 15tick（序列 0 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）",
+        "原 spawn 段：H1 召唤物基线模板 + C5 spawn 参数；与 F 组合并候选 7 同源，只填参数不新建模板；target=self"
+      ],
       "art": {
         "subject": "a white tower blooming from open pages, birthing a living construct",
         "elements": [
@@ -2284,7 +2269,13 @@
         ],
         "mood": "creative, majestic, alive"
       },
-      "role": "generic"
+      "role": "generic",
+      "summon": {
+        "unitId": "unit_tower_construct",
+        "hpRatio": 0.4,
+        "atkRatio": 0.5,
+        "position": "tail"
+      }
     },
     {
       "id": "skill_reader_s0_astral_stairs",

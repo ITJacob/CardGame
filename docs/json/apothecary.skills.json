@@ -336,7 +336,7 @@
     {
       "id": "skill_apothecary_s8_beast_whistle",
       "name": "驯兽哨",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 8,
       "sequenceName": "驯兽师",
       "rarity": "common",
@@ -350,28 +350,16 @@
         "cooldown": 20,
         "castTime": 0
       },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self"
-        },
-        "consumption": "summon"
-      },
-      "effects": [
-        {
-          "type": "spawn",
-          "unitId": "unit_beast",
-          "position": "tail",
-          "note": "F38（H1 基线）；禁止挂「开局」语义状态（A2）"
-        }
-      ],
+      "effects": [],
       "sharedAcross": [
         "planter"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：兽群轴 enabler：召唤动物并挂 `兽群` 身份状态。动物类非构装。A2：禁给召唤物挂开局语义。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": [
+        "翻译/语义：兽群轴 enabler：召唤动物并挂 `兽群` 身份状态。动物类非构装。A2：禁给召唤物挂开局语义。 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）",
+        "原 spawn 段：F38（H1 基线）；禁止挂「开局」语义状态（A2）"
+      ],
       "art": {
         "subject": "a tamer raising a bone whistle as a wolf emerges from pines",
         "elements": [
@@ -381,7 +369,11 @@
         ],
         "mood": "wild, loyal"
       },
-      "role": "core"
+      "role": "core",
+      "summon": {
+        "unitId": "unit_beast",
+        "position": "tail"
+      }
     },
     {
       "id": "skill_apothecary_s8_beast_sense",
@@ -2567,7 +2559,7 @@
     {
       "id": "skill_apothecary_s9_beast_call",
       "name": "兽群呼唤",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 9,
       "sequenceName": "药师",
       "rarity": "common",
@@ -2576,29 +2568,12 @@
       "lore": "以号角召兽同行。",
       "flavor": "来吧，孩子们。",
       "describe": "召唤 1 只野兽至队尾。",
-      "effects": [
-        {
-          "type": "spawn",
-          "unitId": "unit_beast",
-          "position": "tail",
-          "count": 1
-        }
-      ],
+      "effects": [],
       "tentative": false,
       "cost": {
         "energy": 2,
         "cooldown": 0,
         "castTime": 0
-      },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "area",
-          "faction": "none",
-          "scope": "none"
-        },
-        "fallbackSort": null
       },
       "art": {
         "subject": "a horn call answered by shapes moving through the treeline",
@@ -2609,8 +2584,16 @@
         ],
         "mood": "rallying, wild"
       },
-      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 选靶V2：scope:none 保留",
-      "role": "core"
+      "conversionNotes": [
+        "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 选靶V2：scope:none 保留",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）"
+      ],
+      "role": "core",
+      "summon": {
+        "unitId": "unit_beast",
+        "count": 1,
+        "position": "tail"
+      }
     },
     {
       "id": "skill_apothecary_s7_wild_instinct",
@@ -2662,7 +2645,7 @@
     {
       "id": "skill_apothecary_s6_pack_maul",
       "name": "群兽撕咬",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 6,
       "sequenceName": "魔药教授",
       "rarity": "uncommon",
@@ -2671,29 +2654,12 @@
       "lore": "兽群一拥而上。",
       "flavor": "撕碎它。",
       "describe": "召唤 2 只野兽至队尾。",
-      "effects": [
-        {
-          "type": "spawn",
-          "unitId": "unit_beast",
-          "position": "tail",
-          "count": 2
-        }
-      ],
+      "effects": [],
       "tentative": false,
       "cost": {
         "energy": 3,
         "cooldown": 5,
         "castTime": 0
-      },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "area",
-          "faction": "none",
-          "scope": "none"
-        },
-        "fallbackSort": null
       },
       "art": {
         "subject": "a pack of beasts surging forward as one snapping tide",
@@ -2704,8 +2670,16 @@
         ],
         "mood": "ferocious, unified"
       },
-      "conversionNotes": "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 选靶V2：scope:none 保留",
-      "role": "core"
+      "conversionNotes": [
+        "2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 选靶V2：scope:none 保留",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）"
+      ],
+      "role": "core",
+      "summon": {
+        "unitId": "unit_beast",
+        "count": 2,
+        "position": "tail"
+      }
     },
     {
       "id": "skill_apothecary_s5_beast_rush",
@@ -2854,7 +2828,7 @@
     {
       "id": "skill_apothecary_s2_beast_tide",
       "name": "万兽奔腾",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 2,
       "sequenceName": "创生者",
       "rarity": "epic",
@@ -2863,29 +2837,12 @@
       "lore": "万兽奔涌，势不可挡。",
       "flavor": "大地在蹄下震颤。",
       "describe": "召唤 3 只野兽至队尾。",
-      "effects": [
-        {
-          "type": "spawn",
-          "unitId": "unit_beast",
-          "position": "tail",
-          "count": 3
-        }
-      ],
+      "effects": [],
       "tentative": false,
       "cost": {
         "energy": 5,
         "cooldown": 10,
         "castTime": 2
-      },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "area",
-          "faction": "none",
-          "scope": "none"
-        },
-        "fallbackSort": null
       },
       "art": {
         "subject": "an endless stampede of beasts shaking the very earth",
@@ -2896,8 +2853,16 @@
         ],
         "mood": "overwhelming, seismic"
       },
-      "conversionNotes": "2026-10-01 吟唱重标：仪式类（prim）castTime 4→10tick（对齐拍板表） ｜ 选靶V2：scope:none 保留",
-      "role": "core"
+      "conversionNotes": [
+        "2026-10-01 吟唱重标：仪式类（prim）castTime 4→10tick（对齐拍板表） ｜ 选靶V2：scope:none 保留",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）"
+      ],
+      "role": "core",
+      "summon": {
+        "unitId": "unit_beast",
+        "count": 3,
+        "position": "tail"
+      }
     }
   ],
   "unitDefs": [

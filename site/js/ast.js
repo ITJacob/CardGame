@@ -435,4 +435,6 @@ export function walkCardEffects(card, cb) {
     }
   };
   walk(card);
+  // kind=summon：载荷合成 spawn 节点（2026-10-23 召唤牌化），统计口径与复合卡一致
+  if (card.summon && typeof card.summon === 'object') walk({ type: 'spawn', ...card.summon });
 }

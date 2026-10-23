@@ -123,7 +123,7 @@ function renderSkillStats(view) {
     // 费用三件套（energy / cooldown / castTime）同住在卡级 cost 对象上，只算主动卡——
     // 全库主动卡 100% 带 cost（被动卡不带也不该带），缺 cost 的主动卡会被这里静默漏掉，
     // 那是数据事故，页面不兜底
-    if ((c.kind === 'active' || c.kind === 'weapon') && c.cost) {
+    if ((c.kind === 'active' || c.kind === 'weapon' || c.kind === 'summon') && c.cost) {
       if (c.cost.energy != null) { bump(byEnergy, 0, c.cost.energy); bump(energyByPath, p, c.cost.energy); }
       if (c.cost.cooldown != null) { bump(byCooldown, 0, c.cost.cooldown); bump(cooldownByPath, p, c.cost.cooldown); }
       if (c.cost.castTime != null) { bump(byCast, 0, c.cost.castTime); bump(castByPath, p, c.cost.castTime); }

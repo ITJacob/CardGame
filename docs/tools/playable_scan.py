@@ -339,7 +339,7 @@ def target_signature(card, loose=False, with_filter=True):
 def axis_target_dedup(cards, axes):
     out = {}
     for aid in axes:
-        act = [c for c in cards if c.get("axis") == aid and c.get("kind") in ("active", "weapon")]
+        act = [c for c in cards if c.get("axis") == aid and c.get("kind") in ("active", "weapon", "summon")]
         # 主口径（程有序裁定）：**保留 filter 语义族**（决定"能选谁"，玩家可感知）
         # + **排除 fallbackSort**（超时回退排序，玩家不可感知）
         main = defaultdict(list)
@@ -544,7 +544,7 @@ def supply_table(cards, data, keys, status_by_id):
                 read_cards.append(c)
                 for r in set(hits):
                     read_kinds[r] += 1
-        act = [c for c in prod_cards if c.get("kind") in ("active", "weapon")]
+        act = [c for c in prod_cards if c.get("kind") in ("active", "weapon", "summon")]
         write = {
             "produce_cards": len(prod_cards),
             "produce_active": len(act),
@@ -610,7 +610,7 @@ def identity_mount_stats(cards, axes):
                 cons.append(c)
         out[aid + "/" + sid] = {
             "producers": len(prod),
-            "active_producers": sum(1 for c in prod if c.get("kind") in ("active", "weapon")),
+            "active_producers": sum(1 for c in prod if c.get("kind") in ("active", "weapon", "summon")),
             "consumers": len(cons),
             "names": [c.get("name") for c in prod][:12],
         }
@@ -900,7 +900,7 @@ def playability_2x2(cards, st, cost_cards, identity_sids=()):
                     rtypes[sid].add("consume")
                 else:
                     writes[sid].add(cid)
-                    if kind_of.get(cid) in ("active", "weapon"):
+                    if kind_of.get(cid) in ("active", "weapon", "summon"):
                         active_writes[sid].add(cid)
             elif n.get("type") in ("modify_status", "dispel", "transfer_status") and isinstance(sid, str):
                 reads[sid].add(cid)

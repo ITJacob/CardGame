@@ -2098,7 +2098,7 @@
     {
       "id": "skill_savant_s2_creation_authority",
       "name": "制造权柄",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 2,
       "sequenceName": "知识导师",
       "rarity": "epic",
@@ -2113,34 +2113,13 @@
         "cooldown": 30,
         "castTime": 2
       },
-      "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self",
-          "scope": "point"
-        },
-        "consumption": "summon"
-      },
-      "effects": [
-        {
-          "op": "repeat",
-          "count": 2,
-          "steps": [
-            {
-              "type": "spawn",
-              "unitId": "unit_automaton",
-              "hpRatio": 0.45,
-              "position": "tail",
-              "target": "self",
-              "note": "F43 unit_automaton + G3 Repeat 动态段数"
-            }
-          ]
-        }
-      ],
+      "effects": [],
       "tentative": false,
-      "conversionNotes": "联动：一次召唤两台 → 熟能生巧结算 2 次（受每场 3 次上限约束） ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 10tick（序列 2 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：craft轴 self+point（轴选靶签名设计 §4）",
+      "conversionNotes": [
+        "联动：一次召唤两台 → 熟能生巧结算 2 次（受每场 3 次上限约束） ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 10tick（序列 2 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：craft轴 self+point（轴选靶签名设计 §4）",
+        "2026-10-23 召唤牌化：kind 转 summon，effects 内 spawn 段迁入 summon 载荷（提案 summon-first-class.md）",
+        "原 spawn 段：F43 unit_automaton + G3 Repeat 动态段数；target=self"
+      ],
       "art": {
         "subject": "a mentor speaking two machines into existence out of empty air",
         "elements": [
@@ -2148,6 +2127,12 @@
           "raw shapes taking form"
         ],
         "mood": "effortless, declarative"
+      },
+      "summon": {
+        "unitId": "unit_automaton",
+        "count": 2,
+        "hpRatio": 0.45,
+        "position": "tail"
       }
     },
     {
