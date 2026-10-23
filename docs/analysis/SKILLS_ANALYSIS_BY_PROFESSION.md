@@ -1,6 +1,6 @@
 # 技能池设计分析报告（职业维度 · 效果原语专项）
 
-> 数据来源：`docs/json/*.skills.json`（22 份途径技能池，共 **835 张卡**），由 `docs/tools/build_profession_analysis.py` 递归遍历全部效果节点生成。
+> 数据来源：`docs/json/*.skills.json`（22 份途径技能池，共 **838 张卡**），由 `docs/tools/build_profession_analysis.py` 递归遍历全部效果节点生成。
 > 对照基准：`docs/meta/GENERATION_BRIEF.md` v0.3、`docs/ddd/params/*`。
 > 生成日期：2026-10-23
 
@@ -9,7 +9,7 @@
 | 职业（途径） | 卡数 | 效果节点总数 | 原语节点 | 算子节点 |
 |---|---:|---:|---:|---:|
 | 不眠者 sleepless | 34 | 97 | 97 | 35 |
-| 仲裁人 arbiter | 40 | 103 | 103 | 38 |
+| 仲裁人 arbiter | 43 | 136 | 136 | 46 |
 | 偷盗者 thief | 37 | 108 | 108 | 29 |
 | 刺客 assassin | 39 | 112 | 112 | 32 |
 | 囚犯 prisoner | 36 | 115 | 115 | 21 |
@@ -30,7 +30,7 @@
 | 观众 spectator | 36 | 72 | 72 | 26 |
 | 通识者 savant | 36 | 100 | 100 | 28 |
 | 阅读者 reader | 34 | 105 | 105 | 28 |
-| **全库** | **835** | **2555** | **2555** | **843** |
+| **全库** | **838** | **2588** | **2588** | **851** |
 
 > 口径：一张卡含多层嵌套效果（卡面 `effects`、状态触发器、区域/界域定义等），故「效果节点总数」≥ 卡数。原语=以 `type` 表达的 19 类 leaf 效果；算子=以 `op` 表达的 9 类控制流/改写节点（`sequence/if/repeat/target_override/push_back/overlay/pull_forward/swap_ally/insert_tail_cross_lane`）。算子节点内部包裹的原语已计入原语统计，二者存在少量重叠（如 `move`+`push_back`）。
 
@@ -41,7 +41,7 @@
 | 职业 | `mount_status` | `damage` | `modify_stat` | `modify_resource` | `dispel` | `spawn` | `heal` | `move` | `domain` | `drain` | `modify_damage` | `transfer_status` | `echo_last_skill` | `snapshot` | `restore_snapshot` | `gauge_shuffle` | `status_shuffle` | `translocate` | `target_override` | `set_luminance` | `advance_clock` | 合计 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 不眠者 | 53 | 14 | 3 | 9 | 9 | 1 | 2 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 4 | 97 |
-| 仲裁人 | 30 | 28 | 16 | 13 | 6 | 1 | 2 | 2 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 103 |
+| 仲裁人 | 30 | 39 | 30 | 22 | 6 | 1 | 2 | 1 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 136 |
 | 偷盗者 | 33 | 14 | 15 | 9 | 2 | 3 | 0 | 1 | 1 | 9 | 0 | 14 | 0 | 0 | 0 | 0 | 0 | 0 | 7 | 0 | 0 | 108 |
 | 刺客 | 47 | 20 | 6 | 15 | 4 | 1 | 2 | 2 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 13 | 0 | 0 | 0 | 112 |
 | 囚犯 | 34 | 16 | 16 | 20 | 3 | 3 | 1 | 1 | 1 | 0 | 0 | 20 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 115 |
@@ -62,24 +62,24 @@
 | 观众 | 39 | 14 | 6 | 4 | 2 | 2 | 3 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 72 |
 | 通识者 | 25 | 9 | 21 | 14 | 3 | 20 | 5 | 0 | 2 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 100 |
 | 阅读者 | 44 | 23 | 6 | 19 | 2 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 105 |
-| **全库** | 851 | 450 | 257 | 349 | 85 | 102 | 68 | 113 | 32 | 46 | 3 | 56 | 12 | 12 | 37 | 7 | 5 | 31 | 10 | 23 | 6 | **2555** |
+| **全库** | 851 | 461 | 271 | 358 | 85 | 102 | 68 | 112 | 32 | 46 | 3 | 56 | 12 | 12 | 37 | 7 | 5 | 31 | 10 | 23 | 6 | **2588** |
 
 ### 2.1 全库原语用量排行（含占比）
 
 | 原语 | 用量 | 占比 |
 |---|---:|---:|
-| `mount_status` | 851 | 33.3% |
-| `damage` | 450 | 17.6% |
-| `modify_resource` | 349 | 13.7% |
-| `modify_stat` | 257 | 10.1% |
-| `move` | 113 | 4.4% |
-| `spawn` | 102 | 4.0% |
+| `mount_status` | 851 | 32.9% |
+| `damage` | 461 | 17.8% |
+| `modify_resource` | 358 | 13.8% |
+| `modify_stat` | 271 | 10.5% |
+| `move` | 112 | 4.3% |
+| `spawn` | 102 | 3.9% |
 | `dispel` | 85 | 3.3% |
-| `heal` | 68 | 2.7% |
+| `heal` | 68 | 2.6% |
 | `transfer_status` | 56 | 2.2% |
 | `drain` | 46 | 1.8% |
 | `restore_snapshot` | 37 | 1.4% |
-| `domain` | 32 | 1.3% |
+| `domain` | 32 | 1.2% |
 | `translocate` | 31 | 1.2% |
 | `set_luminance` | 23 | 0.9% |
 | `echo_last_skill` | 12 | 0.5% |
@@ -97,7 +97,7 @@
 | 职业 | `sequence` | `if` | `repeat` | `target_override` | `push_back` | `overlay` | `pull_forward` | `swap_ally` | `insert_tail_cross_lane` | 合计 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 不眠者 | 8 | 26 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 35 |
-| 仲裁人 | 18 | 12 | 1 | 0 | 1 | 5 | 1 | 0 | 0 | 38 |
+| 仲裁人 | 16 | 23 | 1 | 0 | 0 | 5 | 1 | 0 | 0 | 46 |
 | 偷盗者 | 17 | 10 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 29 |
 | 刺客 | 15 | 12 | 1 | 0 | 0 | 2 | 1 | 1 | 0 | 32 |
 | 囚犯 | 10 | 9 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 21 |
@@ -118,7 +118,7 @@
 | 观众 | 14 | 10 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 26 |
 | 通识者 | 14 | 11 | 1 | 0 | 0 | 2 | 0 | 0 | 0 | 28 |
 | 阅读者 | 12 | 15 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 28 |
-| **全库** | 313 | 388 | 17 | 0 | 45 | 31 | 29 | 4 | 16 | **843** |
+| **全库** | 311 | 399 | 17 | 0 | 44 | 31 | 29 | 4 | 16 | **851** |
 
 > `target_override` 在全库另有 **10** 处作为 `type` 原语（`effTargetOverride`）出现，与算子的 0 处合计 **10** 处「改写目标」表达。
 
@@ -127,7 +127,7 @@
 | 职业 | Top1 | Top2 | Top3 |
 |---|---|---|---|
 | 不眠者 | `mount_status`(53) | `damage`(14) | `modify_resource`(9) |
-| 仲裁人 | `mount_status`(30) | `damage`(28) | `modify_stat`(16) |
+| 仲裁人 | `damage`(39) | `modify_stat`(30) | `mount_status`(30) |
 | 偷盗者 | `mount_status`(33) | `modify_stat`(15) | `damage`(14) |
 | 刺客 | `mount_status`(47) | `damage`(20) | `modify_resource`(15) |
 | 囚犯 | `mount_status`(34) | `modify_resource`(20) | `transfer_status`(20) |
@@ -151,24 +151,24 @@
 
 ## 三、modify_stat 专项：具体改了哪些属性
 
-全库 `modify_stat` 共 **257** 处。下方按「属性键 / 模式 / 参数」逐层拆解。
+全库 `modify_stat` 共 **271** 处。下方按「属性键 / 模式 / 参数」逐层拆解。
 
 ### 3.1 改了哪些 stat 属性键（全局分布）
 
 | stat 属性键 | 次数 | 占 modify_stat% |
 |---|---:|---:|
-| `attack` | 87 | 33.9% |
-| `defense` | 53 | 20.6% |
-| `gauge.rate` | 40 | 15.6% |
-| `hp_max` | 23 | 8.9% |
-| `armor` | 19 | 7.4% |
-| `resist:mental` | 8 | 3.1% |
-| `energy_max` | 7 | 2.7% |
-| `energy_regen` | 4 | 1.6% |
-| `resist:physical` | 4 | 1.6% |
-| `resist:poison` | 3 | 1.2% |
-| `gauge.threshold` | 3 | 1.2% |
-| `resist:*` | 2 | 0.8% |
+| `attack` | 90 | 33.2% |
+| `defense` | 64 | 23.6% |
+| `gauge.rate` | 40 | 14.8% |
+| `hp_max` | 23 | 8.5% |
+| `armor` | 19 | 7.0% |
+| `resist:mental` | 8 | 3.0% |
+| `energy_max` | 7 | 2.6% |
+| `energy_regen` | 4 | 1.5% |
+| `resist:physical` | 4 | 1.5% |
+| `resist:poison` | 3 | 1.1% |
+| `gauge.threshold` | 3 | 1.1% |
+| `resist:*` | 2 | 0.7% |
 | `rank` | 1 | 0.4% |
 | `summon_cap` | 1 | 0.4% |
 | `resist:fire` | 1 | 0.4% |
@@ -178,11 +178,11 @@
 
 | stat 属性键 | 模式 | 次数 | 占该属性% |
 |---|---|---:|---:|
-| `attack` | `delta` | 83 | 95% |
+| `attack` | `delta` | 86 | 96% |
 | `attack` | `set` | 3 | 3% |
 | `attack` | `to_at_least` | 1 | 1% |
-| `defense` | `delta` | 48 | 91% |
-| `defense` | `set` | 3 | 6% |
+| `defense` | `delta` | 59 | 92% |
+| `defense` | `set` | 3 | 5% |
 | `defense` | `None` | 1 | 2% |
 | `defense` | `to_at_least` | 1 | 2% |
 | `gauge.rate` | `delta` | 31 | 78% |
@@ -209,14 +209,14 @@
 
 | 参数 | 出现次数 | 占 modify_stat% | 说明 |
 |---|---:|---:|---|
-| `value` | 257 | 100.0% | 数值（delta/mul 的增量；set 的设定值） |
-| `duration` | 158 | 61.5% | 持续 tick（null/缺失=常驻） |
-| `condition` | 3 | 1.2% | 条件触发（Chance 走 RandomSource，仅非伤害维度） |
-| `target` | 213 | 82.9% | 效果级目标锚点（二次寻址） |
+| `value` | 271 | 100.0% | 数值（delta/mul 的增量；set 的设定值） |
+| `duration` | 169 | 62.4% | 持续 tick（null/缺失=常驻） |
+| `condition` | 3 | 1.1% | 条件触发（Chance 走 RandomSource，仅非伤害维度） |
+| `target` | 227 | 83.8% | 效果级目标锚点（二次寻址） |
 | `spread` | 1 | 0.4% | 溅射（splash_adjacent） |
-| `sourceRef` | 10 | 3.9% | 取值参照源（caster/secondary_target/field_average） |
-| `valueFrom` | 4 | 1.6% | 动态取值（对象/表达式，非静态数值） |
-| `note` | 103 | 40.1% | 注释 |
+| `sourceRef` | 10 | 3.7% | 取值参照源（caster/secondary_target/field_average） |
+| `valueFrom` | 4 | 1.5% | 动态取值（对象/表达式，非静态数值） |
+| `note` | 116 | 42.8% | 注释 |
 
 ### 3.4 分职业 stat 键矩阵
 
@@ -225,7 +225,7 @@
 | 职业 | `attack` | `defense` | `gauge.rate` | `hp_max` | `armor` | `resist:mental` | `energy_max` | `energy_regen` | `resist:physical` | `resist:poison` | `gauge.threshold` | `resist:*` | `rank` | `summon_cap` | `resist:fire` | `resist:$buildElement` |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 不眠者 | 2 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 仲裁人 | 7 | 4 | 2 | 0 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
+| 仲裁人 | 10 | 15 | 2 | 0 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
 | 偷盗者 | 8 | 2 | 2 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 0 |
 | 刺客 | 1 | 1 | 3 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 囚犯 | 7 | 1 | 1 | 1 | 3 | 1 | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -246,14 +246,14 @@
 | 观众 | 3 | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 通识者 | 5 | 0 | 5 | 3 | 1 | 2 | 2 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 |
 | 阅读者 | 1 | 2 | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **全库** | 87 | 53 | 40 | 23 | 19 | 8 | 7 | 4 | 4 | 3 | 3 | 2 | 1 | 1 | 1 | 1 |
+| **全库** | 90 | 64 | 40 | 23 | 19 | 8 | 7 | 4 | 4 | 3 | 3 | 2 | 1 | 1 | 1 | 1 |
 
 ### 3.5 各职业 modify_stat 参数偏好（condition / duration / target / filter 占比）
 
 | 职业 | modify_stat 总数 | 带 condition | 带 duration | 带 target | 带 filter |
 |---|---:|---:|---:|---:|---:|
 | 不眠者 | 3 | 0 (0%) | 2 (67%) | 2 (67%) | 0 (0%) |
-| 仲裁人 | 16 | 0 (0%) | 14 (88%) | 10 (62%) | 0 (0%) |
+| 仲裁人 | 30 | 0 (0%) | 25 (83%) | 24 (80%) | 0 (0%) |
 | 偷盗者 | 15 | 0 (0%) | 13 (87%) | 7 (47%) | 0 (0%) |
 | 刺客 | 6 | 0 (0%) | 5 (83%) | 3 (50%) | 0 (0%) |
 | 囚犯 | 16 | 0 (0%) | 5 (31%) | 15 (94%) | 0 (0%) |
@@ -281,8 +281,8 @@
 
 | stat 属性键 | 样本数 | 模式分布 | 数值范围(典型) |
 |---|---:|---|---|
-| `attack` | 87 | `delta`×83, `set`×3, `to_at_least`×1 | 负 -5~-1；正 +1~+6 |
-| `defense` | 53 | `delta`×48, `set`×3, `None`×1, `to_at_least`×1 | 负 -3~-1；正 +1~+3 |
+| `attack` | 90 | `delta`×86, `set`×3, `to_at_least`×1 | 负 -5~-1；正 +1~+6 |
+| `defense` | 64 | `delta`×59, `set`×3, `None`×1, `to_at_least`×1 | 负 -3~-1；正 +1~+3 |
 | `gauge.rate` | 40 | `delta`×31, `mul`×7, `set`×2 | 负 -15~-2；正 +1~+10 |
 | `hp_max` | 23 | `delta`×23 | 负 -12~-1；正 +2~+20 |
 | `armor` | 19 | `delta`×17, `set`×2 | 负 -5~-2；正 +1~+12 |
@@ -300,28 +300,28 @@
 
 ## 四、modify_resource 专项：具体改了哪些资源
 
-全库 `modify_resource` 共 **349** 处。
+全库 `modify_resource` 共 **358** 处。
 
 ### 4.1 改了哪些 resource 资源键（全局分布）
 
 | resource 资源键 | 次数 | 占 modify_resource% |
 |---|---:|---:|
-| `gauge.current` | 98 | 28.1% |
-| `lost` | 78 | 22.3% |
-| `energy` | 50 | 14.3% |
-| `lust` | 42 | 12.0% |
-| `hp` | 32 | 9.2% |
-| `armor` | 24 | 6.9% |
-| `order` | 10 | 2.9% |
+| `gauge.current` | 102 | 28.5% |
+| `lost` | 78 | 21.8% |
+| `energy` | 50 | 14.0% |
+| `lust` | 42 | 11.7% |
+| `hp` | 32 | 8.9% |
+| `armor` | 24 | 6.7% |
+| `order` | 15 | 4.2% |
 | `shield` | 7 | 2.0% |
 | `secrecy` | 5 | 1.4% |
-| `fate_value` | 3 | 0.9% |
+| `fate_value` | 3 | 0.8% |
 
 ### 4.2 (资源键 × 模式) 组合明细
 
 | resource 资源键 | 模式 | 次数 | 占该资源% |
 |---|---|---:|---:|
-| `gauge.current` | `delta` | 96 | 98% |
+| `gauge.current` | `delta` | 100 | 98% |
 | `gauge.current` | `swap` | 2 | 2% |
 | `lost` | `delta` | 78 | 100% |
 | `energy` | `delta` | 49 | 98% |
@@ -330,8 +330,8 @@
 | `lust` | `None` | 6 | 14% |
 | `hp` | `delta` | 32 | 100% |
 | `armor` | `delta` | 24 | 100% |
-| `order` | `delta` | 9 | 90% |
-| `order` | `set` | 1 | 10% |
+| `order` | `delta` | 14 | 93% |
+| `order` | `set` | 1 | 7% |
 | `shield` | `delta` | 7 | 100% |
 | `secrecy` | `delta` | 5 | 100% |
 | `fate_value` | `delta` | 3 | 100% |
@@ -342,13 +342,13 @@
 
 | 参数 | 出现次数 | 占 modify_resource% | 说明 |
 |---|---:|---:|---|
-| `value` | 349 | 100.0% | 数值（delta 增量 / set 设定值） |
-| `mode` | 349 | 100.0% | delta / set / swap |
+| `value` | 358 | 100.0% | 数值（delta 增量 / set 设定值） |
+| `mode` | 358 | 100.0% | delta / set / swap |
 | `between` | 2 | 0.6% | swap 双方（effectTarget 数组） |
 | `maxTriggersPerBattle` | 2 | 0.6% | 每场战斗最大触发次数 |
-| `condition` | 3 | 0.9% | 条件触发 |
-| `target` | 304 | 87.1% | 效果级目标锚点 |
-| `note` | 283 | 81.1% | 注释 |
+| `condition` | 3 | 0.8% | 条件触发 |
+| `target` | 313 | 87.4% | 效果级目标锚点 |
+| `note` | 292 | 81.6% | 注释 |
 
 ### 4.4 分职业 resource 键矩阵
 
@@ -357,7 +357,7 @@
 | 职业 | `gauge.current` | `lost` | `energy` | `lust` | `hp` | `armor` | `order` | `shield` | `secrecy` | `fate_value` |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 不眠者 | 5 | 1 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 仲裁人 | 3 | 5 | 0 | 0 | 0 | 1 | 4 | 0 | 0 | 0 |
+| 仲裁人 | 7 | 5 | 0 | 0 | 0 | 1 | 9 | 0 | 0 | 0 |
 | 偷盗者 | 7 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 刺客 | 2 | 13 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 囚犯 | 3 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -378,19 +378,19 @@
 | 观众 | 3 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 通识者 | 3 | 2 | 5 | 0 | 0 | 4 | 0 | 0 | 0 | 0 |
 | 阅读者 | 9 | 1 | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **全库** | 98 | 78 | 50 | 42 | 32 | 24 | 10 | 7 | 5 | 3 |
+| **全库** | 102 | 78 | 50 | 42 | 32 | 24 | 15 | 7 | 5 | 3 |
 
 ### 4.5 资源操控的语义标签（按 resource 归类用途）
 
 | resource | 主要语义 | 高频模式 |
 |---|---|---|
-| `gauge.current` | 推条（抢先/延后出手） | `delta`×96, `swap`×2 |
+| `gauge.current` | 推条（抢先/延后出手） | `delta`×100, `swap`×2 |
 | `lost` | 迷失租金（界域/跨层代价，独立资源槽） | `delta`×78 |
 | `energy` | 能量操控（资源杠杆，最常见） | `delta`×49, `None`×1 |
 | `lust` |  | `delta`×36, `None`×6 |
 | `hp` | 直接治疗/伤害（常与 heal/damage 互补） | `delta`×32 |
 | `armor` | 护甲增减 | `delta`×24 |
-| `order` |  | `delta`×9, `set`×1 |
+| `order` |  | `delta`×14, `set`×1 |
 | `shield` | 护盾吸收池增减 | `delta`×7 |
 | `secrecy` |  | `delta`×5 |
 | `fate_value` |  | `delta`×3 |
@@ -410,21 +410,21 @@
 
 ## 六、总量快照
 
-> 算子口径：sequence=313 / if=388 / target_override=0 / push_back=45 / overlay=31 / repeat=17 / pull_forward=29 / swap_ally=4 / insert_tail_cross_lane=16；本库当前 835 张卡，数字随补卡浮动属正常。
+> 算子口径：sequence=311 / if=399 / target_override=0 / push_back=44 / overlay=31 / repeat=17 / pull_forward=29 / swap_ally=4 / insert_tail_cross_lane=16；本库当前 838 张卡，数字随补卡浮动属正常。
 
 
 ## 七、结论与观察
 
-1. **原语总量**：全库共 2555 个原语节点 + 843 个算子节点；`mount_status`(33%) 与 `damage`(18%) 仍是绝对主力，状态驱动风格延续。
-2. **modify_stat 最常被改的属性**：`attack`(87)、`defense`(53)、`gauge.rate`(40) —— 敏捷原生的 `gauge.rate`、攻防 `attack/defense`、资源速率与独立资源槽是首选。
-3. **modify_resource 最常被改的资源**：`gauge.current`(98)、`lost`(78)、`energy`(50) —— `energy` 是第一杠杆，`lost`（迷失租金）已随界域/跨层普及成为常态成本，`gauge.current`（推条）用量高于直接 hp/shield。
-4. **参数使用**：modify_stat 中带 `duration` 的占 61%（持续型修正为主），带 `condition` 的仅 1%（绝大多数无条件是确定性修正，符合 B1 铁律）；`sourceRef`/`valueFrom` 动态取值共 14 处，属「按参照源缩放」的高级表达。
+1. **原语总量**：全库共 2588 个原语节点 + 851 个算子节点；`mount_status`(33%) 与 `damage`(18%) 仍是绝对主力，状态驱动风格延续。
+2. **modify_stat 最常被改的属性**：`attack`(90)、`defense`(64)、`gauge.rate`(40) —— 敏捷原生的 `gauge.rate`、攻防 `attack/defense`、资源速率与独立资源槽是首选。
+3. **modify_resource 最常被改的资源**：`gauge.current`(102)、`lost`(78)、`energy`(50) —— `energy` 是第一杠杆，`lost`（迷失租金）已随界域/跨层普及成为常态成本，`gauge.current`（推条）用量高于直接 hp/shield。
+4. **参数使用**：modify_stat 中带 `duration` 的占 62%（持续型修正为主），带 `condition` 的仅 1%（绝大多数无条件是确定性修正，符合 B1 铁律）；`sourceRef`/`valueFrom` 动态取值共 14 处，属「按参照源缩放」的高级表达。
 5. **职业差异**：详见 §二/§2.2 矩阵与 §3.4/§4.4。各职业 Top 原语（§2.3）显示签名表达——召唤系（不眠者/收尸人/秘祈人）`spawn` 偏高，控制系（刺客/囚犯）`move`+`dispel` 偏高，能量系（愚者/阅读者）`modify_resource(energy)` 偏高。
 6. **数据质量**：见 §五。未发现问题。
 
 ### 附：统计口径
 
-- 数据源：`docs/json/*.skills.json` 的 `cards[]`，共 835 张卡。
+- 数据源：`docs/json/*.skills.json` 的 `cards[]`，共 838 张卡。
 - 原语/算子用量：**递归遍历**每张卡的全部效果节点（含卡面 `effects`、`statusDefs[].triggers[].effects`、`zoneDef`/`domainDef`/单位定义等任意嵌套），同一张卡的同名原语多次计数。
 - 原语以效果节点 `type` 字段归类（19 类）；算子以效果节点 `op` 字段归类（9 类）。
 - `modify_stat`/`modify_resource` 统计：同样递归全量；`stat`/`resource` 取节点字段值，`mode`/`value`/`duration`/`condition`/`target`/`filter`/`spread`/`sourceRef`/`valueFrom`（资源侧另含 `op`/`between`/`maxTriggersPerBattle`）逐一记录。

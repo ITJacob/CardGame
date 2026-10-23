@@ -940,8 +940,8 @@
   {
    "id": "arbiter",
    "name": "仲裁人",
-   "state": "回溯补登",
-   "date": "2026-10-21",
+   "state": null,
+   "date": "环节⑥拍板",
    "score": 100,
    "scoreParts": {
     "命题": 10,
@@ -954,9 +954,9 @@
    },
    "deductions": [],
    "proposition": {
-    "statement": "立法收税——立规写下「禁」与「价」：违例即惩戒/处决，秩序资源随执法进账，立什么规、抓什么违例是核心决策",
-    "variable": "立规条目选择（立哪条禁/价、豁免条款写给谁）、执法兑现时机（何时收税/处决）",
-    "cost": "立的规被绕过或无人违例则税收空转；处决节奏慢则对面战力始终在线"
+    "statement": "立法者被立法——你写的禁与价对双方生效；豁免不是白给的，要拿秩序度去维持，对手还能反诉删掉你的豁免。立规的代价，就是自己也在规矩里",
+    "variable": "立哪条规（禁技/禁攻）、给谁豁免（付几条秩序）、何时反诉或加码",
+    "cost": "豁免维持费吃空秩序；豁免被反诉删除则规则反噬自己；自己违例先吃罚"
    },
    "style": {
     "signature": "立规（rulePatch seal_effect/cost_mod + res:order 秩序资源深化）",
@@ -967,7 +967,7 @@
      "位移",
      "基础增益"
     ],
-    "redline": "途径设计身份.md 仲裁人身份卡：只立「禁」与「价」，不改写规则文本（改规是律师）；立规必须有违例惩罚与豁免条款"
+    "redline": "途径设计身份.md 仲裁人身份卡：只立「禁」与「价」，不改写规则文本（改规是律师）；立规必须有违例惩罚；豁免必须付代价，不做只收税不受规"
    },
    "axes": [
     {
@@ -976,13 +976,13 @@
      "symbol": "📜",
      "anchor": {
       "kind": "status",
-      "id": "decree",
-      "raw": "status:decree"
+      "id": "decree + status:writ",
+      "raw": "status:decree + status:writ"
      },
      "loop": {
-      "produce": "立规/禁制追击/秩序领域产层",
-      "consume": "满月/审判读层消费",
-      "clear": "规条被废或层数被消费清除",
+      "produce": "立规/禁制追击立规并写法令标记、反诉改写豁免",
+      "consume": "满月耗律令层、加码追加惩罚",
+      "clear": "规条被废止或层数被消耗",
       "produceCards": [
        {
         "name": "立规",
@@ -993,8 +993,8 @@
         "id": "skill_arbiter_s5_punitive_pursuit"
        },
        {
-        "name": "秩序领域",
-        "id": "skill_arbiter_s1_order_domain"
+        "name": "反诉",
+        "id": "skill_arbiter_s4_rebuttal"
        }
       ],
       "consumeCards": [
@@ -1003,12 +1003,12 @@
         "id": "skill_arbiter_s5_full_moon"
        },
        {
-        "name": "审判",
-        "id": "skill_arbiter_s0_judgment"
+        "name": "加码",
+        "id": "skill_arbiter_s3_surcharge"
        }
       ]
      },
-     "decision": "立规条目选择：立哪条禁/价、豁免条款写给谁",
+     "decision": "立哪条禁/价、豁免付几条秩序、是否反诉/加码",
      "signatures": [
       {
        "key": "flag:seal_effect",
@@ -1037,37 +1037,36 @@
          "id": "skill_arbiter_s4_edict_reality_rise"
         }
        ],
-       "empirical": 6,
+       "empirical": 10,
        "ok": true
       }
      ],
-     "planCards": 14,
+     "planCards": 15,
      "roleMixDeclared": {
-      "core": 9,
+      "core": 10,
       "bridge": 1,
-      "generic": 3,
+      "generic": 1,
       "tech": 1
      },
      "actual": {
-      "cards": 14,
+      "cards": 15,
       "roleMix": {
-       "core": 9,
-       "generic": 3,
+       "core": 11,
+       "generic": 2,
        "bridge": 1,
        "tech": 1
       },
       "anchorMatch": true,
       "enablers": [
        "立规",
-       "禁制追击",
-       "秩序领域"
+       "禁制追击"
       ],
-      "payoffs": [],
-      "payoffsNotes": [
+      "payoffs": [
        "满月",
-       "审判"
+       "加码"
       ],
-      "axisScore": 65.0
+      "payoffsNotes": [],
+      "axisScore": 79.5
      }
     },
     {
@@ -1081,7 +1080,7 @@
      },
      "loop": {
       "produce": "过目不忘/察觉异常产层",
-      "consume": "混乱感应/精神刺穿读层消费",
+      "consume": "精神刺穿/混乱感应读层消费",
       "clear": "标记被洗或目标死亡清除",
       "produceCards": [
        {
@@ -1095,12 +1094,12 @@
       ],
       "consumeCards": [
        {
-        "name": "混乱感应",
-        "id": "skill_arbiter_s3_chaos_sense"
-       },
-       {
         "name": "精神刺穿",
         "id": "skill_arbiter_s7_mind_pierce"
+       },
+       {
+        "name": "混乱感应",
+        "id": "skill_arbiter_s3_chaos_sense"
        }
       ]
      },
@@ -1141,12 +1140,11 @@
        "察觉异常"
       ],
       "payoffs": [
+       "混乱感应",
        "精神刺穿"
       ],
-      "payoffsNotes": [
-       "混乱感应"
-      ],
-      "axisScore": 76.8
+      "payoffsNotes": [],
+      "axisScore": 83.3
      }
     },
     {
@@ -1187,7 +1185,7 @@
        }
       ]
      },
-     "decision": "辖区落点与时机：战场怎么切、何时展开辖区",
+     "decision": "辖区落点与时机；豁免登记的维持",
      "signatures": [
       {
        "key": "res:order",
@@ -1201,22 +1199,22 @@
          "id": "skill_arbiter_s6_decree"
         }
        ],
-       "empirical": 6,
+       "empirical": 10,
        "ok": true
       }
      ],
-     "planCards": 8,
+     "planCards": 9,
      "roleMixDeclared": {
       "core": 6,
       "starter": 1,
-      "generic": 1
+      "generic": 2
      },
      "actual": {
-      "cards": 8,
+      "cards": 9,
       "roleMix": {
        "starter": 1,
        "core": 6,
-       "generic": 1
+       "generic": 2
       },
       "anchorMatch": true,
       "enablers": [
@@ -1230,7 +1228,7 @@
        "位格律令"
       ],
       "payoffsNotes": [],
-      "axisScore": 87.5
+      "axisScore": 87.1
      }
     },
     {
@@ -1243,8 +1241,8 @@
       "raw": "status:castigated"
      },
      "loop": {
-      "produce": "惩戒/处决产层",
-      "consume": "审判/位格制裁读层消费",
+      "produce": "惩戒/处决定罪产层",
+      "consume": "审判/位格制裁/审判之剑读层消费（读 writ 追加）",
       "clear": "惩戒执行完毕或定罪被洗清除",
       "produceCards": [
        {
@@ -1264,23 +1262,27 @@
        {
         "name": "位格制裁",
         "id": "skill_arbiter_s2_rank_sanction"
+       },
+       {
+        "name": "审判之剑",
+        "id": "skill_arbiter_s3_judgment_sword"
        }
       ]
      },
-     "decision": "惩戒执行节奏：定罪后何时处决、斩杀线怎么压",
+     "decision": "定罪后何时处决、读法令标记的执行次序",
      "signatures": [],
-     "planCards": 9,
+     "planCards": 10,
      "roleMixDeclared": {
       "core": 4,
       "trap": 1,
       "starter": 1,
-      "generic": 3
+      "generic": 4
      },
      "actual": {
-      "cards": 9,
+      "cards": 10,
       "roleMix": {
        "starter": 1,
-       "generic": 3,
+       "generic": 4,
        "core": 4,
        "trap": 1
       },
@@ -1296,7 +1298,7 @@
       "payoffsNotes": [
        "禁制追击"
       ],
-      "axisScore": 79.0
+      "axisScore": 85.3
      }
     }
    ],
@@ -1348,6 +1350,54 @@
      "purpose": "读律令层数展开秩序领域",
      "ok": true,
      "reason": ""
+    },
+    {
+     "slot": "反诉",
+     "slots": [
+      {
+       "name": "反诉",
+       "id": "skill_arbiter_s4_rebuttal"
+      }
+     ],
+     "slotId": "skill_arbiter_s4_rebuttal",
+     "axis": "decree",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读法令标记追加伤害，并改写豁免",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "加码",
+     "slots": [
+      {
+       "name": "加码",
+       "id": "skill_arbiter_s3_surcharge"
+      }
+     ],
+     "slotId": "skill_arbiter_s3_surcharge",
+     "axis": "decree",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读目标律令追加伤害，并向惩罚载荷加码",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "判决预演",
+     "slots": [
+      {
+       "name": "判决预演",
+       "id": "skill_arbiter_s5_verdict_rehearsal"
+      }
+     ],
+     "slotId": "skill_arbiter_s5_verdict_rehearsal",
+     "axis": "decree",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "对带法令标记者追加伤害",
+     "ok": true,
+     "reason": ""
     }
    ],
    "crossSystem": [
@@ -1392,16 +1442,41 @@
      "hubName": "规则槽",
      "writers": [
       {
-       "name": "（无写入卡，待接线）",
-       "id": null,
-       "placeholder": true
+       "name": "立规",
+       "id": "skill_arbiter_s6_decree",
+       "pathway": "arbiter"
+      },
+      {
+       "name": "权威质变",
+       "id": "skill_arbiter_s6_authority_shift",
+       "pathway": "arbiter"
+      },
+      {
+       "name": "强制平衡",
+       "id": "skill_arbiter_s0_forced_balance",
+       "pathway": "arbiter"
+      },
+      {
+       "name": "位格管辖",
+       "id": "skill_arbiter_s5_rank_jurisdiction",
+       "pathway": "arbiter"
+      },
+      {
+       "name": "位格律令",
+       "id": "skill_arbiter_s0_rank_decree",
+       "pathway": "arbiter"
       }
      ],
      "readers": [
       {
-       "name": "（待他途径补读取卡）",
-       "id": null,
-       "placeholder": true
+       "name": "反诉",
+       "id": "skill_arbiter_s4_rebuttal",
+       "pathway": "arbiter"
+      },
+      {
+       "name": "加码",
+       "id": "skill_arbiter_s3_surcharge",
+       "pathway": "arbiter"
       }
      ],
      "participants": [
@@ -1418,35 +1493,15 @@
    "roles": [
     {
      "role": "core",
-     "declared": 25,
+     "declared": 27,
      "declaredSlots": [
-      {
-       "name": "辖区",
-       "id": "skill_arbiter_s8_jurisdiction"
-      },
-      {
-       "name": "权威质变",
-       "id": "skill_arbiter_s6_authority_shift"
-      },
-      {
-       "name": "震慑",
-       "id": "skill_arbiter_s4_intimidation"
-      },
-      {
-       "name": "分割战场",
-       "id": "skill_arbiter_s3_battlefield_split"
-      },
-      {
-       "name": "近瞬移",
-       "id": "skill_arbiter_s3_blink_step"
-      },
-      {
-       "name": "秩序领域",
-       "id": "skill_arbiter_s1_order_domain"
-      },
       {
        "name": "过目不忘",
        "id": "skill_arbiter_s8_photographic_memory"
+      },
+      {
+       "name": "辖区",
+       "id": "skill_arbiter_s8_jurisdiction"
       },
       {
        "name": "察觉异常",
@@ -1457,36 +1512,20 @@
        "id": "skill_arbiter_s7_mind_pierce"
       },
       {
-       "name": "混乱感应",
-       "id": "skill_arbiter_s3_chaos_sense"
+       "name": "立规",
+       "id": "skill_arbiter_s6_decree"
       },
       {
-       "name": "中止奇异",
-       "id": "skill_arbiter_s1_quell_anomaly"
+       "name": "囚禁",
+       "id": "skill_arbiter_s6_imprison"
       },
       {
-       "name": "贬谪",
-       "id": "skill_arbiter_s1_demean"
+       "name": "权威质变",
+       "id": "skill_arbiter_s6_authority_shift"
       },
       {
        "name": "惩戒",
        "id": "skill_arbiter_s5_castigation"
-      },
-      {
-       "name": "审判之剑",
-       "id": "skill_arbiter_s3_judgment_sword"
-      },
-      {
-       "name": "审判",
-       "id": "skill_arbiter_s0_judgment"
-      },
-      {
-       "name": "位格制裁",
-       "id": "skill_arbiter_s2_rank_sanction"
-      },
-      {
-       "name": "立规",
-       "id": "skill_arbiter_s6_decree"
       },
       {
        "name": "禁制追击",
@@ -1501,27 +1540,71 @@
        "id": "skill_arbiter_s4_edict_reality_rise"
       },
       {
+       "name": "震慑",
+       "id": "skill_arbiter_s4_intimidation"
+      },
+      {
+       "name": "审判之剑",
+       "id": "skill_arbiter_s3_judgment_sword"
+      },
+      {
+       "name": "混乱感应",
+       "id": "skill_arbiter_s3_chaos_sense"
+      },
+      {
+       "name": "分割战场",
+       "id": "skill_arbiter_s3_battlefield_split"
+      },
+      {
+       "name": "近瞬移",
+       "id": "skill_arbiter_s3_blink_step"
+      },
+      {
        "name": "五五开",
        "id": "skill_arbiter_s2_equalize"
+      },
+      {
+       "name": "秩序领域",
+       "id": "skill_arbiter_s1_order_domain"
       },
       {
        "name": "废止",
        "id": "skill_arbiter_s1_abolition"
       },
       {
+       "name": "中止奇异",
+       "id": "skill_arbiter_s1_quell_anomaly"
+      },
+      {
+       "name": "审判",
+       "id": "skill_arbiter_s0_judgment"
+      },
+      {
        "name": "底层规则",
        "id": "skill_arbiter_s0_bedrock_rules"
+      },
+      {
+       "name": "位格制裁",
+       "id": "skill_arbiter_s2_rank_sanction"
+      },
+      {
+       "name": "贬谪",
+       "id": "skill_arbiter_s1_demean"
       },
       {
        "name": "位格律令",
        "id": "skill_arbiter_s0_rank_decree"
       },
       {
-       "name": "囚禁",
-       "id": "skill_arbiter_s6_imprison"
+       "name": "反诉",
+       "id": "skill_arbiter_s4_rebuttal"
+      },
+      {
+       "name": "加码",
+       "id": "skill_arbiter_s3_surcharge"
       }
      ],
-     "actual": 25,
+     "actual": 27,
      "actualSlots": [
       {
        "name": "过目不忘",
@@ -1622,6 +1705,14 @@
       {
        "name": "位格律令",
        "id": "skill_arbiter_s0_rank_decree"
+      },
+      {
+       "name": "反诉",
+       "id": "skill_arbiter_s4_rebuttal"
+      },
+      {
+       "name": "加码",
+       "id": "skill_arbiter_s3_surcharge"
       }
      ]
     },
@@ -1677,19 +1768,11 @@
     },
     {
      "role": "generic",
-     "declared": 9,
+     "declared": 10,
      "declaredSlots": [
-      {
-       "name": "位格管辖",
-       "id": "skill_arbiter_s5_rank_jurisdiction"
-      },
       {
        "name": "痛苦之鞭",
        "id": "skill_arbiter_s7_whip_of_pain"
-      },
-      {
-       "name": "失衡感应",
-       "id": "skill_arbiter_s2_imbalance_sense"
       },
       {
        "name": "爆破",
@@ -1704,19 +1787,31 @@
        "id": "skill_arbiter_s6_lashing"
       },
       {
-       "name": "禁止",
-       "id": "skill_arbiter_s6_forbid"
-      },
-      {
        "name": "剥夺",
        "id": "skill_arbiter_s4_deprivation"
       },
       {
-       "name": "放逐",
-       "id": "skill_arbiter_s4_exile"
+       "name": "失衡感应",
+       "id": "skill_arbiter_s2_imbalance_sense"
+      },
+      {
+       "name": "位格管辖",
+       "id": "skill_arbiter_s5_rank_jurisdiction"
+      },
+      {
+       "name": "法条速记",
+       "id": "skill_arbiter_s7_legal_memory"
+      },
+      {
+       "name": "豁免登记",
+       "id": "skill_arbiter_s6_exemption_ledger"
+      },
+      {
+       "name": "判决预演",
+       "id": "skill_arbiter_s5_verdict_rehearsal"
       }
      ],
-     "actual": 9,
+     "actual": 10,
      "actualSlots": [
       {
        "name": "痛苦之鞭",
@@ -1731,10 +1826,6 @@
        "id": "skill_arbiter_s7_weapon_mastery"
       },
       {
-       "name": "禁止",
-       "id": "skill_arbiter_s6_forbid"
-      },
-      {
        "name": "鞭打",
        "id": "skill_arbiter_s6_lashing"
       },
@@ -1743,16 +1834,24 @@
        "id": "skill_arbiter_s4_deprivation"
       },
       {
-       "name": "放逐",
-       "id": "skill_arbiter_s4_exile"
-      },
-      {
        "name": "失衡感应",
        "id": "skill_arbiter_s2_imbalance_sense"
       },
       {
        "name": "位格管辖",
        "id": "skill_arbiter_s5_rank_jurisdiction"
+      },
+      {
+       "name": "法条速记",
+       "id": "skill_arbiter_s7_legal_memory"
+      },
+      {
+       "name": "豁免登记",
+       "id": "skill_arbiter_s6_exemption_ledger"
+      },
+      {
+       "name": "判决预演",
+       "id": "skill_arbiter_s5_verdict_rehearsal"
       }
      ]
     },
@@ -1858,8 +1957,8 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 3,
-     "total": 3,
+     "hit": 6,
+     "total": 6,
      "miss": []
     },
     "跨系钩子": {
