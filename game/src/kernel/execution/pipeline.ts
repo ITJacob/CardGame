@@ -18,8 +18,9 @@ import type { Action, DecisionRequest, ResolvedTarget } from './types'
 export interface PipelineDeps {
   units: Registry
   enemyOf(faction: FactionId): FactionId
-  /** 每个 Action 一个 EffectContext（携带 actionId；卡片语境的 target 求值见 targetScope） */
-  makeContext(actionId: string, caster: CombatUnit, targetScope?: TargetScope): EffectContext
+  /** 每个 Action 一个 EffectContext（携带 actionId；卡片语境的 target 求值见 targetScope；
+   *  sourceRef = 发起该 Action 的卡 id，供 dimHooks 维度乘区读取） */
+  makeContext(actionId: string, caster: CombatUnit, targetScope?: TargetScope, sourceRef?: string): EffectContext
   /** 按 EffectDef id 解析效果节点 */
   effectNode(defId: string): EffectNode | undefined
   emit(e: DomainEvent): void
@@ -171,7 +172,11 @@ function settle(
       }
     }
   }
-  const ctx = deps.makeContext(actionId, caster, cardScope(caster, hit, deps.enemyOf(caster.faction), secondary))
+  const ctx = deps.makeContext(
+    actionId, caster,
+    cardScope(caster, hit, deps.enemyOf(caster.faction), secondary),
+    source.sourceRef,
+  )
   for (const node of source.effects) {
     executeNodes([node], targetUnits, ctx)
   }

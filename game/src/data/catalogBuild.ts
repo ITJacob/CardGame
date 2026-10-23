@@ -197,6 +197,7 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
         flavor: card.flavor,
         tags: card.tags,
         reach: card.reach,
+        dimHooks: card.dimHooks as unknown as SkillDef['dimHooks'],
       }
 
       if (card.kind === 'active' || card.kind === 'weapon' || card.kind === 'summon') {

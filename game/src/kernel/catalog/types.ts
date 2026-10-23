@@ -410,6 +410,18 @@ export interface SummonDef {
   note?: string
 }
 
+/** 维度乘区挂钩（SCHEMA §7）：board 维度达阈值时本卡相关结算乘 mul */
+export interface DimHook {
+  dim: string
+  comparator?: '>=' | '<=' | '>' | '<' | '=='
+  threshold: number
+  mul: number
+  /** damage=输出伤害 / heal=治疗 / all=两者 / cost·resource·rule_strength 暂未接通 */
+  target?: 'damage' | 'damage_taken' | 'heal' | 'resource' | 'rule_strength' | 'cost' | 'all'
+  filterTags?: string[]
+  note?: string
+}
+
 /** 主动技能定义（kind=active / kind=weapon / kind=summon 的卡） */
 export interface SkillDef {
   id: DefId
@@ -446,6 +458,8 @@ export interface SkillDef {
   weapon?: WeaponDef
   /** kind=summon 的卡：打出即落场（结算已合成为 effects 内 spawn 节点；本字段供 UI） */
   summon?: SummonDef
+  /** 维度乘区挂钩：board 维度达阈值时本卡结算乘 mul */
+  dimHooks?: readonly DimHook[]
 }
 
 /** 被动行为模板（kind=passive 的卡） */
@@ -472,6 +486,8 @@ export interface BehaviorTemplate {
   tags?: string[]
   /** 开局自动装备的武器卡 id（kind=weapon） */
   initialEquip?: string
+  /** 维度乘区挂钩：被动触发链结算时乘 mul */
+  dimHooks?: readonly DimHook[]
 }
 
 export interface RulePatch {

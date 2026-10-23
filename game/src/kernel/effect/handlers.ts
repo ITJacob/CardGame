@@ -54,16 +54,17 @@ export function handleDamage(node: EffDamage, target: CombatUnit | null, ctx: Ef
     lethal: node.lethal,
     pierce: node.pierce,
     armorPierceRatio: numeric(node.armorPierceRatio, 0),
+    dimMul: ctx.dimMul?.('damage') ?? 1,
   })
   applyDamageResult(target, result)
   ctx.reportDamage?.(attacker?.faction ?? '', result.final)
   ctx.onDamage?.(attacker ?? null, target, result.final)
 }
 
-export function handleHeal(node: EffHeal, target: CombatUnit | null, _ctx: EffectContext): void {
+export function handleHeal(node: EffHeal, target: CombatUnit | null, ctx: EffectContext): void {
   if (!target || target.isDead) return
   const hp = target.pool('hp')
-  const amount = numeric(node.value, 0)
+  const amount = round2(numeric(node.value, 0) * (ctx.dimMul?.('heal') ?? 1))
   switch (node.mode) {
     case 'setHp':
       hp.setValue(amount)

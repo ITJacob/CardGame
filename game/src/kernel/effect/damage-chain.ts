@@ -23,6 +23,8 @@ export interface DamageInput {
   /** DoT 旁路：只过 ③ 抗性（INV-D4） */
   dot?: boolean
   minDamage?: number
+  /** 行动卡 dimHooks 的维度乘区（进入 ⑤ 乘区段） */
+  dimMul?: number
 }
 
 export interface DamageStage {
@@ -98,6 +100,7 @@ export function resolveDamage(input: DamageInput): DamageResult {
     const before = cur
     cur *= defender.damageTakenMul
     cur *= attacker?.damageDealtMul ?? 1
+    cur *= input.dimMul ?? 1
     const delta = defender.damageTakenBucket + (attacker?.damageDealtBucket ?? 0)
     cur *= Math.max(0, 1 + delta)
     push('multiplier', before, cur)

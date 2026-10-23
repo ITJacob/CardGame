@@ -49,6 +49,8 @@ export interface EffectContext {
   readonly onDamage?: (attacker: CombatUnit | null, defender: CombatUnit, amount: number) => void
   /** 需要触碰战场/注册表的操作（由 runtime 实现） */
   readonly ops: EffectOps
+  /** 当前行动卡的 dimHooks 维度乘区系数（缺省 1；damage / heal / all） */
+  readonly dimMul?: (target: 'damage' | 'heal') => number
 }
 
 /** 原语中需要改动战场或新建单位的操作集合 */

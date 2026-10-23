@@ -134,7 +134,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       lanes: new Map<string, Lane>(laneIds.map((l) => [l, { id: l, slots: Array.from({ length: LANE_CAPACITY }, () => ({ occupant: null })) }])),
     }))
     const clock = ((this.setupData.board.clock.base % 72) + 72) % 72
-    return { factions, zones: [], domains: [], clock, luminance: 0, phase: phaseOf(clock), lumOverride: null, meters: { secrecy: 0, order: 0, fate_value: 0 } }
+    return { factions, zones: [], domains: [], clock, luminance: 0, phase: phaseOf(clock), lumOverride: null, meters: { secrecy: 0, order: 0, fate_value: 0, death_tally: 0 } }
   }
 
   private placeUnits(): void {
@@ -428,7 +428,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     return {
       units: this.units,
       enemyOf: (f) => (f === this.factions[0] ? this.factions[1] : this.factions[0]),
-      makeContext: (actionId, caster, targetScope) => this.makeContext(actionId, caster, undefined, targetScope),
+      makeContext: (actionId, caster, targetScope, sourceRef) => this.makeContext(actionId, caster, undefined, targetScope, sourceRef),
       equipWeapon: (caster, weapon) => this.equipWeapon(caster, weapon),
       effectNode: (id) => this.lookup.effectNode(id),
       emit: (e) => this.emit(e),
@@ -475,6 +475,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     caster: CombatUnit | null,
     opportunity?: OpportunityPayload,
     targetScope?: TargetScope,
+    sourceRef?: string,
   ): EffectContext {
     return {
       units: this.units,
@@ -486,6 +487,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       actionId,
       opportunity,
       targetScope,
+      dimMul: (target) => this.dimHookMul(sourceRef, target),
       warn: (m) => this.warn(m),
       emit: (e) => this.emit(e),
       mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant, caster),
@@ -540,15 +542,59 @@ class CombatRuntime implements CombatRuntimeHandle {
           const next = set ? value : cur + value
           this.battle.meters[key] = Math.max(-10, Math.min(10, round2(next)))
         },
-        meterOf: (key) => this.battle.meters[key] ?? 0,
+        meterOf: (key) => this.dimValue(key),
       },
+    }
+  }
+
+  // ---------- 维度乘区（SCHEMA §7 dimHooks） ----------
+
+  /** 战场维度现值：luminance 走覆写栈，其余读 meters（secrecy / order / fate_value / death_tally） */
+  private dimValue(dim: string): number {
+    if (dim === 'luminance') return this.battle.lumOverride?.value ?? LUM[this.battle.phase]
+    return this.battle.meters[dim] ?? 0
+  }
+
+  /** 行动卡 dimHooks 对指定结算桶的乘区积；同维度多档只取最贴合的一档（微光档不自叠白昼档） */
+  private dimHookMul(cardId: string | undefined, target: 'damage' | 'heal'): number {
+    if (!cardId) return 1
+    const def = this.lookup.skillDef(cardId) ?? this.lookup.behaviorTemplate(cardId)
+    const hooks = def?.dimHooks
+    if (!hooks?.length) return 1
+    const cardTags = def?.tags ?? []
+    const best = new Map<string, { threshold: number; mul: number; cmp: string }>()
+    for (const h of hooks) {
+      if (h.target !== undefined && h.target !== 'all' && h.target !== target) continue
+      if (h.filterTags?.length && !h.filterTags.some((t) => cardTags.includes(t))) continue
+      if (!this.dimCompare(this.dimValue(h.dim), h.comparator ?? '>=', h.threshold)) continue
+      const key = `${h.dim}|${h.target ?? 'damage'}`
+      const prev = best.get(key)
+      const cmp = h.comparator ?? '>='
+      // 同组只保留最极端阈值的一档：>= / > 取更高阈值，<= / < 取更低阈值
+      const better = !prev || (cmp === '<=' || cmp === '<'
+        ? h.threshold < prev.threshold
+        : h.threshold > prev.threshold)
+      if (better) best.set(key, { threshold: h.threshold, mul: h.mul, cmp })
+    }
+    let mul = 1
+    for (const b of best.values()) mul *= b.mul
+    return mul
+  }
+
+  private dimCompare(actual: number, cmp: string, threshold: number): boolean {
+    switch (cmp) {
+      case '<=': return actual <= threshold
+      case '>': return actual > threshold
+      case '<': return actual < threshold
+      case '==': return actual === threshold
+      default: return actual >= threshold
     }
   }
 
   // ---------- P2b-2：界域 / 区域 / 记录 / 重排 / 规则槽 ----------
 
   private opSetLuminance(value: number | null, delta: number | null, duration: number | null, _dispelable: boolean): void {
-    const base = value ?? this.battle.luminance + (delta ?? 0)
+    const base = value ?? this.dimValue('luminance') + (delta ?? 0)
     this.battle.lumOverride = {
       value: Math.max(0, Math.min(10, Math.round(base))),
       duration: duration ?? -1,
@@ -937,6 +983,12 @@ class CombatRuntime implements CombatRuntimeHandle {
       }
     }
     this.timers = keep
+    // 光照覆写：tick 口径计时（-1 = 永续，不自然到期）
+    const lum = this.battle.lumOverride
+    if (lum && lum.duration > 0) {
+      lum.duration -= 1
+      if (lum.duration <= 0) this.battle.lumOverride = null
+    }
     for (const u of this.units.all()) {
       tickRecords(u.damageMods)
       tickRecords(u.manualUntargetable)
@@ -987,13 +1039,13 @@ class CombatRuntime implements CombatRuntimeHandle {
     if (!onlyDefId && unit.weapon) {
       const wdef = this.lookup.skillDef(unit.weapon.defId)?.weapon
       const scope = this.scopeFor(unit, undefined, subjects, opportunity)
-      this.fireTriggers(unit, event, wdef?.triggers, unit, opportunity, scope)
+      this.fireTriggers(unit, event, wdef?.triggers, unit, opportunity, scope, false, undefined, undefined, unit.weapon.defId)
     }
     // 被动卡（无 onlyDefId 时全部参与）
     if (!onlyDefId) {
       for (const p of unit.passives) {
         const scope = this.scopeFor(unit, undefined, subjects, opportunity)
-        this.fireTriggers(unit, event, p.triggers, unit, opportunity, scope)
+        this.fireTriggers(unit, event, p.triggers, unit, opportunity, scope, false, undefined, undefined, p.defId)
       }
     }
   }
@@ -1010,20 +1062,20 @@ class CombatRuntime implements CombatRuntimeHandle {
       if (host.weapon) {
         const wdef = this.lookup.skillDef(host.weapon.defId)?.weapon
         const scope = this.scopeFor(host, undefined, { ...subjects, target: subject })
-        this.fireTriggers(host, event, wdef?.triggers, host, undefined, scope, true, subject)
+        this.fireTriggers(host, event, wdef?.triggers, host, undefined, scope, true, subject, undefined, host.weapon.defId)
       }
       for (const p of host.passives) {
         const scope = this.scopeFor(host, undefined, { ...subjects, target: subject })
-        this.fireTriggers(host, event, p.triggers, host, undefined, scope, true, subject)
+        this.fireTriggers(host, event, p.triggers, host, undefined, scope, true, subject, undefined, p.defId)
       }
     }
   }
 
-  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, targetScope?: TargetScope, globalPass = false, conditionTarget?: CombatUnit | null, ownerInstance?: StatusInstance): void {
+  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, targetScope?: TargetScope, globalPass = false, conditionTarget?: CombatUnit | null, ownerInstance?: StatusInstance, originCardId?: string): void {
     for (const t of triggers ?? []) {
       if (t.event !== event) continue
       if ((t.global === true) !== globalPass) continue
-      const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity, targetScope)
+      const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity, targetScope, originCardId)
       // P2a：触发器级 condition 先在全局监听上接线；非全局触发器的条件评估待 side 口径统一
       if (globalPass && t.condition && !checkCondition(t.condition, conditionTarget ?? targetScope?.targets[0] ?? unit, ctx, targetScope?.caster ?? null)) continue
       executeNodes(t.effects ?? [], [unit], ctx)
@@ -1049,6 +1101,8 @@ class CombatRuntime implements CombatRuntimeHandle {
       this.dead.add(u.id)
       this.emit({ type: 'UnitDied', unitId: u.id })
       this.stats.unitsLost[u.faction] = (this.stats.unitsLost[u.faction] ?? 0) + 1
+      // 死亡簿维度（源质维度 §一点五）：任何单位走完死亡结算链 +1，cap 10
+      this.battle.meters.death_tally = Math.min(10, (this.battle.meters.death_tally ?? 0) + 1)
       // 战意：击杀不再默认产层——击杀产层由被动卡 on_kill 载荷附加（带 ignoreWarSpiritCap）
       const killerId = this.lastAttacker.get(u.id)
       const killer = killerId ? this.units.get(killerId) : undefined

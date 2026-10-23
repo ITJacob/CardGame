@@ -266,7 +266,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| `dim` | `secrecy`\|`order`\|`fate_value`\|`luminance` | 挂钩的战场维度（闭枚举） |
+| `dim` | `secrecy`\|`order`\|`fate_value`\|`luminance`\|`death_tally` | 挂钩的战场维度（闭枚举；death_tally 见 `源质维度与跨系枢纽.md` §一点五） |
 | `comparator` | `>=`\|`<=`\|`>`\|`<`\|`==` | 阈值比较符，默认 `>=` |
 | `threshold` | number | 触发阈值，须在维度值域内（secrecy/order/luminance ∈ [0,10]、fate_value ∈ [−10,10]） |
 | `mul` | number>0 | 乘区系数；单卡建议 0.8–1.5，超限需 `note` 说明（2026-10-01 乘区审批批 182 项全量过堂） |
@@ -275,6 +275,8 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `note` | string | 口径说明，mul 超限或非常规时必填 |
 
 Gate（validate.py）：`dim` 须为已注册维度、`threshold` 须在值域内、`mul>0`；`mul` 越出 0.8–1.5 给出非阻断告警（平衡期再收紧）。
+
+档位语义：同一张卡在同 `dim` + 同 `target` 上声明多档（如白昼 ≥8 ×1.2 / 微光 ≥5 ×1.1）时，只取**命中档中最贴合的一档**（`>=`/`>` 取阈值最高者，`<=`/`<` 取阈值最低者），**不自叠**；不同 `dim` 或不同 `target` 的档各自成组，结果相乘。
 
 > 维度本身是全局标量，不在此 per-pathway schema 内重复定义；本字段只声明「哪张卡在哪维度达阈值时放大什么」。维度注册表（range/tier）以 ddd 散文为权威源。
 
