@@ -182,7 +182,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `target_override` | `faction` `anchor` `sort` | |
 | `transfer_status` | `mode`(copy/rewrite) `mapping` `fallback`(effect[]) | |
 | `snapshot` / `restore_snapshot` | `fields` | 成对使用 |
-| `echo_last_skill` | `potency` `rounding` | 权柄技能不可被重放 |
+| `echo_last_skill` | `potency` `rounding` `target` | 权柄技能不可被重放；`target` 指定回响主体（2026-10-23 E3 借序：target 指向敌方即借对手最近动作；缺省=施法者自身） |
 | `gauge_shuffle` / `status_shuffle` | `resource` / `mode` `sort` | |
 | `modify_skill` | `skillRef`(selector/by_id) `clearCooldown` `costDelta` `setInstant` `targetSpecOverride` `setOpportunity` | **行为层修改（一）**：改写技能实例运行时属性——清冷却 / 改施法消耗 / 吟唱转瞬发 / **完整改写 TargetSpec**（对齐 DDD：可改技能全部选靶属性，而非仅范围；`targetSpecOverride` 为对象，给出 selectionMode+request 全字段，未给出的沿用原值，2026-09-17 拍板补原缺口，2026-09-20 升级为完整 TargetSpec 补丁）；`setOpportunity: 0` 改写行动机会成本（不消耗机会，需 `skillRef.by_id` 精确指定） |
 | `modify_status` | `statusId` `target` `addDuration` `setDuration` `maxStacksDelta` `dispelableOverride` `restoreCharges` `chargesDelta` | **行为层修改（二）**：改写已存在状态实例的持续 / 最大可叠加层数 / 可驱散性 / 剩余次数（区别于 mount_status 施加新状态）。2026-09-17 拍板；武器耐久改由 `modify_weapon` 处理 |

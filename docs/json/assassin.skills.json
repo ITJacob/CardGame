@@ -13,12 +13,14 @@
       "statusId": "mirror_substitute",
       "enablers": [
         "镜子替身",
-        "魔镜占卜"
-      ],
-      "payoffs": [
+        "镜映",
         "镜中世界"
       ],
-      "note": "2026-09-29 环节⑤：魔镜占卜补 mirror_substitute 产层段（产层 12→20）；镜中世界读 mirror_substitute 升 landed（读层 4→9） ｜ 2026-10-02 批次七：镜中拉入 translocate 原语化——镜中囚禁/镜中世界 detached 化（mirrored 状态退役），translocate 签名 0→2 实证；rank_gap 谓词第三实证 ｜ 2026-10-03 骨架手术：镜形状换形 35 张（详见 designNote）"
+      "payoffs": [
+        "镜中囚禁",
+        "混沌漩涡"
+      ],
+      "note": "2026-10-23 E3 借序重构：镜轴主轴改为镜映借序——记录对手动作（borrowed_step），用回响原语重放；替身降为防御组件。"
     },
     "charm": {
       "symbol": "💋",
@@ -26,12 +28,13 @@
       "statusId": "charm_axis",
       "enablers": [
         "魅惑",
-        "激化矛盾"
+        "借势"
       ],
       "payoffs": [
-        "反复魅惑"
+        "反复魅惑",
+        "魅力权柄"
       ],
-      "note": " ｜ 2026-10-03 骨架手术：镜形状换形 35 张（详见 designNote）"
+      "note": "2026-10-23 E3：魅轴改为诱导出招（借势/激化），提高镜子里有招可借的概率。"
     },
     "plague": {
       "symbol": "🦠",
@@ -44,7 +47,7 @@
       "payoffs": [
         "末日"
       ],
-      "note": "2026-09-29 环节⑤：黑焰补 disease 产层段（产层 12→20）；末日读 disease 升 landed（读层 4→9）；末日挂 charm_axis/doom 自动成跨轴消费 ｜ 2026-10-02 批次七：末日补 witch_form 跨轴读层、命运诅咒补 fate_value 跨系读层 ｜ 2026-10-03 骨架手术：镜形状换形 35 张（详见 designNote）"
+      "note": "2026-10-23 E3：疫病轴保留铺场与爆发；位移模板收敛后更聚焦。"
     },
     "form": {
       "symbol": "🎭",
@@ -58,7 +61,7 @@
       "payoffs": [
         "原初·静止"
       ],
-      "note": "2026-09-29 环节⑤：assassin_form 补层数引擎（身份 8→15）；三形态卡各补产层段（原 enablers 均未实证，产层 5→20）；原初·静止读 assassin_form 升 landed + 跨轴读 mirror_substitute（form→mirror）；影形态读 conceal_authority 跨系（→sleepless）；石化读 puppet_string 跨系（→seer） ｜ 2026-10-03 骨架手术：镜形状换形 35 张（详见 designNote）"
+      "note": "2026-10-23 E3：形态轴保留三形态；发刃读借来的动作追加伤害。"
     }
   },
   "cards": [
@@ -256,9 +259,11 @@
         "selectionMode": "manual",
         "request": {
           "mode": "unit",
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
         },
-        "fallbackSort": "hp_desc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -368,7 +373,8 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "point"
+          "scope": "point",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -402,6 +408,15 @@
           "mode": "delta",
           "target": "self",
           "note": "镜穿梭的租金：迷失值 +1"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "魅惑的代价：自身防御 -1"
         }
       ],
       "sharedAcross": [
@@ -498,7 +513,8 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "point"
+          "scope": "whole_lane",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -687,10 +703,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "diamond_1",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_desc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -728,6 +744,15 @@
           "mode": "delta",
           "target": "self",
           "note": "镜穿梭的租金：迷失值 +1"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "黑焰的代价：自身攻击 -1"
         }
       ],
       "upgradeLadder": {
@@ -811,7 +836,7 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "diamond_1",
+          "scope": "point",
           "pickCount": 1
         },
         "fallbackSort": "gauge_desc"
@@ -843,6 +868,33 @@
           "mode": "delta",
           "target": "self",
           "note": "镜穿梭的租金：迷失值 +1"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "冰霜的代价：自身防御 -1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "charm_axis"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "ice",
+              "value": 1,
+              "note": "魅惑目标心神不稳：追加 1 点冰霜"
+            }
+          ],
+          "else": [],
+          "note": "跨轴读层：charm"
         }
       ],
       "sharedAcross": [
@@ -1273,10 +1325,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "diamond_1",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_desc"
+        "fallbackSort": "buff_count_desc"
       },
       "effects": [
         {
@@ -1291,6 +1343,15 @@
           "duration": 3,
           "direction": "enemy_targeted",
           "note": "镜替身：以替身承接下来的指向"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "播疫的代价：自身防御 -1"
         }
       ],
       "upgradeLadder": {
@@ -1351,6 +1412,27 @@
           "duration": 3,
           "direction": "enemy_targeted",
           "note": "镜像放逐（改为「镜替身」：不加位移、不付迷失租金）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "charm_axis",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_status",
+              "statusId": "charm_axis",
+              "stacksDelta": -1,
+              "target": "target",
+              "note": "反复魅惑：消耗 1 层魅惑"
+            }
+          ],
+          "else": [],
+          "note": "读层：charm_axis（耗层）"
         }
       ],
       "tentative": false,
@@ -1462,7 +1544,7 @@
       "flagship": false,
       "lore": "序列5 痛苦 —— \"操纵头发为武器\"",
       "flavor": "你的发丝骤然暴长，如数十根钢针同时贯穿它的身体。",
-      "describe": "以发丝连刺一名敌人 3 次，每次 2 点物理伤害；末段使其易伤 10tick（受伤 ×1.3）。；出手即把目标拽进镜面一瞬，再原样放回。",
+      "describe": "以发丝连刺一名敌人 3 次，每次 2 点物理伤害；末段使其易伤 10tick（受伤 ×1.3）。；出手即把目标拽进镜面一瞬，再原样放回。；自身带借来的动作时追加伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 20,
@@ -1473,7 +1555,9 @@
         "selectionMode": "manual",
         "request": {
           "mode": "unit",
-          "faction": "enemy"
+          "faction": "enemy",
+          "scope": "whole_lane",
+          "pickCount": 1
         },
         "fallbackSort": "hp_desc"
       },
@@ -1510,6 +1594,54 @@
           "mode": "delta",
           "target": "self",
           "note": "镜穿梭的租金：迷失值 +1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "borrowed_step",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 1,
+              "target": "target",
+              "note": "借序：发刃追加 1 点"
+            }
+          ],
+          "else": [],
+          "note": "读层：borrowed_step"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "发刃的代价：自身防御 -1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "assassin_form"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 1,
+              "note": "发刃：形态在场追加 1 点"
+            }
+          ],
+          "else": [],
+          "note": "读层：assassin_form"
         }
       ],
       "tentative": false,
@@ -1898,7 +2030,7 @@
       "flagship": false,
       "lore": "序列3 不老 —— \"可强制拉人/房屋/街道入镜中世界\"",
       "flavor": "你把它拽进镜子里。外面的人看不见它，它也碰不到外面的世界——等它跌出来的时候，这里已经打完了。",
-      "describe": "位格判定后把一名敌人拉入镜中世界 15tick（translocate detached：不可选中、不能行动、免疫伤害、不参与行动排序，到期跌回原坐标）；位格低于你必定成功且目标无察觉，位格不低于你时基础 40% 成功率（眩晕/冰冻/虚弱 +35%、狂乱/失控 +20%、Boss −20%）。迷失 +0.5。",
+      "describe": "位格判定后把一名敌人拉入镜中世界 15tick（translocate detached：不可选中、不能行动、免疫伤害、不参与行动排序，到期跌回原坐标）；位格低于你必定成功且目标无察觉，位格不低于你时基础 40% 成功率（眩晕/冰冻/虚弱 +35%、狂乱/失控 +20%、Boss −20%）。迷失 +0.5。；自身带借来的动作时追加伤害。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1970,6 +2102,36 @@
           "mode": "delta",
           "target": "self",
           "note": "拉入范式迷失租金 +0.5（向上取整累计）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "borrowed_step",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 3,
+              "target": "target",
+              "note": "借序：镜中囚禁追加 3 点"
+            }
+          ],
+          "else": [],
+          "note": "读层：borrowed_step"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "囚禁的代价：自身攻击 -1"
         }
       ],
       "tentative": false,
@@ -2008,13 +2170,14 @@
       },
       "reach": "none",
       "target": {
-        "selectionMode": "auto",
+        "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "diamond_1",
-          "pickCount": "all"
-        }
+          "scope": "whole_lane",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_desc"
       },
       "effects": [
         {
@@ -2206,10 +2369,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "diamond_1",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "buff_count_desc"
+        "fallbackSort": "armor_desc"
       },
       "effects": [
         {
@@ -2318,13 +2481,14 @@
       },
       "reach": "none",
       "target": {
-        "selectionMode": "auto",
+        "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "scope": "diamond_1",
-          "pickCount": "all"
-        }
+          "scope": "point",
+          "pickCount": 1
+        },
+        "fallbackSort": "debuff_count_desc"
       },
       "effects": [
         {
@@ -2406,6 +2570,15 @@
           "mode": "delta",
           "target": "self",
           "note": "镜穿梭的租金：迷失值 +1"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 15,
+          "note": "末日的代价：自身攻击 -1"
         }
       ],
       "tentative": false,
@@ -2474,6 +2647,26 @@
           "duration": 3,
           "direction": "enemy_targeted",
           "note": "镜替身：以替身承接下来的指向"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "charm_axis",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "self",
+              "note": "魅力权柄：魅层 ≥2 时回复 2 点"
+            }
+          ],
+          "else": [],
+          "note": "读层：charm_axis"
         }
       ],
       "tentative": false,
@@ -2501,7 +2694,7 @@
       "flagship": true,
       "lore": "序列0 魔女 —— \"混沌权柄（核心）：万物归于混沌，漩涡融化事物为未发生的可能性\"",
       "flavor": "你掀开一个漩涡。它身上的祝福被抹平，而它挥出的那两刀——从来就没有发生过。",
-      "describe": "抹平一名敌人的全部增益（万物归于混沌），并使其接下来的 2 次攻击不产生任何效果（被融化成\"未发生的可能性\"）。；得手后留下替身承接指向。",
+      "describe": "抹平一名敌人的全部增益（万物归于混沌），并使其接下来的 2 次攻击不产生任何效果（被融化成\"未发生的可能性\"）。；得手后留下替身承接指向。；自身带借来的动作时追加伤害。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2545,6 +2738,54 @@
           "duration": 3,
           "direction": "enemy_targeted",
           "note": "镜替身：以替身承接下来的指向"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "borrowed_step",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 2,
+              "target": "target",
+              "note": "借序：混沌漩涡追加 2 点"
+            }
+          ],
+          "else": [],
+          "note": "读层：borrowed_step"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "漩涡的代价：自身防御 -1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "charm_axis"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 1,
+              "note": "魅惑目标被卷入漩涡：追加 1 点"
+            }
+          ],
+          "else": [],
+          "note": "跨轴读层：charm"
         }
       ],
       "tentative": false,
@@ -2572,7 +2813,7 @@
       "flagship": false,
       "lore": "序列0 魔女 —— \"镜中世界权柄\"",
       "flavor": "你抬起手，整片战场被折进镜子里。敌人伸手碰不到任何人，而你的同伴，从每一面镜子中同时走了出来。",
-      "describe": "吟唱 2 tick 后降临「镜中世界」2 回合：敌方单位持续不可选中、不可行动、免疫伤害；我方「镜像/替身」标签卡 ×2、敌方「光/净化」标签卡削弱；我方登场/复活从镜像位置出现。入场瞬间：全体敌人被拉入镜中 5tick（translocate），全体友军行动条 +20。自身迷失值 +1。；自身带镜子替身则镜替呼应，全体敌人再被拉入镜中 10tick。",
+      "describe": "吟唱 2 tick 后降临「镜中世界」2 回合：敌方单位持续不可选中、不可行动、免疫伤害；我方「镜像/替身」标签卡 ×2、敌方「光/净化」标签卡削弱；我方登场/复活从镜像位置出现。入场瞬间：全体敌人被拉入镜中 5tick（translocate），全体友军行动条 +20。自身迷失值 +1。；自身带镜子替身则镜替呼应，全体敌人再被拉入镜中 10tick。；自身带借来的动作时，消耗 1 层并用镜子重放对手最近一次技能（60% 强度）。",
       "cost": {
         "energy": 7,
         "cooldown": 40,
@@ -2650,6 +2891,34 @@
               "else": []
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "borrowed_step",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "borrowed_step",
+              "target": "self",
+              "stacks": -1,
+              "stackMode": "consume",
+              "note": "借序：消耗 1 层借来的动作"
+            },
+            {
+              "type": "echo_last_skill",
+              "potency": 0.6,
+              "target": "target",
+              "note": "镜映重放：借对手最近一次技能再放一次（potency 0.6）"
+            }
+          ],
+          "else": [],
+          "note": "读层：borrowed_step"
         }
       ],
       "domain": {
@@ -2853,6 +3122,27 @@
           "duration": 3,
           "direction": "enemy_targeted",
           "note": "镜像放逐（改为「镜替身」：不加位移、不付迷失租金）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "borrowed_step"
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "duration": 20,
+              "target": "self",
+              "note": "借来的动作塑形：攻击 +1（20tick）"
+            }
+          ],
+          "else": [],
+          "note": "跨轴读层：mirror"
         }
       ],
       "tentative": false,
@@ -2867,7 +3157,8 @@
         "request": {
           "mode": "unit",
           "faction": "self",
-          "scope": "point"
+          "scope": "point",
+          "pickCount": 1
         }
       },
       "dimHooks": [
@@ -2941,7 +3232,8 @@
         "request": {
           "mode": "unit",
           "faction": "self",
-          "scope": "point"
+          "scope": "point",
+          "pickCount": 1
         }
       },
       "art": {
@@ -3005,7 +3297,8 @@
         "request": {
           "mode": "unit",
           "faction": "self",
-          "scope": "point"
+          "scope": "point",
+          "pickCount": 1
         }
       },
       "art": {
@@ -3018,6 +3311,205 @@
         "mood": "vital, predatory"
       },
       "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 5→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：镜形状换形（角色=buff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 选靶签名：form轴 self+point（轴选靶签名设计 §4）"
+    },
+    {
+      "id": "skill_assassin_s6_mirror_capture",
+      "name": "镜映",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "欢愉",
+      "rarity": "uncommon",
+      "role": "core",
+      "axis": "mirror",
+      "flagship": false,
+      "lore": "序列6 —— \"『镜映』：它动一下，镜子记一下。\"",
+      "flavor": "你举起镜子。镜面里那个影子正在出招——现在你也有了。",
+      "describe": "对一名敌人造成 2 点暗元素伤害，并记录它的一次动作（借来的动作 1 层，30tick）。代价：自身防御 -1（10tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 15,
+        "castTime": 0
+      },
+      "reach": "melee",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
+        },
+        "fallbackSort": "atk_desc"
+      },
+      "effects": [
+        {
+          "type": "damage",
+          "element": "dark",
+          "value": 2,
+          "target": "target"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "borrowed_step",
+          "target": "self",
+          "duration": 30,
+          "stacks": 1,
+          "stackMode": "add",
+          "note": "镜映：把对手的动作记进镜子（借来的动作 +1 层）"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "举镜的代价：自身防御 -1"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 E3 借序重构新增：借来的动作首要施加方（对敌镜映）。与回响原语组合即“借对手动作”。",
+      "art": {
+        "subject": "a mirror catching an enemy mid-strike",
+        "elements": [
+          "mirror surface",
+          "recorded strike",
+          "cold reflected light"
+        ],
+        "mood": "watchful"
+      }
+    },
+    {
+      "id": "skill_assassin_s7_lure_step",
+      "name": "借势",
+      "kind": "active",
+      "sequence": 7,
+      "sequenceName": "女巫",
+      "rarity": "uncommon",
+      "role": "core",
+      "axis": "charm",
+      "flagship": false,
+      "lore": "序列7 —— \"『借势』：先递个台阶，等它自己往下走。\"",
+      "flavor": "你笑着退了一步。它以为占了上风，立刻追上来——正好进了你的镜子。",
+      "describe": "对一名敌人施加诱惑：攻击 +2（10tick，诱它出招）并记录它两次动作（借来的动作 2 层，30tick）。代价：自身行动条 -5。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_desc"
+      },
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "target": "target",
+          "duration": 10,
+          "note": "递台阶：诱使目标出招，攻击 +2（10tick）"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "borrowed_step",
+          "target": "self",
+          "duration": 30,
+          "stacks": 2,
+          "stackMode": "add",
+          "note": "借势：诱来的动作 2 层"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -5,
+          "mode": "delta",
+          "target": "self",
+          "note": "借势的代价：自身行动条 -5"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 E3 借序重构新增：诱导型施加方（让对手愿意出招），与镜映形成「先诱后映」的次序。",
+      "art": {
+        "subject": "an assassin stepping back as a foe lunges into a waiting mirror",
+        "elements": [
+          "retreating step",
+          "lunging foe",
+          "still mirror"
+        ],
+        "mood": "deceptive"
+      }
+    },
+    {
+      "id": "skill_assassin_s7_mirror_afterimage",
+      "name": "镜面残像",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "女巫",
+      "rarity": "uncommon",
+      "role": "generic",
+      "axis": "mirror",
+      "flagship": false,
+      "lore": "序列7 —— \"『镜面残像』：镜子记下的画面，不会自己消失。\"",
+      "flavor": "镜面上还留着它的影子。你看一眼，就知道它下一步会怎么动。",
+      "describe": "战斗开始时获得镜面残像：自身防御 +1（整场）；对带借来的动作的目标伤害 +1。",
+      "hook": [
+        "on_battle_start"
+      ],
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "borrowed_step"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "dark",
+                  "value": 1,
+                  "target": "target",
+                  "note": "镜面残像：借来的动作在场时追加 1"
+                }
+              ],
+              "else": [],
+              "note": "读层：borrowed_step"
+            }
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 1,
+          "mode": "delta",
+          "target": "self",
+          "note": "镜面残影：防御 +1"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 E3 重构新增：补被动结构（主被动比 2.82），借序读层。",
+      "art": {
+        "subject": "a fading afterimage trapped on a mirror surface",
+        "elements": [
+          "fading reflection",
+          "silver surface"
+        ],
+        "mood": "haunting"
+      }
     }
   ],
   "unitDefs": [
@@ -3141,7 +3633,7 @@
       ]
     }
   ],
-  "designNote": "> **替身枢纽维度（灾祸之城系 §2.2 / 总览 §3）**：`替身` 是跨**三源质**的枢纽状态（刺客镜替身 / 占卜家纸人替身 / 律师替身定义），在 `StatusDef` 标 `crossPathway:true` + 参与途径白名单。刺客经【镜子替身】【镜面替身·改】写入 `替身`，源堡/失序之国可读写。另 黑焰/地狱之火 ↔ 永暗之河 收尸人「亡灵」（见 §三 死灵黑焰）；命运诅咒 ↔ 光之钥「命运」（见 §三 命运枢纽）。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「镜形状」句式换形 35 张通用骨架卡——输出/位移/取用增益一律走「镜」——输出把目标拽入镜面一瞬，得手后留下替身承接指向，取用增益先藏入镜中再踏出；不正面站撸，也不让你瞄到真身。**协作面**：替身可承接打到友军身上的指向。",
+  "designNote": "> **替身枢纽维度（灾祸之城系 §2.2 / 总览 §3）**：`替身` 是跨**三源质**的枢纽状态（刺客镜替身 / 占卜家纸人替身 / 律师替身定义），在 `StatusDef` 标 `crossPathway:true` + 参与途径白名单。刺客经【镜子替身】【镜面替身·改】写入 `替身`，源堡/失序之国可读写。另 黑焰/地狱之火 ↔ 永暗之河 收尸人「亡灵」（见 §三 死灵黑焰）；命运诅咒 ↔ 光之钥「命运」（见 §三 命运枢纽）。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「镜形状」句式换形 35 张通用骨架卡——输出/位移/取用增益一律走「镜」——输出把目标拽入镜面一瞬，得手后留下替身承接指向，取用增益先藏入镜中再踏出；不正面站撸，也不让你瞄到真身。**协作面**：替身可承接打到友军身上的指向。 ｜ 2026-10-23 E3 借序重构：borrowed_step 入池、镜映/借势新增、位移模板收敛、代价与选靶补足。",
   "sampleBuilds": [
     {
       "name": "A 镜中替身 🪞",

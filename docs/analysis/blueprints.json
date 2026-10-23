@@ -2832,9 +2832,9 @@
   {
    "id": "assassin",
    "name": "刺客",
-   "state": "回溯补登",
-   "date": "2026-10-21",
-   "score": 95,
+   "state": null,
+   "date": "环节⑥拍板",
+   "score": 94,
    "scoreParts": {
     "命题": 10,
     "风格边界": 15,
@@ -2842,7 +2842,7 @@
     "决策点": 10,
     "签名键": 13,
     "角色配比": 15,
-    "钩子": 7
+    "钩子": 6
    },
    "deductions": [
     {
@@ -2851,13 +2851,13 @@
     },
     {
      "dim": "钩子",
-     "why": "跨轴钩子 2 条（须 ≥3，或显式声明无）"
+     "why": "跨轴钩子 facet 词表外：status:write"
     }
    ],
    "proposition": {
-    "statement": "替身换位不站撸——输出必带替身/拉入/换位其一：用镜子把「被打」变成「打错」",
-    "variable": "替身放置位置与数量、换位时机（何时真身进场收割）",
-    "cost": "替身被拆或换位失误则真身暴露吃满伤害；镜系被驱散则整套节奏断档"
+    "statement": "镜映借序——不自己搭位移链，而是盯住对手最近一次出招，用镜子借来再放一次；诱导对手出什么招，是刺客的核心决策",
+    "variable": "记谁的动作（镜映单体 / 借势诱导）、何时兑现（消耗借来的动作重放）、用什么手段逼对手出招",
+    "cost": "对手不施法则镜中为空；借来的招打回自己人；镜子被拆或借来的动作被驱散"
    },
    "style": {
     "signature": "镜中世界（translocate 拉入 + ice/dark）",
@@ -2867,9 +2867,101 @@
      "驱散",
      "位移"
     ],
-    "redline": "途径设计身份.md 刺客身份卡：镜子必须与 glass/mirror 语义绑定（替身/拉入/穿梭三选一）；不走正面站撸（输出须带闪避/替身/换位其一）"
+    "redline": "途径设计身份.md 刺客身份卡：镜子必须与 glass/mirror 语义绑定；借序必须借「对手的动作」而非自排序列（与学徒 E2、水手 E1 划界）"
    },
    "axes": [
+    {
+     "id": "mirror",
+     "name": "镜",
+     "symbol": "🪞",
+     "anchor": {
+      "kind": "status",
+      "id": "mirror_substitute + status:borrowed_step",
+      "raw": "status:mirror_substitute + status:borrowed_step"
+     },
+     "loop": {
+      "produce": "镜子替身/镜映/镜中世界产借来的动作",
+      "consume": "镜中囚禁/混沌漩涡/镜中世界消耗重放",
+      "clear": "借来的动作被消耗、替身被拆或镜碎",
+      "produceCards": [
+       {
+        "name": "镜子替身",
+        "id": "skill_assassin_s7_mirror_substitute"
+       },
+       {
+        "name": "镜映",
+        "id": "skill_assassin_s6_mirror_capture"
+       },
+       {
+        "name": "镜中世界",
+        "id": "skill_assassin_s0_mirror_world"
+       }
+      ],
+      "consumeCards": [
+       {
+        "name": "镜中囚禁",
+        "id": "skill_assassin_s3_mirror_prison"
+       },
+       {
+        "name": "混沌漩涡",
+        "id": "skill_assassin_s0_chaos_vortex"
+       },
+       {
+        "name": "镜中世界",
+        "id": "skill_assassin_s0_mirror_world"
+       }
+      ]
+     },
+     "decision": "记谁的动作、何时消耗重放、借来的招打谁",
+     "signatures": [
+      {
+       "key": "prim:translocate",
+       "slots": [
+        {
+         "name": "力量爆发于一击",
+         "id": "skill_assassin_s9_burst_strike"
+        },
+        {
+         "name": "魅惑",
+         "id": "skill_assassin_s8_charm"
+        },
+        {
+         "name": "黑焰",
+         "id": "skill_assassin_s7_black_flame"
+        }
+       ],
+       "empirical": 11,
+       "ok": true
+      }
+     ],
+     "planCards": 10,
+     "roleMixDeclared": {
+      "core": 6,
+      "generic": 2,
+      "bridge": 1,
+      "starter": 1
+     },
+     "actual": {
+      "cards": 10,
+      "roleMix": {
+       "core": 6,
+       "generic": 3,
+       "bridge": 1
+      },
+      "anchorMatch": true,
+      "enablers": [
+       "镜子替身",
+       "镜映",
+       "镜中世界"
+      ],
+      "payoffs": [
+       "镜中囚禁",
+       "混沌漩涡"
+      ],
+      "payoffsNotes": [],
+      "axisScore": 83.0
+     }
+    },
     {
      "id": "charm",
      "name": "魅",
@@ -2881,7 +2973,7 @@
      },
      "loop": {
       "produce": "魅惑/激化矛盾产层",
-      "consume": "反复魅惑读层消费",
+      "consume": "反复魅惑/魅力权柄读层消费",
       "clear": "层数被消费或目标清醒清除",
       "produceCards": [
        {
@@ -2897,32 +2989,37 @@
        {
         "name": "反复魅惑",
         "id": "skill_assassin_s5_repeated_charm"
+       },
+       {
+        "name": "魅力权柄",
+        "id": "skill_assassin_s1_charm_authority"
        }
       ]
      },
-     "decision": "魅惑对象选择：魅谁、激化哪对矛盾",
+     "decision": "魅谁、怎么逼对手出招（诱它攻击/施法）",
      "signatures": [],
-     "planCards": 7,
+     "planCards": 8,
      "roleMixDeclared": {
       "core": 5,
-      "starter": 2
+      "starter": 2,
+      "generic": 1
      },
      "actual": {
-      "cards": 7,
+      "cards": 8,
       "roleMix": {
-       "core": 5,
+       "core": 6,
        "starter": 2
       },
       "anchorMatch": true,
       "enablers": [
-       "魅惑",
-       "激化矛盾"
+       "魅惑"
       ],
       "payoffs": [
-       "反复魅惑"
+       "反复魅惑",
+       "魅力权柄"
       ],
       "payoffsNotes": [],
-      "axisScore": 78.0
+      "axisScore": 86.6
      }
     },
     {
@@ -2935,18 +3032,10 @@
       "raw": "status:assassin_form"
      },
      "loop": {
-      "produce": "影形态/雾形态/血形态产层",
-      "consume": "原初·静止读层消费",
+      "produce": "影/雾/血形态产层",
+      "consume": "原初·静止/发刃读层消费",
       "clear": "形态切换或被驱散清除",
       "produceCards": [
-       {
-        "name": "影形态",
-        "id": "skill_assassin_s6_form_shadow"
-       },
-       {
-        "name": "雾形态",
-        "id": "skill_assassin_s2_form_mist"
-       },
        {
         "name": "血形态",
         "id": "skill_assassin_s1_form_blood"
@@ -2956,6 +3045,10 @@
        {
         "name": "原初·静止",
         "id": "skill_assassin_s0_primal_stillness"
+       },
+       {
+        "name": "发刃",
+        "id": "skill_assassin_s5_hair_blades"
        }
       ]
      },
@@ -2984,64 +3077,7 @@
        "原初·静止"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.0
-     }
-    },
-    {
-     "id": "mirror",
-     "name": "镜",
-     "symbol": "🪞",
-     "anchor": {
-      "kind": "status",
-      "id": "mirror_substitute",
-      "raw": "status:mirror_substitute"
-     },
-     "loop": {
-      "produce": "镜子替身/魔镜占卜产层",
-      "consume": "镜中世界读层消费",
-      "clear": "替身被拆或镜碎清除",
-      "produceCards": [
-       {
-        "name": "镜子替身",
-        "id": "skill_assassin_s7_mirror_substitute"
-       },
-       {
-        "name": "魔镜占卜",
-        "id": "skill_assassin_s7_mirror_divination"
-       }
-      ],
-      "consumeCards": [
-       {
-        "name": "镜中世界",
-        "id": "skill_assassin_s0_mirror_world"
-       }
-      ]
-     },
-     "decision": "替身放置与启用：替身摆哪、何时用替身承伤",
-     "signatures": [],
-     "planCards": 8,
-     "roleMixDeclared": {
-      "core": 5,
-      "generic": 2,
-      "bridge": 1
-     },
-     "actual": {
-      "cards": 8,
-      "roleMix": {
-       "core": 5,
-       "generic": 2,
-       "bridge": 1
-      },
-      "anchorMatch": true,
-      "enablers": [
-       "镜子替身",
-       "魔镜占卜"
-      ],
-      "payoffs": [
-       "镜中世界"
-      ],
-      "payoffsNotes": [],
-      "axisScore": 86.3
+      "axisScore": 83.2
      }
     },
     {
@@ -3074,27 +3110,8 @@
        }
       ]
      },
-     "decision": "疫病铺场次序与爆发时机：先铺疫再黑焰引爆，还是黑焰开路",
+     "decision": "疫病铺场次序与爆发时机",
      "signatures": [
-      {
-       "key": "prim:translocate",
-       "slots": [
-        {
-         "name": "力量爆发于一击",
-         "id": "skill_assassin_s9_burst_strike"
-        },
-        {
-         "name": "魅惑",
-         "id": "skill_assassin_s8_charm"
-        },
-        {
-         "name": "黑焰",
-         "id": "skill_assassin_s7_black_flame"
-        }
-       ],
-       "empirical": 11,
-       "ok": true
-      },
       {
        "key": "elem:ice",
        "slots": [
@@ -3127,8 +3144,8 @@
          "placeholder": true
         }
        ],
-       "empirical": 1,
-       "ok": false
+       "empirical": 6,
+       "ok": true
       }
      ],
      "planCards": 9,
@@ -3155,7 +3172,7 @@
        "末日"
       ],
       "payoffsNotes": [],
-      "axisScore": 84.9
+      "axisScore": 85.4
      }
     }
    ],
@@ -3191,6 +3208,134 @@
      "purpose": "读镜替身层数归一入静止",
      "ok": true,
      "reason": ""
+    },
+    {
+     "slot": "镜中世界",
+     "slots": [
+      {
+       "name": "镜中世界",
+       "id": "skill_assassin_s0_mirror_world"
+      }
+     ],
+     "slotId": "skill_assassin_s0_mirror_world",
+     "axis": "mirror",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "消耗借来的动作，重放对手最近技能",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "镜中囚禁",
+     "slots": [
+      {
+       "name": "镜中囚禁",
+       "id": "skill_assassin_s3_mirror_prison"
+      }
+     ],
+     "slotId": "skill_assassin_s3_mirror_prison",
+     "axis": "mirror",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读借来的动作追加伤害",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "混沌漩涡",
+     "slots": [
+      {
+       "name": "混沌漩涡",
+       "id": "skill_assassin_s0_chaos_vortex"
+      }
+     ],
+     "slotId": "skill_assassin_s0_chaos_vortex",
+     "axis": "mirror",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读借来的动作追加伤害",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "发刃",
+     "slots": [
+      {
+       "name": "发刃",
+       "id": "skill_assassin_s5_hair_blades"
+      }
+     ],
+     "slotId": "skill_assassin_s5_hair_blades",
+     "axis": "form",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "form 卡读 mirror 的借来的动作追加伤害",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "借势",
+     "slots": [
+      {
+       "name": "借势",
+       "id": "skill_assassin_s7_lure_step"
+      }
+     ],
+     "slotId": "skill_assassin_s7_lure_step",
+     "axis": "charm",
+     "concept": "status",
+     "facet": "write",
+     "purpose": "charm 轴诱导并记录对手动作（charm→mirror 跨轴）",
+     "ok": false,
+     "reason": "卡位未引用读轴锚点状态"
+    },
+    {
+     "slot": "冰霜",
+     "slots": [
+      {
+       "name": "冰霜",
+       "id": "skill_assassin_s7_frost"
+      }
+     ],
+     "slotId": "skill_assassin_s7_frost",
+     "axis": "charm",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "plague 卡读魅惑层追加冰霜（plague→charm）",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "影形态",
+     "slots": [
+      {
+       "name": "影形态",
+       "id": "skill_assassin_s6_form_shadow"
+      }
+     ],
+     "slotId": "skill_assassin_s6_form_shadow",
+     "axis": "mirror",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "form 卡读借来的动作塑形（form→mirror）",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "混沌漩涡",
+     "slots": [
+      {
+       "name": "混沌漩涡",
+       "id": "skill_assassin_s0_chaos_vortex"
+      }
+     ],
+     "slotId": "skill_assassin_s0_chaos_vortex",
+     "axis": "charm",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "mirror 卡读魅惑层追加伤害（mirror→charm）",
+     "ok": true,
+     "reason": ""
     }
    ],
    "crossSystem": [
@@ -3199,9 +3344,9 @@
      "hubName": "黑焰",
      "writers": [
       {
-       "name": "（无写入卡，待接线）",
-       "id": null,
-       "placeholder": true
+       "name": "黑焰",
+       "id": "skill_assassin_s7_black_flame",
+       "pathway": "assassin"
       }
      ],
      "readers": [
@@ -3321,7 +3466,7 @@
    "roles": [
     {
      "role": "core",
-     "declared": 22,
+     "declared": 24,
      "declaredSlots": [
       {
        "name": "力量爆发于一击",
@@ -3336,18 +3481,6 @@
        "id": "skill_assassin_s8_inflame_conflict"
       },
       {
-       "name": "欢愉之触",
-       "id": "skill_assassin_s6_bliss_touch"
-      },
-      {
-       "name": "反复魅惑",
-       "id": "skill_assassin_s5_repeated_charm"
-      },
-      {
-       "name": "魅力权柄",
-       "id": "skill_assassin_s1_charm_authority"
-      },
-      {
        "name": "黑焰",
        "id": "skill_assassin_s7_black_flame"
       },
@@ -3356,8 +3489,32 @@
        "id": "skill_assassin_s7_frost"
       },
       {
+       "name": "魔镜占卜",
+       "id": "skill_assassin_s7_mirror_divination"
+      },
+      {
+       "name": "镜子替身",
+       "id": "skill_assassin_s7_mirror_substitute"
+      },
+      {
+       "name": "欢愉之触",
+       "id": "skill_assassin_s6_bliss_touch"
+      },
+      {
        "name": "疾病",
        "id": "skill_assassin_s5_disease"
+      },
+      {
+       "name": "反复魅惑",
+       "id": "skill_assassin_s5_repeated_charm"
+      },
+      {
+       "name": "发刃",
+       "id": "skill_assassin_s5_hair_blades"
+      },
+      {
+       "name": "镜中囚禁",
+       "id": "skill_assassin_s3_mirror_prison"
       },
       {
        "name": "灾难",
@@ -3372,16 +3529,8 @@
        "id": "skill_assassin_s1_apocalypse"
       },
       {
-       "name": "魔镜占卜",
-       "id": "skill_assassin_s7_mirror_divination"
-      },
-      {
-       "name": "镜子替身",
-       "id": "skill_assassin_s7_mirror_substitute"
-      },
-      {
-       "name": "镜中囚禁",
-       "id": "skill_assassin_s3_mirror_prison"
+       "name": "魅力权柄",
+       "id": "skill_assassin_s1_charm_authority"
       },
       {
        "name": "混沌漩涡",
@@ -3408,11 +3557,15 @@
        "id": "skill_assassin_s1_form_blood"
       },
       {
-       "name": "发刃",
-       "id": "skill_assassin_s5_hair_blades"
+       "name": "镜映",
+       "id": "skill_assassin_s6_mirror_capture"
+      },
+      {
+       "name": "借势",
+       "id": "skill_assassin_s7_lure_step"
       }
      ],
-     "actual": 22,
+     "actual": 24,
      "actualSlots": [
       {
        "name": "力量爆发于一击",
@@ -3501,6 +3654,14 @@
       {
        "name": "血形态",
        "id": "skill_assassin_s1_form_blood"
+      },
+      {
+       "name": "镜映",
+       "id": "skill_assassin_s6_mirror_capture"
+      },
+      {
+       "name": "借势",
+       "id": "skill_assassin_s7_lure_step"
       }
      ]
     },
@@ -3572,7 +3733,7 @@
     },
     {
      "role": "generic",
-     "declared": 9,
+     "declared": 10,
      "declaredSlots": [
       {
        "name": "隐形",
@@ -3591,6 +3752,18 @@
        "id": "skill_assassin_s6_frost_armor"
       },
       {
+       "name": "镜像迷宫",
+       "id": "skill_assassin_s5_mirror_maze"
+      },
+      {
+       "name": "不可转移的诅咒",
+       "id": "skill_assassin_s4_untransferable_curse"
+      },
+      {
+       "name": "镜中人",
+       "id": "skill_assassin_s3_mirror_self"
+      },
+      {
        "name": "青春永驻",
        "id": "skill_assassin_s3_eternal_youth"
       },
@@ -3599,19 +3772,11 @@
        "id": "skill_assassin_s3_petrification"
       },
       {
-       "name": "不可转移的诅咒",
-       "id": "skill_assassin_s4_untransferable_curse"
-      },
-      {
-       "name": "镜像迷宫",
-       "id": "skill_assassin_s5_mirror_maze"
-      },
-      {
-       "name": "镜中人",
-       "id": "skill_assassin_s3_mirror_self"
+       "name": "镜面残像",
+       "id": "skill_assassin_s7_mirror_afterimage"
       }
      ],
-     "actual": 9,
+     "actual": 10,
      "actualSlots": [
       {
        "name": "隐形",
@@ -3648,6 +3813,10 @@
       {
        "name": "石化",
        "id": "skill_assassin_s3_petrification"
+      },
+      {
+       "name": "镜面残像",
+       "id": "skill_assassin_s7_mirror_afterimage"
       }
      ]
     },
@@ -3743,11 +3912,9 @@
      "miss": []
     },
     "签名键": {
-     "hit": 2,
+     "hit": 3,
      "total": 3,
-     "miss": [
-      "elem:dark(实证1)"
-     ]
+     "miss": []
     },
     "角色配比": {
      "hit": 7,
@@ -3755,9 +3922,11 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 2,
-     "total": 2,
-     "miss": []
+     "hit": 9,
+     "total": 10,
+     "miss": [
+      "借势→charm"
+     ]
     },
     "跨系钩子": {
      "hit": 2,
