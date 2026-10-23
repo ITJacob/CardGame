@@ -1,6 +1,6 @@
 # 收尸人（corpse_collector）· 技能构筑轴分析
 
-> 数据来源：`docs/json/corpse_collector.skills.json`（共 **42** 张技能卡）。
+> 数据来源：`docs/json/corpse_collector.skills.json`（共 **43** 张技能卡）。
 > 由 `docs/tools/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。
 > 生成日期：2026-10-23
 
@@ -10,9 +10,9 @@
 |---|---|---|---:|---|---:|---|
 | `spirit_sight` | 👁️ | 灵视 | 10 | 6/4 | 0 | 进攻 |
 | `corpse` | 💀 | 尸骸 | 7 | 2/5 | 0 | 进攻 |
-| `undead` | 🧟 | 亡者 | 15 | 9/6 | 0 | 进攻·运营 |
+| `undead` | 🧟 | 亡者 | 16 | 10/6 | 0 | 进攻·运营 |
 | `end` | ⚰️ | 终末 | 10 | 9/1 | 0 | 进攻·运营 |
-| **合计** | — | — | **42** | **26/16** | **0** | — |
+| **合计** | — | — | **43** | **27/16** | **0** | — |
 
 ### 1.1 职业级：挂载状态类型分布
 
@@ -103,17 +103,17 @@
 
 ### 🧟 亡者（undead）
 
-**规模**：15 张技能（主动 9 / 被动 6）；稀有度分布：精良×7、稀有×4、传说×3、史诗×1。
+**规模**：16 张技能（主动 10 / 被动 6）；稀有度分布：精良×7、稀有×5、传说×3、史诗×1。
 
-**效果原语构成**（type，全量递归，共 42 处）：
+**效果原语构成**（type，全量递归，共 41 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 12 | 28.6% |
-| `damage` | 3 | 7.1% |
-| `modify_stat` | 9 | 21.4% |
-| `modify_resource` | 8 | 19.0% |
-| `spawn` | 7 | 16.7% |
+| `mount_status` | 13 | 31.7% |
+| `damage` | 3 | 7.3% |
+| `modify_stat` | 9 | 22.0% |
+| `modify_resource` | 8 | 19.5% |
+| `spawn` | 5 | 12.2% |
 | `heal` | 1 | 2.4% |
 | `domain` | 1 | 2.4% |
 | `drain` | 1 | 2.4% |
@@ -145,7 +145,7 @@
 | `energy` | 1 |
 
 **设计风格总结**：本轴偏【进攻·运营】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `mount_status`(12)、`modify_stat`(9)、`modify_resource`(8)；属性杠杆集中在 `attack`、`defense`、`summon_cap`，资源杠杆集中在 `gauge.current`、`lost`、`energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(13)、`modify_stat`(9)、`modify_resource`(8)；属性杠杆集中在 `attack`、`defense`、`summon_cap`，资源杠杆集中在 `gauge.current`、`lost`、`energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **灵之主宰**：战斗开始时获得「灵之主宰」：你对灵体与亡灵造成的伤害 ×1.5；敌方灵体与亡灵对你造成的伤害 ×0.7；战斗开始时操纵敌方攻击最高的灵体或亡灵反戈 30tick。
 
@@ -196,7 +196,7 @@
 
 ## 附：统计口径
 
-- 数据源：`docs/json/corpse_collector.skills.json` 的 `cards[]`，共 42 张卡。
+- 数据源：`docs/json/corpse_collector.skills.json` 的 `cards[]`，共 43 张卡。
 - 按 `axis` 字段分桶；`axis` 定义与符号取自文件级 `axes`。
 - 效果原语/算子：**递归遍历**每张卡全部效果节点（卡面 `effects`、`statusDefs[].triggers[].effects`、区域/界域等任意嵌套），同名多次计数。
 - 原语以效果节点 `type` 归类（19 类）；算子以 `op` 归类（9 类）。

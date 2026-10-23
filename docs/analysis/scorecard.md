@@ -47,12 +47,11 @@
 
 签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:moon_cycle ×4；sref:prepared_draught ×5；unitType:BEAST ×8；对他途径指纹均距 0.333
 
-角色分布（SCORING §一·附）：core ×26 · starter ×1 · bridge ×2 · generic ×8 · trap ×1 · tech ×3
+角色分布（SCORING §一·附）：core ×25 · starter ×1 · bridge ×2 · generic ×8 · trap ×1 · tech ×4
 
 **途径失分项（含修改意见）**：
 
 - `跨轴耦合` -9.4：本途径他轴机制命中 3 次（apothecary）→ 挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段
-- `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）（兽群号令）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
 - `风格越界` 注：17 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）（药剂调配(prim:grant_immunity)；草药敷贴(prim:grant_immunity)；血族体质(stat:hp_max)；血族魅力(prim:grant_immunity)；腐蚀之爪(prim:grant_immunity)；深渊枷锁(prim:grant_immunity)）→ 人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内
 
 | 轴 | 总分 | 锚兑 | 产兑 | 收兑 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
@@ -707,7 +706,7 @@
 
 签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:filter.unitType ×3；prim:drain ×9；trig:on_kill ×3；对他途径指纹均距 0.310
 
-角色分布（SCORING §一·附）：core ×29 · starter ×3 · bridge ×1 · generic ×7 · trap ×1 · tech ×2
+角色分布（SCORING §一·附）：core ×28 · starter ×3 · bridge ×1 · generic ×7 · trap ×1 · tech ×3
 
 **途径失分项（含修改意见）**：
 
@@ -717,7 +716,6 @@
 - `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）（灵之主宰）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
 - `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）（亡灵权柄）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
 - `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）（通灵之触）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
-- `角色语义` 注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）（尸山号令）→ 补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）
 - `风格越界` 注：20 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）（天然灵视(prim:reveal)；腐息(flag:template)；掘墓人体魄(stat:hp_max)；死亡之眼(elem:holy)；通灵(flag:template,sref:puppet_string)；唤起骷髅(flag:template)）→ 人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内
 
 | 轴 | 总分 | 锚兑 | 产兑 | 收兑 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
