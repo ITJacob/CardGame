@@ -57,7 +57,7 @@
 |---|---:|
 | 具名单位引用 | 82 |
 | 区域蓝本引用 | 10 |
-| 复活（不产生新单位） | 6 |
+| 复活（不产生新单位） | 7 |
 | 动态模板 | 2 |
 | 固定蓝本模板 | 1 |
 
@@ -99,12 +99,12 @@
 
 ### 1.4 按 unitType 分道的承载（卡面）
 
-三路承载合并：效果节点 filter.unitType 乘区 **2** 处（登记口径，当前数据零使用——晨曦领域的类型约束写在域 envRulesText 文本里，结构不可统计）、target.request 选靶约束 **20** 张卡、target_unit_type 条件谓词 **12** 处；另有 target_is_summoned 笼统召唤物谓词 **3** 处（此表按类型拆，不含它）。filter 不区分敌我（克制 / 加益只由效果方向决定）。
+三路承载合并：效果节点 filter.unitType 乘区 **2** 处（登记口径，当前数据零使用——晨曦领域的类型约束写在域 envRulesText 文本里，结构不可统计）、target.request 选靶约束 **9** 张卡、target_unit_type 条件谓词 **12** 处；另有 target_is_summoned 笼统召唤物谓词 **3** 处（此表按类型拆，不含它）。filter 不区分敌我（克制 / 加益只由效果方向决定）。
 
 | unitType | 次数 |
 |---|---:|
-| `SPIRIT` | 21 |
-| `UNDEAD` | 17 |
+| `UNDEAD` | 12 |
+| `SPIRIT` | 12 |
 | `DEMON` | 6 |
 | `CONSTRUCT` | 4 |
 | `ITEM` | 1 |

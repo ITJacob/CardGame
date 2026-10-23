@@ -14,24 +14,27 @@
       "enablers": [
         "天然灵视",
         "灵视觉醒",
-        "死兆预感"
+        "灵界瞭望"
       ],
       "payoffs": [
         "死亡之眼",
-        "幽冥窥视",
-        "灵界瞭望"
+        "幽冥窥视"
       ],
-      "note": "payoffs 2026-09-26 评审：三卡读目标 conceal 类状态存在放大 ×1.5（spirit_sight 本体是被动透隐，无层数可读） ｜ 2026-09-29 环节⑤：enablers 核正（死亡之眼/通灵不挂 spirit_sight 移出，灵视觉醒/死兆预感补入，产层 20）；死亡之眼补 spirit_sight 读层段（payoff 升 landed） ｜ 2026-10-02 批次九：灵视汲取体系——死神使者/死亡之眼 target_unit_type[UNDEAD/SPIRIT]→drain 段（drain 签名 0→2 实证、灵视克灵体结构化 1→3）；亡者之王补 spirit_sight 跨轴读层 ｜ 2026-10-03 骨架手术：死亡过程换形 29 张（详见 designNote）"
+      "note": "2026-10-23 B3 重构：灵视=记账——灵界瞭望对全体记死亡账本、死亡之眼单体补记；其余灵视卡读账兑现。"
     },
     "corpse": {
       "symbol": "💀",
       "name": "尸骸",
       "statusId": "corpse_nature",
       "enablers": [
-        "尸体特质"
+        "尸体特质",
+        "掘墓人体魄"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：corpse_nature 纯自含防御 buff 无下游读取，payoff 真空 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：corpse_nature 是防御性自含 buff，消费者=持有者自身；读层闭环维度记 12 分保底。 ｜ 2026-10-03 骨架手术：死亡过程换形 29 张（详见 designNote）",
+      "payoffs": [
+        "不死者",
+        "右手触碰"
+      ],
+      "note": "2026-10-23 B3 重构：尸骸=资源收束（不死者/右手触碰读尸体特质落地）。",
       "payoffVacuumAccepted": true
     },
     "undead": {
@@ -40,13 +43,15 @@
       "statusId": "puppet_string",
       "enablers": [
         "驱使亡者",
-        "通灵"
+        "通灵",
+        "唤起亡者"
       ],
       "payoffs": [
         "灵魂掌控",
-        "冥界之门"
+        "冥界之门",
+        "收账"
       ],
-      "note": "2026-09-29 环节⑤：enablers 核正（亡者标记无此卡移除；亡者之语挂 word_of_the_dead 移出；通灵补 puppet_string 产层段，产层 5→20） ｜ 2026-09-29 D 类批：payoffs 核正（完全死亡无此卡——幽灵引用移除，换灵魂掌控/冥界之门补 puppet_string 读层段，读层 0→landed） ｜ 2026-10-03 骨架手术：死亡过程换形 29 张（详见 designNote）"
+      "note": "2026-10-23 B3 重构：亡者=军团役使 + 单体收账；puppet_string 单池保留为牵线层数。"
     },
     "end": {
       "symbol": "⚰️",
@@ -57,9 +62,11 @@
         "死亡权柄"
       ],
       "payoffs": [
-        "苍白世界"
+        "苍白世界",
+        "催账",
+        "死亡宣告"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 underworld，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ 2026-09-26 主人裁定：enablers 原列冥界放出/冥界之门（undead 轴卡）改列本轴卡一切的归宿（全轴唯一产 journeys_end）；冥界两卡留 undead 轴（N4 同 spectator/fantasy 修法） ｜ 2026-09-29 环节⑤：死亡权柄补 journeys_end 产层段（产层 20）；苍白世界补 journeys_end 读层段（payoff 升 landed，界域延长） ｜ 2026-10-03 骨架手术：死亡过程换形 29 张（详见 designNote）"
+      "note": "2026-10-23 B3 重构：终末=合并——死亡权柄（≥3 本）/催账（≥2 本）读全场账本合并结算；单目标印记堆叠退役。"
     }
   },
   "cards": [
@@ -75,7 +82,7 @@
       "flagship": false,
       "lore": "序列9 收尸人 —— \"具备尸体特质，体温低，避免亡灵袭击 / 能承受腐烂、寒冷、死亡气息\"",
       "flavor": "你的体温比尸体高不了多少，腐烂与寒冷都伤不到你；而那些游荡的亡灵，也从不把你当成活人。",
-      "describe": "战斗开始时获得「尸体特质」：毒抗性 +20%、冰抗性 +20%，受到亡灵来源的伤害 ×0.7。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时获得「尸体特质」：毒抗性 +20%、冰抗性 +20%，受到亡灵来源的伤害 ×0.7。",
       "hook": [
         "on_battle_start"
       ],
@@ -85,12 +92,6 @@
           "statusId": "corpse_nature",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
         }
       ],
       "sharedAcross": [
@@ -120,7 +121,7 @@
       "flagship": false,
       "lore": "序列9 收尸人 —— \"天然灵视，看见部分恶灵\"",
       "flavor": "你天生能看见那些本不该被看见的东西——藏起来的身形瞒不过你，飘在半空的恶灵更瞒不过你。",
-      "describe": "战斗开始时获得「天然灵视」：敌方隐匿类状态对你无效；你对灵体单位造成的伤害 ×1.3。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时获得「天然灵视」：敌方隐匿类状态对你无效；你对灵体单位造成的伤害 ×1.3。",
       "hook": [
         "on_battle_start"
       ],
@@ -305,7 +306,7 @@
       "flagship": true,
       "lore": "序列8 掘墓人 —— \"『死亡之眼』：进入灵性世界，从更高层次俯视敌人找弱点\"；\"灵视更厉害\"",
       "flavor": "你的魂魄离体半寸，从灵性世界里俯下身——它的要害、它的破绽，一下子全浮了出来。",
-      "describe": "对一名敌人造成 3 点精神伤害（处于隐匿状态时 ×1.5），使其易伤 15tick，并驱散其 1 个隐匿类状态；若自身灵视在场，灵视锁定，伤害 +1。目标为灵体/亡灵时再汲取 2 点生命。",
+      "describe": "对一名敌人造成 3 点精神伤害（处于隐匿状态时 ×1.5），使其易伤 15tick，并驱散其 1 个隐匿类状态；若自身灵视在场，灵视锁定，伤害 +1。目标为灵体/亡灵时再汲取 2 点生命。；为单体目标补记 1 层死亡账本（30tick）。代价：自身防御 -1（10tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -317,13 +318,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "filter": {
-            "unitType": "SPIRIT"
-          },
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "atk_desc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -414,6 +412,22 @@
               "else": []
             }
           ]
+        },
+        {
+          "type": "mount_status",
+          "statusId": "death_ledger",
+          "target": "target",
+          "duration": 30,
+          "note": "死亡之眼：为单一目标补记账本"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "凝视的代价：自身防御 -1"
         }
       ],
       "sharedAcross": [
@@ -464,14 +478,11 @@
         "selectionMode": "manual",
         "request": {
           "mode": "unit",
-          "faction": "ally",
-          "scope": "board",
-          "filter": {
-            "unitType": "SPIRIT"
-          },
+          "faction": "enemy",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_asc"
+        "fallbackSort": "atk_desc"
       },
       "effects": [
         {
@@ -528,14 +539,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "filter": {
-            "unitType": [
-              "UNDEAD",
-              "SPIRIT"
-            ]
-          }
+          "scope": "point",
+          "pickCount": 1
         },
-        "fallbackSort": "gauge_desc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -564,6 +571,14 @@
               "note": "通灵时灵体之线缠绕自身，织就亡者网络（环节⑤ 2026-09-29 补产层段）"
             }
           ]
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -6,
+          "mode": "delta",
+          "target": "self",
+          "note": "通灵的代价：自身行动条 -6"
         }
       ],
       "sharedAcross": [
@@ -592,54 +607,6 @@
       }
     },
     {
-      "id": "skill_corpse_collector_s7_kin_of_spirits",
-      "name": "灵之同类",
-      "kind": "passive",
-      "sequence": 7,
-      "sequenceName": "通灵者",
-      "rarity": "uncommon",
-      "role": "generic",
-      "axis": "undead",
-      "flagship": false,
-      "lore": "序列7 通灵者 —— \"对亡魂、自然灵而言像同类，危险性低\"",
-      "flavor": "在它们眼里，你闻起来和它们是一路的——亡魂不会先扑向你，自然灵也不会。",
-      "describe": "战斗开始时获得「灵之同类」：受到灵体与亡灵来源的伤害 ×0.7；敌方灵体与亡灵优先攻击其他目标（你的受选优先级最低）。；灵视张开：亡者的位置无所遁形。",
-      "hook": [
-        "on_battle_start"
-      ],
-      "effects": [
-        {
-          "type": "mount_status",
-          "statusId": "kin_of_spirits",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
-        }
-      ],
-      "tentative": false,
-      "frameworkFlags": [
-        {
-          "code": "TARGET_WEIGHTING",
-          "note": "C8 候选池加权分支稿面标 🟢 未实现；若只落地一条优先保留减伤① ｜ 2026-09-29 内核裁定：候选池过滤器补 weight 加权字段（共享内核 §四 2026-09-29），倾向权重与 modify_targetability 同出口",
-          "landed": true
-        }
-      ],
-      "art": {
-        "subject": "a lone figure walking calmly through a crowd of harmless ghosts",
-        "elements": [
-          "relaxed spirits",
-          "familiar pale figure"
-        ],
-        "mood": "calm, belonging"
-      },
-      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）"
-    },
-    {
       "id": "skill_corpse_collector_s7_death_rite",
       "name": "亡灵仪式",
       "kind": "active",
@@ -651,7 +618,7 @@
       "flagship": false,
       "lore": "序列7 通灵者 —— \"掌握与灵相关的神秘学仪式\"",
       "flavor": "你在地上画完最后一笔，站进圈里的亡者们同时抬起了头。",
-      "describe": "全体己方亡灵攻击 +2、行动条速率 +3（20tick），自身能量 +2。；灵视张开：亡者的位置无所遁形。",
+      "describe": "全体己方亡灵攻击 +2、行动条速率 +3（20tick），自身能量 +2。",
       "cost": {
         "energy": 3,
         "cooldown": 25,
@@ -659,16 +626,14 @@
       },
       "reach": "none",
       "target": {
-        "selectionMode": "auto",
+        "selectionMode": "manual",
         "request": {
-          "mode": "area",
-          "faction": "ally",
-          "scope": "board",
-          "filter": {
-            "unitType": "UNDEAD"
-          },
-          "pickCount": "all"
-        }
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
+        },
+        "fallbackSort": "atk_desc"
       },
       "effects": [
         {
@@ -691,10 +656,13 @@
           ]
         },
         {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self",
+          "note": "仪式的代价：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -738,7 +706,7 @@
       "flagship": false,
       "lore": "序列6 死灵导师 —— \"『复活』：唤起活尸和骷髅\"",
       "flavor": "你伸手按在尸骸上，骨头开始自己拼合——它站起来，等着你吩咐。",
-      "describe": "唤起一具骷髅为己方作战（落位己方队尾）。",
+      "describe": "唤起一具骷髅为己方作战（落位己方队尾）。；自身带尸体特质时行动条 +8。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -759,6 +727,28 @@
           "position": "tail",
           "note": "F34 + C5",
           "unitId": "unit_skeleton"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "corpse_nature",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 8,
+              "mode": "delta",
+              "target": "self",
+              "note": "尸体特质：骷髅起得更快（行动条 +8）"
+            }
+          ],
+          "else": [],
+          "note": "读层：尸体特质"
         }
       ],
       "tentative": false,
@@ -785,7 +775,7 @@
       "flagship": false,
       "lore": "序列6 死灵导师 —— \"『复活』：唤起活尸和骷髅\"",
       "flavor": "泥土裂开，一具还挂着腐肉的躯体爬了出来，摇摇晃晃地挡在你身前。",
-      "describe": "唤起一具活尸为己方作战（高血低速坦克型，落位己方队尾）。",
+      "describe": "唤起一具活尸为己方作战（高血低速坦克型，落位己方队尾）。；代价：自身防御 -1（10tick）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -806,6 +796,15 @@
           "position": "tail",
           "note": "F35",
           "unitId": "unit_zombie"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self",
+          "note": "活尸的腐气：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -821,47 +820,6 @@
       }
     },
     {
-      "id": "skill_corpse_collector_s6_word_of_dead",
-      "name": "亡者之语",
-      "kind": "passive",
-      "sequence": 6,
-      "sequenceName": "死灵导师",
-      "rarity": "uncommon",
-      "role": "generic",
-      "axis": "undead",
-      "flagship": false,
-      "lore": "序列6 死灵导师 —— \"『亡者之语』：绕过血肉保护，将沟通上升为驱使乃至奴役\"",
-      "flavor": "你只说了一个词——它绕过皮肉与甲胄，直接咬在骨头上。",
-      "describe": "战斗开始时获得「亡者之语」：你造成的所有伤害无视目标护甲，持续整场。；灵视张开：亡者的位置无所遁形。",
-      "hook": [
-        "on_battle_start"
-      ],
-      "effects": [
-        {
-          "type": "mount_status",
-          "statusId": "word_of_the_dead",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
-        }
-      ],
-      "tentative": false,
-      "conversionNotes": "翻译/语义：亡者轴身份状态 `奴役` 主挂载源（枢纽状态 `puppet_string`）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=buff）",
-      "art": {
-        "subject": "a single whispered word clawing at a victim bones",
-        "elements": [
-          "visible sound ripple",
-          "skeletal resonance"
-        ],
-        "mood": "invasive, chilling"
-      }
-    },
-    {
       "id": "skill_corpse_collector_s6_drive_dead",
       "name": "驱使亡者",
       "kind": "active",
@@ -873,7 +831,7 @@
       "flagship": false,
       "lore": "序列6 死灵导师 —— \"将沟通上升为驱使乃至奴役\"；\"可提前控制、驱使亡者和自然灵战斗\"",
       "flavor": "你叫了它的名字——它僵了一瞬，然后转过身，扑向自己刚才的同伴。",
-      "describe": "若目标为灵体或亡灵：操纵其 30tick，攻击强制打向其同阵营友军；否则使其下一次攻击强制打向其阵营首位。；灵视张开：亡者的位置无所遁形。",
+      "describe": "若目标为灵体或亡灵：操纵其 30tick，攻击强制打向其同阵营友军；否则使其下一次攻击强制打向其阵营首位。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -885,14 +843,11 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "filter": {
-            "unitType": [
-              "UNDEAD",
-              "SPIRIT"
-            ]
-          }
+          "scope": "point",
+          "pickCount": 1,
+          "sort": "gauge_desc"
         },
-        "fallbackSort": "atk_desc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -923,10 +878,12 @@
           ]
         },
         {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -5,
+          "mode": "delta",
+          "target": "self",
+          "note": "驱使的代价：自身行动条 -5"
         }
       ],
       "tentative": false,
@@ -990,7 +947,7 @@
       "flagship": false,
       "lore": "序列5 看门人 —— \"『死神使者』：低泣声让目标血液冻僵、生命力流逝\"",
       "flavor": "你低低地哭了一声——它的血停住了，而它身体里的什么东西，正一点一点地往外漏。",
-      "describe": "对一名敌人造成 5 点冰霜伤害，并使其血液冻僵 20tick：行动条速率 ×0.8、每 tick 0.2 点无属性伤害、受到的治疗 ×0.7。目标为灵体/亡灵时额外汲取 3 点生命（半数归自身）。",
+      "describe": "对一名敌人造成 5 点冰霜伤害，并使其血液冻僵 20tick：行动条速率 ×0.8、每 tick 0.2 点无属性伤害、受到的治疗 ×0.7。目标为灵体/亡灵时额外汲取 3 点生命（半数归自身）。；目标带死亡账本时追加 2 点冰霜伤害。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1002,16 +959,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "filter": {
-            "unitType": [
-              "UNDEAD",
-              "SPIRIT"
-            ]
-          },
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_asc"
+        "fallbackSort": "hp_desc"
       },
       "effects": [
         {
@@ -1047,8 +998,35 @@
                 }
               ],
               "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "death_ledger"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "ice",
+                  "value": 2,
+                  "target": "target",
+                  "note": "读账：账本标记的伤口再冻 2 点"
+                }
+              ],
+              "else": [],
+              "note": "读层：死亡账本"
             }
           ]
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -6,
+          "mode": "delta",
+          "target": "self",
+          "note": "低泣的代价：自身行动条 -6"
         }
       ],
       "tentative": false,
@@ -1075,7 +1053,7 @@
       "flagship": false,
       "lore": "序列5 看门人 —— \"小型『冥界』：以身体为囚笼创造独属冥界，容纳魂体亡者\"",
       "flavor": "你的身体里有一处只属于你的冥界——凡是在你面前倒下的，魂都进到这里，散不掉，也走不了。",
-      "describe": "战斗开始时获得「小型冥界」（最多存 3 魂）：任意单位死亡时魂数 +1（满则不再累加）。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时获得「小型冥界」（最多存 3 魂）：任意单位死亡时魂数 +1（满则不再累加）。",
       "hook": [
         "on_battle_start"
       ],
@@ -1085,12 +1063,6 @@
           "statusId": "underworld_cage",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
         }
       ],
       "sharedAcross": [
@@ -1128,11 +1100,14 @@
       },
       "reach": "none",
       "target": {
-        "selectionMode": "auto",
+        "selectionMode": "manual",
         "request": {
           "mode": "unit",
-          "faction": "self"
-        }
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_desc"
       },
       "effects": [
         {
@@ -1161,6 +1136,15 @@
               "note": "F48 status.consume 清空"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self",
+          "note": "放出的代价：自身防御 -1"
         }
       ],
       "sharedAcross": [
@@ -1190,7 +1174,7 @@
       "flagship": false,
       "lore": "序列4 不死者 —— \"『冥界之门』：利用冥界力量创造战斗环境\"",
       "flavor": "你身前的空气裂开一道门的形状，门后的冥界渗了进来——站在门里的亡者变得沉重，而活物变得迟缓。",
-      "describe": "降临「冥界之门」4 回合：己方亡灵每回合攻击 +2、受伤 ×0.85；全体敌人每回合行动条速率 ×0.85；「亡灵/死亡」标签卡效果 ×1.5，「光明/净化」标签卡 ×0.7；死亡单位转为资源。自身迷失值 +1。",
+      "describe": "降临「冥界之门」4 回合：己方亡灵每回合攻击 +2、受伤 ×0.85；全体敌人每回合行动条速率 ×0.85；「亡灵/死亡」标签卡效果 ×1.5，「光明/净化」标签卡 ×0.7；死亡单位转为资源。自身迷失值 +1。；全场死亡账本 ≥3 本时，域内全体敌人攻击 -2（15tick）。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1247,6 +1231,28 @@
           ],
           "else": [],
           "note": "读层段：corpse_collector→puppet_string 存在性读档（D 类批 2026-09-29）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "field_status_count",
+            "id": "death_ledger",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": -2,
+              "mode": "delta",
+              "duration": 15,
+              "target": "all_enemies",
+              "note": "冥界之门：账本压身，全体敌人攻击 -2"
+            }
+          ],
+          "else": [],
+          "note": "读层：死亡账本"
         }
       ],
       "domain": {
@@ -1291,49 +1297,96 @@
       "flagship": true,
       "lore": "序列4 不死者 —— \"漫长生命，但每 60 年死去一次复活一次，遗忘大部分记忆\"",
       "flavor": "你死去，然后又站起来——只是这一次醒来，你想不起自己为什么站在这里，也想不起那些刻在身上的本事。",
-      "describe": "自身死亡时以 40% 生命原地复活（每场一次）：复活时失去全部增益、攻击 -2（本场不恢复）、回复 6 点生命。",
+      "describe": "自身死亡时原地复活（每场一次）：失去全部增益、攻击 -2（本场）、回复 6 点生命；自身带尸体特质时以 60% 生命复活（否则 40%）。",
       "hook": [
         "on_death"
       ],
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "corpse_nature",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
             {
-              "type": "spawn",
-              "reviveOf": "self",
-              "hpRatio": 0.4,
-              "position": "original",
-              "oncePerBattle": true,
-              "note": "G4 reviveOf；60 年一次折为每场一次"
-            },
-            {
-              "type": "dispel",
-              "target": "self",
-              "dispelTarget": "unit",
-              "filter": {
-                "category": [
-                  "buff"
-                ],
-                "count": null
-              },
-              "note": "遗忘大部分记忆 = 失去全部增益"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": -2,
-              "mode": "delta",
-              "duration": null,
-              "target": "self",
-              "note": "遗忘 = 连技艺也一起忘了"
-            },
-            {
-              "type": "heal",
-              "value": 6,
-              "target": "self"
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "spawn",
+                  "reviveOf": "self",
+                  "hpRatio": 0.6,
+                  "position": "original",
+                  "oncePerBattle": true,
+                  "note": "尸骸特质：复活时保留更多血肉（60%）"
+                },
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "buff"
+                    ],
+                    "count": null
+                  }
+                },
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": -2,
+                  "mode": "delta",
+                  "target": "self"
+                },
+                {
+                  "type": "heal",
+                  "value": 6,
+                  "target": "self"
+                }
+              ]
             }
-          ]
+          ],
+          "else": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "spawn",
+                  "reviveOf": "self",
+                  "hpRatio": 0.4,
+                  "position": "original",
+                  "oncePerBattle": true
+                },
+                {
+                  "type": "dispel",
+                  "target": "self",
+                  "dispelTarget": "unit",
+                  "filter": {
+                    "category": [
+                      "buff"
+                    ],
+                    "count": null
+                  }
+                },
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": -2,
+                  "mode": "delta",
+                  "target": "self"
+                },
+                {
+                  "type": "heal",
+                  "value": 6,
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "note": "读层：尸体特质（有则 60% 复活）"
         }
       ],
       "sharedAcross": [
@@ -1362,7 +1415,7 @@
       "flagship": false,
       "lore": "序列4 不死者 —— \"肉体打击不再致命（除非完全摧毁）\"",
       "flavor": "刀砍进你的身体，只留下一道口子——除非有人把你整个碾碎，否则你不会倒下。",
-      "describe": "战斗开始时获得「肉体不灭」：单次受到的伤害不超过自身最大生命的 30%。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时获得「肉体不灭」：单次受到的伤害不超过自身最大生命的 30%。",
       "hook": [
         "on_battle_start"
       ],
@@ -1374,10 +1427,13 @@
           "target": "self"
         },
         {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self",
+          "note": "不灭的肉身：防御 +2"
         }
       ],
       "sharedAcross": [
@@ -1417,14 +1473,12 @@
         "selectionMode": "manual",
         "request": {
           "mode": "unit",
-          "faction": "ally",
-          "filter": {
-            "unitType": "UNDEAD"
-          },
-          "scope": "board",
-          "pickCount": 1
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1,
+          "sort": "buff_count_desc"
         },
-        "fallbackSort": "gauge_desc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -1453,6 +1507,14 @@
           "ratio": 0.5,
           "target": "target",
           "note": "亡者汲取：从衰败的躯体里抽走一分生机"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -6,
+          "mode": "delta",
+          "target": "self",
+          "note": "驱使的代价：自身行动条 -6"
         }
       ],
       "tentative": false,
@@ -1571,7 +1633,7 @@
       "flagship": false,
       "lore": "序列3 摆渡人 —— \"左手触碰：目标几乎不可逆地走向死亡\"",
       "flavor": "你的左手按在它肩上——从这一刻起，它已经在往下走了，而且没有什么能让它停下来。",
-      "describe": "使一名敌人被死亡印记缠绕 40tick（不可驱散）：每 tick 0.4 点无属性伤害、受到的治疗 ×0.5、受伤 ×1.15；只能被【右手触碰】解除。；衰败的躯体被抽走一分生机。",
+      "describe": "使一名敌人被死亡印记缠绕 40tick（不可驱散）：每 tick 0.4 点无属性伤害、受到的治疗 ×0.5、受伤 ×1.15；只能被【右手触碰】解除。；衰败的躯体被抽走一分生机。；目标带死亡账本时防御 -2（20tick）。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1583,10 +1645,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_asc"
+        "fallbackSort": "hp_desc"
       },
       "effects": [
         {
@@ -1601,6 +1663,36 @@
           "ratio": 0.5,
           "target": "target",
           "note": "亡者汲取：从衰败的躯体里抽走一分生机"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "death_ledger"
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -2,
+              "mode": "delta",
+              "target": "target",
+              "duration": 20,
+              "note": "读账：账本撕开伤口，防御 -2（20tick）"
+            }
+          ],
+          "else": [],
+          "note": "读层：死亡账本"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "触碰的代价：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -1687,6 +1779,26 @@
           "ratio": 0.5,
           "target": "target",
           "note": "生机取自他处"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "corpse_nature",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "target",
+              "note": "读层：尸体特质让缝合更彻底，治疗 +2"
+            }
+          ],
+          "else": [],
+          "note": "读层：尸体特质"
         }
       ],
       "tentative": false,
@@ -1712,7 +1824,7 @@
       "flagship": false,
       "lore": "序列3 摆渡人 —— \"不会自然死亡，净化外大部分攻击无效\"",
       "flavor": "你已经死过一次了——那些慢慢侵蚀你的东西，只能把你拖到门口，推不进去；而死亡的气息，对你来说只是故乡的风。",
-      "describe": "战斗开始时获得「摆渡人之躯」：持续伤害不会使你死亡（致死时保留 1 血）；受到毒与冰霜伤害 ×0.6。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时获得「摆渡人之躯」：持续伤害不会使你死亡（致死时保留 1 血）；受到毒与冰霜伤害 ×0.6。；自身带一切的归宿时获得 3 点护盾。",
       "hook": [
         "on_battle_start"
       ],
@@ -1724,10 +1836,26 @@
           "target": "self"
         },
         {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "journeys_end",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 3,
+              "duration": 20,
+              "target": "self",
+              "note": "归宿越深，渡舟越稳（护盾 3）"
+            }
+          ],
+          "else": [],
+          "note": "读层：一切的归宿"
         }
       ],
       "sharedAcross": [
@@ -1757,7 +1885,7 @@
       "flagship": false,
       "lore": "序列2 死亡执政官 —— \"『完全的死亡』：剥夺区域内所有生命力，复活 / 替身能力无效\"",
       "flavor": "你抬手画下边界——那一块地方里不再有生命这回事：流干的血补不回来，准备好的替身，也只是又一具尸体。",
-      "describe": "展开「完全的死亡」区域：区域内敌人每 tick 受 0.4 点无属性伤害、被禁疗且无法复活（各 10tick 刷新）。",
+      "describe": "展开「完全的死亡」区域：区域内敌人每 tick 受 0.4 点无属性伤害、被禁疗且无法复活（各 10tick 刷新）。；全场死亡账本 ≥2 本时追加召唤 1 具骷髅。",
       "cost": {
         "energy": 6,
         "cooldown": 35,
@@ -1778,6 +1906,25 @@
           "consumption": "zone",
           "zone": "zone_true_death",
           "note": "保持 Zone 形态（H9 Zone 母版）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "field_status_count",
+            "id": "death_ledger",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "spawn",
+              "unitId": "unit_skeleton",
+              "position": "tail",
+              "note": "账目合并：死亡自行走出（追加 1 具骷髅）"
+            }
+          ],
+          "else": [],
+          "note": "读层：死亡账本"
         }
       ],
       "tentative": false,
@@ -1813,7 +1960,7 @@
       "flagship": false,
       "lore": "序列2 死亡执政官 —— \"『亡者之王』：小型冥界容纳不死生物大军\"",
       "flavor": "你体内的冥界向外撑开了一圈——它不再只装得下三个魂，而站在你身后的，也不再只是一小队亡者。",
-      "describe": "战斗开始时：小型冥界容量 3→6；自身召唤位上限 +2；你召唤的亡灵攻击 +2、生命上限 +5（常驻）。自身灵视觉醒在场时，攻击再 +1。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时：小型冥界容量 3→6；自身召唤位上限 +2；你召唤的亡灵攻击 +2、生命上限 +5（常驻）。自身灵视觉醒在场时，攻击再 +1。",
       "hook": [
         "on_battle_start"
       ],
@@ -1881,12 +2028,6 @@
               "else": []
             }
           ]
-        },
-        {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
         }
       ],
       "tentative": false,
@@ -1912,7 +2053,7 @@
       "flagship": false,
       "lore": "序列2 死亡执政官 —— \"『死亡之国』：创造死亡苍白区域，不够强大者立刻死亡转为不死\"",
       "flavor": "你脚下的土地褪成一片苍白——站进去的人，凡是撑不住的，都会当场倒下；而当它们再站起来时，已经换了一边。",
-      "describe": "展开「死亡之国」区域：区域内生命不高于 20% 的敌人被处决并转为己方骷髅（60% 生命，己方队尾）；每个单位只判定一次。",
+      "describe": "展开「死亡之国」区域：区域内生命不高于 20% 的敌人被处决并转为己方骷髅（60% 生命，己方队尾）；每个单位只判定一次。；同时全体友军回复 3 点生命。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -1933,6 +2074,12 @@
           "consumption": "zone",
           "zone": "zone_pale_kingdom",
           "note": "保持 Zone 形态"
+        },
+        {
+          "type": "heal",
+          "value": 3,
+          "target": "all_allies",
+          "note": "死亡之国的庇护：全体友军回复 3 点"
         }
       ],
       "tentative": false,
@@ -1969,7 +2116,7 @@
       "flagship": false,
       "lore": "序列1 苍白皇帝 —— \"『死亡宣告』：看到 / 指中的目标瞬间死亡\"",
       "flavor": "你看了它一眼，抬起手，指了过去——它还有两个呼吸的时间，而那已经是它全部的未来。",
-      "describe": "宣告一名敌人死刑（不可驱散，10tick 后执行）：若其生命不高于 40% 则直接处决，否则受到 8 点无属性伤害。；衰败的躯体被抽走一分生机。",
+      "describe": "宣告一名敌人死刑（不可驱散，10tick 后执行）：生命不高于 40% 则处决，否则受 8 点无元素伤害；目标带死亡账本时判决延长至 15tick。",
       "cost": {
         "energy": 6,
         "cooldown": 35,
@@ -1981,24 +2128,53 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
         "fallbackSort": "hp_asc"
       },
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "death_sentence",
-          "duration": 10
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "death_ledger"
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "death_sentence",
+              "target": "target",
+              "duration": 15,
+              "note": "读账：账本延长判决 15tick"
+            }
+          ],
+          "else": [
+            {
+              "type": "mount_status",
+              "statusId": "death_sentence",
+              "target": "target",
+              "duration": 10
+            }
+          ],
+          "note": "读层：死亡账本"
         },
         {
           "type": "drain",
           "resource": "hp",
           "value": 1,
-          "ratio": 0.5,
+          "healRatio": 0.5,
           "target": "target",
           "note": "亡者汲取：从衰败的躯体里抽走一分生机"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -8,
+          "mode": "delta",
+          "target": "self",
+          "note": "宣告的代价：自身行动条 -8"
         }
       ],
       "tentative": false,
@@ -2136,7 +2312,7 @@
       "flagship": true,
       "lore": "序列1 苍白皇帝 —— \"『灵之主宰』：任何具备灵的生物都能压制 / 奴役 / 使其死去\"；序列0 死神 —— \"『奴役』权柄\"",
       "flavor": "凡是有灵的东西，都在你的手掌心里——你可以让它跪下，可以让它转向，也可以只是让它不再存在。",
-      "describe": "战斗开始时获得「灵之主宰」：你对灵体与亡灵造成的伤害 ×1.5；敌方灵体与亡灵对你造成的伤害 ×0.7；战斗开始时操纵敌方攻击最高的灵体或亡灵反戈 30tick。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时获得「灵之主宰」：你对灵体与亡灵造成的伤害 ×1.5；敌方灵体与亡灵对你造成的伤害 ×0.7；战斗开始时操纵敌方攻击最高的灵体或亡灵反戈 30tick。",
       "hook": [
         "on_battle_start"
       ],
@@ -2146,12 +2322,6 @@
           "statusId": "spirit_sovereign",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
         }
       ],
       "tentative": false,
@@ -2245,7 +2415,7 @@
       "flagship": true,
       "lore": "序列0 死神 —— \"『死亡』权柄：生命 / 记忆 / 联系 / 烙印皆会死亡，非凡特性也短暂死亡\"",
       "flavor": "你说了那个字——它的生命、它的记忆、它与这世上一切的联系、它身上那些被赋予过的印记，一起熄灭了。连它赖以不凡的那点东西，也暗了片刻。",
-      "describe": "对一名敌人造成 9 点无属性伤害；驱散其 2 个增益与全部链接/契约类状态；使其 30tick 内无法复活、攻击 -4（20tick）；自身一切的归宿 +1 层；若目标带有提线木偶，亡者归死亡权柄管辖，追加 2 点无属性伤害。；若这一击取了性命，亡者当场被扶起为役。",
+      "describe": "全场死亡账本 ≥3 本时：消耗全场各 1 层账本，对全体敌人造成 4 点无元素伤害并抹除残血（≤30%）；否则对单体造成 9 点无元素伤害。",
       "cost": {
         "energy": 7,
         "cooldown": 40,
@@ -2257,104 +2427,67 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_asc"
+        "fallbackSort": "hp_desc"
       },
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
+          "op": "if",
+          "condition": {
+            "kind": "field_status_count",
+            "id": "death_ledger",
+            "cmp": ">=",
+            "n": 3
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "death_ledger",
+              "target": "all_enemies",
+              "stacks": -1,
+              "stackMode": "consume",
+              "note": "死亡权柄：合并全场账目"
+            },
             {
               "type": "damage",
               "element": "none",
-              "value": 9,
-              "note": "生命死亡"
-            },
-            {
-              "type": "dispel",
-              "target": "target",
-              "dispelTarget": "unit",
-              "filter": {
-                "category": [
-                  "buff"
-                ],
-                "count": 2
-              },
-              "note": "记忆死亡"
-            },
-            {
-              "type": "dispel",
-              "target": "target",
-              "dispelTarget": "unit",
-              "filter": {
-                "category": [
-                  "link",
-                  "contract"
-                ],
-                "count": null
-              },
-              "note": "联系死亡（H40 增补类别）"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "revive_blocked",
-              "duration": 30,
-              "note": "烙印死亡"
-            },
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": -4,
-              "mode": "delta",
-              "duration": 20,
-              "note": "非凡特性短暂死亡"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "journeys_end",
-              "stacks": 1,
-              "stackMode": "add",
-              "duration": null,
-              "target": "self",
-              "note": "行使死亡权柄即归于一切的归宿（环节⑤ 2026-09-29 补产层段）"
+              "value": 4,
+              "target": "all_enemies",
+              "note": "合并结算：每个带账目标承受 4 点"
             },
             {
               "op": "if",
               "condition": {
-                "kind": "has_status",
+                "kind": "hp_percent",
                 "side": "target",
-                "id": "puppet_string",
-                "cmp": ">=",
-                "n": 1
+                "cmp": "<=",
+                "n": 0.3
               },
               "then": [
                 {
                   "type": "damage",
                   "element": "none",
-                  "value": 2,
-                  "note": "亡者归死亡权柄管辖：目标带提线木偶追加 2 点（环节⑤ 2026-09-29 跨轴读层段：end→undead）"
+                  "value": 9999,
+                  "target": "target",
+                  "lethal": true,
+                  "note": "合并后的账目压垮残血者"
                 }
               ],
               "else": []
             }
-          ]
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "target_dead"
-          },
-          "then": [
+          ],
+          "else": [
             {
-              "type": "spawn",
-              "template": "killed_unit",
-              "unitId": "unit_skeleton",
-              "position": "tail",
-              "note": "击杀即扶起：亡者当场被役使（死亡过程三段链）"
+              "type": "damage",
+              "element": "none",
+              "value": 9,
+              "target": "target",
+              "note": "账目不足 3 本：单体死亡权柄"
             }
-          ]
+          ],
+          "note": "拆账合并：全场死亡账本 ≥3 时合并结算"
         }
       ],
       "tentative": false,
@@ -2390,7 +2523,7 @@
       "flagship": false,
       "lore": "序列0 死神 —— \"『终点』权柄\"；\"一切的归宿，所有生命共同的终点\"",
       "flavor": "万物都有终点，而你就是那个终点——离它越近的人，被你拉过去时越轻；而凡是走进终点的，都回不来。",
-      "describe": "战斗开始时获得「一切的归宿」：你对生命不高于 50% 的目标伤害 ×1.3、不高于 25% 时 ×1.6（两档取高不叠乘）；你击杀的敌人无法复活。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时获得「一切的归宿」：你对生命不高于 50% 的目标伤害 ×1.3、不高于 25% 时 ×1.6（两档取高不叠乘）；你击杀的敌人无法复活。",
       "hook": [
         "on_battle_start"
       ],
@@ -2400,12 +2533,6 @@
           "statusId": "journeys_end",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
         }
       ],
       "sharedAcross": [
@@ -2421,7 +2548,23 @@
         ],
         "mood": "final, serene"
       },
-      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）"
+      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）",
+      "triggers": [
+        {
+          "event": "on_kill",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "journeys_end",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": null,
+              "target": "self",
+              "note": "归宿：每一次死亡都让你更接近终点（归宿 +1 层）"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_corpse_collector_s0_undead_authority",
@@ -2435,7 +2578,7 @@
       "flagship": false,
       "lore": "序列0 死神 —— \"『亡灵』权柄\"",
       "flavor": "死亡不是终点，而是一种兵役——凡是在你面前倒下的，最终都会在你的队伍里报到。",
-      "describe": "战斗开始时获得「亡灵权柄」：你控制的亡灵受伤 ×0.85；你的亡灵死亡时冥界魂数 +1（不受容量上限限制）；你的亡灵攻击附带 1 点无属性伤害。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时获得「亡灵权柄」：你控制的亡灵受伤 ×0.85；你的亡灵死亡时冥界魂数 +1（不受容量上限限制）；你的亡灵攻击附带 1 点无属性伤害。",
       "hook": [
         "on_battle_start"
       ],
@@ -2445,12 +2588,6 @@
           "statusId": "undead_authority",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
         }
       ],
       "tentative": false,
@@ -2476,7 +2613,7 @@
       "flagship": false,
       "lore": "天生便见常人所不见。",
       "flavor": "你睁眼，便见亡魂列队。",
-      "describe": "战斗开始时永久获得灵视。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时永久获得灵视。",
       "effects": [
         {
           "type": "mount_status",
@@ -2485,10 +2622,13 @@
           "target": "self"
         },
         {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 3,
+          "mode": "delta",
+          "duration": null,
+          "target": "self",
+          "note": "灵视觉醒：行动条速率 +3"
         }
       ],
       "tentative": false,
@@ -2517,7 +2657,7 @@
       "flagship": false,
       "lore": "幽冥之视洞穿伪装。",
       "flavor": "藏于暗处的，也逃不过你。",
-      "describe": "造成 3 点精神伤害；若目标处于隐匿类状态，本次伤害 ×1.5；若自身带有尸体特质，尸体之眼洞察，伤害 +1。；若这一击取了性命，亡者当场被扶起为役。",
+      "describe": "造成 3 点精神伤害；若目标处于隐匿类状态，本次伤害 ×1.5；若自身带有尸体特质，尸体之眼洞察，伤害 +1。；若这一击取了性命，亡者当场被扶起为役。；目标带死亡账本时伤害 +2。",
       "effects": [
         {
           "op": "if",
@@ -2545,6 +2685,25 @@
               "target": "target"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "death_ledger"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "target": "target",
+              "note": "读账：账本上写着它的死法，伤害 +2"
+            }
+          ],
+          "else": [],
+          "note": "读层：死亡账本"
         },
         {
           "op": "if",
@@ -2579,6 +2738,14 @@
               "note": "击杀即扶起：亡者当场被役使（死亡过程三段链）"
             }
           ]
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -5,
+          "mode": "delta",
+          "target": "self",
+          "note": "窥视的代价：自身行动条 -5"
         }
       ],
       "tentative": false,
@@ -2589,17 +2756,14 @@
       },
       "reach": "spell",
       "target": {
-        "selectionMode": "auto",
+        "selectionMode": "manual",
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "filter": {
-            "unitType": "SPIRIT"
-          },
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": null
+        "fallbackSort": "armor_desc"
       },
       "dimHooks": [
         {
@@ -2633,19 +2797,13 @@
       "flagship": false,
       "lore": "亡者的低语拂过指尖。",
       "flavor": "它们在跟你说话。",
-      "describe": "战斗开始时永久获得灵预警。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时永久获得灵预警。",
       "effects": [
         {
           "type": "mount_status",
           "statusId": "spirit_warning",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "reveal",
-          "target": "all_enemies",
-          "scope": "to_source",
-          "note": "灵视：亡者与灵体的位置无所遁形"
         }
       ],
       "tentative": false,
@@ -2674,7 +2832,7 @@
       "flagship": false,
       "lore": "逝者向你吐露杀机。",
       "flavor": "听，它在警告你。",
-      "describe": "使目标获得灵预警（1 次，3 回合）。；衰败的躯体被抽走一分生机。",
+      "describe": "使目标获得灵预警（1 次，15tick）并汲取 1 点生命；目标带死亡账本时，改为自身灵预警 2 次并额外汲取 1 点。",
       "effects": [
         {
           "type": "mount_status",
@@ -2690,6 +2848,34 @@
           "ratio": 0.5,
           "target": "target",
           "note": "亡者汲取：从衰败的躯体里抽走一分生机"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "death_ledger"
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "spirit_warning",
+              "target": "self",
+              "duration": 15,
+              "charges": 2,
+              "note": "读账：账本让预警更完整（2 次）"
+            },
+            {
+              "type": "drain",
+              "resource": "hp",
+              "value": 1,
+              "healRatio": 0.5,
+              "target": "target",
+              "note": "读账汲取 +1"
+            }
+          ],
+          "else": [],
+          "note": "读层：死亡账本"
         }
       ],
       "tentative": false,
@@ -2700,17 +2886,14 @@
       },
       "reach": "spell",
       "target": {
-        "selectionMode": "auto",
+        "selectionMode": "manual",
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
-          "filter": {
-            "unitType": "SPIRIT"
-          },
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": null
+        "fallbackSort": "buff_count_desc"
       },
       "conversionNotes": "翻译/语义：弱化不死大军，合撑\"亡者之王\"量级。2026-10-01 吟唱补漏：castTime null→0（非仪式）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=debuff） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。",
       "art": {
@@ -2734,7 +2917,7 @@
       "flagship": false,
       "lore": "于灵界俯瞰战场。",
       "flavor": "我看见你了，无论你藏在哪里。",
-      "describe": "造成 7 点精神伤害；若目标处于隐匿类状态，本次伤害 ×1.5。；若这一击取了性命，亡者当场被扶起为役。",
+      "describe": "全体敌人：4 点精神伤害（隐匿目标 ×1.5）并各记下 1 层死亡账本（30tick，可净化拆账）；击杀即扶起亡者。代价：自身行动条 -8。",
       "effects": [
         {
           "op": "if",
@@ -2749,19 +2932,34 @@
             {
               "type": "damage",
               "element": "mental",
-              "value": 7,
-              "mul": 1.5,
-              "target": "target"
+              "value": 4,
+              "target": "target",
+              "note": "俯瞰：隐匿目标受伤 ×1.5（4 点）"
             }
           ],
           "else": [
             {
               "type": "damage",
               "element": "mental",
-              "value": 7,
+              "value": 4,
               "target": "target"
             }
           ]
+        },
+        {
+          "type": "mount_status",
+          "statusId": "death_ledger",
+          "target": "all_enemies",
+          "duration": 30,
+          "note": "灵界瞭望：为全体敌人记下死亡账本（分散拆账）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -8,
+          "mode": "delta",
+          "target": "self",
+          "note": "瞭望的代价：自身行动条 -8"
         },
         {
           "op": "if",
@@ -2774,9 +2972,10 @@
               "template": "killed_unit",
               "unitId": "unit_skeleton",
               "position": "tail",
-              "note": "击杀即扶起：亡者当场被役使（死亡过程三段链）"
+              "note": "击杀即扶起：亡者当场被役使"
             }
-          ]
+          ],
+          "else": []
         }
       ],
       "tentative": false,
@@ -2789,15 +2988,11 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "mode": "unit",
+          "mode": "area",
           "faction": "enemy",
           "scope": "board",
-          "filter": {
-            "unitType": "SPIRIT"
-          },
-          "pickCount": 1
-        },
-        "fallbackSort": null
+          "pickCount": "all"
+        }
       },
       "dimHooks": [
         {
@@ -2832,7 +3027,7 @@
       "flagship": false,
       "lore": "死亡的气息，你比谁都熟。",
       "flavor": "你早已知晓结局。",
-      "describe": "战斗开始时永久获得灵视。；灵视张开：亡者的位置无所遁形。",
+      "describe": "战斗开始时永久获得灵视。",
       "effects": [
         {
           "type": "mount_status",
@@ -2859,7 +3054,35 @@
         ],
         "mood": "resigned, certain"
       },
-      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）"
+      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）",
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "field_status_count",
+                "id": "death_ledger",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 5,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "死兆预感：账本越多，越接近终局（行动条 +5）"
+                }
+              ],
+              "else": [],
+              "note": "读层：死亡账本"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_corpse_collector_s2_end_eye",
@@ -2906,6 +3129,15 @@
               "note": "击杀即扶起：亡者当场被役使（死亡过程三段链）"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "duration": 10,
+          "target": "self",
+          "note": "凝视终末的代价：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -2916,17 +3148,14 @@
       },
       "reach": "spell",
       "target": {
-        "selectionMode": "auto",
+        "selectionMode": "manual",
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
-          "filter": {
-            "unitType": "SPIRIT"
-          },
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": null
+        "fallbackSort": "debuff_count_desc"
       },
       "art": {
         "subject": "a single burning eye seeing through every disguise",
@@ -2937,6 +3166,175 @@
         "mood": "merciless, revealing"
       },
       "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 4→10tick（对齐拍板表） ｜ 2026-10-03 骨架手术：死亡过程换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：spirit_sight轴 enemy+board filter:unitType pick:all（轴选靶签名设计 §4） ｜ 2026-10-17 选靶错配修正·逐张对账：叙述为单体（单体/目标/最前排等），机制却是范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。"
+    },
+    {
+      "id": "skill_corpse_collector_s5_collect_debt",
+      "name": "催账",
+      "kind": "active",
+      "sequence": 5,
+      "sequenceName": "看门人",
+      "rarity": "rare",
+      "role": "core",
+      "axis": "end",
+      "flagship": false,
+      "lore": "序列5 —— \"『催账』：账记够了，就一起收。\"",
+      "flavor": "你翻开账本，念出第一个名字。所有被记下的伤口同时裂开。",
+      "describe": "若全场死亡账本 ≥2 本：消耗每个带账目标 1 层账本，对其各造成 3 点无元素伤害；否则对单体造成 2 点无元素伤害。代价：自身行动条 -6。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 15,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "mode": "area",
+          "faction": "enemy",
+          "scope": "board",
+          "pickCount": "all"
+        }
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "field_status_count",
+            "id": "death_ledger",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "death_ledger",
+              "target": "all_enemies",
+              "stacks": -1,
+              "stackMode": "consume",
+              "note": "催账：合并至少 2 本账目"
+            },
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 3,
+              "target": "all_enemies",
+              "note": "每个带账目标承受 3 点"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "target": "target",
+              "note": "账目不足：单体催讨"
+            }
+          ],
+          "note": "拆账合并低配：≥2 本即可合并"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -6,
+          "mode": "delta",
+          "target": "self",
+          "note": "催账的代价：自身行动条 -6"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 B3 拆账合并重构新增：低配合并卡（≥2 本），与死亡权柄（≥3 本）形成梯度。",
+      "art": {
+        "subject": "a ledger opening while every recorded wound splits open at once",
+        "elements": [
+          "open death ledger",
+          "simultaneous wounds",
+          "pale light"
+        ],
+        "mood": "inexorable"
+      }
+    },
+    {
+      "id": "skill_corpse_collector_s6_settle_single",
+      "name": "收账",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "死灵导师",
+      "rarity": "uncommon",
+      "role": "tech",
+      "axis": "undead",
+      "flagship": false,
+      "lore": "序列6 —— \"『收账』：一笔一笔来，也是一种收。\"",
+      "flavor": "你不急着一次收完。挑一本账，慢慢翻，慢慢拿。",
+      "describe": "单体敌人：若带死亡账本，消耗 1 层账本并造成 5 点无元素伤害、自身回复 3 点生命；否则造成 2 点无元素伤害。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 10,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "death_ledger"
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "death_ledger",
+              "target": "target",
+              "stacks": -1,
+              "stackMode": "consume",
+              "note": "收账：结清 1 本"
+            },
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 5,
+              "target": "target",
+              "note": "账目兑现"
+            },
+            {
+              "type": "heal",
+              "value": 3,
+              "target": "self",
+              "note": "收账回血"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "target": "target"
+            }
+          ],
+          "note": "读层：死亡账本"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 B3 拆账合并重构新增：单体合并/拆账节奏卡，序列 6 教学档。",
+      "art": {
+        "subject": "a collector settling one ledger at a time",
+        "elements": [
+          "single ledger page",
+          "pale hand",
+          "quiet light"
+        ],
+        "mood": "patient, grim"
+      }
     }
   ],
   "unitDefs": [
@@ -3196,7 +3594,7 @@
       ]
     }
   ],
-  "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方之一）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。收尸人经\"灵体之线 / 冥界（隐秘型）\"等 +1/次（见【魂枢·隐秘】、【冥界之门】）。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（收尸人·奴役目标最稳）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次（本系可借此操控占卜家秘偶，占卜家也可操控本系亡灵）\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，收尸人是主消费方之一。\n\n> **昼夜时钟（2026-09-21）**：亡灵/冥界类卡挂**暗夜档**（光照度 ≤2）。⚠️ 依据说明：死神途径核心象征是「死亡、亡灵、冥界、奴役」，**原著本身没有昼夜设定**；此处挂钩依据的是源质归属——收尸人属**永暗之河系**（与不眠者、战士同系，「永暗」即永恒之暗），属同源系延伸而非途径自带。若后续判定不该跨系延伸，可整体摘除。系数 ⚠️D 平衡占位。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「死亡过程」句式换形 29 张通用骨架卡——只做「向死亡」的事——伤害加深死亡印记而非即死；取了性命就把死者当场扶起为役；灵视之下亡者与灵体的位置无所遁形。**协作面**：役使的亡者替友军挡在阵前。",
+  "designNote": "> **隐秘值维度（永暗之河系 §2.3，主消费方之一）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。收尸人经\"灵体之线 / 冥界（隐秘型）\"等 +1/次（见【魂枢·隐秘】、【冥界之门】）。层级（照搬总览，与源堡同源）：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（收尸人·奴役目标最稳）\n> - **≥7**：友方「隐秘 / conceal / 愚弄」类技能 **+50%**\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次（本系可借此操控占卜家秘偶，占卜家也可操控本系亡灵）\n>\n> **跨源质写入方**：源堡（占卜家·愚弄/隐秘）、永暗之河（不眠者·隐秘 / 收尸人·灵体之线 / 战士·隐蔽）三方共用同一 `secrecy` 维度，收尸人是主消费方之一。\n\n> **昼夜时钟（2026-09-21）**：亡灵/冥界类卡挂**暗夜档**（光照度 ≤2）。⚠️ 依据说明：死神途径核心象征是「死亡、亡灵、冥界、奴役」，**原著本身没有昼夜设定**；此处挂钩依据的是源质归属——收尸人属**永暗之河系**（与不眠者、战士同系，「永暗」即永恒之暗），属同源系延伸而非途径自带。若后续判定不该跨系延伸，可整体摘除。系数 ⚠️D 平衡占位。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「死亡过程」句式换形 29 张通用骨架卡——只做「向死亡」的事——伤害加深死亡印记而非即死；取了性命就把死者当场扶起为役；灵视之下亡者与灵体的位置无所遁形。**协作面**：役使的亡者替友军挡在阵前。 ｜ 2026-10-23 B3 拆账合并重构：death_ledger 入池、灵界瞭望全体记账、终末轴合并兑现、reveal 模板收敛、新增催账/收账。",
   "sampleBuilds": [
     {
       "name": "A 冥界亡潮 ⚰",
@@ -3226,7 +3624,7 @@
         "尸体特质",
         "掘墓人体魄",
         "天然灵视",
-        "灵之同类"
+        "肉体不灭"
       ],
       "playstyle": "终末轴即死+凋零，魂枢推隐秘值吃共鸣"
     },
@@ -3242,7 +3640,7 @@
         "天然灵视",
         "尸体特质",
         "掘墓人体魄",
-        "灵之同类"
+        "肉体不灭"
       ],
       "playstyle": "灵视压制全场具备灵者，亡灵掉头"
     },

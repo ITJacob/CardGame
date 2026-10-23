@@ -9039,9 +9039,9 @@
   {
    "id": "corpse_collector",
    "name": "收尸人",
-   "state": "回溯补登",
-   "date": "2026-10-21",
-   "score": 100,
+   "state": null,
+   "date": "环节⑥拍板",
+   "score": 96,
    "scoreParts": {
     "命题": 10,
     "风格边界": 15,
@@ -9049,13 +9049,18 @@
     "决策点": 10,
     "签名键": 15,
     "角色配比": 15,
-    "钩子": 10
+    "钩子": 6
    },
-   "deductions": [],
+   "deductions": [
+    {
+     "dim": "钩子",
+     "why": "跨轴钩子 facet 词表外：status:write；status:write"
+    }
+   ],
    "proposition": {
-    "statement": "死亡过程链——不杀人，只推进死亡：印记/衰老层数堆到门槛才结算，on_kill 击杀即扶起役使",
-    "variable": "死亡印记铺给谁、收割时机（等满门槛还是提前引爆）",
-    "cost": "层数未够目标被奶回/净化则前功尽弃；收割节奏慢则对面战力始终在线"
+    "statement": "死亡记账——不追求一刀杀，而是把死亡分散记到多个敌人账上；账越分散，合并结算越重。对手可以逐个净化拆账",
+    "variable": "记给几个目标（全体铺账还是单体补记）、合并时机（≥2 本催账 / ≥3 本权柄 / 逐本收账）、先记谁",
+    "cost": "账本被逐个净化拆账；合并过早收益低；记账与合并花掉行动机会，输出断档"
    },
    "style": {
     "signature": "亡者冥界（filter.unitType 灵视克制 + on_kill 死亡结算）",
@@ -9065,7 +9070,7 @@
      "驱散",
      "基础增益"
     ],
-    "redline": "途径设计身份.md 收尸人身份卡：死亡结算须走「死亡是过程」语义，不做直接即死；亡者军团受 summon_cap 约束"
+    "redline": "途径设计身份.md 收尸人身份卡：死亡结算须走「死亡是过程」语义，不做直接即死；亡者军团受 summon_cap 约束；账本必须可拆，不做不可驱散的死亡预约"
    },
    "axes": [
     {
@@ -9078,13 +9083,17 @@
       "raw": "status:corpse_nature"
      },
      "loop": {
-      "produce": "尸体特质产层",
-      "consume": "不死者/右手触碰读层消费",
+      "produce": "尸体特质/掘墓人体魄产层",
+      "consume": "不死者/右手触碰读层（复活质量/追加治疗）",
       "clear": "层数被消费或尸体被净化清除",
       "produceCards": [
        {
         "name": "尸体特质",
         "id": "skill_corpse_collector_s9_corpse_nature"
+       },
+       {
+        "name": "掘墓人体魄",
+        "id": "skill_corpse_collector_s8_gravedigger_body"
        }
       ],
       "consumeCards": [
@@ -9117,9 +9126,12 @@
       "enablers": [
        "尸体特质"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "不死者",
+       "右手触碰"
+      ],
       "payoffsNotes": [],
-      "axisScore": 65.9
+      "axisScore": 75.0
      }
     },
     {
@@ -9128,13 +9140,13 @@
      "symbol": "⚰️",
      "anchor": {
       "kind": "status",
-      "id": "journeys_end",
-      "raw": "status:journeys_end"
+      "id": "journeys_end + status:death_ledger",
+      "raw": "status:journeys_end + status:death_ledger"
      },
      "loop": {
-      "produce": "一切的归宿/死亡权柄产层",
-      "consume": "苍白世界读层展开终末",
-      "clear": "层数被消费或界域消散清除",
+      "produce": "一切的归宿/死亡权柄产层；灵视轴铺账",
+      "consume": "死亡权柄（≥3 本）/催账（≥2 本）合并、死亡宣告/苍白世界读账",
+      "clear": "账本被合并消耗或净化",
       "produceCards": [
        {
         "name": "一切的归宿",
@@ -9147,22 +9159,34 @@
       ],
       "consumeCards": [
        {
+        "name": "死亡权柄",
+        "id": "skill_corpse_collector_s0_death_authority"
+       },
+       {
+        "name": "催账",
+        "id": "skill_corpse_collector_s5_collect_debt"
+       },
+       {
+        "name": "死亡宣告",
+        "id": "skill_corpse_collector_s1_death_sentence"
+       },
+       {
         "name": "苍白世界",
         "id": "skill_corpse_collector_s1_pale_world"
        }
       ]
      },
-     "decision": "终末展开时机：何时把战场拖进苍白世界",
+     "decision": "合并时机与合并对象；先做哪本账",
      "signatures": [],
-     "planCards": 9,
+     "planCards": 10,
      "roleMixDeclared": {
       "core": 7,
-      "generic": 2
+      "generic": 3
      },
      "actual": {
-      "cards": 9,
+      "cards": 10,
       "roleMix": {
-       "core": 7,
+       "core": 8,
        "generic": 2
       },
       "anchorMatch": true,
@@ -9171,10 +9195,12 @@
        "死亡权柄"
       ],
       "payoffs": [
-       "苍白世界"
+       "苍白世界",
+       "催账",
+       "死亡宣告"
       ],
       "payoffsNotes": [],
-      "axisScore": 90.1
+      "axisScore": 88.3
      }
     },
     {
@@ -9183,13 +9209,13 @@
      "symbol": "👁️",
      "anchor": {
       "kind": "status",
-      "id": "spirit_sight",
-      "raw": "status:spirit_sight"
+      "id": "spirit_sight + status:death_ledger",
+      "raw": "status:spirit_sight + status:death_ledger"
      },
      "loop": {
-      "produce": "天然灵视/灵视觉醒/死兆预感产层",
-      "consume": "死亡之眼/幽冥窥视/灵界瞭望读层消费",
-      "clear": "层数被消费或目标死亡清除",
+      "produce": "天然灵视/灵视觉醒/灵界瞭望产层并记账",
+      "consume": "死亡之眼/幽冥窥视/亡者低语读账兑现",
+      "clear": "账本被净化、过期或灵视层数被消费",
       "produceCards": [
        {
         "name": "天然灵视",
@@ -9200,8 +9226,8 @@
         "id": "skill_corpse_collector_s9_sight_awaken"
        },
        {
-        "name": "死兆预感",
-        "id": "skill_corpse_collector_s3_death_omen"
+        "name": "灵界瞭望",
+        "id": "skill_corpse_collector_s4_spirit_lookout"
        }
       ],
       "consumeCards": [
@@ -9214,12 +9240,12 @@
         "id": "skill_corpse_collector_s7_ghost_see"
        },
        {
-        "name": "灵界瞭望",
-        "id": "skill_corpse_collector_s4_spirit_lookout"
+        "name": "亡者低语",
+        "id": "skill_corpse_collector_s5_dead_whisper"
        }
       ]
      },
-     "decision": "灵视对象选择：先看谁、灵视层数堆到几层再动手",
+     "decision": "记账对象与补记时机：铺全场还是先记关键目标",
      "signatures": [
       {
        "key": "flag:filter.unitType",
@@ -9277,16 +9303,14 @@
       "enablers": [
        "天然灵视",
        "灵视觉醒",
-       "死兆预感"
-      ],
-      "payoffs": [
-       "死亡之眼"
-      ],
-      "payoffsNotes": [
-       "幽冥窥视",
        "灵界瞭望"
       ],
-      "axisScore": 75.9
+      "payoffs": [
+       "死亡之眼",
+       "幽冥窥视"
+      ],
+      "payoffsNotes": [],
+      "axisScore": 85.1
      }
     },
     {
@@ -9299,8 +9323,8 @@
       "raw": "status:puppet_string"
      },
      "loop": {
-      "produce": "驱使亡者/通灵产层",
-      "consume": "灵魂掌控/冥界之门读层消费",
+      "produce": "驱使亡者/通灵/唤起亡者产层",
+      "consume": "灵魂掌控/冥界之门/收账读层或单体结账",
       "clear": "层数被消费或亡者被驱散清除",
       "produceCards": [
        {
@@ -9310,6 +9334,10 @@
        {
         "name": "通灵",
         "id": "skill_corpse_collector_s7_seance"
+       },
+       {
+        "name": "唤起亡者",
+        "id": "skill_corpse_collector_s6_raise_dead"
        }
       ],
       "consumeCards": [
@@ -9320,6 +9348,10 @@
        {
         "name": "冥界之门",
         "id": "skill_corpse_collector_s4_underworld_gate"
+       },
+       {
+        "name": "收账",
+        "id": "skill_corpse_collector_s6_settle_single"
        }
       ]
      },
@@ -9337,24 +9369,25 @@
          "id": "skill_corpse_collector_s1_soul_capture"
         }
        ],
-       "empirical": 2,
+       "empirical": 3,
        "ok": true
       }
      ],
-     "planCards": 16,
+     "planCards": 15,
      "roleMixDeclared": {
       "core": 9,
       "bridge": 1,
-      "generic": 5,
+      "generic": 4,
       "trap": 1
      },
      "actual": {
-      "cards": 16,
+      "cards": 15,
       "roleMix": {
        "core": 9,
-       "generic": 5,
+       "generic": 3,
        "bridge": 1,
-       "trap": 1
+       "trap": 1,
+       "tech": 1
       },
       "anchorMatch": true,
       "enablers": [
@@ -9366,24 +9399,40 @@
        "冥界之门"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.8
+      "axisScore": 77.6
      }
     }
    ],
    "crossAxis": [
     {
-     "slot": "亡者之王",
+     "slot": "灵界瞭望",
      "slots": [
       {
-       "name": "亡者之王",
-       "id": "skill_corpse_collector_s2_undead_king"
+       "name": "灵界瞭望",
+       "id": "skill_corpse_collector_s4_spirit_lookout"
       }
      ],
-     "slotId": "skill_corpse_collector_s2_undead_king",
+     "slotId": "skill_corpse_collector_s4_spirit_lookout",
      "axis": "spirit_sight",
      "concept": "status",
-     "facet": "read",
-     "purpose": "读灵视层数强化亡者统御",
+     "facet": "write",
+     "purpose": "为全体敌人铺死亡账本（end 轴合并的产出来源）",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "死亡之眼",
+     "slots": [
+      {
+       "name": "死亡之眼",
+       "id": "skill_corpse_collector_s8_death_eye"
+      }
+     ],
+     "slotId": "skill_corpse_collector_s8_death_eye",
+     "axis": "spirit_sight",
+     "concept": "status",
+     "facet": "write",
+     "purpose": "单体补记账本（被拆后的修复手段）",
      "ok": true,
      "reason": ""
     },
@@ -9396,26 +9445,74 @@
       }
      ],
      "slotId": "skill_corpse_collector_s0_death_authority",
-     "axis": "undead",
+     "axis": "end",
      "concept": "status",
      "facet": "read",
-     "purpose": "读亡者牵线层数行死亡权柄",
+     "purpose": "读全场账本数 ≥3 合并结算",
      "ok": true,
      "reason": ""
     },
     {
-     "slot": "幽冥窥视",
+     "slot": "催账",
      "slots": [
       {
-       "name": "幽冥窥视",
-       "id": "skill_corpse_collector_s7_ghost_see"
+       "name": "催账",
+       "id": "skill_corpse_collector_s5_collect_debt"
       }
      ],
-     "slotId": "skill_corpse_collector_s7_ghost_see",
+     "slotId": "skill_corpse_collector_s5_collect_debt",
+     "axis": "end",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读全场账本数 ≥2 低配合并",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "亡者低语",
+     "slots": [
+      {
+       "name": "亡者低语",
+       "id": "skill_corpse_collector_s5_dead_whisper"
+      }
+     ],
+     "slotId": "skill_corpse_collector_s5_dead_whisper",
+     "axis": "spirit_sight",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读账本强化灵预警",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "死神使者",
+     "slots": [
+      {
+       "name": "死神使者",
+       "id": "skill_corpse_collector_s5_death_envoy"
+      }
+     ],
+     "slotId": "skill_corpse_collector_s5_death_envoy",
+     "axis": "end",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读账本追加冰霜伤害",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "不死者",
+     "slots": [
+      {
+       "name": "不死者",
+       "id": "skill_corpse_collector_s4_flesh_undying"
+      }
+     ],
+     "slotId": "skill_corpse_collector_s4_flesh_undying",
      "axis": "corpse",
      "concept": "status",
      "facet": "read",
-     "purpose": "读尸骸特质层数加深窥视",
+     "purpose": "读尸体特质提升复活生命",
      "ok": true,
      "reason": ""
     }
@@ -9446,12 +9543,92 @@
      "writeOk": false,
      "ok": false,
      "reason": "写入卡位无实证"
+    },
+    {
+     "hub": "puppet_string",
+     "hubName": "提线木偶",
+     "writers": [
+      {
+       "name": "通灵",
+       "id": "skill_corpse_collector_s7_seance",
+       "pathway": "corpse_collector"
+      },
+      {
+       "name": "亡灵仪式",
+       "id": "skill_corpse_collector_s7_death_rite",
+       "pathway": "corpse_collector"
+      },
+      {
+       "name": "驱使亡者",
+       "id": "skill_corpse_collector_s6_drive_dead",
+       "pathway": "corpse_collector"
+      }
+     ],
+     "readers": [
+      {
+       "name": "灵魂掌控",
+       "id": "skill_corpse_collector_s1_soul_capture",
+       "pathway": "corpse_collector"
+      },
+      {
+       "name": "冥界之门",
+       "id": "skill_corpse_collector_s4_underworld_gate",
+       "pathway": "corpse_collector"
+      },
+      {
+       "name": "收账",
+       "id": "skill_corpse_collector_s6_settle_single",
+       "pathway": "corpse_collector"
+      }
+     ],
+     "participants": [
+      "corpse_collector",
+      "seer",
+      "assassin",
+      "thief"
+     ],
+     "crossPathway": true,
+     "writeOk": true,
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "hub": "death_tally",
+     "hubName": "death_tally",
+     "writers": [
+      {
+       "name": "（死亡结算自动写入）",
+       "id": null,
+       "placeholder": true
+      }
+     ],
+     "readers": [
+      {
+       "name": "死亡权柄",
+       "id": "skill_corpse_collector_s0_death_authority",
+       "pathway": "corpse_collector"
+      },
+      {
+       "name": "死神使者",
+       "id": "skill_corpse_collector_s5_death_envoy",
+       "pathway": "corpse_collector"
+      }
+     ],
+     "participants": [
+      "corpse_collector",
+      "warrior",
+      "monster"
+     ],
+     "crossPathway": false,
+     "writeOk": false,
+     "ok": false,
+     "reason": "枢纽未标 crossPathway"
     }
    ],
    "roles": [
     {
      "role": "core",
-     "declared": 27,
+     "declared": 28,
      "declaredSlots": [
       {
        "name": "尸体特质",
@@ -9462,20 +9639,84 @@
        "id": "skill_corpse_collector_s8_gravedigger_body"
       },
       {
-       "name": "不死者",
-       "id": "skill_corpse_collector_s4_flesh_undying"
-      },
-      {
-       "name": "右手触碰",
-       "id": "skill_corpse_collector_s3_right_hand"
-      },
-      {
        "name": "死亡之眼",
        "id": "skill_corpse_collector_s8_death_eye"
       },
       {
        "name": "灵之耳语",
        "id": "skill_corpse_collector_s8_spirit_whisper"
+      },
+      {
+       "name": "通灵",
+       "id": "skill_corpse_collector_s7_seance"
+      },
+      {
+       "name": "亡灵仪式",
+       "id": "skill_corpse_collector_s7_death_rite"
+      },
+      {
+       "name": "驱使亡者",
+       "id": "skill_corpse_collector_s6_drive_dead"
+      },
+      {
+       "name": "唤起亡者",
+       "id": "skill_corpse_collector_s6_raise_dead"
+      },
+      {
+       "name": "死神使者",
+       "id": "skill_corpse_collector_s5_death_envoy"
+      },
+      {
+       "name": "冥界放出",
+       "id": "skill_corpse_collector_s5_underworld_release"
+      },
+      {
+       "name": "冥界之门",
+       "id": "skill_corpse_collector_s4_underworld_gate"
+      },
+      {
+       "name": "不死者",
+       "id": "skill_corpse_collector_s4_flesh_undying"
+      },
+      {
+       "name": "亡灵驱使",
+       "id": "skill_corpse_collector_s5_undead_haste_drive"
+      },
+      {
+       "name": "摆渡·对视",
+       "id": "skill_corpse_collector_s3_ferry_gaze"
+      },
+      {
+       "name": "左手触碰",
+       "id": "skill_corpse_collector_s3_left_hand"
+      },
+      {
+       "name": "右手触碰",
+       "id": "skill_corpse_collector_s3_right_hand"
+      },
+      {
+       "name": "死亡宣告",
+       "id": "skill_corpse_collector_s1_death_sentence"
+      },
+      {
+       "name": "苍白世界",
+       "id": "skill_corpse_collector_s1_pale_world"
+      },
+      {
+       "name": "灵之主宰",
+       "id": "skill_corpse_collector_s1_spirit_master"
+      },
+      {
+       "name": "死亡权柄",
+       "id": "skill_corpse_collector_s0_death_authority"
+      },
+      {
+       "name": "一切的归宿",
+       "id": "skill_corpse_collector_s0_journeys_end"
+      },
+      {
+       "name": "亡灵权柄",
+       "id": "skill_corpse_collector_s0_undead_authority"
       },
       {
        "name": "幽冥窥视",
@@ -9498,71 +9739,11 @@
        "id": "skill_corpse_collector_s3_death_omen"
       },
       {
-       "name": "通灵",
-       "id": "skill_corpse_collector_s7_seance"
-      },
-      {
-       "name": "亡灵仪式",
-       "id": "skill_corpse_collector_s7_death_rite"
-      },
-      {
-       "name": "驱使亡者",
-       "id": "skill_corpse_collector_s6_drive_dead"
-      },
-      {
-       "name": "唤起亡者",
-       "id": "skill_corpse_collector_s6_raise_dead"
-      },
-      {
-       "name": "冥界放出",
-       "id": "skill_corpse_collector_s5_underworld_release"
-      },
-      {
-       "name": "冥界之门",
-       "id": "skill_corpse_collector_s4_underworld_gate"
-      },
-      {
-       "name": "亡灵驱使",
-       "id": "skill_corpse_collector_s5_undead_haste_drive"
-      },
-      {
-       "name": "灵之主宰",
-       "id": "skill_corpse_collector_s1_spirit_master"
-      },
-      {
-       "name": "亡灵权柄",
-       "id": "skill_corpse_collector_s0_undead_authority"
-      },
-      {
-       "name": "死神使者",
-       "id": "skill_corpse_collector_s5_death_envoy"
-      },
-      {
-       "name": "摆渡·对视",
-       "id": "skill_corpse_collector_s3_ferry_gaze"
-      },
-      {
-       "name": "左手触碰",
-       "id": "skill_corpse_collector_s3_left_hand"
-      },
-      {
-       "name": "死亡宣告",
-       "id": "skill_corpse_collector_s1_death_sentence"
-      },
-      {
-       "name": "苍白世界",
-       "id": "skill_corpse_collector_s1_pale_world"
-      },
-      {
-       "name": "死亡权柄",
-       "id": "skill_corpse_collector_s0_death_authority"
-      },
-      {
-       "name": "一切的归宿",
-       "id": "skill_corpse_collector_s0_journeys_end"
+       "name": "催账",
+       "id": "skill_corpse_collector_s5_collect_debt"
       }
      ],
-     "actual": 27,
+     "actual": 28,
      "actualSlots": [
       {
        "name": "尸体特质",
@@ -9671,6 +9852,10 @@
       {
        "name": "死兆预感",
        "id": "skill_corpse_collector_s3_death_omen"
+      },
+      {
+       "name": "催账",
+       "id": "skill_corpse_collector_s5_collect_debt"
       }
      ]
     },
@@ -9679,12 +9864,12 @@
      "declared": 3,
      "declaredSlots": [
       {
-       "name": "腐息",
-       "id": "skill_corpse_collector_s9_decay_breath"
-      },
-      {
        "name": "天然灵视",
        "id": "skill_corpse_collector_s9_natural_sight"
+      },
+      {
+       "name": "腐息",
+       "id": "skill_corpse_collector_s9_decay_breath"
       },
       {
        "name": "灵视觉醒",
@@ -9726,20 +9911,8 @@
     },
     {
      "role": "generic",
-     "declared": 9,
+     "declared": 7,
      "declaredSlots": [
-      {
-       "name": "肉体不灭",
-       "id": "skill_corpse_collector_s4_flesh_immortal"
-      },
-      {
-       "name": "摆渡人之躯",
-       "id": "skill_corpse_collector_s3_ferryman_body"
-      },
-      {
-       "name": "灵之同类",
-       "id": "skill_corpse_collector_s7_kin_of_spirits"
-      },
       {
        "name": "唤起骷髅",
        "id": "skill_corpse_collector_s6_raise_skeleton"
@@ -9749,12 +9922,16 @@
        "id": "skill_corpse_collector_s6_raise_zombie"
       },
       {
-       "name": "亡者之语",
-       "id": "skill_corpse_collector_s6_word_of_dead"
-      },
-      {
        "name": "小型冥界",
        "id": "skill_corpse_collector_s5_underworld"
+      },
+      {
+       "name": "肉体不灭",
+       "id": "skill_corpse_collector_s4_flesh_immortal"
+      },
+      {
+       "name": "摆渡人之躯",
+       "id": "skill_corpse_collector_s3_ferryman_body"
       },
       {
        "name": "完全的死亡",
@@ -9765,12 +9942,8 @@
        "id": "skill_corpse_collector_s2_pale_kingdom"
       }
      ],
-     "actual": 9,
+     "actual": 7,
      "actualSlots": [
-      {
-       "name": "灵之同类",
-       "id": "skill_corpse_collector_s7_kin_of_spirits"
-      },
       {
        "name": "唤起骷髅",
        "id": "skill_corpse_collector_s6_raise_skeleton"
@@ -9778,10 +9951,6 @@
       {
        "name": "唤起活尸",
        "id": "skill_corpse_collector_s6_raise_zombie"
-      },
-      {
-       "name": "亡者之语",
-       "id": "skill_corpse_collector_s6_word_of_dead"
       },
       {
        "name": "小型冥界",
@@ -9824,18 +9993,26 @@
     },
     {
      "role": "tech",
-     "declared": 1,
+     "declared": 2,
      "declaredSlots": [
       {
        "name": "终末之眼",
        "id": "skill_corpse_collector_s2_end_eye"
+      },
+      {
+       "name": "收账",
+       "id": "skill_corpse_collector_s6_settle_single"
       }
      ],
-     "actual": 1,
+     "actual": 2,
      "actualSlots": [
       {
        "name": "终末之眼",
        "id": "skill_corpse_collector_s2_end_eye"
+      },
+      {
+       "name": "收账",
+       "id": "skill_corpse_collector_s6_settle_single"
       }
      ]
     }
@@ -9907,15 +10084,16 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 3,
-     "total": 3,
+     "hit": 7,
+     "total": 7,
      "miss": []
     },
     "跨系钩子": {
-     "hit": 0,
-     "total": 1,
+     "hit": 1,
+     "total": 3,
      "miss": [
-      "enslave(crossPathway=True,写入实证=False)"
+      "enslave(crossPathway=True,写入实证=False)",
+      "death_tally(crossPathway=False,写入实证=False)"
      ]
     }
    }

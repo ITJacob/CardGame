@@ -59,8 +59,8 @@
 | 锚点 | 4/4（100%） | — |
 | 签名键 | 3/3（100%） | — |
 | 角色配比 | 7/7（100%） | — |
-| 跨轴钩子 | 3/3（100%） | — |
-| 跨系钩子 | 0/1（0%） | enslave(crossPathway=True,写入实证=False) |
+| 跨轴钩子 | 7/7（100%） | — |
+| 跨系钩子 | 1/3（33%） | enslave(crossPathway=True,写入实证=False)；death_tally(crossPathway=False,写入实证=False) |
 
 ## 罪犯（criminal）
 
