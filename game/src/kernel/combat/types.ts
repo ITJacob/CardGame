@@ -181,4 +181,6 @@ export type DomainEvent =
   | { type: 'UnitTranslocated'; unitId: UnitId }
   | { type: 'UnitReturned'; unitId: UnitId }
   | { type: 'UnitSpawned'; unitId: UnitId }
+  /** 召唤物消散（超 summon_cap / 维持费断供）——不走死亡链，不计死亡簿 */
+  | { type: 'UnitDispersed'; unitId: UnitId; reason: string }
   | { type: 'UnitDied'; unitId: UnitId }

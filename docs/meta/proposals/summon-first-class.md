@@ -1,6 +1,6 @@
 # 召唤牌系统（机制扩容提案）
 
-> 状态：**已拍板（2026-10-23）**；P0/P1/P2 已落地（13 张纯 spawn 卡转 kind=summon、24 个 unitDef 补登、召唤谓词与复合卡二评），P3 部分落地（corpse 2 张已转，军团 cap 特权卡待设计）
+> 状态：**已拍板（2026-10-23）**；P0/P1/P2/P3 全部落地（13 张纯 spawn 卡转 kind=summon、24 个 unitDef 补登、召唤谓词与复合卡二评、corpse 2 张转 summon、军团 cap 特权卡与引擎 cap 结算）
 > 入口：环节⑥骨架重议 → 机制扩容（`WORKFLOW.md`）；对标 `weapon-first-class.md`（同套迁移模式）
 > 结论：召唤单位 = 新增的技能卡类型 `kind: "summon"`，**打出即落场**；引用 unitDef 蓝本；无背包、单位不回手。
 > 纪律：本提案**不改**任何 `docs/ddd` / `docs/json` / schema / 脚本；实施须先过环节⑥ Gate 并按 ② 机制落地顺序推进。
@@ -141,7 +141,7 @@ play(summon card)
 | P0 | schema（kind + summonSpec + 条件约束）；SCHEMA.md 登记；unitDefs 补全 24 单位 | schema 校验 + `validate_schema.py` + 文档评审 |
 | P1 | 13 张首批迁移（避开 corpse）；validate 新规则；内核打出分支；site/game 渲染 | 四门禁全绿 + `npm test` + `score.py` 不退化 |
 | P2 | 召唤谓词（`caster_has_summon.tag/unitId` + `target_is_summoned`，不另立别名）；卡面单位属性面板；复合卡二批评审 | `playable_scan` 可测 |
-| P3 | corpse 2 张转 summon（唤起骷髅 / 唤起活尸；zone 形态两张不转）；军团 cap 特权卡设计待做 | 环节⑥ Gate 通过 |
+| P3 | corpse 2 张转 summon（唤起骷髅 / 唤起活尸；zone 形态两张不转）；军团 cap 特权卡（收尸人·尸山号令 / 药师·兽群号令）与引擎 cap 结算 | 环节⑥ Gate 通过 |
 
 迁移选项：整批一次，**不留兼容壳**（同武器拍板 8）；被动纯 spawn 卡与复合卡本就不在迁移范围，无需壳。
 
@@ -160,7 +160,7 @@ play(summon card)
 | 召唤牌构筑 | 召唤牌与主动技/武器牌竞争牌位，带几只进场是构筑决策 | 编队归主动槽 |
 | 召唤节奏 | cap 是硬约束：何时召、召哪只、何时挤掉旧的 | summon_cap + 打出直通 |
 | 破召对策 | 召唤物是资产也是破绽：克制谓词与击杀优先级的博弈 | target_is_summoned / unitType（已有） |
-| 军团规模 | 以 cap 特权换取多单位同时在场 | summonCap 预留键（P3） |
+| 军团规模 | 以 cap 特权换取多单位同时在场 | ✅ 已落地（2026-10-23）：基数 3 + 维持费型特权卡；`modifiers.summon_cap_bonus` / `summon_cap_override` / spawn `summonCap` 引擎接通 |
 | 单位养成 | 召唤物在场期间被强化/继承，养成线是独立玩法 | companionBuff / inheritSkills（已有，待首张卡） |
 
 ## 10. 拍板记录（2026-10-23）
@@ -175,6 +175,7 @@ play(summon card)
 | 6 | on-play 战吼 | 允许 `effects`（对标武器拍板 2），但禁含 spawn 段（一卡一单位） |
 | 7 | 新原语 | 不新增；`summon_tag` / `summon_is` 谓词留 P2 |
 | 8 | 兼容壳 | 不留；spawn 原语继续合法（增量升格，非替换） |
+| 9 | 军团 cap（2026-10-23） | 基数全局 3；特权用维持费型；先落收尸人·尸山号令（能量 −0.4/tick）与药师·兽群号令（生命 −0.4/tick），各 +2 cap、25tick；断供/到期后超限最老消散 |
 
 ## 11. 实施前仍需明确的细节（不阻塞拍板）
 

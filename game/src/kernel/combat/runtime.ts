@@ -2,7 +2,7 @@
 // 战场 / Placement / Scheduler，并把一次 step 停在 Manual 决策点。
 import type { FactionId, LaneId, Phase, PoolKey, UnitId } from '../ids'
 import type { Battle, Coordinate, Faction, Lane, OccupancyChanged } from '../battle/types'
-import { LANE_CAPACITY } from '../battle/types'
+import { LANE_CAPACITY, SUMMON_CAP_BASE } from '../battle/types'
 import { BattlePlacement } from '../battle/placement'
 import { createLookup, type CatalogLookup } from '../catalog/lookup'
 import type { Catalog, EffectNode, EffModifyWeapon, TriggerDef, WeaponDef } from '../catalog/types'
@@ -21,7 +21,7 @@ import { commitBehavior } from '../execution/commit'
 import type { BehaviorSource, PipelineDeps } from '../execution/pipeline'
 import type { Consumption } from '../shared/types'
 import type { DecisionInput, DecisionRequest } from '../execution/types'
-import { withParams, type EffectContext, type OpportunityPayload } from '../effect/context'
+import { numeric, withParams, type EffectContext, type OpportunityPayload } from '../effect/context'
 import type { TargetScope, TriggerSubjects } from '../effect/target-scope'
 import { checkCondition, executeNodes } from '../effect/executor'
 import { BASIC_ATTACK_ID, basicAttackSource } from './basicAttack'
@@ -258,6 +258,8 @@ class CombatRuntime implements CombatRuntimeHandle {
 
     const crossed = this.scheduler.tick()
     this.tickTimers()
+    // 军团维持费断供 / 状态到期后 cap 下降 → 超限部分最老消散（H39）
+    this.enforceSummonCaps()
     this.tickZones()
     if (this.battle.phase !== this.prevPhase) {
       this.prevPhase = this.battle.phase
@@ -821,7 +823,11 @@ class CombatRuntime implements CombatRuntimeHandle {
     })
   }
 
-  private opSpawn(caster: CombatUnit | null, node: { unitId?: string; def?: string; kind?: string; position?: string; hpRatio?: unknown; atkRatio?: unknown }, near: CombatUnit | null): void {
+  private opSpawn(
+    caster: CombatUnit | null,
+    node: { unitId?: string; def?: string; kind?: string; position?: string; hpRatio?: unknown; atkRatio?: unknown; count?: unknown; summonCap?: unknown; summonCapOverride?: unknown },
+    near: CombatUnit | null,
+  ): void {
     const defId = node.unitId ?? node.def ?? node.kind
     const def = defId ? this.lookup.unitDef(defId) : undefined
     if (!def) {
@@ -830,12 +836,31 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
     const owner = caster
     if (!owner) return
+    const count = Math.max(1, Math.floor(numeric(node.count, 1)))
+    // 卡面 spawn 段可做一次性 cap 覆写（H39）：overrides 只抬不压
+    const capOverride = this.spawnCapOf(node.summonCap ?? node.summonCapOverride)
+    const cap = Math.max(owner.effectiveSummonCap(SUMMON_CAP_BASE), capOverride ?? 0)
+    for (let i = 0; i < count; i += 1) {
+      if (cap <= 0) {
+        this.warn(`召唤失败：召唤位上限为 0（${defId}）`)
+        return
+      }
+      // H39：超限 = 最早在场者先消散，再落新单位
+      this.disperseOverCap(owner, cap)
+      const unit = this.spawnOne(owner, def, near)
+      if (!unit) return
+      this.emit({ type: 'UnitSpawned', unitId: unit.id })
+      // 载荷主体：on_spawn 的 target = 新生单位（执行参数 §2.3），需求本身落在召唤物身上
+      this.fireStatusTriggers(owner, 'on_spawn', undefined, undefined, { target: unit })
+    }
+  }
+
+  /** 单个召唤物落场；半场已满返回 null */
+  private spawnOne(owner: CombatUnit, def: { id: string; base?: unknown; tags?: readonly string[]; unitType?: string }, near: CombatUnit | null): CombatUnit | null {
     const base = typeof def.base === 'object' && def.base ? (def.base as { hp?: number; atk?: number }) : {}
     const hp = typeof base.hp === 'number' ? base.hp : 12
-    const atk = typeof base.atk === 'number' ? base.atk : 3
-    const id = this.ids.next('summon')
     const unit = new CombatUnit(
-      id,
+      this.ids.next('summon'),
       owner.faction,
       { strength: Math.max(0, Math.round((hp - 30) / 10)), agility: 0, intelligence: 0, rank: 0 },
       owner.gender,
@@ -859,13 +884,57 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
     if (!placed) {
       this.units.remove(unit.id)
-      this.warn(`召唤失败：己方半场已满（${defId}）`)
-      return
+      this.warn(`召唤失败：己方半场已满（${def.id}）`)
+      return null
     }
-    this.emit({ type: 'UnitSpawned', unitId: unit.id })
-    // 载荷主体：on_spawn 的 target = 新生单位（执行参数 §2.3），需求本身落在召唤物身上
-    this.fireStatusTriggers(owner, 'on_spawn', undefined, undefined, { target: unit })
-    void atk
+    return unit
+  }
+
+  /** spawn 段 summonCap：number 直接用；对象取 default（valueFrom 属战外阶梯数据，不在此求值） */
+  private spawnCapOf(raw: unknown): number | null {
+    if (typeof raw === 'number' && Number.isFinite(raw)) return Math.trunc(raw)
+    if (raw && typeof raw === 'object') {
+      const v = (raw as { default?: unknown }).default
+      if (typeof v === 'number' && Number.isFinite(v)) return Math.trunc(v)
+    }
+    return null
+  }
+
+  /** 活着的在场召唤物（注册表插入序 = 召唤序） */
+  private liveSummons(ownerId: string): CombatUnit[] {
+    return this.units.all().filter((u) => u.summonerId === ownerId && !u.isDead)
+  }
+
+  /** 超出上限时按「最早在场者先消散」逐个腾位 */
+  private disperseOverCap(owner: CombatUnit, cap: number): void {
+    const list = this.liveSummons(owner.id)
+    while (list.length >= cap) {
+      const oldest = list.shift()
+      if (!oldest) break
+      this.disperseSummon(oldest)
+    }
+  }
+
+  /** 消散：不走死亡链（不记死亡簿/击杀），状态按 on_remove 路径卸载 */
+  private disperseSummon(unit: CombatUnit): void {
+    for (const inst of [...unit.statuses.all()]) {
+      unit.statuses.unmount(inst.instanceId, 'summon_cap')
+      unit.provenance.revertBySource(inst.instanceId)
+      this.emit({ type: 'StatusExpired', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id })
+      this.fireStatusTriggers(unit, 'on_remove', inst.defId, undefined, { target: unit })
+    }
+    unit.provenance.revertAll()
+    this.placement.remove(unit.id)
+    this.units.remove(unit.id)
+    this.emit({ type: 'UnitDispersed', unitId: unit.id, reason: 'summon_cap' })
+  }
+
+  /** cap 下降后（状态到期/被打断）在 tick 边界收敛：超限部分最老消散 */
+  private enforceSummonCaps(): void {
+    const owners = this.units.all().filter((u) => this.liveSummons(u.id).length > 0)
+    for (const owner of owners) {
+      this.disperseOverCap(owner, Math.max(0, owner.effectiveSummonCap(SUMMON_CAP_BASE)))
+    }
   }
 
   /** 移到己方半场的第一个空位（param / insert_tail_cross_lane 的落点语义） */

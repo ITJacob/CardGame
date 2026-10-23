@@ -10,6 +10,8 @@ export const LANE_CAPACITY = 4
 export const LANE_COUNT = 2
 export const FACTION_COUNT = 2
 export const TICK_PER_DAY = 72
+/** 每施法者召唤位上限基数（编队参数 §1.1b：全局 3；状态/账本可加/覆写） */
+export const SUMMON_CAP_BASE = 3
 export const TICK_MINUTES = 20
 export const GAUGE_THRESHOLD = 75
 

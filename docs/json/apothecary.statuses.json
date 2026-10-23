@@ -765,6 +765,57 @@
         "prisoner"
       ],
       "note": "药剂师留痕：疗愈之人带药香（2026-09-29 跨系枢纽批建）层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 枢纽标准档（跨系共享，层数读档上限）。。"
+    },
+    {
+      "id": "beast_legion",
+      "name": "兽群号令",
+      "category": [
+        "buff"
+      ],
+      "dispelable": true,
+      "duration": 25,
+      "maxStacks": 1,
+      "stackPolicy": "refresh",
+      "modifiers": {
+        "summon_cap_bonus": 2
+      },
+      "triggers": [
+        {
+          "event": "on_tick",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "resource_compare",
+                "side": "self",
+                "key": "hp",
+                "cmp": ">",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "hp",
+                  "value": -0.4,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "以血肉供养兽群：每 tick 生命 -0.4（不致死）"
+                }
+              ],
+              "else": [
+                {
+                  "type": "dispel",
+                  "statusId": "beast_legion",
+                  "target": "self",
+                  "note": "血肉不足：号令折断，超限召唤物在 tick 边界按最老优先消散"
+                }
+              ],
+              "note": "维持费型 cap 特权（2026-10-23 拍板）：生命阈值止于 2"
+            }
+          ]
+        }
+      ],
+      "note": "召唤位上限 +2（modifiers.summon_cap_bonus）；维持费 0.4 生命/tick，断供或到期后超限部分按 H39 最老消散。"
     }
   ]
 }

@@ -176,6 +176,32 @@ export class CombatUnit implements Unit {
     this.weapon = null
     return w
   }
+  /** 召唤位加成：账本 summon_cap（modify_stat） + 状态 modifiers.summon_cap_bonus（按层数） */
+  summonCapBonus(): number {
+    let sum = this.modifiers.deltaOf('summon_cap')
+    for (const inst of this.statuses.all()) {
+      const v = numericModifierOf(this.statusDefs.statusDef(inst.defId), 'summon_cap_bonus')
+      if (v !== null) sum += v * inst.currentStacks
+    }
+    return sum
+  }
+
+  /** 召唤位覆写：状态 modifiers.summon_cap_override 取最大（绝对上限） */
+  summonCapOverride(): number | null {
+    let max: number | null = null
+    for (const inst of this.statuses.all()) {
+      const v = numericModifierOf(this.statusDefs.statusDef(inst.defId), 'summon_cap_override')
+      if (v !== null && (max === null || v > max)) max = v
+    }
+    return max
+  }
+
+  /** 生效召唤位上限（基数 + 加成，与绝对覆写取高；编队参数 §1.1b） */
+  effectiveSummonCap(base = 3): number {
+    const override = this.summonCapOverride()
+    return Math.max(0, Math.max(override ?? 0, base + this.summonCapBonus()))
+  }
+
   stat(key: StatKey): number {
     const p = this.effectiveProfile
     switch (key) {
@@ -187,6 +213,7 @@ export class CombatUnit implements Unit {
       case 'energy_regen': return p.energyRegen
       case 'gauge.rate': return p.gaugeRate
       case 'gauge.threshold': return p.gaugeThreshold
+      case 'summon_cap': return this.effectiveSummonCap()
       default:
         if (key.startsWith('resist:')) return p.resistances[key.slice(7) as Exclude<Element, 'none'>] ?? 0
         return 0

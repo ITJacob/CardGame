@@ -117,6 +117,8 @@ export interface EffSpawn extends EffBase {
   reviveOf?: 'self' | 'status_holder' | 'last_dead_ally'
   oncePerBattle?: boolean
   inheritSkills?: boolean
+  /** 本次 spawn 的召唤位上限绝对覆写（number）或 H39 载荷 {default, overflow}；只抬不压 */
+  summonCap?: number | { default?: number; valueFrom?: string; overflow?: string }
   summonCapOverride?: number
 }
 export interface EffDispel extends EffBase {
