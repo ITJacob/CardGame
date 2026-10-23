@@ -2489,7 +2489,7 @@
     {
       "id": "skill_thief_s0_confuse_doppel",
       "name": "混淆分身",
-      "kind": "active",
+      "kind": "summon",
       "sequence": 0,
       "sequenceName": "错误",
       "rarity": "legendary",
@@ -2505,39 +2505,19 @@
         "castTime": 3
       },
       "reach": "none",
-      "target": {
-        "selectionMode": "auto",
-        "request": {
-          "mode": "unit",
-          "faction": "self"
-        }
-      },
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
-            {
-              "type": "spawn",
-              "unitId": "unit_doppelganger",
-              "count": 2,
-              "hpRatio": 0.3,
-              "atkRatio": 0.5,
-              "position": "tail"
-            },
-            {
-              "type": "target_override",
-              "faction": "enemy",
-              "anchor": "unit_doppelganger",
-              "sort": "hp_desc",
-              "note": "目标改写正主承载：敌方单体技能锚点被改写为你的分身（优先生命最高那具；存续 25tick 由 identity_confused 状态计时）"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "identity_confused",
-              "duration": 25,
-              "target": "self"
-            }
-          ]
+          "type": "target_override",
+          "faction": "enemy",
+          "anchor": "unit_doppelganger",
+          "sort": "hp_desc",
+          "note": "目标改写正主承载：敌方单体技能锚点被改写为你的分身（优先生命最高那具；存续 25tick 由 identity_confused 状态计时）"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "identity_confused",
+          "duration": 25,
+          "target": "self"
         },
         {
           "op": "if",
@@ -2564,7 +2544,10 @@
         "apprentice"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：两分身+不可区分；挂寄生。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 15tick（序列 0 档，基准 §三之二） ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 target_override(anchor:unit_doppelganger)『分身冒充』——目标改写正主第二卡（与思维误导 first_empty 分工） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": [
+        "翻译/语义：两分身+不可区分；挂寄生。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 15tick（序列 0 档，基准 §三之二） ｜ 2026-10-02 差异化风格迭代（偷盗者=夺取顶替正主）：升格 target_override(anchor:unit_doppelganger)『分身冒充』——目标改写正主第二卡（与思维误导 first_empty 分工） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+        "2026-10-23 P2 复合卡二批评审：主身份为召唤（单一 unitId，count=2 不违反一卡一单位），转 kind=summon；spawn 段提升为 summon 载荷，target_override / 战吼留在 effects（提案 summon-first-class.md §8 P2）。"
+      ],
       "art": {
         "subject": "three identical thieves grinning in a fog, each daring you to choose",
         "elements": [
@@ -2572,6 +2555,13 @@
           "drifting obscuring fog"
         ],
         "mood": "maddening, playful"
+      },
+      "summon": {
+        "unitId": "unit_doppelganger",
+        "count": 2,
+        "hpRatio": 0.3,
+        "atkRatio": 0.5,
+        "position": "tail"
       }
     },
     {

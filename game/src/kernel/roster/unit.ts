@@ -63,6 +63,8 @@ export class CombatUnit implements Unit {
   originalFaction: FactionId | null = null
   /** 召唤物类别（unitDef.unitType / spawn def） */
   unitType: string | null = null
+  /** 单位蓝本 id（spawn 时记录，供 caster_has_summon.unitId / summon_is 谓词） */
+  unitDefId: string | null = null
   /** 召唤者（spawn 时记录，供 caster_has_summon 谓词） */
   summonerId: UnitId | null = null
   /** 入场途径（ClassDef.id）；职业自带资源/规则按它分发 */

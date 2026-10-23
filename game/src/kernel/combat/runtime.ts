@@ -156,6 +156,7 @@ class CombatRuntime implements CombatRuntimeHandle {
           this.tagsOfUnit(us.defId),
         )
         unit.unitType = us.defId ? (this.lookup.unitDef(us.defId)?.unitType ?? null) : null
+        unit.unitDefId = us.defId ?? null
         unit.pathwayId = us.pathwayId ?? null
         this.units.add(unit)
         this.installBehaviors(unit, us.activeSlots ?? [])
@@ -796,6 +797,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       def.tags ?? [],
     )
     unit.unitType = def.unitType ?? null
+    unit.unitDefId = def.id
     unit.summonerId = owner.id
     this.units.add(unit)
     unit.behaviorSlots.push(this.basicAttackSlot(unit))
@@ -1087,6 +1089,9 @@ class CombatRuntime implements CombatRuntimeHandle {
       gaugeThreshold: u.gauge.threshold,
       statuses: u.statuses.all().map((s) => ({ defId: s.defId, stacks: s.currentStacks, charges: s.charges, maxCharges: s.maxCharges })),
       weapon: u.weapon ? { defId: u.weapon.defId, attack: u.weapon.attack, durability: u.weapon.durability } : null,
+      unitDefId: u.unitDefId,
+      unitType: u.unitType,
+      summonerId: u.summonerId,
     }))
     return { tick: this.battle.clock, phase: this.battle.phase, units, pending: this.pending?.request ?? null, finished: this.outcome !== null }
   }

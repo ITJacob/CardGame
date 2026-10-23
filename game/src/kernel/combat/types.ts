@@ -131,6 +131,12 @@ export interface UnitViewLite {
   statuses: { defId: string; stacks: number; charges: number | null; maxCharges: number | null }[]
   /** 当前武器（单槽） */
   weapon: { defId: string; attack: number; durability: number } | null
+  /** 单位蓝本 id（unitDef.id；普通英雄为 null） */
+  unitDefId: string | null
+  /** 召唤物类别（unitType 枚举值；非召唤物为 null） */
+  unitType: string | null
+  /** 召唤者 unitId（非召唤物为 null） */
+  summonerId: string | null
 }
 
 /** 运行门面：UI 只认这个（见 DESIGN.md §三） */

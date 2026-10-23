@@ -1,6 +1,6 @@
 # 召唤牌系统（机制扩容提案）
 
-> 状态：**已拍板（2026-10-23），待实施**
+> 状态：**已拍板（2026-10-23）**；P0/P1 已落地（13 张纯 spawn 卡转 kind=summon、24 个 unitDef 补登），P2 进行中
 > 入口：环节⑥骨架重议 → 机制扩容（`WORKFLOW.md`）；对标 `weapon-first-class.md`（同套迁移模式）
 > 结论：召唤单位 = 新增的技能卡类型 `kind: "summon"`，**打出即落场**；引用 unitDef 蓝本；无背包、单位不回手。
 > 纪律：本提案**不改**任何 `docs/ddd` / `docs/json` / schema / 脚本；实施须先过环节⑥ Gate 并按 ② 机制落地顺序推进。
@@ -11,7 +11,7 @@
 - **编队槽位**：召唤牌**归主动槽**（`bucketOf(kind) → active`），与主动技能、武器牌竞争牌位；不新增槽位。
 - **生命周期**：打出 → 支付 cost → summon_cap 检查（满则最早者走 on_remove 消散）→ spawn 落位（on_spawn fire）→ 执行 on-play（战吼）→ 卡进弃牌。单位离场走既有规则（死亡 / 寿命 / cap 挤掉），**不回手、不返费**。
 - **与武器的本质差异**：不需要新运行时实体——UnitInstance 本是一等单位；本提案只修「卡 → spawn」的直通管道与数据面（kind + 载荷 + unitDefs 补全）。
-- **首批迁移**：13 张主动纯 spawn 卡（9 途径，避开 corpse_collector）；3 张被动纯 spawn 卡不动（开局/触发自动召唤非「打出」语义）。实测纯 spawn 主动卡 17 张，剔除 2 张违反「一卡一单位」不变量者：thief s6_summon_gate（一卡双单位）、spectator s0_identity_split（inheritSkills 模板语义）——转二批评审。
+- **首批迁移**：13 张主动纯 spawn 卡（9 途径，避开 corpse_collector）；3 张被动纯 spawn 卡不动（开局/触发自动召唤非「打出」语义）。实测纯 spawn 主动卡 17 张，剔除 2 张违反「一卡一单位」不变量者：apothecary s3_summon_gate（一卡双单位）、spectator s3_identity_split（inheritSkills 模板语义）——转二批评审。
 - **它解锁的骨架**：召唤牌构筑、召唤节奏（cap 管理）、破召对策扩面、军团规模、单位养成（见 §9）。
 
 ## 1. 设定核查
@@ -107,7 +107,7 @@ play(summon card)
 |---|---|---|---|
 | `target_is_summoned` / `target_unit_type` | 已有谓词 | 破召对策与克制面，自动覆盖召唤牌产物 | — |
 | `caster_has_summon` | 已有谓词 | 读持有召唤物 | — |
-| `summon_tag` / `summon_is` | 新谓词候选 | 按 unitType / unitId 判定己方在场召唤 | P2 |
+| `summon_tag` / `summon_is` | 并入 `caster_has_summon` | 按 tag / unitId 判定己方在场召唤——P2 评审裁定**不另立同义谓词**，扩 `caster_has_summon` 既有参数（`tag?` / `unitId?`）承载；`target_is_summoned` 同步落地 | P2 |
 
 ## 6. 所有权
 
@@ -140,10 +140,18 @@ play(summon card)
 |---|---|---|
 | P0 | schema（kind + summonSpec + 条件约束）；SCHEMA.md 登记；unitDefs 补全 24 单位 | schema 校验 + `validate_schema.py` + 文档评审 |
 | P1 | 13 张首批迁移（避开 corpse）；validate 新规则；内核打出分支；site/game 渲染 | 四门禁全绿 + `npm test` + `score.py` 不退化 |
-| P2 | `summon_tag` / `summon_is`；卡面单位属性面板；复合卡二批评审 | `playable_scan` 可测 |
+| P2 | 召唤谓词（`caster_has_summon.tag/unitId` + `target_is_summoned`，不另立别名）；卡面单位属性面板；复合卡二批评审 | `playable_scan` 可测 |
 | P3 | corpse 3 张（与⑤第 3 轮合并）；军团 cap 特权卡设计 | 环节⑥ Gate 通过 |
 
 迁移选项：整批一次，**不留兼容壳**（同武器拍板 8）；被动纯 spawn 卡与复合卡本就不在迁移范围，无需壳。
+
+**P2 复合卡二批评审结果（2026-10-23）**
+
+| 卡 | 判定 | 依据 |
+|---|---|---|
+| apothecary `skill_apothecary_s3_summon_gate` | 维持 `kind:"active"` | 一卡两个 unitId（unit_elder_thing + unit_beast×2），违反一卡一单位 |
+| thief `skill_thief_s0_confuse_doppel` | 转 `kind:"summon"` | 单一 unitId + count:2，不违反一卡一单位；target_override / mount_status 留作战吼 |
+| spectator `skill_spectator_s3_identity_split` | 维持 `kind:"active"` | inheritSkills 模板语义不属 summon 载荷，留在 spawn 原语 |
 
 ## 9. 解锁的骨架（示例，待环节⑥裁定）
 

@@ -59,6 +59,28 @@ const RARITY_LABEL: Record<string, string> = {
   legendary: '传说',
 }
 
+/** unitType 12 值中文名（权威：docs/ddd/params/召唤物参数.md §一） */
+const UNIT_TYPE_LABEL: Record<string, string> = {
+  UNDEAD: '亡灵',
+  SPIRIT: '灵体',
+  BEAST: '兽',
+  VERMIN: '虫豸',
+  PLANT: '植株',
+  CONSTRUCT: '造物',
+  MACHINE: '机械',
+  FLESH: '血肉',
+  DEMON: '恶魔',
+  ABERRATION: '异怪',
+  ILLUSION: '幻象',
+  ITEM: '器物',
+}
+
+function numeric(v: unknown): number | null {
+  if (typeof v === 'number') return Number.isFinite(v) ? v : null
+  if (typeof v === 'string' && v.trim() !== '' && Number.isFinite(Number(v))) return Number(v)
+  return null
+}
+
 export interface CardFaceOpts {
   cardId: string
   name: string
@@ -271,10 +293,27 @@ export function cardDetailHtml(catalog: Catalog, cardId: string): string | null 
   const weaponRow = weapon
     ? `<dl class="cp-kv"><dt>攻击</dt><dd>+${weapon.attack}</dd><dt>耐久</dt><dd>${weapon.durability} 次普攻</dd></dl>`
     : ''
-  const summonName = summon ? (catalog.unitDefs.get(summon.unitId)?.name ?? summon.unitId) : ''
-  const summonRow = summon
-    ? `<dl class="cp-kv"><dt>召唤</dt><dd>${escapeHtml(summonName)}${summon.count && summon.count > 1 ? ` ×${summon.count}` : ''}</dd></dl>`
+  // 召唤载荷：卡面只写实例参数，属性按「unitDef base × spawn 比率」合成展示
+  const unitDef = summon ? catalog.unitDefs.get(summon.unitId) : undefined
+  const unitBase = unitDef && typeof unitDef.base === 'object' && unitDef.base
+    ? (unitDef.base as Record<string, unknown>)
+    : {}
+  const baseHp = numeric(unitBase.hp)
+  const baseAtk = numeric(unitBase.atk)
+  const hpRatio = numeric(summon?.hpRatio ?? unitDef?.hpRatio) ?? 1
+  const atkRatio = numeric(summon?.atkRatio ?? unitDef?.atkRatio) ?? 1
+  const summonCells = summon
+    ? [
+        `<dt>召唤</dt><dd>${escapeHtml(unitDef?.name ?? summon.unitId)}${summon.count && summon.count > 1 ? ` ×${summon.count}` : ''}</dd>`,
+        unitDef?.unitType
+          ? `<dt>类别</dt><dd>${escapeHtml(UNIT_TYPE_LABEL[unitDef.unitType] ?? unitDef.unitType)}</dd>`
+          : '',
+        baseHp != null || baseAtk != null
+          ? `<dt>属性</dt><dd>${baseHp != null ? `HP ${Math.max(1, Math.round(baseHp * hpRatio))}` : ''}${baseHp != null && baseAtk != null ? ' · ' : ''}${baseAtk != null ? `ATK ${Math.max(0, Math.round(baseAtk * atkRatio))}` : ''}</dd>`
+          : '',
+      ].filter(Boolean).join('')
     : ''
+  const summonRow = summon ? `<dl class="cp-kv">${summonCells}</dl>` : ''
 
   return `
   <h4>${escapeHtml(def.name)}</h4>

@@ -14,6 +14,8 @@ export interface ConditionUnit {
   readonly tags: readonly string[]
   readonly isDead: boolean
   readonly unitType?: string | null
+  /** 单位蓝本 id（unitDef.id；普通英雄为 null） */
+  readonly unitDefId?: string | null
   readonly summonerId?: string | null
   statusStacks(defId: string): number
   /** 状态实例 grant.params 是否含指定键（recorded_has；H33 slots 存在性读法） */
@@ -94,8 +96,14 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
       const c = ctx.caster
       if (!c) return false
       const tag = cond.tag ? String(cond.tag) : undefined
-      return (ctx.allUnits?.() ?? []).some((u) => u.summonerId === c.id && (!tag || u.tags.includes(tag)))
+      const ids = cond.unitId ? (Array.isArray(cond.unitId) ? cond.unitId : [cond.unitId]) : undefined
+      return (ctx.allUnits?.() ?? []).some((u) =>
+        u.summonerId === c.id
+        && (!tag || u.tags.includes(tag))
+        && (!ids || (u.unitDefId != null && ids.includes(u.unitDefId))))
     }
+    case 'target_is_summoned':
+      return target != null && target.summonerId != null
     case 'hp_percent':
       return target != null && compare((target.hp / Math.max(1, target.hpMax)) * 100, cond.cmp ?? '<=', cond.n ?? 0)
     case 'phase_is':
