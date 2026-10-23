@@ -2705,6 +2705,25 @@
           "element": "physical",
           "value": 3,
           "target": "target"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "ally",
+            "id": "beast_swarm"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 1,
+              "target": "all_enemies",
+              "note": "跨源读取：兽群在场，奔袭追加 1"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 beast_swarm"
         }
       ],
       "tentative": false,

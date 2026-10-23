@@ -893,6 +893,13 @@
           "target": "target",
           "consumption": "summon",
           "note": "藤蔓缠足：扎根即失效，耕种者军团的活地板"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "abundance",
+          "duration": 20,
+          "target": "self",
+          "note": "枢纽接线（2026-10-23）：写入 abundance"
         }
       ],
       "tentative": false,
@@ -2102,6 +2109,24 @@
           ],
           "else": [],
           "note": "跨系接线（2026-10-23）：读取枢纽 filth"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "enslave"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "poison",
+              "value": 1,
+              "note": "跨源读取：奴役对象更易荒芜，追加 1"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 enslave"
         }
       ],
       "tentative": false,

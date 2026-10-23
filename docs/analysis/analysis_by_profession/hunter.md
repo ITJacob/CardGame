@@ -99,18 +99,18 @@
 
 **规模**：14 张技能（主动 9 / 被动 5）；稀有度分布：史诗×7、传说×4、稀有×3。
 
-**效果原语构成**（type，全量递归，共 51 处）：
+**效果原语构成**（type，全量递归，共 52 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 22 | 43.1% |
-| `damage` | 6 | 11.8% |
-| `modify_stat` | 10 | 19.6% |
-| `modify_resource` | 5 | 9.8% |
-| `dispel` | 2 | 3.9% |
-| `spawn` | 2 | 3.9% |
-| `domain` | 2 | 3.9% |
-| `target_override` | 2 | 3.9% |
+| `mount_status` | 23 | 44.2% |
+| `damage` | 6 | 11.5% |
+| `modify_stat` | 10 | 19.2% |
+| `modify_resource` | 5 | 9.6% |
+| `dispel` | 2 | 3.8% |
+| `spawn` | 2 | 3.8% |
+| `domain` | 2 | 3.8% |
+| `target_override` | 2 | 3.8% |
 
 **算子构成**（op，共 15 处）：
 
@@ -138,7 +138,7 @@
 | `shield` | 1 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `mount_status`(22)、`modify_stat`(10)、`damage`(6)；属性杠杆集中在 `attack`、`defense`、`gauge.rate`，资源杠杆集中在 `gauge.current`、`lost`、`shield`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(23)、`modify_stat`(10)、`damage`(6)；属性杠杆集中在 `attack`、`defense`、`gauge.rate`，资源杠杆集中在 `gauge.current`、`lost`、`shield`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **战争权柄**：全体敌人陷入战争狂热（30tick；集众 ≥3 层时 40tick 并消耗 1 层）：攻击最近的任何单位（敌我不分）、攻击 +3、护甲 -5；男性目标受伤 ×1.15。
 

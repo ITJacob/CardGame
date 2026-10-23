@@ -428,6 +428,24 @@
           "target": "self",
           "duration": 10,
           "note": "凝视的代价：自身防御 -1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "purify"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "note": "跨源读取：净化标记在场，追加 1"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 purify"
         }
       ],
       "sharedAcross": [
@@ -1515,6 +1533,13 @@
           "mode": "delta",
           "target": "self",
           "note": "驱使的代价：自身行动条 -6"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "enslave",
+          "duration": 20,
+          "target": "target",
+          "note": "枢纽接线（2026-10-23）：写入 enslave"
         }
       ],
       "tentative": false,

@@ -947,6 +947,33 @@
           "position": "tail",
           "consumption": "summon",
           "note": "返厂维修：拆解重装一遍"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "ally",
+            "id": "reforge"
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 4,
+              "target": "target",
+              "note": "同源共振：重组在场，修复 4 点"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 3,
+              "mode": "delta",
+              "duration": 20,
+              "target": "target",
+              "note": "同源共振：护甲 +3（20tick）"
+            }
+          ],
+          "else": [],
+          "note": "跨系接线（2026-10-23）：读取枢纽 reforge"
         }
       ],
       "tentative": false,
