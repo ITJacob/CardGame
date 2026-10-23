@@ -279,13 +279,6 @@
           "value": 2,
           "mode": "delta",
           "target": "self"
-        },
-        {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "白昼：让光照盖过这里"
         }
       ],
       "tentative": false,
@@ -494,6 +487,14 @@
           "mul": 1.2,
           "target": "damage",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "damage",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -518,7 +519,7 @@
       "flagship": false,
       "lore": "序列8 祈光人 —— \"『祝福』\"",
       "flavor": "你把圣光按在同伴肩上——一层暖意裹住他，伤口也跟着收敛了。",
-      "describe": "使一名友军获得 4 点护盾（15tick），并回复 2 点生命。；白昼之下，阴影无处藏身。",
+      "describe": "使一名友军获得 4 点护盾（15tick），并回复 2 点生命。；白昼之下，阴影无处藏身。；召光：光照抬至白昼档 8（10tick）。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -556,7 +557,7 @@
           "value": 8,
           "duration": 10,
           "dispelable": true,
-          "note": "白昼之下，阴影无处藏身"
+          "note": "召光：把战场抬到白昼档（光照 8，10tick）"
         }
       ],
       "sharedAcross": [
@@ -630,13 +631,6 @@
           ],
           "else": [],
           "note": "跨系读层段：chanter→supplicant grazed_soul（2026-09-29 跨系批）"
-        },
-        {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
         }
       ],
       "sharedAcross": [
@@ -752,6 +746,14 @@
           "mul": 1.2,
           "target": "damage",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "damage",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -844,7 +846,7 @@
       "flagship": false,
       "lore": "序列7 太阳神官 —— \"『净化之斩』\"",
       "flavor": "你挥出凝着圣光的一斩——光刃落处，敌人身上的加持也跟着剥落了一层。",
-      "describe": "对敌方最前排造成 4 点圣光伤害，并驱散其 1 个增益状态。；祈光：把这块战场抬到白昼档。",
+      "describe": "对敌方最前排造成 4 点圣光伤害，并驱散其 1 个增益状态。；祈光：把这块战场抬到白昼档。；召光：光照抬至白昼档 8（10tick）。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -884,19 +886,19 @@
           ]
         },
         {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
-        },
-        {
           "type": "modify_resource",
           "resource": "gauge.current",
           "value": -5,
           "mode": "delta",
           "target": "self",
           "note": "斩击的代价：自身行动条 -5"
+        },
+        {
+          "type": "set_luminance",
+          "value": 8,
+          "duration": 10,
+          "dispelable": true,
+          "note": "召光：把战场抬到白昼档（光照 8，10tick）"
         }
       ],
       "tentative": false,
@@ -909,6 +911,14 @@
           "mul": 1.2,
           "target": "damage",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "damage",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -957,13 +967,6 @@
           "target": "target"
         },
         {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "白昼之下，阴影无处藏身"
-        },
-        {
           "type": "modify_stat",
           "stat": "attack",
           "value": -1,
@@ -1000,6 +1003,14 @@
           "mul": 1.2,
           "target": "damage",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "damage",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -1141,13 +1152,6 @@
             "mul": 1.5
           },
           "target": "target"
-        },
-        {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "白昼之下，阴影无处藏身"
         },
         {
           "type": "modify_resource",
@@ -1304,7 +1308,7 @@
       "flagship": false,
       "lore": "序列5 光之祭司 —— \"『神圣之光』：炽烈光柱从天而降，令敌人蒸发\"",
       "flavor": "一道炽烈的光柱自天而降——光柱散去的时候，那里什么都不剩了。",
-      "describe": "对一名敌人造成 5 点圣光伤害；若其带不死 / 污秽 / 黑暗标签，伤害 ×1.5；若自身处于祝福（层数 ≥1），伤害 +2。；祈光：把这块战场抬到白昼档。；目标带传票时追加圣光伤害。",
+      "describe": "对一名敌人造成 5 点圣光伤害；若其带不死 / 污秽 / 黑暗标签，伤害 ×1.5；若自身处于祝福（层数 ≥1），伤害 +2。；祈光：把这块战场抬到白昼档。；目标带传票时追加圣光伤害。；召光：光照抬至白昼档 8（10tick）。",
       "cost": {
         "energy": 5,
         "cooldown": 25,
@@ -1368,13 +1372,6 @@
           "else": []
         },
         {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
-        },
-        {
           "op": "if",
           "condition": {
             "kind": "has_status",
@@ -1401,6 +1398,13 @@
           "target": "self",
           "duration": 10,
           "note": "圣光的代价：自身防御 -1"
+        },
+        {
+          "type": "set_luminance",
+          "value": 8,
+          "duration": 10,
+          "dispelable": true,
+          "note": "召光：把战场抬到白昼档（光照 8，10tick）"
         }
       ],
       "tentative": false,
@@ -1413,6 +1417,14 @@
           "mul": 1.2,
           "target": "damage",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "damage",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -1479,13 +1491,6 @@
           ]
         },
         {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
-        },
-        {
           "type": "mount_status",
           "statusId": "purify",
           "duration": 20,
@@ -1503,6 +1508,14 @@
           "mul": 1.2,
           "target": "damage",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "damage",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -1601,6 +1614,14 @@
           "mul": 1.2,
           "target": "all",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "all",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -1663,13 +1684,6 @@
               "note": "近战攻击进程，不调 move（G8 合规）"
             }
           ]
-        },
-        {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
         }
       ],
       "tentative": false,
@@ -1682,6 +1696,14 @@
           "mul": 1.2,
           "target": "damage",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "damage",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -1741,13 +1763,6 @@
           ]
         },
         {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
-        },
-        {
           "op": "if",
           "condition": {
             "kind": "has_status",
@@ -1777,6 +1792,14 @@
           "mul": 1.2,
           "target": "damage",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "damage",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -1912,13 +1935,6 @@
             }
           ],
           "else": []
-        },
-        {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "白昼之下，阴影无处藏身"
         }
       ],
       "tentative": false,
@@ -2253,13 +2269,6 @@
               "target": "all_enemies"
             }
           ]
-        },
-        {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "白昼之下，阴影无处藏身"
         }
       ],
       "tentative": false,
@@ -2389,6 +2398,14 @@
           "mul": 1.2,
           "target": "all",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "all",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -2526,6 +2543,14 @@
           "mul": 1.2,
           "target": "all",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "all",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -2587,13 +2612,6 @@
               "value": 7
             }
           ]
-        },
-        {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
         }
       ],
       "triggers": [
@@ -2619,6 +2637,14 @@
           "mul": 1.2,
           "target": "damage",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "damage",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
@@ -2829,13 +2855,6 @@
           "duration": 15,
           "target": "target",
           "note": "（2026-10-09 时长校正：稿期 3 回合 → 15tick，1 回合=5tick）"
-        },
-        {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "白昼之下，阴影无处藏身"
         }
       ],
       "tentative": false,
@@ -3189,13 +3208,6 @@
           ],
           "else": [],
           "note": "连击正主读层：tag_chain(圣咏)——同标签连施计数读取（执行参数 §2.3）"
-        },
-        {
-          "type": "set_luminance",
-          "value": 8,
-          "duration": 10,
-          "dispelable": true,
-          "note": "祈光：把战场覆写层抬到白昼档（≥8，与黑夜互为正反）"
         }
       ],
       "tentative": false,
@@ -3221,6 +3233,14 @@
           "mul": 1.2,
           "target": "damage",
           "note": "白昼档（光照度 ≥8）圣光类加成 ×1.2（⚠️D 平衡占位）。⚠️ 原著无「歌颂者夜间变弱」设定，故**不设夜间惩罚**"
+        },
+        {
+          "dim": "luminance",
+          "comparator": ">=",
+          "threshold": 5,
+          "mul": 1.1,
+          "target": "damage",
+          "note": "微光档（光照 5–7）：白昼加成减弱至 ×1.1，被压暗时收益断档（2026-10-23 环境争夺）"
         }
       ],
       "art": {
