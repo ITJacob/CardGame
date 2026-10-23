@@ -4808,8 +4808,8 @@
   {
    "id": "apprentice",
    "name": "学徒",
-   "state": "回溯补登",
-   "date": "2026-10-21",
+   "state": null,
+   "date": "环节⑥拍板",
    "score": 100,
    "scoreParts": {
     "命题": 10,
@@ -4822,9 +4822,9 @@
    },
    "deductions": [],
    "proposition": {
-    "statement": "时空税换节奏——门途径的一切收益附带位移/换场/回放税：用机动性换强度，echo 回放上一式半份兑现",
-    "variable": "位移链编排（换位次序与落点）、回放对象选择（记录哪一式、何时重现）",
-    "cost": "位移被锁或换位失误则节奏崩；回放对象被清场/贬值则回放作废"
+    "statement": "预排时空——先把几式动作排进时空里，最后一次同时打出；排在里面的内容和顺序不能再改，预判错就落空",
+    "variable": "预排哪几式（攻势/身法）、何时同时结算、预判对手是否位移或免疫",
+    "cost": "对手位移/免疫则对应段落空；预排类型与局面不匹配则收益低；结算前预排被驱散则整段作废"
    },
    "style": {
     "signature": "时空族：放逐/记录/再现（translocate / echo_last_skill / restore_snapshot）",
@@ -4834,7 +4834,7 @@
      "基础增益",
      "资源"
     ],
-    "redline": "途径设计身份.md 学徒身份卡：不拿永久增益与站桩 buff——一切收益必须带「位移/换场/回放」的时空税"
+    "redline": "途径设计身份.md 学徒身份卡：不拿永久增益与站桩 buff——一切收益必须带时空税；预排必须「先记后结」，不做即时爆发"
    },
    "axes": [
     {
@@ -4879,7 +4879,7 @@
        }
       ]
      },
-     "decision": "门节点铺设与启用时机：先铺门再换位调动，还是留门应急",
+     "decision": "门节点铺设与启用时机",
      "signatures": [
       {
        "key": "prim:echo_last_skill",
@@ -4920,14 +4920,14 @@
        "无处不在"
       ],
       "payoffs": [
-       "闪现"
+       "闪现",
+       "撕裂空间"
       ],
       "payoffsNotes": [
        "旅行家之门",
-       "撕裂空间",
        "空间破碎"
       ],
-      "axisScore": 72.6
+      "axisScore": 76.8
      }
     },
     {
@@ -4956,7 +4956,7 @@
        }
       ]
      },
-     "decision": "戏法起手式选择：闪光攒层还是三元素直出",
+     "decision": "戏法起手式选择",
      "signatures": [],
      "planCards": 4,
      "roleMixDeclared": {
@@ -4979,7 +4979,7 @@
        "逃脱戏法"
       ],
       "payoffsNotes": [],
-      "axisScore": 80.9
+      "axisScore": 80.4
      }
     },
     {
@@ -5012,7 +5012,7 @@
        }
       ]
      },
-     "decision": "星界锚定对象与放逐时机：锚谁、何时放逐进时空乱流",
+     "decision": "星界锚定对象与放逐时机",
      "signatures": [
       {
        "key": "prim:translocate",
@@ -5056,7 +5056,7 @@
        "空间隐藏"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.1
+      "axisScore": 82.4
      }
     },
     {
@@ -5065,31 +5065,39 @@
      "symbol": "📖",
      "anchor": {
       "kind": "status",
-      "id": "inscription",
-      "raw": "status:inscription"
+      "id": "inscription + status:staged_scene",
+      "raw": "status:inscription + status:staged_scene"
      },
      "loop": {
-      "produce": "记录/再现产层",
-      "consume": "重现读层回放",
-      "clear": "层数被回放消费",
+      "produce": "记录产记录层、预排·攻势/身法排入场景",
+      "consume": "重现/再现/同时结算读层",
+      "clear": "预排被结算清空、记录层被消耗",
       "produceCards": [
        {
         "name": "记录",
         "id": "skill_apprentice_s6_inscription"
        },
        {
-        "name": "再现",
-        "id": "skill_apprentice_s2_reappear"
+        "name": "预排·攻势",
+        "id": "skill_apprentice_s6_stage_attack"
        }
       ],
       "consumeCards": [
        {
         "name": "重现",
         "id": "skill_apprentice_s6_reenact_strike"
+       },
+       {
+        "name": "再现",
+        "id": "skill_apprentice_s2_reappear"
+       },
+       {
+        "name": "同时结算",
+        "id": "skill_apprentice_s4_simultaneous"
        }
       ]
      },
-     "decision": "记录对象与回放时机：记哪一式、何时重现",
+     "decision": "预排哪几式、何时同时结算、预判对手动作",
      "signatures": [
       {
        "key": "prim:restore_snapshot",
@@ -5107,27 +5115,30 @@
        "ok": true
       }
      ],
-     "planCards": 5,
+     "planCards": 9,
      "roleMixDeclared": {
-      "core": 3,
-      "generic": 2
+      "core": 6,
+      "generic": 3
      },
      "actual": {
-      "cards": 5,
+      "cards": 9,
       "roleMix": {
-       "core": 3,
-       "generic": 2
+       "core": 6,
+       "generic": 3
       },
       "anchorMatch": true,
       "enablers": [
        "记录",
-       "再现"
+       "预排·攻势",
+       "预排·身法"
       ],
       "payoffs": [
-       "重现"
+       "重现",
+       "再现",
+       "同时结算"
       ],
       "payoffsNotes": [],
-      "axisScore": 84.4
+      "axisScore": 81.7
      }
     }
    ],
@@ -5179,6 +5190,54 @@
      "purpose": "读星界锚层数换隐藏深度",
      "ok": true,
      "reason": ""
+    },
+    {
+     "slot": "定位",
+     "slots": [
+      {
+       "name": "定位",
+       "id": "skill_apprentice_s1_locate"
+      }
+     ],
+     "slotId": "skill_apprentice_s1_locate",
+     "axis": "record",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读预排身法加速归位",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "再现·降临",
+     "slots": [
+      {
+       "name": "再现·降临",
+       "id": "skill_apprentice_s2_reenactment_descent"
+      }
+     ],
+     "slotId": "skill_apprentice_s2_reenactment_descent",
+     "axis": "record",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读预排层数压条",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "时痕",
+     "slots": [
+      {
+       "name": "时痕",
+       "id": "skill_apprentice_s7_time_trace"
+      }
+     ],
+     "slotId": "skill_apprentice_s7_time_trace",
+     "axis": "record",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "预排时回能",
+     "ok": true,
+     "reason": ""
     }
    ],
    "crossSystem": [
@@ -5223,15 +5282,39 @@
    "roles": [
     {
      "role": "core",
-     "declared": 26,
+     "declared": 29,
      "declaredSlots": [
       {
        "name": "仪式·门",
        "id": "skill_apprentice_s9_ritual_gate"
       },
       {
+       "name": "戏法·闪光",
+       "id": "skill_apprentice_s8_flash_trick"
+      },
+      {
+       "name": "戏法·三元素",
+       "id": "skill_apprentice_s8_tri_element"
+      },
+      {
        "name": "逃脱戏法",
        "id": "skill_apprentice_s8_escape_act"
+      },
+      {
+       "name": "危险预感",
+       "id": "skill_apprentice_s7_danger_sense"
+      },
+      {
+       "name": "星相学",
+       "id": "skill_apprentice_s7_astrology"
+      },
+      {
+       "name": "记录",
+       "id": "skill_apprentice_s6_inscription"
+      },
+      {
+       "name": "重现",
+       "id": "skill_apprentice_s6_reenact_strike"
       },
       {
        "name": "旅行家之门",
@@ -5242,8 +5325,16 @@
        "id": "skill_apprentice_s5_blink"
       },
       {
+       "name": "守秘",
+       "id": "skill_apprentice_s4_secrecy"
+      },
+      {
        "name": "幻化",
        "id": "skill_apprentice_s4_phantom_door"
+      },
+      {
+       "name": "放逐",
+       "id": "skill_apprentice_s4_exile"
       },
       {
        "name": "撕裂空间",
@@ -5258,44 +5349,12 @@
        "id": "skill_apprentice_s3_breach_gate"
       },
       {
-       "name": "空间破碎",
-       "id": "skill_apprentice_s1_space_shatter"
-      },
-      {
-       "name": "门之概念",
-       "id": "skill_apprentice_s0_door_shut"
-      },
-      {
-       "name": "无处不在",
-       "id": "skill_apprentice_s0_ubiquity"
-      },
-      {
-       "name": "戏法·闪光",
-       "id": "skill_apprentice_s8_flash_trick"
-      },
-      {
-       "name": "戏法·三元素",
-       "id": "skill_apprentice_s8_tri_element"
-      },
-      {
-       "name": "危险预感",
-       "id": "skill_apprentice_s7_danger_sense"
-      },
-      {
-       "name": "星相学",
-       "id": "skill_apprentice_s7_astrology"
-      },
-      {
-       "name": "守秘",
-       "id": "skill_apprentice_s4_secrecy"
-      },
-      {
-       "name": "放逐",
-       "id": "skill_apprentice_s4_exile"
-      },
-      {
        "name": "维度之视",
        "id": "skill_apprentice_s2_dimension_view"
+      },
+      {
+       "name": "再现",
+       "id": "skill_apprentice_s2_reappear"
       },
       {
        "name": "自我符号",
@@ -5310,27 +5369,39 @@
        "id": "skill_apprentice_s1_time_maze"
       },
       {
+       "name": "空间破碎",
+       "id": "skill_apprentice_s1_space_shatter"
+      },
+      {
        "name": "封印",
        "id": "skill_apprentice_s1_seal"
+      },
+      {
+       "name": "门之概念",
+       "id": "skill_apprentice_s0_door_shut"
       },
       {
        "name": "空间牢笼",
        "id": "skill_apprentice_s0_space_cage"
       },
       {
-       "name": "记录",
-       "id": "skill_apprentice_s6_inscription"
+       "name": "无处不在",
+       "id": "skill_apprentice_s0_ubiquity"
       },
       {
-       "name": "重现",
-       "id": "skill_apprentice_s6_reenact_strike"
+       "name": "预排·攻势",
+       "id": "skill_apprentice_s6_stage_attack"
       },
       {
-       "name": "再现",
-       "id": "skill_apprentice_s2_reappear"
+       "name": "预排·身法",
+       "id": "skill_apprentice_s6_stage_move"
+      },
+      {
+       "name": "同时结算",
+       "id": "skill_apprentice_s4_simultaneous"
       }
      ],
-     "actual": 26,
+     "actual": 29,
      "actualSlots": [
       {
        "name": "仪式·门",
@@ -5435,6 +5506,18 @@
       {
        "name": "无处不在",
        "id": "skill_apprentice_s0_ubiquity"
+      },
+      {
+       "name": "预排·攻势",
+       "id": "skill_apprentice_s6_stage_attack"
+      },
+      {
+       "name": "预排·身法",
+       "id": "skill_apprentice_s6_stage_move"
+      },
+      {
+       "name": "同时结算",
+       "id": "skill_apprentice_s4_simultaneous"
       }
      ]
     },
@@ -5482,22 +5565,26 @@
     },
     {
      "role": "generic",
-     "declared": 3,
+     "declared": 4,
      "declaredSlots": [
-      {
-       "name": "半神记录",
-       "id": "skill_apprentice_s5_semi_divine_record"
-      },
       {
        "name": "无形之手",
        "id": "skill_apprentice_s5_invisible_hand"
       },
       {
+       "name": "半神记录",
+       "id": "skill_apprentice_s5_semi_divine_record"
+      },
+      {
        "name": "再现·降临",
        "id": "skill_apprentice_s2_reenactment_descent"
+      },
+      {
+       "name": "时痕",
+       "id": "skill_apprentice_s7_time_trace"
       }
      ],
-     "actual": 3,
+     "actual": 4,
      "actualSlots": [
       {
        "name": "无形之手",
@@ -5510,6 +5597,10 @@
       {
        "name": "再现·降临",
        "id": "skill_apprentice_s2_reenactment_descent"
+      },
+      {
+       "name": "时痕",
+       "id": "skill_apprentice_s7_time_trace"
       }
      ]
     },
@@ -5615,8 +5706,8 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 3,
-     "total": 3,
+     "hit": 6,
+     "total": 6,
      "miss": []
     },
     "跨系钩子": {

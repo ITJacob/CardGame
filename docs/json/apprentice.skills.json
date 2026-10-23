@@ -21,7 +21,7 @@
         "撕裂空间",
         "空间破碎"
       ],
-      "note": "payoffs 2026-09-26 评审：四卡 notes 级读门扉坐标（减费/零耗，卡面未编码 has_status）⚠️ 证据级=notes（与星界轴放逐先例同口径） ｜ 2026-09-29 环节⑤：ritual_gate 补层数引擎（身份 8→15）；无处不在补产层段（破障之门/门之概念不挂 ritual_gate 移出，产层 12→20）；闪现读 ritual_gate 升 landed（payoff notes→landed）；闪现读 flash 跨轴（gate→trick）；撕裂空间读 puppet_string 跨系（→seer）；旅行家之门读 conceal_authority 跨系（→sleepless） ｜ 2026-10-03 骨架手术：时空税换形 20 张（详见 designNote）"
+      "note": "2026-10-23 E2：门轴保留位移与换场，作为预排身法的落点载体。"
     },
     "trick": {
       "symbol": "🎩",
@@ -41,12 +41,15 @@
       "statusId": "inscription",
       "enablers": [
         "记录",
-        "再现"
+        "预排·攻势",
+        "预排·身法"
       ],
       "payoffs": [
-        "重现"
+        "重现",
+        "再现",
+        "同时结算"
       ],
-      "note": "2026-09-29 环节⑤：产层补实证（再现挂 inscription 入列，产层 12→20） ｜ 2026-10-03 骨架手术：时空税换形 20 张（详见 designNote）"
+      "note": "2026-10-23 E2 同时结算重构：预排场景（staged_scene）记录攻势/身法，同时结算卡按 recorded_has 固定顺序连续执行；记录层数（inscription）保留为回放资源。"
     },
     "astral": {
       "symbol": "🌌",
@@ -59,7 +62,7 @@
       "payoffs": [
         "空间隐藏"
       ],
-      "note": "2026-09-29 环节⑤：放逐补 astral_anchor 产层段（产层 12→20）；空间隐藏读 astral_anchor 升 landed（payoff notes→landed，读层 8→13，兼跨轴 gate→astral） ｜ 2026-10-03 骨架手术：时空税换形 20 张（详见 designNote）"
+      "note": "2026-10-23 E2：星界轴保留放逐/锚定。"
     }
   },
   "cards": [
@@ -88,7 +91,7 @@
           "mode": "unit",
           "faction": "self",
           "scope": "point",
-          "pickCount": "all"
+          "pickCount": 1
         }
       },
       "effects": [
@@ -109,6 +112,15 @@
               "note": "锚点 front_line：仅敌方前排受气流挤压"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "开门的代价：自身防御 -1"
         }
       ],
       "sharedAcross": [
@@ -191,9 +203,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "point"
+          "scope": "point",
+          "pickCount": 1
         },
-        "fallbackSort": "gauge_desc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -228,6 +241,15 @@
           "mode": "delta",
           "target": "self",
           "note": "空间操作的租金：迷失值 +1"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "戏法的代价：自身攻击 -1"
         }
       ],
       "tentative": false,
@@ -573,10 +595,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "atk_desc"
+        "fallbackSort": "hp_desc"
       },
       "effects": [
         {
@@ -604,6 +626,14 @@
           "mode": "delta",
           "target": "self",
           "note": "空间操作的租金：迷失值 +1"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -5,
+          "mode": "delta",
+          "target": "self",
+          "note": "观星的代价：自身行动条 -5"
         }
       ],
       "sharedAcross": [
@@ -676,6 +706,15 @@
               "note": "立归档锚 25tick：到期消散时把当前行动条写入快照锚（状态即存档点——记录轴 on_remove 归档风格，矩阵补漏批① 2026-10-02）"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "记录的代价：自身防御 -1"
         }
       ],
       "sharedAcross": [
@@ -717,9 +756,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "point"
+          "scope": "point",
+          "pickCount": 1
         },
-        "fallbackSort": "hp_desc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -766,6 +806,14 @@
               "value": 2
             }
           ]
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -5,
+          "mode": "delta",
+          "target": "self",
+          "note": "重现的代价：自身行动条 -5"
         }
       ],
       "sharedAcross": [
@@ -807,7 +855,7 @@
         "request": {
           "mode": "unit",
           "faction": "ally",
-          "scope": "cross_lane",
+          "scope": "point",
           "pickCount": 1
         },
         "fallbackSort": "hp_asc"
@@ -851,6 +899,37 @@
               "else": []
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "立门的代价：自身防御 -1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "flash",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 8,
+              "mode": "delta",
+              "target": "all_allies",
+              "note": "戏法起手：门开得更快，友军行动条 +8"
+            }
+          ],
+          "else": [],
+          "note": "跨轴读层：trick"
         }
       ],
       "sharedAcross": [
@@ -888,14 +967,13 @@
       },
       "reach": "melee",
       "target": {
-        "selectionMode": "manual",
+        "selectionMode": "auto",
         "request": {
           "mode": "unit",
-          "faction": "enemy",
-          "scope": "cross_lane",
+          "faction": "self",
+          "scope": "point",
           "pickCount": 1
-        },
-        "fallbackSort": "hp_desc"
+        }
       },
       "effects": [
         {
@@ -962,6 +1040,14 @@
           "mode": "delta",
           "target": "self",
           "note": "空间操作的租金：迷失值 +1"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -5,
+          "mode": "delta",
+          "target": "self",
+          "note": "闪现的代价：自身行动条 -5"
         }
       ],
       "sharedAcross": [
@@ -1310,7 +1396,7 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
         "fallbackSort": "atk_desc"
@@ -1344,6 +1430,15 @@
           "mode": "delta",
           "target": "self",
           "note": "跨层租金（与界域同口径：translocate 须付迷失租金）"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "放逐的代价：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -1445,6 +1540,26 @@
           "mode": "delta",
           "target": "self",
           "note": "空间操作的租金：迷失值 +1"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "ritual_gate",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "门节点在场：撕裂更远，追加 2 点"
+            }
+          ],
+          "else": [],
+          "note": "读层：ritual_gate"
         }
       ],
       "tentative": false,
@@ -1689,14 +1804,37 @@
       },
       "reach": "none",
       "target": {
-        "selectionMode": "auto",
+        "selectionMode": "manual",
         "request": {
           "mode": "unit",
-          "faction": "self",
-          "scope": "point"
-        }
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
+        },
+        "fallbackSort": "buff_count_desc"
       },
       "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "staged_scene",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "target": "target",
+              "note": "读预排：预排场景在场，再现提前蓄势"
+            }
+          ],
+          "else": [],
+          "note": "读层：staged_scene"
+        },
         {
           "op": "if",
           "condition": {
@@ -1826,13 +1964,36 @@
       "target": {
         "selectionMode": "auto",
         "request": {
-          "mode": "unit",
-          "faction": "self",
-          "scope": "point"
+          "mode": "area",
+          "faction": "enemy",
+          "scope": "board",
+          "pickCount": "all"
         },
         "consumption": "domain"
       },
       "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "staged_scene",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 8,
+              "mode": "delta",
+              "target": "all_enemies",
+              "note": "读预排：两式在排，降临之境压条更狠（敌方行动条 -8）"
+            }
+          ],
+          "else": [],
+          "note": "读层：staged_scene"
+        },
         {
           "op": "if",
           "condition": {
@@ -1920,8 +2081,7 @@
           "faction": "enemy",
           "scope": "board",
           "pickCount": "all"
-        },
-        "fallbackSort": "atk_desc"
+        }
       },
       "effects": [
         {
@@ -1952,6 +2112,27 @@
               "note": "定位即归位：自身回到最近记录时刻的状态（撤销最近一击，⚠️D 待平衡）"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "self",
+            "statusId": "staged_scene",
+            "id": "kind_move"
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 10,
+              "mode": "delta",
+              "target": "self",
+              "note": "读预排：身法在排，定位归位更快（行动条 +10）"
+            }
+          ],
+          "note": "读层：staged_scene(kind_move)",
+          "else": []
         }
       ],
       "tentative": false,
@@ -2023,6 +2204,15 @@
           "mode": "delta",
           "target": "self",
           "note": "空间操作的租金：迷失值 +1"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "迷宫的代价：自身攻击 -1"
         }
       ],
       "tentative": false,
@@ -2108,6 +2298,46 @@
               "target": "all_enemies"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "staged_scene",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "note": "预排未结：空间破碎追加 2 点"
+            }
+          ],
+          "else": [],
+          "note": "跨轴读层：record"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "astral_anchor",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "note": "星界锚定：破碎追加 1 点"
+            }
+          ],
+          "else": [],
+          "note": "跨轴读层：astral"
         }
       ],
       "tentative": false,
@@ -2359,6 +2589,316 @@
         ],
         "mood": "omnipresent, unreal"
       }
+    },
+    {
+      "id": "skill_apprentice_s6_stage_attack",
+      "name": "预排·攻势",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "记录官",
+      "rarity": "uncommon",
+      "role": "core",
+      "axis": "record",
+      "flagship": false,
+      "lore": "序列6 —— \"『预排·攻势』：先把这一式排进时空里。\"",
+      "flavor": "你把挥拳的动作提前做了一遍。它还没有发生，但已经写好了。",
+      "describe": "预排一式攻势（预排场景 +1 层，30tick）：结算时按固定顺序打出 6 点精神伤害。代价：自身防御 -1（10tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 10,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "mode": "unit",
+          "faction": "self",
+          "scope": "point",
+          "pickCount": 1
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "staged_scene",
+          "target": "self",
+          "duration": 30,
+          "stacks": 1,
+          "stackMode": "add",
+          "params": {
+            "kind_attack": true
+          },
+          "note": "预排攻势：结算时按固定顺序生效"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "预排的代价：自身防御 -1"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 E2 同时结算重构新增：预排攻势（params kind_attack），与预排·身法共同构成 2 张施加方。",
+      "art": {
+        "subject": "a strike rehearsed in a held breath before it happens",
+        "elements": [
+          "held strike",
+          "frozen afterimage",
+          "dim clockface"
+        ],
+        "mood": "suspended"
+      }
+    },
+    {
+      "id": "skill_apprentice_s6_stage_move",
+      "name": "预排·身法",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "记录官",
+      "rarity": "uncommon",
+      "role": "core",
+      "axis": "record",
+      "flagship": false,
+      "lore": "序列6 —— \"『预排·身法』：退路也一起排进去。\"",
+      "flavor": "你退后的路线已经在时空里画好了。真到那一刻，你只是照着走。",
+      "describe": "预排一式身法（预排场景 +1 层，30tick）：结算时后撤 2 格。代价：自身行动条 -5。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 10,
+        "castTime": 0
+      },
+      "reach": "none",
+      "target": {
+        "selectionMode": "auto",
+        "request": {
+          "mode": "unit",
+          "faction": "self",
+          "scope": "point",
+          "pickCount": 1
+        }
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "staged_scene",
+          "target": "self",
+          "duration": 30,
+          "stacks": 1,
+          "stackMode": "add",
+          "params": {
+            "kind_move": true
+          },
+          "note": "预排身法：结算时后撤"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -5,
+          "mode": "delta",
+          "target": "self",
+          "note": "预排的代价：自身行动条 -5"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 E2 重构新增：预排身法（params kind_move），结算卡按 recorded_has 分支执行。",
+      "art": {
+        "subject": "a retreat path drawn in the air ahead of time",
+        "elements": [
+          "ghostly footpath",
+          "stopped clock",
+          "faint dust"
+        ],
+        "mood": "foreseen"
+      }
+    },
+    {
+      "id": "skill_apprentice_s4_simultaneous",
+      "name": "同时结算",
+      "kind": "active",
+      "sequence": 4,
+      "sequenceName": "秘法师",
+      "rarity": "rare",
+      "role": "core",
+      "axis": "record",
+      "flagship": false,
+      "lore": "序列4 —— \"『同时结算』：排好的，一起发生。\"",
+      "flavor": "钟摆落下的一瞬，那几式同时抵达——顺序不会再改了。",
+      "describe": "同时结算全部预排：按固定顺序（攻势→身法）执行——攻势段对目标造成 6 点精神伤害，身法段自身后撤 2 格；结算后清空预排。若未预排则造成 2 点精神伤害。代价：自身行动条 -6。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "self",
+            "statusId": "staged_scene",
+            "id": "kind_attack"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 6,
+              "target": "target",
+              "note": "预排攻势段：同时结算第一段"
+            }
+          ],
+          "else": [],
+          "note": "固定顺序①：攻势"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "self",
+            "statusId": "staged_scene",
+            "id": "kind_move"
+          },
+          "then": [
+            {
+              "type": "move",
+              "op": "push_back",
+              "distance": 2,
+              "target": "self",
+              "note": "预排身法段：同时结算第二段"
+            }
+          ],
+          "else": [],
+          "note": "固定顺序②：身法"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "staged_scene",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "staged_scene",
+              "target": "self",
+              "stacks": "all",
+              "stackMode": "consume",
+              "note": "结算完毕：清空预排场景"
+            }
+          ],
+          "else": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 2,
+              "target": "target",
+              "note": "未预排：只能打出零星一击"
+            }
+          ],
+          "note": "清空预排或退化"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -6,
+          "mode": "delta",
+          "target": "self",
+          "note": "结算的代价：自身行动条 -6"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 E2 重构新增：核心同时结算卡——recorded_has 读预排类型，固定顺序连续执行，预判错则对应段落空。",
+      "art": {
+        "subject": "several rehearsed strikes landing on the same tick",
+        "elements": [
+          "pendulum frozen",
+          "overlapping afterimages",
+          "clock shards"
+        ],
+        "mood": "simultaneous"
+      }
+    },
+    {
+      "id": "skill_apprentice_s7_time_trace",
+      "name": "时痕",
+      "kind": "passive",
+      "sequence": 7,
+      "sequenceName": "占星人",
+      "rarity": "uncommon",
+      "role": "generic",
+      "axis": "record",
+      "flagship": false,
+      "lore": "序列7 —— \"『时痕』：走过的每一步都留着印子。\"",
+      "flavor": "空气里还留着上一次选择的方向。你顺着它走，就不会迷路。",
+      "describe": "战斗开始时获得时痕：自身防御 +1（整场）；每次预排时回复 1 点能量。",
+      "hook": [
+        "on_battle_start"
+      ],
+      "triggers": [
+        {
+          "event": "on_status_gain",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "staged_scene"
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "时痕：预排回能 1"
+                }
+              ],
+              "else": [],
+              "note": "读层：staged_scene"
+            }
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 1,
+          "mode": "delta",
+          "target": "self",
+          "note": "时痕：防御 +1"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 E2 重构新增：补被动（主被动比 2.8），预排读层。",
+      "art": {
+        "subject": "faint footprints left in stopped air",
+        "elements": [
+          "ghost footprints",
+          "still air"
+        ],
+        "mood": "faint"
+      }
     }
   ],
   "unitDefs": [
@@ -2413,7 +2953,7 @@
       ]
     }
   ],
-  "designNote": "> **隐秘值维度（源堡系 §2.2）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。学徒经\"门扉 / 星界\"类效果 +1/次（开门、仪式·门、干扰占卜、星相学、门之概念、空间牢笼、无处不在、门·权柄 等）。层级：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（源堡系共享收益；学徒经【提线接门·改】读取占卜家 `puppet_string` 同享）\n> - **≥7**：友方「愚弄 / 隐秘 / conceal」类技能 **+50%**（学徒的 空间隐藏 / 幻化 / 自我符号 等 conceal 类受益）\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：占卜家（愚弄/观诡）、学徒（星界/门）、偷盗者（欺诈/寄生）、永暗之河（不眠者/收尸人/战士）、暗影世界（囚犯/罪犯）、混沌海（秘祈人）也写入同一 `secrecy` 维度。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「时空税」句式换形 20 张通用骨架卡——一切收益都要交时空税：要么以「回放上一式半份」的形式付出，要么把人送进空间裂隙一瞬（空间操作须付迷失租金）。没有白给的站桩 buff。**协作面**：放逐为队友争取一瞬空档。",
+  "designNote": "> **隐秘值维度（源堡系 §2.2）**：战场级属性 0–10，独立于力/敏/智/灵/体/魅。学徒经\"门扉 / 星界\"类效果 +1/次（开门、仪式·门、干扰占卜、星相学、门之概念、空间牢笼、无处不在、门·权柄 等）。层级：\n> - **≥4**：场上所有 `提线木偶` 每回合 +1 层（源堡系共享收益；学徒经【提线接门·改】读取占卜家 `puppet_string` 同享）\n> - **≥7**：友方「愚弄 / 隐秘 / conceal」类技能 **+50%**（学徒的 空间隐藏 / 幻化 / 自我符号 等 conceal 类受益）\n> - **=10**：触发「**源堡共鸣**」——本回合所有带 `提线木偶` 的目标可被任意友方（含跨源质）操控一次\n>\n> **跨源质写入方**：占卜家（愚弄/观诡）、学徒（星界/门）、偷盗者（欺诈/寄生）、永暗之河（不眠者/收尸人/战士）、暗影世界（囚犯/罪犯）、混沌海（秘祈人）也写入同一 `secrecy` 维度。\n\n> **骨架手术轮（2026-10-03，阶段二·五 全途径推广）**：本途径按「时空税」句式换形 20 张通用骨架卡——一切收益都要交时空税：要么以「回放上一式半份」的形式付出，要么把人送进空间裂隙一瞬（空间操作须付迷失租金）。没有白给的站桩 buff。**协作面**：放逐为队友争取一瞬空档。 ｜ 2026-10-23 E2 同时结算重构：staged_scene 入池、预排/同时结算新增、时痕补被动、代价与选靶补足。",
   "sampleBuilds": [
     {
       "name": "A 门扉调度 🚪",

@@ -1,6 +1,6 @@
 # 学徒（apprentice）· 技能构筑轴分析
 
-> 数据来源：`docs/json/apprentice.skills.json`（共 **34** 张技能卡）。
+> 数据来源：`docs/json/apprentice.skills.json`（共 **38** 张技能卡）。
 > 由 `docs/tools/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。
 > 生成日期：2026-10-23
 
@@ -9,10 +9,10 @@
 | 构筑轴 | 符号 | 名称 | 技能数 | 主动/被动 | 挂载状态 | 设计风格 |
 |---|---|---|---:|---|---:|---|
 | `gate` | 🚪 | 开门 | 13 | 9/4 | 0 | 进攻·运营 |
-| `trick` | 🎩 | 戏法 | 4 | 4/0 | 0 | 进攻·运营 |
-| `record` | 📖 | 记录 | 5 | 3/2 | 0 | 进攻·运营 |
+| `trick` | 🎩 | 戏法 | 4 | 4/0 | 0 | 进攻 |
+| `record` | 📖 | 记录 | 9 | 6/3 | 0 | 进攻·运营 |
 | `astral` | 🌌 | 星界 | 12 | 9/3 | 0 | 进攻·运营 |
-| **合计** | — | — | **34** | **25/9** | **0** | — |
+| **合计** | — | — | **38** | **28/10** | **0** | — |
 
 ### 1.1 职业级：挂载状态类型分布
 
@@ -26,43 +26,45 @@
 
 **规模**：13 张技能（主动 9 / 被动 4）；稀有度分布：稀有×4、普通×3、史诗×3、传说×3。
 
-**效果原语构成**（type，全量递归，共 40 处）：
+**效果原语构成**（type，全量递归，共 47 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 12 | 30.0% |
-| `damage` | 8 | 20.0% |
-| `modify_stat` | 1 | 2.5% |
-| `modify_resource` | 6 | 15.0% |
-| `move` | 3 | 7.5% |
-| `echo_last_skill` | 5 | 12.5% |
-| `translocate` | 5 | 12.5% |
+| `mount_status` | 12 | 25.5% |
+| `damage` | 11 | 23.4% |
+| `modify_stat` | 3 | 6.4% |
+| `modify_resource` | 8 | 17.0% |
+| `move` | 3 | 6.4% |
+| `echo_last_skill` | 5 | 10.6% |
+| `translocate` | 5 | 10.6% |
 
-**算子构成**（op，共 13 处）：
+**算子构成**（op，共 17 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 4 |
-| `if` | 6 |
+| `if` | 10 |
 | `repeat` | 1 |
 | `push_back` | 1 |
 | `insert_tail_cross_lane` | 1 |
 
-**改动的属性（modify_stat，共 1 处）**：
+**改动的属性（modify_stat，共 3 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
+| `defense` | 2 |
 | `armor` | 1 |
 
-**改动的资源（modify_resource，共 6 处）**：
+**改动的资源（modify_resource，共 8 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
 | `lost` | 5 |
+| `gauge.current` | 2 |
 | `energy` | 1 |
 
 **设计风格总结**：本轴偏【进攻·运营】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `mount_status`(12)、`damage`(8)、`modify_resource`(6)；属性杠杆集中在 `armor`，资源杠杆集中在 `lost`、`energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(12)、`damage`(11)、`modify_resource`(8)；属性杠杆集中在 `defense`、`armor`，资源杠杆集中在 `lost`、`gauge.current`、`energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **无处不在**：战斗开始时获得无处不在：行动条速率 +6、无法被位移，并召唤一个留在星界的残影（30% 生命）助战。；无处不在皆穿门（仪式之门 15tick）。；时空税：这份收益以「回放上一式半份」的方式付出（禁裸站桩）。
 
@@ -71,15 +73,16 @@
 
 **规模**：4 张技能（主动 4 / 被动 0）；稀有度分布：普通×3、稀有×1。
 
-**效果原语构成**（type，全量递归，共 13 处）：
+**效果原语构成**（type，全量递归，共 14 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 1 | 7.7% |
-| `damage` | 5 | 38.5% |
-| `modify_resource` | 3 | 23.1% |
-| `move` | 2 | 15.4% |
-| `translocate` | 2 | 15.4% |
+| `mount_status` | 1 | 7.1% |
+| `damage` | 5 | 35.7% |
+| `modify_stat` | 1 | 7.1% |
+| `modify_resource` | 3 | 21.4% |
+| `move` | 2 | 14.3% |
+| `translocate` | 2 | 14.3% |
 
 **算子构成**（op，共 6 处）：
 
@@ -89,6 +92,12 @@
 | `push_back` | 1 |
 | `pull_forward` | 1 |
 
+**改动的属性（modify_stat，共 1 处）**：
+
+| stat 属性键 | 次数 |
+|---|---:|
+| `attack` | 1 |
+
 **改动的资源（modify_resource，共 3 处）**：
 
 | resource 资源键 | 次数 |
@@ -96,45 +105,56 @@
 | `lost` | 2 |
 | `gauge.current` | 1 |
 
-**设计风格总结**：本轴偏【进攻·运营】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `damage`(5)、`modify_resource`(3)、`translocate`(2)；属性杠杆集中在 —，资源杠杆集中在 `lost`、`gauge.current`；挂载状态以 — 类型为主，构成其核心交互骨架。
+**设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
+签名原语为 `damage`(5)、`modify_resource`(3)、`translocate`(2)；属性杠杆集中在 `attack`，资源杠杆集中在 `lost`、`gauge.current`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **戏法·闪光**：使一名敌人被闪光震慑 15tick：它的下一次单体攻击落空，且行动条进度 -20。；门在脚下开裂一瞬，再把人放回原位。
 
 
 ### 📖 记录（record）
 
-**规模**：5 张技能（主动 3 / 被动 2）；稀有度分布：精良×2、史诗×2、稀有×1。
+**规模**：9 张技能（主动 6 / 被动 3）；稀有度分布：精良×5、稀有×2、史诗×2。
 
-**效果原语构成**（type，全量递归，共 18 处）：
+**效果原语构成**（type，全量递归，共 33 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 7 | 38.9% |
-| `damage` | 3 | 16.7% |
-| `modify_resource` | 1 | 5.6% |
-| `spawn` | 1 | 5.6% |
-| `domain` | 1 | 5.6% |
-| `echo_last_skill` | 2 | 11.1% |
-| `snapshot` | 2 | 11.1% |
-| `restore_snapshot` | 1 | 5.6% |
+| `mount_status` | 10 | 30.3% |
+| `damage` | 6 | 18.2% |
+| `modify_stat` | 3 | 9.1% |
+| `modify_resource` | 6 | 18.2% |
+| `spawn` | 1 | 3.0% |
+| `move` | 1 | 3.0% |
+| `domain` | 1 | 3.0% |
+| `echo_last_skill` | 2 | 6.1% |
+| `snapshot` | 2 | 6.1% |
+| `restore_snapshot` | 1 | 3.0% |
 
-**算子构成**（op，共 6 处）：
+**算子构成**（op，共 13 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 2 |
-| `if` | 3 |
+| `if` | 9 |
+| `push_back` | 1 |
 | `overlay` | 1 |
 
-**改动的资源（modify_resource，共 1 处）**：
+**改动的属性（modify_stat，共 3 处）**：
+
+| stat 属性键 | 次数 |
+|---|---:|
+| `defense` | 3 |
+
+**改动的资源（modify_resource，共 6 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
+| `gauge.current` | 4 |
 | `lost` | 1 |
+| `energy` | 1 |
 
 **设计风格总结**：本轴偏【进攻·运营】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `mount_status`(7)、`damage`(3)、`snapshot`(2)；属性杠杆集中在 —，资源杠杆集中在 `lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(10)、`damage`(6)、`modify_resource`(6)；属性杠杆集中在 `defense`，资源杠杆集中在 `gauge.current`、`lost`、`energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **再现**：若记录层数 ≥4：消耗 4 层，再现上一张打出的技能卡（50% 效能）；否则显出一具被记录者的半成品影像为己方作战（40% 生命、50% 攻击）。
 
@@ -143,46 +163,50 @@
 
 **规模**：12 张技能（主动 9 / 被动 3）；稀有度分布：传说×4、精良×3、史诗×3、稀有×2。
 
-**效果原语构成**（type，全量递归，共 33 处）：
+**效果原语构成**（type，全量递归，共 37 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 11 | 33.3% |
-| `damage` | 1 | 3.0% |
-| `modify_stat` | 2 | 6.1% |
-| `modify_resource` | 7 | 21.2% |
-| `echo_last_skill` | 4 | 12.1% |
-| `restore_snapshot` | 1 | 3.0% |
-| `translocate` | 7 | 21.2% |
+| `mount_status` | 11 | 29.7% |
+| `damage` | 1 | 2.7% |
+| `modify_stat` | 4 | 10.8% |
+| `modify_resource` | 9 | 24.3% |
+| `echo_last_skill` | 4 | 10.8% |
+| `restore_snapshot` | 1 | 2.7% |
+| `translocate` | 7 | 18.9% |
 
-**算子构成**（op，共 1 处）：
+**算子构成**（op，共 2 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 1 |
+| `if` | 1 |
 
-**改动的属性（modify_stat，共 2 处）**：
+**改动的属性（modify_stat，共 4 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
+| `defense` | 1 |
 | `gauge.threshold` | 1 |
 | `gauge.rate` | 1 |
+| `attack` | 1 |
 
-**改动的资源（modify_resource，共 7 处）**：
+**改动的资源（modify_resource，共 9 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
 | `lost` | 7 |
+| `gauge.current` | 2 |
 
 **设计风格总结**：本轴偏【进攻·运营】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `mount_status`(11)、`translocate`(7)、`modify_resource`(7)；属性杠杆集中在 `gauge.threshold`、`gauge.rate`，资源杠杆集中在 `lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(11)、`modify_resource`(9)、`translocate`(7)；属性杠杆集中在 `defense`、`gauge.threshold`、`gauge.rate`，资源杠杆集中在 `lost`、`gauge.current`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **时空迷宫**：对全体敌方施加时空迷宫 15tick：每 tick 行动条 -6，且行动条速率 -5；隐秘值≥7 时本卡能量费 6→4。；门在脚下开裂一瞬，再把人放回原位。
 
 
 ## 附：统计口径
 
-- 数据源：`docs/json/apprentice.skills.json` 的 `cards[]`，共 34 张卡。
+- 数据源：`docs/json/apprentice.skills.json` 的 `cards[]`，共 38 张卡。
 - 按 `axis` 字段分桶；`axis` 定义与符号取自文件级 `axes`。
 - 效果原语/算子：**递归遍历**每张卡全部效果节点（卡面 `effects`、`statusDefs[].triggers[].effects`、区域/界域等任意嵌套），同名多次计数。
 - 原语以效果节点 `type` 归类（19 类）；算子以 `op` 归类（9 类）。
