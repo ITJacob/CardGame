@@ -13,11 +13,12 @@
       "statusId": "chink_finding",
       "enablers": [
         "寻隙",
-        "讼师之眼",
-        "律令加身"
+        "立案·侵蚀"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：chink_finding 仅三处 mount_status（均 enabler），无卡面读取 ｜ 2026-09-29 环节⑤：chink_finding 补层数引擎（身份 8→15）；enablers 核正（诡辩/陈词挂 deluded 移出）；纯产层轴真空甄别拍板接受（自足乘区无下游，payoffVacuumAccepted） ｜ 2026-10-02 骨架手术轮：重排形状——改写规则槽/扭曲既有状态/重排行动条/状态易主/重定义技能/扭曲伤害定义；通用骨架卡 39→0，mount_status 46%→28%，三件套 65%→46%，途径均距 0.092→0.229，最近对 0.045→0.174",
+      "payoffs": [
+        "法条援引"
+      ],
+      "note": "2026-10-23 C3 判例制重构：讼辩=立案与援引——先例（precedent）成立后，判例卡读层兑现；事件计数走 dispelled_count/dead_count。",
       "payoffVacuumAccepted": true
     },
     "brute": {
@@ -28,7 +29,7 @@
         "力量解决",
         "放大"
       ],
-      "note": "2026-09-20 清理悬空 statusId（原为 蛮力，全库无此状态定义）；该轴当前无对应身份状态，待设计评审后补。 ｜ payoffs 2026-09-26 评审：amplified 为放大卡自足件（自带 nextAttack×2+处决），无下游消费 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：amplified 自足件自带 nextAttack×2 载荷，无需外部读层；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：力量解决补 amplified 产层段（野蛮体魄/赠予不挂 amplified 移出，产层 12→20）；力量解决读 chink_finding 跨轴（brute→advocacy） ｜ 2026-10-02 骨架手术轮：重排形状——改写规则槽/扭曲既有状态/重排行动条/状态易主/重定义技能/扭曲伤害定义；通用骨架卡 39→0，mount_status 46%→28%，三件套 65%→46%，途径均距 0.092→0.229，最近对 0.045→0.174",
+      "note": "2026-10-23 C3：蛮力轴保留放大与处决；死亡先例由立案·死亡承载。",
       "payoffs": [],
       "payoffVacuumAccepted": true
     },
@@ -44,20 +45,22 @@
         "腐化回扣",
         "收买"
       ],
-      "note": "2026-09-29 环节⑤：enablers 核正（贿赂·关联/赠予不挂 corrupted 移出，腐化回扣实证挂入，产层 12→20）；收买读 corrupted 升 landed（payoff notes→landed，腐化回扣 has_status 列表形未计入口径留 notes）+ 读 doom 跨系（→assassin） ｜ 2026-10-02 骨架手术：产层核正——腐化回扣实为 payoff（只读不挂）移出 enablers，重贿补挂 corrupted 成为第二产层；has_status 数组形改 any_of 同义写法（评分器可实证）"
+      "note": "2026-10-23 C3：贿腐轴保留状态易主与回扣。"
     },
     "warp_rule": {
       "symbol": "🌀",
       "name": "扭曲规则",
       "statusId": "distortion",
       "enablers": [
-        "扭曲",
-        "利用"
+        "立案·死亡",
+        "扭曲"
       ],
       "payoffs": [
-        "秩序崩坏"
+        "重定义",
+        "秩序崩坏",
+        "熵"
       ],
-      "note": "payoffs 2026-09-26 评审：秩序崩坏为僭越终焉（conversionNotes 层证据：锚定规则槽/秩序度棋盘；卡面 effects 为 gauge_shuffle+status_shuffle，直接操作规则槽一段系已知缺口）⚠️ 证据级=notes ｜ 2026-09-29 环节⑤：利用补 distortion 产层段（独享规则/重定义不挂 distortion 移出，产层 12→20）；秩序崩坏读 distortion 升 landed（payoff notes→landed）；扭曲读 puppet_string 跨系（→seer）；规则槽直接操作段仍为已知缺口 ｜ 2026-10-02 骨架手术轮：重排形状——改写规则槽/扭曲既有状态/重排行动条/状态易主/重定义技能/扭曲伤害定义；通用骨架卡 39→0，mount_status 46%→28%，三件套 65%→46%，途径均距 0.092→0.229，最近对 0.045→0.174"
+      "note": "2026-10-23 C3：扭曲规则轴退役「从零改写规则槽」，改为引用本场已发生的先例；先例不可撤销。"
     }
   },
   "cards": [
@@ -85,9 +88,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "point"
+          "scope": "point",
+          "pickCount": 1
         },
-        "fallbackSort": "atk_desc"
+        "fallbackSort": "buff_count_desc"
       },
       "effects": [
         {
@@ -108,6 +112,15 @@
               "note": "扭曲获得：辩词一旦说出口，对方就撕不掉（合同不可单方撤销）"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "诡辩的代价：自身防御 -1"
         }
       ],
       "sharedAcross": [
@@ -208,21 +221,22 @@
               "statusId": "chink_finding",
               "duration": null,
               "target": "self"
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 0,
-              "field": "exemptions",
-              "mode": "append",
-              "value": {
-                "exempt": [
-                  "self"
-                ],
-                "scope": "caster"
-              },
-              "note": "寻隙=找到规则的缝隙：把自己登记进槽 0 豁免名单（先立后破，只改既有槽）"
             }
           ]
+        },
+        {
+          "type": "modify_rule_slot",
+          "slot": 1,
+          "field": "punish",
+          "mode": "append",
+          "value": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 1
+            }
+          ],
+          "note": "援引寻隙判例：在既有惩罚条款后追加 1 点暗伤（引用先例，不从零立法）"
         }
       ],
       "tentative": false,
@@ -261,16 +275,6 @@
               "statusId": "glib_tongue",
               "duration": null,
               "target": "self"
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 1,
-              "field": "scope",
-              "mode": "append",
-              "value": {
-                "scope": "all_enemies"
-              },
-              "note": "滔滔不绝：条款的适用范围被重新划定"
             }
           ]
         }
@@ -284,7 +288,22 @@
           "gaping wound"
         ],
         "mood": "persuasive, insidious"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_active_skill",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "滔滔不绝：施法回 1 能量"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_lawyer_s8_force_resolution",
@@ -310,10 +329,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "behind_1",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_desc"
+        "fallbackSort": "hp_asc"
       },
       "effects": [
         {
@@ -354,6 +373,15 @@
             }
           ],
           "else": []
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "蛮力的代价：自身防御 -1"
         }
       ],
       "upgradeLadder": {
@@ -428,18 +456,6 @@
           "mode": "delta",
           "duration": null,
           "target": "self"
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 2,
-          "field": "exemptions",
-          "mode": "append",
-          "value": {
-            "exempt": [
-              "self"
-            ]
-          },
-          "note": "法不责壮：把自己登记进槽 2 豁免名单"
         }
       ],
       "conversionNotes": [
@@ -561,18 +577,6 @@
           "mode": "delta",
           "duration": 20,
           "target": "target"
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 0,
-          "field": "exemptions",
-          "mode": "remove",
-          "value": {
-            "remove": [
-              "target"
-            ]
-          },
-          "note": "贿赂：把对方从豁免名单里划掉——禁裸减益，削弱必带规则改写"
         }
       ],
       "sharedAcross": [
@@ -794,10 +798,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "atk_desc"
+        "fallbackSort": "debuff_count_desc"
       },
       "effects": [
         {
@@ -808,20 +812,6 @@
               "statusId": "distortion",
               "charges": 1,
               "duration": 20
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 0,
-              "field": "trigger",
-              "mode": "replace",
-              "value": {
-                "trigger": "on_attack",
-                "retarget": "own_faction",
-                "charges": 1,
-                "duration": 20,
-                "durationUnit": "tick"
-              },
-              "note": "规则槽改写（canonical）：把『下次攻击转打自身阵营』登记进 Rules[3] 槽 0 的 trigger 字段"
             },
             {
               "type": "modify_status",
@@ -863,6 +853,15 @@
               "note": "秩序度写入：规则扭曲秩序 -1（律师压低）"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "扭曲的代价：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -898,13 +897,12 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "spread": "splash_adjacent",
-          "scope": "whole_lane",
-          "pickCount": "all"
+          "scope": "point",
+          "pickCount": 1
         },
-        "fallbackSort": "atk_desc",
+        "fallbackSort": "armor_desc",
         "note": "稿面仅给 spread 未给 fallbackSort，manual 模式强制字段暂记 null 待补"
       },
       "effects": [
@@ -927,6 +925,15 @@
               "note": "腐蚀蔓延：归属一并错乱（状态轮转易主）"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "腐蚀的代价：自身攻击 -1"
         }
       ],
       "conversionNotes": "稿面 targetSpec 未给 fallbackSort（manual 必填），暂记 null 待数值阶段补（建议 atk_desc） ｜ 翻译/语义：寻隙/僭越 交界：贪婪驱动的目标偏移（确定性，不掷骰子）。与【扭曲】同属\"改写意图\"，但本条写在规则外（不碰规则槽）。 ｜ 2026-10-02 骨架手术：骨架手术：贿腐=利益重排（status_shuffle） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：bribery轴 enemy+whole_lane pick:all（轴选靶签名设计 §4）",
@@ -993,20 +1000,6 @@
               "value": 3,
               "mode": "delta",
               "target": "self"
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 1,
-              "field": "punish",
-              "mode": "append",
-              "value": {
-                "type": "modify_resource",
-                "resource": "energy",
-                "value": 1,
-                "mode": "delta",
-                "target": "self"
-              },
-              "note": "回扣：把『击杀即付费』追加登记为违例惩罚"
             }
           ],
           "else": []
@@ -1050,13 +1043,12 @@
       "target": {
         "selectionMode": "manual",
         "request": {
-          "mode": "area",
+          "mode": "unit",
           "faction": "enemy",
-          "spread": "splash_adjacent",
-          "scope": "board",
-          "pickCount": "all"
+          "scope": "whole_lane",
+          "pickCount": 1
         },
-        "fallbackSort": "atk_desc",
+        "fallbackSort": "gauge_desc",
         "note": "稿面仅给 spread 未给 fallbackSort，manual 模式强制字段暂记 null 待补"
       },
       "effects": [
@@ -1093,6 +1085,15 @@
               "note": "秩序度写入：混乱压低秩序 -1"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "混乱的代价：自身防御 -1"
         }
       ],
       "frameworkFlags": [
@@ -1206,20 +1207,16 @@
               "statusId": "untouchable_confusion",
               "duration": null,
               "target": "self"
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 1,
-              "field": "exemptions",
-              "mode": "append",
-              "value": {
-                "exempt": [
-                  "self"
-                ]
-              },
-              "note": "难落身：把自己登记进豁免名单"
             }
           ]
+        },
+        {
+          "type": "mount_status",
+          "statusId": "shield",
+          "value": 3,
+          "duration": 20,
+          "target": "self",
+          "note": "难落身：护盾 3"
         }
       ],
       "tentative": false,
@@ -1258,7 +1255,7 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "board",
+          "scope": "point",
           "pickCount": 1
         },
         "fallbackSort": "buff_count_desc"
@@ -1295,6 +1292,15 @@
               "note": "秩序度写入：扭曲规则秩序 -1"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "利用的代价：自身攻击 -1"
         }
       ],
       "tentative": false,
@@ -1332,7 +1338,9 @@
         "selectionMode": "auto",
         "request": {
           "mode": "unit",
-          "faction": "self"
+          "faction": "self",
+          "scope": "point",
+          "pickCount": 1
         }
       },
       "effects": [
@@ -1354,6 +1362,15 @@
               "note": "放大条款可以续期（账本操作）"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "放大的代价：自身防御 -1"
         }
       ],
       "conversionNotes": "与【力量解决】联动：3 能放大 + 3 能力量解决 = 12 伤且带 35% 阈值处决（👊 轴唯一质变点） ｜ 翻译/语义：僭越轴：把\"放大\"做成规则槽的放大器——**规则槽非空时才有意义**（否则没有\"普通一击\"可变处决），与仲裁人强耦合。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 骨架手术：骨架手术：账本操作 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
@@ -1391,7 +1408,9 @@
         "selectionMode": "manual",
         "request": {
           "mode": "unit",
-          "faction": "ally"
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
         },
         "fallbackSort": "atk_desc"
       },
@@ -1411,6 +1430,15 @@
               "note": "利息：拿到好处的人节奏也被重排（协作卡带獠牙——律师的赠予从不免费）"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "赠予的代价：自身防御 -1"
         }
       ],
       "conversionNotes": "稿面遗留：on_tick 自伤会高频触发目标 on_take_damage——① 是否触发对半承担的转移（若是会形成伤害放大循环）；② 不应被狂乱适应计为 debuff。需实现阶段写死 ｜ 翻译/语义：蛮力轴（镜像贿赂）：给己方力量但收血量利息。本途径唯一增益卡，增益自带獠牙。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 骨架手术：骨架手术：协作卡也走重排形状 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
@@ -1449,21 +1477,29 @@
               "statusId": "rule_monopoly",
               "duration": null,
               "target": "self"
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 2,
-              "field": "exemptions",
-              "mode": "replace",
-              "value": {
-                "exempt": [
-                  "self"
-                ],
-                "scope": "self_only"
-              },
-              "note": "独享规则：豁免名单改写为只有自己——律师与仲裁人最刺眼的对立"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "self",
+            "statusId": "precedent",
+            "id": "death"
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 5,
+              "mode": "delta",
+              "target": "self",
+              "note": "独享规则：死亡先例成立时行动条 +5"
+            }
+          ],
+          "else": [],
+          "note": "判例：death"
         }
       ],
       "conversionNotes": [
@@ -1632,16 +1668,6 @@
           "else": []
         },
         {
-          "type": "modify_rule_slot",
-          "slot": 2,
-          "field": "scope",
-          "mode": "append",
-          "value": {
-            "scope": "all_enemies"
-          },
-          "note": "上位者·威严：规则的覆盖范围被重新划定"
-        },
-        {
           "op": "if",
           "condition": {
             "kind": "has_status",
@@ -1700,18 +1726,30 @@
               "statusId": "stratum",
               "duration": null,
               "target": "self"
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 2,
-              "field": "exemptions",
-              "mode": "remove",
-              "value": {
-                "remove": "lower_rank"
-              },
-              "note": "阶层：位格低于你的单位不在豁免保护内"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "precedent",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "阶层：先例 ≥2 时攻击 +1"
+            }
+          ],
+          "else": [],
+          "note": "读层：precedent"
         }
       ],
       "conversionNotes": [
@@ -1982,14 +2020,13 @@
       },
       "reach": "spell",
       "target": {
-        "selectionMode": "manual",
+        "selectionMode": "auto",
         "request": {
-          "mode": "unit",
+          "mode": "area",
           "faction": "enemy",
           "scope": "board",
-          "pickCount": 1
-        },
-        "fallbackSort": "index_asc"
+          "pickCount": "all"
+        }
       },
       "effects": [
         {
@@ -2037,6 +2074,28 @@
               "else": []
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "precedent",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "order",
+              "value": -1,
+              "mode": "delta",
+              "target": "board",
+              "note": "熵：先例 ≥2 时秩序再降 1"
+            }
+          ],
+          "else": [],
+          "note": "读层：precedent"
         }
       ],
       "sharedAcross": [
@@ -2214,34 +2273,6 @@
               "note": "targetSpec ALL_ENEMIES；状态表达保留兼容"
             },
             {
-              "type": "modify_rule_slot",
-              "slot": 1,
-              "field": "trigger",
-              "mode": "replace",
-              "value": {
-                "trigger": "on_heal",
-                "scope": "all_enemies",
-                "invert": "heal_to_damage",
-                "duration": 25,
-                "durationUnit": "tick"
-              },
-              "note": "规则槽改写（slot 1 trigger）：把『治疗结算』事件登记为重定义触发"
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 1,
-              "field": "punish",
-              "mode": "replace",
-              "value": [
-                {
-                  "type": "damage",
-                  "element": "none",
-                  "valueFrom": "triggeredHeal"
-                }
-              ],
-              "note": "规则槽改写（slot 1 punish）：违例载荷=治疗反转为等量伤害"
-            },
-            {
               "type": "modify_status",
               "statusId": "order_redefined",
               "target": "target",
@@ -2249,6 +2280,36 @@
               "note": "重定义不可撤销"
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "self",
+            "statusId": "precedent",
+            "id": "death"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 2,
+              "target": "target",
+              "note": "援引死亡判例：先例成立，追加 2"
+            }
+          ],
+          "else": [],
+          "note": "判例：death"
+        },
+        {
+          "type": "modify_rule_slot",
+          "slot": 2,
+          "field": "exemptions",
+          "mode": "append",
+          "value": {
+            "side": "self"
+          },
+          "note": "援引死亡判例：把既有豁免条款改写给己方（引用先例）"
         }
       ],
       "tentative": false,
@@ -2288,16 +2349,6 @@
               "duration": null,
               "dispelable": false,
               "target": "self"
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 0,
-              "field": "scope",
-              "mode": "append",
-              "value": {
-                "scope": "all_enemies"
-              },
-              "note": "独裁者：规则覆盖范围改为全体敌方——四条权柄的收束"
             }
           ]
         },
@@ -2319,6 +2370,27 @@
             }
           ],
           "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "self",
+            "statusId": "precedent",
+            "id": "consumption"
+          },
+          "then": [
+            {
+              "type": "modify_stat",
+              "stat": "attack",
+              "value": 2,
+              "mode": "delta",
+              "target": "self",
+              "note": "独裁者援引消耗判例：攻击 +2"
+            }
+          ],
+          "else": [],
+          "note": "判例：consumption"
         }
       ],
       "conversionNotes": [
@@ -2371,19 +2443,6 @@
               "duration": null,
               "target": "self",
               "note": "容器状态必须开局挂载；on_death 语义由状态触发器承载"
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 0,
-              "field": "exemptions",
-              "mode": "append",
-              "value": {
-                "exempt": [
-                  "self"
-                ],
-                "condition": "on_death"
-              },
-              "note": "九座陵寝：把自己登记进死亡规则的豁免名单"
             }
           ]
         }
@@ -2481,6 +2540,38 @@
           "mode": "set",
           "target": "board",
           "note": "秩序度写入（2026-10-01 量表写入批）：秩序崩坏 = set 0（拉平全场规则强度，dimHook order 读取随之失效）。"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "all_of",
+            "conditions": [
+              {
+                "kind": "has_status",
+                "side": "self",
+                "id": "precedent",
+                "cmp": ">=",
+                "n": 2
+              },
+              {
+                "kind": "dead_count",
+                "side": "ally",
+                "cmp": ">=",
+                "n": 1
+              }
+            ]
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 4,
+              "target": "all_enemies",
+              "note": "判例成立：死亡先例在场，秩序崩坏全体追加 4"
+            }
+          ],
+          "else": [],
+          "note": "判例：death + precedent≥2"
         }
       ],
       "conversionNotes": "R5 合规声明（关键）：gauge_shuffle 不是随机生成行动条数值，是把已有的一组数重新分配——集合守恒，不产生任何新的随机量 ｜ 不改任何数值、不造成任何伤害，却把对手一整局的节奏规划全部作废——「不参与秩序，而是让秩序失效」 ｜ 翻译/语义：僭越轴终焉：清空规则槽+重排秩序，把对手节奏规划连根拔起。**`秩序度=0` 时才可满效**（与仲裁人 `底层规则` 对位）。R5 合规（集合守恒重排，非随机生成）。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 秩序度写入（2026-10-01 量表写入批）：秩序崩坏 = set 0（拉平全场规则强度，dimHook order 读取随之失效）。 ｜ 2026-10-02 差异化风格迭代（律师=扭曲与熵正主）：gauge_shuffle/status_shuffle 转正补登：显式作用域 all_enemies（原语语义 2026-10-02 落 ddd 效果参数） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排） ｜ 选靶签名：warp_rule轴 enemy+board pick:all（轴选靶签名设计 §4）",
@@ -2583,16 +2674,6 @@
               "statusId": "chink_finding",
               "duration": null,
               "target": "self"
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 0,
-              "field": "scope",
-              "mode": "append",
-              "value": {
-                "scope": "all_enemies"
-              },
-              "note": "讼师之眼：破口的适用范围扩至全体敌方"
             }
           ]
         }
@@ -2609,7 +2690,34 @@
         ],
         "mood": "sharp, knowing"
       },
-      "conversionNotes": "2026-10-02 骨架手术：骨架手术：规则槽迁移"
+      "conversionNotes": "2026-10-02 骨架手术：骨架手术：规则槽迁移",
+      "triggers": [
+        {
+          "event": "on_status_gain",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "precedent"
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "讼师之眼：先例成立时回 1 能量"
+                }
+              ],
+              "else": [],
+              "note": "读层：precedent"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "skill_lawyer_s6_cite_statute",
@@ -2630,18 +2738,6 @@
           "element": "mental",
           "value": 4,
           "target": "target"
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 1,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "damage",
-            "element": "mental",
-            "value": 1
-          },
-          "note": "法条援引：把旧例追加登记为违例惩罚——援引一次，罚一次"
         },
         {
           "op": "if",
@@ -2680,6 +2776,26 @@
             }
           ],
           "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "recorded_has",
+            "side": "self",
+            "statusId": "precedent",
+            "id": "erosion"
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 3,
+              "target": "target",
+              "note": "援引侵蚀判例：本场已有先例，伤害 +3"
+            }
+          ],
+          "else": [],
+          "note": "判例：erosion"
         }
       ],
       "tentative": false,
@@ -2867,20 +2983,16 @@
               "statusId": "chink_finding",
               "duration": null,
               "target": "self"
-            },
-            {
-              "type": "modify_rule_slot",
-              "slot": 0,
-              "field": "punish",
-              "mode": "append",
-              "value": {
-                "type": "modify_stat",
-                "stat": "defense",
-                "value": -1
-              },
-              "note": "律令加身：把『破防』登记为违例惩罚"
             }
           ]
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": 1,
+          "mode": "delta",
+          "target": "self",
+          "note": "律令加身：防御 +1"
         }
       ],
       "tentative": false,
@@ -3009,18 +3121,6 @@
             }
           ],
           "else": []
-        },
-        {
-          "type": "modify_rule_slot",
-          "slot": 0,
-          "field": "punish",
-          "mode": "append",
-          "value": {
-            "type": "damage",
-            "element": "physical",
-            "value": 2
-          },
-          "note": "裁决即执行：把处决追加登记为违例惩罚"
         }
       ],
       "tentative": false,
@@ -3095,6 +3195,34 @@
             }
           ],
           "else": []
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "amplified",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 2,
+              "note": "放大既在：碾压追加 2"
+            }
+          ],
+          "else": [],
+          "note": "读层：amplified"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -6,
+          "mode": "delta",
+          "target": "target",
+          "note": "碾压：目标行动条 -6"
         }
       ],
       "tentative": false,
@@ -3138,20 +3266,38 @@
       "describe": "弑序——先抹掉战场规则槽（槽 0）里的一条规则触发条件，再对一名敌人造成 9 点物理伤害（无视护甲）。",
       "effects": [
         {
-          "type": "modify_rule_slot",
-          "slot": 0,
-          "field": "trigger",
-          "mode": "remove",
-          "value": {
-            "remove": "oldest"
-          },
-          "note": "弑序：直接抹掉槽 0 的一条规则触发——不是改写，是删除（律师的终极僭越）"
-        },
-        {
           "type": "damage",
           "element": "physical",
           "value": 9,
           "armorPierceRatio": 1
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "amplified",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3,
+              "note": "放大 ≥2：铁拳追加 3"
+            }
+          ],
+          "else": [],
+          "note": "读层：amplified"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": 2,
+          "mode": "delta",
+          "target": "self",
+          "note": "弑序铁拳：攻击 +2"
         }
       ],
       "tentative": false,
@@ -3253,6 +3399,15 @@
             }
           ],
           "else": []
+        },
+        {
+          "type": "modify_stat",
+          "stat": "attack",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "收买的代价：自身攻击 -1"
         }
       ],
       "tentative": false,
@@ -3267,10 +3422,10 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "point",
           "pickCount": 1
         },
-        "fallbackSort": "hp_desc"
+        "fallbackSort": "atk_desc"
       },
       "art": {
         "subject": "a lawyer dangling a coin on a string before a row of greedy eyes",
@@ -3321,6 +3476,15 @@
             }
           ],
           "note": "骨架手术：重排形状 + 产层补位"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "重贿的代价：自身防御 -1"
         }
       ],
       "tentative": false,
@@ -3335,7 +3499,7 @@
         "request": {
           "mode": "unit",
           "faction": "enemy",
-          "scope": "whole_lane",
+          "scope": "point",
           "pickCount": 1
         },
         "fallbackSort": "hp_desc"
@@ -3409,6 +3573,171 @@
         "mood": "all-owning, calm"
       },
       "conversionNotes": "2026-10-01 吟唱重标：仪式类（existing）castTime 5→10tick（对齐拍板表） ｜ 2026-10-02 骨架手术：骨架手术：status_shuffle 全体作用域 ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；scope:all+same_lane → whole_lane+pickCount:all（整路）；删 anchor:front_line（默认最前排）"
+    },
+    {
+      "id": "skill_lawyer_s6_file_erosion",
+      "name": "立案·侵蚀",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "腐化男爵",
+      "rarity": "uncommon",
+      "role": "core",
+      "axis": "advocacy",
+      "flagship": false,
+      "lore": "序列6 —— \"『立案·侵蚀』：被驱散过的东西，就成了先例。\"",
+      "flavor": "你把那一页卷宗摊开——上面记着它曾经失去过什么。从那以后，这就叫规矩。",
+      "describe": "立案：记录「侵蚀」与「消耗」两条先例（precedent 1 层，带 erosion/consumption 键，永续不撤销）；本场已有驱散发生时追加 2 点暗元素伤害。代价：自身防御 -1（10tick）。",
+      "cost": {
+        "energy": 2,
+        "cooldown": 15,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
+        },
+        "fallbackSort": "buff_count_desc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "precedent",
+          "target": "self",
+          "stacks": 1,
+          "stackMode": "add",
+          "params": {
+            "erosion": true,
+            "consumption": true
+          },
+          "note": "立案：侵蚀与消耗先例成立（不可撤销）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "dispelled_count",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 2,
+              "target": "target",
+              "note": "本场已有驱散：判例已可援引，追加 2"
+            }
+          ],
+          "else": [],
+          "note": "判例已发生"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "defense",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "duration": 10,
+          "note": "立案的代价：自身防御 -1"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 C3 判例制重构新增：先例首要施加方（侵蚀+消耗双键）。事件计数走 dispelled_count。",
+      "art": {
+        "subject": "a case file opened on an old loss",
+        "elements": [
+          "old case file",
+          "faded wound record",
+          "dim seal"
+        ],
+        "mood": "procedural"
+      }
+    },
+    {
+      "id": "skill_lawyer_s6_file_death",
+      "name": "立案·死亡",
+      "kind": "active",
+      "sequence": 6,
+      "sequenceName": "腐化男爵",
+      "rarity": "uncommon",
+      "role": "core",
+      "axis": "warp_rule",
+      "flagship": false,
+      "lore": "序列6 —— \"『立案·死亡』：死过一次，就是判例。\"",
+      "flavor": "尸体还没凉透，你已经把它写进了下一份判决书里。",
+      "describe": "立案：记录「死亡」先例（precedent 1 层，带 death 键，永续不撤销）；本场已有死亡发生时对目标追加 3 点暗元素伤害。代价：自身行动条 -6。",
+      "cost": {
+        "energy": 3,
+        "cooldown": 20,
+        "castTime": 0
+      },
+      "reach": "spell",
+      "target": {
+        "selectionMode": "manual",
+        "request": {
+          "mode": "unit",
+          "faction": "enemy",
+          "scope": "point",
+          "pickCount": 1
+        },
+        "fallbackSort": "hp_asc"
+      },
+      "effects": [
+        {
+          "type": "mount_status",
+          "statusId": "precedent",
+          "target": "self",
+          "stacks": 1,
+          "stackMode": "add",
+          "params": {
+            "death": true
+          },
+          "note": "立案：死亡先例成立（不可撤销）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "dead_count",
+            "side": "all",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "dark",
+              "value": 3,
+              "target": "target",
+              "note": "本场已有死亡：判例已可援引，追加 3"
+            }
+          ],
+          "else": [],
+          "note": "判例已发生"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": -6,
+          "mode": "delta",
+          "target": "self",
+          "note": "立案的代价：自身行动条 -6"
+        }
+      ],
+      "tentative": true,
+      "conversionNotes": "2026-10-23 C3 重构新增：死亡先例施加方。事件计数走 dead_count。",
+      "art": {
+        "subject": "a death certificate filed before the body cools",
+        "elements": [
+          "death certificate",
+          "cold candle",
+          "dark seal"
+        ],
+        "mood": "cold"
+      }
     }
   ],
   "domainDefs": [
@@ -3475,7 +3804,7 @@
       "extraRuleNote": "与仲裁人【满月】恰成对位：满月立法（公开双向自己也守），扭曲秩序坏法（扭曲拖垮谁也别想干净）；周期载荷只走 on_tick，不引 on_turn_start（G15 规避）；（2026-09-08 界域牌批次新增，同时销掉遗留「混乱区域维度未做真区域」——区域的正解是界域不是 Zone）"
     }
   ],
-  "designNote": "> 拆轴依据《失序之国系技能设定》§4.1：原「讼辩 + 贿腐」合并为 ① 寻隙，原「失序」18 张拆出 ③ 熵蚀（混乱/熵/狂乱）与 ④ 僭越（扭曲/利用/放大/独享规则/阶层/重定义/定义·替身/独裁者）。每轴一个身份状态；enabler 卡挂载/累积该状态，payoff 卡读取该状态放大。\n> **僭越轴 = 规则槽的改规发动机**：律师不立规（立规归仲裁人），但**改规**——`扭曲` 改写 trigger、`利用` 加倍/转向 punish、`独享规则` 把自己加进 exempt、`重定义` 改写作用对象、`定义·替身` 互换身份。规则槽是失序之国两途径**唯一共享棋盘**（详见本节「本系咬合器维度」）。\n> 仲裁人 = **立法者**（造法、执法）；律师 = **法律掮客**（不废法，而是让法为自己服务）。两途径强度都取决于**槽里有几条规则**——仲裁人希望槽满且严苛，律师希望槽满且被自己改写。**利益一致在「槽要满」，冲突在「归谁解释」**。\n\n> **骨架手术轮（2026-10-02，阶段二·五 试点 2/5）**：律师改形为「不创造，只篡改」——每张牌都在改一份已经存在的东西：改规则槽（18 卡）、扭曲既有状态实例（14 卡）、重排行动条与状态归属（12 卡）、重定义技能实例（3 卡）、扭曲伤害定义（2 卡）。**被动卡即「开战前先把合同改好」**：寻隙=把自己写进豁免名单、独享规则=豁免名单改成只有我、阶层=把位格低者从豁免里剔除。禁裸 modify_stat 减益——削弱必附规则改写。协作面＝当庭辩驳（为友军脱困并驳回自己的判决）、赠予（给友军力量但重排其节奏）、扭曲秩序界域（敌我同受）。",
+  "designNote": "> 拆轴依据《失序之国系技能设定》§4.1：原「讼辩 + 贿腐」合并为 ① 寻隙，原「失序」18 张拆出 ③ 熵蚀（混乱/熵/狂乱）与 ④ 僭越（扭曲/利用/放大/独享规则/阶层/重定义/定义·替身/独裁者）。每轴一个身份状态；enabler 卡挂载/累积该状态，payoff 卡读取该状态放大。\n> **僭越轴 = 规则槽的改规发动机**：律师不立规（立规归仲裁人），但**改规**——`扭曲` 改写 trigger、`利用` 加倍/转向 punish、`独享规则` 把自己加进 exempt、`重定义` 改写作用对象、`定义·替身` 互换身份。规则槽是失序之国两途径**唯一共享棋盘**（详见本节「本系咬合器维度」）。\n> 仲裁人 = **立法者**（造法、执法）；律师 = **法律掮客**（不废法，而是让法为自己服务）。两途径强度都取决于**槽里有几条规则**——仲裁人希望槽满且严苛，律师希望槽满且被自己改写。**利益一致在「槽要满」，冲突在「归谁解释」**。\n\n> **骨架手术轮（2026-10-02，阶段二·五 试点 2/5）**：律师改形为「不创造，只篡改」——每张牌都在改一份已经存在的东西：改规则槽（18 卡）、扭曲既有状态实例（14 卡）、重排行动条与状态归属（12 卡）、重定义技能实例（3 卡）、扭曲伤害定义（2 卡）。**被动卡即「开战前先把合同改好」**：寻隙=把自己写进豁免名单、独享规则=豁免名单改成只有我、阶层=把位格低者从豁免里剔除。禁裸 modify_stat 减益——削弱必附规则改写。协作面＝当庭辩驳（为友军脱困并驳回自己的判决）、赠予（给友军力量但重排其节奏）、扭曲秩序界域（敌我同受）。 ｜ 2026-10-23 C3 判例制重构：precedent 入池、立案·侵蚀/死亡新增、modify_rule_slot 全退役、代价与选靶补足。",
   "sampleBuilds": [
     {
       "name": "A 寻隙投资 🗣️",

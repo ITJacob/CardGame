@@ -5720,8 +5720,8 @@
   {
    "id": "lawyer",
    "name": "律师",
-   "state": "回溯补登",
-   "date": "2026-10-21",
+   "state": null,
+   "date": "环节⑥拍板",
    "score": 100,
    "scoreParts": {
     "命题": 10,
@@ -5734,18 +5734,18 @@
    },
    "deductions": [],
    "proposition": {
-    "statement": "先立后破的篡改——一切收益来自改写已存在的规则槽/状态/行动条：场上没有可篡改之物就没有弹药，篡改深度堆到秩序崩坏收场",
-    "variable": "篡改对象选择（改哪条规则槽/哪个状态/谁的行动位）、篡改深度堆叠节奏（何时秩序崩坏收场）",
-    "cost": "对手不上状态/不立规则则篡改空转；秩序崩坏前被抢节奏则深度白堆"
+    "statement": "判例制——不写新规，只引用本场已经发生过的事：被驱散过、死过、被消耗过的东西都会成为先例；先例一旦成立不可撤销，你和对手都能引用它",
+    "variable": "先制造哪种先例（驱散/死亡/消耗）、何时援引、先例被对手共享时如何取舍",
+    "cost": "先例未发生则判例空转；先例被对手援引；先例类型与局面不匹配；立案本身花掉行动机会"
    },
    "style": {
-    "signature": "扭曲与熵（gauge_shuffle 行动条重排 + status_shuffle 状态易主 + modify_rule_slot 规则改写）",
+    "signature": "扭曲与熵（gauge_shuffle 行动条重排 + status_shuffle 状态易主 + 先例援引）",
     "mechanisms": [
      "驱散",
      "基础增益",
      "资源"
     ],
-    "redline": "途径设计身份.md 律师身份卡：扭曲必须「先立后破」——只改写已有规则槽/状态，不从零创造秩序（那是仲裁人）；禁裸 modify_stat 减益——削弱必附规则改写"
+    "redline": "途径设计身份.md 律师身份卡：扭曲必须「先立后破」——只改写/引用已有规则与状态，不从零创造秩序（那是仲裁人）；禁裸 modify_stat 减益"
    },
    "axes": [
     {
@@ -5754,35 +5754,35 @@
      "symbol": "🗣️",
      "anchor": {
       "kind": "status",
-      "id": "chink_finding",
-      "raw": "status:chink_finding"
+      "id": "chink_finding + status:precedent",
+      "raw": "status:chink_finding + status:precedent"
      },
      "loop": {
-      "produce": "寻隙/讼师之眼/律令加身产层",
-      "consume": "chink_finding 层数引擎自放大消费（真空轴已拍板接受）",
-      "clear": "层数被消费或目标清醒清除",
+      "produce": "寻隙/立案·侵蚀产层并记录先例",
+      "consume": "法条援引/当庭辩驳读层",
+      "clear": "先例永续、寻隙层被消费",
       "produceCards": [
        {
         "name": "寻隙",
         "id": "skill_lawyer_s9_chink_finding"
        },
        {
-        "name": "讼师之眼",
-        "id": "skill_lawyer_s7_pleader_eye"
-       },
-       {
-        "name": "律令加身",
-        "id": "skill_lawyer_s3_statute_body"
+        "name": "立案·侵蚀",
+        "id": "skill_lawyer_s6_file_erosion"
        }
       ],
       "consumeCards": [
        {
-        "name": "放大",
-        "id": "skill_lawyer_s4_amplify"
+        "name": "法条援引",
+        "id": "skill_lawyer_s6_cite_statute"
+       },
+       {
+        "name": "当庭辩驳",
+        "id": "skill_lawyer_s4_courtroom_rebut"
        }
       ]
      },
-     "decision": "寻隙对象选择：寻谁的隙、层数堆到几层再爆讼",
+     "decision": "先制造哪种先例、何时援引",
      "signatures": [
       {
        "key": "prim:modify_rule_slot",
@@ -5800,21 +5800,21 @@
          "id": "skill_lawyer_s7_pleader_eye"
         }
        ],
-       "empirical": 18,
+       "empirical": 2,
        "ok": true
       }
      ],
-     "planCards": 10,
+     "planCards": 11,
      "roleMixDeclared": {
-      "core": 6,
+      "core": 7,
       "starter": 2,
       "tech": 1,
       "bridge": 1
      },
      "actual": {
-      "cards": 10,
+      "cards": 11,
       "roleMix": {
-       "core": 6,
+       "core": 7,
        "starter": 2,
        "bridge": 1,
        "tech": 1
@@ -5822,12 +5822,13 @@
       "anchorMatch": true,
       "enablers": [
        "寻隙",
-       "讼师之眼",
-       "律令加身"
+       "立案·侵蚀"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "法条援引"
+      ],
       "payoffsNotes": [],
-      "axisScore": 63.8
+      "axisScore": 82.2
      }
     },
     {
@@ -5841,7 +5842,7 @@
      },
      "loop": {
       "produce": "力量解决/放大产层",
-      "consume": "力量解决/放大读层消费（amplified 自足件 nextAttack×2+处决，真空轴已拍板接受）",
+      "consume": "碾压/弑序铁拳读层消费",
       "clear": "层数被消费清除",
       "produceCards": [
        {
@@ -5855,16 +5856,16 @@
       ],
       "consumeCards": [
        {
-        "name": "力量解决",
-        "id": "skill_lawyer_s8_force_resolution"
+        "name": "碾压",
+        "id": "skill_lawyer_s2_crush"
        },
        {
-        "name": "放大",
-        "id": "skill_lawyer_s4_amplify"
+        "name": "弑序铁拳",
+        "id": "skill_lawyer_s1_regicide_fist"
        }
       ]
      },
-     "decision": "放大时机：何时开倍击、处决线怎么压",
+     "decision": "放大时机与处决线",
      "signatures": [],
      "planCards": 10,
      "roleMixDeclared": {
@@ -5921,7 +5922,7 @@
        }
       ]
      },
-     "decision": "贿赂对象与回收时机：贿谁、何时收买/回扣兑现",
+     "decision": "贿赂对象与回收时机",
      "signatures": [
       {
        "key": "prim:status_shuffle",
@@ -5973,51 +5974,40 @@
      "symbol": "🌀",
      "anchor": {
       "kind": "status",
-      "id": "distortion",
-      "raw": "status:distortion"
+      "id": "distortion + status:precedent",
+      "raw": "status:distortion + status:precedent"
      },
      "loop": {
-      "produce": "扭曲/利用产层",
-      "consume": "秩序崩坏读层爆发",
-      "clear": "层数被爆发消耗或秩序复原清除",
+      "produce": "立案·死亡/扭曲产层并记录先例",
+      "consume": "重定义/秩序崩坏/熵读层",
+      "clear": "先例永续、扭曲层被爆发消耗",
       "produceCards": [
+       {
+        "name": "立案·死亡",
+        "id": "skill_lawyer_s6_file_death"
+       },
        {
         "name": "扭曲",
         "id": "skill_lawyer_s6_distortion"
-       },
-       {
-        "name": "利用",
-        "id": "skill_lawyer_s4_exploit"
        }
       ],
       "consumeCards": [
        {
+        "name": "重定义",
+        "id": "skill_lawyer_s1_redefine"
+       },
+       {
         "name": "秩序崩坏",
         "id": "skill_lawyer_s0_order_collapse"
+       },
+       {
+        "name": "熵",
+        "id": "skill_lawyer_s2_entropy"
        }
       ]
      },
-     "decision": "扭曲对象选择：改哪条规则槽、何时秩序崩坏收场",
+     "decision": "改哪条既有规则、何时崩坏收场",
      "signatures": [
-      {
-       "key": "prim:modify_rule_slot",
-       "slots": [
-        {
-         "name": "扭曲",
-         "id": "skill_lawyer_s6_distortion"
-        },
-        {
-         "name": "重定义",
-         "id": "skill_lawyer_s1_redefine"
-        },
-        {
-         "name": "秩序崩坏",
-         "id": "skill_lawyer_s0_order_collapse"
-        }
-       ],
-       "empirical": 18,
-       "ok": true
-      },
       {
        "key": "prim:gauge_shuffle",
        "slots": [
@@ -6038,29 +6028,31 @@
        "ok": true
       }
      ],
-     "planCards": 16,
+     "planCards": 17,
      "roleMixDeclared": {
-      "core": 14,
+      "core": 15,
       "trap": 1,
       "generic": 1
      },
      "actual": {
-      "cards": 16,
+      "cards": 17,
       "roleMix": {
-       "core": 14,
+       "core": 15,
        "generic": 1,
        "trap": 1
       },
       "anchorMatch": true,
       "enablers": [
-       "扭曲",
-       "利用"
+       "立案·死亡",
+       "扭曲"
       ],
       "payoffs": [
-       "秩序崩坏"
+       "重定义",
+       "秩序崩坏",
+       "熵"
       ],
       "payoffsNotes": [],
-      "axisScore": 83.5
+      "axisScore": 86.2
      }
     }
    ],
@@ -6109,7 +6101,7 @@
      "axis": "warp_rule",
      "concept": "status",
      "facet": "read",
-     "purpose": "读扭曲层数援引法条",
+     "purpose": "读侵蚀判例援引法条",
      "ok": true,
      "reason": ""
     },
@@ -6126,6 +6118,38 @@
      "concept": "status",
      "facet": "read",
      "purpose": "读寻隙层数定碾压面",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "秩序崩坏",
+     "slots": [
+      {
+       "name": "秩序崩坏",
+       "id": "skill_lawyer_s0_order_collapse"
+      }
+     ],
+     "slotId": "skill_lawyer_s0_order_collapse",
+     "axis": "warp_rule",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读先例 + 死亡计数确定罪",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "熵",
+     "slots": [
+      {
+       "name": "熵",
+       "id": "skill_lawyer_s2_entropy"
+      }
+     ],
+     "slotId": "skill_lawyer_s2_entropy",
+     "axis": "advocacy",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读先例层数压低秩序",
      "ok": true,
      "reason": ""
     }
@@ -6234,7 +6258,7 @@
    "roles": [
     {
      "role": "core",
-     "declared": 33,
+     "declared": 35,
      "declaredSlots": [
       {
        "name": "诡辩",
@@ -6245,48 +6269,24 @@
        "id": "skill_lawyer_s9_chink_finding"
       },
       {
-       "name": "讼师之眼",
-       "id": "skill_lawyer_s7_pleader_eye"
-      },
-      {
-       "name": "律令加身",
-       "id": "skill_lawyer_s3_statute_body"
-      },
-      {
        "name": "滔滔不绝",
        "id": "skill_lawyer_s9_glib_tongue"
-      },
-      {
-       "name": "巧言令色",
-       "id": "skill_lawyer_s5_glib_tongue2"
       },
       {
        "name": "力量解决",
        "id": "skill_lawyer_s8_force_resolution"
       },
       {
-       "name": "放大",
-       "id": "skill_lawyer_s4_amplify"
-      },
-      {
        "name": "野蛮体魄",
        "id": "skill_lawyer_s8_barbaric_body"
       },
       {
-       "name": "暴力裁决",
-       "id": "skill_lawyer_s5_violent_verdict"
-      },
-      {
-       "name": "碾压",
-       "id": "skill_lawyer_s2_crush"
-      },
-      {
-       "name": "弑序铁拳",
-       "id": "skill_lawyer_s1_regicide_fist"
-      },
-      {
        "name": "贿赂·削弱",
        "id": "skill_lawyer_s7_bribe_weaken"
+      },
+      {
+       "name": "扭曲",
+       "id": "skill_lawyer_s6_distortion"
       },
       {
        "name": "腐蚀",
@@ -6295,26 +6295,6 @@
       {
        "name": "腐化回扣",
        "id": "skill_lawyer_s6_corruption_kickback"
-      },
-      {
-       "name": "赠予",
-       "id": "skill_lawyer_s4_endow"
-      },
-      {
-       "name": "收买",
-       "id": "skill_lawyer_s5_buy_off"
-      },
-      {
-       "name": "重贿",
-       "id": "skill_lawyer_s3_heavy_bribe"
-      },
-      {
-       "name": "万贿归一",
-       "id": "skill_lawyer_s1_universal_bribe"
-      },
-      {
-       "name": "扭曲",
-       "id": "skill_lawyer_s6_distortion"
       },
       {
        "name": "混乱",
@@ -6329,8 +6309,20 @@
        "id": "skill_lawyer_s4_exploit"
       },
       {
+       "name": "放大",
+       "id": "skill_lawyer_s4_amplify"
+      },
+      {
+       "name": "赠予",
+       "id": "skill_lawyer_s4_endow"
+      },
+      {
        "name": "独享规则",
        "id": "skill_lawyer_s4_rule_monopoly"
+      },
+      {
+       "name": "扭曲秩序",
+       "id": "skill_lawyer_s4_distorted_order"
       },
       {
        "name": "上位者·威严",
@@ -6339,6 +6331,14 @@
       {
        "name": "阶层",
        "id": "skill_lawyer_s3_stratum"
+      },
+      {
+       "name": "熵",
+       "id": "skill_lawyer_s2_entropy"
+      },
+      {
+       "name": "定义·替身",
+       "id": "skill_lawyer_s1_defined_substitute"
       },
       {
        "name": "重定义",
@@ -6357,19 +6357,51 @@
        "id": "skill_lawyer_s0_order_collapse"
       },
       {
-       "name": "定义·替身",
-       "id": "skill_lawyer_s1_defined_substitute"
+       "name": "讼师之眼",
+       "id": "skill_lawyer_s7_pleader_eye"
       },
       {
-       "name": "扭曲秩序",
-       "id": "skill_lawyer_s4_distorted_order"
+       "name": "巧言令色",
+       "id": "skill_lawyer_s5_glib_tongue2"
       },
       {
-       "name": "熵",
-       "id": "skill_lawyer_s2_entropy"
+       "name": "律令加身",
+       "id": "skill_lawyer_s3_statute_body"
+      },
+      {
+       "name": "暴力裁决",
+       "id": "skill_lawyer_s5_violent_verdict"
+      },
+      {
+       "name": "碾压",
+       "id": "skill_lawyer_s2_crush"
+      },
+      {
+       "name": "弑序铁拳",
+       "id": "skill_lawyer_s1_regicide_fist"
+      },
+      {
+       "name": "收买",
+       "id": "skill_lawyer_s5_buy_off"
+      },
+      {
+       "name": "重贿",
+       "id": "skill_lawyer_s3_heavy_bribe"
+      },
+      {
+       "name": "万贿归一",
+       "id": "skill_lawyer_s1_universal_bribe"
+      },
+      {
+       "name": "立案·侵蚀",
+       "id": "skill_lawyer_s6_file_erosion"
+      },
+      {
+       "name": "立案·死亡",
+       "id": "skill_lawyer_s6_file_death"
       }
      ],
-     "actual": 33,
+     "actual": 35,
      "actualSlots": [
       {
        "name": "诡辩",
@@ -6502,6 +6534,14 @@
       {
        "name": "万贿归一",
        "id": "skill_lawyer_s1_universal_bribe"
+      },
+      {
+       "name": "立案·侵蚀",
+       "id": "skill_lawyer_s6_file_erosion"
+      },
+      {
+       "name": "立案·死亡",
+       "id": "skill_lawyer_s6_file_death"
       }
      ]
     },
@@ -6556,18 +6596,6 @@
        "id": "skill_lawyer_s8_savage_charge"
       },
       {
-       "name": "踏月",
-       "id": "skill_lawyer_s2_moon_step"
-      },
-      {
-       "name": "强夺",
-       "id": "skill_lawyer_s6_seize"
-      },
-      {
-       "name": "狂乱适应",
-       "id": "skill_lawyer_s3_frantic_adaptation"
-      },
-      {
        "name": "贿赂·魅惑",
        "id": "skill_lawyer_s7_bribe_charm"
       },
@@ -6582,6 +6610,18 @@
       {
        "name": "对半承担",
        "id": "skill_lawyer_s5_shared_burden"
+      },
+      {
+       "name": "狂乱适应",
+       "id": "skill_lawyer_s3_frantic_adaptation"
+      },
+      {
+       "name": "踏月",
+       "id": "skill_lawyer_s2_moon_step"
+      },
+      {
+       "name": "强夺",
+       "id": "skill_lawyer_s6_seize"
       }
      ],
      "actual": 8,
@@ -6722,8 +6762,8 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 4,
-     "total": 4,
+     "hit": 6,
+     "total": 6,
      "miss": []
     },
     "跨系钩子": {

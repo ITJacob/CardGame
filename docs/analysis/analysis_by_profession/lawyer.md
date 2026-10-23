@@ -1,6 +1,6 @@
 # 律师（lawyer）· 技能构筑轴分析
 
-> 数据来源：`docs/json/lawyer.skills.json`（共 **46** 张技能卡）。
+> 数据来源：`docs/json/lawyer.skills.json`（共 **48** 张技能卡）。
 > 由 `docs/tools/build_axis_analysis.py` 递归遍历全部效果节点，按「构筑轴(axis)」聚合生成。
 > 生成日期：2026-10-23
 
@@ -8,11 +8,11 @@
 
 | 构筑轴 | 符号 | 名称 | 技能数 | 主动/被动 | 挂载状态 | 设计风格 |
 |---|---|---|---:|---|---:|---|
-| `advocacy` | 🗣️ | 讼辩 | 10 | 4/6 | 0 | 进攻 |
+| `advocacy` | 🗣️ | 讼辩 | 11 | 5/6 | 0 | 进攻 |
 | `brute` | 👊 | 蛮力 | 10 | 8/2 | 0 | 进攻 |
-| `bribery` | 🪙 | 贿腐 | 10 | 9/1 | 0 | 控制·运营 |
-| `warp_rule` | 🌀 | 扭曲规则 | 16 | 11/5 | 0 | 进攻 |
-| **合计** | — | — | **46** | **32/14** | **0** | — |
+| `bribery` | 🪙 | 贿腐 | 10 | 9/1 | 0 | 进攻·控制 |
+| `warp_rule` | 🌀 | 扭曲规则 | 17 | 12/5 | 0 | 进攻 |
+| **合计** | — | — | **48** | **34/14** | **0** | — |
 
 ### 1.1 职业级：挂载状态类型分布
 
@@ -24,41 +24,41 @@
 
 ### 🗣️ 讼辩（advocacy）
 
-**规模**：10 张技能（主动 4 / 被动 6）；稀有度分布：普通×5、精良×2、稀有×2、史诗×1。
+**规模**：11 张技能（主动 5 / 被动 6）；稀有度分布：普通×5、精良×3、稀有×2、史诗×1。
 
-**效果原语构成**（type，全量递归，共 18 处）：
+**效果原语构成**（type，全量递归，共 25 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 7 | 38.9% |
-| `damage` | 5 | 27.8% |
-| `modify_stat` | 1 | 5.6% |
-| `modify_resource` | 1 | 5.6% |
-| `dispel` | 2 | 11.1% |
-| `modify_damage` | 1 | 5.6% |
-| `gauge_shuffle` | 1 | 5.6% |
+| `mount_status` | 8 | 32.0% |
+| `damage` | 7 | 28.0% |
+| `modify_stat` | 3 | 12.0% |
+| `modify_resource` | 3 | 12.0% |
+| `dispel` | 2 | 8.0% |
+| `modify_damage` | 1 | 4.0% |
+| `gauge_shuffle` | 1 | 4.0% |
 
-**算子构成**（op，共 11 处）：
+**算子构成**（op，共 14 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 7 |
-| `if` | 4 |
+| `if` | 7 |
 
-**改动的属性（modify_stat，共 1 处）**：
+**改动的属性（modify_stat，共 3 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
-| `defense` | 1 |
+| `defense` | 3 |
 
-**改动的资源（modify_resource，共 1 处）**：
+**改动的资源（modify_resource，共 3 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
-| `energy` | 1 |
+| `energy` | 3 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `mount_status`(7)、`damage`(5)、`dispel`(2)；属性杠杆集中在 `defense`，资源杠杆集中在 `energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(8)、`damage`(7)、`modify_stat`(3)；属性杠杆集中在 `defense`，资源杠杆集中在 `energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **诡辩**：使一名敌人的下次攻击落空（持续 20tick，触发 1 次后失效）；辩词落地即成文——该状态不可被驱散。
 
@@ -67,43 +67,45 @@
 
 **规模**：10 张技能（主动 8 / 被动 2）；稀有度分布：普通×3、史诗×3、稀有×2、精良×1、传说×1。
 
-**效果原语构成**（type，全量递归，共 22 处）：
+**效果原语构成**（type，全量递归，共 27 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 4 | 18.2% |
-| `damage` | 10 | 45.5% |
-| `modify_stat` | 4 | 18.2% |
-| `modify_resource` | 1 | 4.5% |
-| `move` | 1 | 4.5% |
-| `modify_damage` | 1 | 4.5% |
-| `gauge_shuffle` | 1 | 4.5% |
+| `mount_status` | 4 | 14.8% |
+| `damage` | 11 | 40.7% |
+| `modify_stat` | 7 | 25.9% |
+| `modify_resource` | 2 | 7.4% |
+| `move` | 1 | 3.7% |
+| `modify_damage` | 1 | 3.7% |
+| `gauge_shuffle` | 1 | 3.7% |
 
-**算子构成**（op，共 7 处）：
+**算子构成**（op，共 9 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 3 |
-| `if` | 3 |
+| `if` | 5 |
 | `push_back` | 1 |
 
-**改动的属性（modify_stat，共 4 处）**：
+**改动的属性（modify_stat，共 7 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
+| `defense` | 2 |
+| `attack` | 2 |
 | `hp_max` | 1 |
 | `resist:mental` | 1 |
 | `resist:physical` | 1 |
-| `attack` | 1 |
 
-**改动的资源（modify_resource，共 1 处）**：
+**改动的资源（modify_resource，共 2 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
 | `armor` | 1 |
+| `gauge.current` | 1 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `damage`(10)、`mount_status`(4)、`modify_stat`(4)；属性杠杆集中在 `hp_max`、`resist:mental`、`resist:physical`，资源杠杆集中在 `armor`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `damage`(11)、`modify_stat`(7)、`mount_status`(4)；属性杠杆集中在 `defense`、`attack`、`hp_max`，资源杠杆集中在 `armor`、`gauge.current`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **放大**：强化你的下次攻击（持续 20tick，1 次）：伤害 ×2.0，且若目标生命百分比 ≤35% 则直接处决；条款可续期（+5tick）。
 
@@ -112,16 +114,16 @@
 
 **规模**：10 张技能（主动 9 / 被动 1）；稀有度分布：精良×6、稀有×2、史诗×1、传说×1。
 
-**效果原语构成**（type，全量递归，共 19 处）：
+**效果原语构成**（type，全量递归，共 22 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 9 | 47.4% |
-| `damage` | 1 | 5.3% |
-| `modify_stat` | 1 | 5.3% |
-| `modify_resource` | 3 | 15.8% |
-| `gauge_shuffle` | 2 | 10.5% |
-| `status_shuffle` | 3 | 15.8% |
+| `mount_status` | 9 | 40.9% |
+| `damage` | 1 | 4.5% |
+| `modify_stat` | 5 | 22.7% |
+| `modify_resource` | 2 | 9.1% |
+| `gauge_shuffle` | 2 | 9.1% |
+| `status_shuffle` | 3 | 13.6% |
 
 **算子构成**（op，共 11 处）：
 
@@ -130,73 +132,76 @@
 | `sequence` | 8 |
 | `if` | 3 |
 
-**改动的属性（modify_stat，共 1 处）**：
+**改动的属性（modify_stat，共 5 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
-| `attack` | 1 |
+| `attack` | 3 |
+| `defense` | 2 |
 
-**改动的资源（modify_resource，共 3 处）**：
+**改动的资源（modify_resource，共 2 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
-| `energy` | 3 |
+| `energy` | 2 |
 
-**设计风格总结**：本轴偏【控制·运营】——以 debuff、换位、封印、重定向与驱散干扰敌方决策与站位；以能量、推条（gauge）与迷失资源博弈撬动整场节奏，强调资源调度。
-签名原语为 `mount_status`(9)、`status_shuffle`(3)、`modify_resource`(3)；属性杠杆集中在 `attack`，资源杠杆集中在 `energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
+**设计风格总结**：本轴偏【进攻·控制】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀；以 debuff、换位、封印、重定向与驱散干扰敌方决策与站位。
+签名原语为 `mount_status`(9)、`modify_stat`(5)、`status_shuffle`(3)；属性杠杆集中在 `attack`、`defense`，资源杠杆集中在 `energy`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **腐蚀**：使目标及其相邻敌人下次攻击强制打向全场生命百分比最低的单位（不分阵营，20tick，1 次）；腐蚀蔓延——同一范围内再轮转易主 1 个状态。
 
 
 ### 🌀 扭曲规则（warp_rule）
 
-**规模**：16 张技能（主动 11 / 被动 5）；稀有度分布：稀有×6、传说×5、史诗×4、精良×1。
+**规模**：17 张技能（主动 12 / 被动 5）；稀有度分布：稀有×6、传说×5、史诗×4、精良×2。
 
-**效果原语构成**（type，全量递归，共 46 处）：
+**效果原语构成**（type，全量递归，共 58 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 21 | 45.7% |
-| `damage` | 8 | 17.4% |
-| `modify_stat` | 3 | 6.5% |
-| `modify_resource` | 7 | 15.2% |
-| `move` | 1 | 2.2% |
-| `domain` | 1 | 2.2% |
-| `gauge_shuffle` | 3 | 6.5% |
-| `status_shuffle` | 2 | 4.3% |
+| `mount_status` | 23 | 39.7% |
+| `damage` | 10 | 17.2% |
+| `modify_stat` | 8 | 13.8% |
+| `modify_resource` | 10 | 17.2% |
+| `move` | 1 | 1.7% |
+| `domain` | 1 | 1.7% |
+| `gauge_shuffle` | 3 | 5.2% |
+| `status_shuffle` | 2 | 3.4% |
 
-**算子构成**（op，共 24 处）：
+**算子构成**（op，共 31 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 15 |
-| `if` | 7 |
+| `if` | 14 |
 | `push_back` | 1 |
 | `overlay` | 1 |
 
-**改动的属性（modify_stat，共 3 处）**：
+**改动的属性（modify_stat，共 8 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
-| `attack` | 2 |
+| `attack` | 5 |
+| `defense` | 2 |
 | `gauge.rate` | 1 |
 
-**改动的资源（modify_resource，共 7 处）**：
+**改动的资源（modify_resource，共 10 处）**：
 
 | resource 资源键 | 次数 |
 |---|---:|
-| `order` | 6 |
+| `order` | 7 |
+| `gauge.current` | 2 |
 | `lost` | 1 |
 
 **设计风格总结**：本轴偏【进攻】——以直接伤害/削血与伤害乘区为核心手段，强调输出节奏与斩杀。
-签名原语为 `mount_status`(21)、`damage`(8)、`modify_resource`(7)；属性杠杆集中在 `attack`、`gauge.rate`，资源杠杆集中在 `order`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
+签名原语为 `mount_status`(23)、`damage`(10)、`modify_resource`(10)；属性杠杆集中在 `attack`、`defense`、`gauge.rate`，资源杠杆集中在 `order`、`gauge.current`、`lost`；挂载状态以 — 类型为主，构成其核心交互骨架。
 代表技能：
 - **独裁者**：被动：整场战斗中——你施加的单体减益额外蔓延到目标相邻的敌人；你击杀敌人时偷取其 1 个增益且该敌人无法复活；位格低于你的敌人对你造成的伤害 ×0.8；独裁——规则槽（槽 0）的覆盖范围被改写为全体敌方。；自身带镜子替身则镜中独裁，追加 2 点精神伤害。
 
 
 ## 附：统计口径
 
-- 数据源：`docs/json/lawyer.skills.json` 的 `cards[]`，共 46 张卡。
+- 数据源：`docs/json/lawyer.skills.json` 的 `cards[]`，共 48 张卡。
 - 按 `axis` 字段分桶；`axis` 定义与符号取自文件级 `axes`。
 - 效果原语/算子：**递归遍历**每张卡全部效果节点（卡面 `effects`、`statusDefs[].triggers[].effects`、区域/界域等任意嵌套），同名多次计数。
 - 原语以效果节点 `type` 归类（19 类）；算子以 `op` 归类（9 类）。
