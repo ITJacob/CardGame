@@ -444,7 +444,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 33.4 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×7；flag:filter.unitType ×3；sref:guardianship ×3；对他途径指纹均距 0.346
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×7；flag:filter.unitType ×3；sref:guardianship ×3；对他途径指纹均距 0.347
 
 角色分布（SCORING §一·附）：core ×24 · starter ×3 · bridge ×1 · generic ×4 · trap ×1 · tech ×2
 
