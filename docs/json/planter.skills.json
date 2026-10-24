@@ -484,30 +484,10 @@
           "position": "tail",
           "consumption": "summon",
           "note": "孕育：先埋下种子，收益随时间生长（拒绝瞬发全额）"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "vitality_field",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "heal",
-              "value": 2,
-              "target": "self",
-              "note": "缝合读场：治疗场在场时自疗 2"
-            }
-          ],
-          "else": [],
-          "note": "读层：vitality_field"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：生命轴 payoff：读 `生命` 层数放大免死治疗。依赖 `lethal_protect`+C6。 ｜ 2026-10-03 骨架手术：孕育换形（角色=buff）",
+      "conversionNotes": "翻译/语义：生命轴 payoff：读 `生命` 层数放大免死治疗。依赖 `lethal_protect`+C6。 ｜ 2026-10-03 骨架手术：孕育换形（角色=buff） ｜ 2026-10-24 开局快照迁移：自持状态读层 → on_turn_start 持续复评",
       "art": {
         "subject": "coarse straw thread stitching shut a cracked translucent soul",
         "elements": [
@@ -516,7 +496,35 @@
           "wooden needle"
         ],
         "mood": "rustic, tender"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "vitality_field",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "self",
+                  "note": "缝合读场：治疗场在场时自疗 2"
+                }
+              ],
+              "else": [],
+              "note": "读层：vitality_field"
+            }
+          ],
+          "note": "缝合读场：每回合若治疗场在场自疗 2"
+        }
+      ]
     },
     {
       "id": "skill_planter_s8_give_life",
@@ -2573,30 +2581,10 @@
           "position": "tail",
           "consumption": "summon",
           "note": "孕育：先埋下种子，收益随时间生长（拒绝瞬发全额）"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "vitality_field",
-            "cmp": ">=",
-            "n": 2
-          },
-          "then": [
-            {
-              "type": "heal",
-              "value": 2,
-              "target": "all_allies",
-              "note": "母巢读场：治疗场 ≥2 层时全体友军回 2"
-            }
-          ],
-          "else": [],
-          "note": "读层：vitality_field"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：生命轴 flagship payoff：读 `生命` 放大孕育。依赖全局监听。 ｜ 2026-10-03 骨架手术：孕育换形（角色=buff）",
+      "conversionNotes": "翻译/语义：生命轴 flagship payoff：读 `生命` 放大孕育。依赖全局监听。 ｜ 2026-10-03 骨架手术：孕育换形（角色=buff） ｜ 2026-10-24 开局快照迁移：自持状态读层 → on_turn_start 持续复评",
       "art": {
         "subject": "a vast mother figure cradling all creatures that return to her",
         "elements": [
@@ -2604,7 +2592,35 @@
           "circle of beasts great and small"
         ],
         "mood": "primordial, merciful"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "vitality_field",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "all_allies",
+                  "note": "母巢读场：治疗场 ≥2 层时全体友军回 2"
+                }
+              ],
+              "else": [],
+              "note": "读层：vitality_field"
+            }
+          ],
+          "note": "母巢读场：每回合若治疗场≥2 全体回 2"
+        }
+      ]
     },
     {
       "id": "skill_planter_s0_last_return",

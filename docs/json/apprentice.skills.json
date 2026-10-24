@@ -424,34 +424,13 @@
           "target": "self"
         },
         {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "flash",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "modify_resource",
-              "resource": "energy",
-              "value": 2,
-              "mode": "delta",
-              "target": "self",
-              "note": "戏法回能：自身戏法闪光在场则逃脱顺手捞回 2 点能量（环节⑤ 2026-09-29 补读层段：flash payoff 升 landed）"
-            }
-          ],
-          "else": []
-        },
-        {
           "type": "echo_last_skill",
           "potency": 0.5,
           "note": "时空税：以回放上一式半份的形式支付（禁裸站桩 buff）"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：戏法轴旗舰 payoff：把零散 `戏法标记` 收束为\"行动条 +20 / 控制延长\"。⚠️ 依赖 G5/G6 自检（被动整场型，非自推条）。 ｜ 2026-10-03 骨架手术：时空税换形（角色=buff）",
+      "conversionNotes": "翻译/语义：戏法轴旗舰 payoff：把零散 `戏法标记` 收束为\"行动条 +20 / 控制延长\"。⚠️ 依赖 G5/G6 自检（被动整场型，非自推条）。 ｜ 2026-10-03 骨架手术：时空税换形（角色=buff） ｜ 2026-10-24 开局快照迁移：自持状态读层 → on_take_damage 持续复评",
       "art": {
         "subject": "a cornered mage dissolving into smoke and reappearing far behind",
         "elements": [
@@ -460,7 +439,36 @@
           "distant reappearing silhouette"
         ],
         "mood": "elusive, nimble"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "flash",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 2,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "戏法回能：自身戏法闪光在场则逃脱顺手捞回 2 点能量（环节⑤ 2026-09-29 补读层段：flash payoff 升 landed）"
+                }
+              ],
+              "else": []
+            }
+          ],
+          "note": "戏法回能：受击时若带戏法闪光回 2 能量"
+        }
+      ]
     },
     {
       "id": "skill_apprentice_s7_danger_sense",

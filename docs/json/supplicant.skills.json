@@ -2686,76 +2686,10 @@
               "note": "统治者的阴影更深：自身阴影栖息最大层数 +1（账本操作·modify_status 签名）"
             }
           ]
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "shadow_dwell",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 1,
-              "mode": "delta",
-              "duration": 15,
-              "target": "self",
-              "note": "栖影而王：自身阴影栖息在场则统治力提升，攻击 +1"
-            }
-          ],
-          "else": []
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "mirror_substitute",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": 1,
-              "mode": "delta",
-              "duration": 15,
-              "target": "self",
-              "note": "镜影同主：自身镜子替身在场则镜中阴影共护，防御 +1（跨系：assassin）"
-            }
-          ],
-          "else": []
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "grazed_soul",
-            "cmp": ">=",
-            "n": 3
-          },
-          "then": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 2,
-              "mode": "delta",
-              "duration": 15,
-              "target": "self",
-              "note": "魂多势众：放牧灵魂≥3 层，阴影统治更彻（跨轴：shadow→soul）"
-            }
-          ],
-          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：阴影轴与牧魂轴汇合点，召唤 Build 放大器。依赖新增项 2/18。 ｜ 2026-10-02 差异化风格迭代·批次八（秘祈人：血肉经济量化） ｜ 2026-10-02 骨架手术：骨架手术轮：统治者改用账本操作（modify_status）表达『阴影更深』，不再只是挂状态",
+      "conversionNotes": "翻译/语义：阴影轴与牧魂轴汇合点，召唤 Build 放大器。依赖新增项 2/18。 ｜ 2026-10-02 差异化风格迭代·批次八（秘祈人：血肉经济量化） ｜ 2026-10-02 骨架手术：骨架手术轮：统治者改用账本操作（modify_status）表达『阴影更深』，不再只是挂状态 ｜ 2026-10-24 开局快照迁移：自持状态读层 → on_turn_start 持续复评",
       "art": {
         "subject": "a supplicant seated on a throne of kneeling shadows",
         "elements": [
@@ -2763,7 +2697,81 @@
           "crowned silhouette"
         ],
         "mood": "domineering, abyssal"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "shadow_dwell",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": 1,
+                  "mode": "delta",
+                  "duration": 15,
+                  "target": "self",
+                  "note": "栖影而王：自身阴影栖息在场则统治力提升，攻击 +1"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "mirror_substitute",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "modify_stat",
+                  "stat": "defense",
+                  "value": 1,
+                  "mode": "delta",
+                  "duration": 15,
+                  "target": "self",
+                  "note": "镜影同主：自身镜子替身在场则镜中阴影共护，防御 +1（跨系：assassin）"
+                }
+              ],
+              "else": []
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "grazed_soul",
+                "cmp": ">=",
+                "n": 3
+              },
+              "then": [
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": 2,
+                  "mode": "delta",
+                  "duration": 15,
+                  "target": "self",
+                  "note": "魂多势众：放牧灵魂≥3 层，阴影统治更彻（跨轴：shadow→soul）"
+                }
+              ],
+              "else": []
+            }
+          ],
+          "note": "统治读层：每回合按自持状态刷新攻防加成"
+        }
+      ]
     },
     {
       "id": "skill_supplicant_s1_fallen_kin",

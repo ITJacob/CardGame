@@ -291,28 +291,6 @@
           "target": "self",
           "duration": 10,
           "note": "愤怒的代价：自身防御 -1"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "rage",
-            "cmp": ">=",
-            "n": 5
-          },
-          "then": [
-            {
-              "type": "modify_resource",
-              "resource": "energy",
-              "value": 1,
-              "mode": "delta",
-              "target": "self",
-              "note": "怒极回能：怒层 ≥5 回 1 能量"
-            }
-          ],
-          "else": [],
-          "note": "读层：rage"
         }
       ],
       "tentative": false,
@@ -323,7 +301,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：愤怒轴资源引擎。INV-S5 合规。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff）",
+      "conversionNotes": "翻译/语义：愤怒轴资源引擎。INV-S5 合规。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff） ｜ 2026-10-24 开局快照迁移：自持状态读层 → on_turn_start 持续复评",
       "art": {
         "subject": "a brawler's chest glowing with banked inner fire as he endures blow after blow",
         "elements": [
@@ -333,7 +311,37 @@
         ],
         "mood": "seething, relentless"
       },
-      "role": "core"
+      "role": "core",
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "rage",
+                "cmp": ">=",
+                "n": 5
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "energy",
+                  "value": 1,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "怒极回能：怒层 ≥5 回 1 能量"
+                }
+              ],
+              "else": [],
+              "note": "读层：rage"
+            }
+          ],
+          "note": "怒极回能：每回合怒≥5 回 1 能量"
+        }
+      ]
     },
     {
       "id": "skill_sailor_s8_rage_swipe",
@@ -615,31 +623,13 @@
           "value": 4,
           "target": "self",
           "note": "海洋眷顾：回复 4 点"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "chain"
-          },
-          "then": [
-            {
-              "type": "heal",
-              "value": 2,
-              "target": "self",
-              "note": "风暴之后的海：连锁在场回复 2"
-            }
-          ],
-          "else": [],
-          "note": "跨轴读层：storm"
         }
       ],
       "sharedAcross": [
         "chanter"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"全方位\"→三维小幅。海语义落 `armor`（水元素退役→tag，原 `resist:water` 槽撤销）。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff）",
+      "conversionNotes": "翻译/语义：\"全方位\"→三维小幅。海语义落 `armor`（水元素退役→tag，原 `resist:water` 槽撤销）。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff） ｜ 2026-10-24 开局快照迁移：自持状态读层 → on_turn_start 持续复评",
       "art": {
         "subject": "a sailor standing chest-deep in friendly waves that cradle and strengthen him",
         "elements": [
@@ -648,7 +638,33 @@
         ],
         "mood": "favored, steadfast"
       },
-      "role": "core"
+      "role": "core",
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "chain"
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "self",
+                  "note": "风暴之后的海：连锁在场回复 2"
+                }
+              ],
+              "else": [],
+              "note": "跨轴读层：storm"
+            }
+          ],
+          "note": "风暴之后的海：每回合若连锁在场回复 2"
+        }
+      ]
     },
     {
       "id": "skill_sailor_s6_gale",
