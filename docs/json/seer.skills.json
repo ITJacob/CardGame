@@ -20,7 +20,7 @@
         "命运锚点",
         "历史影像"
       ],
-      "note": "payoffs 2026-09-26 评审：命运干扰/命运锚点卡面挂 fate_value≥5 dimHook（落地证据）；历史影像的 observe 联动与命运干扰的「预兆≥3」均 notes 级自述、卡面未挂条件（稿面意图缺口）⚠️ 证据级混合 ｜ payoffs 2026-09-26 评审：命运干扰/命运锚点卡面挂 fate_value≥5 dimHook（落地）；历史影像 observe 联动为 notes 级自述未挂条件（稿面意图缺口） ｜ 2026-09-29 环节⑤：clairvoyance 补层数引擎（身份 8→15）；占星术补产层段（细微观察挂 observe 移出 enablers，产层 12→20）；命运干扰补 clairvoyance 读层段（payoff 升 landed）+ 跨轴读 puppet_string；占星术读 fate_gap 跨系（→thief） ｜ 2026-10-02 批次六：命运干扰补 fate_value 跨系读层（命运同调） ｜ 2026-10-03 骨架手术：提线形状换形 25 张（详见 designNote）"
+      "note": "2026-10-24 ⑤：占星术写命运值并读观察；历史影像读灵视。"
     },
     "trick": {
       "symbol": "🃏",
@@ -30,8 +30,11 @@
         "纸人替身",
         "直觉预感"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：paper_substitute/premonition/poise 均 enabler 自产自耗（charges 型自保），无下游读取 ｜ payoffs 2026-09-26 评审：paper_substitute/premonition/poise 均 enabler 自产自耗（charges 型自保），无下游读取 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：三自保状态自产自耗（戏法轴防御闭环）；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：直觉预感补 paper_substitute 产层段（完美协调挂 poise 移出，产层 12→20） ｜ 2026-10-03 骨架手术：提线形状换形 25 张（详见 designNote）",
+      "payoffs": [
+        "秘偶换位",
+        "秘偶置换"
+      ],
+      "note": "2026-10-24 ⑤：秘偶换位/置换读纸人替身，替身从一次性保险变成可读资源。",
       "payoffVacuumAccepted": true
     },
     "marionette": {
@@ -57,8 +60,12 @@
         "奇迹",
         "愿望"
       ],
-      "payoffs": [],
-      "note": "payoffs 2026-09-26 评审：miracle/wish_fulfilled/power_refine 均自闭环无下游；灵之虫自产自耗 charges 非轴累积资源 ｜ payoffs 2026-09-26 评审：miracle/wish_fulfilled/power_refine 均自闭环无下游；灵之虫自产自耗非轴累积资源 真空轴甄别 2026-09-29 拍板接受（payoffVacuumAccepted）：miracle/wish_fulfilled 自闭环；读层闭环维度记 12 分保底。 ｜ 2026-09-29 环节⑤：miracle 补层数引擎（身份 8→15）；愿望补产层段（能力精进挂 power_refine 移出，产层 12→20） ｜ 2026-10-03 骨架手术：提线形状换形 25 张（详见 designNote）",
+      "payoffs": [
+        "历史影像",
+        "诡秘之境",
+        "灵之虫"
+      ],
+      "note": "2026-10-24 ⑤：历史影像/诡秘之境读并耗奇迹；观察（observe）成为集火标记；占星术写命运值。",
       "payoffVacuumAccepted": true
     }
   },
@@ -211,7 +218,7 @@
       "flagship": false,
       "lore": "序列9 占卜家 —— 占星术，\"提前判断\"",
       "flavor": "你从星象中读出一丝先机，指定一名同伴被向前拨动行动条，抢在对手之前出手。",
-      "describe": "指定一名友军，行动条 +25（delta）。；占星开启灵视（自身灵视 20tick）；自身带命运缝隙则命运缝隙共鸣，行动条再 +10。；嫁接：把自己的好处接到既有的条款后面，不改原文。",
+      "describe": "指定一名友军，行动条 +25（delta）。；占星开启灵视（自身灵视 20tick）；自身带命运缝隙则命运缝隙共鸣，行动条再 +10。；嫁接：把自己的好处接到既有的条款后面，不改原文；战场命运值 +1；自身生命 -1（窥命伤神）；自身有观察时再 +10 行动条。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -275,6 +282,44 @@
             "target": "self"
           },
           "note": "嫁接：往既有惩罚条款后追加一段，不改原文"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "fate_value",
+          "value": 1,
+          "mode": "delta",
+          "target": "board",
+          "note": "观星拨动命运值（可操作变量写入方）"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "hp",
+          "value": -1,
+          "mode": "delta",
+          "target": "self",
+          "note": "窥命伤神：目睹星轨要付一点代价"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "observe",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 10,
+              "mode": "delta",
+              "target": "target",
+              "note": "观察入微：星象落在看得见的人身上"
+            }
+          ],
+          "else": [],
+          "note": "观察集火读取（observe）"
         }
       ],
       "sharedAcross": [
@@ -1303,7 +1348,7 @@
       "flagship": false,
       "lore": "序列4 诡法师 —— \"1 千米内可自由与秘偶调换位置\"",
       "flavor": "你与一具秘偶在瞬息间互换了位置——它替你站到了刀口上。",
-      "describe": "与指定秘偶交换位置（swap_ally 锁定同阵营，G8 合规）。",
+      "describe": "与指定秘偶交换位置（swap_ally 锁定同阵营，G8 合规）；自身带纸人替身时换位后获得 3 点护盾；自身带提线木偶时回能 +1。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -1326,6 +1371,50 @@
           "type": "move",
           "op": "swap_ally",
           "note": "与指定秘偶交换位置；既有 swap_ally move.op，无新扩展"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "paper_substitute",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 3,
+              "duration": 20,
+              "target": "self",
+              "note": "纸人代位：换位时替身挡下一层冲击"
+            }
+          ],
+          "else": [],
+          "note": "trick 收束：读 paper_substitute"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "puppet_string",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "线上借力：回能 +1"
+            }
+          ],
+          "else": [],
+          "note": "trick 读 marionette（跨轴）"
         }
       ],
       "tentative": false,
@@ -1553,7 +1642,7 @@
       "flagship": false,
       "lore": "序列3 古代学者 —— \"从历史孔隙召唤影像（人或物），了解越详细成功率越高\"",
       "flavor": "你从历史的孔隙里拽出一个\"他\"的影像——它有着那个人的模样与手段，却只听你的号令。",
-      "describe": "以指定单位（可敌方）为模板召唤一具历史影像为己方作战（35% 生命 / 60% 攻击，己方队尾）。",
+      "describe": "以指定单位（可敌方）为模板召唤一具历史影像为己方作战（35% 生命 / 60% 攻击，己方队尾）；自身带奇迹时消耗 1 层并回能 2；自身有灵视时回能 +1；自身有观察时获得 2 点护盾。",
       "cost": {
         "energy": 5,
         "cooldown": 35,
@@ -1579,6 +1668,79 @@
           "position": "tail",
           "note": "spawn.template（效果参数 §1.1 本稿新增项 4）+ C5 hpRatio/position",
           "unitId": "unit_historical_echo"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "miracle",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "miracle",
+              "stacks": -1,
+              "stackMode": "consume",
+              "target": "self",
+              "note": "以奇迹为薪：消耗 1 层"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "self"
+            }
+          ],
+          "else": [],
+          "note": "miracle 收束：读并耗 miracle"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "clairvoyance",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "灵视加持：看得见的历史更清楚（回能 +1）"
+            }
+          ],
+          "else": [],
+          "note": "miracle 读 foresight（跨轴）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "observe",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 2,
+              "duration": 20,
+              "target": "self",
+              "note": "观察入微：影像更稳"
+            }
+          ],
+          "else": [],
+          "note": "观察集火读取（observe）"
         }
       ],
       "tentative": false,
@@ -1999,7 +2161,7 @@
       "flagship": true,
       "lore": "序列1 诡秘侍者 —— \"『诡秘之境』：创造神国雏形，带隐秘效果\"",
       "flavor": "你在战场的一角张开神国的雏形——其中的一切都被隐秘笼罩，敌人看不清，也打不中。",
-      "describe": "展开「诡秘之境」区域：区域内己方单位获得 concealed（敌方单体技能难以选中）且受伤 ×0.85；区域内敌方单位行动条速率 ×0.85（各 10tick 刷新）。",
+      "describe": "展开「诡秘之境」区域：区域内己方单位获得 concealed（敌方单体技能难以选中）且受伤 ×0.85；区域内敌方单位行动条速率 ×0.85（各 10tick 刷新）；自身带奇迹时全体友军回复 2 点生命；自身观察 ≥2 层时全体友军获得 2 点护盾。",
       "cost": {
         "energy": 6,
         "cooldown": 40,
@@ -2023,6 +2185,48 @@
           "consumption": "zone",
           "zone": "zone_mystery_realm",
           "note": "保持 Zone 形态（H9 Zone 母版，阵地非全场界域）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "miracle",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "heal",
+              "value": 2,
+              "target": "all_allies",
+              "note": "奇迹灌注领域：全体友军回复 2 点"
+            }
+          ],
+          "else": [],
+          "note": "miracle 收束：读 miracle"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "observe",
+            "cmp": ">=",
+            "n": 2
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "shield",
+              "value": 2,
+              "duration": 20,
+              "target": "all_allies",
+              "note": "观察入微：领域内友军各得 2 护盾"
+            }
+          ],
+          "else": [],
+          "note": "观察集火读取（observe）"
         }
       ],
       "frameworkFlags": [
@@ -2566,7 +2770,7 @@
       "flagship": false,
       "lore": "序列1 诡秘侍者 —— 回来的路，从来不是原路",
       "flavor": "把他送走容易，让他完整地回来难。",
-      "describe": "使一名敌人被放逐 10tick；其回归时受到 5 点精神伤害（时空乱流）。",
+      "describe": "使一名敌人被放逐 10tick；其回归时受到 5 点精神伤害（时空乱流）；自身带纸人替身时回能 +2。",
       "effects": [
         {
           "type": "translocate",
@@ -2588,6 +2792,28 @@
           "mode": "delta",
           "target": "self",
           "note": "跨层租金（与界域同口径，validate 规则：domain/translocate 须付迷失租金）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "paper_substitute",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "self",
+              "note": "纸人代付跨层租金：回能 +2"
+            }
+          ],
+          "else": [],
+          "note": "trick 收束：读 paper_substitute"
         }
       ],
       "tentative": false,

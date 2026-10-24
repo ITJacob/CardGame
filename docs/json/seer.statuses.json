@@ -288,9 +288,34 @@
             }
           ],
           "consumeCharge": true
+        },
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "miracle",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 3,
+                  "target": "self",
+                  "note": "奇迹与灵之虫同源：复活后多回 3 点"
+                }
+              ],
+              "else": [],
+              "note": "miracle 收束：读 miracle（2026-10-24 ⑤）"
+            }
+          ]
         }
       ],
-      "note": "原著明确 4 次（v0.1「每场一次」是偏离，本版改回）；归零后不再触发"
+      "note": "原著明确 4 次（v0.1「每场一次」是偏离，本版改回）；归零后不再触发 ｜ 2026-10-24 ⑤：死亡触发读奇迹，灵之虫成为奇迹轴收束点。"
     },
     {
       "id": "wish_fulfilled",

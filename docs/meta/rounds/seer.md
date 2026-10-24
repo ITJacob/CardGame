@@ -26,6 +26,10 @@
 | 伤害转移 | trick | status | read | 读纸人替身层数转移伤害 |
 | 命运干扰 | marionette | status | read | 读灵体之线层数干扰命运 |
 | 灵界掌控者 | marionette | status | read | 读灵体之线层数展开掌控 |
+| 秘偶换位 | paper_substitute / puppet_string | status | read | 纸人代位护盾、线上借力回能 |
+| 历史影像 | clairvoyance / observe | status | read | 灵视加持回能、观察入微护盾 |
+| 诡秘之境 | miracle / observe | status | read | 读并耗奇迹、观察入微群体护盾 |
+| 灵之虫 | miracle | status | read | 死亡触发读奇迹（复活回血） |
 
 ### 跨系钩子
 | 枢纽状态 | 写入卡位 | 读取卡位 | participants |
@@ -58,3 +62,6 @@ prefill tech 修正升 core（对策形状误判——二卡为自我恢复/复�
 注级）；灵体之线自 prefill generic 维持（take_control 仅识破语义非对策承重，近重复对在案）。
 兑现率缺口（下一迭代轮输入）：paper_substitute 枢纽 0 读取（participants 5 途径待接线）；
 puppet_string 读取面全库最广（8 途径）已接线；trap/bridge 各仅 1 张。）
+
+
+（2026-10-24 **提线经济接线**（环节⑥ P3 后续，⑤）：维持「提线控场」命题，把四条轴的收束从 notes 抬成实证——戏法：秘偶换位/置换读纸人替身（替身从一次性保险变成可读资源）；奇迹：历史影像/诡秘之境读并耗奇迹、灵之虫死亡触发读奇迹；预知：历史影像读灵视、占星术写命运值并读观察；秘偶：秘偶换位读提线木偶。观察（observe）成为集火标记（1 写 3 读）；占星术补自伤代价，fate_value 成为可操作变量（2 主动产 / dimHooks+占星读）。验收：score 77.8→88.0（轴健康 24.6→28.7，四轴 77.9→82.1/84.1/85.2/86.8；跨轴 5.6→11.2）；playable_scan 双挂→理想态；差异化 32.6→32.4。）

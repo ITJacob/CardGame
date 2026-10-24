@@ -169,7 +169,7 @@
 | 锚点 | 4/4（100%） | — |
 | 签名键 | 3/3（100%） | — |
 | 角色配比 | 7/7（100%） | — |
-| 跨轴钩子 | 3/3（100%） | — |
+| 跨轴钩子 | 3/7（43%） | 秘偶换位→paper_substitute / puppet_string；历史影像→clairvoyance / observe；诡秘之境→miracle / observe；灵之虫→miracle |
 | 跨系钩子 | 2/2（100%） | — |
 
 ## 不眠者（sleepless）

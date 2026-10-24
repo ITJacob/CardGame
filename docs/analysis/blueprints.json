@@ -7846,7 +7846,7 @@
          "id": "skill_seer_s0_lord_of_spirits"
         }
        ],
-       "empirical": 4,
+       "empirical": 5,
        "ok": true
       }
      ],
@@ -7872,12 +7872,11 @@
       ],
       "payoffs": [
        "命运干扰",
-       "命运锚点"
-      ],
-      "payoffsNotes": [
+       "命运锚点",
        "历史影像"
       ],
-      "axisScore": 82.6
+      "payoffsNotes": [],
+      "axisScore": 86.8
      }
     },
     {
@@ -7934,9 +7933,12 @@
        "纸人替身",
        "直觉预感"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "秘偶换位",
+       "秘偶置换"
+      ],
       "payoffsNotes": [],
-      "axisScore": 65.1
+      "axisScore": 84.1
      }
     },
     {
@@ -7991,7 +7993,7 @@
          "id": "skill_seer_s5_marionette"
         }
        ],
-       "empirical": 4,
+       "empirical": 5,
        "ok": true
       },
       {
@@ -8047,12 +8049,11 @@
       ],
       "payoffs": [
        "秘偶不死",
+       "秘偶换位",
        "灵界掌控者"
       ],
-      "payoffsNotes": [
-       "秘偶换位"
-      ],
-      "axisScore": 81.0
+      "payoffsNotes": [],
+      "axisScore": 85.2
      }
     },
     {
@@ -8127,9 +8128,13 @@
        "奇迹",
        "愿望"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "历史影像",
+       "诡秘之境",
+       "灵之虫"
+      ],
       "payoffsNotes": [],
-      "axisScore": 62.9
+      "axisScore": 82.1
      }
     }
    ],
@@ -8181,6 +8186,70 @@
      "purpose": "读灵体之线层数展开掌控",
      "ok": true,
      "reason": ""
+    },
+    {
+     "slot": "秘偶换位",
+     "slots": [
+      {
+       "name": "秘偶换位",
+       "id": "skill_seer_s4_marionette_swap"
+      }
+     ],
+     "slotId": "skill_seer_s4_marionette_swap",
+     "axis": "paper_substitute / puppet_string",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "纸人代位护盾、线上借力回能",
+     "ok": false,
+     "reason": "读轴锚点状态缺失"
+    },
+    {
+     "slot": "历史影像",
+     "slots": [
+      {
+       "name": "历史影像",
+       "id": "skill_seer_s3_historical_echo"
+      }
+     ],
+     "slotId": "skill_seer_s3_historical_echo",
+     "axis": "clairvoyance / observe",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "灵视加持回能、观察入微护盾",
+     "ok": false,
+     "reason": "读轴锚点状态缺失"
+    },
+    {
+     "slot": "诡秘之境",
+     "slots": [
+      {
+       "name": "诡秘之境",
+       "id": "skill_seer_s1_mystery_realm"
+      }
+     ],
+     "slotId": "skill_seer_s1_mystery_realm",
+     "axis": "miracle / observe",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读并耗奇迹、观察入微群体护盾",
+     "ok": false,
+     "reason": "读轴锚点状态缺失"
+    },
+    {
+     "slot": "灵之虫",
+     "slots": [
+      {
+       "name": "灵之虫",
+       "id": "skill_seer_s2_spirit_worm"
+      }
+     ],
+     "slotId": "skill_seer_s2_spirit_worm",
+     "axis": "miracle",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "死亡触发读奇迹（复活回血）",
+     "ok": false,
+     "reason": "卡位未引用读轴锚点状态"
     }
    ],
    "crossSystem": [
@@ -8702,8 +8771,13 @@
     },
     "跨轴钩子": {
      "hit": 3,
-     "total": 3,
-     "miss": []
+     "total": 7,
+     "miss": [
+      "秘偶换位→paper_substitute / puppet_string",
+      "历史影像→clairvoyance / observe",
+      "诡秘之境→miracle / observe",
+      "灵之虫→miracle"
+     ]
     },
     "跨系钩子": {
      "hit": 2,
