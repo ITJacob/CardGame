@@ -18135,22 +18135,17 @@
    "name": "观众",
    "state": "回溯补登",
    "date": "2026-10-21",
-   "score": 98,
+   "score": 100,
    "scoreParts": {
     "命题": 10,
     "风格边界": 15,
     "轴循环": 25,
     "决策点": 10,
-    "签名键": 13,
+    "签名键": 15,
     "角色配比": 15,
     "钩子": 10
    },
-   "deductions": [
-    {
-     "dim": "签名键",
-     "why": "键 flag:template 承诺卡位含非真实卡名：（待补强1卡）"
-    }
-   ],
+   "deductions": [],
    "proposition": {
     "statement": "位格压制——位格是强制前提：洞察看穿位格弱点，控制/读心以 rank 差缩放，低位格对高位格无察觉",
     "variable": "位格差的经营（拉抬自己位格 / 压制对象位格）、洞察对象选择",
@@ -18178,7 +18173,7 @@
      },
      "loop": {
       "produce": "观众·细微观察/引导产层",
-      "consume": "读心/编织梦境/洞察权柄读层消费",
+      "consume": "读心/编织梦境/引导读层消费",
       "clear": "层数被消费",
       "produceCards": [
        {
@@ -18200,8 +18195,8 @@
         "id": "skill_spectator_s3_weave_dream"
        },
        {
-        "name": "洞察权柄",
-        "id": "skill_spectator_s2_insight_authority"
+        "name": "引导",
+        "id": "skill_spectator_s5_guide"
        }
       ]
      },
@@ -18242,7 +18237,7 @@
          "id": "skill_spectator_s5_guide"
         }
        ],
-       "empirical": 5,
+       "empirical": 6,
        "ok": true
       }
      ],
@@ -18266,12 +18261,11 @@
       ],
       "payoffs": [
        "读心",
-       "编织梦境"
+       "编织梦境",
+       "引导"
       ],
-      "payoffsNotes": [
-       "洞察权柄"
-      ],
-      "axisScore": 80.0
+      "payoffsNotes": [],
+      "axisScore": 91.5
      }
     },
     {
@@ -18285,7 +18279,7 @@
      },
      "loop": {
       "produce": "心理暗示·质变/操纵产层",
-      "consume": "心理暗示·质变/操纵读层消费（暗示改写行为）",
+      "consume": "心理暗示·质变/操纵/心理暗示·权柄读层消费（暗示改写行为）",
       "clear": "编辑被察觉（rank 前提不满足）则失效",
       "produceCards": [
        {
@@ -18305,6 +18299,10 @@
        {
         "name": "操纵",
         "id": "skill_spectator_s4_manipulate"
+       },
+       {
+        "name": "心理暗示·权柄",
+        "id": "skill_spectator_s2_suggestion_authority"
        }
       ]
      },
@@ -18332,9 +18330,13 @@
        "心理暗示·质变",
        "操纵"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "心理暗示·质变",
+       "操纵",
+       "心理暗示·权柄"
+      ],
       "payoffsNotes": [],
-      "axisScore": 76.6
+      "axisScore": 85.6
      }
     },
     {
@@ -18391,9 +18393,12 @@
        "梦境穿梭",
        "修改"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "梦境穿梭",
+       "修改"
+      ],
       "payoffsNotes": [],
-      "axisScore": 78.2
+      "axisScore": 84.4
      }
     },
     {
@@ -18440,9 +18445,8 @@
          "id": "skill_spectator_s3_identity_split"
         },
         {
-         "name": "（待补强1卡）",
-         "id": null,
-         "placeholder": true
+         "name": "空想具现",
+         "id": "skill_spectator_s1_imagined_creation"
         }
        ],
        "empirical": 1,
@@ -18469,9 +18473,12 @@
        "书写成真",
        "龙化"
       ],
-      "payoffs": [],
+      "payoffs": [
+       "书写成真",
+       "龙化"
+      ],
       "payoffsNotes": [],
-      "axisScore": 77.0
+      "axisScore": 83.0
      }
     }
    ],
@@ -18488,7 +18495,7 @@
      "axis": "insight",
      "concept": "status",
      "facet": "read",
-     "purpose": "读洞察层数引导潜意识",
+     "purpose": "读心象层数引导潜意识（+1 层）",
      "ok": true,
      "reason": ""
     },
@@ -18501,10 +18508,10 @@
       }
      ],
      "slotId": "skill_spectator_s4_manipulate",
-     "axis": "insight",
+     "axis": "suggestion",
      "concept": "status",
      "facet": "read",
-     "purpose": "位格洞察前提下的深度操纵",
+     "purpose": "读旧篡改深度追加伤害",
      "ok": true,
      "reason": ""
     },
@@ -18520,7 +18527,71 @@
      "axis": "insight",
      "concept": "status",
      "facet": "read",
-     "purpose": "读洞察层数编织对口梦境",
+     "purpose": "读心象层数延长封印",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "读心",
+     "slots": [
+      {
+       "name": "读心",
+       "id": "skill_spectator_s8_mind_read"
+      }
+     ],
+     "slotId": "skill_spectator_s8_mind_read",
+     "axis": "suggestion",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "顺着潜意识篡改读进去（追伤 +2）",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "修改",
+     "slots": [
+      {
+       "name": "修改",
+       "id": "skill_spectator_s5_dream_edit"
+      }
+     ],
+     "slotId": "skill_spectator_s5_dream_edit",
+     "axis": "insight",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "以心象为引回能",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "龙化",
+     "slots": [
+      {
+       "name": "龙化",
+       "id": "skill_spectator_s4_dragon_form"
+      }
+     ],
+     "slotId": "skill_spectator_s4_dragon_form",
+     "axis": "fantasy",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "读书写成真延展龙化",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "书写成真",
+     "slots": [
+      {
+       "name": "书写成真",
+       "id": "skill_spectator_s1_written_truth"
+      }
+     ],
+     "slotId": "skill_spectator_s1_written_truth",
+     "axis": "dream",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "梦境相位中书写层数 +1",
      "ok": true,
      "reason": ""
     },
@@ -18536,7 +18607,7 @@
      "axis": "dream",
      "concept": "status",
      "facet": "read",
-     "purpose": "空想巨龙读梦境相位成形",
+     "purpose": "读梦境相位延长真身",
      "ok": true,
      "reason": ""
     }
@@ -18567,6 +18638,54 @@
      "writeOk": true,
      "ok": true,
      "reason": ""
+    },
+    {
+     "hub": "grazed_soul",
+     "hubName": "被放牧的灵魂",
+     "writers": [],
+     "readers": [
+      {
+       "name": "编织梦境",
+       "id": "skill_spectator_s3_weave_dream",
+       "pathway": "spectator"
+      }
+     ],
+     "participants": [
+      "spectator",
+      "supplicant",
+      "chanter",
+      "reader",
+      "sailor",
+      "warrior"
+     ],
+     "crossPathway": true,
+     "writeOk": false,
+     "ok": false,
+     "reason": "写入卡位无实证"
+    },
+    {
+     "hub": "mirror_substitute",
+     "hubName": "镜子替身",
+     "writers": [],
+     "readers": [
+      {
+       "name": "心灵风暴",
+       "id": "skill_spectator_s4_mind_storm",
+       "pathway": "spectator"
+      }
+     ],
+     "participants": [
+      "assassin",
+      "seer",
+      "lawyer",
+      "supplicant",
+      "prisoner",
+      "spectator"
+     ],
+     "crossPathway": true,
+     "writeOk": false,
+     "ok": false,
+     "reason": "写入卡位无实证"
     }
    ],
    "roles": [
@@ -18982,14 +19101,17 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 4,
-     "total": 4,
+     "hit": 8,
+     "total": 8,
      "miss": []
     },
     "跨系钩子": {
      "hit": 1,
-     "total": 1,
-     "miss": []
+     "total": 3,
+     "miss": [
+      "grazed_soul(crossPathway=True,写入实证=False)",
+      "mirror_substitute(crossPathway=True,写入实证=False)"
+     ]
     }
    }
   },

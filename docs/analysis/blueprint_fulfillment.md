@@ -189,8 +189,8 @@
 | 锚点 | 4/4（100%） | — |
 | 签名键 | 2/3（67%） | flag:template(实证1) |
 | 角色配比 | 7/7（100%） | — |
-| 跨轴钩子 | 4/4（100%） | — |
-| 跨系钩子 | 1/1（100%） | — |
+| 跨轴钩子 | 8/8（100%） | — |
+| 跨系钩子 | 1/3（33%） | grazed_soul(crossPathway=True,写入实证=False)；mirror_substitute(crossPathway=True,写入实证=False) |
 
 ## 秘祈人（supplicant）
 

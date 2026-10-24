@@ -15,23 +15,29 @@
 ### 轴玩法
 | 轴 | 名称 | 锚点(kind:id) | 产出→消费→清除 | 玩家决策点 | 签名键承诺(键:卡位) | 计划卡数 | 角色配比 |
 |---|---|---|---|---|---|---|---|
-| insight | 洞察 | status:insight | 观众·细微观察/引导产层→读心/编织梦境/洞察权柄读层消费→层数被消费 | 洞察对象选择：位格差投给谁，层数攒到几层再读 | stat:rank:读心,操纵,编织梦境;sref:insight:观众·细微观察,读心,引导 | 6 | core×3,generic×1,starter×2 |
-| suggestion | 暗示 | status:subconscious_edit | 心理暗示·质变/操纵产层→心理暗示·质变/操纵读层消费（暗示改写行为）→编辑被察觉（rank 前提不满足）则失效 | 暗示对象与编辑深度：位格差够才敢编多深 |  | 11 | core×2,generic×2,starter×1,tech×5,trap×1 |
+| insight | 洞察 | status:insight | 观众·细微观察/引导产层→读心/编织梦境/引导读层消费→层数被消费 | 洞察对象选择：位格差投给谁，层数攒到几层再读 | stat:rank:读心,操纵,编织梦境;sref:insight:观众·细微观察,读心,引导 | 6 | core×3,generic×1,starter×2 |
+| suggestion | 暗示 | status:subconscious_edit | 心理暗示·质变/操纵产层→心理暗示·质变/操纵/心理暗示·权柄读层消费（暗示改写行为）→编辑被察觉（rank 前提不满足）则失效 | 暗示对象与编辑深度：位格差够才敢编多深 |  | 11 | core×2,generic×2,starter×1,tech×5,trap×1 |
 | dream | 梦境 | status:dream_phase | 梦境穿梭/修改产层→梦境穿梭/修改读层消费→梦醒（相位更替）清除 | 入梦时机：梦境窗口内打完combo还是拖长战线 |  | 10 | core×4,tech×3,generic×3 |
-| fantasy | 空想 | status:written_truth | 书写成真/龙化产层→书写成真/龙化读层消费（空想产物带非真存缺陷）→产物短寿消散清除 | 具现什么、何时让产物消散：短寿窗口的节奏对表 | flag:template:身份分离,（待补强1卡） | 9 | core×4,bridge×1,generic×3,tech×1 |
+| fantasy | 空想 | status:written_truth | 书写成真/龙化产层→书写成真/龙化读层消费（空想产物带非真存缺陷）→产物短寿消散清除 | 具现什么、何时让产物消散：短寿窗口的节奏对表 | flag:template:身份分离,空想具现 | 9 | core×4,bridge×1,generic×3,tech×1 |
 
 ### 跨轴钩子
 | 卡位 | 读轴 | 概念 | facet | 用途 |
 |---|---|---|---|---|
-| 引导 | insight | status | read | 读洞察层数引导潜意识 |
-| 操纵 | insight | status | read | 位格洞察前提下的深度操纵 |
-| 编织梦境 | insight | status | read | 读洞察层数编织对口梦境 |
-| 巨龙 | dream | status | read | 空想巨龙读梦境相位成形 |
+| 引导 | insight | status | read | 读心象层数引导潜意识（+1 层） |
+| 操纵 | suggestion | status | read | 读旧篡改深度追加伤害 |
+| 编织梦境 | insight | status | read | 读心象层数延长封印 |
+| 读心 | suggestion | status | read | 顺着潜意识篡改读进去（追伤 +2） |
+| 修改 | insight | status | read | 以心象为引回能 |
+| 龙化 | fantasy | status | read | 读书写成真延展龙化 |
+| 书写成真 | dream | status | read | 梦境相位中书写层数 +1 |
+| 巨龙 | dream | status | read | 读梦境相位延长真身 |
 
 ### 跨系钩子
 | 枢纽状态 | 写入卡位 | 读取卡位 | participants |
 |---|---|---|---|
 | fortify | 宣告未来 | （待他途径补读取卡） | spectator,reader |
+| grazed_soul | — | 编织梦境 | spectator,supplicant,chanter,reader,sailor,warrior |
+| mirror_substitute | — | 心灵风暴 | assassin,seer,lawyer,supplicant,prisoner,spectator |
 
 ### 角色配比
 | 角色 | 张数 | 卡位 |
@@ -55,3 +61,6 @@ generic 恰 9/36=25.0% 贴上限。
 兑现率缺口（下一迭代轮输入）：flag:template 仅身份分离 1 卡实证（承诺位发芽 1 卡）；
 fortify 0 他途径读者（participants 已列 reader 待接线）；dream/fantasy/suggestion 三轴 payoff 登记真空；
 trap/bridge 各仅 1 张；身份卡所载 rank 全库稀缺（观众 1 卡）差距仍待结构批补。）
+
+
+（2026-10-24 **轴接线整理**（环节⑥ P3 候选落地，⑤）：维持「位格压制」命题，四条轴全部补上真实读层——暗示：质变/操纵读旧篡改、权柄耗层回收；梦境：修改/穿梭读梦境相位；空想：龙化读书写成真、书写成真读梦境相位；洞察：引导读心象、读心渗透潜意识。跨轴 5.6→11.2；跨系补织梦读 grazed_soul（混沌海同源强载荷：治疗 + 心象）与心灵风暴读 mirror_substitute。拉入梦境（drawn_in）成为集火标记（1 写 3 读）。验收：score 72.8→83.2（轴健康 27.2→29.4，四轴 84.2/85.6/84.4/83.0）；playable_scan 有变量无集火→理想态；差异化 31.6→31.3。遗留：flag:template 签名仍仅 1 卡实证（-1.2），待补第二张模板产物卡；与 apprentice 指纹 0.142 偏近，列入观察。）

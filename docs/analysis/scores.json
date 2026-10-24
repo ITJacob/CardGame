@@ -4,31 +4,31 @@
  "dimVariance": {
   "轴健康度": {
    "count": 22,
-   "mean": 28.34,
-   "variance": 1.52,
+   "mean": 28.46,
+   "variance": 1.55,
    "min": 24.6,
-   "max": 29.6,
+   "max": 29.9,
    "lowVariance": false
   },
   "跨轴耦合": {
    "count": 22,
-   "mean": 12.1,
-   "variance": 12.04,
+   "mean": 12.44,
+   "variance": 10.05,
    "min": 3.8,
    "max": 15.0,
    "lowVariance": false
   },
   "跨系联动": {
    "count": 22,
-   "mean": 13.76,
-   "variance": 5.38,
-   "min": 8.4,
+   "mean": 13.81,
+   "variance": 4.94,
+   "min": 9.4,
    "max": 15.0,
    "lowVariance": false
   },
   "差异化": {
    "count": 22,
-   "mean": 31.3,
+   "mean": 31.28,
    "variance": 1.99,
    "min": 28.4,
    "max": 33.4,
@@ -52,16 +52,16 @@
   },
   "收束兑现": {
    "count": 88,
-   "mean": 23.57,
-   "variance": 9.05,
+   "mean": 23.62,
+   "variance": 8.98,
    "min": 12.5,
    "max": 25.0,
    "lowVariance": false
   },
   "轴内多样性": {
    "count": 88,
-   "mean": 7.86,
-   "variance": 5.48,
+   "mean": 7.91,
+   "variance": 5.72,
    "min": 4.5,
    "max": 15.0,
    "lowVariance": false
@@ -76,8 +76,8 @@
   },
   "承接连通": {
    "count": 88,
-   "mean": 6.38,
-   "variance": 9.78,
+   "mean": 6.65,
+   "variance": 8.48,
    "min": 0,
    "max": 12,
    "lowVariance": false
@@ -100,268 +100,14 @@
   },
   "收束闭环": {
    "count": 88,
-   "mean": 16.68,
-   "variance": 43.92,
+   "mean": 16.95,
+   "variance": 44.57,
    "min": 0,
    "max": 25,
    "lowVariance": false
   }
  },
  "pathways": [
-  {
-   "id": "spectator",
-   "name": "观众",
-   "total": 72.8,
-   "dims": {
-    "轴健康度": 27.2,
-    "跨轴耦合": 5.6,
-    "跨系联动": 8.4,
-    "结构健康": 5.0,
-    "机制落地": 5.0,
-    "文本完备": 5.0,
-    "差异化": 31.6
-   },
-   "minAxis": 76.6,
-   "cards": 36,
-   "roleDist": {
-    "core": 13,
-    "starter": 3,
-    "tech": 9,
-    "generic": 9,
-    "trap": 1,
-    "bridge": 1
-   },
-   "sigHits": {
-    "flag:template": 1,
-    "sref:insight": 5,
-    "stat:rank": 3
-   },
-   "styleDist": 0.3708,
-   "gates": {
-    "结构健康": true,
-    "机制落地": true,
-    "文本完备": true
-   },
-   "gatePenalty": 0,
-   "styleStrengths": [
-    {
-     "family": "sshape",
-     "keys": [
-      "dur:tick",
-      "stacks"
-     ],
-     "distinct": 32
-    },
-    {
-     "family": "param",
-     "keys": [
-      "field=scope",
-      "mode=delta"
-     ],
-     "distinct": 16
-    },
-    {
-     "family": "tgt",
-     "keys": [
-      "mode=unit",
-      "eff:self"
-     ],
-     "distinct": 14
-    },
-    {
-     "family": "prim",
-     "keys": [
-      "mount_status",
-      "modify_status"
-     ],
-     "distinct": 12
-    }
-   ],
-   "styleParts": {
-    "signature": 5.8,
-    "fingerprint": 12,
-    "config": 3.4,
-    "dedup": 10.4,
-    "dedupRatio": 0.0079,
-    "familyFloor": true,
-    "familyDists": {
-     "prim": 0.317,
-     "elem": 0.4819,
-     "cond": 0.4046,
-     "condarg": 0.3911,
-     "param": 0.3965,
-     "reach": 0.0935,
-     "tgt": 0.0798,
-     "hook": 0.4524,
-     "sshape": 0.2144,
-     "cost": 0.0295,
-     "temporal": 0.1564,
-     "unit": 0.9019
-    }
-   },
-   "singleDimWarn": null,
-   "nearest": "apprentice",
-   "nearestDist": 0.1888,
-   "deductions": [
-    {
-     "dim": "跨轴耦合",
-     "why": "-9.4：本途径他轴机制命中 3 次",
-     "ref": "spectator",
-     "fix": "挑 1–2 张本途径 payoff 卡，加读他轴私有机制产出或复用同一条全局概念 facet 的条件/放大段"
-    },
-    {
-     "dim": "角色语义",
-     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
-     "ref": "心理暗示·权柄",
-     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
-    },
-    {
-     "dim": "风格越界",
-     "why": "注：17 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
-     "ref": "观众·细微观察(prim:write_rule_slot)；出众精神(prim:write_rule_slot)；间接影响(prim:write_rule_slot)；读心(sref:grazed_soul)；气场感知(prim:write_rule_slot)；狂乱(prim:write_rule_slot)",
-     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
-    },
-    {
-     "dim": "差异化",
-     "why": "-1.2：签名键零使用 （有键仅 1 卡，未落地）",
-     "ref": "spectator",
-     "fix": "按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证"
-    }
-   ],
-   "axes": [
-    {
-     "id": "suggestion",
-     "name": "暗示",
-     "symbol": "💭",
-     "total": 76.6,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 25.0,
-      "轴内多样性": 6.6,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 15
-     },
-     "cards": 11,
-     "enablersVerified": [
-      "心理暗示·质变",
-      "操纵"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": []
-    },
-    {
-     "id": "fantasy",
-     "name": "空想",
-     "symbol": "🌈",
-     "total": 77.0,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 25.0,
-      "轴内多样性": 7.0,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 15
-     },
-     "cards": 9,
-     "enablersVerified": [
-      "书写成真",
-      "龙化"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": []
-    },
-    {
-     "id": "dream",
-     "name": "梦境",
-     "symbol": "💤",
-     "total": 78.2,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 25.0,
-      "轴内多样性": 8.2,
-      "规模均衡": 10,
-      "承接连通": 0
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 10
-     },
-     "cards": 10,
-     "enablersVerified": [
-      "梦境穿梭",
-      "修改"
-     ],
-     "payoffsLanded": [],
-     "payoffsNotes": [],
-     "patterns": [],
-     "vacuumAccepted": true,
-     "deductions": []
-    },
-    {
-     "id": "insight",
-     "name": "洞察",
-     "symbol": "👀",
-     "total": 80.0,
-     "dims": {
-      "锚点兑现": 15,
-      "产层兑现": 20.0,
-      "收束兑现": 20.8,
-      "轴内多样性": 8.2,
-      "规模均衡": 10,
-      "承接连通": 6
-     },
-     "legacyDims": {
-      "身份锚定": 15,
-      "产层闭环": 20,
-      "收束闭环": 22
-     },
-     "cards": 6,
-     "enablersVerified": [
-      "观众·细微观察",
-      "引导"
-     ],
-     "payoffsLanded": [
-      "读心",
-      "编织梦境"
-     ],
-     "payoffsNotes": [
-      "洞察权柄"
-     ],
-     "patterns": [
-      "条件分支",
-      "通道读"
-     ],
-     "vacuumAccepted": false,
-     "deductions": [
-      {
-       "dim": "收束兑现",
-       "why": "-4.2：声明消费卡 1/3 未全落地（landed 全分 / notes 半分）",
-       "ref": "洞察权柄(notes)",
-       "fix": "给这些卡补读层段（has_status 条件 / resource_compare 阈值 / 耗层 stacksDelta），把 notes 级升 landed"
-      }
-     ]
-    }
-   ]
-  },
   {
    "id": "thief",
    "name": "偷盗者",
@@ -390,7 +136,7 @@
     "prim:take_control": 5,
     "prim:target_override": 7
    },
-   "styleDist": 0.2963,
+   "styleDist": 0.2942,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -439,15 +185,15 @@
     "dedupRatio": 0.0315,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2013,
+     "prim": 0.2008,
      "elem": 0.3829,
-     "cond": 0.1098,
-     "condarg": 0.1455,
-     "param": 0.4044,
+     "cond": 0.0944,
+     "condarg": 0.132,
+     "param": 0.4031,
      "reach": 0.2188,
-     "tgt": 0.1094,
-     "hook": 0.193,
-     "sshape": 0.1848,
+     "tgt": 0.1097,
+     "hook": 0.1939,
+     "sshape": 0.187,
      "cost": 0.0204,
      "temporal": 0.1226,
      "unit": 0.8794
@@ -690,7 +436,7 @@
     "prim:write_rule_slot": 2,
     "sref:puppet_string": 4
    },
-   "styleDist": 0.3337,
+   "styleDist": 0.3316,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -739,15 +485,15 @@
     "dedupRatio": 0.0054,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2971,
+     "prim": 0.2966,
      "elem": 0.4213,
-     "cond": 0.1046,
-     "condarg": 0.1778,
-     "param": 0.4802,
+     "cond": 0.0901,
+     "condarg": 0.1656,
+     "param": 0.4788,
      "reach": 0.1297,
-     "tgt": 0.1179,
-     "hook": 0.4573,
-     "sshape": 0.2042,
+     "tgt": 0.118,
+     "hook": 0.4572,
+     "sshape": 0.2054,
      "cost": 0.0157,
      "temporal": 0.1244,
      "unit": 0.9038
@@ -1011,7 +757,7 @@
     "elem:lightning": 9,
     "sref:rage": 11
    },
-   "styleDist": 0.2846,
+   "styleDist": 0.2826,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1060,15 +806,15 @@
     "dedupRatio": 0.0055,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2174,
+     "prim": 0.2171,
      "elem": 0.6805,
-     "cond": 0.1153,
-     "condarg": 0.1619,
-     "param": 0.328,
+     "cond": 0.1002,
+     "condarg": 0.1497,
+     "param": 0.3273,
      "reach": 0.0983,
-     "tgt": 0.1209,
-     "hook": 0.3018,
-     "sshape": 0.1951,
+     "tgt": 0.1211,
+     "hook": 0.3025,
+     "sshape": 0.1966,
      "cost": 0.0222,
      "temporal": 0.1226,
      "unit": 1.0
@@ -1254,7 +1000,7 @@
     "flag:companionBuff": 2,
     "res:lust": 36
    },
-   "styleDist": 0.3608,
+   "styleDist": 0.3591,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1303,15 +1049,15 @@
     "dedupRatio": 0.0282,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2715,
+     "prim": 0.2707,
      "elem": 0.592,
-     "cond": 0.1236,
-     "condarg": 0.2762,
-     "param": 0.5299,
+     "cond": 0.1107,
+     "condarg": 0.2651,
+     "param": 0.5289,
      "reach": 0.2156,
      "tgt": 0.1028,
-     "hook": 0.2261,
-     "sshape": 0.1765,
+     "hook": 0.2269,
+     "sshape": 0.1792,
      "cost": 0.0199,
      "temporal": 0.1564,
      "unit": 1.0
@@ -1518,7 +1264,7 @@
     "prim:target_override": 3,
     "sref:massing": 11
    },
-   "styleDist": 0.3107,
+   "styleDist": 0.3089,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1567,15 +1313,15 @@
     "dedupRatio": 0.0044,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.1605,
+     "prim": 0.1602,
      "elem": 0.6784,
-     "cond": 0.1066,
-     "condarg": 0.2472,
-     "param": 0.2555,
+     "cond": 0.0911,
+     "condarg": 0.2366,
+     "param": 0.2545,
      "reach": 0.115,
      "tgt": 0.0814,
-     "hook": 0.2175,
-     "sshape": 0.1493,
+     "hook": 0.2185,
+     "sshape": 0.1521,
      "cost": 0.0158,
      "temporal": 0.1226,
      "unit": 0.9448
@@ -1826,7 +1572,7 @@
     "prim:restore_snapshot": 2,
     "prim:translocate": 14
    },
-   "styleDist": 0.2894,
+   "styleDist": 0.2874,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -1875,23 +1621,23 @@
     "dedupRatio": 0.0085,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2127,
+     "prim": 0.212,
      "elem": 0.3321,
-     "cond": 0.1069,
-     "condarg": 0.1991,
-     "param": 0.3444,
+     "cond": 0.0916,
+     "condarg": 0.1868,
+     "param": 0.3433,
      "reach": 0.1098,
-     "tgt": 0.0565,
-     "hook": 0.2782,
-     "sshape": 0.1461,
+     "tgt": 0.0567,
+     "hook": 0.2792,
+     "sshape": 0.1488,
      "cost": 0.0157,
      "temporal": 0.1564,
      "unit": 0.9019
     }
    },
    "singleDimWarn": null,
-   "nearest": "thief",
-   "nearestDist": 0.1637,
+   "nearest": "spectator",
+   "nearestDist": 0.1475,
    "deductions": [
     {
      "dim": "风格越界",
@@ -2087,7 +1833,7 @@
     "sref:grazed_soul": 7,
     "stat:hp_max": 5
    },
-   "styleDist": 0.3093,
+   "styleDist": 0.3074,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -2136,15 +1882,15 @@
     "dedupRatio": 0.0038,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2135,
+     "prim": 0.2129,
      "elem": 0.338,
-     "cond": 0.1217,
-     "condarg": 0.1461,
-     "param": 0.3125,
+     "cond": 0.1086,
+     "condarg": 0.1327,
+     "param": 0.3108,
      "reach": 0.0984,
-     "tgt": 0.1037,
-     "hook": 0.2195,
-     "sshape": 0.1667,
+     "tgt": 0.1038,
+     "hook": 0.2204,
+     "sshape": 0.169,
      "cost": 0.219,
      "temporal": 0.1244,
      "unit": 0.9788
@@ -2334,6 +2080,267 @@
    ]
   },
   {
+   "id": "spectator",
+   "name": "观众",
+   "total": 83.5,
+   "dims": {
+    "轴健康度": 29.9,
+    "跨轴耦合": 13.1,
+    "跨系联动": 9.4,
+    "结构健康": 5.0,
+    "机制落地": 5.0,
+    "文本完备": 5.0,
+    "差异化": 31.1
+   },
+   "minAxis": 83.0,
+   "cards": 36,
+   "roleDist": {
+    "core": 13,
+    "starter": 3,
+    "tech": 9,
+    "generic": 9,
+    "trap": 1,
+    "bridge": 1
+   },
+   "sigHits": {
+    "flag:template": 1,
+    "sref:insight": 6,
+    "stat:rank": 3
+   },
+   "styleDist": 0.3323,
+   "gates": {
+    "结构健康": true,
+    "机制落地": true,
+    "文本完备": true
+   },
+   "gatePenalty": 0,
+   "styleStrengths": [
+    {
+     "family": "sshape",
+     "keys": [
+      "dur:tick",
+      "stacks"
+     ],
+     "distinct": 32
+    },
+    {
+     "family": "param",
+     "keys": [
+      "mode=delta",
+      "field=scope"
+     ],
+     "distinct": 17
+    },
+    {
+     "family": "tgt",
+     "keys": [
+      "mode=unit",
+      "eff:self"
+     ],
+     "distinct": 14
+    },
+    {
+     "family": "prim",
+     "keys": [
+      "mount_status",
+      "modify_status"
+     ],
+     "distinct": 12
+    }
+   ],
+   "styleParts": {
+    "signature": 5.8,
+    "fingerprint": 12,
+    "config": 3.0,
+    "dedup": 10.3,
+    "dedupRatio": 0.0095,
+    "familyFloor": true,
+    "familyDists": {
+     "prim": 0.3079,
+     "elem": 0.4819,
+     "cond": 0.1171,
+     "condarg": 0.1439,
+     "param": 0.3738,
+     "reach": 0.0935,
+     "tgt": 0.0823,
+     "hook": 0.468,
+     "sshape": 0.2621,
+     "cost": 0.0295,
+     "temporal": 0.1564,
+     "unit": 0.9019
+    }
+   },
+   "singleDimWarn": null,
+   "nearest": "apprentice",
+   "nearestDist": 0.1475,
+   "deductions": [
+    {
+     "dim": "角色语义",
+     "why": "注：core 卡无身份动作（未登记 axes / 未挂锚点 / 非签名键载体 / 未写本途径枢纽）",
+     "ref": "洞察权柄",
+     "fix": "补身份动作 / 跨界读取 / 风险段，或把 role 改回真实定位（口径 SCORING §一·附）"
+    },
+    {
+     "dim": "风格越界",
+     "why": "注：18 张命中他途径主签名键（只读诊断，不进 100 分；共享语义分叉/全局通用机制须人工甄别）",
+     "ref": "观众·细微观察(prim:write_rule_slot)；出众精神(prim:write_rule_slot)；间接影响(prim:write_rule_slot)；读心(sref:grazed_soul)；气场感知(prim:write_rule_slot)；狂乱(prim:write_rule_slot)",
+     "fix": "人工复核：属共享语义分叉 / 全局通用机制则保留，否则收回本途径主签名维度内"
+    },
+    {
+     "dim": "差异化",
+     "why": "-1.2：签名键零使用 （有键仅 1 卡，未落地）",
+     "ref": "spectator",
+     "fix": "按身份卡补签名键卡（见 途径设计身份.md §二），每键 ≥2 卡实证"
+    }
+   ],
+   "axes": [
+    {
+     "id": "fantasy",
+     "name": "空想",
+     "symbol": "🌈",
+     "total": 83.0,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 7.0,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 18
+     },
+     "cards": 9,
+     "enablersVerified": [
+      "书写成真",
+      "龙化"
+     ],
+     "payoffsLanded": [
+      "书写成真",
+      "龙化"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "dream",
+     "name": "梦境",
+     "symbol": "💤",
+     "total": 84.4,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 8.4,
+      "规模均衡": 10,
+      "承接连通": 6
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 18
+     },
+     "cards": 10,
+     "enablersVerified": [
+      "梦境穿梭",
+      "修改"
+     ],
+     "payoffsLanded": [
+      "梦境穿梭",
+      "修改"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支"
+     ],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "suggestion",
+     "name": "暗示",
+     "symbol": "💭",
+     "total": 85.6,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 6.6,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 25
+     },
+     "cards": 11,
+     "enablersVerified": [
+      "心理暗示·质变",
+      "操纵"
+     ],
+     "payoffsLanded": [
+      "心理暗示·质变",
+      "操纵",
+      "心理暗示·权柄"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": true,
+     "deductions": []
+    },
+    {
+     "id": "insight",
+     "name": "洞察",
+     "symbol": "👀",
+     "total": 91.5,
+     "dims": {
+      "锚点兑现": 15,
+      "产层兑现": 20.0,
+      "收束兑现": 25.0,
+      "轴内多样性": 12.5,
+      "规模均衡": 10,
+      "承接连通": 9
+     },
+     "legacyDims": {
+      "身份锚定": 15,
+      "产层闭环": 20,
+      "收束闭环": 25
+     },
+     "cards": 6,
+     "enablersVerified": [
+      "观众·细微观察",
+      "引导"
+     ],
+     "payoffsLanded": [
+      "读心",
+      "编织梦境",
+      "引导"
+     ],
+     "payoffsNotes": [],
+     "patterns": [
+      "存在性",
+      "条件分支",
+      "通道读"
+     ],
+     "vacuumAccepted": false,
+     "deductions": []
+    }
+   ]
+  },
+  {
    "id": "chanter",
    "name": "歌颂者",
    "total": 85.5,
@@ -2361,7 +2368,7 @@
     "prim:write_rule_slot": 2,
     "trig:on_phase_change": 2
    },
-   "styleDist": 0.2953,
+   "styleDist": 0.2934,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -2410,15 +2417,15 @@
     "dedupRatio": 0.0144,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2205,
+     "prim": 0.2203,
      "elem": 0.9342,
-     "cond": 0.1332,
-     "condarg": 0.1762,
-     "param": 0.2637,
+     "cond": 0.1182,
+     "condarg": 0.1639,
+     "param": 0.2628,
      "reach": 0.0719,
      "tgt": 0.1033,
-     "hook": 0.2,
-     "sshape": 0.1847,
+     "hook": 0.2006,
+     "sshape": 0.1879,
      "cost": 0.0244,
      "temporal": 0.1838,
      "unit": 1.0
@@ -2657,7 +2664,7 @@
     "sref:blight": 5,
     "unitType:PLANT": 8
    },
-   "styleDist": 0.3412,
+   "styleDist": 0.3393,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -2706,15 +2713,15 @@
     "dedupRatio": 0.0095,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2788,
+     "prim": 0.2787,
      "elem": 0.6203,
-     "cond": 0.0995,
-     "condarg": 0.1431,
-     "param": 0.4754,
+     "cond": 0.0845,
+     "condarg": 0.1299,
+     "param": 0.4751,
      "reach": 0.2549,
      "tgt": 0.081,
-     "hook": 0.2699,
-     "sshape": 0.1774,
+     "hook": 0.2708,
+     "sshape": 0.1799,
      "cost": 0.0179,
      "temporal": 0.122,
      "unit": 0.9477
@@ -2942,7 +2949,7 @@
     "sref:prepared_draught": 6,
     "unitType:BEAST": 8
    },
-   "styleDist": 0.3205,
+   "styleDist": 0.3186,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -2991,15 +2998,15 @@
     "dedupRatio": 0.0085,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.1824,
+     "prim": 0.1823,
      "elem": 0.5814,
-     "cond": 0.1103,
-     "condarg": 0.1791,
-     "param": 0.3184,
+     "cond": 0.0949,
+     "condarg": 0.1665,
+     "param": 0.3178,
      "reach": 0.1923,
-     "tgt": 0.0846,
-     "hook": 0.2463,
-     "sshape": 0.1997,
+     "tgt": 0.0848,
+     "hook": 0.2469,
+     "sshape": 0.2022,
      "cost": 0.0153,
      "temporal": 0.1244,
      "unit": 0.9661
@@ -3224,7 +3231,7 @@
     "flag:filter.unitType": 3,
     "sref:guardianship": 3
    },
-   "styleDist": 0.3435,
+   "styleDist": 0.3415,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3273,15 +3280,15 @@
     "dedupRatio": 0.0,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.1342,
+     "prim": 0.1337,
      "elem": 0.6376,
-     "cond": 0.1355,
-     "condarg": 0.1636,
-     "param": 0.2911,
+     "cond": 0.1208,
+     "condarg": 0.1508,
+     "param": 0.2901,
      "reach": 0.1153,
-     "tgt": 0.0853,
-     "hook": 0.3307,
-     "sshape": 0.2234,
+     "tgt": 0.0855,
+     "hook": 0.3304,
+     "sshape": 0.2261,
      "cost": 0.0324,
      "temporal": 0.9349,
      "unit": 1.0
@@ -3543,7 +3550,7 @@
     "prim:modify_rule_slot": 2,
     "prim:status_shuffle": 5
    },
-   "styleDist": 0.2442,
+   "styleDist": 0.2422,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3592,15 +3599,15 @@
     "dedupRatio": 0.0018,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.1635,
+     "prim": 0.163,
      "elem": 0.3787,
-     "cond": 0.1128,
-     "condarg": 0.1621,
-     "param": 0.2752,
+     "cond": 0.0985,
+     "condarg": 0.15,
+     "param": 0.2738,
      "reach": 0.19,
-     "tgt": 0.0718,
-     "hook": 0.1947,
-     "sshape": 0.178,
+     "tgt": 0.0719,
+     "hook": 0.1956,
+     "sshape": 0.1793,
      "cost": 0.0199,
      "temporal": 0.1272,
      "unit": 1.0
@@ -3868,7 +3875,7 @@
     "prim:drain": 9,
     "trig:on_kill": 3
    },
-   "styleDist": 0.3067,
+   "styleDist": 0.305,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -3917,15 +3924,15 @@
     "dedupRatio": 0.0033,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.1539,
+     "prim": 0.1535,
      "elem": 0.4587,
-     "cond": 0.2149,
-     "condarg": 0.2057,
-     "param": 0.2984,
+     "cond": 0.2022,
+     "condarg": 0.1944,
+     "param": 0.2974,
      "reach": 0.1566,
-     "tgt": 0.0649,
-     "hook": 0.1925,
-     "sshape": 0.1333,
+     "tgt": 0.065,
+     "hook": 0.1933,
+     "sshape": 0.1363,
      "cost": 0.0166,
      "temporal": 0.1268,
      "unit": 0.9823
@@ -4180,7 +4187,7 @@
     "prim:snapshot": 8,
     "sref:mimic": 3
    },
-   "styleDist": 0.3511,
+   "styleDist": 0.3502,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -4229,15 +4236,15 @@
     "dedupRatio": 0.0196,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2428,
+     "prim": 0.2421,
      "elem": 0.4553,
-     "cond": 0.5655,
-     "condarg": 0.5936,
-     "param": 0.3714,
+     "cond": 0.5586,
+     "condarg": 0.5878,
+     "param": 0.3698,
      "reach": 0.1147,
-     "tgt": 0.076,
-     "hook": 0.2654,
-     "sshape": 0.2344,
+     "tgt": 0.0759,
+     "hook": 0.2666,
+     "sshape": 0.2377,
      "cost": 0.0161,
      "temporal": 0.2397,
      "unit": 1.0
@@ -4434,7 +4441,7 @@
     "sref:law_edit": 6,
     "unitType:CONSTRUCT": 2
    },
-   "styleDist": 0.299,
+   "styleDist": 0.297,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -4483,15 +4490,15 @@
     "dedupRatio": 0.0063,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2105,
+     "prim": 0.2101,
      "elem": 0.4106,
-     "cond": 0.0998,
-     "condarg": 0.1325,
-     "param": 0.36,
+     "cond": 0.0847,
+     "condarg": 0.1193,
+     "param": 0.359,
      "reach": 0.1117,
-     "tgt": 0.09,
-     "hook": 0.2704,
-     "sshape": 0.2106,
+     "tgt": 0.0902,
+     "hook": 0.2711,
+     "sshape": 0.2127,
      "cost": 0.0149,
      "temporal": 0.122,
      "unit": 0.9272
@@ -4704,7 +4711,7 @@
     "elem:ice": 3,
     "prim:translocate": 11
    },
-   "styleDist": 0.2734,
+   "styleDist": 0.2719,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -4753,15 +4760,15 @@
     "dedupRatio": 0.0058,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2236,
+     "prim": 0.2232,
      "elem": 0.5234,
-     "cond": 0.1301,
-     "condarg": 0.1499,
-     "param": 0.3884,
+     "cond": 0.1197,
+     "condarg": 0.1391,
+     "param": 0.3874,
      "reach": 0.1498,
-     "tgt": 0.0748,
-     "hook": 0.2552,
-     "sshape": 0.1786,
+     "tgt": 0.0749,
+     "hook": 0.256,
+     "sshape": 0.1806,
      "cost": 0.0163,
      "temporal": 0.1272,
      "unit": 1.0
@@ -4961,7 +4968,7 @@
     "prim:restore_snapshot": 2,
     "res:fate_value": 6
    },
-   "styleDist": 0.2496,
+   "styleDist": 0.2476,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -5010,15 +5017,15 @@
     "dedupRatio": 0.0067,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.1735,
+     "prim": 0.173,
      "elem": 0.4038,
-     "cond": 0.1235,
-     "condarg": 0.1661,
-     "param": 0.2869,
+     "cond": 0.1092,
+     "condarg": 0.1531,
+     "param": 0.2851,
      "reach": 0.1071,
-     "tgt": 0.0995,
-     "hook": 0.2202,
-     "sshape": 0.1628,
+     "tgt": 0.0997,
+     "hook": 0.2211,
+     "sshape": 0.1654,
      "cost": 0.0307,
      "temporal": 0.1564,
      "unit": 1.0
@@ -5270,7 +5277,7 @@
     "flag:valueFrom": 2,
     "sref:info_form": 2
    },
-   "styleDist": 0.3236,
+   "styleDist": 0.3215,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -5319,15 +5326,15 @@
     "dedupRatio": 0.0085,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.239,
+     "prim": 0.2385,
      "elem": 0.4199,
-     "cond": 0.1211,
-     "condarg": 0.1567,
-     "param": 0.3778,
+     "cond": 0.1066,
+     "condarg": 0.1435,
+     "param": 0.3766,
      "reach": 0.0746,
-     "tgt": 0.0659,
-     "hook": 0.2543,
-     "sshape": 0.1789,
+     "tgt": 0.066,
+     "hook": 0.2553,
+     "sshape": 0.1808,
      "cost": 0.0186,
      "temporal": 0.9319,
      "unit": 1.0
@@ -5548,7 +5555,7 @@
     "flag:seal_effect": 2,
     "res:order": 11
    },
-   "styleDist": 0.2745,
+   "styleDist": 0.2727,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -5597,15 +5604,15 @@
     "dedupRatio": 0.0066,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.1854,
+     "prim": 0.1849,
      "elem": 0.3677,
-     "cond": 0.104,
-     "condarg": 0.2237,
-     "param": 0.3247,
+     "cond": 0.089,
+     "condarg": 0.2131,
+     "param": 0.3238,
      "reach": 0.1119,
-     "tgt": 0.0853,
-     "hook": 0.3805,
-     "sshape": 0.1987,
+     "tgt": 0.0855,
+     "hook": 0.3815,
+     "sshape": 0.2009,
      "cost": 0.0187,
      "temporal": 0.2397,
      "unit": 1.0
@@ -5850,7 +5857,7 @@
     "sref:lineage_stack": 6,
     "unitType:ITEM": 2
    },
-   "styleDist": 0.3046,
+   "styleDist": 0.3026,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -5899,15 +5906,15 @@
     "dedupRatio": 0.0095,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.2192,
+     "prim": 0.2186,
      "elem": 0.3959,
-     "cond": 0.116,
-     "condarg": 0.1356,
-     "param": 0.4313,
+     "cond": 0.1026,
+     "condarg": 0.1222,
+     "param": 0.4305,
      "reach": 0.1234,
-     "tgt": 0.0826,
-     "hook": 0.2178,
-     "sshape": 0.202,
+     "tgt": 0.0828,
+     "hook": 0.2188,
+     "sshape": 0.2037,
      "cost": 0.0195,
      "temporal": 0.1341,
      "unit": 0.9411
@@ -6143,7 +6150,7 @@
     "res:secrecy": 3,
     "trig:on_phase_change": 4
    },
-   "styleDist": 0.3256,
+   "styleDist": 0.3244,
    "gates": {
     "结构健康": true,
     "机制落地": true,
@@ -6192,15 +6199,15 @@
     "dedupRatio": 0.0,
     "familyFloor": true,
     "familyDists": {
-     "prim": 0.1908,
+     "prim": 0.1905,
      "elem": 0.4678,
-     "cond": 0.4765,
-     "condarg": 0.5106,
-     "param": 0.3245,
+     "cond": 0.4678,
+     "condarg": 0.5031,
+     "param": 0.3237,
      "reach": 0.0733,
-     "tgt": 0.0675,
-     "hook": 0.3179,
-     "sshape": 0.194,
+     "tgt": 0.0677,
+     "hook": 0.318,
+     "sshape": 0.1955,
      "cost": 0.0162,
      "temporal": 0.2272,
      "unit": 1.0
