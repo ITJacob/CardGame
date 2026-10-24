@@ -210,6 +210,30 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 `recorded_has`（2026-10-23 增）：`side` + `statusId` + `id`——指定方持有的 `statusId` 状态实例的 slots/params 中含键 `id` 即成立（H33 slots 的存在性读法；阅读者「已读」三维 d_energy/d_skill/d_tempo 的兑现门）。语义权威见 `ddd/params/共享内核参数.md` §三。
 
+**条件谓词的旧稿拼写归并**（语义权威见 `ddd/params/共享内核参数.md` §三）：
+
+**伪谓词归并表**：下列稿面写法**一律不新增谓词**，按下表归并到既有能力。写稿直接用右列，不要发明同义写法。
+
+| 稿面伪谓词 | 归并到 | 说明 |
+|---|---|---|
+| `element_is` | 保留 `element_is` | schema/数据已统一蛇形；§二元素取值域不变 |
+| `target_stat` / `targetStat` | `stat_compare` | 属性比较统一走带参谓词（`valueFrom` 读点的两种拼写另行约定） |
+| `status_category` | `has_category` | 已迁移 |
+| `armor_pierce` | `pierce:[armor]`（效果参数） | 已有穿透标记 |
+| `remove_reason` | `on_remove` 的 `trigger.reason` | 已迁移；取值 expired / dispel / consumed / overwritten |
+| `status_duration_bonus` | `durationModifier`（H14） | 按右列归并 |
+| `redirect_damage` / `ignore_redirect` / `override_priority` | 伤害转嫁族（编队参数 §1.1b） | ratio × direction × split × selfKeep |
+
+**不归并的稿面写法**：
+- `target_dead`：判定**具体目标**已死，不等价于 `dead_count`（后者数某一方死者总数）。
+- `gauge_rank`：用于**分支条件**（目标是否行动条第 1），不等价于选靶排序 `sort: gauge_desc`。
+- `consumed_count`：读**本次效果链刚消耗的数量**，不等价于剩余层数 `has_status`。
+- `fallback_sort`：状态持有的行为覆写键，不是目标请求里的 `fallbackSort` 字段。
+- `ally_damage_mul`：施法者一侧的群体光环（白昼同时挂敌我），不能换成持有者自身的 `damage_mul`。
+- `modify_stat_dynamic`：状态级动态属性载体；效果层的动态属性走 `valueFrom`，两者不同层。
+
+`unit_faction` / `target_faction_is` 已全部迁移：区域分支改走 `zoneEffect{side,payload}`，其余改走 `faction_is`；两者从 schema 撤除。
+
 ⚠️ `chance` 必须遵守随机性治理 R1–R6：只用于**非伤害维度**、单次抽样、须可登记筛出。
 当前全库 2 处 `chance`（登记册见 ddd 随机性治理 §四）：monster 行动条 −8（p=0.5）；lawyer【狂乱】（8 段 p=0.25，2026-09-26 拍板保留真随机）。
 

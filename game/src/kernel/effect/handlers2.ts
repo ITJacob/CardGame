@@ -43,7 +43,7 @@ export function handleSpawn(node: EffSpawn, target: CombatUnit | null, ctx: Effe
 }
 
 /**
- * dispel（效果参数 §二）：嵌套 filter 与平铺字段同等对待（嵌套优先）。
+ * dispel（效果参数 §1.1）：嵌套 filter 与平铺字段同等对待（嵌套优先）。
  * dispelTarget=unit 时优先走召唤物销毁分支（unitId/isOwnSummon/isSummon），
  * 否则按 statusId/category/dispelable/count 清状态；domain 走 tier 解除界域。
  */
