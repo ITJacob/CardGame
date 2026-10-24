@@ -397,6 +397,8 @@ export interface StatusDef {
   damageTransfer?: Record<string, Scalar>
   healReceivedMul?: number
   countMode?: 'cumulative' | 'on_field'
+  /** 禁复活标记（死亡结算字段的通用状态载体，如 revive_blocked） */
+  reviveBlocked?: boolean
   source_filter?: string
   priority?: number | string
   crossPathway?: boolean

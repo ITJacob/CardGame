@@ -92,6 +92,10 @@ class CombatRuntime implements CombatRuntimeHandle {
   private readonly dead = new Set<UnitId>()
   /** 最近阵亡友军坐标（anchor:last_dead_ally） */
   private readonly lastDeadCell = new Map<FactionId, Coordinate>()
+  /** 最近阵亡单位（reviveOf:last_dead_ally 的寻址目标） */
+  private readonly lastDeadUnit = new Map<FactionId, UnitId>()
+  /** oncePerBattle 复活已用过的单位 */
+  private readonly revivedOnce = new Set<UnitId>()
   private readonly factions: [FactionId, FactionId]
   private readonly warnings: string[] = []
   private battle: Battle
@@ -959,6 +963,11 @@ class CombatRuntime implements CombatRuntimeHandle {
     near: CombatUnit | null,
     sources?: { target?: CombatUnit | null; killed?: CombatUnit | null },
   ): void {
+    // reviveOf：复活语义——复用死亡单位本体，不新建单位（召唤物参数 §一）
+    if (node.reviveOf) {
+      this.reviveOne(caster, node)
+      return
+    }
     const template = typeof node.template === 'string' ? node.template : undefined
     let defId = node.unitId ?? node.def ?? node.kind
     let source: CombatUnit | null = null
@@ -1093,6 +1102,66 @@ class CombatRuntime implements CombatRuntimeHandle {
       return null
     }
     return unit
+  }
+
+  /**
+   * reviveOf 复活：复用死亡单位对象（保留坐标/技能组/状态），按 hpRatio 回血。
+   * 约束：`revive_blocked` 最高优先；`oncePerBattle` 按单位计一次。
+   * self / status_holder = 触发语境的宿主（on_death 时即死者）；last_dead_ally = 该阵营最近阵亡单位。
+   */
+  private reviveOne(owner: CombatUnit | null, node: EffSpawn): void {
+    if (!owner) return
+    const target = node.reviveOf === 'last_dead_ally'
+      ? this.units.get(this.lastDeadUnit.get(owner.faction) ?? '')
+      : owner
+    if (!target || !this.dead.has(target.id)) return
+    if (node.oncePerBattle && this.revivedOnce.has(target.id)) return
+    if (this.isReviveBlocked(target)) return
+    const ratio = this.reviveRatio(node.hpRatio, target)
+    target.pool('hp').setValue(Math.max(1, round2(target.hpMax * ratio)))
+    this.dead.delete(target.id)
+    // 落位：original = 原坐标（若已离场则用最近阵亡坐标补回）；tail = 回己方队尾
+    const original = target.position
+    const anchor = original ?? this.lastDeadCell.get(target.faction) ?? null
+    if (node.position === 'tail') {
+      if (original) this.placement.remove(target.id)
+      const ownLanes = [...(this.battle.factions.find((x) => x.id === target.faction)?.lanes.keys() ?? [])].sort()
+      const ordered = anchor ? [anchor.lane, ...ownLanes.filter((l) => l !== anchor.lane)] : ownLanes
+      let placed = false
+      for (const lane of ordered) {
+        if (this.placeAtFree(target.id, target.faction, lane)) { placed = true; break }
+      }
+      if (!placed && anchor) this.placement.insert(target.id, anchor)
+    } else if (!original && anchor) {
+      // 主动卡复活时死者已离场：先回原格，原格被补位占据则回同路队尾
+      if (!this.placement.insert(target.id, anchor).ok) {
+        const ownLanes = [...(this.battle.factions.find((x) => x.id === target.faction)?.lanes.keys() ?? [])].sort()
+        const ordered = [anchor.lane, ...ownLanes.filter((l) => l !== anchor.lane)]
+        for (const lane of ordered) {
+          if (this.placeAtFree(target.id, target.faction, lane)) break
+        }
+      }
+    }
+    if (node.oncePerBattle) this.revivedOnce.add(target.id)
+    this.emit({ type: 'UnitRevived', unitId: target.id })
+  }
+
+  private isReviveBlocked(u: CombatUnit): boolean {
+    return u.statuses.all().some((i) => this.lookup.statusDef(i.defId)?.reviveBlocked === true)
+  }
+
+  /** 复活血量比例：支持 `$<unitDefId>.hpRatio`（取该施法者名下同蓝本存活召唤物的当前比例） */
+  private reviveRatio(raw: EffSpawn['hpRatio'], target: CombatUnit): number {
+    if (typeof raw === 'string' && raw.startsWith('$')) {
+      const m = /^\$([^.]+)\.hpRatio$/.exec(raw)
+      const uid = m?.[1]
+      if (uid) {
+        const src = this.units.all().find((u) => u.unitDefId === uid && u.summonerId === target.id && !u.isDead)
+        if (src) return src.hp / Math.max(1, src.hpMax)
+      }
+      return 1
+    }
+    return this.spawnRatio(raw, 1)
   }
 
   /** spawn 段 summonCap：number 直接用；对象取 default（valueFrom 属战外阶梯数据，不在此求值） */
@@ -1437,6 +1506,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       if (!u.isDead || this.dead.has(u.id)) continue
       this.dead.add(u.id)
       if (u.position) this.lastDeadCell.set(u.faction, { ...u.position })
+      this.lastDeadUnit.set(u.faction, u.id)
       this.emit({ type: 'UnitDied', unitId: u.id })
       this.stats.unitsLost[u.faction] = (this.stats.unitsLost[u.faction] ?? 0) + 1
       // 死亡簿维度（源质维度 §一点五）：任何单位走完死亡结算链 +1，cap 10
@@ -1451,8 +1521,11 @@ class CombatRuntime implements CombatRuntimeHandle {
       if (killer && !killer.isDead) {
         this.fireStatusTriggers(killer, 'on_kill', undefined, undefined, { attacker: killer, target: u, killed: u })
       }
-      u.provenance.revertAll()
-      this.placement.remove(u.id)
+      // on_death 载荷里的 reviveOf 可能已把单位救回：复活者不再走收尾（保留坐标/技能组/状态）
+      if (u.isDead) {
+        u.provenance.revertAll()
+        this.placement.remove(u.id)
+      }
     }
   }
 

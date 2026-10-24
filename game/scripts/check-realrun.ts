@@ -125,7 +125,7 @@ for (const entry of targets) {
   totalUnsupported += a.unsupported
   for (const [k, n] of Object.entries(a.kinds)) aggKinds.set(k, (aggKinds.get(k) ?? 0) + n)
   for (const w of a.warnings) {
-    const key = w.replace(/\(.*\)/, '').trim()
+    const key = w.trim()
     aggWarnings.set(key, (aggWarnings.get(key) ?? 0) + 1)
   }
   console.log(
