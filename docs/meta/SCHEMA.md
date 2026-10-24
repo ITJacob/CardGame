@@ -282,7 +282,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 "dimHooks": [{
   "dim": "secrecy", "comparator": ">=", "threshold": 7,
   "mul": 1.5, "target": "damage", "filterTags": ["隐秘"],
-  "note": "≥7 隐秘类 +50%（⚠️D 平衡占位）"
+  "note": "≥7 隐秘类 +50%"
 }]
 ```
 
@@ -311,7 +311,7 @@ Gate（validate.py）：`dim` 须为已注册维度、`threshold` 须在值域�
 ```json
 "phaseHooks": [{
   "phases": ["dawn"], "mul": 1.25, "target": "damage",
-  "note": "黎明窗口加成（⚠️D 平衡占位）"
+  "note": "黎明窗口加成"
 }]
 ```
 
