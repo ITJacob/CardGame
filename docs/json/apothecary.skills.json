@@ -2519,13 +2519,20 @@
       "flagship": false,
       "lore": "兽性直觉永不失灵。",
       "flavor": "你能嗅到危险的味道。",
-      "describe": "战斗开始时永久获得兽觉：识破与兽群感应先行一步，潜伏者无处藏身。",
+      "describe": "战斗开始时永久获得兽觉：识破与兽群感应先行一步——首次负面状态被免疫（5tick），潜伏者无处藏身。",
       "effects": [
         {
           "type": "mount_status",
           "statusId": "beast_sense",
           "duration": null,
           "target": "self"
+        },
+        {
+          "type": "grant_immunity",
+          "target": "self",
+          "charges": 1,
+          "duration": 5,
+          "note": "野性直觉：先手警觉，首次负面状态被免疫（5tick）"
         }
       ],
       "tentative": false,
@@ -2541,7 +2548,7 @@
         ],
         "mood": "tense, alert"
       },
-      "conversionNotes": "2026-10-03 骨架手术：预服换形（角色=buff）",
+      "conversionNotes": "2026-10-03 骨架手术：预服换形（角色=buff） ｜ 2026-10-24 体检去重：与动物感官拉开——改为先手警觉（grant_immunity），兽觉持续增益仍由 beast_sense 承载",
       "role": "core"
     },
     {
