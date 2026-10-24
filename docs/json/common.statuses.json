@@ -15,7 +15,7 @@
       "3. 降格来的私有状态：卡面必须用 mount_status 传参（value / duration / stacks / params），不得在卡面或私有文件重定义同核 def；common 仅存基准值",
       "4. 带主题身份的变体（额外 modifier / trigger / 跨状态交互）不进 common，保留为私有并叠加挂载 common 核"
     ],
-    "note": "本文件为 2026-09-19 首次建立。数值凡标 ⚠️D 者均为平衡期占位，待平衡期标定。\n2026-09-19 降格试点：新增 conceal（收口 shadow_veil/hidden_space/psych_invisibility）、revive_blocked（收口 eternal_sleep 副本，定义自 corpse_collector 迁入）。",
+    "note": "本文件为 2026-09-19 首次建立。数值按当前档执行。\n2026-09-19 降格试点：新增 conceal（收口 shadow_veil/hidden_space/psych_invisibility）、revive_blocked（收口 eternal_sleep 副本，定义自 corpse_collector 迁入）。",
     "mergedFrom": [
       "vulnerable：原仅 hunter 卡面内联 def，按 §2.2 裁定 mul 1.3 提为本文件权威定义",
       "shackle：原 apothecary/arbiter/pryer/sailor/sleepless/warrior 共 6 份重复 def 合并为 1 份（F7 已登记定义，H24 减速族）"
@@ -448,7 +448,7 @@
               "target": "self"
             }
           ],
-          "note": "R5 确定性化（2026-09-26 拍板）：原著『20% 概率改攻最近单位（含友军）』不落 chance——每回合开始发 1 次改向额度（lust_retarget, charges:1），实际改向时消耗。密度（每回合 1 次 vs 每 N 回合 1 次）⚠️D 待平衡"
+          "note": "R5 确定性化（2026-09-26 拍板）：原著『20% 概率改攻最近单位（含友军）』不落 chance——每回合开始发 1 次改向额度（lust_retarget, charges:1），实际改向时消耗。密度 1 次/回合"
         }
       ],
       "note": "恶欲值档位状态（引擎 thresholdTrigger(metric:'lust') 越档挂载，4–6 档；档位状态 dispelable:false，量表不可驱散 INV-P7，见 编队参数 §2.6）。+20% 伤害（）与改攻友军风险并存的『越强但越失控』下档"
@@ -478,7 +478,7 @@
               "target": "self"
             }
           ],
-          "note": "R5 确定性化：原著『35% 概率攻友军』→ 每回合 1 次改向额度（lust_retarget, charges:1，密度 ⚠️D 待平衡）；『无法被治疗』= heal_received_mul 0"
+          "note": "R5 确定性化：原著『35% 概率攻友军』→ 每回合 1 次改向额度（lust_retarget, charges:1，密度 1 次/回合）；『无法被治疗』= heal_received_mul 0"
         }
       ],
       "note": "恶欲值 7–9 档（挂载方同 lust_restless）。被 罪犯【深渊即我】∑≥15 解锁的「深渊主权」（abyss_sovereignty）suppress——只压制生效、不移除实例 乘区审批（2026-10-01）：0 值=绝对语义档（完全免除/封印/断绝），非渐变乘区，单列登记"
@@ -515,7 +515,7 @@
               "resource": "lust",
               "value": 3,
               "target": "splash_adjacent",
-              "note": "向相邻各传 3 点恶欲值（⚠️D；敌我不分待拍板，先按溅射邻格承载）"
+              "note": "向相邻各传 3 点恶欲值（敌我不分，先按溅射邻格承载）"
             }
           ],
           "note": "=10 档挂载即炸：自伤+归零+传染相邻；爆炸后量表归零自然跌出 10 档，档位状态由越档逻辑卸载"
@@ -550,7 +550,7 @@
       "dispelable": true,
       "duration": 15,
       "charges": 2,
-      "note": "与决斗姿态对称的远程面（2026-10-02 设计落地）：受投掷 / 法术攻击（reach ∈ {thrown, spell}）时顺序反击——先结算主攻击、再以反作用动作回击攻击者（执行上下文 §六，sourceRef=ranged_counter）；还击的是攻击者本人而非弹道，故法术虽无形、守卫姿态不可拦，照样触发反击。对撞的同步性仍为决斗姿态独有。charges 2：前 2 次远程受击反击，每次生效消耗 1 层（R5 确定性）。姿态生命周期同 INV-P8 跳过维持 / INV-P9 行动退出 / INV-P5 硬控清除。挂载卡：战士·守护状态 / 猎人·挑衅（矩阵 stance 行共享列）。数值 ⚠️D 待平衡。"
+      "note": "与决斗姿态对称的远程面（2026-10-02 设计落地）：受投掷 / 法术攻击（reach ∈ {thrown, spell}）时顺序反击——先结算主攻击、再以反作用动作回击攻击者（执行上下文 §六，sourceRef=ranged_counter）；还击的是攻击者本人而非弹道，故法术虽无形、守卫姿态不可拦，照样触发反击。对撞的同步性仍为决斗姿态独有。charges 2：前 2 次远程受击反击，每次生效消耗 1 层（R5 确定性）。姿态生命周期同 INV-P8 跳过维持 / INV-P9 行动退出 / INV-P5 硬控清除。挂载卡：战士·守护状态 / 猎人·挑衅（矩阵 stance 行共享列）。数值按当前档。"
     },
     {
       "id": "burn_resonance",

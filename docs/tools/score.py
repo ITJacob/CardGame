@@ -1895,7 +1895,7 @@ def write_scorecard(pw_rows):
     L = []
     L.append("# 职业设计计分卡（scorecard）\n")
     L.append("> 由 `docs/tools/score.py` 自动生成——**口径变了就改 SCORING.md 重跑，不要手改本文件**。")
-    L.append("> 生成时间：%s。评分标准见 `../meta/SCORING.md`；数值 ⚠️D 不参与计分（基线状态）。\n" % datetime.date.today())
+    L.append("> 生成时间：%s。评分标准见 `../meta/SCORING.md`；数值平衡不参与计分。\n" % datetime.date.today())
 
     L.append("## 一、途径排行（升序 = 优先重设计）\n")
     L.append("| # | 途径 | 总分 | 轴健康 | 跨轴 | 跨系 | 结构 | 落地 | 文本 | 差异 | 最低轴 | 卡数 | 标记 |")
