@@ -94,6 +94,8 @@ export interface UnitFilter {
   isAllyOrMirror?: boolean
   /** 空格（区域模式下按格判定；单位池无法命中） */
   emptySlot?: boolean
+  /** 相对界域所有者的阵营过滤（界域触发器 filter.side） */
+  side?: 'ally' | 'enemy' | 'any'
   adjacency?: Record<string, Scalar>
   unitId?: string | string[]
   element?: string | string[]

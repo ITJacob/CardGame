@@ -85,6 +85,10 @@ export type DomainTier = 'base' | 'hero' | 'overlay'
 export interface DomainGrant {
   /** 正整数 tick 或 -1（常驻） */
   duration: number
+  /** 界域所有者阵营（触发器 filter.side 的相对基准） */
+  ownerFaction?: FactionId
+  /** 施放者 unitId（宿主存活时优先作触发器 host） */
+  casterId?: string
   /** 压制栈排序键，后打出压顶 */
   priority: number
   sourceId: string

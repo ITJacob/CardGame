@@ -85,6 +85,7 @@ class CombatRuntime implements CombatRuntimeHandle {
   private readonly lastSkill = new Map<UnitId, { sourceRef: string; effects: readonly EffectNode[] }>()
   private readonly ruleSlots: { field: string; value: unknown }[][] = [[], [], []]
   private domainSeq = 0
+  private readonly domainLastFire = new Map<string, number>()
   private echoing = false
   private readonly unsupportedKinds = new Map<string, number>()
 
@@ -260,6 +261,7 @@ class CombatRuntime implements CombatRuntimeHandle {
 
     const crossed = this.scheduler.tick()
     this.tickTimers()
+    this.fireDomainTriggers('on_tick')
     // 军团维持费断供 / 状态到期后 cap 下降 → 超限部分最老消散（H39）
     this.enforceSummonCaps()
     this.tickZones()
@@ -289,6 +291,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       this.tickSelfTurn(unit)
       unit.warSpiritGain = 0
       this.fireStatusTriggers(unit, 'on_turn_start', undefined, this.oppPayload(opp))
+      this.fireDomainTriggers('on_turn_start', unit)
       this.runOpportunity(opp, unit, 0)
       this.checkDeaths()
       if (this.pending) break
@@ -326,6 +329,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       }
       if (slot.kind === 'basic_attack') {
         this.fireStatusTriggers(unit, 'on_attack')
+        this.fireDomainTriggers('on_attack', unit)
         this.consumeWeaponDurability(unit)
       } else {
         this.lastSkill.set(unit.id, { sourceRef: source.sourceRef, effects: source.effects })
@@ -628,8 +632,81 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.domainSeq += 1
     this.battle.domains.push({
       def,
-      grant: { duration: duration < 0 ? -1 : Math.max(1, duration), priority: this.domainSeq, sourceId: this.ids.next('domain') },
+      grant: {
+        duration: duration < 0 ? -1 : Math.max(1, duration),
+        priority: this.domainSeq,
+        sourceId: this.ids.next('domain'),
+        ownerFaction: _caster?.faction,
+        casterId: _caster?.id,
+      },
     })
+  }
+
+  /** 界域触发器（战场参数 §1.2）：全局第三方监听，filter.side 相对界域所有者 */
+  private fireDomainTriggers(event: 'on_tick' | 'on_turn_start' | 'on_attack', subject?: CombatUnit): void {
+    if (this.battle.domains.length === 0) return
+    for (const d of this.battle.domains) {
+      const owner = d.grant.ownerFaction
+      if (!owner) continue
+      // 事件主体在场时它就是触发器宿主（on_attack 的 self = 攻击者；on_turn_start 的 self = 行动者）
+      const host = subject
+        ?? (d.grant.casterId ? this.units.get(d.grant.casterId) : undefined)
+        ?? this.units.all().find((u) => u.faction === owner && !u.isDead)
+      if (!host || host.isDead) continue
+      const triggers = d.def.triggers ?? []
+      for (let i = 0; i < triggers.length; i += 1) {
+        const t = triggers[i]!
+        if (t.event !== event) continue
+        const filter = t.filter
+        if (subject) {
+          const side = filter?.side
+          if (side === 'enemy' && subject.faction === owner) continue
+          if (side === 'ally' && subject.faction !== owner) continue
+        }
+        const key = `${d.grant.sourceId}#${i}#${event}`
+        const last = this.domainLastFire.get(key)
+        if (t.minIntervalTicks && last !== undefined && this.tickCount - last < t.minIntervalTicks) continue
+        this.domainLastFire.set(key, this.tickCount)
+        const targets = subject
+          ? [subject]
+          : this.units.all().filter((u) => !u.isDead && u.position != null && this.domainMatches(u, filter, owner))
+        if (!subject && filter?.side && targets.length === 0) continue
+        const enemyFaction = this.factions.find((f) => f !== owner) ?? null
+        const ctx = this.makeContext(this.ids.next('domain'), host, undefined, {
+          host,
+          caster: host,
+          targets,
+          secondary: [],
+          attacker: subject ?? null,
+          killed: null,
+          enemyFaction,
+        }, d.def.id)
+        executeNodes(t.effects ?? [], targets, ctx)
+      }
+    }
+  }
+
+  /** 界域触发器的单位过滤（side 已在上层判定；此处处理 category / hasStatus / unitType） */
+  private domainMatches(u: CombatUnit, filter: { hasCategory?: string | string[]; hasStatus?: boolean | string | { id?: string; stacksAtLeast?: number }; unitType?: string | string[] } | undefined, owner: FactionId): boolean {
+    if (!filter) return true
+    const side = (filter as { side?: string }).side
+    if (side === 'ally' && u.faction !== owner) return false
+    if (side === 'enemy' && u.faction === owner) return false
+    if (filter.unitType !== undefined) {
+      const types = Array.isArray(filter.unitType) ? filter.unitType : [filter.unitType]
+      if (u.unitType == null || !types.includes(u.unitType)) return false
+    }
+    if (filter.hasStatus !== undefined) {
+      const hs = filter.hasStatus
+      if (typeof hs === 'string') { if (u.statusStacks(hs) <= 0) return false }
+      else if (hs !== true && hs && hs.id && u.statusStacks(hs.id) < (hs.stacksAtLeast ?? 1)) return false
+    }
+    if (filter.hasCategory !== undefined) {
+      const cats = Array.isArray(filter.hasCategory) ? filter.hasCategory : [filter.hasCategory]
+      const hit = u.statuses.all().some((i) => cats.some((c) => (this.lookup.statusDef(i.defId)?.category ?? []).includes(c)))
+      if (!hit) return false
+    }
+    return true
   }
 
   private opPlaceZone(caster: CombatUnit | null, defId: string | undefined, duration: number, targets: readonly CombatUnit[]): void {
