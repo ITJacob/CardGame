@@ -121,10 +121,26 @@ export interface EffSpawn extends EffBase {
   summonCap?: number | { default?: number; valueFrom?: string; overflow?: string }
   summonCapOverride?: number
 }
+/** dispel 选择器（效果参数 §二）：statusId/category/count 只对 unit；tier 只对 domain；
+ *  unitId/isOwnSummon/isSummon 为「销毁召唤物」分支（药师·蝙蝠销毁、刺客·镜替身先例） */
+export interface DispelFilter {
+  dispelable?: boolean
+  category?: string[]
+  statusId?: string | string[]
+  tier?: string
+  count?: CountValue
+  unitId?: string | string[]
+  isOwnSummon?: boolean
+  isSummon?: boolean
+  casterOwned?: boolean
+  unitType?: string | string[]
+  hasStatus?: string | { id?: string; stacksAtLeast?: number }
+}
+
 export interface EffDispel extends EffBase {
   type: 'dispel'
-  dispelTarget?: 'unit' | 'domain'
-  filter?: UnitFilter
+  dispelTarget?: 'unit' | 'domain' | 'coordinate'
+  filter?: DispelFilter
   category?: string[]
   statusId?: string | string[]
   count?: CountValue

@@ -545,6 +545,8 @@ class CombatRuntime implements CombatRuntimeHandle {
           this.battle.meters[key] = Math.max(-10, Math.min(10, round2(next)))
         },
         meterOf: (key) => this.dimValue(key),
+        dispelSummons: (owner, sel) => this.opDispelSummons(owner, sel),
+        dispelDomain: (tier, count) => this.opDispelDomain(tier, count),
       },
     }
   }
@@ -927,6 +929,34 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.placement.remove(unit.id)
     this.units.remove(unit.id)
     this.emit({ type: 'UnitDispersed', unitId: unit.id, reason: 'summon_cap' })
+  }
+
+  /** dispel 的召唤物销毁分支：按蓝本/归属筛出召唤物，走消散路径（不上死亡链） */
+  private opDispelSummons(owner: CombatUnit | null, sel: { unitId?: string | string[]; ownOnly?: boolean; count?: number }): void {
+    const ids = sel.unitId ? (Array.isArray(sel.unitId) ? sel.unitId : [sel.unitId]) : undefined
+    const list = this.units.all().filter((u) => u.summonerId != null && !u.isDead
+      && (!sel.ownOnly || u.summonerId === owner?.id)
+      && (!ids || (u.unitDefId != null && ids.includes(u.unitDefId))))
+    const limit = typeof sel.count === 'number' ? sel.count : list.length
+    for (const u of list.slice(0, limit)) this.disperseSummon(u)
+  }
+
+  /** dispel=domain：解除可驱散界域（tier 过滤；base 不可驱散，INV-B11） */
+  private opDispelDomain(tier?: string, count?: number): void {
+    const keep: typeof this.battle.domains = []
+    let removed = 0
+    for (const d of this.battle.domains) {
+      const hit = d.def.dispelable
+        && (tier === undefined || d.def.tier === tier)
+        && (count === undefined || removed < count)
+      if (!hit) {
+        keep.push(d)
+        continue
+      }
+      removed += 1
+      this.emit({ type: 'DomainExpired', defId: d.def.id, tier: d.def.tier })
+    }
+    this.battle.domains = keep
   }
 
   /** cap 下降后（状态到期/被打断）在 tick 边界收敛：超限部分最老消散 */

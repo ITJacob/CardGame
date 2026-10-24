@@ -15,6 +15,7 @@ const NOOP_OPS: EffectOps = {
   shuffleGauges: () => {}, shuffleStatuses: () => {}, modifySkillOf: () => {},
   applyTargetOverride: () => {}, writeRuleSlot: () => {}, modifyRuleSlot: () => {}, boardMeter: () => {},
   meterOf: () => 0,
+  dispelSummons: () => {}, dispelDomain: () => {},
 }
 
 export function stubContext(

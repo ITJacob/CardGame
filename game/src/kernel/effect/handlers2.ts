@@ -39,14 +39,50 @@ export function handleSpawn(node: EffSpawn, target: CombatUnit | null, ctx: Effe
   ctx.ops.spawn(ctx.caster, node, target)
 }
 
+/**
+ * dispel（效果参数 §二）：嵌套 filter 与平铺字段同等对待（嵌套优先）。
+ * dispelTarget=unit 时优先走召唤物销毁分支（unitId/isOwnSummon/isSummon），
+ * 否则按 statusId/category/dispelable/count 清状态；domain 走 tier 解除界域。
+ */
 export function handleDispel(node: EffDispel, target: CombatUnit | null, ctx: EffectContext): void {
+  const f = node.filter ?? {}
+  const kind = node.dispelTarget ?? 'unit'
+  const rawCount = f.count ?? node.count
+  const count = typeof rawCount === 'number' ? rawCount : undefined
+
+  if (kind === 'domain') {
+    ctx.ops.dispelDomain(f.tier, count)
+    return
+  }
+  if (kind === 'coordinate') {
+    ctx.unsupported('dispel', 'coordinate 目标（拆区域）未实现')
+    return
+  }
+
+  // 召唤物销毁：unitId / isOwnSummon / isSummon / casterOwned
+  if (f.unitId !== undefined || f.isOwnSummon || f.isSummon || f.casterOwned) {
+    ctx.ops.dispelSummons(target ?? ctx.caster, {
+      unitId: f.unitId,
+      ownOnly: !!(f.isOwnSummon || f.casterOwned || f.isSummon),
+      count,
+    })
+    return
+  }
+
   if (!target || target.isDead) return
+  const statusIds = f.statusId ?? node.statusId
+  const ids = statusIds ? (Array.isArray(statusIds) ? statusIds : [statusIds]) : undefined
+  const categories = f.category ?? node.category
+  const limit = count ?? Number.MAX_SAFE_INTEGER
+  const wantDispelable = typeof f.dispelable === 'boolean' ? f.dispelable : undefined
   let removed = 0
-  const limit = typeof node.count === 'number' ? node.count : Number.MAX_SAFE_INTEGER
-  for (const instanceId of matchStatuses(target, node.statusId, node.category, ctx)) {
+  for (const inst of target.statuses.all()) {
     if (removed >= limit) break
-    target.statuses.unmount(instanceId, 'dispel')
-    target.provenance.revertBySource(instanceId)
+    if (ids && !ids.includes(inst.defId)) continue
+    if (categories && !categories.some((c) => (ctx.defCategory?.(inst.defId) ?? []).includes(c))) continue
+    if (wantDispelable !== undefined && (ctx.statusDef?.(inst.defId)?.dispelable === true) !== wantDispelable) continue
+    target.statuses.unmount(inst.instanceId, 'dispel')
+    target.provenance.revertBySource(inst.instanceId)
     removed += 1
   }
 }

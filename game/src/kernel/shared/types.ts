@@ -81,10 +81,19 @@ export interface Condition {
 export interface UnitFilter {
   unitType?: string | string[]
   tags?: string[]
-  hasStatus?: boolean | { id?: string; stacksAtLeast?: number }
+  hasStatus?: boolean | string | { id?: string; stacksAtLeast?: number }
   hasCategory?: string | string[]
   hpPercent?: { cmp?: Cmp; n?: number }
   casterHasSummon?: boolean
+  /** 是否为召唤物 / 是否由施法者召唤（征召类选靶） */
+  isSummon?: boolean
+  casterOwned?: boolean
+  /** 持提线木偶的目标（占卜家秘偶换位） */
+  isPuppet?: boolean
+  /** 同阵营或镜像类单位（刺客镜像步） */
+  isAllyOrMirror?: boolean
+  /** 空格（区域模式下按格判定；单位池无法命中） */
+  emptySlot?: boolean
   adjacency?: Record<string, Scalar>
   unitId?: string | string[]
   element?: string | string[]

@@ -6,7 +6,7 @@
 import type { FactionId, LaneId } from '../ids'
 import type { Coordinate } from '../battle/types'
 import type { ResolvedTarget } from './types'
-import type { FactionSelector, SortKey, TargetRequest } from '../shared/types'
+import type { FactionSelector, SortKey, TargetRequest, UnitFilter } from '../shared/types'
 import type { Registry } from '../roster/registry'
 import type { CombatUnit } from '../roster/unit'
 
@@ -46,6 +46,72 @@ function factionPool(selector: FactionSelector, ctx: TargetContext): CombatUnit[
 
 function inPlay(u: CombatUnit): boolean {
   return !u.isDead && !u.detached && u.position != null
+}
+
+/**
+ * 选靶 filter（共享内核参数 §一）：候选池单位过滤。
+ * 未接通字段记 unsupported、视为通过（不静默改变候选池）；数据当前使用
+ * hasStatus / unitType / isSummon / casterOwned / unitId / isPuppet / isAllyOrMirror。
+ */
+function matchesUnitFilter(u: CombatUnit, filter: UnitFilter | undefined, ctx: TargetContext): boolean {
+  if (!filter) return true
+  const self = ctx.self
+  if (filter.unitType !== undefined) {
+    const types = Array.isArray(filter.unitType) ? filter.unitType : [filter.unitType]
+    if (u.unitType == null || !types.includes(u.unitType)) return false
+  }
+  if (filter.tags?.length) {
+    if (!filter.tags.some((t) => u.tags.includes(t))) return false
+  }
+  if (filter.hasStatus !== undefined) {
+    const hs = filter.hasStatus
+    if (typeof hs === 'string') {
+      if (u.statusStacks(hs) <= 0) return false
+    } else if (hs === true) {
+      if (u.statuses.all().length === 0) return false
+    } else if (hs) {
+      if (hs.id && u.statusStacks(hs.id) < (hs.stacksAtLeast ?? 1)) return false
+      if (!hs.id && u.statuses.all().length === 0) return false
+    }
+  }
+  if (filter.unitId !== undefined) {
+    const ids = Array.isArray(filter.unitId) ? filter.unitId : [filter.unitId]
+    if (u.unitDefId == null || !ids.includes(u.unitDefId)) return false
+  }
+  if (filter.isSummon !== undefined && (u.summonerId != null) !== filter.isSummon) return false
+  if (filter.casterOwned !== undefined && (u.summonerId === self.id) !== filter.casterOwned) return false
+  if (filter.isPuppet !== undefined && (u.statusStacks('puppet_string') > 0) !== filter.isPuppet) return false
+  if (filter.isAllyOrMirror !== undefined) {
+    const mirror = u.unitDefId != null && u.unitDefId.includes('mirror')
+    if ((u.faction === self.faction || mirror) !== filter.isAllyOrMirror) return false
+  }
+  if (filter.hpPercent) {
+    const pct = (u.hp / Math.max(1, u.hpMax)) * 100
+    const bound = filter.hpPercent.n ?? 0
+    switch (filter.hpPercent.cmp ?? '<=') {
+      case '>': if (!(pct > bound)) return false; break
+      case '>=': if (!(pct >= bound)) return false; break
+      case '<': if (!(pct < bound)) return false; break
+      case '<=': if (!(pct <= bound)) return false; break
+      default: if (pct !== bound) return false
+    }
+  }
+  if (filter.gender !== undefined && filter.gender !== 'any' && u.gender !== filter.gender) return false
+  const ownRank = u.stat('rank')
+  const casterRank = self.stat('rank')
+  if (filter.rankBelowCaster !== undefined && (ownRank < casterRank) !== filter.rankBelowCaster) return false
+  if (filter.rankAboveCaster !== undefined && (ownRank > casterRank) !== filter.rankAboveCaster) return false
+  if (filter.rankMax !== undefined && ownRank > filter.rankMax) return false
+  if (filter.rankMin !== undefined && ownRank < filter.rankMin) return false
+  if (filter.casterHasSummon !== undefined) {
+    const has = ctx.units.all().some((x) => x.summonerId === self.id && !x.isDead)
+    if (has !== filter.casterHasSummon) return false
+  }
+  if (filter.anyOf?.length && !filter.anyOf.some((f) => matchesUnitFilter(u, f, ctx))) return false
+  if (filter.hasCategory !== undefined || filter.adjacency !== undefined) {
+    ctx.unsupported?.('filter', JSON.stringify(filter))
+  }
+  return true
 }
 
 // ---------- 原点（anchor：几何从哪量起） ----------
@@ -266,7 +332,7 @@ function applyTargetOverride(request: TargetRequest, self: CombatUnit): TargetRe
 
 /** unit：指定型——scope 只作池边界，命中数由 pickCount 决定 */
 function resolveUnit(request: TargetRequest, ctx: TargetContext): ResolvedTarget[] {
-  const pool = factionPool(request.faction, ctx).filter(inPlay)
+  const pool = factionPool(request.faction, ctx).filter(inPlay).filter((u) => matchesUnitFilter(u, request.filter, ctx))
   const scope = request.scope ?? DEFAULT_SCOPE
   const picked = pickInRegion(pool, request, scope, ctx)
   if (picked.length > 0) return picked
@@ -310,6 +376,7 @@ function resolveArea(request: TargetRequest, ctx: TargetContext): ResolvedTarget
     const u = byCell.get(`${cell.faction}/${cell.lane}/${cell.index}`)
     if (!u || seen.has(u.id)) continue
     if (!matchesFaction(request.faction, u, ctx)) continue
+    if (!matchesUnitFilter(u, request.filter, ctx)) continue
     if (request.excludeSelf && u.id === ctx.self.id) continue
     if (u.isUntargetable('area', ctx.self.faction)) continue
     seen.add(u.id)

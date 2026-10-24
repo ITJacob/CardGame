@@ -84,6 +84,17 @@ export interface EffectOps {
   boardMeter(key: string, value: number, set: boolean): void
   /** 战场级量表读数（meter_compare 谓词） */
   meterOf(key: string): number
+  /** dispel 选择器：销毁召唤物（不走死亡链） */
+  dispelSummons(owner: CombatUnit | null, sel: DispelSummonSelector): void
+  /** dispel 选择器：解除界域（只动 dispelable，tier 可选 filter） */
+  dispelDomain(tier?: string, count?: number): void
+}
+
+export interface DispelSummonSelector {
+  unitId?: string | string[]
+  /** true = 只限 owner 召唤的 */
+  ownOnly?: boolean
+  count?: number
 }
 
 /** 用 EffectRef.params 覆写节点上的同名参数 */
