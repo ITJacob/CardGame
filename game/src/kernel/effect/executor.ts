@@ -79,6 +79,7 @@ export function conditionContext(ctx: EffectContext): ConditionContext {
       }
     },
     meterOf: (key) => ctx.ops.meterOf(key),
+    zoneActive: ctx.zoneActive,
   }
 }
 

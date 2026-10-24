@@ -61,6 +61,8 @@ export interface ConditionContext {
   resourceOf?: (unit: ConditionUnit, key: string) => number
   /** 战场量表读数（meter_compare 用：secrecy / order / fate_value / luminance） */
   meterOf?: (key: string) => number
+  /** 场上是否存在指定区域（zone_active；zoneId 为 zoneDef.id） */
+  zoneActive?: (zoneId: string) => boolean
 }
 
 function compare(actual: number, cmp: Cmp, bound: number): boolean {
@@ -230,6 +232,8 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
     case 'meter_compare': {
       return compare(ctx.meterOf?.(String(cond.key ?? '')) ?? 0, cond.cmp ?? '>=', cond.n ?? 0)
     }
+    case 'zone_active':
+      return ctx.zoneActive?.(String(cond.zoneId ?? '')) ?? false
     case 'faction_is': {
       const subject = subjectOf(cond.side, target, ctx)
       const ref = ctx.host ?? ctx.caster

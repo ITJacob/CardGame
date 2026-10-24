@@ -64,6 +64,8 @@ export interface EffectContext {
   readonly damageSource?: 'behavior' | 'status'
   /** valueFrom:ramp 的当前档值（由触发它的状态实例递进给出） */
   readonly rampValue?: number
+  /** zone_active 谓词：场上是否存在指定 zoneDef 的 Active 实例 */
+  readonly zoneActive?: (zoneId: string) => boolean
 }
 
 /** 原语中需要改动战场或新建单位的操作集合 */

@@ -567,6 +567,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       weaponDamage: caster != null && caster.weapon != null && this.isAttackActionRef(sourceRef),
       damageSource: this.isAttackActionRef(sourceRef) ? 'behavior' : 'status',
       rampValue,
+      zoneActive: (zoneId) => this.battle.zones.some((z) => z.status === 'Active' && z.def.id === zoneId),
       warn: (m) => this.warn(m),
       emit: (e) => this.emit(e),
       mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant, caster),
