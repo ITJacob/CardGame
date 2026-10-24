@@ -143,9 +143,27 @@
               "note": "圣焰灼烧；元素必须 holy，否则不死克制对 dot 不生效"
             }
           ]
+        },
+        {
+          "event": "on_take_damage",
+          "condition": {
+            "kind": "element_is",
+            "element": "holy"
+          },
+          "effects": [
+            {
+              "type": "modify_status",
+              "statusId": "sacred_flame",
+              "addDuration": 2,
+              "target": "self",
+              "note": "同元素共鸣（续态档）：圣伤续圣焰 +2tick"
+            }
+          ],
+          "note": "设计箱① 元素共鸣"
         }
       ],
-      "note": "H2 参数化复合 debuff 母版实例（F6/F12/F16/F18/F13/F17/F8 同族）；特殊条款只有元素必须为 holy"
+      "note": "H2 参数化复合 debuff 母版实例（F6/F12/F16/F18/F13/F17/F8 同族）；特殊条款只有元素必须为 holy",
+      "element": "holy"
     },
     {
       "id": "sun_aura",

@@ -1,6 +1,6 @@
 // 战斗运行时：聚合根 Combat 的实现。持事件总线 / 随机源 / id 生成器 / 注册表 /
 // 战场 / Placement / Scheduler，并把一次 step 停在 Manual 决策点。
-import type { FactionId, LaneId, Phase, PoolKey, StatKey, UnitId } from '../ids'
+import type { Element, FactionId, LaneId, Phase, PoolKey, StatKey, UnitId } from '../ids'
 import type { Battle, Coordinate, Faction, Lane, OccupancyChanged, Zone } from '../battle/types'
 import { LANE_CAPACITY, SUMMON_CAP_BASE } from '../battle/types'
 import { BattlePlacement } from '../battle/placement'
@@ -33,6 +33,14 @@ import type {
 } from './types'
 
 const DEFAULT_LANES = ['lane0', 'lane1']
+
+/** 元素相消对立表（稀疏：只立经典对；毒/精神/雷不入表） */
+const OPPOSITE_ELEMENT: Partial<Record<Element, Element>> = {
+  fire: 'ice',
+  ice: 'fire',
+  holy: 'dark',
+  dark: 'holy',
+}
 
 /** H1 召唤物基线（召唤物参数 §二）：baseOn=summon_baseline 与缺省 base 的兜底 */
 const UNIT_TYPE_BASELINE: Record<string, { hp: number; atk: number }> = {
@@ -575,6 +583,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       damageSource: this.isAttackActionRef(sourceRef) ? 'behavior' : 'status',
       rampValue,
       zoneActive: (zoneId) => this.battle.zones.some((z) => z.status === 'Active' && z.def.id === zoneId),
+      elementCounter: (defender, element) => this.elementCounter(defender, element),
       host: triggerCtx?.host,
       subjects: triggerCtx?.subjects,
       event: triggerCtx?.event,
@@ -1446,6 +1455,24 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.fireTriggers(host, 'on_apply', def?.triggers, host, undefined, this.scopeFor(host, inst.grant.casterId, subjects))
     this.fireStatusTriggers(host, 'on_status_gain', undefined, undefined, subjects, { statusId })
     this.checkStackThreshold(host, inst)
+  }
+
+  /** 元素相消（设计箱①）：削受伤方 1 层对立元素的可驱散状态；命中返回 true（伤害 ×0.85） */
+  private elementCounter(defender: CombatUnit, element: Element): boolean {
+    const opposite = OPPOSITE_ELEMENT[element]
+    if (!opposite) return false
+    for (const inst of defender.statuses.all()) {
+      const def = this.lookup.statusDef(inst.defId)
+      if (def?.element !== opposite || def.dispelable !== true) continue
+      if (inst.currentStacks > 1) {
+        inst.currentStacks -= 1
+      } else {
+        defender.statuses.unmount(inst.instanceId, 'consumed')
+        this.emit({ type: 'StatusExpired', instanceId: inst.instanceId, defId: inst.defId, unitId: defender.id })
+      }
+      return true
+    }
+    return false
   }
 
   /** 叠层阈值（stackThreshold）：层数达标时一次性结算（每实例一次；层数回落后再涨不重复） */

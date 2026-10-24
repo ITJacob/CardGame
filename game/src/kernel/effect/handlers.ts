@@ -50,8 +50,10 @@ export function handleDamage(node: EffDamage, target: CombatUnit | null, ctx: Ef
       : node.valueFrom !== undefined
         ? resolveValueFrom(node.valueFrom, attacker, undefined, ctx)
         : (attacker?.attackPower() ?? 0)
-  const raw = round2(base * (node.mul ?? 1))
   const element = node.element ?? 'physical'
+  // 元素相消：对立元素伤害命中持有对立元素状态的目标 → 削 1 层，本次伤害 ×0.85
+  const countered = ctx.elementCounter?.(target, element) ?? false
+  const raw = round2(base * (node.mul ?? 1) * (countered ? 0.85 : 1))
   // 持有者出伤参数（outgoingDamageParams）：pierce 并集、破甲比例取高；受 weaponDamage 门控
   const outgoing = attacker?.outgoingDamageParams(ctx.weaponDamage === true) ?? null
   const pierce = new Set(node.pierce ?? [])

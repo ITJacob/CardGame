@@ -388,6 +388,8 @@ export interface StatusDef {
   triggers?: TriggerDef[]
   charges?: number
   maxStacks?: number
+  /** 状态所属元素（元素联动判定：同元素共鸣 / 对立相消） */
+  element?: Element
   stackPolicy?: 'stack' | 'refresh'
   /** 叠层阈值：层数达到 stacks 时一次性结算 effects（每实例一次） */
   stackThreshold?: { stacks: number; effects?: EffectNode[]; note?: string }
