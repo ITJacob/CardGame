@@ -7,10 +7,17 @@ import { renderStats } from './views/stats.js';
 import { renderScore } from './views/score.js';
 import { renderBlueprint } from './views/blueprint.js';
 import { renderDdd } from './views/ddd.js';
+import { renderHome } from './views/home.js';
+import { renderHow } from './views/how.js';
+import { renderPathways } from './views/pathways.js';
+import { renderMechanics } from './views/mechanics.js';
 
 // 非列表页（卡片列表之外的都算，用于滚动位置还原）。新增页务必登记，
 // 否则从详情返回时会被当成列表页而错误还原滚动位置
-const NON_LIST_PAGES = new Set(['card', 'glossary', 'stats', 'score', 'blueprint', 'ddd']);
+const NON_LIST_PAGES = new Set([
+  'home', 'how', 'pathways', 'mechanics',
+  'card', 'glossary', 'stats', 'score', 'blueprint', 'ddd',
+]);
 
 const view = document.getElementById('view');
 const status = document.getElementById('load-status');
@@ -36,7 +43,7 @@ let listScrollY = 0;
 function route() {
   // hash 形如 #/page/arg?cat=x&q=y：查询串只给「深链」用（领域模型页的术语 token →
   // 术语词典对应栏目），先把 ? 之后摘掉再拆路径，否则 page 会被查询串污染
-  const [path, qs] = (location.hash || '#/cards').replace(/^#/, '').split('?');
+  const [path, qs] = (location.hash || '#/').replace(/^#/, '').split('?');
   const [, page, arg] = path.split('/');
   const isList = !NON_LIST_PAGES.has(page);
   // 详情页是整页一张卡的画布：藏顶栏（含加载状态），离开即恢复
@@ -51,7 +58,11 @@ function route() {
     location.replace('#/stats/status');
     return;
   }
-  if (page === 'card' && arg) { setNav('cards'); renderCardDetail(view, decodeURIComponent(arg), qs || ''); }
+  if (page === 'home' || page === '') { setNav('home'); renderHome(view); }
+  else if (page === 'how') { setNav('how'); renderHow(view); }
+  else if (page === 'pathways') { setNav('pathways'); renderPathways(view); }
+  else if (page === 'mechanics') { setNav('mechanics'); renderMechanics(view); }
+  else if (page === 'card' && arg) { setNav('cards'); renderCardDetail(view, decodeURIComponent(arg), qs || ''); }
   else if (page === 'glossary') { setNav('glossary'); renderGlossary(view, new URLSearchParams(qs || '')); }
   else if (page === 'stats') { setNav('stats'); renderStats(view, arg ? decodeURIComponent(arg) : 'skills'); }
   else if (page === 'score') { setNav('score'); renderScore(view, arg ? decodeURIComponent(arg) : ''); }

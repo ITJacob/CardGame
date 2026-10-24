@@ -127,7 +127,7 @@ function overviewHtml(bp, scores) {
   const gapN = rows.filter((r) => r.p && hasGap(r.p)).length;
   const noRoleN = rows.filter((r) => r.p && !roleBackfilled(r.p)).length;
   return `
-    <h1 class="page-title">玩法蓝图</h1>
+    <h1 class="page-title">玩法蓝图 · 设计对账</h1>
     <p class="muted">${rows.length} 途径${noBp ? `（${noBp} 条未建蓝图）` : ''} · 数据由
       <code>blueprint_score.py</code> 生成 ${escapeHtml(bp.generated)} · 口径
       <code>WORKFLOW.md「玩法蓝图」</code>。蓝图分是格②→③ 的工序门槛（≥60），不是排行榜；
@@ -432,7 +432,7 @@ export async function renderBlueprint(view, arg, qs = '') {
   try {
     bp = await loadBlueprints();
   } catch (e) {
-    view.innerHTML = `<h1 class="page-title">玩法蓝图</h1>
+    view.innerHTML = `<h1 class="page-title">玩法蓝图 · 设计对账</h1>
       <div class="panel"><p class="warn-text">blueprints.json 加载失败：${escapeHtml(e.message)}</p>
       <p class="muted">先跑 <code>python docs/tools/build_analysis.py</code>（或
       <code>python docs/tools/blueprint_score.py</code>）生成站点机读面。</p></div>`;
@@ -445,7 +445,7 @@ export async function renderBlueprint(view, arg, qs = '') {
     if (!p) {
       view.innerHTML = `<div class="panel"><h2>未找到蓝图</h2><p class="mono">${escapeHtml(pid)}</p>
         <p class="muted">该途径可能尚未建蓝图。回溯计划见 WORKFLOW.md「全库回溯计划」。</p>
-        <p><a href="#/blueprint">← 返回玩法蓝图总览</a></p></div>`;
+        <p><a href="#/blueprint">← 返回蓝图对账总览</a></p></div>`;
       return;
     }
     view.innerHTML = pathwayHtml(bp, p);

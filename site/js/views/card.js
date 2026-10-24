@@ -215,7 +215,7 @@ function blueprintPosHtml(c) {
   }
   return `<section class="cs-sec bp-pos"><h2>蓝图定位</h2>
     <dl class="kv">${rows.join('')}</dl>
-    <p class="small"><a href="#/blueprint/${encodeURIComponent(c._pathway)}">查看${escapeHtml(c._pathwayName)}玩法蓝图 →</a></p>
+    <p class="small"><a href="#/blueprint/${encodeURIComponent(c._pathway)}">查看${escapeHtml(c._pathwayName)}蓝图对账 →</a></p>
   </section>`;
 }
 

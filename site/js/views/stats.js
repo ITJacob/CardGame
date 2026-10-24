@@ -317,7 +317,7 @@ function renderSkillStats(view) {
   const roleGroup = group('卡池结构 · 卡角色',
     barPanel('卡角色分布', [...ROLE_ORDER, 'flagship'].map((r) => ({ label: ROLE_LABEL[r], title: r, value: byRole.get(r) || 0 })),
       `<p class="panel-note muted">口径 SCORING §一·附，只统计 <code>cards[].role</code> 的<b>实际值</b>；
-      蓝图里写的「声明配比」不在这里——见 <a href="#/blueprint">玩法蓝图</a>页。flagship 是独立 bool，
+      蓝图里写的「声明配比」不在这里——见 <a href="#/blueprint">蓝图对账</a>页。flagship 是独立 bool，
       不是第七种 role，单列只为看出「旗舰卡落在哪」。role 未回填的途径整行留空，不是设计为 0 张。</p>`),
     heatOf('途径 × 卡角色', roleByPath, roleCols, { unit: ' 张' }));
 

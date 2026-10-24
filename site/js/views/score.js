@@ -142,7 +142,7 @@ function overviewHtml(scores) {
     <p class="muted">口径：<code>docs/meta/SCORING.md</code>（闭环优先）· 数据 <code>score.py</code> 预计算 ${escapeHtml(scores.generated)} · 前端不重算。
     升序 = 重设计优先级。点击行进途径计分卡（评价打分清单 + 用料明细）。</p>
     <p class="muted small">轴级三维（锚点 / 产层 / 收束）是「蓝图声明 ∩ 卡池实证」的兑现口径；
-    蓝图本身的 rubric 分见 <a href="#/blueprint">玩法蓝图</a> 页（永不进 100 分）。</p>
+    蓝图本身的 rubric 分见 <a href="#/blueprint">蓝图对账</a> 页（永不进 100 分）。</p>
     <div class="panel"><table class="score-table">
       <thead><tr><th>#</th><th>途径</th><th>总分</th><th class="col-dimbars">四维（轴健康/跨轴/跨系/差异化）+ 门禁</th><th>最低轴</th><th>卡数</th><th>原语覆盖</th><th>自有状态</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -282,11 +282,11 @@ function roleDistHtml(p) {
   if (!rows.length) {
     return `<div class="panel"><h2>角色配比</h2>
       <p class="panel-note muted">该途径 <code>role</code> 尚未回填（蓝图回溯批 C2 试点）。
-      声明配比与实际卡位见 <a href="#/blueprint/${encodeURIComponent(p.id)}">玩法蓝图</a>。</p></div>`;
+      声明配比与实际卡位见 <a href="#/blueprint/${encodeURIComponent(p.id)}">蓝图对账</a>。</p></div>`;
   }
   return `<div class="panel"><h2>角色配比 <span class="muted small">实际 ${total} 张</span></h2>
     <p class="panel-note muted">口径 SCORING §一·附；与蓝图页「实际」同源。声明配比见
-      <a href="#/blueprint/${encodeURIComponent(p.id)}">玩法蓝图</a>。</p>
+      <a href="#/blueprint/${encodeURIComponent(p.id)}">蓝图对账</a>。</p>
     <div class="bp-rolechips">${rows.map(([r, n]) => {
       const c = { core: 'var(--accent)', starter: 'var(--uncommon)', bridge: 'var(--rare)', generic: 'var(--dim)', trap: 'var(--warn)', tech: 'var(--epic)' }[r];
       return `<span class="bp-rolechip" style="--rc:${c}"><i class="bp-roledot"></i>${escapeHtml(ROLE_LABEL[r] || r)}<span class="mono">${r}</span><b class="num">${n}</b></span>`;
@@ -312,7 +312,7 @@ function pathwayHtml(scores, pid) {
   return `
     <h1 class="page-title">${escapeHtml(p.name)} 计分卡 · <span class="total ${gradeClass(p.total)}">${p.total.toFixed(1)}</span></h1>
     <p class="muted"><a href="#/score">← 返回总览</a> ｜
-      <a href="#/blueprint/${encodeURIComponent(p.id)}">玩法蓝图 →</a>
+      <a href="#/blueprint/${encodeURIComponent(p.id)}">蓝图对账 →</a>
       <span class="muted small">｜ 重设计优先级序 ${scores.pathways.indexOf(p) + 1} / ${scores.pathways.length}</span></p>
     ${roleDistHtml(p)}
     ${checklistHtml(p)}

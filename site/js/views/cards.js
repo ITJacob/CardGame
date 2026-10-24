@@ -294,7 +294,7 @@ async function renderBlueprintStrip(view) {
     if (!host.isConnected || state.pathway !== pid) return;   // 期间已切途径/离页
     const p = (bp.pathways || []).find((x) => x.id === pid);
     if (!p) {
-      host.innerHTML = `<div class="panel bp-strip muted small">${escapeHtml(DB.pathways.find((x) => x.id === pid)?.name || pid)} · 尚未建立玩法蓝图。</div>`;
+      host.innerHTML = `<div class="panel bp-strip muted small">${escapeHtml(DB.pathways.find((x) => x.id === pid)?.name || pid)} · 尚未建立蓝图对账。</div>`;
       return;
     }
     const ful = FULFIL_ORDER.map((k) => {
