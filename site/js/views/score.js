@@ -314,12 +314,18 @@ function pathwayHtml(scores, pid) {
     <p class="muted"><a href="#/score">← 返回总览</a> ｜
       <a href="#/blueprint/${encodeURIComponent(p.id)}">蓝图对账 →</a>
       <span class="muted small">｜ 重设计优先级序 ${scores.pathways.indexOf(p) + 1} / ${scores.pathways.length}</span></p>
+    <p class="muted small">评价清单与角色配比常显；用料明细、构筑轴下钻默认收起，按需展开。</p>
     ${roleDistHtml(p)}
     ${checklistHtml(p)}
-    ${materialHtml(pid)}
-    <div class="panel"><h2>构筑轴（点击行展开下钻）</h2>
-      <table class="score-table"><thead><tr><th>轴</th><th>总分</th><th class="col-dimbars">六维（身份/产层/读层/多样/规模/连通）</th><th>产读</th></tr></thead>
-      <tbody>${axisRows}</tbody></table></div>`;
+    <details class="design-fold" id="score-material">
+      <summary>用料明细<span class="df-meta">卡面原语 / 参数分散度 / 状态九维度</span></summary>
+      ${materialHtml(pid)}
+    </details>
+    <details class="design-fold" id="score-axes">
+      <summary>构筑轴下钻<span class="df-meta">${p.axes.length} 轴 · 点击行展开明细</span></summary>
+      <div class="panel"><table class="score-table"><thead><tr><th>轴</th><th>总分</th><th class="col-dimbars">六维（身份/产层/读层/多样/规模/连通）</th><th>产读</th></tr></thead>
+        <tbody>${axisRows}</tbody></table></div>
+    </details>`;
 }
 
 function cardLink(pid, name) {

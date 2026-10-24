@@ -375,6 +375,15 @@ function designLogHtml(p) {
     </details></div>`;
 }
 
+// 设计台渐进披露：摘要行常显，正文默认收起。页内导航点击时先 open 再滚动，
+// 否则跳到的是一个只有摘要的折叠块
+function foldSection(id, title, meta, body) {
+  return `<details class="design-fold" id="${id}">
+    <summary>${escapeHtml(title)}<span class="df-meta">${escapeHtml(meta)}</span></summary>
+    ${body}
+  </details>`;
+}
+
 function pathwayHtml(bp, p) {
   const head = `<div class="bp-head panel" style="--pc:var(--p-${escapeHtml(p.id)})">
     <div class="bp-head-top">
@@ -418,9 +427,23 @@ function pathwayHtml(bp, p) {
     <div class="bp-axis-grid">${p.axes.map((a) => axisCard(p.id, a)).join('')}</div>
   </section>`;
 
-  const hooks = `<section id="bp-hooks">${crossAxisHtml(p.id, p)}${crossSystemHtml(p.id, p)}</section>`;
-  const roles = `<section id="bp-roles">${rolesHtml(p)}</section>`;
-  const fulfil = `<section id="bp-fulfil">${fulfilPanel(p)}</section>`;
+  // 钩子 / 角色 / 兑现是三块诊断面：进页先看命题、风格边界与轴玩法，需要时再展开
+  const ca = p.crossAxis || [];
+  const cs = p.crossSystem || [];
+  const hookMeta = [
+    p.hooks?.crossAxis?.missing ? '跨轴缺失'
+      : p.hooks?.crossAxis?.declaredNone ? '跨轴显式无'
+        : `跨轴 ${ca.filter((r) => r.ok).length}/${ca.length}`,
+    p.hooks?.crossSystem?.missing ? '跨系缺失'
+      : p.hooks?.crossSystem?.declaredNone ? '跨系显式无'
+        : `跨系 ${cs.filter((r) => r.ok).length}/${cs.length}`,
+  ].join(' · ');
+  const hooks = foldSection('bp-hooks', '钩子', hookMeta,
+    crossAxisHtml(p.id, p) + crossSystemHtml(p.id, p));
+  const roles = foldSection('bp-roles', '角色配比',
+    roleBackfilled(p) ? '声明 / 实际并排' : 'role 未回填', rolesHtml(p));
+  const fulfil = foldSection('bp-fulfil', '兑现率',
+    `五项对账 · 蓝图 ${p.score}/100`, fulfilPanel(p));
   const log = `<section id="bp-log-sec">${designLogHtml(p)}</section>`;
   return head + prop + style + axes + hooks + roles + fulfil + log;
 }
@@ -499,11 +522,15 @@ export async function renderBlueprint(view, arg, qs = '') {
 }
 
 function wirePathway(view, p, qs) {
-  // 页内小节导航：不动 location.hash（hash 是路由），直接滚动
+  // 页内小节导航：不动 location.hash（hash 是路由），直接滚动。
+  // 目标是折叠块时先展开——跳到只有摘要的 details 等于没跳
   view.querySelectorAll('[data-bp-jump]').forEach((b) => {
     b.addEventListener('click', () => {
       const el = view.querySelector(`#${CSS.escape(b.dataset.bpJump)}`);
-      if (el) el.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      if (!el) return;
+      const det = el.matches('details') ? el : (el.closest('details') || el.querySelector('details'));
+      if (det) det.open = true;
+      el.scrollIntoView({ block: 'start', behavior: 'smooth' });
     });
   });
 

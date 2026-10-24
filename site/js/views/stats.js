@@ -1,10 +1,12 @@
 // 统计分析仪表盘（浏览器端现算，口径对齐 docs/tools/build_profession_analysis.py）
-// 本页是**二级菜单调度器**：页首 .stat-tabs 五个子页——
+// 本页是**二级菜单调度器**：页首 .stat-tabs 六个子页——
 //   技能  = 卡面族各组（只统计 docs/json/*.skills.json 的 effects，原 stats 单页内容）
 //   状态  = 状态定义面（*.statuses.json 的 statusDefs，渲染逻辑在 views/status.js）
 //   召唤物 / 区域 / 界域 = 编目三件套（skills.json 顶层 unitDefs / zoneDefs / domainDefs
 //           池 + 卡面用法，渲染逻辑在 views/entities.js）
-// 口子页口径分两族：卡面各组只统计卡面 effects；状态子页统计状态定义；编目三页统计顶层三池。
+//   武器  = kind=weapon 卡面专项（渲染逻辑在 views/weapons.js）
+// 口子页口径分两族：卡面各组只统计卡面 effects；状态子页统计状态定义；编目三页统计顶层三池；
+// 武器页是卡面族内 kind=weapon 的切片。
 //
 // 版面（技能子页）：**一个维度一组**——组标题 → 该维度的全库 bar → 该维度的「途径 × 维度」热图。
 // 早先是「前面一堆 bar、末尾一叠热图」，同一个维度要在页面两头看：bar 给全库尺度、
@@ -17,12 +19,14 @@ import { walkCardEffects } from '../ast.js';
 import { barChart, countBy, sortedRows, heatPanel, wireHeatToggle } from '../charts.js';
 import { renderStatusStats } from './status.js';
 import { renderUnitStats, renderZoneStats, renderDomainStats } from './entities.js';
+import { renderWeaponStats } from './weapons.js';
 
 // 二级菜单。key 同时是 hash 段（#/stats/<key>）与 dispatch 判据；裸 #/stats 落到 skills
 const TABS = [
   ['skills', '技能'],
   ['status', '状态'],
   ['units', '召唤物'],
+  ['weapons', '武器'],
   ['zones', '区域'],
   ['domains', '界域'],
 ];
@@ -35,6 +39,7 @@ export function renderStats(view, sub = 'skills') {
   const box = view.querySelector('#stats-sub');
   if (sub === 'status') return renderStatusSub(view, box);
   if (sub === 'units') return renderUnitStats(box);
+  if (sub === 'weapons') return renderWeaponStats(box);
   if (sub === 'zones') return renderZoneStats(box);
   if (sub === 'domains') return renderDomainStats(box);
   renderSkillStats(box);

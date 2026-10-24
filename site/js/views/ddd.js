@@ -5,95 +5,16 @@
 // 被表格淹没。概述与详解都由 docs/ddd/*.md 现读，站点不维护第二份内容。
 //
 // 搜索匹配与小节计数都以「小节」为单位；文档清单仍读 README 的文档导航。
-import { renderMarkdown, parseToc } from '../md.js';
+import { renderMarkdown } from '../md.js';
+import { BASE, loadDdd } from '../ddd-data.js';
 import { escapeHtml } from '../term.js';
-
-const BASE = '../docs/ddd/';    // 相对 site/index.html
-const README = 'README.md';
-const OVERVIEW = '总览';         // README 在导航里的名字
 
 let CACHE = null;
 // 搜索词与文档筛选跨路由保留：去词典查完词条跳回来，还在原来的筛选上
 let query = '';
 let docFilter = '';
 
-const dirOf = (p) => (p.includes('/') ? p.slice(0, p.lastIndexOf('/')) : '');
-const nameOf = (p) => p.replace(/^.*\//, '').replace(/\.md$/, '');
-const shortLabel = (s) => s.replace(/（[^）]*）\s*$/, '').trim();
 const lower = (s) => String(s || '').toLowerCase();
-
-async function fetchText(url) {
-  const r = await fetch(url);
-  if (!r.ok) throw new Error(`${r.status} ${url}`);
-  return r.text();
-}
-
-/** 按 `##` 拆小节；每个 `##` 后的 `> **概述**：…` 即为该节概述，其余为详解正文。 */
-function parseSections(md) {
-  const lines = String(md).replace(/\r\n?/g, '\n').split('\n');
-  const intro = [];
-  const sections = [];
-  let cur = null;
-  for (const line of lines) {
-    const h = /^##\s+(.+)$/.exec(line);
-    if (h) {
-      if (cur) sections.push(cur);
-      cur = { heading: h[1].trim(), ov: '', body: [] };
-      continue;
-    }
-    if (!cur) { intro.push(line); continue; }
-    const ov = /^>\s*\*\*概述\*\*[：:]\s*(.*)$/.exec(line);
-    if (ov && !cur.ov) { cur.ov = ov[1].trim(); continue; }
-    cur.body.push(line);
-  }
-  if (cur) sections.push(cur);
-  return {
-    intro: intro.join('\n').trim(),
-    sections: sections.map((s) => ({
-      heading: s.heading,
-      ov: s.ov,
-      body: s.body.join('\n').trim(),
-    })),
-  };
-}
-
-async function load() {
-  if (CACHE) return CACHE;
-  const readme = await fetchText(BASE + README);
-  const groups = parseToc(readme);
-  const docs = new Map();
-  docs.set(OVERVIEW, { label: OVERVIEW, group: '', path: README, dir: '', md: readme });
-  for (const g of groups) {
-    for (const it of g.items) {
-      const name = nameOf(it.path);
-      if (docs.has(name)) continue;
-      docs.set(name, {
-        label: shortLabel(it.label), group: g.title,
-        path: it.path, dir: dirOf(it.path), md: null,
-      });
-    }
-  }
-  await Promise.all([...docs.values()]
-    .filter((d) => d.md === null)
-    .map(async (d) => {
-      try {
-        d.md = await fetchText(BASE + d.path);
-      } catch (err) {
-        d.md = '';
-        d.error = err.message;
-      }
-    }));
-
-  for (const d of docs.values()) {
-    if (d.error) { d.intro = ''; d.sections = []; continue; }
-    const parsed = parseSections(d.md);
-    d.intro = parsed.intro;
-    d.sections = parsed.sections;
-  }
-  const total = [...docs.values()].reduce((n, d) => n + d.sections.length, 0);
-  CACHE = { docs, order: [...docs.keys()], total };
-  return CACHE;
-}
 
 function renderOpts(d) {
   return { dir: d.dir, docNames: new Set(CACHE.docs.keys()), base: BASE };
@@ -193,7 +114,8 @@ export async function renderDdd(view, jumpTo = '') {
 
   let data;
   try {
-    data = await load();
+    data = await loadDdd();
+    CACHE = data;
   } catch (err) {
     view.innerHTML = `<h1 class="page-title">领域模型</h1>
       <div class="panel"><h2>文档加载失败</h2>
