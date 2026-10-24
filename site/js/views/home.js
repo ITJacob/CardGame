@@ -47,7 +47,7 @@ function featuredHtml() {
 
 function pathwayTiles() {
   return DB.pathways.map((p) => `
-    <a class="pway-tile" href="#/cards?pathway=${encodeURIComponent(p.id)}" data-pid="${escapeHtml(p.id)}" style="--pc: var(--p-${escapeHtml(p.id)})">
+    <a class="pway-tile" href="#/pathways/${encodeURIComponent(p.id)}" data-pid="${escapeHtml(p.id)}" style="--pc: var(--p-${escapeHtml(p.id)})">
       <span class="pway-name">${escapeHtml(p.name)}</span>
       <span class="pway-prop" data-prop>${escapeHtml(truncate(DB.designNotes.get(p.id), 46))}</span>
       <span class="pway-meta">${Object.keys(DB.axesByPathway.get(p.id) || {}).length} 轴 · ${p.cardCount} 卡</span>
@@ -91,7 +91,7 @@ export function renderHome(view) {
   </section>
 
   <section class="home-section">
-    <div class="home-section-head"><h2>22 条途径</h2><span class="muted">每条途径一种玩法命题 · 点进卡池看它怎么打</span></div>
+    <div class="home-section-head"><h2>22 条途径</h2><span class="muted">每条途径一个玩法命题 · 点进看它怎么打</span></div>
     <div class="pway-grid">${pathwayTiles()}</div>
   </section>
 

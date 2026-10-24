@@ -9,13 +9,14 @@ import { renderBlueprint } from './views/blueprint.js';
 import { renderDdd } from './views/ddd.js';
 import { renderHome } from './views/home.js';
 import { renderHow } from './views/how.js';
-import { renderPathways } from './views/pathways.js';
+import { renderPathways, renderPathwayDetail } from './views/pathways.js';
 import { renderMechanics } from './views/mechanics.js';
+import { renderSearch } from './views/search.js';
 
 // 非列表页（卡片列表之外的都算，用于滚动位置还原）。新增页务必登记，
 // 否则从详情返回时会被当成列表页而错误还原滚动位置
 const NON_LIST_PAGES = new Set([
-  'home', 'how', 'pathways', 'mechanics',
+  'home', 'how', 'pathways', 'mechanics', 'search',
   'card', 'glossary', 'stats', 'score', 'blueprint', 'ddd',
 ]);
 
@@ -60,8 +61,13 @@ function route() {
   }
   if (page === 'home' || page === '') { setNav('home'); renderHome(view); }
   else if (page === 'how') { setNav('how'); renderHow(view); }
-  else if (page === 'pathways') { setNav('pathways'); renderPathways(view); }
+  else if (page === 'pathways') {
+    setNav('pathways');
+    if (arg) renderPathwayDetail(view, decodeURIComponent(arg));
+    else renderPathways(view);
+  }
   else if (page === 'mechanics') { setNav('mechanics'); renderMechanics(view); }
+  else if (page === 'search') { setNav(''); renderSearch(view, new URLSearchParams(qs || '')); }
   else if (page === 'card' && arg) { setNav('cards'); renderCardDetail(view, decodeURIComponent(arg), qs || ''); }
   else if (page === 'glossary') { setNav('glossary'); renderGlossary(view, new URLSearchParams(qs || '')); }
   else if (page === 'stats') { setNav('stats'); renderStats(view, arg ? decodeURIComponent(arg) : 'skills'); }
@@ -71,6 +77,10 @@ function route() {
   else { setNav('cards'); renderCards(view, new URLSearchParams(qs || '')); }
 
   prevPage = isList ? 'cards' : page;
+  // 顶栏搜索框：只在搜索页保留关键词，离开即清空，避免看起来像「当前筛选」
+  const gq = document.getElementById('gq');
+  if (gq && page !== 'search') gq.value = '';
+  document.getElementById('nav-design')?.removeAttribute('open');
   window.scrollTo(0, restoreScroll ? listScrollY : 0);
 }
 
@@ -97,9 +107,33 @@ function initToTop() {
   sync();
 }
 
+// 顶栏全站搜索：提交跳 #/search?q=；按 / 聚焦（输入框内不劫持）
+function initGlobalSearch() {
+  const form = document.getElementById('global-search');
+  const input = document.getElementById('gq');
+  if (!form || !input) return;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = input.value.trim();
+    location.hash = q ? `#/search?q=${encodeURIComponent(q)}` : '#/search';
+  });
+  document.addEventListener('click', (e) => {
+    const d = document.getElementById('nav-design');
+    if (d?.open && !d.contains(e.target)) d.open = false;
+  });
+  window.addEventListener('keydown', (e) => {
+    if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target;
+    if (t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    e.preventDefault();
+    input.focus();
+  });
+}
+
 async function main() {
   initTooltip();
   initToTop();
+  initGlobalSearch();
   try {
     await loadAll((msg) => { status.textContent = msg; });
     status.textContent = '';

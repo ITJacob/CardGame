@@ -35,8 +35,7 @@ function hookHtml(card) {
   const hookEvs = hookEvents(card);
   if (!hookEvs.length) return '';
   return `<div class="trigger-block">
-      <div class="trigger-title">被动钩子 · ${hookEvs.map((e) => termSpan('triggerEvent', e)).join(' · ')}</div>
-      <div class="trigger-body"><span class="muted">任一事件触发即执行；具体效果见下方「效果结构」</span></div>
+      <div class="trigger-title">触发时机 · ${hookEvs.map((e) => termSpan('triggerEvent', e)).join(' · ')}</div>
     </div>`;
 }
 
@@ -239,19 +238,16 @@ export function renderCardDetail(view, id, qs = '') {
       <header class="cs-head">
         <div class="cs-title-row">
           <h1 class="cs-name">${escapeHtml(c.name)}</h1>
-          ${c.role ? `<span class="badge role-${c.role}" title="${escapeHtml(ROLE_INFO[c.role]?.full || '')}">${escapeHtml(ROLE_LABEL[c.role] || c.role)}</span>` : ''}
           ${c.flagship ? '<span class="badge flagship">旗舰</span>' : ''}
         </div>
-        <div class="cs-sub">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')} · <span class="mono cs-copyable" data-copy="${escapeHtml(c.id)}" title="点击复制 cardId（卡面图就命名为它）" tabindex="0" role="button">${escapeHtml(c.id)}</span></div>
+        <div class="cs-sub">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')}</div>
         <div class="badges">
           <span class="badge rarity-${c.rarity}">${cn}</span>
           <span class="badge kind-${c.kind}">${c.kind === 'weapon' ? '武器' : c.kind === 'summon' ? '召唤' : c.kind === 'active' ? '主动' : '被动'}</span>
-          ${c.tentative ? '<span class="badge warn" title="数值待定（⚠️D 占位，平衡期逐条审批）">数值待定</span>' : ''}
           <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
           <span class="badge">轴：${axisSpan(c._pathway, c.axis)}</span>
           ${(c.tags || []).map((t) => `<span class="badge">${escapeHtml(t)}</span>`).join('')}
           ${c.gender && c.gender !== 'any' ? `<span class="badge">${g('gender', c.gender)}限定</span>` : ''}
-          ${(c.sharedAcross || []).map((p) => `<span class="badge">共享→${escapeHtml(DB.pathways.find((x) => x.id === p)?.name || p)}</span>`).join('')}
         </div>
         ${(c.kind === 'active' || c.kind === 'weapon' || c.kind === 'summon') && c.cost ? `<div class="cs-cost">${costHtml(c)}</div>` : ''}
       </header>
@@ -262,48 +258,62 @@ export function renderCardDetail(view, id, qs = '') {
         ${c.lore ? `<div class="muted cs-lore">${escapeHtml(c.lore)}</div>` : ''}
       </section>
 
-      ${blueprintPosHtml(c)}
-
       <section class="cs-sec">
         ${c.kind === 'weapon' ? '<h2>装备</h2>' : c.kind === 'summon' ? '<h2>召唤</h2>' : c.kind === 'active' ? '<h2>施放与选靶</h2>' : '<h2>触发条件</h2>'}
         <dl class="kv">
-          ${c.kind === 'weapon' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
-          <dt>攻击</dt><dd>+${c.weapon?.attack ?? 0}</dd>
+          ${c.kind === 'weapon' ? `<dt>攻击</dt><dd>+${c.weapon?.attack ?? 0}</dd>
           <dt>耐久</dt><dd>${c.weapon?.durability ?? 0} 次普攻</dd>
-          <dt>标签</dt><dd>${(c.weapon?.tags || []).join(' / ') || '—'}</dd>` : c.kind === 'summon' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
-          <dt>单位</dt><dd>${escapeHtml(DB.unitDefs.find((u) => u.id === c.summon?.unitId)?.name || c.summon?.unitId || '—')}${c.summon?.count > 1 ? ` ×${c.summon.count}` : ''}</dd>
+          <dt>标签</dt><dd>${(c.weapon?.tags || []).join(' / ') || '—'}</dd>` : c.kind === 'summon' ? `<dt>单位</dt><dd>${escapeHtml(DB.unitDefs.find((u) => u.id === c.summon?.unitId)?.name || c.summon?.unitId || '—')}${c.summon?.count > 1 ? ` ×${c.summon.count}` : ''}</dd>
           <dt>比率</dt><dd>${[c.summon?.hpRatio != null ? `生命 ${c.summon.hpRatio}` : '', c.summon?.atkRatio != null ? `攻击 ${c.summon.atkRatio}` : ''].filter(Boolean).join(' / ') || '按蓝本'}</dd>
-          <dt>落位</dt><dd>${({ tail: '队尾', at_unit: '目标旁', original: '原位' })[c.summon?.position] || '队尾'}</dd>` : c.kind === 'active' ? `<dt>消耗</dt><dd>${costHtml(c)}</dd>
-          <dt>距离</dt><dd>${g('reach', c.reach)}</dd>
+          <dt>落位</dt><dd>${({ tail: '队尾', at_unit: '目标旁', original: '原位' })[c.summon?.position] || '队尾'}</dd>` : c.kind === 'active' ? `<dt>距离</dt><dd>${g('reach', c.reach)}</dd>
           <dt>目标</dt><dd>${targetHtml(c.target)}</dd>` : `<dt>触发</dt><dd>${hookHtml(c) || '<span class="muted">（无）</span>'}</dd>`}
           ${(c.secondaryTargets || []).map((t, i) => `<dt>附属选靶${i + 1}</dt><dd>${targetHtml(t)}</dd>`).join('')}
         </dl>
       </section>
-      ${c.weapon?.triggers?.length ? `<section class="cs-sec">
-        <h2>装备期触发</h2>
-        ${triggersHtml({ triggers: c.weapon.triggers })}
-      </section>` : ''}
 
-      <section class="cs-sec">
-        <h2>效果结构</h2>
-        ${renderEffects(c.kind === 'summon' && c.summon ? [{ type: 'spawn', ...c.summon }, ...(c.effects || [])] : c.effects)}
-      </section>
+      <details class="cs-fold">
+        <summary>机制细节 · 效果树与触发</summary>
+        <div class="cs-fold-body">
+          ${c.weapon?.triggers?.length ? `<section class="cs-sec">
+            <h2>装备期触发</h2>
+            ${triggersHtml({ triggers: c.weapon.triggers })}
+          </section>` : ''}
+          <section class="cs-sec">
+            <h2>效果结构</h2>
+            ${renderEffects(c.kind === 'summon' && c.summon ? [{ type: 'spawn', ...c.summon }, ...(c.effects || [])] : c.effects)}
+          </section>
+          ${c.triggers?.length ? `<section class="cs-sec">
+            <h2>附加触发</h2>
+            ${triggersHtml(c)}
+          </section>` : ''}
+          ${(unitDefsHtml(c) || zoneDomainHtml(c) || miscHtml(c)) ? `<section class="cs-sec"><h2>附加定义</h2>${unitDefsHtml(c)}${zoneDomainHtml(c)}${miscHtml(c)}</section>` : ''}
+        </div>
+      </details>
 
-      ${c.triggers?.length ? `<section class="cs-sec">
-        <h2>附加触发</h2>
-        ${triggersHtml(c)}
-      </section>` : ''}
+      <details class="cs-fold">
+        <summary>卡面与出图</summary>
+        <div class="cs-fold-body">${artHtml(c)}</div>
+      </details>
 
-      ${artHtml(c)}
+      <details class="cs-fold cs-fold--design">
+        <summary>设计台 · 蓝图定位与实现备注</summary>
+        <div class="cs-fold-body">
+          <dl class="kv cs-meta">
+            <dt>角色</dt><dd>${c.role ? `${escapeHtml(ROLE_LABEL[c.role] || c.role)} · ${escapeHtml(ROLE_INFO[c.role]?.full || '')}` : '—'}${c.flagship ? ' · 旗舰' : ''}</dd>
+            <dt>cardId</dt><dd><span class="mono cs-copyable" data-copy="${escapeHtml(c.id)}" title="点击复制 cardId（卡面图就命名为它）" tabindex="0" role="button">${escapeHtml(c.id)}</span></dd>
+            <dt>数值状态</dt><dd>${c.tentative ? '待定（⚠️D 占位）' : '已标定'}</dd>
+            ${(c.sharedAcross || []).length ? `<dt>共享途径</dt><dd>${c.sharedAcross.map((p) => escapeHtml(DB.pathways.find((x) => x.id === p)?.name || p)).join(' / ')}</dd>` : ''}
+          </dl>
+          ${blueprintPosHtml(c)}
+          ${c.frameworkFlags?.some((f) => f && f.landed !== true) ? `<section class="cs-sec"><h2 class="warn-text">框架缺口</h2>
+            ${c.frameworkFlags.filter((f) => f && f.landed !== true).map((f) => `<div class="warn-text">⚠ ${escapeHtml(typeof f === 'string' ? f : JSON.stringify(f))}</div>`).join('')}</section>` : ''}
+          ${c.frameworkFlags?.some((f) => f && f.landed === true) ? `<section class="cs-sec"><h2>框架登记（已落地）</h2>
+            ${c.frameworkFlags.filter((f) => f && f.landed === true).map((f) => `<div class="muted">✓ ${escapeHtml((f.code || '') + (f.note ? '：' + f.note : ''))}</div>`).join('')}</section>` : ''}
+          ${c.conversionNotes ? `<section class="cs-sec"><h2>转换备注</h2>
+            ${[].concat(c.conversionNotes).map((n) => `<div class="muted">${escapeHtml(n)}</div>`).join('')}</section>` : ''}
+        </div>
+      </details>
 
-      ${(unitDefsHtml(c) || zoneDomainHtml(c) || miscHtml(c)) ? `<section class="cs-sec"><h2>附加定义</h2>${unitDefsHtml(c)}${zoneDomainHtml(c)}${miscHtml(c)}</section>` : ''}
-
-      ${c.frameworkFlags?.some((f) => f && f.landed !== true) ? `<section class="cs-sec"><h2 class="warn-text">框架缺口</h2>
-        ${c.frameworkFlags.filter((f) => f && f.landed !== true).map((f) => `<div class="warn-text">⚠ ${escapeHtml(typeof f === 'string' ? f : JSON.stringify(f))}</div>`).join('')}</section>` : ''}
-      ${c.frameworkFlags?.some((f) => f && f.landed === true) ? `<section class="cs-sec"><h2>框架登记（已落地）</h2>
-        ${c.frameworkFlags.filter((f) => f && f.landed === true).map((f) => `<div class="muted">✓ ${escapeHtml((f.code || '') + (f.note ? '：' + f.note : ''))}</div>`).join('')}</section>` : ''}
-      ${c.conversionNotes ? `<section class="cs-sec"><h2>转换备注</h2>
-        ${[].concat(c.conversionNotes).map((n) => `<div class="muted">${escapeHtml(n)}</div>`).join('')}</section>` : ''}
     </div>
   </div>
   `;
