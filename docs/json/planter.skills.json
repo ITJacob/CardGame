@@ -3011,43 +3011,156 @@
       "id": "unit_beastling",
       "name": "杂交兽",
       "unitType": "BEAST",
-      "note": "随机变异附加的兽系基本盘；2026-10-23 召唤牌化补登（种类归属权威：召唤物参数.md §一）；数值/技能组待平衡期"
+      "base": {
+        "hp": 10,
+        "atk": 4,
+        "reach": "melee"
+      },
+      "note": "H1 BEAST 基线；随机变异附加的兽系基本盘；数值/技能组待平衡期"
     },
     {
       "id": "unit_vermin",
       "name": "虫豸群",
       "unitType": "VERMIN",
-      "note": "低血快攻小体群，亡语毒；2026-10-23 召唤牌化补登（种类归属权威：召唤物参数.md §一）；数值/技能组待平衡期"
+      "base": {
+        "hp": 6,
+        "atk": 2,
+        "reach": "melee"
+      },
+      "triggers": [
+        {
+          "event": "on_attack",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "poison",
+              "duration": 10,
+              "target": "target",
+              "note": "低血快攻小体群，攻击带毒"
+            }
+          ]
+        },
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "poison",
+              "duration": 10,
+              "target": "splash_adjacent",
+              "condition": {
+                "kind": "faction_is",
+                "side": "target",
+                "value": "enemy"
+              },
+              "note": "亡语：相邻敌人中毒 10tick"
+            }
+          ]
+        }
+      ],
+      "note": "H1 VERMIN 基线；亡语毒由蓝本承载（卡面只负责数量/落位）"
     },
     {
       "id": "unit_vine",
       "name": "藤蔓",
       "unitType": "PLANT",
-      "note": "纠缠控制向植株；2026-10-23 召唤牌化补登（种类归属权威：召唤物参数.md §一）；数值/技能组待平衡期"
+      "base": {
+        "hp": 16,
+        "atk": 2,
+        "reach": "melee"
+      },
+      "note": "H1 PLANT 基线；纠缠控制由卡面 vine_snare 承载，蓝本不重复挂载"
     },
     {
       "id": "unit_oak_child",
       "name": "橡树之子",
       "unitType": "PLANT",
-      "note": "≈20 血坚守 + 亡语 ⚠️D；2026-10-23 召唤牌化补登（种类归属权威：召唤物参数.md §一）；数值/技能组待平衡期"
+      "base": {
+        "hp": 20,
+        "atk": 4,
+        "reach": "melee"
+      },
+      "triggers": [
+        {
+          "event": "on_spawn",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "guard",
+              "duration": null,
+              "target": "self",
+              "note": "自带坚守（整场）"
+            }
+          ]
+        },
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "damage",
+              "element": "physical",
+              "value": 3,
+              "target": "splash_adjacent",
+              "condition": {
+                "kind": "faction_is",
+                "side": "target",
+                "value": "enemy"
+              },
+              "note": "亡语：相邻敌人 3 点物理"
+            }
+          ]
+        }
+      ],
+      "note": "≈20 血坚守 + 亡语 3 点物理；H1 PLANT 锚点（数值 ⚠️D）"
     },
     {
       "id": "unit_golem",
       "name": "战斗魔像",
       "unitType": "CONSTRUCT",
-      "note": "armor+5 材质档；2026-10-23 召唤牌化补登（种类归属权威：召唤物参数.md §一）；数值/技能组待平衡期"
+      "base": {
+        "hp": 26,
+        "atk": 5,
+        "reach": "melee"
+      },
+      "triggers": [
+        {
+          "event": "on_spawn",
+          "effects": [
+            {
+              "type": "modify_stat",
+              "stat": "armor",
+              "value": 5,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "材质档：登场即自带护甲 +5"
+            }
+          ]
+        }
+      ],
+      "note": "H1 CONSTRUCT 锚点（笨重高血）；护甲材质档由蓝本 on_spawn 承载"
     },
     {
       "id": "unit_homunculus",
       "name": "炼成人偶",
       "unitType": "CONSTRUCT",
-      "note": "跨途径复用：通识者限 lifetime 6 临时档；种类恒定；2026-10-23 召唤牌化补登（种类归属权威：召唤物参数.md §一）；数值/技能组待平衡期"
+      "base": {
+        "hp": 14,
+        "atk": 3,
+        "reach": "melee"
+      },
+      "note": "H1 CONSTRUCT 基线；通识者限 lifetime 6 临时档（战外层）；数值/技能组待平衡期"
     },
     {
       "id": "unit_doll",
       "name": "材质人偶",
       "unitType": "CONSTRUCT",
-      "note": "材质阶梯人偶（variant 5 档）；2026-10-23 召唤牌化补登（种类归属权威：召唤物参数.md §一）；数值/技能组待平衡期"
+      "base": {
+        "hp": 14,
+        "atk": 3,
+        "reach": "melee"
+      },
+      "note": "H1 CONSTRUCT 基线；材质阶梯人偶（variant 5 档）；数值/技能组待平衡期"
     }
   ],
   "domainDefs": [

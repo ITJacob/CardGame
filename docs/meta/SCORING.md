@@ -1,4 +1,4 @@
-# 职业设计评分体系（SCORING）· **2.15（2026-10-23 骨架重议准入）**
+# 职业设计评分体系（SCORING）· **2.16（2026-10-24 unitDef 载荷入指纹）**
 
 > 配套脚本 `docs/tools/score.py`（唯一计分实现，本文件锁口径）；
 > 产物：`docs/analysis/scorecard.md`（勿手改）+ `docs/analysis/scores.json`（网页端消费，site 经
@@ -67,6 +67,10 @@
 reach / hp·atk 档位 / 攻击或亡语触发类型）应是召唤卡的主载荷，而不是卡面通用效果。同时在
 `playable_scan.py` 新增 `summon_unit_share` 诊断（unitDef 载荷 ÷ 卡面非 spawn 载荷 + unitDef 载荷，
 目标 ≥50%），只进玩法轨、不进 100 分。
+
+**2.16（2026-10-24）**：召唤卡指纹的 unitDef 载荷补全——蓝本 `triggers[].event` 计入 `hook`、
+`triggers[].condition` 计入 `cond`/`condarg`（之前只纳入 `triggers[].effects`）。这样把卡面通用载荷
+迁入 unitDef 时，卡的机制指纹不会被稀释；unitDef 载荷的迁移方向与评分方向一致。
 
 **2.9（2026-10-20）**：挂载状态 def 的形态与触发器载荷并入卡级效果空间/`sshape`。被动卡往往只
 `mount_status` 一个状态，之前指纹只剩一个挂载节点，状态本身的 modifiers/immune/触发器全看不见
@@ -315,7 +319,8 @@ generic 豁免去重又不入指纹，无上限即可把同质化整组隐身。
 单卡微改跨档套利。
 
 > **效果空间** = `cards[].effects` + `cards[].triggers[].effects`（2.6）；`spawn` 引用 `unitDef` 的
-> 元素 / tags / `triggers[].effects`（2.7）；**卡面挂载状态 def 的 `triggers[].effects`**（2.9）。
+> 元素 / tags / `triggers[].effects`（2.7，其 `triggers[].event` / `condition` 另计 `hook` / `cond`，
+> 2.16）；**卡面挂载状态 def 的 `triggers[].effects`**（2.9）。
 > 被动/触发载荷与主动效果同口径；只读 `effects` 会让带触发器的被动卡在指纹里退化成一个挂载节点。
 > `hook` 仍是触发点本身，其余族取效果空间。
 
@@ -323,12 +328,12 @@ generic 豁免去重又不入指纹，无上限即可把同质化整组隐身。
 |---|---|---|
 | `prim` | 原语种类 | `card_effect_types`（每卡去重，含触发载荷） |
 | `elem` | 元素 | 效果空间的 `element` |
-| `cond` | 条件谓词 | 效果空间的 `_cond_kinds` |
+| `cond` | 条件谓词 | 效果空间的 `_cond_kinds`（含 unitDef 触发器条件，2.16） |
 | `condarg` | 条件谓词的枚举参数 | 效果空间 `kind:field=value`（cmp/side/key/stat/unitIdx/…；**私有 statusId 不取**） |
 | `param` | 效果原语的枚举参数 | 效果空间 `field=value`（`modify_stat.stat` / `modify_resource.resource` / spawn 单位与位置 / `move`·`domain`·`translocate` 的 op / 规则槽 field 等；**数值不取**） |
 | `reach` | 射程 | active 卡 `reach`（none/melee/spell/thrown） |
 | `tgt` | 选靶（卡级坐标 + filter + 效果级作用对象） | `target.request`：`faction`/`scope`/`anchor`/`mode`/`selectionMode`；`request.filter` 键（前缀 `filter:`）；效果空间的 `target`（前缀 `eff:`） |
-| `hook` | 触发点 | 卡级 `hook`/`triggers[].event` ＋挂载状态 def 的 `triggers[].event`；**排除 `on_apply`**（状态挂载载荷的固有生命周期事件，不体现触发点设计） |
+| `hook` | 触发点 | 卡级 `hook`/`triggers[].event` ＋挂载状态 def 的 `triggers[].event` ＋ unitDef 蓝本的 `triggers[].event`（2.16）；**排除 `on_apply`**（状态挂载载荷的固有生命周期事件，不体现触发点设计） |
 | `sshape` | **状态形态** | 引用状态 def **及卡面挂载状态 def** 的结构 flags（triggers/charges/stack/threshold/form/phases/cycle/ramp/behavior/action_lock/immune/redirect…）+ 修正名 + 自带效果原语（`on_apply` 载荷）+ 时长形态；**不含私有 statusId** |
 | `cost` | 消耗形态 | `energy` 档（zero/low/mid/high）+ `cooldown` 档（none/short/long）+ 血费（效果空间中的自伤 hp 支付） |
 | `temporal` | 时序形态 | 吟唱有无（`castTime>0`）/ `durationUnit`（tick、self_turn）/ 吟唱转瞬发 |

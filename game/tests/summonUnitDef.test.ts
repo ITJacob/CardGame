@@ -24,10 +24,16 @@ function pathway(opts: { element?: string; hpRatio?: number; atkRatio?: number }
     unitDefs: [{
       id: 'probe_beast', name: '试验兽', unitType: 'BEAST', base: { hp: 20, atk: 4 },
       ...(opts.element ? { element: opts.element } : {}),
-      triggers: [{
-        event: 'on_attack',
-        effects: [{ type: 'mount_status', statusId: 'probe_mark', duration: 10, target: 'self' }],
-      }],
+      triggers: [
+        {
+          event: 'on_attack',
+          effects: [{ type: 'mount_status', statusId: 'probe_mark', duration: 10, target: 'self' }],
+        },
+        {
+          event: 'on_spawn',
+          effects: [{ type: 'mount_status', statusId: 'probe_spawned', duration: 10, target: 'self' }],
+        },
+      ],
     }],
   } as never
 }
@@ -84,6 +90,13 @@ describe('spawn 消费 unitDef', () => {
     const dark = run('dark')
     const none = run(undefined)
     expect(dark).toBeGreaterThan(none)
+  })
+
+  it('unitDef 的 on_spawn 由召唤物自身 fire（宿主 = 新生单位）', () => {
+    const c = createCombat(setup({}))
+    for (let i = 0; i < 3 && !c.ended(); i += 1) c.step()
+    const s = summonOf(c)!
+    expect(s.statuses.some((x) => x.defId === 'probe_spawned')).toBe(true)
   })
 
   it('unitDef.triggers 在 spawn 时装配（on_attack 自挂状态）', () => {

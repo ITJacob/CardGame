@@ -957,8 +957,10 @@ class CombatRuntime implements CombatRuntimeHandle {
       const unit = this.spawnOne(owner, def, near, this.spawnRatio(node.hpRatio, def.hpRatio), this.spawnRatio(node.atkRatio, def.atkRatio))
       if (!unit) return
       this.emit({ type: 'UnitSpawned', unitId: unit.id })
-      // 载荷主体：on_spawn 的 target = 新生单位（执行参数 §2.3），需求本身落在召唤物身上
+      // on_spawn 两侧：owner = 监听「我召唤了谁」（target 为新生单位）；
+      // 新生单位自身 = 蓝本登场载荷（宿主即召唤物，self 指向自己）。
       this.fireStatusTriggers(owner, 'on_spawn', undefined, undefined, { target: unit })
+      this.fireStatusTriggers(unit, 'on_spawn')
     }
   }
 

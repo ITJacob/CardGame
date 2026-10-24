@@ -718,8 +718,11 @@ def _card_families(card, status_by_id=None):
     召唤卡的效果空间额外包含所召唤 unitDef 的触发载荷（攻击效果属于卡面机制）。"""
     fam = {f: set() for f in FAMILIES}
     spawned = spawned_unit_defs(card)
-    unit_effects = [e for u in spawned for tr in (u.get("triggers") or [])
-                    if isinstance(tr, dict) for e in (tr.get("effects") or [])]
+    # 召唤物蓝本的触发点/条件也是卡面机制的一部分（2026-10-24）：载荷迁入 unitDef 后
+    # 指纹不能反而变空，故与卡级触发器同口径计入 hook / cond / condarg。
+    unit_triggers = [tr for u in spawned for tr in (u.get("triggers") or [])
+                     if isinstance(tr, dict)]
+    unit_effects = [e for tr in unit_triggers for e in (tr.get("effects") or [])]
     mounted = [status_by_id.get(m) for m in card_mounts(card)
                if status_by_id and status_by_id.get(m)]
     mounted_effects = [e for sd in mounted for tr in (sd.get("triggers") or [])
@@ -766,8 +769,8 @@ def _card_families(card, status_by_id=None):
         if is_hp_cost:
             fam["cost"].add("hp_cost")
 
-    fam["cond"] |= set(_cond_kinds(space))
-    fam["condarg"] |= _cond_args(space)
+    fam["cond"] |= set(_cond_kinds(space)) | set(_cond_kinds(unit_triggers))
+    fam["condarg"] |= _cond_args(space) | _cond_args(unit_triggers)
 
     spec = card.get("target") or {}
     req = spec.get("request") or {}
@@ -809,6 +812,9 @@ def _card_families(card, status_by_id=None):
             fam["hook"].add(h)
     for tr in (card.get("triggers") or []):
         if isinstance(tr, dict) and tr.get("event") and tr["event"] != "on_apply":
+            fam["hook"].add(tr["event"])
+    for tr in unit_triggers:        # 召唤物蓝本的触发点（载荷归属卡面）
+        if tr.get("event") and tr["event"] != "on_apply":
             fam["hook"].add(tr["event"])
     for m in card_mounts(card):     # 挂状态 = 接入该状态 def 的触发点
         for tr in ((status_by_id or {}).get(m) or {}).get("triggers") or []:

@@ -22,13 +22,13 @@
 | `unit_zombie` | 活尸 | UNDEAD | 收尸人 | reach melee、hpRatio 1.0 |
 | `unit_demon` | 恶魔投影 | DEMON | 罪犯 | 白板 |
 | `unit_war_soldier` | 士兵 | CONSTRUCT | 猎人 | 白板 |
-| `unit_beastling` | 杂交兽 | BEAST | 耕种者 | 白板 |
-| `unit_vermin` | 虫豸群 | VERMIN | 耕种者 | 白板 |
-| `unit_vine` | 藤蔓 | PLANT | 耕种者 | 白板 |
-| `unit_oak_child` | 橡树之子 | PLANT | 耕种者 | 白板 |
-| `unit_golem` | 战斗魔像 | CONSTRUCT | 耕种者 | 白板 |
-| `unit_homunculus` | 炼成人偶 | CONSTRUCT | 耕种者 | 白板 |
-| `unit_doll` | 材质人偶 | CONSTRUCT | 耕种者 | 白板 |
+| `unit_beastling` | 杂交兽 | BEAST | 耕种者 | reach melee |
+| `unit_vermin` | 虫豸群 | VERMIN | 耕种者 | 触发载荷、reach melee |
+| `unit_vine` | 藤蔓 | PLANT | 耕种者 | reach melee |
+| `unit_oak_child` | 橡树之子 | PLANT | 耕种者 | 触发载荷、reach melee |
+| `unit_golem` | 战斗魔像 | CONSTRUCT | 耕种者 | 触发载荷、reach melee |
+| `unit_homunculus` | 炼成人偶 | CONSTRUCT | 耕种者 | reach melee |
+| `unit_doll` | 材质人偶 | CONSTRUCT | 耕种者 | reach melee |
 | `unit_ghoul` | 食尸鬼 | UNDEAD | 囚犯 | 白板 |
 | `unit_relic` | 古物傀儡 | ITEM | 囚犯 | 白板 |
 | `unit_scroll_construct` | 卷轴造物 | CONSTRUCT | 窥秘人 | tags |
