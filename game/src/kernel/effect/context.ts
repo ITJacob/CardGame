@@ -17,6 +17,17 @@ export interface OpportunityPayload {
   readonly consumedBy: string | null
 }
 
+/** 单次结算账本：一个 Action / 一条触发链一份，供 dispelled_count / consumed_count 与动态段数读取。
+ *  跨结算的累计读数（如「本场已有驱散」）走 battleDispelled。 */
+export interface ResolutionLedger {
+  dispelled: number
+  readonly consumed: Map<string, number>
+}
+
+export function createLedger(): ResolutionLedger {
+  return { dispelled: 0, consumed: new Map() }
+}
+
 export interface EffectContext {
   readonly units: Registry
   readonly random: RandomSource
@@ -28,6 +39,12 @@ export interface EffectContext {
   readonly actionId: string
   /** 机会括号载荷：仅 on_turn_start / on_turn_end 触发链上存在（其余触发点与主动行为均为 undefined） */
   readonly opportunity?: OpportunityPayload
+  /** 本次结算账本（本次驱散数 / 本次消耗层数）；由 pipeline 每个 Action、runtime 每条触发链创建 */
+  readonly ledger?: ResolutionLedger
+  /** 本场累计驱散数（dispelled_count scope:'battle'） */
+  readonly battleDispelled?: () => number
+  /** 记录本次结算驱散的数量（unit 状态 / 召唤物 / 界域统一入账） */
+  readonly noteDispel?: (count: number) => void
   /** 效果级 target 的求值语境（执行参数 §2.1b / §2.1c）：触发链 = 载荷，卡片行为 = 施法者 + 选靶。
    *  存在时，效果节点上的 target 简写按它求值；不存在（zone / echo / translocate）则沿用外层落点 */
   readonly targetScope?: TargetScope
@@ -68,6 +85,8 @@ export interface EffectContext {
   readonly zoneActive?: (zoneId: string) => boolean
   /** 叠层阈值复评（modify_status 改层后调用） */
   readonly checkStackThreshold?: (host: CombatUnit, statusId: string) => void
+  /** 同 tag 连击计数（tag_chain） */
+  readonly tagChainCount?: (tag: string) => number
   /** 状态 tags 查询（has_status_tag 谓词） */
   readonly statusTags?: (statusId: string) => readonly string[] | undefined
   /** 元素相消：受伤方身上削 1 层对立元素状态；返回 true 表示本次伤害按克制系数 ×0.85 */
@@ -119,10 +138,10 @@ export interface EffectOps {
   boardMeter(key: string, value: number, set: boolean): void
   /** 战场级量表读数（meter_compare 谓词） */
   meterOf(key: string): number
-  /** dispel 选择器：销毁召唤物（不走死亡链） */
-  dispelSummons(owner: CombatUnit | null, sel: DispelSummonSelector): void
-  /** dispel 选择器：解除界域（只动 dispelable，tier 可选 filter） */
-  dispelDomain(tier?: string, count?: number): void
+  /** dispel 选择器：销毁召唤物（不走死亡链）；返回销毁数量（dispelled_count 入账） */
+  dispelSummons(owner: CombatUnit | null, sel: DispelSummonSelector): number
+  /** dispel 选择器：解除界域（只动 dispelable，tier 可选 filter）；返回解除数量 */
+  dispelDomain(tier?: string, count?: number): number
 }
 
 export interface DispelSummonSelector {

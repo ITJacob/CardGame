@@ -43,8 +43,8 @@ export class CombatStatusSet implements StatusSet {
     const def = this.defs.statusDef(defId)
     const maxStacks = Math.max(1, def?.maxStacks ?? 1)
     const duration = resolveDuration(grant.duration, def?.duration)
-    const mode = grant.stackMode ?? ((grant.stacks ?? 0) < 0 ? 'consume' : 'add')
-    const rawStacks = Math.max(1, Math.floor(Math.abs(grant.stacks ?? 1)))
+    const mode = grant.stackMode ?? ((typeof grant.stacks === 'number' && grant.stacks < 0) ? 'consume' : 'add')
+    const rawStacks = typeof grant.stacks === 'number' ? Math.max(1, Math.floor(Math.abs(grant.stacks))) : 1
     const charged = grant.charges ?? def?.charges
     const initialCharges = typeof charged === 'number' && Number.isFinite(charged)
       ? Math.max(0, Math.floor(charged))
@@ -53,7 +53,8 @@ export class CombatStatusSet implements StatusSet {
 
     if (mode === 'consume') {
       if (!existing) return null
-      const next = existing.currentStacks - rawStacks
+      const take = grant.stacks === 'all' ? existing.currentStacks : rawStacks
+      const next = existing.currentStacks - take
       if (next <= 0) {
         this.unmount(existing.instanceId)
         return null

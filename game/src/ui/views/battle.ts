@@ -1366,7 +1366,8 @@ function buildLogReport(s: BattleSession): string {
       const sts = (u.initialStatuses ?? []).map((g) => {
         const defId = (g as { defId?: string }).defId ?? '?'
         const nm = s.catalog.statusDefs.get(defId)?.name ?? defId
-        return `${nm}${g.stacks && g.stacks > 1 ? `×${g.stacks}` : ''}${g.duration != null ? `(${g.duration}t)` : ''}`
+        const stacks = typeof g.stacks === 'number' ? g.stacks : 1
+        return `${nm}${stacks > 1 ? `×${stacks}` : ''}${g.duration != null ? `(${g.duration}t)` : ''}`
       })
       const mods = (u.initialModifiers ?? []).map((m) => `${m.stat}${m.value > 0 ? '+' : ''}${m.value}`)
       const sub = [

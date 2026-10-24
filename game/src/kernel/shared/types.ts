@@ -65,6 +65,10 @@ export interface Condition {
   element?: string | string[]
   /** damage_source_is：behavior / status */
   sources?: string[]
+  /** gender_is：male / female */
+  gender?: string
+  /** dispelled_count 计数窗口：chain（本次结算，缺省）/ battle（本场累计） */
+  scope?: 'chain' | 'battle'
   faction?: string
   aUnit?: string
   bUnit?: string

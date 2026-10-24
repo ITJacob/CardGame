@@ -17,6 +17,11 @@ export interface ConditionUnit {
   /** 单位蓝本 id（unitDef.id；普通英雄为 null） */
   readonly unitDefId?: string | null
   readonly summonerId?: string | null
+  readonly gender?: string
+  /** 行动条当前进度（gauge_above / gauge_rank） */
+  readonly gaugeCurrent?: number
+  /** 全部状态实例的指定槽值（variant_is） */
+  statusParamValues?(key: string): readonly unknown[]
   statusStacks(defId: string): number
   /** 状态实例 grant.params 是否含指定键（recorded_has；H33 slots 存在性读法） */
   hasStatusParam(defId: string, key: string): boolean
@@ -63,8 +68,14 @@ export interface ConditionContext {
   meterOf?: (key: string) => number
   /** 场上是否存在指定区域（zone_active；zoneId 为 zoneDef.id） */
   zoneActive?: (zoneId: string) => boolean
+  /** 同 tag 连击计数（tag_chain） */
+  tagChainCount?: (tag: string) => number
   /** 状态定义的 tags（has_status_tag 用） */
   statusTags?: (statusId: string) => readonly string[] | undefined
+  /** 驱散计数（dispelled_count：chain = 本次结算，battle = 本场累计） */
+  dispelledCount?: (scope: 'chain' | 'battle') => number
+  /** 本次结算某状态的消耗层数（consumed_count） */
+  consumedCount?: (statusId: string) => number
 }
 
 function compare(actual: number, cmp: Cmp, bound: number): boolean {
@@ -111,6 +122,15 @@ function subjectOf(
   }
 }
 
+/** ally/enemy 侧的存在性聚合：任意同侧单位满足即成立 */
+function sideGroup(cond: Condition, ctx: ConditionContext): ConditionUnit[] | null {
+  if (cond.side !== 'ally' && cond.side !== 'enemy') return null
+  const ref = ctx.host ?? ctx.caster
+  if (!ref) return null
+  const ally = cond.side === 'ally'
+  return (ctx.allUnits?.() ?? []).filter((u) => !u.isDead && (u.faction === ref.faction) === ally)
+}
+
 function subjectSide(cond: Condition): string | undefined {
   return cond.side ?? (typeof cond.target === 'string' ? cond.target : undefined)
 }
@@ -129,6 +149,8 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
       return ctx.random.chance(p)
     }
     case 'has_equipped': {
+      const group = sideGroup(cond, ctx)
+      if (group) return group.some((u) => u.hasEquipped(typeof cond.slot === 'string' ? cond.slot : undefined, typeof cond.id === 'string' ? cond.id : undefined, typeof cond.tag === 'string' ? cond.tag : undefined))
       const subject = subjectOf(cond.side, target, ctx)
       return subject != null && subject.hasEquipped(
         typeof cond.slot === 'string' ? cond.slot : undefined,
@@ -141,24 +163,54 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
         return target != null && target.tags.includes(String(cond.tag ?? ''))
       }
       {
+        const need = cond.n ?? 1
+        const group = sideGroup(cond, ctx)
+        if (group) return group.some((u) => u.statusStacks(prefixOf(cond)) >= need)
         const subject = subjectOf(cond.side, target, ctx)
-        return subject != null && subject.statusStacks(prefixOf(cond)) >= (cond.n ?? 1)
+        return subject != null && subject.statusStacks(prefixOf(cond)) >= need
       }
     case 'has_status_tag': {
-      const subject = subjectOf(cond.side, target, ctx)
       const want = cond.tag == null ? [] : Array.isArray(cond.tag) ? cond.tag : [cond.tag]
-      if (!subject || want.length === 0) return false
-      const held = subject.statusDefIds?.() ?? []
-      const hits = held.filter((id) => {
+      if (want.length === 0) return false
+      const hits = (u: ConditionUnit): number => (u.statusDefIds?.() ?? []).filter((id) => {
         const tags = ctx.statusTags?.(id) ?? []
         return want.some((t) => tags.includes(t))
       }).length
-      return compare(hits, cond.cmp ?? '>=', cond.n ?? 1)
+      const group = sideGroup(cond, ctx)
+      if (group) return group.some((u) => compare(hits(u), cond.cmp ?? '>=', cond.n ?? 1))
+      const subject = subjectOf(cond.side, target, ctx)
+      return subject != null && compare(hits(subject), cond.cmp ?? '>=', cond.n ?? 1)
+    }
+    case 'gender_is': {
+      const subject = subjectOf(cond.side ?? 'target', target, ctx)
+      const want = String(cond.gender ?? cond.value ?? '')
+      return subject != null && want !== '' && subject.gender === want
+    }
+    case 'gauge_above': {
+      const subject = subjectOf(cond.side ?? 'target', target, ctx)
+      return subject != null && compare(subject.gaugeCurrent ?? 0, cond.cmp ?? '>=', cond.n ?? 0)
+    }
+    case 'gauge_rank': {
+      const subject = subjectOf(cond.side ?? 'target', target, ctx)
+      if (!subject) return false
+      const all = (ctx.allUnits?.() ?? []).filter((u) => !u.isDead)
+      const rank = 1 + all.filter((u) => (u.gaugeCurrent ?? 0) > (subject.gaugeCurrent ?? 0)).length
+      return compare(rank, cond.cmp ?? '<=', cond.n ?? 1)
+    }
+    case 'tag_chain':
+      return compare(ctx.tagChainCount?.(String(cond.tag ?? '')) ?? 0, cond.cmp ?? '>=', cond.n ?? 1)
+    case 'variant_is': {
+      const subject = subjectOf(cond.side ?? 'target', target, ctx)
+      const want = String(cond.id ?? '')
+      if (!subject || !want) return false
+      return (subject.statusParamValues?.('variant') ?? []).some((v) => v === want)
     }
     case 'target_dead':
       return target != null && target.isDead
     case 'target_unit_type': {
       const types = cond.unitTypes ?? (cond.type ? (Array.isArray(cond.type) ? cond.type : [cond.type]) : [])
+      const group = sideGroup(cond, ctx)
+      if (group) return group.some((u) => u.unitType != null && types.includes(u.unitType))
       const subject = subjectOf(cond.side ?? 'target', target, ctx)
       return subject != null && subject.unitType != null && types.includes(subject.unitType)
     }
@@ -213,13 +265,14 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
     }
     case 'has_category': {
       const cats = cond.categories ?? (cond.category ? [cond.category] : [])
-      const subject = subjectOf(cond.side, target, ctx)
-      if (!subject) return false
       const ids = cond.id ? (Array.isArray(cond.id) ? cond.id : [cond.id]) : undefined
-      if (ids) return ids.some((id) => (ctx.defCategory?.(id) ?? []).some((c) => cats.includes(c)))
-      // 无 id：判定指定方当前持有的状态类别（has_category side:self/attacker）
-      const held = subject.statusDefIds?.() ?? []
-      return held.some((id) => (ctx.defCategory?.(id) ?? []).some((c) => cats.includes(c)))
+      const hit = (u: ConditionUnit): boolean => ids
+        ? ids.some((id) => (ctx.defCategory?.(id) ?? []).some((c) => cats.includes(c)))
+        : (u.statusDefIds?.() ?? []).some((id) => (ctx.defCategory?.(id) ?? []).some((c) => cats.includes(c)))
+      const group = sideGroup(cond, ctx)
+      if (group) return group.some(hit)
+      const subject = subjectOf(cond.side, target, ctx)
+      return subject != null && hit(subject)
     }
     case 'field_status_count': {
       const id = prefixOf(cond)
@@ -227,7 +280,20 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
       return compare(count, cond.cmp ?? '>=', cond.n ?? 1)
     }
     case 'dead_count': {
-      const dead = (ctx.allUnits?.() ?? []).filter((u) => u.isDead).length
+      // side 缺省 = 全场；ally/enemy 相对 host/caster 数同侧死者（sideGroup 只收活人，不能复用）
+      const all = ctx.allUnits?.() ?? []
+      if (cond.side === 'ally' || cond.side === 'enemy') {
+        const ref = ctx.host ?? ctx.caster
+        if (!ref) return false
+        const ally = cond.side === 'ally'
+        const dead = all.filter((u) => u.isDead && (u.faction === ref.faction) === ally).length
+        return compare(dead, cond.cmp ?? '>=', cond.n ?? 1)
+      }
+      if (cond.side === 'self' || cond.side === 'target') {
+        const subject = subjectOf(cond.side, target, ctx)
+        return compare(subject?.isDead ? 1 : 0, cond.cmp ?? '>=', cond.n ?? 1)
+      }
+      const dead = all.filter((u) => u.isDead).length
       return compare(dead, cond.cmp ?? '>=', cond.n ?? 1)
     }
     case 'resource_compare': {
@@ -245,6 +311,12 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
     case 'meter_compare': {
       return compare(ctx.meterOf?.(String(cond.key ?? '')) ?? 0, cond.cmp ?? '>=', cond.n ?? 0)
     }
+    case 'dispelled_count': {
+      const scope = cond.scope === 'battle' ? 'battle' : 'chain'
+      return compare(ctx.dispelledCount?.(scope) ?? 0, cond.cmp ?? '>=', cond.n ?? 1)
+    }
+    case 'consumed_count':
+      return compare(ctx.consumedCount?.(String(cond.statusId ?? '')) ?? 0, cond.cmp ?? '>=', cond.n ?? 1)
     case 'zone_active':
       return ctx.zoneActive?.(String(cond.zoneId ?? '')) ?? false
     case 'faction_is': {

@@ -123,12 +123,14 @@ export interface StatusGrant {
   duration?: number | null
   /** 时长口径：缺省承接 StatusDef.durationUnit，再缺省 tick */
   durationUnit?: DurationUnit
-  stacks?: number
+  /** 'all' 仅用于 consume：一次扣光当前全部层数（F48 status.consume(all)） */
+  stacks?: number | 'all'
   /** 层数语义：add（默认）/ consume（扣减并在归零时卸载）/ override（直接设值） */
   stackMode?: 'add' | 'consume' | 'override'
   /** 次数型状态的初始次数；省略则回退 StatusDef.charges */
   charges?: number
-  params?: Record<string, number>
+  /** 状态数据槽载荷：数值为主，变体/维度键可为字符串（variant_is / recorded_has / $recorded 读） */
+  params?: Record<string, number | string | boolean>
   sourceId: string
   /** 施加者（释放挂载该状态的技能的单位）；载荷简写 `caster` 读它，区别于宿主 self（执行参数 §2.3） */
   casterId?: string

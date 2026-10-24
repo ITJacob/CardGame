@@ -21,7 +21,7 @@ import { commitBehavior } from '../execution/commit'
 import type { BehaviorSource, PipelineDeps } from '../execution/pipeline'
 import type { Consumption } from '../shared/types'
 import type { DecisionInput, DecisionRequest } from '../execution/types'
-import { numeric, withParams, type EffectContext, type OpportunityPayload } from '../effect/context'
+import { createLedger, numeric, withParams, type EffectContext, type OpportunityPayload, type ResolutionLedger } from '../effect/context'
 import type { TargetScope, TriggerSubjects } from '../effect/target-scope'
 import { conditionContext, executeNodes } from '../effect/executor'
 import { evaluateCondition } from '../shared/effect-condition'
@@ -136,8 +136,21 @@ class CombatRuntime implements CombatRuntimeHandle {
   private readonly zoneBoosts = new Map<UnitId, { stat: StatKey; delta: number; sourceId: string }[]>()
   /** 触发载荷内伤害的嵌套深度：>0 时不再派生 on_deal/on_take_damage，防自触发递归 */
   private damageTriggerDepth = 0
+  /** 同 tag 连击推进：技能 tag 与上一张相同则 +1，否则开新链；无 tag 清链 */
+  private pushTagChain(unit: CombatUnit, skillRef: string): void {
+    const tags = this.lookup.skillDef(skillRef)?.tags ?? []
+    if (tags.length === 0) { this.tagChain.delete(unit.id); return }
+    const prev = this.tagChain.get(unit.id)
+    const tag = prev && tags.includes(prev.tag) ? prev.tag : tags[0]!
+    this.tagChain.set(unit.id, { tag, count: prev && prev.tag === tag ? prev.count + 1 : 1 })
+  }
+
   /** 最近一次已结算 Action 的命中单位（on_attack 条件的 target 主体） */
   private lastActionTargets: CombatUnit[] = []
+  /** 同 tag 技能连击（tag_chain）：每单位只记当前链 */
+  private readonly tagChain = new Map<UnitId, { tag: string; count: number }>()
+  /** 本场累计驱散数（dispelled_count scope:'battle'；先例制「本场已有驱散」） */
+  private dispelledTotal = 0
   private echoing = false
   private readonly unsupportedKinds = new Map<string, number>()
 
@@ -389,6 +402,8 @@ class CombatRuntime implements CombatRuntimeHandle {
         return
       }
       this.lastActionTargets = []
+      if (slot.kind === 'skill') this.pushTagChain(unit, source.sourceRef)
+      else this.tagChain.delete(unit.id)
       const r = commitBehavior(unit, slot, opp, source, this.pipelineDeps())
       if (!r.ok) {
         opp.consumedBy = 'wasted'
@@ -567,7 +582,15 @@ class CombatRuntime implements CombatRuntimeHandle {
     rampValue?: number,
     triggerCtx?: Pick<EffectContext, 'host' | 'subjects' | 'event'>,
   ): EffectContext {
+    const ledger = createLedger()
     return {
+      ledger,
+      battleDispelled: () => this.dispelledTotal,
+      noteDispel: (n) => {
+        if (n <= 0) return
+        ledger.dispelled += n
+        this.dispelledTotal += n
+      },
       units: this.units,
       random: this.random,
       registry: this.randomRegistry,
@@ -586,12 +609,16 @@ class CombatRuntime implements CombatRuntimeHandle {
       elementCounter: (defender, element) => this.elementCounter(defender, element),
       checkStackThreshold: (host, statusId) => this.checkThresholdByDef(host, statusId),
       statusTags: (statusId) => this.lookup.statusDef(statusId)?.tags,
+      tagChainCount: (tag) => {
+        const chain = caster ? this.tagChain.get(caster.id) : undefined
+        return chain && chain.tag === tag ? chain.count : 0
+      },
       host: triggerCtx?.host,
       subjects: triggerCtx?.subjects,
       event: triggerCtx?.event,
       warn: (m) => this.warn(m),
       emit: (e) => this.emit(e),
-      mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant, caster),
+      mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant, caster, ledger),
       effectNode: (id) => this.lookup.effectNode(id),
       defCategory: (id) => this.lookup.statusDef(id)?.category,
       statusDef: (id) => this.lookup.statusDef(id),
@@ -1331,17 +1358,19 @@ class CombatRuntime implements CombatRuntimeHandle {
   }
 
   /** dispel 的召唤物销毁分支：按蓝本/归属筛出召唤物，走消散路径（不上死亡链） */
-  private opDispelSummons(owner: CombatUnit | null, sel: { unitId?: string | string[]; ownOnly?: boolean; count?: number }): void {
+  private opDispelSummons(owner: CombatUnit | null, sel: { unitId?: string | string[]; ownOnly?: boolean; count?: number }): number {
     const ids = sel.unitId ? (Array.isArray(sel.unitId) ? sel.unitId : [sel.unitId]) : undefined
     const list = this.units.all().filter((u) => u.summonerId != null && !u.isDead
       && (!sel.ownOnly || u.summonerId === owner?.id)
       && (!ids || (u.unitDefId != null && ids.includes(u.unitDefId))))
     const limit = typeof sel.count === 'number' ? sel.count : list.length
-    for (const u of list.slice(0, limit)) this.disperseSummon(u)
+    const hit = list.slice(0, limit)
+    for (const u of hit) this.disperseSummon(u)
+    return hit.length
   }
 
   /** dispel=domain：解除可驱散界域（tier 过滤；base 不可驱散，INV-B11） */
-  private opDispelDomain(tier?: string, count?: number): void {
+  private opDispelDomain(tier?: string, count?: number): number {
     const keep: typeof this.battle.domains = []
     let removed = 0
     for (const d of this.battle.domains) {
@@ -1356,6 +1385,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       this.emit({ type: 'DomainExpired', defId: d.def.id, tier: d.def.tier })
     }
     this.battle.domains = keep
+    return removed
   }
 
   /** cap 下降后（状态到期/被打断）在 tick 边界收敛：超限部分最老消散 */
@@ -1420,17 +1450,24 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.mountStatus(unit, 'war_spirit', { stacks: amount }, unit)
   }
 
-  private mountStatus(host: CombatUnit, statusId: string, grant: Omit<StatusGrant, 'sourceId'>, caster: CombatUnit | null = null): void {
+  private mountStatus(
+    host: CombatUnit,
+    statusId: string,
+    grant: Omit<StatusGrant, 'sourceId'>,
+    caster: CombatUnit | null = null,
+    ledger?: ResolutionLedger,
+  ): void {
     if (!statusId) return
     let effectiveGrant = grant
     // 战意正向产出：默认走「受击每自身回合 3 层」上限；被动击杀产层可标记绕过回合上限，
     // 但仍受总量 10 层限制。主动消费的负层数不受此限。
-    if (statusId === 'war_spirit' && (grant.stacks ?? 1) > 0) {
+    const gainStacks = typeof grant.stacks === 'number' ? grant.stacks : 1
+    if (statusId === 'war_spirit' && gainStacks > 0) {
       const cur = host.statuses.all().find((i) => i.defId === 'war_spirit')?.currentStacks ?? 0
       const bypassTurnCap = grant.ignoreWarSpiritCap === true
       const allowed = bypassTurnCap
-        ? Math.max(0, Math.min(grant.stacks ?? 1, 10 - cur))
-        : Math.max(0, Math.min(grant.stacks ?? 1, 3 - host.warSpiritGain, 10 - cur))
+        ? Math.max(0, Math.min(gainStacks, 10 - cur))
+        : Math.max(0, Math.min(gainStacks, 3 - host.warSpiritGain, 10 - cur))
       if (allowed <= 0) return
       effectiveGrant = { ...grant, stacks: allowed }
       if (!bypassTurnCap) host.warSpiritGain += allowed
@@ -1446,6 +1483,15 @@ class CombatRuntime implements CombatRuntimeHandle {
         if (rec.charges <= 0) host.immunities.splice(idx, 1)
       }
       return
+    }
+    // 消耗入账（consumed_count / $consumed）：先记账再卸载，归零卸载也要计入
+    if (ledger && effectiveGrant.stackMode === 'consume') {
+      const cur = host.statuses.all().find((i) => i.defId === statusId)?.currentStacks ?? 0
+      const take = effectiveGrant.stacks === 'all'
+        ? cur
+        : Math.max(1, Math.floor(Math.abs(typeof effectiveGrant.stacks === 'number' ? effectiveGrant.stacks : 1)))
+      const consumed = Math.min(cur, take)
+      if (consumed > 0) ledger.consumed.set(statusId, (ledger.consumed.get(statusId) ?? 0) + consumed)
     }
     const inst = host.statuses.mount(statusId, { ...effectiveGrant, sourceId: this.ids.next('status'), casterId: effectiveGrant.casterId ?? caster?.id })
     if (!inst) return

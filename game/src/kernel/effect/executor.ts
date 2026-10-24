@@ -81,14 +81,39 @@ export function conditionContext(ctx: EffectContext): ConditionContext {
     meterOf: (key) => ctx.ops.meterOf(key),
     zoneActive: ctx.zoneActive,
     statusTags: ctx.statusTags,
+    dispelledCount: (scope) => (scope === 'battle' ? ctx.battleDispelled?.() ?? 0 : ctx.ledger?.dispelled ?? 0),
+    consumedCount: (statusId) => ctx.ledger?.consumed.get(statusId) ?? 0,
+    tagChainCount: ctx.tagChainCount,
     host: ctx.host,
     subjects: ctx.subjects,
     event: ctx.event,
   }
 }
 
-function countOf(value: unknown): number {
+/** 次数解析：数值 / `$consumed.<statusId>` / `{valueFrom:'consumedStacks',div,max}` / countFrom:statusStacks */
+function countOf(value: unknown, node: OpRepeat, ctx: EffectContext): number {
   if (typeof value === 'number' && Number.isFinite(value)) return Math.max(0, Math.floor(value))
+  if (typeof value === 'string') {
+    if (value.startsWith('$consumed.')) {
+      return ctx.ledger?.consumed.get(value.slice('$consumed.'.length)) ?? 0
+    }
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? Math.max(0, Math.floor(parsed)) : 1
+  }
+  if (value != null && typeof value === 'object') {
+    const obj = value as { valueFrom?: string; div?: number; max?: number }
+    if (obj.valueFrom === 'consumedStacks') {
+      const last = [...(ctx.ledger?.consumed ?? new Map<string, number>())].at(-1)?.[1] ?? 0
+      const div = typeof obj.div === 'number' && obj.div > 0 ? obj.div : 1
+      const n = Math.floor(last / div)
+      return Math.max(0, typeof obj.max === 'number' ? Math.min(n, obj.max) : n)
+    }
+    ctx.unsupported('count', String(obj.valueFrom ?? 'object'))
+    return 1
+  }
+  if (node.countFrom === 'statusStacks' && node.statusId) {
+    return Math.max(0, ctx.caster?.statusStacks(node.statusId) ?? 0)
+  }
   return 1
 }
 
@@ -103,7 +128,7 @@ function executeNode(node: EffectNode, targets: readonly (CombatUnit | null)[], 
     return
   }
   if (op === 'repeat') {
-    const n = countOf((node as OpRepeat).count)
+    const n = countOf((node as OpRepeat).count, node as OpRepeat, ctx)
     for (let i = 0; i < n; i += 1) executeNodes((node as OpRepeat).steps, targets, ctx)
     return
   }

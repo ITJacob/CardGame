@@ -343,13 +343,14 @@ export function makeUnit(
   faction = 'A',
   attr: { strength?: number; agility?: number; intelligence?: number } = {},
   defs: StatusDef[] = [],
+  gender: 'male' | 'female' = 'male',
 ): CombatUnit {
   const map = new Map(defs.map((d) => [d.id, d]))
   return new CombatUnit(
     id,
     faction,
     { strength: attr.strength ?? 1, agility: attr.agility ?? 1, intelligence: attr.intelligence ?? 1, rank: 0 },
-    'male',
+    gender,
     { statusDefs: { statusDef: (sid) => map.get(sid) }, nextStatusId: (() => { let n = 0; return () => `st#${++n}` })() },
   )
 }

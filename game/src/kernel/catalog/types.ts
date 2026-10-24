@@ -407,6 +407,8 @@ export interface StatusDef {
   reviveBlocked?: boolean
   /** DoT 递进序列（valueFrom:ramp；每次 on_tick 触发取下一档，末档复用） */
   ramp?: readonly (number | string)[]
+  /** 变体/记录槽载荷（variant_is / recorded_has 读取） */
+  slots?: Record<string, unknown>
   source_filter?: string
   priority?: number | string
   crossPathway?: boolean

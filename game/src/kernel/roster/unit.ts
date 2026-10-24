@@ -150,6 +150,20 @@ export class CombatUnit implements Unit {
   get isDead(): boolean {
     return this.hp <= 0
   }
+  get gaugeCurrent(): number {
+    return this.gauge.current
+  }
+  /** variant_is：全部状态实例的指定 grant.params / def.slots 值 */
+  statusParamValues(key: string): readonly unknown[] {
+    const out: unknown[] = []
+    for (const inst of this.statuses.all()) {
+      const p = inst.grant.params as Record<string, unknown> | undefined
+      if (p && key in p) out.push(p[key])
+      const slot = this.statusDefs.statusDef(inst.defId)?.slots as Record<string, unknown> | undefined
+      if (slot && key in slot) out.push(slot[key])
+    }
+    return out
+  }
   statusStacks(defId: string): number {
     return this.statuses.stacksOf(defId)
   }

@@ -54,7 +54,8 @@ export function handleDispel(node: EffDispel, target: CombatUnit | null, ctx: Ef
   const count = typeof rawCount === 'number' ? rawCount : undefined
 
   if (kind === 'domain') {
-    ctx.ops.dispelDomain(f.tier, count)
+    const removed = ctx.ops.dispelDomain(f.tier, count)
+    ctx.noteDispel?.(removed)
     return
   }
   if (kind === 'coordinate') {
@@ -64,11 +65,12 @@ export function handleDispel(node: EffDispel, target: CombatUnit | null, ctx: Ef
 
   // 召唤物销毁：unitId / isOwnSummon / isSummon / casterOwned
   if (f.unitId !== undefined || f.isOwnSummon || f.isSummon || f.casterOwned) {
-    ctx.ops.dispelSummons(target ?? ctx.caster, {
+    const removed = ctx.ops.dispelSummons(target ?? ctx.caster, {
       unitId: f.unitId,
       ownOnly: !!(f.isOwnSummon || f.casterOwned || f.isSummon),
       count,
     })
+    ctx.noteDispel?.(removed)
     return
   }
 
@@ -79,7 +81,8 @@ export function handleDispel(node: EffDispel, target: CombatUnit | null, ctx: Ef
   const limit = count ?? Number.MAX_SAFE_INTEGER
   const wantDispelable = typeof f.dispelable === 'boolean' ? f.dispelable : undefined
   let removed = 0
-  for (const inst of target.statuses.all()) {
+  // 快照后遍历：unmount 会就地 splice，直接迭代 live 数组会漏掉后半段
+  for (const inst of [...target.statuses.all()]) {
     if (removed >= limit) break
     if (ids && !ids.includes(inst.defId)) continue
     if (categories && !categories.some((c) => (ctx.defCategory?.(inst.defId) ?? []).includes(c))) continue
@@ -88,6 +91,7 @@ export function handleDispel(node: EffDispel, target: CombatUnit | null, ctx: Ef
     target.provenance.revertBySource(inst.instanceId)
     removed += 1
   }
+  if (removed > 0) ctx.noteDispel?.(removed)
 }
 
 export function handleDrain(node: EffDrain, target: CombatUnit | null, ctx: EffectContext): void {

@@ -102,10 +102,10 @@ export function handleMountStatus(node: EffMountStatus, target: CombatUnit | nul
   ctx.mountStatus(target, node.statusId, {
     duration: node.duration ?? undefined,
     durationUnit: node.durationUnit,
-    stacks: typeof node.stacks === 'number' ? node.stacks : undefined,
+    stacks: typeof node.stacks === 'number' ? node.stacks : node.stacks === 'all' ? 'all' : undefined,
     stackMode: node.stackMode,
     charges: typeof node.charges === 'number' ? node.charges : undefined,
-    params: node.params as Record<string, number> | undefined,
+    params: node.params as Record<string, number | string | boolean> | undefined,
     ignoreWarSpiritCap: node.ignoreWarSpiritCap,
   })
 }
