@@ -2455,39 +2455,10 @@
           "type": "mount_status",
           "statusId": "lord_of_spirits",
           "duration": null
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "target",
-            "id": "puppet_string",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "mount_status",
-              "statusId": "shield",
-              "value": 4,
-              "duration": 15,
-              "target": "self",
-              "note": "灵界支配反馈：目标带提线木偶则自身获得 4 点护盾（环节⑤ 2026-09-29 补读层段：puppet_string payoff 升 landed）"
-            }
-          ],
-          "else": []
-        },
-        {
-          "type": "take_control",
-          "target": "target",
-          "duration": 1,
-          "actionPolicy": "full",
-          "onExpire": "revert",
-          "note": "提线木偶：动作由执线者说了算"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"掌控灵界\"=对灵体之线绝对支配。依赖运行时覆写 `dispelable`（本稿新增项9）。 ｜ 2026-10-03 骨架手术：提线形状换形（角色=debuff）",
+      "conversionNotes": "翻译/语义：\"掌控灵界\"=对灵体之线绝对支配。依赖运行时覆写 `dispelable`（本稿新增项9）。 ｜ 2026-10-03 骨架手术：提线形状换形（角色=debuff） ｜ 2026-10-24 开局被动语义迁移：target 读取与 take_control 迁至 on_deal_damage",
       "art": {
         "subject": "a crowned figure enthroned in gray mist, countless spirit threads in his palm",
         "elements": [
@@ -2495,7 +2466,44 @@
           "kneeling puppet court"
         ],
         "mood": "majestic, dreadful"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "puppet_string",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "shield",
+                  "value": 4,
+                  "duration": 15,
+                  "target": "self",
+                  "note": "灵界支配反馈：目标带提线木偶则自身获得 4 点护盾（环节⑤ 2026-09-29 补读层段：puppet_string payoff 升 landed）"
+                },
+                {
+                  "type": "take_control",
+                  "target": "target",
+                  "duration": 1,
+                  "actionPolicy": "full",
+                  "onExpire": "revert",
+                  "note": "提线木偶：打中带提线的目标时短暂夺取行动（迁自开局 take_control）"
+                }
+              ],
+              "else": []
+            }
+          ],
+          "note": "灵界支配：命中提线目标时给盾并短暂夺取（迁自开局快照）"
+        }
+      ]
     },
     {
       "id": "skill_seer_s0_fate_anchor",

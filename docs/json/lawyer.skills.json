@@ -1489,54 +1489,86 @@
               "target": "self"
             }
           ]
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "recorded_has",
-            "side": "self",
-            "statusId": "precedent",
-            "id": "death"
-          },
-          "then": [
-            {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 5,
-              "mode": "delta",
-              "target": "self",
-              "note": "独享规则：死亡先例成立时行动条 +5"
-            }
-          ],
-          "else": [],
-          "note": "判例：death"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "ally",
-            "id": "construct"
-          },
-          "then": [
-            {
-              "type": "modify_stat",
-              "stat": "defense",
-              "value": 1,
-              "mode": "delta",
-              "duration": 20,
-              "target": "self",
-              "note": "跨源读取：造物入规，防御 +1"
-            }
-          ],
-          "else": [],
-          "note": "跨系接线（2026-10-23）：读取枢纽 construct"
         }
       ],
       "conversionNotes": [
         "稿面平衡建议：与滔滔不绝（+1 时长）叠加后减益几乎不可解，数值阶段建议给不可驱散设范围限制（如仅对 debuff 生效，control 类除外）",
         "翻译/语义：僭越轴：把自己加进规则豁免列表——同一条规则只打敌人不打我。与仲裁人「律令双向可验证」刺眼对立。",
-        "2026-10-02 骨架手术：骨架手术：规则槽迁移（replace 模式）"
+        "2026-10-02 骨架手术：骨架手术：规则槽迁移（replace 模式）",
+        " ",
+        "｜",
+        " ",
+        "2",
+        "0",
+        "2",
+        "6",
+        "-",
+        "1",
+        "0",
+        "-",
+        "2",
+        "4",
+        " ",
+        "开",
+        "局",
+        "被",
+        "动",
+        "语",
+        "义",
+        "迁",
+        "移",
+        "：",
+        "战",
+        "况",
+        "条",
+        "件",
+        "段",
+        "迁",
+        "至",
+        " ",
+        "o",
+        "n",
+        "_",
+        "t",
+        "u",
+        "r",
+        "n",
+        "_",
+        "s",
+        "t",
+        "a",
+        "r",
+        "t",
+        "（",
+        "原",
+        " ",
+        "o",
+        "n",
+        "_",
+        "b",
+        "a",
+        "t",
+        "t",
+        "l",
+        "e",
+        "_",
+        "s",
+        "t",
+        "a",
+        "r",
+        "t",
+        " ",
+        "无",
+        "目",
+        "标",
+        "，",
+        "条",
+        "件",
+        "读",
+        "成",
+        "宿",
+        "主",
+        "）"
       ],
       "tentative": false,
       "art": {
@@ -1546,7 +1578,59 @@
           "heavy leaning beam"
         ],
         "mood": "smug, absolute"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "recorded_has",
+                "side": "self",
+                "statusId": "precedent",
+                "id": "death"
+              },
+              "then": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 5,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "独享规则：死亡先例成立时行动条 +5"
+                }
+              ],
+              "else": [],
+              "note": "判例：death"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "field_status_count",
+                "id": "construct",
+                "cmp": ">=",
+                "n": 1,
+                "note": "跨源读取：场上存在造物（原 side:ally 聚合无引擎谓词，用全场计数近似）"
+              },
+              "then": [
+                {
+                  "type": "modify_stat",
+                  "stat": "defense",
+                  "value": 1,
+                  "mode": "delta",
+                  "duration": 20,
+                  "target": "self",
+                  "note": "跨源读取：造物入规，防御 +1"
+                }
+              ],
+              "else": [],
+              "note": "跨系接线（2026-10-23）：读取枢纽 construct"
+            }
+          ],
+          "note": "判例/造物读层改为每回合复评（迁自开局快照）"
+        }
+      ]
     },
     {
       "id": "skill_lawyer_s4_distorted_order",

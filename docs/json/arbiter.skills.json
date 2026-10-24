@@ -1821,54 +1821,10 @@
           "target": "self",
           "duration": 10,
           "note": "感应的代价：自身防御 -1"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "target",
-            "id": "marked"
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "mental",
-              "value": 2,
-              "note": "混乱感应：读取标记追加 2"
-            }
-          ],
-          "else": [],
-          "note": "读层：marked"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "target",
-            "id": "confused"
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "mental",
-              "value": 3,
-              "note": "同源共振：混乱秩序共鸣，追加 3"
-            },
-            {
-              "type": "modify_resource",
-              "resource": "order",
-              "value": -1,
-              "mode": "delta",
-              "target": "board",
-              "note": "秩序维持费：接触混乱要付 1 点秩序"
-            }
-          ],
-          "else": [],
-          "note": "跨系接线（2026-10-23）：读取枢纽 confused"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：审讯轴 payoff 之追猎件。与【过目标记】叠加同目标可吃 +3。 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "翻译/语义：审讯轴 payoff 之追猎件。与【过目标记】叠加同目标可吃 +3。 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-24 开局被动语义迁移：战况条件段迁至 on_deal_damage（原 on_battle_start 无目标，条件读成宿主）",
       "art": {
         "subject": "a hunter's gaze locking onto the most frenzied figure amid swirling red mist",
         "elements": [
@@ -1887,7 +1843,61 @@
           "pickCount": 1
         },
         "fallbackSort": "hp_desc"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "marked"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "note": "混乱感应：读取标记追加 2",
+                  "target": "target"
+                }
+              ],
+              "else": [],
+              "note": "读层：marked"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "confused"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 3,
+                  "note": "同源共振：混乱秩序共鸣，追加 3",
+                  "target": "target"
+                },
+                {
+                  "type": "modify_resource",
+                  "resource": "order",
+                  "value": -1,
+                  "mode": "delta",
+                  "target": "board",
+                  "note": "秩序维持费：接触混乱要付 1 点秩序"
+                }
+              ],
+              "else": [],
+              "note": "跨系接线（2026-10-23）：读取枢纽 confused"
+            }
+          ],
+          "note": "锁敌读层：对带标记/混乱的目标追加精神伤（迁自开局快照）"
+        }
+      ]
     },
     {
       "id": "skill_arbiter_s3_battlefield_split",

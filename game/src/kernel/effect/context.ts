@@ -66,6 +66,15 @@ export interface EffectContext {
   readonly rampValue?: number
   /** zone_active 谓词：场上是否存在指定 zoneDef 的 Active 实例 */
   readonly zoneActive?: (zoneId: string) => boolean
+  /** 触发语境主体：效果级 condition 的 side 解析（载荷内 target/attacker 等） */
+  readonly host?: CombatUnit | null
+  readonly subjects?: {
+    target?: CombatUnit | null
+    attacker?: CombatUnit | null
+    killed?: CombatUnit | null
+    caster?: CombatUnit | null
+  }
+  readonly event?: { element?: string; source?: string; statusId?: string }
 }
 
 /** 原语中需要改动战场或新建单位的操作集合 */

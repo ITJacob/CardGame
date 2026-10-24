@@ -2573,25 +2573,6 @@
           "target": "self"
         },
         {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "target",
-            "id": "occult_seal",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "heal",
-              "value": 2,
-              "target": "self",
-              "note": "封印发缚：目标带诡秘封印则缚印共鸣，自疗 2 点（环节⑤ 2026-09-29 跨系读层段：bondage→sleepless occult_seal）"
-            }
-          ],
-          "else": []
-        },
-        {
           "type": "modify_resource",
           "resource": "lost",
           "value": 1,
@@ -2618,7 +2599,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：束缚轴终焉 payoff + 恶欲值消纳枢纽。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff）",
+      "conversionNotes": "翻译/语义：束缚轴终焉 payoff + 恶欲值消纳枢纽。 ｜ 2026-10-03 骨架手术：诅咒反照换形（角色=buff） ｜ 2026-10-24 开局被动语义迁移：战况条件段迁至 on_deal_damage（原 on_battle_start 无目标，条件读成宿主）",
       "art": {
         "subject": "a figure embracing his chains as they fuse into his flesh",
         "elements": [
@@ -2627,7 +2608,34 @@
           "calm dark eyes"
         ],
         "mood": "resigned, unbreakable"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "occult_seal",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "self",
+                  "note": "封印发缚：目标带诡秘封印则缚印共鸣，自疗 2 点（环节⑤ 2026-09-29 跨系读层段：bondage→sleepless occult_seal）"
+                }
+              ],
+              "else": []
+            }
+          ],
+          "note": "封印发缚：打中带诡秘封印的目标自疗（迁自开局快照）"
+        }
+      ]
     },
     {
       "id": "skill_prisoner_s0_item_authority",

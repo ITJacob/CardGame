@@ -2274,37 +2274,10 @@
           "statusId": "flesh_undying",
           "duration": null,
           "target": "self"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "enemy",
-            "id": "parasitized",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "drain",
-              "resource": "hp",
-              "value": 3,
-              "healRatio": 0.5,
-              "target": "enemy",
-              "note": "寄生体即备用血肉：从被寄生的敌人体内抽取 3 点（不灭的燃料）"
-            },
-            {
-              "type": "heal",
-              "value": 2,
-              "target": "self",
-              "note": "血肉回响：场上有被寄生的敌人则不灭血肉共鸣，自疗 2 点（parasitized payoff）"
-            }
-          ],
-          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：最强防御，复活前提=攒血肉（与【补充血肉】闭环）。依赖新增项 3/4。 ｜ 2026-10-02 骨架手术：骨架手术轮：不灭的燃料来自寄生体——血肉储备与寄生同源",
+      "conversionNotes": "翻译/语义：最强防御，复活前提=攒血肉（与【补充血肉】闭环）。依赖新增项 3/4。 ｜ 2026-10-02 骨架手术：骨架手术轮：不灭的燃料来自寄生体——血肉储备与寄生同源 ｜ 2026-10-24 开局被动语义迁移：战况条件段迁至 on_deal_damage（原 on_battle_start 无目标，条件读成宿主）",
       "art": {
         "subject": "a body regrowing from a single pulsing red cell",
         "elements": [
@@ -2312,7 +2285,42 @@
           "reassembling silhouette"
         ],
         "mood": "tenacious, cyclical"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "enemy",
+                "id": "parasitized",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "drain",
+                  "resource": "hp",
+                  "value": 3,
+                  "healRatio": 0.5,
+                  "target": "target",
+                  "note": "寄生体即备用血肉：从被寄生的敌人体内抽取 3 点（不灭的燃料）"
+                },
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "self",
+                  "note": "血肉回响：场上有被寄生的敌人则不灭血肉共鸣，自疗 2 点（parasitized payoff）"
+                }
+              ],
+              "else": []
+            }
+          ],
+          "note": "寄生体即备用血肉：打中被寄生目标时抽取并自疗（迁自开局快照）"
+        }
+      ]
     },
     {
       "id": "skill_supplicant_s2_word_spirit",

@@ -1138,26 +1138,6 @@
           "note": "跨系枢纽挂载（2026-09-29 跨系批，产层兼枢纽计数）"
         },
         {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "target",
-            "id": "corrupted",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "poison",
-              "value": 2,
-              "note": "以毒攻蚀：目标已被腐蚀则药剂蚀穿 2 点"
-            }
-          ],
-          "else": [],
-          "note": "跨系读层段：apothecary→lawyer corrupted（2026-09-29 跨系批）"
-        },
-        {
           "type": "grant_immunity",
           "target": "self",
           "charges": 1,
@@ -1173,7 +1153,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：药剂轴旗舰 payoff：读银月翻倍预服增益。`on_battle_start` 起手（A2 禁 on_spawn）。 ｜ 2026-10-03 骨架手术：预服换形（角色=dmg）",
+      "conversionNotes": "翻译/语义：药剂轴旗舰 payoff：读银月翻倍预服增益。`on_battle_start` 起手（A2 禁 on_spawn）。 ｜ 2026-10-03 骨架手术：预服换形（角色=dmg） ｜ 2026-10-24 开局被动语义迁移：战况条件段迁至 on_deal_damage（原 on_battle_start 无目标，条件读成宿主）",
       "art": {
         "subject": "a battle-mage downing three glowing potions before dawn",
         "elements": [
@@ -1183,7 +1163,36 @@
         ],
         "mood": "eager, blazing"
       },
-      "role": "core"
+      "role": "core",
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "corrupted",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "poison",
+                  "value": 2,
+                  "note": "以毒攻蚀：目标已被腐蚀则药剂蚀穿 2 点",
+                  "target": "target"
+                }
+              ],
+              "else": [],
+              "note": "跨系读层段：apothecary→lawyer corrupted（2026-09-29 跨系批）"
+            }
+          ],
+          "note": "跨系读层：打中带腐蚀的目标追加毒伤（迁自开局快照）"
+        }
+      ]
     },
     {
       "id": "skill_apothecary_s6_spirit_material",

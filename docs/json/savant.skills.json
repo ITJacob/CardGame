@@ -700,26 +700,6 @@
           "target": "self"
         },
         {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "target",
-            "id": "doom",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "none",
-              "value": 2,
-              "note": "推演厄运：目标带厄运标记则规避反打 2 点"
-            }
-          ],
-          "else": [],
-          "note": "跨系读层段：savant→assassin doom（2026-09-29 跨系批二）"
-        },
-        {
           "type": "modify_rule_slot",
           "slot": 1,
           "field": "scope",
@@ -738,7 +718,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：知识轴 payoff：层数够则多 1 层减伤。依赖 C6 charges。 ｜ 2026-10-03 骨架手术：文明换形（角色=dmg）",
+      "conversionNotes": "翻译/语义：知识轴 payoff：层数够则多 1 层减伤。依赖 C6 charges。 ｜ 2026-10-03 骨架手术：文明换形（角色=dmg） ｜ 2026-10-24 开局被动语义迁移：战况条件段迁至 on_deal_damage（原 on_battle_start 无目标，条件读成宿主）",
       "art": {
         "subject": "an appraiser sidestepping a falling blow by half an inch, utterly calm",
         "elements": [
@@ -746,7 +726,36 @@
           "pre-scouted hazard markers"
         ],
         "mood": "calm, anticipatory"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "doom",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "note": "推演厄运：目标带厄运标记则规避反打 2 点",
+                  "target": "target"
+                }
+              ],
+              "else": [],
+              "note": "跨系读层段：savant→assassin doom（2026-09-29 跨系批二）"
+            }
+          ],
+          "note": "推演厄运：打中带厄运的目标反打（迁自开局快照）"
+        }
+      ]
     },
     {
       "id": "skill_savant_s6_mechanical_marvel",

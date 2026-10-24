@@ -2777,44 +2777,6 @@
           "target": "self"
         },
         {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "target",
-            "id": "forced_growth"
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "none",
-              "value": 2,
-              "target": "target",
-              "note": "接受催熟：催熟为刃，追加 2 点"
-            }
-          ],
-          "else": [],
-          "note": "读层：催熟"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "target",
-            "id": "cultivated",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "none",
-              "value": 2,
-              "note": "权柄读大地：目标大地层数在场则自然权柄顺势催熟为刃，追加 2 点（环节⑤ 2026-09-29 跨轴读层段：blight→harvest，conversionNotes 明写跨轴落地）"
-            }
-          ],
-          "else": []
-        },
-        {
           "type": "spawn",
           "unitId": "unit_vermin",
           "count": 1,
@@ -2825,7 +2787,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：荒芜/大地 payoff：读 `大地` 强化封印抗性。 ｜ 2026-10-03 骨架手术：孕育换形（角色=dmg）",
+      "conversionNotes": "翻译/语义：荒芜/大地 payoff：读 `大地` 强化封印抗性。 ｜ 2026-10-03 骨架手术：孕育换形（角色=dmg） ｜ 2026-10-24 开局被动语义迁移：战况条件段迁至 on_deal_damage（原 on_battle_start 无目标，条件读成宿主）",
       "art": {
         "subject": "a colossal figure whose body is forest, river and stone",
         "elements": [
@@ -2833,7 +2795,54 @@
           "rivers running down stone limbs"
         ],
         "mood": "immense, untouchable"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "forced_growth"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "target": "target",
+                  "note": "接受催熟：催熟为刃，追加 2 点"
+                }
+              ],
+              "else": [],
+              "note": "读层：催熟"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "cultivated",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "none",
+                  "value": 2,
+                  "note": "权柄读大地：目标大地层数在场则自然权柄顺势催熟为刃，追加 2 点（环节⑤ 2026-09-29 跨轴读层段：blight→harvest，conversionNotes 明写跨轴落地）",
+                  "target": "target"
+                }
+              ],
+              "else": []
+            }
+          ],
+          "note": "权柄读层：打中带催熟/大地层数的目标追加伤害（迁自开局快照）"
+        }
+      ]
     },
     {
       "id": "skill_planter_s6_force_growth",

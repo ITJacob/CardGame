@@ -85,7 +85,8 @@
       "flavor": "你的身体早已习惯不眠，别人睡一整夜才攒下的精力，你在片刻的假寐里就能补回——但唯有夜色垂落时，这份禀赋才会真正苏醒。",
       "describe": "夜晚/午夜开始时获得「不眠之躯」：立即回复 5 点能量，并获得能量上限 +5、能量回复 +0.2/tick，持续 10tick；不眠之躯未消退时不会重复触发。",
       "hook": [
-        "on_battle_start"
+        "on_battle_start",
+        "on_phase_change"
       ],
       "effects": [
         {
@@ -134,7 +135,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "稿面注明能量仅为'睡得少'的副产品，v0.1 的能量续航轴已废弃，本卡为唯一遗留｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight），重点在夜不在光。 ｜ 2026-10-20 与夜视分化：由持续夜光环改为 on_phase_change/on_battle_start 的入夜能量爆发（10tick，防重复触发），夜视保留持续相位光环。",
+      "conversionNotes": "稿面注明能量仅为'睡得少'的副产品，v0.1 的能量续航轴已废弃，本卡为唯一遗留｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight），重点在夜不在光。 ｜ 2026-10-20 与夜视分化：由持续夜光环改为 on_phase_change/on_battle_start 的入夜能量爆发（10tick，防重复触发），夜视保留持续相位光环。 ｜ 2026-10-24 相位门控修正：hook 补 on_phase_change（原仅 on_battle_start，白天开局永不触发）",
       "art": {
         "subject": "a watchman resting upright in a moonlit chair, eyes half-open",
         "elements": [

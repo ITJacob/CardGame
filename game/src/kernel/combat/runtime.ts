@@ -126,6 +126,8 @@ class CombatRuntime implements CombatRuntimeHandle {
   private readonly triggerLastFire = new Map<string, number>()
   /** 区域数值倍率已应用的 provenance 记录（unitId → 条目） */
   private readonly zoneBoosts = new Map<UnitId, { stat: StatKey; delta: number; sourceId: string }[]>()
+  /** 触发载荷内伤害的嵌套深度：>0 时不再派生 on_deal/on_take_damage，防自触发递归 */
+  private damageTriggerDepth = 0
   /** 最近一次已结算 Action 的命中单位（on_attack 条件的 target 主体） */
   private lastActionTargets: CombatUnit[] = []
   private echoing = false
@@ -555,6 +557,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     targetScope?: TargetScope,
     sourceRef?: string,
     rampValue?: number,
+    triggerCtx?: Pick<EffectContext, 'host' | 'subjects' | 'event'>,
   ): EffectContext {
     return {
       units: this.units,
@@ -572,6 +575,9 @@ class CombatRuntime implements CombatRuntimeHandle {
       damageSource: this.isAttackActionRef(sourceRef) ? 'behavior' : 'status',
       rampValue,
       zoneActive: (zoneId) => this.battle.zones.some((z) => z.status === 'Active' && z.def.id === zoneId),
+      host: triggerCtx?.host,
+      subjects: triggerCtx?.subjects,
+      event: triggerCtx?.event,
       warn: (m) => this.warn(m),
       emit: (e) => this.emit(e),
       mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant, caster),
@@ -590,13 +596,20 @@ class CombatRuntime implements CombatRuntimeHandle {
         const eventInfo: TriggerEventInfo | undefined = info
           ? { element: info.element, source: info.source }
           : undefined
-        if (attacker) {
-          this.fireStatusTriggers(attacker, 'on_deal_damage', undefined, undefined, {
-            target: defender,
-            attacker,
-          }, eventInfo)
+        // 触发载荷内的伤害不再派生伤害触发（on_deal_damage 追加伤害 → 再触发自己会无限递归）
+        if (this.damageTriggerDepth > 0) return
+        this.damageTriggerDepth += 1
+        try {
+          if (attacker) {
+            this.fireStatusTriggers(attacker, 'on_deal_damage', undefined, undefined, {
+              target: defender,
+              attacker,
+            }, eventInfo)
+          }
+          this.fireStatusTriggers(defender, 'on_take_damage', undefined, undefined, { attacker, target: defender }, eventInfo)
+        } finally {
+          this.damageTriggerDepth -= 1
         }
-        this.fireStatusTriggers(defender, 'on_take_damage', undefined, undefined, { attacker, target: defender }, eventInfo)
         void amount
       },
       ops: {
@@ -1568,18 +1581,23 @@ class CombatRuntime implements CombatRuntimeHandle {
           rampValue = Number(ramp[Math.min(rampStep, ramp.length - 1)])
         }
       }
-      const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity, targetScope, originCardId, rampValue)
       const conditionTargetUnit = conditionTarget ?? targetScope?.targets[0] ?? null
+      const triggerSubjects = {
+        target: conditionTargetUnit,
+        attacker: targetScope?.attacker ?? null,
+        killed: targetScope?.killed ?? null,
+        caster: targetScope?.caster ?? caster ?? null,
+      }
+      const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity, targetScope, originCardId, rampValue, {
+        host: unit,
+        subjects: triggerSubjects,
+        event: eventInfo,
+      })
       if (t.condition) {
         const condCtx = {
           ...conditionContext(ctx),
           host: unit,
-          subjects: {
-            target: conditionTargetUnit,
-            attacker: targetScope?.attacker ?? null,
-            killed: targetScope?.killed ?? null,
-            caster: targetScope?.caster ?? caster ?? null,
-          },
+          subjects: triggerSubjects,
           event: eventInfo,
         }
         if (!evaluateCondition(t.condition, conditionTargetUnit, condCtx)) continue

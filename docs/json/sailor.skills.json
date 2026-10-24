@@ -3415,28 +3415,6 @@
           "mode": "delta",
           "target": "self",
           "note": "盛怒之躯：生命上限 +5"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "hp_percent",
-            "side": "self",
-            "cmp": "<",
-            "n": 50
-          },
-          "then": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 3,
-              "mode": "delta",
-              "duration": 20,
-              "target": "self",
-              "note": "盛怒：低血时攻击 +3"
-            }
-          ],
-          "else": [],
-          "note": "盛怒之躯"
         }
       ],
       "tentative": false,
@@ -3451,8 +3429,38 @@
         ],
         "mood": "volcanic, brimful"
       },
-      "conversionNotes": "2026-10-03 骨架手术：轮转换形（角色=buff）",
-      "role": "core"
+      "conversionNotes": "2026-10-03 骨架手术：轮转换形（角色=buff） ｜ 2026-10-24 开局被动语义迁移：战况条件段迁至 on_take_damage（原 on_battle_start 无目标，条件读成宿主）",
+      "role": "core",
+      "triggers": [
+        {
+          "event": "on_take_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "hp_percent",
+                "side": "self",
+                "cmp": "<",
+                "n": 50
+              },
+              "then": [
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": 3,
+                  "mode": "delta",
+                  "duration": 20,
+                  "target": "self",
+                  "note": "盛怒：低血时攻击 +3"
+                }
+              ],
+              "else": [],
+              "note": "盛怒之躯"
+            }
+          ],
+          "note": "盛怒：受击且低血时攻击 +3（迁自开局快照）"
+        }
+      ]
     },
     {
       "id": "skill_sailor_s4_wrath_smash",
