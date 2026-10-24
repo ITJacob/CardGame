@@ -9,15 +9,15 @@
 | apprentice | assassin | 0.102 | 0.229 |
 | savant | prisoner | 0.147 | 0.229 |
 | prisoner | savant | 0.147 | 0.240 |
-| corpse_collector | prisoner | 0.167 | 0.244 |
+| corpse_collector | prisoner | 0.166 | 0.244 |
 | thief | apprentice | 0.151 | 0.249 |
 | assassin | apprentice | 0.102 | 0.249 |
 | hunter | savant | 0.149 | 0.252 |
 | apothecary | sailor | 0.135 | 0.255 |
 | sailor | apothecary | 0.135 | 0.262 |
-| spectator | apprentice | 0.137 | 0.263 |
+| spectator | apprentice | 0.136 | 0.263 |
 | supplicant | prisoner | 0.195 | 0.264 |
-| lawyer | monster | 0.127 | 0.268 |
+| lawyer | monster | 0.127 | 0.269 |
 | monster | lawyer | 0.127 | 0.272 |
 | arbiter | lawyer | 0.133 | 0.286 |
 | criminal | thief | 0.233 | 0.303 |
@@ -35,7 +35,7 @@
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | **apothecary** | 0.00 | 0.21 | 0.34 | 0.20 | 0.32 | 0.19 | 0.29 | 0.20 | 0.29 | 0.29 | 0.16 | 0.20 | 0.30 | 0.36 | 0.13 | 0.16 | 0.31 | 0.33 | 0.28 | 0.22 | 0.25 | 0.32 |
 | **apprentice** | 0.21 | 0.00 | 0.28 | 0.10 | 0.33 | 0.19 | 0.26 | 0.22 | 0.24 | 0.24 | 0.28 | 0.17 | 0.27 | 0.26 | 0.18 | 0.16 | 0.24 | 0.30 | 0.14 | 0.21 | 0.15 | 0.36 |
-| **arbiter** | 0.34 | 0.28 | 0.00 | 0.32 | 0.17 | 0.28 | 0.32 | 0.28 | 0.13 | 0.14 | 0.39 | 0.27 | 0.35 | 0.33 | 0.32 | 0.28 | 0.30 | 0.35 | 0.29 | 0.31 | 0.29 | 0.27 |
+| **arbiter** | 0.34 | 0.28 | 0.00 | 0.32 | 0.17 | 0.28 | 0.32 | 0.28 | 0.13 | 0.14 | 0.39 | 0.28 | 0.35 | 0.33 | 0.32 | 0.28 | 0.30 | 0.35 | 0.29 | 0.31 | 0.29 | 0.27 |
 | **assassin** | 0.20 | 0.10 | 0.32 | 0.00 | 0.33 | 0.20 | 0.24 | 0.23 | 0.25 | 0.31 | 0.28 | 0.20 | 0.29 | 0.32 | 0.22 | 0.20 | 0.30 | 0.31 | 0.16 | 0.22 | 0.18 | 0.37 |
 | **chanter** | 0.32 | 0.33 | 0.17 | 0.33 | 0.00 | 0.30 | 0.35 | 0.29 | 0.20 | 0.19 | 0.40 | 0.33 | 0.39 | 0.40 | 0.33 | 0.32 | 0.36 | 0.38 | 0.34 | 0.35 | 0.33 | 0.23 |
 | **corpse_collector** | 0.19 | 0.19 | 0.28 | 0.20 | 0.30 | 0.00 | 0.27 | 0.19 | 0.27 | 0.27 | 0.24 | 0.17 | 0.27 | 0.27 | 0.23 | 0.19 | 0.32 | 0.28 | 0.22 | 0.23 | 0.19 | 0.35 |
@@ -44,9 +44,9 @@
 | **lawyer** | 0.29 | 0.24 | 0.13 | 0.25 | 0.20 | 0.27 | 0.29 | 0.30 | 0.00 | 0.13 | 0.39 | 0.27 | 0.34 | 0.33 | 0.26 | 0.27 | 0.30 | 0.34 | 0.29 | 0.27 | 0.25 | 0.24 |
 | **monster** | 0.29 | 0.24 | 0.14 | 0.31 | 0.19 | 0.27 | 0.33 | 0.30 | 0.13 | 0.00 | 0.37 | 0.26 | 0.34 | 0.33 | 0.30 | 0.25 | 0.26 | 0.33 | 0.28 | 0.26 | 0.26 | 0.28 |
 | **planter** | 0.16 | 0.28 | 0.39 | 0.28 | 0.40 | 0.24 | 0.34 | 0.24 | 0.39 | 0.37 | 0.00 | 0.27 | 0.35 | 0.40 | 0.25 | 0.22 | 0.37 | 0.39 | 0.32 | 0.29 | 0.33 | 0.39 |
-| **prisoner** | 0.20 | 0.17 | 0.27 | 0.20 | 0.33 | 0.17 | 0.24 | 0.22 | 0.27 | 0.26 | 0.27 | 0.00 | 0.30 | 0.28 | 0.21 | 0.15 | 0.29 | 0.28 | 0.19 | 0.19 | 0.16 | 0.39 |
+| **prisoner** | 0.20 | 0.17 | 0.28 | 0.20 | 0.33 | 0.17 | 0.24 | 0.22 | 0.27 | 0.26 | 0.27 | 0.00 | 0.30 | 0.27 | 0.21 | 0.15 | 0.29 | 0.28 | 0.19 | 0.19 | 0.16 | 0.39 |
 | **pryer** | 0.30 | 0.27 | 0.35 | 0.29 | 0.39 | 0.27 | 0.37 | 0.22 | 0.34 | 0.34 | 0.35 | 0.30 | 0.00 | 0.32 | 0.28 | 0.25 | 0.35 | 0.37 | 0.31 | 0.33 | 0.29 | 0.35 |
-| **reader** | 0.36 | 0.26 | 0.33 | 0.32 | 0.40 | 0.27 | 0.33 | 0.24 | 0.33 | 0.33 | 0.40 | 0.28 | 0.32 | 0.00 | 0.32 | 0.24 | 0.34 | 0.32 | 0.27 | 0.33 | 0.26 | 0.50 |
+| **reader** | 0.36 | 0.26 | 0.33 | 0.32 | 0.40 | 0.27 | 0.33 | 0.24 | 0.33 | 0.33 | 0.40 | 0.27 | 0.32 | 0.00 | 0.32 | 0.24 | 0.34 | 0.32 | 0.27 | 0.33 | 0.26 | 0.50 |
 | **sailor** | 0.13 | 0.18 | 0.32 | 0.22 | 0.33 | 0.23 | 0.28 | 0.20 | 0.26 | 0.30 | 0.25 | 0.21 | 0.28 | 0.32 | 0.00 | 0.19 | 0.34 | 0.33 | 0.27 | 0.25 | 0.24 | 0.36 |
 | **savant** | 0.16 | 0.16 | 0.28 | 0.20 | 0.32 | 0.19 | 0.25 | 0.15 | 0.27 | 0.25 | 0.22 | 0.15 | 0.25 | 0.24 | 0.19 | 0.00 | 0.25 | 0.32 | 0.22 | 0.20 | 0.19 | 0.36 |
 | **seer** | 0.31 | 0.24 | 0.30 | 0.30 | 0.36 | 0.32 | 0.38 | 0.30 | 0.30 | 0.26 | 0.37 | 0.29 | 0.35 | 0.34 | 0.34 | 0.25 | 0.00 | 0.38 | 0.26 | 0.23 | 0.28 | 0.42 |
@@ -60,7 +60,7 @@
 
 | 途径 | Top-5 指纹键 |
 |---|---|
-| apothecary | sshape:cat:buff ×29；tgt:eff:self ×29；prim:mount_status ×28；cost:cooldown:long ×26；sshape:dur:persistent ×23 |
+| apothecary | tgt:eff:self ×32；sshape:cat:buff ×29；prim:mount_status ×28；cost:cooldown:long ×26；sshape:dur:persistent ×23 |
 | apprentice | tgt:eff:self ×35；cost:cooldown:long ×28；param:mode=delta ×28；prim:mount_status ×28；sshape:dur:tick ×26 |
 | arbiter | cost:cooldown:long ×31；param:mode=delta ×29；tgt:mode=unit ×28；cost:energy:high ×27；tgt:faction=enemy ×27 |
 | assassin | tgt:eff:self ×42；prim:mount_status ×36；sshape:dur:tick ×34；cost:cooldown:long ×31；tgt:mode=unit ×30 |
@@ -70,15 +70,15 @@
 | hunter | prim:mount_status ×35；cost:cooldown:long ×30；tgt:eff:self ×30；sshape:dur:tick ×27；cost:energy:high ×24 |
 | lawyer | prim:mount_status ×35；tgt:eff:self ×34；cost:cooldown:long ×33；cost:energy:high ×31；param:mode=delta ×30 |
 | monster | prim:mount_status ×28；tgt:eff:self ×26；sshape:cat:buff ×25；sshape:dur:persistent ×22；cost:cooldown:long ×21 |
-| planter | prim:mount_status ×33；prim:spawn ×30；unit:reach:melee ×29；tgt:eff:self ×28；cost:cooldown:long ×26 |
-| prisoner | param:mode=delta ×26；cost:cooldown:long ×25；tgt:eff:self ×25；prim:mount_status ×24；cost:energy:high ×22 |
+| planter | prim:mount_status ×33；prim:spawn ×30；tgt:eff:self ×29；unit:reach:melee ×29；cost:cooldown:long ×26 |
+| prisoner | param:mode=delta ×26；tgt:eff:self ×26；cost:cooldown:long ×25；prim:mount_status ×24；cost:energy:high ×22 |
 | pryer | cost:cooldown:long ×28；prim:mount_status ×28；tgt:mode=unit ×27；tgt:eff:self ×25；sshape:cat:buff ×22 |
-| reader | prim:mount_status ×24；sshape:dur:tick ×24；cost:cooldown:long ×23；sshape:cat:debuff ×23；tgt:eff:self ×21 |
-| sailor | tgt:eff:self ×34；prim:mount_status ×32；sshape:cat:buff ×29；cost:cooldown:long ×28；cost:energy:high ×27 |
+| reader | prim:mount_status ×24；sshape:dur:tick ×24；cost:cooldown:long ×23；sshape:cat:debuff ×23；tgt:eff:self ×22 |
+| sailor | tgt:eff:self ×35；prim:mount_status ×32；sshape:cat:buff ×29；cost:cooldown:long ×28；cost:energy:high ×27 |
 | savant | param:mode=delta ×28；cost:cooldown:long ×27；tgt:eff:self ×24；sshape:cat:buff ×23；sshape:stacks ×23 |
 | seer | cost:cooldown:long ×27；tgt:mode=unit ×27；tgt:eff:self ×26；cost:energy:high ×23；param:mode=delta ×23 |
-| sleepless | prim:mount_status ×32；tgt:eff:self ×26；cost:cooldown:long ×21；sshape:dur:tick ×20；cost:energy:high ×18 |
-| spectator | cost:cooldown:long ×27；prim:mount_status ×25；tgt:eff:self ×23；tgt:mode=unit ×22；cost:energy:high ×19 |
+| sleepless | prim:mount_status ×32；tgt:eff:self ×28；cost:cooldown:long ×21；sshape:dur:tick ×20；cost:energy:high ×18 |
+| spectator | cost:cooldown:long ×27；prim:mount_status ×25；tgt:eff:self ×24；tgt:mode=unit ×22；cost:energy:high ×19 |
 | supplicant | tgt:eff:self ×31；param:mode=delta ×30；prim:modify_resource ×28；cost:hp_cost ×27；prim:mount_status ×26 |
 | thief | tgt:eff:self ×28；cost:cooldown:long ×25；prim:mount_status ×24；tgt:mode=unit ×24；cost:energy:high ×23 |
 | warrior | tgt:eff:self ×32；cost:cooldown:long ×26；param:mode=delta ×26；prim:mount_status ×26；cond:has_status ×23 |

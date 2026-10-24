@@ -553,6 +553,8 @@ export interface UnitDef {
   pathwayId: PathwayId
   name?: string
   unitType?: string
+  /** 属性来源：template_target = 复制 spawn 主目标；summon_baseline = 按 unitType H1 基线 */
+  baseOn?: string
   base?: number | string | Record<string, Scalar>
   hpRatio?: number | string
   atkRatio?: number | string

@@ -71,7 +71,12 @@ export interface EffectOps {
   /** 改耐久 / 攻击加值 */
   modifyWeapon(unit: CombatUnit, node: EffModifyWeapon): void
   move(unit: CombatUnit, op: string, distance: number, caster: CombatUnit | null): void
-  spawn(caster: CombatUnit | null, node: EffSpawn, near: CombatUnit | null): void
+  spawn(
+    caster: CombatUnit | null,
+    node: EffSpawn,
+    near: CombatUnit | null,
+    sources?: { target?: CombatUnit | null; killed?: CombatUnit | null },
+  ): void
   translocate(unit: CombatUnit, duration: number, payload: readonly EffectNode[]): void
   takeControl(unit: CombatUnit, duration: number, caster: CombatUnit): void
   grantImmunity(unit: CombatUnit, node: EffGrantImmunity): void

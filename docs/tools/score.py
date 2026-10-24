@@ -69,7 +69,8 @@ def card_effects(card):
         if isinstance(tr, dict):
             effs.extend(tr.get("effects") or [])
     if isinstance(card.get("summon"), dict):
-        effs.append({"type": "spawn", **card["summon"]})
+        # 与 catalogBuild 同口径：summon 牌合成的 spawn 落点 = 施法者自身
+        effs.append({"type": "spawn", "target": "self", **card["summon"]})
     return effs
 
 

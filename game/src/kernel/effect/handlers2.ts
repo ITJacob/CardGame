@@ -36,7 +36,10 @@ export function handleMove(node: EffMove, target: CombatUnit | null, ctx: Effect
 }
 
 export function handleSpawn(node: EffSpawn, target: CombatUnit | null, ctx: EffectContext): void {
-  ctx.ops.spawn(ctx.caster, node, target)
+  ctx.ops.spawn(ctx.caster, node, target, {
+    target: target ?? ctx.targetScope?.targets[0] ?? null,
+    killed: ctx.targetScope?.killed ?? null,
+  })
 }
 
 /**

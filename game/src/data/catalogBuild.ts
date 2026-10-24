@@ -175,9 +175,10 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
       phaseHooks.push(...(card.phaseHooks ?? []))
       for (const sd of card.statusDefs ?? []) register(statusDefs, sd.id, sd, warnings, 'statusDef')
 
-      // kind=summon：载荷合成为 spawn 效果节点置于战吼之前（打出即落场），内核零新增分支
+      // kind=summon：载荷合成为 spawn 效果节点置于战吼之前（打出即落场），内核零新增分支；
+      // target=self 保留「给施法者自己落场」的原语义（baseOn/template 继承据此取源）
       const rawEffects = card.kind === 'summon' && card.summon
-        ? [{ type: 'spawn', ...card.summon } as unknown as EffectNode, ...(card.effects ?? [])]
+        ? [{ type: 'spawn', target: 'self', ...card.summon } as unknown as EffectNode, ...(card.effects ?? [])]
         : card.effects
       const effects = internEffects(card.id, rawEffects, effectDefs, warnings)
       checkTriggers(card.id, card.triggers, warnings)

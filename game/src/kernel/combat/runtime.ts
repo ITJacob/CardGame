@@ -5,14 +5,14 @@ import type { Battle, Coordinate, Faction, Lane, OccupancyChanged } from '../bat
 import { LANE_CAPACITY, SUMMON_CAP_BASE } from '../battle/types'
 import { BattlePlacement } from '../battle/placement'
 import { createLookup, type CatalogLookup } from '../catalog/lookup'
-import type { Catalog, EffectNode, EffModifyWeapon, TriggerDef, UnitDef, WeaponDef } from '../catalog/types'
+import type { Catalog, EffectNode, EffModifyWeapon, EffSpawn, TriggerDef, UnitDef, WeaponDef } from '../catalog/types'
 import { EventBus } from '../shared/events'
 import { SequentialIdGenerator } from '../shared/id-generator'
 import { Mulberry32RandomSource, RandomUsageRegistry, type RandomSource } from '../shared/random-source'
 import { round2 } from '../shared/result'
 import { Registry } from '../roster/registry'
 import { CombatUnit } from '../roster/unit'
-import type { BehaviorSlot, StatusGrant, StatusInstance } from '../roster/types'
+import type { BehaviorSlot, SkillSlot, StatusGrant, StatusInstance } from '../roster/types'
 import { CombatScheduler, phaseOf, PHASE_LUMINANCE as LUM } from '../scheduling/scheduler'
 import { resolveInitiative } from '../scheduling/initiative'
 import { availableBehaviors } from '../scheduling/filter'
@@ -33,6 +33,29 @@ import type {
 } from './types'
 
 const DEFAULT_LANES = ['lane0', 'lane1']
+
+/** H1 召唤物基线（召唤物参数 §二）：baseOn=summon_baseline 与缺省 base 的兜底 */
+const UNIT_TYPE_BASELINE: Record<string, { hp: number; atk: number }> = {
+  UNDEAD: { hp: 12, atk: 3 },
+  SPIRIT: { hp: 14, atk: 3 },
+  BEAST: { hp: 10, atk: 4 },
+  VERMIN: { hp: 6, atk: 2 },
+  PLANT: { hp: 16, atk: 2 },
+  CONSTRUCT: { hp: 14, atk: 3 },
+  MACHINE: { hp: 14, atk: 4 },
+  FLESH: { hp: 12, atk: 3 },
+  DEMON: { hp: 16, atk: 5 },
+  ABERRATION: { hp: 18, atk: 4 },
+  ILLUSION: { hp: 8, atk: 3 },
+  ITEM: { hp: 10, atk: 0 },
+}
+
+interface SpawnPlan {
+  hpMax: number
+  atk: number
+  skills: BehaviorSlot[]
+  skillSlots: SkillSlot[]
+}
 
 /** 触发事件载荷：条件 element_is / damage_source_is / on_status_gain.filter.statusId 用 */
 interface TriggerEventInfo {
@@ -567,7 +590,7 @@ class CombatRuntime implements CombatRuntimeHandle {
         destroyWeapon: (u, reason) => this.destroyWeapon(u, reason),
         modifyWeapon: (u, node) => this.opModifyWeapon(u, node),
         move: (u, op, dist, c) => this.opMove(u, op, dist, c),
-        spawn: (c, node, near) => this.opSpawn(c, node, near),
+        spawn: (c, node, near, sources) => this.opSpawn(c, node, near, sources),
         translocate: (u, dur, payload) => this.opTranslocate(u, dur, payload),
         takeControl: (u, dur, c) => this.opTakeControl(u, dur, c),
         grantImmunity: (u, node) => {
@@ -932,35 +955,88 @@ class CombatRuntime implements CombatRuntimeHandle {
 
   private opSpawn(
     caster: CombatUnit | null,
-    node: { unitId?: string; def?: string; kind?: string; position?: string; hpRatio?: unknown; atkRatio?: unknown; count?: unknown; summonCap?: unknown; summonCapOverride?: unknown },
+    node: EffSpawn,
     near: CombatUnit | null,
+    sources?: { target?: CombatUnit | null; killed?: CombatUnit | null },
   ): void {
-    const defId = node.unitId ?? node.def ?? node.kind
+    const template = typeof node.template === 'string' ? node.template : undefined
+    let defId = node.unitId ?? node.def ?? node.kind
+    let source: CombatUnit | null = null
+    // 动态模板（效果参数 §1.1）：源单位决定属性/技能继承；unitId 仍可选来指定身份蓝本
+    if (template === 'killed_unit') source = sources?.killed ?? null
+    else if (template === 'primary_target') source = sources?.target ?? near ?? null
+    else if (template === 'holder') source = caster
+    else if (template && !defId && this.lookup.unitDef(template)) defId = template
     const def = defId ? this.lookup.unitDef(defId) : undefined
-    if (!def) {
-      this.unsupported('spawn', `未知召唤物 ${String(defId)}`)
+    if (!def && !source) {
+      this.unsupported('spawn', template ? `未知模板 ${template}` : `未知召唤物 ${String(defId)}`)
       return
     }
+    // unitDef.baseOn：属性来源声明（template_target = spawn 主目标；summon_baseline = H1 类型档）
+    if (def?.baseOn === 'template_target' && !source) source = near ?? sources?.target ?? null
     const owner = caster
     if (!owner) return
+    const plan = this.spawnPlan(def, source, node, owner)
     const count = Math.max(1, Math.floor(numeric(node.count, 1)))
     // 卡面 spawn 段可做一次性 cap 覆写（H39）：overrides 只抬不压
     const capOverride = this.spawnCapOf(node.summonCap ?? node.summonCapOverride)
     const cap = Math.max(owner.effectiveSummonCap(SUMMON_CAP_BASE), capOverride ?? 0)
     for (let i = 0; i < count; i += 1) {
       if (cap <= 0) {
-        this.warn(`召唤失败：召唤位上限为 0（${defId}）`)
+        this.warn(`召唤失败：召唤位上限为 0（${defId ?? template}）`)
         return
       }
       // H39：超限 = 最早在场者先消散，再落新单位
       this.disperseOverCap(owner, cap)
-      const unit = this.spawnOne(owner, def, near, this.spawnRatio(node.hpRatio, def.hpRatio), this.spawnRatio(node.atkRatio, def.atkRatio))
+      const unit = this.spawnOne(owner, def, source, plan, near)
       if (!unit) return
       this.emit({ type: 'UnitSpawned', unitId: unit.id })
       // on_spawn 两侧：owner = 监听「我召唤了谁」（target 为新生单位）；
       // 新生单位自身 = 蓝本登场载荷（宿主即召唤物，self 指向自己）。
       this.fireStatusTriggers(owner, 'on_spawn', undefined, undefined, { target: unit })
       this.fireStatusTriggers(unit, 'on_spawn')
+    }
+  }
+
+  /**
+   * spawn 属性/技能计划（召唤物参数 §二/§三）：
+   * - 显式比率 + 动态模板 → 源单位 hpMax/攻击 × 比率，并快照复制技能组；
+   * - unitDef.baseOn = template_target → 主目标为源；summon_baseline → H1 类型档；
+   * - 其余走 unitDef.base 绝对值；identity 始终由 unitId 蓝本优先。
+   */
+  private spawnPlan(def: UnitDef | undefined, source: CombatUnit | null, node: EffSpawn, owner: CombatUnit): SpawnPlan {
+    const base = def && typeof def.base === 'object' && def.base
+      ? (def.base as { hp?: number; atk?: number; hpRatio?: unknown; atkRatio?: unknown })
+      : {}
+    const ratioHp = this.spawnRatio(node.hpRatio, def?.hpRatio ?? base.hpRatio)
+    const ratioAtk = this.spawnRatio(node.atkRatio, def?.atkRatio ?? base.atkRatio)
+    const ratioGiven = node.hpRatio !== undefined || node.atkRatio !== undefined
+    const useSource = source != null && (ratioGiven || !def || def.baseOn === 'template_target')
+    let baseHp: number
+    let baseAtk: number
+    if (useSource && source) {
+      baseHp = source.hpMax
+      baseAtk = source.effectiveProfile.attack
+    } else if (def?.baseOn === 'summon_baseline') {
+      const bl = UNIT_TYPE_BASELINE[def.unitType ?? ''] ?? { hp: 12, atk: 3 }
+      baseHp = bl.hp
+      baseAtk = bl.atk
+    } else {
+      baseHp = typeof base.hp === 'number' ? base.hp : 12
+      baseAtk = typeof base.atk === 'number' ? base.atk : 3
+    }
+    const inherit = node.inheritSkills === true ? (source ?? owner) : (useSource ? source : null)
+    const skills: BehaviorSlot[] = inherit
+      ? inherit.behaviorSlots
+        .filter((s) => s.kind === 'skill')
+        .map((s) => ({ ...s, instanceId: this.ids.next('bslot'), cost: { ...s.cost }, cooldownRemaining: 0 }))
+      : []
+    const skillSlots: SkillSlot[] = inherit ? inherit.skillSlots.map((s) => ({ ...s })) : []
+    return {
+      hpMax: Math.max(1, Math.round(baseHp * ratioHp)),
+      atk: Math.max(0, Math.round(baseAtk * ratioAtk)),
+      skills,
+      skillSlots,
     }
   }
 
@@ -975,33 +1051,32 @@ class CombatRuntime implements CombatRuntimeHandle {
     return pick(v) ?? pick(fallback) ?? 1
   }
 
-  private spawnOne(owner: CombatUnit, def: UnitDef, near: CombatUnit | null, hpRatio = 1, atkRatio = 1): CombatUnit | null {
-    const base = typeof def.base === 'object' && def.base ? (def.base as { hp?: number; atk?: number }) : {}
-    const baseHp = typeof base.hp === 'number' ? base.hp : 12
-    const baseAtk = typeof base.atk === 'number' ? base.atk : 3
-    const hp = Math.max(1, Math.round(baseHp * hpRatio))
-    const atk = Math.max(0, Math.round(baseAtk * atkRatio))
+  private spawnOne(owner: CombatUnit, def: UnitDef | undefined, source: CombatUnit | null, plan: SpawnPlan, near: CombatUnit | null): CombatUnit | null {
+    const tags = def?.tags ?? source?.tags ?? []
+    const gender = def?.gender === 'male' || def?.gender === 'female' ? def.gender : owner.gender
     const unit = new CombatUnit(
       this.ids.next('summon'),
       owner.faction,
       { strength: 0, agility: 0, intelligence: 0, rank: 0 },
-      owner.gender,
+      gender,
       { statusDefs: { statusDef: (sid) => this.lookup.statusDef(sid) }, nextStatusId: () => this.ids.next('status') },
-      def.tags ?? [],
+      tags,
     )
-    unit.unitType = def.unitType ?? null
-    unit.unitDefId = def.id
-    unit.attackElement = def.element ?? null
+    unit.unitType = def?.unitType ?? source?.unitType ?? null
+    unit.unitDefId = def?.id ?? source?.unitDefId ?? null
+    unit.attackElement = def?.element ?? source?.attackElement ?? null
     unit.summonerId = owner.id
     // 基线精确化：构造基线 hp_max=30 / attack=2，经账本补差（可回滚）
-    if (hp !== unit.hpMax) unit.provenance.apply('hp_max', hp - unit.hpMax, 'unitDef')
+    if (plan.hpMax !== unit.hpMax) unit.provenance.apply('hp_max', plan.hpMax - unit.hpMax, 'unitDef')
     unit.pool('hp').setValue(unit.hpMax)
-    const atkDelta = atk - unit.effectiveProfile.attack
+    const atkDelta = plan.atk - unit.effectiveProfile.attack
     if (atkDelta !== 0) unit.provenance.apply('attack', atkDelta, 'unitDef')
     // 蓝本触发器：spawn 时装配为被动触发器（fireStatusTriggers 的 passives 通道）
-    if (def.triggers?.length) unit.passives.push({ defId: def.id, triggers: def.triggers })
+    if (def?.triggers?.length) unit.passives.push({ defId: def.id, triggers: def.triggers })
     this.units.add(unit)
     unit.behaviorSlots.push(this.basicAttackSlot(unit))
+    for (const slot of plan.skills) unit.behaviorSlots.push(slot)
+    unit.skillSlots.push(...plan.skillSlots)
     const nearPos = near?.position ?? owner.position
     const ownLanes = [...(this.battle.factions.find((x) => x.id === owner.faction)?.lanes.keys() ?? [])].sort()
     const ordered = nearPos ? [nearPos.lane, ...ownLanes.filter((l) => l !== nearPos.lane)] : ownLanes
@@ -1014,7 +1089,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
     if (!placed) {
       this.units.remove(unit.id)
-      this.warn(`召唤失败：己方半场已满（${def.id}）`)
+      this.warn(`召唤失败：己方半场已满（${def?.id ?? 'template'}）`)
       return null
     }
     return unit
