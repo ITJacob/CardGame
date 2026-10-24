@@ -1,8 +1,9 @@
-// H4 过滤/条件伤害乘区（编队参数 §1.1b）：damage_mul / damage_taken_mul 的事件级求值。
-// 数值仍走「同类取最优」：增益取最大、减益取最小，两者再相乘一次；filter 不匹配的条目直接跳过。
+// H4 过滤/动态/条件伤害乘区（编队参数 §1.1b）：damage_mul / damage_taken_mul / ally_damage_mul
+// 的事件级求值。数值仍走「同类取最优」：增益取最大、减益取最小，两者再相乘一次。
 // filter 的求值主体按方向分：
 //   damage_mul（持有者出伤）  opponent = 受击方
 //   damage_taken_mul（持有者承伤）opponent = 来源方
+//   ally_damage_mul（友军出伤光环）按出伤方阵营收集，filter 仍按 damage_mul 的对手方求值
 // 受击方专用的键（unitType / gender / targetHpPercent / targetConcealed）恒看 event.defender；
 // tags / hasStatus / hasCategory / statCompare / faction / gaugeAbove / isSummon 看 opponent。
 import type { Element, StatKey } from '../ids'
@@ -17,43 +18,63 @@ export interface DamageMulEvent {
   readonly defender: CombatUnit
   /** 按 id 查单位：承伤光环（filter.casterOwned）需要取受击方的召唤者 */
   readonly unitById?: (id: string) => CombatUnit | undefined
+  /** 全场单位：友军出伤光环 / alive_allies / field_status_count 需要 */
+  readonly allUnits?: () => readonly CombatUnit[]
+  /** 当前战场相位：phase_is 条件需要 */
+  readonly phase?: string
 }
 
-type MulKey = 'damage_mul' | 'damage_taken_mul'
+type MulKey = 'damage_mul' | 'damage_taken_mul' | 'ally_damage_mul'
 
 interface MulEntry {
-  value: number
+  value?: number
+  dynamic?: unknown
+  valueFromParams?: string
   filter?: Record<string, unknown>
+  condition?: Record<string, unknown>
 }
 
 /**
- * 某个持有者的某类常驻乘区；event 缺省时过滤条件不生效（保留旧的无条件语义，供测试/兼容）。
+ * 某个持有者的某类常驻乘区；event 缺省时 filter/condition 不生效（保留旧的无条件语义，供测试/兼容）。
  * auraSource：承伤光环的施予者（受击方的召唤者）。只取带 filter.casterOwned 的条目，
  * 与自身条目一起走「同类取最优」，不额外叠乘。
+ * allies：友军出伤光环的收集范围（damage_mul 专用）。
  */
 export function statusDamageMul(
   holder: CombatUnit,
-  key: MulKey,
+  key: 'damage_mul' | 'damage_taken_mul',
   event: DamageMulEvent | undefined,
   lookup: StatusDefLookup,
   auraSource?: CombatUnit,
+  allies?: readonly CombatUnit[],
 ): number {
   let gain = 1
   let loss = 1
-  const collect = (unit: CombatUnit, auraOnly: boolean): void => {
+  const collect = (unit: CombatUnit, entryKey: MulKey, filterKey: 'damage_mul' | 'damage_taken_mul', auraOnly: boolean): void => {
     for (const inst of unit.statuses.all()) {
       const def = lookup.statusDef(inst.defId)
-      for (const entry of entriesOf(def?.modifiers, key)) {
+      for (const entry of entriesOf(def?.modifiers, entryKey)) {
         if (auraOnly && entry.filter?.casterOwned !== true) continue
-        if (event && entry.filter && !matchesFilter(entry.filter, key, unit, inst, event)) continue
-        const eff = 1 + (entry.value - 1) * inst.currentStacks
+        if (event && entry.condition && !matchesCondition(entry.condition, unit, inst, event)) continue
+        if (event && entry.filter && !matchesFilter(entry.filter, filterKey, unit, inst, event)) continue
+        const value = entryValue(entry, unit, inst, lookup)
+        if (value === null) continue
+        const eff = entry.dynamic !== undefined || entry.valueFromParams !== undefined
+          ? value
+          : 1 + (value - 1) * inst.currentStacks
         if (eff >= 1) gain = Math.max(gain, eff)
         else loss = Math.min(loss, eff)
       }
     }
   }
-  collect(holder, false)
-  if (auraSource && auraSource !== holder) collect(auraSource, true)
+  collect(holder, key, key, false)
+  if (auraSource && auraSource !== holder) collect(auraSource, key, key, true)
+  if (key === 'damage_mul' && allies) {
+    for (const ally of allies) {
+      if (ally.isDead || ally.detached || ally.faction !== holder.faction) continue
+      collect(ally, 'ally_damage_mul', 'damage_mul', false)
+    }
+  }
   return gain * loss
 }
 
@@ -68,10 +89,22 @@ function entriesOf(modifiers: ModifierSet | undefined, key: MulKey): MulEntry[] 
     const o = raw as Record<string, unknown>
     if (typeof o.kind === 'string' && o.kind !== key) return
     const value = firstNumber(o.value, o.mul, o.ratio)
-    if (value === null) return
+    const dynamic = o.dynamic
+    const valueFromParams = typeof o.valueFromParams === 'string' ? o.valueFromParams : undefined
+    if (value === null && dynamic === undefined && !valueFromParams) return
+    // perStackOf 的 filter 是「事件过滤」；perCount 的 filter 是「计哪些状态」，不能当事件过滤
+    const dynObj = dynamic && typeof dynamic === 'object' ? dynamic as Record<string, unknown> : null
+    const filter = o.filter && typeof o.filter === 'object'
+      ? o.filter as Record<string, unknown>
+      : dynObj?.perStackOf && dynObj.filter && typeof dynObj.filter === 'object'
+        ? dynObj.filter as Record<string, unknown>
+        : undefined
     out.push({
-      value,
-      filter: o.filter && typeof o.filter === 'object' ? o.filter as Record<string, unknown> : undefined,
+      value: value ?? undefined,
+      dynamic,
+      valueFromParams,
+      filter,
+      condition: o.condition && typeof o.condition === 'object' ? o.condition as Record<string, unknown> : undefined,
     })
   }
   if (Array.isArray(modifiers)) {
@@ -89,13 +122,110 @@ function firstNumber(...vals: unknown[]): number | null {
   return null
 }
 
+/** 取本条乘区的数值；动态与 valueFromParams 直接给出最终乘数（不再按层数缩放） */
+function entryValue(
+  entry: MulEntry,
+  unit: CombatUnit,
+  inst: StatusInstance,
+  lookup: StatusDefLookup,
+): number | null {
+  if (entry.valueFromParams) {
+    const v = inst.grant.params?.[entry.valueFromParams]
+    return typeof v === 'number' && Number.isFinite(v) ? v : null
+  }
+  if (entry.dynamic !== undefined) return dynamicValue(entry.dynamic, unit, inst, lookup)
+  return entry.value ?? null
+}
+
+function dynamicValue(
+  dyn: unknown,
+  unit: CombatUnit,
+  inst: StatusInstance,
+  lookup: StatusDefLookup,
+): number | null {
+  if (typeof dyn === 'string') {
+    const s = dyn.replace(/×/g, '*').replace(/\s+/g, '')
+    const own = /^1\+([\d.]+)\*(?:stacks|层数)$/.exec(s)
+    if (own) return 1 + Number(own[1]) * inst.currentStacks
+    const capped = /^1\+([\d.]+)\*min\(([A-Za-z_][\w]*)\.stacks,(\d+)\)$/.exec(s)
+    if (capped) return 1 + Number(capped[1]) * Math.min(unit.statusStacks(capped[2]!), Number(capped[3]))
+    return null
+  }
+  if (!dyn || typeof dyn !== 'object') return null
+  const o = dyn as Record<string, unknown>
+  if (o.perCount && typeof o.perCount === 'object') {
+    const p = o.perCount as { value?: unknown; cap?: unknown; filter?: Record<string, unknown> }
+    const step = typeof p.value === 'number' ? p.value : 0
+    const count = countStatuses(unit, p.filter, lookup)
+    const bonus = count * step
+    return 1 + (typeof p.cap === 'number' ? Math.min(bonus, p.cap) : bonus)
+  }
+  if (typeof o.perStackOf === 'string') {
+    const step = typeof o.value === 'number' ? o.value : 0
+    return 1 + step * unit.statusStacks(o.perStackOf)
+  }
+  return null
+}
+
+function countStatuses(unit: CombatUnit, filter: Record<string, unknown> | undefined, lookup: StatusDefLookup): number {
+  if (!filter) return unit.statuses.all().length
+  let n = 0
+  for (const inst of unit.statuses.all()) {
+    const cats = lookup.statusDef(inst.defId)?.category ?? []
+    const wantCats = listOf(filter.hasCategory).filter((x): x is string => typeof x === 'string')
+    if (wantCats.length && !wantCats.some((c) => cats.includes(c))) continue
+    const wantIds = listOf(filter.hasStatus).filter((x): x is string => typeof x === 'string')
+    if (wantIds.length && !wantIds.includes(inst.defId)) continue
+    n += 1
+  }
+  return n
+}
+
+function matchesCondition(
+  cond: Record<string, unknown>,
+  holder: CombatUnit,
+  _inst: StatusInstance,
+  event: DamageMulEvent,
+): boolean {
+  if (cond.metric !== undefined) {
+    if (cond.metric === 'alive_allies') {
+      const n = aliveAllies(holder, event)
+      if (!compare(n, String(cond.cmp ?? '>='), Number(cond.value ?? 0))) return false
+    }
+    return true
+  }
+  const kind = typeof cond.kind === 'string' ? cond.kind : ''
+  switch (kind) {
+    case 'caster_status_exists':
+      return typeof cond.id === 'string' && holder.statusStacks(cond.id) > 0
+    case 'phase_is': {
+      const phases = listOf(cond.phases).filter((x): x is string => typeof x === 'string')
+      return !!event.phase && phases.includes(event.phase)
+    }
+    case 'field_status_count': {
+      const id = String(cond.id ?? '')
+      const units = event.allUnits?.() ?? []
+      const n = id.endsWith('_alive')
+        ? units.filter((u) => !u.isDead && u.unitDefId === id.slice(0, -'_alive'.length)).length
+        : units.filter((u) => u.statusStacks(id) > 0).length
+      return compare(n, String(cond.cmp ?? '>='), Number(cond.n ?? 1))
+    }
+    default:
+      return true
+  }
+}
+
+function aliveAllies(holder: CombatUnit, event: DamageMulEvent): number {
+  return (event.allUnits?.() ?? []).filter((u) => !u.isDead && u.faction === holder.faction).length
+}
+
 function listOf(v: unknown): unknown[] {
   return Array.isArray(v) ? v : [v]
 }
 
 function matchesFilter(
   filter: Record<string, unknown>,
-  key: MulKey,
+  key: 'damage_mul' | 'damage_taken_mul',
   holder: CombatUnit,
   inst: StatusInstance,
   event: DamageMulEvent,

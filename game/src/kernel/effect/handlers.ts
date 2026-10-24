@@ -68,6 +68,8 @@ export function handleDamage(node: EffDamage, target: CombatUnit | null, ctx: Ef
     armorPierceRatio: Math.max(numeric(node.armorPierceRatio, 0), outgoing?.armorPierceRatio ?? 0),
     dimMul: ctx.dimMul?.('damage') ?? 1,
     unitById: (id) => ctx.units.get(id),
+    allUnits: () => ctx.units.all(),
+    phase: ctx.phase,
   })
   applyDamageResult(target, result)
   ctx.reportDamage?.(attacker?.faction ?? '', result.final)

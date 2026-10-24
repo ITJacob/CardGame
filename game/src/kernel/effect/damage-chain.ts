@@ -27,6 +27,10 @@ export interface DamageInput {
   dimMul?: number
   /** 单位查询：承伤光环需要按召唤者 id 取施予者 */
   unitById?: (id: string) => CombatUnit | undefined
+  /** 全场单位：友军光环与 alive_allies / field_status_count 条件 */
+  allUnits?: () => readonly CombatUnit[]
+  /** 当前战场相位：phase_is 条件 */
+  phase?: string
 }
 
 export interface DamageStage {
@@ -101,7 +105,12 @@ export function resolveDamage(input: DamageInput): DamageResult {
   // H4：把本次伤害事件传给常驻乘区，带 filter 的状态只在事件匹配时生效
   if (!input.dot) {
     const before = cur
-    const event = { element, attacker, defender, unitById: input.unitById }
+    const event = {
+      element, attacker, defender,
+      unitById: input.unitById,
+      allUnits: input.allUnits,
+      phase: input.phase,
+    }
     cur *= defender.damageTakenMulFor(event)
     cur *= attacker?.damageDealtMulFor(event) ?? 1
     cur *= input.dimMul ?? 1

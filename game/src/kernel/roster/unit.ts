@@ -446,7 +446,7 @@ export class CombatUnit implements Unit {
   }
 
   damageDealtMulFor(event: DamageMulEvent): number {
-    return this.bestStatusMul('damage_mul', event)
+    return statusDamageMul(this, 'damage_mul', event, this.statusDefs, undefined, event.allUnits?.() ?? [])
   }
 
   /** 一次性增减伤修正桶（modify_damage）：同事件内先加后乘。 */
