@@ -252,7 +252,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 ## 7. 维度乘区挂钩（dimHook）
 
-战场全局标量维度（`secrecy` 隐秘值 / `order` 秩序度 / `fate_value` 命运值 / `luminance` 光照度）的累积与阈值判定定义在 `docs/ddd/params/源质维度与跨系枢纽.md` §二，阈值档位对齐 `docs/ddd/params/数值标定基准.md` §五（隐秘值 4/7/10、秩序度 3/7/10、命运值 ±5/±8/±10、光照度 2/5/8）。`dimHook` 把这个「维度→乘区」的挂钩**结构化到卡面**，供结算层（效果上下文）在 `board.<dim>` 达阈值时对本卡相关结算乘 `mul`。
+战场全局标量维度（`secrecy` 隐秘值 / `order` 秩序度 / `fate_value` 命运值 / `luminance` 光照度）的累积与阈值判定定义在 `docs/ddd/params/源质维度与跨系枢纽.md` §二，阈值档位对齐 `docs/ddd/params/数值标定基准.md` §四（隐秘值 4/7/10、秩序度 3/7/10、命运值 ±5/±8/±10、光照度 2/5/8）。`dimHook` 把这个「维度→乘区」的挂钩**结构化到卡面**，供结算层（效果上下文）在 `board.<dim>` 达阈值时对本卡相关结算乘 `mul`。
 
 ```json
 "dimHooks": [{
