@@ -63,8 +63,16 @@ export function hasChanges(diff: OccupancyDiff): boolean {
 
 /** 转成 IDL 的 OccupancyChanged 形状（enter/exit），供 Zone 监听。 */
 export function toOccupancyChanged(diff: OccupancyDiff): OccupancyChanged {
+  // 位移（swap / relocate / 外部重排）也是「离开原格 + 进入新格」：
+  // 否则区域 on_enter / on_exit 只在生成与移除时触发，走动完全不触发（2026-10-24 修正）
   return {
-    enter: diff.entered.map((e) => ({ unitId: e.unitId, coord: e.coord })),
-    exit: diff.left.map((e) => ({ unitId: e.unitId, coord: e.coord })),
+    enter: sortEntries([
+      ...diff.entered,
+      ...diff.moves.map((m) => ({ unitId: m.unitId, coord: m.to })),
+    ]),
+    exit: sortEntries([
+      ...diff.left,
+      ...diff.moves.map((m) => ({ unitId: m.unitId, coord: m.from })),
+    ]),
   }
 }

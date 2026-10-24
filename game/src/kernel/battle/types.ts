@@ -67,9 +67,12 @@ export interface ZoneGrant {
   affects: 'enemy_of_owner' | 'ally_of_owner' | 'any'
   effects: EffectRef[]
   uses?: number
+  /** 剩余 tick；-1/缺省 = 常驻 */
   duration?: number
   sourceId: string
   triggerOnExisting?: boolean
+  /** 区域所有者阵营（affects 的相对基准） */
+  ownerFaction?: FactionId
 }
 
 export interface Zone {

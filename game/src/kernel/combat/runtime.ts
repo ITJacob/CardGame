@@ -1,7 +1,7 @@
 // 战斗运行时：聚合根 Combat 的实现。持事件总线 / 随机源 / id 生成器 / 注册表 /
 // 战场 / Placement / Scheduler，并把一次 step 停在 Manual 决策点。
 import type { FactionId, LaneId, Phase, PoolKey, UnitId } from '../ids'
-import type { Battle, Coordinate, Faction, Lane, OccupancyChanged } from '../battle/types'
+import type { Battle, Coordinate, Faction, Lane, OccupancyChanged, Zone } from '../battle/types'
 import { LANE_CAPACITY, SUMMON_CAP_BASE } from '../battle/types'
 import { BattlePlacement } from '../battle/placement'
 import { createLookup, type CatalogLookup } from '../catalog/lookup'
@@ -304,6 +304,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.fireDomainTriggers('on_tick')
     // 军团维持费断供 / 状态到期后 cap 下降 → 超限部分最老消散（H39）
     this.enforceSummonCaps()
+    this.tickZonesLifecycle()
     this.tickZones()
     if (this.battle.phase !== this.prevPhase) {
       this.prevPhase = this.battle.phase
@@ -772,16 +773,26 @@ class CombatRuntime implements CombatRuntimeHandle {
       this.unsupported('zone', `未知区域 ${String(defId)}`)
       return
     }
+    // 时长：spawn/卡面显式值优先，否则回退 ZoneDef.duration；仍无则常驻
+    const dur = duration > 0 ? duration : (typeof def.duration === 'number' && def.duration > 0 ? def.duration : -1)
     for (const t of targets) {
       if (!t.position) continue
+      const coord = { ...t.position }
       this.battle.zones.push({
         def,
-        grant: { trigger: def.trigger as 'on_enter' | 'on_exit' | 'on_occupy_tick' | undefined, affects: def.affects, effects: [], duration: duration < 0 ? -1 : duration, sourceId: this.ids.next('zone') },
-        coord: { ...t.position },
+        grant: {
+          trigger: def.trigger as 'on_enter' | 'on_exit' | 'on_occupy_tick' | undefined,
+          affects: def.affects,
+          effects: [],
+          duration: dur,
+          sourceId: this.ids.next('zone'),
+          ownerFaction: caster?.faction,
+        },
+        coord,
         status: 'Active',
       })
+      this.emit({ type: 'ZonePlaced', zoneId: def.id, coord })
     }
-    void caster
   }
 
   private opSnapshot(unit: CombatUnit, fields: readonly string[]): void {
@@ -888,34 +899,71 @@ class CombatRuntime implements CombatRuntimeHandle {
   private onOccupancyChanged(e: OccupancyChanged): void {
     for (const entry of e.enter) {
       const unit = this.units.get(entry.unitId)
-      if (!unit) continue
+      if (!unit || unit.isDead) continue
       for (const zone of this.battle.zones) {
+        if (zone.status !== 'Active') continue
         if (!this.zoneHits(zone, entry.coord)) continue
         if (zone.grant.trigger !== 'on_enter' && zone.grant.trigger !== 'on_occupy_tick') continue
-        const effects = zone.def.effects
-        if (effects && effects.length > 0) {
-          executeNodes(effects, [unit], this.makeContext(this.ids.next('zone'), null))
-        }
+        if (!this.zoneAffects(zone, unit)) continue
+        this.fireZone(zone, unit)
+      }
+    }
+    for (const entry of e.exit) {
+      const unit = this.units.get(entry.unitId)
+      if (!unit || unit.isDead) continue
+      for (const zone of this.battle.zones) {
+        if (zone.status !== 'Active' || zone.grant.trigger !== 'on_exit') continue
+        if (!this.zoneHits(zone, entry.coord)) continue
+        if (!this.zoneAffects(zone, unit)) continue
+        this.fireZone(zone, unit)
       }
     }
   }
 
-  /** 每 tick：站在「逐 tick 触发」区域上的单位吃一次效果 */
+  /** 每 tick：站在「逐 tick 触发」区域上的单位吃一次效果（ZoneDef.interval 节流） */
   private tickZones(): void {
     for (const zone of this.battle.zones) {
       if (zone.status !== 'Active' || zone.grant.trigger !== 'on_occupy_tick') continue
       const def = zone.def
       if (!def.effects || def.effects.length === 0) continue
+      if (def.interval && def.interval > 1 && this.tickCount % def.interval !== 0) continue
       for (const u of this.units.all()) {
         if (!u.position || u.isDead || u.detached) continue
         if (!this.zoneHits(zone, u.position)) continue
-        executeNodes(def.effects, [u], this.makeContext(this.ids.next('zone'), null))
+        if (!this.zoneAffects(zone, u)) continue
+        this.fireZone(zone, u)
       }
     }
   }
 
-  private zoneHits(zone: { coord: Coordinate; grant: { affects: string; sourceId: string } }, coord: Coordinate): boolean {
-    void zone.grant
+  /** 区域生命周期（战场参数 §1.1）：duration 逐 tick 递减，归零置 Expired */
+  private tickZonesLifecycle(): void {
+    for (const zone of this.battle.zones) {
+      if (zone.status !== 'Active') continue
+      const d = zone.grant.duration
+      if (d == null || d < 0) continue
+      zone.grant.duration = d - 1
+      if (zone.grant.duration <= 0) {
+        zone.status = 'Expired'
+        this.emit({ type: 'ZoneExpired', zoneId: zone.def.id, coord: zone.coord })
+      }
+    }
+  }
+
+  private fireZone(zone: Zone, unit: CombatUnit): void {
+    if (!zone.def.effects?.length) return
+    this.emit({ type: 'ZoneTriggered', zoneId: zone.def.id, coord: zone.coord })
+    executeNodes(zone.def.effects, [unit], this.makeContext(this.ids.next('zone'), null))
+  }
+
+  private zoneAffects(zone: Zone, unit: CombatUnit): boolean {
+    const owner = zone.grant.ownerFaction
+    const affects = zone.grant.affects
+    if (affects === 'any' || !owner) return true
+    return affects === 'ally_of_owner' ? unit.faction === owner : unit.faction !== owner
+  }
+
+  private zoneHits(zone: { coord: Coordinate }, coord: Coordinate): boolean {
     return zone.coord.faction === coord.faction && zone.coord.lane === coord.lane && zone.coord.index === coord.index
   }
 
