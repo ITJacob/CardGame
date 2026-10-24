@@ -58,7 +58,30 @@
           ],
           "note": "设计箱① 元素共鸣"
         }
-      ]
+      ],
+      "stackThreshold": {
+        "stacks": 3,
+        "effects": [
+          {
+            "type": "mount_status",
+            "statusId": "disease",
+            "stacks": 1,
+            "target": "self",
+            "note": "升阶：中毒满层 → 疾病"
+          },
+          {
+            "type": "dispel",
+            "target": "self",
+            "dispelTarget": "unit",
+            "filter": {
+              "statusId": "poison",
+              "count": 1
+            },
+            "note": "升阶后原中毒移除"
+          }
+        ],
+        "note": "元素共鸣 4 档（升阶转化）：中毒→疾病"
+      }
     },
     {
       "id": "regen",
@@ -272,11 +295,41 @@
               "stacksDelta": 1,
               "target": "self",
               "note": "同元素共鸣（增效档）：火伤喂灼烧 +1 层"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "burn_resonance",
+              "stacks": 1,
+              "target": "self",
+              "note": "共鸣计数 +1（3 次火伤触燃尽）"
             }
           ],
           "note": "设计箱① 元素共鸣"
         }
-      ]
+      ],
+      "stackThreshold": {
+        "stacks": 3,
+        "effects": [
+          {
+            "type": "mount_status",
+            "statusId": "combustion",
+            "stacks": 1,
+            "target": "self",
+            "note": "升阶：灼烧满层 → 燃焚"
+          },
+          {
+            "type": "dispel",
+            "target": "self",
+            "dispelTarget": "unit",
+            "filter": {
+              "statusId": "burn",
+              "count": 1
+            },
+            "note": "升阶后原灼烧移除"
+          }
+        ],
+        "note": "元素共鸣 4 档（升阶转化）：灼烧→燃焚"
+      }
     },
     {
       "id": "conceal",
@@ -492,6 +545,42 @@
       "duration": 15,
       "charges": 2,
       "note": "与决斗姿态对称的远程面（2026-10-02 设计落地）：受投掷 / 法术攻击（reach ∈ {thrown, spell}）时顺序反击——先结算主攻击、再以反作用动作回击攻击者（执行上下文 §六，sourceRef=ranged_counter）；还击的是攻击者本人而非弹道，故法术虽无形、守卫姿态不可拦，照样触发反击。对撞的同步性仍为决斗姿态独有。charges 2：前 2 次远程受击反击，每次生效消耗 1 层（R5 确定性）。姿态生命周期同 INV-P8 跳过维持 / INV-P9 行动退出 / INV-P5 硬控清除。挂载卡：战士·守护状态 / 猎人·挑衅（矩阵 stance 行共享列）。数值 ⚠️D 待平衡。"
+    },
+    {
+      "id": "burn_resonance",
+      "name": "燃尽",
+      "category": [
+        "debuff"
+      ],
+      "dispelable": false,
+      "duration": null,
+      "maxStacks": 3,
+      "element": "fire",
+      "stackThreshold": {
+        "stacks": 3,
+        "effects": [
+          {
+            "type": "damage",
+            "element": "fire",
+            "value": 3,
+            "target": "self",
+            "note": "燃尽爆发：3 次火伤喂灼烧 → 3 点火伤"
+          },
+          {
+            "type": "dispel",
+            "target": "self",
+            "dispelTarget": "unit",
+            "filter": {
+              "statusId": "burn_resonance",
+              "count": 1
+            },
+            "note": "计数清零"
+          }
+        ],
+        "note": "元素共鸣 3 档（计数爆发）"
+      },
+      "note": "灼烧的同元素计数载体；由 burn 的 on_take_damage 累加",
+      "stackPolicy": "stack"
     }
   ]
 }

@@ -1,4 +1,4 @@
-// 设计箱①：同元素共鸣（状态端）与对立元素相消（伤害 ×0.85 + 削 1 层）。
+// 设计箱①：同元素共鸣（状态端 1/3/4 档）与对立元素相消（伤害 ×0.85 + 削 1 层）。
 import { describe, expect, it } from 'vitest'
 import { createCombat } from '../src/kernel'
 import { buildCatalog } from '../src/data/catalogBuild'
@@ -25,13 +25,40 @@ const PATH: PathwayFile = {
       statusDefs: [
         { id: 'probe_frost', name: '寒霜', category: ['debuff'], dispelable: true, duration: null, maxStacks: 3, element: 'ice' },
         {
-          id: 'probe_ember', name: '余烬', category: ['debuff'], dispelable: true, duration: null, maxStacks: 3, element: 'fire',
+          id: 'probe_ember', name: '余烬', category: ['debuff'], dispelable: true, duration: null, maxStacks: 3,
+          element: 'fire',
           triggers: [{
             event: 'on_take_damage',
             condition: { kind: 'element_is', element: 'fire' },
-            effects: [{ type: 'modify_status', statusId: 'probe_ember', stacksDelta: 1, target: 'self' }],
+            effects: [
+              { type: 'modify_status', statusId: 'probe_ember', stacksDelta: 1, target: 'self' },
+              { type: 'mount_status', statusId: 'probe_counter', stacks: 1, target: 'self' },
+            ],
           }],
         },
+        {
+          id: 'probe_counter', name: '计数', category: ['debuff'], dispelable: false, duration: null,
+          maxStacks: 3, stackPolicy: 'stack', element: 'fire',
+          stackThreshold: {
+            stacks: 3,
+            effects: [
+              { type: 'damage', element: 'fire', value: 3, target: 'self' },
+              { type: 'dispel', target: 'self', dispelTarget: 'unit', filter: { statusId: 'probe_counter', count: 1 } },
+            ],
+          },
+        },
+        {
+          id: 'probe_ascend_src', name: '升阶源', category: ['debuff'], dispelable: true, duration: null, maxStacks: 3,
+          element: 'fire',
+          stackThreshold: {
+            stacks: 3,
+            effects: [
+              { type: 'mount_status', statusId: 'probe_ascended', stacks: 1, target: 'self' },
+              { type: 'dispel', target: 'self', dispelTarget: 'unit', filter: { statusId: 'probe_ascend_src', count: 1 } },
+            ],
+          },
+        },
+        { id: 'probe_ascended', name: '升阶体', category: ['debuff'], dispelable: true, duration: null, maxStacks: 1, element: 'fire' },
       ],
     },
   ],
@@ -70,11 +97,25 @@ describe('元素联动', () => {
   it('相消：火伤命中冰状态 → 削 1 层且本次伤害 ×0.85', () => {
     const r = afterOneHit(createCombat(setup([{ defId: 'probe_frost', stacks: 2 }])))
     expect(r.stacks('probe_frost')).toBe(1)
-    expect(r.hp).toBe(31.5) // 40 - 10×0.85
+    expect(r.hp).toBe(31.5)
   })
 
   it('共鸣：同元素伤害给对应状态 +1 层', () => {
     const r = afterOneHit(createCombat(setup([{ defId: 'probe_ember', stacks: 1 }])))
     expect(r.stacks('probe_ember')).toBe(2)
+  })
+
+  it('共鸣 3 档：计数达 3 触发燃尽', () => {
+    const c = createCombat(setup([{ defId: 'probe_ember', stacks: 1 }]))
+    for (let i = 0; i < 3; i += 1) c.step()
+    expect(c.state().units.find((u) => u.id === 'B_u0')!.hp).toBe(7) // 40 - 3×10 - 燃尽 3
+  })
+
+  it('共鸣 4 档：满层升阶并移除原状态', () => {
+    const c = createCombat(setup([{ defId: 'probe_ascend_src', stacks: 3 }]))
+    c.step()
+    const b = c.state().units.find((u) => u.id === 'B_u0')!
+    expect(b.statuses.some((x) => x.defId === 'probe_ascend_src')).toBe(false)
+    expect(b.statuses.some((x) => x.defId === 'probe_ascended')).toBe(true)
   })
 })

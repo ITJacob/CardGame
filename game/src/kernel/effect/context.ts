@@ -66,6 +66,8 @@ export interface EffectContext {
   readonly rampValue?: number
   /** zone_active 谓词：场上是否存在指定 zoneDef 的 Active 实例 */
   readonly zoneActive?: (zoneId: string) => boolean
+  /** 叠层阈值复评（modify_status 改层后调用） */
+  readonly checkStackThreshold?: (host: CombatUnit, statusId: string) => void
   /** 元素相消：受伤方身上削 1 层对立元素状态；返回 true 表示本次伤害按克制系数 ×0.85 */
   readonly elementCounter?: (defender: CombatUnit, element: Element) => boolean
   /** 触发语境主体：效果级 condition 的 side 解析（载荷内 target/attacker 等） */

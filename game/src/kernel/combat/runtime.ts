@@ -584,6 +584,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       rampValue,
       zoneActive: (zoneId) => this.battle.zones.some((z) => z.status === 'Active' && z.def.id === zoneId),
       elementCounter: (defender, element) => this.elementCounter(defender, element),
+      checkStackThreshold: (host, statusId) => this.checkThresholdByDef(host, statusId),
       host: triggerCtx?.host,
       subjects: triggerCtx?.subjects,
       event: triggerCtx?.event,
@@ -1473,6 +1474,11 @@ class CombatRuntime implements CombatRuntimeHandle {
       return true
     }
     return false
+  }
+
+  private checkThresholdByDef(host: CombatUnit, statusId: string): void {
+    if (!this.lookup.statusDef(statusId)?.stackThreshold) return
+    for (const inst of host.statuses.byDef(statusId)) this.checkStackThreshold(host, inst)
   }
 
   /** 叠层阈值（stackThreshold）：层数达标时一次性结算（每实例一次；层数回落后再涨不重复） */

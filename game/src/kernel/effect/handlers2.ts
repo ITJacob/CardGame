@@ -117,7 +117,7 @@ export function handleModifyWeapon(node: EffModifyWeapon, target: CombatUnit | n
   ctx.ops.modifyWeapon(target, node)
 }
 
-export function handleModifyStatus(node: EffModifyStatus, target: CombatUnit | null, _ctx: EffectContext): void {
+export function handleModifyStatus(node: EffModifyStatus, target: CombatUnit | null, ctx: EffectContext): void {
   if (!target) return
   const insts = node.statusId ? target.statuses.byDef(node.statusId) : []
   for (const inst of insts) {
@@ -128,6 +128,7 @@ export function handleModifyStatus(node: EffModifyStatus, target: CombatUnit | n
     if (node.restoreCharges && inst.maxCharges !== null) inst.charges = inst.maxCharges
     if (node.chargesDelta && inst.charges !== null) inst.charges = Math.max(0, inst.charges + node.chargesDelta)
   }
+  if (node.stacksDelta && node.statusId) ctx.checkStackThreshold?.(target, node.statusId)
 }
 
 export function handleTransferStatus(node: EffTransferStatus, target: CombatUnit | null, ctx: EffectContext): void {
