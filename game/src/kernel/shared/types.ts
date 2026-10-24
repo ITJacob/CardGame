@@ -37,7 +37,7 @@ export type ConditionKind =
 
 /**
  * 效果生效条件（共享内核.md §四）。
- * 注意：schema 把 33 种 kind 建模为「单一对象 + 可选字段」，此处如实投影，
+ * 注意：schema 把 36 种 kind 建模为「单一对象 + 可选字段」，此处如实投影，
  * 未逐 kind 拆判别式联合（那是 P2 编译期的收紧工作）。
  */
 export interface Condition {

@@ -59,7 +59,7 @@ statusDef 38 个字段，设计决策收敛为七组：
 1. **召唤卡引用的单位必须有显式 `unitDef`**，并由它承担主载荷：unitType / element / tags / reach / hp·atk 档位 / 攻击或亡语触发器。只存在于 DDD 归属表、JSON 无 Def 的单位视为未落地。
 2. **卡面只负责**「召几只、落哪、何时、付什么代价」；通用施法者效果（modify_stat / mount_status / damage / heal / dispel）至多一段。
 3. **`playable_scan.py` 的 `summon_unit_share` ≥ 50%** 为设计目标；低于 50% 的召唤卡在下一轮重设计时优先把效果迁入 unitDef。`missing_units` 非空 = 该卡引用的单位还没有 unitDef，先补定义再看占比。
-4. `unitDef.triggers` 尚未接入引擎（`待办.md` §五）时，describe 必须把攻击效果写清；引擎接通后复核。
+4. `unitDef.triggers` 已接入引擎（spawn 时装配为召唤物被动），describe 仍须把蓝本攻击/亡语效果写清（玩家只读卡面）。
 
 ## 机制期玩法轨审核（2026-10-19 立）
 

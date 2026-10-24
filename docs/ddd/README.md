@@ -28,6 +28,7 @@
 | 执行 | 动作与流水线 | Action / ActionSource / ResolvedTarget / BehaviorContext | Pipeline（I→R→M→O） |
 | 效果 | 结算 | Effect / DamageChain / MitigationStage | EffectExecutor |
 | 编目 | 定义态（独立聚合，只读） | 各 Def | Catalog（按 id 解析） |
+| 随机性治理 | 随机性登记与约束 | RandomSource / RandomUsageRegistry | R1–R6 规则族 |
 | 共享内核 | 跨层复用的值对象与规约 | TargetSpec / EffectRef / EffectCondition / RandomSource / 元素 / 术语 | —— |
 
 ## 二、通用模式：Definition + Grant

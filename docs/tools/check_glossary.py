@@ -84,6 +84,8 @@ ENUM_TO_CAT = {
     "condition.cmp": "cmp",
     # 单值枚举（sum），站点 condToText 直接渲染「∑」符号文本，不查词典
     "condition.aggregate": None,
+    # dispelled_count 的计数窗口（chain/battle）：内部结算口径，不上卡面
+    "condition.scope": None,
     "effDamage.spread": "spread",
     "effHeal.mode": "healMode",
     "effMountStatus.stackMode": "stackMode",

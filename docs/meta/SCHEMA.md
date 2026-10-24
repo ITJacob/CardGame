@@ -82,7 +82,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `role` | enum | – | 设计角色六值（2026-10-21 玩法蓝图工序）：`core` 轴循环承重件 / `starter` 低序列入门（须 common）/ `bridge` 跨轴跨系连接 / `generic` 泛用骨架·刻意补位（不得 flagship、不得被 axes 登记）/ `trap` core 同族赌博变体（须带风险段）/ `tech` 对策卡。口径与配比约束见 SCORING.md §一·附 |
 | `lore` / `flavor` / `describe` | string | ✓ | 设定 / 风味 / **玩家可读效果描述**（`describe` 是唯一面向玩家的字段） |
 | `effects` | effect[] | ✓ | 卡面效果；active/passive 须至少 1 条，weapon 可为空（无战吼）；summon 可为空且**禁含 spawn 段**（一卡一单位） |
-| `tentative` | bool | ✓ | 数值待拍板；当前全库 832 张均为 `true` |
+| `tentative` | bool | ✓ | 数值待拍板；当前全库仅 10 张保留 `true`（真实欠账：数值盲区 / 待拍板），其余为 `false` |
 | `cost` | object | active / weapon / summon | `{ energy, cooldown, castTime, opportunity? }`，`castTime` 可为 `null`；`opportunity` 取 `0/1`（缺省 1）：0 = 执行后不消耗行动机会，同一机会可继续行动 |
 | `reach` | `none`\|`melee`\|`thrown`\|`spell` | active | 攻击作用形态（与双方站位正交；决定对撞/反击触发与可拦截性，非攻击类写 none）：melee=近身对抗、thrown=有形投射（可拦截、触发反击）、spell=无形作用（不可拦截、仍触发反击）；原 ranged 已按形态拆为 thrown/spell |
 | `target` | object | active | 见 §4（weapon 的战吼可选用） |
@@ -200,9 +200,9 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 ### 5.3 条件（condition）
 
-开放结构（`additionalProperties: true`），字段随 `kind` 变化。`kind` 为封闭枚举（35 个）：
+开放结构（`additionalProperties: true`），字段随 `kind` 变化。`kind` 为封闭枚举（36 个）：
 
-`all_of` `any_of` `caster_has_summon` `caster_status_exists` `chance` `consumed_count` `damage_source_is` `dead_count` `dispelled_count` `element_is` `faction_is` `field_status_count` `gauge_above` `gauge_rank` `gender_is` `has_category` `has_equipped` `has_status` `hp_percent` `hp_percent_compare` `luminance_compare` `meter_compare` `not` `phase_is` `rank_gap` `recorded_has` `resource_compare` `stat_compare` `tag_chain` `target_dead` `target_has_tag` `target_is_summoned` `target_unit_type` `variant_is` `zone_active`
+`all_of` `any_of` `caster_has_summon` `caster_status_exists` `chance` `consumed_count` `damage_source_is` `dead_count` `dispelled_count` `element_is` `faction_is` `field_status_count` `gauge_above` `gauge_rank` `gender_is` `has_category` `has_equipped` `has_status` `has_status_tag` `hp_percent` `hp_percent_compare` `luminance_compare` `meter_compare` `not` `phase_is` `rank_gap` `recorded_has` `resource_compare` `stat_compare` `tag_chain` `target_dead` `target_has_tag` `target_is_summoned` `target_unit_type` `variant_is` `zone_active`
 
 `meter_compare`（2026-10-23 增）：`key`（`secrecy` / `order` / `fate_value` / `luminance`）+ `cmp` + `n`——战场量表与阈值比较，用于「共享门槛」类玩法（窥秘人 A3 星象共谋：先越过隐秘值门槛者改写规则槽）。语义权威见 `ddd/params/共享内核参数.md` §三。
 
@@ -336,11 +336,11 @@ Gate（validate.py）：`phases` 非空且取值合法、`mul>0`；`mul` 越出 
 
 扩展新枚举值时，先去 `docs/ddd/params/` 对应参数篇登记，再改 schema，最后改数据。
 
-## 10. 当前校验结果（2026-09-22 更新）
+## 10. 当前校验结果（2026-10-24 更新）
 
 ```
 结构校验（validate_schema.py）: files 22 | errors 0 | warns 0
-语义校验（validate.py）       : cards 832 | errors 0 | warns 0（口径随跑随新，本表为 2026-09-30 快照）
+语义校验（validate.py）       : cards 853 | errors 0 | warns 139（模板 note 重复 / 触发点集中类，非阻塞）
 ```
 
 **命名治理（2026-09-18 清零）**：`modifiers` 为开放结构，曾同义异写严重。`validate.py` 内置 `MODIFIER_ALIASES` 别名表，命中即产出非阻断告警引导收敛；全库 25 条已于 2026-09-18 一次性收敛完毕：

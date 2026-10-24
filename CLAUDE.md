@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `docs/ddd/` 保持「纯内容」：只描述最终模型，不得被实现细节反向污染。
 - `docs/json/` 是卡池数据唯一权威源：游戏端只读、**不拷贝**（运行时相对路径直读；dev 由 Vite 中间件把 `/docs` 映射到仓库 `docs/`，prod 由部署把 `docs/` 铺在与游戏同层）。
-- `game/` 目前是 **P0 骨架**（主菜单 + hash 路由 + 数据加载 + 部署流程）；战斗内核**尚未实现**，内核对外契约见 `game/DESIGN.md` 第三节。
+- `game/` 已完成 P0–P7（工程骨架 / 内核 IDL / 内核实现 / 真卡无头对战 / 战外 / 交互战斗 / 排行榜 / 联机）；战斗内核 31 原语 + 16 触发点全接通，见 `game/DESIGN.md` 与 `npm run check:realrun`。
 - 曾有一套 TypeScript 实现（约 8600 行 + 89 测试），2026-09-05 随仓库重定位移除，完整保留在 git 历史 `7e6d01f`，需要时可全量取回。
 - 爬塔派发/构筑（Draft/Progression）等战外上下文归游戏主项目；游戏端自带的战外层（英雄生成/解锁/编队/匹配/存档）在 `game/src/meta/`。
 - 文档即产物：改文档就是改设计。提交信息用中文 + conventional 前缀（`docs:` / `refactor:` / `feat:` 等）。
@@ -21,15 +21,16 @@ docs/meta/           流程·规范·提案（工作流与生成约束，先读 
 ├─ SCORING.md        职业设计评分体系（**2.16，2026-10-24**；2.0 重写于 2026-10-16）：轴级六维 +
 │                    途径级四维（差异化 35）+ 三项门禁；核心是「作用面」模型——状态面 ∪ 全局通道面，
 │                    直接引用与通道介导的间接作用等价计分。配套 score.py；逐职业重设计的取榜依据
-├─ REDESIGN_LOG.md   环节⑤逐职业重设计日志：一途径一迭代，改前改后分 + 改动摘要
+├─ 待办.md           唯一真待办清单（未完成项；已完成项由 git 历史承接）
 ├─ DESIGN_CHECKLIST.md 新卡/新状态设计清单：技能卡 8 步、状态 7 步，及技能↔状态接口契约（与轴评分三维对应）
 ├─ GENERATION_BRIEF.md  技能池生成规范，当前 v0.3；§7–§9 是旧框架编号 → DDD 落点速查
-├─ REGEN_v03_SPEC.md    v0.3 批量重构规范
 ├─ SCHEMA.md         JSON 结构规范（改结构前必读；含已知待修数据清单）
-├─ PENDING.md        途径级遗留与待办汇总（自技能稿迁移）
 ├─ STATUS_TAXONOMY.md 状态概念九维分类索引（权威源指针表）
+├─ 途径设计身份.md    22 途径身份卡（原著锚/签名键/红线/差距）+ 机制所有权矩阵
 ├─ 骨架重议.md       环节⑥骨架层议事：命题撞车簇、候选新骨架、机制扩容请求与拍板记录
-└─ proposals/        机制扩容提案（在办：weapon-first-class.md（P2 待做）、summon-first-class.md（P2 待做）；完成提案归 docs/archive/proposals/）
+├─ rounds/<途径>.md  逐途径玩法蓝图（声明正源）+ 迭代复盘（蓝图解析器读）
+├─ glossary.json     值域词典（check_glossary 对账源）
+└─ proposals/        机制扩容提案（在办：weapon-first-class.md P3；完成提案归 docs/archive/proposals/）
 docs/ddd/            战斗内核 DDD 设计（权威正源，纯内容）
 ├─ README.md         入口：上下文总览、依赖方向、一致性边界、58 条不变量总表
 ├─ contexts/         7 限界上下文 + 共享内核（结构/概念）
@@ -40,11 +41,12 @@ docs/json/           技能池 JSON（唯一维护面，2026-09-18 起技能稿 
 └─ schema/          JSON Schema draft 2020-12（skills/manifest.schema.json）
 docs/archive/        只读历史快照（索引见 archive/README.md）
 ├─ skill-design_v0.3/  技能稿 md ×22（生成期源数据，勿改；差集信息已回收进 JSON）
-├─ proposals/  REGEN 规范 + 四篇已完成机制提案（落地即归档）
+├─ proposals/  已完成机制提案（落地即归档）
+├─ meta/  PENDING/REDESIGN_LOG 落地总账 + 已完结专项（差异化/机制期/选靶）
 ├─ status_bloat_review.md / REGEN_v03_SPEC.md  一次性报告与历史规范
 └─ tools/  三个一次性迁移脚本（跑完即归档）
 docs/analysis/       纯分析产物（勿手改，重跑 docs/tools/ 脚本生成）
-├─ SKILLS_OVERVIEW.md              全库总览（22 途径分章 / 832 卡，重生成产物）
+├─ SKILLS_OVERVIEW.md              全库总览（22 途径分章 / 853 卡，重生成产物）
 ├─ SKILLS_ANALYSIS_BY_PROFESSION.md  原语用量 + modify_stat/modify_resource 属性与参数统计
 ├─ analysis_by_profession/           22 份「职业 × 构筑轴」设计风格报告
 └─ blueprints.json                   玩法蓝图站点机读面（声明 + 实证 join + 逐行兑现；site 只读）
@@ -77,12 +79,12 @@ ui-kit/             game 端的 UI 组件套件（唯一源）：ui-kit.css（.c
                     game/src/ui/styles/kit-bridge.css 文件头与 game/DESIGN.md
                     框分两类：界面区块用 .cg-panel（区域容器），.cg-card 是角色/技能卡面
                     ——游戏真正的卡面是 game 自己的 .card-face，故 game 端只用 .cg-panel
-game/               Web 游戏端（TypeScript + Vite + 原生 DOM；P0/P1 已完成）
+game/               Web 游戏端（TypeScript + Vite + 原生 DOM；P0–P7 已完成）
 ├─ DESIGN.md        游戏端框架设计方案（分层/内核契约/战外上下文/构建部署/数据版本机制/分期）
 ├─ data.lock.json   数据版本锚点：验收 docs/json 后由 npm run data:pin 更新（勿手改）
 ├─ scripts/         数据脚本：check-catalog（22 途径构建校验）/ data-pin / data-status（增量对账）
 └─ src/
-   ├─ kernel/       战斗内核类型 IDL（零 DOM / 零 I/O / 确定性）——实现待 P2，契约见 DESIGN.md §3
+   ├─ kernel/       战斗内核（零 DOM / 零 I/O / 确定性；31 原语 + 16 触发点已实现，契约见 DESIGN.md §3）
    ├─ data/         数据接入层（唯一触碰 docs/json 之处）+ 构建注入的数据版本
    ├─ meta/         战外上下文（英雄生成/解锁/编队/匹配/存档）
    └─ ui/           原生 DOM（router + views + components + styles）
@@ -112,7 +114,7 @@ game/               Web 游戏端（TypeScript + Vite + 原生 DOM；P0/P1 已�
 - **批量编辑务必当轮 `git commit`**，不留未提交改动跨会话——曾发生工作树 `docs/` 整目录被清空（靠 `git checkout HEAD -- docs/` 还原）。
 - 中文路径：`git show`/`git status` 输出会八进制转义不可读，用 `git -c core.quotePath=false ...`。
 - commit message 避免「中文 + 反引号」组合（bash 命令替换会吃掉词），用单引号或 `-F` 传文件。
-- 用户此前要求**先不 push**；只 commit，push 需明确要求。
+- 只 commit；push 需明确要求（用户说「推送」才推）。
 
 ## .workbuddy/
 

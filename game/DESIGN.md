@@ -1,7 +1,7 @@
-# 游戏端框架设计方案 v1（纸面）
+# 游戏端框架设计方案 v1
 
-> 状态：设计稿 · 未实现。落点：本仓库新增顶层 `game/`，TypeScript + Vite + 原生 DOM。
-> 战斗内核实现方式（复活 git `7e6d01f` 旧码 vs 全新实现）本轮**不决策**，只先定接口。
+> 状态：**P0–P7 已实现**（内核 31 原语 + 16 触发点；真卡无头对战、交互战斗、战外、排行榜、联机均已落地）。
+> 落点：仓库顶层 `game/`，TypeScript + Vite + 原生 DOM；实现方式为全新实现（旧码保留在 git `7e6d01f`）。
 
 本文件描述 Web 游戏端的整体架构：仓库定位调整、目录分层、内核对外契约、数据接入、战外上下文、UI 复用、构建部署与分期。
 
@@ -32,7 +32,7 @@ game/                          # 新增顶层；工程根 = Vite root
    │   ├─ roster/              Unit·AttributeSet·Gauge·Pool·StatusInstance·BehaviorSlot·SkillSlot
    │   ├─ scheduling/          BattleClock·Scheduler（tick 原子推进）
    │   ├─ execution/           Pipeline I→R→M→O·Action·ResolvedTarget
-   │   ├─ effect/              EffectExecutor·DamageChain·30 原语
+   │   ├─ effect/              EffectExecutor·DamageChain·31 原语
    │   ├─ combat/              Combat 聚合根·事件流·CombatSetup/CombatEnded
    │   └─ index.ts             ★ 对外唯一出口：createCombat(setup) => CombatFacade
    ├─ data/                    # 数据接入层（唯一触碰 docs/json 之处）
@@ -220,7 +220,7 @@ push main → npm ci && vite build (game/dist)
 |---|---|---|
 | P0 | 工程骨架：Vite+TS+路由+数据加载+主菜单+wiki 链接+部署流程 | Pages 上线，`/CardGame/` 是主菜单 |
 | P1 | 内核 IDL 定稿（第三节落成正式文件）+ 数据接入层 | `catalogBuild` 能把 22 途径 JSON 转成 Def |
-| P2 | 内核实现（五上下文）——旧码复活 or 全新，**本轮不决** | 单测覆盖 30 原语 / 15 触发点 |
+| P2 | 内核实现（五上下文）——全新实现 | 单测覆盖 31 原语 / 16 触发点 |
 | P3 | 无头对战 AI vs AI | 同 seed 两次跑**逐位相同** |
 | P4 | 战外：英雄生成 / 卡池解锁 / 编队 | 能拼出一支合规队伍 |
 | P5 | 交互战斗 UI + 决策点选择 + 日志 | 人机对战可玩 |
@@ -241,7 +241,7 @@ push main → npm ci && vite build (game/dist)
 
 ## 十一、数据版本锚点与增量对账
 
-**问题**：`docs/json` 长期高频微调（近 20 次提交每次都动），game 端每次迭代若全量回归 832 卡不可行。需要「知道本次构建基于哪版数据」+「数据变了只回归受影响部分」。
+**问题**：`docs/json` 长期高频微调（近 20 次提交每次都动），game 端每次迭代若全量回归 853 卡不可行。需要「知道本次构建基于哪版数据」+「数据变了只回归受影响部分」。
 
 **机制**：一个很小的锚点文件 + 一套对账脚本，不做全量同步，不改数据源。
 
@@ -249,9 +249,9 @@ push main → npm ci && vite build (game/dist)
 
 ```json
 { "docsRef": "<提交 sha>", "docsTag": null, "dataHash": "sha256:…",
-  "schemaVersion": "1.3.0", "sourceVersion": "v0.3",
-  "counts": { "pathways": 22, "cards": 832, "statuses": 478, … },
-  "verifiedAt": "2026-10-10", "note": "…" }
+  "schemaVersion": "1.4.0", "sourceVersion": "v0.3",
+  "counts": { "pathways": 22, "cards": 853, "statuses": 496, … },
+  "verifiedAt": "2026-10-24", "note": "…" }
 ```
 
 - `docsRef` = 验收数据时所处的提交，兼作「重建旧版数据」的坐标（`git show <sha>:docs/json/…`）。
@@ -308,7 +308,7 @@ push main → npm ci && vite build (game/dist)
 | P2a 内核核心闭环 + 确定性验收 | ✅ 完成（5 原语 + 内置普攻跑通 AI vs AI；同 seed 逐位相同；vitest 24 用例） |
 | P2b-1 战力类原语 + spawn/translocate 分流 + 触发点/条件 | ✅ 完成（+11 原语共 17/29；14 触发点全接；条件补 7 类；vitest 30 用例） |
 | P2b-2 界域与规则类原语（+12，共 29/29）+ zone/domain 分流 | ✅ 完成（规则槽 write/modify 仅存储、求值缓决，与设计一致；vitest 35 用例） |
-| P3 真实卡池无头对战 + 覆盖扫描 | ✅ 完成（22/22 途径可跑且确定性；残余降级收敛为单一数据缺口） |
+| P3 真实卡池无头对战 + 覆盖扫描 | ✅ 完成（22/22 途径可跑且确定性；未支持原语命中 0） |
 | P4 战外：英雄生成 / 卡池解锁 / 编队 | ✅ 完成（名册→CombatSetup→真卡对战闭环；vitest 42 用例） |
 | P5 交互战斗 UI + 决策点 + 日志 | ✅ 完成（棋盘双朝向 / 技能卡面 / 决策点选靶 / 战斗日志 / 新游戏流程） |
 | P6 排行榜 + 设置 + 现有卡池 | ✅ 完成（对局落战绩；本地榜按胜负→阵亡→用时；设置含 uuid/用户名/重置；卡池页可解锁职业/按张锁卡） |
@@ -318,15 +318,9 @@ push main → npm ci && vite build (game/dist)
 
 对 22 途径各跑一场真卡 AI vs AI（2 队 × 3 人 × 4 技能，全库 Catalog）：
 
-- **22/22 途径可完整跑完**，事件流**全部确定性**（同 seed 两次指纹一致；1 场因 maxTicks 平局）。
-- 降级点收敛为**单一数据缺口**：`spawn` 引用了未定义的召唤单位。
-  `docs/json` 只定义 **11 个 `unitDefs`**（corpse_collector 3 / seer 2 / sleepless 1 / supplicant 5），
-  而 spawn 节点引用 **~24 个不同 `unitId`**（`unit_automaton` 16、`unit_beastling` 11、`unit_beast` 7、`unit_vermin` 7、`unit_vine` 5 …）。
-  → **内核侧无需改**；需数据侧补 `unitDefs`，或把 spawn 改用 `template`。
-- 本轮顺手修掉的内核缺口：`move:param`（落点 `empty_ally_slot`）、`move:insert_tail_cross_lane`、
-  `modify_resource` 的战场量表 `secrecy`/`order`/`fate_value`、条件 `target_unit_type` / `caster_has_summon`。
-  未支持命中从 305 降到 229（余下全为上述数据缺口）。
-- 剩余已知降级：条件 `dispelled_count`（16 次）仍按「视为真」处理。
-- **被动卡已接入**：262 张 `BehaviorTemplate` 经 `UnitSetup.passiveSlots` 装配——被动 = `hook` 事件触发卡面 `effects`（实测 220 张是 `on_battle_start` 开局被动）。装配后多条途径降级归零（学徒 40→0、水手 50→0、怪物 24→0），事件流显著变丰富。
+- **22/22 途径可完整跑完**，事件流**全部确定性**（同 seed 两次指纹一致）。
+- **未支持原语命中 0**；`unitDefs` 已补齐至 37 具（全库 spawn 引用可解析），不再有数据缺口降级。
+- **被动卡已接入**：`BehaviorTemplate` 经 `UnitSetup.passiveSlots` 装配——被动 = `hook` 事件触发卡面 `effects`。
+- 剩余 warning 仅为战场容量类（召唤失败：己方半场已满），属规则内结果而非降级。
 
 移动端为**跨期横切**要求：战场投影双朝向在 P5 交互战斗 UI 落地；编队拖拽在 P4 即需按投影层实现；PWA manifest 与安全区在 P0 骨架已预留（CSS 变量 + `viewport-fit`）。
