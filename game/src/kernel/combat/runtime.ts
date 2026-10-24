@@ -5,7 +5,7 @@ import type { Battle, Coordinate, Faction, Lane, OccupancyChanged } from '../bat
 import { LANE_CAPACITY, SUMMON_CAP_BASE } from '../battle/types'
 import { BattlePlacement } from '../battle/placement'
 import { createLookup, type CatalogLookup } from '../catalog/lookup'
-import type { Catalog, EffectNode, EffModifyWeapon, TriggerDef, WeaponDef } from '../catalog/types'
+import type { Catalog, EffectNode, EffModifyWeapon, TriggerDef, UnitDef, WeaponDef } from '../catalog/types'
 import { EventBus } from '../shared/events'
 import { SequentialIdGenerator } from '../shared/id-generator'
 import { Mulberry32RandomSource, RandomUsageRegistry, type RandomSource } from '../shared/random-source'
@@ -309,11 +309,25 @@ class CombatRuntime implements CombatRuntimeHandle {
    * 机会内执行行为。`cost.opportunity = 0` 的免费行为执行后不闭合机会，可继续选择下一个行为；
    * 每次机会内免费行为至多 2 次（防无消耗循环）。
    */
+  /** 攻击类主动技能 = 效果树含 damage 节点（执行参数 §2.1 的划分依据） */
+  private isAttackSkill(source: BehaviorSource): boolean {
+    return containsDamage(source.effects)
+  }
+
+  /** 本次结算是否属于攻击行为（普攻或攻击类主动技能）：weaponDamage 判据的一半 */
+  private isAttackActionRef(ref: string | undefined): boolean {
+    if (!ref) return false
+    if (ref === BASIC_ATTACK_ID) return true
+    const skill = this.lookup.skillDef(ref)
+    if (!skill) return false
+    return skill.effects.some((r) => containsDamage(this.lookup.effectNode(r.ref)))
+  }
+
   private runOpportunity(opp: ActionOpportunity, unit: CombatUnit, freeCount: number): void {
     while (true) {
       const behaviors = availableBehaviors(unit, unit.activeForcedBehaviors())
       const slot = this.chooseBehavior(behaviors)
-      const source = slot ? this.resolveSource(slot) : undefined
+      const source = slot ? this.resolveSource(slot, unit) : undefined
       if (!slot || !source) {
         opp.consumedBy = 'wasted'
         unit.gauge.settleOverflow()
@@ -335,6 +349,11 @@ class CombatRuntime implements CombatRuntimeHandle {
         this.lastSkill.set(unit.id, { sourceRef: source.sourceRef, effects: source.effects })
         this.fireStatusTriggers(unit, 'on_active_skill')
         this.fireGlobalStatusTriggers('on_active_skill', unit)
+        // 攻击类主动技能同时 fire on_attack（执行参数 §2.1：一次行为两条事件）
+        if (this.isAttackSkill(source)) {
+          this.fireStatusTriggers(unit, 'on_attack')
+          this.fireDomainTriggers('on_attack', unit)
+        }
       }
       const freeAction = (slot.cost.opportunity ?? 1) === 0
       if (r.value) {
@@ -410,8 +429,8 @@ class CombatRuntime implements CombatRuntimeHandle {
     return behaviors[0]
   }
 
-  private resolveSource(slot: BehaviorSlot): BehaviorSource | undefined {
-    if (slot.kind === 'basic_attack') return basicAttackSource()
+  private resolveSource(slot: BehaviorSlot, unit: CombatUnit): BehaviorSource | undefined {
+    if (slot.kind === 'basic_attack') return basicAttackSource(unit.attackElement ?? 'physical')
     const skill = this.lookup.skillDef(slot.defId)
     if (!skill) return undefined
     const effects = skill.effects
@@ -497,6 +516,8 @@ class CombatRuntime implements CombatRuntimeHandle {
       opportunity,
       targetScope,
       dimMul: (target) => this.dimHookMul(sourceRef, target),
+      actionRef: sourceRef,
+      weaponDamage: caster != null && caster.weapon != null && this.isAttackActionRef(sourceRef),
       warn: (m) => this.warn(m),
       emit: (e) => this.emit(e),
       mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant, caster),
@@ -929,7 +950,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       }
       // H39：超限 = 最早在场者先消散，再落新单位
       this.disperseOverCap(owner, cap)
-      const unit = this.spawnOne(owner, def, near)
+      const unit = this.spawnOne(owner, def, near, this.spawnRatio(node.hpRatio, def.hpRatio), this.spawnRatio(node.atkRatio, def.atkRatio))
       if (!unit) return
       this.emit({ type: 'UnitSpawned', unitId: unit.id })
       // 载荷主体：on_spawn 的 target = 新生单位（执行参数 §2.3），需求本身落在召唤物身上
@@ -938,20 +959,41 @@ class CombatRuntime implements CombatRuntimeHandle {
   }
 
   /** 单个召唤物落场；半场已满返回 null */
-  private spawnOne(owner: CombatUnit, def: { id: string; base?: unknown; tags?: readonly string[]; unitType?: string }, near: CombatUnit | null): CombatUnit | null {
+  /** spawn 比率解析：显式数值优先，其次 unitDef 默认，非数值（valueFrom 等）回落 1 */
+  private spawnRatio(v: unknown, fallback: unknown): number {
+    const pick = (x: unknown): number | null => {
+      if (typeof x === 'number' && Number.isFinite(x)) return x
+      if (typeof x === 'string' && x.trim() !== '' && Number.isFinite(Number(x))) return Number(x)
+      return null
+    }
+    return pick(v) ?? pick(fallback) ?? 1
+  }
+
+  private spawnOne(owner: CombatUnit, def: UnitDef, near: CombatUnit | null, hpRatio = 1, atkRatio = 1): CombatUnit | null {
     const base = typeof def.base === 'object' && def.base ? (def.base as { hp?: number; atk?: number }) : {}
-    const hp = typeof base.hp === 'number' ? base.hp : 12
+    const baseHp = typeof base.hp === 'number' ? base.hp : 12
+    const baseAtk = typeof base.atk === 'number' ? base.atk : 3
+    const hp = Math.max(1, Math.round(baseHp * hpRatio))
+    const atk = Math.max(0, Math.round(baseAtk * atkRatio))
     const unit = new CombatUnit(
       this.ids.next('summon'),
       owner.faction,
-      { strength: Math.max(0, Math.round((hp - 30) / 10)), agility: 0, intelligence: 0, rank: 0 },
+      { strength: 0, agility: 0, intelligence: 0, rank: 0 },
       owner.gender,
       { statusDefs: { statusDef: (sid) => this.lookup.statusDef(sid) }, nextStatusId: () => this.ids.next('status') },
       def.tags ?? [],
     )
     unit.unitType = def.unitType ?? null
     unit.unitDefId = def.id
+    unit.attackElement = def.element ?? null
     unit.summonerId = owner.id
+    // 基线精确化：构造基线 hp_max=30 / attack=2，经账本补差（可回滚）
+    if (hp !== unit.hpMax) unit.provenance.apply('hp_max', hp - unit.hpMax, 'unitDef')
+    unit.pool('hp').setValue(unit.hpMax)
+    const atkDelta = atk - unit.effectiveProfile.attack
+    if (atkDelta !== 0) unit.provenance.apply('attack', atkDelta, 'unitDef')
+    // 蓝本触发器：spawn 时装配为被动触发器（fireStatusTriggers 的 passives 通道）
+    if (def.triggers?.length) unit.passives.push({ defId: def.id, triggers: def.triggers })
     this.units.add(unit)
     unit.behaviorSlots.push(this.basicAttackSlot(unit))
     const nearPos = near?.position ?? owner.position
@@ -1396,6 +1438,15 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.unsupportedKinds.set(kind, (this.unsupportedKinds.get(kind) ?? 0) + 1)
     if (this.warnings.length < 50) this.warnings.push(`未实现：${kind}${detail ? ` (${detail})` : ''}`)
   }
+}
+
+/** 效果树是否含 damage 节点（isAttackSkill / isAttackActionRef 共用） */
+function containsDamage(n: unknown): boolean {
+  if (Array.isArray(n)) return n.some(containsDamage)
+  if (!n || typeof n !== 'object') return false
+  const node = n as Record<string, unknown>
+  if (node.type === 'damage') return true
+  return ['steps', 'then', 'else'].some((k) => containsDamage(node[k]))
 }
 
 function scaleNode(node: EffectNode, potency: number): EffectNode {

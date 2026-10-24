@@ -51,6 +51,10 @@ export interface EffectContext {
   readonly ops: EffectOps
   /** 当前行动卡的 dimHooks 维度乘区系数（缺省 1；damage / heal / all） */
   readonly dimMul?: (target: 'damage' | 'heal') => number
+  /** 发起本次结算的来源卡 id（普攻为 __basic_attack__；weaponDamage 判据用） */
+  readonly actionRef?: string
+  /** 本次结算是否属于「会消耗装备武器耐久的攻击」（普攻/攻击类主动 + 武器在槽） */
+  readonly weaponDamage?: boolean
 }
 
 /** 原语中需要改动战场或新建单位的操作集合 */

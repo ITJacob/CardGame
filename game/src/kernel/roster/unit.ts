@@ -9,6 +9,15 @@ import { Gauge, Pool } from './resources'
 import { CombatStatusSet, type StatusDefLookup } from './status'
 import type { AttributeSet, BaseProfile, BehaviorSlot, Channel, EffectiveProfile, SkillSlot, StatusSet, Unit, WeaponInstance } from './types'
 import { rawModifier } from './statusModifiers'
+import { round2 } from '../shared/result'
+
+/** 出伤参数覆写（编队参数 §1.1b）：同源多状态合并——pierce 并集、比例取高 */
+export interface OutgoingDamageParams {
+  pierce: string[]
+  armorPierceRatio: number
+  spread?: string
+  splashRatio: number
+}
 
 export interface UnitDeps {
   statusDefs: StatusDefLookup
@@ -63,6 +72,8 @@ export class CombatUnit implements Unit {
   originalFaction: FactionId | null = null
   /** 召唤物类别（unitDef.unitType / spawn def） */
   unitType: string | null = null
+  /** 普攻元素（unitDef.element；null = physical） */
+  attackElement: Element | null = null
   /** 单位蓝本 id（spawn 时记录，供 caster_has_summon.unitId / summon_is 谓词） */
   unitDefId: string | null = null
   /** 召唤者（spawn 时记录，供 caster_has_summon 谓词） */
@@ -205,7 +216,7 @@ export class CombatUnit implements Unit {
   stat(key: StatKey): number {
     const p = this.effectiveProfile
     switch (key) {
-      case 'attack': return p.attack
+      case 'attack': return this.attackPower()
       case 'defense': return p.defense
       case 'rank': return p.rank
       case 'hp_max': return p.hpMax
@@ -223,6 +234,92 @@ export class CombatUnit implements Unit {
   resistanceOf(element: Element): number {
     if (element === 'none') return 0
     return this.effectiveProfile.resistances[element] ?? 0
+  }
+
+  // ---- 攻击修正 / 出伤参数（编队参数 §1.1b、H24/H16） ----
+
+  /**
+   * attackMod（H24）：数值 (0,1) 视为乘区，其余为平加；对象 `{value, condition}` 带门控，
+   * 条件每次求值（持械加成在武器离槽后立即失效）。乘区同向取最优。
+   */
+  attackModStats(): { mul: number; delta: number } {
+    let gain = 1
+    let loss = 1
+    let delta = 0
+    const absorb = (v: number, stacks: number): void => {
+      if (v > 0 && v < 1) {
+        const eff = 1 + (v - 1) * stacks
+        if (eff >= 1) gain = Math.max(gain, eff)
+        else loss = Math.min(loss, eff)
+      } else {
+        delta += v
+      }
+    }
+    for (const inst of this.statuses.all()) {
+      const raw = rawModifier(this.statusDefs.statusDef(inst.defId)?.modifiers, 'attackMod')
+      if (typeof raw === 'number' && Number.isFinite(raw)) {
+        absorb(raw, inst.currentStacks)
+        continue
+      }
+      if (!raw || typeof raw !== 'object') continue
+      const o = raw as { value?: unknown; condition?: unknown }
+      const value = typeof o.value === 'number' && Number.isFinite(o.value) ? o.value : null
+      if (value === null) continue
+      if (!this.attackModConditionHolds(o.condition)) continue
+      absorb(value, inst.currentStacks)
+    }
+    return { mul: gain * loss, delta }
+  }
+
+  private attackModConditionHolds(condition: unknown): boolean {
+    if (condition == null) return true
+    if (typeof condition !== 'object') return true
+    const c = condition as { kind?: string; slot?: string; defId?: string; tag?: string }
+    if (c.kind === 'has_equipped') return this.hasEquipped(c.slot, c.defId, c.tag)
+    return false
+  }
+
+  /** 攻击值（含 attackMod）：普攻与「未写 value 的 damage」取它 */
+  attackPower(): number {
+    const { mul, delta } = this.attackModStats()
+    return round2(Math.max(0, this.effectiveProfile.attack * mul + delta))
+  }
+
+  /**
+   * 出伤参数覆写：合并全部持有状态。`filter.weaponDamage` 按本次伤害是否属于
+   * 「会消耗装备武器耐久的攻击」门控（on_attack 语境 + 武器在槽）。
+   */
+  outgoingDamageParams(weaponDamage: boolean): OutgoingDamageParams | null {
+    const pierce: string[] = []
+    let armorPierceRatio = 0
+    let spread: string | undefined
+    let splashRatio = 0
+    let any = false
+    for (const inst of this.statuses.all()) {
+      const raw = rawModifier(this.statusDefs.statusDef(inst.defId)?.modifiers, 'outgoingDamageParams')
+      if (!raw || typeof raw !== 'object') continue
+      const p = raw as {
+        filter?: { weaponDamage?: boolean }
+        pierce?: unknown
+        armorPierceRatio?: unknown
+        spread?: unknown
+        splashRatio?: unknown
+      }
+      if (typeof p.filter?.weaponDamage === 'boolean' && p.filter.weaponDamage !== weaponDamage) continue
+      any = true
+      if (Array.isArray(p.pierce)) {
+        for (const s of p.pierce) if (typeof s === 'string' && !pierce.includes(s)) pierce.push(s)
+      }
+      if (typeof p.armorPierceRatio === 'number' && Number.isFinite(p.armorPierceRatio)) {
+        armorPierceRatio = Math.max(armorPierceRatio, p.armorPierceRatio)
+      }
+      if (typeof p.spread === 'string' && spread === undefined) spread = p.spread
+      if (typeof p.splashRatio === 'number' && Number.isFinite(p.splashRatio)) {
+        splashRatio = Math.max(splashRatio, p.splashRatio)
+      }
+    }
+    if (!any) return null
+    return { pierce, armorPierceRatio, spread, splashRatio }
   }
 
   // ---- 状态修饰袋（编队参数 §2.4） ----

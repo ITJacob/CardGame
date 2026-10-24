@@ -43,17 +43,21 @@ export function handleDamage(node: EffDamage, target: CombatUnit | null, ctx: Ef
       ? node.value
       : node.valueFrom !== undefined
         ? resolveValueFrom(node.valueFrom, attacker, undefined, ctx)
-        : (attacker?.effectiveProfile.attack ?? 0)
+        : (attacker?.attackPower() ?? 0)
   const raw = round2(base * (node.mul ?? 1))
   const element = node.element ?? 'physical'
+  // 持有者出伤参数（outgoingDamageParams）：pierce 并集、破甲比例取高；受 weaponDamage 门控
+  const outgoing = attacker?.outgoingDamageParams(ctx.weaponDamage === true) ?? null
+  const pierce = new Set(node.pierce ?? [])
+  if (outgoing) for (const p of outgoing.pierce) pierce.add(p)
   const result = resolveDamage({
     raw,
     element,
     attacker,
     defender: target,
     lethal: node.lethal,
-    pierce: node.pierce,
-    armorPierceRatio: numeric(node.armorPierceRatio, 0),
+    pierce: [...pierce],
+    armorPierceRatio: Math.max(numeric(node.armorPierceRatio, 0), outgoing?.armorPierceRatio ?? 0),
     dimMul: ctx.dimMul?.('damage') ?? 1,
   })
   applyDamageResult(target, result)
