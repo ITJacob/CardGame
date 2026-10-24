@@ -155,33 +155,33 @@
 
 **规模**：17 张技能（主动 12 / 被动 5）；稀有度分布：稀有×6、传说×5、史诗×4、精良×2。
 
-**效果原语构成**（type，全量递归，共 60 处）：
+**效果原语构成**（type，全量递归，共 59 处）：
 
 | 原语 | 次数 | 占本轴% |
 |---|---:|---:|
-| `mount_status` | 24 | 40.0% |
-| `damage` | 10 | 16.7% |
-| `modify_stat` | 9 | 15.0% |
-| `modify_resource` | 10 | 16.7% |
+| `mount_status` | 24 | 40.7% |
+| `damage` | 10 | 16.9% |
+| `modify_stat` | 8 | 13.6% |
+| `modify_resource` | 10 | 16.9% |
 | `move` | 1 | 1.7% |
 | `domain` | 1 | 1.7% |
-| `gauge_shuffle` | 3 | 5.0% |
-| `status_shuffle` | 2 | 3.3% |
+| `gauge_shuffle` | 3 | 5.1% |
+| `status_shuffle` | 2 | 3.4% |
 
-**算子构成**（op，共 33 处）：
+**算子构成**（op，共 32 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 15 |
-| `if` | 16 |
+| `if` | 15 |
 | `push_back` | 1 |
 | `overlay` | 1 |
 
-**改动的属性（modify_stat，共 9 处）**：
+**改动的属性（modify_stat，共 8 处）**：
 
 | stat 属性键 | 次数 |
 |---|---:|
-| `attack` | 5 |
+| `attack` | 4 |
 | `defense` | 3 |
 | `gauge.rate` | 1 |
 

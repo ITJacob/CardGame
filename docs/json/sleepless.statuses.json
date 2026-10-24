@@ -883,7 +883,22 @@
       "name": "潜匿",
       "note": "不眠者私有隐匿状态（自 common conceal 分叉，语义同源，夜视/分类驱散/不可驱散覆写照常生效）；全途径 statusId 级引用统一指此 id。单层状态：不叠层，重复施加只刷新时长（stackPolicy refresh）。时长口径 self_turn（3 个自身回合，敏捷 0 时≈15tick）：破隐走 on_attack + on_active_skill 双挂（任何主动行为，效果结算后 fire，本轮仍吃潜匿收益），故隐身期间的硬控/无可选行为不会破隐。⚠️ 破隐的 dispel 用**平铺** statusId/count（非 filter.statusId）：引擎 dispel 只认平铺选择器，写在 filter 里会被当「无选择器」→ 清光目标全部状态；库内另有 102 处该写法，待单独轮次统一（见 待办）。",
       "maxStacks": 1,
-      "stackPolicy": "refresh"
+      "stackPolicy": "refresh",
+      "stackThreshold": {
+        "stacks": 1,
+        "effects": [
+          {
+            "type": "modify_stat",
+            "stat": "attack",
+            "value": 1,
+            "mode": "delta",
+            "duration": 3,
+            "target": "self",
+            "note": "潜匿加持：身处潜匿则攻 +1（随潜匿到期）"
+          }
+        ],
+        "note": "隐秘权柄读层（原开局快照；3tick = 潜匿时长）"
+      }
     },
     {
       "id": "sleepless_body_power",
