@@ -1,5 +1,5 @@
 // 效果结算的运行时上下文与工具。
-import type { Phase } from '../ids'
+import type { Element, Phase } from '../ids'
 import type { DomainEvent } from '../combat/types'
 import type { EffGrantImmunity, EffModifyWeapon, EffSpawn, EffectNode, StatusDef } from '../catalog/types'
 import type { IdGenerator } from '../shared/id-generator'
@@ -45,8 +45,13 @@ export interface EffectContext {
   readonly unsupported: (kind: string, detail?: string) => void
   /** 遥测：造成伤害（用于 CombatStats） */
   readonly reportDamage?: (dealer: string, amount: number) => void
-  /** 伤害落地钩子（触发 on_deal_damage / on_take_damage） */
-  readonly onDamage?: (attacker: CombatUnit | null, defender: CombatUnit, amount: number) => void
+  /** 伤害落地钩子（触发 on_deal_damage / on_take_damage）；info 供 element_is / damage_source_is 条件 */
+  readonly onDamage?: (
+    attacker: CombatUnit | null,
+    defender: CombatUnit,
+    amount: number,
+    info?: { element: Element; source: 'behavior' | 'status' },
+  ) => void
   /** 需要触碰战场/注册表的操作（由 runtime 实现） */
   readonly ops: EffectOps
   /** 当前行动卡的 dimHooks 维度乘区系数（缺省 1；damage / heal / all） */
@@ -55,6 +60,8 @@ export interface EffectContext {
   readonly actionRef?: string
   /** 本次结算是否属于「会消耗装备武器耐久的攻击」（普攻/攻击类主动 + 武器在槽） */
   readonly weaponDamage?: boolean
+  /** 伤害来源类别（damage_source_is）：攻击行为 = behavior，其余（触发/DoT）= status */
+  readonly damageSource?: 'behavior' | 'status'
 }
 
 /** 原语中需要改动战场或新建单位的操作集合 */

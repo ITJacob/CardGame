@@ -23,7 +23,9 @@ import type { Consumption } from '../shared/types'
 import type { DecisionInput, DecisionRequest } from '../execution/types'
 import { numeric, withParams, type EffectContext, type OpportunityPayload } from '../effect/context'
 import type { TargetScope, TriggerSubjects } from '../effect/target-scope'
-import { checkCondition, executeNodes } from '../effect/executor'
+import { conditionContext, executeNodes } from '../effect/executor'
+import { evaluateCondition } from '../shared/effect-condition'
+import { matchesUnitFilter } from '../execution/target'
 import { BASIC_ATTACK_ID, basicAttackSource } from './basicAttack'
 import type {
   CombatEnded, CombatFacade, CombatSetup, CombatStats, CombatView,
@@ -31,6 +33,13 @@ import type {
 } from './types'
 
 const DEFAULT_LANES = ['lane0', 'lane1']
+
+/** 触发事件载荷：条件 element_is / damage_source_is / on_status_gain.filter.statusId 用 */
+interface TriggerEventInfo {
+  element?: string
+  source?: string
+  statusId?: string
+}
 
 export interface RuntimeOptions {
   setup: CombatSetup
@@ -86,6 +95,8 @@ class CombatRuntime implements CombatRuntimeHandle {
   private readonly ruleSlots: { field: string; value: unknown }[][] = [[], [], []]
   private domainSeq = 0
   private readonly domainLastFire = new Map<string, number>()
+  /** 最近一次已结算 Action 的命中单位（on_attack 条件的 target 主体） */
+  private lastActionTargets: CombatUnit[] = []
   private echoing = false
   private readonly unsupportedKinds = new Map<string, number>()
 
@@ -334,6 +345,7 @@ class CombatRuntime implements CombatRuntimeHandle {
         this.fireStatusTriggers(unit, 'on_turn_end', undefined, this.oppPayload(opp))
         return
       }
+      this.lastActionTargets = []
       const r = commitBehavior(unit, slot, opp, source, this.pipelineDeps())
       if (!r.ok) {
         opp.consumedBy = 'wasted'
@@ -341,17 +353,21 @@ class CombatRuntime implements CombatRuntimeHandle {
         this.fireStatusTriggers(unit, 'on_turn_end', undefined, this.oppPayload(opp))
         return
       }
+      // on_attack 的条件主体（执行参数 §2.1/§2.3）：攻击者 + 本次命中目标
+      const attackSubjects: TriggerSubjects | undefined = this.lastActionTargets[0]
+        ? { attacker: unit, target: this.lastActionTargets[0] }
+        : undefined
       if (slot.kind === 'basic_attack') {
-        this.fireStatusTriggers(unit, 'on_attack')
+        this.fireStatusTriggers(unit, 'on_attack', undefined, undefined, attackSubjects, { source: 'behavior' })
         this.fireDomainTriggers('on_attack', unit)
         this.consumeWeaponDurability(unit)
       } else {
         this.lastSkill.set(unit.id, { sourceRef: source.sourceRef, effects: source.effects })
-        this.fireStatusTriggers(unit, 'on_active_skill')
-        this.fireGlobalStatusTriggers('on_active_skill', unit)
+        this.fireStatusTriggers(unit, 'on_active_skill', undefined, undefined, attackSubjects, { source: 'behavior' })
+        this.fireGlobalStatusTriggers('on_active_skill', unit, attackSubjects)
         // 攻击类主动技能同时 fire on_attack（执行参数 §2.1：一次行为两条事件）
         if (this.isAttackSkill(source)) {
-          this.fireStatusTriggers(unit, 'on_attack')
+          this.fireStatusTriggers(unit, 'on_attack', undefined, undefined, attackSubjects, { source: 'behavior' })
           this.fireDomainTriggers('on_attack', unit)
         }
       }
@@ -468,6 +484,7 @@ class CombatRuntime implements CombatRuntimeHandle {
         const targets = info.targets
           .map((t) => (t.occupant ? this.units.get(t.occupant) : undefined))
           .filter((u): u is CombatUnit => u != null)
+        this.lastActionTargets = targets
         if (info.consumption === 'zone' && info.zoneGrant) {
           this.opPlaceZone(info.caster, info.zoneGrant.def, info.zoneGrant.duration ?? -1, targets)
         } else if (info.consumption === 'domain' && info.domainGrant) {
@@ -518,6 +535,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       dimMul: (target) => this.dimHookMul(sourceRef, target),
       actionRef: sourceRef,
       weaponDamage: caster != null && caster.weapon != null && this.isAttackActionRef(sourceRef),
+      damageSource: this.isAttackActionRef(sourceRef) ? 'behavior' : 'status',
       warn: (m) => this.warn(m),
       emit: (e) => this.emit(e),
       mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant, caster),
@@ -528,18 +546,21 @@ class CombatRuntime implements CombatRuntimeHandle {
       reportDamage: (faction, amount) => {
         if (faction) this.stats.damageDealt[faction] = round2((this.stats.damageDealt[faction] ?? 0) + amount)
       },
-      onDamage: (attacker, defender, amount) => {
+      onDamage: (attacker, defender, amount, info) => {
         if (attacker) this.lastAttacker.set(defender.id, attacker.id)
         // 战意：实际承伤者（含嘲讽/替伤/转向后的落点）每受击 +1，受每回合与总量上限约束
         this.gainWarSpirit(defender, 1)
         // 载荷主体（执行参数 §2.3）：on_deal_damage 的 target = 承伤方；on_take_damage 的 attacker = 造成方
+        const eventInfo: TriggerEventInfo | undefined = info
+          ? { element: info.element, source: info.source }
+          : undefined
         if (attacker) {
           this.fireStatusTriggers(attacker, 'on_deal_damage', undefined, undefined, {
             target: defender,
             attacker,
-          })
+          }, eventInfo)
         }
-        this.fireStatusTriggers(defender, 'on_take_damage', undefined, undefined, { attacker, target: defender })
+        this.fireStatusTriggers(defender, 'on_take_damage', undefined, undefined, { attacker, target: defender }, eventInfo)
         void amount
       },
       ops: {
@@ -679,19 +700,25 @@ class CombatRuntime implements CombatRuntimeHandle {
         const t = triggers[i]!
         if (t.event !== event) continue
         const filter = t.filter
-        if (subject) {
-          const side = filter?.side
-          if (side === 'enemy' && subject.faction === owner) continue
-          if (side === 'ally' && subject.faction !== owner) continue
+        const filterCtx = {
+          units: this.units,
+          self: host,
+          enemyFaction: this.factions.find((f) => f !== host.faction) ?? this.factions[1],
+          sideFaction: owner,
+          lanes: this.laneIds,
+          laneCapacity: LANE_CAPACITY,
+          unsupported: (kind: string, detail?: string) => this.unsupported(kind, detail),
         }
+        // 事件主体在场（on_attack / on_turn_start）：filter 判定主体本身
+        if (subject && filter && !matchesUnitFilter(subject, filter, filterCtx)) continue
         const key = `${d.grant.sourceId}#${i}#${event}`
         const last = this.domainLastFire.get(key)
         if (t.minIntervalTicks && last !== undefined && this.tickCount - last < t.minIntervalTicks) continue
         this.domainLastFire.set(key, this.tickCount)
         const targets = subject
           ? [subject]
-          : this.units.all().filter((u) => !u.isDead && u.position != null && this.domainMatches(u, filter, owner))
-        if (!subject && filter?.side && targets.length === 0) continue
+          : this.units.all().filter((u) => !u.isDead && u.position != null && matchesUnitFilter(u, filter, filterCtx))
+        if (!subject && filter && targets.length === 0) continue
         const enemyFaction = this.factions.find((f) => f !== owner) ?? null
         const ctx = this.makeContext(this.ids.next('domain'), host, undefined, {
           host,
@@ -705,29 +732,6 @@ class CombatRuntime implements CombatRuntimeHandle {
         executeNodes(t.effects ?? [], targets, ctx)
       }
     }
-  }
-
-  /** 界域触发器的单位过滤（side 已在上层判定；此处处理 category / hasStatus / unitType） */
-  private domainMatches(u: CombatUnit, filter: { hasCategory?: string | string[]; hasStatus?: boolean | string | { id?: string; stacksAtLeast?: number }; unitType?: string | string[] } | undefined, owner: FactionId): boolean {
-    if (!filter) return true
-    const side = (filter as { side?: string }).side
-    if (side === 'ally' && u.faction !== owner) return false
-    if (side === 'enemy' && u.faction === owner) return false
-    if (filter.unitType !== undefined) {
-      const types = Array.isArray(filter.unitType) ? filter.unitType : [filter.unitType]
-      if (u.unitType == null || !types.includes(u.unitType)) return false
-    }
-    if (filter.hasStatus !== undefined) {
-      const hs = filter.hasStatus
-      if (typeof hs === 'string') { if (u.statusStacks(hs) <= 0) return false }
-      else if (hs !== true && hs && hs.id && u.statusStacks(hs.id) < (hs.stacksAtLeast ?? 1)) return false
-    }
-    if (filter.hasCategory !== undefined) {
-      const cats = Array.isArray(filter.hasCategory) ? filter.hasCategory : [filter.hasCategory]
-      const hit = u.statuses.all().some((i) => cats.some((c) => (this.lookup.statusDef(i.defId)?.category ?? []).includes(c)))
-      if (!hit) return false
-    }
-    return true
   }
 
   private opPlaceZone(caster: CombatUnit | null, defId: string | undefined, duration: number, targets: readonly CombatUnit[]): void {
@@ -1178,7 +1182,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     // 载荷主体：on_apply / on_status_gain 的 caster = 施加者，target = 宿主（执行参数 §2.3）
     const subjects: TriggerSubjects = { caster, target: host }
     this.fireTriggers(host, 'on_apply', def?.triggers, host, undefined, this.scopeFor(host, inst.grant.casterId, subjects))
-    this.fireStatusTriggers(host, 'on_status_gain', undefined, undefined, subjects)
+    this.fireStatusTriggers(host, 'on_status_gain', undefined, undefined, subjects, { statusId })
   }
 
   /** 每 tick 处理限时记录（translocate 回归 / take_control 归还 / 临时增减伤与可选中性） */
@@ -1248,57 +1252,72 @@ class CombatRuntime implements CombatRuntimeHandle {
     onlyDefId?: string,
     opportunity?: OpportunityPayload,
     subjects?: TriggerSubjects,
+    eventInfo?: TriggerEventInfo,
   ): void {
     // 快照：触发器效果可能卸载自身或其它状态
     for (const inst of [...unit.statuses.all()]) {
       if (onlyDefId && inst.defId !== onlyDefId) continue
       const def = this.lookup.statusDef(inst.defId)
       const scope = this.scopeFor(unit, inst.grant.casterId, subjects, opportunity)
-      this.fireTriggers(unit, event, def?.triggers, unit, opportunity, scope, false, null, inst)
+      this.fireTriggers(unit, event, def?.triggers, unit, opportunity, scope, false, null, inst, undefined, eventInfo)
     }
     // 武器（无 onlyDefId 时参与；装备期触发器，不支持 consumeCharge）
     if (!onlyDefId && unit.weapon) {
       const wdef = this.lookup.skillDef(unit.weapon.defId)?.weapon
       const scope = this.scopeFor(unit, undefined, subjects, opportunity)
-      this.fireTriggers(unit, event, wdef?.triggers, unit, opportunity, scope, false, undefined, undefined, unit.weapon.defId)
+      this.fireTriggers(unit, event, wdef?.triggers, unit, opportunity, scope, false, undefined, undefined, unit.weapon.defId, eventInfo)
     }
     // 被动卡（无 onlyDefId 时全部参与）
     if (!onlyDefId) {
       for (const p of unit.passives) {
         const scope = this.scopeFor(unit, undefined, subjects, opportunity)
-        this.fireTriggers(unit, event, p.triggers, unit, opportunity, scope, false, undefined, undefined, p.defId)
+        this.fireTriggers(unit, event, p.triggers, unit, opportunity, scope, false, undefined, undefined, p.defId, eventInfo)
       }
     }
   }
 
   /** 全局监听：遍历所有存活单位的状态/被动，只执行 global:true 的触发器；事件源作为条件 target。 */
-  private fireGlobalStatusTriggers(event: string, subject: CombatUnit, subjects?: TriggerSubjects): void {
+  private fireGlobalStatusTriggers(event: string, subject: CombatUnit, subjects?: TriggerSubjects, eventInfo?: TriggerEventInfo): void {
     for (const host of this.units.all()) {
       if (host.isDead) continue
       for (const inst of [...host.statuses.all()]) {
         const def = this.lookup.statusDef(inst.defId)
         const scope = this.scopeFor(host, inst.grant.casterId, { ...subjects, target: subject })
-        this.fireTriggers(host, event, def?.triggers, host, undefined, scope, true, subject, inst)
+        this.fireTriggers(host, event, def?.triggers, host, undefined, scope, true, subject, inst, undefined, eventInfo)
       }
       if (host.weapon) {
         const wdef = this.lookup.skillDef(host.weapon.defId)?.weapon
         const scope = this.scopeFor(host, undefined, { ...subjects, target: subject })
-        this.fireTriggers(host, event, wdef?.triggers, host, undefined, scope, true, subject, undefined, host.weapon.defId)
+        this.fireTriggers(host, event, wdef?.triggers, host, undefined, scope, true, subject, undefined, host.weapon.defId, eventInfo)
       }
       for (const p of host.passives) {
         const scope = this.scopeFor(host, undefined, { ...subjects, target: subject })
-        this.fireTriggers(host, event, p.triggers, host, undefined, scope, true, subject, undefined, p.defId)
+        this.fireTriggers(host, event, p.triggers, host, undefined, scope, true, subject, undefined, p.defId, eventInfo)
       }
     }
   }
 
-  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, targetScope?: TargetScope, globalPass = false, conditionTarget?: CombatUnit | null, ownerInstance?: StatusInstance, originCardId?: string): void {
+  private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, targetScope?: TargetScope, globalPass = false, conditionTarget?: CombatUnit | null, ownerInstance?: StatusInstance, originCardId?: string, eventInfo?: TriggerEventInfo): void {
     for (const t of triggers ?? []) {
       if (t.event !== event) continue
       if ((t.global === true) !== globalPass) continue
       const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity, targetScope, originCardId)
-      // P2a：触发器级 condition 先在全局监听上接线；非全局触发器的条件评估待 side 口径统一
-      if (globalPass && t.condition && !checkCondition(t.condition, conditionTarget ?? targetScope?.targets[0] ?? unit, ctx, targetScope?.caster ?? null)) continue
+      const conditionTargetUnit = conditionTarget ?? targetScope?.targets[0] ?? null
+      if (t.condition) {
+        const condCtx = {
+          ...conditionContext(ctx),
+          host: unit,
+          subjects: {
+            target: conditionTargetUnit,
+            attacker: targetScope?.attacker ?? null,
+            killed: targetScope?.killed ?? null,
+            caster: targetScope?.caster ?? caster ?? null,
+          },
+          event: eventInfo,
+        }
+        if (!evaluateCondition(t.condition, conditionTargetUnit, condCtx)) continue
+      }
+      if (t.filter && !this.triggerFilterPasses(t.filter, unit, eventInfo)) continue
       executeNodes(t.effects ?? [], [unit], ctx)
       if (!ownerInstance || !t.consumeCharge) continue
       // 效果可能已自行卸载该状态：按 instanceId 重新取，避免重复卸载
@@ -1312,6 +1331,26 @@ class CombatRuntime implements CombatRuntimeHandle {
         this.emit({ type: 'StatusExpired', instanceId: live.instanceId, defId: live.defId, unitId: unit.id })
       }
     }
+  }
+
+  /**
+   * 触发器 filter（编队参数 §1.1b）：状态/被动/武器触发器按持有者判定；
+   * on_status_gain 的 `statusId` 是事件过滤（本次获得的状态 id）。
+   * 盘侧数据仅 monster.windfall 使用该字段。
+   */
+  private triggerFilterPasses(filter: NonNullable<TriggerDef['filter']>, host: CombatUnit, eventInfo?: TriggerEventInfo): boolean {
+    if (filter.statusId !== undefined && eventInfo?.statusId !== filter.statusId) return false
+    const { statusId: _statusId, ...rest } = filter
+    void _statusId
+    if (Object.keys(rest).length === 0) return true
+    return matchesUnitFilter(host, rest, {
+      units: this.units,
+      self: host,
+      enemyFaction: this.factions.find((f) => f !== host.faction) ?? this.factions[1],
+      lanes: this.laneIds,
+      laneCapacity: LANE_CAPACITY,
+      unsupported: (kind, detail) => this.unsupported(kind, detail),
+    })
   }
 
   // ---------- 收尾 ----------

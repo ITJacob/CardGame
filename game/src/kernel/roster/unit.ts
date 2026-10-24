@@ -153,6 +153,10 @@ export class CombatUnit implements Unit {
   statusStacks(defId: string): number {
     return this.statuses.stacksOf(defId)
   }
+  /** 持有状态 defId 列表（条件 has_category 扫描用） */
+  statusDefIds(): readonly string[] {
+    return this.statuses.all().map((s) => s.defId)
+  }
   hasStatusParam(defId: string, key: string): boolean {
     return this.statuses.byDef(defId).some((i) => i.grant.params != null && key in i.grant.params)
   }

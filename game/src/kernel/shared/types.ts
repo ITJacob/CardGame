@@ -63,6 +63,8 @@ export interface Condition {
   type?: string | string[]
   tag?: string | string[]
   element?: string | string[]
+  /** damage_source_is：behavior / status */
+  sources?: string[]
   faction?: string
   aUnit?: string
   bUnit?: string
@@ -94,8 +96,10 @@ export interface UnitFilter {
   isAllyOrMirror?: boolean
   /** 空格（区域模式下按格判定；单位池无法命中） */
   emptySlot?: boolean
-  /** 相对界域所有者的阵营过滤（界域触发器 filter.side） */
-  side?: 'ally' | 'enemy' | 'any'
+  /** 相对触发器持有者/界域所有者的阵营过滤（filter.side；all/both 不约束） */
+  side?: 'ally' | 'enemy' | 'all' | 'both' | 'any'
+  /** 触发器事件过滤：仅 on_status_gain 使用——本次获得的状态 id */
+  statusId?: string
   adjacency?: Record<string, Scalar>
   unitId?: string | string[]
   element?: string | string[]

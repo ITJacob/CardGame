@@ -62,7 +62,10 @@ export function handleDamage(node: EffDamage, target: CombatUnit | null, ctx: Ef
   })
   applyDamageResult(target, result)
   ctx.reportDamage?.(attacker?.faction ?? '', result.final)
-  ctx.onDamage?.(attacker ?? null, target, result.final)
+  ctx.onDamage?.(attacker ?? null, target, result.final, {
+    element,
+    source: ctx.damageSource ?? 'behavior',
+  })
 }
 
 export function handleHeal(node: EffHeal, target: CombatUnit | null, ctx: EffectContext): void {

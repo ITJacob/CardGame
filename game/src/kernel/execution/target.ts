@@ -14,6 +14,8 @@ export interface TargetContext {
   units: Registry
   self: CombatUnit
   enemyFaction: FactionId
+  /** filter.side 的参照阵营（缺省 = self.faction；界域触发器传所有者阵营） */
+  sideFaction?: FactionId
   /** 有序路 id（升序）——跨路/菱形/链式跳跃的定向依据（战场参数 §二） */
   lanes: readonly LaneId[]
   /** 每路格数 LANE_CAPACITY */
@@ -55,9 +57,14 @@ function inPlay(u: CombatUnit): boolean {
  * 未接通字段记 unsupported、视为通过（不静默改变候选池）；数据当前使用
  * hasStatus / unitType / isSummon / casterOwned / unitId / isPuppet / isAllyOrMirror。
  */
-function matchesUnitFilter(u: CombatUnit, filter: UnitFilter | undefined, ctx: TargetContext): boolean {
+export function matchesUnitFilter(u: CombatUnit, filter: UnitFilter | undefined, ctx: TargetContext): boolean {
   if (!filter) return true
   const self = ctx.self
+  if (filter.side !== undefined && filter.side !== 'any' && filter.side !== 'all' && filter.side !== 'both') {
+    const ref = ctx.sideFaction ?? self.faction
+    if (filter.side === 'ally' && u.faction !== ref) return false
+    if (filter.side === 'enemy' && u.faction === ref) return false
+  }
   if (filter.unitType !== undefined) {
     const types = Array.isArray(filter.unitType) ? filter.unitType : [filter.unitType]
     if (u.unitType == null || !types.includes(u.unitType)) return false
@@ -109,8 +116,12 @@ function matchesUnitFilter(u: CombatUnit, filter: UnitFilter | undefined, ctx: T
     const has = ctx.units.all().some((x) => x.summonerId === self.id && !x.isDead)
     if (has !== filter.casterHasSummon) return false
   }
+  if (filter.hasCategory !== undefined) {
+    const cats = Array.isArray(filter.hasCategory) ? filter.hasCategory : [filter.hasCategory]
+    if (!cats.some((c) => u.hasStatusCategory(c))) return false
+  }
   if (filter.anyOf?.length && !filter.anyOf.some((f) => matchesUnitFilter(u, f, ctx))) return false
-  if (filter.hasCategory !== undefined || filter.adjacency !== undefined) {
+  if (filter.adjacency !== undefined) {
     ctx.unsupported?.('filter', JSON.stringify(filter))
   }
   return true

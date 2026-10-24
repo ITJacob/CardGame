@@ -60,7 +60,7 @@ export function checkCondition(
   return evaluateCondition(cond, target, casterOverride === undefined ? cc : { ...cc, caster: casterOverride })
 }
 
-function conditionContext(ctx: EffectContext): ConditionContext {
+export function conditionContext(ctx: EffectContext): ConditionContext {
   return {
     random: ctx.random,
     registry: ctx.registry,
