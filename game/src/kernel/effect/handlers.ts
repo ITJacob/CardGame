@@ -67,6 +67,7 @@ export function handleDamage(node: EffDamage, target: CombatUnit | null, ctx: Ef
     pierce: [...pierce],
     armorPierceRatio: Math.max(numeric(node.armorPierceRatio, 0), outgoing?.armorPierceRatio ?? 0),
     dimMul: ctx.dimMul?.('damage') ?? 1,
+    unitById: (id) => ctx.units.get(id),
   })
   applyDamageResult(target, result)
   ctx.reportDamage?.(attacker?.faction ?? '', result.final)
@@ -99,6 +100,21 @@ export function handleMountStatus(node: EffMountStatus, target: CombatUnit | nul
   // 亡骸可寻址（编队上下文 §十，2026-10-02 拍板）：on_kill/on_death 的
   // killed_unit / self 载荷允许落在尸体上（revive_blocked 等击杀标记）。
   if (!target) return
+  // recordedTarget 绑定：把本次 Action 的目标实例 id 记进状态，供 H4 filter.recordedTargetOnly 读取。
+  // binding 的值是书写简写（target / primary_target / self），不是单位 id；卡片语境下
+  // target 常是 self（状态挂在施法者身上），真实目标在 targetScope.targets 里
+  const bindKey = node.binding?.recordedTarget
+  let recordedTarget: string | undefined
+  if (bindKey === 'self' || bindKey === 'holder' || bindKey === 'status_holder') {
+    recordedTarget = ctx.caster?.id ?? target.id
+  } else if (bindKey === 'secondary_target') {
+    recordedTarget = ctx.targetScope?.secondary[0]?.id
+  } else if (bindKey) {
+    recordedTarget = ctx.targetScope?.targets[0]?.id ?? target.id
+  }
+  const binding = node.binding
+    ? { ...node.binding, ...(recordedTarget ? { recordedTarget } : {}) }
+    : undefined
   ctx.mountStatus(target, node.statusId, {
     duration: node.duration ?? undefined,
     durationUnit: node.durationUnit,
@@ -106,6 +122,7 @@ export function handleMountStatus(node: EffMountStatus, target: CombatUnit | nul
     stackMode: node.stackMode,
     charges: typeof node.charges === 'number' ? node.charges : undefined,
     params: node.params as Record<string, number | string | boolean> | undefined,
+    binding,
     ignoreWarSpiritCap: node.ignoreWarSpiritCap,
   })
 }

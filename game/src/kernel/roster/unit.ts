@@ -9,6 +9,7 @@ import { Gauge, Pool } from './resources'
 import { CombatStatusSet, type StatusDefLookup } from './status'
 import type { AttributeSet, BaseProfile, BehaviorSlot, Channel, EffectiveProfile, SkillSlot, StatusSet, Unit, WeaponInstance } from './types'
 import { rawModifier } from './statusModifiers'
+import { statusDamageMul, type DamageMulEvent } from './damageMultipliers'
 import { round2 } from '../shared/result'
 
 /** 出伤参数覆写（编队参数 §1.1b）：同源多状态合并——pierce 并集、比例取高 */
@@ -429,22 +430,24 @@ export class CombatUnit implements Unit {
   }
 
   /** 状态常驻乘区：同类取最优——增益取最大、减益取最小，两者再相乘一次。 */
-  private bestStatusMul(key: string): number {
-    let gain = 1
-    let loss = 1
-    for (const inst of this.statuses.all()) {
-      const v = numericModifierOf(this.statusDefs.statusDef(inst.defId), key)
-      if (v === null) continue
-      const eff = 1 + (v - 1) * inst.currentStacks
-      if (eff >= 1) gain = Math.max(gain, eff)
-      else loss = Math.min(loss, eff)
-    }
-    return gain * loss
+  private bestStatusMul(key: 'damage_mul' | 'damage_taken_mul', event?: DamageMulEvent): number {
+    return statusDamageMul(this, key, event, this.statusDefs)
   }
 
   get damageTakenMul(): number { return this.bestStatusMul('damage_taken_mul') }
 
   get damageDealtMul(): number { return this.bestStatusMul('damage_mul') }
+
+  /** H4：按本次伤害事件求值（filter 只在有 event 时生效）。 */
+  damageTakenMulFor(event: DamageMulEvent): number {
+    // 承伤光环：受击方是召唤物时，把召唤者身上带 filter.casterOwned 的条目一并纳入
+    const owner = this.summonerId && event.unitById ? event.unitById(this.summonerId) : undefined
+    return statusDamageMul(this, 'damage_taken_mul', event, this.statusDefs, owner)
+  }
+
+  damageDealtMulFor(event: DamageMulEvent): number {
+    return this.bestStatusMul('damage_mul', event)
+  }
 
   /** 一次性增减伤修正桶（modify_damage）：同事件内先加后乘。 */
   get damageTakenBucket(): number {
@@ -461,6 +464,7 @@ export class CombatUnit implements Unit {
   }
 }
 
+/** 非 H4 的状态修饰键取数值（乘数语义）；H4 的 damage_mul / damage_taken_mul 走 damageMultipliers.ts */
 function numericModifierOf(def: StatusDef | undefined, key: string): number | null {
   const v = rawModifier(def?.modifiers, key)
   if (v === undefined) return null

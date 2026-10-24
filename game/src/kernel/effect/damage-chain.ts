@@ -25,6 +25,8 @@ export interface DamageInput {
   minDamage?: number
   /** 行动卡 dimHooks 的维度乘区（进入 ⑤ 乘区段） */
   dimMul?: number
+  /** 单位查询：承伤光环需要按召唤者 id 取施予者 */
+  unitById?: (id: string) => CombatUnit | undefined
 }
 
 export interface DamageStage {
@@ -95,11 +97,13 @@ export function resolveDamage(input: DamageInput): DamageResult {
     push('defense', before, cur)
   }
 
-  // ⑤ 乘区：常驻同类取最优（承伤取最小、输出取最大）后再乘；一次性修正单独先加后乘
+  // ⑤ 乘区：常驻同类取最优（承伤取最小、输出取最大）后再乘；一次性修正单独先加后乘。
+  // H4：把本次伤害事件传给常驻乘区，带 filter 的状态只在事件匹配时生效
   if (!input.dot) {
     const before = cur
-    cur *= defender.damageTakenMul
-    cur *= attacker?.damageDealtMul ?? 1
+    const event = { element, attacker, defender, unitById: input.unitById }
+    cur *= defender.damageTakenMulFor(event)
+    cur *= attacker?.damageDealtMulFor(event) ?? 1
     cur *= input.dimMul ?? 1
     const delta = defender.damageTakenBucket + (attacker?.damageDealtBucket ?? 0)
     cur *= Math.max(0, 1 + delta)

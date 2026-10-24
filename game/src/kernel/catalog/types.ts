@@ -67,6 +67,8 @@ export interface EffMountStatus extends EffBase {
   dispelable?: boolean
   contagious?: boolean
   spread?: 'splash_adjacent'
+  /** 状态与目标的绑定关系（如 link 双向绑定 / recordedTarget 记录本次目标） */
+  binding?: { recordedTarget?: string }
   /** 战意正向产出绕过「每自身回合 +3」上限（被动击杀产层用） */
   ignoreWarSpiritCap?: boolean
 }
