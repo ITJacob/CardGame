@@ -1568,26 +1568,6 @@
           "target": "self"
         },
         {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "fate_gap",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "mental",
-              "value": 2,
-              "note": "命运星象：自身带命运缝隙则星象叠运 2 点"
-            }
-          ],
-          "else": [],
-          "note": "跨系读层段：pryer→thief fate_gap（2026-09-29 跨系批二）"
-        },
-        {
           "type": "modify_resource",
           "resource": "secrecy",
           "value": 1,
@@ -1604,7 +1584,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：自身节奏与保底反打。起手 `星象`。 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=dmg）",
+      "conversionNotes": "翻译/语义：自身节奏与保底反打。起手 `星象`。 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=dmg） ｜ 2026-10-24 开局快照迁移：fate_gap 读层→on_deal_damage",
       "art": {
         "subject": "a personal constellation burning above a mage's head, flaring at his near death",
         "elements": [
@@ -1612,7 +1592,35 @@
           "pulsing stellar threads"
         ],
         "mood": "intimate, fated"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "fate_gap",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "target": "target",
+                  "note": "命运星象：命中时叠运，追加 2 点精神"
+                }
+              ],
+              "else": []
+            }
+          ],
+          "note": "命运星象（迁自开局快照）"
+        }
+      ]
     },
     {
       "id": "skill_pryer_s4_mystery_reenactment",

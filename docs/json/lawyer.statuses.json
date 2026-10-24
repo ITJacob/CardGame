@@ -693,19 +693,31 @@
       "stackPolicy": "stack",
       "note": "先例（2026-10-23 C3 重构新建）：立案记录本场已发生的事件类型（erosion/consumption/death），duration null 永续——先例一旦成立不可撤销；判例卡按 recorded_has 键援引。",
       "stackThreshold": {
-        "stacks": 2,
+        "stacks": 1,
         "effects": [
           {
-            "type": "modify_stat",
-            "stat": "attack",
-            "value": 1,
-            "mode": "delta",
-            "duration": null,
-            "target": "self",
-            "note": "阶层：先例达 2 层 → 攻击 +1"
+            "op": "if",
+            "condition": {
+              "kind": "recorded_has",
+              "side": "self",
+              "statusId": "precedent",
+              "id": "consumption"
+            },
+            "then": [
+              {
+                "type": "modify_stat",
+                "stat": "attack",
+                "value": 2,
+                "mode": "delta",
+                "duration": null,
+                "target": "self",
+                "note": "独裁者援引消耗判例：攻击 +2"
+              }
+            ],
+            "else": []
           }
         ],
-        "note": "阶层读层（原开局快照）"
+        "note": "独裁者读层（原开局快照）；阶层读层改由阶层卡 on_status_gain 承载"
       }
     }
   ]

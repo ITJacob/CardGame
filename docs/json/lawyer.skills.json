@@ -1848,7 +1848,8 @@
       "conversionNotes": [
         "退化方案（稿面）：改为 on_battle_start 时对低位格敌人一次性挂易伤，代价是后续入场单位吃不到",
         "翻译/语义：僭越轴：位格条件常驻乘区。位格可经 `modify_stat(rank,±N)` 修正。",
-        "2026-10-02 骨架手术：骨架手术：规则槽 remove 模式"
+        "2026-10-02 骨架手术：骨架手术：规则槽 remove 模式",
+        "2026-10-24 开局快照迁移：precedent 读层→on_status_gain"
       ],
       "tentative": false,
       "art": {
@@ -1858,7 +1859,40 @@
           "harmless arrows below"
         ],
         "mood": "aloof, absolute"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_status_gain",
+          "filter": {
+            "statusId": "precedent"
+          },
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "precedent",
+                "cmp": ">=",
+                "n": 2
+              },
+              "then": [
+                {
+                  "type": "modify_stat",
+                  "stat": "attack",
+                  "value": 1,
+                  "mode": "delta",
+                  "duration": null,
+                  "target": "self",
+                  "note": "阶层：先例达 2 层攻击 +1"
+                }
+              ],
+              "else": []
+            }
+          ],
+          "note": "阶层读层（迁自开局快照；precedent 获得/叠层时复评）"
+        }
+      ]
     },
     {
       "id": "skill_lawyer_s3_frantic_surge",
@@ -2474,53 +2508,14 @@
               "target": "self"
             }
           ]
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "self",
-            "id": "mirror_substitute",
-            "cmp": ">=",
-            "n": 1
-          },
-          "then": [
-            {
-              "type": "damage",
-              "element": "mental",
-              "value": 2,
-              "note": "镜中独裁：自身带镜子替身则双影同判 2 点（跨系 assassin）"
-            }
-          ],
-          "else": []
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "recorded_has",
-            "side": "self",
-            "statusId": "precedent",
-            "id": "consumption"
-          },
-          "then": [
-            {
-              "type": "modify_stat",
-              "stat": "attack",
-              "value": 2,
-              "mode": "delta",
-              "target": "self",
-              "note": "独裁者援引消耗判例：攻击 +2"
-            }
-          ],
-          "else": [],
-          "note": "判例：consumption"
         }
       ],
       "conversionNotes": [
         "稿面平衡建议：四条全开强度极高，数值阶段优先砍「扭曲扩散」触发频率（如每场 3 次）",
         "「定义·击杀禁复活」由 mount_status(revive_blocked) 归一为 on_kill 触发器 params.deathSettlement.revive_blocked——revive_blocked 是死亡结算字段（编队参数 §1.1b）不是状态，与 defined_substitute 的 modifiers.reviveBlocked 同出口；源稿语义（你击杀的敌方单位无法复活）不变",
         "翻译/语义：僭越轴收束件：四条下位权柄各取一条合成被动。",
-        "2026-10-02 骨架手术：骨架手术：规则槽迁移"
+        "2026-10-02 骨架手术：骨架手术：规则槽迁移",
+        "2026-10-24 开局快照迁移：mirror_substitute→on_deal_damage；consumption 判例→precedent 阈值"
       ],
       "frameworkFlags": [
         {
@@ -2537,7 +2532,35 @@
           "single fused scepter"
         ],
         "mood": "total, suffocating"
-      }
+      },
+      "triggers": [
+        {
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "self",
+                "id": "mirror_substitute",
+                "cmp": ">=",
+                "n": 1
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "target": "target",
+                  "note": "镜中独裁：命中时双影同判，追加 2 点精神"
+                }
+              ],
+              "else": []
+            }
+          ],
+          "note": "镜中独裁（迁自开局快照）"
+        }
+      ]
     },
     {
       "id": "skill_lawyer_s0_nine_tombs",
