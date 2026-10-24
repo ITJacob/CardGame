@@ -585,6 +585,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       zoneActive: (zoneId) => this.battle.zones.some((z) => z.status === 'Active' && z.def.id === zoneId),
       elementCounter: (defender, element) => this.elementCounter(defender, element),
       checkStackThreshold: (host, statusId) => this.checkThresholdByDef(host, statusId),
+      statusTags: (statusId) => this.lookup.statusDef(statusId)?.tags,
       host: triggerCtx?.host,
       subjects: triggerCtx?.subjects,
       event: triggerCtx?.event,

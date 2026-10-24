@@ -30,7 +30,7 @@ export type ConditionKind =
   | 'damage_source_is' | 'dead_count' | 'dispelled_count' | 'element_is' | 'faction_is'
   | 'field_status_count' | 'gauge_above' | 'gauge_rank' | 'gender_is' | 'has_category'
   | 'has_equipped'
-  | 'has_status' | 'hp_percent' | 'hp_percent_compare' | 'luminance_compare' | 'meter_compare' | 'not'
+  | 'has_status' | 'has_status_tag' | 'hp_percent' | 'hp_percent_compare' | 'luminance_compare' | 'meter_compare' | 'not'
   | 'phase_is' | 'rank_gap' | 'recorded_has' | 'resource_compare' | 'stat_compare' | 'tag_chain'
   | 'target_dead' | 'target_has_tag' | 'target_is_summoned' | 'target_unit_type'
   | 'variant_is' | 'zone_active'

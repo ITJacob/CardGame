@@ -63,6 +63,8 @@ export interface ConditionContext {
   meterOf?: (key: string) => number
   /** 场上是否存在指定区域（zone_active；zoneId 为 zoneDef.id） */
   zoneActive?: (zoneId: string) => boolean
+  /** 状态定义的 tags（has_status_tag 用） */
+  statusTags?: (statusId: string) => readonly string[] | undefined
 }
 
 function compare(actual: number, cmp: Cmp, bound: number): boolean {
@@ -142,6 +144,17 @@ export function evaluateCondition(cond: Condition, target: ConditionUnit | null,
         const subject = subjectOf(cond.side, target, ctx)
         return subject != null && subject.statusStacks(prefixOf(cond)) >= (cond.n ?? 1)
       }
+    case 'has_status_tag': {
+      const subject = subjectOf(cond.side, target, ctx)
+      const want = cond.tag == null ? [] : Array.isArray(cond.tag) ? cond.tag : [cond.tag]
+      if (!subject || want.length === 0) return false
+      const held = subject.statusDefIds?.() ?? []
+      const hits = held.filter((id) => {
+        const tags = ctx.statusTags?.(id) ?? []
+        return want.some((t) => tags.includes(t))
+      }).length
+      return compare(hits, cond.cmp ?? '>=', cond.n ?? 1)
+    }
     case 'target_dead':
       return target != null && target.isDead
     case 'target_unit_type': {

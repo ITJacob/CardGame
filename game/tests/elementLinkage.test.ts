@@ -19,10 +19,19 @@ const PATH: PathwayFile = {
       effects: [{ type: 'damage', element: 'fire', value: 10 }],
     },
     {
+      id: 'probe_tag', name: '识水', kind: 'active', sequence: 9, sequenceName: 's9', rarity: 'common',
+      axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
+      cost: { energy: 0, cooldown: 0, castTime: null }, reach: 'spell',
+      target: { selectionMode: 'auto', request: { faction: 'enemy', anchor: 'enemy_front', sort: 'index_asc', pickCount: 1 } },
+      effects: [{ op: 'if', condition: { kind: 'has_status_tag', side: 'target', tag: 'water', cmp: '>=', n: 1 },
+        then: [{ type: 'damage', element: 'ice', value: 2, target: 'target' }], else: [] }],
+    },
+    {
       id: 'probe_defs', name: '状态池', kind: 'passive', sequence: 1, sequenceName: 's1', rarity: 'common',
       axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
       cost: { energy: 0, cooldown: 100, castTime: null }, hook: [], effects: [],
       statusDefs: [
+        { id: 'probe_wet', name: '浸水', category: ['debuff'], dispelable: true, duration: null, maxStacks: 1, tags: ['water'] },
         { id: 'probe_frost', name: '寒霜', category: ['debuff'], dispelable: true, duration: null, maxStacks: 3, element: 'ice' },
         {
           id: 'probe_ember', name: '余烬', category: ['debuff'], dispelable: true, duration: null, maxStacks: 3,
@@ -98,6 +107,26 @@ describe('元素联动', () => {
     const r = afterOneHit(createCombat(setup([{ defId: 'probe_frost', stacks: 2 }])))
     expect(r.stacks('probe_frost')).toBe(1)
     expect(r.hp).toBe(31.5)
+  })
+
+  it('标签联动：has_status_tag 按状态 tag 判定', () => {
+    const c = createCombat({
+      ...(setup([{ defId: 'probe_wet' }]) as Record<string, unknown>),
+      factions: [
+        { id: 'A', name: '甲', units: [{
+          unitId: 'A_u0', coordinate: { faction: 'A', lane: 'lane0', index: 0 },
+          attributeSet: { strength: 1, agility: 30, intelligence: 1, rank: 0 }, gender: 'male', anchor: 0,
+          activeSlots: [{ skillDefId: 'probe_tag' }], passiveSlots: [], initialStatuses: [],
+        }] },
+        { id: 'B', name: '乙', units: [{
+          unitId: 'B_u0', coordinate: { faction: 'B', lane: 'lane0', index: 0 },
+          attributeSet: { strength: 1, agility: 1, intelligence: 1, rank: 0 }, gender: 'male', anchor: 0,
+          activeSlots: [], passiveSlots: [], initialStatuses: [{ defId: 'probe_wet', sourceId: 'init' }],
+        }] },
+      ],
+    } as never)
+    c.step()
+    expect(c.state().units.find((u) => u.id === 'B_u0')!.hp).toBe(38)
   })
 
   it('共鸣：同元素伤害给对应状态 +1 层', () => {

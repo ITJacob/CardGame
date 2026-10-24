@@ -26,7 +26,15 @@
 - 共鸣 4 档（升阶转化）：灼烧 3 层→燃焚；中毒 3 层→疾病（原状态移除）。
 - 燃焚标记 fire、疾病标记 poison，继续参与相消/共鸣判定。
 
-## 四、残留
+## 四、标签联动（2026-10-24 落地底座）
+
+- `StatusDef.tags`（schema + 内核）：状态层 tag 载体，开放词汇。
+- 谓词 `has_status_tag {side, tag, cmp?, n?}`：按 tag 统计指定方持有的状态数。
+- 元素状态已打 tag：灼烧 fire / 中毒 poison / 血液冻僵 ice / 圣焰 holy / 黑焰 dark。
+- 单测 `elementLinkage.test.ts`（按 water tag 判定追加伤害）。
+- 残留：首个正式出卡消费方待排；tag 词汇表待整理。
+
+## 五、残留
 
 - 标签联动：需 `statusDef.tags` + tag 读谓词（SCHEMA §5.2 登记后实施）。
 - 元素状态覆盖不全（目前只标 5 个）；`frozen` 通用冻结态未建。

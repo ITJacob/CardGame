@@ -80,6 +80,7 @@ export function conditionContext(ctx: EffectContext): ConditionContext {
     },
     meterOf: (key) => ctx.ops.meterOf(key),
     zoneActive: ctx.zoneActive,
+    statusTags: ctx.statusTags,
     host: ctx.host,
     subjects: ctx.subjects,
     event: ctx.event,
