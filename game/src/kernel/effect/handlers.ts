@@ -85,7 +85,9 @@ export function handleHeal(node: EffHeal, target: CombatUnit | null, ctx: Effect
 }
 
 export function handleMountStatus(node: EffMountStatus, target: CombatUnit | null, ctx: EffectContext): void {
-  if (!target || target.isDead) return
+  // 亡骸可寻址（编队上下文 §十，2026-10-02 拍板）：on_kill/on_death 的
+  // killed_unit / self 载荷允许落在尸体上（revive_blocked 等击杀标记）。
+  if (!target) return
   ctx.mountStatus(target, node.statusId, {
     duration: node.duration ?? undefined,
     durationUnit: node.durationUnit,

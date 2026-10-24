@@ -147,7 +147,9 @@ export function resolveEffectTargets(
   unsupported?: (kind: string, detail?: string) => void,
 ): CombatUnit[] {
   const host = scope.host
-  const one = (u: CombatUnit | null | undefined): CombatUnit[] => (u && !u.isDead ? [u] : [])
+  // 单指主体允许是尸体（亡骸可寻址，编队上下文 §十）：on_kill / on_death 的
+  // killed_unit / self 载荷要能挂到亡骸上；数值类 handler 各自跳过已亡目标。
+  const one = (u: CombatUnit | null | undefined): CombatUnit[] => (u ? [u] : [])
   const selected = (): CombatUnit[] => scope.targets.filter((u) => !u.isDead && !u.detached)
   const allies = (): CombatUnit[] => alive(units.aliveIn(host.faction))
   const enemies = (): CombatUnit[] => (scope.enemyFaction ? alive(units.aliveIn(scope.enemyFaction)) : [])
