@@ -111,6 +111,30 @@ describe('mode=unit（指定型）：scope 只作池边界，pickCount 定命中
       .toEqual(['B3'])
   })
 
+  it('point 单目标本路无候选 → 同样回退全场', () => {
+    const { registry } = field([
+      { id: 'A0', faction: 'A', lane: 'lane0', index: 0 },
+      { id: 'B3', faction: 'B', lane: 'lane1', index: 0 },
+    ])
+    const ctx: TargetContext = {
+      units: registry, self: registry.get('A0') as CombatUnit, enemyFaction: 'B', lanes: LANES, laneCapacity: 4,
+    }
+    expect(occ(resolveCandidates(req({ mode: 'unit', faction: 'enemy', scope: 'point', pickCount: 1 }), ctx)))
+      .toEqual(['B3'])
+  })
+
+  it('其他几何 scope 落空不回退（behind_2）', () => {
+    const { registry } = field([
+      { id: 'A0', faction: 'A', lane: 'lane0', index: 0 },
+      { id: 'B3', faction: 'B', lane: 'lane1', index: 0 },
+    ])
+    const ctx: TargetContext = {
+      units: registry, self: registry.get('A0') as CombatUnit, enemyFaction: 'B', lanes: LANES, laneCapacity: 4,
+    }
+    expect(occ(resolveCandidates(req({ mode: 'unit', faction: 'enemy', scope: 'behind_2', pickCount: 'all' }), ctx)))
+      .toEqual([])
+  })
+
   it('anchor enemy_back = 敌方同路最后排', () => {
     const { registry } = field([
       { id: 'A0', faction: 'A', lane: 'lane0', index: 0 },
@@ -141,6 +165,17 @@ describe('mode=area（区块型）：命中区域内全部在位单位，pickCou
     const ctx = scenario()
     expect(occ(resolveCandidates(req({ mode: 'area', faction: 'enemy', anchor: 'enemy_front', scope: 'whole_lane' }), ctx)))
       .toEqual(['B0', 'B1', 'B2'])
+  })
+
+  it('whole_lane 本路为空 → 不回落 board（空区域 0 命中）', () => {
+    const { registry } = field([
+      { id: 'A0', faction: 'A', lane: 'lane0', index: 0 },
+      { id: 'B3', faction: 'B', lane: 'lane1', index: 0 },
+    ])
+    const ctx: TargetContext = {
+      units: registry, self: registry.get('A0') as CombatUnit, enemyFaction: 'B', lanes: LANES, laneCapacity: 4,
+    }
+    expect(occ(resolveCandidates(req({ mode: 'area', faction: 'enemy', scope: 'whole_lane' }), ctx))).toEqual([])
   })
 
   it('pickCount 显式给了也不截断', () => {

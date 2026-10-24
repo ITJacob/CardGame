@@ -656,6 +656,14 @@ def main():
             elif _kind=="summon":
                 check_summon_card(c, cid, _refs["defs"], errors)
             else: errors.append("%s: bad kind"%cid)
+            # ally 单目标不得用 point：point=仅锚点格，而 ally 缺省锚点=施法者格，候选只剩自己
+            # （带显式 anchor 的被动/触发寻址除外，如 anchor=spawned_unit）
+            _req = (c.get("target") or {}).get("request") or {}
+            if ((_req.get("mode") or "unit") == "unit"
+                    and _req.get("faction") in ("ally", "self_or_ally")
+                    and _req.get("scope") == "point"
+                    and not _req.get("anchor")):
+                errors.append("%s: ally 单目标不得用 scope:point（缺省锚点=施法者；任选友军请用 scope:board）" % cid)
             _passive = _kind == "passive"
             _init_eq = c.get("initialEquip")
             if _init_eq is not None:

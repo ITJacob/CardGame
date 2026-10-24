@@ -109,7 +109,7 @@ v0.2 只锁效果不锁数值，但**框架的语义维度封得太死**——�
 
 ### 1.6 目标缺省基准（2026-10-01 拍板补登）
 
-普攻及未显式声明目标规格的近战类伤害行为，缺省 targetSpec = `mode:unit + faction:enemy + anchor:enemy_front + scope:whole_lane + sort:index_asc + pickCount:1`——**敌方同路最前排（同路排首）**；同路无可锁定候选（空路 / 全隐匿）时按 scope 解析规则回退 `scope:board`（全场最前排，平局按 lane 升序）。显式声明优先。**`mode` 是选靶第一级**：`unit` = 池为单位实体（`scope` 只作池边界、`pickCount` 定命中数、不可被选中类排除生效）；`area` = 池为坐标区块（`anchor` 原点 + `scope` 圈定，命中区域内全部在位单位 = **AoE**，`pickCount` 不参与）。`enemy_front` = 过滤后最前排（隐匿 / 不可锁定者不占排首）；spread（溅射）在选定主目标之后扩散，不进候选池。权威源：`../ddd/params/共享内核参数.md` §一。
+普攻及未显式声明目标规格的近战类伤害行为，缺省 targetSpec = `mode:unit + faction:enemy + anchor:enemy_front + scope:whole_lane + sort:index_asc + pickCount:1`——**敌方同路最前排（同路排首）**；unit 单目标（`whole_lane` / `point`）无可锁定候选（空路 / 全隐匿）时回退 `scope:board`（全场最前排，平局按 lane 升序）；其余几何 scope 与 area 不回退。显式声明优先。**`mode` 是选靶第一级**：`unit` = 池为单位实体（`scope` 只作池边界、`pickCount` 定命中数、不可被选中类排除生效）；`area` = 池为坐标区块（`anchor` 原点 + `scope` 圈定，命中区域内全部在位单位 = **AoE**，`pickCount` 不参与）。`enemy_front` = 过滤后最前排（隐匿 / 不可锁定者不占排首）；spread（溅射）在选定主目标之后扩散，不进候选池。权威源：`../ddd/params/共享内核参数.md` §一。
 
 ---
 

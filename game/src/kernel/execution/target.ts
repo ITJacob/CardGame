@@ -401,8 +401,10 @@ function resolveUnit(request: TargetRequest, ctx: TargetContext): ResolvedTarget
   const scope = request.scope ?? DEFAULT_SCOPE
   const picked = pickInRegion(pool, request, scope, ctx)
   if (picked.length > 0) return picked
-  // 缺省 whole_lane 落空（空路 / 全隐匿）→ 回退全场（共享内核参数 §一）
-  if (scope !== DEFAULT_SCOPE) return picked
+  // 单目标的本路框定落空（空路 / 全隐匿）→ 回退全场（共享内核参数 §一）。
+  // 其余几何 scope（behind_n / cross_lane / diamond_n / chain_n 等）是明确的几何意图，
+  // 不回退；area 同理（空区域就是 0 命中，不能变成全场 AoE）
+  if (scope !== DEFAULT_SCOPE && scope !== 'point') return picked
   return pickInRegion(pool, request, 'board', ctx)
 }
 
