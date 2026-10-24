@@ -69,7 +69,21 @@
       },
       "maxStacks": 3,
       "stackPolicy": "refresh",
-      "note": "层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）：身份状态可叠层，层数语义 层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。"
+      "note": "层数引擎 2026-09-29 环节⑤补（maxStacks 3 / refresh）：身份状态可叠层，层数语义 层数档已定（2026-10-01 标定批）：maxStacks 3 + refresh 基准档——层数=强度/资源深度档，产层-读层闭环见轴元数据。。",
+      "triggers": [
+        {
+          "event": "on_phase_change",
+          "effects": [
+            {
+              "type": "heal",
+              "value": 1,
+              "target": "all_allies",
+              "note": "昼夜流转，白昼颂诗回响：每次相位更替，己方全体回复 1（⚠️D 待平衡）"
+            }
+          ],
+          "note": "仪式昼夜：持有者（己方）随相位更替获得回响"
+        }
+      ]
     },
     {
       "id": "obedience",
@@ -494,6 +508,21 @@
               "target": "self"
             }
           ]
+        },
+        {
+          "event": "on_phase_change",
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "obedience",
+              "stacks": 1,
+              "stackMode": "add",
+              "duration": 10,
+              "target": "all_enemies",
+              "note": "日轮流转威压：每次相位更替，敌方全体服从 +1（10tick，⚠️D 待平衡）"
+            }
+          ],
+          "note": "仪式昼夜：变形持续期间随相位更替施压"
         }
       ],
       "modifiers": {

@@ -2707,13 +2707,19 @@
           ]
         },
         {
-          "type": "heal",
-          "value": 3,
-          "target": "all_allies",
+          "op": "if",
           "condition": {
             "kind": "target_dead"
           },
-          "note": "收割结算：本卡斩杀则全体友军回复 3 点（target_dead 谓词）"
+          "then": [
+            {
+              "type": "heal",
+              "value": 3,
+              "target": "all_allies",
+              "note": "收割结算：本卡斩杀则全体友军回复 3 点（target_dead 谓词）"
+            }
+          ],
+          "else": []
         },
         {
           "op": "if",
@@ -2725,13 +2731,19 @@
           },
           "then": [
             {
-              "type": "heal",
-              "value": 2,
-              "target": "all_allies",
+              "op": "if",
               "condition": {
                 "kind": "target_dead"
               },
-              "note": "死亡簿 ≥4：收割回血追加 2 点（战士正主维度 death_tally）"
+              "then": [
+                {
+                  "type": "heal",
+                  "value": 2,
+                  "target": "all_allies",
+                  "note": "死亡簿 ≥4：收割回血追加 2 点（战士正主维度 death_tally）"
+                }
+              ],
+              "else": []
             }
           ],
           "else": []
@@ -2845,21 +2857,8 @@
           "else": []
         }
       ],
-      "triggers": [
-        {
-          "event": "on_kill",
-          "effects": [
-            {
-              "type": "heal",
-              "value": 3,
-              "target": "all_allies"
-            }
-          ],
-          "note": "摧毁即净化"
-        }
-      ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：读 `黄昏` 放大的黄昏轴 payoff（老化叠伤）。 ｜ 2026-09-29 D 类批：轴标签保持 martial（D 类批复核：黄昏巨剑挂 aging 是 twilight 身份的跨轴消费段，迁入即断承接）（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12） ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→6（位格8 基准6）。条件/读层追加段不动。 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M5 收割。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。 ｜ 2026-10-19 拔刀特权加限制：装备武器后挂 battle_authority_draw（force=basic_attack），本机会只能接普攻。",
+      "conversionNotes": "翻译/语义：读 `黄昏` 放大的黄昏轴 payoff（老化叠伤）。 ｜ 2026-09-29 D 类批：轴标签保持 martial（D 类批复核：黄昏巨剑挂 aging 是 twilight 身份的跨轴消费段，迁入即断承接）（主题归队：黄昏巨剑→黄昏/晨曦之剑·光之风暴→猎魔，规模均衡收敛 martial 15→12） ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 8→6（位格8 基准6）。条件/读层追加段不动。 ｜ 2026-10-02 差异化风格迭代·批次五（战士：收割体系+恶魔克星+晨曦阵地） ｜ 2026-10-03 骨架手术：武技链换形（角色=dmg） ｜ 2026-10-03 审计修复：target_override(self)→modify_targetability 嘲讽（替承真义） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：martial轴 enemy+behind_2 pick:all（轴选靶签名设计 §4） ｜ 2026-10-16 环节⑤战士重设计（拆样板 / 武器耐久 / 弃攻铁壁 / 伪装分叉）：M5 收割。 ｜ 签名补批（2026-10-16 第二批）：死亡簿·战意。 ｜ 2026-10-17 选靶错配修正·第二轮（逐张对账）：叙述明写「一名」的卡不再走范围型——改为 mode:unit + pickCount:1（scope 保留作池边界）。 ｜ 2026-10-19 拔刀特权加限制：装备武器后挂 battle_authority_draw（force=basic_attack），本机会只能接普攻。 ｜ 2026-10-24 非被动卡触发器裁定：顶层 on_kill 删除；收割回血改用 if(target_dead) 瞬时判定（原 heal+condition 按友军目标判定，恒不触发）",
       "phaseHooks": [
         {
           "phases": [

@@ -315,7 +315,7 @@
       "flagship": false,
       "lore": "序列8 祈光人 —— \"『白昼』：周围10米获得光照\"",
       "flavor": "你点亮一圈白昼——在这圈光里，黑暗再也藏不住任何东西。",
-      "describe": "全场挂载「白昼」20tick：敌方隐匿与不可选中类状态对己方失效；己方对不死 / 污秽 / 黑暗标签单位的伤害 ×1.15。（写入战场覆写层：光照度 = 10，持续 20tick）；白昼揭露：战场隐秘值 -1。",
+      "describe": "己方全体挂载「白昼」20tick：敌方隐匿与不可选中类状态对己方失效；己方对不死 / 污秽 / 黑暗标签单位的伤害 ×1.15。（写入战场覆写层：光照度 = 10，持续 20tick）；白昼揭露：战场隐秘值 -1。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -338,12 +338,6 @@
               "statusId": "daylight",
               "duration": 20,
               "target": "all_allies"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "daylight",
-              "duration": 20,
-              "target": "all_enemies"
             }
           ]
         },
@@ -375,7 +369,7 @@
         "sailor"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"10米光照\"=反隐匿+光对不死更狠。依赖 C8 + 标签乘区。 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 on_phase_change 触发器『颂诗回响』——仪式昼夜正主第一卡 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "翻译/语义：\"10米光照\"=反隐匿+光对不死更狠。依赖 C8 + 标签乘区。 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 on_phase_change 触发器『颂诗回响』——仪式昼夜正主第一卡 ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-24 非被动卡触发器裁定：卡级 on_phase_change 迁入 daylight 状态（原本是死数据）；敌方不再挂白昼（状态是持有者侧语义）",
       "art": {
         "subject": "a ring of white daylight spreading across dark ground, shadows fleeing",
         "elements": [
@@ -383,21 +377,7 @@
           "fleeing shadows"
         ],
         "mood": "revelatory, calm"
-      },
-      "triggers": [
-        {
-          "event": "on_phase_change",
-          "effects": [
-            {
-              "type": "heal",
-              "value": 1,
-              "target": "all_allies",
-              "note": "昼夜流转，白昼颂诗回响：每次相位更替，己方全体回复 1（仪式昼夜正主承载，⚠️D 待平衡）"
-            }
-          ],
-          "note": "仪式昼夜：白昼与战场相位绑定——相位每更替一次，颂诗回响一次"
-        }
-      ]
+      }
     },
     {
       "id": "skill_chanter_s8_sunshine",
@@ -2397,7 +2377,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：变身+持续群体净化伤害。与 F10 同源。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 on_phase_change 触发器『日轮威压』——仪式昼夜正主第二卡 ｜ 2026-10-03 骨架手术：仪式换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
+      "conversionNotes": "翻译/语义：变身+持续群体净化伤害。与 F10 同源。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 on_phase_change 触发器『日轮威压』——仪式昼夜正主第二卡 ｜ 2026-10-03 骨架手术：仪式换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1） ｜ 2026-10-24 非被动卡触发器裁定：卡级 on_phase_change 迁入 sun_herald 状态",
       "dimHooks": [
         {
           "dim": "luminance",
@@ -2423,24 +2403,7 @@
           "purifying heat rays"
         ],
         "mood": "overwhelming, purifying"
-      },
-      "triggers": [
-        {
-          "event": "on_phase_change",
-          "effects": [
-            {
-              "type": "mount_status",
-              "statusId": "obedience",
-              "stacks": 1,
-              "stackMode": "add",
-              "duration": 10,
-              "target": "all_enemies",
-              "note": "日轮流转威压：每次相位更替，太阳使者威压再临，敌方全体服从 +1（10tick，⚠️D 待平衡）"
-            }
-          ],
-          "note": "仪式昼夜：微缩太阳随相位流转持续施压"
-        }
-      ]
+      }
     },
     {
       "id": "skill_chanter_s2_light_authority",
@@ -2620,23 +2583,25 @@
               "value": 7
             }
           ]
-        }
-      ],
-      "triggers": [
+        },
         {
-          "event": "on_kill",
-          "effects": [
+          "op": "if",
+          "condition": {
+            "kind": "target_dead"
+          },
+          "then": [
             {
               "type": "heal",
               "value": 4,
               "target": "all_allies",
-              "note": "毁灭即净化"
+              "note": "毁灭即净化：本卡斩杀则全体友军回复 4 点"
             }
-          ]
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"毁灭即净化\"=击杀转治疗。依赖 `on_kill`+F59。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 9→7（位格9 基准7）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：仪式换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：judgment轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。",
+      "conversionNotes": "翻译/语义：\"毁灭即净化\"=击杀转治疗。依赖 `on_kill`+F59。 ｜ 2026-10-01 吟唱重标：非仪式，castTime 空→0；直伤梯度重标（2026-10-01，brief 1.2×能量锚点）：保底伤害 9→7（位格9 基准7）。条件/读层追加段不动。 ｜ 2026-10-03 骨架手术：仪式换形（角色=dmg） ｜ 选靶重构：laneRef=same_lane anchor=front_line ｜ 选靶V2：删 laneRef=same_lane；删 scope:single（回落默认 whole_lane+pick1）；删 anchor:front_line（默认最前排） ｜ 选靶签名：judgment轴 enemy+board sort:atk_desc（轴选靶签名设计 §4） ｜ 2026-10-16 选靶错配修正：叙述写「一名」（单体），机制却是 board/whole_lane 范围型（AoE）——改为 mode:unit + pickCount:1（scope 保留作池边界，即「从该池里挑一个」），与 选靶重构设计.md §11.3 的全量 scope→mode 映射开一个例外（叙述单体卡）。 ｜ 2026-10-24 非被动卡触发器裁定：on_kill 改为 if(target_dead) 瞬时后果（原卡级 triggers 是死数据）",
       "dimHooks": [
         {
           "dim": "luminance",
