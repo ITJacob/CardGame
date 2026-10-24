@@ -1,22 +1,16 @@
-// 领域模型页：字段 / 概念速查。
+// 领域模型页：按「概述 → 详解」阅读。
 //
-// 早先这页把 18 篇设计文档整篇渲染出来，表格、散文、裁决记录混在一起——想查一个字段
-// 得先滚过几屏别的。现在改成速查：每篇只留一句导语，正文拆成一条条可检索的条目，
-// 按文档分组；要读全文的从每篇末尾展开「原文」（首次展开才渲染，不拖累首屏）。
+// 每篇文档按 `##` 小节拆开：小节标题下先给 `> **概述**`（一句话说清这一节解决什么），
+// 正文（表格/规则/流程）收进「详解」折叠。首屏只铺概述，想深读再展开，避免整页
+// 被表格淹没。概述与详解都由 docs/ddd/*.md 现读，站点不维护第二份内容。
 //
-// 条目由 md.js 的 parseRef 抽取——「什么算一条」的规则写在那边，这里只管渲染与检索。
-// 文档清单仍现读 README 的「文档导航」：加一篇文档只需在 README 里加一行。
-// 英文枚举 token 仍关联术语词典（悬停看释义、点击跳词典）。
-import { renderMarkdown, parseRef, parseToc } from '../md.js';
+// 搜索匹配与小节计数都以「小节」为单位；文档清单仍读 README 的文档导航。
+import { renderMarkdown, parseToc } from '../md.js';
 import { escapeHtml } from '../term.js';
 
 const BASE = '../docs/ddd/';    // 相对 site/index.html
 const README = 'README.md';
 const OVERVIEW = '总览';         // README 在导航里的名字
-
-// 说明折几行。超过这个长度的才折——取值列（`enemy / ally / self`）本来就短，
-// 折了反而要多点一次
-const CLAMP_AT = 90;
 
 let CACHE = null;
 // 搜索词与文档筛选跨路由保留：去词典查完词条跳回来，还在原来的筛选上
@@ -25,14 +19,42 @@ let docFilter = '';
 
 const dirOf = (p) => (p.includes('/') ? p.slice(0, p.lastIndexOf('/')) : '');
 const nameOf = (p) => p.replace(/^.*\//, '').replace(/\.md$/, '');
-// README 里两篇参数的标签带了补充说明（`源质维度与跨系枢纽（九大源质系 v0.3 …）`），
-// 正文和侧栏都用不上，去掉
 const shortLabel = (s) => s.replace(/（[^）]*）\s*$/, '').trim();
+const lower = (s) => String(s || '').toLowerCase();
 
 async function fetchText(url) {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`${r.status} ${url}`);
   return r.text();
+}
+
+/** 按 `##` 拆小节；每个 `##` 后的 `> **概述**：…` 即为该节概述，其余为详解正文。 */
+function parseSections(md) {
+  const lines = String(md).replace(/\r\n?/g, '\n').split('\n');
+  const intro = [];
+  const sections = [];
+  let cur = null;
+  for (const line of lines) {
+    const h = /^##\s+(.+)$/.exec(line);
+    if (h) {
+      if (cur) sections.push(cur);
+      cur = { heading: h[1].trim(), ov: '', body: [] };
+      continue;
+    }
+    if (!cur) { intro.push(line); continue; }
+    const ov = /^>\s*\*\*概述\*\*[：:]\s*(.*)$/.exec(line);
+    if (ov && !cur.ov) { cur.ov = ov[1].trim(); continue; }
+    cur.body.push(line);
+  }
+  if (cur) sections.push(cur);
+  return {
+    intro: intro.join('\n').trim(),
+    sections: sections.map((s) => ({
+      heading: s.heading,
+      ov: s.ov,
+      body: s.body.join('\n').trim(),
+    })),
+  };
 }
 
 async function load() {
@@ -57,92 +79,37 @@ async function load() {
       try {
         d.md = await fetchText(BASE + d.path);
       } catch (err) {
-        // 单篇拉失败不拖垮整页：那一节位置显示错误，其余照常
         d.md = '';
         d.error = err.message;
       }
     }));
 
-  const docNames = new Set(docs.keys());
   for (const d of docs.values()) {
-    if (d.error) { d.intro = ''; d.entries = []; d.skipped = []; d.items = 0; continue; }
-    const ref = parseRef(d.md, { dir: d.dir, docNames, base: BASE });
-    d.intro = ref.intro;
-    d.entries = ref.entries;
-    d.skipped = ref.skipped;
-    d.items = d.entries.filter((e) => !e.fromHeading).length;
+    if (d.error) { d.intro = ''; d.sections = []; continue; }
+    const parsed = parseSections(d.md);
+    d.intro = parsed.intro;
+    d.sections = parsed.sections;
   }
-  CACHE = { docs, order: [...docs.keys()], total: [...docs.values()].reduce((n, d) => n + d.items, 0) };
+  const total = [...docs.values()].reduce((n, d) => n + d.sections.length, 0);
+  CACHE = { docs, order: [...docs.keys()], total };
   return CACHE;
 }
 
-// 抽取情况。规则（md.js 的 NAME_COLS 等）是前端硬编码的，文档那边不可能知道；
-// 新写一张字段表而首列名没进清单时，它会**静默消失**——不报错、页面上也没有痕迹，
-// 只有翻「原文」才发现。把跳过的表列出来，静默就变成可见：跳的是数值表还是漏掉的
-// 字段表，人扫一眼就分得出来
-function coverageHtml(data) {
-  const rows = [];
-  let n = 0;
-  for (const name of data.order) {
-    const d = data.docs.get(name);
-    if (!d.skipped?.length) continue;
-    n += d.skipped.length;
-    rows.push(`<li><b>${escapeHtml(d.label)}</b>${d.skipped.map((s) => `
-      <div class="qr-skip"><span class="muted">${s.quote ? '引用块 · ' : ''}${escapeHtml(s.sec || '（篇首）')} · 第 ${s.line} 行</span>
-      <code>${escapeHtml(s.head)}</code></div>`).join('')}</li>`);
-  }
-  if (!n) return '';
-  return `<details class="panel qr-coverage">
-    <summary>抽取情况：共收 ${data.total} 条；另有 ${n} 张表按数据表跳过</summary>
-    <p class="muted">速查条目现读自 <code>docs/ddd/*.md</code>，判据（首列算不算字段名）写在
-    <code>site/js/md.js</code> 的 <code>NAME_COLS</code>。下面这些表的首列不是字段名（数值 / 清单表），
-    或整块在引用块里（裁决过程、出处、旧名对照，标了「引用块」），都按跳过处理，它们仍在各篇的
-    「原文」里。<b>新写了一张字段表却出现在这里，就是它的首列名还没进 NAME_COLS。</b></p>
-    <ul>${rows.join('')}</ul></details>`;
+function renderOpts(d) {
+  return { dir: d.dir, docNames: new Set(CACHE.docs.keys()), base: BASE };
 }
 
-function itemHtml(e) {
-  const name = e.isCode ? `<code class="qr-name">${e.nameHtml}</code>` : `<b class="qr-name">${e.nameHtml}</b>`;
-  const head = [
-    name,
-    e.zhHtml ? `<span class="qr-zh">${e.zhHtml}</span>` : '',
-  ].join('');
-  const fields = e.fields.map((f) => `<dt>${escapeHtml(f.label)}</dt>
-      <dd${f.text.length > CLAMP_AT ? ' class="qr-clamp" title="点击展开"' : ''}>${f.html}</dd>`).join('');
-  const desc = e.descHtml
-    ? `<dt>说明</dt><dd${e.descText.length > CLAMP_AT ? ' class="qr-clamp" title="点击展开"' : ''}>${e.descHtml}</dd>`
-    : '';
-  const body = fields || desc ? `<dl class="qr-fields">${fields}${desc}</dl>` : '';
-  return `<div class="qr-item" data-text="${escapeHtml(e.search)}">
-    <div class="qr-item-head">${head}</div>${body}</div>`;
-}
-
-// 篇内按小节（h2/h3）分组：条目不再平铺成一串，同名字段各归各的小节，
-// 「编队篇的 id / 执行篇的 id」一眼分得开。概念条目（fromHeading）即小节标题本身，
-// 折成分组导语，不再以同名条目重复出现
-function listHtml(entries) {
-  const parts = [];
-  let cur2 = null, cur3 = null, open2 = false, open3 = false;
-  const close3 = () => { if (open3) { parts.push('</div>'); open3 = false; } };
-  const close2 = () => { close3(); if (open2) { parts.push('</div>'); open2 = false; } };
-  const introHtml = (e) => e.descHtml
-    ? `<p class="qr-sec-intro" data-text="${escapeHtml(e.search)}">${e.descHtml}</p>` : '';
-  for (const e of entries) {
-    const s2 = e.sec.h2, s3 = e.sec.h3;
-    if (s2 !== cur2) {
-      close2(); cur2 = s2; cur3 = null;
-      if (s2) { parts.push(`<div class="qr-sec"><h3 class="qr-sec2">${escapeHtml(s2)}</h3>`); open2 = true; }
-    }
-    if (e.fromHeading && !s3) { parts.push(introHtml(e)); continue; }
-    if (s3 !== cur3) {
-      close3(); cur3 = s3;
-      if (s3) { parts.push(`<div class="qr-sec"><h4 class="qr-sec3">${escapeHtml(s3)}</h4>`); open3 = true; }
-    }
-    if (e.fromHeading) { parts.push(introHtml(e)); continue; }
-    parts.push(itemHtml(e));
-  }
-  close2();
-  return parts.join('');
+function sectionHtml(d, s, i) {
+  const ovHtml = s.ov
+    ? `<div class="md ddd-ov">${renderMarkdown(s.ov, renderOpts(d))}</div>` : '';
+  const detail = s.body
+    ? `<details class="ddd-detail" data-doc="${escapeHtml(d.label)}" data-sec="${i}">
+        <summary>详解</summary><div class="md"></div></details>` : '';
+  const text = lower(`${s.heading} ${s.ov} ${s.body}`);
+  return `<section class="ddd-sec" data-text="${escapeHtml(text)}">
+    <h3 class="ddd-sec-h">${escapeHtml(s.heading)}</h3>
+    ${ovHtml}${detail}
+  </section>`;
 }
 
 function docHtml(name, d) {
@@ -151,69 +118,51 @@ function docHtml(name, d) {
       <h2 class="qr-doc-title">${escapeHtml(d.label)}</h2>
       <p class="warn-text">加载失败：${escapeHtml(d.error)}（${escapeHtml(d.path)}）</p></section>`;
   }
-  if (!d.entries.length) return '';    // 抽不出条目又不影响别的篇：不占版面
-  const list = listHtml(d.entries);
+  if (!d.sections.length) return '';
+  const intro = d.intro
+    ? `<div class="md qr-intro" data-text="${escapeHtml(lower(d.intro))}">${renderMarkdown(d.intro, renderOpts(d))}</div>` : '';
   return `<section class="panel qr-doc" data-doc="${escapeHtml(name)}">
-    <h2 class="qr-doc-title">${escapeHtml(d.label)}<span class="qr-count muted">${d.items} 条</span></h2>
-    ${d.intro ? `<p class="qr-intro">${d.intro}</p>` : ''}
-    <div class="qr-list">${list}</div>
-    <details class="qr-raw"><summary>原文</summary><div class="md"></div></details>
+    <h2 class="qr-doc-title">${escapeHtml(d.label)}<span class="qr-count muted">${d.sections.length} 节</span></h2>
+    ${intro}
+    <div class="ddd-secs">${d.sections.map((s, i) => sectionHtml(d, s, i)).join('')}</div>
   </section>`;
 }
 
-// 搜索 / 筛选后重算计数与空组显隐。词条全在 DOM 里，直接切 hidden 比重新渲染快得多，
-// 也免去把条目重新拼回字符串。
-//
-// 两套口径分清楚：`n` 是正文里留下的条目数（受侧栏选中的某篇影响），`h` 是搜索命中数
-// （只跟搜索词有关）。侧栏计数一律用 `h`——选中某篇是「切过去看那一篇」，不是「过滤掉
-// 别的篇」；拿选中去参与计数会让其余各篇一律显示 0，分组名随之整片收起，侧栏反而回不去
+// 搜索 / 筛选后重算计数与空组显隐：小节全在 DOM 里，直接切 hidden。
 function applyFilter(view) {
   const q = query.trim().toLowerCase();
   let hit = 0;                     // 全库搜索命中
   let shown = 0;                   // 正文里还剩几篇
-  const hits = new Map();          // 篇名 → 该篇搜索命中条目数，侧栏计数用
+  const hits = new Map();          // 篇名 → 该篇命中小节数，侧栏计数用
   const alive = new Set();         // 篇名 → 这篇还留得下东西（含只有导语命中的）
   view.querySelectorAll('.qr-doc').forEach((sec) => {
-    // 侧栏选定某篇时不参与搜索的文档整篇收起，命中数不受影响
     const scope = !docFilter || sec.dataset.doc === docFilter;
     let n = 0;
     let h = 0;
-    let introHit = 0;
-    sec.querySelectorAll('.qr-item').forEach((it) => {
-      const qHit = !q || it.dataset.text.includes(q);
+    const intro = sec.querySelector('.qr-intro');
+    const introHit = !q || (!!intro && intro.dataset.text.includes(q));
+    if (intro) intro.hidden = q ? !introHit : false;
+    sec.querySelectorAll('.ddd-sec').forEach((el) => {
+      const qHit = !q || el.dataset.text.includes(q);
       if (qHit) h++;
       const ok = scope && qHit;
-      it.hidden = !ok;
+      el.hidden = !ok;
       if (ok) n++;
     });
-    // 分组导语同样参与搜索；它命中时小节留着，没命中随空小节一起收起
-    sec.querySelectorAll('.qr-sec-intro').forEach((p) => {
-      const qHit = !q || p.dataset.text.includes(q);
-      if (qHit) introHit++;
-      p.hidden = !(scope && qHit);
-    });
-    if (h || introHit) alive.add(sec.dataset.doc);
-    // 空小节容器收起（内层先判，外层才能看到内层收起后的真实状态）。
-    // 留着空小节标题会让人以为那一节没加载出来
-    [...sec.querySelectorAll('.qr-sec')].reverse().forEach((box) => {
-      box.hidden = !box.querySelector('.qr-item:not([hidden]), .qr-sec-intro:not([hidden])');
-    });
-    const introVisible = !!sec.querySelector('.qr-sec-intro:not([hidden])');
-    sec.hidden = !(n || introVisible);
+    if (h || (intro && introHit)) alive.add(sec.dataset.doc);
+    sec.hidden = !(n > 0 || (intro && introHit));
     if (!sec.hidden) shown++;
     hit += h;
     hits.set(sec.dataset.doc, h);
-    sec.querySelector('.qr-count').textContent = `${n} 条`;
+    sec.querySelector('.qr-count').textContent = `${n} 节`;
   });
   const total = CACHE.total;
   view.querySelector('#dq-count').textContent = q
-    ? `命中 ${hit} 条 · ${shown} 篇`
+    ? `命中 ${hit} 节 · ${shown} 篇`
     : docFilter
-      ? `已选「${docFilter}」· ${hits.get(docFilter) ?? 0} 条 / 共 ${total} 条`
-      : `共 ${total} 条 · ${CACHE.order.length} 篇`;
+      ? `已选「${docFilter}」· ${hits.get(docFilter) ?? 0} 节 / 共 ${total} 节`
+      : `共 ${total} 节 · ${CACHE.order.length} 篇`;
 
-  // 正文里的分组路标（.qr-band）跟着正文自己的可见性收起：搜 `anchor` 却还挂着
-  // 「领域上下文」这个空标题，会让人以为那一组的内容没加载出来
   const bodyEl = view.querySelector('#ddd-body');
   let band = null;
   let seen = 0;
@@ -224,8 +173,6 @@ function applyFilter(view) {
   }
   flushBand();
 
-  // 侧栏的分组名另算：它跟正文路标不是一回事——正文受选中影响（选中某篇时别的组
-  // 整片收起），侧栏要一直立着好让人切过去，所以只按搜索命中收起自己那一组
   let group = null;
   let groupN = 0;
   const flushGroup = () => { if (group) group.hidden = !groupN; };
@@ -255,7 +202,6 @@ export async function renderDdd(view, jumpTo = '') {
       （<code>python -m http.server</code>）后访问，不能用 file:// 直接打开。</p></div>`;
     return;
   }
-  // 期间若已切到别的页（本页的加载占位已被替换），就不要再往 view 里写
   if (!view.querySelector('.ddd-loading')) return;
 
   docFilter = jumpTo;
@@ -266,7 +212,6 @@ export async function renderDdd(view, jumpTo = '') {
   for (const name of data.order) {
     const d = data.docs.get(name);
     if (d.group !== curGroup) {
-      // 分组名左右两栏各出现一次：侧栏里是导航分组，正文里是阅读时的路标
       if (d.group) {
         const g = escapeHtml(d.group);
         nav.push(`<div class="nav-group">${g}</div>`);
@@ -274,42 +219,47 @@ export async function renderDdd(view, jumpTo = '') {
       }
       curGroup = d.group;
     }
-    if (!d.entries.length) continue;
+    if (!d.sections.length) continue;
     nav.push(`<a href="#/ddd/${encodeURIComponent(name)}" data-doc="${escapeHtml(name)}">${escapeHtml(d.label)}
-      <span class="qr-count muted">${d.items}</span></a>`);
+      <span class="qr-count muted">${d.sections.length}</span></a>`);
     body.push(docHtml(name, d));
   }
 
   view.innerHTML = `<h1 class="page-title">领域模型</h1>
     <div class="panel filters">
       <label>搜索<input type="search" id="dq" value="${escapeHtml(query)}"
-        placeholder="字段 / 概念 / 中文名 / 取值 / 说明"></label>
+        placeholder="小节 / 概述 / 字段 / 取值"></label>
       <span class="muted" id="dq-count"></span>
-      <span class="muted">条目现读自 <code>docs/ddd/*.md</code>（领域设计正源）。说明默认折两行，
-      点开看全；每篇末尾可展开原文。英文 token 悬停看释义、点击跳词典。</span>
+      <button type="button" id="ddd-toggle-all" class="qr-toggle">展开全部详解</button>
+      <span class="muted">每节先给概述；点「详解」看规则、表格与流程。英文 token 悬停看释义、点击跳词典。</span>
     </div>
     <div class="gloss-layout">
       <div class="gloss-nav panel">${nav.join('')}</div>
-      <div id="ddd-body">${body.join('')}${coverageHtml(data)}</div>
+      <div id="ddd-body">${body.join('')}</div>
     </div>`;
 
   const bodyEl = view.querySelector('#ddd-body');
 
-  // 点折起来的说明展开。术语 token 是链接，让跳词典优先
-  bodyEl.addEventListener('click', (e) => {
-    if (e.target.closest('a')) return;
-    e.target.closest('.qr-clamp')?.classList.toggle('open');
-  });
-
-  // 「原文」懒渲染：18 篇全文一次铺出来正是这页早先笨重的原因，首次展开时再渲染
-  bodyEl.querySelectorAll('details.qr-raw').forEach((el) => {
+  // 「详解」懒渲染：18 篇全文一次铺出来正是这页早先笨重的原因，首次展开时再渲染。
+  bodyEl.querySelectorAll('details.ddd-detail').forEach((el) => {
     el.addEventListener('toggle', () => {
+      if (!el.open) return;
       const box = el.querySelector('.md');
-      if (!el.open || box.dataset.rendered) return;
+      if (box.dataset.rendered) return;
       const d = data.docs.get(el.closest('.qr-doc').dataset.doc);
-      box.innerHTML = renderMarkdown(d.md, { dir: d.dir, docNames: new Set(data.docs.keys()), base: BASE });
+      const s = d?.sections[Number(el.dataset.sec)];
+      if (!d || !s) return;
+      box.innerHTML = renderMarkdown(s.body, renderOpts(d));
       box.dataset.rendered = '1';
     });
+  });
+
+  const allBtn = view.querySelector('#ddd-toggle-all');
+  allBtn.addEventListener('click', () => {
+    const items = [...bodyEl.querySelectorAll('details.ddd-detail')];
+    const anyClosed = items.some((x) => !x.open);
+    items.forEach((x) => { x.open = anyClosed; });
+    allBtn.textContent = anyClosed ? '收起全部详解' : '展开全部详解';
   });
 
   view.querySelector('#dq').addEventListener('input', (e) => {
@@ -317,16 +267,8 @@ export async function renderDdd(view, jumpTo = '') {
     applyFilter(view);
   });
 
-  // 按字数挂的折叠标记在宽屏上可能两行就放下了，此时它只有 `光标变成放大镜` 这个
-  // 副作用、点了没反应。渲染完量一次真实高度，没被截断的摘掉标记——量的是布局，
-  // 所以必须赶在 applyFilter 把一部分条目藏起来之前（隐藏的东西高度是 0）
-  bodyEl.querySelectorAll('.qr-clamp').forEach((dd) => {
-    if (dd.scrollHeight <= dd.clientHeight + 4) dd.classList.remove('qr-clamp');
-  });
-
   applyFilter(view);
   if (docFilter && data.docs.has(docFilter)) {
-    // 深链（含文档内的 `[x](./y.md)` 互链）落到该篇：整页只剩它，比滚过去更好找
     bodyEl.querySelector('.qr-doc:not([hidden])')?.scrollIntoView({ block: 'start' });
   }
 }
