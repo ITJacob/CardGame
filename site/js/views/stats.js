@@ -69,8 +69,8 @@ function renderSkillStats(view) {
   const flagCards = cards.filter((c) => openFlags(c).length);
   const axisCount = pathways.reduce((s, p) => s + Object.keys(DB.axesByPathway.get(p.id) || {}).length, 0);
 
-  // 原语 / 算子 / 属性 / 资源 / 元素 + 途径×维度（10 张热图共用这一趟，只为热图再走一遍
-  // 829 张卡（每张还重跑一次 walkCardEffects）是白付一次全量遍历）
+  // 原语 / 算子 / 属性 / 资源 / 元素 + 途径×维度（全部热图共用这一趟，只为热图再走一遍
+  // 全量卡（每张还重跑一次 walkCardEffects）是白付一次全量遍历）
   const primTotal = new Map();       // type -> count
   const primByPath = new Map();      // pathwayId -> Map(type->count)
   const opTotal = new Map();
@@ -107,6 +107,7 @@ function renderSkillStats(view) {
         byDepth = new Map(), tagsTotal = new Map(),
         byFaction = new Map(), byScope = new Map(), bySort = new Map(),
         reqFilterTotal = new Map(), byCx = new Map(), byBudget = new Map();
+  let scopeDefault = 0;   // 带 target 但未显式写 scope、按 schema 缺省 whole_lane 计入的卡
   for (const c of cards) {
     const p = c._pathway;
     bump(rarityByPath, p, c.rarity);
@@ -120,8 +121,8 @@ function renderSkillStats(view) {
       byRole.set('flagship', (byRole.get('flagship') || 0) + 1);
       bump(roleByPath, p, 'flagship');
     }
-    // 费用三件套（energy / cooldown / castTime）同住在卡级 cost 对象上，只算主动卡——
-    // 全库主动卡 100% 带 cost（被动卡不带也不该带），缺 cost 的主动卡会被这里静默漏掉，
+    // 费用三件套（energy / cooldown / castTime）同住在卡级 cost 对象上，只算主动 / 武器 / 召唤卡——
+    // 这三类占主动槽、100% 带 cost（被动卡不带也不该带），缺 cost 会被这里静默漏掉，
     // 那是数据事故，页面不兜底
     if ((c.kind === 'active' || c.kind === 'weapon' || c.kind === 'summon') && c.cost) {
       if (c.cost.energy != null) { bump(byEnergy, 0, c.cost.energy); bump(energyByPath, p, c.cost.energy); }
@@ -139,19 +140,22 @@ function renderSkillStats(view) {
       tagsTotal.set(t, (tagsTotal.get(t) || 0) + 1);
     }
     // 距离 / 选靶 / 触发点三个维度的口径与同组的条形图逐字一致，别在这里换判据：
-    // 选靶用 c.target 判存在（而不是 c.kind === 'active'）——有一张被动卡
-    // （skill_prisoner_s6_corpse_handler）带 target，换个判据两张图会差 1，反而像 bug
+    // 选靶用 c.target 判存在（而不是 c.kind === 'active'）——被动 / 武器卡也有带 target 的，
+    // 换个判据两张图会差几张，反而像 bug
     if (c.kind === 'active' && c.reach) bump(reachByPath, p, c.reach);
     if (c.target?.selectionMode) bump(selByPath, p, c.target.selectionMode);
     // 目标选择三件套（阵营 / 范围 / 排序）+ 选靶过滤键：口径与「选靶方式」组逐字一致——
-    // 用 c.target 判存在（全库 570 主动卡全带 target，另有 1 张被动卡带 target）
+    // 用 c.target 判存在；无 target 的卡不存在选靶几何，不参与 scope 计数
     const rq = c.target?.request;
     if (rq?.faction) { bump(byFaction, 0, rq.faction); bump(factionByPath, p, rq.faction); }
-    // 几何范围（scope）：2026-10-03 §10 几何化——scope 直接表达「取哪片区域」（围绕 anchor
-    // 原点划定），缺省 whole_lane（见 schema unitRequest.scope）。与选数 pickCount 正交。
-    // 显式带默认：约 511 张请求靠 schema 缺省 whole_lane、本身不落 scope 字段，须补默认才计入
-    const sc = rq?.scope || 'whole_lane';
-    bump(byScope, 0, sc); bump(scopeByPath, p, sc);
+    // 几何范围（scope）：直接表达「取哪片区域」（围绕 anchor 原点划定），缺省 whole_lane
+    // （见 schema unitRequest.scope）。与选数 pickCount 正交；只统计带 request 的卡，
+    // 缺省值显式补计，否则靠 schema 缺省的请求会在图里消失
+    if (rq) {
+      const sc = rq.scope || 'whole_lane';
+      if (!rq.scope) scopeDefault++;
+      bump(byScope, 0, sc); bump(scopeByPath, p, sc);
+    }
     if (c.target?.fallbackSort) { bump(bySort, 0, c.target.fallbackSort); bump(sortByPath, p, c.target.fallbackSort); }
     for (const k of Object.keys(rq?.filter || {})) {
       reqFilterTotal.set(k, (reqFilterTotal.get(k) || 0) + 1);
@@ -268,7 +272,7 @@ function renderSkillStats(view) {
       <dt>卡片总数</dt><dd class="num">${cards.length}</dd>
       <dt>途径</dt><dd class="num">${pathways.length}</dd>
       <dt>构筑轴</dt><dd class="num">${axisCount}</dd>
-      <dt>主动 / 被动</dt><dd class="num">${byKind.get('active') || 0} / ${byKind.get('passive') || 0}</dd>
+      <dt>卡型</dt><dd class="num">主动 ${byKind.get('active') || 0} · 召唤 ${byKind.get('summon') || 0} · 武器 ${byKind.get('weapon') || 0} · 被动 ${byKind.get('passive') || 0}</dd>
       <dt>旗舰卡</dt><dd class="num">${flagshipCount}</dd>
       <dt>带框架缺口</dt><dd class="num">${flagCards.length} 张 / ${flagCards.reduce((s, c) => s + openFlags(c).length, 0)} 条</dd>
       <dt>框架登记（已落地）</dt><dd class="num">${cards.reduce((s, c) => s + (c.frameworkFlags || []).filter((f) => f && f.landed === true).length, 0)} 条</dd>
@@ -309,7 +313,9 @@ function renderSkillStats(view) {
     heatOf('途径 × 序列', seqByPath, seqCols, { orderNote: '序列最高的 ', unit: ' 张' }));
 
   const kindGroup = group('卡池结构 · 卡型',
-    barPanel('主动 / 被动', sortedRows(byKind, (k) => zh('cardKind', k))),
+    barPanel('卡型分布', sortedRows(byKind, (k) => zh('cardKind', k)),
+      `<p class="panel-note muted">四类卡同占卡位，区别在结算路径：主动技能由单位施放，
+      武器牌打出即装备，召唤牌打出即落场，被动卡由触发点唤起、没有施放期参数。</p>`),
     heatOf('途径 × 卡型', kindByPath, colsOf(byKind, 'cardKind'), { unit: ' 张' }));
 
   // 卡角色：列序钉死六值 + flagship，不跟用量走——同一张热图在 22 个途径下读法必须一致
@@ -424,14 +430,14 @@ function renderSkillStats(view) {
     heatOf('途径 × 伤害费用比（只算带数值伤害的主动卡）', budgetByPath, budgetCols, { unit: ' 张' }));
 
   const energyGroup = group('费用面 · 能量（cost.energy）',
-    barPanel('能量费用分布（主动卡，有序刻度）', sortedRows(flat(byEnergy), (k) => `${k} 能`, { byKey: true })),
-    heatOf('途径 × 能量费用（只算主动卡）', energyByPath, scaleCols(energyByPath, ' 能'),
+    barPanel('能量费用分布（主动 / 武器 / 召唤卡，有序刻度）', sortedRows(flat(byEnergy), (k) => `${k} 能`, { byKey: true })),
+    heatOf('途径 × 能量费用（主动 / 武器 / 召唤卡）', energyByPath, scaleCols(energyByPath, ' 能'),
       { unit: ' 张', orderNote: '数值最小的 ' }));
 
   const cooldownGroup = group('费用面 · 冷却（cost.cooldown）',
-    barPanel('冷却分布（主动卡，有序刻度）', sortedRows(flat(byCooldown), (k) => `${k} tick`, { byKey: true }),
+    barPanel('冷却分布（主动 / 武器 / 召唤卡，有序刻度）', sortedRows(flat(byCooldown), (k) => `${k} tick`, { byKey: true }),
       `<p class="panel-note muted">冷却以 tick 计时（与吟唱同单位）；0 tick = 无冷却（一次性或被动触发类）。</p>`),
-    heatOf('途径 × 冷却（只算主动卡）', cooldownByPath, scaleCols(cooldownByPath, ' tick'),
+    heatOf('途径 × 冷却（主动 / 武器 / 召唤卡）', cooldownByPath, scaleCols(cooldownByPath, ' tick'),
       { unit: ' 张', orderNote: '数值最小的 ' }));
 
   const hpCostGroup = group('费用面 · 生命代价',
@@ -442,10 +448,10 @@ function renderSkillStats(view) {
     heatOf('途径 × 血费卡', hpCostByPath, [{ key: '血费', label: '血费', title: '血费' }], { unit: ' 张' }));
 
   const castGroup = group('费用面 · 吟唱（cost.castTime）',
-    barPanel('吟唱分布（主动卡，有序刻度）', sortedRows(flat(byCast), (k) => (k ? `${k} tick` : '瞬发（0）'), { byKey: true }),
+    barPanel('吟唱分布（主动 / 武器 / 召唤卡，有序刻度）', sortedRows(flat(byCast), (k) => (k ? `${k} tick` : '瞬发（0）'), { byKey: true }),
       `<p class="panel-note muted">brief §13：序列 7–5 即时技能默认 0（瞬发）不标；序列 4 以上
       或仪式类必标。可被「免吟唱」免除、被控制打断。</p>`),
-    heatOf('途径 × 吟唱（只算主动卡）', castByPath, scaleCols(castByPath, ' tick'),
+    heatOf('途径 × 吟唱（主动 / 武器 / 召唤卡）', castByPath, scaleCols(castByPath, ' tick'),
       { unit: ' 张', orderNote: '数值最小的 ' }));
 
   const durUnitGroup = group('时序面 · 时长口径',
@@ -473,7 +479,7 @@ function renderSkillStats(view) {
 
   const factionGroup = group('目标面 · 目标阵营',
     barPanel('目标阵营（request.faction）', sortedRows(flat(byFaction), (k) => zh('faction', k)),
-      `<p class="panel-note muted">口径与「选靶方式」组一致：有 target 即算（含 1 张被动卡）。
+      `<p class="panel-note muted">口径与「选靶方式」组一致：有 target 即算（含被动 / 武器卡）。
       self 占比如此之高，是大量自保/变身类主动卡的选靶写 self。</p>`),
     heatOf('途径 × 目标阵营', factionByPath, colsOf(flat(byFaction), 'faction'), { unit: ' 张' }));
 
@@ -483,15 +489,15 @@ function renderSkillStats(view) {
       自己的 target（damage/heal/mount_status 等的作用对象）。一张卡可有多个不同作用对象。</p>`),
     heatOf('途径 × 效果级作用对象', effTargetByPath, colsOf(byEffTarget, 'effectTarget'), { unit: ' 处' }));
 
+  const scopeGrand = [...flat(byScope).values()].reduce((a, b) => a + b, 0);
   const scopeGroup = group('目标面 · 几何范围（scope）',
     barPanel('几何范围分布（request.scope）', sortedRows(flat(byScope), (k) => zh('scope', k)),
-      `<p class="panel-note muted">2026-10-03 §10 几何化：scope 直接表达<b>取哪片区域</b>
-      （围绕 anchor 原点划定），与选数 pickCount 正交，二者是选靶流水线的两个独立层。
-      取值域：point / front_n / behind_n / cross_lane / diamond_n / whole_lane / board / none
-      （中文见 glossary scope 栏目）。<b>缺省 whole_lane</b>（被施法侧半场 4 格）——约 511 张请求
-      不落 scope 字段、靠此缺省，故 bar 里 whole_lane 占比最高是预期。laneRef 维度已并入 scope
-      （几何化后无独立的「扫描路线」——「整路 / 全场 / 跨路」本就是 scope 枚举值），旧「扫描路线 /
-      范围形状（scope×laneRef）」两组面板已移除。</p>`),
+      `<p class="panel-note muted">scope 直接表达<b>取哪片区域</b>（围绕 anchor 原点划定），
+      与选数 pickCount 正交，二者是选靶流水线的两个独立层。取值域：point / front_n / behind_n /
+      cross_lane / diamond_n / whole_lane / board / none（中文见 glossary scope 栏目）。
+      只统计带 target 的卡（${scopeGrand} 张请求）；<b>缺省 whole_lane</b>（被施法侧半场 4 格）——
+      ${scopeDefault} 张请求不落 scope 字段、靠 schema 缺省计入，故 whole_lane 占比最高是预期。
+      laneRef 维度已并入 scope，旧「扫描路线 / 范围形状」两组面板已移除。</p>`),
     heatOf('途径 × 几何范围', scopeByPath, colsOf(flat(byScope), 'scope'), { unit: ' 张' }));
 
   const sortGroup = group('目标面 · 选靶排序',
@@ -516,7 +522,7 @@ function renderSkillStats(view) {
     热图共用一套读法——行 = ${pathways.length} 个途径，列 = 该维度的取值，格 = 计数
     （只有「原语 构成」那张是行内归一化后的 %）。同组的 bar 与热图<b>口径相同</b>：bar 各段之和
     = 该组热图各行的合计；跨组不是一回事——属性 / 资源 / 元素 / 算子 / 原语 / 位格 / 条件谓词 / 条件参数 / 效果级作用对象 / 时长口径按<b>效果节点</b>计，
-    稀有度 / 序列 / 卡型 / 卡角色 / 费用 / 冷却 / 吟唱 / 血费 / 构筑深度 / 卡面复杂度 / 数值预算按<b>卡</b>计。每张图的色阶各自独立
+    稀有度 / 序列 / 卡型 / 卡角色 / 构筑深度 / 构筑轴 / 攻击距离 / 选靶方式 / 目标阵营 / 几何范围 / 选靶排序 / 选靶过滤 / 被动触发点 / 卡面复杂度 / 数值预算 / 费用 / 冷却 / 吟唱 / 血费按<b>卡</b>计。每张图的色阶各自独立
     （上限取本图最大值），跨图比颜色没有意义——要比就比格内数字。行序一律是 manifest 途径顺序；
     列序是各自的用量或刻度顺序，悬停表头看原始 key。状态定义口径见「状态」子页，编目三池
     （召唤物 / 区域 / 界域）见各自子页——本页各组均不含它们。</p>
