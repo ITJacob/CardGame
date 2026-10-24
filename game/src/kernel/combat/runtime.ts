@@ -122,6 +122,8 @@ class CombatRuntime implements CombatRuntimeHandle {
   private readonly ruleSlots: { field: string; value: unknown }[][] = [[], [], []]
   private domainSeq = 0
   private readonly domainLastFire = new Map<string, number>()
+  /** 状态/被动/武器触发器的 minIntervalTicks 节流（key = unit#来源#序号#事件） */
+  private readonly triggerLastFire = new Map<string, number>()
   /** 最近一次已结算 Action 的命中单位（on_attack 条件的 target 主体） */
   private lastActionTargets: CombatUnit[] = []
   private echoing = false
@@ -548,6 +550,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     opportunity?: OpportunityPayload,
     targetScope?: TargetScope,
     sourceRef?: string,
+    rampValue?: number,
   ): EffectContext {
     return {
       units: this.units,
@@ -563,6 +566,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       actionRef: sourceRef,
       weaponDamage: caster != null && caster.weapon != null && this.isAttackActionRef(sourceRef),
       damageSource: this.isAttackActionRef(sourceRef) ? 'behavior' : 'status',
+      rampValue,
       warn: (m) => this.warn(m),
       emit: (e) => this.emit(e),
       mountStatus: (host, statusId, grant) => this.mountStatus(host, statusId, grant, caster),
@@ -1444,10 +1448,28 @@ class CombatRuntime implements CombatRuntimeHandle {
   }
 
   private fireTriggers(unit: CombatUnit, event: string, triggers: readonly TriggerDef[] | undefined, caster: CombatUnit | null, opportunity?: OpportunityPayload, targetScope?: TargetScope, globalPass = false, conditionTarget?: CombatUnit | null, ownerInstance?: StatusInstance, originCardId?: string, eventInfo?: TriggerEventInfo): void {
-    for (const t of triggers ?? []) {
+    const list = triggers ?? []
+    for (let ti = 0; ti < list.length; ti += 1) {
+      const t = list[ti]!
       if (t.event !== event) continue
       if ((t.global === true) !== globalPass) continue
-      const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity, targetScope, originCardId)
+      if (t.minIntervalTicks) {
+        const key = `${unit.id}#${ownerInstance?.instanceId ?? originCardId ?? 'passive'}#${ti}#${event}`
+        const last = this.triggerLastFire.get(key)
+        if (last !== undefined && this.tickCount - last < t.minIntervalTicks) continue
+        this.triggerLastFire.set(key, this.tickCount)
+      }
+      // valueFrom:ramp：on_tick 触发时取当前档值，通过条件/过滤器后才推进
+      let rampValue: number | undefined
+      let rampStep: number | undefined
+      if (event === 'on_tick' && ownerInstance) {
+        const ramp = this.lookup.statusDef(ownerInstance.defId)?.ramp
+        if (Array.isArray(ramp) && ramp.length > 0) {
+          rampStep = ownerInstance.rampFires ?? 0
+          rampValue = Number(ramp[Math.min(rampStep, ramp.length - 1)])
+        }
+      }
+      const ctx = this.makeContext(this.ids.next('trig'), caster, opportunity, targetScope, originCardId, rampValue)
       const conditionTargetUnit = conditionTarget ?? targetScope?.targets[0] ?? null
       if (t.condition) {
         const condCtx = {
@@ -1464,6 +1486,7 @@ class CombatRuntime implements CombatRuntimeHandle {
         if (!evaluateCondition(t.condition, conditionTargetUnit, condCtx)) continue
       }
       if (t.filter && !this.triggerFilterPasses(t.filter, unit, eventInfo)) continue
+      if (rampStep !== undefined && ownerInstance) ownerInstance.rampFires = rampStep + 1
       executeNodes(t.effects ?? [], [unit], ctx)
       if (!ownerInstance || !t.consumeCharge) continue
       // 效果可能已自行卸载该状态：按 instanceId 重新取，避免重复卸载

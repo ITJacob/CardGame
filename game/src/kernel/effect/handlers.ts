@@ -29,6 +29,12 @@ function resolveValueFrom(
     }
     case 'maxStatThisBattle':
       return stat ? unit.stat(stat) : 0
+    case 'ramp':
+      if (ctx.rampValue === undefined) {
+        ctx.unsupported('valueFrom', 'ramp 无触发状态语境')
+        return 0
+      }
+      return ctx.rampValue
     default:
       ctx.unsupported('valueFrom', key || 'unknown')
       return 0

@@ -62,6 +62,8 @@ export interface EffectContext {
   readonly weaponDamage?: boolean
   /** 伤害来源类别（damage_source_is）：攻击行为 = behavior，其余（触发/DoT）= status */
   readonly damageSource?: 'behavior' | 'status'
+  /** valueFrom:ramp 的当前档值（由触发它的状态实例递进给出） */
+  readonly rampValue?: number
 }
 
 /** 原语中需要改动战场或新建单位的操作集合 */

@@ -149,6 +149,8 @@ export interface StatusInstance {
   charges: number | null
   /** 次数上限（restoreCharges 补满用）；null = 无次数模型 */
   maxCharges: number | null
+  /** ramp 递进已走到的步数（valueFrom:ramp；每次 on_tick 触发 +1，钳在 ramp 末项） */
+  rampFires?: number
 }
 
 /** 武器实例（武器牌打出后的装备态）：单槽、无游离实例 */
