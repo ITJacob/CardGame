@@ -3774,6 +3774,28 @@
         "interval": {
           "type": "integer"
         },
+        "valueBoost": {
+          "type": "array",
+          "description": "区域内数值倍率（所有者己方、站区时生效；{stat, mul} 多条，同 stat 多区域相乘）。见 docs/ddd/params/战场参数.md §1.1",
+          "items": {
+            "type": "object",
+            "required": [
+              "stat",
+              "mul"
+            ],
+            "properties": {
+              "stat": {
+                "type": "string"
+              },
+              "mul": {
+                "type": "number"
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        },
         "modifiers": {
           "$ref": "#/$defs/modifierSet"
         },

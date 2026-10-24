@@ -535,6 +535,8 @@ export interface ZoneDef {
   duration?: number | null
   durationUnit?: 'turn' | 'tick'
   interval?: number
+  /** 区域内数值倍率（所有者己方、站区时生效；{stat, mul} 多条） */
+  valueBoost?: { stat: string; mul: number }[]
   modifiers?: ModifierSet
   note?: string
 }

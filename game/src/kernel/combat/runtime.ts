@@ -1,6 +1,6 @@
 // 战斗运行时：聚合根 Combat 的实现。持事件总线 / 随机源 / id 生成器 / 注册表 /
 // 战场 / Placement / Scheduler，并把一次 step 停在 Manual 决策点。
-import type { FactionId, LaneId, Phase, PoolKey, UnitId } from '../ids'
+import type { FactionId, LaneId, Phase, PoolKey, StatKey, UnitId } from '../ids'
 import type { Battle, Coordinate, Faction, Lane, OccupancyChanged, Zone } from '../battle/types'
 import { LANE_CAPACITY, SUMMON_CAP_BASE } from '../battle/types'
 import { BattlePlacement } from '../battle/placement'
@@ -124,6 +124,8 @@ class CombatRuntime implements CombatRuntimeHandle {
   private readonly domainLastFire = new Map<string, number>()
   /** 状态/被动/武器触发器的 minIntervalTicks 节流（key = unit#来源#序号#事件） */
   private readonly triggerLastFire = new Map<string, number>()
+  /** 区域数值倍率已应用的 provenance 记录（unitId → 条目） */
+  private readonly zoneBoosts = new Map<UnitId, { stat: StatKey; delta: number; sourceId: string }[]>()
   /** 最近一次已结算 Action 的命中单位（on_attack 条件的 target 主体） */
   private lastActionTargets: CombatUnit[] = []
   private echoing = false
@@ -306,6 +308,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.enforceSummonCaps()
     this.tickZonesLifecycle()
     this.tickZones()
+    this.tickZoneBoosts()
     if (this.battle.phase !== this.prevPhase) {
       this.prevPhase = this.battle.phase
       for (const u of this.units.all()) this.fireStatusTriggers(u, 'on_phase_change')
@@ -792,6 +795,10 @@ class CombatRuntime implements CombatRuntimeHandle {
         status: 'Active',
       })
       this.emit({ type: 'ZonePlaced', zoneId: def.id, coord })
+      // 已有占据者立即吃数值倍率（不等下一 tick 同步）
+      const occupant = this.units.all().find((u) => !u.isDead && u.position &&
+        u.position.faction === coord.faction && u.position.lane === coord.lane && u.position.index === coord.index)
+      if (occupant) this.syncZoneBoosts(occupant)
     }
   }
 
@@ -918,6 +925,10 @@ class CombatRuntime implements CombatRuntimeHandle {
         this.fireZone(zone, unit)
       }
     }
+    for (const entry of [...e.enter, ...e.exit]) {
+      const unit = this.units.get(entry.unitId)
+      if (unit) this.syncZoneBoosts(unit)
+    }
   }
 
   /** 每 tick：站在「逐 tick 触发」区域上的单位吃一次效果（ZoneDef.interval 节流） */
@@ -934,6 +945,45 @@ class CombatRuntime implements CombatRuntimeHandle {
         this.fireZone(zone, u)
       }
     }
+  }
+
+  /**
+   * 区域数值倍率（ZoneDef.valueBoost）：所有者己方单位站在区域内时按 stat × mul 生效。
+   * 用可回滚 provenance 实现：每次同步先撤销旧倍率、再按当前基础值重算，
+   * 离开区域 / 区域到期 / 死亡时倍率自然撤销。同 stat 多区域相乘。
+   */
+  private syncZoneBoosts(unit: CombatUnit): void {
+    const prev = this.zoneBoosts.get(unit.id) ?? []
+    for (const e of prev) unit.provenance.revertBySource(e.sourceId)
+    this.zoneBoosts.delete(unit.id)
+    if (unit.isDead || unit.detached || !unit.position) return
+    const muls = new Map<string, number>()
+    for (const zone of this.battle.zones) {
+      if (zone.status !== 'Active') continue
+      if (!this.zoneHits(zone, unit.position)) continue
+      const owner = zone.grant.ownerFaction
+      if (owner && unit.faction !== owner) continue
+      for (const b of zone.def.valueBoost ?? []) {
+        if (typeof b?.stat !== 'string' || typeof b?.mul !== 'number' || b.mul === 1) continue
+        muls.set(b.stat, (muls.get(b.stat) ?? 1) * b.mul)
+      }
+    }
+    if (muls.size === 0) return
+    const next: { stat: StatKey; delta: number; sourceId: string }[] = []
+    for (const [stat, mul] of muls) {
+      const key = stat as StatKey
+      const base = unit.stat(key)
+      const delta = round2(base * (mul - 1))
+      if (Math.abs(delta) < 0.005) continue
+      const sourceId = `zoneboost:${unit.id}:${stat}`
+      unit.provenance.apply(key, delta, sourceId)
+      next.push({ stat: key, delta, sourceId })
+    }
+    if (next.length > 0) this.zoneBoosts.set(unit.id, next)
+  }
+
+  private tickZoneBoosts(): void {
+    for (const u of this.units.all()) this.syncZoneBoosts(u)
   }
 
   /** 区域生命周期（战场参数 §1.1）：duration 逐 tick 递减，归零置 Expired */
