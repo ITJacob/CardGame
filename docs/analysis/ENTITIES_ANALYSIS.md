@@ -12,16 +12,16 @@
 
 | 单位 | 名称 | unitType | 途径 | 特征 |
 |---|---|---|---|---|
-| `unit_beast` | 驯化野兽 | BEAST | 药师 | 白板 |
-| `unit_bat` | 吸血蝙蝠 | BEAST | 药师 | 白板 |
-| `unit_elder_thing` | 灵界生物 | ABERRATION | 药师 | 白板 |
-| `unit_thoughtform` | 被记录者影像 | ILLUSION | 学徒 | 白板 |
-| `unit_mirror_image` | 镜像 | ILLUSION | 刺客 | 白板 |
-| `unit_wraith` | 亡魂 | UNDEAD | 收尸人 | reach melee、hpRatio 0.7 |
-| `unit_skeleton` | 骷髅 | UNDEAD | 收尸人 | reach melee、hpRatio 1.0 |
-| `unit_zombie` | 活尸 | UNDEAD | 收尸人 | reach melee、hpRatio 1.0 |
-| `unit_demon` | 恶魔投影 | DEMON | 罪犯 | 白板 |
-| `unit_war_soldier` | 士兵 | CONSTRUCT | 猎人 | 白板 |
+| `unit_beast` | 驯化野兽 | BEAST | 药师 | reach melee |
+| `unit_bat` | 吸血蝙蝠 | BEAST | 药师 | reach melee |
+| `unit_elder_thing` | 灵界生物 | ABERRATION | 药师 | reach melee |
+| `unit_thoughtform` | 被记录者影像 | ILLUSION | 学徒 | reach melee |
+| `unit_mirror_image` | 镜像 | ILLUSION | 刺客 | reach melee |
+| `unit_wraith` | 亡魂 | UNDEAD | 收尸人 | reach melee |
+| `unit_skeleton` | 骷髅 | UNDEAD | 收尸人 | reach melee |
+| `unit_zombie` | 活尸 | UNDEAD | 收尸人 | reach melee |
+| `unit_demon` | 恶魔投影 | DEMON | 罪犯 | 触发载荷、reach melee |
+| `unit_war_soldier` | 士兵 | CONSTRUCT | 猎人 | reach melee |
 | `unit_beastling` | 杂交兽 | BEAST | 耕种者 | reach melee |
 | `unit_vermin` | 虫豸群 | VERMIN | 耕种者 | 触发载荷、reach melee |
 | `unit_vine` | 藤蔓 | PLANT | 耕种者 | reach melee |
@@ -29,26 +29,26 @@
 | `unit_golem` | 战斗魔像 | CONSTRUCT | 耕种者 | 触发载荷、reach melee |
 | `unit_homunculus` | 炼成人偶 | CONSTRUCT | 耕种者 | reach melee |
 | `unit_doll` | 材质人偶 | CONSTRUCT | 耕种者 | reach melee |
-| `unit_ghoul` | 食尸鬼 | UNDEAD | 囚犯 | 白板 |
-| `unit_relic` | 古物傀儡 | ITEM | 囚犯 | 白板 |
-| `unit_scroll_construct` | 卷轴造物 | CONSTRUCT | 窥秘人 | tags |
-| `unit_tower_construct` | 白塔造物 | CONSTRUCT | 阅读者 | 白板 |
-| `unit_sea_beast` | 海兽 | BEAST | 水手 | 白板 |
-| `unit_leviathan` | 利维坦 | BEAST | 水手 | 白板 |
-| `unit_automaton` | 机械造物 | MACHINE | 通识者 | 白板 |
+| `unit_ghoul` | 食尸鬼 | UNDEAD | 囚犯 | reach melee |
+| `unit_relic` | 古物傀儡 | ITEM | 囚犯 | reach melee |
+| `unit_scroll_construct` | 卷轴造物 | CONSTRUCT | 窥秘人 | tags、reach melee |
+| `unit_tower_construct` | 白塔造物 | CONSTRUCT | 阅读者 | reach melee |
+| `unit_sea_beast` | 海兽 | BEAST | 水手 | reach melee |
+| `unit_leviathan` | 利维坦 | BEAST | 水手 | reach melee |
+| `unit_automaton` | 机械造物 | MACHINE | 通识者 | reach melee |
 | `unit_historical_echo` | 历史影像 | ILLUSION | 占卜家 | hpRatio 0.35 |
 | `unit_marionette` | 秘偶 | CONSTRUCT | 占卜家 | hpRatio 0.25 |
-| `unit_nature_spirit` | 灵牙自然灵 | SPIRIT | 不眠者 | 触发载荷、元素、reach melee、hpRatio 1.0 |
-| `unit_nature_spirit_swarm` | 群灵 | SPIRIT | 不眠者 | 触发载荷、tags、元素、reach melee、hpRatio 0.6 |
-| `unit_imagined` | 空想造物 | ILLUSION | 观众 | 白板 |
-| `unit_split_identity` | 身份分离体 | ILLUSION | 观众 | 白板 |
-| `unit_shadow_spawn` | 阴影生物 | ILLUSION | 秘祈人 | 触发载荷、tags、元素、hpRatio 0.35 |
-| `unit_flesh_servant` | 血肉仆役 | FLESH | 秘祈人 | 触发载荷、tags、元素、hpRatio 0.5 |
-| `unit_grazed_wraith` | 被放牧的灵体 | SPIRIT | 秘祈人 | tags、元素、hpRatio 0.4 |
-| `unit_fallen_kin` | 堕落眷属 | SPIRIT | 秘祈人 | tags、元素、hpRatio 0.25 |
-| `unit_abomination` | 异变怪物 | ABERRATION | 秘祈人 | 触发载荷、tags、元素、hpRatio 动态（见卡面效果） |
-| `unit_doppelganger` | 分身 | ILLUSION | 偷盗者 | 白板 |
-| `unit_stone_clock` | 石制壁钟虚影 | ITEM | 偷盗者 | 白板 |
+| `unit_nature_spirit` | 灵牙自然灵 | SPIRIT | 不眠者 | 触发载荷、元素、reach melee |
+| `unit_nature_spirit_swarm` | 群灵 | SPIRIT | 不眠者 | 触发载荷、tags、元素、reach melee |
+| `unit_imagined` | 空想造物 | ILLUSION | 观众 | reach melee |
+| `unit_split_identity` | 身份分离体 | ILLUSION | 观众 | reach melee |
+| `unit_shadow_spawn` | 阴影生物 | ILLUSION | 秘祈人 | 触发载荷、tags、元素、reach melee、hpRatio 0.35 |
+| `unit_flesh_servant` | 血肉仆役 | FLESH | 秘祈人 | 触发载荷、tags、元素、reach melee、hpRatio 0.5 |
+| `unit_grazed_wraith` | 被放牧的灵体 | SPIRIT | 秘祈人 | tags、元素、reach melee、hpRatio 0.4 |
+| `unit_fallen_kin` | 堕落眷属 | SPIRIT | 秘祈人 | tags、元素、reach melee、hpRatio 0.25 |
+| `unit_abomination` | 异变怪物 | ABERRATION | 秘祈人 | 触发载荷、tags、元素、reach melee、hpRatio 动态（见卡面效果） |
+| `unit_doppelganger` | 分身 | ILLUSION | 偷盗者 | reach melee |
+| `unit_stone_clock` | 石制壁钟虚影 | ITEM | 偷盗者 | 触发载荷、reach melee |
 
 > unitType 登记率：**37/37**——未登记单位的种类归属见《召唤物参数》§一归属表。
 

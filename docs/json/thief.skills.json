@@ -2539,40 +2539,6 @@
           "note": "H1 召唤物基线：hp 偏高 / atk 0 / gauge.rate 极低（几乎不行动，是一件\"物\"而非战力）"
         }
       ],
-      "triggers": [
-        {
-          "event": "on_spawn",
-          "effects": [
-            {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": -15,
-              "mode": "delta",
-              "target": "all_enemies"
-            },
-            {
-              "type": "damage",
-              "element": "none",
-              "value": 2,
-              "target": "all_enemies",
-              "note": "钟声一响，时间倒退（挂在召唤物自身，A2 合规）"
-            }
-          ]
-        },
-        {
-          "event": "on_death",
-          "effects": [
-            {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": -25,
-              "mode": "delta",
-              "target": "all_enemies",
-              "note": "壁钟碎裂时的最后一响（亡语）"
-            }
-          ]
-        }
-      ],
       "tentative": false,
       "conversionNotes": "unit_stone_clock 单位定义随 H1 召唤物基线登记（本稿新增项 5，已落 ddd：编队参数 §2.4）；on_spawn 触发器挂在召唤物自身 ｜ 翻译/语义：壁钟=登场/碎裂两响拖时间；写时差。A2 自检（on_spawn 挂召唤物自身）。 ｜ 2026-10-01 吟唱重标：仪式类（prim）读条 10tick（序列 1 档，基准 §三之二） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）",
       "art": {
@@ -2952,13 +2918,57 @@
       "id": "unit_doppelganger",
       "name": "分身",
       "unitType": "ILLUSION",
-      "note": "2 具，敌方单体优先选中，5 tick；2026-10-23 召唤牌化补登（种类归属权威：召唤物参数.md §一）；数值/技能组待平衡期"
+      "base": {
+        "hp": 8,
+        "atk": 3,
+        "reach": "melee"
+      },
+      "note": "2 具，敌方单体优先选中，5 tick；H1 ILLUSION 基线；数值/技能组待平衡期"
     },
     {
       "id": "unit_stone_clock",
       "name": "石制壁钟虚影",
       "unitType": "ITEM",
-      "note": "atk 0；登场/碎裂推条，器物非战力；2026-10-23 召唤牌化补登（种类归属权威：召唤物参数.md §一）；数值/技能组待平衡期"
+      "base": {
+        "hp": 10,
+        "atk": 0,
+        "reach": "melee"
+      },
+      "triggers": [
+        {
+          "event": "on_spawn",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -15,
+              "mode": "delta",
+              "target": "all_enemies"
+            },
+            {
+              "type": "damage",
+              "element": "none",
+              "value": 2,
+              "target": "all_enemies",
+              "note": "钟声一响，时间倒退（召唤物自身登场载荷）"
+            }
+          ]
+        },
+        {
+          "event": "on_death",
+          "effects": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -25,
+              "mode": "delta",
+              "target": "all_enemies",
+              "note": "壁钟碎裂时的最后一响（亡语）"
+            }
+          ]
+        }
+      ],
+      "note": "atk 0；器物非战力。登场/碎裂推条与登场伤害由蓝本承载（原卡级 triggers 迁入，2026-10-24）"
     }
   ],
   "domainDefs": [
