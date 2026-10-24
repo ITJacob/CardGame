@@ -1445,6 +1445,19 @@ class CombatRuntime implements CombatRuntimeHandle {
     const subjects: TriggerSubjects = { caster, target: host }
     this.fireTriggers(host, 'on_apply', def?.triggers, host, undefined, this.scopeFor(host, inst.grant.casterId, subjects))
     this.fireStatusTriggers(host, 'on_status_gain', undefined, undefined, subjects, { statusId })
+    this.checkStackThreshold(host, inst)
+  }
+
+  /** 叠层阈值（stackThreshold）：层数达标时一次性结算（每实例一次；层数回落后再涨不重复） */
+  private checkStackThreshold(host: CombatUnit, inst: StatusInstance): void {
+    const def = this.lookup.statusDef(inst.defId)
+    const th = def?.stackThreshold
+    if (!th || inst.thresholdFired) return
+    if (inst.currentStacks < th.stacks) return
+    inst.thresholdFired = true
+    if (th.effects?.length) {
+      executeNodes(th.effects, [host], this.makeContext(this.ids.next('threshold'), host))
+    }
   }
 
   /** 每 tick 处理限时记录（translocate 回归 / take_control 归还 / 临时增减伤与可选中性） */

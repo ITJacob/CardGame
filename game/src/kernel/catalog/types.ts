@@ -389,6 +389,8 @@ export interface StatusDef {
   charges?: number
   maxStacks?: number
   stackPolicy?: 'stack' | 'refresh'
+  /** 叠层阈值：层数达到 stacks 时一次性结算 effects（每实例一次） */
+  stackThreshold?: { stacks: number; effects?: EffectNode[]; note?: string }
   statPerStack?: Record<string, Scalar>
   behaviorModifiers?: unknown[]
   disallowActions?: string[]

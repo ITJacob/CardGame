@@ -151,6 +151,8 @@ export interface StatusInstance {
   maxCharges: number | null
   /** ramp 递进已走到的步数（valueFrom:ramp；每次 on_tick 触发 +1，钳在 ramp 末项） */
   rampFires?: number
+  /** stackThreshold 已结算（每实例一次） */
+  thresholdFired?: boolean
 }
 
 /** 武器实例（武器牌打出后的装备态）：单槽、无游离实例 */
