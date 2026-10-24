@@ -396,6 +396,10 @@ BASELINE_KEYS = {"energy", "armor", "shield", "hp", "hp_max", "gauge.current", "
 SUPPLY_WORDS = ("获得", "积", "每回合", "自动", "默认携带", "默认拥有", "自带")
 
 
+# spawn.template 的动态寻址值：不指向 unitDef 蓝本，不应计入 missing_units
+DYNAMIC_TEMPLATES = {"killed_unit", "primary_target", "holder"}
+
+
 def summon_unit_share(cards, data):
     """召唤卡的 unitDef 载荷占比 = unitDef 触发载荷节点 ÷（卡面非 spawn 载荷 + unitDef 载荷）。
     只作设计诊断，不进 score.py 的 100 分。"""
@@ -409,9 +413,10 @@ def summon_unit_share(cards, data):
                 continue
             u = n.get("unitId") or n.get("template")
             if isinstance(u, str):
-                uids.append(u)
+                if u not in DYNAMIC_TEMPLATES:
+                    uids.append(u)
             elif isinstance(u, list):
-                uids.extend(x for x in u if isinstance(x, str))
+                uids.extend(x for x in u if isinstance(x, str) and x not in DYNAMIC_TEMPLATES)
         if not uids:
             continue
         missing = sorted({u for u in uids if u not in idx})

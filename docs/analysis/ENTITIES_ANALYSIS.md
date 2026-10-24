@@ -6,7 +6,7 @@
 
 ## 一、召唤物（unitDefs 池 + 卡面 spawn 引用）
 
-池内蓝本 **36** 条（覆盖 16 途径）；卡面具名单位引用 **29** 种，其中池外引用（卡面内联、无 unitDef）**0** 种 / 0 次——池只收编「同途径多卡共享」的蓝本，单卡单位属性内联在 spawn 段（hpRatio / atkRatio × H1 基线），**池外引用是常态而非缺漏**。具名单位全集（36）与基线档见 ddd《召唤物参数》。
+池内蓝本 **37** 条（覆盖 17 途径）；卡面具名单位引用 **30** 种，其中池外引用（卡面内联、无 unitDef）**0** 种 / 0 次——池只收编「同途径多卡共享」的蓝本，单卡单位属性内联在 spawn 段（hpRatio / atkRatio × H1 基线），**池外引用是常态而非缺漏**。具名单位全集（36）与基线档见 ddd《召唤物参数》。
 
 ### 1.1 池内蓝本清单
 
@@ -31,6 +31,7 @@
 | `unit_doll` | 材质人偶 | CONSTRUCT | 耕种者 | 白板 |
 | `unit_ghoul` | 食尸鬼 | UNDEAD | 囚犯 | 白板 |
 | `unit_relic` | 古物傀儡 | ITEM | 囚犯 | 白板 |
+| `unit_scroll_construct` | 卷轴造物 | CONSTRUCT | 窥秘人 | tags |
 | `unit_tower_construct` | 白塔造物 | CONSTRUCT | 阅读者 | 白板 |
 | `unit_sea_beast` | 海兽 | BEAST | 水手 | 白板 |
 | `unit_leviathan` | 利维坦 | BEAST | 水手 | 白板 |
@@ -49,17 +50,16 @@
 | `unit_doppelganger` | 分身 | ILLUSION | 偷盗者 | 白板 |
 | `unit_stone_clock` | 石制壁钟虚影 | ITEM | 偷盗者 | 白板 |
 
-> unitType 登记率：**36/36**——未登记单位的种类归属见《召唤物参数》§一归属表。
+> unitType 登记率：**37/37**——未登记单位的种类归属见《召唤物参数》§一归属表。
 
 ### 1.2 spawn 引用形态（卡面，按节点计）
 
 | 形态 | 次数 |
 |---|---:|
-| 具名单位引用 | 65 |
+| 具名单位引用 | 66 |
 | 区域蓝本引用 | 10 |
 | 复活（不产生新单位） | 7 |
 | 动态模板 | 2 |
-| 固定蓝本模板 | 1 |
 
 ### 1.3 具名单位引用清单（spawn unitId 去重）
 
@@ -83,6 +83,7 @@
 | `unit_golem` | 1 | 耕种者 | ✓ |
 | `unit_doll` | 1 | 耕种者 | ✓ |
 | `unit_ghoul` | 1 | 囚犯 | ✓ |
+| `unit_scroll_construct` | 1 | 窥秘人 | ✓ |
 | `unit_leviathan` | 1 | 水手 | ✓ |
 | `unit_automaton` | 1 | 通识者 | ✓ |
 | `unit_historical_echo` | 1 | 占卜家 | ✓ |

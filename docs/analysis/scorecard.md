@@ -45,7 +45,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 30.5 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:ice ×2；elem:lightning ×9；sref:rage ×11；对他途径指纹均距 0.282
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:ice ×2；elem:lightning ×9；sref:rage ×11；对他途径指纹均距 0.288
 
 角色分布（SCORING §一·附）：core ×22 · starter ×3 · bridge ×2 · generic ×10 · trap ×1 · tech ×5
 
@@ -121,7 +121,7 @@
 | 文本完备 | 4.8 |
 | 差异化 | 32.8 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:gender_is ×2；prim:target_override ×3；sref:massing ×11；对他途径指纹均距 0.309
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:gender_is ×2；prim:target_override ×3；sref:massing ×11；对他途径指纹均距 0.305
 
 角色分布（SCORING §一·附）：core ×27 · starter ×2 · bridge ×1 · generic ×8 · trap ×3 · tech ×2
 
@@ -322,7 +322,7 @@
 | 文本完备 | 4.9 |
 | 差异化 | 30.0 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:grant_immunity ×16；prim:write_rule_slot ×2；trig:on_phase_change ×2；对他途径指纹均距 0.293
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:grant_immunity ×16；prim:write_rule_slot ×2；trig:on_phase_change ×2；对他途径指纹均距 0.299
 
 角色分布（SCORING §一·附）：core ×38 · starter ×1 · bridge ×1 · generic ×1 · trap ×1 · tech ×1
 
@@ -401,7 +401,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 33.4 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×7；flag:filter.unitType ×3；sref:guardianship ×3；对他途径指纹均距 0.341
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:holy ×7；flag:filter.unitType ×3；sref:guardianship ×3；对他途径指纹均距 0.346
 
 角色分布（SCORING §一·附）：core ×24 · starter ×3 · bridge ×1 · generic ×4 · trap ×1 · tech ×2
 
@@ -452,7 +452,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 29.1 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:modify_rule_slot ×2；prim:status_shuffle ×5；对他途径指纹均距 0.242
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:gauge_shuffle ×7；prim:modify_rule_slot ×2；prim:status_shuffle ×5；对他途径指纹均距 0.247
 
 角色分布（SCORING §一·附）：core ×35 · starter ×2 · bridge ×1 · generic ×8 · trap ×1 · tech ×1
 
@@ -545,7 +545,7 @@
 | 文本完备 | 4.9 |
 | 差异化 | 31.7 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:reveal ×14；prim:snapshot ×8；sref:mimic ×3；对他途径指纹均距 0.350
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:reveal ×14；prim:snapshot ×8；sref:mimic ×3；对他途径指纹均距 0.355
 
 角色分布（SCORING §一·附）：core ×26 · starter ×2 · bridge ×2 · generic ×2 · trap ×1 · tech ×1
 
@@ -575,7 +575,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 30.4 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:modify_rule_slot ×13；sref:law_edit ×6；unitType:CONSTRUCT ×2；对他途径指纹均距 0.296
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:modify_rule_slot ×13；sref:law_edit ×6；unitType:CONSTRUCT ×2；对他途径指纹均距 0.293
 
 角色分布（SCORING §一·附）：core ×26 · starter ×4 · bridge ×1 · generic ×3 · trap ×1 · tech ×1
 
@@ -611,7 +611,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 30.4 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:dark ×6；elem:ice ×3；prim:translocate ×11；对他途径指纹均距 0.271
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：elem:dark ×6；elem:ice ×3；prim:translocate ×11；对他途径指纹均距 0.277
 
 角色分布（SCORING §一·附）：core ×24 · starter ×5 · bridge ×1 · generic ×10 · trap ×1 · tech ×1
 
@@ -646,7 +646,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 32.4 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×4；prim:write_rule_slot ×2；sref:puppet_string ×5；对他途径指纹均距 0.328
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×4；prim:write_rule_slot ×2；sref:puppet_string ×5；对他途径指纹均距 0.327
 
 角色分布（SCORING §一·附）：core ×23 · starter ×3 · bridge ×1 · generic ×9 · trap ×1 · tech ×2
 
@@ -682,7 +682,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 28.8 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:advance_clock ×2；prim:restore_snapshot ×2；res:fate_value ×6；对他途径指纹均距 0.247
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:advance_clock ×2；prim:restore_snapshot ×2；res:fate_value ×6；对他途径指纹均距 0.253
 
 角色分布（SCORING §一·附）：core ×31 · starter ×1 · bridge ×1 · trap ×1 · tech ×1
 
@@ -721,7 +721,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 32.6 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:cast_time_set ×21；flag:valueFrom ×2；sref:info_form ×2；对他途径指纹均距 0.321
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:cast_time_set ×21；flag:valueFrom ×2；sref:info_form ×2；对他途径指纹均距 0.360
 
 角色分布（SCORING §一·附）：core ×27 · starter ×3 · bridge ×1 · generic ×3 · trap ×1 · tech ×3
 
@@ -806,7 +806,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 30.3 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:cost_mod ×2；flag:seal_effect ×2；res:order ×11；对他途径指纹均距 0.273
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:cost_mod ×2；flag:seal_effect ×2；res:order ×11；对他途径指纹均距 0.278
 
 角色分布（SCORING §一·附）：core ×27 · starter ×3 · bridge ×1 · generic ×10 · trap ×1 · tech ×1
 
@@ -888,7 +888,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 33.3 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:advance_clock ×4；res:secrecy ×3；trig:on_phase_change ×4；对他途径指纹均距 0.324
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:advance_clock ×4；res:secrecy ×3；trig:on_phase_change ×4；对他途径指纹均距 0.329
 
 角色分布（SCORING §一·附）：core ×24 · starter ×4 · bridge ×1 · generic ×2 · trap ×1 · tech ×2
 
