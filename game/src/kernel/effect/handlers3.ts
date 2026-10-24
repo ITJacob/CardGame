@@ -62,7 +62,7 @@ export function handleModifySkill(node: EffModifySkill, target: CombatUnit | nul
 
 export function handleTargetOverride(node: EffTargetOverride, target: CombatUnit | null, ctx: EffectContext): void {
   if (!target) return
-  ctx.ops.applyTargetOverride(target, { anchor: node.anchor, faction: node.faction, sort: node.sort })
+  ctx.ops.applyTargetOverride(target, { anchor: node.anchor, faction: node.faction, sort: node.sort, unitId: node.unitId })
 }
 
 export function handleWriteRuleSlot(node: EffWriteRuleSlot, _t: CombatUnit | null, ctx: EffectContext): void {

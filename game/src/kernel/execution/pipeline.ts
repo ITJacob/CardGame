@@ -3,6 +3,7 @@
 // Manual 且候选>pickCount 时挂起，返回 continueWith 供 UI/AI 喂回选择。
 import type { FactionId, LaneId } from '../ids'
 import type { DomainEvent } from '../combat/types'
+import type { Coordinate } from '../battle/types'
 import type { EffectNode, WeaponDef } from '../catalog/types'
 import type { Consumption, TargetSpec } from '../shared/types'
 import type { EffectContext } from '../effect/context'
@@ -29,6 +30,8 @@ export interface PipelineDeps {
   /** 有序路 id（几何用；战场参数 §二） */
   lanes: readonly LaneId[]
   laneCapacity: number
+  /** 最近阵亡友军坐标（anchor:last_dead_ally） */
+  lastDeadCellFor?(faction: FactionId): Coordinate | null
   /** 结算完成后回调（runtime 用它在 zone/domain 分流时登记实例） */
   onAction?(info: { caster: CombatUnit; consumption: Consumption; targets: readonly ResolvedTarget[]; zoneGrant?: { def: string; duration?: number }; domainGrant?: { def: string; duration?: number } }): void
   /** kind=weapon 的卡：扣费成功后、战吼/选靶之前装备 */
@@ -73,6 +76,7 @@ export function runBehavior(
     lanes: deps.lanes,
     laneCapacity: deps.laneCapacity,
     unsupported: deps.unsupported,
+    lastDeadCellFor: deps.lastDeadCellFor,
   })
 
   // 命中数：area 恒为区域内全取；unit 取 pickCount（整数=N，'all'=池内全部），缺省 1
@@ -159,6 +163,7 @@ function settle(
       lanes: deps.lanes,
       laneCapacity: deps.laneCapacity,
       unsupported: deps.unsupported,
+      lastDeadCellFor: deps.lastDeadCellFor,
     })
     const pickRawS = reqS.pickCount
     const n = (reqS.mode ?? 'unit') === 'area' || pickRawS === 'all'

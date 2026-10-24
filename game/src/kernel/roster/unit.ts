@@ -74,7 +74,7 @@ export class CombatUnit implements Unit {
   /** 本回合已获得的战意层数（每自身回合重置；上限 3） */
   warSpiritGain = 0
   /** target_override：下一次选靶的覆盖（消费后清空） */
-  pendingTargetOverride: { anchor?: string; faction?: string; sort?: string } | null = null
+  pendingTargetOverride: { anchor?: string; faction?: string; sort?: string; unitId?: string } | null = null
 
   private readonly statusDefs: StatusDefLookup
 
@@ -242,14 +242,14 @@ export class CombatUnit implements Unit {
   }
 
   /** 持态型选靶覆写（BehaviorModifier op:target_override）；后挂载者胜出。 */
-  activeTargetOverride(): { anchor?: string; faction?: string; sort?: string } | null {
-    let out: { anchor?: string; faction?: string; sort?: string } | null = null
+  activeTargetOverride(): { anchor?: string; faction?: string; sort?: string; unitId?: string } | null {
+    let out: { anchor?: string; faction?: string; sort?: string; unitId?: string } | null = null
     for (const inst of this.statuses.all()) {
       const def = this.statusDefs.statusDef(inst.defId)
       for (const raw of def?.behaviorModifiers ?? []) {
         if (!raw || typeof raw !== 'object') continue
-        const bm = raw as { op?: string; anchor?: string; faction?: string; sort?: string }
-        if (bm.op === 'target_override') out = { anchor: bm.anchor, faction: bm.faction, sort: bm.sort }
+        const bm = raw as { op?: string; anchor?: string; faction?: string; sort?: string; unitId?: string }
+        if (bm.op === 'target_override') out = { anchor: bm.anchor, faction: bm.faction, sort: bm.sort, unitId: bm.unitId }
       }
     }
     return out

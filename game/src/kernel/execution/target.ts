@@ -6,7 +6,7 @@
 import type { FactionId, LaneId } from '../ids'
 import type { Coordinate } from '../battle/types'
 import type { ResolvedTarget } from './types'
-import type { FactionSelector, SortKey, TargetRequest, UnitFilter } from '../shared/types'
+import type { FactionSelector, TargetRequest, UnitFilter } from '../shared/types'
 import type { Registry } from '../roster/registry'
 import type { CombatUnit } from '../roster/unit'
 
@@ -20,6 +20,8 @@ export interface TargetContext {
   laneCapacity: number
   /** 未支持项登记（缺省静默） */
   unsupported?(kind: string, detail?: string): void
+  /** 最近阵亡友军坐标（复活寻址 anchor:last_dead_ally） */
+  lastDeadCellFor?(faction: FactionId): Coordinate | null
 }
 
 const DEFAULT_SCOPE = 'whole_lane'
@@ -163,12 +165,20 @@ function originOf(request: TargetRequest, ctx: TargetContext): Coordinate {
     case 'enemy_back':
       return { faction: other, lane, index: ctx.laneCapacity - 1 }
     case 'spawned_unit':
-    case 'last_dead_ally':
       ctx.unsupported?.(`anchor:${anchor}`)
       return derivedDefault()
+    case 'last_dead_ally': {
+      // 有登记通道即算已接通；本场尚无人阵亡时按缺省原点（不记 unsupported）
+      if (ctx.lastDeadCellFor) return ctx.lastDeadCellFor(own) ?? derivedDefault()
+      ctx.unsupported?.(`anchor:${anchor}`)
+      return derivedDefault()
+    }
     default: {
       const u = ctx.units.get(specificUnitId(anchor) ?? '')
       if (u?.position) return u.position
+      // 具名 anchor 也接受 unitDef 蓝本 id（如 unit_doppelganger：改指分身而不认实例 id）
+      const byDef = ctx.units.all().find((x) => x.unitDefId === anchor && x.position != null)
+      if (byDef?.position) return byDef.position
       ctx.unsupported?.(`anchor:${anchor}`)
       return derivedDefault()
     }
@@ -289,8 +299,19 @@ function tie(a: CombatUnit, b: CombatUnit, lanes: readonly LaneId[]): number {
   return posCompare(a, b, lanes) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
 }
 
-function sortCandidates(list: CombatUnit[], sort: SortKey, lanes: readonly LaneId[]): CombatUnit[] {
-  const tiebreak = (a: CombatUnit, b: CombatUnit): number => tie(a, b, lanes)
+function sortCandidates(list: CombatUnit[], sort: string, ctx: TargetContext): CombatUnit[] {
+  const tiebreak = (a: CombatUnit, b: CombatUnit): number => tie(a, b, ctx.lanes)
+  const laneOrd = (u: CombatUnit): number => {
+    const i = ctx.lanes.indexOf(u.position?.lane as LaneId)
+    return i < 0 ? 0 : i
+  }
+  const dist = (u: CombatUnit): number => {
+    const from = ctx.self.position
+    const p = u.position
+    if (!from || !p) return Number.MAX_SAFE_INTEGER
+    return Math.abs(laneOrd(u) - laneOrd(ctx.self)) + Math.abs(p.index - from.index)
+  }
+  const hpPct = (u: CombatUnit): number => u.hp / Math.max(1, u.hpMax)
   const cmp = (a: CombatUnit, b: CombatUnit): number => {
     switch (sort) {
       case 'index_desc':
@@ -299,6 +320,10 @@ function sortCandidates(list: CombatUnit[], sort: SortKey, lanes: readonly LaneI
         return a.hp - b.hp || tiebreak(a, b)
       case 'hp_desc':
         return b.hp - a.hp || tiebreak(a, b)
+      case 'distance_asc':
+        return dist(a) - dist(b) || tiebreak(a, b)
+      case 'hp_pct_asc':
+        return hpPct(a) - hpPct(b) || tiebreak(a, b)
       case 'none':
         return tiebreak(a, b)
       default:
@@ -316,17 +341,46 @@ export function resolveCandidates(rawRequest: TargetRequest, ctx: TargetContext)
   return (request.mode ?? 'unit') === 'area' ? resolveArea(request, ctx) : resolveUnit(request, ctx)
 }
 
+/** 几何锚点（其余字符串按具名单位 / unitDef 蓝本 id 解释） */
+const GEOMETRY_ANCHORS = new Set([
+  'self', 'caster', 'enemy_front', 'ally_front', 'enemy_back', 'spawned_unit', 'last_dead_ally',
+])
+
 /** 选靶覆写：一次性 pendingTargetOverride 优先；否则读持态 BehaviorModifier（不消费）。 */
 function applyTargetOverride(request: TargetRequest, self: CombatUnit): TargetRequest {
   const oneShot = self.pendingTargetOverride
   const ov = oneShot ?? self.activeTargetOverride()
   if (!ov) return request
   if (oneShot) self.pendingTargetOverride = null
+  const anchor = ov.anchor
+  const sort = (ov.sort as TargetRequest['sort']) ?? request.sort
+  const faction = (ov.faction as TargetRequest['faction']) ?? request.faction
+
+  // 打空：下一次攻击指向空坐标（C7 母版——多数「误导/认错目标」状态）
+  if (anchor === 'first_empty') return { ...request, faction: 'none' }
+  // 打向不分阵营的最近单位
+  if (anchor === 'nearest_any') {
+    return { ...request, faction: 'any', anchor: 'self', excludeSelf: true, sort: 'distance_asc' as TargetRequest['sort'] }
+  }
+  // 全场生命百分比最低（不分阵营）
+  if (anchor === 'any_lowest_hp') {
+    return { ...request, faction: 'any', anchor: 'self', excludeSelf: true, sort: 'hp_pct_asc' as TargetRequest['sort'] }
+  }
+  // anchor:unit + unitId：改指具名单位（"self" = 持有者自身）
+  if (anchor === 'unit' && ov.unitId) {
+    return ov.unitId === 'self'
+      ? { ...request, faction: 'self', anchor: 'self', sort }
+      : { ...request, faction: 'any', anchor: ov.unitId, sort }
+  }
+  // 具名单位 / unitDef 蓝本 id：跨阵营寻址（如单位分身改指）
+  if (anchor && !GEOMETRY_ANCHORS.has(anchor) && !/^fixed_cell\(/.test(anchor)) {
+    return { ...request, faction: (ov.faction as TargetRequest['faction']) ?? 'any', anchor, sort }
+  }
   return {
     ...request,
-    faction: (ov.faction as TargetRequest['faction']) ?? request.faction,
-    anchor: ov.anchor ?? request.anchor,
-    sort: (ov.sort as TargetRequest['sort']) ?? request.sort,
+    faction,
+    anchor: anchor ?? request.anchor,
+    sort,
   }
 }
 
@@ -357,7 +411,7 @@ function pickInRegion(
     if (request.excludeAnchor && p.faction === origin.faction && p.lane === origin.lane && p.index === origin.index) return false
     return !u.isUntargetable('targeted', ctx.self.faction)
   })
-  return sortCandidates(candidates, request.sort ?? 'index_asc', ctx.lanes).map(toResolved)
+  return sortCandidates(candidates, request.sort ?? 'index_asc', ctx).map(toResolved)
 }
 
 /** area：AoE——anchor 原点 + scope 圈定的坐标区块，命中区域内全部在位单位 */
@@ -382,7 +436,7 @@ function resolveArea(request: TargetRequest, ctx: TargetContext): ResolvedTarget
     seen.add(u.id)
     picked.push(u)
   }
-  return sortCandidates(picked, request.sort ?? 'index_asc', ctx.lanes).map(toResolved)
+  return sortCandidates(picked, request.sort ?? 'index_asc', ctx).map(toResolved)
 }
 
 function matchesFaction(selector: FactionSelector, u: CombatUnit, ctx: TargetContext): boolean {

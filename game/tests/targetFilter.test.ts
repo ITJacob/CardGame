@@ -82,6 +82,52 @@ describe('选靶 filter', () => {
     expect(ids(resolveCandidates({ faction: 'enemy', filter: { rankMax: 1 }, pickCount: 'all', scope: 'board' }, ctx))).toEqual(['e1'])
   })
 
+  it('override first_empty：下一次攻击打空', () => {
+    const a = enemy('e0', 0)
+    const self = selfUnit()
+    self.pendingTargetOverride = { anchor: 'first_empty' }
+    const out = resolveCandidates({ faction: 'enemy', pickCount: 'all', scope: 'board' }, ctxWith([a], self))
+    expect(out).toEqual([])
+  })
+
+  it('override nearest_any：选不分阵营的最近单位', () => {
+    const enemyFar = enemy('e0', 3)
+    const allyNear = makeUnit('ally1', 'A')
+    allyNear.position = { faction: 'A', lane: 'lane0', index: 1 }
+    const self = selfUnit()
+    self.pendingTargetOverride = { anchor: 'nearest_any' }
+    const out = resolveCandidates({ faction: 'enemy', pickCount: 1, scope: 'board' }, ctxWith([enemyFar, allyNear], self))
+    expect(out[0]?.occupant).toBe('ally1')
+  })
+
+  it('override any_lowest_hp：生命百分比最低者优先（不分阵营）', () => {
+    const healthy = enemy('e0', 0)
+    const hurt = makeUnit('ally1', 'A')
+    hurt.position = { faction: 'A', lane: 'lane0', index: 1 }
+    hurt.pool('hp').applyDelta(-(hurt.hpMax - 1))
+    const self = selfUnit()
+    self.pendingTargetOverride = { anchor: 'any_lowest_hp' }
+    const out = resolveCandidates({ faction: 'enemy', pickCount: 'all', scope: 'board' }, ctxWith([healthy, hurt], self))
+    expect(out[0]?.occupant).toBe('ally1')
+  })
+
+  it('override anchor:unit + unitId:self：改指自身', () => {
+    const a = enemy('e0', 0)
+    const self = selfUnit()
+    self.pendingTargetOverride = { anchor: 'unit', unitId: 'self' }
+    const out = resolveCandidates({ faction: 'enemy', pickCount: 1, scope: 'board' }, ctxWith([a], self))
+    expect(ids(out)).toEqual(['self'])
+  })
+
+  it('具名 anchor 按 unitDef 蓝本寻址（unit_doppelganger）', () => {
+    const clone = enemy('e0', 2)
+    clone.unitDefId = 'unit_doppelganger'
+    const self = selfUnit()
+    self.pendingTargetOverride = { anchor: 'unit_doppelganger', faction: 'enemy' }
+    const out = resolveCandidates({ faction: 'enemy', pickCount: 1, scope: 'board' }, ctxWith([clone], self))
+    expect(ids(out)).toEqual(['e0'])
+  })
+
   it('anyOf 组合', () => {
     const a = enemy('e0', 0); a.unitType = 'UNDEAD'
     const b = enemy('e1', 1); b.unitType = 'BEAST'

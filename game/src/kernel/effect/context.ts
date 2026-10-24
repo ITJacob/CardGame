@@ -77,7 +77,7 @@ export interface EffectOps {
   shuffleGauges(units: readonly CombatUnit[], resource: string): void
   shuffleStatuses(units: readonly CombatUnit[], count: number): void
   modifySkillOf(unit: CombatUnit, node: EffectNode): void
-  applyTargetOverride(unit: CombatUnit, spec: { anchor?: string; faction?: string; sort?: string }): void
+  applyTargetOverride(unit: CombatUnit, spec: { anchor?: string; faction?: string; sort?: string; unitId?: string }): void
   writeRuleSlot(node: EffectNode, caster: CombatUnit | null): void
   modifyRuleSlot(node: EffectNode, caster: CombatUnit | null): void
   /** 战场级量表（secrecy / order / fate_value） */

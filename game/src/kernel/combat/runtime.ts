@@ -58,6 +58,8 @@ class CombatRuntime implements CombatRuntimeHandle {
   private readonly ids = new SequentialIdGenerator()
   private readonly units = new Registry()
   private readonly dead = new Set<UnitId>()
+  /** 最近阵亡友军坐标（anchor:last_dead_ally） */
+  private readonly lastDeadCell = new Map<FactionId, Coordinate>()
   private readonly factions: [FactionId, FactionId]
   private readonly warnings: string[] = []
   private battle: Battle
@@ -438,6 +440,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       unsupported: (k, d) => this.unsupported(k, d),
       lanes: this.laneIds,
       laneCapacity: LANE_CAPACITY,
+      lastDeadCellFor: (f) => this.lastDeadCell.get(f) ?? null,
       onAction: (info) => {
         const targets = info.targets
           .map((t) => (t.occupant ? this.units.get(t.occupant) : undefined))
@@ -1198,6 +1201,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     for (const u of this.units.all()) {
       if (!u.isDead || this.dead.has(u.id)) continue
       this.dead.add(u.id)
+      if (u.position) this.lastDeadCell.set(u.faction, { ...u.position })
       this.emit({ type: 'UnitDied', unitId: u.id })
       this.stats.unitsLost[u.faction] = (this.stats.unitsLost[u.faction] ?? 0) + 1
       // 死亡簿维度（源质维度 §一点五）：任何单位走完死亡结算链 +1，cap 10

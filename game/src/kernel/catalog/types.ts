@@ -194,6 +194,8 @@ export interface EffTargetOverride extends EffBase {
   faction?: string
   anchor?: string
   sort?: SortKey
+  /** anchor=unit 时的具名单位（"self" = 持有者自身） */
+  unitId?: string
 }
 export interface EffTransferStatus extends EffBase {
   type: 'transfer_status'
