@@ -151,7 +151,7 @@
        "黑暗之剑"
       ],
       "payoffsNotes": [],
-      "axisScore": 81.1
+      "axisScore": 80.9
      }
     },
     {
@@ -221,7 +221,7 @@
       "payoffsNotes": [
        "恐惧灵光"
       ],
-      "axisScore": 84.9
+      "axisScore": 84.6
      }
     },
     {
@@ -284,7 +284,7 @@
        "恐惧权柄"
       ],
       "payoffsNotes": [],
-      "axisScore": 83.4
+      "axisScore": 83.2
      }
     },
     {
@@ -364,7 +364,7 @@
        "隐秘权柄"
       ],
       "payoffsNotes": [],
-      "axisScore": 87.0
+      "axisScore": 86.5
      }
     }
    ],
@@ -1066,7 +1066,7 @@
        "加码"
       ],
       "payoffsNotes": [],
-      "axisScore": 79.5
+      "axisScore": 79.3
      }
     },
     {
@@ -1144,7 +1144,7 @@
        "精神刺穿"
       ],
       "payoffsNotes": [],
-      "axisScore": 87.6
+      "axisScore": 87.3
      }
     },
     {
@@ -1228,7 +1228,7 @@
        "位格律令"
       ],
       "payoffsNotes": [],
-      "axisScore": 87.1
+      "axisScore": 86.8
      }
     },
     {
@@ -1298,7 +1298,7 @@
       "payoffsNotes": [
        "禁制追击"
       ],
-      "axisScore": 85.3
+      "axisScore": 85.1
      }
     }
    ],
@@ -1976,7 +1976,7 @@
    "name": "偷盗者",
    "state": "回溯补登",
    "date": "2026-10-21",
-   "score": 97,
+   "score": 100,
    "scoreParts": {
     "命题": 10,
     "风格边界": 15,
@@ -1984,14 +1984,9 @@
     "决策点": 10,
     "签名键": 15,
     "角色配比": 15,
-    "钩子": 7
+    "钩子": 10
    },
-   "deductions": [
-    {
-     "dim": "钩子",
-     "why": "跨轴钩子 2 条（须 ≥3，或显式声明无）"
-    }
-   ],
+   "deductions": [],
    "proposition": {
     "statement": "有借有还——一切夺取都是「持有中」：窃取/寄生/顶替带时限归还，在归还窗口内榨取最大价值",
     "variable": "偷什么（能力/时间/身份/锚）、何时主动归还或续借",
@@ -2040,14 +2035,15 @@
      },
      "decision": "窃取时间对象选择：偷谁的节奏、归还节点何时落",
      "signatures": [],
-     "planCards": 6,
+     "planCards": 8,
      "roleMixDeclared": {
       "core": 6
      },
      "actual": {
-      "cards": 6,
+      "cards": 8,
       "roleMix": {
-       "core": 6
+       "core": 7,
+       "generic": 1
       },
       "anchorMatch": true,
       "enablers": [
@@ -2058,7 +2054,7 @@
        "嫁接命运"
       ],
       "payoffsNotes": [],
-      "axisScore": 89.9
+      "axisScore": 87.8
      }
     },
     {
@@ -2152,7 +2148,7 @@
        "欺诈规则"
       ],
       "payoffsNotes": [],
-      "axisScore": 84.1
+      "axisScore": 84.3
      }
     },
     {
@@ -2269,7 +2265,7 @@
      },
      "decision": "窃取目标选择：偷能力还是偷概念、窗口内怎么榨",
      "signatures": [],
-     "planCards": 15,
+     "planCards": 13,
      "roleMixDeclared": {
       "core": 8,
       "starter": 2,
@@ -2277,11 +2273,11 @@
       "bridge": 1
      },
      "actual": {
-      "cards": 15,
+      "cards": 13,
       "roleMix": {
-       "core": 8,
+       "core": 7,
        "starter": 2,
-       "generic": 4,
+       "generic": 3,
        "bridge": 1
       },
       "anchorMatch": true,
@@ -2293,11 +2289,91 @@
        "窃取"
       ],
       "payoffsNotes": [],
-      "axisScore": 79.0
+      "axisScore": 81.6
      }
     }
    ],
    "crossAxis": [
+    {
+     "slot": "窃取",
+     "slots": [
+      {
+       "name": "窃取",
+       "id": "skill_thief_s9_steal"
+      }
+     ],
+     "slotId": "skill_thief_s9_steal",
+     "axis": "chrono",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "偷来的时间在手，多偷 2 能量",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "窃取时间",
+     "slots": [
+      {
+       "name": "窃取时间",
+       "id": "skill_thief_s1_steal_time"
+      }
+     ],
+     "slotId": "skill_thief_s1_steal_time",
+     "axis": "steal",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "盗火在身，连时间惯性一并偷走",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "窃取身份",
+     "slots": [
+      {
+       "name": "窃取身份",
+       "id": "skill_thief_s2_steal_identity"
+      }
+     ],
+     "slotId": "skill_thief_s2_steal_identity",
+     "axis": "steal",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "盗来的能力让顶替更像本人",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "精神干扰",
+     "slots": [
+      {
+       "name": "精神干扰",
+       "id": "skill_thief_s8_mind_jam"
+      }
+     ],
+     "slotId": "skill_thief_s8_mind_jam",
+     "axis": "parasite",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "寄居中的心神更易干扰",
+     "ok": true,
+     "reason": ""
+    },
+    {
+     "slot": "精准窃取",
+     "slots": [
+      {
+       "name": "精准窃取",
+       "id": "skill_thief_s4_precise_steal"
+      }
+     ],
+     "slotId": "skill_thief_s4_precise_steal",
+     "axis": "deceit",
+     "concept": "status",
+     "facet": "read",
+     "purpose": "规则被欺诈，顺手多捞能量",
+     "ok": false,
+     "reason": "卡位未引用读轴锚点状态"
+    },
     {
      "slot": "欺诈规则",
      "slots": [
@@ -2307,28 +2383,29 @@
       }
      ],
      "slotId": "skill_thief_s3_deceive_rule",
-     "axis": "parasite",
+     "axis": "chrono",
      "concept": "status",
      "facet": "read",
-     "purpose": "读深寄层数定欺诈规则生效面",
+     "purpose": "偷来的时间让欺诈更从容",
      "ok": true,
      "reason": ""
     },
     {
-     "slot": "窃取权柄",
+     "slot": "窃取时间 / 衰老 / 嫁接命运",
      "slots": [
       {
-       "name": "窃取权柄",
-       "id": "skill_thief_s0_steal_authority"
+       "name": "窃取时间 / 衰老 / 嫁接命运",
+       "id": null,
+       "missing": true
       }
      ],
-     "slotId": "skill_thief_s0_steal_authority",
-     "axis": "chrono",
+     "slotId": null,
+     "axis": "chrono（fate_gap 集火）",
      "concept": "status",
      "facet": "read",
-     "purpose": "读窃取时间层数放大权柄窃取",
-     "ok": true,
-     "reason": ""
+     "purpose": "命运缝隙中多抽一瞬 / 老得更快 / 多借一段时间",
+     "ok": false,
+     "reason": "卡位无真实卡"
     }
    ],
    "crossSystem": [
@@ -2818,9 +2895,12 @@
      "miss": []
     },
     "跨轴钩子": {
-     "hit": 2,
-     "total": 2,
-     "miss": []
+     "hit": 5,
+     "total": 7,
+     "miss": [
+      "精准窃取→deceit",
+      "窃取时间 / 衰老 / 嫁接命运→chrono（fate_gap 集火）"
+     ]
     },
     "跨系钩子": {
      "hit": 2,
@@ -2959,7 +3039,7 @@
        "混沌漩涡"
       ],
       "payoffsNotes": [],
-      "axisScore": 83.0
+      "axisScore": 82.8
      }
     },
     {
@@ -3019,7 +3099,7 @@
        "魅力权柄"
       ],
       "payoffsNotes": [],
-      "axisScore": 86.6
+      "axisScore": 86.4
      }
     },
     {
@@ -3077,7 +3157,7 @@
        "原初·静止"
       ],
       "payoffsNotes": [],
-      "axisScore": 83.2
+      "axisScore": 83.0
      }
     },
     {
@@ -3172,7 +3252,7 @@
        "末日"
       ],
       "payoffsNotes": [],
-      "axisScore": 85.4
+      "axisScore": 85.1
      }
     }
    ],
@@ -4056,7 +4136,7 @@
       "payoffsNotes": [
        "诅咒权柄"
       ],
-      "axisScore": 78.5
+      "axisScore": 78.3
      }
     },
     {
@@ -4115,7 +4195,7 @@
        "侵蚀诅咒"
       ],
       "payoffsNotes": [],
-      "axisScore": 90.7
+      "axisScore": 90.3
      }
     },
     {
@@ -4192,7 +4272,7 @@
        "万咒加身"
       ],
       "payoffsNotes": [],
-      "axisScore": 87.4
+      "axisScore": 87.1
      }
     },
     {
@@ -4265,7 +4345,7 @@
        "物品权柄"
       ],
       "payoffsNotes": [],
-      "axisScore": 85.1
+      "axisScore": 84.8
      }
     }
    ],
@@ -4927,7 +5007,7 @@
        "旅行家之门",
        "空间破碎"
       ],
-      "axisScore": 77.0
+      "axisScore": 76.8
      }
     },
     {
@@ -4979,7 +5059,7 @@
        "逃脱戏法"
       ],
       "payoffsNotes": [],
-      "axisScore": 80.4
+      "axisScore": 80.2
      }
     },
     {
@@ -5056,7 +5136,7 @@
        "空间隐藏"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.6
+      "axisScore": 82.4
      }
     },
     {
@@ -5138,7 +5218,7 @@
        "同时结算"
       ],
       "payoffsNotes": [],
-      "axisScore": 81.7
+      "axisScore": 81.6
      }
     }
    ],
@@ -5828,7 +5908,7 @@
        "法条援引"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.2
+      "axisScore": 82.0
      }
     },
     {
@@ -5885,7 +5965,7 @@
       ],
       "payoffs": [],
       "payoffsNotes": [],
-      "axisScore": 75.6
+      "axisScore": 75.5
      }
     },
     {
@@ -5965,7 +6045,7 @@
        "收买"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.6
+      "axisScore": 82.4
      }
     },
     {
@@ -6052,7 +6132,7 @@
        "熵"
       ],
       "payoffsNotes": [],
-      "axisScore": 86.3
+      "axisScore": 86.1
      }
     }
    ],
@@ -6915,7 +6995,7 @@
        "反占卜"
       ],
       "payoffsNotes": [],
-      "axisScore": 81.6
+      "axisScore": 81.5
      }
     },
     {
@@ -7015,7 +7095,7 @@
        "命运看守者"
       ],
       "payoffsNotes": [],
-      "axisScore": 86.7
+      "axisScore": 86.5
      }
     },
     {
@@ -7073,7 +7153,7 @@
        "命运看守者"
       ],
       "payoffsNotes": [],
-      "axisScore": 90.0
+      "axisScore": 89.8
      }
     },
     {
@@ -7169,7 +7249,7 @@
        "概率权柄"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.4
+      "axisScore": 82.2
      }
     }
    ],
@@ -7876,7 +7956,7 @@
        "历史影像"
       ],
       "payoffsNotes": [],
-      "axisScore": 86.8
+      "axisScore": 86.6
      }
     },
     {
@@ -7938,7 +8018,7 @@
        "秘偶置换"
       ],
       "payoffsNotes": [],
-      "axisScore": 84.1
+      "axisScore": 83.8
      }
     },
     {
@@ -8053,7 +8133,7 @@
        "灵界掌控者"
       ],
       "payoffsNotes": [],
-      "axisScore": 85.2
+      "axisScore": 85.0
      }
     },
     {
@@ -8134,7 +8214,7 @@
        "灵之虫"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.1
+      "axisScore": 81.9
      }
     }
    ],
@@ -8919,7 +8999,7 @@
       "payoffsNotes": [
        "无坚不摧"
       ],
-      "axisScore": 72.5
+      "axisScore": 72.2
      }
     },
     {
@@ -9005,7 +9085,7 @@
        "铁躯",
        "卸力"
       ],
-      "axisScore": 77.7
+      "axisScore": 77.4
      }
     },
     {
@@ -9086,7 +9166,7 @@
        "晨曦领域"
       ],
       "payoffsNotes": [],
-      "axisScore": 84.5
+      "axisScore": 84.2
      }
     },
     {
@@ -9145,7 +9225,7 @@
        "神罚"
       ],
       "payoffsNotes": [],
-      "axisScore": 85.0
+      "axisScore": 84.8
      }
     }
    ],
@@ -9689,7 +9769,7 @@
        "右手触碰"
       ],
       "payoffsNotes": [],
-      "axisScore": 75.0
+      "axisScore": 74.8
      }
     },
     {
@@ -9758,7 +9838,7 @@
        "死亡宣告"
       ],
       "payoffsNotes": [],
-      "axisScore": 88.3
+      "axisScore": 88.1
      }
     },
     {
@@ -9868,7 +9948,7 @@
        "幽冥窥视"
       ],
       "payoffsNotes": [],
-      "axisScore": 85.3
+      "axisScore": 85.1
      }
     },
     {
@@ -9957,7 +10037,7 @@
        "冥界之门"
       ],
       "payoffsNotes": [],
-      "axisScore": 76.7
+      "axisScore": 76.6
      }
     }
    ],
@@ -10761,7 +10841,7 @@
        "终焉颂歌"
       ],
       "payoffsNotes": [],
-      "axisScore": 84.6
+      "axisScore": 84.5
      }
     },
     {
@@ -10889,7 +10969,7 @@
        "终焉颂歌"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.8
+      "axisScore": 82.7
      }
     },
     {
@@ -10956,7 +11036,7 @@
       "payoffsNotes": [
        "结庭"
       ],
-      "axisScore": 88.1
+      "axisScore": 87.7
      }
     },
     {
@@ -11050,7 +11130,7 @@
        "神圣盔甲",
        "秩序权柄"
       ],
-      "axisScore": 76.9
+      "axisScore": 76.7
      }
     }
    ],
@@ -11780,7 +11860,7 @@
        "风暴汇聚"
       ],
       "payoffsNotes": [],
-      "axisScore": 86.0
+      "axisScore": 85.8
      }
     },
     {
@@ -11839,7 +11919,7 @@
        "深潜"
       ],
       "payoffsNotes": [],
-      "axisScore": 76.3
+      "axisScore": 76.1
      }
     },
     {
@@ -11913,7 +11993,7 @@
        "暴怒一击"
       ],
       "payoffsNotes": [],
-      "axisScore": 80.5
+      "axisScore": 80.3
      }
     },
     {
@@ -11970,7 +12050,7 @@
       ],
       "payoffs": [],
       "payoffsNotes": [],
-      "axisScore": 78.5
+      "axisScore": 78.2
      }
     }
    ],
@@ -12755,7 +12835,7 @@
       "payoffsNotes": [
        "无限制分享"
       ],
-      "axisScore": 82.1
+      "axisScore": 81.9
      }
     },
     {
@@ -12833,7 +12913,7 @@
        "毁灭权柄"
       ],
       "payoffsNotes": [],
-      "axisScore": 78.9
+      "axisScore": 78.7
      }
     },
     {
@@ -12891,7 +12971,7 @@
        "煽动"
       ],
       "payoffsNotes": [],
-      "axisScore": 81.5
+      "axisScore": 81.3
      }
     },
     {
@@ -12966,7 +13046,7 @@
        "紫色火焰"
       ],
       "payoffsNotes": [],
-      "axisScore": 84.2
+      "axisScore": 84.0
      }
     }
    ],
@@ -13677,7 +13757,7 @@
        "阴影统治者"
       ],
       "payoffsNotes": [],
-      "axisScore": 92.1
+      "axisScore": 91.7
      }
     },
     {
@@ -13775,7 +13855,7 @@
        "血肉不灭"
       ],
       "payoffsNotes": [],
-      "axisScore": 77.3
+      "axisScore": 77.0
      }
     },
     {
@@ -13836,7 +13916,7 @@
       ],
       "payoffs": [],
       "payoffsNotes": [],
-      "axisScore": 64.1
+      "axisScore": 63.9
      }
     },
     {
@@ -13916,7 +13996,7 @@
        "灵魂牧场"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.7
+      "axisScore": 82.3
      }
     }
    ],
@@ -14642,7 +14722,7 @@
        "信息化"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.4
+      "axisScore": 82.2
      }
     },
     {
@@ -14743,7 +14823,7 @@
        "神秘再现"
       ],
       "payoffsNotes": [],
-      "axisScore": 84.2
+      "axisScore": 84.0
      }
     },
     {
@@ -14798,7 +14878,7 @@
        "知识攻击"
       ],
       "payoffsNotes": [],
-      "axisScore": 83.4
+      "axisScore": 83.2
      }
     },
     {
@@ -14855,7 +14935,7 @@
        "朗基努斯之枪"
       ],
       "payoffsNotes": [],
-      "axisScore": 90.7
+      "axisScore": 90.3
      }
     }
    ],
@@ -15580,7 +15660,7 @@
        "深渊召唤"
       ],
       "payoffsNotes": [],
-      "axisScore": 78.7
+      "axisScore": 78.5
      }
     },
     {
@@ -15648,7 +15728,7 @@
       "payoffsNotes": [
        "双焰交汇"
       ],
-      "axisScore": 76.3
+      "axisScore": 76.1
      }
     },
     {
@@ -15701,7 +15781,7 @@
        "荒芜侵蚀·改"
       ],
       "payoffsNotes": [],
-      "axisScore": 83.3
+      "axisScore": 83.1
      }
     },
     {
@@ -15765,7 +15845,7 @@
        "深渊即我",
        "恶欲共鸣"
       ],
-      "axisScore": 75.0
+      "axisScore": 74.8
      }
     }
    ],
@@ -16444,7 +16524,7 @@
        "掐尖"
       ],
       "payoffsNotes": [],
-      "axisScore": 79.4
+      "axisScore": 79.2
      }
     },
     {
@@ -16508,7 +16588,7 @@
       "payoffsNotes": [
        "人偶制造"
       ],
-      "axisScore": 84.7
+      "axisScore": 84.4
      }
     },
     {
@@ -16583,7 +16663,7 @@
        "杂交造物"
       ],
       "payoffsNotes": [],
-      "axisScore": 87.7
+      "axisScore": 87.4
      }
     },
     {
@@ -16670,7 +16750,7 @@
        "最后回归之地"
       ],
       "payoffsNotes": [],
-      "axisScore": 88.1
+      "axisScore": 87.8
      }
     }
    ],
@@ -17376,7 +17456,7 @@
        "草药敷贴"
       ],
       "payoffsNotes": [],
-      "axisScore": 83.9
+      "axisScore": 83.6
      }
     },
     {
@@ -17455,7 +17535,7 @@
        "狂兽突袭"
       ],
       "payoffsNotes": [],
-      "axisScore": 80.5
+      "axisScore": 80.3
      }
     },
     {
@@ -17524,7 +17604,7 @@
        "腐蚀之爪"
       ],
       "payoffsNotes": [],
-      "axisScore": 85.0
+      "axisScore": 84.8
      }
     },
     {
@@ -17611,7 +17691,7 @@
        "蝙蝠分解"
       ],
       "payoffsNotes": [],
-      "axisScore": 86.4
+      "axisScore": 86.2
      }
     }
    ],
@@ -18339,7 +18419,7 @@
        "引导"
       ],
       "payoffsNotes": [],
-      "axisScore": 91.5
+      "axisScore": 91.1
      }
     },
     {
@@ -18410,7 +18490,7 @@
        "心理暗示·权柄"
       ],
       "payoffsNotes": [],
-      "axisScore": 85.6
+      "axisScore": 85.4
      }
     },
     {
@@ -18472,7 +18552,7 @@
        "修改"
       ],
       "payoffsNotes": [],
-      "axisScore": 84.4
+      "axisScore": 84.2
      }
     },
     {
@@ -18552,7 +18632,7 @@
        "龙化"
       ],
       "payoffsNotes": [],
-      "axisScore": 83.0
+      "axisScore": 82.8
      }
     }
    ],
@@ -19305,7 +19385,7 @@
        "现实规律"
       ],
       "payoffsNotes": [],
-      "axisScore": 88.0
+      "axisScore": 87.8
      }
     },
     {
@@ -19362,7 +19442,7 @@
        "毁灭新生"
       ],
       "payoffsNotes": [],
-      "axisScore": 89.4
+      "axisScore": 89.1
      }
     },
     {
@@ -19481,7 +19561,7 @@
        "制造大师"
       ],
       "payoffsNotes": [],
-      "axisScore": 79.7
+      "axisScore": 79.5
      }
     },
     {
@@ -19543,7 +19623,7 @@
        "学习权柄"
       ],
       "payoffsNotes": [],
-      "axisScore": 82.2
+      "axisScore": 82.0
      }
     }
    ],
@@ -20271,7 +20351,7 @@
        "秘术·洞烛"
       ],
       "payoffsNotes": [],
-      "axisScore": 80.9
+      "axisScore": 80.8
      }
     },
     {
@@ -20343,7 +20423,7 @@
        "局势推演"
       ],
       "payoffsNotes": [],
-      "axisScore": 86.0
+      "axisScore": 85.7
      }
     },
     {
@@ -20424,7 +20504,7 @@
        "模仿·全知之眼"
       ],
       "payoffsNotes": [],
-      "axisScore": 84.7
+      "axisScore": 84.4
      }
     },
     {
@@ -20514,7 +20594,7 @@
        "仪式魔法大师"
       ],
       "payoffsNotes": [],
-      "axisScore": 80.7
+      "axisScore": 80.5
      }
     }
    ],

@@ -15,16 +15,21 @@
 ### 轴玩法
 | 轴 | 名称 | 锚点(kind:id) | 产出→消费→清除 | 玩家决策点 | 签名键承诺(键:卡位) | 计划卡数 | 角色配比 |
 |---|---|---|---|---|---|---|---|
-| chrono | 时命 | status:stolen_time | 窃取时间/衰老产层→嫁接命运读层消费→层数被消费或归还到期清除 | 窃取时间对象选择：偷谁的节奏、归还节点何时落 |  | 6 | core×6 |
+| chrono | 时命 | status:stolen_time | 窃取时间/衰老产层→嫁接命运读层消费→层数被消费或归还到期清除 | 窃取时间对象选择：偷谁的节奏、归还节点何时落 |  | 8 | core×6 |
 | deceit | 欺诈 | status:misdirect | 思维误导/精神干扰产层→欺诈规则读层消费→层数被消费或欺诈被识破清除 | 欺诈对象与改指时机：误导谁、何时收网 | prim:modify_targetability:伪装·盗天机,寄生;prim:target_override:精神干扰,解析幻象,窃取记忆 | 11 | core×5,starter×2,generic×3,tech×1 |
 | parasite | 寄生 | status:deep_parasitized | 寄生/窃取身份产层→窃取身份/混淆分身读层消费→寄生被驱散或宿主死亡清除 | 寄生对象选择：寄谁、何时深寄接管 | prim:take_control:栽赃,偷走想法,寄生 | 5 | core×3,trap×1,generic×1 |
-| steal | 窃取 | status:stolen_ability | 盗火/窃取权柄产层→窃取读层消费→层数被消费或归还到期清除 | 窃取目标选择：偷能力还是偷概念、窗口内怎么榨 |  | 15 | core×8,starter×2,generic×4,bridge×1 |
+| steal | 窃取 | status:stolen_ability | 盗火/窃取权柄产层→窃取读层消费→层数被消费或归还到期清除 | 窃取目标选择：偷能力还是偷概念、窗口内怎么榨 |  | 13 | core×8,starter×2,generic×4,bridge×1 |
 
 ### 跨轴钩子
 | 卡位 | 读轴 | 概念 | facet | 用途 |
 |---|---|---|---|---|
-| 欺诈规则 | parasite | status | read | 读深寄层数定欺诈规则生效面 |
-| 窃取权柄 | chrono | status | read | 读窃取时间层数放大权柄窃取 |
+| 窃取 | chrono | status | read | 偷来的时间在手，多偷 2 能量 |
+| 窃取时间 | steal | status | read | 盗火在身，连时间惯性一并偷走 |
+| 窃取身份 | steal | status | read | 盗来的能力让顶替更像本人 |
+| 精神干扰 | parasite | status | read | 寄居中的心神更易干扰 |
+| 精准窃取 | deceit | status | read | 规则被欺诈，顺手多捞能量 |
+| 欺诈规则 | chrono | status | read | 偷来的时间让欺诈更从容 |
+| 窃取时间 / 衰老 / 嫁接命运 | chrono（fate_gap 集火） | status | read | 命运缝隙中多抽一瞬 / 老得更快 / 多借一段时间 |
 
 ### 跨系钩子
 | 枢纽状态 | 写入卡位 | 读取卡位 | participants |
@@ -56,3 +61,6 @@ role 推断分歧处置：窃取权柄降 bridge（steal enabler 读 chrono 锚 
 兑现率缺口（下一迭代轮输入）：跨轴钩子仅 2 条实证（<3，钩子维失分在案）；deep_parasitized
 读取=supplicant·液化寄生已接线、fate_gap 读取=pryer 双实证已接线（全库罕见双通枢纽）；
 trap/tech/bridge 各仅 1 张。）
+
+
+（2026-10-24 **跨轴补强**（复审观察项落地，⑤）：四条轴互读成网——窃取读偷来的时间、窃取时间读盗火、窃取身份读盗火、精神干扰读深度寄生、精准窃取读规则被欺诈、欺诈规则读偷来的时间（跨轴 3.8→15.0）。命运缝隙（fate_gap）成为集火标记（1 写 3 读：窃取时间/衰老/嫁接命运）。模板被动差异化：灵性直觉预挂 1 层偷来的时间，卓越观察/找出方位/魅力口才各补一条开局小收益，打断 8 张 0.0 同构对。轴规模：窃取锚/窃取距离归 chrono（steal 15→13、chrono 6→8）。验收：score 76.8→88.8（轴健康 29.9，四轴 81.6/84.3/87.8/93.0，跨轴/跨系双 15）；playable_scan 有变量无集火→理想态；途径内 <0.20 对 32→18、最近对 0.0→0.027。）

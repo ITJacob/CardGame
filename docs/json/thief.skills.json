@@ -74,7 +74,7 @@
       "flagship": false,
       "lore": "序列9 偷盗者 —— \"「窃取」：轻松窃取目标口袋内物品\"",
       "flavor": "你的手从它的口袋里掠过——钱袋没了，而你连它什么时候被划开的都没让它察觉。",
-      "describe": "对一名近战敌人造成 1 点物理伤害，并偷取其 3 点能量归自己（自身盗火在场时偷取 5 点，赃物在手）。",
+      "describe": "对一名近战敌人造成 1 点物理伤害，并偷取其 3 点能量归自己（自身盗火在场时偷取 5 点，赃物在手）；自身带偷来的时间时额外偷取 2 点能量。",
       "cost": {
         "energy": 2,
         "cooldown": 15,
@@ -137,6 +137,28 @@
               ]
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "stolen_time",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 2,
+              "mode": "delta",
+              "target": "self",
+              "note": "偷来的时间在手：手更快，多顺走 2 能量"
+            }
+          ],
+          "else": [],
+          "note": "steal 读 chrono（跨轴）"
         }
       ],
       "upgradeLadder": {
@@ -246,7 +268,7 @@
       "flagship": false,
       "lore": "序列9 偷盗者 —— \"「卓越观察」：感应 10 米内贵重物品\"",
       "flavor": "你一眼就看出谁身上带着值钱的东西——躲起来的没用，揣得深的也没用。",
-      "describe": "战斗开始时获得「卓越观察」：敌方隐匿类状态对你无效；你对携带增益或护盾的目标伤害 ×1.25，持续整场。；增益是借来的：从目标身上抄一份，用完归还。",
+      "describe": "战斗开始时获得「卓越观察」：敌方隐匿类状态对你无效；你对携带增益或护盾的目标伤害 ×1.25，持续整场。；增益是借来的：从目标身上抄一份，用完归还；战斗开始时能量 +2。",
       "hook": [
         "on_battle_start"
       ],
@@ -271,6 +293,14 @@
             ]
           },
           "note": "借来：抄走目标一项增益，有借有还"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "energy",
+          "value": 2,
+          "mode": "delta",
+          "target": "self",
+          "note": "观察蓄势：开局多 2 能量"
         }
       ],
       "sharedAcross": [
@@ -349,7 +379,7 @@
       "flagship": false,
       "lore": "序列8 诈骗师 —— \"「思维误导」+「精神干扰」\"",
       "flavor": "一串细碎的噪声钻进它的脑袋，它的动作慢了半拍，而那半拍足够你做很多事。",
-      "describe": "对一名敌人造成 2 点精神伤害，并使其行动条进度 -20；干扰中藏误导：其被误导 10tick（下一次攻击打空）。；这一击改指最虚的那个——偷袭不挑硬骨头。",
+      "describe": "对一名敌人造成 2 点精神伤害，并使其行动条进度 -20；干扰中藏误导：其被误导 10tick（下一次攻击打空）。；这一击改指最虚的那个——偷袭不挑硬骨头；目标已被深度寄生时追加 1 点精神伤害。",
       "cost": {
         "energy": 3,
         "cooldown": 15,
@@ -388,6 +418,26 @@
           "type": "target_override",
           "anchor": "any_lowest_hp",
           "note": "偷袭：这一击改指生命百分比最低者（持有即改写指向）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "deep_parasitized",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "note": "寄居中的心神更易干扰：追伤 +1"
+            }
+          ],
+          "else": [],
+          "note": "deceit 读 parasite（跨轴）"
         }
       ],
       "sharedAcross": [
@@ -466,7 +516,7 @@
       "flagship": false,
       "lore": "序列8 诈骗师 —— \"「魅力」+「口才」：话术提升 + 超凡说服力\"",
       "flavor": "你说出口的谎，连命运都愿意多信一会儿——它们在你身上留得比别人久。",
-      "describe": "战斗开始时获得「魅力口才」：你施加的减益与控制类状态持续时间 +5tick，持续整场。；增益是借来的：从目标身上抄一份，用完归还。",
+      "describe": "战斗开始时获得「魅力口才」：你施加的减益与控制类状态持续时间 +5tick，持续整场。；增益是借来的：从目标身上抄一份，用完归还；自身行动条速率 +2。",
       "hook": [
         "on_battle_start"
       ],
@@ -491,6 +541,15 @@
             ]
           },
           "note": "借来：抄走目标一项增益，有借有还"
+        },
+        {
+          "type": "modify_stat",
+          "stat": "gauge.rate",
+          "value": 2,
+          "mode": "delta",
+          "duration": null,
+          "target": "self",
+          "note": "话术带节奏：行动条速率 +2"
         }
       ],
       "tentative": false,
@@ -595,7 +654,7 @@
       "flagship": false,
       "lore": "序列7 解密学者 —— \"…找出敌人方位\"",
       "flavor": "你总能算出它在哪儿——前排挡不住你，阴影也藏不住它。",
-      "describe": "战斗开始时获得「找出方位」：你的单体技能选目标时忽略前排限制与守护拦截，隐匿单位仍在你的候选池内，持续整场。；增益是借来的：从目标身上抄一份，用完归还。",
+      "describe": "战斗开始时获得「找出方位」：你的单体技能选目标时忽略前排限制与守护拦截，隐匿单位仍在你的候选池内，持续整场。；增益是借来的：从目标身上抄一份，用完归还；战斗开始时自身行动条 +10。",
       "hook": [
         "on_battle_start"
       ],
@@ -620,6 +679,14 @@
             ]
           },
           "note": "借来：抄走目标一项增益，有借有还"
+        },
+        {
+          "type": "modify_resource",
+          "resource": "gauge.current",
+          "value": 10,
+          "mode": "delta",
+          "target": "self",
+          "note": "先找到方位，自然先动"
         }
       ],
       "sharedAcross": [
@@ -673,6 +740,13 @@
             ]
           },
           "note": "借来：抄走目标一项增益，有借有还"
+        },
+        {
+          "type": "mount_status",
+          "statusId": "stolen_time",
+          "duration": 10,
+          "target": "self",
+          "note": "灵性直觉先摸到一点时间（与窃取时间同源）"
         }
       ],
       "tentative": false,
@@ -1285,7 +1359,7 @@
       "sequenceName": "寄生者",
       "rarity": "rare",
       "role": "core",
-      "axis": "steal",
+      "axis": "chrono",
       "flagship": false,
       "lore": "序列4 寄生者 —— \"可窃取概念性事物（位置、距离）\"",
       "flavor": "你把它与你之间的距离偷走了——它还在原地，却已经被挤到了战场的另一头，怎么迈步也靠近不了。",
@@ -1356,7 +1430,7 @@
       "flagship": false,
       "lore": "序列4 寄生者 —— \"精准窃取目标能力（三选一），维持 2 小时\"",
       "flavor": "你看了一会儿，然后从它身上挑走了最值钱的那一样。",
-      "describe": "从三种精准窃取中选一：偷力（目标攻击 -3、你攻击 +3，25tick）／偷守（双方防御 ±3，25tick）／偷源（偷取目标 6 点能量）。；这份力量也是借来的。",
+      "describe": "从三种精准窃取中选一：偷力（目标攻击 -3、你攻击 +3，25tick）／偷守（双方防御 ±3，25tick）／偷源（偷取目标 6 点能量）。；这份力量也是借来的；目标规则被欺诈时额外获得 1 点能量。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1403,6 +1477,28 @@
             ]
           },
           "note": "借来的力量"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "target",
+            "id": "rule_deceived",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "energy",
+              "value": 1,
+              "mode": "delta",
+              "target": "self",
+              "note": "规则已被欺诈：顺手多捞 1 点能量"
+            }
+          ],
+          "else": [],
+          "note": "steal 读 deceit（跨轴）"
         }
       ],
       "variants": [
@@ -1536,7 +1632,7 @@
       "flagship": true,
       "lore": "序列3 欺瞒导师 —— \"「欺瞒」：误导敌人，甚至欺诈自然规则\"",
       "flavor": "你说服了它的护甲，让它以为自己还在——于是那一刀砍下去，砍在了它\"以为\"的地方。",
-      "describe": "欺诈一名敌人 20tick：它身上已挂载的增益类状态期间不生效（不移除、到期恢复），并造成 3 点精神伤害；若目标已被误导则伤害 +2；若目标已被深度寄生则趁寄居欺其规则，伤害 +1。；这一击改指最虚的那个——偷袭不挑硬骨头。",
+      "describe": "欺诈一名敌人 20tick：它身上已挂载的增益类状态期间不生效（不移除、到期恢复），并造成 3 点精神伤害；若目标已被误导则伤害 +2；若目标已被深度寄生则趁寄居欺其规则，伤害 +1。；这一击改指最虚的那个——偷袭不挑硬骨头；自身带偷来的时间时追加 1 点精神伤害。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1611,6 +1707,26 @@
           "type": "target_override",
           "anchor": "any_lowest_hp",
           "note": "偷袭：这一击改指生命百分比最低者（持有即改写指向）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "stolen_time",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "note": "偷来的时间让欺诈更从容：追伤 +1"
+            }
+          ],
+          "else": [],
+          "note": "deceit 读 chrono（跨轴）"
         }
       ],
       "tentative": false,
@@ -1759,7 +1875,7 @@
       "flagship": false,
       "lore": "序列2 命运木马 —— \"嫁接命运：互换短期未来\"",
       "flavor": "你把它和它的猎物之间的未来剪开、对调——本该先出手的那个，忽然落到了后面。",
-      "describe": "选择一名友军与一名敌人：交换两者当前的行动条数值；若自身偷来的时间在场，时间在手，嫁接后顺带抽目标 20 点行动条。；目标由我指定——最虚的那个。",
+      "describe": "选择一名友军与一名敌人：交换两者当前的行动条数值；若自身偷来的时间在场，时间在手，嫁接后顺带抽目标 20 点行动条。；目标由我指定——最虚的那个；自身带命运缝隙时友军额外 +10 行动条。",
       "cost": {
         "energy": 4,
         "cooldown": 25,
@@ -1820,6 +1936,28 @@
           "type": "target_override",
           "anchor": "any_lowest_hp",
           "note": "指定最虚者"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "fate_gap",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": 10,
+              "mode": "delta",
+              "target": "secondary_target",
+              "note": "顺着缝隙多借一段时间给友军"
+            }
+          ],
+          "else": [],
+          "note": "命运缝隙集火读取（fate_gap）"
         }
       ],
       "sharedAcross": [
@@ -1858,7 +1996,7 @@
       "flagship": false,
       "lore": "序列2 命运木马 —— \"窃取身份：顶替身份使目标成为「无运者」渐死\"",
       "flavor": "你顶替了它在命运里的名字——从这一刻起，没有人再认得它，连好运也绕着它走；它开始一点点地凋谢。",
-      "describe": "使一名敌人成为「无运者」25tick：每 tick 流失 0.2 点生命、受伤 ×1.15、无法再获得增益；先以灵丝寄居 10tick（深度寄生·仅吸血段）；后 10tick 顶替其身（仅接管移动，到期归还）；你获得「顶替」20tick：受伤 ×0.9，且你对该目标伤害 ×1.2；若目标已被深度寄生，寄生者取而代之，追加 2 点精神伤害。",
+      "describe": "使一名敌人成为「无运者」25tick：每 tick 流失 0.2 点生命、受伤 ×1.15、无法再获得增益；先以灵丝寄居 10tick（深度寄生·仅吸血段）；后 10tick 顶替其身（仅接管移动，到期归还）；你获得「顶替」20tick：受伤 ×0.9，且你对该目标伤害 ×1.2；若目标已被深度寄生，寄生者取而代之，追加 2 点精神伤害；自身带盗火时追加 1 点精神伤害。",
       "cost": {
         "energy": 5,
         "cooldown": 30,
@@ -1927,6 +2065,26 @@
               "else": []
             }
           ]
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "stolen_ability",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "damage",
+              "element": "mental",
+              "value": 1,
+              "note": "盗来的能力让顶替更像本人：追伤 +1"
+            }
+          ],
+          "else": [],
+          "note": "parasite 读 steal（跨轴）"
         }
       ],
       "tentative": false,
@@ -2022,7 +2180,7 @@
       "flagship": true,
       "lore": "序列1 时之虫 —— \"「窃取」：可短暂窃取时间、锚、权柄\"",
       "flavor": "你把它生命里的一段时间剪下来揣进了自己怀里——它的动作开始发黏，而你忽然多出了一整个喘息的空档。",
-      "describe": "抽走一名敌人 50 点行动条进度、行动条速率 -6（20tick）；你获得「偷来的时间」20tick：能量恢复速率 +0.2。；增益是借来的：从目标身上抄一份，用完归还。",
+      "describe": "抽走一名敌人 50 点行动条进度、行动条速率 -6（20tick）；你获得「偷来的时间」20tick：能量恢复速率 +0.2。；增益是借来的：从目标身上抄一份，用完归还；自身带盗火时再压目标 10 点行动条；自身带命运缝隙时再压目标 10 点行动条。",
       "cost": {
         "energy": 6,
         "cooldown": 35,
@@ -2080,6 +2238,48 @@
             ]
           },
           "note": "借来：抄走目标一项增益，有借有还"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "stolen_ability",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -10,
+              "mode": "delta",
+              "note": "盗火在身：连时间的惯性一并偷走（再压 10 行动条）"
+            }
+          ],
+          "else": [],
+          "note": "chrono 读 steal（跨轴）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "fate_gap",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -10,
+              "mode": "delta",
+              "note": "命运缝隙里多抽一瞬（再压 10 行动条）"
+            }
+          ],
+          "else": [],
+          "note": "命运缝隙集火读取（fate_gap）"
         }
       ],
       "tentative": false,
@@ -2112,7 +2312,7 @@
       "flagship": false,
       "lore": "序列1 时之虫 —— \"「衰老」：让目标流失生命进入衰老\"",
       "flavor": "你把它生命里尚未到来的那部分提前支取了——它开始咳嗽、迟钝、伤口不再愈合，像是一下子老了二十岁。",
-      "describe": "使一名敌人衰老 25tick：每 tick 流失 0.2 点生命，攻击 -2、行动条速率 -4，受到的治疗 ×0.7；抽其时间归己（偷来的时间 +1 层，20tick）；若目标带厄运标记，厄运加速衰老，攻击额外 -1。；短暂借身操控，片刻即归还。；同源双刃：借厄运者自沾厄运 15tick。",
+      "describe": "使一名敌人衰老 25tick：每 tick 流失 0.2 点生命，攻击 -2、行动条速率 -4，受到的治疗 ×0.7；抽其时间归己（偷来的时间 +1 层，20tick）；若目标带厄运标记，厄运加速衰老，攻击额外 -1。；短暂借身操控，片刻即归还。；同源双刃：借厄运者自沾厄运 15tick；自身带命运缝隙时再压目标 10 点行动条。",
       "cost": {
         "energy": 5,
         "cooldown": 35,
@@ -2177,6 +2377,27 @@
           "actionPolicy": "attack_only",
           "onExpire": "revert",
           "note": "短期借身：操控片刻即归还（不走裸眩晕）"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "kind": "has_status",
+            "side": "self",
+            "id": "fate_gap",
+            "cmp": ">=",
+            "n": 1
+          },
+          "then": [
+            {
+              "type": "modify_resource",
+              "resource": "gauge.current",
+              "value": -10,
+              "mode": "delta",
+              "note": "缝隙里的时间老得更快（再压 10 行动条）"
+            }
+          ],
+          "else": [],
+          "note": "命运缝隙集火读取（fate_gap）"
         }
       ],
       "tentative": false,
@@ -2205,7 +2426,7 @@
       "sequenceName": "时之虫",
       "rarity": "legendary",
       "role": "generic",
-      "axis": "steal",
+      "axis": "chrono",
       "flagship": false,
       "lore": "序列1 时之虫 —— \"「窃取」：可短暂窃取时间、锚、权柄\"",
       "flavor": "你拔掉了它钉在现实里的那根锚——它还在原地，却每一步都要比平时多走很久；而你自己，反倒轻快了起来。",
