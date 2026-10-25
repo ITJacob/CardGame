@@ -480,21 +480,37 @@
       "flagship": false,
       "lore": "序列8 机器 —— \"占卜和反占卜能力\"",
       "flavor": "你把自己的命运藏进了迷雾里——敌人读不到你的下一步，也推不动你的脚步。",
-      "describe": "战斗开始时获得「反占卜」（整场，仅自身）：免疫一切行动条减少（击退/拖慢/厄运侵蚀无效）；敌方的识破/隐匿忽略/必定命中类状态对你无效。",
+      "describe": "首次有状态加身时获得「反占卜」（整场，仅自身）：免疫一切行动条减少（击退/拖慢/厄运侵蚀无效）；敌方的识破/隐匿忽略/必定命中类状态对你无效。",
       "hook": [
-        "on_battle_start"
+        "on_status_gain"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "anti_divination",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "anti_divination",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "anti_divination",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"反占卜\"=掩盖自身命运信息→敌人既读不到也推不动。与【超强预感】层次递进（自身→全队）。⚠️ 依赖 `gaugeReductionImmune` + scope。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：\"反占卜\"=掩盖自身命运信息→敌人既读不到也推不动。与【超强预感】层次递进（自身→全队）。⚠️ 依赖 `gaugeReductionImmune` + scope。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_status_gain（规则 13 事件集中度治理）；以 not has_status(anti_divination) 守卫确保只执行一次",
       "art": {
         "subject": "a figure whose silhouette dissolves into thick gray fog",
         "elements": [
@@ -561,9 +577,9 @@
       "flagship": false,
       "lore": "序列7 幸运者 —— \"有高低起伏\"",
       "flavor": "运气像潮水，有涨有落：涨潮时好事成双，落潮时你只能挨打——但每一次挨打，都在把水位重新推高。",
-      "describe": "战斗开始进入 30tick 双相位循环：低潮期每次挨打 +1 层幸运；高潮期幸运获取 ×2。",
+      "describe": "相位变化时进入 30tick 双相位循环：低潮期每次挨打 +1 层幸运；高潮期幸运获取 ×2。",
       "hook": [
-        "on_battle_start"
+        "on_phase_change"
       ],
       "effects": [
         {
@@ -575,7 +591,7 @@
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"高低起伏\"=双相位节奏而非随机：低潮挨打攒运气、高潮翻倍——决策变成\"要不要主动去挨一下\"。⚠️ 依赖 H50 形态组母版 + `If` 谓词。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：\"高低起伏\"=双相位节奏而非随机：低潮挨打攒运气、高潮翻倍——决策变成\"要不要主动去挨一下\"。⚠️ 依赖 H50 形态组母版 + `If` 谓词。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
       "dimHooks": [
         {
           "dim": "fate_value",
@@ -608,9 +624,9 @@
       "flagship": false,
       "lore": "序列7 幸运者 —— \"日常经常遇到幸运事件（捡钱、投骰如期望等）\"",
       "flavor": "好运总带着点实惠——每一次命运的眷顾，都顺带让你多了几分底气。",
-      "describe": "战斗开始时获得「意外之财」（整场）：每获得 1 层幸运，能量 +1。",
+      "describe": "每当你击杀一个单位时获得「意外之财」（整场）：每获得 1 层幸运，能量 +1。",
       "hook": [
-        "on_battle_start"
+        "on_kill"
       ],
       "effects": [
         {
@@ -638,7 +654,7 @@
         ],
         "mood": "bountiful, gleeful"
       },
-      "conversionNotes": "2026-10-03 骨架手术：判定形状换形（角色=buff）"
+      "conversionNotes": "2026-10-03 骨架手术：判定形状换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_kill（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）"
     },
     {
       "id": "skill_monster_s6_cause_calamity",
@@ -744,9 +760,9 @@
       "flagship": false,
       "lore": "序列6 灾祸教士 —— \"被动遭遇灾祸但可预见并准备\"",
       "flavor": "灾祸总是先落在你头上——但你早就摆好了架势；而把它带到你面前的人，会替你尝到剩下的那份。",
-      "describe": "战斗开始时获得「预见灾祸」（整场）：每次受到伤害立即架起减伤（受伤 ×0.85，10tick），并给攻击者叠 1 层厄运。",
+      "describe": "每次你受到伤害时获得「预见灾祸」（整场）：每次受到伤害立即架起减伤（受伤 ×0.85，10tick），并给攻击者叠 1 层厄运。",
       "hook": [
-        "on_battle_start"
+        "on_take_damage"
       ],
       "effects": [
         {
@@ -758,7 +774,7 @@
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"可预见并准备\"=挨打后架防御；\"灾祸反噬\"=攻击者染厄运。让挨打成为正反馈，与命运潮汐／幸运轴咬合。⚠️ 依赖 `brace` 母版 + F61 `attacker`。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：\"可预见并准备\"=挨打后架防御；\"灾祸反噬\"=攻击者染厄运。让挨打成为正反馈，与命运潮汐／幸运轴咬合。⚠️ 依赖 `brace` 母版 + F61 `attacker`。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
       "art": {
         "subject": "a figure braced under an umbrella as disaster rains back on the attacker",
         "elements": [
@@ -1882,9 +1898,9 @@
       "flagship": false,
       "lore": "序列2 先知 —— \"『水银之躯』（完整神话生物形态）：十秒不被命中的被动\"",
       "flavor": "你化作完整的神话之躯——每隔一阵，就有十秒钟，没有任何东西能碰到你。",
-      "describe": "战斗开始获得循环（整场）：约每 10 tick 自动进入 50tick「水银之躯」窗口（前 2 次打向你的攻击落空）；与主动水银之躯共用状态，层数可叠至 4。",
+      "describe": "每次你受到伤害时获得循环（整场）：约每 10 tick 自动进入 50tick「水银之躯」窗口（前 2 次打向你的攻击落空）；与主动水银之躯共用状态，层数可叠至 4。",
       "hook": [
-        "on_battle_start"
+        "on_take_damage"
       ],
       "effects": [
         {
@@ -1911,7 +1927,7 @@
         ],
         "mood": "alien, untouchable"
       },
-      "conversionNotes": "2026-10-03 骨架手术：判定形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比"
+      "conversionNotes": "2026-10-03 骨架手术：判定形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）"
     },
     {
       "id": "skill_monster_s1_fate_loop",
@@ -2447,9 +2463,9 @@
       "flagship": true,
       "lore": "序列0 命运之轮 —— \"『概率』权柄：万事皆可概率化\"",
       "flavor": "从今往后，它每向前迈出一步，都有一半的可能踩空——而它的每一步，都由命运之轮掷出。",
-      "describe": "战斗开始时获得「概率权柄」（整场）：每 tick 对当前行动条最高的敌方单位判定一次——50% 概率使其行动条 -8（期望 -4/tick）。",
+      "describe": "每当你造成伤害时获得「概率权柄」（整场）：每 tick 对当前行动条最高的敌方单位判定一次——50% 概率使其行动条 -8（期望 -4/tick）。",
       "hook": [
-        "on_battle_start"
+        "on_deal_damage"
       ],
       "effects": [
         {
@@ -2461,7 +2477,7 @@
       ],
       "sharedAcross": [],
       "tentative": false,
-      "conversionNotes": "翻译/语义：全稿唯一概率卡，严守 R5：概率只作用于行动条（非伤害维度）。`condition` 写法 + R3 登记（可筛出）。⚠️ 依赖 `sort:gauge_desc` + 随机治理 R3/R4。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：全稿唯一概率卡，严守 R5：概率只作用于行动条（非伤害维度）。`condition` 写法 + R3 登记（可筛出）。⚠️ 依赖 `sort:gauge_desc` + 随机治理 R3/R4。 ｜ 2026-10-03 骨架手术：判定形状换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_deal_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
       "art": {
         "subject": "towering spectral dice tumbling above a stumbling giant",
         "elements": [

@@ -168,12 +168,12 @@
 | `gauge_shuffle` | 3 | 5.1% |
 | `status_shuffle` | 2 | 3.4% |
 
-**算子构成**（op，共 32 处）：
+**算子构成**（op，共 34 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 15 |
-| `if` | 15 |
+| `if` | 17 |
 | `push_back` | 1 |
 | `overlay` | 1 |
 

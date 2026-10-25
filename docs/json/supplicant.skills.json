@@ -2235,9 +2235,9 @@
       "flagship": false,
       "lore": "序列3 三首圣堂 —— \"'血肉不灭'（只要剩一个细胞 + 血肉补充即可重塑）\"；序列0 倒吊人 —— \"'异变'：黑暗中凭空制造怪物，血肉不灭质变的复活\"",
       "flavor": "只要还剩一个细胞，只要还有血肉可用——你就会重新长回来。",
-      "describe": "战斗开始时获得「血肉不灭」整场：你死亡时若血肉储备 ≥2，消耗 2 层阻止死亡并回复至 20% 最大生命；否则正常死亡。；场上有被寄生的敌人则寄生体即备用血肉：抽取其 3 点（半归自身）并自疗 2 点。",
+      "describe": "每当你开始行动时获得「血肉不灭」整场：你死亡时若血肉储备 ≥2，消耗 2 层阻止死亡并回复至 20% 最大生命；否则正常死亡。；场上有被寄生的敌人则寄生体即备用血肉：抽取其 3 点（半归自身）并自疗 2 点。",
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
       "effects": [
         {
@@ -2248,7 +2248,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：最强防御，复活前提=攒血肉（与【补充血肉】闭环）。依赖新增项 3/4。 ｜ 2026-10-02 骨架手术：骨架手术轮：不灭的燃料来自寄生体——血肉储备与寄生同源 ｜ 2026-10-24 开局被动语义迁移：战况条件段迁至 on_deal_damage（原 on_battle_start 无目标，条件读成宿主）",
+      "conversionNotes": "翻译/语义：最强防御，复活前提=攒血肉（与【补充血肉】闭环）。依赖新增项 3/4。 ｜ 2026-10-02 骨架手术：骨架手术轮：不灭的燃料来自寄生体——血肉储备与寄生同源 ｜ 2026-10-24 开局被动语义迁移：战况条件段迁至 on_deal_damage（原 on_battle_start 无目标，条件读成宿主）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
       "art": {
         "subject": "a body regrowing from a single pulsing red cell",
         "elements": [
@@ -2633,32 +2633,48 @@
       "flagship": false,
       "lore": "序列1 暗天使 —— \"'阴影统治者'\"；序列0 倒吊人 —— \"权柄：阴影之主……\"",
       "flavor": "所有阴影都听你的——你藏在里面时，出手比任何时候都狠；而它们生出来的东西，也更强。",
-      "describe": "战斗开始时获得「阴影统治者」整场（不可驱散）：你处于藏入阴影/潜行类状态时造成伤害 ×1.3；己方阴影/灵体类召唤物攻击 +2；你的阴影栖息上限 +1 层、更深处更久。；自身阴影栖息在场则栖影而王，攻击 +1；自身带镜子替身则镜影同主，防御 +1。自身放牧灵魂≥3 层则攻击再 +2。",
+      "describe": "首次开始行动时获得「阴影统治者」整场（不可驱散）：你处于藏入阴影/潜行类状态时造成伤害 ×1.3；己方阴影/灵体类召唤物攻击 +2；你的阴影栖息上限 +1 层、更深处更久。；自身阴影栖息在场则栖影而王，攻击 +1；自身带镜子替身则镜影同主，防御 +1。自身放牧灵魂≥3 层则攻击再 +2。",
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
-            {
-              "type": "mount_status",
-              "statusId": "shadow_sovereign",
-              "duration": null,
-              "target": "self"
-            },
-            {
-              "type": "modify_status",
-              "statusId": "shadow_dwell",
-              "target": "self",
-              "maxStacksDelta": 1,
-              "note": "统治者的阴影更深：自身阴影栖息最大层数 +1（账本操作·modify_status 签名）"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "shadow_sovereign",
+              "cmp": ">=",
+              "n": 1
             }
-          ]
+          },
+          "then": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "mount_status",
+                  "statusId": "shadow_sovereign",
+                  "duration": null,
+                  "target": "self"
+                },
+                {
+                  "type": "modify_status",
+                  "statusId": "shadow_dwell",
+                  "target": "self",
+                  "maxStacksDelta": 1,
+                  "note": "统治者的阴影更深：自身阴影栖息最大层数 +1（账本操作·modify_status 签名）"
+                }
+              ]
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：阴影轴与牧魂轴汇合点，召唤 Build 放大器。依赖新增项 2/18。 ｜ 2026-10-02 差异化风格迭代·批次八（秘祈人：血肉经济量化） ｜ 2026-10-02 骨架手术：骨架手术轮：统治者改用账本操作（modify_status）表达『阴影更深』，不再只是挂状态 ｜ 2026-10-24 开局快照迁移：自持状态读层 → on_turn_start 持续复评",
+      "conversionNotes": "翻译/语义：阴影轴与牧魂轴汇合点，召唤 Build 放大器。依赖新增项 2/18。 ｜ 2026-10-02 差异化风格迭代·批次八（秘祈人：血肉经济量化） ｜ 2026-10-02 骨架手术：骨架手术轮：统治者改用账本操作（modify_status）表达『阴影更深』，不再只是挂状态 ｜ 2026-10-24 开局快照迁移：自持状态读层 → on_turn_start 持续复评｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理）；以 not has_status(shadow_sovereign) 守卫确保只执行一次",
       "art": {
         "subject": "a supplicant seated on a throne of kneeling shadows",
         "elements": [

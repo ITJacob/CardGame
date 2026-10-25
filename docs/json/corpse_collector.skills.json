@@ -82,9 +82,9 @@
       "flagship": false,
       "lore": "序列9 收尸人 —— \"具备尸体特质，体温低，避免亡灵袭击 / 能承受腐烂、寒冷、死亡气息\"",
       "flavor": "你的体温比尸体高不了多少，腐烂与寒冷都伤不到你；而那些游荡的亡灵，也从不把你当成活人。",
-      "describe": "战斗开始时获得「尸体特质」：毒抗性 +20%、冰抗性 +20%，受到亡灵来源的伤害 ×0.7。",
+      "describe": "每次你受到伤害时获得「尸体特质」：毒抗性 +20%、冰抗性 +20%，受到亡灵来源的伤害 ×0.7。",
       "hook": [
-        "on_battle_start"
+        "on_take_damage"
       ],
       "effects": [
         {
@@ -98,7 +98,7 @@
         "sleepless"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：尸骸轴身份状态 `尸性` 挂载源；与不眠者【通灵之眼】同源\"灵体无害\"。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=buff）",
+      "conversionNotes": "翻译/语义：尸骸轴身份状态 `尸性` 挂载源；与不眠者【通灵之眼】同源\"灵体无害\"。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
       "art": {
         "subject": "a pale corpse-like figure standing motionless among wandering ghosts",
         "elements": [
@@ -121,9 +121,9 @@
       "flagship": false,
       "lore": "序列9 收尸人 —— \"天然灵视，看见部分恶灵\"",
       "flavor": "你天生能看见那些本不该被看见的东西——藏起来的身形瞒不过你，飘在半空的恶灵更瞒不过你。",
-      "describe": "战斗开始时获得「天然灵视」：敌方隐匿类状态对你无效；你对灵体单位造成的伤害 ×1.3。",
+      "describe": "每当你开始行动时获得「天然灵视」：敌方隐匿类状态对你无效；你对灵体单位造成的伤害 ×1.3。",
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
       "effects": [
         {
@@ -143,7 +143,7 @@
         "sleepless"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：灵视轴身份状态 `灵视` 挂载源（与不眠者【通灵之眼】同源骨架，本系常驻）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=buff）",
+      "conversionNotes": "翻译/语义：灵视轴身份状态 `灵视` 挂载源（与不眠者【通灵之眼】同源骨架，本系常驻）。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
       "art": {
         "subject": "a gravedigger's eyes glowing as hidden spirits become visible",
         "elements": [
@@ -1849,9 +1849,9 @@
       "flagship": false,
       "lore": "序列3 摆渡人 —— \"不会自然死亡，净化外大部分攻击无效\"",
       "flavor": "你已经死过一次了——那些慢慢侵蚀你的东西，只能把你拖到门口，推不进去；而死亡的气息，对你来说只是故乡的风。",
-      "describe": "战斗开始时获得「摆渡人之躯」：持续伤害不会使你死亡（致死时保留 1 血）；受到毒与冰霜伤害 ×0.6。；自身带一切的归宿时获得 3 点护盾。",
+      "describe": "每次你受到伤害时获得「摆渡人之躯」：持续伤害不会使你死亡（致死时保留 1 血）；受到毒与冰霜伤害 ×0.6。；自身带一切的归宿时获得 3 点护盾。",
       "hook": [
-        "on_battle_start"
+        "on_take_damage"
       ],
       "effects": [
         {
@@ -1874,7 +1874,7 @@
         ],
         "mood": "timeless, impervious"
       },
-      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）"
+      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）"
     },
     {
       "id": "skill_corpse_collector_s2_true_death",
@@ -2550,9 +2550,9 @@
       "flagship": false,
       "lore": "序列0 死神 —— \"『亡灵』权柄\"",
       "flavor": "死亡不是终点，而是一种兵役——凡是在你面前倒下的，最终都会在你的队伍里报到。",
-      "describe": "战斗开始时获得「亡灵权柄」：你控制的亡灵受伤 ×0.85；你的亡灵死亡时冥界魂数 +1（不受容量上限限制）；你的亡灵攻击附带 1 点无属性伤害。",
+      "describe": "每当你开始行动时获得「亡灵权柄」：你控制的亡灵受伤 ×0.85；你的亡灵死亡时冥界魂数 +1（不受容量上限限制）；你的亡灵攻击附带 1 点无属性伤害。",
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
       "effects": [
         {
@@ -2571,7 +2571,7 @@
         ],
         "mood": "relentless, orderly"
       },
-      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）"
+      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）"
     },
     {
       "id": "skill_corpse_collector_s9_sight_awaken",
@@ -2766,7 +2766,7 @@
       "flagship": false,
       "lore": "亡者的低语拂过指尖。",
       "flavor": "它们在跟你说话。",
-      "describe": "战斗开始时永久获得灵预警。",
+      "describe": "每当你击杀一个单位时永久获得灵预警。",
       "effects": [
         {
           "type": "mount_status",
@@ -2777,7 +2777,7 @@
       ],
       "tentative": false,
       "hook": [
-        "on_battle_start"
+        "on_kill"
       ],
       "art": {
         "subject": "cold fingertips brushing pale whispering mist",
@@ -2787,7 +2787,7 @@
         ],
         "mood": "intimate, chilling"
       },
-      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）"
+      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_kill（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）"
     },
     {
       "id": "skill_corpse_collector_s5_dead_whisper",
@@ -2993,7 +2993,7 @@
       "flagship": false,
       "lore": "死亡的气息，你比谁都熟。",
       "flavor": "你早已知晓结局。",
-      "describe": "战斗开始时永久获得灵视。",
+      "describe": "每当你开始行动时永久获得灵视。",
       "effects": [
         {
           "type": "mount_status",
@@ -3010,7 +3010,7 @@
       ],
       "tentative": false,
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
       "art": {
         "subject": "a figure sensing the familiar smell of approaching death",
@@ -3020,7 +3020,7 @@
         ],
         "mood": "resigned, certain"
       },
-      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）",
+      "conversionNotes": "2026-10-03 骨架手术：死亡过程换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
       "triggers": [
         {
           "event": "on_turn_start",

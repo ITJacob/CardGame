@@ -515,43 +515,59 @@
       "flagship": false,
       "lore": "序列8 诈骗师 —— \"「魅力」+「口才」：话术提升 + 超凡说服力\"",
       "flavor": "你说出口的谎，连命运都愿意多信一会儿——它们在你身上留得比别人久。",
-      "describe": "战斗开始时获得「魅力口才」：你施加的减益与控制类状态持续时间 +5tick，持续整场。；增益是借来的：从目标身上抄一份，用完归还；自身行动条速率 +2。",
+      "describe": "首次造成伤害时获得「魅力口才」：你施加的减益与控制类状态持续时间 +5tick，持续整场。；增益是借来的：从目标身上抄一份，用完归还；自身行动条速率 +2。",
       "hook": [
-        "on_battle_start"
+        "on_deal_damage"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "silver_tongue",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "target"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "silver_tongue",
+              "cmp": ">=",
+              "n": 1
+            }
           },
-          "to": "self",
-          "count": 1,
-          "filter": {
-            "hasCategory": [
-              "buff"
-            ]
-          }
-        },
-        {
-          "type": "modify_stat",
-          "stat": "gauge.rate",
-          "value": 2,
-          "mode": "delta",
-          "duration": null,
-          "target": "self",
-          "note": "话术带节奏：行动条速率 +2"
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "silver_tongue",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "transfer_status",
+              "mode": "copy",
+              "from": {
+                "side": "target"
+              },
+              "to": "self",
+              "count": 1,
+              "filter": {
+                "hasCategory": [
+                  "buff"
+                ]
+              }
+            },
+            {
+              "type": "modify_stat",
+              "stat": "gauge.rate",
+              "value": 2,
+              "mode": "delta",
+              "duration": null,
+              "target": "self",
+              "note": "话术带节奏：行动条速率 +2"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：说服力=你的谎更持久+持续写隐秘值。依赖 durationModifier(H14)。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：说服力=你的谎更持久+持续写隐秘值。依赖 durationModifier(H14)。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_deal_damage（规则 13 事件集中度治理）；以 not has_status(silver_tongue) 守卫确保只执行一次",
       "art": {
         "subject": "a smiling con artist whispering honeyed lies that linger as golden letters",
         "elements": [
@@ -1814,34 +1830,50 @@
       "flagship": false,
       "lore": "序列3 欺瞒导师 —— \"「欺瞒」：误导敌人…\"（位格提升，欺骗不可被识破）",
       "flavor": "到了这个位格，你撒的谎连\"被识破\"这条路都没有了——它们只能信到底。",
-      "describe": "战斗开始时获得「欺瞒导师」：你施加的控制与减益类状态不可被驱散，持续整场。；增益是借来的：从目标身上抄一份，用完归还。",
+      "describe": "首次造成伤害时获得「欺瞒导师」：你施加的控制与减益类状态不可被驱散，持续整场。；增益是借来的：从目标身上抄一份，用完归还。",
       "hook": [
-        "on_battle_start"
+        "on_deal_damage"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "deceit_master",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "target"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "deceit_master",
+              "cmp": ">=",
+              "n": 1
+            }
           },
-          "to": "self",
-          "count": 1,
-          "filter": {
-            "hasCategory": [
-              "buff"
-            ]
-          }
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "deceit_master",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "transfer_status",
+              "mode": "copy",
+              "from": {
+                "side": "target"
+              },
+              "to": "self",
+              "count": 1,
+              "filter": {
+                "hasCategory": [
+                  "buff"
+                ]
+              }
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：质提升=不可驱散+持续写隐秘值。依赖运行时覆写 dispelable(H8)。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：质提升=不可驱散+持续写隐秘值。依赖运行时覆写 dispelable(H8)。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_deal_damage（规则 13 事件集中度治理）；以 not has_status(deceit_master) 守卫确保只执行一次",
       "art": {
         "subject": "a grinning mentor weaving a lie no eye can pierce",
         "elements": [
@@ -2108,34 +2140,50 @@
       "flagship": false,
       "lore": "序列2 命运木马 —— \"对他人命运做手脚，钻命运漏洞\"",
       "flavor": "命运的每一次落笔都留着缝——谁的手快抬到一半，你就从那道缝里钻进去。",
-      "describe": "战斗开始时获得「命运缝隙」：你对行动条进度 ≥70%（即将出手）的敌方单位伤害 ×1.3，持续整场。；增益是借来的：从目标身上抄一份，用完归还。",
+      "describe": "首次击杀单位时获得「命运缝隙」：你对行动条进度 ≥70%（即将出手）的敌方单位伤害 ×1.3，持续整场。；增益是借来的：从目标身上抄一份，用完归还。",
       "hook": [
-        "on_battle_start"
+        "on_kill"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "fate_gap",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "transfer_status",
-          "mode": "copy",
-          "from": {
-            "side": "target"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "fate_gap",
+              "cmp": ">=",
+              "n": 1
+            }
           },
-          "to": "self",
-          "count": 1,
-          "filter": {
-            "hasCategory": [
-              "buff"
-            ]
-          }
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "fate_gap",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "transfer_status",
+              "mode": "copy",
+              "from": {
+                "side": "target"
+              },
+              "to": "self",
+              "count": 1,
+              "filter": {
+                "hasCategory": [
+                  "buff"
+                ]
+              }
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：钻漏洞=专打即将出手者+写时差。依赖 TargetGaugeAbove 谓词(F52)。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=buff）",
+      "conversionNotes": "翻译/语义：钻漏洞=专打即将出手者+写时差。依赖 TargetGaugeAbove 谓词(F52)。 ｜ 2026-10-03 骨架手术：持有形状换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_kill（规则 13 事件集中度治理）；以 not has_status(fate_gap) 守卫确保只执行一次",
       "dimHooks": [
         {
           "dim": "fate_value",

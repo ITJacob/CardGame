@@ -262,9 +262,9 @@
       "flagship": false,
       "lore": "序列8 治安官 —— \"见过就能牢牢记住目标样子，获得额外感应\"",
       "flavor": "你只要看过一眼，那张脸就再也抹不掉了——记住的东西，藏不起来，也逃不掉。",
-      "describe": "战斗开始时标记敌方全体（整场）：你对被标记目标的伤害 +1；其隐匿类状态对你无效；你的单体技能优先选中它们。；判决如此：它不再享有豁免。",
+      "describe": "每当你开始行动时标记敌方全体（整场）：你对被标记目标的伤害 +1；其隐匿类状态对你无效；你的单体技能优先选中它们。；判决如此：它不再享有豁免。",
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
       "effects": [
         {
@@ -279,7 +279,7 @@
         "lawyer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：审讯轴旗舰 enabler：体系入口，让后续所有\"针对\"有根。 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff）",
+      "conversionNotes": "翻译/语义：审讯轴旗舰 enabler：体系入口，让后续所有\"针对\"有根。 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
       "art": {
         "subject": "a constable's desk covered with suspect portraits, each face pinned and catalogued",
         "elements": [
@@ -380,9 +380,9 @@
       "flagship": false,
       "lore": "序列8 治安官 —— \"能察觉不正常因素、邪恶混乱相关事物\"",
       "flavor": "你总能先一步闻到不对劲——那些正在溃烂的、正在失控的、正在躲藏的，都瞒不过你。",
-      "describe": "战斗开始时获得「察觉异常」（整场）：敌方隐匿类状态对你无效；你对带有减益、持续伤害或控制状态的目标伤害 +1；同时标记敌方全体（过目标记）。；判决如此：它不再享有豁免。",
+      "describe": "每次你受到伤害时获得「察觉异常」（整场）：敌方隐匿类状态对你无效；你对带有减益、持续伤害或控制状态的目标伤害 +1；同时标记敌方全体（过目标记）。；判决如此：它不再享有豁免。",
       "hook": [
-        "on_battle_start"
+        "on_take_damage"
       ],
       "effects": [
         {
@@ -403,7 +403,7 @@
         "lawyer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：审讯轴 enabler：被动常驻+对任何异常目标加成。与【混乱感应】差异：本条全体、被动。 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff）",
+      "conversionNotes": "翻译/语义：审讯轴 enabler：被动常驻+对任何异常目标加成。与【混乱感应】差异：本条全体、被动。 ｜ 2026-10-03 骨架手术：立规换形（角色=debuff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
       "art": {
         "subject": "an arbiter pausing in a quiet street, catching a rotten scent no one else smells",
         "elements": [
@@ -922,43 +922,59 @@
       "flagship": false,
       "lore": "序列6 法官 —— \"权威质变，能影响环境\"",
       "flavor": "成为法官之后，你说出的话本身就带着分量——你的命令更持久，你的辖区也更宽阔。",
-      "describe": "战斗开始时获得「权威质变」（整场）：你施加的规则、沉默、眩晕、枷锁、放逐、分割、易伤类状态持续时间 +5tick；你的辖区效果数值 +50%。豁免不是白给的：每写一条扣 2 秩序，自身防御 -1（20tick）。",
+      "describe": "首次开始行动时获得「权威质变」（整场）：你施加的规则、沉默、眩晕、枷锁、放逐、分割、易伤类状态持续时间 +5tick；你的辖区效果数值 +50%。豁免不是白给的：每写一条扣 2 秩序，自身防御 -1（20tick）。",
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "authority",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "write_rule_slot",
-          "slot": 1,
-          "field": "exemptions",
-          "value": {
-            "side": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "authority",
+              "cmp": ">=",
+              "n": 1
+            }
           },
-          "overwrite": false,
-          "note": "立规：写下这一条豁免条款"
-        },
-        {
-          "type": "modify_resource",
-          "resource": "order",
-          "value": -2,
-          "mode": "delta",
-          "target": "board",
-          "note": "豁免维持费：每写一条豁免扣 2 秩序"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "defense",
-          "value": -1,
-          "mode": "delta",
-          "target": "self",
-          "duration": 20,
-          "note": "豁免的反噬：自身防御 -1（20tick）"
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "authority",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "write_rule_slot",
+              "slot": 1,
+              "field": "exemptions",
+              "value": {
+                "side": "self"
+              },
+              "overwrite": false,
+              "note": "立规：写下这一条豁免条款"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "order",
+              "value": -2,
+              "mode": "delta",
+              "target": "board",
+              "note": "豁免维持费：每写一条豁免扣 2 秩序"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -1,
+              "mode": "delta",
+              "target": "self",
+              "duration": 20,
+              "note": "豁免的反噬：自身防御 -1（20tick）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
@@ -978,7 +994,7 @@
         ],
         "mood": "ascendant, heavy, radiant"
       },
-      "conversionNotes": "2026-10-03 骨架手术：立规换形（角色=buff）"
+      "conversionNotes": "2026-10-03 骨架手术：立规换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理）；以 not has_status(authority) 守卫确保只执行一次"
     },
     {
       "id": "skill_arbiter_s5_castigation",
@@ -2263,9 +2279,9 @@
       "flagship": false,
       "lore": "序列2 平衡者 —— \"能感应不平衡发现隐秘目标\"",
       "flavor": "谁在这片战场上站得太高，你一眼就能看出来——而站得最高的那个，往往藏得最深。",
-      "describe": "战斗开始时自动锁定敌方攻击最高的单位（整场）：你对其伤害 ×1.2，其隐匿类状态对你无效。；判决如此：它不再享有豁免。",
+      "describe": "每当你开始行动时自动锁定敌方攻击最高的单位（整场）：你对其伤害 ×1.2，其隐匿类状态对你无效。；判决如此：它不再享有豁免。",
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
       "effects": [
         {
@@ -2291,7 +2307,7 @@
         ],
         "mood": "discerning, cold, looming"
       },
-      "conversionNotes": "2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）"
+      "conversionNotes": "2026-10-03 骨架手术：立规换形（角色=debuff） ｜ 选靶V2：删 scope:single（回落默认 whole_lane+pick1）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）"
     },
     {
       "id": "skill_arbiter_s1_order_domain",
@@ -2944,42 +2960,58 @@
       "flagship": false,
       "lore": "序列5 惩戒骑士 —— 管辖的前提是：你得站在更高的地方",
       "flavor": "低者够不着你，这是秩序，不是傲慢。",
-      "describe": "被动：整场战斗中，位格低于你的敌人对你造成的伤害 ×0.9。豁免不是白给的：每写一条扣 2 秩序，自身防御 -1（20tick）。",
+      "describe": "首次开始行动时，位格低于你的敌人对你造成的伤害 ×0.9。豁免不是白给的：每写一条扣 2 秩序，自身防御 -1（20tick）。",
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "rank_jurisdiction",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "write_rule_slot",
-          "slot": 1,
-          "field": "exemptions",
-          "value": {
-            "side": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "rank_jurisdiction",
+              "cmp": ">=",
+              "n": 1
+            }
           },
-          "overwrite": false
-        },
-        {
-          "type": "modify_resource",
-          "resource": "order",
-          "value": -2,
-          "mode": "delta",
-          "target": "board"
-        },
-        {
-          "type": "modify_stat",
-          "stat": "defense",
-          "value": -1,
-          "mode": "delta",
-          "target": "self",
-          "duration": 20
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "rank_jurisdiction",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "write_rule_slot",
+              "slot": 1,
+              "field": "exemptions",
+              "value": {
+                "side": "self"
+              },
+              "overwrite": false
+            },
+            {
+              "type": "modify_resource",
+              "resource": "order",
+              "value": -2,
+              "mode": "delta",
+              "target": "board"
+            },
+            {
+              "type": "modify_stat",
+              "stat": "defense",
+              "value": -1,
+              "mode": "delta",
+              "target": "self",
+              "duration": 20
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
       "art": {
         "subject": "a high-seated arbiter on a dais far beyond the reach of those below",
@@ -2990,7 +3022,7 @@
         ],
         "mood": "aloof, ordained, immovable"
       },
-      "conversionNotes": "2026-10-03 骨架手术：立规换形（角色=buff）"
+      "conversionNotes": "2026-10-03 骨架手术：立规换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理）；以 not has_status(rank_jurisdiction) 守卫确保只执行一次"
     },
     {
       "id": "skill_arbiter_s2_rank_sanction",

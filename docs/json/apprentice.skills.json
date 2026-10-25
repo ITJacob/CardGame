@@ -1185,24 +1185,40 @@
       "flagship": false,
       "lore": "序列4 秘法师 —— \"「守秘」：屏蔽感应，影响神秘学追踪\"",
       "flavor": "你把关于自己的一切藏进灵界的褶皱里——敌人既读不到你，也休想把你身上的加持抹掉。",
-      "describe": "战斗开始时获得守秘：自身增益不可被敌方驱散，且敌方单体技能选取目标时自身优先级降低。；时空税：这份收益以「回放上一式半份」的方式付出（禁裸站桩）。",
+      "describe": "首次有状态加身时获得守秘：自身增益不可被敌方驱散，且敌方单体技能选取目标时自身优先级降低。；时空税：这份收益以「回放上一式半份」的方式付出（禁裸站桩）。",
       "hook": [
-        "on_battle_start"
+        "on_status_gain"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "secrecy",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "echo_last_skill",
-          "potency": 0.5
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "secrecy",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "secrecy",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "echo_last_skill",
+              "potency": 0.5
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：守秘=增益不可驱散+难锁定+挂星界锚。 ｜ 2026-10-03 骨架手术：时空税换形（角色=buff）",
+      "conversionNotes": "翻译/语义：守秘=增益不可驱散+难锁定+挂星界锚。 ｜ 2026-10-03 骨架手术：时空税换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_status_gain（规则 13 事件集中度治理）；以 not has_status(secrecy) 守卫确保只执行一次",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -2543,27 +2559,43 @@
       "flagship": true,
       "lore": "序列0 门 —— \"「无处不在」（闪现极致）、「概念化」\"",
       "flavor": "闪现到了极致，便是无处不在——你同时站在战场的每一处，敌人推不动一个并不只在原地的你。",
-      "describe": "战斗开始时获得无处不在：行动条速率 +6、无法被位移，并召唤一个留在星界的残影（30% 生命）助战。；无处不在皆穿门（仪式之门 15tick）。；时空税：这份收益以「回放上一式半份」的方式付出（禁裸站桩）。",
+      "describe": "首次受到伤害时获得无处不在：行动条速率 +6、无法被位移，并召唤一个留在星界的残影（30% 生命）助战。；无处不在皆穿门（仪式之门 15tick）。；时空税：这份收益以「回放上一式半份」的方式付出（禁裸站桩）。",
       "hook": [
-        "on_battle_start"
+        "on_take_damage"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "ubiquity",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "ritual_gate",
-          "duration": 15,
-          "target": "self",
-          "note": "无处不在皆穿门（环节⑤ 2026-09-29 补产层段）"
-        },
-        {
-          "type": "echo_last_skill",
-          "potency": 0.5
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "ubiquity",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "ubiquity",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "ritual_gate",
+              "duration": 15,
+              "target": "self",
+              "note": "无处不在皆穿门（环节⑤ 2026-09-29 补产层段）"
+            },
+            {
+              "type": "echo_last_skill",
+              "potency": 0.5
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
@@ -2574,7 +2606,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：无处不在=频率+残影+不可推+门扉坐标+写+2隐秘值。 ｜ 2026-10-03 骨架手术：时空税换形（角色=buff）",
+      "conversionNotes": "翻译/语义：无处不在=频率+残影+不可推+门扉坐标+写+2隐秘值。 ｜ 2026-10-03 骨架手术：时空税换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理）；以 not has_status(ubiquity) 守卫确保只执行一次",
       "art": {
         "subject": "one mage standing everywhere at once, starlit echoes crowding the field",
         "elements": [

@@ -163,29 +163,45 @@
       "flagship": false,
       "lore": "序列9 水手 —— \"平衡+幻鳞（难以被抓握）\"",
       "flavor": "你身上覆着一层滑腻的幻鳞，谁也抓不牢你——推搡、拖拽、擒抱，都从你身上滑开。",
-      "describe": "战斗开始时获得幻鳞：无法被位移，且受到的伤害 ×0.9，持续整场。；踏浪：在风暴里换到更远的位置。",
+      "describe": "首次受到伤害时获得幻鳞：无法被位移，且受到的伤害 ×0.9，持续整场。；踏浪：在风暴里换到更远的位置。",
       "hook": [
-        "on_battle_start"
+        "on_take_damage"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "scale_veil",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self",
-          "note": "踏浪：在风暴里换到更远的位置"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "scale_veil",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "scale_veil",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "move",
+              "op": "insert_tail_cross_lane",
+              "target": "self",
+              "note": "踏浪：在风暴里换到更远的位置"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
         "chanter"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"平衡+难抓握\"→免疫位移；减伤低于 vulnerable 反向量级。依赖新增项 4。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff）",
+      "conversionNotes": "翻译/语义：\"平衡+难抓握\"→免疫位移；减伤低于 vulnerable 反向量级。依赖新增项 4。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理）；以 not has_status(scale_veil) 守卫确保只执行一次",
       "art": {
         "subject": "a sailor whose skin shimmers with slick translucent scales that no hand can grip",
         "elements": [
@@ -508,41 +524,57 @@
       "flagship": false,
       "lore": "序列7 航海家 —— \"天文地理直觉：对磁场、洋流、风向有直觉，永不迷路\"",
       "flavor": "你读得懂磁场、洋流与风向——战斗一开始就抢到先手，而任何想把你的节奏推离航道的手段都会落空。",
-      "describe": "战斗开始时自身行动条 +15，且整场免疫行动条被削减（永不迷路）。；踏浪：在风暴里换到更远的位置。",
+      "describe": "首次开始行动时自身行动条 +15，且整场免疫行动条被削减（永不迷路）。；踏浪：在风暴里换到更远的位置。",
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "navigator_intuition",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
             {
-              "type": "modify_resource",
-              "resource": "gauge.current",
-              "value": 15,
-              "mode": "delta",
-              "target": "self",
-              "note": "on_battle_start 被动自推有效（G5/G6 只禁主动技能回合内自推）"
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "modify_resource",
+                  "resource": "gauge.current",
+                  "value": 15,
+                  "mode": "delta",
+                  "target": "self",
+                  "note": "on_turn_start 被动自推有效（G5/G6 只禁主动技能回合内自推）"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "navigator_intuition",
+                  "duration": null,
+                  "target": "self"
+                }
+              ]
             },
             {
-              "type": "mount_status",
-              "statusId": "navigator_intuition",
-              "duration": null,
+              "type": "move",
+              "op": "insert_tail_cross_lane",
               "target": "self"
             }
-          ]
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self"
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
         "chanter"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：开局推条+免疫被推后。G5/G6 合规（被动）。依赖新增项 5。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff）",
+      "conversionNotes": "翻译/语义：开局推条+免疫被推后。G5/G6 合规（被动）。依赖新增项 5。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理）；以 not has_status(navigator_intuition) 守卫确保只执行一次",
       "art": {
         "subject": "a navigator reading glowing currents and wind-lines above a tattered sea chart",
         "elements": [
@@ -960,35 +992,51 @@
       "flagship": false,
       "lore": "序列6 风眷者 —— \"加速与滑翔：脚下生风跑速翻倍，空中滑翔\"",
       "flavor": "脚下生风，你的出手快得惊人；而每当有人逼近，你便借风滑开一段距离。",
-      "describe": "战斗开始时行动条速率 +8（整场）；且获得 1 层滑翔：每次受击时自身退到己方半场最后位，每场共 1 次。；踏浪：在风暴里换到更远的位置。",
+      "describe": "首次受到伤害时行动条速率 +8（整场）；且获得 1 层滑翔：每次受击时自身退到己方半场最后位，每场共 1 次。；踏浪：在风暴里换到更远的位置。",
       "hook": [
-        "on_battle_start"
+        "on_take_damage"
       ],
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "glide",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
             {
-              "type": "modify_stat",
-              "stat": "gauge.rate",
-              "value": 8,
-              "mode": "delta",
-              "duration": null,
-              "target": "self"
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "modify_stat",
+                  "stat": "gauge.rate",
+                  "value": 8,
+                  "mode": "delta",
+                  "duration": null,
+                  "target": "self"
+                },
+                {
+                  "type": "mount_status",
+                  "statusId": "glide",
+                  "charges": 1,
+                  "duration": null,
+                  "target": "self"
+                }
+              ]
             },
             {
-              "type": "mount_status",
-              "statusId": "glide",
-              "charges": 1,
-              "duration": null,
+              "type": "move",
+              "op": "insert_tail_cross_lane",
               "target": "self"
             }
-          ]
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self"
+          ],
+          "else": []
         }
       ],
       "upgradeLadder": {
@@ -1011,7 +1059,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：速率+滑翔脱战。charges 避 G15。依赖新增项 10。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff）",
+      "conversionNotes": "翻译/语义：速率+滑翔脱战。charges 避 G15。依赖新增项 10。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理）；以 not has_status(glide) 守卫确保只执行一次",
       "art": {
         "subject": "a sailor skimming across the ground on wind currents, gliding away from closing foes",
         "elements": [
@@ -2075,35 +2123,11 @@
       "flagship": true,
       "lore": "序列3 海王 —— \"领域主宰：掌控海域内自由行走海底，掀起四五十米海啸\"",
       "flavor": "这片海域归你主宰——你的人在水中如履平地，而敌人每走一步都要与海水搏斗。",
-      "describe": "战斗开始时注入英雄域「海王国度」（常驻）：己方行动条速率 ×1.1、护甲 +5，敌方行动条速率 ×0.9 且每 tick 受到 0.2 点伤害；「海洋/水」标签卡效果 ×1.3、「火」标签卡 ×0.8。；并获得「潮汐号令」20tick（己方伤害 ×1.1，跨系枢纽）。",
+      "describe": "首次开始行动时注入英雄域「海王国度」（常驻）：己方行动条速率 ×1.1、护甲 +5，敌方行动条速率 ×0.9 且每 tick 受到 0.2 点伤害；「海洋/水」标签卡效果 ×1.3、「火」标签卡 ×0.8。；并获得「潮汐号令」20tick（己方伤害 ×1.1，跨系枢纽）。",
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
-      "effects": [
-        {
-          "type": "domain",
-          "op": "hero",
-          "def": "domain_sea_kingdom",
-          "duration": -1,
-          "durationUnit": "tick",
-          "note": "英雄域激活：被动卡在 on_battle_start 执行；game 尚无 CombatSetup 注入通道，本 effect 是运行时正主（不可删）"
-        },
-        {
-          "type": "modify_resource",
-          "resource": "lost",
-          "value": 0,
-          "mode": "delta",
-          "target": "self",
-          "note": "迷失租金登记：英雄域（hero tier）CombatSetup 注入、常驻、不收迷失租金（源稿与 ddd 英雄域设计一致），0 租金仅为校验口径登记"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "tide_call",
-          "duration": 20,
-          "target": "self",
-          "note": "跨系枢纽挂载（2026-09-29 跨系批，产层兼枢纽计数）"
-        }
-      ],
+      "effects": [],
       "domain": {
         "def": "domain_sea_kingdom",
         "envRulesText": "全场：己方 gauge_rate ×1.1 + 护甲 +5（海中如履平地）；敌方 gauge_rate ×0.9 且每 tick 受 0.2 点伤害（与海水搏斗）——双向：己方加速 / 敌方迟滞磨血"
@@ -2116,7 +2140,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。",
+      "conversionNotes": "Def 编目独立化（2026-10-01）：卡级内联 unitDefs/zoneDef/domainDef 迁至文件顶层池（同途径多卡共享，Catalog 编目层）。｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理）；载荷迁入 minIntervalTicks=9999 的卡级触发器，等价一次性激活",
       "art": {
         "subject": "the surrounding sea obeying one master while enemy soldiers wade against its waves",
         "elements": [
@@ -2125,7 +2149,39 @@
         ],
         "mood": "sovereign, oppressive"
       },
-      "role": "core"
+      "role": "core",
+      "triggers": [
+        {
+          "event": "on_turn_start",
+          "minIntervalTicks": 9999,
+          "effects": [
+            {
+              "type": "domain",
+              "op": "hero",
+              "def": "domain_sea_kingdom",
+              "duration": -1,
+              "durationUnit": "tick",
+              "note": "英雄域激活：卡级触发器（on_turn_start 一次激活）执行；game 尚无 CombatSetup 注入通道，本 effect 是运行时正主（不可删）"
+            },
+            {
+              "type": "modify_resource",
+              "resource": "lost",
+              "value": 0,
+              "mode": "delta",
+              "target": "self",
+              "note": "迷失租金登记：英雄域（hero tier）CombatSetup 注入、常驻、不收迷失租金（源稿与 ddd 英雄域设计一致），0 租金仅为校验口径登记"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "tide_call",
+              "duration": 20,
+              "target": "self",
+              "note": "跨系枢纽挂载（2026-09-29 跨系批，产层兼枢纽计数）"
+            }
+          ],
+          "note": "触发点重分布：原 on_battle_start 载荷迁入（一次激活）"
+        }
+      ]
     },
     {
       "id": "skill_sailor_s3_sea_beast_call",
@@ -2396,27 +2452,13 @@
       "flagship": false,
       "lore": "序列2 天灾 —— \"'愤怒之源'\"",
       "flavor": "你就是愤怒本身——每一次挨打都在你体内点燃双倍的火，而这火可以烧得比从前更旺。",
-      "describe": "战斗开始时愤怒升华：愤怒层数上限 +3（5→8），此后每次受击叠 2 层（替代 +1）。；踏浪：在风暴里换到更远的位置。",
+      "describe": "首次受到伤害时愤怒升华：愤怒层数上限 +3（5→8），此后每次受击叠 2 层（替代 +1）。；踏浪：在风暴里换到更远的位置。",
       "hook": [
-        "on_battle_start"
+        "on_take_damage"
       ],
-      "effects": [
-        {
-          "type": "mount_status",
-          "statusId": "rage",
-          "duration": null,
-          "target": "self",
-          "maxStacksOverride": 8,
-          "note": "H34：rage maxStacks 挂载方覆盖 5→8"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self"
-        }
-      ],
+      "effects": [],
       "tentative": false,
-      "conversionNotes": "叠层规则改写 +1→+2：需覆写 rage 的 on_take_damage 触发器叠层参数（statusDef 级覆写），与愤怒爆发互斥——挂载本状态后替代原触发器，待内核裁定覆写口径 ｜ 数值红线：与暴君权柄（+5）叠加后上限 13，必须与暴怒一击换算系数一起 clamp（上限锁 8） ｜ 翻译/语义：愤怒轴上位放大。（与暴怒一击 一并 clamp）。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff）",
+      "conversionNotes": "叠层规则改写 +1→+2：需覆写 rage 的 on_take_damage 触发器叠层参数（statusDef 级覆写），与愤怒爆发互斥——挂载本状态后替代原触发器，待内核裁定覆写口径 ｜ 数值红线：与暴君权柄（+5）叠加后上限 13，必须与暴怒一击换算系数一起 clamp（上限锁 8） ｜ 翻译/语义：愤怒轴上位放大。（与暴怒一击 一并 clamp）。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理）；载荷迁入 minIntervalTicks=9999 的卡级触发器，等价一次性激活",
       "art": {
         "subject": "a living embodiment of rage whose body burns brighter with every strike endured",
         "elements": [
@@ -2452,6 +2494,26 @@
               "note": "愤怒之源：濒死时怒意更盛"
             }
           ]
+        },
+        {
+          "event": "on_take_damage",
+          "minIntervalTicks": 9999,
+          "effects": [
+            {
+              "type": "mount_status",
+              "statusId": "rage",
+              "duration": null,
+              "target": "self",
+              "maxStacksOverride": 8,
+              "note": "H34：rage maxStacks 挂载方覆盖 5→8"
+            },
+            {
+              "type": "move",
+              "op": "insert_tail_cross_lane",
+              "target": "self"
+            }
+          ],
+          "note": "触发点重分布：原 on_battle_start 载荷迁入（一次激活）"
         }
       ]
     },
@@ -2830,28 +2892,44 @@
       "flagship": false,
       "lore": "序列1 雷神 —— \"'光之化身'：转化能量体，接近光速飞行\"",
       "flavor": "你把自己转化成纯粹的能量体——刀剑与雷霆大半从你身上穿了过去，而你的速度快得近乎光。",
-      "describe": "战斗开始时转化为光之能量体（整场）：物理抗性 +30%、雷电抗性 +30%、行动条速率 +8，代价是精神抗性 -10%。；光之化身即海上暴君（暴君威仪 +1 层，整场）。；踏浪：在风暴里换到更远的位置。；浪头不退——它又被推开一档。",
+      "describe": "首次相位变化时转化为光之能量体（整场）：物理抗性 +30%、雷电抗性 +30%、行动条速率 +8，代价是精神抗性 -10%。；光之化身即海上暴君（暴君威仪 +1 层，整场）。；踏浪：在风暴里换到更远的位置。；浪头不退——它又被推开一档。",
       "hook": [
-        "on_battle_start"
+        "on_phase_change"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "light_form",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "tyrant_dread",
-          "duration": null,
-          "target": "self",
-          "note": "光之化身即海上暴君（环节⑤ 2026-09-29 补产层段）"
-        },
-        {
-          "type": "move",
-          "op": "insert_tail_cross_lane",
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "light_form",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "light_form",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "tyrant_dread",
+              "duration": null,
+              "target": "self",
+              "note": "光之化身即海上暴君（环节⑤ 2026-09-29 补产层段）"
+            },
+            {
+              "type": "move",
+              "op": "insert_tail_cross_lane",
+              "target": "self"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
@@ -2862,7 +2940,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：物质性攻击难奏效+速率。加负抗为代价。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-05 去重：删除与首段完全相同的重复段（骨架手术补强轮产物，会导致同一效果实际结算两次），保留 1 条。",
+      "conversionNotes": "翻译/语义：物质性攻击难奏效+速率。加负抗为代价。 ｜ 2026-10-03 骨架手术：轮转换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比 ｜ 2026-10-05 去重：删除与首段完全相同的重复段（骨架手术补强轮产物，会导致同一效果实际结算两次），保留 1 条。｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理）；以 not has_status(light_form) 守卫确保只执行一次",
       "art": {
         "subject": "a sailor transformed into a being of pure light, blades and bolts passing through him",
         "elements": [

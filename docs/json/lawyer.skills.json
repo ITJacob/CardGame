@@ -262,9 +262,9 @@
       "flagship": false,
       "lore": "序列9 律师 —— \"出色的口才和思辨逻辑\"",
       "flavor": "你说服的不只是它，还有它身上那道伤口——你说它该留多久，它就留多久。",
-      "describe": "被动：整场战斗中，你施加的减益/控制/持续伤害状态持续时间 +5tick；且这些条款的作用范围被改写为全体敌方（槽 1）。",
+      "describe": "每当你施放技能时，你施加的减益/控制/持续伤害状态持续时间 +5tick；且这些条款的作用范围被改写为全体敌方（槽 1）。",
       "hook": [
-        "on_battle_start"
+        "on_active_skill"
       ],
       "effects": [
         {
@@ -280,7 +280,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：寻隙轴「放大器」型 passive：自己挂的减益多留 5tick。依赖 `durationModifier`（ddd 已落）。 ｜ 2026-10-02 骨架手术：骨架手术：规则槽迁移",
+      "conversionNotes": "翻译/语义：寻隙轴「放大器」型 passive：自己挂的减益多留 5tick。依赖 `durationModifier`（ddd 已落）。 ｜ 2026-10-02 骨架手术：骨架手术：规则槽迁移｜2026-10-25 触发点重分布：on_battle_start → on_active_skill（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
       "art": {
         "subject": "a silver-tongued lawyer lecturing an open wound that refuses to close",
         "elements": [
@@ -1204,33 +1204,49 @@
       "flagship": false,
       "lore": "序列5 混乱导师 —— \"使目标/区域出现混乱，攻击难落身\"",
       "flavor": "你周身的秩序始终是乱的——刀砍进来，总要先迷路一程。",
-      "describe": "被动：整场战斗中，你受到的伤害 ×0.9；难落身——把自己写进规则槽（槽 1）的豁免名单。",
+      "describe": "首次受到伤害时，你受到的伤害 ×0.9；难落身——把自己写进规则槽（槽 1）的豁免名单。",
       "hook": [
-        "on_battle_start"
+        "on_take_damage"
       ],
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "untouchable_confusion",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "mount_status",
+                  "statusId": "untouchable_confusion",
+                  "duration": null,
+                  "target": "self"
+                }
+              ]
+            },
             {
               "type": "mount_status",
-              "statusId": "untouchable_confusion",
-              "duration": null,
-              "target": "self"
+              "statusId": "shield",
+              "value": 3,
+              "duration": 20,
+              "target": "self",
+              "note": "难落身：护盾 3"
             }
-          ]
-        },
-        {
-          "type": "mount_status",
-          "statusId": "shield",
-          "value": 3,
-          "duration": 20,
-          "target": "self",
-          "note": "难落身：护盾 3"
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：熵蚀轴常驻减伤：让攻击落不到你身上。 ｜ 2026-10-02 骨架手术：骨架手术：规则槽迁移",
+      "conversionNotes": "翻译/语义：熵蚀轴常驻减伤：让攻击落不到你身上。 ｜ 2026-10-02 骨架手术：骨架手术：规则槽迁移｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理）；以 not has_status(untouchable_confusion) 守卫确保只执行一次",
       "art": {
         "subject": "a knife wandering lost through shifting maze-lines around the lawyer",
         "elements": [
@@ -1472,9 +1488,9 @@
       "flagship": false,
       "lore": "序列4 堕落伯爵 —— \"篡改/增加/利用规则，营造有利战斗环境\"（\"有利\"二字的独占语义）",
       "flavor": "规则当然存在。只是它永远只朝一个方向倾斜——朝着你。",
-      "describe": "被动：整场战斗中，你获得的增益与你施加的减益均不可被驱散；独享——规则槽（槽 2）的豁免名单被改写为「只有我」。",
+      "describe": "每当你开始行动时，你获得的增益与你施加的减益均不可被驱散；独享——规则槽（槽 2）的豁免名单被改写为「只有我」。",
       "hook": [
-        "on_battle_start"
+        "on_turn_start"
       ],
       "effects": [
         {
@@ -1566,7 +1582,8 @@
         "成",
         "宿",
         "主",
-        "）"
+        "）",
+        "2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）"
       ],
       "tentative": false,
       "art": {
@@ -1824,28 +1841,45 @@
       "flagship": false,
       "lore": "序列3 狂乱法师 —— \"部分『阶层』权柄：上位者……下位者身不由己听从\"",
       "flavor": "位格在你之下者，打不动你，也躲不开你。",
-      "describe": "被动：整场战斗中，位格低于你的敌人对你造成的伤害 ×0.85、你对其造成的伤害 ×1.15；阶层——把位格低者从规则槽（槽 2）的豁免名单中剔除。",
+      "describe": "首次有状态加身时，位格低于你的敌人对你造成的伤害 ×0.85、你对其造成的伤害 ×1.15；阶层——把位格低者从规则槽（槽 2）的豁免名单中剔除。",
       "hook": [
-        "on_battle_start"
+        "on_status_gain"
       ],
       "effects": [
         {
-          "op": "sequence",
-          "steps": [
-            {
-              "type": "mount_status",
-              "statusId": "stratum",
-              "duration": null,
-              "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "stratum",
+              "cmp": ">=",
+              "n": 1
             }
-          ]
+          },
+          "then": [
+            {
+              "op": "sequence",
+              "steps": [
+                {
+                  "type": "mount_status",
+                  "statusId": "stratum",
+                  "duration": null,
+                  "target": "self"
+                }
+              ]
+            }
+          ],
+          "else": []
         }
       ],
       "conversionNotes": [
         "退化方案（稿面）：改为 on_battle_start 时对低位格敌人一次性挂易伤，代价是后续入场单位吃不到",
         "翻译/语义：僭越轴：位格条件常驻乘区。位格可经 `modify_stat(rank,±N)` 修正。",
         "2026-10-02 骨架手术：骨架手术：规则槽 remove 模式",
-        "2026-10-24 开局快照迁移：precedent 读层→on_status_gain"
+        "2026-10-24 开局快照迁移：precedent 读层→on_status_gain",
+        "2026-10-25 触发点重分布：on_battle_start → on_status_gain（规则 13 事件集中度治理）；以 not has_status(stratum) 守卫确保只执行一次"
       ],
       "tentative": false,
       "art": {
