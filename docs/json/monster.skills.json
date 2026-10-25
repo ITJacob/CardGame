@@ -1898,22 +1898,38 @@
       "flagship": false,
       "lore": "序列2 先知 —— \"『水银之躯』（完整神话生物形态）：十秒不被命中的被动\"",
       "flavor": "你化作完整的神话之躯——每隔一阵，就有十秒钟，没有任何东西能碰到你。",
-      "describe": "每次你受到伤害时获得循环（整场）：约每 10 tick 自动进入 50tick「水银之躯」窗口（前 2 次打向你的攻击落空）；与主动水银之躯共用状态，层数可叠至 4。",
+      "describe": "首次受到伤害时获得循环（整场）：约每 10 tick 自动进入 50tick「水银之躯」窗口（前 2 次打向你的攻击落空）；与主动水银之躯共用状态，层数可叠至 4。",
       "hook": [
         "on_take_damage"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "mercury_form",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "mercury_cycle",
-          "duration": 50,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "mercury_form",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "mercury_form",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "mercury_cycle",
+              "duration": 50,
+              "target": "self"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [],
@@ -1927,7 +1943,7 @@
         ],
         "mood": "alien, untouchable"
       },
-      "conversionNotes": "2026-10-03 骨架手术：判定形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）"
+      "conversionNotes": "2026-10-03 骨架手术：判定形状换形（角色=buff） ｜ 2026-10-03 骨架手术补强轮：追加第二段稀释 mount 占比｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：加 not has_status 守卫（mercury_cycle 自续，逐次 refresh 会把 50tick 窗口无限推迟）"
     },
     {
       "id": "skill_monster_s1_fate_loop",

@@ -2866,23 +2866,39 @@
       "flagship": false,
       "lore": "序列1 知识皇帝 —— \"『教化』权柄 +『窥秘』权柄：窥见众神乃至旧日的秘密\" / \"神秘知识权柄深化：将力量赋予知识获得其他序列非凡能力\"",
       "flavor": "你把知识分给同伴，知识便回赠他们以灵感。而你从众神都不曾示人的地方取回的那一份，只留给自己。",
-      "describe": "每当你施放技能时获得「教化」：全体友军能量恢复 +0.2/tick，自身伤害 ×1.15，持续整场。；学识化作本能：下一式转瞬发。",
+      "describe": "首次施放技能时获得「教化」：全体友军能量恢复 +0.2/tick，自身伤害 ×1.15，持续整场。；学识化作本能：下一式转瞬发。",
       "hook": [
         "on_active_skill"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "edification",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "modify_skill",
-          "skillRef": {
-            "selector": "self_last"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "edification",
+              "cmp": ">=",
+              "n": 1
+            }
           },
-          "setInstant": true
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "edification",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "modify_skill",
+              "skillRef": {
+                "selector": "self_last"
+              },
+              "setInstant": true
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
@@ -2894,7 +2910,7 @@
         ],
         "mood": "generous, covetous"
       },
-      "conversionNotes": "2026-10-03 骨架手术：参照缩放换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_active_skill（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）"
+      "conversionNotes": "2026-10-03 骨架手术：参照缩放换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_active_skill（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：加 not has_status 守卫（on_apply 永久能量恢复不可重挂叠算）"
     },
     {
       "id": "skill_pryer_s1_false_information",

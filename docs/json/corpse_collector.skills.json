@@ -82,23 +82,39 @@
       "flagship": false,
       "lore": "序列9 收尸人 —— \"具备尸体特质，体温低，避免亡灵袭击 / 能承受腐烂、寒冷、死亡气息\"",
       "flavor": "你的体温比尸体高不了多少，腐烂与寒冷都伤不到你；而那些游荡的亡灵，也从不把你当成活人。",
-      "describe": "每次你受到伤害时获得「尸体特质」：毒抗性 +20%、冰抗性 +20%，受到亡灵来源的伤害 ×0.7。",
+      "describe": "首次受到伤害时获得「尸体特质」：毒抗性 +20%、冰抗性 +20%，受到亡灵来源的伤害 ×0.7。",
       "hook": [
         "on_take_damage"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "corpse_nature",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "corpse_nature",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "corpse_nature",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
         "sleepless"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：尸骸轴身份状态 `尸性` 挂载源；与不眠者【通灵之眼】同源\"灵体无害\"。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
+      "conversionNotes": "翻译/语义：尸骸轴身份状态 `尸性` 挂载源；与不眠者【通灵之眼】同源\"灵体无害\"。 ｜ 2026-10-03 骨架手术：死亡过程换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：加 not has_status 守卫（on_apply 永久毒/冰抗不可重挂叠算）",
       "art": {
         "subject": "a pale corpse-like figure standing motionless among wandering ghosts",
         "elements": [

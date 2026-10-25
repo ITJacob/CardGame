@@ -365,16 +365,32 @@
       "flagship": false,
       "lore": "序列8 折翼天使 —— \"失去良知，与恶欲同流\"",
       "flavor": "你已经不记得良知是什么东西了，所以没人能用它来刺痛你。整场战斗中精神抗性 +20%；而那些被欲望与污秽沾过的人，在你眼里格外好下手——你对身上带着负面状态的目标造成的伤害提高 15%。",
-      "describe": "每次你受到伤害时获得「失去良知」：精神抗性 +20%，对带有减益或持续伤害状态的目标造成的伤害 ×1.15，持续整场。；放纵自身：欲壑 +1，身体被欲望推着往前扑。",
+      "describe": "首次受到伤害时获得「失去良知」：精神抗性 +20%，对带有减益或持续伤害状态的目标造成的伤害 ×1.15，持续整场。；放纵自身：欲壑 +1，身体被欲望推着往前扑。",
       "hook": [
         "on_take_damage"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "lost_conscience",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "lost_conscience",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "lost_conscience",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": []
         },
         {
           "type": "modify_resource",
@@ -390,7 +406,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：恶欲轴广谱加伤（为后续读恶欲值阈值铺垫）。 ｜ 2026-10-03 骨架手术：欲望池换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
+      "conversionNotes": "翻译/语义：恶欲轴广谱加伤（为后续读恶欲值阈值铺垫）。 ｜ 2026-10-03 骨架手术：欲望池换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：守卫首个挂载（on_apply 永久精神抗不可重挂叠算），欲壑+1/前扑保留逐次",
       "art": {
         "subject": "a hollow-eyed man staring blankly as embers drift past his face",
         "elements": [
@@ -1676,16 +1692,32 @@
       "flagship": false,
       "lore": "序列4 魔鬼 —— \"擅长精神层面交锋，高智商\"",
       "flavor": "你在脑子里的战场上从没输过。整场战斗中精神抗性 +20%；而被你的欲望、魅惑与呓语污染过的人，是最容易被你看穿的——你对他们造成的伤害提高 25%。",
-      "describe": "每次你受到伤害时获得「精神交锋」：精神抗性 +20%，对持有欲望/魅惑/呓语的目标造成的伤害 ×1.25，持续整场。；放纵自身：欲壑 +1，身体被欲望推着往前扑。",
+      "describe": "首次受到伤害时获得「精神交锋」：精神抗性 +20%，对持有欲望/魅惑/呓语的目标造成的伤害 ×1.25，持续整场。；放纵自身：欲壑 +1，身体被欲望推着往前扑。",
       "hook": [
         "on_take_damage"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "mental_duelist",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "mental_duelist",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "mental_duelist",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": []
         },
         {
           "type": "modify_resource",
@@ -1701,7 +1733,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：恶欲轴定向加伤（读自身污染状态）。 ｜ 2026-10-03 骨架手术：欲望池换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
+      "conversionNotes": "翻译/语义：恶欲轴定向加伤（读自身污染状态）。 ｜ 2026-10-03 骨架手术：欲望池换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_take_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：守卫首个挂载（on_apply 永久精神抗不可重挂叠算），欲壑+1/前扑保留逐次",
       "art": {
         "subject": "two silhouettes facing off inside a chessboard of floating thoughts",
         "elements": [

@@ -150,12 +150,12 @@
 | `restore_snapshot` | 1 | 2.8% |
 | `advance_clock` | 2 | 5.6% |
 
-**算子构成**（op，共 10 处）：
+**算子构成**（op，共 11 处）：
 
 | 算子 | 次数 |
 |---|---:|
 | `sequence` | 4 |
-| `if` | 6 |
+| `if` | 7 |
 
 **改动的资源（modify_resource，共 11 处）**：
 

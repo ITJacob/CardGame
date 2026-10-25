@@ -396,16 +396,32 @@
       "flagship": false,
       "lore": "序列8 驯兽师 —— \"『动物感官』：读懂野兽想法，沟通 / 驱使 / 分享感官\"",
       "flavor": "你与它们共享着同一副感官 —— 谁咬住了你，你的兽群就先一步知道。",
-      "describe": "每当你开始行动时：己方动物类/召唤物攻击 +1、行动条速率 +5（整场）；你受到伤害时，己方全体召唤物行动条 +10。",
+      "describe": "首次开始行动时：己方动物类/召唤物攻击 +1、行动条速率 +5（整场）；你受到伤害时，己方全体召唤物行动条 +10。",
       "hook": [
         "on_turn_start"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "beast_sense",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "beast_sense",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "beast_sense",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
@@ -419,7 +435,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：兽群轴 payoff：读 `兽群` 增益。推友军非自推条（G5/G6 合规）。 ｜ 2026-10-03 骨架手术：预服换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
+      "conversionNotes": "翻译/语义：兽群轴 payoff：读 `兽群` 增益。推友军非自推条（G5/G6 合规）。 ｜ 2026-10-03 骨架手术：预服换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：加 not has_status 守卫（on_apply 永久 attack/gauge.rate 不可重挂叠算）",
       "art": {
         "subject": "a ranger and a hawk sharing one unbroken gaze",
         "elements": [
@@ -2208,16 +2224,32 @@
       "flagship": true,
       "lore": "序列0 月亮 —— \"『血月 / 红月 / 银月 / 满月 / 缺月』五种月相状态\"",
       "flavor": "你头顶的月亮从不会停在同一副模样 —— 它盈了又缺，缺了又盈；而你随着它的每一次圆缺，变成另一个人。",
-      "describe": "相位变化时获得「月相轮转」：月相按 血月→红月→银月→满月→缺月 每 6 tick 自发轮转（挂载时血月）；生命首次低于 30% 时立即切至满月；【满月】卡可强制切相；自身深红活力 ≥2 层时月相 +1 层。",
+      "describe": "首次开始行动时获得「月相轮转」：月相按 血月→红月→银月→满月→缺月 每 6 tick 自发轮转（挂载时血月）；生命首次低于 30% 时立即切至满月；【满月】卡可强制切相；自身深红活力 ≥2 层时月相 +1 层。",
       "hook": [
-        "on_phase_change"
+        "on_turn_start"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "moon_cycle",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "moon_cycle",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "moon_cycle",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
@@ -2228,7 +2260,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：月相轴核心 enabler：驱动整条节拍器。未持有本条时【满月】仍可单卡成立。依赖 `formGroup/nextPhase/cycleTicks`（H50）。（周期/阈值待标）。 ｜ 2026-10-03 骨架手术：预服换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
+      "conversionNotes": "翻译/语义：月相轴核心 enabler：驱动整条节拍器。未持有本条时【满月】仍可单卡成立。依赖 `formGroup/nextPhase/cycleTicks`（H50）。（周期/阈值待标）。 ｜ 2026-10-03 骨架手术：预服换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：相位钩子改首动挂载并加 not has_status 守卫（本途径无 advance_clock 驱动；避免 maxStacks 5 重挂叠层）",
       "art": {
         "subject": "a single figure morphing under five rotating moon phases",
         "elements": [

@@ -371,11 +371,27 @@
           },
           "then": [
             {
-              "type": "mount_status",
-              "statusId": "midnight_prowess_power",
-              "duration": null,
-              "target": "self",
-              "note": "夜晚/午夜相位：午夜武艺苏醒（攻+2/防+1）"
+              "op": "if",
+              "condition": {
+                "kind": "not",
+                "condition": {
+                  "kind": "has_status",
+                  "side": "self",
+                  "id": "midnight_prowess_power",
+                  "cmp": ">=",
+                  "n": 1
+                }
+              },
+              "then": [
+                {
+                  "type": "mount_status",
+                  "statusId": "midnight_prowess_power",
+                  "duration": null,
+                  "target": "self",
+                  "note": "夜晚/午夜相位：午夜武艺苏醒（攻+2/防+1）"
+                }
+              ],
+              "else": []
             }
           ],
           "else": [
@@ -402,7 +418,7 @@
         ]
       },
       "tentative": false,
-      "conversionNotes": "翻译/语义：暗夜轴属性地板。｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight），醒眠与回击门槛同源。｜午夜回击数值；天光下不回击守途径红线（天光破晓弱项）。 ｜ 2026-10-20 与守夜人分化：午夜回击的恐惧目标显式写 attacker（与卡面「反挂攻击者」一致，触发语境不变）。｜2026-10-25 触发点重分布：hook 摘除 on_battle_start（on_tick 已每 tick 覆盖挂载；规则 13 事件集中度治理）",
+      "conversionNotes": "翻译/语义：暗夜轴属性地板。｜2026-10-08 夜轨改造：luminance_compare → phase_is（night/midnight），醒眠与回击门槛同源。｜午夜回击数值；天光下不回击守途径红线（天光破晓弱项）。 ｜ 2026-10-20 与守夜人分化：午夜回击的恐惧目标显式写 attacker（与卡面「反挂攻击者」一致，触发语境不变）。｜2026-10-25 触发点重分布：hook 摘除 on_battle_start（on_tick 已每 tick 覆盖挂载；规则 13 事件集中度治理）｜2026-10-25 语义修正：重挂前加 not has_status 守卫（on_apply 永久攻+2/防+1 会每 tick 叠算）",
       "art": {
         "subject": "a fighter shadow-boxing under a single street lamp at midnight",
         "elements": [
@@ -1219,7 +1235,7 @@
       "flagship": false,
       "lore": "序列5 灵巫 —— \"可驱使 4-5 个灵，一心多用\"",
       "flavor": "你的意识被拆成许多股，各自牵着一只灵——旁人操控一只都要分神，你同时驱使一群仍游刃有余。",
-      "describe": "战斗开始时，自身召唤位上限 +2；你召唤的灵常驻凝实（伤害 ×1.2、受伤 ×0.85，夜与午夜相位伤害 ×1.4）。",
+      "describe": "开战后，自身召唤位上限 +2；你召唤的灵常驻凝实（伤害 ×1.2、受伤 ×0.85，夜与午夜相位伤害 ×1.4）。",
       "hook": [
         "on_tick"
       ],
@@ -1246,7 +1262,7 @@
         "corpse_collector"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：安魂轴召唤发动机。｜2026-10-09 安魂轴重设计：灵攻击+1 升级为落地凝实（召唤链接入轴正向增益族）。｜2026-10-09 拆身份闸：恢复常驻挂载（原 3461e00 身份闸经实测为空转——条件恒真/自指，纯占位；见提交）｜2026-10-10 对账：凝实挂载由 target self 改为 all_allies + filter isSummon——原写法把增益挂到施法者本体，与 describe『你召唤的灵』不符（挂错人）；同时纠正『走 spawn.companionBuff（F54）』的伪实现说明。改后语义为召唤物存活期间常驻凝实，describe 的『落地自带 20tick』同步改述为『常驻』｜2026-10-25 触发点重分布：hook 摘除 on_battle_start（on_tick 已每 tick 覆盖挂载；规则 13 事件集中度治理）",
+      "conversionNotes": "翻译/语义：安魂轴召唤发动机。｜2026-10-09 安魂轴重设计：灵攻击+1 升级为落地凝实（召唤链接入轴正向增益族）。｜2026-10-09 拆身份闸：恢复常驻挂载（原 3461e00 身份闸经实测为空转——条件恒真/自指，纯占位；见提交）｜2026-10-10 对账：凝实挂载由 target self 改为 all_allies + filter isSummon——原写法把增益挂到施法者本体，与 describe『你召唤的灵』不符（挂错人）；同时纠正『走 spawn.companionBuff（F54）』的伪实现说明。改后语义为召唤物存活期间常驻凝实，describe 的『落地自带 20tick』同步改述为『常驻』｜2026-10-25 触发点重分布：hook 摘除 on_battle_start（on_tick 已每 tick 覆盖挂载；规则 13 事件集中度治理）｜2026-10-25 语义修正：仅修正描述（on_tick 维护，状态无 on_apply，重挂幂等）",
       "art": {
         "subject": "a figure with strands of will each tethered to a spirit",
         "elements": [
@@ -2537,20 +2553,36 @@
       "flagship": false,
       "lore": "序列0 黑暗 —— \"『隐秘』权柄：隐藏痕迹、误导窥探，将任何事物变隐秘\"",
       "flavor": "你走到哪里，痕迹就消失到哪里——连你召来的那些灵，也一并隐没在无人能窥的暗处。",
-      "describe": "战斗开始时获得「隐秘权柄」：己方全体（含自身与召唤物）获得潜匿，且己方单位的潜匿不可被驱散；自身身处潜匿时攻击 +1。潜匿出手即破除，且不会自动复原。",
+      "describe": "开战后获得「隐秘权柄」：己方全体（含自身与召唤物）获得潜匿，且己方单位的潜匿不可被驱散；自身身处潜匿时攻击 +1。潜匿出手即破除，且不会自动复原。",
       "hook": [
         "on_tick"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "conceal_authority",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "conceal_authority",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "conceal_authority",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：隐秘轴终极形态：整队长期不可选中 + 持续推隐秘值。｜dimHook 数值。｜2026-10-09 拆身份闸：恢复常驻挂载（原 3461e00 身份闸经实测为空转——条件恒真/自指，纯；见提交）｜2026-10-10 对账：补记潜匿存在性读层（attack +1）；conceal_authority 自身潜匿改 on_apply 一次性授予（原每 tick 重挂使出手自破/隐秘之地耗层形同无物），描述同步改述。｜2026-10-15：潜匿时长口径改 self_turn（3 个自身回合）；破隐承载改 covert_veil 的 on_attack + on_active_skill 双挂（原记 on_deal_damage），出手后效果结算完毕再破，本轮仍吃潜匿收益。｜2026-10-25 触发点重分布：hook 摘除 on_battle_start（on_tick 已每 tick 覆盖挂载；规则 13 事件集中度治理）",
+      "conversionNotes": "翻译/语义：隐秘轴终极形态：整队长期不可选中 + 持续推隐秘值。｜dimHook 数值。｜2026-10-09 拆身份闸：恢复常驻挂载（原 3461e00 身份闸经实测为空转——条件恒真/自指，纯；见提交）｜2026-10-10 对账：补记潜匿存在性读层（attack +1）；conceal_authority 自身潜匿改 on_apply 一次性授予（原每 tick 重挂使出手自破/隐秘之地耗层形同无物），描述同步改述。｜2026-10-15：潜匿时长口径改 self_turn（3 个自身回合）；破隐承载改 covert_veil 的 on_attack + on_active_skill 双挂（原记 on_deal_damage），出手后效果结算完毕再破，本轮仍吃潜匿收益。｜2026-10-25 触发点重分布：hook 摘除 on_battle_start（on_tick 已每 tick 覆盖挂载；规则 13 事件集中度治理）｜2026-10-25 语义修正：加 not has_status 守卫（每 tick 重挂会经 on_apply 每 tick 恢复自身潜匿，违背「出手即破除」）",
       "dimHooks": [
         {
           "dim": "secrecy",
@@ -2649,7 +2681,7 @@
       "flagship": false,
       "lore": "序列0 黑暗 —— \"『灵体灵性』权柄\"",
       "flavor": "一切具备灵性的存在，都在你的意志之下——你的灵永不失控，而别人的灵，在你面前脆弱得不堪一击。",
-      "describe": "战斗开始时获得「灵体灵性权柄」：己方灵体与亡灵免疫控制；你对灵体与亡灵造成的伤害 ×1.3；灵体与亡灵对你造成的伤害 ×0.85；攻击你的灵体或亡灵陷入安宁 10tick。",
+      "describe": "开战后获得「灵体灵性权柄」：己方灵体与亡灵免疫控制；你对灵体与亡灵造成的伤害 ×1.3；灵体与亡灵对你造成的伤害 ×0.85；攻击你的灵体或亡灵陷入安宁 10tick。",
       "hook": [
         "on_tick"
       ],
@@ -2674,7 +2706,7 @@
         ],
         "mood": "sovereign, untouchable"
       },
-      "conversionNotes": "2026-10-09 安魂轴重设计：权柄新增受击反安（statusDef spirit_authority triggers 承载），安宁产层第 3 来源。｜2026-10-09 拆身份闸：恢复常驻挂载（原 3461e00 身份闸经实测为空转——条件恒真/自指，纯占位；见提交）｜2026-10-25 触发点重分布：hook 摘除 on_battle_start（on_tick 已每 tick 覆盖挂载；规则 13 事件集中度治理）"
+      "conversionNotes": "2026-10-09 安魂轴重设计：权柄新增受击反安（statusDef spirit_authority triggers 承载），安宁产层第 3 来源。｜2026-10-09 拆身份闸：恢复常驻挂载（原 3461e00 身份闸经实测为空转——条件恒真/自指，纯占位；见提交）｜2026-10-25 触发点重分布：hook 摘除 on_battle_start（on_tick 已每 tick 覆盖挂载；规则 13 事件集中度治理）｜2026-10-25 语义修正：仅修正描述（on_tick 维护，状态无 on_apply，重挂幂等）"
     }
   ],
   "unitDefs": [
