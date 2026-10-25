@@ -3,7 +3,7 @@
 //   unit（缺省）= 池为**单位实体**（faction 圈定）；scope 只作池边界，pickCount 决定命中数（指定型）；
 //   area        = 池为**坐标区块**（anchor 原点 + scope 几何圈定）；命中区域内全部在位单位（AoE），
 //                 pickCount 不参与。**AoE 的判据是 mode=area，不是 pickCount**。
-import type { FactionId, LaneId } from '../ids'
+import type { FactionId, LaneId, UnitId } from '../ids'
 import type { Coordinate } from '../battle/types'
 import type { ResolvedTarget } from './types'
 import type { FactionSelector, TargetRequest, UnitFilter } from '../shared/types'
@@ -24,6 +24,8 @@ export interface TargetContext {
   unsupported?(kind: string, detail?: string): void
   /** 最近阵亡友军坐标（复活寻址 anchor:last_dead_ally） */
   lastDeadCellFor?(faction: FactionId): Coordinate | null
+  /** 未过期亡骸：filter.corpse 寻址的坐标与死亡序号 */
+  corpseOf?(unitId: UnitId): { coord: Coordinate; order: number } | undefined
 }
 
 const DEFAULT_SCOPE = 'whole_lane'
@@ -64,6 +66,11 @@ export function matchesUnitFilter(u: CombatUnit, filter: UnitFilter | undefined,
     const ref = ctx.sideFaction ?? self.faction
     if (filter.side === 'ally' && u.faction !== ref) return false
     if (filter.side === 'enemy' && u.faction === ref) return false
+  }
+  if (filter.corpse === true) {
+    if (!u.isDead || !ctx.corpseOf?.(u.id)) return false
+  } else if (filter.corpse === false && u.isDead) {
+    return false
   }
   if (filter.unitType !== undefined) {
     const types = Array.isArray(filter.unitType) ? filter.unitType : [filter.unitType]
@@ -349,7 +356,30 @@ function sortCandidates(list: CombatUnit[], sort: string, ctx: TargetContext): C
 /** 缺省目标基准（共享内核参数 §一）：敌方同路最前排 = whole_lane + index_asc + pickCount 1 */
 export function resolveCandidates(rawRequest: TargetRequest, ctx: TargetContext): ResolvedTarget[] {
   const request = applyTargetOverride(rawRequest, ctx.self)
+  if (request.filter?.corpse === true) return resolveCorpseCandidates(request, ctx)
   return (request.mode ?? 'unit') === 'area' ? resolveArea(request, ctx) : resolveUnit(request, ctx)
+}
+
+/** 亡骸寻址（编队上下文 §十）：亡骸不占位，故无视 anchor/scope 几何；
+ *  取未过期亡骸，anchor:last_dead_ally 优先最近阵亡。坐标仅作展示，occupant = 死者 id。 */
+function resolveCorpseCandidates(request: TargetRequest, ctx: TargetContext): ResolvedTarget[] {
+  if (!ctx.corpseOf) return []
+  const rows: { id: UnitId; coord: Coordinate; order: number }[] = []
+  for (const u of ctx.units.all()) {
+    if (!u.isDead) continue
+    const corpse = ctx.corpseOf(u.id)
+    if (!corpse) continue
+    if (!matchesFaction(request.faction, u, ctx)) continue
+    if (!matchesUnitFilter(u, request.filter, ctx)) continue
+    if (request.excludeSelf && u.id === ctx.self.id) continue
+    rows.push({ id: u.id, coord: corpse.coord, order: corpse.order })
+  }
+  const recent = request.anchor === 'last_dead_ally'
+  rows.sort((a, b) => {
+    const d = recent ? b.order - a.order : a.order - b.order
+    return d !== 0 ? d : (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
+  })
+  return rows.map((r) => ({ coord: r.coord, occupant: r.id }))
 }
 
 /** 几何锚点（其余字符串按具名单位 / unitDef 蓝本 id 解释） */

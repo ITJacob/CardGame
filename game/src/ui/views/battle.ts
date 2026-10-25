@@ -1309,6 +1309,7 @@ function describe(s: BattleSession, e: DomainEvent): string {
     case 'StatusExpired': return `${e.unitId ? `${logNameOf(s, e.unitId)} ` : ''}状态到期 ${statusName(s, e.defId)}`
     case 'UnitSpawned': return `召唤 ${logNameOf(s, e.unitId)}`
     case 'UnitDied': return `${logNameOf(s, e.unitId)} 阵亡`
+    case 'CorpseExpired': return `${logNameOf(s, e.unitId)} 亡骸消散`
     case 'UnitRevived': return `${logNameOf(s, e.unitId)} 复活`
     case 'UnitTranslocated': return `${logNameOf(s, e.unitId)} 被放逐`
     case 'UnitReturned': return `${logNameOf(s, e.unitId)} 回归`

@@ -78,6 +78,12 @@ interface TriggerEventInfo {
   statusId?: string
 }
 
+interface CorpseRecord {
+  coord: Coordinate
+  order: number
+  expiresAtTick: number
+}
+
 export interface RuntimeOptions {
   setup: CombatSetup
   /** 缺省由 setup.catalog 构造 */
@@ -110,6 +116,9 @@ class CombatRuntime implements CombatRuntimeHandle {
   private readonly lastDeadUnit = new Map<FactionId, UnitId>()
   /** oncePerBattle 复活已用过的单位 */
   private readonly revivedOnce = new Set<UnitId>()
+  /** 未过期亡骸（3 tick；召唤物/分身不留） */
+  private readonly corpses = new Map<UnitId, CorpseRecord>()
+  private corpseSeq = 0
   private readonly factions: [FactionId, FactionId]
   private readonly warnings: string[] = []
   private battle: Battle
@@ -336,6 +345,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
     this.tickCount += 1
     this.stats.ticks = this.tickCount
+    this.expireCorpses()
     this.expireRuleSlots()
 
     const crossed = this.scheduler.tick()
@@ -556,6 +566,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       lanes: this.laneIds,
       laneCapacity: LANE_CAPACITY,
       lastDeadCellFor: (f) => this.lastDeadCell.get(f) ?? null,
+      corpseOf: (id) => this.corpseOf(id),
       onAction: (info) => {
         this.actionRuleSeeds.set(info.actionId, this.activeTriggerIds())
         const targets = info.targets
@@ -1569,6 +1580,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     const ratio = this.reviveRatio(node.hpRatio, target)
     target.pool('hp').setValue(Math.max(1, round2(target.hpMax * ratio)))
     this.dead.delete(target.id)
+    this.corpses.delete(target.id)
     // 落位：original = 原坐标（若已离场则用最近阵亡坐标补回）；tail = 回己方队尾
     const original = target.position
     const anchor = original ?? this.lastDeadCell.get(target.faction) ?? null
@@ -2032,6 +2044,29 @@ class CombatRuntime implements CombatRuntimeHandle {
 
   // ---------- 收尾 ----------
 
+  private recordCorpse(unit: CombatUnit): void {
+    if (!unit.position || unit.summonerId != null || unit.unitType === 'ILLUSION') return
+    this.corpseSeq += 1
+    this.corpses.set(unit.id, {
+      coord: { ...unit.position },
+      order: this.corpseSeq,
+      expiresAtTick: this.tickCount + 3,
+    })
+  }
+
+  private expireCorpses(): void {
+    for (const [unitId, corpse] of this.corpses) {
+      if (this.tickCount < corpse.expiresAtTick) continue
+      this.corpses.delete(unitId)
+      this.emit({ type: 'CorpseExpired', unitId })
+    }
+  }
+
+  private corpseOf(unitId: UnitId): { coord: Coordinate; order: number } | undefined {
+    const corpse = this.corpses.get(unitId)
+    return corpse ? { coord: corpse.coord, order: corpse.order } : undefined
+  }
+
   private checkDeaths(): void {
     for (const u of this.units.all()) {
       if (!u.isDead || this.dead.has(u.id)) continue
@@ -2054,6 +2089,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       }
       // on_death 载荷里的 reviveOf 可能已把单位救回：复活者不再走收尾（保留坐标/技能组/状态）
       if (u.isDead) {
+        this.recordCorpse(u)
         u.provenance.revertAll()
         this.placement.remove(u.id)
       }

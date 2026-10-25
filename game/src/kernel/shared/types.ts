@@ -102,6 +102,8 @@ export interface UnitFilter {
   emptySlot?: boolean
   /** 相对触发器持有者/界域所有者的阵营过滤（filter.side；all/both 不约束） */
   side?: 'ally' | 'enemy' | 'all' | 'both' | 'any'
+  /** 亡骸寻址：true = 只取未过期亡骸（无视 anchor/scope 几何）；正常选靶仍排除死者 */
+  corpse?: boolean
   /** 触发器事件过滤：仅 on_status_gain 使用——本次获得的状态 id */
   statusId?: string
   adjacency?: Record<string, Scalar>

@@ -46,7 +46,7 @@ export class CombatScheduler implements Scheduler {
     emit({ type: 'TickAdvanced', tickIndex: battle.clock })
 
     for (const unit of units.all()) {
-      if (unit.detached) continue
+      if (unit.detached || unit.isDead) continue
       // 2 Gauge 累积 + 严格越阈
       const g = unit.gauge.advance()
       if (g.crossed) {
@@ -55,7 +55,7 @@ export class CombatScheduler implements Scheduler {
       }
     }
     for (const unit of units.all()) {
-      if (unit.detached) continue
+      if (unit.detached || unit.isDead) continue
       // 3 Pool regen
       for (const pool of unit.pools.values()) pool.regenerate()
       // 4 Channel 递减

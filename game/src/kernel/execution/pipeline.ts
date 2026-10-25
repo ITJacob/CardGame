@@ -1,7 +1,7 @@
 // 执行流水线 I→R→M→O（执行上下文 §四）。
 // P2a：consumption 仅 instant 实做；R 无转向规则（finalTargets=committedTargets）；
 // Manual 且候选>pickCount 时挂起，返回 continueWith 供 UI/AI 喂回选择。
-import type { FactionId, LaneId } from '../ids'
+import type { FactionId, LaneId, UnitId } from '../ids'
 import type { DomainEvent } from '../combat/types'
 import type { Coordinate } from '../battle/types'
 import type { EffectNode, WeaponDef } from '../catalog/types'
@@ -32,6 +32,8 @@ export interface PipelineDeps {
   laneCapacity: number
   /** 最近阵亡友军坐标（anchor:last_dead_ally） */
   lastDeadCellFor?(faction: FactionId): Coordinate | null
+  /** 未过期亡骸（filter.corpse 寻址） */
+  corpseOf?(unitId: UnitId): { coord: Coordinate; order: number } | undefined
   /** 选靶完成后、O 之前（runtime 用它在 zone/domain 分流时登记实例） */
   onAction?(info: ActionInfo): void
   /** O 完成后（zone/domain 早退前也调用）；runtime 在此时结算规则槽动作规则 */
@@ -91,6 +93,7 @@ export function runBehavior(
     laneCapacity: deps.laneCapacity,
     unsupported: deps.unsupported,
     lastDeadCellFor: deps.lastDeadCellFor,
+    corpseOf: deps.corpseOf,
   })
 
   // 命中数：area 恒为区域内全取；unit 取 pickCount（整数=N，'all'=池内全部），缺省 1
@@ -188,6 +191,7 @@ function settle(
       laneCapacity: deps.laneCapacity,
       unsupported: deps.unsupported,
       lastDeadCellFor: deps.lastDeadCellFor,
+      corpseOf: deps.corpseOf,
     })
     const pickRawS = reqS.pickCount
     const n = (reqS.mode ?? 'unit') === 'area' || pickRawS === 'all'
