@@ -23,7 +23,7 @@ export function handleAdvanceClock(node: EffAdvanceClock, _t: CombatUnit | null,
 }
 
 export function handleDomain(node: EffDomain, _t: CombatUnit | null, ctx: EffectContext): void {
-  ctx.ops.applyDomain(node.op, node.def, node.duration ?? -1, ctx.caster)
+  ctx.ops.applyDomain(node.op, node.def, node.duration, ctx.caster)
 }
 
 export function handleSnapshot(node: EffSnapshot, target: CombatUnit | null, ctx: EffectContext): void {

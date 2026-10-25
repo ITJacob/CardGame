@@ -25,6 +25,10 @@ export interface DamageInput {
   minDamage?: number
   /** 行动卡 dimHooks 的维度乘区（进入 ⑤ 乘区段） */
   dimMul?: number
+  /** 界域 empower 的出伤乘区（进入 ⑤ 乘区段；DoT 不进通用乘区） */
+  domainMul?: number
+  /** 界域 disable_effect(effectType:'shield')：跳过护盾吸收段 */
+  skipShield?: boolean
   /** 单位查询：承伤光环需要按召唤者 id 取施予者 */
   unitById?: (id: string) => CombatUnit | undefined
   /** 全场单位：友军光环与 alive_allies / field_status_count 条件 */
@@ -67,7 +71,7 @@ export function resolveDamage(input: DamageInput): DamageResult {
   let cur = raw
 
   // ① 护盾（LIFO；P2a 单层）
-  if (!pierced.has('shield') && !input.dot) {
+  if (!pierced.has('shield') && !input.dot && !input.skipShield) {
     const before = cur
     const used = Math.min(defender.pool('shield').current, cur)
     absorbed.shield = round2(used)
@@ -114,6 +118,7 @@ export function resolveDamage(input: DamageInput): DamageResult {
     cur *= defender.damageTakenMulFor(event)
     cur *= attacker?.damageDealtMulFor(event) ?? 1
     cur *= input.dimMul ?? 1
+    cur *= input.domainMul ?? 1
     const delta = defender.damageTakenBucket + (attacker?.damageDealtBucket ?? 0)
     cur *= Math.max(0, 1 + delta)
     push('multiplier', before, cur)

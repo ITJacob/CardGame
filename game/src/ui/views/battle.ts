@@ -1313,6 +1313,8 @@ function describe(s: BattleSession, e: DomainEvent): string {
     case 'UnitTranslocated': return `${logNameOf(s, e.unitId)} 被放逐`
     case 'UnitReturned': return `${logNameOf(s, e.unitId)} 回归`
     case 'DomainPlaced': return `界域展开 ${e.defId}`
+    case 'DomainCovered': return `界域被压制 ${e.defId}`
+    case 'DomainExpired': return `界域消散 ${e.defId}`
     case 'ZonePlaced': return `区域布下`
     default: return e.type
   }

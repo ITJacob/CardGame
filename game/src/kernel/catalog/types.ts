@@ -528,6 +528,10 @@ export interface RulePatch {
   kind: string
   side?: string
   tag?: string | string[]
+  /** 取反过滤：卡面 tags 与其中任一重合则不命中 */
+  tagNot?: string | string[]
+  /** 仅 targetSpec 为单体（mode !== area 且 pickCount 缺省/1）的技能 */
+  singleTarget?: boolean
   mul?: number
   stat?: string
   effectType?: string

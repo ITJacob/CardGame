@@ -67,6 +67,8 @@ export function handleDamage(node: EffDamage, target: CombatUnit | null, ctx: Ef
     pierce: [...pierce],
     armorPierceRatio: Math.max(numeric(node.armorPierceRatio, 0), outgoing?.armorPierceRatio ?? 0),
     dimMul: ctx.dimMul?.('damage') ?? 1,
+    domainMul: ctx.domainRule?.damageMul?.(attacker?.faction) ?? 1,
+    skipShield: ctx.domainRule?.shieldBlocked?.(target.faction) ?? false,
     unitById: (id) => ctx.units.get(id),
     allUnits: () => ctx.units.all(),
     phase: ctx.phase,
@@ -82,7 +84,11 @@ export function handleDamage(node: EffDamage, target: CombatUnit | null, ctx: Ef
 export function handleHeal(node: EffHeal, target: CombatUnit | null, ctx: EffectContext): void {
   if (!target || target.isDead) return
   const hp = target.pool('hp')
-  const amount = round2(numeric(node.value, 0) * (ctx.dimMul?.('heal') ?? 1))
+  const amount = round2(
+    numeric(node.value, 0)
+    * (ctx.dimMul?.('heal') ?? 1)
+    * (ctx.domainRule?.healMul?.(ctx.caster?.faction) ?? 1),
+  )
   switch (node.mode) {
     case 'setHp':
       hp.setValue(amount)

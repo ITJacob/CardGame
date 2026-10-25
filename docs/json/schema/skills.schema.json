@@ -3673,7 +3673,25 @@
               }
             }
           ],
-          "description": "按 SkillDef.tags 过滤的作用面，可多值。"
+          "description": "按 SkillDef.tags 过滤的作用面，可多值（any-of）。"
+        },
+        "tagNot": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "description": "取反过滤：卡面 tags 与其中任一重合则不命中（none-of）。"
+        },
+        "singleTarget": {
+          "type": "boolean",
+          "description": "仅作用于单体技能（targetSpec.request.mode !== area 且 pickCount 缺省/1）。"
         },
         "mul": {
           "type": "number"
@@ -3682,7 +3700,8 @@
           "type": "string"
         },
         "effectType": {
-          "type": "string"
+          "type": "string",
+          "description": "效果类型过滤。disable_effect 可取 shield：受击方护盾段不吸收伤害（由伤害链读取）。"
         },
         "delta": {
           "type": "integer",

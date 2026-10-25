@@ -1,9 +1,11 @@
 // 战斗运行时：聚合根 Combat 的实现。持事件总线 / 随机源 / id 生成器 / 注册表 /
 // 战场 / Placement / Scheduler，并把一次 step 停在 Manual 决策点。
 import type { Element, FactionId, LaneId, Phase, PoolKey, StatKey, UnitId } from '../ids'
-import type { Battle, Coordinate, Faction, Lane, OccupancyChanged, Zone } from '../battle/types'
+import type { Battle, Coordinate, DomainInstance, DomainTier, Faction, Lane, OccupancyChanged, Zone } from '../battle/types'
 import { LANE_CAPACITY, SUMMON_CAP_BASE } from '../battle/types'
+import { activeDomains, topOverlay } from '../battle/domain'
 import { BattlePlacement } from '../battle/placement'
+import { domainCostDelta, domainEffectBlocked, domainEmpowerMul, domainShieldBlocked, type RuleProfile } from './domainRules'
 import { createLookup, type CatalogLookup } from '../catalog/lookup'
 import type { Catalog, EffectNode, EffModifyWeapon, EffSpawn, TriggerDef, UnitDef, WeaponDef } from '../catalog/types'
 import { EventBus } from '../shared/events'
@@ -227,6 +229,10 @@ class CombatRuntime implements CombatRuntimeHandle {
         unit.unitDefId = us.defId ?? null
         unit.pathwayId = us.pathwayId ?? null
         this.units.add(unit)
+        for (const [key, value] of Object.entries(us.pools ?? {})) {
+          if (typeof value === 'number') unit.pool(key as PoolKey).setValue(value)
+        }
+        if (us.gauge?.current !== undefined) unit.gauge.setValue('current', us.gauge.current)
         this.installBehaviors(unit, us.activeSlots ?? [])
         this.installPassives(unit, us.passiveSlots ?? [])
         for (const m of us.initialModifiers ?? []) unit.provenance.apply(m.stat, m.value, 'constitution')
@@ -392,7 +398,7 @@ class CombatRuntime implements CombatRuntimeHandle {
 
   private runOpportunity(opp: ActionOpportunity, unit: CombatUnit, freeCount: number): void {
     while (true) {
-      const behaviors = availableBehaviors(unit, unit.activeForcedBehaviors())
+      const behaviors = availableBehaviors(unit, unit.activeForcedBehaviors(), (b) => this.effectiveEnergyCost(b))
       const slot = this.chooseBehavior(behaviors)
       const source = slot ? this.resolveSource(slot, unit) : undefined
       if (!slot || !source) {
@@ -404,7 +410,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       this.lastActionTargets = []
       if (slot.kind === 'skill') this.pushTagChain(unit, source.sourceRef)
       else this.tagChain.delete(unit.id)
-      const r = commitBehavior(unit, slot, opp, source, this.pipelineDeps())
+      const r = commitBehavior(unit, slot, opp, source, this.pipelineDeps(), this.effectiveEnergyCost(slot))
       if (!r.ok) {
         opp.consumedBy = 'wasted'
         unit.gauge.settleOverflow()
@@ -520,7 +526,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       secondaryTargets: skill.secondaryTargets,
       consumption: (skill.targetSpec?.consumption as Consumption) ?? 'instant',
       zoneGrant: skill.zoneGrant ? { def: skill.zoneGrant.def, duration: skill.zoneGrant.duration } : undefined,
-      domainGrant: skill.domainGrant ? { def: skill.domainGrant.def, duration: skill.domainGrant.duration } : undefined,
+      domainGrant: skill.domainGrant ? { def: skill.domainGrant.def, tier: skill.domainGrant.tier, duration: skill.domainGrant.duration } : undefined,
       weapon: skill.weapon,
     }
   }
@@ -546,7 +552,8 @@ class CombatRuntime implements CombatRuntimeHandle {
         if (info.consumption === 'zone' && info.zoneGrant) {
           this.opPlaceZone(info.caster, info.zoneGrant.def, info.zoneGrant.duration ?? -1, targets)
         } else if (info.consumption === 'domain' && info.domainGrant) {
-          this.opDomain('overlay', info.domainGrant.def, info.domainGrant.duration ?? -1, info.caster)
+          this.opDomain(info.domainGrant.tier ?? 'overlay', info.domainGrant.def,
+            info.domainGrant.duration, info.caster, info.sourceRef)
         }
       },
     }
@@ -583,6 +590,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     triggerCtx?: Pick<EffectContext, 'host' | 'subjects' | 'event'>,
   ): EffectContext {
     const ledger = createLedger()
+    const ruleProfile = this.ruleProfileOf(sourceRef)
     return {
       ledger,
       battleDispelled: () => this.dispelledTotal,
@@ -601,6 +609,25 @@ class CombatRuntime implements CombatRuntimeHandle {
       opportunity,
       targetScope,
       dimMul: (target) => this.dimHookMul(sourceRef, target),
+      domainRule: {
+        effectBlocked: (type) => domainEffectBlocked(this.battle.domains, {
+          faction: caster?.faction,
+          tags: ruleProfile.tags,
+          singleTarget: ruleProfile.singleTarget,
+          effectType: type,
+        }),
+        damageMul: (faction) => domainEmpowerMul(this.battle.domains, {
+          faction,
+          tags: ruleProfile.tags,
+          singleTarget: ruleProfile.singleTarget,
+        }, 'damage'),
+        healMul: (faction) => domainEmpowerMul(this.battle.domains, {
+          faction,
+          tags: ruleProfile.tags,
+          singleTarget: ruleProfile.singleTarget,
+        }, 'heal'),
+        shieldBlocked: (faction) => domainShieldBlocked(this.battle.domains, faction),
+      },
       actionRef: sourceRef,
       weaponDamage: caster != null && caster.weapon != null && this.isAttackActionRef(sourceRef),
       damageSource: this.isAttackActionRef(sourceRef) ? 'behavior' : 'status',
@@ -695,6 +722,44 @@ class CombatRuntime implements CombatRuntimeHandle {
     return this.battle.meters[dim] ?? 0
   }
 
+  /** 当前 Action 来源卡的规则过滤面（tag / 单体 / 效果类型），供 RulePatch 读取 */
+  private ruleProfileOf(ref: string | undefined): RuleProfile {
+    const skill = ref ? this.lookup.skillDef(ref) : undefined
+    if (!skill) return { tags: [], singleTarget: false, effectTypes: [] }
+    const req = skill.targetSpec?.request
+    const singleTarget = req === undefined
+      ? true
+      : req.mode !== 'area' && (req.pickCount === undefined || req.pickCount === 1)
+    const effectTypes = new Set<string>()
+    for (const r of skill.effects) {
+      const node = this.lookup.effectNode(r.ref)
+      if (node) this.collectEffectTypes(node, effectTypes)
+    }
+    return { tags: skill.tags ?? [], singleTarget, effectTypes: [...effectTypes] }
+  }
+
+  private collectEffectTypes(node: EffectNode, out: Set<string>): void {
+    const n = node as unknown as {
+      op?: string; type?: string; steps?: EffectNode[]; then?: EffectNode[]; else?: EffectNode[]
+    }
+    if (n.op === 'sequence' || n.op === 'repeat') {
+      for (const step of n.steps ?? []) this.collectEffectTypes(step, out)
+      return
+    }
+    if (n.op === 'if') {
+      for (const step of n.then ?? []) this.collectEffectTypes(step, out)
+      for (const step of n.else ?? []) this.collectEffectTypes(step, out)
+      return
+    }
+    if (n.type) out.add(n.type)
+  }
+
+  /** cost_mod：技能的实际能量费（不写回 slot，modify_skill 的静态改动仍生效） */
+  private effectiveEnergyCost(slot: BehaviorSlot): number {
+    if (slot.kind !== 'skill') return slot.cost.energy
+    return Math.max(0, slot.cost.energy + domainCostDelta(this.battle.domains, this.ruleProfileOf(slot.defId)))
+  }
+
   /** 行动卡 dimHooks 对指定结算桶的乘区积；同维度多档只取最贴合的一档（微光档不自叠白昼档） */
   private dimHookMul(cardId: string | undefined, target: 'damage' | 'heal'): number {
     if (!cardId) return 1
@@ -752,29 +817,66 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.battle.luminance = LUM[next]
   }
 
-  private opDomain(_op: string, defId: string | undefined, duration: number, _caster: CombatUnit | null): void {
+  private opDomain(
+    op: string,
+    defId: string | undefined,
+    duration: number | undefined,
+    caster: CombatUnit | null,
+    sourceRef?: string,
+  ): void {
     const def = defId ? this.lookup.domainDef?.(defId) : undefined
     if (!def) {
       this.unsupported('domain', `未知界域 ${String(defId)}`)
       return
     }
+    const profile = this.ruleProfileOf(sourceRef)
+    if (domainEffectBlocked(this.battle.domains, {
+      faction: caster?.faction,
+      tags: profile.tags,
+      singleTarget: profile.singleTarget,
+      effectType: 'domain',
+    })) return
+
+    const raw = duration ?? def.duration ?? -1
+    const tier: DomainTier = op === 'hero' ? 'hero' : op === 'swap' ? 'base' : (
+      op === 'overlay' ? 'overlay' : (def.tier === 'hero' || def.tier === 'base' ? def.tier : 'overlay')
+    )
     this.domainSeq += 1
-    this.battle.domains.push({
+    const instance: DomainInstance = {
       def,
+      tier,
       grant: {
-        duration: duration < 0 ? -1 : Math.max(1, duration),
+        duration: raw < 0 ? -1 : Math.max(1, raw),
         priority: this.domainSeq,
         sourceId: this.ids.next('domain'),
-        ownerFaction: _caster?.faction,
-        casterId: _caster?.id,
+        ownerFaction: caster?.faction,
+        casterId: caster?.id,
       },
-    })
+    }
+
+    const prevTop = topOverlay(this.battle.domains)
+    let demoted = 0
+    if (tier === 'base' && op === 'swap') {
+      // 底层与栈顶对换：原 base 降为 overlay（仅改层籍），并压在新域之上
+      for (const d of this.battle.domains) {
+        if (d.tier !== 'base') continue
+        d.tier = 'overlay'
+        this.domainSeq += 1
+        d.grant.priority = this.domainSeq
+        demoted += 1
+      }
+    }
+    this.battle.domains.push(instance)
+    this.emit({ type: 'DomainPlaced', defId: def.id, tier })
+    if (prevTop && (tier === 'overlay' || demoted > 0)) {
+      this.emit({ type: 'DomainCovered', defId: prevTop.def.id, tier: prevTop.tier })
+    }
   }
 
-  /** 界域触发器（战场参数 §1.2）：全局第三方监听，filter.side 相对界域所有者 */
+  /** 界域触发器（战场参数 §1.2）：全局第三方监听，filter.side 相对界域所有者；只跑 active 界域 */
   private fireDomainTriggers(event: 'on_tick' | 'on_turn_start' | 'on_attack', subject?: CombatUnit): void {
     if (this.battle.domains.length === 0) return
-    for (const d of this.battle.domains) {
+    for (const d of activeDomains(this.battle.domains)) {
       const owner = d.grant.ownerFaction
       if (!owner) continue
       // 事件主体在场时它就是触发器宿主（on_attack 的 self = 攻击者；on_turn_start 的 self = 行动者）
@@ -1369,20 +1471,23 @@ class CombatRuntime implements CombatRuntimeHandle {
     return hit.length
   }
 
-  /** dispel=domain：解除可驱散界域（tier 过滤；base 不可驱散，INV-B11） */
+  /** dispel=domain：解除正在生效的可驱散界域（base 不可驱散，INV-B11） */
   private opDispelDomain(tier?: string, count?: number): number {
+    const active = new Set(activeDomains(this.battle.domains))
     const keep: typeof this.battle.domains = []
     let removed = 0
     for (const d of this.battle.domains) {
-      const hit = d.def.dispelable
-        && (tier === undefined || d.def.tier === tier)
+      const hit = active.has(d)
+        && d.tier !== 'base'
+        && d.def.dispelable
+        && (tier === undefined || d.tier === tier)
         && (count === undefined || removed < count)
       if (!hit) {
         keep.push(d)
         continue
       }
       removed += 1
-      this.emit({ type: 'DomainExpired', defId: d.def.id, tier: d.def.tier })
+      this.emit({ type: 'DomainExpired', defId: d.def.id, tier: d.tier })
     }
     this.battle.domains = keep
     return removed

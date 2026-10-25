@@ -100,6 +100,8 @@ export interface DomainGrant {
 
 export interface DomainInstance {
   def: DomainDef
+  /** 实例层籍：swap 会改层籍而不改 Def；压制栈与驱散按这里判定 */
+  tier: DomainTier
   grant: DomainGrant
 }
 

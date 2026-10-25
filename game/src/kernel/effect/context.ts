@@ -1,5 +1,5 @@
 // 效果结算的运行时上下文与工具。
-import type { Element, Phase } from '../ids'
+import type { Element, FactionId, Phase } from '../ids'
 import type { DomainEvent } from '../combat/types'
 import type { EffGrantImmunity, EffModifyWeapon, EffSpawn, EffectNode, StatusDef } from '../catalog/types'
 import type { IdGenerator } from '../shared/id-generator'
@@ -73,6 +73,13 @@ export interface EffectContext {
   readonly ops: EffectOps
   /** 当前行动卡的 dimHooks 维度乘区系数（缺省 1；damage / heal / all） */
   readonly dimMul?: (target: 'damage' | 'heal') => number
+  /** 现行界域 RulePatch 的被动读取面（战场参数 §1.2 / INV-D6） */
+  readonly domainRule?: {
+    effectBlocked?: (type: string) => boolean
+    damageMul?: (faction: FactionId | undefined) => number
+    healMul?: (faction: FactionId | undefined) => number
+    shieldBlocked?: (faction: FactionId | undefined) => boolean
+  }
   /** 发起本次结算的来源卡 id（普攻为 __basic_attack__；weaponDamage 判据用） */
   readonly actionRef?: string
   /** 本次结算是否属于「会消耗装备武器耐久的攻击」（普攻/攻击类主动 + 武器在槽） */
@@ -123,7 +130,7 @@ export interface EffectOps {
   // ---- P2b-2 ----
   setLuminance(value: number | null, delta: number | null, duration: number | null, dispelable: boolean): void
   advanceClock(ticks: number): void
-  applyDomain(op: string, defId: string | undefined, duration: number, caster: CombatUnit | null): void
+  applyDomain(op: string, defId: string | undefined, duration: number | undefined, caster: CombatUnit | null): void
   placeZone(caster: CombatUnit | null, defId: string | undefined, duration: number, targets: readonly CombatUnit[]): void
   snapshotUnit(unit: CombatUnit, fields: readonly string[]): void
   restoreUnit(unit: CombatUnit, fields: readonly string[]): void

@@ -142,6 +142,7 @@ function executeNode(node: EffectNode, targets: readonly (CombatUnit | null)[], 
   }
 
   const type = (node as { type?: string }).type
+  if (type && ctx.domainRule?.effectBlocked?.(type)) return
   const handler = type ? HANDLERS[type] : undefined
   if (!handler) {
     ctx.unsupported(type ?? '未知节点')

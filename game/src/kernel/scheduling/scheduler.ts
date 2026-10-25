@@ -1,7 +1,8 @@
 // 调度器：tick 原子推进（8 阶段），推进(1–7) 与授予(8) 严格分离。
 // detached 单位跳过第 2–6 步（计时冻结）。P2a 的 Zone/Domain 运行时为 stub。
 import type { Phase } from '../ids'
-import type { Battle } from '../battle/types'
+import type { Battle, DomainInstance } from '../battle/types'
+import { activeDomains } from '../battle/domain'
 import type { DomainEvent } from '../combat/types'
 import type { Registry } from '../roster/registry'
 import type { CombatUnit } from '../roster/unit'
@@ -71,9 +72,19 @@ export class CombatScheduler implements Scheduler {
       unit.provenance.tick()
     }
 
-    // 7 Zone/界域 duration 递减（P2a stub：仅递减 domains）
-    for (const d of battle.domains) if (d.grant.duration > 0) d.grant.duration -= 1
-    battle.domains = battle.domains.filter((d) => d.grant.duration !== 0)
+    // 7 界域 duration 递减：被压制的 overlay 暂停计时（战场上下文 §六）
+    const active = new Set(activeDomains(battle.domains))
+    const expired: DomainInstance[] = []
+    for (const d of battle.domains) {
+      if (!active.has(d) || d.grant.duration <= 0) continue
+      d.grant.duration -= 1
+      if (d.grant.duration === 0) expired.push(d)
+    }
+    if (expired.length > 0) {
+      const gone = new Set(expired)
+      battle.domains = battle.domains.filter((d) => !gone.has(d))
+      for (const d of expired) emit({ type: 'DomainExpired', defId: d.def.id, tier: d.tier })
+    }
 
     // 8 授予交由 runtime 处理
     return crossed

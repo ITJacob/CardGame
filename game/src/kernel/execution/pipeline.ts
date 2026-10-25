@@ -33,7 +33,14 @@ export interface PipelineDeps {
   /** 最近阵亡友军坐标（anchor:last_dead_ally） */
   lastDeadCellFor?(faction: FactionId): Coordinate | null
   /** 结算完成后回调（runtime 用它在 zone/domain 分流时登记实例） */
-  onAction?(info: { caster: CombatUnit; consumption: Consumption; targets: readonly ResolvedTarget[]; zoneGrant?: { def: string; duration?: number }; domainGrant?: { def: string; duration?: number } }): void
+  onAction?(info: {
+    caster: CombatUnit
+    sourceRef: string
+    consumption: Consumption
+    targets: readonly ResolvedTarget[]
+    zoneGrant?: { def: string; duration?: number }
+    domainGrant?: { def: string; tier?: string; duration?: number }
+  }): void
   /** kind=weapon 的卡：扣费成功后、战吼/选靶之前装备 */
   equipWeapon?(caster: CombatUnit, weapon: WeaponDef): void
 }
@@ -47,7 +54,7 @@ export interface BehaviorSource {
   consumption: Consumption
   /** consumption=zone / domain 时的卡面授予（由 runtime 消费） */
   zoneGrant?: { def: string; duration?: number }
-  domainGrant?: { def: string; duration?: number }
+  domainGrant?: { def: string; tier?: string; duration?: number }
   /** kind=weapon：装备载荷（战吼走 effects） */
   weapon?: WeaponDef
 }
@@ -139,7 +146,7 @@ function settle(
   deps.emit({ type: 'TargetsResolved', actionId, targets: action.finalTargets })
 
   // M：consumption 分流（zone/domain 由 runtime 经 onAction 登记，不走 O）
-  deps.onAction?.({ caster, consumption: source.consumption, targets: action.finalTargets, zoneGrant: source.zoneGrant, domainGrant: source.domainGrant })
+  deps.onAction?.({ caster, sourceRef: source.sourceRef, consumption: source.consumption, targets: action.finalTargets, zoneGrant: source.zoneGrant, domainGrant: source.domainGrant })
   if (source.consumption === 'zone' || source.consumption === 'domain') {
     return
   }
