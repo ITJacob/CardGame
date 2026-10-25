@@ -91,25 +91,6 @@
       },
       "triggers": [
         {
-          "event": "on_active_skill",
-          "effects": [
-            {
-              "type": "damage",
-              "element": "mental",
-              "value": 3,
-              "target": "self",
-              "note": "惩罚作用于违背者（持有者），结算归施法者（casterId F56）"
-            },
-            {
-              "type": "mount_status",
-              "statusId": "shackle",
-              "duration": 10,
-              "target": "self"
-            }
-          ],
-          "consumeCharge": 1
-        },
-        {
           "event": "on_turn_start",
           "effects": [
             {
@@ -123,7 +104,7 @@
           ]
         }
       ],
-      "note": "🔴 decree 状态族（rule / punishment 字段）未落 ddd（本稿新增项 2）；触发点 on_active_skill ✅、惩罚归施法者 casterId ✅ 均已落。退化方案：改为沉默 10t + mental 3 硬控（失去立法者辨识度，不推荐） ｜ 2026-10-02 补漏批③：on_turn_start 回合宣示状态面（矩阵触发点仲裁人正主落地）"
+      "note": "decree 状态族：rule / punishment 由规则槽承载（on_active_skill 惩罚已迁至 Rules[3] slot0）；本状态保留 duration/charges 标记与 on_turn_start 回合宣示。 ｜ 2026-10-02 补漏批③：on_turn_start 状态面。"
     },
     {
       "id": "authority",

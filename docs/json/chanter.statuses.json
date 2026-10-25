@@ -256,21 +256,7 @@
       ],
       "dispelable": true,
       "duration": 25,
-      "triggers": [
-        {
-          "event": "on_deal_damage",
-          "effects": [
-            {
-              "type": "damage",
-              "element": "holy",
-              "value": 2,
-              "target": "self",
-              "note": "违约代价：伤害结算回持有者自身"
-            }
-          ]
-        }
-      ],
-      "note": "与既有「反伤」同族母版（差异：反伤只在攻击施法者时触发，本条攻击任何人都付代价）"
+      "note": "誓约标记：违约惩罚由规则槽 slot2 承载（on_deal_damage 触发器已迁出本状态）。"
     },
     {
       "id": "purify",
@@ -394,28 +380,7 @@
       ],
       "dispelable": true,
       "duration": 40,
-      "triggers": [
-        {
-          "event": "on_attack",
-          "condition": {
-            "kind": "hp_percent_compare",
-            "aSide": "target",
-            "bSide": "self",
-            "cmp": "<"
-          },
-          "effects": [
-            {
-              "type": "mount_status",
-              "statusId": "guilty",
-              "duration": 30,
-              "target": "self",
-              "note": "违背准则（加害弱者）者被定罪；触发者为发动攻击的单位"
-            }
-          ],
-          "note": "默认档「不得加害弱者」；on_attack 触发点已落（执行参数 §2.1），规避 G15-b 时间尺度冲突"
-        }
-      ],
-      "note": "准则内容为数据层变体档（B6），引擎只承载「立法 + 违背判定 + 定罪」"
+      "note": "正义准则标记：违约定罪由规则槽 slot2 承载（on_attack 触发器已迁出本状态）。准则内容为数据层变体档（B6）。"
     },
     {
       "id": "guilty",

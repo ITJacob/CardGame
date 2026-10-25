@@ -178,6 +178,8 @@ export type DomainEvent =
   | { type: 'DomainPlaced'; defId: string; tier: string }
   | { type: 'DomainCovered'; defId: string; tier: string }
   | { type: 'DomainExpired'; defId: string; tier: string }
+  | { type: 'RuleSlotChanged'; slot: number; field: string; mode: string }
+  | { type: 'RuleTriggered'; slot: number; rule: string; unitId: UnitId }
   | { type: 'UnitTranslocated'; unitId: UnitId }
   | { type: 'UnitReturned'; unitId: UnitId }
   | { type: 'UnitSpawned'; unitId: UnitId }

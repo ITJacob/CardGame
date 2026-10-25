@@ -1315,6 +1315,8 @@ function describe(s: BattleSession, e: DomainEvent): string {
     case 'DomainPlaced': return `界域展开 ${e.defId}`
     case 'DomainCovered': return `界域被压制 ${e.defId}`
     case 'DomainExpired': return `界域消散 ${e.defId}`
+    case 'RuleSlotChanged': return `规则槽 ${e.slot} · ${e.field} ${e.mode}`
+    case 'RuleTriggered': return `规则触发 · ${e.rule} · ${logNameOf(s, e.unitId)}`
     case 'ZonePlaced': return `区域布下`
     default: return e.type
   }

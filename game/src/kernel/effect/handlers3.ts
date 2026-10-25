@@ -65,12 +65,12 @@ export function handleTargetOverride(node: EffTargetOverride, target: CombatUnit
   ctx.ops.applyTargetOverride(target, { anchor: node.anchor, faction: node.faction, sort: node.sort, unitId: node.unitId })
 }
 
-export function handleWriteRuleSlot(node: EffWriteRuleSlot, _t: CombatUnit | null, ctx: EffectContext): void {
-  ctx.ops.writeRuleSlot(node, ctx.caster)
+export function handleWriteRuleSlot(node: EffWriteRuleSlot, target: CombatUnit | null, ctx: EffectContext): void {
+  ctx.ops.writeRuleSlot(node, ctx.caster, target)
 }
 
-export function handleModifyRuleSlot(node: EffModifyRuleSlot, _t: CombatUnit | null, ctx: EffectContext): void {
-  ctx.ops.modifyRuleSlot(node, ctx.caster)
+export function handleModifyRuleSlot(node: EffModifyRuleSlot, target: CombatUnit | null, ctx: EffectContext): void {
+  ctx.ops.modifyRuleSlot(node, ctx.caster, target)
 }
 
 /** splash/splash_adjacent 的目标集合：目标所在路的前后邻接（P2b-2 取「目标 + 同路相邻一格」） */

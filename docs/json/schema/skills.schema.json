@@ -4280,7 +4280,7 @@
     },
     "effWriteRuleSlot": {
       "type": "object",
-      "description": "写入规则槽：把一条规则写进战场级 Rules[3] 的指定槽位。overwrite=true 覆盖该槽；false 仅在槽位为空时写入（write-if-empty，modify_rule_slot 无此语义）。改写既有规则用 modify_rule_slot。",
+      "description": "写入规则槽：把一条规则写进战场级 Rules[3] 的指定槽位。overwrite=true 覆盖该槽同 field 的既有规则；false 仅当该 field 为空时写入（write-if-empty，modify_rule_slot 无此语义）。改写既有规则用 modify_rule_slot。",
       "required": [
         "type"
       ],
@@ -4313,7 +4313,7 @@
         },
         "overwrite": {
           "type": "boolean",
-          "description": "是否覆盖该槽既有规则（默认 true）。"
+          "description": "是否覆盖该槽同 field 的既有规则（默认 true）。"
         },
         "note": {
           "type": "string"

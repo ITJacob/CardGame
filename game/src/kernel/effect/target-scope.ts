@@ -25,6 +25,8 @@ export interface TargetScope {
   readonly attacker: CombatUnit | null
   /** `killed_unit` 的落点（on_kill / on_death 语境） */
   readonly killed: CombatUnit | null
+  /** `rule_breaker` 的落点：规则槽 punish 语境下的违约单位 */
+  readonly ruleBreaker?: CombatUnit | null
   /** 群体与几何简写展开的敌方阵营（宿主阵营的对位） */
   readonly enemyFaction: FactionId | null
   readonly opportunity?: OpportunityPayload
@@ -175,6 +177,9 @@ export function resolveEffectTargets(
       return one(scope.attacker ?? host)
     case 'killed_unit':
       return one(scope.killed ?? host)
+    case 'rule_breaker':
+      // 仅规则槽 punish 语境有落点；无语境时返回空集，绝不回退宿主（避免误罚规则施法者）
+      return one(scope.ruleBreaker ?? null)
     // —— 群体 ——
     case 'all_allies':
       return allies()

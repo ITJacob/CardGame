@@ -139,8 +139,8 @@ export interface EffectOps {
   shuffleStatuses(units: readonly CombatUnit[], count: number): void
   modifySkillOf(unit: CombatUnit, node: EffectNode): void
   applyTargetOverride(unit: CombatUnit, spec: { anchor?: string; faction?: string; sort?: string; unitId?: string }): void
-  writeRuleSlot(node: EffectNode, caster: CombatUnit | null): void
-  modifyRuleSlot(node: EffectNode, caster: CombatUnit | null): void
+  writeRuleSlot(node: EffectNode, caster: CombatUnit | null, target: CombatUnit | null): void
+  modifyRuleSlot(node: EffectNode, caster: CombatUnit | null, target: CombatUnit | null): void
   /** 战场级量表（secrecy / order / fate_value） */
   boardMeter(key: string, value: number, set: boolean): void
   /** 战场级量表读数（meter_compare 谓词） */

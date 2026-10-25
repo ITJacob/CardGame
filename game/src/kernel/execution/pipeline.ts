@@ -32,17 +32,24 @@ export interface PipelineDeps {
   laneCapacity: number
   /** 最近阵亡友军坐标（anchor:last_dead_ally） */
   lastDeadCellFor?(faction: FactionId): Coordinate | null
-  /** 结算完成后回调（runtime 用它在 zone/domain 分流时登记实例） */
-  onAction?(info: {
-    caster: CombatUnit
-    sourceRef: string
-    consumption: Consumption
-    targets: readonly ResolvedTarget[]
-    zoneGrant?: { def: string; duration?: number }
-    domainGrant?: { def: string; tier?: string; duration?: number }
-  }): void
+  /** 选靶完成后、O 之前（runtime 用它在 zone/domain 分流时登记实例） */
+  onAction?(info: ActionInfo): void
+  /** O 完成后（zone/domain 早退前也调用）；runtime 在此时结算规则槽动作规则 */
+  afterSettle?(info: ActionInfo): void
   /** kind=weapon 的卡：扣费成功后、战吼/选靶之前装备 */
   equipWeapon?(caster: CombatUnit, weapon: WeaponDef): void
+}
+
+export interface ActionInfo {
+  actionId: string
+  caster: CombatUnit
+  sourceRef: string
+  consumption: Consumption
+  targets: readonly ResolvedTarget[]
+  /** 与 targets 对齐的「本次行动前 HP%」；空位为 null。规则 on_attack 条件用 */
+  targetHpPercent: readonly (number | null)[]
+  zoneGrant?: { def: string; duration?: number }
+  domainGrant?: { def: string; tier?: string; duration?: number }
 }
 
 export interface BehaviorSource {
@@ -145,14 +152,24 @@ function settle(
   deps.emit({ type: 'BehaviorCommitted', actionId, caster: caster.id, cost: source.consumption, sourceRef: source.sourceRef })
   deps.emit({ type: 'TargetsResolved', actionId, targets: action.finalTargets })
 
-  // M：consumption 分流（zone/domain 由 runtime 经 onAction 登记，不走 O）
-  deps.onAction?.({ caster, sourceRef: source.sourceRef, consumption: source.consumption, targets: action.finalTargets, zoneGrant: source.zoneGrant, domainGrant: source.domainGrant })
-  if (source.consumption === 'zone' || source.consumption === 'domain') {
-    return
+  const targetUnits = action.finalTargets.map((t) => (t.occupant ? deps.units.get(t.occupant) ?? null : null))
+  const info: ActionInfo = {
+    actionId,
+    caster,
+    sourceRef: source.sourceRef,
+    consumption: source.consumption,
+    targets: action.finalTargets,
+    targetHpPercent: targetUnits.map((u) => (u && !u.isDead ? u.pool('hp').current / u.hpMax : null)),
+    zoneGrant: source.zoneGrant,
+    domainGrant: source.domainGrant,
   }
 
-  // O：逐目标 condition→handler→事件
-  const targetUnits = action.finalTargets.map((t) => (t.occupant ? deps.units.get(t.occupant) ?? null : null))
+  // M：consumption 分流（zone/domain 由 runtime 经 onAction 登记，不走 O）
+  deps.onAction?.(info)
+  if (source.consumption === 'zone' || source.consumption === 'domain') {
+    deps.afterSettle?.(info)
+    return
+  }
   // 卡片语境（执行参数 §2.1c）：效果节点自带的 target 简写以「施法者 + 本次选靶命中集合」求值；
   // 不带 target 的节点仍落在下面传入的 targetUnits（选靶）上。
   const hit = targetUnits.filter((u): u is CombatUnit => u != null)
@@ -197,6 +214,7 @@ function settle(
     if (!t.occupant) continue
     deps.emit({ type: 'EffectApplied', actionId, effectRef: { ref: source.sourceRef }, target: t })
   }
+  deps.afterSettle?.(info)
 }
 
 export { toResolved }

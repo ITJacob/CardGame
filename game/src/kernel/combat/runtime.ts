@@ -20,7 +20,11 @@ import { resolveInitiative } from '../scheduling/initiative'
 import { availableBehaviors } from '../scheduling/filter'
 import type { ActionOpportunity } from '../scheduling/types'
 import { commitBehavior } from '../execution/commit'
-import type { BehaviorSource, PipelineDeps } from '../execution/pipeline'
+import type { ActionInfo, BehaviorSource, PipelineDeps } from '../execution/pipeline'
+import {
+  createRuleSlots, expireRules, findRule, isExempt, isExpired, modifyRule, prohibits, punishNodes,
+  triggerValue, writeRule, type RuleField, type RuleSlotEntry, type RuleSlotMeta, type RuleSlotState,
+} from './ruleSlots'
 import type { Consumption } from '../shared/types'
 import type { DecisionInput, DecisionRequest } from '../execution/types'
 import { createLedger, numeric, withParams, type EffectContext, type OpportunityPayload, type ResolutionLedger } from '../effect/context'
@@ -129,7 +133,10 @@ class CombatRuntime implements CombatRuntimeHandle {
   private prevPhase: Phase = 'day'
   private readonly snapshots = new Map<UnitId, Record<string, unknown>>()
   private readonly lastSkill = new Map<UnitId, { sourceRef: string; effects: readonly EffectNode[] }>()
-  private readonly ruleSlots: { field: string; value: unknown }[][] = [[], [], []]
+  private readonly ruleSlots: RuleSlotState = createRuleSlots()
+  /** 每个 Action 开始时已存在的 trigger sourceId；O 中新写的规则不在本次行动反噬自己 */
+  private readonly actionRuleSeeds = new Map<string, Set<string>>()
+  private ruleTriggerDepth = 0
   private domainSeq = 0
   private readonly domainLastFire = new Map<string, number>()
   /** 状态/被动/武器触发器的 minIntervalTicks 节流（key = unit#来源#序号#事件） */
@@ -329,6 +336,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
     this.tickCount += 1
     this.stats.ticks = this.tickCount
+    this.expireRuleSlots()
 
     const crossed = this.scheduler.tick()
     this.tickTimers()
@@ -399,6 +407,7 @@ class CombatRuntime implements CombatRuntimeHandle {
   private runOpportunity(opp: ActionOpportunity, unit: CombatUnit, freeCount: number): void {
     while (true) {
       const behaviors = availableBehaviors(unit, unit.activeForcedBehaviors(), (b) => this.effectiveEnergyCost(b))
+        .filter((b) => this.ruleAllowsAction(unit, b))
       const slot = this.chooseBehavior(behaviors)
       const source = slot ? this.resolveSource(slot, unit) : undefined
       if (!slot || !source) {
@@ -421,18 +430,21 @@ class CombatRuntime implements CombatRuntimeHandle {
       const attackSubjects: TriggerSubjects | undefined = this.lastActionTargets[0]
         ? { attacker: unit, target: this.lastActionTargets[0] }
         : undefined
-      if (slot.kind === 'basic_attack') {
-        this.fireStatusTriggers(unit, 'on_attack', undefined, undefined, attackSubjects, { source: 'behavior' })
-        this.fireDomainTriggers('on_attack', unit)
-        this.consumeWeaponDurability(unit)
-      } else {
-        this.lastSkill.set(unit.id, { sourceRef: source.sourceRef, effects: source.effects })
-        this.fireStatusTriggers(unit, 'on_active_skill', undefined, undefined, attackSubjects, { source: 'behavior' })
-        this.fireGlobalStatusTriggers('on_active_skill', unit, attackSubjects)
-        // 攻击类主动技能同时 fire on_attack（执行参数 §2.1：一次行为两条事件）
-        if (this.isAttackSkill(source)) {
+      // 规则惩罚在 afterSettle 内执行；若行动者已被惩罚杀死，不再派生后续行为触发
+      if (!unit.isDead) {
+        if (slot.kind === 'basic_attack') {
           this.fireStatusTriggers(unit, 'on_attack', undefined, undefined, attackSubjects, { source: 'behavior' })
           this.fireDomainTriggers('on_attack', unit)
+          this.consumeWeaponDurability(unit)
+        } else {
+          this.lastSkill.set(unit.id, { sourceRef: source.sourceRef, effects: source.effects })
+          this.fireStatusTriggers(unit, 'on_active_skill', undefined, undefined, attackSubjects, { source: 'behavior' })
+          this.fireGlobalStatusTriggers('on_active_skill', unit, attackSubjects)
+          // 攻击类主动技能同时 fire on_attack（执行参数 §2.1：一次行为两条事件）
+          if (this.isAttackSkill(source)) {
+            this.fireStatusTriggers(unit, 'on_attack', undefined, undefined, attackSubjects, { source: 'behavior' })
+            this.fireDomainTriggers('on_attack', unit)
+          }
         }
       }
       const freeAction = (slot.cost.opportunity ?? 1) === 0
@@ -545,6 +557,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       laneCapacity: LANE_CAPACITY,
       lastDeadCellFor: (f) => this.lastDeadCell.get(f) ?? null,
       onAction: (info) => {
+        this.actionRuleSeeds.set(info.actionId, this.activeTriggerIds())
         const targets = info.targets
           .map((t) => (t.occupant ? this.units.get(t.occupant) : undefined))
           .filter((u): u is CombatUnit => u != null)
@@ -556,6 +569,7 @@ class CombatRuntime implements CombatRuntimeHandle {
             info.domainGrant.duration, info.caster, info.sourceRef)
         }
       },
+      afterSettle: (info) => this.fireActionRules(info),
     }
   }
 
@@ -672,10 +686,10 @@ class CombatRuntime implements CombatRuntimeHandle {
             }, eventInfo)
           }
           this.fireStatusTriggers(defender, 'on_take_damage', undefined, undefined, { attacker, target: defender }, eventInfo)
+          if (attacker && amount > 0) this.fireDealDamageRules(attacker)
         } finally {
           this.damageTriggerDepth -= 1
         }
-        void amount
       },
       ops: {
         destroyWeapon: (u, reason) => this.destroyWeapon(u, reason),
@@ -700,8 +714,8 @@ class CombatRuntime implements CombatRuntimeHandle {
         shuffleStatuses: (us, count) => this.opShuffleStatuses(us, count),
         modifySkillOf: (u, node) => this.opModifySkill(u, node),
         applyTargetOverride: (u, spec) => { u.pendingTargetOverride = spec },
-        writeRuleSlot: (node, caster) => this.opWriteRuleSlot(node, caster),
-        modifyRuleSlot: (node, caster) => this.opModifyRuleSlot(node, caster),
+        writeRuleSlot: (node, caster, target) => this.opWriteRuleSlot(node, caster, target),
+        modifyRuleSlot: (node, caster, target) => this.opModifyRuleSlot(node, caster, target),
         boardMeter: (key, value, set) => {
           const cur = this.battle.meters[key] ?? 0
           const next = set ? value : cur + value
@@ -758,6 +772,141 @@ class CombatRuntime implements CombatRuntimeHandle {
   private effectiveEnergyCost(slot: BehaviorSlot): number {
     if (slot.kind !== 'skill') return slot.cost.energy
     return Math.max(0, slot.cost.energy + domainCostDelta(this.battle.domains, this.ruleProfileOf(slot.defId)))
+  }
+
+  private activeTriggerIds(): Set<string> {
+    const ids = new Set<string>()
+    for (const slot of this.ruleSlots) {
+      for (const entry of slot) if (entry.field === 'trigger') ids.add(entry.sourceId)
+    }
+    return ids
+  }
+
+  /** no_skill / no_attack 禁令：带 punish 的规则只罚不禁 */
+  private ruleAllowsAction(unit: CombatUnit, slot: BehaviorSlot): boolean {
+    if (slot.kind === 'skill') return !prohibits(this.ruleSlots, unit.faction, 'skill', this.tickCount)
+    if (slot.kind === 'basic_attack') return !prohibits(this.ruleSlots, unit.faction, 'basic_attack', this.tickCount)
+    return true
+  }
+
+  /** O 后动作规则：仅使用本次行动开始前已存在的 trigger（新写的规则不反噬本次行动） */
+  private fireActionRules(info: ActionInfo): void {
+    const seeds = this.actionRuleSeeds.get(info.actionId)
+    this.actionRuleSeeds.delete(info.actionId)
+    if (this.ruleTriggerDepth > 0) return
+    const caster = info.caster
+    if (caster.isDead || caster.detached) return
+    const targets = info.targets
+      .map((t) => (t.occupant ? this.units.get(t.occupant) ?? null : null))
+      .filter((u): u is CombatUnit => u != null)
+    if (info.sourceRef === BASIC_ATTACK_ID) {
+      this.fireRuleEvent('no_attack', caster, [], [], seeds)
+    } else {
+      this.fireRuleEvent('no_skill', caster, [], [], seeds)
+    }
+    if (this.isAttackActionRef(info.sourceRef)) {
+      this.fireRuleEvent('on_attack', caster, targets, info.targetHpPercent, seeds)
+    }
+  }
+
+  private fireDealDamageRules(attacker: CombatUnit): void {
+    if (this.ruleTriggerDepth > 0) return
+    this.fireRuleEvent('on_deal_damage', attacker)
+  }
+
+  private fireRuleEvent(
+    event: 'no_skill' | 'no_attack' | 'on_attack' | 'on_deal_damage',
+    breaker: CombatUnit,
+    targets: readonly CombatUnit[] = [],
+    targetHpPercents: readonly (number | null)[] = [],
+    allowed?: ReadonlySet<string>,
+  ): void {
+    if (breaker.isDead || isExempt(this.ruleSlots, breaker.faction)) return
+    for (let slot = 0; slot < this.ruleSlots.length; slot += 1) {
+      const trigger = findRule(this.ruleSlots, slot, 'trigger')
+      if (!trigger || isExpired(trigger, this.tickCount)) continue
+      if (allowed && !allowed.has(trigger.sourceId)) continue
+      const v = triggerValue(trigger)
+      if (event === 'no_skill') {
+        if (v.rule !== 'no_skill') continue
+      } else if (event === 'no_attack') {
+        if (v.rule !== 'no_attack') continue
+      } else if (event === 'on_attack') {
+        if (v.trigger !== 'on_attack') continue
+        if (!this.ruleConditionMet(v.condition, breaker, targets, targetHpPercents)) continue
+      } else {
+        if (v.trigger !== 'on_deal_damage') continue
+        if (v.scope === 'oath_holder' && trigger.scopeUnitId !== breaker.id) continue
+        if (v.scope !== undefined && v.scope !== 'oath_holder') {
+          this.unsupported('rule:scope', String(v.scope))
+          continue
+        }
+      }
+      this.fireRulePunish(slot, trigger, breaker)
+    }
+  }
+
+  private ruleConditionMet(
+    condition: string | undefined,
+    breaker: CombatUnit,
+    targets: readonly CombatUnit[],
+    targetHpPercents: readonly (number | null)[],
+  ): boolean {
+    if (condition === undefined) return true
+    if (condition === 'target_hp_percent_lower_than_attacker') {
+      const attackerHp = breaker.pool('hp').current / breaker.hpMax
+      return targets.some((_target, i) => {
+        const hp = targetHpPercents[i]
+        return hp !== null && hp !== undefined && hp < attackerHp
+      })
+    }
+    this.unsupported('rule:condition', condition)
+    return false
+  }
+
+  private fireRulePunish(slot: number, trigger: RuleSlotEntry, breaker: CombatUnit): void {
+    if (trigger.chargesRemaining !== undefined && trigger.chargesRemaining <= 0) return
+    const nodes = punishNodes(findRule(this.ruleSlots, slot, 'punish'))
+    if (nodes.length === 0) return
+    const ruleCaster = trigger.casterId ? this.units.get(trigger.casterId) : undefined
+    const caster = ruleCaster && !ruleCaster.isDead ? ruleCaster : null
+    const host = caster ?? breaker
+    const enemyFaction = this.factions.find((f) => f !== host.faction) ?? null
+    const v = triggerValue(trigger)
+    this.emit({
+      type: 'RuleTriggered',
+      slot,
+      rule: v.rule ?? v.trigger ?? 'rule',
+      unitId: breaker.id,
+    })
+    const scope: TargetScope = {
+      host,
+      caster,
+      targets: [breaker],
+      secondary: [],
+      attacker: breaker,
+      killed: null,
+      ruleBreaker: breaker,
+      enemyFaction,
+    }
+    const ctx = this.makeContext(this.ids.next('rule'), caster, undefined, scope, trigger.sourceId)
+    this.ruleTriggerDepth += 1
+    try {
+      executeNodes(nodes, [breaker], ctx)
+    } finally {
+      this.ruleTriggerDepth -= 1
+    }
+    if (trigger.chargesRemaining !== undefined) {
+      trigger.chargesRemaining -= 1
+      if (trigger.chargesRemaining <= 0) {
+        const list = this.ruleSlots[slot]
+        const idx = list?.indexOf(trigger) ?? -1
+        if (idx >= 0) {
+          list!.splice(idx, 1)
+          this.emit({ type: 'RuleSlotChanged', slot, field: 'trigger', mode: 'expire' })
+        }
+      }
+    }
   }
 
   /** 行动卡 dimHooks 对指定结算桶的乘区积；同维度多档只取最贴合的一档（微光档不自叠白昼档） */
@@ -1036,23 +1185,67 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
   }
 
-  private opWriteRuleSlot(node: EffectNode, _caster: CombatUnit | null): void {
-    const n = node as { slot?: number; field?: string; value?: unknown; overwrite?: boolean }
-    const slot = this.ruleSlots[n.slot ?? 0]
-    if (!slot) return
-    if (n.overwrite) slot.length = 0
-    slot.push({ field: n.field ?? 'trigger', value: n.value })
+  private ruleField(raw: string | undefined, fallback: RuleField): RuleField | null {
+    if (raw === undefined) return fallback
+    return raw === 'trigger' || raw === 'punish' || raw === 'exemptions' || raw === 'scope' ? raw : null
   }
 
-  private opModifyRuleSlot(node: EffectNode, _caster: CombatUnit | null): void {
-    const n = node as { slot?: number; field?: string; value?: unknown; mode?: string }
-    const slot = this.ruleSlots[n.slot ?? 0]
-    if (!slot) return
-    if (n.mode === 'remove') {
-      const idx = slot.findIndex((e) => e.field === n.field)
-      if (idx >= 0) slot.splice(idx, 1)
-    } else {
-      slot.push({ field: n.field ?? 'punish', value: n.value })
+  private ruleMeta(
+    field: RuleField,
+    value: unknown,
+    caster: CombatUnit | null,
+    target: CombatUnit | null,
+  ): RuleSlotMeta {
+    const meta: RuleSlotMeta = {
+      sourceId: this.ids.next('rule'),
+      ownerFaction: caster?.faction,
+      casterId: caster?.id,
+    }
+    if (field !== 'trigger') return meta
+    const v = (value ?? {}) as { scope?: string; duration?: number; durationUnit?: 'turn' | 'tick'; charges?: number }
+    const scopeTarget = target ?? caster
+    if (v.scope === 'oath_holder' && scopeTarget && !scopeTarget.isDead) meta.scopeUnitId = scopeTarget.id
+    if (typeof v.duration === 'number' && Number.isFinite(v.duration) && v.duration > 0) {
+      const ticks = v.durationUnit === 'turn' ? v.duration * 5 : v.duration
+      meta.expiresAtTick = this.tickCount + Math.max(1, Math.trunc(ticks))
+    }
+    if (typeof v.charges === 'number' && v.charges > 0) meta.chargesRemaining = Math.trunc(v.charges)
+    return meta
+  }
+
+  private opWriteRuleSlot(node: EffectNode, caster: CombatUnit | null, target: CombatUnit | null): void {
+    const n = node as { slot?: number; field?: string; value?: unknown; overwrite?: boolean }
+    const slot = n.slot ?? 0
+    const field = this.ruleField(n.field, 'trigger')
+    if (!this.ruleSlots[slot] || !field) {
+      this.unsupported('write_rule_slot', `非法槽/字段 ${String(slot)}/${String(n.field)}`)
+      return
+    }
+    const meta = this.ruleMeta(field, n.value, caster, target)
+    const change = writeRule(this.ruleSlots, slot, field, n.value, n.overwrite !== false, meta)
+    if (change) this.emit({ type: 'RuleSlotChanged', ...change })
+  }
+
+  private opModifyRuleSlot(node: EffectNode, caster: CombatUnit | null, target: CombatUnit | null): void {
+    const n = node as {
+      slot?: number; field?: string; value?: unknown; mode?: string; filter?: unknown
+    }
+    const slot = n.slot ?? 0
+    const field = this.ruleField(n.field, 'punish')
+    if (n.filter !== undefined) this.unsupported('modify_rule_slot:filter', 'filter 尚未求值')
+    if (!this.ruleSlots[slot] || !field) {
+      this.unsupported('modify_rule_slot', `非法槽/字段 ${String(slot)}/${String(n.field)}`)
+      return
+    }
+    const mode = n.mode === 'append' || n.mode === 'remove' ? n.mode : 'replace'
+    const meta = this.ruleMeta(field, n.value, caster, target)
+    const change = modifyRule(this.ruleSlots, slot, field, mode, n.value, meta)
+    if (change) this.emit({ type: 'RuleSlotChanged', ...change })
+  }
+
+  private expireRuleSlots(): void {
+    for (const change of expireRules(this.ruleSlots, this.tickCount)) {
+      this.emit({ type: 'RuleSlotChanged', ...change })
     }
   }
 
