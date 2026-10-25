@@ -2866,9 +2866,9 @@
       "flagship": false,
       "lore": "序列1 知识皇帝 —— \"『教化』权柄 +『窥秘』权柄：窥见众神乃至旧日的秘密\" / \"神秘知识权柄深化：将力量赋予知识获得其他序列非凡能力\"",
       "flavor": "你把知识分给同伴，知识便回赠他们以灵感。而你从众神都不曾示人的地方取回的那一份，只留给自己。",
-      "describe": "首次施放技能时获得「教化」：全体友军能量恢复 +0.2/tick，自身伤害 ×1.15，持续整场。；学识化作本能：下一式转瞬发。",
+      "describe": "开战后获得「教化」：全体友军能量恢复 +0.2/tick，自身伤害 ×1.15，持续整场。；学识化作本能：下一式转瞬发。",
       "hook": [
-        "on_active_skill"
+        "on_tick"
       ],
       "effects": [
         {
@@ -2910,7 +2910,7 @@
         ],
         "mood": "generous, covetous"
       },
-      "conversionNotes": "2026-10-03 骨架手术：参照缩放换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_active_skill（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：加 not has_status 守卫（on_apply 永久能量恢复不可重挂叠算）"
+      "conversionNotes": "2026-10-03 骨架手术：参照缩放换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_active_skill（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：加 not has_status 守卫（on_apply 永久能量恢复不可重挂叠算）｜2026-10-25 开局生效回补：hook → on_tick，not has_status 守卫一次性挂载（on_tick 逐 tick 复跑会叠层/重发 on_apply 永久属性）"
     },
     {
       "id": "skill_pryer_s1_false_information",
@@ -2989,9 +2989,9 @@
       "flagship": true,
       "lore": "序列0 隐者 —— \"『隐匿』权柄\"",
       "flavor": "你的一部分始终留在知识荒野的雾里。敌人找不到你——除非你自己走出来。",
-      "describe": "首次有状态加身时获得「隐匿权柄」：敌方单体技能难以选中你、受伤 ×0.9；你每次造成伤害后显形 10tick（期间上述效果失效）。；学识化作本能：下一式转瞬发。",
+      "describe": "开战后获得「隐匿权柄」：敌方单体技能难以选中你、受伤 ×0.9；你每次造成伤害后显形 10tick（期间上述效果失效）。；学识化作本能：下一式转瞬发。",
       "hook": [
-        "on_status_gain"
+        "on_tick"
       ],
       "effects": [
         {
@@ -3032,7 +3032,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：常驻半隐匿、攻击即破。窥秘轴 payoff：层数够则减伤更深。 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_status_gain（规则 13 事件集中度治理）；以 not has_status(concealment_authority) 守卫确保只执行一次",
+      "conversionNotes": "翻译/语义：常驻半隐匿、攻击即破。窥秘轴 payoff：层数够则减伤更深。 ｜ 2026-10-03 骨架手术：参照缩放换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_status_gain（规则 13 事件集中度治理）；以 not has_status(concealment_authority) 守卫确保只执行一次｜2026-10-25 开局生效回补：hook → on_tick，not has_status 守卫一次性挂载（on_tick 逐 tick 复跑会叠层/重发 on_apply 永久属性）",
       "art": {
         "subject": "a mage half-dissolved into gray mist at the edge of a wild knowledge wasteland",
         "elements": [

@@ -1015,9 +1015,9 @@
       "flagship": false,
       "lore": "序列7 太阳神官 —— \"『太阳光环』\"；\"体质增强，抗疾病\"",
       "flavor": "你周身始终悬着一圈太阳的光晕——它护住同伴，也灼伤那些见不得光的东西。",
-      "describe": "首次开始行动时，己方全体获得「太阳光环」整场：受伤 ×0.9；对不死 / 污秽 / 黑暗标签单位造成的伤害 ×1.15。；公证：先净化，再给一次免疫——光明不靠驱散来赢。",
+      "describe": "首次相位变化时，己方全体获得「太阳光环」整场：受伤 ×0.9；对不死 / 污秽 / 黑暗标签单位造成的伤害 ×1.15。；公证：先净化，再给一次免疫——光明不靠驱散来赢。",
       "hook": [
-        "on_turn_start"
+        "on_phase_change"
       ],
       "effects": [
         {
@@ -1051,7 +1051,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：光环=减伤+对不死污秽加成。依赖 F59 + 标签。 ｜ 2026-10-03 骨架手术：仪式换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：相位钩子改首动并加守卫（本途径无 advance_clock 驱动；免疫不可逐次重发）",
+      "conversionNotes": "翻译/语义：光环=减伤+对不死污秽加成。依赖 F59 + 标签。 ｜ 2026-10-03 骨架手术：仪式换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：相位钩子改首动并加守卫（本途径无 advance_clock 驱动；免疫不可逐次重发）｜2026-10-25 开局生效回补：hook 回挂 on_phase_change（身份签名键 trig:on_phase_change），not has_status 守卫一次性挂载（相位重挂会经 on_apply 叠算）",
       "art": {
         "subject": "a chanter wreathed in a ring of solar radiance shielding his allies",
         "elements": [
@@ -1073,9 +1073,9 @@
       "flagship": false,
       "lore": "序列7 太阳神官 —— \"『免疫恐惧』\"；\"体质增强，抗疾病\"",
       "flavor": "恐惧在你面前没有落脚的地方；疫病与毒秽也难侵你的身。",
-      "describe": "首次开始行动时获得「无畏」整场：免疫控制类状态，毒素抗性 +20%、精神抗性 +10%。",
+      "describe": "首次相位变化时获得「无畏」整场：免疫控制类状态，毒素抗性 +20%、精神抗性 +10%。",
       "hook": [
-        "on_turn_start"
+        "on_phase_change"
       ],
       "effects": [
         {
@@ -1113,7 +1113,7 @@
         "spectator"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：免疫恐惧=control免疫；体质=抗性。唯一常驻自保被动。依赖 G12。 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 grant_immunity(against:control)『无畏』——免疫正主第一卡 ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：相位钩子改首动并加守卫（on_apply 永久抗性不可重挂叠算）",
+      "conversionNotes": "翻译/语义：免疫恐惧=control免疫；体质=抗性。唯一常驻自保被动。依赖 G12。 ｜ 2026-10-02 差异化风格迭代（歌颂者=公证契约正主）：升格 grant_immunity(against:control)『无畏』——免疫正主第一卡 ｜ 2026-10-02 矩阵复审·四批（歌颂者=连击正主）：hymn 轴全卡挂「圣咏」tag 建链，勇气赞歌/终焉颂歌补 tag_chain 读层 payoff｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：相位钩子改首动并加守卫（on_apply 永久抗性不可重挂叠算）｜2026-10-25 开局生效回补：hook 回挂 on_phase_change（身份签名键 trig:on_phase_change），not has_status 守卫一次性挂载（相位重挂会经 on_apply 叠算）",
       "art": {
         "subject": "an unshaken chanter standing firm as shadows and plague recoil",
         "elements": [
@@ -1547,9 +1547,9 @@
       "flagship": false,
       "lore": "序列5 光之祭司 —— \"污秽和死灵的克星\"",
       "flavor": "污秽与死灵在你面前无所遁形——你的光天生就知道该往哪里烧。",
-      "describe": "首次开始行动时获得「邪秽克星」整场：你对不死 / 污秽 / 黑暗标签单位造成的全部伤害 ×1.5；此类单位对你造成的伤害 ×0.85。；公证：先净化，再给一次免疫——光明不靠驱散来赢。",
+      "describe": "首次相位变化时获得「邪秽克星」整场：你对不死 / 污秽 / 黑暗标签单位造成的全部伤害 ×1.5；此类单位对你造成的伤害 ×0.85。；公证：先净化，再给一次免疫——光明不靠驱散来赢。",
       "hook": [
-        "on_turn_start"
+        "on_phase_change"
       ],
       "effects": [
         {
@@ -1582,7 +1582,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：辨识度核心——专杀不死与污秽。依赖单位标签。 ｜ 2026-10-03 骨架手术：仪式换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：相位钩子改首动并加守卫（本途径无 advance_clock 驱动；免疫不可逐次重发）",
+      "conversionNotes": "翻译/语义：辨识度核心——专杀不死与污秽。依赖单位标签。 ｜ 2026-10-03 骨架手术：仪式换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：相位钩子改首动并加守卫（本途径无 advance_clock 驱动；免疫不可逐次重发）｜2026-10-25 开局生效回补：hook 回挂 on_phase_change（身份签名键 trig:on_phase_change），not has_status 守卫一次性挂载（相位重挂会经 on_apply 叠算）",
       "art": {
         "subject": "a priest whose piercing light exposes lurking filth and undead",
         "elements": [
@@ -1839,9 +1839,9 @@
       "flagship": false,
       "lore": "序列4 无暗者 —— \"『神圣盔甲』\"",
       "flavor": "一层看不见的神圣盔甲覆上你的身体——它既挡刀，也让你的拳头更重。",
-      "describe": "首次开始行动时获得「神圣盔甲」整场：护甲上限 +5、攻击 +2，并额外获得 5 点护盾（15tick）。；公证：先净化，再给一次免疫——光明不靠驱散来赢。",
+      "describe": "首次相位变化时获得「神圣盔甲」整场：护甲上限 +5、攻击 +2，并额外获得 5 点护盾（15tick）。；公证：先净化，再给一次免疫——光明不靠驱散来赢。",
       "hook": [
-        "on_turn_start"
+        "on_phase_change"
       ],
       "effects": [
         {
@@ -1874,7 +1874,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：攻防一体常驻防御被动。 ｜ 2026-10-03 骨架手术：仪式换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：相位钩子改首动并加守卫（on_apply 永久护甲/攻击不可重挂叠算）",
+      "conversionNotes": "翻译/语义：攻防一体常驻防御被动。 ｜ 2026-10-03 骨架手术：仪式换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_phase_change（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 语义修正：相位钩子改首动并加守卫（on_apply 永久护甲/攻击不可重挂叠算）｜2026-10-25 开局生效回补：hook 回挂 on_phase_change（身份签名键 trig:on_phase_change），not has_status 守卫一次性挂载（相位重挂会经 on_apply 叠算）",
       "art": {
         "subject": "an invisible suit of sacred armor glowing over the caster's body",
         "elements": [

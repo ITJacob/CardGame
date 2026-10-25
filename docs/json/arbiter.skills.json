@@ -922,9 +922,9 @@
       "flagship": false,
       "lore": "序列6 法官 —— \"权威质变，能影响环境\"",
       "flavor": "成为法官之后，你说出的话本身就带着分量——你的命令更持久，你的辖区也更宽阔。",
-      "describe": "首次开始行动时获得「权威质变」（整场）：你施加的规则、沉默、眩晕、枷锁、放逐、分割、易伤类状态持续时间 +5tick；你的辖区效果数值 +50%。豁免不是白给的：每写一条扣 2 秩序，自身防御 -1（20tick）。",
+      "describe": "开战后获得「权威质变」（整场）：你施加的规则、沉默、眩晕、枷锁、放逐、分割、易伤类状态持续时间 +5tick；你的辖区效果数值 +50%。豁免不是白给的：每写一条扣 2 秩序，自身防御 -1（20tick）。",
       "hook": [
-        "on_turn_start"
+        "on_tick"
       ],
       "effects": [
         {
@@ -994,7 +994,7 @@
         ],
         "mood": "ascendant, heavy, radiant"
       },
-      "conversionNotes": "2026-10-03 骨架手术：立规换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理）；以 not has_status(authority) 守卫确保只执行一次"
+      "conversionNotes": "2026-10-03 骨架手术：立规换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理）；以 not has_status(authority) 守卫确保只执行一次｜2026-10-25 开局生效回补：hook → on_tick，not has_status 守卫一次性挂载（on_tick 逐 tick 复跑会叠层/重发 on_apply 永久属性）"
     },
     {
       "id": "skill_arbiter_s5_castigation",
@@ -2960,7 +2960,7 @@
       "flagship": false,
       "lore": "序列5 惩戒骑士 —— 管辖的前提是：你得站在更高的地方",
       "flavor": "低者够不着你，这是秩序，不是傲慢。",
-      "describe": "首次开始行动时，位格低于你的敌人对你造成的伤害 ×0.9。豁免不是白给的：每写一条扣 2 秩序，自身防御 -1（20tick）。",
+      "describe": "开战后，位格低于你的敌人对你造成的伤害 ×0.9。豁免不是白给的：每写一条扣 2 秩序，自身防御 -1（20tick）。",
       "effects": [
         {
           "op": "if",
@@ -3011,7 +3011,7 @@
       ],
       "tentative": false,
       "hook": [
-        "on_turn_start"
+        "on_tick"
       ],
       "art": {
         "subject": "a high-seated arbiter on a dais far beyond the reach of those below",
@@ -3022,7 +3022,7 @@
         ],
         "mood": "aloof, ordained, immovable"
       },
-      "conversionNotes": "2026-10-03 骨架手术：立规换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理）；以 not has_status(rank_jurisdiction) 守卫确保只执行一次"
+      "conversionNotes": "2026-10-03 骨架手术：立规换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理）；以 not has_status(rank_jurisdiction) 守卫确保只执行一次｜2026-10-25 开局生效回补：hook → on_tick，not has_status 守卫一次性挂载（on_tick 逐 tick 复跑会叠层/重发 on_apply 永久属性）"
     },
     {
       "id": "skill_arbiter_s2_rank_sanction",

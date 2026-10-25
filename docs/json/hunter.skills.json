@@ -80,23 +80,39 @@
       "flagship": false,
       "lore": "序列9 猎人 —— \"感官直线提升：分辨气味、看到浅脚印、听见心跳微风\"",
       "flavor": "你能听见它的心跳，闻得到它三天前留下的气味——再会藏的猎物，在你眼里也像踩在雪地上一样清楚。",
-      "describe": "每当你造成伤害时获得猎人感官（整场，不可驱散）：敌方隐匿/不可选中类状态对你无效，你的单体技能自动优选当前生命值最低的敌人。",
+      "describe": "开战后获得猎人感官（整场，不可驱散）：敌方隐匿/不可选中类状态对你无效，你的单体技能自动优选当前生命值最低的敌人。",
       "hook": [
-        "on_deal_damage"
+        "on_tick"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "hunter_sense",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "hunter_sense",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "hunter_sense",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
         "assassin"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：感知能力拆两条：① \"看到隐藏\"=识破隐匿（C8 候选池过滤）；② \"听见心跳\"=目标优选。同时给收割轴起手挂 `弱点` 基础标记，让 payoff 有起手层。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_deal_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
+      "conversionNotes": "翻译/语义：感知能力拆两条：① \"看到隐藏\"=识破隐匿（C8 候选池过滤）；② \"听见心跳\"=目标优选。同时给收割轴起手挂 `弱点` 基础标记，让 payoff 有起手层。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_deal_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 开局生效回补：hook → on_tick，not has_status 守卫一次性挂载（on_tick 逐 tick 复跑会叠层/重发 on_apply 永久属性）",
       "art": {
         "subject": "a tracker kneeling to read faint glowing footprints in dark forest moss",
         "elements": [
@@ -146,23 +162,39 @@
       "flagship": false,
       "lore": "序列9 猎人 —— \"能直观找到结构要点\"",
       "flavor": "你一眼就看出它护甲衔接处的那条缝——你的每一次攻击，都落在最不该被砸的地方。",
-      "describe": "每当你开始行动时获得结构之眼（整场）：你的攻击无视目标 50% 的护甲。",
+      "describe": "开战后获得结构之眼（整场）：你的攻击无视目标 50% 的护甲。",
       "hook": [
-        "on_turn_start"
+        "on_tick"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "structural_eye",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "structural_eye",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "structural_eye",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
         "assassin"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"直观找到结构要点\"=打在结构最薄弱处=破甲。收割轴低序列地基。⚠️ 依赖 `armor_pierce`（H16）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
+      "conversionNotes": "翻译/语义：\"直观找到结构要点\"=打在结构最薄弱处=破甲。收割轴低序列地基。⚠️ 依赖 `armor_pierce`（H16）。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 开局生效回补：hook → on_tick，not has_status 守卫一次性挂载（on_tick 逐 tick 复跑会叠层/重发 on_apply 永久属性）",
       "art": {
         "subject": "a hunter's cold gaze tracing glowing seams across an enemy's armor",
         "elements": [
@@ -1463,20 +1495,36 @@
       "flagship": false,
       "lore": "序列5 收割者 —— \"『精准』：让攻击精准命中预定位置\"",
       "flavor": "你决定打哪儿，就打哪儿——没有谁能替它挡下来，也没有哪种把戏能让它从你眼前消失。",
-      "describe": "每当你造成伤害时获得精准（整场）：你的攻击不被守护转移、不受目标隐匿影响，你的目标改写类效果优先级高于嘲讽/守护。",
+      "describe": "开战后获得精准（整场）：你的攻击不被守护转移、不受目标隐匿影响，你的目标改写类效果优先级高于嘲讽/守护。",
       "hook": [
-        "on_deal_damage"
+        "on_tick"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "precision",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "precision",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "precision",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"精准命中预定位置\"=对抗一切目标干扰/保护。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_deal_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
+      "conversionNotes": "翻译/语义：\"精准命中预定位置\"=对抗一切目标干扰/保护。 ｜ 2026-10-03 骨架手术：团队计价换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_deal_damage（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 开局生效回补：hook → on_tick，not has_status 守卫一次性挂载（on_tick 逐 tick 复跑会叠层/重发 on_apply 永久属性）",
       "art": {
         "subject": "a single unerring arrow flying past every shield to its chosen mark",
         "elements": [

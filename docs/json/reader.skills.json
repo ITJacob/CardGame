@@ -485,23 +485,39 @@
       "flagship": false,
       "lore": "序列8 推理学员 —— \"成为仪式魔法专家\"",
       "flavor": "同样的步骤，你念出来的咒文比书上多出了三个音节——而效果，强了不止一点。",
-      "describe": "每当你施放技能时获得「仪式专精」：你造成的精神伤害 ×1.2，持续整场。",
+      "describe": "开战后获得「仪式专精」：你造成的精神伤害 ×1.2，持续整场。",
       "hook": [
-        "on_active_skill"
+        "on_tick"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "ritual_expertise",
-          "duration": null,
-          "target": "self"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "ritual_expertise",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "ritual_expertise",
+              "duration": null,
+              "target": "self"
+            }
+          ],
+          "else": []
         }
       ],
       "sharedAcross": [
         "pryer"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：协同引擎，让仪式魔法后期仍占槽。按元素过滤乘区（新增项 18）。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_active_skill（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
+      "conversionNotes": "翻译/语义：协同引擎，让仪式魔法后期仍占槽。按元素过滤乘区（新增项 18）。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_active_skill（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 开局生效回补：hook → on_tick，not has_status 守卫一次性挂载（on_tick 逐 tick 复跑会叠层/重发 on_apply 永久属性）",
       "art": {
         "subject": "a reader chanting over a grimoire, extra syllables glowing between his lips",
         "elements": [
@@ -1212,23 +1228,39 @@
       "flagship": false,
       "lore": "序列5 秘术导师 —— \"可省略施法材料和步骤\"",
       "flavor": "那些繁琐的材料、冗长的咒文，你早就不需要了——你想，于是它发生。",
-      "describe": "每当你施放技能时获得「省略步骤」：你的本途径技能能量消耗 -1（最低 1），持续整场。；并获得「仪式专精」整场：精神伤害 ×1.2。",
+      "describe": "开战后获得「省略步骤」：你的本途径技能能量消耗 -1（最低 1），持续整场。；并获得「仪式专精」整场：精神伤害 ×1.2。",
       "hook": [
-        "on_active_skill"
+        "on_tick"
       ],
       "effects": [
         {
-          "type": "mount_status",
-          "statusId": "streamlined_cast",
-          "duration": null,
-          "target": "self"
-        },
-        {
-          "type": "mount_status",
-          "statusId": "ritual_expertise",
-          "duration": null,
-          "target": "self",
-          "note": "省略的是步骤，专精在其中（环节⑤ 2026-09-29 补产层段）"
+          "op": "if",
+          "condition": {
+            "kind": "not",
+            "condition": {
+              "kind": "has_status",
+              "side": "self",
+              "id": "streamlined_cast",
+              "cmp": ">=",
+              "n": 1
+            }
+          },
+          "then": [
+            {
+              "type": "mount_status",
+              "statusId": "streamlined_cast",
+              "duration": null,
+              "target": "self"
+            },
+            {
+              "type": "mount_status",
+              "statusId": "ritual_expertise",
+              "duration": null,
+              "target": "self",
+              "note": "省略的是步骤，专精在其中（环节⑤ 2026-09-29 补产层段）"
+            }
+          ],
+          "else": []
         }
       ],
       "tentative": false,
@@ -1239,7 +1271,7 @@
           "landed": true
         }
       ],
-      "conversionNotes": "翻译/语义：连发引擎，让\"解析→模仿\"链路跑得起来。⚠️ 依赖新增项 11（🟡）。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_active_skill（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）",
+      "conversionNotes": "翻译/语义：连发引擎，让\"解析→模仿\"链路跑得起来。⚠️ 依赖新增项 11（🟡）。 ｜ 2026-10-03 骨架手术：先解析后放大换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_active_skill（规则 13 事件集中度治理；挂载型载荷重复执行为等价刷新）｜2026-10-25 开局生效回补：hook → on_tick，not has_status 守卫一次性挂载（on_tick 逐 tick 复跑会叠层/重发 on_apply 永久属性）",
       "art": {
         "subject": "a reader snapping his fingers as ritual candles and ingredients dissolve into light",
         "elements": [

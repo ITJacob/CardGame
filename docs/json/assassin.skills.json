@@ -133,9 +133,9 @@
       "flagship": false,
       "lore": "序列9 刺客 —— \"固化鹰的视力和黑暗视觉\"",
       "flavor": "鹰的瞳孔在你的眼底凝固，黑暗与隐匿都瞒不过你——连躲进镜子里的人，你也能一眼看见。",
-      "describe": "首次开始行动时获得「鹰的视力」：敌方的隐匿类状态与「镜中囚禁」状态对你无效——你可以选中并攻击那些单位，持续整场。；增益自镜中取用——先留下一具替身承接指向。",
+      "describe": "开战后获得「鹰的视力」：敌方的隐匿类状态与「镜中囚禁」状态对你无效——你可以选中并攻击那些单位，持续整场。；增益自镜中取用——先留下一具替身承接指向。",
       "hook": [
-        "on_turn_start"
+        "on_tick"
       ],
       "effects": [
         {
@@ -172,7 +172,7 @@
         "hunter"
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：识破隐匿 + 能看见镜中人（刺客内部制衡）。 ｜ 2026-10-03 骨架手术：镜形状换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理）；以 not has_status(eagle_sight) 守卫确保只执行一次",
+      "conversionNotes": "翻译/语义：识破隐匿 + 能看见镜中人（刺客内部制衡）。 ｜ 2026-10-03 骨架手术：镜形状换形（角色=buff）｜2026-10-25 触发点重分布：on_battle_start → on_turn_start（规则 13 事件集中度治理）；以 not has_status(eagle_sight) 守卫确保只执行一次｜2026-10-25 开局生效回补：hook → on_tick，not has_status 守卫一次性挂载（on_tick 逐 tick 复跑会叠层/重发 on_apply 永久属性）",
       "art": {
         "subject": "a hunter whose hawk-pupil eyes pierce through darkness and mirrors",
         "elements": [
