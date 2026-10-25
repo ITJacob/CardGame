@@ -281,6 +281,74 @@ def _iter_effect_nodes(node):
             yield from _iter_effect_nodes(v)
 
 
+def _iter_exec_effects(node):
+    """只产出「会实际执行」的效果节点：沿容器（if then/else、sequence/repeat steps、
+    fallback）下行，不进入 condition / filter / modify_rule_slot.value 等参数载荷——
+    这些载荷不按当前语境即时执行（规则槽 punish 的落点在违约事件里才求值）。"""
+    if isinstance(node, list):
+        for v in node:
+            yield from _iter_exec_effects(v)
+        return
+    if not isinstance(node, dict):
+        return
+    op = node.get("op")
+    if op in ("sequence", "repeat") or ("steps" in node and op is not None):
+        yield from _iter_exec_effects(node.get("steps") or [])
+        return
+    if op == "if" or "then" in node:
+        yield from _iter_exec_effects(node.get("then") or [])
+        yield from _iter_exec_effects(node.get("else") or [])
+        return
+    yield node
+    fb = node.get("fallback")
+    if isinstance(fb, (dict, list)):
+        yield from _iter_exec_effects(fb)
+
+
+def _effect_stack_key(n):
+    t = n.get("type")
+    if t == "modify_stat":
+        base = "stat:%s/%s" % (n.get("stat"), n.get("mode"))
+    elif t == "modify_resource":
+        base = "res:%s/%s" % (n.get("resource"), n.get("mode"))
+    elif t == "mount_status":
+        base = "status:%s" % n.get("statusId")
+    else:
+        return None
+    # 只有「完全同形」（同值/同层数/同时长/同目标）才算批量重复；
+    # 同键不同值或不同时长的递增 payoff / 分层延长是有意设计，不计。
+    sig = {k: n.get(k) for k in
+           ("value", "valueFrom", "stacks", "charges", "duration", "target", "stackMode")}
+    return base, json.dumps(sig, sort_keys=True, ensure_ascii=False)
+
+
+def _effect_path_counts(node):
+    """按「单条执行路径」统计同形效果：if 的 then/else 互斥取较大者，
+    sequence/repeat 顺序累加。用于区分「合法分支/递增 payoff」与真正的批量重复。"""
+    if isinstance(node, list):
+        total = {}
+        for v in node:
+            for k, c in _effect_path_counts(v).items():
+                total[k] = total.get(k, 0) + c
+        return total
+    if not isinstance(node, dict):
+        return {}
+    op = node.get("op")
+    if op in ("sequence", "repeat") or ("steps" in node and op is not None):
+        return _effect_path_counts(node.get("steps") or [])
+    if op == "if" or "then" in node:
+        a = _effect_path_counts(node.get("then") or [])
+        b = _effect_path_counts(node.get("else") or [])
+        return {k: max(a.get(k, 0), b.get(k, 0)) for k in set(a) | set(b)}
+    key = _effect_stack_key(node)
+    out = {key: 1} if key else {}
+    fb = node.get("fallback")
+    if isinstance(fb, (dict, list)):
+        for k, c in _effect_path_counts(fb).items():
+            out[k] = out.get(k, 0) + c
+    return out
+
+
 def check_summon_card(c, cid, def_ids, errors):
     """召唤牌硬约束（2026-10-23 召唤牌化，提案 summon-first-class.md）：
     kind=summon 必须有 cost + summon 载荷；unitId 必须解析到某途径顶层 unitDefs 池；
@@ -314,28 +382,26 @@ def check_summon_card(c, cid, def_ids, errors):
 def lint_playability(pid, cards, warns):
     """玩法/文本卫生门禁（2026-10-19 立，先告警观察误报）：
     10 同形状增益叠加 / 11 触发语境错配 / 12 模板句复制 / 13 被动触发点集中度。"""
-    # 10 单卡同 stat/resource/status + mode 的增益 ≥3 次
+    # 10 单卡「完全同形」效果 ≥3 次（按单条执行路径计：if 的 then/else 互斥、
+    # sequence 顺序累加；参数载荷不参与）。同键不同值/不同时长的递增 payoff
+    # 与分层延长不计入——它们是有意的读层设计，不是批量重复。
     for c in cards:
-        cnt = {}
-        for n in _iter_effect_nodes(c.get("effects")):
-            t = n.get("type")
-            if t == "modify_stat":
-                key = ("stat:%s/%s" % (n.get("stat"), n.get("mode")))
-            elif t == "modify_resource":
-                key = ("res:%s/%s" % (n.get("resource"), n.get("mode")))
-            elif t == "mount_status":
-                key = ("status:%s" % n.get("statusId"))
-            else:
-                continue
-            cnt[key] = cnt.get(key, 0) + 1
+        cnt = _effect_path_counts(c.get("effects"))
         for key, n in cnt.items():
             if n >= 3:
-                warns.append("%s: 同形状叠加 %s ×%d（单卡同键应 ≤2）" % (c.get("id"), key, n))
+                warns.append("%s: 同形状叠加 %s ×%d（单卡同键应 ≤2）" % (c.get("id"), key[0], n))
 
-    # 11 触发语境错配（严格口径）：无受害方的事件里用白名单原语打 target
+    # 11 触发语境错配：按执行参数 §2.1b 触发点语境表判定——
+    # · on_battle_start：无受害方，target 缺省回退 host，打 target/None 即可能误伤自己；
+    # · on_kill：target = 被击杀者（合法），仅 target=None（回退击杀者）可疑；
+    # · on_death：target = 击杀者（合法），仅 target=None（回退死者）可疑。
+    # target_override 设置后续寻靶、modify_skill 按 skillRef 改写，均不寻址受害方，剔除。
     victim_prims = {"damage", "reveal", "drain", "take_control", "modify_targetability",
-                    "target_override", "translocate", "move", "dispel", "modify_skill"}
-    no_victim = {"on_battle_start", "on_kill", "on_death"}
+                    "translocate", "move", "dispel"}
+    # on_battle_start / on_turn_start / on_turn_end / on_phase_change / on_weapon_equip
+    # 与 on_death / on_kill 的 target 缺省回退按 §2.1b 处理（见下方分支）。
+    no_victim = {"on_battle_start", "on_turn_start", "on_turn_end",
+                 "on_phase_change", "on_weapon_equip", "on_kill", "on_death"}
     for c in cards:
         payloads = [(tr.get("event"), tr.get("effects")) for tr in (c.get("triggers") or [])]
         hk = c.get("hook")
@@ -345,11 +411,18 @@ def lint_playability(pid, cards, warns):
         for ev, effects in payloads:
             if ev not in no_victim:
                 continue
-            for n in _iter_effect_nodes(effects):
+            for n in _iter_exec_effects(effects):
                 t = n.get("type")
                 if t not in victim_prims or n.get("target") == "self":
                     continue
-                if n.get("target") in (None, "target", "killed_unit"):
+                # 自我范围 dispel（如销毁自己的召唤物）不依赖受害方
+                flt = n.get("filter")
+                if t == "dispel" and isinstance(flt, dict) and flt.get("isOwnSummon"):
+                    continue
+                bad = n.get("target") in (None, "target", "killed_unit")
+                if ev in ("on_kill", "on_death"):
+                    bad = n.get("target") is None
+                if bad:
                     warns.append("%s: 触发语境错配——%s @ %s 无受害方（target=%s）"
                                  % (c.get("id"), t, ev, n.get("target")))
 

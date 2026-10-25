@@ -79,7 +79,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 30.3 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:flesh_undying ×2；sref:grazed_soul ×6；stat:hp_max ×5；对他途径指纹均距 0.282
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：sref:flesh_undying ×2；sref:grazed_soul ×6；stat:hp_max ×5；对他途径指纹均距 0.281
 
 角色分布（SCORING §一·附）：core ×21 · starter ×3 · bridge ×1 · generic ×6 · trap ×1 · tech ×1
 
@@ -286,7 +286,7 @@
 | 文本完备 | 4.7 |
 | 差异化 | 28.3 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:filter.unitType ×3；prim:drain ×9；trig:on_kill ×3；对他途径指纹均距 0.271
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:filter.unitType ×3；prim:drain ×8；trig:on_kill ×3；对他途径指纹均距 0.270
 
 角色分布（SCORING §一·附）：core ×28 · starter ×3 · bridge ×1 · generic ×7 · trap ×1 · tech ×3
 
@@ -334,7 +334,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 31.1 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:template ×1；sref:insight ×6；stat:rank ×3；对他途径指纹均距 0.304
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：flag:template ×1；sref:insight ×6；stat:rank ×3；对他途径指纹均距 0.303
 
 角色分布（SCORING §一·附）：core ×13 · starter ×3 · bridge ×1 · generic ×9 · trap ×1 · tech ×9
 
@@ -607,7 +607,7 @@
 | 文本完备 | 5.0 |
 | 差异化 | 32.4 |
 
-签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×4；prim:write_rule_slot ×2；sref:puppet_string ×5；对他途径指纹均距 0.332
+签名键用量（≥2 卡实证 = 落地；键表见 途径设计身份.md §一）：prim:translocate ×4；prim:write_rule_slot ×2；sref:puppet_string ×5；对他途径指纹均距 0.331
 
 角色分布（SCORING §一·附）：core ×23 · starter ×3 · bridge ×1 · generic ×9 · trap ×1 · tech ×2
 
@@ -624,7 +624,7 @@
 | 轴 | 总分 | 锚兑 | 产兑 | 收兑 | 多样 | 规模 | 连通 | 实证 enabler | 实证 payoff | notes 级 |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
 | 🌟 奇迹 `miracle` | **81.9** | 15 | 20.0 | 25.0 | 5.9 | 10 | 6 | 奇迹,愿望 | 历史影像,诡秘之境,灵之虫 | — |
-| 🃏 戏法 `trick` | **83.8** | 15 | 20.0 | 25.0 | 7.8 | 10 | 6 | 纸人替身,直觉预感 | 秘偶换位,秘偶置换 | — |
+| 🃏 戏法 `trick` | **84.1** | 15 | 20.0 | 25.0 | 8.1 | 10 | 6 | 纸人替身,直觉预感 | 秘偶换位,秘偶置换 | — |
 | 🪆 秘偶 `marionette` | **85.0** | 15 | 20.0 | 25.0 | 6.0 | 10 | 9 | 秘偶,伤害转移 | 秘偶不死,秘偶换位,灵界掌控者 | — |
 | 🔮 预知 `foresight` | **86.6** | 15 | 20.0 | 25.0 | 7.6 | 10 | 9 | 灵视,占星术 | 命运干扰,命运锚点,历史影像 | — |
 

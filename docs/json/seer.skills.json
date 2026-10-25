@@ -454,32 +454,41 @@
           "duration": 20,
           "target": "self",
           "note": "危机预感凝为纸人（环节⑤ 2026-09-29 补产层段）"
-        },
+        }
+      ],
+      "triggers": [
         {
-          "type": "take_control",
-          "target": "target",
-          "duration": 1,
-          "actionPolicy": "full",
-          "onExpire": "revert",
-          "note": "提线木偶：动作由执线者说了算"
-        },
-        {
-          "op": "if",
-          "condition": {
-            "kind": "has_status",
-            "side": "target",
-            "id": "deep_parasitized"
-          },
-          "then": [
+          "event": "on_deal_damage",
+          "effects": [
             {
-              "type": "damage",
-              "element": "mental",
-              "value": 2,
-              "note": "同源共振：深度寄生显现，追加 2"
+              "type": "take_control",
+              "target": "target",
+              "duration": 1,
+              "actionPolicy": "full",
+              "onExpire": "revert",
+              "note": "提线木偶：打中目标时短暂夺取行动（迁自 on_turn_start——该触发点无受害方）"
+            },
+            {
+              "op": "if",
+              "condition": {
+                "kind": "has_status",
+                "side": "target",
+                "id": "deep_parasitized"
+              },
+              "then": [
+                {
+                  "type": "damage",
+                  "element": "mental",
+                  "value": 2,
+                  "target": "target",
+                  "note": "同源共振：深度寄生显现，追加 2"
+                }
+              ],
+              "else": [],
+              "note": "跨系接线（2026-10-23）：读取枢纽 deep_parasitized（迁至命中语境）"
             }
           ],
-          "else": [],
-          "note": "跨系接线（2026-10-23）：读取枢纽 deep_parasitized"
+          "note": "提线木偶与跨系读层迁至 on_deal_damage（on_turn_start 无受害方）"
         }
       ],
       "frameworkFlags": [
@@ -490,7 +499,7 @@
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：\"预感下一步\"=提前规避=减伤。C6 `charges` 表达一次性预感，每回合补 1 上限 3。⚠️ 依赖 F51 + G15。 ｜ 2026-10-03 骨架手术：提线形状换形（角色=debuff）",
+      "conversionNotes": "翻译/语义：\"预感下一步\"=提前规避=减伤。C6 `charges` 表达一次性预感，每回合补 1 上限 3。⚠️ 依赖 F51 + G15。 ｜ 2026-10-03 骨架手术：提线形状换形（角色=debuff） ｜ 2026-10-25 开局被动语义迁移：take_control 与 deep_parasitized 读层迁至 on_deal_damage（on_turn_start 无受害方）",
       "art": {
         "subject": "a seer flinching from a dagger made of smoke before it strikes",
         "elements": [
@@ -521,18 +530,26 @@
           "type": "mount_status",
           "statusId": "poise",
           "duration": null
-        },
+        }
+      ],
+      "triggers": [
         {
-          "type": "take_control",
-          "target": "target",
-          "duration": 1,
-          "actionPolicy": "full",
-          "onExpire": "revert",
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "take_control",
+              "target": "target",
+              "duration": 1,
+              "actionPolicy": "full",
+              "onExpire": "revert",
+              "note": "提线木偶：打中目标时短暂夺取行动（迁自开局 take_control——on_battle_start 无受害方）"
+            }
+          ],
           "note": "提线木偶：动作由执线者说了算"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：原著\"几乎不会跌倒\"=不被位移+不被击倒。v0.1 译成\"行动速率+8\"是凭空发明，已改回。⚠️ 依赖 G12 `immune` + `move_immune`（本稿新增项 6）。 ｜ 2026-10-03 骨架手术：提线形状换形（角色=debuff）",
+      "conversionNotes": "翻译/语义：原著\"几乎不会跌倒\"=不被位移+不被击倒。v0.1 译成\"行动速率+8\"是凭空发明，已改回。⚠️ 依赖 G12 `immune` + `move_immune`（本稿新增项 6）。 ｜ 2026-10-03 骨架手术：提线形状换形（角色=debuff） ｜ 2026-10-25 开局被动语义迁移：take_control 迁至 on_deal_damage（on_battle_start 无受害方）",
       "art": {
         "subject": "a masked dancer balancing perfectly on a taut wire in a storm",
         "elements": [
@@ -1251,18 +1268,26 @@
           "type": "mount_status",
           "statusId": "spirit_thread_vision",
           "duration": null
-        },
+        }
+      ],
+      "triggers": [
         {
-          "type": "take_control",
-          "target": "target",
-          "duration": 1,
-          "actionPolicy": "full",
-          "onExpire": "revert",
+          "event": "on_deal_damage",
+          "effects": [
+            {
+              "type": "take_control",
+              "target": "target",
+              "duration": 1,
+              "actionPolicy": "full",
+              "onExpire": "revert",
+              "note": "提线木偶：打中目标时短暂夺取行动（迁自开局 take_control——on_battle_start 无受害方）"
+            }
+          ],
           "note": "提线木偶：动作由执线者说了算"
         }
       ],
       "tentative": false,
-      "conversionNotes": "翻译/语义：本途径唯一反隐匿手段，招牌定位（克魔女/隐身/阴影）。依赖 C8「识破」。 ｜ 2026-10-03 骨架手术：提线形状换形（角色=debuff）",
+      "conversionNotes": "翻译/语义：本途径唯一反隐匿手段，招牌定位（克魔女/隐身/阴影）。依赖 C8「识破」。 ｜ 2026-10-03 骨架手术：提线形状换形（角色=debuff） ｜ 2026-10-25 开局被动语义迁移：take_control 迁至 on_deal_damage（on_battle_start 无受害方）",
       "art": {
         "subject": "countless translucent threads revealed crisscrossing a dark street",
         "elements": [
