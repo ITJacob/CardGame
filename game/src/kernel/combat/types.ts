@@ -1,7 +1,7 @@
 // 战斗聚合根与对外契约（README §〇/§一/§三）。
 // 入场 CombatSetup → 出场 CombatEnded；内核是纯函数：结果 = f(初始状态, 输入序列, seed)。
 
-import type { FactionId, Gender, Phase, UnitId } from '../ids'
+import type { FactionId, Gender, Phase, Reach, UnitId } from '../ids'
 import type { CatalogSnapshot } from '../catalog/types'
 import type { Coordinate, DomainGrant, OccupancyChanged } from '../battle/types'
 import type { StatusGrant, Unit } from '../roster/types'
@@ -137,6 +137,10 @@ export interface UnitViewLite {
   unitType: string | null
   /** 召唤者 unitId（非召唤物为 null） */
   summonerId: string | null
+  /** 单位性别（spawn 时 unitDef.gender 优先，否则继承召唤者） */
+  gender: Gender
+  /** 普攻射程（无普攻槽为 null） */
+  basicReach: Reach | null
 }
 
 /** 运行门面：UI 只认这个（见 DESIGN.md §三） */

@@ -1,6 +1,6 @@
 // 战斗运行时：聚合根 Combat 的实现。持事件总线 / 随机源 / id 生成器 / 注册表 /
 // 战场 / Placement / Scheduler，并把一次 step 停在 Manual 决策点。
-import type { Element, FactionId, LaneId, Phase, PoolKey, StatKey, UnitId } from '../ids'
+import type { Element, FactionId, LaneId, Phase, PoolKey, Reach, StatKey, UnitId } from '../ids'
 import type { Battle, Coordinate, DomainInstance, DomainTier, Faction, Lane, OccupancyChanged, Zone } from '../battle/types'
 import { LANE_CAPACITY, SUMMON_CAP_BASE } from '../battle/types'
 import { activeDomains, topOverlay } from '../battle/domain'
@@ -67,6 +67,7 @@ const UNIT_TYPE_BASELINE: Record<string, { hp: number; atk: number }> = {
 interface SpawnPlan {
   hpMax: number
   atk: number
+  reach: Reach
   skills: BehaviorSlot[]
   skillSlots: SkillSlot[]
 }
@@ -119,6 +120,8 @@ class CombatRuntime implements CombatRuntimeHandle {
   /** 未过期亡骸（3 tick；召唤物/分身不留） */
   private readonly corpses = new Map<UnitId, CorpseRecord>()
   private corpseSeq = 0
+  /** spawn lifetime 到期 tick（仅召唤物） */
+  private readonly spawnLifetimes = new Map<UnitId, number>()
   private readonly factions: [FactionId, FactionId]
   private readonly warnings: string[] = []
   private battle: Battle
@@ -323,12 +326,12 @@ class CombatRuntime implements CombatRuntimeHandle {
       .filter((n): n is EffectNode => n !== undefined)
   }
 
-  private basicAttackSlot(unit: CombatUnit): BehaviorSlot {
+  private basicAttackSlot(unit: CombatUnit, reach: Reach = 'melee'): BehaviorSlot {
     return {
       instanceId: this.ids.next('bslot'),
       defId: BASIC_ATTACK_ID,
       kind: 'basic_attack',
-      reach: 'melee',
+      reach,
       cost: { energy: 0, gauge: unit.gauge.threshold, cooldown: 0, opportunity: 1 },
       cooldownRemaining: 0,
     }
@@ -346,6 +349,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     this.tickCount += 1
     this.stats.ticks = this.tickCount
     this.expireCorpses()
+    this.expireSpawnLifetimes()
     this.expireRuleSlots()
 
     const crossed = this.scheduler.tick()
@@ -1457,7 +1461,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       }
       // H39：超限 = 最早在场者先消散，再落新单位
       this.disperseOverCap(owner, cap)
-      const unit = this.spawnOne(owner, def, source, plan, near)
+      const unit = this.spawnOne(owner, def, source, plan, near, node)
       if (!unit) return
       this.emit({ type: 'UnitSpawned', unitId: unit.id })
       // on_spawn 两侧：owner = 监听「我召唤了谁」（target 为新生单位）；
@@ -1475,8 +1479,12 @@ class CombatRuntime implements CombatRuntimeHandle {
    */
   private spawnPlan(def: UnitDef | undefined, source: CombatUnit | null, node: EffSpawn, owner: CombatUnit): SpawnPlan {
     const base = def && typeof def.base === 'object' && def.base
-      ? (def.base as { hp?: number; atk?: number; hpRatio?: unknown; atkRatio?: unknown })
+      ? (def.base as { hp?: number; atk?: number; hpRatio?: unknown; atkRatio?: unknown; reach?: unknown })
       : {}
+    const rawReach = base.reach
+    const reach: Reach = rawReach === 'melee' || rawReach === 'thrown' || rawReach === 'spell' || rawReach === 'none'
+      ? rawReach
+      : 'melee'
     const ratioHp = this.spawnRatio(node.hpRatio, def?.hpRatio ?? base.hpRatio)
     const ratioAtk = this.spawnRatio(node.atkRatio, def?.atkRatio ?? base.atkRatio)
     const ratioGiven = node.hpRatio !== undefined || node.atkRatio !== undefined
@@ -1504,6 +1512,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     return {
       hpMax: Math.max(1, Math.round(baseHp * ratioHp)),
       atk: Math.max(0, Math.round(baseAtk * ratioAtk)),
+      reach,
       skills,
       skillSlots,
     }
@@ -1520,7 +1529,14 @@ class CombatRuntime implements CombatRuntimeHandle {
     return pick(v) ?? pick(fallback) ?? 1
   }
 
-  private spawnOne(owner: CombatUnit, def: UnitDef | undefined, source: CombatUnit | null, plan: SpawnPlan, near: CombatUnit | null): CombatUnit | null {
+  private spawnOne(
+    owner: CombatUnit,
+    def: UnitDef | undefined,
+    source: CombatUnit | null,
+    plan: SpawnPlan,
+    near: CombatUnit | null,
+    node: EffSpawn,
+  ): CombatUnit | null {
     const tags = def?.tags ?? source?.tags ?? []
     const gender = def?.gender === 'male' || def?.gender === 'female' ? def.gender : owner.gender
     const unit = new CombatUnit(
@@ -1543,25 +1559,46 @@ class CombatRuntime implements CombatRuntimeHandle {
     // 蓝本触发器：spawn 时装配为被动触发器（fireStatusTriggers 的 passives 通道）
     if (def?.triggers?.length) unit.passives.push({ defId: def.id, triggers: def.triggers })
     this.units.add(unit)
-    unit.behaviorSlots.push(this.basicAttackSlot(unit))
+    unit.behaviorSlots.push(this.basicAttackSlot(unit, plan.reach))
     for (const slot of plan.skills) unit.behaviorSlots.push(slot)
     unit.skillSlots.push(...plan.skillSlots)
-    const nearPos = near?.position ?? owner.position
-    const ownLanes = [...(this.battle.factions.find((x) => x.id === owner.faction)?.lanes.keys() ?? [])].sort()
-    const ordered = nearPos ? [nearPos.lane, ...ownLanes.filter((l) => l !== nearPos.lane)] : ownLanes
-    let placed = false
-    for (const lane of ordered) {
-      if (this.placeAtFree(unit.id, owner.faction, lane)) {
-        placed = true
-        break
-      }
-    }
-    if (!placed) {
+    if (!this.placeSpawn(unit, owner, near, source, node.position)) {
       this.units.remove(unit.id)
       this.warn(`召唤失败：己方半场已满（${def?.id ?? 'template'}）`)
       return null
     }
+    const lifetime = numeric(node.lifetime, 0)
+    if (lifetime > 0) {
+      this.spawnLifetimes.set(unit.id, this.tickCount + Math.max(1, Math.floor(lifetime)))
+    }
     return unit
+  }
+
+  private placeSpawn(
+    unit: CombatUnit,
+    owner: CombatUnit,
+    near: CombatUnit | null,
+    source: CombatUnit | null,
+    position: 'tail' | 'at_unit' | 'original' | undefined,
+  ): boolean {
+    if (position === 'original') {
+      const origin = source?.position
+        ?? (source ? this.corpseOf(source.id)?.coord : undefined)
+        ?? near?.position
+        ?? owner.position
+      if (origin) {
+        const coord = { faction: owner.faction, lane: origin.lane, index: origin.index }
+        if (this.placement.insert(unit.id, coord).ok) return true
+        if (this.placeAtFree(unit.id, owner.faction, origin.lane)) return true
+      }
+    }
+    const nearPos = near?.position ?? owner.position
+    const ownLanes = [...(this.battle.factions.find((x) => x.id === owner.faction)?.lanes.keys() ?? [])].sort()
+    const ordered = nearPos ? [nearPos.lane, ...ownLanes.filter((l) => l !== nearPos.lane)] : ownLanes
+    for (const lane of ordered) {
+      if (this.placeAtFree(unit.id, owner.faction, lane)) return true
+    }
+    return false
   }
 
   /**
@@ -1651,9 +1688,11 @@ class CombatRuntime implements CombatRuntimeHandle {
   }
 
   /** 消散：不走死亡链（不记死亡簿/击杀），状态按 on_remove 路径卸载 */
-  private disperseSummon(unit: CombatUnit): void {
+  private disperseSummon(unit: CombatUnit, reason = 'summon_cap'): void {
+    this.spawnLifetimes.delete(unit.id)
+    const unmountReason = reason === 'lifetime' ? 'expired' : reason
     for (const inst of [...unit.statuses.all()]) {
-      unit.statuses.unmount(inst.instanceId, 'summon_cap')
+      unit.statuses.unmount(inst.instanceId, unmountReason)
       unit.provenance.revertBySource(inst.instanceId)
       this.emit({ type: 'StatusExpired', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id })
       this.fireStatusTriggers(unit, 'on_remove', inst.defId, undefined, { target: unit })
@@ -1661,7 +1700,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     unit.provenance.revertAll()
     this.placement.remove(unit.id)
     this.units.remove(unit.id)
-    this.emit({ type: 'UnitDispersed', unitId: unit.id, reason: 'summon_cap' })
+    this.emit({ type: 'UnitDispersed', unitId: unit.id, reason })
   }
 
   /** dispel 的召唤物销毁分支：按蓝本/归属筛出召唤物，走消散路径（不上死亡链） */
@@ -2067,6 +2106,15 @@ class CombatRuntime implements CombatRuntimeHandle {
     return corpse ? { coord: corpse.coord, order: corpse.order } : undefined
   }
 
+  private expireSpawnLifetimes(): void {
+    for (const [unitId, expiresAtTick] of this.spawnLifetimes) {
+      if (this.tickCount < expiresAtTick) continue
+      const unit = this.units.get(unitId)
+      if (unit) this.disperseSummon(unit, 'lifetime')
+      else this.spawnLifetimes.delete(unitId)
+    }
+  }
+
   private checkDeaths(): void {
     for (const u of this.units.all()) {
       if (!u.isDead || this.dead.has(u.id)) continue
@@ -2124,6 +2172,8 @@ class CombatRuntime implements CombatRuntimeHandle {
       unitDefId: u.unitDefId,
       unitType: u.unitType,
       summonerId: u.summonerId,
+      gender: u.gender,
+      basicReach: u.behaviorSlots.find((s) => s.kind === 'basic_attack')?.reach ?? null,
     }))
     return { tick: this.battle.clock, phase: this.battle.phase, units, pending: this.pending?.request ?? null, finished: this.outcome !== null }
   }

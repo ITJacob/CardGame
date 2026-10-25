@@ -6,7 +6,7 @@
 
 ## 一、召唤物（unitDefs 池 + 卡面 spawn 引用）
 
-池内蓝本 **37** 条（覆盖 17 途径）；卡面具名单位引用 **30** 种，其中池外引用（卡面内联、无 unitDef）**0** 种 / 0 次——池只收编「同途径多卡共享」的蓝本，单卡单位属性内联在 spawn 段（hpRatio / atkRatio × H1 基线），**池外引用是常态而非缺漏**。具名单位全集（36）与基线档见 ddd《召唤物参数》。
+池内蓝本 **38** 条（覆盖 17 途径）；卡面具名单位引用 **30** 种，其中池外引用（卡面内联、无 unitDef）**0** 种 / 0 次——池只收编「同途径多卡共享」的蓝本，单卡单位属性内联在 spawn 段（hpRatio / atkRatio × H1 基线），**池外引用是常态而非缺漏**。具名单位全集（36）与基线档见 ddd《召唤物参数》。
 
 ### 1.1 池内蓝本清单
 
@@ -22,6 +22,7 @@
 | `unit_zombie` | 活尸 | UNDEAD | 收尸人 | reach melee |
 | `unit_demon` | 恶魔投影 | DEMON | 罪犯 | 触发载荷、reach melee |
 | `unit_war_soldier` | 士兵 | CONSTRUCT | 猎人 | reach melee |
+| `unit_snare_trap` | 捕兽夹 | CONSTRUCT | 猎人 | tags、reach melee |
 | `unit_beastling` | 杂交兽 | BEAST | 耕种者 | reach melee |
 | `unit_vermin` | 虫豸群 | VERMIN | 耕种者 | 触发载荷、reach melee |
 | `unit_vine` | 藤蔓 | PLANT | 耕种者 | reach melee |
@@ -50,7 +51,7 @@
 | `unit_doppelganger` | 分身 | ILLUSION | 偷盗者 | reach melee |
 | `unit_stone_clock` | 石制壁钟虚影 | ITEM | 偷盗者 | 触发载荷、reach melee |
 
-> unitType 登记率：**37/37**——未登记单位的种类归属见《召唤物参数》§一归属表。
+> unitType 登记率：**38/38**——未登记单位的种类归属见《召唤物参数》§一归属表。
 
 ### 1.2 spawn 引用形态（卡面，按节点计）
 
