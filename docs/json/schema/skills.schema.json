@@ -244,7 +244,7 @@
     },
     "card": {
       "type": "object",
-      "description": "一张技能卡。kind 决定必填分支：active 需 cost/reach/target；passive 需 hook；weapon 需 cost + weapon 载荷（打出即装备，effects 为可选战吼）。",
+      "description": "一张技能卡。kind 决定必填分支：active 需 cost/reach/target；passive 需 hook；equipment 需 cost + equipment 载荷（打出即装备，effects 为可选战吼）；summon 需 cost + summon 载荷。",
       "required": [
         "id",
         "name",
@@ -275,7 +275,7 @@
           "enum": [
             "active",
             "passive",
-            "weapon",
+            "equipment",
             "summon"
           ]
         },
@@ -364,9 +364,9 @@
           },
           "description": "被动技能的挂载触发点（数组；与 triggers[].event 同源 triggerEvent 枚举，任一事件触发即执行主体 effects）。2026-10-04 由标量改为数组：标量与 triggers[] 本是同一级事件，但 hook 单选导致 t=0 兜底只能塞进 triggers[]，故统一为数组。语义边界：多个事件共享同一套主体 effects，而非每事件配一套 effects；effects 内无法判断本次被哪个事件触发（condition 全集 36 种均为世界状态判断，无 trigger_is/event_is），故数组只适用于「同效多挂载点」（各事件跑出来的结果语义等价、重复执行无害）。若不同事件需执行不同效果（异效），主事件放 hook、其余事件放 triggers[]——其每项自带 event + inline effects + condition + consumeCharge/consume + global。"
         },
-        "weapon": {
-          "$ref": "#/$defs/weaponSpec",
-          "description": "武器载荷（仅 kind=weapon）：打出即装备；攻击加值/耐久/装备期触发器。"
+        "equipment": {
+          "$ref": "#/$defs/equipmentSpec",
+          "description": "装备载荷（仅 kind=equipment）：打出即装备。武器槽=攻击+耐久；护具槽=护甲池（池空下线）。"
         },
         "summon": {
           "$ref": "#/$defs/summonSpec",
@@ -375,7 +375,7 @@
         "initialEquip": {
           "type": "string",
           "pattern": "^skill_[a-z0-9_]+_s[0-9]_[a-z0-9_]+$",
-          "description": "初始装备（仅 passive）：开局自动装备该武器卡 id（须为同途径 kind=weapon 的卡）。"
+          "description": "初始装备（仅 passive）：开局自动装备该装备卡 id（须为同途径 kind=equipment 的卡）。"
         },
         "statusDefs": {
           "type": "array",
@@ -520,7 +520,7 @@
           "if": {
             "properties": {
               "kind": {
-                "const": "weapon"
+                "const": "equipment"
               }
             },
             "required": [
@@ -530,7 +530,7 @@
           "then": {
             "required": [
               "cost",
-              "weapon"
+              "equipment"
             ]
           }
         },
@@ -554,35 +554,41 @@
         }
       ]
     },
-    "weaponSpec": {
+    "equipmentSpec": {
       "type": "object",
-      "description": "武器载荷（WeaponDef 的 JSON 形态）：装备期间生效，离开槽即失效。攻击加值走 delta 层；耐久按普攻次数消耗。",
+      "description": "装备载荷（EquipmentDef 的 JSON 形态）：武器槽=耐久制，护具槽=护甲池制。效果随槽，离开槽即失效/回收。",
       "required": [
-        "slot",
-        "attack",
-        "durability"
+        "slot"
       ],
       "additionalProperties": false,
       "properties": {
         "slot": {
-          "const": "weapon",
-          "description": "武器槽；当前仅 weapon。"
+          "enum": [
+            "weapon",
+            "armor"
+          ],
+          "description": "装备槽：武器（耐久制）/ 护具（护甲池制），互相独立、各单槽单实例。"
         },
         "attack": {
           "type": "number",
-          "description": "装备期间攻击加值（delta 层）。"
+          "description": "weapon 槽：装备期间攻击加值（delta 层）。"
         },
         "durability": {
           "type": "integer",
           "minimum": 1,
-          "description": "耐久：按普攻次数消耗，归零摧毁。"
+          "description": "weapon 槽：耐久，按普攻次数消耗，归零下线。"
+        },
+        "armor": {
+          "type": "number",
+          "minimum": 1,
+          "description": "armor 槽：创建护甲池（容量=初始值）；护甲池只源于当前护具，池空护具下线。"
         },
         "tags": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "武器标签（sword / bow / dagger …），供谓词与选靶过滤。"
+          "description": "装备标签（sword / shield …），供谓词与选靶过滤。"
         },
         "modifiers": {
           "$ref": "#/$defs/modifierSet",
@@ -593,12 +599,28 @@
           "items": {
             "$ref": "#/$defs/trigger"
           },
-          "description": "装备期间的触发器；不支持 consumeCharge（耐久由引擎按普攻次数扣）。"
+          "description": "装备期间的触发器；不支持 consumeCharge。"
         },
         "note": {
           "type": "string"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "slot": { "const": "weapon" } },
+            "required": ["slot"]
+          },
+          "then": { "required": ["attack", "durability"] }
+        },
+        {
+          "if": {
+            "properties": { "slot": { "const": "armor" } },
+            "required": ["slot"]
+          },
+          "then": { "required": ["armor"] }
+        }
+      ]
     },
     "summonSpec": {
       "type": "object",
@@ -1169,6 +1191,9 @@
         },
         {
           "$ref": "#/$defs/effDisarm"
+        },
+        {
+          "$ref": "#/$defs/effRecoverEquipment"
         },
         {
           "$ref": "#/$defs/effDrain"
@@ -1956,7 +1981,7 @@
     },
     "effDisarm": {
       "type": "object",
-      "description": "缴械：卸下并摧毁目标当前武器（WeaponInstance）。武器不是状态，dispel 不作用于武器；无背包，卸下即摧毁、不保留定义。",
+      "description": "缴械：卸下并摧毁目标指定装备槽的装备。装备不是状态，dispel 不作用；无背包，卸下即下线并触发同槽公用 CD。",
       "required": [
         "type"
       ],
@@ -1970,9 +1995,10 @@
         },
         "slot": {
           "enum": [
-            "weapon"
+            "weapon",
+            "armor"
           ],
-          "description": "装备槽；缺省 weapon。当前仅武器槽。"
+          "description": "装备槽；缺省 weapon。"
         },
         "statusId": {
           "oneOf": [
@@ -1986,10 +2012,44 @@
               }
             }
           ],
-          "description": "可选：只卸下指定武器；缺省 = 该槽位上的装备。"
+          "description": "可选：只卸下指定装备；缺省 = 该槽位上的装备。"
         },
         "count": {
           "$ref": "#/$defs/countValue"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "effRecoverEquipment": {
+      "type": "object",
+      "description": "主动回收装备：提前下线当前装备（不占行动机会由卡面 cost.opportunity=0 表达）；同槽公用 CD 按 cooldownMul 缩减（缺省 0.3）。",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "recover_equipment"
+        },
+        "target": {
+          "$ref": "#/$defs/effectTarget"
+        },
+        "slot": {
+          "enum": [
+            "weapon",
+            "armor"
+          ],
+          "description": "要回收的装备槽；缺省 = 当前装备的全部槽位。"
+        },
+        "cooldownMul": {
+          "type": "number",
+          "minimum": 0,
+          "description": "同槽公用 CD 缩减系数（缺省 0.3）。"
         },
         "condition": {
           "$ref": "#/$defs/condition"
@@ -2847,9 +2907,10 @@
         },
         "slot": {
           "enum": [
-            "weapon"
+            "weapon",
+            "armor"
           ],
-          "description": "装备槽过滤（has_equipped 用）；缺省 = 任意装备槽。当前仅 weapon。"
+          "description": "装备槽过滤（has_equipped 用）；缺省 = 任意装备槽。"
         },
         "p": {
           "type": "number",
@@ -4235,7 +4296,7 @@
         "on_death",
         "on_kill",
         "on_attack",
-        "on_weapon_equip",
+        "on_equipment_equip",
         "on_take_damage",
         "on_deal_damage",
         "on_active_skill",

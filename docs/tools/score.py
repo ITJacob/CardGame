@@ -57,7 +57,7 @@ def walk(node):
 
 
 def card_effects(card):
-    """卡的全部效果节点：effects 链 + triggers[].effects + weapon.triggers[].effects。
+    """卡的全部效果节点：effects 链 + triggers[].effects + equipment.triggers[].effects。
     2026-10-20 起与主动效果同口径——只读 effects 会让被动卡的指纹/作用面退化成一个挂载节点；
     2026-10-23 起武器载荷的装备期触发器同口径纳入。
     2026-10-23 召唤牌化：summon 载荷合成一个 spawn 节点纳入（指纹/作用面与复合卡同口径）。"""
@@ -65,7 +65,7 @@ def card_effects(card):
     for tr in card.get("triggers") or []:
         if isinstance(tr, dict):
             effs.extend(tr.get("effects") or [])
-    for tr in (card.get("weapon") or {}).get("triggers") or []:
+    for tr in (card.get("equipment") or {}).get("triggers") or []:
         if isinstance(tr, dict):
             effs.extend(tr.get("effects") or [])
     if isinstance(card.get("summon"), dict):
@@ -234,34 +234,34 @@ def obj_status_refs(obj):
     return out
 
 
-WEAPON_BY_ID = {}   # 武器卡 id -> card（2026-10-23 武器牌化；消费方须先调 load_weapon_index）
+WEAPON_BY_ID = {}   # 装备卡 id -> card（2026-10-23 武器牌化→2026-10-26 equipment；消费方须先调 load_weapon_index）
 
 
 def load_weapon_index(pathways):
     WEAPON_BY_ID.clear()
     for _d in pathways.values():
         for _c in _d.get("cards") or []:
-            if _c.get("kind") == "weapon":
+            if _c.get("kind") == "equipment":
                 WEAPON_BY_ID[_c["id"]] = _c
     return WEAPON_BY_ID
 
 
 def _slot_weapons(slot):
     return {cid for cid, c in WEAPON_BY_ID.items()
-            if (c.get("weapon") or {}).get("slot") == slot}
+            if (c.get("equipment") or {}).get("slot") == slot}
 
 
 def equipped_status_refs(card, status_by_id=None):
-    """has_equipped 条件读取的武器卡：按 slot 命中（缺省 = 任意武器）。
-    条件不点名具体武器，读到的是该槽位全部武器——新增武器自动纳入。"""
+    """has_equipped 条件读取的装备卡：按 slot 命中（缺省 = 任意武器）。
+    条件不点名具体武器，读到的是该槽位全部装备——新增武器自动纳入。"""
     out = set()
     for n in walk(card_effects(card)):
         if n.get("kind") != "has_equipped":
             continue
         slot = n.get("slot")
         out |= {cid for cid, c in WEAPON_BY_ID.items()
-                if (c.get("weapon") or {}).get("slot")
-                and (not slot or c["weapon"]["slot"] == slot)}
+                if (c.get("equipment") or {}).get("slot")
+                and (not slot or c["equipment"]["slot"] == slot)}
     return out
 
 
@@ -274,10 +274,10 @@ def surface_of(card, status_by_id, def_index):
     mounted = [status_by_id.get(m) for m in card_mounts(card)]
     objs = [card] + [m for m in mounted if m] + card_def_refs(card, def_index)
     writes = {"status:" + m for m in card_mounts(card)} | channel_writes(objs)
-    if card.get("kind") == "weapon":
-        writes.add("weapon:" + card.get("id", ""))
+    if card.get("kind") == "equipment":
+        writes.add("equipment:" + card.get("id", ""))
     reads = {"status:" + s for s in card_status_refs(card)} | channel_reads(objs)
-    reads |= {"weapon:" + s for s in equipped_status_refs(card, status_by_id)}
+    reads |= {"equipment:" + s for s in equipped_status_refs(card, status_by_id)}
     # 挂载/区域 def 自身对状态的引用也算读（payoff 经专属状态读层）
     for o in ([m for m in mounted if m] + card_def_refs(card, def_index)):
         reads |= {"status:" + s for s in obj_status_refs(o)}
@@ -315,8 +315,8 @@ def card_facets(card, anchor, status_by_id, def_index):
     objs = _card_objs(card, status_by_id, def_index)
     if kind == "equipment":
         slot_weapons = _slot_weapons(aid)
-        wp = card.get("weapon") or {}
-        if card.get("kind") == "weapon" and wp.get("slot") == aid:
+        wp = card.get("equipment") or {}
+        if card.get("kind") == "equipment" and wp.get("slot") == aid:
             facets.add("equip")
             if isinstance(wp.get("durability"), int) and wp["durability"] > 0:
                 facets.add("durability_consume")
@@ -792,7 +792,7 @@ def _card_families(card, status_by_id=None):
         fam["reach"].add("reach=" + card["reach"])
 
     cost = card.get("cost") or {}
-    if card.get("kind") in ("active", "weapon", "summon"):
+    if card.get("kind") in ("active", "equipment", "summon"):
         energy = cost.get("energy")
         if isinstance(energy, int):
             fam["cost"].add("energy:" + ("zero" if energy == 0 else
@@ -1123,7 +1123,7 @@ def main():
             slot_ids = set()
             if a_kind == "equipment" and a_id:
                 slot_ids = _slot_weapons(a_id)
-                identity_items = {"weapon:" + i for i in slot_ids}
+                identity_items = {"equipment:" + i for i in slot_ids}
             elif a_kind == "channel" and a_id:
                 identity_channel = a_id
                 identity_items = {a_id}
@@ -1138,9 +1138,9 @@ def main():
                 if a_kind == "channel":
                     ok = a_id in ax_writes
                 elif a_kind == "equipment":
-                    ops = [c for c in axis_cards if c.get("kind") == "weapon"
-                           and (c.get("weapon") or {}).get("slot") == a_id]
-                    ok = len(ops) >= 2 and any((c.get("weapon") or {}).get("durability") for c in ops)
+                    ops = [c for c in axis_cards if c.get("kind") == "equipment"
+                           and (c.get("equipment") or {}).get("slot") == a_id]
+                    ok = len(ops) >= 2 and any((c.get("equipment") or {}).get("durability") for c in ops)
                 elif a_kind == "primitive":
                     ok = sum(1 for c in axis_cards if a_id in card_effect_types(c)) >= 2
                 elif a_kind == "resource":
@@ -1651,7 +1651,7 @@ def main():
             if want and c.get("rarity") not in want:
                 bad_rarity += 1
         struct += 3 if bad_rarity == 0 else max(0, 3 - 2 * bad_rarity)
-        actives = sum(1 for c in cards if c.get("kind") in ("active", "weapon", "summon"))
+        actives = sum(1 for c in cards if c.get("kind") in ("active", "equipment", "summon"))
         passives = len(cards) - actives
         aratio = actives / passives if passives else 99
         if 1.5 <= aratio <= 3.0:

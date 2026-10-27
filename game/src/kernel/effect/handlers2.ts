@@ -3,7 +3,7 @@
 // reveal / take_control。需要触碰战场或注册表的走 ctx.ops。
 import type {
   EffDisarm, EffDispel, EffDrain, EffGrantImmunity, EffModifyDamage, EffModifyStatus,
-  EffModifyTargetability, EffModifyWeapon, EffMove, EffReveal, EffSpawn, EffTakeControl,
+  EffModifyTargetability, EffModifyWeapon, EffMove, EffRecoverEquipment, EffReveal, EffSpawn, EffTakeControl,
   EffTransferStatus, EffTranslocate,
 } from '../catalog/types'
 import type { EffectContext } from './context'
@@ -111,8 +111,12 @@ export function handleDrain(node: EffDrain, target: CombatUnit | null, ctx: Effe
 
 export function handleDisarm(node: EffDisarm, target: CombatUnit | null, ctx: EffectContext): void {
   if (!target || target.isDead) return
-  if (node.slot && node.slot !== 'weapon') return
-  ctx.ops.destroyWeapon(target, 'disarm')
+  ctx.ops.destroyEquipment(target, node.slot ?? 'weapon', 'disarm')
+}
+
+export function handleRecoverEquipment(node: EffRecoverEquipment, target: CombatUnit | null, ctx: EffectContext): void {
+  if (!target || target.isDead) return
+  ctx.ops.recoverEquipment(target, node)
 }
 
 export function handleModifyWeapon(node: EffModifyWeapon, target: CombatUnit | null, ctx: EffectContext): void {

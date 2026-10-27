@@ -9,6 +9,9 @@ import type { CombatUnit } from '../roster/unit'
 const RESIST_MIN = -0.5
 const RESIST_MAX = 0.75
 
+/** 无形元素：护甲不抵消（编队参数 §2.1 护甲与护盾分工）；护盾逻辑不变 */
+const INTANGIBLE_ELEMENTS = new Set(['mental', 'holy', 'dark'])
+
 export interface DamageInput {
   raw: number
   element: Element
@@ -79,8 +82,8 @@ export function resolveDamage(input: DamageInput): DamageResult {
     push('shield', before, cur)
   }
 
-  // ② 护甲
-  if (!pierced.has('armor') && !input.dot) {
+  // ② 护甲（有形伤害才吸收；精神/圣神/黑暗与 DoT 绕过——编队参数 §2.1）
+  if (!pierced.has('armor') && !input.dot && !INTANGIBLE_ELEMENTS.has(element)) {
     const before = cur
     const ratio = clamp(input.armorPierceRatio ?? 0, 0, 1)
     const effectiveArmor = defender.pool('armor').current * (1 - ratio)

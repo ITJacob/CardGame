@@ -1,7 +1,7 @@
 // 效果结算的运行时上下文与工具。
-import type { Element, FactionId, Phase } from '../ids'
+import type { Element, EquipmentSlot, FactionId, Phase } from '../ids'
 import type { DomainEvent } from '../combat/types'
-import type { EffGrantImmunity, EffModifyWeapon, EffSpawn, EffectNode, StatusDef } from '../catalog/types'
+import type { EffGrantImmunity, EffModifyWeapon, EffRecoverEquipment, EffSpawn, EffectNode, StatusDef } from '../catalog/types'
 import type { IdGenerator } from '../shared/id-generator'
 import type { RandomSource, RandomUsageRegistry } from '../shared/random-source'
 import type { StatusGrant } from '../roster/types'
@@ -112,8 +112,9 @@ export interface EffectContext {
 /** 原语中需要改动战场或新建单位的操作集合 */
 export interface EffectOps {
   /** 卸下并摧毁武器 */
-  destroyWeapon(unit: CombatUnit, reason: string): void
-  /** 改耐久 / 攻击加值 */
+  destroyEquipment(unit: CombatUnit, slot: EquipmentSlot, reason: string): void
+  recoverEquipment(unit: CombatUnit, node: EffRecoverEquipment): void
+  /** 改耐久 / 攻击加值（weapon 槽专用） */
   modifyWeapon(unit: CombatUnit, node: EffModifyWeapon): void
   move(unit: CombatUnit, op: string, distance: number, caster: CombatUnit | null): void
   spawn(

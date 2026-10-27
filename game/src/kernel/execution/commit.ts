@@ -28,10 +28,14 @@ export function commitBehavior(
     opportunity.consumedBy = 'committed'
   }
   unit.pool('energy').applyDelta(-energyCost)
-  if (slot.cost.cooldown > 0) slot.cooldownRemaining = slot.cost.cooldown
 
-  // 武器牌：扣费后立即装备——即使随后选靶失败/挂起，武器也已打出
-  if (source.weapon) deps.equipWeapon?.(unit, source.weapon)
+  // 装备牌：扣费后立即装备（即使随后选靶失败/挂起，装备也已打出）；
+  // 冷却在下线时才开始转（runtime 登记 pendingCooldown，此处不设置 cooldownRemaining）。
+  if (source.equipment) {
+    deps.equipEquipment?.(unit, source.equipment)
+  } else if (slot.cost.cooldown > 0) {
+    slot.cooldownRemaining = slot.cost.cooldown
+  }
 
   return ok(runBehavior(unit, source, free ? null : opportunity.consumedBy, deps))
 }

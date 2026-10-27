@@ -6,20 +6,20 @@
 //   2. 卡内顶层效果节点 → 驻留为 EffectDef，并生成 EffectRef（含 condition/target 透传）
 //   3. card.statusDefs → StatusDef；途径级 unitDefs/zoneDefs/domainDefs → 各自池
 //   4. 途径 → ClassDef（knownSkills = 该途径全部卡 id）
-//   5. 引用校验：触发器事件必须 ∈ 16 闭集；效果类型必须 ∈ 31 原语 ∪ 3 算子；
+//   5. 引用校验：触发器事件必须 ∈ 16 闭集；效果类型必须 ∈ 32 原语 ∪ 3 算子；
 //      mount_status/modify_status.statusId 必须可解析（外部 common 状态由 opts 注入）
 
 import type {
-  BehaviorTemplate, Catalog, ClassDef, DomainDef, EffectDef, EffectNode, PhaseHook,
-  SkillDef, StatusDef, TriggerDef, UnitDef, WeaponDef, ZoneDef,
+  BehaviorTemplate, Catalog, ClassDef, DomainDef, EffectDef, EffectNode, EquipmentDef, PhaseHook,
+  SkillDef, StatusDef, TriggerDef, UnitDef, ZoneDef,
 } from '../kernel/catalog/types'
 import type { EffectRef, TargetSpec } from '../kernel/shared/types'
 import type { PathwayFile, RawCard } from './schema.types'
 
-/** 31 个效果原语（权威源 = schema effect.oneOf） */
+/** 32 个效果原语（权威源 = schema effect.oneOf） */
 export const EFFECT_TYPES: readonly string[] = [
   'damage', 'heal', 'mount_status', 'modify_stat', 'modify_resource', 'move', 'spawn',
-  'dispel', 'disarm', 'drain', 'domain', 'translocate', 'snapshot', 'restore_snapshot',
+  'dispel', 'disarm', 'recover_equipment', 'drain', 'domain', 'translocate', 'snapshot', 'restore_snapshot',
   'modify_damage', 'target_override', 'transfer_status', 'echo_last_skill',
   'gauge_shuffle', 'status_shuffle', 'modify_skill', 'modify_status',
   'modify_targetability', 'reveal', 'grant_immunity', 'take_control',
@@ -33,7 +33,7 @@ const OPERATORS = new Set(['sequence', 'repeat', 'if'])
 /** 16 个触发点封闭集（执行参数 §2.1） */
 export const TRIGGER_EVENTS: readonly string[] = [
   'on_apply', 'on_remove', 'on_tick', 'on_turn_start', 'on_turn_end', 'on_battle_start', 'on_spawn',
-  'on_death', 'on_kill', 'on_attack', 'on_weapon_equip', 'on_active_skill', 'on_deal_damage',
+  'on_death', 'on_kill', 'on_attack', 'on_equipment_equip', 'on_active_skill', 'on_deal_damage',
   'on_take_damage', 'on_status_gain', 'on_phase_change',
 ]
 const TRIGGER_EVENT_SET = new Set(TRIGGER_EVENTS)
@@ -201,10 +201,10 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
         dimHooks: card.dimHooks as unknown as SkillDef['dimHooks'],
       }
 
-      if (card.kind === 'active' || card.kind === 'weapon' || card.kind === 'summon') {
+      if (card.kind === 'active' || card.kind === 'equipment' || card.kind === 'summon') {
         register(skillDefs, card.id, {
           ...base,
-          kind: card.kind as 'active' | 'weapon' | 'summon',
+          kind: card.kind as 'active' | 'equipment' | 'summon',
           cost: card.cost,
           targetSpec: card.target
             ? (card.target as unknown as TargetSpec)
@@ -217,8 +217,8 @@ export function buildCatalog(files: readonly PathwayFile[], opts: BuildOptions =
           authority: card.flagship,
           zoneGrant: card.zone as SkillDef['zoneGrant'],
           domainGrant: card.domain as SkillDef['domainGrant'],
-          weapon: card.kind === 'weapon'
-            ? ({ ...(card.weapon as WeaponDef), id: card.id, slot: 'weapon' } as WeaponDef)
+          equipment: card.kind === 'equipment'
+            ? ({ ...(card.equipment as EquipmentDef), id: card.id } as EquipmentDef)
             : undefined,
           summon: card.kind === 'summon' ? card.summon : undefined,
         }, warnings, 'skillDef')

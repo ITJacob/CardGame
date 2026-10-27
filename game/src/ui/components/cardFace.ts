@@ -87,8 +87,8 @@ export interface CardFaceOpts {
   rarity?: string
   /** epic/legendary 的途径边框取档用 */
   pathwayId?: string
-  /** 主动 / 武器 / 召唤 / 被动：决定要不要出 ⚡ 费用（有费用即主动/武器/召唤） */
-  kind?: 'active' | 'passive' | 'weapon' | 'summon'
+  /** 主动 / 装备 / 召唤 / 被动：决定要不要出 ⚡ 费用（有费用即主动/装备/召唤） */
+  kind?: 'active' | 'passive' | 'equipment' | 'summon'
   /** 能量消耗，仅主动卡有 */
   cost?: number | null
   /** compact 60×80（名册/技能槽）、full 120×160（卡池）、zoom 放到视口里看大图。
@@ -131,7 +131,7 @@ export function cardFaceHtml(opts: CardFaceOpts): string {
   const fallback = frameFallbackUrl(rarity)
   // 主动必有 ⚡ 费用、被动必无 —— 这一条本身就足以分辨主/被动，不再单挂一个「主/被」角标。
   // kind 仍需保留：它决定要不要出费用，也落在 k-<kind> 类上给样式/测试当锚。
-  const costHtml = (kind === 'active' || kind === 'weapon' || kind === 'summon') && cost != null ? `<span class="ci-cost">⚡${cost}</span>` : ''
+  const costHtml = (kind === 'active' || kind === 'equipment' || kind === 'summon') && cost != null ? `<span class="ci-cost">⚡${cost}</span>` : ''
   const tag = as === 'button' ? 'button' : 'figure'
   // figcaption 只在 figure 里合法；按钮档换成 div（样式挂类不挂标签，外观不变）
   const infoTag = as === 'button' ? 'div' : 'figcaption'
@@ -260,7 +260,7 @@ export function cardDetailHtml(catalog: Catalog, cardId: string): string | null 
   const skillDef = catalog.skillDefs.get(cardId)
   const kind = skillDef?.kind ?? (skillDef ? 'active' : 'passive')
   const cost = skillDef?.cost
-  const weapon = skillDef?.weapon
+  const equipment = skillDef?.equipment
   const summon = skillDef?.summon
   const hook = catalog.behaviorTemplates.get(cardId)?.hook
   const trig = def.triggers?.map((t) => t.event).filter(Boolean) ?? []
@@ -269,7 +269,7 @@ export function cardDetailHtml(catalog: Catalog, cardId: string): string | null 
 
   const meta: Array<[text: string, cls: string]> = [
     [RARITY_LABEL[def.rarity] ?? def.rarity, `cp-badge--rarity r-${def.rarity}`],
-    [kind === 'weapon' ? '武器' : kind === 'summon' ? '召唤' : kind === 'active' ? '主动' : '被动', kind === 'passive' ? 'cp-badge--passive' : ''],
+    [kind === 'equipment' ? '装备' : kind === 'summon' ? '召唤' : kind === 'active' ? '主动' : '被动', kind === 'passive' ? 'cp-badge--passive' : ''],
     [def.sequence != null ? `序列${def.sequence}${def.sequenceName ? ` · ${def.sequenceName}` : ''}` : '', ''],
   ]
   const badges = meta
@@ -290,8 +290,12 @@ export function cardDetailHtml(catalog: Catalog, cardId: string): string | null 
   const trigRow = events.length
     ? `<dl class="cp-kv"><dt>触发</dt><dd>${escapeHtml(events.join('、'))}</dd></dl>`
     : ''
-  const weaponRow = weapon
-    ? `<dl class="cp-kv"><dt>攻击</dt><dd>+${weapon.attack}</dd><dt>耐久</dt><dd>${weapon.durability} 次普攻</dd></dl>`
+  const weaponRow = equipment
+    ? `<dl class="cp-kv">${
+        equipment.slot === 'weapon'
+          ? `<dt>攻击</dt><dd>+${equipment.attack ?? 0}</dd><dt>耐久</dt><dd>${equipment.durability ?? 0} 次普攻</dd>`
+          : `<dt>护甲</dt><dd>${equipment.armor ?? 0}</dd>`
+      }</dl>`
     : ''
   // 召唤载荷：卡面只写实例参数，属性按「unitDef base × spawn 比率」合成展示
   const unitDef = summon ? catalog.unitDefs.get(summon.unitId) : undefined

@@ -11,6 +11,38 @@ import { resolveEffectTargets } from './target-scope'
 
 const POOL_KEYS: readonly PoolKey[] = ['hp', 'energy', 'shield', 'armor', 'lost', 'lust']
 
+/** 护甲新规则（2026-10-26 装备拍板）：护甲池只源于当前护具。
+ *  有护具 = 强化护具池（正值充能抬水位，负值削池，set 取值后重置并抬水位）；
+ *  无护具 = 正值改充护盾池（护盾逻辑不变），负值空操作。 */
+function applyArmorChange(
+  target: CombatUnit,
+  value: number,
+  mode: 'delta' | 'set',
+  sourceRef: 'caster' | 'secondary_target' | 'field_average' | undefined,
+  ctx: EffectContext,
+): void {
+  let v = value
+  if (sourceRef === 'caster') v = ctx.caster?.pool('armor').current ?? 0
+  else if (sourceRef === 'secondary_target') v = ctx.targetScope?.secondary[0]?.pool('armor').current ?? 0
+  else if (sourceRef === 'field_average') {
+    const alive = ctx.units.all().filter((u) => !u.isDead)
+    v = alive.length === 0 ? 0 : round2(alive.reduce((sum, u) => sum + u.pool('armor').current, 0) / alive.length)
+  }
+  const equipped = target.hasEquipped('armor')
+  if (mode === 'set') {
+    const pool = target.pool(equipped ? 'armor' : 'shield')
+    pool.setValue(Math.max(0, v))
+    if (equipped && v > pool.max) pool.setMax(v)
+    return
+  }
+  if (v > 0) {
+    if (equipped) target.chargeArmor(v)
+    else target.pool('shield').applyDelta(v)
+  } else if (v < 0 && equipped) {
+    target.pool('armor').applyDelta(v)
+  }
+}
+
 /** 解析 valueFrom 引用（P2b-1 支持 targetStat / statusStacks / maxStatThisBattle） */
 function resolveValueFrom(
   ref: unknown,
@@ -138,6 +170,11 @@ export function handleMountStatus(node: EffMountStatus, target: CombatUnit | nul
 export function handleModifyStat(node: EffModifyStat, target: CombatUnit | null, ctx: EffectContext): void {
   if (!target || target.isDead) return
   const stat = node.stat
+  if (stat === 'armor') {
+    const v = typeof node.value === 'number' ? node.value : resolveValueFrom(node.valueFrom, target, stat, ctx)
+    applyArmorChange(target, v, node.mode === 'set' ? 'set' : 'delta', node.sourceRef, ctx)
+    return
+  }
   const value = typeof node.value === 'number' ? node.value : resolveValueFrom(node.valueFrom, target, stat, ctx)
   const current = target.stat(stat)
   let delta: number
@@ -205,6 +242,10 @@ export function handleModifyResource(node: EffModifyResource, target: CombatUnit
   }
   if (!POOL_KEYS.includes(res as PoolKey)) {
     ctx.unsupported('modify_resource', `未知资源 ${res}`)
+    return
+  }
+  if (res === 'armor') {
+    applyArmorChange(target, value, node.mode === 'set' ? 'set' : 'delta', undefined, ctx)
     return
   }
   const pool = target.pool(res as PoolKey)

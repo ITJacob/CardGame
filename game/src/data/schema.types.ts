@@ -24,10 +24,13 @@ export interface RawCardTarget {
   note?: string
 }
 
-export interface RawWeapon {
-  slot: 'weapon'
-  attack: number
-  durability: number
+export interface RawEquipment {
+  slot: 'weapon' | 'armor'
+  /** weapon 槽 */
+  attack?: number
+  durability?: number
+  /** armor 槽：护甲池容量与初始值 */
+  armor?: number
   tags?: string[]
   modifiers?: Record<string, unknown> | unknown[]
   triggers?: TriggerDef[]
@@ -103,7 +106,7 @@ export interface RawVariant {
   costOverride?: RawCost
 }
 
-/** 一张技能卡（kind=active/weapon/summon → SkillDef；kind=passive → BehaviorTemplate） */
+/** 一张技能卡（kind=active/equipment/summon → SkillDef；kind=passive → BehaviorTemplate） */
 export interface RawCard {
   id: string
   name: string
@@ -118,11 +121,11 @@ export interface RawCard {
   describe: string
   effects: EffectNode[]
   tentative: boolean
-  /** kind=weapon：打出即装备 */
-  weapon?: RawWeapon
+  /** kind=equipment：打出即装备 */
+  equipment?: RawEquipment
   /** kind=summon：打出即落场（2026-10-23 召唤牌化） */
   summon?: RawSummon
-  /** passive：开局自动装备的武器卡 id */
+  /** passive：开局自动装备的装备卡 id */
   initialEquip?: string
   cost?: RawCost
   reach?: Reach

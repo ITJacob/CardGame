@@ -49,7 +49,7 @@ TGT = {"self": "自身", "caster": "施法者", "target": "目标", "primary_tar
        "splash_behind": "溅射身后", "one_own_snare_trap": "自身一个陷阱"}
 RARITY = {"common": "普通", "uncommon": "精良", "rare": "稀有", "epic": "史诗", "legendary": "传说"}
 SIDE = {"self": "自身", "target": "目标", "ally": "友军", "enemy": "敌人", "both": "双方", "all": "全场"}
-SLOT = {"weapon": "武器"}
+SLOT = {"weapon": "武器", "armor": "护具"}
 EVENT = {"on_apply": "施加时", "on_remove": "移除时", "on_tick": "每 tick", "on_turn_start": "获得机会时",
          "on_turn_end": "机会闭合时",
          "on_battle_start": "战斗开始", "on_spawn": "登场时", "on_death": "死亡时", "on_kill": "击杀时",
@@ -422,7 +422,7 @@ def main():
         cs = d["cards"]
         nf = sum(1 for c in cs if any(not f.get("landed") for f in (c.get("frameworkFlags") or [])))
         nn = sum(1 for c in cs if c.get("conversionNotes"))
-        nact = sum(1 for c in cs if c["kind"] in ("active", "weapon", "summon"))
+        nact = sum(1 for c in cs if c["kind"] in ("active", "equipment", "summon"))
         nfs = sum(1 for c in cs if c.get("flagship"))
         tot["cards"] += len(cs); tot["act"] += nact; tot["pas"] += len(cs) - nact
         tot["flag"] += nf; tot["note"] += nn; tot["fs"] += nfs
@@ -444,8 +444,8 @@ def main():
         w("")
         w("## %d. %s（%s）" % (i, d["pathwayName"], d["pathwayId"]))
         w("")
-        w("**%d 张卡** · 主动/武器 %d / 被动 %d · ⚠️待落地缺口 %d 张 · 口径存疑 %d 张" %
-          (len(cs), sum(1 for c in cs if c["kind"] in ("active", "weapon", "summon")),
+        w("**%d 张卡** · 主动/装备 %d / 被动 %d · ⚠️待落地缺口 %d 张 · 口径存疑 %d 张" %
+          (len(cs), sum(1 for c in cs if c["kind"] in ("active", "equipment", "summon")),
            sum(1 for c in cs if c["kind"] == "passive"), nf, nn))
         w("")
         w("构筑轴：%s" % axes)
@@ -465,7 +465,7 @@ def main():
             for c in sorted(group, key=lambda x: (not x.get("flagship"), x["id"])):
                 tags = []
                 tags.append(RARITY.get(c["rarity"], c["rarity"]))
-                tags.append({"active": "主动", "weapon": "武器", "summon": "召唤", "passive": "被动"}.get(c["kind"], c["kind"]))
+                tags.append({"active": "主动", "equipment": "装备", "summon": "召唤", "passive": "被动"}.get(c["kind"], c["kind"]))
                 if c.get("flagship"):
                     tags.append("旗舰")
                 a = d["axes"].get(c.get("axis"), {})
@@ -474,16 +474,19 @@ def main():
                 w("#### %s　`%s`" % (c["name"], c["id"]))
                 w("")
                 w("- **类型**：%s" % " / ".join(tags))
-                if c["kind"] in ("active", "weapon", "summon") and c.get("cost"):
+                if c["kind"] in ("active", "equipment", "summon") and c.get("cost"):
                     ct = c["cost"]
                     cast = "无吟唱" if ct.get("castTime") is None else ("瞬发" if ct.get("castTime") == 0 else "吟唱 %s" % ct["castTime"])
                     _reach = {"none": "无", "melee": "近战", "thrown": "投射", "spell": "法术"}.get(c.get("reach"), c.get("reach") or "—")
                     w("- **消耗**：能量 %s · 冷却 %s · %s · 距离 %s" %
                       (ct.get("energy"), ct.get("cooldown"), cast, _reach))
-                    if c["kind"] == "weapon":
-                        wp = c.get("weapon") or {}
-                        w("- **武器**：攻击 +%s · 耐久 %s · 标签 %s" %
-                          (wp.get("attack"), wp.get("durability"), ",".join(wp.get("tags") or []) or "—"))
+                    if c["kind"] == "equipment":
+                        wp = c.get("equipment") or {}
+                        if wp.get("slot") == "armor":
+                            w("- **装备（护具）**：护甲 %s · 标签 %s" % (wp.get("armor"), ",".join(wp.get("tags") or []) or "—"))
+                        else:
+                            w("- **装备（武器）**：攻击 +%s · 耐久 %s · 标签 %s" %
+                              (wp.get("attack"), wp.get("durability"), ",".join(wp.get("tags") or []) or "—"))
                     if c["kind"] == "summon":
                         sp = c.get("summon") or {}
                         _bits = ["`%s`" % sp.get("unitId")]

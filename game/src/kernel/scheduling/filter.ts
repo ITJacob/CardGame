@@ -11,6 +11,8 @@ export function availableBehaviors(
 ): BehaviorSlot[] {
   return unit.behaviorSlots.filter((b) => {
     if (b.cooldownRemaining !== 0) return false
+    // 装备牌：其装备实例仍在线时不可重打（CD 于下线后才开始计，见编队上下文 §六·一）
+    if (b.equipInstanceId != null && unit.equipment.some((e) => e.instanceId === b.equipInstanceId)) return false
     // force 白名单既接受技能 defId，也接受行为 kind（basic_attack / skill）
     if (force.length > 0 && !force.includes(b.defId) && !force.includes(b.kind)) return false
     if (unit.channel !== null) return false

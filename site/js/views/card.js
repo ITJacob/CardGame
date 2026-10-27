@@ -243,13 +243,13 @@ export function renderCardDetail(view, id, qs = '') {
         <div class="cs-sub">序列${c.sequence} · ${escapeHtml(c.sequenceName || '')}</div>
         <div class="badges">
           <span class="badge rarity-${c.rarity}">${cn}</span>
-          <span class="badge kind-${c.kind}">${c.kind === 'weapon' ? '武器' : c.kind === 'summon' ? '召唤' : c.kind === 'active' ? '主动' : '被动'}</span>
+          <span class="badge kind-${c.kind}">${c.kind === 'equipment' ? '装备' : c.kind === 'summon' ? '召唤' : c.kind === 'active' ? '主动' : '被动'}</span>
           <span class="badge pw">${escapeHtml(c._pathwayName)}</span>
           <span class="badge">轴：${axisSpan(c._pathway, c.axis)}</span>
           ${(c.tags || []).map((t) => `<span class="badge">${escapeHtml(t)}</span>`).join('')}
           ${c.gender && c.gender !== 'any' ? `<span class="badge">${g('gender', c.gender)}限定</span>` : ''}
         </div>
-        ${(c.kind === 'active' || c.kind === 'weapon' || c.kind === 'summon') && c.cost ? `<div class="cs-cost">${costHtml(c)}</div>` : ''}
+        ${(c.kind === 'active' || c.kind === 'equipment' || c.kind === 'summon') && c.cost ? `<div class="cs-cost">${costHtml(c)}</div>` : ''}
       </header>
 
       <section class="cs-sec cs-desc">
@@ -259,11 +259,13 @@ export function renderCardDetail(view, id, qs = '') {
       </section>
 
       <section class="cs-sec">
-        ${c.kind === 'weapon' ? '<h2>装备</h2>' : c.kind === 'summon' ? '<h2>召唤</h2>' : c.kind === 'active' ? '<h2>施放与选靶</h2>' : '<h2>触发条件</h2>'}
+        ${c.kind === 'equipment' ? '<h2>装备</h2>' : c.kind === 'summon' ? '<h2>召唤</h2>' : c.kind === 'active' ? '<h2>施放与选靶</h2>' : '<h2>触发条件</h2>'}
         <dl class="kv">
-          ${c.kind === 'weapon' ? `<dt>攻击</dt><dd>+${c.weapon?.attack ?? 0}</dd>
-          <dt>耐久</dt><dd>${c.weapon?.durability ?? 0} 次普攻</dd>
-          <dt>标签</dt><dd>${(c.weapon?.tags || []).join(' / ') || '—'}</dd>` : c.kind === 'summon' ? `<dt>单位</dt><dd>${escapeHtml(DB.unitDefs.find((u) => u.id === c.summon?.unitId)?.name || c.summon?.unitId || '—')}${c.summon?.count > 1 ? ` ×${c.summon.count}` : ''}</dd>
+          ${c.kind === 'equipment' ? `${c.equipment?.slot === 'armor'
+            ? `<dt>护甲</dt><dd>${c.equipment?.armor ?? 0}</dd>`
+            : `<dt>攻击</dt><dd>+${c.equipment?.attack ?? 0}</dd>
+          <dt>耐久</dt><dd>${c.equipment?.durability ?? 0} 次普攻</dd>`}
+          <dt>标签</dt><dd>${(c.equipment?.tags || []).join(' / ') || '—'}</dd>` : c.kind === 'summon' ? `<dt>单位</dt><dd>${escapeHtml(DB.unitDefs.find((u) => u.id === c.summon?.unitId)?.name || c.summon?.unitId || '—')}${c.summon?.count > 1 ? ` ×${c.summon.count}` : ''}</dd>
           <dt>比率</dt><dd>${[c.summon?.hpRatio != null ? `生命 ${c.summon.hpRatio}` : '', c.summon?.atkRatio != null ? `攻击 ${c.summon.atkRatio}` : ''].filter(Boolean).join(' / ') || '按蓝本'}</dd>
           <dt>落位</dt><dd>${({ tail: '队尾', at_unit: '目标旁', original: '原位' })[c.summon?.position] || '队尾'}</dd>` : c.kind === 'active' ? `<dt>距离</dt><dd>${g('reach', c.reach)}</dd>
           <dt>目标</dt><dd>${targetHtml(c.target)}</dd>` : `<dt>触发</dt><dd>${hookHtml(c) || '<span class="muted">（无）</span>'}</dd>`}
@@ -274,9 +276,9 @@ export function renderCardDetail(view, id, qs = '') {
       <details class="cs-fold">
         <summary>机制细节 · 效果树与触发</summary>
         <div class="cs-fold-body">
-          ${c.weapon?.triggers?.length ? `<section class="cs-sec">
+          ${c.equipment?.triggers?.length ? `<section class="cs-sec">
             <h2>装备期触发</h2>
-            ${triggersHtml({ triggers: c.weapon.triggers })}
+            ${triggersHtml({ triggers: c.equipment.triggers })}
           </section>` : ''}
           <section class="cs-sec">
             <h2>效果结构</h2>

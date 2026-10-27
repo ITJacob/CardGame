@@ -3,7 +3,7 @@
 // 三层契约：默认值/上下限只写 Def，实例值只写 Grant（INV-C2）。
 
 import type {
-  CardId, DefId, Element, Gender, PathwayId, Phase, Rarity, Reach,
+  CardId, DefId, Element, EquipmentSlot, Gender, PathwayId, Phase, Rarity, Reach,
 } from '../ids'
 import type {
   Condition, Consumption, CountValue, EffectRef, EffectTarget, Scalar,
@@ -149,20 +149,26 @@ export interface EffDispel extends EffBase {
   mode?: 'area'
   collect?: string
 }
-/** 缴械：卸下并摧毁目标当前武器（WeaponInstance） */
+/** 缴械：卸下并摧毁目标指定装备槽（缺省 weapon） */
 export interface EffDisarm extends EffBase {
   type: 'disarm'
-  slot?: 'weapon'
+  slot?: EquipmentSlot
   statusId?: string | string[]
   count?: CountValue
 }
-/** 武器改写：补/增减耐久、增减攻击加值 */
+/** 武器改写：补/增减耐久、增减攻击加值（weapon 槽专用） */
 export interface EffModifyWeapon extends EffBase {
   type: 'modify_weapon'
   slot?: 'weapon'
   restoreDurability?: boolean
   durabilityDelta?: number
   attackDelta?: number
+}
+/** 主动回收装备：提前下线当前装备，同槽公用 CD 按 cooldownMul 缩减（缺省 0.3） */
+export interface EffRecoverEquipment extends EffBase {
+  type: 'recover_equipment'
+  slot?: EquipmentSlot
+  cooldownMul?: number
 }
 export interface EffDrain extends EffBase {
   type: 'drain'
@@ -349,7 +355,7 @@ export type EffectNode =
   | EffGaugeShuffle | EffStatusShuffle | EffModifySkill | EffModifyStatus
   | EffModifyTargetability | EffReveal | EffGrantImmunity | EffTakeControl
   | EffWriteRuleSlot | EffModifyRuleSlot | EffSetLuminance | EffAdvanceClock
-  | EffSnapshot | EffRestoreSnapshot | EffModifyWeapon
+  | EffSnapshot | EffRestoreSnapshot | EffModifyWeapon | EffRecoverEquipment
   | OpSequence | OpRepeat | OpIf
 
 // ============================================================
@@ -420,12 +426,16 @@ export interface StatusDef {
 export type StatusModifier = Record<string, Scalar>
 export type ModifierSet = StatusModifier[] | Record<string, Scalar>
 
-/** 武器定义（kind=weapon 的卡；不是状态） */
-export interface WeaponDef {
+/** 装备定义（kind=equipment 的卡；不是状态）。武器=耐久制，护具=护甲池制（池空下线）。 */
+export interface EquipmentDef {
   id: DefId
-  slot: 'weapon'
-  attack: number
-  durability: number
+  slot: EquipmentSlot
+  /** weapon 槽：攻击加值 */
+  attack?: number
+  /** weapon 槽：耐久，普攻一次 -1，归零下线 */
+  durability?: number
+  /** armor 槽：创建护甲池（容量与初始值） */
+  armor?: number
   tags?: string[]
   modifiers?: ModifierSet
   triggers?: TriggerDef[]
@@ -456,13 +466,13 @@ export interface DimHook {
   note?: string
 }
 
-/** 主动技能定义（kind=active / kind=weapon / kind=summon 的卡） */
+/** 主动技能定义（kind=active / kind=equipment / kind=summon 的卡） */
 export interface SkillDef {
   id: DefId
   sourceCardId: CardId
   pathwayId: PathwayId
-  /** 原始卡类型（active / weapon / summon）；UI 与编队分槽用 */
-  kind?: 'active' | 'weapon' | 'summon'
+  /** 原始卡类型（active / equipment / summon）；UI 与编队分槽用 */
+  kind?: 'active' | 'equipment' | 'summon'
   name: string
   rarity: Rarity
   axis: string
@@ -488,8 +498,8 @@ export interface SkillDef {
   zoneGrant?: { def: string; duration?: number; durationUnit?: 'turn' | 'tick'; affects?: string }
   /** consumption=domain 时由卡面携带的界域授予 */
   domainGrant?: { def: string; tier?: string; duration?: number; durationUnit?: 'turn' | 'tick' }
-  /** kind=weapon 的卡：打出即装备 */
-  weapon?: WeaponDef
+  /** kind=equipment 的卡：打出即装备 */
+  equipment?: EquipmentDef
   /** kind=summon 的卡：打出即落场（结算已合成为 effects 内 spawn 节点；本字段供 UI） */
   summon?: SummonDef
   /** 维度乘区挂钩：board 维度达阈值时本卡结算乘 mul */
@@ -518,7 +528,7 @@ export interface BehaviorTemplate {
   effects: EffectRef[]
   reach?: Reach
   tags?: string[]
-  /** 开局自动装备的武器卡 id（kind=weapon） */
+  /** 开局自动装备的装备卡 id（kind=equipment，slot 匹配） */
   initialEquip?: string
   /** 维度乘区挂钩：被动触发链结算时乘 mul */
   dimHooks?: readonly DimHook[]

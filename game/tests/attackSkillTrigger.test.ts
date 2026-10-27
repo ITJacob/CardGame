@@ -23,10 +23,10 @@ function pathway(): PathwayFile {
         effects: [{ type: 'mount_status', statusId: 'probe_guard', duration: 10, target: 'self' }],
       },
       {
-        id: 'probe_blade', name: '试刃', kind: 'weapon' as const, sequence: 9, sequenceName: 's9',
+        id: 'probe_blade', name: '试刃', kind: 'equipment' as const, sequence: 9, sequenceName: 's9',
         rarity: 'common' as const, axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
         cost: { energy: 0, cooldown: 100, castTime: null }, effects: [],
-        weapon: {
+        equipment: {
           slot: 'weapon', attack: 0, durability: 5,
           triggers: [{ event: 'on_attack', effects: [{ type: 'mount_status', statusId: 'probe_on_attack', duration: 10, target: 'self' }] }],
         },

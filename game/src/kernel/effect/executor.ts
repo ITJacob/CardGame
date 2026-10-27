@@ -23,6 +23,7 @@ const HANDLERS: Record<string, Handler> = {
   spawn: H2.handleSpawn as unknown as Handler,
   dispel: H2.handleDispel as unknown as Handler,
   disarm: H2.handleDisarm as unknown as Handler,
+  recover_equipment: H2.handleRecoverEquipment as unknown as Handler,
   modify_weapon: H2.handleModifyWeapon as unknown as Handler,
   drain: H2.handleDrain as unknown as Handler,
   modify_status: H2.handleModifyStatus as unknown as Handler,

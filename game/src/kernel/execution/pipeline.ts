@@ -4,7 +4,7 @@
 import type { FactionId, LaneId, UnitId } from '../ids'
 import type { DomainEvent } from '../combat/types'
 import type { Coordinate } from '../battle/types'
-import type { EffectNode, WeaponDef } from '../catalog/types'
+import type { EffectNode, EquipmentDef } from '../catalog/types'
 import type { Consumption, TargetSpec } from '../shared/types'
 import type { EffectContext } from '../effect/context'
 import type { TargetScope } from '../effect/target-scope'
@@ -38,8 +38,8 @@ export interface PipelineDeps {
   onAction?(info: ActionInfo): void
   /** O 完成后（zone/domain 早退前也调用）；runtime 在此时结算规则槽动作规则 */
   afterSettle?(info: ActionInfo): void
-  /** kind=weapon 的卡：扣费成功后、战吼/选靶之前装备 */
-  equipWeapon?(caster: CombatUnit, weapon: WeaponDef): void
+  /** kind=equipment 的卡：扣费成功后、战吼/选靶之前装备 */
+  equipEquipment?(caster: CombatUnit, equipment: EquipmentDef): void
 }
 
 export interface ActionInfo {
@@ -64,8 +64,8 @@ export interface BehaviorSource {
   /** consumption=zone / domain 时的卡面授予（由 runtime 消费） */
   zoneGrant?: { def: string; duration?: number }
   domainGrant?: { def: string; tier?: string; duration?: number }
-  /** kind=weapon：装备载荷（战吼走 effects） */
-  weapon?: WeaponDef
+  /** kind=equipment：装备载荷（战吼走 effects） */
+  equipment?: EquipmentDef
 }
 
 export interface AwaitingDecision {

@@ -11,7 +11,7 @@ function overviewHtml(def) {
   if (def.duration != null) chips.push(`持续 ${def.duration}`);
   if (def.maxStacks != null) chips.push(`上限 ${def.maxStacks} 层`);
   if (def.charges != null) chips.push(`${def.charges} 次`);
-  if (def.equipSlot) chips.push(`装备槽：${def.equipSlot === 'weapon' ? '武器' : def.equipSlot}`);
+  if (def.equipSlot) chips.push(`装备槽：${({ weapon: '武器', armor: '护具' })[def.equipSlot] || def.equipSlot}`);
   if (def.dispelable === false) chips.push('不可驱散');
   else if (def.dispelable === true) chips.push('可驱散');
   if (def.stackPolicy) chips.push(`叠层·${termSpan('stackPolicy', def.stackPolicy, { showKey: false })}`);

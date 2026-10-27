@@ -106,6 +106,8 @@ ENUM_TO_CAT = {
     "effDispel.category": "statusCategory",
     "effDisarm.slot": "equipSlot",
     "effModifyWeapon.slot": "equipSlot",
+    "effRecoverEquipment.slot": "equipSlot",
+    "equipmentSpec.slot": "equipSlot",
     "effDrain.resource": "resource",
     "effDrain.category": "statusCategory",
     "effDomain.op": "domainOp",

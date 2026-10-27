@@ -7,7 +7,7 @@ import { activeDomains, topOverlay } from '../battle/domain'
 import { BattlePlacement } from '../battle/placement'
 import { domainCostDelta, domainEffectBlocked, domainEmpowerMul, domainShieldBlocked, type RuleProfile } from './domainRules'
 import { createLookup, type CatalogLookup } from '../catalog/lookup'
-import type { Catalog, EffectNode, EffModifyWeapon, EffSpawn, TriggerDef, UnitDef, WeaponDef } from '../catalog/types'
+import type { Catalog, EffectNode, EffModifyWeapon, EffRecoverEquipment, EffSpawn, EquipmentDef, TriggerDef, UnitDef } from '../catalog/types'
 import { EventBus } from '../shared/events'
 import { SequentialIdGenerator } from '../shared/id-generator'
 import { Mulberry32RandomSource, RandomUsageRegistry, type RandomSource } from '../shared/random-source'
@@ -309,10 +309,10 @@ class CombatRuntime implements CombatRuntimeHandle {
       if (triggers.length > 0) unit.passives.push({ defId: tpl.id, triggers })
       if (tpl.initialEquip) initialEquips.push(tpl.initialEquip)
     }
-    // 被动全部登记完再开局装备：on_weapon_equip / 战吼能看到完整被动集
+    // 被动全部登记完再开局装备：on_equipment_equip / 战吼能看到完整被动集
     for (const id of initialEquips) {
-      const def = this.lookup.skillDef(id)?.weapon
-      if (def) this.equipWeapon(unit, def)
+      const def = this.lookup.skillDef(id)?.equipment
+      if (def) this.equipEquipment(unit, def)
       else this.warn(`initialEquip 未知武器 ${id}`)
     }
   }
@@ -393,7 +393,7 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
 
     this.checkDeaths()
-    this.breakSpentWeapons()
+    this.breakSpentEquipment()
     this.checkTermination()
     // runOpportunity 可能在方法内改写 this.pending，控制流收窄不可用，这里显式放宽
     const pendingReq = (this.pending as { request: DecisionRequest } | null)?.request ?? null
@@ -482,48 +482,76 @@ class CombatRuntime implements CombatRuntimeHandle {
     }
   }
 
-  /** 本步末尾清掉耐久归零的武器（期间若被 on_kill 补满则保留）。 */
-  private breakSpentWeapons(): void {
+  /** 本步末尾下线耗尽的装备：武器耐久归零 / 护具护甲池打空（期间被补满则保留）。 */
+  private breakSpentEquipment(): void {
     for (const unit of this.units.all()) {
-      if (unit.weapon && unit.weapon.durability <= 0) this.destroyWeapon(unit, 'durability')
+      const weapon = unit.equipment.find((e) => e.slot === 'weapon')
+      if (weapon && (weapon.durability ?? 0) <= 0) this.destroyEquipment(unit, 'weapon', 'durability')
+      const armor = unit.equipment.find((e) => e.slot === 'armor')
+      if (armor && unit.pool('armor').current <= 0) this.destroyEquipment(unit, 'armor', 'depleted')
     }
   }
 
-  /** 装备武器：销毁旧武器 → 建实例 → fire on_weapon_equip（战吼由流水线随后执行）。 */
-  private equipWeapon(unit: CombatUnit, def: WeaponDef): void {
-    if (unit.weapon) this.destroyWeapon(unit, 'replaced')
-    const inst = unit.equipWeapon(def, this.ids.next('weapon'))
-    this.emit({ type: 'WeaponEquipped', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id })
-    this.fireStatusTriggers(unit, 'on_weapon_equip')
+  /** 装备：同槽旧件下线 → 建实例 → 登记卡槽 pendingCooldown → fire on_equipment_equip（战吼随后）。 */
+  private equipEquipment(unit: CombatUnit, def: EquipmentDef): void {
+    if (unit.equipment.some((e) => e.slot === def.slot)) this.destroyEquipment(unit, def.slot, 'replaced')
+    const inst = unit.equipEquipment(def, this.ids.next('equip'))
+    const slot = unit.behaviorSlots.find((s) => s.kind === 'skill' && s.defId === def.id)
+    if (slot) {
+      slot.equipInstanceId = inst.instanceId
+      slot.pendingCooldown = slot.cost.cooldown
+      slot.cooldownRemaining = 0
+    }
+    this.emit({ type: 'EquipmentEquipped', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id, slot: inst.slot })
+    this.fireStatusTriggers(unit, 'on_equipment_equip')
   }
 
-  private destroyWeapon(unit: CombatUnit, reason: string): void {
-    const inst = unit.destroyWeapon()
+  /** 下线装备并结算同槽公用 CD：该槽所有装备牌进入「卡面 CD × cooldownMul」。 */
+  private destroyEquipment(unit: CombatUnit, slot: 'weapon' | 'armor', reason: string, cooldownMul = 1): void {
+    const inst = unit.removeEquipment(slot)
     if (!inst) return
-    this.emit({ type: 'WeaponDestroyed', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id, reason })
+    this.emit({ type: 'EquipmentDestroyed', instanceId: inst.instanceId, defId: inst.defId, unitId: unit.id, slot: inst.slot, reason })
+    const owner = unit.behaviorSlots.find((s) => s.equipInstanceId === inst.instanceId)
+    const base = owner?.pendingCooldown ?? this.lookup.skillDef(inst.defId)?.cost?.cooldown ?? 0
+    const cd = round2(base * cooldownMul)
+    for (const s of unit.behaviorSlots) {
+      if (s.kind !== 'skill') continue
+      const def = this.lookup.skillDef(s.defId)
+      if (def?.kind !== 'equipment' || def.equipment?.slot !== slot) continue
+      s.cooldownRemaining = Math.max(0, cd)
+      if (s.equipInstanceId === inst.instanceId) s.equipInstanceId = undefined
+      s.pendingCooldown = s.cost.cooldown
+    }
   }
 
-  /** 普攻后扣 1 耐久（步末统一判定销毁，on_kill 补耐久可救回）。 */
+  /** 普攻后扣 1 武器耐久（步末统一判定下线，on_kill 补耐久可救回）。 */
   private consumeWeaponDurability(unit: CombatUnit): void {
-    if (!unit.weapon) return
-    unit.weapon.durability = Math.max(0, unit.weapon.durability - 1)
+    const weapon = unit.equipment.find((e) => e.slot === 'weapon')
+    if (!weapon) return
+    weapon.durability = Math.max(0, (weapon.durability ?? 0) - 1)
   }
 
   private opModifyWeapon(unit: CombatUnit, node: EffModifyWeapon): void {
-    const w = unit.weapon
-    if (!w) return
+    const weapon = unit.equipment.find((e) => e.slot === 'weapon')
+    if (!weapon) return
     if (node.restoreDurability) {
-      const def = this.lookup.skillDef(w.defId)?.weapon
-      if (def) w.durability = def.durability
+      const def = this.lookup.skillDef(weapon.defId)?.equipment
+      if (def?.durability != null) weapon.durability = def.durability
     }
     if (typeof node.durabilityDelta === 'number') {
-      w.durability = Math.max(0, w.durability + node.durabilityDelta)
+      weapon.durability = Math.max(0, (weapon.durability ?? 0) + node.durabilityDelta)
     }
     if (typeof node.attackDelta === 'number' && node.attackDelta !== 0) {
-      unit.provenance.revertBySource(w.instanceId)
-      w.attack += node.attackDelta
-      unit.provenance.apply('attack', w.attack, w.instanceId)
+      unit.provenance.revertBySource(weapon.instanceId)
+      weapon.attack = (weapon.attack ?? 0) + node.attackDelta
+      unit.provenance.apply('attack', weapon.attack, weapon.instanceId)
     }
+  }
+
+  private opRecoverEquipment(unit: CombatUnit, node: EffRecoverEquipment): void {
+    const slots: readonly ('weapon' | 'armor')[] = node.slot ? [node.slot] : ['weapon', 'armor']
+    const mul = typeof node.cooldownMul === 'number' && Number.isFinite(node.cooldownMul) ? node.cooldownMul : 0.3
+    for (const slot of slots) this.destroyEquipment(unit, slot, 'recovered', mul)
   }
 
   // ---------- 行为源 ----------
@@ -553,7 +581,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       consumption: (skill.targetSpec?.consumption as Consumption) ?? 'instant',
       zoneGrant: skill.zoneGrant ? { def: skill.zoneGrant.def, duration: skill.zoneGrant.duration } : undefined,
       domainGrant: skill.domainGrant ? { def: skill.domainGrant.def, tier: skill.domainGrant.tier, duration: skill.domainGrant.duration } : undefined,
-      weapon: skill.weapon,
+      equipment: skill.equipment,
     }
   }
 
@@ -562,7 +590,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       units: this.units,
       enemyOf: (f) => (f === this.factions[0] ? this.factions[1] : this.factions[0]),
       makeContext: (actionId, caster, targetScope, sourceRef) => this.makeContext(actionId, caster, undefined, targetScope, sourceRef),
-      equipWeapon: (caster, weapon) => this.equipWeapon(caster, weapon),
+      equipEquipment: (caster, equipment) => this.equipEquipment(caster, equipment),
       effectNode: (id) => this.lookup.effectNode(id),
       emit: (e) => this.emit(e),
       nextActionId: () => this.ids.next('action'),
@@ -658,7 +686,7 @@ class CombatRuntime implements CombatRuntimeHandle {
         shieldBlocked: (faction) => domainShieldBlocked(this.battle.domains, faction),
       },
       actionRef: sourceRef,
-      weaponDamage: caster != null && caster.weapon != null && this.isAttackActionRef(sourceRef),
+      weaponDamage: caster != null && caster.equipment.some((e) => e.slot === 'weapon') && this.isAttackActionRef(sourceRef),
       damageSource: this.isAttackActionRef(sourceRef) ? 'behavior' : 'status',
       rampValue,
       zoneActive: (zoneId) => this.battle.zones.some((z) => z.status === 'Active' && z.def.id === zoneId),
@@ -707,7 +735,8 @@ class CombatRuntime implements CombatRuntimeHandle {
         }
       },
       ops: {
-        destroyWeapon: (u, reason) => this.destroyWeapon(u, reason),
+        destroyEquipment: (u, slot, reason) => this.destroyEquipment(u, slot, reason),
+        recoverEquipment: (u, node) => this.opRecoverEquipment(u, node),
         modifyWeapon: (u, node) => this.opModifyWeapon(u, node),
         move: (u, op, dist, c) => this.opMove(u, op, dist, c),
         spawn: (c, node, near, sources) => this.opSpawn(c, node, near, sources),
@@ -1965,11 +1994,13 @@ class CombatRuntime implements CombatRuntimeHandle {
       const scope = this.scopeFor(unit, inst.grant.casterId, subjects, opportunity)
       this.fireTriggers(unit, event, def?.triggers, unit, opportunity, scope, false, null, inst, undefined, eventInfo)
     }
-    // 武器（无 onlyDefId 时参与；装备期触发器，不支持 consumeCharge）
-    if (!onlyDefId && unit.weapon) {
-      const wdef = this.lookup.skillDef(unit.weapon.defId)?.weapon
-      const scope = this.scopeFor(unit, undefined, subjects, opportunity)
-      this.fireTriggers(unit, event, wdef?.triggers, unit, opportunity, scope, false, undefined, undefined, unit.weapon.defId, eventInfo)
+    // 装备触发器（无 onlyDefId 时参与；装备期触发器，不支持 consumeCharge）
+    if (!onlyDefId) {
+      for (const equipment of unit.equipment) {
+        const edef = this.lookup.skillDef(equipment.defId)?.equipment
+        const scope = this.scopeFor(unit, undefined, subjects, opportunity)
+        this.fireTriggers(unit, event, edef?.triggers, unit, opportunity, scope, false, undefined, undefined, equipment.defId, eventInfo)
+      }
     }
     // 被动卡（无 onlyDefId 时全部参与）
     if (!onlyDefId) {
@@ -1989,10 +2020,10 @@ class CombatRuntime implements CombatRuntimeHandle {
         const scope = this.scopeFor(host, inst.grant.casterId, { ...subjects, target: subject })
         this.fireTriggers(host, event, def?.triggers, host, undefined, scope, true, subject, inst, undefined, eventInfo)
       }
-      if (host.weapon) {
-        const wdef = this.lookup.skillDef(host.weapon.defId)?.weapon
+      for (const equipment of host.equipment) {
+        const edef = this.lookup.skillDef(equipment.defId)?.equipment
         const scope = this.scopeFor(host, undefined, { ...subjects, target: subject })
-        this.fireTriggers(host, event, wdef?.triggers, host, undefined, scope, true, subject, undefined, host.weapon.defId, eventInfo)
+        this.fireTriggers(host, event, edef?.triggers, host, undefined, scope, true, subject, undefined, equipment.defId, eventInfo)
       }
       for (const p of host.passives) {
         const scope = this.scopeFor(host, undefined, { ...subjects, target: subject })
@@ -2168,7 +2199,7 @@ class CombatRuntime implements CombatRuntimeHandle {
       gaugeRate: u.gauge.rate,
       gaugeThreshold: u.gauge.threshold,
       statuses: u.statuses.all().map((s) => ({ defId: s.defId, stacks: s.currentStacks, charges: s.charges, maxCharges: s.maxCharges })),
-      weapon: u.weapon ? { defId: u.weapon.defId, attack: u.weapon.attack, durability: u.weapon.durability } : null,
+      equipment: u.equipment.map((e) => ({ defId: e.defId, slot: e.slot, attack: e.attack, armor: e.armor, durability: e.durability })),
       unitDefId: u.unitDefId,
       unitType: u.unitType,
       summonerId: u.summonerId,

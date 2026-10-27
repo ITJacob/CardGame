@@ -1,7 +1,7 @@
 // 战斗聚合根与对外契约（README §〇/§一/§三）。
 // 入场 CombatSetup → 出场 CombatEnded；内核是纯函数：结果 = f(初始状态, 输入序列, seed)。
 
-import type { FactionId, Gender, Phase, Reach, UnitId } from '../ids'
+import type { EquipmentSlot, FactionId, Gender, Phase, Reach, UnitId } from '../ids'
 import type { CatalogSnapshot } from '../catalog/types'
 import type { Coordinate, DomainGrant, OccupancyChanged } from '../battle/types'
 import type { StatusGrant, Unit } from '../roster/types'
@@ -129,8 +129,8 @@ export interface UnitViewLite {
   /** 行动条越阈阈值——UI 预测出手顺序用 */
   gaugeThreshold: number
   statuses: { defId: string; stacks: number; charges: number | null; maxCharges: number | null }[]
-  /** 当前武器（单槽） */
-  weapon: { defId: string; attack: number; durability: number } | null
+  /** 当前装备（武器/护具各至多一件） */
+  equipment: { defId: string; slot: EquipmentSlot; attack?: number; armor?: number; durability?: number }[]
   /** 单位蓝本 id（unitDef.id；普通英雄为 null） */
   unitDefId: string | null
   /** 召唤物类别（unitType 枚举值；非召唤物为 null） */
@@ -174,8 +174,8 @@ export type DomainEvent =
   | { type: 'StatusRefreshed'; instanceId: string; defId: string }
   | { type: 'StatusExpired'; instanceId: string; defId: string; unitId?: UnitId }
   | { type: 'StatusDispelled'; instanceId: string; defId: string }
-  | { type: 'WeaponEquipped'; instanceId: string; defId: string; unitId: UnitId }
-  | { type: 'WeaponDestroyed'; instanceId: string; defId: string; unitId: UnitId; reason: string }
+  | { type: 'EquipmentEquipped'; instanceId: string; defId: string; unitId: UnitId; slot: EquipmentSlot }
+  | { type: 'EquipmentDestroyed'; instanceId: string; defId: string; unitId: UnitId; slot: EquipmentSlot; reason: string }
   | { type: 'ZonePlaced'; zoneId: string; coord: Coordinate }
   | { type: 'ZoneTriggered'; zoneId: string; coord: Coordinate }
   | { type: 'ZoneExpired'; zoneId: string; coord: Coordinate }

@@ -37,7 +37,7 @@ MECH_HINTS = [
     ("位移", lambda types, c: types & {"move", "translocate"}),
     ("基础增益", lambda types, c: "modify_stat" in types),
     ("资源", lambda types, c: "modify_resource" in types),
-    ("装备", lambda types, c: c.get("kind") == "weapon" or "modify_weapon" in types),
+    ("装备", lambda types, c: c.get("kind") == "equipment" or "modify_weapon" in types),
     ("界域", lambda types, c: "domain" in types),
     ("相位", lambda types, c: types & {"advance_clock", "set_luminance"} or c.get("phaseHooks")),
     ("吟唱", lambda types, c: c.get("castTime")),

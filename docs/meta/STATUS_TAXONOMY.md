@@ -90,7 +90,7 @@
 
 ### 维度 9 · 运行态 vs 定义态
 - **statusDef（定义态）**：静态模板，全库只定义一次（INV-C2 单点定义），跨途径按 `id` 引用。
-- **StatusInstance（运行态）**：定义经 `mount_status` 落场后的实例，可叠加层数 `maxStacks`（stack/refresh）、消耗次数 `charges`、到期 `duration`，可被 `dispel` / `modify_status` 改写。武器不是状态（见 `kind:"weapon"` 卡与 WeaponInstance），`dispel` 不作用于武器。
+- **StatusInstance（运行态）**：定义经 `mount_status` 落场后的实例，可叠加层数 `maxStacks`（stack/refresh）、消耗次数 `charges`、到期 `duration`，可被 `dispel` / `modify_status` 改写。装备不是状态（见 `kind:"equipment"` 卡与 EquipmentInstance），`dispel` 不作用于装备。
 - 红线：同名状态必须同定义，异义只能拆 id（豁免机制已移除）；`dispel` 只作用于 StatusInstance（INV-P7）。
 
 ---

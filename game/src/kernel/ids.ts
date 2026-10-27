@@ -37,5 +37,8 @@ export type Reach = 'none' | 'melee' | 'thrown' | 'spell'
 
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
 
-/** 卡的种类：active/weapon/summon → SkillDef；passive → BehaviorTemplate */
-export type CardKind = 'active' | 'passive' | 'weapon' | 'summon'
+/** 卡的种类：active/equipment/summon → SkillDef；passive → BehaviorTemplate */
+export type CardKind = 'active' | 'passive' | 'equipment' | 'summon'
+
+/** 装备槽（装备牌一等公民化 2026-10-26）：武器 / 护具，互相独立、单槽单实例 */
+export type EquipmentSlot = 'weapon' | 'armor'

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { createCombat } from '../src/kernel'
 import { buildCatalog } from '../src/data/catalogBuild'
 import type { PathwayFile } from '../src/data/schema.types'
-import type { StatusDef, WeaponDef } from '../src/kernel/catalog/types'
+import type { EquipmentDef, StatusDef } from '../src/kernel/catalog/types'
 import { makeUnit } from './helpers/fixture'
 
 const WEAKEN: StatusDef = {
@@ -21,7 +21,7 @@ const GRAND: StatusDef = {
     outgoingDamageParams: { filter: { weaponDamage: true }, armorPierceRatio: 0.5 },
   } as never,
 }
-const BLADE: WeaponDef = { id: 'probe_blade', slot: 'weapon', attack: 2, durability: 5 }
+const BLADE: EquipmentDef = { id: 'probe_blade', slot: 'weapon', attack: 2, durability: 5 }
 
 describe('attackMod：按持有状态实时参与攻击值', () => {
   it('平加值（负数）钳到 0', () => {
@@ -41,9 +41,9 @@ describe('attackMod：按持有状态实时参与攻击值', () => {
     const u = makeUnit('u', 'A', { strength: 2 }, [GRAND])
     u.statuses.mount('grand', { sourceId: 't' })
     expect(u.attackPower()).toBe(2)
-    u.equipWeapon(BLADE, 'w1')
+    u.equipEquipment(BLADE, 'w1')
     expect(u.attackPower()).toBe(7) // 2 + 武器 2 + 持械 3
-    u.destroyWeapon()
+    u.removeEquipment('weapon')
     expect(u.attackPower()).toBe(2)
   })
 })
@@ -54,7 +54,7 @@ describe('outgoingDamageParams：weaponDamage 门控', () => {
     u.statuses.mount('grand', { sourceId: 't' })
     // 无武器：引擎判定 weaponDamage=false，filter 拦下
     expect(u.outgoingDamageParams(false)).toBeNull()
-    u.equipWeapon(BLADE, 'w1')
+    u.equipEquipment(BLADE, 'w1')
     const p = u.outgoingDamageParams(true)!
     expect(p.armorPierceRatio).toBe(0.5)
     expect(u.outgoingDamageParams(false)).toBeNull()
@@ -68,16 +68,14 @@ const CARD_START = {
   rarity: 'common' as const, axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
   cost: { energy: 0, cooldown: 100, castTime: null }, hook: ['on_battle_start'], effects: [],
   initialEquip: 'probe_blade',
-  statusDefs: [
-    GRAND,
-    {
-      id: 'probe_plate', name: '护甲', category: ['buff'], dispelable: false, duration: null, maxStacks: 1,
-      triggers: [{
-        event: 'on_apply',
-        effects: [{ type: 'modify_resource', resource: 'armor', value: 10, mode: 'delta', target: 'self' }],
-      }],
-    },
-  ],
+  statusDefs: [GRAND],
+}
+
+const CARD_PLATE_START = {
+  id: 'probe_plate_start', name: '开局披甲', kind: 'passive' as const, sequence: 9, sequenceName: 's9',
+  rarity: 'common' as const, axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
+  cost: { energy: 0, cooldown: 100, castTime: null }, hook: ['on_battle_start'], effects: [],
+  initialEquip: 'probe_plate_card',
 }
 
 function pathway(): PathwayFile {
@@ -85,11 +83,18 @@ function pathway(): PathwayFile {
     pathwayId: 'warrior', pathwayName: '战士', sourceFile: 'probe', sourceVersion: 'test',
     cards: [
       CARD_START,
+      CARD_PLATE_START,
       {
-        id: 'probe_blade', name: '试刃', kind: 'weapon' as const, sequence: 9, sequenceName: 's9',
+        id: 'probe_blade', name: '试刃', kind: 'equipment' as const, sequence: 9, sequenceName: 's9',
         rarity: 'common' as const, axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
         cost: { energy: 0, cooldown: 100, castTime: null }, effects: [],
-        weapon: { slot: 'weapon', attack: 2, durability: 5 },
+        equipment: { slot: 'weapon', attack: 2, durability: 5 },
+      },
+      {
+        id: 'probe_plate_card', name: '重甲', kind: 'equipment' as const, sequence: 9, sequenceName: 's9',
+        rarity: 'common' as const, axis: 'a', flagship: false, lore: '', flavor: '', describe: '', tentative: false,
+        cost: { energy: 0, cooldown: 100, castTime: null }, effects: [],
+        equipment: { slot: 'armor', armor: 10 },
       },
     ],
   } as never
@@ -117,7 +122,7 @@ function setup(opts: { grand: boolean }) {
           unitId: 'B_u0', pathwayId: 'warrior', coordinate: { faction: 'B' as const, lane: 'lane0' as const, index: 0 },
           attributeSet: { strength: 10, agility: 1, intelligence: 1, rank: 0 },
           gender: 'male' as const, anchor: 0,
-          activeSlots: [], passiveSlots: [], initialStatuses: [{ defId: 'probe_plate' }],
+          activeSlots: [], passiveSlots: [{ defId: 'probe_plate_start' }], initialStatuses: [],
         }],
       },
     ],

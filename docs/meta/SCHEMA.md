@@ -73,7 +73,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 |---|---|:--:|---|
 | `id` | string | ✓ | `skill_<pathwayId>_s<序列>_<短名>`，全局唯一 |
 | `name` | string | ✓ | 中文名 |
-| `kind` | `active`\|`passive`\|`weapon`\|`summon` | ✓ | 决定下面的必填分支；`weapon` = 打出即装备的武器牌；`summon` = 打出即落场的召唤牌（2026-10-23 召唤牌化） |
+| `kind` | `active`\|`passive`\|`equipment`\|`summon` | ✓ | 决定下面的必填分支；`equipment` = 打出即装备的装备牌（武器/护具两槽，2026-10-26 武器牌泛化）；`summon` = 打出即落场的召唤牌（2026-10-23 召唤牌化） |
 | `sequence` | int 0–9 | ✓ | 序列位阶；稀有度由它派生 |
 | `sequenceName` | string | ✓ | 该位阶名称 |
 | `rarity` | enum | ✓ | `common`(9-8) / `uncommon`(7-6) / `rare`(5-4) / `epic`(3-2) / `legendary`(1-0) |
@@ -81,15 +81,15 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `flagship` | bool | ✓ | 是否旗舰卡 |
 | `role` | enum | – | 设计角色六值（2026-10-21 玩法蓝图工序）：`core` 轴循环承重件 / `starter` 低序列入门（须 common）/ `bridge` 跨轴跨系连接 / `generic` 泛用骨架·刻意补位（不得 flagship、不得被 axes 登记）/ `trap` core 同族赌博变体（须带风险段）/ `tech` 对策卡。口径与配比约束见 SCORING.md §一·附 |
 | `lore` / `flavor` / `describe` | string | ✓ | 设定 / 风味 / **玩家可读效果描述**（`describe` 是唯一面向玩家的字段） |
-| `effects` | effect[] | ✓ | 卡面效果；active/passive 须至少 1 条，weapon 可为空（无战吼）；summon 可为空且**禁含 spawn 段**（一卡一单位） |
+| `effects` | effect[] | ✓ | 卡面效果；active/passive 须至少 1 条，equipment 可为空（无战吼）；summon 可为空且**禁含 spawn 段**（一卡一单位） |
 | `tentative` | bool | ✓ | 数值待拍板；当前全库仅 10 张保留 `true`（真实欠账：数值盲区 / 待拍板），其余为 `false` |
-| `cost` | object | active / weapon / summon | `{ energy, cooldown, castTime, opportunity? }`，`castTime` 可为 `null`；`opportunity` 取 `0/1`（缺省 1）：0 = 执行后不消耗行动机会，同一机会可继续行动 |
+| `cost` | object | active / equipment / summon | `{ energy, cooldown, castTime, opportunity? }`，`castTime` 可为 `null`；`opportunity` 取 `0/1`（缺省 1）：0 = 执行后不消耗行动机会，同一机会可继续行动 |
 | `reach` | `none`\|`melee`\|`thrown`\|`spell` | active | 攻击作用形态（与双方站位正交；决定对撞/反击触发与可拦截性，非攻击类写 none）：melee=近身对抗、thrown=有形投射（可拦截、触发反击）、spell=无形作用（不可拦截、仍触发反击）；原 ranged 已按形态拆为 thrown/spell |
-| `target` | object | active | 见 §4（weapon 的战吼可选用） |
+| `target` | object | active | 见 §4（equipment 的战吼选用） |
 | `hook` | enum | passive | 被动挂载的触发点 |
-| `weapon` | object | weapon | 武器载荷 `{ slot, attack, durability, tags?, modifiers?, triggers?, note? }`：打出即装备；攻击加值走 delta 层，耐久按普攻次数消耗、归零摧毁；装备期触发器不支持 `consumeCharge` |
+| `equipment` | object | equipment | 装备载荷 `{ slot(weapon\|armor), attack?, durability?, armor?, tags?, modifiers?, triggers?, note? }`：打出即装备、同槽顶替；武器槽 = 攻击加值 + 耐久（按普攻次数消耗、归零下线）；护具槽 = 护甲池（容量=初始值，池空下线、卸下清零）；同槽公用 CD 于装备下线后才开始计 |
 | `summon` | object | summon | 召唤载荷 `{ unitId, count?, hpRatio?, atkRatio?, position?, lifetime?, note? }`（2026-10-23）：打出即落场；卡面只写实例参数，unitType/基线/技能组由途径顶层 `unitDefs` 蓝本兜底；`template`/`reviveOf`/`zone` 语义留在 spawn 原语 |
-| `initialEquip` | card id | passive | 开局自动装备该武器卡（须为同途径 `kind:"weapon"`）；仅 `on_battle_start` 生效 |
+| `initialEquip` | card id | passive | 开局自动装备该装备卡（须为同途径 `kind:"equipment"`）；仅 `on_battle_start` 生效 |
 | `statusDefs` | statusDef[] | | 卡引入的私有状态 |
 | `triggers` | trigger[] | | 卡片级触发器 |
 | `unitDefs` / `zoneDef` / `domainDef` | | | 卡引入的单位 / 区域 / 界域定义 |
@@ -110,7 +110,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 - `kind: active` → 必须同时有 `cost`、`reach`、`target`
 - `kind: passive` → 必须有 `hook`
-- `kind: weapon` → 必须有 `cost`、`weapon`（`reach` / `target` 可选，仅供战吼；`effects` 可为空）
+- `kind: equipment` → 必须有 `cost`、`equipment`（`reach` / `target` 可选，仅供战吼；`effects` 可为空）
 - `kind: summon` → 必须有 `cost`、`summon`（无 `reach` / `target`——默认落己方战场；`effects` 战吼可选但禁含 spawn 段）
 
 ## 4. 目标系统
@@ -162,7 +162,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `repeat` | `steps` | 重复；`count` 可用对象形式 `{valueFrom, filter, cap}` 做运行期计算 |
 | `if` | `condition`, `then` | 条件分支，`else` 可选 |
 
-### 5.2 原语（31 个，封闭集）
+### 5.2 原语（32 个，封闭集）
 
 | type | 关键字段 | 备注 |
 |---|---|---|
@@ -174,7 +174,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `move` | `op` `distance` | 7 种 op |
 | `spawn` | `unitId`/`template` `position` `hpRatio` `reviveOf` | 复活走 `reviveOf`，不新增原语（G4）；键名裁定 2026-10-01：unitId=静态引用唯一正键、template=动态模板，原 `unit` 键已撤（单位定义见 ddd 召唤物参数.md） |
 | `dispel` | `dispelTarget`(unit/domain) `filter` `category` `count` | 只作用于 StatusInstance（INV-P7）；尊重 `dispelable`，**不拆装备槽武器**（武器不可驱散，卸下走 `disarm`） |
-| `disarm` | `target` `slot`(weapon) | **缴械**：卸下并摧毁目标当前武器（WeaponInstance）。武器不是状态，`dispel` 不作用于武器；无背包，卸下即摧毁、不保留定义 |
+| `disarm` | `target` `slot`(weapon\|armor) | **缴械**：卸下并摧毁目标指定装备槽的装备。装备不是状态，`dispel` 不作用；无背包，卸下即下线并触发同槽公用 CD |
 | `drain` | `resource` `value` `healRatio` | |
 | `domain` | `op`(overlay/swap/hero) `def` `duration` | 界域三件套 |
 | `translocate` | `op`(pull_into/banish) `duration` `returnPayload` | **跨层位移**：目标 detached N tick（离场不持坐标、计时冻结），到期于己方队尾回归；`banish` 可带回归载荷。ddd 效果参数 11 号，2026-09-06 拍板；schema 于 2026-09-16 补登记（此前缺失导致零使用） |
@@ -186,12 +186,13 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 | `gauge_shuffle` / `status_shuffle` | `resource` / `mode` `sort` | |
 | `modify_skill` | `skillRef`(selector/by_id) `clearCooldown` `costDelta` `setInstant` `targetSpecOverride` `setOpportunity` | **行为层修改（一）**：改写技能实例运行时属性——清冷却 / 改施法消耗 / 吟唱转瞬发 / **完整改写 TargetSpec**（对齐 DDD：可改技能全部选靶属性，而非仅范围；`targetSpecOverride` 为对象，给出 selectionMode+request 全字段，未给出的沿用原值，2026-09-17 拍板补原缺口，2026-09-20 升级为完整 TargetSpec 补丁）；`setOpportunity: 0` 改写行动机会成本（不消耗机会，需 `skillRef.by_id` 精确指定） |
 | `modify_status` | `statusId` `target` `addDuration` `setDuration` `maxStacksDelta` `dispelableOverride` `restoreCharges` `chargesDelta` | **行为层修改（二）**：改写已存在状态实例的持续 / 最大可叠加层数 / 可驱散性 / 剩余次数（区别于 mount_status 施加新状态）。2026-09-17 拍板；武器耐久改由 `modify_weapon` 处理 |
-| `modify_weapon` | `target` `slot`(weapon) `restoreDurability` `durabilityDelta` `attackDelta` | **武器改写**（2026-10-23 落地）：补满 / 增减耐久、增减攻击加值。目标无武器时为空操作；攻击加值走装备期 provenance |
+| `modify_weapon` | `target` `slot`(weapon) `restoreDurability` `durabilityDelta` `attackDelta` | **武器改写**（weapon 槽专用）：补满 / 增减耐久、增减攻击加值。目标无武器时为空操作；攻击加值走装备期 provenance |
 | `modify_targetability` | `target` `untargetable` `direction` `duration` `pierce` | 目标可选性：改单位「可被选为目标」的属性，带方向与穿透。对应手写 `untargetableByTargeted`(29)/`untargetable`(2)/`untargetableByAll`(1) |
 | `reveal` | `target` `scope`(to_source/to_all) `dispel` `pierceTargetability` | 揭示 / 穿透隐匿。对应手写 14 种拼写（约 26 处）。⚠️ **纯驱散隐匿仍用 `dispel(filter.category=[conceal])`**，本原语用于「显形但不驱散」「仅对施法者显形」 |
 | `grant_immunity` | `target` `against`(statusCategory[]) `element` `damageType` `charges` `duration` | 授予免疫（临时/条件性）。此前仅 `statusDef.immune`（2 处）可用，需为每种免疫单写状态 |
 | `take_control` | `target` `duration` `onExpire`(revert/die/keep) `actionPolicy`(full/attack_only/move_only) | 夺取控制权 / 阵营翻转：持续期内目标视为己方行动。此前**完全空白**（0 处），而「操控/支配」被提及 72 次 |
 | `write_rule_slot` | `slot`(0–2) `field`(trigger/punish/exemptions/scope) `value` `overwrite` | **规则槽写入（一）**：把一条规则写进战场级 `Rules[3]` 的指定槽位；overwrite 按 field 覆盖（默认 true），false 仅当该 field 为空时写入。与 `transfer_status` 同族（效果上下文 §2.1），服务仲裁人律令轴全卡。2026-09-18 落地 |
+| `recover_equipment` | `target` `slot`(weapon\|armor)? `cooldownMul` | **主动回收装备**：提前下线当前装备；同槽公用 CD 按 `cooldownMul`（缺省 0.3）缩减，支持快速再起。不占行动机会由卡面 `cost.opportunity:0` 表达（2026-10-26 第 32 原语） |
 | `modify_rule_slot` | `slot`(0–2) `field` `value` `mode`(replace/append/remove) `filter` | **规则槽修改（二）**：改写/追加/移除既有槽位规则（replace/append/remove 作用于该 field），服务律师与通识者的僭越轴改规类卡。`field` 闭枚举即律师侧要求的「防非法字段写入」校验；`filter` 尚未求值。2026-09-18 落地 |
 | `advance_clock` | `ticks` | **战场时钟推进**：`board.clock += N`（mod 72）。触发 `on_phase_change`。**时钟只进不退**——不提供回拨算子，「回到过去」走已有的 保存/重启/命运循环（快照回滚，原著水银之蛇「非逆转时光」）。2026-09-21 落地，见 `docs/ddd/params/战场参数.md` §1.3 |
 | `set_luminance` | `value`(0–10) `duration`(tick) `dispelable` | **光照度覆写**：写入战场级覆写层 `board.lumOverride`，压栈顶、到期回落派生值。服务权柄卡「黑夜降临」「白昼」等昼夜覆盖类。触发 `on_phase_change`。2026-09-21 落地 |
@@ -206,7 +207,7 @@ python docs/tools/check_enum_sync.py   # ddd 参数篇 + 本文档 ↔ schema �
 
 `meter_compare`（2026-10-23 增）：`key`（`secrecy` / `order` / `fate_value` / `luminance`）+ `cmp` + `n`——战场量表与阈值比较，用于「共享门槛」类玩法（窥秘人 A3 星象共谋：先越过隐秘值门槛者改写规则槽）。语义权威见 `ddd/params/共享内核参数.md` §三。
 
-`has_equipped`（2026-10-19 增，2026-10-23 改）：`side` + 可选 `slot`（当前仅 `weapon`）/ `id` / `tag`；按单位的 `WeaponInstance` 判定是否持有武器。缺省**不点名具体武器**——任何来源的武器自动纳入；需要精确排除时用 `id`（武器 defId，即 weapon_is 语义）或 `tag`（WeaponDef.tags，即 weapon_tag 语义，2026-10-23 P2 扩参）。
+`has_equipped`（2026-10-19 增，2026-10-26 改）：`side` + 可选 `slot`（`weapon` / `armor`）/ `id` / `tag`；按单位的 `EquipmentInstance` 判定是否持有装备。缺省**不点名具体装备**——任何来源的装备自动纳入；需要精确排除时用 `id`（装备 defId）或 `tag`（EquipmentDef.tags）。
 
 `recorded_has`（2026-10-23 增）：`side` + `statusId` + `id`——指定方持有的 `statusId` 状态实例的 slots/params 中含键 `id` 即成立（H33 slots 的存在性读法；阅读者「已读」三维 d_energy/d_skill/d_tempo 的兑现门）。语义权威见 `ddd/params/共享内核参数.md` §三。
 
@@ -336,7 +337,7 @@ Gate（validate.py）：`phases` 非空且取值合法、`mul>0`；`mul` 越出 
 ```
 
 `landed: false` = 仍欠账。当前 104 张卡带 flag（共 109 条），其中 **46 条为 `landed: false`**。
-✅ 触发点 `on_status_gain` 已落地为第 14 触发点（2026-09-29 内核裁定，执行参数 §2.1）；`on_turn_end` 已落地为第 15 触发点（2026-10-15，机会括号右端）；`on_weapon_equip` 已落地为第 16 触发点（2026-10-23，武器牌装备时 fire，先于战吼）；frameworkFlag 登记随裁定批全量销账。
+✅ 触发点 `on_status_gain` 已落地为第 14 触发点（2026-09-29 内核裁定，执行参数 §2.1）；`on_turn_end` 已落地为第 15 触发点（2026-10-15，机会括号右端）；`on_equipment_equip` 已落地为第 16 触发点（2026-10-23 落地、2026-10-26 随装备泛化更名，装备牌装备时 fire，先于战吼）；frameworkFlag 登记随裁定批全量销账。
 
 **与 `conversionNotes` 的边界（2026-09-19 明确，避免重复排查）**
 

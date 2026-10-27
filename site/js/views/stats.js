@@ -4,9 +4,9 @@
 //   状态  = 状态定义面（*.statuses.json 的 statusDefs，渲染逻辑在 views/status.js）
 //   召唤物 / 区域 / 界域 = 编目三件套（skills.json 顶层 unitDefs / zoneDefs / domainDefs
 //           池 + 卡面用法，渲染逻辑在 views/entities.js）
-//   武器  = kind=weapon 卡面专项（渲染逻辑在 views/weapons.js）
+//   装备  = kind=equipment 卡面专项（渲染逻辑在 views/weapons.js）
 // 口子页口径分两族：卡面各组只统计卡面 effects；状态子页统计状态定义；编目三页统计顶层三池；
-// 武器页是卡面族内 kind=weapon 的切片。
+// 装备页是卡面族内 kind=equipment 的切片。
 //
 // 版面（技能子页）：**一个维度一组**——组标题 → 该维度的全库 bar → 该维度的「途径 × 维度」热图。
 // 早先是「前面一堆 bar、末尾一叠热图」，同一个维度要在页面两头看：bar 给全库尺度、
@@ -26,7 +26,7 @@ const TABS = [
   ['skills', '技能'],
   ['status', '状态'],
   ['units', '召唤物'],
-  ['weapons', '武器'],
+  ['weapons', '装备'],
   ['zones', '区域'],
   ['domains', '界域'],
 ];
@@ -126,10 +126,10 @@ function renderSkillStats(view) {
       byRole.set('flagship', (byRole.get('flagship') || 0) + 1);
       bump(roleByPath, p, 'flagship');
     }
-    // 费用三件套（energy / cooldown / castTime）同住在卡级 cost 对象上，只算主动 / 武器 / 召唤卡——
+    // 费用三件套（energy / cooldown / castTime）同住在卡级 cost 对象上，只算主动 / 装备 / 召唤卡——
     // 这三类占主动槽、100% 带 cost（被动卡不带也不该带），缺 cost 会被这里静默漏掉，
     // 那是数据事故，页面不兜底
-    if ((c.kind === 'active' || c.kind === 'weapon' || c.kind === 'summon') && c.cost) {
+    if ((c.kind === 'active' || c.kind === 'equipment' || c.kind === 'summon') && c.cost) {
       if (c.cost.energy != null) { bump(byEnergy, 0, c.cost.energy); bump(energyByPath, p, c.cost.energy); }
       if (c.cost.cooldown != null) { bump(byCooldown, 0, c.cost.cooldown); bump(cooldownByPath, p, c.cost.cooldown); }
       if (c.cost.castTime != null) { bump(byCast, 0, c.cost.castTime); bump(castByPath, p, c.cost.castTime); }
@@ -145,7 +145,7 @@ function renderSkillStats(view) {
       tagsTotal.set(t, (tagsTotal.get(t) || 0) + 1);
     }
     // 距离 / 选靶 / 触发点三个维度的口径与同组的条形图逐字一致，别在这里换判据：
-    // 选靶用 c.target 判存在（而不是 c.kind === 'active'）——被动 / 武器卡也有带 target 的，
+    // 选靶用 c.target 判存在（而不是 c.kind === 'active'）——被动 / 装备卡也有带 target 的，
     // 换个判据两张图会差几张，反而像 bug
     if (c.kind === 'active' && c.reach) bump(reachByPath, p, c.reach);
     if (c.target?.selectionMode) bump(selByPath, p, c.target.selectionMode);
@@ -277,7 +277,7 @@ function renderSkillStats(view) {
       <dt>卡片总数</dt><dd class="num">${cards.length}</dd>
       <dt>途径</dt><dd class="num">${pathways.length}</dd>
       <dt>构筑轴</dt><dd class="num">${axisCount}</dd>
-      <dt>卡型</dt><dd class="num">主动 ${byKind.get('active') || 0} · 召唤 ${byKind.get('summon') || 0} · 武器 ${byKind.get('weapon') || 0} · 被动 ${byKind.get('passive') || 0}</dd>
+      <dt>卡型</dt><dd class="num">主动 ${byKind.get('active') || 0} · 召唤 ${byKind.get('summon') || 0} · 装备 ${byKind.get('equipment') || 0} · 被动 ${byKind.get('passive') || 0}</dd>
       <dt>旗舰卡</dt><dd class="num">${flagshipCount}</dd>
       <dt>带框架缺口</dt><dd class="num">${flagCards.length} 张 / ${flagCards.reduce((s, c) => s + openFlags(c).length, 0)} 条</dd>
       <dt>框架登记（已落地）</dt><dd class="num">${cards.reduce((s, c) => s + (c.frameworkFlags || []).filter((f) => f && f.landed === true).length, 0)} 条</dd>
@@ -320,7 +320,7 @@ function renderSkillStats(view) {
   const kindGroup = group('卡池结构 · 卡型',
     barPanel('卡型分布', sortedRows(byKind, (k) => zh('cardKind', k)),
       `<p class="panel-note muted">四类卡同占卡位，区别在结算路径：主动技能由单位施放，
-      武器牌打出即装备，召唤牌打出即落场，被动卡由触发点唤起、没有施放期参数。</p>`),
+      装备牌打出即装备，召唤牌打出即落场，被动卡由触发点唤起、没有施放期参数。</p>`),
     heatOf('途径 × 卡型', kindByPath, colsOf(byKind, 'cardKind'), { unit: ' 张' }));
 
   // 卡角色：列序钉死六值 + flagship，不跟用量走——同一张热图在 22 个途径下读法必须一致
@@ -435,14 +435,14 @@ function renderSkillStats(view) {
     heatOf('途径 × 伤害费用比（只算带数值伤害的主动卡）', budgetByPath, budgetCols, { unit: ' 张' }));
 
   const energyGroup = group('费用面 · 能量（cost.energy）',
-    barPanel('能量费用分布（主动 / 武器 / 召唤卡，有序刻度）', sortedRows(flat(byEnergy), (k) => `${k} 能`, { byKey: true })),
-    heatOf('途径 × 能量费用（主动 / 武器 / 召唤卡）', energyByPath, scaleCols(energyByPath, ' 能'),
+    barPanel('能量费用分布（主动 / 装备 / 召唤卡，有序刻度）', sortedRows(flat(byEnergy), (k) => `${k} 能`, { byKey: true })),
+    heatOf('途径 × 能量费用（主动 / 装备 / 召唤卡）', energyByPath, scaleCols(energyByPath, ' 能'),
       { unit: ' 张', orderNote: '数值最小的 ' }));
 
   const cooldownGroup = group('费用面 · 冷却（cost.cooldown）',
-    barPanel('冷却分布（主动 / 武器 / 召唤卡，有序刻度）', sortedRows(flat(byCooldown), (k) => `${k} tick`, { byKey: true }),
+    barPanel('冷却分布（主动 / 装备 / 召唤卡，有序刻度）', sortedRows(flat(byCooldown), (k) => `${k} tick`, { byKey: true }),
       `<p class="panel-note muted">冷却以 tick 计时（与吟唱同单位）；0 tick = 无冷却（一次性或被动触发类）。</p>`),
-    heatOf('途径 × 冷却（主动 / 武器 / 召唤卡）', cooldownByPath, scaleCols(cooldownByPath, ' tick'),
+    heatOf('途径 × 冷却（主动 / 装备 / 召唤卡）', cooldownByPath, scaleCols(cooldownByPath, ' tick'),
       { unit: ' 张', orderNote: '数值最小的 ' }));
 
   const hpCostGroup = group('费用面 · 生命代价',
@@ -453,10 +453,10 @@ function renderSkillStats(view) {
     heatOf('途径 × 血费卡', hpCostByPath, [{ key: '血费', label: '血费', title: '血费' }], { unit: ' 张' }));
 
   const castGroup = group('费用面 · 吟唱（cost.castTime）',
-    barPanel('吟唱分布（主动 / 武器 / 召唤卡，有序刻度）', sortedRows(flat(byCast), (k) => (k ? `${k} tick` : '瞬发（0）'), { byKey: true }),
+    barPanel('吟唱分布（主动 / 装备 / 召唤卡，有序刻度）', sortedRows(flat(byCast), (k) => (k ? `${k} tick` : '瞬发（0）'), { byKey: true }),
       `<p class="panel-note muted">brief §13：序列 7–5 即时技能默认 0（瞬发）不标；序列 4 以上
       或仪式类必标。可被「免吟唱」免除、被控制打断。</p>`),
-    heatOf('途径 × 吟唱（主动 / 武器 / 召唤卡）', castByPath, scaleCols(castByPath, ' tick'),
+    heatOf('途径 × 吟唱（主动 / 装备 / 召唤卡）', castByPath, scaleCols(castByPath, ' tick'),
       { unit: ' 张', orderNote: '数值最小的 ' }));
 
   const durUnitGroup = group('时序面 · 时长口径',
@@ -484,7 +484,7 @@ function renderSkillStats(view) {
 
   const factionGroup = group('目标面 · 目标阵营',
     barPanel('目标阵营（request.faction）', sortedRows(flat(byFaction), (k) => zh('faction', k)),
-      `<p class="panel-note muted">口径与「选靶方式」组一致：有 target 即算（含被动 / 武器卡）。
+      `<p class="panel-note muted">口径与「选靶方式」组一致：有 target 即算（含被动 / 装备卡）。
       self 占比如此之高，是大量自保/变身类主动卡的选靶写 self。</p>`),
     heatOf('途径 × 目标阵营', factionByPath, colsOf(flat(byFaction), 'faction'), { unit: ' 张' }));
 

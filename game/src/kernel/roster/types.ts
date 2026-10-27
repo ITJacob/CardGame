@@ -1,7 +1,7 @@
 // 编队上下文：单位与挂载（编队上下文.md / 编队参数.md）。
 // 三层：AttributeSet（源，战内不可变）→ BaseProfile（派生一次）→ EffectiveProfile（应用 ModifierLayer）。
 
-import type { Element, FactionId, Gender, InstanceId, PoolKey, Reach, StatKey, UnitId } from '../ids'
+import type { Element, EquipmentSlot, FactionId, Gender, InstanceId, PoolKey, Reach, StatKey, UnitId } from '../ids'
 import type { EffectRef } from '../shared/types'
 import type { Coordinate } from '../battle/types'
 
@@ -157,14 +157,18 @@ export interface StatusInstance {
   thresholdFired?: boolean
 }
 
-/** 武器实例（武器牌打出后的装备态）：单槽、无游离实例 */
-export interface WeaponInstance {
+/** 装备实例（装备牌打出后的装备态）：武器/护具各单槽、无游离实例 */
+export interface EquipmentInstance {
   instanceId: InstanceId
   defId: string
-  slot: 'weapon'
-  attack: number
-  durability: number
-  /** 武器标签（WeaponDef.tags 复制；weapon_tag 谓词用） */
+  slot: EquipmentSlot
+  /** weapon 槽：攻击加值（provenance 已记账） */
+  attack?: number
+  /** weapon 槽：剩余耐久 */
+  durability?: number
+  /** armor 槽：创建时的护甲池容量/初始值 */
+  armor?: number
+  /** 装备标签（EquipmentDef.tags 复制；has_equipped 谓词用） */
   tags?: readonly string[]
 }
 
@@ -193,6 +197,10 @@ export interface BehaviorSlot {
   readonly reach: Reach
   readonly cost: { energy: number; gauge: number; cooldown: number; opportunity: number }
   cooldownRemaining: number
+  /** kind=equipment 的卡：装备实例 id（下线时据此结算同槽公用 CD） */
+  equipInstanceId?: string
+  /** kind=equipment 的卡：卡面 cooldown，装备下线后才开始转 */
+  pendingCooldown?: number
 }
 
 export interface SkillSlot {
@@ -220,7 +228,7 @@ export interface Unit {
   gauges: Map<string, Gauge>
   pools: Map<PoolKey, Pool>
   statuses: StatusSet
-  weapon: WeaponInstance | null
+  equipment: EquipmentInstance[]
   behaviorSlots: BehaviorSlot[]
   skillSlots: SkillSlot[]
   channel: Channel | null

@@ -1,13 +1,13 @@
 // 单位：聚合内的实体（不是聚合根）。装配属性/资源/状态/修正层。
-import type { Element, FactionId, Gender, InstanceId, PoolKey, StatKey, UnitId } from '../ids'
+import type { Element, EquipmentSlot, FactionId, Gender, InstanceId, PoolKey, StatKey, UnitId } from '../ids'
 import type { Coordinate } from '../battle/types'
-import type { StatusDef, TriggerDef, WeaponDef } from '../catalog/types'
+import type { EquipmentDef, StatusDef, TriggerDef } from '../catalog/types'
 import { StatModifiers } from './attributes'
 import { computeEffective, deriveBaseProfile } from './profile'
 import { StatProvenance } from './provenance'
 import { Gauge, Pool } from './resources'
 import { CombatStatusSet, type StatusDefLookup } from './status'
-import type { AttributeSet, BaseProfile, BehaviorSlot, Channel, EffectiveProfile, SkillSlot, StatusSet, Unit, WeaponInstance } from './types'
+import type { AttributeSet, BaseProfile, BehaviorSlot, Channel, EffectiveProfile, EquipmentInstance, SkillSlot, StatusSet, Unit } from './types'
 import { rawModifier } from './statusModifiers'
 import { statusDamageMul, type DamageMulEvent } from './damageMultipliers'
 import { round2 } from '../shared/result'
@@ -81,8 +81,8 @@ export class CombatUnit implements Unit {
   summonerId: UnitId | null = null
   /** 入场途径（ClassDef.id）；职业自带资源/规则按它分发 */
   pathwayId: string | null = null
-  /** 当前装备武器（单槽；null = 徒手） */
-  weapon: WeaponInstance | null = null
+  /** 当前装备（武器/护具各单槽；效果随槽，无背包） */
+  equipment: EquipmentInstance[] = []
   /** 本回合已获得的战意层数（每自身回合重置；上限 3） */
   warSpiritGain = 0
   /** target_override：下一次选靶的覆盖（消费后清空） */
@@ -176,35 +176,54 @@ export class CombatUnit implements Unit {
     return this.statuses.byDef(defId).some((i) => i.grant.params != null && key in i.grant.params)
   }
   hasEquipped(slot?: string, defId?: string, tag?: string): boolean {
-    const w = this.weapon
-    if (!w) return false
-    if (slot && w.slot !== slot) return false
-    if (defId && w.defId !== defId) return false
-    if (tag && !(w.tags ?? []).includes(tag)) return false
-    return true
+    return this.equipment.some((e) => {
+      if (slot && e.slot !== slot) return false
+      if (defId && e.defId !== defId) return false
+      if (tag && !(e.tags ?? []).includes(tag)) return false
+      return true
+    })
   }
-  /** 装备武器：先销毁旧的，再写攻击加值 provenance（sourceId = WeaponInstance） */
-  equipWeapon(def: WeaponDef, instanceId: string): WeaponInstance {
-    if (this.weapon) this.provenance.revertBySource(this.weapon.instanceId)
-    const inst: WeaponInstance = {
+  /** 装备：同槽旧件先撤销武器攻击修正；护具重置护甲池（容量=初始值=armor） */
+  equipEquipment(def: EquipmentDef, instanceId: string): EquipmentInstance {
+    const old = this.equipment.find((e) => e.slot === def.slot)
+    if (old) this.provenance.revertBySource(old.instanceId)
+    const inst: EquipmentInstance = {
       instanceId,
       defId: def.id,
-      slot: 'weapon',
+      slot: def.slot,
       attack: def.attack,
       durability: def.durability,
+      armor: def.armor,
       tags: def.tags,
     }
-    this.weapon = inst
-    this.provenance.apply('attack', def.attack, instanceId)
+    this.equipment = [...this.equipment.filter((e) => e.slot !== def.slot), inst]
+    if (def.attack) this.provenance.apply('attack', def.attack, instanceId)
+    if (def.armor) {
+      const pool = this.pool('armor')
+      pool.setMax(def.armor)
+      pool.setValue(def.armor)
+    }
     return inst
   }
-  /** 销毁当前武器并撤销其修正 */
-  destroyWeapon(): WeaponInstance | null {
-    const w = this.weapon
-    if (!w) return null
-    this.provenance.revertBySource(w.instanceId)
-    this.weapon = null
-    return w
+  /** 下线装备：撤销武器攻击修正；护具清空护甲池（池子只源于当前护具） */
+  removeEquipment(slot: EquipmentSlot): EquipmentInstance | null {
+    const idx = this.equipment.findIndex((e) => e.slot === slot)
+    if (idx < 0) return null
+    const inst = this.equipment[idx]!
+    this.provenance.revertBySource(inst.instanceId)
+    if (inst.slot === 'armor') {
+      const pool = this.pool('armor')
+      pool.setMax(0)
+      pool.setValue(0)
+    }
+    this.equipment.splice(idx, 1)
+    return inst
+  }
+  /** 强化当前护具：护甲池充能并抬容量水位（仅调用方确认 hasEquipped('armor') 后使用） */
+  chargeArmor(amount: number): void {
+    const pool = this.pool('armor')
+    if (amount > 0) pool.setMax(Math.max(pool.max, round2(pool.current + amount)))
+    pool.applyDelta(amount)
   }
   /** 召唤位加成：账本 summon_cap（modify_stat） + 状态 modifiers.summon_cap_bonus（按层数） */
   summonCapBonus(): number {
